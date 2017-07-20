@@ -1,0 +1,10 @@
+Package: RSPrePro
+Type: Package
+Title: Find, download, correct and preprocess Sentinel2 time series
+Version: 0.1.0
+Authors@R: c(person("Luigi", "Ranghetti", email = "ranghetti.l@irea.cnr.it", role = c("aut", "cre")),
+             person("Lorenzo", "Busetto", email = "lbusett@gmail.com", role = c("aut")))
+Description: To be added
+License: GPL-3
+Encoding: UTF-8
+URL: https://github.com/ggranga/RSPrePro
