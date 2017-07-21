@@ -17,10 +17,13 @@
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @export
+#' @importFrom reticulate import import_builtins py_str
 
 
 
-s2buildvrt <- function(infile,outfile=".",utmzone="") {
+s2buildvrt <- function(infile,
+                       outfile=".",
+                       utmzone="") {
 
   res <- c("10m","20m","60m") # resolutions used
 
@@ -56,16 +59,17 @@ s2buildvrt <- function(infile,outfile=".",utmzone="") {
   vrt01_names <- file.path(vrt_tmpdir,paste0(out_prefix,"_",res,".vrt"))
 
   # create separate vrt for files
-  sapply(
-    paste0(
-      "python2 -c \"",
-      "import sys; ",
-      "from osgeo import gdal; ",
-      "ds = gdal.Open(sys.argv[1]); ",
-      "open(sys.argv[2], 'wb').write(ds.GetMetadata('xml:VRT')[0].encode('utf-8'))\" ",
-      "\"",infile_gdalnames,"\" \"",vrt01_names,"\""
-    ), system, intern = Sys.info()["sysname"] == "Windows"
-  )
+  if (length(vrt01_names) == length(infile_gdalnames)) {
+    py <- import_builtins(convert=FALSE)
+    sys <- import("sys",convert=FALSE)
+    gdal <- import("osgeo",convert=FALSE)$gdal
+    for (i in 1:length(vrt01_names)) {
+      vrt_bi <- gdal$Open(infile_gdalnames[i])
+      writeLines(py_str(vrt_bi$GetMetadata("xml:VRT")[[0]]$encode("utf-8")), vrt01_names[i])
+    }
+  } else {
+    stop("Internal error (this should not happen).")
+  }
 
   # create separate vrt for bands
   if ("10m" %in% res) {
@@ -126,5 +130,5 @@ s2buildvrt <- function(infile,outfile=".",utmzone="") {
     ), intern = Sys.info()["sysname"] == "Windows"
   )
 
-
 }
+

@@ -4,20 +4,20 @@
 \alias{s2buildvrt}
 \title{s2buildvrt}
 \usage{
-s2buildvrt(infile, outdir = ".", utmzone = "")
+s2buildvrt(infile, outfile = ".", utmzone = "")
 }
 \arguments{
 \item{infile}{`character` Full path of the input SAFE folder (alternatively,
 full path of the xml file of the product with metadata).}
 
+\item{outfile}{`character` (optional) Full path (or full name) where the
+output vrt file should be created (default: current directory). If a
+directory is provided, the file name will be the same of the SAFE input product.}
+
 \item{utmzone}{`character`(optional) UTM zone of output products (default:
 the first one retrieved from input granules). Note that this function
 does not perform reprojections: if no granules refer to the specified
 UTM zone, no output is created.}
-
-\item{outfile}{`character` (optional) Full path (or full name) where the
-output vrt file should be created (default: current directory). If a
-directory is provided, the file name will be the same of the SAFE input product.}
 }
 \description{
 Build a vrt with all Sentinel2 bands
