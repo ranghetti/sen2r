@@ -19,7 +19,10 @@
 #' @export
 #' @importFrom reticulate import import_builtins py_str
 
-
+# TODO>
+# - add support for L2A compact name
+# - call gdalbuildvrt in a way which ensures that the application is found
+# - add uspport for relative paths
 
 s2buildvrt <- function(infile,
                        outfile=".",
