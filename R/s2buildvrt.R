@@ -69,7 +69,11 @@ s2buildvrt <- function(infile,
     gdal <- import("osgeo",convert=FALSE)$gdal
     for (i in 1:length(vrt01_names)) {
       vrt_bi <- gdal$Open(infile_gdalnames[i])
-      writeLines(py_str(vrt_bi$GetMetadata("xml:VRT")[[0]]), vrt01_names[i])
+      if (is(vrt_bi$GetMetadata("xml:VRT")[[0]], "python.builtin.str")) { # python 3
+        writeLines(py_str(vrt_bi$GetMetadata("xml:VRT")[[0]]), vrt01_names[i])
+      } else { # python 2
+        writeLines(py_str(vrt_bi$GetMetadata("xml:VRT")[[0]]$encode("utf-8")), vrt01_names[i])
+      }
     }
   } else {
     stop("Internal error (this should not happen).")
