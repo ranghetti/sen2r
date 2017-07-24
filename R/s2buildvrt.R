@@ -5,9 +5,10 @@
 #'  Output vrt is at 10m resolution.
 #' @param infile `character` Full path of the input SAFE folder (alternatively,
 #'  full path of the xml file of the product with metadata).
-#' @param outfile `character` (optional) Full path (or full name) where the
-#'  output vrt file should be created (default: current directory). If a
-#'  directory is provided, the file name will be the same of the SAFE input product.
+#' @param outfile `character` (optional) Full name of the output vrt file
+#'  (or full existing directory where the vrt file should be created
+#'  (default: current directory). If a directory is provided, the file name
+#'  will be the same of the SAFE input product.
 #' @param utmzone `character`(optional) UTM zone of output products (default:
 #'  the first one retrieved from input granules). Note that this function
 #'  does not perform reprojections: if no granules refer to the specified
@@ -68,7 +69,7 @@ s2buildvrt <- function(infile,
     gdal <- import("osgeo",convert=FALSE)$gdal
     for (i in 1:length(vrt01_names)) {
       vrt_bi <- gdal$Open(infile_gdalnames[i])
-      writeLines(py_str(vrt_bi$GetMetadata("xml:VRT")[[0]]$encode("utf-8")), vrt01_names[i])
+      writeLines(py_str(vrt_bi$GetMetadata("xml:VRT")[[0]]), vrt01_names[i])
     }
   } else {
     stop("Internal error (this should not happen).")
@@ -109,9 +110,12 @@ s2buildvrt <- function(infile,
   }
 
   # create final vrt
-  if (file.info(outfile)$isdir) {
+  if (file.exists(outfile) & file.info(outfile)$isdir) {
     outfile <- file.path(outfile,paste0(out_prefix,".vrt"))
+  } else {
+    outfile <- paste0(gsub("\\.vrt$","",outfile),".vrt")
   }
+
   system(
     paste0(
       "gdalbuildvrt -separate ",
