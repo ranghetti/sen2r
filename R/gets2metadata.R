@@ -7,13 +7,16 @@ s2_getmetadata <- function(s2, info, readfile) {
   # define regular expressions to identify products
   s2_regex <- list("compactname_main_xml" = list("regex" = "^MTD\\_MSIL([12][AC])\\.xml$", "elements" = c("level")),
                 "compactname_main_path" = list("regex" = "^S(2[AB])\\_MSIL([12][AC])\\_([0-9]{8}T[0-9]{6})\\_N([0-9]{4})\\_R([0-9]{3})\\_T([A-Z0-9]{5})_[0-9]{8}T[0-9]{6}\\.SAFE$",
-                                               "elements" = c("mission","level","sensing_datetime","id_baseline","id_orbit","id_tile")),
+                                               "elements" = c("mission","level","sensing_datetime","id_baseline","id_orbit","creation_datetime")),
                 "oldname_main_path" = list("regex" = "^S(2[AB])\\_([A-Z]{4})\\_PRD\\_MSIL([12][AC])\\_(.{4})\\_([0-9]{8}T[0-9]{6})\\_R([0-9]{3})\\_V[0-9]{8}T[0-9]{6}\\_([0-9]{8}T[0-9]{6})\\.SAFE$",
                                            "elements" = c("mission","file_class","level","centre","creation_datetime","id_orbit","sensing_datetime")),
                 "oldname_granule_path" = list("regex" = "^S(2[AB])\\_([A-Z]{4})\\_MSI\\_L([12][AC])\\_TL\\_(.{4})\\_([0-9]{8}T[0-9]{6})\\_A([0-9]{6})\\_T([A-Z0-9]{5})\\_N([0-9]{2})\\.([0-9]{2})$",
-                                              "elements" = c("mission","file_class","level","centre","creation_datetime","orbit_number","proc_baseline_x","proc_baseline_y")),
+                                              "elements" = c("mission","file_class","level","centre","creation_datetime","orbit_number","id_tile","proc_baseline_x","proc_baseline_y")),
                 "oldname_granule_xml" = list("regex" = "^S(2[AB])\\_([A-Z]{4})\\_MTD\\_L([12][AC])\\_TL\\_(.{4})\\_([0-9]{8}T[0-9]{6})\\_A([0-9]{6})\\_T([A-Z0-9]{5})\\.xml$",
-                                              "elements" = c("mission","file_class","level","centre","creation_datetime","orbit_number","proc_baseline_x","proc_baseline_y")),
+                                             "elements" = c("mission","file_class","level","centre","creation_datetime","orbit_number","id_tile")),
+                "compactname_granule_path" = list("regex" = "^L([12][AC])\\_T([A-Z0-9]{5})\\_A([0-9]{6})\\_([0-9]{8}T[0-9]{6})$",
+                                              "elements" = c("level","id_tile","orbit_number","creation_datetime")),
+                "compactname_granule_xml" = list("regex" = "^MTD\\_TL\\.xml$", "elements" = character(0)),
                 "oldname_main_xml" = list("regex" = "^S(2[AB])\\_([A-Z]{4})\\_MTD\\_SAFL([12][AC])\\_(.{4})\\_([0-9]{8}T[0-9]{6})\\_R([0-9]{3})\\_V[0-9]{8}T[0-9]{6}\\_([0-9]{8}T[0-9]{6})\\.xml$",
                                           "elements" = c("mission","file_class","level","centre","creation_datetime","id_orbit","sensing_datetime")))
 
@@ -59,7 +62,7 @@ s2_getmetadata <- function(s2, info, readfile) {
 
     # if nameinfo is required, metadata from file name are read
     if ("nameinfo" %in% info) {
-      # for old names, retreive from xml name
+      # for old names, retrieve from xml name
       if (s2_version=="old") {
         for (var in s2_regex$oldname_main_xml$elements) {
           metadata[[var]] <- gsub(
@@ -78,7 +81,13 @@ s2_getmetadata <- function(s2, info, readfile) {
 
     # info on tile[s]
     if ("tiles" %in% info) {
-      # TODO
+      granules <- list.files(file.path(dirname(name_xmlfile),"GRANULE"),full.names=TRUE)
+      granules_xml <- sapply(granules, list.files, s2_regex[[paste0(s2_version,"name_granule_xml")]]$regex, full.names=TRUE)
+      granules_notempty <- unlist(sapply(granules_xml,dirname))
+      metadata[["tiles"]] <- gsub(
+        s2_regex[[paste0(s2_version,"name_granule_path")]]$regex,
+        paste0("\\",which(s2_regex[[paste0(s2_version,"name_granule_path")]]$elements=="id_tile")),
+        basename(granules_notempty))
     }
 
 
