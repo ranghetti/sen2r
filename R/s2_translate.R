@@ -1,6 +1,7 @@
-#' s2buildvrt
-#' @description Build a vrt with all Sentinel2 bands
-#' @details The function build a virtual raster from a Sentinel2 SAFE product.
+#' s2_translate
+#' @description Convert the S2 product from SAFE format
+#' @details The function build a virtual raster from a Sentinel2 SAFE product,
+#'  eventually translating it in another spatial format.
 #'  For now, only L1C and L2a with long name (< 2016/12/06) are recognised.
 #'  Output vrt is at 10m resolution.
 #' @param infile `character` Full path of the input SAFE folder (alternatively,
@@ -9,6 +10,8 @@
 #'  (or full existing directory where the vrt file should be created
 #'  (default: current directory). If a directory is provided, the file name
 #'  will be the same of the SAFE input product.
+#' @param format `character` (optional) Format of the output file (in a
+#'  format recognised by GDAL). Default value is "VRT" (Virtual Raster).
 #' @param utmzone `character`(optional) UTM zone of output products (default:
 #'  the first one retrieved from input granules). Note that this function
 #'  does not perform reprojections: if no granules refer to the specified
@@ -20,45 +23,46 @@
 #' @export
 #' @importFrom reticulate import import_builtins py_str
 
-# TODO>
+# TODO
 # - add support for L2A compact name
 # - call gdalbuildvrt in a way which ensures that the application is found
 # - add uspport for relative paths
 
-s2buildvrt <- function(infile,
-                       outfile=".",
-                       utmzone="") {
+s2_translate <- function(infile,
+                         outfile=".",
+                         format="VRT",
+                         utmzone="") {
 
   res <- c("10m","20m","60m") # resolutions used
 
-  # If a directory was passed instead of a xml, retrieve xml name automatically
-  if (file.info(infile)$isdir) {
-      infile_all <- list.files(infile, "\\.xml$",full.names=TRUE)
-      infile <- infile_all[grep("(^S2A_.*\\_V[T0-9]+\\_[T0-9]+\\.xml$)|(^MTD\\_MSIL[12][AC]\\.xml$)",basename(infile_all),perl=TRUE)][1]
-      if (length(infile_all)==0 | is.na(infile)) {
-        stop("Could not find required XML file for S2 data")
-      }
+  # check output format
+  sel_driver <- gdal$GetDriverByName(format)
+  if (is.null(py_to_r(sel_driver))) {
+    stop(paste0("Format \"",format,"\"is not recognised; ",
+                "please use one of the formats supported by your GDAL installation ",
+                "(type 'gdalinfo --formats' in a terminal).")) # FIXME replace with R function
   }
-  # TODO check existence
+
+    # Retrieve xml required metadata
+  infile_meta <- s2_getMetadata(infile, c("xml_main","utm","nameinfo"))
 
   # retrieve UTM zone
-  infile_dir = dirname(infile)
+  infile_dir = dirname(infile_meta$xml_main)
   if (utmzone=="") {
-    infile_granules <- list.files(file.path(infile_dir,"GRANULE"))
-    infile_granules <- sapply(infile_granules,function(x){gsub(".*_T([0-9]{2})[A-Z]{3}_.*","\\1",x)})
-    infile_utm_auto <- unique(infile_granules)
-    if (length(infile_utm_auto)>1) {
-      warning("More than one UTM zone was found in the product; using the first one.")
+    message(paste0("Using UTM zone ",sel_utmzone <- infile_meta$utm[1],"."))
+  } else {
+    sel_utmzone <- which(infile_meta$utm== as.integer(utmzone))
+    if (length(sel_utmzone)==0) {
+      warning(paste0("Tiles with UTM zone ",utmzone," are not present: zone ",
+                     sel_utmzone <- infile_meta$utm[1]," will be used."))
     }
-    utmzone <- infile_utm_auto[1]
   }
 
   # define basename for output files
-  out_prefix <- gsub(".SAFE$","",basename(infile_dir))
+  out_prefix <- gsub(".SAFE$","",basename(infile_dir)) # FIXME use new naming convention
 
   ## Create VRT intermediate files
-  infile_level <- gsub(".*L([12][AC]).*","\\1",infile)
-  infile_gdalnames <- paste0("SENTINEL2_L",infile_level,":",infile,":",res,":","EPSG_326",utmzone)
+  infile_gdalnames <- paste0("SENTINEL2_L",infile_meta$level,":",infile,":",res,":","EPSG_326",sel_utmzone)
   dir.create(vrt_tmpdir <- tempdir(), showWarnings=FALSE)
   vrt01_names <- file.path(vrt_tmpdir,paste0(out_prefix,"_",res,".vrt"))
 
@@ -114,17 +118,11 @@ s2buildvrt <- function(infile,
   }
 
   # create final vrt
-  if (file.exists(outfile) & file.info(outfile)$isdir) {
-    outfile <- file.path(outfile,paste0(out_prefix,".vrt"))
-  } else {
-    outfile <- paste0(gsub("\\.vrt$","",outfile),".vrt")
-  }
-
   system(
     paste0(
       "gdalbuildvrt -separate ",
       "-resolution highest ",
-      "\"",outfile,"\" ",
+      "\"",tempdir(),"/",out_prefix,".vrt\" ",
       if ("60m" %in% res) {paste0("\"",tempdir(),"/",out_prefix,"_b01.vrt\" ")},
       if ("10m" %in% res) {paste0("\"",tempdir(),"/",out_prefix,"_b02.vrt\" ")},
       if ("10m" %in% res) {paste0("\"",tempdir(),"/",out_prefix,"_b03.vrt\" ")},
@@ -140,6 +138,30 @@ s2buildvrt <- function(infile,
       if ("20m" %in% res) {paste0("\"",tempdir(),"/",out_prefix,"_b12.vrt\" ")}
     ), intern = Sys.info()["sysname"] == "Windows"
   )
+
+  # create output file
+  out_ext <- if (format=="ENVI") {
+    "dat"
+  } else {
+    unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(gdal$DMD_EXTENSIONS))," ")," "))[1]
+  }
+  if (file.exists(outfile) & file.info(outfile)$isdir) {
+    outfile <- file.path(outfile,paste0(out_prefix,".",out_ext))
+  } else {
+    outfile <- paste0(gsub(paste0("\\.",out_ext,"$"),"",outfile),".",out_ext)
+  }
+
+  if (format=="VRT") {
+    file.copy(paste0(tempdir(),"/",out_prefix,".vrt"), outfile)
+  } else {
+    system(
+      paste0(
+        "gdal_translate -of ",format," ",
+        "\"",tempdir(),"/",out_prefix,".vrt\" ",
+        "\"",outfile,"\""
+      ), intern = Sys.info()["sysname"] == "Windows"
+    )
+  }
 
 }
 

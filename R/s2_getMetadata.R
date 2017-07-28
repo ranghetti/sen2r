@@ -3,7 +3,7 @@
 #' @details The function scan a Sentinel2 product (main path, granule path,
 #'  main / granule xml file or GDAL object) to retrieve information about
 #'  the product.
-#' @param infile `character` or `osgeo.gdal.Dataset` This input parameter
+#' @param s2 `character` or `osgeo.gdal.Dataset` This input parameter
 #'  can be the main path of a S2 file, the path of the xml with metadata,
 #'  th path of a single granule, the xml path of a single granule, or a
 #'  `osgeo.gdal.Dataset` object (obtained reading the product with python).
@@ -20,9 +20,10 @@
 #' @importFrom tools file_path_as_absolute
 #' @importFrom reticulate import py_to_r
 
-# TODO>
+# TODO
 # - make the output list uniform (es. level and tiles/id_tile)
 # - add a parameter which provides the list of the available options
+# - add check for format integrity
 
 s2_getMetadata <- function(s2, info="all") {
 
@@ -44,14 +45,16 @@ s2_getMetadata <- function(s2, info="all") {
                                       "elements" = c("level","id_tile","orbit_number","creation_datetime")))
 
   # define all possible elements to scan
-  info_general <- c("prod_type", "version", "tiles") # information always retrieved
+  info_general <- c("prod_type", "version", "tiles", "utm", "xml_main", "xml_granules") # information always retrieved
   info_gdal <- c("clouds","direction","orbit_n","preview_url", # information retrieved by reading the file metadata
                  "proc_baseline","level","sensing_datetime",
                  "nodata_value","saturated_value")
-  if (info=="all") {
-    info <- c(info_general, "nameinfo", info_gdal)
-  } else if (info=="nameinfo") {
-    info <- c(info_general, "nameinfo")
+  if (length(info)==1) {
+    if (info=="all") {
+      info <- c(info_general, "nameinfo", info_gdal)
+    } else if (info=="nameinfo") {
+      info <- c(info_general, "nameinfo")
+    }
   }
 
   metadata <- list() # output object, with requested metadata
@@ -86,7 +89,9 @@ s2_getMetadata <- function(s2, info="all") {
         if (length(compactname_main_xmlfile)==0) {
           if (length(oldname_main_xmlfile)==1) {
             s2_version <- "old"
-            s2_xml <- oldname_main_xmlfile
+            s2_main_xml <- s2_xml <- oldname_main_xmlfile
+            s2_granules_xml <- unlist(sapply(list.dirs(file.path(s2_path,"GRANULE"), recursive=FALSE, full.names=TRUE),
+                                      list.files, s2_regex$oldname_granule_xml$regex, full.names=TRUE))
           } else if (length(oldname_main_xmlfile)==0) {
             stop("This product is not in the right format (not recognised).")
           } else {
@@ -95,7 +100,9 @@ s2_getMetadata <- function(s2, info="all") {
         } else if (length(compactname_main_xmlfile)==1) {
           if (length(oldname_main_xmlfile)==0) {
             s2_version <- "compact"
-            s2_xml <- compactname_main_xmlfile
+            s2_main_xml <- s2_xml <- compactname_main_xmlfile
+            s2_granules_xml <- unlist(sapply(list.dirs(file.path(s2_path,"GRANULE"), recursive=FALSE, full.names=TRUE),
+                                             list.files, s2_regex$compactname_granule_xml$regex, full.names=TRUE))
           } else {
             stop("This product is not in the right format (not univocally recognised).")
           }
@@ -110,14 +117,16 @@ s2_getMetadata <- function(s2, info="all") {
         if (length(compactname_granule_xmlfile)==0) {
           if (length(oldname_granule_xmlfile)==1) {
             s2_version <- "old"
-            s2_xml <- oldname_granule_xmlfile
+            s2_main_xml <- list.files(dirname(dirname(s2_path)), s2_regex$oldname_main_xml$regex, full.names=TRUE)
+            s2_granules_xml <- s2_xml <- oldname_granule_xmlfile
           } else if (length(oldname_granule_xmlfile)==0) {
             stop("This product is not in the right format (not recognised).")
           }
         } else if (length(compactname_granule_xmlfile)==1) {
           if (length(oldname_granule_xmlfile)==0) {
             s2_version <- "compact"
-            s2_xml <- compactname_granule_xmlfile
+            s2_main_xml <- list.files(dirname(dirname(s2_path)), s2_regex$compactname_main_xml$regex, full.names=TRUE)
+            s2_granules_xml <- s2_xml <- compactname_granule_xmlfile
           } else if (length(oldname_granule_xmlfile)==1) {
             stop("This product is not in the right format (not univocally recognised).")
           }
@@ -136,6 +145,12 @@ s2_getMetadata <- function(s2, info="all") {
     }
     if ("version" %in% info) { # return the version if required
       metadata[["version"]] <- s2_version
+    }
+    if ("xml_main" %in% info) { # return the path of the main xml file, if required
+      metadata[["xml_main"]] <- s2_main_xml
+    }
+    if ("xml_granules" %in% info) { # return the version if required
+      metadata[["xml_granules"]] <- s2_granules_xml
     }
 
     # if nameinfo is required, metadata from file name are read
@@ -179,25 +194,22 @@ s2_getMetadata <- function(s2, info="all") {
     }
 
     # info on tile[s]
-    if ("tiles" %in% info) {
-      if (s2_type=="product") {
-        granules <- list.files(file.path(s2_path,"GRANULE"),full.names=TRUE)
-        granules_xml <- sapply(granules, list.files, s2_regex[[paste0(s2_version,"name_granule_xml")]]$regex, full.names=TRUE)
-        granules_notempty <- unlist(sapply(granules_xml,dirname))
-      } else {
-        granules_notempty <- s2_path
-      }
-      metadata[["tiles"]] <- gsub(
+    if (any(c("tiles","utm") %in% info)) {
+      av_tiles <- gsub(
         s2_regex[[paste0(s2_version,"name_granule_path")]]$regex,
         paste0("\\",which(s2_regex[[paste0(s2_version,"name_granule_path")]]$elements=="id_tile")),
-        basename(granules_notempty))
+        basename(dirname(s2_granules_xml)))
+      if ("tiles" %in% info) {
+        metadata[["tiles"]] <- av_tiles
+      }
+      if ("utm" %in% info) {
+        metadata[["utm"]] <- as.integer(unique(substr(av_tiles,1,2)))
+      }
     }
 
 
     # if necessary, read the file for further metadata
-    if (any(c("clouds","direction","orbit_n","preview_url",
-              "proc_baseline","level","sensing_datetime",
-              "nodata_value","saturated_value") %in% info)) {
+    if (any(info_gdal %in% info)) {
 
       gdal <- import("osgeo",convert=FALSE)$gdal
 
