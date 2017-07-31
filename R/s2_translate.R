@@ -26,9 +26,7 @@
 #' @importFrom reticulate import import_builtins py_str
 
 # TODO
-# - add support for L2A compact name
 # - call gdalbuildvrt in a way which ensures that the application is found
-# - add uspport for relative paths
 
 s2_translate <- function(infile,
                          outfile=".",
@@ -62,7 +60,14 @@ s2_translate <- function(infile,
     }
   }
 
-    # Retrieve xml required metadata
+  # Check GDAL installation
+  if (Sys.which("gdal_translate")=="" | Sys.which("gdalbuildvrt")=="") {
+    print_message(type="message",
+                  "Searching for a valid GDAL installation, please wait...")
+    # TODO
+  }
+
+  # Retrieve xml required metadata
   infile_meta <- s2_getMetadata(infile, c("xml_main","utm","level","tiles", "jp2list"))
 
   # retrieve UTM zone
@@ -104,7 +109,7 @@ s2_translate <- function(infile,
       vrt_spectralbands <- c(vrt_spectralbands, vrt_selband)
       system(
         paste0(
-          "gdalbuildvrt ",
+          Sys.which("gdalbuildvrt")," ",
           "\"",vrt_selband,"\" ",
           paste(paste0("\"",jp2_selband,"\""), collapse=" ")
         ),
@@ -123,7 +128,7 @@ s2_translate <- function(infile,
   # create final vrt
   system(
     paste0(
-      "gdalbuildvrt -separate ",
+      Sys.which("gdalbuildvrt")," -separate ",
       "\"",tempdir(),"/",out_prefix,".vrt\" ",
       paste(paste0("\"",vrt_spectralbands,"\""), collapse=" ")
     ),
@@ -236,7 +241,7 @@ s2_translate <- function(infile,
   } else {
     system(
       paste0(
-        "gdal_translate -of ",format," ",
+        Sys.which("gdal_translate")," -of ",format," ",
         if (format=="GTiff") {paste0("-co COMPRESS=",toupper(compress)," ")},
         "\"",tempdir(),"/",out_prefix,".vrt\" ",
         "\"",outfile,"\""
