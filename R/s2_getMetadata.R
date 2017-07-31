@@ -34,26 +34,36 @@ s2_getMetadata <- function(s2, info="all") {
     "oldname_main_path" = list("regex" = "^S(2[AB])\\_([A-Z]{4})\\_PRD\\_MSIL([12][AC])\\_(.{4})\\_([0-9]{8}T[0-9]{6})\\_R([0-9]{3})\\_V[0-9]{8}T[0-9]{6}\\_([0-9]{8}T[0-9]{6})\\.SAFE$",
                                "elements" = c("mission","file_class","level","centre","creation_datetime","id_orbit","sensing_datetime")),
     "compactname_main_xml" = list("regex" = "^MTD\\_MSIL([12][AC])\\.xml$", "elements" = c("level")),
-    "compactname_main_path" = list("regex" = "^S(2[AB])\\_MSIL([12][AC])\\_([0-9]{8}T[0-9]{6})\\_N([0-9]{4})\\_R([0-9]{3})\\_T([A-Z0-9]{5})_[0-9]{8}T[0-9]{6}\\.SAFE$",
-                                   "elements" = c("mission","level","sensing_datetime","id_baseline","id_orbit","id_tile")),
+    "compactname_main_path" = list("regex" = "^S(2[AB])\\_MSIL([12][AC])\\_([0-9]{8}T[0-9]{6})\\_N([0-9]{4})\\_R([0-9]{3})\\_T([A-Z0-9]{5})\\_([0-9]{8}T[0-9]{6})\\.SAFE$",
+                                   "elements" = c("mission","level","sensing_datetime","id_baseline","id_orbit","id_tile","creation_datetime")),
     "oldname_granule_xml" = list("regex" = "^S(2[AB])\\_([A-Z]{4})\\_MTD\\_L([12][AC])\\_TL\\_(.{4})\\_([0-9]{8}T[0-9]{6})\\_A([0-9]{6})\\_T([A-Z0-9]{5})\\.xml$",
                                  "elements" = c("mission","file_class","level","centre","creation_datetime","orbit_number","id_tile")),
     "oldname_granule_path" = list("regex" = "^S(2[AB])\\_([A-Z]{4})\\_MSI\\_L([12][AC])\\_TL\\_(.{4})\\_([0-9]{8}T[0-9]{6})\\_A([0-9]{6})\\_T([A-Z0-9]{5})\\_N([0-9]{2})\\.([0-9]{2})$",
                                   "elements" = c("mission","file_class","level","centre","creation_datetime","orbit_number","id_tile","proc_baseline_x","proc_baseline_y")),
     "compactname_granule_xml" = list("regex" = "^MTD\\_TL\\.xml$", "elements" = character(0)),
     "compactname_granule_path" = list("regex" = "^L([12][AC])\\_T([A-Z0-9]{5})\\_A([0-9]{6})\\_([0-9]{8}T[0-9]{6})$",
-                                      "elements" = c("level","id_tile","orbit_number","creation_datetime")))
+                                      "elements" = c("level","id_tile","orbit_number","creation_datetime")),
+    "oldname_L1C_jp2" = list("regex" = "^S(2[AB])\\_([A-Z]{4})\\_MSI\\_L1C\\_TL\\_(.{4})\\_([0-9]{8}T[0-9]{6})\\_A([0-9]{6})\\_T([A-Z0-9]{5})_(B[0-9A]{2})\\.jp2$",
+                             "elements" = c("mission","file_class","centre","creation_datetime","orbit_number","id_tile","bandname")),
+    "oldname_L2A_jp2" = list("regex" = "^S(2[AB])\\_([A-Z]{4})\\_([A-Z]{3})\\_L2A\\_TL\\_(.{4})\\_([0-9]{8}T[0-9]{6})\\_A([0-9]{6})\\_T([A-Z0-9]{5})\\_?(B[0-9A]{2})?\\_([126]0m)\\.jp2$",
+                             "elements" = c("mission","file_class","additional_product","centre","creation_datetime","orbit_number","id_tile","bandname","res")),
+    "compactname_L1C_jp2" = list("regex" = "^T([A-Z0-9]{5})\\_([0-9]{8}T[0-9]{6})\\_(B[0-9A]{2})\\.jp2$",
+                                 "elements" = c("id_tile","sensing_datetime","bandname")),
+    "compactname_L2A_jp2" = list("regex" = "^L2A\\_T([A-Z0-9]{5})\\_([0-9]{8}T[0-9]{6})\\_([0-9A-Z]{3})\\_([126]0m)\\.jp2$",
+                                 "elements" = c("id_tile","sensing_datetime","bandname","res"))) # here bandname can be also additional_product
 
   # define all possible elements to scan
   info_general <- c("prod_type", "version", "tiles", "utm", "xml_main", "xml_granules") # information always retrieved
+  info_name <- c("level","creation_datetime", "id_tile", "mission", "centre", "file_class",
+                 "id_orbit", "orbit_number", "sensing_datetime", "id_baseline") # information retrieved from name
   info_gdal <- c("clouds","direction","orbit_n","preview_url", # information retrieved by reading the file metadata
                  "proc_baseline","level","sensing_datetime",
                  "nodata_value","saturated_value")
   if (length(info)==1) {
     if (info=="all") {
-      info <- c(info_general, "nameinfo", info_gdal)
+      info <- c(info_general, info_name, info_gdal)
     } else if (info=="nameinfo") {
-      info <- c(info_general, "nameinfo")
+      info <- c(info_general, info_name)
     }
   }
 
@@ -93,9 +103,9 @@ s2_getMetadata <- function(s2, info="all") {
             s2_granules_xml <- unlist(sapply(list.dirs(file.path(s2_path,"GRANULE"), recursive=FALSE, full.names=TRUE),
                                       list.files, s2_regex$oldname_granule_xml$regex, full.names=TRUE))
           } else if (length(oldname_main_xmlfile)==0) {
-            stop("This product is not in the right format (not recognised).")
+            print_message(type="error", "This product is not in the right format (not recognised).")
           } else {
-            stop("This product is not in the right format (not univocally recognised).")
+            print_message(type="error", "This product is not in the right format (not univocally recognised).")
           }
         } else if (length(compactname_main_xmlfile)==1) {
           if (length(oldname_main_xmlfile)==0) {
@@ -104,7 +114,7 @@ s2_getMetadata <- function(s2, info="all") {
             s2_granules_xml <- unlist(sapply(list.dirs(file.path(s2_path,"GRANULE"), recursive=FALSE, full.names=TRUE),
                                              list.files, s2_regex$compactname_granule_xml$regex, full.names=TRUE))
           } else {
-            stop("This product is not in the right format (not univocally recognised).")
+            print_message(type="error", "This product is not in the right format (not univocally recognised).")
           }
         }
       } else {
@@ -120,7 +130,7 @@ s2_getMetadata <- function(s2, info="all") {
             s2_main_xml <- list.files(dirname(dirname(s2_path)), s2_regex$oldname_main_xml$regex, full.names=TRUE)
             s2_granules_xml <- s2_xml <- oldname_granule_xmlfile
           } else if (length(oldname_granule_xmlfile)==0) {
-            stop("This product is not in the right format (not recognised).")
+            print_message(type="error", "This product is not in the right format (not recognised).")
           }
         } else if (length(compactname_granule_xmlfile)==1) {
           if (length(oldname_granule_xmlfile)==0) {
@@ -128,16 +138,16 @@ s2_getMetadata <- function(s2, info="all") {
             s2_main_xml <- list.files(dirname(dirname(s2_path)), s2_regex$compactname_main_xml$regex, full.names=TRUE)
             s2_granules_xml <- s2_xml <- compactname_granule_xmlfile
           } else if (length(oldname_granule_xmlfile)==1) {
-            stop("This product is not in the right format (not univocally recognised).")
+            print_message(type="error", "This product is not in the right format (not univocally recognised).")
           }
         }
       } else if (length(oldname_granule_xmlfile)+length(compactname_granule_xmlfile)==0) {
-        stop("This product is not in the right format (not recognised).")
+        print_message(type="error", "This product is not in the right format (not recognised).")
       } else {
-        stop("This product is not in the right format (not univocally recognised).")
+        print_message(type="error", "This product is not in the right format (not univocally recognised).")
       }
     } else {
-      stop("This product is not in the right format (not univocally recognised).")
+      print_message(type="error", "This product is not in the right format (not univocally recognised).")
     }
 
     if ("prod_type" %in% info) { # return the type if required
@@ -153,45 +163,47 @@ s2_getMetadata <- function(s2, info="all") {
       metadata[["xml_granules"]] <- s2_granules_xml
     }
 
-    # if nameinfo is required, metadata from file name are read
-    if ("nameinfo" %in% info) {
-
-      # decide target, regex and elements to scan
-      if (s2_version=="old") {
-        # for old names, retrieve from xml name
-        nameinfo_target <- basename(s2_xml)
-        if (s2_type=="product") {
-          nameinfo_regex <- s2_regex$oldname_main_xml$regex
-          nameinfo_elements <- s2_regex$oldname_main_xml$elements
-        } else if (s2_type=="singlegranule") {
-          nameinfo_regex <- s2_regex$oldname_granule_xml$regex
-          nameinfo_elements <- s2_regex$oldname_granule_xml$elements
-        }
-      } else {
-        # for compact names, retrieve from directory name
-        nameinfo_target <- basename(s2_path)
-        if (s2_type=="product") {
-          nameinfo_regex <- s2_regex$compactname_main_path$regex
-          nameinfo_elements <- s2_regex$compactname_main_path$elements
-        } else if (s2_type=="singlegranule") {
-          nameinfo_regex <- s2_regex$compactname_granule_path$regex
-          nameinfo_elements <- s2_regex$compactname_granule_path$elements
-        }
+    # metadata from file name are read
+    # decide target, regex and elements to scan
+    if (s2_version=="old") {
+      # for old names, retrieve from xml name
+      nameinfo_target <- basename(s2_xml)
+      if (s2_type=="product") {
+        nameinfo_regex <- s2_regex$oldname_main_xml$regex
+        nameinfo_elements <- s2_regex$oldname_main_xml$elements
+      } else if (s2_type=="singlegranule") {
+        nameinfo_regex <- s2_regex$oldname_granule_xml$regex
+        nameinfo_elements <- s2_regex$oldname_granule_xml$elements
       }
-
-      # scan
-      for (sel_el in nameinfo_elements) {
-        metadata[[sel_el]] <- gsub(
-          nameinfo_regex,
-          paste0("\\",which(nameinfo_elements==sel_el)),
-          nameinfo_target)
-        # format if it is a date or a time
-        if (length(grep("\\_datetime",sel_el))==1) {
-          metadata[[sel_el]] <- as.POSIXct(metadata[[sel_el]], format="%Y%m%dT%H%M%S", tz="UTC")
-        }
+    } else {
+      # for compact names, retrieve from directory name
+      nameinfo_target <- basename(s2_path)
+      if (s2_type=="product") {
+        nameinfo_regex <- s2_regex$compactname_main_path$regex
+        nameinfo_elements <- s2_regex$compactname_main_path$elements
+      } else if (s2_type=="singlegranule") {
+        nameinfo_regex <- s2_regex$compactname_granule_path$regex
+        nameinfo_elements <- s2_regex$compactname_granule_path$elements
       }
-
     }
+
+    # scan
+    metadata_nameinfo <- list()
+    for (sel_el in nameinfo_elements) {
+      metadata_nameinfo[[sel_el]] <- gsub(
+        nameinfo_regex,
+        paste0("\\",which(nameinfo_elements==sel_el)),
+        nameinfo_target)
+      # format if it is a date or a time
+      if (length(grep("\\_datetime",sel_el))==1) {
+        metadata_nameinfo[[sel_el]] <- as.POSIXct(metadata_nameinfo[[sel_el]], format="%Y%m%dT%H%M%S", tz="UTC")
+      }
+      # return if nameinfo is required
+      if (sel_el %in% info) {
+        metadata[[sel_el]] <- metadata_nameinfo[[sel_el]]
+      }
+    }
+    s2_level <- metadata_nameinfo[["level"]] # used as base info
 
     # info on tile[s]
     if (any(c("tiles","utm") %in% info)) {
@@ -207,6 +219,44 @@ s2_getMetadata <- function(s2, info="all") {
       }
     }
 
+    # if requested, give band names
+    if ("jp2list" %in% info) {
+
+      # compute elements
+      jp2_listall <- list.files(s2_path, s2_regex[[paste0(s2_version,"name_L",s2_level,"_jp2")]]$regex, recursive=TRUE, full.names=FALSE)
+      jp2_bandname <- gsub(s2_regex[[paste0(s2_version,"name_L",s2_level,"_jp2")]]$regex,
+                           paste0("\\",which(s2_regex[[paste0(s2_version,"name_L",s2_level,"_jp2")]]$elements == "bandname")),
+                           basename(jp2_listall))
+      jp2_layertype <- gsub(s2_regex[[paste0(s2_version,"name_L",s2_level,"_jp2")]]$regex,
+                           paste0("\\",which(s2_regex[[paste0(s2_version,"name_L",s2_level,"_jp2")]]$elements == "additional_product")),
+                           basename(jp2_listall))
+      jp2_res <- gsub(s2_regex[[paste0(s2_version,"name_L",s2_level,"_jp2")]]$regex,
+                      paste0("\\",which(s2_regex[[paste0(s2_version,"name_L",s2_level,"_jp2")]]$elements == "res")),
+                      basename(jp2_listall))
+      jp2_tile <- gsub(s2_regex[[paste0(s2_version,"name_L",s2_level,"_jp2")]]$regex,
+                      paste0("\\",which(s2_regex[[paste0(s2_version,"name_L",s2_level,"_jp2")]]$elements == "id_tile")),
+                      basename(jp2_listall))
+      # corrections for compact names
+      if (s2_version=="compact") {
+        jp2_layertype[grep("^B[0-9A]{2}$",jp2_bandname)] <- "MSI"
+        jp2_layertype[jp2_layertype!="MSI"] <- jp2_bandname[jp2_layertype!="MSI"]
+        jp2_bandname[jp2_layertype!="MSI"] <- ""
+      }
+
+      # correction B8A -> B08A (to maintain order)
+      jp2_bandname[jp2_bandname=="B8A"] <- "B08A"
+
+      # output data.frame
+      jp2_list <- data.frame("layer" = basename(jp2_listall),
+                             "tile" = jp2_tile,
+                             "type" = jp2_layertype,
+                             "band" = jp2_bandname,
+                             "res" = jp2_res,
+                             "relpath" = jp2_listall,
+                             stringsAsFactors=FALSE)
+      metadata[["jp2list"]] <-jp2_list[with(jp2_list, order(band,type,res,tile)),]
+
+    }
 
     # if necessary, read the file for further metadata
     if (any(info_gdal %in% info)) {
@@ -250,9 +300,9 @@ s2_getMetadata <- function(s2, info="all") {
     if ("proc_baseline" %in% info) {
       metadata[["proc_baseline"]] <- py_to_r(s2_gdal$GetMetadata()[["PROCESSING_BASELINE"]])
     }
-    if ("level" %in% info) {
-      metadata[["level"]] <- py_to_r(s2_gdal$GetMetadata()[["PROCESSING_LEVEL"]])
-    }
+    # if ("level" %in% info) {
+    #   metadata[["level"]] <- py_to_r(s2_gdal$GetMetadata()[["PROCESSING_LEVEL"]])
+    # }
     if ("sensing_datetime" %in% info) {
       start_time <- as.POSIXct(
         py_to_r(s2_gdal$GetMetadata()[["PRODUCT_START_TIME"]]), format="%Y-%m-%dT%H:%M:%S", tz="UTC")
