@@ -1,0 +1,25 @@
+title: RSPrePro
+template:
+  params:
+    bootswatch: yeti
+reference:
+  - title: Reading and converting SAFE format
+    desc: ~
+    contents:
+      - '`s2_getMetadata`'
+      - '`s2_translate`'
+  - title: Accessory functions
+    desc: (not exported)
+    contents:
+      - '`expand_path`'
+      - '`print_message`'
+navbar:
+  type: inverse
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Function reference"
+      href: reference/index.html
+  right:
+    - icon: fa-github fa-lg
+      href: https://github.com/ggranga/RSPrePro/
