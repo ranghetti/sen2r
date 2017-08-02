@@ -40,7 +40,7 @@
 #' @importFrom tools file_path_as_absolute
 #' @importFrom reticulate import py_to_r
 #'
-#' #@md # FIXME reactivate (solve the "R session aborted" problem occurring while roxygenising)
+# #' @md # FIXME reactivate (solve the "R session aborted" problem occurring while roxygenising)
 #'
 #' @examples \dontrun{
 #' # Define product path

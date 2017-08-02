@@ -2,7 +2,6 @@
 
 export(s2_getMetadata)
 export(s2_translate)
-importFrom(reticulate,"#@md")
 importFrom(reticulate,import)
 importFrom(reticulate,import_builtins)
 importFrom(reticulate,py_str)
