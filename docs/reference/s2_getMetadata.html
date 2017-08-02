@@ -34,6 +34,18 @@
 <![endif]-->
 
 
+<!-- Google analytics -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-11080708-8', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
   </head>
 
   <body>
@@ -99,10 +111,26 @@ th path of a single granule, the xml path of a single granule, or a
     <tr>
       <th>info</th>
       <td><p>`character` (optional) Vector with the list of the metadata
-which should be provided. By default, all the metadata are provided.
-By choosing "nameinfo", only the metadata obtained by scanning the file
-name are provided (this is a bit faster). Alternatively, single
-information can be asked.</p></td>
+which should be provided. Accepted values are:
+* "all" (default): all the retrevable metadata are provided;
+* "nameinfo": only the metadata obtained by scanning the file
+name are provided (the file is not opened with GDAL, so this method
+is a bit faster).
+* a vector of single specific information:
+    - "prod_type" ('singlegranule' or 'product');
+    - "version" ('old' or 'compact');
+    - "tiles" (vector with the tiles ID available in the product);
+    - "utm"  (vector with the UTM zones used in the product);
+    - "xml_main" (name of the main XML file with metadata);
+    - "xml_granules" (names of the XML with granule metadata);
+    - "level" ('1C' or '2A');
+    - "creation_datetime", "id_tile", "mission", "centre",
+        "file_class", "id_orbit", "orbit_number", "sensing_datetime",
+        "id_baseline": metadata spefici of the product type and version
+        (they are returned only if obtainable for the specified input);
+    - "clouds","direction","orbit_n","preview_url", "proc_baseline",
+        "level", "sensing_datetime", "nodata_value", "saturated_value":
+        information retrieved from the metadata stored in the XML file.</p></td>
     </tr>
     </table>
     

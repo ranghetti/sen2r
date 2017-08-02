@@ -2,6 +2,7 @@ title: RSPrePro
 template:
   params:
     bootswatch: yeti
+    ganalytics: UA-11080708-8
 reference:
   - title: Reading and converting SAFE format
     desc: ~
