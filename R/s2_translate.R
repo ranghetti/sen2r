@@ -36,6 +36,7 @@ s2_translate <- function(infile,
 
   res <- c("10m","20m","60m") # resolutions used
 
+  # import python modules
   py <- import_builtins(convert=FALSE)
   sys <- import("sys",convert=FALSE)
   gdal <- import("osgeo",convert=FALSE)$gdal

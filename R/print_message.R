@@ -36,6 +36,7 @@ print_message <- function(..., type, sep="", date=FALSE, date_format="") {
     cat = cat(message_string,"\n",sep=""),
     error = stop(message_string, call.=FALSE),
     warning = warning(message_string, call.=FALSE),
+    waiting = invisible(readline(message_string)),
     stop(paste0("Type '",type,"' not yet supported."))
   )
 }
