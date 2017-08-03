@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>print_message — print_message • RSPrePro</title>
+<title>install_s2download — install_s2download • RSPrePro</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,61 +89,30 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>print_message</h1>
+    <h1>install_s2download</h1>
     </div>
 
     
-    <p>Print a message</p>
+    <p>Clone s2download and install sen2cor docker.</p>
     
 
-    <pre class="usage"><span class='fu'>print_message</span>(<span class='no'>...</span>, <span class='no'>type</span>, <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>date</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>date_format</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
+    <pre class="usage"><span class='fu'>install_s2download</span>(<span class='kw'>inst_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>...</th>
-      <td><p><code>R</code> objects which are concatenated.</p></td>
-    </tr>
-    <tr>
-      <th>type</th>
-      <td><p><code>character</code> Type of the output (accepted values: 'message'
-for a diagnostic message, 'string' for a character output, 'cat' for the
-output of <code><a href='http://www.rdocumentation.org/packages/base/topics/cat'>base::cat()</a></code> function, 'error' and 'warning' for an error or
-warning message. Intentionally, no default value is defined.</p></td>
-    </tr>
-    <tr>
-      <th>sep</th>
-      <td><p><code>character</code> (optional) character used to separate input values
-(default is nothing).</p></td>
-    </tr>
-    <tr>
-      <th>date</th>
-      <td><p><code>logical</code> Set TRUE to place the date before the message
-(useful for logs or time consuming operations).</p></td>
-    </tr>
-    <tr>
-      <th>date_format</th>
-      <td><p><code>character</code> Format of the date (see <code><a href='http://www.rdocumentation.org/packages/base/topics/strptime'>base::strftime()</a></code>)
-for the definition of the format). The default format is
-"%Y-%m-%d %H:%M:%S".</p></td>
+      <th>inst_path</th>
+      <td><p><code>character</code> Path where s2download will be cloned
+(default: a subdirectory of the RSPrePro package).</p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>message (in the defined format).</p>
-    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Several functions print messages in different formats
-(message, error, warning, cat, R output) and with different syntaxes
-(concatenating parameters or accepting a single argument, appending
-a new line, etc.).
-This accessory function provides a common interface for different types:
-several arguments are accepted and concatenated with the 'sep' argument;
-the format is defined with the 'format' argument; a date is optionally
-placed before the message.</p>
+    <p>s2download is a collection of python scripts used to download
+and correct Sentinel-2 images, and it is required by RSPrePro.
+This function clones them and installs a docker with sen2cor.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
@@ -156,8 +125,6 @@ placed before the message.</p>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#value">Value</a></li>
-
       <li><a href="#details">Details</a></li>
 
       <li><a href="#note">Note</a></li>

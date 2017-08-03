@@ -103,52 +103,77 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>s2</th>
-      <td><p>`character` or `osgeo.gdal.Dataset` This input parameter
+      <td><p>'character' or 'osgeo.gdal.Dataset' This input parameter
 can be the main path of a S2 file, the path of the xml with metadata,
 th path of a single granule, the xml path of a single granule, or a
-`osgeo.gdal.Dataset` object (obtained reading the product with python).</p></td>
+'osgeo.gdal.Dataset' object (obtained reading the product with python).</p></td>
     </tr>
     <tr>
       <th>info</th>
-      <td><p>`character` (optional) Vector with the list of the metadata
-which should be provided. Accepted values are:
-* "all" (default): all the retrevable metadata are provided;
-* "nameinfo": only the metadata obtained by scanning the file
-name are provided (the file is not opened with GDAL, so this method
-is a bit faster).
-* a vector of single specific information:
-    - "prod_type" ('singlegranule' or 'product');
-    - "version" ('old' or 'compact');
-    - "tiles" (vector with the tiles ID available in the product);
-    - "utm"  (vector with the UTM zones used in the product);
-    - "xml_main" (name of the main XML file with metadata);
-    - "xml_granules" (names of the XML with granule metadata);
-    - "level" ('1C' or '2A');
-    - "creation_datetime", "id_tile", "mission", "centre",
-        "file_class", "id_orbit", "orbit_number", "sensing_datetime",
-        "id_baseline": metadata spefici of the product type and version
-        (they are returned only if obtainable for the specified input);
-    - "clouds","direction","orbit_n","preview_url", "proc_baseline",
-        "level", "sensing_datetime", "nodata_value", "saturated_value":
-        information retrieved from the metadata stored in the XML file.</p></td>
+      <td><p>'character' (optional) Vector with the list of the metadata
+which should be provided.
+Accepted values are:</p><ul>
+<li><p>"all" (default): all the retrevable metadata are provided;</p></li>
+<li><p>"nameinfo": only the metadata obtained by scanning the file name
+are provided (the file is not opened with GDAL, so this method is
+a bit faster).</p></li>
+<li><p>a vector of single specific information (one or more from the
+followings):</p><ul>
+<li><p>"prod_type" ('singlegranule' or 'product');</p></li>
+<li><p>"version" ('old' or 'compact');</p></li>
+<li><p>"tiles" (vector with the tiles ID available in the product);</p></li>
+<li><p>"utm" (vector with the UTM zones used in the product);</p></li>
+<li><p>"xml_main" (name of the main XML file with metadata);</p></li>
+<li><p>"xml_granules" (names of the XML with granule metadata);</p></li>
+<li><p>"level" ('1C' or '2A');</p></li>
+<li><p>"creation_datetime", "id_tile", "mission", "centre",
+"file_class", "id_orbit", "orbit_number", "sensing_datetime",
+"id_baseline": metadata spefici of the product type and
+version (they are returned only if obtainable for the specified
+input);</p></li>
+<li><p>"clouds","direction","orbit_n","preview_url", "proc_baseline",
+"level", "sensing_datetime", "nodata_value", "saturated_value":
+information retrieved from the metadata stored in the XML file.</p></li>
+</ul></li>
+</ul></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>`list` list of the output metadata.</p>
+    <p>'list' list of the output metadata.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The function scan a Sentinel2 product (main path, granule path,
- main / granule xml file or GDAL object) to retrieve information about
- the product.</p>
+main / granule xml file or GDAL object) to retrieve information about
+the product.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='co'># Define product path</span>
+<span class='no'>s2_examplename</span> <span class='kw'>&lt;-</span> <span class='st'>"/position/of/the/following/product/S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"</span>
+
+<span class='co'># Return all the available information</span>
+<span class='fu'>s2_getMetadata</span>(<span class='no'>s2_examplename</span>)
+
+<span class='co'># Return only the information retrevable form the file names</span>
+<span class='co'># (it still requires that the product exists)</span>
+<span class='fu'>s2_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"filinfo"</span>)
+
+<span class='co'># Return some specific information</span>
+<span class='fu'>s2_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='st'>"tiles"</span>, <span class='st'>"level"</span>, <span class='st'>"id_tile"</span>))
+
+<span class='co'># Return a single information</span>
+<span class='co'># (in this case, the output is a vector instead than a list)</span>
+<span class='fu'>s2_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"level"</span>)
+
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -160,7 +185,9 @@ is a bit faster).
       <li><a href="#details">Details</a></li>
 
       <li><a href="#note">Note</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     

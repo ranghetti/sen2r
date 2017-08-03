@@ -103,36 +103,36 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>path</th>
-      <td><p>`character` the path name to check ad eventually expand.</p></td>
+      <td><p><code>character</code> the path name to check ad eventually expand.</p></td>
     </tr>
     <tr>
       <th>parent</th>
-      <td><p>`character` the parent directory to use if 'path' is
+      <td><p><code>character</code> the parent directory to use if 'path' is
 relative (default value: the working directory).</p></td>
     </tr>
     <tr>
       <th>silent</th>
-      <td><p>`logical` if TRUE (default), no message are shown;
+      <td><p><code>logical</code> if TRUE (default), no message are shown;
 otherwise, a message inform if 'parent' were applied or not.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>`R` objects which are concatenated.</p></td>
+      <td><p><code>R</code> objects which are concatenated.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>`character` the path eventually expanded.</p>
+    <p><code>character</code> the path eventually expanded.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Accessory function which checks if a path is absolute or relative;
- if relative, use a specified parent directory instead than the working
- dorectory to expand it.
- Useful for functions which accept more than one path as arguments,
- in which one of them contains the absolute position, and the others
- do not.</p>
+if relative, use a specified parent directory instead than the working
+dorectory to expand it.
+Useful for functions which accept more than one path as arguments,
+in which one of them contains the absolute position, and the others
+do not.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
