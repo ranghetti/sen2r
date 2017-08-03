@@ -2,7 +2,7 @@
 % Please edit documentation in R/s2_translate.R
 \name{s2_translate}
 \alias{s2_translate}
-\title{s2_translate}
+\title{Convert from SAFE format}
 \usage{
 s2_translate(infile, outfile = ".", format = "VRT", compress = "DEFLATE",
   utmzone = "")
@@ -28,9 +28,6 @@ does not perform reprojections: if no granules refer to the specified
 UTM zone, no output is created.}
 }
 \description{
-Convert the S2 product from SAFE format
-}
-\details{
 The function build a virtual raster from a Sentinel2 SAFE product,
 eventually translating it in another spatial format.
 For now, only L1C and L2a with long name (< 2016/12/06) are recognised.

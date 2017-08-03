@@ -2,7 +2,7 @@
 % Please edit documentation in R/install_s2download.R
 \name{install_s2download}
 \alias{install_s2download}
-\title{install_s2download}
+\title{Clone s2download and install sen2cor docker.}
 \usage{
 install_s2download(inst_path = NA)
 }
@@ -11,9 +11,6 @@ install_s2download(inst_path = NA)
 (default: a subdirectory of the RSPrePro package).}
 }
 \description{
-Clone s2download and install sen2cor docker.
-}
-\details{
 s2download is a collection of python scripts used to download
 and correct Sentinel-2 images, and it is required by RSPrePro.
 This function clones them and installs a docker with sen2cor.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/print_message.R
 \name{print_message}
 \alias{print_message}
-\title{print_message}
+\title{Print a message}
 \usage{
 print_message(..., type, sep = "", date = FALSE, date_format = "")
 }
@@ -28,9 +28,6 @@ for the definition of the format). The default format is
 message (in the defined format).
 }
 \description{
-Print a message
-}
-\details{
 Several functions print messages in different formats
 (message, error, warning, cat, R output) and with different syntaxes
 (concatenating parameters or accepting a single argument, appending

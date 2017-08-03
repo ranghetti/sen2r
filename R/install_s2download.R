@@ -1,6 +1,5 @@
-#' install_s2download
-#' @description Clone s2download and install sen2cor docker.
-#' @details s2download is a collection of python scripts used to download
+#' @title Clone s2download and install sen2cor docker.
+#' @description s2download is a collection of python scripts used to download
 #'  and correct Sentinel-2 images, and it is required by RSPrePro.
 #'  This function clones them and installs a docker with sen2cor.
 #' @param inst_path `character` Path where s2download will be cloned

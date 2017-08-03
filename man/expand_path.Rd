@@ -2,7 +2,7 @@
 % Please edit documentation in R/expand_path.R
 \name{expand_path}
 \alias{expand_path}
-\title{expand_path}
+\title{Expand a path with a parent directory}
 \usage{
 expand_path(path, parent = NA, silent = TRUE)
 }
@@ -21,9 +21,6 @@ otherwise, a message inform if 'parent' were applied or not.}
 \code{character} the path eventually expanded.
 }
 \description{
-Expand a path with a parent directory
-}
-\details{
 Accessory function which checks if a path is absolute or relative;
 if relative, use a specified parent directory instead than the working
 dorectory to expand it.

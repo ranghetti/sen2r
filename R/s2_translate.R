@@ -1,6 +1,5 @@
-#' s2_translate
-#' @description Convert the S2 product from SAFE format
-#' @details The function build a virtual raster from a Sentinel2 SAFE product,
+#' @title Convert from SAFE format
+#' @description The function build a virtual raster from a Sentinel2 SAFE product,
 #'  eventually translating it in another spatial format.
 #'  For now, only L1C and L2a with long name (< 2016/12/06) are recognised.
 #'  Output vrt is at 10m resolution.

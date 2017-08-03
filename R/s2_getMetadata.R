@@ -1,6 +1,5 @@
-#' s2_getMetadata
-#' @description Get information from S2 file name or metadata
-#' @details The function scan a Sentinel2 product (main path, granule path,
+#' @title Get information from S2 file name or metadata
+#' @description The function scan a Sentinel2 product (main path, granule path,
 #'  main / granule xml file or GDAL object) to retrieve information about
 #'  the product.
 #' @param s2 'character' or 'osgeo.gdal.Dataset' This input parameter

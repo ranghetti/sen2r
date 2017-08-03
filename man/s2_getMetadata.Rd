@@ -2,7 +2,7 @@
 % Please edit documentation in R/s2_getMetadata.R
 \name{s2_getMetadata}
 \alias{s2_getMetadata}
-\title{s2_getMetadata}
+\title{Get information from S2 file name or metadata}
 \usage{
 s2_getMetadata(s2, info = "all")
 }
@@ -45,9 +45,6 @@ information retrieved from the metadata stored in the XML file.
 'list' list of the output metadata.
 }
 \description{
-Get information from S2 file name or metadata
-}
-\details{
 The function scan a Sentinel2 product (main path, granule path,
 main / granule xml file or GDAL object) to retrieve information about
 the product.

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>s2_translate — s2_translate • RSPrePro</title>
+<title>Convert from SAFE format — s2_translate • RSPrePro</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,11 +89,14 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>s2_translate</h1>
+    <h1>Convert from SAFE format</h1>
     </div>
 
     
-    <p>Convert the S2 product from SAFE format</p>
+    <p>The function build a virtual raster from a Sentinel2 SAFE product,
+eventually translating it in another spatial format.
+For now, only L1C and L2a with long name (&lt; 2016/12/06) are recognised.
+Output vrt is at 10m resolution.</p>
     
 
     <pre class="usage"><span class='fu'>s2_translate</span>(<span class='no'>infile</span>, <span class='kw'>outfile</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"VRT"</span>, <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>,
@@ -133,13 +136,6 @@ UTM zone, no output is created.</p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>The function build a virtual raster from a Sentinel2 SAFE product,
-eventually translating it in another spatial format.
-For now, only L1C and L2a with long name (&lt; 2016/12/06) are recognised.
-Output vrt is at 10m resolution.</p>
-    
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
@@ -151,8 +147,6 @@ Output vrt is at 10m resolution.</p>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#details">Details</a></li>
-
       <li><a href="#note">Note</a></li>
           </ul>
 

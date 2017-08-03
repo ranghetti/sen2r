@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>s2_getMetadata — s2_getMetadata • RSPrePro</title>
+<title>Get information from S2 file name or metadata — s2_getMetadata • RSPrePro</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,11 +89,13 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>s2_getMetadata</h1>
+    <h1>Get information from S2 file name or metadata</h1>
     </div>
 
     
-    <p>Get information from S2 file name or metadata</p>
+    <p>The function scan a Sentinel2 product (main path, granule path,
+main / granule xml file or GDAL object) to retrieve information about
+the product.</p>
     
 
     <pre class="usage"><span class='fu'>s2_getMetadata</span>(<span class='no'>s2</span>, <span class='kw'>info</span> <span class='kw'>=</span> <span class='st'>"all"</span>)</pre>
@@ -143,12 +145,6 @@ information retrieved from the metadata stored in the XML file.</p></li>
 
     <p>'list' list of the output metadata.</p>
     
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>The function scan a Sentinel2 product (main path, granule path,
-main / granule xml file or GDAL object) to retrieve information about
-the product.</p>
-    
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
@@ -181,8 +177,6 @@ the product.</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-
-      <li><a href="#details">Details</a></li>
 
       <li><a href="#note">Note</a></li>
       

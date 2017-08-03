@@ -1,6 +1,5 @@
-#' print_message
-#' @description Print a message
-#' @details Several functions print messages in different formats
+#' @title Print a message
+#' @description Several functions print messages in different formats
 #'  (message, error, warning, cat, R output) and with different syntaxes
 #'  (concatenating parameters or accepting a single argument, appending
 #'   a new line, etc.).

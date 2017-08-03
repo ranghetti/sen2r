@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>print_message — print_message • RSPrePro</title>
+<title>Print a message — print_message • RSPrePro</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,11 +89,18 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>print_message</h1>
+    <h1>Print a message</h1>
     </div>
 
     
-    <p>Print a message</p>
+    <p>Several functions print messages in different formats
+(message, error, warning, cat, R output) and with different syntaxes
+(concatenating parameters or accepting a single argument, appending
+a new line, etc.).
+This accessory function provides a common interface for different types:
+several arguments are accepted and concatenated with the 'sep' argument;
+the format is defined with the 'format' argument; a date is optionally
+placed before the message.</p>
     
 
     <pre class="usage"><span class='fu'>print_message</span>(<span class='no'>...</span>, <span class='no'>type</span>, <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>date</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>date_format</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
@@ -134,17 +141,6 @@ for the definition of the format). The default format is
 
     <p>message (in the defined format).</p>
     
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>Several functions print messages in different formats
-(message, error, warning, cat, R output) and with different syntaxes
-(concatenating parameters or accepting a single argument, appending
-a new line, etc.).
-This accessory function provides a common interface for different types:
-several arguments are accepted and concatenated with the 'sep' argument;
-the format is defined with the 'format' argument; a date is optionally
-placed before the message.</p>
-    
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
@@ -157,8 +153,6 @@ placed before the message.</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-
-      <li><a href="#details">Details</a></li>
 
       <li><a href="#note">Note</a></li>
           </ul>

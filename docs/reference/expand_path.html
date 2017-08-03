@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>expand_path — expand_path • RSPrePro</title>
+<title>Expand a path with a parent directory — expand_path • RSPrePro</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,11 +89,16 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>expand_path</h1>
+    <h1>Expand a path with a parent directory</h1>
     </div>
 
     
-    <p>Expand a path with a parent directory</p>
+    <p>Accessory function which checks if a path is absolute or relative;
+if relative, use a specified parent directory instead than the working
+dorectory to expand it.
+Useful for functions which accept more than one path as arguments,
+in which one of them contains the absolute position, and the others
+do not.</p>
     
 
     <pre class="usage"><span class='fu'>expand_path</span>(<span class='no'>path</span>, <span class='kw'>parent</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>silent</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
@@ -125,15 +130,6 @@ otherwise, a message inform if 'parent' were applied or not.</p></td>
 
     <p><code>character</code> the path eventually expanded.</p>
     
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>Accessory function which checks if a path is absolute or relative;
-if relative, use a specified parent directory instead than the working
-dorectory to expand it.
-Useful for functions which accept more than one path as arguments,
-in which one of them contains the absolute position, and the others
-do not.</p>
-    
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
@@ -146,8 +142,6 @@ do not.</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-
-      <li><a href="#details">Details</a></li>
 
       <li><a href="#note">Note</a></li>
           </ul>
