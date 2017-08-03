@@ -7,19 +7,38 @@
 s2_getMetadata(s2, info = "all")
 }
 \arguments{
-\item{s2}{`character` or `osgeo.gdal.Dataset` This input parameter
+\item{s2}{'character' or 'osgeo.gdal.Dataset' This input parameter
 can be the main path of a S2 file, the path of the xml with metadata,
 th path of a single granule, the xml path of a single granule, or a
-`osgeo.gdal.Dataset` object (obtained reading the product with python).}
+'osgeo.gdal.Dataset' object (obtained reading the product with python).}
 
-\item{info}{`character` (optional) Vector with the list of the metadata
-which should be provided. By default, all the metadata are provided.
-By choosing "nameinfo", only the metadata obtained by scanning the file
-name are provided (this is a bit faster). Alternatively, single
-information can be asked.}
+\item{info}{'character' (optional) Vector with the list of the metadata
+which should be provided.
+Accepted values are:
+* "all" (default): all the retrevable metadata are provided;
+* "nameinfo": only the metadata obtained by scanning the file name
+    are provided (the file is not opened with GDAL, so this method is
+    a bit faster).
+* a vector of single specific information (one or more from the
+    followings):
+    - "prod_type" ('singlegranule' or 'product');
+    - "version" ('old' or 'compact');
+    - "tiles" (vector with the tiles ID available in the product);
+    - "utm" (vector with the UTM zones used in the product);
+    - "xml_main" (name of the main XML file with metadata);
+    - "xml_granules" (names of the XML with granule metadata);
+    - "level" ('1C' or '2A');
+    - "creation_datetime", "id_tile", "mission", "centre",
+        "file_class", "id_orbit", "orbit_number", "sensing_datetime",
+        "id_baseline": metadata spefici of the product type and
+        version (they are returned only if obtainable for the specified
+        input);
+    - "clouds","direction","orbit_n","preview_url", "proc_baseline",
+        "level", "sensing_datetime", "nodata_value", "saturated_value":
+        information retrieved from the metadata stored in the XML file.}
 }
 \value{
-`list` list of the output metadata.
+'list' list of the output metadata.
 }
 \description{
 Get information from S2 file name or metadata
@@ -31,6 +50,27 @@ The function scan a Sentinel2 product (main path, granule path,
 }
 \note{
 License: GPL 3.0
+}
+\examples{
+\dontrun{
+# Define product path
+s2_examplename <- "/position/of/the/following/product/S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"
+
+# Return all the available information
+s2_getMetadata(s2_examplename)
+
+# Return only the information retrevable form the file names
+# (it still requires that the product exists)
+s2_getMetadata(s2_examplename, info="filinfo")
+
+# Return some specific information
+s2_getMetadata(s2_examplename, info=c("tiles", "level", "id_tile"))
+
+# Return a single information
+# (in this case, the output is a vector instead than a list)
+s2_getMetadata(s2_examplename, info="level")
+
+}
 }
 \author{
 Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
