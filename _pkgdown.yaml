@@ -4,6 +4,10 @@ template:
     bootswatch: yeti
     ganalytics: UA-11080708-8
 reference:
+  - title: Downloading and correcting Sentinel-2 products
+    desc: ~
+    contents:
+      - '`install_s2download`'
   - title: Reading and converting SAFE format
     desc: ~
     contents:
