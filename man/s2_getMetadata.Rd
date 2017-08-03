@@ -15,27 +15,31 @@ th path of a single granule, the xml path of a single granule, or a
 \item{info}{'character' (optional) Vector with the list of the metadata
 which should be provided.
 Accepted values are:
-* "all" (default): all the retrevable metadata are provided;
-* "nameinfo": only the metadata obtained by scanning the file name
-    are provided (the file is not opened with GDAL, so this method is
-    a bit faster).
-* a vector of single specific information (one or more from the
-    followings):
-    - "prod_type" ('singlegranule' or 'product');
-    - "version" ('old' or 'compact');
-    - "tiles" (vector with the tiles ID available in the product);
-    - "utm" (vector with the UTM zones used in the product);
-    - "xml_main" (name of the main XML file with metadata);
-    - "xml_granules" (names of the XML with granule metadata);
-    - "level" ('1C' or '2A');
-    - "creation_datetime", "id_tile", "mission", "centre",
-        "file_class", "id_orbit", "orbit_number", "sensing_datetime",
-        "id_baseline": metadata spefici of the product type and
-        version (they are returned only if obtainable for the specified
-        input);
-    - "clouds","direction","orbit_n","preview_url", "proc_baseline",
-        "level", "sensing_datetime", "nodata_value", "saturated_value":
-        information retrieved from the metadata stored in the XML file.}
+\itemize{
+\item "all" (default): all the retrevable metadata are provided;
+\item "nameinfo": only the metadata obtained by scanning the file name
+are provided (the file is not opened with GDAL, so this method is
+a bit faster).
+\item a vector of single specific information (one or more from the
+followings):
+\itemize{
+\item "prod_type" ('singlegranule' or 'product');
+\item "version" ('old' or 'compact');
+\item "tiles" (vector with the tiles ID available in the product);
+\item "utm" (vector with the UTM zones used in the product);
+\item "xml_main" (name of the main XML file with metadata);
+\item "xml_granules" (names of the XML with granule metadata);
+\item "level" ('1C' or '2A');
+\item "creation_datetime", "id_tile", "mission", "centre",
+"file_class", "id_orbit", "orbit_number", "sensing_datetime",
+"id_baseline": metadata spefici of the product type and
+version (they are returned only if obtainable for the specified
+input);
+\item "clouds","direction","orbit_n","preview_url", "proc_baseline",
+"level", "sensing_datetime", "nodata_value", "saturated_value":
+information retrieved from the metadata stored in the XML file.
+}
+}}
 }
 \value{
 'list' list of the output metadata.
@@ -45,8 +49,8 @@ Get information from S2 file name or metadata
 }
 \details{
 The function scan a Sentinel2 product (main path, granule path,
- main / granule xml file or GDAL object) to retrieve information about
- the product.
+main / granule xml file or GDAL object) to retrieve information about
+the product.
 }
 \note{
 License: GPL 3.0

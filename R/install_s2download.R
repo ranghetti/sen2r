@@ -67,20 +67,18 @@ install_s2download <- function(inst_path=NA) {
   if (!inst_path %in% py_to_r(sys$path)) {
     sys$path$insert(py$int(0),inst_path)
   }
-browser()
-setwd(inst_path)
-install_s2download_dependencies <- import("install_dependencies", convert=FALSE)
+  install_s2download_dependencies <- import("install_dependencies", convert=FALSE)
   # TODO: add checks on python modules!
 
   # clone dependent repositories
 
   install_s2download_dependencies$clone_repo(c("ggranga","fetchLandsatSentinelFromGoogleCloud"))
   install_s2download_dependencies$clone_repo(c("ggranga","Sentinel-download"))
-  # install_s2download_dependencies$clone_sen2cor_docker()
+  install_s2download_dependencies$clone_sen2cor_docker()
 
   # exit
   print_message(
-    type="messsage",
+    type="message",
     "s2download and dependencies have been correctly installed.")
 
 }

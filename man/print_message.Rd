@@ -7,20 +7,20 @@
 print_message(..., type, sep = "", date = FALSE, date_format = "")
 }
 \arguments{
-\item{...}{`R` objects which are concatenated.}
+\item{...}{\code{R} objects which are concatenated.}
 
-\item{type}{`character` Type of the output (accepted values: 'message'
+\item{type}{\code{character} Type of the output (accepted values: 'message'
 for a diagnostic message, 'string' for a character output, 'cat' for the
-output of [base::cat()] function, 'error' and 'warning' for an error or
+output of \code{\link[base:cat]{base::cat()}} function, 'error' and 'warning' for an error or
 warning message. Intentionally, no default value is defined.}
 
-\item{sep}{`character` (optional) character used to separate input values
+\item{sep}{\code{character} (optional) character used to separate input values
 (default is nothing).}
 
-\item{date}{`logical` Set TRUE to place the date before the message
+\item{date}{\code{logical} Set TRUE to place the date before the message
 (useful for logs or time consuming operations).}
 
-\item{date_format}{`character` Format of the date (see [base::strftime()])
+\item{date_format}{\code{character} Format of the date (see \code{\link[base:strftime]{base::strftime()}})
 for the definition of the format). The default format is
 "\%Y-\%m-\%d \%H:\%M:\%S".}
 }
@@ -32,13 +32,13 @@ Print a message
 }
 \details{
 Several functions print messages in different formats
- (message, error, warning, cat, R output) and with different syntaxes
- (concatenating parameters or accepting a single argument, appending
-  a new line, etc.).
-  This accessory function provides a common interface for different types:
-  several arguments are accepted and concatenated with the 'sep' argument;
-  the format is defined with the 'format' argument; a date is optionally
-  placed before the message.
+(message, error, warning, cat, R output) and with different syntaxes
+(concatenating parameters or accepting a single argument, appending
+a new line, etc.).
+This accessory function provides a common interface for different types:
+several arguments are accepted and concatenated with the 'sep' argument;
+the format is defined with the 'format' argument; a date is optionally
+placed before the message.
 }
 \note{
 License: GPL 3.0

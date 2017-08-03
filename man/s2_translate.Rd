@@ -8,21 +8,21 @@ s2_translate(infile, outfile = ".", format = "VRT", compress = "DEFLATE",
   utmzone = "")
 }
 \arguments{
-\item{infile}{`character` Full path of the input SAFE folder (alternatively,
+\item{infile}{\code{character} Full path of the input SAFE folder (alternatively,
 full path of the xml file of the product with metadata).}
 
-\item{outfile}{`character` (optional) Full name of the output vrt file
+\item{outfile}{\code{character} (optional) Full name of the output vrt file
 (or full existing directory where the vrt file should be created
 (default: current directory). If a directory is provided, the file name
 will be the same of the SAFE input product.}
 
-\item{format}{`character` (optional) Format of the output file (in a
+\item{format}{\code{character} (optional) Format of the output file (in a
 format recognised by GDAL). Default value is "VRT" (Virtual Raster).}
 
-\item{compress}{`character` (optional) In the case a GTiff format is
+\item{compress}{\code{character} (optional) In the case a GTiff format is
 chosen, the compression indicated with this parameter is used.}
 
-\item{utmzone}{`character`(optional) UTM zone of output products (default:
+\item{utmzone}{\code{character}(optional) UTM zone of output products (default:
 the first one retrieved from input granules). Note that this function
 does not perform reprojections: if no granules refer to the specified
 UTM zone, no output is created.}
@@ -32,9 +32,9 @@ Convert the S2 product from SAFE format
 }
 \details{
 The function build a virtual raster from a Sentinel2 SAFE product,
- eventually translating it in another spatial format.
- For now, only L1C and L2a with long name (< 2016/12/06) are recognised.
- Output vrt is at 10m resolution.
+eventually translating it in another spatial format.
+For now, only L1C and L2a with long name (< 2016/12/06) are recognised.
+Output vrt is at 10m resolution.
 }
 \note{
 License: GPL 3.0
