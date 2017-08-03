@@ -40,8 +40,6 @@
 #' @importFrom tools file_path_as_absolute
 #' @importFrom reticulate import py_to_r
 #'
-#' #@md # FIXME reactivate (solve the "R session aborted" problem occurring while roxygenising)
-#'
 #' @examples \dontrun{
 #' # Define product path
 #' s2_examplename <- "/position/of/the/following/product/S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"
