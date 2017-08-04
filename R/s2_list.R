@@ -19,7 +19,6 @@
 #' @export
 #' @importFrom reticulate import py_to_r
 #' @importFrom sprawl get_extent
-#' @importFrom MODIStsp reproj_bbox
 #'
 #' @examples \dontrun{
 #' pos <- SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=CRS("+init=epsg:4326"))
