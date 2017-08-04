@@ -33,4 +33,5 @@
 
  # s2download
  s2download/
+ s2download_path.txt
 .Rproj.user

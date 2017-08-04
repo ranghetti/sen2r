@@ -20,7 +20,7 @@
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @export
-#' @importFrom reticulate import import_builtins py_str use_python py_module_available
+#' @importFrom reticulate import import_builtins py_str use_python py_module_available py_to_r
 
 install_s2download <- function(inst_path=NA) {
 
@@ -28,8 +28,8 @@ install_s2download <- function(inst_path=NA) {
   s2download_git <- "https://github.com/ggranga/s2download.git"
 
   # define the required python modules and binary dependencies
-  py_modules <- c("os","sys","git","subprocess","re")
-  dependencies <- c("git","docker-compose","python2")
+  py_modules <- c("os","sys","git","subprocess","re","numpy")
+  dependencies <- c("git","docker-compose","python2","wget")
 
   # define inst_path (where to install or update)
   if (is.na(inst_path)) {
@@ -95,7 +95,7 @@ install_s2download <- function(inst_path=NA) {
   sys <- import("sys",convert=FALSE)
 
   # clone the package and import the module
-  system(paste0("git clone ",s2download_git," ",inst_path))
+  system(paste0(Sys.which("git")," clone ",s2download_git," ",inst_path))
   if (!inst_path %in% py_to_r(sys$path)) {
     sys$path$insert(py$int(0),inst_path)
   }
@@ -109,5 +109,8 @@ install_s2download <- function(inst_path=NA) {
 
   # TODO check on errors (bot in python some of them does not appear as errors)
   # and message in case all run ok.
+
+  # Save a text file with the directory where s2download has been cloned
+  writeLines(inst_path, file.path(system.file(package="RSPrePro"),"s2download_path.txt"))
 
 }
