@@ -8,6 +8,7 @@ reference:
     desc: ~
     contents:
       - '`install_s2download`'
+      - '`s2_find`'
   - title: Reading and converting SAFE format
     desc: ~
     contents:
@@ -16,6 +17,7 @@ reference:
   - title: Accessory functions
     desc: (not exported)
     contents:
+      - '`import_s2download`'
       - '`expand_path`'
       - '`print_message`'
 navbar:

@@ -15,6 +15,19 @@ s2download is a collection of python scripts used to download
 and correct Sentinel-2 images, and it is required by RSPrePro.
 This function clones them and installs a docker with sen2cor.
 }
+\details{
+The function installs both Sentinel-download (to download
+Sentinel-2 images from SciHub), fetchLandsatSentinelFromGoogleCloud
+(to download from Google Cloud) and sen2cor_docker (to run
+sen2cor in a docker which ensure its functionality).
+This last function works only on Linux systems.
+
+TODO In future this last function will be separated, in order to
+allow the download to run also on Windows.
+
+Note that first run can be very time consuming, since the docker
+for sen2cor have to be downloaded and built.
+}
 \note{
 License: GPL 3.0
 }

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Clone s2download and install sen2cor docker. — install_s2download • RSPrePro</title>
+<title>Retrieve list of available products. — s2_list • RSPrePro</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,54 +89,91 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Clone s2download and install sen2cor docker.</h1>
+    <h1>Retrieve list of available products.</h1>
     </div>
 
     
-    <p>s2download is a collection of python scripts used to download
-and correct Sentinel-2 images, and it is required by RSPrePro.
-This function clones them and installs a docker with sen2cor.</p>
+    <p>The function retrieves the list of available Sentinel-2
+products basing on search criteria. It makes use of s2downoad
+python function.</p>
     
 
-    <pre class="usage"><span class='fu'>install_s2download</span>(<span class='kw'>inst_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+    <pre class="usage"><span class='fu'>s2_list</span>(<span class='kw'>spatial_extent</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>orbit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>corr_type</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>max_cloud</span> <span class='kw'>=</span> <span class='fl'>110</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>inst_path</th>
-      <td><p><code>character</code> Path where s2download will be cloned
-(default: a subdirectory of the RSPrePro package).</p></td>
+      <th>tile</th>
+      <td><p>TODO</p></td>
+    </tr>
+    <tr>
+      <th>orbit</th>
+      <td><p>TODO</p></td>
+    </tr>
+    <tr>
+      <th>corr_type</th>
+      <td><p>TODO</p></td>
+    </tr>
+    <tr>
+      <th>apihub</th>
+      <td><p>TODO</p></td>
+    </tr>
+    <tr>
+      <th>max_cloud</th>
+      <td><p>TODO</p></td>
+    </tr>
+    <tr>
+      <th>coords</th>
+      <td><p>TODO</p></td>
+    </tr>
+    <tr>
+      <th>extent</th>
+      <td><p>TODO</p></td>
+    </tr>
+    <tr>
+      <th>start_date</th>
+      <td><p>TODO</p></td>
+    </tr>
+    <tr>
+      <th>end_date</th>
+      <td><p>TODO</p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The function installs both Sentinel-download (to download
-Sentinel-2 images from SciHub), fetchLandsatSentinelFromGoogleCloud
-(to download from Google Cloud) and sen2cor_docker (to run
-sen2cor in a docker which ensure its functionality).
-This last function works only on Linux systems.</p>
-<p>TODO In future this last function will be separated, in order to
-allow the download to run also on Windows.</p>
-<p>Note that first run can be very time consuming, since the docker
-for sen2cor have to be downloaded and built.</p>
+    <p>A vector of available products (being each element an URL,
+and its name the product name)</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='no'>pos</span> <span class='kw'>&lt;-</span> <span class='fu'>SpatialPoints</span>(<span class='fu'>data.frame</span>(<span class='st'>"x"</span><span class='kw'>=</span><span class='fl'>12.0</span>,<span class='st'>"y"</span><span class='kw'>=</span><span class='fl'>44.8</span>), <span class='kw'>proj4string</span><span class='kw'>=</span><span class='fu'>CRS</span>(<span class='st'>"+init=epsg:4326"</span>))
+<span class='no'>time_window</span> <span class='kw'>&lt;-</span> <span class='fu'>as.Date</span>(<span class='fu'>c</span>(<span class='st'>"2017-05-01"</span>,<span class='st'>"2017-07-30"</span>))
+<span class='fu'>s2_list</span>(<span class='kw'>spatial_extent</span><span class='kw'>=</span><span class='no'>pos</span>, <span class='kw'>tile</span><span class='kw'>=</span><span class='st'>"32TQQ"</span>,
+        <span class='kw'>time_interval</span><span class='kw'>=</span><span class='no'>time_window</span>,
+        <span class='kw'>apihub</span><span class='kw'>=</span><span class='fu'>file.path</span>(<span class='fu'>system.file</span>(<span class='kw'>package</span><span class='kw'>=</span><span class='st'>"RSPrePro"</span>),<span class='st'>"s2download"</span>,<span class='st'>"apihub.txt"</span>))
+<span class='co'># }</span><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#details">Details</a></li>
+      <li><a href="#value">Value</a></li>
 
       <li><a href="#note">Note</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     
