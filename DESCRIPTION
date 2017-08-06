@@ -1,10 +1,12 @@
 Package: RSPrePro
 Type: Package
-Title: Find, download, correct and preprocess Sentinel2 time series
+Title: Download and preprocess Remote Sensing images (Sentinel-2 and Landsat)
 Version: 0.1.0
 Authors@R: c(person("Luigi", "Ranghetti", email = "ranghetti.l@irea.cnr.it", role = c("aut", "cre")),
              person("Lorenzo", "Busetto", email = "lbusett@gmail.com", role = c("aut")))
-Description: To be added
+Description: This package contains useful functions to preprocess Landsat and Sentinel-2 imagery.
+  The download and the atmospheric correction is done using a python module (s2download).
+  This package is under construction.
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 URL: https://github.com/ggranga/RSPrePro
@@ -12,6 +14,7 @@ RoxygenNote: 6.0.1.9000
 Imports:
   reticulate,
   tools,
+  methods,
   sprawl
 Roxygen: list(markdown = TRUE)
 Remotes: lbusett/sprawl

@@ -1,12 +1,12 @@
 
--   [RSPrePro: Download and preprocess Remote Sensing images (Sentinal-2 and Landsat)](#rsprepro-download-and-preprocess-remote-sensing-images-sentinal-2-and-landsat)
+-   [RSPrePro: Download and preprocess Remote Sensing images (Sentinel-2 and Landsat)](#rsprepro-download-and-preprocess-remote-sensing-images-sentinel-2-and-landsat)
     -   [Warning](#warning)
     -   [Installation](#installation)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 [![Travis-CI Build Status](https://travis-ci.org/ggranga/RSPrePro.svg?branch=master)](https://travis-ci.org/ggranga/RSPrePro) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/RSPrePro)](https://cran.r-project.org/package=RSPrePro) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
-RSPrePro: Download and preprocess Remote Sensing images (Sentinal-2 and Landsat)
+RSPrePro: Download and preprocess Remote Sensing images (Sentinel-2 and Landsat)
 ================================================================================
 
 Warning
