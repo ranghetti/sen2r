@@ -9,23 +9,19 @@ s2_list(spatial_extent = NULL, tile = NULL, orbit = NULL,
   max_cloud = 110)
 }
 \arguments{
+\item{spatial_extent}{TODO}
+
 \item{tile}{TODO}
 
 \item{orbit}{TODO}
+
+\item{time_interval}{TODO}
 
 \item{corr_type}{TODO}
 
 \item{apihub}{TODO}
 
 \item{max_cloud}{TODO}
-
-\item{coords}{TODO}
-
-\item{extent}{TODO}
-
-\item{start_date}{TODO}
-
-\item{end_date}{TODO}
 }
 \value{
 A vector of available products (being each element an URL,

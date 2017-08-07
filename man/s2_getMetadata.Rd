@@ -55,7 +55,8 @@ License: GPL 3.0
 \examples{
 \dontrun{
 # Define product path
-s2_examplename <- "/position/of/the/following/product/S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"
+s2_examplename <-
+  "/path/of/the/product/S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"
 
 # Return all the available information
 s2_getMetadata(s2_examplename)

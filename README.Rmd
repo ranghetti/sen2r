@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/RSPrePro)](https://cran.r-project.org/package=RSPrePro)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
-# RSPrePro: Download and preprocess Remote Sensing images (Sentinal-2 and Landsat)
+# RSPrePro: Download and preprocess Remote Sensing images (Sentinel-2 and Landsat)
 
 ## Warning
 This package is under construction: for now only the functions documented in the [function references](http://ggranga.github.io/RSPrePro/reference) are working. 
