@@ -2,12 +2,10 @@
 #' @description The function retrieves the list of available Sentinel-2
 #'  products basing on search criteria. It makes use of s2downoad
 #'  python function.
-#' @param coords TODO
-#' @param extent TODO
+#' @param spatial_extent TODO
 #' @param tile TODO
 #' @param orbit TODO
-#' @param start_date TODO
-#' @param end_date TODO
+#' @param time_interval TODO
 #' @param corr_type TODO
 #' @param apihub TODO
 #' @param max_cloud TODO
