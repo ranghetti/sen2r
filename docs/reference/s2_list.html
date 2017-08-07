@@ -107,6 +107,10 @@ downloading and correcting them.</p>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>spatial_extent</th>
+      <td><p>TODO</p></td>
+    </tr>
+    <tr>
       <th>tile</th>
       <td><p>TODO</p></td>
     </tr>
@@ -130,14 +134,6 @@ downloading and correcting them.</p>
       <th>max_cloud</th>
       <td><p>TODO</p></td>
     </tr>
-    <tr>
-      <th>coords</th>
-      <td><p>TODO</p></td>
-    </tr>
-    <tr>
-      <th>extent</th>
-      <td><p>TODO</p></td>
-    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -154,7 +150,8 @@ and its name the product name)</p>
     <pre class="examples"># NOT RUN {
 pos <- SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=CRS("+init=epsg:4326"))
 time_window <- as.Date(c("2017-05-01","2017-07-30"))
-s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window))
+example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window))
+print(example_s2_list)
 # }
 <div class='input'>
 </div></pre>

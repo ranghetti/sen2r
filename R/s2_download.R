@@ -15,7 +15,8 @@
 #' @export
 #'
 #' @examples \dontrun{
-#' single_s2 <- "https://scihub.copernicus.eu/apihub/odata/v1/Products('c7142722-42bf-4f93-b8c5-59fd1792c430')/\\$value"
+#' single_s2 <- paste0("https://scihub.copernicus.eu/apihub/odata/v1/",
+#'   "Products('c7142722-42bf-4f93-b8c5-59fd1792c430')/\\$value")
 #' names(single_s2) <- "S2A_MSIL1C_20170613T101031_N0205_R022_T32TQQ_20170613T101608.SAFE"
 #' # (this is equivalent to:
 #' # single_s2 <- example_s2_list[1]

@@ -9,6 +9,8 @@ s2_list(spatial_extent = NULL, tile = NULL, orbit = NULL,
   max_cloud = 110)
 }
 \arguments{
+\item{spatial_extent}{TODO}
+
 \item{tile}{TODO}
 
 \item{orbit}{TODO}
@@ -20,10 +22,6 @@ s2_list(spatial_extent = NULL, tile = NULL, orbit = NULL,
 \item{apihub}{TODO}
 
 \item{max_cloud}{TODO}
-
-\item{coords}{TODO}
-
-\item{extent}{TODO}
 }
 \value{
 A vector of available products (being each element an URL,
@@ -42,7 +40,8 @@ License: GPL 3.0
 \dontrun{
 pos <- SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=CRS("+init=epsg:4326"))
 time_window <- as.Date(c("2017-05-01","2017-07-30"))
-s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window))
+example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window))
+print(example_s2_list)
 }
 
 }

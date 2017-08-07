@@ -3,8 +3,7 @@
 #'  products basing on search criteria. It makes use of s2downoad
 #'  python function only to retrieve the list of files, without
 #'  downloading and correcting them.
-#' @param coords TODO
-#' @param extent TODO
+#' @param spatial_extent TODO
 #' @param tile TODO
 #' @param orbit TODO
 #' @param time_interval TODO
@@ -23,7 +22,8 @@
 #' @examples \dontrun{
 #' pos <- SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=CRS("+init=epsg:4326"))
 #' time_window <- as.Date(c("2017-05-01","2017-07-30"))
-#' s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window))
+#' example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window))
+#' print(example_s2_list)
 #' }
 #'
 
