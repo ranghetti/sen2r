@@ -1,7 +1,8 @@
 #' @title Retrieve list of available products.
 #' @description The function retrieves the list of available Sentinel-2
 #'  products basing on search criteria. It makes use of s2downoad
-#'  python function.
+#'  python function only to retrieve the list of files, without
+#'  downloading and correcting them.
 #' @param coords TODO
 #' @param extent TODO
 #' @param tile TODO
@@ -64,7 +65,10 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
   # import s2download
   s2download <- import_s2download(convert=FALSE)
 
-  apihub <- file.path(s2download$inst_path,"apihub.txt")
+  # link to apihub
+  if (is.null(apihub)) {
+    apihub <- file.path(s2download$inst_path,"apihub.txt")
+  }
   if (!file.exists(apihub)) {
     print_message(type="error","File apihub.txt with the SciHub credentials is missing.") # TODO build it
   }
