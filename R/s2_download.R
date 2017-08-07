@@ -15,11 +15,21 @@
 #' @export
 #'
 #' @examples \dontrun{
-#' pos <- SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=CRS("+init=epsg:4326"))
-#' time_window <- as.Date(c("2017-05-01","2017-07-30"))
-#' s2_list(spatial_extent=pos, tile="32TQQ",
-#'         time_interval=time_window,
-#'         apihub=file.path(system.file(package="RSPrePro"),"s2download","apihub.txt"))
+#' single_s2 <- "https://scihub.copernicus.eu/apihub/odata/v1/Products('c7142722-42bf-4f93-b8c5-59fd1792c430')/\\$value"
+#' names(single_s2) <- "S2A_MSIL1C_20170613T101031_N0205_R022_T32TQQ_20170613T101608.SAFE"
+#' # (this is equivalent to:
+#' # single_s2 <- example_s2_list[1]
+#' # where example_s2_list is the output of the example of the
+#' # s2_list() function)
+#'
+#' # Download the whole product
+#' s2_download(single_s2, write_dir=tempdir()')
+#'
+#' # Download a specific tile
+#' s2_download(single_s2, tile="32TQQ", write_dir=tempdir()')
+#' # (for products with compact names, the two produce equivalent
+#' # results, while the forst downloads a SAFE archive, the second
+#' # downloades single product files)
 #' }
 #'
 

@@ -95,7 +95,8 @@
     
     <p>The function retrieves the list of available Sentinel-2
 products basing on search criteria. It makes use of s2downoad
-python function.</p>
+python function only to retrieve the list of files, without
+downloading and correcting them.</p>
     
 
     <pre class="usage"><span class='fu'>s2_list</span>(<span class='kw'>spatial_extent</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>orbit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
@@ -105,10 +106,6 @@ python function.</p>
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>spatial_extent</th>
-      <td><p>TODO</p></td>
-    </tr>
     <tr>
       <th>tile</th>
       <td><p>TODO</p></td>
@@ -133,6 +130,14 @@ python function.</p>
       <th>max_cloud</th>
       <td><p>TODO</p></td>
     </tr>
+    <tr>
+      <th>coords</th>
+      <td><p>TODO</p></td>
+    </tr>
+    <tr>
+      <th>extent</th>
+      <td><p>TODO</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -146,13 +151,12 @@ and its name the product name)</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='no'>pos</span> <span class='kw'>&lt;-</span> <span class='fu'>SpatialPoints</span>(<span class='fu'>data.frame</span>(<span class='st'>"x"</span><span class='kw'>=</span><span class='fl'>12.0</span>,<span class='st'>"y"</span><span class='kw'>=</span><span class='fl'>44.8</span>), <span class='kw'>proj4string</span><span class='kw'>=</span><span class='fu'>CRS</span>(<span class='st'>"+init=epsg:4326"</span>))
-<span class='no'>time_window</span> <span class='kw'>&lt;-</span> <span class='fu'>as.Date</span>(<span class='fu'>c</span>(<span class='st'>"2017-05-01"</span>,<span class='st'>"2017-07-30"</span>))
-<span class='fu'>s2_list</span>(<span class='kw'>spatial_extent</span><span class='kw'>=</span><span class='no'>pos</span>, <span class='kw'>tile</span><span class='kw'>=</span><span class='st'>"32TQQ"</span>,
-        <span class='kw'>time_interval</span><span class='kw'>=</span><span class='no'>time_window</span>,
-        <span class='kw'>apihub</span><span class='kw'>=</span><span class='fu'>file.path</span>(<span class='fu'>system.file</span>(<span class='kw'>package</span><span class='kw'>=</span><span class='st'>"RSPrePro"</span>),<span class='st'>"s2download"</span>,<span class='st'>"apihub.txt"</span>))
-<span class='co'># }</span><div class='input'>
+    <pre class="examples"># NOT RUN {
+pos <- SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=CRS("+init=epsg:4326"))
+time_window <- as.Date(c("2017-05-01","2017-07-30"))
+s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window))
+# }
+<div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

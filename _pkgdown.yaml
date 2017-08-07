@@ -9,6 +9,7 @@ reference:
     contents:
       - '`install_s2download`'
       - '`s2_list`'
+      - '`s2_download`'
   - title: Reading and converting SAFE format
     desc: ~
     contents:

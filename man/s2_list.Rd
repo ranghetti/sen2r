@@ -9,8 +9,6 @@ s2_list(spatial_extent = NULL, tile = NULL, orbit = NULL,
   max_cloud = 110)
 }
 \arguments{
-\item{spatial_extent}{TODO}
-
 \item{tile}{TODO}
 
 \item{orbit}{TODO}
@@ -22,6 +20,10 @@ s2_list(spatial_extent = NULL, tile = NULL, orbit = NULL,
 \item{apihub}{TODO}
 
 \item{max_cloud}{TODO}
+
+\item{coords}{TODO}
+
+\item{extent}{TODO}
 }
 \value{
 A vector of available products (being each element an URL,
@@ -30,7 +32,8 @@ and its name the product name)
 \description{
 The function retrieves the list of available Sentinel-2
 products basing on search criteria. It makes use of s2downoad
-python function.
+python function only to retrieve the list of files, without
+downloading and correcting them.
 }
 \note{
 License: GPL 3.0
@@ -39,9 +42,7 @@ License: GPL 3.0
 \dontrun{
 pos <- SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=CRS("+init=epsg:4326"))
 time_window <- as.Date(c("2017-05-01","2017-07-30"))
-s2_list(spatial_extent=pos, tile="32TQQ",
-        time_interval=time_window,
-        apihub=file.path(system.file(package="RSPrePro"),"s2download","apihub.txt"))
+s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window))
 }
 
 }

@@ -23,9 +23,7 @@
 #' @examples \dontrun{
 #' pos <- SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=CRS("+init=epsg:4326"))
 #' time_window <- as.Date(c("2017-05-01","2017-07-30"))
-#' s2_list(spatial_extent=pos, tile="32TQQ",
-#'         time_interval=time_window,
-#'         apihub=file.path(system.file(package="RSPrePro"),"s2download","apihub.txt"))
+#' s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window))
 #' }
 #'
 
