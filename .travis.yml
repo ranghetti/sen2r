@@ -1,24 +1,7 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: R
-sudo: required
+sudo: false
+dist: trusty
 cache: packages
-
-before_install:
-  - curl -OL https://raw.githubusercontent.com/metacran/r-builder/master/pkg-build.sh
-  - chmod 755 pkg-build.sh
-
-install:
-  - ./pkg-build.sh install_github lbusett/sprawl
-
-matrix:
-  include:
-    - os: linux
-      dist: trusty
-      sudo: required
-      env:
-      global:
-      - R_BUILD_ARGS=" "
-      - R_CHECK_ARGS="--no-build-vignettes --no-manual --timings"
-      - R_CHECK_TIMINGS_="0"
-      - BOOTSTRAP_LATEX="1"
+r_github_packages: lbusett/sprawl
