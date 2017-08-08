@@ -28,7 +28,7 @@ install_s2download <- function(inst_path=NA) {
   s2download_git <- "https://github.com/ggranga/s2download.git"
 
   # define the required python modules and binary dependencies
-  py_modules <- c("os","sys","git","subprocess","re","numpy")
+  py_modules <- c("os","sys","git","subprocess","re","numpy","zipfile")
   dependencies <- c("git","docker-compose","python2","wget")
 
   # define inst_path (where to install or update)
