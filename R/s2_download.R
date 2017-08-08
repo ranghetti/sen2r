@@ -2,17 +2,18 @@
 #' @description The function downloads a single S2 product.
 #'  Input filename must be an element obtained with s2_list() function
 #'  (the content must be a URL, and the name the product name).
-#' @param filename TODO
+#' @param s2_prodlist TODO
 #' @param downloader TODO
 #' @param apihub TODO
 #' @param tile TODO
-#' @param write_dir TODO
+#' @param out_dir TODO
 #' @return A vector of available products (being each element an URL,
 #'  and its name the product name)
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @export
+#' @importFrom reticulate import
 #'
 #' @examples \dontrun{
 #' single_s2 <- paste0("https://scihub.copernicus.eu/apihub/odata/v1/",
@@ -24,21 +25,27 @@
 #' # s2_list() function)
 #'
 #' # Download the whole product
-#' s2_download(single_s2, write_dir=tempdir()')
+#' s2_download(single_s2, out_dir=tempdir()')
 #'
 #' # Download a specific tile
-#' s2_download(single_s2, tile="32TQQ", write_dir=tempdir()')
+#' s2_download(single_s2, tile="32TQQ", out_dir=tempdir()')
 #' # (for products with compact names, the two produce equivalent
 #' # results, while the forst downloads a SAFE archive, the second
 #' # downloades single product files)
 #' }
 #'
+#' # Download a serie of products
+#' pos <- sp::SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=CRS("+init=epsg:4326"))
+#' time_window <- as.Date(c("2017-05-01","2017-07-30"))
+#' example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window)
+#' s2_download(example_s2_list, out_dir=tempdir())
+#'
 
-s2_download <- function(filename=NULL,
+s2_download <- function(s2_prodlist=NULL,
                         downloader="wget",
                         apihub=NULL,
                         tile=NULL,
-                        write_dir=".") {
+                        out_dir=".") {
 
   # import s2download
   s2download <- import_s2download(convert=FALSE)
@@ -53,14 +60,16 @@ s2_download <- function(filename=NULL,
     print_message(type="error","File apihub.txt with the SciHub credentials is missing.") # TODO build it
   }
 
-  s2download$download_s2product(filename=names(filename),
-                                link=filename,
-                                downloader=downloader,
-                                apihub=apihub,
-                                tile=NULL,
-                                no_download=FALSE,
-                                write_dir='.',
-                                file_list=NULL)
+  for (filename in s2_prodlist) {
+    s2download$download_s2product(filename=names(filename),
+                                  link=filename,
+                                  downloader=downloader,
+                                  apihub=apihub,
+                                  tile=tile,
+                                  no_download=FALSE,
+                                  write_dir=out_dir,
+                                  file_list=NULL)
+  }
 
   return(NULL)
 
