@@ -17,4 +17,4 @@ Imports:
   methods,
   sprawl
 Roxygen: list(markdown = TRUE)
-Remotes: lbusett/sprawl
+Remotes: ggranga/sprawl
