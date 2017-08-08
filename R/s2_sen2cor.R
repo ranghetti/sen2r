@@ -1,20 +1,19 @@
-#' @title Apply .
-#' @description The function retrieves the list of available Sentinel-2
-#'  products basing on search criteria. It makes use of s2downoad
-#'  python function only to retrieve the list of files, without
-#'  downloading and correcting them.
-#' @param l1c_prodlist TODO
-#' @param l1c_dir TODO
-#' @param out_dir TODO
-#' @param n_procs TODO
-#' @param overwrite TODO
-#' @return A vector of available products (being each element an URL,
-#'  and its name the product name)
+#' @title Correct L1C products using sen2cor
+#' @description The function uses sen2cor from the docker to manually correct L1C products.
+#' @param l1c_prodlist 'character' list of L1C product names to be corrected. They can be both
+#'  product names with full/relative path or only names of SAFE products (in this case, also
+#'  l1c_dir argument must be provided). SAFE products must be unzipped.
+#'  Note that, at this stage, all products must be in the same directory (this will be fixed).
+#' @param l1c_dir 'character' Full or relative path of input L1C products.
+#' @param out_dir 'character' Directory where output L2A products will be placed.
+#' @param n_procs 'integer' Number of processors to use (default is 1, single processor).
+#' @param overwrite 'logical' Should existing output L2A products be overwritten?
+#'  (default: FALSE)
+#' @return NULL
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @export
-#' @importFrom reticulate import
 #'
 #' @examples \dontrun{
 #' pos <- sp::SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=sp::CRS("+init=epsg:4326"))
@@ -22,9 +21,7 @@
 #' example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window)
 #' s2_download(example_s2_list, out_dir=tempdir())
 #' s2_sen2cor(names(example_s2_list)[1], l1c_dir=tempdir(), out_dir=tempdir())
-#'
 #' }
-#'
 
 s2_sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, out_dir=NULL, n_procs=1, overwrite=FALSE) {
 

@@ -4,11 +4,11 @@
 \alias{s2_download}
 \title{Download S2 products.}
 \usage{
-s2_download(filename = NULL, downloader = "wget", apihub = NULL,
-  tile = NULL, write_dir = ".")
+s2_download(s2_prodlist = NULL, downloader = "wget", apihub = NULL,
+  tile = NULL, out_dir = ".")
 }
 \arguments{
-\item{filename}{TODO}
+\item{s2_prodlist}{TODO}
 
 \item{downloader}{TODO}
 
@@ -16,7 +16,7 @@ s2_download(filename = NULL, downloader = "wget", apihub = NULL,
 
 \item{tile}{TODO}
 
-\item{write_dir}{TODO}
+\item{out_dir}{TODO}
 }
 \value{
 A vector of available products (being each element an URL,
@@ -41,15 +41,19 @@ names(single_s2) <- "S2A_MSIL1C_20170613T101031_N0205_R022_T32TQQ_20170613T10160
 # s2_list() function)
 
 # Download the whole product
-s2_download(single_s2, write_dir=tempdir()')
+s2_download(single_s2, out_dir=tempdir()')
 
 # Download a specific tile
-s2_download(single_s2, tile="32TQQ", write_dir=tempdir()')
+s2_download(single_s2, tile="32TQQ", out_dir=tempdir()')
 # (for products with compact names, the two produce equivalent
 # results, while the forst downloads a SAFE archive, the second
 # downloades single product files)
+# Download a serie of products
+pos <- sp::SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=sp::CRS("+init=epsg:4326"))
+time_window <- as.Date(c("2017-05-01","2017-07-30"))
+example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window)
+s2_download(example_s2_list, out_dir=tempdir())
 }
-
 }
 \author{
 Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}

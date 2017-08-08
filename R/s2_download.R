@@ -13,7 +13,6 @@
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @export
-#' @importFrom reticulate import
 #'
 #' @examples \dontrun{
 #' single_s2 <- paste0("https://scihub.copernicus.eu/apihub/odata/v1/",
@@ -32,14 +31,12 @@
 #' # (for products with compact names, the two produce equivalent
 #' # results, while the forst downloads a SAFE archive, the second
 #' # downloades single product files)
-#' }
-#'
 #' # Download a serie of products
 #' pos <- sp::SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=sp::CRS("+init=epsg:4326"))
 #' time_window <- as.Date(c("2017-05-01","2017-07-30"))
 #' example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window)
 #' s2_download(example_s2_list, out_dir=tempdir())
-#'
+#' }
 
 s2_download <- function(s2_prodlist=NULL,
                         downloader="wget",

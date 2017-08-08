@@ -10,6 +10,7 @@ reference:
       - '`install_s2download`'
       - '`s2_list`'
       - '`s2_download`'
+      - '`s2_sen2cor`'
   - title: Reading and converting SAFE format
     desc: ~
     contents:

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Download S2 products. — s2_download • RSPrePro</title>
+<title>Correct L1C products using sen2cor — s2_sen2cor • RSPrePro</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,47 +89,44 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Download S2 products.</h1>
+    <h1>Correct L1C products using sen2cor</h1>
     </div>
 
     
-    <p>The function downloads a single S2 product.
-Input filename must be an element obtained with s2_list() function
-(the content must be a URL, and the name the product name).</p>
+    <p>The function uses sen2cor from the docker to manually correct L1C products.</p>
     
 
-    <pre class="usage"><span class='fu'>s2_download</span>(<span class='kw'>s2_prodlist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>downloader</span> <span class='kw'>=</span> <span class='st'>"wget"</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>tile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>out_dir</span> <span class='kw'>=</span> <span class='st'>"."</span>)</pre>
+    <pre class="usage"><span class='fu'>s2_sen2cor</span>(<span class='kw'>l1c_prodlist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>l1c_dir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>out_dir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>n_procs</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>s2_prodlist</th>
-      <td><p>TODO</p></td>
+      <th>l1c_prodlist</th>
+      <td><p>'character' list of L1C product names to be corrected. They can be both
+product names with full/relative path or only names of SAFE products (in this case, also
+l1c_dir argument must be provided). SAFE products must be unzipped.
+Note that, at this stage, all products must be in the same directory (this will be fixed).</p></td>
     </tr>
     <tr>
-      <th>downloader</th>
-      <td><p>TODO</p></td>
-    </tr>
-    <tr>
-      <th>apihub</th>
-      <td><p>TODO</p></td>
-    </tr>
-    <tr>
-      <th>tile</th>
-      <td><p>TODO</p></td>
+      <th>l1c_dir</th>
+      <td><p>'character' Full or relative path of input L1C products.</p></td>
     </tr>
     <tr>
       <th>out_dir</th>
-      <td><p>TODO</p></td>
+      <td><p>'character' Directory where output L2A products will be placed.</p></td>
+    </tr>
+    <tr>
+      <th>n_procs</th>
+      <td><p>'integer' Number of processors to use (default is 1, single processor).</p></td>
+    </tr>
+    <tr>
+      <th>overwrite</th>
+      <td><p>'logical' Should existing output L2A products be overwritten?
+(default: FALSE)</p></td>
     </tr>
     </table>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>A vector of available products (being each element an URL,
-and its name the product name)</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
@@ -137,38 +134,19 @@ and its name the product name)</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"># NOT RUN {
-single_s2 <- paste0("https://scihub.copernicus.eu/apihub/odata/v1/",
-  "Products('c7142722-42bf-4f93-b8c5-59fd1792c430')/\\$value")
-names(single_s2) <- "S2A_MSIL1C_20170613T101031_N0205_R022_T32TQQ_20170613T101608.SAFE"
-# (this is equivalent to:
-# single_s2 <- example_s2_list[1]
-# where example_s2_list is the output of the example of the
-# s2_list() function)
-
-# Download the whole product
-s2_download(single_s2, out_dir=tempdir()')
-
-# Download a specific tile
-s2_download(single_s2, tile="32TQQ", out_dir=tempdir()')
-# (for products with compact names, the two produce equivalent
-# results, while the forst downloads a SAFE archive, the second
-# downloades single product files)
-# Download a serie of products
-pos <- sp::SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=sp::CRS("+init=epsg:4326"))
-time_window <- as.Date(c("2017-05-01","2017-07-30"))
-example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window)
-s2_download(example_s2_list, out_dir=tempdir())
-# }
-</pre>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='no'>pos</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sp</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sp/topics/SpatialPoints'>SpatialPoints</a></span>(<span class='fu'>data.frame</span>(<span class='st'>"x"</span><span class='kw'>=</span><span class='fl'>12.0</span>,<span class='st'>"y"</span><span class='kw'>=</span><span class='fl'>44.8</span>), <span class='kw'>proj4string</span><span class='kw'>=</span><span class='kw pkg'>sp</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sp/topics/CRS-class'>CRS</a></span>(<span class='st'>"+init=epsg:4326"</span>))
+<span class='no'>time_window</span> <span class='kw'>&lt;-</span> <span class='fu'>as.Date</span>(<span class='fu'>c</span>(<span class='st'>"2017-05-01"</span>,<span class='st'>"2017-07-30"</span>))
+<span class='no'>example_s2_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='s2_list.html'>s2_list</a></span>(<span class='kw'>spatial_extent</span><span class='kw'>=</span><span class='no'>pos</span>, <span class='kw'>tile</span><span class='kw'>=</span><span class='st'>"32TQQ"</span>, <span class='kw'>time_interval</span><span class='kw'>=</span><span class='no'>time_window</span>)
+<span class='fu'><a href='s2_download.html'>s2_download</a></span>(<span class='no'>example_s2_list</span>, <span class='kw'>out_dir</span><span class='kw'>=</span><span class='fu'>tempdir</span>())
+<span class='fu'>s2_sen2cor</span>(<span class='fu'>names</span>(<span class='no'>example_s2_list</span>)[<span class='fl'>1</span>], <span class='kw'>l1c_dir</span><span class='kw'>=</span><span class='fu'>tempdir</span>(), <span class='kw'>out_dir</span><span class='kw'>=</span><span class='fu'>tempdir</span>())
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#value">Value</a></li>
-
       <li><a href="#note">Note</a></li>
       
       <li><a href="#examples">Examples</a></li>

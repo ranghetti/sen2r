@@ -147,14 +147,27 @@ and its name the product name)</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"># NOT RUN {
-pos <- SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=CRS("+init=epsg:4326"))
-time_window <- as.Date(c("2017-05-01","2017-07-30"))
-example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window))
-print(example_s2_list)
-# }
-<div class='input'>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>pos</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sp</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sp/topics/SpatialPoints'>SpatialPoints</a></span>(<span class='fu'>data.frame</span>(<span class='st'>"x"</span><span class='kw'>=</span><span class='fl'>12.0</span>,<span class='st'>"y"</span><span class='kw'>=</span><span class='fl'>44.8</span>), <span class='kw'>proj4string</span><span class='kw'>=</span><span class='kw pkg'>sp</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sp/topics/CRS-class'>CRS</a></span>(<span class='st'>"+init=epsg:4326"</span>))
+<span class='no'>time_window</span> <span class='kw'>&lt;-</span> <span class='fu'>as.Date</span>(<span class='fu'>c</span>(<span class='st'>"2017-05-01"</span>,<span class='st'>"2017-07-30"</span>))
+<span class='no'>example_s2_list</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_list</span>(<span class='kw'>spatial_extent</span><span class='kw'>=</span><span class='no'>pos</span>, <span class='kw'>tile</span><span class='kw'>=</span><span class='st'>"32TQQ"</span>, <span class='kw'>time_interval</span><span class='kw'>=</span><span class='no'>time_window</span>)
+<span class='fu'>print</span>(<span class='no'>example_s2_list</span>)</div><div class='output co'>#&gt;                                        S2A_MSIL1C_20170613T101031_N0205_R022_T32TQQ_20170613T101608.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('c7142722-42bf-4f93-b8c5-59fd1792c430')/\\$value" 
+#&gt;                                        S2A_MSIL2A_20170723T101031_N0205_R022_T32TQQ_20170723T101029.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('e5ebd399-a3da-40c9-a9bb-99df46957888')/\\$value" 
+#&gt;                                        S2A_MSIL2A_20170713T101031_N0205_R022_T32TQQ_20170713T101119.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('fd30e5c9-f5de-4cea-ae67-b1903812083e')/\\$value" 
+#&gt;                                        S2A_MSIL2A_20170703T101021_N0205_R022_T32TQQ_20170703T101041.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('f7138844-e878-4dbc-bb0f-b9676bbcb851')/\\$value" 
+#&gt;                                        S2A_MSIL2A_20170623T101021_N0205_R022_T32TQQ_20170623T101121.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('df329a91-b116-4778-8d24-2e13565fe6d2')/\\$value" 
+#&gt;                                        S2A_MSIL2A_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('eac41b5b-01b4-4438-9a83-09504b4b0420')/\\$value" 
+#&gt;                                        S2A_MSIL2A_20170524T101031_N0205_R022_T32TQQ_20170524T101353.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('25f6ebf3-8751-457a-bb81-0e9d48c71560')/\\$value" 
+#&gt;                                        S2A_MSIL2A_20170514T101031_N0205_R022_T32TQQ_20170514T101125.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('89c56fa7-47d9-4088-af08-0459d15debbd')/\\$value" 
+#&gt;                                        S2A_MSIL2A_20170504T101031_N0205_R022_T32TQQ_20170504T101349.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('2c3f5023-adab-4873-8f0f-f90381545b57')/\\$value" </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
