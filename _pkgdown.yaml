@@ -1,10 +1,10 @@
-title: RSPrePro
+title: fidolasen
 template:
   params:
     bootswatch: yeti
     ganalytics: UA-11080708-8
 reference:
-  - title: Downloading and correcting Sentinel-2 products
+  - title: FInd, DOwnload and preprocess LAndsat and SENtinel images
     desc: ~
     contents:
       - '`install_s2download`'
@@ -31,4 +31,4 @@ navbar:
       href: reference/index.html
   right:
     - icon: fa-github fa-lg
-      href: https://github.com/ggranga/RSPrePro/
+      href: https://github.com/ggranga/fidolasen/
