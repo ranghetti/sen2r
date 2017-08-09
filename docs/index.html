@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Download and preprocess Remote Sensing images (Sentinel-2 and Landsat) • RSPrePro</title>
+<title>FInd, DOwnload and preprocess LAndsat and SENtinel images • fidolasen</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
@@ -33,7 +33,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">RSPrePro</a>
+      <a class="navbar-brand" href="index.html">fidolasen</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -46,7 +46,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/ggranga/RSPrePro/">
+  <a href="https://github.com/ggranga/fidolasen/">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -69,20 +69,20 @@
 <div class="contents">
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-<div id="rsprepro-download-and-preprocess-remote-sensing-images-sentinel-2-and-landsat" class="section level1">
+<div id="fidolasen-find-download-and-preprocess-landsat-and-sentinel-images" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#rsprepro-download-and-preprocess-remote-sensing-images-sentinel-2-and-landsat" class="anchor"></a>RSPrePro: Download and preprocess Remote Sensing images (Sentinel-2 and Landsat)</h1></div>
+<a href="#fidolasen-find-download-and-preprocess-landsat-and-sentinel-images" class="anchor"></a>fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</h1></div>
 <div id="warning" class="section level2">
 <h2 class="hasAnchor">
 <a href="#warning" class="anchor"></a>Warning</h2>
-<p>This package is under construction: for now only the functions documented in the <a href="http://ggranga.github.io/RSPrePro/reference">function references</a> are working. Moreover, the download and atmospheric correction on Sentinel-2 data <a href="http://github.com/ggranga/s2tsp">s2tsp</a> was not yet implemented in this R interface, so it must be runned using <a href="http://github.com/ggranga/s2tsp">python scripts</a>.</p>
+<p>This package is under construction: for now only the functions documented in the <a href="http://ggranga.github.io/fidolasen/reference">function references</a> are working.</p>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>You can install RSPrePro from github with:</p>
+<p>You can install fidolasen from GitHub with:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
-devtools::<span class="kw">install_github</span>(<span class="st">"ggranga/RSPrePro"</span>)</code></pre></div>
+devtools::<span class="kw">install_github</span>(<span class="st">"ggranga/fidolasen"</span>)</code></pre></div>
 </div>
 </div>
 </div>
@@ -92,7 +92,7 @@ devtools::<span class="kw">install_github</span>(<span class="st">"ggranga/RSPre
     <h2 class="hasAnchor">
 <a href="#sidebar" class="anchor"></a>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/ggranga/RSPrePro">https://​github.com/​ggranga/​RSPrePro</a>
+<li>Browse source code at <br><a href="https://github.com/ggranga/fidolasen">https://​github.com/​ggranga/​fidolasen</a>
 </li>
 </ul>
 <h2>License</h2>
@@ -104,8 +104,8 @@ devtools::<span class="kw">install_github</span>(<span class="st">"ggranga/RSPre
 </ul>
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/ggranga/RSPrePro"><img src="https://travis-ci.org/ggranga/RSPrePro.svg?branch=master" alt="Travis-CI Build Status"></a></li>
-<li><a href="https://cran.r-project.org/package=RSPrePro"><img src="http://www.r-pkg.org/badges/version/RSPrePro" alt="CRAN_Status_Badge"></a></li>
+<li><a href="https://travis-ci.org/ggranga/fidolasen"><img src="https://travis-ci.org/ggranga/fidolasen.svg?branch=master" alt="Travis-CI Build Status"></a></li>
+<li><a href="https://cran.r-project.org/package=fidolasen"><img src="http://www.r-pkg.org/badges/version/fidolasen" alt="CRAN_Status_Badge"></a></li>
 <li><a href="http://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg" alt="License: GPL v3"></a></li>
 </ul>
 </div>
