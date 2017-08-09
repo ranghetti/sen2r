@@ -116,9 +116,12 @@ th path of a single granule, the xml path of a single granule, or a
 which should be provided.
 Accepted values are:</p><ul>
 <li><p>"all" (default): all the retrevable metadata are provided;</p></li>
+<li><p>"fileinfo": only the metadata obtained by scanning the file name
+and product structure (without opening it woth GDAL) are provided.</p></li>
 <li><p>"nameinfo": only the metadata obtained by scanning the file name
-are provided (the file is not opened with GDAL, so this method is
-a bit faster).</p></li>
+are provided (it is faster and there is no need to have downloaded
+yet the file; it works only with product names or granule names,
+not with XML names).</p></li>
 <li><p>a vector of single specific information (one or more from the
 followings):</p><ul>
 <li><p>"prod_type" ('singlegranule' or 'product');</p></li>
@@ -151,17 +154,41 @@ information retrieved from the metadata stored in the XML file.</p></li>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='co'># Define product path</span>
+    <pre class="examples"><div class='input'><span class='co'># Define product name</span>
 <span class='no'>s2_examplename</span> <span class='kw'>&lt;-</span>
   <span class='st'>"/path/of/the/product/S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"</span>
 
+<span class='co'># Return only the information retrevable from the file names (files are not scanned)</span>
+<span class='fu'>s2_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"nameinfo"</span>)</div><div class='output co'>#&gt; $prod_type
+#&gt; [1] "product"
+#&gt; 
+#&gt; $version
+#&gt; [1] "compact"
+#&gt; 
+#&gt; $mission
+#&gt; [1] "2A"
+#&gt; 
+#&gt; $level
+#&gt; [1] "1C"
+#&gt; 
+#&gt; $sensing_datetime
+#&gt; [1] "2017-06-03 10:10:31 UTC"
+#&gt; 
+#&gt; $id_baseline
+#&gt; [1] "0205"
+#&gt; 
+#&gt; $id_orbit
+#&gt; [1] "022"
+#&gt; 
+#&gt; $id_tile
+#&gt; [1] "32TQQ"
+#&gt; 
+#&gt; $creation_datetime
+#&gt; [1] "2017-06-03 10:10:26 UTC"
+#&gt; </div><div class='input'>
+</div><span class='co'># NOT RUN {</span>
 <span class='co'># Return all the available information</span>
 <span class='fu'>s2_getMetadata</span>(<span class='no'>s2_examplename</span>)
-
-<span class='co'># Return only the information retrevable form the file names</span>
-<span class='co'># (it still requires that the product exists)</span>
-<span class='fu'>s2_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"filinfo"</span>)
 
 <span class='co'># Return some specific information</span>
 <span class='fu'>s2_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='st'>"tiles"</span>, <span class='st'>"level"</span>, <span class='st'>"id_tile"</span>))

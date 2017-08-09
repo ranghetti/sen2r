@@ -17,9 +17,12 @@ which should be provided.
 Accepted values are:
 \itemize{
 \item "all" (default): all the retrevable metadata are provided;
+\item "fileinfo": only the metadata obtained by scanning the file name
+and product structure (without opening it woth GDAL) are provided.
 \item "nameinfo": only the metadata obtained by scanning the file name
-are provided (the file is not opened with GDAL, so this method is
-a bit faster).
+are provided (it is faster and there is no need to have downloaded
+yet the file; it works only with product names or granule names,
+not with XML names).
 \item a vector of single specific information (one or more from the
 followings):
 \itemize{
@@ -53,17 +56,17 @@ the product.
 License: GPL 3.0
 }
 \examples{
-\dontrun{
-# Define product path
+# Define product name
 s2_examplename <-
   "/path/of/the/product/S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"
 
+# Return only the information retrevable from the file names (files are not scanned)
+s2_getMetadata(s2_examplename, info="nameinfo")
+
+\dontrun{
+
 # Return all the available information
 s2_getMetadata(s2_examplename)
-
-# Return only the information retrevable form the file names
-# (it still requires that the product exists)
-s2_getMetadata(s2_examplename, info="filinfo")
 
 # Return some specific information
 s2_getMetadata(s2_examplename, info=c("tiles", "level", "id_tile"))

@@ -10,9 +10,12 @@
 #'  which should be provided.
 #'  Accepted values are:
 #'  * "all" (default): all the retrevable metadata are provided;
+#'  * "fileinfo": only the metadata obtained by scanning the file name
+#'      and product structure (without opening it woth GDAL) are provided.
 #'  * "nameinfo": only the metadata obtained by scanning the file name
-#'      are provided (the file is not opened with GDAL, so this method is
-#'      a bit faster).
+#'      are provided (it is faster and there is no need to have downloaded
+#'      yet the file; it works only with product names or granule names,
+#'      not with XML names).
 #'  * a vector of single specific information (one or more from the
 #'      followings):
 #'      - "prod_type" ('singlegranule' or 'product');
@@ -40,17 +43,18 @@
 #' @importFrom reticulate import py_to_r
 #' @importFrom methods is
 #'
-#' @examples \dontrun{
-#' # Define product path
+#' @examples
+#' # Define product name
 #' s2_examplename <-
 #'   "/path/of/the/product/S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"
 #'
+#' # Return only the information retrevable from the file names (files are not scanned)
+#' s2_getMetadata(s2_examplename, info="nameinfo")
+#'
+#' \dontrun{
+#'
 #' # Return all the available information
 #' s2_getMetadata(s2_examplename)
-#'
-#' # Return only the information retrevable form the file names
-#' # (it still requires that the product exists)
-#' s2_getMetadata(s2_examplename, info="filinfo")
 #'
 #' # Return some specific information
 #' s2_getMetadata(s2_examplename, info=c("tiles", "level", "id_tile"))
@@ -94,17 +98,25 @@ s2_getMetadata <- function(s2, info="all") {
                                  "elements" = c("id_tile","sensing_datetime","bandname","res"))) # here bandname can be also additional_product
 
   # define all possible elements to scan
-  info_general <- c("prod_type", "version", "tiles", "utm", "xml_main", "xml_granules") # information always retrieved
+  info_base <- c("prod_type", "version") # information always retrieved
+  info_general <- c("tiles", "utm", "xml_main", "xml_granules") # information retrieved if the product is scanned
   info_name <- c("level","creation_datetime", "id_tile", "mission", "centre", "file_class",
                  "id_orbit", "orbit_number", "sensing_datetime", "id_baseline") # information retrieved from name
   info_gdal <- c("clouds","direction","orbit_n","preview_url", # information retrieved by reading the file metadata
-                 "proc_baseline","level","sensing_datetime",
+                 "proc_baseline","gdal_level","gdal_sensing_datetime",
                  "nodata_value","saturated_value")
   if (length(info)==1) {
     if (info=="all") {
-      info <- c(info_general, info_name, info_gdal)
+      info <- c(info_base, info_general, info_name, info_gdal)
+      scan_file <- TRUE
+    } else if (info=="fileinfo") {
+      info <- c(info_base, info_general, info_name)
+      scan_file <- TRUE
     } else if (info=="nameinfo") {
-      info <- c(info_general, info_name)
+      info <- c(info_base, info_name)
+      scan_file <- FALSE
+    } else {
+      scan_file <- TRUE
     }
   }
 
@@ -113,82 +125,144 @@ s2_getMetadata <- function(s2, info="all") {
   # If s2 is a string, check it and retrieve file metadata
   if (is(s2, "character")) {
 
-    # If s2 is a path:
-    # convert in absolute path (and check that file exists)
-    s2_path <- file_path_as_absolute(s2)
+    # if scan_file is FALSE, check the input as a product name without searching for files
+    if (!scan_file) {
 
-    # retrieve the name of xml main file
-    # if it is a directory, scan the content
-    if (file.info(s2_path)$isdir) {
-      compactname_main_xmlfile <- list.files(s2_path,s2_regex$compactname_main_xml$regex, full.names=TRUE)
-      oldname_main_xmlfile <- list.files(s2_path,s2_regex$oldname_main_xml$regex, full.names=TRUE)
-      compactname_granule_xmlfile <- list.files(s2_path,s2_regex$compactname_granule_xml$regex, full.names=TRUE)
-      oldname_granule_xmlfile <- list.files(s2_path,s2_regex$oldname_granule_xml$regex, full.names=TRUE)
-    } else {
-      compactname_main_xmlfile <- s2_path[grep(s2_regex$compactname_main_xml$regex, basename(s2_path))]
-      oldname_main_xmlfile <- s2_path[grep(s2_regex$oldname_main_xml$regex, basename(s2_path))]
-      compactname_granule_xmlfile <- s2_path[grep(s2_regex$compactname_granule_xml$regex, basename(s2_path))]
-      oldname_granule_xmlfile <- s2_path[grep(s2_regex$oldname_granule_xml$regex, basename(s2_path))]
-      s2_path <- dirname(s2_path)
-    }
+      s2_name <- basename(s2)
 
-    # check version (old / compact) and product type (product / singlegranule)
-    if (length(oldname_main_xmlfile)+length(compactname_main_xmlfile)==1) {
-      if (length(oldname_granule_xmlfile)+length(compactname_granule_xmlfile)==0) {
+      # retrieve type and version
+      nameinfo_target <- s2_name
+      if (length(grep(s2_regex$compactname_main_path$regex, s2_name))+length(grep(s2_regex$oldname_main_path$regex, s2_name))==1) {
         s2_type <- "product"
-        # Check product version
-        if (length(compactname_main_xmlfile)==0) {
-          if (length(oldname_main_xmlfile)==1) {
-            s2_version <- "old"
-            s2_main_xml <- s2_xml <- oldname_main_xmlfile
-            s2_granules_xml <- unlist(sapply(list.dirs(file.path(s2_path,"GRANULE"), recursive=FALSE, full.names=TRUE),
-                                      list.files, s2_regex$oldname_granule_xml$regex, full.names=TRUE))
-          } else if (length(oldname_main_xmlfile)==0) {
-            print_message(type="error", "This product is not in the right format (not recognised).")
-          } else {
-            print_message(type="error", "This product is not in the right format (not univocally recognised).")
-          }
-        } else if (length(compactname_main_xmlfile)==1) {
-          if (length(oldname_main_xmlfile)==0) {
-            s2_version <- "compact"
-            s2_main_xml <- s2_xml <- compactname_main_xmlfile
-            s2_granules_xml <- unlist(sapply(list.dirs(file.path(s2_path,"GRANULE"), recursive=FALSE, full.names=TRUE),
-                                             list.files, s2_regex$compactname_granule_xml$regex, full.names=TRUE))
-          } else {
-            print_message(type="error", "This product is not in the right format (not univocally recognised).")
-          }
+        if(length(grep(s2_regex$compactname_main_path$regex, s2_name))==1) {
+          s2_version <- "compact"
+          nameinfo_regex <- s2_regex$compactname_main_path$regex
+          nameinfo_elements <- s2_regex$compactname_main_path$elements
+        } else if(length(grep(s2_regex$oldname_main_path$regex, s2_name))==1) {
+          nameinfo_regex <- s2_regex$oldname_main_path$regex
+          nameinfo_elements <- s2_regex$oldname_main_path$elements
+          s2_version <- "old"
         }
-      } else {
-        stop("This product is not in the right format (not univocally recognised).")
-      }
-    } else if (length(oldname_main_xmlfile)+length(compactname_main_xmlfile)==0) {
-      if (length(oldname_granule_xmlfile)+length(compactname_granule_xmlfile)==1) {
+      } else if (length(grep(s2_regex$compactname_granule_path$regex, s2_name))+length(grep(s2_regex$oldname_granule_path$regex, s2_name))==1) {
         s2_type <- "singlegranule"
-        # Check product version
-        if (length(compactname_granule_xmlfile)==0) {
-          if (length(oldname_granule_xmlfile)==1) {
-            s2_version <- "old"
-            s2_main_xml <- list.files(dirname(dirname(s2_path)), s2_regex$oldname_main_xml$regex, full.names=TRUE)
-            s2_granules_xml <- s2_xml <- oldname_granule_xmlfile
-          } else if (length(oldname_granule_xmlfile)==0) {
-            print_message(type="error", "This product is not in the right format (not recognised).")
-          }
-        } else if (length(compactname_granule_xmlfile)==1) {
-          if (length(oldname_granule_xmlfile)==0) {
-            s2_version <- "compact"
-            s2_main_xml <- list.files(dirname(dirname(s2_path)), s2_regex$compactname_main_xml$regex, full.names=TRUE)
-            s2_granules_xml <- s2_xml <- compactname_granule_xmlfile
-          } else if (length(oldname_granule_xmlfile)==1) {
-            print_message(type="error", "This product is not in the right format (not univocally recognised).")
-          }
+        if(length(grep(s2_regex$compactname_granule_path$regex, s2_name))==1) {
+          s2_version <- "compact"
+          nameinfo_regex <- s2_regex$compactname_granule_path$regex
+          nameinfo_elements <- s2_regex$compactname_granule_path$elements
+        } else if(length(grep(s2_regex$oldname_granule_path$regex, s2_name))==1) {
+          s2_version <- "old"
+          nameinfo_regex <- s2_regex$oldname_granule_path$regex
+          nameinfo_elements <- s2_regex$oldname_granule_path$elements
         }
-      } else if (length(oldname_granule_xmlfile)+length(compactname_granule_xmlfile)==0) {
-        print_message(type="error", "This product is not in the right format (not recognised).")
       } else {
-        print_message(type="error", "This product is not in the right format (not univocally recognised).")
+        print_message(type="error", "This product is not in the right format (not recognised).")
       }
+
+    # if scan_file is TRUE, scan for file content
     } else {
-      print_message(type="error", "This product is not in the right format (not univocally recognised).")
+
+      # If s2 is a path:
+      # convert in absolute path (and check that file exists)
+      s2_path <- file_path_as_absolute(s2)
+
+      # retrieve the name of xml main file
+      # if it is a directory, scan the content
+      if (file.info(s2_path)$isdir) {
+        compactname_main_xmlfile <- list.files(s2_path,s2_regex$compactname_main_xml$regex, full.names=TRUE)
+        oldname_main_xmlfile <- list.files(s2_path,s2_regex$oldname_main_xml$regex, full.names=TRUE)
+        compactname_granule_xmlfile <- list.files(s2_path,s2_regex$compactname_granule_xml$regex, full.names=TRUE)
+        oldname_granule_xmlfile <- list.files(s2_path,s2_regex$oldname_granule_xml$regex, full.names=TRUE)
+      } else {
+        compactname_main_xmlfile <- s2_path[grep(s2_regex$compactname_main_xml$regex, basename(s2_path))]
+        oldname_main_xmlfile <- s2_path[grep(s2_regex$oldname_main_xml$regex, basename(s2_path))]
+        compactname_granule_xmlfile <- s2_path[grep(s2_regex$compactname_granule_xml$regex, basename(s2_path))]
+        oldname_granule_xmlfile <- s2_path[grep(s2_regex$oldname_granule_xml$regex, basename(s2_path))]
+        s2_path <- dirname(s2_path)
+      }
+
+      # check version (old / compact) and product type (product / singlegranule)
+      if (length(oldname_main_xmlfile)+length(compactname_main_xmlfile)==1) {
+        if (length(oldname_granule_xmlfile)+length(compactname_granule_xmlfile)==0) {
+          s2_type <- "product"
+          # Check product version
+          if (length(compactname_main_xmlfile)==0) {
+            if (length(oldname_main_xmlfile)==1) {
+              s2_version <- "old"
+              s2_main_xml <- s2_xml <- oldname_main_xmlfile
+              s2_granules_xml <- unlist(sapply(list.dirs(file.path(s2_path,"GRANULE"), recursive=FALSE, full.names=TRUE),
+                                        list.files, s2_regex$oldname_granule_xml$regex, full.names=TRUE))
+            } else if (length(oldname_main_xmlfile)==0) {
+              print_message(type="error", "This product is not in the right format (not recognised).")
+            } else {
+              print_message(type="error", "This product is not in the right format (not univocally recognised).")
+            }
+          } else if (length(compactname_main_xmlfile)==1) {
+            if (length(oldname_main_xmlfile)==0) {
+              s2_version <- "compact"
+              s2_main_xml <- s2_xml <- compactname_main_xmlfile
+              s2_granules_xml <- unlist(sapply(list.dirs(file.path(s2_path,"GRANULE"), recursive=FALSE, full.names=TRUE),
+                                               list.files, s2_regex$compactname_granule_xml$regex, full.names=TRUE))
+            } else {
+              print_message(type="error", "This product is not in the right format (not univocally recognised).")
+            }
+          }
+        } else {
+          stop("This product is not in the right format (not univocally recognised).")
+        }
+      } else if (length(oldname_main_xmlfile)+length(compactname_main_xmlfile)==0) {
+        if (length(oldname_granule_xmlfile)+length(compactname_granule_xmlfile)==1) {
+          s2_type <- "singlegranule"
+          # Check product version
+          if (length(compactname_granule_xmlfile)==0) {
+            if (length(oldname_granule_xmlfile)==1) {
+              s2_version <- "old"
+              s2_main_xml <- list.files(dirname(dirname(s2_path)), s2_regex$oldname_main_xml$regex, full.names=TRUE)
+              s2_granules_xml <- s2_xml <- oldname_granule_xmlfile
+            } else if (length(oldname_granule_xmlfile)==0) {
+              print_message(type="error", "This product is not in the right format (not recognised).")
+            }
+          } else if (length(compactname_granule_xmlfile)==1) {
+            if (length(oldname_granule_xmlfile)==0) {
+              s2_version <- "compact"
+              s2_main_xml <- list.files(dirname(dirname(s2_path)), s2_regex$compactname_main_xml$regex, full.names=TRUE)
+              s2_granules_xml <- s2_xml <- compactname_granule_xmlfile
+            } else if (length(oldname_granule_xmlfile)==1) {
+              print_message(type="error", "This product is not in the right format (not univocally recognised).")
+            }
+          }
+        } else if (length(oldname_granule_xmlfile)+length(compactname_granule_xmlfile)==0) {
+          print_message(type="error", "This product is not in the right format (not recognised).")
+        } else {
+          print_message(type="error", "This product is not in the right format (not univocally recognised).")
+        }
+      } else {
+        print_message(type="error", "This product is not in the right format (not recognised).")
+      }
+
+      # metadata from file name are read
+      # decide target, regex and elements to scan
+      if (s2_version=="old") {
+        # for old names, retrieve from xml name
+        nameinfo_target <- basename(s2_xml)
+        if (s2_type=="product") {
+          nameinfo_regex <- s2_regex$oldname_main_xml$regex
+          nameinfo_elements <- s2_regex$oldname_main_xml$elements
+        } else if (s2_type=="singlegranule") {
+          nameinfo_regex <- s2_regex$oldname_granule_xml$regex
+          nameinfo_elements <- s2_regex$oldname_granule_xml$elements
+        }
+      } else {
+        # for compact names, retrieve from directory name
+        nameinfo_target <- basename(s2_path)
+        if (s2_type=="product") {
+          nameinfo_regex <- s2_regex$compactname_main_path$regex
+          nameinfo_elements <- s2_regex$compactname_main_path$elements
+        } else if (s2_type=="singlegranule") {
+          nameinfo_regex <- s2_regex$compactname_granule_path$regex
+          nameinfo_elements <- s2_regex$compactname_granule_path$elements
+        }
+      }
+
     }
 
     if ("prod_type" %in% info) { # return the type if required
@@ -204,29 +278,6 @@ s2_getMetadata <- function(s2, info="all") {
       metadata[["xml_granules"]] <- s2_granules_xml
     }
 
-    # metadata from file name are read
-    # decide target, regex and elements to scan
-    if (s2_version=="old") {
-      # for old names, retrieve from xml name
-      nameinfo_target <- basename(s2_xml)
-      if (s2_type=="product") {
-        nameinfo_regex <- s2_regex$oldname_main_xml$regex
-        nameinfo_elements <- s2_regex$oldname_main_xml$elements
-      } else if (s2_type=="singlegranule") {
-        nameinfo_regex <- s2_regex$oldname_granule_xml$regex
-        nameinfo_elements <- s2_regex$oldname_granule_xml$elements
-      }
-    } else {
-      # for compact names, retrieve from directory name
-      nameinfo_target <- basename(s2_path)
-      if (s2_type=="product") {
-        nameinfo_regex <- s2_regex$compactname_main_path$regex
-        nameinfo_elements <- s2_regex$compactname_main_path$elements
-      } else if (s2_type=="singlegranule") {
-        nameinfo_regex <- s2_regex$compactname_granule_path$regex
-        nameinfo_elements <- s2_regex$compactname_granule_path$elements
-      }
-    }
 
     # scan
     metadata_nameinfo <- list()
