@@ -14,8 +14,7 @@
 #'      and product structure (without opening it woth GDAL) are provided.
 #'  * "nameinfo": only the metadata obtained by scanning the file name
 #'      are provided (it is faster and there is no need to have downloaded
-#'      yet the file; it works only with product names or granule names,
-#'      not with XML names).
+#'      yet the file).
 #'  * a vector of single specific information (one or more from the
 #'      followings):
 #'      - "prod_type" ('singlegranule' or 'product');
@@ -33,6 +32,10 @@
 #'      - "clouds","direction","orbit_n","preview_url", "proc_baseline",
 #'          "level", "sensing_datetime", "nodata_value", "saturated_value":
 #'          information retrieved from the metadata stored in the XML file.
+#'      In this version, querying for specific elements requires the product
+#'      to be present in the filesystem; in future this will be changed
+#'      (see the second example for a workaround to scan for specific
+#'      elements without needing the file to have been downloaded).
 
 #' @return 'list' list of the output metadata.
 #'
@@ -51,6 +54,13 @@
 #' # Return only the information retrevable from the file names (files are not scanned)
 #' s2_getMetadata(s2_examplename, info="nameinfo")
 #'
+#' # Return some specific information without scanning files
+#' s2_getMetadata(s2_examplename, info="nameinfo")[c("level", "id_tile")]
+#'
+#' # Return a single information without scanning files
+#' # (in this case, the output is a vector instead than a list)
+#' s2_getMetadata(s2_examplename, info="nameinfo")[["level"]]
+#'
 #' \dontrun{
 #'
 #' # Return all the available information
@@ -60,8 +70,7 @@
 #' s2_getMetadata(s2_examplename, info=c("tiles", "level", "id_tile"))
 #'
 #' # Return a single information
-#' # (in this case, the output is a vector instead than a list)
-#' s2_getMetadata(s2_examplename, info="level")
+#' s2_getMetadata(s2_examplename, info="clouds")
 #'
 #' }
 
@@ -132,30 +141,58 @@ s2_getMetadata <- function(s2, info="all") {
 
       # retrieve type and version
       nameinfo_target <- s2_name
-      if (length(grep(s2_regex$compactname_main_path$regex, s2_name))+length(grep(s2_regex$oldname_main_path$regex, s2_name))==1) {
-        s2_type <- "product"
-        if(length(grep(s2_regex$compactname_main_path$regex, s2_name))==1) {
-          s2_version <- "compact"
-          nameinfo_regex <- s2_regex$compactname_main_path$regex
-          nameinfo_elements <- s2_regex$compactname_main_path$elements
-        } else if(length(grep(s2_regex$oldname_main_path$regex, s2_name))==1) {
-          nameinfo_regex <- s2_regex$oldname_main_path$regex
-          nameinfo_elements <- s2_regex$oldname_main_path$elements
-          s2_version <- "old"
-        }
-      } else if (length(grep(s2_regex$compactname_granule_path$regex, s2_name))+length(grep(s2_regex$oldname_granule_path$regex, s2_name))==1) {
-        s2_type <- "singlegranule"
-        if(length(grep(s2_regex$compactname_granule_path$regex, s2_name))==1) {
-          s2_version <- "compact"
-          nameinfo_regex <- s2_regex$compactname_granule_path$regex
-          nameinfo_elements <- s2_regex$compactname_granule_path$elements
-        } else if(length(grep(s2_regex$oldname_granule_path$regex, s2_name))==1) {
-          s2_version <- "old"
-          nameinfo_regex <- s2_regex$oldname_granule_path$regex
-          nameinfo_elements <- s2_regex$oldname_granule_path$elements
+      if (length(grep("\\.xml$",nameinfo_target))==1) {
+        if (length(grep(s2_regex$compactname_main_xml$regex, s2_name))+length(grep(s2_regex$oldname_main_xml$regex, s2_name))==1) {
+          s2_type <- "product"
+          if(length(grep(s2_regex$compactname_main_xml$regex, s2_name))==1) {
+            s2_version <- "compact"
+            nameinfo_regex <- s2_regex$compactname_main_xml$regex
+            nameinfo_elements <- s2_regex$compactname_main_xml$elements
+          } else if(length(grep(s2_regex$oldname_main_xml$regex, s2_name))==1) {
+            nameinfo_regex <- s2_regex$oldname_main_xml$regex
+            nameinfo_elements <- s2_regex$oldname_main_xml$elements
+            s2_version <- "old"
+          }
+        } else if (length(grep(s2_regex$compactname_granule_xml$regex, s2_name))+length(grep(s2_regex$oldname_granule_xml$regex, s2_name))==1) {
+          s2_type <- "singlegranule"
+          if(length(grep(s2_regex$compactname_granule_xml$regex, s2_name))==1) {
+            s2_version <- "compact"
+            nameinfo_regex <- s2_regex$compactname_granule_xml$regex
+            nameinfo_elements <- s2_regex$compactname_granule_xml$elements
+          } else if(length(grep(s2_regex$oldname_granule_xml$regex, s2_name))==1) {
+            s2_version <- "old"
+            nameinfo_regex <- s2_regex$oldname_granule_xml$regex
+            nameinfo_elements <- s2_regex$oldname_granule_xml$elements
+          }
+        } else {
+          print_message(type="error", "This product is not in the right format (not recognised).")
         }
       } else {
-        print_message(type="error", "This product is not in the right format (not recognised).")
+        if (length(grep(s2_regex$compactname_main_path$regex, s2_name))+length(grep(s2_regex$oldname_main_path$regex, s2_name))==1) {
+          s2_type <- "product"
+          if(length(grep(s2_regex$compactname_main_path$regex, s2_name))==1) {
+            s2_version <- "compact"
+            nameinfo_regex <- s2_regex$compactname_main_path$regex
+            nameinfo_elements <- s2_regex$compactname_main_path$elements
+          } else if(length(grep(s2_regex$oldname_main_path$regex, s2_name))==1) {
+            nameinfo_regex <- s2_regex$oldname_main_path$regex
+            nameinfo_elements <- s2_regex$oldname_main_path$elements
+            s2_version <- "old"
+          }
+        } else if (length(grep(s2_regex$compactname_granule_path$regex, s2_name))+length(grep(s2_regex$oldname_granule_path$regex, s2_name))==1) {
+          s2_type <- "singlegranule"
+          if(length(grep(s2_regex$compactname_granule_path$regex, s2_name))==1) {
+            s2_version <- "compact"
+            nameinfo_regex <- s2_regex$compactname_granule_path$regex
+            nameinfo_elements <- s2_regex$compactname_granule_path$elements
+          } else if(length(grep(s2_regex$oldname_granule_path$regex, s2_name))==1) {
+            s2_version <- "old"
+            nameinfo_regex <- s2_regex$oldname_granule_path$regex
+            nameinfo_elements <- s2_regex$oldname_granule_path$elements
+          }
+        } else {
+          print_message(type="error", "This product is not in the right format (not recognised).")
+        }
       }
 
     # if scan_file is TRUE, scan for file content
