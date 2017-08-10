@@ -42,7 +42,7 @@ day on the same tile);
 \item \code{ttttt} is the tile number (e.g. \code{32TQQ}).
 }
 
-Products which contains only one tile (date ≥ 2016-12-06 or
+Products which contains only one tile (date > 2016-12-05 or
 < 2016-12-06 but containing only one tile) follows entirely this convention;
 for products with more than one tile (or that can not be checked), the field
 \code{ttttt} is replaced by:

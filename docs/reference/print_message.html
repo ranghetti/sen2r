@@ -92,7 +92,9 @@
     <h1>Print a message</h1>
     </div>
 
-
+    
+    <p>A common interface for printing messages of several types.</p>
+    
 
     <pre class="usage"><span class='fu'>print_message</span>(<span class='no'>...</span>, <span class='no'>type</span>, <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>date</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>date_format</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
     
@@ -124,31 +126,28 @@ warning message. Intentionally, no default value is defined.</p></td>
       <th>date_format</th>
       <td><p>Format of the date (see <code>strftime()</code>)
 for the definition of the format). The default format is
-<code>\<!-- %Y-\\%m-\\%d \\%H:\\%M:\\%S"}.} -->
-</code>
+"%Y-%m-%d %H:%M:%S".</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-Message (in the defined format).
+    <p>Message (in the defined format).</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-
-A common interface for printing messages of several types.
-
-
-Several functions print messages in different formats
+    <p>Several functions print messages in different formats
 (message, error, warning, cat, R output) and with different syntaxes
 (concatenating parameters or accepting a single argument, appending
 a new line, etc.).
 This accessory function provides a common interface for different types:
 several arguments are accepted and concatenated with the <code>sep</code> argument;
 the format is defined with the <code>format</code> argument; a date is optionally
-placed before the message.
+placed before the message.</p>
+    
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-
-License: GPL 3.0
-
-
-Luigi Ranghetti, phD (2017) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p></td>
-    </tr>
-    </table>
+    <p>License: GPL 3.0</p>
     
 
   </div>
@@ -156,7 +155,17 @@ Luigi Ranghetti, phD (2017) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
+
+      <li><a href="#note">Note</a></li>
+          </ul>
+
+    <h2>Author</h2>
+    
+Luigi Ranghetti, phD (2017) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a>
 
   </div>
 </div>

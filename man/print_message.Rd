@@ -22,7 +22,7 @@ warning message. Intentionally, no default value is defined.}
 
 \item{date_format}{Format of the date (see \code{\link[=strftime]{strftime()}})
 for the definition of the format). The default format is
-\code{\\%Y-\\%m-\\%d \\%H:\\%M:\\%S"}.}
+"\%Y-\%m-\%d \%H:\%M:\%S".}
 }
 \value{
 Message (in the defined format).
