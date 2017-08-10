@@ -4,7 +4,7 @@ language: R
 sudo: required
 dist: trusty
 cache: packages
-r_github_packages: ggranga/sprawl
+r_github_packages: lbusett/sprawl
 
 before_install:
   - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
