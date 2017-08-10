@@ -120,8 +120,7 @@ Accepted values are:</p><ul>
 and product structure (without opening it woth GDAL) are provided.</p></li>
 <li><p>"nameinfo": only the metadata obtained by scanning the file name
 are provided (it is faster and there is no need to have downloaded
-yet the file; it works only with product names or granule names,
-not with XML names).</p></li>
+yet the file).</p></li>
 <li><p>a vector of single specific information (one or more from the
 followings):</p><ul>
 <li><p>"prod_type" ('singlegranule' or 'product');</p></li>
@@ -139,7 +138,12 @@ input);</p></li>
 <li><p>"clouds","direction","orbit_n","preview_url", "proc_baseline",
 "level", "sensing_datetime", "nodata_value", "saturated_value":
 information retrieved from the metadata stored in the XML file.</p></li>
-</ul></li>
+</ul>
+
+<p>In this version, querying for specific elements requires the product
+to be present in the filesystem; in future this will be changed
+(see the second example for a workaround to scan for specific
+elements without needing the file to have been downloaded).</p></li>
 </ul></td>
     </tr>
     </table>
@@ -186,6 +190,16 @@ information retrieved from the metadata stored in the XML file.</p></li>
 #&gt; $creation_datetime
 #&gt; [1] "2017-06-03 10:10:26 UTC"
 #&gt; </div><div class='input'>
+<span class='co'># Return some specific information without scanning files</span>
+<span class='fu'>s2_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"nameinfo"</span>)[<span class='fu'>c</span>(<span class='st'>"level"</span>, <span class='st'>"id_tile"</span>)]</div><div class='output co'>#&gt; $level
+#&gt; [1] "1C"
+#&gt; 
+#&gt; $id_tile
+#&gt; [1] "32TQQ"
+#&gt; </div><div class='input'>
+<span class='co'># Return a single information without scanning files</span>
+<span class='co'># (in this case, the output is a vector instead than a list)</span>
+<span class='fu'>s2_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"nameinfo"</span>)<span class='kw'>[[</span><span class='st'>"level"</span>]]</div><div class='output co'>#&gt; [1] "1C"</div><div class='input'>
 </div><span class='co'># NOT RUN {</span>
 <span class='co'># Return all the available information</span>
 <span class='fu'>s2_getMetadata</span>(<span class='no'>s2_examplename</span>)
@@ -194,8 +208,7 @@ information retrieved from the metadata stored in the XML file.</p></li>
 <span class='fu'>s2_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='st'>"tiles"</span>, <span class='st'>"level"</span>, <span class='st'>"id_tile"</span>))
 
 <span class='co'># Return a single information</span>
-<span class='co'># (in this case, the output is a vector instead than a list)</span>
-<span class='fu'>s2_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"level"</span>)
+<span class='fu'>s2_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"clouds"</span>)
 
 <span class='co'># }</span></pre>
   </div>

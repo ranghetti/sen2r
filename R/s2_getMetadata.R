@@ -32,6 +32,7 @@
 #'      - "clouds","direction","orbit_n","preview_url", "proc_baseline",
 #'          "level", "sensing_datetime", "nodata_value", "saturated_value":
 #'          information retrieved from the metadata stored in the XML file.
+#'
 #'      In this version, querying for specific elements requires the product
 #'      to be present in the filesystem; in future this will be changed
 #'      (see the second example for a workaround to scan for specific

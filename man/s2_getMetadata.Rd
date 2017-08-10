@@ -21,8 +21,7 @@ Accepted values are:
 and product structure (without opening it woth GDAL) are provided.
 \item "nameinfo": only the metadata obtained by scanning the file name
 are provided (it is faster and there is no need to have downloaded
-yet the file; it works only with product names or granule names,
-not with XML names).
+yet the file).
 \item a vector of single specific information (one or more from the
 followings):
 \itemize{
@@ -42,6 +41,11 @@ input);
 "level", "sensing_datetime", "nodata_value", "saturated_value":
 information retrieved from the metadata stored in the XML file.
 }
+
+In this version, querying for specific elements requires the product
+to be present in the filesystem; in future this will be changed
+(see the second example for a workaround to scan for specific
+elements without needing the file to have been downloaded).
 }}
 }
 \value{
@@ -63,6 +67,13 @@ s2_examplename <-
 # Return only the information retrevable from the file names (files are not scanned)
 s2_getMetadata(s2_examplename, info="nameinfo")
 
+# Return some specific information without scanning files
+s2_getMetadata(s2_examplename, info="nameinfo")[c("level", "id_tile")]
+
+# Return a single information without scanning files
+# (in this case, the output is a vector instead than a list)
+s2_getMetadata(s2_examplename, info="nameinfo")[["level"]]
+
 \dontrun{
 
 # Return all the available information
@@ -72,8 +83,7 @@ s2_getMetadata(s2_examplename)
 s2_getMetadata(s2_examplename, info=c("tiles", "level", "id_tile"))
 
 # Return a single information
-# (in this case, the output is a vector instead than a list)
-s2_getMetadata(s2_examplename, info="level")
+s2_getMetadata(s2_examplename, info="clouds")
 
 }
 }
