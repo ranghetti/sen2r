@@ -7,18 +7,22 @@
 s2_getMetadata(s2, info = "all")
 }
 \arguments{
-\item{s2}{'character' or 'osgeo.gdal.Dataset' This input parameter
+\item{s2}{A Sentinel-2 product, being both a \code{character} (path of an
+existing product, or simply product name) or python object of class
+\code{osgeo.gdal.Dataset}. This input parameter
 can be the main path of a S2 file, the path of the xml with metadata,
-th path of a single granule, the xml path of a single granule, or a
-'osgeo.gdal.Dataset' object (obtained reading the product with python).}
+the path of a single granule, the xml path of a single granule, or a
+'osgeo.gdal.Dataset' object (obtained reading the product with python).
+If the product does not exist locally, the function can run only with
+option \code{info="nameinfo"} (see below).}
 
-\item{info}{'character' (optional) Vector with the list of the metadata
+\item{info}{(optional) A character vector with the list of the metadata
 which should be provided.
 Accepted values are:
 \itemize{
 \item "all" (default): all the retrevable metadata are provided;
 \item "fileinfo": only the metadata obtained by scanning the file name
-and product structure (without opening it woth GDAL) are provided.
+and product structure (without opening it with GDAL) are provided.
 \item "nameinfo": only the metadata obtained by scanning the file name
 are provided (it is faster and there is no need to have downloaded
 yet the file).
@@ -49,7 +53,7 @@ elements without needing the file to have been downloaded).
 }}
 }
 \value{
-'list' list of the output metadata.
+A list of the output metadata.
 }
 \description{
 The function scan a Sentinel2 product (main path, granule path,

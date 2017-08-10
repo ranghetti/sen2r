@@ -1,20 +1,25 @@
 #' @title Clone s2download and install sen2cor docker.
-#' @description s2download is a collection of python scripts used to download
-#'  and correct Sentinel-2 images, and it is required by RSPrePro.
+#' @description [s2download](https://github.com/ggranga/s2download)
+#'  is a collection of python scripts used to download
+#'  and correct Sentinel-2 images, and it is required by this package.
 #'  This function clones them and installs a docker with sen2cor.
-#' @details The function installs both Sentinel-download (to download
-#'  Sentinel-2 images from SciHub), fetchLandsatSentinelFromGoogleCloud
-#'  (to download from Google Cloud) and sen2cor_docker (to run
+#' @details The function installs both [Sentinel-download](
+#' https://github.com/ggranga/Sentinel-download) (to download
+#'  Sentinel-2 images from SciHub), [fetchLandsatSentinelFromGoogleCloud](
+#'  https://github.com/ggranga/fetchLandsatSentinelFromGoogleCloud)
+#'  (to download from Google Cloud) and [sen2cor_docker](
+#'  https://github.com/ggranga/sen2cor_docker) (to run
 #'  sen2cor in a docker which ensure its functionality).
 #'  This last function works only on Linux systems.
 #'
-#'  TODO In future this last function will be separated, in order to
-#'  allow the download to run also on Windows.
+#'  _TODO In future this last function will be separated, in order to
+#'  allow the download to run also on Windows._
 #'
 #'  Note that first run can be very time consuming, since the docker
 #'  for sen2cor have to be downloaded and built.
-#' @param inst_path `character` Path where s2download will be cloned
-#'  (default: a subdirectory of the RSPrePro package).
+#' @param inst_path Path where
+#'  [s2download](https://github.com/ggranga/s2download) will be cloned
+#'  (default: a subdirectory of this package).
 #' @return NULL
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}

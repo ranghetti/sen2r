@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Import s2download python module — import_s2download • fidolasen</title>
+<title>Rename products using a shorten convention — s2_shortname • fidolasen</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,30 +89,63 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Import s2download python module</h1>
+    <h1>Rename products using a shorten convention</h1>
     </div>
 
     
-    <p><a href='https://github.com/ggranga/s2download'>s2download</a> is
-a collection of python scripts used to download
-and correct Sentinel-2 images, and it is required by this package.
-This internal function check if they are installed and imports them.</p>
+    <p>This function renames a Sentinel-2 product in order to
+obtain shorten names. See the details for the structure of the
+adopted schema. The function applies only to product names (not
+to single granule names), since it is thought to be applied to
+entire products.</p>
     
 
-    <pre class="usage"><span class='fu'>import_s2download</span>(<span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>s2_shortname</span>(<span class='no'>prod_name</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>...</th>
-      <td><p>Optional parameters of <a href='http://www.rdocumentation.org/packages/reticulate/topics/import'>import()</a></p></td>
+      <th>input_name</th>
+      <td><p>Input Sentinel-2 product name: it can be both
+a complete path or a simple file name. If the file exists, the product
+is scanned to retrieve the tiles list and UTM zones; otherwise the
+basename is simply translated in he short naming convention.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>s2download</code> python module</p>
+    <p>Output product name</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p><a href='https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/naming-convention'>ESA Sentinel-2 naming convention</a>
+is particularly long-winded; moreover, the convention changed after
+December 6th 2016, causing products to follow two different schemes.</p>
+<p>The convention here adopted follows this schema:
+    <code>S2mll_yyyymmdd_rrr_ttttt</code></p>
+<p>where:</p><ul>
+<li><p><code>S2mll</code> shows the mission ID (<code>S2A</code> or <code>S2B</code>) and the product level
+(<code>1C</code> or <code>2A</code>);</p></li>
+<li><p><code>yyyymmdd</code> is the sensing date (e.g. <code>20170603</code> for 2017-06-03) ; the
+hour is skipped, since a single sensor can not pass two times in a
+day on the same tile);</p></li>
+<li><p><code>rrr</code> is the relative orbit number (e.g. <code>022</code>);</p></li>
+<li><p><code>ttttt</code> is the tile number (e.g. <code>32TQQ</code>).</p></li>
+</ul>
+    <p>Products which contains only one tile (date ≥ 2016-12-06 or
+&lt; 2016-12-06 but containing only one tile) follows entirely this convention;
+for products with more than one tile (or that can not be checked), the field
+<code>ttttt</code> is replaced by:</p><ul>
+<li><p><code>uuxxx</code> if the UTM zone is unique (where <code>uu</code> is the UTM zone, and <code>xxx</code>
+is a random numeric sequence), e.g. <code>32876</code>;</p></li>
+<li><p><code>xxxxx</code> if the UTM zone is not unique or it it can not be checked (being
+<code>xxxxx</code> a random literal A-Z sequence).</p></li>
+</ul>
+    <p>Since the tile number is composed by two numeric and three literal character,
+these two conventions (one composed by five numeric and the other by five
+literal characters) ensure that these three cases can be distinguished.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
@@ -126,6 +159,8 @@ This internal function check if they are installed and imports them.</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
 
       <li><a href="#note">Note</a></li>
           </ul>

@@ -2,16 +2,20 @@
 #' @description The function scan a Sentinel2 product (main path, granule path,
 #'  main / granule xml file or GDAL object) to retrieve information about
 #'  the product.
-#' @param s2 'character' or 'osgeo.gdal.Dataset' This input parameter
+#' @param s2 A Sentinel-2 product, being both a `character` (path of an
+#'  existing product, or simply product name) or python object of class
+#'  `osgeo.gdal.Dataset`. This input parameter
 #'  can be the main path of a S2 file, the path of the xml with metadata,
-#'  th path of a single granule, the xml path of a single granule, or a
+#'  the path of a single granule, the xml path of a single granule, or a
 #'  'osgeo.gdal.Dataset' object (obtained reading the product with python).
-#' @param info 'character' (optional) Vector with the list of the metadata
+#'  If the product does not exist locally, the function can run only with
+#'  option `info="nameinfo"` (see below).
+#' @param info (optional) A character vector with the list of the metadata
 #'  which should be provided.
 #'  Accepted values are:
 #'  * "all" (default): all the retrevable metadata are provided;
 #'  * "fileinfo": only the metadata obtained by scanning the file name
-#'      and product structure (without opening it woth GDAL) are provided.
+#'      and product structure (without opening it with GDAL) are provided.
 #'  * "nameinfo": only the metadata obtained by scanning the file name
 #'      are provided (it is faster and there is no need to have downloaded
 #'      yet the file).
@@ -38,7 +42,7 @@
 #'      (see the second example for a workaround to scan for specific
 #'      elements without needing the file to have been downloaded).
 
-#' @return 'list' list of the output metadata.
+#' @return A list of the output metadata.
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0

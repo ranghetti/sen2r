@@ -6,12 +6,12 @@
 #'  in which one of them contains the absolute position, and the others
 #'  do not.
 #' @param ... `R` objects which are concatenated.
-#' @param path `character` the path name to check ad eventually expand.
-#' @param parent `character` the parent directory to use if 'path' is
+#' @param path The path name (`character`) to check ad eventually expand.
+#' @param parent The parent directory (`character`) to use if `path` is
 #'  relative (default value: the working directory).
-#' @param silent `logical` if TRUE (default), no message are shown;
-#'  otherwise, a message inform if 'parent' were applied or not.
-#' @return `character` the path eventually expanded.
+#' @param silent Logical value: if TRUE (default), no message are shown;
+#'  otherwise, a message inform if `parent`` were applied or not.
+#' @return The path eventually expanded.
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0

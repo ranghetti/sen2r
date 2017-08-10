@@ -7,14 +7,15 @@
 import_s2download(...)
 }
 \arguments{
-\item{...}{optional parameters of import() function}
+\item{...}{Optional parameters of \link[reticulate:import]{import()}}
 }
 \value{
-s2download python module
+\code{s2download} python module
 }
 \description{
-s2download is a collection of python scripts used to download
-and correct Sentinel-2 images, and it is required by RSPrePro.
+\href{https://github.com/ggranga/s2download}{s2download} is
+a collection of python scripts used to download
+and correct Sentinel-2 images, and it is required by this package.
 This internal function check if they are installed and imports them.
 }
 \note{

@@ -12,7 +12,7 @@ fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images
 Warning
 -------
 
-This package is under construction: for now only the functions documented in the [function references](http://ggranga.github.io/fidolasen/reference) are working.
+This package is under construction: for now only the functions documented in the [function references](reference/index.html) are working.
 
 Installation
 ------------

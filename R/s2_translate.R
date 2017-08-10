@@ -3,17 +3,17 @@
 #'  eventually translating it in another spatial format.
 #'  For now, only L1C and L2a with long name (< 2016/12/06) are recognised.
 #'  Output vrt is at 10m resolution.
-#' @param infile `character` Full path of the input SAFE folder (alternatively,
+#' @param infile Full path of the input SAFE folder (alternatively,
 #'  full path of the xml file of the product with metadata).
-#' @param outfile `character` (optional) Full name of the output vrt file
+#' @param outfile (optional) Full name of the output vrt file
 #'  (or full existing directory where the vrt file should be created
 #'  (default: current directory). If a directory is provided, the file name
 #'  will be the same of the SAFE input product.
-#' @param format `character` (optional) Format of the output file (in a
+#' @param format (optional) Format of the output file (in a
 #'  format recognised by GDAL). Default value is "VRT" (Virtual Raster).
-#' @param compress `character` (optional) In the case a GTiff format is
+#' @param compress (optional) In the case a GTiff format is
 #'  chosen, the compression indicated with this parameter is used.
-#' @param utmzone `character`(optional) UTM zone of output products (default:
+#' @param utmzone (optional) UTM zone of output products (default:
 #'  the first one retrieved from input granules). Note that this function
 #'  does not perform reprojections: if no granules refer to the specified
 #'  UTM zone, no output is created.

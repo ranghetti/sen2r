@@ -9,32 +9,35 @@ print_message(..., type, sep = "", date = FALSE, date_format = "")
 \arguments{
 \item{...}{\code{R} objects which are concatenated.}
 
-\item{type}{\code{character} Type of the output (accepted values: 'message'
+\item{type}{Type of the output (accepted values: 'message'
 for a diagnostic message, 'string' for a character output, 'cat' for the
-output of \code{\link[base:cat]{base::cat()}} function, 'error' and 'warning' for an error or
+output of \code{\link[=cat]{cat()}} function, 'error' and 'warning' for an error or
 warning message. Intentionally, no default value is defined.}
 
-\item{sep}{\code{character} (optional) character used to separate input values
+\item{sep}{(optional) character used to separate input values
 (default is nothing).}
 
-\item{date}{\code{logical} Set TRUE to place the date before the message
-(useful for logs or time consuming operations).}
+\item{date}{Logical value: set TRUE to place the date before the message
+(useful for logs or time consuming operations); default is FALSE.}
 
-\item{date_format}{\code{character} Format of the date (see \code{\link[base:strftime]{base::strftime()}})
+\item{date_format}{Format of the date (see \code{\link[=strftime]{strftime()}})
 for the definition of the format). The default format is
-"\%Y-\%m-\%d \%H:\%M:\%S".}
+\code{\\%Y-\\%m-\\%d \\%H:\\%M:\\%S"}.}
 }
 \value{
-message (in the defined format).
+Message (in the defined format).
 }
 \description{
+A common interface for printing messages of several types.
+}
+\details{
 Several functions print messages in different formats
 (message, error, warning, cat, R output) and with different syntaxes
 (concatenating parameters or accepting a single argument, appending
 a new line, etc.).
 This accessory function provides a common interface for different types:
-several arguments are accepted and concatenated with the 'sep' argument;
-the format is defined with the 'format' argument; a date is optionally
+several arguments are accepted and concatenated with the \code{sep} argument;
+the format is defined with the \code{format} argument; a date is optionally
 placed before the message.
 }
 \note{

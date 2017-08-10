@@ -1,9 +1,10 @@
 #' @title Import s2download python module
-#' @description s2download is a collection of python scripts used to download
-#'  and correct Sentinel-2 images, and it is required by RSPrePro.
+#' @description [s2download](https://github.com/ggranga/s2download) is
+#'  a collection of python scripts used to download
+#'  and correct Sentinel-2 images, and it is required by this package.
 #'  This internal function check if they are installed and imports them.
-#' @param ... optional parameters of import() function
-#' @return s2download python module
+#' @param ... Optional parameters of [import()][reticulate::import()]
+#' @return `s2download` python module
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0

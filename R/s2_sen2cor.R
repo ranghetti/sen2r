@@ -1,13 +1,13 @@
 #' @title Correct L1C products using sen2cor
 #' @description The function uses sen2cor from the docker to manually correct L1C products.
-#' @param l1c_prodlist 'character' list of L1C product names to be corrected. They can be both
+#' @param l1c_prodlist List of L1C product names to be corrected. They can be both
 #'  product names with full/relative path or only names of SAFE products (in this case, also
 #'  l1c_dir argument must be provided). SAFE products must be unzipped.
 #'  Note that, at this stage, all products must be in the same directory (this will be fixed).
-#' @param l1c_dir 'character' Full or relative path of input L1C products.
-#' @param out_dir 'character' Directory where output L2A products will be placed.
-#' @param n_procs 'integer' Number of processors to use (default is 1, single processor).
-#' @param overwrite 'logical' Should existing output L2A products be overwritten?
+#' @param l1c_dir Full or relative path of input L1C products.
+#' @param out_dir Directory where output L2A products will be placed.
+#' @param n_procs Number of processors (`integer`) to use (default is 1, single processor).
+#' @param overwrite Logical value: should existing output L2A products be overwritten?
 #'  (default: FALSE)
 #' @return NULL
 #'

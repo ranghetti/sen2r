@@ -24,7 +24,8 @@ and its name the product name)
 }
 \description{
 The function downloads a single S2 product.
-Input filename must be an element obtained with s2_list() function
+Input filename must be an element obtained with
+\link[fidolasen:s2_list]{s2_list()} function
 (the content must be a URL, and the name the product name).
 }
 \note{

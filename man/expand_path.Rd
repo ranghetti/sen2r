@@ -7,18 +7,18 @@
 expand_path(path, parent = NA, silent = TRUE)
 }
 \arguments{
-\item{path}{\code{character} the path name to check ad eventually expand.}
+\item{path}{The path name (\code{character}) to check ad eventually expand.}
 
-\item{parent}{\code{character} the parent directory to use if 'path' is
+\item{parent}{The parent directory (\code{character}) to use if \code{path} is
 relative (default value: the working directory).}
 
-\item{silent}{\code{logical} if TRUE (default), no message are shown;
-otherwise, a message inform if 'parent' were applied or not.}
+\item{silent}{Logical value: if TRUE (default), no message are shown;
+otherwise, a message inform if `parent`` were applied or not.}
 
 \item{...}{\code{R} objects which are concatenated.}
 }
 \value{
-\code{character} the path eventually expanded.
+The path eventually expanded.
 }
 \description{
 Accessory function which checks if a path is absolute or relative;

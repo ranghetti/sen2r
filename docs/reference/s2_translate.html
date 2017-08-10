@@ -107,29 +107,29 @@ Output vrt is at 10m resolution.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>infile</th>
-      <td><p><code>character</code> Full path of the input SAFE folder (alternatively,
+      <td><p>Full path of the input SAFE folder (alternatively,
 full path of the xml file of the product with metadata).</p></td>
     </tr>
     <tr>
       <th>outfile</th>
-      <td><p><code>character</code> (optional) Full name of the output vrt file
+      <td><p>(optional) Full name of the output vrt file
 (or full existing directory where the vrt file should be created
 (default: current directory). If a directory is provided, the file name
 will be the same of the SAFE input product.</p></td>
     </tr>
     <tr>
       <th>format</th>
-      <td><p><code>character</code> (optional) Format of the output file (in a
+      <td><p>(optional) Format of the output file (in a
 format recognised by GDAL). Default value is "VRT" (Virtual Raster).</p></td>
     </tr>
     <tr>
       <th>compress</th>
-      <td><p><code>character</code> (optional) In the case a GTiff format is
+      <td><p>(optional) In the case a GTiff format is
 chosen, the compression indicated with this parameter is used.</p></td>
     </tr>
     <tr>
       <th>utmzone</th>
-      <td><p><code>character</code>(optional) UTM zone of output products (default:
+      <td><p>(optional) UTM zone of output products (default:
 the first one retrieved from input granules). Note that this function
 does not perform reprojections: if no granules refer to the specified
 UTM zone, no output is created.</p></td>

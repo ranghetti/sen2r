@@ -16,12 +16,13 @@
 #'  where:
 #'  * `S2mll` shows the mission ID (`S2A` or `S2B`) and the product level
 #'      (`1C` or `2A`);
-#'  * `yyyymmdd` is the sensing date (e.g. `20170603``) ; the hour is skipped,
-#'      since a single sensor can not pass two times in a day on the same tile);
+#'  * `yyyymmdd` is the sensing date (e.g. `20170603` for 2017-06-03) ; the
+#'      hour is skipped, since a single sensor can not pass two times in a
+#'      day on the same tile);
 #'  * `rrr` is the relative orbit number (e.g. `022`);
 #'  * `ttttt` is the tile number (e.g. `32TQQ`).
 #'
-#'  Products which contains only one tile (date \geq 2016-12-06 or
+#'  Products which contains only one tile (date ≥ 2016-12-06 or
 #'  < 2016-12-06 but containing only one tile) follows entirely this convention;
 #'  for products with more than one tile (or that can not be checked), the field
 #'  `ttttt` is replaced by:
@@ -34,16 +35,14 @@
 #'  these two conventions (one composed by five numeric and the other by five
 #'  literal characters) ensure that these three cases can be distinguished.
 
-#'
-#' @param input_name 'character' input Sentinel-2 product name: it can be both
+#' @param input_name Input Sentinel-2 product name: it can be both
 #'  a complete path or a simple file name. If the file exists, the product
 #'  is scanned to retrieve the tiles list and UTM zones; otherwise the
 #'  basename is simply translated in he short naming convention.
-#' @return 'character' output product name
+#' @return Output product name
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
-#' @importFrom reticulate import import_builtins py_to_r use_python
 
 s2_shortname <- function(prod_name) {
 

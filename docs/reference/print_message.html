@@ -92,16 +92,7 @@
     <h1>Print a message</h1>
     </div>
 
-    
-    <p>Several functions print messages in different formats
-(message, error, warning, cat, R output) and with different syntaxes
-(concatenating parameters or accepting a single argument, appending
-a new line, etc.).
-This accessory function provides a common interface for different types:
-several arguments are accepted and concatenated with the 'sep' argument;
-the format is defined with the 'format' argument; a date is optionally
-placed before the message.</p>
-    
+
 
     <pre class="usage"><span class='fu'>print_message</span>(<span class='no'>...</span>, <span class='no'>type</span>, <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>date</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>date_format</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
     
@@ -114,36 +105,50 @@ placed before the message.</p>
     </tr>
     <tr>
       <th>type</th>
-      <td><p><code>character</code> Type of the output (accepted values: 'message'
+      <td><p>Type of the output (accepted values: 'message'
 for a diagnostic message, 'string' for a character output, 'cat' for the
-output of <code><a href='http://www.rdocumentation.org/packages/base/topics/cat'>base::cat()</a></code> function, 'error' and 'warning' for an error or
+output of <code>cat()</code> function, 'error' and 'warning' for an error or
 warning message. Intentionally, no default value is defined.</p></td>
     </tr>
     <tr>
       <th>sep</th>
-      <td><p><code>character</code> (optional) character used to separate input values
+      <td><p>(optional) character used to separate input values
 (default is nothing).</p></td>
     </tr>
     <tr>
       <th>date</th>
-      <td><p><code>logical</code> Set TRUE to place the date before the message
-(useful for logs or time consuming operations).</p></td>
+      <td><p>Logical value: set TRUE to place the date before the message
+(useful for logs or time consuming operations); default is FALSE.</p></td>
     </tr>
     <tr>
       <th>date_format</th>
-      <td><p><code>character</code> Format of the date (see <code><a href='http://www.rdocumentation.org/packages/base/topics/strptime'>base::strftime()</a></code>)
+      <td><p>Format of the date (see <code>strftime()</code>)
 for the definition of the format). The default format is
-"%Y-%m-%d %H:%M:%S".</p></td>
+<code>\<!-- %Y-\\%m-\\%d \\%H:\\%M:\\%S"}.} -->
+</code>
+
+Message (in the defined format).
+
+
+A common interface for printing messages of several types.
+
+
+Several functions print messages in different formats
+(message, error, warning, cat, R output) and with different syntaxes
+(concatenating parameters or accepting a single argument, appending
+a new line, etc.).
+This accessory function provides a common interface for different types:
+several arguments are accepted and concatenated with the <code>sep</code> argument;
+the format is defined with the <code>format</code> argument; a date is optionally
+placed before the message.
+
+
+License: GPL 3.0
+
+
+Luigi Ranghetti, phD (2017) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p></td>
     </tr>
     </table>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>message (in the defined format).</p>
-    
-    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
-
-    <p>License: GPL 3.0</p>
     
 
   </div>
@@ -151,15 +156,7 @@ for the definition of the format). The default format is
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-
-      <li><a href="#note">Note</a></li>
-          </ul>
-
-    <h2>Author</h2>
-    
-Luigi Ranghetti, phD (2017) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a>
+                </ul>
 
   </div>
 </div>
