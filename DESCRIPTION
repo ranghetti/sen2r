@@ -16,6 +16,7 @@ Imports:
   tools,
   methods,
   sprawl,
-  digest
+  digest,
+  stringr
 Roxygen: list(markdown = TRUE)
 Remotes: lbusett/sprawl
