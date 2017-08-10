@@ -4,13 +4,26 @@
 \alias{s2_shortname}
 \title{Rename products using a shorten convention}
 \usage{
-s2_shortname(prod_name)
+s2_shortname(prod_name, ext = NULL, full.name = TRUE, set.seed = NA)
 }
 \arguments{
-\item{input_name}{Input Sentinel-2 product name: it can be both
+\item{prod_name}{Input Sentinel-2 product name: it can be both
 a complete path or a simple file name. If the file exists, the product
 is scanned to retrieve the tiles list and UTM zones; otherwise the
 basename is simply translated in he short naming convention.}
+
+\item{ext}{(optional) Extension of the output filename (default: none)}
+
+\item{full.name}{Logical value: if TRUE (default), all the input path
+is maintained (if existing); if FALSE, only basename is returned.}
+
+\item{set.seed}{(internal parameter) Logical value: if TRUE, the
+generation of random tile elements is univocal (this is useful not to
+assign different names to the same element); if FALSE, the generation
+is completely random (this is useful not to assign the same name to
+products with the same names (e.g. product with old name downloaded in
+different moments which contains different subsets of tiles).
+Default value is TRUE if the file exists locally, FALSE if not.}
 }
 \value{
 Output product name
@@ -49,16 +62,40 @@ for products with more than one tile (or that can not be checked), the field
 \itemize{
 \item \code{uuxxx} if the UTM zone is unique (where \code{uu} is the UTM zone, and \code{xxx}
 is a random numeric sequence), e.g. \code{32876};
-\item \code{xxxxx} if the UTM zone is not unique or it it can not be checked (being
-\code{xxxxx} a random literal A-Z sequence).
+\item \code{yyxxx} if the UTM zone is not unique or it it can not be checked (being
+\code{yy} a random literal A-Z sequence, and \code{xxx} a random numeric sequence).
 }
 
 Since the tile number is composed by two numeric and three literal character,
-these two conventions (one composed by five numeric and the other by five
-literal characters) ensure that these three cases can be distinguished.
+these two conventions (one composed by five numeric and the other by two
+literal and three numeric characters) ensure that these three cases can be
+distinguished.
 }
 \note{
 License: GPL 3.0
+}
+\examples{
+# Define product names
+s2_compactname_example <- file.path(
+  "/non/existing/path",
+  "S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE")
+s2_oldname_example <-
+  "S2A_OPER_PRD_MSIL1C_PDMC_20160809T051732_R022_V20150704T101337_20150704T101337.SAFE"
+s2_existing_example <- "/replace/with/the/main/path/of/existing/product/with/oldname/convention"
+
+# With compact names, it works also without scanning the file
+s2_shortname(s2_compactname_example, ext="tif")
+
+# With old names, without scanning the file the id_tile is not retrieved,
+# so the tile filed is replaced with a random sequence
+unlist(lapply(rep(s2_oldname_example,5), s2_shortname, full.name=FALSE))
+
+\dontrun{
+# If the file exists locally, the tile is retrieved from the content
+# (if unique; if not, a random sequence is equally used, but it is
+# always the same for the same product)
+s2_shortname(s2_existing_example, full.name=FALSE)
+}
 }
 \author{
 Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}

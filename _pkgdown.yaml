@@ -20,6 +20,7 @@ reference:
     desc: (not exported)
     contents:
       - '`import_s2download`'
+      - '`s2_shortname`'
       - '`expand_path`'
       - '`print_message`'
 navbar:

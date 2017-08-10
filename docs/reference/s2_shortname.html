@@ -100,17 +100,36 @@ to single granule names), since it is thought to be applied to
 entire products.</p>
     
 
-    <pre class="usage"><span class='fu'>s2_shortname</span>(<span class='no'>prod_name</span>)</pre>
+    <pre class="usage"><span class='fu'>s2_shortname</span>(<span class='no'>prod_name</span>, <span class='kw'>ext</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>full.name</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>set.seed</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>input_name</th>
+      <th>prod_name</th>
       <td><p>Input Sentinel-2 product name: it can be both
 a complete path or a simple file name. If the file exists, the product
 is scanned to retrieve the tiles list and UTM zones; otherwise the
 basename is simply translated in he short naming convention.</p></td>
+    </tr>
+    <tr>
+      <th>ext</th>
+      <td><p>(optional) Extension of the output filename (default: none)</p></td>
+    </tr>
+    <tr>
+      <th>full.name</th>
+      <td><p>Logical value: if TRUE (default), all the input path
+is maintained (if existing); if FALSE, only basename is returned.</p></td>
+    </tr>
+    <tr>
+      <th>set.seed</th>
+      <td><p>(internal parameter) Logical value: if TRUE, the
+generation of random tile elements is univocal (this is useful not to
+assign different names to the same element); if FALSE, the generation
+is completely random (this is useful not to assign the same name to
+products with the same names (e.g. product with old name downloaded in
+different moments which contains different subsets of tiles).
+Default value is TRUE if the file exists locally, FALSE if not.</p></td>
     </tr>
     </table>
     
@@ -140,18 +159,41 @@ for products with more than one tile (or that can not be checked), the field
 <code>ttttt</code> is replaced by:</p><ul>
 <li><p><code>uuxxx</code> if the UTM zone is unique (where <code>uu</code> is the UTM zone, and <code>xxx</code>
 is a random numeric sequence), e.g. <code>32876</code>;</p></li>
-<li><p><code>xxxxx</code> if the UTM zone is not unique or it it can not be checked (being
-<code>xxxxx</code> a random literal A-Z sequence).</p></li>
+<li><p><code>yyxxx</code> if the UTM zone is not unique or it it can not be checked (being
+<code>yy</code> a random literal A-Z sequence, and <code>xxx</code> a random numeric sequence).</p></li>
 </ul>
     <p>Since the tile number is composed by two numeric and three literal character,
-these two conventions (one composed by five numeric and the other by five
-literal characters) ensure that these three cases can be distinguished.</p>
+these two conventions (one composed by five numeric and the other by two
+literal and three numeric characters) ensure that these three cases can be
+distinguished.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'># Define product names</span>
+<span class='no'>s2_compactname_example</span> <span class='kw'>&lt;-</span> <span class='fu'>file.path</span>(
+  <span class='st'>"/non/existing/path"</span>,
+  <span class='st'>"S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"</span>)
+<span class='no'>s2_oldname_example</span> <span class='kw'>&lt;-</span>
+  <span class='st'>"S2A_OPER_PRD_MSIL1C_PDMC_20160809T051732_R022_V20150704T101337_20150704T101337.SAFE"</span>
+<span class='no'>s2_existing_example</span> <span class='kw'>&lt;-</span> <span class='st'>"/replace/with/the/main/path/of/an/existing/product"</span>
+
+<span class='co'># With compact names, it works also without scanning the file</span>
+<span class='fu'>s2_shortname</span>(<span class='no'>s2_compactname_example</span>, <span class='kw'>ext</span><span class='kw'>=</span><span class='st'>"tif"</span>)</div><div class='output co'>#&gt; [1] "/non/existing/path/S2A1C_20170603_022_32TQQ.tif"</div><div class='input'>
+<span class='co'># With old names, without scanning the file the id_tile is not retrieved,</span>
+<span class='co'># so the tile filed is replaced with a random sequence</span>
+<span class='fu'>unlist</span>(<span class='fu'>lapply</span>(<span class='fu'>rep</span>(<span class='no'>s2_oldname_example</span>,<span class='fl'>5</span>), <span class='no'>s2_shortname</span>, <span class='kw'>full.name</span><span class='kw'>=</span><span class='fl'>FALSE</span>))</div><div class='output co'>#&gt; [1] "S2A1C_20150704_022_CV600" "S2A1C_20150704_022_EA466"
+#&gt; [3] "S2A1C_20150704_022_MH732" "S2A1C_20150704_022_UW174"
+#&gt; [5] "S2A1C_20150704_022_AI402"</div><div class='input'>
+</div><span class='co'># NOT RUN {</span>
+<span class='co'># If the file exists locally, the tile is retrieved from the content</span>
+<span class='co'># (if unique; if not, a random sequence is equally used, but it is</span>
+<span class='co'># always the same for the same product)</span>
+<span class='fu'>s2_shortname</span>(<span class='no'>s2_existing_example</span>, <span class='kw'>full.name</span><span class='kw'>=</span><span class='fl'>FALSE</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -163,7 +205,9 @@ literal characters) ensure that these three cases can be distinguished.</p>
       <li><a href="#details">Details</a></li>
 
       <li><a href="#note">Note</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     

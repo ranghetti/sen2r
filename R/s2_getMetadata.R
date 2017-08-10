@@ -132,6 +132,8 @@ s2_getMetadata <- function(s2, info="all") {
     } else {
       scan_file <- TRUE
     }
+  } else {
+    scan_file <- TRUE
   }
 
   metadata <- list() # output object, with requested metadata

@@ -28,22 +28,134 @@
 #'  `ttttt` is replaced by:
 #'  * `uuxxx` if the UTM zone is unique (where `uu` is the UTM zone, and `xxx`
 #'      is a random numeric sequence), e.g. `32876`;
-#'  * `xxxxx` if the UTM zone is not unique or it it can not be checked (being
-#'      `xxxxx` a random literal A-Z sequence).
+#'  * `yyxxx` if the UTM zone is not unique or it it can not be checked (being
+#'      `yy` a random literal A-Z sequence, and `xxx` a random numeric sequence).
 #'
 #'  Since the tile number is composed by two numeric and three literal character,
-#'  these two conventions (one composed by five numeric and the other by five
-#'  literal characters) ensure that these three cases can be distinguished.
+#'  these two conventions (one composed by five numeric and the other by two
+#'  literal and three numeric characters) ensure that these three cases can be
+#'  distinguished.
 
-#' @param input_name Input Sentinel-2 product name: it can be both
+#' @param prod_name Input Sentinel-2 product name: it can be both
 #'  a complete path or a simple file name. If the file exists, the product
 #'  is scanned to retrieve the tiles list and UTM zones; otherwise the
 #'  basename is simply translated in he short naming convention.
+#' @param ext (optional) Extension of the output filename (default: none)
+#' @param full.name Logical value: if TRUE (default), all the input path
+#'  is maintained (if existing); if FALSE, only basename is returned.
+#' @param set.seed (internal parameter) Logical value: if TRUE, the
+#'  generation of random tile elements is univocal (this is useful not to
+#'  assign different names to the same element); if FALSE, the generation
+#'  is completely random (this is useful not to assign the same name to
+#'  products with the same names (e.g. product with old name downloaded in
+#'  different moments which contains different subsets of tiles).
+#'  Default value is TRUE if the file exists locally, FALSE if not.
 #' @return Output product name
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
+#' @importFrom digest digest
 
-s2_shortname <- function(prod_name) {
+#' @examples
+#' # Define product names
+#' s2_compactname_example <- file.path(
+#'   "/non/existing/path",
+#'   "S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE")
+#' s2_oldname_example <-
+#'   "S2A_OPER_PRD_MSIL1C_PDMC_20160809T051732_R022_V20150704T101337_20150704T101337.SAFE"
+#' s2_existing_example <- "/replace/with/the/main/path/of/existing/product/with/oldname/convention"
+#'
+#' # With compact names, it works also without scanning the file
+#' s2_shortname(s2_compactname_example, ext="tif")
+#'
+#' # With old names, without scanning the file the id_tile is not retrieved,
+#' # so the tile filed is replaced with a random sequence
+#' unlist(lapply(rep(s2_oldname_example,5), s2_shortname, full.name=FALSE))
+#'
+#' \dontrun{
+#' # If the file exists locally, the tile is retrieved from the content
+#' # (if unique; if not, a random sequence is equally used, but it is
+#' # always the same for the same product)
+#' s2_shortname(s2_existing_example, full.name=FALSE)
+#' }
+
+
+s2_shortname <- function(prod_name, ext=NULL, full.name=TRUE, set.seed=NA) {
+
+  # elements used by the function
+  needed_metadata <- c("tiles","utm","mission","level","sensing_datetime","id_orbit","id_tile")
+  # elements mandatory to convert filename
+  mandatory_metadata <- c("mission","level","sensing_datetime","id_orbit")
+
+  if (file.exists(prod_name)) {
+    s2_metadata <- s2_getMetadata(prod_name, info=needed_metadata)
+    if (is.na(set.seed)) {
+      set.seed <- TRUE
+    }
+  } else {
+    s2_allmetadata <- s2_getMetadata(prod_name, info="nameinfo")
+    s2_metadata <- s2_allmetadata[names(s2_allmetadata)[names(s2_allmetadata) %in% needed_metadata]]
+    if (is.na(set.seed)) {
+      set.seed <- FALSE
+    }
+  }
+
+  # check that necessary elements do not miss
+  if (any(sapply(s2_metadata[mandatory_metadata],is.null))) {
+    print_message(
+      type="error",
+      "Some of the required elements ('",
+      paste(mandatory_metadata[sapply(s2_metadata[mandatory_metadata],is.null)], collapse="' '"),
+      "') can not be retreved from the input filename.")
+  }
+
+  # check if id_tile is missing
+  if (is.null(s2_metadata$id_tile)) {
+
+    # set seed if requested
+    if (set.seed) {
+      base_str <- paste(unlist(s2_metadata[needed_metadata]),collapse="")
+      sel_seed <- strtoi(substr(digest(base_str, algo='xxhash32'),2,8), base=16)
+      set.seed(sel_seed)
+    }
+
+    # if it contains only one tile, use that tile
+    if (length(s2_metadata$tiles)==1) {
+      s2_metadata$id_tile <- s2_metadata$tiles
+    # otherwise, use convention 1 if UTM zone is unique, 2 if not
+    } else if (length(s2_metadata$utm)==1) {
+      s2_metadata$id_tile <- paste0(s2_metadata$utm,
+                                    str_pad(sample(1000,1)-1,3,"left","0"))
+    } else {
+      s2_metadata$id_tile <- paste0(paste(LETTERS[sample(26,2,replace=TRUE)],collapse=""),
+                                    str_pad(sample(1000,1)-1,3,"left","0"))
+    }
+
+  }
+
+  # compose name
+  short_name <- with(
+    s2_metadata,
+    paste0("S",mission,level,"_",
+           strftime(s2_metadata$sensing_datetime,"%Y%m%d"),"_",
+           id_orbit,"_",id_tile)
+  )
+
+  # check name length
+  if (nchar(short_name)!=24) {
+    print_message(type="error", "Internal error (this should not happen).")
+  }
+
+  # add dirname and extension
+  out_name <- if (dirname(prod_name)!="." & full.name) {
+    file.path(dirname(prod_name), short_name)
+  } else {
+    short_name
+  }
+  if (!is.null(ext)) {
+    out_name <- paste0(out_name,".",gsub("^\\.","",ext))
+  }
+
+  return(out_name)
 
 }

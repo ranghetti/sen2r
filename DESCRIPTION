@@ -15,6 +15,7 @@ Imports:
   reticulate,
   tools,
   methods,
-  sprawl
+  sprawl,
+  digest
 Roxygen: list(markdown = TRUE)
 Remotes: lbusett/sprawl
