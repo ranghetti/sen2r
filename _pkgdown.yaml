@@ -1,0 +1,34 @@
+title: fidolasen
+template:
+  params:
+    bootswatch: yeti
+    ganalytics: UA-11080708-8
+reference:
+  - title: FInd, DOwnload and preprocess LAndsat and SENtinel images
+    desc: ~
+    contents:
+      - '`install_s2download`'
+      - '`s2_list`'
+      - '`s2_download`'
+      - '`s2_sen2cor`'
+  - title: Reading and converting SAFE format
+    desc: ~
+    contents:
+      - '`s2_getMetadata`'
+      - '`s2_translate`'
+  - title: Accessory functions
+    desc: (not exported)
+    contents:
+      - '`import_s2download`'
+      - '`expand_path`'
+      - '`print_message`'
+navbar:
+  type: inverse
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Function reference"
+      href: reference/index.html
+  right:
+    - icon: fa-github fa-lg
+      href: https://github.com/ggranga/fidolasen/

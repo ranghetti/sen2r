@@ -1,0 +1,36 @@
+---
+output:
+  github_document:
+    toc: yes
+    toc_depth: 2
+  fig_caption: no
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+[![Travis-CI Build Status](https://travis-ci.org/ggranga/fidolasen.svg?branch=master)](https://travis-ci.org/ggranga/fidolasen)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/fidolasen)](https://cran.r-project.org/package=fidolasen)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
+
+# fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images
+
+## Warning
+This package is under construction: for now only the functions documented in the [function references](reference/index.html) are working. 
+
+## Installation
+
+You can install fidolasen from GitHub with:
+
+```{r gh-installation, eval = FALSE}
+# install.packages("devtools")
+devtools::install_github("ggranga/fidolasen")
+```
+
