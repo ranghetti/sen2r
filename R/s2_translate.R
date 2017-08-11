@@ -5,10 +5,11 @@
 #'  Output vrt is at 10m resolution.
 #' @param infile Full path of the input SAFE folder (alternatively,
 #'  full path of the xml file of the product with metadata).
-#' @param outfile (optional) Full name of the output vrt file
-#'  (or full existing directory where the vrt file should be created
-#'  (default: current directory). If a directory is provided, the file name
-#'  will be the same of the SAFE input product.
+#' @param outfile (optional) Full name of the output file
+#'  (or full existing directory where the file should be created
+#'  (default: current directory). If a directory is provided (or if no
+#'  value is specified), the file name will follow the short naming
+#'  convention adopted in this package (see [s2_shortname()]).
 #' @param format (optional) Format of the output file (in a
 #'  format recognised by GDAL). Default value is "VRT" (Virtual Raster).
 #' @param compress (optional) In the case a GTiff format is
@@ -87,7 +88,7 @@ s2_translate <- function(infile,
   }
 
   # define basename for output files
-  out_prefix <- gsub(".SAFE$","",basename(infile_dir)) # FIXME use new naming convention
+  out_prefix <- s2_shortname(infile_dir, full.name=FALSE)
 
   ## Create VRT intermediate files ##
   dir.create(vrt_tmpdir <- tempdir(), showWarnings=FALSE)

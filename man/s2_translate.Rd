@@ -11,10 +11,11 @@ s2_translate(infile, outfile = ".", format = "VRT", compress = "DEFLATE",
 \item{infile}{Full path of the input SAFE folder (alternatively,
 full path of the xml file of the product with metadata).}
 
-\item{outfile}{(optional) Full name of the output vrt file
-(or full existing directory where the vrt file should be created
-(default: current directory). If a directory is provided, the file name
-will be the same of the SAFE input product.}
+\item{outfile}{(optional) Full name of the output file
+(or full existing directory where the file should be created
+(default: current directory). If a directory is provided (or if no
+value is specified), the file name will follow the short naming
+convention adopted in this package (see \code{\link[=s2_shortname]{s2_shortname()}}).}
 
 \item{format}{(optional) Format of the output file (in a
 format recognised by GDAL). Default value is "VRT" (Virtual Raster).}
