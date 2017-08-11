@@ -182,17 +182,17 @@ distinguished.</p>
 <span class='no'>s2_existing_example</span> <span class='kw'>&lt;-</span> <span class='st'>"/replace/with/the/main/path/of/existing/product/with/oldname/convention"</span>
 
 <span class='co'># With compact names, it works also without scanning the file</span>
-<span class='kw pkg'>fidolasen</span><span class='kw ns'>:::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/fidolasen/topics/s2_shortname'>s2_shortname</a></span>(<span class='no'>s2_compactname_example</span>, <span class='kw'>ext</span><span class='kw'>=</span><span class='st'>"tif"</span>)</div><div class='output co'>#&gt; [1] "/non/existing/path/S2A1C_20170603_022_32TQQ.tif"</div><div class='input'>
+<span class='fu'>s2_shortname</span>(<span class='no'>s2_compactname_example</span>, <span class='kw'>ext</span><span class='kw'>=</span><span class='st'>"tif"</span>)</div><div class='output co'>#&gt; [1] "/non/existing/path/S2A1C_20170603_022_32TQQ.tif"</div><div class='input'>
 <span class='co'># With old names, without scanning the file the id_tile is not retrieved,</span>
 <span class='co'># so the tile filed is replaced with a random sequence</span>
-<span class='fu'>unlist</span>(<span class='fu'>lapply</span>(<span class='fu'>rep</span>(<span class='no'>s2_oldname_example</span>,<span class='fl'>5</span>), <span class='kw pkg'>fidolasen</span><span class='kw ns'>:::</span><span class='no'><a href='http://www.rdocumentation.org/packages/fidolasen/topics/s2_shortname'>s2_shortname</a></span>, <span class='kw'>full.name</span><span class='kw'>=</span><span class='fl'>FALSE</span>))</div><div class='output co'>#&gt; [1] "S2A1C_20150704_022_CV600" "S2A1C_20150704_022_EA466"
+<span class='fu'>unlist</span>(<span class='fu'>lapply</span>(<span class='fu'>rep</span>(<span class='no'>s2_oldname_example</span>,<span class='fl'>5</span>), <span class='no'>s2_shortname</span>, <span class='kw'>full.name</span><span class='kw'>=</span><span class='fl'>FALSE</span>))</div><div class='output co'>#&gt; [1] "S2A1C_20150704_022_CV600" "S2A1C_20150704_022_EA466"
 #&gt; [3] "S2A1C_20150704_022_MH732" "S2A1C_20150704_022_UW174"
 #&gt; [5] "S2A1C_20150704_022_AI402"</div><div class='input'>
 </div><span class='co'># NOT RUN {</span>
 <span class='co'># If the file exists locally, the tile is retrieved from the content</span>
 <span class='co'># (if unique; if not, a random sequence is equally used, but it is</span>
 <span class='co'># always the same for the same product)</span>
-<span class='kw pkg'>fidolasen</span><span class='kw ns'>:::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/fidolasen/topics/s2_shortname'>s2_shortname</a></span>(<span class='no'>s2_existing_example</span>, <span class='kw'>full.name</span><span class='kw'>=</span><span class='fl'>FALSE</span>)
+<span class='fu'>s2_shortname</span>(<span class='no'>s2_existing_example</span>, <span class='kw'>full.name</span><span class='kw'>=</span><span class='fl'>FALSE</span>)
 <span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

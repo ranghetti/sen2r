@@ -84,17 +84,17 @@ s2_oldname_example <-
 s2_existing_example <- "/replace/with/the/main/path/of/existing/product/with/oldname/convention"
 
 # With compact names, it works also without scanning the file
-fidolasen:::s2_shortname(s2_compactname_example, ext="tif")
+s2_shortname(s2_compactname_example, ext="tif")
 
 # With old names, without scanning the file the id_tile is not retrieved,
 # so the tile filed is replaced with a random sequence
-unlist(lapply(rep(s2_oldname_example,5), fidolasen:::s2_shortname, full.name=FALSE))
+unlist(lapply(rep(s2_oldname_example,5), s2_shortname, full.name=FALSE))
 
 \dontrun{
 # If the file exists locally, the tile is retrieved from the content
 # (if unique; if not, a random sequence is equally used, but it is
 # always the same for the same product)
-fidolasen:::s2_shortname(s2_existing_example, full.name=FALSE)
+s2_shortname(s2_existing_example, full.name=FALSE)
 }
 }
 \author{
