@@ -38,7 +38,7 @@ install_s2download <- function(inst_path=NA) {
 
   # define inst_path (where to install or update)
   if (is.na(inst_path)) {
-    inst_path <- file.path(system.file(package="RSPrePro"),"s2download")
+    inst_path <- file.path(system.file(package="fidolasen"),"s2download")
   }
   if (!file.exists(inst_path)) {
     dir.create(inst_path, recursive=TRUE)
@@ -116,6 +116,6 @@ install_s2download <- function(inst_path=NA) {
   # and message in case all run ok.
 
   # Save a text file with the directory where s2download has been cloned
-  writeLines(inst_path, file.path(system.file(package="RSPrePro"),"s2download_path.txt"))
+  writeLines(inst_path, file.path(system.file(package="fidolasen"),"s2download_path.txt"))
 
 }
