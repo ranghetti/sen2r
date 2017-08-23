@@ -7,7 +7,7 @@
 import_s2download(...)
 }
 \arguments{
-\item{...}{Optional parameters of \link[reticulate:import]{import()}}
+\item{...}{Optional parameters of \code{\link[reticulate]{import}}}
 }
 \value{
 \code{s2download} python module

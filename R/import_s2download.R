@@ -3,7 +3,7 @@
 #'  a collection of python scripts used to download
 #'  and correct Sentinel-2 images, and it is required by this package.
 #'  This internal function check if they are installed and imports them.
-#' @param ... Optional parameters of [import()][reticulate::import()]
+#' @param ... Optional parameters of \code{\link[reticulate]{import}}
 #' @return `s2download` python module
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}

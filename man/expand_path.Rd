@@ -13,7 +13,7 @@ expand_path(path, parent = NA, silent = TRUE)
 relative (default value: the working directory).}
 
 \item{silent}{Logical value: if TRUE (default), no message are shown;
-otherwise, a message inform if `parent`` were applied or not.}
+otherwise, a message inform if \code{parent} were applied or not.}
 
 \item{...}{\code{R} objects which are concatenated.}
 }

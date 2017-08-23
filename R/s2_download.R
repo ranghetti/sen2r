@@ -1,7 +1,7 @@
 #' @title Download S2 products.
 #' @description The function downloads a single S2 product.
 #'  Input filename must be an element obtained with
-#'  [s2_list()][fidolasen::s2_list()] function
+#'  [s2_list] function
 #'  (the content must be a URL, and the name the product name).
 #' @param s2_prodlist TODO
 #' @param downloader TODO

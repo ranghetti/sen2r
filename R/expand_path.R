@@ -10,7 +10,7 @@
 #' @param parent The parent directory (`character`) to use if `path` is
 #'  relative (default value: the working directory).
 #' @param silent Logical value: if TRUE (default), no message are shown;
-#'  otherwise, a message inform if `parent`` were applied or not.
+#'  otherwise, a message inform if `parent` were applied or not.
 #' @return The path eventually expanded.
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}

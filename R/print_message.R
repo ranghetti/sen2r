@@ -11,13 +11,13 @@
 #' @param ... `R` objects which are concatenated.
 #' @param type Type of the output (accepted values: 'message'
 #'  for a diagnostic message, 'string' for a character output, 'cat' for the
-#'  output of [cat()] function, 'error' and 'warning' for an error or
+#'  output of \code{\link[base]{cat}} function, 'error' and 'warning' for an error or
 #'  warning message. Intentionally, no default value is defined.
 #' @param sep (optional) character used to separate input values
 #'  (default is nothing).
 #' @param date Logical value: set TRUE to place the date before the message
 #'  (useful for logs or time consuming operations); default is FALSE.
-#' @param date_format Format of the date (see [strftime()])
+#' @param date_format Format of the date (see \code{\link[base]{strftime}})
 #'  for the definition of the format). The default format is
 #'  "\%Y-\%m-\%d \%H:\%M:\%S".
 #' @return Message (in the defined format).
