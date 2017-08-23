@@ -9,32 +9,33 @@
 #'  the path of a single granule, the xml path of a single granule, or a
 #'  'osgeo.gdal.Dataset' object (obtained reading the product with python).
 #'  If the product does not exist locally, the function can run only with
-#'  option `info="nameinfo"` (see below).
+#'  option `info = "nameinfo"` (see below).
 #' @param info (optional) A character vector with the list of the metadata
 #'  which should be provided.
 #'  Accepted values are:
-#'  * "all" (default): all the retrevable metadata are provided;
-#'  * "fileinfo": only the metadata obtained by scanning the file name
+#'  * `"all"` (default): all the retrevable metadata are provided;
+#'  * `"fileinfo"`: only the metadata obtained by scanning the file name
 #'      and product structure (without opening it with GDAL) are provided.
-#'  * "nameinfo": only the metadata obtained by scanning the file name
+#'  * `"nameinfo"`: only the metadata obtained by scanning the file name
 #'      are provided (it is faster and there is no need to have downloaded
 #'      yet the file).
 #'  * a vector of single specific information (one or more from the
 #'      followings):
-#'      - "prod_type" ('singlegranule' or 'product');
-#'      - "version" ('old' or 'compact');
-#'      - "tiles" (vector with the tiles ID available in the product);
-#'      - "utm" (vector with the UTM zones used in the product);
-#'      - "xml_main" (name of the main XML file with metadata);
-#'      - "xml_granules" (names of the XML with granule metadata);
-#'      - "level" ('1C' or '2A');
-#'      - "creation_datetime", "id_tile", "mission", "centre",
-#'          "file_class", "id_orbit", "orbit_number", "sensing_datetime",
-#'          "id_baseline": metadata spefici of the product type and
-#'          version (they are returned only if obtainable for the specified
-#'          input);
-#'      - "clouds","direction","orbit_n","preview_url", "proc_baseline",
-#'          "level", "sensing_datetime", "nodata_value", "saturated_value":
+#'      - `"prod_type"` ('singlegranule' or 'product');
+#'      - `"version"` ('old' or 'compact');
+#'      - `"tiles"` (vector with the tiles ID available in the product);
+#'      - `"utm"` (vector with the UTM zones used in the product);
+#'      - `"xml_main"` (name of the main XML file with metadata);
+#'      - `"xml_granules"` (names of the XML with granule metadata);
+#'      - `"level"` ('1C' or '2A');
+#'      - `"creation_datetime"`, `"id_tile"`, `"mission"`, `"centre"`,
+#'          `"file_class"`, `"id_orbit"`, `"orbit_number"`,
+#'          `"sensing_datetime"`, `"id_baseline"`: metadata speficic of
+#'          the product type and version (they are returned only if
+#'          obtainable for the specified input);
+#'      - `"clouds"`, `"direction"`, `"orbit_n"`, `"preview_url"`,
+#'          `"proc_baseline"`, `"level"`, `"sensing_datetime"`,
+#'          `"nodata_value"`, `"saturated_value"`:
 #'          information retrieved from the metadata stored in the XML file.
 #'
 #'      In this version, querying for specific elements requires the product
@@ -76,7 +77,6 @@
 #'
 #' # Return a single information
 #' s2_getMetadata(s2_examplename, info="clouds")
-#'
 #' }
 
 # TODO

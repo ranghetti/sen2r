@@ -11,7 +11,7 @@ print_message(..., type, sep = "", date = FALSE, date_format = "")
 
 \item{type}{Type of the output (accepted values: 'message'
 for a diagnostic message, 'string' for a character output, 'cat' for the
-output of \code{\link[=cat]{cat()}} function, 'error' and 'warning' for an error or
+output of \code{\link[base]{cat}} function, 'error' and 'warning' for an error or
 warning message. Intentionally, no default value is defined.}
 
 \item{sep}{(optional) character used to separate input values
@@ -20,7 +20,7 @@ warning message. Intentionally, no default value is defined.}
 \item{date}{Logical value: set TRUE to place the date before the message
 (useful for logs or time consuming operations); default is FALSE.}
 
-\item{date_format}{Format of the date (see \code{\link[=strftime]{strftime()}})
+\item{date_format}{Format of the date (see \code{\link[base]{strftime}})
 for the definition of the format). The default format is
 "\%Y-\%m-\%d \%H:\%M:\%S".}
 }

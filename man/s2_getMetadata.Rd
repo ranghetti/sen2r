@@ -14,35 +14,36 @@ can be the main path of a S2 file, the path of the xml with metadata,
 the path of a single granule, the xml path of a single granule, or a
 'osgeo.gdal.Dataset' object (obtained reading the product with python).
 If the product does not exist locally, the function can run only with
-option \code{info="nameinfo"} (see below).}
+option \code{info = "nameinfo"} (see below).}
 
 \item{info}{(optional) A character vector with the list of the metadata
 which should be provided.
 Accepted values are:
 \itemize{
-\item "all" (default): all the retrevable metadata are provided;
-\item "fileinfo": only the metadata obtained by scanning the file name
+\item \code{"all"} (default): all the retrevable metadata are provided;
+\item \code{"fileinfo"}: only the metadata obtained by scanning the file name
 and product structure (without opening it with GDAL) are provided.
-\item "nameinfo": only the metadata obtained by scanning the file name
+\item \code{"nameinfo"}: only the metadata obtained by scanning the file name
 are provided (it is faster and there is no need to have downloaded
 yet the file).
 \item a vector of single specific information (one or more from the
 followings):
 \itemize{
-\item "prod_type" ('singlegranule' or 'product');
-\item "version" ('old' or 'compact');
-\item "tiles" (vector with the tiles ID available in the product);
-\item "utm" (vector with the UTM zones used in the product);
-\item "xml_main" (name of the main XML file with metadata);
-\item "xml_granules" (names of the XML with granule metadata);
-\item "level" ('1C' or '2A');
-\item "creation_datetime", "id_tile", "mission", "centre",
-"file_class", "id_orbit", "orbit_number", "sensing_datetime",
-"id_baseline": metadata spefici of the product type and
-version (they are returned only if obtainable for the specified
-input);
-\item "clouds","direction","orbit_n","preview_url", "proc_baseline",
-"level", "sensing_datetime", "nodata_value", "saturated_value":
+\item \code{"prod_type"} ('singlegranule' or 'product');
+\item \code{"version"} ('old' or 'compact');
+\item \code{"tiles"} (vector with the tiles ID available in the product);
+\item \code{"utm"} (vector with the UTM zones used in the product);
+\item \code{"xml_main"} (name of the main XML file with metadata);
+\item \code{"xml_granules"} (names of the XML with granule metadata);
+\item \code{"level"} ('1C' or '2A');
+\item \code{"creation_datetime"}, \code{"id_tile"}, \code{"mission"}, \code{"centre"},
+\code{"file_class"}, \code{"id_orbit"}, \code{"orbit_number"},
+\code{"sensing_datetime"}, \code{"id_baseline"}: metadata speficic of
+the product type and version (they are returned only if
+obtainable for the specified input);
+\item \code{"clouds"}, \code{"direction"}, \code{"orbit_n"}, \code{"preview_url"},
+\code{"proc_baseline"}, \code{"level"}, \code{"sensing_datetime"},
+\code{"nodata_value"}, \code{"saturated_value"}:
 information retrieved from the metadata stored in the XML file.
 }
 
@@ -88,7 +89,6 @@ s2_getMetadata(s2_examplename, info=c("tiles", "level", "id_tile"))
 
 # Return a single information
 s2_getMetadata(s2_examplename, info="clouds")
-
 }
 }
 \author{

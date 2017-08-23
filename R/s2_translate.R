@@ -9,7 +9,7 @@
 #'  (or full existing directory where the file should be created
 #'  (default: current directory). If a directory is provided (or if no
 #'  value is specified), the file name will follow the short naming
-#'  convention adopted in this package (see [s2_shortname()]).
+#'  convention adopted in this package (see [s2_shortname]).
 #' @param format (optional) Format of the output file (in a
 #'  format recognised by GDAL). Default value is "VRT" (Virtual Raster).
 #' @param compress (optional) In the case a GTiff format is
@@ -24,9 +24,6 @@
 #' @note License: GPL 3.0
 #' @export
 #' @importFrom reticulate import import_builtins py_str
-
-# TODO
-# - call gdalbuildvrt in a way which ensures that the application is found
 
 s2_translate <- function(infile,
                          outfile=".",
@@ -46,9 +43,12 @@ s2_translate <- function(infile,
   if (is.null(py_to_r(sel_driver))) {
     print_message(
       type="error",
-      "Format \"",format,"\"is not recognised; ",
-      "please use one of the formats supported by your GDAL installation ",
-      "(type 'gdalinfo --formats' in a terminal).") # FIXME replace with R function
+      "Format \"",format,"\" is not recognised; ",
+      "please use one of the formats supported by your GDAL installation.\n\n",
+      "To list them, use the following command:\n",
+      "gdalUtils::gdalinfo(formats=TRUE)\n\n",
+      "To search for a specific format, use:\n",
+      "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
   }
 
   # check compression value
@@ -62,11 +62,7 @@ s2_translate <- function(infile,
   }
 
   # Check GDAL installation
-  if (Sys.which("gdal_translate")=="" | Sys.which("gdalbuildvrt")=="") {
-    print_message(type="message",
-                  "Searching for a valid GDAL installation, please wait...")
-    # TODO
-  }
+  check_gdal(abort=TRUE)
 
   # Retrieve xml required metadata
   infile_meta <- s2_getMetadata(infile, c("xml_main","utm","level","tiles", "jp2list"))
