@@ -25,13 +25,14 @@
 #' # s2_list() function)
 #'
 #' # Download the whole product
-#' s2_download(single_s2, out_dir=tempdir()')
+#' s2_download(single_s2, out_dir=tempdir())
 #'
 #' # Download a specific tile
 #' s2_download(single_s2, tile="32TQQ", out_dir=tempdir()')
-#' # (for products with compact names, the two produce equivalent
-#' # results, while the forst downloads a SAFE archive, the second
-#' # downloades single product files)
+#' # (for products with compact names, the two above commands produce equivalent
+#' # results: the first one downloads a SAFE archive, while the second one
+#' # downloads single product files)
+#'
 #' # Download a serie of products
 #' pos <- sp::SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=sp::CRS("+init=epsg:4326"))
 #' time_window <- as.Date(c("2017-05-01","2017-07-30"))

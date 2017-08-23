@@ -1,15 +1,16 @@
 #' @title Rename products using a shorten convention
 #' @description This function renames a Sentinel-2 product in order to
 #'  obtain shorten names. See the details for the structure of the
-#'  adopted schema. The function applies only to product names (not
-#'  to single granule names), since it is thought to be applied to
-#'  entire products.
+#'  adopted schema (named "fidolasen-S2 naming convention").
+#'  The function applies only to product names (not to single granule
+#'  names), since it is thought to be applied to entire products.
 #' @details [ESA Sentinel-2 naming convention](
 #'  https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/naming-convention)
 #'  is particularly long-winded; moreover, the convention changed after
 #'  December 6th 2016, causing products to follow two different schemes.
 #'
-#'  The convention here adopted follows this schema:
+#'  The convention here adopted, named "fidolasen-S2 naming convention",
+#'  follows this schema:
 #'
 #'  `S2mll_yyyymmdd_rrr_ttttt`
 #'
