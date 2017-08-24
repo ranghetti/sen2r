@@ -94,7 +94,6 @@ s2_translate <- function(infile,
   ## Create VRT intermediate files ##
   dir.create(vrt_tmpdir <- tempdir(), showWarnings=FALSE)
 
-browser()
   # select required bands from the list
   jp2df_spectralbands <- infile_meta$jp2list[infile_meta$jp2list$type=="MSI",]
   jp2df_spectralbands <-jp2df_spectralbands[with(jp2df_spectralbands,order(band,res)),]
