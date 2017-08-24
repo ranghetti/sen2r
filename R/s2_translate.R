@@ -9,7 +9,15 @@
 #'  (or full existing directory where the file should be created
 #'  (default: current directory). If a directory is provided (or if no
 #'  value is specified), the file name will follow the short naming
-#'  convention adopted in this package (see [s2_shortname]).
+#'  convention adopted in this package (see [s2_shortname]). If the
+#'  parameter `prod_type` has length > 1, `outfile` must be a directory.
+#' @param prod_type (optional) Vector of types to be produced as outputs
+#'  (see [s2_shortname] for the list of accepted values). Default is
+#'  reflectance ("TOA" for level 1C, "BOA" for level 2A).
+#' @param res (optional) Spatial resolution (one between '10m', '20m' or '60m');
+#'  default is '10m'. Notice that, choosing '10m' or '20m', bands with lower
+#'  resolution will be rescaled to `res`. Band 08 is used with `res = '10m'`,
+#'  band 08A with `res = '20m'` and `res = '60m'`.
 #' @param format (optional) Format of the output file (in a
 #'  format recognised by GDAL). Default value is "VRT" (Virtual Raster).
 #' @param compress (optional) In the case a GTiff format is
@@ -31,17 +39,30 @@
 
 s2_translate <- function(infile,
                          outfile=".",
+                         prod_type=NULL,
+                         res="10m",
                          format="VRT",
                          compress="DEFLATE",
                          vrt_rel_paths="TRUE",
                          utmzone="") {
 
-  res <- c("10m","20m","60m") # resolutions used
-
   # import python modules
   py <- import_builtins(convert=FALSE)
   sys <- import("sys",convert=FALSE)
   gdal <- import("osgeo",convert=FALSE)$gdal
+
+  # check res (and use the resolutions >= specified res)
+  if (!res %in% c("10m","20m","60m")) {
+    print_message(
+      type="error",
+      "\"res\" value is not recognised (accepted values are '10m', '20m' ",
+      "and '60m').")
+  }
+  if (res == "10m") {
+    res <- c("10m","20m","60m")
+  } else if (res == "20m") {
+    res <- c("20m","60m")
+  }
 
   # check output format
   sel_driver <- gdal$GetDriverByName(format)
@@ -88,11 +109,49 @@ s2_translate <- function(infile,
     }
   }
 
-  # define basename for output files
-  out_prefix <- s2_shortname(infile_dir, full.name=FALSE)
-
   ## Create VRT intermediate files ##
   dir.create(vrt_tmpdir <- tempdir(), showWarnings=FALSE)
+
+  # select default product type if missing
+  if (is.null(prod_type)) {
+    if (infile_meta$level=="1C") {
+      prod_type <- "TOA"
+    } else if (infile_meta$level=="2A") {
+      prod_type <- "BOA"
+    }
+  }
+
+  # define basename for output files
+  out_prefix <- sapply(prod_type, function(x) {
+    s2_shortname(infile_dir, prod_type=x, res=res[1], full.name=FALSE, abort=TRUE)
+  })
+
+  # create a file for each prod_type
+  for (sel_prod in prod_type) {
+
+browser()
+
+    # select required bands from the list
+    jp2df_selbands <- infile_meta$jp2list[infile_meta$jp2list$type==sel_prod,]
+    jp2df_selbands <-jp2df_selbands[with(jp2df_selbands,order(band,res)),]
+    jp2df_selbands <-jp2df_selbands[as.integer(substr(jp2df_selbands$res,1,2))>res,]
+    jp2df_selbands <- jp2df_selbands[!duplicated(with(jp2df_selbands,paste(band,tile))),]
+    jp2_spectralbands <- file.path(infile_dir,jp2df_spectralbands[,"relpath"])
+
+
+# TODO da qui: adatta per qualsiasi prod_type in output;
+    # sistema documentazione;
+    # fai script per gabri (con tiles generiche);
+    # sistema bbox_from_file in modistsp;
+    # sistema documentazione di tutte le altre funzioni
+
+
+
+  }
+
+
+
+
 
   # select required bands from the list
   jp2df_spectralbands <- infile_meta$jp2list[infile_meta$jp2list$type=="MSI",]

@@ -3,7 +3,7 @@
 #'  the minimum required version (2.1.3, since previous versions do not
 #'  manage SAFE format).
 #' @param abort Logical parameter: if TRUE (default), the function aborts
-#'  in case no GDAL installation is found; if FALSE, a warning is showed
+#'  in case no GDAL installation is found; if FALSE, a warning is shown
 #'  and FALSE is returned.
 #' @return Logical: TRUE in case the installation is ok, FALSE if GDAL
 #'  is missing and abort=FALSE (otherwise, the function stops).
