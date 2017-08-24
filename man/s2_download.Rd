@@ -34,7 +34,7 @@ License: GPL 3.0
 \examples{
 \dontrun{
 single_s2 <- paste0("https://scihub.copernicus.eu/apihub/odata/v1/",
-  "Products('c7142722-42bf-4f93-b8c5-59fd1792c430')/\\\\$value")
+  "Products(\\'c7142722-42bf-4f93-b8c5-59fd1792c430\\')/\\\\$value")
 names(single_s2) <- "S2A_MSIL1C_20170613T101031_N0205_R022_T32TQQ_20170613T101608.SAFE"
 # (this is equivalent to:
 # single_s2 <- example_s2_list[1]
@@ -42,13 +42,14 @@ names(single_s2) <- "S2A_MSIL1C_20170613T101031_N0205_R022_T32TQQ_20170613T10160
 # s2_list() function)
 
 # Download the whole product
-s2_download(single_s2, out_dir=tempdir()')
+s2_download(single_s2, out_dir=tempdir())
 
 # Download a specific tile
-s2_download(single_s2, tile="32TQQ", out_dir=tempdir()')
-# (for products with compact names, the two produce equivalent
-# results, while the forst downloads a SAFE archive, the second
-# downloades single product files)
+s2_download(single_s2, tile="32TQQ", out_dir=tempdir())
+# (for products with compact names, the two above commands produce equivalent
+# results: the first one downloads a SAFE archive, while the second one
+# downloads single product files)
+
 # Download a serie of products
 pos <- sp::SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=sp::CRS("+init=epsg:4326"))
 time_window <- as.Date(c("2017-05-01","2017-07-30"))

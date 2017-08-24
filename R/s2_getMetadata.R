@@ -48,7 +48,6 @@
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @export
-#' @importFrom tools file_path_as_absolute
 #' @importFrom reticulate import py_to_r
 #' @importFrom methods is
 #'
@@ -207,7 +206,7 @@ s2_getMetadata <- function(s2, info="all") {
 
       # If s2 is a path:
       # convert in absolute path (and check that file exists)
-      s2_path <- file_path_as_absolute(s2)
+      s2_path <- normalizePath(s2, mustWork=TRUE)
 
       # retrieve the name of xml main file
       # if it is a directory, scan the content

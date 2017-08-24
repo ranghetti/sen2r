@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Expand a path with a parent directory — expand_path • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
+<title>Convert absolute paths to relatives in a virtual file — gdal_abs2rel • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,70 +89,51 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Expand a path with a parent directory</h1>
+    <h1>Convert absolute paths to relatives in a virtual file</h1>
     </div>
 
     
-    <p>Accessory function which checks if a path is absolute or relative;
-if relative, use a specified parent directory instead than the working
-dorectory to expand it.
-Useful for functions which accept more than one path as arguments,
-in which one of them contains the absolute position, and the others
-do not.</p>
+    <p>This function read the content of a GDAL virtual file
+(VRT) and check the presence of absolute paths; when the path of a
+file has a common parent directory with the path in which the VRT
+is, this is replaced with a relative. This is useful when VRT are
+on a remote driver, which can be mounted to several points.</p>
     
 
-    <pre class="usage"><span class='fu'>expand_path</span>(<span class='no'>path</span>, <span class='kw'>parent</span> <span class='kw'>=</span> <span class='fu'>getwd</span>(), <span class='kw'>silent</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>normalize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>gdal_abs2rel</span>(<span class='no'>path</span>, <span class='kw'>ref_path</span> <span class='kw'>=</span> <span class='fu'>getwd</span>(), <span class='kw'>mustWork</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>path</th>
-      <td><p>The path name (<code>character</code>) to check ad eventually expand.</p></td>
+      <th>in_vrt</th>
+      <td><p>The path of the VRT to be read.</p></td>
     </tr>
     <tr>
-      <th>parent</th>
-      <td><p>The parent directory (<code>character</code>) to use if <code>path</code> is
-relative (default value: the working directory).</p></td>
-    </tr>
-    <tr>
-      <th>silent</th>
-      <td><p>Logical value: if TRUE (default), no message are shown;
-if FALSE, a message inform if <code>parent</code> were applied or not;
-if NA, a warning is returned if <code>path</code> is expanded, nothing if it
-is already an absolute path.</p></td>
-    </tr>
-    <tr>
-      <th>normalize</th>
-      <td><p>Logical value: if TRUE (default), the path is normalised
-(<code><a href='http://www.rdocumentation.org/packages/base/topics/normalizePath'>normalizePath</a></code> is applied); if FALSE it is simply
-appended.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p><code>R</code> objects which are concatenated.</p></td>
+      <th>out_vrt</th>
+      <td><p>(optional) The path of the output VRT file (default
+is to overwrite <code>in_vrt</code>).</p></td>
     </tr>
     </table>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>The path eventually expanded.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'># the reference path
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#value">Value</a></li>
-
       <li><a href="#note">Note</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     

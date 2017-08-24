@@ -19,6 +19,7 @@ Imports:
   digest,
   stringr,
   rgdal,
-  gdalUtils
+  gdalUtils,
+  magrittr
 Roxygen: list(markdown = TRUE)
 Remotes: lbusett/sprawl

@@ -4,7 +4,7 @@
 \alias{expand_path}
 \title{Expand a path with a parent directory}
 \usage{
-expand_path(path, parent = NA, silent = TRUE)
+expand_path(path, parent = getwd(), silent = TRUE, normalize = TRUE)
 }
 \arguments{
 \item{path}{The path name (\code{character}) to check ad eventually expand.}
@@ -13,7 +13,13 @@ expand_path(path, parent = NA, silent = TRUE)
 relative (default value: the working directory).}
 
 \item{silent}{Logical value: if TRUE (default), no message are shown;
-otherwise, a message inform if \code{parent} were applied or not.}
+if FALSE, a message inform if \code{parent} were applied or not;
+if NA, a warning is returned if \code{path} is expanded, nothing if it
+is already an absolute path.}
+
+\item{normalize}{Logical value: if TRUE (default), the path is normalised
+(\code{\link[base]{normalizePath}} is applied); if FALSE it is simply
+appended.}
 
 \item{...}{\code{R} objects which are concatenated.}
 }

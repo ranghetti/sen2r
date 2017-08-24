@@ -17,13 +17,18 @@ reference:
       - '`s2_getMetadata`'
       - '`s2_translate`'
   - title: Accessory functions
+    contents:
+      - '`s2_shortname`'
+      - '`fs2nc_getElements`'
+      - '`expand_path`'
+      - '`comsub`'
+      - '`abs2rel`'
+      - '`gdal_abs2rel`'
+  - title: Internal functions
     desc: (not exported)
     contents:
       - '`import_s2download`'
       - '`s2_shortname`'
-      - '`fs2nc_getElements`'
-      - '`check_gdal`'
-      - '`expand_path`'
       - '`print_message`'
 navbar:
   type: inverse

@@ -10,18 +10,23 @@
 #' @param parent The parent directory (`character`) to use if `path` is
 #'  relative (default value: the working directory).
 #' @param silent Logical value: if TRUE (default), no message are shown;
-#'  otherwise, a message inform if `parent` were applied or not.
+#'  if FALSE, a message inform if `parent` were applied or not;
+#'  if NA, a warning is returned if `path` is expanded, nothing if it
+#'  is already an absolute path.
+#' @param normalize Logical value: if TRUE (default), the path is normalised
+#'  (\code{\link[base]{normalizePath}} is applied); if FALSE it is simply
+#'  appended.
 #' @return The path eventually expanded.
-#'
+#' @export
+#' @importFrom magrittr %>%
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 
 
-expand_path <- function(path, parent=NA, silent=TRUE) {
+expand_path <- function(path, parent=getwd(), silent=TRUE, normalize=TRUE) {
 
-  if (is.na(parent)) {
-    parent <- getwd()
-  }
+  # chose the function to apply
+  expand_fun <- ifelse(normalize==TRUE, "normalizePath", "path.expand")
 
   # check if path is relative
   path_isabsolute <- if (Sys.info()["sysname"] == "Windows") {
@@ -34,16 +39,27 @@ expand_path <- function(path, parent=NA, silent=TRUE) {
 
   # return
   if (path_isabsolute) {
-    if (!silent) {
+
+    if (!is.na(silent) & silent==FALSE) {
       print_message(type="message", "Path '",path,"' is already absolute.")
     }
-    return(path.expand(path))
+    do.call(expand_fun, list(ex_vrt)) %>%
+      return()
+
   } else {
-    if (!silent) {
-      print_message(type="message", "Path '",path,"' is not absolute; '",
-                  gsub("/$","",parent),"' is used as prefix.")
+
+    if (is.na(silent) | silent==FALSE) {
+      print_message(
+        type=ifelse(is.na(silent),"warning","message"),
+        "Path '",path,"' is not absolute; '",
+        gsub("/$","",parent),"' is used as prefix.")
     }
-    return(path.expand(file.path(gsub("/$","",parent),path)))
+
+    gsub("/$","",parent) %>%
+      file.path(path) %>%
+      list() %>%
+      do.call(expand_fun, .) %>%
+      return()
 
   }
 
