@@ -24,8 +24,7 @@
 s2_merge <- function(infiles,
                      outdir=".",
                      format="VRT",
-                     compress="DEFLATE",
-                     utmzone="") {
+                     compress="DEFLATE") {
 
   # Check that files exist
   if (!any(sapply(infiles, file.exists))) {

@@ -22,8 +22,8 @@ The function search for the longest common prefix between
 multiple strings.
 }
 \note{
-Modified from a suggestion taken from \link{stackoverflow}
-(https://stackoverflow.com/questions/28273716/r-implementation-for-finding-the-longest-common-starting-substrings-in-a-set-of).
+Modified from a suggestion taken from
+\href{https://stackoverflow.com/questions/28273716/r-implementation-for-finding-the-longest-common-starting-substrings-in-a-set-of}{stackoverflow}.
 }
 \examples{
 strings <- c("/home/lranghetti/git/fidolasen",

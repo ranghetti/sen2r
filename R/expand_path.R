@@ -25,6 +25,9 @@
 
 expand_path <- function(path, parent=getwd(), silent=TRUE, normalize=TRUE) {
 
+  # to avoid NOTE on check
+  . <- NULL
+
   # chose the function to apply
   expand_fun <- ifelse(normalize==TRUE, "normalizePath", "path.expand")
 
@@ -43,7 +46,7 @@ expand_path <- function(path, parent=getwd(), silent=TRUE, normalize=TRUE) {
     if (!is.na(silent) & silent==FALSE) {
       print_message(type="message", "Path '",path,"' is already absolute.")
     }
-    do.call(expand_fun, list(ex_vrt)) %>%
+    do.call(expand_fun, list(path)) %>%
       return()
 
   } else {

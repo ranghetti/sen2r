@@ -26,6 +26,9 @@
 #' }
 gdal_abs2rel <- function(in_vrt, out_vrt=NA) {
 
+  # to avoid NOTE on check
+  . <- NULL
+
   if (is.na(out_vrt)) {
     out_vrt <- in_vrt
   }
@@ -62,6 +65,9 @@ gdal_abs2rel <- function(in_vrt, out_vrt=NA) {
 #' @name gdal_rel2abs
 #' @rdname gdal_abs2rel_rel2abs
 gdal_rel2abs <- function(in_vrt, out_vrt=NA) {
+
+  # to avoid NOTE on check
+  . <- NULL
 
   if (is.na(out_vrt)) {
     out_vrt <- in_vrt

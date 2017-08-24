@@ -36,16 +36,15 @@
 #'
 #' abs2rel(in_path_2, ref_path)
 #'
-#' abs2rel(in_path_3, ref_path)
+#' suppressWarnings(abs2rel(in_path_3, ref_path))
 #'
-#' abs2rel(in_path_4, ref_path, mustWork=TRUE)
+#' suppressWarnings(abs2rel(in_path_4, ref_path, mustWork=FALSE))
 #'
-#' abs2rel(in_path_4, ref_path, mustWork=NA)
-#'
-#' abs2rel(in_path_4, ref_path, mustWork=FALSE)
-#'
-#' abs2rel(ref_path, ref_path)
+#' suppressWarnings(abs2rel(ref_path, ref_path))
 abs2rel <- function(path, ref_path=getwd(), mustWork=NA) {
+
+  # to avoid NOTE on check
+  . <- NULL
 
   # check if path is absolute
   path <- expand_path(path, silent=NA)

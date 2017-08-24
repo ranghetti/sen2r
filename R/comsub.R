@@ -9,8 +9,8 @@
 #' @return A character with the longest common initial substring
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
-#' @note Modified from a suggestion taken from [stackoverflow]
-#'  (https://stackoverflow.com/questions/28273716/r-implementation-for-finding-the-longest-common-starting-substrings-in-a-set-of).
+#' @note Modified from a suggestion taken from
+#'  [stackoverflow](https://stackoverflow.com/questions/28273716/r-implementation-for-finding-the-longest-common-starting-substrings-in-a-set-of).
 #' @export
 #' @importFrom reticulate import py_to_r
 #' @importFrom methods is
@@ -24,6 +24,7 @@
 #' comsub(strings, sep="/")
 
 comsub <- function(data, sep="") {
+  . <- NULL # to avoid NOTE on check
   data_spl <- strsplit(data,sep)
   data_spl_maxlength <- max(sapply(strsplit(data,sep), length))
   which_max <- lapply(data_spl, `length<-`, data_spl_maxlength) %>%
