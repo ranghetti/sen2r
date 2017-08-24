@@ -30,6 +30,6 @@ s2_download(example_s2_list_l2a, out_dir=l2a_path)
 ## 3) Convert in vrt
 dir.create(vrt_01_path<-file.path(vrt_path,"01_translate"),showWarnings=FALSE)
 for (sel_prod in list.files(l2a_path,"\\.SAFE$",full.names=TRUE)) {
-  s2_translate(sel_prod, vrt_01_path, format="VRT")
+  s2_translate(sel_prod, vrt_01_path, format="VRT", vrt_rel_paths=TRUE)
 }
 

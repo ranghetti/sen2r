@@ -5,7 +5,7 @@
 \title{Convert from SAFE format}
 \usage{
 s2_translate(infile, outfile = ".", format = "VRT", compress = "DEFLATE",
-  utmzone = "")
+  vrt_rel_paths = "TRUE", utmzone = "")
 }
 \arguments{
 \item{infile}{Full path of the input SAFE folder (alternatively,
@@ -22,6 +22,11 @@ format recognised by GDAL). Default value is "VRT" (Virtual Raster).}
 
 \item{compress}{(optional) In the case a GTiff format is
 chosen, the compression indicated with this parameter is used.}
+
+\item{vrt_rel_paths}{(optional) Logical: if TRUE (default), the paths
+present in the VRT output file are relative to the VRT position;
+if FALSE, they are absolute. This takes effect only with
+\code{format = "VRT"}.}
 
 \item{utmzone}{(optional) UTM zone of output products (default:
 the first one retrieved from input granules). Note that this function

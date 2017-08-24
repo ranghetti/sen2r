@@ -14,6 +14,10 @@
 #'  format recognised by GDAL). Default value is "VRT" (Virtual Raster).
 #' @param compress (optional) In the case a GTiff format is
 #'  chosen, the compression indicated with this parameter is used.
+#' @param vrt_rel_paths (optional) Logical: if TRUE (default), the paths
+#'  present in the VRT output file are relative to the VRT position;
+#'  if FALSE, they are absolute. This takes effect only with
+#'  `format = "VRT"`.
 #' @param utmzone (optional) UTM zone of output products (default:
 #'  the first one retrieved from input granules). Note that this function
 #'  does not perform reprojections: if no granules refer to the specified
@@ -29,6 +33,7 @@ s2_translate <- function(infile,
                          outfile=".",
                          format="VRT",
                          compress="DEFLATE",
+                         vrt_rel_paths="TRUE",
                          utmzone="") {
 
   res <- c("10m","20m","60m") # resolutions used
@@ -89,6 +94,7 @@ s2_translate <- function(infile,
   ## Create VRT intermediate files ##
   dir.create(vrt_tmpdir <- tempdir(), showWarnings=FALSE)
 
+browser()
   # select required bands from the list
   jp2df_spectralbands <- infile_meta$jp2list[infile_meta$jp2list$type=="MSI",]
   jp2df_spectralbands <-jp2df_spectralbands[with(jp2df_spectralbands,order(band,res)),]
@@ -132,94 +138,6 @@ s2_translate <- function(infile,
     intern = Sys.info()["sysname"] == "Windows"
   )
 
-
-  # old way (gdal + python) <- remove
-
-  # ## Create VRT intermediate files ##
-  # dir.create(vrt_tmpdir <- tempdir(), showWarnings=FALSE)
-  # vrt01_names <- file.path(vrt_tmpdir,paste0(out_prefix,"_",res,".vrt"))
-  #
-  # # for level 1C, use GDAL driver to retrieve first vrt files (one per resolution)
-  # if (infile_meta$level=="1C") {
-  #
-  #   infile_gdalnames <- paste0("SENTINEL2_L",infile_meta$level,":",infile_meta$xml_main,":",res,":","EPSG_326",sel_utmzone)
-  #   # create separate vrt for files
-  #   if (length(vrt01_names) == length(infile_gdalnames)) {
-  #     for (i in 1:length(vrt01_names)) {
-  #       browser()
-  #       vrt_bi <- gdal$Open(infile_gdalnames[i])
-  #       if (is(vrt_bi$GetMetadata("xml:VRT")[[0]], "python.builtin.str")) { # python 3
-  #         writeLines(py_str(vrt_bi$GetMetadata("xml:VRT")[[0]]), vrt01_names[i])
-  #       } else { # python 2
-  #         writeLines(py_str(vrt_bi$GetMetadata("xml:VRT")[[0]]$encode("utf-8")), vrt01_names[i])
-  #       }
-  #     }
-  #   } else {
-  #     print_message(type="error", "Internal error (this should not happen).")
-  #   }
-  #
-  # # for level 2, scan the product manually (this because GDAL does not manage level2 yet)
-  # } else {
-  #   # FIXME moved
-  # }
-  #
-  # # create separate vrt for bands
-  # if ("10m" %in% res) {
-  #   system(paste0("gdalbuildvrt -b 1 \"",tempdir(),"/",out_prefix,"_b02.vrt\" \"",tempdir(),"/",out_prefix,"_10m.vrt\""),
-  #          intern = Sys.info()["sysname"] == "Windows")
-  #   system(paste0("gdalbuildvrt -b 2 \"",tempdir(),"/",out_prefix,"_b03.vrt\" \"",tempdir(),"/",out_prefix,"_10m.vrt\""),
-  #          intern = Sys.info()["sysname"] == "Windows")
-  #   system(paste0("gdalbuildvrt -b 3 \"",tempdir(),"/",out_prefix,"_b04.vrt\" \"",tempdir(),"/",out_prefix,"_10m.vrt\""),
-  #          intern = Sys.info()["sysname"] == "Windows")
-  #   system(paste0("gdalbuildvrt -b 4 \"",tempdir(),"/",out_prefix,"_b08.vrt\" \"",tempdir(),"/",out_prefix,"_10m.vrt\""),
-  #          intern = Sys.info()["sysname"] == "Windows")
-  # }
-  # if ("20m" %in% res) {
-  #   system(paste0("gdalbuildvrt -b 1 \"",tempdir(),"/",out_prefix,"_b05.vrt\" \"",tempdir(),"/",out_prefix,"_20m.vrt\""),
-  #          intern = Sys.info()["sysname"] == "Windows")
-  #   system(paste0("gdalbuildvrt -b 2 \"",tempdir(),"/",out_prefix,"_b06.vrt\" \"",tempdir(),"/",out_prefix,"_20m.vrt\""),
-  #          intern = Sys.info()["sysname"] == "Windows")
-  #   system(paste0("gdalbuildvrt -b 3 \"",tempdir(),"/",out_prefix,"_b07.vrt\" \"",tempdir(),"/",out_prefix,"_20m.vrt\""),
-  #          intern = Sys.info()["sysname"] == "Windows")
-  #   system(paste0("gdalbuildvrt -b 4 \"",tempdir(),"/",out_prefix,"_b08a.vrt\" \"",tempdir(),"/",out_prefix,"_20m.vrt\""),
-  #          intern = Sys.info()["sysname"] == "Windows")
-  #   system(paste0("gdalbuildvrt -b 5 \"",tempdir(),"/",out_prefix,"_b11.vrt\" \"",tempdir(),"/",out_prefix,"_20m.vrt\""),
-  #          intern = Sys.info()["sysname"] == "Windows")
-  #   system(paste0("gdalbuildvrt -b 6 \"",tempdir(),"/",out_prefix,"_b12.vrt\" \"",tempdir(),"/",out_prefix,"_20m.vrt\""),
-  #          intern = Sys.info()["sysname"] == "Windows")
-  # }
-  # if ("60m" %in% res) {
-  #   system(paste0("gdalbuildvrt -b 1 \"",tempdir(),"/",out_prefix,"_b01.vrt\" \"",tempdir(),"/",out_prefix,"_60m.vrt\""),
-  #          intern = Sys.info()["sysname"] == "Windows")
-  #   system(paste0("gdalbuildvrt -b 2 \"",tempdir(),"/",out_prefix,"_b09.vrt\" \"",tempdir(),"/",out_prefix,"_60m.vrt\""),
-  #          intern = Sys.info()["sysname"] == "Windows")
-  #   system(paste0("gdalbuildvrt -b 3 \"",tempdir(),"/",out_prefix,"_b10.vrt\" \"",tempdir(),"/",out_prefix,"_60m.vrt\""),
-  #          intern = Sys.info()["sysname"] == "Windows")
-  # }
-  #
-  # # create final vrt
-  # system(
-  #   paste0(
-  #     "gdalbuildvrt -separate ",
-  #     "-resolution highest ",
-  #     "\"",tempdir(),"/",out_prefix,".vrt\" ",
-  #     if ("60m" %in% res) {paste0("\"",tempdir(),"/",out_prefix,"_b01.vrt\" ")},
-  #     if ("10m" %in% res) {paste0("\"",tempdir(),"/",out_prefix,"_b02.vrt\" ")},
-  #     if ("10m" %in% res) {paste0("\"",tempdir(),"/",out_prefix,"_b03.vrt\" ")},
-  #     if ("10m" %in% res) {paste0("\"",tempdir(),"/",out_prefix,"_b04.vrt\" ")},
-  #     if ("20m" %in% res) {paste0("\"",tempdir(),"/",out_prefix,"_b05.vrt\" ")},
-  #     if ("20m" %in% res) {paste0("\"",tempdir(),"/",out_prefix,"_b06.vrt\" ")},
-  #     if ("20m" %in% res) {paste0("\"",tempdir(),"/",out_prefix,"_b07.vrt\" ")},
-  #     if ("10m" %in% res) {paste0("\"",tempdir(),"/",out_prefix,"_b08.vrt\" ")},
-  #     if ("20m" %in% res) {paste0("\"",tempdir(),"/",out_prefix,"_b08a.vrt\" ")},
-  #     if ("60m" %in% res) {paste0("\"",tempdir(),"/",out_prefix,"_b09.vrt\" ")},
-  #     if ("60m" %in% res) {paste0("\"",tempdir(),"/",out_prefix,"_b10.vrt\" ")},
-  #     if ("20m" %in% res) {paste0("\"",tempdir(),"/",out_prefix,"_b11.vrt\" ")},
-  #     if ("20m" %in% res) {paste0("\"",tempdir(),"/",out_prefix,"_b12.vrt\" ")}
-  #   ), intern = Sys.info()["sysname"] == "Windows"
-  # )
-
-
   # create output file
   out_ext <- if (format=="ENVI") {
     "dat"
@@ -244,6 +162,9 @@ s2_translate <- function(infile,
         "\"",outfile,"\""
       ), intern = Sys.info()["sysname"] == "Windows"
     )
+    if (format=="VRT" & vrt_rel_paths==TRUE) {
+      gdal_abs2rel(outfile)
+    }
   }
 
   print_message(type="message",

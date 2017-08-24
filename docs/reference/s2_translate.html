@@ -100,7 +100,7 @@ Output vrt is at 10m resolution.</p>
     
 
     <pre class="usage"><span class='fu'>s2_translate</span>(<span class='no'>infile</span>, <span class='kw'>outfile</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"VRT"</span>, <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>,
-  <span class='kw'>utmzone</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
+  <span class='kw'>vrt_rel_paths</span> <span class='kw'>=</span> <span class='st'>"TRUE"</span>, <span class='kw'>utmzone</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -127,6 +127,13 @@ format recognised by GDAL). Default value is "VRT" (Virtual Raster).</p></td>
       <th>compress</th>
       <td><p>(optional) In the case a GTiff format is
 chosen, the compression indicated with this parameter is used.</p></td>
+    </tr>
+    <tr>
+      <th>vrt_rel_paths</th>
+      <td><p>(optional) Logical: if TRUE (default), the paths
+present in the VRT output file are relative to the VRT position;
+if FALSE, they are absolute. This takes effect only with
+<code>format = "VRT"</code>.</p></td>
     </tr>
     <tr>
       <th>utmzone</th>
