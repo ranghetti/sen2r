@@ -10,7 +10,12 @@
 #'  (default: current directory). If a directory is provided (or if no
 #'  value is specified), the file name will follow the short naming
 #'  convention adopted in this package (see [s2_shortname]). If the
-#'  parameter `prod_type` has length > 1, `outfile` must be a directory.
+#'  parameter `prod_type` has length > 1, `outfile` must be an existing directory.
+#' @param subdirs (optional) Logical: if TRUE, differet output products are
+#'  placed in separated `outfile` subdirectories; if FALSE, they are placed in
+#'  `outfile` directory; if NA (default), subdirectories are created only if
+#'  `prod_type` has length > 1. This parameter takes effect only in `outfile`
+#'  is an existing directory.
 #' @param prod_type (optional) Vector of types to be produced as outputs
 #'  (see [s2_shortname] for the list of accepted values). Default is
 #'  reflectance ("TOA" for level 1C, "BOA" for level 2A).
@@ -30,15 +35,34 @@
 #'  the first one retrieved from input granules). Note that this function
 #'  does not perform reprojections: if no granules refer to the specified
 #'  UTM zone, no output is created.
-#' @return NULL
-#'
+#' @return A vector with the names of the created output files.
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @export
 #' @importFrom reticulate import import_builtins py_str
+#' @examples \dontrun{
+#' s2_l1c_example <- file.path(
+#'   "/existing/path",
+#'   "S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE")
+#' s2_l1c_example <- file.path(
+#'   "/existing/path",
+#'   "S2A_MSIL2A_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE")
+#'
+#' # Create a single TOA GeoTIFF in the same directory
+#' s2_translate(s2_l1c_example, format="GTiff")
+#'
+#' # Create a single BOA VRT with a custom name
+#' s2_translate(s2_l2a_example, "/new/path/example_sentinel2_sr.vrt",
+#'   vrt_rel_paths=TRUE)
+#'
+#' # Create three products (ENVI) in the same directory at 60m resolution
+#' s2_translate(s2_example, format="ENVI", prod_type=c("BOA","TCI","SCL"),
+#'   res="60m", subdirs=TRUE)
+#'}
 
 s2_translate <- function(infile,
                          outfile=".",
+                         subdirs=NA,
                          prod_type=NULL,
                          res="10m",
                          format="VRT",
@@ -75,6 +99,32 @@ s2_translate <- function(infile,
       "gdalUtils::gdalinfo(formats=TRUE)\n\n",
       "To search for a specific format, use:\n",
       "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
+  }
+
+  # define output directory
+  if (file.exists(outfile) & file.info(outfile)$isdir) {
+    outdir <- expand_path(outfile, parent=dirname(infile_dir))
+    # create subdirs
+    if (is.na(subdirs)) {
+      subdirs <- ifelse(length(prod_type)>1, TRUE, FALSE)
+    }
+    if (subdirs) {
+      sapply(file.path(outdir,prod_type), dir.create, showWarnings=FALSE)
+    }
+  } else {
+    subdirs <- FALSE
+    if (length(prod_type)>1) {
+      print_message(
+        type="error",
+        "\"prod_type\" has length > 1, but \"outdir\" ",
+        "is not an existing directory; please check.")
+    }
+    outdir <- expand_path(dirname(outfile), parent=dirname(infile_dir))
+    if (!file.info(outdir)$isdir) {
+      print_message(
+        type="error",
+        "Directory \"",outdir,"\" does not exist.")
+    }
   }
 
   # check compression value
@@ -121,112 +171,107 @@ s2_translate <- function(infile,
     }
   }
 
-  # define basename for output files
-  out_prefix <- sapply(prod_type, function(x) {
-    s2_shortname(infile_dir, prod_type=x, res=res[1], full.name=FALSE, abort=TRUE)
-  })
-
   # create a file for each prod_type
+  out_names <- character(0) # names of created files
   for (sel_prod in prod_type) {
 
-browser()
+    if (sel_prod %in% c("BOA","TOA")) {
+      sel_type <- "MSI"
+    } else {
+      sel_type <- sel_prod
+    }
 
-    # select required bands from the list
-    jp2df_selbands <- infile_meta$jp2list[infile_meta$jp2list$type==sel_prod,]
-    jp2df_selbands <-jp2df_selbands[with(jp2df_selbands,order(band,res)),]
-    jp2df_selbands <-jp2df_selbands[as.integer(substr(jp2df_selbands$res,1,2))>res,]
+    ## define elements of output file names
+    # define basename
+    if (file.exists(outfile) & file.info(outfile)$isdir) {
+      out_prefix <- s2_shortname(infile_dir, prod_type=sel_prod, res=res[1], full.name=FALSE, abort=TRUE)
+    } else {
+      out_prefix <- paste0(gsub(paste0("\\.",out_ext,"$"),"",basename(outfile)),".",out_ext)
+    }
+    # define subdir
+    out_subdir <- ifelse(subdirs, file.path(outdir,sel_prod), outdir)
+    # define extension
+    out_ext <- if (format=="ENVI") {
+      "dat"
+    } else {
+      unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(gdal$DMD_EXTENSIONS))," ")," "))[1]
+    }
+    # complete filename
+    out_name <- file.path(out_subdir,paste0(out_prefix,".",out_ext))
+
+    # select required bands from the list and order them by resolution
+    jp2df_selbands <- infile_meta$jp2list[infile_meta$jp2list$type==sel_type,]
+    jp2df_selbands <- jp2df_selbands[with(jp2df_selbands,order(band,res)),]
+    # remove lower resolutions and keep only the best resolution for each band
+    jp2df_selbands <- jp2df_selbands[as.integer(substr(jp2df_selbands$res,1,2))>=as.integer(substr(res[1],1,2)),]
     jp2df_selbands <- jp2df_selbands[!duplicated(with(jp2df_selbands,paste(band,tile))),]
-    jp2_spectralbands <- file.path(infile_dir,jp2df_spectralbands[,"relpath"])
+    # extract vector of paths
+    jp2_selbands <- file.path(infile_dir,jp2df_selbands[,"relpath"])
 
+    # TODO check that required bands are present
 
-# TODO da qui: adatta per qualsiasi prod_type in output;
-    # sistema documentazione;
-    # fai script per gabri (con tiles generiche);
-    # sistema bbox_from_file in modistsp;
-    # sistema documentazione di tutte le altre funzioni
+    # if more than one tile are present in the product, merge them
+    if (length(infile_meta$tiles)>1) {
+      vrt_selbands <- character(0)
+      for (sel_band in unique(jp2df_selbands$band)) {
+        jp2_selband <- jp2_selbands[jp2df_selbands$band==sel_band]
+        vrt_selband <- paste0(tempdir(),"/",out_prefix,"_",sel_band,".vrt")
+        vrt_selbands <- c(vrt_selbands, vrt_selband)
+        system(
+          paste0(
+            Sys.which("gdalbuildvrt")," ",
+            "\"",vrt_selband,"\" ",
+            paste(paste0("\"",jp2_selband,"\""), collapse=" ")
+          ),
+          intern = Sys.info()["sysname"] == "Windows"
+        )
+      }
+    } else {
+      vrt_selbands <- jp2_selbands
+    }
+    # TODO: in this way, in the overlapping areas only one of the two is considered.
+    # In L2A there are slight differences (due to different parameters used by sen2cor).
+    # A more elaborated function to deal with this situations could be implemented
+    # (e.g. average value, maybe weighted on the relative distance from the border of
+    # one tile or another).
 
-
-
-  }
-
-
-
-
-
-  # select required bands from the list
-  jp2df_spectralbands <- infile_meta$jp2list[infile_meta$jp2list$type=="MSI",]
-  jp2df_spectralbands <-jp2df_spectralbands[with(jp2df_spectralbands,order(band,res)),]
-  jp2df_spectralbands <- jp2df_spectralbands[!duplicated(with(jp2df_spectralbands,paste(band,tile))),]
-  jp2_spectralbands <- file.path(infile_dir,jp2df_spectralbands[,"relpath"])
-
-  # TODO check that required bands are present
-
-  # if more than one tile are present in the product, merge them
-  if (length(infile_meta$tiles)>1) {
-    vrt_spectralbands <- character(0)
-    for (sel_band in unique(jp2df_spectralbands$band)) {
-      jp2_selband <- jp2_spectralbands[jp2df_spectralbands$band==sel_band]
-      vrt_selband <- paste0(tempdir(),"/",out_prefix,"_",sel_band,".vrt")
-      vrt_spectralbands <- c(vrt_spectralbands, vrt_selband)
+    # create final vrt (of select final raster)
+    # for a multiband raster (reflectance), create final vrt
+    if (length(vrt_selbands)>1) {
+      final_vrt_name <- paste0(tempdir(),"/",out_prefix,".vrt")
       system(
         paste0(
-          Sys.which("gdalbuildvrt")," ",
-          "\"",vrt_selband,"\" ",
-          paste(paste0("\"",jp2_selband,"\""), collapse=" ")
+          Sys.which("gdalbuildvrt")," -separate ",
+          "\"",final_vrt_name,"\" ",
+          paste(paste0("\"",vrt_selbands,"\""), collapse=" ")
         ),
         intern = Sys.info()["sysname"] == "Windows"
       )
+    # for a single band raster, skip this step
+    } else {
+      final_vrt_name <- vrt_selbands
     }
-  } else {
-    vrt_spectralbands <- jp2_spectralbands
-  }
-  # TODO: in this way, in the overlapping areas only one of the two is considered.
-  # In L2A there are slight differences (due to different parameters used by sen2cor).
-  # A more elaborated function to deal with this situations could be implemented
-  # (e.g. average value, maybe weighted on the relative distance from the border of
-  # one tile or another).
 
-  # create final vrt
-  system(
-    paste0(
-      Sys.which("gdalbuildvrt")," -separate ",
-      "\"",tempdir(),"/",out_prefix,".vrt\" ",
-      paste(paste0("\"",vrt_spectralbands,"\""), collapse=" ")
-    ),
-    intern = Sys.info()["sysname"] == "Windows"
-  )
-
-  # create output file
-  out_ext <- if (format=="ENVI") {
-    "dat"
-  } else {
-    unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(gdal$DMD_EXTENSIONS))," ")," "))[1]
-  }
-  if (file.exists(outfile) & file.info(outfile)$isdir) {
-    outfile <- file.path(expand_path(outfile,parent=dirname(infile_dir)),paste0(out_prefix,".",out_ext))
-  } else {
-    outfile <- expand_path(paste0(gsub(paste0("\\.",out_ext,"$"),"",outfile),".",out_ext),
-                           parent=dirname(infile_dir))
-  }
-
-  if (format=="VRT") {
-    file.copy(paste0(tempdir(),"/",out_prefix,".vrt"), outfile)
-  } else {
+    # create output file
     system(
       paste0(
         Sys.which("gdal_translate")," -of ",format," ",
         if (format=="GTiff") {paste0("-co COMPRESS=",toupper(compress)," ")},
-        "\"",tempdir(),"/",out_prefix,".vrt\" ",
-        "\"",outfile,"\""
+        "\"",final_vrt_name,"\" ",
+        "\"",out_name,"\""
       ), intern = Sys.info()["sysname"] == "Windows"
     )
     if (format=="VRT" & vrt_rel_paths==TRUE) {
-      gdal_abs2rel(outfile)
+      gdal_abs2rel(out_name)
     }
-  }
+
+    out_names <- c(out_names, out_name)
+
+  } # end of prod_type cycle
 
   print_message(type="message",
-                "Output file created at ",outfile,".")
+                length(out_names)," output files were correctly created.")
+  return(out_names)
 
 }
 

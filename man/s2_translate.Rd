@@ -4,7 +4,8 @@
 \alias{s2_translate}
 \title{Convert from SAFE format}
 \usage{
-s2_translate(infile, outfile = ".", format = "VRT", compress = "DEFLATE",
+s2_translate(infile, outfile = ".", subdirs = NA, prod_type = NULL,
+  res = "10m", format = "VRT", compress = "DEFLATE",
   vrt_rel_paths = "TRUE", utmzone = "")
 }
 \arguments{
@@ -15,7 +16,23 @@ full path of the xml file of the product with metadata).}
 (or full existing directory where the file should be created
 (default: current directory). If a directory is provided (or if no
 value is specified), the file name will follow the short naming
-convention adopted in this package (see \link{s2_shortname}).}
+convention adopted in this package (see \link{s2_shortname}). If the
+parameter \code{prod_type} has length > 1, \code{outfile} must be an existing directory.}
+
+\item{subdirs}{(optional) Logical: if TRUE, differet output products are
+placed in separated \code{outfile} subdirectories; if FALSE, they are placed in
+\code{outfile} directory; if NA (default), subdirectories are created only if
+\code{prod_type} has length > 1. This parameter takes effect only in \code{outfile}
+is an existing directory.}
+
+\item{prod_type}{(optional) Vector of types to be produced as outputs
+(see \link{s2_shortname} for the list of accepted values). Default is
+reflectance ("TOA" for level 1C, "BOA" for level 2A).}
+
+\item{res}{(optional) Spatial resolution (one between '10m', '20m' or '60m');
+default is '10m'. Notice that, choosing '10m' or '20m', bands with lower
+resolution will be rescaled to \code{res}. Band 08 is used with \code{res = '10m'},
+band 08A with \code{res = '20m'} and \code{res = '60m'}.}
 
 \item{format}{(optional) Format of the output file (in a
 format recognised by GDAL). Default value is "VRT" (Virtual Raster).}
@@ -33,6 +50,9 @@ the first one retrieved from input granules). Note that this function
 does not perform reprojections: if no granules refer to the specified
 UTM zone, no output is created.}
 }
+\value{
+A vector with the names of the created output files.
+}
 \description{
 The function build a virtual raster from a Sentinel2 SAFE product,
 eventually translating it in another spatial format.
@@ -41,6 +61,27 @@ Output vrt is at 10m resolution.
 }
 \note{
 License: GPL 3.0
+}
+\examples{
+\dontrun{
+s2_l1c_example <- file.path(
+  "/existing/path",
+  "S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE")
+s2_l1c_example <- file.path(
+  "/existing/path",
+  "S2A_MSIL2A_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE")
+
+# Create a single TOA GeoTIFF in the same directory
+s2_translate(s2_l1c_example, format="GTiff")
+
+# Create a single BOA VRT with a custom name
+s2_translate(s2_l2a_example, "/new/path/example_sentinel2_sr.vrt",
+  vrt_rel_paths=TRUE)
+
+# Create three products (ENVI) in the same directory at 60m resolution
+s2_translate(s2_example, format="ENVI", prod_type=c("BOA","TCI","SCL"),
+  res="60m", subdirs=TRUE)
+}
 }
 \author{
 Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}

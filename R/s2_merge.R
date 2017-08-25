@@ -43,7 +43,9 @@ s2_merge <- function(infiles,
   infiles_meta <- lapply(infiles, fs2nc_getElements)
 
   # Group by orbit id
-  ids_orbit <-
+  # ids_orbit <-
+
+  # WIP
 
 
 

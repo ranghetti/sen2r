@@ -12,7 +12,7 @@
 #' @examples
 #' # Define product name
 #' fs2nc_examplename <-
-#'   "/path/of/the/product/S2A1C_20170603_022_32TQQ.tif"
+#'   "/path/of/the/product/S2A1C_20170603_022_32TQQ_TOA_20.tif"
 #'
 #' # Return metadata
 #' fs2nc_getElements(fs2nc_examplename)
@@ -22,9 +22,9 @@ fs2nc_getElements <- function(s2_name) {
   # define regular expressions to identify products
   fs2nc_regex <- list(
     "tile" = list("regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([A-Z0-9]{5})\\_([A-Z0-9]{3})\\_([126]0)\\.?(.*)$",
-                  "elements" = c("mission","level","sensing_date","id_orbit","id_tile","prod_type","res","file_format")),
+                  "elements" = c("mission","level","sensing_date","id_orbit","id_tile","prod_type","res","file_ext")),
     "merged" = list("regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_\\_([A-Z0-9]{3})\\_([126]0)\\.?(.*)$",
-                    "elements" = c("mission","level","sensing_date","id_orbit","prod_type","res","file_format")))
+                    "elements" = c("mission","level","sensing_date","id_orbit","prod_type","res","file_ext")))
 
   metadata <- list() # output object, with requested metadata
 
@@ -47,9 +47,12 @@ fs2nc_getElements <- function(s2_name) {
       fs2nc_regex[[metadata$type]]$regex,
       paste0("\\",which(fs2nc_regex[[metadata$type]]$elements==sel_el)),
       s2_name)
-    # format if it is a date
+    # specific formattations
     if (sel_el=="sensing_date") {
       metadata[[sel_el]] <- as.Date(metadata[[sel_el]], format="%Y%m%d")
+    }
+    if (sel_el=="res") {
+      metadata[[sel_el]] <- paste0(metadata[[sel_el]],"m")
     }
   }
 

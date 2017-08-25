@@ -8,7 +8,7 @@ check_gdal(abort = TRUE)
 }
 \arguments{
 \item{abort}{Logical parameter: if TRUE (default), the function aborts
-in case no GDAL installation is found; if FALSE, a warning is showed
+in case no GDAL installation is found; if FALSE, a warning is shown
 and FALSE is returned.}
 }
 \value{

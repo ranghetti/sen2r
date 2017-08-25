@@ -378,8 +378,8 @@ s2_getMetadata <- function(s2, info="all") {
         jp2_bandname[jp2_layertype!="MSI"] <- ""
       }
 
-      # correction B8A -> B08A (to maintain order)
-      jp2_bandname[jp2_bandname=="B8A"] <- "B08A"
+      # correction B8A -> B08 (only one between them is used)
+      jp2_bandname[jp2_bandname=="B8A"] <- "B08"
 
       # output data.frame
       jp2_list <- data.frame("layer" = basename(jp2_listall),

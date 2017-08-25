@@ -24,7 +24,7 @@ License: GPL 3.0
 \examples{
 # Define product name
 fs2nc_examplename <-
-  "/path/of/the/product/S2A1C_20170603_022_32TQQ.tif"
+  "/path/of/the/product/S2A1C_20170603_022_32TQQ_TOA_20.tif"
 
 # Return metadata
 fs2nc_getElements(fs2nc_examplename)
