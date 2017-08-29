@@ -39,7 +39,8 @@ gdal_abs2rel <- function(in_vrt, out_vrt=NA) {
 
   vrt_text <- readLines(in_vrt)
 
-  path_regex <- "^ *<SourceFilename relativeToVRT=\"0\">(.*)</SourceFilename> *$"
+  # path_regex <- "^ *<SourceFilename relativeToVRT=\"0\">(.*)</SourceFilename> *$"
+  path_regex <- "^.* relativeToVRT=\"0\">(.*)</.*"
 
   for (sel_line in grep(path_regex, vrt_text)) {
     abs_path <- gsub(path_regex, "\\1", vrt_text[sel_line])
@@ -50,7 +51,6 @@ gdal_abs2rel <- function(in_vrt, out_vrt=NA) {
         gsub("relativeToVRT=\"0\"", "relativeToVRT=\"1\"", .)
     }
   }
-
   writeLines(vrt_text, out_vrt)
 
 }
@@ -79,7 +79,8 @@ gdal_rel2abs <- function(in_vrt, out_vrt=NA) {
 
   vrt_text <- readLines(in_vrt)
 
-  path_regex <- "^ *<SourceFilename relativeToVRT=\"1\">(.*)</SourceFilename> *$"
+  # path_regex <- "^ *<SourceFilename relativeToVRT=\"1\">(.*)</SourceFilename> *$"
+  path_regex <- "^.* relativeToVRT=\"1\">(.*)</.*"
 
   for (sel_line in grep(path_regex, vrt_text)) {
     rel_path <- gsub(path_regex, "\\1", vrt_text[sel_line])

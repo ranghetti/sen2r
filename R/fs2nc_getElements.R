@@ -2,9 +2,10 @@
 #' @description This accessory function extracts metadata included in
 #'  the name of a Sentinel-2 product which follows the fidolasen-S2
 #'  naming convention (see [s2_shortname]).
-#' @param s2_name A Sentinel-2 product name in the fidolasen-S2
-#'  naming convention.
-#' @return A list of the output metadata.
+#' @param s2_names A vector of Sentinel-2 product names in the
+#'  fidolasen-S2 naming convention.
+#' @param format One between `list` of `data.frame`.
+#' @return A list or a data.frame of the output metadata.
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
@@ -17,7 +18,7 @@
 #' # Return metadata
 #' fs2nc_getElements(fs2nc_examplename)
 
-fs2nc_getElements <- function(s2_name) {
+fs2nc_getElements <- function(s2_names, format="list") {
 
   # define regular expressions to identify products
   fs2nc_regex <- list(
@@ -28,34 +29,56 @@ fs2nc_getElements <- function(s2_name) {
 
   metadata <- list() # output object, with requested metadata
 
-  s2_name <- basename(s2_name)
+  s2_names <- basename(s2_names)
 
-  # retrieve type
-  if(length(grep(fs2nc_regex$tile$regex, s2_name))==1) {
-    metadata$type <- "tile"
-  } else if(length(grep(fs2nc_regex$merged$regex, s2_name))==1) {
-    metadata$type <- "merged"
-  } else {
+  for (s2_name in s2_names) {
+
+    metadata[[s2_name]] <- list()
+
+    # retrieve type
+    if(length(grep(fs2nc_regex$tile$regex, s2_name))==1) {
+      metadata[[s2_name]]$type <- "tile"
+    } else if(length(grep(fs2nc_regex$merged$regex, s2_name))==1) {
+      metadata[[s2_name]]$type <- "merged"
+    } else {
+      print_message(
+        type="error",
+        "\"",s2_name,"\" was not recognised.")
+    }
+
+    # retrieve info
+    for (sel_el in fs2nc_regex[[metadata[[s2_name]]$type]]$elements) {
+      metadata[[s2_name]][[sel_el]] <- gsub(
+        fs2nc_regex[[metadata[[s2_name]]$type]]$regex,
+        paste0("\\",which(fs2nc_regex[[metadata[[s2_name]]$type]]$elements==sel_el)),
+        s2_name)
+      # specific formattations
+      if (sel_el=="sensing_date") {
+        metadata[[s2_name]][[sel_el]] <- as.Date(metadata[[s2_name]][[sel_el]], format="%Y%m%d")
+      }
+      if (sel_el=="res") {
+        metadata[[s2_name]][[sel_el]] <- paste0(metadata[[s2_name]][[sel_el]],"m")
+      }
+    }
+
+  } # end of prod cycle
+
+
+  # return output
+  if (format=="data.frame") {
+    return(do.call("rbind", lapply(metadata, as.data.frame, stringsAsFactors=FALSE)))
+  }
+
+  if (format!="list") {
     print_message(
-      type="error",
-      "\"",s2_name,"\" was not recognised.")
+      type="warning",
+      "Argument must be one between 'data.frame' and 'list'.",
+      "Returnig a list.")
   }
-
-  # retrieve info
-  for (sel_el in fs2nc_regex[[metadata$type]]$elements) {
-    metadata[[sel_el]] <- gsub(
-      fs2nc_regex[[metadata$type]]$regex,
-      paste0("\\",which(fs2nc_regex[[metadata$type]]$elements==sel_el)),
-      s2_name)
-    # specific formattations
-    if (sel_el=="sensing_date") {
-      metadata[[sel_el]] <- as.Date(metadata[[sel_el]], format="%Y%m%d")
-    }
-    if (sel_el=="res") {
-      metadata[[sel_el]] <- paste0(metadata[[sel_el]],"m")
-    }
+  if (length(metadata)==1) {
+    return(metadata[[1]])
+  } else {
+    return(metadata)
   }
-
-  return(metadata)
 
 }

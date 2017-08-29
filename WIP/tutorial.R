@@ -23,14 +23,25 @@ s2_levels <- unlist(sapply(names(example_s2_list), s2_getMetadata, "nameinfo")["
 example_s2_list_l1c <- example_s2_list[s2_levels=="1C"]
 example_s2_list_l2a <- example_s2_list[s2_levels=="2A"]
 
-s2_download(example_s2_list_l1c, out_dir=l1c_path)
-s2_sen2cor(names(example_s2_list_l1c), l1c_dir=l1c_path, out_dir=l2a_path, n_procs=4)
-s2_download(example_s2_list_l2a, out_dir=l2a_path)
+if (length(example_s2_list_l1c)>0) {
+  s2_download(example_s2_list_l1c, out_dir=l1c_path)
+  s2_sen2cor(names(example_s2_list_l1c), l1c_dir=l1c_path, out_dir=l2a_path, n_procs=4)
+}
+if (length(example_s2_list_l2a)>0) {
+  s2_download(example_s2_list_l2a, out_dir=l2a_path)
+}
 
 ## 3) Convert in vrt
 dir.create(vrt_01_path<-file.path(vrt_path,"01_translate"),showWarnings=FALSE)
+sel_prod_types <- c("BOA","TCI","SCL")
 for (sel_prod in list.files(l2a_path,"\\.SAFE$",full.names=TRUE)) {
-  s2_translate(sel_prod, vrt_01_path, prod_type=c("BOA","TCI","SCL"),
-               format="VRT", vrt_rel_paths=TRUE)
+  if (!file.exists(sel_prod)) {
+    s2_translate(sel_prod, vrt_01_path, prod_type=sel_prod_types,
+                 format="VRT", vrt_rel_paths=TRUE)
+  }
 }
 
+## 4) merge by orbit
+dir.create(vrt_02_path<-file.path(vrt_path,"02_merge"),showWarnings=FALSE)
+vrt_01_names <- list.files(vrt_01_path, recursive=TRUE, full.names=TRUE)
+s2_merge(vrt_01_names, vrt_02_path)

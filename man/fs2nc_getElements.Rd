@@ -4,14 +4,16 @@
 \alias{fs2nc_getElements}
 \title{Get information from S2 short name}
 \usage{
-fs2nc_getElements(s2_name)
+fs2nc_getElements(s2_names, format = "list")
 }
 \arguments{
-\item{s2_name}{A Sentinel-2 product name in the fidolasen-S2
-naming convention.}
+\item{s2_names}{A vector of Sentinel-2 product names in the
+fidolasen-S2 naming convention.}
+
+\item{format}{One between \code{list} of \code{data.frame}.}
 }
 \value{
-A list of the output metadata.
+A list or a data.frame of the output metadata.
 }
 \description{
 This accessory function extracts metadata included in

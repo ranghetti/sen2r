@@ -39,7 +39,7 @@
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @export
-#' @importFrom reticulate import import_builtins py_str
+#' @importFrom reticulate import import_builtins py_str py_to_r
 #' @examples \dontrun{
 #' s2_l1c_example <- file.path(
 #'   "/existing/path",
@@ -161,6 +161,10 @@ s2_translate <- function(infile,
 
   ## Create VRT intermediate files ##
   dir.create(vrt_tmpdir <- tempdir(), showWarnings=FALSE)
+  # FIXME this cause producing vrt not executable after reboot!
+  # solve in one of the followings:
+  # 1) do not merge (translate single granules, and merge them after with s2_merge;
+  # 2) use a hidden subdir instead of tempdir
 
   # select default product type if missing
   if (is.null(prod_type)) {
@@ -215,7 +219,7 @@ s2_translate <- function(infile,
       vrt_selbands <- character(0)
       for (sel_band in unique(jp2df_selbands$band)) {
         jp2_selband <- jp2_selbands[jp2df_selbands$band==sel_band]
-        vrt_selband <- paste0(tempdir(),"/",out_prefix,"_",sel_band,".vrt")
+        vrt_selband <- paste0(vrt_tmpdir,"/",out_prefix,"_",sel_band,".vrt")
         vrt_selbands <- c(vrt_selbands, vrt_selband)
         system(
           paste0(
@@ -238,7 +242,7 @@ s2_translate <- function(infile,
     # create final vrt (of select final raster)
     # for a multiband raster (reflectance), create final vrt
     if (length(vrt_selbands)>1) {
-      final_vrt_name <- paste0(tempdir(),"/",out_prefix,".vrt")
+      final_vrt_name <- paste0(vrt_tmpdir,"/",out_prefix,".vrt")
       system(
         paste0(
           Sys.which("gdalbuildvrt")," -separate ",

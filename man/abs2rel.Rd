@@ -13,7 +13,7 @@ warning is shown).}
 
 \item{ref_path}{(optional) The reference path to be compared to
 \code{path} to obtain the relative directory (default: current working
-corectory). \emph{Important}: the path is considered as a directory
+directory). \emph{Important}: the path is considered as a directory
 also if it is the path of a file!}
 
 \item{mustWork}{(optional) logical: if TRUE an error is given

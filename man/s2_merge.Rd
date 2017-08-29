@@ -4,7 +4,8 @@
 \alias{s2_merge}
 \title{Merge S2 tiles with the same date and orbit}
 \usage{
-s2_merge(infiles, outdir = ".", format = "VRT", compress = "DEFLATE")
+s2_merge(infiles, outdir = ".", subdirs = NA, tmpdir = ".vrt",
+  compress = "DEFLATE", out_crs = "")
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths
@@ -17,19 +18,31 @@ the files should be created (default: current directory).
 \code{outdir} can bot be an existing or non-existing directory (in the
 second case, its parent directory must exists).}
 
-\item{format}{(optional) Format of the output file (in a
-format recognised by GDAL). Default value is "VRT" (Virtual Raster).}
+\item{subdirs}{(optional) Logical: if TRUE, differet output products are
+placed in separated \code{outfile} subdirectories; if FALSE, they are placed in
+\code{outfile} directory; if NA (default), subdirectories are created only if
+\code{infiles} relate to more than a single product.}
+
+\item{tmpdir}{(optional) Path where intermediate VRT will be created.
+Default is in a hidden subdirectory (called \code{.vrt}) of the parent
+directory of \code{infiles}. Set \code{tmpdir=tempdir()} if you do not want to
+keep the intermediate files after reboot.}
 
 \item{compress}{(optional) In the case a GTiff format is
-chosen, the compression indicated with this parameter is used.}
+present, the compression indicated with this parameter is used.}
+
+\item{out_crs}{(optional) proj4string (character) of the output CRS
+(default: the CRS of the first input file). The tiles with CRS different
+from \code{out_crs} will be reprojected (and a warning returned).}
 }
 \value{
 A vector with the names of the merged products.
 }
 \description{
-The function merge the input Sentinel-2 products with
-the same date and orbit number. Outputs are a set of products in
-the specified format.
+The function merge the input Sentinel-2 files with
+the same date, orbit number, product type and file format.
+Outputs are a set of products in the same format of corresponding
+input files.
 }
 \note{
 License: GPL 3.0

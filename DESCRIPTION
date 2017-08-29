@@ -20,6 +20,9 @@ Imports:
   stringr,
   rgdal,
   gdalUtils,
-  magrittr
+  magrittr,
+  sp,
+  data.table,
+  raster
 Roxygen: list(markdown = TRUE)
 Remotes: lbusett/sprawl

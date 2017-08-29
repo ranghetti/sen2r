@@ -16,6 +16,7 @@ reference:
     contents:
       - '`s2_getMetadata`'
       - '`s2_translate`'
+      - '`s2_merge`'
   - title: Accessory functions
     contents:
       - '`s2_shortname`'
@@ -24,6 +25,7 @@ reference:
       - '`comsub`'
       - '`abs2rel`'
       - '`gdal_abs2rel`'
+      - '`gdalwarp_grid`'
   - title: Internal functions
     desc: (not exported)
     contents:

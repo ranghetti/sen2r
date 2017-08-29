@@ -8,7 +8,7 @@
 #'  warning is shown).
 #' @param ref_path (optional) The reference path to be compared to
 #'  `path` to obtain the relative directory (default: current working
-#'  corectory). *Important*: the path is considered as a directory
+#'  directory). *Important*: the path is considered as a directory
 #'  also if it is the path of a file!
 #' @param mustWork (optional) logical: if TRUE an error is given
 #'  if `path` or `ref_path` do not exists; if NA (default) then a
