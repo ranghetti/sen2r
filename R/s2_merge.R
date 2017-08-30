@@ -11,12 +11,14 @@
 #'  the files should be created (default: current directory).
 #'  `outdir` can bot be an existing or non-existing directory (in the
 #'  second case, its parent directory must exists).
+#'  If it is a relative path, it is expanded from the common parent
+#'  directory of `infiles`.
 #' @param subdirs (optional) Logical: if TRUE, differet output products are
 #'  placed in separated `outfile` subdirectories; if FALSE, they are placed in
 #'  `outfile` directory; if NA (default), subdirectories are created only if
 #'  `infiles` relate to more than a single product.
 #' @param tmpdir (optional) Path where intermediate VRT will be created.
-#'  Default is in a hidden subdirectory (called `.vrt`) of the parent
+#'  Default is in a hidden subdirectory (called `.vrt`) of the common parent
 #'  directory of `infiles`. Set `tmpdir=tempdir()` if you do not want to
 #'  keep the intermediate files after reboot.
 #' @param compress (optional) In the case a GTiff format is
@@ -38,7 +40,7 @@
 s2_merge <- function(infiles,
                      outdir=".",
                      subdirs=NA,
-                     tmpdir=".vrt",
+                     tmpdir=NA,
                      compress="DEFLATE",
                      out_crs="") {
 
@@ -110,17 +112,21 @@ s2_merge <- function(infiles,
       type="warning",
       "Not all the tiles are in the specified projection; ",
       "tiles with different projection will be reprojected.")
-    dir.create(file.path(outdir,tmpdir), recursive=FALSE, showWarnings=FALSE)
+    if (is.na(tmpdir)) {
+      tmpdir <- file.path(comsub(infiles,"/"),".vrt")
+    }
+    dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
   }
 
   # create outdir if not existing
+  suppressWarnings(outdir <- expand_path(outdir, parent=comsub(infiles,"/"), silent=TRUE))
   dir.create(outdir, recursive=FALSE, showWarnings=FALSE)
 
   # if out_crs is different from the projection of all input files,
   # reprojected the first file and use as reference for the grid;
   # otherwise, use the first non-reprojected file.
   if (all(diffcrs)) {
-    ref_file <- file.path(outdir,tmpdir,".ref_grid.vrt")
+    ref_file <- file.path(tmpdir,".ref_grid.vrt")
     system(
       paste0(
         Sys.which("gdalwarp")," ",
@@ -186,7 +192,7 @@ s2_merge <- function(infiles,
     # build intermediate reprojected VRTs (if necessary)
     for (i in seq_len(sum(sel_diffcrs))) {
       reproj_vrt <- file.path(
-        outdir,tmpdir,
+        tmpdir,
         gsub(paste0("\\.",sel_infiles_meta[sel_diffcrs,][i,"file_ext"],"$"),
              "_reproj.vrt",
              basename(sel_infiles[sel_diffcrs][i]))
@@ -205,7 +211,7 @@ s2_merge <- function(infiles,
 
     # merge tiles
     merged_vrt <- file.path(
-      outdir,tmpdir,
+      tmpdir,
       gsub(paste0("\\.",sel_infiles_meta[1,"file_ext"],"$"),
            ".vrt",
            sel_outfile))

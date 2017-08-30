@@ -4,7 +4,7 @@
 \alias{s2_merge}
 \title{Merge S2 tiles with the same date and orbit}
 \usage{
-s2_merge(infiles, outdir = ".", subdirs = NA, tmpdir = ".vrt",
+s2_merge(infiles, outdir = ".", subdirs = NA, tmpdir = NA,
   compress = "DEFLATE", out_crs = "")
 }
 \arguments{
@@ -16,7 +16,9 @@ fidolasen-S2 naming convention (\link{s2_shortname}).}
 \item{outdir}{(optional) Full name of the output directory where
 the files should be created (default: current directory).
 \code{outdir} can bot be an existing or non-existing directory (in the
-second case, its parent directory must exists).}
+second case, its parent directory must exists).
+If it is a relative path, it is expanded from the common parent
+directory of \code{infiles}.}
 
 \item{subdirs}{(optional) Logical: if TRUE, differet output products are
 placed in separated \code{outfile} subdirectories; if FALSE, they are placed in
@@ -24,7 +26,7 @@ placed in separated \code{outfile} subdirectories; if FALSE, they are placed in
 \code{infiles} relate to more than a single product.}
 
 \item{tmpdir}{(optional) Path where intermediate VRT will be created.
-Default is in a hidden subdirectory (called \code{.vrt}) of the parent
+Default is in a hidden subdirectory (called \code{.vrt}) of the common parent
 directory of \code{infiles}. Set \code{tmpdir=tempdir()} if you do not want to
 keep the intermediate files after reboot.}
 
