@@ -74,7 +74,8 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
   av_prod_tuple <- s2download$s2_download(
     lat=lat, lon=lon, latmin=latmin, latmax=latmax, lonmin=lonmin, lonmax=lonmax,
     start_date=time_interval[1] ,end_date=time_interval[2],
-    orbit=orbit, apihub=apihub, max_cloud=max_cloud,
+    orbit=ifelse(is.null(orbit)) {NULL} else {as.integer(orbit)},
+    apihub=apihub, max_cloud=max_cloud,
     tile=tile, list_only=TRUE,
     corr_type="auto")
 
