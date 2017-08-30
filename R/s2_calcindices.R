@@ -7,17 +7,18 @@
 
 
 
-# WIP
-
-# Read HTML indices database from indexdatabase.de
-library(XML)
-s2_url <- "http://www.indexdatabase.de/db/is.php?sensor_id=96"
-download.file(s2_url, s2_html <- tempfile(), method = "wget", quiet = TRUE)
-dat_html<-htmlTreeParse(discFile)
-rootNode<-xmlRoot(dat_html)
-# doc <- htmlTreeParse(sub("s", "", fileURL), useInternal = TRUE)
-
-names(rootNode[["body"]][["div"]][["table"]])
-
-names_products <- names(xmlChildren(rootNode)) # names of the single products
-names_products <- names_products[names_products != "comment"]
+# # WIP
+#
+# # Read HTML indices database from indexdatabase.de
+# library(XML)
+# s2_url <- "http://www.indexdatabase.de/db/is.php?sensor_id=96"
+# download.file(s2_url, s2_path <- tempfile(), method = "wget", quiet = TRUE)
+# s2_html <- htmlTreeParse(s2_path) %>%
+#   xmlRoot()
+# s2_html_table <- s2_html[["body"]][["div"]][["table"]]
+# # doc <- htmlTreeParse(sub("s", "", fileURL), useInternal = TRUE)
+#
+# names(s2_html)
+#
+# # names_products <- names(xmlChildren(rootNode)) # names of the single products
+# # names_products <- names_products[names_products != "comment"]
