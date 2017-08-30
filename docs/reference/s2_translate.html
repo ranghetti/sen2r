@@ -99,8 +99,8 @@ For now, only L1C and L2a with long name (&lt; 2016/12/06) are recognised.
 Output vrt is at 10m resolution.</p>
     
 
-    <pre class="usage"><span class='fu'>s2_translate</span>(<span class='no'>infile</span>, <span class='kw'>outfile</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>prod_type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>res</span> <span class='kw'>=</span> <span class='st'>"10m"</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"VRT"</span>, <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>,
+    <pre class="usage"><span class='fu'>s2_translate</span>(<span class='no'>infile</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>prod_type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='st'>"10m"</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"VRT"</span>, <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>,
   <span class='kw'>vrt_rel_paths</span> <span class='kw'>=</span> <span class='st'>"TRUE"</span>, <span class='kw'>utmzone</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
@@ -112,21 +112,26 @@ Output vrt is at 10m resolution.</p>
 full path of the xml file of the product with metadata).</p></td>
     </tr>
     <tr>
-      <th>outfile</th>
-      <td><p>(optional) Full name of the output file
-(or full existing directory where the file should be created
-(default: current directory). If a directory is provided (or if no
-value is specified), the file name will follow the short naming
-convention adopted in this package (see <a href='s2_shortname.html'>s2_shortname</a>). If the
-parameter <code>prod_type</code> has length &gt; 1, <code>outfile</code> must be an existing directory.</p></td>
+      <th>outdir</th>
+      <td><p>(optional) Full name of the output directory where
+the files should be created (default: current directory).
+<code>outdir</code> can bot be an existing or non-existing directory (in the
+second case, its parent directory must exists).
+If it is a relative path, it is expanded from the directory of <code>infile</code>.</p></td>
     </tr>
     <tr>
       <th>subdirs</th>
       <td><p>(optional) Logical: if TRUE, differet output products are
-placed in separated <code>outfile</code> subdirectories; if FALSE, they are placed in
-<code>outfile</code> directory; if NA (default), subdirectories are created only if
-<code>prod_type</code> has length &gt; 1. This parameter takes effect only in <code>outfile</code>
-is an existing directory.</p></td>
+placed in separated <code>outdir</code> subdirectories; if FALSE, they are placed in
+<code>outdir</code> directory; if NA (default), subdirectories are created only if
+<code>prod_type</code> has length &gt; 1.</p></td>
+    </tr>
+    <tr>
+      <th>tmpdir</th>
+      <td><p>(optional) Path where intermediate VRT will be created.
+Default is in a hidden subdirectory (called <code>.vrt</code>) of the parent
+directory of the SAFE folder. Set <code>tmpdir=tempdir()</code> if you do not want to
+keep the intermediate files after reboot.</p></td>
     </tr>
     <tr>
       <th>prod_type</th>

@@ -4,26 +4,29 @@
 \alias{s2_translate}
 \title{Convert from SAFE format}
 \usage{
-s2_translate(infile, outfile = ".", subdirs = NA, prod_type = NULL,
-  res = "10m", format = "VRT", compress = "DEFLATE",
+s2_translate(infile, outdir = ".", subdirs = NA, tmpdir = NA,
+  prod_type = NULL, res = "10m", format = "VRT", compress = "DEFLATE",
   vrt_rel_paths = "TRUE", utmzone = "")
 }
 \arguments{
 \item{infile}{Full path of the input SAFE folder (alternatively,
 full path of the xml file of the product with metadata).}
 
-\item{outfile}{(optional) Full name of the output file
-(or full existing directory where the file should be created
-(default: current directory). If a directory is provided (or if no
-value is specified), the file name will follow the short naming
-convention adopted in this package (see \link{s2_shortname}). If the
-parameter \code{prod_type} has length > 1, \code{outfile} must be an existing directory.}
+\item{outdir}{(optional) Full name of the output directory where
+the files should be created (default: current directory).
+\code{outdir} can bot be an existing or non-existing directory (in the
+second case, its parent directory must exists).
+If it is a relative path, it is expanded from the directory of \code{infile}.}
 
 \item{subdirs}{(optional) Logical: if TRUE, differet output products are
-placed in separated \code{outfile} subdirectories; if FALSE, they are placed in
-\code{outfile} directory; if NA (default), subdirectories are created only if
-\code{prod_type} has length > 1. This parameter takes effect only in \code{outfile}
-is an existing directory.}
+placed in separated \code{outdir} subdirectories; if FALSE, they are placed in
+\code{outdir} directory; if NA (default), subdirectories are created only if
+\code{prod_type} has length > 1.}
+
+\item{tmpdir}{(optional) Path where intermediate VRT will be created.
+Default is in a hidden subdirectory (called \code{.vrt}) of the parent
+directory of the SAFE folder. Set \code{tmpdir=tempdir()} if you do not want to
+keep the intermediate files after reboot.}
 
 \item{prod_type}{(optional) Vector of types to be produced as outputs
 (see \link{s2_shortname} for the list of accepted values). Default is

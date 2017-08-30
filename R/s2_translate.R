@@ -5,17 +5,19 @@
 #'  Output vrt is at 10m resolution.
 #' @param infile Full path of the input SAFE folder (alternatively,
 #'  full path of the xml file of the product with metadata).
-#' @param outfile (optional) Full name of the output file
-#'  (or full existing directory where the file should be created
-#'  (default: current directory). If a directory is provided (or if no
-#'  value is specified), the file name will follow the short naming
-#'  convention adopted in this package (see [s2_shortname]). If the
-#'  parameter `prod_type` has length > 1, `outfile` must be an existing directory.
+#' @param outdir (optional) Full name of the output directory where
+#'  the files should be created (default: current directory).
+#'  `outdir` can bot be an existing or non-existing directory (in the
+#'  second case, its parent directory must exists).
+#'  If it is a relative path, it is expanded from the directory of `infile`.
 #' @param subdirs (optional) Logical: if TRUE, differet output products are
-#'  placed in separated `outfile` subdirectories; if FALSE, they are placed in
-#'  `outfile` directory; if NA (default), subdirectories are created only if
-#'  `prod_type` has length > 1. This parameter takes effect only in `outfile`
-#'  is an existing directory.
+#'  placed in separated `outdir` subdirectories; if FALSE, they are placed in
+#'  `outdir` directory; if NA (default), subdirectories are created only if
+#'  `prod_type` has length > 1.
+#' @param tmpdir (optional) Path where intermediate VRT will be created.
+#'  Default is in a hidden subdirectory (called `.vrt`) of the parent
+#'  directory of the SAFE folder. Set `tmpdir=tempdir()` if you do not want to
+#'  keep the intermediate files after reboot.
 #' @param prod_type (optional) Vector of types to be produced as outputs
 #'  (see [s2_shortname] for the list of accepted values). Default is
 #'  reflectance ("TOA" for level 1C, "BOA" for level 2A).
@@ -61,8 +63,9 @@
 #'}
 
 s2_translate <- function(infile,
-                         outfile=".",
+                         outdir=".",
                          subdirs=NA,
+                         tmpdir=NA,
                          prod_type=NULL,
                          res="10m",
                          format="VRT",
@@ -101,30 +104,22 @@ s2_translate <- function(infile,
       "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
   }
 
+  # Check GDAL installation
+  check_gdal(abort=TRUE)
+
+  # Retrieve xml required metadata
+  infile_meta <- s2_getMetadata(infile, c("xml_main","xml_granules","utm","level","tiles", "jp2list"))
+  infile_dir = dirname(infile_meta$xml_main)
+
   # define output directory
-  if (file.exists(outfile) & file.info(outfile)$isdir) {
-    outdir <- expand_path(outfile, parent=dirname(infile_dir))
-    # create subdirs
-    if (is.na(subdirs)) {
-      subdirs <- ifelse(length(prod_type)>1, TRUE, FALSE)
-    }
-    if (subdirs) {
-      sapply(file.path(outdir,prod_type), dir.create, showWarnings=FALSE)
-    }
-  } else {
-    subdirs <- FALSE
-    if (length(prod_type)>1) {
-      print_message(
-        type="error",
-        "\"prod_type\" has length > 1, but \"outdir\" ",
-        "is not an existing directory; please check.")
-    }
-    outdir <- expand_path(dirname(outfile), parent=dirname(infile_dir))
-    if (!file.info(outdir)$isdir) {
-      print_message(
-        type="error",
-        "Directory \"",outdir,"\" does not exist.")
-    }
+  suppressWarnings(outdir <- expand_path(outdir, parent=dirname(infile_dir), silent=TRUE))
+  dir.create(outdir, recursive=FALSE, showWarnings=FALSE)
+  # create subdirs
+  if (is.na(subdirs)) {
+    subdirs <- ifelse(length(prod_type)>1, TRUE, FALSE)
+  }
+  if (subdirs) {
+    sapply(file.path(outdir,prod_type), dir.create, showWarnings=FALSE)
   }
 
   # check compression value
@@ -134,17 +129,11 @@ s2_translate <- function(infile,
       print_message(type="warning",
                     "'",toupper(compress),"' is not a valid compression value; ",
                     "the default 'DEFLATE' value will be used.")
+      compress <- "DEFLATE"
     }
   }
 
-  # Check GDAL installation
-  check_gdal(abort=TRUE)
-
-  # Retrieve xml required metadata
-  infile_meta <- s2_getMetadata(infile, c("xml_main","utm","level","tiles", "jp2list"))
-
   # retrieve UTM zone
-  infile_dir = dirname(infile_meta$xml_main)
   if (utmzone=="") {
     print_message(
       type="message",
@@ -159,13 +148,6 @@ s2_translate <- function(infile,
     }
   }
 
-  ## Create VRT intermediate files ##
-  dir.create(vrt_tmpdir <- tempdir(), showWarnings=FALSE)
-  # FIXME this cause producing vrt not executable after reboot!
-  # solve in one of the followings:
-  # 1) do not merge (translate single granules, and merge them after with s2_merge;
-  # 2) use a hidden subdir instead of tempdir
-
   # select default product type if missing
   if (is.null(prod_type)) {
     if (infile_meta$level=="1C") {
@@ -175,7 +157,14 @@ s2_translate <- function(infile,
     }
   }
 
-  # create a file for each prod_type
+  # define output extension
+  out_ext <- if (format=="ENVI") {
+    "dat"
+  } else {
+    unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(gdal$DMD_EXTENSIONS))," ")," "))[1]
+  }
+
+  # create a file / set of files for each prod_type
   out_names <- character(0) # names of created files
   for (sel_prod in prod_type) {
 
@@ -185,92 +174,82 @@ s2_translate <- function(infile,
       sel_type <- sel_prod
     }
 
-    ## define elements of output file names
-    # define basename
-    if (file.exists(outfile) & file.info(outfile)$isdir) {
-      out_prefix <- s2_shortname(infile_dir, prod_type=sel_prod, res=res[1], full.name=FALSE, abort=TRUE)
-    } else {
-      out_prefix <- paste0(gsub(paste0("\\.",out_ext,"$"),"",basename(outfile)),".",out_ext)
-    }
-    # define subdir
+    # define output subdir
     out_subdir <- ifelse(subdirs, file.path(outdir,sel_prod), outdir)
-    # define extension
-    out_ext <- if (format=="ENVI") {
-      "dat"
-    } else {
-      unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(gdal$DMD_EXTENSIONS))," ")," "))[1]
-    }
-    # complete filename
-    out_name <- file.path(out_subdir,paste0(out_prefix,".",out_ext))
-
-    # select required bands from the list and order them by resolution
-    jp2df_selbands <- infile_meta$jp2list[infile_meta$jp2list$type==sel_type,]
-    jp2df_selbands <- jp2df_selbands[with(jp2df_selbands,order(band,res)),]
-    # remove lower resolutions and keep only the best resolution for each band
-    jp2df_selbands <- jp2df_selbands[as.integer(substr(jp2df_selbands$res,1,2))>=as.integer(substr(res[1],1,2)),]
-    jp2df_selbands <- jp2df_selbands[!duplicated(with(jp2df_selbands,paste(band,tile))),]
-    # extract vector of paths
-    jp2_selbands <- file.path(infile_dir,jp2df_selbands[,"relpath"])
 
     # TODO check that required bands are present
 
-    # if more than one tile are present in the product, merge them
-    if (length(infile_meta$tiles)>1) {
-      vrt_selbands <- character(0)
-      for (sel_band in unique(jp2df_selbands$band)) {
-        jp2_selband <- jp2_selbands[jp2df_selbands$band==sel_band]
-        vrt_selband <- paste0(vrt_tmpdir,"/",out_prefix,"_",sel_band,".vrt")
-        vrt_selbands <- c(vrt_selbands, vrt_selband)
+    # cycle on granules (with compact names, this runs only once; with old name, one or more)
+    for (sel_granule in infile_meta$xml_granules) {
+
+      sel_tile <- s2_getMetadata(dirname(sel_granule), "nameinfo")$id_tile
+
+      # define output basename
+      out_prefix <- s2_shortname(sel_granule, prod_type=sel_prod, res=res[1], full.name=FALSE, abort=TRUE)
+      # complete output filename
+      out_name <- file.path(out_subdir,paste0(out_prefix,".",out_ext))
+
+      # select required bands from the list and order them by resolution
+      jp2df_selbands <- infile_meta$jp2list[infile_meta$jp2list$type==sel_type &
+                                            infile_meta$jp2list$tile==sel_tile,]
+      jp2df_selbands <- jp2df_selbands[with(jp2df_selbands,order(band,res)),]
+      # remove lower resolutions and keep only the best resolution for each band
+      if (!any(jp2df_selbands$res=="")) {
+        jp2df_selbands <- jp2df_selbands[as.integer(substr(jp2df_selbands$res,1,2))>=as.integer(substr(res[1],1,2)),]
+      } else {
+        # for oldname L1C (which do not have "res" in granule name) remove B08 or B8A basing on the requested "res"
+        if (as.integer(substr(res[1],1,2)) < 20) {
+          jp2df_selbands <- jp2df_selbands[-grep("B8A.jp2$",jp2df_selbands$layer),]
+        } else {
+          jp2df_selbands <- jp2df_selbands[-grep("B08.jp2$",jp2df_selbands$layer),]
+        }
+      }
+      jp2df_selbands <- jp2df_selbands[!duplicated(with(jp2df_selbands,paste(band,tile))),]
+      # extract vector of paths
+      jp2_selbands <- file.path(infile_dir,jp2df_selbands[,"relpath"])
+
+      # create final vrt with all the bands (of select final raster with a single band)
+      if (length(jp2_selbands)>1) {
+        # define and create tmpdir
+        if (is.na(tmpdir)) {
+          tmpdir <- file.path(dirname(infile_dir),".vrt")
+        }
+        dir.create(tmpdir, showWarnings=FALSE)
+        final_vrt_name <- ifelse(format=="VRT", out_name, paste0(tmpdir,"/",out_prefix,".vrt"))
         system(
           paste0(
-            Sys.which("gdalbuildvrt")," ",
-            "\"",vrt_selband,"\" ",
-            paste(paste0("\"",jp2_selband,"\""), collapse=" ")
+            Sys.which("gdalbuildvrt")," -separate ",
+            "-resolution highest ",
+            "\"",final_vrt_name,"\" ",
+            paste(paste0("\"",jp2_selbands,"\""), collapse=" ")
           ),
           intern = Sys.info()["sysname"] == "Windows"
         )
+        if (vrt_rel_paths==TRUE) {
+          gdal_abs2rel(out_name)
+        }
+      } else {
+        final_vrt_name <- jp2_selbands
       }
-    } else {
-      vrt_selbands <- jp2_selbands
-    }
-    # TODO: in this way, in the overlapping areas only one of the two is considered.
-    # In L2A there are slight differences (due to different parameters used by sen2cor).
-    # A more elaborated function to deal with this situations could be implemented
-    # (e.g. average value, maybe weighted on the relative distance from the border of
-    # one tile or another).
 
-    # create final vrt (of select final raster)
-    # for a multiband raster (reflectance), create final vrt
-    if (length(vrt_selbands)>1) {
-      final_vrt_name <- paste0(vrt_tmpdir,"/",out_prefix,".vrt")
-      system(
-        paste0(
-          Sys.which("gdalbuildvrt")," -separate ",
-          "-resolution highest ",
-          "\"",final_vrt_name,"\" ",
-          paste(paste0("\"",vrt_selbands,"\""), collapse=" ")
-        ),
-        intern = Sys.info()["sysname"] == "Windows"
-      )
-    # for a single band raster, skip this step
-    } else {
-      final_vrt_name <- vrt_selbands
-    }
+      # create output file (or copy vrt file)
+      if (format != "VRT" | length(jp2_selbands)==1) {
+        system(
+          paste0(
+            Sys.which("gdal_translate")," -of ",format," ",
+            if (format=="GTiff") {paste0("-co COMPRESS=",toupper(compress)," ")},
+            "\"",final_vrt_name,"\" ",
+            "\"",out_name,"\""
+          ), intern = Sys.info()["sysname"] == "Windows"
+        )
+        if (format == "VRT" & vrt_rel_paths==TRUE) {
+          gdal_abs2rel(out_name)
+        }
+      }
 
-    # create output file
-    system(
-      paste0(
-        Sys.which("gdal_translate")," -of ",format," ",
-        if (format=="GTiff") {paste0("-co COMPRESS=",toupper(compress)," ")},
-        "\"",final_vrt_name,"\" ",
-        "\"",out_name,"\""
-      ), intern = Sys.info()["sysname"] == "Windows"
-    )
-    if (format=="VRT" & vrt_rel_paths==TRUE) {
-      gdal_abs2rel(out_name)
-    }
+      out_names <- c(out_names, out_name)
 
-    out_names <- c(out_names, out_name)
+    } # end of sel_granule cycle
 
   } # end of prod_type cycle
 
