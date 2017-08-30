@@ -188,19 +188,6 @@ day on the same tile);</p></li>
 (10, 20 or 60);</p></li>
 <li><p><code>fff</code> (length: variable, generally 3) is the file extension.</p></li>
 </ul>
-    <p>Products which contains only one tile (date &gt; 2016-12-05 or
-&lt; 2016-12-06 but containing only one tile) follows entirely this convention;
-for products with more than one tile (or that can not be checked), the field
-<code>ttttt</code> is replaced by:</p><ul>
-<li><p><code>uuxxx</code> if the UTM zone is unique (where <code>uu</code> is the UTM zone, and <code>xxx</code>
-is a random numeric sequence), e.g. <code>32876</code>;</p></li>
-<li><p><code>yyxxx</code> if the UTM zone is not unique or it it can not be checked (being
-<code>yy</code> a random literal A-Z sequence, and <code>xxx</code> a random numeric sequence).</p></li>
-</ul>
-    <p>Since the tile number is composed by two numeric and three literal character,
-these two conventions (one composed by five numeric and the other by two
-literal and three numeric characters) ensure that these three cases can be
-distinguished.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 

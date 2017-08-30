@@ -84,22 +84,6 @@ day on the same tile);
 (10, 20 or 60);
 \item \code{fff} (length: variable, generally 3) is the file extension.
 }
-
-Products which contains only one tile (date > 2016-12-05 or
-< 2016-12-06 but containing only one tile) follows entirely this convention;
-for products with more than one tile (or that can not be checked), the field
-\code{ttttt} is replaced by:
-\itemize{
-\item \code{uuxxx} if the UTM zone is unique (where \code{uu} is the UTM zone, and \code{xxx}
-is a random numeric sequence), e.g. \code{32876};
-\item \code{yyxxx} if the UTM zone is not unique or it it can not be checked (being
-\code{yy} a random literal A-Z sequence, and \code{xxx} a random numeric sequence).
-}
-
-Since the tile number is composed by two numeric and three literal character,
-these two conventions (one composed by five numeric and the other by two
-literal and three numeric characters) ensure that these three cases can be
-distinguished.
 }
 \note{
 License: GPL 3.0

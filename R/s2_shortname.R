@@ -38,20 +38,6 @@
 #'      (10, 20 or 60);
 #'  * `fff` (length: variable, generally 3) is the file extension.
 #'
-#'  Products which contains only one tile (date > 2016-12-05 or
-#'  < 2016-12-06 but containing only one tile) follows entirely this convention;
-#'  for products with more than one tile (or that can not be checked), the field
-#'  `ttttt` is replaced by:
-#'  * `uuxxx` if the UTM zone is unique (where `uu` is the UTM zone, and `xxx`
-#'      is a random numeric sequence), e.g. `32876`;
-#'  * `yyxxx` if the UTM zone is not unique or it it can not be checked (being
-#'      `yy` a random literal A-Z sequence, and `xxx` a random numeric sequence).
-#'
-#'  Since the tile number is composed by two numeric and three literal character,
-#'  these two conventions (one composed by five numeric and the other by two
-#'  literal and three numeric characters) ensure that these three cases can be
-#'  distinguished.
-
 #' @param prod_name Input Sentinel-2 product name: it can be both
 #'  a complete path or a simple file name. If the file exists, the product
 #'  is scanned to retrieve the tiles list and UTM zones; otherwise the
