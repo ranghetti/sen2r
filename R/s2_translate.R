@@ -246,6 +246,7 @@ s2_translate <- function(infile,
       system(
         paste0(
           Sys.which("gdalbuildvrt")," -separate ",
+          "-resolution highest ",
           "\"",final_vrt_name,"\" ",
           paste(paste0("\"",vrt_selbands,"\""), collapse=" ")
         ),
