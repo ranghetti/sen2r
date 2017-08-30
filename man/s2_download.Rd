@@ -5,7 +5,7 @@
 \title{Download S2 products.}
 \usage{
 s2_download(s2_prodlist = NULL, downloader = "wget", apihub = NULL,
-  tile = NULL, out_dir = ".")
+  tile = NULL, orbit = NULL, out_dir = ".")
 }
 \arguments{
 \item{s2_prodlist}{TODO}
@@ -15,6 +15,8 @@ s2_download(s2_prodlist = NULL, downloader = "wget", apihub = NULL,
 \item{apihub}{TODO}
 
 \item{tile}{TODO}
+
+\item{orbit}{TODO}
 
 \item{out_dir}{TODO}
 }

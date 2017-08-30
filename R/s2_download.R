@@ -7,6 +7,7 @@
 #' @param downloader TODO
 #' @param apihub TODO
 #' @param tile TODO
+#' @param orbit TODO
 #' @param out_dir TODO
 #' @return A vector of available products (being each element an URL,
 #'  and its name the product name)
@@ -44,6 +45,7 @@ s2_download <- function(s2_prodlist=NULL,
                         downloader="wget",
                         apihub=NULL,
                         tile=NULL,
+                        orbit=NULL,
                         out_dir=".") {
 
   # import s2download
@@ -67,6 +69,7 @@ s2_download <- function(s2_prodlist=NULL,
                                   downloader=downloader,
                                   apihub=apihub,
                                   tile=tile,
+                                  # orbit=if (is.null(orbit)) orbit else as.integer(orbit),
                                   no_download=FALSE,
                                   write_dir=out_dir,
                                   file_list=NULL)
