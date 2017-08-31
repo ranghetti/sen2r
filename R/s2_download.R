@@ -3,14 +3,18 @@
 #'  Input filename must be an element obtained with
 #'  [s2_list] function
 #'  (the content must be a URL, and the name the product name).
-#' @param s2_prodlist TODO
-#' @param downloader TODO
-#' @param apihub TODO
-#' @param tile TODO
-#' @param orbit TODO
-#' @param out_dir TODO
-#' @return A vector of available products (being each element an URL,
-#'  and its name the product name)
+#' @param s2_prodlist List of the products to be downloaded
+#'  (this must be the output of [s2_list] function).
+#' @param downloader Executable to use to download products
+#'  (default: "wwget").
+#' @param apihub Path of the "apihub.txt" file containing credentials
+#'  of scihub account. If NULL (default) the default credentials
+#'  (username "user", password "user") will be used.
+#' @param tile Single Sentinel-2 Tile string (5-length character)
+#' @param orbit Single Sentinel-2 orbit number
+#' @param outdir (optional) Full name of the existing output directory
+#'  where the files should be created (default: current directory).
+#' @return NULL
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
@@ -26,10 +30,10 @@
 #' # s2_list() function)
 #'
 #' # Download the whole product
-#' s2_download(single_s2, out_dir=tempdir())
+#' s2_download(single_s2, outdir=tempdir())
 #'
 #' # Download a specific tile
-#' s2_download(single_s2, tile="32TQQ", out_dir=tempdir())
+#' s2_download(single_s2, tile="32TQQ", outdir=tempdir())
 #' # (for products with compact names, the two above commands produce equivalent
 #' # results: the first one downloads a SAFE archive, while the second one
 #' # downloads single product files)
@@ -38,7 +42,7 @@
 #' pos <- sp::SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=sp::CRS("+init=epsg:4326"))
 #' time_window <- as.Date(c("2017-05-01","2017-07-30"))
 #' example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window)
-#' s2_download(example_s2_list, out_dir=tempdir())
+#' s2_download(example_s2_list, outdir=tempdir())
 #' }
 
 s2_download <- function(s2_prodlist=NULL,
@@ -46,7 +50,7 @@ s2_download <- function(s2_prodlist=NULL,
                         apihub=NULL,
                         tile=NULL,
                         orbit=NULL,
-                        out_dir=".") {
+                        outdir=".") {
 
   # import s2download
   s2download <- import_s2download(convert=FALSE)
@@ -71,7 +75,7 @@ s2_download <- function(s2_prodlist=NULL,
                                   tile=tile,
                                   # orbit=if (is.null(orbit)) orbit else as.integer(orbit),
                                   no_download=FALSE,
-                                  write_dir=out_dir,
+                                  write_dir=outdir,
                                   file_list=NULL)
   }
 

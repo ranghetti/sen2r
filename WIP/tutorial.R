@@ -46,7 +46,7 @@ if (length(example_s2_list_l1c)>0) {
   lapply(sel_tiles, function(tile) {
     s2_download(example_s2_list_l1c, out_dir=l1c_path, tile=tile)
   })
-  s2_sen2cor(names(example_s2_list_l1c), l1c_dir=l1c_path, out_dir=l2a_path, n_procs=4)
+  s2_sen2cor(names(example_s2_list_l1c), l1c_dir=l1c_path, out_dir=l2a_path, n_procs=1)
 }
 if (length(example_s2_list_l2a)>0) {
   s2_download(example_s2_list_l2a, out_dir=l2a_path)

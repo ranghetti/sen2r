@@ -101,46 +101,54 @@ downloading and correcting them.</p>
     
 
     <pre class="usage"><span class='fu'>s2_list</span>(<span class='kw'>spatial_extent</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>orbit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>corr_type</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>max_cloud</span> <span class='kw'>=</span> <span class='fl'>110</span>)</pre>
+  <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>max_cloud</span> <span class='kw'>=</span> <span class='fl'>110</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>spatial_extent</th>
-      <td><p>TODO</p></td>
+      <td><p>A valid spatial object managed by <a href='http://www.rdocumentation.org/packages/sprawl/topics/get_extent'>sprawl::get_extent</a></p></td>
     </tr>
     <tr>
       <th>tile</th>
-      <td><p>TODO</p></td>
+      <td><p>Single Sentinel-2 Tile string (5-length character)</p></td>
     </tr>
     <tr>
       <th>orbit</th>
-      <td><p>TODO</p></td>
+      <td><p>Single Sentinel-2 orbit number</p></td>
     </tr>
     <tr>
       <th>time_interval</th>
-      <td><p>TODO</p></td>
+      <td><p>a temporal vector (class POSIXct or
+Date) of length 1 (specific day) or 2 (time interval).</p></td>
     </tr>
     <tr>
-      <th>corr_type</th>
-      <td><p>TODO</p></td>
+      <th>level</th>
+      <td><p>Character vector with one of the following:
+- "auto" (default): check if level-2A is available on SciHub:
+if so, list it; if not, list the corresponding level-1C
+product
+- "L1C": list available level-1C products
+- "L2A": list available level-2A products</p></td>
     </tr>
     <tr>
       <th>apihub</th>
-      <td><p>TODO</p></td>
+      <td><p>Path of the "apihub.txt" file containing credentials
+of scihub account. If NULL (default) the default credentials
+(username "user", password "user") will be used.</p></td>
     </tr>
     <tr>
       <th>max_cloud</th>
-      <td><p>TODO</p></td>
+      <td><p>Integer number (0-100) containing the maximum cloud
+level of the tiles to be listed (default: no filter).</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A vector of available products (being each element an URL,
-and its name the product name)</p>
+and its name the product name).</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 

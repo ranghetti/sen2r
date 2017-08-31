@@ -5,24 +5,25 @@
 \title{Download S2 products.}
 \usage{
 s2_download(s2_prodlist = NULL, downloader = "wget", apihub = NULL,
-  tile = NULL, orbit = NULL, out_dir = ".")
+  tile = NULL, orbit = NULL, outdir = ".")
 }
 \arguments{
-\item{s2_prodlist}{TODO}
+\item{s2_prodlist}{List of the products to be downloaded
+(this must be the output of \link{s2_list} function).}
 
-\item{downloader}{TODO}
+\item{downloader}{Executable to use to download products
+(default: "wwget").}
 
-\item{apihub}{TODO}
+\item{apihub}{Path of the "apihub.txt" file containing credentials
+of scihub account. If NULL (default) the default credentials
+(username "user", password "user") will be used.}
 
-\item{tile}{TODO}
+\item{tile}{Single Sentinel-2 Tile string (5-length character)}
 
-\item{orbit}{TODO}
+\item{orbit}{Single Sentinel-2 orbit number}
 
-\item{out_dir}{TODO}
-}
-\value{
-A vector of available products (being each element an URL,
-and its name the product name)
+\item{outdir}{(optional) Full name of the existing output directory
+where the files should be created (default: current directory).}
 }
 \description{
 The function downloads a single S2 product.
@@ -44,10 +45,10 @@ names(single_s2) <- "S2A_MSIL1C_20170613T101031_N0205_R022_T32TQQ_20170613T10160
 # s2_list() function)
 
 # Download the whole product
-s2_download(single_s2, out_dir=tempdir())
+s2_download(single_s2, outdir=tempdir())
 
 # Download a specific tile
-s2_download(single_s2, tile="32TQQ", out_dir=tempdir())
+s2_download(single_s2, tile="32TQQ", outdir=tempdir())
 # (for products with compact names, the two above commands produce equivalent
 # results: the first one downloads a SAFE archive, while the second one
 # downloads single product files)
@@ -56,7 +57,7 @@ s2_download(single_s2, tile="32TQQ", out_dir=tempdir())
 pos <- sp::SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=sp::CRS("+init=epsg:4326"))
 time_window <- as.Date(c("2017-05-01","2017-07-30"))
 example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window)
-s2_download(example_s2_list, out_dir=tempdir())
+s2_download(example_s2_list, outdir=tempdir())
 }
 }
 \author{
