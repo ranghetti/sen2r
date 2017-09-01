@@ -75,7 +75,7 @@
 <div id="warning" class="section level2">
 <h2 class="hasAnchor">
 <a href="#warning" class="anchor"></a>Warning</h2>
-<p>This package is under construction: for now only the functions documented in the <a href="reference/index.html">function references</a> are working.</p>
+<p>This package is under construction: for now only the functions documented in the <a href="https://ggranga.github.io/fidolasen/reference/index.html">function references</a> are working.</p>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
@@ -83,6 +83,12 @@
 <p>You can install fidolasen from GitHub with:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
 devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"ggranga/fidolasen"</span>)</code></pre></div>
+<p>This will install the R package, containing all the functions necessary to preprocess data. To download Sentinel-2 images and perform atmospheric correction with <a href="http://step.esa.int/main/third-party-plugins-2/sen2cor">sen2cor</a>, the package makes use of a set of Python functions (<a href="https://github.com/ggranga/s2download">s2download</a>). To import these scripts, run R function <a href="https://ggranga.github.io/fidolasen/reference/install_s2download.html"><code><a href="reference/s2_download.html">s2_download()</a></code></a> included in the package. Please notice that the use of sen2cor algorythm for now is possible only under Linux systems, and the installation of the docker (necessary to run it) requires some time and a consistent amount of disk space.</p>
+</div>
+<div id="credits" class="section level2">
+<h2 class="hasAnchor">
+<a href="#credits" class="anchor"></a>Credits</h2>
+<p><code>fidolasen</code> is being developed by Luigi Ranghetti and Lorenzo Busetto (<a href="http://www.irea.cnr.it">IREA-CNR</a>), and it is released under <a href="https://www.gnu.org/licenses/gpl.html">GPL 3.0</a>.</p>
 </div>
 </div>
 </div>
