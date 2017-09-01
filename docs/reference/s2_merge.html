@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check GDAL installation — check_gdal • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
+<title>Merge S2 tiles with the same date and orbit — s2_merge • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,48 +89,74 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check GDAL installation</h1>
+    <h1>Merge S2 tiles with the same date and orbit</h1>
     </div>
 
     
-    <p>The function check that GDAL is installed and updated to
-the minimum required version (2.1.3, since previous versions do not
-manage SAFE format).</p>
+    <p>The function merge the input Sentinel-2 files with
+the same date, orbit number, product type and file format.
+Outputs are a set of products in the same format of corresponding
+input files.</p>
     
 
-    <pre class="usage"><span class='fu'>check_gdal</span>(<span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>s2_merge</span>(<span class='no'>infiles</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>out_crs</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>abort</th>
-      <td><p>Logical parameter: if TRUE (default), the function aborts
-in case no GDAL installation is found; if FALSE, a warning is shown
-and FALSE is returned.</p></td>
+      <th>infiles</th>
+      <td><p>A vector of input filenames. Input files are paths
+of products already converted from SAFE format to a format managed by
+GDAL (use <a href='s2_translate.html'>s2_translate</a> to do it); their names must be in the
+fidolasen-S2 naming convention (<a href='s2_shortname.html'>s2_shortname</a>).</p></td>
+    </tr>
+    <tr>
+      <th>outdir</th>
+      <td><p>(optional) Full name of the output directory where
+the files should be created (default: current directory).
+<code>outdir</code> can bot be an existing or non-existing directory (in the
+second case, its parent directory must exists).
+If it is a relative path, it is expanded from the common parent
+directory of <code>infiles</code>.</p></td>
+    </tr>
+    <tr>
+      <th>subdirs</th>
+      <td><p>(optional) Logical: if TRUE, differet output products are
+placed in separated <code>outfile</code> subdirectories; if FALSE, they are placed in
+<code>outfile</code> directory; if NA (default), subdirectories are created only if
+<code>infiles</code> relate to more than a single product.</p></td>
+    </tr>
+    <tr>
+      <th>tmpdir</th>
+      <td><p>(optional) Path where intermediate VRT will be created.
+Default is in a hidden subdirectory (called <code>.vrt</code>) of the common parent
+directory of <code>infiles</code>. Set <code>tmpdir=tempdir()</code> if you do not want to
+keep the intermediate files after reboot.</p></td>
+    </tr>
+    <tr>
+      <th>compress</th>
+      <td><p>(optional) In the case a GTiff format is
+present, the compression indicated with this parameter is used.</p></td>
+    </tr>
+    <tr>
+      <th>out_crs</th>
+      <td><p>(optional) proj4string (character) of the output CRS
+(default: the CRS of the first input file). The tiles with CRS different
+from <code>out_crs</code> will be reprojected (and a warning returned).</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Logical: TRUE in case the installation is ok, FALSE if GDAL
-is missing and abort=FALSE (otherwise, the function stops).</p>
+    <p>A vector with the names of the merged products.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='co'># Remove previous GDAL information</span>
-<span class='fu'>options</span>(<span class='st'>"gdalUtils_gdalPath"</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
-<span class='fu'>getOption</span>(<span class='st'>"gdalUtils_gdalPath"</span>)
-
-<span class='co'># Use function</span>
-<span class='fu'>check_gdal</span>()
-<span class='fu'>getOption</span>(<span class='st'>"gdalUtils_gdalPath"</span>)
-<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -140,9 +166,7 @@ is missing and abort=FALSE (otherwise, the function stops).</p>
       <li><a href="#value">Value</a></li>
 
       <li><a href="#note">Note</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+          </ul>
 
     <h2>Author</h2>
     

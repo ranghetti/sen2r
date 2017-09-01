@@ -100,37 +100,41 @@ Input filename must be an element obtained with
     
 
     <pre class="usage"><span class='fu'>s2_download</span>(<span class='kw'>s2_prodlist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>downloader</span> <span class='kw'>=</span> <span class='st'>"wget"</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>tile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>out_dir</span> <span class='kw'>=</span> <span class='st'>"."</span>)</pre>
+  <span class='kw'>tile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>orbit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"."</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>s2_prodlist</th>
-      <td><p>TODO</p></td>
+      <td><p>List of the products to be downloaded
+(this must be the output of <a href='s2_list.html'>s2_list</a> function).</p></td>
     </tr>
     <tr>
       <th>downloader</th>
-      <td><p>TODO</p></td>
+      <td><p>Executable to use to download products
+(default: "wwget").</p></td>
     </tr>
     <tr>
       <th>apihub</th>
-      <td><p>TODO</p></td>
+      <td><p>Path of the "apihub.txt" file containing credentials
+of scihub account. If NULL (default) the default credentials
+(username "user", password "user") will be used.</p></td>
     </tr>
     <tr>
       <th>tile</th>
-      <td><p>TODO</p></td>
+      <td><p>Single Sentinel-2 Tile string (5-length character)</p></td>
     </tr>
     <tr>
-      <th>out_dir</th>
-      <td><p>TODO</p></td>
+      <th>orbit</th>
+      <td><p>Single Sentinel-2 orbit number</p></td>
+    </tr>
+    <tr>
+      <th>outdir</th>
+      <td><p>(optional) Full name of the existing output directory
+where the files should be created (default: current directory).</p></td>
     </tr>
     </table>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>A vector of available products (being each element an URL,
-and its name the product name)</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
@@ -138,38 +142,36 @@ and its name the product name)</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"># NOT RUN {
-single_s2 <- paste0("https://scihub.copernicus.eu/apihub/odata/v1/",
-  "Products('c7142722-42bf-4f93-b8c5-59fd1792c430')/\\$value")
-names(single_s2) <- "S2A_MSIL1C_20170613T101031_N0205_R022_T32TQQ_20170613T101608.SAFE"
-# (this is equivalent to:
-# single_s2 <- example_s2_list[1]
-# where example_s2_list is the output of the example of the
-# s2_list() function)
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='no'>single_s2</span> <span class='kw'>&lt;-</span> <span class='fu'>paste0</span>(<span class='st'>"https://scihub.copernicus.eu/apihub/odata/v1/"</span>,
+  <span class='st'>"Products(\'c7142722-42bf-4f93-b8c5-59fd1792c430\')/\\$value"</span>)
+<span class='fu'>names</span>(<span class='no'>single_s2</span>) <span class='kw'>&lt;-</span> <span class='st'>"S2A_MSIL1C_20170613T101031_N0205_R022_T32TQQ_20170613T101608.SAFE"</span>
+<span class='co'># (this is equivalent to:</span>
+<span class='co'># single_s2 &lt;- example_s2_list[1]</span>
+<span class='co'># where example_s2_list is the output of the example of the</span>
+<span class='co'># s2_list() function)</span>
 
-# Download the whole product
-s2_download(single_s2, out_dir=tempdir()')
+<span class='co'># Download the whole product</span>
+<span class='fu'>s2_download</span>(<span class='no'>single_s2</span>, <span class='kw'>outdir</span><span class='kw'>=</span><span class='fu'>tempdir</span>())
 
-# Download a specific tile
-s2_download(single_s2, tile="32TQQ", out_dir=tempdir()')
-# (for products with compact names, the two produce equivalent
-# results, while the forst downloads a SAFE archive, the second
-# downloades single product files)
-# Download a serie of products
-pos <- sp::SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=sp::CRS("+init=epsg:4326"))
-time_window <- as.Date(c("2017-05-01","2017-07-30"))
-example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window)
-s2_download(example_s2_list, out_dir=tempdir())
-# }
-</pre>
+<span class='co'># Download a specific tile</span>
+<span class='fu'>s2_download</span>(<span class='no'>single_s2</span>, <span class='kw'>tile</span><span class='kw'>=</span><span class='st'>"32TQQ"</span>, <span class='kw'>outdir</span><span class='kw'>=</span><span class='fu'>tempdir</span>())
+<span class='co'># (for products with compact names, the two above commands produce equivalent</span>
+<span class='co'># results: the first one downloads a SAFE archive, while the second one</span>
+<span class='co'># downloads single product files)</span>
+
+<span class='co'># Download a serie of products</span>
+<span class='no'>pos</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sp</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sp/topics/SpatialPoints'>SpatialPoints</a></span>(<span class='fu'>data.frame</span>(<span class='st'>"x"</span><span class='kw'>=</span><span class='fl'>12.0</span>,<span class='st'>"y"</span><span class='kw'>=</span><span class='fl'>44.8</span>), <span class='kw'>proj4string</span><span class='kw'>=</span><span class='kw pkg'>sp</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sp/topics/CRS-class'>CRS</a></span>(<span class='st'>"+init=epsg:4326"</span>))
+<span class='no'>time_window</span> <span class='kw'>&lt;-</span> <span class='fu'>as.Date</span>(<span class='fu'>c</span>(<span class='st'>"2017-05-01"</span>,<span class='st'>"2017-07-30"</span>))
+<span class='no'>example_s2_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='s2_list.html'>s2_list</a></span>(<span class='kw'>spatial_extent</span><span class='kw'>=</span><span class='no'>pos</span>, <span class='kw'>tile</span><span class='kw'>=</span><span class='st'>"32TQQ"</span>, <span class='kw'>time_interval</span><span class='kw'>=</span><span class='no'>time_window</span>)
+<span class='fu'>s2_download</span>(<span class='no'>example_s2_list</span>, <span class='kw'>outdir</span><span class='kw'>=</span><span class='fu'>tempdir</span>())
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#value">Value</a></li>
-
       <li><a href="#note">Note</a></li>
       
       <li><a href="#examples">Examples</a></li>

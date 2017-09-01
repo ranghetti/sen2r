@@ -4,7 +4,8 @@
 \alias{s2_shortname}
 \title{Rename products using a shorten convention}
 \usage{
-s2_shortname(prod_name, ext = NULL, full.name = TRUE, set.seed = NA)
+s2_shortname(prod_name, prod_type = NULL, ext = NULL, res = "10m",
+  full.name = TRUE, set.seed = NA, abort = FALSE)
 }
 \arguments{
 \item{prod_name}{Input Sentinel-2 product name: it can be both
@@ -12,7 +13,15 @@ a complete path or a simple file name. If the file exists, the product
 is scanned to retrieve the tiles list and UTM zones; otherwise the
 basename is simply translated in he short naming convention.}
 
-\item{ext}{(optional) Extension of the output filename (default: none)}
+\item{prod_type}{(optional) Output product (default: \code{TOA} for L1C, \code{BOA}
+for L2A); see the details for the list of accepted products.}
+
+\item{ext}{(optional) Extension of the output filename (default: none).}
+
+\item{res}{(optional) Spatial resolution (one between '10m', '20m' or '60m');
+default is '10m'. Notice that, choosing '10m' or '20m', bands with lower
+resolution will be rescaled to \code{res}. Band 08 is used with \code{res = '10m'},
+band 08A with \code{res = '20m'} and \code{res = '60m'}.}
 
 \item{full.name}{Logical value: if TRUE (default), all the input path
 is maintained (if existing); if FALSE, only basename is returned.}
@@ -24,6 +33,9 @@ is completely random (this is useful not to assign the same name to
 products with the same names (e.g. product with old name downloaded in
 different moments which contains different subsets of tiles).
 Default value is TRUE if the file exists locally, FALSE if not.}
+
+\item{abort}{Logical parameter: if TRUE, the function aborts in case
+\code{prod_type} is not recognised; if FALSE (default), a warning is shown.}
 }
 \value{
 Output product name
@@ -31,45 +43,47 @@ Output product name
 \description{
 This function renames a Sentinel-2 product in order to
 obtain shorten names. See the details for the structure of the
-adopted schema. The function applies only to product names (not
-to single granule names), since it is thought to be applied to
-entire products.
+adopted schema (named "fidolasen-S2 naming convention").
+The function applies only to product names (not to single granule
+names), since it is thought to be applied to entire products.
 }
 \details{
 \href{https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/naming-convention}{ESA Sentinel-2 naming convention}
 is particularly long-winded; moreover, the convention changed after
 December 6th 2016, causing products to follow two different schemes.
 
-The convention here adopted follows this schema:
+The convention here adopted, named "fidolasen-S2 naming convention",
+follows this schema:
 
-\code{S2mll_yyyymmdd_rrr_ttttt}
+\code{S2mll_yyyymmdd_rrr_ttttt_ppp_rr.fff}
 
 where:
 \itemize{
-\item \code{S2mll} shows the mission ID (\code{S2A} or \code{S2B}) and the product level
+\item \code{S2mll} (length: 5) shows the mission ID (\code{S2A} or \code{S2B}) and the product level
 (\code{1C} or \code{2A});
-\item \code{yyyymmdd} is the sensing date (e.g. \code{20170603} for 2017-06-03) ; the
+\item \code{yyyymmdd} (length: 8) is the sensing date (e.g. \code{20170603} for 2017-06-03) ; the
 hour is skipped, since a single sensor can not pass two times in a
 day on the same tile);
-\item \code{rrr} is the relative orbit number (e.g. \code{022});
-\item \code{ttttt} is the tile number (e.g. \code{32TQQ}).
-}
-
-Products which contains only one tile (date > 2016-12-05 or
-< 2016-12-06 but containing only one tile) follows entirely this convention;
-for products with more than one tile (or that can not be checked), the field
-\code{ttttt} is replaced by:
+\item \code{rrr} (length: 3) is the relative orbit number (e.g. \code{022});
+\item \code{ttttt} (length: 5) is the tile number (e.g. \code{32TQQ});
+\item \code{ppp} (length: 3) is the output product, being one of these:
+\emph{for level 1C:}
 \itemize{
-\item \code{uuxxx} if the UTM zone is unique (where \code{uu} is the UTM zone, and \code{xxx}
-is a random numeric sequence), e.g. \code{32876};
-\item \code{yyxxx} if the UTM zone is not unique or it it can not be checked (being
-\code{yy} a random literal A-Z sequence, and \code{xxx} a random numeric sequence).
+\item \code{TOA}: 13-bands Top-Of-Atmosphere Reflectance;
+\emph{for level 2A:}
+\item \code{BOA}: 13-bands Bottom-Of-Atmosphere Reflectance;
+\item \code{TCI}: True Colour Image (3-band RGB 8-bit image);
+\item \code{AOT}: Aerosol Optical Thickness;
+\item \code{WVP}: Water Vapour;
+\item \code{SCL}: Scene Classification Map;
+\item \code{CLD}: Quality Indicators for cloud probabilities;
+\item \code{SNW}: Quality Indicators for snow probabilities;
+\item \code{VIS}: TODO Visibility (used for AOT);
 }
-
-Since the tile number is composed by two numeric and three literal character,
-these two conventions (one composed by five numeric and the other by two
-literal and three numeric characters) ensure that these three cases can be
-distinguished.
+\item \code{rr} (length: 2) is the original minimum spatial resolution in metres
+(10, 20 or 60);
+\item \code{fff} (length: variable, generally 3) is the file extension.
+}
 }
 \note{
 License: GPL 3.0

@@ -14,7 +14,7 @@ import_s2download <- function(...) {
 
   # check that s2download and dependencies were cloned
   # this ensures also that python2 and other dependencies are present)
-  if (!file.exists(file.path(system.file(package="RSPrePro"),"s2download_path.txt"))) {
+  if (!file.exists(file.path(system.file(package="fidolasen"),"s2download_path.txt"))) {
     print_message(
       type="waiting",
       "s2download was not found in your system; press ENTER to install, ESC to escape."
@@ -28,7 +28,7 @@ import_s2download <- function(...) {
   sys <- import("sys",convert=FALSE)
 
   # load s2download
-  s2download_path <- readLines(file.path(system.file(package="RSPrePro"),"s2download_path.txt"))[1]
+  s2download_path <- readLines(file.path(system.file(package="fidolasen"),"s2download_path.txt"))[1]
   if (!s2download_path %in% py_to_r(sys$path)) {
     sys$path$insert(py$int(0),s2download_path)
   }

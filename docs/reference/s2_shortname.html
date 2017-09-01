@@ -95,12 +95,13 @@
     
     <p>This function renames a Sentinel-2 product in order to
 obtain shorten names. See the details for the structure of the
-adopted schema. The function applies only to product names (not
-to single granule names), since it is thought to be applied to
-entire products.</p>
+adopted schema (named "fidolasen-S2 naming convention").
+The function applies only to product names (not to single granule
+names), since it is thought to be applied to entire products.</p>
     
 
-    <pre class="usage"><span class='fu'>s2_shortname</span>(<span class='no'>prod_name</span>, <span class='kw'>ext</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>full.name</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>set.seed</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+    <pre class="usage"><span class='fu'>s2_shortname</span>(<span class='no'>prod_name</span>, <span class='kw'>prod_type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ext</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='st'>"10m"</span>,
+  <span class='kw'>full.name</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>set.seed</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -113,8 +114,20 @@ is scanned to retrieve the tiles list and UTM zones; otherwise the
 basename is simply translated in he short naming convention.</p></td>
     </tr>
     <tr>
+      <th>prod_type</th>
+      <td><p>(optional) Output product (default: <code>TOA</code> for L1C, <code>BOA</code>
+for L2A); see the details for the list of accepted products.</p></td>
+    </tr>
+    <tr>
       <th>ext</th>
-      <td><p>(optional) Extension of the output filename (default: none)</p></td>
+      <td><p>(optional) Extension of the output filename (default: none).</p></td>
+    </tr>
+    <tr>
+      <th>res</th>
+      <td><p>(optional) Spatial resolution (one between '10m', '20m' or '60m');
+default is '10m'. Notice that, choosing '10m' or '20m', bands with lower
+resolution will be rescaled to <code>res</code>. Band 08 is used with <code>res = '10m'</code>,
+band 08A with <code>res = '20m'</code> and <code>res = '60m'</code>.</p></td>
     </tr>
     <tr>
       <th>full.name</th>
@@ -131,6 +144,11 @@ products with the same names (e.g. product with old name downloaded in
 different moments which contains different subsets of tiles).
 Default value is TRUE if the file exists locally, FALSE if not.</p></td>
     </tr>
+    <tr>
+      <th>abort</th>
+      <td><p>Logical parameter: if TRUE, the function aborts in case
+<code>prod_type</code> is not recognised; if FALSE (default), a warning is shown.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -142,30 +160,34 @@ Default value is TRUE if the file exists locally, FALSE if not.</p></td>
     <p><a href='https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/naming-convention'>ESA Sentinel-2 naming convention</a>
 is particularly long-winded; moreover, the convention changed after
 December 6th 2016, causing products to follow two different schemes.</p>
-<p>The convention here adopted follows this schema:
-    <code>S2mll_yyyymmdd_rrr_ttttt</code></p>
+<p>The convention here adopted, named "fidolasen-S2 naming convention",
+follows this schema:
+    <code>S2mll_yyyymmdd_rrr_ttttt_ppp_rr.fff</code></p>
 <p>where:</p><ul>
-<li><p><code>S2mll</code> shows the mission ID (<code>S2A</code> or <code>S2B</code>) and the product level
+<li><p><code>S2mll</code> (length: 5) shows the mission ID (<code>S2A</code> or <code>S2B</code>) and the product level
 (<code>1C</code> or <code>2A</code>);</p></li>
-<li><p><code>yyyymmdd</code> is the sensing date (e.g. <code>20170603</code> for 2017-06-03) ; the
+<li><p><code>yyyymmdd</code> (length: 8) is the sensing date (e.g. <code>20170603</code> for 2017-06-03) ; the
 hour is skipped, since a single sensor can not pass two times in a
 day on the same tile);</p></li>
-<li><p><code>rrr</code> is the relative orbit number (e.g. <code>022</code>);</p></li>
-<li><p><code>ttttt</code> is the tile number (e.g. <code>32TQQ</code>).</p></li>
+<li><p><code>rrr</code> (length: 3) is the relative orbit number (e.g. <code>022</code>);</p></li>
+<li><p><code>ttttt</code> (length: 5) is the tile number (e.g. <code>32TQQ</code>);</p></li>
+<li><p><code>ppp</code> (length: 3) is the output product, being one of these:
+<em>for level 1C:</em></p><ul>
+<li><p><code>TOA</code>: 13-bands Top-Of-Atmosphere Reflectance;
+<em>for level 2A:</em></p></li>
+<li><p><code>BOA</code>: 13-bands Bottom-Of-Atmosphere Reflectance;</p></li>
+<li><p><code>TCI</code>: True Colour Image (3-band RGB 8-bit image);</p></li>
+<li><p><code>AOT</code>: Aerosol Optical Thickness;</p></li>
+<li><p><code>WVP</code>: Water Vapour;</p></li>
+<li><p><code>SCL</code>: Scene Classification Map;</p></li>
+<li><p><code>CLD</code>: Quality Indicators for cloud probabilities;</p></li>
+<li><p><code>SNW</code>: Quality Indicators for snow probabilities;</p></li>
+<li><p><code>VIS</code>: TODO Visibility (used for AOT);</p></li>
+</ul></li>
+<li><p><code>rr</code> (length: 2) is the original minimum spatial resolution in metres
+(10, 20 or 60);</p></li>
+<li><p><code>fff</code> (length: variable, generally 3) is the file extension.</p></li>
 </ul>
-    <p>Products which contains only one tile (date &gt; 2016-12-05 or
-&lt; 2016-12-06 but containing only one tile) follows entirely this convention;
-for products with more than one tile (or that can not be checked), the field
-<code>ttttt</code> is replaced by:</p><ul>
-<li><p><code>uuxxx</code> if the UTM zone is unique (where <code>uu</code> is the UTM zone, and <code>xxx</code>
-is a random numeric sequence), e.g. <code>32876</code>;</p></li>
-<li><p><code>yyxxx</code> if the UTM zone is not unique or it it can not be checked (being
-<code>yy</code> a random literal A-Z sequence, and <code>xxx</code> a random numeric sequence).</p></li>
-</ul>
-    <p>Since the tile number is composed by two numeric and three literal character,
-these two conventions (one composed by five numeric and the other by two
-literal and three numeric characters) ensure that these three cases can be
-distinguished.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
@@ -182,12 +204,12 @@ distinguished.</p>
 <span class='no'>s2_existing_example</span> <span class='kw'>&lt;-</span> <span class='st'>"/replace/with/the/main/path/of/existing/product/with/oldname/convention"</span>
 
 <span class='co'># With compact names, it works also without scanning the file</span>
-<span class='fu'>s2_shortname</span>(<span class='no'>s2_compactname_example</span>, <span class='kw'>ext</span><span class='kw'>=</span><span class='st'>"tif"</span>)</div><div class='output co'>#&gt; [1] "/non/existing/path/S2A1C_20170603_022_32TQQ.tif"</div><div class='input'>
+<span class='fu'>s2_shortname</span>(<span class='no'>s2_compactname_example</span>, <span class='kw'>ext</span><span class='kw'>=</span><span class='st'>"tif"</span>)</div><div class='output co'>#&gt; [1] "/non/existing/path/S2A1C_20170603_022_32TQQ_TOA_10.tif"</div><div class='input'>
 <span class='co'># With old names, without scanning the file the id_tile is not retrieved,</span>
 <span class='co'># so the tile filed is replaced with a random sequence</span>
-<span class='fu'>unlist</span>(<span class='fu'>lapply</span>(<span class='fu'>rep</span>(<span class='no'>s2_oldname_example</span>,<span class='fl'>5</span>), <span class='no'>s2_shortname</span>, <span class='kw'>full.name</span><span class='kw'>=</span><span class='fl'>FALSE</span>))</div><div class='output co'>#&gt; [1] "S2A1C_20150704_022_CV600" "S2A1C_20150704_022_EA466"
-#&gt; [3] "S2A1C_20150704_022_MH732" "S2A1C_20150704_022_UW174"
-#&gt; [5] "S2A1C_20150704_022_AI402"</div><div class='input'>
+<span class='fu'>unlist</span>(<span class='fu'>lapply</span>(<span class='fu'>rep</span>(<span class='no'>s2_oldname_example</span>,<span class='fl'>5</span>), <span class='no'>s2_shortname</span>, <span class='kw'>full.name</span><span class='kw'>=</span><span class='fl'>FALSE</span>))</div><div class='output co'>#&gt; [1] "S2A1C_20150704_022_CV600_TOA_10" "S2A1C_20150704_022_EA466_TOA_10"
+#&gt; [3] "S2A1C_20150704_022_MH732_TOA_10" "S2A1C_20150704_022_UW174_TOA_10"
+#&gt; [5] "S2A1C_20150704_022_AI402_TOA_10"</div><div class='input'>
 </div><span class='co'># NOT RUN {</span>
 <span class='co'># If the file exists locally, the tile is retrieved from the content</span>
 <span class='co'># (if unique; if not, a random sequence is equally used, but it is</span>

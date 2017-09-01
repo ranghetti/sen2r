@@ -101,7 +101,7 @@ in which one of them contains the absolute position, and the others
 do not.</p>
     
 
-    <pre class="usage"><span class='fu'>expand_path</span>(<span class='no'>path</span>, <span class='kw'>parent</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>silent</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>expand_path</span>(<span class='no'>path</span>, <span class='kw'>parent</span> <span class='kw'>=</span> <span class='fu'>getwd</span>(), <span class='kw'>silent</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>normalize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -118,7 +118,15 @@ relative (default value: the working directory).</p></td>
     <tr>
       <th>silent</th>
       <td><p>Logical value: if TRUE (default), no message are shown;
-otherwise, a message inform if <code>parent</code> were applied or not.</p></td>
+if FALSE, a message inform if <code>parent</code> were applied or not;
+if NA, a warning is returned if <code>path</code> is expanded, nothing if it
+is already an absolute path.</p></td>
+    </tr>
+    <tr>
+      <th>normalize</th>
+      <td><p>Logical value: if TRUE (default), the path is normalised
+(<code><a href='http://www.rdocumentation.org/packages/base/topics/normalizePath'>normalizePath</a></code> is applied); if FALSE it is simply
+appended.</p></td>
     </tr>
     <tr>
       <th>...</th>

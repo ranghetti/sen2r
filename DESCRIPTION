@@ -19,6 +19,10 @@ Imports:
   digest,
   stringr,
   rgdal,
-  gdalUtils
+  gdalUtils,
+  magrittr,
+  sp,
+  data.table,
+  raster
 Roxygen: list(markdown = TRUE)
 Remotes: lbusett/sprawl

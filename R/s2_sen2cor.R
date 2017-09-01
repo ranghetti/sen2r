@@ -46,7 +46,7 @@ s2_sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, out_dir=NULL, n_procs=1,
   s2download$call_sen2cor(l1c_dir=unique(dirname(l1c_prodlist)),
                           l2a_dir=out_dir,
                           l1c_list=basename(l1c_prodlist),
-                          n_procs=n_procs,
+                          n_procs=as.integer(n_procs),
                           overwrite=overwrite)
 
 }

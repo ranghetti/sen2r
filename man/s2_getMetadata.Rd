@@ -57,7 +57,7 @@ elements without needing the file to have been downloaded).
 A list of the output metadata.
 }
 \description{
-The function scan a Sentinel2 product (main path, granule path,
+The function scans a Sentinel2 product (main path, granule path,
 main / granule xml file or GDAL object) to retrieve information about
 the product.
 }

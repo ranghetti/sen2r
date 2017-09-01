@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check GDAL installation — check_gdal • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
+<title>Convert absolute from/to relative paths in a virtual file — gdal_abs2rel • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,32 +89,41 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check GDAL installation</h1>
+    <h1>Convert absolute from/to relative paths in a virtual file</h1>
     </div>
 
     
-    <p>The function check that GDAL is installed and updated to
-the minimum required version (2.1.3, since previous versions do not
-manage SAFE format).</p>
+    <p>The two functions read the content of a GDAL virtual
+file (VRT) and check the presence of paths to linked files.
+
+    gdal_abs2rel scans the presence of absolute paths: when an
+absolute path has a common parent directory with the path in which
+the VRT is, this is replaced with a relative. This is useful when
+VRT are on a remote driver, which can be mounted to several points.
+
+    gdal_rel2abs checks the presence of relative paths,
+and replace them with the corresponding absolute path (symbolic
+links are followed). This is useful to grant that VRT can be moved
+(if the files they link to are not moved).</p>
     
 
-    <pre class="usage"><span class='fu'>check_gdal</span>(<span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>gdal_abs2rel</span>(<span class='no'>in_vrt</span>, <span class='kw'>out_vrt</span> <span class='kw'>=</span> <span class='fl'>NA</span>)
+
+<span class='fu'>gdal_rel2abs</span>(<span class='no'>in_vrt</span>, <span class='kw'>out_vrt</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>abort</th>
-      <td><p>Logical parameter: if TRUE (default), the function aborts
-in case no GDAL installation is found; if FALSE, a warning is shown
-and FALSE is returned.</p></td>
+      <th>in_vrt</th>
+      <td><p>The path of the VRT to be read.</p></td>
+    </tr>
+    <tr>
+      <th>out_vrt</th>
+      <td><p>(optional) The path of the output VRT file (default
+is to overwrite <code>in_vrt</code>).</p></td>
     </tr>
     </table>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>Logical: TRUE in case the installation is ok, FALSE if GDAL
-is missing and abort=FALSE (otherwise, the function stops).</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
@@ -123,13 +132,11 @@ is missing and abort=FALSE (otherwise, the function stops).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='co'># Remove previous GDAL information</span>
-<span class='fu'>options</span>(<span class='st'>"gdalUtils_gdalPath"</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
-<span class='fu'>getOption</span>(<span class='st'>"gdalUtils_gdalPath"</span>)
-
-<span class='co'># Use function</span>
-<span class='fu'>check_gdal</span>()
-<span class='fu'>getOption</span>(<span class='st'>"gdalUtils_gdalPath"</span>)
+<span class='no'>example_vrt</span> <span class='kw'>&lt;-</span> <span class='st'>"/TODO/example/s2_translate.vrt"</span>
+<span class='no'>rel_vrt</span> <span class='kw'>&lt;-</span> <span class='st'>"/TODO/example/s2_translate_rel.vrt"</span>
+<span class='no'>abs_vrt</span> <span class='kw'>&lt;-</span> <span class='st'>"/TODO/example/s2_translate_abs.vrt"</span>
+<span class='fu'>gdal_abs2rel</span>(<span class='no'>example_vrt</span>, <span class='no'>rel_vrt</span>)
+<span class='fu'>gdal_rel2abs</span>(<span class='no'>example_vrt</span>, <span class='no'>abs_vrt</span>)
 <span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -137,8 +144,6 @@ is missing and abort=FALSE (otherwise, the function stops).</p>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#value">Value</a></li>
-
       <li><a href="#note">Note</a></li>
       
       <li><a href="#examples">Examples</a></li>

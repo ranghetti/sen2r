@@ -4,21 +4,30 @@
 #'  [s2download](https://github.com/ggranga/s2download)
 #'  python function only to retrieve the list of files, without
 #'  downloading and correcting them.
-#' @param spatial_extent TODO
-#' @param tile TODO
-#' @param orbit TODO
-#' @param time_interval TODO
-#' @param corr_type TODO
-#' @param apihub TODO
-#' @param max_cloud TODO
+#' @param spatial_extent A valid spatial object managed by [sprawl::get_extent]
+#' @param tile Single Sentinel-2 Tile string (5-length character)
+#' @param orbit Single Sentinel-2 orbit number
+#' @param time_interval a temporal vector (class [POSIXct] or
+#'  [Date]) of length 1 (specific day) or 2 (time interval).
+#' @param level Character vector with one of the following:
+#'     - "auto" (default): check if level-2A is available on SciHub:
+#'         if so, list it; if not, list the corresponding level-1C
+#'         product
+#'     - "L1C": list available level-1C products
+#'     - "L2A": list available level-2A products
+#' @param apihub Path of the "apihub.txt" file containing credentials
+#'  of scihub account. If NULL (default) the default credentials
+#'  (username "user", password "user") will be used.
+#' @param max_cloud Integer number (0-100) containing the maximum cloud
+#'  level of the tiles to be listed (default: no filter).
 #' @return A vector of available products (being each element an URL,
-#'  and its name the product name)
+#'  and its name the product name).
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @export
 #' @importFrom reticulate import py_to_r
-#' @importFrom sprawl get_extent
+#' @importFrom sprawl get_extent reproj_extent
 #'
 #' @examples \dontrun{
 #' pos <- sp::SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=sp::CRS("+init=epsg:4326"))
@@ -29,29 +38,26 @@
 
 s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parameters
                     time_interval=NULL, # temporal parameters
-                    corr_type="auto",
+                    level="auto",
                     apihub=NULL,
                     max_cloud=110) {
 
   # checks on inputs
-  # spatial_extent must be a valid sp object
-  # TODO for now, take the bounding box and no controls are added
-  extent_extent <- get_extent(spatial_extent)@extent
-  # FIXME aggiungi riproiezione dopo aver modificato MODIStsp_reproj_bbox in sprawl
+  spatext <- get_extent(spatial_extent) %>%
+    reproj_extent("+init=epsg:4326")
 
   # pass lat,lon if the bounding box is a point or line; latmin,latmax,lonmin,lonmax if it is a rectangle
-  if (extent_extent["xmin"]==extent_extent["xmax"] | extent_extent["ymin"]==extent_extent["ymax"]) {
-    lon <- mean(extent_extent["xmin"], extent_extent["xmax"])
-    lat <- mean(extent_extent["ymin"], extent_extent["ymax"])
+  if (spatext@extent["xmin"]==spatext@extent["xmax"] | spatext@extent["ymin"]==spatext@extent["ymax"]) {
+    lon <- mean(spatext@extent["xmin"], spatext@extent["xmax"])
+    lat <- mean(spatext@extent["ymin"], spatext@extent["ymax"])
     lonmin <- lonmax <- latmin <- latmax <- NULL
   } else {
-    lonmin <- extent_extent["xmin"]; lonmax <- extent_extent["xmax"]
-    latmin <- extent_extent["ymin"]; latmax <- extent_extent["ymax"]
+    lonmin <- spatext@extent["xmin"]; lonmax <- spatext@extent["xmax"]
+    latmin <- spatext@extent["ymin"]; latmax <- spatext@extent["ymax"]
     lon <- lat <- NULL
   }
 
   # checks on dates
-  # time_interval must be a single date or a two length date
   # TODO add checks on format
   if (length(time_interval)==1) {
     time_interval <- rep(time_interval,2)
@@ -70,13 +76,22 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
     print_message(type="error","File apihub.txt with the SciHub credentials is missing.") # TODO build it
   }
 
+  # set corr_type
+  corr_type <- switch(
+    level,
+    auto = "auto",
+    L1C  = "no",
+    L2A  = "scihub",
+    "auto")
+
   # run the research of the list of products
   av_prod_tuple <- s2download$s2_download(
     lat=lat, lon=lon, latmin=latmin, latmax=latmax, lonmin=lonmin, lonmax=lonmax,
     start_date=time_interval[1] ,end_date=time_interval[2],
-    orbit=orbit, apihub=apihub, max_cloud=max_cloud,
+    orbit=ifelse(is.null(orbit), NULL, as.integer(orbit)),
+    apihub=apihub, max_cloud=max_cloud,
     tile=tile, list_only=TRUE,
-    corr_type="auto")
+    corr_type=corr_type)
 
   av_prod_list <- py_to_r(av_prod_tuple)[[1]]
   names(av_prod_list) <- py_to_r(av_prod_tuple)[[2]]

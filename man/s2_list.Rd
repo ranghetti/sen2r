@@ -5,27 +5,35 @@
 \title{Retrieve list of available products.}
 \usage{
 s2_list(spatial_extent = NULL, tile = NULL, orbit = NULL,
-  time_interval = NULL, corr_type = "auto", apihub = NULL,
-  max_cloud = 110)
+  time_interval = NULL, level = "auto", apihub = NULL, max_cloud = 110)
 }
 \arguments{
-\item{spatial_extent}{TODO}
+\item{spatial_extent}{A valid spatial object managed by \link[sprawl:get_extent]{sprawl::get_extent}}
 
-\item{tile}{TODO}
+\item{tile}{Single Sentinel-2 Tile string (5-length character)}
 
-\item{orbit}{TODO}
+\item{orbit}{Single Sentinel-2 orbit number}
 
-\item{time_interval}{TODO}
+\item{time_interval}{a temporal vector (class \link{POSIXct} or
+\link{Date}) of length 1 (specific day) or 2 (time interval).}
 
-\item{corr_type}{TODO}
+\item{level}{Character vector with one of the following:
+- "auto" (default): check if level-2A is available on SciHub:
+if so, list it; if not, list the corresponding level-1C
+product
+- "L1C": list available level-1C products
+- "L2A": list available level-2A products}
 
-\item{apihub}{TODO}
+\item{apihub}{Path of the "apihub.txt" file containing credentials
+of scihub account. If NULL (default) the default credentials
+(username "user", password "user") will be used.}
 
-\item{max_cloud}{TODO}
+\item{max_cloud}{Integer number (0-100) containing the maximum cloud
+level of the tiles to be listed (default: no filter).}
 }
 \value{
 A vector of available products (being each element an URL,
-and its name the product name)
+and its name the product name).
 }
 \description{
 The function retrieves the list of available Sentinel-2
