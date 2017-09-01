@@ -15,6 +15,8 @@ Warning
 
 This package is under construction: for now only the functions documented in the [function references](https://ggranga.github.io/fidolasen/reference/index.html) are working.
 
+Current version is pre-release 0.2.0 (see [release details](https://github.com/ggranga/fidolasen/releases/tag/0.2.0)).
+
 Installation
 ------------
 
