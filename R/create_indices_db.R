@@ -20,7 +20,7 @@
 #' @importFrom data.table data.table setnames ":="
 #' @importFrom XML htmlTreeParse xmlRoot readHTMLTable xmlAttrs saveXML
 #' @importFrom magrittr %>%
-#' @importFrom jsonlite toJSON
+#' @importFrom jsonlite toJSON fromJSON
 #' @importFrom stats runif
 #' @importFrom utils capture.output download.file unzip packageVersion
 
@@ -30,14 +30,17 @@ create_indices_db <- function(xslt_path=NA, json_path=NA) {
   # to avoid NOTE on check
   n_index <- name <- longname <- . <- s2_formula <- type <- NULL
 
-  # check if indices.json already exists
+  # check if indices.json already exists, and if the version is updated
+  # we assume that a new version of indices.json is created at every new ackage update
   if (is.na(json_path)) {
     json_path <- file.path(system.file("extdata",package="fidolasen"),"indices.json")
   }
   if (system.file("extdata","indices.json", package="fidolasen") == json_path) {
-    # exit from function if the file already exists
-    # TODO do not exit in case of package version update
-    return(NULL)
+    json_version <- jsonlite::fromJSON(json_path)$fidolasen_version %>%
+      package_version()
+    if (json_version >= packageVersion("fidolasen")) {
+      return(NULL)
+    }
   }
 
   # check the presence of xsltproc
