@@ -22,7 +22,7 @@
 #' @importFrom magrittr %>%
 #' @importFrom jsonlite toJSON
 #' @importFrom stats runif
-#' @importFrom utils capture.output download.file unzip
+#' @importFrom utils capture.output download.file unzip packageVersion
 
 
 create_indices_db <- function(xslt_path=NA, json_path=NA) {
