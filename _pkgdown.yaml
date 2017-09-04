@@ -26,6 +26,7 @@ reference:
       - '`abs2rel`'
       - '`gdal_abs2rel`'
       - '`gdalwarp_grid`'
+      - '`list_indices`'
   - title: Internal functions
     desc: (not exported)
     contents:

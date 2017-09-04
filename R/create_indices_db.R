@@ -223,7 +223,7 @@ create_indices_db <- function(xslt_path=NA, json_path=NA) {
   })
 
   json_table <- list(
-    "s2_table" = s2_table,
+    "indices" = s2_table,
     "fidolasen_version" = as.character(packageVersion("fidolasen")),
     "creation_date" = as.character(Sys.time())
   )
