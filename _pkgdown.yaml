@@ -30,8 +30,8 @@ reference:
     desc: (not exported)
     contents:
       - '`import_s2download`'
-      - '`s2_shortname`'
       - '`print_message`'
+      - '`create_indices_db`'
 navbar:
   type: inverse
   left:
