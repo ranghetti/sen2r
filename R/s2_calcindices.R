@@ -1,13 +1,7 @@
-
-# function to create maps of spectral indices
-# from TOA / BOA images (create vrt if missing), load the index formula from a json
-# and compute final map
-
-
-
-
 #' @title Compute maps of spectral indices
-#' @description Create maps of a set of spectral indices.
+#' @description Create maps of a set of spectral indices. Since
+#'  `gdal_calc.py` is used to perform computations, output files
+#'  are physical rasters (no output VRT is allowed).
 #' @param infiles A vector of input filenames. Input files are paths
 #'  of BOA (or TOA) products already converted from SAFE format to a
 #'  format managed by GDAL (use [s2_translate] to do it);
@@ -26,6 +20,9 @@
 #'  second case, its parent directory must exists).
 #'  If it is a relative path, it is expanded from the common parent
 #'  directory of `infiles`.
+#' @param format (optional) Format of the output file (in a
+#'  format recognised by GDAL). Default is the same format of input images
+#'  (or "GTiff" in case of VRT input images).
 #' @param subdirs (optional) Logical: if TRUE, different indices are
 #'  placed in separated `outfile` subdirectories; if FALSE, they are placed in
 #'  `outfile` directory; if NA (default), subdirectories are created only if
@@ -43,12 +40,18 @@
 #' @return A vector with the names of the created products.
 #' @importFrom jsonlite fromJSON
 #' @importFrom data.table data.table
+#' @importFrom rgdal GDALinfo
+#' @importFrom reticulate gdal
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 
 s2_calcindices <- function(infiles,
                            indices,
                            outdir=".",
+                           a=NA,
+                           b=NA,
+                           x=NA,
+                           format=NA,
                            subdirs=NA,
                            tmpdir=NA,
                            compress="DEFLATE",
@@ -77,15 +80,43 @@ s2_calcindices <- function(infiles,
   # exstract needed indices_db
   indices_info <- indices_db[match(indices,indices_db$name),]
 
+  # check output format
+  if (!is.na(format)) {
+    gdal <- import("osgeo",convert=FALSE)$gdal
+    sel_driver <- gdal$GetDriverByName(format)
+    if (is.null(py_to_r(sel_driver))) {
+      print_message(
+        type="error",
+        "Format \"",format,"\" is not recognised; ",
+        "please use one of the formats supported by your GDAL installation.\n\n",
+        "To list them, use the following command:\n",
+        "gdalUtils::gdalinfo(formats=TRUE)\n\n",
+        "To search for a specific format, use:\n",
+        "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
+    }
+  }
+
   # Get files metadata
   infiles_meta <- data.table(fs2nc_getElements(infiles, format="data.frame"))
   infiles_meta <- infiles_meta[prod_type %in% c("TOA","BOA"),]
+
+  # create subdirs (if requested)
+  prod_types <- unique(infiles_meta$prod_type)
+  if (is.na(subdirs)) {
+    subdirs <- ifelse(length(indices)>1, TRUE, FALSE)
+  }
+  if (subdirs) {
+    sapply(file.path(outdir,indices), dir.create, showWarnings=FALSE)
+  }
 
   # read TOA/BOA image
   outfiles <- character(0)
   for (i in seq_along(infiles)) {
     sel_infile <- infiles[i]
     sel_infile_meta <- c(infiles_meta[i,])
+    sel_format <- suppressWarnings(ifelse(
+      !is.na(format), format, attr(GDALinfo(sel_infile), "driver")
+    )) %>% ifelse(.!="VRT",.,"GTiff")
 
     # check bands to use
     if (sel_infile_meta$prod_type=="TOA") {
@@ -109,14 +140,17 @@ s2_calcindices <- function(infiles,
         gsub("m$","",sel_infile_meta$res),".",
         sel_infile_meta$file_ext)
 
+      # define subdir
+      out_subdir <- ifelse(subdirs, file.path(outdir,indices[j]), outdir)
+
       # change index formula to be used with bands
       sel_formula <- indices_info[j,"s2_formula"]
       for (b in seq_len(nrow(gdal_bands))) {
         sel_formula <- gsub(paste0("([^0-9a-zA-Z])",gdal_bands[b,"band"],"([^0-9a-zA-Z])"),
-                            paste0("\\1",gdal_bands[b,"letter"],"\\2"),
+                            paste0("\\1",gdal_bands[b,"letter"],".astype(float)\\2"),
                             sel_formula)
       }
-      if (dataType %in% c("Int16","UInt16")) {
+      if (dataType %in% c("Int16","UInt16","Int32","UInt32")) {
         sel_formula <- paste0("10000*(",sel_formula,")")
       }
 
@@ -127,15 +161,16 @@ s2_calcindices <- function(infiles,
           paste(apply(gdal_bands,1,function(l){
             paste0("-",l["letter"]," \"",sel_infile,"\" --",l["letter"],"_band=",which(gdal_bands$letter==l["letter"]))
           }), collapse=" ")," ",
-          "--outfile=\"",file.path(outdir,sel_outfile),"\" ",
+          "--outfile=\"",file.path(out_subdir,sel_outfile),"\" ",
           "--type=\"",dataType,"\" ",
-          "--format=\"","VRT","\" ", # FIXME correct format
+          "--format=\"",sel_format,"\" ",
+          if (sel_format=="GTiff") {paste0("--co=\"COMPRESS=",toupper(compress),"\" ")},
           "--calc=\"",sel_formula,"\""
         ),
         intern = Sys.info()["sysname"] == "Windows"
       )
 
-      outfiles <- c(outfiles, file.path(outdir,sel_outfile)) # TODO use out_subdir for different indices
+      outfiles <- c(outfiles, file.path(out_subdir,sel_outfile)) # TODO use out_subdir for different indices
 
     }
 

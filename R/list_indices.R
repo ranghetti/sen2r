@@ -9,6 +9,7 @@
 #'  - `link`: URL to the index description page;
 #'  - `s2_formula`: expression containing the formula to compute the index;
 #'  - `s2_formula_mathml`: MathML version of the formula.
+#' @param pattern A regular expression on index names.
 #' @return A data.frame with the required information. The table contains
 #'  also the following attributes:
 #'  - `creation_date`: timestamp of the creation date of the indices archive;
@@ -23,7 +24,7 @@
 #' list_indices(c("name","longname"))
 #' }
 
-list_indices <- function(values) {
+list_indices <- function(values, pattern="") {
 
   # generate indices.json if missing
   create_indices_db()
@@ -33,7 +34,7 @@ list_indices <- function(values) {
   indices <- jsonlite::fromJSON(json_path)
 
   # select requested values from the table
-  indices$indices <- indices$indices[,values]
+  indices$indices <- indices$indices[grep(pattern,indices$indices$name),values]
   attr(indices$indices, "fidolasen_version") <- package_version(indices$fidolasen_version)
   attr(indices$indices, "creation_date") <- as.POSIXct(indices$creation_date)
 
