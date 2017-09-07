@@ -91,12 +91,6 @@ s2_merge <- function(infiles,
   #     "Some of the input files is not in a UTM projection.")
   # }
 
-  # vector which identifies, for each infiles, if its projection is
-  # different or not from out_crs
-  diffcrs <- sapply(infiles_meta$proj4string, function(x) {
-    !compareCRS(CRS(x), CRS(out_crs))
-  })
-
   # if utm zones differ from the selected utm zone, show a warning
   if (out_crs=="") {
     print_message(
@@ -104,6 +98,13 @@ s2_merge <- function(infiles,
       "Using projection \"",infiles_meta$proj4string[1],"\".")
     out_crs <- infiles_meta$proj4string[1]
   }
+
+  # vector which identifies, for each infiles, if its projection is
+  # different or not from out_crs
+  diffcrs <- sapply(infiles_meta$proj4string, function(x) {
+    !compareCRS(CRS(x), CRS(out_crs))
+  })
+
   # Check out_crs
   out_crs <- check_proj4string(out_crs)
   # check the projections of input files
@@ -112,11 +113,11 @@ s2_merge <- function(infiles,
       type="warning",
       "Not all the tiles are in the specified projection; ",
       "tiles with different projection will be reprojected.")
-    if (is.na(tmpdir)) {
-      tmpdir <- file.path(comsub(infiles,"/"),".vrt")
-    }
-    dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
   }
+  if (is.na(tmpdir)) {
+    tmpdir <- file.path(comsub(infiles,"/"),".vrt")
+  }
+  dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
 
   # create outdir if not existing
   suppressWarnings(outdir <- expand_path(outdir, parent=comsub(infiles,"/"), silent=TRUE))
@@ -180,7 +181,7 @@ s2_merge <- function(infiles,
       strftime(sel_infiles_meta[1,"sensing_date"],"%Y%m%d"),"_",
       sel_infiles_meta[1,"id_orbit"],"__",
       sel_infiles_meta[1,"prod_type"],"_",
-      sel_infiles_meta[1,"res"],".",
+      gsub("m$","",sel_infiles_meta[1,"res"]),".",
       sel_infiles_meta[1,"file_ext"])
     sel_outformat <- unique(sel_infiles_meta[,"format"])
     if (length(sel_outformat)>1) {
@@ -234,6 +235,10 @@ s2_merge <- function(infiles,
         "\"",file.path(out_subdir,sel_outfile),"\" "),
       intern = Sys.info()["sysname"] == "Windows"
     )
+    if (sel_outformat=="VRT") {
+      gdal_abs2rel(file.path(out_subdir,sel_outfile))
+    }
+
 
     outfiles <- c(outfiles, file.path(out_subdir,sel_outfile))
 

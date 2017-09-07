@@ -57,6 +57,8 @@ s2_calcindices <- function(infiles,
                            compress="DEFLATE",
                            dataType="Int16") {
 
+  prod_type <- . <- NULL
+
   # generate indices.json if missing and read it
   create_indices_db()
   indices_db <- list_indices(c("n_index","name","longname","s2_formula"))
