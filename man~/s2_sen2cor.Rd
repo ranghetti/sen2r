@@ -4,7 +4,7 @@
 \alias{s2_sen2cor}
 \title{Correct L1C products using sen2cor}
 \usage{
-s2_sen2cor(l1c_prodlist = NULL, l1c_dir = NULL, outdir = NULL,
+s2_sen2cor(l1c_prodlist = NULL, l1c_dir = NULL, out_dir = NULL,
   n_procs = 1, overwrite = FALSE)
 }
 \arguments{
@@ -15,7 +15,7 @@ Note that, at this stage, all products must be in the same directory (this will 
 
 \item{l1c_dir}{Full or relative path of input L1C products.}
 
-\item{outdir}{Directory where output L2A products will be placed.}
+\item{out_dir}{Directory where output L2A products will be placed.}
 
 \item{n_procs}{Number of processors (\code{integer}) to use (default is 1, single processor).}
 
@@ -33,8 +33,8 @@ License: GPL 3.0
 pos <- sp::SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=sp::CRS("+init=epsg:4326"))
 time_window <- as.Date(c("2017-05-01","2017-07-30"))
 example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window)
-s2_download(example_s2_list, outdir=tempdir())
-s2_sen2cor(names(example_s2_list)[1], l1c_dir=tempdir(), outdir=tempdir())
+s2_download(example_s2_list, out_dir=tempdir())
+s2_sen2cor(names(example_s2_list)[1], l1c_dir=tempdir(), out_dir=tempdir())
 }
 }
 \author{

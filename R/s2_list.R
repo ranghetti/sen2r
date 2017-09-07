@@ -28,6 +28,7 @@
 #' @export
 #' @importFrom reticulate import py_to_r r_to_py
 #' @importFrom sprawl get_extent reproj_extent
+#' @importFrom magrittr "%>%"
 #'
 #' @examples \dontrun{
 #' pos <- sp::SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=sp::CRS("+init=epsg:4326"))

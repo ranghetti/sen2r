@@ -13,7 +13,7 @@
 #'  parameters regarding the output grid (`te`, `tr`, `t_srs`) are ignored,
 #'  and the output files are built with the same grid (alignment and
 #'  resolution) of `ref` raster.
-#' @param tr Numeric. (`c(xres,yres)``). set output file resolution
+#' @param tr Numeric. (`c(xres,yres)`). set output file resolution
 #'  (in target georeferenced units).
 #' @param te Georeferenced extents of output file to be created
 #'  (xmin,ymin,xmax,ymax)
@@ -29,6 +29,7 @@
 #' @importFrom sp CRS
 #' @importFrom methods as
 #' @importFrom reticulate import py_to_r
+#' @importFrom magrittr "%>%"
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @examples

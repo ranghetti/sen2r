@@ -11,7 +11,7 @@
 #'  indices. Values should be included in names corresponding to the
 #'  Abbreviations of the following indices:
 #'  [IDB](http://www.indexdatabase.de/db/is.php?sensor_id=96)
-#'  # FIXME the list of the accepted values is a subset; this reference
+#'  FIXME the list of the accepted values is a subset; this reference
 #'  will be replaced with an internal html page integrated in the
 #'  shiny interface).
 #' @param outdir (optional) Full name of the output directory where
@@ -41,7 +41,8 @@
 #' @importFrom jsonlite fromJSON
 #' @importFrom data.table data.table
 #' @importFrom rgdal GDALinfo
-#' @importFrom reticulate gdal
+#' @importFrom reticulate import
+#' @importFrom magrittr "%>%"
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 
@@ -181,8 +182,3 @@ s2_calcindices <- function(infiles,
   return(outfiles)
 
 }
-
-
-
-
-

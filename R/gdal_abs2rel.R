@@ -13,7 +13,7 @@
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @export
-#' @importFrom magrittr %>%
+#' @importFrom magrittr "%>%"
 #' @name gdal_abs2rel
 #' @rdname gdal_abs2rel_rel2abs
 #' @examples
@@ -61,7 +61,7 @@ gdal_abs2rel <- function(in_vrt, out_vrt=NA) {
 #'  links are followed). This is useful to grant that VRT can be moved
 #'  (if the files they link to are not moved).
 #' @export
-#' @importFrom magrittr %>%
+#' @importFrom magrittr "%>%"
 #' @name gdal_rel2abs
 #' @rdname gdal_abs2rel_rel2abs
 gdal_rel2abs <- function(in_vrt, out_vrt=NA) {

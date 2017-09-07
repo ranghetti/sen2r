@@ -19,7 +19,7 @@
 #' @note License: GPL 3.0
 #' @importFrom data.table data.table setnames ":="
 #' @importFrom XML htmlTreeParse xmlRoot readHTMLTable xmlAttrs saveXML
-#' @importFrom magrittr %>%
+#' @importFrom magrittr "%>%"
 #' @importFrom jsonlite toJSON fromJSON
 #' @importFrom stats runif
 #' @importFrom utils capture.output download.file unzip packageVersion

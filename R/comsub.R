@@ -14,6 +14,7 @@
 #' @export
 #' @importFrom reticulate import py_to_r
 #' @importFrom methods is
+#' @importFrom magrittr "%>%"
 #'
 #' @examples
 #' strings <- c("/home/lranghetti/git/fidolasen",
