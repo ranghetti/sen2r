@@ -20,6 +20,11 @@
 #'  second case, its parent directory must exists).
 #'  If it is a relative path, it is expanded from the common parent
 #'  directory of `infiles`.
+#' @param parameters (optional) Values of index parameters. This variable
+#'  must be a named list, in which each element is a list of parameters,
+#'  i.e.:
+#'  `parameters = list("SAVI" = list("a" = 0.5))`
+#'  TODO: add default values (in the json)
 #' @param format (optional) Format of the output file (in a
 #'  format recognised by GDAL). Default is the same format of input images
 #'  (or "GTiff" in case of VRT input images).
@@ -49,9 +54,7 @@
 s2_calcindices <- function(infiles,
                            indices,
                            outdir=".",
-                           a=NA,
-                           b=NA,
-                           x=NA,
+                           parameters=NULL,
                            format=NA,
                            subdirs=NA,
                            tmpdir=NA,
@@ -133,6 +136,9 @@ s2_calcindices <- function(infiles,
     # compute single indices
     for (j in seq_along(indices)) {
 
+      # extract parameters
+      sel_par <- parameters[[indices[j]]]
+
       # define output filename
       sel_outfile <- paste0(
         "S2",sel_infile_meta$mission,sel_infile_meta$level,"_",
@@ -158,20 +164,23 @@ s2_calcindices <- function(infiles,
       }
 
       # apply gdal_calc
-      system(
-        paste0(
-          Sys.which("gdal_calc.py")," ",
-          paste(apply(gdal_bands,1,function(l){
-            paste0("-",l["letter"]," \"",sel_infile,"\" --",l["letter"],"_band=",which(gdal_bands$letter==l["letter"]))
-          }), collapse=" ")," ",
-          "--outfile=\"",file.path(out_subdir,sel_outfile),"\" ",
-          "--type=\"",dataType,"\" ",
-          "--format=\"",sel_format,"\" ",
-          if (sel_format=="GTiff") {paste0("--co=\"COMPRESS=",toupper(compress),"\" ")},
-          "--calc=\"",sel_formula,"\""
-        ),
-        intern = Sys.info()["sysname"] == "Windows"
+      with(sel_par,
+        system(
+          paste0(
+            Sys.which("gdal_calc.py")," ",
+            paste(apply(gdal_bands,1,function(l){
+              paste0("-",l["letter"]," \"",sel_infile,"\" --",l["letter"],"_band=",which(gdal_bands$letter==l["letter"]))
+            }), collapse=" ")," ",
+            "--outfile=\"",file.path(out_subdir,sel_outfile),"\" ",
+            "--type=\"",dataType,"\" ",
+            "--format=\"",sel_format,"\" ",
+            if (sel_format=="GTiff") {paste0("--co=\"COMPRESS=",toupper(compress),"\" ")},
+            "--calc=\"",sel_formula,"\""
+          ),
+          intern = Sys.info()["sysname"] == "Windows"
+        )
       )
+      # TODO check that required parameters are present
 
       outfiles <- c(outfiles, file.path(out_subdir,sel_outfile)) # TODO use out_subdir for different indices
 

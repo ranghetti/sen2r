@@ -4,7 +4,7 @@
 \alias{s2_calcindices}
 \title{Compute maps of spectral indices}
 \usage{
-s2_calcindices(infiles, indices, outdir = ".", a = NA, b = NA, x = NA,
+s2_calcindices(infiles, indices, outdir = ".", parameters = NULL,
   format = NA, subdirs = NA, tmpdir = NA, compress = "DEFLATE",
   dataType = "Int16")
 }
@@ -29,6 +29,12 @@ the files should be created (default: current directory).
 second case, its parent directory must exists).
 If it is a relative path, it is expanded from the common parent
 directory of \code{infiles}.}
+
+\item{parameters}{(optional) Values of index parameters. This variable
+must be a named list, in which each element is a list of parameters,
+i.e.:
+\code{parameters = list("SAVI" = list("a" = 0.5))}
+TODO: add default values (in the json)}
 
 \item{format}{(optional) Format of the output file (in a
 format recognised by GDAL). Default is the same format of input images

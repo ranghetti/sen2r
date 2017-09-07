@@ -98,7 +98,7 @@
 are physical rasters (no output VRT is allowed).</p>
     
 
-    <pre class="usage"><span class='fu'>s2_calcindices</span>(<span class='no'>infiles</span>, <span class='no'>indices</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='kw'>a</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>b</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>x</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+    <pre class="usage"><span class='fu'>s2_calcindices</span>(<span class='no'>infiles</span>, <span class='no'>indices</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='kw'>parameters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>,
   <span class='kw'>dataType</span> <span class='kw'>=</span> <span class='st'>"Int16"</span>)</pre>
     
@@ -131,6 +131,14 @@ the files should be created (default: current directory).
 second case, its parent directory must exists).
 If it is a relative path, it is expanded from the common parent
 directory of <code>infiles</code>.</p></td>
+    </tr>
+    <tr>
+      <th>parameters</th>
+      <td><p>(optional) Values of index parameters. This variable
+must be a named list, in which each element is a list of parameters,
+i.e.:
+<code>parameters = list("SAVI" = list("a" = 0.5))</code>
+TODO: add default values (in the json)</p></td>
     </tr>
     <tr>
       <th>format</th>
