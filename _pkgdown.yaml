@@ -26,12 +26,13 @@ reference:
       - '`abs2rel`'
       - '`gdal_abs2rel`'
       - '`gdalwarp_grid`'
+      - '`list_indices`'
   - title: Internal functions
     desc: (not exported)
     contents:
       - '`import_s2download`'
-      - '`s2_shortname`'
       - '`print_message`'
+      - '`create_indices_db`'
 navbar:
   type: inverse
   left:

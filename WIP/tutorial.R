@@ -23,6 +23,7 @@ sel_tiles      <- c("32TLR", "32TMR")
 sel_orbits     <- c(108, 65)
 sel_time_window <- as.Date(c("2016-11-16","2016-12-15")) # both old and compact names
 sel_prod_types <- c("BOA","TCI","SCL")
+sel_indices    <- c("NDVI","SAVI","NDRE","EVI")
 
 out_format     <- "VRT"
 out_res        <- "10m"
@@ -32,7 +33,7 @@ out_res        <- "10m"
 
 ## 1) List some products in a quite extended area
 #     (enough to include multiple tiles and orbits)
-example_s2_list <- unlist(sapply(sel_orbits, function(x){
+example_s2_list <- unlist(lapply(sel_orbits, function(x){
   s2_list(spatial_extent=sel_boundaries, time_interval=sel_time_window, orbit=x)
 }))
 print(example_s2_list)
@@ -46,7 +47,7 @@ if (length(example_s2_list_l1c)>0) {
   lapply(sel_tiles, function(tile) {
     s2_download(example_s2_list_l1c, out_dir=l1c_path, tile=tile)
   })
-  s2_sen2cor(names(example_s2_list_l1c), l1c_dir=l1c_path, out_dir=l2a_path, n_procs=1)
+  s2_sen2cor(list.files(l1c_path,"\\.SAFE$"), l1c_dir=l1c_path, out_dir=l2a_path, n_procs=1)
 }
 if (length(example_s2_list_l2a)>0) {
   s2_download(example_s2_list_l2a, out_dir=l2a_path)
@@ -54,8 +55,14 @@ if (length(example_s2_list_l2a)>0) {
 
 ## 3) Convert in vrt
 dir.create(vrt_01_path<-file.path(vrt_path,"01_translate"),showWarnings=FALSE)
+for (sel_prod in list.files(l1c_path,"\\.SAFE$",full.names=TRUE)) {
+  if (!file.exists(file.path(vrt_01_path,basename(s2_shortname(sel_prod, ext="vrt"))))) {
+    s2_translate(sel_prod, vrt_01_path, prod_type="TOA",
+                 format="VRT", vrt_rel_paths=TRUE)
+  }
+}
 for (sel_prod in list.files(l2a_path,"\\.SAFE$",full.names=TRUE)) {
-  if (!file.exists(sel_prod)) {
+  if (!file.exists(file.path(vrt_01_path,basename(s2_shortname(sel_prod, ext="vrt"))))) {
     s2_translate(sel_prod, vrt_01_path, prod_type=sel_prod_types,
                  format="VRT", vrt_rel_paths=TRUE)
   }
@@ -65,3 +72,8 @@ for (sel_prod in list.files(l2a_path,"\\.SAFE$",full.names=TRUE)) {
 dir.create(vrt_02_path<-file.path(vrt_path,"02_merge"),showWarnings=FALSE)
 vrt_01_names <- list.files(vrt_01_path, recursive=TRUE, full.names=TRUE)
 s2_merge(vrt_01_names, vrt_02_path)
+
+## 5) Compute spectral indices
+dir.create(vrt_03_path<-file.path(vrt_path,"03_indices"),showWarnings=FALSE)
+vrt_02_names <- list.files(vrt_02_path, recursive=TRUE, full.names=TRUE)
+s2_calcindices(vrt_02_names, sel_indices, vrt_03_path)
