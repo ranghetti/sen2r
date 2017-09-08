@@ -101,8 +101,8 @@ If not specified, the output format of each file is the same of the
 corresponding source file.</p>
     
 
-    <pre class="usage"><span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>, <span class='no'>dstfiles</span>, <span class='kw'>of</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ref</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>te</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>t_srs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>r</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>dstnodata</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>, <span class='no'>dstfiles</span>, <span class='kw'>of</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ref</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>mask</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>tr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>t_srs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>r</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>dstnodata</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -122,32 +122,52 @@ the format of every input filename.</p></td>
     </tr>
     <tr>
       <th>ref</th>
-      <td><p>Path of the raster taken as reference: if provided, other
-parameters regarding the output grid (<code>te</code>, <code>tr</code>, <code>t_srs</code>) are ignored,
-and the output files are built with the same grid (alignment and
-resolution) of <code>ref</code> raster.</p></td>
+      <td><p>Path of the raster taken as reference: if provided,
+parameters regarding the output grid (alignment, resolution and
+extent) are taken from this raster. To set differently some of
+these values, specify also other values of <code>mask</code> and/or <code>tr</code>.
+<code>t_srs</code> parameter value is always ignored when <code>ref</code> is provided.</p></td>
+    </tr>
+    <tr>
+      <th>mask</th>
+      <td><p>Spatial path or object from which to take the extent
+of output files. If it is a polygon, this is used as masking layer;
+otherwise, only the bounding box  is considered;. If both <code>ref</code>
+and <code>mask</code> are provided, this parameter will overlay the extent of the
+reference raster. In order to take only the grid from <code>res</code> and not
+to clip on its extent, set <code>mask=NA</code>. Notice that the output
+projection is never taken from <code>mask</code>.</p></td>
     </tr>
     <tr>
       <th>tr</th>
       <td><p>Numeric. (<code>c(xres,yres)</code>). set output file resolution
-(in target georeferenced units).</p></td>
-    </tr>
-    <tr>
-      <th>te</th>
-      <td><p>Georeferenced extents of output file to be created
-(xmin,ymin,xmax,ymax)</p></td>
+(in target georeferenced units). If bot <code>ref</code> and <code>tr</code> are provided,
+<code>tr</code> is rounded in order to match the exact extent.</p></td>
     </tr>
     <tr>
       <th>t_srs</th>
-      <td><p>A vector of corresponding output file paths.</p></td>
+      <td><p>Target spatial reference set (character). The coordinate
+systems that can be passed are anything supported by the
+<code>OGRSpatialReference.SetFromUserInput()</code> call, which includes EPSG
+PCS and GCSes (ie. EPSG:4296), PROJ.4 declarations (as above),
+or the name of a .prf file containing well known text.</p></td>
     </tr>
     <tr>
       <th>r</th>
-      <td><p>A vector of corresponding output file paths.</p></td>
+      <td><p>Resampling_method ("near"|"bilinear"|"cubic"|"cubicspline"|
+"lanczos"|"average"|"mode"|"max"|"min"|"med"|"q1"|"q3").</p></td>
     </tr>
     <tr>
       <th>dstnodata</th>
-      <td><p>A vector of corresponding output file paths.</p></td>
+      <td><p>Set nodata values for output bands (different values
+can be supplied for each band). If more than one value is supplied
+all values should be quoted to keep them together as a single
+operating system argument. New files will be initialized to this
+value and if possible the nodata value will be recorded in the output
+file. Use a value of NA to ensure that nodata is not defined.
+If this argument is not used then nodata values will be copied from
+the source datasets. At the moment it is not possible to set different
+values for different <code>srcfiles</code> (use multiple calls of the functions).</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -163,13 +183,63 @@ resolution) of <code>ref</code> raster.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='no'>ex_sel</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='st'>"/path/of/existing/input/file.tif"</span>,
-            <span class='st'>"/path/of/existing/input/anotherfile.jp2"</span>)
-<span class='no'>ex_ref</span> <span class='kw'>&lt;-</span> <span class='st'>"/path/of/the/reference/file.jp2"</span>
-<span class='no'>ex_out</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='st'>"/path/of/the/output/file.tif"</span>,
-            <span class='st'>"/path/of/the/output/anotherfile.jp2"</span>)
+<span class='no'>srcfiles</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='st'>"/path/of/a/s2/file.tif"</span>,
+              <span class='st'>"/path/of/another/s2/file.tif"</span>)
+<span class='no'>crop_poly</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='st'>"/path/of/a/polygon/vector.shp"</span>)
 
-<span class='fu'>gdal_warp</span>(<span class='no'>ex_sel</span>, <span class='no'>ex_out</span>, <span class='no'>ex_ref</span>, <span class='kw'>dstnodata</span><span class='kw'>=</span><span class='fl'>0</span>, <span class='kw'>overwrite</span><span class='kw'>=</span><span class='fl'>TRUE</span>)
+<span class='co'># Simple clip</span>
+<span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>[<span class='fl'>1</span>],
+          <span class='no'>test0_clip</span> <span class='kw'>&lt;-</span> <span class='fu'>file.path</span>(<span class='fu'>tempdir</span>(),<span class='st'>"test0_clip.tif"</span>),
+          <span class='kw'>mask</span> <span class='kw'>=</span> <span class='fu'>get_extent</span>(<span class='no'>crop_poly</span>))
+
+<span class='co'># Clip and mask</span>
+<span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>,
+          <span class='no'>test0_mask</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='fu'>file.path</span>(<span class='fu'>tempdir</span>(),<span class='st'>"test0_mask.tif"</span>),
+                          <span class='fu'>tempfile</span>()),
+          <span class='kw'>mask</span> <span class='kw'>=</span> <span class='no'>crop_poly</span>)
+
+<span class='co'># Warp on a reference raster</span>
+<span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>[<span class='fl'>1</span>],
+          <span class='no'>test1</span> <span class='kw'>&lt;-</span> <span class='fu'>file.path</span>(<span class='fu'>tempdir</span>(),<span class='st'>"test1.tif"</span>),
+          <span class='kw'>ref</span> <span class='kw'>=</span> <span class='no'>test0_mask</span>[<span class='fl'>1</span>])
+
+<span class='co'># Reproject all the input file</span>
+<span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>[<span class='fl'>1</span>],
+          <span class='no'>test2</span> <span class='kw'>&lt;-</span> <span class='fu'>file.path</span>(<span class='fu'>tempdir</span>(),<span class='st'>"test2.tif"</span>),
+          <span class='kw'>t_srs</span> <span class='kw'>=</span> <span class='st'>"+init=epsg:32631"</span>)
+
+<span class='co'># Reproject and clip on a bounding box</span>
+<span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>[<span class='fl'>1</span>],
+          <span class='no'>test3a</span> <span class='kw'>&lt;-</span> <span class='fu'>file.path</span>(<span class='fu'>tempdir</span>(),<span class='st'>"test3a.tif"</span>),
+          <span class='kw'>mask</span> <span class='kw'>=</span> <span class='fu'>get_extent</span>(<span class='no'>crop_poly</span>),
+          <span class='kw'>t_srs</span> <span class='kw'>=</span> <span class='st'>"+init=epsg:32631"</span>)
+<span class='co'># Reproject and clip on polygon (masking outside)</span>
+<span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>[<span class='fl'>1</span>],
+          <span class='no'>test3b</span> <span class='kw'>&lt;-</span> <span class='fu'>file.path</span>(<span class='fu'>tempdir</span>(),<span class='st'>"test3b.tif"</span>),
+          <span class='kw'>mask</span> <span class='kw'>=</span> <span class='no'>crop_poly</span>,
+          <span class='kw'>t_srs</span> <span class='kw'>=</span> <span class='st'>"+init=epsg:32631"</span>)
+<span class='co'># Workaround to clip on a bounding box without</span>
+<span class='co'># enlarging it too much (cause of the reprojection)</span>
+<span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>[<span class='fl'>1</span>],
+          <span class='no'>test3c</span> <span class='kw'>&lt;-</span> <span class='fu'>file.path</span>(<span class='fu'>tempdir</span>(),<span class='st'>"test3c.tif"</span>),
+          <span class='kw'>mask</span> <span class='kw'>=</span> <span class='fu'>st_cast</span>(<span class='no'>crop_poly</span>,<span class='st'>"LINESTRING"</span>),
+          <span class='kw'>t_srs</span> <span class='kw'>=</span> <span class='st'>"+init=epsg:32631"</span>)
+
+<span class='co'># Use a reference raster with a different projection</span>
+<span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>[<span class='fl'>1</span>],
+          <span class='no'>test4a</span> <span class='kw'>&lt;-</span> <span class='fu'>file.path</span>(<span class='fu'>tempdir</span>(),<span class='st'>"test4a.tif"</span>),
+          <span class='kw'>ref</span> <span class='kw'>=</span> <span class='no'>test3b</span>)
+<span class='co'># Use a reference raster with a different projection</span>
+<span class='co'># and specify a different bounding box</span>
+<span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>[<span class='fl'>1</span>],
+          <span class='no'>test4b</span> <span class='kw'>&lt;-</span> <span class='fu'>file.path</span>(<span class='fu'>tempdir</span>(),<span class='st'>"test4b.tif"</span>),
+          <span class='kw'>mask</span> <span class='kw'>=</span> <span class='no'>test0_clip</span>,
+          <span class='kw'>ref</span> <span class='kw'>=</span> <span class='no'>test3b</span>)
+<span class='co'># Use a reference raster with a different projection and a mask</span>
+<span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>[<span class='fl'>1</span>],
+          <span class='no'>test4c</span> <span class='kw'>&lt;-</span> <span class='fu'>file.path</span>(<span class='fu'>tempdir</span>(),<span class='st'>"test4c.tif"</span>),
+          <span class='kw'>mask</span> <span class='kw'>=</span> <span class='no'>crop_poly</span>,
+          <span class='kw'>ref</span> <span class='kw'>=</span> <span class='no'>test3b</span>)
 <span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

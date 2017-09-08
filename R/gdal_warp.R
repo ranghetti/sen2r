@@ -47,7 +47,7 @@
 #' @importFrom rgdal GDALinfo CRSargs
 #' @importFrom gdalUtils gdalwarp gdal_translate
 #' @importFrom sp CRS
-#' @importFrom sf st_transform
+#' @importFrom sf st_transform st_geometry_type st_write st_cast
 #' @importFrom methods as
 #' @importFrom reticulate import py_to_r
 #' @importFrom magrittr "%>%"
@@ -74,7 +74,7 @@
 #' # Warp on a reference raster
 #' gdal_warp(srcfiles[1],
 #'           test1 <- file.path(tempdir(),"test1.tif"),
-#'           ref = test0_mask)
+#'           ref = test0_mask[1])
 #'
 #' # Reproject all the input file
 #' gdal_warp(srcfiles[1],

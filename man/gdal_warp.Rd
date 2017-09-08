@@ -86,7 +86,7 @@ gdal_warp(srcfiles,
 # Warp on a reference raster
 gdal_warp(srcfiles[1],
           test1 <- file.path(tempdir(),"test1.tif"),
-          ref = test0_mask)
+          ref = test0_mask[1])
 
 # Reproject all the input file
 gdal_warp(srcfiles[1],
