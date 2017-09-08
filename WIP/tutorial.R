@@ -20,7 +20,7 @@ out_path <- file.path(base_path, "out")
 sapply(c(l1c_path,l2a_path,vrt_path),dir.create,showWarnings=FALSE)
 
 ita_boundaries <- sprawl::get_boundaries("Italy", 3)
-sel_boundaries <- ita_boundaries[grep("Valtournenche|Ayas|Gressoney-La-Trinit[èé]", ita_boundaries$NAME_3),]
+sel_crop <- ita_boundaries[grep("Valtournenche|Ayas|Gressoney-La-Trinit[èé]", ita_boundaries$NAME_3),]
 
 sel_tiles      <- c("32TLR", "32TMR")
 sel_orbits     <- c(108, 65)
@@ -33,7 +33,7 @@ sel_res        <- "10m"
 
 out_res        <- 15
 out_proj       <- sp::CRS("+init=epsg:3035")
-out_bbox       <- sel_boundaries %>% get_extent() %>% reproj_extent(out_proj) %>% as("matrix")
+out_bbox       <- sel_crop %>% get_extent() %>% reproj_extent(out_proj) %>% as("matrix")
 
 
 ### end of parameters ###
@@ -42,7 +42,7 @@ out_bbox       <- sel_boundaries %>% get_extent() %>% reproj_extent(out_proj) %>
 ## 1) List some products in a quite extended area
 #     (enough to include multiple tiles and orbits)
 example_s2_list <- unlist(lapply(sel_orbits, function(x){
-  s2_list(spatial_extent=sel_boundaries, time_interval=sel_time_window, orbit=x)
+  s2_list(spatial_extent=sel_crop, time_interval=sel_time_window, orbit=x)
 }))
 print(example_s2_list)
 
@@ -103,3 +103,11 @@ fidolasen::gdal_warp(vrt_02_names, sel_outfiles,
 ## 5) Compute spectral indices
 boa_names <- list.files(out_path, "BOA", recursive=TRUE, full.names=TRUE)
 s2_calcindices(boa_names, sel_indices, out_path, subdirs=TRUE, format="GTiff", compress="DEFLATE", dataType="Int32")
+
+
+
+### Tests on gdal_warp ###
+srcfiles <- list.files(out_path, "NDVI", recursive=TRUE, full.names=TRUE)
+crop_poly <- sel_crop[sel_crop$NAME_3=="Ayas",]
+srcfiles <- srcfiles[grep("20161211.+tif$",srcfiles)]
+# then follows the examples in gdal_warp documentation
