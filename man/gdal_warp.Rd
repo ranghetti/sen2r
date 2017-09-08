@@ -4,8 +4,8 @@
 \alias{gdal_warp}
 \title{Clip, reproject and warp raster files}
 \usage{
-gdal_warp(srcfiles, dstfiles, of = NULL, ref = NULL, tr = NULL,
-  te = NULL, t_srs = NULL, r = NULL, dstnodata = NULL, ...)
+gdal_warp(srcfiles, dstfiles, of = NULL, ref = NULL, mask = NULL,
+  tr = NULL, t_srs = NULL, r = NULL, dstnodata = NULL, ...)
 }
 \arguments{
 \item{srcfiles}{A vector of input file paths (managed by GDAL).}
@@ -15,22 +15,42 @@ gdal_warp(srcfiles, dstfiles, of = NULL, ref = NULL, tr = NULL,
 \item{of}{The output format (use the short format name). Default is
 the format of every input filename.}
 
-\item{ref}{Path of the raster taken as reference: if provided, other
-parameters regarding the output grid (\code{te}, \code{tr}, \code{t_srs}) are ignored,
-and the output files are built with the same grid (alignment and
-resolution) of \code{ref} raster.}
+\item{ref}{Path of the raster taken as reference: if provided,
+parameters regarding the output grid (alignment, resolution and
+extent) are taken from this raster. To set differently some of
+these values, specify also other values of \code{mask} and/or \code{tr}.
+\code{t_srs} parameter value is always ignored when \code{ref} is provided.}
+
+\item{mask}{Spatial path or object from which to take the extent
+of output files. If it is a polygon, this is used as masking layer;
+otherwise, only the bounding box  is considered;. If both \code{ref}
+and \code{mask} are provided, this parameter will overlay the extent of the
+reference raster. In order to take only the grid from \code{res} and not
+to clip on its extent, set \code{mask=NA}. Notice that the output
+projection is never taken from \code{mask}.}
 
 \item{tr}{Numeric. (\code{c(xres,yres)}). set output file resolution
-(in target georeferenced units).}
+(in target georeferenced units). If bot \code{ref} and \code{tr} are provided,
+\code{tr} is rounded in order to match the exact extent.}
 
-\item{te}{Georeferenced extents of output file to be created
-(xmin,ymin,xmax,ymax)}
+\item{t_srs}{Target spatial reference set (character). The coordinate
+systems that can be passed are anything supported by the
+\code{\link[=OGRSpatialReference.SetFromUserInput]{OGRSpatialReference.SetFromUserInput()}} call, which includes EPSG
+PCS and GCSes (ie. EPSG:4296), PROJ.4 declarations (as above),
+or the name of a .prf file containing well known text.}
 
-\item{t_srs}{A vector of corresponding output file paths.}
+\item{r}{Resampling_method ("near"|"bilinear"|"cubic"|"cubicspline"|
+"lanczos"|"average"|"mode"|"max"|"min"|"med"|"q1"|"q3").}
 
-\item{r}{A vector of corresponding output file paths.}
-
-\item{dstnodata}{A vector of corresponding output file paths.}
+\item{dstnodata}{Set nodata values for output bands (different values
+can be supplied for each band). If more than one value is supplied
+all values should be quoted to keep them together as a single
+operating system argument. New files will be initialized to this
+value and if possible the nodata value will be recorded in the output
+file. Use a value of NA to ensure that nodata is not defined.
+If this argument is not used then nodata values will be copied from
+the source datasets. At the moment it is not possible to set different
+values for different \code{srcfiles} (use multiple calls of the functions).}
 
 \item{...}{Additional parameters of \link{gdalwarp} or \link{gdal_translate}
 (different from \code{s_srs}, \code{t_srs}, \code{te}, \code{tr}, \code{ts} and \code{of}).}
@@ -48,13 +68,63 @@ License: GPL 3.0
 }
 \examples{
 \dontrun{
-ex_sel <- c("/path/of/existing/input/file.tif",
-            "/path/of/existing/input/anotherfile.jp2")
-ex_ref <- "/path/of/the/reference/file.jp2"
-ex_out <- c("/path/of/the/output/file.tif",
-            "/path/of/the/output/anotherfile.jp2")
+srcfiles <- c("/path/of/a/s2/file.tif",
+              "/path/of/another/s2/file.tif")
+crop_poly <- c("/path/of/a/polygon/vector.shp")
 
-gdal_warp(ex_sel, ex_out, ex_ref, dstnodata=0, overwrite=TRUE)
+# Simple clip
+gdal_warp(srcfiles[1],
+          test0_clip <- file.path(tempdir(),"test0_clip.tif"),
+          mask = get_extent(crop_poly))
+
+# Clip and mask
+gdal_warp(srcfiles,
+          test0_mask <- c(file.path(tempdir(),"test0_mask.tif"),
+                          tempfile()),
+          mask = crop_poly)
+
+# Warp on a reference raster
+gdal_warp(srcfiles[1],
+          test1 <- file.path(tempdir(),"test1.tif"),
+          ref = test0_mask)
+
+# Reproject all the input file
+gdal_warp(srcfiles[1],
+          test2 <- file.path(tempdir(),"test2.tif"),
+          t_srs = "+init=epsg:32631")
+
+# Reproject and clip on a bounding box
+gdal_warp(srcfiles[1],
+          test3a <- file.path(tempdir(),"test3a.tif"),
+          mask = get_extent(crop_poly),
+          t_srs = "+init=epsg:32631")
+# Reproject and clip on polygon (masking outside)
+gdal_warp(srcfiles[1],
+          test3b <- file.path(tempdir(),"test3b.tif"),
+          mask = crop_poly,
+          t_srs = "+init=epsg:32631")
+# Workaround to clip on a bounding box without
+# enlarging it too much (cause of the reprojection)
+gdal_warp(srcfiles[1],
+          test3c <- file.path(tempdir(),"test3c.tif"),
+          mask = st_cast(crop_poly,"LINESTRING"),
+          t_srs = "+init=epsg:32631")
+
+# Use a reference raster with a different projection
+gdal_warp(srcfiles[1],
+          test4a <- file.path(tempdir(),"test4a.tif"),
+          ref = test3b)
+# Use a reference raster with a different projection
+# and specify a different bounding box
+gdal_warp(srcfiles[1],
+          test4b <- file.path(tempdir(),"test4b.tif"),
+          mask = test0_clip,
+          ref = test3b)
+# Use a reference raster with a different projection and a mask
+gdal_warp(srcfiles[1],
+          test4c <- file.path(tempdir(),"test4c.tif"),
+          mask = crop_poly,
+          ref = test3b)
 }
 }
 \author{
