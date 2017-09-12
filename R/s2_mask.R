@@ -182,11 +182,12 @@ s2_mask <- function(infiles,
                  format = sel_format,
                  options = ifelse(sel_format=="GTiff",
                                   c(paste0("COMPRESS=",compress)),
-                                  NULL),
+                                  ""),
                  overwrite = TRUE)
 
     # fix for envi extension (writeRaster use .envi)
-    if (sel_format=="ENVI") {
+    if (sel_format=="ENVI" &
+        file.exists(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile))) {
       file.rename(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),
                   sel_outfile)
       file.rename(paste0(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),".aux.xml"),
