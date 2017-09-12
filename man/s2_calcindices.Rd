@@ -5,8 +5,7 @@
 \title{Compute maps of spectral indices}
 \usage{
 s2_calcindices(infiles, indices, outdir = ".", parameters = NULL,
-  format = NA, subdirs = NA, tmpdir = NA, compress = "DEFLATE",
-  dataType = "Int16")
+  format = NA, subdirs = NA, compress = "DEFLATE", dataType = "Int16")
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths
@@ -44,11 +43,6 @@ format recognised by GDAL). Default is the same format of input images
 placed in separated \code{outfile} subdirectories; if FALSE, they are placed in
 \code{outfile} directory; if NA (default), subdirectories are created only if
 more than a single spectral index is required.}
-
-\item{tmpdir}{(optional) Path where intermediate VRT will be created.
-Default is in a hidden subdirectory (called \code{.vrt}) of the common parent
-directory of \code{infiles}. Set \code{tmpdir=tempdir()} if you do not want to
-keep the intermediate files after reboot.}
 
 \item{compress}{(optional) In the case a GTiff format is
 present, the compression indicated with this parameter is used.}

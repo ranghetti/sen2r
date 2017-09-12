@@ -82,22 +82,33 @@ vrt_01_names <- list.files(vrt_01_path, recursive=TRUE, full.names=TRUE)
 s2_merge(vrt_01_names, vrt_02_path)
 
 ## 5) clip, rescale, reproject
+dir.create(vrt_03_path<-file.path(vrt_path,"03_warp"),showWarnings=FALSE)
 vrt_02_names <- list.files(vrt_02_path, recursive=TRUE, full.names=TRUE)
-sapply(subdirs <- unique(basename(dirname(vrt_02_names))), function(x) {
-  dir.create(file.path(out_path,x),showWarnings=FALSE)
-})
-sel_outfiles <- file.path(out_path,
+vrt_03_names <- file.path(vrt_03_path,
                           basename(dirname(vrt_02_names)),
-                          gsub("\\.vrt$",".tif",basename(vrt_02_names)))
-fidolasen::gdal_warp(vrt_02_names, sel_outfiles,
+                          basename(vrt_02_names))
+sapply(unique(basename(dirname(vrt_03_names))), function(x) {
+  dir.create(file.path(vrt_03_path,x),showWarnings=FALSE)
+})
+fidolasen::gdal_warp(vrt_02_names, vrt_03_names,
                      t_srs = out_proj@projargs,
-                     te = c(out_bbox),
+                     mask = sel_crop,
                      tr = c(out_res,out_res),
-                     of = out_format,
+                     of = "VRT",
                      compress="DEFLATE")
 # lapply(sel_outfiles, gdal_abs2rel) # FIXME move within single functions
 
-## 5) create output files, IF REQUESTED
+## 5) Apply mask
+sapply(subdirs <- unique(basename(dirname(vrt_03_names))), function(x) {
+  dir.create(file.path(out_path,x),showWarnings=FALSE)
+})
+
+s2_mask(vrt_03_names[grep("BOA|TCI|TOA",vrt_03_names)],
+        vrt_03_names[grep("_SCL_",vrt_03_names)],
+        mask_type="cloud_medium_proba",
+        outdir=out_path,
+        format=out_format,
+        subdirs=TRUE)
 
 
 ## 5) Compute spectral indices

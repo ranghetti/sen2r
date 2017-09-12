@@ -174,6 +174,13 @@ s2_translate <- function(infile,
       sel_type <- sel_prod
     }
 
+    # define NA flag
+    sel_na <- switch(sel_prod,
+                     BOA = "65535",
+                     TOA = "65535",
+                     SCL = "0",
+                     TCI = NA,
+                     NA)
     # define output subdir
     out_subdir <- ifelse(subdirs, file.path(outdir,sel_prod), outdir)
 
@@ -238,6 +245,7 @@ s2_translate <- function(infile,
           paste0(
             Sys.which("gdal_translate")," -of ",format," ",
             if (format=="GTiff") {paste0("-co COMPRESS=",toupper(compress)," ")},
+            if (!is.na(sel_na)) {paste0("-a_nodata ",sel_na," ")},
             "\"",final_vrt_name,"\" ",
             "\"",out_name,"\""
           ), intern = Sys.info()["sysname"] == "Windows"

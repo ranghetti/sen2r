@@ -26,7 +26,7 @@
 #'  `tr` is rounded in order to match the exact extent.
 #' @param t_srs Target spatial reference set (character). The coordinate
 #'  systems that can be passed are anything supported by the
-#'  [OGRSpatialReference.SetFromUserInput()] call, which includes EPSG
+#'  OGRSpatialReference.SetFromUserInput() call, which includes EPSG
 #'  PCS and GCSes (ie. EPSG:4296), PROJ.4 declarations (as above),
 #'  or the name of a .prf file containing well known text.
 #' @param r Resampling_method ("near"|"bilinear"|"cubic"|"cubicspline"|

@@ -76,13 +76,6 @@ s2_merge <- function(infiles,
   #            "None")
   #   }
   # })
-  infiles_meta$NAflag <- sapply(infiles_meta$prod_type, switch,
-                                BOA = "65535",
-                                TOA = "65535",
-                                SCL = "0",
-                                TCI = "None",
-                                "None")
-
   # # check input UTM zones
   # infiles_meta$utm <- gsub(".* \\+zone\\=([0-9]+) .*","\\1",infiles_meta$proj4string)
   # if (any(infiles_meta$utm != as.character(as.integer(infiles_meta$utm)))) {
@@ -202,8 +195,7 @@ s2_merge <- function(infiles,
                     dstfiles = reproj_vrt,
                     ref = ref_file,
                     of = "VRT",
-                    r = "near",
-                    dstnodata = sel_infiles_meta[sel_diffcrs,][i,"NAflag"])
+                    r = "near")
       gdal_abs2rel(reproj_vrt)
 
       # replace input file path with intermediate

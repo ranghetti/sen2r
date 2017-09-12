@@ -32,10 +32,6 @@
 #'  placed in separated `outfile` subdirectories; if FALSE, they are placed in
 #'  `outfile` directory; if NA (default), subdirectories are created only if
 #'  more than a single spectral index is required.
-#' @param tmpdir (optional) Path where intermediate VRT will be created.
-#'  Default is in a hidden subdirectory (called `.vrt`) of the common parent
-#'  directory of `infiles`. Set `tmpdir=tempdir()` if you do not want to
-#'  keep the intermediate files after reboot.
 #' @param compress (optional) In the case a GTiff format is
 #'  present, the compression indicated with this parameter is used.
 #' @param dataType (optional) Numeric datatype of the ouptut rasters:
@@ -43,6 +39,7 @@
 #'  if "Int16" (default) or "UInt16", values are multiplicated by a 10000
 #'  scale factor.
 #' @return A vector with the names of the created products.
+#' @export
 #' @importFrom jsonlite fromJSON
 #' @importFrom data.table data.table
 #' @importFrom rgdal GDALinfo
@@ -57,11 +54,13 @@ s2_calcindices <- function(infiles,
                            parameters=NULL,
                            format=NA,
                            subdirs=NA,
-                           tmpdir=NA,
                            compress="DEFLATE",
                            dataType="Int16") {
 
   prod_type <- . <- NULL
+
+  # import python modules
+  gdal <- import("osgeo",convert=FALSE)$gdal
 
   # generate indices.json if missing and read it
   create_indices_db()
@@ -88,7 +87,6 @@ s2_calcindices <- function(infiles,
 
   # check output format
   if (!is.na(format)) {
-    gdal <- import("osgeo",convert=FALSE)$gdal
     sel_driver <- gdal$GetDriverByName(format)
     if (is.null(py_to_r(sel_driver))) {
       print_message(
@@ -107,7 +105,6 @@ s2_calcindices <- function(infiles,
   infiles_meta <- infiles_meta[prod_type %in% c("TOA","BOA"),]
 
   # create subdirs (if requested)
-  prod_types <- unique(infiles_meta$prod_type)
   if (is.na(subdirs)) {
     subdirs <- ifelse(length(indices)>1, TRUE, FALSE)
   }
@@ -123,6 +120,9 @@ s2_calcindices <- function(infiles,
     sel_format <- suppressWarnings(ifelse(
       !is.na(format), format, attr(GDALinfo(sel_infile), "driver")
     )) %>% ifelse(.!="VRT",.,"GTiff")
+    sel_out_ext <- ifelse(
+      sel_format=="ENVI", "dat",
+      unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(gdal$DMD_EXTENSIONS))," ")," "))[1])
 
     # check bands to use
     if (sel_infile_meta$prod_type=="TOA") {
@@ -147,7 +147,7 @@ s2_calcindices <- function(infiles,
         sel_infile_meta$id_tile,"_",
         indices_info[j,"name"],"_",
         gsub("m$","",sel_infile_meta$res),".",
-        sel_infile_meta$file_ext)
+        sel_out_ext)
 
       # define subdir
       out_subdir <- ifelse(subdirs, file.path(outdir,indices[j]), outdir)
@@ -165,20 +165,20 @@ s2_calcindices <- function(infiles,
 
       # apply gdal_calc
       with(sel_par,
-        system(
-          paste0(
-            Sys.which("gdal_calc.py")," ",
-            paste(apply(gdal_bands,1,function(l){
-              paste0("-",l["letter"]," \"",sel_infile,"\" --",l["letter"],"_band=",which(gdal_bands$letter==l["letter"]))
-            }), collapse=" ")," ",
-            "--outfile=\"",file.path(out_subdir,sel_outfile),"\" ",
-            "--type=\"",dataType,"\" ",
-            "--format=\"",sel_format,"\" ",
-            if (sel_format=="GTiff") {paste0("--co=\"COMPRESS=",toupper(compress),"\" ")},
-            "--calc=\"",sel_formula,"\""
-          ),
-          intern = Sys.info()["sysname"] == "Windows"
-        )
+           system(
+             paste0(
+               Sys.which("gdal_calc.py")," ",
+               paste(apply(gdal_bands,1,function(l){
+                 paste0("-",l["letter"]," \"",sel_infile,"\" --",l["letter"],"_band=",which(gdal_bands$letter==l["letter"]))
+               }), collapse=" ")," ",
+               "--outfile=\"",file.path(out_subdir,sel_outfile),"\" ",
+               "--type=\"",dataType,"\" ",
+               "--format=\"",sel_format,"\" ",
+               if (sel_format=="GTiff") {paste0("--co=\"COMPRESS=",toupper(compress),"\" ")},
+               "--calc=\"",sel_formula,"\""
+             ),
+             intern = Sys.info()["sysname"] == "Windows"
+           )
       )
       # TODO check that required parameters are present
 

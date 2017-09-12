@@ -35,7 +35,7 @@ projection is never taken from \code{mask}.}
 
 \item{t_srs}{Target spatial reference set (character). The coordinate
 systems that can be passed are anything supported by the
-\code{\link[=OGRSpatialReference.SetFromUserInput]{OGRSpatialReference.SetFromUserInput()}} call, which includes EPSG
+OGRSpatialReference.SetFromUserInput() call, which includes EPSG
 PCS and GCSes (ie. EPSG:4296), PROJ.4 declarations (as above),
 or the name of a .prf file containing well known text.}
 

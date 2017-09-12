@@ -22,6 +22,7 @@ Imports:
   gdalUtils,
   magrittr,
   sp,
+  sf,
   data.table,
   raster,
   XML,
