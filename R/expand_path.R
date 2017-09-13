@@ -18,7 +18,7 @@
 #'  appended.
 #' @return The path eventually expanded.
 #' @export
-#' @importFrom magrittr %>%
+#' @importFrom magrittr "%>%"
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 

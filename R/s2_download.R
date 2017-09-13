@@ -11,13 +11,13 @@
 #'  of scihub account. If NULL (default) the default credentials
 #'  (username "user", password "user") will be used.
 #' @param tile Single Sentinel-2 Tile string (5-length character)
-#' @param orbit Single Sentinel-2 orbit number
 #' @param outdir (optional) Full name of the existing output directory
 #'  where the files should be created (default: current directory).
 #' @return NULL
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
+#' @importFrom reticulate r_to_py
 #' @export
 #'
 #' @examples \dontrun{
@@ -49,7 +49,6 @@ s2_download <- function(s2_prodlist=NULL,
                         downloader="wget",
                         apihub=NULL,
                         tile=NULL,
-                        orbit=NULL,
                         outdir=".") {
 
   # import s2download
@@ -72,11 +71,11 @@ s2_download <- function(s2_prodlist=NULL,
                                   link=link,
                                   downloader=downloader,
                                   apihub=apihub,
-                                  tile=tile,
-                                  # orbit=if (is.null(orbit)) orbit else as.integer(orbit),
+                                  tile=r_to_py(tile),
                                   no_download=FALSE,
                                   write_dir=outdir,
                                   file_list=NULL)
+
   }
 
   return(NULL)

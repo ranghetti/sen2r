@@ -26,8 +26,9 @@
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @export
-#' @importFrom reticulate import py_to_r
+#' @importFrom reticulate import py_to_r r_to_py
 #' @importFrom sprawl get_extent reproj_extent
+#' @importFrom magrittr "%>%"
 #'
 #' @examples \dontrun{
 #' pos <- sp::SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=sp::CRS("+init=epsg:4326"))
@@ -65,6 +66,16 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
   # convert in format taken by th function
   time_interval <- strftime(time_interval,"%Y%m%d")
 
+  # convert orbits to integer
+  if (is.null(orbit)) {
+    orbit <- list(NULL)
+  } else {
+    orbit <- as.integer(orbit)
+    if (any(is.na(orbit))) {
+      orbit <- list(NULL)
+    }
+  }
+
   # import s2download
   s2download <- import_s2download(convert=FALSE)
 
@@ -85,16 +96,20 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
     "auto")
 
   # run the research of the list of products
-  av_prod_tuple <- s2download$s2_download(
-    lat=lat, lon=lon, latmin=latmin, latmax=latmax, lonmin=lonmin, lonmax=lonmax,
-    start_date=time_interval[1] ,end_date=time_interval[2],
-    orbit=ifelse(is.null(orbit), NULL, as.integer(orbit)),
-    apihub=apihub, max_cloud=max_cloud,
-    tile=tile, list_only=TRUE,
-    corr_type=corr_type)
+  av_prod_tuple <- lapply(orbit, function(o) {
+    s2download$s2_download(
+      lat=lat, lon=lon, latmin=latmin, latmax=latmax, lonmin=lonmin, lonmax=lonmax,
+      start_date=time_interval[1], end_date=time_interval[2],
+      tile=r_to_py(tile),
+      orbit=r_to_py(o),
+      apihub=apihub,
+      max_cloud=max_cloud,
+      list_only=TRUE,
+      corr_type=corr_type)
+  })
 
-  av_prod_list <- py_to_r(av_prod_tuple)[[1]]
-  names(av_prod_list) <- py_to_r(av_prod_tuple)[[2]]
+  av_prod_list <- unlist(lapply(av_prod_tuple, function(x) {py_to_r(x)[[1]]}))
+  names(av_prod_list) <- unlist(lapply(av_prod_tuple, function(x) {py_to_r(x)[[2]]}))
 
   return(av_prod_list)
 

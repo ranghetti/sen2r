@@ -116,6 +116,7 @@ install_s2download <- function(inst_path=NA) {
   # and message in case all run ok.
 
   # Save a text file with the directory where s2download has been cloned
-  writeLines(inst_path, file.path(system.file(package="fidolasen"),"s2download_path.txt"))
+  s2download_metapath <- file.path(system.file("extdata",package="fidolasen"),"s2download_path.txt")
+  writeLines(inst_path, s2download_metapath)
 
 }

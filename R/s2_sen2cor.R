@@ -5,7 +5,7 @@
 #'  l1c_dir argument must be provided). SAFE products must be unzipped.
 #'  Note that, at this stage, all products must be in the same directory (this will be fixed).
 #' @param l1c_dir Full or relative path of input L1C products.
-#' @param out_dir Directory where output L2A products will be placed.
+#' @param outdir Directory where output L2A products will be placed.
 #' @param n_procs Number of processors (`integer`) to use (default is 1, single processor).
 #' @param overwrite Logical value: should existing output L2A products be overwritten?
 #'  (default: FALSE)
@@ -19,11 +19,11 @@
 #' pos <- sp::SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=sp::CRS("+init=epsg:4326"))
 #' time_window <- as.Date(c("2017-05-01","2017-07-30"))
 #' example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window)
-#' s2_download(example_s2_list, out_dir=tempdir())
-#' s2_sen2cor(names(example_s2_list)[1], l1c_dir=tempdir(), out_dir=tempdir())
+#' s2_download(example_s2_list, outdir=tempdir())
+#' s2_sen2cor(names(example_s2_list)[1], l1c_dir=tempdir(), outdir=tempdir())
 #' }
 
-s2_sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, out_dir=NULL, n_procs=1, overwrite=FALSE) {
+s2_sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, n_procs=1, overwrite=FALSE) {
 
   # import s2download
   s2download <- import_s2download(convert=FALSE)
@@ -44,7 +44,7 @@ s2_sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, out_dir=NULL, n_procs=1,
   # (to do it, edit s2_getMetadata() in order to accept also prod naems without files)
 
   s2download$call_sen2cor(l1c_dir=unique(dirname(l1c_prodlist)),
-                          l2a_dir=out_dir,
+                          l2a_dir=outdir,
                           l1c_list=basename(l1c_prodlist),
                           n_procs=as.integer(n_procs),
                           overwrite=overwrite)

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Correct L1C products using sen2cor — s2_sen2cor • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
+<title>List spectral indices — list_indices • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,44 +89,46 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Correct L1C products using sen2cor</h1>
+    <h1>List spectral indices</h1>
     </div>
 
     
-    <p>The function uses sen2cor from the docker to manually correct L1C products.</p>
+    <p>Return a table with attributes of the spectral indices
+computable with the package.</p>
     
 
-    <pre class="usage"><span class='fu'>s2_sen2cor</span>(<span class='kw'>l1c_prodlist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>l1c_dir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>n_procs</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>list_indices</span>(<span class='no'>values</span>, <span class='kw'>pattern</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>l1c_prodlist</th>
-      <td><p>List of L1C product names to be corrected. They can be both
-product names with full/relative path or only names of SAFE products (in this case, also
-l1c_dir argument must be provided). SAFE products must be unzipped.
-Note that, at this stage, all products must be in the same directory (this will be fixed).</p></td>
+      <th>values</th>
+      <td><p>A vector of attributes which will be returned, being
+one or more within the followings:</p><ul>
+<li><p><code>n_index</code>: internal index identifiers;</p></li>
+<li><p><code>name</code>: index name;</p></li>
+<li><p><code>longname</code>: index description;</p></li>
+<li><p><code>link</code>: URL to the index description page;</p></li>
+<li><p><code>s2_formula</code>: expression containing the formula to compute the index;</p></li>
+<li><p><code>s2_formula_mathml</code>: MathML version of the formula.</p></li>
+</ul></td>
     </tr>
     <tr>
-      <th>l1c_dir</th>
-      <td><p>Full or relative path of input L1C products.</p></td>
-    </tr>
-    <tr>
-      <th>outdir</th>
-      <td><p>Directory where output L2A products will be placed.</p></td>
-    </tr>
-    <tr>
-      <th>n_procs</th>
-      <td><p>Number of processors (<code>integer</code>) to use (default is 1, single processor).</p></td>
-    </tr>
-    <tr>
-      <th>overwrite</th>
-      <td><p>Logical value: should existing output L2A products be overwritten?
-(default: FALSE)</p></td>
+      <th>pattern</th>
+      <td><p>A regular expression on index names.</p></td>
     </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A data.frame with the required information. The table contains
+also the following attributes:</p><ul>
+<li><p><code>creation_date</code>: timestamp of the creation date of the indices archive;</p></li>
+<li><p><code>fidolasen_version</code>: version of the <code>fidolasen</code> package used to
+create the indices archive.</p></li>
+</ul>
+
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
@@ -135,11 +137,7 @@ Note that, at this stage, all products must be in the same directory (this will 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='no'>pos</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sp</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sp/topics/SpatialPoints'>SpatialPoints</a></span>(<span class='fu'>data.frame</span>(<span class='st'>"x"</span><span class='kw'>=</span><span class='fl'>12.0</span>,<span class='st'>"y"</span><span class='kw'>=</span><span class='fl'>44.8</span>), <span class='kw'>proj4string</span><span class='kw'>=</span><span class='kw pkg'>sp</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sp/topics/CRS-class'>CRS</a></span>(<span class='st'>"+init=epsg:4326"</span>))
-<span class='no'>time_window</span> <span class='kw'>&lt;-</span> <span class='fu'>as.Date</span>(<span class='fu'>c</span>(<span class='st'>"2017-05-01"</span>,<span class='st'>"2017-07-30"</span>))
-<span class='no'>example_s2_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='s2_list.html'>s2_list</a></span>(<span class='kw'>spatial_extent</span><span class='kw'>=</span><span class='no'>pos</span>, <span class='kw'>tile</span><span class='kw'>=</span><span class='st'>"32TQQ"</span>, <span class='kw'>time_interval</span><span class='kw'>=</span><span class='no'>time_window</span>)
-<span class='fu'><a href='s2_download.html'>s2_download</a></span>(<span class='no'>example_s2_list</span>, <span class='kw'>outdir</span><span class='kw'>=</span><span class='fu'>tempdir</span>())
-<span class='fu'>s2_sen2cor</span>(<span class='fu'>names</span>(<span class='no'>example_s2_list</span>)[<span class='fl'>1</span>], <span class='kw'>l1c_dir</span><span class='kw'>=</span><span class='fu'>tempdir</span>(), <span class='kw'>outdir</span><span class='kw'>=</span><span class='fu'>tempdir</span>())
+<span class='fu'>list_indices</span>(<span class='fu'>c</span>(<span class='st'>"name"</span>,<span class='st'>"longname"</span>))
 <span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -147,6 +145,8 @@ Note that, at this stage, all products must be in the same directory (this will 
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
+      <li><a href="#value">Value</a></li>
+
       <li><a href="#note">Note</a></li>
       
       <li><a href="#examples">Examples</a></li>

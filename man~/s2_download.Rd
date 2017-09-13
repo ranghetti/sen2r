@@ -5,7 +5,7 @@
 \title{Download S2 products.}
 \usage{
 s2_download(s2_prodlist = NULL, downloader = "wget", apihub = NULL,
-  tile = NULL, outdir = ".")
+  tile = NULL, orbit = NULL, outdir = ".")
 }
 \arguments{
 \item{s2_prodlist}{List of the products to be downloaded
@@ -19,6 +19,8 @@ of scihub account. If NULL (default) the default credentials
 (username "user", password "user") will be used.}
 
 \item{tile}{Single Sentinel-2 Tile string (5-length character)}
+
+\item{orbit}{Single Sentinel-2 orbit number}
 
 \item{outdir}{(optional) Full name of the existing output directory
 where the files should be created (default: current directory).}

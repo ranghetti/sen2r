@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Correct L1C products using sen2cor — s2_sen2cor • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
+<title>Apply cloud masks — s2_mask • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,68 +89,108 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Correct L1C products using sen2cor</h1>
+    <h1>Apply cloud masks</h1>
     </div>
 
     
-    <p>The function uses sen2cor from the docker to manually correct L1C products.</p>
+    <p>Apply a cloud mask to a Sentinel-2 product. Since
+raster functions are used to perform computations, output files
+are physical rasters (no output VRT is allowed).</p>
     
 
-    <pre class="usage"><span class='fu'>s2_sen2cor</span>(<span class='kw'>l1c_prodlist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>l1c_dir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>n_procs</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>s2_mask</span>(<span class='no'>infiles</span>, <span class='no'>maskfiles</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='st'>"cloud_medium_proba"</span>,
+  <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"./masked"</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>l1c_prodlist</th>
-      <td><p>List of L1C product names to be corrected. They can be both
-product names with full/relative path or only names of SAFE products (in this case, also
-l1c_dir argument must be provided). SAFE products must be unzipped.
-Note that, at this stage, all products must be in the same directory (this will be fixed).</p></td>
+      <th>infiles</th>
+      <td><p>A vector of input filenames. Input files are paths
+of products already converted from SAFE format to a
+format managed by GDAL (use <a href='s2_translate.html'>s2_translate</a> to do it);
+their names must be in the fidolasen-S2 naming convention
+(<a href='s2_shortname.html'>s2_shortname</a>).</p></td>
     </tr>
     <tr>
-      <th>l1c_dir</th>
-      <td><p>Full or relative path of input L1C products.</p></td>
+      <th>maskfiles</th>
+      <td><p>A vector of filenames from which to take the
+information about cloud coverage (for now, only SCL products
+have been implemented). It is not necessary that <code>maskfiles</code>
+elements strictly match <code>infiles</code> ones. Input files are paths
+of products already converted from SAFE format to a
+format managed by GDAL (use <a href='s2_translate.html'>s2_translate</a> to do it);
+their names must be in the fidolasen-S2 naming convention
+(<a href='s2_shortname.html'>s2_shortname</a>).</p></td>
+    </tr>
+    <tr>
+      <th>mask_type</th>
+      <td><p>Character vector which determines the type of
+mask to be applied. Accepted values are:</p><ul>
+<li><p>"cloud_high_proba": mask pixels checked as "No data" or
+"Cloud (high probability)" in the SCL product;</p></li>
+<li><p>"cloud_medium_proba": mask pixels checked as "No data" or
+"Cloud (high or medium probability)" in the SCL product;</p></li>
+<li><p>"cloud_low_proba": mask pixels checked as "No data" or
+"Cloud (any probability)" in the SCL product;</p></li>
+<li><p>"cloud_and_shadow": mask pixels checked as "No data",
+"Cloud (any probability)" or "Cloud shadow" in the SCL product;</p></li>
+<li><p>"cloud_shadow_cirrus": mask pixels checked as "No data",
+"Cloud (any probability)", "Cloud shadow" or "Thin cirrus"
+in the SCL product;</p></li>
+<li><p>"opaque_clouds" (still to be implemented).</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>outdir</th>
-      <td><p>Directory where output L2A products will be placed.</p></td>
+      <td><p>(optional) Full name of the output directory where
+the files should be created (default: "current directory"masked"
+subdir of current directory).
+<code>outdir</code> can bot be an existing or non-existing directory (in the
+second case, its parent directory must exists).
+If it is a relative path, it is expanded from the common parent
+directory of <code>infiles</code>.</p></td>
     </tr>
     <tr>
-      <th>n_procs</th>
-      <td><p>Number of processors (<code>integer</code>) to use (default is 1, single processor).</p></td>
+      <th>format</th>
+      <td><p>(optional) Format of the output file (in a
+format recognised by GDAL). Default is the same format of input images
+(or "GTiff" in case of VRT input images).</p></td>
     </tr>
     <tr>
-      <th>overwrite</th>
-      <td><p>Logical value: should existing output L2A products be overwritten?
-(default: FALSE)</p></td>
+      <th>subdirs</th>
+      <td><p>(optional) Logical: if TRUE, different indices are
+placed in separated <code>outfile</code> subdirectories; if FALSE, they are placed in
+<code>outfile</code> directory; if NA (default), subdirectories are created only if
+more than a single spectral index is required.</p></td>
+    </tr>
+    <tr>
+      <th>compress</th>
+      <td><p>(optional) In the case a GTiff format is
+present, the compression indicated with this parameter is used.</p></td>
     </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A vector with the names of the created products.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='no'>pos</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sp</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sp/topics/SpatialPoints'>SpatialPoints</a></span>(<span class='fu'>data.frame</span>(<span class='st'>"x"</span><span class='kw'>=</span><span class='fl'>12.0</span>,<span class='st'>"y"</span><span class='kw'>=</span><span class='fl'>44.8</span>), <span class='kw'>proj4string</span><span class='kw'>=</span><span class='kw pkg'>sp</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sp/topics/CRS-class'>CRS</a></span>(<span class='st'>"+init=epsg:4326"</span>))
-<span class='no'>time_window</span> <span class='kw'>&lt;-</span> <span class='fu'>as.Date</span>(<span class='fu'>c</span>(<span class='st'>"2017-05-01"</span>,<span class='st'>"2017-07-30"</span>))
-<span class='no'>example_s2_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='s2_list.html'>s2_list</a></span>(<span class='kw'>spatial_extent</span><span class='kw'>=</span><span class='no'>pos</span>, <span class='kw'>tile</span><span class='kw'>=</span><span class='st'>"32TQQ"</span>, <span class='kw'>time_interval</span><span class='kw'>=</span><span class='no'>time_window</span>)
-<span class='fu'><a href='s2_download.html'>s2_download</a></span>(<span class='no'>example_s2_list</span>, <span class='kw'>outdir</span><span class='kw'>=</span><span class='fu'>tempdir</span>())
-<span class='fu'>s2_sen2cor</span>(<span class='fu'>names</span>(<span class='no'>example_s2_list</span>)[<span class='fl'>1</span>], <span class='kw'>l1c_dir</span><span class='kw'>=</span><span class='fu'>tempdir</span>(), <span class='kw'>outdir</span><span class='kw'>=</span><span class='fu'>tempdir</span>())
-<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
+      <li><a href="#value">Value</a></li>
+
       <li><a href="#note">Note</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+          </ul>
 
     <h2>Author</h2>
     

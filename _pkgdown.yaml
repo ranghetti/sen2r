@@ -17,6 +17,9 @@ reference:
       - '`s2_getMetadata`'
       - '`s2_translate`'
       - '`s2_merge`'
+      - '`gdal_warp`'
+      - '`s2_mask`'
+      - '`s2_calcindices`'
   - title: Accessory functions
     contents:
       - '`s2_shortname`'
@@ -25,13 +28,13 @@ reference:
       - '`comsub`'
       - '`abs2rel`'
       - '`gdal_abs2rel`'
-      - '`gdalwarp_grid`'
+      - '`list_indices`'
   - title: Internal functions
     desc: (not exported)
     contents:
       - '`import_s2download`'
-      - '`s2_shortname`'
       - '`print_message`'
+      - '`create_indices_db`'
 navbar:
   type: inverse
   left:

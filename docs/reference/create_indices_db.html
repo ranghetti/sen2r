@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Correct L1C products using sen2cor — s2_sen2cor • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
+<title>Create the indices database — create_indices_db • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,42 +89,37 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Correct L1C products using sen2cor</h1>
+    <h1>Create the indices database</h1>
     </div>
 
     
-    <p>The function uses sen2cor from the docker to manually correct L1C products.</p>
+    <p>The internal function checks if idices.json (the
+database of spectral indices) already exists; if not, it
+downloads source files and creates it.
+Since this function depends on xsltproc executable (available
+inly for Linux), this function can be used only from from
+Linux. It is not necessary, since a indices.json file is
+present in the package.</p>
     
 
-    <pre class="usage"><span class='fu'>s2_sen2cor</span>(<span class='kw'>l1c_prodlist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>l1c_dir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>n_procs</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>create_indices_db</span>(<span class='kw'>xslt_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>json_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>l1c_prodlist</th>
-      <td><p>List of L1C product names to be corrected. They can be both
-product names with full/relative path or only names of SAFE products (in this case, also
-l1c_dir argument must be provided). SAFE products must be unzipped.
-Note that, at this stage, all products must be in the same directory (this will be fixed).</p></td>
+      <th>xslt_path</th>
+      <td><p>(optional) The path where to install <code>xsltml</code>,
+an external <code>xsltproc</code> script used to convert MathML index formulas
+to LaTeX (default: a subdirectory of the package).</p></td>
     </tr>
     <tr>
-      <th>l1c_dir</th>
-      <td><p>Full or relative path of input L1C products.</p></td>
-    </tr>
-    <tr>
-      <th>outdir</th>
-      <td><p>Directory where output L2A products will be placed.</p></td>
-    </tr>
-    <tr>
-      <th>n_procs</th>
-      <td><p>Number of processors (<code>integer</code>) to use (default is 1, single processor).</p></td>
-    </tr>
-    <tr>
-      <th>overwrite</th>
-      <td><p>Logical value: should existing output L2A products be overwritten?
-(default: FALSE)</p></td>
+      <th>json_path</th>
+      <td><p>(optional) The path of the output JSON file.
+<em>Warning</em>: to create a file which wil be usable by the package,
+this option must be left to NA (default location is within the
+package installation). Edit this only to create the file in another
+place for external use.</p></td>
     </tr>
     </table>
     
@@ -133,14 +128,6 @@ Note that, at this stage, all products must be in the same directory (this will 
     <p>License: GPL 3.0</p>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='no'>pos</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sp</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sp/topics/SpatialPoints'>SpatialPoints</a></span>(<span class='fu'>data.frame</span>(<span class='st'>"x"</span><span class='kw'>=</span><span class='fl'>12.0</span>,<span class='st'>"y"</span><span class='kw'>=</span><span class='fl'>44.8</span>), <span class='kw'>proj4string</span><span class='kw'>=</span><span class='kw pkg'>sp</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sp/topics/CRS-class'>CRS</a></span>(<span class='st'>"+init=epsg:4326"</span>))
-<span class='no'>time_window</span> <span class='kw'>&lt;-</span> <span class='fu'>as.Date</span>(<span class='fu'>c</span>(<span class='st'>"2017-05-01"</span>,<span class='st'>"2017-07-30"</span>))
-<span class='no'>example_s2_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='s2_list.html'>s2_list</a></span>(<span class='kw'>spatial_extent</span><span class='kw'>=</span><span class='no'>pos</span>, <span class='kw'>tile</span><span class='kw'>=</span><span class='st'>"32TQQ"</span>, <span class='kw'>time_interval</span><span class='kw'>=</span><span class='no'>time_window</span>)
-<span class='fu'><a href='s2_download.html'>s2_download</a></span>(<span class='no'>example_s2_list</span>, <span class='kw'>outdir</span><span class='kw'>=</span><span class='fu'>tempdir</span>())
-<span class='fu'>s2_sen2cor</span>(<span class='fu'>names</span>(<span class='no'>example_s2_list</span>)[<span class='fl'>1</span>], <span class='kw'>l1c_dir</span><span class='kw'>=</span><span class='fu'>tempdir</span>(), <span class='kw'>outdir</span><span class='kw'>=</span><span class='fu'>tempdir</span>())
-<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -148,9 +135,7 @@ Note that, at this stage, all products must be in the same directory (this will 
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#note">Note</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+          </ul>
 
     <h2>Author</h2>
     
