@@ -10,6 +10,7 @@ s2_gui <- function(param_list=NULL) {
   library(leaflet.extras)
   library(reticulate)
   library(shinyFiles)
+  library(shinyjs)
 
   # import python modules
   gdal <- import("osgeo",convert=FALSE)$gdal
@@ -45,6 +46,9 @@ s2_gui <- function(param_list=NULL) {
         ),
         sidebarMenu(
           menuItem("Spatial-temporal selection", tabName = "tab_query", icon = icon("image"))
+        ),
+        sidebarMenu(
+          menuItem("Product selection", tabName = "tab_prod", icon = icon("image"))
         ),
         sidebarMenu(
           menuItem("Output geometry", tabName = "tab_geom", icon = icon("image"))
@@ -107,11 +111,11 @@ s2_gui <- function(param_list=NULL) {
               # steps_preprocess
               column(
                 width=12,
-                radioButtons("steps_reqout", h3("Select required outputs"),
+                checkboxGroupInput("steps_reqout", h3("Select required outputs"),
                              choices = list("Raw SAFE format" = "return_safe",
                                             "Single tiles in another format" = "return_tiles",
                                             "Selected extent" = "return_clipped"),
-                             selected="return_clipped")
+                             selected=c("return_clipped"))
               )
 
 
@@ -174,6 +178,44 @@ s2_gui <- function(param_list=NULL) {
 
           ), # end of tabItem tab_query
 
+          tabItem(
+            tabName = "tab_prod",
+            title="Product selection",
+
+            box(
+              width=12,
+              title="Products to be exported",
+              checkboxGroupInput("check_prods",
+                                 NULL,
+                                 choices = list("TOA (top-of-atmosphere) Surface Reflectance" = "TOA",
+                                                "BOA (bottom-of-atmosphere) Surface Reflectance" = "BOA",
+                                                "SCL (surface classification map)" = "SCL",
+                                                "TCI (true-color) RGB 8-bit image" = "TCI"),
+                                 selected = c("BOA"))
+            ), # end of box for product selection
+
+            box(
+              width=12,
+              title="Index selection",
+
+              column(
+                width=8,
+                textInput("filter_indices", "Filter indices"),
+                uiOutput("check_indices")
+              ),
+
+              column(
+                width=4,
+                uiOutput("select_index"),
+                uiOutput("show_formula")
+              ) # TODO change and improve
+
+            ) # end of column/box for indices selection
+
+
+
+          ), # end of tabItem tab_prod
+
           ### Output tab (geometry and parameters) ###
           tabItem(
             tabName = "tab_geom",
@@ -202,23 +244,26 @@ s2_gui <- function(param_list=NULL) {
               box(
                 width=4,
                 radioButtons("outproj", label = "Output projection",
-                             choices = list("UTM input projection" = "no_reproj",
-                                            "Specify UTM zone:" = "utm",
-                                            "Specify EPSG code:" = "epsg",
-                                            "Enter proj4string:" = "proj4"),
+                             choices = list("Input projection (do not reproject)" = "no_reproj",
+                                            "UTM projection" = "utm",
+                                            "Custom EPSG CRS" = "epsg",
+                                            "Custom proj4" = "proj4"),
                              selected = "no_reproj"),
 
                 conditionalPanel(
                   condition = "input.outproj == 'utm'",
-                  numericInput("outproj_utmzone", NULL, value=character(0), min=1, max=60, width="150pt")
+                  numericInput("outproj_utmzone", "Specify UTM timezone:",
+                               value=character(0), min=1, max=60, width="150pt")
                 ),
                 conditionalPanel(
                   condition = "input.outproj == 'epsg'",
-                  numericInput("outproj_epsg", NULL, value=character(0), min=0, width="150pt")
+                  numericInput("outproj_epsg", "Specify EPSG code:",
+                               value=character(0), min=0, width="150pt")
                 ),
                 conditionalPanel(
                   condition = "input.outproj == 'proj4'",
-                  textInput("outproj_proj4", NULL, value=character(0), width="150pt")
+                  textInput("outproj_proj4", "Enter custom proj4string:",
+                            value=character(0), width="150pt")
                 ),
 
                 htmlOutput("outproj_message")
@@ -275,7 +320,46 @@ s2_gui <- function(param_list=NULL) {
             tabName = "tab_path",
             title="Set directories",
 
-            shinyDirButton("path_l1c", "Directory for level-1C SAFE products:", "Upload")
+            div(style="display:inline-block;vertical-align:top;",
+                strong("Directory for level-1C SAFE products: \u00a0")),
+            div(style="display:inline-block;vertical-align:top;",
+                htmlOutput("path_l1c_errormess")),
+            div(div(style="display:inline-block;vertical-align:top;width:50pt;",
+                    shinyDirButton("path_l1c_sel", "Select", "Specify directory for level-1C SAFE products")),
+                div(style="display:inline-block;vertical-align:top;",
+                    textInput("path_l1c_textin", NULL, "Enter directory..."))),
+
+            div(style="display:inline-block;vertical-align:top;",
+                strong("Directory for level-2A SAFE products: \u00a0")),
+            div(style="display:inline-block;vertical-align:top;",
+                htmlOutput("path_l2a_errormess")),
+            div(div(style="display:inline-block;vertical-align:top;width:50pt;",
+                    shinyDirButton("path_l2a_sel", "Select", "Specify directory for level-2A SAFE products")),
+                div(style="display:inline-block;vertical-align:top;",
+                    textInput("path_l2a_textin", NULL, "Enter directory..."))),
+
+            div(style="display:inline-block;vertical-align:top;",
+                strong("Directory for entire tiles in custom format: \u00a0")),
+            div(style="display:inline-block;vertical-align:top;",
+                htmlOutput("path_tiles_errormess")),
+            div(div(style="display:inline-block;vertical-align:top;width:50pt;",
+                    shinyDirButton("path_tiles_sel", "Select", "Specify directory for entire tiles in custom format")),
+                div(style="display:inline-block;vertical-align:top;",
+                    textInput("path_tiles_textin", NULL, "Enter directory..."))),
+
+            div(style="display:inline-block;vertical-align:top;",
+                strong("Directory for output pre-processed products: \u00a0")),
+            div(style="display:inline-block;vertical-align:top;",
+                htmlOutput("path_out_errormess")),
+            div(div(style="display:inline-block;vertical-align:top;width:50pt;",
+                    shinyDirButton("path_out_sel", "Select", "Specify directory for output pre-processed products")),
+                div(style="display:inline-block;vertical-align:top;",
+                    textInput("path_out_textin", NULL, "Enter directory...")))
+
+
+
+
+
 
           ) # end of tabItem tab_steps
 
@@ -389,8 +473,59 @@ s2_gui <- function(param_list=NULL) {
     # TODO activate/deactivate editing and allow other modes (bbox?, load shape)
     # (basing on https://github.com/r-spatial/mapedit/issues/61)
 
-
     ## end of extent module ##
+
+
+
+    ## Product module ##
+
+    create_indices_db()
+    indices_db <- data.table(list_indices(c("n_index","name","longname","s2_formula_mathml","link")))
+    indices_db[,extendedname:=paste0(name," (",longname,")")]
+    setkey(indices_db, "name")
+
+    indices_filtered <- reactive({
+      indices_matches <- indices_db[grep(tolower(input$filter_indices),
+                                         tolower(indices_db$extendedname)),
+                                    name]
+      indices_db[unique(c(indices_checked(),indices_matches)),
+                 list(name,extendedname)]
+    })
+    indices_checked <- reactive({
+      sort(input$list_indices)
+    })
+    # observe({
+    #   names(indices_checked) <- indices_db[match(indices_checked, indices_db$name),extendedname]
+    # })
+
+    output$check_indices <- renderUI({
+      checkboxGroupInput("list_indices",
+                         "Indices to be exported",
+                         choices = setNames(as.list(indices_filtered()$name),
+                                            indices_filtered()$extendedname),
+                         selected = indices_checked())
+    })
+
+    output$select_index <- renderUI({
+      selectInput("select_indexformula",
+                  "Select index to be shown",
+                  choices = setNames(as.list(indices_filtered()$name),
+                                     indices_filtered()$name),
+                  selected = "NDVI")
+    })
+
+    output$show_formula <- renderUI({
+      withMathJax(indices_db[name==input$select_indexformula,
+                 HTML(s2_formula_mathml)])
+    })
+
+
+
+
+
+    ## end of product module ##
+
+
 
 
     ## Geometry module ##
@@ -446,8 +581,73 @@ s2_gui <- function(param_list=NULL) {
 
     ## Path module ##
 
-    shinyDirChoose(input, "path_l1c", roots = c(home = '~'), filetypes = c('', 'txt'))
-    path_l1c <- reactive(input$path_l1c)
+    # accessory functions to check that the new directory exists and is writable
+    path_check <- function(path) {
+      if (length(path)>0 & path[1]!="") {
+        if (!dir.exists(path)) {
+          return(renderUI(span(style="color:red",
+                               "(the directory does not exist)")))
+        } else if (file.access(path, mode=2)<0) {
+          return(renderUI(span(style="color:red",
+                               "(the directory is not writable)")))
+        } else {
+          return(renderText(""))
+        }
+        #
+      } else {
+        return(renderText(""))
+      }
+    }
+
+    volumes <- c("Home"=path.expand("~"), getVolumes()())
+    path_l1c_string <- path_l2a_string <- path_tiles_string <- path_out_string <- ""
+
+    shinyDirChoose(input, "path_l1c_sel", roots = volumes)
+    shinyDirChoose(input, "path_l2a_sel", roots = volumes)
+    shinyDirChoose(input, "path_tiles_sel", roots = volumes)
+    shinyDirChoose(input, "path_out_sel", roots = volumes)
+
+    # if paths change after using the shinyDirButton, update the values and the textInput
+    observe({
+      path_l1c_string <- parseDirPath(volumes, input$path_l1c_sel)
+      updateTextInput(session, "path_l1c_textin", value = path_l1c_string)
+      output$path_l1c_errormess <- path_check(path_l1c_string)
+    })
+    observe({
+      path_l2a_string <- parseDirPath(volumes, input$path_l2a_sel)
+      updateTextInput(session, "path_l2a_textin", value = path_l2a_string)
+      output$path_l2a_errormess <- path_check(path_l2a_string)
+    })
+    observe({
+      path_tiles_string <- parseDirPath(volumes, input$path_tiles_sel)
+      updateTextInput(session, "path_tiles_textin", value = path_tiles_string)
+      output$path_tiles_errormess <- path_check(path_tiles_string)
+    })
+    observe({
+      path_out_string <- parseDirPath(volumes, input$path_out_sel)
+      updateTextInput(session, "path_out_textin", value = path_out_string)
+      output$path_out_errormess <- path_check(path_out_string)
+    })
+
+    # if path changes after using the textInput, update the value
+    observe({
+      path_l1c_string <- input$path_l1c_textin
+      # FIXME add a sort of "updateShinyDirButton" as in the case above
+      output$path_l1c_errormess <- path_check(path_l1c_string)
+    })
+    observe({
+      path_l2a_string <- input$path_l2a_textin
+      output$path_l2a_errormess <- path_check(path_l2a_string)
+    })
+    observe({
+      path_tiles_string <- input$path_tiles_textin
+      output$path_tiles_errormess <- path_check(path_tiles_string)
+    })
+    observe({
+      path_out_string <- input$path_out_textin
+      output$path_out_errormess <- path_check(path_out_string)
+    })
+
 
     ## end of path module ##
 
