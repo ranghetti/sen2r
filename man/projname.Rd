@@ -2,7 +2,7 @@
 % Please edit documentation in R/projname.R
 \name{projname}
 \alias{projname}
-\title{Return the projection name}
+\title{Return the name of a projection}
 \usage{
 projname(proj4string, abort = FALSE)
 }
