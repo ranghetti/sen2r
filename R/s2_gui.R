@@ -11,6 +11,7 @@ s2_gui <- function(param_list=NULL) {
   library(reticulate)
   library(shinyFiles)
   library(shinyjs)
+  library(sf)
 
   # import python modules
   gdal <- import("osgeo",convert=FALSE)$gdal
@@ -67,7 +68,7 @@ s2_gui <- function(param_list=NULL) {
             title="Main options",
 
             fluidRow(box(
-              title=h2("Select sensors"),
+              title="Select sensors",
               width=12,
               # TODO move elsewhere
               checkboxGroupInput("sel_sensor", NULL, #"Select sensors",
@@ -79,7 +80,7 @@ s2_gui <- function(param_list=NULL) {
 
 
             fluidRow(box(
-              title=h2("Processing steps"),
+              title="Processing steps",
               width=12,
 
               column(
@@ -206,9 +207,9 @@ s2_gui <- function(param_list=NULL) {
 
               column(
                 width=4,
-                uiOutput("select_index"),
+                # uiOutput("select_index"),
                 uiOutput("show_formula")
-              ) # TODO change and improve
+              )
 
             ) # end of column/box for indices selection
 
@@ -221,49 +222,81 @@ s2_gui <- function(param_list=NULL) {
             tabName = "tab_geom",
             title="Output parameters",
 
-            fluidRow(
-              h2("\u00a0 Output geometry"),
+            fluidRow(box(
+              width=12,
+              title=h2("\u00a0 Output geometry"),
+
+
+              radioButtons("use_reference", label = "Use an existing raster as reference?",
+                           choices = list("Yes" = TRUE,
+                                          "No" = FALSE),
+                           selected = FALSE),
+              conditionalPanel(
+                condition = "input.use_reference == 'TRUE'",
+                div(div(style="display:inline-block;vertical-align:top;width:50pt;",
+                        shinyFilesButton("reference_file", "Select", "Select reference file", multiple=FALSE)),
+                    div(style="display:inline-block;vertical-align:top;",
+                        textInput("reference_file_textin", NULL, "Enter file path..."))),
+                checkboxGroupInput("reference_usefor", label = "Use the file as a reference for:",
+                             choices = list("Projection" = "proj",
+                                            "Resolution" = "res",
+                                            #"Extent" = "ext", # TODO
+                                            "Output format" = "outformat"),
+                             selected = c("proj","res","ext"))
+
+              ),
+
+
 
               box(
                 width=4,
-                radioButtons("resolution", label = "Spatial resolution",
-                             choices = list("10 metres" = "10m",
-                                            "20 metres" = "20m",
-                                            "60 metres" = "60m",
-                                            "Custom" = "custom"),
-                             selected = "10m"),
                 conditionalPanel(
-                  condition = "input.resolution == 'custom'",
-                  numericInput("resolution_custom", "Specify resolution (in metres)",
-                               # width="100px",
-                               value = 10,
-                               min = 0)
-                )
+                  condition = "input.use_reference == 'FALSE' || input.reference_usefor.indexOf('res') < 0",
+                  radioButtons("resolution", label = "Spatial resolution",
+                               choices = list("10 metres" = "10m",
+                                              "20 metres" = "20m",
+                                              "60 metres" = "60m",
+                                              "Custom" = "custom"),
+                               selected = "10m"),
+                  conditionalPanel(
+                    condition = "input.resolution == 'custom'",
+                    numericInput("resolution_custom", "Specify resolution (in metres)",
+                                 # width="100px",
+                                 value = 10,
+                                 min = 0)
+                  )
+
+                ),
+
+                htmlOutput("outres_message")
+
               ), # end of box resolution
 
               box(
                 width=4,
-                radioButtons("outproj", label = "Output projection",
-                             choices = list("Input projection (do not reproject)" = "no_reproj",
-                                            "UTM projection" = "utm",
-                                            "Custom EPSG CRS" = "epsg",
-                                            "Custom proj4" = "proj4"),
-                             selected = "no_reproj"),
-
                 conditionalPanel(
-                  condition = "input.outproj == 'utm'",
-                  numericInput("outproj_utmzone", "Specify UTM timezone:",
-                               value=character(0), min=1, max=60, width="150pt")
-                ),
-                conditionalPanel(
-                  condition = "input.outproj == 'epsg'",
-                  numericInput("outproj_epsg", "Specify EPSG code:",
-                               value=character(0), min=0, width="150pt")
-                ),
-                conditionalPanel(
-                  condition = "input.outproj == 'proj4'",
-                  textInput("outproj_proj4", "Enter custom proj4string:",
-                            value=character(0), width="150pt")
+                  condition = "input.use_reference == 'FALSE' || input.reference_usefor.indexOf('proj') < 0",
+                  radioButtons("outproj", label = "Output projection",
+                               choices = list("Input projection (do not reproject)" = "no_reproj",
+                                              "UTM projection" = "utm",
+                                              "Custom EPSG CRS" = "epsg",
+                                              "Custom proj4" = "proj4"),
+                               selected = "no_reproj"),
+                  conditionalPanel(
+                    condition = "input.outproj == 'utm'",
+                    numericInput("outproj_utmzone", "Specify UTM timezone:",
+                                 value=character(0), min=1, max=60, width="150pt")
+                  ),
+                  conditionalPanel(
+                    condition = "input.outproj == 'epsg'",
+                    numericInput("outproj_epsg", "Specify EPSG code:",
+                                 value=character(0), min=0, width="150pt")
+                  ),
+                  conditionalPanel(
+                    condition = "input.outproj == 'proj4'",
+                    textInput("outproj_proj4", "Enter custom proj4string:",
+                              value=character(0), width="150pt")
+                  )
                 ),
 
                 htmlOutput("outproj_message")
@@ -277,7 +310,7 @@ s2_gui <- function(param_list=NULL) {
                              selected = "near")
               ) # end of box resampling
 
-            ), # end of fluidRow "Output geometry"
+            )), # end of fluidRow/box "Output geometry"
 
 
             fluidRow(
@@ -285,22 +318,28 @@ s2_gui <- function(param_list=NULL) {
 
               box(
                 width=4,
-                radioButtons("outformat", label = "Output format",
-                             choices = list("GeoTiff" = "GTiff",
-                                            "ENVI" = "ENVI"),
-                             # TODO add others common formats
-                             selected = "GTiff"),
-
                 conditionalPanel(
-                  condition = "input.outformat == 'GTiff'",
-                  radioButtons("compression", label = "Output compression",
-                               choices = list("Uncompressed" = "NONE",
-                                              "Low (packbits)" = "PACKBITS",
-                                              "Medium (lzw)" = "LZW",
-                                              "High (deflate)" = "DEFLATE"),
-                               selected = "LZW")
-                )
-              ),
+                  condition = "input.use_reference == 'FALSE' || input.reference_usefor.indexOf('outformat') < 0",
+
+                  radioButtons("outformat", label = "Output format",
+                               choices = list("GeoTiff" = "GTiff",
+                                              "ENVI" = "ENVI"),
+                               # TODO add others common formats
+                               selected = "GTiff"),
+
+                  conditionalPanel(
+                    condition = "input.outformat == 'GTiff'",
+                    radioButtons("compression", label = "Output compression",
+                                 choices = list("Uncompressed" = "NONE",
+                                                "Low (packbits)" = "PACKBITS",
+                                                "Medium (lzw)" = "LZW",
+                                                "High (deflate)" = "DEFLATE"),
+                                 selected = "LZW")
+                  )
+                )#,
+
+                # htmlOutput("outformat_message") # TODO
+              ), # end of outformat box
 
               box(
                 width=4,
@@ -494,9 +533,6 @@ s2_gui <- function(param_list=NULL) {
     indices_checked <- reactive({
       sort(input$list_indices)
     })
-    # observe({
-    #   names(indices_checked) <- indices_db[match(indices_checked, indices_db$name),extendedname]
-    # })
 
     output$check_indices <- renderUI({
       checkboxGroupInput("list_indices",
@@ -506,20 +542,32 @@ s2_gui <- function(param_list=NULL) {
                          selected = indices_checked())
     })
 
-    output$select_index <- renderUI({
-      selectInput("select_indexformula",
-                  "Select index to be shown",
-                  choices = setNames(as.list(indices_filtered()$name),
-                                     indices_filtered()$name),
-                  selected = "NDVI")
-    })
+    # output$select_index <- renderUI({
+    #   selectInput("select_indexformula",
+    #               "Select index to be shown",
+    #               choices = setNames(as.list(indices_filtered()$name),
+    #                                  indices_filtered()$name),
+    #               selected = "NDVI")
+    # }) # removed: now details of all checked indices are shown
+
+    index_details <- function(index) {
+      return(box(
+        width=12,
+        title=indices_db[name==index,name],
+        p(em(indices_db[name==index,longname])),
+        p(strong("Formula:"),
+          br(),
+          withMathJax(indices_db[name==index,
+                                 HTML(s2_formula_mathml)])),
+        p(a("More info",
+            target="_blank",
+            href=indices_db[name==index,link]))
+      ))
+    }
 
     output$show_formula <- renderUI({
-      withMathJax(indices_db[name==input$select_indexformula,
-                 HTML(s2_formula_mathml)])
+      div(lapply(indices_checked(), index_details))
     })
-
-
 
 
 
@@ -529,6 +577,95 @@ s2_gui <- function(param_list=NULL) {
 
 
     ## Geometry module ##
+
+    # reference file
+    volumes <- c("Home"=path.expand("~"), getVolumes()())
+    shinyFileChoose(input, "reference_file", roots = volumes)
+    # ref_res <- ref_ll <- ref_size <- ref_bbox <- ref_proj <- NULL
+
+    reference <- reactive({
+
+      if (!is.null(input$reference_file)) {
+        # output$path_l1c_errormess <- path_check(path_l1c_string)
+
+        reference_path <- try(
+          parseFilePaths(volumes,input$reference_file)$datapath %>%
+            as.character(),
+          silent = TRUE)
+        reference_spatype <- try(
+          get_rastype(reference_path),
+          silent=TRUE)
+        if (reference_spatype == "rastfile") {
+
+          # update path
+          updateTextInput(session, "reference_file_textin",
+                          value = reference_path)
+
+          # get metadata
+          ref_metadata <- suppressWarnings(GDALinfo(reference_path))
+          ref_res <- ref_metadata[c("res.x","res.y")]
+          ref_ll <- ref_metadata[c("ll.x","ll.y")]
+          ref_size <- ref_metadata[c("columns","rows")]
+          ref_bbox <- matrix(
+              c(ref_ll, ref_ll + ref_size * ref_res),
+              ncol=2)
+            dimnames(ref_bbox) <- list(c("x","y"),c("min","max"))
+            ref_proj <- attr(ref_metadata, "projection") %>%
+              CRS() %>% CRSargs()
+
+          return(list("metadata" = ref_metadata,
+                      "res" = ref_res,
+                      "bbox" = ref_bbox,
+                      "proj" = ref_proj))
+
+        } else {
+          updateTextInput(session, "reference_file_textin",
+                          value = "Input is not a valid raster file.")
+        }
+
+      }
+
+      return(NULL)
+
+    })
+
+
+    # update resolution from reference file
+    output$outres_message <- renderUI({
+      if(input$use_reference==TRUE & "res" %in% input$reference_usefor) {
+        if (!is.null(reference())) {
+          HTML(paste(strong(span(style="color:darkgreen",
+                                 "Selected resolution:")),
+                     br(),
+                     gsub("\\_"," ",paste(reference()$res,collapse="\u2009\u00d7\u2009")), # shortspace times shortspace
+                     sep="\n"))
+        } else {
+          span(style="color:red",
+               "The resolution is not specified.")
+        }
+      } else {
+        ""
+      }
+    })
+
+    # update projection from reference file
+    output$outproj_message <- renderUI({
+      if(input$use_reference==TRUE & "proj" %in% input$reference_usefor) {
+        if (!is.null(reference())) {
+          HTML(paste(strong(span(style="color:darkgreen",
+                                 "Selected resolution:")),
+                     br(),
+                     gsub("\\_"," ",paste(reference()$res,collapse="\u2009\u00d7\u2009")), # shortspace times shortspace
+                     sep="\n"))
+        } else {
+          span(style="color:red",
+               "The resolution is not specified.")
+        }
+      } else {
+        ""
+      }
+    })
+
 
     # reprojection
     observe({
@@ -546,8 +683,8 @@ s2_gui <- function(param_list=NULL) {
                                                        "+datum=WGS84 +units=m +no_defs ",
                                                        "+ellps=WGS84 +towgs84=0,0,0"))@projargs,
                                       epsg = CRS(paste0("+init=epsg:",input$outproj_epsg))@projargs,
-                                      proj4 = CRS(input$outproj_proj4)@projargs)
-
+                                      proj4 = CRS(input$outproj_proj4)@projargs),
+          silent=TRUE
         )
         if (class(proj4_check)=="try-error") {
           output$outproj_message <- renderUI(span(style="color:red",
@@ -555,19 +692,11 @@ s2_gui <- function(param_list=NULL) {
         } else if (is.na(outproj_validated)) {
           output$outproj_message <- renderText("")
         } else {
-          proj4_wkt <- outproj_validated %>%
-            rgdal::showWKT() %>%
-            r_to_py() %>%
-            osr$SpatialReference()
-          proj4_name <- if (is.projected(CRS(outproj_validated))) {
-            proj4_wkt$GetAttrValue('projcs')
-          } else {
-            proj4_wkt$GetAttrValue('geogcs')
-          }
+          proj4_name <- projname(outproj_validated)
           output$outproj_message <- renderUI(HTML(paste(strong(span(style="color:darkgreen",
                                                                   "Selected projection:")),
                                                       br(),
-                                                      gsub("\\_"," ",proj4_name),
+                                                      proj4_name,
                                                       sep="\n"))
           )
         }
@@ -599,7 +728,6 @@ s2_gui <- function(param_list=NULL) {
       }
     }
 
-    volumes <- c("Home"=path.expand("~"), getVolumes()())
     path_l1c_string <- path_l2a_string <- path_tiles_string <- path_out_string <- ""
 
     shinyDirChoose(input, "path_l1c_sel", roots = volumes)
