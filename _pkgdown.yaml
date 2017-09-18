@@ -26,6 +26,7 @@ reference:
       - '`fs2nc_getElements`'
       - '`expand_path`'
       - '`comsub`'
+      - '`projname`'
       - '`abs2rel`'
       - '`gdal_abs2rel`'
       - '`list_indices`'
