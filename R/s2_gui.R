@@ -89,7 +89,7 @@ s2_gui <- function(param_list=NULL) {
               radioButtons("step_download", h3("Download"),
                            choices = list("Download tiles" = 1,
                                           "Process existing tiles" = 2),
-                           selected = character(0)),
+                           selected = 1),
 
               # delete_safe
               conditionalPanel(
@@ -106,7 +106,14 @@ s2_gui <- function(param_list=NULL) {
             column(
               width=8,
               # step_atmcorr (perform or not sen2cor and how)
-              uiOutput("step_atmcorr")
+              # uiOutput("step_atmcorr")
+              radioButtons("step_atmcorr", h3("Atmospheric correction"),
+                           choices = list("Automatically download or correct basing on availability" = 1,
+                                          "Use only L2A products already available for download" = 2,
+                                          "Always download L1C products and correct locally" = 3,
+                                          "Never perform (use only L1C products)" = 4),
+                           selected = 1)
+
             ),
 
             # steps_preprocess
@@ -155,16 +162,86 @@ s2_gui <- function(param_list=NULL) {
             width=12,
 
             column(
-              width=9,
-              editModUI("extent_editor")
+              width=4,
+              radioButtons("extent_type", "Use as extent:",
+                           choices = list("Bounding box coordinates" = "bbox",
+                                          "Upload vector file" = "vectfile",
+                                          "Draw on the map" = "draw"),
+                           selected = "bbox"),
+
+              radioButtons("extent_as_mask", "Mask outside the polygons?",
+                           choices = list("Yes" = TRUE,
+                                          "No" = FALSE),
+                           selected = FALSE)
             ),
 
             column(
+              width=8,
+              conditionalPanel(
+                condition = "input.extent_type == 'draw' || input.extent_type == 'vectfile'",
+                radioButtons("dissolve_extent", "Number of output extents:",
+                             choices = list("Unique (dissolve all the polygons)" = TRUE,
+                                            "Multiple (each polygon is an extent)" = FALSE),
+                             selected = TRUE)
+              ),
+              conditionalPanel(
+                condition = "input.extent_type == 'vectfile'",
+                selectInput("extent_id", "Select the field to use as extent name",
+                            choices = list("No one (using row numbers)" = "nrow",
+                                           "take","dynamically","from","shape","attributes"),
+                            selected = "nrow")
+              ),
+              conditionalPanel(
+                condition = "input.extent_type == 'bbox'",
+                div(
+                  strong("Insert bounding box coordinates:"),
+                  div(div(style="display:inline-block;position:relative;margin-left:55px;padding-top:10px;",
+                          numericInput("bbox_ymax", NULL, value=NULL, width="100px")),
+                      div(style="display:inline-block;position:relative;bottom:0;margin-left:65px;padding-top:10px;",
+                          span(style="color:grey", "upper north."))),
+                  div(div(style="display:inline-block;position:relative;",
+                          numericInput("bbox_xmin", NULL, value=NULL, width="100px")),
+                      div(style="display:inline-block;position:relative;margin-left:10px;",
+                          numericInput("bbox_xmax", NULL, value=NULL, width="100px")),
+                      div(style="display:inline-block;position:relative;bottom:0;margin-left:10px;",
+                          span(style="color:grey", "left-right east."))),
+                  div(div(style="display:inline-block;position:relative;margin-left:55px;",
+                          numericInput("bbox_ymin", NULL, value=NULL, width="100px")),
+                      div(style="display:inline-block;position:relative;bottom:0;margin-left:65px;",
+                          span(style="color:grey", "lower north."))),
+                  textInput("bboxproj", "Projection of the coordinates:",
+                               value="4326", width="210px"),
+                  htmlOutput("bboxproj_message")
+
+
+                )
+              )
+            ),
+
+
+            column(
+              width=9,
+              conditionalPanel(
+                condition = "input.extent_type == 'draw'",
+                editModUI("extent_editor")
+              )
+            ),
+
+
+
+            column(
               width=3,
-              uiOutput("s2tiles_selID"),
-              strong("Orbits selected"),
-              helpText(em("Not yet impemented."))
+
+              conditionalPanel(
+                condition = "input.extent_type == 'draw'",
+                div(
+                  uiOutput("s2tiles_selID"),
+                  strong("Orbits selected"),
+                  helpText(em("Not yet impemented."))
+                )
+              )
             )
+
 
 
           )) # end of fluidRow/box "Spatial extent"
@@ -448,35 +525,24 @@ s2_gui <- function(param_list=NULL) {
 
     ## Steps module ##
 
-
-
-    # Create widgets for step_atmcorr basing on step_download
-    output$step_atmcorr <- renderUI({
-      if (length(input$step_download)==0) {
-        HTML(paste(
-          h3("Atmospheric correction"),
-          br(),
-          helpText(em("Please select download method")),
-          sep="\n"
-        ))
-      } else {
-        radioButtons("step_atmcorr", h3("Atmospheric correction"),
-                     choices = if (length(input$step_download)==0) {
-                       list("Please select download method" = 0)
-                     } else if(input$step_download == 1) {
-                       list("Automatically download or correct basing on availability" = 1,
-                            "Use only L2A products already available for download" = 2,
-                            "Always download L1C products and correct locally" = 3,
-                            "Never perform (use only L1C products)" = 4)
-                     } else if (input$step_download == 2) {
-                       list("Use only L2A products already available" = 2,
-                            "Use L1C products already available and correct locally" = 3,
-                            "Do not perform (use only L1C products already available)" = 4)
-                     },
-                     selected = character(0))
+    # Update widgets for step_atmcorr basing on step_download
+    observe({
+      if (input$step_download == 1) {
+        updateRadioButtons(session, "step_atmcorr",
+                           choices = list("Automatically download or correct basing on availability" = 1,
+                                "Use only L2A products already available for download" = 2,
+                                "Always download L1C products and correct locally" = 3,
+                                "Never perform (use only L1C products)" = 4),
+                           selected = input$step_atmcorr)
+      }
+      if (input$step_download == 2) {
+        updateRadioButtons(session, "step_atmcorr",
+                           choices = list("Use only L2A products already available" = 2,
+                                "Use L1C products already available and correct locally" = 3,
+                                "Do not perform (use only L1C products already available)" = 4),
+                           selected = input$step_atmcorr)
       }
     })
-
     ## end of steps module ##
 
 
@@ -488,6 +554,30 @@ s2_gui <- function(param_list=NULL) {
         st_polygon(list(matrix(c(-1E6,4E6,2E6,4E6,2E6,7E6,-1E6,7E6,-1E6,4E6),ncol=2, byrow=TRUE))),
         # st_polygon(),
         crs = 32632))
+
+
+    ## Bbox mode
+
+    # message for bboxproj
+    output$bboxproj_message <- renderUI({
+      bboxproj_validated <- try(
+        suppressWarnings(check_proj4string(input$bboxproj, abort=TRUE)),
+        silent=TRUE
+      )
+      if (input$bboxproj=="") {
+        ""
+      }  else if (bboxproj_validated=="invalid") {
+        span(style="color:red",
+             "Insert a valid projection (UTM timezone, EPSG code or PROJ4 string).")
+      } else {
+        div(strong("Selected projection:"),
+            br(),
+            projname(bboxproj_validated),
+            style="color:darkgreen")
+      }
+    })
+
+
 
     # namespace for extent selection
     rv$s2tiles_selected <- s2tiles[1,]
@@ -551,30 +641,31 @@ s2_gui <- function(param_list=NULL) {
     indices_db[,extendedname:=paste0(name," (",longname,")")]
     setkey(indices_db, "name")
 
-    indices_filtered <- reactive({
-      indices_matches <- indices_db[grep(tolower(input$filter_indices),
-                                         tolower(indices_db$extendedname)),
-                                    name]
-      indices_db[unique(c(indices_checked(),indices_matches)),
-                 list(name,extendedname)]
+    indices_rv <- reactiveValues()
+    observe({
+      indices_rv$matches <- indices_db[grep(tolower(input$filter_indices),
+                                            tolower(indices_db$extendedname)),
+                                       name]
+      indices_rv$filtered <- indices_db[unique(c(indices_rv$checked,indices_rv$matches)),
+                                        list(name,extendedname)]
     })
-    indices_checked <- reactive({
-      sort(input$list_indices)
+    observe({
+      indices_rv$checked <- sort(input$list_indices)
     })
 
     output$check_indices <- renderUI({
       checkboxGroupInput("list_indices",
                          "Indices to be exported",
-                         choices = setNames(as.list(indices_filtered()$name),
-                                            indices_filtered()$extendedname),
-                         selected = indices_checked())
+                         choices = setNames(as.list(indices_rv$filtered$name),
+                                            indices_rv$filtered$extendedname),
+                         selected = indices_rv$checked)
     })
 
     # output$select_index <- renderUI({
     #   selectInput("select_indexformula",
     #               "Select index to be shown",
-    #               choices = setNames(as.list(indices_filtered()$name),
-    #                                  indices_filtered()$name),
+    #               choices = setNames(as.list(indices_rv$filtered$name),
+    #                                  indices_rv$filtered$name),
     #               selected = "NDVI")
     # }) # removed: now details of all checked indices are shown
 
@@ -594,7 +685,7 @@ s2_gui <- function(param_list=NULL) {
     }
 
     output$show_formula <- renderUI({
-      div(lapply(indices_checked(), index_details))
+      div(lapply(indices_rv$checked, index_details))
     })
 
 
@@ -687,7 +778,6 @@ s2_gui <- function(param_list=NULL) {
 
     ## Reprojection
     output$outproj_message <- renderUI({
-
       # if required, take from reference raster
       if(input$use_reference==TRUE & "proj" %in% input$reference_usefor) {
 
@@ -915,7 +1005,6 @@ s2_gui <- function(param_list=NULL) {
 
     # function to import saved parameters
     import_param_list <- function(pl) {
-browser()
 
       # processing steps
       updateCheckboxGroupInput(session, "sel_sensor", selected = pl$sel_sensor)
@@ -932,61 +1021,8 @@ browser()
 
       # product selection
       updateCheckboxGroupInput(session, "check_prods", selected = pl$check_prods)
-      updateCheckboxGroupInput(session, "list_indices", selected = pl$list_indices) # FIXME not working since it is reactive
-
-      # output geometry
-      # TODO
-      # # path of the reference file (NULL if not provided)
-      # rl$reference_path <- ifelse(input$use_reference==TRUE,
-      #                             input$reference_file_textin,
-      #                             NA)
-      # # spatial resolution (2-length numeric vector)
-      # rl$res <- if (input$use_reference==TRUE &
-      #               "res" %in% input$reference_usefor) {
-      #   reference()$res
-      # } else {
-      #   if (input$resolution == "10m") {
-      #     c(10,10)
-      #   } else if (input$resolution == "20m") {
-      #     c(20,20)
-      #   } else if (input$resolution == "60m") {
-      #     c(60,60)
-      #   } else if (input$resolution == "custom") {
-      #     rep(input$resolution_custom,2)
-      #   }
-      # }
-      # # unit of measure ("Meter" or "Degree")
-      # rl$unit <- ifelse(input$use_reference==TRUE &
-      #                     "res" %in% input$reference_usefor,
-      #                   reference()$unit,
-      #                   "Meter") # TODO allow degrees if outproj is longlat
-      # # output proj4string
-      # rl$proj <- if (input$use_reference==TRUE &
-      #                "proj" %in% input$reference_usefor) {
-      #   reference()$proj
-      # } else {
-      #   switch(input$outproj,
-      #          no_reproj = NA,
-      #          utm = CRS(paste0("+proj=utm ",
-      #                           "+zone=",input$outproj_utmzone," ",
-      #                           "+datum=WGS84 +units=m +no_defs ",
-      #                           "+ellps=WGS84 +towgs84=0,0,0"))@projargs,
-      #          epsg = CRS(paste0("+init=epsg:",input$outproj_epsg))@projargs,
-      #          proj4 = CRS(input$outproj_proj4)@projargs)
-      # }
-      # # resampling method ("near" or "mode")
-      # rl$resampling <- input$resampling
-      # # output format (GDAL format name)
-      # rl$outformat <- ifelse(input$use_reference==TRUE &
-      #                          "outformat" %in% input$reference_usefor,
-      #                        reference()$outformat,
-      #                        input$outformat)
-      # # output compression ("LZW", "DEFLATE" etc.)
-      # rl$compression <- ifelse(rl$outformat=="GTiff",
-      #                          input$compression,
-      #                          NA)
-      # # overwrite or skip existing files (logical)
-      # rl$overwrite <- input$overwrite
+      indices_rv$checked <- pl$list_indices
+      # updateCheckboxGroupInput(session, "list_indices", selected = pl$list_indices) # FIXME not working since it is reactive
 
       # set directories
       updateTextInput(session, "path_l1c_textin", value = pl$path_l1c)
@@ -995,6 +1031,41 @@ browser()
       updateTextInput(session, "path_out_textin", value = pl$path_out)
       updateRadioButtons(session, "path_tiles_subdirs", selected = pl$path_tiles_subdirs)
       updateRadioButtons(session, "path_out_subdirs", selected = pl$path_out_subdirs)
+
+      # output geometry
+      updateTextInput(session, "reference_file_textin", value = pl$reference_path)
+      updateRadioButtons(session, "use_reference", selected = ifelse(is.na(pl$reference_path), FALSE, TRUE))
+
+      if (is.na(pl$reference_path)) {
+        updateTextInput(session, "resolution_custom", value = pl$res[1])
+        updateRadioButtons(session, "resolution", selected = {
+          if (pl$res[1]==10) {
+            "10m"
+          } else if (pl$res[1]==20) {
+            "20m"
+          } else if (pl$res[1]==60) {
+            "60m"
+          } else {
+            "custom"
+          }
+        })
+        updateRadioButtons(session, "outproj", selected = {
+          if (is.na(pl$proj)) {
+            "no_reproj"
+          } else {
+            "proj4"
+          }
+        })
+        updateTextInput(session, "outproj_proj4", value = ifelse(!is.na(pl$proj),
+                                                                    pl$proj,
+                                                                    character(0)))
+        updateRadioButtons(session, "outformat", selected = pl$outformat)
+      }
+      updateRadioButtons(session, "resampling", selected = pl$resampling)
+      updateRadioButtons(session, "compression", selected = ifelse(pl$outformat=="GTiff",
+                                                                   pl$compression,
+                                                                   character(0)))
+      updateRadioButtons(session, "overwrite", selected = pl$overwrite)
 
     }
 
@@ -1042,7 +1113,6 @@ browser()
 #     observe({
 #
 #       if (!is.null(input$import_param2)) {
-# browser()
 #         imported_param <- input$import_param2$datapath %>%
 #           as.character() %>%
 #           readLines() %>%
