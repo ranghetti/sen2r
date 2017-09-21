@@ -59,11 +59,10 @@ projpar <- function(proj4string, par, abort = FALSE) {
 
 projname <- function(proj4string, abort = FALSE) {
 
-
-  proj4_name <- projpar("+init=epsg:32632", "geogcs")
+  proj4_name <- projpar(proj4string, "geogcs")
 
   if (is.projected(CRS(attr(proj4_name, "proj4string")))) {
-    proj4_name <- projpar("+init=epsg:32632", "projcs")
+    proj4_name <- projpar(proj4string, "projcs")
   }
   proj4_name <- gsub("\\_"," ",proj4_name)
 
