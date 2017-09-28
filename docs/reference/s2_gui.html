@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Shiny Module Server for Geo Create, Edit, Delete — editModPoly • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
+<title>Launch the GUI for Sentinel-2 products — s2_gui • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,61 +89,38 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Shiny Module Server for Geo Create, Edit, Delete</h1>
+    <h1>Launch the GUI for Sentinel-2 products</h1>
     </div>
 
     
-    <p>Shiny Module Server for Geo Create, Edit, Delete</p>
+    <p>Launch the GUI to set parameters for the processing
+chain of Sentinel-2 products.</p>
     
 
-    <pre class="usage"><span class='fu'>editModPoly</span>(<span class='no'>input</span>, <span class='no'>output</span>, <span class='no'>session</span>, <span class='no'>leafmap</span>, <span class='kw'>targetLayerId</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>sf</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>record</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>)</pre>
+    <pre class="usage"><span class='fu'>s2_gui</span>(<span class='kw'>param_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>thunderforest_api</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>input</th>
-      <td><p>Shiny server function input</p></td>
+      <th>param_list</th>
+      <td><p>List of parameters for initialising the GUI values
+(if empty, default values are used).</p></td>
     </tr>
     <tr>
-      <th>output</th>
-      <td><p>Shiny server function output</p></td>
-    </tr>
-    <tr>
-      <th>session</th>
-      <td><p>Shiny server function session</p></td>
-    </tr>
-    <tr>
-      <th>leafmap</th>
-      <td><p>leaflet map to use for Selection</p></td>
-    </tr>
-    <tr>
-      <th>targetLayerId</th>
-      <td><p><code>character</code> identifier of layer to edit, delete</p></td>
-    </tr>
-    <tr>
-      <th>sf</th>
-      <td><p><code>logical</code> to return simple features.  <code>sf=FALSE</code> will return
-<code>GeoJSON</code>.</p></td>
-    </tr>
-    <tr>
-      <th>record</th>
-      <td><p><code>logical</code> to record all edits for future playback.</p></td>
-    </tr>
-    <tr>
-      <th>crs</th>
-      <td><p>CRS (EPSG) to be used</p></td>
+      <th>thunderforest_api</th>
+      <td><p>Character value with the API for thinderforest
+layers (now not used).</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>server function for Shiny module</p>
+    <p>A list of parameters.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>Slightly edited from <a href='http://www.rdocumentation.org/packages/mapedit/topics/editMod'>mapedit::editMod</a> in order to allow drawing only polygons.</p>
+    <p>License: GPL 3.0</p>
     
 
   </div>
@@ -156,6 +133,10 @@
 
       <li><a href="#note">Note</a></li>
           </ul>
+
+    <h2>Author</h2>
+    
+Luigi Ranghetti, phD (2017) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a>
 
   </div>
 </div>

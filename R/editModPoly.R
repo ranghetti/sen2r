@@ -8,9 +8,12 @@
 #' @param sf \code{logical} to return simple features.  \code{sf=FALSE} will return
 #'          \code{GeoJSON}.
 #' @param record \code{logical} to record all edits for future playback.
-#'
+#' @param crs CRS (EPSG) to be used
 #' @return server function for Shiny module
-#' @import shiny
+#' @importFrom shiny observeEvent reactive reactiveValues
+#' @importFrom leaflet.extras addDrawToolbar drawPolygonOptions drawRectangleOptions editToolbarOptions
+#' @importFrom leaflet renderLeaflet
+# #' @importFrom mapedit combine_list_of_sf st_as_sfc.geo_list
 #' @import mapedit
 #' @note Slightly edited from [mapedit::editMod] in order to allow drawing only polygons.
 editModPoly <- function(

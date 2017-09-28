@@ -22,6 +22,8 @@ editModPoly(input, output, session, leafmap, targetLayerId = NULL,
 \code{GeoJSON}.}
 
 \item{record}{\code{logical} to record all edits for future playback.}
+
+\item{crs}{CRS (EPSG) to be used}
 }
 \value{
 server function for Shiny module

@@ -4,6 +4,10 @@ template:
     bootswatch: yeti
     ganalytics: UA-11080708-8
 reference:
+  - title: Automatic processing chain
+    desc: ~
+    contents:
+      - '`s2_gui`'
   - title: Find and download Sentinel-2 products
     desc: ~
     contents:
@@ -36,6 +40,7 @@ reference:
       - '`import_s2download`'
       - '`print_message`'
       - '`create_indices_db`'
+      - '`editModPoly`'
 navbar:
   type: inverse
   left:

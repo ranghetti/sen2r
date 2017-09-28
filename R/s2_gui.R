@@ -1,18 +1,33 @@
+#' @title Launch the GUI for Sentinel-2 products
+#' @description Launch the GUI to set parameters for the processing
+#'  chain of Sentinel-2 products.
+#' @param param_list List of parameters for initialising the GUI values
+#'  (if empty, default values are used).
+#' @param thunderforest_api Character value with the API for thinderforest
+#'  layers (now not used).
+#' @return A list of parameters.
+#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @note License: GPL 3.0
+#' @importFrom jsonlite fromJSON toJSON
+#' @importFrom data.table data.table ":="
+#' @importFrom geojsonio geojson_json
+#' @importFrom leaflet addLayersControl addPolygons addProviderTiles addTiles clearShapes hideGroup labelOptions layersControlOptions leaflet leafletProxy setView
+#' @importFrom leaflet.extras addDrawToolbar editToolbarOptions removeDrawToolbar
+#' @importFrom mapedit editModUI
+#' @importFrom reticulate import
+#' @importFrom sf st_intersects st_polygon st_read st_sf st_sfc st_transform
+#' @importFrom shiny a actionButton br callModule checkboxGroupInput checkboxInput column conditionalPanel dateRangeInput div em fluidRow h2 h3 helpText HTML htmlOutput icon isolate NS numericInput observe p radioButtons reactive reactiveValues renderText renderUI runApp selectInput shinyApp span stopApp strong textInput uiOutput updateCheckboxGroupInput updateDateRangeInput updateRadioButtons updateTextInput withMathJax
+#' @importFrom shinydashboard box dashboardBody dashboardHeader dashboardPage dashboardSidebar menuItem sidebarMenu tabItem tabItems
+#' @importFrom shinyFiles getVolumes parseDirPath parseFilePaths parseSavePath shinyDirButton shinyDirChoose shinyFileChoose shinyFileSave shinyFilesButton shinySaveButton
+#' @importFrom sprawl check_proj4string get_rastype get_vectype
+#' @importFrom stats setNames
+#' @importFrom utils head unzip
+#'
+#' @export
 
 
 s2_gui <- function(param_list=NULL,
                    thunderforest_api=NA) {
-
-  require(shinydashboard)
-  require(mapview)
-  require(mapedit)
-  require(shiny)
-  library(leaflet)
-  library(leaflet.extras)
-  library(reticulate)
-  library(shinyFiles)
-  library(shinyjs)
-  library(sf)
 
   # import python modules
   gdal <- import("osgeo",convert=FALSE)$gdal
@@ -521,6 +536,8 @@ s2_gui <- function(param_list=NULL,
 
   s2_gui.server <- function(input, output, session) {
 
+    extendedname <- link <- longname <- name <- providers <- s2_formula_mathml <- NULL
+
     # initialise rv
     # (list of reactive values to be passed as output)
     rv <- reactiveValues()
@@ -805,6 +822,7 @@ s2_gui <- function(param_list=NULL,
     })
 
     index_details <- function(index) {
+      extendedname <- link <- longname <- name <- providers <- s2_formula_mathml <- NULL
       return(box(
         width=12,
         title=indices_db[name==index,name],
@@ -1113,6 +1131,7 @@ s2_gui <- function(param_list=NULL,
 
     # function to import saved parameters
     import_param_list <- function(pl) {
+browser()
 
       # processing steps
       updateCheckboxGroupInput(session, "sel_sensor", selected = pl$sel_sensor)
@@ -1228,6 +1247,12 @@ s2_gui <- function(param_list=NULL,
     observe({
       if (exists("imported_param") && !is.null(imported_param())) {
         import_param_list(imported_param()) # FIXME 3 same as fixme2 (after importing parameters, map is not drawn)
+      }
+    })
+    observe({
+      if (!is.null(param_list)) {
+browser()
+        import_param_list(param_list)
       }
     })
 
