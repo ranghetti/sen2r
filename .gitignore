@@ -36,3 +36,6 @@
  xslt/
  s2download_path.txt
 .Rproj.user
+
+ # s2_tiles.kml
+ inst/extdata/vector/s2_tiles.kml

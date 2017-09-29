@@ -45,11 +45,15 @@
 #'  more than a single spectral index is required.
 #' @param compress (optional) In the case a GTiff format is
 #'  present, the compression indicated with this parameter is used.
+#' @param parallel (logical) If TRUE, masking is conducted using parallel
+#'  processing exploiting `raster::beginCluster`. This speeds-up the computation
+#'  for large rasters, Default: FALSE
 #' @return A vector with the names of the created products.
 #' @export
 #' @importFrom rgdal GDALinfo
 #' @importFrom reticulate import
-#' @importFrom raster stack brick values mask NAvalue dataType
+#' @importFrom raster stack brick values mask NAvalue dataType beginCluster
+#'   endCluster
 #' @importFrom magrittr "%>%"
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
@@ -60,7 +64,8 @@ s2_mask <- function(infiles,
                     outdir="./masked",
                     format=NA,
                     subdirs=NA,
-                    compress="DEFLATE") {
+                    compress="DEFLATE",
+                    parallel = FALSE) {
 
   . <- NULL
 
@@ -172,18 +177,25 @@ s2_mask <- function(infiles,
       }) %>% apply(1, sum)
 
     inraster <- raster::brick(sel_infile)
+
+    if (parallel) {
+      raster::beginCluster()
+    }
     raster::mask(inraster,
                  outmask,
-                 filename = sel_outfile,
-                 maskvalue = 0,
+                 filename    = sel_outfile,
+                 maskvalue   = 0,
                  updatevalue = NAvalue(inraster),
-                 updateNA = TRUE,
-                 datatype = dataType(inraster),
-                 format = sel_format,
-                 options = ifelse(sel_format=="GTiff",
+                 updateNA    = TRUE,
+                 datatype    = dataType(inraster),
+                 format      = sel_format,
+                 options     = ifelse(sel_format == "GTiff",
                                   c(paste0("COMPRESS=",compress)),
                                   ""),
-                 overwrite = TRUE)
+                 overwrite   = TRUE)
+    if (parallel) {
+      raster::endCluster()
+    }
 
     # fix for envi extension (writeRaster use .envi)
     if (sel_format=="ENVI" &

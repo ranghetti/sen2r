@@ -26,6 +26,13 @@ Imports:
   data.table,
   raster,
   XML,
-  jsonlite
+  jsonlite,
+  geojsonio,
+  leaflet,
+  leaflet.extras,
+  mapedit,
+  shiny,
+  shinyFiles,
+  shinydashboard
 Roxygen: list(markdown = TRUE)
 Remotes: lbusett/sprawl
