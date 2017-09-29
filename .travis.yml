@@ -15,11 +15,13 @@ apt_packages:
   - libprotoc-dev
   - protobuf-compiler
   - valgrind
+  - libjq-dev
 
 before_install:
   - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
+  - sudo add-apt-repository -y ppa:opencpu/jq --yes
   - sudo apt-get -qq update
-  - sudo apt-get install -y libgdal-dev libproj-dev libgeos-dev libv8-dev libprotobuf-dev libudunits2-dev netcdf-bin libv8-dev
+  - sudo apt-get install -y libgdal-dev libproj-dev libv8-dev libprotobuf-dev libudunits2-dev netcdf-bin libv8-dev libjq-dev
 
 after_success:
   - Rscript -e 'covr::codecov()'
