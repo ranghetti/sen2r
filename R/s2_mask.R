@@ -45,9 +45,9 @@
 #'  more than a single spectral index is required.
 #' @param compress (optional) In the case a GTiff format is
 #'  present, the compression indicated with this parameter is used.
-#' @param parallel (logical) If TRUE, masking is conducted using parallel
-#'  processing exploiting `raster::beginCluster`. This speeds-up the computation
-#'  for large rasters, Default: FALSE
+#' @param parallel (optional) Logical: if TRUE, masking is conducted using parallel
+#'  processing exploiting [raster::beginCluster]. This speeds-up the computation
+#'  for large rasters. If FALSE (default), single core processing is used.
 #' @return A vector with the names of the created products.
 #' @export
 #' @importFrom rgdal GDALinfo

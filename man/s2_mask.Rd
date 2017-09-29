@@ -60,9 +60,10 @@ more than a single spectral index is required.}
 
 \item{compress}{(optional) In the case a GTiff format is
 present, the compression indicated with this parameter is used.}
-\item{parallel}{(logical) If TRUE, masking is conducted using parallel
-processing exploiting \code{raster::beginCluster}. This speeds-up the computation
-for large rasters, Default: FALSE}
+
+\item{parallel}{(optional) Logical: if TRUE, masking is conducted using parallel
+processing exploiting \link[raster:beginCluster]{raster::beginCluster}. This speeds-up the computation
+for large rasters. If FALSE (default), single core processing is used.}
 }
 \value{
 A vector with the names of the created products.

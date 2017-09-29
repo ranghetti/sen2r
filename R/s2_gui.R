@@ -11,17 +11,28 @@
 #' @importFrom jsonlite fromJSON toJSON
 #' @importFrom data.table data.table ":="
 #' @importFrom geojsonio geojson_json
-#' @importFrom leaflet addLayersControl addPolygons addProviderTiles addTiles clearShapes hideGroup labelOptions layersControlOptions leaflet leafletProxy setView
-#' @importFrom leaflet.extras addDrawToolbar editToolbarOptions removeDrawToolbar
+#' @importFrom leaflet addLayersControl addPolygons addProviderTiles
+#'  addTiles clearShapes hideGroup labelOptions layersControlOptions
+#'  leaflet leafletProxy setView
+#' @importFrom leaflet.extras addDrawToolbar editToolbarOptions
+#'  removeDrawToolbar
 #' @importFrom mapedit editModUI
 #' @importFrom reticulate import
 #' @importFrom sf st_intersects st_polygon st_read st_sf st_sfc st_transform
-#' @importFrom shiny a actionButton br callModule checkboxGroupInput checkboxInput column conditionalPanel dateRangeInput div em fluidRow h2 h3 helpText HTML htmlOutput icon isolate NS numericInput observe p radioButtons reactive reactiveValues renderText renderUI runApp selectInput shinyApp span stopApp strong textInput uiOutput updateCheckboxGroupInput updateDateRangeInput updateRadioButtons updateTextInput withMathJax
-#' @importFrom shinydashboard box dashboardBody dashboardHeader dashboardPage dashboardSidebar menuItem sidebarMenu tabItem tabItems
-#' @importFrom shinyFiles getVolumes parseDirPath parseFilePaths parseSavePath shinyDirButton shinyDirChoose shinyFileChoose shinyFileSave shinyFilesButton shinySaveButton
+#' @importFrom shiny a actionButton br callModule checkboxGroupInput
+#'  checkboxInput column conditionalPanel dateRangeInput div em fluidRow h2 h3
+#'  helpText HTML htmlOutput icon isolate NS numericInput observe p
+#'  radioButtons reactive reactiveValues renderText renderUI runApp selectInput
+#'  shinyApp span stopApp strong textInput uiOutput updateCheckboxGroupInput
+#'  updateDateRangeInput updateRadioButtons updateTextInput withMathJax
+#' @importFrom shinydashboard box dashboardBody dashboardHeader dashboardPage
+#'  dashboardSidebar menuItem sidebarMenu tabItem tabItems
+#' @importFrom shinyFiles getVolumes parseDirPath parseFilePaths parseSavePath
+#'  shinyDirButton shinyDirChoose shinyFileChoose shinyFileSave
+#'  shinyFilesButton shinySaveButton
 #' @importFrom sprawl check_proj4string get_rastype get_vectype
 #' @importFrom stats setNames
-#' @importFrom utils head unzip
+#' @importFrom utils unzip
 #'
 #' @export
 
@@ -509,7 +520,8 @@ s2_gui <- function(param_list=NULL,
 
           # Save buttons
           br(),
-          tags$head(tags$script(src = "message-handler.js")),
+          HTML("<script src=\"message-handler.js\"></script>"),
+          # head(script(src = "message-handler.js")),
           p(
             shinySaveButton("export_param", "Export parameters", "Export parameters as ...", filetype=list(json="json")),
             "\u2001", # quad space

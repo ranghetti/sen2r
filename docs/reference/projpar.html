@@ -134,12 +134,11 @@ attribute <code>proj4string</code> with the input projection checked using
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>projpar</span>(<span class='st'>"+init=epsg:4326"</span>, <span class='st'>"Unit"</span>)</div><div class='output co'>#&gt; [1] "Degree"
-#&gt; attr(,"proj4string")
-#&gt; [1] "+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"</div><div class='input'>
-<span class='fu'>projname</span>(<span class='st'>"+init=epsg:4326"</span>)</div><div class='output co'>#&gt; [1] "GCS WGS 1984"
-#&gt; attr(,"proj4string")
-#&gt; [1] "+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"</div></pre>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='fu'>projpar</span>(<span class='st'>"+init=epsg:4326"</span>, <span class='st'>"Unit"</span>)
+<span class='co'># }</span><span class='co'># NOT RUN {</span>
+<span class='fu'>projname</span>(<span class='st'>"+init=epsg:4326"</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
