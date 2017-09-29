@@ -1,33 +1,38 @@
-# R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
-
 language: R
 sudo: required
 dist: trusty
 cache: packages
-r_github_packages: lbusett/sprawl
+
+r_github_packages:
+  - lbusett/sprawl
+
+apt_packages:
+  - libgdal-dev
+  - libproj-dev
+  - libudunits2-dev
+  - libv8-dev
+  - libprotobuf-dev
+  - libprotoc-dev
+  - protobuf-compiler
+  - valgrind
 
 before_install:
   - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
-  - sudo add-apt-repository ppa:opencpu/jq --yes
   - sudo apt-get -qq update
-  - sudo apt-get install -y libgdal-dev libproj-dev libv8-dev libprotobuf-dev libjq-dev
+  - sudo apt-get install -y libgdal-dev libproj-dev libgeos-dev libv8-dev libprotobuf-dev libudunits2-dev netcdf-bin libv8-dev
 
-matrix:
-  include:
-    - os: linux
-      dist: trusty
-      env:
-      global:
-      - R_BUILD_ARGS=" "
-      - R_CHECK_ARGS="--no-build-vignettes --no-manual --timings"
-      - R_CHECK_TIMINGS_="0"
-      addons:
-        apt:
-          packages:
-            - libgdal-dev
-            - libproj-dev
-            - units
-            - libudunits2-dev
-            - libv8-dev
-            - libprotobuf-dev
-            - libjq-dev
+after_success:
+  - Rscript -e 'covr::codecov()'
+
+env:
+  global:
+    - R_LIBS="http://cran.rstudio.com"
+    - R_BUILD_ARGS="--no-build-vignettes --no-manual"
+    - R_CHECK_ARGS="--no-build-vignettes --no-manual --as-cran"
+    - R_CHECK_TIMINGS_="0"
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
+
