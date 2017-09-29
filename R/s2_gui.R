@@ -1067,7 +1067,7 @@ s2_gui <- function(param_list=NULL,
       # spatio-temporal selection
       rl$timewindow <- input$timewindow # range of dates
       rl$timeperiod <- input$timeperiod # "full" or "seasonal"
-      rl$extent <- geojson_json(rv$extent) # polygons
+      rl$extent <- if (!is.null(rv$extent)) {geojson_json(rv$extent)} else {NULL} # polygons
       # rl$s2tiles_selected <- rv$draw_tiles_overlapping[rv$draw_tiles_overlapping$tile_id %in% input$tiles_checkbox,] # MULTIPOLYGON with the selected tiles
       rl$s2tiles_selected <- input$tiles_checkbox # selected tile IDs
 
