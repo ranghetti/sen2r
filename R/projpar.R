@@ -21,8 +21,9 @@
 #' @importFrom rgdal showWKT
 #' @importFrom magrittr "%>%"
 #'
-#' @examples
+#' @examples \dontrun{
 #' projpar("+init=epsg:4326", "Unit")
+#' }
 
 projpar <- function(proj4string, par, abort = FALSE) {
 

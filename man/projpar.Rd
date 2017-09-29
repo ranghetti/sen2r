@@ -33,7 +33,9 @@ the WKT of the given proj4string.
 Python is needed.
 }
 \examples{
+\dontrun{
 projpar("+init=epsg:4326", "Unit")
+}
 
 projname("+init=epsg:4326")
 }
