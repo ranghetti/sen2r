@@ -178,7 +178,9 @@ s2_mask <- function(infiles,
 
     inraster <- raster::brick(sel_infile)
 
-    if (parallel) raster::beginCluster()
+    if (parallel) {
+      raster::beginCluster()
+    }
     raster::mask(inraster,
                  outmask,
                  filename    = sel_outfile,
@@ -191,7 +193,9 @@ s2_mask <- function(infiles,
                                   c(paste0("COMPRESS=",compress)),
                                   ""),
                  overwrite   = TRUE)
-    if (parallel) raster::endCluster()
+    if (parallel) {
+      raster::endCluster()
+    }
 
     # fix for envi extension (writeRaster use .envi)
     if (sel_format=="ENVI" &
