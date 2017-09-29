@@ -299,7 +299,7 @@ s2_gui <- function(param_list=NULL,
             title="Products to be exported",
             checkboxGroupInput("check_prods",
                                NULL,
-                               choices = list("TOA (top-of-atmosphere) Surface Reflectance" = "TOA",
+                               choices = list("TOA (top-of-atmosphere) Reflectance" = "TOA",
                                               "BOA (bottom-of-atmosphere) Surface Reflectance" = "BOA",
                                               "SCL (surface classification map)" = "SCL",
                                               "TCI (true-color) RGB 8-bit image" = "TCI"),
@@ -696,10 +696,18 @@ s2_gui <- function(param_list=NULL,
       # addTiles(paste0("https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png",
       #                 if (!is.na(thunderforest_api)) {paste0("?apikey=",thunderforest_api)}),
       #          group = "OpenStreetMap Outdoors") %>%
-      addProviderTiles(providers$OpenTopoMap, group = "OpenTopoMap") %>%
-      addProviderTiles(providers$CartoDB.Positron, group = "CartoDB") %>%
-      addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") %>%
-      addProviderTiles(providers$CartoDB.DarkMatterOnlyLabels, group = "Names") %>%
+      # addProviderTiles(providers$OpenTopoMap, group = "OpenTopoMap") %>%
+      addTiles("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+               group = "OpenTopoMap") %>%
+      # addProviderTiles(providers$CartoDB.Positron, group = "CartoDB") %>%
+      addTiles("https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
+               group = "CartoDB") %>%
+      # addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") %>%
+      addTiles("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+               group = "Satellite") %>%
+      # addProviderTiles(providers$CartoDB.DarkMatterOnlyLabels, group = "Names") %>%
+      addTiles("https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_only_labels/{z}/{x}/{y}.png",
+               group = "Names") %>%
       # addTiles(paste0("https://{s}.tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png",
       #                 if (!is.na(thunderforest_api)) {paste0("?apikey=",thunderforest_api)}),
       #          group = "Metal or death") %>%
