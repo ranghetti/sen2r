@@ -1048,6 +1048,11 @@ s2_gui <- function(param_list=NULL,
 
     ## Exit and save
 
+    # functions to check that all is correctly set TODO
+    check_param <- function() {
+
+    }
+
     # function to create a list to objects to be returned
     create_return_list <- function() {
       rl <- list()
