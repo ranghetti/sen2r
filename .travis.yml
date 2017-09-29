@@ -25,5 +25,7 @@ matrix:
           packages:
             - libgdal-dev
             - libproj-dev
+            - units
+            - libudunits2-dev
             - libv8-dev
             - protobuf-compiler
