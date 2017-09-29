@@ -54,9 +54,9 @@ projpar <- function(proj4string, par, abort = FALSE) {
 #' @rdname projpar
 #' @export
 #' @importFrom sp is.projected CRS
-#' @examples
-#'
+#' @examples \dontrun{
 #' projname("+init=epsg:4326")
+#' }
 
 projname <- function(proj4string, abort = FALSE) {
 

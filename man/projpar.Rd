@@ -36,8 +36,9 @@ Python is needed.
 \dontrun{
 projpar("+init=epsg:4326", "Unit")
 }
-
+\dontrun{
 projname("+init=epsg:4326")
+}
 }
 \author{
 Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
