@@ -5,7 +5,8 @@
 \title{Apply cloud masks}
 \usage{
 s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba",
-  outdir = "./masked", format = NA, subdirs = NA, compress = "DEFLATE")
+  outdir = "./masked", format = NA, subdirs = NA, compress = "DEFLATE",
+  parallel = FALSE)
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths
@@ -59,6 +60,9 @@ more than a single spectral index is required.}
 
 \item{compress}{(optional) In the case a GTiff format is
 present, the compression indicated with this parameter is used.}
+\item{parallel}{(logical) If TRUE, masking is conducted using parallel
+processing exploiting \code{raster::beginCluster}. This speeds-up the computation
+for large rasters, Default: FALSE}
 }
 \value{
 A vector with the names of the created products.
