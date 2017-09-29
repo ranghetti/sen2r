@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Apply cloud masks — s2_mask • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
+<title>Launch the GUI for Sentinel-2 products — s2_gui • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,91 +89,34 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Apply cloud masks</h1>
+    <h1>Launch the GUI for Sentinel-2 products</h1>
     </div>
 
     
-    <p>Apply a cloud mask to a Sentinel-2 product. Since
-raster functions are used to perform computations, output files
-are physical rasters (no output VRT is allowed).</p>
+    <p>Launch the GUI to set parameters for the processing
+chain of Sentinel-2 products.</p>
     
 
-    <pre class="usage"><span class='fu'>s2_mask</span>(<span class='no'>infiles</span>, <span class='no'>maskfiles</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='st'>"cloud_medium_proba"</span>,
-  <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"./masked"</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>)</pre>
+    <pre class="usage"><span class='fu'>s2_gui</span>(<span class='kw'>param_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>thunderforest_api</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>infiles</th>
-      <td><p>A vector of input filenames. Input files are paths
-of products already converted from SAFE format to a
-format managed by GDAL (use <a href='s2_translate.html'>s2_translate</a> to do it);
-their names must be in the fidolasen-S2 naming convention
-(<a href='s2_shortname.html'>s2_shortname</a>).</p></td>
+      <th>param_list</th>
+      <td><p>List of parameters for initialising the GUI values
+(if empty, default values are used).</p></td>
     </tr>
     <tr>
-      <th>maskfiles</th>
-      <td><p>A vector of filenames from which to take the
-information about cloud coverage (for now, only SCL products
-have been implemented). It is not necessary that <code>maskfiles</code>
-elements strictly match <code>infiles</code> ones. Input files are paths
-of products already converted from SAFE format to a
-format managed by GDAL (use <a href='s2_translate.html'>s2_translate</a> to do it);
-their names must be in the fidolasen-S2 naming convention
-(<a href='s2_shortname.html'>s2_shortname</a>).</p></td>
-    </tr>
-    <tr>
-      <th>mask_type</th>
-      <td><p>Character vector which determines the type of
-mask to be applied. Accepted values are:</p><ul>
-<li><p>"cloud_high_proba": mask pixels checked as "No data" or
-"Cloud (high probability)" in the SCL product;</p></li>
-<li><p>"cloud_medium_proba": mask pixels checked as "No data" or
-"Cloud (high or medium probability)" in the SCL product;</p></li>
-<li><p>"cloud_low_proba": mask pixels checked as "No data" or
-"Cloud (any probability)" in the SCL product;</p></li>
-<li><p>"cloud_and_shadow": mask pixels checked as "No data",
-"Cloud (any probability)" or "Cloud shadow" in the SCL product;</p></li>
-<li><p>"cloud_shadow_cirrus": mask pixels checked as "No data",
-"Cloud (any probability)", "Cloud shadow" or "Thin cirrus"
-in the SCL product;</p></li>
-<li><p>"opaque_clouds" (still to be implemented).</p></li>
-</ul></td>
-    </tr>
-    <tr>
-      <th>outdir</th>
-      <td><p>(optional) Full name of the output directory where
-the files should be created (default: "current directory"masked"
-subdir of current directory).
-<code>outdir</code> can bot be an existing or non-existing directory (in the
-second case, its parent directory must exists).
-If it is a relative path, it is expanded from the common parent
-directory of <code>infiles</code>.</p></td>
-    </tr>
-    <tr>
-      <th>format</th>
-      <td><p>(optional) Format of the output file (in a
-format recognised by GDAL). Default is the same format of input images
-(or "GTiff" in case of VRT input images).</p></td>
-    </tr>
-    <tr>
-      <th>subdirs</th>
-      <td><p>(optional) Logical: if TRUE, different indices are
-placed in separated <code>outfile</code> subdirectories; if FALSE, they are placed in
-<code>outfile</code> directory; if NA (default), subdirectories are created only if
-more than a single spectral index is required.</p></td>
-    </tr>
-    <tr>
-      <th>compress</th>
-      <td><p>(optional) In the case a GTiff format is
-present, the compression indicated with this parameter is used.</p></td>
+      <th>thunderforest_api</th>
+      <td><p>Character value with the API for thinderforest
+layers (now not used).</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A vector with the names of the created products.</p>
+    <p>A list of parameters.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
