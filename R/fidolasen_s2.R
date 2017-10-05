@@ -13,59 +13,69 @@
 #'  provided as arguments, default values will be used.
 #'  Use the function [s2_gui()] to create a complete list of
 #'  parameters.
+#' @param preprocess
+#' @param s2_levels
 #' @param sel_sensor =NA,
 #' @param online =NA,
 #' @param overwrite_safe =NA,
 #' @param rm_safe =NA,
 #' @param step_atmcorr =NA,
-#' @param steps_reqout =NA,
 #' @param timewindow =NA,
 #' @param timeperiod =NA,
 #' @param extent =NA,
 #' @param s2tiles_selected =NA,
+#' @param s2orbits_selected =NA,
 #' @param list_prods =NA,
 #' @param reference_path =NA,
+#' @param rescale
 #' @param res =NA,
+#' @param res_s2
 #' @param unit =NA,
 #' @param proj =NA,
 #' @param resampling =NA,
+#' @param resampling_scl
 #' @param outformat =NA,
 #' @param compression =NA,
 #' @param overwrite =NA,
 #' @param path_l1c =NA,
 #' @param path_l2a =NA,
 #' @param path_tiles =NA,
+#' @param path_merged
 #' @param path_out =NA,
-#' @param path_tiles_subdirs =NA,
-#' @param path_out_subdirs =NA
+#' @param path_subdirs =NA,
 
 
 fidolasen_s2 <- function(param_list=NULL,
+                         preprocess=NA,
+                         s2_levels=NA,
                          sel_sensor=NA,
                          online=NA,
                          overwrite_safe=NA,
                          rm_safe=NA,
                          step_atmcorr=NA,
-                         steps_reqout=NA,
                          timewindow=NA,
                          timeperiod=NA,
                          extent=NA,
                          s2tiles_selected=NA,
+                         s2orbits_selected=NA,
                          list_prods=NA,
                          reference_path=NA,
+                         rescale=NA,
                          res=NA,
+                         res_s2=NA,
                          unit=NA,
                          proj=NA,
                          resampling=NA,
+                         resampling_scl=NA,
                          outformat=NA,
                          compression=NA,
                          overwrite=NA,
                          path_l1c=NA,
                          path_l2a=NA,
                          path_tiles=NA,
+                         path_merged=NA,
                          path_out=NA,
-                         path_tiles_subdirs=NA,
-                         path_out_subdirs=NA) {
+                         path_subdirs=NA) {
 
 
   # import python modules
@@ -77,31 +87,36 @@ fidolasen_s2 <- function(param_list=NULL,
   # Create parameter list with default values
   # (elements should correspond to the function arguments,
   # except for param_list)
-  pm_def <- list(sel_sensor=c("s2a","s2b"),
+  pm_def <- list(preprocess=TRUE,
+                 s2_levels=c("l2a"),
+                 sel_sensor=c("s2a","s2b"),
                  online=TRUE,
                  overwrite_safe=FALSE,
                  rm_safe="no",
                  step_atmcorr="auto",
-                 steps_reqout=c("safe","clipped"),
                  timewindow=c(Sys.Date()-90, Sys.Date()), # last 90 days
                  timeperiod="full",
                  extent=get_extent(matrix(c(9.4,45.4,10.27,46.1),nrow=2),"+init=epsg:4326"),
                  s2tiles_selected=c("32TNR","32TNS"),
+                 s2orbits_selected=str_pad(c(1:143),3,"left","0"), # temporary select all orbits (TODO implement)
                  list_prods=c("BOA"),
                  reference_path=NA,
+                 rescale=FALSE,
                  res=c(10,10),
+                 res_s2="10m",
                  unit="Meter",
                  proj=NA,
                  resampling="near",
+                 resampling_scl="near",
                  outformat="GTiff",
                  compression="LZW",
                  overwrite=FALSE,
                  path_l1c="",
                  path_l2a="",
                  path_tiles="",
+                 path_merged="",
                  path_out="",
-                 path_tiles_subdirs=TRUE,
-                 path_out_subdirs=TRUE)
+                 path_subdirs=TRUE)
 
   # Import param_list, if provided
   pm <- if (is.null(param_list)) {
@@ -153,18 +168,30 @@ fidolasen_s2 <- function(param_list=NULL,
   }
 
 
-
   ## 2. List required products ##
-  s2_list <- s2_list(spatial_extent = pm$extent,
-                     time_interval = pm$timewindow,
-                     tile = pm$s2tiles_selected,
-                     level = if (pm$step_atmcorr=="auto") {
-                       "auto"
-                     } else if (pm$step_atmcorr=="l2a") {
-                       "L2A"
-                     } else if (pm$step_atmcorr %in% c("scihub","no")) {
-                       "L1C"
-                     })
+  s2_lists <- list()
+  if ("l1c" %in% pm$s2_levels) {
+    s2_lists[["l1c"]] <- s2_list(spatial_extent = pm$extent,
+                                 time_interval = pm$timewindow,
+                                 tile = pm$s2tiles_selected,
+                                 level = "L1C")
+  }
+  if ("l2a" %in% pm$s2_levels) {
+    s2_lists[["l2a"]] <- s2_list(spatial_extent = pm$extent,
+                                 time_interval = pm$timewindow,
+                                 tile = pm$s2tiles_selected,
+                                 level = if (pm$step_atmcorr=="auto") {
+                                   "auto"
+                                 } else if (pm$step_atmcorr=="l2a") {
+                                   "L2A"
+                                 } else if (pm$step_atmcorr %in% c("scihub","no")) {
+                                   "L1C"
+                                 })
+  }
+  s2_list <- unlist(s2_lists)[!duplicated(unlist(s2_lists))]
+  names(s2_list) <- gsub("^l[12][ac]\\.","",names(s2_list))
+
+
   # getting required metadata
   s2_dt <- sapply(names(s2_list), function(x) unlist(s2_getMetadata(x, info="nameinfo"))) %>%
     t() %>% data.table()
@@ -172,9 +199,9 @@ fidolasen_s2 <- function(param_list=NULL,
   s2_dt[,c("sensing_datetime","creation_datetime"):=list(as.POSIXct(sensing_datetime, format="%s"),
                                                          as.POSIXct(creation_datetime, format="%s"))]
   s2_dt[id_tile %in% pm$s2tiles_selected,][order(sensing_datetime),]
-  s2_dt <- s2_dt[id_tile %in% pm$s2tiles_selected & id_orbit %in% sel_orbits,][order(-sensing_datetime),]
+  s2_dt <- s2_dt[id_tile %in% pm$s2tiles_selected & id_orbit %in% pm$s2orbits_selected,][order(-sensing_datetime),]
   setorder(s2_dt, -sensing_datetime)
-  s2_dt <- s2_dt[!duplicated(s2_dt[,list(id_orbit,id_tile)]) &  # consider only most recent tiles
+  s2_dt <- s2_dt[!duplicated(s2_dt[,list(mission,level,id_orbit,id_tile)]) &  # consider only most recent tiles
                    # id_orbit %in% pm$s2orbits_selected &       # use only selected orbits (TODO not yet implemented)
                    id_tile %in% pm$s2tiles_selected,]           # use only selected tiles
   s2_list_l1c <- s2_dt[level=="1C",url]
@@ -182,6 +209,7 @@ fidolasen_s2 <- function(param_list=NULL,
   names(s2_list_l1c) <- s2_dt[level=="1C",name]
   names(s2_list_l2a) <- s2_dt[level=="2A",name]
 
+browser()
 
   ## 3. Download them ##
   if (length(s2_list_l2a)>0) {
