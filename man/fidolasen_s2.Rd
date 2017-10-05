@@ -73,8 +73,6 @@ parameters.}
 \item{path_tiles_subdirs}{=NA,}
 
 \item{path_out_subdirs}{=NA}
-
-\item{timewindow}{=NA,}
 }
 \description{
 The function is a wrapper to perform the entire

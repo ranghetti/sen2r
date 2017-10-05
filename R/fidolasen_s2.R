@@ -20,7 +20,6 @@
 #' @param step_atmcorr =NA,
 #' @param steps_reqout =NA,
 #' @param timewindow =NA,
-#' @param timewindow =NA,
 #' @param timeperiod =NA,
 #' @param extent =NA,
 #' @param s2tiles_selected =NA,
