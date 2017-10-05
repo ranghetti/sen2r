@@ -27,6 +27,7 @@ their names must be in the fidolasen-S2 naming convention
 \item{mask_type}{Character vector which determines the type of
 mask to be applied. Accepted values are:
 \itemize{
+\item "nodata": mask pixels checked as "No data" in the SCL product;
 \item "cloud_high_proba": mask pixels checked as "No data" or
 "Cloud (high probability)" in the SCL product;
 \item "cloud_medium_proba": mask pixels checked as "No data" or

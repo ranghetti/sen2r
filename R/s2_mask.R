@@ -17,6 +17,7 @@
 #'  ([s2_shortname]).
 #' @param mask_type Character vector which determines the type of
 #'  mask to be applied. Accepted values are:
+#'  - "nodata": mask pixels checked as "No data" in the SCL product;
 #'  - "cloud_high_proba": mask pixels checked as "No data" or
 #'      "Cloud (high probability)" in the SCL product;
 #'  - "cloud_medium_proba": mask pixels checked as "No data" or
@@ -118,9 +119,11 @@ s2_mask <- function(infiles,
   }
 
   # define required bands and formula to compute masks
-  # accepted mask_type values: cloud_high_proba, cloud_medium_proba, cloud_low_proba, cloud_and_shadow, cloud_shadow_cirrus, opaque_clouds
+  # accepted mask_type values: nodata, cloud_high_proba, cloud_medium_proba, cloud_low_proba, cloud_and_shadow, cloud_shadow_cirrus, opaque_clouds
   # structure of req_masks: list, names are prod_types, content are values of the files to set as 0, otherwise 1
-  if (mask_type == "cloud_high_proba") {
+  if (mask_type == "nodata") {
+    req_masks <- list("SCL"=c(0))
+  } else if (mask_type == "cloud_high_proba") {
     req_masks <- list("SCL"=c(0,9))
   } else if (mask_type == "cloud_medium_proba") {
     req_masks <- list("SCL"=c(0,8:9))
