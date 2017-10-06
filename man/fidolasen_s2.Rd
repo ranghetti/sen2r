@@ -4,14 +4,14 @@
 \alias{fidolasen_s2}
 \title{Find, download and preprocess Sentinel-2 images}
 \usage{
-fidolasen_s2(param_list = NULL, sel_sensor = NA, online = NA,
-  overwrite_safe = NA, rm_safe = NA, step_atmcorr = NA,
-  steps_reqout = NA, timewindow = NA, timeperiod = NA, extent = NA,
-  s2tiles_selected = NA, list_prods = NA, reference_path = NA, res = NA,
-  unit = NA, proj = NA, resampling = NA, outformat = NA,
+fidolasen_s2(param_list = NULL, preprocess = NA, s2_levels = NA,
+  sel_sensor = NA, online = NA, overwrite_safe = NA, rm_safe = NA,
+  step_atmcorr = NA, timewindow = NA, timeperiod = NA, extent = NA,
+  s2tiles_selected = NA, s2orbits_selected = NA, list_prods = NA,
+  reference_path = NA, rescale = NA, res = NA, res_s2 = NA, unit = NA,
+  proj = NA, resampling = NA, resampling_scl = NA, outformat = NA,
   compression = NA, overwrite = NA, path_l1c = NA, path_l2a = NA,
-  path_tiles = NA, path_out = NA, path_tiles_subdirs = NA,
-  path_out_subdirs = NA)
+  path_tiles = NA, path_merged = NA, path_out = NA, path_subdirs = NA)
 }
 \arguments{
 \item{param_list}{List of input parameters: it can be both an
@@ -34,8 +34,6 @@ parameters.}
 
 \item{step_atmcorr}{=NA,}
 
-\item{steps_reqout}{=NA,}
-
 \item{timewindow}{=NA,}
 
 \item{timeperiod}{=NA,}
@@ -43,6 +41,8 @@ parameters.}
 \item{extent}{=NA,}
 
 \item{s2tiles_selected}{=NA,}
+
+\item{s2orbits_selected}{=NA,}
 
 \item{list_prods}{=NA,}
 
@@ -70,9 +70,7 @@ parameters.}
 
 \item{path_out}{=NA,}
 
-\item{path_tiles_subdirs}{=NA,}
-
-\item{path_out_subdirs}{=NA}
+\item{path_subdirs}{=NA,}
 }
 \description{
 The function is a wrapper to perform the entire

@@ -21,7 +21,7 @@
 #' @importFrom sf st_intersects st_polygon st_read st_sf st_sfc st_transform
 #' @importFrom shiny a actionButton br callModule checkboxGroupInput
 #'  checkboxInput column conditionalPanel dateRangeInput div em fluidRow h2 h3
-#'  helpText HTML htmlOutput icon isolate NS numericInput observe p
+#'  helpText hr HTML htmlOutput icon isolate NS numericInput observe p
 #'  radioButtons reactive reactiveValues renderText renderUI runApp selectInput
 #'  shinyApp span stopApp strong textInput uiOutput updateCheckboxGroupInput
 #'  updateDateRangeInput updateRadioButtons updateTextInput withMathJax
@@ -217,7 +217,8 @@ s2_gui <- function(param_list=NULL,
                 width=5,
                 # delete_safe
                 conditionalPanel(
-                  condition = "input.download_safe != 'no'",
+                  condition = "input.download_safe != 'no' && (input.preprocess == 'TRUE' || (input.preprocess == 'FALSE' && input.list_levels.indexOf('l1c')==-1 && input.list_levels.indexOf('l2a')!=-1))",
+                  # condition = "input.download_safe != 'no'",
                   radioButtons("rm_safe", "Delete SAFE tiles after processing?",
                                choices = list("Yes" = "all",
                                               "Only L1C" = "l1c",
@@ -729,7 +730,7 @@ s2_gui <- function(param_list=NULL,
       } else if (input$download_safe %in% c("no")) {
         updateRadioButtons(session, "step_atmcorr",
                            choices = list("Always (use L1C products already available and correct them locally)" = "scihub",
-                                          "Never(use only L2A products already available locally)" = "l2a"),
+                                          "Never (use only L2A products already available locally)" = "l2a"),
                            selected = input$step_atmcorr)
       }
     })
@@ -773,6 +774,29 @@ s2_gui <- function(param_list=NULL,
         }
       )
     })
+
+    # update rm_safe if preprocess is not required
+    observe({
+      if (input$preprocess == FALSE) {
+        updateRadioButtons(session, "rm_safe", "Delete unrequired level-1C SAFE tiles?",
+                     choices = list("Yes" = "l1c",
+                                    "No" = "no"),
+                     selected = "no")
+      } else {
+        updateRadioButtons(session, "rm_safe", "Delete SAFE tiles after processing?",
+                           choices = list("Yes" = "all",
+                                          "Only L1C" = "l1c",
+                                          "No" = "no"),
+                           selected = "no")
+      }
+      if (input$download_safe == 'no' |
+          input$preprocess == FALSE &
+          (!"l2a" %in% input$list_levels | "l1c" %in% input$list_levels)) {
+        updateRadioButtons(session, "rm_safe",
+                           selected = "no")
+      }
+    })
+
 
 
 
@@ -1308,10 +1332,11 @@ browser()
       rl$extent <- if (!is.null(rv$extent)) {
         geojson_json(rv$extent, pretty=TRUE)
       } else {
-        NULL
+        geojson_json(st_polygon())
       }
       # rl$s2tiles_selected <- rv$draw_tiles_overlapping[rv$draw_tiles_overlapping$tile_id %in% input$tiles_checkbox,] # MULTIPOLYGON with the selected tiles
-      rl$s2tiles_selected <- input$tiles_checkbox # selected tile IDs
+      rl$s2tiles_selected <- if (is.null(rl$s2tiles_selected)) {NA} else {input$tiles_checkbox} # selected tile IDs
+      rl$s2orbits_selected <- str_pad(c(1:143),3,"left","0") # temporary select all orbits (TODO implement)
 
       # product selection #
       rl$list_prods <- input$list_prods # TOA, BOA, SCL, TCI (for now)
@@ -1373,9 +1398,9 @@ browser()
       # set directories #
       rl$path_l1c <- input$path_l1c_textin # path of L1C SAFE products
       rl$path_l2a <- input$path_l2a_textin # path of L2A SAFE products
-      rl$path_tiles <- input$path_tiles_textin # path of entire tiled products
-      rl$path_merged <- input$path_merged_textin # path of entire tiled products
-      rl$path_out <- input$path_out_textin # path of output pre-processed products
+      rl$path_tiles <- if ("tiles" %in% input$steps_reqout) {input$path_tiles_textin} else {NA} # path of entire tiled products
+      rl$path_merged <- if ("merged" %in% input$steps_reqout) {input$path_merged_textin} else {NA} # path of entire tiled products
+      rl$path_out <- if ("out" %in% input$steps_reqout) {input$path_out_textin} else {NA} # path of output pre-processed products
       rl$path_subdirs <- input$path_subdirs # logical (use subdirs)
 
       return(rl)
@@ -1408,7 +1433,7 @@ browser()
                                         "Draw on the map" = "draw",
                                         "Imported from JSON" = "imported"),
                          selected = "imported")
-      isolate(rv$extent <- if (is.null(pl$extent)) {st_polygon()} else {st_read(pl$extent)})
+      isolate(rv$extent <- if (pl$extent==geojson_json(st_polygon())) {st_polygon()} else {st_read(pl$extent)})
       updateCheckboxGroupInput(session, "tiles_checkbox",
                                selected = pl$s2tiles_selected)
       # rl$s2tiles_selected <- input$tiles_checkbox # selected tile IDs

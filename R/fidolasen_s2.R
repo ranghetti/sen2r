@@ -13,8 +13,8 @@
 #'  provided as arguments, default values will be used.
 #'  Use the function [s2_gui()] to create a complete list of
 #'  parameters.
-#' @param preprocess
-#' @param s2_levels
+#' @param preprocess =NA,
+#' @param s2_levels =NA,
 #' @param sel_sensor =NA,
 #' @param online =NA,
 #' @param overwrite_safe =NA,
@@ -27,20 +27,20 @@
 #' @param s2orbits_selected =NA,
 #' @param list_prods =NA,
 #' @param reference_path =NA,
-#' @param rescale
+#' @param rescale =NA,
 #' @param res =NA,
 #' @param res_s2
 #' @param unit =NA,
 #' @param proj =NA,
 #' @param resampling =NA,
-#' @param resampling_scl
+#' @param resampling_scl =NA,
 #' @param outformat =NA,
 #' @param compression =NA,
 #' @param overwrite =NA,
 #' @param path_l1c =NA,
 #' @param path_l2a =NA,
 #' @param path_tiles =NA,
-#' @param path_merged
+#' @param path_merged =NA,
 #' @param path_out =NA,
 #' @param path_subdirs =NA,
 
@@ -170,25 +170,54 @@ fidolasen_s2 <- function(param_list=NULL,
 
   ## 2. List required products ##
   s2_lists <- list()
-  if ("l1c" %in% pm$s2_levels) {
-    s2_lists[["l1c"]] <- s2_list(spatial_extent = pm$extent,
-                                 time_interval = pm$timewindow,
-                                 tile = pm$s2tiles_selected,
-                                 level = "L1C")
+
+  if (pm$online == TRUE) {
+
+    # if online mode, retrieve list with s2_list() basing on parameters
+    if ("l1c" %in% pm$s2_levels) {
+      # list of SAFE (L1C) needed for required L1C
+      s2_lists[["l1c"]] <- s2_list(spatial_extent = pm$extent,
+                                   time_interval = pm$timewindow,
+                                   tile = pm$s2tiles_selected,
+                                   level = "L1C")
+    }
+    if ("l2a" %in% pm$s2_levels) {
+      # list of SAFE (L1C or/and L2A) needed for required L2A
+      s2_lists[["l2a"]] <- s2_list(spatial_extent = pm$extent,
+                                   time_interval = pm$timewindow,
+                                   tile = pm$s2tiles_selected,
+                                   level = if (pm$step_atmcorr=="auto") {
+                                     "auto"
+                                   } else if (pm$step_atmcorr=="l2a") {
+                                     "L2A"
+                                   } else if (pm$step_atmcorr %in% c("scihub","no")) {
+                                     "L1C"
+                                   })
+    }
+
+  } else {
+
+    # if offline mode, read the SAFE product list from folders and filter
+    if ("l1c" %in% pm$s2_levels) {
+      s2_lists[["l1c"]] <- list.files(pm$path_l1c, "\\.SAFE$")
+    }
+    if ("l2a" %in% pm$s2_levels) {
+      s2_lists[["l2a"]] <- if (pm$step_atmcorr=="l2a") {
+        list.files(pm$path_l2a, "\\.SAFE$")
+      } else if (pm$step_atmcorr %in% c("scihub","no")) { # FIXME "auto"?
+        list.files(pm$path_l1c, "\\.SAFE$")
+      }
+    }
+    s2_lists <- lapply(s2_lists, function(l) {
+      sapply(l, function(x) {
+        tryCatch(s2_getMetadata(x, info="nameinfo")$level,
+                 error = function(e) NA)
+      })
+    })
+    s2_lists <- lapply(s2_lists, function(l) {l[!is.na(l)]})
+
   }
-  if ("l2a" %in% pm$s2_levels) {
-    s2_lists[["l2a"]] <- s2_list(spatial_extent = pm$extent,
-                                 time_interval = pm$timewindow,
-                                 tile = pm$s2tiles_selected,
-                                 level = if (pm$step_atmcorr=="auto") {
-                                   "auto"
-                                 } else if (pm$step_atmcorr=="l2a") {
-                                   "L2A"
-                                 } else if (pm$step_atmcorr %in% c("scihub","no")) {
-                                   "L1C"
-                                 })
-  }
-  s2_list <- unlist(s2_lists)[!duplicated(unlist(s2_lists))]
+  s2_list <- unlist(s2_lists)[!duplicated(unlist(lapply(s2_lists, names)))]
   names(s2_list) <- gsub("^l[12][ac]\\.","",names(s2_list))
 
 
@@ -198,44 +227,68 @@ fidolasen_s2 <- function(param_list=NULL,
   s2_dt[,c("name","url"):=list(names(s2_list),s2_list)]
   s2_dt[,c("sensing_datetime","creation_datetime"):=list(as.POSIXct(sensing_datetime, format="%s"),
                                                          as.POSIXct(creation_datetime, format="%s"))]
-  s2_dt[id_tile %in% pm$s2tiles_selected,][order(sensing_datetime),]
-  s2_dt <- s2_dt[id_tile %in% pm$s2tiles_selected & id_orbit %in% pm$s2orbits_selected,][order(-sensing_datetime),]
+  s2_dt <- s2_dt[id_tile %in% pm$s2tiles_selected &
+                   id_orbit %in% pm$s2orbits_selected &
+                   as.Date(sensing_datetime) > pm$timewindow[1] &
+                   as.Date(sensing_datetime) < pm$timewindow[2],][
+                     order(-sensing_datetime),]
   setorder(s2_dt, -sensing_datetime)
   s2_dt <- s2_dt[!duplicated(s2_dt[,list(mission,level,id_orbit,id_tile)]) &  # consider only most recent tiles
                    # id_orbit %in% pm$s2orbits_selected &       # use only selected orbits (TODO not yet implemented)
                    id_tile %in% pm$s2tiles_selected,]           # use only selected tiles
-  s2_list_l1c <- s2_dt[level=="1C",url]
-  s2_list_l2a <- s2_dt[level=="2A",url]
+  s2_list_l1c <- s2_dt[level=="1C",url] # list of required L1C
+  s2_list_l2a <- s2_dt[level=="2A",url] # list of required L2A
   names(s2_list_l1c) <- s2_dt[level=="1C",name]
   names(s2_list_l2a) <- s2_dt[level=="2A",name]
 
 browser()
 
   ## 3. Download them ##
-  if (length(s2_list_l2a)>0) {
-    lapply(pm$s2tiles_selected, function(tile) {
-      s2_download(s2_list_l2a,
-                  outdir = pm$path_l2a,
-                  tile = tile)
-    })
+  # TODO implement ovwerite/skip
+  # (now it skips, but analysing each single file)
+
+  if (pm$online == TRUE) {
+    if (length(s2_list_l2a)>0) {
+      lapply(pm$s2tiles_selected, function(tile) {
+        s2_download(s2_list_l2a,
+                    outdir = pm$path_l2a,
+                    tile = tile)
+      })
+    }
+    if (length(s2_list_l1c)>0) {
+      lapply(pm$s2tiles_selected, function(tile) {
+        s2_download(s2_list_l1c,
+                    outdir = pm$path_l1c,
+                    tile = tile)
+      })
+    }
   }
   if (length(s2_list_l1c)>0) {
-    lapply(pm$s2tiles_selected, function(tile) {
-      s2_download(s2_list_l1c,
-                  outdir = pm$path_l1c,
-                  tile = tile)
-    })
     s2_sen2cor(list.files(pm$path_l1c,"\\.SAFE$"),
                l1c_dir = pm$path_l1c,
                outdir = pm$path_l2a,
                n_procs = 1) # TODO implement multicore
+  }
+browser()
+
+  # delete SAFE, if required
+  if (pm$rm_safe == "all") {
+
+  } else if (pm$rm_safe == "all") {
+
+  }
+
+  # if no processing is required, stop here
+  safe_names <- c(if("l1c" %in% pm$s2_levels){names(s2_list_l1c)},
+                  if("l2a" %in% pm$s2_levels){names(s2_list_l2a)})
+  if (input$preprocess == FALSE) {
+    return(safe_names)
   }
 
 
   ## 4. Convert in vrt ##
   dir.create(pm$path_tiles, recursive=FALSE, showWarnings=FALSE)
   # l2a_names <- list.files(pm$path_l2a, paste0(sel_tiles,".+\\.SAFE$"), full.names=TRUE)
-  l2a_names <- names(s2_list_l2a)
   if ("tiles" %in% pm$steps_reqout) {
     tiles_ext <- out_ext
     tiles_outformat <- pm$outformat
