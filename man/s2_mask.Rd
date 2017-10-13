@@ -6,7 +6,7 @@
 \usage{
 s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba",
   outdir = "./masked", format = NA, subdirs = NA, compress = "DEFLATE",
-  parallel = FALSE)
+  parallel = FALSE, overwrite = FALSE)
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths
@@ -65,6 +65,9 @@ present, the compression indicated with this parameter is used.}
 \item{parallel}{(optional) Logical: if TRUE, masking is conducted using parallel
 processing exploiting \link[raster:beginCluster]{raster::beginCluster}. This speeds-up the computation
 for large rasters. If FALSE (default), single core processing is used.}
+
+\item{overwrite}{Logical value: should existing output files be
+overwritten? (default: FALSE)}
 }
 \value{
 A vector with the names of the created products.

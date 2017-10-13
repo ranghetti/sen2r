@@ -101,7 +101,7 @@ Output vrt is at 10m resolution.</p>
 
     <pre class="usage"><span class='fu'>s2_translate</span>(<span class='no'>infile</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>prod_type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='st'>"10m"</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"VRT"</span>, <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>,
-  <span class='kw'>vrt_rel_paths</span> <span class='kw'>=</span> <span class='st'>"TRUE"</span>, <span class='kw'>utmzone</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
+  <span class='kw'>vrt_rel_paths</span> <span class='kw'>=</span> <span class='st'>"TRUE"</span>, <span class='kw'>utmzone</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -170,11 +170,17 @@ the first one retrieved from input granules). Note that this function
 does not perform reprojections: if no granules refer to the specified
 UTM zone, no output is created.</p></td>
     </tr>
+    <tr>
+      <th>overwrite</th>
+      <td><p>Logical value: should existing output files be
+overwritten? (default: FALSE)</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A vector with the names of the created output files.</p>
+    <p>A vector with the names of the created output files
+(just created or already existing).</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 

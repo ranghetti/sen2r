@@ -99,7 +99,8 @@ are physical rasters (no output VRT is allowed).</p>
     
 
     <pre class="usage"><span class='fu'>s2_calcindices</span>(<span class='no'>infiles</span>, <span class='no'>indices</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='kw'>parameters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>dataType</span> <span class='kw'>=</span> <span class='st'>"Int16"</span>)</pre>
+  <span class='kw'>source</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"TOA"</span>, <span class='st'>"BOA"</span>), <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>dataType</span> <span class='kw'>=</span> <span class='st'>"Int16"</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -140,6 +141,15 @@ i.e.:
 TODO: add default values (in the json)</p></td>
     </tr>
     <tr>
+      <th>source</th>
+      <td><p>(optional) Vector with the products from which computing
+the indices. It can be "BOA", "TOA" or both (default). If both values
+are provided, indices are computed from the available products ("TOA"
+if TOA is available, BOA if BOA is available); in the case both are
+available, two files are produced (they can be distinguished from the
+level component - S2x1C or S2x2A - in the filename).</p></td>
+    </tr>
+    <tr>
       <th>format</th>
       <td><p>(optional) Format of the output file (in a
 format recognised by GDAL). Default is the same format of input images
@@ -163,6 +173,11 @@ present, the compression indicated with this parameter is used.</p></td>
 if "Float32" or "Float64" is chosen, numeric values are not rescaled;
 if "Int16" (default) or "UInt16", values are multiplicated by a 10000
 scale factor.</p></td>
+    </tr>
+    <tr>
+      <th>overwrite</th>
+      <td><p>Logical value: should existing output files be
+overwritten? (default: FALSE)</p></td>
     </tr>
     </table>
     

@@ -8,6 +8,7 @@ reference:
     desc: ~
     contents:
       - '`s2_gui`'
+      - '`fidolasen_s2`'
   - title: Find and download Sentinel-2 products
     desc: ~
     contents:

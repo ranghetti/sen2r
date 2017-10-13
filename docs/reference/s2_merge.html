@@ -99,8 +99,8 @@ Outputs are a set of products in the same format of corresponding
 input files.</p>
     
 
-    <pre class="usage"><span class='fu'>s2_merge</span>(<span class='no'>infiles</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>out_crs</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
+    <pre class="usage"><span class='fu'>s2_merge</span>(<span class='no'>infiles</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>out_crs</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -136,6 +136,11 @@ directory of <code>infiles</code>. Set <code>tmpdir=tempdir()</code> if you do n
 keep the intermediate files after reboot.</p></td>
     </tr>
     <tr>
+      <th>format</th>
+      <td><p>(optional) Format of the output file (in a
+format recognised by GDAL). Default is to maintain each input format.</p></td>
+    </tr>
+    <tr>
       <th>compress</th>
       <td><p>(optional) In the case a GTiff format is
 present, the compression indicated with this parameter is used.</p></td>
@@ -146,11 +151,17 @@ present, the compression indicated with this parameter is used.</p></td>
 (default: the CRS of the first input file). The tiles with CRS different
 from <code>out_crs</code> will be reprojected (and a warning returned).</p></td>
     </tr>
+    <tr>
+      <th>overwrite</th>
+      <td><p>Logical value: should existing output files be
+overwritten? (default: FALSE)</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A vector with the names of the merged products.</p>
+    <p>A vector with the names of the merged products (just created or
+already existing).</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 

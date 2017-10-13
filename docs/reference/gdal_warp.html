@@ -102,7 +102,8 @@ corresponding source file.</p>
     
 
     <pre class="usage"><span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>, <span class='no'>dstfiles</span>, <span class='kw'>of</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ref</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>mask</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>tr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>t_srs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>r</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>dstnodata</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>tr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>t_srs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>r</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>dstnodata</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -168,6 +169,11 @@ file. Use a value of NA to ensure that nodata is not defined.
 If this argument is not used then nodata values will be copied from
 the source datasets. At the moment it is not possible to set different
 values for different <code>srcfiles</code> (use multiple calls of the functions).</p></td>
+    </tr>
+    <tr>
+      <th>overwrite</th>
+      <td><p>Logical value: should existing output files be
+overwritten? (default: FALSE)</p></td>
     </tr>
     <tr>
       <th>...</th>

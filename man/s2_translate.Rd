@@ -6,7 +6,7 @@
 \usage{
 s2_translate(infile, outdir = ".", subdirs = NA, tmpdir = NA,
   prod_type = NULL, res = "10m", format = "VRT", compress = "DEFLATE",
-  vrt_rel_paths = "TRUE", utmzone = "")
+  vrt_rel_paths = "TRUE", utmzone = "", overwrite = FALSE)
 }
 \arguments{
 \item{infile}{Full path of the input SAFE folder (alternatively,
@@ -52,9 +52,13 @@ if FALSE, they are absolute. This takes effect only with
 the first one retrieved from input granules). Note that this function
 does not perform reprojections: if no granules refer to the specified
 UTM zone, no output is created.}
+
+\item{overwrite}{Logical value: should existing output files be
+overwritten? (default: FALSE)}
 }
 \value{
-A vector with the names of the created output files.
+A vector with the names of the created output files
+(just created or already existing).
 }
 \description{
 The function build a virtual raster from a Sentinel2 SAFE product,

@@ -100,14 +100,16 @@ list or file (parameter <code>param_list</code>) or singularly (see the
 descriptions of all the other parameters).</p>
     
 
-    <pre class="usage"><span class='fu'>fidolasen_s2</span>(<span class='kw'>param_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sel_sensor</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>online</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>overwrite_safe</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>rm_safe</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>step_atmcorr</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>steps_reqout</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>timeperiod</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>s2tiles_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>reference_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>unit</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>proj</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>resampling</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>outformat</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+    <pre class="usage"><span class='fu'>fidolasen_s2</span>(<span class='kw'>param_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>preprocess</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>s2_levels</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>sel_sensor</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>online</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>overwrite_safe</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>rm_safe</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>step_atmcorr</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>timeperiod</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>s2tiles_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>s2orbits_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>extent_as_mask</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>index_source</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>reference_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res_s2</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>proj</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>resampling</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>resampling_scl</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>outformat</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>compression</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_l1c</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_l2a</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>path_tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_out</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_tiles_subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>path_out_subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+  <span class='kw'>path_tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_merged</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_out</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>path_subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -123,6 +125,14 @@ If some parameters are missing in <code>param_list</code> and are not
 provided as arguments, default values will be used.
 Use the function <code><a href='s2_gui.html'>s2_gui()</a></code> to create a complete list of
 parameters.</p></td>
+    </tr>
+    <tr>
+      <th>preprocess</th>
+      <td><p>=NA,</p></td>
+    </tr>
+    <tr>
+      <th>s2_levels</th>
+      <td><p>=NA,</p></td>
     </tr>
     <tr>
       <th>sel_sensor</th>
@@ -145,10 +155,6 @@ parameters.</p></td>
       <td><p>=NA,</p></td>
     </tr>
     <tr>
-      <th>steps_reqout</th>
-      <td><p>=NA,</p></td>
-    </tr>
-    <tr>
       <th>timewindow</th>
       <td><p>=NA,</p></td>
     </tr>
@@ -165,7 +171,27 @@ parameters.</p></td>
       <td><p>=NA,</p></td>
     </tr>
     <tr>
+      <th>s2orbits_selected</th>
+      <td><p>=NA,</p></td>
+    </tr>
+    <tr>
+      <th>extent_as_mask</th>
+      <td><p>=NA,</p></td>
+    </tr>
+    <tr>
       <th>list_prods</th>
+      <td><p>=NA,</p></td>
+    </tr>
+    <tr>
+      <th>list_indices</th>
+      <td><p>=NA,</p></td>
+    </tr>
+    <tr>
+      <th>index_source</th>
+      <td><p>=NA,</p></td>
+    </tr>
+    <tr>
+      <th>mask_type</th>
       <td><p>=NA,</p></td>
     </tr>
     <tr>
@@ -174,6 +200,10 @@ parameters.</p></td>
     </tr>
     <tr>
       <th>res</th>
+      <td><p>=NA,</p></td>
+    </tr>
+    <tr>
+      <th>res_s2</th>
       <td><p>=NA,</p></td>
     </tr>
     <tr>
@@ -186,6 +216,10 @@ parameters.</p></td>
     </tr>
     <tr>
       <th>resampling</th>
+      <td><p>=NA,</p></td>
+    </tr>
+    <tr>
+      <th>resampling_scl</th>
       <td><p>=NA,</p></td>
     </tr>
     <tr>
@@ -213,16 +247,20 @@ parameters.</p></td>
       <td><p>=NA,</p></td>
     </tr>
     <tr>
+      <th>path_merged</th>
+      <td><p>=NA,</p></td>
+    </tr>
+    <tr>
       <th>path_out</th>
       <td><p>=NA,</p></td>
     </tr>
     <tr>
-      <th>path_tiles_subdirs</th>
+      <th>path_indices</th>
       <td><p>=NA,</p></td>
     </tr>
     <tr>
-      <th>path_out_subdirs</th>
-      <td><p>=NA</p></td>
+      <th>path_subdirs</th>
+      <td><p>=NA,</p></td>
     </tr>
     </table>
     

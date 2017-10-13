@@ -7,11 +7,13 @@
 fidolasen_s2(param_list = NULL, preprocess = NA, s2_levels = NA,
   sel_sensor = NA, online = NA, overwrite_safe = NA, rm_safe = NA,
   step_atmcorr = NA, timewindow = NA, timeperiod = NA, extent = NA,
-  s2tiles_selected = NA, s2orbits_selected = NA, list_prods = NA,
-  reference_path = NA, rescale = NA, res = NA, res_s2 = NA, unit = NA,
-  proj = NA, resampling = NA, resampling_scl = NA, outformat = NA,
+  s2tiles_selected = NA, s2orbits_selected = NA, extent_as_mask = NA,
+  list_prods = NA, list_indices = NA, index_source = NA, mask_type = NA,
+  reference_path = NA, res = NA, res_s2 = NA, unit = NA, proj = NA,
+  resampling = NA, resampling_scl = NA, outformat = NA,
   compression = NA, overwrite = NA, path_l1c = NA, path_l2a = NA,
-  path_tiles = NA, path_merged = NA, path_out = NA, path_subdirs = NA)
+  path_tiles = NA, path_merged = NA, path_out = NA, path_indices = NA,
+  path_subdirs = NA)
 }
 \arguments{
 \item{param_list}{List of input parameters: it can be both an
@@ -23,6 +25,10 @@ If some parameters are missing in \code{param_list} and are not
 provided as arguments, default values will be used.
 Use the function \code{\link[=s2_gui]{s2_gui()}} to create a complete list of
 parameters.}
+
+\item{preprocess}{=NA,}
+
+\item{s2_levels}{=NA,}
 
 \item{sel_sensor}{=NA,}
 
@@ -44,17 +50,29 @@ parameters.}
 
 \item{s2orbits_selected}{=NA,}
 
+\item{extent_as_mask}{=NA,}
+
 \item{list_prods}{=NA,}
+
+\item{list_indices}{=NA,}
+
+\item{index_source}{=NA,}
+
+\item{mask_type}{=NA,}
 
 \item{reference_path}{=NA,}
 
 \item{res}{=NA,}
+
+\item{res_s2}{=NA,}
 
 \item{unit}{=NA,}
 
 \item{proj}{=NA,}
 
 \item{resampling}{=NA,}
+
+\item{resampling_scl}{=NA,}
 
 \item{outformat}{=NA,}
 
@@ -68,7 +86,11 @@ parameters.}
 
 \item{path_tiles}{=NA,}
 
+\item{path_merged}{=NA,}
+
 \item{path_out}{=NA,}
+
+\item{path_indices}{=NA,}
 
 \item{path_subdirs}{=NA,}
 }
