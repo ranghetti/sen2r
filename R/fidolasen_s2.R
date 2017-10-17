@@ -662,7 +662,6 @@ masked_names_exp <- if (!is.na(pm$mask_type)) {
     }
 
   } # end of pm$overwrite FALSE IF cycle
-browser()
 
   ## 4. Convert in vrt ##
   if (length(c(safe_names_l1c_req,safe_names_l2a_req))>0) {

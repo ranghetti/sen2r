@@ -19,7 +19,7 @@
 #' @importFrom mapedit editModUI
 #' @importFrom reticulate import
 #' @importFrom sf st_intersects st_polygon st_read st_sf st_sfc st_transform
-#' @importFrom shiny a actionButton br callModule checkboxGroupInput
+#' @importFrom shiny a actionButton actionLink br callModule checkboxGroupInput
 #'  checkboxInput column conditionalPanel dateRangeInput div em fluidRow h2 h3
 #'  helpText hr HTML htmlOutput icon isolate NS numericInput observe p
 #'  radioButtons reactive reactiveValues renderText renderUI runApp selectInput
