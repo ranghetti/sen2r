@@ -69,11 +69,14 @@ s2_gui <- function(param_list=NULL,
       sidebarMenu(
         menuItem("Product selection", tabName = "tab_steps", icon = icon("image"))
       ),
-      sidebarMenu(
-        menuItem("Spatial-temporal selection", tabName = "tab_query", icon = icon("clone"))
+      conditionalPanel(
+        condition = "input.proc_steps.indexOf('query') != -1",
+        sidebarMenu(
+          menuItem("Spatial-temporal selection", tabName = "tab_query", icon = icon("clone"))
+        )
       ),
       conditionalPanel(
-        condition = "input.preprocess == 'TRUE'",
+        condition = "input.proc_steps.indexOf('preprocess') != -1",
         sidebarMenu(
           menuItem("Processing settings", tabName = "tab_prepro", icon = icon("th"))
         ),
@@ -116,14 +119,34 @@ s2_gui <- function(param_list=NULL,
           tabName = "tab_steps",
           title="Product selection",
 
+          # fluidRow(box(
+          #   title="Processing steps",
+          #   width=12,
+          #   radioButtons("preprocess", NULL, #"Perform the following steps:",
+          #                choices = list("Only find and download SAFE products" = FALSE,
+          #                               "Find and download SAFE, process them" = TRUE),
+          #                selected=TRUE,
+          #                inline = TRUE)
+          # )),
+
           fluidRow(box(
             title="Processing steps",
             width=12,
-            radioButtons("preprocess", NULL, #"Perform the following steps:",
-                         choices = list("Only find and download SAFE products" = FALSE,
-                                        "Find and download SAFE, process them" = TRUE),
-                         selected=TRUE,
-                         inline = TRUE)
+            checkboxGroupInput("proc_steps", NULL, #"Perform the following steps:",
+                         choices = list("Spatio-temporal selection of SAFE products" = "query",
+                                        "Atmoshperic correction of L1C products with sen2cor" = "atmcorr",
+                                        "Processing steps (see details in the \"Preprocessing settings\" tab)" = "preprocess"),
+                         selected=c("query","atmcorr","preprocess"),
+                         inline = FALSE),
+            conditionalPanel(
+              condition = "input.proc_steps.indexOf('preprocess') == -1 && input.proc_steps.indexOf('atmcorr') == -1 && input.proc_steps.indexOf('query') == -1",
+              span(style="color:red", "Select at least one step.")
+            ),
+            conditionalPanel(
+              condition = "output.req_l2a == 'FALSE' && input.proc_steps.indexOf('atmcorr') != -1",
+              span(style="color:grey", "Atmospheric correction is not needed (only L1C products were selected).")
+            )
+
           )),
 
           fluidRow(box(
@@ -131,35 +154,39 @@ s2_gui <- function(param_list=NULL,
             width=12,
 
             fluidRow(
-              column(
-                width=8,
-                conditionalPanel(
-                  condition = "input.preprocess == 'TRUE'",
-                  checkboxGroupInput("list_prods",
-                                     "Select products:",
-                                     choiceNames = list("TOA (top-of-atmosphere) Reflectance",
-                                                    "BOA (bottom-of-atmosphere) Surface Reflectance",
-                                                    "SCL (surface classification map)",
-                                                    "TCI (true-color) RGB 8-bit image"),
-                                     choiceValues = list("TOA", "BOA", "SCL", "TCI"),
-                                     selected = c("BOA"))
-                ),
-                conditionalPanel(
-                  condition = "input.preprocess == 'FALSE'",
-                  checkboxGroupInput("list_levels",
-                                     "Select products:",
-                                     choiceNames = list(a("Level-1C", href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-1c", target="_blank"),
-                                                        a("Level-2A", href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-2a", target="_blank")),
-                                     choiceValues = list("l1c", "l2a"),
-                                     selected = c("l2a"))
+
+              conditionalPanel(
+                condition = "input.proc_steps.indexOf('query') != -1 || input.proc_steps.indexOf('preprocess') != -1",
+                column(
+                  width=8,
+                  conditionalPanel(
+                    condition = "input.proc_steps.indexOf('preprocess') != -1",
+                    checkboxGroupInput("list_prods",
+                                       "Select products:",
+                                       choiceNames = list("TOA (top-of-atmosphere) Reflectance",
+                                                          "BOA (bottom-of-atmosphere) Surface Reflectance",
+                                                          "SCL (surface classification map)",
+                                                          "TCI (true-color) RGB 8-bit image"),
+                                       choiceValues = list("TOA", "BOA", "SCL", "TCI"),
+                                       selected = c("BOA"))
+                  ),
+                  conditionalPanel(
+                    condition = "input.proc_steps.indexOf('preprocess') == -1 && input.proc_steps.indexOf('query') != -1",
+                    checkboxGroupInput("list_levels",
+                                       "Select products:",
+                                       choiceNames = list(a("Level-1C", href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-1c", target="_blank"),
+                                                          a("Level-2A", href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-2a", target="_blank")),
+                                       choiceValues = list("l1c", "l2a"),
+                                       selected = c("l2a"))
+                  )
                 )
-              ), # end of column for indices selection
+              ),
 
               column(
                 width=4,
 
                 conditionalPanel(
-                  condition = "input.preprocess == 'TRUE'",
+                  condition = "input.proc_steps.indexOf('preprocess') != -1",
                   uiOutput("levels_message"),
                   br()
                 ),
@@ -173,8 +200,9 @@ s2_gui <- function(param_list=NULL,
                                    selected=c("s2a","s2b"),
                                    inline = FALSE)
               ) # end of column for sensor selection
+
             )
-          )), # end of fluidrow/box "Select products and sensors"
+          )),
 
           fluidRow(box(
             title="SAFE options",
@@ -215,18 +243,27 @@ s2_gui <- function(param_list=NULL,
               column(
                 width=7,
                 # online_mode (online/offline mode)
-                radioButtons("download_safe", "Download SAFE products?",
-                             choices = list("Yes, all (overwrite existing products)" = "all",
-                                            "Download only new products" = "new",
-                                            "No (offline mode, process only existing products)" = "no"),
-                             selected = "new")
+                radioButtons("overwrite_safe", "Overwrite SAFE products?",
+                             choices = list("Yes (download and apply sen2cor on all products)" = TRUE,
+                                            "No (skip download or sen2cor for existing products)" = FALSE),
+                             selected = TRUE),
+
+                conditionalPanel(
+                  condition = "input.proc_steps.indexOf('query') != -1",
+                  radioButtons("online", "Online mode?",
+                               choices = list("Yes (search SAFE products on SciHub and download)" = TRUE,
+                                              "No (query and apply sen2cor only among existing SAFE products)" = FALSE),
+                               selected = TRUE)
+                )
+
               ),
               column(
                 width=5,
                 # delete_safe
                 conditionalPanel(
-                  condition = "input.download_safe != 'no' && (input.preprocess == 'TRUE' || (input.preprocess == 'FALSE' && input.list_levels.indexOf('l1c')==-1 && input.list_levels.indexOf('l2a')!=-1))",
+                  # condition = "input.download_safe != 'no' && (input.preprocess == 'TRUE' || (input.preprocess == 'FALSE' && input.list_levels.indexOf('l1c')==-1 && input.list_levels.indexOf('l2a')!=-1))",
                   # condition = "input.download_safe != 'no'",
+                  condition = "output.online_mode == 'TRUE'",
                   radioButtons("rm_safe", "Delete SAFE tiles after processing?",
                                choices = list("Yes" = "all",
                                               "Only unrequired L1C" = "l1c",
@@ -234,27 +271,23 @@ s2_gui <- function(param_list=NULL,
                                selected="no")
                 )
               )
-            ), # end of fluidRow download / delete SAFE
+            ) # end of fluidRow download / delete SAFE
 
-            # step_atmcorr (perform or not sen2cor and how)
-            # uiOutput("step_atmcorr")
-            conditionalPanel(
-              condition = "output.req_l2a == 'TRUE'",
-              radioButtons("step_atmcorr", "Perform atmospheric correction?", #"Atmospheric correction",
-                           choices = list("Always (download all L1C products and correct them locally)" = "scihub",
-                                          "If needed (download L2A or correct from L1C basing on L2A availability)" = "auto",
-                                          "Never (use only L2A products already available for download)" = "l2a"),
+          )), # end of fluidRow/box "SAFE options"
+
+          conditionalPanel(
+            condition = "output.req_l2a == 'TRUE' && input.proc_steps.indexOf('atmcorr') != -1 && output.online_mode == 'TRUE'",
+            fluidRow(box(
+              title="sen2cor options",
+              width=12,
+              # step_atmcorr (perform or not sen2cor and how)
+              # uiOutput("step_atmcorr")
+              radioButtons("step_atmcorr", "When level-2A products are available for download:",
+                           choices = list("Directly download them instead of generating them using sen2cor" = "auto",
+                                          "Generate them from level-1C SAFE using sen2cor in any case" = "scihub"),
                            selected = "auto")
-            ),
-            conditionalPanel(
-              condition = "output.req_l2a == 'FALSE'",
-              div(strong("Perform atmospheric correction?"),
-                  br(),
-                  span(style="color:grey", "Atmospheric correction is not needed (only L1C products were selected)."))
-            )
-
-
-          )) # end of fluidRow/box "SAFE options"
+            )) # end of fluidRow/box "sen2cor options"
+          )
 
         ), # end of tabItem tab_steps
 
@@ -397,7 +430,7 @@ s2_gui <- function(param_list=NULL,
           title="Procesisng settings",
 
           conditionalPanel(
-            condition = "input.preprocess == 'TRUE'",
+            condition = "input.proc_steps.indexOf('preprocess') != -1",
 
             fluidRow(box(
               title="Processing options",
@@ -672,7 +705,7 @@ s2_gui <- function(param_list=NULL,
           title="Index selection",
 
           conditionalPanel(
-            condition = "input.preprocess == 'TRUE'",
+            condition = "input.proc_steps.indexOf('preprocess') != -1",
 
             fluidRow(
               box(
@@ -747,34 +780,38 @@ s2_gui <- function(param_list=NULL,
     # accepted products (update together with the same variables in s2_gui())
     l1c_prods <- c("TOA")
     l2a_prods <- c("BOA","SCL","TCI")
-    observe({
-      if (input$download_safe %in% c("all","new")) {
-        updateRadioButtons(session, "step_atmcorr",
-                           choices = list("Always (download all L1C products and correct them locally)" = "scihub",
-                                          "If needed (download L2A or correct from L1C basing on L2A availability)" = "auto",
-                                          "Never (use only L2A products already available for download or locally)" = "l2a"),
-                           selected = input$step_atmcorr)
-      } else if (input$download_safe %in% c("no")) {
-        updateRadioButtons(session, "step_atmcorr",
-                           choices = list("Always (use L1C products already available and correct them locally)" = "scihub",
-                                          "Never (use only L2A products already available locally)" = "l2a"),
-                           selected = input$step_atmcorr)
-      }
-    })
+    # observe({
+    #   if (input$online == TRUE & "atmcorr" %in% input$proc_steps) {
+    #     updateRadioButtons(session, "step_atmcorr",
+    #                        choices = list("Always (download all L1C products and correct them locally)" = "scihub",
+    #                                       "If needed (download L2A or correct from L1C basing on L2A availability)" = "auto",
+    #                                       "Never (use only L2A products already available for download or locally)" = "l2a"),
+    #                        selected = input$step_atmcorr)
+    #   } else if (input$online == FALSE & "atmcorr" %in% input$proc_steps) {
+    #     updateRadioButtons(session, "step_atmcorr",
+    #                        choices = list("Always (use L1C products already available and correct them locally)" = "scihub",
+    #                                       "Never (use only L2A products already available locally)" = "l2a"),
+    #                        selected = input$step_atmcorr)
+    #   }
+    # })
 
     # Reactive list of required SAFE levels
     safe_req <- reactiveValues()
     observe({
-      if (input$preprocess==TRUE) {
+      if ("preprocess" %in% input$proc_steps) {
         safe_req$l1c <- if (any(l1c_prods %in% input$list_prods) |
-                            input$index_source=="TOA") {TRUE} else {FALSE}
+                            indices_req()==TRUE & input$index_source=="TOA") {TRUE} else {FALSE}
         safe_req$l2a <- if (any(l2a_prods %in% input$list_prods) |
-                            input$index_source=="BOA") {TRUE} else {FALSE}
-      } else if (input$preprocess==FALSE) {
+                            indices_req()==TRUE & input$index_source=="BOA") {TRUE} else {FALSE}
+      } else if ("query" %in% input$proc_steps) {
         safe_req$l1c <- if ("l1c" %in% input$list_levels) {TRUE} else {FALSE}
         safe_req$l2a <- if ("l2a" %in% input$list_levels) {TRUE} else {FALSE}
+      } else if ("atmcorr" %in% input$proc_steps) {
+        safe_req$l1c <- FALSE
+        safe_req$l2a <- TRUE
+      } else {
+        safe_req$l1c <- safe_req$l2a <- FALSE # this should never happen (nothing done)
       }
-
     })
     # these output values are used for conditionalPanels:
     output$req_l2a <- renderText(safe_req$l2a)
@@ -788,7 +825,7 @@ s2_gui <- function(param_list=NULL,
         strong("SAFE levels needed:"),
         br(),
         if (safe_req$l1c==FALSE & safe_req$l2a==FALSE) {
-          (span(style="color:red", "Select at least one product."))
+          (span(style="color:red", "Select at least one product or index."))
         },
         if (safe_req$l1c==TRUE) {
           a("Level-1C", href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-1c", target="_blank")
@@ -804,9 +841,19 @@ s2_gui <- function(param_list=NULL,
       )
     })
 
+    # Reactive variable: TRUE for online mode, FALSE for offline mode
+    online_mode <- reactive({
+      input$online == TRUE &
+        "query" %in% input$proc_steps
+    })
+    # convert in output value to be used in conditionalPanel
+    output$online_mode <- renderText(online_mode())
+    # options to update these values also if not visible
+    outputOptions(output, "online_mode", suspendWhenHidden = FALSE)
+
     # update rm_safe if preprocess is not required
     observe({
-      if (input$preprocess == FALSE) {
+      if (!"preprocess" %in% input$proc_steps) {
         updateRadioButtons(session, "rm_safe", "Delete unrequired level-1C SAFE tiles?",
                      choices = list("Yes" = "l1c",
                                     "No" = "no"),
@@ -818,13 +865,13 @@ s2_gui <- function(param_list=NULL,
                                           "No" = "no"),
                            selected = "no")
       }
-      if (input$download_safe == 'no' |
-          input$preprocess == FALSE &
-          (!"l2a" %in% input$list_levels | "l1c" %in% input$list_levels)) {
+      if (online_mode() == FALSE |
+          !"query" %in% input$proc_steps) {
         updateRadioButtons(session, "rm_safe",
                            selected = "no")
       }
     })
+
 
     # # Temporary message to alert that S2B are not retrievable automatically until they will be operational.
     # # This will be removed.
@@ -1020,7 +1067,6 @@ s2_gui <- function(param_list=NULL,
     # Actions when the polygon layer changes
     observe({
       if(length(rv$extent) > 0) {
-browser()
         rv$draw_tiles_overlapping <- s2tiles[unique(unlist(st_intersects(st_transform(rv$extent,4326), s2tiles))),]
         updateCheckboxGroupInput(session, "tiles_checkbox",
                                  choices = setNames(
@@ -1089,6 +1135,17 @@ browser()
 
 
     ## Product module ##
+
+    # Reactive variable: TRUE if indices are required, FALSE if not
+    indices_req <- reactive({
+      "indices" %in% input$steps_reqout &
+        !is.null(input$list_indices)
+    })
+    # convert in output value to be used in conditionalPanel
+    output$indices_req <- renderText(indices_req())
+    # options to update these values also if not visible
+    outputOptions(output, "indices_req", suspendWhenHidden = FALSE)
+
 
     create_indices_db()
     indices_db <- data.table(list_indices(c("n_index","name","longname","s2_formula_mathml","link")))
@@ -1371,13 +1428,25 @@ browser()
       rl <- list()
 
       # processing steps #
-      rl$preprocess <- input$preprocess # TRUE to perform preprocessing steps, FALSE to download SAFE only
+      rl$preprocess <- "preprocess" %in% input$proc_steps # TRUE to perform preprocessing steps, FALSE to download SAFE only
       rv$s2_levels <- c(if(safe_req$l1c==TRUE){"l1c"}, if(safe_req$l2a==TRUE){"l2a"}) # required S2 levels ("l1c","l2a")
       rl$sel_sensor <- input$sel_sensor # sensors to use ("s2a", "s2b")
-      rl$online <- switch(input$download_safe, all = TRUE, new = TRUE, no = FALSE) # TRUE if online mode, FALSE if offline mode
-      rl$overwrite_safe <- switch(input$download_safe, all = TRUE, new = FALSE, no = FALSE) # TRUE to overwrite existing SAFE, FALSE not to
-      rl$rm_safe <- switch(input$download_safe, all = input$rm_safe, new = input$rm_safe, no = "no") # "yes" to delete all SAFE, "l1c" to delete only l1c, "no" not to remove
-      rl$step_atmcorr <- ifelse(safe_req$l2a==TRUE, input$step_atmcorr, "no") # download_method in sen2cor: "auto", "l2a", "scihub" or "no"
+      rl$online <- online_mode() # TRUE if online mode, FALSE if offline mode
+      rl$overwrite_safe <- input$overwrite_safe # TRUE to overwrite existing SAFE, FALSE not to
+      rl$rm_safe <- ifelse(online_mode()==TRUE, input$rm_safe, "no") # "yes" to delete all SAFE, "l1c" to delete only l1c, "no" not to remove
+      rl$step_atmcorr <- if ("atmcorr" %in% input$proc_steps) {  # download_method in sen2cor: "auto", "l2a", "scihub" or "no"
+        if (online_mode()==TRUE) {
+          input$step_atmcorr # "auto" or "scihub"
+        } else {
+          "scihub"
+        }
+      } else {
+        if (online_mode()==TRUE) {
+          if (safe_req$l2a==TRUE) {"l2a"} else {"no"}
+        } else {
+          "no"
+        }
+      }
       # rl$steps_reqout <- input$steps_reqout # vector of required outputs: "safe", "tiles", "clipped" (one or more)
 
       # spatio-temporal selection #
@@ -1398,7 +1467,7 @@ browser()
 
       # product selection #
       rl$list_prods <- input$list_prods # TOA, BOA, SCL, TCI (for now)
-      rl$list_indices <- if ("indices" %in% input$steps_reqout) {input$list_indices} else {NA} # index names
+      rl$list_indices <- if (indices_req()==TRUE) {input$list_indices} else {NA} # index names
       rl$index_source <- input$index_source # reflectance band for computing indices ("BOA" or "TOA")
       rl$mask_type <- if (input$atm_mask==FALSE) {NA} else {input$atm_mask_type} # atmospheric masking (accepted types as in s2_mask())
 
@@ -1459,7 +1528,7 @@ browser()
       rl$path_tiles <- if ("tiles" %in% input$steps_reqout) {input$path_tiles_textin} else {NA} # path of entire tiled products
       rl$path_merged <- if ("merged" %in% input$steps_reqout) {input$path_merged_textin} else {NA} # path of entire tiled products
       rl$path_out <- if ("out" %in% input$steps_reqout) {input$path_out_textin} else {NA} # path of output pre-processed products
-      rl$path_indices <- if ("indices" %in% input$steps_reqout) {input$path_indices_textin} else {NA} # path of spectral indices
+      rl$path_indices <- if (indices_req()==TRUE) {input$path_indices_textin} else {NA} # path of spectral indices
       rl$path_subdirs <- input$path_subdirs # logical (use subdirs)
 
       return(rl)
@@ -1470,14 +1539,8 @@ browser()
 
       # processing steps
       updateCheckboxGroupInput(session, "sel_sensor", selected = pl$sel_sensor)
-      updateRadioButtons(session, "download_safe",
-                         selected = if (pl$online==TRUE & pl$overwrite_safe==TRUE) {
-                           "all"
-                         } else if (pl$online==TRUE & pl$overwrite_safe==FALSE) {
-                           "new"
-                         } else if (pl$online==FALSE) {
-                           "no"
-                         })
+      updateRadioButtons(session, "overwrite_safe", selected = pl$overwrite_safe)
+      updateRadioButtons(session, "online", selected = pl$online)
       updateCheckboxGroupInput(session, "list_levels", selected = pl$s2_levels)
       updateRadioButtons(session, "rm_safe", selected = pl$rm_safe)
       updateRadioButtons(session, "step_atmcorr", selected = pl$step_atmcorr)
