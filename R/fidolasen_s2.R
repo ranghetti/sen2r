@@ -255,6 +255,20 @@ fidolasen_s2 <- function(param_list=NULL,
   s2_list <- unlist(s2_lists)[!duplicated(unlist(lapply(s2_lists, names)))]
   names(s2_list) <- gsub("^l[12][ac]\\.","",names(s2_list))
 
+  # If s2_list is empty, exit
+  if (length(s2_list)==0) {
+    print_message(
+      type = "message",
+      if (pm$online==FALSE) {
+        paste0("No SAFE products which match the settings were found locally; ",
+               "please download them or set different spatial/temporal extents.")
+      } else {
+        paste0("No SAFE products matching the settings were found; ",
+               "please set different spatial/temporal extents.")
+      }
+    )
+  }
+
 
   # getting required metadata
   s2_dt <- lapply(names(s2_list), function(x) {
@@ -648,6 +662,7 @@ masked_names_exp <- if (!is.na(pm$mask_type)) {
     }
 
   } # end of pm$overwrite FALSE IF cycle
+browser()
 
   ## 4. Convert in vrt ##
   if (length(c(safe_names_l1c_req,safe_names_l2a_req))>0) {
