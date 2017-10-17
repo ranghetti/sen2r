@@ -33,6 +33,9 @@ Imports:
   mapedit,
   shiny,
   shinyFiles,
-  shinydashboard
+  shinydashboard,
+  foreach,
+  parallel,
+  doParallel
 Roxygen: list(markdown = TRUE)
 Remotes: lbusett/sprawl

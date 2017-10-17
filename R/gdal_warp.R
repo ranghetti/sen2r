@@ -40,6 +40,8 @@
 #'  If this argument is not used then nodata values will be copied from
 #'  the source datasets. At the moment it is not possible to set different
 #'  values for different `srcfiles` (use multiple calls of the functions).
+#' @param overwrite Logical value: should existing output files be
+#'  overwritten? (default: FALSE)
 #' @param ... Additional parameters of [gdalwarp] or [gdal_translate]
 #'  (different from `s_srs`, `t_srs`, `te`, `tr`, `ts` and `of`).
 #' @return NULL
@@ -124,6 +126,7 @@ gdal_warp <- function(srcfiles,
                       t_srs = NULL,
                       r = NULL,
                       dstnodata = NULL,
+                      overwrite = FALSE,
                       ...) {
 
   # import python modules
@@ -175,7 +178,7 @@ gdal_warp <- function(srcfiles,
     # if it is a vector, set "te" to the bounding box (in t_srs)
     if (mask_type %in% c("sfobject","spobject","vectfile")) {
       mask <- cast_vect(mask,"sfobject")
-      if (length(grep("POLYGON",st_geometry_type(mask))>1)) {
+      if (length(grep("POLYGON",st_geometry_type(mask)))>1) {
         st_write(st_cast(mask, "MULTIPOLYGON"),
                  mask_file <- paste0(tempfile(),".shp"))
       } # if not, mask_polygon is not created
@@ -198,6 +201,9 @@ gdal_warp <- function(srcfiles,
   for (i in seq_along(srcfiles)) {
     srcfile <- srcfiles[i]
     dstfile <- dstfiles[i]
+
+    # if dstfile already exists and overwrite==FALSE, do not proceed
+    if (!file.exists(dstfile) | overwrite==TRUE) {
 
     # read infile parameters
     sel_metadata <- suppressWarnings(GDALinfo(srcfile))
@@ -279,15 +285,18 @@ gdal_warp <- function(srcfiles,
     }
 
     # finally, apply gdal_warp or gdal_translate
-    if (compareCRS(CRS(sel_t_srs), CRS(sel_s_srs)) & !exists("mask_file")) {
-      gdal_translate(src_dataset = srcfile, dst_dataset = dstfile,
-               projwin = sel_te[c(1,4,3,2)],
-               tr = sel_tr,
-               of = sel_of,
-               r = sel_r,
-               a_nodata = dstnodata,
-               ...)
-    } else {
+    # temporary leave only gdal_warp to avoid some problems
+    # (e.g., translating a 1001x1001 20m to 10m results in 2002x2002 instead of 200[12]x200[12])
+    # if (compareCRS(CRS(sel_t_srs), CRS(sel_s_srs)) & !exists("mask_file")) {
+    #   gdal_translate(src_dataset = srcfile, dst_dataset = dstfile,
+    #            projwin = sel_te[c(1,4,3,2)],
+    #            tr = sel_tr,
+    #            of = sel_of,
+    #            r = sel_r,
+    #            a_nodata = dstnodata,
+    #            ...)
+    # } else {
+
       gdalwarp_expr <- paste0(
         "gdalwarp(srcfile = srcfile, dstfile = dstfile, ",
         "s_srs = sel_s_srs, t_srs = sel_t_srs, ",
@@ -295,7 +304,9 @@ gdal_warp <- function(srcfiles,
         if (exists("mask_file")) {
           "cutline = mask_file, "
         },
-        "tr = sel_tr, ",
+        if (!is.null(tr)) {
+          "tr = sel_tr, "
+        },
         "of = sel_of, ",
         "r = sel_r, ",
         if (!is.null(dstnodata)) {
@@ -305,9 +316,12 @@ gdal_warp <- function(srcfiles,
             "dstnodata = dstnodata, "
           }
         },
+        "overwrite = ",overwrite,", ",
         "...)")
       eval(parse(text=gdalwarp_expr))
-    }
+    # }
+
+    } # end of overwrite IF cycle
 
   }
 

@@ -49,12 +49,17 @@
 #' @param parallel (optional) Logical: if TRUE, masking is conducted using parallel
 #'  processing exploiting [raster::beginCluster]. This speeds-up the computation
 #'  for large rasters. If FALSE (default), single core processing is used.
+#' @param overwrite Logical value: should existing output files be
+#'  overwritten? (default: FALSE)
 #' @return A vector with the names of the created products.
 #' @export
 #' @importFrom rgdal GDALinfo
+#' @importFrom parallel detectCores makeCluster
+#' @importFrom doParallel registerDoParallel
+#' @importFrom foreach foreach "%do%" "%dopar%"
 #' @importFrom reticulate import
 #' @importFrom raster stack brick values mask NAvalue dataType beginCluster
-#'   endCluster
+#'   endCluster overlay
 #' @importFrom magrittr "%>%"
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
@@ -66,7 +71,8 @@ s2_mask <- function(infiles,
                     format=NA,
                     subdirs=NA,
                     compress="DEFLATE",
-                    parallel = FALSE) {
+                    parallel = FALSE,
+                    overwrite = FALSE) {
 
   . <- NULL
 
@@ -137,9 +143,22 @@ s2_mask <- function(infiles,
     print_message(type="error", "Mask type 'opaque_clouds' has not been yet implemented.")
   }
 
-  # cycle on each file
+
+  ## Cycle on each file
+  # if parallel==TRUE, use doParallel
+  if (parallel==TRUE) {
+    `%DO%` <- `%dopar%`
+    n_cores <- min(parallel::detectCores()-1, length(infiles), 7) # use at most 7 cores
+    cl <- makeCluster(n_cores)
+    registerDoParallel(cl)
+  } else {
+    `%DO%` <- `%do%`
+  }
+
   outfiles <- character(0)
-  for (i in seq_along(infiles)) {
+  foreach(i=seq_along(infiles)) %DO% {
+  # for (i in seq_along(infiles)) {
+
     sel_infile <- infiles[i]
     sel_infile_meta <- c(infiles_meta[i,])
     sel_format <- suppressWarnings(ifelse(
@@ -154,7 +173,6 @@ s2_mask <- function(infiles,
       maskfiles[which(maskfiles_meta$prod_type==m &
                         maskfiles_meta$type==sel_infile_meta$type &
                         maskfiles_meta$mission==sel_infile_meta$mission &
-                        maskfiles_meta$level==sel_infile_meta$level &
                         maskfiles_meta$sensing_date==sel_infile_meta$sensing_date &
                         maskfiles_meta$id_orbit==sel_infile_meta$id_orbit &
                         maskfiles_meta$res==sel_infile_meta$res)][1]
@@ -170,48 +188,63 @@ s2_mask <- function(infiles,
            paste0(".",sel_out_ext),
            basename(sel_infile)))
 
-    # create global mask
-    inmask <- raster::stack(sel_maskfiles)
-    outmask <- inmask[[1]]
-    raster::values(outmask) <- sapply(
-      seq_along(inmask@layers),
-      function(i) {
-        !raster::values(inmask)[,i] %in% req_masks[[i]]
-      }) %>% apply(1, sum)
+    # if output already exists and overwrite==FALSE, do not proceed
+    if (!file.exists(sel_outfile) | overwrite==TRUE) {
 
-    inraster <- raster::brick(sel_infile)
+      # load input rasters
+      inmask <- raster::stack(sel_maskfiles)
+      inraster <- raster::brick(sel_infile)
 
-    if (parallel) {
-      raster::beginCluster()
-    }
-    raster::mask(inraster,
-                 outmask,
-                 filename    = sel_outfile,
-                 maskvalue   = 0,
-                 updatevalue = NAvalue(inraster),
-                 updateNA    = TRUE,
-                 datatype    = dataType(inraster),
-                 format      = sel_format,
-                 options     = ifelse(sel_format == "GTiff",
-                                  c(paste0("COMPRESS=",compress)),
-                                  ""),
-                 overwrite   = TRUE)
-    if (parallel) {
-      raster::endCluster()
-    }
+      # create global mask
+      mask_tmpfiles <- character(0)
+      for (i in seq_along(inmask@layers)) {
+        mask_tmpfiles <- c(tempfile(fileext=".tif"), mask_tmpfiles)
+        raster::calc(inmask[[i]],
+                     function(x){!x %in% req_masks[[i]] %>% as.integer()},
+                     filename = mask_tmpfiles[1])
+      }
+      if(length(mask_tmpfiles)==1) {
+        outmask <- mask_tmpfiles
+      } else {
+        outmask <- tempfile(fileext=".tif")
+        raster::overlay(stack(mask_tmpfiles), fun=sum, filename=outmask)
+      }
 
-    # fix for envi extension (writeRaster use .envi)
-    if (sel_format=="ENVI" &
-        file.exists(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile))) {
-      file.rename(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),
-                  sel_outfile)
-      file.rename(paste0(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),".aux.xml"),
-                  paste0(sel_outfile,".aux.xml"))
-    }
+      # apply mask
+      # FIXME parallelisation not working
+      # if (parallel) {raster::beginCluster(n_cores)}
+      raster::mask(inraster,
+                   raster::raster(outmask),
+                   filename    = sel_outfile,
+                   maskvalue   = 0,
+                   updatevalue = NAvalue(inraster),
+                   updateNA    = TRUE,
+                   datatype    = dataType(inraster),
+                   format      = sel_format,
+                   options     = ifelse(sel_format == "GTiff",
+                                        c(paste0("COMPRESS=",compress)),
+                                        ""),
+                   overwrite   = overwrite)
+      # if (parallel) {raster::endCluster()}
+
+      # fix for envi extension (writeRaster use .envi)
+      if (sel_format=="ENVI" &
+          file.exists(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile))) {
+        file.rename(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),
+                    sel_outfile)
+        file.rename(paste0(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),".aux.xml"),
+                    paste0(sel_outfile,".aux.xml"))
+      }
+
+    } # end of overwrite IF cycle
 
     outfiles <- c(outfiles, sel_outfile)
 
   } # end on infiles cycle
+
+  if (parallel==TRUE) {
+    stopCluster(cl)
+  }
 
   return(outfiles)
 

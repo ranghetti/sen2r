@@ -19,9 +19,9 @@
 #' @importFrom mapedit editModUI
 #' @importFrom reticulate import
 #' @importFrom sf st_intersects st_polygon st_read st_sf st_sfc st_transform
-#' @importFrom shiny a actionButton br callModule checkboxGroupInput
+#' @importFrom shiny a actionButton actionLink br callModule checkboxGroupInput
 #'  checkboxInput column conditionalPanel dateRangeInput div em fluidRow h2 h3
-#'  helpText HTML htmlOutput icon isolate NS numericInput observe p
+#'  helpText hr HTML htmlOutput icon isolate NS numericInput observe p
 #'  radioButtons reactive reactiveValues renderText renderUI runApp selectInput
 #'  shinyApp span stopApp strong textInput uiOutput updateCheckboxGroupInput
 #'  updateDateRangeInput updateRadioButtons updateTextInput withMathJax
@@ -77,8 +77,11 @@ s2_gui <- function(param_list=NULL,
         sidebarMenu(
           menuItem("Processing settings", tabName = "tab_prepro", icon = icon("th"))
         ),
-        sidebarMenu(
-          menuItem("Index selection", tabName = "tab_index", icon = icon("calculator"))
+        conditionalPanel(
+          condition = "input.steps_reqout.indexOf('indices') != -1",
+          sidebarMenu(
+            menuItem("Index selection", tabName = "tab_index", icon = icon("calculator"))
+          )
         )
       ),
       # sidebarMenu(
@@ -134,18 +137,20 @@ s2_gui <- function(param_list=NULL,
                   condition = "input.preprocess == 'TRUE'",
                   checkboxGroupInput("list_prods",
                                      "Select products:",
-                                     choices = list("TOA (top-of-atmosphere) Reflectance" = "TOA",
-                                                    "BOA (bottom-of-atmosphere) Surface Reflectance" = "BOA",
-                                                    "SCL (surface classification map)" = "SCL",
-                                                    "TCI (true-color) RGB 8-bit image" = "TCI"),
+                                     choiceNames = list("TOA (top-of-atmosphere) Reflectance",
+                                                    "BOA (bottom-of-atmosphere) Surface Reflectance",
+                                                    "SCL (surface classification map)",
+                                                    "TCI (true-color) RGB 8-bit image"),
+                                     choiceValues = list("TOA", "BOA", "SCL", "TCI"),
                                      selected = c("BOA"))
                 ),
                 conditionalPanel(
                   condition = "input.preprocess == 'FALSE'",
                   checkboxGroupInput("list_levels",
                                      "Select products:",
-                                     choices = list("Level-1C" = "l1c",
-                                                    "Level-2A" = "l2a"),
+                                     choiceNames = list(a("Level-1C", href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-1c", target="_blank"),
+                                                        a("Level-2A", href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-2a", target="_blank")),
+                                     choiceValues = list("l1c", "l2a"),
                                      selected = c("l2a"))
                 )
               ), # end of column for indices selection
@@ -160,8 +165,11 @@ s2_gui <- function(param_list=NULL,
                 ),
 
                 checkboxGroupInput("sel_sensor", "Select sensors:",
-                                   choices = list("Sentinel-2A" = "s2a",
-                                                  "Sentinel-2B" = "s2b"),
+                                   choiceNames = list("Sentinel-2A",
+                                                      span("Sentinel-2B",#
+                                                           actionLink("sel_sensor_tempmessage", "(note)")) # temp
+                                   ),
+                                   choiceValues = list("s2a", "s2b"),
                                    selected=c("s2a","s2b"),
                                    inline = FALSE)
               ) # end of column for sensor selection
@@ -217,10 +225,11 @@ s2_gui <- function(param_list=NULL,
                 width=5,
                 # delete_safe
                 conditionalPanel(
-                  condition = "input.download_safe != 'no'",
+                  condition = "input.download_safe != 'no' && (input.preprocess == 'TRUE' || (input.preprocess == 'FALSE' && input.list_levels.indexOf('l1c')==-1 && input.list_levels.indexOf('l2a')!=-1))",
+                  # condition = "input.download_safe != 'no'",
                   radioButtons("rm_safe", "Delete SAFE tiles after processing?",
                                choices = list("Yes" = "all",
-                                              "Only L1C" = "l1c",
+                                              "Only unrequired L1C" = "l1c",
                                               "No" = "no"),
                                selected="no")
                 )
@@ -403,8 +412,9 @@ s2_gui <- function(param_list=NULL,
                   checkboxGroupInput("steps_reqout", "Required processing steps:",
                                      choices = list("Single tiles in custom format" = "tiles",
                                                     "Tiles spatially merged" = "merged",
-                                                    "Images clipped and warped on output extent" = "out"),
-                                     selected=c("out")),
+                                                    "Images clipped and warped on output extent" = "out",
+                                                    "Spectral indices" = "indices"),
+                                     selected=c("out","indices")),
 
                   # set directories
                   conditionalPanel(
@@ -441,6 +451,18 @@ s2_gui <- function(param_list=NULL,
                                 shinyDirButton("path_out_sel", "Select", "Specify directory for output processed products")),
                             div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
                                 textInput("path_out_textin", NULL, "Enter directory..."))))
+                  ),
+
+                  conditionalPanel(
+                    condition = "input.steps_reqout.indexOf('indices') != -1",
+                    div(div(style="display:inline-block;vertical-align:top;",
+                            strong("Directory for spectral indices: \u00a0")),
+                        div(style="display:inline-block;vertical-align:top;",
+                            htmlOutput("path_indices_errormess")),
+                        div(div(style="display:inline-block;vertical-align:top;width:50pt;",
+                                shinyDirButton("path_indices_sel", "Select", "Specify directory for spectral indices")),
+                            div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
+                                textInput("path_indices_textin", NULL, "Enter directory..."))))
                   ),
 
                   checkboxInput("path_subdirs", "Group products in subdirectories", value = TRUE)
@@ -656,6 +678,11 @@ s2_gui <- function(param_list=NULL,
               box(
                 width=8,
                 title="Index selection",
+                radioButtons("index_source", "Build indices from:",
+                             choices = list("TOA Reflectance" = "TOA",
+                                            "BOA Reflectance" = "BOA"),
+                             selected = "BOA",
+                             inline = TRUE),
                 textInput("filter_indices", "Filter indices"),
                 uiOutput("check_indices")
               ),
@@ -717,6 +744,7 @@ s2_gui <- function(param_list=NULL,
     ## Steps module ##
 
     # Update widgets for step_atmcorr basing on online_mode
+    # accepted products (update together with the same variables in s2_gui())
     l1c_prods <- c("TOA")
     l2a_prods <- c("BOA","SCL","TCI")
     observe({
@@ -729,7 +757,7 @@ s2_gui <- function(param_list=NULL,
       } else if (input$download_safe %in% c("no")) {
         updateRadioButtons(session, "step_atmcorr",
                            choices = list("Always (use L1C products already available and correct them locally)" = "scihub",
-                                          "Never(use only L2A products already available locally)" = "l2a"),
+                                          "Never (use only L2A products already available locally)" = "l2a"),
                            selected = input$step_atmcorr)
       }
     })
@@ -738,8 +766,10 @@ s2_gui <- function(param_list=NULL,
     safe_req <- reactiveValues()
     observe({
       if (input$preprocess==TRUE) {
-        safe_req$l1c <- if (any(l1c_prods %in% input$list_prods)) {TRUE} else {FALSE}
-        safe_req$l2a <- if (any(l2a_prods %in% input$list_prods)) {TRUE} else {FALSE}
+        safe_req$l1c <- if (any(l1c_prods %in% input$list_prods) |
+                            input$index_source=="TOA") {TRUE} else {FALSE}
+        safe_req$l2a <- if (any(l2a_prods %in% input$list_prods) |
+                            input$index_source=="BOA") {TRUE} else {FALSE}
       } else if (input$preprocess==FALSE) {
         safe_req$l1c <- if ("l1c" %in% input$list_levels) {TRUE} else {FALSE}
         safe_req$l2a <- if ("l2a" %in% input$list_levels) {TRUE} else {FALSE}
@@ -761,18 +791,59 @@ s2_gui <- function(param_list=NULL,
           (span(style="color:red", "Select at least one product."))
         },
         if (safe_req$l1c==TRUE) {
-          # a("Level-1C", href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-1c", target="_blank")
-          "Level-1C"
+          a("Level-1C", href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-1c", target="_blank")
+          # "Level-1C"
         },
         if (safe_req$l1c==TRUE & safe_req$l2a==TRUE) {
           br()
         },
         if (safe_req$l2a==TRUE) {
-          # a("Level-2A", href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-2a", target="_blank")
-          "Level-2A"
+          a("Level-2A", href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-2a", target="_blank")
+          # "Level-2A"
         }
       )
     })
+
+    # update rm_safe if preprocess is not required
+    observe({
+      if (input$preprocess == FALSE) {
+        updateRadioButtons(session, "rm_safe", "Delete unrequired level-1C SAFE tiles?",
+                     choices = list("Yes" = "l1c",
+                                    "No" = "no"),
+                     selected = "no")
+      } else {
+        updateRadioButtons(session, "rm_safe", "Delete SAFE tiles after processing?",
+                           choices = list("Yes" = "all",
+                                          "Only unrequired L1C" = "l1c",
+                                          "No" = "no"),
+                           selected = "no")
+      }
+      if (input$download_safe == 'no' |
+          input$preprocess == FALSE &
+          (!"l2a" %in% input$list_levels | "l1c" %in% input$list_levels)) {
+        updateRadioButtons(session, "rm_safe",
+                           selected = "no")
+      }
+    })
+
+    # # Temporary message to alert that S2B are not retrievable automatically until they will be operational.
+    # # This will be removed.
+    observeEvent(input$sel_sensor_tempmessage, {
+      # if (input$download_safe!="no" & "s2b" %in% input$sel_sensor) {
+        showModal(modalDialog(
+          title = "Sentinel-2B temporary alert",
+          em(paste0("This tool find only products from SciHub operational ",
+                    "hub, while currently only few Sentinel-2B products are ",
+                    "available there. If you need more products, consider to ",
+                    "manually search and download products from "),
+             a("PreOps SciHub", href="https://scihub.copernicus.eu/s2b", target="_blank"),
+             " and then to re-launch the tool in offline mode."),
+          easyClose = TRUE,
+          footer = NULL
+        ))
+      # }
+    })
+
 
 
 
@@ -1239,6 +1310,7 @@ browser()
     shinyDirChoose(input, "path_tiles_sel", roots = volumes)
     shinyDirChoose(input, "path_merged_sel", roots = volumes)
     shinyDirChoose(input, "path_out_sel", roots = volumes)
+    shinyDirChoose(input, "path_indices_sel", roots = volumes)
 
     # if paths change after using the shinyDirButton, update the values and the textInput
     observe({
@@ -1261,6 +1333,10 @@ browser()
       path_out_string <- parseDirPath(volumes, input$path_out_sel)
       updateTextInput(session, "path_out_textin", value = path_out_string)
     })
+    observe({
+      path_indices_string <- parseDirPath(volumes, input$path_indices_sel)
+      updateTextInput(session, "path_indices_textin", value = path_indices_string)
+    })
 
     # if path changes after using the textInput, update the value
     observe({
@@ -1277,6 +1353,9 @@ browser()
     })
     observe({
       output$path_out_errormess <- path_check(input$path_out_textin)
+    })
+    observe({
+      output$path_indices_errormess <- path_check(input$path_indices_textin)
     })
 
 
@@ -1306,24 +1385,28 @@ browser()
       rl$timeperiod <- input$timeperiod # "full" or "seasonal"
       # polygons
       rl$extent <- if (!is.null(rv$extent)) {
-        geojson_json(rv$extent, pretty=TRUE)
+        rv$extent %>%
+          st_transform(4326) %>%
+          geojson_json(pretty=TRUE)
       } else {
-        NULL
+        geojson_json(st_polygon())
       }
       # rl$s2tiles_selected <- rv$draw_tiles_overlapping[rv$draw_tiles_overlapping$tile_id %in% input$tiles_checkbox,] # MULTIPOLYGON with the selected tiles
-      rl$s2tiles_selected <- input$tiles_checkbox # selected tile IDs
+      rl$s2tiles_selected <- if (is.null(rl$s2tiles_selected)) {NA} else {input$tiles_checkbox} # selected tile IDs
+      rl$s2orbits_selected <- str_pad(c(1:143),3,"left","0") # temporary select all orbits (TODO implement)
+      rl$extent_as_mask <- input$extent_as_mask # logical: TRUE to mask outside the extent polygon, FALSE not to
 
       # product selection #
       rl$list_prods <- input$list_prods # TOA, BOA, SCL, TCI (for now)
-      rl$list_indices <- input$list_indices # index names
+      rl$list_indices <- if ("indices" %in% input$steps_reqout) {input$list_indices} else {NA} # index names
+      rl$index_source <- input$index_source # reflectance band for computing indices ("BOA" or "TOA")
+      rl$mask_type <- if (input$atm_mask==FALSE) {NA} else {input$atm_mask_type} # atmospheric masking (accepted types as in s2_mask())
 
       # output geometry #
       # path of the reference file (NULL if not provided)
       rl$reference_path <- ifelse(input$use_reference==TRUE,
                                   input$reference_file_textin,
                                   NA)
-      # rescale to custom resolution (TRUE or FALSE)
-      rl$rescale <- input$rescale
       # spatial resolution for output products (2-length numeric vector)
       rl$res <- if (input$use_reference==TRUE &
                     "res" %in% input$reference_usefor) {
@@ -1373,9 +1456,10 @@ browser()
       # set directories #
       rl$path_l1c <- input$path_l1c_textin # path of L1C SAFE products
       rl$path_l2a <- input$path_l2a_textin # path of L2A SAFE products
-      rl$path_tiles <- input$path_tiles_textin # path of entire tiled products
-      rl$path_merged <- input$path_merged_textin # path of entire tiled products
-      rl$path_out <- input$path_out_textin # path of output pre-processed products
+      rl$path_tiles <- if ("tiles" %in% input$steps_reqout) {input$path_tiles_textin} else {NA} # path of entire tiled products
+      rl$path_merged <- if ("merged" %in% input$steps_reqout) {input$path_merged_textin} else {NA} # path of entire tiled products
+      rl$path_out <- if ("out" %in% input$steps_reqout) {input$path_out_textin} else {NA} # path of output pre-processed products
+      rl$path_indices <- if ("indices" %in% input$steps_reqout) {input$path_indices_textin} else {NA} # path of spectral indices
       rl$path_subdirs <- input$path_subdirs # logical (use subdirs)
 
       return(rl)
@@ -1397,7 +1481,11 @@ browser()
       updateCheckboxGroupInput(session, "list_levels", selected = pl$s2_levels)
       updateRadioButtons(session, "rm_safe", selected = pl$rm_safe)
       updateRadioButtons(session, "step_atmcorr", selected = pl$step_atmcorr)
-      # updateCheckboxGroupInput(session, "steps_reqout", selected = pl$steps_reqout)
+      updateCheckboxGroupInput(session, "steps_reqout",
+                               selected = c(if(!is.na(input$path_tiles_textin)){"tiles"},
+                                            if(!is.na(input$path_merged_textin)){"merged"},
+                                            if(!is.na(input$path_out_textin)){"out"},
+                                            if(!is.na(input$path_indices_textin)){"indices"}))
 
       # spatio-temporal selection
       updateDateRangeInput(session, "timewindow", start=pl$timewindow[1], end=pl$timewindow[2])
@@ -1408,15 +1496,22 @@ browser()
                                         "Draw on the map" = "draw",
                                         "Imported from JSON" = "imported"),
                          selected = "imported")
-      isolate(rv$extent <- if (is.null(pl$extent)) {st_polygon()} else {st_read(pl$extent)})
+      isolate(rv$extent <- if (pl$extent==geojson_json(st_polygon())) {st_polygon()} else {st_read(pl$extent)})
       updateCheckboxGroupInput(session, "tiles_checkbox",
                                selected = pl$s2tiles_selected)
       # rl$s2tiles_selected <- input$tiles_checkbox # selected tile IDs
+      updateRadioButtons(session, "extent_as_mask", selected = rv$extent_as_mask)
 
       # product selection
       updateCheckboxGroupInput(session, "list_prods", selected = pl$list_prods)
       indices_rv$checked <- pl$list_indices
       # updateCheckboxGroupInput(session, "list_indices", selected = pl$list_indices) # FIXME 1 not working since it is reactive
+      updateRadioButtons(session, "atm_mask",
+                         selected = ifelse(is.na(pl$mask_type),FALSE,TRUE))
+      updateRadioButtons(session, "atm_mask_type",
+                         selected = ifelse(is.na(pl$mask_type),"cloud_medium_proba",pl$mask_type))
+      updateRadioButtons(session, "index_source", selected = pl$index_source)
+
 
       # set directories
       updateTextInput(session, "path_l1c_textin", value = pl$path_l1c)
@@ -1424,6 +1519,7 @@ browser()
       updateTextInput(session, "path_tiles_textin", value = pl$path_tiles)
       updateTextInput(session, "path_merged_textin", value = pl$path_merged)
       updateTextInput(session, "path_out_textin", value = pl$path_out)
+      updateTextInput(session, "path_indices_textin", value = pl$path_indices)
       updateRadioButtons(session, "path_subdirs", selected = pl$path_subdirs)
 
       # output geometry
@@ -1431,7 +1527,7 @@ browser()
       updateRadioButtons(session, "use_reference", selected = ifelse(is.na(pl$reference_path), FALSE, TRUE))
 
       if (is.na(pl$reference_path)) {
-        updateRadioButtons(session, "rescale", selected = pl$rescale)
+        updateRadioButtons(session, "rescale", selected = if(any(is.na(pl$res))) {FALSE} else {TRUE})
         updateTextInput(session, "resolution_custom", value = pl$res[1])
         updateRadioButtons(session, "resolution_s2", selected = pl$res_s2)
         updateRadioButtons(session, "reproj", selected = {

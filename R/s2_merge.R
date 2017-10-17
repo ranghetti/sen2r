@@ -21,12 +21,17 @@
 #'  Default is in a hidden subdirectory (called `.vrt`) of the common parent
 #'  directory of `infiles`. Set `tmpdir=tempdir()` if you do not want to
 #'  keep the intermediate files after reboot.
+#' @param format (optional) Format of the output file (in a
+#'  format recognised by GDAL). Default is to maintain each input format.
 #' @param compress (optional) In the case a GTiff format is
 #'  present, the compression indicated with this parameter is used.
 #' @param out_crs (optional) proj4string (character) of the output CRS
 #'  (default: the CRS of the first input file). The tiles with CRS different
 #'  from `out_crs` will be reprojected (and a warning returned).
-#' @return A vector with the names of the merged products.
+#' @param overwrite Logical value: should existing output files be
+#'  overwritten? (default: FALSE)
+#' @return A vector with the names of the merged products (just created or
+#'  already existing).
 #' @importFrom rgdal GDALinfo
 #' @importFrom sp CRS
 #' @importFrom magrittr "%>%"
@@ -41,8 +46,10 @@ s2_merge <- function(infiles,
                      outdir=".",
                      subdirs=NA,
                      tmpdir=NA,
+                     format=NA,
                      compress="DEFLATE",
-                     out_crs="") {
+                     out_crs="",
+                     overwrite=FALSE) {
 
   # Check that files exist
   if (!any(sapply(infiles, file.exists))) {
@@ -176,61 +183,67 @@ s2_merge <- function(infiles,
       sel_infiles_meta[1,"prod_type"],"_",
       gsub("m$","",sel_infiles_meta[1,"res"]),".",
       sel_infiles_meta[1,"file_ext"])
-    sel_outformat <- unique(sel_infiles_meta[,"format"])
+    sel_outformat <- ifelse(is.na(format),
+                            unique(sel_infiles_meta[,"format"]),
+                            format)
     if (length(sel_outformat)>1) {
       print_message(type="error", "Internal error (non unique format).")
     }
     # define subdir
     out_subdir <- ifelse(subdirs, file.path(outdir,sel_infiles_meta[1,"prod_type"]), outdir)
 
-    # build intermediate reprojected VRTs (if necessary)
-    for (i in seq_len(sum(sel_diffcrs))) {
-      reproj_vrt <- file.path(
+    # if output already exists and overwrite==FALSE, do not proceed
+    if (!file.exists(file.path(out_subdir,sel_outfile)) | overwrite==TRUE) {
+
+      # build intermediate reprojected VRTs (if necessary)
+      for (i in seq_len(sum(sel_diffcrs))) {
+        reproj_vrt <- file.path(
+          tmpdir,
+          gsub(paste0("\\.",sel_infiles_meta[sel_diffcrs,][i,"file_ext"],"$"),
+               "_reproj.vrt",
+               basename(sel_infiles[sel_diffcrs][i]))
+        )
+        gdalwarp_grid(srcfiles = sel_infiles[sel_diffcrs][i],
+                      dstfiles = reproj_vrt,
+                      ref = ref_file,
+                      of = "VRT",
+                      r = "near")
+        gdal_abs2rel(reproj_vrt)
+
+        # replace input file path with intermediate
+        sel_infiles[sel_diffcrs][i] <- reproj_vrt
+      }
+
+      # merge tiles
+      merged_vrt <- file.path(
         tmpdir,
-        gsub(paste0("\\.",sel_infiles_meta[sel_diffcrs,][i,"file_ext"],"$"),
-             "_reproj.vrt",
-             basename(sel_infiles[sel_diffcrs][i]))
+        gsub(paste0("\\.",sel_infiles_meta[1,"file_ext"],"$"),
+             ".vrt",
+             sel_outfile))
+      system(
+        paste0(
+          Sys.which("gdalbuildvrt")," ",
+          "\"",merged_vrt,"\" ",
+          paste(paste0("\"",sel_infiles,"\""), collapse=" ")
+        ),
+        intern = Sys.info()["sysname"] == "Windows"
       )
-      gdalwarp_grid(srcfiles = sel_infiles[sel_diffcrs][i],
-                    dstfiles = reproj_vrt,
-                    ref = ref_file,
-                    of = "VRT",
-                    r = "near")
-      gdal_abs2rel(reproj_vrt)
 
-      # replace input file path with intermediate
-      sel_infiles[sel_diffcrs][i] <- reproj_vrt
-    }
+      # create output merged file
+      system(
+        paste0(
+          Sys.which("gdal_translate")," ",
+          "-of ",sel_outformat," ",
+          if (sel_outformat=="GTiff") {paste0("-co COMPRESS=",toupper(compress)," ")},
+          "\"",merged_vrt,"\" ",
+          "\"",file.path(out_subdir,sel_outfile),"\" "),
+        intern = Sys.info()["sysname"] == "Windows"
+      )
+      if (sel_outformat=="VRT") {
+        gdal_abs2rel(file.path(out_subdir,sel_outfile))
+      }
 
-    # merge tiles
-    merged_vrt <- file.path(
-      tmpdir,
-      gsub(paste0("\\.",sel_infiles_meta[1,"file_ext"],"$"),
-           ".vrt",
-           sel_outfile))
-    system(
-      paste0(
-        Sys.which("gdalbuildvrt")," ",
-        "\"",merged_vrt,"\" ",
-        paste(paste0("\"",sel_infiles,"\""), collapse=" ")
-      ),
-      intern = Sys.info()["sysname"] == "Windows"
-    )
-
-    # create output merged file
-    system(
-      paste0(
-        Sys.which("gdal_translate")," ",
-        "-of ",sel_outformat," ",
-        if (sel_outformat=="GTiff") {paste0("-co COMPRESS=",toupper(compress)," ")},
-        "\"",merged_vrt,"\" ",
-        "\"",file.path(out_subdir,sel_outfile),"\" "),
-      intern = Sys.info()["sysname"] == "Windows"
-    )
-    if (sel_outformat=="VRT") {
-      gdal_abs2rel(file.path(out_subdir,sel_outfile))
-    }
-
+    } # end of overwrite IF cycle
 
     outfiles <- c(outfiles, file.path(out_subdir,sel_outfile))
 

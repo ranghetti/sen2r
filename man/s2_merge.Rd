@@ -4,8 +4,8 @@
 \alias{s2_merge}
 \title{Merge S2 tiles with the same date and orbit}
 \usage{
-s2_merge(infiles, outdir = ".", subdirs = NA, tmpdir = NA,
-  compress = "DEFLATE", out_crs = "")
+s2_merge(infiles, outdir = ".", subdirs = NA, tmpdir = NA, format = NA,
+  compress = "DEFLATE", out_crs = "", overwrite = FALSE)
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths
@@ -30,15 +30,22 @@ Default is in a hidden subdirectory (called \code{.vrt}) of the common parent
 directory of \code{infiles}. Set \code{tmpdir=tempdir()} if you do not want to
 keep the intermediate files after reboot.}
 
+\item{format}{(optional) Format of the output file (in a
+format recognised by GDAL). Default is to maintain each input format.}
+
 \item{compress}{(optional) In the case a GTiff format is
 present, the compression indicated with this parameter is used.}
 
 \item{out_crs}{(optional) proj4string (character) of the output CRS
 (default: the CRS of the first input file). The tiles with CRS different
 from \code{out_crs} will be reprojected (and a warning returned).}
+
+\item{overwrite}{Logical value: should existing output files be
+overwritten? (default: FALSE)}
 }
 \value{
-A vector with the names of the merged products.
+A vector with the names of the merged products (just created or
+already existing).
 }
 \description{
 The function merge the input Sentinel-2 files with

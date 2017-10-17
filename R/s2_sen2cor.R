@@ -9,7 +9,8 @@
 #' @param n_procs Number of processors (`integer`) to use (default is 1, single processor).
 #' @param overwrite Logical value: should existing output L2A products be overwritten?
 #'  (default: FALSE)
-#' @return NULL
+#' @return Vector character with the list ot the output products (being corrected or already
+#'  existing)
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
@@ -48,5 +49,13 @@ s2_sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, n_procs=1, 
                           l1c_list=basename(l1c_prodlist),
                           n_procs=as.integer(n_procs),
                           overwrite=overwrite)
+
+  # return the names of corrected products (or already existing products)
+  expected_l2a_prodlist <- file.path(
+    outdir,
+    gsub("^S2([AB])\\_MSIL1C\\_","S2\\1\\_MSIL2A\\_",basename(l1c_prodlist))
+  )
+  existing_l2a_prodlist <- expected_l2a_prodlist[file.exists(expected_l2a_prodlist)]
+  return(existing_l2a_prodlist)
 
 }

@@ -37,7 +37,10 @@
 #'  the first one retrieved from input granules). Note that this function
 #'  does not perform reprojections: if no granules refer to the specified
 #'  UTM zone, no output is created.
-#' @return A vector with the names of the created output files.
+#' @param overwrite Logical value: should existing output files be
+#'  overwritten? (default: FALSE)
+#' @return A vector with the names of the created output files
+#'   (just created or already existing).
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @export
@@ -71,7 +74,8 @@ s2_translate <- function(infile,
                          format="VRT",
                          compress="DEFLATE",
                          vrt_rel_paths="TRUE",
-                         utmzone="") {
+                         utmzone="",
+                         overwrite = FALSE) {
 
   # import python modules
   py <- import_builtins(convert=FALSE)
@@ -196,64 +200,69 @@ s2_translate <- function(infile,
       # complete output filename
       out_name <- file.path(out_subdir,paste0(out_prefix,".",out_ext))
 
-      # select required bands from the list and order them by resolution
-      jp2df_selbands <- infile_meta$jp2list[infile_meta$jp2list$type==sel_type &
-                                            infile_meta$jp2list$tile==sel_tile,]
-      jp2df_selbands <- jp2df_selbands[with(jp2df_selbands,order(band,res)),]
-      # remove lower resolutions and keep only the best resolution for each band
-      if (!any(jp2df_selbands$res=="")) {
-        jp2df_selbands <- jp2df_selbands[as.integer(substr(jp2df_selbands$res,1,2))>=as.integer(substr(res[1],1,2)),]
-      } else {
-        # for oldname L1C (which do not have "res" in granule name) remove B08 or B8A basing on the requested "res"
-        if (as.integer(substr(res[1],1,2)) < 20) {
-          jp2df_selbands <- jp2df_selbands[-grep("B8A.jp2$",jp2df_selbands$layer),]
+      # if out_name already exists and overwrite==FALSE, do not proceed
+      if (!file.exists(out_name) | overwrite==TRUE) {
+
+        # select required bands from the list and order them by resolution
+        jp2df_selbands <- infile_meta$jp2list[infile_meta$jp2list$type==sel_type &
+                                              infile_meta$jp2list$tile==sel_tile,]
+        jp2df_selbands <- jp2df_selbands[with(jp2df_selbands,order(band,res)),]
+        # remove lower resolutions and keep only the best resolution for each band
+        if (!any(jp2df_selbands$res=="")) {
+          jp2df_selbands <- jp2df_selbands[as.integer(substr(jp2df_selbands$res,1,2))>=as.integer(substr(res[1],1,2)),]
         } else {
-          jp2df_selbands <- jp2df_selbands[-grep("B08.jp2$",jp2df_selbands$layer),]
+          # for oldname L1C (which do not have "res" in granule name) remove B08 or B8A basing on the requested "res"
+          if (as.integer(substr(res[1],1,2)) < 20) {
+            jp2df_selbands <- jp2df_selbands[-grep("B8A.jp2$",jp2df_selbands$layer),]
+          } else {
+            jp2df_selbands <- jp2df_selbands[-grep("B08.jp2$",jp2df_selbands$layer),]
+          }
         }
-      }
-      jp2df_selbands <- jp2df_selbands[!duplicated(with(jp2df_selbands,paste(band,tile))),]
-      # extract vector of paths
-      jp2_selbands <- file.path(infile_dir,jp2df_selbands[,"relpath"])
+        jp2df_selbands <- jp2df_selbands[!duplicated(with(jp2df_selbands,paste(band,tile))),]
+        # extract vector of paths
+        jp2_selbands <- file.path(infile_dir,jp2df_selbands[,"relpath"])
 
-      # create final vrt with all the bands (of select final raster with a single band)
-      if (length(jp2_selbands)>1) {
-        # define and create tmpdir
-        if (is.na(tmpdir)) {
-          tmpdir <- file.path(dirname(infile_dir),".vrt")
+        # create final vrt with all the bands (of select final raster with a single band)
+        if (length(jp2_selbands)>1) {
+          # define and create tmpdir
+          if (is.na(tmpdir)) {
+            tmpdir <- file.path(dirname(infile_dir),".vrt")
+          }
+          dir.create(tmpdir, showWarnings=FALSE)
+          final_vrt_name <- ifelse(format=="VRT", out_name, paste0(tmpdir,"/",out_prefix,".vrt"))
+          system(
+            paste0(
+              Sys.which("gdalbuildvrt")," -separate ",
+              "-resolution highest ",
+              "\"",final_vrt_name,"\" ",
+              paste(paste0("\"",jp2_selbands,"\""), collapse=" ")
+            ),
+            intern = Sys.info()["sysname"] == "Windows"
+          )
+          if (vrt_rel_paths==TRUE) {
+            gdal_abs2rel(final_vrt_name)
+          }
+        } else {
+          final_vrt_name <- jp2_selbands
         }
-        dir.create(tmpdir, showWarnings=FALSE)
-        final_vrt_name <- ifelse(format=="VRT", out_name, paste0(tmpdir,"/",out_prefix,".vrt"))
-        system(
-          paste0(
-            Sys.which("gdalbuildvrt")," -separate ",
-            "-resolution highest ",
-            "\"",final_vrt_name,"\" ",
-            paste(paste0("\"",jp2_selbands,"\""), collapse=" ")
-          ),
-          intern = Sys.info()["sysname"] == "Windows"
-        )
-        if (vrt_rel_paths==TRUE) {
-          gdal_abs2rel(final_vrt_name)
-        }
-      } else {
-        final_vrt_name <- jp2_selbands
-      }
 
-      # create output file (or copy vrt file)
-      if (format != "VRT" | length(jp2_selbands)==1) {
-        system(
-          paste0(
-            Sys.which("gdal_translate")," -of ",format," ",
-            if (format=="GTiff") {paste0("-co COMPRESS=",toupper(compress)," ")},
-            if (!is.na(sel_na)) {paste0("-a_nodata ",sel_na," ")},
-            "\"",final_vrt_name,"\" ",
-            "\"",out_name,"\""
-          ), intern = Sys.info()["sysname"] == "Windows"
-        )
-        if (format == "VRT" & vrt_rel_paths==TRUE) {
-          gdal_abs2rel(out_name)
+        # create output file (or copy vrt file)
+        if (format != "VRT" | length(jp2_selbands)==1) {
+          system(
+            paste0(
+              Sys.which("gdal_translate")," -of ",format," ",
+              if (format=="GTiff") {paste0("-co COMPRESS=",toupper(compress)," ")},
+              if (!is.na(sel_na)) {paste0("-a_nodata ",sel_na," ")},
+              "\"",final_vrt_name,"\" ",
+              "\"",out_name,"\""
+            ), intern = Sys.info()["sysname"] == "Windows"
+          )
+          if (format == "VRT" & vrt_rel_paths==TRUE) {
+            gdal_abs2rel(out_name)
+          }
         }
-      }
+
+      } # end of "overwite" IF cycle
 
       out_names <- c(out_names, out_name)
 
