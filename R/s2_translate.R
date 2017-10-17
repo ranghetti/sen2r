@@ -233,7 +233,7 @@ s2_translate <- function(infile,
           intern = Sys.info()["sysname"] == "Windows"
         )
         if (vrt_rel_paths==TRUE) {
-          gdal_abs2rel(out_name)
+          gdal_abs2rel(final_vrt_name)
         }
       } else {
         final_vrt_name <- jp2_selbands
