@@ -4,8 +4,8 @@
 #'  data. Input is a set of parameters that can be passed with a
 #'  list or file (parameter `param_list`) or singularly (see the
 #'  descriptions of all the other parameters).
-#' @param param_list List of input parameters: it can be both an
-#'  R list or the path of a JSON file.
+#' @param param_list (optional) List of input parameters:
+#'  it can be both an R list or the path of a JSON file.
 #'  If some parameters are passed both as elements of `param_list`
 #'  and as function arguments, the values passed as function
 #'  arguments are considered.
@@ -13,40 +13,122 @@
 #'  provided as arguments, default values will be used.
 #'  Use the function [s2_gui()] to create a complete list of
 #'  parameters.
-#' @param preprocess =NA,
-#' @param s2_levels =NA,
-#' @param sel_sensor =NA,
-#' @param online =NA,
-#' @param overwrite_safe =NA,
-#' @param rm_safe =NA,
-#' @param step_atmcorr =NA,
-#' @param timewindow =NA,
-#' @param timeperiod =NA,
-#' @param extent =NA,
-#' @param s2tiles_selected =NA,
-#' @param s2orbits_selected =NA,
-#' @param extent_as_mask =NA,
-#' @param list_prods =NA,
-#' @param list_indices =NA,
-#' @param index_source =NA,
-#' @param mask_type =NA,
-#' @param reference_path =NA,
-#' @param res =NA,
-#' @param res_s2 =NA,
-#' @param unit =NA,
-#' @param proj =NA,
-#' @param resampling =NA,
-#' @param resampling_scl =NA,
-#' @param outformat =NA,
-#' @param compression =NA,
-#' @param overwrite =NA,
-#' @param path_l1c =NA,
-#' @param path_l2a =NA,
-#' @param path_tiles =NA,
-#' @param path_merged =NA,
-#' @param path_out =NA,
-#' @param path_indices =NA,
-#' @param path_subdirs =NA,
+#'  If `param_list` is NULL (default), values given with the
+#'  parameters below (or default values for parameters not
+#'  provided) are used.
+#' @param preprocess (optional) Logical: TRUE (default) to perform also
+#'  preprocessing steps, FALSE not to (do only find, download
+#'  and atmospheric correction).
+#' @param s2_levels (optional) Character vector of length 1 or 2, with
+#' Sentinel-2 levels required for processing steps or as output.
+#'  Accepted values: "l1c" and "l2a"; default: "l2a".
+#' @param sel_sensor (optional) Character vector of length 1 or 2, with
+#' Sentinel-2 sensors to be used.
+#'  Accepted values: "s2a" and "s2b"; default: c("s2a","s2b").
+#' @param online (optional) Logical: TRUE (default) to search for available
+#'  products on SciHub (and download if needed); FALSE to work
+#'  only with already downloaded SAFE products.
+#' @param overwrite_safe (optional) Logical: TRUE to overwrite existing
+#'  products with products found online or manually corrected,
+#'  FALSE (default) to skip download and atmospheric correction for
+#'  products already existing.
+#' @param rm_safe (optional) Character: should SAFE products be deleted after
+#'  preprocessing? "yes" means to delete all SAFE; "no" (default)
+#'  not to delete; "l1c" to delete only Level-1C products.
+#' @param step_atmcorr (optional) Character vector to determine how to obtain
+#'  Level-2A SAFE products:
+#'  * "auto" (default) means that L2A is first
+#'  searched on SciHub: if found, it is dowloaded, if not, the
+#'  corresponding Level-1C is downloaded and sen2cor is used to
+#'  produce L2A;
+#'  * "scihub" means that sen2cor is always used from L1C products
+#'  downloaded from SciHub;
+#'  * "l2a" means that they are downloaded if available on SciHub,
+#'  otherwise they are skipped (sen2cor is never used);
+#'  * "no" means that L1C are not considered (processing chain
+#'  makes use only of L1C products).
+#' @param timewindow (optional) Temporal window for querying: Date object
+#'  of length 1 (single day) or 2 (time window).
+#' @param timeperiod (optional) Character:
+#'  * "full" (default) means that all
+#'  the images included in the time window are considered;
+#'  * "seasonal" means that only the single seasonal periods in the
+#'  window are used (i.e., with a time window from 2015-06-01 to
+#'  2017-08-31, the periods 2015-06-01 to 2015-08-31, 2016-06-01
+#'  to 2016-08-31 and 2017-06-01 to 2017-08-31 are considered).
+#' @param extent (optional) Spatial extent on which to clip products, in
+#'  geojson format.
+#' @param s2tiles_selected (optional) Character vector with the Sentinel-2
+#'  tiles to be considered.
+#' @param s2orbits_selected (optional) Character vector with the Sentinel-2
+#'  orbits to be considered (still to be implemented; for now,
+#'  all the accepted values are listed).
+#' @param extent_as_mask (optional) Logical: if TRUE, pixel values outside
+#'  the `extent` polygon are set to NA; if FALSE, all the values
+#'  within the bounding box are maintained.
+#' @param list_prods (optional) Character vector with the values of the
+#'  products to be processed (accepted values: "TOA", "BOA", "SCL",
+#'  "TCI"). Default is "BOA".
+#' @param list_indices (optional) Character vector with the values of the
+#'  spectral indices to be computed. Default is no one (NA).
+#' @param index_source (optional) Character value: if "BOA" (default), indices
+#'  are computed from BOA values; if "TOA", non corrected reflectances
+#'  are instead used (be careful to use this setting!).
+#' @param mask_type (optional) Character value which determines the categories
+#'  in the Srface Classification Map to be masked (see [s2_mask()]
+#'  for the accepted values). Default (NA) is not to mask.
+#' @param reference_path (optional) Path of the raster file to be used as a
+#'  reference grid. If NA (default), no reference is used.
+#' @param res (optional) Numerifc vector of length 2 with the x-y resolution
+#'  for output products. Default: c(10,10). NA means that the resolution
+#'  is keeped as native.
+#' @param res_s2 (optional) Character value corresponding to the native Sentinel-2
+#'  resolution to be used. Accepted values are "10m" (default), "20m"
+#'  and "60m".
+#' @param unit (optional) Character value corresponding to the unit of measure
+#'  with which to interpret the resolution (for now, only "Meter" -
+#'  the default value - is supported).
+#' @param proj (optional) Character string with the pro4string of the output
+#'  resolution. default value (NA) means not to reproject.
+#' @param resampling (optional) Resampling method (one of the values supported
+#'  by `gdal_translate`: "near" (default), "bilinear", "cubic",
+#'  "cubicspline", "lanczos", "average" or "mode").
+#' @param resampling_scl (optional) Resampling method for categorical products
+#'  (for now, only SCL): one among "near" (default) and "mode".
+#' @param outformat (optional) Format of the output file (in a
+#'  format recognised by GDAL). Default is "GTiff".
+#' @param compression (optional) In the case GTiff is chosen as
+#'  output format, the compression indicated with this parameter is
+#'  used (default is "DEFLATE").
+#' @param overwrite (optional) Logical value: should existing output
+#'  files be overwritten? (default: FALSE).
+#' @param path_l1c (optional) Path of the directory in which Level-1C SAFE
+#'  products are searched and/or downloaded. If not provided (default), a
+#'  temporary directory is used.
+#' @param path_l2a (optional) Path of the directory in which Level-2A SAFE
+#'  products are searched, downloaded and/or generated. If not provided
+#'  (default), a temporary directory is used.
+#' @param path_tiles (optional) Path of the directory in which Sentinel-2
+#'  tiles (as generated by [s2_translate]) are searched and/or generated.
+#'  If not provided (default), a temporary directory is used, and files
+#'  are generated as virtual rasters; otherwise, they are generated in
+#'  the format specified with `outformat` parameter.
+#' @param path_merged (optional) Path of the directory in which Sentinel-2
+#'  tiles merged by orbit (as generated by [s2_merge]) are searched and/or
+#'  generated.
+#'  If not provided (default), a temporary directory is used, and files
+#'  are generated as virtual rasters; otherwise, they are generated in
+#'  the format specified with `outformat` parameter.
+#' @param path_out (optional) Path of the directory in which Sentinel-2
+#'  output products are searched and/or generated.
+#'  If not provided (default), a temporary directory is used.
+#' @param path_indices (optional) Path of the directory in which files of
+#' spectral indices are searched and/or generated.
+#'  If not provided (default), `path_out` is used.
+#' @param path_subdirs (optional) Logical: if TRUE (default), a directory
+#'  for each output product or spectral index is generated within
+#'  `path_tiles`, `path_merged`, `path_out` and `path_indices`; if FALSE,
+#'  products are put directly within them.
 
 
 fidolasen_s2 <- function(param_list=NULL,

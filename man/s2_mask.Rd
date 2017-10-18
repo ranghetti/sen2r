@@ -66,7 +66,7 @@ present, the compression indicated with this parameter is used.}
 processing exploiting \link[raster:beginCluster]{raster::beginCluster}. This speeds-up the computation
 for large rasters. If FALSE (default), single core processing is used.}
 
-\item{overwrite}{Logical value: should existing output files be
+\item{overwrite}{(optional) Logical value: should existing output files be
 overwritten? (default: FALSE)}
 }
 \value{

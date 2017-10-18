@@ -116,151 +116,235 @@ descriptions of all the other parameters).</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>param_list</th>
-      <td><p>List of input parameters: it can be both an
-R list or the path of a JSON file.
+      <td><p>(optional) List of input parameters:
+it can be both an R list or the path of a JSON file.
 If some parameters are passed both as elements of <code>param_list</code>
 and as function arguments, the values passed as function
 arguments are considered.
 If some parameters are missing in <code>param_list</code> and are not
 provided as arguments, default values will be used.
 Use the function <code><a href='s2_gui.html'>s2_gui()</a></code> to create a complete list of
-parameters.</p></td>
+parameters.
+If <code>param_list</code> is NULL (default), values given with the
+parameters below (or default values for parameters not
+provided) are used.</p></td>
     </tr>
     <tr>
       <th>preprocess</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Logical: TRUE (default) to perform also
+preprocessing steps, FALSE not to (do only find, download
+and atmospheric correction).</p></td>
     </tr>
     <tr>
       <th>s2_levels</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Character vector of length 1 or 2, with
+Sentinel-2 levels required for processing steps or as output.
+Accepted values: "l1c" and "l2a"; default: "l2a".</p></td>
     </tr>
     <tr>
       <th>sel_sensor</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Character vector of length 1 or 2, with
+Sentinel-2 sensors to be used.
+Accepted values: "s2a" and "s2b"; default: c("s2a","s2b").</p></td>
     </tr>
     <tr>
       <th>online</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Logical: TRUE (default) to search for available
+products on SciHub (and download if needed); FALSE to work
+only with already downloaded SAFE products.</p></td>
     </tr>
     <tr>
       <th>overwrite_safe</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Logical: TRUE to overwrite existing
+products with products found online or manually corrected,
+FALSE (default) to skip download and atmospheric correction for
+products already existing.</p></td>
     </tr>
     <tr>
       <th>rm_safe</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Character: should SAFE products be deleted after
+preprocessing? "yes" means to delete all SAFE; "no" (default)
+not to delete; "l1c" to delete only Level-1C products.</p></td>
     </tr>
     <tr>
       <th>step_atmcorr</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Character vector to determine how to obtain
+Level-2A SAFE products:</p><ul>
+<li><p>"auto" (default) means that L2A is first
+searched on SciHub: if found, it is dowloaded, if not, the
+corresponding Level-1C is downloaded and sen2cor is used to
+produce L2A;</p></li>
+<li><p>"scihub" means that sen2cor is always used from L1C products
+downloaded from SciHub;</p></li>
+<li><p>"l2a" means that they are downloaded if available on SciHub,
+otherwise they are skipped (sen2cor is never used);</p></li>
+<li><p>"no" means that L1C are not considered (processing chain
+makes use only of L1C products).</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>timewindow</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Temporal window for querying: Date object
+of length 1 (single day) or 2 (time window).</p></td>
     </tr>
     <tr>
       <th>timeperiod</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Character:</p><ul>
+<li><p>"full" (default) means that all
+the images included in the time window are considered;</p></li>
+<li><p>"seasonal" means that only the single seasonal periods in the
+window are used (i.e., with a time window from 2015-06-01 to
+2017-08-31, the periods 2015-06-01 to 2015-08-31, 2016-06-01
+to 2016-08-31 and 2017-06-01 to 2017-08-31 are considered).</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>extent</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Spatial extent on which to clip products, in
+geojson format.</p></td>
     </tr>
     <tr>
       <th>s2tiles_selected</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Character vector with the Sentinel-2
+tiles to be considered.</p></td>
     </tr>
     <tr>
       <th>s2orbits_selected</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Character vector with the Sentinel-2
+orbits to be considered (still to be implemented; for now,
+all the accepted values are listed).</p></td>
     </tr>
     <tr>
       <th>extent_as_mask</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Logical: if TRUE, pixel values outside
+the <code>extent</code> polygon are set to NA; if FALSE, all the values
+within the bounding box are maintained.</p></td>
     </tr>
     <tr>
       <th>list_prods</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Character vector with the values of the
+products to be processed (accepted values: "TOA", "BOA", "SCL",
+"TCI"). Default is "BOA".</p></td>
     </tr>
     <tr>
       <th>list_indices</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Character vector with the values of the
+spectral indices to be computed. Default is no one (NA).</p></td>
     </tr>
     <tr>
       <th>index_source</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Character value: if "BOA" (default), indices
+are computed from BOA values; if "TOA", non corrected reflectances
+are instead used (be careful to use this setting!).</p></td>
     </tr>
     <tr>
       <th>mask_type</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Character value which determines the categories
+in the Srface Classification Map to be masked (see <code><a href='s2_mask.html'>s2_mask()</a></code>
+for the accepted values). Default (NA) is not to mask.</p></td>
     </tr>
     <tr>
       <th>reference_path</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Path of the raster file to be used as a
+reference grid. If NA (default), no reference is used.</p></td>
     </tr>
     <tr>
       <th>res</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Numerifc vector of length 2 with the x-y resolution
+for output products. Default: c(10,10). NA means that the resolution
+is keeped as native.</p></td>
     </tr>
     <tr>
       <th>res_s2</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Character value corresponding to the native Sentinel-2
+resolution to be used. Accepted values are "10m" (default), "20m"
+and "60m".</p></td>
     </tr>
     <tr>
       <th>unit</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Character value corresponding to the unit of measure
+with which to interpret the resolution (for now, only "Meter" -
+the default value - is supported).</p></td>
     </tr>
     <tr>
       <th>proj</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Character string with the pro4string of the output
+resolution. default value (NA) means not to reproject.</p></td>
     </tr>
     <tr>
       <th>resampling</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Resampling method (one of the values supported
+by <code>gdal_translate</code>: "near" (default), "bilinear", "cubic",
+"cubicspline", "lanczos", "average" or "mode").</p></td>
     </tr>
     <tr>
       <th>resampling_scl</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Resampling method for categorical products
+(for now, only SCL): one among "near" (default) and "mode".</p></td>
     </tr>
     <tr>
       <th>outformat</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Format of the output file (in a
+format recognised by GDAL). Default is "GTiff".</p></td>
     </tr>
     <tr>
       <th>compression</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) In the case GTiff is chosen as
+output format, the compression indicated with this parameter is
+used (default is "DEFLATE").</p></td>
     </tr>
     <tr>
       <th>overwrite</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Logical value: should existing output
+files be overwritten? (default: FALSE).</p></td>
     </tr>
     <tr>
       <th>path_l1c</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Path of the directory in which Level-1C SAFE
+products are searched and/or downloaded. If not provided (default), a
+temporary directory is used.</p></td>
     </tr>
     <tr>
       <th>path_l2a</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Path of the directory in which Level-2A SAFE
+products are searched, downloaded and/or generated. If not provided
+(default), a temporary directory is used.</p></td>
     </tr>
     <tr>
       <th>path_tiles</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Path of the directory in which Sentinel-2
+tiles (as generated by <a href='s2_translate.html'>s2_translate</a>) are searched and/or generated.
+If not provided (default), a temporary directory is used, and files
+are generated as virtual rasters; otherwise, they are generated in
+the format specified with <code>outformat</code> parameter.</p></td>
     </tr>
     <tr>
       <th>path_merged</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Path of the directory in which Sentinel-2
+tiles merged by orbit (as generated by <a href='s2_merge.html'>s2_merge</a>) are searched and/or
+generated.
+If not provided (default), a temporary directory is used, and files
+are generated as virtual rasters; otherwise, they are generated in
+the format specified with <code>outformat</code> parameter.</p></td>
     </tr>
     <tr>
       <th>path_out</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Path of the directory in which Sentinel-2
+output products are searched and/or generated.
+If not provided (default), a temporary directory is used.</p></td>
     </tr>
     <tr>
       <th>path_indices</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Path of the directory in which files of
+spectral indices are searched and/or generated.
+If not provided (default), <code>path_out</code> is used.</p></td>
     </tr>
     <tr>
       <th>path_subdirs</th>
-      <td><p>=NA,</p></td>
+      <td><p>(optional) Logical: if TRUE (default), a directory
+for each output product or spectral index is generated within
+<code>path_tiles</code>, <code>path_merged</code>, <code>path_out</code> and <code>path_indices</code>; if FALSE,
+products are put directly within them.</p></td>
     </tr>
     </table>
     
