@@ -154,7 +154,6 @@ s2_gui <- function(param_list=NULL,
             width=12,
 
             fluidRow(
-
               conditionalPanel(
                 condition = "input.proc_steps.indexOf('query') != -1 || input.proc_steps.indexOf('preprocess') != -1",
                 column(
@@ -871,7 +870,6 @@ s2_gui <- function(param_list=NULL,
                            selected = "no")
       }
     })
-
 
     # # Temporary message to alert that S2B are not retrievable automatically until they will be operational.
     # # This will be removed.

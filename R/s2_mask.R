@@ -49,7 +49,7 @@
 #' @param parallel (optional) Logical: if TRUE, masking is conducted using parallel
 #'  processing exploiting [raster::beginCluster]. This speeds-up the computation
 #'  for large rasters. If FALSE (default), single core processing is used.
-#' @param overwrite Logical value: should existing output files be
+#' @param overwrite (optional) Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
 #' @return A vector with the names of the created products.
 #' @export
