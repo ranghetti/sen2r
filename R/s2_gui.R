@@ -209,16 +209,19 @@ s2_gui <- function(param_list=NULL,
 
             fluidRow(
               # L1C directory
-              column(
-                width=6,
-                div(style="display:inline-block;vertical-align:top;",
-                    strong("Directory for level-1C SAFE products: \u00a0")),
-                div(style="display:inline-block;vertical-align:top;",
-                    htmlOutput("path_l1c_errormess")),
-                div(div(style="display:inline-block;vertical-align:top;width:50pt;",
-                        shinyDirButton("path_l1c_sel", "Select", "Specify directory for level-1C SAFE products")),
-                    div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
-                        textInput("path_l1c_textin", NULL, "Enter directory...")))
+              conditionalPanel(
+                condition = "input.proc_steps.indexOf('query') != -1 || input.proc_steps.indexOf('atmcorr') != -1 || output.req_l1c == 'TRUE'",
+                column(
+                  width=6,
+                  div(style="display:inline-block;vertical-align:top;",
+                      strong("Directory for level-1C SAFE products: \u00a0")),
+                  div(style="display:inline-block;vertical-align:top;",
+                      htmlOutput("path_l1c_errormess")),
+                  div(div(style="display:inline-block;vertical-align:top;width:50pt;",
+                          shinyDirButton("path_l1c_sel", "Select", "Specify directory for level-1C SAFE products")),
+                      div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
+                          textInput("path_l1c_textin", NULL, "Enter directory...")))
+                )
               ),
               # L2A directory
               conditionalPanel(
@@ -242,10 +245,13 @@ s2_gui <- function(param_list=NULL,
               column(
                 width=7,
                 # online_mode (online/offline mode)
-                radioButtons("overwrite_safe", "Overwrite SAFE products?",
-                             choices = list("Yes (download and apply sen2cor on all products)" = TRUE,
-                                            "No (skip download or sen2cor for existing products)" = FALSE),
-                             selected = TRUE),
+                conditionalPanel(
+                  condition = "input.proc_steps.indexOf('query') != -1 || input.proc_steps.indexOf('atmcorr') != -1",
+                  radioButtons("overwrite_safe", "Overwrite SAFE products?",
+                               choices = list("Yes (download and apply sen2cor on all products)" = TRUE,
+                                              "No (skip download or sen2cor for existing products)" = FALSE),
+                               selected = TRUE)
+                ),
 
                 conditionalPanel(
                   condition = "input.proc_steps.indexOf('query') != -1",
@@ -813,8 +819,10 @@ s2_gui <- function(param_list=NULL,
       }
     })
     # these output values are used for conditionalPanels:
+    output$req_l1c <- renderText(safe_req$l1c)
     output$req_l2a <- renderText(safe_req$l2a)
     # options to update these values also if not visible
+    outputOptions(output, "req_l1c", suspendWhenHidden = FALSE)
     outputOptions(output, "req_l2a", suspendWhenHidden = FALSE)
 
 
