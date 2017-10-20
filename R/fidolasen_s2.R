@@ -63,8 +63,11 @@
 #' @param s2orbits_selected (optional) Character vector with the Sentinel-2
 #'  orbits to be considered (still to be implemented; for now,
 #'  all the accepted values are listed).
+#' @param clip_on_extent (optional) Logical: if TRUE (default), output products and
+#'  indices are clipped to the selected extent (and resampled/reprojected);
+#'  if FALSE, the geometry and extension of the tiles is maintained.
 #' @param extent_as_mask (optional) Logical: if TRUE, pixel values outside
-#'  the `extent` polygon are set to NA; if FALSE, all the values
+#'  the `extent` polygon are set to NA; if FALSE (default), all the values
 #'  within the bounding box are maintained.
 #' @param list_prods (optional) Character vector with the values of the
 #'  products to be processed (accepted values: "TOA", "BOA", "SCL",
@@ -144,6 +147,7 @@ fidolasen_s2 <- function(param_list=NULL,
                          extent=NA,
                          s2tiles_selected=NA,
                          s2orbits_selected=NA,
+                         clip_on_extent=NA,
                          extent_as_mask=NA,
                          list_prods=NA,
                          list_indices=NA,
@@ -190,6 +194,7 @@ fidolasen_s2 <- function(param_list=NULL,
                  extent=get_extent(matrix(c(9.4,45.4,10.27,46.1),nrow=2),"+init=epsg:4326") %>% as("sfc_POLYGON") %>% geojson_json(),
                  s2tiles_selected=c("32TNR","32TNS"),
                  s2orbits_selected=str_pad(c(1:143),3,"left","0"), # temporary select all orbits (TODO implement)
+                 clip_on_extent=TRUE,
                  extent_as_mask=FALSE,
                  list_prods=c("BOA"),
                  list_indices=NA,

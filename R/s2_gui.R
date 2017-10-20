@@ -78,11 +78,8 @@ s2_gui <- function(param_list=NULL,
         sidebarMenu(
           menuItem("Processing settings", tabName = "tab_prepro", icon = icon("th"))
         ),
-        conditionalPanel(
-          condition = "input.steps_reqout.indexOf('indices') != -1",
-          sidebarMenu(
-            menuItem("Index selection", tabName = "tab_index", icon = icon("calculator"))
-          )
+        sidebarMenu(
+          menuItem("Index selection", tabName = "tab_index", icon = icon("calculator"))
         )
       ),
       # sidebarMenu(
@@ -172,7 +169,9 @@ s2_gui <- function(param_list=NULL,
                                                         "SCL (surface classification map)",
                                                         "TCI (true-color) RGB 8-bit image"),
                                      choiceValues = list("TOA", "BOA", "SCL", "TCI"),
-                                     selected = c("BOA"))
+                                     selected = c("BOA")),
+                  span(style="color:grey",
+                       "To select spectral indices, use the tab \"Index selection\".")
                 ),
                 conditionalPanel(
                   condition = "input.preprocess == 'FALSE'",
@@ -361,12 +360,7 @@ s2_gui <- function(param_list=NULL,
                                choices = list("Bounding box coordinates" = "bbox",
                                               "Upload vector file" = "vectfile",
                                               "Draw on the map" = "draw"),
-                               selected = "draw"),
-
-                  radioButtons("extent_as_mask", "Mask outside the polygons?",
-                               choices = list("Yes" = TRUE,
-                                              "No" = FALSE),
-                               selected = FALSE)
+                               selected = "draw")
                 ),
 
                 column(
@@ -465,55 +459,20 @@ s2_gui <- function(param_list=NULL,
         ### Output tab (geometry and parameters) ###
         tabItem(
           tabName = "tab_prepro",
-          title="Procesisng settings",
+          title="Processing settings",
 
           conditionalPanel(
             condition = "input.preprocess == 'TRUE'",
 
             fluidRow(box(
-              title="Processing options",
-              width=12,
+              width=6,
+              title = "Ouptut extent",
 
               fluidRow(
-
                 column(
-                  width=6,
-
-                  #steps_preprocess
-                  checkboxGroupInput("steps_reqout", "Required processing steps:",
-                                     choices = list("Single tiles in custom format" = "tiles",
-                                                    "Tiles spatially merged" = "merged",
-                                                    "Images clipped and warped on output extent" = "out",
-                                                    "Spectral indices" = "indices"),
-                                     selected=c("out","indices")),
-
-                  # set directories
+                  width=12,
                   conditionalPanel(
-                    condition = "input.steps_reqout.indexOf('tiles') != -1",
-                    div(div(style="display:inline-block;vertical-align:top;",
-                            strong("Directory for single tiles in custom format: \u00a0")),
-                        div(style="display:inline-block;vertical-align:top;",
-                            htmlOutput("path_tiles_errormess")),
-                        div(div(style="display:inline-block;vertical-align:top;width:50pt;",
-                                shinyDirButton("path_tiles_sel", "Select", "Specify directory for single tiles in custom format")),
-                            div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
-                                textInput("path_tiles_textin", NULL, "Enter directory..."))))
-                  ),
-
-                  conditionalPanel(
-                    condition = "input.steps_reqout.indexOf('merged') != -1",
-                    div(div(style="display:inline-block;vertical-align:top;",
-                            strong("Directory for tiles spatially merged: \u00a0")),
-                        div(style="display:inline-block;vertical-align:top;",
-                            htmlOutput("path_merged_errormess")),
-                        div(div(style="display:inline-block;vertical-align:top;width:50pt;",
-                                shinyDirButton("path_merged_sel", "Select", "Specify directory for tiles spatially merged")),
-                            div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
-                                textInput("path_merged_textin", NULL, "Enter directory..."))))
-                  ),
-
-                  conditionalPanel(
-                    condition = "input.steps_reqout.indexOf('out') != -1",
+                    condition = "input.list_prods.length > 0",
                     div(div(style="display:inline-block;vertical-align:top;",
                             strong("Directory for output processed products: \u00a0")),
                         div(style="display:inline-block;vertical-align:top;",
@@ -522,60 +481,129 @@ s2_gui <- function(param_list=NULL,
                                 shinyDirButton("path_out_sel", "Select", "Specify directory for output processed products")),
                             div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
                                 textInput("path_out_textin", NULL, "Enter directory..."))))
-                  ),
+                  )
+                ),
+                column(
+                  width=12,
+                  div(#style="margin-top: 25px",
+                    checkboxInput("path_subdirs", "Group products in subdirectories", value = TRUE))
+                )
+              ),
 
-                  conditionalPanel(
-                    condition = "input.steps_reqout.indexOf('indices') != -1",
-                    div(div(style="display:inline-block;vertical-align:top;",
-                            strong("Directory for spectral indices: \u00a0")),
-                        div(style="display:inline-block;vertical-align:top;",
-                            htmlOutput("path_indices_errormess")),
-                        div(div(style="display:inline-block;vertical-align:top;width:50pt;",
-                                shinyDirButton("path_indices_sel", "Select", "Specify directory for spectral indices")),
-                            div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
-                                textInput("path_indices_textin", NULL, "Enter directory..."))))
-                  ),
+              fluidRow(
+                column(
+                  width=12,
+                  radioButtons("clip_on_extent", "Clip the outputs on the selected extent?",
+                           choices = list("Yes" = TRUE,
+                                          "No (return all the tile extension)" = FALSE),
+                           selected = TRUE,
+                           inline = TRUE)
+                ),
+                column(
+                  width=12,
+                  radioButtons("extent_as_mask", "Mask outside the polygons?",
+                               choices = list("Yes (set nodata)" = TRUE,
+                                              "No" = FALSE),
+                               selected = FALSE,
+                               inline = TRUE)
+                )
+              ),
 
-                  checkboxInput("path_subdirs", "Group products in subdirectories", value = TRUE)
+              hr(style="margin-top: 0em; margin-bottom: 0.75em;"),
 
-                ), # end of column with paths
-
+              fluidRow(
                 column(
                   width=6,
-                  radioButtons("atm_mask", "Mask cloud-covered pixels?",
+                  radioButtons("keep_tiles", "Keep the single tiles?",
                                choices = list("Yes" = TRUE,
                                               "No" = FALSE),
                                selected = FALSE,
-                               inline = TRUE),
+                               inline = TRUE)
+                ),
+                conditionalPanel(
+                  condition = "input.clip_on_extent == 'TRUE'",
+                  column(
+                    width=6,
+                    radioButtons("keep_merged", "Keep the tile mosaics?",
+                                 choices = list("Yes" = TRUE,
+                                                "No" = FALSE),
+                                 selected = FALSE,
+                                 inline = TRUE))
+                )
+              ), # end of fluidRow keep_tiles
 
+              fluidRow(
+                column(
+                  width=12,
                   conditionalPanel(
-                    condition = "input.list_prods.indexOf('SCL')==-1 && input.atm_mask == 'TRUE'",
-                    span(style="color:grey",
-                         p(stype="margin-bottom:15pt",
-                           "SCL is required to mask products, so Level-2A SAFE ",
-                                "are also required. Return to \"Product selection\" menu ",
-                                "to check sen2cor settings."))
-                  ),
-
-                  conditionalPanel(
-                    condition = "input.atm_mask == 'TRUE'",
-                    radioButtons("atm_mask_type", "Apply mask to:",
-                                 choices = list("No data" = "nodata",
-                                                "No data or clouds (high probability)" = "cloud_high_proba",
-                                                "No data or clouds (high or medium probability)" = "cloud_medium_proba",
-                                                "No data or clouds (any probability)" = "cloud_low_proba",
-                                                "No data, clouds or cloud shadows" = "cloud_and_shadow",
-                                                "No data, clouds, cloud shadows or thin cirrus" = "cloud_shadow_cirrus"),
-                                 selected = "cloud_medium_proba")
+                    condition = "input.keep_tiles == 'TRUE'",
+                    div(div(style="display:inline-block;vertical-align:top;",
+                            strong("Directory for single tiles in custom format: \u00a0")),
+                        div(style="display:inline-block;vertical-align:top;",
+                            htmlOutput("path_tiles_errormess")),
+                        div(div(style="display:inline-block;vertical-align:top;width:50pt;",
+                                shinyDirButton("path_tiles_sel", "Select", "Specify directory for single tiles in custom format")),
+                            div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
+                                textInput("path_tiles_textin", NULL, "Enter directory..."))))
                   )
+                ),
+                column(
+                  width=12,
+                  conditionalPanel(
+                    condition = "input.clip_on_extent == 'TRUE' && input.keep_merged == 'TRUE'",
+                    div(div(style="display:inline-block;vertical-align:top;",
+                            strong("Directory for tiles spatially merged: \u00a0")),
+                        div(style="display:inline-block;vertical-align:top;",
+                            htmlOutput("path_merged_errormess")),
+                        div(div(style="display:inline-block;vertical-align:top;width:50pt;",
+                                shinyDirButton("path_merged_sel", "Select", "Specify directory for tiles spatially merged")),
+                            div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
+                                textInput("path_merged_textin", NULL, "Enter directory..."))))
+                  )
+                )
+              ) # end of fluidRow keep_tiles
 
-                ) # end of column of atmospheric masking
 
-              ) # end of fluidrow inside processing options
-            )), # end of fluidRow/box "Processing steps"
+
+
+
+            ), # end of box "Processing options"
+
+            box(
+              title="Atmospheric mask",
+              width=6,
+
+              radioButtons("atm_mask", "Mask cloud-covered pixels?",
+                           choices = list("Yes" = TRUE,
+                                          "No" = FALSE),
+                           selected = FALSE,
+                           inline = TRUE),
+
+              conditionalPanel(
+                condition = "input.list_prods.indexOf('SCL')==-1 && input.atm_mask == 'TRUE'",
+                span(style="color:grey",
+                     p(stype="margin-bottom:15pt",
+                       "SCL is required to mask products, so Level-2A SAFE ",
+                       "are also required. Return to \"Product selection\" menu ",
+                       "to check sen2cor settings."))
+              ),
+
+              conditionalPanel(
+                condition = "input.atm_mask == 'TRUE'",
+                radioButtons("atm_mask_type", "Apply mask to:",
+                             choices = list("No data" = "nodata",
+                                            "No data or clouds (high probability)" = "cloud_high_proba",
+                                            "No data or clouds (high or medium probability)" = "cloud_medium_proba",
+                                            "No data or clouds (any probability)" = "cloud_low_proba",
+                                            "No data, clouds or cloud shadows" = "cloud_and_shadow",
+                                            "No data, clouds, cloud shadows or thin cirrus" = "cloud_shadow_cirrus"),
+                             selected = "cloud_medium_proba")
+              )
+
+            )), # end of fluidRow/box "Atmospheric mask"
 
             conditionalPanel(
-              condition = "input.steps_reqout.indexOf('out') != -1",
+              condition = "input.clip_on_extent == 'TRUE'",
               fluidRow(box(
                 width=12,
                 title = "Output geometry",
@@ -619,7 +647,7 @@ s2_gui <- function(param_list=NULL,
 
                 ), # end of fluidrow for spatial reference
 
-                hr(),
+                hr(style="margin-top: 0em; margin-bottom: 0.75em;"),
 
                 fluidRow( # fluidrow for output geometry settings
 
@@ -704,7 +732,7 @@ s2_gui <- function(param_list=NULL,
             ), # end of conditionalpanel on output geometry
 
             fluidRow(box(
-              title="Output settings",
+              title="Output files format",
               width=12,
 
               fluidRow(
@@ -749,7 +777,7 @@ s2_gui <- function(param_list=NULL,
         ### Indices tab ###
         tabItem(
           tabName = "tab_index",
-          title="Index selection",
+          title="Spectral indices",
 
           conditionalPanel(
             condition = "input.preprocess == 'TRUE'",
@@ -758,11 +786,22 @@ s2_gui <- function(param_list=NULL,
               box(
                 width=8,
                 title="Index selection",
+
+                div(div(style="display:inline-block;vertical-align:top;",
+                        strong("Directory for spectral indices: \u00a0")),
+                    div(style="display:inline-block;vertical-align:top;",
+                        htmlOutput("path_indices_errormess")),
+                    div(div(style="display:inline-block;vertical-align:top;width:50pt;",
+                            shinyDirButton("path_indices_sel", "Select", "Specify directory for spectral indices")),
+                        div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
+                            textInput("path_indices_textin", NULL, "Enter directory...")))),
+
                 radioButtons("index_source", "Build indices from:",
                              choices = list("TOA Reflectance" = "TOA",
                                             "BOA Reflectance" = "BOA"),
                              selected = "BOA",
                              inline = TRUE),
+
                 textInput("filter_indices", "Filter indices"),
                 uiOutput("check_indices")
               ),
@@ -1183,7 +1222,7 @@ s2_gui <- function(param_list=NULL,
 
     # Reactive variable: TRUE if indices are required, FALSE if not
     indices_req <- reactive({
-      "indices" %in% input$steps_reqout &
+      # "indices" %in% input$steps_reqout &
         !is.null(input$list_indices)
     })
     # convert in output value to be used in conditionalPanel
@@ -1496,13 +1535,15 @@ s2_gui <- function(param_list=NULL,
       # rl$s2tiles_selected <- rv$draw_tiles_overlapping[rv$draw_tiles_overlapping$tile_id %in% input$tiles_checkbox,] # MULTIPOLYGON with the selected tiles
       rl$s2tiles_selected <- if (is.null(rl$s2tiles_selected)) {NA} else {input$tiles_checkbox} # selected tile IDs
       rl$s2orbits_selected <- str_pad(c(1:143),3,"left","0") # temporary select all orbits (TODO implement)
-      rl$extent_as_mask <- input$extent_as_mask # logical: TRUE to mask outside the extent polygon, FALSE not to
 
       # product selection #
       rl$list_prods <- input$list_prods # TOA, BOA, SCL, TCI (for now)
       rl$list_indices <- if (indices_req()==TRUE) {input$list_indices} else {NA} # index names
       rl$index_source <- input$index_source # reflectance band for computing indices ("BOA" or "TOA")
       rl$mask_type <- if (input$atm_mask==FALSE) {NA} else {input$atm_mask_type} # atmospheric masking (accepted types as in s2_mask())
+
+      rl$clip_on_extent <- input$clip_on_extent # TRUE to clip (and warp) on the selected extent, FALSE to work at tiles/merged level
+      rl$extent_as_mask <- input$extent_as_mask # TRUE to mask outside the polygons of extent, FALSE to use as boundig box
 
       # output geometry #
       # path of the reference file (NULL if not provided)
@@ -1558,9 +1599,9 @@ s2_gui <- function(param_list=NULL,
       # set directories #
       rl$path_l1c <- input$path_l1c_textin # path of L1C SAFE products
       rl$path_l2a <- input$path_l2a_textin # path of L2A SAFE products
-      rl$path_tiles <- if ("tiles" %in% input$steps_reqout) {input$path_tiles_textin} else {NA} # path of entire tiled products
-      rl$path_merged <- if ("merged" %in% input$steps_reqout) {input$path_merged_textin} else {NA} # path of entire tiled products
-      rl$path_out <- if ("out" %in% input$steps_reqout) {input$path_out_textin} else {NA} # path of output pre-processed products
+      rl$path_tiles <- if (input$keep_tiles==TRUE) {input$path_tiles_textin} else {NA} # path of entire tiled products
+      rl$path_merged <- if (input$keep_merged==TRUE) {input$path_merged_textin} else {NA} # path of entire tiled products
+      rl$path_out <- if (length(input$list_prods)>0) {input$path_out_textin} else {NA} # path of output pre-processed products
       rl$path_indices <- if (indices_req()==TRUE) {input$path_indices_textin} else {NA} # path of spectral indices
       rl$path_subdirs <- input$path_subdirs # logical (use subdirs)
 
@@ -1577,11 +1618,14 @@ s2_gui <- function(param_list=NULL,
       updateCheckboxGroupInput(session, "list_levels", selected = pl$s2_levels)
       updateRadioButtons(session, "rm_safe", selected = pl$rm_safe)
       updateRadioButtons(session, "step_atmcorr", selected = pl$step_atmcorr)
-      updateCheckboxGroupInput(session, "steps_reqout",
-                               selected = c(if(!is.na(input$path_tiles_textin)){"tiles"},
-                                            if(!is.na(input$path_merged_textin)){"merged"},
-                                            if(!is.na(input$path_out_textin)){"out"},
-                                            if(!is.na(input$path_indices_textin)){"indices"}))
+      # updateCheckboxGroupInput(session, "steps_reqout",
+      #                          selected = c(if(!is.na(input$path_tiles_textin)){"tiles"},
+      #                                       if(!is.na(input$path_merged_textin)){"merged"},
+      #                                       if(!is.na(input$path_out_textin)){"out"},
+      #                                       if(!is.na(input$path_indices_textin)){"indices"}))
+      updateRadioButtons(session, "clip_on_extent", selected = pl$clip_on_extent)
+      updateRadioButtons(session, "keep_tiles", selected = ifelse(is.na(pl$path_tiles),FALSE,TRUE))
+      updateRadioButtons(session, "keep_merged", selected = ifelse(is.na(pl$path_merged),FALSE,TRUE))
 
       # spatio-temporal selection
       updateDateRangeInput(session, "timewindow", start=pl$timewindow[1], end=pl$timewindow[2])
