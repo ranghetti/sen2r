@@ -158,7 +158,6 @@ s2_mask <- function(infiles,
   outfiles <- character(0)
   foreach(i=seq_along(infiles)) %DO% {
   # for (i in seq_along(infiles)) {
-
     sel_infile <- infiles[i]
     sel_infile_meta <- c(infiles_meta[i,])
     sel_format <- suppressWarnings(ifelse(
@@ -210,11 +209,23 @@ s2_mask <- function(infiles,
         raster::overlay(stack(mask_tmpfiles), fun=sum, filename=outmask)
       }
 
+      # if mask is at different resolution than inraster
+      # (e.g. 20m instead of 10m),
+      # resample it
+      if (any(suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")]) !=
+                             suppressWarnings(GDALinfo(outmask)[c("res.x","res.y")]))) {
+        gdal_warp(outmask,
+                  outmask_res <- tempfile(fileext=".tif"),
+                  ref = sel_infile)
+      } else {
+        outmask_res <- outmask
+      }
+
       # apply mask
       # FIXME parallelisation not working
       # if (parallel) {raster::beginCluster(n_cores)}
       raster::mask(inraster,
-                   raster::raster(outmask),
+                   raster::raster(outmask_res),
                    filename    = sel_outfile,
                    maskvalue   = 0,
                    updatevalue = NAvalue(inraster),
