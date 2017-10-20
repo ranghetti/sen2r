@@ -170,8 +170,9 @@ s2_gui <- function(param_list=NULL,
                                                         "TCI (true-color) RGB 8-bit image"),
                                      choiceValues = list("TOA", "BOA", "SCL", "TCI"),
                                      selected = c("BOA")),
-                  span(style="color:grey",
-                       "To select spectral indices, use the tab \"Index selection\".")
+                  span(style="color:grey;",
+                       p(style="margin-bottom:1em;",
+                         "To select spectral indices, use the tab \"Index selection\"."))
                 ),
                 conditionalPanel(
                   condition = "input.preprocess == 'FALSE'",
@@ -246,36 +247,30 @@ s2_gui <- function(param_list=NULL,
 
             fluidRow(
               column(
-                width=7,
+                width=6,
+
                 # online_mode (online/offline mode)
                 radioButtons("online", "Download mode",
-                             choices = list("Online (search SAFE products on SciHub and download)" = TRUE,
-                                            "Offline (query and apply sen2cor only among existing SAFE products)" = FALSE),
+                             choices = list("Online (search and download)" = TRUE,
+                                            "Offline (query and/or apply sen2cor among SAFE products)" = FALSE),
                              selected = TRUE),
 
-                # conditionalPanel(
-                #   condition = paste0("input.step_atmcorr == 'auto' || input.step_atmcorr == 'scihub' || ",
-                #                      "input.online == 'TRUE'"),
-                  radioButtons("overwrite_safe", "Overwrite SAFE products?",
-                               choices = list("Yes (download and apply sen2cor on all products)" = TRUE,
-                                              "No (skip download or sen2cor for existing products)" = FALSE),
-                               selected = TRUE)
-                # )
+                # delete_safe
+                radioButtons("rm_safe", "Delete raw SAFE files after processing?",
+                             choices = list("Yes" = "all",
+                                            "Only level-1C" = "l1c",
+                                            "No" = "no"),
+                             selected = "no",
+                             inline = TRUE)
 
               ),
               column(
-                width=5,
-                # delete_safe
-                conditionalPanel(
-                  # condition = "input.download_safe != 'no' && (input.preprocess == 'TRUE' || (input.preprocess == 'FALSE' && input.list_levels.indexOf('l1c')==-1 && input.list_levels.indexOf('l2a')!=-1))",
-                  # condition = "input.download_safe != 'no'",
-                  condition = "input.online_mode == 'TRUE'",
-                  radioButtons("rm_safe", "Delete raw SAFE files after processing?",
-                               choices = list("Yes" = "all",
-                                              "Only unrequired L1C" = "l1c",
-                                              "No" = "no"),
-                               selected="no")
-                )
+                width=6,
+                # overwrite SAFE
+                radioButtons("overwrite_safe", "Overwrite SAFE products?",
+                             choices = list("Yes (download and apply sen2cor on all products)" = TRUE,
+                                            "No (skip download or sen2cor for existing products)" = FALSE),
+                             selected = TRUE)
               )
             ) # end of fluidRow download / delete SAFE
 
@@ -925,23 +920,14 @@ s2_gui <- function(param_list=NULL,
       )
     })
 
-    # update rm_safe if preprocess is not required
+    # disable rm_safe if offline mode
     observe({
-      if (!input$preprocess==TRUE) {
-        updateRadioButtons(session, "rm_safe", "Delete unrequired level-1C SAFE tiles?",
-                     choices = list("Yes" = "l1c",
-                                    "No" = "no"),
-                     selected = "no")
-      } else {
-        updateRadioButtons(session, "rm_safe", "Delete SAFE tiles after processing?",
-                           choices = list("Yes" = "all",
-                                          "Only unrequired L1C" = "l1c",
-                                          "No" = "no"),
-                           selected = "no")
-      }
       if (input$online == FALSE) {
+        disable("rm_safe")
         updateRadioButtons(session, "rm_safe",
                            selected = "no")
+      } else {
+        enable("rm_safe")
       }
     })
 
@@ -1517,7 +1503,7 @@ s2_gui <- function(param_list=NULL,
       rl$sel_sensor <- input$sel_sensor # sensors to use ("s2a", "s2b")
       rl$online <- input$online # TRUE if online mode, FALSE if offline mode
       rl$overwrite_safe <- input$overwrite_safe # TRUE to overwrite existing SAFE, FALSE not to
-      rl$rm_safe <- ifelse(input$online==TRUE, input$rm_safe, "no") # "yes" to delete all SAFE, "l1c" to delete only l1c, "no" not to remove
+      rl$rm_safe <- input$rm_safe # "yes" to delete all SAFE, "l1c" to delete only l1c, "no" not to remove
       rl$step_atmcorr <- if (safe_req$l2a==TRUE) {input$step_atmcorr} else {"no"} # download_method in sen2cor: "auto", "l2a", "scihub" or "no"
       # rl$steps_reqout <- input$steps_reqout # vector of required outputs: "safe", "tiles", "clipped" (one or more)
 
