@@ -34,6 +34,7 @@ Imports:
   shiny,
   shinyFiles,
   shinydashboard,
+  shinyjs,
   foreach,
   parallel,
   doParallel

@@ -30,6 +30,7 @@
 #' @importFrom shinyFiles getVolumes parseDirPath parseFilePaths parseSavePath
 #'  shinyDirButton shinyDirChoose shinyFileChoose shinyFileSave
 #'  shinyFilesButton shinySaveButton
+#' @importFrom shinyjs enable disable
 #' @importFrom sprawl check_proj4string get_rastype get_vectype
 #' @importFrom stats setNames
 #' @importFrom utils unzip
@@ -69,14 +70,11 @@ s2_gui <- function(param_list=NULL,
       sidebarMenu(
         menuItem("Product selection", tabName = "tab_steps", icon = icon("image"))
       ),
-      conditionalPanel(
-        condition = "input.proc_steps.indexOf('query') != -1",
-        sidebarMenu(
-          menuItem("Spatial-temporal selection", tabName = "tab_query", icon = icon("clone"))
-        )
+      sidebarMenu(
+        menuItem("Spatial-temporal selection", tabName = "tab_query", icon = icon("clone"))
       ),
       conditionalPanel(
-        condition = "input.proc_steps.indexOf('preprocess') != -1",
+        condition = "input.preprocess == 'TRUE'",
         sidebarMenu(
           menuItem("Processing settings", tabName = "tab_prepro", icon = icon("th"))
         ),
@@ -92,6 +90,7 @@ s2_gui <- function(param_list=NULL,
       # ),
 
       HTML("<script src=\"message-handler.js\"></script>"),
+      shinyjs::useShinyjs(),
       shiny::tags$head(shiny::tags$style(".darkbutton{background-color:#28353b;color:#b8c7ce;width:200px;")), # background color and font color
       div(
         style="position:absolute;top:250px;",
@@ -129,24 +128,32 @@ s2_gui <- function(param_list=NULL,
           #                inline = TRUE)
           # )),
 
+          # fluidRow(box(
+          #   title="Processing steps",
+          #   width=12,
+          #   checkboxGroupInput("proc_steps", NULL, #"Perform the following steps:",
+          #                choices = list("Spatio-temporal selection of SAFE products" = "query",
+          #                               "Atmospheric correction of L1C products with sen2cor" = "atmcorr",
+          #                               "Processing steps (see details in the \"Preprocessing settings\" tab)" = "preprocess"),
+          #                selected=c("query","atmcorr","preprocess"),
+          #                inline = FALSE),
+          #   conditionalPanel(
+          #     condition = "input.preprocess == 'FALSE' && input.proc_steps.indexOf('atmcorr') == -1 && input.proc_steps.indexOf('query') == -1",
+          #     span(style="color:red", "Select at least one step.")
+          #   ),
+          #   conditionalPanel(
+          #     condition = "output.req_l2a == 'FALSE' && input.proc_steps.indexOf('atmcorr') != -1",
+          #     span(style="color:grey", "Atmospheric correction is not needed (only L1C products were selected).")
+          #   )
+          # )),
           fluidRow(box(
-            title="Processing steps",
+            title="Required output type",
             width=12,
-            checkboxGroupInput("proc_steps", NULL, #"Perform the following steps:",
-                         choices = list("Spatio-temporal selection of SAFE products" = "query",
-                                        "Atmoshperic correction of L1C products with sen2cor" = "atmcorr",
-                                        "Processing steps (see details in the \"Preprocessing settings\" tab)" = "preprocess"),
-                         selected=c("query","atmcorr","preprocess"),
-                         inline = FALSE),
-            conditionalPanel(
-              condition = "input.proc_steps.indexOf('preprocess') == -1 && input.proc_steps.indexOf('atmcorr') == -1 && input.proc_steps.indexOf('query') == -1",
-              span(style="color:red", "Select at least one step.")
-            ),
-            conditionalPanel(
-              condition = "output.req_l2a == 'FALSE' && input.proc_steps.indexOf('atmcorr') != -1",
-              span(style="color:grey", "Atmospheric correction is not needed (only L1C products were selected).")
-            )
-
+            radioButtons("preprocess", NULL,
+                               choices = list("Processed spatial files (surface reflectance, spectral indices, ...)" = TRUE,
+                                              "Raw SAFE files (downloaded and/or corrected with sen2cor)" = FALSE),
+                               selected=TRUE,
+                               inline = FALSE)
           )),
 
           fluidRow(box(
@@ -154,30 +161,27 @@ s2_gui <- function(param_list=NULL,
             width=12,
 
             fluidRow(
-              conditionalPanel(
-                condition = "input.proc_steps.indexOf('query') != -1 || input.proc_steps.indexOf('preprocess') != -1",
-                column(
-                  width=8,
-                  conditionalPanel(
-                    condition = "input.proc_steps.indexOf('preprocess') != -1",
-                    checkboxGroupInput("list_prods",
-                                       "Select products:",
-                                       choiceNames = list("TOA (top-of-atmosphere) Reflectance",
-                                                          "BOA (bottom-of-atmosphere) Surface Reflectance",
-                                                          "SCL (surface classification map)",
-                                                          "TCI (true-color) RGB 8-bit image"),
-                                       choiceValues = list("TOA", "BOA", "SCL", "TCI"),
-                                       selected = c("BOA"))
-                  ),
-                  conditionalPanel(
-                    condition = "input.proc_steps.indexOf('preprocess') == -1 && input.proc_steps.indexOf('query') != -1",
-                    checkboxGroupInput("list_levels",
-                                       "Select products:",
-                                       choiceNames = list(a("Level-1C", href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-1c", target="_blank"),
-                                                          a("Level-2A", href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-2a", target="_blank")),
-                                       choiceValues = list("l1c", "l2a"),
-                                       selected = c("l2a"))
-                  )
+              column(
+                width=8,
+                conditionalPanel(
+                  condition = "input.preprocess == 'TRUE'",
+                  checkboxGroupInput("list_prods",
+                                     "Select products:",
+                                     choiceNames = list("TOA (top-of-atmosphere) Reflectance",
+                                                        "BOA (bottom-of-atmosphere) Surface Reflectance",
+                                                        "SCL (surface classification map)",
+                                                        "TCI (true-color) RGB 8-bit image"),
+                                     choiceValues = list("TOA", "BOA", "SCL", "TCI"),
+                                     selected = c("BOA"))
+                ),
+                conditionalPanel(
+                  condition = "input.preprocess == 'FALSE'",
+                  checkboxGroupInput("list_levels",
+                                     "Select products:",
+                                     choiceNames = list(span("Raw", a("level-1C", href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-1c", target="_blank"), "SAFE files"),
+                                                        span("Raw", a("level-2A", href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-2a", target="_blank"), "SAFE files")),
+                                     choiceValues = list("l1c", "l2a"),
+                                     selected = c("l2a"))
                 )
               ),
 
@@ -185,7 +189,7 @@ s2_gui <- function(param_list=NULL,
                 width=4,
 
                 conditionalPanel(
-                  condition = "input.proc_steps.indexOf('preprocess') != -1",
+                  condition = "input.preprocess == 'TRUE'",
                   uiOutput("levels_message"),
                   br()
                 ),
@@ -210,7 +214,7 @@ s2_gui <- function(param_list=NULL,
             fluidRow(
               # L1C directory
               conditionalPanel(
-                condition = "input.proc_steps.indexOf('query') != -1 || input.proc_steps.indexOf('atmcorr') != -1 || output.req_l1c == 'TRUE'",
+                condition = "output.req_l1c == 'TRUE'",
                 column(
                   width=6,
                   div(style="display:inline-block;vertical-align:top;",
@@ -245,21 +249,19 @@ s2_gui <- function(param_list=NULL,
               column(
                 width=7,
                 # online_mode (online/offline mode)
-                conditionalPanel(
-                  condition = "input.proc_steps.indexOf('query') != -1 || input.proc_steps.indexOf('atmcorr') != -1",
+                radioButtons("online", "Download mode",
+                             choices = list("Online (search SAFE products on SciHub and download)" = TRUE,
+                                            "Offline (query and apply sen2cor only among existing SAFE products)" = FALSE),
+                             selected = TRUE),
+
+                # conditionalPanel(
+                #   condition = paste0("input.step_atmcorr == 'auto' || input.step_atmcorr == 'scihub' || ",
+                #                      "input.online == 'TRUE'"),
                   radioButtons("overwrite_safe", "Overwrite SAFE products?",
                                choices = list("Yes (download and apply sen2cor on all products)" = TRUE,
                                               "No (skip download or sen2cor for existing products)" = FALSE),
                                selected = TRUE)
-                ),
-
-                conditionalPanel(
-                  condition = "input.proc_steps.indexOf('query') != -1",
-                  radioButtons("online", "Online mode?",
-                               choices = list("Yes (search SAFE products on SciHub and download)" = TRUE,
-                                              "No (query and apply sen2cor only among existing SAFE products)" = FALSE),
-                               selected = TRUE)
-                )
+                # )
 
               ),
               column(
@@ -268,8 +270,8 @@ s2_gui <- function(param_list=NULL,
                 conditionalPanel(
                   # condition = "input.download_safe != 'no' && (input.preprocess == 'TRUE' || (input.preprocess == 'FALSE' && input.list_levels.indexOf('l1c')==-1 && input.list_levels.indexOf('l2a')!=-1))",
                   # condition = "input.download_safe != 'no'",
-                  condition = "output.online_mode == 'TRUE'",
-                  radioButtons("rm_safe", "Delete SAFE tiles after processing?",
+                  condition = "input.online_mode == 'TRUE'",
+                  radioButtons("rm_safe", "Delete raw SAFE files after processing?",
                                choices = list("Yes" = "all",
                                               "Only unrequired L1C" = "l1c",
                                               "No" = "no"),
@@ -281,15 +283,16 @@ s2_gui <- function(param_list=NULL,
           )), # end of fluidRow/box "SAFE options"
 
           conditionalPanel(
-            condition = "output.req_l2a == 'TRUE' && input.proc_steps.indexOf('atmcorr') != -1 && output.online_mode == 'TRUE'",
+            condition = "output.req_l2a == 'TRUE'",
             fluidRow(box(
-              title="sen2cor options",
+              title="Atmospheric correction options",
               width=12,
               # step_atmcorr (perform or not sen2cor and how)
               # uiOutput("step_atmcorr")
-              radioButtons("step_atmcorr", "When level-2A products are available for download:",
-                           choices = list("Directly download them instead of generating them using sen2cor" = "auto",
-                                          "Generate them from level-1C SAFE using sen2cor in any case" = "scihub"),
+              radioButtons("step_atmcorr", "Method to obtain level-2A corrected images", #NULL, #"When level-2A products are available for download:",
+                           choices = list("Search and download corrected images whenever it is possible, otherwise use sen2cor on this PC" = "auto",
+                                          "Always search and download level-1C SAFE, and correct them on this PC" = "scihub",
+                                          "Search and download corrected images (skip them if they are not available)" = "l2a"),
                            selected = "auto")
             )) # end of fluidRow/box "sen2cor options"
           )
@@ -305,19 +308,34 @@ s2_gui <- function(param_list=NULL,
             title="Temporal parameters",
             width=12,
 
-            column(
-              width=6,
-              dateRangeInput("timewindow", label = "Time interval")
+            conditionalPanel(
+              condition = "input.online == 'FALSE'",
+              radioButtons("query_time", label = "Use temporal filter?",
+                           choices = list("Yes" = TRUE,
+                                          "No (process all the input SAFE images)" = FALSE),
+                           inline = TRUE)
             ),
 
-            column(
-              width=6,
-              radioButtons("timeperiod", label = "Time period type",
-                           choices = list("Full" = "full",
-                                          "Seasonal" = "seasonal"),
-                           selected = "full",
-                           inline = TRUE)
-            )
+            conditionalPanel(
+              condition = "input.query_time == 'TRUE'",
+              fluidRow(
+
+                column(
+                  width=6,
+                  dateRangeInput("timewindow", label = "Time interval")
+                ),
+
+                column(
+                  width=6,
+                  radioButtons("timeperiod", label = "Time period type",
+                               choices = list("Full" = "full",
+                                              "Seasonal" = "seasonal"),
+                               selected = "full",
+                               inline = TRUE)
+                )
+
+              )
+            ) # end of conditionalPanel on temporal query
 
           )), # end of fluidRow/box "Temporal parameters"
 
@@ -325,104 +343,119 @@ s2_gui <- function(param_list=NULL,
             title="Spatial extent",
             width=12,
 
-            column(
-              width=4,
-              radioButtons("extent_type", "Use as extent:",
-                           choices = list("Bounding box coordinates" = "bbox",
-                                          "Upload vector file" = "vectfile",
-                                          "Draw on the map" = "draw"),
-                           selected = "draw"),
-
-              radioButtons("extent_as_mask", "Mask outside the polygons?",
+            conditionalPanel(
+              condition = "input.online == 'FALSE'",
+              radioButtons("query_space", label = "Use spatial filter/clip?",
                            choices = list("Yes" = TRUE,
-                                          "No" = FALSE),
-                           selected = FALSE)
+                                          "No (process all the input SAFE images)" = FALSE),
+                           inline = TRUE)
             ),
 
-            column(
-              width=8,
-              conditionalPanel(
-                condition = "input.extent_type == 'vectfile'",
-                div(style="display:inline-block;vertical-align:top;",
-                    strong("Select vector file: \u00a0")),
-                div(style="display:inline-block;vertical-align:top;",
-                    htmlOutput("path_vectfile_errormess")),
-                div(#div(style="display:inline-block;vertical-align:top;width:50pt;", # FIXME 2 choosing file with the button the extent is not drawn yet, and the toolbar is not added/removed changing extent_type
-                  # shinyFilesButton("path_vectfile_sel",
-                  #                  "Select",
-                  #                  "Specify the file to be used as extent",
-                  #                  multiple = FALSE)),
-                  div(style="display:inline-block;vertical-align:top;",
-                      textInput("path_vectfile_textin", NULL, "Enter file path...")))
-              ),
-              conditionalPanel(
-                condition = "input.extent_type == 'draw' || input.extent_type == 'vectfile'",
-                radioButtons("dissolve_extent", "Number of output extents:",
-                             choices = list("Unique (dissolve all the polygons)" = TRUE,
-                                            "Multiple (each polygon is an extent)" = FALSE),
-                             selected = TRUE)
-              ),
-              conditionalPanel(
-                condition = "input.extent_type == 'vectfile' && input.dissolve_extent == 'FALSE'",
-                selectInput("extent_id", "Select the field to use as extent name",
-                            choices = list("No one (using row numbers)" = "nrow",
-                                           "take","dynamically","from","shape","attributes"),
-                            selected = "nrow")
-              ),
-              conditionalPanel(
-                condition = "input.extent_type == 'bbox'",
-                div(
-                  strong("Insert bounding box coordinates:"),
-                  div(div(style="display:inline-block;position:relative;margin-left:55px;padding-top:10px;",
-                          numericInput("bbox_ymax", NULL, value=NULL, width="100px")),
-                      div(style="display:inline-block;position:relative;bottom:0;margin-left:65px;padding-top:10px;",
-                          span(style="color:grey", "upper north."))),
-                  div(div(style="display:inline-block;position:relative;",
-                          numericInput("bbox_xmin", NULL, value=NULL, width="100px")),
-                      div(style="display:inline-block;position:relative;margin-left:10px;",
-                          numericInput("bbox_xmax", NULL, value=NULL, width="100px")),
-                      div(style="display:inline-block;position:relative;bottom:0;margin-left:10px;",
-                          span(style="color:grey", "left-right east."))),
-                  div(div(style="display:inline-block;position:relative;margin-left:55px;",
-                          numericInput("bbox_ymin", NULL, value=NULL, width="100px")),
-                      div(style="display:inline-block;position:relative;bottom:0;margin-left:65px;",
-                          span(style="color:grey", "lower north."))),
-                  div(div(style="display:inline-block;position:relative;",
-                          textInput("bboxproj", "Projection of the coordinates:",
-                                    value="4326", width="210px")),
-                      div(style="display:inline-block;position:relative;bottom:0;margin-left:10px;",
-                          htmlOutput("bboxproj_message")))
+            conditionalPanel(
+              condition = "input.query_space == 'TRUE'",
+              fluidRow(
+
+                column(
+                  width=4,
+                  radioButtons("extent_type", "Use as extent:",
+                               choices = list("Bounding box coordinates" = "bbox",
+                                              "Upload vector file" = "vectfile",
+                                              "Draw on the map" = "draw"),
+                               selected = "draw"),
+
+                  radioButtons("extent_as_mask", "Mask outside the polygons?",
+                               choices = list("Yes" = TRUE,
+                                              "No" = FALSE),
+                               selected = FALSE)
+                ),
+
+                column(
+                  width=8,
+                  conditionalPanel(
+                    condition = "input.extent_type == 'vectfile'",
+                    div(style="display:inline-block;vertical-align:top;",
+                        strong("Select vector file: \u00a0")),
+                    div(style="display:inline-block;vertical-align:top;",
+                        htmlOutput("path_vectfile_errormess")),
+                    div(#div(style="display:inline-block;vertical-align:top;width:50pt;", # FIXME 2 choosing file with the button the extent is not drawn yet, and the toolbar is not added/removed changing extent_type
+                      # shinyFilesButton("path_vectfile_sel",
+                      #                  "Select",
+                      #                  "Specify the file to be used as extent",
+                      #                  multiple = FALSE)),
+                      div(style="display:inline-block;vertical-align:top;",
+                          textInput("path_vectfile_textin", NULL, "Enter file path...")))
+                  ),
+                  conditionalPanel(
+                    condition = "input.extent_type == 'draw' || input.extent_type == 'vectfile'",
+                    radioButtons("dissolve_extent", "Number of output extents:",
+                                 choices = list("Unique (dissolve all the polygons)" = TRUE,
+                                                "Multiple (each polygon is an extent)" = FALSE),
+                                 selected = TRUE)
+                  ),
+                  conditionalPanel(
+                    condition = "input.extent_type == 'vectfile' && input.dissolve_extent == 'FALSE'",
+                    selectInput("extent_id", "Select the field to use as extent name",
+                                choices = list("No one (using row numbers)" = "nrow",
+                                               "take","dynamically","from","shape","attributes"),
+                                selected = "nrow")
+                  ),
+                  conditionalPanel(
+                    condition = "input.extent_type == 'bbox'",
+                    div(
+                      strong("Insert bounding box coordinates:"),
+                      div(div(style="display:inline-block;position:relative;margin-left:55px;padding-top:10px;",
+                              numericInput("bbox_ymax", NULL, value=NULL, width="100px")),
+                          div(style="display:inline-block;position:relative;bottom:0;margin-left:65px;padding-top:10px;",
+                              span(style="color:grey", "upper north."))),
+                      div(div(style="display:inline-block;position:relative;",
+                              numericInput("bbox_xmin", NULL, value=NULL, width="100px")),
+                          div(style="display:inline-block;position:relative;margin-left:10px;",
+                              numericInput("bbox_xmax", NULL, value=NULL, width="100px")),
+                          div(style="display:inline-block;position:relative;bottom:0;margin-left:10px;",
+                              span(style="color:grey", "left-right east."))),
+                      div(div(style="display:inline-block;position:relative;margin-left:55px;",
+                              numericInput("bbox_ymin", NULL, value=NULL, width="100px")),
+                          div(style="display:inline-block;position:relative;bottom:0;margin-left:65px;",
+                              span(style="color:grey", "lower north."))),
+                      div(div(style="display:inline-block;position:relative;",
+                              textInput("bboxproj", "Projection of the coordinates:",
+                                        value="4326", width="210px")),
+                          div(style="display:inline-block;position:relative;bottom:0;margin-left:10px;",
+                              htmlOutput("bboxproj_message")))
+                    )
+                  )
                 )
-              )
-            ),
 
+              ), # end of 1st fluidRow after conditionalPanel on spatial filter
 
-            column(
-              width=9,
-              # conditionalPanel(
-              #   condition = "input.extent_type == 'draw'",
-              editModUI("extent_editor")
-              # )
-            ),
+              fluidRow(
 
+                column(
+                  width=9,
+                  # conditionalPanel(
+                  #   condition = "input.extent_type == 'draw'",
+                  editModUI("extent_editor")
+                  # )
+                ),
 
+                column(
+                  width=3,
 
-            column(
-              width=3,
+                  # conditionalPanel(
+                  #   condition = "input.extent_type == 'draw'",
+                  div(
+                    checkboxGroupInput("tiles_checkbox",
+                                       "Tiles selected",
+                                       choices = character(0),
+                                       selected = character(0)),
+                    # uiOutput("s2tiles_selID"),
+                    strong("Orbits selected"),
+                    helpText(em("Not yet impemented."))
+                  )
+                )
+              ) # end of 1st fluidRow after conditionalPanel on spatial filter
 
-              # conditionalPanel(
-              #   condition = "input.extent_type == 'draw'",
-              div(
-                checkboxGroupInput("tiles_checkbox",
-                                   "Tiles selected",
-                                   choices = character(0),
-                                   selected = character(0)),
-                # uiOutput("s2tiles_selID"),
-                strong("Orbits selected"),
-                helpText(em("Not yet impemented."))
-              )
-              # )
-            )
+            ) # end of conditionalPanel on spatial query
 
           )) # end of fluidRow/box "Spatial extent"
 
@@ -435,7 +468,7 @@ s2_gui <- function(param_list=NULL,
           title="Procesisng settings",
 
           conditionalPanel(
-            condition = "input.proc_steps.indexOf('preprocess') != -1",
+            condition = "input.preprocess == 'TRUE'",
 
             fluidRow(box(
               title="Processing options",
@@ -516,6 +549,15 @@ s2_gui <- function(param_list=NULL,
                                inline = TRUE),
 
                   conditionalPanel(
+                    condition = "input.list_prods.indexOf('SCL')==-1 && input.atm_mask == 'TRUE'",
+                    span(style="color:grey",
+                         p(stype="margin-bottom:15pt",
+                           "SCL is required to mask products, so Level-2A SAFE ",
+                                "are also required. Return to \"Product selection\" menu ",
+                                "to check sen2cor settings."))
+                  ),
+
+                  conditionalPanel(
                     condition = "input.atm_mask == 'TRUE'",
                     radioButtons("atm_mask_type", "Apply mask to:",
                                  choices = list("No data" = "nodata",
@@ -544,7 +586,7 @@ s2_gui <- function(param_list=NULL,
                     width=8,
                     radioButtons("use_reference", label = "Use an existing raster as a reference for output grid?",
                                  choices = list("Yes (load raster)" = TRUE,
-                                                "No (define new output grid)" = FALSE),
+                                                "No" = FALSE),
                                  selected = FALSE,
                                  inline = TRUE),
                     conditionalPanel(
@@ -710,7 +752,7 @@ s2_gui <- function(param_list=NULL,
           title="Index selection",
 
           conditionalPanel(
-            condition = "input.proc_steps.indexOf('preprocess') != -1",
+            condition = "input.preprocess == 'TRUE'",
 
             fluidRow(
               box(
@@ -803,19 +845,15 @@ s2_gui <- function(param_list=NULL,
     # Reactive list of required SAFE levels
     safe_req <- reactiveValues()
     observe({
-      if ("preprocess" %in% input$proc_steps) {
+      if (input$preprocess==TRUE) {
         safe_req$l1c <- if (any(l1c_prods %in% input$list_prods) |
                             indices_req()==TRUE & input$index_source=="TOA") {TRUE} else {FALSE}
         safe_req$l2a <- if (any(l2a_prods %in% input$list_prods) |
+                            input$atm_mask == TRUE |
                             indices_req()==TRUE & input$index_source=="BOA") {TRUE} else {FALSE}
-      } else if ("query" %in% input$proc_steps) {
+      } else {
         safe_req$l1c <- if ("l1c" %in% input$list_levels) {TRUE} else {FALSE}
         safe_req$l2a <- if ("l2a" %in% input$list_levels) {TRUE} else {FALSE}
-      } else if ("atmcorr" %in% input$proc_steps) {
-        safe_req$l1c <- FALSE
-        safe_req$l2a <- TRUE
-      } else {
-        safe_req$l1c <- safe_req$l2a <- FALSE # this should never happen (nothing done)
       }
     })
     # these output values are used for conditionalPanels:
@@ -848,19 +886,9 @@ s2_gui <- function(param_list=NULL,
       )
     })
 
-    # Reactive variable: TRUE for online mode, FALSE for offline mode
-    online_mode <- reactive({
-      input$online == TRUE &
-        "query" %in% input$proc_steps
-    })
-    # convert in output value to be used in conditionalPanel
-    output$online_mode <- renderText(online_mode())
-    # options to update these values also if not visible
-    outputOptions(output, "online_mode", suspendWhenHidden = FALSE)
-
     # update rm_safe if preprocess is not required
     observe({
-      if (!"preprocess" %in% input$proc_steps) {
+      if (!input$preprocess==TRUE) {
         updateRadioButtons(session, "rm_safe", "Delete unrequired level-1C SAFE tiles?",
                      choices = list("Yes" = "l1c",
                                     "No" = "no"),
@@ -872,8 +900,7 @@ s2_gui <- function(param_list=NULL,
                                           "No" = "no"),
                            selected = "no")
       }
-      if (online_mode() == FALSE |
-          !"query" %in% input$proc_steps) {
+      if (input$online == FALSE) {
         updateRadioButtons(session, "rm_safe",
                            selected = "no")
       }
@@ -897,6 +924,18 @@ s2_gui <- function(param_list=NULL,
       # }
     })
 
+    # Disable overwrite_safe in some conditions
+    observe({
+      # toggleState("overwrite_safe",
+      #             condition = {input$step_atmcorr %in% c("auto","scihub") | input$online==TRUE})
+      if (input$step_atmcorr %in% c("auto","scihub") | input$online==TRUE) {
+        enable("overwrite_safe")
+      } else {
+        disable("overwrite_safe")
+        updateRadioButtons(session, "overwrite_safe",
+                           selected = FALSE)
+      }
+    })
 
 
 
@@ -1434,25 +1473,13 @@ s2_gui <- function(param_list=NULL,
       rl <- list()
 
       # processing steps #
-      rl$preprocess <- "preprocess" %in% input$proc_steps # TRUE to perform preprocessing steps, FALSE to download SAFE only
+      rl$preprocess <- input$preprocess==TRUE # TRUE to perform preprocessing steps, FALSE to download SAFE only
       rv$s2_levels <- c(if(safe_req$l1c==TRUE){"l1c"}, if(safe_req$l2a==TRUE){"l2a"}) # required S2 levels ("l1c","l2a")
       rl$sel_sensor <- input$sel_sensor # sensors to use ("s2a", "s2b")
-      rl$online <- online_mode() # TRUE if online mode, FALSE if offline mode
+      rl$online <- input$online # TRUE if online mode, FALSE if offline mode
       rl$overwrite_safe <- input$overwrite_safe # TRUE to overwrite existing SAFE, FALSE not to
-      rl$rm_safe <- ifelse(online_mode()==TRUE, input$rm_safe, "no") # "yes" to delete all SAFE, "l1c" to delete only l1c, "no" not to remove
-      rl$step_atmcorr <- if ("atmcorr" %in% input$proc_steps) {  # download_method in sen2cor: "auto", "l2a", "scihub" or "no"
-        if (online_mode()==TRUE) {
-          input$step_atmcorr # "auto" or "scihub"
-        } else {
-          "scihub"
-        }
-      } else {
-        if (online_mode()==TRUE) {
-          if (safe_req$l2a==TRUE) {"l2a"} else {"no"}
-        } else {
-          "no"
-        }
-      }
+      rl$rm_safe <- ifelse(input$online==TRUE, input$rm_safe, "no") # "yes" to delete all SAFE, "l1c" to delete only l1c, "no" not to remove
+      rl$step_atmcorr <- if (safe_req$l2a==TRUE) {input$step_atmcorr} else {"no"} # download_method in sen2cor: "auto", "l2a", "scihub" or "no"
       # rl$steps_reqout <- input$steps_reqout # vector of required outputs: "safe", "tiles", "clipped" (one or more)
 
       # spatio-temporal selection #
