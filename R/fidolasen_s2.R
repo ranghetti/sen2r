@@ -177,6 +177,10 @@ fidolasen_s2 <- function(param_list=NULL,
   # import python modules
   gdal <- import("osgeo",convert=FALSE)$gdal
 
+  # internal function: return character(0) instead of NULL
+  # (used to build _req names)
+  nn <- function(x) {if (is.null(x)) character(0) else x}
+
   ## 1. Read / import parameters ##
 
   # Create parameter list with default values
@@ -633,8 +637,9 @@ fidolasen_s2 <- function(param_list=NULL,
 
     if (pm$overwrite==TRUE) {
 
+      indices_names_new <- indices_names_exp
       out_names_req <- out_names_new <- out_names_exp
-      masked_names_req <- masked_names_new <- masked_names_exp
+      masked_names_new <- masked_names_exp
       warped_names_req <- warped_names_new <- warped_names_reqout <- warped_names_exp
       tiles_names_req <- tiles_names_new <- tiles_names_exp
       safe_names_l1c_req <- file.path(pm$path_l1c,names(s2_list_l1c))
@@ -642,129 +647,166 @@ fidolasen_s2 <- function(param_list=NULL,
 
     } else {
 
-      indices_names_new <- if (length(indices_names_exp)==0) {
-        NULL
-      } else {
-        indices_names_exp[!file.exists(indices_names_exp)]
-      }
+      indices_names_new <- indices_names_exp[!file.exists(nn(indices_names_exp))]
 
       # required output products
-      out_names_req <- if (length(out_names_exp)==0) {
+      # out_names_req <- if (length(out_names_exp)==0) {
+      #   NULL
+      # } else if (is.na(pm$path_out)) {
+      #   if (length(indices_names_new)==0) {
+      #     NULL
+      #   } else {
+      #     out_basenames_req <- data.table(
+      #       fs2nc_getElements(indices_names_new, format="data.frame")
+      #     )[,paste0("S2",
+      #               mission,
+      #               level,"_",
+      #               strftime(sensing_date,"%Y%m%d"),"_",
+      #               id_orbit,"__",
+      #               ifelse(level=="2A","BOA","TOA"),"_",
+      #               substr(res,1,2),".",
+      #               out_ext)]
+      #     out_names_exp[basename(out_names_exp) %in% out_basenames_req &
+      #                     !file.exists(out_names_exp)]
+      #   }
+      # } else {
+      #   if (!is.na(pm$mask_type) & !"SCL" %in% pm$list_prods) {
+      #     out_names_exp[fs2nc_getElements(out_names_exp, format="data.frame")$prod_type!="SCL"]
+      #   } else {
+      #     out_names_exp
+      #   }
+      # }
+      out_basenames_req <- if (length(indices_names_new)==0) {
         NULL
-      } else if (is.na(pm$path_out)) {
-        if (length(indices_names_new)==0) {
-          NULL
-        } else {
-          out_basenames_req <- data.table(
-            fs2nc_getElements(indices_names_new, format="data.frame")
-          )[,paste0("S2",
-                    mission,
-                    level,"_",
-                    strftime(sensing_date,"%Y%m%d"),"_",
-                    id_orbit,"__",
-                    ifelse(level=="2A","BOA","TOA"),"_",
-                    substr(res,1,2),".",
-                    out_ext)]
-          out_names_exp[basename(out_names_exp) %in% out_basenames_req &
-                          !file.exists(out_names_exp)]
-        }
       } else {
-        if (!is.na(pm$mask_type) & !"SCL" %in% pm$list_prods) {
-          out_names_exp[fs2nc_getElements(out_names_exp, format="data.frame")$prod_type!="SCL"]
-        } else {
-          out_names_exp
-        }
+        data.table(
+          fs2nc_getElements(indices_names_new, format="data.frame")
+        )[,paste0("S2",
+                  mission,
+                  level,"_",
+                  strftime(sensing_date,"%Y%m%d"),"_",
+                  id_orbit,"__",
+                  ifelse(level=="2A","BOA","TOA"),"_",
+                  substr(res,1,2),".",
+                  out_ext)]
       }
-      out_names_new <- if (length(out_names_req)==0) {
-        NULL
+      out_names_req <- out_names_exp[basename(nn(out_names_exp)) %in% out_basenames_req]
+      out_names_new <- if (is.na(pm$path_out)) {
+        out_names_req
       } else {
-        out_names_req[!file.exists(out_names_req)]
+        unique(c(
+          out_names_req,
+          if (!is.na(pm$mask_type) & !"SCL" %in% pm$list_prods) {
+            out_names_exp[fs2nc_getElements(out_names_exp, format="data.frame")$prod_type!="SCL"]
+          } else {
+            out_names_exp
+          }
+        ))
       }
+      out_names_new <- out_names_new[!file.exists(nn(out_names_new))]
 
       # required masked and warped
-      if (is.na(pm$mask_type)) {
-        masked_names_req <- masked_names_new <- NULL
-        warped_names_req <- warped_names_new <- out_names_new
+      masked_names_new <- if (is.na(pm$mask_type)) {
+        NULL
       } else {
-        masked_names_req <- out_names_new[fs2nc_getElements(out_names_new, format="data.frame")$prod_type!="SCL"]
-        masked_names_new <- if (length(masked_names_req)==0) {
-          NULL
-        } else {
-          masked_names_req[!file.exists(masked_names_req)]
-        }
-        warped_names_req <- if (pm$clip_on_extent==FALSE | length(out_names_req)==0) {
-          NULL
-        } else {
-          c(file.path(path_warped,
-                      if(pm$path_subdirs==TRUE){basename(dirname(out_names_new))}else{""},
-                      gsub(paste0(out_ext,"$"),warped_ext,basename(out_names_new))),
-            if (!is.na(pm$path_out) & !"SCL" %in% pm$list_prods) {
-              file.path(path_warped,
-                          if(pm$path_subdirs==TRUE){basename(dirname(out_names_exp[fs2nc_getElements(out_names_exp, format="data.frame")$prod_type=="SCL"]))}else{""},
-                          gsub(paste0(out_ext,"$"),warped_ext,basename(out_names_exp[fs2nc_getElements(out_names_exp, format="data.frame")$prod_type=="SCL"])))
-            })
-        }
-        warped_names_new <- if (length(warped_names_req)==0) {
-          NULL
-        } else {
-          warped_names_req[!file.exists(warped_names_req)]
-        }
+        out_names_new[fs2nc_getElements(out_names_new, format="data.frame")$prod_type!="SCL"]
       }
+      warped_names_req <- if (pm$clip_on_extent==FALSE | length(out_names_new)==0) {
+        NULL
+      } else {
+        c(file.path(path_warped,
+                    if(pm$path_subdirs==TRUE){basename(dirname(out_names_new))}else{""},
+                    gsub(paste0(out_ext,"$"),warped_ext,basename(out_names_new))),
+          if (!is.na(pm$mask_type) & !"SCL" %in% pm$list_prods & length(out_names_new)>0) {
+            out_names_exp[fs2nc_getElements(out_names_exp, format="data.frame")$prod_type=="SCL"]
+          })
+      }
+      warped_names_new <- warped_names_req[!file.exists(nn(warped_names_req))]
 
       # required merged
-      merged_names_req <- if (length(merged_names_exp)==0) {
-        NULL
-      } else if (is.na(pm$path_merged)) {
-        if (length(out_names_new)==0) {
-          NULL
-        } else {
-          if (pm$extent_as_mask==TRUE) {
-            merged_basenames_req <- c(
-              gsub(paste0(warped_ext,"$"),merged_ext,basename(warped_names_new)),
-              gsub(paste0(out_ext,"$"),merged_ext,basename(masked_names_new)))
-            merged_names_exp[basename(merged_names_exp) %in% merged_basenames_req]
-          } else {
-            c(file.path(path_merged,
-                        if(pm$path_subdirs==TRUE){basename(dirname(out_names_new))}else{""},
-                        gsub(paste0(out_ext,"$"),merged_ext,basename(out_names_new))),
-              if (!is.na(pm$path_out) & !"SCL" %in% pm$list_prods) {
-                file.path(path_merged,
-                          if(pm$path_subdirs==TRUE){basename(dirname(out_names_exp[fs2nc_getElements(out_names_exp, format="data.frame")$prod_type=="SCL"]))}else{""},
-                          gsub(paste0(out_ext,"$"),merged_ext,basename(out_names_exp[fs2nc_getElements(out_names_exp, format="data.frame")$prod_type=="SCL"])))
-              })
-          }
-        }
+      # merged_names_req <- if (length(merged_names_exp)==0) {
+      #   NULL
+      # } else if (is.na(pm$path_merged)) {
+      #   if (length(out_names_new)==0) {
+      #     NULL
+      #   } else {
+      #     if (pm$extent_as_mask==TRUE) {
+      #       merged_basenames_req <- c(
+      #         gsub(paste0(warped_ext,"$"),merged_ext,basename(warped_names_new)),
+      #         gsub(paste0(out_ext,"$"),merged_ext,basename(masked_names_new)))
+      #       merged_names_exp[basename(merged_names_exp) %in% merged_basenames_req]
+      #     } else {
+      #       c(file.path(path_merged,
+      #                   if(pm$path_subdirs==TRUE){basename(dirname(out_names_new))}else{""},
+      #                   gsub(paste0(out_ext,"$"),merged_ext,basename(out_names_new))),
+      #         if (!is.na(pm$path_out) & !"SCL" %in% pm$list_prods) {
+      #           file.path(path_merged,
+      #                     if(pm$path_subdirs==TRUE){basename(dirname(out_names_exp[fs2nc_getElements(out_names_exp, format="data.frame")$prod_type=="SCL"]))}else{""},
+      #                     gsub(paste0(out_ext,"$"),merged_ext,basename(out_names_exp[fs2nc_getElements(out_names_exp, format="data.frame")$prod_type=="SCL"])))
+      #         })
+      #     }
+      #   }
+      # } else {
+      #   merged_names_exp
+      # }
+      # merged_names_new <- if (length(merged_names_req)==0) {
+      #   NULL
+      # } else {
+      #   merged_names_req[!file.exists(merged_names_req)]
+      # }
+      merged_basenames_req <- c(
+        gsub(paste0(warped_ext,"$"),merged_ext,basename(nn(warped_names_new))),
+        gsub(paste0(out_ext,"$"),merged_ext,basename(nn(masked_names_new))))
+      merged_names_req <- if (pm$clip_on_extent==TRUE) {
+          merged_names_exp[basename(nn(merged_names_exp)) %in% merged_basenames_req]
       } else {
-        merged_names_exp
+        c(file.path(path_merged,
+                    if(pm$path_subdirs==TRUE){basename(dirname(nn(out_names_new)))}else{""},
+                    gsub(paste0(out_ext,"$"),merged_ext,basename(nn(out_names_new)))),
+          if (!is.na(pm$mask_type) & !"SCL" %in% pm$list_prods & length(out_names_new)>0) {
+            out_names_exp[fs2nc_getElements(out_names_req, format="data.frame")$prod_type=="SCL"]
+          })
       }
-      merged_names_new <- if (length(merged_names_req)==0) {
-        NULL
+      merged_names_new <- if (is.na(pm$path_merged)) {
+        merged_names_req
       } else {
-        merged_names_req[!file.exists(merged_names_req)]
+        unique(c(merged_names_req,merged_names_exp))
       }
+      merged_names_new <- merged_names_new[!file.exists(nn(merged_names_new))]
+
       # output of merged_names_req
       warped_names_reqout <- warped_names_exp[merged_names_exp %in% merged_names_req]
 
       # required tiles
-      tiles_names_req <- if (length(tiles_names_exp)==0) {
-        NULL
-      } else if (is.na(pm$path_tiles)) {
-        if (length(merged_names_new)==0) {
-          NULL
-        } else {
-          tiles_basenames_req <- gsub(paste0(merged_ext,"$"),tiles_ext,basename(merged_names_new)) %>%
-            gsub("\\_\\_","_[A-Z0-9]{5}_",.) %>%
-            paste0("^",.,"$")
-          tiles_names_exp[unlist(lapply(tiles_basenames_req, grep, basename(tiles_names_exp)))]
-        }
-      } else {
-        tiles_names_exp
-      }
-      tiles_names_new <- if (length(tiles_names_req)==0) {
-        NULL
-      } else {
+      # tiles_names_req <- if (length(tiles_names_exp)==0) {
+      #   NULL
+      # } else if (is.na(pm$path_tiles)) {
+      #   if (length(merged_names_new)==0) {
+      #     NULL
+      #   } else {
+      #     tiles_basenames_req <- gsub(paste0(merged_ext,"$"),tiles_ext,basename(merged_names_new)) %>%
+      #       gsub("\\_\\_","_[A-Z0-9]{5}_",.) %>%
+      #       paste0("^",.,"$")
+      #     tiles_names_exp[unlist(lapply(tiles_basenames_req, grep, basename(tiles_names_exp)))]
+      #   }
+      # } else {
+      #   tiles_names_exp
+      # }
+      # tiles_names_new <- if (length(tiles_names_req)==0) {
+      #   NULL
+      # } else {
+      #   tiles_names_req
+      # }
+      tiles_basenames_req <- gsub(paste0(merged_ext,"$"),tiles_ext,basename(nn(merged_names_new))) %>%
+        gsub("\\_\\_","_[A-Z0-9]{5}_",.) %>%
+        paste0("^",.,"$")
+      tiles_names_req <- tiles_names_exp[unlist(lapply(tiles_basenames_req, grep, basename(nn(tiles_names_exp))))]
+      tiles_names_new <- if (is.na(pm$path_tiles)) {
         tiles_names_req
+      } else {
+        unique(c(tiles_names_req,tiles_names_exp))
       }
+      tiles_names_new <- tiles_names_new[!file.exists(nn(tiles_names_new))]
 
       # required SAFE products
       if (length(tiles_names_req)==0) {
@@ -823,7 +865,6 @@ fidolasen_s2 <- function(param_list=NULL,
     # indices_names_new
     # out_names_req
     # out_names_new
-    # masked_names_req
     # masked_names_new
     # warped_names_req
     # warped_names_new
@@ -951,7 +992,6 @@ fidolasen_s2 <- function(param_list=NULL,
 
     } # end of gdal_warp and s2_mask IF cycle
 
-
     ## 8. Compute spectral indices ##
     # dir.create(file.path(path_out,pm$list_indices), recursive=FALSE, showWarnings = FALSE)
     if (length(out_names_req)>0) {
@@ -965,7 +1005,6 @@ fidolasen_s2 <- function(param_list=NULL,
     }
 
   } # end of pm$preprocess IF cycle
-
 
   ## 9. remove temporary files
   unlink(path_tmp, recursive = TRUE)
