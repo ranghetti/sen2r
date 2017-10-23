@@ -650,32 +650,6 @@ fidolasen_s2 <- function(param_list=NULL,
       indices_names_new <- indices_names_exp[!file.exists(nn(indices_names_exp))]
 
       # required output products
-      # out_names_req <- if (length(out_names_exp)==0) {
-      #   NULL
-      # } else if (is.na(pm$path_out)) {
-      #   if (length(indices_names_new)==0) {
-      #     NULL
-      #   } else {
-      #     out_basenames_req <- data.table(
-      #       fs2nc_getElements(indices_names_new, format="data.frame")
-      #     )[,paste0("S2",
-      #               mission,
-      #               level,"_",
-      #               strftime(sensing_date,"%Y%m%d"),"_",
-      #               id_orbit,"__",
-      #               ifelse(level=="2A","BOA","TOA"),"_",
-      #               substr(res,1,2),".",
-      #               out_ext)]
-      #     out_names_exp[basename(out_names_exp) %in% out_basenames_req &
-      #                     !file.exists(out_names_exp)]
-      #   }
-      # } else {
-      #   if (!is.na(pm$mask_type) & !"SCL" %in% pm$list_prods) {
-      #     out_names_exp[fs2nc_getElements(out_names_exp, format="data.frame")$prod_type!="SCL"]
-      #   } else {
-      #     out_names_exp
-      #   }
-      # }
       out_basenames_req <- if (length(indices_names_new)==0) {
         NULL
       } else {
@@ -724,36 +698,6 @@ fidolasen_s2 <- function(param_list=NULL,
       warped_names_new <- warped_names_req[!file.exists(nn(warped_names_req))]
 
       # required merged
-      # merged_names_req <- if (length(merged_names_exp)==0) {
-      #   NULL
-      # } else if (is.na(pm$path_merged)) {
-      #   if (length(out_names_new)==0) {
-      #     NULL
-      #   } else {
-      #     if (pm$extent_as_mask==TRUE) {
-      #       merged_basenames_req <- c(
-      #         gsub(paste0(warped_ext,"$"),merged_ext,basename(warped_names_new)),
-      #         gsub(paste0(out_ext,"$"),merged_ext,basename(masked_names_new)))
-      #       merged_names_exp[basename(merged_names_exp) %in% merged_basenames_req]
-      #     } else {
-      #       c(file.path(path_merged,
-      #                   if(pm$path_subdirs==TRUE){basename(dirname(out_names_new))}else{""},
-      #                   gsub(paste0(out_ext,"$"),merged_ext,basename(out_names_new))),
-      #         if (!is.na(pm$path_out) & !"SCL" %in% pm$list_prods) {
-      #           file.path(path_merged,
-      #                     if(pm$path_subdirs==TRUE){basename(dirname(out_names_exp[fs2nc_getElements(out_names_exp, format="data.frame")$prod_type=="SCL"]))}else{""},
-      #                     gsub(paste0(out_ext,"$"),merged_ext,basename(out_names_exp[fs2nc_getElements(out_names_exp, format="data.frame")$prod_type=="SCL"])))
-      #         })
-      #     }
-      #   }
-      # } else {
-      #   merged_names_exp
-      # }
-      # merged_names_new <- if (length(merged_names_req)==0) {
-      #   NULL
-      # } else {
-      #   merged_names_req[!file.exists(merged_names_req)]
-      # }
       merged_basenames_req <- c(
         gsub(paste0(warped_ext,"$"),merged_ext,basename(nn(warped_names_new))),
         gsub(paste0(out_ext,"$"),merged_ext,basename(nn(masked_names_new))))
@@ -778,25 +722,6 @@ fidolasen_s2 <- function(param_list=NULL,
       warped_names_reqout <- warped_names_exp[merged_names_exp %in% merged_names_req]
 
       # required tiles
-      # tiles_names_req <- if (length(tiles_names_exp)==0) {
-      #   NULL
-      # } else if (is.na(pm$path_tiles)) {
-      #   if (length(merged_names_new)==0) {
-      #     NULL
-      #   } else {
-      #     tiles_basenames_req <- gsub(paste0(merged_ext,"$"),tiles_ext,basename(merged_names_new)) %>%
-      #       gsub("\\_\\_","_[A-Z0-9]{5}_",.) %>%
-      #       paste0("^",.,"$")
-      #     tiles_names_exp[unlist(lapply(tiles_basenames_req, grep, basename(tiles_names_exp)))]
-      #   }
-      # } else {
-      #   tiles_names_exp
-      # }
-      # tiles_names_new <- if (length(tiles_names_req)==0) {
-      #   NULL
-      # } else {
-      #   tiles_names_req
-      # }
       tiles_basenames_req <- gsub(paste0(merged_ext,"$"),tiles_ext,basename(nn(merged_names_new))) %>%
         gsub("\\_\\_","_[A-Z0-9]{5}_",.) %>%
         paste0("^",.,"$")
