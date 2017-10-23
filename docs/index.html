@@ -86,6 +86,41 @@
 devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"ggranga/fidolasen"</span>)</code></pre></div>
 <p>This will install the R package, containing all the functions necessary to preprocess data. To download Sentinel-2 images and perform atmospheric correction with <a href="http://step.esa.int/main/third-party-plugins-2/sen2cor">sen2cor</a>, the package makes use of a set of Python functions (<a href="https://github.com/ggranga/s2download">s2download</a>). To import these scripts, run R function <a href="https://ggranga.github.io/fidolasen/reference/install_s2download.html"><code><a href="reference/s2_download.html">s2_download()</a></code></a> included in the package. Please notice that the use of sen2cor algorythm for now is possible only under Linux systems, and the installation of the docker (necessary to run it) requires some time and a consistent amount of disk space.</p>
 </div>
+<div id="usage" class="section level2">
+<h2 class="hasAnchor">
+<a href="#usage" class="anchor"></a>Usage</h2>
+<p>The simpler way to use the functions developed until now is to follow the following two steps:</p>
+<ol style="list-style-type: decimal">
+<li>
+<code>eval=FALSE param &lt;- s2_gui()</code>, which opens the GUI with which the user can set all the necessary parameters;</li>
+<li>
+<code><a href="reference/fidolasen_s2.html">fidolasen_s2(param)</a></code>, to launch the main function with the selected parameters.</li>
+</ol>
+<p>Other possibilities are:</p>
+<ul>
+<li>to launch <a href="https://ggranga.github.io/fidolasen/reference/s2_gui.html"><code><a href="reference/fidolasen_s2.html">fidolasen_s2()</a></code></a> with parameters passed manually (see the documentation of the function for further details);</li>
+<li>to use other specific functions to run single steps separately:
+<ul>
+<li>
+<a href="https://ggranga.github.io/fidolasen/reference/s2_list.html"><code><a href="reference/s2_list.html">s2_list()</a></code></a> to retrieve the list of available Sentinel-2 products basing on input parameters;</li>
+<li>
+<a href="https://ggranga.github.io/fidolasen/reference/s2_download.html"><code><a href="reference/s2_download.html">s2_download()</a></code></a> to download Sentinel-2 products;</li>
+<li>
+<a href="https://ggranga.github.io/fidolasen/reference/s2_sen2cor.html"><code><a href="reference/s2_sen2cor.html">s2_sen2cor()</a></code></a> to correct level-1C products using <a href="http://step.esa.int/main/third-party-plugins-2/sen2cor">sen2cor</a>;</li>
+<li>
+<a href="https://ggranga.github.io/fidolasen/reference/s2_translate.html"><code><a href="reference/s2_translate.html">s2_translate()</a></code></a> to convert Sentinel-2 products from SAFE format to a format managed by GDAL;</li>
+<li>
+<a href="https://ggranga.github.io/fidolasen/reference/s2_merge.html"><code><a href="reference/s2_merge.html">s2_merge()</a></code></a> to merge Sentinel-2 tiles which have the same date and orbit;</li>
+<li>
+<a href="https://ggranga.github.io/fidolasen/reference/gdal_warp.html"><code><a href="reference/gdal_warp.html">gdal_warp()</a></code></a> to clip, reproject and warp raster files (this is a wrapper to call <a href="http://www.gdal.org/gdal_translate.html">gdal_translate</a> or <a href="http://www.gdal.org/gdalwarp.html">gdalwarp</a> basing on input parameters);</li>
+<li>
+<a href="https://ggranga.github.io/fidolasen/reference/s2_mask.html"><code><a href="reference/s2_mask.html">s2_mask()</a></code></a> to apply a cloud mask to Sentinel-2 products;</li>
+<li>
+<a href="https://ggranga.github.io/fidolasen/reference/s2_calcindices.html"><code><a href="reference/s2_calcindices.html">s2_calcindices()</a></code></a> to compute maps of spectral indices from Sentinel-2 Surface Reflectance multiband raster files.</li>
+</ul>
+</li>
+</ul>
+</div>
 <div id="credits" class="section level2">
 <h2 class="hasAnchor">
 <a href="#credits" class="anchor"></a>Credits</h2>
