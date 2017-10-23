@@ -272,6 +272,23 @@ fidolasen_s2 <- function(param_list=NULL,
     list_prods <- c(list_prods, pm$index_source)
   }
 
+  # check that output directories exist
+  paths_exist <- sapply(pm[c("path_l1c","path_l2a","path_tiles","path_merged","path_out","path_indices")],
+                        function(x){if(is.na(x)){NA}else{file.exists(x)}})
+  paths_exist <- paths_exist[!is.na(paths_exist)]
+  if (any(!paths_exist)) {
+    print_message(
+      type="error",
+      "The following output ",
+      if (sum(!paths_exist)==1) {"directory does "} else {"directories do "},
+      "not exist:\n",
+      paste(pm[names(paths_exist[!paths_exist])],collapse="\n"),
+      ".\nPlease create ",
+      if (sum(!paths_exist)==1) {"it "} else {"them "},
+      "before continuing."
+    )
+  }
+
 
   # check output format
   sel_driver <- gdal$GetDriverByName(pm$outformat)
