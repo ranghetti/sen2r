@@ -678,6 +678,14 @@ fidolasen_s2 <- function(param_list=NULL,
         ))
       }
       out_names_new <- out_names_new[!file.exists(nn(out_names_new))]
+      if (!is.na(pm$mask_type) & !"SCL" %in% pm$list_prods & length(out_names_new)>0) {
+        # if some output needs to be created with masking, include the creation of SCL
+        out_names_new <- unique(c(
+          out_names_new,
+          out_names_exp[fs2nc_getElements(out_names_exp, format="data.frame")$prod_type=="SCL"]
+        ))
+      }
+      out_names_new <- out_names_new[!file.exists(nn(out_names_new))]
 
       # required masked and warped
       masked_names_new <- if (is.na(pm$mask_type)) {
@@ -907,7 +915,7 @@ fidolasen_s2 <- function(param_list=NULL,
       #                           if(pm$path_subdirs==TRUE){basename(dirname(warped_names[!names_merged_exp_scl_idx]))}else{""},
       #                           gsub(paste0(warped_ext,"$"),out_ext,basename(warped_names[!names_merged_exp_scl_idx])))
       masked_names_out <- s2_mask(if(pm$clip_on_extent==TRUE){warped_names_req}else{merged_names_req},
-                                  if(pm$clip_on_extent==TRUE){warped_names_req}else{merged_names_req}[names_merged_exp_scl_idx],
+                                  if(pm$clip_on_extent==TRUE){warped_names_req}else{merged_names_exp[names_merged_exp_scl_idx]},
                                   mask_type=pm$mask_type,
                                   outdir=path_out,
                                   format=pm$outformat,
