@@ -37,9 +37,23 @@
 #'
 #' @export
 
+s2_gui <- function(param_list = NULL,
+                   thunderforest_api = NA) {
+  .s2_gui(
+    param_list = param_list,
+    par_fun = "parent",
+    thunderforest_api = thunderforest_api
+  )
+}
 
-s2_gui <- function(param_list=NULL,
-                   thunderforest_api=NA) {
+# Internal function with parameter par_fun (parent function):
+# default is "parent", but it can be set with another value
+# for internal purposes.
+# For now, value "fidolasen_s2" is used when s2_gui() is launched from
+# fidolasen_s2(), and is used to change save button label.
+.s2_gui <- function(param_list = NULL,
+                    par_fun = "parent",
+                    thunderforest_api = NA) {
 
   # import python modules
   gdal <- import("osgeo",convert=FALSE)$gdal
@@ -101,10 +115,28 @@ s2_gui <- function(param_list=NULL,
           shinyFilesButton("import_param", "Load options", "Import a JSON file with parameters", multiple=FALSE, class="darkbutton")
         ),
         p(style="margin-top:20pt;",
-          actionButton("return_param", strong("\u2000Save and close GUI"), icon=icon("check"), class="darkbutton")
+          actionButton(
+            "return_param",
+            label = if (par_fun=="fidolasen_s2") {
+              strong("\u2000Launch processing")
+            } else {
+              strong("\u2000Save and close GUI")
+            },
+            icon = icon("check"),
+            class = "darkbutton"
+          )
         ),
         p(style="margin-top:0pt;",
-          actionButton("exit_gui", "\u2000Close without saving", icon=icon("ban"), class="darkbutton")
+          actionButton(
+            "exit_gui",
+            label = if (par_fun=="fidolasen_s2") {
+              "\u2000Close without processing"
+            } else {
+              "\u2000Close without saving"
+            },
+            icon = icon("ban"),
+            class = "darkbutton"
+          )
         )
       )
 
@@ -1264,11 +1296,6 @@ s2_gui <- function(param_list=NULL,
 
     # disable dissolve_extent (not yet implemented, TODO)
     disable("dissolve_extent")
-
-
-
-
-
 
 
     ## end of extent module ##

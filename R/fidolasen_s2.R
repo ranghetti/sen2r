@@ -16,6 +16,11 @@
 #'  If `param_list` is NULL (default), values given with the
 #'  parameters below (or default values for parameters not
 #'  provided) are used.
+#' @param gui (optional) Logical: if TRUE, function [s2_gui()] is
+#'  launched before starting to process in order to set or load parameters;
+#'  if FALSE, the function uses parameters passed with `param_list` or
+#'  with other function arguments. Default is FALSE if `param_list` is not
+#'  NULL, TRUE elsewhere.
 #' @param preprocess (optional) Logical: TRUE (default) to perform also
 #'  preprocessing steps, FALSE not to (do only find, download
 #'  and atmospheric correction).
@@ -147,6 +152,7 @@
 
 
 fidolasen_s2 <- function(param_list=NULL,
+                         gui=NA,
                          preprocess=NA,
                          s2_levels=NA,
                          sel_sensor=NA,
@@ -273,6 +279,20 @@ fidolasen_s2 <- function(param_list=NULL,
     }
     if (is.na(pm$timewindow)) {
       pm$timewindow <- c(Sys.Date() - 90, Sys.Date())
+    }
+  }
+
+
+  ## Open GUI (if required)
+  # if gui argument was not specified, use default value
+  if (is.na(gui)) {
+    gui <- if (is.null(param_list)) {TRUE} else {FALSE}
+  }
+  # open GUI
+  if (gui==TRUE) {
+    pm <- .s2_gui(pm, par_fun = "fidolasen_s2")
+    if (is.null(pm)) {
+      return()
     }
   }
 

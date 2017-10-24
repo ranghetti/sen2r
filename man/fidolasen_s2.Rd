@@ -4,16 +4,17 @@
 \alias{fidolasen_s2}
 \title{Find, download and preprocess Sentinel-2 images}
 \usage{
-fidolasen_s2(param_list = NULL, preprocess = NA, s2_levels = NA,
-  sel_sensor = NA, online = NA, overwrite_safe = NA, rm_safe = NA,
-  step_atmcorr = NA, timewindow = NA, timeperiod = NA, extent = NA,
-  s2tiles_selected = NA, s2orbits_selected = NA, clip_on_extent = NA,
-  extent_as_mask = NA, list_prods = NA, list_indices = NA,
-  index_source = NA, mask_type = NA, reference_path = NA, res = NA,
-  res_s2 = NA, unit = NA, proj = NA, resampling = NA,
-  resampling_scl = NA, outformat = NA, compression = NA, overwrite = NA,
-  path_l1c = NA, path_l2a = NA, path_tiles = NA, path_merged = NA,
-  path_out = NA, path_indices = NA, path_subdirs = NA)
+fidolasen_s2(param_list = NULL, gui = NA, preprocess = NA,
+  s2_levels = NA, sel_sensor = NA, online = NA, overwrite_safe = NA,
+  rm_safe = NA, step_atmcorr = NA, timewindow = NA, timeperiod = NA,
+  extent = NA, s2tiles_selected = NA, s2orbits_selected = NA,
+  clip_on_extent = NA, extent_as_mask = NA, list_prods = NA,
+  list_indices = NA, index_source = NA, mask_type = NA,
+  reference_path = NA, res = NA, res_s2 = NA, unit = NA, proj = NA,
+  resampling = NA, resampling_scl = NA, outformat = NA,
+  compression = NA, overwrite = NA, path_l1c = NA, path_l2a = NA,
+  path_tiles = NA, path_merged = NA, path_out = NA, path_indices = NA,
+  path_subdirs = NA)
 }
 \arguments{
 \item{param_list}{(optional) List of input parameters:
@@ -28,6 +29,12 @@ parameters.
 If \code{param_list} is NULL (default), values given with the
 parameters below (or default values for parameters not
 provided) are used.}
+
+\item{gui}{(optional) Logical: if TRUE, function \code{\link[=s2_gui]{s2_gui()}} is
+launched before starting to process in order to set or load parameters;
+if FALSE, the function uses parameters passed with \code{param_list} or
+with other function arguments. Default is FALSE if \code{param_list} is not
+NULL, TRUE elsewhere.}
 
 \item{preprocess}{(optional) Logical: TRUE (default) to perform also
 preprocessing steps, FALSE not to (do only find, download
