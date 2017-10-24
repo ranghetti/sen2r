@@ -71,15 +71,18 @@ s2_gui <- function(param_list=NULL,
         menuItem("Product selection", tabName = "tab_steps", icon = icon("image"))
       ),
       sidebarMenu(
-        menuItem("Spatial-temporal selection", tabName = "tab_query", icon = icon("clone"))
+        menuItem("Spatio-temporal selection", tabName = "tab_query", icon = icon("clone"))
       ),
       conditionalPanel(
         condition = "input.preprocess == 'TRUE'",
         sidebarMenu(
-          menuItem("Processing settings", tabName = "tab_prepro", icon = icon("th"))
+          menuItem("Processing options", tabName = "tab_prepro", icon = icon("th"))
         ),
-        sidebarMenu(
-          menuItem("Index selection", tabName = "tab_index", icon = icon("calculator"))
+        conditionalPanel(
+          condition = "input.list_prods.indexOf('indices') != -1",
+          sidebarMenu(
+            menuItem("Spectral indices selection", tabName = "tab_index", icon = icon("calculator"))
+          )
         )
       ),
       # sidebarMenu(
@@ -92,10 +95,10 @@ s2_gui <- function(param_list=NULL,
       div(
         style="position:absolute;top:250px;",
         p(style="margin-top:15pt;margin-left:11pt;",
-          shinySaveButton("export_param", "Export parameters", "Export parameters as ...", filetype=list(json="json"), class="darkbutton")
+          shinySaveButton("export_param", "Save options as...", "Save parameters as ...", filetype=list(json="json"), class="darkbutton")
         ),
         p(style="margin-top:5pt;margin-left:11pt;",
-          shinyFilesButton("import_param", "Import parameters", "Import a JSON file with parameters", multiple=FALSE, class="darkbutton")
+          shinyFilesButton("import_param", "Load options", "Import a JSON file with parameters", multiple=FALSE, class="darkbutton")
         ),
         p(style="margin-top:20pt;",
           actionButton("return_param", strong("\u2000Save and close GUI"), icon=icon("check"), class="darkbutton")
@@ -131,7 +134,7 @@ s2_gui <- function(param_list=NULL,
           #   checkboxGroupInput("proc_steps", NULL, #"Perform the following steps:",
           #                choices = list("Spatio-temporal selection of SAFE products" = "query",
           #                               "Atmospheric correction of L1C products with sen2cor" = "atmcorr",
-          #                               "Processing steps (see details in the \"Preprocessing settings\" tab)" = "preprocess"),
+          #                               "Processing steps (see details in the \"Preprocessing options\" tab)" = "preprocess"),
           #                selected=c("query","atmcorr","preprocess"),
           #                inline = FALSE),
           #   conditionalPanel(
@@ -144,13 +147,23 @@ s2_gui <- function(param_list=NULL,
           #   )
           # )),
           fluidRow(box(
-            title="Required output type",
+            title="Type of processing",
             width=12,
-            radioButtons("preprocess", NULL,
-                               choices = list("Processed spatial files (surface reflectance, spectral indices, ...)" = TRUE,
-                                              "Raw SAFE files (downloaded and/or corrected with sen2cor)" = FALSE),
-                               selected=TRUE,
-                               inline = FALSE)
+            radioButtons(
+              "preprocess", NULL,
+              choiceNames = list(
+                "Processed spatial files (surface reflectance, spectral indices, ...) in custom format",
+                span(
+                  "Raw files in ",
+                  a("raw SAFE format",
+                    href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/data-formats",
+                    target="_blank"),
+                  " (downloaded and/or corrected with sen2cor)")
+                ),
+              choiceValues = list(TRUE, FALSE),
+              selected=TRUE,
+              inline = FALSE
+            )
           )),
 
           fluidRow(box(
@@ -167,12 +180,18 @@ s2_gui <- function(param_list=NULL,
                                      choiceNames = list("TOA (top-of-atmosphere) Reflectance",
                                                         "BOA (bottom-of-atmosphere) Surface Reflectance",
                                                         "SCL (surface classification map)",
-                                                        "TCI (true-color) RGB 8-bit image"),
-                                     choiceValues = list("TOA", "BOA", "SCL", "TCI"),
-                                     selected = c("BOA")),
-                  span(style="color:grey;",
-                       p(style="margin-bottom:1em;",
-                         "To select spectral indices, use the tab \"Index selection\"."))
+                                                        "TCI (true-color) RGB 8-bit image",
+                                                        "Spectral indices"),
+                                     choiceValues = list("TOA", "BOA", "SCL", "TCI", "indices"),
+                                     selected = c("BOA"))#,
+                  # checkboxInput(
+                  #   "activate_indices",
+                  #   label = "Spectral indices",
+                  #   value = FALSE
+                  # )#,
+                  # span(style="color:grey;",
+                  #      p(style="margin-bottom:1em;",
+                  #        "To select spectral indices, use the tab \"Spectral indices selection\"."))
                 ),
                 conditionalPanel(
                   condition = "input.preprocess == 'FALSE'",
@@ -196,8 +215,8 @@ s2_gui <- function(param_list=NULL,
 
                 checkboxGroupInput("sel_sensor", "Select sensors:",
                                    choiceNames = list("Sentinel-2A",
-                                                      span("Sentinel-2B",#
-                                                           actionLink("sel_sensor_tempmessage", "(note)")) # temp
+                                                      span("Sentinel-2B\u2000",#
+                                                           actionLink("sel_sensor_tempmessage", icon("info-circle"))) # temp
                                    ),
                                    choiceValues = list("s2a", "s2b"),
                                    selected=c("s2a","s2b"),
@@ -250,10 +269,17 @@ s2_gui <- function(param_list=NULL,
                 width=6,
 
                 # online_mode (online/offline mode)
-                radioButtons("online", "Download mode",
-                             choices = list("Online (search and download)" = TRUE,
-                                            "Offline (query and/or apply sen2cor among SAFE products)" = FALSE),
-                             selected = TRUE),
+                radioButtons(
+                  "online",
+                  label = span(
+                    "Download mode\u2000",
+                    actionLink("help_online", icon("question-circle"))
+                  ),
+                  choiceNames = list("Online", "Offline"),
+                  choiceValues = list(TRUE, FALSE),
+                  selected = TRUE,
+                  inline = TRUE
+                ),
 
                 # delete_safe
                 radioButtons("rm_safe", "Delete raw SAFE files after processing?",
@@ -267,10 +293,17 @@ s2_gui <- function(param_list=NULL,
               column(
                 width=6,
                 # overwrite SAFE
-                radioButtons("overwrite_safe", "Overwrite SAFE products?",
-                             choices = list("Yes (download and apply sen2cor on all products)" = TRUE,
-                                            "No (skip download or sen2cor for existing products)" = FALSE),
-                             selected = TRUE)
+                radioButtons(
+                  "overwrite_safe",
+                  label = span(
+                    "Overwrite existing SAFE products?\u2000",
+                    actionLink("help_overwrite_safe", icon("question-circle"))
+                  ),
+                  choiceNames = list("Yes", "No"),
+                  choiceValues = list(TRUE, FALSE),
+                  selected = TRUE,
+                  inline = TRUE
+                )
               )
             ) # end of fluidRow download / delete SAFE
 
@@ -283,11 +316,19 @@ s2_gui <- function(param_list=NULL,
               width=12,
               # step_atmcorr (perform or not sen2cor and how)
               # uiOutput("step_atmcorr")
-              radioButtons("step_atmcorr", "Method to obtain level-2A corrected images", #NULL, #"When level-2A products are available for download:",
-                           choices = list("Search and download corrected images whenever it is possible, otherwise use sen2cor on this PC" = "auto",
-                                          "Always search and download level-1C SAFE, and correct them on this PC" = "scihub",
-                                          "Search and download corrected images (skip them if they are not available)" = "l2a"),
-                           selected = "auto")
+              radioButtons(
+                "step_atmcorr",
+                label = span(
+                  "Method to obtain level-2A corrected images\u2000",
+                  actionLink("help_step_atmcorr", icon("question-circle"))
+                ),
+                choiceNames = list(
+                  "Use only level-2A images available locally or online",
+                  "Use sen2cor only for level-2A products not available locally or online",
+                  "Always correct level-1C images with sen2cor locally"
+                ),
+                choiceValues = list("l2a","auto", "scihub"),
+                selected = "auto")
             )) # end of fluidRow/box "sen2cor options"
           )
 
@@ -351,10 +392,10 @@ s2_gui <- function(param_list=NULL,
 
                 column(
                   width=4,
-                  radioButtons("extent_type", "Use as extent:",
-                               choices = list("Bounding box coordinates" = "bbox",
+                  radioButtons("extent_type", "Method to select extent",
+                               choices = list("Draw on the map" = "draw",
                                               "Upload vector file" = "vectfile",
-                                              "Draw on the map" = "draw"),
+                                              "Enter coordinates" = "bbox"),
                                selected = "draw")
                 ),
 
@@ -376,10 +417,18 @@ s2_gui <- function(param_list=NULL,
                   ),
                   conditionalPanel(
                     condition = "input.extent_type == 'draw' || input.extent_type == 'vectfile'",
-                    radioButtons("dissolve_extent", "Number of output extents:",
-                                 choices = list("Unique (dissolve all the polygons)" = TRUE,
-                                                "Multiple (each polygon is an extent)" = FALSE),
-                                 selected = TRUE)
+                    radioButtons(
+                      "dissolve_extent",
+                      label = span(
+                        "Consider multiple polygons as:",
+                        actionLink("help_dissolve_extent", icon("question-circle"))
+                      ),
+                      choiceNames = list(
+                        "A multipart geometry (create a single merged output)",
+                        "Single part geometries (create separate outputs)"
+                      ),
+                      choiceValues = list(TRUE, FALSE),
+                      selected = TRUE)
                   ),
                   conditionalPanel(
                     condition = "input.extent_type == 'vectfile' && input.dissolve_extent == 'FALSE'",
@@ -454,317 +503,327 @@ s2_gui <- function(param_list=NULL,
         ### Output tab (geometry and parameters) ###
         tabItem(
           tabName = "tab_prepro",
-          title="Processing settings",
+          title="Processing options",
 
-          conditionalPanel(
-            condition = "input.preprocess == 'TRUE'",
+          fluidRow(box(
+            title="Output files",
+            width=12,
 
-            fluidRow(box(
-              width=6,
-              title = "Ouptut extent",
-
-              fluidRow(
-                column(
-                  width=12,
-                  conditionalPanel(
-                    condition = "input.list_prods.length > 0",
-                    div(div(style="display:inline-block;vertical-align:top;",
-                            strong("Directory for output processed products: \u00a0")),
-                        div(style="display:inline-block;vertical-align:top;",
-                            htmlOutput("path_out_errormess")),
-                        div(div(style="display:inline-block;vertical-align:top;width:50pt;",
-                                shinyDirButton("path_out_sel", "Select", "Specify directory for output processed products")),
-                            div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
-                                textInput("path_out_textin", NULL, "Enter directory..."))))
+            fluidRow(
+              column(
+                width=12,
+                conditionalPanel(
+                  condition = "input.list_prods.length > 1 || (input.list_prods.length > 0 && input.list_prods.indexOf('indices') == -1)",
+                  div(div(style="display:inline-block;vertical-align:top;",
+                          strong("Directory for output processed products: \u00a0")),
+                      div(style="display:inline-block;vertical-align:top;",
+                          htmlOutput("path_out_errormess")),
+                      div(div(style="display:inline-block;vertical-align:top;width:50pt;",
+                              shinyDirButton("path_out_sel", "Select", "Specify directory for output processed products")),
+                          div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
+                              textInput("path_out_textin", NULL, "Enter directory..."))))
+                ),
+                div(
+                  style="margin-top: -15px",
+                  checkboxInput(
+                    "path_subdirs",
+                    label = span(
+                      "Group products in subdirectories\u2000",
+                      actionLink("help_path_subdirs", icon("question-circle"))
+                    ),
+                    value = TRUE
                   )
-                ),
-                column(
-                  width=12,
-                  div(#style="margin-top: 25px",
-                    checkboxInput("path_subdirs", "Group products in subdirectories", value = TRUE))
                 )
+              )
+            ),
+
+            fluidRow(
+
+              column(
+                width=5,
+                radioButtons("overwrite", label = "Overwrite existing outputs",
+                             choices = list("Yes (reprocess all)" = TRUE,
+                                            "No (skip processing if outputs exist)" = FALSE),
+                             selected = FALSE)
               ),
 
-              fluidRow(
-                column(
-                  width=12,
-                  radioButtons("clip_on_extent", "Clip the outputs on the selected extent?",
-                           choices = list("Yes" = TRUE,
-                                          "No (return all the tile extension)" = FALSE),
-                           selected = TRUE,
-                           inline = TRUE)
-                ),
-                column(
-                  width=12,
-                  radioButtons("extent_as_mask", "Mask outside the polygons?",
-                               choices = list("Yes (set nodata)" = TRUE,
-                                              "No" = FALSE),
-                               selected = FALSE,
-                               inline = TRUE)
-                )
+              column(
+                width=4,
+                selectInput("outformat", label = "Output file format",
+                            choices = list("GeoTiff" = "GTiff",
+                                           "ENVI" = "ENVI"),
+                            # TODO add others common formats
+                            selected = "GTiff")
               ),
 
-              hr(style="margin-top: 0em; margin-bottom: 0.75em;"),
+              conditionalPanel(
+                condition = "input.outformat == 'GTiff'",
+                column(
+                  width=3,
+                  selectInput("compression", label = "Output compression",
+                              choices = list("Uncompressed" = "NONE",
+                                             "Low (packbits)" = "PACKBITS",
+                                             "Medium (lzw)" = "LZW",
+                                             "High (deflate)" = "DEFLATE"),
+                              selected = "LZW")
+                )
+              )
 
-              fluidRow(
+              # htmlOutput("outformat_message") # disabled
+
+            ) # end of fluidRow in output settings
+
+          )), # end of fluidrow/box "Output files"
+
+
+          fluidRow(box(
+            width=6,
+            title = "Ouptut extent",
+
+            fluidRow(
+              column(
+                width=12,
+                radioButtons(
+                  "clip_on_extent",
+                  label = span(
+                    "Clip outputs on the selected extent?\u2000",
+                    actionLink("help_clip_on_extent", icon("question-circle"))
+                  ),
+                  choiceNames = list("Yes", "No"),
+                  choiceValues = list(TRUE, FALSE),
+                  selected = TRUE,
+                  inline = TRUE
+                )
+              ),
+              column(
+                width=12,
+                radioButtons(
+                  "extent_as_mask",
+                  label = "Mask data outside the selected polygons?",
+                             choices = list("Yes" = TRUE, # TODO set nodata
+                                            "No" = FALSE),
+                             selected = FALSE,
+                             inline = TRUE)
+              )
+            ),
+
+            hr(style="margin-top: 0em; margin-bottom: 0.75em;"),
+
+            fluidRow(
+              column(
+                width=6,
+                radioButtons("keep_tiles", "Save single tiles?",
+                             choices = list("Yes" = TRUE,
+                                            "No" = FALSE),
+                             selected = FALSE,
+                             inline = TRUE)
+              ),
+              conditionalPanel(
+                condition = "input.clip_on_extent == 'TRUE'",
                 column(
                   width=6,
-                  radioButtons("keep_tiles", "Keep the single tiles?",
+                  radioButtons("keep_merged", "Save merged tiles?",
                                choices = list("Yes" = TRUE,
                                               "No" = FALSE),
                                selected = FALSE,
-                               inline = TRUE)
-                ),
-                conditionalPanel(
-                  condition = "input.clip_on_extent == 'TRUE'",
-                  column(
-                    width=6,
-                    radioButtons("keep_merged", "Keep the tile mosaics?",
-                                 choices = list("Yes" = TRUE,
-                                                "No" = FALSE),
-                                 selected = FALSE,
-                                 inline = TRUE))
-                )
-              ), # end of fluidRow keep_tiles
-
-              fluidRow(
-                column(
-                  width=12,
-                  conditionalPanel(
-                    condition = "input.keep_tiles == 'TRUE'",
-                    div(div(style="display:inline-block;vertical-align:top;",
-                            strong("Directory for single tiles in custom format: \u00a0")),
-                        div(style="display:inline-block;vertical-align:top;",
-                            htmlOutput("path_tiles_errormess")),
-                        div(div(style="display:inline-block;vertical-align:top;width:50pt;",
-                                shinyDirButton("path_tiles_sel", "Select", "Specify directory for single tiles in custom format")),
-                            div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
-                                textInput("path_tiles_textin", NULL, "Enter directory..."))))
-                  )
-                ),
-                column(
-                  width=12,
-                  conditionalPanel(
-                    condition = "input.clip_on_extent == 'TRUE' && input.keep_merged == 'TRUE'",
-                    div(div(style="display:inline-block;vertical-align:top;",
-                            strong("Directory for tiles spatially merged: \u00a0")),
-                        div(style="display:inline-block;vertical-align:top;",
-                            htmlOutput("path_merged_errormess")),
-                        div(div(style="display:inline-block;vertical-align:top;width:50pt;",
-                                shinyDirButton("path_merged_sel", "Select", "Specify directory for tiles spatially merged")),
-                            div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
-                                textInput("path_merged_textin", NULL, "Enter directory..."))))
-                  )
-                )
-              ) # end of fluidRow keep_tiles
-
-
-
-
-
-            ), # end of box "Processing options"
-
-            box(
-              title="Atmospheric mask",
-              width=6,
-
-              radioButtons("atm_mask", "Mask cloud-covered pixels?",
-                           choices = list("Yes" = TRUE,
-                                          "No" = FALSE),
-                           selected = FALSE,
-                           inline = TRUE),
-
-              conditionalPanel(
-                condition = "input.list_prods.indexOf('SCL')==-1 && input.atm_mask == 'TRUE'",
-                span(style="color:grey",
-                     p(stype="margin-bottom:15pt",
-                       "SCL is required to mask products, so Level-2A SAFE ",
-                       "are also required. Return to \"Product selection\" menu ",
-                       "to check sen2cor settings."))
-              ),
-
-              conditionalPanel(
-                condition = "input.atm_mask == 'TRUE'",
-                radioButtons("atm_mask_type", "Apply mask to:",
-                             choices = list("No data" = "nodata",
-                                            "No data or clouds (high probability)" = "cloud_high_proba",
-                                            "No data or clouds (high or medium probability)" = "cloud_medium_proba",
-                                            "No data or clouds (any probability)" = "cloud_low_proba",
-                                            "No data, clouds or cloud shadows" = "cloud_and_shadow",
-                                            "No data, clouds, cloud shadows or thin cirrus" = "cloud_shadow_cirrus"),
-                             selected = "cloud_medium_proba")
+                               inline = TRUE))
               )
+            ), # end of fluidRow keep_tiles
 
-            )), # end of fluidRow/box "Atmospheric mask"
+            fluidRow(
+              column(
+                width=12,
+                conditionalPanel(
+                  condition = "input.keep_tiles == 'TRUE'",
+                  div(div(style="display:inline-block;vertical-align:top;",
+                          strong("Output directory for single tiles: \u00a0")),
+                      div(style="display:inline-block;vertical-align:top;",
+                          htmlOutput("path_tiles_errormess")),
+                      div(div(style="display:inline-block;vertical-align:top;width:50pt;",
+                              shinyDirButton("path_tiles_sel", "Select", "Specify directory for single tiles in custom format")),
+                          div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
+                              textInput("path_tiles_textin", NULL, "Enter directory..."))))
+                )
+              ),
+              column(
+                width=12,
+                conditionalPanel(
+                  condition = "input.clip_on_extent == 'TRUE' && input.keep_merged == 'TRUE'",
+                  div(div(style="display:inline-block;vertical-align:top;",
+                          strong("Output directory for merged tiles: \u00a0")),
+                      div(style="display:inline-block;vertical-align:top;",
+                          htmlOutput("path_merged_errormess")),
+                      div(div(style="display:inline-block;vertical-align:top;width:50pt;",
+                              shinyDirButton("path_merged_sel", "Select", "Specify directory for tiles spatially merged")),
+                          div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
+                              textInput("path_merged_textin", NULL, "Enter directory..."))))
+                )
+              )
+            ) # end of fluidRow keep_tiles
+
+          ), # end of box "Output extent"
+
+          box(
+            title="Atmospheric mask",
+            width=6,
+
+            radioButtons("atm_mask", "Mask cloud-covered pixels?",
+                         choices = list("Yes" = TRUE,
+                                        "No" = FALSE),
+                         selected = FALSE,
+                         inline = TRUE),
 
             conditionalPanel(
-              condition = "input.clip_on_extent == 'TRUE'",
-              fluidRow(box(
-                width=12,
-                title = "Output geometry",
+              condition = "output.req_l2a_onlytomask == 'TRUE'",
+              span(style="color:grey",
+                   p(stype="margin-bottom:15pt",
+                     "SCL is required to mask products, so Level-2A SAFE ",
+                     "are also required. Return to \"Product selection\" menu ",
+                     "to check sen2cor settings."))
+            ),
 
-                fluidRow( # fluidrow for spatial reference
+            conditionalPanel(
+              condition = "input.atm_mask == 'TRUE'",
+              selectInput("atm_mask_type", "Apply mask to:",
+                           choices = list("No data" = "nodata",
+                                          "No data or clouds (high probability)" = "cloud_high_proba",
+                                          "No data or clouds (high or medium probability)" = "cloud_medium_proba",
+                                          "No data or clouds (any probability)" = "cloud_low_proba",
+                                          "No data, clouds or cloud shadows" = "cloud_and_shadow",
+                                          "No data, clouds, cloud shadows or thin cirrus" = "cloud_shadow_cirrus"),
+                           selected = "cloud_medium_proba")
+            )
 
+          )), # end of fluidRow/box "Atmospheric mask"
+
+          conditionalPanel(
+            condition = "input.clip_on_extent == 'TRUE'",
+            fluidRow(box(
+              width=12,
+              title = "Output geometry",
+
+              fluidRow( # fluidrow for spatial reference
+
+                column(
+                  width=8,
+                  radioButtons("use_reference", label = "Use an existing raster to define the output grid?",
+                               choices = list("Yes" = TRUE,
+                                              "No" = FALSE),
+                               selected = FALSE,
+                               inline = TRUE),
+                  conditionalPanel(
+                    condition = "input.use_reference == 'TRUE'",
+                    div(
+                      div(
+                        style="display:inline-block;vertical-align:top;",
+                        shinyFilesButton("reference_file_button", "Select raster", "Select reference file", multiple=FALSE),
+                        "\u2001"),
+                      div(
+                        style="display:inline-block;vertical-align:top;width:calc(100% - 88pt);",
+                        textInput("reference_file_textin", label = NULL, "Enter file path...", width="100%"))),
+                    uiOutput("reference_file_message")
+
+                  )
+                ), # end of column reference
+
+                conditionalPanel(
+                  condition = "input.use_reference == 'TRUE'",
                   column(
-                    width=8,
-                    radioButtons("use_reference", label = "Use an existing raster as a reference for output grid?",
-                                 choices = list("Yes (load raster)" = TRUE,
-                                                "No" = FALSE),
+                    width=4,
+                    checkboxGroupInput("reference_usefor", label = "Use the file to define:",
+                                       choices = list("Projection" = "proj",
+                                                      "Resolution" = "res"),
+                                       #"Extent" = "ext", # TODO
+                                       # "Output format" = "outformat"),
+                                       selected = c("proj","res"))
+                  ) # end of column use reference for
+                ) # end of its conditional panel
+
+              ), # end of fluidrow for spatial reference
+
+              hr(style="margin-top: 0em; margin-bottom: 0.75em;"),
+
+              fluidRow( # fluidrow for output geometry settings
+
+                column(
+                  width=4,
+
+                  strong("Spatial resolution"),
+                  conditionalPanel(
+                    condition = "input.use_reference == 'FALSE' || input.reference_usefor.indexOf('res') < 0",
+                    radioButtons("rescale", label = NULL,
+                                 choices = list("Native" = FALSE,
+                                                "Custom" = TRUE),
                                  selected = FALSE,
                                  inline = TRUE),
                     conditionalPanel(
-                      condition = "input.use_reference == 'TRUE'",
-                      div(
-                        div(
-                          style="display:inline-block;vertical-align:top;",
-                          shinyFilesButton("reference_file_button", "Select", "Select reference file", multiple=FALSE),
-                          "\u2001"),
-                        div(
-                          style="display:inline-block;vertical-align:top;width:calc(100% - 65pt);",
-                          textInput("reference_file_textin", label = NULL, "Enter file path...", width="100%"))),
-                      uiOutput("reference_file_message")
-
-                    )
-                  ), # end of column reference
-
-                  conditionalPanel(
-                    condition = "input.use_reference == 'TRUE'",
-                    column(
-                      width=4,
-                      checkboxGroupInput("reference_usefor", label = "Use the file as a reference for:",
-                                         choices = list("Projection" = "proj",
-                                                        "Resolution" = "res"),
-                                         #"Extent" = "ext", # TODO
-                                         # "Output format" = "outformat"),
-                                         selected = c("proj","res"))
-                    ) # end of column use reference for
-                  ) # end of its conditional panel
-
-                ), # end of fluidrow for spatial reference
-
-                hr(style="margin-top: 0em; margin-bottom: 0.75em;"),
-
-                fluidRow( # fluidrow for output geometry settings
-
-                  column(
-                    width=4,
-
-                    strong("Spatial resolution"),
-                    conditionalPanel(
-                      condition = "input.use_reference == 'FALSE' || input.reference_usefor.indexOf('res') < 0",
-                      radioButtons("rescale", label = NULL,
-                                   choices = list("Native" = FALSE,
-                                                  "Custom" = TRUE),
-                                   selected = FALSE,
-                                   inline = TRUE),
-                      conditionalPanel(
-                        condition = "input.rescale == 'FALSE'",
-                        radioButtons("resolution_s2", label = "Specify resolution",
-                                     choices = list("10 metres" = "10m",
-                                                    "20 metres" = "20m",
-                                                    "60 metres" = "60m"),
-                                     selected = "10m")
-                      ),
-                      conditionalPanel(
-                        condition = "input.rescale == 'TRUE'",
-                        numericInput("resolution_custom", "Specify resolution (in metres)",
-                                     # width="100px",
-                                     value = 10,
-                                     min = 0)
-                      )
-
+                      condition = "input.rescale == 'FALSE'",
+                      radioButtons("resolution_s2", label = "Specify resolution",
+                                   choices = list("10 metres" = "10m",
+                                                  "20 metres" = "20m",
+                                                  "60 metres" = "60m"),
+                                   selected = "10m")
                     ),
-
-                    htmlOutput("outres_message")
-
-                  ), # end of column spatial resolution
-
-                  column(
-                    width=4,
-
-                    strong("Output projection"),
                     conditionalPanel(
-                      condition = "input.use_reference == 'FALSE' || input.reference_usefor.indexOf('proj') < 0",
-                      radioButtons("reproj", label = NULL,
-                                   choices = list("Input projection (do not reproject)" = FALSE,
-                                                  "Custom projection" = TRUE),
-                                   selected = FALSE),
-                      conditionalPanel(
-                        condition = "input.reproj == 'TRUE'",
-                        textInput("outproj", NULL,
-                                  value=character(0), width="100%")
-                      )
-                    ),
-
-                    htmlOutput("outproj_message")
-
-                  ), # end of column output projection
-
-                  column(
-                    width=4,
-                    selectInput("resampling", label = "Resampling method",
-                                 choices = list("Nearest neighbour" = "near",
-                                                "Average" = "average",
-                                                "Bilinear" = "bilinear",
-                                                "Cubic" = "cubic",
-                                                "Cubic spline" = "cubicspline",
-                                                "Lanczos windowed sinc" = "lanczos",
-                                                "Mode" = "mode"),
-                                 selected = "near"),
-                    conditionalPanel(
-                      condition = "input.list_prods.indexOf('SCL') != -1", # add here any additional discrete product
-                      selectInput("resampling_scl", label = "Resampling method for SCL",
-                                   choices = list("Nearest neighbour" = "near",
-                                                  "Mode" = "mode"),
-                                   selected = "near")
-
+                      condition = "input.rescale == 'TRUE'",
+                      numericInput("resolution_custom", "Specify resolution (in metres)",
+                                   # width="100px",
+                                   value = 10,
+                                   min = 0)
                     )
-                  ) # end of column resampling method
 
-                ) # end of fluidrow for output geometry settings
-
-              )) # end of fluidrow/box "Output geometry"
-            ), # end of conditionalpanel on output geometry
-
-            fluidRow(box(
-              title="Output files format",
-              width=12,
-
-              fluidRow(
-
-                column(
-                  width=6,
-                  radioButtons("outformat", label = "Output format",
-                               choices = list("GeoTiff" = "GTiff",
-                                              "ENVI" = "ENVI"),
-                               # TODO add others common formats
-                               selected = "GTiff"),
-
-                  conditionalPanel(
-                    condition = "input.outformat == 'GTiff'",
-                    radioButtons("compression", label = "Output compression",
-                                 choices = list("Uncompressed" = "NONE",
-                                                "Low (packbits)" = "PACKBITS",
-                                                "Medium (lzw)" = "LZW",
-                                                "High (deflate)" = "DEFLATE"),
-                                 selected = "LZW")
                   ),
 
-                  htmlOutput("outformat_message")
-                ), # end of outformat box
+                  htmlOutput("outres_message")
+
+                ), # end of column spatial resolution
 
                 column(
-                  width=6,
-                  radioButtons("overwrite", label = "Overwrite existing outputs",
-                               choices = list("Yes (reprocess all)" = TRUE,
-                                              "No (skip processing if outputs exist)" = FALSE),
-                               selected = FALSE)
-                )
+                  width=4,
 
-              ) # end of fluidRow in output settings
+                  strong("Output projection"),
+                  conditionalPanel(
+                    condition = "input.use_reference == 'FALSE' || input.reference_usefor.indexOf('proj') < 0",
+                    radioButtons("reproj", label = NULL,
+                                 choices = list("Input projection (do not reproject)" = FALSE,
+                                                "Custom projection" = TRUE),
+                                 selected = FALSE),
+                    conditionalPanel(
+                      condition = "input.reproj == 'TRUE'",
+                      textInput("outproj", NULL,
+                                value=character(0), width="100%")
+                    )
+                  ),
 
-            )) # end of fluidrow/box "Output settings"
-          ) # end of conditionalPanel on tab_prepro
+                  htmlOutput("outproj_message")
+
+                ), # end of column output projection
+
+                column(
+                  width=4,
+                  selectInput("resampling", label = "Resampling method",
+                              choices = list("Nearest neighbour" = "near",
+                                             "Average" = "average",
+                                             "Bilinear" = "bilinear",
+                                             "Cubic" = "cubic",
+                                             "Cubic spline" = "cubicspline",
+                                             "Lanczos windowed sinc" = "lanczos",
+                                             "Mode" = "mode"),
+                              selected = "near"),
+                  conditionalPanel(
+                    condition = "input.list_prods.indexOf('SCL') != -1", # add here any additional discrete product
+                    selectInput("resampling_scl", label = "Resampling method for SCL",
+                                choices = list("Nearest neighbour" = "near",
+                                               "Mode" = "mode"),
+                                selected = "near")
+
+                  )
+                ) # end of column resampling method
+
+              ) # end of fluidrow for output geometry settings
+
+            )) # end of fluidrow/box "Output geometry"
+          ) # end of conditionalpanel on output geometry
 
         ), # end of tabItem tab_prepro
 
@@ -780,7 +839,7 @@ s2_gui <- function(param_list=NULL,
             fluidRow(
               box(
                 width=8,
-                title="Index selection",
+                title="Spectral indices selection",
 
                 div(div(style="display:inline-block;vertical-align:top;",
                         strong("Directory for spectral indices: \u00a0")),
@@ -881,21 +940,29 @@ s2_gui <- function(param_list=NULL,
     observe({
       if (input$preprocess==TRUE) {
         safe_req$l1c <- if (any(l1c_prods %in% input$list_prods) |
-                            indices_req()==TRUE & input$index_source=="TOA") {TRUE} else {FALSE}
+                            indices_req()==TRUE & input$index_source=="TOA" |
+                            input$step_atmcorr %in% c("auto","scihub")) {TRUE} else {FALSE}
         safe_req$l2a <- if (any(l2a_prods %in% input$list_prods) |
                             input$atm_mask == TRUE |
                             indices_req()==TRUE & input$index_source=="BOA") {TRUE} else {FALSE}
+        safe_req$l2a_onlytomask <- if (!any(l2a_prods %in% input$list_prods) &
+                            input$atm_mask == TRUE &
+                            (indices_req()==FALSE |
+                             indices_req()==TRUE & input$index_source=="BOA")) {TRUE} else {FALSE}
       } else {
         safe_req$l1c <- if ("l1c" %in% input$list_levels) {TRUE} else {FALSE}
         safe_req$l2a <- if ("l2a" %in% input$list_levels) {TRUE} else {FALSE}
+        safe_req$l2a_onlytomask <- FALSE
       }
     })
     # these output values are used for conditionalPanels:
     output$req_l1c <- renderText(safe_req$l1c)
     output$req_l2a <- renderText(safe_req$l2a)
+    output$req_l2a_onlytomask <- renderText(safe_req$l2a_onlytomask)
     # options to update these values also if not visible
     outputOptions(output, "req_l1c", suspendWhenHidden = FALSE)
     outputOptions(output, "req_l2a", suspendWhenHidden = FALSE)
+    outputOptions(output, "req_l2a_onlytomask", suspendWhenHidden = FALSE)
 
 
     # Message for levels needed
@@ -1195,6 +1262,10 @@ s2_gui <- function(param_list=NULL,
     })
 
 
+    # disable dissolve_extent (not yet implemented, TODO)
+    disable("dissolve_extent")
+
+
 
 
 
@@ -1389,20 +1460,21 @@ s2_gui <- function(param_list=NULL,
 
     })
 
-    ## Update output format from reference file
-    output$outformat_message <- renderUI({
-      if(input$use_reference==TRUE & "outformat" %in% input$reference_usefor) {
-        if (!is.null(reference())) {
-          span(style="color:darkgreen",
-               reference()$outformat)
-        } else {
-          span(style="color:grey",
-               "Specify a valid raster file.")
-        }
-      } else {
-        ""
-      }
-    })
+    # ## Update output format from reference file
+    # (disabled: not yet possible to do it)
+    # output$outformat_message <- renderUI({
+    #   if(input$use_reference==TRUE & "outformat" %in% input$reference_usefor) {
+    #     if (!is.null(reference())) {
+    #       span(style="color:darkgreen",
+    #            reference()$outformat)
+    #     } else {
+    #       span(style="color:grey",
+    #            "Specify a valid raster file.")
+    #     }
+    #   } else {
+    #     ""
+    #   }
+    # })
 
 
 
@@ -1486,6 +1558,151 @@ s2_gui <- function(param_list=NULL,
     })
 
 
+    ## Question messages
+
+    observeEvent(input$help_online, {
+      showModal(modalDialog(
+        title = "Download mode",
+        p(HTML(
+          "Selecting <strong>Online</strong> mode, the user must specify",
+          "a spatial extent and a temporal window (in \"Spatio-temporal",
+          "selection\" tab), and the list of required products is searched",
+          "online (an internet connection is required);",
+          "missing SAFE products are then downloaded."
+        )),
+        p(HTML(
+          "In <strong>Offline</strong> mode, only already available SAFE",
+          "products are used (level-2A images can be produced locally",
+          "with sen2cor if the corresponding level-1C images are available);",
+          "the user can still filter them spatially and temporally,",
+          "but this is not mandatory (if no parameters are specified,",
+          "all the SAFE images are processed).")),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+
+    observeEvent(input$help_overwrite_safe, {
+      showModal(modalDialog(
+        title = "Overwrite existing SAFE products?",
+        p(HTML(
+          "<strong>Yes</strong>:",
+          "re-download all images matching the parameters set in",
+          "\"Spatio-temporal selection\" tab and re-apply sen2cor if needed."
+        )),
+        p(HTML(
+          "<strong>No</strong>:",
+          "skip download and/or atmospheric correction for existing images."
+        )),
+        em("This option is available only in online mode."),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+
+    observeEvent(input$help_step_atmcorr, {
+      showModal(modalDialog(
+        title = "Method to obtain level-2A corrected images",
+        p(HTML(
+          "<strong>Use only level-2A images available locally or online</strong>:",
+          "sen2cor is never used locally: level-2A products are used only",
+          "if they are already available locally or if they can be downloaded",
+          "from SciHub.",
+          "This option is useful if sen2cor is not available locally,",
+          "or if its use must be avoided at all."
+        )),
+        p(HTML(
+          "<strong>Use sen2cor only for level-2A products not available",
+          "locally or online</strong>:",
+          "level-2A images are first of all searched locally or online;",
+          "only for not available products (with corresponding level-1C images",
+          "available) sen2cor is used to produce them.",
+          "This option is useful to optimize time of processing",
+          "(downloading of level-2A images is faster than producing them","
+          with sen2cor), and in most of the situations."
+        )),
+        p(HTML(
+          "<strong>Always correct level-1C images with sen2cor locally</strong>:",
+          "If level-2A images are not available locally, they are corrected",
+          "applying sen2cor to their corresponding level-1C images.",
+          "This option can be used to reduce internet traffic if a level-1C",
+          "archive is already available, or if both level-1C and level-2A",
+          "products are required for outputs."
+        )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+
+    observeEvent(input$help_dissolve_extent, {
+      showModal(modalDialog(
+        title = "Consider multiple polygons as:",
+        p(HTML(
+          "<strong>A multipart geometry</strong>:",
+          "all the polygons drawn (or the entire vector file which was",
+          "uploaded) are considered as a single multipart",
+          "polygon, so the output will cover the extent of all the polygons."
+        )),
+        p(HTML(
+          "<strong>Single part geometries</strong>:",
+          "the number of outputs will be equal to the number of polygons",
+          "drawn (or to the number of polygons inside the uploaded vector",
+          "file).",
+          "Subdirectories are created for each output product: the name is",
+          "a consecutive integer number, or an attribute name for uploaded",
+          "vector files."
+        )),
+        em(
+          "This option was not yet implemented: for now, only a multipart",
+           "geometry can be used."
+        ),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+
+    observeEvent(input$help_path_subdirs, {
+      showModal(modalDialog(
+        title = "Group products in subdirectories",
+        p("If checked, output products chosen in the first tab will be put",
+          "in separate subdirectories (e.g., if \"TOA\" and \"BOA\" were","
+          chosen, a subdirectory \"BOA\" will contain BOA files, and a",
+          "subdirectory \"TOA\" will contain TOA files);",
+          "otherwise, all the output files will be put in the directory",
+          "specified above.",
+          "Subdirectories can be created automatically, but the paren output",
+          "directory must exist."),
+        p("This option take effets also for spectral indices (for which",
+          "subdirectory names are index names) and for intermediate files",
+          "if the user chosed to save them."),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+
+    observeEvent(input$help_clip_on_extent, {
+      showModal(modalDialog(
+        title = "Clip outputs on the selected extent?",
+        p(HTML(
+          "<strong>Yes</strong>:",
+          "the extent selected in the tab \"Spatio-temporal selection\"",
+          "is used as extent for output products.",
+          "The user can pass other geometry parameters in the box",
+          "\"Output geometry\"."
+        )),
+        p(HTML(
+          "<strong>No</strong>:",
+          "the extent selected in the tab \"Spatio-temporal selection\"",
+          "is used to select tiles overlapping it;",
+          "output products maintain the full extent and the geometry of",
+          "Sentinel-2 input tiles."
+        )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+
+
     ## Exit and save
 
     # functions to check that all is correctly set TODO
@@ -1523,8 +1740,8 @@ s2_gui <- function(param_list=NULL,
       rl$s2orbits_selected <- str_pad(c(1:143),3,"left","0") # temporary select all orbits (TODO implement)
 
       # product selection #
-      rl$list_prods <- input$list_prods # TOA, BOA, SCL, TCI (for now)
-      rl$list_indices <- if (indices_req()==TRUE) {input$list_indices} else {NA} # index names
+      rl$list_prods <- input$list_prods[!input$list_prods %in% "indices"] # TOA, BOA, SCL, TCI (for now)
+      rl$list_indices <- if (indices_req()==TRUE & "indices" %in% input$list_prods) {input$list_indices} else {NA} # index names
       rl$index_source <- input$index_source # reflectance band for computing indices ("BOA" or "TOA")
       rl$mask_type <- if (input$atm_mask==FALSE) {NA} else {input$atm_mask_type} # atmospheric masking (accepted types as in s2_mask())
 
@@ -1587,7 +1804,7 @@ s2_gui <- function(param_list=NULL,
       rl$path_l2a <- input$path_l2a_textin # path of L2A SAFE products
       rl$path_tiles <- if (input$keep_tiles==TRUE) {input$path_tiles_textin} else {NA} # path of entire tiled products
       rl$path_merged <- if (input$keep_merged==TRUE) {input$path_merged_textin} else {NA} # path of entire tiled products
-      rl$path_out <- if (length(input$list_prods)>0) {input$path_out_textin} else {NA} # path of output pre-processed products
+      rl$path_out <- if (length(input$list_prods)>1 | length(input$list_prods)>0 & !"indices" %in% input$list_prods) {input$path_out_textin} else {NA} # path of output pre-processed products
       rl$path_indices <- if (indices_req()==TRUE) {input$path_indices_textin} else {NA} # path of spectral indices
       rl$path_subdirs <- input$path_subdirs # logical (use subdirs)
 
@@ -1629,7 +1846,11 @@ s2_gui <- function(param_list=NULL,
       updateRadioButtons(session, "extent_as_mask", selected = rv$extent_as_mask)
 
       # product selection
-      updateCheckboxGroupInput(session, "list_prods", selected = pl$list_prods)
+      if (any(!is.na(pl$list_indices))) {
+        updateCheckboxGroupInput(session, "list_prods", selected = c(pl$list_prods,"indices"))
+      } else {
+        updateCheckboxGroupInput(session, "list_prods", selected = pl$list_prods)
+      }
       indices_rv$checked <- pl$list_indices
       # updateCheckboxGroupInput(session, "list_indices", selected = pl$list_indices) # FIXME 1 not working since it is reactive
       updateRadioButtons(session, "atm_mask",
