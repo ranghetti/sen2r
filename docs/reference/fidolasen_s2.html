@@ -185,7 +185,11 @@ makes use only of L1C products).</p></li>
     <tr>
       <th>timewindow</th>
       <td><p>(optional) Temporal window for querying: Date object
-of length 1 (single day) or 2 (time window).</p></td>
+of length 1 (single day) or 2 (time window). Default is NA in online mode
+(meaning that no filters are used, and all found images are processed); in
+online mode, default is to process last 90 days.
+Only in offline mode, it is possible to pass NA not to
+filter by sensing time.</p></td>
     </tr>
     <tr>
       <th>timeperiod</th>
@@ -201,12 +205,13 @@ to 2016-08-31 and 2017-06-01 to 2017-08-31 are considered).</p></li>
     <tr>
       <th>extent</th>
       <td><p>(optional) Spatial extent on which to clip products, in
-geojson format.</p></td>
+geojson format. Default is NA for offline mode (meaning no extent:
+all found tiles are entirely used); in online mode, a sample extent is used.</p></td>
     </tr>
     <tr>
       <th>s2tiles_selected</th>
       <td><p>(optional) Character vector with the Sentinel-2
-tiles to be considered.</p></td>
+tiles to be considered (default is NA, meaning all the tiles).</p></td>
     </tr>
     <tr>
       <th>s2orbits_selected</th>
@@ -216,8 +221,8 @@ all the accepted values are listed).</p></td>
     </tr>
     <tr>
       <th>clip_on_extent</th>
-      <td><p>(optional) Logical: if TRUE (default), output products and
-indices are clipped to the selected extent (and resampled/reprojected);
+      <td><p>(optional) Logical: if TRUE (default), output products
+and indices are clipped to the selected extent (and resampled/reprojected);
 if FALSE, the geometry and extension of the tiles is maintained.</p></td>
     </tr>
     <tr>

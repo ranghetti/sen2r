@@ -54,13 +54,14 @@
 #' @return A vector with the names of the created products.
 #' @export
 #' @importFrom rgdal GDALinfo
-#' @importFrom parallel detectCores makeCluster
+#' @importFrom parallel detectCores makeCluster stopCluster
 #' @importFrom doParallel registerDoParallel
 #' @importFrom foreach foreach "%do%" "%dopar%"
-#' @importFrom reticulate import
-#' @importFrom raster stack brick values mask NAvalue dataType beginCluster
-#'   endCluster overlay
+#' @importFrom reticulate import py_to_r
+#' @importFrom raster stack brick calc dataType mask NAvalue overlay
+#'   beginCluster endCluster
 #' @importFrom magrittr "%>%"
+#' @importFrom data.table data.table
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 

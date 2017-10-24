@@ -48,7 +48,11 @@
 #'  * "no" means that L1C are not considered (processing chain
 #'  makes use only of L1C products).
 #' @param timewindow (optional) Temporal window for querying: Date object
-#'  of length 1 (single day) or 2 (time window).
+#'  of length 1 (single day) or 2 (time window). Default is NA in online mode
+#'  (meaning that no filters are used, and all found images are processed); in
+#'  online mode, default is to process last 90 days.
+#'  Only in offline mode, it is possible to pass NA not to
+#'  filter by sensing time.
 #' @param timeperiod (optional) Character:
 #'  * "full" (default) means that all
 #'  the images included in the time window are considered;
@@ -57,14 +61,15 @@
 #'  2017-08-31, the periods 2015-06-01 to 2015-08-31, 2016-06-01
 #'  to 2016-08-31 and 2017-06-01 to 2017-08-31 are considered).
 #' @param extent (optional) Spatial extent on which to clip products, in
-#'  geojson format.
+#'  geojson format. Default is NA for offline mode (meaning no extent:
+#'  all found tiles are entirely used); in online mode, a sample extent is used.
 #' @param s2tiles_selected (optional) Character vector with the Sentinel-2
-#'  tiles to be considered.
+#'  tiles to be considered (default is NA, meaning all the tiles).
 #' @param s2orbits_selected (optional) Character vector with the Sentinel-2
 #'  orbits to be considered (still to be implemented; for now,
 #'  all the accepted values are listed).
-#' @param clip_on_extent (optional) Logical: if TRUE (default), output products and
-#'  indices are clipped to the selected extent (and resampled/reprojected);
+#' @param clip_on_extent (optional) Logical: if TRUE (default), output products
+#'  and indices are clipped to the selected extent (and resampled/reprojected);
 #'  if FALSE, the geometry and extension of the tiles is maintained.
 #' @param extent_as_mask (optional) Logical: if TRUE, pixel values outside
 #'  the `extent` polygon are set to NA; if FALSE (default), all the values
@@ -132,6 +137,13 @@
 #'  for each output product or spectral index is generated within
 #'  `path_tiles`, `path_merged`, `path_out` and `path_indices`; if FALSE,
 #'  products are put directly within them.
+#'
+#' @importFrom data.table data.table rbindlist
+#' @importFrom geojsonio geojson_json
+#' @importFrom jsonlite read_json
+#' @importFrom reticulate import py_to_r
+#' @importFrom sf st_cast st_read
+#' @importFrom sprawl get_extent
 
 
 fidolasen_s2 <- function(param_list=NULL,
@@ -193,11 +205,11 @@ fidolasen_s2 <- function(param_list=NULL,
                  overwrite_safe=FALSE,
                  rm_safe="no",
                  step_atmcorr="auto",
-                 timewindow=c(Sys.Date()-90, Sys.Date()), # last 90 days
+                 timewindow=NA, # below re-defined as last 90 days if online mode
                  timeperiod="full",
-                 extent=get_extent(matrix(c(9.4,45.4,10.27,46.1),nrow=2),"+init=epsg:4326") %>% as("sfc_POLYGON") %>% geojson_json(),
-                 s2tiles_selected=c("32TNR","32TNS"),
-                 s2orbits_selected=str_pad(c(1:143),3,"left","0"), # temporary select all orbits (TODO implement)
+                 extent=NA, # below re-defined as sample extent if online mode
+                 s2tiles_selected=NA, # below re-defined for online mode
+                 s2orbits_selected=NA, # temporary select all orbits (TODO implement)
                  clip_on_extent=TRUE,
                  extent_as_mask=FALSE,
                  list_prods=c("BOA"),
@@ -243,6 +255,24 @@ fidolasen_s2 <- function(param_list=NULL,
     }
     if (length(pm[[sel_par]])==1 & all(is.na(pm[[sel_par]]))) {
       pm[[sel_par]] <- pm_def[[sel_par]]
+    }
+  }
+
+  # Define sample spatial extent / temporal timewindow if online mode
+  if (pm$online == TRUE) {
+    if (is.na(pm$extent)) {
+      pm$extent <- get_extent(
+        matrix(c(9.4, 45.4, 10.27, 46.1), nrow = 2),
+        "+init=epsg:4326"
+      ) %>%
+        as("sfc_POLYGON") %>%
+        geojson_json()
+      if (is.na(pm$s2tiles_selected)) {
+        pm$s2tiles_selected <- c("32TNR", "32TNS")
+      }
+    }
+    if (is.na(pm$timewindow)) {
+      pm$timewindow <- c(Sys.Date() - 90, Sys.Date())
     }
   }
 
@@ -391,13 +421,19 @@ fidolasen_s2 <- function(param_list=NULL,
   s2_dt <- s2_dt[id_tile %in% pm$s2tiles_selected & # FIXME works only with new products! (add retrieval of all tiles)
                    id_orbit %in% pm$s2orbits_selected &
                    mission %in% toupper(substr(pm$sel_sensor,2,3)) &
-                   as.Date(sensing_datetime) > pm$timewindow[1] &
-                   as.Date(sensing_datetime) < pm$timewindow[2],][
                      order(-sensing_datetime),]
-  setorder(s2_dt, -sensing_datetime)
-  s2_dt <- s2_dt[!duplicated(s2_dt[,list(mission,level,id_orbit,id_tile)]) &  # consider only most recent tiles
-                   # id_orbit %in% pm$s2orbits_selected &       # use only selected orbits (TODO not yet implemented)
-                   id_tile %in% pm$s2tiles_selected,]           # use only selected tiles
+  if (!is.na(pm$timewindow)) {
+    s2_dt <- s2_dt[as.Date(sensing_datetime) > pm$timewindow[1] &
+                     as.Date(sensing_datetime) < pm$timewindow[2],]
+  }
+  if (!is.na(pm$s2tiles_selected)) {
+    s2_dt <- s2_dt[id_tile %in% pm$s2tiles_selected,]
+  }
+  if (!is.na(pm$s2orbits_selected)) {
+    s2_dt <- s2_dt[id_orbit %in% pm$s2orbits_selected,]
+  }
+  # setorder(s2_dt, -sensing_datetime)
+  s2_dt <- s2_dt[!duplicated(s2_dt[,list(mission,level,id_orbit,id_tile)]),]
   s2_list_l1c <- s2_dt[level=="1C",url] # list of required L1C
   s2_list_l2a <- s2_dt[level=="2A",url] # list of required L2A
   names(s2_list_l1c) <- s2_dt[level=="1C",name]
@@ -891,7 +927,9 @@ fidolasen_s2 <- function(param_list=NULL,
 
         dir.create(path_warped, recursive=FALSE, showWarnings=FALSE)
         # create mask
-        s2_mask_extent <- if (pm$extent_as_mask==TRUE) {
+        s2_mask_extent <- if (is.na(pm$extent)) {
+          NULL
+        } else if (pm$extent_as_mask==TRUE) {
           st_read(pm$extent)
         } else {
           st_cast(st_read(pm$extent),"LINESTRING")

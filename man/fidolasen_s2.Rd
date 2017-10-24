@@ -70,7 +70,11 @@ makes use only of L1C products).
 }}
 
 \item{timewindow}{(optional) Temporal window for querying: Date object
-of length 1 (single day) or 2 (time window).}
+of length 1 (single day) or 2 (time window). Default is NA in online mode
+(meaning that no filters are used, and all found images are processed); in
+online mode, default is to process last 90 days.
+Only in offline mode, it is possible to pass NA not to
+filter by sensing time.}
 
 \item{timeperiod}{(optional) Character:
 \itemize{
@@ -83,17 +87,18 @@ to 2016-08-31 and 2017-06-01 to 2017-08-31 are considered).
 }}
 
 \item{extent}{(optional) Spatial extent on which to clip products, in
-geojson format.}
+geojson format. Default is NA for offline mode (meaning no extent:
+all found tiles are entirely used); in online mode, a sample extent is used.}
 
 \item{s2tiles_selected}{(optional) Character vector with the Sentinel-2
-tiles to be considered.}
+tiles to be considered (default is NA, meaning all the tiles).}
 
 \item{s2orbits_selected}{(optional) Character vector with the Sentinel-2
 orbits to be considered (still to be implemented; for now,
 all the accepted values are listed).}
 
-\item{clip_on_extent}{(optional) Logical: if TRUE (default), output products and
-indices are clipped to the selected extent (and resampled/reprojected);
+\item{clip_on_extent}{(optional) Logical: if TRUE (default), output products
+and indices are clipped to the selected extent (and resampled/reprojected);
 if FALSE, the geometry and extension of the tiles is maintained.}
 
 \item{extent_as_mask}{(optional) Logical: if TRUE, pixel values outside

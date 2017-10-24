@@ -35,7 +35,7 @@
 #' @importFrom rgdal GDALinfo
 #' @importFrom sp CRS
 #' @importFrom magrittr "%>%"
-#' @importFrom sprawl check_proj4string reproj_extent
+#' @importFrom sprawl check_proj4string
 #' @importFrom raster compareCRS
 #' @import data.table
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
