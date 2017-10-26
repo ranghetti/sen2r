@@ -344,7 +344,7 @@ fidolasen_s2 <- function(param_list=NULL,
     pm$list_prods
   }
   # if some indices is required, compute also TOA or BOA
-  if (!is.na(pm$list_indices) & !pm$index_source %in% pm$list_prods){
+  if (any(!is.na(pm$list_indices)) & !pm$index_source %in% pm$list_prods){
     list_prods <- c(list_prods, pm$index_source)
   }
   
@@ -546,22 +546,20 @@ fidolasen_s2 <- function(param_list=NULL,
           "^S2([AB])\\_MSIL1C\\_","S2\\1\\_MSIL2A\\_",
           names(s2_list_l1c)
         ) %in% names(s2_list_l2a)
-      ] %>%
-      .[
-        !file.path(pm$path_l1c,names(.)) %>% 
-          file.exists()
       ]
     } else {
       s2_list_l1c
     }
     if (length(s2_list_l1c_tocorrect)>0) {
       
-      print_message(
-        type = "message",
-        date = TRUE,
-        "Starting to correct level-1C SAFE products with sen2cor. ",
-        "This operation could take very long time."
-      )
+      if (sum(!file.path(pm$path_l1c,names(s2_list_l1c_tocorrect)) %>% file.exists()) > 0) {
+        print_message(
+          type = "message",
+          date = TRUE,
+          "Starting to correct level-1C SAFE products with sen2cor. ",
+          "This operation could take very long time."
+        )
+      }
       
       s2_list_l2a_corrected <- s2_sen2cor(names(s2_list_l1c_tocorrect),
                                           l1c_dir = pm$path_l1c,
