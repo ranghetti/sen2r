@@ -1,6 +1,15 @@
 {
   "indices": [
     {
+      "n_index": 1,
+      "longname": "Adjusted transformed soil-adjusted VI",
+      "name": "ATSAVI",
+      "link": "http://www.indexdatabase.de/db/i-single.php?id=209",
+      "s2_formula": "par_a*(band_8-par_a*band_4-par_b)/((band_8+band_4-par_a*par_b+par_x*(1+par_a^2)))",
+      "checked": false,
+      "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mrow>\n   <mi mathcolor=\"#443399\">a<\/mi>\n   <mo>&amp;InvisibleTimes;<\/mo>\n   <mfrac>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mi mathcolor=\"#443399\">800nm<\/mi>\n       <mo>-<\/mo>\n       <mrow>\n        <mrow>\n         <mi mathcolor=\"#443399\">a<\/mi>\n         <mo>·<\/mo>\n         <mi mathcolor=\"#443399\">670nm<\/mi>\n        <\/mrow>\n        <mo>-<\/mo>\n        <mi mathcolor=\"#443399\">b<\/mi>\n       <\/mrow>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mo>(<\/mo>\n       <mrow>\n        <mrow>\n         <mi mathcolor=\"#443399\">800nm<\/mi>\n         <mo>+<\/mo>\n         <mrow>\n          <mrow>\n           <mi mathcolor=\"#443399\">670nm<\/mi>\n           <mo>-<\/mo>\n           <mrow>\n            <mi mathcolor=\"#443399\">a<\/mi>\n            <mo>·<\/mo>\n            <mi mathcolor=\"#443399\">b<\/mi>\n           <\/mrow>\n          <\/mrow>\n          <mo>+<\/mo>\n          <mrow>\n           <mi mathcolor=\"#443399\">X<\/mi>\n           <mo>&amp;InvisibleTimes;<\/mo>\n           <mrow>\n            <mo>(<\/mo>\n            <mrow>\n             <mrow>\n              <mn>1<\/mn>\n              <mo>+<\/mo>\n              <msup>\n               <mi mathcolor=\"#443399\">a<\/mi>\n               <mn>2<\/mn>\n              <\/msup>\n             <\/mrow>\n            <\/mrow>\n            <mo>)<\/mo>\n           <\/mrow>\n          <\/mrow>\n         <\/mrow>\n        <\/mrow>\n       <\/mrow>\n       <mo>)<\/mo>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n   <\/mfrac>\n  <\/mrow>\n <\/mrow>\n<\/math>"
+    },
+    {
       "n_index": 2,
       "longname": "Aerosol free vegetation index 1600",
       "name": "AFRI1600",
@@ -41,8 +50,9 @@
       "longname": "Atmospherically Resistant Vegetation Index",
       "name": "ARVI",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=4",
-      "s2_formula": "(band_8-band_4-a*(band_4-band_2))/(band_8+band_4-a*(band_4-band_2))",
+      "s2_formula": "(band_8-band_4-par_a*(band_4-band_2))/(band_8+band_4-par_a*(band_4-band_2))",
       "checked": true,
+      "a": 1,
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR<\/mi>\n      <mo>-<\/mo>\n      <mrow>\n       <mi mathcolor=\"#443399\">RED<\/mi>\n       <mo>-<\/mo>\n       <mrow>\n        <mi mathcolor=\"#443399\">y<\/mi>\n        <mo>&amp;InvisibleTimes;<\/mo>\n        <mrow>\n         <mo>(<\/mo>\n         <mrow>\n          <mrow>\n           <mi mathcolor=\"#443399\">RED<\/mi>\n           <mo>-<\/mo>\n           <mi mathcolor=\"#443399\">BLUE<\/mi>\n          <\/mrow>\n         <\/mrow>\n         <mo>)<\/mo>\n        <\/mrow>\n       <\/mrow>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR<\/mi>\n      <mo>+<\/mo>\n      <mrow>\n       <mi mathcolor=\"#443399\">RED<\/mi>\n       <mo>-<\/mo>\n       <mrow>\n        <mi mathcolor=\"#443399\">y<\/mi>\n        <mo>&amp;InvisibleTimes;<\/mo>\n        <mrow>\n         <mo>(<\/mo>\n         <mrow>\n          <mrow>\n           <mi mathcolor=\"#443399\">RED<\/mi>\n           <mo>-<\/mo>\n           <mi mathcolor=\"#443399\">BLUE<\/mi>\n          <\/mrow>\n         <\/mrow>\n         <mo>)<\/mo>\n        <\/mrow>\n       <\/mrow>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
     },
     {
@@ -239,7 +249,7 @@
       "longname": "EPI",
       "name": "EPI",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=256",
-      "s2_formula": "a*(band_4)/((band_3*band_5)^b)",
+      "s2_formula": "par_a*(band_4)/((band_3*band_5)^par_b)",
       "checked": false,
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mrow>\n   <mi mathcolor=\"#443399\">a<\/mi>\n   <mo>&amp;InvisibleTimes;<\/mo>\n   <mfrac>\n    <mrow>\n     <mi mathcolor=\"#443399\">[672]<\/mi>\n    <\/mrow>\n    <mrow>\n     <msup>\n      <mrow>\n       <mo>(<\/mo>\n       <mrow>\n        <mrow>\n         <mi mathcolor=\"#443399\">[550]<\/mi>\n         <mo>·<\/mo>\n         <mi mathcolor=\"#443399\">[708]<\/mi>\n        <\/mrow>\n       <\/mrow>\n       <mo>)<\/mo>\n      <\/mrow>\n      <mi mathcolor=\"#443399\">b<\/mi>\n     <\/msup>\n    <\/mrow>\n   <\/mfrac>\n  <\/mrow>\n <\/mrow>\n<\/math>"
     },
@@ -302,7 +312,7 @@
       "longname": "Green Optimized Soil Adjusted Vegetation Index",
       "name": "GOSAVI",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=29",
-      "s2_formula": "(band_8-band_3)/(band_8+band_3+a)",
+      "s2_formula": "(band_8-band_3)/(band_8+band_3+par_a)",
       "checked": false,
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR<\/mi>\n      <mo>-<\/mo>\n      <mi mathcolor=\"#443399\">G<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR<\/mi>\n      <mo>+<\/mo>\n      <mrow>\n       <mi mathcolor=\"#443399\">G<\/mi>\n       <mo>+<\/mo>\n       <mi mathcolor=\"#443399\">Y<\/mi>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
     },
@@ -311,7 +321,7 @@
       "longname": "Green Soil Adjusted Vegetation Index",
       "name": "GSAVI",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=31",
-      "s2_formula": "(band_8-band_3)/(band_8+band_3+a)*(1+a)",
+      "s2_formula": "(band_8-band_3)/(band_8+band_3+par_a)*(1+par_a)",
       "checked": false,
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mrow>\n   <mfrac>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mi mathcolor=\"#443399\">NIR<\/mi>\n       <mo>-<\/mo>\n       <mi mathcolor=\"#443399\">G<\/mi>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mi mathcolor=\"#443399\">NIR<\/mi>\n       <mo>+<\/mo>\n       <mrow>\n        <mi mathcolor=\"#443399\">G<\/mi>\n        <mo>+<\/mo>\n        <mi mathcolor=\"#443399\">L<\/mi>\n       <\/mrow>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n   <\/mfrac>\n   <mo>&amp;InvisibleTimes;<\/mo>\n   <mrow>\n    <mo>(<\/mo>\n    <mrow>\n     <mrow>\n      <mn>1<\/mn>\n      <mo>+<\/mo>\n      <mi mathcolor=\"#443399\">L<\/mi>\n     <\/mrow>\n    <\/mrow>\n    <mo>)<\/mo>\n   <\/mrow>\n  <\/mrow>\n <\/mrow>\n<\/math>"
     },
@@ -338,7 +348,7 @@
       "longname": "Ideal vegetation index",
       "name": "IVI",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=276",
-      "s2_formula": "(band_8-b)/(a*band_4)",
+      "s2_formula": "(band_8-par_b)/(par_a*band_4)",
       "checked": false,
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR<\/mi>\n      <mo>-<\/mo>\n      <mi mathcolor=\"#443399\">b<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">a<\/mi>\n      <mo>·<\/mo>\n      <mi mathcolor=\"#443399\">RED<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
     },
@@ -860,7 +870,7 @@
       "longname": "Perpendicular Vegetation Index",
       "name": "PVI",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=64",
-      "s2_formula": "((1)/(sqrt(a^2+1)))*(band_8-a-b)",
+      "s2_formula": "((1)/(sqrt(par_a^2+1)))*(band_8-par_a-par_b)",
       "checked": false,
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mrow>\n   <mrow>\n    <mo>(<\/mo>\n    <mrow>\n     <mfrac>\n      <mrow>\n       <mn>1<\/mn>\n      <\/mrow>\n      <mrow>\n       <msqrt>\n        <mrow>\n         <msup>\n          <mi mathcolor=\"#443399\">a<\/mi>\n          <mn>2<\/mn>\n         <\/msup>\n         <mo>+<\/mo>\n         <mn>1<\/mn>\n        <\/mrow>\n       <\/msqrt>\n      <\/mrow>\n     <\/mfrac>\n    <\/mrow>\n    <mo>)<\/mo>\n   <\/mrow>\n   <mo>&amp;InvisibleTimes;<\/mo>\n   <mrow>\n    <mo>(<\/mo>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR<\/mi>\n      <mo>-<\/mo>\n      <mrow>\n       <mi mathcolor=\"#443399\">ar<\/mi>\n       <mo>-<\/mo>\n       <mi mathcolor=\"#443399\">b<\/mi>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n    <mo>)<\/mo>\n   <\/mrow>\n  <\/mrow>\n <\/mrow>\n<\/math>"
     },
@@ -923,7 +933,7 @@
       "longname": "SAVImir",
       "name": "SAVImir",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=394",
-      "s2_formula": "(band_8-band_12)*(1+a)/(band_8+band_12+a)",
+      "s2_formula": "(band_8-band_12)*(1+par_a)/(band_8+band_12+par_a)",
       "checked": false,
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mrow>\n   <mrow>\n    <mo>(<\/mo>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR<\/mi>\n      <mo>-<\/mo>\n      <mi mathcolor=\"#443399\">MIR<\/mi>\n     <\/mrow>\n    <\/mrow>\n    <mo>)<\/mo>\n   <\/mrow>\n   <mo>&amp;InvisibleTimes;<\/mo>\n   <mfrac>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mn>1<\/mn>\n       <mo>+<\/mo>\n       <mi mathcolor=\"#443399\">L<\/mi>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mi mathcolor=\"#443399\">NIR<\/mi>\n       <mo>+<\/mo>\n       <mrow>\n        <mi mathcolor=\"#443399\">MIR<\/mi>\n        <mo>+<\/mo>\n        <mi mathcolor=\"#443399\">L<\/mi>\n       <\/mrow>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n   <\/mfrac>\n  <\/mrow>\n <\/mrow>\n<\/math>"
     },
@@ -1607,7 +1617,7 @@
       "longname": "Soil Adjusted Vegetation Index",
       "name": "SAVI",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=87",
-      "s2_formula": "(band_8-band_4)/(band_8+band_4+a)*(1+a)",
+      "s2_formula": "(band_8-band_4)/(band_8+band_4+par_a)*(1+par_a)",
       "checked": true,
       "a": 0.5,
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mrow>\n   <mfrac>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mi mathcolor=\"#443399\">800nm<\/mi>\n       <mo>-<\/mo>\n       <mi mathcolor=\"#443399\">670nm<\/mi>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mi mathcolor=\"#443399\">800nm<\/mi>\n       <mo>+<\/mo>\n       <mrow>\n        <mi mathcolor=\"#443399\">670nm<\/mi>\n        <mo>+<\/mo>\n        <mi mathcolor=\"#443399\">L<\/mi>\n       <\/mrow>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n   <\/mfrac>\n   <mo>&amp;InvisibleTimes;<\/mo>\n   <mrow>\n    <mo>(<\/mo>\n    <mrow>\n     <mrow>\n      <mn>1<\/mn>\n      <mo>+<\/mo>\n      <mi mathcolor=\"#443399\">L<\/mi>\n     <\/mrow>\n    <\/mrow>\n    <mo>)<\/mo>\n   <\/mrow>\n  <\/mrow>\n <\/mrow>\n<\/math>"
@@ -1626,7 +1636,7 @@
       "longname": "Soil-adjusted vegetation index 2",
       "name": "SAVI2",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=310",
-      "s2_formula": "(band_8)/(band_4+(b)/(a))",
+      "s2_formula": "(band_8)/(band_4+(par_b)/(par_a))",
       "checked": false,
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mi mathcolor=\"#443399\">NIR<\/mi>\n   <\/mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">RED<\/mi>\n      <mo>+<\/mo>\n      <mfrac>\n       <mrow>\n        <mi mathcolor=\"#443399\">b<\/mi>\n       <\/mrow>\n       <mrow>\n        <mi mathcolor=\"#443399\">a<\/mi>\n       <\/mrow>\n      <\/mfrac>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
     },
@@ -1739,11 +1749,20 @@
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mrow>\n   <mn>3<\/mn>\n   <mo>&amp;InvisibleTimes;<\/mo>\n   <mrow>\n    <mo>(<\/mo>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mo>(<\/mo>\n       <mrow>\n        <mrow>\n         <mi mathcolor=\"#443399\">700nm<\/mi>\n         <mo>-<\/mo>\n         <mi mathcolor=\"#443399\">670nm<\/mi>\n        <\/mrow>\n       <\/mrow>\n       <mo>)<\/mo>\n      <\/mrow>\n      <mo>-<\/mo>\n      <mrow>\n       <mn>0.2<\/mn>\n       <mo>&amp;InvisibleTimes;<\/mo>\n       <mrow>\n        <mrow>\n         <mo>(<\/mo>\n         <mrow>\n          <mrow>\n           <mi mathcolor=\"#443399\">700nm<\/mi>\n           <mo>-<\/mo>\n           <mi mathcolor=\"#443399\">550nm<\/mi>\n          <\/mrow>\n         <\/mrow>\n         <mo>)<\/mo>\n        <\/mrow>\n        <mo>&amp;InvisibleTimes;<\/mo>\n        <mrow>\n         <mo>(<\/mo>\n         <mrow>\n          <mfrac>\n           <mrow>\n            <mi mathcolor=\"#443399\">700nm<\/mi>\n           <\/mrow>\n           <mrow>\n            <mi mathcolor=\"#443399\">670nm<\/mi>\n           <\/mrow>\n          <\/mfrac>\n         <\/mrow>\n         <mo>)<\/mo>\n        <\/mrow>\n       <\/mrow>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n    <mo>)<\/mo>\n   <\/mrow>\n  <\/mrow>\n <\/mrow>\n<\/math>"
     },
     {
+      "n_index": 241,
+      "longname": "Transformed Soil Adjusted Vegetation Index",
+      "name": "TSAVI",
+      "link": "http://www.indexdatabase.de/db/i-single.php?id=97",
+      "s2_formula": "(par_b*(band_8-par_b*band_4-par_a))/(band_4+par_b*(band_8-par_a)+par_x*(1+par_b^2))",
+      "checked": false,
+      "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">B<\/mi>\n      <mo>&amp;InvisibleTimes;<\/mo>\n      <mrow>\n       <mo>(<\/mo>\n       <mrow>\n        <mrow>\n         <mi mathcolor=\"#443399\">NIR<\/mi>\n         <mo>-<\/mo>\n         <mrow>\n          <mrow>\n           <mi mathcolor=\"#443399\">B<\/mi>\n           <mo>·<\/mo>\n           <mi mathcolor=\"#443399\">R<\/mi>\n          <\/mrow>\n          <mo>-<\/mo>\n          <mi mathcolor=\"#443399\">A<\/mi>\n         <\/mrow>\n        <\/mrow>\n       <\/mrow>\n       <mo>)<\/mo>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">RED<\/mi>\n      <mo>+<\/mo>\n      <mrow>\n       <mrow>\n        <mi mathcolor=\"#443399\">B<\/mi>\n        <mo>&amp;InvisibleTimes;<\/mo>\n        <mrow>\n         <mo>(<\/mo>\n         <mrow>\n          <mrow>\n           <mi mathcolor=\"#443399\">NIR<\/mi>\n           <mo>-<\/mo>\n           <mi mathcolor=\"#443399\">A<\/mi>\n          <\/mrow>\n         <\/mrow>\n         <mo>)<\/mo>\n        <\/mrow>\n       <\/mrow>\n       <mo>+<\/mo>\n       <mrow>\n        <mi mathcolor=\"#443399\">X<\/mi>\n        <mo>&amp;InvisibleTimes;<\/mo>\n        <mrow>\n         <mo>(<\/mo>\n         <mrow>\n          <mrow>\n           <mn>1<\/mn>\n           <mo>+<\/mo>\n           <msup>\n            <mi mathcolor=\"#443399\">B<\/mi>\n            <mn>2<\/mn>\n           <\/msup>\n          <\/mrow>\n         <\/mrow>\n         <mo>)<\/mo>\n        <\/mrow>\n       <\/mrow>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
+    },
+    {
       "n_index": 242,
       "longname": "Transformed Soil Adjusted Vegetation Index 2",
       "name": "TSAVI2",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=247",
-      "s2_formula": "(a*band_8-a*band_4-b)/(band_4+a*band_8-a*b)",
+      "s2_formula": "(par_a*band_8-par_a*band_4-par_b)/(band_4+par_a*band_8-par_a*par_b)",
       "checked": false,
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mi mathcolor=\"#443399\">a<\/mi>\n       <mo>·<\/mo>\n       <mi mathcolor=\"#443399\">NIR<\/mi>\n      <\/mrow>\n      <mo>-<\/mo>\n      <mrow>\n       <mrow>\n        <mi mathcolor=\"#443399\">a<\/mi>\n        <mo>·<\/mo>\n        <mi mathcolor=\"#443399\">RED<\/mi>\n       <\/mrow>\n       <mo>-<\/mo>\n       <mi mathcolor=\"#443399\">b<\/mi>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">RED<\/mi>\n      <mo>+<\/mo>\n      <mrow>\n       <mrow>\n        <mi mathcolor=\"#443399\">a<\/mi>\n        <mo>·<\/mo>\n        <mi mathcolor=\"#443399\">NIR<\/mi>\n       <\/mrow>\n       <mo>-<\/mo>\n       <mrow>\n        <mi mathcolor=\"#443399\">a<\/mi>\n        <mo>·<\/mo>\n        <mi mathcolor=\"#443399\">b<\/mi>\n       <\/mrow>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
     },
@@ -1788,7 +1807,7 @@
       "longname": "Weighted Difference Vegetation Index",
       "name": "WDVI",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=104",
-      "s2_formula": "band_8-a*band_4",
+      "s2_formula": "band_8-par_a*band_4",
       "checked": false,
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mrow>\n   <mi mathcolor=\"#443399\">NIR<\/mi>\n   <mo>-<\/mo>\n   <mrow>\n    <mi mathcolor=\"#443399\">a<\/mi>\n    <mo>·<\/mo>\n    <mi mathcolor=\"#443399\">RED<\/mi>\n   <\/mrow>\n  <\/mrow>\n <\/mrow>\n<\/math>"
     },
@@ -1821,5 +1840,5 @@
     }
   ],
   "fidolasen_version": ["0.2.0"],
-  "creation_date": ["2017-10-26 09:23:39"]
+  "creation_date": ["2017-10-26 14:07:53"]
 }

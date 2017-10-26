@@ -100,7 +100,7 @@ are physical rasters (no output VRT is allowed).</p>
 
     <pre class="usage"><span class='fu'>s2_calcindices</span>(<span class='no'>infiles</span>, <span class='no'>indices</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='kw'>parameters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>source</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"TOA"</span>, <span class='st'>"BOA"</span>), <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>dataType</span> <span class='kw'>=</span> <span class='st'>"Int16"</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>dataType</span> <span class='kw'>=</span> <span class='st'>"Float32"</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -138,7 +138,8 @@ directory of <code>infiles</code>.</p></td>
 must be a named list, in which each element is a list of parameters,
 i.e.:
 <code>parameters = list("SAVI" = list("a" = 0.5))</code>
-TODO: add default values (in the json)</p></td>
+Values can be both numeric values or band names (e.g. "band_1").
+If not specified, parameters are set to default values.</p></td>
     </tr>
     <tr>
       <th>source</th>
@@ -170,8 +171,8 @@ present, the compression indicated with this parameter is used.</p></td>
     <tr>
       <th>dataType</th>
       <td><p>(optional) Numeric datatype of the ouptut rasters:
-if "Float32" or "Float64" is chosen, numeric values are not rescaled;
-if "Int16" (default) or "UInt16", values are multiplicated by a 10000
+if "Float32" (default) or "Float64" is chosen, numeric values are not rescaled;
+if "Int16" or "UInt16", values are multiplicated by a 10000
 scale factor.</p></td>
     </tr>
     <tr>

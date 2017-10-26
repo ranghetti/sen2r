@@ -24,7 +24,8 @@
 #'  must be a named list, in which each element is a list of parameters,
 #'  i.e.:
 #'  `parameters = list("SAVI" = list("a" = 0.5))`
-#'  TODO: add default values (in the json)
+#'  Values can be both numeric values or band names (e.g. "band_1").
+#'  If not specified, parameters are set to default values.
 #' @param source (optional) Vector with the products from which computing
 #'  the indices. It can be "BOA", "TOA" or both (default). If both values
 #'  are provided, indices are computed from the available products ("TOA"
@@ -41,8 +42,8 @@
 #' @param compress (optional) In the case a GTiff format is
 #'  present, the compression indicated with this parameter is used.
 #' @param dataType (optional) Numeric datatype of the ouptut rasters:
-#'  if "Float32" or "Float64" is chosen, numeric values are not rescaled;
-#'  if "Int16" (default) or "UInt16", values are multiplicated by a 10000
+#'  if "Float32" (default) or "Float64" is chosen, numeric values are not rescaled;
+#'  if "Int16" or "UInt16", values are multiplicated by a 10000
 #'  scale factor.
 #' @param overwrite Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
@@ -64,7 +65,7 @@ s2_calcindices <- function(infiles,
                            format=NA,
                            subdirs=NA,
                            compress="DEFLATE",
-                           dataType="Int16",
+                           dataType="Float32",
                            overwrite=FALSE) {
 
   prod_type <- . <- NULL
@@ -74,7 +75,7 @@ s2_calcindices <- function(infiles,
 
   # generate indices.json if missing and read it
   create_indices_db()
-  indices_db <- list_indices(c("n_index","name","longname","s2_formula"))
+  indices_db <- list_indices(c("n_index","name","longname","s2_formula","a","b","x"))
 
   # check that the required indices exists
   if (!any(indices %in% indices_db$name)) {
@@ -148,7 +149,7 @@ s2_calcindices <- function(infiles,
     for (j in seq_along(indices)) {
 
       # extract parameters
-      sel_par <- parameters[[indices[j]]]
+      sel_parameters <- parameters[[indices[j]]]
 
       # define output filename
       sel_outfile <- paste0(
@@ -167,10 +168,18 @@ s2_calcindices <- function(infiles,
       if (!file.exists(file.path(out_subdir,sel_outfile)) | overwrite==TRUE) {
 
         # change index formula to be used with bands
+        for (sel_par in c("a","b","x")) {
+          assign(sel_par, if (is.null(sel_parameters[[sel_par]])) {indices_info[j,sel_par]} else {sel_parameters[[sel_par]]})
+        }
         sel_formula <- indices_info[j,"s2_formula"]
-        for (b in seq_len(nrow(gdal_bands))) {
-          sel_formula <- gsub(paste0("([^0-9a-zA-Z])",gdal_bands[b,"band"],"([^0-9a-zA-Z])"),
-                              paste0("\\1",gdal_bands[b,"letter"],".astype(float)\\2"),
+        for (sel_par in c("a","b","x")) {
+          sel_formula <- gsub(paste0("([^0-9a-zA-Z])par\\_",sel_par,"([^0-9a-zA-Z])"),
+                              paste0("\\1",get(sel_par),"\\2"),
+                              sel_formula)
+        }
+        for (sel_band in seq_len(nrow(gdal_bands))) {
+          sel_formula <- gsub(paste0("([^0-9a-zA-Z])",gdal_bands[sel_band,"band"],"([^0-9a-zA-Z])"),
+                              paste0("\\1",gdal_bands[sel_band,"letter"],".astype(float)\\2"),
                               sel_formula)
         }
         if (dataType %in% c("Int16","UInt16","Int32","UInt32")) {
@@ -178,24 +187,21 @@ s2_calcindices <- function(infiles,
         }
 
         # apply gdal_calc
-        with(sel_par,
-             system(
-               paste0(
-                 Sys.which("gdal_calc.py")," ",
-                 paste(apply(gdal_bands,1,function(l){
-                   paste0("-",l["letter"]," \"",sel_infile,"\" --",l["letter"],"_band=",which(gdal_bands$letter==l["letter"]))
-                 }), collapse=" ")," ",
-                 "--outfile=\"",file.path(out_subdir,sel_outfile),"\" ",
-                 "--type=\"",dataType,"\" ",
-                 "--format=\"",sel_format,"\" ",
-                 if (overwrite==TRUE) {"--overwrite"},
-                 if (sel_format=="GTiff") {paste0("--co=\"COMPRESS=",toupper(compress),"\" ")},
-                 "--calc=\"",sel_formula,"\""
-               ),
-               intern = Sys.info()["sysname"] == "Windows"
-             )
-        )
-        # TODO check that required parameters are present
+       system(
+         paste0(
+           Sys.which("gdal_calc.py")," ",
+           paste(apply(gdal_bands,1,function(l){
+             paste0("-",l["letter"]," \"",sel_infile,"\" --",l["letter"],"_band=",which(gdal_bands$letter==l["letter"]))
+           }), collapse=" ")," ",
+           "--outfile=\"",file.path(out_subdir,sel_outfile),"\" ",
+           "--type=\"",dataType,"\" ",
+           "--format=\"",sel_format,"\" ",
+           if (overwrite==TRUE) {"--overwrite"},
+           if (sel_format=="GTiff") {paste0("--co=\"COMPRESS=",toupper(compress),"\" ")},
+           "--calc=\"",sel_formula,"\""
+         ),
+         intern = Sys.info()["sysname"] == "Windows"
+       )
 
       } # end of overwrite IF cycle
 

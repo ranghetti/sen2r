@@ -182,14 +182,14 @@ create_indices_db <- function(xslt_path = NA,
   s2_table$s2_formula[s2_table$name=="TCI"] <- gsub("band\\_1\\.5","1.5",s2_table[name=="TCI",s2_formula]) # specific error
 
   # rename parameters (A, B, ...)
-  s2_table[,s2_formula:=gsub("par\\_([aALyY]r?)", "a", s2_table$s2_formula)] # first parameters (a, A, ar, y, Y, L) -> "a"
-  s2_table[,s2_formula:=gsub("par\\_([bB])", "b", s2_table$s2_formula)] # second parameters (b, B) -> "b"
-  s2_table[,s2_formula:=gsub("par\\_([X])", "x", s2_table$s2_formula)] # third parameters ("X") -> "x"
+  s2_table[,s2_formula:=gsub("par\\_([aALyY]r?)", "par_a", s2_table$s2_formula)] # first parameters (a, A, ar, y, Y, L) -> "a"
+  s2_table[,s2_formula:=gsub("par\\_([bB])", "par_b", s2_table$s2_formula)] # second parameters (b, B) -> "b"
+  s2_table[,s2_formula:=gsub("par\\_([X])", "par_x", s2_table$s2_formula)] # third parameters ("X") -> "x"
 
   ## Test expressions
   # build a data.frame with random values
   test_df <- runif(16,0,1)
-  names(test_df) <- c(paste0("band_",c(1:12,"8a")),"a","b","x")
+  names(test_df) <- c(paste0("band_",c(1:12,"8a")),"par_a","par_b","par_x")
   test_df <- as.data.frame(t(test_df))
 
   test_results <-with(test_df,
@@ -251,7 +251,8 @@ create_indices_db <- function(xslt_path = NA,
 
   # set default parameter values
   s2_table[name=="SAVI", a:=0.5] # default value for L (here "a") parameter
-
+  s2_table[name=="ARVI", a:=1] # default value for gamma (here "a") parameter
+  
   # add missing indices
   s2_table_new <- data.table(
     n_index = 300,
