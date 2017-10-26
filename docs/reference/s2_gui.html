@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create the indices database — create_indices_db • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
+<title>Launch the GUI for Sentinel-2 products — s2_gui • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,44 +89,34 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create the indices database</h1>
+    <h1>Launch the GUI for Sentinel-2 products</h1>
     </div>
 
     
-    <p>The internal function checks if idices.json (the
-database of spectral indices) already exists; if not, it
-downloads source files and creates it.
-Since this function depends on xsltproc executable (available
-inly for Linux), this function can be used only from from
-Linux. It is not necessary, since a indices.json file is
-present in the package.</p>
+    <p>Launch the GUI to set parameters for the processing
+chain of Sentinel-2 products.</p>
     
 
-    <pre class="usage"><span class='fu'>create_indices_db</span>(<span class='kw'>xslt_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>json_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>s2_gui</span>(<span class='kw'>param_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>thunderforest_api</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>xslt_path</th>
-      <td><p>(optional) The path where to install <code>xsltml</code>,
-an external <code>xsltproc</code> script used to convert MathML index formulas
-to LaTeX (default: a subdirectory of the package).</p></td>
+      <th>param_list</th>
+      <td><p>List of parameters for initialising the GUI values
+(if empty, default values are used).</p></td>
     </tr>
     <tr>
-      <th>json_path</th>
-      <td><p>(optional) The path of the output JSON file.
-<em>Warning</em>: to create a file which wil be usable by the package,
-this option must be left to NA (default location is within the
-package installation). Edit this only to create the file in another
-place for external use.</p></td>
-    </tr>
-    <tr>
-      <th>force</th>
-      <td><p>(optional) Logical: if FALSE (default), the db is created only
-if missing or not updated; if TRUE, it is created in any case..</p></td>
+      <th>thunderforest_api</th>
+      <td><p>Character value with the API for thinderforest
+layers (now not used).</p></td>
     </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A list of parameters.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
@@ -139,6 +129,8 @@ if missing or not updated; if TRUE, it is created in any case..</p></td>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
+      <li><a href="#value">Value</a></li>
+
       <li><a href="#note">Note</a></li>
           </ul>
 

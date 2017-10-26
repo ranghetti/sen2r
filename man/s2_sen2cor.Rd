@@ -22,6 +22,10 @@ Note that, at this stage, all products must be in the same directory (this will 
 \item{overwrite}{Logical value: should existing output L2A products be overwritten?
 (default: FALSE)}
 }
+\value{
+Vector character with the list ot the output products (being corrected or already
+existing)
+}
 \description{
 The function uses sen2cor from the docker to manually correct L1C products.
 }

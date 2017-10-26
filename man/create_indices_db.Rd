@@ -4,7 +4,7 @@
 \alias{create_indices_db}
 \title{Create the indices database}
 \usage{
-create_indices_db(xslt_path = NA, json_path = NA)
+create_indices_db(xslt_path = NA, json_path = NA, force = FALSE)
 }
 \arguments{
 \item{xslt_path}{(optional) The path where to install \code{xsltml},
@@ -16,6 +16,9 @@ to LaTeX (default: a subdirectory of the package).}
 this option must be left to NA (default location is within the
 package installation). Edit this only to create the file in another
 place for external use.}
+
+\item{force}{(optional) Logical: if FALSE (default), the db is created only
+if missing or not updated; if TRUE, it is created in any case..}
 }
 \description{
 The internal function checks if idices.json (the

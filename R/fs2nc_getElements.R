@@ -20,11 +20,16 @@
 
 fs2nc_getElements <- function(s2_names, format="list") {
 
+  # if input is NULL, return NULL
+  if (is.null(s2_names)) {
+    return(NULL)
+  }
+
   # define regular expressions to identify products
   fs2nc_regex <- list(
-    "tile" = list("regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([A-Z0-9]{5})\\_([A-Z0-9]{3})\\_([126]0)\\.?(.*)$",
+    "tile" = list("regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([A-Z0-9]{5})\\_([A-Z0-9]+)\\_([126]0)\\.?(.*)$",
                   "elements" = c("mission","level","sensing_date","id_orbit","id_tile","prod_type","res","file_ext")),
-    "merged" = list("regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_\\_([A-Z0-9]{3})\\_([126]0)\\.?(.*)$",
+    "merged" = list("regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_\\_([A-Z0-9]+)\\_([126]0)\\.?(.*)$",
                     "elements" = c("mission","level","sensing_date","id_orbit","prod_type","res","file_ext")))
 
   metadata <- list() # output object, with requested metadata

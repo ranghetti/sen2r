@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create the indices database — create_indices_db • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
+<title>Shiny Module Server for Geo Create, Edit, Delete — editModPoly • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,48 +89,61 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create the indices database</h1>
+    <h1>Shiny Module Server for Geo Create, Edit, Delete</h1>
     </div>
 
     
-    <p>The internal function checks if idices.json (the
-database of spectral indices) already exists; if not, it
-downloads source files and creates it.
-Since this function depends on xsltproc executable (available
-inly for Linux), this function can be used only from from
-Linux. It is not necessary, since a indices.json file is
-present in the package.</p>
+    <p>Shiny Module Server for Geo Create, Edit, Delete</p>
     
 
-    <pre class="usage"><span class='fu'>create_indices_db</span>(<span class='kw'>xslt_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>json_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>editModPoly</span>(<span class='no'>input</span>, <span class='no'>output</span>, <span class='no'>session</span>, <span class='no'>leafmap</span>, <span class='kw'>targetLayerId</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>sf</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>record</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>xslt_path</th>
-      <td><p>(optional) The path where to install <code>xsltml</code>,
-an external <code>xsltproc</code> script used to convert MathML index formulas
-to LaTeX (default: a subdirectory of the package).</p></td>
+      <th>input</th>
+      <td><p>Shiny server function input</p></td>
     </tr>
     <tr>
-      <th>json_path</th>
-      <td><p>(optional) The path of the output JSON file.
-<em>Warning</em>: to create a file which wil be usable by the package,
-this option must be left to NA (default location is within the
-package installation). Edit this only to create the file in another
-place for external use.</p></td>
+      <th>output</th>
+      <td><p>Shiny server function output</p></td>
     </tr>
     <tr>
-      <th>force</th>
-      <td><p>(optional) Logical: if FALSE (default), the db is created only
-if missing or not updated; if TRUE, it is created in any case..</p></td>
+      <th>session</th>
+      <td><p>Shiny server function session</p></td>
+    </tr>
+    <tr>
+      <th>leafmap</th>
+      <td><p>leaflet map to use for Selection</p></td>
+    </tr>
+    <tr>
+      <th>targetLayerId</th>
+      <td><p><code>character</code> identifier of layer to edit, delete</p></td>
+    </tr>
+    <tr>
+      <th>sf</th>
+      <td><p><code>logical</code> to return simple features.  <code>sf=FALSE</code> will return
+<code>GeoJSON</code>.</p></td>
+    </tr>
+    <tr>
+      <th>record</th>
+      <td><p><code>logical</code> to record all edits for future playback.</p></td>
+    </tr>
+    <tr>
+      <th>crs</th>
+      <td><p>CRS (EPSG) to be used</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>server function for Shiny module</p>
+    
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>License: GPL 3.0</p>
+    <p>Slightly edited from <a href='http://www.rdocumentation.org/packages/mapedit/topics/editMod'>mapedit::editMod</a> in order to allow drawing only polygons.</p>
     
 
   </div>
@@ -139,12 +152,10 @@ if missing or not updated; if TRUE, it is created in any case..</p></td>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
+      <li><a href="#value">Value</a></li>
+
       <li><a href="#note">Note</a></li>
           </ul>
-
-    <h2>Author</h2>
-    
-Luigi Ranghetti, phD (2017) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a>
 
   </div>
 </div>

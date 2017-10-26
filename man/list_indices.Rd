@@ -15,7 +15,9 @@ one or more within the followings:
 \item \code{longname}: index description;
 \item \code{link}: URL to the index description page;
 \item \code{s2_formula}: expression containing the formula to compute the index;
-\item \code{s2_formula_mathml}: MathML version of the formula.
+\item \code{s2_formula_mathml}: MathML version of the formula;
+\item \code{checked}: logical (TRUE for verified indices);
+\item \code{a}, \code{b}, \code{x}: parameter values (NA for non required parameters).
 }}
 
 \item{pattern}{A regular expression on index names.}

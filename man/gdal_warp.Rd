@@ -5,7 +5,8 @@
 \title{Clip, reproject and warp raster files}
 \usage{
 gdal_warp(srcfiles, dstfiles, of = NULL, ref = NULL, mask = NULL,
-  tr = NULL, t_srs = NULL, r = NULL, dstnodata = NULL, ...)
+  tr = NULL, t_srs = NULL, r = NULL, dstnodata = NULL,
+  overwrite = FALSE, ...)
 }
 \arguments{
 \item{srcfiles}{A vector of input file paths (managed by GDAL).}
@@ -51,6 +52,9 @@ file. Use a value of NA to ensure that nodata is not defined.
 If this argument is not used then nodata values will be copied from
 the source datasets. At the moment it is not possible to set different
 values for different \code{srcfiles} (use multiple calls of the functions).}
+
+\item{overwrite}{Logical value: should existing output files be
+overwritten? (default: FALSE)}
 
 \item{...}{Additional parameters of \link{gdalwarp} or \link{gdal_translate}
 (different from \code{s_srs}, \code{t_srs}, \code{te}, \code{tr}, \code{ts} and \code{of}).}

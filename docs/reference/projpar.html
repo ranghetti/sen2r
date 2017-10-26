@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create the indices database — create_indices_db • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
+<title>Return a parameter used in a WRT projection — projpar • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,58 +89,68 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create the indices database</h1>
+    <h1>Return a parameter used in a WRT projection</h1>
     </div>
 
     
-    <p>The internal function checks if idices.json (the
-database of spectral indices) already exists; if not, it
-downloads source files and creates it.
-Since this function depends on xsltproc executable (available
-inly for Linux), this function can be used only from from
-Linux. It is not necessary, since a indices.json file is
-present in the package.</p>
+    <p>Return the value of a parameter (or the name) present in
+the WKT of the given proj4string.</p>
     
 
-    <pre class="usage"><span class='fu'>create_indices_db</span>(<span class='kw'>xslt_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>json_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>projpar</span>(<span class='no'>proj4string</span>, <span class='no'>par</span>, <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+<span class='fu'>projname</span>(<span class='no'>proj4string</span>, <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>xslt_path</th>
-      <td><p>(optional) The path where to install <code>xsltml</code>,
-an external <code>xsltproc</code> script used to convert MathML index formulas
-to LaTeX (default: a subdirectory of the package).</p></td>
+      <th>proj4string</th>
+      <td><p>The proj4string to be named (a character or a CRS
+object).</p></td>
     </tr>
     <tr>
-      <th>json_path</th>
-      <td><p>(optional) The path of the output JSON file.
-<em>Warning</em>: to create a file which wil be usable by the package,
-this option must be left to NA (default location is within the
-package installation). Edit this only to create the file in another
-place for external use.</p></td>
+      <th>par</th>
+      <td><p>Character corresponding to the parameter name.</p></td>
     </tr>
     <tr>
-      <th>force</th>
-      <td><p>(optional) Logical: if FALSE (default), the db is created only
-if missing or not updated; if TRUE, it is created in any case..</p></td>
+      <th>abort</th>
+      <td><p>logical: if TRUE, the function aborts in case an invalid
+proj4string is passed; if FALSE (default), the function returns NA,
+and a warning is shown.</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A character with the content of the parameter (NULL if the
+parameter is not recognised) or the name of the projection, and an
+attribute <code>proj4string</code> with the input projection checked using
+<a href='http://www.rdocumentation.org/packages/sprawl/topics/check_proj4string'>sprawl::check_proj4string</a>.</p>
+    
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>License: GPL 3.0</p>
+    <p>Python is needed.</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='fu'>projpar</span>(<span class='st'>"+init=epsg:4326"</span>, <span class='st'>"Unit"</span>)
+<span class='co'># }</span><span class='co'># NOT RUN {</span>
+<span class='fu'>projname</span>(<span class='st'>"+init=epsg:4326"</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
+      <li><a href="#value">Value</a></li>
+
       <li><a href="#note">Note</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     

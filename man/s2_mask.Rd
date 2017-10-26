@@ -5,7 +5,8 @@
 \title{Apply cloud masks}
 \usage{
 s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba",
-  outdir = "./masked", format = NA, subdirs = NA, compress = "DEFLATE")
+  outdir = "./masked", format = NA, subdirs = NA, compress = "DEFLATE",
+  parallel = FALSE, overwrite = FALSE)
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths
@@ -26,6 +27,7 @@ their names must be in the fidolasen-S2 naming convention
 \item{mask_type}{Character vector which determines the type of
 mask to be applied. Accepted values are:
 \itemize{
+\item "nodata": mask pixels checked as "No data" in the SCL product;
 \item "cloud_high_proba": mask pixels checked as "No data" or
 "Cloud (high probability)" in the SCL product;
 \item "cloud_medium_proba": mask pixels checked as "No data" or
@@ -59,6 +61,13 @@ more than a single spectral index is required.}
 
 \item{compress}{(optional) In the case a GTiff format is
 present, the compression indicated with this parameter is used.}
+
+\item{parallel}{(optional) Logical: if TRUE, masking is conducted using parallel
+processing exploiting \link[raster:beginCluster]{raster::beginCluster}. This speeds-up the computation
+for large rasters. If FALSE (default), single core processing is used.}
+
+\item{overwrite}{(optional) Logical value: should existing output files be
+overwritten? (default: FALSE)}
 }
 \value{
 A vector with the names of the created products.

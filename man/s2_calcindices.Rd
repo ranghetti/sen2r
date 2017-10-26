@@ -5,7 +5,8 @@
 \title{Compute maps of spectral indices}
 \usage{
 s2_calcindices(infiles, indices, outdir = ".", parameters = NULL,
-  format = NA, subdirs = NA, compress = "DEFLATE", dataType = "Int16")
+  source = c("TOA", "BOA"), format = NA, subdirs = NA,
+  compress = "DEFLATE", dataType = "Float32", overwrite = FALSE)
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths
@@ -33,7 +34,15 @@ directory of \code{infiles}.}
 must be a named list, in which each element is a list of parameters,
 i.e.:
 \code{parameters = list("SAVI" = list("a" = 0.5))}
-TODO: add default values (in the json)}
+Values can be both numeric values or band names (e.g. "band_1").
+If not specified, parameters are set to default values.}
+
+\item{source}{(optional) Vector with the products from which computing
+the indices. It can be "BOA", "TOA" or both (default). If both values
+are provided, indices are computed from the available products ("TOA"
+if TOA is available, BOA if BOA is available); in the case both are
+available, two files are produced (they can be distinguished from the
+level component - S2x1C or S2x2A - in the filename).}
 
 \item{format}{(optional) Format of the output file (in a
 format recognised by GDAL). Default is the same format of input images
@@ -48,9 +57,12 @@ more than a single spectral index is required.}
 present, the compression indicated with this parameter is used.}
 
 \item{dataType}{(optional) Numeric datatype of the ouptut rasters:
-if "Float32" or "Float64" is chosen, numeric values are not rescaled;
-if "Int16" (default) or "UInt16", values are multiplicated by a 10000
+if "Float32" (default) or "Float64" is chosen, numeric values are not rescaled;
+if "Int16" or "UInt16", values are multiplicated by a 10000
 scale factor.}
+
+\item{overwrite}{Logical value: should existing output files be
+overwritten? (default: FALSE)}
 }
 \value{
 A vector with the names of the created products.
