@@ -14,6 +14,8 @@
 #'  this option must be left to NA (default location is within the
 #'  package installation). Edit this only to create the file in another
 #'  place for external use.
+#' @param force (optional) Logical: if FALSE (default), the db is created only
+#'  if missing or not updated; if TRUE, it is created in any case..
 #' @return NULL
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
@@ -25,7 +27,9 @@
 #' @importFrom utils capture.output download.file unzip packageVersion
 
 
-create_indices_db <- function(xslt_path=NA, json_path=NA) {
+create_indices_db <- function(xslt_path = NA,
+                              json_path = NA,
+                              force = FALSE) {
 
   # to avoid NOTE on check
   n_index <- name <- longname <- . <- s2_formula <- type <- NULL
@@ -38,7 +42,7 @@ create_indices_db <- function(xslt_path=NA, json_path=NA) {
   if (system.file("extdata","indices.json", package="fidolasen") == json_path) {
     json_version <- jsonlite::fromJSON(json_path)$fidolasen_version %>%
       package_version()
-    if (json_version >= packageVersion("fidolasen")) {
+    if (force == FALSE & json_version >= packageVersion("fidolasen")) {
       return(NULL)
     }
   }
@@ -85,6 +89,9 @@ create_indices_db <- function(xslt_path=NA, json_path=NA) {
   s2_formula_mathml <- lapply(seq_along(s2_html_table)[-1], function(x) {
     s2_html_table[[x]][[5]][[1]]
   })
+  s2_formula_mathml_general <- lapply(seq_along(s2_html_table)[-1], function(x) {
+    s2_html_table[[x]][[4]][[1]]
+  }) # this is used for automatic band substitution
 
   # Build table
   s2_table$s2_formula <- as.character(NA)
@@ -118,6 +125,7 @@ create_indices_db <- function(xslt_path=NA, json_path=NA) {
   # clean
   n_index_toremove <- sort(as.integer(n_index_toremove))
   s2_formula_mathml <- s2_formula_mathml[!s2_table$n_index %in% n_index_toremove]
+  s2_formula_mathml_general <- s2_formula_mathml_general[!s2_table$n_index %in% n_index_toremove]
   s2_table <- s2_table[!n_index %in% n_index_toremove,]
 
 
@@ -213,14 +221,79 @@ create_indices_db <- function(xslt_path=NA, json_path=NA) {
   # # TODO2 check all the aoutmatic parsings (maybe expression do not provide errors but they are different from originals)
   n_index_toremove <- test_out[type%in%c("error","warning"),n_index]
   s2_formula_mathml <- s2_formula_mathml[!s2_table$n_index %in% n_index_toremove]
+  s2_formula_mathml_general <- s2_formula_mathml_general[!s2_table$n_index %in% n_index_toremove]
   s2_table <- s2_table[!n_index %in% n_index_toremove,]
+
+
+  ## Check indices manually
+  # (this is necessary because most of the indices is associated to wrong
+  # Sentinel-2 bands, and because parameter values are missing)
+  # logical: FALSE for not checked, TRUE for checked
+  s2_table$checked <- FALSE
+  # numerics: values for index parameters
+  s2_table$x <- s2_table$b <- s2_table$a <- as.numeric(NA)
+
+  # by default, make all these changes
+  # (only bands named as "RED", "BLUE" and "NIR" are changed, because
+  # these are the wrong ones, while normally bands named in other ways
+  # - like "700nm" - are correctly associated)
+  s2_table[grepl("RED",s2_formula_mathml_general),
+           s2_formula := gsub("band_5","band_4",s2_formula)] # B5 to B4 (Red)
+  s2_table[grepl("NIR",s2_formula_mathml_general),
+           s2_formula := gsub("band_9","band_8",s2_formula)] # B9 to B8 (NIR)
+  s2_table[grepl("BLUE",s2_formula_mathml_general),
+           s2_formula := gsub("band_1","band_2",s2_formula)] # B2 to B1 (Blue)
+
+  # set as checked for indices ok after previous changes
+  s2_table[name %in% c("NDVI","SAVI","MCARI","MCARI2","TCARI","ARVI","NDRE",
+                       "BNDVI","GNDVI","NDII","TCI","MSAVI","OSAVI","MTVI2",
+                       "MCARI/MTVI2","TCARI/OSAVI"),checked:=TRUE]
+
+  # set default parameter values
+  s2_table[name=="SAVI", a:=0.5] # default value for L (here "a") parameter
+
+  # add missing indices
+  s2_table_new <- data.table(
+    n_index = 300,
+    longname = c(
+      "Normalized Difference Flood Index B1B7",
+      "Normalized Difference Flood Index B1B6"
+    ),
+    name = c("NDFI","NDFI2"),
+    link = c(
+      "https://doi.org/10.1371/journal.pone.0088741",
+      "https://doi.org/10.1371/journal.pone.0088741"
+    ),
+    s2_formula = c(
+      "(band_4-band_12)/(band_4+band_12)",
+      "(band_4-band_11)/(band_4+band_11)"
+    ),
+    checked = rep(TRUE,2),
+    a = c(NA,NA),
+    b = c(NA,NA),
+    x = c(NA,NA)
+  )
+  s2_table <- rbind(s2_table, s2_table_new, fill=TRUE)
+
+  # add empty elements in MathML formulas
+  for (i in length(s2_formula_mathml) + seq_len(nrow(s2_table) - length(s2_formula_mathml))) {
+    s2_formula_mathml[[i]] <- NA
+    s2_formula_mathml_general[[i]] <- NA
+  }
 
 
   ## Convert in JSON
   # convert MathML to character
-  s2_table$s2_formula_mathml <- sapply(s2_formula_mathml, function(x) {
-    paste(capture.output(print(x)), collapse="\n")
-  })
+  s2_table$s2_formula_mathml <- sapply(
+    s2_formula_mathml_general, # replaced from s2_formula_mathml in order not to show uncorrect band numbers
+    function(x) {
+      if (is(x, "XMLNode")) {
+        paste(capture.output(print(x)), collapse="\n")
+      } else {
+        ""
+      }
+    }
+  )
 
   json_table <- list(
     "indices" = s2_table,

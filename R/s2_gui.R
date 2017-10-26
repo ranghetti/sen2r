@@ -190,8 +190,9 @@ s2_gui <- function(param_list = NULL,
                   a("raw SAFE format",
                     href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/data-formats",
                     target="_blank"),
-                  " (downloaded and/or corrected with sen2cor)")
-                ),
+                  " (downloaded and/or corrected with sen2cor)"
+                )
+              ),
               choiceValues = list(TRUE, FALSE),
               selected=TRUE,
               inline = FALSE
@@ -248,7 +249,7 @@ s2_gui <- function(param_list = NULL,
                 checkboxGroupInput("sel_sensor", "Select sensors:",
                                    choiceNames = list("Sentinel-2A",
                                                       span("Sentinel-2B\u2000",#
-                                                           actionLink("sel_sensor_tempmessage", icon("info-circle"))) # temp
+                                                           actionLink("note_sel_sensor", icon("info-circle"))) # temp
                                    ),
                                    choiceValues = list("s2a", "s2b"),
                                    selected=c("s2a","s2b"),
@@ -452,7 +453,7 @@ s2_gui <- function(param_list = NULL,
                     radioButtons(
                       "dissolve_extent",
                       label = span(
-                        "Consider multiple polygons as:",
+                        "Consider multiple polygons as:\u2000",
                         actionLink("help_dissolve_extent", icon("question-circle"))
                       ),
                       choiceNames = list(
@@ -882,11 +883,32 @@ s2_gui <- function(param_list = NULL,
                         div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
                             textInput("path_indices_textin", NULL, "Enter directory...")))),
 
-                radioButtons("index_source", "Build indices from:",
-                             choices = list("TOA Reflectance" = "TOA",
-                                            "BOA Reflectance" = "BOA"),
-                             selected = "BOA",
-                             inline = TRUE),
+                fluidRow(
+                  column(
+                    width = 5,
+                    radioButtons(
+                      "index_source",
+                      label = span(
+                        "Build indices from:\u2000",
+                        actionLink("help_index_source", icon("question-circle"))
+                      ),
+                      choices = list("BOA" = "BOA",
+                                     "TOA" = "TOA"),
+                      selected = "BOA",
+                      inline = TRUE)
+                  ),
+                  column(
+                    width = 7,
+                    checkboxInput(
+                      "verified_indices",
+                      label = span(
+                        "Show only verified indices\u2000",
+                        actionLink("note_list_indices", icon("info-circle"))
+                      ),
+                      value = TRUE
+                    )
+                  )
+                ),
 
                 textInput("filter_indices", "Filter indices"),
                 uiOutput("check_indices")
@@ -1032,7 +1054,7 @@ s2_gui <- function(param_list = NULL,
 
     # # Temporary message to alert that S2B are not retrievable automatically until they will be operational.
     # # This will be removed.
-    observeEvent(input$sel_sensor_tempmessage, {
+    observeEvent(input$note_sel_sensor, {
       # if (input$download_safe!="no" & "s2b" %in% input$sel_sensor) {
         showModal(modalDialog(
           title = "Sentinel-2B temporary alert",
@@ -1226,7 +1248,11 @@ s2_gui <- function(param_list = NULL,
                             st_polygon()
                           },
                           imported = if (!is.null(imported_param())) {
-                            st_read(imported_param()$extent)
+                            if (any(!is.na(imported_param()$extent))) {
+                              st_read(imported_param()$extent)
+                            } else {
+                              NULL
+                            }
                           } else {
                             NULL
                           })
@@ -1314,17 +1340,32 @@ s2_gui <- function(param_list = NULL,
     # options to update these values also if not visible
     outputOptions(output, "indices_req", suspendWhenHidden = FALSE)
 
-
     create_indices_db()
-    indices_db <- data.table(list_indices(c("n_index","name","longname","s2_formula_mathml","link")))
-    indices_db[,extendedname:=paste0(name," (",longname,")")]
+    indices_db <- data.table(list_indices(c("n_index","name","longname","s2_formula_mathml","link","checked")))
+    check_mark <- icon("check") %>%
+      span(style="color:darkgreen;", .) %>%
+      as.character() %>%
+      gsub("\n *","",.)
+    indices_db[,extendedname := paste0(
+      name,
+      " (",longname,")  ",
+      ifelse(checked, check_mark, "")
+    )]
     setkey(indices_db, "name")
 
     indices_rv <- reactiveValues()
     observe({
-      indices_rv$matches <- indices_db[grep(tolower(input$filter_indices),
-                                            tolower(indices_db$extendedname)),
-                                       name]
+      indices_db_verified_idx <- if (input$verified_indices==TRUE) {
+        indices_db$checked
+      } else {
+        rep(TRUE, nrow(indices_db))
+      }
+      indices_rv$matches <- indices_db[
+        indices_db_verified_idx &
+          grepl(tolower(input$filter_indices),
+                tolower(indices_db$extendedname)),
+        name
+      ]
       indices_rv$filtered <- indices_db[unique(c(indices_rv$checked,indices_rv$matches)),
                                         list(name,extendedname)]
     })
@@ -1333,11 +1374,14 @@ s2_gui <- function(param_list = NULL,
     })
 
     output$check_indices <- renderUI({
-      checkboxGroupInput("list_indices",
-                         "Indices to be exported",
-                         choices = setNames(as.list(indices_rv$filtered$name),
-                                            indices_rv$filtered$extendedname),
-                         selected = indices_rv$checked)
+      checkboxGroupInput(
+        "list_indices",
+        label = "Indices to be exported",
+        choiceNames = lapply(indices_rv$filtered$extendedname, HTML),
+        # choiceNames = lapply(indices_rv$filtered$name, function(x){span(x,icon("info-circle"))}),
+        choiceValues = as.list(indices_rv$filtered$name),
+        selected = indices_rv$checked
+      )
     })
 
     index_details <- function(index) {
@@ -1621,7 +1665,8 @@ s2_gui <- function(param_list = NULL,
           "<strong>No</strong>:",
           "skip download and/or atmospheric correction for existing images."
         )),
-        em("This option is available only in online mode."),
+        em("This option is not available if nor download neither atmospheric",
+           "correction are required."),
         easyClose = TRUE,
         footer = NULL
       ))
@@ -1729,6 +1774,61 @@ s2_gui <- function(param_list = NULL,
       ))
     })
 
+    observeEvent(input$help_index_source, {
+      showModal(modalDialog(
+        title = "Build indices from:",
+        p(HTML(
+          "<strong>BOA</strong>:",
+          "Spectral indices are build from surface reflectances",
+          " (Bottom Of Atmosphere).",
+          "This is the default option."
+        )),
+        p(HTML(
+          "<strong>TOA</strong>:",
+          "Spectral indices are build from Top Of Atmosphere reflectances.",
+          "It is strongly suggested not to use this option",
+          "(use only if you are not interested to the absolute values",
+          "of the indices, and if the atmospheric disturbance in your area",
+          "of interest is sufficiently uniform)."
+        )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+
+    observeEvent(input$note_list_indices, {
+      showModal(modalDialog(
+        title = "Spectral indices",
+        HTML(
+          "<table style=\"width:100%\">",
+          "<tr>",
+          "<td style=\"padding-right: 10px;\">",
+          as.character(
+            a(href="http://www.indexdatabase.de/db/is.php?sensor_id=96",
+              target="_blank",
+              img(
+                src="http://www.indexdatabase.de/daten/grafik/logo.png",
+                alt="IDB logo",
+                height="70",
+                width="125"
+              )
+            )
+          ),
+          "</td>",
+          "<td>",
+          "Spectral indices here listed were mostly taken from",
+          "<a href=\"http://www.indexdatabase.de\" target=\"_blank\">Index DataBase</a>.",
+          paste0("Indices marked as verified (",check_mark,") were checked"),
+          "in order to ensure that the formula used to compute them",
+          "is actually the formula used by the authors, and that",
+          "Sentinel-2 bands associated to spectral bands are correct.",
+          "</td></tr>"
+        ),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+
 
     ## Exit and save
 
@@ -1742,29 +1842,41 @@ s2_gui <- function(param_list = NULL,
       rl <- list()
 
       # processing steps #
-      rl$preprocess <- input$preprocess==TRUE # TRUE to perform preprocessing steps, FALSE to download SAFE only
-      rv$s2_levels <- c(if(safe_req$l1c==TRUE){"l1c"}, if(safe_req$l2a==TRUE){"l2a"}) # required S2 levels ("l1c","l2a")
+      rl$preprocess <- as.logical(input$preprocess) # TRUE to perform preprocessing steps, FALSE to download SAFE only
+      rl$s2_levels <- c(if(safe_req$l1c==TRUE){"l1c"}, if(safe_req$l2a==TRUE){"l2a"}) # required S2 levels ("l1c","l2a")
       rl$sel_sensor <- input$sel_sensor # sensors to use ("s2a", "s2b")
-      rl$online <- input$online # TRUE if online mode, FALSE if offline mode
-      rl$overwrite_safe <- input$overwrite_safe # TRUE to overwrite existing SAFE, FALSE not to
+      rl$online <- as.logical(input$online) # TRUE if online mode, FALSE if offline mode
+      rl$overwrite_safe <- as.logical(input$overwrite_safe) # TRUE to overwrite existing SAFE, FALSE not to
       rl$rm_safe <- input$rm_safe # "yes" to delete all SAFE, "l1c" to delete only l1c, "no" not to remove
       rl$step_atmcorr <- if (safe_req$l2a==TRUE) {input$step_atmcorr} else {"no"} # download_method in sen2cor: "auto", "l2a", "scihub" or "no"
       # rl$steps_reqout <- input$steps_reqout # vector of required outputs: "safe", "tiles", "clipped" (one or more)
 
       # spatio-temporal selection #
-      rl$timewindow <- input$timewindow # range of dates
-      rl$timeperiod <- input$timeperiod # "full" or "seasonal"
+      rl$timewindow <- if (input$query_time==TRUE) { # range of dates
+        input$timewindow
+      } else {
+        NA
+      }
+      rl$timeperiod <- if (input$query_time==TRUE) { # range of dates
+        input$timeperiod # "full" or "seasonal"
+      } else {
+        "full"
+      }
       # polygons
-      rl$extent <- if (!is.null(rv$extent)) {
+
+      rl$extent <- if (input$query_space == TRUE | !is.null(rv$extent)) {
         rv$extent %>%
           st_transform(4326) %>%
           geojson_json(pretty=TRUE)
       } else {
-        geojson_json(st_polygon())
+        NA
       }
-      # rl$s2tiles_selected <- rv$draw_tiles_overlapping[rv$draw_tiles_overlapping$tile_id %in% input$tiles_checkbox,] # MULTIPOLYGON with the selected tiles
-      rl$s2tiles_selected <- if (is.null(rl$s2tiles_selected)) {NA} else {input$tiles_checkbox} # selected tile IDs
-      rl$s2orbits_selected <- str_pad(c(1:143),3,"left","0") # temporary select all orbits (TODO implement)
+      rl$s2tiles_selected <- if (input$query_space == TRUE | is.null(rl$s2tiles_selected)) {
+        NA
+      } else {
+        input$tiles_checkbox
+      } # selected tile IDs
+      rl$s2orbits_selected <- NA # temporary select all orbits (TODO implement)
 
       # product selection #
       rl$list_prods <- input$list_prods[!input$list_prods %in% "indices"] # TOA, BOA, SCL, TCI (for now)
@@ -1772,8 +1884,8 @@ s2_gui <- function(param_list = NULL,
       rl$index_source <- input$index_source # reflectance band for computing indices ("BOA" or "TOA")
       rl$mask_type <- if (input$atm_mask==FALSE) {NA} else {input$atm_mask_type} # atmospheric masking (accepted types as in s2_mask())
 
-      rl$clip_on_extent <- input$clip_on_extent # TRUE to clip (and warp) on the selected extent, FALSE to work at tiles/merged level
-      rl$extent_as_mask <- input$extent_as_mask # TRUE to mask outside the polygons of extent, FALSE to use as boundig box
+      rl$clip_on_extent <- as.logical(input$clip_on_extent) # TRUE to clip (and warp) on the selected extent, FALSE to work at tiles/merged level
+      rl$extent_as_mask <- as.logical(input$extent_as_mask) # TRUE to mask outside the polygons of extent, FALSE to use as boundig box
 
       # output geometry #
       # path of the reference file (NULL if not provided)
@@ -1824,7 +1936,7 @@ s2_gui <- function(param_list = NULL,
                                input$compression,
                                NA)
       # overwrite or skip existing files (logical)
-      rl$overwrite <- input$overwrite
+      rl$overwrite <- as.logical(input$overwrite)
 
       # set directories #
       rl$path_l1c <- input$path_l1c_textin # path of L1C SAFE products
@@ -1833,7 +1945,7 @@ s2_gui <- function(param_list = NULL,
       rl$path_merged <- if (input$keep_merged==TRUE) {input$path_merged_textin} else {NA} # path of entire tiled products
       rl$path_out <- if (length(input$list_prods)>1 | length(input$list_prods)>0 & !"indices" %in% input$list_prods) {input$path_out_textin} else {NA} # path of output pre-processed products
       rl$path_indices <- if (indices_req()==TRUE) {input$path_indices_textin} else {NA} # path of spectral indices
-      rl$path_subdirs <- input$path_subdirs # logical (use subdirs)
+      rl$path_subdirs <- as.logical(input$path_subdirs) # logical (use subdirs)
 
       return(rl)
     }
@@ -1842,42 +1954,59 @@ s2_gui <- function(param_list = NULL,
     import_param_list <- function(pl) {
 
       # processing steps
-      updateCheckboxGroupInput(session, "sel_sensor", selected = pl$sel_sensor)
-      updateRadioButtons(session, "overwrite_safe", selected = pl$overwrite_safe)
-      updateRadioButtons(session, "online", selected = pl$online)
+      updateRadioButtons(session, "preprocess", selected = pl$preprocess)
       updateCheckboxGroupInput(session, "list_levels", selected = pl$s2_levels)
+      updateCheckboxGroupInput(session, "sel_sensor", selected = pl$sel_sensor)
+      updateRadioButtons(session, "online", selected = pl$online)
+      updateRadioButtons(session, "overwrite_safe", selected = pl$overwrite_safe)
       updateRadioButtons(session, "rm_safe", selected = pl$rm_safe)
       updateRadioButtons(session, "step_atmcorr", selected = pl$step_atmcorr)
-      # updateCheckboxGroupInput(session, "steps_reqout",
-      #                          selected = c(if(!is.na(input$path_tiles_textin)){"tiles"},
-      #                                       if(!is.na(input$path_merged_textin)){"merged"},
-      #                                       if(!is.na(input$path_out_textin)){"out"},
-      #                                       if(!is.na(input$path_indices_textin)){"indices"}))
-      updateRadioButtons(session, "clip_on_extent", selected = pl$clip_on_extent)
-      updateRadioButtons(session, "keep_tiles", selected = ifelse(is.na(pl$path_tiles),FALSE,TRUE))
-      updateRadioButtons(session, "keep_merged", selected = ifelse(is.na(pl$path_merged),FALSE,TRUE))
+
 
       # spatio-temporal selection
-      updateDateRangeInput(session, "timewindow", start=pl$timewindow[1], end=pl$timewindow[2])
-      updateRadioButtons(session, "timeperiod", selected = pl$timeperiod)
-      updateRadioButtons(session, "extent_type",
-                         choices = list("Bounding box coordinates" = "bbox",
-                                        "Upload vector file" = "vectfile",
-                                        "Draw on the map" = "draw",
-                                        "Imported from JSON" = "imported"),
-                         selected = "imported")
-      isolate(rv$extent <- if (pl$extent==geojson_json(st_polygon())) {st_polygon()} else {st_read(pl$extent)})
-      updateCheckboxGroupInput(session, "tiles_checkbox",
-                               selected = pl$s2tiles_selected)
-      # rl$s2tiles_selected <- input$tiles_checkbox # selected tile IDs
-      updateRadioButtons(session, "extent_as_mask", selected = rv$extent_as_mask)
+      if (any(is.na(pl$timewindow))) {
+        updateRadioButtons(session, "query_time", selected = FALSE)
+      } else {
+        updateRadioButtons(session, "query_time", selected = TRUE)
+        updateDateRangeInput(session, "timewindow", start=pl$timewindow[1], end=pl$timewindow[2])
+        updateRadioButtons(session, "timeperiod", selected = pl$timeperiod)
+      }
+      if (any(is.na(pl$extent))) {
+        updateRadioButtons(session, "query_space", selected = FALSE)
+      } else {
+        updateRadioButtons(session, "query_space", selected = TRUE)
+        updateRadioButtons(session, "extent_type",
+                           choices = list("Bounding box coordinates" = "bbox",
+                                          "Upload vector file" = "vectfile",
+                                          "Draw on the map" = "draw",
+                                          "Imported from JSON" = "imported"),
+                           selected = "imported")
+        isolate({
+          rv$extent <- if (is.na(pl$extent)) {
+            st_polygon()
+          } else if (pl$extent == geojson_json(st_polygon())) {
+            st_polygon()
+          } else {
+            st_read(pl$extent)
+          }
+        })
+        updateCheckboxGroupInput(session, "tiles_checkbox",
+                                 selected = pl$s2tiles_selected)
+        # rl$s2tiles_selected <- input$tiles_checkbox # selected tile IDs
+        updateRadioButtons(session, "extent_as_mask", selected = rv$extent_as_mask)
+      }
 
       # product selection
-      if (any(!is.na(pl$list_indices))) {
-        updateCheckboxGroupInput(session, "list_prods", selected = c(pl$list_prods,"indices"))
-      } else {
-        updateCheckboxGroupInput(session, "list_prods", selected = pl$list_prods)
-      }
+      if (all(is.na(pl$list_prods))) {pl$list_prods <- NULL}
+      updateCheckboxGroupInput(
+        session, "list_prods",
+        selected = if (any(!is.na(pl$list_indices))) {
+          c(pl$list_prods,"indices")
+        } else {
+          pl$list_prods
+        }
+      )
+      if (all(is.na(pl$list_indices))) {pl$list_indices <- NULL}
       indices_rv$checked <- pl$list_indices
       # updateCheckboxGroupInput(session, "list_indices", selected = pl$list_indices) # FIXME 1 not working since it is reactive
       updateRadioButtons(session, "atm_mask",
@@ -1885,6 +2014,9 @@ s2_gui <- function(param_list = NULL,
       updateRadioButtons(session, "atm_mask_type",
                          selected = ifelse(is.na(pl$mask_type),"cloud_medium_proba",pl$mask_type))
       updateRadioButtons(session, "index_source", selected = pl$index_source)
+      updateRadioButtons(session, "clip_on_extent", selected = pl$clip_on_extent)
+      updateRadioButtons(session, "keep_tiles", selected = ifelse(is.na(pl$path_tiles),FALSE,TRUE))
+      updateRadioButtons(session, "keep_merged", selected = ifelse(is.na(pl$path_merged),FALSE,TRUE))
 
 
       # set directories
@@ -1968,6 +2100,7 @@ s2_gui <- function(param_list = NULL,
     observe({
       if (exists("imported_param") && !is.null(imported_param())) {
         import_param_list(imported_param()) # FIXME 3 same as fixme2 (after importing parameters, map is not drawn)
+        # imported_param() <- NULL
       }
     })
     observe({
