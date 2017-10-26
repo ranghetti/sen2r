@@ -71,7 +71,7 @@ s2_gui <- function(param_list = NULL,
           exdir   = dirname(s2tiles_kml),
           unzip   = "internal")
   }
-  s2tiles <- st_read(s2tiles_kml, stringsAsFactors=FALSE)
+  s2tiles <- st_read(s2tiles_kml, stringsAsFactors=FALSE, quiet=TRUE)
   s2tiles[,!names(s2tiles)%in%c("Name","geometry")] <- NULL
   names(s2tiles) <- gsub("^Name$","tile_id",names(s2tiles))
 

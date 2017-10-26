@@ -8,13 +8,12 @@ fidolasen_s2(param_list = NULL, gui = NA, preprocess = NA,
   s2_levels = NA, sel_sensor = NA, online = NA, overwrite_safe = NA,
   rm_safe = NA, step_atmcorr = NA, timewindow = NA, timeperiod = NA,
   extent = NA, s2tiles_selected = NA, s2orbits_selected = NA,
-  clip_on_extent = NA, extent_as_mask = NA, list_prods = NA,
-  list_indices = NA, index_source = NA, mask_type = NA,
-  reference_path = NA, res = NA, res_s2 = NA, unit = NA, proj = NA,
-  resampling = NA, resampling_scl = NA, outformat = NA,
-  compression = NA, overwrite = NA, path_l1c = NA, path_l2a = NA,
-  path_tiles = NA, path_merged = NA, path_out = NA, path_indices = NA,
-  path_subdirs = NA)
+  list_prods = NA, list_indices = NA, index_source = NA, mask_type = NA,
+  clip_on_extent = NA, extent_as_mask = NA, reference_path = NA,
+  res = NA, res_s2 = NA, unit = NA, proj = NA, resampling = NA,
+  resampling_scl = NA, outformat = NA, compression = NA, overwrite = NA,
+  path_l1c = NA, path_l2a = NA, path_tiles = NA, path_merged = NA,
+  path_out = NA, path_indices = NA, path_subdirs = NA)
 }
 \arguments{
 \item{param_list}{(optional) List of input parameters:
@@ -104,14 +103,6 @@ tiles to be considered (default is NA, meaning all the tiles).}
 orbits to be considered (still to be implemented; for now,
 all the accepted values are listed).}
 
-\item{clip_on_extent}{(optional) Logical: if TRUE (default), output products
-and indices are clipped to the selected extent (and resampled/reprojected);
-if FALSE, the geometry and extension of the tiles is maintained.}
-
-\item{extent_as_mask}{(optional) Logical: if TRUE, pixel values outside
-the \code{extent} polygon are set to NA; if FALSE (default), all the values
-within the bounding box are maintained.}
-
 \item{list_prods}{(optional) Character vector with the values of the
 products to be processed (accepted values: "TOA", "BOA", "SCL",
 "TCI"). Default is "BOA".}
@@ -126,6 +117,14 @@ are instead used (be careful to use this setting!).}
 \item{mask_type}{(optional) Character value which determines the categories
 in the Srface Classification Map to be masked (see \code{\link[=s2_mask]{s2_mask()}}
 for the accepted values). Default (NA) is not to mask.}
+
+\item{clip_on_extent}{(optional) Logical: if TRUE (default), output products
+and indices are clipped to the selected extent (and resampled/reprojected);
+if FALSE, the geometry and extension of the tiles is maintained.}
+
+\item{extent_as_mask}{(optional) Logical: if TRUE, pixel values outside
+the \code{extent} polygon are set to NA; if FALSE (default), all the values
+within the bounding box are maintained.}
 
 \item{reference_path}{(optional) Path of the raster file to be used as a
 reference grid. If NA (default), no reference is used.}
