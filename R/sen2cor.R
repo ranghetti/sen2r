@@ -153,8 +153,8 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, n
       
       # move output to the required output directory
       if (sen2cor_out_l2a != sel_l2a) {
-        file.copy(sen2cor_out_l2a, sel_l2a, recursive=TRUE)
-        file.remove(sen2cor_out_l2a, recursive=TRUE)
+        file.copy(sen2cor_out_l2a, dirname(sel_l2a), recursive=TRUE)
+        unlink(sen2cor_out_l2a, recursive=TRUE)
       }
       
     } # end IF cycle on overwrite
