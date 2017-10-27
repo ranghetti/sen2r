@@ -11,6 +11,7 @@
 #' @note License: GPL 3.0
 #' @importFrom jsonlite toJSON fromJSON
 #' @importFrom utils download.file unzip
+#' @importFrom magrittr '%>%'
 #' @export
 #' @examples \dontrun{
 #' install_sen2cor()

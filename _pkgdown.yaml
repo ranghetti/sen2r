@@ -7,7 +7,6 @@ reference:
   - title: Automatic processing chain
     desc: ~
     contents:
-      - '`s2_gui`'
       - '`fidolasen_s2`'
   - title: Find and download Sentinel-2 products
     desc: ~
@@ -15,7 +14,7 @@ reference:
       - '`install_s2download`'
       - '`s2_list`'
       - '`s2_download`'
-      - '`s2_sen2cor`'
+      - '`sen2cor`'
   - title: Read and convert SAFE format
     desc: ~
     contents:
@@ -27,14 +26,17 @@ reference:
       - '`s2_calcindices`'
   - title: Accessory functions
     contents:
+      - '`s2_gui`'
       - '`s2_shortname`'
       - '`fs2nc_getElements`'
+      - '`install_sen2cor`'
       - '`expand_path`'
       - '`comsub`'
       - '`projname`'
       - '`abs2rel`'
       - '`gdal_abs2rel`'
       - '`list_indices`'
+      - '`mountpoint`'
   - title: Internal functions
     desc: (not exported)
     contents:

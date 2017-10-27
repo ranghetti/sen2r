@@ -27,7 +27,7 @@ You can install **fidolasen** from GitHub with:
 devtools::install_github("ggranga/fidolasen")
 ```
 
-This will install the R package, containing all the functions necessary to preprocess data. To download Sentinel-2 images and perform atmospheric correction with [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor), the package makes use of a set of Python functions ([s2download](https://github.com/ggranga/s2download)). To import these scripts, run R function [`s2_download()`](reference/install_s2download.md) included in the package. Please notice that the use of sen2cor algorythm for now is possible only under Linux systems, and the installation of the docker (necessary to run it) requires some time and a consistent amount of disk space.
+This will install the R package, containing all the functions necessary to preprocess data. To download Sentinel-2 images and perform atmospheric correction with [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor), the package makes use of a set of Python functions ([s2download](https://github.com/ggranga/s2download)). To import these scripts, run R function [`s2_download()`](reference/install_s2download.md) included in the package. Please notice that the use of sen2cor algorythm was not yet possible under MAC.
 
 Usage
 -----
@@ -38,9 +38,9 @@ Alternatively, [`fidolasen_s2()`](reference/fidolasen_s2.md) can be launched wit
 
 Other specific functions can be used to run single steps separately:
 
--   [`s2_list`](reference/s2_list.md) to retrieve the list of available Sentinel-2 products basing on input parameters;
+-   [`s2_list()`](reference/s2_list.md) to retrieve the list of available Sentinel-2 products basing on input parameters;
 -   [`s2_download()`](reference/s2_download.md) to download Sentinel-2 products;
--   [`s2_sen2cor()`](reference/s2_sen2cor.html) to correct level-1C products using [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor);
+-   [`sen2cor()`](reference/sen2cor.html) to correct level-1C products using [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor);
 -   [`s2_translate()`](reference/s2_translate.md) to convert Sentinel-2 products from SAFE format to a format managed by GDAL;
 -   [`s2_merge()`](reference/s2_merge.md) to merge Sentinel-2 tiles which have the same date and orbit;
 -   [`gdal_warp()`](reference/gdal_warp.md) to clip, reproject and warp raster files (this is a wrapper to call [gdal\_translate](http://www.gdal.org/gdal_translate.html) or [gdalwarp](http://www.gdal.org/gdalwarp.html) basing on input parameters);

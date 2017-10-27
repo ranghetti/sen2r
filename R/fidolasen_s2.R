@@ -326,7 +326,6 @@ fidolasen_s2 <- function(param_list=NULL,
   
   # internal parameters
   dir.create(path_tmp <- tempdir(), showWarnings = FALSE) # consider to add as an optional parameter
-  dir.create(path_tmp <- "/home/lranghetti/nas-s4a/nr_working/luigi/data/s2tsp/171013_fidolasen_build/tmpdir", showWarnings = FALSE) # FIXME FIXME FIXME remove!
   path_out <- if (!is.na(pm$path_out)) {pm$path_out} else {file.path(path_tmp,"out")}
   path_indices <- if (!is.na(pm$path_indices)) {pm$path_indices} else {file.path(path_tmp,"indices")}
   path_tiles <- if (!is.na(pm$path_tiles)) {pm$path_tiles} else {file.path(path_tmp,"tiles")}
@@ -561,7 +560,7 @@ fidolasen_s2 <- function(param_list=NULL,
         )
       }
       
-      s2_list_l2a_corrected <- s2_sen2cor(names(s2_list_l1c_tocorrect),
+      s2_list_l2a_corrected <- sen2cor(names(s2_list_l1c_tocorrect),
                                           l1c_dir = pm$path_l1c,
                                           outdir = pm$path_l2a,
                                           n_procs = 1) # TODO implement multicore
