@@ -1862,9 +1862,9 @@ s2_gui <- function(param_list = NULL,
       } else {
         "full"
       }
+      
       # polygons
-
-      rl$extent <- if (input$query_space == TRUE | !is.null(rv$extent)) {
+      rl$extent <- if (input$query_space == TRUE & !is.null(rv$extent)) {
         rv$extent %>%
           st_transform(4326) %>%
           geojson_json(pretty=TRUE)
@@ -1946,6 +1946,9 @@ s2_gui <- function(param_list = NULL,
       rl$path_out <- if (length(input$list_prods)>1 | length(input$list_prods)>0 & !"indices" %in% input$list_prods) {input$path_out_textin} else {NA} # path of output pre-processed products
       rl$path_indices <- if (indices_req()==TRUE) {input$path_indices_textin} else {NA} # path of spectral indices
       rl$path_subdirs <- as.logical(input$path_subdirs) # logical (use subdirs)
+      
+      # information about package version
+      rl$fidolasen_version <- packageVersion("fidolasen") %>% as.character()
 
       return(rl)
     }

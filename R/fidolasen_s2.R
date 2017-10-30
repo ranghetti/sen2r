@@ -145,7 +145,7 @@
 #'
 #' @importFrom data.table data.table rbindlist
 #' @importFrom geojsonio geojson_json
-#' @importFrom jsonlite read_json
+#' @importFrom jsonlite fromJSON
 #' @importFrom reticulate import py_to_r
 #' @importFrom sf st_cast st_read
 #' @importFrom sprawl get_extent
@@ -244,7 +244,7 @@ fidolasen_s2 <- function(param_list=NULL,
   print_message(
     type = "message",
     date = TRUE,
-    "Starting fidolasen execition."
+    "Starting fidolasen execution."
   )
   
   # Import param_list, if provided
@@ -253,13 +253,31 @@ fidolasen_s2 <- function(param_list=NULL,
     pm_def
   } else if (is(param_list, "character")) {
     # load json parameter file
-    jsonlite::read_json(param_list)
+    jsonlite::fromJSON(param_list)
     # TODO check package version and parameter names
   } else if (is(param_list, "list")) {
     param_list
     # TODO check parameter names
   }
   
+  # Check param_list version
+  if (is.null(pm$fidolasen_version)) {
+    pm$fidolasen_version <- package_version("0.2.0")
+  }
+  if (packageVersion("fidolasen") > package_version(pm$fidolasen_version)) {
+    open_gui <- print_message(
+      type="waiting",
+      "The parameter file was created with an old version of the package: ",
+      "Type \"G\" (and ENTER) to open the GUI and check that" ,
+      "the input parameters are correct, or ENTER to procees anyway ",
+      "(this could lead to errors). ",
+      "Alternatively, press ESC to interrupt."
+    )
+    if (length(grep("^[Gg]",open_gui))>0) {
+      gui <- TRUE
+    }
+  }
+
   # Overwrite parameters passed manually
   # (if some parameters are still missing, copy from default values)
   for (sel_par in names(pm_def)) {
@@ -284,7 +302,7 @@ fidolasen_s2 <- function(param_list=NULL,
       #   pm$s2tiles_selected <- c("32TNR", "32TNS")
       # }
     }
-    if (is.na(pm$timewindow)) {
+    if (all(is.na(pm$timewindow))) {
       pm$timewindow <- c(Sys.Date() - 90, Sys.Date())
     }
   }
