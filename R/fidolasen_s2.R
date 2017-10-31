@@ -145,7 +145,7 @@
 #'
 #' @importFrom data.table data.table rbindlist
 #' @importFrom geojsonio geojson_json
-#' @importFrom jsonlite read_json
+#' @importFrom jsonlite fromJSON
 #' @importFrom reticulate import py_to_r
 #' @importFrom sf st_cast st_read
 #' @importFrom sprawl get_extent
@@ -244,7 +244,7 @@ fidolasen_s2 <- function(param_list=NULL,
   print_message(
     type = "message",
     date = TRUE,
-    "Starting fidolasen execition."
+    "Starting fidolasen execution."
   )
   
   # Import param_list, if provided
@@ -253,13 +253,31 @@ fidolasen_s2 <- function(param_list=NULL,
     pm_def
   } else if (is(param_list, "character")) {
     # load json parameter file
-    jsonlite::read_json(param_list)
+    jsonlite::fromJSON(param_list)
     # TODO check package version and parameter names
   } else if (is(param_list, "list")) {
     param_list
     # TODO check parameter names
   }
   
+  # Check param_list version
+  if (is.null(pm$fidolasen_version)) {
+    pm$fidolasen_version <- package_version("0.2.0")
+  }
+  if (packageVersion("fidolasen") > package_version(pm$fidolasen_version)) {
+    open_gui <- print_message(
+      type="waiting",
+      "The parameter file was created with an old version of the package: ",
+      "Type \"G\" (and ENTER) to open the GUI and check that" ,
+      "the input parameters are correct, or ENTER to procees anyway ",
+      "(this could lead to errors). ",
+      "Alternatively, press ESC to interrupt."
+    )
+    if (length(grep("^[Gg]",open_gui))>0) {
+      gui <- TRUE
+    }
+  }
+
   # Overwrite parameters passed manually
   # (if some parameters are still missing, copy from default values)
   for (sel_par in names(pm_def)) {
@@ -271,23 +289,23 @@ fidolasen_s2 <- function(param_list=NULL,
     }
   }
   
-  # Define sample spatial extent / temporal timewindow if online mode
-  if (pm$online == TRUE) {
-    if (is.na(pm$extent)) {
-      pm$extent <- get_extent(
-        matrix(c(9.4, 45.4, 10.27, 46.1), nrow = 2),
-        "+init=epsg:4326"
-      ) %>%
-        as("sfc_POLYGON") %>%
-        geojson_json()
-      # if (is.na(pm$s2tiles_selected)) {
-      #   pm$s2tiles_selected <- c("32TNR", "32TNS")
-      # }
-    }
-    if (is.na(pm$timewindow)) {
-      pm$timewindow <- c(Sys.Date() - 90, Sys.Date())
-    }
-  }
+  # # Define sample spatial extent / temporal timewindow if online mode
+  # if (pm$online == TRUE) {
+  #   if (is.na(pm$extent)) {
+  #     pm$extent <- get_extent(
+  #       matrix(c(9.4, 45.4, 10.27, 46.1), nrow = 2),
+  #       "+init=epsg:4326"
+  #     ) %>%
+  #       as("sfc_POLYGON") %>%
+  #       geojson_json()
+  #     # if (is.na(pm$s2tiles_selected)) {
+  #     #   pm$s2tiles_selected <- c("32TNR", "32TNS")
+  #     # }
+  #   }
+  #   if (all(is.na(pm$timewindow))) {
+  #     pm$timewindow <- c(Sys.Date() - 90, Sys.Date())
+  #   }
+  # }
   
   
   ## Open GUI (if required)
@@ -326,7 +344,6 @@ fidolasen_s2 <- function(param_list=NULL,
   
   # internal parameters
   dir.create(path_tmp <- tempdir(), showWarnings = FALSE) # consider to add as an optional parameter
-  dir.create(path_tmp <- "/home/lranghetti/nas-s4a/nr_working/luigi/data/s2tsp/171013_fidolasen_build/tmpdir", showWarnings = FALSE) # FIXME FIXME FIXME remove!
   path_out <- if (!is.na(pm$path_out)) {pm$path_out} else {file.path(path_tmp,"out")}
   path_indices <- if (!is.na(pm$path_indices)) {pm$path_indices} else {file.path(path_tmp,"indices")}
   path_tiles <- if (!is.na(pm$path_tiles)) {pm$path_tiles} else {file.path(path_tmp,"tiles")}
@@ -561,7 +578,7 @@ fidolasen_s2 <- function(param_list=NULL,
         )
       }
       
-      s2_list_l2a_corrected <- s2_sen2cor(names(s2_list_l1c_tocorrect),
+      s2_list_l2a_corrected <- sen2cor(names(s2_list_l1c_tocorrect),
                                           l1c_dir = pm$path_l1c,
                                           outdir = pm$path_l2a,
                                           n_procs = 1) # TODO implement multicore

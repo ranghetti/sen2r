@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-[![Travis-CI Build Status](https://travis-ci.org/ggranga/fidolasen.svg?branch=master)](https://travis-ci.org/ggranga/fidolasen)
+[![Travis-CI Build Status](https://travis-ci.org/ranghetti/fidolasen.svg?branch=master)](https://travis-ci.org/ranghetti/fidolasen)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/fidolasen)](https://cran.r-project.org/package=fidolasen)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 ## Warning
 This package is under construction: for now only the functions documented in the [function references](reference/index.html) are working. 
 
-<!--Current version is pre-release 0.2.0 (see [release details](https://github.com/ggranga/fidolasen/releases/tag/0.2.0)).-->
+<!--Current version is pre-release 0.2.0 (see [release details](https://github.com/ranghetti/fidolasen/releases/tag/0.2.0)).-->
 
 
 ## Installation
@@ -34,19 +34,17 @@ You can install **fidolasen** from GitHub with:
 
 ```{r gh-installation, eval = FALSE}
 # install.packages("devtools")
-devtools::install_github("ggranga/fidolasen")
+devtools::install_github("ranghetti/fidolasen")
 ```
 
 This will install the R package, containing all the functions necessary to preprocess data. 
 To download Sentinel-2 images and perform atmospheric correction with
 [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor),
-the package makes use of a set of Python functions ([s2download](https://github.com/ggranga/s2download)).
+the package makes use of a set of Python functions ([s2download](https://github.com/ranghetti/s2download)).
 To import these scripts, run R function 
 [`s2_download()`](reference/install_s2download.md)
 included in the package. 
-Please notice that the use of sen2cor algorythm for now is possible only under Linux systems,
-and the installation of the docker (necessary to run it) requires some time and a consistent 
-amount of disk space.
+Please notice that the use of sen2cor algorythm was not yet possible under MAC.
 
 
 ## Usage
@@ -64,11 +62,11 @@ or passing manually the parameters as arguments of the function
     
 Other specific functions can be used to run single steps separately:
 
-* [`s2_list`](reference/s2_list.md)
+* [`s2_list()`](reference/s2_list.md)
     to retrieve the list of available Sentinel-2 products basing on input parameters;
 * [`s2_download()`](reference/s2_download.md)
     to download Sentinel-2 products;
-* [`s2_sen2cor()`](reference/s2_sen2cor.html)
+* [`sen2cor()`](reference/sen2cor.html)
     to correct level-1C products using [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor);
 * [`s2_translate()`](reference/s2_translate.md)
     to convert Sentinel-2 products from SAFE format to a format managed by GDAL;

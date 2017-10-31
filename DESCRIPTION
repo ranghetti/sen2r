@@ -5,7 +5,7 @@ Version: 0.2.0
 Authors@R: c(person("Luigi", "Ranghetti", email = "ranghetti.l@irea.cnr.it", role = c("aut", "cre")),
              person("Lorenzo", "Busetto", email = "lbusett@gmail.com", role = c("aut")))
 Description: This package contains useful functions to preprocess Landsat and Sentinel-2 imagery.
-  The download and the atmospheric correction is done using a python module (s2download).
+  The download is done using a python module (s2download).
   This package is under construction.
 License: GPL-3 + file LICENSE
 Encoding: UTF-8

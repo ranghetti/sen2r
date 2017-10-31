@@ -76,15 +76,15 @@
 <h2 class="hasAnchor">
 <a href="#warning" class="anchor"></a>Warning</h2>
 <p>This package is under construction: for now only the functions documented in the <a href="reference/index.html">function references</a> are working.</p>
-<!--Current version is pre-release 0.2.0 (see [release details](https://github.com/ggranga/fidolasen/releases/tag/0.2.0)).-->
+<!--Current version is pre-release 0.2.0 (see [release details](https://github.com/ranghetti/fidolasen/releases/tag/0.2.0)).-->
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>You can install <strong>fidolasen</strong> from GitHub with:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"ggranga/fidolasen"</span>)</code></pre></div>
-<p>This will install the R package, containing all the functions necessary to preprocess data. To download Sentinel-2 images and perform atmospheric correction with <a href="http://step.esa.int/main/third-party-plugins-2/sen2cor">sen2cor</a>, the package makes use of a set of Python functions (<a href="https://github.com/ggranga/s2download">s2download</a>). To import these scripts, run R function <a href="reference/install_s2download.md"><code><a href="reference/s2_download.html">s2_download()</a></code></a> included in the package. Please notice that the use of sen2cor algorythm for now is possible only under Linux systems, and the installation of the docker (necessary to run it) requires some time and a consistent amount of disk space.</p>
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"ranghetti/fidolasen"</span>)</code></pre></div>
+<p>This will install the R package, containing all the functions necessary to preprocess data. To download Sentinel-2 images and perform atmospheric correction with <a href="http://step.esa.int/main/third-party-plugins-2/sen2cor">sen2cor</a>, the package makes use of a set of Python functions (<a href="https://github.com/ranghetti/s2download">s2download</a>). To import these scripts, run R function <a href="reference/install_s2download.md"><code><a href="reference/s2_download.html">s2_download()</a></code></a> included in the package. Please notice that the use of sen2cor algorythm was not yet possible under MAC.</p>
 </div>
 <div id="usage" class="section level2">
 <h2 class="hasAnchor">
@@ -94,11 +94,11 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
 <p>Other specific functions can be used to run single steps separately:</p>
 <ul>
 <li>
-<a href="reference/s2_list.md"><code>s2_list</code></a> to retrieve the list of available Sentinel-2 products basing on input parameters;</li>
+<a href="reference/s2_list.md"><code><a href="reference/s2_list.html">s2_list()</a></code></a> to retrieve the list of available Sentinel-2 products basing on input parameters;</li>
 <li>
 <a href="reference/s2_download.md"><code><a href="reference/s2_download.html">s2_download()</a></code></a> to download Sentinel-2 products;</li>
 <li>
-<a href="reference/s2_sen2cor.html"><code><a href="reference/s2_sen2cor.html">s2_sen2cor()</a></code></a> to correct level-1C products using <a href="http://step.esa.int/main/third-party-plugins-2/sen2cor">sen2cor</a>;</li>
+<a href="reference/sen2cor.html"><code><a href="reference/sen2cor.html">sen2cor()</a></code></a> to correct level-1C products using <a href="http://step.esa.int/main/third-party-plugins-2/sen2cor">sen2cor</a>;</li>
 <li>
 <a href="reference/s2_translate.md"><code><a href="reference/s2_translate.html">s2_translate()</a></code></a> to convert Sentinel-2 products from SAFE format to a format managed by GDAL;</li>
 <li>
@@ -136,7 +136,7 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
 </ul>
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/ggranga/fidolasen"><img src="https://travis-ci.org/ggranga/fidolasen.svg?branch=master" alt="Travis-CI Build Status"></a></li>
+<li><a href="https://travis-ci.org/ranghetti/fidolasen"><img src="https://travis-ci.org/ranghetti/fidolasen.svg?branch=master" alt="Travis-CI Build Status"></a></li>
 <li><a href="https://cran.r-project.org/package=fidolasen"><img src="http://www.r-pkg.org/badges/version/fidolasen" alt="CRAN_Status_Badge"></a></li>
 <li><a href="http://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg" alt="License: GPL v3"></a></li>
 </ul>
