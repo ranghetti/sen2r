@@ -289,23 +289,23 @@ fidolasen_s2 <- function(param_list=NULL,
     }
   }
   
-  # Define sample spatial extent / temporal timewindow if online mode
-  if (pm$online == TRUE) {
-    if (is.na(pm$extent)) {
-      pm$extent <- get_extent(
-        matrix(c(9.4, 45.4, 10.27, 46.1), nrow = 2),
-        "+init=epsg:4326"
-      ) %>%
-        as("sfc_POLYGON") %>%
-        geojson_json()
-      # if (is.na(pm$s2tiles_selected)) {
-      #   pm$s2tiles_selected <- c("32TNR", "32TNS")
-      # }
-    }
-    if (all(is.na(pm$timewindow))) {
-      pm$timewindow <- c(Sys.Date() - 90, Sys.Date())
-    }
-  }
+  # # Define sample spatial extent / temporal timewindow if online mode
+  # if (pm$online == TRUE) {
+  #   if (is.na(pm$extent)) {
+  #     pm$extent <- get_extent(
+  #       matrix(c(9.4, 45.4, 10.27, 46.1), nrow = 2),
+  #       "+init=epsg:4326"
+  #     ) %>%
+  #       as("sfc_POLYGON") %>%
+  #       geojson_json()
+  #     # if (is.na(pm$s2tiles_selected)) {
+  #     #   pm$s2tiles_selected <- c("32TNR", "32TNS")
+  #     # }
+  #   }
+  #   if (all(is.na(pm$timewindow))) {
+  #     pm$timewindow <- c(Sys.Date() - 90, Sys.Date())
+  #   }
+  # }
   
   
   ## Open GUI (if required)
