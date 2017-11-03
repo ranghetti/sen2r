@@ -148,7 +148,6 @@
 #' @importFrom jsonlite fromJSON
 #' @importFrom reticulate import py_to_r
 #' @importFrom sf st_cast st_read
-#' @importFrom sprawl get_extent
 
 
 fidolasen_s2 <- function(param_list=NULL,
@@ -422,7 +421,7 @@ fidolasen_s2 <- function(param_list=NULL,
       date = TRUE,
       "Searching for available SAFE products on SciHub..."
     )
-    
+
     # if online mode, retrieve list with s2_list() basing on parameters
     if ("l1c" %in% pm$s2_levels) {
       # list of SAFE (L1C) needed for required L1C
@@ -501,13 +500,13 @@ fidolasen_s2 <- function(param_list=NULL,
   s2_dt <- s2_dt[mission %in% toupper(substr(pm$sel_sensor,2,3)),][
     order(-sensing_datetime),]
   if (!any(is.na(pm$timewindow))) {
-    s2_dt <- s2_dt[as.Date(sensing_datetime) > pm$timewindow[1] &
-                     as.Date(sensing_datetime) < pm$timewindow[2],]
+    s2_dt <- s2_dt[as.Date(sensing_datetime) >= pm$timewindow[1] &
+                     as.Date(sensing_datetime) <= pm$timewindow[2],]
   }
-  if (!is.na(pm$s2tiles_selected)) { # FIXME works only with new products! (add retrieval of all tiles)
+  if (all(!is.na(pm$s2tiles_selected))) { # FIXME works only with new products! (add retrieval of all tiles)
     s2_dt <- s2_dt[id_tile %in% pm$s2tiles_selected,]
   }
-  if (!is.na(pm$s2orbits_selected)) {
+  if (all(!is.na(pm$s2orbits_selected))) {
     s2_dt <- s2_dt[id_orbit %in% pm$s2orbits_selected,]
   }
   # setorder(s2_dt, -sensing_datetime)
@@ -517,7 +516,7 @@ fidolasen_s2 <- function(param_list=NULL,
   names(s2_list_l1c) <- s2_dt[level=="1C",name]
   names(s2_list_l2a) <- s2_dt[level=="2A",name]
   
-  
+
   ## 3. Download them ##
   # TODO implement ovwerite/skip
   # (now it skips, but analysing each single file)
@@ -580,8 +579,7 @@ fidolasen_s2 <- function(param_list=NULL,
       
       s2_list_l2a_corrected <- sen2cor(names(s2_list_l1c_tocorrect),
                                           l1c_dir = pm$path_l1c,
-                                          outdir = pm$path_l2a,
-                                          n_procs = 1) # TODO implement multicore
+                                          outdir = pm$path_l2a)
       names(s2_list_l2a_corrected) <- basename(s2_list_l2a_corrected)
       s2_list_l2a <- c(s2_list_l2a,s2_list_l2a_corrected)
     }
@@ -808,10 +806,29 @@ fidolasen_s2 <- function(param_list=NULL,
     if (pm$overwrite==TRUE) {
       
       indices_names_new <- indices_names_exp
-      out_names_req <- out_names_new <- out_names_exp
+      out_names_req <- if (length(indices_names_exp)==0) {NULL} else {out_names_exp}
+      out_names_new <- out_names_exp
       masked_names_new <- masked_names_exp
-      warped_names_req <- warped_names_new <- warped_names_reqout <- warped_names_exp
-      tiles_names_req <- tiles_names_new <- tiles_names_exp
+      warped_names_req <- if (pm$clip_on_extent==FALSE | length(out_names_exp)==0) {
+        NULL
+      } else {
+        warped_names_exp
+      }
+      warped_names_new <- warped_names_reqout <- warped_names_exp
+      merged_names_req <- if (pm$clip_on_extent==TRUE & length(warped_names_exp)==0) {
+        NULL
+      } else if (pm$clip_on_extent==FALSE & length(out_names_exp)==0) {
+        NULL
+      } else {
+        merged_names_exp
+      }
+      merged_names_new <- merged_names_exp
+      tiles_names_req <- if (length(merged_names_exp)==0) {
+        NULL
+      } else {
+        tiles_names_exp
+      }
+      tiles_names_new <- tiles_names_exp
       safe_names_l1c_req <- file.path(pm$path_l1c,names(s2_list_l1c))
       safe_names_l2a_req <- file.path(pm$path_l2a,names(s2_list_l2a))
       
@@ -935,7 +952,7 @@ fidolasen_s2 <- function(param_list=NULL,
                    function(x){grep(x,tiles_names_new)} %>% length() > 0) %>%
               unlist()
             ] %>%
-            file.path(path_l1c,.)
+            file.path(pm$path_l1c,.)
         } else {
           character(0)
         }
@@ -945,7 +962,7 @@ fidolasen_s2 <- function(param_list=NULL,
                    function(x){grep(x,tiles_names_new)} %>% length() > 0) %>%
               unlist()
             ] %>%
-            file.path(path_l2a,.)
+            file.path(pm$path_l2a,.)
         } else {
           character(0)
         }
@@ -1067,7 +1084,7 @@ fidolasen_s2 <- function(param_list=NULL,
         } else if (pm$extent_as_mask==TRUE) {
           st_read(pm$extent)
         } else {
-          st_cast(st_read(pm$extent),"LINESTRING")
+          suppressWarnings(st_cast(st_read(pm$extent, quiet=TRUE),"LINESTRING"))
         }  # TODO add support for multiple extents
         
         if(pm$path_subdirs==TRUE){
@@ -1111,15 +1128,19 @@ fidolasen_s2 <- function(param_list=NULL,
         "Starting to apply atmospheric masks."
       )
       
-      masked_names_out <- s2_mask(if(pm$clip_on_extent==TRUE){warped_names_req}else{merged_names_req},
-                                  if(pm$clip_on_extent==TRUE){warped_names_req}else{merged_names_exp[names_merged_exp_scl_idx]},
-                                  mask_type=pm$mask_type,
-                                  outdir=path_out,
-                                  format=pm$outformat,
-                                  subdirs=pm$path_subdirs,
-                                  overwrite=pm$overwrite,
-                                  parallel=FALSE)
-      
+    if (!is.na(pm$mask_type)) {
+      masked_names_out <- s2_mask(
+        if(pm$clip_on_extent==TRUE){warped_names_req}else{merged_names_req},
+        if(pm$clip_on_extent==TRUE){warped_names_req}else{merged_names_exp[names_merged_exp_scl_idx]},
+        mask_type=pm$mask_type,
+        outdir=path_out,
+        format=pm$outformat,
+        subdirs=pm$path_subdirs,
+        overwrite=pm$overwrite,
+        parallel=FALSE
+      )
+    }
+
     } # end of gdal_warp and s2_mask IF cycle
     
     ## 8. Compute spectral indices ##
