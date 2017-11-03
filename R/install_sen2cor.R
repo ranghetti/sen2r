@@ -19,8 +19,8 @@
 
 install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
   
-  # # sen2cor version
-  # sen2cor_version <- package_version("2.4.0")
+  # sen2cor version
+  sen2cor_version <- package_version("2.4.0")
   
   # check if it is already installed
   binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"sen2cor_path.json")
