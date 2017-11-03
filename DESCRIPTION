@@ -39,4 +39,4 @@ Imports:
   parallel,
   doParallel
 Roxygen: list(markdown = TRUE)
-Remotes: git::https://github.com/lbusett/sprawl.git#9395b814bcc59c701ba816e76357ebdfee185f28
+Remotes: lbusett/sprawl#9395b814bcc59c701ba816e76357ebdfee185f28
