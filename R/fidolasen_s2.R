@@ -25,7 +25,9 @@
 #'  preprocessing steps, FALSE not to (do only find, download
 #'  and atmospheric correction).
 #' @param s2_levels (optional) Character vector of length 1 or 2, with
-#' Sentinel-2 levels required for processing steps or as output.
+#'  Sentinel-2 levels required for processing steps or as output.
+#'  This parameter is used only if `preprocess = FALSE` (otherwise, the 
+#'  required levels are derived from `list_prods`).
 #'  Accepted values: "l1c" and "l2a"; default: "l2a".
 #' @param sel_sensor (optional) Character vector of length 1 or 2, with
 #' Sentinel-2 sensors to be used.
@@ -65,8 +67,9 @@
 #'  window are used (i.e., with a time window from 2015-06-01 to
 #'  2017-08-31, the periods 2015-06-01 to 2015-08-31, 2016-06-01
 #'  to 2016-08-31 and 2017-06-01 to 2017-08-31 are considered).
-#' @param extent (optional) Spatial extent on which to clip products, in
-#'  geojson format. Default is NA for offline mode (meaning no extent:
+#' @param extent (optional) Spatial extent on which to clip products (it can
+#'  be both the path of a vector file or a geoJSON). 
+#'  Default is NA for offline mode (meaning no extent:
 #'  all found tiles are entirely used); in online mode, a sample extent is used.
 #' @param s2tiles_selected (optional) Character vector with the Sentinel-2
 #'  tiles to be considered (default is NA, meaning all the tiles).
@@ -1122,25 +1125,24 @@ fidolasen_s2 <- function(param_list=NULL,
       #                           if(pm$path_subdirs==TRUE){basename(dirname(warped_names[!names_merged_exp_scl_idx]))}else{""},
       #                           gsub(paste0(warped_ext,"$"),out_ext,basename(warped_names[!names_merged_exp_scl_idx])))
       
-      print_message(
-        type = "message",
-        date = TRUE,
-        "Starting to apply atmospheric masks."
-      )
+      if (!is.na(pm$mask_type)) {
+        print_message(
+          type = "message",
+          date = TRUE,
+          "Starting to apply atmospheric masks."
+        )
+        masked_names_out <- s2_mask(
+          if(pm$clip_on_extent==TRUE){warped_names_req}else{merged_names_req},
+          if(pm$clip_on_extent==TRUE){warped_names_req}else{merged_names_exp[names_merged_exp_scl_idx]},
+          mask_type=pm$mask_type,
+          outdir=path_out,
+          format=pm$outformat,
+          subdirs=pm$path_subdirs,
+          overwrite=pm$overwrite,
+          parallel=FALSE
+        )
+      }
       
-    if (!is.na(pm$mask_type)) {
-      masked_names_out <- s2_mask(
-        if(pm$clip_on_extent==TRUE){warped_names_req}else{merged_names_req},
-        if(pm$clip_on_extent==TRUE){warped_names_req}else{merged_names_exp[names_merged_exp_scl_idx]},
-        mask_type=pm$mask_type,
-        outdir=path_out,
-        format=pm$outformat,
-        subdirs=pm$path_subdirs,
-        overwrite=pm$overwrite,
-        parallel=FALSE
-      )
-    }
-
     } # end of gdal_warp and s2_mask IF cycle
     
     ## 8. Compute spectral indices ##

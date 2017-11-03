@@ -40,6 +40,7 @@ reference:
   - title: Internal functions
     desc: (not exported)
     contents:
+      - '`geograbber_process`'
       - '`import_s2download`'
       - '`print_message`'
       - '`create_indices_db`'

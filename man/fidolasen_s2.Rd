@@ -41,6 +41,8 @@ and atmospheric correction).}
 
 \item{s2_levels}{(optional) Character vector of length 1 or 2, with
 Sentinel-2 levels required for processing steps or as output.
+This parameter is used only if \code{preprocess = FALSE} (otherwise, the
+required levels are derived from \code{list_prods}).
 Accepted values: "l1c" and "l2a"; default: "l2a".}
 
 \item{sel_sensor}{(optional) Character vector of length 1 or 2, with
@@ -92,8 +94,9 @@ window are used (i.e., with a time window from 2015-06-01 to
 to 2016-08-31 and 2017-06-01 to 2017-08-31 are considered).
 }}
 
-\item{extent}{(optional) Spatial extent on which to clip products, in
-geojson format. Default is NA for offline mode (meaning no extent:
+\item{extent}{(optional) Spatial extent on which to clip products (it can
+be both the path of a vector file or a geoJSON).
+Default is NA for offline mode (meaning no extent:
 all found tiles are entirely used); in online mode, a sample extent is used.}
 
 \item{s2tiles_selected}{(optional) Character vector with the Sentinel-2

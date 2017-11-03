@@ -147,6 +147,8 @@ and atmospheric correction).</p></td>
       <th>s2_levels</th>
       <td><p>(optional) Character vector of length 1 or 2, with
 Sentinel-2 levels required for processing steps or as output.
+This parameter is used only if <code>preprocess = FALSE</code> (otherwise, the
+required levels are derived from <code>list_prods</code>).
 Accepted values: "l1c" and "l2a"; default: "l2a".</p></td>
     </tr>
     <tr>
@@ -212,8 +214,9 @@ to 2016-08-31 and 2017-06-01 to 2017-08-31 are considered).</p></li>
     </tr>
     <tr>
       <th>extent</th>
-      <td><p>(optional) Spatial extent on which to clip products, in
-geojson format. Default is NA for offline mode (meaning no extent:
+      <td><p>(optional) Spatial extent on which to clip products (it can
+be both the path of a vector file or a geoJSON).
+Default is NA for offline mode (meaning no extent:
 all found tiles are entirely used); in online mode, a sample extent is used.</p></td>
     </tr>
     <tr>
