@@ -151,6 +151,7 @@
 #' @importFrom jsonlite fromJSON
 #' @importFrom reticulate import py_to_r
 #' @importFrom sf st_cast st_read
+#' @export
 
 
 fidolasen_s2 <- function(param_list=NULL,

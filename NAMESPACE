@@ -3,6 +3,7 @@
 export(abs2rel)
 export(comsub)
 export(expand_path)
+export(fidolasen_s2)
 export(fs2nc_getElements)
 export(gdal_abs2rel)
 export(gdal_rel2abs)
