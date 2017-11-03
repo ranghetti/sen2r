@@ -16,7 +16,8 @@ Warning
 
 This package is under construction: for now only the functions documented in the [function references](reference/index.html) are working.
 
-<!--Current version is pre-release 0.2.0 (see [release details](https://github.com/ranghetti/fidolasen/releases/tag/0.2.0)).-->
+Current version is pre-release 0.3.0 (see [release details](https://github.com/ranghetti/fidolasen/releases/tag/0.3.0)).
+
 Installation
 ------------
 
