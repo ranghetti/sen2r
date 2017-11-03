@@ -4,9 +4,9 @@
 \alias{geograbber_process}
 \title{Preprocess (clip, reproject, reshape, mask) SAFE products}
 \usage{
-geograbber_process(path_safe, path_out, bbox = NA, sel_sensor = c("s2a",
-  "s2b"), list_prods = c("BOA"), mask_type = NA, res = NA, proj = NA,
-  resampling = "near", overwrite = FALSE)
+geograbber_process(path_safe, path_out, bbox = NA, list_prods = c("BOA"),
+  mask_type = NA, res = NA, proj = NA, resampling = "near",
+  overwrite = FALSE)
 }
 \arguments{
 \item{path_safe}{Path of the directory in which SAFE
@@ -17,10 +17,6 @@ output products are generated.}
 
 \item{bbox}{(optional) Four-length numeric vector with the bounding box
 of the output products (xmin, ymin, xmax, ymax).}
-
-\item{sel_sensor}{(optional) Character vector of length 1 or 2, with
-Sentinel-2 sensors to be used.
-Accepted values: "s2a" and "s2b"; default: c("s2a","s2b").}
 
 \item{list_prods}{(optional) Character vector with the values of the
 products to be processed (accepted values: "TOA", "BOA", "SCL",

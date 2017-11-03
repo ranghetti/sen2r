@@ -99,9 +99,9 @@ neither sen2cor is applied to existing L1C products.
 Output products are GeoTIFF files clipped to a desired</p>
     
 
-    <pre class="usage"><span class='fu'>geograbber_process</span>(<span class='no'>path_safe</span>, <span class='no'>path_out</span>, <span class='kw'>bbox</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>sel_sensor</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"s2a"</span>,
-  <span class='st'>"s2b"</span>), <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"BOA"</span>), <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>proj</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>resampling</span> <span class='kw'>=</span> <span class='st'>"near"</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>geograbber_process</span>(<span class='no'>path_safe</span>, <span class='no'>path_out</span>, <span class='kw'>bbox</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"BOA"</span>),
+  <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>proj</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>resampling</span> <span class='kw'>=</span> <span class='st'>"near"</span>,
+  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -120,12 +120,6 @@ output products are generated.</p></td>
       <th>bbox</th>
       <td><p>(optional) Four-length numeric vector with the bounding box
 of the output products (xmin, ymin, xmax, ymax).</p></td>
-    </tr>
-    <tr>
-      <th>sel_sensor</th>
-      <td><p>(optional) Character vector of length 1 or 2, with
-Sentinel-2 sensors to be used.
-Accepted values: "s2a" and "s2b"; default: c("s2a","s2b").</p></td>
     </tr>
     <tr>
       <th>list_prods</th>
