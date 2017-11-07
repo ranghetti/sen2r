@@ -1,7 +1,7 @@
 #' @title Retrieve list of available products.
 #' @description The function retrieves the list of available Sentinel-2
 #'  products basing on search criteria. It makes use of
-#'  [s2download](https://github.com/ggranga/s2download)
+#'  [s2download](https://github.com/ranghetti/s2download)
 #'  python function only to retrieve the list of files, without
 #'  downloading and correcting them.
 #' @param spatial_extent A valid spatial object managed by [sprawl::get_extent]

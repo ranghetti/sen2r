@@ -13,7 +13,7 @@ import_s2download(...)
 \code{s2download} python module
 }
 \description{
-\href{https://github.com/ggranga/s2download}{s2download} is
+\href{https://github.com/ranghetti/s2download}{s2download} is
 a collection of python scripts used to download
 and correct Sentinel-2 images, and it is required by this package.
 This internal function check if they are installed and imports them.

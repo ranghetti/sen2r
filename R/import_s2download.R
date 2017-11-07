@@ -1,5 +1,5 @@
 #' @title Import s2download python module
-#' @description [s2download](https://github.com/ggranga/s2download) is
+#' @description [s2download](https://github.com/ranghetti/s2download) is
 #'  a collection of python scripts used to download
 #'  and correct Sentinel-2 images, and it is required by this package.
 #'  This internal function check if they are installed and imports them.
