@@ -1,5 +1,5 @@
 #' @title Create the indices database
-#' @description The internal function checks if idices.json (the
+#' @description The internal function checks if indices.json (the
 #'  database of spectral indices) already exists; if not, it
 #'  downloads source files and creates it.
 #'  Since this function depends on xsltproc executable (available
