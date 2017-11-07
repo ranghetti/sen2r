@@ -40,10 +40,12 @@ reference:
   - title: Internal functions
     desc: (not exported)
     contents:
+      - '`init_python`'
       - '`geograbber_process`'
       - '`import_s2download`'
       - '`print_message`'
       - '`create_indices_db`'
+      - '`gdal_formats_db`'
       - '`editModPoly`'
 navbar:
   type: inverse
@@ -54,4 +56,4 @@ navbar:
       href: reference/index.html
   right:
     - icon: fa-github fa-lg
-      href: https://github.com/ggranga/fidolasen/
+      href: https://github.com/ranghetti/fidolasen/

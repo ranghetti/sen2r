@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Clone s2download and install sen2cor docker. — install_s2download • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
+<title>Create the database of GDAL supported formats — gdal_formats_db • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,26 +89,38 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Clone s2download and install sen2cor docker.</h1>
+    <h1>Create the database of GDAL supported formats</h1>
     </div>
 
     
-    <p><a href='https://github.com/lranghetti/s2download'>s2download</a>
-is a collection of python scripts used to download
-and correct Sentinel-2 images, and it is required by this package.
-This function clones them and installs a docker with sen2cor.</p>
+    <p>The internal function checks if gdal_formats.json (the
+database of spectral indices) already exists; if not, it
+downloads source files and creates it.
+Since on Windows there is an issue in reading the extension of
+a GDAL driver with <code>reticulate</code> functions when the package <code>fidolasen</code>
+was already charged, this function can be used only from from
+Linux. It is not necessary, since a gdal_formats.json file is
+present in the package, but can be used to update the list in accordance
+with the formats actually managed by your GDAl installation.</p>
     
 
-    <pre class="usage"><span class='fu'>install_s2download</span>(<span class='kw'>inst_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+    <pre class="usage"><span class='fu'>gdal_formats_db</span>(<span class='kw'>json_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>inst_path</th>
-      <td><p>Path where
-<a href='https://github.com/lranghetti/s2download'>s2download</a> will be cloned
-(default: a subdirectory of this package).</p></td>
+      <th>json_path</th>
+      <td><p>(optional) The path of the output JSON file.
+<em>Warning</em>: to create a file which wil be usable by the package,
+this option must be left to NA (default location is within the
+package installation). Edit this only to create the file in another
+place for external use.</p></td>
+    </tr>
+    <tr>
+      <th>force</th>
+      <td><p>(optional) Logical: if FALSE (default), the db is created only
+if missing or not updated; if TRUE, it is created in any case..</p></td>
     </tr>
     </table>
     

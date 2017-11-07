@@ -8,11 +8,11 @@ install_s2download(inst_path = NA)
 }
 \arguments{
 \item{inst_path}{Path where
-\href{https://github.com/ggranga/s2download}{s2download} will be cloned
+\href{https://github.com/lranghetti/s2download}{s2download} will be cloned
 (default: a subdirectory of this package).}
 }
 \description{
-\href{https://github.com/ggranga/s2download}{s2download}
+\href{https://github.com/lranghetti/s2download}{s2download}
 is a collection of python scripts used to download
 and correct Sentinel-2 images, and it is required by this package.
 This function clones them and installs a docker with sen2cor.
