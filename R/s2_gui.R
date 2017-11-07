@@ -243,7 +243,7 @@ s2_gui <- function(param_list = NULL,
                   div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                           shinyDirButton("path_l1c_sel", "Select", "Specify directory for level-1C SAFE products")),
                       div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
-                          textInput("path_l1c_textin", NULL, "Enter directory...")))
+                          textInput("path_l1c_textin", NULL, "")))
                 )
               ),
               # L2A directory
@@ -258,7 +258,7 @@ s2_gui <- function(param_list = NULL,
                   div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                           shinyDirButton("path_l2a_sel", "Select", "Specify directory for level-2A SAFE products")),
                       div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
-                          textInput("path_l2a_textin", NULL, "Enter directory...")))
+                          textInput("path_l2a_textin", NULL, "")))
                 )
               )
             ), # end of fluidrow for safe directories
@@ -348,6 +348,7 @@ s2_gui <- function(param_list = NULL,
               radioButtons("query_time", label = "Use temporal filter?",
                            choices = list("Yes" = TRUE,
                                           "No (process all the input SAFE images)" = FALSE),
+                           selected = TRUE,
                            inline = TRUE)
             ),
             
@@ -528,7 +529,7 @@ s2_gui <- function(param_list = NULL,
                       div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                               shinyDirButton("path_out_sel", "Select", "Specify directory for output processed products")),
                           div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
-                              textInput("path_out_textin", NULL, "Enter directory..."))))
+                              textInput("path_out_textin", NULL, ""))))
                 ),
                 div(
                   style="margin-top: -15px",
@@ -649,7 +650,7 @@ s2_gui <- function(param_list = NULL,
                       div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                               shinyDirButton("path_tiles_sel", "Select", "Specify directory for single tiles in custom format")),
                           div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
-                              textInput("path_tiles_textin", NULL, "Enter directory..."))))
+                              textInput("path_tiles_textin", NULL, ""))))
                 )
               ),
               column(
@@ -663,7 +664,7 @@ s2_gui <- function(param_list = NULL,
                       div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                               shinyDirButton("path_merged_sel", "Select", "Specify directory for tiles spatially merged")),
                           div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
-                              textInput("path_merged_textin", NULL, "Enter directory..."))))
+                              textInput("path_merged_textin", NULL, ""))))
                 )
               )
             ) # end of fluidRow keep_tiles
@@ -855,7 +856,7 @@ s2_gui <- function(param_list = NULL,
                     div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                             shinyDirButton("path_indices_sel", "Select", "Specify directory for spectral indices")),
                         div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
-                            textInput("path_indices_textin", NULL, "Enter directory...")))),
+                            textInput("path_indices_textin", NULL, "")))),
                 
                 fluidRow(
                   column(

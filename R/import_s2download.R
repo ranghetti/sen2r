@@ -11,6 +11,9 @@
 #' @importFrom reticulate import import_builtins py_to_r use_python
 
 import_s2download <- function(...) {
+  
+  # check that python and the required modules are installed
+  py <- init_python()
 
   # check that s2download and dependencies were cloned
   # this ensures also that python2 and other dependencies are present)
@@ -23,15 +26,10 @@ import_s2download <- function(...) {
     install_s2download()
   }
 
-  # import python modules
-  use_python(Sys.which("python2")[1])
-  py <- import_builtins(convert=FALSE)
-  sys <- import("sys",convert=FALSE)
-
   # load s2download
   s2download_path <- readLines(s2download_metapath)[1]
-  if (!s2download_path %in% py_to_r(sys$path)) {
-    sys$path$insert(py$int(0),s2download_path)
+  if (!s2download_path %in% py_to_r(py$sys$path)) {
+    py$sys$path$insert(py$py$int(0),s2download_path)
   }
 
   s2download <- import("s2download", ...)

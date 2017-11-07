@@ -51,7 +51,6 @@
 #' @importFrom sp CRS
 #' @importFrom sf st_transform st_geometry_type st_write st_cast
 #' @importFrom methods as
-#' @importFrom reticulate import py_to_r
 #' @importFrom magrittr "%>%"
 #' @importFrom sprawl cast_vect get_spatype
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
@@ -139,8 +138,9 @@ gdal_warp <- function(srcfiles,
 
   # check output format
   if (!is.null(of)) {
-    sel_driver <- gdal$GetDriverByName(of)
-    if (is.null(py_to_r(sel_driver))) {
+    gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="fidolasen"))
+    sel_driver <- gdal_formats[gdal_formats$name==of,]
+    if (nrow(sel_driver)==0) {
       print_message(
         type="error",
         "Format \"",of,"\" is not recognised; ",

@@ -26,7 +26,7 @@
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @export
-#' @importFrom reticulate import py_to_r r_to_py
+#' @importFrom reticulate py_to_r r_to_py
 #' @importFrom sprawl get_extent reproj_extent
 #' @importFrom magrittr "%>%"
 #'
