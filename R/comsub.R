@@ -32,7 +32,7 @@ comsub <- function(data, sep="") {
     do.call(rbind,.) %>%
     apply(2, function(i){!length(unique(i))==1}) %>%
     which.max() -1
-  paste(c(data_spl[[1]][1:which_max],""), collapse=sep)
+  paste(c(data_spl[[1]][seq_len(which_max)],""), collapse=sep)
 }
 
 
