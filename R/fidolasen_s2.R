@@ -940,7 +940,7 @@ fidolasen_s2 <- function(param_list=NULL,
       tiles_names_new <- tiles_names_new[!file.exists(nn(tiles_names_new))]
       
       # required SAFE products
-      if (length(tiles_names_req)==0) {
+      if (length(tiles_names_new)==0) {
         safe_names_l1c_req <- safe_names_l2a_req <- NULL
       } else {
         tiles_dt_new <- data.table(fs2nc_getElements(tiles_names_new,format="data.frame"))
