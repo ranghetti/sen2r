@@ -1,10 +1,10 @@
 #' @title Clone s2download and install sen2cor docker.
-#' @description [s2download](https://github.com/ggranga/s2download)
+#' @description [s2download](https://github.com/lranghetti/s2download)
 #'  is a collection of python scripts used to download
 #'  and correct Sentinel-2 images, and it is required by this package.
 #'  This function clones them and installs a docker with sen2cor.
 #' @param inst_path Path where
-#'  [s2download](https://github.com/ggranga/s2download) will be cloned
+#'  [s2download](https://github.com/lranghetti/s2download) will be cloned
 #'  (default: a subdirectory of this package).
 #' @return NULL
 #'
@@ -16,13 +16,13 @@
 install_s2download <- function(inst_path=NA) {
 
   # define remote position of s2download
-  s2download_git <- "https://github.com/ggranga/s2download.git"
+  s2download_git <- "https://github.com/lranghetti/s2download.git"
 
-  # define the required python modules and binary dependencies
-  py_modules <- c("os","sys","git","subprocess","re","numpy","zipfile")
-  dependencies <- c("git","docker-compose","python2","wget")
-
-  # define inst_path (where to install or update)
+  # define the required binary dependencies
+  dependencies <- c("git","python2","wget")
+  # dependencies <- c("git","docker-compose","python2","wget")
+  
+    # define inst_path (where to install or update)
   if (is.na(inst_path)) {
     inst_path <- file.path(system.file(package="fidolasen"),"s2download")
   }
@@ -41,7 +41,7 @@ install_s2download <- function(inst_path=NA) {
     dir.create(inst_path)
   }
 
-  # check that docker-compose and git are installed
+  # check that git is installed
   missing_dep <- dependencies[Sys.which(dependencies)==""]
   if (length(missing_dep)>0) {
     print_message(
@@ -55,46 +55,31 @@ install_s2download <- function(inst_path=NA) {
       })
   } #TODO pip2 not working to install gitPython
 
-  # check the user to be in the "docker" group
-  user_groups <- unlist(strsplit(system(paste("groups", system("whoami",intern=TRUE)), intern=TRUE), " "))
-  if (!"docker" %in% user_groups) {
-    print_message(
-      type="error",
-      "Current user '",system("whoami",intern=TRUE),"' is not in the group 'docker' ",
-      "(this is required to run sen2cor in a docker). ",
-      "Please add it before installing s2download (you can do it with the command ",
-      "'sudo usermod -a -G docker ",system("whoami",intern=TRUE),"' ;",
-      "some systems requires to logout and re-login to take effects).")
-  }
+  # # check the user to be in the "docker" group
+  # user_groups <- unlist(strsplit(system(paste("groups", system("whoami",intern=TRUE)), intern=TRUE), " "))
+  # if (!"docker" %in% user_groups) {
+  #   print_message(
+  #     type="error",
+  #     "Current user '",system("whoami",intern=TRUE),"' is not in the group 'docker' ",
+  #     "(this is required to run sen2cor in a docker). ",
+  #     "Please add it before installing s2download (you can do it with the command ",
+  #     "'sudo usermod -a -G docker ",system("whoami",intern=TRUE),"' ;",
+  #     "some systems requires to logout and re-login to take effects).")
+  # }
 
-  # checks the python version
-  # (install_denepdencies.py runs also with python3, but using python2
-  # for compatibility with s2download.py)
-  use_python(Sys.which("python2")[1])
-  py_missing <- py_modules[!sapply(py_modules,py_module_available)]
-  if (length(py_missing)>0) {
-    print_message(
-      type="error",
-      "Some modules (",paste(py_missing,collapse=", "),") are missing in your python distribution. ",
-      "Please install them before continuing (depending on your distribution, you can find ",
-      "packaged version of them, otherwise you can install them manually with ",
-      "'sudo pip2 install ",paste(py_missing,collapse=" "),"' - pip2 is required).")
-  } #TODO pip2 not working to install gitPython
-
-  # import python modules
-  py <- import_builtins(convert=FALSE)
-  sys <- import("sys",convert=FALSE)
+  # checks the python version and import modules
+  py <- init_python()
 
   # clone the package and import the module
   system(paste0(Sys.which("git")," clone ",s2download_git," ",inst_path))
-  if (!inst_path %in% py_to_r(sys$path)) {
-    sys$path$insert(py$int(0),inst_path)
+  if (!inst_path %in% py_to_r(py$sys$path)) {
+    py$sys$path$insert(py$py$int(0),inst_path)
   }
   install_s2download_dependencies <- import("install_dependencies", convert=FALSE)
 
   # clone dependent repositories
-  # install_s2download_dependencies$clone_repo(c("ggranga","fetchLandsatSentinelFromGoogleCloud"))
-  install_s2download_dependencies$clone_repo(c("ggranga","Sentinel-download"))
+  # install_s2download_dependencies$clone_repo(c("lranghetti","fetchLandsatSentinelFromGoogleCloud"))
+  install_s2download_dependencies$clone_repo(c("lranghetti","Sentinel-download"))
   # install_s2download_dependencies$clone_sen2cor_docker()
   # install_s2download_dependencies$build_sen2cor_docker()
 

@@ -149,7 +149,6 @@
 #' @importFrom data.table data.table rbindlist
 #' @importFrom geojsonio geojson_json
 #' @importFrom jsonlite fromJSON
-#' @importFrom reticulate import py_to_r
 #' @importFrom sf st_cast st_read
 #' @export
 
@@ -196,8 +195,9 @@ fidolasen_s2 <- function(param_list=NULL,
   ### Preliminary settings ###
   
   # import python modules
-  gdal <- import("osgeo",convert=FALSE)$gdal
-  
+  # check that python and the required modules are installed
+  py <- init_python()
+
   # internal function: return character(0) instead of NULL
   # (used to build _req names)
   nn <- function(x) {if (is.null(x)) character(0) else x}
@@ -395,8 +395,12 @@ fidolasen_s2 <- function(param_list=NULL,
   
   
   # check output format
-  sel_driver <- gdal$GetDriverByName(pm$outformat)
-  if (is.null(py_to_r(sel_driver))) {
+  # sel_driver <- py$osgeo$gdal$GetDriverByName(pm$outformat)
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="fidolasen"))
+  sel_driver <- gdal_formats[gdal_formats$name==pm$outformat,]
+  
+  # if (is.null(py_to_r(sel_driver))) {
+  if (nrow(sel_driver)==0) {
     print_message(
       type="error",
       "Format \"",pm$outformat,"\" is not recognised; ",
@@ -407,12 +411,15 @@ fidolasen_s2 <- function(param_list=NULL,
       "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
   }
   # define output extension
-  out_ext <- if (pm$outformat=="ENVI") {
-    "dat"
-  } else {
-    unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(gdal$DMD_EXTENSIONS))," ")," "))[1]
-  }
-  
+
+  # out_ext <- if (pm$outformat=="ENVI") {
+  #   "dat"
+  # } else {
+  #   # unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(gdal$DMD_EXTENSIONS))," ")," "))[1]
+  #   unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(py$osgeo$gdal$DMD_EXTENSIONS))," ")," "))[1]
+  # }
+  out_ext <- sel_driver[1,"ext"]
+
   ### Find, download and preprocess ###
   
   ## 2. List required products ##

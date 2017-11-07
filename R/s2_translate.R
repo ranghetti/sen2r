@@ -43,8 +43,8 @@
 #'   (just created or already existing).
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
+#' @importFrom jsonlite fromJSON
 #' @export
-#' @importFrom reticulate import import_builtins py_str py_to_r
 #' @examples \dontrun{
 #' s2_l1c_example <- file.path(
 #'   "/existing/path",
@@ -77,11 +77,6 @@ s2_translate <- function(infile,
                          utmzone="",
                          overwrite = FALSE) {
 
-  # import python modules
-  py <- import_builtins(convert=FALSE)
-  sys <- import("sys",convert=FALSE)
-  gdal <- import("osgeo",convert=FALSE)$gdal
-
   # check res (and use the resolutions >= specified res)
   if (!res %in% c("10m","20m","60m")) {
     print_message(
@@ -96,8 +91,9 @@ s2_translate <- function(infile,
   }
 
   # check output format
-  sel_driver <- gdal$GetDriverByName(format)
-  if (is.null(py_to_r(sel_driver))) {
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="fidolasen"))
+  sel_driver <- gdal_formats[gdal_formats$name==format,]
+  if (nrow(sel_driver)==0) {
     print_message(
       type="error",
       "Format \"",format,"\" is not recognised; ",
@@ -162,12 +158,8 @@ s2_translate <- function(infile,
   }
 
   # define output extension
-  out_ext <- if (format=="ENVI") {
-    "dat"
-  } else {
-    unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(gdal$DMD_EXTENSIONS))," ")," "))[1]
-  }
-
+  out_ext <- sel_driver[1,"ext"]
+  
   # create a file / set of files for each prod_type
   out_names <- character(0) # names of created files
   for (sel_prod in prod_type) {
