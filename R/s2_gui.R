@@ -856,7 +856,11 @@ s2_gui <- function(param_list = NULL,
                     div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                             shinyDirButton("path_indices_sel", "Select", "Specify directory for spectral indices")),
                         div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
-                            textInput("path_indices_textin", NULL, "")))),
+                            textInput("path_indices_textin", NULL, ""))),
+                    div(style="display:inline-block;vertical-align:top;",
+                        actionButton("path_indices_cp", "Copy from directory for output processed products"))),
+                
+                br(),
                 
                 fluidRow(
                   column(
@@ -885,6 +889,7 @@ s2_gui <- function(param_list = NULL,
                   )
                 ),
                 
+                hr(style="margin-top: 0em; margin-bottom: 0.75em;"),
                 textInput("filter_indices", "Filter indices"),
                 uiOutput("check_indices")
               ),
@@ -1646,6 +1651,10 @@ s2_gui <- function(param_list = NULL,
       output$path_indices_errormess <- path_check(input$path_indices_textin)
     })
     
+    # action button to copy indices_path from out_path
+    observeEvent(input$path_indices_cp, {
+      updateTextInput(session, "path_indices_textin", value = input$path_out_textin)
+    })
     
     ## Question messages
     
