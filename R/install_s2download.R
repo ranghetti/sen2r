@@ -1,10 +1,10 @@
 #' @title Clone s2download and install sen2cor docker.
-#' @description [s2download](https://github.com/lranghetti/s2download)
+#' @description [s2download](https://github.com/ranghetti/s2download)
 #'  is a collection of python scripts used to download
 #'  and correct Sentinel-2 images, and it is required by this package.
 #'  This function clones them and installs a docker with sen2cor.
 #' @param inst_path Path where
-#'  [s2download](https://github.com/lranghetti/s2download) will be cloned
+#'  [s2download](https://github.com/ranghetti/s2download) will be cloned
 #'  (default: a subdirectory of this package).
 #' @return NULL
 #'
@@ -16,7 +16,7 @@
 install_s2download <- function(inst_path=NA) {
 
   # define remote position of s2download
-  s2download_git <- "https://github.com/lranghetti/s2download.git"
+  s2download_git <- "https://github.com/ranghetti/s2download.git"
 
   # define the required binary dependencies
   dependencies <- c("git","python2","wget")
@@ -75,11 +75,12 @@ install_s2download <- function(inst_path=NA) {
   if (!inst_path %in% py_to_r(py$sys$path)) {
     py$sys$path$insert(py$py$int(0),inst_path)
   }
+
   install_s2download_dependencies <- import("install_dependencies", convert=FALSE)
 
   # clone dependent repositories
-  # install_s2download_dependencies$clone_repo(c("lranghetti","fetchLandsatSentinelFromGoogleCloud"))
-  install_s2download_dependencies$clone_repo(c("lranghetti","Sentinel-download"))
+  # install_s2download_dependencies$clone_repo(c("ranghetti","fetchLandsatSentinelFromGoogleCloud"))
+  install_s2download_dependencies$clone_repo(c("ranghetti","Sentinel-download"))
   # install_s2download_dependencies$clone_sen2cor_docker()
   # install_s2download_dependencies$build_sen2cor_docker()
 

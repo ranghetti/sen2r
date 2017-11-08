@@ -514,7 +514,8 @@ fidolasen_s2 <- function(param_list=NULL,
     s2_dt <- s2_dt[as.Date(sensing_datetime) >= pm$timewindow[1] &
                      as.Date(sensing_datetime) <= pm$timewindow[2],]
   }
-  if (all(!is.na(pm$s2tiles_selected))) { # FIXME works only with new products! (add retrieval of all tiles)
+  
+  if (all(!is.na(pm$s2tiles_selected)) & !is.null(s2_dt$id_tile)) { # FIXME works only with new products! (add retrieval of all tiles)
     s2_dt <- s2_dt[id_tile %in% pm$s2tiles_selected,]
   }
   if (all(!is.na(pm$s2orbits_selected))) {
@@ -1006,7 +1007,6 @@ fidolasen_s2 <- function(param_list=NULL,
     # safe_names_l1c_req
     # safe_names_l2a_req
 
-    
     ## 4. Convert in vrt ##
     if (length(c(safe_names_l1c_req,safe_names_l2a_req))>0) {
       

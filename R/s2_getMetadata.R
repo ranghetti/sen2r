@@ -171,6 +171,7 @@ s2_getMetadata <- function(s2, info="all") {
             nameinfo_elements <- list(s2_regex$oldname_granule_xml$elements)
           }
         } else {
+# browser()
           print_message(type="error", "This product is not in the right format (not recognised).")
         }
       } else {

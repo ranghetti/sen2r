@@ -187,7 +187,7 @@ s2_calcindices <- function(infiles,
         }
 
         # apply gdal_calc
-       system(
+        system(
          paste0(
            Sys.which("gdal_calc.py")," ",
            paste(apply(gdal_bands,1,function(l){

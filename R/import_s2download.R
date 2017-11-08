@@ -18,6 +18,7 @@ import_s2download <- function(...) {
   # check that s2download and dependencies were cloned
   # this ensures also that python2 and other dependencies are present)
   s2download_metapath <- file.path(system.file("extdata",package="fidolasen"),"s2download_path.txt")
+
   if (!file.exists(s2download_metapath)) {
     print_message(
       type="waiting",
