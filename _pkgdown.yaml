@@ -47,6 +47,7 @@ reference:
       - '`create_indices_db`'
       - '`gdal_formats_db`'
       - '`editModPoly`'
+      - '`read_scihub_login`'
 navbar:
   type: inverse
   left:

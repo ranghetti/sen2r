@@ -23,7 +23,7 @@
 #'  checkboxInput column conditionalPanel dateRangeInput div em fluidRow h2 h3
 #'  helpText hr HTML htmlOutput icon isolate NS numericInput observe p
 #'  radioButtons reactive reactiveValues renderText renderUI runApp selectInput
-#'  shinyApp span stopApp strong textInput uiOutput updateCheckboxGroupInput
+#'  shinyApp showModal span stopApp strong textInput uiOutput updateCheckboxGroupInput
 #'  updateDateRangeInput updateRadioButtons updateTextInput withMathJax
 #' @importFrom shinydashboard box dashboardBody dashboardHeader dashboardPage
 #'  dashboardSidebar menuItem sidebarMenu tabItem tabItems
@@ -281,17 +281,20 @@ s2_gui <- function(param_list = NULL,
                   inline = TRUE
                 ),
                 
-                # delete_safe
-                radioButtons("rm_safe", "Delete raw SAFE files after processing?",
-                             choices = list("Yes" = "all",
-                                            "Only level-1C" = "l1c",
-                                            "No" = "no"),
-                             selected = "no",
-                             inline = TRUE)
-                
+                # SciHub credentials
+                conditionalPanel(
+                  condition = "input.online == 'TRUE'",
+                  actionButton(
+                    "scihub",
+                    label = "\u2000Set SciHub credentials",
+                    icon=icon("user-circle")
+                  )
+                )
+
               ),
               column(
                 width=6,
+                
                 # overwrite SAFE
                 radioButtons(
                   "overwrite_safe",
@@ -303,7 +306,16 @@ s2_gui <- function(param_list = NULL,
                   choiceValues = list(TRUE, FALSE),
                   selected = TRUE,
                   inline = TRUE
-                )
+                ),
+                
+                # delete_safe
+                radioButtons("rm_safe", "Delete raw SAFE files after processing?",
+                             choices = list("Yes" = "all",
+                                            "Only level-1C" = "l1c",
+                                            "No" = "no"),
+                             selected = "no",
+                             inline = TRUE)
+                
               )
             ) # end of fluidRow download / delete SAFE
             
@@ -1063,8 +1075,17 @@ s2_gui <- function(param_list = NULL,
       }
     })
     
+    # Edit scihub credentials
+    observeEvent(input$scihub, {
+      showModal(scihub_modal())
+    })
     
-    
+    # save user/password
+    observeEvent(input$save_apihub, {
+      write_scihub_login(input$scihub_username, input$scihub_password)
+      removeModal()
+    })
+
     ## end of steps module ##
     
     
