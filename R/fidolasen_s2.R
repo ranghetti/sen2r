@@ -523,6 +523,11 @@ fidolasen_s2 <- function(param_list=NULL,
   }
   # setorder(s2_dt, -sensing_datetime)
   s2_dt <- s2_dt[!duplicated(s2_dt[,list(mission,level,id_orbit,id_tile)]),]
+  s2_dt <- if (!is.null(s2_dt$id_tile)) {
+    s2_dt[!duplicated(s2_dt[,list(mission,level,id_orbit,id_tile)]),]
+  } else {
+    s2_dt[!duplicated(s2_dt[,list(mission,level,id_orbit)]),]
+    }
   s2_list_l1c <- s2_dt[level=="1C",url] # list of required L1C
   s2_list_l2a <- s2_dt[level=="2A",url] # list of required L2A
   names(s2_list_l1c) <- s2_dt[level=="1C",name]
