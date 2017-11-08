@@ -8,7 +8,7 @@
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
-#' @importFrom reticulate import import_builtins py_to_r use_python
+#' @importFrom reticulate import_from_path import_builtins py_to_r use_python
 
 import_s2download <- function(...) {
   
@@ -29,12 +29,11 @@ import_s2download <- function(...) {
 
   # load s2download
   s2download_path <- readLines(s2download_metapath)[1]
-  if (!s2download_path %in% py_to_r(py$sys$path)) {
-    py$sys$path$insert(py$py$int(0),s2download_path)
-  }
-
-  s2download <- import("s2download", ...)
-  s2download$inst_path <- s2download_path
+  # if (!s2download_path %in% py_to_r(py$sys$path)) {
+  #   py$sys$path$insert(py$py$int(0),s2download_path)
+  # }
+  s2download <- import_from_path("s2download", s2download_path, ...)
+  # s2download$inst_path <- s2download_path
 
   return(s2download)
 

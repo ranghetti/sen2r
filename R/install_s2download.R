@@ -11,7 +11,7 @@
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @export
-#' @importFrom reticulate import import_builtins py_str use_python py_module_available py_to_r
+#' @importFrom reticulate import_from_path import_builtins py_str use_python py_module_available py_to_r
 
 install_s2download <- function(inst_path=NA) {
 
@@ -72,11 +72,7 @@ install_s2download <- function(inst_path=NA) {
 
   # clone the package and import the module
   system(paste0(Sys.which("git")," clone ",s2download_git," ",inst_path))
-  if (!inst_path %in% py_to_r(py$sys$path)) {
-    py$sys$path$insert(py$py$int(0),inst_path)
-  }
-
-  install_s2download_dependencies <- import("install_dependencies", convert=FALSE)
+  install_s2download_dependencies <- import_from_path("install_dependencies", inst_path, convert=FALSE)
 
   # clone dependent repositories
   # install_s2download_dependencies$clone_repo(c("ranghetti","fetchLandsatSentinelFromGoogleCloud"))
