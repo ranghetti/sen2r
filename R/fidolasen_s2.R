@@ -196,7 +196,7 @@ fidolasen_s2 <- function(param_list=NULL,
   
   # import python modules
   # check that python and the required modules are installed
-  # py <- init_python() # FIXME restore
+  py <- init_python()
 
   # internal function: return character(0) instead of NULL
   # (used to build _req names)
@@ -514,8 +514,7 @@ fidolasen_s2 <- function(param_list=NULL,
     s2_dt <- s2_dt[as.Date(sensing_datetime) >= pm$timewindow[1] &
                      as.Date(sensing_datetime) <= pm$timewindow[2],]
   }
-  
-  if (all(!is.na(pm$s2tiles_selected)) & !is.null(s2_dt$id_tile)) { # FIXME works only with new products! (add retrieval of all tiles)
+  if (all(!is.na(pm$s2tiles_selected))) { # FIXME works only with new products! (add retrieval of all tiles)
     s2_dt <- s2_dt[id_tile %in% pm$s2tiles_selected,]
   }
   if (all(!is.na(pm$s2orbits_selected))) {
@@ -523,11 +522,6 @@ fidolasen_s2 <- function(param_list=NULL,
   }
   # setorder(s2_dt, -sensing_datetime)
   s2_dt <- s2_dt[!duplicated(s2_dt[,list(mission,level,id_orbit,id_tile)]),]
-  s2_dt <- if (!is.null(s2_dt$id_tile)) {
-    s2_dt[!duplicated(s2_dt[,list(mission,level,id_orbit,id_tile)]),]
-  } else {
-    s2_dt[!duplicated(s2_dt[,list(mission,level,id_orbit)]),]
-    }
   s2_list_l1c <- s2_dt[level=="1C",url] # list of required L1C
   s2_list_l2a <- s2_dt[level=="2A",url] # list of required L2A
   names(s2_list_l1c) <- s2_dt[level=="1C",name]
