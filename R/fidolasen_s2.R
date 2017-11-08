@@ -145,6 +145,12 @@
 #'  for each output product or spectral index is generated within
 #'  `path_tiles`, `path_merged`, `path_out` and `path_indices`; if FALSE,
 #'  products are put directly within them.
+#' @param use_python (optional) Logical: if TRUE (default), the presence of
+#'  python in the system is checked before running the function; 
+#'  if FALSE, this is skipped. Setting this to FALSE can bge useful on 
+#'  systems with problems with python, when [fidolasen_s2)] is intended
+#'  to be used only for processing existing SAFE files (python is required
+#'  in any case to download SAFE).
 #'
 #' @importFrom data.table data.table rbindlist
 #' @importFrom geojsonio geojson_json
@@ -189,14 +195,17 @@ fidolasen_s2 <- function(param_list=NULL,
                          path_merged=NA,
                          path_out=NA,
                          path_indices=NA,
-                         path_subdirs=NA) {
+                         path_subdirs=NA,
+                         use_python = TRUE) {
   
   
   ### Preliminary settings ###
   
   # import python modules
   # check that python and the required modules are installed
-  py <- init_python()
+  if (use_python == TRUE) {
+    py <- init_python()
+  }
 
   # internal function: return character(0) instead of NULL
   # (used to build _req names)

@@ -13,7 +13,8 @@ fidolasen_s2(param_list = NULL, gui = NA, preprocess = NA,
   res = NA, res_s2 = NA, unit = NA, proj = NA, resampling = NA,
   resampling_scl = NA, outformat = NA, compression = NA, overwrite = NA,
   path_l1c = NA, path_l2a = NA, path_tiles = NA, path_merged = NA,
-  path_out = NA, path_indices = NA, path_subdirs = NA)
+  path_out = NA, path_indices = NA, path_subdirs = NA,
+  use_python = TRUE)
 }
 \arguments{
 \item{param_list}{(optional) List of input parameters:
@@ -197,6 +198,15 @@ If not provided (default), \code{path_out} is used.}
 for each output product or spectral index is generated within
 \code{path_tiles}, \code{path_merged}, \code{path_out} and \code{path_indices}; if FALSE,
 products are put directly within them.}
+
+\item{use_python}{(optional) Logical: if TRUE (default), the presence of
+python in the system is checked before running the function;
+if FALSE, this is skipped. Setting this to FALSE can bge useful on
+systems with problems with python, when [fidolasen_s2)] is intended
+to be used only for processing existing SAFE files (python is required
+in any case to download SAFE).
+
+[fidolasen_s2)]: R:fidolasen_s2)}
 }
 \description{
 The function is a wrapper to perform the entire
