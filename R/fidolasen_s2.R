@@ -196,7 +196,7 @@ fidolasen_s2 <- function(param_list=NULL,
   
   # import python modules
   # check that python and the required modules are installed
-  py <- init_python()
+  # py <- init_python() # FIXME restore
 
   # internal function: return character(0) instead of NULL
   # (used to build _req names)
