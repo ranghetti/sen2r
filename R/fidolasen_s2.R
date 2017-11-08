@@ -196,7 +196,7 @@ fidolasen_s2 <- function(param_list=NULL,
   
   # import python modules
   # check that python and the required modules are installed
-  # py <- init_python() # FIXME restore
+  py <- init_python()
 
   # internal function: return character(0) instead of NULL
   # (used to build _req names)
@@ -514,8 +514,7 @@ fidolasen_s2 <- function(param_list=NULL,
     s2_dt <- s2_dt[as.Date(sensing_datetime) >= pm$timewindow[1] &
                      as.Date(sensing_datetime) <= pm$timewindow[2],]
   }
-  
-  if (all(!is.na(pm$s2tiles_selected)) & !is.null(s2_dt$id_tile)) { # FIXME works only with new products! (add retrieval of all tiles)
+  if (all(!is.na(pm$s2tiles_selected))) { # FIXME works only with new products! (add retrieval of all tiles)
     s2_dt <- s2_dt[id_tile %in% pm$s2tiles_selected,]
   }
   if (all(!is.na(pm$s2orbits_selected))) {
