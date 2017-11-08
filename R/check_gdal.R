@@ -10,7 +10,7 @@
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
-#' @importFrom gdalUtils gdal_setInstallation
+#' @importFrom gdalUtils gdal_setInstallation gdal_chooseInstallation
 #' @importFrom rgdal getGDALVersionInfo
 #' @examples
 #' \dontrun{
