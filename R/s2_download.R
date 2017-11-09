@@ -65,17 +65,32 @@ s2_download <- function(s2_prodlist=NULL,
   }
 
   for (i in 1:length(s2_prodlist)) {
+    
     link <- s2_prodlist[i]
     filename <- names(s2_prodlist[i])
+    # download archive for compactname products
+    if (s2_getMetadata(filename, "nameinfo")$version=="compact") {
+      tile <- r_to_py(NULL)
+      unzip_tile <- TRUE
+    } else {
+      tile <- r_to_py(tile)
+      unzip_tile <- FALSE
+    }
+
     s2download$download_s2product(filename=filename,
                                   link=link,
                                   downloader=downloader,
                                   apihub=apihub,
-                                  tile=r_to_py(tile),
+                                  tile=tile,
                                   no_download=FALSE,
                                   write_dir=outdir,
                                   file_list=NULL)
-
+    
+    # if the archive was downloaded, unzip it
+    if (unzip_tile) {
+      unzip(file.path(outdir,paste0(filename,".zip")))
+      unlink(file.path(outdir,paste0(filename,".zip")))
+    }
   }
 
   return(NULL)
