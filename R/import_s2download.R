@@ -32,8 +32,19 @@ import_s2download <- function(...) {
   # if (!s2download_path %in% py_to_r(py$sys$path)) {
   #   py$sys$path$insert(py$py$int(0),s2download_path)
   # }
-  s2download <- import_from_path("s2download", s2download_path, ...)
-  # s2download$inst_path <- s2download_path
+  s2download <- tryCatch(
+    import_from_path("s2download", s2download_path, ...), 
+    error = print
+  )
+  if (is(s2download, "error")) {
+    s2download <- import_from_path(
+      "s2download", 
+      paste0(normalizePath(s2download_path),"/"), 
+      ...
+    )
+  }
+  
+  s2download$inst_path <- s2download_path
 
   return(s2download)
 

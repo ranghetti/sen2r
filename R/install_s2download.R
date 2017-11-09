@@ -72,7 +72,17 @@ install_s2download <- function(inst_path=NA) {
 
   # clone the package and import the module
   system(paste0(Sys.which("git")," clone ",s2download_git," ",inst_path))
-  install_s2download_dependencies <- import_from_path("install_dependencies", inst_path, convert=FALSE)
+  install_s2download_dependencies <- tryCatch(
+    import_from_path("install_dependencies", inst_path, convert=FALSE), 
+    error = print
+  )
+  if (is(install_s2download_dependencies, "error")) {
+    install_s2download_dependencies <- import_from_path(
+      "install_dependencies", 
+      paste0(normalizePath(inst_path),"/"), 
+      convert=FALSE
+    )
+  }
 
   # clone dependent repositories
   # install_s2download_dependencies$clone_repo(c("ranghetti","fetchLandsatSentinelFromGoogleCloud"))
