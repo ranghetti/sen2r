@@ -527,6 +527,9 @@ fidolasen_s2 <- function(param_list=NULL,
   s2_dt[,c("name","url"):=list(names(s2_list),s2_list)]
   s2_dt[,c("sensing_datetime","creation_datetime"):=list(as.POSIXct(sensing_datetime, format="%s"),
                                                          as.POSIXct(creation_datetime, format="%s"))]
+  if (is.null(s2_dt$id_tile)) {
+    s2_dt$id_tile <- NA
+  }
   
   s2_dt <- s2_dt[mission %in% toupper(substr(pm$sel_sensor,2,3)),][
     order(-sensing_datetime),]
@@ -534,9 +537,11 @@ fidolasen_s2 <- function(param_list=NULL,
     s2_dt <- s2_dt[as.Date(sensing_datetime) >= pm$timewindow[1] &
                      as.Date(sensing_datetime) <= pm$timewindow[2],]
   }
-  
-  if (all(!is.na(pm$s2tiles_selected))) { # FIXME works only with new products! (add retrieval of all tiles)
-    s2_dt <- s2_dt[id_tile %in% pm$s2tiles_selected,]
+  # if pm$s2tiles_selected contains NA, do not filter on tiles;
+  # otherwise, filter on tiles but keep also NA not to discard old name products.
+  # FIXME check also tiles in old products, otherwise too much products are processed in offline mode.
+  if (all(!is.na(pm$s2tiles_selected))) {
+    s2_dt <- s2_dt[id_tile %in% c(pm$s2tiles_selected,NA),]
   }
   if (all(!is.na(pm$s2orbits_selected))) {
     s2_dt <- s2_dt[id_orbit %in% pm$s2orbits_selected,]
@@ -586,6 +591,9 @@ fidolasen_s2 <- function(param_list=NULL,
     }
   }
   
+  # second filter on tiles
+  # TODO
+
   # apply sen2cor
   if (pm$step_atmcorr %in% c("auto","scihub")) {
     s2_list_l1c_tocorrect <- if (pm$overwrite_safe==FALSE) {
