@@ -537,9 +537,9 @@ fidolasen_s2 <- function(param_list=NULL,
     s2_dt <- s2_dt[as.Date(sensing_datetime) >= pm$timewindow[1] &
                      as.Date(sensing_datetime) <= pm$timewindow[2],]
   }
-  # if pm$s2tiles_selected contains NA, do not filter on tiles;
+  # if pm$s2tiles_selected contains NA, do not filter on tiles now;
   # otherwise, filter on tiles but keep also NA not to discard old name products.
-  # FIXME check also tiles in old products, otherwise too much products are processed in offline mode.
+  # (products will be filtered later: #filter2)
   if (all(!is.na(pm$s2tiles_selected))) {
     s2_dt <- s2_dt[id_tile %in% c(pm$s2tiles_selected,NA),]
   }
@@ -574,6 +574,7 @@ fidolasen_s2 <- function(param_list=NULL,
       })
       
     }
+    
     if (length(s2_list_l1c)>0) {
       
       print_message(
@@ -591,8 +592,14 @@ fidolasen_s2 <- function(param_list=NULL,
     }
   }
   
-  # second filter on tiles
-  # TODO
+  # second filter on tiles (#filter2)
+  s2_dt$id_tile <- lapply(file.path(pm$path_l1c,s2_dt[level=="1C",name]), s2_getMetadata, "tiles") %>%
+    sapply(paste, collapse = " ")
+  if (all(!is.na(pm$s2tiles_selected))) {
+    s2_dt <- s2_dt[sapply(strsplit(s2_dt$id_tile," "), function(x){
+      any(x %in% pm$s2tiles_selected)
+    }),]
+  }
 
   # apply sen2cor
   if (pm$step_atmcorr %in% c("auto","scihub")) {
@@ -642,7 +649,10 @@ fidolasen_s2 <- function(param_list=NULL,
       "Execution of fidolasen session terminated."
     )
     
-    return(safe_fullnames)
+    return(
+      c(file.path(pm$path_l1c,names(s2_list_l1c)),
+        file.path(pm$path_l2a,names(s2_list_l2a)))
+    )
     
   }
   
