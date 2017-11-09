@@ -523,6 +523,7 @@ fidolasen_s2 <- function(param_list=NULL,
     s2_dt <- s2_dt[as.Date(sensing_datetime) >= pm$timewindow[1] &
                      as.Date(sensing_datetime) <= pm$timewindow[2],]
   }
+  
   if (all(!is.na(pm$s2tiles_selected))) { # FIXME works only with new products! (add retrieval of all tiles)
     s2_dt <- s2_dt[id_tile %in% pm$s2tiles_selected,]
   }

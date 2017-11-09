@@ -106,7 +106,7 @@ s2_translate <- function(infile,
 
   # Check GDAL installation
   check_gdal(abort=TRUE)
-
+browser()
   # Retrieve xml required metadata
   infile_meta <- s2_getMetadata(infile, c("xml_main","xml_granules","utm","level","tiles", "jp2list"))
   infile_dir = dirname(infile_meta$xml_main)

@@ -265,22 +265,22 @@ s2_getMetadata <- function(s2, info="all") {
             } else if (length(oldname_granule_xmlfile)==0) {
               print_message(type="error", "This product is not in the right format (not recognised).")
             }
-          } else if (length(compactname_granule_xmlfile)==1) {
-            if (length(oldname_granule_xmlfile)==0) {
+          } else if (length(compactname_granule_xmlfile) == 1) {
+            if (length(oldname_granule_xmlfile) == 0) {
               s2_version <- "compact"
               s2_main_xml <- list.files(dirname(dirname(s2_path)), s2_regex$compactname_main_xml$regex, full.names=TRUE)
               s2_granules_xml <- s2_xml <- compactname_granule_xmlfile
-            } else if (length(oldname_granule_xmlfile)==1) {
-              print_message(type="error", "This product is not in the right format (not univocally recognised).")
+            } else if (length(oldname_granule_xmlfile) == 1) {
+              print_message(type = "error", "This product is not in the right format (not univocally recognised).")
             }
           }
-        } else if (length(oldname_granule_xmlfile)+length(compactname_granule_xmlfile)==0) {
-          print_message(type="error", "This product is not in the right format (not recognised).")
+        } else if (length(oldname_granule_xmlfile) + length(compactname_granule_xmlfile) == 0) {
+          print_message(type = "error", "This product is not in the right format (not recognised).")
         } else {
-          print_message(type="error", "This product is not in the right format (not univocally recognised).")
+          print_message(type = "error", "This product is not in the right format (not univocally recognised).")
         }
       } else {
-        print_message(type="error", "This product is not in the right format (not recognised).")
+        print_message(type = "error", "This product is not in the right format (not recognised).")
       }
 
       # metadata from file name are read
