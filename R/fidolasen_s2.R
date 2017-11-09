@@ -487,6 +487,17 @@ fidolasen_s2 <- function(param_list=NULL,
     
   }
   s2_list <- unlist(s2_lists)[!duplicated(unlist(lapply(s2_lists, names)))]
+  
+  # if s2_list is empty, exit 
+  if (length(s2_list)==0) {
+    print_message(
+      type = "message",
+      date = TRUE,
+      "No SAFE products found with the parameters set; exiting."
+    )
+    return(NULL)
+  }
+
   names(s2_list) <- gsub("^l[12][ac]\\.","",names(s2_list))
   
   # If s2_list is empty, exit
