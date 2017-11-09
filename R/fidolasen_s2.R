@@ -689,7 +689,7 @@ fidolasen_s2 <- function(param_list=NULL,
         file.path(
           path_tiles,
           if(pm$path_subdirs==TRUE){p}else{""},
-          s2_shortname(x, prod_type=p, ext=tiles_ext)
+          s2_shortname(x, prod_type=p, ext=tiles_ext, res=pm$res_s2)
         )
       })
     }) %>% unlist()
@@ -698,7 +698,7 @@ fidolasen_s2 <- function(param_list=NULL,
         file.path(
           path_tiles,
           if(pm$path_subdirs==TRUE){p}else{""},
-          s2_shortname(x, prod_type=p, ext=tiles_ext)
+          s2_shortname(x, prod_type=p, ext=tiles_ext, res=pm$res_s2)
         )
       })
     }) %>% unlist()
