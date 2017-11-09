@@ -70,10 +70,10 @@ s2_download <- function(s2_prodlist=NULL,
     filename <- names(s2_prodlist[i])
     # download archive for compactname products
     if (s2_getMetadata(filename, "nameinfo")$version=="compact") {
-      tile <- r_to_py(NULL)
+      py_tile <- r_to_py(NULL)
       unzip_tile <- TRUE
     } else {
-      tile <- r_to_py(tile)
+      py_tile <- r_to_py(tile)
       unzip_tile <- FALSE
     }
 
@@ -87,14 +87,15 @@ s2_download <- function(s2_prodlist=NULL,
                                   link=link,
                                   downloader=downloader,
                                   apihub=apihub,
-                                  tile=tile,
+                                  tile=py_tile,
                                   no_download=FALSE,
                                   write_dir=outdir,
                                   file_list=NULL)
     
     # if the archive was downloaded, unzip it
     if (unzip_tile) {
-      unzip(file.path(outdir,paste0(filename,".zip")))
+      unzip(file.path(outdir,paste0(filename,".zip"))) %>%
+        suppressWarnings()
       unlink(file.path(outdir,paste0(filename,".zip")))
     }
   }
