@@ -77,6 +77,12 @@ s2_download <- function(s2_prodlist=NULL,
       unzip_tile <- FALSE
     }
 
+    print_message(
+      type = "message",
+      date = TRUE,
+      "Downloading product ",i," of ",length(s2_prodlist),
+      " (",filename,")..."
+    )
     s2download$download_s2product(filename=filename,
                                   link=link,
                                   downloader=downloader,
