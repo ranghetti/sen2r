@@ -286,7 +286,7 @@ s2_gui <- function(param_list = NULL,
                   condition = "input.online == 'TRUE'",
                   actionButton(
                     "scihub",
-                    label = "\u2000Set SciHub credentials",
+                    label = "\u2000Login in SciHub",
                     icon=icon("user-circle")
                   )
                 )
@@ -2030,13 +2030,13 @@ s2_gui <- function(param_list = NULL,
       rl$overwrite <- as.logical(input$overwrite)
       
       # set directories #
-      rl$path_l1c <- input$path_l1c_textin # path of L1C SAFE products
-      rl$path_l2a <- input$path_l2a_textin # path of L2A SAFE products
-      rl$path_tiles <- if (input$keep_tiles==TRUE) {input$path_tiles_textin} else {NA} # path of entire tiled products
-      rl$path_merged <- if (input$keep_merged==TRUE) {input$path_merged_textin} else {NA} # path of entire tiled products
-      rl$path_out <- if (length(input$list_prods)>1 | length(input$list_prods)>0 & !"indices" %in% input$list_prods) {input$path_out_textin} else {NA} # path of output pre-processed products
-      rl$path_indices <- if (indices_req()==TRUE) {input$path_indices_textin} else {NA} # path of spectral indices
-      rl$path_subdirs <- as.logical(input$path_subdirs) # logical (use subdirs)
+      rl$path_l1c <- if (safe_req$l1c==TRUE) {input$path_l1c_textin} else {NA} # path of L1C SAFE products
+      rl$path_l2a <- if (safe_req$l2a==TRUE) {input$path_l2a_textin} else {NA} # path of L2A SAFE products
+      rl$path_tiles <- if (rl$preprocess==TRUE & input$keep_tiles==TRUE) {input$path_tiles_textin} else {NA} # path of entire tiled products
+      rl$path_merged <- if (rl$preprocess==TRUE & input$keep_merged==TRUE) {input$path_merged_textin} else {NA} # path of entire tiled products
+      rl$path_out <- if (rl$preprocess==TRUE & (length(input$list_prods)>1 | length(input$list_prods)>0 & !"indices" %in% input$list_prods)) {input$path_out_textin} else {NA} # path of output pre-processed products
+      rl$path_indices <- if (rl$preprocess==TRUE & indices_req()==TRUE) {input$path_indices_textin} else {NA} # path of spectral indices
+      rl$path_subdirs <- if (rl$preprocess==TRUE) {as.logical(input$path_subdirs)} else {NA} # logical (use subdirs)
       
       # information about package version
       rl$fidolasen_version <- packageVersion("fidolasen") %>% as.character()
