@@ -23,9 +23,14 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
   sen2cor_version <- package_version("2.4.0")
   
   # check if it is already installed
-  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"sen2cor_path.json")
-  if (force != TRUE & file.exists(binpaths_file)) {
-    sen2cor_bin <- jsonlite::fromJSON(binpaths_file)$sen2cor 
+  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
+  binpaths <- if (file.exists(binpaths_file)) {
+    jsonlite::fromJSON(binpaths_file)
+  } else {
+    list("sen2cor" = NULL)
+  }
+  if (force != TRUE & !is.null(binpaths$sen2cor)) {
+    sen2cor_bin <- binpaths$sen2cor 
     if (file.exists(sen2cor_bin)) {
       print_message(
         type = "message",
@@ -95,16 +100,8 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
 
   # Save a text file with the L2A_Process path,
   # including also paths of GDAL apps
-  out_paths <- list(
-    "sen2cor" = sen2cor_bin,
-    "python" = list.files(dirname(sen2cor_bin), "^python2\\.7$", full.names=TRUE),
-    "gdalbuildvrt" = list.files(dirname(sen2cor_bin), "^gdalbuildvrt$", full.names=TRUE),
-    "gdal_translate" = list.files(dirname(sen2cor_bin), "^gdal_translate$", full.names=TRUE),
-    "gdalwarp" = list.files(dirname(sen2cor_bin), "^gdalwarp$", full.names=TRUE),
-    "gdalinfo" = list.files(dirname(sen2cor_bin), "^gdalinfo$", full.names=TRUE),
-    "ogrinfo" = list.files(dirname(sen2cor_bin), "^ogrinfo$", full.names=TRUE)
-  ) %>% jsonlite::toJSON(pretty = TRUE)
-
-  writeLines(out_paths, binpaths_file)
+  binpaths$sen2cor <- sen2cor_bin
+  binpaths <- lapply(binpaths, normalizePath)
+  writeLines(jsonlite::toJSON(binpaths), binpaths_file)
   
 }

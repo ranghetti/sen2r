@@ -77,6 +77,17 @@ s2_translate <- function(infile,
                          utmzone="",
                          overwrite = FALSE) {
 
+  # Load GDAL paths
+  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
+  binpaths <- if (file.exists(binpaths_file)) {
+    jsonlite::fromJSON(binpaths_file)
+  } else {
+    list("gdalinfo" = NULL)
+  }
+  if (is.null(binpaths$gdalinfo)) {
+    check_gdal()
+  }
+  
   # check res (and use the resolutions >= specified res)
   if (!res %in% c("10m","20m","60m")) {
     print_message(
@@ -223,7 +234,7 @@ s2_translate <- function(infile,
           final_vrt_name <- ifelse(format=="VRT", out_name, paste0(tmpdir,"/",out_prefix,".vrt"))
           system(
             paste0(
-              Sys.which("gdalbuildvrt")," -separate ",
+              binpaths$gdalbuildvrt," -separate ",
               "-resolution highest ",
               "\"",final_vrt_name,"\" ",
               paste(paste0("\"",jp2_selbands,"\""), collapse=" ")
@@ -241,7 +252,7 @@ s2_translate <- function(infile,
         if (format != "VRT" | length(jp2_selbands)==1) {
           system(
             paste0(
-              Sys.which("gdal_translate")," -of ",format," ",
+              binpaths$gdal_translate," -of ",format," ",
               if (format=="GTiff") {paste0("-co COMPRESS=",toupper(compress)," ")},
               if (!is.na(sel_na)) {paste0("-a_nodata ",sel_na," ")},
               "\"",final_vrt_name,"\" ",

@@ -73,6 +73,17 @@ s2_calcindices <- function(infiles,
   # import python modules
   gdal <- import("osgeo",convert=FALSE)$gdal
 
+  # Load GDAL paths
+  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
+  binpaths <- if (file.exists(binpaths_file)) {
+    jsonlite::fromJSON(binpaths_file)
+  } else {
+    list("gdalinfo" = NULL)
+  }
+  if (is.null(binpaths$gdalinfo)) {
+    check_gdal()
+  }
+  
   # generate indices.json if missing and read it
   create_indices_db()
   indices_db <- list_indices(c("n_index","name","longname","s2_formula","a","b","x"))
@@ -189,7 +200,7 @@ s2_calcindices <- function(infiles,
         # apply gdal_calc
         system(
          paste0(
-           Sys.which("gdal_calc.py")," ",
+           binpaths$gdal_calc.py," ",
            paste(apply(gdal_bands,1,function(l){
              paste0("-",l["letter"]," \"",sel_infile,"\" --",l["letter"],"_band=",which(gdal_bands$letter==l["letter"]))
            }), collapse=" ")," ",

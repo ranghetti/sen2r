@@ -63,6 +63,17 @@ s2_merge <- function(infiles,
       paste(infiles[!sapply(infiles, file.exists)], collapse="\", \""),
       "\") do not exists locally; please check file names and paths.")
   }
+  
+  # Load GDAL paths
+  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
+  binpaths <- if (file.exists(binpaths_file)) {
+    jsonlite::fromJSON(binpaths_file)
+  } else {
+    list("gdalinfo" = NULL)
+  }
+  if (is.null(binpaths$gdalinfo)) {
+    check_gdal()
+  }
 
   # Get files metadata
   infiles_meta <- fs2nc_getElements(infiles, format="data.frame")
@@ -130,7 +141,7 @@ s2_merge <- function(infiles,
     ref_file <- file.path(tmpdir,".ref_grid.vrt")
     system(
       paste0(
-        Sys.which("gdalwarp")," ",
+        binpaths$gdaliwarp," ",
         "-overwrite ",
         "-s_srs \"",infiles_meta[1,"proj4string"],"\" ",
         "-t_srs \"",out_crs,"\" ",
@@ -222,7 +233,7 @@ s2_merge <- function(infiles,
              sel_outfile))
       system(
         paste0(
-          Sys.which("gdalbuildvrt")," ",
+          binpaths$gdalbuildvrt," ",
           "\"",merged_vrt,"\" ",
           paste(paste0("\"",sel_infiles,"\""), collapse=" ")
         ),
@@ -232,7 +243,7 @@ s2_merge <- function(infiles,
       # create output merged file
       system(
         paste0(
-          Sys.which("gdal_translate")," ",
+          binpaths$gdal_translate," ",
           "-of ",sel_outformat," ",
           if (sel_outformat=="GTiff") {paste0("-co COMPRESS=",toupper(compress)," ")},
           "\"",merged_vrt,"\" ",

@@ -5,6 +5,8 @@
 #' @param abort Logical parameter: if TRUE (default), the function aborts
 #'  in case no GDAL installation is found; if FALSE, a warning is shown
 #'  and FALSE is returned.
+#' @param force (optional) Logical: if TRUE, install even if it is already 
+#'  installed (default is FALSE).
 #' @return Logical: TRUE in case the installation is ok, FALSE if GDAL
 #'  is missing and abort=FALSE (otherwise, the function stops).
 #'
@@ -12,6 +14,7 @@
 #' @note License: GPL 3.0
 #' @importFrom gdalUtils gdal_setInstallation gdal_chooseInstallation
 #' @importFrom rgdal getGDALVersionInfo
+#' @importFrom jsonlite fromJSON
 #' @examples
 #' \dontrun{
 #'
@@ -27,18 +30,31 @@
 # TODO check also python and GDAL outside install_s2download
 # (one could be interested only in preprocessing and not in downloading)
 
-check_gdal <- function(abort = TRUE) {
+check_gdal <- function(abort = TRUE, force = FALSE) {
 
   # set minimum GDAL version
   gdal_minversion <- package_version("2.1.3")
-
-  # If GDAL is not found, search for it
-  if (is.null(getOption("gdalUtils_gdalPath"))) {
-    print_message(
-      type="message",
-      "Searching for a valid GDAL installation...")
-    gdal_setInstallation(ignore.full_scan = TRUE, verbose = TRUE)
+  
+  # load the saved GDAL path, if exists
+  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
+  binpaths <- if (file.exists(binpaths_file)) {
+    jsonlite::fromJSON(binpaths_file)
+  } else {
+    list("gdalinfo" = NULL)
   }
+  if (force != TRUE & !is.null(binpaths$gdalinfo)) {
+    print_message(
+      type = "message",
+      "GDAL is already set; to reconfigure it, set force = TRUE."
+    )
+    return(TRUE)
+  }
+  
+  # If GDAL is not found, search for it
+  print_message(
+    type="message",
+    "Searching for a valid GDAL installation...")
+  gdal_setInstallation(ignore.full_scan = TRUE, verbose = TRUE)
   
   # Check if this found version supports OpenJPEG
   gdal_check_jp2 <- tryCatch(gdal_chooseInstallation(hasDrivers=c("JP2OpenJPEG")), error = print)
@@ -64,10 +80,8 @@ check_gdal <- function(abort = TRUE) {
       "GDAL was not found, please install it."
     )
     return(FALSE)
-  } else {
-    gdal_chooseInstallation(hasDrivers=c("JP2OpenJPEG"))
   }
-
+    
   # set message method
   message_type <- ifelse(abort==TRUE, "error", "warning")
 
@@ -91,9 +105,23 @@ check_gdal <- function(abort = TRUE) {
       "Please install JP2OpenJPEG support and recompile GDAL.")
     return(FALSE)
   }
-
+  
+  # set this version to be used with gdalUtils
+  gdal_chooseInstallation(hasDrivers=c("JP2OpenJPEG"))
+  
+  # save the path for use with external calls
+  binpaths$gdalbuildvrt <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdalbuildvrt")))
+  binpaths$gdal_translate <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdal_translate")))
+  binpaths$gdalwarp <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdalwarp")))
+  binpaths$gdal_calc.py <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdal_calc.py")))
+  binpaths$gdalinfo <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdalinfo")))
+  binpaths$ogrinfo <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("ogrinfo")))
+  
+  binpaths <- lapply(binpaths, normalizePath)
+  writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
+  
   print_message(
-    type="cat",
+    type="message",
     "GDAL version in use: ", as.character(gdal_version))
   return(TRUE)
 

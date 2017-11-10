@@ -35,7 +35,7 @@
  s2download/
  sen2cor/
  xslt/
- sen2cor_path.json
+ paths.json
  s2download_path.txt
 .Rproj.user
 
