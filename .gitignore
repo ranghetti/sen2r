@@ -1,9 +1,9 @@
  # History files
- .Rhistory
- .Rapp.history
+ *.Rhistory
+ *.Rapp.history
 
  # Session Data files
- .RData
+ *.RData
 
  # Example code in package build process
  *-Ex.R
@@ -28,15 +28,21 @@
  # Temporary files created by R markdown
  *.utf8.md
  *.knit.md
- .Rproj.user/
+ .Rproj.user
  *.Rproj
 
- # s2download
- s2download/
+ # dependencies (s2download, sen2cor, xslt)
+ /s2download/
+ inst/s2download/
  sen2cor/
- xslt/
- paths.json
-.Rproj.user
+ inst/sen2cor/
+ extdata/xslt/
+ inst/extdata/xslt/
+ 
+ # path file
+ extdata/paths.json
+ inst/extdata/paths.json
 
  # s2_tiles.kml
+ extdata/vector/s2_tiles.kml
  inst/extdata/vector/s2_tiles.kml
