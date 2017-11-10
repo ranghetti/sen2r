@@ -94,7 +94,14 @@ install_s2download <- function(inst_path=NA) {
   # and message in case all run ok.
 
   # Save a text file with the directory where s2download has been cloned
-  s2download_metapath <- file.path(system.file("extdata",package="fidolasen"),"s2download_path.txt")
-  writeLines(inst_path, s2download_metapath)
+  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
+  binpaths <- if (file.exists(binpaths_file)) {
+    jsonlite::fromJSON(binpaths_file)
+  } else {
+    list("s2download" = NULL)
+  }
+  binpaths$s2download <- inst_path
+  binpaths <- lapply(binpaths, normalizePath)
+  writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
 
 }

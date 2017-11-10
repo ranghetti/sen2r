@@ -36,7 +36,6 @@
  sen2cor/
  xslt/
  paths.json
- s2download_path.txt
 .Rproj.user
 
  # s2_tiles.kml

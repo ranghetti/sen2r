@@ -17,9 +17,14 @@ import_s2download <- function(...) {
 
   # check that s2download and dependencies were cloned
   # this ensures also that python2 and other dependencies are present)
-  s2download_metapath <- file.path(system.file("extdata",package="fidolasen"),"s2download_path.txt")
-
-  if (!file.exists(s2download_metapath)) {
+  # check if it is already installed
+  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
+  binpaths <- if (file.exists(binpaths_file)) {
+    jsonlite::fromJSON(binpaths_file)
+  } else {
+    list("s2download" = NULL)
+  }
+  if (length(binpaths$s2download)==0) {
     print_message(
       type="waiting",
       "s2download was not found in your system; press ENTER to install, ESC to escape."
@@ -28,23 +33,20 @@ import_s2download <- function(...) {
   }
 
   # load s2download
-  s2download_path <- readLines(s2download_metapath)[1]
-  # if (!s2download_path %in% py_to_r(py$sys$path)) {
-  #   py$sys$path$insert(py$py$int(0),s2download_path)
-  # }
+  binpaths <- jsonlite::fromJSON(binpaths_file)
   s2download <- tryCatch(
-    import_from_path("s2download", s2download_path, ...), 
+    import_from_path("s2download", binpaths$s2download, ...), 
     error = print
   )
   if (is(s2download, "error")) {
     s2download <- import_from_path(
       "s2download", 
-      paste0(normalizePath(s2download_path),"/"), 
+      paste0(normalizePath(binpaths$s2download),"/"), 
       ...
     )
   }
   
-  s2download$inst_path <- s2download_path
+  s2download$inst_path <- binpaths$s2download
 
   return(s2download)
 

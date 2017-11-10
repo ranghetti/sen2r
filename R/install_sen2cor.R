@@ -102,6 +102,6 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
   # including also paths of GDAL apps
   binpaths$sen2cor <- sen2cor_bin
   binpaths <- lapply(binpaths, normalizePath)
-  writeLines(jsonlite::toJSON(binpaths), binpaths_file)
+  writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
   
 }
