@@ -33,16 +33,16 @@
 
  # dependencies (s2download, sen2cor, xslt)
  /s2download/
- inst/s2download/
- sen2cor/
- inst/sen2cor/
- extdata/xslt/
- inst/extdata/xslt/
+ /inst/s2download/
+ /sen2cor/
+ /inst/sen2cor/
+ /extdata/xslt/
+ /inst/extdata/xslt/
  
  # path file
- extdata/paths.json
- inst/extdata/paths.json
+ /extdata/paths.json
+ /inst/extdata/paths.json
 
  # s2_tiles.kml
- extdata/vector/s2_tiles.kml
- inst/extdata/vector/s2_tiles.kml
+ /extdata/vector/s2_tiles.kml
+ /inst/extdata/vector/s2_tiles.kml
