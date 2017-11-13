@@ -92,12 +92,6 @@ s2_download <- function(s2_prodlist=NULL,
                                   write_dir=outdir,
                                   file_list=NULL)
     
-    # if the archive was downloaded, unzip it
-    if (unzip_tile) {
-      unzip(file.path(outdir,paste0(filename,".zip"))) %>%
-        suppressWarnings()
-      unlink(file.path(outdir,paste0(filename,".zip")))
-    }
   }
 
   return(NULL)
