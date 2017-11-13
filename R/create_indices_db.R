@@ -168,7 +168,7 @@ create_indices_db <- function(xslt_path = NA,
     while (length(grep("[{}]", tmp_latex))>0 & n_iter<=max_iter) {
       tmp_latex <- gsub(paste0("\\\\frac",parent_regex,parent_regex), "(\\1)/(\\2)", tmp_latex, perl=TRUE) # convert fractions
       tmp_latex <- gsub(paste0("\\\\sqrt",parent_regex), "sqrt(\\1)", tmp_latex, perl=TRUE) # convert sqrt
-      tmp_latex <- gsub(paste0(parent_regex,"\\^",parent_regex),"\\1^\\2", tmp_latex, perl=TRUE) # square
+      tmp_latex <- gsub(paste0(parent_regex,"\\^",parent_regex),"power\\(\\1,\\2\\)", tmp_latex, perl=TRUE) # square
       n_iter <- n_iter+1
     }
 
@@ -191,6 +191,8 @@ create_indices_db <- function(xslt_path = NA,
   test_df <- runif(16,0,1)
   names(test_df) <- c(paste0("band_",c(1:12,"8a")),"par_a","par_b","par_x")
   test_df <- as.data.frame(t(test_df))
+  # define power() as in numpy
+  power <- function(x,y){x^y}
 
   test_results <-with(test_df,
                       sapply(s2_table$s2_formula,
