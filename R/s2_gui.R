@@ -215,14 +215,13 @@ s2_gui <- function(param_list = NULL,
                   br()
                 ),
                 
-                checkboxGroupInput("sel_sensor", "Select sensors:",
-                                   choiceNames = list("Sentinel-2A",
-                                                      span("Sentinel-2B\u2000",#
-                                                           actionLink("note_sel_sensor", icon("info-circle"))) # temp
-                                   ),
-                                   choiceValues = list("s2a", "s2b"),
-                                   selected=c("s2a","s2b"),
-                                   inline = FALSE)
+                checkboxGroupInput(
+                  "sel_sensor", "Select sensors:",
+                  choiceNames = list("Sentinel-2A", "Sentinel-2B"),
+                  choiceValues = list("s2a", "s2b"),
+                  selected = c("s2a","s2b"),
+                  inline = FALSE
+                )
               ) # end of column for sensor selection
               
             )
@@ -1044,24 +1043,6 @@ s2_gui <- function(param_list = NULL,
       } else {
         enable("rm_safe")
       }
-    })
-    
-    # # Temporary message to alert that S2B are not retrievable automatically until they will be operational.
-    # # This will be removed.
-    observeEvent(input$note_sel_sensor, {
-      # if (input$download_safe!="no" & "s2b" %in% input$sel_sensor) {
-      showModal(modalDialog(
-        title = "Sentinel-2B temporary alert",
-        em(paste0("This tool find only products from SciHub operational ",
-                  "hub, while currently only few Sentinel-2B products are ",
-                  "available there. If you need more products, consider to ",
-                  "manually search and download products from "),
-           a("PreOps SciHub", href="https://scihub.copernicus.eu/s2b", target="_blank"),
-           " and then to re-launch the tool in offline mode."),
-        easyClose = TRUE,
-        footer = NULL
-      ))
-      # }
     })
     
     # Disable overwrite_safe in some conditions
