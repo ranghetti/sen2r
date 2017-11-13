@@ -102,7 +102,8 @@ geograbber_process <- function(path_safe,
     path_tiles        = NA,
     path_merged       = NA,
     path_indices      = NA,
-    path_subdirs      = TRUE
+    path_subdirs      = TRUE,
+    use_python        = FALSE
   )
   
 }
