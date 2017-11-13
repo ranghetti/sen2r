@@ -211,6 +211,9 @@ fidolasen_s2 <- function(param_list=NULL,
   # (used to build _req names)
   nn <- function(x) {if (is.null(x)) character(0) else x}
   
+   # create tempdir
+  dir.create(tempdir(), showWarnings=FALSE)
+  
   ## 1. Read / import parameters ##
   
   # Create parameter list with default values

@@ -61,6 +61,8 @@ s2_gui <- function(param_list = NULL,
   
   # TODO: populate parameter values with param_list content, if provided
   
+  # create tempdir
+  dir.create(tempdir(), showWarnings=FALSE)
   
   # extract and import tiles kml
   s2tiles_kmz <- system.file("extdata","vector","s2_tiles.kmz",package="fidolasen")
