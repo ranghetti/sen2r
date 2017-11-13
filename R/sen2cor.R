@@ -42,16 +42,22 @@
 
 sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, n_procs=1, overwrite=FALSE) {
   
-  # install sen2cor is not already done
-  install_sen2cor() %>% suppressMessages()
-  
   # load sen2cor executable path
-  sen2cor_bin <- fromJSON(
-    file.path(
-      system.file("extdata",package="fidolasen"),
-      "sen2cor_path.json"
+  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
+  binpaths <- if (file.exists(binpaths_file)) {
+    jsonlite::fromJSON(binpaths_file)
+  } else {
+    list("sen2cor" = NULL)
+  }
+  if (length(binpaths$sen2cor)==0) {
+    print_message(
+      type="waiting",
+      "s2download was not found in your system; press ENTER to install, ESC to escape."
     )
-  )$sen2cor
+    install_sen2cor() %>% suppressMessages()
+    binpaths <- jsonlite::fromJSON(binpaths_file)
+  }
+  
   
   # if l1c_dir is defined, append to product names
   if (!is.null(l1c_dir)) {
@@ -143,7 +149,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, n
       
       # apply sen2cor
       system(
-        paste(sen2cor_bin, sel_l1c),
+        paste(binpaths$sen2cor, sel_l1c),
         intern = Sys.info()["sysname"] == "Windows"
       )
       sen2cor_out_l2a <- file.path(
