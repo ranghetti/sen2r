@@ -152,7 +152,7 @@
 #'  to be used only for processing existing SAFE files (python is required
 #'  in any case to download SAFE).
 #'
-#' @importFrom data.table data.table rbindlist
+#' @import data.table
 #' @importFrom geojsonio geojson_json
 #' @importFrom jsonlite fromJSON
 #' @importFrom sf st_cast st_read

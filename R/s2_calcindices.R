@@ -50,7 +50,7 @@
 #' @return A vector with the names of the created products.
 #' @export
 #' @importFrom jsonlite fromJSON
-#' @importFrom data.table data.table
+#' @import data.table
 #' @importFrom rgdal GDALinfo
 #' @importFrom reticulate import
 #' @importFrom magrittr "%>%"

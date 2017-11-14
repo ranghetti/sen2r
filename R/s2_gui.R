@@ -9,7 +9,7 @@
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @importFrom jsonlite fromJSON toJSON
-#' @importFrom data.table data.table ":="
+#' @import data.table
 #' @importFrom geojsonio geojson_json
 #' @importFrom leaflet addLayersControl addPolygons addProviderTiles
 #'  addTiles clearShapes fitBounds hideGroup labelOptions layersControlOptions

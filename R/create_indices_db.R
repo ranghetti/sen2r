@@ -19,7 +19,7 @@
 #' @return NULL
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
-#' @importFrom data.table data.table setnames ":="
+#' @import data.table
 #' @importFrom XML htmlTreeParse xmlRoot readHTMLTable xmlAttrs saveXML
 #' @importFrom magrittr "%>%"
 #' @importFrom jsonlite toJSON fromJSON
