@@ -4,12 +4,15 @@
 \alias{check_gdal}
 \title{Check GDAL installation}
 \usage{
-check_gdal(abort = TRUE)
+check_gdal(abort = TRUE, force = FALSE)
 }
 \arguments{
 \item{abort}{Logical parameter: if TRUE (default), the function aborts
 in case no GDAL installation is found; if FALSE, a warning is shown
 and FALSE is returned.}
+
+\item{force}{(optional) Logical: if TRUE, install even if it is already
+installed (default is FALSE).}
 }
 \value{
 Logical: TRUE in case the installation is ok, FALSE if GDAL
