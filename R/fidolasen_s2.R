@@ -531,7 +531,7 @@ fidolasen_s2 <- function(param_list=NULL,
   s2_dt[,c("sensing_datetime","creation_datetime"):=list(as.POSIXct(sensing_datetime, format="%s"),
                                                          as.POSIXct(creation_datetime, format="%s"))]
   if (is.null(s2_dt$id_tile)) {
-    s2_dt$id_tile <- NA
+    s2_dt$id_tile <- as.character(NA)
   }
   
   s2_dt <- s2_dt[mission %in% toupper(substr(pm$sel_sensor,2,3)),][
@@ -550,7 +550,16 @@ fidolasen_s2 <- function(param_list=NULL,
     s2_dt <- s2_dt[id_orbit %in% pm$s2orbits_selected,]
   }
   # setorder(s2_dt, -sensing_datetime)
-  s2_dt <- s2_dt[!duplicated(s2_dt[,list(mission,level,id_orbit,id_tile)]),]
+  s2_dt <- s2_dt[
+    !duplicated(
+      s2_dt[,list(
+        mission,
+        level,
+        id_orbit,
+        ifelse(is.na(id_tile),sample(1E5),id_tile)) # if id_tile is not specified do not remove duplicates, because different products can rely to different tiles
+      ]
+    ),
+  ]
   s2_list_l1c <- s2_dt[level=="1C",url] # list of required L1C
   s2_list_l2a <- s2_dt[level=="2A",url] # list of required L2A
   names(s2_list_l1c) <- s2_dt[level=="1C",name]
@@ -716,21 +725,21 @@ fidolasen_s2 <- function(param_list=NULL,
     # The list of the generated file names is at the end of this section.
     
     # expected names for tiles
-    tiles_l1c_names_exp <- lapply(names(s2_list_l1c), function(x){
+    tiles_l1c_names_exp <- lapply(file.path(pm$path_l1c,names(s2_list_l1c)), function(x){
       lapply(list_prods[list_prods %in% l1c_prods], function(p){
         file.path(
           path_tiles,
           if(pm$path_subdirs==TRUE){p}else{""},
-          s2_shortname(x, prod_type=p, ext=tiles_ext, res=pm$res_s2)
+          basename(s2_shortname(x, prod_type=p, ext=tiles_ext, res=pm$res_s2))
         )
       })
     }) %>% unlist()
-    tiles_l2a_names_exp <- lapply(names(s2_list_l2a), function(x){
+    tiles_l2a_names_exp <- lapply(file.path(pm$path_l2a,names(s2_list_l2a)), function(x){
       lapply(list_prods[list_prods %in% l2a_prods], function(p){
         file.path(
           path_tiles,
           if(pm$path_subdirs==TRUE){p}else{""},
-          s2_shortname(x, prod_type=p, ext=tiles_ext, res=pm$res_s2)
+          basename(s2_shortname(x, prod_type=p, ext=tiles_ext, res=pm$res_s2))
         )
       })
     }) %>% unlist()
@@ -1002,12 +1011,15 @@ fidolasen_s2 <- function(param_list=NULL,
         tiles_dt_new <- data.table(fs2nc_getElements(tiles_names_new,format="data.frame"))
         safe_dt_av <- sapply(c(names(s2_list_l1c),names(s2_list_l2a)), function(x) unlist(s2_getMetadata(x, info="nameinfo"))) %>%
           t() %>% data.table()
+        if (is.null(safe_dt_av$id_tile)) {
+          safe_dt_av$id_tile <- ""
+        }
         tiles_basenames_av <- safe_dt_av[,paste0("S",
                                                  mission,
                                                  level,"_",
                                                  strftime(as.POSIXct(sensing_datetime, format="%s"),"%Y%m%d"),"_",
                                                  id_orbit,"_",
-                                                 id_tile,"_",
+                                                 ifelse(id_tile!="",id_tile,"[A-Z0-9]{5}"),"_",
                                                  "[A-Z0-9]{3}_",
                                                  "[126]0\\.",
                                                  tiles_ext)]
