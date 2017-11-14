@@ -83,15 +83,29 @@ s2_download <- function(s2_prodlist=NULL,
       "Downloading product ",i," of ",length(s2_prodlist),
       " (",filename,")..."
     )
-    s2download$download_s2product(filename=filename,
-                                  link=link,
-                                  downloader=downloader,
-                                  apihub=apihub,
-                                  tile=py_tile,
-                                  no_download=FALSE,
-                                  write_dir=outdir,
-                                  file_list=NULL)
     
+    trace_function(
+      s2download$download_s2product,
+      filename      = filename,
+      link          = link,
+      downloader    = downloader,
+      apihub        = apihub,
+      tile          = py_tile,
+      no_download   = FALSE,
+      write_dir     = outdir,
+      file_list     = NULL,
+      trace_funname = "s2download",
+      trace_files   = file.path(outdir,c(filename,paste0(filename,".zip")))
+    )
+    # s2download$download_s2product(filename=filename,
+    #                               link=link,
+    #                               downloader=downloader,
+    #                               apihub=apihub,
+    #                               tile=py_tile,
+    #                               no_download=FALSE,
+    #                               write_dir=outdir,
+    #                               file_list=NULL)
+
   }
 
   return(NULL)

@@ -147,16 +147,24 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, n
         sel_l1c <- file.path(sel_proc_dir, basename(sel_l1c))
       }
       
+      # path of the L2A product where it is placed by sen2cor
+      sen2cor_out_l2a <- file.path(
+        dirname(sel_l1c),
+        gsub("^S2([AB])\\_MSIL1C\\_","S2\\1_MSIL2A_",basename(sel_l1c))
+      )
+      
       # apply sen2cor
+      sel_trace <- start_trace(sen2cor_out_l2a, "sen2cor")
       system(
         paste(binpaths$sen2cor, sel_l1c),
         intern = Sys.info()["sysname"] == "Windows"
       )
-      sen2cor_out_l2a <- file.path(
-        dirname(sel_l1c),
-        gsub("^S2([AB])\\_MSIL1C\\_","S2\\1_MSIL2A_",basename(sel_l1c))
-      ) # path of the L2A product where it is placed by sen2cor
-      
+      if (TRUE) { # TODO define a way to check if sen2cor runned correctly
+        end_trace(sel_trace)
+      } else {
+        clean_trace(sel_trace)
+      }
+
       # move output to the required output directory
       if (sen2cor_out_l2a != sel_l2a) {
         file.copy(sen2cor_out_l2a, dirname(sel_l2a), recursive=TRUE)

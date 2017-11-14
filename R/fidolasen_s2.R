@@ -1091,14 +1091,28 @@ fidolasen_s2 <- function(param_list=NULL,
         for (sel_prod in safe_names_l1c_req) {
           tiles_l1c_names_out <- c(
             tiles_l1c_names_out,
-            s2_translate(infile = sel_prod,
-                         outdir = path_tiles,
-                         prod_type = list_l1c_prods,
-                         format = tiles_outformat,
-                         res = pm$res_s2,
-                         vrt_rel_paths = TRUE,
-                         subdirs = pm$path_subdirs,
-                         overwrite = pm$overwrite))
+            trace_function(
+              s2_translate,
+              infile = sel_prod,
+              outdir = path_tiles,
+              prod_type = list_l1c_prods,
+              format = tiles_outformat,
+              res = pm$res_s2,
+              vrt_rel_paths = TRUE,
+              subdirs = pm$path_subdirs,
+              overwrite = pm$overwrite,
+              trace_files = tiles_names_new
+            )
+          )
+          # s2_translate(infile = sel_prod,
+            #              outdir = path_tiles,
+            #              prod_type = list_l1c_prods,
+            #              format = tiles_outformat,
+            #              res = pm$res_s2,
+            #              vrt_rel_paths = TRUE,
+            #              subdirs = pm$path_subdirs,
+            #              overwrite = pm$overwrite))
+
         }
       }
       if("l2a" %in% pm$s2_levels) {
@@ -1106,14 +1120,29 @@ fidolasen_s2 <- function(param_list=NULL,
         for (sel_prod in safe_names_l2a_req) {
           tiles_l2a_names_out <- c(
             tiles_l2a_names_out,
-            s2_translate(infile = sel_prod,
-                         outdir = path_tiles,
-                         prod_type = list_l2a_prods,
-                         format = tiles_outformat,
-                         res = pm$res_s2,
-                         vrt_rel_paths = TRUE,
-                         subdirs = pm$path_subdirs,
-                         overwrite = pm$overwrite))
+            trace_function(
+              s2_translate,
+              infile = sel_prod,
+              outdir = path_tiles,
+              prod_type = list_l2a_prods,
+              format = tiles_outformat,
+              res = pm$res_s2,
+              vrt_rel_paths = TRUE,
+              subdirs = pm$path_subdirs,
+              overwrite = pm$overwrite,
+              trace_files = tiles_names_new
+            )
+          )
+          # tiles_l2a_names_out <- c(
+          #   tiles_l2a_names_out,
+          #   s2_translate(infile = sel_prod,
+          #                outdir = path_tiles,
+          #                prod_type = list_l2a_prods,
+          #                format = tiles_outformat,
+          #                res = pm$res_s2,
+          #                vrt_rel_paths = TRUE,
+          #                subdirs = pm$path_subdirs,
+          #                overwrite = pm$overwrite))
         }
       }
       
@@ -1134,11 +1163,20 @@ fidolasen_s2 <- function(param_list=NULL,
       )
       
       dir.create(path_merged, recursive=FALSE, showWarnings=FALSE)
-      merged_names_out <- s2_merge(tiles_names_req,
-                                   path_merged,
-                                   subdirs=pm$path_subdirs,
-                                   format=merged_outformat,
-                                   overwrite=pm$overwrite)
+      merged_names_out <- trace_function(
+        s2_merge,
+        infiles = tiles_names_req,
+        outdir = path_merged,
+        subdirs = pm$path_subdirs,
+        format = merged_outformat,
+        overwrite = pm$overwrite,
+        trace_files = merged_names_new
+      )
+      # merged_names_out <- s2_merge(tiles_names_req,
+      #                              path_merged,
+      #                              subdirs=pm$path_subdirs,
+      #                              format=merged_outformat,
+      #                              overwrite=pm$overwrite)
       # TODO check merged_names_out - merged_names_req
       
     } # end of s2_merge IF cycle
@@ -1172,24 +1210,68 @@ fidolasen_s2 <- function(param_list=NULL,
         if (any(!file.exists(warped_names_reqout)) | pm$overwrite==TRUE) {
           # index which is TRUE for SCL products, FALSE for others
           names_merged_req_scl_idx <- fs2nc_getElements(merged_names_req,format="data.frame")$prod_type=="SCL"
-          fidolasen::gdal_warp(merged_names_req[!names_merged_req_scl_idx],
-                               warped_names_reqout[!names_merged_req_scl_idx],
-                               of = warped_outformat,
-                               ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
-                               mask = s2_mask_extent,
-                               tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
-                               t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
-                               r = pm$resampling,
-                               overwrite = pm$overwrite) # TODO dstnodata value?
-          fidolasen::gdal_warp(merged_names_req[names_merged_req_scl_idx],
-                               warped_names_reqout[names_merged_req_scl_idx],
-                               of = pm$outformat, # use physical files to speed up next steps
-                               ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
-                               mask = s2_mask_extent,
-                               tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
-                               t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
-                               r = pm$resampling_scl,
-                               overwrite = pm$overwrite)
+          # here trace_function() is not used, since argument "tr" matches multiple formal arguments.
+          # manual cycle is performed.
+          tracename_gdalwarp <- start_trace(warped_names_reqout[!names_merged_req_scl_idx], "gdal_warp")
+          trace_gdalwarp <- tryCatch(
+            gdal_warp(
+              merged_names_req[!names_merged_req_scl_idx],
+              warped_names_reqout[!names_merged_req_scl_idx],
+              of = warped_outformat,
+              ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
+              mask = s2_mask_extent,
+              tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
+              t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
+              r = pm$resampling,
+              overwrite = pm$overwrite
+            ), # TODO dstnodata value?
+            error = print
+          )
+          if (is(trace_gdalwarp, "error")) {
+            clean_trace(tracename_gdalwarp)
+            stop(trace_gdalwarp)
+          } else {
+            end_trace(tracename_gdalwarp)
+          }
+          tracename_gdalwarp <- start_trace(warped_names_reqout[!names_merged_req_scl_idx], "gdal_warp")
+          trace_gdalwarp <- tryCatch(
+            gdal_warp(
+              merged_names_req[names_merged_req_scl_idx],
+              warped_names_reqout[names_merged_req_scl_idx],
+              of = pm$outformat, # use physical files to speed up next steps
+              ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
+              mask = s2_mask_extent,
+              tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
+              t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
+              r = pm$resampling_scl,
+              overwrite = pm$overwrite
+            ), # TODO dstnodata value?
+            error = print
+          )
+          if (is(trace_gdalwarp, "error")) {
+            clean_trace(tracename_gdalwarp)
+            stop(trace_gdalwarp)
+          } else {
+            end_trace(tracename_gdalwarp)
+          }
+          # gdal_warp(merged_names_req[!names_merged_req_scl_idx],
+          #           warped_names_reqout[!names_merged_req_scl_idx],
+          #           of = warped_outformat,
+          #           ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
+          #           mask = s2_mask_extent,
+          #           tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
+          #           t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
+          #           r = pm$resampling,
+          #           overwrite = pm$overwrite) # TODO dstnodata value?
+          # gdal_warp(merged_names_req[names_merged_req_scl_idx],
+          #           warped_names_reqout[names_merged_req_scl_idx],
+          #           of = pm$outformat, # use physical files to speed up next steps
+          #           ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
+          #           mask = s2_mask_extent,
+          #           tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
+          #           t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
+          #           r = pm$resampling_scl,
+          #           overwrite = pm$overwrite)
         }
         
       } # end of gdal_warp IF clip_on_extent cycle
@@ -1206,16 +1288,28 @@ fidolasen_s2 <- function(param_list=NULL,
           date = TRUE,
           "Starting to apply atmospheric masks."
         )
-        masked_names_out <- s2_mask(
-          if(pm$clip_on_extent==TRUE){warped_names_req}else{merged_names_req},
-          if(pm$clip_on_extent==TRUE){warped_names_req}else{merged_names_exp[names_merged_exp_scl_idx]},
-          mask_type=pm$mask_type,
-          outdir=path_out,
-          format=pm$outformat,
-          subdirs=pm$path_subdirs,
-          overwrite=pm$overwrite,
-          parallel=FALSE
+        masked_names_out <- trace_function(
+          s2_mask,
+          infiles = if(pm$clip_on_extent==TRUE){warped_names_req}else{merged_names_req},
+          maskfiles = if(pm$clip_on_extent==TRUE){warped_names_req}else{merged_names_exp[names_merged_exp_scl_idx]},
+          mask_type = pm$mask_type,
+          outdir = path_out,
+          format = pm$outformat,
+          subdirs = pm$path_subdirs,
+          overwrite = pm$overwrite,
+          parallel = FALSE,
+          trace_files = out_names_new
         )
+        # masked_names_out <- s2_mask(
+        #   if(pm$clip_on_extent==TRUE){warped_names_req}else{merged_names_req},
+        #   if(pm$clip_on_extent==TRUE){warped_names_req}else{merged_names_exp[names_merged_exp_scl_idx]},
+        #   mask_type=pm$mask_type,
+        #   outdir=path_out,
+        #   format=pm$outformat,
+        #   subdirs=pm$path_subdirs,
+        #   overwrite=pm$overwrite,
+        #   parallel=FALSE
+        # )
       }
       
     } # end of gdal_warp and s2_mask IF cycle
@@ -1230,13 +1324,24 @@ fidolasen_s2 <- function(param_list=NULL,
         "Computing required spectral indices."
       )
       
-      indices_names <- s2_calcindices(out_names_req,
-                                      indices=pm$list_indices,
-                                      outdir=path_indices,
-                                      subdirs=TRUE,
-                                      source=pm$index_source,
-                                      format=pm$outformat,
-                                      overwrite=pm$overwrite)
+      indices_names <- trace_function(
+        s2_calcindices,
+        infiles = out_names_req,
+        indices = pm$list_indices,
+        outdir = path_indices,
+        subdirs = TRUE,
+        source = pm$index_source,
+        format = pm$outformat,
+        overwrite = pm$overwrite,
+        trace_files = indices_names_new
+      )
+      # indices_names <- s2_calcindices(out_names_req,
+      #                                 indices=pm$list_indices,
+      #                                 outdir=path_indices,
+      #                                 subdirs=TRUE,
+      #                                 source=pm$index_source,
+      #                                 format=pm$outformat,
+      #                                 overwrite=pm$overwrite)
     }
     
   } # end of pm$preprocess IF cycle
