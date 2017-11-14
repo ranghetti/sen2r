@@ -927,6 +927,9 @@ fidolasen_s2 <- function(param_list=NULL,
       }
       out_names_new <- out_names_new[!file.exists(nn(out_names_new))]
       
+      # index which is TRUE for SCL products, FALSE for others
+      names_merged_new_out_idx <- fs2nc_getElements(out_names_new,format="data.frame")$prod_type=="SCL"
+      
       # required masked and warped
       masked_names_new <- if (is.na(pm$mask_type)) {
         NULL
@@ -935,29 +938,40 @@ fidolasen_s2 <- function(param_list=NULL,
       }
       warped_names_req <- if (pm$clip_on_extent==FALSE | length(out_names_new)==0) {
         NULL
+      } else if (is.na(pm$mask_type)) {
+          out_names_exp[!names_merged_new_out_idx] # FIXME check!
       } else {
-        c(file.path(path_warped,
-                    if(pm$path_subdirs==TRUE){basename(dirname(out_names_new))}else{""},
-                    gsub(paste0(out_ext,"$"),warped_ext,basename(out_names_new))),
-          if (!is.na(pm$mask_type) & !"SCL" %in% pm$list_prods & length(out_names_new)>0) {
-            out_names_exp[fs2nc_getElements(out_names_exp, format="data.frame")$prod_type=="SCL"]
-          })
+        file.path(
+          path_warped,
+          if(pm$path_subdirs==TRUE){basename(dirname(out_names_new))}else{""},
+          ifelse(
+            names_merged_new_out_idx & !"SCL" %in% pm$list_prods,
+            basename(out_names_new),
+            gsub(paste0(out_ext,"$"),warped_ext,basename(out_names_new))
+          )
+        )
       }
       warped_names_new <- warped_names_req[!file.exists(nn(warped_names_req))]
-      
+
       # required merged
       merged_basenames_req <- c(
-        gsub(paste0(warped_ext,"$"),merged_ext,basename(nn(warped_names_new))),
-        gsub(paste0(out_ext,"$"),merged_ext,basename(nn(masked_names_new))))
+        gsub(paste0(warped_ext,"$"),merged_ext,basename(nn(warped_names_new))) %>%
+          gsub(paste0(out_ext,"$"),merged_ext,.),
+        gsub(paste0(out_ext,"$"),merged_ext,basename(nn(masked_names_new)))) %>%
+        unique()
       merged_names_req <- if (pm$clip_on_extent==TRUE) {
         merged_names_exp[basename(nn(merged_names_exp)) %in% merged_basenames_req]
       } else {
-        c(file.path(path_merged,
-                    if(pm$path_subdirs==TRUE){basename(dirname(nn(out_names_new)))}else{""},
-                    gsub(paste0(out_ext,"$"),merged_ext,basename(nn(out_names_new)))),
-          if (!is.na(pm$mask_type) & !"SCL" %in% pm$list_prods & length(out_names_new)>0) {
+        c(
+          file.path(
+            path_merged,
+            if(pm$path_subdirs==TRUE){basename(dirname(nn(out_names_new)))}else{""},
+            gsub(paste0(out_ext,"$"),merged_ext,basename(nn(out_names_new)))
+          ),
+          if (is.na(pm$mask_type) & !"SCL" %in% pm$list_prods & length(out_names_new)>0) {
             out_names_exp[fs2nc_getElements(out_names_req, format="data.frame")$prod_type=="SCL"]
-          })
+          }
+        )
       }
       merged_names_new <- if (is.na(pm$path_merged)) {
         merged_names_req
