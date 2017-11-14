@@ -28,7 +28,7 @@
  # Temporary files created by R markdown
  *.utf8.md
  *.knit.md
- .Rproj.user
+.Rproj.user
  *.Rproj
 
  # dependencies (s2download, sen2cor, xslt)
@@ -43,6 +43,8 @@
  /extdata/paths.json
  /inst/extdata/paths.json
 
- # s2_tiles.kml
+ # other files
  /extdata/vector/s2_tiles.kml
  /inst/extdata/vector/s2_tiles.kml
+ /extdata/example_files/safe/
+ /inst/extdata/example_files/safe/
