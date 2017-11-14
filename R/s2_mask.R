@@ -84,17 +84,12 @@ s2_mask <- function(infiles,
   if (!any(sapply(infiles, file.exists))) {
     print_message(
       type="error",
-      "The input files (\"",
-      paste(infiles, collapse="\", \""),
-      "\") do not exists locally; please check file names and paths.")
-  } else if (!all(sapply(infiles, file.exists))) {
-    print_message(
-      type="error",
-      "Some of the input files (\"",
+      if (!all(sapply(infiles, file.exists))) {"The "} else {"Some of the "},
+      "input files (\"",
       paste(infiles[!sapply(infiles, file.exists)], collapse="\", \""),
       "\") do not exists locally; please check file names and paths.")
   }
-
+  
   # check output format
   if (!is.na(format)) {
     gdal <- import("osgeo",convert=FALSE)$gdal

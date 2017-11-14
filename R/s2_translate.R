@@ -272,8 +272,10 @@ s2_translate <- function(infile,
 
   } # end of prod_type cycle
 
-  print_message(type="message",
-                length(out_names)," output files were correctly created.")
+  print_message(
+    type="message",
+    length(out_names)," output files were correctly created."
+  )
   return(out_names)
 
 }

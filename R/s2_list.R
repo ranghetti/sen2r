@@ -84,7 +84,10 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
     apihub <- file.path(s2download$inst_path,"apihub.txt")
   }
   if (!file.exists(apihub)) {
-    print_message(type="error","File apihub.txt with the SciHub credentials is missing.") # TODO build it
+    print_message(
+      type="error",
+      "File apihub.txt with the SciHub credentials is missing."
+    ) # TODO build it
   }
 
   # set corr_type

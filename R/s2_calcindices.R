@@ -89,10 +89,13 @@ s2_calcindices <- function(infiles,
   indices_db <- list_indices(c("n_index","name","longname","s2_formula","a","b","x"))
 
   # check that the required indices exists
-  if (!any(indices %in% indices_db$name)) {
+  if (!all(indices %in% indices_db$name)) {
     print_message(
       type="error",
-      "The requested index names are not recognisable; please use accepted ",
+      if (!any(indices %in% indices_db$name)) {"The "} else {"Some of the "},
+      "requested index names (\"",
+      paste(indices[!indices %in% indices_db$name], collapse="\", \""),
+      ,"\") are not recognisable; please use accepted ",
       "values. To list accepted index names, type ",
       "'sort(list_indices(\"name\"))'.")
   }

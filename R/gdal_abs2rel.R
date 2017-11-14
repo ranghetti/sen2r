@@ -34,7 +34,7 @@ gdal_abs2rel <- function(in_vrt, out_vrt=NA) {
   }
 
   if (!file.exists(in_vrt)) {
-    print_message(type="error", "Input file does not exists.")
+    print_message(type="error", "Input file (\"",in_vrt,"\") does not exists.")
   }
 
   vrt_text <- readLines(in_vrt)
@@ -74,7 +74,7 @@ gdal_rel2abs <- function(in_vrt, out_vrt=NA) {
   }
 
   if (!file.exists(in_vrt)) {
-    print_message(type="error", "Input file does not exists.")
+    print_message(type="error", "Input file (\"",in_vrt,"\") does not exists.")
   }
 
   vrt_text <- readLines(in_vrt)
