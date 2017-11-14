@@ -61,7 +61,7 @@
 #' @importFrom raster stack brick calc dataType mask NAvalue overlay
 #'   beginCluster endCluster
 #' @importFrom magrittr "%>%"
-#' @importFrom data.table data.table
+#' @import data.table
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 
