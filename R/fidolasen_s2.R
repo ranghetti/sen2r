@@ -1306,7 +1306,7 @@ fidolasen_s2 <- function(param_list=NULL,
           format = pm$outformat,
           subdirs = pm$path_subdirs,
           overwrite = pm$overwrite,
-          parallel = FALSE,
+          parallel = TRUE, # TODO pass as parameter
           trace_files = out_names_new
         )
         # masked_names_out <- s2_mask(

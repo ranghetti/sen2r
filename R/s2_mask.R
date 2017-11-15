@@ -135,30 +135,38 @@ s2_mask <- function(infiles,
   } else if (mask_type == "opaque_clouds") {
     print_message(type="error", "Mask type 'opaque_clouds' has not been yet implemented.")
   }
-
-
+  
   ## Cycle on each file
   # if parallel==TRUE, use doParallel
   if (parallel==TRUE) {
     `%DO%` <- `%dopar%`
-    n_cores <- min(parallel::detectCores()-1, length(infiles), 7) # use at most 7 cores
-    cl <- makeCluster(n_cores)
-    registerDoParallel(cl)
+    n_cores <- min(parallel::detectCores()-2, 8) # use at most 8 cores
   } else {
     `%DO%` <- `%do%`
+    n_cores <- 1
   }
 
   outfiles <- character(0)
-  foreach(i=seq_along(infiles)) %DO% {
+  foreach(i=seq_along(infiles),
+          .combine=c,
+          .export = "mountpoint",
+          .packages=c("raster","reticulate","rgdal","sprawl")) %DO% {
   # for (i in seq_along(infiles)) {
     sel_infile <- infiles[i]
     sel_infile_meta <- c(infiles_meta[i,])
     sel_format <- suppressWarnings(ifelse(
       !is.na(format), format, attr(GDALinfo(sel_infile), "driver")
-    )) %>% ifelse(.!="VRT",.,"GTiff")
-    sel_out_ext <- ifelse(
-      sel_format=="ENVI", "dat",
-      unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(gdal$DMD_EXTENSIONS))," ")," "))[1])
+    ))
+    if (sel_format=="VRT") {sel_format <- "GTiff"}
+    sel_out_ext <- gdal_formats[gdal_formats$name==sel_format,"ext"][1]
+    
+    # define NA flag (values should be the same defined in s2_translate)
+    sel_na <- switch(sel_infile_meta$prod_type,
+                     BOA = "65535",
+                     TOA = "65535",
+                     SCL = "0",
+                     TCI = NA,
+                     NA)
 
     # check that infile has the correct maskfile
     sel_maskfiles <- sapply(names(req_masks), function(m) {
@@ -192,14 +200,20 @@ s2_mask <- function(infiles,
       for (i in seq_along(inmask@layers)) {
         mask_tmpfiles <- c(tempfile(fileext=".tif"), mask_tmpfiles)
         raster::calc(inmask[[i]],
-                     function(x){!x %in% req_masks[[i]] %>% as.integer()},
-                     filename = mask_tmpfiles[1])
+                     function(x){as.integer(!x %in% req_masks[[i]])},
+                     filename = mask_tmpfiles[1],
+                     options  = "COMPRESS=LZW",
+                     datatype = "INT1U")
       }
       if(length(mask_tmpfiles)==1) {
         outmask <- mask_tmpfiles
       } else {
         outmask <- tempfile(fileext=".tif")
-        raster::overlay(stack(mask_tmpfiles), fun=sum, filename=outmask)
+        raster::overlay(stack(mask_tmpfiles),
+                        fun = sum,
+                        filename = outmask,
+                        options  = "COMPRESS=LZW",
+                        datatype = "INT1U")
       }
 
       # if mask is at different resolution than inraster
@@ -214,22 +228,38 @@ s2_mask <- function(infiles,
         outmask_res <- outmask
       }
 
-      # apply mask
-      # FIXME parallelisation not working
-      # if (parallel) {raster::beginCluster(n_cores)}
-      raster::mask(inraster,
-                   raster::raster(outmask_res),
-                   filename    = sel_outfile,
-                   maskvalue   = 0,
-                   updatevalue = NAvalue(inraster),
-                   updateNA    = TRUE,
-                   datatype    = dataType(inraster),
-                   format      = sel_format,
-                   options     = ifelse(sel_format == "GTiff",
-                                        c(paste0("COMPRESS=",compress)),
-                                        ""),
-                   overwrite   = overwrite)
-      # if (parallel) {raster::endCluster()}
+      # # apply mask
+      # # FIXME parallelisation not working
+      # # if (parallel) {raster::beginCluster(n_cores)}
+      # raster::mask(inraster,
+      #              raster::raster(outmask_res),
+      #              filename    = sel_outfile,
+      #              maskvalue   = 0,
+      #              updatevalue = NAvalue(inraster),
+      #              updateNA    = TRUE,
+      #              datatype    = dataType(inraster),
+      #              format      = sel_format,
+      #              options     = ifelse(sel_format == "GTiff",
+      #                                   c(paste0("COMPRESS=",compress)),
+      #                                   ""),
+      #              overwrite   = overwrite)
+
+      # try with mask_rast
+      sprawl::mask_rast(
+        inraster,
+        raster::raster(outmask_res),
+        out_file   = sel_outfile,
+        mask_value = 0,
+        out_type   = "filename",
+        out_dtype  = convert_rastdtype(dataType(inraster), "raster")$gdal,
+        out_nodata = NAvalue(inraster),
+        compress   = if (sel_format == "GTiff") {compress} else {"None"},
+        overwrite  = overwrite,
+        parallel   = parallel,
+        cores      = n_cores,
+        verbose    = FALSE
+      )
+      
 
       # fix for envi extension (writeRaster use .envi)
       if (sel_format=="ENVI" &
