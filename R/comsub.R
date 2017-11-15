@@ -12,7 +12,6 @@
 #' @note Modified from a suggestion taken from
 #'  [stackoverflow](https://stackoverflow.com/questions/28273716/r-implementation-for-finding-the-longest-common-starting-substrings-in-a-set-of).
 #' @export
-#' @importFrom reticulate import py_to_r
 #' @importFrom methods is
 #' @importFrom magrittr "%>%"
 #'

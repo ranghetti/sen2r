@@ -55,12 +55,10 @@
 #' @export
 #' @importFrom rgdal GDALinfo
 #' @importFrom parallel detectCores makeCluster stopCluster
-#' @importFrom doParallel registerDoParallel
 #' @importFrom foreach foreach "%do%" "%dopar%"
-#' @importFrom reticulate import py_to_r
 #' @importFrom raster stack brick calc dataType mask NAvalue overlay
 #'   beginCluster endCluster
-#' @importFrom magrittr "%>%"
+#' @importFrom jsonlite fromJSON
 #' @import data.table
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
@@ -77,9 +75,6 @@ s2_mask <- function(infiles,
 
   . <- NULL
 
-  # import python modules
-  gdal <- import("osgeo",convert=FALSE)$gdal
-
   # Check that files exist
   if (!any(sapply(infiles, file.exists))) {
     print_message(
@@ -89,12 +84,12 @@ s2_mask <- function(infiles,
       paste(infiles[!sapply(infiles, file.exists)], collapse="\", \""),
       "\") do not exists locally; please check file names and paths.")
   }
-  
+
   # check output format
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="fidolasen"))
   if (!is.na(format)) {
-    gdal <- import("osgeo",convert=FALSE)$gdal
-    sel_driver <- gdal$GetDriverByName(format)
-    if (is.null(py_to_r(sel_driver))) {
+    sel_driver <- gdal_formats[gdal_formats$name==format,]
+    if (nrow(sel_driver)==0) {
       print_message(
         type="error",
         "Format \"",format,"\" is not recognised; ",

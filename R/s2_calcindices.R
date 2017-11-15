@@ -52,7 +52,6 @@
 #' @importFrom jsonlite fromJSON
 #' @import data.table
 #' @importFrom rgdal GDALinfo
-#' @importFrom reticulate import
 #' @importFrom magrittr "%>%"
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
@@ -69,9 +68,6 @@ s2_calcindices <- function(infiles,
                            overwrite=FALSE) {
 
   prod_type <- . <- NULL
-
-  # import python modules
-  gdal <- import("osgeo",convert=FALSE)$gdal
 
   # Load GDAL paths
   binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
@@ -111,9 +107,10 @@ s2_calcindices <- function(infiles,
   indices_info <- indices_db[match(indices,indices_db$name),]
 
   # check output format
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="fidolasen"))
   if (!is.na(format)) {
-    sel_driver <- gdal$GetDriverByName(format)
-    if (is.null(py_to_r(sel_driver))) {
+    sel_driver <- gdal_formats[gdal_formats$name==format,]
+    if (nrow(sel_driver)==0) {
       print_message(
         type="error",
         "Format \"",format,"\" is not recognised; ",
@@ -145,11 +142,10 @@ s2_calcindices <- function(infiles,
     sel_infile_meta <- c(infiles_meta[i,])
     sel_format <- suppressWarnings(ifelse(
       !is.na(format), format, attr(GDALinfo(sel_infile), "driver")
-    )) %>% ifelse(.!="VRT",.,"GTiff")
-    sel_out_ext <- ifelse(
-      sel_format=="ENVI", "dat",
-      unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(gdal$DMD_EXTENSIONS))," ")," "))[1])
-
+    ))
+    if (sel_format=="VRT") {sel_format <- "GTiff"}
+    sel_out_ext <- gdal_formats[gdal_formats$name==sel_format,"ext"][1]
+    
     # check bands to use
     if (sel_infile_meta$prod_type=="TOA") {
       gdal_bands <- data.frame("letter"=LETTERS[1:12],"band"=paste0("band_",1:12))
