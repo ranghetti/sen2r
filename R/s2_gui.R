@@ -1241,19 +1241,19 @@ s2_gui <- function(param_list = NULL,
                           bbox = rv$bbox,
                           draw = extent_edits()$finished,
                           vectfile = if (!is.na(rv$vectfile_path)) {
-                            st_read(rv$vectfile_path) %>% st_transform(4326)
+                            st_read(rv$vectfile_path, quiet=TRUE) %>% st_transform(4326)
                           } else {
                             st_polygon()
                           },
                           imported = if (!is.null(imported_param())) {
                             if (any(!is.na(imported_param()$extent))) {
-                              st_read(imported_param()$extent)
+                              st_read(imported_param()$extent, quiet=TRUE)
                             } else {
                               st_polygon()
                             }
                           } else if (!is.null(param_list)) {
                             if (any(!is.na(param_list$extent))) {
-                              st_read(param_list$extent)
+                              st_read(param_list$extent, quiet=TRUE)
                             } else {
                               st_polygon()
                             }

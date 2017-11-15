@@ -448,14 +448,14 @@ fidolasen_s2 <- function(param_list=NULL,
     # if online mode, retrieve list with s2_list() basing on parameters
     if ("l1c" %in% pm$s2_levels) {
       # list of SAFE (L1C) needed for required L1C
-      s2_lists[["l1c"]] <- s2_list(spatial_extent = st_read(pm$extent),
+      s2_lists[["l1c"]] <- s2_list(spatial_extent = st_read(pm$extent, quiet=TRUE),
                                    time_interval = pm$timewindow,
                                    tile = pm$s2tiles_selected,
                                    level = "L1C")
     }
     if ("l2a" %in% pm$s2_levels) {
       # list of SAFE (L1C or/and L2A) needed for required L2A
-      s2_lists[["l2a"]] <- s2_list(spatial_extent = st_read(pm$extent),
+      s2_lists[["l2a"]] <- s2_list(spatial_extent = st_read(pm$extent, quiet=TRUE),
                                    time_interval = pm$timewindow,
                                    tile = pm$s2tiles_selected,
                                    level = if (pm$step_atmcorr=="auto") {
@@ -1207,7 +1207,7 @@ fidolasen_s2 <- function(param_list=NULL,
         s2_mask_extent <- if (is.na(pm$extent)) {
           NULL
         } else if (pm$extent_as_mask==TRUE) {
-          st_read(pm$extent)
+          st_read(pm$extent, quiet=TRUE)
         } else {
           suppressWarnings(st_cast(st_read(pm$extent, quiet=TRUE),"LINESTRING"))
         }  # TODO add support for multiple extents

@@ -187,7 +187,8 @@ gdal_warp <- function(srcfiles,
       mask <- cast_vect(mask,"sfobject")
       if (length(grep("POLYGON",st_geometry_type(mask)))>1) {
         st_write(st_cast(mask, "MULTIPOLYGON"),
-                 mask_file <- paste0(tempfile(),".shp"))
+                 mask_file <- paste0(tempfile(),".shp"),
+                 quiet = TRUE)
       } # if not, mask_polygon is not created
     } else if (mask_type == "rastfile") {
       mask <- get_extent(mask)
