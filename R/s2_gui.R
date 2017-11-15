@@ -1907,8 +1907,41 @@ s2_gui <- function(param_list = NULL,
     ## Exit and save
     
     # functions to check that all is correctly set TODO
-    check_param <- function() {
-      
+    # return TRUE if check passes, FALSE if errors occur
+    check_param <- function(param_list) {
+      error_list <- check_param_list(param_list, type = "string")
+      if (!is.null(error_list)) {
+        # if errors occur:
+        # build modal dialog
+        check_param_modal <- modalDialog(
+          title = "Parameter errors",
+          size = "m",
+          if (length(error_list)==1) {
+            tagList(
+              p("A parameter has not been correctly set:",
+                br(), error_list),
+              p("Please edit it using the GUI before continuing.")
+            )
+          } else {
+            taglist(
+              p(HTML(
+                "Some parameters have not been correctly set:",
+                "<ul><li>",
+                paste(error_list, collapse="</li><li>"),
+                "</li></ul>"
+              )),
+              p("Please edit them using the GUI before continuing.")
+            )
+          },
+          easyClose = TRUE,
+          footer = NULL
+        )
+        # show modal dialog
+        showModal(check_param_modal)
+        return(FALSE)
+      } else {
+        return(TRUE)
+      }
     }
     
     # function to create a list to objects to be returned
@@ -2131,18 +2164,17 @@ s2_gui <- function(param_list = NULL,
     }
     
     # if Return is pressend, exit from GUI and return values
-    observe({
-      if (input$return_param==1) {
-        return_list <- create_return_list() # run creation of return_list
+    observeEvent(input$return_param, {
+      return_list <- create_return_list() # run creation of return_list
+      check_param_result <- check_param(return_list)
+      if (check_param_result) {
         stopApp(return_list)
       }
     })
     
     # if Exit is pressend, exit from GUI
-    observe({
-      if (input$exit_gui==1) {
-        stopApp()
-      }
+    observeEvent(input$exit_gui, {
+      stopApp()
     })
     
     # if Export is pressed, export the values
@@ -2151,8 +2183,11 @@ s2_gui <- function(param_list = NULL,
       export_param_path <- parseSavePath(volumes, input$export_param)
       if (nrow(export_param_path)>0) {
         return_list <- create_return_list() # run creation of return_list
-        writeLines(toJSON(return_list, pretty=TRUE),
-                   as.character(export_param_path$datapath))
+        check_param_result <- check_param(return_list)
+        if (check_param_result) {
+          writeLines(toJSON(return_list, pretty=TRUE),
+                     as.character(export_param_path$datapath))
+        }
       }
     })
     

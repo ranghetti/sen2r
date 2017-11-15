@@ -355,7 +355,10 @@ fidolasen_s2 <- function(param_list=NULL,
     
   }
   
-  # TODO check consistency of parameters
+  
+  ## Check consistency of parameters
+  # TODO work in progress
+  check_param_list(pm)
   
   # internal parameters
   dir.create(path_tmp <- tempfile(pattern="dir"), showWarnings = FALSE) # consider to add as an optional parameter
