@@ -358,7 +358,7 @@ fidolasen_s2 <- function(param_list=NULL,
   # TODO check consistency of parameters
   
   # internal parameters
-  dir.create(path_tmp <- tempdir(), showWarnings = FALSE) # consider to add as an optional parameter
+  dir.create(path_tmp <- tempfile(pattern="dir"), showWarnings = FALSE) # consider to add as an optional parameter
   path_out <- if (!is.na(pm$path_out)) {pm$path_out} else {file.path(path_tmp,"out")}
   path_indices <- if (!is.na(pm$path_indices)) {pm$path_indices} else {file.path(path_tmp,"indices")}
   path_tiles <- if (!is.na(pm$path_tiles)) {pm$path_tiles} else {file.path(path_tmp,"tiles")}
@@ -1333,6 +1333,7 @@ fidolasen_s2 <- function(param_list=NULL,
         "Computing required spectral indices."
       )
       
+      dir.create(path_indices, recursive=FALSE, showWarnings=FALSE)
       indices_names <- trace_function(
         s2_calcindices,
         infiles = out_names_req,
