@@ -642,7 +642,7 @@
     },
     {
       "n_index": 95,
-      "longname": "Normalized Difference 800/470 Pigment specific normalised diÂfference C2",
+      "longname": "Normalized Difference 800/470 Pigment specific normalised difference C2",
       "name": "PSNDc2",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=306",
       "s2_formula": "(band_8-band_2)/(band_8+band_2)",
@@ -651,7 +651,7 @@
     },
     {
       "n_index": 96,
-      "longname": "Normalized Difference 800/500 Pigment specific normalised diÂfference C1",
+      "longname": "Normalized Difference 800/500 Pigment specific normalised difference C1",
       "name": "PSNDc1",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=286",
       "s2_formula": "(band_8-band_2)/(band_8+band_2)",
@@ -669,7 +669,7 @@
     },
     {
       "n_index": 98,
-      "longname": "Normalized Difference 800/650 Pigment specific normalised diÂfference B1",
+      "longname": "Normalized Difference 800/650 Pigment specific normalised difference B1",
       "name": "PSNDb1",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=285",
       "s2_formula": "(band_8-band_4)/(band_8+band_4)",
@@ -678,7 +678,7 @@
     },
     {
       "n_index": 99,
-      "longname": "Normalized Difference 800/675 Pigment specific normalised diÂfference A1",
+      "longname": "Normalized Difference 800/675 Pigment specific normalised difference A1",
       "name": "PSNDa1",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=284",
       "s2_formula": "(band_8-band_4)/(band_8+band_4)",
@@ -1769,7 +1769,7 @@
     {
       "n_index": 244,
       "longname": "Triangular chlorophyll index",
-      "name": "TCI",
+      "name": "TCIindex",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=392",
       "s2_formula": "1.2*(band_5-band_3)-1.5*(band_4-band_3)*sqrt((band_5)/(band_4))",
       "checked": true,
@@ -1840,5 +1840,5 @@
     }
   ],
   "fidolasen_version": ["0.2.0"],
-  "creation_date": ["2017-11-13 10:38:16"]
+  "creation_date": ["2017-11-15 10:41:25"]
 }

@@ -180,7 +180,8 @@ create_indices_db <- function(xslt_path = NA,
   # last manual corrections on formulas
   s2_table[,s2_formula:=gsub("par\\_([0-9])", "band_\\1", s2_table$s2_formula)] # some bands were wrongly classified as parameters
   s2_table$s2_formula[s2_table$name=="TCI"] <- gsub("band\\_1\\.5","1.5",s2_table[name=="TCI",s2_formula]) # specific error
-
+  s2_table$name[s2_table$name=="TCI"] <- "TCI_idx" # in order not to mess with TCI True Color Image product
+  
   # rename parameters (A, B, ...)
   s2_table[,s2_formula:=gsub("par\\_([aALyY]r?)", "par_a", s2_table$s2_formula)] # first parameters (a, A, ar, y, Y, L) -> "a"
   s2_table[,s2_formula:=gsub("par\\_([bB])", "par_b", s2_table$s2_formula)] # second parameters (b, B) -> "b"
@@ -248,8 +249,8 @@ create_indices_db <- function(xslt_path = NA,
 
   # set as checked for indices ok after previous changes
   s2_table[name %in% c("NDVI","SAVI","MCARI","MCARI2","TCARI","ARVI","NDRE",
-                       "BNDVI","GNDVI","NDII","TCI","MSAVI","OSAVI","MTVI2",
-                       "MCARI/MTVI2","TCARI/OSAVI"),checked:=TRUE]
+                       "BNDVI","GNDVI","NDII","TCI_idx","MSAVI","OSAVI",
+                       "MTVI2","MCARI/MTVI2","TCARI/OSAVI"),checked:=TRUE]
 
   # set default parameter values
   s2_table[name=="SAVI", a:=0.5] # default value for L (here "a") parameter
