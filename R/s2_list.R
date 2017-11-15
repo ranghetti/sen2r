@@ -29,6 +29,7 @@
 #' @importFrom reticulate py_to_r r_to_py
 #' @importFrom sprawl get_extent reproj_extent
 #' @importFrom magrittr "%>%"
+#' @importFrom sf st_read st_centroid st_polygon
 #'
 #' @examples \dontrun{
 #' pos <- sp::SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=sp::CRS("+init=epsg:4326"))
@@ -43,9 +44,53 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
                     apihub=NULL,
                     max_cloud=110) {
 
+  # check if spatial_extent was provided
+  spatial_extent_exists <- if (!exists("spatial_extent")) {
+    FALSE
+  } else if (is.null(spatial_extent)) {
+    FALSE
+  } else if (any(is.na(spatial_extent))) {
+    FALSE
+  } else if (spatial_extent==st_polygon()) {
+    FALSE
+  } else {
+    TRUE
+  }
+  
+  # if not, retrieve it from tile
+  if (!spatial_extent_exists) {
+    if (is.null(tile)) {
+      print_message(
+        type = "error",
+        "At least one parameter among spatial_extent and tile must be specified."
+      )
+    } else if (any(is.na(tile))) {
+      print_message(
+        type = "error",
+        "At least one parameter among spatial_extent and tile must be specified."
+      )
+    } else {
+      # extract and import tiles kml
+      s2tiles_kmz <- system.file("extdata","vector","s2_tiles.kmz",package="fidolasen")
+      s2tiles_kml <- gsub("\\.kmz$",".kml",s2tiles_kmz)
+      if (!file.exists(s2tiles_kml)) {
+        unzip(zipfile = s2tiles_kmz,
+              files   = basename(s2tiles_kml),
+              exdir   = dirname(s2tiles_kml),
+              unzip   = "internal")
+      }
+      s2tiles <- st_read(s2tiles_kml, stringsAsFactors=FALSE, quiet=TRUE)
+      # take the centroids of the selected tiles as extent
+      spatial_extent <- suppressWarnings(
+        s2tiles[s2tiles$Name %in% tile,] %>%
+          st_centroid()
+      )
+    }
+  }
+
   # checks on inputs
   spatext <- get_extent(spatial_extent) %>%
-    reproj_extent("+init=epsg:4326")
+    reproj_extent("+init=epsg:4326", verbose=FALSE)
 
   # pass lat,lon if the bounding box is a point or line; latmin,latmax,lonmin,lonmax if it is a rectangle
   if (spatext@extent["xmin"]==spatext@extent["xmax"] | spatext@extent["ymin"]==spatext@extent["ymax"]) {
