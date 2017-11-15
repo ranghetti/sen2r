@@ -37,6 +37,7 @@ reference:
       - '`gdal_abs2rel`'
       - '`list_indices`'
       - '`mountpoint`'
+      - '`trace_function`'
   - title: Internal functions
     desc: (not exported)
     contents:
@@ -48,6 +49,7 @@ reference:
       - '`gdal_formats_db`'
       - '`editModPoly`'
       - '`read_scihub_login`'
+      - '`check_param_list`'
 navbar:
   type: inverse
   left:

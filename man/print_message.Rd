@@ -9,10 +9,15 @@ print_message(..., type, sep = "", date = FALSE, date_format = "")
 \arguments{
 \item{...}{\code{R} objects which are concatenated.}
 
-\item{type}{Type of the output (accepted values: 'message'
-for a diagnostic message, 'string' for a character output, 'cat' for the
-output of \code{\link[base]{cat}} function, 'error' and 'warning' for an error or
-warning message. Intentionally, no default value is defined.}
+\item{type}{Type of the output .Accepted values:
+\itemize{
+\item 'message' for a diagnostic message;
+\item 'string' for a character output;
+\item 'cat' for the output of \code{\link[base]{cat}} function;
+\item 'error' and 'warning' for an error or warning message.
+}
+
+Intentionally, no default value is defined.}
 
 \item{sep}{(optional) character used to separate input values
 (default is nothing).}

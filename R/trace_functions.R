@@ -36,6 +36,7 @@
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @importFrom magrittr "%>%"
+#' @importFrom methods is
 
 #' @name start_trace
 #' @rdname trace_function
@@ -99,6 +100,7 @@ clean_trace <- function(tracename) {
 
 #' @name trace_function
 #' @rdname trace_function
+#' @export
 trace_function <- function(trace_fun, trace_files, trace_funname=NA, ...) {
   
   # Start tracing
@@ -128,6 +130,7 @@ trace_function <- function(trace_fun, trace_files, trace_funname=NA, ...) {
 
 #' @name clean_traces
 #' @rdname trace_function
+#' @export
 clean_traces <- function(trace_funname=NA) {
   
   # import the content of the path in which trace txt files are placed
