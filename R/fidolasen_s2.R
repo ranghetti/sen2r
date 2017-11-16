@@ -609,13 +609,33 @@ fidolasen_s2 <- function(param_list=NULL,
   
   # second filter on tiles (#filter2)
   s2_dt$id_tile <- lapply(file.path(pm$path_l1c,s2_dt[,name]), s2_getMetadata, "tiles") %>%
-    sapply(paste, collapse = " ")
-  if (all(!is.na(pm$s2tiles_selected))) {
+    sapply(paste, collapse = " ") %>% as.character()
+  if (all(!is.na(pm$s2tiles_selected)) & nrow(s2_dt)>0) {
+    # filter "elegant" using strsplit (fails with empty s2_dt)
     s2_dt <- s2_dt[sapply(strsplit(s2_dt$id_tile," "), function(x){
       any(x %in% pm$s2tiles_selected)
     }),]
+    # # filter "ugly" with regexp
+    # s2_dt <- s2_dt[grep(paste0("(",paste(pm$s2tiles_selected,collapse=")|("),")"), s2_dt$id_tile),]
   }
-
+  
+  # If s2_list is empty, exit (second time)
+  if (nrow(s2_dt)==0) {
+    print_message(
+      type = "message",
+      date = TRUE,
+      if (pm$online==FALSE) {
+        paste0("No SAFE products which match the settings were found locally; ",
+               "please download them or set different tile or orbit IDs.")
+      } else {
+        paste0("No SAFE products matching the settings were found; ",
+               "please set different tile or orbit IDs.")
+      },
+      " Execution halted."
+    )
+    return(invisible(NULL))
+  }
+  
   # apply sen2cor
   if (pm$step_atmcorr %in% c("auto","scihub")) {
     s2_list_l1c_tocorrect <- if (pm$overwrite_safe==FALSE) {
