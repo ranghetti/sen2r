@@ -80,10 +80,14 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
               unzip   = "internal")
       }
       s2tiles <- st_read(s2tiles_kml, stringsAsFactors=FALSE, quiet=TRUE)
-      # take the centroids of the selected tiles as extent
+      # take the the selected tiles as extent
+      # (this will result in the selection of more tiles, cause to overlapping 
+      # areas; it is filtered in s2_download, but it is slow: FIXME).
+      # It is not possible to use tile centroids, because tile of external areas
+      # of orbits could not be included).
       spatial_extent <- suppressWarnings(
-        s2tiles[s2tiles$Name %in% tile,] %>%
-          st_centroid()
+        s2tiles[s2tiles$Name %in% tile,] #%>%
+          # sf::st_centroid()
       )
     }
   }
@@ -154,11 +158,29 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
       apihub=apihub,
       max_cloud=max_cloud,
       list_only=TRUE,
+      max_records=0, # TODO this is possible after an addition in Sentinel-download python script:
+      # cycle on product requests (one per 100 products) is interrupted after
+      # the first request of length 0.
       corr_type=corr_type)
   })
 
   av_prod_list <- unlist(lapply(av_prod_tuple, function(x) {py_to_r(x)[[1]]}))
   names(av_prod_list) <- unlist(lapply(av_prod_tuple, function(x) {py_to_r(x)[[2]]}))
+  
+  # filter on tiles
+  # (filtering within python code does not take effect with list_only=TRUE)
+  # The filter is applied only on compactname products
+  # (using fidolasen_s2(), a complete filter on tiles is applied after downloading the product;
+  # however, s2_download() would correctly download only required tiles)
+  
+  if (!is.null(tile) & !is.null(av_prod_list)) {
+    av_prod_tiles <- lapply(names(av_prod_list), function(x) {
+      s2_getMetadata(x, info="nameinfo")$id_tile %>%
+        ifelse(is.null(.), NA, .) 
+    }) %>%
+      unlist()
+    av_prod_list <- av_prod_list[av_prod_tiles %in% tile | is.na(av_prod_tiles)]
+  }
 
   return(av_prod_list)
 
