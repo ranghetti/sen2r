@@ -22,7 +22,7 @@ fs2nc_getElements <- function(s2_names, format="list") {
 
   # if input is NULL, return NULL
   if (is.null(s2_names)) {
-    return(NULL)
+    return(invisible(NULL))
   }
 
   # define regular expressions to identify products

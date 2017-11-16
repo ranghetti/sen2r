@@ -74,7 +74,7 @@ end_trace <- function(tracename) {
 clean_trace <- function(tracename) {
   
   # do nothing if tracename does not exist
-  if (!file.exists(tracename)) {return(NULL)}
+  if (!file.exists(tracename)) {return(invisible(NULL))}
   
   # retrieve when the trace started
   tracetime <- gsub("^([0-9]+)\\_.*\\.txt$","\\1",basename(tracename)) %>%
@@ -147,7 +147,7 @@ clean_traces <- function(trace_funname=NA) {
     tracenames_df <- tracenames_df[tracenames_df$fun==trace_funname,]
   }
   # if empty, exit
-  if (nrow(tracenames_df)==0) {return(NULL)}
+  if (nrow(tracenames_df)==0) {return(invisible(NULL))}
   
   # read the names of the single files
   outfilenames <- lapply(tracenames_df$name, readLines)

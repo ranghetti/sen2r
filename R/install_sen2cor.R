@@ -36,7 +36,7 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
         type = "message",
         "sen2cor is already installed; to overwrite, set force = TRUE."
       )
-      return(NULL)
+      return(invisible(NULL))
     }
   }
   

@@ -108,6 +108,6 @@ s2_download <- function(s2_prodlist=NULL,
 
   }
 
-  return(NULL)
-
+  return(invisible(NULL))
+  
 }

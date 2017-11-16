@@ -23,7 +23,7 @@ mountpoint <- function(path, protocol=NA) {
       type = "warning",
       "This function does not work on Windows systems."
     )
-    return(NULL)
+    return(invisible(NULL))
   }
   
   # retrieve mountpoints
@@ -49,7 +49,7 @@ mountpoint <- function(path, protocol=NA) {
   
   if (length(parents) == 0) {
     # if no parent directories, return NULL
-    return(NULL)
+    return(invisible(NULL))
   } else if (length(parents) > 1) {
     # if more than one parent directories, return the "nearer" to path
     parents <- names(sapply(parents,nchar) %>% sort(decreasing=TRUE))[1]

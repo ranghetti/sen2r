@@ -43,7 +43,7 @@ create_indices_db <- function(xslt_path = NA,
     json_version <- jsonlite::fromJSON(json_path)$fidolasen_version %>%
       package_version()
     if (force == FALSE & json_version >= packageVersion("fidolasen")) {
-      return(NULL)
+      return(invisible(NULL))
     }
   }
 
@@ -305,6 +305,5 @@ create_indices_db <- function(xslt_path = NA,
     "creation_date" = as.character(Sys.time())
   )
   writeLines(jsonlite::toJSON(json_table, pretty=TRUE), json_path)
-  return(NULL)
-
+  return(invisible(NULL))
 }

@@ -35,7 +35,7 @@ gdal_formats_db <- function(json_path = NA,
     json_version <- jsonlite::fromJSON(json_path)$fidolasen_version %>%
       package_version()
     if (force == FALSE & json_version >= packageVersion("fidolasen")) {
-      return(NULL)
+      return(invisible(NULL))
     }
   }
   
@@ -78,6 +78,6 @@ gdal_formats_db <- function(json_path = NA,
   
   ## Convert in JSON
   writeLines(jsonlite::toJSON(gdal_drivers, pretty=TRUE), json_path)
-  return(NULL)
+  return(invisible(NULL))
   
 }

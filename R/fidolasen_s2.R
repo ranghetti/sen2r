@@ -501,7 +501,7 @@ fidolasen_s2 <- function(param_list=NULL,
       date = TRUE,
       "No SAFE products found with the parameters set; exiting."
     )
-    return(NULL)
+    return(invisible(NULL))
   }
 
   names(s2_list) <- gsub("^l[12][ac]\\.","",names(s2_list))
@@ -520,6 +520,7 @@ fidolasen_s2 <- function(param_list=NULL,
       },
       " Execution halted."
     )
+    return(invisible(NULL))
   }
   
   
@@ -684,10 +685,10 @@ fidolasen_s2 <- function(param_list=NULL,
       "Execution of fidolasen session terminated."
     )
     
-    return(
+    return(invisible(
       c(file.path(pm$path_l1c,names(s2_list_l1c)),
         file.path(pm$path_l2a,names(s2_list_l2a)))
-    )
+    ))
     
   }
   

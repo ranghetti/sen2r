@@ -1480,7 +1480,7 @@ s2_gui <- function(param_list = NULL,
         
       }
       
-      return(NULL)
+      return(invisible(NULL))
       
     })
     

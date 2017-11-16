@@ -98,7 +98,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, n
       type = "warning",
       "No valid L1C products were found,"
     )
-    return(NULL)
+    return(invisible(NULL))
   }
   
   ## Cycle on each file
