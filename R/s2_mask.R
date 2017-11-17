@@ -138,12 +138,12 @@ s2_mask <- function(infiles,
   
   ## Cycle on each file
   # if parallel==TRUE, use doParallel
-  if (parallel==TRUE) {
-    `%DO%` <- `%dopar%`
-    n_cores <- min(parallel::detectCores()-2, 8) # use at most 8 cores
-  } else {
+  n_cores <- min(parallel::detectCores()-1, 8) # use at most 8 cores
+  if (parallel==FALSE | Sys.info()["sysname"] == "Windows" | n_cores<=1) {
     `%DO%` <- `%do%`
     n_cores <- 1
+  } else {
+    `%DO%` <- `%dopar%`
   }
 
   outfiles <- character(0)
