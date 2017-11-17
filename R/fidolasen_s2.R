@@ -604,12 +604,18 @@ fidolasen_s2 <- function(param_list=NULL,
                     outdir = pm$path_l1c,
                     tile = tile)
       })
+      # FIXME this operation can be very long with oldname products but tiled:
+      # Sentinel-download.py scans within single xml files and discharges 
+      # products without the selected tile, but for some reasons this 
+      # operation can be very time consuming. Find a way to avoid it.
       
     }
   }
   
   # second filter on tiles (#filter2)
-  s2_dt$id_tile <- lapply(file.path(pm$path_l1c,s2_dt[,name]), s2_getMetadata, "tiles") %>%
+  s2_dt$id_tile <- lapply(file.path(pm$path_l1c,s2_dt[,name]), function(x) {
+    tryCatch(s2_getMetadata(x, "tiles"), error = function(e) {NULL})
+  }) %>%
     sapply(paste, collapse = " ") %>% as.character()
   if (all(!is.na(pm$s2tiles_selected)) & nrow(s2_dt)>0) {
     # filter "elegant" using strsplit (fails with empty s2_dt)
