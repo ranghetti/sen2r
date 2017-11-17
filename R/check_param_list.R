@@ -3,10 +3,16 @@
 #'  is in the correct format, and then speficied values are coherent with 
 #'  parameters.
 #' @param type Type of the output (see [print_message] for details).
-#' @return Depending on `type` argument, output can be a vector of errors 
-#'  (if `type = "string"`), the first error occurred (if `type = "error"`)
-#'  or a set of warnings (if `type = "warning"`). If no errors occur,
-#'  output is NULL.
+#' @param correct Logical: if TRUE (default), the function corrects
+#'  some incoherences (e.g. timewindow of length 1 is transformed in length 2)
+#'  and returns the corrected list as output; if false, only checking is 
+#'  performed, and the output is NULL if no errors occur.
+#' @return In case of errors, depending on `type` argument, output can be 
+#'  a vector of errors (if `type = "string"`), 
+#'  the first error occurred (if `type = "error"`)
+#'  or a set of warnings (if `type = "warning"`). 
+#'  If no errors occur, output is the corrected parameter list if 
+#'  `correct = TRUE` or NULL otherwise.
 #'  
 #' @importFrom jsonlite fromJSON
 #' @importFrom methods is
@@ -14,7 +20,7 @@
 #' @note License: GPL 3.0
 
 
-check_param_list <- function(pm, type = "string") {
+check_param_list <- function(pm, type = "string", correct = TRUE) {
   
   # check the output type
   
@@ -74,6 +80,8 @@ check_param_list <- function(pm, type = "string") {
   
   
   # WIP 
+  
+  return(pm)
   
   
 }

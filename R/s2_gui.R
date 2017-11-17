@@ -1909,7 +1909,7 @@ s2_gui <- function(param_list = NULL,
     # functions to check that all is correctly set TODO
     # return TRUE if check passes, FALSE if errors occur
     check_param <- function(param_list) {
-      error_list <- check_param_list(param_list, type = "string")
+      error_list <- check_param_list(param_list, type = "string", correct = FALSE)
       if (!is.null(error_list)) {
         # if errors occur:
         # build modal dialog

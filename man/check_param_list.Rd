@@ -13,7 +13,7 @@ check_param_list(pm, type = "string")
 Depending on \code{type} argument, output can be a vector of errors
 (if \code{type = "string"}), the first error occurred (if \code{type = "error"})
 or a set of warnings (if \code{type = "warning"}). If no errors occur,
-output is NULL.
+output is the corrected parameter list.
 }
 \description{
 Check that the parameter list (or JSON parameter file)
