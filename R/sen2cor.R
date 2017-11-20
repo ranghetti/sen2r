@@ -52,7 +52,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, n
   if (length(binpaths$sen2cor)==0) {
     print_message(
       type="waiting",
-      "s2download was not found in your system; press ENTER to install, ESC to escape."
+      "sen2cor was not found in your system; press ENTER to install, ESC to escape."
     )
     install_sen2cor() %>% suppressMessages()
     binpaths <- jsonlite::fromJSON(binpaths_file)

@@ -95,13 +95,12 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
           unzip   = "internal") %>%
       suppressWarnings()
     unlink(sen2cor_installer)
-    sen2cor_bin <- file.path(sen2cor_dir, "bin", "L2A_Process.bat")
+    sen2cor_bin <- file.path(sen2cor_dir, "bin", "Sen2Cor-2.4.0-win64", "L2A_Process.bat")
   }
 
   # Save a text file with the L2A_Process path,
   # including also paths of GDAL apps
-  binpaths$sen2cor <- sen2cor_bin
-  binpaths <- lapply(binpaths, normalizePath)
+  binpaths$sen2cor <- normalizePath(sen2cor_bin)
   writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
   
 }

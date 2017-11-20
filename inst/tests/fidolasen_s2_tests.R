@@ -76,9 +76,9 @@ testthat::test_that(
       path_out = out_dir
     )
     
-    ### Test 3: create spectral indices from an existing output
+    ### Test 3: create spectral indices
     context("Test 3: spectral indices")
-    out_dir <- file.path(example_dir, "out", "out_test2")
+    out_dir <- file.path(example_dir, "out", "out_test3")
     dir.create(out_dir, showWarnings = FALSE)
     fidolasen_s2(
       gui = FALSE,
@@ -89,29 +89,14 @@ testthat::test_that(
       extent_as_mask = TRUE,
       timewindow = as.Date("2017-07-03"),
       list_indices = c("NDVI","MSAVI","MCARI","NDRE"),
-      mask_type = "cloud_medium_proba",
+      mask_type = NA,
       path_l1c = safe_dir,
       path_l2a = safe_dir,
       path_out = out_dir,
       path_indices = out_dir
     )
     
-    ### Test 4: download
-    context("Test 4: download SAFE tiles")
-    fidolasen_s2(
-      gui = FALSE,
-      online = TRUE,
-      preprocess = FALSE,
-      s2_levels = "l1c",
-      step_atmcorr = "no",
-      s2tiles_selected = c("32TNR","32TNS"),
-      s2orbits_selected = "022",
-      timewindow = as.Date(c("2016-12-05","2016-12-15")),
-      path_l1c = safe_dir,
-      path_l2a = safe_dir
-    )
-    
-    ### Test 4: download
+    ### Test 4: download (only windows)
     context("Test 4: download SAFE tiles")
     fidolasen_s2(
       gui = FALSE,

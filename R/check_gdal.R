@@ -113,11 +113,21 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
   binpaths$gdalbuildvrt <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdalbuildvrt")))
   binpaths$gdal_translate <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdal_translate")))
   binpaths$gdalwarp <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdalwarp")))
-  binpaths$gdal_calc.py <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdal_calc.py")))
+  binpaths$gdal_calc <- if (Sys.info()["sysname"] == "Windows") {
+    binpaths$python <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("python")))
+    paste0(binpaths$python," ",getOption("gdalUtils_gdalPath")[[1]]$path,"gdal_calc.py")
+  } else { 
+    file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdal_calc.py")))
+  }
   binpaths$gdalinfo <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdalinfo")))
   binpaths$ogrinfo <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("ogrinfo")))
   
-  binpaths <- lapply(binpaths, normalizePath)
+  lapply(
+    c("gdalbuildvrt","gdal_translate","gdalwarp","gdalinfo","ogrinfo"), 
+    function(x){
+      binpaths[[x]] <- normalizePath(binpaths[[x]])
+    }
+  )
   writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
   
   print_message(

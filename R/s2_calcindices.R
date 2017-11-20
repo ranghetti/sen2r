@@ -199,7 +199,7 @@ s2_calcindices <- function(infiles,
         # apply gdal_calc
         system(
          paste0(
-           binpaths$gdal_calc.py," ",
+           binpaths$gdal_calc," ",
            paste(apply(gdal_bands,1,function(l){
              paste0("-",l["letter"]," \"",sel_infile,"\" --",l["letter"],"_band=",which(gdal_bands$letter==l["letter"]))
            }), collapse=" ")," ",

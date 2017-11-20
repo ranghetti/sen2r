@@ -100,8 +100,7 @@ install_s2download <- function(inst_path=NA) {
   } else {
     list("s2download" = NULL)
   }
-  binpaths$s2download <- inst_path
-  binpaths <- lapply(binpaths, normalizePath)
+  binpaths$s2download <- normalizePath(inst_path)
   writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
 
 }
