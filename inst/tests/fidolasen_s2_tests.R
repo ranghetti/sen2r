@@ -96,7 +96,7 @@ testthat::test_that(
       path_indices = out_dir
     )
     
-    ### Test 4: download (only windows)
+    ### Test 4: download (not working on windows)
     context("Test 4: download SAFE tiles")
     fidolasen_s2(
       gui = FALSE,
