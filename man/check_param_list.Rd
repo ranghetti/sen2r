@@ -7,6 +7,8 @@
 check_param_list(pm, type = "string", correct = TRUE)
 }
 \arguments{
+\item{pm}{List of parameters or path of a JSON parameter file.}
+
 \item{type}{Type of the output (see \link{print_message} for details).}
 
 \item{correct}{Logical: if TRUE (default), the function corrects

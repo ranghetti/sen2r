@@ -2,6 +2,7 @@
 #' @description Check that the parameter list (or JSON parameter file)
 #'  is in the correct format, and then speficied values are coherent with 
 #'  parameters.
+#' @param pm List of parameters or path of a JSON parameter file.
 #' @param type Type of the output (see [print_message] for details).
 #' @param correct Logical: if TRUE (default), the function corrects
 #'  some incoherences (e.g. timewindow of length 1 is transformed in length 2)
