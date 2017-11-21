@@ -95,7 +95,7 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
           unzip   = "internal") %>%
       suppressWarnings()
     unlink(sen2cor_installer)
-    sen2cor_bin <- file.path(sen2cor_dir, "bin", "Sen2Cor-2.4.0-win64", "L2A_Process.bat")
+    sen2cor_bin <- system.file("sen2cor", paste0("Sen2Cor-",sen2cor_version,"-win64"), "L2A_Process.bat", package="fidolasen")
   }
 
   # Save a text file with the L2A_Process path,
