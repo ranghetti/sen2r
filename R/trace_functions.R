@@ -43,7 +43,8 @@
 start_trace <- function(trace_files, trace_funname) {
   
   # path in which trace txt files are placed
-  trace_path <- system.file("logs",package="fidolasen")
+  trace_path <- file.path(system.file(package="fidolasen"),"logs") 
+  dir.create(trace_path, showWarnings = FALSE) 
   
   # define name of the tracelog
   tracename <- file.path(
