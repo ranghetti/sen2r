@@ -128,9 +128,6 @@ gdal_warp <- function(srcfiles,
                       overwrite = FALSE,
                       ...) {
 
-  # import python modules
-  gdal <- import("osgeo",convert=FALSE)$gdal
-
   # check consistency between inputs and outputs
   if (length(srcfiles) != length(dstfiles)) {
     print_message(
