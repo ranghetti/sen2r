@@ -226,7 +226,7 @@ s2_merge <- function(infiles,
                       ref = ref_file,
                       of = "VRT",
                       r = "near")
-        gdal_abs2rel(reproj_vrt)
+        if (vrt_rel_paths) {gdal_abs2rel(reproj_vrt)}
 
         # replace input file path with intermediate
         sel_infiles[sel_diffcrs][i] <- reproj_vrt
@@ -257,7 +257,7 @@ s2_merge <- function(infiles,
           "\"",file.path(out_subdir,sel_outfile),"\" "),
         intern = Sys.info()["sysname"] == "Windows"
       )
-      if (sel_outformat=="VRT") {
+      if (sel_outformat=="VRT" & vrt_rel_paths) {
         gdal_abs2rel(file.path(out_subdir,sel_outfile))
       }
 
