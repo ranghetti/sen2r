@@ -1846,35 +1846,8 @@
       "s2_formula": "(band_3-band_11)/(band_3+band_11)",
       "checked": true,
       "s2_formula_mathml": ""
-    },
-    {
-      "n_index": 300,
-      "longname": "Normalized Difference Flood Index B1B7",
-      "name": "NDFI",
-      "link": "https://doi.org/10.1371/journal.pone.0088741",
-      "s2_formula": "(band_4-band_12)/(band_4+band_12)",
-      "checked": true,
-      "s2_formula_mathml": ""
-    },
-    {
-      "n_index": 300,
-      "longname": "Normalized Difference Flood Index B1B6",
-      "name": "NDFI2",
-      "link": "https://doi.org/10.1371/journal.pone.0088741",
-      "s2_formula": "(band_4-band_11)/(band_4+band_11)",
-      "checked": true,
-      "s2_formula_mathml": ""
-    },
-    {
-      "n_index": 300,
-      "longname": "Normalize Difference Snow Index",
-      "name": "NDSI",
-      "link": "https://doi.org/10.1007/978-90-481-2642-2_376",
-      "s2_formula": "(band_3-band_11)/(band_3+band_11)",
-      "checked": true,
-      "s2_formula_mathml": ""
     }
   ],
   "fidolasen_version": ["0.3.0"],
-  "creation_date": ["2017-11-21 16:30:57"]
+  "creation_date": ["2017-11-21 16:36:22"]
 }
