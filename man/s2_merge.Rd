@@ -5,7 +5,8 @@
 \title{Merge S2 tiles with the same date and orbit}
 \usage{
 s2_merge(infiles, outdir = ".", subdirs = NA, tmpdir = NA, format = NA,
-  compress = "DEFLATE", out_crs = "", overwrite = FALSE)
+  compress = "DEFLATE", vrt_rel_paths = NA, out_crs = "",
+  overwrite = FALSE)
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths
@@ -35,6 +36,11 @@ format recognised by GDAL). Default is to maintain each input format.}
 
 \item{compress}{(optional) In the case a GTiff format is
 present, the compression indicated with this parameter is used.}
+
+\item{vrt_rel_paths}{(optional) Logical: if TRUE (default on Linux),
+the paths present in the VRT output file are relative to the VRT position;
+if FALSE (default on Windows), they are absolute.
+This takes effect only with \code{format = "VRT"}.}
 
 \item{out_crs}{(optional) proj4string (character) of the output CRS
 (default: the CRS of the first input file). The tiles with CRS different

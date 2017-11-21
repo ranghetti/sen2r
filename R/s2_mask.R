@@ -57,7 +57,7 @@
 #' @importFrom parallel detectCores makeCluster stopCluster
 #' @importFrom foreach foreach "%do%" "%dopar%"
 #' @importFrom raster stack brick calc dataType mask NAvalue overlay
-#'   beginCluster endCluster
+#'   beginCluster endCluster clusterR
 #' @importFrom jsonlite fromJSON
 #' @import data.table
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}

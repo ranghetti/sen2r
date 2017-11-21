@@ -23,9 +23,13 @@ knitr::opts_chunk$set(
 # fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images
 
 ## Warning
-This package is under construction: for now only the functions documented in the [function references](reference/index.html) are working. 
+This package is under construction (current version is [pre-release 0.3.0](https://github.com/ranghetti/fidolasen/releases/tag/0.3.0)):
+currently only the main processing chain for Sentinel-2 data was implemented.
+Please refer to the [crontab of release 0.4.0](https://github.com/ranghetti/fidolasen/milestone/3)
+to know which implementations will be performed regarding Sentinel-2 data.
+The implementation of the processing chaing over Landsat data is scheduled for the 
+[release 0.5.0](https://github.com/ranghetti/fidolasen/milestone/2).
 
-Current version is pre-release 0.3.0 (see [release details](https://github.com/ranghetti/fidolasen/releases/tag/0.3.0)).
 
 
 ## Installation
@@ -38,14 +42,23 @@ devtools::install_github("ranghetti/fidolasen")
 ```
 
 This will install the R package, containing all the functions necessary to preprocess data. 
-To download Sentinel-2 images and perform atmospheric correction with
-[sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor),
-the package makes use of a set of Python functions ([s2download](https://github.com/ranghetti/s2download)).
-To import these scripts, run R function 
+
+To download Sentinel-2 images the package makes use of a set of Python functions 
+([s2download](https://github.com/ranghetti/s2download)), which works only over
+Linux systems. Download will be possible over Windows in a future release.
+These scripts are imported the first time hey are used (alternatively, launch the function
 [`s2_download()`](reference/install_s2download.md)
-included in the package. 
+included in the package). 
+
+Atmospheric correction is performed using [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor):
+the package will automatically download and install it at first use,
+or by running function [`install_sen2cor()`](reference/install_sen2cor.md).
 Please notice that the use of sen2cor algorythm was not yet possible under MAC.
 
+Preprocessing functions make use of [GDAL](http://www.gdal.org), which must 
+support JPEG2000 format. On Windows, it is strongly recommended to install it 
+using the [OSGeo4W installer](http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe)
+in advanced mode, and checking the installation of `openjpeg` library.
 
 ## Usage
 

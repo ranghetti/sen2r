@@ -15,8 +15,8 @@ and FALSE is returned.}
 installed (default is FALSE).}
 }
 \value{
-Logical: TRUE in case the installation is ok, FALSE if GDAL
-is missing and abort=FALSE (otherwise, the function stops).
+Logical (invisible): TRUE in case the installation is ok, FALSE
+if GDAL is missing and abort=FALSE (otherwise, the function stops).
 }
 \description{
 The function check that GDAL is installed and updated to

@@ -75,8 +75,7 @@
 <div id="warning" class="section level2">
 <h2 class="hasAnchor">
 <a href="#warning" class="anchor"></a>Warning</h2>
-<p>This package is under construction: for now only the functions documented in the <a href="reference/index.html">function references</a> are working.</p>
-<p>Current version is pre-release 0.3.0 (see <a href="https://github.com/ranghetti/fidolasen/releases/tag/0.3.0">release details</a>).</p>
+<p>This package is under construction (current version is <a href="https://github.com/ranghetti/fidolasen/releases/tag/0.3.0">pre-release 0.3.0</a>): currently only the main processing chain for Sentinel-2 data was implemented. Please refer to the <a href="https://github.com/ranghetti/fidolasen/milestone/3">crontab of release 0.4.0</a> to know which implementations will be performed regarding Sentinel-2 data. The implementation of the processing chaing over Landsat data is scheduled for the <a href="https://github.com/ranghetti/fidolasen/milestone/2">release 0.5.0</a>.</p>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
@@ -84,7 +83,10 @@
 <p>You can install <strong>fidolasen</strong> from GitHub with:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
 devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"ranghetti/fidolasen"</span>)</code></pre></div>
-<p>This will install the R package, containing all the functions necessary to preprocess data. To download Sentinel-2 images and perform atmospheric correction with <a href="http://step.esa.int/main/third-party-plugins-2/sen2cor">sen2cor</a>, the package makes use of a set of Python functions (<a href="https://github.com/ranghetti/s2download">s2download</a>). To import these scripts, run R function <a href="reference/install_s2download.md"><code>s2_download()</code></a> included in the package. Please notice that the use of sen2cor algorythm was not yet possible under MAC.</p>
+<p>This will install the R package, containing all the functions necessary to preprocess data.</p>
+<p>To download Sentinel-2 images the package makes use of a set of Python functions (<a href="https://github.com/ranghetti/s2download">s2download</a>), which works only over Linux systems. Download will be possible over Windows in a future release. These scripts are imported the first time hey are used (alternatively, launch the function <a href="reference/install_s2download.md"><code>s2_download()</code></a> included in the package).</p>
+<p>Atmospheric correction is performed using <a href="http://step.esa.int/main/third-party-plugins-2/sen2cor">sen2cor</a>: the package will automatically download and install it at first use, or by running function <a href="reference/install_sen2cor.md"><code>install_sen2cor()</code></a>. Please notice that the use of sen2cor algorythm was not yet possible under MAC.</p>
+<p>Preprocessing functions make use of <a href="http://www.gdal.org">GDAL</a>, which must support JPEG2000 format. On Windows, it is strongly recommended to install it using the <a href="http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe">OSGeo4W installer</a> in advanced mode, and checking the installation of <code>openjpeg</code> library.</p>
 </div>
 <div id="usage" class="section level2">
 <h2 class="hasAnchor">

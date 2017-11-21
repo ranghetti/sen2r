@@ -81,6 +81,7 @@ s2_translate <- function(infile,
   if (is.na(vrt_rel_paths)) {
     vrt_rel_paths <- Sys.info()["sysname"] != "Windows"
   }
+  
   # Load GDAL paths
   binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {

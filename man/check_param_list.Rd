@@ -4,16 +4,23 @@
 \alias{check_param_list}
 \title{Check a fidolasen parameter list}
 \usage{
-check_param_list(pm, type = "string")
+check_param_list(pm, type = "string", correct = TRUE)
 }
 \arguments{
 \item{type}{Type of the output (see \link{print_message} for details).}
+
+\item{correct}{Logical: if TRUE (default), the function corrects
+some incoherences (e.g. timewindow of length 1 is transformed in length 2)
+and returns the corrected list as output; if false, only checking is
+performed, and the output is NULL if no errors occur.}
 }
 \value{
-Depending on \code{type} argument, output can be a vector of errors
-(if \code{type = "string"}), the first error occurred (if \code{type = "error"})
-or a set of warnings (if \code{type = "warning"}). If no errors occur,
-output is the corrected parameter list.
+In case of errors, depending on \code{type} argument, output can be
+a vector of errors (if \code{type = "string"}),
+the first error occurred (if \code{type = "error"})
+or a set of warnings (if \code{type = "warning"}).
+If no errors occur, output is the corrected parameter list if
+\code{correct = TRUE} or NULL otherwise.
 }
 \description{
 Check that the parameter list (or JSON parameter file)

@@ -98,7 +98,7 @@ is in the correct format, and then speficied values are coherent with
 parameters.</p>
     
 
-    <pre class="usage"><span class='fu'>check_param_list</span>(<span class='no'>pm</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"string"</span>)</pre>
+    <pre class="usage"><span class='fu'>check_param_list</span>(<span class='no'>pm</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"string"</span>, <span class='kw'>correct</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -107,14 +107,23 @@ parameters.</p>
       <th>type</th>
       <td><p>Type of the output (see print_message for details).</p></td>
     </tr>
+    <tr>
+      <th>correct</th>
+      <td><p>Logical: if TRUE (default), the function corrects
+some incoherences (e.g. timewindow of length 1 is transformed in length 2)
+and returns the corrected list as output; if false, only checking is
+performed, and the output is NULL if no errors occur.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Depending on <code>type</code> argument, output can be a vector of errors
-(if <code>type = "string"</code>), the first error occurred (if <code>type = "error"</code>)
-or a set of warnings (if <code>type = "warning"</code>). If no errors occur,
-output is NULL.</p>
+    <p>In case of errors, depending on <code>type</code> argument, output can be
+a vector of errors (if <code>type = "string"</code>),
+the first error occurred (if <code>type = "error"</code>)
+or a set of warnings (if <code>type = "warning"</code>).
+If no errors occur, output is the corrected parameter list if
+<code>correct = TRUE</code> or NULL otherwise.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
