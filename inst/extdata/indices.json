@@ -832,7 +832,7 @@
     {
       "n_index": 118,
       "longname": "Normalized Difference Salinity Index",
-      "name": "NDSI",
+      "name": "NDSaI",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=57",
       "s2_formula": "(band_11-band_12)/(band_11+band_12)",
       "checked": false,
@@ -1769,7 +1769,7 @@
     {
       "n_index": 244,
       "longname": "Triangular chlorophyll index",
-      "name": "TCIindex",
+      "name": "TCI_idx",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=392",
       "s2_formula": "1.2*(band_5-band_3)-1.5*(band_4-band_3)*sqrt((band_5)/(band_4))",
       "checked": true,
@@ -1837,8 +1837,44 @@
       "s2_formula": "(band_4-band_11)/(band_4+band_11)",
       "checked": true,
       "s2_formula_mathml": ""
+    },
+    {
+      "n_index": 300,
+      "longname": "Normalize Difference Snow Index",
+      "name": "NDSI",
+      "link": "https://doi.org/10.1007/978-90-481-2642-2_376",
+      "s2_formula": "(band_3-band_11)/(band_3+band_11)",
+      "checked": true,
+      "s2_formula_mathml": ""
+    },
+    {
+      "n_index": 300,
+      "longname": "Normalized Difference Flood Index B1B7",
+      "name": "NDFI",
+      "link": "https://doi.org/10.1371/journal.pone.0088741",
+      "s2_formula": "(band_4-band_12)/(band_4+band_12)",
+      "checked": true,
+      "s2_formula_mathml": ""
+    },
+    {
+      "n_index": 300,
+      "longname": "Normalized Difference Flood Index B1B6",
+      "name": "NDFI2",
+      "link": "https://doi.org/10.1371/journal.pone.0088741",
+      "s2_formula": "(band_4-band_11)/(band_4+band_11)",
+      "checked": true,
+      "s2_formula_mathml": ""
+    },
+    {
+      "n_index": 300,
+      "longname": "Normalize Difference Snow Index",
+      "name": "NDSI",
+      "link": "https://doi.org/10.1007/978-90-481-2642-2_376",
+      "s2_formula": "(band_3-band_11)/(band_3+band_11)",
+      "checked": true,
+      "s2_formula_mathml": ""
     }
   ],
-  "fidolasen_version": ["0.2.0"],
-  "creation_date": ["2017-11-15 10:41:25"]
+  "fidolasen_version": ["0.3.0"],
+  "creation_date": ["2017-11-21 16:30:57"]
 }

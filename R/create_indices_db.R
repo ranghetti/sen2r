@@ -181,6 +181,7 @@ create_indices_db <- function(xslt_path = NA,
   s2_table[,s2_formula:=gsub("par\\_([0-9])", "band_\\1", s2_table$s2_formula)] # some bands were wrongly classified as parameters
   s2_table$s2_formula[s2_table$name=="TCI"] <- gsub("band\\_1\\.5","1.5",s2_table[name=="TCI",s2_formula]) # specific error
   s2_table$name[s2_table$name=="TCI"] <- "TCI_idx" # in order not to mess with TCI True Color Image product
+  s2_table$name[s2_table$name=="NDSI"] <- "NDSaI" # in order not to mess with Normalized Difference Snow Index
   
   # rename parameters (A, B, ...)
   s2_table[,s2_formula:=gsub("par\\_([aALyY]r?)", "par_a", s2_table$s2_formula)] # first parameters (a, A, ar, y, Y, L) -> "a"
@@ -261,21 +262,24 @@ create_indices_db <- function(xslt_path = NA,
     n_index = 300,
     longname = c(
       "Normalized Difference Flood Index B1B7",
-      "Normalized Difference Flood Index B1B6"
+      "Normalized Difference Flood Index B1B6",
+      "Normalize Difference Snow Index"
     ),
-    name = c("NDFI","NDFI2"),
+    name = c("NDFI","NDFI2","NDSI"),
     link = c(
       "https://doi.org/10.1371/journal.pone.0088741",
-      "https://doi.org/10.1371/journal.pone.0088741"
+      "https://doi.org/10.1371/journal.pone.0088741",
+      "https://doi.org/10.1007/978-90-481-2642-2_376"
     ),
     s2_formula = c(
       "(band_4-band_12)/(band_4+band_12)",
-      "(band_4-band_11)/(band_4+band_11)"
+      "(band_4-band_11)/(band_4+band_11)",
+      "(band_3-band_11)/(band_3+band_11)"
     ),
-    checked = rep(TRUE,2),
-    a = c(NA,NA),
-    b = c(NA,NA),
-    x = c(NA,NA)
+    checked = rep(TRUE,3),
+    a = c(NA,NA,NA),
+    b = c(NA,NA,NA),
+    x = c(NA,NA,NA)
   )
   s2_table <- rbind(s2_table, s2_table_new, fill=TRUE)
 
