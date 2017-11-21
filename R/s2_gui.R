@@ -274,7 +274,15 @@ s2_gui <- function(param_list = NULL,
                   "online",
                   label = span(
                     "Download mode\u2000",
-                    actionLink("help_online", icon("question-circle"))
+                    actionLink("help_online", icon("question-circle")),
+                    if (Sys.info()["sysname"] == "Windows") {
+                      span(
+                        "\u2000",
+                        actionLink("fix_online", icon("warning"))
+                      )
+                    } else {
+                      
+                    }
                   ),
                   choiceNames = list("Online", "Offline"),
                   choiceValues = list(TRUE, FALSE),
@@ -688,11 +696,18 @@ s2_gui <- function(param_list = NULL,
             title="Atmospheric mask",
             width=6,
             
-            radioButtons("atm_mask", "Mask cloud-covered pixels?",
-                         choices = list("Yes" = TRUE,
-                                        "No" = FALSE),
-                         selected = FALSE,
-                         inline = TRUE),
+            radioButtons(
+              "atm_mask", 
+              label = span(
+                "Mask cloud-covered pixels?\u2000",
+                if (Sys.info()["sysname"] == "Windows") {
+                  actionLink("fix_mask", icon("warning"))
+                }
+              ),
+              choices = list("Yes" = TRUE, "No" = FALSE),
+              selected = FALSE,
+              inline = TRUE
+            ),
             
             conditionalPanel(
               condition = "output.req_l2a_onlytomask == 'TRUE'",
@@ -1057,6 +1072,18 @@ s2_gui <- function(param_list = NULL,
                            selected = FALSE)
       }
     })
+    
+    # disable online mode on Windows
+    observe({
+      if (Sys.info()["sysname"] == "Windows") {
+        disable("online")
+        updateRadioButtons(session, "online",
+                           selected = FALSE)
+      } else {
+        enable("online")
+      }
+    })
+    
     
     # Edit scihub credentials
     observeEvent(input$scihub, {
@@ -1683,6 +1710,18 @@ s2_gui <- function(param_list = NULL,
         footer = NULL
       ))
     })
+
+    observeEvent(input$fix_online, {
+      showModal(modalDialog(
+        title = "Download is not supported on Windows",
+        p(
+          "Currently, finding and downloading SAFE products is possible",
+          "only over Linux systems. This will be fixed in a future release."
+        ),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
     
     observeEvent(input$help_overwrite_safe, {
       showModal(modalDialog(
@@ -1821,6 +1860,20 @@ s2_gui <- function(param_list = NULL,
           "(use only if you are not interested to the absolute values",
           "of the indices, and if the atmospheric disturbance in your area",
           "of interest is sufficiently uniform)."
+        )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+    
+    observeEvent(input$fix_mask, {
+      showModal(modalDialog(
+        title = "Bug masking on Windows",
+        p(HTML(
+          "A bug is known using cloud masks over Windows systems;",
+          "this will be fixed in a future release.",
+          "If you do not observe this error, please report it in",
+          "<a href=\"https://github.com/ranghetti/fidolasen/issues/47\" target=\"_blank\">this page</a>."
         )),
         easyClose = TRUE,
         footer = NULL
