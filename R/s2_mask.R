@@ -74,7 +74,18 @@ s2_mask <- function(infiles,
                     overwrite = FALSE) {
 
   . <- NULL
-
+  
+  # Load GDAL paths
+  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
+  binpaths <- if (file.exists(binpaths_file)) {
+    jsonlite::fromJSON(binpaths_file)
+  } else {
+    list("gdalinfo" = NULL)
+  }
+  if (is.null(binpaths$gdalinfo)) {
+    check_gdal()
+  }
+  
   # Check that files exist
   if (!any(sapply(infiles, file.exists))) {
     print_message(
@@ -195,6 +206,20 @@ s2_mask <- function(infiles,
 
       # load input rasters
       inmask <- raster::stack(sel_maskfiles)
+      
+      # path for bug #47
+      if (Sys.info()["sysname"] == "Windows" & gsub(".*\\.([^\\.]+)$","\\1",sel_infile)=="vrt") {
+        # on Windows, use input physical files
+        system(
+          paste0(
+            binpaths$gdal_translate," -of GTiff ",
+            paste0("-co COMPRESS=",toupper(compress)," "),
+            "\"",sel_infile,"\" ",
+            "\"",gsub("\\.vrt$",".tif",sel_infile),"\""
+          ), intern = TRUE
+        )
+        sel_infile <- gsub("\\.vrt$",".tif",sel_infile)
+      }
       inraster <- raster::brick(sel_infile)
 
       # create global mask
