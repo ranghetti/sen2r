@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 # fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images
 
 ## Warning
-This package is under construction (current version is [pre-release 0.3.0](https://github.com/ranghetti/fidolasen/releases/tag/0.3.0)):
+This package is under construction (current version is [pre-release 0.3.0](https://github.com/ranghetti/fidolasen/releases/tag/v0.3.0)):
 currently only the main processing chain for Sentinel-2 data was implemented.
 Please refer to the [crontab of release 0.4.0](https://github.com/ranghetti/fidolasen/milestone/3)
 to know which implementations will be performed regarding Sentinel-2 data.
