@@ -29,10 +29,10 @@
 #'  format recognised by GDAL). Default value is "VRT" (Virtual Raster).
 #' @param compress (optional) In the case a GTiff format is
 #'  chosen, the compression indicated with this parameter is used.
-#' @param vrt_rel_paths (optional) Logical: if TRUE (default), the paths
-#'  present in the VRT output file are relative to the VRT position;
-#'  if FALSE, they are absolute. This takes effect only with
-#'  `format = "VRT"`.
+#' @param vrt_rel_paths (optional) Logical: if TRUE (default on Linux), 
+#'  the paths present in the VRT output file are relative to the VRT position;
+#'  if FALSE (default on Windows), they are absolute. 
+#'  This takes effect only with `format = "VRT"`.
 #' @param utmzone (optional) UTM zone of output products (default:
 #'  the first one retrieved from input granules). Note that this function
 #'  does not perform reprojections: if no granules refer to the specified
@@ -73,10 +73,14 @@ s2_translate <- function(infile,
                          res="10m",
                          format="VRT",
                          compress="DEFLATE",
-                         vrt_rel_paths="TRUE",
+                         vrt_rel_paths=NA,
                          utmzone="",
                          overwrite = FALSE) {
 
+  # Define vrt_rel_paths
+  if (is.na(vrt_rel_paths)) {
+    vrt_rel_paths <- Sys.info()["sysname"] != "Windows"
+  }
   # Load GDAL paths
   binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {

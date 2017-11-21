@@ -25,6 +25,10 @@
 #'  format recognised by GDAL). Default is to maintain each input format.
 #' @param compress (optional) In the case a GTiff format is
 #'  present, the compression indicated with this parameter is used.
+#' @param vrt_rel_paths (optional) Logical: if TRUE (default on Linux), 
+#'  the paths present in the VRT output file are relative to the VRT position;
+#'  if FALSE (default on Windows), they are absolute. 
+#'  This takes effect only with `format = "VRT"`.
 #' @param out_crs (optional) proj4string (character) of the output CRS
 #'  (default: the CRS of the first input file). The tiles with CRS different
 #'  from `out_crs` will be reprojected (and a warning returned).
@@ -48,9 +52,15 @@ s2_merge <- function(infiles,
                      tmpdir=NA,
                      format=NA,
                      compress="DEFLATE",
+                     vrt_rel_paths=NA,
                      out_crs="",
                      overwrite=FALSE) {
 
+  # Define vrt_rel_paths
+  if (is.na(vrt_rel_paths)) {
+    vrt_rel_paths <- Sys.info()["sysname"] != "Windows"
+  }
+  
   # Check that files exist
   if (!any(sapply(infiles, file.exists))) {
     print_message(
