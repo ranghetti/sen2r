@@ -698,12 +698,7 @@ s2_gui <- function(param_list = NULL,
             
             radioButtons(
               "atm_mask", 
-              label = span(
-                "Mask cloud-covered pixels?\u2000",
-                if (Sys.info()["sysname"] == "Windows") {
-                  actionLink("fix_mask", icon("warning"))
-                }
-              ),
+              label = "Mask cloud-covered pixels?",
               choices = list("Yes" = TRUE, "No" = FALSE),
               selected = FALSE,
               inline = TRUE
@@ -1860,20 +1855,6 @@ s2_gui <- function(param_list = NULL,
           "(use only if you are not interested to the absolute values",
           "of the indices, and if the atmospheric disturbance in your area",
           "of interest is sufficiently uniform)."
-        )),
-        easyClose = TRUE,
-        footer = NULL
-      ))
-    })
-    
-    observeEvent(input$fix_mask, {
-      showModal(modalDialog(
-        title = "Bug masking on Windows",
-        p(HTML(
-          "A bug is known using cloud masks over Windows systems;",
-          "this will be fixed in a future release.",
-          "If you do not observe this error, please report it in",
-          "<a href=\"https://github.com/ranghetti/fidolasen/issues/47\" target=\"_blank\">this page</a>."
         )),
         easyClose = TRUE,
         footer = NULL
