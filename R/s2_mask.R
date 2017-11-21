@@ -139,19 +139,21 @@ s2_mask <- function(infiles,
   ## Cycle on each file
   # if parallel==TRUE, use doParallel
   n_cores <- min(parallel::detectCores()-1, 8) # use at most 8 cores
-  if (parallel==FALSE | Sys.info()["sysname"] == "Windows" | n_cores<=1) {
+  # if (parallel==FALSE | Sys.info()["sysname"] == "Windows" | n_cores<=1) {
+  if (parallel==FALSE | n_cores<=1) {
     `%DO%` <- `%do%`
+    parallel <- FALSE
     n_cores <- 1
   } else {
     `%DO%` <- `%dopar%`
   }
 
   outfiles <- character(0)
-  foreach(i=seq_along(infiles),
-          .combine=c,
-          .export = "mountpoint",
-          .packages=c("raster","reticulate","rgdal","sprawl")) %DO% {
-  # for (i in seq_along(infiles)) {
+  # foreach(i=seq_along(infiles),
+  #         .combine=c,
+  #         .export = "mountpoint",
+  #         .packages=c("raster","reticulate","rgdal","sprawl")) %DO% {
+  for (i in seq_along(infiles)) {
     sel_infile <- infiles[i]
     sel_infile_meta <- c(infiles_meta[i,])
     sel_format <- suppressWarnings(ifelse(
@@ -228,37 +230,55 @@ s2_mask <- function(infiles,
         outmask_res <- outmask
       }
 
-      # # apply mask
-      # # FIXME parallelisation not working
-      # # if (parallel) {raster::beginCluster(n_cores)}
-      # raster::mask(inraster,
-      #              raster::raster(outmask_res),
-      #              filename    = sel_outfile,
-      #              maskvalue   = 0,
-      #              updatevalue = NAvalue(inraster),
-      #              updateNA    = TRUE,
-      #              datatype    = dataType(inraster),
-      #              format      = sel_format,
-      #              options     = ifelse(sel_format == "GTiff",
-      #                                   c(paste0("COMPRESS=",compress)),
-      #                                   ""),
-      #              overwrite   = overwrite)
+      # apply mask
+      # FIXME parallelisation not working
+      # if (parallel) {raster::beginCluster(n_cores)}
 
-      # try with mask_rast
-      sprawl::mask_rast(
-        inraster,
-        raster::raster(outmask_res),
-        out_file   = sel_outfile,
-        mask_value = 0,
-        out_type   = "filename",
-        out_dtype  = convert_rastdtype(dataType(inraster), "raster")$gdal,
-        out_nodata = NAvalue(inraster),
-        compress   = if (sel_format == "GTiff") {compress} else {"None"},
-        overwrite  = overwrite,
-        parallel   = parallel,
-        cores      = n_cores,
-        verbose    = FALSE
-      )
+      if (!parallel) {
+        raster::mask(inraster,
+                     raster::raster(outmask_res),
+                     filename    = sel_outfile,
+                     maskvalue   = 0,
+                     updatevalue = NAvalue(inraster),
+                     updateNA    = TRUE,
+                     datatype    = dataType(inraster),
+                     format      = sel_format,
+                     options     = ifelse(sel_format == "GTiff",
+                                          c(paste0("COMPRESS=",compress)),
+                                          ""),
+                     overwrite   = overwrite)
+      } else {
+        beginCluster(n = n_cores)
+        raster::clusterR(inraster,
+                     fun         = function(x, y) {x*y},
+                     args        = list(y = raster::raster(outmask_res)),
+                     filename    = sel_outfile,
+                     NAflag      = NAvalue(inraster),
+                     datatype    = dataType(inraster),
+                     format      = sel_format,
+                     options     = ifelse(sel_format == "GTiff",
+                                          c(paste0("COMPRESS=",compress)),
+                                          ""),
+                     overwrite   = overwrite)
+        endCluster()
+      }
+      
+
+      # # try with mask_rast
+      # sprawl::mask_rast(
+      #   inraster,
+      #   raster::raster(outmask_res),
+      #   out_file   = sel_outfile,
+      #   mask_value = 0,
+      #   out_type   = "filename",
+      #   out_dtype  = convert_rastdtype(dataType(inraster), "raster")$gdal,
+      #   out_nodata = NAvalue(inraster),
+      #   compress   = if (sel_format == "GTiff") {compress} else {"None"},
+      #   overwrite  = overwrite,
+      #   parallel   = parallel,
+      #   cores      = n_cores,
+      #   verbose    = FALSE
+      # )
       
 
       # fix for envi extension (writeRaster use .envi)
@@ -276,9 +296,9 @@ s2_mask <- function(infiles,
 
   } # end on infiles cycle
 
-  if (parallel==TRUE) {
-    stopCluster(cl)
-  }
+  # if (parallel==TRUE) {
+  #   stopCluster(cl)
+  # }
 
   return(outfiles)
 
