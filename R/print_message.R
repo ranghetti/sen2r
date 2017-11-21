@@ -9,10 +9,13 @@
 #'   the format is defined with the `format` argument; a date is optionally
 #'   placed before the message.
 #' @param ... `R` objects which are concatenated.
-#' @param type Type of the output (accepted values: 'message'
-#'  for a diagnostic message, 'string' for a character output, 'cat' for the
-#'  output of \code{\link[base]{cat}} function, 'error' and 'warning' for an error or
-#'  warning message. Intentionally, no default value is defined.
+#' @param type Type of the output .Accepted values: 
+#'  - 'message' for a diagnostic message;
+#'  - 'string' for a character output;
+#'  - 'cat' for the output of \code{\link[base]{cat}} function;
+#'  - 'error' and 'warning' for an error or warning message. 
+#'  
+#'  Intentionally, no default value is defined.
 #' @param sep (optional) character used to separate input values
 #'  (default is nothing).
 #' @param date Logical value: set TRUE to place the date before the message

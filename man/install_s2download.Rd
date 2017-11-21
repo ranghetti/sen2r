@@ -8,27 +8,14 @@ install_s2download(inst_path = NA)
 }
 \arguments{
 \item{inst_path}{Path where
-\href{https://github.com/ggranga/s2download}{s2download} will be cloned
+\href{https://github.com/ranghetti/s2download}{s2download} will be cloned
 (default: a subdirectory of this package).}
 }
 \description{
-\href{https://github.com/ggranga/s2download}{s2download}
+\href{https://github.com/ranghetti/s2download}{s2download}
 is a collection of python scripts used to download
 and correct Sentinel-2 images, and it is required by this package.
 This function clones them and installs a docker with sen2cor.
-}
-\details{
-The function installs both \href{https://github.com/ggranga/Sentinel-download}{Sentinel-download} (to download
-Sentinel-2 images from SciHub), \href{https://github.com/ggranga/fetchLandsatSentinelFromGoogleCloud}{fetchLandsatSentinelFromGoogleCloud}
-(to download from Google Cloud) and \href{https://github.com/ggranga/sen2cor_docker}{sen2cor_docker} (to run
-sen2cor in a docker which ensure its functionality).
-This last function works only on Linux systems.
-
-\emph{TODO In future this last function will be separated, in order to
-allow the download to run also on Windows.}
-
-Note that first run can be very time consuming, since the docker
-for sen2cor have to be downloaded and built.
 }
 \note{
 License: GPL 3.0

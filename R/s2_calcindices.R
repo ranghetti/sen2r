@@ -50,9 +50,8 @@
 #' @return A vector with the names of the created products.
 #' @export
 #' @importFrom jsonlite fromJSON
-#' @importFrom data.table data.table
+#' @import data.table
 #' @importFrom rgdal GDALinfo
-#' @importFrom reticulate import
 #' @importFrom magrittr "%>%"
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
@@ -70,18 +69,29 @@ s2_calcindices <- function(infiles,
 
   prod_type <- . <- NULL
 
-  # import python modules
-  gdal <- import("osgeo",convert=FALSE)$gdal
-
+  # Load GDAL paths
+  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
+  binpaths <- if (file.exists(binpaths_file)) {
+    jsonlite::fromJSON(binpaths_file)
+  } else {
+    list("gdalinfo" = NULL)
+  }
+  if (is.null(binpaths$gdalinfo)) {
+    check_gdal()
+  }
+  
   # generate indices.json if missing and read it
   create_indices_db()
   indices_db <- list_indices(c("n_index","name","longname","s2_formula","a","b","x"))
 
   # check that the required indices exists
-  if (!any(indices %in% indices_db$name)) {
+  if (!all(indices %in% indices_db$name)) {
     print_message(
       type="error",
-      "The requested index names are not recognisable; please use accepted ",
+      if (!any(indices %in% indices_db$name)) {"The "} else {"Some of the "},
+      "requested index names (\"",
+      paste(indices[!indices %in% indices_db$name], collapse="\", \""),
+      ,"\") are not recognisable; please use accepted ",
       "values. To list accepted index names, type ",
       "'sort(list_indices(\"name\"))'.")
   }
@@ -97,9 +107,10 @@ s2_calcindices <- function(infiles,
   indices_info <- indices_db[match(indices,indices_db$name),]
 
   # check output format
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="fidolasen"))
   if (!is.na(format)) {
-    sel_driver <- gdal$GetDriverByName(format)
-    if (is.null(py_to_r(sel_driver))) {
+    sel_driver <- gdal_formats[gdal_formats$name==format,]
+    if (nrow(sel_driver)==0) {
       print_message(
         type="error",
         "Format \"",format,"\" is not recognised; ",
@@ -131,11 +142,10 @@ s2_calcindices <- function(infiles,
     sel_infile_meta <- c(infiles_meta[i,])
     sel_format <- suppressWarnings(ifelse(
       !is.na(format), format, attr(GDALinfo(sel_infile), "driver")
-    )) %>% ifelse(.!="VRT",.,"GTiff")
-    sel_out_ext <- ifelse(
-      sel_format=="ENVI", "dat",
-      unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(gdal$DMD_EXTENSIONS))," ")," "))[1])
-
+    ))
+    if (sel_format=="VRT") {sel_format <- "GTiff"}
+    sel_out_ext <- gdal_formats[gdal_formats$name==sel_format,"ext"][1]
+    
     # check bands to use
     if (sel_infile_meta$prod_type=="TOA") {
       gdal_bands <- data.frame("letter"=LETTERS[1:12],"band"=paste0("band_",1:12))
@@ -187,9 +197,9 @@ s2_calcindices <- function(infiles,
         }
 
         # apply gdal_calc
-       system(
+        system(
          paste0(
-           Sys.which("gdal_calc.py")," ",
+           binpaths$gdal_calc," ",
            paste(apply(gdal_bands,1,function(l){
              paste0("-",l["letter"]," \"",sel_infile,"\" --",l["letter"],"_band=",which(gdal_bands$letter==l["letter"]))
            }), collapse=" ")," ",

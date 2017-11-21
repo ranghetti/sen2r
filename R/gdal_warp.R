@@ -51,7 +51,6 @@
 #' @importFrom sp CRS
 #' @importFrom sf st_transform st_geometry_type st_write st_cast
 #' @importFrom methods as
-#' @importFrom reticulate import py_to_r
 #' @importFrom magrittr "%>%"
 #' @importFrom sprawl cast_vect get_spatype
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
@@ -134,13 +133,21 @@ gdal_warp <- function(srcfiles,
 
   # check consistency between inputs and outputs
   if (length(srcfiles) != length(dstfiles)) {
-    print_message(type="error", "\"srcfiles\" and \"dstfiles\" must be of the same length.")
+    print_message(
+      type="error", 
+      "\"srcfiles\" (\"",
+      paste(srcfiles, collapse="\", \""),
+      "\") and \"dstfiles\" (\"",
+      paste(dstfiles, collapse="\", \""),
+      "\") must be of the same length."
+    )
   }
 
   # check output format
   if (!is.null(of)) {
-    sel_driver <- gdal$GetDriverByName(of)
-    if (is.null(py_to_r(sel_driver))) {
+    gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="fidolasen"))
+    sel_driver <- gdal_formats[gdal_formats$name==of,]
+    if (nrow(sel_driver)==0) {
       print_message(
         type="error",
         "Format \"",of,"\" is not recognised; ",
@@ -180,7 +187,8 @@ gdal_warp <- function(srcfiles,
       mask <- cast_vect(mask,"sfobject")
       if (length(grep("POLYGON",st_geometry_type(mask)))>1) {
         st_write(st_cast(mask, "MULTIPOLYGON"),
-                 mask_file <- paste0(tempfile(),".shp"))
+                 mask_file <- paste0(tempfile(),".shp"),
+                 quiet = TRUE)
       } # if not, mask_polygon is not created
     } else if (mask_type == "rastfile") {
       mask <- get_extent(mask)

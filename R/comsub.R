@@ -12,7 +12,6 @@
 #' @note Modified from a suggestion taken from
 #'  [stackoverflow](https://stackoverflow.com/questions/28273716/r-implementation-for-finding-the-longest-common-starting-substrings-in-a-set-of).
 #' @export
-#' @importFrom reticulate import py_to_r
 #' @importFrom methods is
 #' @importFrom magrittr "%>%"
 #'
@@ -28,11 +27,15 @@ comsub <- function(data, sep="") {
   . <- NULL # to avoid NOTE on check
   data_spl <- strsplit(data,sep)
   data_spl_maxlength <- max(sapply(strsplit(data,sep), length))
-  which_max <- lapply(data_spl, `length<-`, data_spl_maxlength) %>%
-    do.call(rbind,.) %>%
-    apply(2, function(i){!length(unique(i))==1}) %>%
+  which_max <- if (length(unique(data)) > 1) {
+    lapply(data_spl, `length<-`, data_spl_maxlength) %>%
+      do.call(rbind,.) %>%
+      apply(2, function(i){!length(unique(i))==1}) %>%
     which.max() -1
-  paste(c(data_spl[[1]][1:which_max],""), collapse=sep)
+  } else {
+    length(data_spl[[1]]) - 1 # FIXME ok for dir  with "/", but not with ""
+  }
+  paste(c(data_spl[[1]][seq_len(which_max)],""), collapse=sep)
 }
 
 

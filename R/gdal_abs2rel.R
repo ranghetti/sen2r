@@ -34,7 +34,7 @@ gdal_abs2rel <- function(in_vrt, out_vrt=NA) {
   }
 
   if (!file.exists(in_vrt)) {
-    print_message(type="error", "Input file does not exists.")
+    print_message(type="error", "Input file (\"",in_vrt,"\") does not exists.")
   }
 
   vrt_text <- readLines(in_vrt)
@@ -47,8 +47,8 @@ gdal_abs2rel <- function(in_vrt, out_vrt=NA) {
     rel_path <- suppressWarnings(abs2rel(abs_path, dirname(in_vrt)))
     if (abs_path != rel_path) {
       vrt_text[sel_line] <- vrt_text[sel_line] %>%
-        gsub(abs_path, rel_path, .) %>%
-        gsub("relativeToVRT=\"0\"", "relativeToVRT=\"1\"", .)
+        gsub(abs_path, rel_path, ., fixed=TRUE) %>%
+        gsub("relativeToVRT=\"0\"", "relativeToVRT=\"1\"", ., fixed=TRUE)
     }
   }
   writeLines(vrt_text, out_vrt)
@@ -74,7 +74,7 @@ gdal_rel2abs <- function(in_vrt, out_vrt=NA) {
   }
 
   if (!file.exists(in_vrt)) {
-    print_message(type="error", "Input file does not exists.")
+    print_message(type="error", "Input file (\"",in_vrt,"\") does not exists.")
   }
 
   vrt_text <- readLines(in_vrt)
@@ -86,8 +86,8 @@ gdal_rel2abs <- function(in_vrt, out_vrt=NA) {
     rel_path <- gsub(path_regex, "\\1", vrt_text[sel_line])
     abs_path <- expand_path(rel_path, dirname(in_vrt), normalize=TRUE)
     vrt_text[sel_line] <- vrt_text[sel_line] %>%
-      gsub(rel_path, abs_path, .) %>%
-      gsub("relativeToVRT=\"1\"", "relativeToVRT=\"0\"", .)
+      gsub(rel_path, abs_path, ., fixed=TRUE) %>%
+      gsub("relativeToVRT=\"1\"", "relativeToVRT=\"0\"", ., fixed=TRUE)
   }
 
   writeLines(vrt_text, out_vrt)

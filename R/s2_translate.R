@@ -29,10 +29,10 @@
 #'  format recognised by GDAL). Default value is "VRT" (Virtual Raster).
 #' @param compress (optional) In the case a GTiff format is
 #'  chosen, the compression indicated with this parameter is used.
-#' @param vrt_rel_paths (optional) Logical: if TRUE (default), the paths
-#'  present in the VRT output file are relative to the VRT position;
-#'  if FALSE, they are absolute. This takes effect only with
-#'  `format = "VRT"`.
+#' @param vrt_rel_paths (optional) Logical: if TRUE (default on Linux), 
+#'  the paths present in the VRT output file are relative to the VRT position;
+#'  if FALSE (default on Windows), they are absolute. 
+#'  This takes effect only with `format = "VRT"`.
 #' @param utmzone (optional) UTM zone of output products (default:
 #'  the first one retrieved from input granules). Note that this function
 #'  does not perform reprojections: if no granules refer to the specified
@@ -43,8 +43,8 @@
 #'   (just created or already existing).
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
+#' @importFrom jsonlite fromJSON
 #' @export
-#' @importFrom reticulate import import_builtins py_str py_to_r
 #' @examples \dontrun{
 #' s2_l1c_example <- file.path(
 #'   "/existing/path",
@@ -73,15 +73,26 @@ s2_translate <- function(infile,
                          res="10m",
                          format="VRT",
                          compress="DEFLATE",
-                         vrt_rel_paths="TRUE",
+                         vrt_rel_paths=NA,
                          utmzone="",
                          overwrite = FALSE) {
 
-  # import python modules
-  py <- import_builtins(convert=FALSE)
-  sys <- import("sys",convert=FALSE)
-  gdal <- import("osgeo",convert=FALSE)$gdal
-
+  # Define vrt_rel_paths
+  if (is.na(vrt_rel_paths)) {
+    vrt_rel_paths <- Sys.info()["sysname"] != "Windows"
+  }
+  
+  # Load GDAL paths
+  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
+  binpaths <- if (file.exists(binpaths_file)) {
+    jsonlite::fromJSON(binpaths_file)
+  } else {
+    list("gdalinfo" = NULL)
+  }
+  if (is.null(binpaths$gdalinfo)) {
+    check_gdal()
+  }
+  
   # check res (and use the resolutions >= specified res)
   if (!res %in% c("10m","20m","60m")) {
     print_message(
@@ -96,8 +107,9 @@ s2_translate <- function(infile,
   }
 
   # check output format
-  sel_driver <- gdal$GetDriverByName(format)
-  if (is.null(py_to_r(sel_driver))) {
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="fidolasen"))
+  sel_driver <- gdal_formats[gdal_formats$name==format,]
+  if (nrow(sel_driver)==0) {
     print_message(
       type="error",
       "Format \"",format,"\" is not recognised; ",
@@ -110,7 +122,6 @@ s2_translate <- function(infile,
 
   # Check GDAL installation
   check_gdal(abort=TRUE)
-
   # Retrieve xml required metadata
   infile_meta <- s2_getMetadata(infile, c("xml_main","xml_granules","utm","level","tiles", "jp2list"))
   infile_dir = dirname(infile_meta$xml_main)
@@ -162,12 +173,8 @@ s2_translate <- function(infile,
   }
 
   # define output extension
-  out_ext <- if (format=="ENVI") {
-    "dat"
-  } else {
-    unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(gdal$DMD_EXTENSIONS))," ")," "))[1]
-  }
-
+  out_ext <- sel_driver[1,"ext"]
+  
   # create a file / set of files for each prod_type
   out_names <- character(0) # names of created files
   for (sel_prod in prod_type) {
@@ -232,7 +239,7 @@ s2_translate <- function(infile,
           final_vrt_name <- ifelse(format=="VRT", out_name, paste0(tmpdir,"/",out_prefix,".vrt"))
           system(
             paste0(
-              Sys.which("gdalbuildvrt")," -separate ",
+              binpaths$gdalbuildvrt," -separate ",
               "-resolution highest ",
               "\"",final_vrt_name,"\" ",
               paste(paste0("\"",jp2_selbands,"\""), collapse=" ")
@@ -250,7 +257,7 @@ s2_translate <- function(infile,
         if (format != "VRT" | length(jp2_selbands)==1) {
           system(
             paste0(
-              Sys.which("gdal_translate")," -of ",format," ",
+              binpaths$gdal_translate," -of ",format," ",
               if (format=="GTiff") {paste0("-co COMPRESS=",toupper(compress)," ")},
               if (!is.na(sel_na)) {paste0("-a_nodata ",sel_na," ")},
               "\"",final_vrt_name,"\" ",
@@ -270,8 +277,10 @@ s2_translate <- function(infile,
 
   } # end of prod_type cycle
 
-  print_message(type="message",
-                length(out_names)," output files were correctly created.")
+  print_message(
+    type="message",
+    length(out_names)," output files were correctly created."
+  )
   return(out_names)
 
 }

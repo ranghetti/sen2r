@@ -65,19 +65,49 @@ s2_download <- function(s2_prodlist=NULL,
   }
 
   for (i in 1:length(s2_prodlist)) {
+    
     link <- s2_prodlist[i]
     filename <- names(s2_prodlist[i])
-    s2download$download_s2product(filename=filename,
-                                  link=link,
-                                  downloader=downloader,
-                                  apihub=apihub,
-                                  tile=r_to_py(tile),
-                                  no_download=FALSE,
-                                  write_dir=outdir,
-                                  file_list=NULL)
+    # download archive for compactname products
+    if (s2_getMetadata(filename, "nameinfo")$version=="compact") {
+      py_tile <- r_to_py(NULL)
+      unzip_tile <- TRUE
+    } else {
+      py_tile <- r_to_py(tile)
+      unzip_tile <- FALSE
+    }
+
+    print_message(
+      type = "message",
+      date = TRUE,
+      "Downloading product ",i," of ",length(s2_prodlist),
+      " (",filename,")..."
+    )
+    
+    trace_function(
+      s2download$download_s2product,
+      filename      = filename,
+      link          = link,
+      downloader    = downloader,
+      apihub        = apihub,
+      tile          = py_tile,
+      no_download   = FALSE,
+      write_dir     = outdir,
+      file_list     = NULL,
+      trace_funname = "s2download",
+      trace_files   = file.path(outdir,c(filename,paste0(filename,".zip")))
+    )
+    # s2download$download_s2product(filename=filename,
+    #                               link=link,
+    #                               downloader=downloader,
+    #                               apihub=apihub,
+    #                               tile=py_tile,
+    #                               no_download=FALSE,
+    #                               write_dir=outdir,
+    #                               file_list=NULL)
 
   }
 
-  return(NULL)
-
+  return(invisible(NULL))
+  
 }

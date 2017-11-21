@@ -25,6 +25,10 @@
 #'  format recognised by GDAL). Default is to maintain each input format.
 #' @param compress (optional) In the case a GTiff format is
 #'  present, the compression indicated with this parameter is used.
+#' @param vrt_rel_paths (optional) Logical: if TRUE (default on Linux), 
+#'  the paths present in the VRT output file are relative to the VRT position;
+#'  if FALSE (default on Windows), they are absolute. 
+#'  This takes effect only with `format = "VRT"`.
 #' @param out_crs (optional) proj4string (character) of the output CRS
 #'  (default: the CRS of the first input file). The tiles with CRS different
 #'  from `out_crs` will be reprojected (and a warning returned).
@@ -48,20 +52,34 @@ s2_merge <- function(infiles,
                      tmpdir=NA,
                      format=NA,
                      compress="DEFLATE",
+                     vrt_rel_paths=NA,
                      out_crs="",
                      overwrite=FALSE) {
 
+  # Define vrt_rel_paths
+  if (is.na(vrt_rel_paths)) {
+    vrt_rel_paths <- Sys.info()["sysname"] != "Windows"
+  }
+  
   # Check that files exist
   if (!any(sapply(infiles, file.exists))) {
     print_message(
       type="error",
-      "The input files do not exists locally; please check file names and paths.")
-  } else if (!all(sapply(infiles, file.exists))) {
-    print_message(
-      type="error",
-      "Some of the input files (\"",
+      if (!all(sapply(infiles, file.exists))) {"The "} else {"Some of the "},
+      "input files (\"",
       paste(infiles[!sapply(infiles, file.exists)], collapse="\", \""),
       "\") do not exists locally; please check file names and paths.")
+  }
+  
+  # Load GDAL paths
+  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
+  binpaths <- if (file.exists(binpaths_file)) {
+    jsonlite::fromJSON(binpaths_file)
+  } else {
+    list("gdalinfo" = NULL)
+  }
+  if (is.null(binpaths$gdalinfo)) {
+    check_gdal()
   }
 
   # Get files metadata
@@ -130,7 +148,7 @@ s2_merge <- function(infiles,
     ref_file <- file.path(tmpdir,".ref_grid.vrt")
     system(
       paste0(
-        Sys.which("gdalwarp")," ",
+        binpaths$gdaliwarp," ",
         "-overwrite ",
         "-s_srs \"",infiles_meta[1,"proj4string"],"\" ",
         "-t_srs \"",out_crs,"\" ",
@@ -208,7 +226,7 @@ s2_merge <- function(infiles,
                       ref = ref_file,
                       of = "VRT",
                       r = "near")
-        gdal_abs2rel(reproj_vrt)
+        if (vrt_rel_paths) {gdal_abs2rel(reproj_vrt)}
 
         # replace input file path with intermediate
         sel_infiles[sel_diffcrs][i] <- reproj_vrt
@@ -222,7 +240,7 @@ s2_merge <- function(infiles,
              sel_outfile))
       system(
         paste0(
-          Sys.which("gdalbuildvrt")," ",
+          binpaths$gdalbuildvrt," ",
           "\"",merged_vrt,"\" ",
           paste(paste0("\"",sel_infiles,"\""), collapse=" ")
         ),
@@ -232,14 +250,14 @@ s2_merge <- function(infiles,
       # create output merged file
       system(
         paste0(
-          Sys.which("gdal_translate")," ",
+          binpaths$gdal_translate," ",
           "-of ",sel_outformat," ",
           if (sel_outformat=="GTiff") {paste0("-co COMPRESS=",toupper(compress)," ")},
           "\"",merged_vrt,"\" ",
           "\"",file.path(out_subdir,sel_outfile),"\" "),
         intern = Sys.info()["sysname"] == "Windows"
       )
-      if (sel_outformat=="VRT") {
+      if (sel_outformat=="VRT" & vrt_rel_paths) {
         gdal_abs2rel(file.path(out_subdir,sel_outfile))
       }
 

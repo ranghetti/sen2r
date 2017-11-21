@@ -45,7 +45,14 @@ gdalwarp_grid <- function(srcfiles,
 
   # check consistency between inputs and outputs
   if (length(srcfiles) != length(dstfiles)) {
-    print_message(type="error", "\"srcfiles\" and \"dstfiles\" must be of the same length.")
+    print_message(
+      type="error", 
+      "\"srcfiles\" (\"",
+      paste(srcfiles, collapse="\", \""),
+      "\") and \"dstfiles\" (\"",
+      paste(dstfiles, collapse="\", \""),
+      "\") must be of the same length."
+    )
   }
 
   # check output format

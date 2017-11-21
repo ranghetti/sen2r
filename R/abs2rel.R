@@ -55,7 +55,10 @@ abs2rel <- function(path, ref_path=getwd(), mustWork=NA) {
 
   # if path = ref_path, return with a warning
   if (path == ref_path) {
-    print_message(type="warning", "Input and reference point to the same path.")
+    print_message(
+      type="warning", 
+      "Input (",path,") and reference (",ref_path,") point to the same path."
+    )
     return(".")
   }
 
@@ -67,7 +70,8 @@ abs2rel <- function(path, ref_path=getwd(), mustWork=NA) {
   if (com_path=="") {
     print_message(
       type="warning",
-      "Input and reference paths have not a common parent directory; ",
+      "Input (",path,") and reference (",ref_path,
+      ") paths have not a common parent directory; ",
       "an absolute path is returned.")
     return(path)
   }

@@ -6,7 +6,7 @@
 \usage{
 s2_translate(infile, outdir = ".", subdirs = NA, tmpdir = NA,
   prod_type = NULL, res = "10m", format = "VRT", compress = "DEFLATE",
-  vrt_rel_paths = "TRUE", utmzone = "", overwrite = FALSE)
+  vrt_rel_paths = NA, utmzone = "", overwrite = FALSE)
 }
 \arguments{
 \item{infile}{Full path of the input SAFE folder (alternatively,
@@ -43,10 +43,10 @@ format recognised by GDAL). Default value is "VRT" (Virtual Raster).}
 \item{compress}{(optional) In the case a GTiff format is
 chosen, the compression indicated with this parameter is used.}
 
-\item{vrt_rel_paths}{(optional) Logical: if TRUE (default), the paths
-present in the VRT output file are relative to the VRT position;
-if FALSE, they are absolute. This takes effect only with
-\code{format = "VRT"}.}
+\item{vrt_rel_paths}{(optional) Logical: if TRUE (default on Linux),
+the paths present in the VRT output file are relative to the VRT position;
+if FALSE (default on Windows), they are absolute.
+This takes effect only with \code{format = "VRT"}.}
 
 \item{utmzone}{(optional) UTM zone of output products (default:
 the first one retrieved from input granules). Note that this function

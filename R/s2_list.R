@@ -1,7 +1,7 @@
 #' @title Retrieve list of available products.
 #' @description The function retrieves the list of available Sentinel-2
 #'  products basing on search criteria. It makes use of
-#'  [s2download](https://github.com/ggranga/s2download)
+#'  [s2download](https://github.com/ranghetti/s2download)
 #'  python function only to retrieve the list of files, without
 #'  downloading and correcting them.
 #' @param spatial_extent A valid spatial object managed by [sprawl::get_extent]
@@ -26,9 +26,10 @@
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @export
-#' @importFrom reticulate import py_to_r r_to_py
+#' @importFrom reticulate py_to_r r_to_py
 #' @importFrom sprawl get_extent reproj_extent
 #' @importFrom magrittr "%>%"
+#' @importFrom sf st_read st_centroid st_polygon
 #'
 #' @examples \dontrun{
 #' pos <- sp::SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=sp::CRS("+init=epsg:4326"))
@@ -43,9 +44,57 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
                     apihub=NULL,
                     max_cloud=110) {
 
+  # check if spatial_extent was provided
+  spatial_extent_exists <- if (!exists("spatial_extent")) {
+    FALSE
+  } else if (is.null(spatial_extent)) {
+    FALSE
+  } else if (any(is.na(spatial_extent))) {
+    FALSE
+  } else if (spatial_extent==st_polygon()) {
+    FALSE
+  } else {
+    TRUE
+  }
+  
+  # if not, retrieve it from tile
+  if (!spatial_extent_exists) {
+    if (is.null(tile)) {
+      print_message(
+        type = "error",
+        "At least one parameter among spatial_extent and tile must be specified."
+      )
+    } else if (any(is.na(tile))) {
+      print_message(
+        type = "error",
+        "At least one parameter among spatial_extent and tile must be specified."
+      )
+    } else {
+      # extract and import tiles kml
+      s2tiles_kmz <- system.file("extdata","vector","s2_tiles.kmz",package="fidolasen")
+      s2tiles_kml <- gsub("\\.kmz$",".kml",s2tiles_kmz)
+      if (!file.exists(s2tiles_kml)) {
+        unzip(zipfile = s2tiles_kmz,
+              files   = basename(s2tiles_kml),
+              exdir   = dirname(s2tiles_kml),
+              unzip   = "internal")
+      }
+      s2tiles <- st_read(s2tiles_kml, stringsAsFactors=FALSE, quiet=TRUE)
+      # take the the selected tiles as extent
+      # (this will result in the selection of more tiles, cause to overlapping 
+      # areas; it is filtered in s2_download, but it is slow: FIXME).
+      # It is not possible to use tile centroids, because tile of external areas
+      # of orbits could not be included).
+      spatial_extent <- suppressWarnings(
+        s2tiles[s2tiles$Name %in% tile,] #%>%
+          # sf::st_centroid()
+      )
+    }
+  }
+
   # checks on inputs
   spatext <- get_extent(spatial_extent) %>%
-    reproj_extent("+init=epsg:4326")
+    reproj_extent("+init=epsg:4326", verbose=FALSE)
 
   # pass lat,lon if the bounding box is a point or line; latmin,latmax,lonmin,lonmax if it is a rectangle
   if (spatext@extent["xmin"]==spatext@extent["xmax"] | spatext@extent["ymin"]==spatext@extent["ymax"]) {
@@ -84,7 +133,10 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
     apihub <- file.path(s2download$inst_path,"apihub.txt")
   }
   if (!file.exists(apihub)) {
-    print_message(type="error","File apihub.txt with the SciHub credentials is missing.") # TODO build it
+    print_message(
+      type="error",
+      "File apihub.txt with the SciHub credentials is missing."
+    ) # TODO build it
   }
 
   # set corr_type
@@ -97,6 +149,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
 
   # run the research of the list of products
   av_prod_tuple <- lapply(orbit, function(o) {
+    
     s2download$s2_download(
       lat=lat, lon=lon, latmin=latmin, latmax=latmax, lonmin=lonmin, lonmax=lonmax,
       start_date=time_interval[1], end_date=time_interval[2],
@@ -105,11 +158,29 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
       apihub=apihub,
       max_cloud=max_cloud,
       list_only=TRUE,
+      max_records=0, # TODO this is possible after an addition in Sentinel-download python script:
+      # cycle on product requests (one per 100 products) is interrupted after
+      # the first request of length 0.
       corr_type=corr_type)
   })
 
   av_prod_list <- unlist(lapply(av_prod_tuple, function(x) {py_to_r(x)[[1]]}))
   names(av_prod_list) <- unlist(lapply(av_prod_tuple, function(x) {py_to_r(x)[[2]]}))
+  
+  # filter on tiles
+  # (filtering within python code does not take effect with list_only=TRUE)
+  # The filter is applied only on compactname products
+  # (using fidolasen_s2(), a complete filter on tiles is applied after downloading the product;
+  # however, s2_download() would correctly download only required tiles)
+  
+  if (!is.null(tile) & !is.null(av_prod_list)) {
+    av_prod_tiles <- lapply(names(av_prod_list), function(x) {
+      s2_getMetadata(x, info="nameinfo")$id_tile %>%
+        ifelse(is.null(.), NA, .) 
+    }) %>%
+      unlist()
+    av_prod_list <- av_prod_list[av_prod_tiles %in% tile | is.na(av_prod_tiles)]
+  }
 
   return(av_prod_list)
 

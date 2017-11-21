@@ -6,7 +6,7 @@
     -   [Credits](#credits)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![Travis-CI Build Status](https://travis-ci.org/ggranga/fidolasen.svg?branch=master)](https://travis-ci.org/ggranga/fidolasen) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/fidolasen)](https://cran.r-project.org/package=fidolasen) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
+[![Travis-CI Build Status](https://travis-ci.org/ranghetti/fidolasen.svg?branch=master)](https://travis-ci.org/ranghetti/fidolasen) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/fidolasen)](https://cran.r-project.org/package=fidolasen) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
 fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images
 ====================================================================
@@ -14,9 +14,8 @@ fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images
 Warning
 -------
 
-This package is under construction: for now only the functions documented in the [function references](reference/index.html) are working.
+This package is under construction (current version is [pre-release 0.3.0](https://github.com/ranghetti/fidolasen/releases/tag/0.3.0)): currently only the main processing chain for Sentinel-2 data was implemented. Please refer to the [crontab of release 0.4.0](https://github.com/ranghetti/fidolasen/milestone/3) to know which implementations will be performed regarding Sentinel-2 data. The implementation of the processing chaing over Landsat data is scheduled for the [release 0.5.0](https://github.com/ranghetti/fidolasen/milestone/2).
 
-<!--Current version is pre-release 0.2.0 (see [release details](https://github.com/ggranga/fidolasen/releases/tag/0.2.0)).-->
 Installation
 ------------
 
@@ -24,10 +23,16 @@ You can install **fidolasen** from GitHub with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("ggranga/fidolasen")
+devtools::install_github("ranghetti/fidolasen")
 ```
 
-This will install the R package, containing all the functions necessary to preprocess data. To download Sentinel-2 images and perform atmospheric correction with [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor), the package makes use of a set of Python functions ([s2download](https://github.com/ggranga/s2download)). To import these scripts, run R function [`s2_download()`](reference/install_s2download.md) included in the package. Please notice that the use of sen2cor algorythm for now is possible only under Linux systems, and the installation of the docker (necessary to run it) requires some time and a consistent amount of disk space.
+This will install the R package, containing all the functions necessary to preprocess data.
+
+To download Sentinel-2 images the package makes use of a set of Python functions ([s2download](https://github.com/ranghetti/s2download)), which works only over Linux systems. Download will be possible over Windows in a future release. These scripts are imported the first time hey are used (alternatively, launch the function [`s2_download()`](reference/install_s2download.md) included in the package).
+
+Atmospheric correction is performed using [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor): the package will automatically download and install it at first use, or by running function [`install_sen2cor()`](reference/install_sen2cor.md). Please notice that the use of sen2cor algorythm was not yet possible under MAC.
+
+Preprocessing functions make use of [GDAL](http://www.gdal.org), which must support JPEG2000 format. On Windows, it is strongly recommended to install it using the [OSGeo4W installer](http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe) in advanced mode, and checking the installation of `openjpeg` library.
 
 Usage
 -----
@@ -38,9 +43,9 @@ Alternatively, [`fidolasen_s2()`](reference/fidolasen_s2.md) can be launched wit
 
 Other specific functions can be used to run single steps separately:
 
--   [`s2_list`](reference/s2_list.md) to retrieve the list of available Sentinel-2 products basing on input parameters;
+-   [`s2_list()`](reference/s2_list.md) to retrieve the list of available Sentinel-2 products basing on input parameters;
 -   [`s2_download()`](reference/s2_download.md) to download Sentinel-2 products;
--   [`s2_sen2cor()`](reference/s2_sen2cor.html) to correct level-1C products using [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor);
+-   [`sen2cor()`](reference/sen2cor.html) to correct level-1C products using [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor);
 -   [`s2_translate()`](reference/s2_translate.md) to convert Sentinel-2 products from SAFE format to a format managed by GDAL;
 -   [`s2_merge()`](reference/s2_merge.md) to merge Sentinel-2 tiles which have the same date and orbit;
 -   [`gdal_warp()`](reference/gdal_warp.md) to clip, reproject and warp raster files (this is a wrapper to call [gdal\_translate](http://www.gdal.org/gdal_translate.html) or [gdalwarp](http://www.gdal.org/gdalwarp.html) basing on input parameters);

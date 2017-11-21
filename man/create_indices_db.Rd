@@ -21,7 +21,7 @@ place for external use.}
 if missing or not updated; if TRUE, it is created in any case..}
 }
 \description{
-The internal function checks if idices.json (the
+The internal function checks if indices.json (the
 database of spectral indices) already exists; if not, it
 downloads source files and creates it.
 Since this function depends on xsltproc executable (available

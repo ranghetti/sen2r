@@ -13,7 +13,8 @@ fidolasen_s2(param_list = NULL, gui = NA, preprocess = NA,
   res = NA, res_s2 = NA, unit = NA, proj = NA, resampling = NA,
   resampling_scl = NA, outformat = NA, compression = NA, overwrite = NA,
   path_l1c = NA, path_l2a = NA, path_tiles = NA, path_merged = NA,
-  path_out = NA, path_indices = NA, path_subdirs = NA)
+  path_out = NA, path_indices = NA, path_subdirs = NA,
+  use_python = TRUE)
 }
 \arguments{
 \item{param_list}{(optional) List of input parameters:
@@ -41,6 +42,8 @@ and atmospheric correction).}
 
 \item{s2_levels}{(optional) Character vector of length 1 or 2, with
 Sentinel-2 levels required for processing steps or as output.
+This parameter is used only if \code{preprocess = FALSE} (otherwise, the
+required levels are derived from \code{list_prods}).
 Accepted values: "l1c" and "l2a"; default: "l2a".}
 
 \item{sel_sensor}{(optional) Character vector of length 1 or 2, with
@@ -92,8 +95,9 @@ window are used (i.e., with a time window from 2015-06-01 to
 to 2016-08-31 and 2017-06-01 to 2017-08-31 are considered).
 }}
 
-\item{extent}{(optional) Spatial extent on which to clip products, in
-geojson format. Default is NA for offline mode (meaning no extent:
+\item{extent}{(optional) Spatial extent on which to clip products (it can
+be both the path of a vector file or a geoJSON).
+Default is NA for offline mode (meaning no extent:
 all found tiles are entirely used); in online mode, a sample extent is used.}
 
 \item{s2tiles_selected}{(optional) Character vector with the Sentinel-2
@@ -194,6 +198,15 @@ If not provided (default), \code{path_out} is used.}
 for each output product or spectral index is generated within
 \code{path_tiles}, \code{path_merged}, \code{path_out} and \code{path_indices}; if FALSE,
 products are put directly within them.}
+
+\item{use_python}{(optional) Logical: if TRUE (default), the presence of
+python in the system is checked before running the function;
+if FALSE, this is skipped. Setting this to FALSE can bge useful on
+systems with problems with python, when [fidolasen_s2)] is intended
+to be used only for processing existing SAFE files (python is required
+in any case to download SAFE).
+
+[fidolasen_s2)]: R:fidolasen_s2)}
 }
 \description{
 The function is a wrapper to perform the entire
