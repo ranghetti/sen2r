@@ -7,8 +7,8 @@
 #'  and FALSE is returned.
 #' @param force (optional) Logical: if TRUE, install even if it is already 
 #'  installed (default is FALSE).
-#' @return Logical: TRUE in case the installation is ok, FALSE if GDAL
-#'  is missing and abort=FALSE (otherwise, the function stops).
+#' @return Logical (invisible): TRUE in case the installation is ok, FALSE 
+#'  if GDAL is missing and abort=FALSE (otherwise, the function stops).
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
@@ -43,11 +43,11 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
     list("gdalinfo" = NULL)
   }
   if (force != TRUE & !is.null(binpaths$gdalinfo)) {
-    print_message(
-      type = "message",
-      "GDAL is already set; to reconfigure it, set force = TRUE."
-    )
-    return(TRUE)
+    # print_message(
+    #   type = "message",
+    #   "GDAL is already set; to reconfigure it, set force = TRUE."
+    # )
+    return(invisible(TRUE))
   }
   
   # If GDAL is not found, search for it
@@ -79,7 +79,7 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
       type=message_type,
       "GDAL was not found, please install it."
     )
-    return(FALSE)
+    return(invisible(FALSE))
   }
     
   # set message method
@@ -93,7 +93,7 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
     print_message(
       type=message_type,
       "GDAL version must be at least ", gdal_minversion, ". Please update it.")
-    return(FALSE)
+    return(invisible(FALSE))
   }
 
   # check requisites (JP2 support)
@@ -103,7 +103,7 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
       type=message_type,
       "Your local GDAL installation does not support JPEG2000 (JP2OpenJPEG) format. ",
       "Please install JP2OpenJPEG support and recompile GDAL.")
-    return(FALSE)
+    return(invisible(FALSE))
   }
   
   # set this version to be used with gdalUtils
@@ -133,7 +133,7 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
   print_message(
     type="message",
     "GDAL version in use: ", as.character(gdal_version))
-  return(TRUE)
+  return(invisible(TRUE))
 
 }
 
