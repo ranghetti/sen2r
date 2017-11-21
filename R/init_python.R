@@ -7,7 +7,7 @@
 #' @note License: GPL 3.0
 #' @importFrom reticulate import import_builtins use_python py_module_available py_discover_config
 
-init_python <- function(inst_path=NA) {
+init_python <- function() {
   
   # define the required python module
   # py_modules <- c("os","sys","git","subprocess","re","numpy","zipfile","osgeo")

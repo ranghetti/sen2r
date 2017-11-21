@@ -4,7 +4,7 @@
 \alias{init_python}
 \title{Initialise python}
 \usage{
-init_python(inst_path = NA)
+init_python()
 }
 \value{
 A list with the required mosules.
