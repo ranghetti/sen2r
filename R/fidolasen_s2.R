@@ -282,10 +282,10 @@ fidolasen_s2 <- function(param_list=NULL,
   if (packageVersion("fidolasen") > package_version(pm$fidolasen_version)) {
     open_gui <- print_message(
       type="waiting",
-      "The parameter file was created with an old version of the package: ",
-      "Type \"G\" (and ENTER) to open the GUI and check that" ,
-      "the input parameters are correct, or ENTER to procees anyway ",
-      "(this could lead to errors). ",
+      "The parameter file was created with an old version of the package:\n ",
+      "type \"G\" (and ENTER) to open the GUI and check that the input\n ",
+      "parameters are correct, or ENTER to proceed anyway\n ",
+      "(this could lead to errors).\n ",
       "Alternatively, press ESC to interrupt."
     )
     if (length(grep("^[Gg]",open_gui))>0) {
@@ -512,10 +512,10 @@ fidolasen_s2 <- function(param_list=NULL,
       type = "message",
       date = TRUE,
       if (pm$online==FALSE) {
-        paste0("No SAFE products which match the settings were found locally; ",
+        paste0("No SAFE products which match the settings were found locally;\n ",
                "please download them or set different spatial/temporal extents.")
       } else {
-        paste0("No SAFE products matching the settings were found; ",
+        paste0("No SAFE products matching the settings were found;\n ",
                "please set different spatial/temporal extents.")
       },
       " Execution halted."
@@ -1112,6 +1112,19 @@ fidolasen_s2 <- function(param_list=NULL,
     # tiles_names_new
     # safe_names_l1c_req
     # safe_names_l2a_req
+
+    # Check if processing is needed
+    if (length(c(indices_names_new, out_names_new, masked_names_new, 
+                 warped_names_new, merged_names_new, tiles_names_new)) == 0) {
+      print_message(
+        type = "message",
+        date = TRUE,
+        "All the required output files already exist; nothing to do.\n ",
+        "To reprocess, run fidolasen_s2() with the argument overwrite = TRUE\n ",
+        "or specify a different output directory."
+      )
+      return(invisible(NULL))
+    }
 
     ## 4. Convert in vrt ##
     if (length(c(safe_names_l1c_req,safe_names_l2a_req))>0) {
