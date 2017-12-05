@@ -253,7 +253,8 @@ fidolasen_s2 <- function(param_list=NULL,
                  path_merged=NA,
                  path_out=NA,
                  path_indices=NA,
-                 path_subdirs=TRUE)
+                 path_subdirs=TRUE,
+                 fidolasen_version=packageVersion("fidolasen"))
   
   # Starting execution
   print_message(
@@ -295,7 +296,7 @@ fidolasen_s2 <- function(param_list=NULL,
 
   # Overwrite parameters passed manually
   # (if some parameters are still missing, copy from default values)
-  for (sel_par in names(pm_def)) {
+  for (sel_par in names(pm_def)[-match("fidolasen_version",names(pm_def))]) {
     if (!(length(get(sel_par))==1 & all(is.na(get(sel_par))))) {
       pm[[sel_par]] <- get(sel_par)
     }
