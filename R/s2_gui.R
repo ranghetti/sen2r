@@ -1958,7 +1958,7 @@ s2_gui <- function(param_list = NULL,
               p("Please edit it using the GUI before continuing.")
             )
           } else {
-            taglist(
+            tagList(
               p(HTML(
                 "Some parameters have not been correctly set:",
                 "<ul><li>",
