@@ -1007,7 +1007,8 @@ s2_gui <- function(param_list = NULL,
                                        (indices_req()==FALSE |
                                         indices_req()==TRUE & input$index_source=="BOA")) {TRUE} else {FALSE}
       } else {
-        safe_req$l1c <- if ("l1c" %in% input$list_levels) {TRUE} else {FALSE}
+        safe_req$l1c <- if ("l1c" %in% input$list_levels | 
+                            input$step_atmcorr %in% c("auto","scihub")) {TRUE} else {FALSE}
         safe_req$l2a <- if ("l2a" %in% input$list_levels) {TRUE} else {FALSE}
         safe_req$l2a_onlytomask <- FALSE
       }
