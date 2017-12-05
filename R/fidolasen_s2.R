@@ -226,7 +226,7 @@ fidolasen_s2 <- function(param_list=NULL,
                  overwrite_safe=FALSE,
                  rm_safe="no",
                  step_atmcorr="auto",
-                 timewindow=NA, # below re-defined as last 90 days if online mode
+                 timewindow=c(Sys.Date() - 90, Sys.Date()),
                  timeperiod="full",
                  extent=NA, # below re-defined as sample extent if online mode
                  s2tiles_selected=NA, # below re-defined for online mode
@@ -305,7 +305,7 @@ fidolasen_s2 <- function(param_list=NULL,
     }
   }
   
-  # # Define sample spatial extent / temporal timewindow if online mode
+  # # Define sample spatial extent if online mode
   # if (pm$online == TRUE) {
   #   if (is.na(pm$extent)) {
   #     pm$extent <- get_extent(
@@ -317,9 +317,6 @@ fidolasen_s2 <- function(param_list=NULL,
   #     # if (is.na(pm$s2tiles_selected)) {
   #     #   pm$s2tiles_selected <- c("32TNR", "32TNS")
   #     # }
-  #   }
-  #   if (all(is.na(pm$timewindow))) {
-  #     pm$timewindow <- c(Sys.Date() - 90, Sys.Date())
   #   }
   # }
   
