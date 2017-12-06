@@ -82,7 +82,11 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   
   # WIP 
   
-  return(pm)
+  if (correct==TRUE) {
+    return(pm)
+  } else {
+    return(invisible(NULL))
+  }
   
   
 }
