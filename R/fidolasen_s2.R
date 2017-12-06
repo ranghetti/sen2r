@@ -357,7 +357,11 @@ fidolasen_s2 <- function(param_list=NULL,
   ## Check consistency of parameters
   # TODO work in progress
   pm <- check_param_list(pm, type = "error", correct = TRUE)
-  
+  # convert from GeoJSON to sf
+  if (is(pm$extent, "character")) {
+    pm$extent <- st_read(pm$extent, quiet=TRUE)
+  }
+
   # internal parameters
   dir.create(path_tmp <- tempfile(pattern="dir"), showWarnings = FALSE) # consider to add as an optional parameter
   path_out <- if (!is.na(pm$path_out)) {pm$path_out} else {file.path(path_tmp,"out")}

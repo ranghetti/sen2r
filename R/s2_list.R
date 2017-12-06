@@ -51,8 +51,12 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
     FALSE
   } else if (any(is.na(spatial_extent))) {
     FALSE
-  } else if (spatial_extent==st_polygon()) {
-    FALSE
+  } else if (is(spatial_extent, "POLYGON")) {
+    if (length(spatial_extent)==0) {
+      FALSE
+    } else {
+      TRUE
+    }
   } else {
     TRUE
   }
