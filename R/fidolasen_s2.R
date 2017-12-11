@@ -670,7 +670,8 @@ fidolasen_s2 <- function(param_list=NULL,
       
       s2_list_l2a_corrected <- sen2cor(names(s2_list_l1c_tocorrect),
                                           l1c_dir = pm$path_l1c,
-                                          outdir = pm$path_l2a)
+                                          outdir = pm$path_l2a,
+                                       parallel = TRUE)
       names(s2_list_l2a_corrected) <- basename(s2_list_l2a_corrected)
       s2_list_l2a <- c(s2_list_l2a,s2_list_l2a_corrected)
     }

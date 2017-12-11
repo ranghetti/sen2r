@@ -48,7 +48,10 @@
 #'  present, the compression indicated with this parameter is used.
 #' @param parallel (optional) Logical: if TRUE, masking is conducted using parallel
 #'  processing exploiting [raster::beginCluster]. This speeds-up the computation
-#'  for large rasters. If FALSE (default), single core processing is used.
+#'  for large rasters. 
+#'  The number of cores is automatically determined; specifying it is also 
+#'  possible (e.g. `parallel = 4`).
+#'  If FALSE (default), single core processing is used.
 #' @param overwrite (optional) Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
 #' @return A vector with the names of the created products.
@@ -149,9 +152,13 @@ s2_mask <- function(infiles,
   
   ## Cycle on each file
   # if parallel==TRUE, use doParallel
-  n_cores <- min(parallel::detectCores()-1, 8) # use at most 8 cores
+  n_cores <- if (is.numeric(parallel)) {
+    as.integer(parallel)
+  } else {
+    min(parallel::detectCores()-1, 8) # use at most 8 cores
+  }
   # if (parallel==FALSE | Sys.info()["sysname"] == "Windows" | n_cores<=1) {
-  if (parallel==FALSE | n_cores<=1) {
+  if (n_cores<=1) {
     `%DO%` <- `%do%`
     parallel <- FALSE
     n_cores <- 1

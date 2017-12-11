@@ -64,7 +64,10 @@ present, the compression indicated with this parameter is used.}
 
 \item{parallel}{(optional) Logical: if TRUE, masking is conducted using parallel
 processing exploiting \link[raster:beginCluster]{raster::beginCluster}. This speeds-up the computation
-for large rasters. If FALSE (default), single core processing is used.}
+for large rasters.
+The number of cores is automatically determined; specifying it is also
+possible (e.g. \code{parallel = 4}).
+If FALSE (default), single core processing is used.}
 
 \item{overwrite}{(optional) Logical value: should existing output files be
 overwritten? (default: FALSE)}

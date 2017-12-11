@@ -175,7 +175,10 @@ present, the compression indicated with this parameter is used.</p></td>
       <th>parallel</th>
       <td><p>(optional) Logical: if TRUE, masking is conducted using parallel
 processing exploiting <a href='http://www.rdocumentation.org/packages/raster/topics/cluster'>raster::beginCluster</a>. This speeds-up the computation
-for large rasters. If FALSE (default), single core processing is used.</p></td>
+for large rasters.
+The number of cores is automatically determined; specifying it is also
+possible (e.g. <code>parallel = 4</code>).
+If FALSE (default), single core processing is used.</p></td>
     </tr>
     <tr>
       <th>overwrite</th>
