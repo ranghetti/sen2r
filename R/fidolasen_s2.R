@@ -670,8 +670,8 @@ fidolasen_s2 <- function(param_list=NULL,
       }
       
       s2_list_l2a_corrected <- sen2cor(names(s2_list_l1c_tocorrect),
-                                          l1c_dir = pm$path_l1c,
-                                          outdir = pm$path_l2a,
+                                       l1c_dir = pm$path_l1c,
+                                       outdir = pm$path_l2a,
                                        parallel = TRUE)
       names(s2_list_l2a_corrected) <- basename(s2_list_l2a_corrected)
       s2_list_l2a <- c(s2_list_l2a,s2_list_l2a_corrected)
@@ -829,15 +829,6 @@ fidolasen_s2 <- function(param_list=NULL,
                          if(pm$path_subdirs==TRUE){basename(dirname(merged_names_exp))}else{""},
                          gsub(paste0(merged_ext,"$"),warped_ext,basename(merged_names_exp))))
       )
-    }
-    
-    # index which is TRUE for SCL products, FALSE for others
-    names_warped_exp_scl_idx <- fs2nc_getElements(warped_names_exp,format="data.frame")$prod_type=="SCL"
-    # index which is TRUE for products to be atm. masked, FALSE for others
-    names_warped_tomask_idx <- if ("SCL" %in% pm$list_prods) {
-      names_warped_exp_scl_idx>-1
-    } else {
-      !names_warped_exp_scl_idx
     }
     
     # expected names for masked products
@@ -1092,6 +1083,16 @@ fidolasen_s2 <- function(param_list=NULL,
       
     } # end of pm$overwrite FALSE IF cycle
     
+    # index which is TRUE for SCL products, FALSE for others
+    names_warped_exp_scl_idx <- fs2nc_getElements(warped_names_exp,format="data.frame")$prod_type=="SCL"
+    names_warped_req_scl_idx <- fs2nc_getElements(warped_names_req,format="data.frame")$prod_type=="SCL"
+    # index which is TRUE for products to be atm. masked, FALSE for others
+    names_warped_tomask_idx <- if ("SCL" %in% pm$list_prods) {
+      names_warped_req_scl_idx>-1
+    } else {
+      !names_warped_req_scl_idx
+    }
+
     # End of the section of the creation of file names
     # List of the file names:
     # List of all the file names, in order of creation
@@ -1250,9 +1251,9 @@ fidolasen_s2 <- function(param_list=NULL,
         s2_mask_extent <- if (is.na(pm$extent)) {
           NULL
         } else if (pm$extent_as_mask==TRUE) {
-          st_read(pm$extent, quiet=TRUE)
+          pm$extent
         } else {
-          suppressWarnings(st_cast(st_read(pm$extent, quiet=TRUE),"LINESTRING"))
+          suppressWarnings(st_cast(pm$extent,"LINESTRING"))
         }  # TODO add support for multiple extents
         
         if(pm$path_subdirs==TRUE){
@@ -1343,7 +1344,7 @@ fidolasen_s2 <- function(param_list=NULL,
         masked_names_out <- trace_function(
           s2_mask,
           infiles = if(pm$clip_on_extent==TRUE){warped_names_req[names_warped_tomask_idx]}else{merged_names_req[names_merged_tomask_idx]},
-          maskfiles = if(pm$clip_on_extent==TRUE){warped_names_req[names_warped_exp_scl_idx]}else{merged_names_exp[names_merged_exp_scl_idx]},
+          maskfiles = if(pm$clip_on_extent==TRUE){warped_names_exp[names_warped_exp_scl_idx]}else{merged_names_exp[names_merged_exp_scl_idx]},
           mask_type = pm$mask_type,
           outdir = path_out,
           format = pm$outformat,
