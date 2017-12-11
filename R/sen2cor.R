@@ -124,8 +124,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, p
   }
   
   # cycle on eacjh product
-  l2a_prodlist <- c()
-  foreach(i=seq_along(l1c_prodlist), 
+  l2a_prodlist <- foreach(i=seq_along(l1c_prodlist), 
           .combine=c,
           .export = "mountpoint",
           .packages='fidolasen') %DO% {
@@ -184,7 +183,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, p
       
     } # end IF cycle on overwrite
 
-    l2a_prodlist <- c(l2a_prodlist, sel_l2a)
+    sel_l2a
     
   } # end cycle on each product
   
