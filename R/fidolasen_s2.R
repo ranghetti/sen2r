@@ -530,7 +530,7 @@ fidolasen_s2 <- function(param_list=NULL,
   s2_dt <- lapply(names(s2_list), function(x) {
     unlist(s2_getMetadata(x, info="nameinfo")) %>%
       t() %>%
-      as.data.frame()
+      as.data.frame(stringsAsFactors=FALSE)
   }) %>%
     rbindlist(fill=TRUE)
   s2_dt[,c("name","url"):=list(names(s2_list),s2_list)]
@@ -562,7 +562,8 @@ fidolasen_s2 <- function(param_list=NULL,
         mission,
         level,
         id_orbit,
-        ifelse(is.na(id_tile),sample(1E5),id_tile)) # if id_tile is not specified do not remove duplicates, because different products can rely to different tiles
+        id_tile=ifelse(is.na(id_tile),sample(1E5),id_tile)), # if id_tile is not specified do not remove duplicates, because different products can rely to different tiles
+        sensing_datetime
       ]
     ),
   ]
@@ -582,7 +583,7 @@ fidolasen_s2 <- function(param_list=NULL,
       print_message(
         type = "message",
         date = TRUE,
-        "Starting to download the required level-1C SAFE products."
+        "Starting to download the required level-2A SAFE products."
       )
       
       lapply(pm$s2tiles_selected, function(tile) {
@@ -598,7 +599,7 @@ fidolasen_s2 <- function(param_list=NULL,
       print_message(
         type = "message",
         date = TRUE,
-        "Starting to download the required level-2A SAFE products."
+        "Starting to download the required level-1C SAFE products."
       )
       
       lapply(pm$s2tiles_selected, function(tile) {
