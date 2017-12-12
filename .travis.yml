@@ -3,10 +3,8 @@ sudo: required
 dist: trusty
 cache: packages
 
-r_binary_packages:
-  - sf
-
 r_github_packages:
+  - r-spatial/sf
   - lbusett/sprawl
 
 apt_packages:
