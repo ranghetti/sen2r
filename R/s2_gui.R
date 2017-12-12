@@ -2109,14 +2109,14 @@ s2_gui <- function(param_list = NULL,
       
       
       # spatio-temporal selection
-      if (any(is.na(pl$timewindow))) {
+      if (anyNA(pl$timewindow)) {
         updateRadioButtons(session, "query_time", selected = FALSE)
       } else {
         updateRadioButtons(session, "query_time", selected = TRUE)
         updateDateRangeInput(session, "timewindow", start=pl$timewindow[1], end=pl$timewindow[2])
         updateRadioButtons(session, "timeperiod", selected = pl$timeperiod)
       }
-      if (any(is.na(pl$extent)) & pl$online == FALSE) {
+      if (anyNA(pl$extent) & pl$online == FALSE) {
         updateRadioButtons(session, "query_space", selected = FALSE)
       } else {
         updateRadioButtons(session, "query_space", selected = TRUE)
@@ -2161,7 +2161,7 @@ s2_gui <- function(param_list = NULL,
       updateRadioButtons(session, "use_reference", selected = ifelse(is.na(pl$reference_path), FALSE, TRUE))
       
       if (is.na(pl$reference_path)) {
-        updateRadioButtons(session, "rescale", selected = if(any(is.na(pl$res))) {FALSE} else {TRUE})
+        updateRadioButtons(session, "rescale", selected = if(anyNA(pl$res)) {FALSE} else {TRUE})
         updateTextInput(session, "resolution_custom", value = pl$res[1])
         updateRadioButtons(session, "resolution_s2", selected = pl$res_s2)
         updateRadioButtons(session, "reproj", selected = {

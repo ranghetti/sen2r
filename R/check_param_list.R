@@ -49,7 +49,7 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   # TODO check package version and parameter names
   
   # check timewindow
-  if (!any(is.na(pm$timewindow))) {
+  if (!anyNA(pm$timewindow)) {
     if (length(pm$timewindow)==1) {
       pm$timewindow <- rep(pm$timewindow, 2)
     } else if (length(pm$timewindow)>2) {
@@ -72,7 +72,7 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   }
   
   # example of check
-  if (!any(is.na(pm$res)) & any(pm$res <= 0)) {
+  if (!anyNA(pm$res) & any(pm$res <= 0)) {
     print_message(
       type = type,
       "Output resolution (parameter \"res\" ) must be positive."

@@ -542,7 +542,7 @@ fidolasen_s2 <- function(param_list=NULL,
   
   s2_dt <- s2_dt[mission %in% toupper(substr(pm$sel_sensor,2,3)),][
     order(-sensing_datetime),]
-  if (!any(is.na(pm$timewindow))) {
+  if (!anyNA(pm$timewindow)) {
     s2_dt <- s2_dt[as.Date(sensing_datetime) >= pm$timewindow[1] &
                      as.Date(sensing_datetime) <= pm$timewindow[2],]
   }
@@ -868,7 +868,7 @@ fidolasen_s2 <- function(param_list=NULL,
     } else {
       c("1C","2A")
     }
-    indices_names_exp <- if (length(out_names_exp)==0 | any(is.na(pm$list_indices))) {
+    indices_names_exp <- if (length(out_names_exp)==0 | anyNA(pm$list_indices)) {
       NULL
     } else {
       data.table(
@@ -1248,7 +1248,7 @@ fidolasen_s2 <- function(param_list=NULL,
         
         dir.create(path_warped, recursive=FALSE, showWarnings=FALSE)
         # create mask
-        s2_mask_extent <- if (is.na(pm$extent)) {
+        s2_mask_extent <- if (anyNA(pm$extent)) {
           NULL
         } else if (pm$extent_as_mask==TRUE) {
           pm$extent
@@ -1273,7 +1273,7 @@ fidolasen_s2 <- function(param_list=NULL,
               of = warped_outformat,
               ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
               mask = s2_mask_extent,
-              tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
+              tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
               t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
               r = pm$resampling,
               dstnodata = s2_defNA(
@@ -1298,7 +1298,7 @@ fidolasen_s2 <- function(param_list=NULL,
               of = pm$outformat, # use physical files to speed up next steps
               ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
               mask = s2_mask_extent,
-              tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
+              tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
               t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
               r = pm$resampling_scl,
               dstnodata = s2_defNA(

@@ -49,7 +49,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
     FALSE
   } else if (is.null(spatial_extent)) {
     FALSE
-  } else if (any(is.na(spatial_extent))) {
+  } else if (anyNA(spatial_extent)) {
     FALSE
   } else if (is(spatial_extent, "POLYGON")) {
     if (length(spatial_extent)==0) {
@@ -68,7 +68,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
         type = "error",
         "At least one parameter among spatial_extent and tile must be specified."
       )
-    } else if (any(is.na(tile))) {
+    } else if (anyNA(tile)) {
       print_message(
         type = "error",
         "At least one parameter among spatial_extent and tile must be specified."
@@ -124,7 +124,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
     orbit <- list(NULL)
   } else {
     orbit <- as.integer(orbit)
-    if (any(is.na(orbit))) {
+    if (anyNA(orbit)) {
       orbit <- list(NULL)
     }
   }
