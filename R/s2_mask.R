@@ -60,7 +60,7 @@
 #' @importFrom parallel detectCores makeCluster stopCluster
 #' @importFrom foreach foreach "%do%" "%dopar%"
 #' @importFrom raster stack brick calc dataType mask NAvalue overlay
-#'   beginCluster endCluster clusterR
+#'   beginCluster endCluster clusterR NAvalue dataType
 #' @importFrom jsonlite fromJSON
 #' @import data.table
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
@@ -180,14 +180,6 @@ s2_mask <- function(infiles,
     if (sel_format=="VRT") {sel_format <- "GTiff"}
     sel_out_ext <- gdal_formats[gdal_formats$name==sel_format,"ext"][1]
     
-    # define NA flag (values should be the same defined in s2_translate)
-    sel_na <- switch(sel_infile_meta$prod_type,
-                     BOA = "65535",
-                     TOA = "65535",
-                     SCL = "0",
-                     TCI = NA,
-                     NA)
-
     # check that infile has the correct maskfile
     sel_maskfiles <- sapply(names(req_masks), function(m) {
       maskfiles[which(maskfiles_meta$prod_type==m &
@@ -271,7 +263,7 @@ s2_mask <- function(infiles,
                      raster::raster(outmask_res),
                      filename    = sel_outfile,
                      maskvalue   = 0,
-                     updatevalue = NAvalue(inraster),
+                     updatevalue = s2_defNA(sel_infile_meta$prod_type),
                      updateNA    = TRUE,
                      datatype    = dataType(inraster),
                      format      = sel_format,
@@ -285,7 +277,7 @@ s2_mask <- function(infiles,
                      fun         = function(x, y) {x*y},
                      args        = list(y = raster::raster(outmask_res)),
                      filename    = sel_outfile,
-                     NAflag      = NAvalue(inraster),
+                     NAflag      = s2_defNA(sel_infile_meta$prod_type),
                      datatype    = dataType(inraster),
                      format      = sel_format,
                      options     = ifelse(sel_format == "GTiff",
