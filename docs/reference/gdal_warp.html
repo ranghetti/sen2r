@@ -166,6 +166,8 @@ all values should be quoted to keep them together as a single
 operating system argument. New files will be initialized to this
 value and if possible the nodata value will be recorded in the output
 file. Use a value of NA to ensure that nodata is not defined.
+A vector with the same length of <code>srcfiles</code> can be supplied, in order to
+specify different nodata values for each input file.
 If this argument is not used then nodata values will be copied from
 the source datasets. At the moment it is not possible to set different
 values for different <code>srcfiles</code> (use multiple calls of the functions).</p></td>
