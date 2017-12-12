@@ -1276,6 +1276,10 @@ fidolasen_s2 <- function(param_list=NULL,
               tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
               t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
               r = pm$resampling,
+              dstnodata = s2_defNA(
+                sapply(merged_names_req[!names_merged_req_scl_idx],
+                       function(x){fs2nc_getElements(x)$prod_type})
+              ),
               overwrite = pm$overwrite
             ), # TODO dstnodata value?
             error = print
@@ -1297,6 +1301,10 @@ fidolasen_s2 <- function(param_list=NULL,
               tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
               t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
               r = pm$resampling_scl,
+              dstnodata = s2_defNA(
+                sapply(merged_names_req[names_merged_req_scl_idx],
+                       function(x){fs2nc_getElements(x)$prod_type})
+              ),
               overwrite = pm$overwrite
             ), # TODO dstnodata value?
             error = print
