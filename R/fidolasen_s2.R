@@ -245,7 +245,7 @@ fidolasen_s2 <- function(param_list=NULL,
                  resampling="near",
                  resampling_scl="near",
                  outformat="GTiff",
-                 compression="LZW",
+                 compression="DEFLATE",
                  overwrite=FALSE,
                  path_l1c=NA,
                  path_l2a=NA,
@@ -1280,6 +1280,7 @@ fidolasen_s2 <- function(param_list=NULL,
                 sapply(merged_names_req[!names_merged_req_scl_idx],
                        function(x){fs2nc_getElements(x)$prod_type})
               ),
+              co = if (warped_outformat=="GTiff") {paste0("COMPRESS=",pm$compression)},
               overwrite = pm$overwrite
             ), # TODO dstnodata value?
             error = print
@@ -1305,6 +1306,7 @@ fidolasen_s2 <- function(param_list=NULL,
                 sapply(merged_names_req[names_merged_req_scl_idx],
                        function(x){fs2nc_getElements(x)$prod_type})
               ),
+              co = if (pm$outformat=="GTiff") {paste0("COMPRESS=",pm$compression)},
               overwrite = pm$overwrite
             ), # TODO dstnodata value?
             error = print
@@ -1356,6 +1358,7 @@ fidolasen_s2 <- function(param_list=NULL,
           mask_type = pm$mask_type,
           outdir = path_out,
           format = pm$outformat,
+          compress = pm$compression,
           subdirs = pm$path_subdirs,
           overwrite = pm$overwrite,
           parallel = TRUE, # TODO pass as parameter
@@ -1394,6 +1397,7 @@ fidolasen_s2 <- function(param_list=NULL,
         subdirs = TRUE,
         source = pm$index_source,
         format = pm$outformat,
+        compress = pm$compression,
         overwrite = pm$overwrite,
         trace_files = indices_names_new
       )

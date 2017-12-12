@@ -179,6 +179,7 @@ s2_mask <- function(infiles,
     ))
     if (sel_format=="VRT") {sel_format <- "GTiff"}
     sel_out_ext <- gdal_formats[gdal_formats$name==sel_format,"ext"][1]
+    sel_naflag <- s2_defNA(sel_infile_meta$prod_type)
     
     # check that infile has the correct maskfile
     sel_maskfiles <- sapply(names(req_masks), function(m) {
@@ -259,31 +260,33 @@ s2_mask <- function(infiles,
       # if (parallel) {raster::beginCluster(n_cores)}
 
       if (!parallel) {
-        raster::mask(inraster,
-                     raster::raster(outmask_res),
-                     filename    = sel_outfile,
-                     maskvalue   = 0,
-                     updatevalue = s2_defNA(sel_infile_meta$prod_type),
-                     updateNA    = TRUE,
-                     datatype    = dataType(inraster),
-                     format      = sel_format,
-                     options     = ifelse(sel_format == "GTiff",
-                                          c(paste0("COMPRESS=",compress)),
-                                          ""),
-                     overwrite   = overwrite)
+        raster::mask(
+          inraster,
+          raster::raster(outmask_res),
+          filename = sel_outfile,
+          maskvalue = sel_naflag,
+          updatevalue = sel_naflag,
+          updateNA = TRUE,
+          datatype = dataType(inraster),
+          format = sel_format,
+          options = if(sel_format == "GTiff") {paste0("COMPRESS=",compress)},
+          overwrite = overwrite
+        )
       } else {
         beginCluster(n = n_cores)
-        raster::clusterR(inraster,
-                     fun         = function(x, y) {x*y},
-                     args        = list(y = raster::raster(outmask_res)),
-                     filename    = sel_outfile,
-                     NAflag      = s2_defNA(sel_infile_meta$prod_type),
-                     datatype    = dataType(inraster),
-                     format      = sel_format,
-                     options     = ifelse(sel_format == "GTiff",
-                                          c(paste0("COMPRESS=",compress)),
-                                          ""),
-                     overwrite   = overwrite)
+        raster::clusterR(
+          inraster,
+          fun = function(x,m,na) {m*x+(1-m)*na},
+          # fun = function(x, m) {x*m},
+          args = list(m = raster::raster(outmask_res),
+                      na = sel_naflag),
+          filename = sel_outfile,
+          NAflag = sel_naflag,
+          datatype = dataType(inraster),
+          format = sel_format,
+          options = if(sel_format == "GTiff") {paste0("COMPRESS=",compress)},
+          overwrite = overwrite
+        )
         endCluster()
       }
       
