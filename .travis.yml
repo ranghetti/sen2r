@@ -3,13 +3,15 @@ sudo: required
 dist: trusty
 cache: packages
 
+r_binary_packages:
+  - sf
+
 r_github_packages:
   - lbusett/sprawl
 
 apt_packages:
   - libgdal-dev
   - libproj-dev
-  - libgeos-dev
   - libudunits2-dev
   - libv8-dev
   - libprotobuf-dev
