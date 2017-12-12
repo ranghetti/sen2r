@@ -50,6 +50,7 @@ reference:
       - '`editModPoly`'
       - '`read_scihub_login`'
       - '`check_param_list`'
+      - '`s2_defNA`'
 navbar:
   type: inverse
   left:
