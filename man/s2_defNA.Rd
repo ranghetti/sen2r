@@ -19,8 +19,8 @@ each product type (except for spectral indices, whose NA value is
 managed by \link{s2_calcindices}).
 }
 \examples{
-s2_defNA("BOA")
-s2_defNA(c("BOA","BOA","SCL","TCI"))
+fidolasen:::s2_defNA("BOA")
+fidolasen:::s2_defNA(c("BOA","BOA","SCL","TCI"))
 }
 \author{
 Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}

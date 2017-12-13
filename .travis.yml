@@ -4,12 +4,12 @@ dist: trusty
 cache: packages
 
 r_github_packages:
+  - r-spatial/sf
   - lbusett/sprawl
 
 apt_packages:
   - libgdal-dev
   - libproj-dev
-  - libgeos-dev
   - libudunits2-dev
   - libv8-dev
   - libprotobuf-dev
