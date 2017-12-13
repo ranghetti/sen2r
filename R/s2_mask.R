@@ -48,7 +48,10 @@
 #'  present, the compression indicated with this parameter is used.
 #' @param parallel (optional) Logical: if TRUE, masking is conducted using parallel
 #'  processing exploiting [raster::beginCluster]. This speeds-up the computation
-#'  for large rasters. If FALSE (default), single core processing is used.
+#'  for large rasters. 
+#'  The number of cores is automatically determined; specifying it is also 
+#'  possible (e.g. `parallel = 4`).
+#'  If FALSE (default), single core processing is used.
 #' @param overwrite (optional) Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
 #' @return A vector with the names of the created products.
@@ -57,7 +60,7 @@
 #' @importFrom parallel detectCores makeCluster stopCluster
 #' @importFrom foreach foreach "%do%" "%dopar%"
 #' @importFrom raster stack brick calc dataType mask NAvalue overlay
-#'   beginCluster endCluster clusterR
+#'   beginCluster endCluster clusterR NAvalue dataType
 #' @importFrom jsonlite fromJSON
 #' @import data.table
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
@@ -149,9 +152,13 @@ s2_mask <- function(infiles,
   
   ## Cycle on each file
   # if parallel==TRUE, use doParallel
-  n_cores <- min(parallel::detectCores()-1, 8) # use at most 8 cores
+  n_cores <- if (is.numeric(parallel)) {
+    as.integer(parallel)
+  } else {
+    min(parallel::detectCores()-1, 8) # use at most 8 cores
+  }
   # if (parallel==FALSE | Sys.info()["sysname"] == "Windows" | n_cores<=1) {
-  if (parallel==FALSE | n_cores<=1) {
+  if (n_cores<=1) {
     `%DO%` <- `%do%`
     parallel <- FALSE
     n_cores <- 1
@@ -172,15 +179,8 @@ s2_mask <- function(infiles,
     ))
     if (sel_format=="VRT") {sel_format <- "GTiff"}
     sel_out_ext <- gdal_formats[gdal_formats$name==sel_format,"ext"][1]
+    sel_naflag <- s2_defNA(sel_infile_meta$prod_type)
     
-    # define NA flag (values should be the same defined in s2_translate)
-    sel_na <- switch(sel_infile_meta$prod_type,
-                     BOA = "65535",
-                     TOA = "65535",
-                     SCL = "0",
-                     TCI = NA,
-                     NA)
-
     # check that infile has the correct maskfile
     sel_maskfiles <- sapply(names(req_masks), function(m) {
       maskfiles[which(maskfiles_meta$prod_type==m &
@@ -260,31 +260,33 @@ s2_mask <- function(infiles,
       # if (parallel) {raster::beginCluster(n_cores)}
 
       if (!parallel) {
-        raster::mask(inraster,
-                     raster::raster(outmask_res),
-                     filename    = sel_outfile,
-                     maskvalue   = 0,
-                     updatevalue = NAvalue(inraster),
-                     updateNA    = TRUE,
-                     datatype    = dataType(inraster),
-                     format      = sel_format,
-                     options     = ifelse(sel_format == "GTiff",
-                                          c(paste0("COMPRESS=",compress)),
-                                          ""),
-                     overwrite   = overwrite)
+        raster::mask(
+          inraster,
+          raster::raster(outmask_res),
+          filename = sel_outfile,
+          maskvalue = sel_naflag,
+          updatevalue = sel_naflag,
+          updateNA = TRUE,
+          datatype = dataType(inraster),
+          format = sel_format,
+          options = if(sel_format == "GTiff") {paste0("COMPRESS=",compress)},
+          overwrite = overwrite
+        )
       } else {
         beginCluster(n = n_cores)
-        raster::clusterR(inraster,
-                     fun         = function(x, y) {x*y},
-                     args        = list(y = raster::raster(outmask_res)),
-                     filename    = sel_outfile,
-                     NAflag      = NAvalue(inraster),
-                     datatype    = dataType(inraster),
-                     format      = sel_format,
-                     options     = ifelse(sel_format == "GTiff",
-                                          c(paste0("COMPRESS=",compress)),
-                                          ""),
-                     overwrite   = overwrite)
+        raster::clusterR(
+          inraster,
+          fun = function(x,m,na) {m*x+(1-m)*na},
+          # fun = function(x, m) {x*m},
+          args = list(m = raster::raster(outmask_res),
+                      na = sel_naflag),
+          filename = sel_outfile,
+          NAflag = sel_naflag,
+          datatype = dataType(inraster),
+          format = sel_format,
+          options = if(sel_format == "GTiff") {paste0("COMPRESS=",compress)},
+          overwrite = overwrite
+        )
         endCluster()
       }
       

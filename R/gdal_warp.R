@@ -37,6 +37,8 @@
 #'  operating system argument. New files will be initialized to this
 #'  value and if possible the nodata value will be recorded in the output
 #'  file. Use a value of NA to ensure that nodata is not defined.
+#'  A vector with the same length of `srcfiles` can be supplied, in order to
+#'  specify different nodata values for each input file.
 #'  If this argument is not used then nodata values will be copied from
 #'  the source datasets. At the moment it is not possible to set different
 #'  values for different `srcfiles` (use multiple calls of the functions).
@@ -139,6 +141,20 @@ gdal_warp <- function(srcfiles,
       "\") must be of the same length."
     )
   }
+  
+  # check the length of dstnodata
+  if (length(dstnodata)==1) {
+    dstnodata <- rep(dstnodata, length(srcfiles))
+  } else if (length(dstnodata)!=length(srcfiles)) {
+    print_message(
+      type="error", 
+      "\"dstnodata\" must be of length 1",
+      if (length(srcfiles) > 1) {
+        paste0(" or ",length(srcfiles))
+      },
+      " (the length of \"srcfiles\")."
+    )
+  }
 
   # check output format
   if (!is.null(of)) {
@@ -206,6 +222,7 @@ gdal_warp <- function(srcfiles,
   for (i in seq_along(srcfiles)) {
     srcfile <- srcfiles[i]
     dstfile <- dstfiles[i]
+    sel_nodata <- dstnodata[i]
 
     # if dstfile already exists and overwrite==FALSE, do not proceed
     if (!file.exists(dstfile) | overwrite==TRUE) {
@@ -314,11 +331,11 @@ gdal_warp <- function(srcfiles,
         },
         "of = sel_of, ",
         "r = sel_r, ",
-        if (!is.null(dstnodata)) {
-          if (is.na(dstnodata)) {
+        if (!is.null(sel_nodata)) {
+          if (is.na(sel_nodata)) {
             "dstnodata = NULL, "
           } else {
-            "dstnodata = dstnodata, "
+            "dstnodata = sel_nodata, "
           }
         },
         "overwrite = ",overwrite,", ",

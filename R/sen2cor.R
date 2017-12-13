@@ -18,7 +18,11 @@
 #'  processing is done there and then L2A is moved to `outdir`. 
 #'  This is required under Linux systems when `l1c_dir` is a subdirectory of
 #'  a unit mounted with SAMBA, otherwise sen2cor would produce empty L2A products.
-#' @param n_procs Number of processors (`integer`) to use (default is 1, single processor).
+#' @param parallel (optional) Logical: if TRUE, sen2cor instances are launched 
+#'  in parallel using multiple cores; if FALSE (default), they are launched in 
+#'  series on a single core. 
+#'  The number of cores is automatically determined; specifying it is also 
+#'  possible (e.g. `parallel = 4`).
 #' @param overwrite Logical value: should existing output L2A products be overwritten?
 #'  (default: FALSE)
 #' @return Vector character with the list ot the output products (being corrected or already
@@ -40,7 +44,7 @@
 #' sen2cor(names(example_s2_list)[1], l1c_dir=tempdir(), outdir=tempdir())
 #' }
 
-sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, n_procs=1, overwrite=FALSE) {
+sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, parallel=FALSE, overwrite=FALSE) {
   
   # load sen2cor executable path
   binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
@@ -103,18 +107,24 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, n
   
   ## Cycle on each file
   # if parallel==TRUE, use doParallel
-  if (n_procs>1) {
+  n_cores <- if (is.numeric(parallel)) {
+    as.integer(parallel)
+  } else {
+    min(parallel::detectCores()-1, length(l1c_prodlist), 8) # use at most 8 cores
+  }
+  # if (parallel==FALSE | Sys.info()["sysname"] == "Windows" | n_cores<=1) {
+  if (parallel==FALSE | n_cores<=1) {
+    `%DO%` <- `%do%`
+    parallel <- FALSE
+    n_cores <- 1
+  } else {
     `%DO%` <- `%dopar%`
-    n_cores <- min(parallel::detectCores()-1, length(l1c_prodlist), 7) # use at most 7 cores
     cl <- makeCluster(n_cores)
     registerDoParallel(cl)
-  } else {
-    `%DO%` <- `%do%`
   }
   
   # cycle on eacjh product
-  l2a_prodlist <- c()
-  foreach(i=seq_along(l1c_prodlist), 
+  l2a_prodlist <- foreach(i=seq_along(l1c_prodlist), 
           .combine=c,
           .export = "mountpoint",
           .packages='fidolasen') %DO% {
@@ -173,11 +183,11 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, n
       
     } # end IF cycle on overwrite
 
-    l2a_prodlist <- c(l2a_prodlist, sel_l2a)
+    sel_l2a
     
   } # end cycle on each product
   
-  if (n_procs>1) {
+  if (n_cores>1) {
     stopCluster(cl)
   }
   

@@ -100,7 +100,7 @@ is used.</p>
     
 
     <pre class="usage"><span class='fu'>sen2cor</span>(<span class='kw'>l1c_prodlist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>l1c_dir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>proc_dir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>n_procs</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='kw'>proc_dir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -133,8 +133,12 @@ This is required under Linux systems when <code>l1c_dir</code> is a subdirectory
 a unit mounted with SAMBA, otherwise sen2cor would produce empty L2A products.</p></td>
     </tr>
     <tr>
-      <th>n_procs</th>
-      <td><p>Number of processors (<code>integer</code>) to use (default is 1, single processor).</p></td>
+      <th>parallel</th>
+      <td><p>(optional) Logical: if TRUE, sen2cor instances are launched
+in parallel using multiple cores; if FALSE (default), they are launched in
+series on a single core.
+The number of cores is automatically determined; specifying it is also
+possible (e.g. <code>parallel = 4</code>).</p></td>
     </tr>
     <tr>
       <th>overwrite</th>

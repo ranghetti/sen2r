@@ -69,7 +69,7 @@ write_scihub_login <- function(username, password, apihub_path=NA) {
 # write dialog content
 scihub_modal <- function(username=NA, password=NA) {
   # read scihub user/password
-  if (any(is.na(c(username,password)))) {
+  if (anyNA(c(username,password))) {
     apihub <- read_scihub_login()
     username <- apihub[1]
     password <- apihub[2]

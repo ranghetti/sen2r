@@ -4,6 +4,7 @@ dist: trusty
 cache: packages
 
 r_github_packages:
+  - r-spatial/sf
   - lbusett/sprawl
 
 apt_packages:

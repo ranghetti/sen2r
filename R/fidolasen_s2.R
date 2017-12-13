@@ -226,7 +226,7 @@ fidolasen_s2 <- function(param_list=NULL,
                  overwrite_safe=FALSE,
                  rm_safe="no",
                  step_atmcorr="auto",
-                 timewindow=NA, # below re-defined as last 90 days if online mode
+                 timewindow=c(Sys.Date() - 90, Sys.Date()),
                  timeperiod="full",
                  extent=NA, # below re-defined as sample extent if online mode
                  s2tiles_selected=NA, # below re-defined for online mode
@@ -245,7 +245,7 @@ fidolasen_s2 <- function(param_list=NULL,
                  resampling="near",
                  resampling_scl="near",
                  outformat="GTiff",
-                 compression="LZW",
+                 compression="DEFLATE",
                  overwrite=FALSE,
                  path_l1c=NA,
                  path_l2a=NA,
@@ -253,7 +253,8 @@ fidolasen_s2 <- function(param_list=NULL,
                  path_merged=NA,
                  path_out=NA,
                  path_indices=NA,
-                 path_subdirs=TRUE)
+                 path_subdirs=TRUE,
+                 fidolasen_version=packageVersion("fidolasen"))
   
   # Starting execution
   print_message(
@@ -282,10 +283,10 @@ fidolasen_s2 <- function(param_list=NULL,
   if (packageVersion("fidolasen") > package_version(pm$fidolasen_version)) {
     open_gui <- print_message(
       type="waiting",
-      "The parameter file was created with an old version of the package: ",
-      "Type \"G\" (and ENTER) to open the GUI and check that" ,
-      "the input parameters are correct, or ENTER to procees anyway ",
-      "(this could lead to errors). ",
+      "The parameter file was created with an old version of the package:\n ",
+      "type \"G\" (and ENTER) to open the GUI and check that the input\n ",
+      "parameters are correct, or ENTER to proceed anyway\n ",
+      "(this could lead to errors).\n ",
       "Alternatively, press ESC to interrupt."
     )
     if (length(grep("^[Gg]",open_gui))>0) {
@@ -295,7 +296,7 @@ fidolasen_s2 <- function(param_list=NULL,
 
   # Overwrite parameters passed manually
   # (if some parameters are still missing, copy from default values)
-  for (sel_par in names(pm_def)) {
+  for (sel_par in names(pm_def)[-match("fidolasen_version",names(pm_def))]) {
     if (!(length(get(sel_par))==1 & all(is.na(get(sel_par))))) {
       pm[[sel_par]] <- get(sel_par)
     }
@@ -304,7 +305,7 @@ fidolasen_s2 <- function(param_list=NULL,
     }
   }
   
-  # # Define sample spatial extent / temporal timewindow if online mode
+  # # Define sample spatial extent if online mode
   # if (pm$online == TRUE) {
   #   if (is.na(pm$extent)) {
   #     pm$extent <- get_extent(
@@ -316,9 +317,6 @@ fidolasen_s2 <- function(param_list=NULL,
   #     # if (is.na(pm$s2tiles_selected)) {
   #     #   pm$s2tiles_selected <- c("32TNR", "32TNS")
   #     # }
-  #   }
-  #   if (all(is.na(pm$timewindow))) {
-  #     pm$timewindow <- c(Sys.Date() - 90, Sys.Date())
   #   }
   # }
   
@@ -359,7 +357,11 @@ fidolasen_s2 <- function(param_list=NULL,
   ## Check consistency of parameters
   # TODO work in progress
   pm <- check_param_list(pm, type = "error", correct = TRUE)
-  
+  # convert from GeoJSON to sf
+  if (is(pm$extent, "character")) {
+    pm$extent <- st_read(pm$extent, quiet=TRUE)
+  }
+
   # internal parameters
   dir.create(path_tmp <- tempfile(pattern="dir"), showWarnings = FALSE) # consider to add as an optional parameter
   path_out <- if (!is.na(pm$path_out)) {pm$path_out} else {file.path(path_tmp,"out")}
@@ -512,10 +514,10 @@ fidolasen_s2 <- function(param_list=NULL,
       type = "message",
       date = TRUE,
       if (pm$online==FALSE) {
-        paste0("No SAFE products which match the settings were found locally; ",
+        paste0("No SAFE products which match the settings were found locally;\n ",
                "please download them or set different spatial/temporal extents.")
       } else {
-        paste0("No SAFE products matching the settings were found; ",
+        paste0("No SAFE products matching the settings were found;\n ",
                "please set different spatial/temporal extents.")
       },
       " Execution halted."
@@ -528,7 +530,7 @@ fidolasen_s2 <- function(param_list=NULL,
   s2_dt <- lapply(names(s2_list), function(x) {
     unlist(s2_getMetadata(x, info="nameinfo")) %>%
       t() %>%
-      as.data.frame()
+      as.data.frame(stringsAsFactors=FALSE)
   }) %>%
     rbindlist(fill=TRUE)
   s2_dt[,c("name","url"):=list(names(s2_list),s2_list)]
@@ -540,7 +542,7 @@ fidolasen_s2 <- function(param_list=NULL,
   
   s2_dt <- s2_dt[mission %in% toupper(substr(pm$sel_sensor,2,3)),][
     order(-sensing_datetime),]
-  if (!any(is.na(pm$timewindow))) {
+  if (!anyNA(pm$timewindow)) {
     s2_dt <- s2_dt[as.Date(sensing_datetime) >= pm$timewindow[1] &
                      as.Date(sensing_datetime) <= pm$timewindow[2],]
   }
@@ -560,7 +562,8 @@ fidolasen_s2 <- function(param_list=NULL,
         mission,
         level,
         id_orbit,
-        ifelse(is.na(id_tile),sample(1E5),id_tile)) # if id_tile is not specified do not remove duplicates, because different products can rely to different tiles
+        id_tile=ifelse(is.na(id_tile),sample(1E5),id_tile)), # if id_tile is not specified do not remove duplicates, because different products can rely to different tiles
+        sensing_datetime
       ]
     ),
   ]
@@ -580,7 +583,7 @@ fidolasen_s2 <- function(param_list=NULL,
       print_message(
         type = "message",
         date = TRUE,
-        "Starting to download the required level-1C SAFE products."
+        "Starting to download the required level-2A SAFE products."
       )
       
       lapply(pm$s2tiles_selected, function(tile) {
@@ -596,7 +599,7 @@ fidolasen_s2 <- function(param_list=NULL,
       print_message(
         type = "message",
         date = TRUE,
-        "Starting to download the required level-2A SAFE products."
+        "Starting to download the required level-1C SAFE products."
       )
       
       lapply(pm$s2tiles_selected, function(tile) {
@@ -667,8 +670,9 @@ fidolasen_s2 <- function(param_list=NULL,
       }
       
       s2_list_l2a_corrected <- sen2cor(names(s2_list_l1c_tocorrect),
-                                          l1c_dir = pm$path_l1c,
-                                          outdir = pm$path_l2a)
+                                       l1c_dir = pm$path_l1c,
+                                       outdir = pm$path_l2a,
+                                       parallel = TRUE)
       names(s2_list_l2a_corrected) <- basename(s2_list_l2a_corrected)
       s2_list_l2a <- c(s2_list_l2a,s2_list_l2a_corrected)
     }
@@ -827,15 +831,6 @@ fidolasen_s2 <- function(param_list=NULL,
       )
     }
     
-    # index which is TRUE for SCL products, FALSE for others
-    names_warped_exp_scl_idx <- fs2nc_getElements(warped_names_exp,format="data.frame")$prod_type=="SCL"
-    # index which is TRUE for products to be atm. masked, FALSE for others
-    names_warped_tomask_idx <- if ("SCL" %in% pm$list_prods) {
-      names_warped_exp_scl_idx>-1
-    } else {
-      !names_warped_exp_scl_idx
-    }
-    
     # expected names for masked products
     # if clip_on_extent is required, mask warped, otherwise, mask merged
     masked_names_exp <- if (!is.na(pm$mask_type)) {
@@ -873,7 +868,7 @@ fidolasen_s2 <- function(param_list=NULL,
     } else {
       c("1C","2A")
     }
-    indices_names_exp <- if (length(out_names_exp)==0 | any(is.na(pm$list_indices))) {
+    indices_names_exp <- if (length(out_names_exp)==0 | anyNA(pm$list_indices)) {
       NULL
     } else {
       data.table(
@@ -1088,6 +1083,16 @@ fidolasen_s2 <- function(param_list=NULL,
       
     } # end of pm$overwrite FALSE IF cycle
     
+    # index which is TRUE for SCL products, FALSE for others
+    names_warped_exp_scl_idx <- fs2nc_getElements(warped_names_exp,format="data.frame")$prod_type=="SCL"
+    names_warped_req_scl_idx <- fs2nc_getElements(warped_names_req,format="data.frame")$prod_type=="SCL"
+    # index which is TRUE for products to be atm. masked, FALSE for others
+    names_warped_tomask_idx <- if ("SCL" %in% pm$list_prods) {
+      names_warped_req_scl_idx>-1
+    } else {
+      !names_warped_req_scl_idx
+    }
+
     # End of the section of the creation of file names
     # List of the file names:
     # List of all the file names, in order of creation
@@ -1112,6 +1117,19 @@ fidolasen_s2 <- function(param_list=NULL,
     # tiles_names_new
     # safe_names_l1c_req
     # safe_names_l2a_req
+
+    # Check if processing is needed
+    if (length(c(indices_names_new, out_names_new, masked_names_new, 
+                 warped_names_new, merged_names_new, tiles_names_new)) == 0) {
+      print_message(
+        type = "message",
+        date = TRUE,
+        "All the required output files already exist; nothing to do.\n ",
+        "To reprocess, run fidolasen_s2() with the argument overwrite = TRUE\n ",
+        "or specify a different output directory."
+      )
+      return(invisible(NULL))
+    }
 
     ## 4. Convert in vrt ##
     if (length(c(safe_names_l1c_req,safe_names_l2a_req))>0) {
@@ -1230,12 +1248,12 @@ fidolasen_s2 <- function(param_list=NULL,
         
         dir.create(path_warped, recursive=FALSE, showWarnings=FALSE)
         # create mask
-        s2_mask_extent <- if (is.na(pm$extent)) {
+        s2_mask_extent <- if (anyNA(pm$extent)) {
           NULL
         } else if (pm$extent_as_mask==TRUE) {
-          st_read(pm$extent, quiet=TRUE)
+          pm$extent
         } else {
-          suppressWarnings(st_cast(st_read(pm$extent, quiet=TRUE),"LINESTRING"))
+          suppressWarnings(st_cast(pm$extent,"LINESTRING"))
         }  # TODO add support for multiple extents
         
         if(pm$path_subdirs==TRUE){
@@ -1255,9 +1273,14 @@ fidolasen_s2 <- function(param_list=NULL,
               of = warped_outformat,
               ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
               mask = s2_mask_extent,
-              tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
+              tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
               t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
               r = pm$resampling,
+              dstnodata = s2_defNA(
+                sapply(merged_names_req[!names_merged_req_scl_idx],
+                       function(x){fs2nc_getElements(x)$prod_type})
+              ),
+              co = if (warped_outformat=="GTiff") {paste0("COMPRESS=",pm$compression)},
               overwrite = pm$overwrite
             ), # TODO dstnodata value?
             error = print
@@ -1276,9 +1299,14 @@ fidolasen_s2 <- function(param_list=NULL,
               of = pm$outformat, # use physical files to speed up next steps
               ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
               mask = s2_mask_extent,
-              tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
+              tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
               t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
               r = pm$resampling_scl,
+              dstnodata = s2_defNA(
+                sapply(merged_names_req[names_merged_req_scl_idx],
+                       function(x){fs2nc_getElements(x)$prod_type})
+              ),
+              co = if (pm$outformat=="GTiff") {paste0("COMPRESS=",pm$compression)},
               overwrite = pm$overwrite
             ), # TODO dstnodata value?
             error = print
@@ -1326,10 +1354,11 @@ fidolasen_s2 <- function(param_list=NULL,
         masked_names_out <- trace_function(
           s2_mask,
           infiles = if(pm$clip_on_extent==TRUE){warped_names_req[names_warped_tomask_idx]}else{merged_names_req[names_merged_tomask_idx]},
-          maskfiles = if(pm$clip_on_extent==TRUE){warped_names_req[names_warped_exp_scl_idx]}else{merged_names_exp[names_merged_exp_scl_idx]},
+          maskfiles = if(pm$clip_on_extent==TRUE){warped_names_exp[names_warped_exp_scl_idx]}else{merged_names_exp[names_merged_exp_scl_idx]},
           mask_type = pm$mask_type,
           outdir = path_out,
           format = pm$outformat,
+          compress = pm$compression,
           subdirs = pm$path_subdirs,
           overwrite = pm$overwrite,
           parallel = TRUE, # TODO pass as parameter
@@ -1368,6 +1397,7 @@ fidolasen_s2 <- function(param_list=NULL,
         subdirs = TRUE,
         source = pm$index_source,
         format = pm$outformat,
+        compress = pm$compression,
         overwrite = pm$overwrite,
         trace_files = indices_names_new
       )

@@ -23,7 +23,7 @@
 #'  checkboxInput column conditionalPanel dateRangeInput div em fluidRow h2 h3
 #'  helpText hr HTML htmlOutput icon isolate NS numericInput observe p
 #'  radioButtons reactive reactiveValues renderText renderUI runApp selectInput
-#'  shinyApp showModal span stopApp strong textInput uiOutput updateCheckboxGroupInput
+#'  shinyApp showModal span stopApp strong tagList textInput uiOutput updateCheckboxGroupInput
 #'  updateDateRangeInput updateRadioButtons updateTextInput withMathJax
 #' @importFrom shinydashboard box dashboardBody dashboardHeader dashboardPage
 #'  dashboardSidebar menuItem sidebarMenu tabItem tabItems
@@ -1007,7 +1007,8 @@ s2_gui <- function(param_list = NULL,
                                        (indices_req()==FALSE |
                                         indices_req()==TRUE & input$index_source=="BOA")) {TRUE} else {FALSE}
       } else {
-        safe_req$l1c <- if ("l1c" %in% input$list_levels) {TRUE} else {FALSE}
+        safe_req$l1c <- if ("l1c" %in% input$list_levels | 
+                            input$step_atmcorr %in% c("auto","scihub")) {TRUE} else {FALSE}
         safe_req$l2a <- if ("l2a" %in% input$list_levels) {TRUE} else {FALSE}
         safe_req$l2a_onlytomask <- FALSE
       }
@@ -1957,7 +1958,7 @@ s2_gui <- function(param_list = NULL,
               p("Please edit it using the GUI before continuing.")
             )
           } else {
-            taglist(
+            tagList(
               p(HTML(
                 "Some parameters have not been correctly set:",
                 "<ul><li>",
@@ -2108,14 +2109,14 @@ s2_gui <- function(param_list = NULL,
       
       
       # spatio-temporal selection
-      if (any(is.na(pl$timewindow))) {
+      if (anyNA(pl$timewindow)) {
         updateRadioButtons(session, "query_time", selected = FALSE)
       } else {
         updateRadioButtons(session, "query_time", selected = TRUE)
         updateDateRangeInput(session, "timewindow", start=pl$timewindow[1], end=pl$timewindow[2])
         updateRadioButtons(session, "timeperiod", selected = pl$timeperiod)
       }
-      if (any(is.na(pl$extent)) & pl$online == FALSE) {
+      if (anyNA(pl$extent) & pl$online == FALSE) {
         updateRadioButtons(session, "query_space", selected = FALSE)
       } else {
         updateRadioButtons(session, "query_space", selected = TRUE)
@@ -2160,7 +2161,7 @@ s2_gui <- function(param_list = NULL,
       updateRadioButtons(session, "use_reference", selected = ifelse(is.na(pl$reference_path), FALSE, TRUE))
       
       if (is.na(pl$reference_path)) {
-        updateRadioButtons(session, "rescale", selected = if(any(is.na(pl$res))) {FALSE} else {TRUE})
+        updateRadioButtons(session, "rescale", selected = if(anyNA(pl$res)) {FALSE} else {TRUE})
         updateTextInput(session, "resolution_custom", value = pl$res[1])
         updateRadioButtons(session, "resolution_s2", selected = pl$res_s2)
         updateRadioButtons(session, "reproj", selected = {

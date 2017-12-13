@@ -5,7 +5,7 @@
 \title{Correct L1C products using sen2cor}
 \usage{
 sen2cor(l1c_prodlist = NULL, l1c_dir = NULL, outdir = NULL,
-  proc_dir = NA, n_procs = 1, overwrite = FALSE)
+  proc_dir = NA, parallel = FALSE, overwrite = FALSE)
 }
 \arguments{
 \item{l1c_prodlist}{List of L1C product names to be corrected. They can be both
@@ -27,7 +27,11 @@ processing is done there and then L2A is moved to \code{outdir}.
 This is required under Linux systems when \code{l1c_dir} is a subdirectory of
 a unit mounted with SAMBA, otherwise sen2cor would produce empty L2A products.}
 
-\item{n_procs}{Number of processors (\code{integer}) to use (default is 1, single processor).}
+\item{parallel}{(optional) Logical: if TRUE, sen2cor instances are launched
+in parallel using multiple cores; if FALSE (default), they are launched in
+series on a single core.
+The number of cores is automatically determined; specifying it is also
+possible (e.g. \code{parallel = 4}).}
 
 \item{overwrite}{Logical value: should existing output L2A products be overwritten?
 (default: FALSE)}
