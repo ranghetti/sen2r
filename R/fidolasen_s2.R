@@ -558,13 +558,13 @@ fidolasen_s2 <- function(param_list=NULL,
   # setorder(s2_dt, -sensing_datetime)
   s2_dt <- s2_dt[
     !duplicated(
-      s2_dt[,list(
+      s2_dt[order(-creation_datetime), list(
         mission,
         level,
         id_orbit,
-        id_tile=ifelse(is.na(id_tile),sample(1E5),id_tile)), # if id_tile is not specified do not remove duplicates, because different products can rely to different tiles
+        id_tile=ifelse(is.na(id_tile),sample(1E5),id_tile), # if id_tile is not specified do not remove duplicates, because different products can rely to different tiles
         sensing_datetime
-      ]
+      )]
     ),
   ]
   s2_list_l1c <- s2_dt[level=="1C",url] # list of required L1C
