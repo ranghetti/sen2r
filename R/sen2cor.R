@@ -132,7 +132,10 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, p
     sel_l1c <- l1c_prodlist[i]
     sel_l2a <- file.path(
       if (is.null(outdir)) {dirname(sel_l1c)} else {outdir},
-      gsub("^S2([AB])\\_MSIL1C\\_","S2\\1_MSIL2A_",basename(sel_l1c))
+      gsub(
+        "_MSIL1C\\_", "_MSIL2A_",
+        gsub("_OPER_", "_USER_", basename(sel_l1c))
+      )
     ) # path of the L2A product where it should be placed definitively
     
     # proceed only if overwrite==TRUE, or if file does not exist
@@ -160,7 +163,10 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, p
       # path of the L2A product where it is placed by sen2cor
       sen2cor_out_l2a <- file.path(
         dirname(sel_l1c),
-        gsub("^S2([AB])\\_MSIL1C\\_","S2\\1_MSIL2A_",basename(sel_l1c))
+        gsub(
+          "_MSIL1C\\_", "_MSIL2A_",
+          gsub("_OPER_", "_USER_", basename(sel_l1c))
+        )
       )
       
       # apply sen2cor
