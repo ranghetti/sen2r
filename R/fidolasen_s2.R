@@ -393,10 +393,12 @@ fidolasen_s2 <- function(param_list=NULL,
     )
   }
   
-  # check that output directories exist
-  paths_exist <- sapply(pm[c("path_l1c","path_l2a","path_tiles","path_merged","path_out","path_indices")],
-                        function(x){if(is.na(x)){NA}else{file.exists(x)}})
-  paths_exist <- paths_exist[!is.na(paths_exist)]
+  # check that output parent directories exist, and create required paths
+  parent_paths <- sapply(
+    pm[c("path_l1c","path_l2a","path_tiles","path_merged","path_out","path_indices")], 
+    function(x){if(is.na(x)){NA}else{dirname(x)}}
+  ) %>% unique() %>% na.omit() %>% as.character()
+  paths_exist <- sapply(parent_paths, file.exists)
   if (any(!paths_exist)) {
     print_message(
       type="error",
@@ -409,6 +411,10 @@ fidolasen_s2 <- function(param_list=NULL,
       "before continuing."
     )
   }
+  sapply(
+    pm[c("path_l1c","path_l2a","path_tiles","path_merged","path_out","path_indices")],
+    function(x) {if(is.na(x)){NA}else{dir.create(x, recursive = FALSE, showWarnings = FALSE)}}
+  )
   
   
   # check output format

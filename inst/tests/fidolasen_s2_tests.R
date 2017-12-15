@@ -18,7 +18,6 @@ testthat::test_that(
     context("Test 0: raw download")
     example_dir <- system.file("extdata","example_files", package="fidolasen")
     safe_dir <- file.path(example_dir, "safe")
-    dir.create(safe_dir, showWarnings = FALSE)
     s2tiles_test1 <- c(
       "S2A_OPER_PRD_MSIL1C_PDMC_20161206T102010_R022_V20161205T101402_20161205T101402.SAFE" = 
         "https://scihub.copernicus.eu/dhus/odata/v1/Products('37e6ef05-3598-4491-ae74-10a0685bcdc2')/\\$value",
@@ -43,7 +42,6 @@ testthat::test_that(
     context("Test 1: translate and merge two tiles")
     out_dir <- file.path(example_dir, "out", "out_test1")
     dir.create(dirname(out_dir), showWarnings = FALSE)
-    dir.create(out_dir, showWarnings = FALSE)
     fidolasen_s2(
       gui = FALSE,
       online = FALSE,
@@ -60,7 +58,6 @@ testthat::test_that(
     ### Test 2: clip and mask
     context("Test 2: clip and mask")
     out_dir <- file.path(example_dir, "out", "out_test2")
-    dir.create(out_dir, showWarnings = FALSE)
     fidolasen_s2(
       gui = FALSE,
       online = FALSE,
@@ -79,7 +76,6 @@ testthat::test_that(
     ### Test 3: create spectral indices
     context("Test 3: spectral indices")
     out_dir <- file.path(example_dir, "out", "out_test3")
-    dir.create(out_dir, showWarnings = FALSE)
     fidolasen_s2(
       gui = FALSE,
       online = FALSE,
