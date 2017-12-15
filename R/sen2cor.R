@@ -155,9 +155,12 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, p
       
       # if proc_dir is [manually or automatically] set, copy sel_l1c
       if (!is.na(sel_proc_dir)) {
+        use_tempdir <- TRUE
         dir.create(sel_proc_dir, recursive=FALSE, showWarnings=FALSE)
         file.copy(sel_l1c, sel_proc_dir, recursive=TRUE)
         sel_l1c <- file.path(sel_proc_dir, basename(sel_l1c))
+      } else {
+        use_tempdir <- FALSE
       }
       
       # path of the L2A product where it is placed by sen2cor
@@ -170,7 +173,11 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, p
       )
       
       # apply sen2cor
-      sel_trace <- start_trace(sen2cor_out_l2a, "sen2cor")
+      sel_trace <- if (use_tempdir) {
+        start_trace(sen2cor_out_l2a, "sen2cor")
+      } else {
+        start_trace(c(sel_l1c, sen2cor_out_l2a), "sen2cor")
+      }
       system(
         paste(binpaths$sen2cor, sel_l1c),
         intern = Sys.info()["sysname"] == "Windows"
@@ -182,9 +189,10 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, p
       }
 
       # move output to the required output directory
-      if (sen2cor_out_l2a != sel_l2a) {
+      if (use_tempdir) {
         file.copy(sen2cor_out_l2a, dirname(sel_l2a), recursive=TRUE)
         unlink(sen2cor_out_l2a, recursive=TRUE)
+        unlink(sel_l1c, recursive=TRUE)
       }
       
     } # end IF cycle on overwrite
