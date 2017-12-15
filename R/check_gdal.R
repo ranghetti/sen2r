@@ -47,6 +47,7 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
     #   type = "message",
     #   "GDAL is already set; to reconfigure it, set force = TRUE."
     # )
+    gdal_setInstallation(search_path=dirname(binpaths$gdalinfo), rescan=TRUE)
     return(invisible(TRUE))
   }
   
