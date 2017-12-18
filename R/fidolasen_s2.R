@@ -52,7 +52,7 @@
 #'  downloaded from SciHub;
 #'  * "l2a" means that they are downloaded if available on SciHub,
 #'  otherwise they are skipped (sen2cor is never used);
-#'  * "no" means that L1C are not considered (processing chain
+#'  * "no" means that L2A are not considered (processing chain
 #'  makes use only of L1C products).
 #' @param timewindow (optional) Temporal window for querying: Date object
 #'  of length 1 (single day) or 2 (time window). Default is NA in online mode

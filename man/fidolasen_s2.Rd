@@ -74,7 +74,7 @@ produce L2A;
 downloaded from SciHub;
 \item "l2a" means that they are downloaded if available on SciHub,
 otherwise they are skipped (sen2cor is never used);
-\item "no" means that L1C are not considered (processing chain
+\item "no" means that L2A are not considered (processing chain
 makes use only of L1C products).
 }}
 
