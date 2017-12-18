@@ -51,6 +51,13 @@ s2_download <- function(s2_prodlist=NULL,
                         tile=NULL,
                         outdir=".") {
 
+  # convert input NA arguments in NULL
+  for (a in c("s2_prodlist","tile","apihub")) {
+    if (suppressWarnings(all(is.na(get(a))))) {
+      assign(a,NULL)
+    }
+  }
+  
   # import s2download
   s2download <- import_s2download(convert=FALSE)
 

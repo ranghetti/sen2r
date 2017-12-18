@@ -43,13 +43,18 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
                     level="auto",
                     apihub=NULL,
                     max_cloud=110) {
+  
+  # convert input NA arguments in NULL
+  for (a in c("spatial_extent","tile","orbit","time_interval","apihub")) {
+    if (suppressWarnings(all(is.na(get(a))))) {
+      assign(a,NULL)
+    }
+  }
 
   # check if spatial_extent was provided
   spatial_extent_exists <- if (!exists("spatial_extent")) {
     FALSE
   } else if (is.null(spatial_extent)) {
-    FALSE
-  } else if (anyNA(spatial_extent)) {
     FALSE
   } else if (is(spatial_extent, "POLYGON")) {
     if (length(spatial_extent)==0) {
@@ -64,11 +69,6 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
   # if not, retrieve it from tile
   if (!spatial_extent_exists) {
     if (is.null(tile)) {
-      print_message(
-        type = "error",
-        "At least one parameter among spatial_extent and tile must be specified."
-      )
-    } else if (anyNA(tile)) {
       print_message(
         type = "error",
         "At least one parameter among spatial_extent and tile must be specified."
