@@ -562,17 +562,6 @@ fidolasen_s2 <- function(param_list=NULL,
     s2_dt <- s2_dt[id_orbit %in% pm$s2orbits_selected,]
   }
   # setorder(s2_dt, -sensing_datetime)
-  s2_dt <- s2_dt[
-    !duplicated(
-      s2_dt[order(-creation_datetime), list(
-        mission,
-        level,
-        id_orbit,
-        id_tile=ifelse(is.na(id_tile),sample(1E5),id_tile), # if id_tile is not specified do not remove duplicates, because different products can rely to different tiles
-        sensing_datetime
-      )]
-    ),
-  ]
   s2_list_l1c <- s2_dt[level=="1C",url] # list of required L1C
   s2_list_l2a <- s2_dt[level=="2A",url] # list of required L2A
   names(s2_list_l1c) <- s2_dt[level=="1C",name]
@@ -635,6 +624,29 @@ fidolasen_s2 <- function(param_list=NULL,
     # s2_dt <- s2_dt[grep(paste0("(",paste(pm$s2tiles_selected,collapse=")|("),")"), s2_dt$id_tile),]
   }
   
+  # remove duplicates (often for different creation dates, or same sensing dates and different sensing hours)
+  # (placed here causes downloading more than the required tiles, but it is the only method to be sure not to exclude
+  # some products with the required tiles and include others without them)
+  s2_dt <- s2_dt[order(-creation_datetime),]
+  s2_dt <- s2_dt[
+    !duplicated(
+      s2_dt[, list(
+        mission,
+        level,
+        id_orbit,
+        id_tile=ifelse(is.na(id_tile),sample(1E5),id_tile), # if id_tile is not specified do not remove duplicates, because different products can rely to different tiles
+        as.Date(sensing_datetime)
+      )]
+    ),
+    ]
+  
+  # redefine s2_list_l1c/l2a
+  s2_list_l1c <- s2_dt[level=="1C",url] # list of required L1C
+  s2_list_l2a <- s2_dt[level=="2A",url] # list of required L2A
+  names(s2_list_l1c) <- s2_dt[level=="1C",name]
+  names(s2_list_l2a) <- s2_dt[level=="2A",name]
+  
+
   # If s2_list is empty, exit (second time)
   if (nrow(s2_dt)==0) {
     print_message(
@@ -774,6 +786,7 @@ fidolasen_s2 <- function(param_list=NULL,
         )
       })
     }) %>% unlist()
+    tiles_l1c_names_exp <- tiles_l1c_names_exp[!duplicated(tiles_l1c_names_exp)]
     tiles_l2a_names_exp <- lapply(file.path(pm$path_l2a,names(s2_list_l2a)), function(x){
       lapply(list_prods[list_prods %in% l2a_prods], function(p){
         file.path(
@@ -783,6 +796,7 @@ fidolasen_s2 <- function(param_list=NULL,
         )
       })
     }) %>% unlist()
+    tiles_l2a_names_exp <- tiles_l2a_names_exp[!duplicated(tiles_l2a_names_exp)]
     tiles_names_exp <- c(if("l1c" %in% pm$s2_levels) {tiles_l1c_names_exp},
                          if("l2a" %in% pm$s2_levels) {tiles_l2a_names_exp})
     
@@ -1049,10 +1063,19 @@ fidolasen_s2 <- function(param_list=NULL,
         safe_names_l1c_req <- safe_names_l2a_req <- NULL
       } else {
         tiles_dt_new <- data.table(fs2nc_getElements(tiles_names_new,format="data.frame"))
-        safe_dt_av <- sapply(c(names(s2_list_l1c),names(s2_list_l2a)), function(x) unlist(s2_getMetadata(x, info="nameinfo"))) %>%
-          t() %>% data.table()
-        if (is.null(safe_dt_av$id_tile)) {
-          safe_dt_av$id_tile <- ""
+        safe_dt_av <- lapply(c(names(s2_list_l1c),names(s2_list_l2a)), function(x) {
+          unlist(s2_getMetadata(x, info=c("nameinfo"))) %>%
+            t() %>%
+            as.data.frame(stringsAsFactors=FALSE)
+        }) %>%
+          rbindlist(fill=TRUE)
+        safe_dt_av$id_tile <- if (is.null(safe_dt_av$id_tile)) {
+          ""
+        } else {
+          lapply(c(file.path(pm$path_l1c,names(s2_list_l1c)),file.path(pm$path_l2a,names(s2_list_l2a))), function(x) {
+          tryCatch(s2_getMetadata(x, "tiles"), error = function(e) {NULL})
+        }) %>%
+          sapply(paste, collapse = " ") %>% as.character()
         }
         tiles_basenames_av <- safe_dt_av[,paste0("S",
                                                  mission,
