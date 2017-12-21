@@ -36,15 +36,17 @@ fs2nc_getElements <- function(s2_names, format="list") {
 
   s2_names <- basename(s2_names)
 
-  for (s2_name in s2_names) {
+  for (i in seq_along(s2_names)) {
 
-    metadata[[s2_name]] <- list()
+    s2_name <- s2_names[i]
+    metadata[[i]] <- list()
+    names(metadata)[i] <- s2_name
 
     # retrieve type
     if(length(grep(fs2nc_regex$tile$regex, s2_name))==1) {
-      metadata[[s2_name]]$type <- "tile"
+      metadata[[i]]$type <- "tile"
     } else if(length(grep(fs2nc_regex$merged$regex, s2_name))==1) {
-      metadata[[s2_name]]$type <- "merged"
+      metadata[[i]]$type <- "merged"
     } else {
       print_message(
         type="error",
@@ -52,17 +54,17 @@ fs2nc_getElements <- function(s2_names, format="list") {
     }
 
     # retrieve info
-    for (sel_el in fs2nc_regex[[metadata[[s2_name]]$type]]$elements) {
-      metadata[[s2_name]][[sel_el]] <- gsub(
-        fs2nc_regex[[metadata[[s2_name]]$type]]$regex,
-        paste0("\\",which(fs2nc_regex[[metadata[[s2_name]]$type]]$elements==sel_el)),
+    for (sel_el in fs2nc_regex[[metadata[[i]]$type]]$elements) {
+      metadata[[i]][[sel_el]] <- gsub(
+        fs2nc_regex[[metadata[[i]]$type]]$regex,
+        paste0("\\",which(fs2nc_regex[[metadata[[i]]$type]]$elements==sel_el)),
         s2_name)
       # specific formattations
       if (sel_el=="sensing_date") {
-        metadata[[s2_name]][[sel_el]] <- as.Date(metadata[[s2_name]][[sel_el]], format="%Y%m%d")
+        metadata[[i]][[sel_el]] <- as.Date(metadata[[i]][[sel_el]], format="%Y%m%d")
       }
       if (sel_el=="res") {
-        metadata[[s2_name]][[sel_el]] <- paste0(metadata[[s2_name]][[sel_el]],"m")
+        metadata[[i]][[sel_el]] <- paste0(metadata[[i]][[sel_el]],"m")
       }
     }
 
