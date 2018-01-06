@@ -611,7 +611,7 @@ fidolasen_s2 <- function(param_list=NULL,
   }
   
   # second filter on tiles (#filter2)
-  s2_dt$id_tile <- lapply(file.path(pm$path_l1c,s2_dt[,name]), function(x) {
+  s2_dt$id_tile <- lapply(file.path(ifelse(s2_dt$level=="1C",pm$path_l1c,pm$path_l2a),s2_dt[,name]), function(x) {
     tryCatch(s2_getMetadata(x, "tiles"), error = function(e) {NULL})
   }) %>%
     sapply(paste, collapse = " ") %>% as.character()
