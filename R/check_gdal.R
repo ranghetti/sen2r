@@ -120,11 +120,12 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
   } else { 
     file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdal_calc.py")))
   }
+  binpaths$gdaldem <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdaldem")))
   binpaths$gdalinfo <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdalinfo")))
   binpaths$ogrinfo <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("ogrinfo")))
   
   lapply(
-    c("gdalbuildvrt","gdal_translate","gdalwarp","gdalinfo","ogrinfo"), 
+    c("gdalbuildvrt","gdal_translate","gdalwarp","gdaldem","gdalinfo","ogrinfo"), 
     function(x){
       binpaths[[x]] <- normalizePath(binpaths[[x]])
     }
