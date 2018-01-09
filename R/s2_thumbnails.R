@@ -57,7 +57,7 @@ stack2rgb <- function(in_rast,
 #'  singleband raster file. This function is used by [s2_thumbnails], 
 #'  and it will be exported when it would be more generalised.
 #' @param in_rast Path of the input multiband raster.
-#' @param out_rast (optional) Path of the output RGB JPEG image; if NULL
+#' @param out_file (optional) Path of the output RGB JPEG image; if NULL
 #'  (default), a RasterLayer will be returned.
 #' @param palette Path of the palette file to be used (cpt or txt),
 #'  or character value of a builtin palette ("SCL", "NDVI", the default 

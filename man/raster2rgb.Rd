@@ -10,6 +10,9 @@ raster2rgb(in_rast, out_file = NULL, palette = "generic_ndsi_2",
 \arguments{
 \item{in_rast}{Path of the input multiband raster.}
 
+\item{out_file}{(optional) Path of the output RGB JPEG image; if NULL
+(default), a RasterLayer will be returned.}
+
 \item{palette}{Path of the palette file to be used (cpt or txt),
 or character value of a builtin palette ("SCL", "NDVI", the default
 "generic_ndsi" or "generic_ndsi_2").}
@@ -21,9 +24,6 @@ accepted.}
 \item{maxval}{(to be implemented) the value corresponding to the maximum
 value of the palette (for now, only 1 is used). A quantile will be also
 accepted.}
-
-\item{out_rast}{(optional) Path of the output RGB JPEG image; if NULL
-(default), a RasterLayer will be returned.}
 }
 \value{
 The path of the output image; alternatively, the output image
