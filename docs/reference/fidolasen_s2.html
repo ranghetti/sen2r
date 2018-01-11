@@ -110,7 +110,7 @@ descriptions of all the other parameters).</p>
   <span class='kw'>resampling_scl</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>outformat</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>compression</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>path_l1c</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_l2a</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_merged</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>path_out</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>use_python</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+  <span class='kw'>thumbnails</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>use_python</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -368,6 +368,15 @@ If not provided (default), <code>path_out</code> is used.</p></td>
 for each output product or spectral index is generated within
 <code>path_tiles</code>, <code>path_merged</code>, <code>path_out</code> and <code>path_indices</code>; if FALSE,
 products are put directly within them.</p></td>
+    </tr>
+    <tr>
+      <th>thumbnails</th>
+      <td><p>(optional) Logical: if TRUE (default), a thumbnail is
+added for each product created. Thumbnails are JPEG or PNG georeferenced
+small images (width or height of 1024 pixels) with default colour palettes
+(for more details, see the help window in the GUI). They are placed in
+a subdirectory of the products names "thumbnails".
+If FALSE, they are not created.</p></td>
     </tr>
     <tr>
       <th>use_python</th>
