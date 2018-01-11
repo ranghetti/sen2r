@@ -234,27 +234,29 @@ s2_thumbnails <- function(infiles,
     
     # set outdir
     if (is.na(outdir)) {
-      outdir <- file.path(dirname(sel_infile_path), "thumbnails")
-      dir.create(outdir, recursive = FALSE, showWarnings = FALSE)
+      sel_outdir <- file.path(dirname(sel_infile_path), "thumbnails")
+      dir.create(sel_outdir, recursive = FALSE, showWarnings = FALSE)
+    }
+    
+    # Determine prod_type
+    sel_prod_type <- if (is.na(prod_type)) {
+      sel_infile_meta$prod_type
+    } else {
+      prod_type
     }
     
     # Set output path
     out_path <- file.path(
-      outdir, 
+      sel_outdir, 
       gsub(
         "\\..+$",
-        if (prod_type %in% c("SCL")) {".png"} else {".jpg"}, # resp. discrete or continuous values
+        if (sel_prod_type %in% c("SCL")) {".png"} else {".jpg"}, # resp. discrete or continuous values
         basename(sel_infile_path)
       )
     )
     
     # if output already exists and overwrite==FALSE, do not proceed
     if (!file.exists(out_path) | overwrite==TRUE) {
-      
-      # Determine prod_type
-      if (is.na(prod_type)) {
-        prod_type <- sel_infile_meta$prod_type
-      }
       
       # Resize input if necessary
       sel_infile_size <- suppressWarnings(GDALinfo(sel_infile_path)[c("rows","columns")])
@@ -265,7 +267,7 @@ s2_thumbnails <- function(infiles,
           paste0(
             binpaths$gdal_translate," -of VRT ",
             "-outsize ",out_size[2]," ",out_size[1]," ",
-            if (prod_type %in% c("SCL")) {"-r mode "} else {"-r average "}, # resp. discrete or continuous values
+            if (sel_prod_type %in% c("SCL")) {"-r mode "} else {"-r average "}, # resp. discrete or continuous values
             "\"",sel_infile_path,"\" ",
             "\"",resized_path,"\""
           ), intern = Sys.info()["sysname"] == "Windows"
@@ -275,7 +277,7 @@ s2_thumbnails <- function(infiles,
       }
       
       # generate RGB basing on prod_type
-      if (prod_type %in% c("BOA","TOA")) {
+      if (sel_prod_type %in% c("BOA","TOA")) {
         
         stack2rgb(
           resized_path, 
@@ -300,8 +302,8 @@ s2_thumbnails <- function(infiles,
         raster2rgb(
           resized_path, 
           out_file = out_path, 
-          palette = if (prod_type %in% c("SCL")) {prod_type} else {"generic_ndsi"}#,
-          # TODO cycle here above basing on prod_type to use different palettes for different products / indices
+          palette = if (sel_prod_type %in% c("SCL")) {sel_prod_type} else {"generic_ndsi"}#,
+          # TODO cycle here above basing on sel_prod_type to use different palettes for different products / indices
           # minval = -1, 
           # maxval = 1
         )
