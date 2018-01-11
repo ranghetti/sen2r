@@ -552,15 +552,35 @@ s2_gui <- function(param_list = NULL,
                           div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
                               textInput("path_out_textin", NULL, ""))))
                 ),
-                div(
-                  style="margin-top: -15px",
-                  checkboxInput(
-                    "path_subdirs",
-                    label = span(
-                      "Group products in subdirectories\u2000",
-                      actionLink("help_path_subdirs", icon("question-circle"))
-                    ),
-                    value = TRUE
+                
+                fluidRow(
+                  column(
+                    width=5,
+                    div(
+                      style="margin-top: -15px",
+                      checkboxInput(
+                        "path_subdirs",
+                        label = span(
+                          "Group products in subdirectories\u2000",
+                          actionLink("help_path_subdirs", icon("question-circle"))
+                        ),
+                        value = TRUE
+                      )
+                    )
+                  ),
+                  column(
+                    width=7,
+                    div(
+                      style="margin-top: -15px",
+                      checkboxInput(
+                        "check_thumbnails",
+                        label = span(
+                          "Create thumbnails\u2000",
+                          actionLink("help_thumbnails", icon("question-circle"))
+                        ),
+                        value = TRUE
+                      )
+                    )
                   )
                 )
               )
@@ -1818,6 +1838,49 @@ s2_gui <- function(param_list = NULL,
       ))
     })
     
+    observeEvent(input$help_thumbnails, {
+      showModal(modalDialog(
+        title = "Create thumbnails?",
+        p("If checked, a thumbnail (a JPEG or PNG image with a width or height",
+          "of 1024 pixels) with a corresponding",
+          ".aux.xml file containing georeferencing metadata) will be created",
+          "for each output file, and placed in a subdirectory named",
+          "\"thumbnails\"."),
+        p("Color schemes are set as follows:"),
+        p(HTML(
+          "<ul>",
+          "<li>BOA and TOA reflectances are shown in false colours",
+          "(SWIR-NIR-Red);</li>",
+          "<li>SCL maps make use of the",
+          as.character(a(
+            href="https://sentinel.esa.int/web/sentinel/technical-guides/sentinel-2-msi/level-2a/algorithm",
+            target="_blank",
+            "original colour scheme:"
+          )),
+          as.character(img(
+            src="https://sentinel.esa.int/documents/247904/322303/SUH-WIKI-MSI-230_Scene_Classification_figure_3.png",
+            alt="SCL colour scheme"
+          )),
+          "<br></li>",
+          "<li>spectral indices uses this",
+          as.character(a(
+            href="http://soliton.vm.bytemark.co.uk/pub/cpt-city/cmocean/tn/delta.png.index.html",
+            target="_blank",
+            "common colour ramp:"
+          )),
+          as.character(img(
+            src="http://soliton.vm.bytemark.co.uk/pub/cpt-city/cmocean/delta.png",
+            alt="indices colour ramp"
+          )),
+          "<br>with minimum and maximum values set to -1 and 1.</li>",
+          "</ul>"
+        )),
+        p("For now, these color schemes cannot be modified."),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+    
     observeEvent(input$help_clip_on_extent, {
       showModal(modalDialog(
         title = "Clip outputs on the selected extent?",
@@ -2088,6 +2151,7 @@ s2_gui <- function(param_list = NULL,
       rl$path_out <- if (rl$preprocess==TRUE & (length(input$list_prods)>1 | length(input$list_prods)>0 & !"indices" %in% input$list_prods)) {input$path_out_textin} else {NA} # path of output pre-processed products
       rl$path_indices <- if (rl$preprocess==TRUE & indices_req()==TRUE) {input$path_indices_textin} else {NA} # path of spectral indices
       rl$path_subdirs <- if (rl$preprocess==TRUE) {as.logical(input$path_subdirs)} else {NA} # logical (use subdirs)
+      rl$thumbnails <- if (rl$preprocess==TRUE) {as.logical(input$check_thumbnails)} else {NA} # logical (create thumbnails)
       
       # information about package version
       rl$fidolasen_version <- packageVersion("fidolasen") %>% as.character()
@@ -2155,6 +2219,7 @@ s2_gui <- function(param_list = NULL,
       updateTextInput(session, "path_out_textin", value = pl$path_out)
       updateTextInput(session, "path_indices_textin", value = pl$path_indices)
       updateRadioButtons(session, "path_subdirs", selected = pl$path_subdirs)
+      updateRadioButtons(session, "check_thumbnails", selected = pl$thumbnails)
       
       # output geometry
       updateTextInput(session, "reference_file_textin", value = pl$reference_path)

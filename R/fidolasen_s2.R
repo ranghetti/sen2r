@@ -145,6 +145,12 @@
 #'  for each output product or spectral index is generated within
 #'  `path_tiles`, `path_merged`, `path_out` and `path_indices`; if FALSE,
 #'  products are put directly within them.
+#' @param thumbnails (optional) Logical: if TRUE (default), a thumbnail is
+#'  added for each product created. Thumbnails are JPEG or PNG georeferenced
+#'  small images (width or height of 1024 pixels) with default colour palettes
+#'  (for more details, see the help window in the GUI). They are placed in
+#'  a subdirectory of the products names "thumbnails".
+#'  If FALSE, they are not created.
 #' @param use_python (optional) Logical: if TRUE (default), the presence of
 #'  python in the system is checked before running the function; 
 #'  if FALSE, this is skipped. Setting this to FALSE can bge useful on 
@@ -196,6 +202,7 @@ fidolasen_s2 <- function(param_list=NULL,
                          path_out=NA,
                          path_indices=NA,
                          path_subdirs=NA,
+                         thumbnails=TRUE,
                          use_python = TRUE) {
   
   
@@ -254,6 +261,7 @@ fidolasen_s2 <- function(param_list=NULL,
                  path_out=NA,
                  path_indices=NA,
                  path_subdirs=TRUE,
+                 thumbnails=TRUE,
                  fidolasen_version=packageVersion("fidolasen"))
   
   # Starting execution
@@ -1442,43 +1450,47 @@ fidolasen_s2 <- function(param_list=NULL,
     
     ## 9. create thumbnails
     
-    # define input files
-    names_req <- unique(c(tiles_names_new, merged_names_new, warped_names_new, 
-                          masked_names_new, out_names_new, indices_names_new))
-    # exclude temporary files
-    names_req <- names_req[!grepl(paste0("^",path_tmp), names_req)]
-    
-    if (length(names_req)>0) {
+    if (thumbnails==TRUE) {
       
-      print_message(
-        type = "message",
-        date = TRUE,
-        "Generating thumbnails."
-      )
+      # define input files
+      names_req <- unique(c(tiles_names_new, merged_names_new, warped_names_new, 
+                            masked_names_new, out_names_new, indices_names_new))
+      # exclude temporary files
+      names_req <- names_req[!grepl(paste0("^",path_tmp), names_req)]
       
-      # define expected output names
-      names_new <- file.path(
-        dirname(names_req), 
-        "thumbnails",
-        sapply(
-          basename(names_req), 
-          function(x) {
-            gsub(
-              "\\..+$",
-              if (fs2nc_getElements(x)$prod_type %in% c("SCL")) {".png"} else {".jpg"},
-              x
-            )
-          }
+      if (length(names_req)>0) {
+        
+        print_message(
+          type = "message",
+          date = TRUE,
+          "Generating thumbnails."
         )
-      )
+        
+        # define expected output names
+        names_new <- file.path(
+          dirname(names_req), 
+          "thumbnails",
+          sapply(
+            basename(names_req), 
+            function(x) {
+              gsub(
+                "\\..+$",
+                if (fs2nc_getElements(x)$prod_type %in% c("SCL")) {".png"} else {".jpg"},
+                x
+              )
+            }
+          )
+        )
+        
+        indices_names <- trace_function(
+          s2_thumbnails,
+          infiles = names_req,
+          trace_files = c(names_new,paste0(names_new,".aux.xml"))
+        )
+        
+      }
       
-      indices_names <- trace_function(
-        s2_thumbnails,
-        infiles = names_req,
-        trace_files = c(names_new,paste0(names_new,".aux.xml"))
-      )
-      
-    }
+    } # end of thumbnails IF cycle
     
     
   } # end of pm$preprocess IF cycle

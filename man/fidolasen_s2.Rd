@@ -14,7 +14,7 @@ fidolasen_s2(param_list = NULL, gui = NA, preprocess = NA,
   resampling_scl = NA, outformat = NA, compression = NA, overwrite = NA,
   path_l1c = NA, path_l2a = NA, path_tiles = NA, path_merged = NA,
   path_out = NA, path_indices = NA, path_subdirs = NA,
-  use_python = TRUE)
+  thumbnails = TRUE, use_python = TRUE)
 }
 \arguments{
 \item{param_list}{(optional) List of input parameters:
@@ -198,6 +198,13 @@ If not provided (default), \code{path_out} is used.}
 for each output product or spectral index is generated within
 \code{path_tiles}, \code{path_merged}, \code{path_out} and \code{path_indices}; if FALSE,
 products are put directly within them.}
+
+\item{thumbnails}{(optional) Logical: if TRUE (default), a thumbnail is
+added for each product created. Thumbnails are JPEG or PNG georeferenced
+small images (width or height of 1024 pixels) with default colour palettes
+(for more details, see the help window in the GUI). They are placed in
+a subdirectory of the products names "thumbnails".
+If FALSE, they are not created.}
 
 \item{use_python}{(optional) Logical: if TRUE (default), the presence of
 python in the system is checked before running the function;
