@@ -93,12 +93,12 @@
 
 
 s2_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m", full.name=TRUE, set.seed=NA, abort=FALSE) {
-
+  
   # elements used by the function
   needed_metadata <- c("tiles","utm","mission","level","sensing_datetime","id_orbit","id_tile")
   # elements mandatory to convert filename
   mandatory_metadata <- c("mission","level","sensing_datetime","id_orbit")
-
+  
   if (file.exists(prod_name)) {
     s2_metadata <- s2_getMetadata(prod_name, info=needed_metadata)
     if (is.na(set.seed)) {
@@ -111,7 +111,7 @@ s2_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m", full.na
       set.seed <- FALSE
     }
   }
-
+  
   # check that necessary elements do not miss
   if (any(sapply(s2_metadata[mandatory_metadata],is.null))) {
     print_message(
@@ -120,21 +120,21 @@ s2_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m", full.na
       paste(mandatory_metadata[sapply(s2_metadata[mandatory_metadata],is.null)], collapse="' '"),
       "') can not be retreved from the input filename.")
   }
-
+  
   # check if id_tile is missing
   if (is.null(s2_metadata$id_tile)) {
-
+    
     # set seed if requested
     if (set.seed) {
       base_str <- paste(unlist(s2_metadata[needed_metadata]),collapse="")
       sel_seed <- strtoi(substr(digest(base_str, algo='xxhash32'),2,8), base=16)
       set.seed(sel_seed)
     }
-
+    
     # if it contains only one tile, use that tile
     if (length(s2_metadata$tiles)==1) {
       s2_metadata$id_tile <- s2_metadata$tiles
-    # otherwise, use convention 1 if UTM zone is unique, 2 if not
+      # otherwise, use convention 1 if UTM zone is unique, 2 if not
     } else if (length(s2_metadata$utm)==1) {
       s2_metadata$id_tile <- paste0(s2_metadata$utm,
                                     str_pad(sample(1000,1)-1,3,"left","0"))
@@ -142,9 +142,9 @@ s2_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m", full.na
       s2_metadata$id_tile <- paste0(paste(LETTERS[sample(26,2,replace=TRUE)],collapse=""),
                                     str_pad(sample(1000,1)-1,3,"left","0"))
     }
-
+    
   }
-
+  
   # select default product type if missing
   if (is.null(prod_type)) {
     if (s2_metadata$level=="1C") {
@@ -153,7 +153,7 @@ s2_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m", full.na
       prod_type <- "BOA"
     }
   }
-
+  
   # check prod_type
   prod_type_accepted_values <- list(
     "1C" = c("TOA"),
@@ -167,7 +167,7 @@ s2_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m", full.na
       paste(prod_type_accepted_values[[s2_metadata$level]], collapse="', '"),
       "'; use 'xxx' for a generic string in order not to show this warning).")
   }
-
+  
   # check res
   if (!res %in% c("10m","20m","60m")) {
     print_message(
@@ -175,7 +175,7 @@ s2_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m", full.na
       "\"res\" value is not recognised (accepted values are '10m', '20m' ",
       "and '60m').")
   }
-
+  
   # compose name
   short_name <- with(
     s2_metadata,
@@ -183,7 +183,7 @@ s2_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m", full.na
            strftime(s2_metadata$sensing_datetime,"%Y%m%d"),"_",
            id_orbit,"_",id_tile,"_",prod_type,"_",substr(res,1,2))
   )
-
+  
   # check name length
   if (nchar(short_name)!=31) {
     print_message(
@@ -191,7 +191,7 @@ s2_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m", full.na
       "Length of shortname is wrong (probably \"prod_type\" or \"res\" ",
       "has wrong length).")
   }
-
+  
   # add dirname and extension
   out_name <- if (dirname(prod_name)!="." & full.name) {
     file.path(dirname(prod_name), short_name)
@@ -201,7 +201,7 @@ s2_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m", full.na
   if (!is.null(ext)) {
     out_name <- paste0(out_name,".",gsub("^\\.","",ext))
   }
-
+  
   return(out_name)
-
+  
 }

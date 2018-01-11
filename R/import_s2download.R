@@ -14,7 +14,7 @@ import_s2download <- function(...) {
   
   # check that python and the required modules are installed
   py <- init_python()
-
+  
   # check that s2download and dependencies were cloned
   # this ensures also that python2 and other dependencies are present)
   # check if it is already installed
@@ -31,7 +31,7 @@ import_s2download <- function(...) {
     )
     install_s2download()
   }
-
+  
   # load s2download
   binpaths <- jsonlite::fromJSON(binpaths_file)
   s2download <- tryCatch(
@@ -47,7 +47,7 @@ import_s2download <- function(...) {
   }
   
   s2download$inst_path <- binpaths$s2download
-
+  
   return(s2download)
-
+  
 }

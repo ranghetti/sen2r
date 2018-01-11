@@ -206,12 +206,12 @@ fidolasen_s2 <- function(param_list=NULL,
   if (use_python == TRUE) {
     py <- init_python()
   }
-
+  
   # internal function: return character(0) instead of NULL
   # (used to build _req names)
   nn <- function(x) {if (is.null(x)) character(0) else x}
   
-   # create tempdir
+  # create tempdir
   dir.create(tempdir(), showWarnings=FALSE)
   
   ## 1. Read / import parameters ##
@@ -293,7 +293,7 @@ fidolasen_s2 <- function(param_list=NULL,
       gui <- TRUE
     }
   }
-
+  
   # Overwrite parameters passed manually
   # (if some parameters are still missing, copy from default values)
   for (sel_par in names(pm_def)[-match("fidolasen_version",names(pm_def))]) {
@@ -361,7 +361,7 @@ fidolasen_s2 <- function(param_list=NULL,
   if (is(pm$extent, "character")) {
     pm$extent <- st_read(pm$extent, quiet=TRUE)
   }
-
+  
   # internal parameters
   dir.create(path_tmp <- tempfile(pattern="dir"), showWarnings = FALSE) # consider to add as an optional parameter
   path_out <- if (!is.na(pm$path_out)) {pm$path_out} else {file.path(path_tmp,"out")}
@@ -434,7 +434,7 @@ fidolasen_s2 <- function(param_list=NULL,
       "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
   }
   # define output extension
-
+  
   # out_ext <- if (pm$outformat=="ENVI") {
   #   "dat"
   # } else {
@@ -442,7 +442,7 @@ fidolasen_s2 <- function(param_list=NULL,
   #   unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(py$osgeo$gdal$DMD_EXTENSIONS))," ")," "))[1]
   # }
   out_ext <- sel_driver[1,"ext"]
-
+  
   ### Find, download and preprocess ###
   
   ## 2. List required products ##
@@ -455,7 +455,7 @@ fidolasen_s2 <- function(param_list=NULL,
       date = TRUE,
       "Searching for available SAFE products on SciHub..."
     )
-
+    
     # if online mode, retrieve list with s2_list() basing on parameters
     if ("l1c" %in% pm$s2_levels) {
       # list of SAFE (L1C) needed for required L1C
@@ -511,7 +511,7 @@ fidolasen_s2 <- function(param_list=NULL,
     )
     return(invisible(NULL))
   }
-
+  
   names(s2_list) <- gsub("^l[12][ac]\\.","",names(s2_list))
   
   # If s2_list is empty, exit
@@ -567,7 +567,7 @@ fidolasen_s2 <- function(param_list=NULL,
   names(s2_list_l1c) <- s2_dt[level=="1C",name]
   names(s2_list_l2a) <- s2_dt[level=="2A",name]
   
-
+  
   ## 3. Download them ##
   # TODO implement ovwerite/skip
   # (now it skips, but analysing each single file)
@@ -646,7 +646,7 @@ fidolasen_s2 <- function(param_list=NULL,
   names(s2_list_l1c) <- s2_dt[level=="1C",name]
   names(s2_list_l2a) <- s2_dt[level=="2A",name]
   
-
+  
   # If s2_list is empty, exit (second time)
   if (nrow(s2_dt)==0) {
     print_message(
@@ -672,7 +672,7 @@ fidolasen_s2 <- function(param_list=NULL,
           "^S2([AB])\\_MSIL1C\\_","S2\\1\\_MSIL2A\\_",
           names(s2_list_l1c)
         ) %in% names(s2_list_l2a)
-      ]
+        ]
     } else {
       s2_list_l1c
     }
@@ -1002,7 +1002,7 @@ fidolasen_s2 <- function(param_list=NULL,
       warped_names_req <- if (pm$clip_on_extent==FALSE | length(out_names_new)==0) {
         NULL
       } else if (is.na(pm$mask_type)) {
-          out_names_exp[!names_merged_new_out_idx] # FIXME check!
+        out_names_exp[!names_merged_new_out_idx] # FIXME check!
       } else {
         file.path(
           path_warped,
@@ -1015,7 +1015,7 @@ fidolasen_s2 <- function(param_list=NULL,
         )
       }
       warped_names_new <- warped_names_req[!file.exists(nn(warped_names_req))]
-
+      
       # required merged
       merged_basenames_req <- c(
         gsub(paste0(warped_ext,"$"),merged_ext,basename(nn(warped_names_new))) %>%
@@ -1073,9 +1073,9 @@ fidolasen_s2 <- function(param_list=NULL,
           ""
         } else {
           lapply(c(file.path(pm$path_l1c,names(s2_list_l1c)),file.path(pm$path_l2a,names(s2_list_l2a))), function(x) {
-          tryCatch(s2_getMetadata(x, "tiles"), error = function(e) {NULL})
-        }) %>%
-          sapply(paste, collapse = " ") %>% as.character()
+            tryCatch(s2_getMetadata(x, "tiles"), error = function(e) {NULL})
+          }) %>%
+            sapply(paste, collapse = " ") %>% as.character()
         }
         tiles_basenames_av <- safe_dt_av[,paste0("S",
                                                  mission,
@@ -1121,7 +1121,7 @@ fidolasen_s2 <- function(param_list=NULL,
     } else {
       !names_warped_req_scl_idx
     }
-
+    
     # End of the section of the creation of file names
     # List of the file names:
     # List of all the file names, in order of creation
@@ -1146,7 +1146,7 @@ fidolasen_s2 <- function(param_list=NULL,
     # tiles_names_new
     # safe_names_l1c_req
     # safe_names_l2a_req
-
+    
     # Check if processing is needed
     if (length(c(indices_names_new, out_names_new, masked_names_new, 
                  warped_names_new, merged_names_new, tiles_names_new)) == 0) {
@@ -1159,7 +1159,8 @@ fidolasen_s2 <- function(param_list=NULL,
       )
       return(invisible(NULL))
     }
-
+    
+    
     ## 4. Convert in vrt ##
     if (length(c(safe_names_l1c_req,safe_names_l2a_req))>0) {
       
@@ -1190,13 +1191,13 @@ fidolasen_s2 <- function(param_list=NULL,
             )
           )
           # s2_translate(infile = sel_prod,
-            #              outdir = path_tiles,
-            #              prod_type = list_l1c_prods,
-            #              format = tiles_outformat,
-            #              res = pm$res_s2,
-            #              subdirs = pm$path_subdirs,
-            #              overwrite = pm$overwrite))
-
+          #              outdir = path_tiles,
+          #              prod_type = list_l1c_prods,
+          #              format = tiles_outformat,
+          #              res = pm$res_s2,
+          #              subdirs = pm$path_subdirs,
+          #              overwrite = pm$overwrite))
+          
         }
       }
       if("l2a" %in% pm$s2_levels) {

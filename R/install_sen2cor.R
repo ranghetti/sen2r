@@ -97,7 +97,7 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
     unlink(sen2cor_installer)
     sen2cor_bin <- system.file("sen2cor", paste0("Sen2Cor-",sen2cor_version,"-win64"), "L2A_Process.bat", package="fidolasen")
   }
-
+  
   # Save a text file with the L2A_Process path,
   # including also paths of GDAL apps
   binpaths$sen2cor <- normalizePath(sen2cor_bin)

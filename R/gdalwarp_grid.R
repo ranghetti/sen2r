@@ -33,16 +33,16 @@ gdalwarp_grid <- function(srcfiles,
                           ref,
                           of = NULL,
                           ...) {
-
+  
   # import python modules
   gdal <- import("osgeo",convert=FALSE)$gdal
-
+  
   # read ref parameters
   ref_metadata <- suppressWarnings(GDALinfo(ref))
   ref_res <- ref_metadata[c("res.x","res.y")]
   ref_min <- ref_metadata[c("ll.x","ll.y")]
   ref_proj <- attr(ref_metadata, "projection")
-
+  
   # check consistency between inputs and outputs
   if (length(srcfiles) != length(dstfiles)) {
     print_message(
@@ -54,7 +54,7 @@ gdalwarp_grid <- function(srcfiles,
       "\") must be of the same length."
     )
   }
-
+  
   # check output format
   if (!is.null(of)) {
     sel_driver <- gdal$GetDriverByName(of)
@@ -69,12 +69,12 @@ gdalwarp_grid <- function(srcfiles,
         "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
     }
   }
-
+  
   # cycle on each infiles
   for (i in seq_along(srcfiles)) {
     srcfile <- srcfiles[i]
     dstfile <- dstfiles[i]
-
+    
     # read infile parameters
     sel_metadata <- suppressWarnings(GDALinfo(srcfile))
     sel_res <- sel_metadata[c("res.x","res.y")]
@@ -86,14 +86,14 @@ gdalwarp_grid <- function(srcfiles,
     dimnames(sel_bbox) <- list(c("x","y"),c("min","max"))
     sel_extent <- get_extent(sel_bbox, sel_proj)
     of <- ifelse (is.null(of), attr(sel_metadata, "driver"), of)
-
+    
     # get reprojected extent
     out_extent <- reproj_extent(sel_extent, ref_proj)
-
+    
     # allineate out_extent to ref grid
     out_bbox_mod <- round((as(out_extent, "matrix") - ref_min) / ref_res) * ref_res + ref_min
     # out_extent_mod <- get_extent(out_bbox_mod, ref_proj)
-
+    
     # warp
     # (using gdalwarp() instead of calling gdalwarp from system() is a bit slower,
     # but it easily allows to pass additional parameters)
@@ -103,7 +103,7 @@ gdalwarp_grid <- function(srcfiles,
              tr = ref_res,
              of = of,
              ...)
-
+    
   }
-
+  
 }

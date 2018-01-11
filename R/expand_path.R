@@ -24,13 +24,13 @@
 
 
 expand_path <- function(path, parent=getwd(), silent=TRUE, normalize=TRUE) {
-
+  
   # to avoid NOTE on check
   . <- NULL
-
+  
   # chose the function to apply
   expand_fun <- ifelse(normalize==TRUE, "normalizePath", "path.expand")
-
+  
   # check if path is relative
   path_isabsolute <- if (Sys.info()["sysname"] == "Windows") {
     # for windows, the second character is used to discriminate absolute from relative
@@ -39,31 +39,31 @@ expand_path <- function(path, parent=getwd(), silent=TRUE, normalize=TRUE) {
     # for unix, the first character is used
     substr(path.expand(path),1,1) == "/"
   }
-
+  
   # return
   if (path_isabsolute) {
-
+    
     if (!is.na(silent) & silent==FALSE) {
       print_message(type="message", "Path '",path,"' is already absolute.")
     }
     do.call(expand_fun, list(path)) %>%
       return()
-
+    
   } else {
-
+    
     if (is.na(silent) | silent==FALSE) {
       print_message(
         type=ifelse(is.na(silent),"warning","message"),
         "Path '",path,"' is not absolute; '",
         gsub("/$","",parent),"' is used as prefix.")
     }
-
+    
     gsub("/$","",parent) %>%
       file.path(path) %>%
       list() %>%
       do.call(expand_fun, .) %>%
       return()
-
+    
   }
-
+  
 }

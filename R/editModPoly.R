@@ -45,27 +45,27 @@ editModPoly <- function(
       editOptions = leaflet.extras::editToolbarOptions()
     )
   }
-
+  
   output$map <- leaflet::renderLeaflet({leafmap})
-
+  
   featurelist <- reactiveValues(
     drawn = list(),
     edited_all = list(),
     deleted_all = list(),
     finished = list()
   )
-
+  
   recorder <- list()
-
+  
   EVT_DRAW <- "map_draw_new_feature"
   EVT_EDIT <- "map_draw_edited_features"
   EVT_DELETE <- "map_draw_deleted_features"
-
+  
   shiny::observeEvent(input[[EVT_DRAW]], {
     featurelist$drawn <- c(featurelist$drawn, list(input[[EVT_DRAW]]))
     featurelist$finished <- c(featurelist$finished, list(input[[EVT_DRAW]]))
   })
-
+  
   shiny::observeEvent(input[[EVT_EDIT]], {
     edited <- input[[EVT_EDIT]]
     # find the edited features and update drawn
@@ -78,10 +78,10 @@ editModPoly <- function(
         featurelist$finished[loc] <<- list(x)
       }
     })
-
+    
     featurelist$edited_all <- c(featurelist$edited_all, list(edited))
   })
-
+  
   shiny::observeEvent(input[[EVT_DELETE]], {
     deleted <- input[[EVT_DELETE]]
     # find the deleted features and update finished
@@ -94,10 +94,10 @@ editModPoly <- function(
         featurelist$finished[loc] <<- NULL
       }
     })
-
+    
     featurelist$deleted_all <- c(featurelist$deleted_all, list(deleted))
   })
-
+  
   # record events if record = TRUE
   if(record == TRUE) {
     lapply(
@@ -118,8 +118,8 @@ editModPoly <- function(
       }
     )
   }
-
-
+  
+  
   # collect all of the the features into a list
   #  by action
   returnlist <- reactive({
@@ -137,7 +137,7 @@ editModPoly <- function(
           # ignore empty action types to prevent error
           #   handle in the helper functions?
           if(length(action) == 0) { return() }
-
+          
           # FeatureCollection requires special treatment
           #  and we need to extract features
           features <- Reduce(
@@ -152,13 +152,13 @@ editModPoly <- function(
             action,
             init = NULL
           )
-
+          
           mapedit:::combine_list_of_sf(
             lapply(features, mapedit:::st_as_sf.geo_list, crs = crs)
           )
         }
       )
-
+      
       recorder <- lapply(
         recorder,
         function(evt) {
@@ -173,6 +173,6 @@ editModPoly <- function(
     }
     return(workinglist)
   })
-
+  
   return(returnlist)
 }

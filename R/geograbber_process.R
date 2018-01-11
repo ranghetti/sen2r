@@ -61,7 +61,7 @@ geograbber_process <- function(path_safe,
       )
     )
   }
-
+  
   # Launch processing
   fidolasen_s2(
     # parameters passed by this function
@@ -107,5 +107,3 @@ geograbber_process <- function(path_safe,
   )
   
 }
-
-

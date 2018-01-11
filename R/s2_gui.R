@@ -299,7 +299,7 @@ s2_gui <- function(param_list = NULL,
                     icon=icon("user-circle")
                   )
                 )
-
+                
               ),
               column(
                 width=6,
@@ -1091,7 +1091,7 @@ s2_gui <- function(param_list = NULL,
       write_scihub_login(input$scihub_username, input$scihub_password)
       removeModal()
     })
-
+    
     ## end of steps module ##
     
     
@@ -1706,7 +1706,7 @@ s2_gui <- function(param_list = NULL,
         footer = NULL
       ))
     })
-
+    
     observeEvent(input$fix_online, {
       showModal(modalDialog(
         title = "Download is not supported on Windows",
@@ -1920,7 +1920,7 @@ s2_gui <- function(param_list = NULL,
         footer = NULL
       ))
     })
-
+    
     observeEvent(input$import_param_deactivated, {
       showModal(modalDialog(
         title = "Issue with import parameter function",

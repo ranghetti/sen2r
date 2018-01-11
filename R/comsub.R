@@ -31,7 +31,7 @@ comsub <- function(data, sep="") {
     lapply(data_spl, `length<-`, data_spl_maxlength) %>%
       do.call(rbind,.) %>%
       apply(2, function(i){!length(unique(i))==1}) %>%
-    which.max() -1
+      which.max() -1
   } else {
     length(data_spl[[1]]) - 1 # FIXME ok for dir  with "/", but not with ""
   }

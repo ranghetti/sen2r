@@ -19,29 +19,29 @@
 #' fs2nc_getElements(fs2nc_examplename)
 
 fs2nc_getElements <- function(s2_names, format="list") {
-
+  
   # if input is NULL, return NULL
   if (is.null(s2_names)) {
     return(invisible(NULL))
   }
-
+  
   # define regular expressions to identify products
   fs2nc_regex <- list(
     "tile" = list("regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([A-Z0-9]{5})\\_([A-Z0-9]+)\\_([126]0)\\.?(.*)$",
                   "elements" = c("mission","level","sensing_date","id_orbit","id_tile","prod_type","res","file_ext")),
     "merged" = list("regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_\\_([A-Z0-9]+)\\_([126]0)\\.?(.*)$",
                     "elements" = c("mission","level","sensing_date","id_orbit","prod_type","res","file_ext")))
-
+  
   metadata <- list() # output object, with requested metadata
-
+  
   s2_names <- basename(s2_names)
-
+  
   for (i in seq_along(s2_names)) {
-
+    
     s2_name <- s2_names[i]
     metadata[[i]] <- list()
     names(metadata)[i] <- s2_name
-
+    
     # retrieve type
     if(length(grep(fs2nc_regex$tile$regex, s2_name))==1) {
       metadata[[i]]$type <- "tile"
@@ -52,7 +52,7 @@ fs2nc_getElements <- function(s2_names, format="list") {
         type="error",
         "\"",s2_name,"\" was not recognised.")
     }
-
+    
     # retrieve info
     for (sel_el in fs2nc_regex[[metadata[[i]]$type]]$elements) {
       metadata[[i]][[sel_el]] <- gsub(
@@ -67,15 +67,15 @@ fs2nc_getElements <- function(s2_names, format="list") {
         metadata[[i]][[sel_el]] <- paste0(metadata[[i]][[sel_el]],"m")
       }
     }
-
+    
   } # end of prod cycle
-
-
+  
+  
   # return output
   if (format=="data.frame") {
     return(do.call("rbind", lapply(metadata, as.data.frame, stringsAsFactors=FALSE)))
   }
-
+  
   if (format!="list") {
     print_message(
       type="warning",
@@ -87,5 +87,5 @@ fs2nc_getElements <- function(s2_names, format="list") {
   } else {
     return(metadata)
   }
-
+  
 }

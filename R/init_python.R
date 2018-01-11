@@ -12,7 +12,7 @@ init_python <- function() {
   # define the required python module
   # py_modules <- c("os","sys","git","subprocess","re","numpy","zipfile","osgeo")
   py_modules <- c("os","sys","re","numpy","zipfile","osgeo")
-
+  
   # checks the python version
   # (if possible, use python2 for compatibility with s2download.py)
   py_discover_config()

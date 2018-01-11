@@ -30,10 +30,10 @@
 create_indices_db <- function(xslt_path = NA,
                               json_path = NA,
                               force = FALSE) {
-
+  
   # to avoid NOTE on check
   n_index <- name <- longname <- . <- s2_formula <- type <- NULL
-
+  
   # check if indices.json already exists, and if the version is updated
   # we assume that a new version of indices.json is created at every new ackage update
   if (is.na(json_path)) {
@@ -46,7 +46,7 @@ create_indices_db <- function(xslt_path = NA,
       return(invisible(NULL))
     }
   }
-
+  
   # check the presence of xsltproc
   if (Sys.which("xsltproc")=="") {
     print_message(
@@ -54,12 +54,12 @@ create_indices_db <- function(xslt_path = NA,
       "\"xsltproc\" was not found in your system; ",
       "please install it or update your system PATH.")
   }
-
+  
   # set XSLT path
   if (is.na(xslt_path)) {
     xslt_path <- file.path(system.file(package="fidolasen"),"extdata","xslt")
   }
-
+  
   # if missing, download xsltml to convert from MathML to LaTeX: http://fhoerni.free.fr/comp/xslt.html
   if (any(!file.exists(file.path(xslt_path,c("cmarkup.xsl","entities.xsl","glayout.xsl","mmltex.xsl","scripts.xsl","tables.xsl","tokens.xsl"))))) {
     dir.create(xslt_path, recursive=FALSE, showWarnings=FALSE)
@@ -69,7 +69,7 @@ create_indices_db <- function(xslt_path = NA,
     unzip(file.path(xslt_path,"xsltml_2.1.2.zip"), exdir=xslt_path)
     unlink(file.path(xslt_path,"xsltml_2.1.2.zip"))
   }
-
+  
   # Read HTML indices database from indexdatabase.de
   idb_url <- "http://www.indexdatabase.de"
   idb_s2indices_url <- file.path(idb_url,"db/is.php?sensor_id=96")
@@ -78,11 +78,11 @@ create_indices_db <- function(xslt_path = NA,
   s2_htmlinternal <- htmlTreeParse(s2_path, useInternalNodes = TRUE) %>% xmlRoot()
   s2_html_table <- s2_html[["body"]][["div"]][["table"]]
   s2_htmlinternal_table <- s2_htmlinternal[["body"]][["div"]][["table"]]
-
+  
   s2_table <- data.table(readHTMLTable(s2_htmlinternal_table, header=TRUE, stringsAsFactors=FALSE)[,1:3])
   setnames(s2_table, c( "Nr.\r\n      ", "Name\r\n      ","Abbrev.\r\n      "),
            c("n_index","longname","name"))
-
+  
   s2_table$link <- paste0(idb_url, sapply(seq_along(s2_html_table)[-1], function(x) {
     xmlAttrs(s2_html_table[[x]][[2]][[1]])["href"]
   }))
@@ -92,7 +92,7 @@ create_indices_db <- function(xslt_path = NA,
   s2_formula_mathml_general <- lapply(seq_along(s2_html_table)[-1], function(x) {
     s2_html_table[[x]][[4]][[1]]
   }) # this is used for automatic band substitution
-
+  
   # Build table
   s2_table$s2_formula <- as.character(NA)
   s2_table[,n_index:=as.integer(n_index)]
@@ -102,7 +102,7 @@ create_indices_db <- function(xslt_path = NA,
       "The index numbering in Index DataBase is altered; ",
       "please report this to a maintainer.")
   }
-
+  
   # clean database
   n_index_toremove <- c()
   # change name to some indices
@@ -127,18 +127,18 @@ create_indices_db <- function(xslt_path = NA,
   s2_formula_mathml <- s2_formula_mathml[!s2_table$n_index %in% n_index_toremove]
   s2_formula_mathml_general <- s2_formula_mathml_general[!s2_table$n_index %in% n_index_toremove]
   s2_table <- s2_table[!n_index %in% n_index_toremove,]
-
-
+  
+  
   ## Convert MathML to LaTeX on each row, using external tool
   parent_regex <- "\\{((?>[^{}]+)|(?R))*\\}"
   max_iter = 7 # maximum numbero of iterations for nested fractions
-
+  
   for (sel_row in seq_len(nrow(s2_table))) {
-
-
+    
+    
     saveXML(s2_formula_mathml[[sel_row]],
             tmp_infile <- tempfile())
-
+    
     system(
       paste0(
         Sys.which("xsltproc")," ",
@@ -147,7 +147,7 @@ create_indices_db <- function(xslt_path = NA,
         "\"",tmp_outfile <- tempfile(),"\""),
       intern = Sys.info()["sysname"] == "Windows"
     )
-
+    
     # convert manually from latex to formula
     tmp_latex <- suppressWarnings(readLines(tmp_outfile)) %>%
       gsub("^\\$ *(.*) *\\$$","\\1",.) %>% # remove math symbols
@@ -163,7 +163,7 @@ create_indices_db <- function(xslt_path = NA,
       gsub("par\\_([^0-9A-Za-z])", "\\1", .)  %>% # error in two indices
       gsub("\\\\left\\(", "(", .)  %>% # parenthesis
       gsub("\\\\right\\)", ")", .) # parenthesis
-
+    
     n_iter <- 1
     while (length(grep("[{}]", tmp_latex))>0 & n_iter<=max_iter) {
       tmp_latex <- gsub(paste0("\\\\frac",parent_regex,parent_regex), "(\\1)/(\\2)", tmp_latex, perl=TRUE) # convert fractions
@@ -171,12 +171,12 @@ create_indices_db <- function(xslt_path = NA,
       tmp_latex <- gsub(paste0(parent_regex,"\\^",parent_regex),"power\\(\\1,\\2\\)", tmp_latex, perl=TRUE) # square
       n_iter <- n_iter+1
     }
-
+    
     s2_table[sel_row,"s2_formula"] <- tmp_latex
     # print(sel_row)
-
+    
   }
-
+  
   # last manual corrections on formulas
   s2_table[,s2_formula:=gsub("par\\_([0-9])", "band_\\1", s2_table$s2_formula)] # some bands were wrongly classified as parameters
   s2_table$s2_formula[s2_table$name=="TCI"] <- gsub("band\\_1\\.5","1.5",s2_table[name=="TCI",s2_formula]) # specific error
@@ -187,7 +187,7 @@ create_indices_db <- function(xslt_path = NA,
   s2_table[,s2_formula:=gsub("par\\_([aALyY]r?)", "par_a", s2_table$s2_formula)] # first parameters (a, A, ar, y, Y, L) -> "a"
   s2_table[,s2_formula:=gsub("par\\_([bB])", "par_b", s2_table$s2_formula)] # second parameters (b, B) -> "b"
   s2_table[,s2_formula:=gsub("par\\_([X])", "par_x", s2_table$s2_formula)] # third parameters ("X") -> "x"
-
+  
   ## Test expressions
   # build a data.frame with random values
   test_df <- runif(16,0,1)
@@ -195,7 +195,7 @@ create_indices_db <- function(xslt_path = NA,
   test_df <- as.data.frame(t(test_df))
   # define power() as in numpy
   power <- function(x,y){x^y}
-
+  
   test_results <-with(test_df,
                       sapply(s2_table$s2_formula,
                              function(x) {
@@ -217,7 +217,7 @@ create_indices_db <- function(xslt_path = NA,
                          "index"=s2_table$name,
                          "output"=ifelse(test_type=="ok",test_results,NA),
                          "type"=test_type)
-
+  
   # # These indices contain errors:
   # test_out[type=="error",]
   # # for now, remove them.
@@ -227,8 +227,8 @@ create_indices_db <- function(xslt_path = NA,
   s2_formula_mathml <- s2_formula_mathml[!s2_table$n_index %in% n_index_toremove]
   s2_formula_mathml_general <- s2_formula_mathml_general[!s2_table$n_index %in% n_index_toremove]
   s2_table <- s2_table[!n_index %in% n_index_toremove,]
-
-
+  
+  
   ## Check indices manually
   # (this is necessary because most of the indices is associated to wrong
   # Sentinel-2 bands, and because parameter values are missing)
@@ -236,7 +236,7 @@ create_indices_db <- function(xslt_path = NA,
   s2_table$checked <- FALSE
   # numerics: values for index parameters
   s2_table$x <- s2_table$b <- s2_table$a <- as.numeric(NA)
-
+  
   # by default, make all these changes
   # (only bands named as "RED", "BLUE" and "NIR" are changed, because
   # these are the wrong ones, while normally bands named in other ways
@@ -247,12 +247,12 @@ create_indices_db <- function(xslt_path = NA,
            s2_formula := gsub("band_9","band_8",s2_formula)] # B9 to B8 (NIR)
   s2_table[grepl("BLUE",s2_formula_mathml_general),
            s2_formula := gsub("band_1","band_2",s2_formula)] # B2 to B1 (Blue)
-
+  
   # set as checked for indices ok after previous changes
   s2_table[name %in% c("NDVI","SAVI","MCARI","MCARI2","TCARI","ARVI","NDRE",
                        "BNDVI","GNDVI","NDII","TCI_idx","MSAVI","OSAVI",
                        "MTVI2","MCARI/MTVI2","TCARI/OSAVI"),checked:=TRUE]
-
+  
   # set default parameter values
   s2_table[name=="SAVI", a:=0.5] # default value for L (here "a") parameter
   s2_table[name=="ARVI", a:=1] # default value for gamma (here "a") parameter
@@ -282,14 +282,14 @@ create_indices_db <- function(xslt_path = NA,
     x = c(NA,NA,NA)
   )
   s2_table <- rbind(s2_table, s2_table_new, fill=TRUE)
-
+  
   # add empty elements in MathML formulas
   for (i in length(s2_formula_mathml) + seq_len(nrow(s2_table) - length(s2_formula_mathml))) {
     s2_formula_mathml[[i]] <- NA
     s2_formula_mathml_general[[i]] <- NA
   }
-
-
+  
+  
   ## Convert in JSON
   # convert MathML to character
   s2_table$s2_formula_mathml <- sapply(
@@ -302,7 +302,7 @@ create_indices_db <- function(xslt_path = NA,
       }
     }
   )
-
+  
   json_table <- list(
     "indices" = s2_table,
     "fidolasen_version" = as.character(packageVersion("fidolasen")),

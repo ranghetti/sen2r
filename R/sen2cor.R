@@ -124,10 +124,12 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, p
   }
   
   # cycle on eacjh product
-  l2a_prodlist <- foreach(i=seq_along(l1c_prodlist), 
-          .combine=c,
-          .export = "mountpoint",
-          .packages='fidolasen') %DO% {
+  l2a_prodlist <- foreach(
+    i=seq_along(l1c_prodlist), 
+    .combine=c,
+    .export = "mountpoint",
+    .packages='fidolasen'
+  ) %DO% {
     
     sel_l1c <- l1c_prodlist[i]
     sel_l2a <- file.path(
@@ -187,7 +189,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, p
       } else {
         clean_trace(sel_trace)
       }
-
+      
       # move output to the required output directory
       if (use_tempdir) {
         file.copy(sen2cor_out_l2a, dirname(sel_l2a), recursive=TRUE)
@@ -196,7 +198,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, p
       }
       
     } # end IF cycle on overwrite
-
+    
     sel_l2a
     
   } # end cycle on each product

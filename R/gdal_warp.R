@@ -129,7 +129,7 @@ gdal_warp <- function(srcfiles,
                       dstnodata = NULL,
                       overwrite = FALSE,
                       ...) {
-
+  
   # check consistency between inputs and outputs
   if (length(srcfiles) != length(dstfiles)) {
     print_message(
@@ -155,7 +155,7 @@ gdal_warp <- function(srcfiles,
       " (the length of \"srcfiles\")."
     )
   }
-
+  
   # check output format
   if (!is.null(of)) {
     gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="fidolasen"))
@@ -171,7 +171,7 @@ gdal_warp <- function(srcfiles,
         "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
     }
   }
-
+  
   # if "ref" is specified, read ref parameters
   if (!is.null(ref)) {
     ref_metadata <- suppressWarnings(GDALinfo(ref))
@@ -191,7 +191,7 @@ gdal_warp <- function(srcfiles,
       tr <- ref_size*ref_res/round((ref_size*ref_res)/tr)
     }
   }
-
+  
   # if "mask" is specified, take "mask" and "te" from it
   if (!is.null(mask)) {
     mask_type <- get_spatype(mask)
@@ -217,108 +217,108 @@ gdal_warp <- function(srcfiles,
         as("matrix")
     }
   }
-
+  
   # cycle on each srcfile
   for (i in seq_along(srcfiles)) {
     srcfile <- srcfiles[i]
     dstfile <- dstfiles[i]
     sel_nodata <- dstnodata[i]
-
+    
     # if dstfile already exists and overwrite==FALSE, do not proceed
     if (!file.exists(dstfile) | overwrite==TRUE) {
-
-    # read infile parameters
-    sel_metadata <- suppressWarnings(GDALinfo(srcfile))
-    sel_res <- sel_metadata[c("res.x","res.y")]
-    sel_ll <- sel_metadata[c("ll.x","ll.y")]
-    sel_size <- sel_metadata[c("columns","rows")]
-    sel_s_srs <- attr(sel_metadata, "projection") %>%
-      CRS() %>% CRSargs()
-    sel_bbox <- matrix(
-      c(sel_ll, sel_ll + sel_size * sel_res),
-      ncol=2)
-    dimnames(sel_bbox) <- list(c("x","y"),c("min","max"))
-    sel_extent <- get_extent(sel_bbox, sel_s_srs)
-    sel_of <- ifelse (is.null(of), attr(sel_metadata, "driver"), of)
-
-    # set default parameter values (if not specified)
-    sel_t_srs <- ifelse(is.null(t_srs), sel_s_srs, t_srs)
-    sel_tr <- if (is.null(tr)) {sel_res} else {tr}
-    # default method: near if the target resolution is lower than an half of the source,
-    # mode elsewhere
-    sel_r <- if (is.null(r)) {
-      ifelse(all(2*tr < sel_res), "near", "mode")
-    } else {
-      r
-    }
-
-    # get reprojected extent
-    # (if already set it was referring to mask; in this case, to srcfile)
-    suppressMessages(
-      sel_src_bbox <- as(reproj_extent(sel_extent, sel_t_srs), "matrix")
-    )
-
-    # set the correct bounding box for srcfile
-    if (is.null(ref)) {
-      if (is.null(mask)) {
-        # ref NULL & mask NULL: use bbox of srcfile, reprojected
-        sel_te <- sel_src_bbox
-      } else if (class(mask)=="logical" && is.na(mask)) { # check if mask==NA
-        # ref NULL & mask NA: the same (use bbox of srcfile, reprojected)
-        sel_te <- sel_src_bbox
+      
+      # read infile parameters
+      sel_metadata <- suppressWarnings(GDALinfo(srcfile))
+      sel_res <- sel_metadata[c("res.x","res.y")]
+      sel_ll <- sel_metadata[c("ll.x","ll.y")]
+      sel_size <- sel_metadata[c("columns","rows")]
+      sel_s_srs <- attr(sel_metadata, "projection") %>%
+        CRS() %>% CRSargs()
+      sel_bbox <- matrix(
+        c(sel_ll, sel_ll + sel_size * sel_res),
+        ncol=2)
+      dimnames(sel_bbox) <- list(c("x","y"),c("min","max"))
+      sel_extent <- get_extent(sel_bbox, sel_s_srs)
+      sel_of <- ifelse (is.null(of), attr(sel_metadata, "driver"), of)
+      
+      # set default parameter values (if not specified)
+      sel_t_srs <- ifelse(is.null(t_srs), sel_s_srs, t_srs)
+      sel_tr <- if (is.null(tr)) {sel_res} else {tr}
+      # default method: near if the target resolution is lower than an half of the source,
+      # mode elsewhere
+      sel_r <- if (is.null(r)) {
+        ifelse(all(2*tr < sel_res), "near", "mode")
       } else {
-        # ref NULL & mask provided: use bbox of mask, reprojected and aligned to src grid
-        sel_mask_bbox <- if (exists("mask_bbox")) {
-          mask_bbox
-        } else {
-          st_transform(mask, sel_t_srs) %>%
-            get_extent() %>%
-            as("matrix")
-        }
-        sel_te <- (sel_mask_bbox - sel_ll) / sel_tr
-        sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
-        dimnames(sel_te) <- list(c("x","y"),c("min","max"))
-        sel_te <- sel_te * sel_tr + sel_ll
+        r
       }
-    } else {
-      if (is.null(mask)) {
-        # ref provided & mask NULL: use bbox of ref
-        sel_te <- ref_bbox
-      } else if (class(mask)=="logical" && is.na(mask)) {
-        # ref provided & mask NA: use bbox of srcfile (reprojected and aligned to ref grid)
-        sel_te <- (sel_src_bbox - ref_ll) / sel_tr
-        sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
-        dimnames(sel_te) <- list(c("x","y"),c("min","max"))
-        sel_te <- sel_te * sel_tr + ref_ll
+      
+      # get reprojected extent
+      # (if already set it was referring to mask; in this case, to srcfile)
+      suppressMessages(
+        sel_src_bbox <- as(reproj_extent(sel_extent, sel_t_srs), "matrix")
+      )
+      
+      # set the correct bounding box for srcfile
+      if (is.null(ref)) {
+        if (is.null(mask)) {
+          # ref NULL & mask NULL: use bbox of srcfile, reprojected
+          sel_te <- sel_src_bbox
+        } else if (class(mask)=="logical" && is.na(mask)) { # check if mask==NA
+          # ref NULL & mask NA: the same (use bbox of srcfile, reprojected)
+          sel_te <- sel_src_bbox
+        } else {
+          # ref NULL & mask provided: use bbox of mask, reprojected and aligned to src grid
+          sel_mask_bbox <- if (exists("mask_bbox")) {
+            mask_bbox
+          } else {
+            st_transform(mask, sel_t_srs) %>%
+              get_extent() %>%
+              as("matrix")
+          }
+          sel_te <- (sel_mask_bbox - sel_ll) / sel_tr
+          sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
+          dimnames(sel_te) <- list(c("x","y"),c("min","max"))
+          sel_te <- sel_te * sel_tr + sel_ll
+        }
       } else {
-        # ref provided & mask provided: use bbox of mask (reprojected and aligned to ref grid)
-        sel_mask_bbox <- if (exists("mask_bbox")) {
-          mask_bbox
+        if (is.null(mask)) {
+          # ref provided & mask NULL: use bbox of ref
+          sel_te <- ref_bbox
+        } else if (class(mask)=="logical" && is.na(mask)) {
+          # ref provided & mask NA: use bbox of srcfile (reprojected and aligned to ref grid)
+          sel_te <- (sel_src_bbox - ref_ll) / sel_tr
+          sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
+          dimnames(sel_te) <- list(c("x","y"),c("min","max"))
+          sel_te <- sel_te * sel_tr + ref_ll
         } else {
-          st_transform(mask, sel_t_srs) %>%
-            get_extent() %>%
-            as("matrix")
+          # ref provided & mask provided: use bbox of mask (reprojected and aligned to ref grid)
+          sel_mask_bbox <- if (exists("mask_bbox")) {
+            mask_bbox
+          } else {
+            st_transform(mask, sel_t_srs) %>%
+              get_extent() %>%
+              as("matrix")
+          }
+          sel_te <- (sel_mask_bbox - ref_ll) / sel_tr
+          sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
+          dimnames(sel_te) <- list(c("x","y"),c("min","max"))
+          sel_te <- sel_te * sel_tr + ref_ll
         }
-        sel_te <- (sel_mask_bbox - ref_ll) / sel_tr
-        sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
-        dimnames(sel_te) <- list(c("x","y"),c("min","max"))
-        sel_te <- sel_te * sel_tr + ref_ll
       }
-    }
-
-    # finally, apply gdal_warp or gdal_translate
-    # temporary leave only gdal_warp to avoid some problems
-    # (e.g., translating a 1001x1001 20m to 10m results in 2002x2002 instead of 200[12]x200[12])
-    # if (compareCRS(CRS(sel_t_srs), CRS(sel_s_srs)) & !exists("mask_file")) {
-    #   gdal_translate(src_dataset = srcfile, dst_dataset = dstfile,
-    #            projwin = sel_te[c(1,4,3,2)],
-    #            tr = sel_tr,
-    #            of = sel_of,
-    #            r = sel_r,
-    #            a_nodata = dstnodata,
-    #            ...)
-    # } else {
-
+      
+      # finally, apply gdal_warp or gdal_translate
+      # temporary leave only gdal_warp to avoid some problems
+      # (e.g., translating a 1001x1001 20m to 10m results in 2002x2002 instead of 200[12]x200[12])
+      # if (compareCRS(CRS(sel_t_srs), CRS(sel_s_srs)) & !exists("mask_file")) {
+      #   gdal_translate(src_dataset = srcfile, dst_dataset = dstfile,
+      #            projwin = sel_te[c(1,4,3,2)],
+      #            tr = sel_tr,
+      #            of = sel_of,
+      #            r = sel_r,
+      #            a_nodata = dstnodata,
+      #            ...)
+      # } else {
+      
       gdalwarp_expr <- paste0(
         "gdalwarp(srcfile = srcfile, dstfile = dstfile, ",
         "s_srs = sel_s_srs, t_srs = sel_t_srs, ",
@@ -341,10 +341,10 @@ gdal_warp <- function(srcfiles,
         "overwrite = ",overwrite,", ",
         "...)")
       eval(parse(text=gdalwarp_expr))
-    # }
-
+      # }
+      
     } # end of overwrite IF cycle
-
+    
   }
-
+  
 }
