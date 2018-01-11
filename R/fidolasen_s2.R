@@ -1440,9 +1440,51 @@ fidolasen_s2 <- function(param_list=NULL,
       #                                 overwrite=pm$overwrite)
     }
     
+    ## 9. create thumbnails
+    
+    # define input files
+    names_req <- unique(c(tiles_names_new, merged_names_new, warped_names_new, 
+                          masked_names_new, out_names_new, indices_names_new))
+    # exclude temporary files
+    names_req <- names_req[!grepl(paste0("^",path_tmp), names_req)]
+    
+    if (length(names_req)>0) {
+      
+      print_message(
+        type = "message",
+        date = TRUE,
+        "Generating thumbnails."
+      )
+      
+      # define expected output names
+      names_new <- file.path(
+        dirname(names_req), 
+        "thumbnails",
+        sapply(
+          basename(names_req), 
+          function(x) {
+            gsub(
+              "\\..+$",
+              if (fs2nc_getElements(x)$prod_type %in% c("SCL")) {".png"} else {".jpg"},
+              x
+            )
+          }
+        )
+      )
+      
+      indices_names <- trace_function(
+        s2_thumbnails,
+        infiles = names_req,
+        trace_files = c(names_new,paste0(names_new,".aux.xml"))
+      )
+      
+    }
+    
+    
   } # end of pm$preprocess IF cycle
   
-  ## 9. remove temporary files
+  
+  ## 10. remove temporary files
   unlink(path_tmp, recursive = TRUE)
   
   # Exit
