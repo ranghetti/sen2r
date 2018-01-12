@@ -30,7 +30,8 @@ the type of false colours to be used for the thumbnails:
 height) of the output images (default: 1024 px).
 If this is lower than the corresponding dimension of the maps, maps are
 rescaled before producing the thumbnails; otherwise the original dimensions
-are maintained.}
+are maintained.
+To keep the original size in any case, set \code{dim = Inf}.}
 
 \item{outdir}{(optional) Full name of the existing output directory
 where the files should be created.  Default is a subdirectory (named

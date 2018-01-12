@@ -181,7 +181,8 @@ raster2rgb <- function(in_rast,
 #'  height) of the output images (default: 1024 px). 
 #'  If this is lower than the corresponding dimension of the maps, maps are
 #'  rescaled before producing the thumbnails; otherwise the original dimensions
-#'  are maintained.
+#'  are maintained. 
+#'  To keep the original size in any case, set `dim = Inf`.
 #' @param outdir (optional) Full name of the existing output directory
 #'  where the files should be created.  Default is a subdirectory (named 
 #'  "thumbnails") of the parent directory of each input file.
