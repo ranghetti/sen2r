@@ -59,6 +59,11 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, p
         type="waiting",
         "sen2cor was not found in your system; press ENTER to install, ESC to escape."
       )
+    } else {
+      print_message(
+        type="message",
+        "sen2cor was not found in your system and will be installed."
+      )
     }
     install_sen2cor() %>% suppressMessages()
     binpaths <- jsonlite::fromJSON(binpaths_file)

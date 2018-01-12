@@ -288,17 +288,25 @@ fidolasen_s2 <- function(param_list=NULL,
   if (is.null(pm$fidolasen_version)) {
     pm$fidolasen_version <- package_version("0.2.0")
   }
-  if (packageVersion("fidolasen") > package_version(pm$fidolasen_version) & interactive()) {
-    open_gui <- print_message(
-      type="waiting",
-      "The parameter file was created with an old version of the package:\n ",
-      "type \"G\" (and ENTER) to open the GUI and check that the input\n ",
-      "parameters are correct, or ENTER to proceed anyway\n ",
-      "(this could lead to errors).\n ",
-      "Alternatively, press ESC to interrupt."
-    )
-    if (length(grep("^[Gg]",open_gui))>0) {
-      gui <- TRUE
+  if (packageVersion("fidolasen") > package_version(pm$fidolasen_version)) {
+    if (interactive()) {
+      open_gui <- print_message(
+        type="waiting",
+        "The parameter file was created with an old version of the package:\n ",
+        "type \"G\" (and ENTER) to open the GUI and check that the input\n ",
+        "parameters are correct, or ENTER to proceed anyway\n ",
+        "(this could lead to errors).\n ",
+        "Alternatively, press ESC to interrupt."
+      )
+      if (length(grep("^[Gg]",open_gui))>0) {
+        gui <- TRUE
+      }
+    } else {
+      print_message(
+        type="warning",
+        "The parameter file was created with an old version of the package:\n ",
+        "(this could lead to errors).\n "
+      )
     }
   }
   

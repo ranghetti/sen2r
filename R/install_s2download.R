@@ -38,6 +38,10 @@ install_s2download <- function(inst_path=NA) {
       print_message(
         type="waiting",
         inst_path," already exists and will be erased: ENTER to proceed or ESC to cancel...")
+    } else {
+      print_message(
+        type="warning",
+        inst_path," already exists and will be erased.")
     }
     unlink(inst_path,recursive=TRUE)
     dir.create(inst_path)

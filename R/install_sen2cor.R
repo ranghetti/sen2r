@@ -56,6 +56,10 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
       print_message(
         type="waiting",
         sen2cor_dir," already exists and will be erased: ENTER to proceed or ESC to cancel...")
+    } else {
+      print_message(
+        type="warning",
+        sen2cor_dir," already exists and will be erased.")
     }
     unlink(sen2cor_dir,recursive=TRUE)
     dir.create(sen2cor_dir)

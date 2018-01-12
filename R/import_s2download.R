@@ -30,6 +30,11 @@ import_s2download <- function(...) {
         type="waiting",
         "s2download was not found in your system; press ENTER to install, ESC to escape."
       )
+    } else {
+      print_message(
+        type="message",
+        "s2download was not found in your system and will be installed."
+      )
     }
     install_s2download()
   }
