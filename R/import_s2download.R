@@ -37,6 +37,7 @@ import_s2download <- function(...) {
       )
     }
     install_s2download()
+    binpaths <- jsonlite::fromJSON(binpaths_file)
   }
   
   # load s2download

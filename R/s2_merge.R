@@ -80,6 +80,7 @@ s2_merge <- function(infiles,
   }
   if (is.null(binpaths$gdalinfo)) {
     check_gdal()
+    binpaths <- jsonlite::fromJSON(binpaths_file)
   }
   
   # Get files metadata

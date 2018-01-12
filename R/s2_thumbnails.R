@@ -104,6 +104,7 @@ raster2rgb <- function(in_rast,
   }
   if (is.null(binpaths$gdalinfo)) {
     check_gdal()
+    binpaths <- jsonlite::fromJSON(binpaths_file)
   }
   
   # Load palette
@@ -223,6 +224,7 @@ s2_thumbnails <- function(infiles,
   }
   if (is.null(binpaths$gdalinfo)) {
     check_gdal()
+    binpaths <- jsonlite::fromJSON(binpaths_file)
   }
   
   # Get files metadata

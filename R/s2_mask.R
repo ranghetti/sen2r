@@ -87,6 +87,7 @@ s2_mask <- function(infiles,
   }
   if (is.null(binpaths$gdalinfo)) {
     check_gdal()
+    binpaths <- jsonlite::fromJSON(binpaths_file)
   }
   
   # Check that files exist

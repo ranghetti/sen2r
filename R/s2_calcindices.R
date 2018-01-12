@@ -78,6 +78,7 @@ s2_calcindices <- function(infiles,
   }
   if (is.null(binpaths$gdalinfo)) {
     check_gdal()
+    binpaths <- jsonlite::fromJSON(binpaths_file)
   }
   
   # generate indices.json if missing and read it

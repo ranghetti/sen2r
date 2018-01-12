@@ -38,6 +38,7 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
       )
       return(invisible(NULL))
     }
+    binpaths <- jsonlite::fromJSON(binpaths_file)
   }
   
   # define sen2cor_dir (where to install or update)

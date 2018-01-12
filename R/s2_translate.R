@@ -91,6 +91,7 @@ s2_translate <- function(infile,
   }
   if (is.null(binpaths$gdalinfo)) {
     check_gdal()
+    binpaths <- jsonlite::fromJSON(binpaths_file)
   }
   
   # check res (and use the resolutions >= specified res)
