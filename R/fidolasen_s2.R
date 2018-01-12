@@ -288,7 +288,7 @@ fidolasen_s2 <- function(param_list=NULL,
   if (is.null(pm$fidolasen_version)) {
     pm$fidolasen_version <- package_version("0.2.0")
   }
-  if (packageVersion("fidolasen") > package_version(pm$fidolasen_version)) {
+  if (packageVersion("fidolasen") > package_version(pm$fidolasen_version) & interactive()) {
     open_gui <- print_message(
       type="waiting",
       "The parameter file was created with an old version of the package:\n ",

@@ -52,9 +52,11 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
       sen2cor_dir," already exists and it is a file; please provide a different value (or leave blank).")
   }
   if (length(list.files(sen2cor_dir))>0) {
-    print_message(
-      type="waiting",
-      sen2cor_dir," already exists and will be erased: ENTER to proceed or ESC to cancel...")
+    if (interactive()) {
+      print_message(
+        type="waiting",
+        sen2cor_dir," already exists and will be erased: ENTER to proceed or ESC to cancel...")
+    }
     unlink(sen2cor_dir,recursive=TRUE)
     dir.create(sen2cor_dir)
   }

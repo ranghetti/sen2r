@@ -25,10 +25,12 @@ import_s2download <- function(...) {
     list("s2download" = NULL)
   }
   if (length(binpaths$s2download)==0) {
-    print_message(
-      type="waiting",
-      "s2download was not found in your system; press ENTER to install, ESC to escape."
-    )
+    if (interactive()) {
+      print_message(
+        type="waiting",
+        "s2download was not found in your system; press ENTER to install, ESC to escape."
+      )
+    }
     install_s2download()
   }
   

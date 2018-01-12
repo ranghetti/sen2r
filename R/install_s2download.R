@@ -34,9 +34,11 @@ install_s2download <- function(inst_path=NA) {
       inst_path," already exists and it is a file; please provide a different value (or leave blank).")
   }
   if (length(list.files(inst_path))>0) {
-    print_message(
-      type="waiting",
-      inst_path," already exists and will be erased: ENTER to proceed or ESC to cancel...")
+    if (interactive()) {
+      print_message(
+        type="waiting",
+        inst_path," already exists and will be erased: ENTER to proceed or ESC to cancel...")
+    }
     unlink(inst_path,recursive=TRUE)
     dir.create(inst_path)
   }
