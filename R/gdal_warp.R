@@ -143,17 +143,19 @@ gdal_warp <- function(srcfiles,
   }
   
   # check the length of dstnodata
-  if (length(dstnodata)==1) {
-    dstnodata <- rep(dstnodata, length(srcfiles))
-  } else if (length(dstnodata)!=length(srcfiles)) {
-    print_message(
-      type="error", 
-      "\"dstnodata\" must be of length 1",
-      if (length(srcfiles) > 1) {
-        paste0(" or ",length(srcfiles))
-      },
-      " (the length of \"srcfiles\")."
-    )
+  if (!is.null(dstnodata)) {
+    if (length(dstnodata)==1) {
+      dstnodata <- rep(dstnodata, length(srcfiles))
+    } else if (length(dstnodata)!=length(srcfiles)) {
+      print_message(
+        type="error", 
+        "\"dstnodata\" must be of length 1",
+        if (length(srcfiles) > 1) {
+          paste0(" or ",length(srcfiles))
+        },
+        " (the length of \"srcfiles\")."
+      )
+    }
   }
   
   # check output format
@@ -222,7 +224,7 @@ gdal_warp <- function(srcfiles,
   for (i in seq_along(srcfiles)) {
     srcfile <- srcfiles[i]
     dstfile <- dstfiles[i]
-    sel_nodata <- dstnodata[i]
+    sel_nodata <- if (is.null(dstnodata)) {NULL} else {dstnodata[i]}
     
     # if dstfile already exists and overwrite==FALSE, do not proceed
     if (!file.exists(dstfile) | overwrite==TRUE) {
