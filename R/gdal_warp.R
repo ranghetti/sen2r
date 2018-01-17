@@ -200,7 +200,7 @@ gdal_warp <- function(srcfiles,
     # if it is a vector, set "te" to the bounding box (in t_srs)
     if (mask_type %in% c("sfobject","spobject","vectfile")) {
       mask <- cast_vect(mask,"sfobject")
-      if (length(grep("POLYGON",st_geometry_type(mask)))>1) {
+      if (length(grep("POLYGON",st_geometry_type(mask)))>=1) {
         st_write(st_cast(mask, "MULTIPOLYGON"),
                  mask_file <- paste0(tempfile(),".shp"),
                  quiet = TRUE)
