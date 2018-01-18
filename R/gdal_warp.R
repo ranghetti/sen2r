@@ -54,7 +54,8 @@
 #' @importFrom sf st_transform st_geometry_type st_write st_cast
 #' @importFrom methods as
 #' @importFrom magrittr "%>%"
-#' @importFrom sprawl cast_vect get_spatype
+#' @importFrom units ud_units
+#' @importFrom sprawl cast_vect get_spatype reproj_extent
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @examples
