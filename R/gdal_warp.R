@@ -50,12 +50,14 @@
 #' @export
 #' @importFrom rgdal GDALinfo CRSargs
 #' @importFrom gdalUtils gdalwarp gdal_translate
-#' @importFrom sp CRS
-#' @importFrom sf st_transform st_geometry_type st_write st_cast
+#' @importFrom sp CRS bbox
+#' @importFrom raster extent
+#' @importFrom sf st_transform st_geometry st_geometry_type st_write st_cast st_area
 #' @importFrom methods as
 #' @importFrom magrittr "%>%"
 #' @importFrom units ud_units
 #' @importFrom sprawl cast_vect get_spatype reproj_extent
+#' @importClassesFrom sprawl sprawlext
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @examples
@@ -218,14 +220,22 @@ gdal_warp <- function(srcfiles,
       mask <- get_extent(mask)
     }
     if (is(mask, "sprawlext")) {
-      mask <- as(mask, "sfc_POLYGON")
+      mask <- sf::st_polygon(list(rbind(
+        c(mask@extent["xmin"], mask@extent["ymin"]),
+        c(mask@extent["xmin"], mask@extent["ymax"]),
+        c(mask@extent["xmax"], mask@extent["ymax"]),
+        c(mask@extent["xmax"], mask@extent["ymin"]),
+        c(mask@extent["xmin"], mask@extent["ymin"])))
+      ) %>%
+        sf::st_sfc(crs = mask@proj4string)
+      # mask <- as(mask, "sfc_POLYGON")
     }
     # create mask_bbox if t_srs is specified;
     # otherwise, create each time within srcfile cycle
     if (!is.null(t_srs)) {
       mask_bbox <- st_transform(mask, t_srs) %>%
-        get_extent() %>%
-        as("matrix")
+        extent() %>% bbox()
+      # get_extent() %>% as("matrix")
     }
   }
   
@@ -265,9 +275,10 @@ gdal_warp <- function(srcfiles,
       
       # get reprojected extent
       # (if already set it was referring to mask; in this case, to srcfile)
-      suppressMessages(
-        sel_src_bbox <- as(reproj_extent(sel_extent, sel_t_srs), "matrix")
+      sel_src_bbox <- suppressMessages(
+        matrix(reproj_extent(sel_extent, sel_t_srs)@extent, nrow=2, ncol=2)
       )
+      # dimnames(sel_src_bbox) <- list(c("x","y"), c("min","max"))
       
       # set the correct bounding box for srcfile
       if (is.null(ref)) {
@@ -283,8 +294,8 @@ gdal_warp <- function(srcfiles,
             mask_bbox
           } else {
             st_transform(mask, sel_t_srs) %>%
-              get_extent() %>%
-              as("matrix")
+              extent() %>% bbox()
+            # get_extent() %>% as("matrix")
           }
           sel_te <- (sel_mask_bbox - sel_ll) / sel_tr
           sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
@@ -307,8 +318,8 @@ gdal_warp <- function(srcfiles,
             mask_bbox
           } else {
             st_transform(mask, sel_t_srs) %>%
-              get_extent() %>%
-              as("matrix")
+              extent() %>% bbox()
+            # get_extent() %>% as("matrix")
           }
           sel_te <- (sel_mask_bbox - ref_ll) / sel_tr
           sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
