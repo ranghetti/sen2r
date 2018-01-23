@@ -70,7 +70,13 @@
 #' @param extent (optional) Spatial extent on which to clip products (it can
 #'  be both the path of a vector file or a geoJSON). 
 #'  Default is NA for offline mode (meaning no extent:
-#'  all found tiles are entirely used); in online mode, a sample extent is used.
+#'  all found tiles are entirely used); in online mode, a sample extent is used
+#'  as default.
+#' @param extent_name (optional) Name of the area set as extent, to be used in
+#'  the output file names. Default is to leave it blank. The name is an 
+#'  alphanumeric string which cannot contain points nor underscores, and that 
+#'  cannot be a five-length string with the same structure of a tile ID
+#'  (two numeric and three uppercase character values).
 #' @param s2tiles_selected (optional) Character vector with the Sentinel-2
 #'  tiles to be considered (default is NA, meaning all the tiles).
 #' @param s2orbits_selected (optional) Character vector with the Sentinel-2
@@ -177,6 +183,7 @@ fidolasen_s2 <- function(param_list=NULL,
                          timewindow=NA,
                          timeperiod=NA,
                          extent=NA,
+                         extent_name=NA,
                          s2tiles_selected=NA,
                          s2orbits_selected=NA,
                          list_prods=NA,
@@ -236,6 +243,7 @@ fidolasen_s2 <- function(param_list=NULL,
                  timewindow=c(Sys.Date() - 90, Sys.Date()),
                  timeperiod="full",
                  extent=NA, # below re-defined as sample extent if online mode
+                 extent_name="",
                  s2tiles_selected=NA, # below re-defined for online mode
                  s2orbits_selected=NA, # temporary select all orbits (TODO implement)
                  list_prods=c("BOA"),
@@ -376,6 +384,20 @@ fidolasen_s2 <- function(param_list=NULL,
   # convert from GeoJSON to sf
   if (is(pm$extent, "character")) {
     pm$extent <- st_read(pm$extent, quiet=TRUE)
+  }
+  
+  # check extent_name
+  if (grepl("^[0-9]{2}[A-Z]{3}$",extent_name)) {
+    print_message(
+      type = "error",
+      "\"extent_name\" cannot have the same structure of a tile ID ",
+      "(two numeric and by three uppercase character values)."
+    )
+  } else if (grepl("[\\.\\_]",extent_name)) {
+    print_message(
+      type = "error",
+      "\"extent_name\" cannot contain points nor underscores."
+    )
   }
   
   # internal parameters
@@ -850,20 +872,31 @@ fidolasen_s2 <- function(param_list=NULL,
     warped_names_exp <- if (pm$clip_on_extent==FALSE | length(merged_names_exp)==0) {
       NULL
     } else {
+      basename_warped_names_exp <- data.table(
+        fs2nc_getElements(merged_names_exp, format="data.frame")
+      )[,paste0("S2",
+                mission,
+                level,"_",
+                strftime(sensing_date,"%Y%m%d"),"_",
+                id_orbit,"_", 
+                pm$extent_name,"_",
+                prod_type,"_",
+                substr(res,1,2),".",
+                file_ext)]
       # if SCL were explicitly required, directly create them as output files (since they are never masked);
       # instead, build only virtual files
       ifelse(
         names_merged_exp_scl_idx & "SCL" %in% pm$list_prods,
         file.path(path_out,
                   if(pm$path_subdirs==TRUE){basename(dirname(merged_names_exp))}else{""},
-                  gsub(paste0(merged_ext,"$"),out_ext,basename(merged_names_exp))),
+                  gsub(paste0(merged_ext,"$"),out_ext,basename_warped_names_exp)),
         ifelse(names_merged_exp_scl_idx,
                file.path(path_warped,
                          if(pm$path_subdirs==TRUE){basename(dirname(merged_names_exp))}else{""},
-                         gsub(paste0(merged_ext,"$"),out_ext,basename(merged_names_exp))),
+                         gsub(paste0(merged_ext,"$"),out_ext,basename_warped_names_exp)),
                file.path(path_warped,
                          if(pm$path_subdirs==TRUE){basename(dirname(merged_names_exp))}else{""},
-                         gsub(paste0(merged_ext,"$"),warped_ext,basename(merged_names_exp))))
+                         gsub(paste0(merged_ext,"$"),warped_ext,basename_warped_names_exp)))
       )
     }
     
