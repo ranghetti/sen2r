@@ -103,14 +103,15 @@ descriptions of all the other parameters).</p>
     <pre class="usage"><span class='fu'>fidolasen_s2</span>(<span class='kw'>param_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>gui</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>preprocess</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>s2_levels</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>sel_sensor</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>online</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>overwrite_safe</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>rm_safe</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>step_atmcorr</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>timeperiod</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>s2tiles_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>s2orbits_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>index_source</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>clip_on_extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>extent_as_mask</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>reference_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res_s2</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>proj</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>resampling</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>resampling_scl</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>outformat</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>compression</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>path_l1c</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_l2a</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_merged</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>path_out</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>thumbnails</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>use_python</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+  <span class='kw'>extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>extent_name</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>s2tiles_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>s2orbits_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>index_source</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>clip_on_extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>extent_as_mask</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>reference_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res_s2</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>unit</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>proj</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>resampling</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>resampling_scl</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>outformat</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>compression</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_l1c</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>path_l2a</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_merged</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_out</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>path_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>thumbnails</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>use_python</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -218,7 +219,16 @@ to 2016-08-31 and 2017-06-01 to 2017-08-31 are considered).</p></li>
       <td><p>(optional) Spatial extent on which to clip products (it can
 be both the path of a vector file or a geoJSON).
 Default is NA for offline mode (meaning no extent:
-all found tiles are entirely used); in online mode, a sample extent is used.</p></td>
+all found tiles are entirely used); in online mode, a sample extent is used
+as default.</p></td>
+    </tr>
+    <tr>
+      <th>extent_name</th>
+      <td><p>(optional) Name of the area set as extent, to be used in
+the output file names. Default is to leave it blank. The name is an
+alphanumeric string which cannot contain points nor underscores, and that
+cannot be a five-length string with the same structure of a tile ID
+(two numeric and three uppercase character values).</p></td>
     </tr>
     <tr>
       <th>s2tiles_selected</th>

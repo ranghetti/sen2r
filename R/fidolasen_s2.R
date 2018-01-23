@@ -949,7 +949,8 @@ fidolasen_s2 <- function(param_list=NULL,
                mission,
                level,"_",
                strftime(sensing_date,"%Y%m%d"),"_",
-               id_orbit,"__",
+               id_orbit,"_",
+               if (pm$clip_on_extent==TRUE) {pm$extent_name},"_",
                "<index>_",
                substr(res,1,2),".",
                file_ext)] %>%
@@ -1013,7 +1014,8 @@ fidolasen_s2 <- function(param_list=NULL,
                   mission,
                   level,"_",
                   strftime(sensing_date,"%Y%m%d"),"_",
-                  id_orbit,"__",
+                  id_orbit,"_",
+                  if (pm$clip_on_extent==TRUE) {pm$extent_name},"_",
                   ifelse(level=="2A","BOA","TOA"),"_",
                   substr(res,1,2),".",
                   out_ext)]
@@ -1070,8 +1072,10 @@ fidolasen_s2 <- function(param_list=NULL,
       # required merged
       merged_basenames_req <- c(
         gsub(paste0(warped_ext,"$"),merged_ext,basename(nn(warped_names_new))) %>%
+          gsub(paste0("\\_",pm$extent_name,"\\_"),"__",.) %>%
           gsub(paste0(out_ext,"$"),merged_ext,.),
-        gsub(paste0(out_ext,"$"),merged_ext,basename(nn(masked_names_new)))) %>%
+        gsub(paste0(out_ext,"$"),merged_ext,basename(nn(masked_names_new))) %>%
+          gsub(paste0("\\_",pm$extent_name,"\\_"),"__",.)) %>%
         unique()
       merged_names_req <- if (pm$clip_on_extent==TRUE) {
         merged_names_exp[basename(nn(merged_names_exp)) %in% merged_basenames_req]
