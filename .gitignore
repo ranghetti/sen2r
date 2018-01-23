@@ -38,6 +38,7 @@
  /inst/sen2cor/
  /extdata/xslt/
  /inst/extdata/xslt/
+ /query_results.xml
  
  # path file
  /extdata/paths.json
