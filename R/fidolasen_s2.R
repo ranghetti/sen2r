@@ -545,7 +545,9 @@ fidolasen_s2 <- function(param_list=NULL,
     print_message(
       type = "message",
       date = TRUE,
-      "No SAFE products found with the parameters set; exiting."
+      "No SAFE products found with the parameters set ",
+      "(the searching parameters may be too restrictive, ",
+      "or the Copernicus Open Access Hub could be unavailable); exiting."
     )
     return(invisible(NULL))
   }
