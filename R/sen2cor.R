@@ -18,6 +18,8 @@
 #'  processing is done there and then L2A is moved to `outdir`. 
 #'  This is required under Linux systems when `l1c_dir` is a subdirectory of
 #'  a unit mounted with SAMBA, otherwise sen2cor would produce empty L2A products.
+#' @param tiles Vector of Sentinel-2 Tile strings (5-length character) to be 
+#'  processed (default: process all the tiles found in the input L1C products).
 #' @param parallel (optional) Logical: if TRUE, sen2cor instances are launched 
 #'  in parallel using multiple cores; if FALSE (default), they are launched in 
 #'  series on a single core. 
@@ -44,7 +46,8 @@
 #' sen2cor(names(example_s2_list)[1], l1c_dir=tempdir(), outdir=tempdir())
 #' }
 
-sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, parallel=FALSE, overwrite=FALSE) {
+sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, 
+                    tiles=NULL, parallel=FALSE, overwrite=FALSE) {
   
   # load sen2cor executable path
   binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
@@ -69,6 +72,10 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, p
     binpaths <- jsonlite::fromJSON(binpaths_file)
   }
   
+  # tiles NA -> NULL
+  if (!is.null(tiles)) {
+    if (all(is.na(tiles))) {tiles <- character(0)}
+  }
   
   # if l1c_dir is defined, append to product names
   if (!is.null(l1c_dir)) {
@@ -90,7 +97,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, p
         type = "warning",
         proc_dir, "is on a SAMBA mounted unit, so it will not be used."
       )
-      proc_dir <- NULL
+      proc_dir <- NA
     }
   }
   
@@ -138,6 +145,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, p
     .packages='fidolasen'
   ) %DO% {
     
+    # set paths
     sel_l1c <- l1c_prodlist[i]
     sel_l2a <- file.path(
       if (is.null(outdir)) {dirname(sel_l1c)} else {outdir},
@@ -147,18 +155,64 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, p
       )
     ) # path of the L2A product where it should be placed definitively
     
-    # proceed only if overwrite==TRUE, or if file does not exist
-    if (overwrite==TRUE | !file.exists(sel_l2a)) {
+    ## Set the tiles vectors (existing, required, ...)
+    # existing L1C tiles within input product
+    sel_l1c_tiles_existing <- sapply(
+      list.files(file.path(sel_l1c,"GRANULE")), 
+      function(x){s2_getMetadata(x,"nameinfo")$id_tile}
+    )
+    # L2A tiles already existing
+    sel_l2a_tiles_existing <- if (file.exists(sel_l2a)) {
+      sapply(
+        list.files(file.path(sel_l2a,"GRANULE")), 
+        function(x){s2_getMetadata(x,"nameinfo")$id_tile}
+      )
+    } else {
+      character(0)
+    }
+    # L2A tiles required as output (already existing or not)
+    sel_l2a_tiles_required <- if (is.null(tiles)) {
+      sel_l1c_tiles_existing
+    } else {
+      sel_l1c_tiles_existing[sel_l1c_tiles_existing %in% tiles]
+    }
+    # L2A tiles to be corrected (= required and not yet existing)
+    sel_l2a_tiles_tocorrect <- sel_l2a_tiles_required[
+      !sel_l2a_tiles_required %in% sel_l2a_tiles_existing
+      ]
+    # L1C tiles not required to be corrected
+    sel_l1c_tiles_unnecessary <- sel_l1c_tiles_existing[
+      !sel_l1c_tiles_existing %in% sel_l2a_tiles_tocorrect
+      ]
+    # L1C tiles to be manually excluded before applying sen2cor in order
+    # not to process them (= tiles present within input L1C product
+    # and not already esisting as L2A, because in this case sen2cor would
+    # automatically skip them)
+    sel_l1c_tiles_toavoid <- sel_l1c_tiles_unnecessary[
+      !sel_l1c_tiles_unnecessary %in% sel_l2a_tiles_existing
+      ]
+    
+    ## Continue only if not all the existing tiles have already been corrected
+    ## (or if the user chosed to overwrite)
+    if (overwrite==TRUE | length(sel_l2a_tiles_tocorrect)>0) {
       
       # if output exists (and overwrite==TRUE), delete it
-      unlink(sel_l2a)
+      if (overwrite==TRUE) {unlink(sel_l2a)}
       
-      # if sel_l1c is on a SAMBA mountpoint, set proc_dir to a temporary directory
+      # set a temporary proc_dir in the following three cases:
+      # 1) if some L1C tiles need to be manually excluded;
+      # 2) if dirname(sel_l1c)!=dirname(sel_l2a) & input L1C was already partially corrected
+      #    (to avoid the risk to process more tiles than required);
+      # 3) if sel_l1c is on a SAMBA mountpoint (because sen2cor does not process
+      #    correctly in this case)
       sel_proc_dir <- proc_dir
       if (is.na(proc_dir)) {
-        if (Sys.info()["sysname"] != "Windows" & 
-            !is.null(mountpoint(sel_l1c, "cifs"))) {
-          sel_proc_dir <- tempdir()
+        if (
+          length(sel_l1c_tiles_toavoid)>0 | # 1
+          dirname(sel_l1c)!=dirname(sel_l2a) & length(sel_l2a_tiles_existing)>0 | # 2
+          Sys.info()["sysname"] != "Windows" & !is.null(mountpoint(sel_l1c, "cifs")) # 3
+        ) {
+          sel_proc_dir <- tempfile(pattern="sen2cor_")
         }
       }
       
@@ -166,7 +220,25 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, p
       if (!is.na(sel_proc_dir)) {
         use_tempdir <- TRUE
         dir.create(sel_proc_dir, recursive=FALSE, showWarnings=FALSE)
-        file.copy(sel_l1c, sel_proc_dir, recursive=TRUE)
+        if (length(sel_l1c_tiles_unnecessary)==0) {
+          # if some tiles is unnecessary, copy only necessary files
+          dir.create(file.path(sel_proc_dir,basename(sel_l1c)))
+          sel_l1c_files <- list.files(sel_l1c, recursive=FALSE, full.names=FALSE)
+          file.copy(
+            file.path(sel_l1c,sel_l1c_files[!grepl("^GRANULE$",sel_l1c_files)]),
+            file.path(sel_proc_dir,basename(sel_l1c)),
+            recursive = TRUE
+          )
+          dir.create(file.path(sel_proc_dir,basename(sel_l1c),"GRANULE"))
+          file.copy(
+            file.path(sel_l1c,"GRANULE",names(sel_l2a_tiles_tocorrect)),
+            file.path(sel_proc_dir,basename(sel_l1c),"GRANULE"),
+            recursive = TRUE
+          )
+        } else {
+          # else, copy the whole product
+          file.copy(sel_l1c, sel_proc_dir, recursive=TRUE)
+        }
         sel_l1c <- file.path(sel_proc_dir, basename(sel_l1c))
       } else {
         use_tempdir <- FALSE
@@ -182,13 +254,16 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, p
       )
       
       # apply sen2cor
-      sel_trace <- if (use_tempdir) {
-        start_trace(sen2cor_out_l2a, "sen2cor")
+      trace_paths <- if (use_tempdir) {
+        c(sel_l1c, sen2cor_out_l2a)
+      } else if (overwrite==TRUE | !file.exists(sen2cor_out_l2a)) {
+        sen2cor_out_l2a
       } else {
-        start_trace(c(sel_l1c, sen2cor_out_l2a), "sen2cor")
+        file.path(sen2cor_out_l2a,"GRANULE",names(sel_l2a_tiles_tocorrect))
       }
+      sel_trace <- start_trace(trace_paths, "sen2cor")
       system(
-        paste(binpaths$sen2cor, sel_l1c),
+        paste(binpaths$sen2cor, "--refresh", sel_l1c),
         intern = Sys.info()["sysname"] == "Windows"
       )
       if (TRUE) { # TODO define a way to check if sen2cor runned correctly
@@ -198,9 +273,11 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, p
       }
       
       # move output to the required output directory
-      if (use_tempdir) {
-        file.copy(sen2cor_out_l2a, dirname(sel_l2a), recursive=TRUE)
+      if (use_tempdir | dirname(sen2cor_out_l2a)!=dirname(sel_l2a)) {
+        file.copy(sen2cor_out_l2a, dirname(sel_l2a), recursive=TRUE, overwrite=TRUE)
         unlink(sen2cor_out_l2a, recursive=TRUE)
+      } 
+      if (use_tempdir) {
         unlink(sel_l1c, recursive=TRUE)
       }
       
