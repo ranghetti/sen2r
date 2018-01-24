@@ -220,7 +220,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
       if (!is.na(sel_proc_dir)) {
         use_tempdir <- TRUE
         dir.create(sel_proc_dir, recursive=FALSE, showWarnings=FALSE)
-        if (length(sel_l1c_tiles_unnecessary)==0) {
+        if (length(sel_l1c_tiles_unnecessary)>0) {
           # if some tiles is unnecessary, copy only necessary files
           dir.create(file.path(sel_proc_dir,basename(sel_l1c)))
           sel_l1c_files <- list.files(sel_l1c, recursive=FALSE, full.names=FALSE)
