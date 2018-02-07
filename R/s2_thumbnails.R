@@ -89,10 +89,10 @@ raster2rgb <- function(in_rast,
   
   # Define builtin palette paths
   palette_builtin <- c(
-    "SCL" = system.file("extdata","palettes","scl.txt", package="fidolasen"),
+    "SCL" = system.file("extdata","palettes","SCL.txt", package="fidolasen"),
     "NDVI" = system.file("extdata","palettes","NDVI.cpt", package="fidolasen"),
-    "generic_ndsi" = system.file("extdata","palettes","ndsi_1.cpt", package="fidolasen"),
-    "generic_ndsi_2" = system.file("extdata","palettes","ndsi_2.cpt", package="fidolasen")
+    "generic_ndsi" = system.file("extdata","palettes","NDSI.cpt", package="fidolasen"),
+    "Zscore" = system.file("extdata","palettes","Zscore.cpt", package="fidolasen")
   )
   
   # Load GDAL paths
@@ -305,7 +305,13 @@ s2_thumbnails <- function(infiles,
         raster2rgb(
           resized_path, 
           out_file = out_path, 
-          palette = if (sel_prod_type %in% c("SCL")) {sel_prod_type} else {"generic_ndsi"}#,
+          palette = if (sel_prod_type %in% c("SCL")) {
+            sel_prod_type
+          } else if (grepl("\\-Z$",sel_prod_type)) {
+            "Zscore"
+          } else {
+            "generic_ndsi"
+          }#,
           # TODO cycle here above basing on sel_prod_type to use different palettes for different products / indices
           # minval = -1, 
           # maxval = 1
