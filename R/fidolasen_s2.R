@@ -1301,7 +1301,7 @@ fidolasen_s2 <- function(param_list=NULL,
     
     
     ## 5. Merge by orbit ##
-    if (length(tiles_names_req)>0) {
+    if (length(tiles_names_req[file.exists(tiles_names_req)])>0) {
       
       print_message(
         type = "message",
@@ -1312,7 +1312,7 @@ fidolasen_s2 <- function(param_list=NULL,
       dir.create(path_merged, recursive=FALSE, showWarnings=FALSE)
       merged_names_out <- trace_function(
         s2_merge,
-        infiles = tiles_names_req,
+        infiles = tiles_names_req[file.exists(tiles_names_req)], # TODO add warning when sum(!file.exists(tiles_names_req))>0
         outdir = path_merged,
         subdirs = pm$path_subdirs,
         format = merged_outformat,
@@ -1329,7 +1329,7 @@ fidolasen_s2 <- function(param_list=NULL,
     } # end of s2_merge IF cycle
     
     
-    if (length(merged_names_req)>0) {
+    if (length(merged_names_req[file.exists(merged_names_req)])>0) {
       
       ## 6. Clip, rescale, reproject ##
       if (pm$clip_on_extent==TRUE) {
@@ -1362,8 +1362,8 @@ fidolasen_s2 <- function(param_list=NULL,
           tracename_gdalwarp <- start_trace(warped_names_reqout[!names_merged_req_scl_idx], "gdal_warp")
           trace_gdalwarp <- tryCatch(
             gdal_warp(
-              merged_names_req[!names_merged_req_scl_idx],
-              warped_names_reqout[!names_merged_req_scl_idx],
+              merged_names_req[!names_merged_req_scl_idx & file.exists(merged_names_req)],
+              warped_names_reqout[!names_merged_req_scl_idx & file.exists(merged_names_req)],
               of = warped_outformat,
               ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
               mask = s2_mask_extent,
@@ -1371,7 +1371,7 @@ fidolasen_s2 <- function(param_list=NULL,
               t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
               r = pm$resampling,
               dstnodata = s2_defNA(
-                sapply(merged_names_req[!names_merged_req_scl_idx],
+                sapply(merged_names_req[!names_merged_req_scl_idx & file.exists(merged_names_req)],
                        function(x){fs2nc_getElements(x)$prod_type})
               ),
               co = if (warped_outformat=="GTiff") {paste0("COMPRESS=",pm$compression)},
@@ -1388,8 +1388,8 @@ fidolasen_s2 <- function(param_list=NULL,
           tracename_gdalwarp <- start_trace(warped_names_reqout[!names_merged_req_scl_idx], "gdal_warp")
           trace_gdalwarp <- tryCatch(
             gdal_warp(
-              merged_names_req[names_merged_req_scl_idx],
-              warped_names_reqout[names_merged_req_scl_idx],
+              merged_names_req[names_merged_req_scl_idx & file.exists(merged_names_req)],
+              warped_names_reqout[names_merged_req_scl_idx & file.exists(merged_names_req)],
               of = pm$outformat, # use physical files to speed up next steps
               ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
               mask = s2_mask_extent,
@@ -1397,7 +1397,7 @@ fidolasen_s2 <- function(param_list=NULL,
               t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
               r = pm$resampling_scl,
               dstnodata = s2_defNA(
-                sapply(merged_names_req[names_merged_req_scl_idx],
+                sapply(merged_names_req[names_merged_req_scl_idx & file.exists(merged_names_req)],
                        function(x){fs2nc_getElements(x)$prod_type})
               ),
               co = if (pm$outformat=="GTiff") {paste0("COMPRESS=",pm$compression)},
@@ -1447,8 +1447,16 @@ fidolasen_s2 <- function(param_list=NULL,
         )
         masked_names_out <- trace_function(
           s2_mask,
-          infiles = if(pm$clip_on_extent==TRUE){warped_names_req[names_warped_tomask_idx]}else{merged_names_req[names_merged_tomask_idx]},
-          maskfiles = if(pm$clip_on_extent==TRUE){warped_names_exp[names_warped_exp_scl_idx]}else{merged_names_exp[names_merged_exp_scl_idx]},
+          infiles = if (pm$clip_on_extent==TRUE) {
+            warped_names_req[names_warped_tomask_idx & file.exists(warped_names_req)]
+          } else {
+            merged_names_req[names_merged_tomask_idx & file.exists(merged_names_req)]
+          },
+          maskfiles = if (pm$clip_on_extent==TRUE) {
+            warped_names_exp[names_warped_exp_scl_idx]
+          } else {
+            merged_names_exp[names_merged_exp_scl_idx]
+          },
           mask_type = pm$mask_type,
           outdir = path_out,
           format = pm$outformat,
@@ -1474,7 +1482,7 @@ fidolasen_s2 <- function(param_list=NULL,
     
     ## 8. Compute spectral indices ##
     # dir.create(file.path(path_out,pm$list_indices), recursive=FALSE, showWarnings = FALSE)
-    if (length(out_names_req)>0) {
+    if (length(out_names_req[file.exists(out_names_req)])>0) {
       
       print_message(
         type = "message",
@@ -1485,7 +1493,7 @@ fidolasen_s2 <- function(param_list=NULL,
       dir.create(path_indices, recursive=FALSE, showWarnings=FALSE)
       indices_names <- trace_function(
         s2_calcindices,
-        infiles = out_names_req,
+        infiles = out_names_req[file.exists(out_names_req)],
         indices = pm$list_indices,
         outdir = path_indices,
         subdirs = TRUE,
@@ -1513,6 +1521,8 @@ fidolasen_s2 <- function(param_list=NULL,
                             masked_names_new, out_names_new, indices_names_new))
       # exclude temporary files
       names_req <- names_req[!grepl(paste0("^",path_tmp), names_req)]
+      # exclude files not created
+      names_req <- names_req[file.exists(names_req)]
       
       if (length(names_req)>0) {
         
