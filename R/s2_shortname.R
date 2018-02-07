@@ -49,6 +49,9 @@
 #'  default is '10m'. Notice that, choosing '10m' or '20m', bands with lower
 #'  resolution will be rescaled to `res`. Band 08 is used with `res = '10m'`,
 #'  band 08A with `res = '20m'` and `res = '60m'`.
+#' @param tiles (optional) Character vector with the desired output tile IDs 
+#'  (id specified IDs are not present in the input SAFE product, they are not
+#'  produced). Default (NA) is to consider all the found tiles.
 #' @param full.name Logical value: if TRUE (default), all the input path
 #'  is maintained (if existing); if FALSE, only basename is returned.
 #' @param set.seed (internal parameter) Logical value: if TRUE, the
@@ -58,6 +61,9 @@
 #'  products with the same names (e.g. product with old name downloaded in
 #'  different moments which contains different subsets of tiles).
 #'  Default value is TRUE if the file exists locally, FALSE if not.
+#' @param multiple_names Logical: if TRUE, multiple names are returned in case
+#'  the SAFE product contains more than one tile; if FALSE (default), a random
+#'  tile element is used.
 #' @param abort Logical parameter: if TRUE, the function aborts in case
 #'  `prod_type` is not recognised; if FALSE (default), a warning is shown.
 #' @return Output product name
@@ -92,7 +98,7 @@
 #' }
 
 
-s2_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m", full.name=TRUE, set.seed=NA, abort=FALSE) {
+s2_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m", tiles=NA, full.name=TRUE, set.seed=NA, multiple_names=FALSE, abort=FALSE) {
   
   # elements used by the function
   needed_metadata <- c("tiles","utm","mission","level","sensing_datetime","id_orbit","id_tile")
@@ -121,6 +127,18 @@ s2_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m", full.na
       "') can not be retreved from the input filename.")
   }
   
+  # Check "tiles" argument
+  if (is.null(tiles)) {tiles <- NA}
+  if (anyNA(tiles)) {tiles <- NA} else if (all(tiles=="")) {tiles <- NA}
+  
+  # Filter id_tile and tiles
+  if (!is.null(s2_metadata$id_tile) & !anyNA(tiles)) {
+    s2_metadata$id_tile <- s2_metadata$id_tile[s2_metadata$id_tile %in% tiles]
+  }
+  if (!is.null(s2_metadata$tiles) & !anyNA(tiles)) {
+    s2_metadata$tiles <- s2_metadata$tiles[s2_metadata$tiles %in% tiles]
+  }
+  
   # check if id_tile is missing
   if (is.null(s2_metadata$id_tile)) {
     
@@ -131,11 +149,12 @@ s2_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m", full.na
       set.seed(sel_seed)
     }
     
-    # if it contains only one tile, use that tile
-    if (length(s2_metadata$tiles)==1) {
+    if (length(s2_metadata$tiles)==1 | multiple_names==TRUE) {
+      # if it contains only one tile, use that tile
+      # with more tiles, use those tiles if multiple names were requested
       s2_metadata$id_tile <- s2_metadata$tiles
-      # otherwise, use convention 1 if UTM zone is unique, 2 if not
     } else if (length(s2_metadata$utm)==1) {
+      # otherwise, use convention 1 if UTM zone is unique, 2 if not
       s2_metadata$id_tile <- paste0(s2_metadata$utm,
                                     str_pad(sample(1000,1)-1,3,"left","0"))
     } else {
@@ -185,7 +204,7 @@ s2_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m", full.na
   )
   
   # check name length
-  if (nchar(short_name)!=31) {
+  if (any(nchar(short_name)!=31)) {
     print_message(
       type="warning",
       "Length of shortname is wrong (probably \"prod_type\" or \"res\" ",

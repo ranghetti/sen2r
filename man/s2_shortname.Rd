@@ -5,7 +5,8 @@
 \title{Rename products using a shorten convention}
 \usage{
 s2_shortname(prod_name, prod_type = NULL, ext = NULL, res = "10m",
-  full.name = TRUE, set.seed = NA, abort = FALSE)
+  tiles = NA, full.name = TRUE, set.seed = NA, multiple_names = FALSE,
+  abort = FALSE)
 }
 \arguments{
 \item{prod_name}{Input Sentinel-2 product name: it can be both
@@ -23,6 +24,10 @@ default is '10m'. Notice that, choosing '10m' or '20m', bands with lower
 resolution will be rescaled to \code{res}. Band 08 is used with \code{res = '10m'},
 band 08A with \code{res = '20m'} and \code{res = '60m'}.}
 
+\item{tiles}{(optional) Character vector with the desired output tile IDs
+(id specified IDs are not present in the input SAFE product, they are not
+produced). Default (NA) is to consider all the found tiles.}
+
 \item{full.name}{Logical value: if TRUE (default), all the input path
 is maintained (if existing); if FALSE, only basename is returned.}
 
@@ -33,6 +38,10 @@ is completely random (this is useful not to assign the same name to
 products with the same names (e.g. product with old name downloaded in
 different moments which contains different subsets of tiles).
 Default value is TRUE if the file exists locally, FALSE if not.}
+
+\item{multiple_names}{Logical: if TRUE, multiple names are returned in case
+the SAFE product contains more than one tile; if FALSE (default), a random
+tile element is used.}
 
 \item{abort}{Logical parameter: if TRUE, the function aborts in case
 \code{prod_type} is not recognised; if FALSE (default), a warning is shown.}

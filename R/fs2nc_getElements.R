@@ -10,6 +10,7 @@
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @export
+#' @importFrom data.table as.data.table
 #' @examples
 #' # Define product name
 #' fs2nc_examplename <-
@@ -27,11 +28,11 @@ fs2nc_getElements <- function(s2_names, format="list") {
   
   # define regular expressions to identify products
   fs2nc_regex <- list(
-    "tile" = list("regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([0-9]{2}[A-Z]{3})\\_([A-Z0-9]+)\\_([126]0)\\.?([^\\_]*)$",
+    "tile" = list("regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([0-9A-Z]{5})\\_([A-Z0-9\\-]+)\\_([126]0)\\.?([^\\_]*)$",
                   "elements" = c("mission","level","sensing_date","id_orbit","id_tile","prod_type","res","file_ext")),
-    "merged" = list("regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_\\_([A-Z0-9]+)\\_([126]0)\\.?([^\\_]*)$",
+    "merged" = list("regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_\\_([A-Z0-9\\-]+)\\_([126]0)\\.?([^\\_]*)$",
                     "elements" = c("mission","level","sensing_date","id_orbit","prod_type","res","file_ext")),
-    "clipped" = list("regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([^\\_\\.]+)\\_([A-Z0-9]+)\\_([126]0)\\.?([^\\_]*)$",
+    "clipped" = list("regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([^\\_\\.]+)\\_([A-Z0-9\\-]+)\\_([126]0)\\.?([^\\_]*)$",
                      "elements" = c("mission","level","sensing_date","id_orbit","extent_name","prod_type","res","file_ext")))
   
   metadata <- list() # output object, with requested metadata
@@ -77,7 +78,13 @@ fs2nc_getElements <- function(s2_names, format="list") {
   
   # return output
   if (format=="data.frame") {
-    return(do.call("rbind", lapply(metadata, as.data.frame, stringsAsFactors=FALSE)))
+    return(as.data.frame(
+      do.call(
+        "rbind", 
+        c(lapply(metadata, as.data.table, stringsAsFactors=FALSE), 
+          fill=TRUE)
+      )
+    ))
   }
   
   if (format!="list") {
