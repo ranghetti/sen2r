@@ -387,7 +387,7 @@ fidolasen_s2 <- function(param_list=NULL,
   }
   
   # check extent_name
-  if (grepl("^[0-9]{2}[A-Z]{3}$",extent_name)) {
+  if (grepl("^[0-9A-Z]{5}$",extent_name)) {
     print_message(
       type = "error",
       "\"extent_name\" cannot have the same structure of a tile ID ",
@@ -823,17 +823,19 @@ fidolasen_s2 <- function(param_list=NULL,
         file.path(
           path_tiles,
           if(pm$path_subdirs==TRUE){p}else{""},
-          basename(s2_shortname(x, prod_type=p, ext=tiles_ext, res=pm$res_s2))
+          basename(s2_shortname(x, prod_type=p, ext=tiles_ext, res=pm$res_s2, tiles=pm$s2tiles_selected, multiple_names=TRUE))
         )
       })
     }) %>% unlist()
     tiles_l1c_names_exp <- tiles_l1c_names_exp[!duplicated(tiles_l1c_names_exp)]
     tiles_l2a_names_exp <- lapply(file.path(pm$path_l2a,names(s2_list_l2a)), function(x){
       lapply(list_prods[list_prods %in% l2a_prods], function(p){
+        sel_av_tiles <- s2_getMetadata(x,"tiles")
+        sel_tiles <- sel_av_tiles[sel_av_tiles %in% pm$s2tiles_selected]
         file.path(
           path_tiles,
           if(pm$path_subdirs==TRUE){p}else{""},
-          basename(s2_shortname(x, prod_type=p, ext=tiles_ext, res=pm$res_s2))
+          basename(s2_shortname(x, prod_type=p, ext=tiles_ext, res=pm$res_s2, tiles=pm$s2tiles_selected, multiple_names=TRUE))
         )
       })
     }) %>% unlist()
@@ -1132,6 +1134,11 @@ fidolasen_s2 <- function(param_list=NULL,
             tryCatch(s2_getMetadata(x, "tiles"), error = function(e) {NULL})
           }) %>%
             sapply(paste, collapse = " ") %>% as.character()
+          # keep only required tiles
+          safe_dt_av$id_tile <- sapply(safe_dt_av$id_tile, function(x) {
+            strsplit(x," ")[[1]][strsplit(x," ")[[1]] %in% pm$s2tiles_selected] %>% 
+              paste(collapse=" ")
+          })
         }
         tiles_basenames_av <- safe_dt_av[,paste0("S",
                                                  mission,
@@ -1240,6 +1247,7 @@ fidolasen_s2 <- function(param_list=NULL,
               outdir = path_tiles,
               prod_type = list_l1c_prods,
               format = tiles_outformat,
+              tiles = pm$s2tiles_selected,
               res = pm$res_s2,
               subdirs = pm$path_subdirs,
               overwrite = pm$overwrite,
