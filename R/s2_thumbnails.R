@@ -244,7 +244,7 @@ s2_thumbnails <- function(infiles,
     
     # Determine prod_type
     sel_prod_type <- if (is.na(prod_type)) {
-      sel_infile_meta$prod_type
+      infiles_meta[i,prod_type]
     } else {
       prod_type
     }
