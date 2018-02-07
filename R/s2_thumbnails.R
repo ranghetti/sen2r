@@ -228,12 +228,13 @@ s2_thumbnails <- function(infiles,
   }
   
   # Get files metadata
-  infiles_meta <- data.table(fs2nc_getElements(infiles, format="data.frame"))
+  if (is.na(prod_type)) {
+    infiles_meta <- data.table(fs2nc_getElements(infiles, format="data.frame"))
+  }
   
   out_names <- character(0) # names of created files
   for (i in seq_along(infiles)) {
     sel_infile_path <- infiles[i]
-    sel_infile_meta <- c(infiles_meta[i,])
     
     # set outdir
     if (is.na(outdir)) {
