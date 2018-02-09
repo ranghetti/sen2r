@@ -308,7 +308,7 @@ s2_thumbnails <- function(infiles,
           out_file = out_path, 
           palette = if (sel_prod_type %in% c("SCL")) {
             sel_prod_type
-          } else if (grepl("\\-Z$",sel_prod_type)) {
+          } else if (grepl("\\-Z$",sel_prod_type) | sel_prod_type=="Zscore") {
             "Zscore"
           } else {
             "generic_ndsi"
