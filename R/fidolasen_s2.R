@@ -764,19 +764,6 @@ fidolasen_s2 <- function(param_list=NULL,
   
   ### Processing steps ###
   
-  # do nothing if preprocess is not required
-  if (pm$preprocess == FALSE) {
-    # remove temporary files
-    unlink(path_tmp, recursive = TRUE)
-    # Exit
-    print_message(
-      type = "message",
-      date = TRUE,
-      "Execution of fidolasen session terminated."
-    )
-    return(invisible(NULL))
-  }
-  
   ## Define output formats
   if (!is.na(pm$path_tiles)) {
     tiles_ext <- out_ext
