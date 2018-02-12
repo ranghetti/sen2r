@@ -45,7 +45,7 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   }
   
   # TODO check the names of the content of the list
-
+  
   # TODO check package version and parameter names
   
   # check timewindow

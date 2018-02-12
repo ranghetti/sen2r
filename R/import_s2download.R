@@ -14,7 +14,7 @@ import_s2download <- function(...) {
   
   # check that python and the required modules are installed
   py <- init_python()
-
+  
   # check that s2download and dependencies were cloned
   # this ensures also that python2 and other dependencies are present)
   # check if it is already installed
@@ -25,13 +25,21 @@ import_s2download <- function(...) {
     list("s2download" = NULL)
   }
   if (length(binpaths$s2download)==0) {
-    print_message(
-      type="waiting",
-      "s2download was not found in your system; press ENTER to install, ESC to escape."
-    )
+    if (interactive()) {
+      print_message(
+        type="waiting",
+        "s2download was not found in your system; press ENTER to install, ESC to escape."
+      )
+    } else {
+      print_message(
+        type="message",
+        "s2download was not found in your system and will be installed."
+      )
+    }
     install_s2download()
+    binpaths <- jsonlite::fromJSON(binpaths_file)
   }
-
+  
   # load s2download
   binpaths <- jsonlite::fromJSON(binpaths_file)
   s2download <- tryCatch(
@@ -47,7 +55,7 @@ import_s2download <- function(...) {
   }
   
   s2download$inst_path <- binpaths$s2download
-
+  
   return(s2download)
-
+  
 }

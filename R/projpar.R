@@ -26,27 +26,27 @@
 #' }
 
 projpar <- function(proj4string, par, abort = FALSE) {
-
+  
   # import python modules
   osr <- import("osgeo",convert=FALSE)$osr
-
+  
   proj4string_check <- check_proj4string(proj4string, abort=abort)
-
+  
   if (proj4string_check == "invalid") {
     return(NA)
   }
-
+  
   proj4_wkt <- proj4string_check %>%
     showWKT() %>%
     r_to_py() %>%
     osr$SpatialReference()
   proj4_par <- proj4_wkt$GetAttrValue(par) %>%
     py_to_r()
-
+  
   attr(proj4_par, "proj4string") <- proj4string_check
-
+  
   return(proj4_par)
-
+  
 }
 
 
@@ -59,14 +59,14 @@ projpar <- function(proj4string, par, abort = FALSE) {
 #' }
 
 projname <- function(proj4string, abort = FALSE) {
-
+  
   proj4_name <- projpar(proj4string, "geogcs")
-
+  
   if (is.projected(CRS(attr(proj4_name, "proj4string")))) {
     proj4_name <- projpar(proj4string, "projcs")
   }
   proj4_name <- gsub("\\_"," ",proj4_name)
-
+  
   return(proj4_name)
-
+  
 }

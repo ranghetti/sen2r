@@ -84,7 +84,7 @@
 # - add check for format integrity
 
 s2_getMetadata <- function(s2, info="all") {
-
+  
   # define regular expressions to identify products
   s2_regex <- list(
     "oldname_main_xml" = list("regex" = "^S(2[AB])\\_([A-Z]{4})\\_MTD\\_SAFL([12][AC])\\_(.{4})\\_([0-9]{8}T[0-9]{6})\\_R([0-9]{3})\\_V[0-9]{8}T[0-9]{6}\\_([0-9]{8}T[0-9]{6})\\.xml$",
@@ -109,7 +109,7 @@ s2_getMetadata <- function(s2, info="all") {
                                  "elements" = c("id_tile","sensing_datetime","bandname")),
     "compactname_L2A_jp2" = list("regex" = "^L2A\\_T([A-Z0-9]{5})\\_([0-9]{8}T[0-9]{6})\\_([0-9A-Z]{3})\\_([126]0m)\\.jp2$",
                                  "elements" = c("id_tile","sensing_datetime","bandname","res"))) # here bandname can be also additional_product
-
+  
   # define all possible elements to scan
   info_base <- c("prod_type", "version") # information always retrieved
   info_general <- c("tiles", "utm", "xml_main", "xml_granules") # information retrieved if the product is scanned
@@ -134,17 +134,17 @@ s2_getMetadata <- function(s2, info="all") {
   } else {
     scan_file <- TRUE
   }
-
+  
   metadata <- list() # output object, with requested metadata
-
+  
   # If s2 is a string, check it and retrieve file metadata
   if (is(s2, "character")) {
-
+    
     # if scan_file is FALSE, check the input as a product name without searching for files
     if (!scan_file) {
-
+      
       s2_name <- basename(s2)
-
+      
       # retrieve type and version
       nameinfo_target <- s2_name
       if (length(grep("\\.xml$",nameinfo_target))==1) {
@@ -171,7 +171,6 @@ s2_getMetadata <- function(s2, info="all") {
             nameinfo_elements <- list(s2_regex$oldname_granule_xml$elements)
           }
         } else {
-# browser()
           print_message(
             type="error", 
             "This product (",s2,") is not in the right format (not recognised)."
@@ -207,14 +206,14 @@ s2_getMetadata <- function(s2, info="all") {
           )
         }
       }
-
-    # if scan_file is TRUE, scan for file content
+      
+      # if scan_file is TRUE, scan for file content
     } else {
-
+      
       # If s2 is a path:
       # convert in absolute path (and check that file exists)
       s2_path <- normalizePath(s2, mustWork=TRUE)
-
+      
       # retrieve the name of xml main file
       # if it is a directory, scan the content
       if (file.info(s2_path)$isdir) {
@@ -229,7 +228,7 @@ s2_getMetadata <- function(s2, info="all") {
         oldname_granule_xmlfile <- s2_path[grep(s2_regex$oldname_granule_xml$regex, basename(s2_path))]
         s2_path <- dirname(s2_path)
       }
-
+      
       # check version (old / compact) and product type (product / singlegranule)
       if (length(oldname_main_xmlfile)+length(compactname_main_xmlfile)==1) {
         if (length(oldname_granule_xmlfile)+length(compactname_granule_xmlfile)==0) {
@@ -240,7 +239,7 @@ s2_getMetadata <- function(s2, info="all") {
               s2_version <- "old"
               s2_main_xml <- s2_xml <- oldname_main_xmlfile
               s2_granules_xml <- unlist(sapply(list.dirs(file.path(s2_path,"GRANULE"), recursive=FALSE, full.names=TRUE),
-                                        list.files, s2_regex$oldname_granule_xml$regex, full.names=TRUE))
+                                               list.files, s2_regex$oldname_granule_xml$regex, full.names=TRUE))
             } else if (length(oldname_main_xmlfile)==0) {
               print_message(
                 type="error", 
@@ -315,7 +314,7 @@ s2_getMetadata <- function(s2, info="all") {
           "This product (",s2,") is not in the right format (not recognised)."
         )
       }
-
+      
       # metadata from file name are read
       # decide target, regex and elements to scan
       if (s2_version=="old") {
@@ -341,9 +340,9 @@ s2_getMetadata <- function(s2, info="all") {
           nameinfo_elements <- list(s2_regex$compactname_granule_path$elements, s2_regex$compactname_main_path$elements)
         }
       }
-
+      
     }
-
+    
     if ("prod_type" %in% info) { # return the type if required
       metadata[["prod_type"]] <- s2_type
     }
@@ -356,8 +355,8 @@ s2_getMetadata <- function(s2, info="all") {
     if ("xml_granules" %in% info) { # return the version if required
       metadata[["xml_granules"]] <- s2_granules_xml
     }
-
-
+    
+    
     # scan
     metadata_nameinfo <- list()
     for (i in seq_along(nameinfo_target)) {
@@ -377,7 +376,7 @@ s2_getMetadata <- function(s2, info="all") {
       }
     }
     s2_level <- metadata_nameinfo[["level"]] # used as base info
-
+    
     # info on tile[s]
     if (any(c("tiles","utm") %in% info)) {
       av_tiles <- gsub(
@@ -391,34 +390,34 @@ s2_getMetadata <- function(s2, info="all") {
         metadata[["utm"]] <- as.integer(unique(substr(av_tiles,1,2)))
       }
     }
-
+    
     # if requested, give band names
     if ("jp2list" %in% info) {
-
+      
       # compute elements
       jp2_listall <- list.files(s2_path, s2_regex[[paste0(s2_version,"name_L",s2_level,"_jp2")]]$regex, recursive=TRUE, full.names=FALSE)
       jp2_bandname <- gsub(s2_regex[[paste0(s2_version,"name_L",s2_level,"_jp2")]]$regex,
                            paste0("\\",which(s2_regex[[paste0(s2_version,"name_L",s2_level,"_jp2")]]$elements == "bandname")),
                            basename(jp2_listall))
       jp2_layertype <- gsub(s2_regex[[paste0(s2_version,"name_L",s2_level,"_jp2")]]$regex,
-                           paste0("\\",which(s2_regex[[paste0(s2_version,"name_L",s2_level,"_jp2")]]$elements == "additional_product")),
-                           basename(jp2_listall))
+                            paste0("\\",which(s2_regex[[paste0(s2_version,"name_L",s2_level,"_jp2")]]$elements == "additional_product")),
+                            basename(jp2_listall))
       jp2_res <- gsub(s2_regex[[paste0(s2_version,"name_L",s2_level,"_jp2")]]$regex,
                       paste0("\\",which(s2_regex[[paste0(s2_version,"name_L",s2_level,"_jp2")]]$elements == "res")),
                       basename(jp2_listall))
       jp2_tile <- gsub(s2_regex[[paste0(s2_version,"name_L",s2_level,"_jp2")]]$regex,
-                      paste0("\\",which(s2_regex[[paste0(s2_version,"name_L",s2_level,"_jp2")]]$elements == "id_tile")),
-                      basename(jp2_listall))
+                       paste0("\\",which(s2_regex[[paste0(s2_version,"name_L",s2_level,"_jp2")]]$elements == "id_tile")),
+                       basename(jp2_listall))
       # corrections for compact names
       if (s2_version=="compact") {
         jp2_layertype[grep("^B[0-9A]{2}$",jp2_bandname)] <- "MSI"
         jp2_layertype[jp2_layertype!="MSI"] <- jp2_bandname[jp2_layertype!="MSI"]
         jp2_bandname[jp2_layertype!="MSI"] <- ""
       }
-
+      
       # correction B8A -> B08 (only one between them is used)
       jp2_bandname[jp2_bandname=="B8A"] <- "B08"
-
+      
       # output data.frame
       jp2_list <- data.frame("layer" = basename(jp2_listall),
                              "tile" = jp2_tile,
@@ -428,14 +427,14 @@ s2_getMetadata <- function(s2, info="all") {
                              "relpath" = jp2_listall,
                              stringsAsFactors=FALSE)
       metadata[["jp2list"]] <-jp2_list[with(jp2_list, order(band,type,res,tile)),]
-
+      
     }
-
+    
     # if necessary, read the file for further metadata
     if (any(info_gdal %in% info)) {
-
+      
       gdal <- import("osgeo",convert=FALSE)$gdal
-
+      
       s2_gdal <- gdal$Open(s2_xml)
       # in case of error (old names), try to read a single granule
       if (s2_type=="product" & is(s2_gdal,"python.builtin.NoneType")) {
@@ -443,20 +442,20 @@ s2_getMetadata <- function(s2, info="all") {
         first_granule_xml <- list.files(first_granule,s2_regex[[paste0(s2_version,"name_granule_xml")]]$regex,full.names=TRUE)
         s2_gdal <- gdal$Open(first_granule_xml)
       }
-
+      
     }
-
+    
   }
-
+  
   # If s2 is a gdal object, read metadata directly
   if (is(s2, "osgeo.gdal.Dataset")) {
     gdal <- import("osgeo",convert=FALSE)$gdal
     s2_gdal <- s2
   }
-
+  
   # retrieve metadata from file content
   if (exists("s2_gdal")) {
-
+    
     # Read metadata
     if ("clouds" %in% info) {
       metadata[["clouds"]] <- py_to_r(s2_gdal$GetMetadata()[["CLOUDY_PIXEL_PERCENTAGE"]])
@@ -493,14 +492,14 @@ s2_getMetadata <- function(s2, info="all") {
     if ("saturated_value" %in% info) {
       metadata[["saturated_value"]] <- py_to_r(s2_gdal$GetMetadata()[["SPECIAL_VALUE_SATURATED"]])
     }
-
+    
   }
-
+  
   # return
   if (length(metadata)>1) {
     return(metadata)
   } else {
     return(unlist(metadata))
   }
-
+  
 }

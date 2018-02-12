@@ -55,7 +55,7 @@ s2_merge <- function(infiles,
                      vrt_rel_paths=NA,
                      out_crs="",
                      overwrite=FALSE) {
-
+  
   # Define vrt_rel_paths
   if (is.na(vrt_rel_paths)) {
     vrt_rel_paths <- Sys.info()["sysname"] != "Windows"
@@ -80,8 +80,9 @@ s2_merge <- function(infiles,
   }
   if (is.null(binpaths$gdalinfo)) {
     check_gdal()
+    binpaths <- jsonlite::fromJSON(binpaths_file)
   }
-
+  
   # Get files metadata
   infiles_meta <- fs2nc_getElements(infiles, format="data.frame")
   # get metadata from GDALinfo (FIXME time expensive; check if it can be speeded up)
@@ -108,7 +109,7 @@ s2_merge <- function(infiles,
   #     type="error",
   #     "Some of the input files is not in a UTM projection.")
   # }
-
+  
   # if utm zones differ from the selected utm zone, show a warning
   if (out_crs=="") {
     print_message(
@@ -116,13 +117,13 @@ s2_merge <- function(infiles,
       "Using projection \"",infiles_meta$proj4string[1],"\".")
     out_crs <- infiles_meta$proj4string[1]
   }
-
+  
   # vector which identifies, for each infiles, if its projection is
   # different or not from out_crs
   diffcrs <- sapply(infiles_meta$proj4string, function(x) {
     !compareCRS(CRS(x), CRS(out_crs))
   })
-
+  
   # Check out_crs
   out_crs <- check_proj4string(out_crs)
   # check the projections of input files
@@ -136,11 +137,11 @@ s2_merge <- function(infiles,
     tmpdir <- file.path(comsub(infiles,"/"),".vrt")
   }
   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
-
+  
   # create outdir if not existing
   suppressWarnings(outdir <- expand_path(outdir, parent=comsub(infiles,"/"), silent=TRUE))
   dir.create(outdir, recursive=FALSE, showWarnings=FALSE)
-
+  
   # if out_crs is different from the projection of all input files,
   # reprojected the first file and use as reference for the grid;
   # otherwise, use the first non-reprojected file.
@@ -160,7 +161,7 @@ s2_merge <- function(infiles,
   } else {
     ref_file <- infiles[which(!diffcrs)[1]]
   }
-
+  
   # Group by all except id_tile
   infiles_meta_grps <- paste(infiles_meta$mission,
                              infiles_meta$level,
@@ -170,7 +171,7 @@ s2_merge <- function(infiles,
                              infiles_meta$res,
                              infiles_meta$file_ext,
                              infiles_meta$format) # FIXME use better syntax (data.table) when the error with data.table will be fixed
-
+  
   # create subdirs (if requested)
   prod_types <- unique(infiles_meta$prod_type)
   if (is.na(subdirs)) {
@@ -179,20 +180,20 @@ s2_merge <- function(infiles,
   if (subdirs) {
     sapply(file.path(outdir,prod_types), dir.create, showWarnings=FALSE)
   }
-
+  
   # merge single output products
   outfiles <- character(0)
   for (infiles_meta_grp in unique(infiles_meta_grps)) {
-
+    
     sel_infiles <- infiles[infiles_meta_grps == infiles_meta_grp]
     sel_infiles_meta <- infiles_meta[infiles_meta_grps == infiles_meta_grp,]
     sel_diffcrs <- diffcrs[infiles_meta_grps == infiles_meta_grp]
-
+    
     # Check that there are not duplicated tiles
     if (any(duplicated(sel_infiles_meta$id_tile))) {
       print_message(type="error", "Internal error (duplicated id_tile).")
     }
-
+    
     # Define output filename
     sel_outfile <- paste0(
       "S2",sel_infiles_meta[1,"mission"],sel_infiles_meta[1,"level"],"_",
@@ -209,10 +210,10 @@ s2_merge <- function(infiles,
     }
     # define subdir
     out_subdir <- ifelse(subdirs, file.path(outdir,sel_infiles_meta[1,"prod_type"]), outdir)
-
+    
     # if output already exists and overwrite==FALSE, do not proceed
     if (!file.exists(file.path(out_subdir,sel_outfile)) | overwrite==TRUE) {
-
+      
       # build intermediate reprojected VRTs (if necessary)
       for (i in seq_len(sum(sel_diffcrs))) {
         reproj_vrt <- file.path(
@@ -227,11 +228,11 @@ s2_merge <- function(infiles,
                       of = "VRT",
                       r = "near")
         if (vrt_rel_paths) {gdal_abs2rel(reproj_vrt)}
-
+        
         # replace input file path with intermediate
         sel_infiles[sel_diffcrs][i] <- reproj_vrt
       }
-
+      
       # merge tiles
       merged_vrt <- file.path(
         tmpdir,
@@ -246,7 +247,7 @@ s2_merge <- function(infiles,
         ),
         intern = Sys.info()["sysname"] == "Windows"
       )
-
+      
       # create output merged file
       system(
         paste0(
@@ -260,13 +261,13 @@ s2_merge <- function(infiles,
       if (sel_outformat=="VRT" & vrt_rel_paths) {
         gdal_abs2rel(file.path(out_subdir,sel_outfile))
       }
-
+      
     } # end of overwrite IF cycle
-
+    
     outfiles <- c(outfiles, file.path(out_subdir,sel_outfile))
-
+    
   }
-
+  
   return(outfiles)
-
+  
 }

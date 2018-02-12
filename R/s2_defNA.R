@@ -23,7 +23,7 @@ s2_defNA <- function(prod_types) {
     TCI = NA, # no NA, in order not to delete actual black or white pixels
     NA
   )
-
+  
 }
 
 

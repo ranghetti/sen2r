@@ -7,13 +7,14 @@
 fidolasen_s2(param_list = NULL, gui = NA, preprocess = NA,
   s2_levels = NA, sel_sensor = NA, online = NA, overwrite_safe = NA,
   rm_safe = NA, step_atmcorr = NA, timewindow = NA, timeperiod = NA,
-  extent = NA, s2tiles_selected = NA, s2orbits_selected = NA,
-  list_prods = NA, list_indices = NA, index_source = NA, mask_type = NA,
-  clip_on_extent = NA, extent_as_mask = NA, reference_path = NA,
-  res = NA, res_s2 = NA, unit = NA, proj = NA, resampling = NA,
-  resampling_scl = NA, outformat = NA, compression = NA, overwrite = NA,
-  path_l1c = NA, path_l2a = NA, path_tiles = NA, path_merged = NA,
-  path_out = NA, path_indices = NA, path_subdirs = NA,
+  extent = NA, extent_name = NA, s2tiles_selected = NA,
+  s2orbits_selected = NA, list_prods = NA, list_indices = NA,
+  index_source = NA, mask_type = NA, clip_on_extent = NA,
+  extent_as_mask = NA, reference_path = NA, res = NA, res_s2 = NA,
+  unit = NA, proj = NA, resampling = NA, resampling_scl = NA,
+  outformat = NA, compression = NA, overwrite = NA, path_l1c = NA,
+  path_l2a = NA, path_tiles = NA, path_merged = NA, path_out = NA,
+  path_indices = NA, path_subdirs = NA, thumbnails = TRUE,
   use_python = TRUE)
 }
 \arguments{
@@ -74,7 +75,7 @@ produce L2A;
 downloaded from SciHub;
 \item "l2a" means that they are downloaded if available on SciHub,
 otherwise they are skipped (sen2cor is never used);
-\item "no" means that L1C are not considered (processing chain
+\item "no" means that L2A are not considered (processing chain
 makes use only of L1C products).
 }}
 
@@ -98,7 +99,14 @@ to 2016-08-31 and 2017-06-01 to 2017-08-31 are considered).
 \item{extent}{(optional) Spatial extent on which to clip products (it can
 be both the path of a vector file or a geoJSON).
 Default is NA for offline mode (meaning no extent:
-all found tiles are entirely used); in online mode, a sample extent is used.}
+all found tiles are entirely used); in online mode, a sample extent is used
+as default.}
+
+\item{extent_name}{(optional) Name of the area set as extent, to be used in
+the output file names. Default is to leave it blank. The name is an
+alphanumeric string which cannot contain points nor underscores, and that
+cannot be a five-length string with the same structure of a tile ID
+(two numeric and three uppercase character values).}
 
 \item{s2tiles_selected}{(optional) Character vector with the Sentinel-2
 tiles to be considered (default is NA, meaning all the tiles).}
@@ -198,6 +206,13 @@ If not provided (default), \code{path_out} is used.}
 for each output product or spectral index is generated within
 \code{path_tiles}, \code{path_merged}, \code{path_out} and \code{path_indices}; if FALSE,
 products are put directly within them.}
+
+\item{thumbnails}{(optional) Logical: if TRUE (default), a thumbnail is
+added for each product created. Thumbnails are JPEG or PNG georeferenced
+small images (width or height of 1024 pixels) with default colour palettes
+(for more details, see the help window in the GUI). They are placed in
+a subdirectory of the products names "thumbnails".
+If FALSE, they are not created.}
 
 \item{use_python}{(optional) Logical: if TRUE (default), the presence of
 python in the system is checked before running the function;

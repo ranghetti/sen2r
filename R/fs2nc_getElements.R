@@ -10,6 +10,7 @@
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @export
+#' @importFrom data.table as.data.table
 #' @examples
 #' # Define product name
 #' fs2nc_examplename <-
@@ -19,61 +20,73 @@
 #' fs2nc_getElements(fs2nc_examplename)
 
 fs2nc_getElements <- function(s2_names, format="list") {
-
+  
   # if input is NULL, return NULL
   if (is.null(s2_names)) {
     return(invisible(NULL))
   }
-
+  
   # define regular expressions to identify products
   fs2nc_regex <- list(
-    "tile" = list("regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([A-Z0-9]{5})\\_([A-Z0-9]+)\\_([126]0)\\.?(.*)$",
+    "tile" = list("regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([0-9A-Z]{5})\\_([A-Z0-9\\-]+)\\_([126]0)\\.?([^\\_]*)$",
                   "elements" = c("mission","level","sensing_date","id_orbit","id_tile","prod_type","res","file_ext")),
-    "merged" = list("regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_\\_([A-Z0-9]+)\\_([126]0)\\.?(.*)$",
-                    "elements" = c("mission","level","sensing_date","id_orbit","prod_type","res","file_ext")))
-
+    "merged" = list("regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_\\_([A-Z0-9\\-]+)\\_([126]0)\\.?([^\\_]*)$",
+                    "elements" = c("mission","level","sensing_date","id_orbit","prod_type","res","file_ext")),
+    "clipped" = list("regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([^\\_\\.]+)\\_([A-Z0-9\\-]+)\\_([126]0)\\.?([^\\_]*)$",
+                     "elements" = c("mission","level","sensing_date","id_orbit","extent_name","prod_type","res","file_ext")))
+  
   metadata <- list() # output object, with requested metadata
-
+  
   s2_names <- basename(s2_names)
-
-  for (s2_name in s2_names) {
-
-    metadata[[s2_name]] <- list()
-
+  
+  for (i in seq_along(s2_names)) {
+    
+    s2_name <- s2_names[i]
+    metadata[[i]] <- list()
+    names(metadata)[i] <- s2_name
+    
     # retrieve type
     if(length(grep(fs2nc_regex$tile$regex, s2_name))==1) {
-      metadata[[s2_name]]$type <- "tile"
+      metadata[[i]]$type <- "tile"
     } else if(length(grep(fs2nc_regex$merged$regex, s2_name))==1) {
-      metadata[[s2_name]]$type <- "merged"
+      metadata[[i]]$type <- "merged"
+    } else if(length(grep(fs2nc_regex$clipped$regex, s2_name))==1) {
+      metadata[[i]]$type <- "clipped"
     } else {
       print_message(
         type="error",
         "\"",s2_name,"\" was not recognised.")
     }
-
+    
     # retrieve info
-    for (sel_el in fs2nc_regex[[metadata[[s2_name]]$type]]$elements) {
-      metadata[[s2_name]][[sel_el]] <- gsub(
-        fs2nc_regex[[metadata[[s2_name]]$type]]$regex,
-        paste0("\\",which(fs2nc_regex[[metadata[[s2_name]]$type]]$elements==sel_el)),
+    for (sel_el in fs2nc_regex[[metadata[[i]]$type]]$elements) {
+      metadata[[i]][[sel_el]] <- gsub(
+        fs2nc_regex[[metadata[[i]]$type]]$regex,
+        paste0("\\",which(fs2nc_regex[[metadata[[i]]$type]]$elements==sel_el)),
         s2_name)
       # specific formattations
       if (sel_el=="sensing_date") {
-        metadata[[s2_name]][[sel_el]] <- as.Date(metadata[[s2_name]][[sel_el]], format="%Y%m%d")
+        metadata[[i]][[sel_el]] <- as.Date(metadata[[i]][[sel_el]], format="%Y%m%d")
       }
       if (sel_el=="res") {
-        metadata[[s2_name]][[sel_el]] <- paste0(metadata[[s2_name]][[sel_el]],"m")
+        metadata[[i]][[sel_el]] <- paste0(metadata[[i]][[sel_el]],"m")
       }
     }
-
+    
   } # end of prod cycle
-
-
+  
+  
   # return output
   if (format=="data.frame") {
-    return(do.call("rbind", lapply(metadata, as.data.frame, stringsAsFactors=FALSE)))
+    return(as.data.frame(
+      do.call(
+        "rbind", 
+        c(lapply(metadata, as.data.table, stringsAsFactors=FALSE), 
+          fill=TRUE)
+      )
+    ))
   }
-
+  
   if (format!="list") {
     print_message(
       type="warning",
@@ -85,5 +98,5 @@ fs2nc_getElements <- function(s2_names, format="list") {
   } else {
     return(metadata)
   }
-
+  
 }

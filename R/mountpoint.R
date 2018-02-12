@@ -40,7 +40,7 @@ mountpoint <- function(path, protocol=NA) {
     mountpoints_paths <- mountpoints_paths[mountpoints_protocols %in% protocol]
     mountpoints_protocols <- mountpoints_protocols[mountpoints_protocols %in% protocol]
   }
-
+  
   # scan the path
   path <- expand_path(path)
   parents <- sapply(mountpoints_paths, grep, path) %>%

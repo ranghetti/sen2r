@@ -52,7 +52,7 @@
 #'  downloaded from SciHub;
 #'  * "l2a" means that they are downloaded if available on SciHub,
 #'  otherwise they are skipped (sen2cor is never used);
-#'  * "no" means that L1C are not considered (processing chain
+#'  * "no" means that L2A are not considered (processing chain
 #'  makes use only of L1C products).
 #' @param timewindow (optional) Temporal window for querying: Date object
 #'  of length 1 (single day) or 2 (time window). Default is NA in online mode
@@ -70,7 +70,13 @@
 #' @param extent (optional) Spatial extent on which to clip products (it can
 #'  be both the path of a vector file or a geoJSON). 
 #'  Default is NA for offline mode (meaning no extent:
-#'  all found tiles are entirely used); in online mode, a sample extent is used.
+#'  all found tiles are entirely used); in online mode, a sample extent is used
+#'  as default.
+#' @param extent_name (optional) Name of the area set as extent, to be used in
+#'  the output file names. Default is to leave it blank. The name is an 
+#'  alphanumeric string which cannot contain points nor underscores, and that 
+#'  cannot be a five-length string with the same structure of a tile ID
+#'  (two numeric and three uppercase character values).
 #' @param s2tiles_selected (optional) Character vector with the Sentinel-2
 #'  tiles to be considered (default is NA, meaning all the tiles).
 #' @param s2orbits_selected (optional) Character vector with the Sentinel-2
@@ -145,6 +151,12 @@
 #'  for each output product or spectral index is generated within
 #'  `path_tiles`, `path_merged`, `path_out` and `path_indices`; if FALSE,
 #'  products are put directly within them.
+#' @param thumbnails (optional) Logical: if TRUE (default), a thumbnail is
+#'  added for each product created. Thumbnails are JPEG or PNG georeferenced
+#'  small images (width or height of 1024 pixels) with default colour palettes
+#'  (for more details, see the help window in the GUI). They are placed in
+#'  a subdirectory of the products names "thumbnails".
+#'  If FALSE, they are not created.
 #' @param use_python (optional) Logical: if TRUE (default), the presence of
 #'  python in the system is checked before running the function; 
 #'  if FALSE, this is skipped. Setting this to FALSE can bge useful on 
@@ -171,6 +183,7 @@ fidolasen_s2 <- function(param_list=NULL,
                          timewindow=NA,
                          timeperiod=NA,
                          extent=NA,
+                         extent_name=NA,
                          s2tiles_selected=NA,
                          s2orbits_selected=NA,
                          list_prods=NA,
@@ -196,6 +209,7 @@ fidolasen_s2 <- function(param_list=NULL,
                          path_out=NA,
                          path_indices=NA,
                          path_subdirs=NA,
+                         thumbnails=TRUE,
                          use_python = TRUE) {
   
   
@@ -206,12 +220,12 @@ fidolasen_s2 <- function(param_list=NULL,
   if (use_python == TRUE) {
     py <- init_python()
   }
-
+  
   # internal function: return character(0) instead of NULL
   # (used to build _req names)
   nn <- function(x) {if (is.null(x)) character(0) else x}
   
-   # create tempdir
+  # create tempdir
   dir.create(tempdir(), showWarnings=FALSE)
   
   ## 1. Read / import parameters ##
@@ -229,6 +243,7 @@ fidolasen_s2 <- function(param_list=NULL,
                  timewindow=c(Sys.Date() - 90, Sys.Date()),
                  timeperiod="full",
                  extent=NA, # below re-defined as sample extent if online mode
+                 extent_name="",
                  s2tiles_selected=NA, # below re-defined for online mode
                  s2orbits_selected=NA, # temporary select all orbits (TODO implement)
                  list_prods=c("BOA"),
@@ -254,6 +269,7 @@ fidolasen_s2 <- function(param_list=NULL,
                  path_out=NA,
                  path_indices=NA,
                  path_subdirs=TRUE,
+                 thumbnails=TRUE,
                  fidolasen_version=packageVersion("fidolasen"))
   
   # Starting execution
@@ -281,19 +297,27 @@ fidolasen_s2 <- function(param_list=NULL,
     pm$fidolasen_version <- package_version("0.2.0")
   }
   if (packageVersion("fidolasen") > package_version(pm$fidolasen_version)) {
-    open_gui <- print_message(
-      type="waiting",
-      "The parameter file was created with an old version of the package:\n ",
-      "type \"G\" (and ENTER) to open the GUI and check that the input\n ",
-      "parameters are correct, or ENTER to proceed anyway\n ",
-      "(this could lead to errors).\n ",
-      "Alternatively, press ESC to interrupt."
-    )
-    if (length(grep("^[Gg]",open_gui))>0) {
-      gui <- TRUE
+    if (interactive()) {
+      open_gui <- print_message(
+        type="waiting",
+        "The parameter file was created with an old version of the package:\n ",
+        "type \"G\" (and ENTER) to open the GUI and check that the input\n ",
+        "parameters are correct, or ENTER to proceed anyway\n ",
+        "(this could lead to errors).\n ",
+        "Alternatively, press ESC to interrupt."
+      )
+      if (length(grep("^[Gg]",open_gui))>0) {
+        gui <- TRUE
+      }
+    } else {
+      print_message(
+        type="warning",
+        "The parameter file was created with an old version of the package:\n ",
+        "(this could lead to errors).\n "
+      )
     }
   }
-
+  
   # Overwrite parameters passed manually
   # (if some parameters are still missing, copy from default values)
   for (sel_par in names(pm_def)[-match("fidolasen_version",names(pm_def))]) {
@@ -361,7 +385,21 @@ fidolasen_s2 <- function(param_list=NULL,
   if (is(pm$extent, "character")) {
     pm$extent <- st_read(pm$extent, quiet=TRUE)
   }
-
+  
+  # check extent_name
+  if (grepl("^[0-9A-Z]{5}$",extent_name)) {
+    print_message(
+      type = "error",
+      "\"extent_name\" cannot have the same structure of a tile ID ",
+      "(two numeric and by three uppercase character values)."
+    )
+  } else if (grepl("[\\.\\_]",extent_name)) {
+    print_message(
+      type = "error",
+      "\"extent_name\" cannot contain points nor underscores."
+    )
+  }
+  
   # internal parameters
   dir.create(path_tmp <- tempfile(pattern="dir"), showWarnings = FALSE) # consider to add as an optional parameter
   path_out <- if (!is.na(pm$path_out)) {pm$path_out} else {file.path(path_tmp,"out")}
@@ -393,10 +431,12 @@ fidolasen_s2 <- function(param_list=NULL,
     )
   }
   
-  # check that output directories exist
-  paths_exist <- sapply(pm[c("path_l1c","path_l2a","path_tiles","path_merged","path_out","path_indices")],
-                        function(x){if(is.na(x)){NA}else{file.exists(x)}})
-  paths_exist <- paths_exist[!is.na(paths_exist)]
+  # check that output parent directories exist, and create required paths
+  parent_paths <- sapply(
+    pm[c("path_l1c","path_l2a","path_tiles","path_merged","path_out","path_indices")], 
+    function(x){if(is.na(x)){NA}else{dirname(x)}}
+  ) %>% unique() %>% na.omit() %>% as.character()
+  paths_exist <- sapply(parent_paths, file.exists)
   if (any(!paths_exist)) {
     print_message(
       type="error",
@@ -409,6 +449,10 @@ fidolasen_s2 <- function(param_list=NULL,
       "before continuing."
     )
   }
+  sapply(
+    pm[c("path_l1c","path_l2a","path_tiles","path_merged","path_out","path_indices")],
+    function(x) {if(is.na(x)){NA}else{dir.create(x, recursive = FALSE, showWarnings = FALSE)}}
+  )
   
   
   # check output format
@@ -428,7 +472,7 @@ fidolasen_s2 <- function(param_list=NULL,
       "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
   }
   # define output extension
-
+  
   # out_ext <- if (pm$outformat=="ENVI") {
   #   "dat"
   # } else {
@@ -436,7 +480,7 @@ fidolasen_s2 <- function(param_list=NULL,
   #   unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(py$osgeo$gdal$DMD_EXTENSIONS))," ")," "))[1]
   # }
   out_ext <- sel_driver[1,"ext"]
-
+  
   ### Find, download and preprocess ###
   
   ## 2. List required products ##
@@ -449,7 +493,7 @@ fidolasen_s2 <- function(param_list=NULL,
       date = TRUE,
       "Searching for available SAFE products on SciHub..."
     )
-
+    
     # if online mode, retrieve list with s2_list() basing on parameters
     if ("l1c" %in% pm$s2_levels) {
       # list of SAFE (L1C) needed for required L1C
@@ -501,11 +545,13 @@ fidolasen_s2 <- function(param_list=NULL,
     print_message(
       type = "message",
       date = TRUE,
-      "No SAFE products found with the parameters set; exiting."
+      "No SAFE products found with the parameters set ",
+      "(the searching parameters may be too restrictive, ",
+      "or the Copernicus Open Access Hub could be unavailable); exiting."
     )
     return(invisible(NULL))
   }
-
+  
   names(s2_list) <- gsub("^l[12][ac]\\.","",names(s2_list))
   
   # If s2_list is empty, exit
@@ -556,23 +602,12 @@ fidolasen_s2 <- function(param_list=NULL,
     s2_dt <- s2_dt[id_orbit %in% pm$s2orbits_selected,]
   }
   # setorder(s2_dt, -sensing_datetime)
-  s2_dt <- s2_dt[
-    !duplicated(
-      s2_dt[order(-creation_datetime), list(
-        mission,
-        level,
-        id_orbit,
-        id_tile=ifelse(is.na(id_tile),sample(1E5),id_tile), # if id_tile is not specified do not remove duplicates, because different products can rely to different tiles
-        sensing_datetime
-      )]
-    ),
-  ]
   s2_list_l1c <- s2_dt[level=="1C",url] # list of required L1C
   s2_list_l2a <- s2_dt[level=="2A",url] # list of required L2A
   names(s2_list_l1c) <- s2_dt[level=="1C",name]
   names(s2_list_l2a) <- s2_dt[level=="2A",name]
   
-
+  
   ## 3. Download them ##
   # TODO implement ovwerite/skip
   # (now it skips, but analysing each single file)
@@ -616,7 +651,7 @@ fidolasen_s2 <- function(param_list=NULL,
   }
   
   # second filter on tiles (#filter2)
-  s2_dt$id_tile <- lapply(file.path(pm$path_l1c,s2_dt[,name]), function(x) {
+  s2_dt$id_tile <- lapply(file.path(ifelse(s2_dt$level=="1C",pm$path_l1c,pm$path_l2a),s2_dt[,name]), function(x) {
     tryCatch(s2_getMetadata(x, "tiles"), error = function(e) {NULL})
   }) %>%
     sapply(paste, collapse = " ") %>% as.character()
@@ -628,6 +663,29 @@ fidolasen_s2 <- function(param_list=NULL,
     # # filter "ugly" with regexp
     # s2_dt <- s2_dt[grep(paste0("(",paste(pm$s2tiles_selected,collapse=")|("),")"), s2_dt$id_tile),]
   }
+  
+  # remove duplicates (often for different creation dates, or same sensing dates and different sensing hours)
+  # (placed here causes downloading more than the required tiles, but it is the only method to be sure not to exclude
+  # some products with the required tiles and include others without them)
+  s2_dt <- s2_dt[order(-creation_datetime),]
+  s2_dt <- s2_dt[
+    !duplicated(
+      s2_dt[, list(
+        mission,
+        level,
+        id_orbit,
+        id_tile=ifelse(is.na(id_tile),sample(1E5),id_tile), # if id_tile is not specified do not remove duplicates, because different products can rely to different tiles
+        as.Date(sensing_datetime)
+      )]
+    ),
+    ]
+  
+  # redefine s2_list_l1c/l2a
+  s2_list_l1c <- s2_dt[level=="1C",url] # list of required L1C
+  s2_list_l2a <- s2_dt[level=="2A",url] # list of required L2A
+  names(s2_list_l1c) <- s2_dt[level=="1C",name]
+  names(s2_list_l2a) <- s2_dt[level=="2A",name]
+  
   
   # If s2_list is empty, exit (second time)
   if (nrow(s2_dt)==0) {
@@ -654,7 +712,7 @@ fidolasen_s2 <- function(param_list=NULL,
           "^S2([AB])\\_MSIL1C\\_","S2\\1\\_MSIL2A\\_",
           names(s2_list_l1c)
         ) %in% names(s2_list_l2a)
-      ]
+        ]
     } else {
       s2_list_l1c
     }
@@ -672,6 +730,7 @@ fidolasen_s2 <- function(param_list=NULL,
       s2_list_l2a_corrected <- sen2cor(names(s2_list_l1c_tocorrect),
                                        l1c_dir = pm$path_l1c,
                                        outdir = pm$path_l2a,
+                                       tiles = pm$s2tiles_selected,
                                        parallel = TRUE)
       names(s2_list_l2a_corrected) <- basename(s2_list_l2a_corrected)
       s2_list_l2a <- c(s2_list_l2a,s2_list_l2a_corrected)
@@ -705,714 +764,798 @@ fidolasen_s2 <- function(param_list=NULL,
   
   ### Processing steps ###
   
-  # do anything if preprocess is not required
-  if (pm$preprocess == TRUE) {
-    
-    
-    ## Define output formats
-    if (!is.na(pm$path_tiles)) {
-      tiles_ext <- out_ext
-      tiles_outformat <- pm$outformat
+  ## Define output formats
+  if (!is.na(pm$path_tiles)) {
+    tiles_ext <- out_ext
+    tiles_outformat <- pm$outformat
+  } else {
+    tiles_ext <- "vrt"
+    tiles_outformat <- "VRT"
+  }
+  if (!is.na(pm$path_merged)) {
+    merged_ext <- out_ext
+    merged_outformat <- pm$outformat
+  } else {
+    merged_ext <- "vrt"
+    merged_outformat <- "VRT"
+  }
+  if (is.na(pm$mask_type)) {
+    warped_ext <- out_ext
+    warped_outformat <- pm$outformat
+  } else {
+    warped_ext <- "vrt"
+    warped_outformat <- "VRT"
+  }
+  
+  ## Define output file names and lists ##
+  # This section is structured in the following way:
+  # 1. Retrieve the file names expected to be present at the
+  #    end of the processing chain (suffix _exp):
+  #    - tiles_names_
+  #    - merged_names_
+  #    - warped_names_
+  #    - masked_names_
+  #    - out_names_ (= warped_names_ or subset(warped_names_)+masked_names_)
+  #    - indices_names_
+  # 2. Compute the file names expected to be created
+  #    (suffixes _req and _new, see below)
+  #    (this operation is done in reverse order).
+  # Meaning of the suffixes _exp, _req and _new
+  # (here and for all the script):
+  # _exp: [full] names of the files expected to be present at the
+  #       end of the processing chain (already existing or not);
+  # _req: names of the files required for the next step
+  #       (e.g. tiles_names_req are required to perform s2_merge())
+  # _new: names of the required files not existing yet (expected
+  #       to be created).
+  # With overwrite=TRUE, all these vectors are equal
+  # (e.g. merged_names_exp = merged_names_req = merged_names_new),
+  # because all is overwritten.
+  # The list of the generated file names is at the end of this section.
+  
+  # expected names for tiles
+  tiles_l1c_names_exp <- lapply(file.path(pm$path_l1c,names(s2_list_l1c)), function(x){
+    lapply(list_prods[list_prods %in% l1c_prods], function(p){
+      file.path(
+        path_tiles,
+        if(pm$path_subdirs==TRUE){p}else{""},
+        basename(s2_shortname(x, prod_type=p, ext=tiles_ext, res=pm$res_s2, tiles=pm$s2tiles_selected, multiple_names=TRUE))
+      )
+    })
+  }) %>% unlist()
+  tiles_l1c_names_exp <- tiles_l1c_names_exp[!duplicated(tiles_l1c_names_exp)]
+  tiles_l2a_names_exp <- lapply(file.path(pm$path_l2a,names(s2_list_l2a)), function(x){
+    lapply(list_prods[list_prods %in% l2a_prods], function(p){
+      sel_av_tiles <- s2_getMetadata(x,"tiles")
+      sel_tiles <- sel_av_tiles[sel_av_tiles %in% pm$s2tiles_selected]
+      file.path(
+        path_tiles,
+        if(pm$path_subdirs==TRUE){p}else{""},
+        basename(s2_shortname(x, prod_type=p, ext=tiles_ext, res=pm$res_s2, tiles=pm$s2tiles_selected, multiple_names=TRUE))
+      )
+    })
+  }) %>% unlist()
+  tiles_l2a_names_exp <- tiles_l2a_names_exp[!duplicated(tiles_l2a_names_exp)]
+  tiles_names_exp <- c(if("l1c" %in% pm$s2_levels) {tiles_l1c_names_exp},
+                       if("l2a" %in% pm$s2_levels) {tiles_l2a_names_exp})
+  
+  # expected names for merged
+  if (length(tiles_names_exp)==0) {
+    merged_names_exp <- NULL
+  } else {
+    merged_names_exp <- data.table(
+      fs2nc_getElements(tiles_names_exp, format="data.frame")
+    )[,paste0("S2",
+              mission,
+              level,"_",
+              strftime(sensing_date,"%Y%m%d"),"_",
+              id_orbit,"__",
+              prod_type,"_",
+              substr(res,1,2),".",
+              file_ext)]
+    merged_names_exp <- merged_names_exp[!duplicated(merged_names_exp)]
+    merged_names_exp <- gsub(paste0(tiles_ext,"$"),merged_ext,merged_names_exp) %>%
+      file.path(path_merged,
+                if(pm$path_subdirs==TRUE){fs2nc_getElements(merged_names_exp, format="data.frame")$prod_type}else{""},
+                .)
+  }
+  
+  # index which is TRUE for SCL products, FALSE for others
+  names_merged_exp_scl_idx <- fs2nc_getElements(merged_names_exp,format="data.frame")$prod_type=="SCL"
+  # index which is TRUE for products to be atm. masked, FALSE for others
+  names_merged_tomask_idx <- if ("SCL" %in% pm$list_prods) {
+    names_merged_exp_scl_idx>-1
+  } else {
+    !names_merged_exp_scl_idx
+  }
+  
+  # expected names for warped products
+  warped_names_exp <- if (pm$clip_on_extent==FALSE | length(merged_names_exp)==0) {
+    NULL
+  } else {
+    basename_warped_names_exp <- data.table(
+      fs2nc_getElements(merged_names_exp, format="data.frame")
+    )[,paste0("S2",
+              mission,
+              level,"_",
+              strftime(sensing_date,"%Y%m%d"),"_",
+              id_orbit,"_", 
+              pm$extent_name,"_",
+              prod_type,"_",
+              substr(res,1,2),".",
+              file_ext)]
+    # if SCL were explicitly required, directly create them as output files (since they are never masked);
+    # instead, build only virtual files
+    ifelse(
+      names_merged_exp_scl_idx & "SCL" %in% pm$list_prods,
+      file.path(path_out,
+                if(pm$path_subdirs==TRUE){basename(dirname(merged_names_exp))}else{""},
+                gsub(paste0(merged_ext,"$"),out_ext,basename_warped_names_exp)),
+      ifelse(names_merged_exp_scl_idx,
+             file.path(path_warped,
+                       if(pm$path_subdirs==TRUE){basename(dirname(merged_names_exp))}else{""},
+                       gsub(paste0(merged_ext,"$"),out_ext,basename_warped_names_exp)),
+             file.path(path_warped,
+                       if(pm$path_subdirs==TRUE){basename(dirname(merged_names_exp))}else{""},
+                       gsub(paste0(merged_ext,"$"),warped_ext,basename_warped_names_exp)))
+    )
+  }
+  
+  # expected names for masked products
+  # if clip_on_extent is required, mask warped, otherwise, mask merged
+  masked_names_exp <- if (!is.na(pm$mask_type)) {
+    if (pm$clip_on_extent==TRUE) {
+      file.path(path_out,
+                if(pm$path_subdirs==TRUE){basename(dirname(nn(warped_names_exp[!names_merged_exp_scl_idx])))}else{""},
+                gsub(paste0(warped_ext,"$"),out_ext,basename(nn(warped_names_exp[!names_merged_exp_scl_idx]))))
     } else {
-      tiles_ext <- "vrt"
-      tiles_outformat <- "VRT"
+      file.path(path_out,
+                if(pm$path_subdirs==TRUE){basename(dirname(nn(merged_names_exp[!names_merged_exp_scl_idx])))}else{""},
+                gsub(paste0(merged_ext,"$"),out_ext,basename(nn(merged_names_exp[!names_merged_exp_scl_idx]))))
     }
-    if (!is.na(pm$path_merged)) {
-      merged_ext <- out_ext
-      merged_outformat <- pm$outformat
+  }
+  
+  # expected names for output products
+  out_names_exp <- if (!is.na(pm$mask_type)) {
+    if (pm$clip_on_extent==TRUE) {
+      c(warped_names_exp[names_merged_exp_scl_idx], masked_names_exp)
     } else {
-      merged_ext <- "vrt"
-      merged_outformat <- "VRT"
+      c(merged_names_exp[names_merged_exp_scl_idx], masked_names_exp)
     }
-    if (is.na(pm$mask_type)) {
-      warped_ext <- out_ext
-      warped_outformat <- pm$outformat
+  } else {
+    if (pm$clip_on_extent==TRUE) {
+      warped_names_exp
     } else {
-      warped_ext <- "vrt"
-      warped_outformat <- "VRT"
+      merged_names_exp
     }
-    
-    ## Define output file names and lists ##
-    # This section is structured in the following way:
-    # 1. Retrieve the file names expected to be present at the
-    #    end of the processing chain (suffix _exp):
-    #    - tiles_names_
-    #    - merged_names_
-    #    - warped_names_
-    #    - masked_names_
-    #    - out_names_ (= warped_names_ or subset(warped_names_)+masked_names_)
-    #    - indices_names_
-    # 2. Compute the file names expected to be created
-    #    (suffixes _req and _new, see below)
-    #    (this operation is done in reverse order).
-    # Meaning of the suffixes _exp, _req and _new
-    # (here and for all the script):
-    # _exp: [full] names of the files expected to be present at the
-    #       end of the processing chain (already existing or not);
-    # _req: names of the files required for the next step
-    #       (e.g. tiles_names_req are required to perform s2_merge())
-    # _new: names of the required files not existing yet (expected
-    #       to be created).
-    # With overwrite=TRUE, all these vectors are equal
-    # (e.g. merged_names_exp = merged_names_req = merged_names_new),
-    # because all is overwritten.
-    # The list of the generated file names is at the end of this section.
-    
-    # expected names for tiles
-    tiles_l1c_names_exp <- lapply(file.path(pm$path_l1c,names(s2_list_l1c)), function(x){
-      lapply(list_prods[list_prods %in% l1c_prods], function(p){
+  }
+  
+  # expected names for indices
+  level_for_indices <- if (all(pm$index_source=="TOA")) {
+    "1C"
+  } else if (all(pm$index_source=="BOA")) {
+    "2A"
+  } else {
+    c("1C","2A")
+  }
+  indices_names_exp <- if (length(out_names_exp)==0 | anyNA(pm$list_indices)) {
+    NULL
+  } else {
+    data.table(
+      fs2nc_getElements(out_names_exp, format="data.frame")
+    )[level %in% level_for_indices,
+      paste0("S2",
+             mission,
+             level,"_",
+             strftime(sensing_date,"%Y%m%d"),"_",
+             id_orbit,"_",
+             if (pm$clip_on_extent==TRUE) {pm$extent_name},"_",
+             "<index>_",
+             substr(res,1,2),".",
+             file_ext)] %>%
+      expand.grid(pm$list_indices) %>%
+      apply(1,function(x){
         file.path(
-          path_tiles,
-          if(pm$path_subdirs==TRUE){p}else{""},
-          basename(s2_shortname(x, prod_type=p, ext=tiles_ext, res=pm$res_s2))
+          if(pm$path_subdirs==TRUE){x[2]}else{""},
+          gsub("<index>",x[2],x[1])
         )
-      })
-    }) %>% unlist()
-    tiles_l2a_names_exp <- lapply(file.path(pm$path_l2a,names(s2_list_l2a)), function(x){
-      lapply(list_prods[list_prods %in% l2a_prods], function(p){
-        file.path(
-          path_tiles,
-          if(pm$path_subdirs==TRUE){p}else{""},
-          basename(s2_shortname(x, prod_type=p, ext=tiles_ext, res=pm$res_s2))
-        )
-      })
-    }) %>% unlist()
-    tiles_names_exp <- c(if("l1c" %in% pm$s2_levels) {tiles_l1c_names_exp},
-                         if("l2a" %in% pm$s2_levels) {tiles_l2a_names_exp})
+      }) %>%
+      file.path(path_indices,.) %>%
+      gsub(paste0(merged_ext,"$"),out_ext,.)
+  }
+  
+  
+  # list of required files and steps
+  
+  # if overwrite is set to TRUE, works with expected names;
+  # otherwise, compute non-existing values
+  
+  if (pm$overwrite==TRUE) {
     
-    # expected names for merged
-    if (length(tiles_names_exp)==0) {
-      merged_names_exp <- NULL
+    indices_names_new <- indices_names_exp
+    out_names_req <- if (length(indices_names_exp)==0) {NULL} else {out_names_exp}
+    out_names_new <- out_names_exp
+    masked_names_new <- masked_names_exp
+    warped_names_req <- if (pm$clip_on_extent==FALSE | length(out_names_exp)==0) {
+      NULL
     } else {
-      merged_names_exp <- data.table(
-        fs2nc_getElements(tiles_names_exp, format="data.frame")
+      warped_names_exp
+    }
+    warped_names_new <- warped_names_reqout <- warped_names_exp
+    merged_names_req <- if (pm$clip_on_extent==TRUE & length(warped_names_exp)==0) {
+      NULL
+    } else if (pm$clip_on_extent==FALSE & length(out_names_exp)==0) {
+      NULL
+    } else {
+      merged_names_exp
+    }
+    merged_names_new <- merged_names_exp
+    tiles_names_req <- if (length(merged_names_exp)==0) {
+      NULL
+    } else {
+      tiles_names_exp
+    }
+    tiles_names_new <- tiles_names_exp
+    safe_names_l1c_req <- file.path(pm$path_l1c,names(s2_list_l1c))
+    safe_names_l2a_req <- file.path(pm$path_l2a,names(s2_list_l2a))
+    
+  } else {
+    
+    indices_names_new <- indices_names_exp[!file.exists(nn(indices_names_exp))]
+    
+    # required output products
+    out_basenames_req <- if (length(indices_names_new)==0) {
+      NULL
+    } else {
+      data.table(
+        fs2nc_getElements(indices_names_new, format="data.frame")
       )[,paste0("S2",
                 mission,
                 level,"_",
                 strftime(sensing_date,"%Y%m%d"),"_",
-                id_orbit,"__",
-                prod_type,"_",
+                id_orbit,"_",
+                if (pm$clip_on_extent==TRUE) {pm$extent_name},"_",
+                ifelse(level=="2A","BOA","TOA"),"_",
                 substr(res,1,2),".",
-                file_ext)]
-      merged_names_exp <- merged_names_exp[!duplicated(merged_names_exp)]
-      merged_names_exp <- gsub(paste0(tiles_ext,"$"),merged_ext,merged_names_exp) %>%
-        file.path(path_merged,
-                  if(pm$path_subdirs==TRUE){fs2nc_getElements(merged_names_exp, format="data.frame")$prod_type}else{""},
-                  .)
+                out_ext)]
     }
+    out_names_req <- out_names_exp[basename(nn(out_names_exp)) %in% out_basenames_req]
+    out_names_new <- if (is.na(pm$path_out)) {
+      out_names_req
+    } else {
+      unique(c(
+        out_names_req,
+        if (!is.na(pm$mask_type) & !"SCL" %in% pm$list_prods) {
+          out_names_exp[fs2nc_getElements(out_names_exp, format="data.frame")$prod_type!="SCL"]
+        } else {
+          out_names_exp
+        }
+      ))
+    }
+    out_names_new <- out_names_new[!file.exists(nn(out_names_new))]
+    if (!is.na(pm$mask_type) & !"SCL" %in% pm$list_prods & length(out_names_new)>0) {
+      # if some output needs to be created with masking, include the creation of SCL
+      out_names_new <- unique(c(
+        out_names_new,
+        out_names_exp[fs2nc_getElements(out_names_exp, format="data.frame")$prod_type=="SCL"]
+      ))
+    }
+    out_names_new <- out_names_new[!file.exists(nn(out_names_new))]
     
     # index which is TRUE for SCL products, FALSE for others
-    names_merged_exp_scl_idx <- fs2nc_getElements(merged_names_exp,format="data.frame")$prod_type=="SCL"
-    # index which is TRUE for products to be atm. masked, FALSE for others
-    names_merged_tomask_idx <- if ("SCL" %in% pm$list_prods) {
-      names_merged_exp_scl_idx>-1
-    } else {
-      !names_merged_exp_scl_idx
-    }
+    names_merged_new_out_idx <- fs2nc_getElements(out_names_new,format="data.frame")$prod_type=="SCL"
     
-    # expected names for warped products
-    warped_names_exp <- if (pm$clip_on_extent==FALSE | length(merged_names_exp)==0) {
+    # required masked and warped
+    masked_names_new <- if (is.na(pm$mask_type)) {
       NULL
     } else {
-      # if SCL were explicitly required, directly create them as output files (since they are never masked);
-      # instead, build only virtual files
-      ifelse(
-        names_merged_exp_scl_idx & "SCL" %in% pm$list_prods,
-        file.path(path_out,
-                  if(pm$path_subdirs==TRUE){basename(dirname(merged_names_exp))}else{""},
-                  gsub(paste0(merged_ext,"$"),out_ext,basename(merged_names_exp))),
-        ifelse(names_merged_exp_scl_idx,
-               file.path(path_warped,
-                         if(pm$path_subdirs==TRUE){basename(dirname(merged_names_exp))}else{""},
-                         gsub(paste0(merged_ext,"$"),out_ext,basename(merged_names_exp))),
-               file.path(path_warped,
-                         if(pm$path_subdirs==TRUE){basename(dirname(merged_names_exp))}else{""},
-                         gsub(paste0(merged_ext,"$"),warped_ext,basename(merged_names_exp))))
+      out_names_new[fs2nc_getElements(out_names_new, format="data.frame")$prod_type!="SCL"]
+    }
+    warped_names_req <- if (pm$clip_on_extent==FALSE | length(out_names_new)==0) {
+      NULL
+    } else if (is.na(pm$mask_type)) {
+      out_names_exp[!names_merged_new_out_idx] # FIXME check!
+    } else {
+      file.path(
+        path_warped,
+        if(pm$path_subdirs==TRUE){basename(dirname(out_names_new))}else{""},
+        ifelse(
+          names_merged_new_out_idx & !"SCL" %in% pm$list_prods,
+          basename(out_names_new),
+          gsub(paste0(out_ext,"$"),warped_ext,basename(out_names_new))
+        )
       )
     }
+    warped_names_new <- warped_names_req[!file.exists(nn(warped_names_req))]
     
-    # expected names for masked products
-    # if clip_on_extent is required, mask warped, otherwise, mask merged
-    masked_names_exp <- if (!is.na(pm$mask_type)) {
-      if (pm$clip_on_extent==TRUE) {
-        file.path(path_out,
-                  if(pm$path_subdirs==TRUE){basename(dirname(nn(warped_names_exp[!names_merged_exp_scl_idx])))}else{""},
-                  gsub(paste0(warped_ext,"$"),out_ext,basename(nn(warped_names_exp[!names_merged_exp_scl_idx]))))
-      } else {
-        file.path(path_out,
-                  if(pm$path_subdirs==TRUE){basename(dirname(nn(merged_names_exp[!names_merged_exp_scl_idx])))}else{""},
-                  gsub(paste0(merged_ext,"$"),out_ext,basename(nn(merged_names_exp[!names_merged_exp_scl_idx]))))
-      }
-    }
-    
-    # expected names for output products
-    out_names_exp <- if (!is.na(pm$mask_type)) {
-      if (pm$clip_on_extent==TRUE) {
-        c(warped_names_exp[names_merged_exp_scl_idx], masked_names_exp)
-      } else {
-        c(merged_names_exp[names_merged_exp_scl_idx], masked_names_exp)
-      }
+    # required merged
+    merged_basenames_req <- c(
+      gsub(paste0(warped_ext,"$"),merged_ext,basename(nn(warped_names_new))) %>%
+        gsub(paste0("\\_",pm$extent_name,"\\_"),"__",.) %>%
+        gsub(paste0(out_ext,"$"),merged_ext,.),
+      gsub(paste0(out_ext,"$"),merged_ext,basename(nn(masked_names_new))) %>%
+        gsub(paste0("\\_",pm$extent_name,"\\_"),"__",.)) %>%
+      unique()
+    merged_names_req <- if (pm$clip_on_extent==TRUE) {
+      merged_names_exp[basename(nn(merged_names_exp)) %in% merged_basenames_req]
     } else {
-      if (pm$clip_on_extent==TRUE) {
-        warped_names_exp
-      } else {
-        merged_names_exp
-      }
-    }
-    
-    # expected names for indices
-    level_for_indices <- if (all(pm$index_source=="TOA")) {
-      "1C"
-    } else if (all(pm$index_source=="BOA")) {
-      "2A"
-    } else {
-      c("1C","2A")
-    }
-    indices_names_exp <- if (length(out_names_exp)==0 | anyNA(pm$list_indices)) {
-      NULL
-    } else {
-      data.table(
-        fs2nc_getElements(out_names_exp, format="data.frame")
-      )[level %in% level_for_indices,
-        paste0("S2",
-               mission,
-               level,"_",
-               strftime(sensing_date,"%Y%m%d"),"_",
-               id_orbit,"__",
-               "<index>_",
-               substr(res,1,2),".",
-               file_ext)] %>%
-        expand.grid(pm$list_indices) %>%
-        apply(1,function(x){
-          file.path(
-            if(pm$path_subdirs==TRUE){x[2]}else{""},
-            gsub("<index>",x[2],x[1])
-          )
-        }) %>%
-        file.path(path_indices,.) %>%
-        gsub(paste0(merged_ext,"$"),out_ext,.)
-    }
-    
-    
-    # list of required files and steps
-    
-    # if overwrite is set to TRUE, works with expected names;
-    # otherwise, compute non-existing values
-    
-    if (pm$overwrite==TRUE) {
-      
-      indices_names_new <- indices_names_exp
-      out_names_req <- if (length(indices_names_exp)==0) {NULL} else {out_names_exp}
-      out_names_new <- out_names_exp
-      masked_names_new <- masked_names_exp
-      warped_names_req <- if (pm$clip_on_extent==FALSE | length(out_names_exp)==0) {
-        NULL
-      } else {
-        warped_names_exp
-      }
-      warped_names_new <- warped_names_reqout <- warped_names_exp
-      merged_names_req <- if (pm$clip_on_extent==TRUE & length(warped_names_exp)==0) {
-        NULL
-      } else if (pm$clip_on_extent==FALSE & length(out_names_exp)==0) {
-        NULL
-      } else {
-        merged_names_exp
-      }
-      merged_names_new <- merged_names_exp
-      tiles_names_req <- if (length(merged_names_exp)==0) {
-        NULL
-      } else {
-        tiles_names_exp
-      }
-      tiles_names_new <- tiles_names_exp
-      safe_names_l1c_req <- file.path(pm$path_l1c,names(s2_list_l1c))
-      safe_names_l2a_req <- file.path(pm$path_l2a,names(s2_list_l2a))
-      
-    } else {
-      
-      indices_names_new <- indices_names_exp[!file.exists(nn(indices_names_exp))]
-      
-      # required output products
-      out_basenames_req <- if (length(indices_names_new)==0) {
-        NULL
-      } else {
-        data.table(
-          fs2nc_getElements(indices_names_new, format="data.frame")
-        )[,paste0("S2",
-                  mission,
-                  level,"_",
-                  strftime(sensing_date,"%Y%m%d"),"_",
-                  id_orbit,"__",
-                  ifelse(level=="2A","BOA","TOA"),"_",
-                  substr(res,1,2),".",
-                  out_ext)]
-      }
-      out_names_req <- out_names_exp[basename(nn(out_names_exp)) %in% out_basenames_req]
-      out_names_new <- if (is.na(pm$path_out)) {
-        out_names_req
-      } else {
-        unique(c(
-          out_names_req,
-          if (!is.na(pm$mask_type) & !"SCL" %in% pm$list_prods) {
-            out_names_exp[fs2nc_getElements(out_names_exp, format="data.frame")$prod_type!="SCL"]
-          } else {
-            out_names_exp
-          }
-        ))
-      }
-      out_names_new <- out_names_new[!file.exists(nn(out_names_new))]
-      if (!is.na(pm$mask_type) & !"SCL" %in% pm$list_prods & length(out_names_new)>0) {
-        # if some output needs to be created with masking, include the creation of SCL
-        out_names_new <- unique(c(
-          out_names_new,
-          out_names_exp[fs2nc_getElements(out_names_exp, format="data.frame")$prod_type=="SCL"]
-        ))
-      }
-      out_names_new <- out_names_new[!file.exists(nn(out_names_new))]
-      
-      # index which is TRUE for SCL products, FALSE for others
-      names_merged_new_out_idx <- fs2nc_getElements(out_names_new,format="data.frame")$prod_type=="SCL"
-      
-      # required masked and warped
-      masked_names_new <- if (is.na(pm$mask_type)) {
-        NULL
-      } else {
-        out_names_new[fs2nc_getElements(out_names_new, format="data.frame")$prod_type!="SCL"]
-      }
-      warped_names_req <- if (pm$clip_on_extent==FALSE | length(out_names_new)==0) {
-        NULL
-      } else if (is.na(pm$mask_type)) {
-          out_names_exp[!names_merged_new_out_idx] # FIXME check!
-      } else {
+      c(
         file.path(
-          path_warped,
-          if(pm$path_subdirs==TRUE){basename(dirname(out_names_new))}else{""},
-          ifelse(
-            names_merged_new_out_idx & !"SCL" %in% pm$list_prods,
-            basename(out_names_new),
-            gsub(paste0(out_ext,"$"),warped_ext,basename(out_names_new))
-          )
-        )
-      }
-      warped_names_new <- warped_names_req[!file.exists(nn(warped_names_req))]
-
-      # required merged
-      merged_basenames_req <- c(
-        gsub(paste0(warped_ext,"$"),merged_ext,basename(nn(warped_names_new))) %>%
-          gsub(paste0(out_ext,"$"),merged_ext,.),
-        gsub(paste0(out_ext,"$"),merged_ext,basename(nn(masked_names_new)))) %>%
-        unique()
-      merged_names_req <- if (pm$clip_on_extent==TRUE) {
-        merged_names_exp[basename(nn(merged_names_exp)) %in% merged_basenames_req]
-      } else {
-        c(
-          file.path(
-            path_merged,
-            if(pm$path_subdirs==TRUE){basename(dirname(nn(out_names_new)))}else{""},
-            gsub(paste0(out_ext,"$"),merged_ext,basename(nn(out_names_new)))
-          ),
-          if (is.na(pm$mask_type) & !"SCL" %in% pm$list_prods & length(out_names_new)>0) {
-            out_names_exp[fs2nc_getElements(out_names_req, format="data.frame")$prod_type=="SCL"]
-          }
-        )
-      }
-      merged_names_new <- if (is.na(pm$path_merged)) {
-        merged_names_req
-      } else {
-        unique(c(merged_names_req,merged_names_exp))
-      }
-      merged_names_new <- merged_names_new[!file.exists(nn(merged_names_new))]
-      
-      # output of merged_names_req
-      warped_names_reqout <- warped_names_exp[merged_names_exp %in% merged_names_req]
-      
-      # required tiles
-      tiles_basenames_req <- gsub(paste0(merged_ext,"$"),tiles_ext,basename(nn(merged_names_new))) %>%
-        gsub("\\_\\_","_[A-Z0-9]{5}_",.) %>%
-        paste0("^",.,"$")
-      tiles_names_req <- tiles_names_exp[unlist(lapply(tiles_basenames_req, grep, basename(nn(tiles_names_exp))))]
-      tiles_names_new <- if (is.na(pm$path_tiles)) {
-        tiles_names_req
-      } else {
-        unique(c(tiles_names_req,tiles_names_exp))
-      }
-      tiles_names_new <- tiles_names_new[!file.exists(nn(tiles_names_new))]
-      
-      # required SAFE products
-      if (length(tiles_names_new)==0) {
-        safe_names_l1c_req <- safe_names_l2a_req <- NULL
-      } else {
-        tiles_dt_new <- data.table(fs2nc_getElements(tiles_names_new,format="data.frame"))
-        safe_dt_av <- sapply(c(names(s2_list_l1c),names(s2_list_l2a)), function(x) unlist(s2_getMetadata(x, info="nameinfo"))) %>%
-          t() %>% data.table()
-        if (is.null(safe_dt_av$id_tile)) {
-          safe_dt_av$id_tile <- ""
+          path_merged,
+          if(pm$path_subdirs==TRUE){basename(dirname(nn(out_names_new)))}else{""},
+          gsub(paste0(out_ext,"$"),merged_ext,basename(nn(out_names_new)))
+        ),
+        if (is.na(pm$mask_type) & !"SCL" %in% pm$list_prods & length(out_names_new)>0) {
+          out_names_exp[fs2nc_getElements(out_names_req, format="data.frame")$prod_type=="SCL"]
         }
-        tiles_basenames_av <- safe_dt_av[,paste0("S",
-                                                 mission,
-                                                 level,"_",
-                                                 strftime(as.POSIXct(sensing_datetime, format="%s"),"%Y%m%d"),"_",
-                                                 id_orbit,"_",
-                                                 ifelse(id_tile!="",id_tile,"[A-Z0-9]{5}"),"_",
-                                                 "[A-Z0-9]{3}_",
-                                                 "[126]0\\.",
-                                                 tiles_ext)]
-        tiles_basenames_l1c_av <- tiles_basenames_av[safe_dt_av$level=="1C"]
-        tiles_basenames_l2a_av <- tiles_basenames_av[safe_dt_av$level=="2A"]
-        safe_names_l1c_req <- if (nrow(tiles_dt_new[level=="1C",])>0) {
-          names(s2_list_l1c)[
-            lapply(tiles_basenames_l1c_av,
-                   function(x){grep(x,tiles_names_new)} %>% length() > 0) %>%
-              unlist()
-            ] %>%
-            file.path(pm$path_l1c,.)
-        } else {
-          character(0)
-        }
-        safe_names_l2a_req <- if (nrow(tiles_dt_new[level=="2A",])>0) {
-          names(s2_list_l2a)[
-            lapply(tiles_basenames_l2a_av,
-                   function(x){grep(x,tiles_names_new)} %>% length() > 0) %>%
-              unlist()
-            ] %>%
-            file.path(pm$path_l2a,.)
-        } else {
-          character(0)
-        }
-      }
-      
-    } # end of pm$overwrite FALSE IF cycle
-    
-    # index which is TRUE for SCL products, FALSE for others
-    names_warped_exp_scl_idx <- fs2nc_getElements(warped_names_exp,format="data.frame")$prod_type=="SCL"
-    names_warped_req_scl_idx <- fs2nc_getElements(warped_names_req,format="data.frame")$prod_type=="SCL"
-    # index which is TRUE for products to be atm. masked, FALSE for others
-    names_warped_tomask_idx <- if ("SCL" %in% pm$list_prods) {
-      names_warped_req_scl_idx>-1
+      )
+    }
+    merged_names_new <- if (is.na(pm$path_merged)) {
+      merged_names_req
     } else {
-      !names_warped_req_scl_idx
+      unique(c(merged_names_req,merged_names_exp))
     }
-
-    # End of the section of the creation of file names
-    # List of the file names:
-    # List of all the file names, in order of creation
-    # (useful for checks):
-    # tiles_l1c_names_exp
-    # tiles_l2a_names_exp
-    # tiles_names_exp
-    # merged_names_exp
-    # warped_names_exp
-    # masked_names_exp
-    # out_names_exp
-    # indices_names_exp
-    # indices_names_new
-    # out_names_req
-    # out_names_new
-    # masked_names_new
-    # warped_names_req
-    # warped_names_new
-    # merged_names_req
-    # merged_names_new
-    # tiles_names_req
-    # tiles_names_new
-    # safe_names_l1c_req
-    # safe_names_l2a_req
-
-    # Check if processing is needed
-    if (length(c(indices_names_new, out_names_new, masked_names_new, 
-                 warped_names_new, merged_names_new, tiles_names_new)) == 0) {
-      print_message(
-        type = "message",
-        date = TRUE,
-        "All the required output files already exist; nothing to do.\n ",
-        "To reprocess, run fidolasen_s2() with the argument overwrite = TRUE\n ",
-        "or specify a different output directory."
-      )
-      return(invisible(NULL))
+    merged_names_new <- merged_names_new[!file.exists(nn(merged_names_new))]
+    
+    # output of merged_names_req
+    warped_names_reqout <- warped_names_exp[merged_names_exp %in% merged_names_req]
+    
+    # required tiles
+    tiles_basenames_req <- gsub(paste0(merged_ext,"$"),tiles_ext,basename(nn(merged_names_new))) %>%
+      gsub("\\_\\_","_[A-Z0-9]{5}_",.) %>%
+      paste0("^",.,"$")
+    tiles_names_req <- tiles_names_exp[unlist(lapply(tiles_basenames_req, grep, basename(nn(tiles_names_exp))))]
+    tiles_names_new <- if (is.na(pm$path_tiles)) {
+      tiles_names_req
+    } else {
+      unique(c(tiles_names_req,tiles_names_exp))
     }
-
-    ## 4. Convert in vrt ##
-    if (length(c(safe_names_l1c_req,safe_names_l2a_req))>0) {
-      
-      print_message(
-        type = "message",
-        date = TRUE,
-        "Starting to translate SAFE products in custom format."
-      )
-      
-      dir.create(path_tiles, recursive=FALSE, showWarnings=FALSE)
-      tiles_l1c_names_out <- tiles_l2a_names_out <- character(0)
-      
-      if("l1c" %in% pm$s2_levels) {
-        list_l1c_prods <- list_prods[list_prods %in% l1c_prods]
-        for (sel_prod in safe_names_l1c_req) {
-          tiles_l1c_names_out <- c(
-            tiles_l1c_names_out,
-            trace_function(
-              s2_translate,
-              infile = sel_prod,
-              outdir = path_tiles,
-              prod_type = list_l1c_prods,
-              format = tiles_outformat,
-              res = pm$res_s2,
-              subdirs = pm$path_subdirs,
-              overwrite = pm$overwrite,
-              trace_files = tiles_names_new
-            )
-          )
-          # s2_translate(infile = sel_prod,
-            #              outdir = path_tiles,
-            #              prod_type = list_l1c_prods,
-            #              format = tiles_outformat,
-            #              res = pm$res_s2,
-            #              subdirs = pm$path_subdirs,
-            #              overwrite = pm$overwrite))
-
-        }
+    tiles_names_new <- tiles_names_new[!file.exists(nn(tiles_names_new))]
+    
+    # required SAFE products
+    if (length(tiles_names_new)==0) {
+      safe_names_l1c_req <- safe_names_l2a_req <- NULL
+    } else {
+      tiles_dt_new <- data.table(fs2nc_getElements(tiles_names_new,format="data.frame"))
+      safe_dt_av <- lapply(c(names(s2_list_l1c),names(s2_list_l2a)), function(x) {
+        unlist(s2_getMetadata(x, info=c("nameinfo"))) %>%
+          t() %>%
+          as.data.frame(stringsAsFactors=FALSE)
+      }) %>%
+        rbindlist(fill=TRUE)
+      safe_dt_av$id_tile <- if (is.null(safe_dt_av$id_tile)) {
+        ""
+      } else {
+        lapply(c(file.path(pm$path_l1c,names(s2_list_l1c)),file.path(pm$path_l2a,names(s2_list_l2a))), function(x) {
+          tryCatch(s2_getMetadata(x, "tiles"), error = function(e) {NULL})
+        }) %>%
+          sapply(paste, collapse = " ") %>% as.character()
+        # keep only required tiles
+        safe_dt_av$id_tile <- sapply(safe_dt_av$id_tile, function(x) {
+          strsplit(x," ")[[1]][strsplit(x," ")[[1]] %in% pm$s2tiles_selected] %>% 
+            paste(collapse=" ")
+        })
       }
-      if("l2a" %in% pm$s2_levels) {
-        list_l2a_prods <- list_prods[list_prods %in% l2a_prods]
-        for (sel_prod in safe_names_l2a_req) {
-          tiles_l2a_names_out <- c(
-            tiles_l2a_names_out,
-            trace_function(
-              s2_translate,
-              infile = sel_prod,
-              outdir = path_tiles,
-              prod_type = list_l2a_prods,
-              format = tiles_outformat,
-              res = pm$res_s2,
-              subdirs = pm$path_subdirs,
-              overwrite = pm$overwrite,
-              trace_files = tiles_names_new
-            )
-          )
-          # tiles_l2a_names_out <- c(
-          #   tiles_l2a_names_out,
-          #   s2_translate(infile = sel_prod,
-          #                outdir = path_tiles,
-          #                prod_type = list_l2a_prods,
-          #                format = tiles_outformat,
-          #                res = pm$res_s2,
-          #                subdirs = pm$path_subdirs,
-          #                overwrite = pm$overwrite))
-        }
+      tiles_basenames_av <- safe_dt_av[,paste0("S",
+                                               mission,
+                                               level,"_",
+                                               strftime(as.POSIXct(sensing_datetime, format="%s"),"%Y%m%d"),"_",
+                                               id_orbit,"_",
+                                               ifelse(id_tile!="",id_tile,"[A-Z0-9]{5}"),"_",
+                                               "[A-Z0-9]{3}_",
+                                               "[126]0\\.",
+                                               tiles_ext)]
+      tiles_basenames_l1c_av <- tiles_basenames_av[safe_dt_av$level=="1C"]
+      tiles_basenames_l2a_av <- tiles_basenames_av[safe_dt_av$level=="2A"]
+      safe_names_l1c_req <- if (nrow(tiles_dt_new[level=="1C",])>0) {
+        names(s2_list_l1c)[
+          lapply(tiles_basenames_l1c_av,
+                 function(x){grep(x,tiles_names_new)} %>% length() > 0) %>%
+            unlist()
+          ] %>%
+          file.path(pm$path_l1c,.)
+      } else {
+        character(0)
       }
-      
-      tiles_names_out <- c(if("l1c" %in% pm$s2_levels) {tiles_l1c_names_out},
-                           if("l2a" %in% pm$s2_levels) {tiles_l2a_names_out})
-      # TODO check tiles_names_out - tiles_names_req
-      
-    } # end of s2_translate IF cycle
+      safe_names_l2a_req <- if (nrow(tiles_dt_new[level=="2A",])>0) {
+        names(s2_list_l2a)[
+          lapply(tiles_basenames_l2a_av,
+                 function(x){grep(x,tiles_names_new)} %>% length() > 0) %>%
+            unlist()
+          ] %>%
+          file.path(pm$path_l2a,.)
+      } else {
+        character(0)
+      }
+    }
     
+  } # end of pm$overwrite FALSE IF cycle
+  
+  # index which is TRUE for SCL products, FALSE for others
+  names_warped_exp_scl_idx <- fs2nc_getElements(warped_names_exp,format="data.frame")$prod_type=="SCL"
+  names_warped_req_scl_idx <- fs2nc_getElements(warped_names_req,format="data.frame")$prod_type=="SCL"
+  # index which is TRUE for products to be atm. masked, FALSE for others
+  names_warped_tomask_idx <- if ("SCL" %in% pm$list_prods) {
+    names_warped_req_scl_idx>-1
+  } else {
+    !names_warped_req_scl_idx
+  }
+  
+  # End of the section of the creation of file names
+  # List of the file names:
+  # List of all the file names, in order of creation
+  # (useful for checks):
+  # tiles_l1c_names_exp
+  # tiles_l2a_names_exp
+  # tiles_names_exp
+  # merged_names_exp
+  # warped_names_exp
+  # masked_names_exp
+  # out_names_exp
+  # indices_names_exp
+  # indices_names_new
+  # out_names_req
+  # out_names_new
+  # masked_names_new
+  # warped_names_req
+  # warped_names_new
+  # merged_names_req
+  # merged_names_new
+  # tiles_names_req
+  # tiles_names_new
+  # safe_names_l1c_req
+  # safe_names_l2a_req
+  
+  # Check if processing is needed
+  if (length(c(indices_names_new, out_names_new, masked_names_new, 
+               warped_names_new, merged_names_new, tiles_names_new)) == 0) {
+    print_message(
+      type = "message",
+      date = TRUE,
+      "All the required output files already exist; nothing to do.\n ",
+      "To reprocess, run fidolasen_s2() with the argument overwrite = TRUE\n ",
+      "or specify a different output directory."
+    )
+    return(invisible(NULL))
+  }
+  
+  
+  ## 4. Convert in vrt ##
+  if (length(c(safe_names_l1c_req,safe_names_l2a_req))>0) {
     
-    ## 5. Merge by orbit ##
-    if (length(tiles_names_req)>0) {
-      
-      print_message(
-        type = "message",
-        date = TRUE,
-        "Starting to merge tiles by orbit."
-      )
-      
-      dir.create(path_merged, recursive=FALSE, showWarnings=FALSE)
-      merged_names_out <- trace_function(
-        s2_merge,
-        infiles = tiles_names_req,
-        outdir = path_merged,
-        subdirs = pm$path_subdirs,
-        format = merged_outformat,
-        overwrite = pm$overwrite,
-        trace_files = merged_names_new
-      )
-      # merged_names_out <- s2_merge(tiles_names_req,
-      #                              path_merged,
-      #                              subdirs=pm$path_subdirs,
-      #                              format=merged_outformat,
-      #                              overwrite=pm$overwrite)
-      # TODO check merged_names_out - merged_names_req
-      
-    } # end of s2_merge IF cycle
+    print_message(
+      type = "message",
+      date = TRUE,
+      "Starting to translate SAFE products in custom format."
+    )
     
+    dir.create(path_tiles, recursive=FALSE, showWarnings=FALSE)
+    tiles_l1c_names_out <- tiles_l2a_names_out <- character(0)
     
-    if (length(merged_names_req)>0) {
-      
-      ## 6. Clip, rescale, reproject ##
-      if (pm$clip_on_extent==TRUE) {
-        
-        print_message(
-          type = "message",
-          date = TRUE,
-          "Starting to edit geometry (clip, reproject, rescale)."
+    if("l1c" %in% pm$s2_levels) {
+      list_l1c_prods <- list_prods[list_prods %in% l1c_prods]
+      for (sel_prod in safe_names_l1c_req) {
+        tiles_l1c_names_out <- c(
+          tiles_l1c_names_out,
+          trace_function(
+            s2_translate,
+            infile = sel_prod,
+            outdir = path_tiles,
+            prod_type = list_l1c_prods,
+            format = tiles_outformat,
+            tiles = pm$s2tiles_selected,
+            res = pm$res_s2,
+            subdirs = pm$path_subdirs,
+            overwrite = pm$overwrite,
+            trace_files = tiles_names_new
+          )
         )
+        # s2_translate(infile = sel_prod,
+        #              outdir = path_tiles,
+        #              prod_type = list_l1c_prods,
+        #              format = tiles_outformat,
+        #              res = pm$res_s2,
+        #              subdirs = pm$path_subdirs,
+        #              overwrite = pm$overwrite))
         
-        dir.create(path_warped, recursive=FALSE, showWarnings=FALSE)
-        # create mask
-        s2_mask_extent <- if (anyNA(pm$extent)) {
-          NULL
-        } else if (pm$extent_as_mask==TRUE) {
-          pm$extent
+      }
+    }
+    if("l2a" %in% pm$s2_levels) {
+      list_l2a_prods <- list_prods[list_prods %in% l2a_prods]
+      for (sel_prod in safe_names_l2a_req) {
+        tiles_l2a_names_out <- c(
+          tiles_l2a_names_out,
+          trace_function(
+            s2_translate,
+            infile = sel_prod,
+            outdir = path_tiles,
+            prod_type = list_l2a_prods,
+            format = tiles_outformat,
+            res = pm$res_s2,
+            subdirs = pm$path_subdirs,
+            overwrite = pm$overwrite,
+            trace_files = tiles_names_new
+          )
+        )
+        # tiles_l2a_names_out <- c(
+        #   tiles_l2a_names_out,
+        #   s2_translate(infile = sel_prod,
+        #                outdir = path_tiles,
+        #                prod_type = list_l2a_prods,
+        #                format = tiles_outformat,
+        #                res = pm$res_s2,
+        #                subdirs = pm$path_subdirs,
+        #                overwrite = pm$overwrite))
+      }
+    }
+    
+    tiles_names_out <- c(if("l1c" %in% pm$s2_levels) {tiles_l1c_names_out},
+                         if("l2a" %in% pm$s2_levels) {tiles_l2a_names_out})
+    # TODO check tiles_names_out - tiles_names_req
+    
+  } # end of s2_translate IF cycle
+  
+  
+  ## 5. Merge by orbit ##
+  if (length(tiles_names_req[file.exists(tiles_names_req)])>0) {
+    
+    print_message(
+      type = "message",
+      date = TRUE,
+      "Starting to merge tiles by orbit."
+    )
+    
+    dir.create(path_merged, recursive=FALSE, showWarnings=FALSE)
+    merged_names_out <- trace_function(
+      s2_merge,
+      infiles = tiles_names_req[file.exists(tiles_names_req)], # TODO add warning when sum(!file.exists(tiles_names_req))>0
+      outdir = path_merged,
+      subdirs = pm$path_subdirs,
+      format = merged_outformat,
+      overwrite = pm$overwrite,
+      trace_files = merged_names_new
+    )
+    # merged_names_out <- s2_merge(tiles_names_req,
+    #                              path_merged,
+    #                              subdirs=pm$path_subdirs,
+    #                              format=merged_outformat,
+    #                              overwrite=pm$overwrite)
+    # TODO check merged_names_out - merged_names_req
+    
+  } # end of s2_merge IF cycle
+  
+  
+  if (length(merged_names_req[file.exists(merged_names_req)])>0) {
+    
+    ## 6. Clip, rescale, reproject ##
+    if (pm$clip_on_extent==TRUE) {
+      
+      print_message(
+        type = "message",
+        date = TRUE,
+        "Starting to edit geometry (clip, reproject, rescale)."
+      )
+      
+      dir.create(path_warped, recursive=FALSE, showWarnings=FALSE)
+      # create mask
+      s2_mask_extent <- if (anyNA(pm$extent)) {
+        NULL
+      } else if (pm$extent_as_mask==TRUE) {
+        pm$extent
+      } else {
+        suppressWarnings(st_cast(pm$extent,"LINESTRING"))
+      }  # TODO add support for multiple extents
+      
+      if(pm$path_subdirs==TRUE){
+        sapply(unique(dirname(warped_names_reqout)),dir.create,showWarnings=FALSE)
+      }
+      
+      if (any(!file.exists(warped_names_reqout)) | pm$overwrite==TRUE) {
+        # index which is TRUE for SCL products, FALSE for others
+        names_merged_req_scl_idx <- fs2nc_getElements(merged_names_req,format="data.frame")$prod_type=="SCL"
+        # here trace_function() is not used, since argument "tr" matches multiple formal arguments.
+        # manual cycle is performed.
+        tracename_gdalwarp <- start_trace(warped_names_reqout[!names_merged_req_scl_idx], "gdal_warp")
+        trace_gdalwarp <- tryCatch(
+          gdal_warp(
+            merged_names_req[!names_merged_req_scl_idx & file.exists(merged_names_req)],
+            warped_names_reqout[!names_merged_req_scl_idx & file.exists(merged_names_req)],
+            of = warped_outformat,
+            ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
+            mask = s2_mask_extent,
+            tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
+            t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
+            r = pm$resampling,
+            dstnodata = s2_defNA(
+              sapply(merged_names_req[!names_merged_req_scl_idx & file.exists(merged_names_req)],
+                     function(x){fs2nc_getElements(x)$prod_type})
+            ),
+            co = if (warped_outformat=="GTiff") {paste0("COMPRESS=",pm$compression)},
+            overwrite = pm$overwrite
+          ), # TODO dstnodata value?
+          error = print
+        )
+        if (is(trace_gdalwarp, "error")) {
+          clean_trace(tracename_gdalwarp)
+          stop(trace_gdalwarp)
         } else {
-          suppressWarnings(st_cast(pm$extent,"LINESTRING"))
-        }  # TODO add support for multiple extents
-        
-        if(pm$path_subdirs==TRUE){
-          sapply(unique(dirname(warped_names_reqout)),dir.create,showWarnings=FALSE)
+          end_trace(tracename_gdalwarp)
         }
-        
-        if (any(!file.exists(warped_names_reqout)) | pm$overwrite==TRUE) {
-          # index which is TRUE for SCL products, FALSE for others
-          names_merged_req_scl_idx <- fs2nc_getElements(merged_names_req,format="data.frame")$prod_type=="SCL"
-          # here trace_function() is not used, since argument "tr" matches multiple formal arguments.
-          # manual cycle is performed.
-          tracename_gdalwarp <- start_trace(warped_names_reqout[!names_merged_req_scl_idx], "gdal_warp")
-          trace_gdalwarp <- tryCatch(
-            gdal_warp(
-              merged_names_req[!names_merged_req_scl_idx],
-              warped_names_reqout[!names_merged_req_scl_idx],
-              of = warped_outformat,
-              ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
-              mask = s2_mask_extent,
-              tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
-              t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
-              r = pm$resampling,
-              dstnodata = s2_defNA(
-                sapply(merged_names_req[!names_merged_req_scl_idx],
-                       function(x){fs2nc_getElements(x)$prod_type})
-              ),
-              co = if (warped_outformat=="GTiff") {paste0("COMPRESS=",pm$compression)},
-              overwrite = pm$overwrite
-            ), # TODO dstnodata value?
-            error = print
-          )
-          if (is(trace_gdalwarp, "error")) {
-            clean_trace(tracename_gdalwarp)
-            stop(trace_gdalwarp)
-          } else {
-            end_trace(tracename_gdalwarp)
-          }
-          tracename_gdalwarp <- start_trace(warped_names_reqout[!names_merged_req_scl_idx], "gdal_warp")
-          trace_gdalwarp <- tryCatch(
-            gdal_warp(
-              merged_names_req[names_merged_req_scl_idx],
-              warped_names_reqout[names_merged_req_scl_idx],
-              of = pm$outformat, # use physical files to speed up next steps
-              ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
-              mask = s2_mask_extent,
-              tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
-              t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
-              r = pm$resampling_scl,
-              dstnodata = s2_defNA(
-                sapply(merged_names_req[names_merged_req_scl_idx],
-                       function(x){fs2nc_getElements(x)$prod_type})
-              ),
-              co = if (pm$outformat=="GTiff") {paste0("COMPRESS=",pm$compression)},
-              overwrite = pm$overwrite
-            ), # TODO dstnodata value?
-            error = print
-          )
-          if (is(trace_gdalwarp, "error")) {
-            clean_trace(tracename_gdalwarp)
-            stop(trace_gdalwarp)
-          } else {
-            end_trace(tracename_gdalwarp)
-          }
-          # gdal_warp(merged_names_req[!names_merged_req_scl_idx],
-          #           warped_names_reqout[!names_merged_req_scl_idx],
-          #           of = warped_outformat,
-          #           ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
-          #           mask = s2_mask_extent,
-          #           tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
-          #           t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
-          #           r = pm$resampling,
-          #           overwrite = pm$overwrite) # TODO dstnodata value?
-          # gdal_warp(merged_names_req[names_merged_req_scl_idx],
-          #           warped_names_reqout[names_merged_req_scl_idx],
-          #           of = pm$outformat, # use physical files to speed up next steps
-          #           ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
-          #           mask = s2_mask_extent,
-          #           tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
-          #           t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
-          #           r = pm$resampling_scl,
-          #           overwrite = pm$overwrite)
+        tracename_gdalwarp <- start_trace(warped_names_reqout[!names_merged_req_scl_idx], "gdal_warp")
+        trace_gdalwarp <- tryCatch(
+          gdal_warp(
+            merged_names_req[names_merged_req_scl_idx & file.exists(merged_names_req)],
+            warped_names_reqout[names_merged_req_scl_idx & file.exists(merged_names_req)],
+            of = pm$outformat, # use physical files to speed up next steps
+            ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
+            mask = s2_mask_extent,
+            tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
+            t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
+            r = pm$resampling_scl,
+            dstnodata = s2_defNA(
+              sapply(merged_names_req[names_merged_req_scl_idx & file.exists(merged_names_req)],
+                     function(x){fs2nc_getElements(x)$prod_type})
+            ),
+            co = if (pm$outformat=="GTiff") {paste0("COMPRESS=",pm$compression)},
+            overwrite = pm$overwrite
+          ), # TODO dstnodata value?
+          error = print
+        )
+        if (is(trace_gdalwarp, "error")) {
+          clean_trace(tracename_gdalwarp)
+          stop(trace_gdalwarp)
+        } else {
+          end_trace(tracename_gdalwarp)
         }
-        
-      } # end of gdal_warp IF clip_on_extent cycle
-      
-      ## 7. Apply mask ##
-      # FIXME understand if this should be done before warping (if so, how to manage virtual/physical files?)
-      # masked_names <- file.path(path_out,
-      #                           if(pm$path_subdirs==TRUE){basename(dirname(warped_names[!names_merged_exp_scl_idx]))}else{""},
-      #                           gsub(paste0(warped_ext,"$"),out_ext,basename(warped_names[!names_merged_exp_scl_idx])))
-      
-      if (!is.na(pm$mask_type)) {
-        print_message(
-          type = "message",
-          date = TRUE,
-          "Starting to apply atmospheric masks."
-        )
-        masked_names_out <- trace_function(
-          s2_mask,
-          infiles = if(pm$clip_on_extent==TRUE){warped_names_req[names_warped_tomask_idx]}else{merged_names_req[names_merged_tomask_idx]},
-          maskfiles = if(pm$clip_on_extent==TRUE){warped_names_exp[names_warped_exp_scl_idx]}else{merged_names_exp[names_merged_exp_scl_idx]},
-          mask_type = pm$mask_type,
-          outdir = path_out,
-          format = pm$outformat,
-          compress = pm$compression,
-          subdirs = pm$path_subdirs,
-          overwrite = pm$overwrite,
-          parallel = TRUE, # TODO pass as parameter
-          trace_files = out_names_new
-        )
-        # masked_names_out <- s2_mask(
-        #   if(pm$clip_on_extent==TRUE){warped_names_req}else{merged_names_req},
-        #   if(pm$clip_on_extent==TRUE){warped_names_req}else{merged_names_exp[names_merged_exp_scl_idx]},
-        #   mask_type=pm$mask_type,
-        #   outdir=path_out,
-        #   format=pm$outformat,
-        #   subdirs=pm$path_subdirs,
-        #   overwrite=pm$overwrite,
-        #   parallel=FALSE
-        # )
+        # gdal_warp(merged_names_req[!names_merged_req_scl_idx],
+        #           warped_names_reqout[!names_merged_req_scl_idx],
+        #           of = warped_outformat,
+        #           ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
+        #           mask = s2_mask_extent,
+        #           tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
+        #           t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
+        #           r = pm$resampling,
+        #           overwrite = pm$overwrite) # TODO dstnodata value?
+        # gdal_warp(merged_names_req[names_merged_req_scl_idx],
+        #           warped_names_reqout[names_merged_req_scl_idx],
+        #           of = pm$outformat, # use physical files to speed up next steps
+        #           ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
+        #           mask = s2_mask_extent,
+        #           tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
+        #           t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
+        #           r = pm$resampling_scl,
+        #           overwrite = pm$overwrite)
       }
       
-    } # end of gdal_warp and s2_mask IF cycle
+    } # end of gdal_warp IF clip_on_extent cycle
     
-    ## 8. Compute spectral indices ##
-    # dir.create(file.path(path_out,pm$list_indices), recursive=FALSE, showWarnings = FALSE)
-    if (length(out_names_req)>0) {
-      
+    ## 7. Apply mask ##
+    # FIXME understand if this should be done before warping (if so, how to manage virtual/physical files?)
+    # masked_names <- file.path(path_out,
+    #                           if(pm$path_subdirs==TRUE){basename(dirname(warped_names[!names_merged_exp_scl_idx]))}else{""},
+    #                           gsub(paste0(warped_ext,"$"),out_ext,basename(warped_names[!names_merged_exp_scl_idx])))
+    
+    if (!is.na(pm$mask_type)) {
       print_message(
         type = "message",
         date = TRUE,
-        "Computing required spectral indices."
+        "Starting to apply atmospheric masks."
       )
-      
-      dir.create(path_indices, recursive=FALSE, showWarnings=FALSE)
-      indices_names <- trace_function(
-        s2_calcindices,
-        infiles = out_names_req,
-        indices = pm$list_indices,
-        outdir = path_indices,
-        subdirs = TRUE,
-        source = pm$index_source,
+      masked_names_out <- trace_function(
+        s2_mask,
+        infiles = if (pm$clip_on_extent==TRUE) {
+          warped_names_req[names_warped_tomask_idx & file.exists(warped_names_req)]
+        } else {
+          merged_names_req[names_merged_tomask_idx & file.exists(merged_names_req)]
+        },
+        maskfiles = if (pm$clip_on_extent==TRUE) {
+          warped_names_exp[names_warped_exp_scl_idx]
+        } else {
+          merged_names_exp[names_merged_exp_scl_idx]
+        },
+        mask_type = pm$mask_type,
+        outdir = path_out,
         format = pm$outformat,
         compress = pm$compression,
+        subdirs = pm$path_subdirs,
         overwrite = pm$overwrite,
-        trace_files = indices_names_new
+        parallel = TRUE, # TODO pass as parameter
+        trace_files = out_names_new
       )
-      # indices_names <- s2_calcindices(out_names_req,
-      #                                 indices=pm$list_indices,
-      #                                 outdir=path_indices,
-      #                                 subdirs=TRUE,
-      #                                 source=pm$index_source,
-      #                                 format=pm$outformat,
-      #                                 overwrite=pm$overwrite)
+      # masked_names_out <- s2_mask(
+      #   if(pm$clip_on_extent==TRUE){warped_names_req}else{merged_names_req},
+      #   if(pm$clip_on_extent==TRUE){warped_names_req}else{merged_names_exp[names_merged_exp_scl_idx]},
+      #   mask_type=pm$mask_type,
+      #   outdir=path_out,
+      #   format=pm$outformat,
+      #   subdirs=pm$path_subdirs,
+      #   overwrite=pm$overwrite,
+      #   parallel=FALSE
+      # )
     }
     
-  } # end of pm$preprocess IF cycle
+  } # end of gdal_warp and s2_mask IF cycle
   
-  ## 9. remove temporary files
+  ## 8. Compute spectral indices ##
+  # dir.create(file.path(path_out,pm$list_indices), recursive=FALSE, showWarnings = FALSE)
+  if (length(out_names_req[file.exists(out_names_req)])>0) {
+    
+    print_message(
+      type = "message",
+      date = TRUE,
+      "Computing required spectral indices."
+    )
+    
+    dir.create(path_indices, recursive=FALSE, showWarnings=FALSE)
+    indices_names <- trace_function(
+      s2_calcindices,
+      infiles = out_names_req[file.exists(out_names_req)],
+      indices = pm$list_indices,
+      outdir = path_indices,
+      subdirs = TRUE,
+      source = pm$index_source,
+      format = pm$outformat,
+      compress = pm$compression,
+      overwrite = pm$overwrite,
+      trace_files = indices_names_new
+    )
+    # indices_names <- s2_calcindices(out_names_req,
+    #                                 indices=pm$list_indices,
+    #                                 outdir=path_indices,
+    #                                 subdirs=TRUE,
+    #                                 source=pm$index_source,
+    #                                 format=pm$outformat,
+    #                                 overwrite=pm$overwrite)
+  }
+  
+  ## 9. create thumbnails
+  
+  if (thumbnails==TRUE) {
+    
+    # define input files
+    names_req <- unique(c(tiles_names_new, merged_names_new, warped_names_new, 
+                          masked_names_new, out_names_new, indices_names_new))
+    # exclude temporary files
+    names_req <- names_req[!grepl(paste0("^",path_tmp), names_req)]
+    # exclude files not created
+    names_req <- names_req[file.exists(names_req)]
+    
+    if (length(names_req)>0) {
+      
+      print_message(
+        type = "message",
+        date = TRUE,
+        "Generating thumbnails."
+      )
+      
+      # define expected output names
+      names_new <- file.path(
+        dirname(names_req), 
+        "thumbnails",
+        sapply(
+          basename(names_req), 
+          function(x) {
+            gsub(
+              "\\..+$",
+              if (fs2nc_getElements(x)$prod_type %in% c("SCL")) {".png"} else {".jpg"},
+              x
+            )
+          }
+        )
+      )
+      
+      indices_names <- trace_function(
+        s2_thumbnails,
+        infiles = names_req,
+        trace_files = c(names_new,paste0(names_new,".aux.xml"))
+      )
+      
+    }
+    
+  } # end of thumbnails IF cycle
+  
+  
+  ## 10. remove temporary files
   unlink(path_tmp, recursive = TRUE)
   
   # Exit

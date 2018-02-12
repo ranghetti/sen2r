@@ -42,17 +42,17 @@
 #'
 #' suppressWarnings(abs2rel(ref_path, ref_path))
 abs2rel <- function(path, ref_path=getwd(), mustWork=NA) {
-
+  
   # to avoid NOTE on check
   . <- NULL
-
+  
   # check if path is absolute
   path <- expand_path(path, silent=NA)
-
+  
   # normalise paths
   path <- normalizePath(path, winslash="/", mustWork=mustWork)
   ref_path <- normalizePath(ref_path, winslash="/", mustWork=mustWork) # this also removes ending "/"
-
+  
   # if path = ref_path, return with a warning
   if (path == ref_path) {
     print_message(
@@ -61,11 +61,11 @@ abs2rel <- function(path, ref_path=getwd(), mustWork=NA) {
     )
     return(".")
   }
-
+  
   # search common parent directory
   com_path <- comsub(c(path,ref_path), sep="/") %>%
     gsub("/$","",.) # remove the ending "/" if present
-
+  
   # if com_path is not null, return path with a warning
   if (com_path=="") {
     print_message(
@@ -75,17 +75,17 @@ abs2rel <- function(path, ref_path=getwd(), mustWork=NA) {
       "an absolute path is returned.")
     return(path)
   }
-
+  
   # different part of directories
   diff_ref <- gsub(paste0("^",com_path),"",ref_path) %>%
     gsub("^/","",.)
   diff_in <- gsub(paste0("^",com_path),"",path) %>%
     gsub("^/","",.)
-
+  
   # number of directory to "scale"
   n_ref <- strsplit(diff_ref,"/")[[1]] %>%
-      length()
-
+    length()
+  
   # relative path
   out_prefix <- if (n_ref==0) {
     "."
@@ -93,9 +93,9 @@ abs2rel <- function(path, ref_path=getwd(), mustWork=NA) {
     paste(rep("..",n_ref), collapse="/")
   }
   rel_path <- file.path(out_prefix,diff_in)
-
+  
   return(rel_path)
-
+  
 }
 
 

@@ -66,9 +66,9 @@ s2_calcindices <- function(infiles,
                            compress="DEFLATE",
                            dataType="Float32",
                            overwrite=FALSE) {
-
+  
   prod_type <- . <- NULL
-
+  
   # Load GDAL paths
   binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {
@@ -78,12 +78,13 @@ s2_calcindices <- function(infiles,
   }
   if (is.null(binpaths$gdalinfo)) {
     check_gdal()
+    binpaths <- jsonlite::fromJSON(binpaths_file)
   }
   
   # generate indices.json if missing and read it
   create_indices_db()
   indices_db <- list_indices(c("n_index","name","longname","s2_formula","a","b","x"))
-
+  
   # check that the required indices exists
   if (!all(indices %in% indices_db$name)) {
     print_message(
@@ -105,7 +106,7 @@ s2_calcindices <- function(infiles,
   }
   # exstract needed indices_db
   indices_info <- indices_db[match(indices,indices_db$name),]
-
+  
   # check output format
   gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="fidolasen"))
   if (!is.na(format)) {
@@ -121,12 +122,12 @@ s2_calcindices <- function(infiles,
         "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
     }
   }
-
+  
   # Get files metadata
   infiles_meta <- data.table(fs2nc_getElements(infiles, format="data.frame"))
   infiles <- infiles[infiles_meta$prod_type %in% source]
   infiles_meta <- infiles_meta[prod_type %in% source,]
-
+  
   # create subdirs (if requested)
   if (is.na(subdirs)) {
     subdirs <- ifelse(length(indices)>1, TRUE, FALSE)
@@ -134,7 +135,7 @@ s2_calcindices <- function(infiles,
   if (subdirs) {
     sapply(file.path(outdir,indices), dir.create, showWarnings=FALSE)
   }
-
+  
   # read TOA/BOA image
   outfiles <- character(0)
   for (i in seq_along(infiles)) {
@@ -154,29 +155,32 @@ s2_calcindices <- function(infiles,
     } else {
       print_message(type="error", "Internal error (this should not happen).")
     }
-
+    
     # compute single indices
     for (j in seq_along(indices)) {
-
+      
       # extract parameters
       sel_parameters <- parameters[[indices[j]]]
-
+      
       # define output filename
       sel_outfile <- paste0(
         "S2",sel_infile_meta$mission,sel_infile_meta$level,"_",
         strftime(sel_infile_meta$sensing_date,"%Y%m%d"),"_",
         sel_infile_meta$id_orbit,"_",
-        sel_infile_meta$id_tile,"_",
+        switch(sel_infile_meta$type, 
+               tile = sel_infile_meta$id_tile, 
+               clipped = sel_infile_meta$extent_name, 
+               ""),"_",
         indices_info[j,"name"],"_",
         gsub("m$","",sel_infile_meta$res),".",
         sel_out_ext)
-
+      
       # define subdir
       out_subdir <- ifelse(subdirs, file.path(outdir,indices[j]), outdir)
-
+      
       # if output already exists and overwrite==FALSE, do not proceed
       if (!file.exists(file.path(out_subdir,sel_outfile)) | overwrite==TRUE) {
-
+        
         # change index formula to be used with bands
         for (sel_par in c("a","b","x")) {
           assign(sel_par, if (is.null(sel_parameters[[sel_par]])) {indices_info[j,sel_par]} else {sel_parameters[[sel_par]]})
@@ -195,32 +199,32 @@ s2_calcindices <- function(infiles,
         if (dataType %in% c("Int16","UInt16","Int32","UInt32")) {
           sel_formula <- paste0("10000*(",sel_formula,")")
         }
-
+        
         # apply gdal_calc
         system(
-         paste0(
-           binpaths$gdal_calc," ",
-           paste(apply(gdal_bands,1,function(l){
-             paste0("-",l["letter"]," \"",sel_infile,"\" --",l["letter"],"_band=",which(gdal_bands$letter==l["letter"]))
-           }), collapse=" ")," ",
-           "--outfile=\"",file.path(out_subdir,sel_outfile),"\" ",
-           "--type=\"",dataType,"\" ",
-           "--format=\"",sel_format,"\" ",
-           if (overwrite==TRUE) {"--overwrite"},
-           if (sel_format=="GTiff") {paste0("--co=\"COMPRESS=",toupper(compress),"\" ")},
-           "--calc=\"",sel_formula,"\""
-         ),
-         intern = Sys.info()["sysname"] == "Windows"
-       )
-
+          paste0(
+            binpaths$gdal_calc," ",
+            paste(apply(gdal_bands,1,function(l){
+              paste0("-",l["letter"]," \"",sel_infile,"\" --",l["letter"],"_band=",which(gdal_bands$letter==l["letter"]))
+            }), collapse=" ")," ",
+            "--outfile=\"",file.path(out_subdir,sel_outfile),"\" ",
+            "--type=\"",dataType,"\" ",
+            "--format=\"",sel_format,"\" ",
+            if (overwrite==TRUE) {"--overwrite"},
+            if (sel_format=="GTiff") {paste0("--co=\"COMPRESS=",toupper(compress),"\" ")},
+            "--calc=\"",sel_formula,"\""
+          ),
+          intern = Sys.info()["sysname"] == "Windows"
+        )
+        
       } # end of overwrite IF cycle
-
+      
       outfiles <- c(outfiles, file.path(out_subdir,sel_outfile))
-
+      
     }
-
+    
   } # end cycle on infiles
-
+  
   return(outfiles)
-
+  
 }

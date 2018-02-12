@@ -31,7 +31,7 @@
 # (one could be interested only in preprocessing and not in downloading)
 
 check_gdal <- function(abort = TRUE, force = FALSE) {
-
+  
   # set minimum GDAL version
   gdal_minversion <- package_version("2.1.3")
   
@@ -47,6 +47,7 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
     #   type = "message",
     #   "GDAL is already set; to reconfigure it, set force = TRUE."
     # )
+    gdal_setInstallation(search_path=dirname(binpaths$gdalinfo), rescan=TRUE)
     return(invisible(TRUE))
   }
   
@@ -58,7 +59,7 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
   
   # Check if this found version supports OpenJPEG
   gdal_check_jp2 <- tryCatch(gdal_chooseInstallation(hasDrivers=c("JP2OpenJPEG")), error = print)
-
+  
   # If GDAL is not found, or if found version does not support JP2, perform a full search
   if (is.null(getOption("gdalUtils_gdalPath")) | is(gdal_check_jp2, "error")) {
     print_message(
@@ -70,8 +71,8 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
   
   # Check again if this found version supports OpenJPEG
   gdal_check_jp2 <- tryCatch(gdal_chooseInstallation(hasDrivers=c("JP2OpenJPEG")), error = print)
-
-
+  
+  
   # If GDAL is not found, return FALSE
   # (this should not happen, since GDAL is required by rgdal)
   if (is.null(getOption("gdalUtils_gdalPath")) | is(gdal_check_jp2, "error")) {
@@ -81,21 +82,21 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
     )
     return(invisible(FALSE))
   }
-    
+  
   # set message method
   message_type <- ifelse(abort==TRUE, "error", "warning")
-
+  
   # check requisites (minimum version)
   gdal_version <- package_version(gsub("^GDAL ([0-9.]*)[0-9A-Za-z/., ]*", "\\1",
                                        rgdal::getGDALVersionInfo(str = "--version")))
-
+  
   if (gdal_version < gdal_minversion) {
     print_message(
       type=message_type,
       "GDAL version must be at least ", gdal_minversion, ". Please update it.")
     return(invisible(FALSE))
   }
-
+  
   # check requisites (JP2 support)
   gdal_JP2support <- length(grep("JP2OpenJPEG", gdalUtils::gdalinfo(formats = TRUE))) > 0
   if (!gdal_JP2support) {
@@ -119,11 +120,12 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
   } else { 
     file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdal_calc.py")))
   }
+  binpaths$gdaldem <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdaldem")))
   binpaths$gdalinfo <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdalinfo")))
   binpaths$ogrinfo <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("ogrinfo")))
   
   lapply(
-    c("gdalbuildvrt","gdal_translate","gdalwarp","gdalinfo","ogrinfo"), 
+    c("gdalbuildvrt","gdal_translate","gdalwarp","gdaldem","gdalinfo","ogrinfo"), 
     function(x){
       binpaths[[x]] <- normalizePath(binpaths[[x]])
     }
@@ -134,7 +136,7 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
     type="message",
     "GDAL version in use: ", as.character(gdal_version))
   return(invisible(TRUE))
-
+  
 }
 
 

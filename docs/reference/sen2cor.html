@@ -100,7 +100,7 @@ is used.</p>
     
 
     <pre class="usage"><span class='fu'>sen2cor</span>(<span class='kw'>l1c_prodlist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>l1c_dir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>proc_dir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='kw'>proc_dir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>tiles</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -131,6 +131,11 @@ in this case, L1C input products are copied in a temporary directory,
 processing is done there and then L2A is moved to <code>outdir</code>.
 This is required under Linux systems when <code>l1c_dir</code> is a subdirectory of
 a unit mounted with SAMBA, otherwise sen2cor would produce empty L2A products.</p></td>
+    </tr>
+    <tr>
+      <th>tiles</th>
+      <td><p>Vector of Sentinel-2 Tile strings (5-length character) to be
+processed (default: process all the tiles found in the input L1C products).</p></td>
     </tr>
     <tr>
       <th>parallel</th>

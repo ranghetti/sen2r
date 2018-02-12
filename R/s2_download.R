@@ -50,12 +50,19 @@ s2_download <- function(s2_prodlist=NULL,
                         apihub=NULL,
                         tile=NULL,
                         outdir=".") {
-
+  
+  # convert input NA arguments in NULL
+  for (a in c("s2_prodlist","tile","apihub")) {
+    if (suppressWarnings(all(is.na(get(a))))) {
+      assign(a,NULL)
+    }
+  }
+  
   # import s2download
   s2download <- import_s2download(convert=FALSE)
-
+  
   # TODO add checks on the format of filename (one element output of s2_list)
-
+  
   # link to apihub
   if (is.null(apihub)) {
     apihub <- file.path(s2download$inst_path,"apihub.txt")
@@ -63,7 +70,7 @@ s2_download <- function(s2_prodlist=NULL,
   if (!file.exists(apihub)) {
     print_message(type="error","File apihub.txt with the SciHub credentials is missing.") # TODO build it
   }
-
+  
   for (i in 1:length(s2_prodlist)) {
     
     link <- s2_prodlist[i]
@@ -76,7 +83,7 @@ s2_download <- function(s2_prodlist=NULL,
       py_tile <- r_to_py(tile)
       unzip_tile <- FALSE
     }
-
+    
     print_message(
       type = "message",
       date = TRUE,
@@ -105,9 +112,9 @@ s2_download <- function(s2_prodlist=NULL,
     #                               no_download=FALSE,
     #                               write_dir=outdir,
     #                               file_list=NULL)
-
+    
   }
-
+  
   return(invisible(NULL))
   
 }

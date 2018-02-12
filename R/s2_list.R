@@ -43,13 +43,18 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
                     level="auto",
                     apihub=NULL,
                     max_cloud=110) {
-
+  
+  # convert input NA arguments in NULL
+  for (a in c("spatial_extent","tile","orbit","time_interval","apihub")) {
+    if (suppressWarnings(all(is.na(get(a))))) {
+      assign(a,NULL)
+    }
+  }
+  
   # check if spatial_extent was provided
   spatial_extent_exists <- if (!exists("spatial_extent")) {
     FALSE
   } else if (is.null(spatial_extent)) {
-    FALSE
-  } else if (anyNA(spatial_extent)) {
     FALSE
   } else if (is(spatial_extent, "POLYGON")) {
     if (length(spatial_extent)==0) {
@@ -64,11 +69,6 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
   # if not, retrieve it from tile
   if (!spatial_extent_exists) {
     if (is.null(tile)) {
-      print_message(
-        type = "error",
-        "At least one parameter among spatial_extent and tile must be specified."
-      )
-    } else if (anyNA(tile)) {
       print_message(
         type = "error",
         "At least one parameter among spatial_extent and tile must be specified."
@@ -95,11 +95,11 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
       )
     }
   }
-
+  
   # checks on inputs
   spatext <- get_extent(spatial_extent) %>%
     reproj_extent("+init=epsg:4326", verbose=FALSE)
-
+  
   # pass lat,lon if the bounding box is a point or line; latmin,latmax,lonmin,lonmax if it is a rectangle
   if (spatext@extent["xmin"]==spatext@extent["xmax"] | spatext@extent["ymin"]==spatext@extent["ymax"]) {
     lon <- mean(spatext@extent["xmin"], spatext@extent["xmax"])
@@ -110,7 +110,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
     latmin <- spatext@extent["ymin"]; latmax <- spatext@extent["ymax"]
     lon <- lat <- NULL
   }
-
+  
   # checks on dates
   # TODO add checks on format
   if (length(time_interval)==1) {
@@ -118,7 +118,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
   }
   # convert in format taken by th function
   time_interval <- strftime(time_interval,"%Y%m%d")
-
+  
   # convert orbits to integer
   if (is.null(orbit)) {
     orbit <- list(NULL)
@@ -128,10 +128,10 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
       orbit <- list(NULL)
     }
   }
-
+  
   # import s2download
   s2download <- import_s2download(convert=FALSE)
-
+  
   # link to apihub
   if (is.null(apihub)) {
     apihub <- file.path(s2download$inst_path,"apihub.txt")
@@ -142,7 +142,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
       "File apihub.txt with the SciHub credentials is missing."
     ) # TODO build it
   }
-
+  
   # set corr_type
   corr_type <- switch(
     level,
@@ -150,7 +150,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
     L1C  = "no",
     L2A  = "scihub",
     "auto")
-
+  
   # run the research of the list of products
   av_prod_tuple <- lapply(orbit, function(o) {
     
@@ -167,7 +167,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
       # the first request of length 0.
       corr_type=corr_type)
   })
-
+  
   av_prod_list <- unlist(lapply(av_prod_tuple, function(x) {py_to_r(x)[[1]]}))
   names(av_prod_list) <- unlist(lapply(av_prod_tuple, function(x) {py_to_r(x)[[2]]}))
   
@@ -185,9 +185,9 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
       unlist()
     av_prod_list <- av_prod_list[av_prod_tiles %in% tile | is.na(av_prod_tiles)]
   }
-
+  
   return(av_prod_list)
-
+  
   # TODO add all the checks!
-
+  
 }

@@ -28,6 +28,7 @@ reference:
     contents:
       - '`s2_gui`'
       - '`s2_shortname`'
+      - '`s2_thumbnails`'
       - '`fs2nc_getElements`'
       - '`install_sen2cor`'
       - '`expand_path`'
@@ -51,6 +52,8 @@ reference:
       - '`read_scihub_login`'
       - '`check_param_list`'
       - '`s2_defNA`'
+      - '`stack2rgb`'
+      - '`raster2rgb`'
 navbar:
   type: inverse
   left:

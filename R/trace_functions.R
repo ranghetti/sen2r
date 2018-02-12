@@ -109,13 +109,13 @@ trace_function <- function(trace_fun, trace_files, trace_funname=NA, ...) {
     trace_funname <- deparse(substitute(trace_fun))
   }
   tracename <- start_trace(trace_files, trace_funname)
-    
+  
   # run function
   fun_out <- tryCatch(
     trace_fun(...),
     error = print
   )
-
+  
   # in case of errors, clean the ouput and return an error;
   # otherwise, end the trace and return the output
   if (is(fun_out, "error")) {
@@ -125,7 +125,7 @@ trace_function <- function(trace_fun, trace_files, trace_funname=NA, ...) {
     end_trace(tracename)
     return(fun_out)
   }
-
+  
 }
 
 
@@ -161,7 +161,7 @@ clean_traces <- function(trace_funname=NA) {
   outfiles_df$tracetime <- tracenames_df[
     match(outfiles_df$tracename, tracenames_df$name),
     "time"
-  ]
+    ]
   
   # delete files if they were created after each tracetime
   for (i in seq_len(nrow(outfiles_df))) {
@@ -174,5 +174,5 @@ clean_traces <- function(trace_funname=NA) {
   
   # delete trace files
   unlink(tracenames_df$name)
-
+  
 }

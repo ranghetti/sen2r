@@ -5,8 +5,9 @@
 \title{Convert from SAFE format}
 \usage{
 s2_translate(infile, outdir = ".", subdirs = NA, tmpdir = NA,
-  prod_type = NULL, res = "10m", format = "VRT", compress = "DEFLATE",
-  vrt_rel_paths = NA, utmzone = "", overwrite = FALSE)
+  prod_type = NULL, tiles = NA, res = "10m", format = "VRT",
+  compress = "DEFLATE", vrt_rel_paths = NA, utmzone = "",
+  overwrite = FALSE)
 }
 \arguments{
 \item{infile}{Full path of the input SAFE folder (alternatively,
@@ -31,6 +32,10 @@ keep the intermediate files after reboot.}
 \item{prod_type}{(optional) Vector of types to be produced as outputs
 (see \link{s2_shortname} for the list of accepted values). Default is
 reflectance ("TOA" for level 1C, "BOA" for level 2A).}
+
+\item{tiles}{(optional) Character vector with the desired output tile IDs
+(id specified IDs are not present in the input SAFE product, they are not
+produced). Default (NA) is to process all the found tiles.}
 
 \item{res}{(optional) Spatial resolution (one between '10m', '20m' or '60m');
 default is '10m'. Notice that, choosing '10m' or '20m', bands with lower

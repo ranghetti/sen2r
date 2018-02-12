@@ -101,7 +101,8 @@ names), since it is thought to be applied to entire products.</p>
     
 
     <pre class="usage"><span class='fu'>s2_shortname</span>(<span class='no'>prod_name</span>, <span class='kw'>prod_type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ext</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='st'>"10m"</span>,
-  <span class='kw'>full.name</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>set.seed</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='kw'>tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>full.name</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>set.seed</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>multiple_names</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -130,6 +131,12 @@ resolution will be rescaled to <code>res</code>. Band 08 is used with <code>res 
 band 08A with <code>res = '20m'</code> and <code>res = '60m'</code>.</p></td>
     </tr>
     <tr>
+      <th>tiles</th>
+      <td><p>(optional) Character vector with the desired output tile IDs
+(id specified IDs are not present in the input SAFE product, they are not
+produced). Default (NA) is to consider all the found tiles.</p></td>
+    </tr>
+    <tr>
       <th>full.name</th>
       <td><p>Logical value: if TRUE (default), all the input path
 is maintained (if existing); if FALSE, only basename is returned.</p></td>
@@ -143,6 +150,12 @@ is completely random (this is useful not to assign the same name to
 products with the same names (e.g. product with old name downloaded in
 different moments which contains different subsets of tiles).
 Default value is TRUE if the file exists locally, FALSE if not.</p></td>
+    </tr>
+    <tr>
+      <th>multiple_names</th>
+      <td><p>Logical: if TRUE, multiple names are returned in case
+the SAFE product contains more than one tile; if FALSE (default), a random
+tile element is used.</p></td>
     </tr>
     <tr>
       <th>abort</th>
