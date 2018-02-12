@@ -414,6 +414,15 @@ s2_gui <- function(param_list = NULL,
                 
                 column(
                   width=4,
+                  
+                  div(style="display:inline-block;vertical-align:top;",
+                      span(
+                        strong("Extent name:\u2000")),
+                        actionLink("help_extent_name", icon("question-circle"))
+                      ),
+                  div(style="display:inline-block;vertical-align:top;",
+                        textInput("extent_name_textin", NULL, "")),
+                  
                   radioButtons(
                     "extent_type", 
                     label = span(
@@ -1819,6 +1828,21 @@ s2_gui <- function(param_list = NULL,
       ))
     })
     
+    observeEvent(input$help_extent_name, {
+      showModal(modalDialog(
+        title = "Name of the extent",
+        p(
+          "Enter an alphanumeric label (which cannot contain spaces, points",
+          "nor underscores, and that cannot be a five-length string with",
+          "the same structure of a tile ID",
+          "(two numeric and three uppercase character values).",
+          "This label is used in the output file names."
+        ),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+    
     observeEvent(input$help_path_subdirs, {
       showModal(modalDialog(
         title = "Group products in subdirectories",
@@ -2091,6 +2115,7 @@ s2_gui <- function(param_list = NULL,
       
       rl$clip_on_extent <- as.logical(input$clip_on_extent) # TRUE to clip (and warp) on the selected extent, FALSE to work at tiles/merged level
       rl$extent_as_mask <- as.logical(input$extent_as_mask) # TRUE to mask outside the polygons of extent, FALSE to use as boundig box
+      rl$extent_name <- input$extent_name_textin # Character name of the extent
       
       # output geometry #
       # path of the reference file (NULL if not provided)
@@ -2207,6 +2232,7 @@ s2_gui <- function(param_list = NULL,
                          selected = ifelse(is.na(pl$mask_type),"cloud_medium_proba",pl$mask_type))
       updateRadioButtons(session, "index_source", selected = pl$index_source)
       updateRadioButtons(session, "clip_on_extent", selected = pl$clip_on_extent)
+      updateRadioButtons(session, "extent_name_textin", selected = pl$extent_name)
       updateRadioButtons(session, "keep_tiles", selected = ifelse(is.na(pl$path_tiles),FALSE,TRUE))
       updateRadioButtons(session, "keep_merged", selected = ifelse(is.na(pl$path_merged),FALSE,TRUE))
       
