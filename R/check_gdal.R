@@ -103,7 +103,17 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
     print_message(
       type=message_type,
       "Your local GDAL installation does not support JPEG2000 (JP2OpenJPEG) format. ",
-      "Please install JP2OpenJPEG support and recompile GDAL.")
+      "Please install JP2OpenJPEG support and recompile GDAL.",
+      if (Sys.info()["sysname"] == "Windows" & message_type=="error") {
+        paste0(
+          "\nWe recommend to use the OSGeo4W installer ",
+          "(http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86",
+          if (Sys.info()["machine"]=="x86-64") {"_64"},".exe), ",
+          "to choose the \"Advanced install\" and ",
+          "to check the packages \"gdal\" and \"openjpeg\"."
+        )
+      }
+    )
     return(invisible(FALSE))
   }
   
@@ -111,18 +121,18 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
   gdal_chooseInstallation(hasDrivers=c("JP2OpenJPEG"))
   
   # save the path for use with external calls
-  binpaths$gdalbuildvrt <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdalbuildvrt")))
-  binpaths$gdal_translate <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdal_translate")))
-  binpaths$gdalwarp <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdalwarp")))
+  binpaths$gdalbuildvrt <- normalizePath(file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdalbuildvrt"))))
+  binpaths$gdal_translate <- normalizePath(file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdal_translate"))))
+  binpaths$gdalwarp <- normalizePath(file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdalwarp"))))
   binpaths$gdal_calc <- if (Sys.info()["sysname"] == "Windows") {
-    binpaths$python <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("python")))
-    paste0(binpaths$python," ",getOption("gdalUtils_gdalPath")[[1]]$path,"gdal_calc.py")
+    binpaths$python <- normalizePath(file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("python"))))
+    normalizePath(paste0(binpaths$python," ",getOption("gdalUtils_gdalPath")[[1]]$path,"gdal_calc.py"))
   } else { 
-    file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdal_calc.py")))
+    normalizePath(file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdal_calc.py"))))
   }
-  binpaths$gdaldem <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdaldem")))
-  binpaths$gdalinfo <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdalinfo")))
-  binpaths$ogrinfo <- file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("ogrinfo")))
+  binpaths$gdaldem <- normalizePath(file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdaldem"))))
+  binpaths$gdalinfo <- normalizePath(file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdalinfo"))))
+  binpaths$ogrinfo <- normalizePath(file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("ogrinfo"))))
   
   lapply(
     c("gdalbuildvrt","gdal_translate","gdalwarp","gdaldem","gdalinfo","ogrinfo"), 
@@ -138,5 +148,3 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
   return(invisible(TRUE))
   
 }
-
-
