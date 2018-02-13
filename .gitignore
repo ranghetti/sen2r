@@ -39,6 +39,8 @@
  /extdata/xslt/
  /inst/extdata/xslt/
  /query_results.xml
+ /wget.exe
+ /inst/wget.exe
  
  # path file
  /extdata/paths.json
