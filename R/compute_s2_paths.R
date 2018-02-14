@@ -19,7 +19,7 @@
 #'    
 #'     Meaning of the suffixes `_exp`, `_req` and `_new`
 #'     (here and for all the script):
-#'     - `_exp`: [full] names of the files expected to be present at the
+#'     - `_exp`: full names of the files expected to be present at the
 #'         end of the processing chain (already existing or not);
 #'     - `_req`: names of the files required for the next step
 #'         (e.g. tiles_names_req are required to perform s2_merge())
