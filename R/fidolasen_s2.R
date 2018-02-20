@@ -168,6 +168,7 @@
 #' @importFrom geojsonio geojson_json
 #' @importFrom jsonlite fromJSON
 #' @importFrom sf st_cast st_read st_combine
+#' @importFrom sprawl cast_vect
 #' @export
 
 
@@ -380,6 +381,10 @@ fidolasen_s2 <- function(param_list=NULL,
   # convert from GeoJSON to sf
   if (is(pm$extent, "character")) {
     pm$extent <- st_read(pm$extent, quiet=TRUE)
+  }
+  # convert from other managed formats
+  if (!is(pm$extent, "sf")) {
+    pm$extent <- cast_vect(pm$extent, "sfobject")
   }
   
   # check extent_name
@@ -1024,7 +1029,7 @@ fidolasen_s2 <- function(param_list=NULL,
       
       dir.create(paths["warped"], recursive=FALSE, showWarnings=FALSE)
       # create mask
-      s2_mask_extent <- if (anyNA(pm$extent)) {
+      s2_mask_extent <- if (anyNA(pm$extent$geometry)) {
         NULL
       } else if (pm$extent_as_mask==TRUE) {
         pm$extent %>% st_combine() # TODO remove this when multiple extents will be allowed
