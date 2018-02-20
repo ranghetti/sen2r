@@ -630,7 +630,12 @@ fidolasen_s2 <- function(param_list=NULL,
       )
       names(s2_list_l2a_tobecorrected) <- basename(s2_list_l2a_tobecorrected)
       s2_list_l2a_exp <- c(s2_list_l2a,s2_list_l2a_tobecorrected)
+    } else {
+      s2_list_l2a_exp <- s2_list_l2a
     }
+  } else {
+    s2_list_l1c_tocorrect <- character()
+    s2_list_l2a_exp <- s2_list_l2a
   }
   
   # If s2_list is empty, exit (second time)
@@ -679,13 +684,15 @@ fidolasen_s2 <- function(param_list=NULL,
     
     # Import path of files to ignore, if exists
     # (see comment at #ignorePath)
-    if (is(param_list, "character")) {
+    ignorelist <- if (is(param_list, "character")) {
       ignorelist_path <- gsub("\\.json$","_ignorelist.txt",param_list)
-      ignorelist <- if (file.exists(ignorelist_path)) {
+      if (file.exists(ignorelist_path)) {
         readLines(ignorelist_path)
       } else {
         character()
       }
+    } else {
+      character()
     }
     
     # compute names for required files (SAFE req)
