@@ -10,7 +10,7 @@
 init_python <- function() {
   
   # define the required python module
-  py_modules <- c("os","sys","git","subprocess","re","numpy","urllib","zipfile","osgeo")
+  py_modules <- c("os","sys","subprocess","re","numpy","urllib","zipfile","osgeo")
   # py_modules <- c("os","sys","re","numpy","zipfile","osgeo")
   
   # checks the python version

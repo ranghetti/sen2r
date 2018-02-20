@@ -16,7 +16,8 @@
 install_s2download <- function(inst_path=NA) {
   
   # define remote position of s2download
-  s2download_git <- "https://github.com/ranghetti/s2download.git"
+  s2download_ref <- "devel"
+  s2download_url <- paste0("https://github.com/ranghetti/s2download/archive/",s2download_ref,".zip")
   
   # define the required binary dependencies
   dependencies <- c("git","python","wget")
@@ -28,9 +29,7 @@ install_s2download <- function(inst_path=NA) {
   if (is.na(inst_path)) {
     inst_path <- file.path(system.file(package="fidolasen"),"s2download")
   }
-  if (!file.exists(inst_path)) {
-    dir.create(inst_path, recursive=TRUE)
-  } else if (!file.info(inst_path)$isdir) {
+  if (file.exists(inst_path) & !file.info(inst_path)$isdir) {
     print_message(
       type="error",
       inst_path," already exists and it is a file; please provide a different value (or leave blank).")
@@ -46,7 +45,8 @@ install_s2download <- function(inst_path=NA) {
         inst_path," already exists and will be erased.")
     }
     unlink(inst_path,recursive=TRUE)
-    dir.create(inst_path)
+  } else if (dir.exists(inst_path)) {
+    unlink(inst_path)
   }
   
   # check that git, python2 and wget are installed
@@ -91,6 +91,8 @@ install_s2download <- function(inst_path=NA) {
           binpaths$wget <- wget_path
           writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
         }
+        # # add to the path
+        # system(paste0('setx PATH "',binpaths$wget,'"'), intern=TRUE)
       }
       
       # If other ones are missing:
@@ -119,27 +121,34 @@ install_s2download <- function(inst_path=NA) {
   py <- init_python()
   
   # clone the package and import the module
-  system(paste0(binpaths$git," clone ",s2download_git," ",inst_path))
+  s2download_zippath <- file.path(dirname(inst_path), "s2download.zip")
+  download.file(s2download_url, destfile = s2download_zippath)
+  unzip(zipfile = s2download_zippath,
+        exdir   = dirname(inst_path),
+        unzip   = "internal") %>%
+    suppressWarnings()
+  file.rename(file.path(dirname(inst_path),paste0("s2download-",s2download_ref)), inst_path)
+  unlink(s2download_zippath)
+  # system(paste0(binpaths$git," clone ",s2download_git," ",inst_path))
   install_s2download_dependencies <- tryCatch(
     import_from_path("install_dependencies", inst_path, convert=FALSE), 
-    error = print
+    error = function(e){e}
   )
   if (is(install_s2download_dependencies, "error")) {
     install_s2download_dependencies <- import_from_path(
       "install_dependencies", 
-      paste0(normalizePath(inst_path),"/"), 
+      normalizePath(paste0(inst_path,"/")), 
       convert=FALSE
     )
   }
   
   # clone dependent repositories
-  install_s2download_dependencies$clone_repo(c("ranghetti","Sentinel-download"))
+  install_s2download_dependencies$download_repo(c("ranghetti","Sentinel-download"))
   
   # TODO check on errors (bot in python some of them does not appear as errors)
   # and message in case all run ok.
   
   # Save a text file with the directory where s2download has been cloned
-  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {
     jsonlite::fromJSON(binpaths_file)
   } else {
