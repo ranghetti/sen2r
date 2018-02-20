@@ -167,7 +167,7 @@
 #' @import data.table
 #' @importFrom geojsonio geojson_json
 #' @importFrom jsonlite fromJSON
-#' @importFrom sf st_cast st_read
+#' @importFrom sf st_cast st_read st_combine
 #' @export
 
 
@@ -976,7 +976,7 @@ fidolasen_s2 <- function(param_list=NULL,
   
   
   ## 5. Merge by orbit ##
-  if (sum(file.exists(nn(s2names$merged_names_new)))>0) {
+  if (sum(file.exists(nn(s2names$tiles_names_req)))>0) {
     
     print_message(
       type = "message",
@@ -987,7 +987,7 @@ fidolasen_s2 <- function(param_list=NULL,
     dir.create(paths["merged"], recursive=FALSE, showWarnings=FALSE)
     merged_names_out <- trace_function(
       s2_merge,
-      infiles = s2names$merged_names_new[file.exists(s2names$merged_names_new)], # TODO add warning when sum(!file.exists(s2names$merged_names_new))>0
+      infiles = s2names$tiles_names_req[file.exists(s2names$tiles_names_req)], # TODO add warning when sum(!file.exists(s2names$merged_names_new))>0
       outdir = paths["merged"],
       subdirs = pm$path_subdirs,
       format = merged_outformat,
@@ -1020,9 +1020,9 @@ fidolasen_s2 <- function(param_list=NULL,
       s2_mask_extent <- if (anyNA(pm$extent)) {
         NULL
       } else if (pm$extent_as_mask==TRUE) {
-        pm$extent
+        pm$extent %>% st_combine() # TODO remove this when multiple extents will be allowed
       } else {
-        suppressWarnings(st_cast(pm$extent,"LINESTRING"))
+        suppressWarnings(st_cast(pm$extent,"LINESTRING")) %>% st_combine() # TODO remove this when multiple extents will be allowed
       }  # TODO add support for multiple extents
       
       if(pm$path_subdirs==TRUE){

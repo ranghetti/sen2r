@@ -19,7 +19,7 @@
 #'    
 #'     Meaning of the suffixes `_exp`, `_req` and `_new`
 #'     (here and for all the script):
-#'     - `_exp`: [full] names of the files expected to be present at the
+#'     - `_exp`: full names of the files expected to be present at the
 #'         end of the processing chain (already existing or not);
 #'     - `_req`: names of the files required for the next step
 #'         (e.g. tiles_names_req are required to perform s2_merge())
@@ -460,6 +460,7 @@ compute_s2_paths <- function(pm,
     "masked_names_new" = masked_names_new,
     "warped_names_req" = warped_names_req,
     "warped_names_new" = warped_names_new,
+    "warped_names_reqout" = warped_names_reqout,
     "merged_names_req" = merged_names_req,
     "merged_names_new" = merged_names_new,
     "tiles_names_req" = tiles_names_req,
