@@ -167,7 +167,7 @@
 #' @import data.table
 #' @importFrom geojsonio geojson_json
 #' @importFrom jsonlite fromJSON
-#' @importFrom sf st_cast st_read
+#' @importFrom sf st_cast st_read st_combine
 #' @export
 
 
@@ -1020,9 +1020,9 @@ fidolasen_s2 <- function(param_list=NULL,
       s2_mask_extent <- if (anyNA(pm$extent)) {
         NULL
       } else if (pm$extent_as_mask==TRUE) {
-        pm$extent
+        pm$extent %>% st_combine() # TODO remove this when multiple extents will be allowed
       } else {
-        suppressWarnings(st_cast(pm$extent,"LINESTRING"))
+        suppressWarnings(st_cast(pm$extent,"LINESTRING")) %>% st_combine() # TODO remove this when multiple extents will be allowed
       }  # TODO add support for multiple extents
       
       if(pm$path_subdirs==TRUE){
