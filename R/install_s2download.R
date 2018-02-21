@@ -16,19 +16,20 @@
 install_s2download <- function(inst_path=NA) {
   
   # define remote position of s2download
-  s2download_git <- "https://github.com/ranghetti/s2download.git"
+  s2download_ref <- "devel"
+  s2download_url <- paste0("https://github.com/ranghetti/s2download/archive/",s2download_ref,".zip")
   
   # define the required binary dependencies
-  dependencies <- c("git","python2","wget")
-  # dependencies <- c("git","docker-compose","python2","wget")
+  dependencies <- c("git","python","wget")
+  
+  # define the versions to download (for Windows)
+  wget_ver <- package_version("1.19.4")
   
   # define inst_path (where to install or update)
   if (is.na(inst_path)) {
     inst_path <- file.path(system.file(package="fidolasen"),"s2download")
   }
-  if (!file.exists(inst_path)) {
-    dir.create(inst_path, recursive=TRUE)
-  } else if (!file.info(inst_path)$isdir) {
+  if (file.exists(inst_path) & !file.info(inst_path)$isdir) {
     print_message(
       type="error",
       inst_path," already exists and it is a file; please provide a different value (or leave blank).")
@@ -44,63 +45,110 @@ install_s2download <- function(inst_path=NA) {
         inst_path," already exists and will be erased.")
     }
     unlink(inst_path,recursive=TRUE)
-    dir.create(inst_path)
+  } else if (dir.exists(inst_path)) {
+    unlink(inst_path)
   }
   
-  # check that git is installed
-  missing_dep <- dependencies[Sys.which(dependencies)==""]
-  if (length(missing_dep)>0) {
-    print_message(
-      type="error",
-      "Some dependencies (",paste(missing_dep,collapse=", "),") were not found in your system; ",
-      "please install them or update your system PATH. ",
-      if ("docker-compose" %in% missing_dep){
-        paste0("\n(Some systems require, after installing docker-compose, to manually enable ",
-               "the service 'docker'; to do this use the command ",
-               "'sudo systemctl enable docker; sudo systemctl start docker')")
-      })
-  } #TODO pip2 not working to install gitPython
+  # check that git, python2 and wget are installed
+  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
+  binpaths <- if (file.exists(binpaths_file)) {
+    jsonlite::fromJSON(binpaths_file)
+  } else {
+    sapply(dependencies,function(x){x=NULL})
+  }
   
-  # # check the user to be in the "docker" group
-  # user_groups <- unlist(strsplit(system(paste("groups", system("whoami",intern=TRUE)), intern=TRUE), " "))
-  # if (!"docker" %in% user_groups) {
-  #   print_message(
-  #     type="error",
-  #     "Current user '",system("whoami",intern=TRUE),"' is not in the group 'docker' ",
-  #     "(this is required to run sen2cor in a docker). ",
-  #     "Please add it before installing s2download (you can do it with the command ",
-  #     "'sudo usermod -a -G docker ",system("whoami",intern=TRUE),"' ;",
-  #     "some systems requires to logout and re-login to take effects).")
-  # }
+  # add missing binaries to binpaths
+  for (d in dependencies[!dependencies %in% names(binpaths)]) {
+    binpaths[[d]] <- normalizePath(Sys.which(d))
+  }
+  writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
+  
+  missing_dep <- dependencies[binpaths[dependencies]==""]
+  if (length(missing_dep)>0) {
+    
+    if (Sys.info()["sysname"] != "Windows") {
+      
+      # On Linux, send an error if something is missing
+      print_message(
+        type="error",
+        "Some dependencies (",paste(missing_dep,collapse=", "),") were not found in your system; ",
+        "please install them or update your system PATH. "
+      )
+      
+    } else {
+      
+      # On Windows, download and install (them)or inform how to install them)
+      
+      # Download wget
+      if ("wget" %in% missing_dep) {
+        wget_url <- file.path(
+          "https://eternallybored.org/misc/wget", wget_ver,
+          if (Sys.info()["machine"]=="x86-64") {"64"} else {"32"}, "wget.exe"
+        )
+        wget_path <- normalizePath(file.path(system.file(package="fidolasen"),"wget.exe"))
+        download.file(wget_url, wget_path)
+        if (file.exists(wget_path)) {
+          binpaths$wget <- wget_path
+          writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
+        }
+        # # add to the path
+        # system(paste0('setx PATH "',binpaths$wget,'"'), intern=TRUE)
+      }
+      
+      # If other ones are missing:
+      if (length(missing_dep[missing_dep!="wget"])>0) {
+        print_message(
+          type="error",
+          "Some dependencies (",paste(missing_dep,collapse=", "),") were not found in your system; ",
+          "please install them or update your system PATH.",
+          if ("git" %in% missing_dep) {
+            "\nGit can be downloaded and installed from https://git-scm.com/downloads"
+          },
+          if ("python" %in% missing_dep) {paste0(
+            "\nTo install python, we suggest to use the OSGeo4W installer ",
+            "(http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86",
+            if (Sys.info()["machine"]=="x86-64") {"_64"},".exe), ",
+            "to choose the \"Advanced install\" and to check ",
+            "the packages \"python-core\" and \"python-pip\" packages."
+          )}
+        )
+      }
+      
+    }
+  } #TODO pip2 not working to install gitPython
   
   # checks the python version and import modules
   py <- init_python()
   
   # clone the package and import the module
-  system(paste0(Sys.which("git")," clone ",s2download_git," ",inst_path))
+  s2download_zippath <- file.path(dirname(inst_path), "s2download.zip")
+  download.file(s2download_url, destfile = s2download_zippath)
+  unzip(zipfile = s2download_zippath,
+        exdir   = dirname(inst_path),
+        unzip   = "internal") %>%
+    suppressWarnings()
+  file.rename(file.path(dirname(inst_path),paste0("s2download-",s2download_ref)), inst_path)
+  unlink(s2download_zippath)
+  # system(paste0(binpaths$git," clone ",s2download_git," ",inst_path))
   install_s2download_dependencies <- tryCatch(
     import_from_path("install_dependencies", inst_path, convert=FALSE), 
-    error = print
+    error = function(e){e}
   )
   if (is(install_s2download_dependencies, "error")) {
     install_s2download_dependencies <- import_from_path(
       "install_dependencies", 
-      paste0(normalizePath(inst_path),"/"), 
+      normalizePath(paste0(inst_path,"/")), 
       convert=FALSE
     )
   }
   
   # clone dependent repositories
-  # install_s2download_dependencies$clone_repo(c("ranghetti","fetchLandsatSentinelFromGoogleCloud"))
-  install_s2download_dependencies$clone_repo(c("ranghetti","Sentinel-download"))
-  # install_s2download_dependencies$clone_sen2cor_docker()
-  # install_s2download_dependencies$build_sen2cor_docker()
+  install_s2download_dependencies$download_repo(c("ranghetti","Sentinel-download"))
   
   # TODO check on errors (bot in python some of them does not appear as errors)
   # and message in case all run ok.
   
   # Save a text file with the directory where s2download has been cloned
-  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {
     jsonlite::fromJSON(binpaths_file)
   } else {

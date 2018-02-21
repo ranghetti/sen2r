@@ -50,9 +50,8 @@
 #' @export
 #' @importFrom rgdal GDALinfo CRSargs
 #' @importFrom gdalUtils gdalwarp gdal_translate
-#' @importFrom sp CRS bbox
-#' @importFrom raster extent
-#' @importFrom sf st_transform st_geometry st_geometry_type st_write st_cast st_area
+#' @importFrom sp CRS
+#' @importFrom sf st_transform st_geometry st_geometry_type st_write st_cast st_area st_bbox st_sfc st_polygon
 #' @importFrom methods as
 #' @importFrom magrittr "%>%"
 #' @importFrom units ud_units
@@ -221,21 +220,23 @@ gdal_warp <- function(srcfiles,
       mask <- get_extent(mask)
     }
     if (is(mask, "sprawlext")) {
-      mask <- sf::st_polygon(list(rbind(
+      mask <- st_polygon(list(rbind(
         c(mask@extent["xmin"], mask@extent["ymin"]),
         c(mask@extent["xmin"], mask@extent["ymax"]),
         c(mask@extent["xmax"], mask@extent["ymax"]),
         c(mask@extent["xmax"], mask@extent["ymin"]),
         c(mask@extent["xmin"], mask@extent["ymin"])))
       ) %>%
-        sf::st_sfc(crs = mask@proj4string)
+        st_sfc(crs = mask@proj4string)
       # mask <- as(mask, "sfc_POLYGON")
     }
     # create mask_bbox if t_srs is specified;
     # otherwise, create each time within srcfile cycle
     if (!is.null(t_srs)) {
       mask_bbox <- st_transform(mask, t_srs) %>%
-        extent() %>% bbox()
+        st_bbox() %>% 
+        matrix(nrow=2, ncol=2, dimnames=list(c("x","y"),c("min","max")))
+      # extent() %>% bbox()
       # get_extent() %>% as("matrix")
     }
   }
@@ -295,7 +296,8 @@ gdal_warp <- function(srcfiles,
             mask_bbox
           } else {
             st_transform(mask, sel_t_srs) %>%
-              extent() %>% bbox()
+              st_bbox() %>% 
+              matrix(nrow=2, ncol=2, dimnames=list(c("x","y"),c("min","max")))
             # get_extent() %>% as("matrix")
           }
           sel_te <- (sel_mask_bbox - sel_ll) / sel_tr
@@ -319,7 +321,8 @@ gdal_warp <- function(srcfiles,
             mask_bbox
           } else {
             st_transform(mask, sel_t_srs) %>%
-              extent() %>% bbox()
+              st_bbox() %>% 
+              matrix(nrow=2, ncol=2, dimnames=list(c("x","y"),c("min","max")))
             # get_extent() %>% as("matrix")
           }
           sel_te <- (sel_mask_bbox - ref_ll) / sel_tr
