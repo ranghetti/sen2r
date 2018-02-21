@@ -383,7 +383,7 @@ fidolasen_s2 <- function(param_list=NULL,
     pm$extent <- st_read(pm$extent, quiet=TRUE)
   }
   # convert from other managed formats
-  if (!is(pm$extent, "sf")) {
+  if (!all(is.na(pm$extent)) & !is(pm$extent, "sf")) {
     pm$extent <- cast_vect(pm$extent, "sfobject")
   }
   
@@ -1220,7 +1220,7 @@ fidolasen_s2 <- function(param_list=NULL,
       "masked_names_new", "out_names_new", "indices_names_new"
     )]))
     # exclude temporary files
-    names_req <- names_req[!grepl(paste0("^",path_tmp), names_req)]
+    names_req <- names_req[!grepl(path_tmp, names_req, fixed=TRUE)]
     # check if some files were not created
     names_missing <- names_req[!file.exists(names_req)]
     thumb_names_req <- names_req[file.exists(names_req)]
