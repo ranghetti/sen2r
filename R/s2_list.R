@@ -91,7 +91,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
       # of orbits could not be included).
       spatial_extent <- suppressWarnings(
         s2tiles[s2tiles$Name %in% tile,] #%>%
-          # sf::st_centroid()
+        # sf::st_centroid()
       )
     }
   }

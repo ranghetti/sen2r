@@ -979,8 +979,7 @@ fidolasen_s2 <- function(param_list=NULL,
         #                overwrite = pm$overwrite))
       }
     }
-    warped_names_new <- warped_names_req[!file.exists(nn(warped_names_req))]
-    
+
     tiles_names_out <- c(if("l1c" %in% pm$s2_levels) {tiles_l1c_names_out},
                          if("l2a" %in% pm$s2_levels) {tiles_l2a_names_out})
     # TODO check tiles_names_out - merged_names_new
