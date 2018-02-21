@@ -187,7 +187,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
     message(py_output)
     py_return
   })
-
+  
   av_prod_list <- unlist(lapply(av_prod_tuple, function(x) {py_to_r(x)[[1]]}))
   names(av_prod_list) <- unlist(lapply(av_prod_tuple, function(x) {py_to_r(x)[[2]]}))
   
