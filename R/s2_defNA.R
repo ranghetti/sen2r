@@ -20,8 +20,8 @@ s2_defNA <- function(prod_types) {
     BOA = 2^16-2, # default value for UInt16
     TOA = 2^16-2, # default value for UInt16
     SCL = 0, # specific for SCL
-    TCI = NA, # no NA, in order not to delete actual black or white pixels
-    NA
+    TCI = 0, # no specific NA value because it is a Byte format
+    0 # default value is not yet NA because this causes errors in s2_mask
   )
   
 }
