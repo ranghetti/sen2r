@@ -68,6 +68,7 @@ s2_download <- function(s2_prodlist=NULL,
   } else {
     list("wget" = NULL)
   }
+  if (is.null(binpaths$wget)) {install_s2download()}
   
   # TODO add checks on the format of filename (one element output of s2_list)
   

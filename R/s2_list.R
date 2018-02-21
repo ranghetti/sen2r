@@ -139,6 +139,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
   } else {
     list("wget" = NULL)
   }
+  if (is.null(binpaths$wget)) {install_s2download()}
   
   # link to apihub
   if (is.null(apihub)) {
