@@ -91,7 +91,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
       # of orbits could not be included).
       spatial_extent <- suppressWarnings(
         s2tiles[s2tiles$Name %in% tile,] #%>%
-          # sf::st_centroid()
+        # sf::st_centroid()
       )
     }
   }
@@ -132,6 +132,15 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
   # import s2download
   s2download <- import_s2download(convert=FALSE)
   
+  # read the path of wget
+  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
+  binpaths <- if (file.exists(binpaths_file)) {
+    jsonlite::fromJSON(binpaths_file)
+  } else {
+    list("wget" = NULL)
+  }
+  if (is.null(binpaths$wget)) {install_s2download()}
+  
   # link to apihub
   if (is.null(apihub)) {
     apihub <- file.path(s2download$inst_path,"apihub.txt")
@@ -153,19 +162,30 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
   
   # run the research of the list of products
   av_prod_tuple <- lapply(orbit, function(o) {
-    
-    s2download$s2_download(
-      lat=lat, lon=lon, latmin=latmin, latmax=latmax, lonmin=lonmin, lonmax=lonmax,
-      start_date=time_interval[1], end_date=time_interval[2],
-      tile=r_to_py(tile),
-      orbit=r_to_py(o),
-      apihub=apihub,
-      max_cloud=max_cloud,
-      list_only=TRUE,
-      max_records=0, # TODO this is possible after an addition in Sentinel-download python script:
-      # cycle on product requests (one per 100 products) is interrupted after
-      # the first request of length 0.
-      corr_type=corr_type)
+    # py_capture_output was added not only to allow threating the python output
+    # as R message, but also because, on Windows, the following error was returned
+    # if the function was launched outside py_capture_output:
+    # Error in py_call_impl(callable, dots$args, dots$keywords) : 
+    #   IOError: [Errno 9] Bad file descriptor
+    # from a python console, the error did not appear (only inside reticulate).
+    py_output <- reticulate::py_capture_output(
+      py_return <- s2download$s2_download(
+        lat=lat, lon=lon, latmin=latmin, latmax=latmax, lonmin=lonmin, lonmax=lonmax,
+        start_date=time_interval[1], end_date=time_interval[2],
+        tile=r_to_py(tile),
+        orbit=r_to_py(o),
+        apihub=apihub,
+        max_cloud=max_cloud,
+        list_only=TRUE,
+        max_records=0, # TODO this is possible after an addition in Sentinel-download python script:
+        # cycle on product requests (one per 100 products) is interrupted after
+        # the first request of length 0.
+        corr_type=corr_type,
+        wget_path=dirname(binpaths$wget)
+      )
+    )
+    message(py_output)
+    py_return
   })
   
   av_prod_list <- unlist(lapply(av_prod_tuple, function(x) {py_to_r(x)[[1]]}))

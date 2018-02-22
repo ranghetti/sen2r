@@ -61,6 +61,15 @@ s2_download <- function(s2_prodlist=NULL,
   # import s2download
   s2download <- import_s2download(convert=FALSE)
   
+  # read the path of wget
+  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
+  binpaths <- if (file.exists(binpaths_file)) {
+    jsonlite::fromJSON(binpaths_file)
+  } else {
+    list("wget" = NULL)
+  }
+  if (is.null(binpaths$wget)) {install_s2download()}
+  
   # TODO add checks on the format of filename (one element output of s2_list)
   
   # link to apihub
@@ -101,6 +110,7 @@ s2_download <- function(s2_prodlist=NULL,
       no_download   = FALSE,
       write_dir     = outdir,
       file_list     = NULL,
+      wget_path     = dirname(binpaths$wget),
       trace_funname = "s2download",
       trace_files   = file.path(outdir,c(filename,paste0(filename,".zip")))
     )

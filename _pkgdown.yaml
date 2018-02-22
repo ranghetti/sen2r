@@ -42,6 +42,7 @@ reference:
   - title: Internal functions
     desc: (not exported)
     contents:
+      - '`nn`'
       - '`init_python`'
       - '`geograbber_process`'
       - '`import_s2download`'
@@ -54,6 +55,7 @@ reference:
       - '`s2_defNA`'
       - '`stack2rgb`'
       - '`raster2rgb`'
+      - '`compute_s2_paths`'
 navbar:
   type: inverse
   left:

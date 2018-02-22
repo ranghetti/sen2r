@@ -28,7 +28,7 @@ devtools::install_github("ranghetti/fidolasen")
 
 This will install the R package, containing all the functions necessary to preprocess data.
 
-To download Sentinel-2 images the package makes use of a set of Python functions ([s2download](https://github.com/ranghetti/s2download)), which works only over Linux systems. Download will be possible over Windows in a future release. These scripts are imported the first time hey are used (alternatively, launch the function [`s2_download()`](reference/install_s2download.md) included in the package).
+To download Sentinel-2 images the package makes use of a set of Python functions ([s2download](https://github.com/ranghetti/s2download)). These scripts are imported the first time hey are used (alternatively, launch the function [`s2_download()`](reference/install_s2download.md) included in the package).
 
 Atmospheric correction is performed using [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor): the package will automatically download and install it at first use, or by running function [`install_sen2cor()`](reference/install_sen2cor.md). Please notice that the use of sen2cor algorythm was not yet possible under MAC.
 

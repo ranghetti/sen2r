@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Set NA value of a specific product type — s2_defNA • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
+<title>Replace NULL with character() — nn • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,36 +89,40 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Set NA value of a specific product type</h1>
+    <h1>Replace NULL with character()</h1>
     </div>
 
     
-    <p>Internal function to determine the NA value to be used for
-each product type (except for spectral indices, whose NA value is
-managed by <a href='s2_calcindices.html'>s2_calcindices</a>).</p>
+    <p>Internal function: return character(0) instead of NULL.
+This is sometimes needed not to return error when applying some functions.</p>
     
 
-    <pre class="usage"><span class='fu'>s2_defNA</span>(<span class='no'>prod_types</span>)</pre>
+    <pre class="usage"><span class='fu'>nn</span>(<span class='no'>x</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>prod_types</th>
-      <td><p>Character vector of the input product types</p></td>
+      <th>x</th>
+      <td><p>Input variable</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Numeric NA values (NA not to seet any NA value), corresponding to
-<code>prod_types</code>.</p>
+    <p><code>character(0)</code> if <code>x==NULL</code>, <code>x</code> elsewhere</p>
+    
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>License: GPL 3.0</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw pkg'>fidolasen</span><span class='kw ns'>:::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/fidolasen/topics/s2_defNA'>s2_defNA</a></span>(<span class='st'>"BOA"</span>)</div><div class='output co'>#&gt;   BOA 
-#&gt; 65534 </div><div class='input'><span class='kw pkg'>fidolasen</span><span class='kw ns'>:::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/fidolasen/topics/s2_defNA'>s2_defNA</a></span>(<span class='fu'>c</span>(<span class='st'>"BOA"</span>,<span class='st'>"BOA"</span>,<span class='st'>"SCL"</span>,<span class='st'>"TCI"</span>))</div><div class='output co'>#&gt;   BOA   BOA   SCL   TCI 
-#&gt; 65534 65534     0     0 </div></pre>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='fu'>basename</span>(<span class='kw'>NULL</span>) <span class='co'># error</span>
+<span class='fu'>basename</span>(<span class='fu'>character</span>()) <span class='co'># ok</span>
+<span class='fu'>basename</span>(<span class='fu'>nn</span>(<span class='kw'>NULL</span>)) <span class='co'># ok</span>
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -126,6 +130,8 @@ managed by <a href='s2_calcindices.html'>s2_calcindices</a>).</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#note">Note</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

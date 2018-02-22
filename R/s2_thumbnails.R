@@ -301,6 +301,18 @@ s2_thumbnails <- function(infiles,
           )
         )
         
+      } else if (sel_prod_type %in% c("TCI")) {
+        
+        system(
+          paste0(
+            binpaths$gdal_translate," ",
+            "-of JPEG -co QUALITY=90 ",
+            "-a_nodata 0 ",
+            "\"",resized_path,"\" ",
+            "\"",out_path,"\""
+          ), intern = Sys.info()["sysname"] == "Windows"
+        )
+
       } else {
         
         raster2rgb(
