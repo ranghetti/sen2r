@@ -1,7 +1,7 @@
 Package: fidolasen
 Type: Package
 Title: FInd, DOwnload and preprocess LAndsat and SENtinel images
-Version: 0.3.0
+Version: 0.3.1
 Authors@R: c(person("Luigi", "Ranghetti", email = "ranghetti.l@irea.cnr.it", role = c("aut", "cre")),
              person("Lorenzo", "Busetto", email = "lbusett@gmail.com", role = c("aut")))
 Description: This package contains useful functions to preprocess Landsat and Sentinel-2 imagery.
