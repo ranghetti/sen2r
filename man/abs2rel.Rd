@@ -34,15 +34,15 @@ License: GPL 3.0
 }
 \examples{
 # the reference path
-(ref_path <- system.file(package="fidolasen"))
+(ref_path <- system.file(package="salto"))
 # a path with a common parent with ref_path
 (in_path_1 <- system.file(package="gdalUtils"))
 # a path included in ref_path
-(in_path_2 <- system.file("R", "abs2rel.R", package="fidolasen"))
+(in_path_2 <- system.file("R", "abs2rel.R", package="salto"))
 # a path external to ref_path (in Linux)
 (in_path_3 <- system.file(package="base"))
 # an unexisting path
-(in_path_4 <- gsub("fidolasen","fidolasino",ref_path))
+(in_path_4 <- gsub("salto","salutato",ref_path))
 
 abs2rel(in_path_1, ref_path)
 

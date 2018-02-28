@@ -87,7 +87,7 @@ s2_translate <- function(infile,
   }
   
   # Load GDAL paths
-  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
+  binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {
     jsonlite::fromJSON(binpaths_file)
   } else {
@@ -116,7 +116,7 @@ s2_translate <- function(infile,
   if (anyNA(tiles)) {tiles <- NA} else if (all(tiles=="")) {tiles <- NA}
   
   # check output format
-  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="fidolasen"))
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="salto"))
   sel_driver <- gdal_formats[gdal_formats$name==format,]
   if (nrow(sel_driver)==0) {
     print_message(

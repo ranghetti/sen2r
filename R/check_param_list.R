@@ -1,4 +1,4 @@
-#' @title Check a fidolasen parameter list
+#' @title Check a parameter list
 #' @description Check that the parameter list (or JSON parameter file)
 #'  is in the correct format, and then speficied values are coherent with 
 #'  parameters.

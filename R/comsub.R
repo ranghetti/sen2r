@@ -16,8 +16,8 @@
 #' @importFrom magrittr "%>%"
 #'
 #' @examples
-#' strings <- c("/home/lranghetti/git/fidolasen",
-#'              "/home/lranghetti/git_data/fidolasen/ex/vrt/01_translate/")
+#' strings <- c("/home/user/git/salto",
+#'              "/home/user/git_data/salto/ex/vrt/01_translate/")
 #'
 #' comsub(strings)
 #'

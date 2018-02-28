@@ -162,7 +162,7 @@ gdal_warp <- function(srcfiles,
   
   # check output format
   if (!is.null(of)) {
-    gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="fidolasen"))
+    gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="salto"))
     sel_driver <- gdal_formats[gdal_formats$name==of,]
     if (nrow(sel_driver)==0) {
       print_message(

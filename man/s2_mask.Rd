@@ -12,7 +12,7 @@ s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba",
 \item{infiles}{A vector of input filenames. Input files are paths
 of products already converted from SAFE format to a
 format managed by GDAL (use \link{s2_translate} to do it);
-their names must be in the fidolasen-S2 naming convention
+their names must be in the SALTO-S2 naming convention
 (\link{s2_shortname}).}
 
 \item{maskfiles}{A vector of filenames from which to take the
@@ -21,7 +21,7 @@ have been implemented). It is not necessary that \code{maskfiles}
 elements strictly match \code{infiles} ones. Input files are paths
 of products already converted from SAFE format to a
 format managed by GDAL (use \link{s2_translate} to do it);
-their names must be in the fidolasen-S2 naming convention
+their names must be in the salto-S2 naming convention
 (\link{s2_shortname}).}
 
 \item{mask_type}{Character vector which determines the type of

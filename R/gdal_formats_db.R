@@ -3,7 +3,7 @@
 #'  database of spectral indices) already exists; if not, it
 #'  downloads source files and creates it.
 #'  Since on Windows there is an issue in reading the extension of 
-#'  a GDAL driver with `reticulate` functions when the package `fidolasen`
+#'  a GDAL driver with `reticulate` functions when the package `salto`
 #'  was already charged, this function can be used only from from
 #'  Linux. It is not necessary, since a gdal_formats.json file is
 #'  present in the package, but can be used to update the list in accordance
@@ -29,12 +29,12 @@ gdal_formats_db <- function(json_path = NA,
   # check if gdal_formats.json already exists, and if the version is updated
   # we assume that a new version of gdal_formats.json is created at every new package update
   if (is.na(json_path)) {
-    json_path <- file.path(system.file("extdata",package="fidolasen"),"gdal_formats.json")
+    json_path <- file.path(system.file("extdata",package="salto"),"gdal_formats.json")
   }
-  if (system.file("extdata","gdal_formats.json", package="fidolasen") == json_path) {
-    json_version <- jsonlite::fromJSON(json_path)$fidolasen_version %>%
+  if (system.file("extdata","gdal_formats.json", package="salto") == json_path) {
+    json_version <- jsonlite::fromJSON(json_path)$pkg_version %>%
       package_version()
-    if (force == FALSE & json_version >= packageVersion("fidolasen")) {
+    if (force == FALSE & json_version >= packageVersion("salto")) {
       return(invisible(NULL))
     }
   }

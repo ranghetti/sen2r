@@ -160,7 +160,7 @@
 #' @param use_python (optional) Logical: if TRUE (default), the presence of
 #'  python in the system is checked before running the function; 
 #'  if FALSE, this is skipped. Setting this to FALSE can bge useful on 
-#'  systems with problems with python, when [fidolasen_s2)] is intended
+#'  systems with problems with python, when [sto)] is intended
 #'  to be used only for processing existing SAFE files (python is required
 #'  in any case to download SAFE).
 #'
@@ -172,46 +172,46 @@
 #' @export
 
 
-fidolasen_s2 <- function(param_list=NULL,
-                         gui=NA,
-                         preprocess=NA,
-                         s2_levels=NA,
-                         sel_sensor=NA,
-                         online=NA,
-                         overwrite_safe=NA,
-                         rm_safe=NA,
-                         step_atmcorr=NA,
-                         timewindow=NA,
-                         timeperiod=NA,
-                         extent=NA,
-                         extent_name=NA,
-                         s2tiles_selected=NA,
-                         s2orbits_selected=NA,
-                         list_prods=NA,
-                         list_indices=NA,
-                         index_source=NA,
-                         mask_type=NA,
-                         clip_on_extent=NA,
-                         extent_as_mask=NA,
-                         reference_path=NA,
-                         res=NA,
-                         res_s2=NA,
-                         unit=NA,
-                         proj=NA,
-                         resampling=NA,
-                         resampling_scl=NA,
-                         outformat=NA,
-                         compression=NA,
-                         overwrite=NA,
-                         path_l1c=NA,
-                         path_l2a=NA,
-                         path_tiles=NA,
-                         path_merged=NA,
-                         path_out=NA,
-                         path_indices=NA,
-                         path_subdirs=NA,
-                         thumbnails=TRUE,
-                         use_python = TRUE) {
+sto <- function(param_list=NULL,
+                gui=NA,
+                preprocess=NA,
+                s2_levels=NA,
+                sel_sensor=NA,
+                online=NA,
+                overwrite_safe=NA,
+                rm_safe=NA,
+                step_atmcorr=NA,
+                timewindow=NA,
+                timeperiod=NA,
+                extent=NA,
+                extent_name=NA,
+                s2tiles_selected=NA,
+                s2orbits_selected=NA,
+                list_prods=NA,
+                list_indices=NA,
+                index_source=NA,
+                mask_type=NA,
+                clip_on_extent=NA,
+                extent_as_mask=NA,
+                reference_path=NA,
+                res=NA,
+                res_s2=NA,
+                unit=NA,
+                proj=NA,
+                resampling=NA,
+                resampling_scl=NA,
+                outformat=NA,
+                compression=NA,
+                overwrite=NA,
+                path_l1c=NA,
+                path_l2a=NA,
+                path_tiles=NA,
+                path_merged=NA,
+                path_out=NA,
+                path_indices=NA,
+                path_subdirs=NA,
+                thumbnails=TRUE,
+                use_python = TRUE) {
   
   
   ### Preliminary settings ###
@@ -267,13 +267,13 @@ fidolasen_s2 <- function(param_list=NULL,
                  path_indices=NA,
                  path_subdirs=TRUE,
                  thumbnails=TRUE,
-                 fidolasen_version=packageVersion("fidolasen"))
+                 pkg_version=packageVersion("salto"))
   
   # Starting execution
   print_message(
     type = "message",
     date = TRUE,
-    "Starting fidolasen execution."
+    "Starting SALTO execution."
   )
   
   # Import param_list, if provided
@@ -290,10 +290,14 @@ fidolasen_s2 <- function(param_list=NULL,
   }
   
   # Check param_list version
-  if (is.null(pm$fidolasen_version)) {
-    pm$fidolasen_version <- package_version("0.2.0")
+  if (is.null(pm$pkg_version)) {
+    if (!is.null(pm$fidolasen_version)) {
+      pm$pkg_version <- pm$fidolasen_version
+    } else {
+      pm$pkg_version <- package_version("0.2.0")
+    }
   }
-  if (packageVersion("fidolasen") > package_version(pm$fidolasen_version)) {
+  if (packageVersion("salto") > package_version(pm$pkg_version)) {
     if (interactive()) {
       open_gui <- print_message(
         type="waiting",
@@ -317,7 +321,7 @@ fidolasen_s2 <- function(param_list=NULL,
   
   # Overwrite parameters passed manually
   # (if some parameters are still missing, copy from default values)
-  for (sel_par in names(pm_def)[-match("fidolasen_version",names(pm_def))]) {
+  for (sel_par in names(pm_def)[-match("pkg_version",names(pm_def))]) {
     if (!(length(get(sel_par))==1 & all(is.na(get(sel_par))))) {
       pm[[sel_par]] <- get(sel_par)
     }
@@ -356,7 +360,7 @@ fidolasen_s2 <- function(param_list=NULL,
       "Launching GUI..."
     )
     
-    pm <- .s2_gui(pm, par_fun = "fidolasen_s2")
+    pm <- .s2_gui(pm, par_fun = "sto")
     if (is.null(pm)) {
       print_message(
         type = "message",
@@ -459,7 +463,7 @@ fidolasen_s2 <- function(param_list=NULL,
   
   # check output format
   # sel_driver <- py$osgeo$gdal$GetDriverByName(pm$outformat)
-  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="fidolasen"))
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="salto"))
   sel_driver <- gdal_formats[gdal_formats$name==pm$outformat,]
   
   # if (is.null(py_to_r(sel_driver))) {
@@ -721,7 +725,7 @@ fidolasen_s2 <- function(param_list=NULL,
         type = "message",
         date = TRUE,
         "All the required output files already exist; nothing to do.\n ",
-        "To reprocess, run fidolasen_s2() with the argument overwrite = TRUE\n ",
+        "To reprocess, run sto() with the argument overwrite = TRUE\n ",
         "or specify a different output directory."
       )
       return(invisible(NULL))
@@ -883,7 +887,7 @@ fidolasen_s2 <- function(param_list=NULL,
     print_message(
       type = "message",
       date = TRUE,
-      "Execution of fidolasen session terminated."
+      "Execution of SALTO session terminated."
     )
     
     unlink(path_tmp, recursive = TRUE) # probabily only empty directories will be deleted
@@ -1293,7 +1297,7 @@ fidolasen_s2 <- function(param_list=NULL,
   print_message(
     type = "message",
     date = TRUE,
-    "Execution of fidolasen session terminated."
+    "Execution of SALTO session terminated."
   )
   
 }

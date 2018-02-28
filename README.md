@@ -1,29 +1,29 @@
 
--   [fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images](#fidolasen-find-download-and-preprocess-landsat-and-sentinel-images)
+-   [SALTO: Sentinel-2 And Landsat TOolbox](#salto-sentinel-2-and-landsat-toolbox)
     -   [Warning](#warning)
     -   [Installation](#installation)
     -   [Usage](#usage)
     -   [Credits](#credits)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![Travis-CI Build Status](https://travis-ci.org/ranghetti/fidolasen.svg?branch=master)](https://travis-ci.org/ranghetti/fidolasen) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/fidolasen)](https://cran.r-project.org/package=fidolasen) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
+[![Travis-CI Build Status](https://travis-ci.org/ranghetti/fidolasen.svg?branch=master)](https://travis-ci.org/ranghetti/salto) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/salto)](https://cran.r-project.org/package=salto) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
-fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images
-====================================================================
+SALTO: Sentinel-2 And Landsat TOolbox
+=====================================
 
 Warning
 -------
 
-This package is under construction (current version is [pre-release 0.3.1](https://github.com/ranghetti/fidolasen/releases/tag/v0.3.1)): currently only the main processing chain for Sentinel-2 data was implemented. Please refer to the [crontab of release 0.4.0](https://github.com/ranghetti/fidolasen/milestone/3) to know which implementations will be performed regarding Sentinel-2 data. The implementation of the processing chaing over Landsat data is scheduled for the [release 0.5.0](https://github.com/ranghetti/fidolasen/milestone/2).
+This package is under construction (current version is [pre-release 0.3.1](https://github.com/ranghetti/salto/releases/tag/v0.3.1)): currently only the main processing chain for Sentinel-2 data was implemented. Please refer to the [crontab of release 0.4.0](https://github.com/ranghetti/salto/milestone/3) to know which implementations will be performed regarding Sentinel-2 data. The implementation of the processing chaing over Landsat data is scheduled for the [release 0.5.0](https://github.com/ranghetti/salto/milestone/2).
 
 Installation
 ------------
 
-You can install **fidolasen** from GitHub with:
+You can install **SALTO** from GitHub with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("ranghetti/fidolasen")
+devtools::install_github("ranghetti/salto")
 ```
 
 This will install the R package, containing all the functions necessary to preprocess data.
@@ -37,9 +37,9 @@ Preprocessing functions make use of [GDAL](http://www.gdal.org), which must supp
 Usage
 -----
 
-The simpler way to use **fidolasen** is to execute the function `fidolasen_s2()` without any argument: this opens the GUI to select the processing parameters, and then launches the main function.
+The simpler way to use **SALTO** is to execute the function `sto()` without any argument: this opens the GUI to select the processing parameters, and then launches the main function.
 
-Alternatively, [`fidolasen_s2()`](reference/fidolasen_s2.md) can be launched with a list of parameters (created with [`s2_gui()`](reference/s2_gui.md)) or passing manually the parameters as arguments of the function (see the documentation of the function for further details).
+Alternatively, [`sto()`](reference/sto.md) can be launched with a list of parameters (created with [`s2_gui()`](reference/s2_gui.md)) or passing manually the parameters as arguments of the function (see the documentation of the function for further details).
 
 Other specific functions can be used to run single steps separately:
 
@@ -55,4 +55,4 @@ Other specific functions can be used to run single steps separately:
 Credits
 -------
 
-**fidolasen** is being developed by Luigi Ranghetti and Lorenzo Busetto ([IREA-CNR](http://www.irea.cnr.it)), and it is released under [GPL 3.0](https://www.gnu.org/licenses/gpl.html).
+**SALTO** is being developed by Luigi Ranghetti and Lorenzo Busetto ([IREA-CNR](http://www.irea.cnr.it)), and it is released under [GPL 3.0](https://www.gnu.org/licenses/gpl.html).

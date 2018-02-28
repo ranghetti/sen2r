@@ -36,7 +36,7 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
   gdal_minversion <- package_version("2.1.3")
   
   # load the saved GDAL path, if exists
-  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
+  binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {
     jsonlite::fromJSON(binpaths_file)
   } else {

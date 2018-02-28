@@ -40,10 +40,10 @@ A list, containing the following vectors:
 \code{safe_names_l1c_req}, \code{safe_names_l1c_req}, \code{safe_names_l2a_req}.
 }
 \description{
-Internal function (to be used within \code{\link[=fidolasen_s2]{fidolasen_s2()}})
+Internal function (to be used within \code{\link[=sto]{sto()}})
 which computes the names of the required output image files
 (see details).
-The function was splitted from \code{\link[=fidolasen_s2]{fidolasen_s2()}} because this code
+The function was splitted from \code{\link[=sto]{sto()}} because this code
 is called twice (and to shorten the main function).
 }
 \details{

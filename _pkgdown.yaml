@@ -1,4 +1,4 @@
-title: "fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images"
+title: "SALTO: Sentinel-2 And Landsat TOolbox"
 template:
   params:
     bootswatch: yeti
@@ -7,7 +7,7 @@ reference:
   - title: Automatic processing chain
     desc: ~
     contents:
-      - '`fidolasen_s2`'
+      - '`sto`'
   - title: Find and download Sentinel-2 products
     desc: ~
     contents:
@@ -65,4 +65,4 @@ navbar:
       href: reference/index.html
   right:
     - icon: fa-github fa-lg
-      href: https://github.com/ranghetti/fidolasen/
+      href: https://github.com/ranghetti/salto/
