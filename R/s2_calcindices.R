@@ -5,7 +5,7 @@
 #' @param infiles A vector of input filenames. Input files are paths
 #'  of BOA (or TOA) products already converted from SAFE format to a
 #'  format managed by GDAL (use [s2_translate] to do it);
-#'  their names must be in the fidolasen-S2 naming convention
+#'  their names must be in the SALTO-S2 naming convention
 #'  ([s2_shortname]).
 #' @param indices Character vector with the names of the required
 #'  indices. Values should be included in names corresponding to the
@@ -70,7 +70,7 @@ s2_calcindices <- function(infiles,
   prod_type <- . <- NULL
   
   # Load GDAL paths
-  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
+  binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {
     jsonlite::fromJSON(binpaths_file)
   } else {
@@ -108,7 +108,7 @@ s2_calcindices <- function(infiles,
   indices_info <- indices_db[match(indices,indices_db$name),]
   
   # check output format
-  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="fidolasen"))
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="salto"))
   if (!is.na(format)) {
     sel_driver <- gdal_formats[gdal_formats$name==format,]
     if (nrow(sel_driver)==0) {

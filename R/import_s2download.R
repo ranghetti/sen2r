@@ -18,7 +18,7 @@ import_s2download <- function(...) {
   # check that s2download and dependencies were cloned
   # this ensures also that python2 and other dependencies are present)
   # check if it is already installed
-  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
+  binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {
     jsonlite::fromJSON(binpaths_file)
   } else {

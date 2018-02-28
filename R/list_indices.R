@@ -15,7 +15,7 @@
 #' @return A data.frame with the required information. The table contains
 #'  also the following attributes:
 #'  - `creation_date`: timestamp of the creation date of the indices archive;
-#'  - `fidolasen_version`: version of the `fidolasen` package used to
+#'  - `pkg_version`: version of the `salto` package used to
 #'      create the indices archive.
 #' @export
 #' @importFrom jsonlite fromJSON
@@ -32,7 +32,7 @@ list_indices <- function(values, pattern="") {
   create_indices_db()
   
   # read indices database
-  json_path <- system.file("extdata","indices.json",package="fidolasen")
+  json_path <- system.file("extdata","indices.json",package="salto")
   indices <- jsonlite::fromJSON(json_path)
   
   # select requested values from the table
@@ -42,7 +42,7 @@ list_indices <- function(values, pattern="") {
     }
   }
   indices$indices <- indices$indices[grep(pattern,indices$indices$name),values]
-  attr(indices$indices, "fidolasen_version") <- package_version(indices$fidolasen_version)
+  attr(indices$indices, "pkg_version") <- package_version(indices$pkg_version)
   attr(indices$indices, "creation_date") <- as.POSIXct(indices$creation_date)
   
   # return requested values

@@ -49,8 +49,8 @@ s2_gui <- function(param_list = NULL,
 # Internal function with parameter par_fun (parent function):
 # default is "parent", but it can be set with another value
 # for internal purposes.
-# For now, value "fidolasen_s2" is used when s2_gui() is launched from
-# fidolasen_s2(), and is used to change save button label.
+# For now, value "sto" is used when s2_gui() is launched from
+# sto(), and is used to change save button label.
 .s2_gui <- function(param_list = NULL,
                     par_fun = "parent",
                     thunderforest_api = NA) {
@@ -65,7 +65,7 @@ s2_gui <- function(param_list = NULL,
   dir.create(tempdir(), showWarnings=FALSE)
   
   # extract and import tiles kml
-  s2tiles_kmz <- system.file("extdata","vector","s2_tiles.kmz",package="fidolasen")
+  s2tiles_kmz <- system.file("extdata","vector","s2_tiles.kmz",package="salto")
   s2tiles_kml <- gsub("\\.kmz$",".kml",s2tiles_kmz)
   if (!file.exists(s2tiles_kml)) {
     unzip(zipfile = s2tiles_kmz,
@@ -79,7 +79,7 @@ s2_gui <- function(param_list = NULL,
   
   # shiny
   s2_gui.ui <- dashboardPage(
-    dashboardHeader(title="fidolasen"),
+    dashboardHeader(title="salto"),
     
     dashboardSidebar(
       
@@ -122,7 +122,7 @@ s2_gui <- function(param_list = NULL,
         p(style="margin-top:20pt;",
           actionButton(
             "return_param",
-            label = if (par_fun=="fidolasen_s2") {
+            label = if (par_fun=="sto") {
               strong("\u2000Launch processing")
             } else {
               strong("\u2000Save and close GUI")
@@ -134,7 +134,7 @@ s2_gui <- function(param_list = NULL,
         p(style="margin-top:0pt;",
           actionButton(
             "exit_gui",
-            label = if (par_fun=="fidolasen_s2") {
+            label = if (par_fun=="sto") {
               "\u2000Close without processing"
             } else {
               "\u2000Close without saving"
@@ -1992,7 +1992,7 @@ s2_gui <- function(param_list = NULL,
         p(HTML(
           "<ol>",
           "<li>When an extent was already passed in input",
-          "(as an argument of fidolasen_s2() function, or with a parameter list)",
+          "(as an argument of sto() function, or with a parameter list)",
           "the map is not updated instantaneously. To update it,",
           "select another method to select extent (e.g. \"draw\") and then",
           "select again \"Imported as parameter\".</li>",
@@ -2014,11 +2014,11 @@ s2_gui <- function(param_list = NULL,
         p(HTML(
           "The function used to import parameter list was temporary",
           "deactivated, due to an incompatibility with another module.",
-          "To import a JSON option file, launch <tt>fidolasen_s2()</tt>",
+          "To import a JSON option file, launch <tt>sto()</tt>",
           "function with the path of the file as argument:"
         )),
         p(HTML(
-          "<tt>fidolasen_s2(param_list = \"/path/of/the/file.json\")</tt>"
+          "<tt>sto(param_list = \"/path/of/the/file.json\")</tt>"
         )),
         easyClose = TRUE,
         footer = NULL
@@ -2179,7 +2179,7 @@ s2_gui <- function(param_list = NULL,
       rl$thumbnails <- if (rl$preprocess==TRUE) {as.logical(input$check_thumbnails)} else {NA} # logical (create thumbnails)
       
       # information about package version
-      rl$fidolasen_version <- packageVersion("fidolasen") %>% as.character()
+      rl$pkg_version <- packageVersion("salto") %>% as.character()
       
       return(rl)
     }

@@ -50,7 +50,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
                     tiles=NULL, parallel=FALSE, overwrite=FALSE) {
   
   # load sen2cor executable path
-  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
+  binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {
     jsonlite::fromJSON(binpaths_file)
   } else {
@@ -142,7 +142,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
     i=seq_along(l1c_prodlist), 
     .combine=c,
     .export = "mountpoint",
-    .packages='fidolasen'
+    .packages='salto'
   ) %DO% {
     
     # set paths

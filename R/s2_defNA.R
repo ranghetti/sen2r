@@ -8,8 +8,8 @@
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #'
 #' @examples
-#' fidolasen:::s2_defNA("BOA")
-#' fidolasen:::s2_defNA(c("BOA","BOA","SCL","TCI"))
+#' salto:::s2_defNA("BOA")
+#' salto:::s2_defNA(c("BOA","BOA","SCL","TCI"))
 
 
 s2_defNA <- function(prod_types) {

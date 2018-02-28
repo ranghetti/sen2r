@@ -12,7 +12,7 @@ s2_calcindices(infiles, indices, outdir = ".", parameters = NULL,
 \item{infiles}{A vector of input filenames. Input files are paths
 of BOA (or TOA) products already converted from SAFE format to a
 format managed by GDAL (use \link{s2_translate} to do it);
-their names must be in the fidolasen-S2 naming convention
+their names must be in the SALTO-S2 naming convention
 (\link{s2_shortname}).}
 
 \item{indices}{Character vector with the names of the required

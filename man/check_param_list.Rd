@@ -2,7 +2,7 @@
 % Please edit documentation in R/check_param_list.R
 \name{check_param_list}
 \alias{check_param_list}
-\title{Check a fidolasen parameter list}
+\title{Check a parameter list}
 \usage{
 check_param_list(pm, type = "string", correct = TRUE)
 }

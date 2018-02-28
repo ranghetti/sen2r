@@ -1,9 +1,9 @@
 #' @title Get information from S2 short name
 #' @description This accessory function extracts metadata included in
-#'  the name of a Sentinel-2 product which follows the fidolasen-S2
+#'  the name of a Sentinel-2 product which follows the SALTO-S2
 #'  naming convention (see [s2_shortname]).
 #' @param s2_names A vector of Sentinel-2 product names in the
-#'  fidolasen-S2 naming convention.
+#'  SALTO-S2 naming convention.
 #' @param format One between `list` of `data.frame`.
 #' @return A list or a data.frame of the output metadata.
 #'

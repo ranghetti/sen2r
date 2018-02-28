@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Download S2 products. — s2_download • fidolasen: FInd, DOwnload and preprocess LAndsat and SENtinel images</title>
+<title>Download S2 products. — s2_download • SALTO: Sentinel-2 And Landsat TOolbox</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -59,7 +59,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">fidolasen</a>
+      <a class="navbar-brand" href="../index.html">salto</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -73,7 +73,7 @@
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/ranghetti/fidolasen/">
+  <a href="https://github.com/ranghetti/salto/">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -95,7 +95,7 @@
     
     <p>The function downloads a single S2 product.
 Input filename must be an element obtained with
-<a href='s2_list.html'>s2_list</a> function
+s2_list function
 (the content must be a URL, and the name the product name).</p>
     
 
@@ -108,7 +108,7 @@ Input filename must be an element obtained with
     <tr>
       <th>s2_prodlist</th>
       <td><p>List of the products to be downloaded
-(this must be the output of <a href='s2_list.html'>s2_list</a> function).</p></td>
+(this must be the output of s2_list function).</p></td>
     </tr>
     <tr>
       <th>downloader</th>
@@ -159,7 +159,7 @@ where the files should be created (default: current directory).</p></td>
 <span class='co'># Download a serie of products</span>
 <span class='no'>pos</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sp</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sp/topics/SpatialPoints'>SpatialPoints</a></span>(<span class='fu'>data.frame</span>(<span class='st'>"x"</span><span class='kw'>=</span><span class='fl'>12.0</span>,<span class='st'>"y"</span><span class='kw'>=</span><span class='fl'>44.8</span>), <span class='kw'>proj4string</span><span class='kw'>=</span><span class='kw pkg'>sp</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sp/topics/CRS-class'>CRS</a></span>(<span class='st'>"+init=epsg:4326"</span>))
 <span class='no'>time_window</span> <span class='kw'>&lt;-</span> <span class='fu'>as.Date</span>(<span class='fu'>c</span>(<span class='st'>"2017-05-01"</span>,<span class='st'>"2017-07-30"</span>))
-<span class='no'>example_s2_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='s2_list.html'>s2_list</a></span>(<span class='kw'>spatial_extent</span><span class='kw'>=</span><span class='no'>pos</span>, <span class='kw'>tile</span><span class='kw'>=</span><span class='st'>"32TQQ"</span>, <span class='kw'>time_interval</span><span class='kw'>=</span><span class='no'>time_window</span>)
+<span class='no'>example_s2_list</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_list</span>(<span class='kw'>spatial_extent</span><span class='kw'>=</span><span class='no'>pos</span>, <span class='kw'>tile</span><span class='kw'>=</span><span class='st'>"32TQQ"</span>, <span class='kw'>time_interval</span><span class='kw'>=</span><span class='no'>time_window</span>)
 <span class='fu'>s2_download</span>(<span class='no'>example_s2_list</span>, <span class='kw'>outdir</span><span class='kw'>=</span><span class='fu'>tempdir</span>())
 <span class='co'># }</span></pre>
   </div>

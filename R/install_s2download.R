@@ -27,7 +27,7 @@ install_s2download <- function(inst_path=NA) {
   
   # define inst_path (where to install or update)
   if (is.na(inst_path)) {
-    inst_path <- file.path(system.file(package="fidolasen"),"s2download")
+    inst_path <- file.path(system.file(package="salto"),"s2download")
   }
   if (file.exists(inst_path) & !file.info(inst_path)$isdir) {
     print_message(
@@ -50,7 +50,7 @@ install_s2download <- function(inst_path=NA) {
   }
   
   # check that git, python2 and wget are installed
-  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
+  binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {
     jsonlite::fromJSON(binpaths_file)
   } else {
@@ -85,7 +85,7 @@ install_s2download <- function(inst_path=NA) {
           "https://eternallybored.org/misc/wget", wget_ver,
           if (Sys.info()["machine"]=="x86-64") {"64"} else {"32"}, "wget.exe"
         )
-        wget_path <- normalizePath(file.path(system.file(package="fidolasen"),"wget.exe"))
+        wget_path <- normalizePath(file.path(system.file(package="salto"),"wget.exe"))
         download.file(wget_url, wget_path)
         if (file.exists(wget_path)) {
           binpaths$wget <- wget_path

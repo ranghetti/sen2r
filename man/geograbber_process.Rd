@@ -41,7 +41,7 @@ by \code{gdal_translate}: "near" (default), "bilinear", "cubic",
 files be overwritten? (default: FALSE).}
 }
 \description{
-The function is a simplified wrapper of \code{\link[=fidolasen_s2]{fidolasen_s2()}}
+The function is a simplified wrapper of \code{\link[=sto]{sto()}}
 to preprocess existing SAFE products. No online research is performed,
 neither sen2cor is applied to existing L1C products.
 Output products are GeoTIFF files clipped to a desired

@@ -6,7 +6,7 @@
 #' @param infiles A vector of input filenames. Input files are paths
 #'  of products already converted from SAFE format to a format managed by
 #'  GDAL (use [s2_translate] to do it); their names must be in the
-#'  fidolasen-S2 naming convention ([s2_shortname]).
+#'  SALTO-S2 naming convention ([s2_shortname]).
 #' @param outdir (optional) Full name of the output directory where
 #'  the files should be created (default: current directory).
 #'  `outdir` can bot be an existing or non-existing directory (in the
@@ -72,7 +72,7 @@ s2_merge <- function(infiles,
   }
   
   # Load GDAL paths
-  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
+  binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {
     jsonlite::fromJSON(binpaths_file)
   } else {

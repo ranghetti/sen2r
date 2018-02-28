@@ -37,12 +37,12 @@ create_indices_db <- function(xslt_path = NA,
   # check if indices.json already exists, and if the version is updated
   # we assume that a new version of indices.json is created at every new ackage update
   if (is.na(json_path)) {
-    json_path <- file.path(system.file("extdata",package="fidolasen"),"indices.json")
+    json_path <- file.path(system.file("extdata",package="salto"),"indices.json")
   }
-  if (system.file("extdata","indices.json", package="fidolasen") == json_path) {
-    json_version <- jsonlite::fromJSON(json_path)$fidolasen_version %>%
+  if (system.file("extdata","indices.json", package="salto") == json_path) {
+    json_version <- jsonlite::fromJSON(json_path)$pkg_version %>%
       package_version()
-    if (force == FALSE & json_version >= packageVersion("fidolasen")) {
+    if (force == FALSE & json_version >= packageVersion("salto")) {
       return(invisible(NULL))
     }
   }
@@ -57,7 +57,7 @@ create_indices_db <- function(xslt_path = NA,
   
   # set XSLT path
   if (is.na(xslt_path)) {
-    xslt_path <- file.path(system.file(package="fidolasen"),"extdata","xslt")
+    xslt_path <- file.path(system.file(package="salto"),"extdata","xslt")
   }
   
   # if missing, download xsltml to convert from MathML to LaTeX: http://fhoerni.free.fr/comp/xslt.html
@@ -305,7 +305,7 @@ create_indices_db <- function(xslt_path = NA,
   
   json_table <- list(
     "indices" = s2_table,
-    "fidolasen_version" = as.character(packageVersion("fidolasen")),
+    "pkg_version" = as.character(packageVersion("salto")),
     "creation_date" = as.character(Sys.time())
   )
   writeLines(jsonlite::toJSON(json_table, pretty=TRUE), json_path)

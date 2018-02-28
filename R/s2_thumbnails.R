@@ -89,14 +89,14 @@ raster2rgb <- function(in_rast,
   
   # Define builtin palette paths
   palette_builtin <- c(
-    "SCL" = system.file("extdata","palettes","SCL.txt", package="fidolasen"),
-    "NDVI" = system.file("extdata","palettes","NDVI.cpt", package="fidolasen"),
-    "generic_ndsi" = system.file("extdata","palettes","NDSI.cpt", package="fidolasen"),
-    "Zscore" = system.file("extdata","palettes","Zscore.cpt", package="fidolasen")
+    "SCL" = system.file("extdata","palettes","SCL.txt", package="salto"),
+    "NDVI" = system.file("extdata","palettes","NDVI.cpt", package="salto"),
+    "generic_ndsi" = system.file("extdata","palettes","NDSI.cpt", package="salto"),
+    "Zscore" = system.file("extdata","palettes","Zscore.cpt", package="salto")
   )
   
   # Load GDAL paths
-  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
+  binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {
     jsonlite::fromJSON(binpaths_file)
   } else {
@@ -167,7 +167,7 @@ raster2rgb <- function(in_rast,
 #' @param infiles A vector of input filenames. Input files are paths
 #'  of products already converted from SAFE format to a
 #'  format managed by GDAL (use [s2_translate] to do it);
-#'  their names must be in the fidolasen-S2 naming convention
+#'  their names must be in the SALTO-S2 naming convention
 #'  ([s2_shortname]).
 #' @param prod_type (optional) Output product (see [s2_shortname] for the 
 #'  list of accepted products). If not provided, it is retrieved from the
@@ -216,7 +216,7 @@ s2_thumbnails <- function(infiles,
   }
   
   # Load GDAL paths
-  binpaths_file <- file.path(system.file("extdata",package="fidolasen"),"paths.json")
+  binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {
     jsonlite::fromJSON(binpaths_file)
   } else {

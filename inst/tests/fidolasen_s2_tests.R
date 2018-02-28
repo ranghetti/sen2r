@@ -1,12 +1,12 @@
-# Tests to perform on fidolasen_s2() processing chains.
+# Tests to perform on sto() processing chains.
 
 # Please notice that these tests are not though to cover all the possible
 # processing types possible with this package.
 
 
-context("Fidolasen S2 examples")
+context("SALTO S2 examples")
 testthat::test_that(
-  "Tests on fidolasen_s2", {
+  "Tests on sto", {
     
     library(testthat)
     library(magrittr)
@@ -16,9 +16,9 @@ testthat::test_that(
     
     ### Test 1: download
     context("Test 1: download SAFE tiles (zip)")
-    example_dir <- system.file("extdata","example_files", package="fidolasen")
+    example_dir <- system.file("extdata","example_files", package="salto")
     safe_dir <- file.path(example_dir, "safe")
-    system.time(fidolasen_s2(
+    system.time(sto(
       gui = FALSE,
       online = TRUE,
       preprocess = FALSE,
@@ -33,7 +33,7 @@ testthat::test_that(
     
     ### Test 2: download (old & compact name)
     context("Test 2: download SAFE tiles (zip & files)")
-    system.time(fidolasen_s2(
+    system.time(sto(
       gui = FALSE,
       online = TRUE,
       preprocess = FALSE,
@@ -48,7 +48,7 @@ testthat::test_that(
     
     ### Test 3: sen2cor
     context("Test 3: apply sen2cor")
-    system.time(fidolasen_s2(
+    system.time(sto(
       gui = FALSE,
       online = FALSE,
       preprocess = FALSE,
@@ -65,7 +65,7 @@ testthat::test_that(
     context("Test 4: translate and merge two tiles")
     out_dir <- file.path(example_dir, "out", "out_test1")
     dir.create(dirname(out_dir), showWarnings = FALSE)
-    system.time(fidolasen_s2(
+    system.time(sto(
       gui = FALSE,
       online = FALSE,
       s2_levels = "l1c",
@@ -81,7 +81,7 @@ testthat::test_that(
     ### Test 5: clip and mask
     context("Test 5: clip and mask")
     out_dir <- file.path(example_dir, "out", "out_test2")
-    system.time(fidolasen_s2(
+    system.time(sto(
       gui = FALSE,
       online = FALSE,
       s2_levels = "l2a",
@@ -100,7 +100,7 @@ testthat::test_that(
     ### Test 6: create spectral indices
     context("Test 6: spectral indices")
     out_dir <- file.path(example_dir, "out", "out_test3")
-    system.time(fidolasen_s2(
+    system.time(sto(
       gui = FALSE,
       online = FALSE,
       s2_levels = "l2a",
