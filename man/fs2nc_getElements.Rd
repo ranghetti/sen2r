@@ -4,13 +4,17 @@
 \alias{fs2nc_getElements}
 \title{Get information from S2 short name}
 \usage{
-fs2nc_getElements(s2_names, format = "list")
+fs2nc_getElements(s2_names, format = "list", abort = TRUE)
 }
 \arguments{
 \item{s2_names}{A vector of Sentinel-2 product names in the
 SALTO-S2 naming convention.}
 
 \item{format}{One between \code{list} of \code{data.frame}.}
+
+\item{abort}{Logical parameter: if TRUE (default), the function aborts
+in case any of \code{s2_names} is not recognised; if FALSE, a warning is shown,
+and a list with only the element "type"='unrecognised' is returned.}
 }
 \value{
 A list or a data.frame of the output metadata.
