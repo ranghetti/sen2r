@@ -449,7 +449,7 @@ sto <- function(param_list=NULL,
       "The following output ",
       if (sum(!paths_exist)==1) {"directory does "} else {"directories do "},
       "not exist:\n",
-      paste(pm[names(paths_exist[!paths_exist])],collapse="\n"),
+      paste(names(paths_exist[!paths_exist]),collapse="\n"),
       ".\nPlease create ",
       if (sum(!paths_exist)==1) {"it "} else {"them "},
       "before continuing."
@@ -532,8 +532,23 @@ sto <- function(param_list=NULL,
     if ("l2a" %in% pm$s2_levels) {
       s2_lists[["l2a"]] <- if (pm$step_atmcorr=="l2a") {
         list.files(pm$path_l2a, "\\.SAFE$")
-      } else if (pm$step_atmcorr %in% c("scihub","no","auto")) { # FIXME "auto"? -> for now, managed as "scihub" (apply sen2cor; if l2a already exists, do nothing)
+      } else if (pm$step_atmcorr %in% c("scihub","no")) {
         list.files(pm$path_l1c, "\\.SAFE$")
+      } else if (pm$step_atmcorr=="auto") {
+        all_l1c <- list.files(pm$path_l1c, "\\.SAFE$")
+        all_l2a <- list.files(pm$path_l2a, "\\.SAFE$")
+        c(
+          all_l2a,
+          all_l1c[
+            !gsub(
+              "\\_OPER\\_","_USER_",
+              gsub(
+                "^S2([AB])\\_((?:OPER\\_PRD\\_)?)MSIL1C\\_","S2\\1\\_\\2MSIL2A\\_",
+                all_l1c
+              )
+            ) %in% all_l2a
+            ]
+        )
       }
     }
     s2_lists <- lapply(s2_lists, function(l) {
@@ -983,7 +998,7 @@ sto <- function(param_list=NULL,
         #                overwrite = pm$overwrite))
       }
     }
-
+    
     tiles_names_out <- c(if("l1c" %in% pm$s2_levels) {tiles_l1c_names_out},
                          if("l2a" %in% pm$s2_levels) {tiles_l2a_names_out})
     # TODO check tiles_names_out - merged_names_new
