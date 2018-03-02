@@ -239,7 +239,9 @@ compute_s2_paths <- function(pm,
   
   # expected names for masked products
   # if clip_on_extent is required, mask warped, otherwise, mask merged
-  if (!is.na(pm$mask_type)) {
+  if (is.na(pm$mask_type)) {
+    masked_names_exp <- NULL
+  } else {
     masked_names_exp <- if (pm$clip_on_extent==TRUE) {
       file.path(paths["out"],
                 if(pm$path_subdirs==TRUE){basename(dirname(nn(warped_names_exp[!names_merged_exp_scl_idx])))}else{""},
@@ -297,7 +299,9 @@ compute_s2_paths <- function(pm,
   } else {
     c("1C","2A")
   }
-  if (length(out_names_exp)>0 & !anyNA(pm$list_indices)) {
+  if (length(out_names_exp)==0 | anyNA(pm$list_indices)) {
+    indices_names_exp <- NULL
+  } else {
     indices_names_exp <- data.table(
       fs2nc_getElements(out_names_exp, format="data.frame")
     )[level %in% level_for_indices,
