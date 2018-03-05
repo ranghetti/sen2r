@@ -41,6 +41,7 @@
 #' @importFrom magrittr "%>%"
 #' @importFrom sprawl check_proj4string
 #' @importFrom raster compareCRS
+#' @importFrom jsonlite fromJSON
 #' @import data.table
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
@@ -55,6 +56,9 @@ s2_merge <- function(infiles,
                      vrt_rel_paths=NA,
                      out_crs="",
                      overwrite=FALSE) {
+  
+  # load output formats
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="salto"))
   
   # Define vrt_rel_paths
   if (is.na(vrt_rel_paths)) {
@@ -194,6 +198,12 @@ s2_merge <- function(infiles,
       print_message(type="error", "Internal error (duplicated id_tile).")
     }
     
+    sel_outformat <- ifelse(is.na(format),
+                            unique(sel_infiles_meta[,"format"]),
+                            format)
+    if (length(sel_outformat)>1) {
+      print_message(type="error", "Internal error (non unique format).")
+    }
     # Define output filename
     sel_outfile <- paste0(
       "S2",sel_infiles_meta[1,"mission"],sel_infiles_meta[1,"level"],"_",
@@ -201,13 +211,7 @@ s2_merge <- function(infiles,
       sel_infiles_meta[1,"id_orbit"],"__",
       sel_infiles_meta[1,"prod_type"],"_",
       gsub("m$","",sel_infiles_meta[1,"res"]),".",
-      sel_infiles_meta[1,"file_ext"])
-    sel_outformat <- ifelse(is.na(format),
-                            unique(sel_infiles_meta[,"format"]),
-                            format)
-    if (length(sel_outformat)>1) {
-      print_message(type="error", "Internal error (non unique format).")
-    }
+      gdal_formats[gdal_formats$name==sel_outformat,"ext"])
     # define subdir
     out_subdir <- ifelse(subdirs, file.path(outdir,sel_infiles_meta[1,"prod_type"]), outdir)
     
