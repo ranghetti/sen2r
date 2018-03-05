@@ -916,7 +916,7 @@ s2_gui <- function(param_list = NULL,
                 
                 fluidRow(
                   column(
-                    width = 5,
+                    width = 6,
                     radioButtons(
                       "index_source",
                       label = span(
@@ -927,6 +927,25 @@ s2_gui <- function(param_list = NULL,
                                      "TOA" = "TOA"),
                       selected = "BOA",
                       inline = TRUE)
+                  ),
+                  column(
+                    width = 6,
+                    selectInput(
+                      "index_datatype", label = "Data type",
+                      choices = list("Byte" = "Byte",
+                                     "Integer (16 bits)" = "Int16",
+                                     "Float (32 bits)" = "Float32",
+                                     "Float (64 bits)" = "Float64"),
+                      selected = "Int16"
+                    )
+                  )
+                ),
+                
+                hr(style="margin-top: 0em; margin-bottom: 0.75em;"),
+                fluidRow(
+                  column(
+                    width = 5,
+                    textInput("filter_indices", "Filter indices")
                   ),
                   column(
                     width = 7,
@@ -940,9 +959,6 @@ s2_gui <- function(param_list = NULL,
                     )
                   )
                 ),
-                
-                hr(style="margin-top: 0em; margin-bottom: 0.75em;"),
-                textInput("filter_indices", "Filter indices"),
                 uiOutput("check_indices")
               ),
               
@@ -2161,6 +2177,7 @@ s2_gui <- function(param_list = NULL,
                                "outformat" %in% input$reference_usefor,
                              reference()$outformat,
                              input$outformat)
+      rl$index_datatype <- input$index_datatype
       # output compression ("LZW", "DEFLATE" etc.)
       rl$compression <- ifelse(rl$outformat=="GTiff",
                                input$compression,
@@ -2267,6 +2284,7 @@ s2_gui <- function(param_list = NULL,
                                                            character(0)))
         updateRadioButtons(session, "outformat", selected = pl$outformat)
       }
+      updateRadioButtons(session, "index_datatype", selected = pl$index_datatype)
       updateRadioButtons(session, "resampling", selected = pl$resampling)
       updateRadioButtons(session, "resampling_scl", selected = pl$resampling_scl)
       updateRadioButtons(session, "compression", selected = ifelse(pl$outformat=="GTiff",
