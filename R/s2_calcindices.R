@@ -41,10 +41,16 @@
 #'  more than a single spectral index is required.
 #' @param compress (optional) In the case a GTiff format is
 #'  present, the compression indicated with this parameter is used.
-#' @param dataType (optional) Numeric datatype of the ouptut rasters:
-#'  if "Float32" (default) or "Float64" is chosen, numeric values are not rescaled;
-#'  if "Int16" or "UInt16", values are multiplicated by a 10000
-#'  scale factor.
+#' @param dataType (optional) Numeric datatype of the ouptut rasters.
+#'  if "Float32" or "Float64" is chosen, numeric values are not rescaled;
+#'  if "Int16" (default) or "UInt16", values are multiplicated by `scaleFactor` argument;
+#'  if "Byte", values are shifted by 100, multiplicated by 100 and truncated
+#'  at 200 (so that range -1 to 1 is coherced to 0-200), and nodata value 
+#'  is assigned to 255.
+#' @param scaleFactor (optional) Scale factor for output values when an integer
+#'  datatype is chosen (default values are 10000 for "Int16" and "UInt16", 
+#'  1E9 for "Int32" and "UInt32"). Notice that, using "UInt16" and "UInt32" types,
+#'  negative values will be truncated to 0.
 #' @param overwrite Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
 #' @return A vector with the names of the created products.
@@ -64,7 +70,8 @@ s2_calcindices <- function(infiles,
                            format=NA,
                            subdirs=NA,
                            compress="DEFLATE",
-                           dataType="Float32",
+                           dataType="Int16",
+                           scaleFactor=NA,
                            overwrite=FALSE) {
   
   prod_type <- . <- NULL
@@ -104,7 +111,7 @@ s2_calcindices <- function(infiles,
       ") are not recognisable and will be skipped.")
     indices <- indices[indices %in% indices_db$name]
   }
-  # exstract needed indices_db
+  # extract needed indices_db
   indices_info <- indices_db[match(indices,indices_db$name),]
   
   # check output format
@@ -121,6 +128,11 @@ s2_calcindices <- function(infiles,
         "To search for a specific format, use:\n",
         "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
     }
+  }
+  
+  # assign scaleFactor value
+  if (grepl("Int",dataType) & is.na(scaleFactor)) {
+    scaleFactor <- ifelse(grepl("Int32",dataType),1E9,1E4)
   }
   
   # Get files metadata
@@ -196,8 +208,16 @@ s2_calcindices <- function(infiles,
                               paste0("\\1",gdal_bands[sel_band,"letter"],".astype(float)\\2"),
                               sel_formula)
         }
-        if (dataType %in% c("Int16","UInt16","Int32","UInt32")) {
-          sel_formula <- paste0("10000*(",sel_formula,")")
+        if (grepl("Int", dataType)) {
+          sel_formula <- paste0(
+            "clip(",
+            scaleFactor,"*(",sel_formula,"),",
+            switch(dataType, Int16=-2^15+2, UInt16=0, Int32=-2^31+4, UInt32=0),",",
+            switch(dataType, Int16=2^15-1, UInt16=2^16-2, Int32=2^31-3, UInt32=2^32-4),")"
+          )
+        }
+        if (dataType == "Byte") {
+          sel_formula <- paste0("clip(100+100*(",sel_formula,"),0,200)")
         }
         
         # apply gdal_calc
@@ -210,7 +230,7 @@ s2_calcindices <- function(infiles,
             "--outfile=\"",file.path(out_subdir,sel_outfile),"\" ",
             "--type=\"",dataType,"\" ",
             "--format=\"",sel_format,"\" ",
-            if (overwrite==TRUE) {"--overwrite"},
+            if (overwrite==TRUE) {"--overwrite "},
             if (sel_format=="GTiff") {paste0("--co=\"COMPRESS=",toupper(compress),"\" ")},
             "--calc=\"",sel_formula,"\""
           ),

@@ -100,7 +100,8 @@ are physical rasters (no output VRT is allowed).</p>
 
     <pre class="usage"><span class='fu'>s2_calcindices</span>(<span class='no'>infiles</span>, <span class='no'>indices</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='kw'>parameters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>source</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"TOA"</span>, <span class='st'>"BOA"</span>), <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>dataType</span> <span class='kw'>=</span> <span class='st'>"Float32"</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>dataType</span> <span class='kw'>=</span> <span class='st'>"Int16"</span>, <span class='kw'>scaleFactor</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -170,10 +171,19 @@ present, the compression indicated with this parameter is used.</p></td>
     </tr>
     <tr>
       <th>dataType</th>
-      <td><p>(optional) Numeric datatype of the ouptut rasters:
-if "Float32" (default) or "Float64" is chosen, numeric values are not rescaled;
-if "Int16" or "UInt16", values are multiplicated by a 10000
-scale factor.</p></td>
+      <td><p>(optional) Numeric datatype of the ouptut rasters.
+if "Float32" or "Float64" is chosen, numeric values are not rescaled;
+if "Int16" (default) or "UInt16", values are multiplicated by <code>scaleFactor</code> argument;
+if "Byte", values are shifted by 100, multiplicated by 100 and truncated
+at 200 (so that range -1 to 1 is coherced to 0-200), and nodata value
+is assigned to 255.</p></td>
+    </tr>
+    <tr>
+      <th>scaleFactor</th>
+      <td><p>(optional) Scale factor for output values when an integer
+datatype is chosen (default values are 10000 for "Int16" and "UInt16",
+1E9 for "Int32" and "UInt32"). Notice that, using "UInt16" and "UInt32" types,
+negative values will be truncated to 0.</p></td>
     </tr>
     <tr>
       <th>overwrite</th>
