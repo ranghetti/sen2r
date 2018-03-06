@@ -165,6 +165,8 @@
 #'  systems with problems with python, when [sto)] is intended
 #'  to be used only for processing existing SAFE files (python is required
 #'  in any case to download SAFE).
+#' @return A vector with the paths of the files which were created (excluded
+#'  the temporary files); NULL otherwise.
 #'
 #' @import data.table
 #' @importFrom geojsonio geojson_json
@@ -492,6 +494,10 @@ sto <- function(param_list=NULL,
   out_ext <- sel_driver[1,"ext"]
   
   
+  #### SAFE Part (find, download, correct)
+  for (dummy in TRUE) {
+    # dummy cycle, created only to allow "break" from this part
+  
   ### Find SAFE and compute the names of required files ###
   
   ## 2. List required products ##
@@ -573,9 +579,10 @@ sto <- function(param_list=NULL,
       date = TRUE,
       "No SAFE products found with the parameters set ",
       "(the searching parameters may be too restrictive, ",
-      "or the Copernicus Open Access Hub could be unavailable); exiting."
+      "or the Copernicus Open Access Hub could be unavailable)."
     )
-    return(invisible(NULL))
+    break
+    # return(invisible(NULL))
   }
   
   names(s2_list) <- gsub("^l[12][ac]\\.","",names(s2_list))
@@ -587,14 +594,14 @@ sto <- function(param_list=NULL,
       date = TRUE,
       if (pm$online==FALSE) {
         paste0("No SAFE products which match the settings were found locally;\n ",
-               "please download them or set different spatial/temporal extents.")
+               "please download them or set different spatial/temporal extents.\n",
+               "Execution halted.")
       } else {
-        paste0("No SAFE products matching the settings were found;\n ",
-               "please set different spatial/temporal extents.")
-      },
-      " Execution halted."
+        paste0("No SAFE products matching the settings were found.")
+      }
     )
-    return(invisible(NULL))
+    break
+    # return(invisible(NULL))
   }
   
   
@@ -673,14 +680,15 @@ sto <- function(param_list=NULL,
       date = TRUE,
       if (pm$online==FALSE) {
         paste0("No SAFE products which match the settings were found locally; ",
-               "please download them or set different tile or orbit IDs.")
+               "please download them or set different tile or orbit IDs.\n",
+               "Execution halted."
+        )
       } else {
-        paste0("No SAFE products matching the settings were found; ",
-               "please set different tile or orbit IDs.")
-      },
-      " Execution halted."
+        paste0("No SAFE products matching the settings were found.")
+      }
     )
-    return(invisible(NULL))
+    break
+    # return(invisible(NULL))
   }
   
   
@@ -900,7 +908,7 @@ sto <- function(param_list=NULL,
     unlink(file.path(pm$path_l1c,names(s2_list_l1c_tocorrect)), recursive=TRUE)
   }
   
-  # if no processing is required, stop here
+  # if no processing is required, stop here # TODO see #TODO3 (end of file)
   if (pm$preprocess == FALSE) {
     
     print_message(
@@ -916,6 +924,12 @@ sto <- function(param_list=NULL,
         file.path(pm$path_l2a,names(s2_list_l2a)))
     ))
     
+  }
+
+  } # end of SAFE dummy FOR cycle
+  
+  if (pm$preprocess == FALSE) {
+    return(invisible(NULL))
   }
   
   # update names for output files (after #filter2)
@@ -1184,7 +1198,7 @@ sto <- function(param_list=NULL,
         compress = pm$compression,
         subdirs = pm$path_subdirs,
         overwrite = pm$overwrite,
-        parallel = TRUE, # TODO pass as parameter
+        parallel = FALSE, # TODO pass as parameter
         trace_files = s2names$out_names_new
       )
       # masked_names_out <- s2_mask(
@@ -1233,21 +1247,22 @@ sto <- function(param_list=NULL,
     #                                 format=pm$outformat,
     #                                 overwrite=pm$overwrite)
   }
+
+  # check file which have been created
+  names_out <- unique(unlist(s2names[c(
+    "tiles_names_new", "merged_names_new", "warped_names_new",
+    "masked_names_new", "out_names_new", "indices_names_new"
+  )]))
+  # exclude temporary files
+  names_out <- names_out[!grepl(path_tmp, names_out, fixed=TRUE)]
+  names_out_created <- names_out[file.exists(names_out)]
+  
   
   ## 9. create thumbnails
   
   if (thumbnails==TRUE) {
     
-    # define input files
-    names_req <- unique(unlist(s2names[c(
-      "tiles_names_new", "merged_names_new", "warped_names_new",
-      "masked_names_new", "out_names_new", "indices_names_new"
-    )]))
-    # exclude temporary files
-    names_req <- names_req[!grepl(path_tmp, names_req, fixed=TRUE)]
-    # check if some files were not created
-    names_missing <- names_req[!file.exists(names_req)]
-    thumb_names_req <- names_req[file.exists(names_req)]
+    thumb_names_req <- names_out_created
     
     if (length(thumb_names_req)>0) {
       
@@ -1287,6 +1302,9 @@ sto <- function(param_list=NULL,
   ## 10. remove temporary files
   unlink(path_tmp, recursive = TRUE)
   
+  # check if some files were not created
+  names_missing <- names_out[!file.exists(names_out)]
+  
   # Note down the list of non created files (#ignorePath)
   # (sometimes not all the output files are correctly created, i.e. because of
   # old name SAFE products which do not include all the tiles.
@@ -1319,5 +1337,9 @@ sto <- function(param_list=NULL,
     date = TRUE,
     "Execution of SALTO session terminated."
   )
+  
+  # Return output file paths
+  return(names_out_created)
+  # TODO add also SAFE created files (here and at line #TODO3)
   
 }
