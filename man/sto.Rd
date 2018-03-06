@@ -11,10 +11,10 @@ sto(param_list = NULL, gui = NA, preprocess = NA, s2_levels = NA,
   list_prods = NA, list_indices = NA, index_source = NA, mask_type = NA,
   clip_on_extent = NA, extent_as_mask = NA, reference_path = NA,
   res = NA, res_s2 = NA, unit = NA, proj = NA, resampling = NA,
-  resampling_scl = NA, outformat = NA, compression = NA, overwrite = NA,
-  path_l1c = NA, path_l2a = NA, path_tiles = NA, path_merged = NA,
-  path_out = NA, path_indices = NA, path_subdirs = NA,
-  thumbnails = TRUE, use_python = TRUE)
+  resampling_scl = NA, outformat = NA, index_datatype = NA,
+  compression = NA, overwrite = NA, path_l1c = NA, path_l2a = NA,
+  path_tiles = NA, path_merged = NA, path_out = NA, path_indices = NA,
+  path_subdirs = NA, thumbnails = TRUE, use_python = TRUE)
 }
 \arguments{
 \item{param_list}{(optional) List of input parameters:
@@ -165,6 +165,9 @@ by \code{gdal_translate}: "near" (default), "bilinear", "cubic",
 \item{outformat}{(optional) Format of the output file (in a
 format recognised by GDAL). Default is "GTiff".}
 
+\item{index_datatype}{(optional) Numeric datatype of the ouptut
+spectral indices (see \link{s2_calcindices}.}
+
 \item{compression}{(optional) In the case GTiff is chosen as
 output format, the compression indicated with this parameter is
 used (default is "DEFLATE").}
@@ -221,6 +224,10 @@ to be used only for processing existing SAFE files (python is required
 in any case to download SAFE).
 
 [sto)]: R:sto)}
+}
+\value{
+A vector with the paths of the files which were created (excluded
+the temporary files); NULL otherwise.
 }
 \description{
 The function is a wrapper to perform the entire

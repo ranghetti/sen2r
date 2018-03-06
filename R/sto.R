@@ -119,6 +119,8 @@
 #'  (for now, only SCL): one among "near" (default) and "mode".
 #' @param outformat (optional) Format of the output file (in a
 #'  format recognised by GDAL). Default is "GTiff".
+#' @param index_datatype (optional) Numeric datatype of the ouptut 
+#'  spectral indices (see [s2_calcindices].
 #' @param compression (optional) In the case GTiff is chosen as
 #'  output format, the compression indicated with this parameter is
 #'  used (default is "DEFLATE").
@@ -201,6 +203,7 @@ sto <- function(param_list=NULL,
                 resampling=NA,
                 resampling_scl=NA,
                 outformat=NA,
+                index_datatype=NA,
                 compression=NA,
                 overwrite=NA,
                 path_l1c=NA,
@@ -257,6 +260,7 @@ sto <- function(param_list=NULL,
                  resampling="near",
                  resampling_scl="near",
                  outformat="GTiff",
+                 index_datatype="Int16",
                  compression="DEFLATE",
                  overwrite=FALSE,
                  path_l1c=NA,
@@ -1216,6 +1220,7 @@ sto <- function(param_list=NULL,
       subdirs = TRUE,
       source = pm$index_source,
       format = pm$outformat,
+      dataType = pm$index_datatype,
       compress = pm$compression,
       overwrite = pm$overwrite,
       trace_files = s2names$indices_names_new
