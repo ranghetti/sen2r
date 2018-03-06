@@ -11,12 +11,11 @@
 #' @param maxval (optional) the value corresponding to white (default: 10000).
 #' @return The path of the output image; alternatively, the output image
 #'  as RasterBrick (if `out_rast = NULL`).
-#'
+#'  
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
-#' @importFrom raster brick calc
-#' @importFrom rgdal writeGDAL
-#' @importFrom methods as
+#' @importFrom raster raster
+#' @importFrom jsonlite fromJSON
 
 stack2rgb <- function(in_rast, 
                       out_file = NULL, 
@@ -24,30 +23,89 @@ stack2rgb <- function(in_rast,
                       minval = 0, 
                       maxval = 1E4) {
   
-  # compute RGB
-  out_rast <- calc(brick(in_rast), function(x){
-    c(
-      as.integer(min(max(x[[bands[1]]],minval),maxval)*255/(maxval-minval)+minval),
-      as.integer(min(max(x[[bands[2]]],minval),maxval)*255/(maxval-minval)+minval),
-      as.integer(min(max(x[[bands[3]]],minval),maxval)*255/(maxval-minval)+minval)
-    )
-  })
+  # Load GDAL paths
+  binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")
+  binpaths <- if (file.exists(binpaths_file)) {
+    jsonlite::fromJSON(binpaths_file)
+  } else {
+    list("gdalinfo" = NULL)
+  }
+  if (is.null(binpaths$gdalinfo)) {
+    check_gdal()
+    binpaths <- jsonlite::fromJSON(binpaths_file)
+  }
+  
+  # Set output file
+  return_raster <- if (is.null(out_file)) {
+    out_file <- tempfile()
+    TRUE
+  } else {
+    FALSE
+  }
+  
+  # Define formula
+  gdal_formula <- paste0(
+    "clip(A.astype(float),",minval,",",maxval,")*255/(",maxval,"-",minval,")+",minval
+  )
+  
+  # Compute RGB with gdal_calc
+  # (an intermediate step creating a GeoTiff is required,
+  # since gdal_calc is not able to write in JPEG format)
+  tif_path <- file.path(tempdir(), gsub("\\..+$","_temp.tif",basename(out_file)))
+  system(
+    paste0(
+      binpaths$gdal_calc," ",
+      "-A \"",in_rast,"\" --allBands=A ",
+      "--calc=\"",gdal_formula,"\" ",
+      "--outfile=\"",tif_path,"\" ",
+      "--type=\"Byte\" ",
+      "--NoDataValue=0 ",
+      "--format=\"GTiff\"  "
+      # "--format=\"JPEG\" --co=\"QUALITY=90\""
+    ),
+    intern = Sys.info()["sysname"] == "Windows"
+  )
+  system(
+    paste0(
+      binpaths$gdal_translate," ",
+      "-of \"JPEG\" -co \"QUALITY=90\" -ot \"Byte\" ",
+      "\"",tif_path,"\" \"",out_file,"\""
+    ),
+    intern = Sys.info()["sysname"] == "Windows"
+  )
+  unlink(tif_path)
   
   # Return output raster
-  if (is.null(out_file)) {
-    return(out_rast)
+  if (return_raster) {
+    return(brick(out_file))
   } else {
-    suppressWarnings(
-      writeGDAL(
-        as(out_rast, "SpatialGridDataFrame"), 
-        out_file,
-        drivername="JPEG",
-        type="Byte",
-        options=c("COMPRESS=JPEG")
-      )
-    )
     return(invisible(NULL))
   }
+  
+  # # old internal (raster::calc) method
+  # out_rast <- calc(brick(in_rast), function(x){
+  #   c(
+  #     as.integer(min(max(x[[bands[1]]],minval),maxval)*255/(maxval-minval)+minval),
+  #     as.integer(min(max(x[[bands[2]]],minval),maxval)*255/(maxval-minval)+minval),
+  #     as.integer(min(max(x[[bands[3]]],minval),maxval)*255/(maxval-minval)+minval)
+  #   )
+  # })
+  # 
+  # # Return output raster
+  # if (is.null(out_file)) {
+  #   return(out_rast)
+  # } else {
+  #   suppressWarnings(
+  #     writeGDAL(
+  #       as(out_rast, "SpatialGridDataFrame"), 
+  #       out_file,
+  #       drivername="JPEG",
+  #       type="Byte",
+  #       options=c("COMPRESS=JPEG")
+  #     )
+  #   )
+  #   return(invisible(NULL))
+  # }
   
 }
 
@@ -128,19 +186,32 @@ raster2rgb <- function(in_rast,
   }
   
   # Compute RGB with gdaldem
+  # (an intermediate step creating a GeoTiff is required,
+  # since gdal_calc is not able to write in JPEG format)
+  tif_path <- file.path(tempdir(), gsub("\\..+$","_temp.tif",basename(out_file)))
   system(
     paste0(
       binpaths$gdaldem," color-relief ",
-      if (gsub("^.*\\.(.+)$","\\1",out_file) == "png") {
-        "-of PNG -co ZLEVEL=9 -co NBITS=8 " # discrete values
-      } else { # if (gsub("^.*\\.(.+)$","\\1",out_file) %in% c("jpg","jpeg")) {
-        "-of JPEG -co QUALITY=90 " # continuous values
-      },
+      "-of GTiff -co COMPRESS=LZW ", # discrete values
+      "-compute_edges ",
       "\"",in_rast,"\" ",
       "\"",palette,"\" ",
-      "\"",out_file,"\""
+      "\"",tif_path,"\""
     ), intern = Sys.info()["sysname"] == "Windows"
   )
+  system(
+    paste0(
+      binpaths$gdal_translate," ",
+      if (gsub("^.*\\.(.+)$","\\1",out_file) == "png") {
+        "-of PNG -co ZLEVEL=9 -co NBITS=8 " # discrete values
+      } else if (gsub("^.*\\.(.+)$","\\1",out_file) %in% c("jpg","jpeg")) {
+        "-of JPEG -co QUALITY=90 " # continuous values
+      },
+      "\"",tif_path,"\" \"",out_file,"\""
+    ),
+    intern = Sys.info()["sysname"] == "Windows"
+  )
+  unlink(tif_path)
   
   # Return output raster
   if (return_raster) {
@@ -196,6 +267,7 @@ raster2rgb <- function(in_rast,
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @import data.table
+#' @importFrom jsonlite fromJSON
 #' @export
 
 s2_thumbnails <- function(infiles, 
@@ -262,17 +334,38 @@ s2_thumbnails <- function(infiles,
     # if output already exists and overwrite==FALSE, do not proceed
     if (!file.exists(out_path) | overwrite==TRUE) {
       
+      # Consider only the required bands
+      if (sel_prod_type %in% c("BOA","TOA")) {
+        rgb_bands = switch(
+          rgb_type,
+          "SwirNirR" = c(11,8,4),
+          "NirRG" = c(8,4,3),
+          "RGB" = c(4,3,2)
+        )
+        filterbands_path <- file.path(tmpdir, gsub("\\..+$","_filterbands.vrt",basename(sel_infile_path)))
+        system(
+          paste0(
+            binpaths$gdal_translate," -of VRT ",
+            "-b ",paste(rgb_bands, collapse=" -b ")," ",
+            "\"",sel_infile_path,"\" ",
+            "\"",filterbands_path,"\""
+          ), intern = Sys.info()["sysname"] == "Windows"
+        )
+      } else {
+        filterbands_path <- sel_infile_path
+      }
+      
       # Resize input if necessary
       sel_infile_size <- suppressWarnings(GDALinfo(sel_infile_path)[c("rows","columns")])
       if (dim < max(sel_infile_size)) {
         out_size <- round(sel_infile_size * min(dim,max(sel_infile_size)) / max(sel_infile_size))
-        resized_path <- file.path(tmpdir, gsub("\\..+$",".vrt",basename(sel_infile_path)))
+        resized_path <- file.path(tmpdir, gsub("\\..+$","_resized.vrt",basename(sel_infile_path)))
         system(
           paste0(
-            binpaths$gdal_translate," -of VRT ",
-            "-outsize ",out_size[2]," ",out_size[1]," ",
+            binpaths$gdalwarp," -of VRT ",
+            "-ts ",out_size[2]," ",out_size[1]," ",
             if (sel_prod_type %in% c("SCL")) {"-r mode "} else {"-r average "}, # resp. discrete or continuous values
-            "\"",sel_infile_path,"\" ",
+            "\"",filterbands_path,"\" ",
             "\"",resized_path,"\""
           ), intern = Sys.info()["sysname"] == "Windows"
         )
@@ -286,12 +379,6 @@ s2_thumbnails <- function(infiles,
         stack2rgb(
           resized_path, 
           out_file = out_path,
-          bands = switch(
-            rgb_type,
-            "SwirNirR" = c(11,8,4),
-            "NirRG" = c(8,4,3),
-            "RGB" = c(4,3,2)
-          ),
           minval = 0, 
           maxval = switch(
             rgb_type,
@@ -312,7 +399,7 @@ s2_thumbnails <- function(infiles,
             "\"",out_path,"\""
           ), intern = Sys.info()["sysname"] == "Windows"
         )
-
+        
       } else {
         
         raster2rgb(
