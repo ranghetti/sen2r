@@ -320,7 +320,7 @@ compute_s2_paths <- function(pm,
           all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
         }
         if (!is.null(pm$extent_name) & !anyNA(pm$extent_name)) {
-          all_meta <- all_meta[id_orbit %in% pm$extent_name,]
+          all_meta <- all_meta[extent_name %in% pm$extent_name,]
         }
         all_meta$names
       } else {
