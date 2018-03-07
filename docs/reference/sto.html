@@ -107,10 +107,10 @@ descriptions of all the other parameters).</p>
   <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>index_source</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>clip_on_extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>extent_as_mask</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>reference_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res_s2</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>proj</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>resampling</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>resampling_scl</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>outformat</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>compression</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>path_l1c</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_l2a</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_merged</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>path_out</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>thumbnails</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>use_python</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+  <span class='kw'>resampling_scl</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>outformat</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>index_datatype</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>compression</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_l1c</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_l2a</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>path_tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_merged</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_out</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>path_subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>thumbnails</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>use_python</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -318,6 +318,11 @@ by <code>gdal_translate</code>: "near" (default), "bilinear", "cubic",
       <th>outformat</th>
       <td><p>(optional) Format of the output file (in a
 format recognised by GDAL). Default is "GTiff".</p></td>
+    </tr>
+    <tr>
+      <th>index_datatype</th>
+      <td><p>(optional) Numeric datatype of the ouptut
+spectral indices (see <a href='s2_calcindices.html'>s2_calcindices</a>.</p></td>
     </tr>
     <tr>
       <th>compression</th>

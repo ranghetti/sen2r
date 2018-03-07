@@ -4,7 +4,7 @@
 \alias{s2_mask}
 \title{Apply cloud masks}
 \usage{
-s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba", max_mask = 0,
+s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba",
   outdir = "./masked", format = NA, subdirs = NA, compress = "DEFLATE",
   parallel = FALSE, overwrite = FALSE)
 }
