@@ -4,7 +4,7 @@
 \alias{s2_mask}
 \title{Apply cloud masks}
 \usage{
-s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba",
+s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba", max_mask = 0,
   outdir = "./masked", format = NA, subdirs = NA, compress = "DEFLATE",
   parallel = FALSE, overwrite = FALSE)
 }
@@ -24,7 +24,7 @@ format managed by GDAL (use \link{s2_translate} to do it);
 their names must be in the salto-S2 naming convention
 (\link{s2_shortname}).}
 
-\item{mask_type}{Character vector which determines the type of
+\item{mask_type}{(optional) Character vector which determines the type of
 mask to be applied. Accepted values are:
 \itemize{
 \item "nodata": mask pixels checked as "No data" in the SCL product;
@@ -39,6 +39,11 @@ mask to be applied. Accepted values are:
 \item "cloud_shadow_cirrus": mask pixels checked as "No data",
 "Cloud (any probability)", "Cloud shadow" or "Thin cirrus"
 in the SCL product;
+\item a string in the following form: "scl_n_m_n", where n, m and n are one or
+more SCL class numbers (e.g. "scl_0_8_9_11"): mask pixels corresponding
+to the classes specified in the string. E.g. string "scl_0_8_9_11" can
+be used to mask classes 0 ("No data"), 8-9 ("Cloud (high or medium
+probability)") and 11 ("Snow");
 \item "opaque_clouds" (still to be implemented).
 }}
 

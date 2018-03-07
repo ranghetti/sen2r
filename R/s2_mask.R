@@ -15,7 +15,7 @@
 #'  format managed by GDAL (use [s2_translate] to do it);
 #'  their names must be in the salto-S2 naming convention
 #'  ([s2_shortname]).
-#' @param mask_type Character vector which determines the type of
+#' @param mask_type (optional) Character vector which determines the type of
 #'  mask to be applied. Accepted values are:
 #'  - "nodata": mask pixels checked as "No data" in the SCL product;
 #'  - "cloud_high_proba": mask pixels checked as "No data" or
@@ -29,6 +29,11 @@
 #'  - "cloud_shadow_cirrus": mask pixels checked as "No data",
 #'      "Cloud (any probability)", "Cloud shadow" or "Thin cirrus"
 #'      in the SCL product;
+#'  - a string in the following form: "scl_n_m_n", where n, m and n are one or
+#'      more SCL class numbers (e.g. "scl_0_8_9_11"): mask pixels corresponding
+#'      to the classes specified in the string. E.g. string "scl_0_8_9_11" can
+#'      be used to mask classes 0 ("No data"), 8-9 ("Cloud (high or medium 
+#'      probability)") and 11 ("Snow");
 #'  - "opaque_clouds" (still to be implemented).
 #' @param outdir (optional) Full name of the output directory where
 #'  the files should be created (default: "current directory"masked"
@@ -147,6 +152,8 @@ s2_mask <- function(infiles,
     req_masks <- list("SCL"=c(0,3,7:9))
   } else if (mask_type == "cloud_shadow_cirrus") {
     req_masks <- list("SCL"=c(0,3,7:10))
+  } else if (grepl("^scl\\_", mask_type)) {
+    req_masks <- list("SCL"=strsplit(mask_type,"_")[[1]][-1])
   } else if (mask_type == "opaque_clouds") {
     print_message(type="error", "Mask type 'opaque_clouds' has not been yet implemented.")
   }
