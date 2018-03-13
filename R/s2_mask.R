@@ -235,7 +235,7 @@ s2_mask <- function(infiles,
       for (i in seq_along(inmask@layers)) {
         mask_tmpfiles <- c(tempfile(fileext=".tif"), mask_tmpfiles)
         raster::calc(inmask[[i]],
-                     function(x){as.integer(!x %in% req_masks[[i]])},
+                     function(x){as.integer(!is.na(x) & !x %in% req_masks[[i]])},
                      filename = mask_tmpfiles[1],
                      options  = "COMPRESS=LZW",
                      datatype = "INT1U")
