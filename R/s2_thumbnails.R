@@ -177,6 +177,21 @@ raster2rgb <- function(in_rast,
     palette <- palette_builtin[palette]
   }
   
+  # Rescale palette, if necessary
+  if (!names(palette) %in% c("SCL") & (minval!=-1 | maxval!=1)) {
+    palette_txt <- strsplit(gsub("^ *(.*) *$","\\1",readLines(palette))," +")
+    palette_txt_new <- palette_txt
+    for (i in seq_along(palette_txt)) {
+      if (length(palette_txt[[i]])==8 & !anyNA(suppressWarnings(as.numeric(palette_txt[[i]])))) {
+        palette_txt_new[[i]][c(1,5)] <- (as.numeric(palette_txt[[i]])[c(1,5)]+1)/2*(maxval-minval)+minval
+      }
+    }
+    writeLines(
+      sapply(palette_txt_new, paste, collapse=" "), 
+      palette <- tempfile(fileext=".cpt")
+    )
+  }
+  
   # Set output file
   return_raster <- if (is.null(out_file)) {
     out_file <- tempfile()
@@ -228,7 +243,7 @@ raster2rgb <- function(in_rast,
 #'  products. BOA and TOA multiband images are rendered as false colour
 #'  JPEG images; SCL maps are rendered as 8-bit PNG;
 #'  other singleband images (like spectral indices) are rendered as 
-#'  JPEG images with a standard color palette.
+#'  JPEG images with a standard colour palette.
 #'  Some improvements still have to be done:
 #'  * allowing the possibility to chose the palette and the limits 
 #'      (for now, the range -1 to 1 is always used);
@@ -255,6 +270,10 @@ raster2rgb <- function(in_rast,
 #'  rescaled before producing the thumbnails; otherwise the original dimensions
 #'  are maintained. 
 #'  To keep the original size in any case, set `dim = Inf`.
+#' @param scaleRange (optional) Range of valid values. If not specified, it is
+#'  automatically retrieved from the product type. It is useful for BOA "dark"
+#'  products. When spectral indices are saved with Integer values, the range
+#'  is automatically set to -10000 to 10000.
 #' @param outdir (optional) Full name of the existing output directory
 #'  where the files should be created.  Default is a subdirectory (named 
 #'  "thumbnails") of the parent directory of each input file.
@@ -274,6 +293,7 @@ s2_thumbnails <- function(infiles,
                           prod_type=NA, # TODO implement (for now only NOA / TOA)
                           rgb_type="SwirNirR",
                           dim=1024, 
+                          scaleRange=NA,
                           outdir=NA,
                           tmpdir=NA,
                           overwrite=FALSE) {
@@ -373,19 +393,37 @@ s2_thumbnails <- function(infiles,
         resized_path <- sel_infile_path
       }
       
+      # define scaleRange
+      if (anyNA(scaleRange)) {
+        scaleRange <- if (sel_prod_type %in% c("BOA","TOA")) {
+          c(0, switch(rgb_type, "SwirNirR" = 8000, "NirRG" = 7500, "RGB" = 2500))
+        } else if (sel_prod_type %in% c("Zscore")){
+          c(-3, 3)
+        } else if (sel_prod_type %in% c("SCL")){
+          rep(NA,2) # it is ignored
+        } else { # spectral indices
+          sel_infile_datatype <- attr(
+            suppressWarnings(GDALinfo(sel_infile_path)),
+            "df"
+          )[1,"GDType"]
+          if (grepl("^Float",sel_infile_datatype)) {
+            c(-1, 1)
+          } else if (grepl("^Int",sel_infile_datatype)) {
+            c(-1E4,1E4)
+          } else if (grepl("^Byte$",sel_infile_datatype)) {
+            c(0,200)
+          }
+        }
+      }
+      
       # generate RGB basing on prod_type
       if (sel_prod_type %in% c("BOA","TOA")) {
         
         stack2rgb(
           resized_path, 
           out_file = out_path,
-          minval = 0, 
-          maxval = switch(
-            rgb_type,
-            "SwirNirR" = 8000,
-            "NirRG" = 7500,
-            "RGB" = 2500
-          )
+          minval = scaleRange[1], 
+          maxval = scaleRange[2]
         )
         
       } else if (sel_prod_type %in% c("TCI")) {
@@ -411,10 +449,9 @@ s2_thumbnails <- function(infiles,
             "Zscore"
           } else {
             "generic_ndsi"
-          }#,
-          # TODO cycle here above basing on sel_prod_type to use different palettes for different products / indices
-          # minval = -1, 
-          # maxval = 1
+          },
+          minval = scaleRange[1], 
+          maxval = scaleRange[2]
         )
         
       }
