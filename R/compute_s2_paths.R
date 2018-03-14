@@ -109,7 +109,7 @@ compute_s2_paths <- function(pm,
   # add existing files for tiles
   tiles_names_exi <- if (!is.na(pm$path_tiles)) {
     all_names <- if (pm$path_subdirs==TRUE) {
-      list.files(file.path(pm$path_tiles,pm$list_prods), full.names=TRUE)
+      list.files(file.path(pm$path_tiles,list_prods), full.names=TRUE)
     } else {
       list.files(pm$path_tiles, full.names=TRUE)
     }
@@ -119,7 +119,7 @@ compute_s2_paths <- function(pm,
       # filter
       all_meta <- all_meta[
         type != "unrecognised" &
-          prod_type %in% pm$list_prods &
+          prod_type %in% list_prods &
           mission %in% toupper(substr(pm$sel_sensor,3,3)) & 
           level %in% toupper(substr(pm$s2_levels,2,3)) &
           file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
@@ -166,7 +166,7 @@ compute_s2_paths <- function(pm,
     # add existing files for merged
     merged_names_exi <- if (!is.na(pm$path_merged)) {
       all_names <- if (pm$path_subdirs==TRUE) {
-        list.files(file.path(pm$path_merged,pm$list_prods), full.names=TRUE)
+        list.files(file.path(pm$path_merged,list_prods), full.names=TRUE)
       } else {
         list.files(pm$path_merged, full.names=TRUE)
       }
@@ -176,7 +176,7 @@ compute_s2_paths <- function(pm,
         # filter
         all_meta <- all_meta[
           type != "unrecognised" &
-            prod_type %in% pm$list_prods &
+            prod_type %in% list_prods &
             mission %in% toupper(substr(pm$sel_sensor,3,3)) & 
             level %in% toupper(substr(pm$s2_levels,2,3)) &
             file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
@@ -242,7 +242,7 @@ compute_s2_paths <- function(pm,
     # add existing files for warped
     warped_names_exi <- if (is.na(pm$mask_type)) {
       all_names <- if (pm$path_subdirs==TRUE) {
-        list.files(file.path(pm$path_out,pm$list_prods), full.names=TRUE)
+        list.files(file.path(pm$path_out,list_prods), full.names=TRUE)
       } else {
         list.files(pm$path_out, full.names=TRUE)
       }
@@ -252,7 +252,7 @@ compute_s2_paths <- function(pm,
         # filter
         all_meta <- all_meta[
           type != "unrecognised" &
-            prod_type %in% pm$list_prods &
+            prod_type %in% list_prods &
             mission %in% toupper(substr(pm$sel_sensor,3,3)) & 
             level %in% toupper(substr(pm$s2_levels,2,3)) &
             file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
@@ -295,7 +295,7 @@ compute_s2_paths <- function(pm,
     # add existing files for masked
     masked_names_exi <- if (!is.na(pm$mask_type)) {
       all_names <- if (pm$path_subdirs==TRUE) {
-        list.files(file.path(pm$path_out,pm$list_prods), full.names=TRUE)
+        list.files(file.path(pm$path_out,list_prods), full.names=TRUE)
       } else {
         list.files(pm$path_out, full.names=TRUE)
       }
@@ -305,7 +305,7 @@ compute_s2_paths <- function(pm,
         # filter
         all_meta <- all_meta[
           type != "unrecognised" &
-            prod_type %in% pm$list_prods &
+            prod_type %in% list_prods &
             mission %in% toupper(substr(pm$sel_sensor,3,3)) & 
             level %in% toupper(substr(pm$s2_levels,2,3)) &
             file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
@@ -391,7 +391,7 @@ compute_s2_paths <- function(pm,
         # filter
         all_meta <- all_meta[
           type != "unrecognised" &
-            prod_type %in% pm$list_prods &
+            prod_type %in% list_prods &
             mission %in% toupper(substr(pm$sel_sensor,3,3)) & 
             level %in% toupper(substr(pm$s2_levels,2,3)) &
             file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
