@@ -35,6 +35,16 @@
 #'      be used to mask classes 0 ("No data"), 8-9 ("Cloud (high or medium 
 #'      probability)") and 11 ("Snow");
 #'  - "opaque_clouds" (still to be implemented).
+#' @param max_mask (optional) Numeric value (range 0 to 100), which represents
+#'  the maximum percentage of allowed masked surface (by clouds or any other 
+#'  type of mask chosen with argument `mask_type`) for producing outputs. 
+#'  Images with a percentage of masked surface greater than `max_mask`%
+#'  are not processed (the list of expected output files which have not been 
+#'  generated is returned as an attribute, named "skipped"). 
+#'  Default value is 80.
+#'  Notice that the percentage is computed on non-NA values (if input images 
+#'  had previously been clipped and masked using a polygon, the percentage is
+#'  computed on the surface included in the masking polygons).
 #' @param outdir (optional) Full name of the output directory where
 #'  the files should be created (default: "current directory"masked"
 #'  subdir of current directory).
@@ -75,6 +85,7 @@
 s2_mask <- function(infiles,
                     maskfiles,
                     mask_type="cloud_medium_proba",
+                    max_mask=80,
                     outdir="./masked",
                     tmpdir=NA,
                     format=NA,
@@ -218,7 +229,6 @@ s2_mask <- function(infiles,
         )
         sel_infile <- gsub("\\.vrt$",".tif",sel_infile)
       }
-      inraster <- raster::brick(sel_infile)
       
       # create global mask
       mask_tmpfiles <- character(0)
@@ -253,60 +263,62 @@ s2_mask <- function(infiles,
         outmask_res <- outmask
       }
       
-      # apply mask
-      # using only non-parallel version, since ther is not any speeding up
-      # (the bottleneck is writing the final output, which van not be parallelised).
-      # TODO (maybe): if the user requires spectral indices but not BOA,
-      # parallelise the masking, create a vrt BOA (from singleband TIFFs)
-      # so to skip this passage.
+      # load mask and evaluate if the output have to be produced
+      inraster <- raster::brick(sel_infile)
+      mask_rast <- raster::raster(outmask_res)
+      # compute the percentage of masked surface
+      perc_mask <- 100-mean(values(mask_rast),na.rm=TRUE)*100
       
-      if (sel_format!="VRT") {
-        raster::mask(
-          inraster,
-          raster::raster(outmask_res),
-          filename = sel_outfile,
-          maskvalue = 0,
-          updatevalue = sel_naflag,
-          updateNA = TRUE,
-          NAflag = sel_naflag,
-          datatype = dataType(inraster),
-          format = sel_format,
-          options = if(sel_format == "GTiff") {paste0("COMPRESS=",compress)},
-          overwrite = overwrite
-        )
-      } else {
-        maskapply_parallel(
-          inraster, 
-          raster(outmask_res), 
-          outpath = sel_outfile,
-          tmpdir = tmpdir,
-          binpaths = binpaths,
-          NAflag = sel_naflag,
-          parallel = parallel,
-          datatype = dataType(inraster),
-          overwrite = overwrite
-        )
-      }
-      
-      
-      # fix for envi extension (writeRaster use .envi)
-      if (sel_format=="ENVI" &
-          file.exists(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile))) {
-        file.rename(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),
-                    sel_outfile)
-        file.rename(paste0(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),".aux.xml"),
-                    paste0(sel_outfile,".aux.xml"))
-      }
+      # if the image is sufficiently clean, mask it
+      if (is.na(max_mask) | perc_mask <= max_mask) {
+        
+        if (sel_format!="VRT") {
+          raster::mask(
+            inraster,
+            raster::raster(outmask_res),
+            filename = sel_outfile,
+            maskvalue = 0,
+            updatevalue = sel_naflag,
+            updateNA = TRUE,
+            NAflag = sel_naflag,
+            datatype = dataType(inraster),
+            format = sel_format,
+            options = if(sel_format == "GTiff") {paste0("COMPRESS=",compress)},
+            overwrite = overwrite
+          )
+        } else {
+          maskapply_parallel(
+            inraster, 
+            raster(outmask_res), 
+            outpath = sel_outfile,
+            tmpdir = tmpdir,
+            binpaths = binpaths,
+            NAflag = sel_naflag,
+            parallel = parallel,
+            datatype = dataType(inraster),
+            overwrite = overwrite
+          )
+        }
+        
+        
+        # fix for envi extension (writeRaster use .envi)
+        if (sel_format=="ENVI" &
+            file.exists(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile))) {
+          file.rename(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),
+                      sel_outfile)
+          file.rename(paste0(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),".aux.xml"),
+                      paste0(sel_outfile,".aux.xml"))
+        }
+        
+      } # end of max_mask IF cycle
       
     } # end of overwrite IF cycle
     
-    outfiles <- c(outfiles, sel_outfile)
+    if (file.exists(sel_outfile)) {
+      outfiles <- c(outfiles, sel_outfile)
+    }
     
   } # end on infiles cycle
-  
-  # if (parallel==TRUE) {
-  #   stopCluster(cl)
-  # }
   
   return(outfiles)
   

@@ -91,8 +91,18 @@
 #'  are computed from BOA values; if "TOA", non corrected reflectances
 #'  are instead used (be careful to use this setting!).
 #' @param mask_type (optional) Character value which determines the categories
-#'  in the Srface Classification Map to be masked (see [s2_mask()]
+#'  in the Surface Classification Map to be masked (see [s2_mask()]
 #'  for the accepted values). Default (NA) is not to mask.
+#' @param max_mask (optional) Numeric value (range 0 to 100), which represents
+#'  the maximum percentage of allowed masked surface (by clouds or any other 
+#'  type of mask chosen with argument `mask_type`) for producing outputs. 
+#'  Images with a percentage of masked surface greater than `max_mask`%
+#'  are not processed (the list of expected output files which have not been 
+#'  generated is returned as an attribute, named "skipped"). 
+#'  Default value is 80.
+#'  Notice that the percentage is computed on non-NA values (if input images 
+#'  had previously been clipped and masked using a polygon, the percentage is
+#'  computed on the surface included in the masking polygons).
 #' @param clip_on_extent (optional) Logical: if TRUE (default), output products
 #'  and indices are clipped to the selected extent (and resampled/reprojected);
 #'  if FALSE, the geometry and extension of the tiles is maintained.
@@ -195,6 +205,7 @@ sto <- function(param_list=NULL,
                 list_indices=NA,
                 index_source=NA,
                 mask_type=NA,
+                max_mask=NA,
                 clip_on_extent=NA,
                 extent_as_mask=NA,
                 reference_path=NA,
@@ -252,6 +263,7 @@ sto <- function(param_list=NULL,
                  list_indices=NA,
                  index_source="BOA",
                  mask_type=NA,
+                 max_mask=100,
                  clip_on_extent=TRUE,
                  extent_as_mask=FALSE,
                  reference_path=NA,
@@ -1213,6 +1225,7 @@ sto <- function(param_list=NULL,
             s2names$merged_names_exp[names_merged_exp_scl_idx]
           },
           mask_type = pm$mask_type,
+          max_mask = max_mask,
           outdir = paths["out"],
           tmpdir = file.path(path_tmp,"tmp_masked"),
           format = pm$outformat,
@@ -1233,6 +1246,7 @@ sto <- function(param_list=NULL,
             s2names$merged_names_exp[names_merged_exp_scl_idx]
           },
           mask_type = pm$mask_type,
+          max_mask = max_mask,
           outdir = paths["out"],
           tmpdir = file.path(path_tmp,"tmp_masked"),
           format = sr_masked_outformat,
@@ -1244,16 +1258,6 @@ sto <- function(param_list=NULL,
         )
       } else {character(0)}
       masked_names_out <- c(masked_names_out_nsr, masked_names_out_sr)
-      # masked_names_out <- s2_mask(
-      #   if(pm$clip_on_extent==TRUE){s2names$warped_names_req}else{s2names$merged_names_req},
-      #   if(pm$clip_on_extent==TRUE){s2names$warped_names_req}else{s2names$merged_names_exp[names_merged_exp_scl_idx]},
-      #   mask_type=pm$mask_type,
-      #   outdir=paths["out"],
-      #   format=pm$outformat,
-      #   subdirs=pm$path_subdirs,
-      #   overwrite=pm$overwrite,
-      #   parallel=FALSE
-      # )
     }
     
   } # end of gdal_warp and s2_mask IF cycle
@@ -1362,7 +1366,8 @@ sto <- function(param_list=NULL,
     }
     print_message(
       type="warning",
-      "Some files expected to be created were not created:\n\"",
+      "Some files were not created ",
+      "(probably because the cloud coverage was higher than \"max_mask\"):\n\"",
       paste(names_missing,collapse="\"\n\""),
       if (is(param_list, "character")) {paste0(
         "\"\nThese files will be skipped during next executions ",

@@ -752,31 +752,35 @@ s2_gui <- function(param_list = NULL,
                                          "No data, clouds or cloud shadows" = "cloud_and_shadow",
                                          "No data, clouds, cloud shadows or thin cirrus" = "cloud_shadow_cirrus",
                                          "Custom mask" = "custom"),
-                          selected = "cloud_medium_proba")
-            ),
-            
-            conditionalPanel(
-              condition = "input.atm_mask == 'TRUE' && input.atm_mask_type == 'custom'",
-              checkboxGroupInput(
-                "atm_mask_custom", "Select the classes to mask:",
-                choiceNames = list(
-                  HTML("<font style=\"family:monospace;background-color:#000000;color:white\">\u20020\u2002</font>\u2002No data"),
-                  HTML("<font style=\"family:monospace;background-color:#FF0000;color:white\">\u20021\u2002</font>\u2002Saturated or defective"),
-                  HTML("<font style=\"family:monospace;background-color:#424142;color:white\">\u20022\u2002</font>\u2002Dark area pixels"),
-                  HTML("<font style=\"family:monospace;background-color:#633400;color:white\">\u20023\u2002</font>\u2002Cloud shadows"),
-                  HTML("<font style=\"family:monospace;background-color:#29f329;color:black\">\u20024\u2002</font>\u2002Vegetation"),
-                  HTML("<font style=\"family:monospace;background-color:#ffff00;color:black\">\u20025\u2002</font>\u2002Bare soils"),
-                  HTML("<font style=\"family:monospace;background-color:#0000ff;color:white\">\u20026\u2002</font>\u2002Water"),
-                  HTML("<font style=\"family:monospace;background-color:#7b7d7b;color:white\">\u20027\u2002</font>\u2002Cloud (low probability)"),
-                  HTML("<font style=\"family:monospace;background-color:#bdbebd;color:black\">\u20028\u2002</font>\u2002Cloud (medium probability)"),
-                  HTML("<font style=\"family:monospace;background-color:#ffffff;color:black\">\u20029\u2002</font>\u2002Cloud (high probability)"),
-                  HTML("<font style=\"family:monospace;background-color:#63cbff;color:black\">\u200510\u2005</font>\u2002Thin cirrus"),
-                  HTML("<font style=\"family:monospace;background-color:#ff9aff;color:black\">\u200511\u2005</font>\u2002Snow")
-                ),
-                choiceValues = as.list(0:11),
-                selected = list(0,8,9)
-              )
-            )
+                          selected = "cloud_medium_proba"),
+              
+              conditionalPanel(
+                condition = "input.atm_mask_type == 'custom'",
+                checkboxGroupInput(
+                  "atm_mask_custom", "Select the classes to mask:",
+                  choiceNames = list(
+                    HTML("<font style=\"family:monospace;background-color:#000000;color:white\">\u20020\u2002</font>\u2002No data"),
+                    HTML("<font style=\"family:monospace;background-color:#FF0000;color:white\">\u20021\u2002</font>\u2002Saturated or defective"),
+                    HTML("<font style=\"family:monospace;background-color:#424142;color:white\">\u20022\u2002</font>\u2002Dark area pixels"),
+                    HTML("<font style=\"family:monospace;background-color:#633400;color:white\">\u20023\u2002</font>\u2002Cloud shadows"),
+                    HTML("<font style=\"family:monospace;background-color:#29f329;color:black\">\u20024\u2002</font>\u2002Vegetation"),
+                    HTML("<font style=\"family:monospace;background-color:#ffff00;color:black\">\u20025\u2002</font>\u2002Bare soils"),
+                    HTML("<font style=\"family:monospace;background-color:#0000ff;color:white\">\u20026\u2002</font>\u2002Water"),
+                    HTML("<font style=\"family:monospace;background-color:#7b7d7b;color:white\">\u20027\u2002</font>\u2002Cloud (low probability)"),
+                    HTML("<font style=\"family:monospace;background-color:#bdbebd;color:black\">\u20028\u2002</font>\u2002Cloud (medium probability)"),
+                    HTML("<font style=\"family:monospace;background-color:#ffffff;color:black\">\u20029\u2002</font>\u2002Cloud (high probability)"),
+                    HTML("<font style=\"family:monospace;background-color:#63cbff;color:black\">\u200510\u2005</font>\u2002Thin cirrus"),
+                    HTML("<font style=\"family:monospace;background-color:#ff9aff;color:black\">\u200511\u2005</font>\u2002Snow")
+                  ),
+                  choiceValues = as.list(0:11),
+                  selected = list(0,8,9)
+                )
+              ),
+              
+              sliderInput("max_masked_perc", "Maximum cloud cover",
+                          min = 0, max = 100, value = 80,
+                          step = 1, post = "%")
+            ) # end of conditionalPanel atm_mask
 
           )), # end of fluidRow/box "Atmospheric mask"
           
@@ -2158,6 +2162,7 @@ s2_gui <- function(param_list = NULL,
       } else {
         input$atm_mask_type
       } # atmospheric masking (accepted types as in s2_mask())
+      rl$max_mask <- input$max_masked_perc
       
       rl$clip_on_extent <- as.logical(input$clip_on_extent) # TRUE to clip (and warp) on the selected extent, FALSE to work at tiles/merged level
       rl$extent_as_mask <- as.logical(input$extent_as_mask) # TRUE to mask outside the polygons of extent, FALSE to use as boundig box
@@ -2275,6 +2280,8 @@ s2_gui <- function(param_list = NULL,
       # updateCheckboxGroupInput(session, "list_indices", selected = pl$list_indices) # FIXME 1 not working since it is reactive
       updateRadioButtons(session, "atm_mask",
                          selected = ifelse(is.na(pl$mask_type),FALSE,TRUE))
+      updateSliderInput(session, "max_masked_perc",
+                        value = ifelse(is.na(pl$mask_type),80,pl$max_mask))
       updateRadioButtons(session, "atm_mask_type",
                          selected = ifelse(is.na(pl$mask_type),"cloud_medium_proba",pl$mask_type))
       updateRadioButtons(session, "atm_mask_custom",

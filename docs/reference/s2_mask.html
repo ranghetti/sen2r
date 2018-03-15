@@ -98,7 +98,7 @@ raster functions are used to perform computations, output files
 are physical rasters (no output VRT is allowed).</p>
     
 
-    <pre class="usage"><span class='fu'>s2_mask</span>(<span class='no'>infiles</span>, <span class='no'>maskfiles</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='st'>"cloud_medium_proba"</span>,
+    <pre class="usage"><span class='fu'>s2_mask</span>(<span class='no'>infiles</span>, <span class='no'>maskfiles</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='st'>"cloud_medium_proba"</span>, <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>80</span>,
   <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"./masked"</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
@@ -147,6 +147,19 @@ be used to mask classes 0 ("No data"), 8-9 ("Cloud (high or medium
 probability)") and 11 ("Snow");</p></li>
 <li><p>"opaque_clouds" (still to be implemented).</p></li>
 </ul></td>
+    </tr>
+    <tr>
+      <th>max_mask</th>
+      <td><p>(optional) Numeric value (range 0 to 100), which represents
+the maximum percentage of allowed masked surface (by clouds or any other
+type of mask chosen with argument <code>mask_type</code>) for producing outputs.
+Images with a percentage of masked surface greater than <code>max_mask</code><!-- % -->
+are not processed (the list of expected output files which have not been
+generated is returned as an attribute, named "skipped").
+Default value is 80.
+Notice that the percentage is computed on non-NA values (if input images
+had previously been clipped and masked using a polygon, the percentage is
+computed on the surface included in the masking polygons).</p></td>
     </tr>
     <tr>
       <th>outdir</th>

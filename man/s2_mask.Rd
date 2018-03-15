@@ -4,7 +4,7 @@
 \alias{s2_mask}
 \title{Apply cloud masks}
 \usage{
-s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba",
+s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba", max_mask = 80,
   outdir = "./masked", tmpdir = NA, format = NA, subdirs = NA,
   compress = "DEFLATE", parallel = FALSE, overwrite = FALSE)
 }
@@ -46,6 +46,17 @@ be used to mask classes 0 ("No data"), 8-9 ("Cloud (high or medium
 probability)") and 11 ("Snow");
 \item "opaque_clouds" (still to be implemented).
 }}
+
+\item{max_mask}{(optional) Numeric value (range 0 to 100), which represents
+the maximum percentage of allowed masked surface (by clouds or any other
+type of mask chosen with argument \code{mask_type}) for producing outputs.
+Images with a percentage of masked surface greater than \code{max_mask}%
+are not processed (the list of expected output files which have not been
+generated is returned as an attribute, named "skipped").
+Default value is 80.
+Notice that the percentage is computed on non-NA values (if input images
+had previously been clipped and masked using a polygon, the percentage is
+computed on the surface included in the masking polygons).}
 
 \item{outdir}{(optional) Full name of the output directory where
 the files should be created (default: "current directory"masked"
