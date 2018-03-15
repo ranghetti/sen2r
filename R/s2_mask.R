@@ -264,10 +264,13 @@ s2_mask <- function(infiles,
       }
       
       # apply mask
-      # FIXME parallelisation not working
-      # if (parallel) {raster::beginCluster(n_cores)}
+      # using only non-parallel version, since ther is not any speeding up
+      # (the bottleneck is writing the final output, which van not be parallelised).
+      # TODO (maybe): if the user requires spectral indices but not BOA,
+      # parallelise the masking, create a vrt BOA (from singleband TIFFs)
+      # so to skip this passage.
       
-      if (!parallel) {
+      # if (!parallel) {
         raster::mask(
           inraster,
           raster::raster(outmask_res),
