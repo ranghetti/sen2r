@@ -35,10 +35,6 @@ If FALSE (default), single core processing is used.}
 
 \item{overwrite}{(optional) Logical value: should existing output files be
 overwritten? (default: FALSE)}
-
-\item{format}{(optional) Format of the output file (in a
-format recognised by GDAL). Default is the same format of input images
-(or "GTiff" in case of VRT input images).}
 }
 \description{
 Internal function to apply cloud mask to SR products.

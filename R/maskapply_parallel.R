@@ -17,9 +17,6 @@
 #'  possible (e.g. `parallel = 4`).
 #'  If FALSE (default), single core processing is used.
 #' @param minrows (optional) Argument to be passed to [raster::blockSize].
-#' @param format (optional) Format of the output file (in a
-#'  format recognised by GDAL). Default is the same format of input images
-#'  (or "GTiff" in case of VRT input images).
 #' @param datatype (optional) data type of the output raster.
 #' @param overwrite (optional) Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
