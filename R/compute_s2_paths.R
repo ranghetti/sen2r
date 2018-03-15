@@ -48,6 +48,7 @@
 #' @param tiles_ext Extension (character) of tiled products.
 #' @param merged_ext Extension (character) of merged products.
 #' @param warped_ext Extension (character) of warped products.
+#' @param sr_masked_ext Extension (character) of masked products of SR products.
 #' @param ignorelist Vector of output files to be ignored.
 #'
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
@@ -64,6 +65,7 @@ compute_s2_paths <- function(pm,
                              tiles_ext, 
                              merged_ext, 
                              warped_ext, 
+                             sr_masked_ext,
                              ignorelist) {
   
   # accepted products (update together with the same variables in s2_gui() and in sto())
@@ -291,6 +293,16 @@ compute_s2_paths <- function(pm,
                 if(pm$path_subdirs==TRUE){basename(dirname(nn(merged_names_exp[!names_merged_exp_scl_idx])))}else{""},
                 gsub(paste0(merged_ext,"$"),out_ext,basename(nn(merged_names_exp[!names_merged_exp_scl_idx]))))
     }
+    # use sr_masked_ext if necessary
+    if (!pm$index_source %in% pm$list_prods){
+      masked_names_exp_sr_idx <- sapply(masked_names_exp,function(x){
+        fs2nc_getElements(x)$prod_type
+      })==pm$index_source
+      masked_names_exp[masked_names_exp_sr_idx] <- gsub(
+        paste0(out_ext,"$"), sr_masked_ext, 
+        masked_names_exp[masked_names_exp_sr_idx]
+      )
+    }
     
     # add existing files for masked
     masked_names_exi <- if (!is.na(pm$mask_type)) {
@@ -478,7 +490,7 @@ compute_s2_paths <- function(pm,
                 if (pm$clip_on_extent==TRUE) {pm$extent_name},"_",
                 ifelse(level=="2A","BOA","TOA"),"_",
                 substr(res,1,2),".",
-                out_ext)]
+                if (!pm$index_source %in% pm$list_prods) {sr_masked_ext} else {out_ext})]
     }
     out_names_req <- out_names_exp[basename(nn(out_names_exp)) %in% out_basenames_req]
     out_names_new <- if (is.na(pm$path_out)) {

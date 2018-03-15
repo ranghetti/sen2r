@@ -42,6 +42,8 @@
 #'  second case, its parent directory must exists).
 #'  If it is a relative path, it is expanded from the common parent
 #'  directory of `infiles`.
+#' @param tmpdir (optional) Path where intermediate VRT will be created.
+#'  Default is in a temporary directory.
 #' @param format (optional) Format of the output file (in a
 #'  format recognised by GDAL). Default is the same format of input images
 #'  (or "GTiff" in case of VRT input images).
@@ -52,18 +54,18 @@
 #' @param compress (optional) In the case a GTiff format is
 #'  present, the compression indicated with this parameter is used.
 #' @param parallel (optional) Logical: if TRUE, masking is conducted using parallel
-#'  processing exploiting [raster::beginCluster]. This speeds-up the computation
-#'  for large rasters. 
+#'  processing, to speed-up the computation for large rasters.
 #'  The number of cores is automatically determined; specifying it is also 
 #'  possible (e.g. `parallel = 4`).
 #'  If FALSE (default), single core processing is used.
+#'  Multiprocess masking computation is always performed in singlecore mode
+#'  if `format != "VRT"` (because in this case there is no gain in using
+#'  multicore processing).
 #' @param overwrite (optional) Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
 #' @return A vector with the names of the created products.
 #' @export
 #' @importFrom rgdal GDALinfo
-#' @importFrom parallel detectCores makeCluster stopCluster
-#' @importFrom foreach foreach "%do%" "%dopar%"
 #' @importFrom raster stack brick calc dataType mask NAvalue overlay
 #'   beginCluster endCluster clusterR NAvalue dataType
 #' @importFrom jsonlite fromJSON
@@ -75,6 +77,7 @@ s2_mask <- function(infiles,
                     maskfiles,
                     mask_type="cloud_medium_proba",
                     outdir="./masked",
+                    tmpdir=NA,
                     format=NA,
                     subdirs=NA,
                     compress="DEFLATE",
@@ -121,6 +124,12 @@ s2_mask <- function(infiles,
     }
   }
   
+  # Check tmpdir
+  if (is.na(tmpdir)) {
+    tmpdir <- tempfile(pattern="dir")
+  }
+  dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
+  
   # Get files metadata
   infiles_meta <- data.table(fs2nc_getElements(infiles, format="data.frame"))
   maskfiles_meta <- data.table(fs2nc_getElements(maskfiles, format="data.frame"))
@@ -128,6 +137,8 @@ s2_mask <- function(infiles,
   #   infiles_meta_gdal <- sapply(infiles, function(x) {attributes(GDALinfo(x))[c("df")]})
   # )
   
+  # create outdir if not existing
+  dir.create(outdir, recursive=FALSE, showWarnings=FALSE)
   # create subdirs (if requested)
   prod_types <- unique(infiles_meta$prod_type)
   if (is.na(subdirs)) {
@@ -159,33 +170,13 @@ s2_mask <- function(infiles,
   }
   
   ## Cycle on each file
-  # if parallel==TRUE, use doParallel
-  n_cores <- if (is.numeric(parallel)) {
-    as.integer(parallel)
-  } else {
-    min(parallel::detectCores()-1, 8) # use at most 8 cores
-  }
-  # if (parallel==FALSE | Sys.info()["sysname"] == "Windows" | n_cores<=1) {
-  if (n_cores<=1) {
-    `%DO%` <- `%do%`
-    parallel <- FALSE
-    n_cores <- 1
-  } else {
-    `%DO%` <- `%dopar%`
-  }
-  
   outfiles <- character(0)
-  # foreach(i=seq_along(infiles),
-  #         .combine=c,
-  #         .export = "mountpoint",
-  #         .packages=c("raster","reticulate","rgdal","sprawl")) %DO% {
   for (i in seq_along(infiles)) {
     sel_infile <- infiles[i]
     sel_infile_meta <- c(infiles_meta[i,])
     sel_format <- suppressWarnings(ifelse(
       !is.na(format), format, attr(GDALinfo(sel_infile), "driver")
     ))
-    if (sel_format=="VRT") {sel_format <- "GTiff"}
     sel_out_ext <- gdal_formats[gdal_formats$name==sel_format,"ext"][1]
     sel_naflag <- s2_defNA(sel_infile_meta$prod_type)
     
@@ -270,7 +261,7 @@ s2_mask <- function(infiles,
       # parallelise the masking, create a vrt BOA (from singleband TIFFs)
       # so to skip this passage.
       
-      # if (!parallel) {
+      if (sel_format!="VRT") {
         raster::mask(
           inraster,
           raster::raster(outmask_res),
@@ -285,39 +276,18 @@ s2_mask <- function(infiles,
           overwrite = overwrite
         )
       } else {
-        beginCluster(n = n_cores)
-        raster::clusterR(
-          inraster,
-          fun = function(x,m,na) {m*x+(1-m)*na},
-          # fun = function(x, m) {x*m},
-          args = list(m = raster::raster(outmask_res),
-                      na = sel_naflag),
-          filename = sel_outfile,
+        maskapply_parallel(
+          inraster, 
+          raster(outmask_res), 
+          outpath = sel_outfile,
+          tmpdir = tmpdir,
+          binpaths = binpaths,
           NAflag = sel_naflag,
+          parallel = parallel,
           datatype = dataType(inraster),
-          format = sel_format,
-          options = if(sel_format == "GTiff") {paste0("COMPRESS=",compress)},
           overwrite = overwrite
         )
-        endCluster()
       }
-      
-      
-      # # try with mask_rast
-      # sprawl::mask_rast(
-      #   inraster,
-      #   raster::raster(outmask_res),
-      #   out_file   = sel_outfile,
-      #   mask_value = 0,
-      #   out_type   = "filename",
-      #   out_dtype  = convert_rastdtype(dataType(inraster), "raster")$gdal,
-      #   out_nodata = NAvalue(inraster),
-      #   compress   = if (sel_format == "GTiff") {compress} else {"None"},
-      #   overwrite  = overwrite,
-      #   parallel   = parallel,
-      #   cores      = n_cores,
-      #   verbose    = FALSE
-      # )
       
       
       # fix for envi extension (writeRaster use .envi)

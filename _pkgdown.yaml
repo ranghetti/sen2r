@@ -56,6 +56,7 @@ reference:
       - '`stack2rgb`'
       - '`raster2rgb`'
       - '`compute_s2_paths`'
+      - '`maskapply_parallel`'
 navbar:
   type: inverse
   left:

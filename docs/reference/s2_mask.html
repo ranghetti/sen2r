@@ -99,8 +99,8 @@ are physical rasters (no output VRT is allowed).</p>
     
 
     <pre class="usage"><span class='fu'>s2_mask</span>(<span class='no'>infiles</span>, <span class='no'>maskfiles</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='st'>"cloud_medium_proba"</span>,
-  <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"./masked"</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>,
-  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"./masked"</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -159,6 +159,11 @@ If it is a relative path, it is expanded from the common parent
 directory of <code>infiles</code>.</p></td>
     </tr>
     <tr>
+      <th>tmpdir</th>
+      <td><p>(optional) Path where intermediate VRT will be created.
+Default is in a temporary directory.</p></td>
+    </tr>
+    <tr>
       <th>format</th>
       <td><p>(optional) Format of the output file (in a
 format recognised by GDAL). Default is the same format of input images
@@ -179,11 +184,13 @@ present, the compression indicated with this parameter is used.</p></td>
     <tr>
       <th>parallel</th>
       <td><p>(optional) Logical: if TRUE, masking is conducted using parallel
-processing exploiting <a href='http://www.rdocumentation.org/packages/raster/topics/cluster'>raster::beginCluster</a>. This speeds-up the computation
-for large rasters.
+processing, to speed-up the computation for large rasters.
 The number of cores is automatically determined; specifying it is also
 possible (e.g. <code>parallel = 4</code>).
-If FALSE (default), single core processing is used.</p></td>
+If FALSE (default), single core processing is used.
+Multiprocess masking computation is always performed in singlecore mode
+if <code>format != "VRT"</code> (because in this case there is no gain in using
+multicore processing).</p></td>
     </tr>
     <tr>
       <th>overwrite</th>

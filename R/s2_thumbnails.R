@@ -304,8 +304,8 @@ s2_thumbnails <- function(infiles,
   # Set tmpdir
   if (is.na(tmpdir)) {
     tmpdir <- tempfile(pattern="dir")
-    dir.create(tmpdir, recursive = FALSE, showWarnings = FALSE)
   }
+  dir.create(tmpdir, recursive = FALSE, showWarnings = FALSE)
   
   # Load GDAL paths
   binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")

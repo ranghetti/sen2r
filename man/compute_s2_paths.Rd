@@ -5,7 +5,7 @@
 \title{Compute names of S2 file to be generated}
 \usage{
 compute_s2_paths(pm, s2_list_l1c, s2_list_l2a, paths, list_prods, out_ext,
-  tiles_ext, merged_ext, warped_ext, ignorelist)
+  tiles_ext, merged_ext, warped_ext, sr_masked_ext, ignorelist)
 }
 \arguments{
 \item{pm}{List of input parameters.}
@@ -27,6 +27,8 @@ products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").}
 \item{merged_ext}{Extension (character) of merged products.}
 
 \item{warped_ext}{Extension (character) of warped products.}
+
+\item{sr_masked_ext}{Extension (character) of masked products of SR products.}
 
 \item{ignorelist}{Vector of output files to be ignored.}
 }

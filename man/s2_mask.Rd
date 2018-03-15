@@ -5,8 +5,8 @@
 \title{Apply cloud masks}
 \usage{
 s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba",
-  outdir = "./masked", format = NA, subdirs = NA, compress = "DEFLATE",
-  parallel = FALSE, overwrite = FALSE)
+  outdir = "./masked", tmpdir = NA, format = NA, subdirs = NA,
+  compress = "DEFLATE", parallel = FALSE, overwrite = FALSE)
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths
@@ -55,6 +55,9 @@ second case, its parent directory must exists).
 If it is a relative path, it is expanded from the common parent
 directory of \code{infiles}.}
 
+\item{tmpdir}{(optional) Path where intermediate VRT will be created.
+Default is in a temporary directory.}
+
 \item{format}{(optional) Format of the output file (in a
 format recognised by GDAL). Default is the same format of input images
 (or "GTiff" in case of VRT input images).}
@@ -68,11 +71,13 @@ more than a single spectral index is required.}
 present, the compression indicated with this parameter is used.}
 
 \item{parallel}{(optional) Logical: if TRUE, masking is conducted using parallel
-processing exploiting \link[raster:beginCluster]{raster::beginCluster}. This speeds-up the computation
-for large rasters.
+processing, to speed-up the computation for large rasters.
 The number of cores is automatically determined; specifying it is also
 possible (e.g. \code{parallel = 4}).
-If FALSE (default), single core processing is used.}
+If FALSE (default), single core processing is used.
+Multiprocess masking computation is always performed in singlecore mode
+if \code{format != "VRT"} (because in this case there is no gain in using
+multicore processing).}
 
 \item{overwrite}{(optional) Logical value: should existing output files be
 overwritten? (default: FALSE)}

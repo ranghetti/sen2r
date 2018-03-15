@@ -18,9 +18,7 @@
 #'  `outfile` directory; if NA (default), subdirectories are created only if
 #'  `infiles` relate to more than a single product.
 #' @param tmpdir (optional) Path where intermediate VRT will be created.
-#'  Default is in a hidden subdirectory (called `.vrt`) of the common parent
-#'  directory of `infiles`. Set `tmpdir=tempdir()` if you do not want to
-#'  keep the intermediate files after reboot.
+#'  Default is in a temporary directory.
 #' @param format (optional) Format of the output file (in a
 #'  format recognised by GDAL). Default is to maintain each input format.
 #' @param compress (optional) In the case a GTiff format is
@@ -138,7 +136,7 @@ s2_merge <- function(infiles,
       "tiles with different projection will be reprojected.")
   }
   if (is.na(tmpdir)) {
-    tmpdir <- file.path(comsub(infiles,"/"),".vrt")
+    tmpdir <- tempfile(pattern="dir")
   }
   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
   

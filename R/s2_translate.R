@@ -245,7 +245,7 @@ s2_translate <- function(infile,
           if (length(jp2_selbands)>1) {
             # define and create tmpdir
             if (is.na(tmpdir)) {
-              tmpdir <- file.path(dirname(infile_dir),".vrt")
+              tmpdir <- tempfile(pattern="dir")
             }
             dir.create(tmpdir, showWarnings=FALSE)
             final_vrt_name <- ifelse(format=="VRT", out_name, paste0(tmpdir,"/",out_prefix,".vrt"))

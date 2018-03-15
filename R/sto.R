@@ -717,6 +717,13 @@ sto <- function(param_list=NULL,
         warped_ext <- "vrt"
         warped_outformat <- "VRT"
       }
+      if (pm$index_source %in% pm$list_prods) {
+        sr_masked_ext <- out_ext
+        sr_masked_outformat <- pm$outformat
+      } else {
+        sr_masked_ext <- "vrt"
+        sr_masked_outformat <- "VRT"
+      }
       
       # Import path of files to ignore, if exists
       # (see comment at #ignorePath)
@@ -739,7 +746,7 @@ sto <- function(param_list=NULL,
         paths=paths, 
         list_prods=list_prods, 
         out_ext=out_ext, tiles_ext=tiles_ext, 
-        merged_ext=merged_ext, warped_ext=warped_ext, 
+        merged_ext=merged_ext, warped_ext=warped_ext, sr_masked_ext=sr_masked_ext,
         ignorelist = ignorelist
       )
       
@@ -940,7 +947,7 @@ sto <- function(param_list=NULL,
     paths=paths, 
     list_prods=list_prods, 
     out_ext=out_ext, tiles_ext=tiles_ext, 
-    merged_ext=merged_ext, warped_ext=warped_ext, 
+    merged_ext=merged_ext, warped_ext=warped_ext, sr_masked_ext=sr_masked_ext,
     ignorelist = ignorelist
   )
   
@@ -969,6 +976,7 @@ sto <- function(param_list=NULL,
             s2_translate,
             infile = sel_prod,
             outdir = path["tiles"],
+            tmpdir = file.path(path_tmp,"tmp_tiles"),
             prod_type = list_l1c_prods,
             format = tiles_outformat,
             tiles = pm$s2tiles_selected,
@@ -996,6 +1004,7 @@ sto <- function(param_list=NULL,
           trace_function(
             s2_translate,
             infile = sel_prod,
+            tmpdir = file.path(path_tmp,"tmp_tiles"),
             outdir = paths["tiles"],
             prod_type = list_l2a_prods,
             format = tiles_outformat,
@@ -1039,6 +1048,7 @@ sto <- function(param_list=NULL,
       infiles = s2names$tiles_names_req[file.exists(s2names$tiles_names_req)], # TODO add warning when sum(!file.exists(s2names$merged_names_new))>0
       outdir = paths["merged"],
       subdirs = pm$path_subdirs,
+      tmpdir = file.path(path_tmp,"tmp_merged"),
       format = merged_outformat,
       overwrite = pm$overwrite,
       trace_files = s2names$merged_names_new
@@ -1180,27 +1190,60 @@ sto <- function(param_list=NULL,
         !names_warped_req_scl_idx
       }
       
-      masked_names_out <- trace_function(
-        s2_mask,
-        infiles = if (pm$clip_on_extent==TRUE) {
-          s2names$warped_names_req[names_warped_tomask_idx & file.exists(s2names$warped_names_req)]
-        } else {
-          s2names$merged_names_req[names_merged_tomask_idx & file.exists(s2names$merged_names_req)]
-        },
-        maskfiles = if (pm$clip_on_extent==TRUE) {
-          s2names$warped_names_exp[names_warped_exp_scl_idx]
-        } else {
-          s2names$merged_names_exp[names_merged_exp_scl_idx]
-        },
-        mask_type = pm$mask_type,
-        outdir = paths["out"],
-        format = pm$outformat,
-        compress = pm$compression,
-        subdirs = pm$path_subdirs,
-        overwrite = pm$overwrite,
-        parallel = FALSE, # TODO pass as parameter
-        trace_files = s2names$out_names_new
-      )
+      # if SR outformat is different (because BOA was not required,
+      # bur some indices are) launch s2_mask separately
+      masked_names_infiles <- if (pm$clip_on_extent==TRUE) {
+        s2names$warped_names_req[names_warped_tomask_idx & file.exists(s2names$warped_names_req)]
+      } else {
+        s2names$merged_names_req[names_merged_tomask_idx & file.exists(s2names$merged_names_req)]
+      }
+      masked_names_infiles_sr_idx <- any(!is.na(pm$list_indices)) & 
+        !pm$index_source %in% pm$list_prods & 
+        sapply(masked_names_infiles, function(x){
+          fs2nc_getElements(x)$prod_type==pm$index_source
+        })
+      
+      masked_names_out_nsr <- if (length(masked_names_infiles[!masked_names_infiles_sr_idx])>0) {
+        trace_function(
+          s2_mask,
+          infiles = masked_names_infiles[!masked_names_infiles_sr_idx],
+          maskfiles = if (pm$clip_on_extent==TRUE) {
+            s2names$warped_names_exp[names_warped_exp_scl_idx]
+          } else {
+            s2names$merged_names_exp[names_merged_exp_scl_idx]
+          },
+          mask_type = pm$mask_type,
+          outdir = paths["out"],
+          tmpdir = file.path(path_tmp,"tmp_masked"),
+          format = pm$outformat,
+          compress = pm$compression,
+          subdirs = pm$path_subdirs,
+          overwrite = pm$overwrite,
+          parallel = FALSE, # TODO pass as parameter
+          trace_files = s2names$out_names_new
+        )
+      } else {character(0)}
+      masked_names_out_sr <- if (length(masked_names_infiles[masked_names_infiles_sr_idx])>0) {
+        trace_function(
+          s2_mask,
+          infiles = masked_names_infiles[masked_names_infiles_sr_idx],
+          maskfiles = if (pm$clip_on_extent==TRUE) {
+            s2names$warped_names_exp[names_warped_exp_scl_idx]
+          } else {
+            s2names$merged_names_exp[names_merged_exp_scl_idx]
+          },
+          mask_type = pm$mask_type,
+          outdir = paths["out"],
+          tmpdir = file.path(path_tmp,"tmp_masked"),
+          format = sr_masked_outformat,
+          compress = pm$compression,
+          subdirs = pm$path_subdirs,
+          overwrite = pm$overwrite,
+          parallel = TRUE, # TODO pass as parameter
+          trace_files = s2names$out_names_new
+        )
+      } else {character(0)}
+      masked_names_out <- c(masked_names_out_nsr, masked_names_out_sr)
       # masked_names_out <- s2_mask(
       #   if(pm$clip_on_extent==TRUE){s2names$warped_names_req}else{s2names$merged_names_req},
       #   if(pm$clip_on_extent==TRUE){s2names$warped_names_req}else{s2names$merged_names_exp[names_merged_exp_scl_idx]},
@@ -1291,6 +1334,7 @@ sto <- function(param_list=NULL,
       thumb_names_out <- trace_function(
         s2_thumbnails,
         infiles = thumb_names_req,
+        tmpdir = file.path(path_tmp,"tmp_thumbnails"),
         trace_files = c(thumb_names_new,paste0(thumb_names_new,".aux.xml"))
       )
       

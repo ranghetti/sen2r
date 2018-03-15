@@ -27,9 +27,7 @@ placed in separated \code{outfile} subdirectories; if FALSE, they are placed in
 \code{infiles} relate to more than a single product.}
 
 \item{tmpdir}{(optional) Path where intermediate VRT will be created.
-Default is in a hidden subdirectory (called \code{.vrt}) of the common parent
-directory of \code{infiles}. Set \code{tmpdir=tempdir()} if you do not want to
-keep the intermediate files after reboot.}
+Default is in a temporary directory.}
 
 \item{format}{(optional) Format of the output file (in a
 format recognised by GDAL). Default is to maintain each input format.}
