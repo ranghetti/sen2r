@@ -148,3 +148,4 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
   return(invisible(TRUE))
   
 }
+    # FIXME se non trova python non assegna il path corretto a gdal_calc
