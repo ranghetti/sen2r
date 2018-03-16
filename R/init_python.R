@@ -47,3 +47,4 @@ init_python <- function() {
   py
   
 }
+    # FIXME add alert if python is missing
