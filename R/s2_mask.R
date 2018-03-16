@@ -76,7 +76,7 @@
 #' @return A vector with the names of the created products.
 #' @export
 #' @importFrom rgdal GDALinfo
-#' @importFrom raster stack brick calc dataType mask overlay
+#' @importFrom raster stack brick calc dataType mask overlay values
 #' @importFrom jsonlite fromJSON
 #' @import data.table
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
