@@ -23,8 +23,8 @@
 #'  checkboxInput column conditionalPanel dateRangeInput div em fluidRow h2 h3
 #'  helpText hr HTML htmlOutput icon isolate NS numericInput observe p
 #'  radioButtons reactive reactiveValues renderText renderUI runApp selectInput
-#'  shinyApp showModal span stopApp strong tagList textInput uiOutput updateCheckboxGroupInput
-#'  updateDateRangeInput updateRadioButtons updateTextInput withMathJax
+#'  shinyApp showModal sliderInput span stopApp strong tagList textInput uiOutput updateCheckboxGroupInput
+#'  updateDateRangeInput updateSliderInput updateRadioButtons updateTextInput withMathJax
 #' @importFrom shinydashboard box dashboardBody dashboardHeader dashboardPage
 #'  dashboardSidebar menuItem sidebarMenu tabItem tabItems
 #' @importFrom shinyFiles getVolumes parseDirPath parseFilePaths parseSavePath
