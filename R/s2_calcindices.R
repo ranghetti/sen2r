@@ -216,6 +216,11 @@ s2_calcindices <- function(infiles,
             switch(dataType, Int16=2^15-1, UInt16=2^16-2, Int32=2^31-3, UInt32=2^32-4),")"
           )
         }
+        sel_nodata <- switch(
+          dataType, 
+          Int16=-2^15, UInt16=2^16-1, Int32=-2^31, UInt32=2^32-1,
+          Float32=-9999, Float64=-9999, Byte=255
+        )
         if (dataType == "Byte") {
           sel_formula <- paste0("clip(100+100*(",sel_formula,"),0,200)")
         }
@@ -229,6 +234,7 @@ s2_calcindices <- function(infiles,
             }), collapse=" ")," ",
             "--outfile=\"",file.path(out_subdir,sel_outfile),"\" ",
             "--type=\"",dataType,"\" ",
+            "--NoDataValue=",sel_nodata," ",
             "--format=\"",sel_format,"\" ",
             if (overwrite==TRUE) {"--overwrite "},
             if (sel_format=="GTiff") {paste0("--co=\"COMPRESS=",toupper(compress),"\" ")},
