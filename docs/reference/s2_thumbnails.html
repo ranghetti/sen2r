@@ -98,13 +98,7 @@ products. BOA and TOA multiband images are rendered as false colour
 JPEG images; SCL maps are rendered as 8-bit PNG;
 other singleband images (like spectral indices) are rendered as
 JPEG images with a standard colour palette.
-Some improvements still have to be done:</p><ul>
-<li><p>allowing the possibility to chose the palette and the limits
-(for now, the range -1 to 1 is always used);</p></li>
-<li><p>adding support for RGB products.</p></li>
-</ul>
-
-    <p>Output images are georeferenced.</p>
+Output images are georeferenced.</p>
     
 
     <pre class="usage"><span class='fu'>s2_thumbnails</span>(<span class='no'>infiles</span>, <span class='kw'>prod_type</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>rgb_type</span> <span class='kw'>=</span> <span class='st'>"SwirNirR"</span>, <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fl'>1024</span>,
@@ -147,10 +141,14 @@ To keep the original size in any case, set <code>dim = Inf</code>.</p></td>
     </tr>
     <tr>
       <th>scaleRange</th>
-      <td><p>(optional) Range of valid values. If not specified, it is
-automatically retrieved from the product type. It is useful for BOA "dark"
-products. When spectral indices are saved with Integer values, the range
-is automatically set to -10000 to 10000.</p></td>
+      <td><p>(optional) Range of valid values. If not specified
+(default), it is automatically retrieved from the product type.
+Default ranges for BOA and TOA products are 0 to 8000
+(<code>rgb_type = "SwirNirR"</code>), 0 to 7500 (<code>"NirRG"</code>) and 0 to 2500 (<code>"RGB"</code>).
+For spectral indices, default range is -1 to 1 for Float products, -10000
+to 10000 for Int and 0 to 200 for Byte; for "Zscore" products, default
+range is -3 to 3 for Float and -3000 to 3000 for Int.
+It can be useful i.e. to stretch BOA "dark" products.</p></td>
     </tr>
     <tr>
       <th>outdir</th>
