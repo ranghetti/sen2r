@@ -430,7 +430,7 @@ sto <- function(param_list=NULL,
   paths["indices"] <- if (!is.na(pm$path_indices)) {pm$path_indices} else {file.path(path_tmp,"indices")}
   paths["tiles"] <- if (!is.na(pm$path_tiles)) {pm$path_tiles} else {file.path(path_tmp,"tiles")}
   paths["merged"] <- if (!is.na(pm$path_merged)) {pm$path_merged} else {file.path(path_tmp,"merged")}
-  paths["warped"] <- if (is.na(pm$mask_type)) {paths$out} else {file.path(path_tmp,"warped")}
+  paths["warped"] <- if (is.na(pm$mask_type)) {paths["out"]} else {file.path(path_tmp,"warped")}
   
   # accepted products (update together with the same variables in s2_gui() and in compute_s2_names())
   l1c_prods <- c("TOA")
