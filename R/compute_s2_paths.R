@@ -318,6 +318,7 @@ compute_s2_paths <- function(pm,
         all_meta <- all_meta[
           type != "unrecognised" &
             prod_type %in% list_prods &
+            prod_type != "SCL" &
             mission %in% toupper(substr(pm$sel_sensor,3,3)) & 
             level %in% toupper(substr(pm$s2_levels,2,3)) &
             file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
