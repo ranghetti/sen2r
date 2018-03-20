@@ -244,11 +244,6 @@ raster2rgb <- function(in_rast,
 #'  JPEG images; SCL maps are rendered as 8-bit PNG;
 #'  other singleband images (like spectral indices) are rendered as 
 #'  JPEG images with a standard colour palette.
-#'  Some improvements still have to be done:
-#'  * allowing the possibility to chose the palette and the limits 
-#'      (for now, the range -1 to 1 is always used);
-#'  * adding support for RGB products.
-#'  
 #'  Output images are georeferenced.
 #' @param infiles A vector of input filenames. Input files are paths
 #'  of products already converted from SAFE format to a
@@ -270,10 +265,14 @@ raster2rgb <- function(in_rast,
 #'  rescaled before producing the thumbnails; otherwise the original dimensions
 #'  are maintained. 
 #'  To keep the original size in any case, set `dim = Inf`.
-#' @param scaleRange (optional) Range of valid values. If not specified, it is
-#'  automatically retrieved from the product type. It is useful for BOA "dark"
-#'  products. When spectral indices are saved with Integer values, the range
-#'  is automatically set to -10000 to 10000.
+#' @param scaleRange (optional) Range of valid values. If not specified 
+#'  (default), it is automatically retrieved from the product type. 
+#'  Default ranges for BOA and TOA products are 0 to 8000 
+#'  (`rgb_type = "SwirNirR"`), 0 to 7500 (`"NirRG"`) and 0 to 2500 (`"RGB"`).
+#'  For spectral indices, default range is -1 to 1 for Float products, -10000
+#'  to 10000 for Int and 0 to 200 for Byte; for "Zscore" products, default 
+#'  range is -3 to 3 for Float and -3000 to 3000 for Int.
+#'  It can be useful i.e. to stretch BOA "dark" products. 
 #' @param outdir (optional) Full name of the existing output directory
 #'  where the files should be created.  Default is a subdirectory (named 
 #'  "thumbnails") of the parent directory of each input file.
@@ -398,7 +397,15 @@ s2_thumbnails <- function(infiles,
         scaleRange <- if (sel_prod_type %in% c("BOA","TOA")) {
           c(0, switch(rgb_type, "SwirNirR" = 8000, "NirRG" = 7500, "RGB" = 2500))
         } else if (sel_prod_type %in% c("Zscore")){
-          c(-3, 3)
+          sel_infile_datatype <- attr(
+            suppressWarnings(GDALinfo(sel_infile_path)),
+            "df"
+          )[1,"GDType"]
+          if (grepl("^Float",sel_infile_datatype)) {
+            c(-3, 3)
+          } else if (grepl("^Int",sel_infile_datatype)) {
+            c(-3E3,3E3)
+          }
         } else if (sel_prod_type %in% c("SCL")){
           rep(NA,2) # it is ignored
         } else { # spectral indices
