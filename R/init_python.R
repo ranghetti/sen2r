@@ -21,9 +21,36 @@ init_python <- function() {
   } else {
     list("python"=NULL)
   }
+  
+  # Search or install Python
   if (is.null(binpaths$python)) {
-    binpaths$python <- normalizePath(py_discover_config(required_module = "osgeo")$python)
+    
+    # Try to search Python
+    binpaths$python <- tryCatch(
+      normalizePath(py_discover_config(required_module = "osgeo")$python),
+      error = function(e) {NULL}
+    )
+    
+    # If not found, ask for installing Osgeo
+    if (is.null(binpaths$python)) {
+      open_gui <- print_message(
+        type="error",
+        "Python was not found on your system: please install it.",
+        if (Sys.info()["sysname"] == "Windows") {
+          paste0(
+            "\nIt is recommended to install it together with GDAL using the OSGeo4W ",
+            "installer (GDAL is required for processing operations).\n",
+            "Download it from  http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86",
+            if (Sys.info()["machine"]=="x86-64") {"_64"},".exe, ",
+            "then choose the \"Advanced install\" and ",
+            "check the packages \"python-core\", \"gdal\" and \"openjpeg\"."
+          )
+        }
+      )
+    }
+    
     writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
+    
   }
   
   py_missing <- py_modules[!sapply(py_modules,py_module_available)]
@@ -47,4 +74,3 @@ init_python <- function() {
   py
   
 }
-    # FIXME add alert if python is missing

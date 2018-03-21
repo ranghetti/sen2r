@@ -65,13 +65,15 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
     print_message(
       type="message",
       "GDAL was not found in the system PATH, search in the full ",
-      "system (this could take some time, please wait...")
+      "system (this could take some time, please wait)...")
     gdal_setInstallation(ignore.full_scan = FALSE, verbose = TRUE)
   }
   
   # Check again if this found version supports OpenJPEG
   gdal_check_jp2 <- tryCatch(gdal_chooseInstallation(hasDrivers=c("JP2OpenJPEG")), error = print)
   
+  # set message method
+  message_type <- ifelse(abort==TRUE, "error", "warning")
   
   # If GDAL is not found, return FALSE
   # (this should not happen, since GDAL is required by rgdal)
@@ -82,9 +84,6 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
     )
     return(invisible(FALSE))
   }
-  
-  # set message method
-  message_type <- ifelse(abort==TRUE, "error", "warning")
   
   # check requisites (minimum version)
   gdal_version <- package_version(gsub("^GDAL ([0-9.]*)[0-9A-Za-z/., ]*", "\\1",
@@ -110,7 +109,7 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
           "(http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86",
           if (Sys.info()["machine"]=="x86-64") {"_64"},".exe), ",
           "to choose the \"Advanced install\" and ",
-          "to check the packages \"gdal\" and \"openjpeg\"."
+          "to check the packages \"python-core\", \"gdal\" and \"openjpeg\"."
         )
       }
     )
@@ -148,4 +147,3 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
   return(invisible(TRUE))
   
 }
-    # FIXME se non trova python non assegna il path corretto a gdal_calc
