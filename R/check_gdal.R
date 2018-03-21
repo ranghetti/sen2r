@@ -120,18 +120,20 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
   gdal_chooseInstallation(hasDrivers=c("JP2OpenJPEG"))
   
   # save the path for use with external calls
-  binpaths$gdalbuildvrt <- normalizePath(file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdalbuildvrt"))))
-  binpaths$gdal_translate <- normalizePath(file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdal_translate"))))
-  binpaths$gdalwarp <- normalizePath(file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdalwarp"))))
+  bin_ext <- ifelse(Sys.info()["sysname"] == "Windows", ".exe", "")
+  gdal_dir <- getOption("gdalUtils_gdalPath")[[1]]$path
+  binpaths$gdalbuildvrt <- normalizePath(file.path(gdal_dir,paste0("gdalbuildvrt",bin_ext)))
+  binpaths$gdal_translate <- normalizePath(file.path(gdal_dir,paste0("gdal_translate",bin_ext)))
+  binpaths$gdalwarp <- normalizePath(file.path(gdal_dir,paste0("gdalwarp",bin_ext)))
   binpaths$gdal_calc <- if (Sys.info()["sysname"] == "Windows") {
-    binpaths$python <- normalizePath(file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("python"))))
-    normalizePath(paste0(binpaths$python," ",getOption("gdalUtils_gdalPath")[[1]]$path,"gdal_calc.py"))
+    binpaths$python <- normalizePath(file.path(gdal_dir,paste0("python",bin_ext)))
+    paste0(binpaths$python," ",normalizePath(file.path(gdal_dir,"gdal_calc.py")))
   } else { 
-    normalizePath(file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdal_calc.py"))))
+    normalizePath(file.path(gdal_dir,"gdal_calc.py"))
   }
-  binpaths$gdaldem <- normalizePath(file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdaldem"))))
-  binpaths$gdalinfo <- normalizePath(file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("gdalinfo"))))
-  binpaths$ogrinfo <- normalizePath(file.path(getOption("gdalUtils_gdalPath")[[1]]$path,basename(Sys.which("ogrinfo"))))
+  binpaths$gdaldem <- normalizePath(file.path(gdal_dir,paste0("gdaldem",bin_ext)))
+  binpaths$gdalinfo <- normalizePath(file.path(gdal_dir,paste0("gdalinfo",bin_ext)))
+  binpaths$ogrinfo <- normalizePath(file.path(gdal_dir,paste0("ogrinfo",bin_ext)))
   
   lapply(
     c("gdalbuildvrt","gdal_translate","gdalwarp","gdaldem","gdalinfo","ogrinfo"), 

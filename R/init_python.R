@@ -10,8 +10,14 @@
 init_python <- function() {
   
   # define the required python module
-  py_modules <- c("os","sys","subprocess","re","numpy","urllib","zipfile","osgeo")
+  py_modules <- c("os","sys","subprocess","re","numpy","urllib","zipfile")
+  # osgeo was removed, since the version of python to use was forced to have osgeo
   # py_modules <- c("os","sys","re","numpy","zipfile","osgeo")
+  
+  # On Windows, start searching in the GDAL directory
+  if (Sys.info()["sysname"] == "Windows") {
+    check_gdal()
+  }
   
   # checks the python version
   # (if possible, use python2 for compatibility with s2download.py)
@@ -53,6 +59,7 @@ init_python <- function() {
     
   }
   
+  use_python(binpaths$python) # FIXME force using osgeo python, OR load osgeo with import_from_path() instead of import("osgeo")
   py_missing <- py_modules[!sapply(py_modules,py_module_available)]
   if (length(py_missing)>0) {
     print_message(
