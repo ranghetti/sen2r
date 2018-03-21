@@ -34,7 +34,6 @@ expand_path <- function(path, parent=getwd(), silent=TRUE, normalize=TRUE) {
   # check if path is relative
   path_isabsolute <- if (Sys.info()["sysname"] == "Windows") {
     # for windows, the second character is used to discriminate absolute from relative
-browser()
     substr(path.expand(path),2,2) == ":"
   } else {
     # for unix, the first character is used
