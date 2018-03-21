@@ -3,7 +3,7 @@
 #'  in the GUI.
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
-#' @importFrom shiny actionButton div htmlOutput icon modalButton modalDialog
+#' @importFrom shiny actionButton div fileInput htmlOutput icon modalButton modalDialog
 #'  numericInput span tagList textInput
 
 #' @name load_extent_bbox

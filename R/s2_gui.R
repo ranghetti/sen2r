@@ -20,12 +20,12 @@
 #' @importFrom reticulate import
 #' @importFrom sf st_coordinates st_intersects st_polygon st_read st_sf st_sfc st_transform
 #' @importFrom shiny a actionButton actionLink br callModule checkboxGroupInput
-#'  checkboxInput column conditionalPanel dateRangeInput div em fluidRow h2 h3
-#'  helpText hr HTML htmlOutput icon isolate NS numericInput observe p
-#'  radioButtons reactive reactiveValues renderText renderUI runApp selectInput
+#'  checkboxInput column conditionalPanel dateRangeInput div downloadButton downloadHandler em fileInput fluidRow h2 h3
+#'  helpText hr HTML htmlOutput icon incProgress isolate NS numericInput observe p
+#'  radioButtons reactive reactiveValues renderText renderUI runApp selectInput setProgress
 #'  shinyApp showModal sliderInput span stopApp strong tagList textInput uiOutput updateCheckboxGroupInput
 #'  updateDateRangeInput updateSliderInput updateRadioButtons updateTextInput withMathJax
-#'  withProgress incProgress setProgress
+#'  withProgress
 #' @importFrom shinydashboard box dashboardBody dashboardHeader dashboardPage
 #'  dashboardSidebar menuItem sidebarMenu tabItem tabItems
 #' @importFrom shinyFiles getVolumes parseDirPath parseFilePaths parseSavePath
@@ -125,6 +125,17 @@ s2_gui <- function(param_list = NULL,
       #                                     ')), # return the width/height of the window (used to set map height)
       div(
         style="position:absolute;top:250px;",
+        # # client-side buttons
+        # p(style="margin-top:15pt;margin-left:11pt;",
+        #   downloadButton("export_param", "\u2000Save options as...", class="darkbutton")
+        # ),
+        # p(style="margin-top:5pt;margin-left:11pt;",
+        #   fileInput(
+        #     "import_param", label = NULL, buttonLabel = "Load options", 
+        #     accept = "application/json", multiple = FALSE#, class = "darkbutton"
+        #   )
+        # ),
+        # server-side buttons
         p(style="margin-top:15pt;margin-left:11pt;",
           shinySaveButton("export_param", "Save options as...", "Save parameters as ...", filetype=list(json="json"), class="darkbutton")
         ),
@@ -158,7 +169,7 @@ s2_gui <- function(param_list = NULL,
         )
       )
       
-      ),
+    ),
     
     dashboardBody(
       tabItems(
@@ -991,41 +1002,10 @@ s2_gui <- function(param_list = NULL,
           
         ) # end of tabItem tab_index
         
-        # ### Path tab (set all the paths) ###
-        # tabItem(
-        #   tabName = "tab_path",
-        #   title="Set directories",
-        #
-        #
-        #
-        #
-        #   # Save buttons
-        #   br(),
-        #   # HTML("<script src=\"message-handler.js\"></script>"),
-        #   # # head(script(src = "message-handler.js")),
-        #   # p(
-        #   #   shinySaveButton("export_param", "Export parameters", "Export parameters as ...", filetype=list(json="json")),
-        #   #   "\u2001", # quad space
-        #   #   shinyFilesButton("import_param", "Import parameters", "Import a JSON file with parameters", multiple=FALSE)
-        #   # ),
-        #   # p(
-        #   #   actionButton("return_param", strong("Save and close GUI")),
-        #   #   "\u2001", # quad space
-        #   #   actionButton("exit_gui", "Close without saving")
-        #   # )
-        #   # TODO client buttons
-        #   # fileInput("import_param_client", "Import parameters from client",
-        #   #           accept = c(
-        #   #             "text/json",
-        #   #             ".json")
-        #   # )
-        #
-        # ) # end of tabItem tab_steps
-        
       ) # end of tabItems
     ) # end of dashboardBody
     
-    ) # end of s2_gui.ui dashboardPage
+  ) # end of s2_gui.ui dashboardPage
   
   s2_gui.server <- function(input, output, session) {
     
@@ -1173,7 +1153,7 @@ s2_gui <- function(param_list = NULL,
     
     
     ## Extent module ##
-
+    
     #-- Function to update the map and the list of tiles --#
     # it returns TRUE if the input extent source was correctly read, FALSE elsewhere.
     # argument extent_srouce determines which source to be used:
@@ -1295,8 +1275,8 @@ s2_gui <- function(param_list = NULL,
         }
         
       }
-        
-
+      
+      
       # 2. Update the list of overlapping tiles and the tiles on the map
       if(length(rv$extent) > 0) {
         
@@ -1405,7 +1385,7 @@ s2_gui <- function(param_list = NULL,
     #     height = isolate(ifelse(!is.null(input$dimension),input$dimension[1]*3/5,600))
     #   )
     # })
-
+    
     
     #-- Reactive objects for input selection (NOT map update) --#
     
@@ -1539,7 +1519,7 @@ s2_gui <- function(param_list = NULL,
         }
         for (i in 1:10) {incProgress(1/10); Sys.sleep(0.1)}
       })
-
+      
     })
     
     
@@ -1550,7 +1530,7 @@ s2_gui <- function(param_list = NULL,
         for (i in 1:10) {incProgress(1/10); Sys.sleep(0.1)}
       })
     })
-
+    
     
     # # disable dissolve_extent (not yet implemented, TODO)
     # disable("dissolve_extent")
@@ -2480,7 +2460,7 @@ s2_gui <- function(param_list = NULL,
       stopApp()
     })
     
-    # if Export is pressed, export the values
+    # if Export is pressed, export the values (using server-side button)
     observe({
       shinyFileSave(input, "export_param", roots=volumes, session=session)
       export_param_path <- parseSavePath(volumes, input$export_param)
@@ -2494,20 +2474,46 @@ s2_gui <- function(param_list = NULL,
       }
     })
     
-    # # if Import is pressed, read a json object
+    # # if Export is pressed, export the values (using client-side button)
+    # output$export_param <- downloadHandler(
+    #   filename = function() {
+    #     paste0("salto_", strftime(Sys.Date(),"%Y%m%d"), ".json")
+    #   },
+    #   content = function(file) {
+    #     return_list <- create_return_list() # run creation of return_list
+    #     check_param_result <- check_param(return_list)
+    #     if (check_param_result) {
+    #       writeLines(toJSON(return_list, pretty=TRUE), file)
+    #     }
+    #   },
+    #   contentType = "application/json"
+    # )
+    
+    # # if Import is pressed, read a json object (using server-side button)
     shinyFileChoose(input, "import_param", roots=volumes, session=session,
                     filetypes = c("JSON"="json"))
-
+    
     observeEvent(input$import_param, {
-        import_param_path <- parseFilePaths(volumes,input$import_param)
-        rv$imported_param <- if (nrow(import_param_path)>0) {
-          import_param_path$datapath %>%
-            as.character() %>%
-            readLines() %>%
-            fromJSON()
-        } else {
-          NULL
-        }
+      
+      # server-side button
+      import_param_path <- input$import_param
+      import_param_path <- parseFilePaths(volumes,input$import_param)
+      rv$imported_param <- if (nrow(import_param_path)>0) {
+        import_param_path$datapath %>%
+          as.character() %>%
+          readLines() %>%
+          fromJSON()
+      } else {
+        NULL
+      }
+      
+      # # client-side button
+      # rv$imported_param <- if (nrow(input$import_param$datapath)>0) {
+      #   readLines(fromJSON(input$import_param$datapath))
+      # } else {
+      #   NULL
+      # }
+      
       if (!is.null(rv$imported_param)) {
         import_param_list(rv$imported_param)
         rv$imported_param <- NULL
@@ -2538,4 +2544,4 @@ s2_gui <- function(param_list = NULL,
     stop("The function must be run from an interactive R session.")
   }
   
-  }
+}
