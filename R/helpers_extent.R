@@ -63,7 +63,7 @@ load_extent_bbox <- function() {
     ),
     easyClose = FALSE,
     footer = tagList(
-      actionButton("save_extent_bbox", "\u2000Ok", icon=icon("check")),
+      actionButton("save_extent_bbox", strong("\u2000Ok"), icon=icon("check")),
       modalButton("\u2000Cancel", icon = icon("ban"))
     )
   )
@@ -76,9 +76,11 @@ load_extent_vectfile <- function() {
   modalDialog(
     title = "Select vector file",
     size = "s",
-    p("Chose the vector file to be used as extent."),
-    p("To upload a shapefile, select all the related files",
-      "(at most the .shp, .shx, .dbf and .prj ones must be present)."),
+    helpText(em(
+      p("Chose the vector file to be used as extent."),
+      p("To upload a shapefile, select all the related files",
+        "(at most the .shp, .shx, .dbf and .prj ones must be present).")
+    )),
     # div(div(style="display:inline-block;vertical-align:top;width:50pt;", # FIXME 2 choosing file with the button the extent is not drawn yet, and the toolbar is not added/removed changing extent_type
     #         shinyFilesButton("path_vectfile_sel",
     #                          "Select",
@@ -93,7 +95,7 @@ load_extent_vectfile <- function() {
         htmlOutput("path_vectfile_errormess")),
     easyClose = FALSE,
     footer = tagList(
-      actionButton("save_extent_vectfile", "\u2000Ok", icon=icon("check")),
+      actionButton("save_extent_vectfile", strong("\u2000Ok"), icon=icon("check")),
       modalButton("\u2000Cancel", icon = icon("ban"))
     )
   )
@@ -107,10 +109,11 @@ load_extent_draw <- function(extent_ns_name) {
   modalDialog(
     title = "Draw the extent",
     size = "l",
-    editModUI(extent_ns_name),
+    helpText(em("Use the tools on the left to draw the extent of your products.")),
+    editModUI(extent_ns_name, height=500, width="100%"),
     easyClose = FALSE,
     footer = tagList(
-      actionButton("save_extent_draw", "\u2000Ok", icon=icon("check")),
+      actionButton("save_extent_draw", strong("\u2000Ok"), icon=icon("check")),
       modalButton("\u2000Cancel", icon = icon("ban"))
     )
   )

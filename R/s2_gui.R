@@ -25,6 +25,7 @@
 #'  radioButtons reactive reactiveValues renderText renderUI runApp selectInput
 #'  shinyApp showModal sliderInput span stopApp strong tagList textInput uiOutput updateCheckboxGroupInput
 #'  updateDateRangeInput updateSliderInput updateRadioButtons updateTextInput withMathJax
+#'  withProgress incProgress setProgress
 #' @importFrom shinydashboard box dashboardBody dashboardHeader dashboardPage
 #'  dashboardSidebar menuItem sidebarMenu tabItem tabItems
 #' @importFrom shinyFiles getVolumes parseDirPath parseFilePaths parseSavePath
@@ -109,30 +110,28 @@ s2_gui <- function(param_list = NULL,
       shinyjs::useShinyjs(),
       shiny::tags$head(shiny::tags$style(".darkbutton{background-color:#28353b;color:#b8c7ce;width:200px;")), # background color and font color
       shiny::tags$head(shiny::tags$script(src = "message-handler.js")), # for actionbuttons
-      shiny::tags$head(shiny::tags$script('
-                                          var dimension = [0, 0];
-                                          $(document).on("shiny:connected", function(e) {
-                                          dimension[0] = window.innerWidth;
-                                          dimension[1] = window.innerHeight;
-                                          Shiny.onInputChange("dimension", dimension);
-                                          });
-                                          $(window).resize(function(e) {
-                                          dimension[0] = window.innerWidth;
-                                          dimension[1] = window.innerHeight;
-                                          Shiny.onInputChange("dimension", dimension);
-                                          });
-                                          ')), # return the width/height of the window (used to set map height)
+      # shiny::tags$head(shiny::tags$script('
+      #                                     var dimension = [0, 0];
+      #                                     $(document).on("shiny:connected", function(e) {
+      #                                     dimension[0] = window.innerWidth;
+      #                                     dimension[1] = window.innerHeight;
+      #                                     Shiny.onInputChange("dimension", dimension);
+      #                                     });
+      #                                     $(window).resize(function(e) {
+      #                                     dimension[0] = window.innerWidth;
+      #                                     dimension[1] = window.innerHeight;
+      #                                     Shiny.onInputChange("dimension", dimension);
+      #                                     });
+      #                                     ')), # return the width/height of the window (used to set map height)
       div(
         style="position:absolute;top:250px;",
         p(style="margin-top:15pt;margin-left:11pt;",
           shinySaveButton("export_param", "Save options as...", "Save parameters as ...", filetype=list(json="json"), class="darkbutton")
         ),
-        # # FIXME "Load options" was deactivated for unsolved problems
-        # # with extent map.
-        # p(style="margin-top:5pt;margin-left:11pt;",
-        #   shinyFilesButton("import_param", "Load options", "Import a JSON file with parameters", multiple=FALSE, class="darkbutton")
-        # ),
-        actionButton("import_param_deactivated", label = "Load options", class = "darkbutton"),
+        p(style="margin-top:5pt;margin-left:11pt;",
+          shinyFilesButton("import_param", "Load options", "Import a JSON file with parameters", multiple=FALSE, class="darkbutton")
+        ),
+        # actionButton("import_param_deactivated", label = "Load options", class = "darkbutton"),
         p(style="margin-top:20pt;",
           actionButton(
             "return_param",
@@ -454,40 +453,36 @@ s2_gui <- function(param_list = NULL,
                           width = 200,
                           icon=icon("upload")
                         )),
-                    div(style="padding-top:10px;padding-bottom:10px;",
+                    div(style="padding-top:10px;",
                         actionButton(
                           "button_extent_draw",
                           label = "\u2000Draw it on the map",
                           width = 200,
                           icon=icon("paint-brush")
+                        )),
+                    div(style="padding-top:10px;padding-bottom:10px;",
+                        actionButton(
+                          "button_refresh_map",
+                          label = "\u2000Reload the extent on map",
+                          width = 200,
+                          icon=icon("retweet")
                         ))
                   )
                   
-                  # radioButtons(
-                  #   "extent_type", 
-                  #   label = span(
-                  #     "Method to select extent\u2000"#,
-                  #     # actionLink("alert_leaflet", icon("warning"), style="color:red")
-                  #   ),
-                  #   choices = list(
-                  #     # "Draw on the map" = "draw",
-                  #     "Upload vector file" = "vectfile",
-                  #     "Enter coordinates" = "bbox"
-                  #   ),
-                  #   selected = "bbox"
-                  # )
                 ),
                 
                 column(
                   width=6,
                   div(
-                    checkboxGroupInput("tiles_checkbox",
-                                       "Tiles selected",
-                                       choices = character(0),
-                                       selected = character(0)),
-                    # uiOutput("s2tiles_selID"),
+                    checkboxGroupInput(
+                      "tiles_checkbox",
+                      "Tiles selected",
+                      choices = character(0),
+                      selected = character(0),
+                      inline = FALSE
+                    ),
                     strong("Orbits selected"),
-                    helpText(em("Not yet impemented."))
+                    helpText(em("Not yet implemented."))
                   )
                 )
                 
@@ -525,12 +520,8 @@ s2_gui <- function(param_list = NULL,
                 column(
                   width=12,
                   # Map
-                  # conditionalPanel(
-                  #   condition = "input.extent_type == 'draw'",
-                  # editModUI("extent_editor")
-                  # )
-                  uiOutput("view_map_leaflet")
-                  # leafletOutput("view_map", height=600, width="100%")
+                  # uiOutput("view_map_leaflet")
+                  leafletOutput("view_map", height=600, width="100%")
                 )
               ) # end of 1st fluidRow after conditionalPanel on spatial filter
               
@@ -762,18 +753,18 @@ s2_gui <- function(param_list = NULL,
                 checkboxGroupInput(
                   "atm_mask_custom", "Select the classes to mask:",
                   choiceNames = list(
-                    HTML("<font style=\"family:monospace;background-color:#000000;color:white\">\u20020\u2002</font>\u2002No data"),
-                    HTML("<font style=\"family:monospace;background-color:#FF0000;color:white\">\u20021\u2002</font>\u2002Saturated or defective"),
-                    HTML("<font style=\"family:monospace;background-color:#424142;color:white\">\u20022\u2002</font>\u2002Dark area pixels"),
-                    HTML("<font style=\"family:monospace;background-color:#633400;color:white\">\u20023\u2002</font>\u2002Cloud shadows"),
-                    HTML("<font style=\"family:monospace;background-color:#29f329;color:black\">\u20024\u2002</font>\u2002Vegetation"),
-                    HTML("<font style=\"family:monospace;background-color:#ffff00;color:black\">\u20025\u2002</font>\u2002Bare soils"),
-                    HTML("<font style=\"family:monospace;background-color:#0000ff;color:white\">\u20026\u2002</font>\u2002Water"),
-                    HTML("<font style=\"family:monospace;background-color:#7b7d7b;color:white\">\u20027\u2002</font>\u2002Cloud (low probability)"),
-                    HTML("<font style=\"family:monospace;background-color:#bdbebd;color:black\">\u20028\u2002</font>\u2002Cloud (medium probability)"),
-                    HTML("<font style=\"family:monospace;background-color:#ffffff;color:black\">\u20029\u2002</font>\u2002Cloud (high probability)"),
-                    HTML("<font style=\"family:monospace;background-color:#63cbff;color:black\">\u200510\u2005</font>\u2002Thin cirrus"),
-                    HTML("<font style=\"family:monospace;background-color:#ff9aff;color:black\">\u200511\u2005</font>\u2002Snow")
+                    HTML("<font style=\"family:monospace;background-color:#000000;color:white;\">\u20020\u2002</font>\u2002No data"),
+                    HTML("<font style=\"family:monospace;background-color:#FF0000;color:white;\">\u20021\u2002</font>\u2002Saturated or defective"),
+                    HTML("<font style=\"family:monospace;background-color:#424142;color:white;\">\u20022\u2002</font>\u2002Dark area pixels"),
+                    HTML("<font style=\"family:monospace;background-color:#633400;color:white;\">\u20023\u2002</font>\u2002Cloud shadows"),
+                    HTML("<font style=\"family:monospace;background-color:#29f329;color:black;\">\u20024\u2002</font>\u2002Vegetation"),
+                    HTML("<font style=\"family:monospace;background-color:#ffff00;color:black;\">\u20025\u2002</font>\u2002Bare soils"),
+                    HTML("<font style=\"family:monospace;background-color:#0000ff;color:white;\">\u20026\u2002</font>\u2002Water"),
+                    HTML("<font style=\"family:monospace;background-color:#7b7d7b;color:white;\">\u20027\u2002</font>\u2002Cloud (low probability)"),
+                    HTML("<font style=\"family:monospace;background-color:#bdbebd;color:black;\">\u20028\u2002</font>\u2002Cloud (medium probability)"),
+                    HTML("<font style=\"family:monospace;background-color:#ffffff;color:black;\">\u20029\u2002</font>\u2002Cloud (high probability)"),
+                    HTML("<font style=\"family:monospace;background-color:#63cbff;color:black;\">\u200510\u2005</font>\u2002Thin cirrus"),
+                    HTML("<font style=\"family:monospace;background-color:#ff9aff;color:black;\">\u200511\u2005</font>\u2002Snow")
                   ),
                   choiceValues = as.list(0:11),
                   selected = list(0,8,9)
@@ -1182,9 +1173,7 @@ s2_gui <- function(param_list = NULL,
     
     
     ## Extent module ##
-    
-    # FIXME starting revolutioning from here
-    
+
     #-- Function to update the map and the list of tiles --#
     # it returns TRUE if the input extent source was correctly read, FALSE elsewhere.
     # argument extent_srouce determines which source to be used:
@@ -1213,7 +1202,10 @@ s2_gui <- function(param_list = NULL,
                 ncol=2,
                 byrow=TRUE))),
               crs = rv$bboxproj)) %>% st_transform(4326)
+            # attribute valid is used to know if continuing loading the new extent (TRUE) or not (FALSE)
             attr(x, "valid") <- TRUE
+            # attribute new is used to update the list of selected tiles (if TRUE) or not (if FALSE)
+            attr(x, "new") <- TRUE 
             x
           } else {
             x <- st_polygon(); attr(x, "valid") <- FALSE; x
@@ -1238,6 +1230,7 @@ s2_gui <- function(param_list = NULL,
             x <- st_read(rv$vectfile_path, quiet=TRUE) %>% 
               st_transform(4326)
             attr(x, "valid") <- TRUE
+            attr(x, "new") <- TRUE
             x
           },
           error = function(e) {x <- st_polygon(); attr(x, "valid") <- FALSE; x}
@@ -1257,6 +1250,7 @@ s2_gui <- function(param_list = NULL,
         sel_drawn <- if (!is.null(rv$extent_edits()$finished)) {
           x <- rv$extent_edits()$finished
           attr(x, "valid") <- TRUE
+          attr(x, "new") <- TRUE
           x
         } else {
           x <- st_polygon(); attr(x, "valid") <- FALSE; x
@@ -1270,12 +1264,15 @@ s2_gui <- function(param_list = NULL,
         
       } else if (extent_source == "imported") {
         
+        # Imported from parameters #
+        
         sel_imported_extent <- if (is.null(custom_source) | anyNA(custom_source)) {
           x <- st_polygon(); attr(x, "valid") <- FALSE; x
         } else {
           x <- st_read(custom_source, quiet=TRUE) %>% 
             st_transform(4326)
           attr(x, "valid") <- TRUE
+          attr(x, "new") <- TRUE
           x
         }
         
@@ -1285,31 +1282,36 @@ s2_gui <- function(param_list = NULL,
         
         rv$extent <- sel_imported_extent
         
-      }
-      
-      # 2. Update the list of overlapping tiles and the tiles on the map
-      if(length(rv$extent) > 0) {
-        rv$draw_tiles_overlapping <- s2tiles[unique(unlist(suppressWarnings(st_intersects(st_transform(rv$extent,4326), s2tiles)))),]
-        # if the user is loading saved parameters, read the selected tiles ID;
-        # for any otyher change, for now set all the tiles as selected
-        rv$draw_tiles_selected <- if (!is.null(imported_param())) {
-          if (any(!is.na(imported_param()$s2tiles_selected))) {
-            s2tiles[match(imported_param()$s2tiles_selected,s2tiles$tile_id),]
-          } else {
-            rv$draw_tiles_overlapping
-          }
+      } else {
+        
+        # For any other value of extent_source, use the existing rv$extent
+        
+        if (is.null(rv$extent)) {
+          return(FALSE)
+        } else if (!attr(rv$extent, "valid")) {
+          return(FALSE)
         } else {
-          rv$draw_tiles_overlapping
+          attr(rv$extent, "new") <- FALSE
         }
         
-        # update the list of tiles
-        updateCheckboxGroupInput(
-          session, "tiles_checkbox",
-          choices = setNames(
-            as.list(rv$draw_tiles_overlapping$tile_id),
-            rv$draw_tiles_overlapping$tile_id),
-          selected = rv$draw_tiles_selected$tile_id
-        )
+      }
+        
+
+      # 2. Update the list of overlapping tiles and the tiles on the map
+      if(length(rv$extent) > 0) {
+        
+        rv$draw_tiles_overlapping <- s2tiles[unique(unlist(suppressWarnings(st_intersects(st_transform(rv$extent,4326), s2tiles)))),]
+        
+        if (attr(rv$extent, "new")) {
+          # update the list of tiles
+          updateCheckboxGroupInput(
+            session, "tiles_checkbox",
+            choiceNames = lapply(rv$draw_tiles_overlapping$tile_id, span, style="family:monospace;"),
+            choiceValues = rv$draw_tiles_overlapping$tile_id,
+            selected = rv$draw_tiles_overlapping$tile_id,
+            inline = nrow(rv$draw_tiles_overlapping) > 8 # inline if they are many
+          )
+        }
         
         # reset and update the map
         react_map(base_map()) 
@@ -1396,14 +1398,14 @@ s2_gui <- function(param_list = NULL,
     }
     react_map <- reactiveVal({base_map()})
     output$view_map <- renderLeaflet({react_map()})
-    # renderUI of the leaflet so to update dinamically the width
-    output$view_map_leaflet <- renderUI({
-      leafletOutput(
-        "view_map",
-        height = ifelse(!is.null(input$dimension),input$dimension[1]*3/5,600)
-      )
-    })
-    
+    # # renderUI of the leaflet so to update dinamically the width
+    # output$view_map_leaflet <- renderUI({
+    #   leafletOutput(
+    #     "view_map",
+    #     height = isolate(ifelse(!is.null(input$dimension),input$dimension[1]*3/5,600))
+    #   )
+    # })
+
     
     #-- Reactive objects for input selection (NOT map update) --#
     
@@ -1439,12 +1441,17 @@ s2_gui <- function(param_list = NULL,
     })
     # use bbox
     observeEvent(input$save_extent_bbox, {
-      bbox_valid <- update_extent(extent_source="bbox")
-      if (bbox_valid) {
-        removeModal()
-      } else {
-        alert("Please insert a valid bounding box.")
-      }
+      # Add a progress bar while update_extent is running
+      withProgress(message = 'Creating the extent...', value = 0, {
+        bbox_valid <- update_extent(extent_source="bbox")
+        if (bbox_valid) {
+          removeModal()
+        } else {
+          alert("Please insert a valid bounding box.")
+        }
+        # Fake progress
+        for (i in 1:10) {incProgress(1/10); Sys.sleep(0.1)}
+      })
     })
     
     
@@ -1486,35 +1493,6 @@ s2_gui <- function(param_list = NULL,
       }
     })
     
-    #     # # read the specified file
-    #     shinyFileChoose(input, "path_vectfile_sel", roots=volumes, session=session)
-    #     
-    #     # if paths change after using the shinyDirButton, update the values and the textInput
-    #     observeEvent(input$path_vectfile_sel, {
-    # browser()
-    #       path_vectfile_string <- parseFilePaths(volumes,input$path_vectfile_sel)
-    #       updateTextInput(session, "path_vectfile_textin", value = as.character(path_vectfile_string[1,"datapath"]))
-    #     })
-    #     # if path changes after using the textInput, update the value
-    #     observeEvent(input$path_vectfile_textin, {
-    # browser()
-    #       output$path_vectfile_errormess <- if (length(input$path_vectfile_textin)>0 &
-    #                                             input$path_vectfile_textin[1]!="") {
-    #         if (!file.exists(input$path_vectfile_textin)) {
-    #           rv$vectfile_path <- NA
-    #           renderUI(span(style="color:red", "\u2718 (the file does not exist)"))
-    #         # } else if (try(get_vectype(input$path_vectfile_textin),silent=TRUE)!="vectfile") {
-    #         #   rv$vectfile_path <- NA
-    #         #   renderUI(span(style="color:red", "\u2718 (the file is not a recognised vector file)"))
-    #         } else {
-    #           rv$vectfile_path <- input$path_vectfile_textin
-    #           renderUI(span(style="color:darkgreen", "\u2714"))
-    #         }
-    #       } else {
-    #         return(renderText(""))
-    #       }
-    #     })
-    
     # Open modal dialog to load the vector file
     observeEvent(input$button_extent_vectfile, {
       rv$vectfile_path <- ""
@@ -1522,12 +1500,15 @@ s2_gui <- function(param_list = NULL,
     })
     # use bbox
     observeEvent(input$save_extent_vectfile, {
-      vectfile_valid <- update_extent(extent_source="vectfile")
-      if (vectfile_valid) {
-        removeModal()
-      } else {
-        alert("Please specify a valid vector file.")
-      }
+      withProgress(message = 'Creating the extent...', value = 0, {
+        vectfile_valid <- update_extent(extent_source="vectfile")
+        if (vectfile_valid) {
+          removeModal()
+        } else {
+          alert("Please specify a valid vector file.")
+        }
+        for (i in 1:10) {incProgress(1/10); Sys.sleep(0.1)}
+      })
     })
     
     
@@ -1535,6 +1516,7 @@ s2_gui <- function(param_list = NULL,
     
     # Open modal dialog to edit bbox
     observeEvent(input$button_extent_draw, {
+      
       
       # create a new namespace every time the button is pushed,
       # in order not to make mess between modules
@@ -1548,14 +1530,27 @@ s2_gui <- function(param_list = NULL,
     
     # use bbox
     observeEvent(input$save_extent_draw, {
-      drawn_valid <- update_extent(extent_source="draw")
-      if (drawn_valid) {
-        removeModal()
-      } else {
-        alert("Please draw a valid extent.")
-      }
+      withProgress(message = 'Creating the extent...', value = 0, {
+        drawn_valid <- update_extent(extent_source="draw")
+        if (drawn_valid) {
+          removeModal()
+        } else {
+          alert("Please draw a valid extent.")
+        }
+        for (i in 1:10) {incProgress(1/10); Sys.sleep(0.1)}
+      })
+
     })
     
+    
+    #- Refresh the map if required -#
+    observeEvent(input$button_refresh_map, {
+      withProgress(message = 'Refreshing the map...', value = 0, {
+        update_extent(extent_source="fake")
+        for (i in 1:10) {incProgress(1/10); Sys.sleep(0.1)}
+      })
+    })
+
     
     # # disable dissolve_extent (not yet implemented, TODO)
     # disable("dissolve_extent")
@@ -2353,107 +2348,121 @@ s2_gui <- function(param_list = NULL,
     # function to import saved parameters
     import_param_list <- function(pl) {
       
-      # processing steps
-      updateRadioButtons(session, "preprocess", selected = pl$preprocess)
-      updateCheckboxGroupInput(session, "list_levels", selected = pl$s2_levels)
-      updateCheckboxGroupInput(session, "sel_sensor", selected = pl$sel_sensor)
-      updateRadioButtons(session, "online", selected = pl$online)
-      updateRadioButtons(session, "overwrite_safe", selected = pl$overwrite_safe)
-      updateRadioButtons(session, "rm_safe", selected = pl$rm_safe)
-      updateRadioButtons(session, "step_atmcorr", selected = pl$step_atmcorr)
-      
-      
-      # spatio-temporal selection
-      if (anyNA(pl$timewindow)) {
-        updateRadioButtons(session, "query_time", selected = FALSE)
-      } else {
-        updateRadioButtons(session, "query_time", selected = TRUE)
-        updateDateRangeInput(session, "timewindow", start=pl$timewindow[1], end=pl$timewindow[2])
-        updateRadioButtons(session, "timeperiod", selected = pl$timeperiod)
-      }
-      if (anyNA(pl$extent) & pl$online == FALSE) {
-        updateRadioButtons(session, "query_space", selected = FALSE)
-      } else {
-        updateRadioButtons(session, "query_space", selected = TRUE)
-        # rl$s2tiles_selected <- input$tiles_checkbox # selected tile IDs
-        updateRadioButtons(session, "extent_as_mask", selected = rv$extent_as_mask)
-      }
-      
-      # product selection
-      if (all(is.na(pl$list_prods))) {pl$list_prods <- NULL}
-      updateCheckboxGroupInput(
-        session, "list_prods",
-        selected = if (any(!is.na(pl$list_indices))) {
-          c(pl$list_prods,"indices")
+      # Add a progress bar while importing
+      withProgress(message = 'Loading the parameters...', value = 0, {
+        
+        # processing steps
+        updateRadioButtons(session, "preprocess", selected = pl$preprocess)
+        updateCheckboxGroupInput(session, "list_levels", selected = pl$s2_levels)
+        updateCheckboxGroupInput(session, "sel_sensor", selected = pl$sel_sensor)
+        updateRadioButtons(session, "online", selected = pl$online)
+        updateRadioButtons(session, "overwrite_safe", selected = pl$overwrite_safe)
+        updateRadioButtons(session, "rm_safe", selected = pl$rm_safe)
+        updateRadioButtons(session, "step_atmcorr", selected = pl$step_atmcorr)
+        setProgress(0.2)
+        
+        # spatio-temporal selection
+        if (anyNA(pl$timewindow)) {
+          updateRadioButtons(session, "query_time", selected = FALSE)
         } else {
-          pl$list_prods
+          updateRadioButtons(session, "query_time", selected = TRUE)
+          updateDateRangeInput(session, "timewindow", start=pl$timewindow[1], end=pl$timewindow[2])
+          updateRadioButtons(session, "timeperiod", selected = pl$timeperiod)
         }
-      )
-      if (all(is.na(pl$list_indices))) {pl$list_indices <- NULL}
-      indices_rv$checked <- pl$list_indices
-      # updateCheckboxGroupInput(session, "list_indices", selected = pl$list_indices) # FIXME 1 not working since it is reactive
-      updateRadioButtons(session, "atm_mask",
-                         selected = ifelse(is.na(pl$mask_type),FALSE,TRUE))
-      updateSliderInput(session, "max_masked_perc",
-                        value = ifelse(is.na(pl$mask_type),80,pl$max_mask))
-      updateRadioButtons(session, "atm_mask_type",
-                         selected = ifelse(is.na(pl$mask_type),"cloud_medium_proba",pl$mask_type))
-      updateRadioButtons(session, "atm_mask_custom",
-                         selected = ifelse(grepl("^scl\\_",pl$mask_type),strsplit(pl$mask_type,"_")[[1]][-1],c(0,8:9)))
-      updateRadioButtons(session, "index_source", selected = pl$index_source)
-      updateRadioButtons(session, "clip_on_extent", selected = pl$clip_on_extent)
-      updateRadioButtons(session, "extent_name_textin", selected = pl$extent_name)
-      updateRadioButtons(session, "keep_tiles", selected = ifelse(is.na(pl$path_tiles),FALSE,TRUE))
-      updateRadioButtons(session, "keep_merged", selected = ifelse(is.na(pl$path_merged),FALSE,TRUE))
-      
-      
-      # set directories
-      updateTextInput(session, "path_l1c_textin", value = pl$path_l1c)
-      updateTextInput(session, "path_l2a_textin", value = pl$path_l2a)
-      updateTextInput(session, "path_tiles_textin", value = pl$path_tiles)
-      updateTextInput(session, "path_merged_textin", value = pl$path_merged)
-      updateTextInput(session, "path_out_textin", value = pl$path_out)
-      updateTextInput(session, "path_indices_textin", value = pl$path_indices)
-      updateRadioButtons(session, "path_subdirs", selected = pl$path_subdirs)
-      updateRadioButtons(session, "check_thumbnails", selected = pl$thumbnails)
-      
-      # output geometry
-      updateTextInput(session, "reference_file_textin", value = pl$reference_path)
-      updateRadioButtons(session, "use_reference", selected = ifelse(is.na(pl$reference_path), FALSE, TRUE))
-      
-      if (is.na(pl$reference_path)) {
-        updateRadioButtons(session, "rescale", selected = if(anyNA(pl$res)) {FALSE} else {TRUE})
-        updateTextInput(session, "resolution_custom", value = pl$res[1])
-        updateRadioButtons(session, "resolution_s2", selected = pl$res_s2)
-        updateRadioButtons(session, "reproj", selected = {
-          if (is.na(pl$proj)) {
-            FALSE
+        if (anyNA(pl$extent) & pl$online == FALSE) {
+          updateRadioButtons(session, "query_space", selected = FALSE)
+        } else {
+          updateRadioButtons(session, "query_space", selected = TRUE)
+          # rl$s2tiles_selected <- input$tiles_checkbox # selected tile IDs
+          updateRadioButtons(session, "extent_as_mask", selected = rv$extent_as_mask)
+        }
+        setProgress(0.4)
+        
+        # product selection
+        if (all(is.na(pl$list_prods))) {pl$list_prods <- NULL}
+        updateCheckboxGroupInput(
+          session, "list_prods",
+          selected = if (any(!is.na(pl$list_indices))) {
+            c(pl$list_prods,"indices")
           } else {
-            TRUE
+            pl$list_prods
           }
+        )
+        if (all(is.na(pl$list_indices))) {pl$list_indices <- NULL}
+        indices_rv$checked <- pl$list_indices
+        # updateCheckboxGroupInput(session, "list_indices", selected = pl$list_indices) # FIXME 1 not working since it is reactive
+        updateRadioButtons(session, "atm_mask",
+                           selected = ifelse(is.na(pl$mask_type),FALSE,TRUE))
+        updateSliderInput(session, "max_masked_perc",
+                          value = ifelse(is.na(pl$mask_type),80,pl$max_mask))
+        updateRadioButtons(session, "atm_mask_type",
+                           selected = ifelse(is.na(pl$mask_type),"cloud_medium_proba",pl$mask_type))
+        updateRadioButtons(session, "atm_mask_custom",
+                           selected = ifelse(grepl("^scl\\_",pl$mask_type),strsplit(pl$mask_type,"_")[[1]][-1],c(0,8:9)))
+        updateRadioButtons(session, "index_source", selected = pl$index_source)
+        updateRadioButtons(session, "clip_on_extent", selected = pl$clip_on_extent)
+        updateRadioButtons(session, "extent_name_textin", selected = pl$extent_name)
+        updateRadioButtons(session, "keep_tiles", selected = ifelse(is.na(pl$path_tiles),FALSE,TRUE))
+        updateRadioButtons(session, "keep_merged", selected = ifelse(is.na(pl$path_merged),FALSE,TRUE))
+        setProgress(0.6)
+        
+        
+        # set directories
+        updateTextInput(session, "path_l1c_textin", value = pl$path_l1c)
+        updateTextInput(session, "path_l2a_textin", value = pl$path_l2a)
+        updateTextInput(session, "path_tiles_textin", value = pl$path_tiles)
+        updateTextInput(session, "path_merged_textin", value = pl$path_merged)
+        updateTextInput(session, "path_out_textin", value = pl$path_out)
+        updateTextInput(session, "path_indices_textin", value = pl$path_indices)
+        updateRadioButtons(session, "path_subdirs", selected = pl$path_subdirs)
+        updateRadioButtons(session, "check_thumbnails", selected = pl$thumbnails)
+        
+        # output geometry
+        updateTextInput(session, "reference_file_textin", value = pl$reference_path)
+        updateRadioButtons(session, "use_reference", selected = ifelse(is.na(pl$reference_path), FALSE, TRUE))
+        
+        if (is.na(pl$reference_path)) {
+          updateRadioButtons(session, "rescale", selected = if(anyNA(pl$res)) {FALSE} else {TRUE})
+          updateTextInput(session, "resolution_custom", value = pl$res[1])
+          updateRadioButtons(session, "resolution_s2", selected = pl$res_s2)
+          updateRadioButtons(session, "reproj", selected = {
+            if (is.na(pl$proj)) {
+              FALSE
+            } else {
+              TRUE
+            }
+          })
+          updateTextInput(session, "outproj", value = ifelse(!is.na(pl$proj),
+                                                             pl$proj,
+                                                             character(0)))
+          updateRadioButtons(session, "outformat", selected = pl$outformat)
+        }
+        updateRadioButtons(session, "index_datatype", selected = pl$index_datatype)
+        updateRadioButtons(session, "resampling", selected = pl$resampling)
+        updateRadioButtons(session, "resampling_scl", selected = pl$resampling_scl)
+        updateRadioButtons(session, "compression", selected = ifelse(pl$outformat=="GTiff",
+                                                                     pl$compression,
+                                                                     character(0)))
+        updateRadioButtons(session, "overwrite", selected = pl$overwrite)
+        setProgress(0.8)
+        
+        # update extent (at the end, not to interfer with other events
+        # (the delay is required to update the map after the map is charged)
+        shinyjs::delay(5E3, {
+          update_extent("imported", custom_source = pl$extent)
+          updateCheckboxGroupInput(session, "tiles_checkbox",
+                                   selected = pl$s2tiles_selected)
+          
         })
-        updateTextInput(session, "outproj", value = ifelse(!is.na(pl$proj),
-                                                           pl$proj,
-                                                           character(0)))
-        updateRadioButtons(session, "outformat", selected = pl$outformat)
-      }
-      updateRadioButtons(session, "index_datatype", selected = pl$index_datatype)
-      updateRadioButtons(session, "resampling", selected = pl$resampling)
-      updateRadioButtons(session, "resampling_scl", selected = pl$resampling_scl)
-      updateRadioButtons(session, "compression", selected = ifelse(pl$outformat=="GTiff",
-                                                                   pl$compression,
-                                                                   character(0)))
-      updateRadioButtons(session, "overwrite", selected = pl$overwrite)
-      
-      # update extent (at the end, not to interfer with other events
-      # (the delay is required to update the map after the map is charged)
-      shinyjs::delay(
-        5E3, 
-        update_extent("imported", custom_source = pl$extent)
-      )
-      updateCheckboxGroupInput(session, "tiles_checkbox",
-                               selected = pl$s2tiles_selected)
-      
+        setProgress(1)
+        alert(paste(
+          "Parameters were correctly loaded.",
+          "If you do not see the selected extent on the map, please use",
+          "the button \"Refresh the map\"",
+          "(notice that loading a big vector file can take some time)."
+        ))
+        
+      })
       
     }
     
@@ -2486,30 +2495,25 @@ s2_gui <- function(param_list = NULL,
     })
     
     # # if Import is pressed, read a json object
-    # # FIXME "Load options" was deactivated for unsolved problems
-    # # with extent map.
-    imported_param <- reactive({NULL})
-    # shinyFileChoose(input, "import_param", roots=volumes, session=session,
-    #                 filetypes = c("JSON"="json"))
-    # imported_param <- reactive({
-    #   if (!is.null(input$import_param)) {
-    #     import_param_path <- parseFilePaths(volumes,input$import_param)
-    #     if (nrow(import_param_path)>0) {
-    #       import_param_path$datapath %>%
-    #         as.character() %>%
-    #         readLines() %>%
-    #         fromJSON()
-    #     } else {
-    #       NULL
-    #     }
-    #   }
-    # })
-    # observe({
-    #   if (exists("imported_param") && !is.null(imported_param())) {
-    #     import_param_list(imported_param()) # FIXME 3 same as fixme2 (after importing parameters, map is not drawn)
-    #     # imported_param() <- NULL
-    #   }
-    # })
+    shinyFileChoose(input, "import_param", roots=volumes, session=session,
+                    filetypes = c("JSON"="json"))
+
+    observeEvent(input$import_param, {
+        import_param_path <- parseFilePaths(volumes,input$import_param)
+        rv$imported_param <- if (nrow(import_param_path)>0) {
+          import_param_path$datapath %>%
+            as.character() %>%
+            readLines() %>%
+            fromJSON()
+        } else {
+          NULL
+        }
+      if (!is.null(rv$imported_param)) {
+        import_param_list(rv$imported_param)
+        rv$imported_param <- NULL
+      }
+    })
+    
     observeEvent(param_list, {
       if (!is.null(param_list)) {
         import_param_list(param_list)
