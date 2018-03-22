@@ -1,7 +1,7 @@
 #' @title Initialise python
 #' @description Internal function to check that the python dependencies
 #'  required in the package are present; if so, load the base modules.
-#' @return A list with the required mosules.
+#' @return A list with the required modules.
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
