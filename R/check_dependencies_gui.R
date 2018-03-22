@@ -29,8 +29,6 @@
 
 check_dependencies <- function() {
   
-library(shiny)
-
 settings.ui <- fluidPage(
   
   # header
