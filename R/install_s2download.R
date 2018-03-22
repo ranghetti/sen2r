@@ -20,10 +20,7 @@ install_s2download <- function(inst_path=NA) {
   s2download_url <- paste0("https://github.com/ranghetti/s2download/archive/",s2download_ref,".zip")
   
   # define the required binary dependencies
-  dependencies <- c("git","python","wget")
-  
-  # define the versions to download (for Windows)
-  wget_ver <- package_version("1.19.4")
+  dependencies <- c("python","wget")
   
   # define inst_path (where to install or update)
   if (is.na(inst_path)) {
@@ -77,23 +74,10 @@ install_s2download <- function(inst_path=NA) {
       
     } else {
       
-      # On Windows, download and install (them)or inform how to install them)
+      # On Windows, download and install (them) or inform how to install them)
       
       # Download wget
-      if ("wget" %in% missing_dep) {
-        wget_url <- file.path(
-          "https://eternallybored.org/misc/wget", wget_ver,
-          if (Sys.info()["machine"]=="x86-64") {"64"} else {"32"}, "wget.exe"
-        )
-        wget_path <- normalizePath(file.path(system.file(package="salto"),"wget.exe"))
-        download.file(wget_url, wget_path)
-        if (file.exists(wget_path)) {
-          binpaths$wget <- wget_path
-          writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
-        }
-        # # add to the path
-        # system(paste0('setx PATH "',binpaths$wget,'"'), intern=TRUE)
-      }
+      suppressMessages(install_wget())
       
       # If other ones are missing:
       if (length(missing_dep[missing_dep!="wget"])>0) {

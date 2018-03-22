@@ -11,8 +11,15 @@ init_python <- function() {
   
   # define the required python module
   py_modules <- c("os","sys","subprocess","re","numpy","urllib","zipfile")
-  # osgeo was removed, since the version of python to use was forced to have osgeo
-  # py_modules <- c("os","sys","re","numpy","zipfile","osgeo")
+  py_modules_frompath <- c("numpy","osgeo")
+  # py_modules are imported with import() function, so from any of the
+  # discovered python versions; 
+  # py_modules_frompath are imported with import_from_path(), which grants to
+  # use the chosen (osgeo for windows) python version.
+  # This was necessary, since in some windows installations use_python()
+  # was unable to set the python version correctly (python was set, but not
+  # pythonhome, so import() continued to try to import from pythonhome, i.e. 
+  # osgeo from Anaconda python, which was missing).
   
   # On Windows, start searching in the GDAL directory
   if (Sys.info()["sysname"] == "Windows") {
@@ -59,8 +66,11 @@ init_python <- function() {
     
   }
   
-  use_python(binpaths$python) # FIXME force using osgeo python, OR load osgeo with import_from_path() instead of import("osgeo")
-  py_missing <- py_modules[!sapply(py_modules,py_module_available)]
+  use_python(binpaths$python)
+  py_missing <- py_modules[!sapply(
+    ifelse(Sys.info()["sysname"] == "Windows", py_modules, c(py_modules,py_modules_frompath)),
+    py_module_available
+  )]
   if (length(py_missing)>0) {
     print_message(
       type="error",
@@ -68,13 +78,23 @@ init_python <- function() {
       "Please install them before continuing (depending on your distribution, you can find ",
       "packaged version of them, otherwise you can install them manually with ",
       "'sudo pip2 install ",paste(py_missing,collapse=" "),"' - pip2 is required).")
-  } #TODO pip2 not working to install gitPython
+  }
   
   # import python modules
   py <- list()
   py$py <- import_builtins(convert=FALSE)
   for (mod in py_modules) {
     py[[mod]] <- import(mod, convert=FALSE)
+  }
+  for (mod in py_modules_frompath) {
+    py[[mod]] <- if (Sys.info()["sysname"] != "Windows") {
+      import(mod, convert=FALSE)
+    } else {
+      import_from_path(
+        mod, 
+        file.path(dirname(dirname(binpaths$python)), "apps/Python27", mod)
+      )
+    }
   }
   
   # return the modules
