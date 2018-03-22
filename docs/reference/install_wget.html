@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Initialise python — init_python • SALTO: Sentinel-2 And Landsat TOolbox</title>
+<title>Download and install wget. — install_wget • SALTO: Sentinel-2 And Landsat TOolbox</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,38 +89,54 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Initialise python</h1>
+    <h1>Download and install wget.</h1>
     </div>
 
     
-    <p>Internal function to check that the python dependencies
-required in the package are present; if so, load the base modules.</p>
+    <p>This function download and install standalone version of
+<a href='https://eternallybored.org/misc/wget'>GNU Wget</a> for Windows.</p>
     
 
-    <pre class="usage"><span class='fu'>init_python</span>()</pre>
-        
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>A list with the required modules.</p>
+    <pre class="usage"><span class='fu'>install_wget</span>(<span class='kw'>wget_dir</span> <span class='kw'>=</span> <span class='fu'>system.file</span>(<span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"salto"</span>), <span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>wget_dir</th>
+      <td><p>(optional) Path where wget executable will be installed
+(default: the package path).</p></td>
+    </tr>
+    <tr>
+      <th>force</th>
+      <td><p>(optional) Logical: if TRUE, install even if it is already
+installed (default is FALSE).</p></td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='fu'>install_wget</span>()
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#value">Value</a></li>
-
       <li><a href="#note">Note</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     
-Luigi Ranghetti, phD (2017) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a>
+Luigi Ranghetti, phD (2018) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a>
 
   </div>
 </div>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Initialise python — init_python • SALTO: Sentinel-2 And Landsat TOolbox</title>
+<title>Insert an extent — load_extent_bbox • SALTO: Sentinel-2 And Landsat TOolbox</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,19 +89,28 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Initialise python</h1>
+    <h1>Insert an extent</h1>
     </div>
 
     
-    <p>Internal function to check that the python dependencies
-required in the package are present; if so, load the base modules.</p>
+    <p>Internal functions and modal dialogs to specify an extent
+in the GUI.</p>
     
 
-    <pre class="usage"><span class='fu'>init_python</span>()</pre>
-        
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <pre class="usage"><span class='fu'>load_extent_bbox</span>()
 
-    <p>A list with the required modules.</p>
+<span class='fu'>load_extent_vectfile</span>()
+
+<span class='fu'>load_extent_draw</span>(<span class='no'>extent_ns_name</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>extent_ns_name</th>
+      <td><p>Name of the namespace to be used</p></td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
@@ -112,15 +121,14 @@ required in the package are present; if so, load the base modules.</p>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#value">Value</a></li>
-
       <li><a href="#note">Note</a></li>
           </ul>
 
     <h2>Author</h2>
     
-Luigi Ranghetti, phD (2017) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a>
+Luigi Ranghetti, phD (2018) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a>
 
   </div>
 </div>
