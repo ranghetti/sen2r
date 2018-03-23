@@ -58,10 +58,7 @@ init_python <- function() {
   }
   
   use_python(binpaths$python)
-  py_missing <- py_modules[!sapply(
-    ifelse(Sys.info()["sysname"] == "Windows", py_modules, c(py_modules,py_modules_frompath)),
-    py_module_available
-  )]
+  py_missing <- py_missing <- py_modules[!sapply(py_modules,py_module_available)]
   if (length(py_missing)>0) {
     print_message(
       type="error",

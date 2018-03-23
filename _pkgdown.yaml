@@ -59,7 +59,7 @@ reference:
       - '`raster2rgb`'
       - '`compute_s2_paths`'
       - '`maskapply_parallel`'
-      - '`load_extent`'
+      - '`load_extent_bbox`'
 navbar:
   type: inverse
   left:
