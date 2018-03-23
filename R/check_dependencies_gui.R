@@ -20,6 +20,7 @@
 #'  reactiveFileReader reactiveValues renderText renderUI runApp
 #'  shinyApp showModal span strong textOutput uiOutput
 #' @importFrom shinyjs html useShinyjs
+#' @importFrom shinyWidgets confirmSweetAlert
 #' @importFrom utils capture.output
 #' @importFrom jsonlite fromJSON toJSON
 #' @examples
@@ -101,7 +102,10 @@ check_dependencies <- function() {
            actionButton("check_s2download", "Check s2download scripts", width=200),
            "\u2000"),
       span(style="display:inline-block;vertical-align:center;",
-           htmlOutput("check_s2download_icon"))
+           htmlOutput("check_s2download_icon")),
+      
+      hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+      uiOutput("footer_buttons")
       
     ) # end of fluidRow Dependencies
     
@@ -208,7 +212,9 @@ check_dependencies <- function() {
     # build the icon of the check
     observe({
       input$check_wget
-      rv$check_wget_isvalid <- if (!is.null(binpaths()$wget)) {
+      rv$check_wget_isvalid <- if (Sys.info()["sysname"] != "Windows") {
+        TRUE
+      } else if (!is.null(binpaths()$wget)) {
         file.exists(binpaths()$wget)
       } else {FALSE}
     })
@@ -511,7 +517,60 @@ check_dependencies <- function() {
       
     })
     
-    # Closing the connection when window is closed
+    
+    
+    ##-- Footer buttons --##
+    observe({
+      rv$check_all_isvalid <- all(c(
+        rv$check_gdal_isvalid, rv$check_wget_isvalid, 
+        rv$check_sen2cor_isvalid, rv$check_s2download_isvalid
+      ))
+    })
+    
+    output$footer_buttons <- renderUI({
+      div(
+        style = "vertical-align:center;text-align:right;",
+        if (rv$check_all_isvalid) {
+          span(
+            style = "display:inline-block;",
+            "All the dependencies are satisfied, you can safely use the library.\u2000"
+          )
+          # actionButton("close_gui", "\u2000Close", icon = icon("check"), class = "darkbutton")
+        },
+        actionButton(
+          "close_gui", "\u2000Close", 
+          icon = icon(ifelse(rv$check_all_isvalid, "check", "exclamation-triangle")), 
+          class = "darkbutton"
+        )
+        
+      )
+      
+    })
+    
+    # Close the connection when button is pressed
+    observeEvent(input$close_gui, {
+      if (!rv$check_all_isvalid) {
+        confirmSweetAlert(
+          session = session, inputId = "confirm_close", type = "warning",
+          title = "Closing the GUI?",
+          text = paste0(
+            "Are you sure do you want to quit? ",
+            "Running the package with unsatisfied ",
+            "dependencies can lead to errors."
+          ), 
+          danger_mode = TRUE, btn_labels = c("Cancel", "Close window")
+        )
+      } else {
+        stopApp()
+      }
+    })
+    observeEvent(input$confirm_close, {
+      if (input$confirm_close) {
+        stopApp()
+      }
+    })
+    
+    # Close the connection when window is closed
     session$onSessionEnded(function() {
       stopApp()
     })
