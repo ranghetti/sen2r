@@ -1116,7 +1116,9 @@ sto <- function(param_list=NULL,
       
       dir.create(paths["warped"], recursive=FALSE, showWarnings=FALSE)
       # create mask
-      s2_mask_extent <- if (anyNA(pm$extent$geometry)) {
+      s2_mask_extent <- if (is.na(pm$extent)) {
+        NULL
+      } else if (anyNA(pm$extent$geometry)) { # FIXME check on telemod tiffs
         NULL
       } else if (pm$extent_as_mask==TRUE) {
         pm$extent %>% st_combine() # TODO remove this when multiple extents will be allowed

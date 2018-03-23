@@ -57,17 +57,6 @@ init_python <- function() {
     
   }
   
-  use_python(binpaths$python)
-  py_missing <- py_missing <- py_modules[!sapply(py_modules,py_module_available)]
-  if (length(py_missing)>0) {
-    print_message(
-      type="error",
-      "Some modules (",paste(py_missing,collapse=", "),") are missing in your python distribution. ",
-      "Please install them before continuing (depending on your distribution, you can find ",
-      "packaged version of them, otherwise you can install them manually with ",
-      "'sudo pip2 install ",paste(py_missing,collapse=" "),"' - pip2 is required).")
-  }
-  
   # import python modules
   # in Windows they are imported with import_from_path(), which grants to
   # use the chosen (osgeo for windows) python version.
@@ -86,6 +75,17 @@ init_python <- function() {
         file.path(dirname(dirname(binpaths$python)), "apps/Python27/Lib/site-packages")
       )
     }
+  }
+  
+  use_python(binpaths$python)
+  py_missing <- py_modules[!sapply(py_modules,py_module_available)]
+  if (length(py_missing)>0) {
+    print_message(
+      type="error",
+      "Some modules (",paste(py_missing,collapse=", "),") are missing in your python distribution. ",
+      "Please install them before continuing (depending on your distribution, you can find ",
+      "packaged version of them, otherwise you can install them manually with ",
+      "'sudo pip2 install ",paste(py_missing,collapse=" "),"' - pip2 is required).")
   }
   
   # return the modules
