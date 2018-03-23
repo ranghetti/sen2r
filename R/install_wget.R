@@ -5,7 +5,7 @@
 #'  (default: the package path).
 #' @param force (optional) Logical: if TRUE, install even if it is already 
 #'  installed (default is FALSE).
-#' @return NULL
+#' @return The path of wget
 #'
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
@@ -61,5 +61,7 @@ install_wget <- function(wget_dir = system.file(package="salto"),
     }
     # # add to the path
     # system(paste0('setx PATH "',binpaths$wget,'"'), intern=TRUE)
+    
+    wget_path
   
 }

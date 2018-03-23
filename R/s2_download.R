@@ -66,9 +66,8 @@ s2_download <- function(s2_prodlist=NULL,
   binpaths <- if (file.exists(binpaths_file)) {
     jsonlite::fromJSON(binpaths_file)
   } else {
-    list("wget" = NULL)
+    list("wget" = install_wget())
   }
-  if (is.null(binpaths$wget)) {install_s2download()}
   
   # TODO add checks on the format of filename (one element output of s2_list)
   

@@ -232,12 +232,6 @@ sto <- function(param_list=NULL,
   
   ### Preliminary settings ###
   
-  # import python modules
-  # check that python and the required modules are installed
-  if (use_python == TRUE) {
-    py <- init_python()
-  }
-  
   # create tempdir
   dir.create(tempdir(), showWarnings=FALSE)
   
@@ -294,7 +288,7 @@ sto <- function(param_list=NULL,
     while(is.na(open_check_gui)) {
       open_check_gui_prompt <- print_message(
         type="waiting",
-        "It seems you are running this package for the first time. ",
+        # "It seems you are running this package for the first time. ",
         "Do you want to install the required dependencies using a GUI? (y/n) "
       )
       open_check_gui <- if (grepl("^[Yy]",open_check_gui_prompt)) {
@@ -314,6 +308,13 @@ sto <- function(param_list=NULL,
     date = TRUE,
     "Starting SALTO execution."
   )
+  
+  # import python modules
+  # check that python and the required modules are installed
+  if (use_python == TRUE) {
+    py <- init_python()
+  }
+  
   
   # Import param_list, if provided
   pm <- if (is.null(param_list)) {

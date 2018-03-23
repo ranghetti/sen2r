@@ -13,7 +13,15 @@
 #' @export
 #' @importFrom reticulate import_from_path import_builtins py_str use_python py_module_available py_to_r
 
-install_s2download <- function(inst_path=NA) {
+install_s2download <- function(inst_path = NA) {
+  .install_s2download(
+    inst_path = inst_path, 
+    interactive = TRUE
+  )
+}
+
+.install_s2download <- function(inst_path = NA,
+                                interactive = TRUE) {
   
   # define remote position of s2download
   s2download_ref <- "devel"
@@ -32,10 +40,11 @@ install_s2download <- function(inst_path=NA) {
       inst_path," already exists and it is a file; please provide a different value (or leave blank).")
   }
   if (length(list.files(inst_path))>0) {
-    if (interactive()) {
+    if (interactive & interactive()) {
       print_message(
-        type="waiting",
-        inst_path," already exists and will be erased: ENTER to proceed or ESC to cancel...")
+        type="waiting", 
+        paste0(inst_path," already exists and will be erased: ENTER to proceed or ESC to cancel...")
+      )
     } else {
       print_message(
         type="warning",
@@ -85,15 +94,12 @@ install_s2download <- function(inst_path=NA) {
           type="error",
           "Some dependencies (",paste(missing_dep,collapse=", "),") were not found in your system; ",
           "please install them or update your system PATH.",
-          if ("git" %in% missing_dep) {
-            "\nGit can be downloaded and installed from https://git-scm.com/downloads"
-          },
           if ("python" %in% missing_dep) {paste0(
             "\nTo install python, we suggest to use the OSGeo4W installer ",
             "(http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86",
             if (Sys.info()["machine"]=="x86-64") {"_64"},".exe), ",
             "to choose the \"Advanced install\" and to check ",
-            "the packages \"python-core\" and \"python-pip\" packages."
+            "the package \"gdal-python\"."
           )}
         )
       }

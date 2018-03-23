@@ -18,6 +18,14 @@
 #' }
 
 install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
+  .install_sen2cor(
+    sen2cor_dir = sen2cor_dir, 
+    force = force, 
+    interactive = TRUE
+  )
+}
+
+.install_sen2cor <- function(sen2cor_dir=NA, force = FALSE, interactive = TRUE) {
   
   # sen2cor version
   sen2cor_version <- package_version("2.4.0")
@@ -53,7 +61,7 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
       sen2cor_dir," already exists and it is a file; please provide a different value (or leave blank).")
   }
   if (length(list.files(sen2cor_dir))>0) {
-    if (interactive()) {
+    if (interactive & interactive()) {
       print_message(
         type="waiting",
         sen2cor_dir," already exists and will be erased: ENTER to proceed or ESC to cancel...")

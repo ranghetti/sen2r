@@ -137,9 +137,8 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
   binpaths <- if (file.exists(binpaths_file)) {
     jsonlite::fromJSON(binpaths_file)
   } else {
-    list("wget" = NULL)
+    list("wget" = install_wget())
   }
-  if (is.null(binpaths$wget)) {install_s2download()}
   
   # link to apihub
   if (is.null(apihub)) {

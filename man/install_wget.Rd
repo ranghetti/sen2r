@@ -13,6 +13,9 @@ install_wget(wget_dir = system.file(package = "salto"), force = FALSE)
 \item{force}{(optional) Logical: if TRUE, install even if it is already
 installed (default is FALSE).}
 }
+\value{
+The path of wget
+}
 \description{
 This function download and install standalone version of
 \href{https://eternallybored.org/misc/wget}{GNU Wget} for Windows.

@@ -21,6 +21,7 @@
 #'  shinyApp showModal span strong textOutput uiOutput
 #' @importFrom shinyjs html useShinyjs
 #' @importFrom utils capture.output
+#' @importFrom jsonlite fromJSON toJSON
 #' @examples
 #' \dontrun{
 #' 
@@ -58,9 +59,11 @@ settings.ui <- fluidPage(
         "Wget is the downloader used by the package;",
         "it is required by the package, unless you choose to work offline."
       )),
-      span(style="padding-top:5px;",
+      span(style="display:inline-block;vertical-align:center;padding-top:5px;",
            actionButton("check_wget", "Check wget", width=200),
-           "\u2000")
+           "\u2000"),
+      span(style="display:inline-block;vertical-align:center;",
+           htmlOutput("check_wget_icon"))
       
       # Do not check Python (always present in Linux, and provided by GDAL in Windows)
       # h3("Python"),
@@ -79,7 +82,7 @@ settings.ui <- fluidPage(
       "sen2cor is used to perform atmospheric correction of Sentinel-2",
       "Level-1C products: it is required by the package,",
       "unless you choose not to correct products locally",
-      "(using only Level-1C - TOA products",
+      "(using only Level-1C \u2013 TOA products",
       "or dowloading directly Level-2A products)."
     )),
     span(style="display:inline-block;vertical-align:center;padding-top:5px;",
@@ -118,14 +121,16 @@ settings.server <- function(input, output, session) {
     "python", "sen2cor", "s2download", "wget"
   )
   # load binpaths
-  # check that git, python2 and wget are installed
   binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")
-  # binpaths <- if (file.exists(binpaths_file)) {
-  #   jsonlite::fromJSON(binpaths_file)
-  # } else {
-  #   sapply(dependencies,function(x){x=NULL})
-  # }
-  binpaths <- reactiveFileReader(intervalMillis = 1000, session = session, filePath = binpaths_file, readFunc = jsonlite::fromJSON)
+
+  binpaths <- reactivePoll(1000, session, function() {
+  }, function() {
+    if (file.exists(binpaths_file)) {
+      fromJSON(binpaths_file)
+    } else {
+      sapply(dependencies,function(x){x=NULL})
+    }
+  })
   
 
   ##-- Perform checks of dependencies --##
@@ -204,8 +209,7 @@ settings.server <- function(input, output, session) {
   observe({
     input$check_wget
     rv$check_wget_isvalid <- if (!is.null(binpaths()$wget)) {
-      file.exists(file.path(binpaths()$wget,"wget.py")) &
-        file.exists(file.path(binpaths()$wget,"Sentinel-download/Sentinel_download.py"))
+      file.exists(binpaths()$wget)
     } else {FALSE}
   })
   output$check_wget_isvalid <- renderText(rv$check_wget_isvalid)
@@ -368,7 +372,7 @@ settings.server <- function(input, output, session) {
     
     check_sen2cor_outmess <- capture.output(
       check_sen2cor_outerr <- tryCatch(
-        install_sen2cor(),
+        .install_sen2cor(interactive = FALSE),
         error = function(e) {print(e)}
       ),
       type = "message"
@@ -483,7 +487,7 @@ settings.server <- function(input, output, session) {
     
     check_s2download_outmess <- capture.output(
       check_s2download_outerr <- tryCatch(
-        install_s2download(),
+        .install_s2download(interactive = FALSE),
         error = function(e) {print(e)}
       ),
       type = "message"
