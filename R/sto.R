@@ -287,6 +287,27 @@ sto <- function(param_list=NULL,
                  thumbnails=TRUE,
                  pkg_version=packageVersion("salto"))
   
+  # If it is the first time that the package is used,
+  # ask for opening the GUI to install dependencies
+  if (interactive() & !file.exists(system.file("extdata","paths.json", package="salto"))) {
+    open_check_gui <- NA
+    while(is.na(open_check_gui)) {
+      open_check_gui_prompt <- print_message(
+        type="waiting",
+        "It seems you are running this package for the first time. ",
+        "Do you want to install the required dependencies using a GUI? (y/n) "
+      )
+      open_check_gui <- if (grepl("^[Yy]",open_check_gui_prompt)) {
+        TRUE
+      } else if (grepl("^[Nn]",open_check_gui_prompt)) {
+        FALSE
+      } else {
+        NA
+      }
+    }
+    if (open_check_gui) {check_dependencies()}
+  }
+  
   # Starting execution
   print_message(
     type = "message",
@@ -305,36 +326,6 @@ sto <- function(param_list=NULL,
   } else if (is(param_list, "list")) {
     param_list
     # TODO check parameter names
-  }
-  
-  # Check param_list version
-  if (is.null(pm$pkg_version)) {
-    if (!is.null(pm$fidolasen_version)) {
-      pm$pkg_version <- pm$fidolasen_version
-    } else {
-      pm$pkg_version <- package_version("0.2.0")
-    }
-  }
-  if (packageVersion("salto") > package_version(pm$pkg_version)) {
-    if (interactive()) {
-      open_gui <- print_message(
-        type="waiting",
-        "The parameter file was created with an old version of the package:\n ",
-        "type \"G\" (and ENTER) to open the GUI and check that the input\n ",
-        "parameters are correct, or ENTER to proceed anyway\n ",
-        "(this could lead to errors).\n ",
-        "Alternatively, press ESC to interrupt."
-      )
-      if (length(grep("^[Gg]",open_gui))>0) {
-        gui <- TRUE
-      }
-    } else {
-      print_message(
-        type="warning",
-        "The parameter file was created with an old version of the package:\n ",
-        "(this could lead to errors).\n "
-      )
-    }
   }
   
   # Overwrite parameters passed manually
@@ -363,13 +354,49 @@ sto <- function(param_list=NULL,
   #   }
   # }
   
-  
-  ## Open GUI (if required)
   # if gui argument was not specified, use default value
   if (is.na(gui)) {
     gui <- if (is.null(param_list)) {TRUE} else {FALSE}
   }
-  # open GUI
+  
+  # Check param_list version
+  if (is.null(pm$pkg_version)) {
+    if (!is.null(pm$fidolasen_version)) {
+      pm$pkg_version <- pm$fidolasen_version
+    } else {
+      pm$pkg_version <- package_version("0.2.0")
+    }
+  }
+  if (packageVersion("salto") > package_version(pm$pkg_version)) {
+    if (interactive() & !gui) {
+      open_gui <- NA
+      while(is.na(open_gui)) {
+        open_gui_prompt <- print_message(
+          type="waiting",
+          "\nThe parameter file was created with an old version of the package:\n",
+          "would you like to open a GUI and check that the input parameters are correct? (y/n)\n",
+          # "Note that continuing without checking them could lead to errors.\n",
+          "Alternatively, press ESC to interrupt and check the parameter file manually.\n"
+        )
+        open_gui <- if (grepl("^[Yy]",open_gui_prompt)) {
+          gui <- TRUE
+          TRUE
+        } else if (grepl("^[Nn]",open_gui_prompt)) {
+          FALSE
+        } else {
+          NA
+        }
+      }
+    } else {
+      print_message(
+        type="warning",
+        "The parameter file was created with an old version of the package ",
+        "(this could lead to errors)."
+      )
+    }
+  }
+
+  ## Open GUI (if required)
   if (gui==TRUE) {
     
     print_message(
