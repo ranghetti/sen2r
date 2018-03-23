@@ -30,7 +30,8 @@
 #' @importFrom shinyFiles getVolumes parseDirPath parseFilePaths parseSavePath
 #'  shinyDirButton shinyDirChoose shinyFileChoose shinyFileSave
 #'  shinyFilesButton shinySaveButton
-#' @importFrom shinyjs alert delay disable enable
+#' @importFrom shinyjs delay disable enable
+#' @importFrom shinyWidgets sendSweetAlert
 #' @importFrom sprawl check_proj4string get_rastype get_vectype
 #' @importFrom stats setNames
 #' @importFrom utils unzip
@@ -1422,7 +1423,19 @@ s2_gui <- function(param_list = NULL,
         if (bbox_valid) {
           removeModal()
         } else {
-          alert("Please insert a valid bounding box.")
+          sendSweetAlert(
+            session, 
+            title = "Invalid bounding box", 
+            text = paste(
+              "Please insert a valid bounding box",
+              "(check i.e. that numeric values make sense with the chosen projection,",
+              "and that left easting \uFF1C right easting and",
+              "lower northing \uFF1C upper northing)."
+            ), 
+            type = "error",
+            btn_labels = "Ok"
+          )
+          
         }
         # Fake progress
         for (i in 1:10) {incProgress(1/10); Sys.sleep(0.1)}
@@ -1438,20 +1451,32 @@ s2_gui <- function(param_list = NULL,
       # checks
       if (length(unique(gsub("\\..+$","",input$path_vectfile_sel$name))) > 1) {
         # if more than one vector were chosen, give an alert and do not use the file
-        alert(paste(
-          "Please select a single vector",
-          "(multiple selection is allowed only for shapefiles)."
-        ))
+        sendSweetAlert(
+          session, 
+          title = "Invalid vector", 
+          text = paste(
+            "Please select a single vector",
+            "(multiple selection is allowed only for shapefiles)."
+          ),
+          type = "error",
+          btn_labels = "Ok"
+        )
         rv$vectfile_path <- ""
       } else if (length(uploaded_exts) == 1 && !uploaded_exts %in% c("shp","shx","dbf","prj")) {
         # if a single file was chosen and it is not a shapefile, use it
         rv$vectfile_path <- input$path_vectfile_sel$datapath
       } else if (anyNA(match(c("shp","shx","dbf","prj"),uploaded_exts))) {
         # if a shapefile was chosen but some files are missing, do not use it
-        alert(paste(
-          "Please select all the files of the shapefile",
-          "(at most .shp, .shx, .prj, .dbf)."
-        ))
+        sendSweetAlert(
+          session, 
+          title = "Incomplete shapefile", 
+          text = paste(
+            "Please select all the files of the shapefile",
+            "(at most .shp, .shx, .prj, .dbf)."
+          ),
+          type = "error",
+          btn_labels = "Ok"
+        )
         rv$vectfile_path <- ""
       } else {
         # if a shapefile was chosen and all the files are present,
@@ -1480,7 +1505,13 @@ s2_gui <- function(param_list = NULL,
         if (vectfile_valid) {
           removeModal()
         } else {
-          alert("Please specify a valid vector file.")
+          sendSweetAlert(
+            session, 
+            title = "Please specify a valid vector file.", 
+            text = NULL,
+            type = "error",
+            btn_labels = "Ok"
+          )
         }
         for (i in 1:10) {incProgress(1/10); Sys.sleep(0.1)}
       })
@@ -1510,7 +1541,13 @@ s2_gui <- function(param_list = NULL,
         if (drawn_valid) {
           removeModal()
         } else {
-          alert("Please draw a valid extent.")
+          sendSweetAlert(
+            session, 
+            title = "Please draw a valid extent.", 
+            text = NULL,
+            type = "error",
+            btn_labels = "Ok"
+          )
         }
         for (i in 1:10) {incProgress(1/10); Sys.sleep(0.1)}
       })
@@ -2430,13 +2467,19 @@ s2_gui <- function(param_list = NULL,
           
         })
         setProgress(1)
-        alert(paste(
-          "Parameters were correctly loaded.",
-          "If you do not see the selected extent on the map, please use",
-          "the button \"Refresh the map\"",
-          "(notice that loading a big vector file can take some time)."
-        ))
-        
+        # sendSweetAlert(
+        #   session, 
+        #   title = "Parameters loaded.", 
+        #   text = paste(
+        #     "Parameters were correctly loaded.",
+        #     "If you do not see the selected extent on the map, please use",
+        #     "the button \"Refresh the map\"",
+        #     "(notice that loading a big vector file can take some time)."
+        #   ),
+        #   type = "success",
+        #   btn_labels = "Ok"
+        # )
+
       })
       
     }
