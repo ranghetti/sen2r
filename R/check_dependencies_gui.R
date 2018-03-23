@@ -507,6 +507,11 @@ settings.server <- function(input, output, session) {
     
   })
   
+  # Closing the connection when window is closed
+  session$onSessionEnded(function() {
+    stopApp()
+  })
+  
 }
 
 

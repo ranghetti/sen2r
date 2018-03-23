@@ -2528,6 +2528,11 @@ s2_gui <- function(param_list = NULL,
     
     ## end of path module ##
     
+    # Closing the connection when window is closed
+    session$onSessionEnded(function() {
+      stopApp()
+    })
+    
   } # end of s2_gui.server function
   
   
