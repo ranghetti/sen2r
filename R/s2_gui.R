@@ -17,7 +17,6 @@
 #' @importFrom leaflet.extras addDrawToolbar editToolbarOptions
 #'  removeDrawToolbar
 #' @importFrom mapedit editModUI
-#' @importFrom reticulate import
 #' @importFrom sf st_coordinates st_intersects st_polygon st_read st_sf st_sfc st_transform
 #' @importFrom shiny a actionButton actionLink br callModule checkboxGroupInput
 #'  checkboxInput column conditionalPanel dateRangeInput div downloadButton downloadHandler em fileInput fluidRow h2 h3
@@ -55,10 +54,6 @@ s2_gui <- function(param_list = NULL,
 .s2_gui <- function(param_list = NULL,
                     par_fun = "parent",
                     thunderforest_api = NA) {
-  
-  # import python modules
-  gdal <- import("osgeo",convert=FALSE)$gdal
-  osr <- import("osgeo",convert=FALSE)$osr
   
   # TODO: populate parameter values with param_list content, if provided
   

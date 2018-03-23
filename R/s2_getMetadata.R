@@ -48,7 +48,7 @@
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @export
-#' @importFrom reticulate import py_to_r
+#' @importFrom reticulate py_to_r
 #' @importFrom methods is
 #'
 #' @examples
@@ -109,6 +109,9 @@ s2_getMetadata <- function(s2, info="all") {
                                  "elements" = c("id_tile","sensing_datetime","bandname")),
     "compactname_L2A_jp2" = list("regex" = "^L2A\\_T([A-Z0-9]{5})\\_([0-9]{8}T[0-9]{6})\\_([0-9A-Z]{3})\\_([126]0m)\\.jp2$",
                                  "elements" = c("id_tile","sensing_datetime","bandname","res"))) # here bandname can be also additional_product
+  
+  # import python modules
+  py <- init_python()
   
   # define all possible elements to scan
   info_base <- c("prod_type", "version") # information always retrieved
@@ -433,14 +436,12 @@ s2_getMetadata <- function(s2, info="all") {
     # if necessary, read the file for further metadata
     if (any(info_gdal %in% info)) {
       
-      gdal <- import("osgeo",convert=FALSE)$gdal
-      
-      s2_gdal <- gdal$Open(s2_xml)
+      s2_gdal <- py$gdal$Open(s2_xml)
       # in case of error (old names), try to read a single granule
       if (s2_type=="product" & is(s2_gdal,"python.builtin.NoneType")) {
         first_granule <- list.files(file.path(s2_path,"GRANULE"),full.names=TRUE)[1]
         first_granule_xml <- list.files(first_granule,s2_regex[[paste0(s2_version,"name_granule_xml")]]$regex,full.names=TRUE)
-        s2_gdal <- gdal$Open(first_granule_xml)
+        s2_gdal <- py$gdal$Open(first_granule_xml)
       }
       
     }
@@ -449,7 +450,6 @@ s2_getMetadata <- function(s2, info="all") {
   
   # If s2 is a gdal object, read metadata directly
   if (is(s2, "osgeo.gdal.Dataset")) {
-    gdal <- import("osgeo",convert=FALSE)$gdal
     s2_gdal <- s2
   }
   

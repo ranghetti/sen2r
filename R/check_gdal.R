@@ -109,7 +109,7 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
           "(http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86",
           if (Sys.info()["machine"]=="x86-64") {"_64"},".exe), ",
           "to choose the \"Advanced install\" and ",
-          "to check the packages \"python-core\", \"gdal\" and \"openjpeg\"."
+          "to check the packages \"gdal-python\" and \"openjpeg\"."
         )
       }
     )

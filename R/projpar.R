@@ -15,7 +15,7 @@
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note Python is needed.
 #' @export
-#' @importFrom reticulate import r_to_py py_to_r
+#' @importFrom reticulate r_to_py py_to_r
 #' @importFrom sprawl check_proj4string
 #' @importFrom sp CRS
 #' @importFrom rgdal showWKT
@@ -28,7 +28,7 @@
 projpar <- function(proj4string, par, abort = FALSE) {
   
   # import python modules
-  osr <- import("osgeo",convert=FALSE)$osr
+  py <- init_python()
   
   proj4string_check <- check_proj4string(proj4string, abort=abort)
   
@@ -39,7 +39,7 @@ projpar <- function(proj4string, par, abort = FALSE) {
   proj4_wkt <- proj4string_check %>%
     showWKT() %>%
     r_to_py() %>%
-    osr$SpatialReference()
+    py$osr$SpatialReference()
   proj4_par <- proj4_wkt$GetAttrValue(par) %>%
     py_to_r()
   

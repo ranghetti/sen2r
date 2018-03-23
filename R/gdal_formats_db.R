@@ -45,14 +45,14 @@ gdal_formats_db <- function(json_path = NA,
   # read GDAL drivers
   gdal_driver_list <- list()
   for (i in 1:(py_to_r(gdal$GetDriverCount())-1)) {
-    gdal_driver_list[[i]] <- py$osgeo$gdal$GetDriver(py$py$int(i))
+    gdal_driver_list[[i]] <- py$gdal$GetDriver(py$py$int(i))
   }
   
   # export vectors of names and extensions
   gdal_driver_ext <- sapply(
     gdal_driver_list,
     function(x) {
-      unlist(strsplit(paste0(py_to_r(x$GetMetadataItem(py$osgeo$gdal$DMD_EXTENSIONS))," ")," "))[1]
+      unlist(strsplit(paste0(py_to_r(x$GetMetadataItem(py$gdal$DMD_EXTENSIONS))," ")," "))[1]
     }
   )
   gdal_driver_names <- sapply(

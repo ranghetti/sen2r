@@ -10,16 +10,7 @@
 init_python <- function() {
   
   # define the required python module
-  py_modules <- c("os","sys","subprocess","re","numpy","urllib","zipfile")
-  py_modules_frompath <- c("numpy","osgeo")
-  # py_modules are imported with import() function, so from any of the
-  # discovered python versions; 
-  # py_modules_frompath are imported with import_from_path(), which grants to
-  # use the chosen (osgeo for windows) python version.
-  # This was necessary, since in some windows installations use_python()
-  # was unable to set the python version correctly (python was set, but not
-  # pythonhome, so import() continued to try to import from pythonhome, i.e. 
-  # osgeo from Anaconda python, which was missing).
+  py_modules <- c("os","sys","subprocess","re","numpy","urllib","zipfile","numpy","gdal","osr")
   
   # On Windows, start searching in the GDAL directory
   if (Sys.info()["sysname"] == "Windows") {
@@ -40,7 +31,7 @@ init_python <- function() {
     
     # Try to search Python
     binpaths$python <- tryCatch(
-      normalizePath(py_discover_config(required_module = "osgeo")$python),
+      normalizePath(py_discover_config(required_module = "gdal")$python),
       error = function(e) {NULL}
     )
     
@@ -56,7 +47,7 @@ init_python <- function() {
             "Download it from  http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86",
             if (Sys.info()["machine"]=="x86-64") {"_64"},".exe, ",
             "then choose the \"Advanced install\" and ",
-            "check the packages \"python-core\", \"gdal\" and \"openjpeg\"."
+            "check the package \"gdal-python\"."
           )
         }
       )
@@ -81,18 +72,21 @@ init_python <- function() {
   }
   
   # import python modules
+  # in Windows they are imported with import_from_path(), which grants to
+  # use the chosen (osgeo for windows) python version.
+  # This was necessary, since in some windows installations use_python()
+  # was unable to set the python version correctly (python was set, but not
+  # pythonhome, so import() continued to try to import from pythonhome, i.e. 
+  # osgeo from Anaconda python, which was missing).
   py <- list()
   py$py <- import_builtins(convert=FALSE)
   for (mod in py_modules) {
-    py[[mod]] <- import(mod, convert=FALSE)
-  }
-  for (mod in py_modules_frompath) {
     py[[mod]] <- if (Sys.info()["sysname"] != "Windows") {
       import(mod, convert=FALSE)
     } else {
       import_from_path(
         mod, 
-        file.path(dirname(dirname(binpaths$python)), "apps/Python27", mod)
+        file.path(dirname(dirname(binpaths$python)), "apps/Python27/Lib/site-packages")
       )
     }
   }

@@ -507,7 +507,7 @@ sto <- function(param_list=NULL,
   
   
   # check output format
-  # sel_driver <- py$osgeo$gdal$GetDriverByName(pm$outformat)
+  # sel_driver <- py$gdal$GetDriverByName(pm$outformat)
   gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="salto"))
   sel_driver <- gdal_formats[gdal_formats$name==pm$outformat,]
   
@@ -528,7 +528,7 @@ sto <- function(param_list=NULL,
   #   "dat"
   # } else {
   #   # unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(gdal$DMD_EXTENSIONS))," ")," "))[1]
-  #   unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(py$osgeo$gdal$DMD_EXTENSIONS))," ")," "))[1]
+  #   unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(py$gdal$DMD_EXTENSIONS))," ")," "))[1]
   # }
   out_ext <- sel_driver[1,"ext"]
   
