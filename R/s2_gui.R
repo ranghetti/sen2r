@@ -13,24 +13,25 @@
 #' @importFrom geojsonio geojson_json
 #' @importFrom leaflet addLayersControl addPolygons addProviderTiles
 #'  addTiles clearShapes fitBounds hideGroup labelOptions layersControlOptions
-#'  leaflet leafletProxy
+#'  leaflet leafletOutput leafletProxy
 #' @importFrom leaflet.extras addDrawToolbar editToolbarOptions
 #'  removeDrawToolbar
 #' @importFrom mapedit editModUI
-#' @importFrom reticulate import
 #' @importFrom sf st_coordinates st_intersects st_polygon st_read st_sf st_sfc st_transform
 #' @importFrom shiny a actionButton actionLink br callModule checkboxGroupInput
-#'  checkboxInput column conditionalPanel dateRangeInput div em fluidRow h2 h3
-#'  helpText hr HTML htmlOutput icon isolate NS numericInput observe p
-#'  radioButtons reactive reactiveValues renderText renderUI runApp selectInput
-#'  shinyApp showModal span stopApp strong tagList textInput uiOutput updateCheckboxGroupInput
-#'  updateDateRangeInput updateRadioButtons updateTextInput withMathJax
+#'  checkboxInput column conditionalPanel dateRangeInput div downloadButton downloadHandler em fileInput fluidRow h2 h3
+#'  helpText hr HTML htmlOutput icon incProgress isolate NS numericInput observe p
+#'  radioButtons reactive reactiveValues renderText renderUI runApp selectInput setProgress
+#'  shinyApp showModal sliderInput span stopApp strong tagList textInput uiOutput updateCheckboxGroupInput
+#'  updateDateRangeInput updateSliderInput updateRadioButtons updateTextInput withMathJax
+#'  withProgress
 #' @importFrom shinydashboard box dashboardBody dashboardHeader dashboardPage
 #'  dashboardSidebar menuItem sidebarMenu tabItem tabItems
 #' @importFrom shinyFiles getVolumes parseDirPath parseFilePaths parseSavePath
 #'  shinyDirButton shinyDirChoose shinyFileChoose shinyFileSave
 #'  shinyFilesButton shinySaveButton
-#' @importFrom shinyjs enable disable
+#' @importFrom shinyjs delay disable enable
+#' @importFrom shinyWidgets sendSweetAlert
 #' @importFrom sprawl check_proj4string get_rastype get_vectype
 #' @importFrom stats setNames
 #' @importFrom utils unzip
@@ -55,17 +56,13 @@ s2_gui <- function(param_list = NULL,
                     par_fun = "parent",
                     thunderforest_api = NA) {
   
-  # import python modules
-  gdal <- import("osgeo",convert=FALSE)$gdal
-  osr <- import("osgeo",convert=FALSE)$osr
-  
   # TODO: populate parameter values with param_list content, if provided
   
   # create tempdir
   dir.create(tempdir(), showWarnings=FALSE)
   
   # extract and import tiles kml
-  s2tiles_kmz <- system.file("extdata","vector","s2_tiles.kmz",package="salto")
+  s2tiles_kmz <- system.file("extdata","vector","s2_tiles.kmz",package="sen2r")
   s2tiles_kml <- gsub("\\.kmz$",".kml",s2tiles_kmz)
   if (!file.exists(s2tiles_kml)) {
     unzip(zipfile = s2tiles_kmz,
@@ -79,7 +76,7 @@ s2_gui <- function(param_list = NULL,
   
   # shiny
   s2_gui.ui <- dashboardPage(
-    dashboardHeader(title="salto"),
+    dashboardHeader(title="sen2r"),
     
     dashboardSidebar(
       
@@ -108,17 +105,40 @@ s2_gui <- function(param_list = NULL,
       HTML("<script src=\"message-handler.js\"></script>"),
       shinyjs::useShinyjs(),
       shiny::tags$head(shiny::tags$style(".darkbutton{background-color:#28353b;color:#b8c7ce;width:200px;")), # background color and font color
+      shiny::tags$head(shiny::tags$script(src = "message-handler.js")), # for actionbuttons
+      # shiny::tags$head(shiny::tags$script('
+      #                                     var dimension = [0, 0];
+      #                                     $(document).on("shiny:connected", function(e) {
+      #                                     dimension[0] = window.innerWidth;
+      #                                     dimension[1] = window.innerHeight;
+      #                                     Shiny.onInputChange("dimension", dimension);
+      #                                     });
+      #                                     $(window).resize(function(e) {
+      #                                     dimension[0] = window.innerWidth;
+      #                                     dimension[1] = window.innerHeight;
+      #                                     Shiny.onInputChange("dimension", dimension);
+      #                                     });
+      #                                     ')), # return the width/height of the window (used to set map height)
       div(
         style="position:absolute;top:250px;",
+        # # client-side buttons
+        # p(style="margin-top:15pt;margin-left:11pt;",
+        #   downloadButton("export_param", "\u2000Save options as...", class="darkbutton")
+        # ),
+        # p(style="margin-top:5pt;margin-left:11pt;",
+        #   fileInput(
+        #     "import_param", label = NULL, buttonLabel = "Load options", 
+        #     accept = "application/json", multiple = FALSE#, class = "darkbutton"
+        #   )
+        # ),
+        # server-side buttons
         p(style="margin-top:15pt;margin-left:11pt;",
           shinySaveButton("export_param", "Save options as...", "Save parameters as ...", filetype=list(json="json"), class="darkbutton")
         ),
-        # # FIXME "Load options" was deactivated for unsolved problems
-        # # with extent map.
-        # p(style="margin-top:5pt;margin-left:11pt;",
-        #   shinyFilesButton("import_param", "Load options", "Import a JSON file with parameters", multiple=FALSE, class="darkbutton")
-        # ),
-        actionButton("import_param_deactivated", label = "Load options", class = "darkbutton"),
+        p(style="margin-top:5pt;margin-left:11pt;",
+          shinyFilesButton("import_param", "Load options", "Import a JSON file with parameters", multiple=FALSE, class="darkbutton")
+        ),
+        # actionButton("import_param_deactivated", label = "Load options", class = "darkbutton"),
         p(style="margin-top:20pt;",
           actionButton(
             "return_param",
@@ -413,121 +433,102 @@ s2_gui <- function(param_list = NULL,
               fluidRow(
                 
                 column(
-                  width=4,
+                  width=6,
                   
                   div(style="display:inline-block;vertical-align:top;",
                       span(
-                        strong("Extent name:\u2000")),
+                        strong("Extent name:\u2000"),
                         actionLink("help_extent_name", icon("question-circle"))
-                      ),
-                  div(style="display:inline-block;vertical-align:top;",
-                        textInput("extent_name_textin", NULL, "")),
+                      )),
+                  div(style="vertical-align:top;",
+                      textInput("extent_name_textin", NULL, "")),
                   
-                  radioButtons(
-                    "extent_type", 
-                    label = span(
-                      "Method to select extent\u2000",
-                      actionLink("alert_leaflet", icon("warning"), style="color:red")
-                    ),
-                    choices = list(
-                      "Draw on the map" = "draw",
-                      "Upload vector file" = "vectfile",
-                      "Enter coordinates" = "bbox"
-                    ),
-                    selected = "draw")
+                  # Buttons to load the extent with modal dialogs
+                  strong("Specify the extent:\u2000"),
+                  span(
+                    div(style="padding-top:5px;",
+                        actionButton(
+                          "button_extent_bbox",
+                          label = "\u2000Specify a bounding box",
+                          width = 200,
+                          icon=icon("object-group")
+                        )),
+                    div(style="padding-top:10px;",
+                        actionButton(
+                          "button_extent_vectfile",
+                          label = "\u2000Load a vector file",
+                          width = 200,
+                          icon=icon("upload")
+                        )),
+                    div(style="padding-top:10px;",
+                        actionButton(
+                          "button_extent_draw",
+                          label = "\u2000Draw it on the map",
+                          width = 200,
+                          icon=icon("paint-brush")
+                        )),
+                    div(style="padding-top:10px;padding-bottom:10px;",
+                        actionButton(
+                          "button_refresh_map",
+                          label = "\u2000Reload the extent on map",
+                          width = 200,
+                          icon=icon("retweet")
+                        ))
+                  )
+                  
                 ),
                 
                 column(
-                  width=8,
-                  conditionalPanel(
-                    condition = "input.extent_type == 'vectfile'",
-                    div(style="display:inline-block;vertical-align:top;",
-                        strong("Select vector file: \u00a0")),
-                    div(style="display:inline-block;vertical-align:top;",
-                        htmlOutput("path_vectfile_errormess")),
-                    div(#div(style="display:inline-block;vertical-align:top;width:50pt;", # FIXME 2 choosing file with the button the extent is not drawn yet, and the toolbar is not added/removed changing extent_type
-                      # shinyFilesButton("path_vectfile_sel",
-                      #                  "Select",
-                      #                  "Specify the file to be used as extent",
-                      #                  multiple = FALSE)),
-                      div(style="display:inline-block;vertical-align:top;",
-                          textInput("path_vectfile_textin", NULL, "Enter file path...")))
-                  ),
-                  conditionalPanel(
-                    condition = "input.extent_type == 'draw' || input.extent_type == 'vectfile'",
-                    radioButtons(
-                      "dissolve_extent",
-                      label = span(
-                        "Consider multiple polygons as:\u2000",
-                        actionLink("help_dissolve_extent", icon("question-circle"))
-                      ),
-                      choiceNames = list(
-                        "A multipart geometry (create a single merged output)",
-                        "Single part geometries (create separate outputs)"
-                      ),
-                      choiceValues = list(TRUE, FALSE),
-                      selected = TRUE)
-                  ),
-                  conditionalPanel(
-                    condition = "input.extent_type == 'vectfile' && input.dissolve_extent == 'FALSE'",
-                    selectInput("extent_id", "Select the field to use as extent name",
-                                choices = list("No one (using row numbers)" = "nrow",
-                                               "take","dynamically","from","shape","attributes"),
-                                selected = "nrow")
-                  ),
-                  conditionalPanel(
-                    condition = "input.extent_type == 'bbox'",
-                    div(
-                      strong("Insert bounding box coordinates:"),
-                      div(div(style="display:inline-block;position:relative;margin-left:55px;padding-top:10px;",
-                              numericInput("bbox_ymax", NULL, value=NULL, width="100px")),
-                          div(style="display:inline-block;position:relative;bottom:0;margin-left:65px;padding-top:10px;",
-                              span(style="color:grey", "upper north."))),
-                      div(div(style="display:inline-block;position:relative;",
-                              numericInput("bbox_xmin", NULL, value=NULL, width="100px")),
-                          div(style="display:inline-block;position:relative;margin-left:10px;",
-                              numericInput("bbox_xmax", NULL, value=NULL, width="100px")),
-                          div(style="display:inline-block;position:relative;bottom:0;margin-left:10px;",
-                              span(style="color:grey", "left-right east."))),
-                      div(div(style="display:inline-block;position:relative;margin-left:55px;",
-                              numericInput("bbox_ymin", NULL, value=NULL, width="100px")),
-                          div(style="display:inline-block;position:relative;bottom:0;margin-left:65px;",
-                              span(style="color:grey", "lower north."))),
-                      div(div(style="display:inline-block;position:relative;",
-                              textInput("bboxproj", "Projection of the coordinates:",
-                                        value="4326", width="210px")),
-                          div(style="display:inline-block;position:relative;bottom:0;margin-left:10px;",
-                              htmlOutput("bboxproj_message")))
-                    )
+                  width=6,
+                  div(
+                    checkboxGroupInput(
+                      "tiles_checkbox",
+                      "Tiles selected",
+                      choices = character(0),
+                      selected = character(0),
+                      inline = FALSE
+                    ),
+                    strong("Orbits selected"),
+                    helpText(em("Not yet implemented."))
                   )
                 )
+                
+                # TODO Multipart geometries: do not remove this part of code;
+                # this functionality have to be implemented.
+                # column(
+                #   width=8,
+                #   conditionalPanel(
+                #     condition = "input.extent_type == 'draw' || input.extent_type == 'vectfile'",
+                #     radioButtons(
+                #       "dissolve_extent",
+                #       label = span(
+                #         "Consider multiple polygons as:\u2000",
+                #         actionLink("help_dissolve_extent", icon("question-circle"))
+                #       ),
+                #       choiceNames = list(
+                #         "A multipart geometry (create a single merged output)",
+                #         "Single part geometries (create separate outputs)"
+                #       ),
+                #       choiceValues = list(TRUE, FALSE),
+                #       selected = TRUE)
+                #   ),
+                #   conditionalPanel(
+                #     condition = "input.extent_type == 'vectfile' && input.dissolve_extent == 'FALSE'",
+                #     selectInput("extent_id", "Select the field to use as extent name",
+                #                 choices = list("No one (using row numbers)" = "nrow",
+                #                                "take","dynamically","from","shape","attributes"),
+                #                 selected = "nrow")
+                #   )#,
+                # )
                 
               ), # end of 1st fluidRow after conditionalPanel on spatial filter
               
               fluidRow(
-                
                 column(
-                  width=9,
-                  # conditionalPanel(
-                  #   condition = "input.extent_type == 'draw'",
-                  editModUI("extent_editor")
-                  # )
-                ),
-                
-                column(
-                  width=3,
-                  
-                  # conditionalPanel(
-                  #   condition = "input.extent_type == 'draw'",
-                  div(
-                    checkboxGroupInput("tiles_checkbox",
-                                       "Tiles selected",
-                                       choices = character(0),
-                                       selected = character(0)),
-                    # uiOutput("s2tiles_selID"),
-                    strong("Orbits selected"),
-                    helpText(em("Not yet impemented."))
-                  )
+                  width=12,
+                  # Map
+                  # uiOutput("view_map_leaflet")
+                  leafletOutput("view_map", height=600, width="100%")
                 )
               ) # end of 1st fluidRow after conditionalPanel on spatial filter
               
@@ -750,9 +751,37 @@ s2_gui <- function(param_list = NULL,
                                          "No data or clouds (high or medium probability)" = "cloud_medium_proba",
                                          "No data or clouds (any probability)" = "cloud_low_proba",
                                          "No data, clouds or cloud shadows" = "cloud_and_shadow",
-                                         "No data, clouds, cloud shadows or thin cirrus" = "cloud_shadow_cirrus"),
-                          selected = "cloud_medium_proba")
-            )
+                                         "No data, clouds, cloud shadows or thin cirrus" = "cloud_shadow_cirrus",
+                                         "Custom mask" = "custom"),
+                          selected = "cloud_medium_proba"),
+              
+              conditionalPanel(
+                condition = "input.atm_mask_type == 'custom'",
+                checkboxGroupInput(
+                  "atm_mask_custom", "Select the classes to mask:",
+                  choiceNames = list(
+                    HTML("<font style=\"family:monospace;background-color:#000000;color:white;\">\u20020\u2002</font>\u2002No data"),
+                    HTML("<font style=\"family:monospace;background-color:#FF0000;color:white;\">\u20021\u2002</font>\u2002Saturated or defective"),
+                    HTML("<font style=\"family:monospace;background-color:#424142;color:white;\">\u20022\u2002</font>\u2002Dark area pixels"),
+                    HTML("<font style=\"family:monospace;background-color:#633400;color:white;\">\u20023\u2002</font>\u2002Cloud shadows"),
+                    HTML("<font style=\"family:monospace;background-color:#29f329;color:black;\">\u20024\u2002</font>\u2002Vegetation"),
+                    HTML("<font style=\"family:monospace;background-color:#ffff00;color:black;\">\u20025\u2002</font>\u2002Bare soils"),
+                    HTML("<font style=\"family:monospace;background-color:#0000ff;color:white;\">\u20026\u2002</font>\u2002Water"),
+                    HTML("<font style=\"family:monospace;background-color:#7b7d7b;color:white;\">\u20027\u2002</font>\u2002Cloud (low probability)"),
+                    HTML("<font style=\"family:monospace;background-color:#bdbebd;color:black;\">\u20028\u2002</font>\u2002Cloud (medium probability)"),
+                    HTML("<font style=\"family:monospace;background-color:#ffffff;color:black;\">\u20029\u2002</font>\u2002Cloud (high probability)"),
+                    HTML("<font style=\"family:monospace;background-color:#63cbff;color:black;\">\u200510\u2005</font>\u2002Thin cirrus"),
+                    HTML("<font style=\"family:monospace;background-color:#ff9aff;color:black;\">\u200511\u2005</font>\u2002Snow")
+                  ),
+                  choiceValues = as.list(0:11),
+                  selected = list(0,8,9)
+                )
+              ),
+              
+              sliderInput("max_masked_perc", "Maximum cloud cover",
+                          min = 0, max = 100, value = 80,
+                          step = 1, post = "%")
+            ) # end of conditionalPanel atm_mask
             
           )), # end of fluidRow/box "Atmospheric mask"
           
@@ -780,7 +809,7 @@ s2_gui <- function(param_list = NULL,
                         "\u2001"),
                       div(
                         style="display:inline-block;vertical-align:top;width:calc(100% - 88pt);",
-                        textInput("reference_file_textin", label = NULL, "Enter file path...", width="100%"))),
+                        textInput("reference_file_textin", label = NULL, "", width="100%"))),
                     uiOutput("reference_file_message")
                     
                   )
@@ -916,7 +945,7 @@ s2_gui <- function(param_list = NULL,
                 
                 fluidRow(
                   column(
-                    width = 5,
+                    width = 6,
                     radioButtons(
                       "index_source",
                       label = span(
@@ -927,6 +956,25 @@ s2_gui <- function(param_list = NULL,
                                      "TOA" = "TOA"),
                       selected = "BOA",
                       inline = TRUE)
+                  ),
+                  column(
+                    width = 6,
+                    selectInput(
+                      "index_datatype", label = "Data type",
+                      choices = list("Byte" = "Byte",
+                                     "Integer (16 bits)" = "Int16",
+                                     "Float (32 bits)" = "Float32",
+                                     "Float (64 bits)" = "Float64"),
+                      selected = "Int16"
+                    )
+                  )
+                ),
+                
+                hr(style="margin-top: 0em; margin-bottom: 0.75em;"),
+                fluidRow(
+                  column(
+                    width = 5,
+                    textInput("filter_indices", "Filter indices")
                   ),
                   column(
                     width = 7,
@@ -940,9 +988,6 @@ s2_gui <- function(param_list = NULL,
                     )
                   )
                 ),
-                
-                hr(style="margin-top: 0em; margin-bottom: 0.75em;"),
-                textInput("filter_indices", "Filter indices"),
                 uiOutput("check_indices")
               ),
               
@@ -952,37 +997,6 @@ s2_gui <- function(param_list = NULL,
           ) # end of conditionalpanel on tab_index
           
         ) # end of tabItem tab_index
-        
-        # ### Path tab (set all the paths) ###
-        # tabItem(
-        #   tabName = "tab_path",
-        #   title="Set directories",
-        #
-        #
-        #
-        #
-        #   # Save buttons
-        #   br(),
-        #   # HTML("<script src=\"message-handler.js\"></script>"),
-        #   # # head(script(src = "message-handler.js")),
-        #   # p(
-        #   #   shinySaveButton("export_param", "Export parameters", "Export parameters as ...", filetype=list(json="json")),
-        #   #   "\u2001", # quad space
-        #   #   shinyFilesButton("import_param", "Import parameters", "Import a JSON file with parameters", multiple=FALSE)
-        #   # ),
-        #   # p(
-        #   #   actionButton("return_param", strong("Save and close GUI")),
-        #   #   "\u2001", # quad space
-        #   #   actionButton("exit_gui", "Close without saving")
-        #   # )
-        #   # TODO client buttons
-        #   # fileInput("import_param_client", "Import parameters from client",
-        #   #           accept = c(
-        #   #             "text/json",
-        #   #             ".json")
-        #   # )
-        #
-        # ) # end of tabItem tab_steps
         
       ) # end of tabItems
     ) # end of dashboardBody
@@ -1026,15 +1040,15 @@ s2_gui <- function(param_list = NULL,
     observe({
       if (input$preprocess==TRUE) {
         safe_req$l1c <- if (any(l1c_prods %in% input$list_prods) |
-                            indices_req()==TRUE & input$index_source=="TOA" |
+                            !is.null(input$list_indices) & input$index_source=="TOA" |
                             input$step_atmcorr %in% c("auto","scihub")) {TRUE} else {FALSE}
         safe_req$l2a <- if (any(l2a_prods %in% input$list_prods) |
                             input$atm_mask == TRUE |
-                            indices_req()==TRUE & input$index_source=="BOA") {TRUE} else {FALSE}
+                            !is.null(input$list_indices) & input$index_source=="BOA") {TRUE} else {FALSE}
         safe_req$l2a_onlytomask <- if (!any(l2a_prods %in% input$list_prods) &
                                        input$atm_mask == TRUE &
-                                       (indices_req()==FALSE |
-                                        indices_req()==TRUE & input$index_source=="BOA")) {TRUE} else {FALSE}
+                                       (is.null(input$list_indices) |
+                                        !is.null(input$list_indices) & input$index_source=="BOA")) {TRUE} else {FALSE}
       } else {
         safe_req$l1c <- if ("l1c" %in% input$list_levels | 
                             input$step_atmcorr %in% c("auto","scihub")) {TRUE} else {FALSE}
@@ -1124,221 +1138,160 @@ s2_gui <- function(param_list = NULL,
     ## end of steps module ##
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     ## Extent module ##
     
-    # default view
-    extent_sf <- st_sf(
-      st_sfc(
-        st_polygon(list(matrix(c(-1E6,4E6,2E6,4E6,2E6,7E6,-1E6,7E6,-1E6,4E6),ncol=2, byrow=TRUE))),
-        # st_polygon(),
-        crs = 32632))
-    
-    
-    ## Bbox mode
-    
-    # message for bboxproj
-    output$bboxproj_message <- renderUI({
-      bboxproj_validated <- try(
-        suppressWarnings(check_proj4string(input$bboxproj, abort=TRUE)),
-        silent=TRUE
-      )
-      if (input$bboxproj=="") {
-        rv$bboxproj <- NA
-        ""
-      }  else if (bboxproj_validated=="invalid") {
-        rv$bboxproj <- NA
-        span(style="color:red", "\u2718") # ballot
-        # span(style="color:red",
-        #      "Insert a valid projection (UTM timezone, EPSG code or PROJ4 string).")
-      } else {
-        rv$bboxproj <- bboxproj_validated
-        span(style="color:darkgreen", "\u2714") # check
-        # div(strong("Selected projection:"),
-        #     br(),
-        #     projname(bboxproj_validated),
-        #     style="color:darkgreen")
-      }
-    })
-    
-    # create bbox from coordinates
-    observe({
-      rv$bbox <- if (!is.na(input$bbox_xmin) & !is.na(input$bbox_xmax) &
-                     !is.na(input$bbox_ymin) & !is.na(input$bbox_ymax) &
-                     !(is.null(rv$bboxproj) || is.na(rv$bboxproj))) {
-        if (input$bbox_xmin < input$bbox_xmax &
-            input$bbox_ymin < input$bbox_ymax) {
-          st_sf(st_sfc(
-            st_polygon(list(matrix(
-              c(input$bbox_xmin,input$bbox_ymin,
-                input$bbox_xmin,input$bbox_ymax,
-                input$bbox_xmax,input$bbox_ymax,
-                input$bbox_xmax,input$bbox_ymin,
-                input$bbox_xmin,input$bbox_ymin),
-              ncol=2,
-              byrow=TRUE))),
-            crs = rv$bboxproj))
-        } else {
-          st_polygon()
-        }
-      } else {
-        st_polygon()
-      }
-    })
-    
-    
-    
-    
-    
-    ## Vector file mode
-    
-    # # read the specified file
-    shinyFileChoose(input, "path_vectfile_sel", roots=volumes, session=session)
-    
-    # if paths change after using the shinyDirButton, update the values and the textInput
-    observe({
-      path_vectfile_string <- parseFilePaths(volumes,input$path_vectfile_sel)$datapath %>%
-        as.character()
-      updateTextInput(session, "path_vectfile_textin", value = path_vectfile_string)
-    })
-    # if path changes after using the textInput, update the value
-    observe({
-      # output$path_vectfile_errormess <- vectfile_check(input$path_vectfile_textin)
-      output$path_vectfile_errormess <- if (length(input$path_vectfile_textin)>0 &
-                                            input$path_vectfile_textin[1]!="") {
-        if (!file.exists(input$path_vectfile_textin)) {
-          rv$vectfile_path <- NA
-          renderUI(span(style="color:red", "\u2718 (the file does not exist)"))
-        } else if (try(get_vectype(input$path_vectfile_textin),silent=TRUE)!="vectfile") {
-          rv$vectfile_path <- NA
-          renderUI(span(style="color:red", "\u2718 (the file is not a recognised vector file)"))
-        } else {
-          rv$vectfile_path <- input$path_vectfile_textin
-          renderUI(span(style="color:darkgreen", "\u2714"))
-        }
-        #
-      } else {
-        return(renderText(""))
-      }
-    })
-    
-    
-    
-    ## Drawn mode
-    
-    
-    
-    # namespace for extent selection
-    extent_ns <- NS("extent_editor")
-    rv$draw_tiles_overlapping <- s2tiles[1,]
-    rv$extent <- NULL
-    
-    # Create the extent map
-    base_map <- leaflet() %>%
+    #-- Function to update the map and the list of tiles --#
+    # it returns TRUE if the input extent source was correctly read, FALSE elsewhere.
+    # argument extent_srouce determines which source to be used:
+    # "bbox", "vectfile", "draw" from selection buttons, "imported" from parameter;
+    # in this case, the argument "custom_source" is the source to be passed.
+    update_extent <- function(extent_source, custom_source=NA) {
       
-      # add tiles
-      addTiles(group = "OpenStreetMap") %>%
-      # addTiles(paste0("https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png",
-      #                 if (!is.na(thunderforest_api)) {paste0("?apikey=",thunderforest_api)}),
-      #          group = "OpenStreetMap Outdoors") %>%
-      # addProviderTiles(providers$OpenTopoMap, group = "OpenTopoMap") %>%
-      addTiles("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
-               group = "OpenTopoMap") %>%
-      # addProviderTiles(providers$CartoDB.Positron, group = "CartoDB") %>%
-      addTiles("https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
-               group = "CartoDB") %>%
-      # addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") %>%
-      addTiles("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-               group = "Satellite") %>%
-      # addProviderTiles(providers$CartoDB.PositronOnlyLabels, group = "Dark names") %>%
-      addTiles("https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_only_labels/{z}/{x}/{y}.png",
-               group = "Light names") %>%
-      # addProviderTiles(providers$CartoDB.DarkMatterOnlyLabels, group = "Dark names") %>%
-      addTiles("https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_only_labels/{z}/{x}/{y}.png",
-               group = "Dark names") %>%
-      # addTiles(paste0("https://{s}.tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png",
-      #                 if (!is.na(thunderforest_api)) {paste0("?apikey=",thunderforest_api)}),
-      #          group = "Metal or death") %>%
-      
-      # view and controls
-      addLayersControl(
-        baseGroups = c("OpenStreetMap", "OpenTopoMap", "CartoDB", "Satellite"),
-        overlayGroups = c("Light names","Dark names","S2 tiles","Extent"),
-        options = layersControlOptions(collapsed = FALSE)
-      ) %>%
-      hideGroup(c("Light names","Dark names"))
-    
-    # initial zoom
-    base_map <- if (!is.null(isolate(rv$extent))) {
-      fitBounds(
-        base_map,
-        lng1 = min(st_coordinates(rv$extent)[,"X"]),
-        lat1 = min(st_coordinates(rv$extent)[,"Y"]),
-        lng2 = max(st_coordinates(rv$extent)[,"X"]),
-        lat2 = max(st_coordinates(rv$extent)[,"Y"])
-      )
-    } else {
-      fitBounds(base_map, lng1 = 3, lat1 = 44, lng2 = 15, lat2 = 50)
-    }
-    
-    
-    # (http://r-spatial.org/r/2017/06/09/mapedit_0-2-0.html)
-    extent_edits <- callModule(editModPoly, "extent_editor", base_map)
-    base_map <- removeDrawToolbar(base_map, clearFeatures = FALSE)
-    # observe({print(extent_edits())})
-    
-    # Select vector (bbox, file or drawn) to be used
-    observe({
-      # rv$extent <- NULL
-      rv$extent <- switch(input$extent_type,
-                          bbox = rv$bbox,
-                          draw = extent_edits()$finished,
-                          vectfile = if (!is.na(rv$vectfile_path)) {
-                            st_read(rv$vectfile_path, quiet=TRUE) %>% st_transform(4326)
-                          } else {
-                            st_polygon()
-                          },
-                          imported = if (!is.null(imported_param())) {
-                            if (any(!is.na(imported_param()$extent))) {
-                              st_read(imported_param()$extent, quiet=TRUE)
-                            } else {
-                              st_polygon()
-                            }
-                          } else if (!is.null(param_list)) {
-                            if (any(!is.na(param_list$extent))) {
-                              st_read(param_list$extent, quiet=TRUE)
-                            } else {
-                              st_polygon()
-                            }
-                          } else {
-                            st_polygon()
-                          })
-    })
-    
-    
-    # Actions when the polygon layer changes
-    observe({
-      if(length(rv$extent) > 0) {
-        rv$draw_tiles_overlapping <- s2tiles[unique(unlist(st_intersects(st_transform(rv$extent,4326), s2tiles))),]
-        # if the user is loading saved parameters, read the selected tiles ID;
-        # for any otyher change, for now set all the tiles as selected
-        rv$draw_tiles_selected <- if (!is.null(imported_param())) {
-          if (any(!is.na(imported_param()$s2tiles_selected))) {
-            s2tiles[match(imported_param()$s2tiles_selected,s2tiles$tile_id),]
+      # 1. Define rv$extent
+      if (extent_source == "bbox") {
+        
+        # Bbox mode #
+        
+        # create bbox from coordinates
+        sel_bbox <- if (!is.na(input$bbox_xmin) & !is.na(input$bbox_xmax) &
+                        !is.na(input$bbox_ymin) & !is.na(input$bbox_ymax) &
+                        !(is.null(rv$bboxproj) || is.na(rv$bboxproj))) {
+          if (input$bbox_xmin < input$bbox_xmax &
+              input$bbox_ymin < input$bbox_ymax) {
+            x <- st_sf(st_sfc(
+              st_polygon(list(matrix(
+                c(input$bbox_xmin,input$bbox_ymin,
+                  input$bbox_xmin,input$bbox_ymax,
+                  input$bbox_xmax,input$bbox_ymax,
+                  input$bbox_xmax,input$bbox_ymin,
+                  input$bbox_xmin,input$bbox_ymin),
+                ncol=2,
+                byrow=TRUE))),
+              crs = rv$bboxproj)) %>% st_transform(4326)
+            # attribute valid is used to know if continuing loading the new extent (TRUE) or not (FALSE)
+            attr(x, "valid") <- TRUE
+            # attribute new is used to update the list of selected tiles (if TRUE) or not (if FALSE)
+            attr(x, "new") <- TRUE 
+            x
           } else {
-            rv$draw_tiles_overlapping
+            x <- st_polygon(); attr(x, "valid") <- FALSE; x
           }
         } else {
-          rv$draw_tiles_overlapping
+          x <- st_polygon(); attr(x, "valid") <- FALSE; x
         }
         
-        updateCheckboxGroupInput(
-          session, "tiles_checkbox",
-          choices = setNames(
-            as.list(rv$draw_tiles_overlapping$tile_id),
-            rv$draw_tiles_overlapping$tile_id),
-          selected = rv$draw_tiles_selected$tile_id
+        if (!attr(sel_bbox, "valid")) {
+          return(FALSE)
+        }
+        
+        rv$extent <- sel_bbox
+        
+      } else if (extent_source == "vectfile") {
+        
+        # Vectfile mode #
+        
+        # check that the path is a valid vector file
+        sel_vectfile <- tryCatch(
+          {
+            x <- st_read(rv$vectfile_path, quiet=TRUE) %>% 
+              st_transform(4326)
+            attr(x, "valid") <- TRUE
+            attr(x, "new") <- TRUE
+            x
+          },
+          error = function(e) {x <- st_polygon(); attr(x, "valid") <- FALSE; x}
         )
-        leafletProxy(extent_ns("map")) %>%
+        
+        if (!attr(sel_vectfile, "valid")) {
+          return(FALSE)
+        }
+        
+        rv$extent <- sel_vectfile
+        
+      } else if (extent_source == "draw") {
+        
+        # Drawn mode #
+        
+        # namespace for extent selection
+        sel_drawn <- if (!is.null(rv$extent_edits()$finished)) {
+          x <- rv$extent_edits()$finished
+          attr(x, "valid") <- TRUE
+          attr(x, "new") <- TRUE
+          x
+        } else {
+          x <- st_polygon(); attr(x, "valid") <- FALSE; x
+        }
+        
+        if (!attr(sel_drawn, "valid")) {
+          return(FALSE)
+        }
+        
+        rv$extent <- sel_drawn
+        
+      } else if (extent_source == "imported") {
+        
+        # Imported from parameters #
+        
+        sel_imported_extent <- if (is.null(custom_source) | anyNA(custom_source)) {
+          x <- st_polygon(); attr(x, "valid") <- FALSE; x
+        } else {
+          x <- st_read(custom_source, quiet=TRUE) %>% 
+            st_transform(4326)
+          attr(x, "valid") <- TRUE
+          attr(x, "new") <- TRUE
+          x
+        }
+        
+        if (!attr(sel_imported_extent, "valid")) {
+          return(FALSE)
+        }
+        
+        rv$extent <- sel_imported_extent
+        
+      } else {
+        
+        # For any other value of extent_source, use the existing rv$extent
+        
+        if (is.null(rv$extent)) {
+          return(FALSE)
+        } else if (!attr(rv$extent, "valid")) {
+          return(FALSE)
+        } else {
+          attr(rv$extent, "new") <- FALSE
+        }
+        
+      }
+      
+      
+      # 2. Update the list of overlapping tiles and the tiles on the map
+      if(length(rv$extent) > 0) {
+        
+        rv$draw_tiles_overlapping <- s2tiles[unique(unlist(suppressWarnings(st_intersects(st_transform(rv$extent,4326), s2tiles)))),]
+        
+        if (attr(rv$extent, "new")) {
+          # update the list of tiles
+          updateCheckboxGroupInput(
+            session, "tiles_checkbox",
+            choiceNames = lapply(rv$draw_tiles_overlapping$tile_id, span, style="family:monospace;"),
+            choiceValues = rv$draw_tiles_overlapping$tile_id,
+            selected = rv$draw_tiles_overlapping$tile_id,
+            inline = nrow(rv$draw_tiles_overlapping) > 8 # inline if they are many
+          )
+        }
+        
+        # reset and update the map
+        react_map(base_map()) 
+        leafletProxy("view_map") %>%
           clearShapes() %>%
           fitBounds(
             lng1 = min(st_coordinates(rv$extent)[,"X"]),
@@ -1369,38 +1322,250 @@ s2_gui <- function(param_list = NULL,
                       color = "darkgreen") #%>%
       } else {
         rv$draw_tiles_overlapping <- NULL
+        # empty the list of tiles
         updateCheckboxGroupInput(session, "tiles_checkbox",
                                  choices = NULL)
-        leafletProxy(extent_ns("map")) %>%
-          clearShapes()
+        # reset the map
+        react_map(base_map())
+        # leafletProxy("view_map") %>%
+        #   clearShapes()
       }
-    })
+      
+      return(TRUE)
+      
+    }
     
     
+    #-- Create the map (once) --#
+    base_map <- function() {
+      leaflet() %>%
+        
+        # add tiles
+        addTiles(group = "OpenStreetMap") %>%
+        # addTiles(paste0("https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png",
+        #                 if (!is.na(thunderforest_api)) {paste0("?apikey=",thunderforest_api)}),
+        #          group = "OpenStreetMap Outdoors") %>%
+        # addProviderTiles(providers$OpenTopoMap, group = "OpenTopoMap") %>%
+        addTiles("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+                 group = "OpenTopoMap") %>%
+        # addProviderTiles(providers$CartoDB.Positron, group = "CartoDB") %>%
+        addTiles("https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
+                 group = "CartoDB") %>%
+        # addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") %>%
+        addTiles("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+                 group = "Satellite") %>%
+        # addProviderTiles(providers$CartoDB.PositronOnlyLabels, group = "Dark names") %>%
+        addTiles("https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_only_labels/{z}/{x}/{y}.png",
+                 group = "Light names") %>%
+        # addProviderTiles(providers$CartoDB.DarkMatterOnlyLabels, group = "Dark names") %>%
+        addTiles("https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_only_labels/{z}/{x}/{y}.png",
+                 group = "Dark names") %>%
+        # addTiles(paste0("https://{s}.tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png",
+        #                 if (!is.na(thunderforest_api)) {paste0("?apikey=",thunderforest_api)}),
+        #          group = "Metal or death") %>%
+        
+        # view and controls
+        addLayersControl(
+          baseGroups = c("OpenStreetMap", "OpenTopoMap", "CartoDB", "Satellite"),
+          overlayGroups = c("Light names","Dark names","S2 tiles","Extent"),
+          options = layersControlOptions(collapsed = FALSE)
+        ) %>%
+        hideGroup(c("Light names","Dark names"))
+    }
+    react_map <- reactiveVal({base_map()})
+    output$view_map <- renderLeaflet({react_map()})
+    # # renderUI of the leaflet so to update dinamically the width
+    # output$view_map_leaflet <- renderUI({
+    #   leafletOutput(
+    #     "view_map",
+    #     height = isolate(ifelse(!is.null(input$dimension),input$dimension[1]*3/5,600))
+    #   )
+    # })
     
     
+    #-- Reactive objects for input selection (NOT map update) --#
     
+    #- Bbox mode -#
     
-    # WIP
-    
-    # If draw mode is off, deactivate editing toolbar
-    observe({
-      if (input$extent_type!="draw") {
-        leafletProxy(extent_ns("map")) %>%
-          removeDrawToolbar(clearFeatures = FALSE)
+    # message for bboxproj
+    output$bboxproj_message <- renderUI({
+      bboxproj_validated <- tryCatch(
+        suppressWarnings(check_proj4string(input$bboxproj, abort=TRUE)),
+        error = function(e) {"invalid"}
+      )
+      if (input$bboxproj=="") {
+        rv$bboxproj <- NA
+        ""
+      }  else if (bboxproj_validated=="invalid") {
+        rv$bboxproj <- NA
+        # span(style="color:red", "\u2718") # ballot
+        span(style="color:red",
+             "Insert a valid projection (UTM timezone, EPSG code or PROJ4 string).")
       } else {
-        leafletProxy(extent_ns("map")) %>%
-          addDrawToolbar(
-            polylineOptions = FALSE,
-            markerOptions = FALSE,
-            circleOptions = FALSE,
-            editOptions = editToolbarOptions())
+        rv$bboxproj <- bboxproj_validated
+        # span(style="color:darkgreen", "\u2714") # check
+        div(strong("Selected projection:"),
+            br(),
+            projname(bboxproj_validated),
+            style="color:darkgreen")
       }
     })
     
+    # Open modal dialog to edit bbox
+    observeEvent(input$button_extent_bbox, {
+      showModal(load_extent_bbox())
+    })
+    # use bbox
+    observeEvent(input$save_extent_bbox, {
+      # Add a progress bar while update_extent is running
+      withProgress(message = 'Creating the extent...', value = 0, {
+        bbox_valid <- update_extent(extent_source="bbox")
+        if (bbox_valid) {
+          removeModal()
+        } else {
+          sendSweetAlert(
+            session, 
+            title = "Invalid bounding box", 
+            text = paste(
+              "Please insert a valid bounding box",
+              "(check i.e. that numeric values make sense with the chosen projection,",
+              "and that left easting \uFF1C right easting and",
+              "lower northing \uFF1C upper northing)."
+            ), 
+            type = "error",
+            btn_labels = "Ok"
+          )
+          
+        }
+        # Fake progress
+        for (i in 1:10) {incProgress(1/10); Sys.sleep(0.1)}
+      })
+    })
     
-    # disable dissolve_extent (not yet implemented, TODO)
-    disable("dissolve_extent")
+    
+    #- Vector file mode -#
+    
+    # if 
+    observeEvent(input$path_vectfile_sel, {
+      uploaded_exts <- gsub("^.+\\.(.+)$","\\1",input$path_vectfile_sel$name)
+      # checks
+      if (length(unique(gsub("\\..+$","",input$path_vectfile_sel$name))) > 1) {
+        # if more than one vector were chosen, give an alert and do not use the file
+        sendSweetAlert(
+          session, 
+          title = "Invalid vector", 
+          text = paste(
+            "Please select a single vector",
+            "(multiple selection is allowed only for shapefiles)."
+          ),
+          type = "error",
+          btn_labels = "Ok"
+        )
+        rv$vectfile_path <- ""
+      } else if (length(uploaded_exts) == 1 && !uploaded_exts %in% c("shp","shx","dbf","prj")) {
+        # if a single file was chosen and it is not a shapefile, use it
+        rv$vectfile_path <- input$path_vectfile_sel$datapath
+      } else if (anyNA(match(c("shp","shx","dbf","prj"),uploaded_exts))) {
+        # if a shapefile was chosen but some files are missing, do not use it
+        sendSweetAlert(
+          session, 
+          title = "Incomplete shapefile", 
+          text = paste(
+            "Please select all the files of the shapefile",
+            "(at most .shp, .shx, .prj, .dbf)."
+          ),
+          type = "error",
+          btn_labels = "Ok"
+        )
+        rv$vectfile_path <- ""
+      } else {
+        # if a shapefile was chosen and all the files are present,
+        # rename the uploaded files in order to have the same filename and use them
+        path_vectfile_sel_new_datapath <- file.path(
+          dirname(input$path_vectfile_sel$datapath), input$path_vectfile_sel$name
+        )
+        for(i in seq_len(nrow(input$path_vectfile_sel))) {
+          file.rename(input$path_vectfile_sel$datapath[i], path_vectfile_sel_new_datapath[i])
+        }
+        rv$vectfile_path <- path_vectfile_sel_new_datapath[
+          input$path_vectfile_sel$type=="application/x-esri-shape"
+          ]
+      }
+    })
+    
+    # Open modal dialog to load the vector file
+    observeEvent(input$button_extent_vectfile, {
+      rv$vectfile_path <- ""
+      showModal(load_extent_vectfile())
+    })
+    # use bbox
+    observeEvent(input$save_extent_vectfile, {
+      withProgress(message = 'Creating the extent...', value = 0, {
+        vectfile_valid <- update_extent(extent_source="vectfile")
+        if (vectfile_valid) {
+          removeModal()
+        } else {
+          sendSweetAlert(
+            session, 
+            title = "Please specify a valid vector file.", 
+            text = NULL,
+            type = "error",
+            btn_labels = "Ok"
+          )
+        }
+        for (i in 1:10) {incProgress(1/10); Sys.sleep(0.1)}
+      })
+    })
+    
+    
+    #- Draw mode -#
+    
+    # Open modal dialog to edit bbox
+    observeEvent(input$button_extent_draw, {
+      
+      
+      # create a new namespace every time the button is pushed,
+      # in order not to make mess between modules
+      extent_ns_name <- paste0("editor_",sample(1E9,1))
+      extent_ns <- NS(extent_ns_name)
+      rv$extent_edits <- callModule(editModPoly, extent_ns_name, base_map())
+      
+      showModal(load_extent_draw(extent_ns_name))
+      
+    })
+    
+    # use bbox
+    observeEvent(input$save_extent_draw, {
+      withProgress(message = 'Creating the extent...', value = 0, {
+        drawn_valid <- update_extent(extent_source="draw")
+        if (drawn_valid) {
+          removeModal()
+        } else {
+          sendSweetAlert(
+            session, 
+            title = "Please draw a valid extent.", 
+            text = NULL,
+            type = "error",
+            btn_labels = "Ok"
+          )
+        }
+        for (i in 1:10) {incProgress(1/10); Sys.sleep(0.1)}
+      })
+      
+    })
+    
+    
+    #- Refresh the map if required -#
+    observeEvent(input$button_refresh_map, {
+      withProgress(message = 'Refreshing the map...', value = 0, {
+        update_extent(extent_source="fake")
+        for (i in 1:10) {incProgress(1/10); Sys.sleep(0.1)}
+      })
+    })
+    
+    
+    # # disable dissolve_extent (not yet implemented, TODO)
+    # disable("dissolve_extent")
     
     
     ## end of extent module ##
@@ -1801,32 +1966,32 @@ s2_gui <- function(param_list = NULL,
         ))
     })
     
-    observeEvent(input$help_dissolve_extent, {
-      showModal(modalDialog(
-        title = "Consider multiple polygons as:",
-        p(HTML(
-          "<strong>A multipart geometry</strong>:",
-          "all the polygons drawn (or the entire vector file which was",
-          "uploaded) are considered as a single multipart",
-          "polygon, so the output will cover the extent of all the polygons."
-        )),
-        p(HTML(
-          "<strong>Single part geometries</strong>:",
-          "the number of outputs will be equal to the number of polygons",
-          "drawn (or to the number of polygons inside the uploaded vector",
-          "file).",
-          "Subdirectories are created for each output product: the name is",
-          "a consecutive integer number, or an attribute name for uploaded",
-          "vector files."
-        )),
-        em(
-          "This option was not yet implemented: for now, only a multipart",
-          "geometry can be used."
-        ),
-        easyClose = TRUE,
-        footer = NULL
-      ))
-    })
+    # observeEvent(input$help_dissolve_extent, {
+    #   showModal(modalDialog(
+    #     title = "Consider multiple polygons as:",
+    #     p(HTML(
+    #       "<strong>A multipart geometry</strong>:",
+    #       "all the polygons drawn (or the entire vector file which was",
+    #       "uploaded) are considered as a single multipart",
+    #       "polygon, so the output will cover the extent of all the polygons."
+    #     )),
+    #     p(HTML(
+    #       "<strong>Single part geometries</strong>:",
+    #       "the number of outputs will be equal to the number of polygons",
+    #       "drawn (or to the number of polygons inside the uploaded vector",
+    #       "file).",
+    #       "Subdirectories are created for each output product: the name is",
+    #       "a consecutive integer number, or an attribute name for uploaded",
+    #       "vector files."
+    #     )),
+    #     em(
+    #       "This option was not yet implemented: for now, only a multipart",
+    #       "geometry can be used."
+    #     ),
+    #     easyClose = TRUE,
+    #     footer = NULL
+    #   ))
+    # })
     
     observeEvent(input$help_extent_name, {
       showModal(modalDialog(
@@ -2111,7 +2276,14 @@ s2_gui <- function(param_list = NULL,
       rl$list_prods <- input$list_prods[!input$list_prods %in% "indices"] # TOA, BOA, SCL, TCI (for now)
       rl$list_indices <- if (indices_req()==TRUE & "indices" %in% input$list_prods) {input$list_indices} else {NA} # index names
       rl$index_source <- input$index_source # reflectance band for computing indices ("BOA" or "TOA")
-      rl$mask_type <- if (input$atm_mask==FALSE) {NA} else {input$atm_mask_type} # atmospheric masking (accepted types as in s2_mask())
+      rl$mask_type <- if (input$atm_mask==FALSE) {
+        NA
+      } else if (input$atm_mask_type=="custom") {
+        paste0("scl_",paste(input$atm_mask_custom,collapse="_"))
+      } else {
+        input$atm_mask_type
+      } # atmospheric masking (accepted types as in s2_mask())
+      rl$max_mask <- input$max_masked_perc
       
       rl$clip_on_extent <- as.logical(input$clip_on_extent) # TRUE to clip (and warp) on the selected extent, FALSE to work at tiles/merged level
       rl$extent_as_mask <- as.logical(input$extent_as_mask) # TRUE to mask outside the polygons of extent, FALSE to use as boundig box
@@ -2161,6 +2333,7 @@ s2_gui <- function(param_list = NULL,
                                "outformat" %in% input$reference_usefor,
                              reference()$outformat,
                              input$outformat)
+      rl$index_datatype <- input$index_datatype
       # output compression ("LZW", "DEFLATE" etc.)
       rl$compression <- ifelse(rl$outformat=="GTiff",
                                input$compression,
@@ -2179,7 +2352,7 @@ s2_gui <- function(param_list = NULL,
       rl$thumbnails <- if (rl$preprocess==TRUE) {as.logical(input$check_thumbnails)} else {NA} # logical (create thumbnails)
       
       # information about package version
-      rl$pkg_version <- packageVersion("salto") %>% as.character()
+      rl$pkg_version <- packageVersion("sen2r") %>% as.character()
       
       return(rl)
     }
@@ -2187,105 +2360,127 @@ s2_gui <- function(param_list = NULL,
     # function to import saved parameters
     import_param_list <- function(pl) {
       
-      # processing steps
-      updateRadioButtons(session, "preprocess", selected = pl$preprocess)
-      updateCheckboxGroupInput(session, "list_levels", selected = pl$s2_levels)
-      updateCheckboxGroupInput(session, "sel_sensor", selected = pl$sel_sensor)
-      updateRadioButtons(session, "online", selected = pl$online)
-      updateRadioButtons(session, "overwrite_safe", selected = pl$overwrite_safe)
-      updateRadioButtons(session, "rm_safe", selected = pl$rm_safe)
-      updateRadioButtons(session, "step_atmcorr", selected = pl$step_atmcorr)
-      
-      
-      # spatio-temporal selection
-      if (anyNA(pl$timewindow)) {
-        updateRadioButtons(session, "query_time", selected = FALSE)
-      } else {
-        updateRadioButtons(session, "query_time", selected = TRUE)
-        updateDateRangeInput(session, "timewindow", start=pl$timewindow[1], end=pl$timewindow[2])
-        updateRadioButtons(session, "timeperiod", selected = pl$timeperiod)
-      }
-      if (anyNA(pl$extent) & pl$online == FALSE) {
-        updateRadioButtons(session, "query_space", selected = FALSE)
-      } else {
-        updateRadioButtons(session, "query_space", selected = TRUE)
-        # rl$s2tiles_selected <- input$tiles_checkbox # selected tile IDs
-        updateRadioButtons(session, "extent_as_mask", selected = rv$extent_as_mask)
-      }
-      
-      # product selection
-      if (all(is.na(pl$list_prods))) {pl$list_prods <- NULL}
-      updateCheckboxGroupInput(
-        session, "list_prods",
-        selected = if (any(!is.na(pl$list_indices))) {
-          c(pl$list_prods,"indices")
+      # Add a progress bar while importing
+      withProgress(message = 'Loading the parameters...', value = 0, {
+        
+        # processing steps
+        updateRadioButtons(session, "preprocess", selected = pl$preprocess)
+        updateCheckboxGroupInput(session, "list_levels", selected = pl$s2_levels)
+        updateCheckboxGroupInput(session, "sel_sensor", selected = pl$sel_sensor)
+        updateRadioButtons(session, "online", selected = pl$online)
+        updateRadioButtons(session, "overwrite_safe", selected = pl$overwrite_safe)
+        updateRadioButtons(session, "rm_safe", selected = pl$rm_safe)
+        updateRadioButtons(session, "step_atmcorr", selected = pl$step_atmcorr)
+        setProgress(0.2)
+        
+        # spatio-temporal selection
+        if (anyNA(pl$timewindow)) {
+          updateRadioButtons(session, "query_time", selected = FALSE)
         } else {
-          pl$list_prods
+          updateRadioButtons(session, "query_time", selected = TRUE)
+          updateDateRangeInput(session, "timewindow", start=pl$timewindow[1], end=pl$timewindow[2])
+          updateRadioButtons(session, "timeperiod", selected = pl$timeperiod)
         }
-      )
-      if (all(is.na(pl$list_indices))) {pl$list_indices <- NULL}
-      indices_rv$checked <- pl$list_indices
-      # updateCheckboxGroupInput(session, "list_indices", selected = pl$list_indices) # FIXME 1 not working since it is reactive
-      updateRadioButtons(session, "atm_mask",
-                         selected = ifelse(is.na(pl$mask_type),FALSE,TRUE))
-      updateRadioButtons(session, "atm_mask_type",
-                         selected = ifelse(is.na(pl$mask_type),"cloud_medium_proba",pl$mask_type))
-      updateRadioButtons(session, "index_source", selected = pl$index_source)
-      updateRadioButtons(session, "clip_on_extent", selected = pl$clip_on_extent)
-      updateRadioButtons(session, "extent_name_textin", selected = pl$extent_name)
-      updateRadioButtons(session, "keep_tiles", selected = ifelse(is.na(pl$path_tiles),FALSE,TRUE))
-      updateRadioButtons(session, "keep_merged", selected = ifelse(is.na(pl$path_merged),FALSE,TRUE))
-      
-      
-      # set directories
-      updateTextInput(session, "path_l1c_textin", value = pl$path_l1c)
-      updateTextInput(session, "path_l2a_textin", value = pl$path_l2a)
-      updateTextInput(session, "path_tiles_textin", value = pl$path_tiles)
-      updateTextInput(session, "path_merged_textin", value = pl$path_merged)
-      updateTextInput(session, "path_out_textin", value = pl$path_out)
-      updateTextInput(session, "path_indices_textin", value = pl$path_indices)
-      updateRadioButtons(session, "path_subdirs", selected = pl$path_subdirs)
-      updateRadioButtons(session, "check_thumbnails", selected = pl$thumbnails)
-      
-      # output geometry
-      updateTextInput(session, "reference_file_textin", value = pl$reference_path)
-      updateRadioButtons(session, "use_reference", selected = ifelse(is.na(pl$reference_path), FALSE, TRUE))
-      
-      if (is.na(pl$reference_path)) {
-        updateRadioButtons(session, "rescale", selected = if(anyNA(pl$res)) {FALSE} else {TRUE})
-        updateTextInput(session, "resolution_custom", value = pl$res[1])
-        updateRadioButtons(session, "resolution_s2", selected = pl$res_s2)
-        updateRadioButtons(session, "reproj", selected = {
-          if (is.na(pl$proj)) {
-            FALSE
+        if (anyNA(pl$extent) & pl$online == FALSE) {
+          updateRadioButtons(session, "query_space", selected = FALSE)
+        } else {
+          updateRadioButtons(session, "query_space", selected = TRUE)
+          # rl$s2tiles_selected <- input$tiles_checkbox # selected tile IDs
+          updateRadioButtons(session, "extent_as_mask", selected = rv$extent_as_mask)
+        }
+        setProgress(0.4)
+        
+        # product selection
+        if (all(is.na(pl$list_prods))) {pl$list_prods <- NULL}
+        updateCheckboxGroupInput(
+          session, "list_prods",
+          selected = if (any(!is.na(pl$list_indices))) {
+            c(pl$list_prods,"indices")
           } else {
-            TRUE
+            pl$list_prods
           }
+        )
+        if (all(is.na(pl$list_indices))) {pl$list_indices <- NULL}
+        indices_rv$checked <- pl$list_indices
+        # updateCheckboxGroupInput(session, "list_indices", selected = pl$list_indices) # FIXME 1 not working since it is reactive
+        updateRadioButtons(session, "atm_mask",
+                           selected = ifelse(is.na(pl$mask_type),FALSE,TRUE))
+        updateSliderInput(session, "max_masked_perc",
+                          value = ifelse(is.na(pl$mask_type),80,pl$max_mask))
+        updateRadioButtons(session, "atm_mask_type",
+                           selected = ifelse(is.na(pl$mask_type),"cloud_medium_proba",pl$mask_type))
+        updateRadioButtons(session, "atm_mask_custom",
+                           selected = ifelse(grepl("^scl\\_",pl$mask_type),strsplit(pl$mask_type,"_")[[1]][-1],c(0,8:9)))
+        updateRadioButtons(session, "index_source", selected = pl$index_source)
+        updateRadioButtons(session, "clip_on_extent", selected = pl$clip_on_extent)
+        updateRadioButtons(session, "extent_name_textin", selected = pl$extent_name)
+        updateRadioButtons(session, "keep_tiles", selected = ifelse(is.na(pl$path_tiles),FALSE,TRUE))
+        updateRadioButtons(session, "keep_merged", selected = ifelse(is.na(pl$path_merged),FALSE,TRUE))
+        setProgress(0.6)
+        
+        
+        # set directories
+        updateTextInput(session, "path_l1c_textin", value = pl$path_l1c)
+        updateTextInput(session, "path_l2a_textin", value = pl$path_l2a)
+        updateTextInput(session, "path_tiles_textin", value = pl$path_tiles)
+        updateTextInput(session, "path_merged_textin", value = pl$path_merged)
+        updateTextInput(session, "path_out_textin", value = pl$path_out)
+        updateTextInput(session, "path_indices_textin", value = pl$path_indices)
+        updateRadioButtons(session, "path_subdirs", selected = pl$path_subdirs)
+        updateRadioButtons(session, "check_thumbnails", selected = pl$thumbnails)
+        
+        # output geometry
+        updateTextInput(session, "reference_file_textin", value = pl$reference_path)
+        updateRadioButtons(session, "use_reference", selected = ifelse(is.na(pl$reference_path), FALSE, TRUE))
+        
+        if (is.na(pl$reference_path)) {
+          updateRadioButtons(session, "rescale", selected = if(anyNA(pl$res)) {FALSE} else {TRUE})
+          updateTextInput(session, "resolution_custom", value = pl$res[1])
+          updateRadioButtons(session, "resolution_s2", selected = pl$res_s2)
+          updateRadioButtons(session, "reproj", selected = {
+            if (is.na(pl$proj)) {
+              FALSE
+            } else {
+              TRUE
+            }
+          })
+          updateTextInput(session, "outproj", value = ifelse(!is.na(pl$proj),
+                                                             pl$proj,
+                                                             character(0)))
+          updateRadioButtons(session, "outformat", selected = pl$outformat)
+        }
+        updateRadioButtons(session, "index_datatype", selected = pl$index_datatype)
+        updateRadioButtons(session, "resampling", selected = pl$resampling)
+        updateRadioButtons(session, "resampling_scl", selected = pl$resampling_scl)
+        updateRadioButtons(session, "compression", selected = ifelse(pl$outformat=="GTiff",
+                                                                     pl$compression,
+                                                                     character(0)))
+        updateRadioButtons(session, "overwrite", selected = pl$overwrite)
+        setProgress(0.8)
+        
+        # update extent (at the end, not to interfer with other events
+        # (the delay is required to update the map after the map is charged)
+        shinyjs::delay(5E3, {
+          update_extent("imported", custom_source = pl$extent)
+          updateCheckboxGroupInput(session, "tiles_checkbox",
+                                   selected = pl$s2tiles_selected)
+          
         })
-        updateTextInput(session, "outproj", value = ifelse(!is.na(pl$proj),
-                                                           pl$proj,
-                                                           character(0)))
-        updateRadioButtons(session, "outformat", selected = pl$outformat)
-      }
-      updateRadioButtons(session, "resampling", selected = pl$resampling)
-      updateRadioButtons(session, "resampling_scl", selected = pl$resampling_scl)
-      updateRadioButtons(session, "compression", selected = ifelse(pl$outformat=="GTiff",
-                                                                   pl$compression,
-                                                                   character(0)))
-      updateRadioButtons(session, "overwrite", selected = pl$overwrite)
-      
-      # update extent (at the end, not to interfere with outhers events
-      if (!is.na(pl$extent)) {
-        updateRadioButtons(session, "extent_type",
-                           choices = list("Bounding box coordinates" = "bbox",
-                                          "Upload vector file" = "vectfile",
-                                          "Draw on the map" = "draw",
-                                          "Imported as parameter" = "imported"),
-                           selected = "imported")
-      }
-      # updating tiles_checkbox was moved outside this function
-      # updateCheckboxGroupInput(session, "tiles_checkbox",
-      #                          selected = pl$s2tiles_selected)
+        setProgress(1)
+        # sendSweetAlert(
+        #   session, 
+        #   title = "Parameters loaded.", 
+        #   text = paste(
+        #     "Parameters were correctly loaded.",
+        #     "If you do not see the selected extent on the map, please use",
+        #     "the button \"Refresh the map\"",
+        #     "(notice that loading a big vector file can take some time)."
+        #   ),
+        #   type = "success",
+        #   btn_labels = "Ok"
+        # )
+
+      })
       
     }
     
@@ -2303,7 +2498,7 @@ s2_gui <- function(param_list = NULL,
       stopApp()
     })
     
-    # if Export is pressed, export the values
+    # if Export is pressed, export the values (using server-side button)
     observe({
       shinyFileSave(input, "export_param", roots=volumes, session=session)
       export_param_path <- parseSavePath(volumes, input$export_param)
@@ -2317,38 +2512,64 @@ s2_gui <- function(param_list = NULL,
       }
     })
     
-    # # if Import is pressed, read a json object
-    # # FIXME "Load options" was deactivated for unsolved problems
-    # # with extent map.
-    imported_param <- reactive({NULL})
-    # shinyFileChoose(input, "import_param", roots=volumes, session=session,
-    #                 filetypes = c("JSON"="json"))
-    # imported_param <- reactive({
-    #   if (!is.null(input$import_param)) {
-    #     import_param_path <- parseFilePaths(volumes,input$import_param)
-    #     if (nrow(import_param_path)>0) {
-    #       import_param_path$datapath %>%
-    #         as.character() %>%
-    #         readLines() %>%
-    #         fromJSON()
-    #     } else {
-    #       NULL
+    # # if Export is pressed, export the values (using client-side button)
+    # output$export_param <- downloadHandler(
+    #   filename = function() {
+    #     paste0("sen2r_", strftime(Sys.Date(),"%Y%m%d"), ".json")
+    #   },
+    #   content = function(file) {
+    #     return_list <- create_return_list() # run creation of return_list
+    #     check_param_result <- check_param(return_list)
+    #     if (check_param_result) {
+    #       writeLines(toJSON(return_list, pretty=TRUE), file)
     #     }
-    #   }
-    # })
-    # observe({
-    #   if (exists("imported_param") && !is.null(imported_param())) {
-    #     import_param_list(imported_param()) # FIXME 3 same as fixme2 (after importing parameters, map is not drawn)
-    #     # imported_param() <- NULL
-    #   }
-    # })
-    observe({
+    #   },
+    #   contentType = "application/json"
+    # )
+    
+    # # if Import is pressed, read a json object (using server-side button)
+    shinyFileChoose(input, "import_param", roots=volumes, session=session,
+                    filetypes = c("JSON"="json"))
+    
+    observeEvent(input$import_param, {
+      
+      # server-side button
+      import_param_path <- input$import_param
+      import_param_path <- parseFilePaths(volumes,input$import_param)
+      rv$imported_param <- if (nrow(import_param_path)>0) {
+        import_param_path$datapath %>%
+          as.character() %>%
+          readLines() %>%
+          fromJSON()
+      } else {
+        NULL
+      }
+      
+      # # client-side button
+      # rv$imported_param <- if (nrow(input$import_param$datapath)>0) {
+      #   readLines(fromJSON(input$import_param$datapath))
+      # } else {
+      #   NULL
+      # }
+      
+      if (!is.null(rv$imported_param)) {
+        import_param_list(rv$imported_param)
+        rv$imported_param <- NULL
+      }
+    })
+    
+    observeEvent(param_list, {
       if (!is.null(param_list)) {
         import_param_list(param_list)
       }
     })
     
     ## end of path module ##
+    
+    # Closing the connection when window is closed
+    session$onSessionEnded(function() {
+      stopApp()
+    })
     
   } # end of s2_gui.server function
   
@@ -2367,6 +2588,3 @@ s2_gui <- function(param_list = NULL,
   }
   
 }
-
-
-

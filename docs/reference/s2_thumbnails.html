@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create thumbnails for S2 products. — s2_thumbnails • SALTO: Sentinel-2 And Landsat TOolbox</title>
+<title>Create thumbnails for S2 products. — s2_thumbnails • An R toolbox to find, download an preprocess Sentinel-2 data</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -59,7 +59,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">salto</a>
+      <a class="navbar-brand" href="../index.html">sen2r</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -73,7 +73,7 @@
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/ranghetti/salto/">
+  <a href="https://github.com/ranghetti/sen2r/">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -97,18 +97,12 @@
 products. BOA and TOA multiband images are rendered as false colour
 JPEG images; SCL maps are rendered as 8-bit PNG;
 other singleband images (like spectral indices) are rendered as
-JPEG images with a standard color palette.
-Some improvements still have to be done:</p><ul>
-<li><p>allowing the possibility to chose the palette and the limits
-(for now, the range -1 to 1 is always used);</p></li>
-<li><p>adding support for RGB products.</p></li>
-</ul>
-
-    <p>Output images are georeferenced.</p>
+JPEG images with a standard colour palette.
+Output images are georeferenced.</p>
     
 
     <pre class="usage"><span class='fu'>s2_thumbnails</span>(<span class='no'>infiles</span>, <span class='kw'>prod_type</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>rgb_type</span> <span class='kw'>=</span> <span class='st'>"SwirNirR"</span>, <span class='kw'>dim</span> <span class='kw'>=</span> <span class='fl'>1024</span>,
-  <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='kw'>scaleRange</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -144,6 +138,17 @@ If this is lower than the corresponding dimension of the maps, maps are
 rescaled before producing the thumbnails; otherwise the original dimensions
 are maintained.
 To keep the original size in any case, set <code>dim = Inf</code>.</p></td>
+    </tr>
+    <tr>
+      <th>scaleRange</th>
+      <td><p>(optional) Range of valid values. If not specified
+(default), it is automatically retrieved from the product type.
+Default ranges for BOA and TOA products are 0 to 8000
+(<code>rgb_type = "SwirNirR"</code>), 0 to 7500 (<code>"NirRG"</code>) and 0 to 2500 (<code>"RGB"</code>).
+For spectral indices, default range is -1 to 1 for Float products, -10000
+to 10000 for Int and 0 to 200 for Byte; for "Zscore" products, default
+range is -3 to 3 for Float and -3000 to 3000 for Int.
+It can be useful i.e. to stretch BOA "dark" products.</p></td>
     </tr>
     <tr>
       <th>outdir</th>

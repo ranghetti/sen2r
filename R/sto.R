@@ -91,8 +91,18 @@
 #'  are computed from BOA values; if "TOA", non corrected reflectances
 #'  are instead used (be careful to use this setting!).
 #' @param mask_type (optional) Character value which determines the categories
-#'  in the Srface Classification Map to be masked (see [s2_mask()]
+#'  in the Surface Classification Map to be masked (see [s2_mask()]
 #'  for the accepted values). Default (NA) is not to mask.
+#' @param max_mask (optional) Numeric value (range 0 to 100), which represents
+#'  the maximum percentage of allowed masked surface (by clouds or any other 
+#'  type of mask chosen with argument `mask_type`) for producing outputs. 
+#'  Images with a percentage of masked surface greater than `max_mask`%
+#'  are not processed (the list of expected output files which have not been 
+#'  generated is returned as an attribute, named "skipped"). 
+#'  Default value is 80.
+#'  Notice that the percentage is computed on non-NA values (if input images 
+#'  had previously been clipped and masked using a polygon, the percentage is
+#'  computed on the surface included in the masking polygons).
 #' @param clip_on_extent (optional) Logical: if TRUE (default), output products
 #'  and indices are clipped to the selected extent (and resampled/reprojected);
 #'  if FALSE, the geometry and extension of the tiles is maintained.
@@ -119,6 +129,8 @@
 #'  (for now, only SCL): one among "near" (default) and "mode".
 #' @param outformat (optional) Format of the output file (in a
 #'  format recognised by GDAL). Default is "GTiff".
+#' @param index_datatype (optional) Numeric datatype of the ouptut 
+#'  spectral indices (see [s2_calcindices].
 #' @param compression (optional) In the case GTiff is chosen as
 #'  output format, the compression indicated with this parameter is
 #'  used (default is "DEFLATE").
@@ -163,6 +175,8 @@
 #'  systems with problems with python, when [sto)] is intended
 #'  to be used only for processing existing SAFE files (python is required
 #'  in any case to download SAFE).
+#' @return A vector with the paths of the files which were created (excluded
+#'  the temporary files); NULL otherwise.
 #'
 #' @import data.table
 #' @importFrom geojsonio geojson_json
@@ -191,6 +205,7 @@ sto <- function(param_list=NULL,
                 list_indices=NA,
                 index_source=NA,
                 mask_type=NA,
+                max_mask=NA,
                 clip_on_extent=NA,
                 extent_as_mask=NA,
                 reference_path=NA,
@@ -201,6 +216,7 @@ sto <- function(param_list=NULL,
                 resampling=NA,
                 resampling_scl=NA,
                 outformat=NA,
+                index_datatype=NA,
                 compression=NA,
                 overwrite=NA,
                 path_l1c=NA,
@@ -215,12 +231,6 @@ sto <- function(param_list=NULL,
   
   
   ### Preliminary settings ###
-  
-  # import python modules
-  # check that python and the required modules are installed
-  if (use_python == TRUE) {
-    py <- init_python()
-  }
   
   # create tempdir
   dir.create(tempdir(), showWarnings=FALSE)
@@ -247,6 +257,7 @@ sto <- function(param_list=NULL,
                  list_indices=NA,
                  index_source="BOA",
                  mask_type=NA,
+                 max_mask=100,
                  clip_on_extent=TRUE,
                  extent_as_mask=FALSE,
                  reference_path=NA,
@@ -257,6 +268,7 @@ sto <- function(param_list=NULL,
                  resampling="near",
                  resampling_scl="near",
                  outformat="GTiff",
+                 index_datatype="Int16",
                  compression="DEFLATE",
                  overwrite=FALSE,
                  path_l1c=NA,
@@ -269,12 +281,40 @@ sto <- function(param_list=NULL,
                  thumbnails=TRUE,
                  pkg_version=packageVersion("salto"))
   
+  # If it is the first time that the package is used,
+  # ask for opening the GUI to install dependencies
+  if (interactive() & !file.exists(system.file("extdata","paths.json", package="salto"))) {
+    open_check_gui <- NA
+    while(is.na(open_check_gui)) {
+      open_check_gui_prompt <- print_message(
+        type="waiting",
+        # "It seems you are running this package for the first time. ",
+        "Do you want to install the required dependencies using a GUI? (y/n) "
+      )
+      open_check_gui <- if (grepl("^[Yy]",open_check_gui_prompt)) {
+        TRUE
+      } else if (grepl("^[Nn]",open_check_gui_prompt)) {
+        FALSE
+      } else {
+        NA
+      }
+    }
+    if (open_check_gui) {check_sen2r_deps()}
+  }
+  
   # Starting execution
   print_message(
     type = "message",
     date = TRUE,
     "Starting SALTO execution."
   )
+  
+  # import python modules
+  # check that python and the required modules are installed
+  if (use_python == TRUE) {
+    py <- init_python()
+  }
+  
   
   # Import param_list, if provided
   pm <- if (is.null(param_list)) {
@@ -287,36 +327,6 @@ sto <- function(param_list=NULL,
   } else if (is(param_list, "list")) {
     param_list
     # TODO check parameter names
-  }
-  
-  # Check param_list version
-  if (is.null(pm$pkg_version)) {
-    if (!is.null(pm$fidolasen_version)) {
-      pm$pkg_version <- pm$fidolasen_version
-    } else {
-      pm$pkg_version <- package_version("0.2.0")
-    }
-  }
-  if (packageVersion("salto") > package_version(pm$pkg_version)) {
-    if (interactive()) {
-      open_gui <- print_message(
-        type="waiting",
-        "The parameter file was created with an old version of the package:\n ",
-        "type \"G\" (and ENTER) to open the GUI and check that the input\n ",
-        "parameters are correct, or ENTER to proceed anyway\n ",
-        "(this could lead to errors).\n ",
-        "Alternatively, press ESC to interrupt."
-      )
-      if (length(grep("^[Gg]",open_gui))>0) {
-        gui <- TRUE
-      }
-    } else {
-      print_message(
-        type="warning",
-        "The parameter file was created with an old version of the package:\n ",
-        "(this could lead to errors).\n "
-      )
-    }
   }
   
   # Overwrite parameters passed manually
@@ -345,13 +355,49 @@ sto <- function(param_list=NULL,
   #   }
   # }
   
-  
-  ## Open GUI (if required)
   # if gui argument was not specified, use default value
   if (is.na(gui)) {
     gui <- if (is.null(param_list)) {TRUE} else {FALSE}
   }
-  # open GUI
+  
+  # Check param_list version
+  if (is.null(pm$pkg_version)) {
+    if (!is.null(pm$fidolasen_version)) {
+      pm$pkg_version <- pm$fidolasen_version
+    } else {
+      pm$pkg_version <- package_version("0.2.0")
+    }
+  }
+  if (packageVersion("salto") > package_version(pm$pkg_version)) {
+    if (interactive() & !gui) {
+      open_gui <- NA
+      while(is.na(open_gui)) {
+        open_gui_prompt <- print_message(
+          type="waiting",
+          "\nThe parameter file was created with an old version of the package:\n",
+          "would you like to open a GUI and check that the input parameters are correct? (y/n)\n",
+          # "Note that continuing without checking them could lead to errors.\n",
+          "Alternatively, press ESC to interrupt and check the parameter file manually.\n"
+        )
+        open_gui <- if (grepl("^[Yy]",open_gui_prompt)) {
+          gui <- TRUE
+          TRUE
+        } else if (grepl("^[Nn]",open_gui_prompt)) {
+          FALSE
+        } else {
+          NA
+        }
+      }
+    } else {
+      print_message(
+        type="warning",
+        "The parameter file was created with an old version of the package ",
+        "(this could lead to errors)."
+      )
+    }
+  }
+
+  ## Open GUI (if required)
   if (gui==TRUE) {
     
     print_message(
@@ -412,7 +458,7 @@ sto <- function(param_list=NULL,
   paths["indices"] <- if (!is.na(pm$path_indices)) {pm$path_indices} else {file.path(path_tmp,"indices")}
   paths["tiles"] <- if (!is.na(pm$path_tiles)) {pm$path_tiles} else {file.path(path_tmp,"tiles")}
   paths["merged"] <- if (!is.na(pm$path_merged)) {pm$path_merged} else {file.path(path_tmp,"merged")}
-  paths["warped"] <- if (is.na(pm$mask_type)) {path_out} else {file.path(path_tmp,"warped")}
+  paths["warped"] <- if (is.na(pm$mask_type)) {paths["out"]} else {file.path(path_tmp,"warped")}
   
   # accepted products (update together with the same variables in s2_gui() and in compute_s2_names())
   l1c_prods <- c("TOA")
@@ -449,7 +495,7 @@ sto <- function(param_list=NULL,
       "The following output ",
       if (sum(!paths_exist)==1) {"directory does "} else {"directories do "},
       "not exist:\n",
-      paste(pm[names(paths_exist[!paths_exist])],collapse="\n"),
+      paste(names(paths_exist[!paths_exist]),collapse="\n"),
       ".\nPlease create ",
       if (sum(!paths_exist)==1) {"it "} else {"them "},
       "before continuing."
@@ -462,7 +508,7 @@ sto <- function(param_list=NULL,
   
   
   # check output format
-  # sel_driver <- py$osgeo$gdal$GetDriverByName(pm$outformat)
+  # sel_driver <- py$gdal$GetDriverByName(pm$outformat)
   gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="salto"))
   sel_driver <- gdal_formats[gdal_formats$name==pm$outformat,]
   
@@ -483,420 +529,454 @@ sto <- function(param_list=NULL,
   #   "dat"
   # } else {
   #   # unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(gdal$DMD_EXTENSIONS))," ")," "))[1]
-  #   unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(py$osgeo$gdal$DMD_EXTENSIONS))," ")," "))[1]
+  #   unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(py$gdal$DMD_EXTENSIONS))," ")," "))[1]
   # }
   out_ext <- sel_driver[1,"ext"]
   
   
-  ### Find SAFE and compute the names of required files ###
-  
-  ## 2. List required products ##
-  s2_lists <- list()
-  
-  if (pm$online == TRUE) {
+  #### SAFE Part (find, download, correct)
+  for (dummy in TRUE) {
+    # dummy cycle, created only to allow "break" from this part
     
-    print_message(
-      type = "message",
-      date = TRUE,
-      "Searching for available SAFE products on SciHub..."
-    )
+    ### Find SAFE and compute the names of required files ###
     
-    # if online mode, retrieve list with s2_list() basing on parameters
-    if ("l1c" %in% pm$s2_levels) {
-      # list of SAFE (L1C) needed for required L1C
-      s2_lists[["l1c"]] <- s2_list(spatial_extent = pm$extent,
-                                   time_interval = pm$timewindow,
-                                   tile = pm$s2tiles_selected,
-                                   level = "L1C")
-    }
-    if ("l2a" %in% pm$s2_levels) {
-      # list of SAFE (L1C or/and L2A) needed for required L2A
-      s2_lists[["l2a"]] <- s2_list(spatial_extent = pm$extent,
-                                   time_interval = pm$timewindow,
-                                   tile = pm$s2tiles_selected,
-                                   level = if (pm$step_atmcorr=="auto") {
-                                     "auto"
-                                   } else if (pm$step_atmcorr=="l2a") {
-                                     "L2A"
-                                   } else if (pm$step_atmcorr %in% c("scihub","no")) {
-                                     "L1C"
-                                   })
-    }
+    ## 2. List required products ##
+    s2_lists <- list()
     
-  } else {
-    
-    # if offline mode, read the SAFE product list from folders and filter
-    if ("l1c" %in% pm$s2_levels) {
-      s2_lists[["l1c"]] <- list.files(pm$path_l1c, "\\.SAFE$")
-    }
-    if ("l2a" %in% pm$s2_levels) {
-      s2_lists[["l2a"]] <- if (pm$step_atmcorr=="l2a") {
-        list.files(pm$path_l2a, "\\.SAFE$")
-      } else if (pm$step_atmcorr %in% c("scihub","no","auto")) { # FIXME "auto"? -> for now, managed as "scihub" (apply sen2cor; if l2a already exists, do nothing)
-        list.files(pm$path_l1c, "\\.SAFE$")
+    if (pm$online == TRUE) {
+      
+      print_message(
+        type = "message",
+        date = TRUE,
+        "Searching for available SAFE products on SciHub..."
+      )
+      
+      # if online mode, retrieve list with s2_list() basing on parameters
+      if ("l1c" %in% pm$s2_levels) {
+        # list of SAFE (L1C) needed for required L1C
+        s2_lists[["l1c"]] <- s2_list(spatial_extent = pm$extent,
+                                     time_interval = pm$timewindow,
+                                     tile = pm$s2tiles_selected,
+                                     level = "L1C")
       }
-    }
-    s2_lists <- lapply(s2_lists, function(l) {
-      sapply(l, function(x) {
-        tryCatch(s2_getMetadata(x, info="nameinfo")$level,
-                 error = function(e) NA)
+      if ("l2a" %in% pm$s2_levels) {
+        # list of SAFE (L1C or/and L2A) needed for required L2A
+        s2_lists[["l2a"]] <- s2_list(spatial_extent = pm$extent,
+                                     time_interval = pm$timewindow,
+                                     tile = pm$s2tiles_selected,
+                                     level = if (pm$step_atmcorr=="auto") {
+                                       "auto"
+                                     } else if (pm$step_atmcorr=="l2a") {
+                                       "L2A"
+                                     } else if (pm$step_atmcorr %in% c("scihub","no")) {
+                                       "L1C"
+                                     })
+      }
+      
+    } else {
+      
+      # if offline mode, read the SAFE product list from folders and filter
+      if ("l1c" %in% pm$s2_levels) {
+        s2_lists[["l1c"]] <- list.files(pm$path_l1c, "\\.SAFE$")
+      }
+      if ("l2a" %in% pm$s2_levels) {
+        s2_lists[["l2a"]] <- if (pm$step_atmcorr=="l2a") {
+          list.files(pm$path_l2a, "\\.SAFE$")
+        } else if (pm$step_atmcorr %in% c("scihub","no")) {
+          list.files(pm$path_l1c, "\\.SAFE$")
+        } else if (pm$step_atmcorr=="auto") {
+          all_l1c <- list.files(pm$path_l1c, "\\.SAFE$")
+          all_l2a <- list.files(pm$path_l2a, "\\.SAFE$")
+          c(
+            all_l2a,
+            all_l1c[
+              !gsub(
+                "\\_OPER\\_","_USER_",
+                gsub(
+                  "^S2([AB])\\_((?:OPER\\_PRD\\_)?)MSIL1C\\_","S2\\1\\_\\2MSIL2A\\_",
+                  all_l1c
+                )
+              ) %in% all_l2a
+              ]
+          )
+        }
+      }
+      s2_lists <- lapply(s2_lists, function(l) {
+        sapply(l, function(x) {
+          tryCatch(s2_getMetadata(x, info="nameinfo")$level,
+                   error = function(e) NA)
+        })
       })
-    })
-    s2_lists <- lapply(s2_lists, function(l) {l[!is.na(l)]})
+      s2_lists <- lapply(s2_lists, function(l) {l[!is.na(l)]})
+      
+    }
+    s2_list <- unlist(s2_lists)[!duplicated(unlist(lapply(s2_lists, names)))]
     
-  }
-  s2_list <- unlist(s2_lists)[!duplicated(unlist(lapply(s2_lists, names)))]
-  
-  # if s2_list is empty, exit 
-  if (length(s2_list)==0) {
-    print_message(
-      type = "message",
-      date = TRUE,
-      "No SAFE products found with the parameters set ",
-      "(the searching parameters may be too restrictive, ",
-      "or the Copernicus Open Access Hub could be unavailable); exiting."
-    )
-    return(invisible(NULL))
-  }
-  
-  names(s2_list) <- gsub("^l[12][ac]\\.","",names(s2_list))
-  
-  # If s2_list is empty, exit
-  if (length(s2_list)==0) {
-    print_message(
-      type = "message",
-      date = TRUE,
-      if (pm$online==FALSE) {
-        paste0("No SAFE products which match the settings were found locally;\n ",
-               "please download them or set different spatial/temporal extents.")
+    # if s2_list is empty, exit 
+    if (length(s2_list)==0) {
+      print_message(
+        type = "message",
+        date = TRUE,
+        "No SAFE products found with the parameters set ",
+        "(the searching parameters may be too restrictive, ",
+        "or the Copernicus Open Access Hub could be unavailable)."
+      )
+      break
+      # return(invisible(NULL))
+    }
+    
+    names(s2_list) <- gsub("^l[12][ac]\\.","",names(s2_list))
+    
+    # If s2_list is empty, exit
+    if (length(s2_list)==0) {
+      print_message(
+        type = "message",
+        date = TRUE,
+        if (pm$online==FALSE) {
+          paste0("No SAFE products which match the settings were found locally;\n ",
+                 "please download them or set different spatial/temporal extents.\n",
+                 "Execution halted.")
+        } else {
+          paste0("No SAFE products matching the settings were found.")
+        }
+      )
+      break
+      # return(invisible(NULL))
+    }
+    
+    
+    # getting required metadata
+    s2_dt <- lapply(names(s2_list), function(x) {
+      unlist(s2_getMetadata(x, info="nameinfo")) %>%
+        t() %>%
+        as.data.frame(stringsAsFactors=FALSE)
+    }) %>%
+      rbindlist(fill=TRUE)
+    s2_dt[,c("name","url"):=list(names(s2_list),s2_list)]
+    s2_dt[,c("sensing_datetime","creation_datetime"):=list(as.POSIXct(sensing_datetime, format="%s"),
+                                                           as.POSIXct(creation_datetime, format="%s"))]
+    if (is.null(s2_dt$id_tile)) {
+      s2_dt$id_tile <- as.character(NA)
+    }
+    
+    s2_dt <- s2_dt[mission %in% toupper(substr(pm$sel_sensor,2,3)),][
+      order(-sensing_datetime),]
+    if (!anyNA(pm$timewindow)) {
+      s2_dt <- s2_dt[as.Date(sensing_datetime) >= pm$timewindow[1] &
+                       as.Date(sensing_datetime) <= pm$timewindow[2],]
+    }
+    # if pm$s2tiles_selected contains NA, do not filter on tiles now;
+    # otherwise, filter on tiles but keep also NA not to discard old name products.
+    # (products will be filtered later: #filter2)
+    if (all(!is.na(pm$s2tiles_selected))) {
+      s2_dt <- s2_dt[id_tile %in% c(pm$s2tiles_selected,NA),]
+    }
+    if (all(!is.na(pm$s2orbits_selected))) {
+      s2_dt <- s2_dt[id_orbit %in% pm$s2orbits_selected,]
+    }
+    # setorder(s2_dt, -sensing_datetime)
+    s2_list_l1c <- s2_dt[level=="1C",url] # list of required L1C
+    s2_list_l2a <- s2_dt[level=="2A",url] # list of required L2A
+    names(s2_list_l1c) <- s2_dt[level=="1C",name]
+    names(s2_list_l2a) <- s2_dt[level=="2A",name]
+    
+    # add expected L2A names (after sen2cor)
+    if (pm$step_atmcorr %in% c("auto","scihub")) {
+      s2_list_l1c_tocorrect <- if (pm$overwrite_safe==FALSE) {
+        s2_list_l1c[
+          !gsub(
+            "\\_OPER\\_","_USER_",
+            gsub(
+              "^S2([AB])\\_((?:OPER\\_PRD\\_)?)MSIL1C\\_","S2\\1\\_\\2MSIL2A\\_",
+              names(s2_list_l1c)
+            )
+          ) %in% names(s2_list_l2a)
+          ]
       } else {
-        paste0("No SAFE products matching the settings were found;\n ",
-               "please set different spatial/temporal extents.")
-      },
-      " Execution halted."
-    )
-    return(invisible(NULL))
-  }
-  
-  
-  # getting required metadata
-  s2_dt <- lapply(names(s2_list), function(x) {
-    unlist(s2_getMetadata(x, info="nameinfo")) %>%
-      t() %>%
-      as.data.frame(stringsAsFactors=FALSE)
-  }) %>%
-    rbindlist(fill=TRUE)
-  s2_dt[,c("name","url"):=list(names(s2_list),s2_list)]
-  s2_dt[,c("sensing_datetime","creation_datetime"):=list(as.POSIXct(sensing_datetime, format="%s"),
-                                                         as.POSIXct(creation_datetime, format="%s"))]
-  if (is.null(s2_dt$id_tile)) {
-    s2_dt$id_tile <- as.character(NA)
-  }
-  
-  s2_dt <- s2_dt[mission %in% toupper(substr(pm$sel_sensor,2,3)),][
-    order(-sensing_datetime),]
-  if (!anyNA(pm$timewindow)) {
-    s2_dt <- s2_dt[as.Date(sensing_datetime) >= pm$timewindow[1] &
-                     as.Date(sensing_datetime) <= pm$timewindow[2],]
-  }
-  # if pm$s2tiles_selected contains NA, do not filter on tiles now;
-  # otherwise, filter on tiles but keep also NA not to discard old name products.
-  # (products will be filtered later: #filter2)
-  if (all(!is.na(pm$s2tiles_selected))) {
-    s2_dt <- s2_dt[id_tile %in% c(pm$s2tiles_selected,NA),]
-  }
-  if (all(!is.na(pm$s2orbits_selected))) {
-    s2_dt <- s2_dt[id_orbit %in% pm$s2orbits_selected,]
-  }
-  # setorder(s2_dt, -sensing_datetime)
-  s2_list_l1c <- s2_dt[level=="1C",url] # list of required L1C
-  s2_list_l2a <- s2_dt[level=="2A",url] # list of required L2A
-  names(s2_list_l1c) <- s2_dt[level=="1C",name]
-  names(s2_list_l2a) <- s2_dt[level=="2A",name]
-  
-  # add expected L2A names (after sen2cor)
-  if (pm$step_atmcorr %in% c("auto","scihub")) {
-    s2_list_l1c_tocorrect <- if (pm$overwrite_safe==FALSE) {
-      s2_list_l1c[
-        !gsub(
+        s2_list_l1c
+      }
+      if (length(s2_list_l1c_tocorrect)>0) {
+        s2_list_l2a_tobecorrected <- gsub(
           "\\_OPER\\_","_USER_",
           gsub(
             "^S2([AB])\\_((?:OPER\\_PRD\\_)?)MSIL1C\\_","S2\\1\\_\\2MSIL2A\\_",
-            names(s2_list_l1c)
+            names(s2_list_l1c_tocorrect)
           )
-        ) %in% names(s2_list_l2a)
-        ]
-    } else {
-      s2_list_l1c
-    }
-    if (length(s2_list_l1c_tocorrect)>0) {
-      s2_list_l2a_tobecorrected <- gsub(
-        "\\_OPER\\_","_USER_",
-        gsub(
-          "^S2([AB])\\_((?:OPER\\_PRD\\_)?)MSIL1C\\_","S2\\1\\_\\2MSIL2A\\_",
-          names(s2_list_l1c_tocorrect)
         )
-      )
-      names(s2_list_l2a_tobecorrected) <- basename(s2_list_l2a_tobecorrected)
-      s2_list_l2a_exp <- c(s2_list_l2a,s2_list_l2a_tobecorrected)
+        names(s2_list_l2a_tobecorrected) <- basename(s2_list_l2a_tobecorrected)
+        s2_list_l2a_exp <- c(s2_list_l2a,s2_list_l2a_tobecorrected)
+      } else {
+        s2_list_l2a_exp <- s2_list_l2a
+      }
     } else {
+      s2_list_l1c_tocorrect <- character()
       s2_list_l2a_exp <- s2_list_l2a
     }
-  } else {
-    s2_list_l1c_tocorrect <- character()
-    s2_list_l2a_exp <- s2_list_l2a
-  }
-  
-  # If s2_list is empty, exit (second time)
-  if (nrow(s2_dt)==0) {
-    print_message(
-      type = "message",
-      date = TRUE,
-      if (pm$online==FALSE) {
-        paste0("No SAFE products which match the settings were found locally; ",
-               "please download them or set different tile or orbit IDs.")
+    
+    # If s2_list is empty, exit (second time)
+    if (nrow(s2_dt)==0) {
+      print_message(
+        type = "message",
+        date = TRUE,
+        if (pm$online==FALSE) {
+          paste0("No SAFE products which match the settings were found locally; ",
+                 "please download them or set different tile or orbit IDs.\n",
+                 "Execution halted."
+          )
+        } else {
+          paste0("No SAFE products matching the settings were found.")
+        }
+      )
+      break
+      # return(invisible(NULL))
+    }
+    
+    
+    # if preprocess is required, define output names
+    if (pm$preprocess == TRUE) {  
+      
+      ## Define output formats
+      if (!is.na(pm$path_tiles)) {
+        tiles_ext <- out_ext
+        tiles_outformat <- pm$outformat
       } else {
-        paste0("No SAFE products matching the settings were found; ",
-               "please set different tile or orbit IDs.")
-      },
-      " Execution halted."
-    )
-    return(invisible(NULL))
-  }
-  
-  
-  # if preprocess is required, define output names
-  if (pm$preprocess == TRUE) {  
-    
-    ## Define output formats
-    if (!is.na(pm$path_tiles)) {
-      tiles_ext <- out_ext
-      tiles_outformat <- pm$outformat
-    } else {
-      tiles_ext <- "vrt"
-      tiles_outformat <- "VRT"
-    }
-    if (!is.na(pm$path_merged)) {
-      merged_ext <- out_ext
-      merged_outformat <- pm$outformat
-    } else {
-      merged_ext <- "vrt"
-      merged_outformat <- "VRT"
-    }
-    if (is.na(pm$mask_type)) {
-      warped_ext <- out_ext
-      warped_outformat <- pm$outformat
-    } else {
-      warped_ext <- "vrt"
-      warped_outformat <- "VRT"
-    }
-    
-    # Import path of files to ignore, if exists
-    # (see comment at #ignorePath)
-    ignorelist <- if (is(param_list, "character")) {
-      ignorelist_path <- gsub("\\.json$","_ignorelist.txt",param_list)
-      if (file.exists(ignorelist_path)) {
-        readLines(ignorelist_path)
+        tiles_ext <- "vrt"
+        tiles_outformat <- "VRT"
+      }
+      if (!is.na(pm$path_merged)) {
+        merged_ext <- out_ext
+        merged_outformat <- pm$outformat
+      } else {
+        merged_ext <- "vrt"
+        merged_outformat <- "VRT"
+      }
+      if (is.na(pm$mask_type)) {
+        warped_ext <- out_ext
+        warped_outformat <- pm$outformat
+      } else {
+        warped_ext <- "vrt"
+        warped_outformat <- "VRT"
+      }
+      if (pm$index_source %in% pm$list_prods) {
+        sr_masked_ext <- out_ext
+        sr_masked_outformat <- pm$outformat
+      } else {
+        sr_masked_ext <- "vrt"
+        sr_masked_outformat <- "VRT"
+      }
+      
+      # Import path of files to ignore, if exists
+      # (see comment at #ignorePath)
+      ignorelist <- if (is(param_list, "character")) {
+        ignorelist_path <- gsub("\\.json$","_ignorelist.txt",param_list)
+        if (file.exists(ignorelist_path)) {
+          readLines(ignorelist_path)
+        } else {
+          character()
+        }
       } else {
         character()
       }
-    } else {
-      character()
-    }
-    
-    # compute names for required files (SAFE req)
-    print_message(type = "message", date = TRUE, "Computing output names...")
-    s2names <- compute_s2_paths(
-      pm=pm, 
-      s2_list_l1c=s2_list_l1c, s2_list_l2a=s2_list_l2a_exp, 
-      paths=paths, 
-      list_prods=list_prods, 
-      out_ext=out_ext, tiles_ext=tiles_ext, 
-      merged_ext=merged_ext, warped_ext=warped_ext, 
-      ignorelist = ignorelist
-    )
-    
-    # Check if processing is needed
-    if (all(sapply(s2names[c(
-      "indices_names_new", "out_names_new", "masked_names_new", 
-      "warped_names_new", "merged_names_new", "tiles_names_new"
-    )], length) == 0)) {
-      print_message(
-        type = "message",
-        date = TRUE,
-        "All the required output files already exist; nothing to do.\n ",
-        "To reprocess, run sto() with the argument overwrite = TRUE\n ",
-        "or specify a different output directory."
-      )
-      return(invisible(NULL))
-    }
-    
-  } # end of pm$preprocess==TRUE IF cycle (names of required files)
-  
-  
-  ### SAFE processing: download and atmospheric correction ###
-  
-  ## Generate the list of required SAFE
-  if (pm$preprocess==TRUE) {
-    # if preprocess is required, only the SAFE necessary to generate new files are considered
-    s2_list_l2a_req <- s2_list_l2a[names(s2_list_l2a) %in% basename(nn(s2names$safe_names_l2a_req))]
-    safe_names_l2a_reqout <- s2names$safe_names_l2a_req[!basename(nn(s2names$safe_names_l2a_req)) %in% names(s2_list_l2a)]
-    safe_names_l1c_tocorrect <- gsub(
-      "\\_USER\\_","_OPER_",
-      gsub(
-        "^S2([AB])\\_((?:USER\\_PRD\\_)?)MSIL2A\\_","S2\\1\\_\\2MSIL1C\\_",
-        basename(nn(safe_names_l2a_reqout))
-      )
-    )
-    s2_list_l1c_req <- s2_list_l1c[
-      names(s2_list_l1c) %in% c(safe_names_l1c_tocorrect,basename(nn(s2names$safe_names_l1c_req)))
-      ]
-    s2_dt <- s2_dt[name %in% c(names(s2_list_l1c_req),names(s2_list_l2a_req)),]
-    s2_list_l1c <- s2_list_l1c_req
-    s2_list_l2a <- s2_list_l2a_req
-  }
-  
-  ## 3. Download required SAFE ##
-  # TODO implement ovwerite/skip
-  # (now it skips, but analysing each single file)
-  
-  if (pm$online == TRUE) {
-    if (length(s2_list_l2a)>0) {
       
-      print_message(
-        type = "message",
-        date = TRUE,
-        "Starting to download the required level-2A SAFE products."
+      # compute names for required files (SAFE req)
+      print_message(type = "message", date = TRUE, "Computing output names...")
+      s2names <- compute_s2_paths(
+        pm=pm, 
+        s2_list_l1c=s2_list_l1c, s2_list_l2a=s2_list_l2a_exp, 
+        paths=paths, 
+        list_prods=list_prods, 
+        out_ext=out_ext, tiles_ext=tiles_ext, 
+        merged_ext=merged_ext, warped_ext=warped_ext, sr_masked_ext=sr_masked_ext,
+        ignorelist = ignorelist
       )
       
-      lapply(pm$s2tiles_selected, function(tile) {
-        s2_download(s2_list_l2a,
-                    outdir = pm$path_l2a,
-                    tile = tile)
-      })
-      
-    }
-    
-    if (length(s2_list_l1c)>0) {
-      
-      print_message(
-        type = "message",
-        date = TRUE,
-        "Starting to download the required level-1C SAFE products."
-      )
-      
-      lapply(pm$s2tiles_selected, function(tile) {
-        s2_download(s2_list_l1c,
-                    outdir = pm$path_l1c,
-                    tile = tile)
-      })
-      # FIXME this operation can be very long with oldname products but tiled:
-      # Sentinel-download.py scans within single xml files and discharges
-      # products without the selected tile, but for some reasons this
-      # operation can be very time consuming. Find a way to avoid it.
-      
-    }
-  }
-  
-  # second filter on tiles (#filter2)
-  s2_dt$id_tile <- lapply(file.path(ifelse(s2_dt$level=="1C",pm$path_l1c,pm$path_l2a),s2_dt[,name]), function(x) {
-    tryCatch(s2_getMetadata(x, "tiles"), error = function(e) {NULL})
-  }) %>%
-    sapply(paste, collapse = " ") %>% as.character()
-  if (all(!is.na(pm$s2tiles_selected)) & nrow(s2_dt)>0) {
-    # filter "elegant" using strsplit (fails with empty s2_dt)
-    s2_dt <- s2_dt[sapply(strsplit(s2_dt$id_tile," "), function(x){
-      any(x %in% pm$s2tiles_selected)
-    }),]
-    # # filter "ugly" with regexp
-    # s2_dt <- s2_dt[grep(paste0("(",paste(pm$s2tiles_selected,collapse=")|("),")"), s2_dt$id_tile),]
-  }
-  
-  # remove duplicates (often for different creation dates, or same sensing dates and different sensing hours)
-  # (placed here causes downloading more than the required tiles, but it is the only method to be sure not to exclude
-  # some products with the required tiles and include others without them)
-  s2_dt <- s2_dt[order(-creation_datetime),]
-  s2_dt <- s2_dt[
-    !duplicated(
-      s2_dt[, list(
-        mission,
-        level,
-        id_orbit,
-        id_tile=ifelse(is.na(id_tile),sample(1E5),id_tile), # if id_tile is not specified do not remove duplicates, because different products can rely to different tiles
-        as.Date(sensing_datetime)
-      )]
-    ),
-    ]
-  
-  # redefine s2_list_l1c/l2a
-  s2_list_l1c <- s2_dt[level=="1C",url] # list of required L1C
-  s2_list_l2a <- s2_dt[level=="2A",url] # list of required L2A
-  names(s2_list_l1c) <- s2_dt[level=="1C",name]
-  names(s2_list_l2a) <- s2_dt[level=="2A",name]
-  
-  ## Apply sen2cor
-  if (pm$step_atmcorr %in% c("auto","scihub")) {
-    
-    s2_list_l1c_tocorrect <- if (pm$overwrite_safe==FALSE) {
-      s2_list_l1c[
-        !gsub(
-          "\\_OPER\\_","_USER_",
-          gsub(
-            "^S2([AB])\\_((?:OPER\\_PRD\\_)?)MSIL1C\\_","S2\\1\\_\\2MSIL2A\\_",
-            names(s2_list_l1c)
-          )
-        ) %in% names(s2_list_l2a)
-        ]
-    } else {
-      s2_list_l1c
-    }
-    
-    if (length(s2_list_l1c_tocorrect)>0) {
-      
-      if (sum(!file.path(pm$path_l1c,names(s2_list_l1c_tocorrect)) %>% file.exists()) > 0) {
+      # Check if processing is needed
+      if (all(sapply(s2names[c(
+        "indices_names_new", "out_names_new", "masked_names_new", 
+        "warped_names_new", "merged_names_new", "tiles_names_new"
+      )], length) == 0)) {
         print_message(
           type = "message",
           date = TRUE,
-          "Starting to correct level-1C SAFE products with sen2cor. ",
-          "This operation could take very long time."
+          "All the required output files already exist; nothing to do.\n ",
+          "To reprocess, run sto() with the argument overwrite = TRUE\n ",
+          "or specify a different output directory."
         )
+        return(invisible(NULL))
       }
       
-      s2_list_l2a_corrected <- sen2cor(names(s2_list_l1c_tocorrect),
-                                       l1c_dir = pm$path_l1c,
-                                       outdir = pm$path_l2a,
-                                       tiles = pm$s2tiles_selected,
-                                       parallel = TRUE)
-      names(s2_list_l2a_corrected) <- basename(s2_list_l2a_corrected)
-      s2_list_l2a <- c(s2_list_l2a,s2_list_l2a_corrected)
+    } # end of pm$preprocess==TRUE IF cycle (names of required files)
+    
+    
+    ### SAFE processing: download and atmospheric correction ###
+    
+    ## Generate the list of required SAFE
+    if (pm$preprocess==TRUE) {
+      # if preprocess is required, only the SAFE necessary to generate new files are considered
+      s2_list_l2a_req <- s2_list_l2a[names(s2_list_l2a) %in% basename(nn(s2names$safe_names_l2a_req))]
+      safe_names_l2a_reqout <- s2names$safe_names_l2a_req[!basename(nn(s2names$safe_names_l2a_req)) %in% names(s2_list_l2a)]
+      safe_names_l1c_tocorrect <- gsub(
+        "\\_USER\\_","_OPER_",
+        gsub(
+          "^S2([AB])\\_((?:USER\\_PRD\\_)?)MSIL2A\\_","S2\\1\\_\\2MSIL1C\\_",
+          basename(nn(safe_names_l2a_reqout))
+        )
+      )
+      s2_list_l1c_req <- s2_list_l1c[
+        names(s2_list_l1c) %in% c(safe_names_l1c_tocorrect,basename(nn(s2names$safe_names_l1c_req)))
+        ]
+      s2_dt <- s2_dt[name %in% c(names(s2_list_l1c_req),names(s2_list_l2a_req)),]
+      s2_list_l1c <- s2_list_l1c_req
+      s2_list_l2a <- s2_list_l2a_req
     }
     
-  }
+    ## 3. Download required SAFE ##
+    # TODO implement ovwerite/skip
+    # (now it skips, but analysing each single file)
+    
+    if (pm$online == TRUE) {
+      if (length(s2_list_l2a)>0) {
+        
+        print_message(
+          type = "message",
+          date = TRUE,
+          "Starting to download the required level-2A SAFE products."
+        )
+        
+        lapply(pm$s2tiles_selected, function(tile) {
+          s2_download(s2_list_l2a,
+                      outdir = pm$path_l2a,
+                      tile = tile)
+        })
+        
+      }
+      
+      if (length(s2_list_l1c)>0) {
+        
+        print_message(
+          type = "message",
+          date = TRUE,
+          "Starting to download the required level-1C SAFE products."
+        )
+        
+        lapply(pm$s2tiles_selected, function(tile) {
+          s2_download(s2_list_l1c,
+                      outdir = pm$path_l1c,
+                      tile = tile)
+        })
+        # FIXME this operation can be very long with oldname products but tiled:
+        # Sentinel-download.py scans within single xml files and discharges
+        # products without the selected tile, but for some reasons this
+        # operation can be very time consuming. Find a way to avoid it.
+        
+      }
+    }
+    
+    # second filter on tiles (#filter2)
+    s2_dt$id_tile <- lapply(file.path(ifelse(s2_dt$level=="1C",pm$path_l1c,pm$path_l2a),s2_dt[,name]), function(x) {
+      tryCatch(s2_getMetadata(x, "tiles"), error = function(e) {NULL})
+    }) %>%
+      sapply(paste, collapse = " ") %>% as.character()
+    if (all(!is.na(pm$s2tiles_selected)) & nrow(s2_dt)>0) {
+      # filter "elegant" using strsplit (fails with empty s2_dt)
+      s2_dt <- s2_dt[sapply(strsplit(s2_dt$id_tile," "), function(x){
+        any(x %in% pm$s2tiles_selected)
+      }),]
+      # # filter "ugly" with regexp
+      # s2_dt <- s2_dt[grep(paste0("(",paste(pm$s2tiles_selected,collapse=")|("),")"), s2_dt$id_tile),]
+    }
+    
+    # remove duplicates (often for different creation dates, or same sensing dates and different sensing hours)
+    # (placed here causes downloading more than the required tiles, but it is the only method to be sure not to exclude
+    # some products with the required tiles and include others without them)
+    s2_dt <- s2_dt[order(-creation_datetime),]
+    s2_dt <- s2_dt[
+      !duplicated(
+        s2_dt[, list(
+          mission,
+          level,
+          id_orbit,
+          id_tile=ifelse(is.na(id_tile),sample(1E5),id_tile), # if id_tile is not specified do not remove duplicates, because different products can rely to different tiles
+          as.Date(sensing_datetime)
+        )]
+      ),
+      ]
+    
+    # redefine s2_list_l1c/l2a
+    s2_list_l1c <- s2_dt[level=="1C",url] # list of required L1C
+    s2_list_l2a <- s2_dt[level=="2A",url] # list of required L2A
+    names(s2_list_l1c) <- s2_dt[level=="1C",name]
+    names(s2_list_l2a) <- s2_dt[level=="2A",name]
+    
+    ## Apply sen2cor
+    if (pm$step_atmcorr %in% c("auto","scihub")) {
+      
+      s2_list_l1c_tocorrect <- if (pm$overwrite_safe==FALSE) {
+        s2_list_l1c[
+          !gsub(
+            "\\_OPER\\_","_USER_",
+            gsub(
+              "^S2([AB])\\_((?:OPER\\_PRD\\_)?)MSIL1C\\_","S2\\1\\_\\2MSIL2A\\_",
+              names(s2_list_l1c)
+            )
+          ) %in% names(s2_list_l2a)
+          ]
+      } else {
+        s2_list_l1c
+      }
+      
+      if (length(s2_list_l1c_tocorrect)>0) {
+        
+        if (sum(!file.path(pm$path_l1c,names(s2_list_l1c_tocorrect)) %>% file.exists()) > 0) {
+          print_message(
+            type = "message",
+            date = TRUE,
+            "Starting to correct level-1C SAFE products with sen2cor. ",
+            "This operation could take very long time."
+          )
+        }
+        
+        s2_list_l2a_corrected <- sen2cor(names(s2_list_l1c_tocorrect),
+                                         l1c_dir = pm$path_l1c,
+                                         outdir = pm$path_l2a,
+                                         tiles = pm$s2tiles_selected,
+                                         parallel = TRUE)
+        names(s2_list_l2a_corrected) <- basename(s2_list_l2a_corrected)
+        s2_list_l2a <- c(s2_list_l2a,s2_list_l2a_corrected)
+      }
+      
+    }
+    
+    # delete SAFE, if required
+    if (pm$rm_safe == "all") {
+      unlink(file.path(pm$path_l1c,names(s2_list_l1c)), recursive=TRUE)
+      unlink(file.path(pm$path_l2a,names(s2_list_l2a)), recursive=TRUE)
+    } else if (pm$rm_safe == "l1c" & !("l1c" %in% pm$s2_levels)) {
+      unlink(file.path(pm$path_l1c,names(s2_list_l1c_tocorrect)), recursive=TRUE)
+    }
+    
+    # if no processing is required, stop here # TODO see #TODO3 (end of file)
+    if (pm$preprocess == FALSE) {
+      
+      print_message(
+        type = "message",
+        date = TRUE,
+        "Execution of SALTO session terminated."
+      )
+      
+      unlink(path_tmp, recursive = TRUE) # probabily only empty directories will be deleted
+      
+      return(invisible(
+        c(file.path(pm$path_l1c,names(s2_list_l1c)),
+          file.path(pm$path_l2a,names(s2_list_l2a)))
+      ))
+      
+    }
+    
+  } # end of SAFE dummy FOR cycle
   
-  # delete SAFE, if required
-  if (pm$rm_safe == "all") {
-    unlink(file.path(pm$path_l1c,names(s2_list_l1c)), recursive=TRUE)
-    unlink(file.path(pm$path_l2a,names(s2_list_l2a)), recursive=TRUE)
-  } else if (pm$rm_safe == "l1c" & !("l1c" %in% pm$s2_levels)) {
-    unlink(file.path(pm$path_l1c,names(s2_list_l1c_tocorrect)), recursive=TRUE)
-  }
-  
-  # if no processing is required, stop here
   if (pm$preprocess == FALSE) {
-    
-    print_message(
-      type = "message",
-      date = TRUE,
-      "Execution of SALTO session terminated."
-    )
-    
-    unlink(path_tmp, recursive = TRUE) # probabily only empty directories will be deleted
-    
-    return(invisible(
-      c(file.path(pm$path_l1c,names(s2_list_l1c)),
-        file.path(pm$path_l2a,names(s2_list_l2a)))
-    ))
-    
+    return(invisible(NULL))
   }
   
   # update names for output files (after #filter2)
@@ -907,7 +987,7 @@ sto <- function(param_list=NULL,
     paths=paths, 
     list_prods=list_prods, 
     out_ext=out_ext, tiles_ext=tiles_ext, 
-    merged_ext=merged_ext, warped_ext=warped_ext, 
+    merged_ext=merged_ext, warped_ext=warped_ext, sr_masked_ext=sr_masked_ext,
     ignorelist = ignorelist
   )
   
@@ -936,6 +1016,7 @@ sto <- function(param_list=NULL,
             s2_translate,
             infile = sel_prod,
             outdir = path["tiles"],
+            tmpdir = file.path(path_tmp,"tmp_tiles"),
             prod_type = list_l1c_prods,
             format = tiles_outformat,
             tiles = pm$s2tiles_selected,
@@ -963,6 +1044,7 @@ sto <- function(param_list=NULL,
           trace_function(
             s2_translate,
             infile = sel_prod,
+            tmpdir = file.path(path_tmp,"tmp_tiles"),
             outdir = paths["tiles"],
             prod_type = list_l2a_prods,
             format = tiles_outformat,
@@ -983,7 +1065,7 @@ sto <- function(param_list=NULL,
         #                overwrite = pm$overwrite))
       }
     }
-
+    
     tiles_names_out <- c(if("l1c" %in% pm$s2_levels) {tiles_l1c_names_out},
                          if("l2a" %in% pm$s2_levels) {tiles_l2a_names_out})
     # TODO check tiles_names_out - merged_names_new
@@ -1006,6 +1088,7 @@ sto <- function(param_list=NULL,
       infiles = s2names$tiles_names_req[file.exists(s2names$tiles_names_req)], # TODO add warning when sum(!file.exists(s2names$merged_names_new))>0
       outdir = paths["merged"],
       subdirs = pm$path_subdirs,
+      tmpdir = file.path(path_tmp,"tmp_merged"),
       format = merged_outformat,
       overwrite = pm$overwrite,
       trace_files = s2names$merged_names_new
@@ -1033,7 +1116,9 @@ sto <- function(param_list=NULL,
       
       dir.create(paths["warped"], recursive=FALSE, showWarnings=FALSE)
       # create mask
-      s2_mask_extent <- if (anyNA(pm$extent$geometry)) {
+      s2_mask_extent <- if (is.na(pm$extent)) {
+        NULL
+      } else if (anyNA(pm$extent$geometry)) { # FIXME check on telemod tiffs
         NULL
       } else if (pm$extent_as_mask==TRUE) {
         pm$extent %>% st_combine() # TODO remove this when multiple extents will be allowed
@@ -1147,37 +1232,62 @@ sto <- function(param_list=NULL,
         !names_warped_req_scl_idx
       }
       
-      masked_names_out <- trace_function(
-        s2_mask,
-        infiles = if (pm$clip_on_extent==TRUE) {
-          s2names$warped_names_req[names_warped_tomask_idx & file.exists(s2names$warped_names_req)]
-        } else {
-          s2names$merged_names_req[names_merged_tomask_idx & file.exists(s2names$merged_names_req)]
-        },
-        maskfiles = if (pm$clip_on_extent==TRUE) {
-          s2names$warped_names_exp[names_warped_exp_scl_idx]
-        } else {
-          s2names$merged_names_exp[names_merged_exp_scl_idx]
-        },
-        mask_type = pm$mask_type,
-        outdir = paths["out"],
-        format = pm$outformat,
-        compress = pm$compression,
-        subdirs = pm$path_subdirs,
-        overwrite = pm$overwrite,
-        parallel = TRUE, # TODO pass as parameter
-        trace_files = s2names$out_names_new
-      )
-      # masked_names_out <- s2_mask(
-      #   if(pm$clip_on_extent==TRUE){s2names$warped_names_req}else{s2names$merged_names_req},
-      #   if(pm$clip_on_extent==TRUE){s2names$warped_names_req}else{s2names$merged_names_exp[names_merged_exp_scl_idx]},
-      #   mask_type=pm$mask_type,
-      #   outdir=paths["out"],
-      #   format=pm$outformat,
-      #   subdirs=pm$path_subdirs,
-      #   overwrite=pm$overwrite,
-      #   parallel=FALSE
-      # )
+      # if SR outformat is different (because BOA was not required,
+      # bur some indices are) launch s2_mask separately
+      masked_names_infiles <- if (pm$clip_on_extent==TRUE) {
+        s2names$warped_names_req[names_warped_tomask_idx & file.exists(s2names$warped_names_req)]
+      } else {
+        s2names$merged_names_req[names_merged_tomask_idx & file.exists(s2names$merged_names_req)]
+      }
+      masked_names_infiles_sr_idx <- any(!is.na(pm$list_indices)) & 
+        !pm$index_source %in% pm$list_prods & 
+        sapply(masked_names_infiles, function(x){
+          fs2nc_getElements(x)$prod_type==pm$index_source
+        })
+      
+      masked_names_out_nsr <- if (length(masked_names_infiles[!masked_names_infiles_sr_idx])>0) {
+        trace_function(
+          s2_mask,
+          infiles = masked_names_infiles[!masked_names_infiles_sr_idx],
+          maskfiles = if (pm$clip_on_extent==TRUE) {
+            s2names$warped_names_exp[names_warped_exp_scl_idx]
+          } else {
+            s2names$merged_names_exp[names_merged_exp_scl_idx]
+          },
+          mask_type = pm$mask_type,
+          max_mask = pm$max_mask,
+          outdir = paths["out"],
+          tmpdir = file.path(path_tmp,"tmp_masked"),
+          format = pm$outformat,
+          compress = pm$compression,
+          subdirs = pm$path_subdirs,
+          overwrite = pm$overwrite,
+          parallel = FALSE, # TODO pass as parameter
+          trace_files = s2names$out_names_new
+        )
+      } else {character(0)}
+      masked_names_out_sr <- if (length(masked_names_infiles[masked_names_infiles_sr_idx])>0) {
+        trace_function(
+          s2_mask,
+          infiles = masked_names_infiles[masked_names_infiles_sr_idx],
+          maskfiles = if (pm$clip_on_extent==TRUE) {
+            s2names$warped_names_exp[names_warped_exp_scl_idx]
+          } else {
+            s2names$merged_names_exp[names_merged_exp_scl_idx]
+          },
+          mask_type = pm$mask_type,
+          max_mask = pm$max_mask,
+          outdir = paths["out"],
+          tmpdir = file.path(path_tmp,"tmp_masked"),
+          format = sr_masked_outformat,
+          compress = pm$compression,
+          subdirs = pm$path_subdirs,
+          overwrite = pm$overwrite,
+          parallel = TRUE, # TODO pass as parameter
+          trace_files = s2names$out_names_new
+        )
+      } else {character(0)}
+      masked_names_out <- c(masked_names_out_nsr, masked_names_out_sr)
     }
     
   } # end of gdal_warp and s2_mask IF cycle
@@ -1201,6 +1311,7 @@ sto <- function(param_list=NULL,
       subdirs = TRUE,
       source = pm$index_source,
       format = pm$outformat,
+      dataType = pm$index_datatype,
       compress = pm$compression,
       overwrite = pm$overwrite,
       trace_files = s2names$indices_names_new
@@ -1214,20 +1325,21 @@ sto <- function(param_list=NULL,
     #                                 overwrite=pm$overwrite)
   }
   
+  # check file which have been created
+  names_out <- unique(unlist(s2names[c(
+    "tiles_names_new", "merged_names_new", "warped_names_new",
+    "masked_names_new", "out_names_new", "indices_names_new"
+  )]))
+  # exclude temporary files
+  names_out <- names_out[!grepl(path_tmp, names_out, fixed=TRUE)]
+  names_out_created <- names_out[file.exists(names_out)]
+  
+  
   ## 9. create thumbnails
   
   if (thumbnails==TRUE) {
     
-    # define input files
-    names_req <- unique(unlist(s2names[c(
-      "tiles_names_new", "merged_names_new", "warped_names_new",
-      "masked_names_new", "out_names_new", "indices_names_new"
-    )]))
-    # exclude temporary files
-    names_req <- names_req[!grepl(path_tmp, names_req, fixed=TRUE)]
-    # check if some files were not created
-    names_missing <- names_req[!file.exists(names_req)]
-    thumb_names_req <- names_req[file.exists(names_req)]
+    thumb_names_req <- names_out_created
     
     if (length(thumb_names_req)>0) {
       
@@ -1256,6 +1368,7 @@ sto <- function(param_list=NULL,
       thumb_names_out <- trace_function(
         s2_thumbnails,
         infiles = thumb_names_req,
+        tmpdir = file.path(path_tmp,"tmp_thumbnails"),
         trace_files = c(thumb_names_new,paste0(thumb_names_new,".aux.xml"))
       )
       
@@ -1266,6 +1379,9 @@ sto <- function(param_list=NULL,
   
   ## 10. remove temporary files
   unlink(path_tmp, recursive = TRUE)
+  
+  # check if some files were not created
+  names_missing <- names_out[!file.exists(names_out)]
   
   # Note down the list of non created files (#ignorePath)
   # (sometimes not all the output files are correctly created, i.e. because of
@@ -1280,7 +1396,8 @@ sto <- function(param_list=NULL,
     }
     print_message(
       type="warning",
-      "Some files expected to be created were not created:\n\"",
+      "Some files were not created ",
+      "(probably because the cloud coverage was higher than \"max_mask\"):\n\"",
       paste(names_missing,collapse="\"\n\""),
       if (is(param_list, "character")) {paste0(
         "\"\nThese files will be skipped during next executions ",
@@ -1299,5 +1416,9 @@ sto <- function(param_list=NULL,
     date = TRUE,
     "Execution of SALTO session terminated."
   )
+  
+  # Return output file paths
+  return(names_out_created)
+  # TODO add also SAFE created files (here and at line #TODO3)
   
 }

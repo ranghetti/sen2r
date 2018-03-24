@@ -22,15 +22,15 @@
 #'
 #' @examples
 #' # the reference path
-#' (ref_path <- system.file(package="salto"))
+#' (ref_path <- system.file(package="sen2r"))
 #' # a path with a common parent with ref_path
 #' (in_path_1 <- system.file(package="gdalUtils"))
 #' # a path included in ref_path
-#' (in_path_2 <- system.file("R", "abs2rel.R", package="salto"))
+#' (in_path_2 <- system.file("R", "abs2rel.R", package="sen2r"))
 #' # a path external to ref_path (in Linux)
 #' (in_path_3 <- system.file(package="base"))
 #' # an unexisting path
-#' (in_path_4 <- gsub("salto","salutato",ref_path))
+#' (in_path_4 <- gsub("sen2r","r2sen",ref_path))
 #'
 #' abs2rel(in_path_1, ref_path)
 #'

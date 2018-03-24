@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SALTO: Sentinel-2 And Landsat TOolbox • SALTO: Sentinel-2 And Landsat TOolbox</title>
+<title>An R toolbox to find, download an preprocess Sentinel-2 data • An R toolbox to find, download an preprocess Sentinel-2 data</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
@@ -33,7 +33,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">salto</a>
+      <a class="navbar-brand" href="index.html">sen2r</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -46,7 +46,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/ranghetti/salto/">
+  <a href="https://github.com/ranghetti/sen2r/">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -69,20 +69,20 @@
 <div class="contents">
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-<div id="salto-sentinel-2-and-landsat-toolbox" class="section level1">
+<div id="an-r-toolbox-to-find-download-an-preprocess-sentinel-2-data" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#salto-sentinel-2-and-landsat-toolbox" class="anchor"></a>SALTO: Sentinel-2 And Landsat TOolbox</h1></div>
+<a href="#an-r-toolbox-to-find-download-an-preprocess-sentinel-2-data" class="anchor"></a>An R toolbox to find, download an preprocess Sentinel-2 data</h1></div>
 <div id="warning" class="section level2">
 <h2 class="hasAnchor">
 <a href="#warning" class="anchor"></a>Warning</h2>
-<p>This package is under construction (current version is <a href="https://github.com/ranghetti/salto/releases/tag/v0.3.1">pre-release 0.3.1</a>): currently only the main processing chain for Sentinel-2 data was implemented. Please refer to the <a href="https://github.com/ranghetti/salto/milestone/3">crontab of release 0.4.0</a> to know which implementations will be performed regarding Sentinel-2 data. The implementation of the processing chaing over Landsat data is scheduled for the <a href="https://github.com/ranghetti/salto/milestone/2">release 0.5.0</a>.</p>
+<p>This package is under construction (current version is <a href="https://github.com/ranghetti/sen2r/releases/tag/v0.3.1">pre-release 0.3.1</a>): currently only the main processing chain for Sentinel-2 data was implemented. Please refer to the <a href="https://github.com/ranghetti/sen2r/milestone/3">crontab of release 0.4.0</a> to know which implementations will be performed regarding Sentinel-2 data.</p>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>You can install <strong>SALTO</strong> from GitHub with:</p>
+<p>You can install <strong>sen2r</strong> from GitHub with:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"ranghetti/salto"</span>)</code></pre></div>
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"ranghetti/sen2r"</span>)</code></pre></div>
 <p>This will install the R package, containing all the functions necessary to preprocess data.</p>
 <p>To download Sentinel-2 images the package makes use of a set of Python functions (<a href="https://github.com/ranghetti/s2download">s2download</a>). These scripts are imported the first time hey are used (alternatively, launch the function <a href="reference/install_s2download.md"><code>s2_download()</code></a> included in the package).</p>
 <p>Atmospheric correction is performed using <a href="http://step.esa.int/main/third-party-plugins-2/sen2cor">sen2cor</a>: the package will automatically download and install it at first use, or by running function <a href="reference/install_sen2cor.md"><code>install_sen2cor()</code></a>. Please notice that the use of sen2cor algorythm was not yet possible under MAC.</p>
@@ -91,8 +91,8 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
 <div id="usage" class="section level2">
 <h2 class="hasAnchor">
 <a href="#usage" class="anchor"></a>Usage</h2>
-<p>The simpler way to use <strong>SALTO</strong> is to execute the function <code>sto()</code> without any argument: this opens the GUI to select the processing parameters, and then launches the main function.</p>
-<p>Alternatively, <a href="reference/sto.md"><code>sto()</code></a> can be launched with a list of parameters (created with <a href="reference/s2_gui.md"><code>s2_gui()</code></a>) or passing manually the parameters as arguments of the function (see the documentation of the function for further details).</p>
+<p>The simpler way to use <strong>sen2r</strong> is to execute the function <code>sen2r()</code> without any argument: this opens the GUI to select the processing parameters, and then launches the main function.</p>
+<p>Alternatively, <a href="reference/sen2r.md"><code>sen2r()</code></a> can be launched with a list of parameters (created with <a href="reference/s2_gui.md"><code>s2_gui()</code></a>) or passing manually the parameters as arguments of the function (see the documentation of the function for further details).</p>
 <p>Other specific functions can be used to run single steps separately:</p>
 <ul>
 <li>
@@ -116,7 +116,7 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
 <div id="credits" class="section level2">
 <h2 class="hasAnchor">
 <a href="#credits" class="anchor"></a>Credits</h2>
-<p><strong>SALTO</strong> is being developed by Luigi Ranghetti and Lorenzo Busetto (<a href="http://www.irea.cnr.it">IREA-CNR</a>), and it is released under <a href="https://www.gnu.org/licenses/gpl.html">GPL 3.0</a>.</p>
+<p><strong>sen2r</strong> is being developed by Luigi Ranghetti and Lorenzo Busetto (<a href="http://www.irea.cnr.it">IREA-CNR</a>), and it is released under <a href="https://www.gnu.org/licenses/gpl.html">GPL 3.0</a>.</p>
 </div>
 </div>
 </div>
@@ -126,7 +126,7 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
     <h2 class="hasAnchor">
 <a href="#sidebar" class="anchor"></a>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/ranghetti/salto">https://​github.com/​ranghetti/​salto</a>
+<li>Browse source code at <br><a href="https://github.com/ranghetti/sen2r">https://​github.com/​ranghetti/​sen2r</a>
 </li>
 </ul>
 <h2>License</h2>
@@ -138,8 +138,8 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
 </ul>
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/ranghetti/salto"><img src="https://travis-ci.org/ranghetti/fidolasen.svg?branch=master" alt="Travis-CI Build Status"></a></li>
-<li><a href="https://cran.r-project.org/package=salto"><img src="http://www.r-pkg.org/badges/version/salto" alt="CRAN_Status_Badge"></a></li>
+<li><a href="https://travis-ci.org/ranghetti/sen2r"><img src="https://travis-ci.org/ranghetti/fidolasen.svg?branch=master" alt="Travis-CI Build Status"></a></li>
+<li><a href="https://cran.r-project.org/package=sen2r"><img src="http://www.r-pkg.org/badges/version/sen2r" alt="CRAN_Status_Badge"></a></li>
 <li><a href="http://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg" alt="License: GPL v3"></a></li>
 </ul>
 </div>

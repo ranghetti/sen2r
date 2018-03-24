@@ -1,29 +1,29 @@
 
--   [SALTO: Sentinel-2 And Landsat TOolbox](#salto-sentinel-2-and-landsat-toolbox)
+-   [An R toolbox to find, download an preprocess Sentinel-2 data](#an-r-toolbox-to-find-download-an-preprocess-sentinel-2-data)
     -   [Warning](#warning)
     -   [Installation](#installation)
     -   [Usage](#usage)
     -   [Credits](#credits)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![Travis-CI Build Status](https://travis-ci.org/ranghetti/fidolasen.svg?branch=master)](https://travis-ci.org/ranghetti/salto) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/salto)](https://cran.r-project.org/package=salto) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
+[![Travis-CI Build Status](https://travis-ci.org/ranghetti/fidolasen.svg?branch=master)](https://travis-ci.org/ranghetti/sen2r) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/sen2r)](https://cran.r-project.org/package=sen2r) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
-SALTO: Sentinel-2 And Landsat TOolbox
-=====================================
+An R toolbox to find, download an preprocess Sentinel-2 data
+============================================================
 
 Warning
 -------
 
-This package is under construction (current version is [pre-release 0.3.1](https://github.com/ranghetti/salto/releases/tag/v0.3.1)): currently only the main processing chain for Sentinel-2 data was implemented. Please refer to the [crontab of release 0.4.0](https://github.com/ranghetti/salto/milestone/3) to know which implementations will be performed regarding Sentinel-2 data. The implementation of the processing chaing over Landsat data is scheduled for the [release 0.5.0](https://github.com/ranghetti/salto/milestone/2).
+This package is under construction (current version is [pre-release 0.3.1](https://github.com/ranghetti/sen2r/releases/tag/v0.3.1)): currently only the main processing chain for Sentinel-2 data was implemented. Please refer to the [crontab of release 0.4.0](https://github.com/ranghetti/sen2r/milestone/3) to know which implementations will be performed regarding Sentinel-2 data.
 
 Installation
 ------------
 
-You can install **SALTO** from GitHub with:
+You can install **sen2r** from GitHub with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("ranghetti/salto")
+devtools::install_github("ranghetti/sen2r")
 ```
 
 This will install the R package, containing all the functions necessary to preprocess data.
@@ -37,9 +37,9 @@ Preprocessing functions make use of [GDAL](http://www.gdal.org), which must supp
 Usage
 -----
 
-The simpler way to use **SALTO** is to execute the function `sto()` without any argument: this opens the GUI to select the processing parameters, and then launches the main function.
+The simpler way to use **sen2r** is to execute the function `sen2r()` without any argument: this opens the GUI to select the processing parameters, and then launches the main function.
 
-Alternatively, [`sto()`](reference/sto.md) can be launched with a list of parameters (created with [`s2_gui()`](reference/s2_gui.md)) or passing manually the parameters as arguments of the function (see the documentation of the function for further details).
+Alternatively, [`sen2r()`](reference/sen2r.md) can be launched with a list of parameters (created with [`s2_gui()`](reference/s2_gui.md)) or passing manually the parameters as arguments of the function (see the documentation of the function for further details).
 
 Other specific functions can be used to run single steps separately:
 
@@ -55,4 +55,4 @@ Other specific functions can be used to run single steps separately:
 Credits
 -------
 
-**SALTO** is being developed by Luigi Ranghetti and Lorenzo Busetto ([IREA-CNR](http://www.irea.cnr.it)), and it is released under [GPL 3.0](https://www.gnu.org/licenses/gpl.html).
+**sen2r** is being developed by Luigi Ranghetti and Lorenzo Busetto ([IREA-CNR](http://www.irea.cnr.it)), and it is released under [GPL 3.0](https://www.gnu.org/licenses/gpl.html).

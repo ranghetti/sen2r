@@ -6,7 +6,7 @@
 #' @param infiles A vector of input filenames. Input files are paths
 #'  of products already converted from SAFE format to a format managed by
 #'  GDAL (use [s2_translate] to do it); their names must be in the
-#'  SALTO-S2 naming convention ([s2_shortname]).
+#'  sen2r naming convention ([s2_shortname]).
 #' @param outdir (optional) Full name of the output directory where
 #'  the files should be created (default: current directory).
 #'  `outdir` can bot be an existing or non-existing directory (in the
@@ -18,9 +18,7 @@
 #'  `outfile` directory; if NA (default), subdirectories are created only if
 #'  `infiles` relate to more than a single product.
 #' @param tmpdir (optional) Path where intermediate VRT will be created.
-#'  Default is in a hidden subdirectory (called `.vrt`) of the common parent
-#'  directory of `infiles`. Set `tmpdir=tempdir()` if you do not want to
-#'  keep the intermediate files after reboot.
+#'  Default is in a temporary directory.
 #' @param format (optional) Format of the output file (in a
 #'  format recognised by GDAL). Default is to maintain each input format.
 #' @param compress (optional) In the case a GTiff format is
@@ -41,6 +39,7 @@
 #' @importFrom magrittr "%>%"
 #' @importFrom sprawl check_proj4string
 #' @importFrom raster compareCRS
+#' @importFrom jsonlite fromJSON
 #' @import data.table
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
@@ -55,6 +54,9 @@ s2_merge <- function(infiles,
                      vrt_rel_paths=NA,
                      out_crs="",
                      overwrite=FALSE) {
+  
+  # load output formats
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))
   
   # Define vrt_rel_paths
   if (is.na(vrt_rel_paths)) {
@@ -72,7 +74,7 @@ s2_merge <- function(infiles,
   }
   
   # Load GDAL paths
-  binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")
+  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {
     jsonlite::fromJSON(binpaths_file)
   } else {
@@ -134,7 +136,7 @@ s2_merge <- function(infiles,
       "tiles with different projection will be reprojected.")
   }
   if (is.na(tmpdir)) {
-    tmpdir <- file.path(comsub(infiles,"/"),".vrt")
+    tmpdir <- tempfile(pattern="dir")
   }
   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
   
@@ -194,6 +196,12 @@ s2_merge <- function(infiles,
       print_message(type="error", "Internal error (duplicated id_tile).")
     }
     
+    sel_outformat <- ifelse(is.na(format),
+                            unique(sel_infiles_meta[,"format"]),
+                            format)
+    if (length(sel_outformat)>1) {
+      print_message(type="error", "Internal error (non unique format).")
+    }
     # Define output filename
     sel_outfile <- paste0(
       "S2",sel_infiles_meta[1,"mission"],sel_infiles_meta[1,"level"],"_",
@@ -201,13 +209,7 @@ s2_merge <- function(infiles,
       sel_infiles_meta[1,"id_orbit"],"__",
       sel_infiles_meta[1,"prod_type"],"_",
       gsub("m$","",sel_infiles_meta[1,"res"]),".",
-      sel_infiles_meta[1,"file_ext"])
-    sel_outformat <- ifelse(is.na(format),
-                            unique(sel_infiles_meta[,"format"]),
-                            format)
-    if (length(sel_outformat)>1) {
-      print_message(type="error", "Internal error (non unique format).")
-    }
+      gdal_formats[gdal_formats$name==sel_outformat,"ext"])
     # define subdir
     out_subdir <- ifelse(subdirs, file.path(outdir,sel_infiles_meta[1,"prod_type"]), outdir)
     

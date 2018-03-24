@@ -6,13 +6,14 @@
 \usage{
 s2_calcindices(infiles, indices, outdir = ".", parameters = NULL,
   source = c("TOA", "BOA"), format = NA, subdirs = NA,
-  compress = "DEFLATE", dataType = "Float32", overwrite = FALSE)
+  compress = "DEFLATE", dataType = "Int16", scaleFactor = NA,
+  overwrite = FALSE)
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths
 of BOA (or TOA) products already converted from SAFE format to a
 format managed by GDAL (use \link{s2_translate} to do it);
-their names must be in the SALTO-S2 naming convention
+their names must be in the sen2r naming convention
 (\link{s2_shortname}).}
 
 \item{indices}{Character vector with the names of the required
@@ -56,10 +57,17 @@ more than a single spectral index is required.}
 \item{compress}{(optional) In the case a GTiff format is
 present, the compression indicated with this parameter is used.}
 
-\item{dataType}{(optional) Numeric datatype of the ouptut rasters:
-if "Float32" (default) or "Float64" is chosen, numeric values are not rescaled;
-if "Int16" or "UInt16", values are multiplicated by a 10000
-scale factor.}
+\item{dataType}{(optional) Numeric datatype of the ouptut rasters.
+if "Float32" or "Float64" is chosen, numeric values are not rescaled;
+if "Int16" (default) or "UInt16", values are multiplicated by \code{scaleFactor} argument;
+if "Byte", values are shifted by 100, multiplicated by 100 and truncated
+at 200 (so that range -1 to 1 is coherced to 0-200), and nodata value
+is assigned to 255.}
+
+\item{scaleFactor}{(optional) Scale factor for output values when an integer
+datatype is chosen (default values are 10000 for "Int16" and "UInt16",
+1E9 for "Int32" and "UInt32"). Notice that, using "UInt16" and "UInt32" types,
+negative values will be truncated to 0.}
 
 \item{overwrite}{Logical value: should existing output files be
 overwritten? (default: FALSE)}

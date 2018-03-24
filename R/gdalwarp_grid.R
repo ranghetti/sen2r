@@ -14,7 +14,7 @@
 #' @importFrom rgdal GDALinfo
 #' @importFrom gdalUtils gdalwarp
 #' @importFrom methods as
-#' @importFrom reticulate import py_to_r
+#' @importFrom reticulate py_to_r
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @examples
@@ -35,7 +35,7 @@ gdalwarp_grid <- function(srcfiles,
                           ...) {
   
   # import python modules
-  gdal <- import("osgeo",convert=FALSE)$gdal
+  py <- init_python()
   
   # read ref parameters
   ref_metadata <- suppressWarnings(GDALinfo(ref))
@@ -57,7 +57,7 @@ gdalwarp_grid <- function(srcfiles,
   
   # check output format
   if (!is.null(of)) {
-    sel_driver <- gdal$GetDriverByName(of)
+    sel_driver <- py$gdal$GetDriverByName(of)
     if (is.null(py_to_r(sel_driver))) {
       print_message(
         type="error",

@@ -7,7 +7,7 @@
 init_python()
 }
 \value{
-A list with the required mosules.
+A list with the required modules.
 }
 \description{
 Internal function to check that the python dependencies

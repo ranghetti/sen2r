@@ -9,12 +9,13 @@ sto(param_list = NULL, gui = NA, preprocess = NA, s2_levels = NA,
   step_atmcorr = NA, timewindow = NA, timeperiod = NA, extent = NA,
   extent_name = NA, s2tiles_selected = NA, s2orbits_selected = NA,
   list_prods = NA, list_indices = NA, index_source = NA, mask_type = NA,
-  clip_on_extent = NA, extent_as_mask = NA, reference_path = NA,
-  res = NA, res_s2 = NA, unit = NA, proj = NA, resampling = NA,
-  resampling_scl = NA, outformat = NA, compression = NA, overwrite = NA,
-  path_l1c = NA, path_l2a = NA, path_tiles = NA, path_merged = NA,
-  path_out = NA, path_indices = NA, path_subdirs = NA,
-  thumbnails = TRUE, use_python = TRUE)
+  max_mask = NA, clip_on_extent = NA, extent_as_mask = NA,
+  reference_path = NA, res = NA, res_s2 = NA, unit = NA, proj = NA,
+  resampling = NA, resampling_scl = NA, outformat = NA,
+  index_datatype = NA, compression = NA, overwrite = NA, path_l1c = NA,
+  path_l2a = NA, path_tiles = NA, path_merged = NA, path_out = NA,
+  path_indices = NA, path_subdirs = NA, thumbnails = TRUE,
+  use_python = TRUE)
 }
 \arguments{
 \item{param_list}{(optional) List of input parameters:
@@ -126,8 +127,19 @@ are computed from BOA values; if "TOA", non corrected reflectances
 are instead used (be careful to use this setting!).}
 
 \item{mask_type}{(optional) Character value which determines the categories
-in the Srface Classification Map to be masked (see \code{\link[=s2_mask]{s2_mask()}}
+in the Surface Classification Map to be masked (see \code{\link[=s2_mask]{s2_mask()}}
 for the accepted values). Default (NA) is not to mask.}
+
+\item{max_mask}{(optional) Numeric value (range 0 to 100), which represents
+the maximum percentage of allowed masked surface (by clouds or any other
+type of mask chosen with argument \code{mask_type}) for producing outputs.
+Images with a percentage of masked surface greater than \code{max_mask}%
+are not processed (the list of expected output files which have not been
+generated is returned as an attribute, named "skipped").
+Default value is 80.
+Notice that the percentage is computed on non-NA values (if input images
+had previously been clipped and masked using a polygon, the percentage is
+computed on the surface included in the masking polygons).}
 
 \item{clip_on_extent}{(optional) Logical: if TRUE (default), output products
 and indices are clipped to the selected extent (and resampled/reprojected);
@@ -164,6 +176,9 @@ by \code{gdal_translate}: "near" (default), "bilinear", "cubic",
 
 \item{outformat}{(optional) Format of the output file (in a
 format recognised by GDAL). Default is "GTiff".}
+
+\item{index_datatype}{(optional) Numeric datatype of the ouptut
+spectral indices (see \link{s2_calcindices}.}
 
 \item{compression}{(optional) In the case GTiff is chosen as
 output format, the compression indicated with this parameter is
@@ -221,6 +236,10 @@ to be used only for processing existing SAFE files (python is required
 in any case to download SAFE).
 
 [sto)]: R:sto)}
+}
+\value{
+A vector with the paths of the files which were created (excluded
+the temporary files); NULL otherwise.
 }
 \description{
 The function is a wrapper to perform the entire

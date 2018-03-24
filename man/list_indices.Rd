@@ -27,7 +27,7 @@ A data.frame with the required information. The table contains
 also the following attributes:
 \itemize{
 \item \code{creation_date}: timestamp of the creation date of the indices archive;
-\item \code{pkg_version}: version of the \code{salto} package used to
+\item \code{pkg_version}: version of the \code{sen2r} package used to
 create the indices archive.
 }
 }

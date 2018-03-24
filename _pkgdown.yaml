@@ -1,4 +1,4 @@
-title: "SALTO: Sentinel-2 And Landsat TOolbox"
+title: "An R toolbox to find, download an preprocess Sentinel-2 data"
 template:
   params:
     bootswatch: yeti
@@ -27,6 +27,7 @@ reference:
   - title: Accessory functions
     contents:
       - '`s2_gui`'
+      - '`check_sen2r_deps`'
       - '`s2_shortname`'
       - '`s2_thumbnails`'
       - '`fs2nc_getElements`'
@@ -39,6 +40,7 @@ reference:
       - '`list_indices`'
       - '`mountpoint`'
       - '`trace_function`'
+      - '`install_wget`'
   - title: Internal functions
     desc: (not exported)
     contents:
@@ -56,6 +58,8 @@ reference:
       - '`stack2rgb`'
       - '`raster2rgb`'
       - '`compute_s2_paths`'
+      - '`maskapply_parallel`'
+      - '`load_extent_bbox`'
 navbar:
   type: inverse
   left:
@@ -65,4 +69,4 @@ navbar:
       href: reference/index.html
   right:
     - icon: fa-github fa-lg
-      href: https://github.com/ranghetti/salto/
+      href: https://github.com/ranghetti/sen2r/

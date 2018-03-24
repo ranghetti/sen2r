@@ -13,21 +13,26 @@
 #' @export
 #' @importFrom reticulate import_from_path import_builtins py_str use_python py_module_available py_to_r
 
-install_s2download <- function(inst_path=NA) {
+install_s2download <- function(inst_path = NA) {
+  .install_s2download(
+    inst_path = inst_path, 
+    interactive = TRUE
+  )
+}
+
+.install_s2download <- function(inst_path = NA,
+                                interactive = TRUE) {
   
   # define remote position of s2download
   s2download_ref <- "devel"
   s2download_url <- paste0("https://github.com/ranghetti/s2download/archive/",s2download_ref,".zip")
   
   # define the required binary dependencies
-  dependencies <- c("git","python","wget")
-  
-  # define the versions to download (for Windows)
-  wget_ver <- package_version("1.19.4")
+  dependencies <- c("python","wget")
   
   # define inst_path (where to install or update)
   if (is.na(inst_path)) {
-    inst_path <- file.path(system.file(package="salto"),"s2download")
+    inst_path <- file.path(system.file(package="sen2r"),"s2download")
   }
   if (file.exists(inst_path) & !file.info(inst_path)$isdir) {
     print_message(
@@ -35,10 +40,11 @@ install_s2download <- function(inst_path=NA) {
       inst_path," already exists and it is a file; please provide a different value (or leave blank).")
   }
   if (length(list.files(inst_path))>0) {
-    if (interactive()) {
+    if (interactive & interactive()) {
       print_message(
-        type="waiting",
-        inst_path," already exists and will be erased: ENTER to proceed or ESC to cancel...")
+        type="waiting", 
+        paste0(inst_path," already exists and will be erased: ENTER to proceed or ESC to cancel...")
+      )
     } else {
       print_message(
         type="warning",
@@ -50,7 +56,7 @@ install_s2download <- function(inst_path=NA) {
   }
   
   # check that git, python2 and wget are installed
-  binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")
+  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {
     jsonlite::fromJSON(binpaths_file)
   } else {
@@ -77,23 +83,10 @@ install_s2download <- function(inst_path=NA) {
       
     } else {
       
-      # On Windows, download and install (them)or inform how to install them)
+      # On Windows, download and install (them) or inform how to install them)
       
       # Download wget
-      if ("wget" %in% missing_dep) {
-        wget_url <- file.path(
-          "https://eternallybored.org/misc/wget", wget_ver,
-          if (Sys.info()["machine"]=="x86-64") {"64"} else {"32"}, "wget.exe"
-        )
-        wget_path <- normalizePath(file.path(system.file(package="salto"),"wget.exe"))
-        download.file(wget_url, wget_path)
-        if (file.exists(wget_path)) {
-          binpaths$wget <- wget_path
-          writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
-        }
-        # # add to the path
-        # system(paste0('setx PATH "',binpaths$wget,'"'), intern=TRUE)
-      }
+      suppressMessages(install_wget())
       
       # If other ones are missing:
       if (length(missing_dep[missing_dep!="wget"])>0) {
@@ -101,15 +94,12 @@ install_s2download <- function(inst_path=NA) {
           type="error",
           "Some dependencies (",paste(missing_dep,collapse=", "),") were not found in your system; ",
           "please install them or update your system PATH.",
-          if ("git" %in% missing_dep) {
-            "\nGit can be downloaded and installed from https://git-scm.com/downloads"
-          },
           if ("python" %in% missing_dep) {paste0(
             "\nTo install python, we suggest to use the OSGeo4W installer ",
             "(http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86",
             if (Sys.info()["machine"]=="x86-64") {"_64"},".exe), ",
             "to choose the \"Advanced install\" and to check ",
-            "the packages \"python-core\" and \"python-pip\" packages."
+            "the package \"gdal-python\"."
           )}
         )
       }

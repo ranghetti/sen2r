@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get information from S2 short name — fs2nc_getElements • SALTO: Sentinel-2 And Landsat TOolbox</title>
+<title>Get information from S2 short name — fs2nc_getElements • An R toolbox to find, download an preprocess Sentinel-2 data</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -59,7 +59,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">salto</a>
+      <a class="navbar-brand" href="../index.html">sen2r</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -73,7 +73,7 @@
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/ranghetti/salto/">
+  <a href="https://github.com/ranghetti/sen2r/">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -94,11 +94,11 @@
 
     
     <p>This accessory function extracts metadata included in
-the name of a Sentinel-2 product which follows the SALTO-S2
+the name of a Sentinel-2 product which follows the sen2r
 naming convention (see s2_shortname).</p>
     
 
-    <pre class="usage"><span class='fu'>fs2nc_getElements</span>(<span class='no'>s2_names</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"list"</span>)</pre>
+    <pre class="usage"><span class='fu'>fs2nc_getElements</span>(<span class='no'>s2_names</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"list"</span>, <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -106,11 +106,17 @@ naming convention (see s2_shortname).</p>
     <tr>
       <th>s2_names</th>
       <td><p>A vector of Sentinel-2 product names in the
-SALTO-S2 naming convention.</p></td>
+sen2r naming convention.</p></td>
     </tr>
     <tr>
       <th>format</th>
       <td><p>One between <code>list</code> of <code>data.frame</code>.</p></td>
+    </tr>
+    <tr>
+      <th>abort</th>
+      <td><p>Logical parameter: if TRUE (default), the function aborts
+in case any of <code>s2_names</code> is not recognised; if FALSE, a warning is shown,
+and a list with only the element "type"='unrecognised' is returned.</p></td>
     </tr>
     </table>
     

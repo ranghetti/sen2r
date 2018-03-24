@@ -11,12 +11,11 @@
 #' @param maxval (optional) the value corresponding to white (default: 10000).
 #' @return The path of the output image; alternatively, the output image
 #'  as RasterBrick (if `out_rast = NULL`).
-#'
+#'  
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
-#' @importFrom raster brick calc
-#' @importFrom rgdal writeGDAL
-#' @importFrom methods as
+#' @importFrom raster raster
+#' @importFrom jsonlite fromJSON
 
 stack2rgb <- function(in_rast, 
                       out_file = NULL, 
@@ -24,30 +23,89 @@ stack2rgb <- function(in_rast,
                       minval = 0, 
                       maxval = 1E4) {
   
-  # compute RGB
-  out_rast <- calc(brick(in_rast), function(x){
-    c(
-      as.integer(min(max(x[[bands[1]]],minval),maxval)*255/(maxval-minval)+minval),
-      as.integer(min(max(x[[bands[2]]],minval),maxval)*255/(maxval-minval)+minval),
-      as.integer(min(max(x[[bands[3]]],minval),maxval)*255/(maxval-minval)+minval)
-    )
-  })
+  # Load GDAL paths
+  binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")
+  binpaths <- if (file.exists(binpaths_file)) {
+    jsonlite::fromJSON(binpaths_file)
+  } else {
+    list("gdalinfo" = NULL)
+  }
+  if (is.null(binpaths$gdalinfo)) {
+    check_gdal()
+    binpaths <- jsonlite::fromJSON(binpaths_file)
+  }
+  
+  # Set output file
+  return_raster <- if (is.null(out_file)) {
+    out_file <- tempfile()
+    TRUE
+  } else {
+    FALSE
+  }
+  
+  # Define formula
+  gdal_formula <- paste0(
+    "clip(A.astype(float),",minval,",",maxval,")*255/(",maxval,"-",minval,")+",minval
+  )
+  
+  # Compute RGB with gdal_calc
+  # (an intermediate step creating a GeoTiff is required,
+  # since gdal_calc is not able to write in JPEG format)
+  tif_path <- file.path(tempdir(), gsub("\\..+$","_temp.tif",basename(out_file)))
+  system(
+    paste0(
+      binpaths$gdal_calc," ",
+      "-A \"",in_rast,"\" --allBands=A ",
+      "--calc=\"",gdal_formula,"\" ",
+      "--outfile=\"",tif_path,"\" ",
+      "--type=\"Byte\" ",
+      "--NoDataValue=0 ",
+      "--format=\"GTiff\"  "
+      # "--format=\"JPEG\" --co=\"QUALITY=90\""
+    ),
+    intern = Sys.info()["sysname"] == "Windows"
+  )
+  system(
+    paste0(
+      binpaths$gdal_translate," ",
+      "-of \"JPEG\" -co \"QUALITY=90\" -ot \"Byte\" ",
+      "\"",tif_path,"\" \"",out_file,"\""
+    ),
+    intern = Sys.info()["sysname"] == "Windows"
+  )
+  unlink(tif_path)
   
   # Return output raster
-  if (is.null(out_file)) {
-    return(out_rast)
+  if (return_raster) {
+    return(brick(out_file))
   } else {
-    suppressWarnings(
-      writeGDAL(
-        as(out_rast, "SpatialGridDataFrame"), 
-        out_file,
-        drivername="JPEG",
-        type="Byte",
-        options=c("COMPRESS=JPEG")
-      )
-    )
     return(invisible(NULL))
   }
+  
+  # # old internal (raster::calc) method
+  # out_rast <- calc(brick(in_rast), function(x){
+  #   c(
+  #     as.integer(min(max(x[[bands[1]]],minval),maxval)*255/(maxval-minval)+minval),
+  #     as.integer(min(max(x[[bands[2]]],minval),maxval)*255/(maxval-minval)+minval),
+  #     as.integer(min(max(x[[bands[3]]],minval),maxval)*255/(maxval-minval)+minval)
+  #   )
+  # })
+  # 
+  # # Return output raster
+  # if (is.null(out_file)) {
+  #   return(out_rast)
+  # } else {
+  #   suppressWarnings(
+  #     writeGDAL(
+  #       as(out_rast, "SpatialGridDataFrame"), 
+  #       out_file,
+  #       drivername="JPEG",
+  #       type="Byte",
+  #       options=c("COMPRESS=JPEG")
+  #     )
+  #   )
+  #   return(invisible(NULL))
+  # }
   
 }
 
@@ -119,6 +177,21 @@ raster2rgb <- function(in_rast,
     palette <- palette_builtin[palette]
   }
   
+  # Rescale palette, if necessary
+  if (!names(palette) %in% c("SCL") & (minval!=-1 | maxval!=1)) {
+    palette_txt <- strsplit(gsub("^ *(.*) *$","\\1",readLines(palette))," +")
+    palette_txt_new <- palette_txt
+    for (i in seq_along(palette_txt)) {
+      if (length(palette_txt[[i]])==8 & !anyNA(suppressWarnings(as.numeric(palette_txt[[i]])))) {
+        palette_txt_new[[i]][c(1,5)] <- (as.numeric(palette_txt[[i]])[c(1,5)]+1)/2*(maxval-minval)+minval
+      }
+    }
+    writeLines(
+      sapply(palette_txt_new, paste, collapse=" "), 
+      palette <- tempfile(fileext=".cpt")
+    )
+  }
+  
   # Set output file
   return_raster <- if (is.null(out_file)) {
     out_file <- tempfile()
@@ -128,19 +201,32 @@ raster2rgb <- function(in_rast,
   }
   
   # Compute RGB with gdaldem
+  # (an intermediate step creating a GeoTiff is required,
+  # since gdal_calc is not able to write in JPEG format)
+  tif_path <- file.path(tempdir(), gsub("\\..+$","_temp.tif",basename(out_file)))
   system(
     paste0(
       binpaths$gdaldem," color-relief ",
-      if (gsub("^.*\\.(.+)$","\\1",out_file) == "png") {
-        "-of PNG -co ZLEVEL=9 -co NBITS=8 " # discrete values
-      } else { # if (gsub("^.*\\.(.+)$","\\1",out_file) %in% c("jpg","jpeg")) {
-        "-of JPEG -co QUALITY=90 " # continuous values
-      },
+      "-of GTiff -co COMPRESS=LZW ", # discrete values
+      "-compute_edges ",
       "\"",in_rast,"\" ",
       "\"",palette,"\" ",
-      "\"",out_file,"\""
+      "\"",tif_path,"\""
     ), intern = Sys.info()["sysname"] == "Windows"
   )
+  system(
+    paste0(
+      binpaths$gdal_translate," ",
+      if (gsub("^.*\\.(.+)$","\\1",out_file) == "png") {
+        "-of PNG -co ZLEVEL=9 -co NBITS=8 " # discrete values
+      } else if (gsub("^.*\\.(.+)$","\\1",out_file) %in% c("jpg","jpeg")) {
+        "-of JPEG -co QUALITY=90 " # continuous values
+      },
+      "\"",tif_path,"\" \"",out_file,"\""
+    ),
+    intern = Sys.info()["sysname"] == "Windows"
+  )
+  unlink(tif_path)
   
   # Return output raster
   if (return_raster) {
@@ -157,12 +243,7 @@ raster2rgb <- function(in_rast,
 #'  products. BOA and TOA multiband images are rendered as false colour
 #'  JPEG images; SCL maps are rendered as 8-bit PNG;
 #'  other singleband images (like spectral indices) are rendered as 
-#'  JPEG images with a standard color palette.
-#'  Some improvements still have to be done:
-#'  * allowing the possibility to chose the palette and the limits 
-#'      (for now, the range -1 to 1 is always used);
-#'  * adding support for RGB products.
-#'  
+#'  JPEG images with a standard colour palette.
 #'  Output images are georeferenced.
 #' @param infiles A vector of input filenames. Input files are paths
 #'  of products already converted from SAFE format to a
@@ -184,6 +265,14 @@ raster2rgb <- function(in_rast,
 #'  rescaled before producing the thumbnails; otherwise the original dimensions
 #'  are maintained. 
 #'  To keep the original size in any case, set `dim = Inf`.
+#' @param scaleRange (optional) Range of valid values. If not specified 
+#'  (default), it is automatically retrieved from the product type. 
+#'  Default ranges for BOA and TOA products are 0 to 8000 
+#'  (`rgb_type = "SwirNirR"`), 0 to 7500 (`"NirRG"`) and 0 to 2500 (`"RGB"`).
+#'  For spectral indices, default range is -1 to 1 for Float products, -10000
+#'  to 10000 for Int and 0 to 200 for Byte; for "Zscore" products, default 
+#'  range is -3 to 3 for Float and -3000 to 3000 for Int.
+#'  It can be useful i.e. to stretch BOA "dark" products. 
 #' @param outdir (optional) Full name of the existing output directory
 #'  where the files should be created.  Default is a subdirectory (named 
 #'  "thumbnails") of the parent directory of each input file.
@@ -196,12 +285,14 @@ raster2rgb <- function(in_rast,
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @import data.table
+#' @importFrom jsonlite fromJSON
 #' @export
 
 s2_thumbnails <- function(infiles, 
                           prod_type=NA, # TODO implement (for now only NOA / TOA)
                           rgb_type="SwirNirR",
                           dim=1024, 
+                          scaleRange=NA,
                           outdir=NA,
                           tmpdir=NA,
                           overwrite=FALSE) {
@@ -212,8 +303,8 @@ s2_thumbnails <- function(infiles,
   # Set tmpdir
   if (is.na(tmpdir)) {
     tmpdir <- tempfile(pattern="dir")
-    dir.create(tmpdir, recursive = FALSE, showWarnings = FALSE)
   }
+  dir.create(tmpdir, recursive = FALSE, showWarnings = FALSE)
   
   # Load GDAL paths
   binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")
@@ -262,22 +353,74 @@ s2_thumbnails <- function(infiles,
     # if output already exists and overwrite==FALSE, do not proceed
     if (!file.exists(out_path) | overwrite==TRUE) {
       
+      # Consider only the required bands
+      if (sel_prod_type %in% c("BOA","TOA")) {
+        rgb_bands = switch(
+          rgb_type,
+          "SwirNirR" = c(11,8,4),
+          "NirRG" = c(8,4,3),
+          "RGB" = c(4,3,2)
+        )
+        filterbands_path <- file.path(tmpdir, gsub("\\..+$","_filterbands.vrt",basename(sel_infile_path)))
+        system(
+          paste0(
+            binpaths$gdal_translate," -of VRT ",
+            "-b ",paste(rgb_bands, collapse=" -b ")," ",
+            "\"",sel_infile_path,"\" ",
+            "\"",filterbands_path,"\""
+          ), intern = Sys.info()["sysname"] == "Windows"
+        )
+      } else {
+        filterbands_path <- sel_infile_path
+      }
+      
       # Resize input if necessary
       sel_infile_size <- suppressWarnings(GDALinfo(sel_infile_path)[c("rows","columns")])
       if (dim < max(sel_infile_size)) {
         out_size <- round(sel_infile_size * min(dim,max(sel_infile_size)) / max(sel_infile_size))
-        resized_path <- file.path(tmpdir, gsub("\\..+$",".vrt",basename(sel_infile_path)))
+        resized_path <- file.path(tmpdir, gsub("\\..+$","_resized.vrt",basename(sel_infile_path)))
         system(
           paste0(
-            binpaths$gdal_translate," -of VRT ",
-            "-outsize ",out_size[2]," ",out_size[1]," ",
+            binpaths$gdalwarp," -of VRT ",
+            "-ts ",out_size[2]," ",out_size[1]," ",
             if (sel_prod_type %in% c("SCL")) {"-r mode "} else {"-r average "}, # resp. discrete or continuous values
-            "\"",sel_infile_path,"\" ",
+            "\"",filterbands_path,"\" ",
             "\"",resized_path,"\""
           ), intern = Sys.info()["sysname"] == "Windows"
         )
       } else {
         resized_path <- sel_infile_path
+      }
+      
+      # define scaleRange
+      if (anyNA(scaleRange)) {
+        scaleRange <- if (sel_prod_type %in% c("BOA","TOA")) {
+          c(0, switch(rgb_type, "SwirNirR" = 8000, "NirRG" = 7500, "RGB" = 2500))
+        } else if (sel_prod_type %in% c("Zscore")){
+          sel_infile_datatype <- attr(
+            suppressWarnings(GDALinfo(sel_infile_path)),
+            "df"
+          )[1,"GDType"]
+          if (grepl("^Float",sel_infile_datatype)) {
+            c(-3, 3)
+          } else if (grepl("^Int",sel_infile_datatype)) {
+            c(-3E3,3E3)
+          }
+        } else if (sel_prod_type %in% c("SCL")){
+          rep(NA,2) # it is ignored
+        } else { # spectral indices
+          sel_infile_datatype <- attr(
+            suppressWarnings(GDALinfo(sel_infile_path)),
+            "df"
+          )[1,"GDType"]
+          if (grepl("^Float",sel_infile_datatype)) {
+            c(-1, 1)
+          } else if (grepl("^Int",sel_infile_datatype)) {
+            c(-1E4,1E4)
+          } else if (grepl("^Byte$",sel_infile_datatype)) {
+            c(0,200)
+          }
+        }
       }
       
       # generate RGB basing on prod_type
@@ -286,19 +429,8 @@ s2_thumbnails <- function(infiles,
         stack2rgb(
           resized_path, 
           out_file = out_path,
-          bands = switch(
-            rgb_type,
-            "SwirNirR" = c(11,8,4),
-            "NirRG" = c(8,4,3),
-            "RGB" = c(4,3,2)
-          ),
-          minval = 0, 
-          maxval = switch(
-            rgb_type,
-            "SwirNirR" = 8000,
-            "NirRG" = 7500,
-            "RGB" = 2500
-          )
+          minval = scaleRange[1], 
+          maxval = scaleRange[2]
         )
         
       } else if (sel_prod_type %in% c("TCI")) {
@@ -312,7 +444,7 @@ s2_thumbnails <- function(infiles,
             "\"",out_path,"\""
           ), intern = Sys.info()["sysname"] == "Windows"
         )
-
+        
       } else {
         
         raster2rgb(
@@ -324,10 +456,9 @@ s2_thumbnails <- function(infiles,
             "Zscore"
           } else {
             "generic_ndsi"
-          }#,
-          # TODO cycle here above basing on sel_prod_type to use different palettes for different products / indices
-          # minval = -1, 
-          # maxval = 1
+          },
+          minval = scaleRange[1], 
+          maxval = scaleRange[2]
         )
         
       }

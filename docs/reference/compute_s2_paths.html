@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compute names of S2 file to be generated — compute_s2_paths • SALTO: Sentinel-2 And Landsat TOolbox</title>
+<title>Compute names of S2 file to be generated — compute_s2_paths • An R toolbox to find, download an preprocess Sentinel-2 data</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -59,7 +59,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">salto</a>
+      <a class="navbar-brand" href="../index.html">sen2r</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -73,7 +73,7 @@
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/ranghetti/salto/">
+  <a href="https://github.com/ranghetti/sen2r/">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -101,7 +101,7 @@ is called twice (and to shorten the main function).</p>
     
 
     <pre class="usage"><span class='fu'>compute_s2_paths</span>(<span class='no'>pm</span>, <span class='no'>s2_list_l1c</span>, <span class='no'>s2_list_l2a</span>, <span class='no'>paths</span>, <span class='no'>list_prods</span>, <span class='no'>out_ext</span>,
-  <span class='no'>tiles_ext</span>, <span class='no'>merged_ext</span>, <span class='no'>warped_ext</span>, <span class='no'>ignorelist</span>)</pre>
+  <span class='no'>tiles_ext</span>, <span class='no'>merged_ext</span>, <span class='no'>warped_ext</span>, <span class='no'>sr_masked_ext</span>, <span class='no'>ignorelist</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -143,6 +143,10 @@ products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").</p></td>
     <tr>
       <th>warped_ext</th>
       <td><p>Extension (character) of warped products.</p></td>
+    </tr>
+    <tr>
+      <th>sr_masked_ext</th>
+      <td><p>Extension (character) of masked products of SR products.</p></td>
     </tr>
     <tr>
       <th>ignorelist</th>

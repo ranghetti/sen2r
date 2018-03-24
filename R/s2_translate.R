@@ -87,7 +87,7 @@ s2_translate <- function(infile,
   }
   
   # Load GDAL paths
-  binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")
+  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {
     jsonlite::fromJSON(binpaths_file)
   } else {
@@ -116,7 +116,7 @@ s2_translate <- function(infile,
   if (anyNA(tiles)) {tiles <- NA} else if (all(tiles=="")) {tiles <- NA}
   
   # check output format
-  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="salto"))
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))
   sel_driver <- gdal_formats[gdal_formats$name==format,]
   if (nrow(sel_driver)==0) {
     print_message(
@@ -245,7 +245,7 @@ s2_translate <- function(infile,
           if (length(jp2_selbands)>1) {
             # define and create tmpdir
             if (is.na(tmpdir)) {
-              tmpdir <- file.path(dirname(infile_dir),".vrt")
+              tmpdir <- tempfile(pattern="dir")
             }
             dir.create(tmpdir, showWarnings=FALSE)
             final_vrt_name <- ifelse(format=="VRT", out_name, paste0(tmpdir,"/",out_prefix,".vrt"))

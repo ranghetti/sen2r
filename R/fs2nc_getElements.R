@@ -1,10 +1,13 @@
 #' @title Get information from S2 short name
 #' @description This accessory function extracts metadata included in
-#'  the name of a Sentinel-2 product which follows the SALTO-S2
+#'  the name of a Sentinel-2 product which follows the sen2r
 #'  naming convention (see [s2_shortname]).
 #' @param s2_names A vector of Sentinel-2 product names in the
-#'  SALTO-S2 naming convention.
+#'  sen2r naming convention.
 #' @param format One between `list` of `data.frame`.
+#' @param abort Logical parameter: if TRUE (default), the function aborts 
+#'  in case any of `s2_names` is not recognised; if FALSE, a warning is shown,
+#'  and a list with only the element "type"='unrecognised' is returned.
 #' @return A list or a data.frame of the output metadata.
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
@@ -19,7 +22,7 @@
 #' # Return metadata
 #' fs2nc_getElements(fs2nc_examplename)
 
-fs2nc_getElements <- function(s2_names, format="list") {
+fs2nc_getElements <- function(s2_names, format="list", abort=TRUE) {
   
   # if input is NULL, return NULL
   if (is.null(s2_names)) {
@@ -54,12 +57,14 @@ fs2nc_getElements <- function(s2_names, format="list") {
       metadata[[i]]$type <- "clipped"
     } else {
       print_message(
-        type="error",
+        type=if(abort==TRUE){"error"}else{"warning"},
         "\"",s2_name,"\" was not recognised.")
+      metadata[[i]]$type <- "unrecognised" # so not to enter in the next cycle
     }
     
     # retrieve info
     for (sel_el in fs2nc_regex[[metadata[[i]]$type]]$elements) {
+      # generic formattation
       metadata[[i]][[sel_el]] <- gsub(
         fs2nc_regex[[metadata[[i]]$type]]$regex,
         paste0("\\",which(fs2nc_regex[[metadata[[i]]$type]]$elements==sel_el)),
@@ -74,7 +79,6 @@ fs2nc_getElements <- function(s2_names, format="list") {
     }
     
   } # end of prod cycle
-  
   
   # return output
   if (format=="data.frame") {

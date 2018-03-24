@@ -8,8 +8,8 @@
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #'
 #' @examples
-#' salto:::s2_defNA("BOA")
-#' salto:::s2_defNA(c("BOA","BOA","SCL","TCI"))
+#' sen2r:::s2_defNA("BOA")
+#' sen2r:::s2_defNA(c("BOA","BOA","SCL","TCI"))
 
 
 s2_defNA <- function(prod_types) {
@@ -17,8 +17,8 @@ s2_defNA <- function(prod_types) {
   sapply(
     prod_types,
     switch,
-    BOA = 2^16-2, # default value for UInt16
-    TOA = 2^16-2, # default value for UInt16
+    BOA = 2^16-1, # default value for UInt16
+    TOA = 2^16-1, # default value for UInt16
     SCL = 0, # specific for SCL
     TCI = 0, # no specific NA value because it is a Byte format
     0 # default value is not yet NA because this causes errors in s2_mask

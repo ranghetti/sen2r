@@ -4,9 +4,9 @@
 \alias{s2_mask}
 \title{Apply cloud masks}
 \usage{
-s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba",
-  outdir = "./masked", format = NA, subdirs = NA, compress = "DEFLATE",
-  parallel = FALSE, overwrite = FALSE)
+s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba", max_mask = 80,
+  outdir = "./masked", tmpdir = NA, format = NA, subdirs = NA,
+  compress = "DEFLATE", parallel = FALSE, overwrite = FALSE)
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths
@@ -24,7 +24,7 @@ format managed by GDAL (use \link{s2_translate} to do it);
 their names must be in the salto-S2 naming convention
 (\link{s2_shortname}).}
 
-\item{mask_type}{Character vector which determines the type of
+\item{mask_type}{(optional) Character vector which determines the type of
 mask to be applied. Accepted values are:
 \itemize{
 \item "nodata": mask pixels checked as "No data" in the SCL product;
@@ -39,8 +39,24 @@ mask to be applied. Accepted values are:
 \item "cloud_shadow_cirrus": mask pixels checked as "No data",
 "Cloud (any probability)", "Cloud shadow" or "Thin cirrus"
 in the SCL product;
+\item a string in the following form: "scl_n_m_n", where n, m and n are one or
+more SCL class numbers (e.g. "scl_0_8_9_11"): mask pixels corresponding
+to the classes specified in the string. E.g. string "scl_0_8_9_11" can
+be used to mask classes 0 ("No data"), 8-9 ("Cloud (high or medium
+probability)") and 11 ("Snow");
 \item "opaque_clouds" (still to be implemented).
 }}
+
+\item{max_mask}{(optional) Numeric value (range 0 to 100), which represents
+the maximum percentage of allowed masked surface (by clouds or any other
+type of mask chosen with argument \code{mask_type}) for producing outputs.
+Images with a percentage of masked surface greater than \code{max_mask}%
+are not processed (the list of expected output files which have not been
+generated is returned as an attribute, named "skipped").
+Default value is 80.
+Notice that the percentage is computed on non-NA values (if input images
+had previously been clipped and masked using a polygon, the percentage is
+computed on the surface included in the masking polygons).}
 
 \item{outdir}{(optional) Full name of the output directory where
 the files should be created (default: "current directory"masked"
@@ -49,6 +65,9 @@ subdir of current directory).
 second case, its parent directory must exists).
 If it is a relative path, it is expanded from the common parent
 directory of \code{infiles}.}
+
+\item{tmpdir}{(optional) Path where intermediate VRT will be created.
+Default is in a temporary directory.}
 
 \item{format}{(optional) Format of the output file (in a
 format recognised by GDAL). Default is the same format of input images
@@ -63,11 +82,13 @@ more than a single spectral index is required.}
 present, the compression indicated with this parameter is used.}
 
 \item{parallel}{(optional) Logical: if TRUE, masking is conducted using parallel
-processing exploiting \link[raster:beginCluster]{raster::beginCluster}. This speeds-up the computation
-for large rasters.
+processing, to speed-up the computation for large rasters.
 The number of cores is automatically determined; specifying it is also
 possible (e.g. \code{parallel = 4}).
-If FALSE (default), single core processing is used.}
+If FALSE (default), single core processing is used.
+Multiprocess masking computation is always performed in singlecore mode
+if \code{format != "VRT"} (because in this case there is no gain in using
+multicore processing).}
 
 \item{overwrite}{(optional) Logical value: should existing output files be
 overwritten? (default: FALSE)}

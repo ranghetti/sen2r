@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compute maps of spectral indices — s2_calcindices • SALTO: Sentinel-2 And Landsat TOolbox</title>
+<title>Compute maps of spectral indices — s2_calcindices • An R toolbox to find, download an preprocess Sentinel-2 data</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -59,7 +59,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">salto</a>
+      <a class="navbar-brand" href="../index.html">sen2r</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -73,7 +73,7 @@
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/ranghetti/salto/">
+  <a href="https://github.com/ranghetti/sen2r/">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -100,7 +100,8 @@ are physical rasters (no output VRT is allowed).</p>
 
     <pre class="usage"><span class='fu'>s2_calcindices</span>(<span class='no'>infiles</span>, <span class='no'>indices</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='kw'>parameters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>source</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"TOA"</span>, <span class='st'>"BOA"</span>), <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>dataType</span> <span class='kw'>=</span> <span class='st'>"Float32"</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>dataType</span> <span class='kw'>=</span> <span class='st'>"Int16"</span>, <span class='kw'>scaleFactor</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -110,7 +111,7 @@ are physical rasters (no output VRT is allowed).</p>
       <td><p>A vector of input filenames. Input files are paths
 of BOA (or TOA) products already converted from SAFE format to a
 format managed by GDAL (use s2_translate to do it);
-their names must be in the SALTO-S2 naming convention
+their names must be in the sen2r naming convention
 (s2_shortname).</p></td>
     </tr>
     <tr>
@@ -170,10 +171,19 @@ present, the compression indicated with this parameter is used.</p></td>
     </tr>
     <tr>
       <th>dataType</th>
-      <td><p>(optional) Numeric datatype of the ouptut rasters:
-if "Float32" (default) or "Float64" is chosen, numeric values are not rescaled;
-if "Int16" or "UInt16", values are multiplicated by a 10000
-scale factor.</p></td>
+      <td><p>(optional) Numeric datatype of the ouptut rasters.
+if "Float32" or "Float64" is chosen, numeric values are not rescaled;
+if "Int16" (default) or "UInt16", values are multiplicated by <code>scaleFactor</code> argument;
+if "Byte", values are shifted by 100, multiplicated by 100 and truncated
+at 200 (so that range -1 to 1 is coherced to 0-200), and nodata value
+is assigned to 255.</p></td>
+    </tr>
+    <tr>
+      <th>scaleFactor</th>
+      <td><p>(optional) Scale factor for output values when an integer
+datatype is chosen (default values are 10000 for "Int16" and "UInt16",
+1E9 for "Int32" and "UInt32"). Notice that, using "UInt16" and "UInt32" types,
+negative values will be truncated to 0.</p></td>
     </tr>
     <tr>
       <th>overwrite</th>

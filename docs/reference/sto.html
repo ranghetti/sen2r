@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Find, download and preprocess Sentinel-2 images — sto • SALTO: Sentinel-2 And Landsat TOolbox</title>
+<title>Find, download and preprocess Sentinel-2 images — sto • An R toolbox to find, download an preprocess Sentinel-2 data</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -59,7 +59,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">salto</a>
+      <a class="navbar-brand" href="../index.html">sen2r</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -73,7 +73,7 @@
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/ranghetti/salto/">
+  <a href="https://github.com/ranghetti/sen2r/">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -105,12 +105,13 @@ descriptions of all the other parameters).</p>
   <span class='kw'>step_atmcorr</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>timeperiod</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>extent_name</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>s2tiles_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>s2orbits_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>index_source</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>clip_on_extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>extent_as_mask</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>reference_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res_s2</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>proj</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>resampling</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>resampling_scl</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>outformat</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>compression</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>path_l1c</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_l2a</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_merged</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>path_out</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>thumbnails</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>use_python</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+  <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>clip_on_extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>extent_as_mask</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>reference_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res_s2</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>proj</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>resampling</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>resampling_scl</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>outformat</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>index_datatype</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>compression</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_l1c</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>path_l2a</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_merged</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_out</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>path_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>thumbnails</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>use_python</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -260,8 +261,21 @@ are instead used (be careful to use this setting!).</p></td>
     <tr>
       <th>mask_type</th>
       <td><p>(optional) Character value which determines the categories
-in the Srface Classification Map to be masked (see <code>s2_mask()</code>
+in the Surface Classification Map to be masked (see <code>s2_mask()</code>
 for the accepted values). Default (NA) is not to mask.</p></td>
+    </tr>
+    <tr>
+      <th>max_mask</th>
+      <td><p>(optional) Numeric value (range 0 to 100), which represents
+the maximum percentage of allowed masked surface (by clouds or any other
+type of mask chosen with argument <code>mask_type</code>) for producing outputs.
+Images with a percentage of masked surface greater than <code>max_mask</code><!-- % -->
+are not processed (the list of expected output files which have not been
+generated is returned as an attribute, named "skipped").
+Default value is 80.
+Notice that the percentage is computed on non-NA values (if input images
+had previously been clipped and masked using a polygon, the percentage is
+computed on the surface included in the masking polygons).</p></td>
     </tr>
     <tr>
       <th>clip_on_extent</th>
@@ -318,6 +332,11 @@ by <code>gdal_translate</code>: "near" (default), "bilinear", "cubic",
       <th>outformat</th>
       <td><p>(optional) Format of the output file (in a
 format recognised by GDAL). Default is "GTiff".</p></td>
+    </tr>
+    <tr>
+      <th>index_datatype</th>
+      <td><p>(optional) Numeric datatype of the ouptut
+spectral indices (see s2_calcindices.</p></td>
     </tr>
     <tr>
       <th>compression</th>
@@ -399,13 +418,20 @@ in any case to download SAFE).</p>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A vector with the paths of the files which were created (excluded
+the temporary files); NULL otherwise.</p>
+    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#value">Value</a></li>
+          </ul>
 
   </div>
 </div>

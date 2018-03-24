@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Merge S2 tiles with the same date and orbit — s2_merge • SALTO: Sentinel-2 And Landsat TOolbox</title>
+<title>Merge S2 tiles with the same date and orbit — s2_merge • An R toolbox to find, download an preprocess Sentinel-2 data</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -59,7 +59,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">salto</a>
+      <a class="navbar-brand" href="../index.html">sen2r</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -73,7 +73,7 @@
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/ranghetti/salto/">
+  <a href="https://github.com/ranghetti/sen2r/">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -111,7 +111,7 @@ input files.</p>
       <td><p>A vector of input filenames. Input files are paths
 of products already converted from SAFE format to a format managed by
 GDAL (use s2_translate to do it); their names must be in the
-SALTO-S2 naming convention (s2_shortname).</p></td>
+sen2r naming convention (s2_shortname).</p></td>
     </tr>
     <tr>
       <th>outdir</th>
@@ -132,9 +132,7 @@ placed in separated <code>outfile</code> subdirectories; if FALSE, they are plac
     <tr>
       <th>tmpdir</th>
       <td><p>(optional) Path where intermediate VRT will be created.
-Default is in a hidden subdirectory (called <code>.vrt</code>) of the common parent
-directory of <code>infiles</code>. Set <code>tmpdir=tempdir()</code> if you do not want to
-keep the intermediate files after reboot.</p></td>
+Default is in a temporary directory.</p></td>
     </tr>
     <tr>
       <th>format</th>

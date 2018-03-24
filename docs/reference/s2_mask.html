@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Apply cloud masks — s2_mask • SALTO: Sentinel-2 And Landsat TOolbox</title>
+<title>Apply cloud masks — s2_mask • An R toolbox to find, download an preprocess Sentinel-2 data</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -59,7 +59,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">salto</a>
+      <a class="navbar-brand" href="../index.html">sen2r</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -73,7 +73,7 @@
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/ranghetti/salto/">
+  <a href="https://github.com/ranghetti/sen2r/">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -98,9 +98,9 @@ raster functions are used to perform computations, output files
 are physical rasters (no output VRT is allowed).</p>
     
 
-    <pre class="usage"><span class='fu'>s2_mask</span>(<span class='no'>infiles</span>, <span class='no'>maskfiles</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='st'>"cloud_medium_proba"</span>,
-  <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"./masked"</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>,
-  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>s2_mask</span>(<span class='no'>infiles</span>, <span class='no'>maskfiles</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='st'>"cloud_medium_proba"</span>, <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>80</span>,
+  <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"./masked"</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -126,7 +126,7 @@ their names must be in the salto-S2 naming convention
     </tr>
     <tr>
       <th>mask_type</th>
-      <td><p>Character vector which determines the type of
+      <td><p>(optional) Character vector which determines the type of
 mask to be applied. Accepted values are:</p><ul>
 <li><p>"nodata": mask pixels checked as "No data" in the SCL product;</p></li>
 <li><p>"cloud_high_proba": mask pixels checked as "No data" or
@@ -140,8 +140,26 @@ mask to be applied. Accepted values are:</p><ul>
 <li><p>"cloud_shadow_cirrus": mask pixels checked as "No data",
 "Cloud (any probability)", "Cloud shadow" or "Thin cirrus"
 in the SCL product;</p></li>
+<li><p>a string in the following form: "scl_n_m_n", where n, m and n are one or
+more SCL class numbers (e.g. "scl_0_8_9_11"): mask pixels corresponding
+to the classes specified in the string. E.g. string "scl_0_8_9_11" can
+be used to mask classes 0 ("No data"), 8-9 ("Cloud (high or medium
+probability)") and 11 ("Snow");</p></li>
 <li><p>"opaque_clouds" (still to be implemented).</p></li>
 </ul></td>
+    </tr>
+    <tr>
+      <th>max_mask</th>
+      <td><p>(optional) Numeric value (range 0 to 100), which represents
+the maximum percentage of allowed masked surface (by clouds or any other
+type of mask chosen with argument <code>mask_type</code>) for producing outputs.
+Images with a percentage of masked surface greater than <code>max_mask</code><!-- % -->
+are not processed (the list of expected output files which have not been
+generated is returned as an attribute, named "skipped").
+Default value is 80.
+Notice that the percentage is computed on non-NA values (if input images
+had previously been clipped and masked using a polygon, the percentage is
+computed on the surface included in the masking polygons).</p></td>
     </tr>
     <tr>
       <th>outdir</th>
@@ -152,6 +170,11 @@ subdir of current directory).
 second case, its parent directory must exists).
 If it is a relative path, it is expanded from the common parent
 directory of <code>infiles</code>.</p></td>
+    </tr>
+    <tr>
+      <th>tmpdir</th>
+      <td><p>(optional) Path where intermediate VRT will be created.
+Default is in a temporary directory.</p></td>
     </tr>
     <tr>
       <th>format</th>
@@ -174,11 +197,13 @@ present, the compression indicated with this parameter is used.</p></td>
     <tr>
       <th>parallel</th>
       <td><p>(optional) Logical: if TRUE, masking is conducted using parallel
-processing exploiting <a href='http://www.rdocumentation.org/packages/raster/topics/cluster'>raster::beginCluster</a>. This speeds-up the computation
-for large rasters.
+processing, to speed-up the computation for large rasters.
 The number of cores is automatically determined; specifying it is also
 possible (e.g. <code>parallel = 4</code>).
-If FALSE (default), single core processing is used.</p></td>
+If FALSE (default), single core processing is used.
+Multiprocess masking computation is always performed in singlecore mode
+if <code>format != "VRT"</code> (because in this case there is no gain in using
+multicore processing).</p></td>
     </tr>
     <tr>
       <th>overwrite</th>

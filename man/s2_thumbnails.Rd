@@ -5,7 +5,7 @@
 \title{Create thumbnails for S2 products.}
 \usage{
 s2_thumbnails(infiles, prod_type = NA, rgb_type = "SwirNirR", dim = 1024,
-  outdir = NA, tmpdir = NA, overwrite = FALSE)
+  scaleRange = NA, outdir = NA, tmpdir = NA, overwrite = FALSE)
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths
@@ -33,6 +33,15 @@ rescaled before producing the thumbnails; otherwise the original dimensions
 are maintained.
 To keep the original size in any case, set \code{dim = Inf}.}
 
+\item{scaleRange}{(optional) Range of valid values. If not specified
+(default), it is automatically retrieved from the product type.
+Default ranges for BOA and TOA products are 0 to 8000
+(\code{rgb_type = "SwirNirR"}), 0 to 7500 (\code{"NirRG"}) and 0 to 2500 (\code{"RGB"}).
+For spectral indices, default range is -1 to 1 for Float products, -10000
+to 10000 for Int and 0 to 200 for Byte; for "Zscore" products, default
+range is -3 to 3 for Float and -3000 to 3000 for Int.
+It can be useful i.e. to stretch BOA "dark" products.}
+
 \item{outdir}{(optional) Full name of the existing output directory
 where the files should be created.  Default is a subdirectory (named
 "thumbnails") of the parent directory of each input file.}
@@ -51,14 +60,7 @@ Function to create thumbnail images for Sentinel-2
 products. BOA and TOA multiband images are rendered as false colour
 JPEG images; SCL maps are rendered as 8-bit PNG;
 other singleband images (like spectral indices) are rendered as
-JPEG images with a standard color palette.
-Some improvements still have to be done:
-\itemize{
-\item allowing the possibility to chose the palette and the limits
-(for now, the range -1 to 1 is always used);
-\item adding support for RGB products.
-}
-
+JPEG images with a standard colour palette.
 Output images are georeferenced.
 }
 \note{

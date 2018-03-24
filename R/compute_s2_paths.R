@@ -48,6 +48,7 @@
 #' @param tiles_ext Extension (character) of tiled products.
 #' @param merged_ext Extension (character) of merged products.
 #' @param warped_ext Extension (character) of warped products.
+#' @param sr_masked_ext Extension (character) of masked products of SR products.
 #' @param ignorelist Vector of output files to be ignored.
 #'
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
@@ -64,6 +65,7 @@ compute_s2_paths <- function(pm,
                              tiles_ext, 
                              merged_ext, 
                              warped_ext, 
+                             sr_masked_ext,
                              ignorelist) {
   
   # accepted products (update together with the same variables in s2_gui() and in sto())
@@ -71,6 +73,9 @@ compute_s2_paths <- function(pm,
   l2a_prods <- c("BOA","SCL","TCI")
   
   # TODO load parameter file if pm is a path
+  
+  # load output formats
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))
   
   ## Define output file names and lists ##
   
@@ -103,6 +108,43 @@ compute_s2_paths <- function(pm,
   tiles_names_exp <- c(if("l1c" %in% pm$s2_levels) {tiles_l1c_names_exp},
                        if("l2a" %in% pm$s2_levels) {tiles_l2a_names_exp})
   
+  # add existing files for tiles
+  tiles_names_exi <- if (!is.na(pm$path_tiles)) {
+    all_names <- if (pm$path_subdirs==TRUE) {
+      list.files(file.path(pm$path_tiles,list_prods), full.names=TRUE)
+    } else {
+      list.files(pm$path_tiles, full.names=TRUE)
+    }
+    if (length(all_names)>0) {
+      all_meta <- data.table(suppressWarnings(fs2nc_getElements(all_names, abort=FALSE, format="data.frame")))
+      all_meta$names <- all_names
+      # filter
+      all_meta <- all_meta[
+        type != "unrecognised" &
+          prod_type %in% list_prods &
+          mission %in% toupper(substr(pm$sel_sensor,3,3)) & 
+          level %in% toupper(substr(pm$s2_levels,2,3)) &
+          file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
+        ,]
+      if (!is.null(pm$timewindow) & !anyNA(pm$timewindow)) {
+        all_meta <- all_meta[
+          all_meta$sensing_date>=pm$timewindow[1] & 
+            all_meta$sensing_date<=pm$timewindow[2]
+          ,]
+      }
+      if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected)) {
+        all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
+      }
+      if (!is.null(pm$s2tiles_selected) & !anyNA(pm$s2tiles_selected)) {
+        all_meta <- all_meta[id_tile %in% pm$s2tiles_selected,]
+      }
+      all_meta$names
+    } else {
+      character(0)
+    }
+  }
+  tiles_names_exp <- unique(c(tiles_names_exp,tiles_names_exi))
+  
   # expected names for merged
   if (length(tiles_names_exp)==0) {
     merged_names_exp <- NULL
@@ -122,7 +164,42 @@ compute_s2_paths <- function(pm,
       file.path(paths["merged"],
                 if(pm$path_subdirs==TRUE){fs2nc_getElements(merged_names_exp, format="data.frame")$prod_type}else{""},
                 .)
+    
+    # add existing files for merged
+    merged_names_exi <- if (!is.na(pm$path_merged)) {
+      all_names <- if (pm$path_subdirs==TRUE) {
+        list.files(file.path(pm$path_merged,list_prods), full.names=TRUE)
+      } else {
+        list.files(pm$path_merged, full.names=TRUE)
+      }
+      if (length(all_names)>0) {
+        all_meta <- data.table(suppressWarnings(fs2nc_getElements(all_names, abort=FALSE, format="data.frame")))
+        all_meta$names <- all_names
+        # filter
+        all_meta <- all_meta[
+          type != "unrecognised" &
+            prod_type %in% list_prods &
+            mission %in% toupper(substr(pm$sel_sensor,3,3)) & 
+            level %in% toupper(substr(pm$s2_levels,2,3)) &
+            file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
+          ,]
+        if (!is.null(pm$timewindow) & !anyNA(pm$timewindow)) {
+          all_meta <- all_meta[
+            all_meta$sensing_date>=pm$timewindow[1] & 
+              all_meta$sensing_date<=pm$timewindow[2]
+            ,]
+        }
+        if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected)) {
+          all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
+        }
+        all_meta$names
+      } else {
+        character(0)
+      }
+    }
+    merged_names_exp <- unique(c(merged_names_exp,merged_names_exi))
   }
+  
   
   # index which is TRUE for SCL products, FALSE for others
   names_merged_exp_scl_idx <- fs2nc_getElements(merged_names_exp,format="data.frame")$prod_type=="SCL"
@@ -134,8 +211,8 @@ compute_s2_paths <- function(pm,
   }
   
   # expected names for warped products
-  warped_names_exp <- if (pm$clip_on_extent==FALSE | length(merged_names_exp)==0) {
-    NULL
+  if (pm$clip_on_extent==FALSE | length(merged_names_exp)==0) {
+    warped_names_exp <- NULL
   } else {
     basename_warped_names_exp <- data.table(
       fs2nc_getElements(merged_names_exp, format="data.frame")
@@ -150,25 +227,64 @@ compute_s2_paths <- function(pm,
               file_ext)]
     # if SCL were explicitly required, directly create them as output files (since they are never masked);
     # instead, build only virtual files
-    ifelse(
+    warped_names_exp <- ifelse(
       names_merged_exp_scl_idx & "SCL" %in% pm$list_prods,
       file.path(paths["out"],
                 if(pm$path_subdirs==TRUE){basename(dirname(merged_names_exp))}else{""},
                 gsub(paste0(merged_ext,"$"),out_ext,basename_warped_names_exp)),
-      ifelse(names_merged_exp_scl_idx,
+      ifelse(names_merged_exp_scl_idx, # make SCL layers as temporary TIF (to save time when applying them to mask)
              file.path(paths["warped"],
                        if(pm$path_subdirs==TRUE){basename(dirname(merged_names_exp))}else{""},
                        gsub(paste0(merged_ext,"$"),out_ext,basename_warped_names_exp)),
-             file.path(paths["warped"],
+             file.path(paths["warped"], # and other products as vrt
                        if(pm$path_subdirs==TRUE){basename(dirname(merged_names_exp))}else{""},
                        gsub(paste0(merged_ext,"$"),warped_ext,basename_warped_names_exp)))
     )
+    
+    # add existing files for warped
+    warped_names_exi <- if (is.na(pm$mask_type)) {
+      all_names <- if (pm$path_subdirs==TRUE) {
+        list.files(file.path(pm$path_out,list_prods), full.names=TRUE)
+      } else {
+        list.files(pm$path_out, full.names=TRUE)
+      }
+      if (length(all_names)>0) {
+        all_meta <- data.table(suppressWarnings(fs2nc_getElements(all_names, abort=FALSE, format="data.frame")))
+        all_meta$names <- all_names
+        # filter
+        all_meta <- all_meta[
+          type != "unrecognised" &
+            prod_type %in% list_prods &
+            mission %in% toupper(substr(pm$sel_sensor,3,3)) & 
+            level %in% toupper(substr(pm$s2_levels,2,3)) &
+            file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
+          ,]
+        if (!is.null(pm$timewindow) & !anyNA(pm$timewindow)) {
+          all_meta <- all_meta[
+            all_meta$sensing_date>=pm$timewindow[1] & 
+              all_meta$sensing_date<=pm$timewindow[2]
+            ,]
+        }
+        if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected)) {
+          all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
+        }
+        if (!is.null(pm$extent_name) & !anyNA(pm$extent_name)) {
+          all_meta <- all_meta[id_orbit %in% pm$extent_name,]
+        }
+        all_meta$names
+      } else {
+        character(0)
+      }
+    }
+    warped_names_exp <- unique(c(warped_names_exp,warped_names_exi))
   }
   
   # expected names for masked products
   # if clip_on_extent is required, mask warped, otherwise, mask merged
-  masked_names_exp <- if (!is.na(pm$mask_type)) {
-    if (pm$clip_on_extent==TRUE) {
+  if (is.na(pm$mask_type)) {
+    masked_names_exp <- NULL
+  } else {
+    masked_names_exp <- if (pm$clip_on_extent==TRUE) {
       file.path(paths["out"],
                 if(pm$path_subdirs==TRUE){basename(dirname(nn(warped_names_exp[!names_merged_exp_scl_idx])))}else{""},
                 gsub(paste0(warped_ext,"$"),out_ext,basename(nn(warped_names_exp[!names_merged_exp_scl_idx]))))
@@ -177,6 +293,54 @@ compute_s2_paths <- function(pm,
                 if(pm$path_subdirs==TRUE){basename(dirname(nn(merged_names_exp[!names_merged_exp_scl_idx])))}else{""},
                 gsub(paste0(merged_ext,"$"),out_ext,basename(nn(merged_names_exp[!names_merged_exp_scl_idx]))))
     }
+    # use sr_masked_ext if necessary
+    if (!pm$index_source %in% pm$list_prods){
+      masked_names_exp_sr_idx <- sapply(masked_names_exp,function(x){
+        fs2nc_getElements(x)$prod_type
+      })==pm$index_source
+      masked_names_exp[masked_names_exp_sr_idx] <- gsub(
+        paste0(out_ext,"$"), sr_masked_ext, 
+        masked_names_exp[masked_names_exp_sr_idx]
+      )
+    }
+    
+    # add existing files for masked
+    masked_names_exi <- if (!is.na(pm$mask_type)) {
+      all_names <- if (pm$path_subdirs==TRUE) {
+        list.files(file.path(pm$path_out,list_prods), full.names=TRUE)
+      } else {
+        list.files(pm$path_out, full.names=TRUE)
+      }
+      if (length(all_names)>0) {
+        all_meta <- data.table(suppressWarnings(fs2nc_getElements(all_names, abort=FALSE, format="data.frame")))
+        all_meta$names <- all_names
+        # filter
+        all_meta <- all_meta[
+          type != "unrecognised" &
+            prod_type %in% list_prods &
+            prod_type != "SCL" &
+            mission %in% toupper(substr(pm$sel_sensor,3,3)) & 
+            level %in% toupper(substr(pm$s2_levels,2,3)) &
+            file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
+          ,]
+        if (!is.null(pm$timewindow) & !anyNA(pm$timewindow)) {
+          all_meta <- all_meta[
+            all_meta$sensing_date>=pm$timewindow[1] & 
+              all_meta$sensing_date<=pm$timewindow[2]
+            ,]
+        }
+        if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected)) {
+          all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
+        }
+        if (!is.null(pm$extent_name) & !anyNA(pm$extent_name)) {
+          all_meta <- all_meta[extent_name %in% pm$extent_name,]
+        }
+        all_meta$names
+      } else {
+        character(0)
+      }
+    }
+    masked_names_exp <- unique(c(masked_names_exp,masked_names_exi))
   }
   
   # expected names for output products
@@ -202,10 +366,10 @@ compute_s2_paths <- function(pm,
   } else {
     c("1C","2A")
   }
-  indices_names_exp <- if (length(out_names_exp)==0 | anyNA(pm$list_indices)) {
-    NULL
+  if (length(out_names_exp)==0 | anyNA(pm$list_indices)) {
+    indices_names_exp <- NULL
   } else {
-    data.table(
+    indices_names_exp <- data.table(
       fs2nc_getElements(out_names_exp, format="data.frame")
     )[level %in% level_for_indices,
       paste0("S2",
@@ -226,6 +390,43 @@ compute_s2_paths <- function(pm,
       }) %>%
       file.path(paths["indices"],.) %>%
       gsub(paste0(merged_ext,"$"),out_ext,.)
+    
+    # add existing files for indices
+    indices_names_exi <-  if (!is.na(pm$path_indices)) {
+      all_names <- if (pm$path_subdirs==TRUE) {
+        list.files(file.path(pm$path_indices,pm$list_indices), full.names=TRUE)
+      } else {
+        list.files(pm$path_indices, full.names=TRUE)
+      }
+      if (length(all_names)>0) {
+        all_meta <- data.table(suppressWarnings(fs2nc_getElements(all_names, abort=FALSE, format="data.frame")))
+        all_meta$names <- all_names
+        # filter
+        all_meta <- all_meta[
+          type != "unrecognised" &
+            prod_type %in% list_prods &
+            mission %in% toupper(substr(pm$sel_sensor,3,3)) & 
+            level %in% toupper(substr(pm$s2_levels,2,3)) &
+            file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
+          ,]
+        if (!is.null(pm$timewindow) & !anyNA(pm$timewindow)) {
+          all_meta <- all_meta[
+            all_meta$sensing_date>=pm$timewindow[1] & 
+              all_meta$sensing_date<=pm$timewindow[2]
+            ,]
+        }
+        if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected)) {
+          all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
+        }
+        if (!is.null(pm$extent_name) & !anyNA(pm$extent_name)) {
+          all_meta <- all_meta[id_orbit %in% pm$extent_name,]
+        }
+        all_meta$names
+      } else {
+        character(0)
+      }
+    }
+    indices_names_exp <- unique(c(indices_names_exp,indices_names_exi))
   }
   
   
@@ -290,7 +491,7 @@ compute_s2_paths <- function(pm,
                 if (pm$clip_on_extent==TRUE) {pm$extent_name},"_",
                 ifelse(level=="2A","BOA","TOA"),"_",
                 substr(res,1,2),".",
-                out_ext)]
+                if (!pm$index_source %in% pm$list_prods) {sr_masked_ext} else {out_ext})]
     }
     out_names_req <- out_names_exp[basename(nn(out_names_exp)) %in% out_basenames_req]
     out_names_new <- if (is.na(pm$path_out)) {

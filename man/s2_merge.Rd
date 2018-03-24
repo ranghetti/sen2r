@@ -12,7 +12,7 @@ s2_merge(infiles, outdir = ".", subdirs = NA, tmpdir = NA, format = NA,
 \item{infiles}{A vector of input filenames. Input files are paths
 of products already converted from SAFE format to a format managed by
 GDAL (use \link{s2_translate} to do it); their names must be in the
-SALTO-S2 naming convention (\link{s2_shortname}).}
+sen2r naming convention (\link{s2_shortname}).}
 
 \item{outdir}{(optional) Full name of the output directory where
 the files should be created (default: current directory).
@@ -27,9 +27,7 @@ placed in separated \code{outfile} subdirectories; if FALSE, they are placed in
 \code{infiles} relate to more than a single product.}
 
 \item{tmpdir}{(optional) Path where intermediate VRT will be created.
-Default is in a hidden subdirectory (called \code{.vrt}) of the common parent
-directory of \code{infiles}. Set \code{tmpdir=tempdir()} if you do not want to
-keep the intermediate files after reboot.}
+Default is in a temporary directory.}
 
 \item{format}{(optional) Format of the output file (in a
 format recognised by GDAL). Default is to maintain each input format.}
