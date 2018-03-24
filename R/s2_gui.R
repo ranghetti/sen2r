@@ -62,7 +62,7 @@ s2_gui <- function(param_list = NULL,
   dir.create(tempdir(), showWarnings=FALSE)
   
   # extract and import tiles kml
-  s2tiles_kmz <- system.file("extdata","vector","s2_tiles.kmz",package="salto")
+  s2tiles_kmz <- system.file("extdata","vector","s2_tiles.kmz",package="sen2r")
   s2tiles_kml <- gsub("\\.kmz$",".kml",s2tiles_kmz)
   if (!file.exists(s2tiles_kml)) {
     unzip(zipfile = s2tiles_kmz,
@@ -76,7 +76,7 @@ s2_gui <- function(param_list = NULL,
   
   # shiny
   s2_gui.ui <- dashboardPage(
-    dashboardHeader(title="salto"),
+    dashboardHeader(title="sen2r"),
     
     dashboardSidebar(
       
@@ -2352,7 +2352,7 @@ s2_gui <- function(param_list = NULL,
       rl$thumbnails <- if (rl$preprocess==TRUE) {as.logical(input$check_thumbnails)} else {NA} # logical (create thumbnails)
       
       # information about package version
-      rl$pkg_version <- packageVersion("salto") %>% as.character()
+      rl$pkg_version <- packageVersion("sen2r") %>% as.character()
       
       return(rl)
     }
@@ -2515,7 +2515,7 @@ s2_gui <- function(param_list = NULL,
     # # if Export is pressed, export the values (using client-side button)
     # output$export_param <- downloadHandler(
     #   filename = function() {
-    #     paste0("salto_", strftime(Sys.Date(),"%Y%m%d"), ".json")
+    #     paste0("sen2r_", strftime(Sys.Date(),"%Y%m%d"), ".json")
     #   },
     #   content = function(file) {
     #     return_list <- create_return_list() # run creation of return_list

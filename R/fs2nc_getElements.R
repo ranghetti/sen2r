@@ -1,9 +1,9 @@
 #' @title Get information from S2 short name
 #' @description This accessory function extracts metadata included in
-#'  the name of a Sentinel-2 product which follows the SALTO-S2
+#'  the name of a Sentinel-2 product which follows the sen2r
 #'  naming convention (see [s2_shortname]).
 #' @param s2_names A vector of Sentinel-2 product names in the
-#'  SALTO-S2 naming convention.
+#'  sen2r naming convention.
 #' @param format One between `list` of `data.frame`.
 #' @param abort Logical parameter: if TRUE (default), the function aborts 
 #'  in case any of `s2_names` is not recognised; if FALSE, a warning is shown,

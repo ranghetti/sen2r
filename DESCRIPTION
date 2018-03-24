@@ -1,15 +1,14 @@
-Package: salto
+Package: sen2r
 Type: Package
-Title: SALTO: Sentinel-2 And Landsat TOolbox
+Title: An R toolbox to find, download an preprocess Sentinel-2 data
 Version: 0.3.1
 Authors@R: c(person("Luigi", "Ranghetti", email = "ranghetti.l@irea.cnr.it", role = c("aut", "cre")),
              person("Lorenzo", "Busetto", email = "lbusett@gmail.com", role = c("aut")))
-Description: This package contains useful functions to preprocess Landsat and Sentinel-2 imagery.
-  The download is done using a python module (s2download).
+Description: This package contains useful functions to preprocess Sentinel-2 imagery.
   This package is under construction.
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
-URL: https://github.com/ranghetti/salto
+URL: https://github.com/ranghetti/sen2r
 RoxygenNote: 6.0.1
 Imports:
   reticulate,

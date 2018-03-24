@@ -12,7 +12,7 @@ s2_merge(infiles, outdir = ".", subdirs = NA, tmpdir = NA, format = NA,
 \item{infiles}{A vector of input filenames. Input files are paths
 of products already converted from SAFE format to a format managed by
 GDAL (use \link{s2_translate} to do it); their names must be in the
-SALTO-S2 naming convention (\link{s2_shortname}).}
+sen2r naming convention (\link{s2_shortname}).}
 
 \item{outdir}{(optional) Full name of the output directory where
 the files should be created (default: current directory).

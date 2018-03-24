@@ -26,10 +26,10 @@
 #' @examples
 #' \dontrun{
 #' 
-#' check_dependencies()
+#' check_sen2r_deps()
 #' }
 
-check_dependencies <- function() {
+check_sen2r_deps <- function() {
   
   settings.ui <- fluidPage(
     
@@ -125,7 +125,7 @@ check_dependencies <- function() {
       "python", "sen2cor", "s2download", "wget"
     )
     # load binpaths
-    binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")
+    binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
     
     binpaths <- reactivePoll(1000, session, function() {
     }, function() {

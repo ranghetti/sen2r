@@ -299,7 +299,7 @@ sto <- function(param_list=NULL,
         NA
       }
     }
-    if (open_check_gui) {check_dependencies()}
+    if (open_check_gui) {check_sen2r_deps()}
   }
   
   # Starting execution

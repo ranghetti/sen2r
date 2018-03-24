@@ -8,7 +8,7 @@ fs2nc_getElements(s2_names, format = "list", abort = TRUE)
 }
 \arguments{
 \item{s2_names}{A vector of Sentinel-2 product names in the
-SALTO-S2 naming convention.}
+sen2r naming convention.}
 
 \item{format}{One between \code{list} of \code{data.frame}.}
 
@@ -21,7 +21,7 @@ A list or a data.frame of the output metadata.
 }
 \description{
 This accessory function extracts metadata included in
-the name of a Sentinel-2 product which follows the SALTO-S2
+the name of a Sentinel-2 product which follows the sen2r
 naming convention (see \link{s2_shortname}).
 }
 \note{

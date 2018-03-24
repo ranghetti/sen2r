@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get information from S2 short name — fs2nc_getElements • An R toolbox to find, download an preprocess Sentinel-2 data</title>
+<title>Check package dependencies — check_sen2r_deps • An R toolbox to find, download an preprocess Sentinel-2 data</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,40 +89,28 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get information from S2 short name</h1>
+    <h1>Check package dependencies</h1>
     </div>
 
     
-    <p>This accessory function extracts metadata included in
-the name of a Sentinel-2 product which follows the sen2r
-naming convention (see s2_shortname).</p>
+    <p>The function allows to graphically check that all the
+dependencies are installed.</p>
     
 
-    <pre class="usage"><span class='fu'>fs2nc_getElements</span>(<span class='no'>s2_names</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"list"</span>, <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
-    
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>s2_names</th>
-      <td><p>A vector of Sentinel-2 product names in the
-sen2r naming convention.</p></td>
-    </tr>
-    <tr>
-      <th>format</th>
-      <td><p>One between <code>list</code> of <code>data.frame</code>.</p></td>
-    </tr>
-    <tr>
-      <th>abort</th>
-      <td><p>Logical parameter: if TRUE (default), the function aborts
-in case any of <code>s2_names</code> is not recognised; if FALSE, a warning is shown,
-and a list with only the element "type"='unrecognised' is returned.</p></td>
-    </tr>
-    </table>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <pre class="usage"><span class='fu'>check_sen2r_deps</span>()</pre>
+        
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>A list or a data.frame of the output metadata.</p>
+    <p>This package needs some external dependencies to run:</p><ul>
+<li><p>Python</p></li>
+<li><p>GDAL</p></li>
+<li><p>Wget</p></li>
+<li><p>sen2cor</p></li>
+<li><p>s2download</p></li>
+</ul>
+    <p>This function opens a GUI which allows to check that these dependencies
+are installed. This check is highly suggested before using the library for
+the fist time, in order to avoid errors.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
@@ -130,45 +118,15 @@ and a list with only the element "type"='unrecognised' is returned.</p></td>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Define product name</span>
-<span class='no'>fs2nc_examplename</span> <span class='kw'>&lt;-</span>
-  <span class='st'>"/path/of/the/product/S2A1C_20170603_022_32TQQ_TOA_20.tif"</span>
-
-<span class='co'># Return metadata</span>
-<span class='fu'>fs2nc_getElements</span>(<span class='no'>fs2nc_examplename</span>)</div><div class='output co'>#&gt; $type
-#&gt; [1] "tile"
-#&gt; 
-#&gt; $mission
-#&gt; [1] "A"
-#&gt; 
-#&gt; $level
-#&gt; [1] "1C"
-#&gt; 
-#&gt; $sensing_date
-#&gt; [1] "2017-06-03"
-#&gt; 
-#&gt; $id_orbit
-#&gt; [1] "022"
-#&gt; 
-#&gt; $id_tile
-#&gt; [1] "32TQQ"
-#&gt; 
-#&gt; $prod_type
-#&gt; [1] "TOA"
-#&gt; 
-#&gt; $res
-#&gt; [1] "20m"
-#&gt; 
-#&gt; $file_ext
-#&gt; [1] "tif"
-#&gt; </div></pre>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='fu'>check_sen2r_deps</span>()
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#value">Value</a></li>
+      <li><a href="#details">Details</a></li>
 
       <li><a href="#note">Note</a></li>
       
@@ -177,7 +135,7 @@ and a list with only the element "type"='unrecognised' is returned.</p></td>
 
     <h2>Author</h2>
     
-Luigi Ranghetti, phD (2017) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a>
+Luigi Ranghetti, phD (2018) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a>
 
   </div>
 </div>

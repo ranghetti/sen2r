@@ -21,7 +21,7 @@ The internal function checks if gdal_formats.json (the
 database of spectral indices) already exists; if not, it
 downloads source files and creates it.
 Since on Windows there is an issue in reading the extension of
-a GDAL driver with \code{reticulate} functions when the package \code{salto}
+a GDAL driver with \code{reticulate} functions when the package \code{sen2r}
 was already charged, this function can be used only from from
 Linux. It is not necessary, since a gdal_formats.json file is
 present in the package, but can be used to update the list in accordance

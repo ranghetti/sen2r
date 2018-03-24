@@ -19,7 +19,7 @@ init_python <- function() {
   
   # checks the python version
   # (if possible, use python2 for compatibility with s2download.py)
-  binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")
+  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {
     jsonlite::fromJSON(binpaths_file)
   } else {

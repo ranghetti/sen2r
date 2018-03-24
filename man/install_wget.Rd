@@ -4,7 +4,7 @@
 \alias{install_wget}
 \title{Download and install wget.}
 \usage{
-install_wget(wget_dir = system.file(package = "salto"), force = FALSE)
+install_wget(wget_dir = system.file(package = "sen2r"), force = FALSE)
 }
 \arguments{
 \item{wget_dir}{(optional) Path where wget executable will be installed

@@ -75,7 +75,7 @@ compute_s2_paths <- function(pm,
   # TODO load parameter file if pm is a path
   
   # load output formats
-  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="salto"))
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))
   
   ## Define output file names and lists ##
   

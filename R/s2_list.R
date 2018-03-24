@@ -75,7 +75,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
       )
     } else {
       # extract and import tiles kml
-      s2tiles_kmz <- system.file("extdata","vector","s2_tiles.kmz",package="salto")
+      s2tiles_kmz <- system.file("extdata","vector","s2_tiles.kmz",package="sen2r")
       s2tiles_kml <- gsub("\\.kmz$",".kml",s2tiles_kmz)
       if (!file.exists(s2tiles_kml)) {
         unzip(zipfile = s2tiles_kmz,
@@ -133,7 +133,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
   s2download <- import_s2download(convert=FALSE)
   
   # read the path of wget
-  binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")
+  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {
     jsonlite::fromJSON(binpaths_file)
   } else {

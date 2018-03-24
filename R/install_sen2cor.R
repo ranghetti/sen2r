@@ -31,7 +31,7 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
   sen2cor_version <- package_version("2.4.0")
   
   # check if it is already installed
-  binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")
+  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {
     jsonlite::fromJSON(binpaths_file)
   } else {
@@ -51,7 +51,7 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
   
   # define sen2cor_dir (where to install or update)
   if (is.na(sen2cor_dir)) {
-    sen2cor_dir <- file.path(system.file(package="salto"),"sen2cor")
+    sen2cor_dir <- file.path(system.file(package="sen2r"),"sen2cor")
   }
   if (!file.exists(sen2cor_dir)) {
     dir.create(sen2cor_dir, recursive=FALSE, showWarnings = FALSE)
@@ -110,7 +110,7 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
           unzip   = "internal") %>%
       suppressWarnings()
     unlink(sen2cor_installer)
-    sen2cor_bin <- system.file("sen2cor", paste0("Sen2Cor-",sen2cor_version,"-win64"), "L2A_Process.bat", package="salto")
+    sen2cor_bin <- system.file("sen2cor", paste0("Sen2Cor-",sen2cor_version,"-win64"), "L2A_Process.bat", package="sen2r")
   }
   
   # Save a text file with the L2A_Process path,

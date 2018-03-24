@@ -32,7 +32,7 @@ install_s2download <- function(inst_path = NA) {
   
   # define inst_path (where to install or update)
   if (is.na(inst_path)) {
-    inst_path <- file.path(system.file(package="salto"),"s2download")
+    inst_path <- file.path(system.file(package="sen2r"),"s2download")
   }
   if (file.exists(inst_path) & !file.info(inst_path)$isdir) {
     print_message(
@@ -56,7 +56,7 @@ install_s2download <- function(inst_path = NA) {
   }
   
   # check that git, python2 and wget are installed
-  binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")
+  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {
     jsonlite::fromJSON(binpaths_file)
   } else {
