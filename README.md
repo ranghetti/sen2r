@@ -6,7 +6,7 @@
     -   [Credits](#credits)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![Travis-CI Build Status](https://travis-ci.org/ranghetti/fidolasen.svg?branch=master)](https://travis-ci.org/ranghetti/sen2r) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/sen2r)](https://cran.r-project.org/package=sen2r) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
+[![Travis-CI Build Status](https://travis-ci.org/ranghetti/sen2r.svg?branch=master)](https://travis-ci.org/ranghetti/sen2r) [![Codecov coverage status](https://codecov.io/gh/lranghetti/sen2r/branch/master/graph/badge.svg)](https://codecov.io/gh/lranghetti/sen2r) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/sen2r)](https://cran.r-project.org/package=sen2r) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
 An R toolbox to find, download an preprocess Sentinel-2 data
 ============================================================
