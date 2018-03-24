@@ -51,7 +51,7 @@ s2_gui <- function(param_list = NULL,
 # default is "parent", but it can be set with another value
 # for internal purposes.
 # For now, value "sto" is used when s2_gui() is launched from
-# sto(), and is used to change save button label.
+# sen2r(), and is used to change save button label.
 .s2_gui <- function(param_list = NULL,
                     par_fun = "parent",
                     thunderforest_api = NA) {
@@ -2157,7 +2157,7 @@ s2_gui <- function(param_list = NULL,
         p(HTML(
           "<ol>",
           "<li>When an extent was already passed in input",
-          "(as an argument of sto() function, or with a parameter list)",
+          "(as an argument of sen2r() function, or with a parameter list)",
           "the map is not updated instantaneously. To update it,",
           "select another method to select extent (e.g. \"draw\") and then",
           "select again \"Imported as parameter\".</li>",
@@ -2179,11 +2179,11 @@ s2_gui <- function(param_list = NULL,
         p(HTML(
           "The function used to import parameter list was temporary",
           "deactivated, due to an incompatibility with another module.",
-          "To import a JSON option file, launch <tt>sto()</tt>",
+          "To import a JSON option file, launch <tt>sen2r()</tt>",
           "function with the path of the file as argument:"
         )),
         p(HTML(
-          "<tt>sto(param_list = \"/path/of/the/file.json\")</tt>"
+          "<tt>sen2r(param_list = \"/path/of/the/file.json\")</tt>"
         )),
         easyClose = TRUE,
         footer = NULL

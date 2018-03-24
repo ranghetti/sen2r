@@ -11,7 +11,7 @@ s2_thumbnails(infiles, prod_type = NA, rgb_type = "SwirNirR", dim = 1024,
 \item{infiles}{A vector of input filenames. Input files are paths
 of products already converted from SAFE format to a
 format managed by GDAL (use \link{s2_translate} to do it);
-their names must be in the SALTO-S2 naming convention
+their names must be in the sen2r naming convention
 (\link{s2_shortname}).}
 
 \item{prod_type}{(optional) Output product (see \link{s2_shortname} for the

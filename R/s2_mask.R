@@ -5,7 +5,7 @@
 #' @param infiles A vector of input filenames. Input files are paths
 #'  of products already converted from SAFE format to a
 #'  format managed by GDAL (use [s2_translate] to do it);
-#'  their names must be in the SALTO-S2 naming convention
+#'  their names must be in the sen2r naming convention
 #'  ([s2_shortname]).
 #' @param maskfiles A vector of filenames from which to take the
 #'  information about cloud coverage (for now, only SCL products
@@ -13,7 +13,7 @@
 #'  elements strictly match `infiles` ones. Input files are paths
 #'  of products already converted from SAFE format to a
 #'  format managed by GDAL (use [s2_translate] to do it);
-#'  their names must be in the salto-S2 naming convention
+#'  their names must be in the sen2r naming convention
 #'  ([s2_shortname]).
 #' @param mask_type (optional) Character vector which determines the type of
 #'  mask to be applied. Accepted values are:
@@ -97,7 +97,7 @@ s2_mask <- function(infiles,
   . <- NULL
   
   # Load GDAL paths
-  binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")
+  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {
     jsonlite::fromJSON(binpaths_file)
   } else {
@@ -119,7 +119,7 @@ s2_mask <- function(infiles,
   }
   
   # check output format
-  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="salto"))
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))
   if (!is.na(format)) {
     sel_driver <- gdal_formats[gdal_formats$name==format,]
     if (nrow(sel_driver)==0) {

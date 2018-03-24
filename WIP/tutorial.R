@@ -7,7 +7,7 @@
 library(sprawl)
 library(data.table)
 library(magrittr)
-library(salto)
+library(sen2r)
 
 
 ### Set parameters ###
@@ -90,7 +90,7 @@ vrt_03_names <- file.path(vrt_03_path,
 sapply(unique(basename(dirname(vrt_03_names))), function(x) {
   dir.create(file.path(vrt_03_path,x),showWarnings=FALSE)
 })
-salto::gdal_warp(vrt_02_names, vrt_03_names,
+sen2r::gdal_warp(vrt_02_names, vrt_03_names,
                      t_srs = out_proj@projargs,
                      mask = sel_crop,
                      tr = c(out_res,out_res),

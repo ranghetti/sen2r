@@ -1,5 +1,5 @@
 #' @title Preprocess (clip, reproject, reshape, mask) SAFE products
-#' @description The function is a simplified wrapper of [sto()]
+#' @description The function is a simplified wrapper of [sen2r()]
 #'  to preprocess existing SAFE products. No online research is performed,
 #'  neither sen2cor is applied to existing L1C products.
 #'  Output products are GeoTIFF files clipped to a desired 
@@ -63,7 +63,7 @@ geograbber_process <- function(path_safe,
   }
   
   # Launch processing
-  sto(
+  sen2r(
     # parameters passed by this function
     extent            = extent,
     list_prods        = list_prods,

@@ -7,7 +7,7 @@ reference:
   - title: Automatic processing chain
     desc: ~
     contents:
-      - '`sto`'
+      - '`sen2r`'
   - title: Find and download Sentinel-2 products
     desc: ~
     contents:

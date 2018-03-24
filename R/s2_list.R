@@ -193,7 +193,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
   # filter on tiles
   # (filtering within python code does not take effect with list_only=TRUE)
   # The filter is applied only on compactname products
-  # (using sto(), a complete filter on tiles is applied after downloading the product;
+  # (using sen2r(), a complete filter on tiles is applied after downloading the product;
   # however, s2_download() would correctly download only required tiles)
   
   if (!is.null(tile) & !is.null(av_prod_list)) {

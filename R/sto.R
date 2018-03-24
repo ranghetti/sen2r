@@ -172,7 +172,7 @@
 #' @param use_python (optional) Logical: if TRUE (default), the presence of
 #'  python in the system is checked before running the function; 
 #'  if FALSE, this is skipped. Setting this to FALSE can bge useful on 
-#'  systems with problems with python, when [sto)] is intended
+#'  systems with problems with python, when [sen2r()] is intended
 #'  to be used only for processing existing SAFE files (python is required
 #'  in any case to download SAFE).
 #' @return A vector with the paths of the files which were created (excluded
@@ -186,48 +186,48 @@
 #' @export
 
 
-sto <- function(param_list=NULL,
-                gui=NA,
-                preprocess=NA,
-                s2_levels=NA,
-                sel_sensor=NA,
-                online=NA,
-                overwrite_safe=NA,
-                rm_safe=NA,
-                step_atmcorr=NA,
-                timewindow=NA,
-                timeperiod=NA,
-                extent=NA,
-                extent_name=NA,
-                s2tiles_selected=NA,
-                s2orbits_selected=NA,
-                list_prods=NA,
-                list_indices=NA,
-                index_source=NA,
-                mask_type=NA,
-                max_mask=NA,
-                clip_on_extent=NA,
-                extent_as_mask=NA,
-                reference_path=NA,
-                res=NA,
-                res_s2=NA,
-                unit=NA,
-                proj=NA,
-                resampling=NA,
-                resampling_scl=NA,
-                outformat=NA,
-                index_datatype=NA,
-                compression=NA,
-                overwrite=NA,
-                path_l1c=NA,
-                path_l2a=NA,
-                path_tiles=NA,
-                path_merged=NA,
-                path_out=NA,
-                path_indices=NA,
-                path_subdirs=NA,
-                thumbnails=TRUE,
-                use_python = TRUE) {
+sen2r <- function(param_list=NULL,
+                  gui=NA,
+                  preprocess=NA,
+                  s2_levels=NA,
+                  sel_sensor=NA,
+                  online=NA,
+                  overwrite_safe=NA,
+                  rm_safe=NA,
+                  step_atmcorr=NA,
+                  timewindow=NA,
+                  timeperiod=NA,
+                  extent=NA,
+                  extent_name=NA,
+                  s2tiles_selected=NA,
+                  s2orbits_selected=NA,
+                  list_prods=NA,
+                  list_indices=NA,
+                  index_source=NA,
+                  mask_type=NA,
+                  max_mask=NA,
+                  clip_on_extent=NA,
+                  extent_as_mask=NA,
+                  reference_path=NA,
+                  res=NA,
+                  res_s2=NA,
+                  unit=NA,
+                  proj=NA,
+                  resampling=NA,
+                  resampling_scl=NA,
+                  outformat=NA,
+                  index_datatype=NA,
+                  compression=NA,
+                  overwrite=NA,
+                  path_l1c=NA,
+                  path_l2a=NA,
+                  path_tiles=NA,
+                  path_merged=NA,
+                  path_out=NA,
+                  path_indices=NA,
+                  path_subdirs=NA,
+                  thumbnails=TRUE,
+                  use_python = TRUE) {
   
   
   ### Preliminary settings ###
@@ -279,11 +279,11 @@ sto <- function(param_list=NULL,
                  path_indices=NA,
                  path_subdirs=TRUE,
                  thumbnails=TRUE,
-                 pkg_version=packageVersion("salto"))
+                 pkg_version=packageVersion("sen2r"))
   
   # If it is the first time that the package is used,
   # ask for opening the GUI to install dependencies
-  if (interactive() & !file.exists(system.file("extdata","paths.json", package="salto"))) {
+  if (interactive() & !file.exists(system.file("extdata","paths.json", package="sen2r"))) {
     open_check_gui <- NA
     while(is.na(open_check_gui)) {
       open_check_gui_prompt <- print_message(
@@ -306,7 +306,7 @@ sto <- function(param_list=NULL,
   print_message(
     type = "message",
     date = TRUE,
-    "Starting SALTO execution."
+    "Starting sen2r execution."
   )
   
   # import python modules
@@ -368,7 +368,7 @@ sto <- function(param_list=NULL,
       pm$pkg_version <- package_version("0.2.0")
     }
   }
-  if (packageVersion("salto") > package_version(pm$pkg_version)) {
+  if (packageVersion("sen2r") > package_version(pm$pkg_version)) {
     if (interactive() & !gui) {
       open_gui <- NA
       while(is.na(open_gui)) {
@@ -396,7 +396,7 @@ sto <- function(param_list=NULL,
       )
     }
   }
-
+  
   ## Open GUI (if required)
   if (gui==TRUE) {
     
@@ -406,7 +406,7 @@ sto <- function(param_list=NULL,
       "Launching GUI..."
     )
     
-    pm <- .s2_gui(pm, par_fun = "sto")
+    pm <- .s2_gui(pm, par_fun = "sen2r")
     if (is.null(pm)) {
       print_message(
         type = "message",
@@ -509,7 +509,7 @@ sto <- function(param_list=NULL,
   
   # check output format
   # sel_driver <- py$gdal$GetDriverByName(pm$outformat)
-  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="salto"))
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))
   sel_driver <- gdal_formats[gdal_formats$name==pm$outformat,]
   
   # if (is.null(py_to_r(sel_driver))) {
@@ -799,7 +799,7 @@ sto <- function(param_list=NULL,
           type = "message",
           date = TRUE,
           "All the required output files already exist; nothing to do.\n ",
-          "To reprocess, run sto() with the argument overwrite = TRUE\n ",
+          "To reprocess, run sen2r() with the argument overwrite = TRUE\n ",
           "or specify a different output directory."
         )
         return(invisible(NULL))
@@ -961,7 +961,7 @@ sto <- function(param_list=NULL,
       print_message(
         type = "message",
         date = TRUE,
-        "Execution of SALTO session terminated."
+        "Execution of sen2r session terminated."
       )
       
       unlink(path_tmp, recursive = TRUE) # probabily only empty directories will be deleted
@@ -1414,7 +1414,7 @@ sto <- function(param_list=NULL,
   print_message(
     type = "message",
     date = TRUE,
-    "Execution of SALTO session terminated."
+    "Execution of sen2r session terminated."
   )
   
   # Return output file paths

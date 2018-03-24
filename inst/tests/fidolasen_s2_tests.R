@@ -1,10 +1,10 @@
-# Tests to perform on sto() processing chains.
+# Tests to perform on sen2r() processing chains.
 
 # Please notice that these tests are not though to cover all the possible
 # processing types possible with this package.
 
 
-context("SALTO S2 examples")
+context("sen2r S2 examples")
 testthat::test_that(
   "Tests on sto", {
     
@@ -16,9 +16,9 @@ testthat::test_that(
     
     ### Test 1: download
     context("Test 1: download SAFE tiles (zip)")
-    example_dir <- system.file("extdata","example_files", package="salto")
+    example_dir <- system.file("extdata","example_files", package="sen2r")
     safe_dir <- file.path(example_dir, "safe")
-    system.time(sto(
+    system.time(sen2r(
       gui = FALSE,
       online = TRUE,
       preprocess = FALSE,
@@ -33,7 +33,7 @@ testthat::test_that(
     
     ### Test 2: download (old & compact name)
     context("Test 2: download SAFE tiles (zip & files)")
-    system.time(sto(
+    system.time(sen2r(
       gui = FALSE,
       online = TRUE,
       preprocess = FALSE,
@@ -48,7 +48,7 @@ testthat::test_that(
     
     ### Test 3: sen2cor
     context("Test 3: apply sen2cor")
-    system.time(sto(
+    system.time(sen2r(
       gui = FALSE,
       online = FALSE,
       preprocess = FALSE,
@@ -65,7 +65,7 @@ testthat::test_that(
     context("Test 4: translate and merge two tiles")
     out_dir <- file.path(example_dir, "out", "out_test1")
     dir.create(dirname(out_dir), showWarnings = FALSE)
-    system.time(sto(
+    system.time(sen2r(
       gui = FALSE,
       online = FALSE,
       s2_levels = "l1c",
@@ -81,7 +81,7 @@ testthat::test_that(
     ### Test 5: clip and mask
     context("Test 5: clip and mask")
     out_dir <- file.path(example_dir, "out", "out_test2")
-    system.time(sto(
+    system.time(sen2r(
       gui = FALSE,
       online = FALSE,
       s2_levels = "l2a",
@@ -100,7 +100,7 @@ testthat::test_that(
     ### Test 6: create spectral indices
     context("Test 6: spectral indices")
     out_dir <- file.path(example_dir, "out", "out_test3")
-    system.time(sto(
+    system.time(sen2r(
       gui = FALSE,
       online = FALSE,
       s2_levels = "l2a",

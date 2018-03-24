@@ -1,8 +1,8 @@
 #' @title Compute names of S2 file to be generated
-#' @description Internal function (to be used within [sto()])
+#' @description Internal function (to be used within [sen2r()])
 #'  which computes the names of the required output image files
 #'  (see details). 
-#'  The function was splitted from [sto()] because this code
+#'  The function was splitted from [sen2r()] because this code
 #'  is called twice (and to shorten the main function).
 #' @details This fuction is structured in the following way:
 #' 1. Retrieve the file names expected to be present at the
@@ -68,7 +68,7 @@ compute_s2_paths <- function(pm,
                              sr_masked_ext,
                              ignorelist) {
   
-  # accepted products (update together with the same variables in s2_gui() and in sto())
+  # accepted products (update together with the same variables in s2_gui() and in sen2r())
   l1c_prods <- c("TOA")
   l2a_prods <- c("BOA","SCL","TCI")
   

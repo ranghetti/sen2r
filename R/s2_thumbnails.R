@@ -24,7 +24,7 @@ stack2rgb <- function(in_rast,
                       maxval = 1E4) {
   
   # Load GDAL paths
-  binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")
+  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {
     jsonlite::fromJSON(binpaths_file)
   } else {
@@ -147,14 +147,14 @@ raster2rgb <- function(in_rast,
   
   # Define builtin palette paths
   palette_builtin <- c(
-    "SCL" = system.file("extdata","palettes","SCL.txt", package="salto"),
-    "NDVI" = system.file("extdata","palettes","NDVI.cpt", package="salto"),
-    "generic_ndsi" = system.file("extdata","palettes","NDSI.cpt", package="salto"),
-    "Zscore" = system.file("extdata","palettes","Zscore.cpt", package="salto")
+    "SCL" = system.file("extdata","palettes","SCL.txt", package="sen2r"),
+    "NDVI" = system.file("extdata","palettes","NDVI.cpt", package="sen2r"),
+    "generic_ndsi" = system.file("extdata","palettes","NDSI.cpt", package="sen2r"),
+    "Zscore" = system.file("extdata","palettes","Zscore.cpt", package="sen2r")
   )
   
   # Load GDAL paths
-  binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")
+  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {
     jsonlite::fromJSON(binpaths_file)
   } else {
@@ -248,7 +248,7 @@ raster2rgb <- function(in_rast,
 #' @param infiles A vector of input filenames. Input files are paths
 #'  of products already converted from SAFE format to a
 #'  format managed by GDAL (use [s2_translate] to do it);
-#'  their names must be in the SALTO-S2 naming convention
+#'  their names must be in the sen2r naming convention
 #'  ([s2_shortname]).
 #' @param prod_type (optional) Output product (see [s2_shortname] for the 
 #'  list of accepted products). If not provided, it is retrieved from the
@@ -307,7 +307,7 @@ s2_thumbnails <- function(infiles,
   dir.create(tmpdir, recursive = FALSE, showWarnings = FALSE)
   
   # Load GDAL paths
-  binpaths_file <- file.path(system.file("extdata",package="salto"),"paths.json")
+  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {
     jsonlite::fromJSON(binpaths_file)
   } else {

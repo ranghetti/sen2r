@@ -43,7 +43,7 @@
 start_trace <- function(trace_files, trace_funname) {
   
   # path in which trace txt files are placed
-  trace_path <- file.path(system.file(package="salto"),"logs") 
+  trace_path <- file.path(system.file(package="sen2r"),"logs") 
   dir.create(trace_path, showWarnings = FALSE) 
   
   # define name of the tracelog
@@ -135,7 +135,7 @@ trace_function <- function(trace_fun, trace_files, trace_funname=NA, ...) {
 clean_traces <- function(trace_funname=NA) {
   
   # import the content of the path in which trace txt files are placed
-  trace_path <- system.file("logs",package="salto")
+  trace_path <- system.file("logs",package="sen2r")
   tracenames_df <- data.frame(
     "name" = list.files(trace_path, "^([0-9]+)\\_(.*)\\.txt$", full.names = TRUE),
     stringsAsFactors = FALSE
