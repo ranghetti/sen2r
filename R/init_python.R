@@ -77,7 +77,13 @@ init_python <- function() {
     }
   }
   
+  # set the proper Python installation
+  if (!dirname(binpaths$python) %in% py_to_r(py$sys$path)) {
+    py$sys$path$append(dirname(binpaths$python))
+  }
   use_python(binpaths$python)
+  
+  # check for missing modules
   py_missing <- py_modules[!sapply(py_modules,py_module_available)]
   if (length(py_missing)>0) {
     print_message(
