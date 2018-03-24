@@ -17,6 +17,8 @@ apt_packages:
   - protobuf-compiler
   - valgrind
   - libjq-dev
+  - python-numpy
+  - python-gdal
 
 before_install:
   - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
