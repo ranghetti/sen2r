@@ -76,9 +76,19 @@ s2_gui <- function(param_list = NULL,
   
   # shiny
   s2_gui.ui <- dashboardPage(
-    dashboardHeader(title="sen2r"),
-    
-    dashboardSidebar(
+    title = "sen2r: an R toolbox to find, download and preprocess Sentinel-2 data",
+    header = dashboardHeader(),
+    sidebar = dashboardSidebar(
+      
+      # logo
+      div(
+        style = "text-align:center;padding-top:17px;padding-bottom:30px;",
+        a(
+          href='https://ranghetti.github.io/sen2r',
+          target = "_blank",
+          uiOutput("img_logo")
+        )
+      ),
       
       sidebarMenu(
         menuItem("Product selection", tabName = "tab_steps", icon = icon("image"))
@@ -106,6 +116,8 @@ s2_gui <- function(param_list = NULL,
       shinyjs::useShinyjs(),
       shiny::tags$head(shiny::tags$style(".darkbutton{background-color:#28353b;color:#b8c7ce;width:200px;")), # background color and font color
       shiny::tags$head(shiny::tags$script(src = "message-handler.js")), # for actionbuttons
+      shiny::tags$head(tags$link(rel="icon", href="favicon.ico")),
+      
       # shiny::tags$head(shiny::tags$script('
       #                                     var dimension = [0, 0];
       #                                     $(document).on("shiny:connected", function(e) {
@@ -120,7 +132,7 @@ s2_gui <- function(param_list = NULL,
       #                                     });
       #                                     ')), # return the width/height of the window (used to set map height)
       div(
-        style="position:absolute;top:250px;",
+        style="position:absolute;top:430px;",
         # # client-side buttons
         # p(style="margin-top:15pt;margin-left:11pt;",
         #   downloadButton("export_param", "\u2000Save options as...", class="darkbutton")
@@ -164,7 +176,6 @@ s2_gui <- function(param_list = NULL,
           )
         )
       )
-      
     ),
     
     dashboardBody(
@@ -1004,6 +1015,12 @@ s2_gui <- function(param_list = NULL,
   ) # end of s2_gui.ui dashboardPage
   
   s2_gui.server <- function(input, output, session) {
+    
+    # link to www directory and objects
+    addResourcePath("www", system.file("www", package="sen2r"))
+    output$img_logo<-renderUI(
+      img(src='www/images/sen2r_logo_200px.png',height='133',width='200')
+    )
     
     extendedname <- link <- longname <- name <- providers <- s2_formula_mathml <- NULL
     
