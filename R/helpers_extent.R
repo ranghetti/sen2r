@@ -11,54 +11,63 @@
 load_extent_bbox <- function() {
   modalDialog(
     title = "Specify a bounding box",
-    size = "s",
-    strong("Insert the coordinates of the bounding box:"),
-    div(
-      style="position:relative;margin-left:55px;top:0px;",
-      numericInput(
-        "bbox_ymax", 
-        label = span(style="font-weight:normal;color:grey", "upper northing"),
-        value = NULL, width = "100px"
-      )
-    ),
-    div(
-      div(
-        style="display:inline-block;position:relative;top:-5px;",
-        numericInput(
-          "bbox_xmin", 
-          label = span(style="font-weight:normal;color:grey", "left easting"), 
-          value = NULL, width = "100px"
+    size = "l",
+    fluidRow(
+      column(
+        width=4,
+        strong("Insert the coordinates of the bounding box:"),
+        div(
+          style="width:200px;position:relative;margin-left:40px;top:0px;",
+          numericInput(
+            "bbox_ymax", 
+            label = span(style="font-weight:normal;color:grey", "upper northing"),
+            value = NULL, width = "110px"
+          )
+        ),
+        div(
+          style="width:200px;",
+          div(
+            style="display:inline-block;position:relative;top:-5px;",
+            numericInput(
+              "bbox_xmin", 
+              label = span(style="font-weight:normal;color:grey", "left easting"), 
+              value = NULL, width = "90px"
+            )
+          ),
+          div(
+            style="display:inline-block;position:relative;margin-left:10px;top:-5px;",
+            numericInput(
+              "bbox_xmax", 
+              label = span(style="font-weight:normal;color:grey", "right easting"), 
+              value = NULL, width = "90px"
+            )
+          )
+        ),
+        div(
+          style="width:200px;position:relative;margin-left:40px;top:-10px;",
+          numericInput(
+            "bbox_ymin", 
+            label = span(style="font-weight:normal;color:grey", "lower northing"), 
+            value = NULL, 
+            width = "110px"
+          )
+        ),
+        strong("Specify the projection of the coordinates:"),
+        div(
+          div(
+            style="display:inline-block;position:relative;",
+            textInput("bboxproj", NULL,
+                      value="4326", width="190px")
+          ),
+          div(
+            style="display:inline-block;position:relative;bottom:0;margin-left:10px;",
+            htmlOutput("bboxproj_message")
+          )
         )
       ),
-      div(
-        style="display:inline-block;position:relative;margin-left:10px;top:-5px;",
-        numericInput(
-          "bbox_xmax", 
-          label = span(style="font-weight:normal;color:grey", "right easting"), 
-          value = NULL, 
-          width = "100px"
-        )
-      )
-    ),
-    div(
-      style="position:relative;margin-left:55px;top:-10px;",
-      numericInput(
-        "bbox_ymin", 
-        label = span(style="font-weight:normal;color:grey", "lower northing"), 
-        value = NULL, 
-        width = "100px"
-      )
-    ),
-    strong("Specify the projection of the coordinates:"),
-    div(
-      div(
-        style="display:inline-block;position:relative;",
-        textInput("bboxproj", NULL,
-                  value="4326", width="210px")
-      ),
-      div(
-        style="display:inline-block;position:relative;bottom:0;margin-left:10px;",
-        htmlOutput("bboxproj_message")
+      column(
+        width=8,
+        leafletOutput("view_map_bbox", height=400, width="100%")
       )
     ),
     easyClose = FALSE,
@@ -75,7 +84,7 @@ load_extent_bbox <- function() {
 load_extent_vectfile <- function() {
   modalDialog(
     title = "Select vector file",
-    size = "s",
+    size = "m",
     helpText(em(
       p("Chose the vector file to be used as extent."),
       p("To upload a shapefile, select all the related files",
@@ -93,6 +102,7 @@ load_extent_vectfile <- function() {
               multiple = TRUE),
     div(style="display:inline-block;vertical-align:top;",
         htmlOutput("path_vectfile_errormess")),
+    leafletOutput("view_map_vectfile", height=400, width="100%"),
     easyClose = FALSE,
     footer = tagList(
       actionButton("save_extent_vectfile", strong("\u2000Ok"), icon=icon("check")),
