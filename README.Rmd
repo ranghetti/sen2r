@@ -17,11 +17,10 @@ knitr::opts_chunk$set(
 ```
 
 [![Travis-CI Build Status](https://travis-ci.org/ranghetti/sen2r.svg?branch=master)](https://travis-ci.org/ranghetti/sen2r)
-[![Codecov coverage status](https://codecov.io/gh/lranghetti/sen2r/branch/master/graph/badge.svg)](https://codecov.io/gh/lranghetti/sen2r)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/sen2r)](https://cran.r-project.org/package=sen2r)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
-<img src="www/images/sen2r_logo_200px.png" width="200" height="113" align="right" />
+<img src="docs/sen2r_logo_200px.png" width="200" height="113" align="right" />
 
 # An R toolbox to find, download and preprocess Sentinel-2 data
 
@@ -100,7 +99,7 @@ Other specific functions can be used to run single steps separately:
 ([IREA-CNR](http://www.irea.cnr.it)),
 and it is released under the [GNU General Public License version 3](https://www.gnu.org/licenses/gpl-3.0.html) (GPL‑3).
 
-The [sen2r logo](www/images/sen2r_logo_200px.png), 
+The [sen2r logo](docs/sen2r_logo_200px.png), 
 partially derived from the [R logo](https://www.r-project.org/logo),
 is released under the [Creative Commons Attribution-ShareAlike 4.0 International license](https://creativecommons.org/licenses/by-sa/4.0) (CC-BY-SA 4.0).
 
