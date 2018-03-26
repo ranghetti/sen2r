@@ -116,7 +116,7 @@ s2_gui <- function(param_list = NULL,
       shinyjs::useShinyjs(),
       shiny::tags$head(shiny::tags$style(".darkbutton{background-color:#28353b;color:#b8c7ce;width:200px;")), # background color and font color
       shiny::tags$head(shiny::tags$script(src = "message-handler.js")), # for actionbuttons
-      shiny::tags$head(tags$link(rel="icon", href="favicon.ico")),
+      shiny::tags$head(shiny::tags$link(rel="icon", href="favicon.ico")),
       
       # shiny::tags$head(shiny::tags$script('
       #                                     var dimension = [0, 0];

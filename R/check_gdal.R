@@ -55,13 +55,21 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
   print_message(
     type="message",
     "Searching for a valid GDAL installation...")
-  gdal_setInstallation(ignore.full_scan = TRUE, verbose = TRUE)
+  gdal_check_fastpath <- tryCatch(
+    gdal_setInstallation(ignore.full_scan = TRUE, verbose = TRUE), 
+    error = print
+  )
   
   # Check if this found version supports OpenJPEG
-  gdal_check_jp2 <- tryCatch(gdal_chooseInstallation(hasDrivers=c("JP2OpenJPEG")), error = print)
+  gdal_check_jp2 <- tryCatch(
+    gdal_chooseInstallation(hasDrivers=c("JP2OpenJPEG")), 
+    error = print
+  )
   
   # If GDAL is not found, or if found version does not support JP2, perform a full search
-  if (is.null(getOption("gdalUtils_gdalPath")) | is(gdal_check_jp2, "error")) {
+  if (is.null(getOption("gdalUtils_gdalPath")) |
+      is(gdal_check_jp2, "error") |
+      is(gdal_check_fastpath, "error")) {
     print_message(
       type="message",
       "GDAL was not found in the system PATH, search in the full ",
