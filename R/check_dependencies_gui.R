@@ -113,6 +113,9 @@ check_sen2r_deps <- function() {
   
   settings.server <- function(input, output, session) {
     
+    # link to www directory and objects
+    addResourcePath("www", system.file("www", package="sen2r"))
+
     rv <- reactiveValues()
     
     # output OS name (to be used in conditionalPanel)  
@@ -165,6 +168,8 @@ check_sen2r_deps <- function() {
       modalDialog(
         title = "GDAL check",
         size = "s",
+        htmlOutput("check_wget_bigicon"),
+        textOutput("check_gdal_outext"),
         conditionalPanel(
           condition = "output.check_gdal_isvalid == 'NA'", 
           p(style="text-align:center;font-size:500%;color:darkgrey;", "\u23F3")
@@ -226,6 +231,18 @@ check_sen2r_deps <- function() {
         span(style="color:darkgreen;", "\u2714")
       } else {
         span(style="color:red;", "\u2718")
+      }
+    })
+    output$check_wget_bigicon <- renderUI({
+      if (is.na(rv$check_wget_isvalid)) {
+        div(
+          align="center",
+          img(src='www/images/spinner.gif',height='120',width='120')
+        )
+      } else if (rv$check_wget_isvalid) {
+        p(style="text-align:center;font-size:500%;color:darkgreen;", "\u2714")
+      } else {
+        p(style="text-align:center;font-size:500%;color:red;", "\u2718")
       }
     })
     outputOptions(output, "check_wget_isvalid", suspendWhenHidden = FALSE)
