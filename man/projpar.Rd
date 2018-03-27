@@ -23,7 +23,7 @@ and a warning is shown.}
 A character with the content of the parameter (NULL if the
 parameter is not recognised) or the name of the projection, and an
 attribute \code{proj4string} with the input projection checked using
-\link[sprawl:check_proj4string]{sprawl::check_proj4string}.
+\code{\link[sf:st_crs]{sf::st_crs()}}.
 }
 \description{
 Return the value of a parameter (or the name) present in

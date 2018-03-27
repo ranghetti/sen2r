@@ -4,7 +4,8 @@
 #'  [s2download](https://github.com/ranghetti/s2download)
 #'  python function only to retrieve the list of files, without
 #'  downloading and correcting them.
-#' @param spatial_extent A valid spatial object managed by [sprawl::get_extent]
+#' @param spatial_extent A valid spatial object object of class `sf`,
+#'  `sfc` or `sfg`
 #' @param tile Single Sentinel-2 Tile string (5-length character)
 #' @param orbit Single Sentinel-2 orbit number
 #' @param time_interval a temporal vector (class [POSIXct] or
@@ -27,9 +28,8 @@
 #' @note License: GPL 3.0
 #' @export
 #' @importFrom reticulate py_to_r r_to_py
-#' @importFrom sprawl get_extent reproj_extent
 #' @importFrom magrittr "%>%"
-#' @importFrom sf st_read st_centroid st_polygon
+#' @importFrom sf st_bbox st_read st_centroid st_polygon st_transform
 #'
 #' @examples \dontrun{
 #' pos <- sp::SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=sp::CRS("+init=epsg:4326"))
@@ -97,17 +97,16 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
   }
   
   # checks on inputs
-  spatext <- get_extent(spatial_extent) %>%
-    reproj_extent("+init=epsg:4326", verbose=FALSE)
+  spatext <- st_bbox(st_transform(spatial_extent, 4326))
   
   # pass lat,lon if the bounding box is a point or line; latmin,latmax,lonmin,lonmax if it is a rectangle
-  if (spatext@extent["xmin"]==spatext@extent["xmax"] | spatext@extent["ymin"]==spatext@extent["ymax"]) {
-    lon <- mean(spatext@extent["xmin"], spatext@extent["xmax"])
-    lat <- mean(spatext@extent["ymin"], spatext@extent["ymax"])
+  if (spatext["xmin"]==spatext["xmax"] || spatext["ymin"]==spatext["ymax"]) {
+    lon <- mean(spatext["xmin"], spatext["xmax"])
+    lat <- mean(spatext["ymin"], spatext["ymax"])
     lonmin <- lonmax <- latmin <- latmax <- NULL
   } else {
-    lonmin <- spatext@extent["xmin"]; lonmax <- spatext@extent["xmax"]
-    latmin <- spatext@extent["ymin"]; latmax <- spatext@extent["ymax"]
+    lonmin <- spatext["xmin"]; lonmax <- spatext["xmax"]
+    latmin <- spatext["ymin"]; latmax <- spatext["ymax"]
     lon <- lat <- NULL
   }
   

@@ -17,7 +17,6 @@ This package needs some external dependencies to run:
 \item GDAL
 \item Wget
 \item sen2cor
-\item s2download
 }
 
 This function opens a GUI which allows to check that these dependencies

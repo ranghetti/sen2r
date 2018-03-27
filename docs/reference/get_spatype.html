@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Retrieve list of available products. — s2_list • An R toolbox to find, download an preprocess Sentinel-2 data</title>
+<title>check the "spatial type" of an object or file — get_spatype • An R toolbox to find, download an preprocess Sentinel-2 data</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,80 +89,47 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Retrieve list of available products.</h1>
+    <h1>check the "spatial type" of an object or file</h1>
     </div>
 
     
-    <p>The function retrieves the list of available Sentinel-2
-products basing on search criteria. It makes use of
-<a href='https://github.com/ranghetti/s2download'>s2download</a>
-python function only to retrieve the list of files, without
-downloading and correcting them.</p>
+    <p>accessory function to check if an object passed to the function
+corresponds to a <code>*Spatial</code> Object, a <code>sf</code> object, a R <code>raster</code> object, a
+file corresponding to a vector, or a file corresponding to a raster.
+NOTE: to check only for vector or raster types, the associated functions
+<code>get_vectype</code> and <code>get_rastype</code> can be used, with the same syntax.</p>
     
 
-    <pre class="usage"><span class='fu'>s2_list</span>(<span class='kw'>spatial_extent</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>orbit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>max_cloud</span> <span class='kw'>=</span> <span class='fl'>110</span>)</pre>
+    <pre class="usage"><span class='fu'>get_spatype</span>(<span class='no'>in_object</span>, <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>spatial_extent</th>
-      <td><p>A valid spatial object object of class <code>sf</code>,
-<code>sfc</code> or <code>sfg</code></p></td>
+      <th>in_object</th>
+      <td><p>either a <code>R</code> object or a <code>character</code> string pointing to a
+vector or raster layer</p></td>
     </tr>
     <tr>
-      <th>tile</th>
-      <td><p>Single Sentinel-2 Tile string (5-length character)</p></td>
-    </tr>
-    <tr>
-      <th>orbit</th>
-      <td><p>Single Sentinel-2 orbit number</p></td>
-    </tr>
-    <tr>
-      <th>time_interval</th>
-      <td><p>a temporal vector (class POSIXct or
-Date) of length 1 (specific day) or 2 (time interval).</p></td>
-    </tr>
-    <tr>
-      <th>level</th>
-      <td><p>Character vector with one of the following:
-- "auto" (default): check if level-2A is available on SciHub:
-if so, list it; if not, list the corresponding level-1C
-product
-- "L1C": list available level-1C products
-- "L2A": list available level-2A products</p></td>
-    </tr>
-    <tr>
-      <th>apihub</th>
-      <td><p>Path of the "apihub.txt" file containing credentials
-of scihub account. If NULL (default) the default credentials
-(username "user", password "user") will be used.</p></td>
-    </tr>
-    <tr>
-      <th>max_cloud</th>
-      <td><p>Integer number (0-100) containing the maximum cloud
-level of the tiles to be listed (default: no filter).</p></td>
+      <th>abort</th>
+      <td><p><code>logical</code> if TRUE the function aborts if <code>object</code> is not
+recognized as an R spatial file or valid vector or raster file; if FALSE,
+a warning is shown and `NA`` is returned.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A vector of available products (being each element an URL,
-and its name the product name).</p>
+    <p>character ("<em>spobject</em>" | "<em>sfobject</em>" | "<em>rastobject</em> | "
+<em>vectfile</em>" | <em>rastfile</em>), or <code>NA</code> if the input does not
+belong to any spatial category and abort == FALSE</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>License: GPL 3.0</p>
+    <p>Functions get_spatype, <a href='get_rastype.html'>get_rastype</a> and <a href='get_vectype.html'>get_vectype</a> come from
+package <a href='http://lbusett.github.io/sprawl'>sprawl</a>.</p>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='no'>pos</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sp</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sp/topics/SpatialPoints'>SpatialPoints</a></span>(<span class='fu'>data.frame</span>(<span class='st'>"x"</span><span class='kw'>=</span><span class='fl'>12.0</span>,<span class='st'>"y"</span><span class='kw'>=</span><span class='fl'>44.8</span>), <span class='kw'>proj4string</span><span class='kw'>=</span><span class='kw pkg'>sp</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sp/topics/CRS-class'>CRS</a></span>(<span class='st'>"+init=epsg:4326"</span>))
-<span class='no'>time_window</span> <span class='kw'>&lt;-</span> <span class='fu'>as.Date</span>(<span class='fu'>c</span>(<span class='st'>"2017-05-01"</span>,<span class='st'>"2017-07-30"</span>))
-<span class='no'>example_s2_list</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_list</span>(<span class='kw'>spatial_extent</span><span class='kw'>=</span><span class='no'>pos</span>, <span class='kw'>tile</span><span class='kw'>=</span><span class='st'>"32TQQ"</span>, <span class='kw'>time_interval</span><span class='kw'>=</span><span class='no'>time_window</span>)
-<span class='fu'>print</span>(<span class='no'>example_s2_list</span>)
-<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -172,12 +139,12 @@ and its name the product name).</p>
       <li><a href="#value">Value</a></li>
 
       <li><a href="#note">Note</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+          </ul>
 
     <h2>Author</h2>
     
+Lorenzo Busetto, phD (2017) <a href='mailto:lbusett@gmail.com'>lbusett@gmail.com</a>
+
 Luigi Ranghetti, phD (2017) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a>
 
   </div>

@@ -8,7 +8,8 @@ s2_list(spatial_extent = NULL, tile = NULL, orbit = NULL,
   time_interval = NULL, level = "auto", apihub = NULL, max_cloud = 110)
 }
 \arguments{
-\item{spatial_extent}{A valid spatial object managed by \link[sprawl:get_extent]{sprawl::get_extent}}
+\item{spatial_extent}{A valid spatial object object of class \code{sf},
+\code{sfc} or \code{sfg}}
 
 \item{tile}{Single Sentinel-2 Tile string (5-length character)}
 

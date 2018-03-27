@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Preprocess (clip, reproject, reshape, mask) SAFE products — geograbber_process • An R toolbox to find, download an preprocess Sentinel-2 data</title>
+<title>Check in the input is a <code>Raster</code> object or raster file — get_rastype • An R toolbox to find, download an preprocess Sentinel-2 data</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,73 +89,42 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Preprocess (clip, reproject, reshape, mask) SAFE products</h1>
+    <h1>Check in the input is a <code>Raster</code> object or raster file</h1>
     </div>
 
     
-    <p>The function is a simplified wrapper of <code><a href='sen2r.html'>sen2r()</a></code>
-to preprocess existing SAFE products. No online research is performed,
-neither sen2cor is applied to existing L1C products.
-Output products are GeoTIFF files clipped to a desired</p>
+    <p>Check if a <code>R</code> object or a filename correspond to a valid <code>Raster</code>
+object, to a raster file or none of the above. Useful to detect which kind
+of input is passed to a function and abort / do something in the case of
+"wrong" input.</p>
     
 
-    <pre class="usage"><span class='fu'>geograbber_process</span>(<span class='no'>path_safe</span>, <span class='no'>path_out</span>, <span class='kw'>bbox</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"BOA"</span>),
-  <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>proj</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>resampling</span> <span class='kw'>=</span> <span class='st'>"near"</span>,
-  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>get_rastype</span>(<span class='no'>in_rast</span>, <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>path_safe</th>
-      <td><p>Path of the directory in which SAFE
-products are searched.</p></td>
+      <th>in_rast</th>
+      <td><p>name of an <code>R</code> object, or <code>character</code> giving the full path
+to a spatial file</p></td>
     </tr>
     <tr>
-      <th>path_out</th>
-      <td><p>Path of the directory in which Sentinel-2
-output products are generated.</p></td>
-    </tr>
-    <tr>
-      <th>bbox</th>
-      <td><p>(optional) Four-length numeric vector with the bounding box
-of the output products (xmin, ymin, xmax, ymax), in geographic coordinates.</p></td>
-    </tr>
-    <tr>
-      <th>list_prods</th>
-      <td><p>(optional) Character vector with the values of the
-products to be processed (accepted values: "TOA", "BOA", "SCL",
-"TCI"). Default is "BOA".</p></td>
-    </tr>
-    <tr>
-      <th>mask_type</th>
-      <td><p>(optional) Character value which determines the categories
-in the Srface Classification Map to be masked (see <code><a href='s2_mask.html'>s2_mask()</a></code>
-for the accepted values). Default (NA) is not to mask.</p></td>
-    </tr>
-    <tr>
-      <th>res</th>
-      <td><p>(optional) Numerifc vector of length 2 with the x-y resolution
-for output products. NA (default) means that the resolution
-is keeped as native.</p></td>
-    </tr>
-    <tr>
-      <th>proj</th>
-      <td><p>(optional) Character string with the pro4string of the output
-resolution. default value (NA) means not to reproject.</p></td>
-    </tr>
-    <tr>
-      <th>resampling</th>
-      <td><p>(optional) Resampling method (one of the values supported
-by <code>gdal_translate</code>: "near" (default), "bilinear", "cubic",
-"cubicspline", "lanczos", "average" or "mode").</p></td>
-    </tr>
-    <tr>
-      <th>overwrite</th>
-      <td><p>(optional) Logical value: should existing output
-files be overwritten? (default: FALSE).</p></td>
+      <th>abort</th>
+      <td><p>If TRUE, and <code>in_rast</code> is neither a raster object or
+filename, send an error message and abort, Default: TRUE</p></td>
     </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p><code>character</code> equal to "rastfile" (if <code>in_rast</code> is a raster file),
+<code>rastobject</code> (if <code>in_rast</code> is a <code>R</code> raster object) or <code>NA`` if it is neither (unless</code>abort` == TRUE)</p>
+    
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>Functions <a href='get_spatype.html'>get_spatype</a>, get_rastype and <a href='get_vectype.html'>get_vectype</a> come from
+package <a href='http://lbusett.github.io/sprawl'>sprawl</a>.</p>
     
 
   </div>
@@ -163,7 +132,15 @@ files be overwritten? (default: FALSE).</p></td>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#note">Note</a></li>
+          </ul>
+
+    <h2>Author</h2>
+    
+Lorenzo Busetto, phD (2017) <a href='mailto:lbusett@gmail.com'>lbusett@gmail.com</a>
 
   </div>
 </div>

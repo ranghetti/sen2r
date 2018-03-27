@@ -35,10 +35,7 @@
 #' @return A vector with the names of the merged products (just created or
 #'  already existing).
 #' @importFrom rgdal GDALinfo
-#' @importFrom sp CRS
 #' @importFrom magrittr "%>%"
-#' @importFrom sprawl check_proj4string
-#' @importFrom raster compareCRS
 #' @importFrom jsonlite fromJSON
 #' @import data.table
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
@@ -93,7 +90,7 @@ s2_merge <- function(infiles,
     infiles_meta_gdal <- sapply(infiles, function(x) {attributes(GDALinfo(x))[c("driver","projection")]})
   )
   infiles_meta$format <- unlist(infiles_meta_gdal[1,])
-  infiles_meta$proj4string <- sapply(unlist(infiles_meta_gdal[2,]), function(x) {CRS(x)@projargs})
+  infiles_meta$proj4string <- sapply(unlist(infiles_meta_gdal[2,]), function(x) {st_crs2(x)$proj4string})
   # infiles_meta$NAflag <- sapply(infiles_meta_gdal[3,], function(x) {
   #   if (x[1,"hasNoDataValue"]==TRUE) {
   #     x[1,"NoDataValue"]
@@ -123,11 +120,12 @@ s2_merge <- function(infiles,
   # vector which identifies, for each infiles, if its projection is
   # different or not from out_crs
   diffcrs <- sapply(infiles_meta$proj4string, function(x) {
-    !compareCRS(CRS(x), CRS(out_crs))
+    st_crs2(x) != st_crs2(out_crs)
+    # !compareCRS(CRS(x), CRS(out_crs))
   })
   
   # Check out_crs
-  out_crs <- check_proj4string(out_crs)
+  out_crs <- st_crs2(out_crs)$proj4string
   # check the projections of input files
   if (any(diffcrs)) {
     print_message(

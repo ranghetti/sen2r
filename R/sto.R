@@ -182,7 +182,6 @@
 #' @importFrom geojsonio geojson_json
 #' @importFrom jsonlite fromJSON
 #' @importFrom sf st_cast st_read st_combine
-#' @importFrom sprawl cast_vect
 #' @export
 
 
@@ -431,10 +430,8 @@ sen2r <- function(param_list=NULL,
   # convert from GeoJSON to sf
   if (is(pm$extent, "character")) {
     pm$extent <- st_read(pm$extent, quiet=TRUE)
-  }
-  # convert from other managed formats
-  if (!all(is.na(pm$extent)) & !is(pm$extent, "sf")) {
-    pm$extent <- cast_vect(pm$extent, "sfobject")
+  } else if (is(pm$extent, "Spatial")) {
+    pm$extent <- st_as_st(pm$extent)
   }
   
   # check extent_name
@@ -732,6 +729,7 @@ sen2r <- function(param_list=NULL,
     }
     
     
+    
     # if preprocess is required, define output names
     if (pm$preprocess == TRUE) {  
       
@@ -787,7 +785,7 @@ sen2r <- function(param_list=NULL,
         list_prods=list_prods, 
         out_ext=out_ext, tiles_ext=tiles_ext, 
         merged_ext=merged_ext, warped_ext=warped_ext, sr_masked_ext=sr_masked_ext,
-        ignorelist = ignorelist
+        ignorelist = ifelse(exists("ignorelist"), ignorelist, NULL)
       )
       
       # Check if processing is needed
@@ -988,7 +986,7 @@ sen2r <- function(param_list=NULL,
     list_prods=list_prods, 
     out_ext=out_ext, tiles_ext=tiles_ext, 
     merged_ext=merged_ext, warped_ext=warped_ext, sr_masked_ext=sr_masked_ext,
-    ignorelist = ignorelist
+    ignorelist = ifelse(exists("ignorelist"), ignorelist, NULL)
   )
   
   
@@ -1116,7 +1114,7 @@ sen2r <- function(param_list=NULL,
       
       dir.create(paths["warped"], recursive=FALSE, showWarnings=FALSE)
       # create mask
-      s2_mask_extent <- if (is.na(pm$extent)) {
+      s2_mask_extent <- if (is(pm$extent, "vector") && is.na(pm$extent)) {
         NULL
       } else if (anyNA(pm$extent$geometry)) { # FIXME check on telemod tiffs
         NULL
@@ -1391,6 +1389,7 @@ sen2r <- function(param_list=NULL,
   # in a hidden file, so to ignore them during next executions. 
   # To try it again, delete the file or set overwrite = TRUE).
   if (length(names_missing)>0) {
+    ignorelist_path <- gsub("\\.json$","_ignorelist.txt",param_list)
     if (is(param_list, "character")) {
       write(names_missing, ignorelist_path, append=TRUE)
     }

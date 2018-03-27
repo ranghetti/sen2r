@@ -540,7 +540,6 @@ check_sen2r_deps <- function() {
         ),
         type = "message"
       )
-      browser()
       
       # remove the text
       if (is(check_sen2cor_outerr, "error")) {

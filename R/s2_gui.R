@@ -17,7 +17,7 @@
 #' @importFrom leaflet.extras addDrawToolbar editToolbarOptions
 #'  removeDrawToolbar
 #' @importFrom mapedit editModUI
-#' @importFrom sf st_coordinates st_intersects st_polygon st_read st_sf st_sfc st_transform
+#' @importFrom sf st_coordinates st_crs st_intersects st_polygon st_read st_sf st_sfc st_transform
 #' @importFrom shiny a actionButton actionLink br callModule checkboxGroupInput
 #'  checkboxInput column conditionalPanel dateRangeInput div downloadButton downloadHandler em fileInput fluidRow h2 h3
 #'  helpText hr HTML htmlOutput icon incProgress isolate NS numericInput observe p
@@ -32,7 +32,6 @@
 #'  shinyFilesButton shinySaveButton
 #' @importFrom shinyjs delay disable enable
 #' @importFrom shinyWidgets sendSweetAlert
-#' @importFrom sprawl check_proj4string get_rastype get_vectype
 #' @importFrom stats setNames
 #' @importFrom utils unzip
 #'
@@ -1362,13 +1361,13 @@ s2_gui <- function(param_list = NULL,
     # message for bboxproj
     output$bboxproj_message <- renderUI({
       bboxproj_validated <- tryCatch(
-        suppressWarnings(check_proj4string(input$bboxproj, abort=TRUE)),
-        error = function(e) {"invalid"}
-      )
+        st_crs(input$bboxproj), 
+        error = function(e) {st_crs(NA)}
+      )$proj4string
       if (input$bboxproj=="") {
         rv$bboxproj <- NA
         ""
-      }  else if (bboxproj_validated=="invalid") {
+      } else if (is.na(bboxproj_validated)) {
         rv$bboxproj <- NA
         # span(style="color:red", "\u2718") # ballot
         span(style="color:red",
@@ -1837,13 +1836,13 @@ s2_gui <- function(param_list = NULL,
         # else, take the specified one
       } else {
         
-        outproj_validated <- try(
-          suppressWarnings(check_proj4string(input$outproj, abort=TRUE)),
-          silent=TRUE
-        )
+        outproj_validated <- tryCatch(
+          st_crs(input$outproj), 
+          error = function(e) {st_crs(NA)}
+        )$proj4string
         if (input$reproj==FALSE | input$outproj=="") {
           ""
-        }  else if (outproj_validated=="invalid") {
+        }  else if (is.na(outproj_validated)) {
           span(style="color:red",
                "Insert a valid projection (UTM timezone, EPSG code or PROJ4 string).")
         } else {
@@ -2405,7 +2404,10 @@ s2_gui <- function(param_list = NULL,
       } else if (input$reproj==FALSE) {
         NA
       } else {
-        check_proj4string(input$outproj)
+        tryCatch(
+          st_crs(input$outproj), 
+          error = function(e) {st_crs(NA)}
+        )$proj4string
       }
       # resampling methods ("nearest","bilinear","cubic","cubicspline","lanczos","average","mode")
       rl$resampling <- input$resampling

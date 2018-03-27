@@ -79,20 +79,26 @@ gdalwarp_grid <- function(srcfiles,
     sel_metadata <- suppressWarnings(GDALinfo(srcfile))
     sel_res <- sel_metadata[c("res.x","res.y")]
     sel_proj <- attr(sel_metadata, "projection")
-    sel_bbox <- matrix(
-      c(sel_metadata[c("ll.x","ll.y")],
-        sel_metadata[c("ll.x","ll.y")] + sel_metadata[c("rows","columns")] * sel_res),
-      ncol=2)
-    dimnames(sel_bbox) <- list(c("x","y"),c("min","max"))
-    sel_extent <- get_extent(sel_bbox, sel_proj)
+    sel_bbox <- c(
+      sel_metadata[c("ll.x","ll.y")],
+      sel_metadata[c("ll.x","ll.y")] + sel_metadata[c("rows","columns")] * sel_res)
+    names(sel_bbox) <- c("xmin", "ymin", "xmax", "ymax")
+    sel_bbox <- st_bbox(sel_bbox, crs = sel_proj)
     of <- ifelse (is.null(of), attr(sel_metadata, "driver"), of)
     
     # get reprojected extent
-    out_extent <- reproj_extent(sel_extent, ref_proj)
+    out_bbox <- matrix(
+      st_bbox(st_transform(st_as_sfc(sel_bbox), ref_proj)), 
+      nrow=2, ncol=2, 
+      dimnames=list(c("x","y"),c("min","max"))
+    )
     
     # allineate out_extent to ref grid
-    out_bbox_mod <- round((as(out_extent, "matrix") - ref_min) / ref_res) * ref_res + ref_min
-    # out_extent_mod <- get_extent(out_bbox_mod, ref_proj)
+    out_bbox_mod <- round((out_bbox - ref_min) / ref_res) * ref_res + ref_min
+
+    
+    
+    
     
     # warp
     # (using gdalwarp() instead of calling gdalwarp from system() is a bit slower,
