@@ -11,7 +11,6 @@ reference:
   - title: Find and download Sentinel-2 products
     desc: ~
     contents:
-      - '`install_s2download`'
       - '`s2_list`'
       - '`s2_download`'
       - '`sen2cor`'

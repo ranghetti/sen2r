@@ -17,6 +17,10 @@ is a collection of python scripts used to download
 and correct Sentinel-2 images, and it is required by this package.
 This function clones them and installs a docker with sen2cor.
 }
+\details{
+This function is not yet required, since \code{s2download} scripts were
+integrated in the package.
+}
 \note{
 License: GPL 3.0
 }
