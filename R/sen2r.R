@@ -532,6 +532,54 @@ sen2r <- function(param_list=NULL,
   
   
   #### SAFE Part (find, download, correct)
+  # if preprocess is required, define output formats
+  if (pm$preprocess == TRUE) {  
+    
+    ## Define output formats
+    if (!is.na(pm$path_tiles)) {
+      tiles_ext <- out_ext
+      tiles_outformat <- pm$outformat
+    } else {
+      tiles_ext <- "vrt"
+      tiles_outformat <- "VRT"
+    }
+    if (!is.na(pm$path_merged)) {
+      merged_ext <- out_ext
+      merged_outformat <- pm$outformat
+    } else {
+      merged_ext <- "vrt"
+      merged_outformat <- "VRT"
+    }
+    if (is.na(pm$mask_type)) {
+      warped_ext <- out_ext
+      warped_outformat <- pm$outformat
+    } else {
+      warped_ext <- "vrt"
+      warped_outformat <- "VRT"
+    }
+    if (pm$index_source %in% pm$list_prods) {
+      sr_masked_ext <- out_ext
+      sr_masked_outformat <- pm$outformat
+    } else {
+      sr_masked_ext <- "vrt"
+      sr_masked_outformat <- "VRT"
+    }
+    
+    # Import path of files to ignore, if exists
+    # (see comment at #ignorePath)
+    ignorelist <- if (is(param_list, "character")) {
+      ignorelist_path <- gsub("\\.json$","_ignorelist.txt",param_list)
+      if (file.exists(ignorelist_path)) {
+        readLines(ignorelist_path)
+      } else {
+        character()
+      }
+    } else {
+      character()
+    }
+    
+  }
+  
   for (dummy in TRUE) {
     # dummy cycle, created only to allow "break" from this part
     
@@ -732,36 +780,6 @@ sen2r <- function(param_list=NULL,
     
     # if preprocess is required, define output names
     if (pm$preprocess == TRUE) {  
-      
-      ## Define output formats
-      if (!is.na(pm$path_tiles)) {
-        tiles_ext <- out_ext
-        tiles_outformat <- pm$outformat
-      } else {
-        tiles_ext <- "vrt"
-        tiles_outformat <- "VRT"
-      }
-      if (!is.na(pm$path_merged)) {
-        merged_ext <- out_ext
-        merged_outformat <- pm$outformat
-      } else {
-        merged_ext <- "vrt"
-        merged_outformat <- "VRT"
-      }
-      if (is.na(pm$mask_type)) {
-        warped_ext <- out_ext
-        warped_outformat <- pm$outformat
-      } else {
-        warped_ext <- "vrt"
-        warped_outformat <- "VRT"
-      }
-      if (pm$index_source %in% pm$list_prods) {
-        sr_masked_ext <- out_ext
-        sr_masked_outformat <- pm$outformat
-      } else {
-        sr_masked_ext <- "vrt"
-        sr_masked_outformat <- "VRT"
-      }
       
       # Import path of files to ignore, if exists
       # (see comment at #ignorePath)
@@ -981,7 +999,8 @@ sen2r <- function(param_list=NULL,
   print_message(type = "message", date = TRUE, "Updating output names...")
   s2names <- compute_s2_paths(
     pm=pm, 
-    s2_list_l1c=s2_list_l1c, s2_list_l2a=s2_list_l2a, 
+    s2_list_l1c=ifelse(exists("s2_list_l1c"), s2_list_l1c, character(0)),
+    s2_list_l2a=ifelse(exists("s2_list_l2a"), s2_list_l2a, character(0)),
     paths=paths, 
     list_prods=list_prods, 
     out_ext=out_ext, tiles_ext=tiles_ext, 
@@ -1330,7 +1349,7 @@ sen2r <- function(param_list=NULL,
   )]))
   # exclude temporary files
   names_out <- names_out[!grepl(path_tmp, names_out, fixed=TRUE)]
-  names_out_created <- names_out[file.exists(names_out)]
+  names_out_created <- names_out[file.exists(nn(names_out))]
   
   
   ## 9. create thumbnails
@@ -1379,7 +1398,7 @@ sen2r <- function(param_list=NULL,
   unlink(path_tmp, recursive = TRUE)
   
   # check if some files were not created
-  names_missing <- names_out[!file.exists(names_out)]
+  names_missing <- names_out[!file.exists(nn(names_out))]
   
   # Note down the list of non created files (#ignorePath)
   # (sometimes not all the output files are correctly created, i.e. because of

@@ -57,6 +57,9 @@ init_python <- function() {
     
   }
   
+  # set the proper Python installation
+  use_python(binpaths$python, required = TRUE)
+  
   # import python modules
   # in Windows they are imported with import_from_path(), which grants to
   # use the chosen (osgeo for windows) python version.
@@ -76,12 +79,9 @@ init_python <- function() {
       )
     }
   }
-  
-  # set the proper Python installation
-  if (!dirname(binpaths$python) %in% py_to_r(py$sys$path)) {
-    py$sys$path$append(dirname(binpaths$python))
-  }
-  use_python(binpaths$python)
+  # if (!dirname(binpaths$python) %in% py_to_r(py$sys$path)) {
+  #   py$sys$path$append(dirname(binpaths$python))
+  # }
   
   # check for missing modules
   py_missing <- py_modules[!sapply(py_modules,py_module_available)]

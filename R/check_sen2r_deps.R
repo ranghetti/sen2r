@@ -448,7 +448,7 @@ check_sen2r_deps <- function() {
                 modalButton("\u2000Close", icon = icon("check")))
           ))
         )
-        rv$check_wget_isvalid <- FALSE
+        rv$check_wget_isvalid <- TRUE
       }
       
     })
