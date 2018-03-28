@@ -72,8 +72,8 @@ expand_path <- function(path, parent=getwd(), silent=TRUE, normalize=TRUE) {
 
 
 #' @title Express file paths in canonical Form basing on the operating system
-#' @description Accessory function wrapper for [normalizePath()] in Linux
-#'  and [shortPathName(normalizePath())] in Windows.
+#' @description Accessory function wrapper for `normalizePath()` in Linux
+#'  and `shortPathName(normalizePath())` in Windows.
 #' @param path character vector of file paths
 #' @param ... additional parameters passed to [normalizePath] (i.e. mustWork).
 #' @return The paths normalized.

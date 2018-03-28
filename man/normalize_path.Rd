@@ -15,8 +15,8 @@ normalize_path(path, ...)
 The paths normalized.
 }
 \description{
-Accessory function wrapper for \code{\link[=normalizePath]{normalizePath()}} in Linux
-and \link{shortPathName(normalizePath())} in Windows.
+Accessory function wrapper for \code{normalizePath()} in Linux
+and \code{shortPathName(normalizePath())} in Windows.
 }
 \note{
 License: GPL 3.0
