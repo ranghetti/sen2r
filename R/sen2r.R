@@ -999,8 +999,8 @@ sen2r <- function(param_list=NULL,
   print_message(type = "message", date = TRUE, "Updating output names...")
   s2names <- compute_s2_paths(
     pm=pm, 
-    s2_list_l1c=ifelse(exists("s2_list_l1c"), s2_list_l1c, character(0)),
-    s2_list_l2a=ifelse(exists("s2_list_l2a"), s2_list_l2a, character(0)),
+    s2_list_l1c = if (exists("s2_list_l1c")) {s2_list_l1c} else {character(0)},
+    s2_list_l2a = if (exists("s2_list_l2a")) {s2_list_l2a} else {character(0)},
     paths=paths, 
     list_prods=list_prods, 
     out_ext=out_ext, tiles_ext=tiles_ext, 
