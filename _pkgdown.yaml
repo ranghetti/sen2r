@@ -41,6 +41,7 @@ reference:
       - '`trace_function`'
       - '`install_wget`'
       - '`st_crs2`'
+      - '`normalize_path`'
   - title: Internal functions
     desc: (not exported)
     contents:
