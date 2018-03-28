@@ -41,7 +41,7 @@ geograbber_process <- function(path_safe,
 ) {
   
   # Check bbox and generate extent
-  extent <- if (allNA(bbox)) {
+  extent <- if (all(is.na(bbox))) {
     NA
   } else {
     if (length(bbox)!=4 | !is(bbox, "numeric")) {
