@@ -49,7 +49,7 @@ import_s2download <- function(...) {
   if (is(s2download, "error")) {
     s2download <- import_from_path(
       "s2download", 
-      paste0(normalizePath(binpaths$s2download),"/"), 
+      paste0(normalize_path(binpaths$s2download),"/"), 
       ...
     )
   }

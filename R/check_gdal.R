@@ -130,23 +130,23 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
   # save the path for use with external calls
   bin_ext <- ifelse(Sys.info()["sysname"] == "Windows", ".exe", "")
   gdal_dir <- getOption("gdalUtils_gdalPath")[[1]]$path
-  binpaths$gdalbuildvrt <- normalizePath(file.path(gdal_dir,paste0("gdalbuildvrt",bin_ext)))
-  binpaths$gdal_translate <- normalizePath(file.path(gdal_dir,paste0("gdal_translate",bin_ext)))
-  binpaths$gdalwarp <- normalizePath(file.path(gdal_dir,paste0("gdalwarp",bin_ext)))
+  binpaths$gdalbuildvrt <- normalize_path(file.path(gdal_dir,paste0("gdalbuildvrt",bin_ext)))
+  binpaths$gdal_translate <- normalize_path(file.path(gdal_dir,paste0("gdal_translate",bin_ext)))
+  binpaths$gdalwarp <- normalize_path(file.path(gdal_dir,paste0("gdalwarp",bin_ext)))
   binpaths$gdal_calc <- if (Sys.info()["sysname"] == "Windows") {
-    binpaths$python <- normalizePath(file.path(gdal_dir,paste0("python",bin_ext)))
-    paste0(binpaths$python," ",normalizePath(file.path(gdal_dir,"gdal_calc.py")))
+    binpaths$python <- normalize_path(file.path(gdal_dir,paste0("python",bin_ext)))
+    paste0(binpaths$python," ",normalize_path(file.path(gdal_dir,"gdal_calc.py")))
   } else { 
-    normalizePath(file.path(gdal_dir,"gdal_calc.py"))
+    normalize_path(file.path(gdal_dir,"gdal_calc.py"))
   }
-  binpaths$gdaldem <- normalizePath(file.path(gdal_dir,paste0("gdaldem",bin_ext)))
-  binpaths$gdalinfo <- normalizePath(file.path(gdal_dir,paste0("gdalinfo",bin_ext)))
-  binpaths$ogrinfo <- normalizePath(file.path(gdal_dir,paste0("ogrinfo",bin_ext)))
+  binpaths$gdaldem <- normalize_path(file.path(gdal_dir,paste0("gdaldem",bin_ext)))
+  binpaths$gdalinfo <- normalize_path(file.path(gdal_dir,paste0("gdalinfo",bin_ext)))
+  binpaths$ogrinfo <- normalize_path(file.path(gdal_dir,paste0("ogrinfo",bin_ext)))
   
   lapply(
     c("gdalbuildvrt","gdal_translate","gdalwarp","gdaldem","gdalinfo","ogrinfo"), 
     function(x){
-      binpaths[[x]] <- normalizePath(binpaths[[x]])
+      binpaths[[x]] <- normalize_path(binpaths[[x]])
     }
   )
   writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)

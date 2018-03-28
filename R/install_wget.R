@@ -53,8 +53,8 @@ install_wget <- function(wget_dir = system.file(package="sen2r"),
       "https://eternallybored.org/misc/wget/releases/wget-", wget_ver, 
       if (Sys.info()["machine"]=="x86-64") {"-win64"} else {"-win32"}, ".zip"
     )
-    wget_zip <- normalizePath(file.path(wget_dir,"wget.zip"), mustWork=FALSE)
-    wget_path <- normalizePath(file.path(wget_dir,"wget.exe"), mustWork=FALSE)
+    wget_zip <- normalize_path(file.path(wget_dir,"wget.zip"), mustWork=FALSE)
+    wget_path <- normalize_path(file.path(wget_dir,"wget.exe"), mustWork=FALSE)
     download.file(wget_url, wget_zip)
     if (file.exists(wget_zip)) {
       unzip(zipfile = wget_zip,

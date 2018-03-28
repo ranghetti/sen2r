@@ -31,7 +31,7 @@ init_python <- function() {
     
     # Try to search Python
     binpaths$python <- tryCatch(
-      normalizePath(py_discover_config(required_module = "gdal")$python),
+      normalize_path(py_discover_config(required_module = "gdal")$python),
       error = function(e) {NULL}
     )
     

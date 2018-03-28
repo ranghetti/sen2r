@@ -115,7 +115,7 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
   
   # Save a text file with the L2A_Process path,
   # including also paths of GDAL apps
-  binpaths$sen2cor <- normalizePath(sen2cor_bin)
+  binpaths$sen2cor <- normalize_path(sen2cor_bin)
   writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
   
 }

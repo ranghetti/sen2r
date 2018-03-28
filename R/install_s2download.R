@@ -66,7 +66,7 @@ install_s2download <- function(inst_path = NA) {
   
   # add missing binaries to binpaths
   for (d in dependencies[!dependencies %in% names(binpaths)]) {
-    binpaths[[d]] <- normalizePath(Sys.which(d))
+    binpaths[[d]] <- normalize_path(Sys.which(d))
   }
   writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
   
@@ -128,7 +128,7 @@ install_s2download <- function(inst_path = NA) {
   if (is(install_s2download_dependencies, "error")) {
     install_s2download_dependencies <- import_from_path(
       "install_dependencies", 
-      normalizePath(paste0(inst_path,"/")), 
+      normalize_path(paste0(inst_path,"/")), 
       convert=FALSE
     )
   }
@@ -145,7 +145,7 @@ install_s2download <- function(inst_path = NA) {
   } else {
     list("s2download" = NULL)
   }
-  binpaths$s2download <- normalizePath(inst_path)
+  binpaths$s2download <- normalize_path(inst_path)
   writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
   
 }
