@@ -803,6 +803,7 @@ sen2r <- function(param_list=NULL,
         list_prods=list_prods, 
         out_ext=out_ext, tiles_ext=tiles_ext, 
         merged_ext=merged_ext, warped_ext=warped_ext, sr_masked_ext=sr_masked_ext,
+        force_tiles = TRUE,
         ignorelist = ifelse(exists("ignorelist"), ignorelist, NULL)
       )
       
@@ -1005,6 +1006,7 @@ sen2r <- function(param_list=NULL,
     list_prods=list_prods, 
     out_ext=out_ext, tiles_ext=tiles_ext, 
     merged_ext=merged_ext, warped_ext=warped_ext, sr_masked_ext=sr_masked_ext,
+    force_tiles = FALSE,
     ignorelist = ifelse(exists("ignorelist"), ignorelist, NULL)
   )
   
@@ -1065,6 +1067,7 @@ sen2r <- function(param_list=NULL,
             outdir = paths["tiles"],
             prod_type = list_l2a_prods,
             format = tiles_outformat,
+            tiles = pm$s2tiles_selected,
             res = pm$res_s2,
             subdirs = pm$path_subdirs,
             overwrite = pm$overwrite,
@@ -1140,7 +1143,8 @@ sen2r <- function(param_list=NULL,
       } else if (pm$extent_as_mask==TRUE) {
         pm$extent %>% st_combine() # TODO remove this when multiple extents will be allowed
       } else {
-        suppressWarnings(st_cast(pm$extent,"LINESTRING")) %>% st_combine() # TODO remove this when multiple extents will be allowed
+        suppressWarnings(st_cast(st_cast(pm$extent,"POLYGON"), "LINESTRING")) %>%
+          st_combine() # TODO remove this when multiple extents will be allowed
       }  # TODO add support for multiple extents
       
       if(pm$path_subdirs==TRUE){

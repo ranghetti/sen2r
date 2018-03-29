@@ -49,6 +49,7 @@
 #' @param merged_ext Extension (character) of merged products.
 #' @param warped_ext Extension (character) of warped products.
 #' @param sr_masked_ext Extension (character) of masked products of SR products.
+#' @param force_tiles (optional) Logical: passed to [s2_shortname] (default: TRUE).
 #' @param ignorelist Vector of output files to be ignored.
 #'
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
@@ -66,6 +67,7 @@ compute_s2_paths <- function(pm,
                              merged_ext, 
                              warped_ext, 
                              sr_masked_ext,
+                             force_tiles=FALSE,
                              ignorelist) {
   
   # accepted products (update together with the same variables in s2_gui() and in sen2r())
@@ -85,7 +87,7 @@ compute_s2_paths <- function(pm,
       file.path(
         paths["tiles"],
         if(pm$path_subdirs==TRUE){p}else{""},
-        basename(s2_shortname(x, prod_type=p, ext=tiles_ext, res=pm$res_s2, tiles=pm$s2tiles_selected, multiple_names=TRUE))
+        basename(s2_shortname(x, prod_type=p, ext=tiles_ext, res=pm$res_s2, tiles=pm$s2tiles_selected, force_tiles=force_tiles, multiple_names=TRUE))
       )
     })
   }) %>% unlist()
@@ -100,7 +102,7 @@ compute_s2_paths <- function(pm,
       file.path(
         paths["tiles"],
         if(pm$path_subdirs==TRUE){p}else{""},
-        basename(s2_shortname(x, prod_type=p, ext=tiles_ext, res=pm$res_s2, tiles=pm$s2tiles_selected, multiple_names=TRUE))
+        basename(s2_shortname(x, prod_type=p, ext=tiles_ext, res=pm$res_s2, tiles=pm$s2tiles_selected, force_tiles=force_tiles, multiple_names=TRUE))
       )
     })
   }) %>% unlist()
