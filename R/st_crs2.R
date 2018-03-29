@@ -1,7 +1,8 @@
 #' @title Retrieve coordinate reference system from sf or sfc object
 #' @name st_crs2
 #' @description This function is a wrapper for [sf::st_crs], unless accepting
-#'  also UTM timezones (see details).
+#'  also UTM timezones (see details) and threating numeric `character` strings
+#'  as integers.
 #' @param x numeric, character, or object of class \link{sf} or \link{sfc}
 #' @param ... other parameters passed to [sf::st_crs].
 #' @return If \code{x} is 0 < numeric <= 60, return \code{crs} object for UTM timezone \code{x} N;
@@ -43,6 +44,8 @@ st_crs2 <- function(x, ...) {
         2, "left", "0"
       )
     )
+  } else if (grepl("^[0-9]+$", x)) {
+    as.integer(x)
   } else {
     x
   }

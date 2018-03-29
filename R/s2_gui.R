@@ -17,7 +17,7 @@
 #' @importFrom leaflet.extras addDrawToolbar editToolbarOptions
 #'  removeDrawToolbar
 #' @importFrom mapedit editModUI
-#' @importFrom sf st_coordinates st_crs st_intersects st_polygon st_read st_sf st_sfc st_transform
+#' @importFrom sf st_coordinates st_crs st_intersects st_polygon st_read st_bbox st_as_sfc st_transform
 #' @importFrom shiny a actionButton actionLink br callModule checkboxGroupInput
 #'  checkboxInput column conditionalPanel dateRangeInput div downloadButton downloadHandler em fileInput fluidRow h2 h3
 #'  helpText hr HTML htmlOutput icon incProgress isolate NS numericInput observe p
@@ -1361,7 +1361,7 @@ s2_gui <- function(param_list = NULL,
     # message for bboxproj
     output$bboxproj_message <- renderUI({
       bboxproj_validated <- tryCatch(
-        st_crs(input$bboxproj), 
+        st_crs2(input$bboxproj), 
         error = function(e) {st_crs(NA)}
       )$proj4string
       if (input$bboxproj=="") {
@@ -1405,16 +1405,15 @@ s2_gui <- function(param_list = NULL,
         if (input$bbox_xmin != input$bbox_xmax &
             input$bbox_ymin != input$bbox_ymax) {
           # create the polygon
-          rv$bbox_polygon <- st_sf(st_sfc(
-            st_polygon(list(matrix(
-              c(input$bbox_xmin,input$bbox_ymin,
-                input$bbox_xmin,input$bbox_ymax,
-                input$bbox_xmax,input$bbox_ymax,
-                input$bbox_xmax,input$bbox_ymin,
-                input$bbox_xmin,input$bbox_ymin),
-              ncol=2,
-              byrow=TRUE))),
-            crs = rv$bboxproj)) %>% st_transform(4326)
+          rv$bbox_polygon <- st_as_sfc(
+            st_bbox(
+              c("xmin" = input$bbox_xmin,
+                "ymin" = input$bbox_ymin,
+                "xmax" = input$bbox_xmax,
+                "ymax" = input$bbox_ymax), 
+              crs = rv$bboxproj
+            )
+          ) %>% st_transform(4326)
           attr(rv$bbox_polygon, "valid") <- TRUE
         } else {
           rv$bbox_polygon <- st_polygon()
@@ -1837,7 +1836,7 @@ s2_gui <- function(param_list = NULL,
       } else {
         
         outproj_validated <- tryCatch(
-          st_crs(input$outproj), 
+          st_crs2(input$outproj), 
           error = function(e) {st_crs(NA)}
         )$proj4string
         if (input$reproj==FALSE | input$outproj=="") {
@@ -2405,7 +2404,7 @@ s2_gui <- function(param_list = NULL,
         NA
       } else {
         tryCatch(
-          st_crs(input$outproj), 
+          st_crs2(input$outproj), 
           error = function(e) {st_crs(NA)}
         )$proj4string
       }

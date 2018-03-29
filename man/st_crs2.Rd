@@ -22,7 +22,8 @@ if \code{x} is of class \code{sf} or \code{sfc}, return its \code{crs} object.
 }
 \description{
 This function is a wrapper for \link[sf:st_crs]{sf::st_crs}, unless accepting
-also UTM timezones (see details).
+also UTM timezones (see details) and threating numeric \code{character} strings
+as integers.
 }
 \details{
 See \link[sf:st_crs]{sf::st_crs} for details.

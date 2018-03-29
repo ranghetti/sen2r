@@ -29,7 +29,7 @@ projpar <- function(proj4string, par, abort = FALSE) {
   py <- init_python()
   
   crs_check <- tryCatch(
-    st_crs(proj4string), 
+    st_crs2(proj4string), 
     error = function(e) {st_crs(NA)}
   )
   
