@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/sen2r)](https://cran.r-project.org/package=sen2r)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
-<img src="docs/sen2r_logo_200px.png" width="200" height="113" align="right" />
+<img src="man/figures/sen2r_logo_200px.png" width="200" height="113" align="right" />
 
 # An R toolbox to find, download and preprocess Sentinel-2 data
 
@@ -34,7 +34,7 @@ to know which implementations will be performed regarding Sentinel-2 data.
 
 ## Installation
 
-You can install **<span style="color:#5793dd;vertical-align:text-bottom;font-size:90%;font-weight:500;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:850;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:700;">r</span>** from GitHub with:
+You can install <span style="color:#5793dd;vertical-align:text-bottom;font-size:90%;font-weight:500;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:850;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:700;">r</span> from GitHub with:
 
 ```{r gh-installation, eval = FALSE}
 # install.packages("devtools")
@@ -61,7 +61,7 @@ in advanced mode, and checking the installation of `openjpeg` library.
 
 ## Usage
 
-The simpler way to use **<span style="color:#5793dd;vertical-align:text-bottom;font-size:90%;font-weight:500;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:850;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:700;">r</span>** is to execute the function `sen2r()` 
+The simpler way to use <span style="color:#5793dd;vertical-align:text-bottom;font-size:90%;font-weight:500;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:850;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:700;">r</span> is to execute the function `sen2r()` 
 without any argument: this opens the GUI to select the processing parameters,
 and then launches the main function.
     
@@ -95,11 +95,11 @@ Other specific functions can be used to run single steps separately:
 
 ## Credits
 
-**<span style="color:#5793dd;vertical-align:text-bottom;font-size:90%;font-weight:500;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:850;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:700;">r</span>** is being developed by Luigi Ranghetti and Lorenzo Busetto
+<span style="color:#5793dd;vertical-align:text-bottom;font-size:90%;font-weight:500;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:850;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:700;">r</span> is being developed by Luigi Ranghetti and Lorenzo Busetto
 ([IREA-CNR](http://www.irea.cnr.it)),
 and it is released under the [GNU General Public License version 3](https://www.gnu.org/licenses/gpl-3.0.html) (GPL‑3).
 
-The [<span style="color:#5793dd;vertical-align:text-bottom;font-size:90%;font-weight:500;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:850;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:700;">r</span> logo](docs/sen2r_logo_200px.png), 
+The [<span style="color:#5793dd;vertical-align:text-bottom;font-size:90%;font-weight:500;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:850;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:700;">r</span> logo](man/figures/sen2r_logo_200px.png), 
 partially derived from the [R logo](https://www.r-project.org/logo),
 is released under the [Creative Commons Attribution-ShareAlike 4.0 International license](https://creativecommons.org/licenses/by-sa/4.0) (CC-BY-SA 4.0).
 
