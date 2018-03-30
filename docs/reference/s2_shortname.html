@@ -101,8 +101,8 @@ names), since it is thought to be applied to entire products.</p>
     
 
     <pre class="usage"><span class='fu'>s2_shortname</span>(<span class='no'>prod_name</span>, <span class='kw'>prod_type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ext</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='st'>"10m"</span>,
-  <span class='kw'>tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>full.name</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>set.seed</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>multiple_names</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='kw'>tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>force_tiles</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>full.name</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>set.seed</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>multiple_names</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -133,8 +133,15 @@ band 08A with <code>res = '20m'</code> and <code>res = '60m'</code>.</p></td>
     <tr>
       <th>tiles</th>
       <td><p>(optional) Character vector with the desired output tile IDs
-(id specified IDs are not present in the input SAFE product, they are not
+(if specified IDs are not present in the input SAFE product, they are not
 produced). Default (NA) is to consider all the found tiles.</p></td>
+    </tr>
+    <tr>
+      <th>force_tiles</th>
+      <td><p>(optional) Logical: if FALSE (default), only already
+existing tiles (specified using the argument <code>tiles</code>) are used;
+if TRUE, all specified tiles are considered.
+It takes effect only if <code>tiles</code> is not NA.</p></td>
     </tr>
     <tr>
       <th>full.name</th>

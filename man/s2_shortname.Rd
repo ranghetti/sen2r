@@ -5,8 +5,8 @@
 \title{Rename products using a shorten convention}
 \usage{
 s2_shortname(prod_name, prod_type = NULL, ext = NULL, res = "10m",
-  tiles = NA, full.name = TRUE, set.seed = NA, multiple_names = FALSE,
-  abort = FALSE)
+  tiles = NA, force_tiles = FALSE, full.name = TRUE, set.seed = NA,
+  multiple_names = FALSE, abort = FALSE)
 }
 \arguments{
 \item{prod_name}{Input Sentinel-2 product name: it can be both
@@ -25,8 +25,13 @@ resolution will be rescaled to \code{res}. Band 08 is used with \code{res = '10m
 band 08A with \code{res = '20m'} and \code{res = '60m'}.}
 
 \item{tiles}{(optional) Character vector with the desired output tile IDs
-(id specified IDs are not present in the input SAFE product, they are not
+(if specified IDs are not present in the input SAFE product, they are not
 produced). Default (NA) is to consider all the found tiles.}
+
+\item{force_tiles}{(optional) Logical: if FALSE (default), only already
+existing tiles (specified using the argument \code{tiles}) are used;
+if TRUE, all specified tiles are considered.
+It takes effect only if \code{tiles} is not NA.}
 
 \item{full.name}{Logical value: if TRUE (default), all the input path
 is maintained (if existing); if FALSE, only basename is returned.}
