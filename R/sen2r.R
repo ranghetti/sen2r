@@ -1007,7 +1007,7 @@ sen2r <- function(param_list=NULL,
     out_ext=out_ext, tiles_ext=tiles_ext, 
     merged_ext=merged_ext, warped_ext=warped_ext, sr_masked_ext=sr_masked_ext,
     force_tiles = FALSE,
-    ignorelist = ifelse(exists("ignorelist"), ignorelist, NULL)
+    ignorelist = if (exists("ignorelist")) {ignorelist} else {NULL}
   )
   
   
