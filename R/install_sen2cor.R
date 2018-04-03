@@ -123,7 +123,7 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
     linenumber_tofix <- grep("t2a_split[2] + '_' + t2a_split[1] + '_' + t1c_split[10]", script_tofix, fixed=TRUE)
     if (length(linenumber_tofix)>0) {
       script_tofix[linenumber_tofix] <- gsub(
-        "t1c_split[10]", "tlc_split[-1]", 
+        "t1c_split[10]", "t1c_split[-1]", 
         script_tofix[linenumber_tofix], 
         fixed = TRUE
       )
