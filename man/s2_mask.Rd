@@ -2,11 +2,15 @@
 % Please edit documentation in R/s2_mask.R
 \name{s2_mask}
 \alias{s2_mask}
+\alias{s2_perc_masked}
 \title{Apply cloud masks}
 \usage{
 s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba", max_mask = 80,
   outdir = "./masked", tmpdir = NA, format = NA, subdirs = NA,
   compress = "DEFLATE", parallel = FALSE, overwrite = FALSE)
+
+s2_perc_masked(infiles, maskfiles, mask_type = "cloud_medium_proba",
+  tmpdir = NA, parallel = FALSE)
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths
@@ -94,12 +98,19 @@ multicore processing).}
 overwritten? (default: FALSE)}
 }
 \value{
-A vector with the names of the created products.
+\link{s2_mask} returns a vector with the names of the created products.
+
+\link{s2_perc_masked} returns a names vector with the percentages
+of masked surtfaces.
 }
 \description{
-Apply a cloud mask to a Sentinel-2 product. Since
+\link{s2_mask} Applies a cloud mask to a Sentinel-2 product. Since
 \link{raster} functions are used to perform computations, output files
 are physical rasters (no output VRT is allowed).
+
+\link{s2_perc_masked} computes the percentage of cloud-masked surface.
+The function is similar to \link{s2_mask}, but it returns percentages instead
+of masked rasters.
 }
 \note{
 License: GPL 3.0

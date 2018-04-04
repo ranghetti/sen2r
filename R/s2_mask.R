@@ -1,5 +1,5 @@
 #' @title Apply cloud masks
-#' @description Apply a cloud mask to a Sentinel-2 product. Since
+#' @description [s2_mask] Applies a cloud mask to a Sentinel-2 product. Since
 #'  [raster] functions are used to perform computations, output files
 #'  are physical rasters (no output VRT is allowed).
 #' @param infiles A vector of input filenames. Input files are paths
@@ -73,7 +73,7 @@
 #'  multicore processing).
 #' @param overwrite (optional) Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
-#' @return A vector with the names of the created products.
+#' @return [s2_mask] returns a vector with the names of the created products.
 #' @export
 #' @importFrom rgdal GDALinfo
 #' @importFrom raster stack brick calc dataType mask overlay values
@@ -83,6 +83,31 @@
 #' @note License: GPL 3.0
 
 s2_mask <- function(infiles,
+                     maskfiles,
+                     mask_type="cloud_medium_proba",
+                     max_mask=80,
+                     outdir="./masked",
+                     tmpdir=NA,
+                     format=NA,
+                     subdirs=NA,
+                     compress="DEFLATE",
+                     parallel = FALSE,
+                     overwrite = FALSE) {
+  .s2_mask(infiles = infiles,
+           maskfiles = maskfiles,
+           mask_type = mask_type,
+           max_mask = max_mask,
+           outdir = outdir,
+           tmpdir = tmpdir,
+           format = format,
+           subdirs = subdirs,
+           compress = compress,
+           parallel = parallel,
+           overwrite = overwrite,
+           output_type = "s2_mask")
+}
+
+.s2_mask <- function(infiles,
                     maskfiles,
                     mask_type="cloud_medium_proba",
                     max_mask=80,
@@ -92,7 +117,8 @@ s2_mask <- function(infiles,
                     subdirs=NA,
                     compress="DEFLATE",
                     parallel = FALSE,
-                    overwrite = FALSE) {
+                    overwrite = FALSE,
+                    output_type = "s2_mask") { # determines if using s2_mask() or s2_perc_masked()
   
   . <- NULL
   
@@ -180,7 +206,11 @@ s2_mask <- function(infiles,
   }
   
   ## Cycle on each file
-  outfiles <- character(0)
+  if (output_type == "s2_mask") {
+    outfiles <- character(0)
+  } else if (output_type == "perc") {
+    outpercs <- numeric(0)
+  }
   for (i in seq_along(infiles)) {
     sel_infile <- infiles[i]
     sel_infile_meta <- c(infiles_meta[i,])
@@ -251,6 +281,15 @@ s2_mask <- function(infiles,
                         datatype = "INT1U")
       }
       
+      # compute the percentage of masked surface
+      perc_mask <- 100-mean(values(raster(outmask)),na.rm=TRUE)*100
+      
+      # if the requested output is this value, return it; else, continue masking
+      if (output_type == "perc") {
+        names(perc_mask) <- sel_infile
+        outpercs <- c(outpercs, perc_mask)
+      } else if (output_type == "s2_mask") {
+      
       # if mask is at different resolution than inraster
       # (e.g. 20m instead of 10m),
       # resample it
@@ -266,9 +305,7 @@ s2_mask <- function(infiles,
       # load mask and evaluate if the output have to be produced
       inraster <- raster::brick(sel_infile)
       mask_rast <- raster::raster(outmask_res)
-      # compute the percentage of masked surface
-      perc_mask <- 100-mean(values(mask_rast),na.rm=TRUE)*100
-      
+
       # if the image is sufficiently clean, mask it
       if (is.na(max_mask) | perc_mask <= max_mask) {
         
@@ -312,14 +349,44 @@ s2_mask <- function(infiles,
         
       } # end of max_mask IF cycle
       
+      } # end of output_type IF cycle
+      
     } # end of overwrite IF cycle
     
-    if (file.exists(sel_outfile)) {
+    if (output_type == "s2_mask" & file.exists(sel_outfile)) {
       outfiles <- c(outfiles, sel_outfile)
     }
     
   } # end on infiles cycle
   
-  return(outfiles)
+  if (output_type == "s2_mask") {
+    return(outfiles)
+  } else if (output_type == "perc") {
+    return(outpercs)
+  }
   
+}
+
+
+#' @title Compute the percentage of cloud-masked surface
+#' @description [s2_perc_masked] computes the percentage of cloud-masked surface.
+#'  The function is similar to [s2_mask], but it returns percentages instead
+#'  of masked rasters.
+#' @return [s2_perc_masked] returns a names vector with the percentages 
+#'  of masked surtfaces.
+#' @rdname s2_mask
+#' @export
+
+s2_perc_masked <- function(infiles,
+                           maskfiles,
+                           mask_type="cloud_medium_proba",
+                           tmpdir=NA,
+                           parallel = FALSE) {
+  .s2_mask(infiles = infiles,
+           maskfiles = maskfiles,
+           mask_type = mask_type,
+           max_mask = 100,
+           tmpdir = tmpdir,
+           parallel = parallel,
+           output_type = "perc")
 }
