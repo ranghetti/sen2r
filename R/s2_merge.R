@@ -38,6 +38,7 @@
 #' @importFrom magrittr "%>%"
 #' @importFrom jsonlite fromJSON
 #' @import data.table
+#' @export
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 
