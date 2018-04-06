@@ -128,16 +128,16 @@ compute_s2_paths <- function(pm,
           level %in% toupper(substr(pm$s2_levels,2,3)) &
           file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
         ,]
-      if (!is.null(pm$timewindow) & !anyNA(pm$timewindow)) {
+      if (!is.null(pm$timewindow) & !anyNA(pm$timewindow) & !is.null(all_meta$sensing_date)) {
         all_meta <- all_meta[
           all_meta$sensing_date>=pm$timewindow[1] & 
             all_meta$sensing_date<=pm$timewindow[2]
           ,]
       }
-      if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected)) {
+      if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected) & !is.null(all_meta$id_orbit)) {
         all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
       }
-      if (!is.null(pm$s2tiles_selected) & !anyNA(pm$s2tiles_selected)) {
+      if (!is.null(pm$s2tiles_selected) & !anyNA(pm$s2tiles_selected & !is.null(all_meta$id_tile))) {
         all_meta <- all_meta[id_tile %in% pm$s2tiles_selected,]
       }
       all_meta$names
@@ -185,13 +185,13 @@ compute_s2_paths <- function(pm,
             level %in% toupper(substr(pm$s2_levels,2,3)) &
             file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
           ,]
-        if (!is.null(pm$timewindow) & !anyNA(pm$timewindow)) {
+        if (!is.null(pm$timewindow) & !anyNA(pm$timewindow) & !is.null(all_meta$sensing_date)) {
           all_meta <- all_meta[
             all_meta$sensing_date>=pm$timewindow[1] & 
               all_meta$sensing_date<=pm$timewindow[2]
             ,]
         }
-        if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected)) {
+        if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected) & !is.null(all_meta$id_orbit)) {
           all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
         }
         all_meta$names
@@ -261,17 +261,17 @@ compute_s2_paths <- function(pm,
             level %in% toupper(substr(pm$s2_levels,2,3)) &
             file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
           ,]
-        if (!is.null(pm$timewindow) & !anyNA(pm$timewindow)) {
+        if (!is.null(pm$timewindow) & !anyNA(pm$timewindow) & !is.null(all_meta$sensing_date)) {
           all_meta <- all_meta[
             all_meta$sensing_date>=pm$timewindow[1] & 
               all_meta$sensing_date<=pm$timewindow[2]
             ,]
         }
-        if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected)) {
+        if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected) & !is.null(all_meta$id_orbit)) {
           all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
         }
-        if (!is.null(pm$extent_name) & !anyNA(pm$extent_name)) {
-          all_meta <- all_meta[id_orbit %in% pm$extent_name,]
+        if (!is.null(pm$extent_name) & !anyNA(pm$extent_name) & !is.null(all_meta$extent_name)) {
+          all_meta <- all_meta[extent_name %in% pm$extent_name,]
         }
         all_meta$names
       } else {
@@ -325,16 +325,16 @@ compute_s2_paths <- function(pm,
             level %in% toupper(substr(pm$s2_levels,2,3)) &
             file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
           ,]
-        if (!is.null(pm$timewindow) & !anyNA(pm$timewindow)) {
+        if (!is.null(pm$timewindow) & !anyNA(pm$timewindow) & !is.null(all_meta$sensing_date)) {
           all_meta <- all_meta[
             all_meta$sensing_date>=pm$timewindow[1] & 
               all_meta$sensing_date<=pm$timewindow[2]
             ,]
         }
-        if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected)) {
+        if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected) & !is.null(all_meta$id_orbit)) {
           all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
         }
-        if (!is.null(pm$extent_name) & !anyNA(pm$extent_name)) {
+        if (!is.null(pm$extent_name) & !anyNA(pm$extent_name) & !is.null(all_meta$extent_name)) {
           all_meta <- all_meta[extent_name %in% pm$extent_name,]
         }
         all_meta$names
@@ -361,16 +361,16 @@ compute_s2_paths <- function(pm,
   }
   
   # expected names for indices
-  level_for_indices <- if (all(pm$index_source=="TOA")) {
-    "1C"
-  } else if (all(pm$index_source=="BOA")) {
-    "2A"
-  } else {
-    c("1C","2A")
-  }
   if (length(out_names_exp)==0 | anyNA(pm$list_indices)) {
     indices_names_exp <- NULL
   } else {
+    level_for_indices <- if (all(pm$index_source=="TOA")) {
+      "1C"
+    } else if (all(pm$index_source=="BOA")) {
+      "2A"
+    } else {
+      c("1C","2A")
+    }
     indices_names_exp <- data.table(
       fs2nc_getElements(out_names_exp, format="data.frame")
     )[level %in% level_for_indices,
@@ -411,16 +411,16 @@ compute_s2_paths <- function(pm,
             level %in% toupper(substr(pm$s2_levels,2,3)) &
             file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
           ,]
-        if (!is.null(pm$timewindow) & !anyNA(pm$timewindow)) {
+        if (!is.null(pm$timewindow) & !anyNA(pm$timewindow) & !is.null(all_meta$sensing_date)) {
           all_meta <- all_meta[
             all_meta$sensing_date>=pm$timewindow[1] & 
               all_meta$sensing_date<=pm$timewindow[2]
             ,]
         }
-        if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected)) {
+        if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected) & !is.null(all_meta$id_orbit)) {
           all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
         }
-        if (!is.null(pm$extent_name) & !anyNA(pm$extent_name)) {
+        if (!is.null(pm$extent_name) & !anyNA(pm$extent_name) & !is.null(all_meta$id_orbit)) {
           all_meta <- all_meta[id_orbit %in% pm$extent_name,]
         }
         all_meta$names
