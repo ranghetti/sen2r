@@ -93,14 +93,21 @@
     </div>
 
     
-    <p>Apply a cloud mask to a Sentinel-2 product. Since
+    <p>s2_mask Applies a cloud mask to a Sentinel-2 product. Since
 raster functions are used to perform computations, output files
-are physical rasters (no output VRT is allowed).</p>
+are physical rasters (no output VRT is allowed).
+
+    s2_perc_masked computes the percentage of cloud-masked surface.
+The function is similar to s2_mask, but it returns percentages instead
+of masked rasters.</p>
     
 
     <pre class="usage"><span class='fu'>s2_mask</span>(<span class='no'>infiles</span>, <span class='no'>maskfiles</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='st'>"cloud_medium_proba"</span>, <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>80</span>,
   <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"./masked"</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+<span class='fu'>s2_perc_masked</span>(<span class='no'>infiles</span>, <span class='no'>maskfiles</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='st'>"cloud_medium_proba"</span>,
+  <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -214,7 +221,10 @@ overwritten? (default: FALSE)</p></td>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A vector with the names of the created products.</p>
+    <p>s2_mask returns a vector with the names of the created products.
+
+s2_perc_masked returns a names vector with the percentages
+of masked surtfaces.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 

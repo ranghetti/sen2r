@@ -55,11 +55,11 @@
 #'  * "no" means that L2A are not considered (processing chain
 #'  makes use only of L1C products).
 #' @param timewindow (optional) Temporal window for querying: Date object
-#'  of length 1 (single day) or 2 (time window). Default is NA in online mode
-#'  (meaning that no filters are used, and all found images are processed); in
-#'  online mode, default is to process last 90 days.
-#'  Only in offline mode, it is possible to pass NA not to
-#'  filter by sensing time.
+#'  of length 1 (single day) or 2 (time window). Default is NA, meaning that
+#'  no filters are used if online = FALSE, and all found images are processed;
+#'  if online = TRUE, last 90 days are processed.
+#'  Is it possible to pass also integer (or difftime) values, which are 
+#'  interpreted as the last n days.
 #' @param timeperiod (optional) Character:
 #'  * "full" (default) means that all
 #'  the images included in the time window are considered;

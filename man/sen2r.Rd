@@ -4,18 +4,19 @@
 \alias{sen2r}
 \title{Find, download and preprocess Sentinel-2 images}
 \usage{
-sen2r(param_list = NULL, gui = NA, preprocess = NA, s2_levels = NA,
-  sel_sensor = NA, online = NA, overwrite_safe = NA, rm_safe = NA,
-  step_atmcorr = NA, timewindow = NA, timeperiod = NA, extent = NA,
-  extent_name = NA, s2tiles_selected = NA, s2orbits_selected = NA,
-  list_prods = NA, list_indices = NA, index_source = NA, mask_type = NA,
-  max_mask = NA, clip_on_extent = NA, extent_as_mask = NA,
-  reference_path = NA, res = NA, res_s2 = NA, unit = NA, proj = NA,
-  resampling = NA, resampling_scl = NA, outformat = NA,
-  index_datatype = NA, compression = NA, overwrite = NA, path_l1c = NA,
-  path_l2a = NA, path_tiles = NA, path_merged = NA, path_out = NA,
-  path_indices = NA, path_subdirs = NA, thumbnails = TRUE,
-  use_python = TRUE)
+sen2r(param_list = NULL, gui = NA, preprocess = TRUE,
+  s2_levels = c("l2a"), sel_sensor = c("s2a", "s2b"), online = TRUE,
+  overwrite_safe = FALSE, rm_safe = "no", step_atmcorr = "auto",
+  timewindow = NA, timeperiod = "full", extent = NA, extent_name = "",
+  s2tiles_selected = NA, s2orbits_selected = NA, list_prods = c("BOA"),
+  list_indices = NA, index_source = "BOA", mask_type = NA,
+  max_mask = 100, clip_on_extent = TRUE, extent_as_mask = FALSE,
+  reference_path = NA, res = c(10, 10), res_s2 = "10m", unit = "Meter",
+  proj = NA, resampling = "near", resampling_scl = "near",
+  outformat = "GTiff", index_datatype = "Int16", compression = "DEFLATE",
+  overwrite = FALSE, path_l1c = NA, path_l2a = NA, path_tiles = NA,
+  path_merged = NA, path_out = NA, path_indices = NA,
+  path_subdirs = TRUE, thumbnails = TRUE, use_python = TRUE)
 }
 \arguments{
 \item{param_list}{(optional) List of input parameters:
@@ -80,11 +81,11 @@ makes use only of L1C products).
 }}
 
 \item{timewindow}{(optional) Temporal window for querying: Date object
-of length 1 (single day) or 2 (time window). Default is NA in online mode
-(meaning that no filters are used, and all found images are processed); in
-online mode, default is to process last 90 days.
-Only in offline mode, it is possible to pass NA not to
-filter by sensing time.}
+of length 1 (single day) or 2 (time window). Default is NA, meaning that
+no filters are used if online = FALSE, and all found images are processed;
+if online = TRUE, last 90 days are processed.
+Is it possible to pass also integer (or difftime) values, which are
+interpreted as the last n days.}
 
 \item{timeperiod}{(optional) Character:
 \itemize{
