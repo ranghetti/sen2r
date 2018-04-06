@@ -185,100 +185,54 @@
 #' @export
 
 
-sen2r <- function(param_list=NULL,
-                  gui=NA,
-                  preprocess=NA,
-                  s2_levels=NA,
-                  sel_sensor=NA,
-                  online=NA,
-                  overwrite_safe=NA,
-                  rm_safe=NA,
-                  step_atmcorr=NA,
-                  timewindow=NA,
-                  timeperiod=NA,
-                  extent=NA,
-                  extent_name=NA,
-                  s2tiles_selected=NA,
-                  s2orbits_selected=NA,
-                  list_prods=NA,
-                  list_indices=NA,
-                  index_source=NA,
-                  mask_type=NA,
-                  max_mask=NA,
-                  clip_on_extent=NA,
-                  extent_as_mask=NA,
-                  reference_path=NA,
-                  res=NA,
-                  res_s2=NA,
-                  unit=NA,
-                  proj=NA,
-                  resampling=NA,
-                  resampling_scl=NA,
-                  outformat=NA,
-                  index_datatype=NA,
-                  compression=NA,
-                  overwrite=NA,
-                  path_l1c=NA,
-                  path_l2a=NA,
-                  path_tiles=NA,
-                  path_merged=NA,
-                  path_out=NA,
-                  path_indices=NA,
-                  path_subdirs=NA,
-                  thumbnails=TRUE,
-                  use_python = TRUE) {
+sen2r <- function(param_list = NULL,
+                  gui = NA,
+                  preprocess = TRUE,
+                  s2_levels = c("l2a"),
+                  sel_sensor = c("s2a","s2b"),
+                  online = TRUE,
+                  overwrite_safe = FALSE,
+                  rm_safe = "no",
+                  step_atmcorr = "auto",
+                  timewindow = NA,
+                  timeperiod = "full",
+                  extent = NA, # below re-defined as sample extent if online mode
+                  extent_name = "",
+                  s2tiles_selected = NA, # below re-defined for online mode
+                  s2orbits_selected = NA, # temporary select all orbits (TODO implement)
+                  list_prods = c("BOA"),
+                  list_indices = NA,
+                  index_source = "BOA",
+                  mask_type = NA,
+                  max_mask = 100,
+                  clip_on_extent = TRUE,
+                  extent_as_mask = FALSE,
+                  reference_path = NA,
+                  res = c(10,10),
+                  res_s2 = "10m",
+                  unit = "Meter",
+                  proj = NA,
+                  resampling = "near",
+                  resampling_scl = "near",
+                  outformat = "GTiff",
+                  index_datatype = "Int16",
+                  compression = "DEFLATE",
+                  overwrite = FALSE,
+                  path_l1c = NA,
+                  path_l2a = NA,
+                  path_tiles = NA,
+                  path_merged = NA,
+                  path_out = NA,
+                  path_indices = NA,
+                  path_subdirs = TRUE,
+                  thumbnails = TRUE,
+                  use_python  =  TRUE) {
   
   
   ### Preliminary settings ###
   
   # create tempdir
   dir.create(tempdir(), showWarnings=FALSE)
-  
-  ## 1. Read / import parameters ##
-  
-  # Create parameter list with default values
-  # (elements should correspond to the function arguments,
-  # except for param_list)
-  pm_def <- list(preprocess=TRUE,
-                 s2_levels=c("l2a"),
-                 sel_sensor=c("s2a","s2b"),
-                 online=TRUE,
-                 overwrite_safe=FALSE,
-                 rm_safe="no",
-                 step_atmcorr="auto",
-                 timewindow=c(Sys.Date() - 90, Sys.Date()),
-                 timeperiod="full",
-                 extent=NA, # below re-defined as sample extent if online mode
-                 extent_name="",
-                 s2tiles_selected=NA, # below re-defined for online mode
-                 s2orbits_selected=NA, # temporary select all orbits (TODO implement)
-                 list_prods=c("BOA"),
-                 list_indices=NA,
-                 index_source="BOA",
-                 mask_type=NA,
-                 max_mask=100,
-                 clip_on_extent=TRUE,
-                 extent_as_mask=FALSE,
-                 reference_path=NA,
-                 res=c(10,10),
-                 res_s2="10m",
-                 unit="Meter",
-                 proj=NA,
-                 resampling="near",
-                 resampling_scl="near",
-                 outformat="GTiff",
-                 index_datatype="Int16",
-                 compression="DEFLATE",
-                 overwrite=FALSE,
-                 path_l1c=NA,
-                 path_l2a=NA,
-                 path_tiles=NA,
-                 path_merged=NA,
-                 path_out=NA,
-                 path_indices=NA,
-                 path_subdirs=TRUE,
-                 thumbnails=TRUE,
-                 pkg_version=packageVersion("sen2r"))
   
   # If it is the first time that the package is used,
   # ask for opening the GUI to install dependencies
@@ -315,44 +269,42 @@ sen2r <- function(param_list=NULL,
   }
   
   
+  ## 1. Read / import parameters ##
+  
+  # Read arguments with default values
+  pm_def <- formals("sen2r")
+  # select arguments which are not parameters
+  pm_def <- sapply(pm_def[!names(pm_def) %in% c("param_list","gui","use_python")], eval)
+  
+  # filter names of passed arguments
+  pm_arg_passed <- logical(0)
+  for (i in seq_along(formalArgs("sen2r"))) {
+    pm_arg_passed[i] <- !do.call(missing, list(formalArgs("sen2r")[i]))
+  }
+  # Read arguments with passed values
+  pm_arg <- sapply(formalArgs("sen2r")[pm_arg_passed], function(x){
+    do.call(get, list(x))
+  }, simplify=FALSE)
+  # select arguments which are not parameters
+  pm_arg <- pm_arg[!names(pm_arg) %in% c("param_list","gui","use_python")]
+  
   # Import param_list, if provided
-  pm <- if (is.null(param_list)) {
-    # create with default values
-    pm_def
-  } else if (is(param_list, "character")) {
+  pm_list <- if (is(param_list, "character")) {
     # load json parameter file
     jsonlite::fromJSON(param_list)
     # TODO check package version and parameter names
   } else if (is(param_list, "list")) {
     param_list
     # TODO check parameter names
+  } else {
+    list("pkg_version" = packageVersion("sen2r"))
   }
   
-  # Overwrite parameters passed manually
-  # (if some parameters are still missing, copy from default values)
-  for (sel_par in names(pm_def)[-match("pkg_version",names(pm_def))]) {
-    if (!(length(get(sel_par))==1 & all(is.na(get(sel_par))))) {
-      pm[[sel_par]] <- get(sel_par)
-    }
-    if (length(pm[[sel_par]])==1 & all(is.na(pm[[sel_par]]))) {
-      pm[[sel_par]] <- pm_def[[sel_par]]
-    }
-  }
-  
-  # # Define sample spatial extent if online mode
-  # if (pm$online == TRUE) {
-  #   if (is.na(pm$extent)) {
-  #     pm$extent <- get_extent(
-  #       matrix(c(9.4, 45.4, 10.27, 46.1), nrow = 2),
-  #       "+init=epsg:4326"
-  #     ) %>%
-  #       as("sfc_POLYGON") %>%
-  #       geojson_json()
-  #     # if (is.na(pm$s2tiles_selected)) {
-  #     #   pm$s2tiles_selected <- c("32TNR", "32TNS")
-  #     # }
-  #   }
-  # }
+  # Create the ultimate parameter list (pm):
+  # based on pm_def, overwrite first with pm_list and then with pm_arg
+  pm <- pm_def
+  pm[names(pm_list)] <- pm_list
+  pm[names(pm_arg)] <- pm_arg
   
   # if gui argument was not specified, use default value
   if (is.na(gui)) {
@@ -360,14 +312,14 @@ sen2r <- function(param_list=NULL,
   }
   
   # Check param_list version
-  if (is.null(pm$pkg_version)) {
-    if (!is.null(pm$fidolasen_version)) {
-      pm$pkg_version <- pm$fidolasen_version
+  if (is.null(pm_list$pkg_version)) {
+    if (!is.null(pm_list$fidolasen_version)) {
+      pm_list$pkg_version <- pm_list$fidolasen_version
     } else {
-      pm$pkg_version <- package_version("0.2.0")
+      pm_list$pkg_version <- package_version("0.2.0")
     }
   }
-  if (packageVersion("sen2r") > package_version(pm$pkg_version)) {
+  if (packageVersion("sen2r") > package_version(pm_list$pkg_version)) {
     if (interactive() & !gui) {
       open_gui <- NA
       while(is.na(open_gui)) {
