@@ -137,7 +137,7 @@ compute_s2_paths <- function(pm,
       if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected) & !is.null(all_meta$id_orbit)) {
         all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
       }
-      if (!is.null(pm$s2tiles_selected) & !anyNA(pm$s2tiles_selected & !is.null(all_meta$id_tile))) {
+      if (!is.null(pm$s2tiles_selected) & !anyNA(pm$s2tiles_selected) & !is.null(all_meta$id_tile)) {
         all_meta <- all_meta[id_tile %in% pm$s2tiles_selected,]
       }
       all_meta$names
