@@ -5,7 +5,8 @@
 \title{Create thumbnails for S2 products.}
 \usage{
 s2_thumbnails(infiles, prod_type = NA, rgb_type = "SwirNirR", dim = 1024,
-  scaleRange = NA, outdir = NA, tmpdir = NA, overwrite = FALSE)
+  scaleRange = NA, outdir = NA, tmpdir = NA, rmtmp = TRUE,
+  overwrite = FALSE)
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths
@@ -46,8 +47,11 @@ It can be useful i.e. to stretch BOA "dark" products.}
 where the files should be created.  Default is a subdirectory (named
 "thumbnails") of the parent directory of each input file.}
 
-\item{tmpdir}{(optional) Path where intermediate VRT will be created.
+\item{tmpdir}{(optional) Path where intermediate files (VRT) will be created.
 Default is a temporary directory.}
+
+\item{rmtmp}{(optional) Logical: should temporary files be removed?
+(Default: TRUE)}
 
 \item{overwrite}{(optional) Logical value: should existing thumbnails be
 overwritten? (default: TRUE)}

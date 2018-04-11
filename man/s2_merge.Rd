@@ -4,8 +4,8 @@
 \alias{s2_merge}
 \title{Merge S2 tiles with the same date and orbit}
 \usage{
-s2_merge(infiles, outdir = ".", subdirs = NA, tmpdir = NA, format = NA,
-  compress = "DEFLATE", vrt_rel_paths = NA, out_crs = "",
+s2_merge(infiles, outdir = ".", subdirs = NA, tmpdir = NA, rmtmp = TRUE,
+  format = NA, compress = "DEFLATE", vrt_rel_paths = NA, out_crs = "",
   overwrite = FALSE)
 }
 \arguments{
@@ -26,8 +26,11 @@ placed in separated \code{outfile} subdirectories; if FALSE, they are placed in
 \code{outfile} directory; if NA (default), subdirectories are created only if
 \code{infiles} relate to more than a single product.}
 
-\item{tmpdir}{(optional) Path where intermediate VRT will be created.
-Default is in a temporary directory.}
+\item{tmpdir}{(optional) Path where intermediate files (VRT) will be created.
+Default is a temporary directory.}
+
+\item{rmtmp}{(optional) Logical: should temporary files be removed?
+(Default: TRUE)}
 
 \item{format}{(optional) Format of the output file (in a
 format recognised by GDAL). Default is to maintain each input format.}

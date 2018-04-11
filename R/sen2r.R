@@ -175,6 +175,11 @@
 #'  systems with problems with python, when [sen2r()] is intended
 #'  to be used only for processing existing SAFE files (python is required
 #'  in any case to download SAFE).
+#' @param tmpdir (optional) Path where intermediate files will be created.
+#'  Default is a temporary directory (unless `outformat = "VRT"`: in this case,
+#'  default is a subdirectory named ".vrt" within `path_out`).
+#' @param rmtmp (optional) Logical: should temporary files be removed?
+#'  (Default: TRUE). `rmtmp` is forced to `FALSE` if `outformat = "VRT"`.
 #' @return A vector with the paths of the files which were created (excluded
 #'  the temporary files); NULL otherwise.
 #'
@@ -226,13 +231,12 @@ sen2r <- function(param_list = NULL,
                   path_indices = NA,
                   path_subdirs = TRUE,
                   thumbnails = TRUE,
-                  use_python  =  TRUE) {
+                  use_python = TRUE,
+                  tmpdir = NA,
+                  rmtmp = TRUE) {
   
   
   ### Preliminary settings ###
-  
-  # create tempdir
-  dir.create(tempdir(), showWarnings=FALSE)
   
   # If it is the first time that the package is used,
   # ask for opening the GUI to install dependencies
@@ -274,7 +278,7 @@ sen2r <- function(param_list = NULL,
   # Read arguments with default values
   pm_def <- formals("sen2r")
   # select arguments which are not parameters
-  pm_def <- sapply(pm_def[!names(pm_def) %in% c("param_list","gui","use_python")], eval)
+  pm_def <- sapply(pm_def[!names(pm_def) %in% c("param_list","gui","use_python","tmpdir","rmtmp")], eval)
   
   # filter names of passed arguments
   pm_arg_passed <- logical(0)
@@ -286,7 +290,7 @@ sen2r <- function(param_list = NULL,
     do.call(get, list(x))
   }, simplify=FALSE)
   # select arguments which are not parameters
-  pm_arg <- pm_arg[!names(pm_arg) %in% c("param_list","gui","use_python")]
+  pm_arg <- pm_arg[!names(pm_arg) %in% c("param_list","gui","use_python","tmpdir","rmtmp")]
   
   # Import param_list, if provided
   pm_list <- if (is(param_list, "character")) {
@@ -400,14 +404,26 @@ sen2r <- function(param_list = NULL,
     )
   }
   
+  # define and create tmpdir
+  if (is.na(tmpdir)) {
+    # if outformat is VRT, set as a subdirectory of path_out
+    tmpdir <- if (pm$outformat == "VRT") {
+      rmtmp = FALSE # force not to remove intermediate files
+      file.path(pm$path_out, ".vrt")
+    } else {
+      tempfile(pattern="sen2r_")
+    }
+  }
+  dir.create(tmpdir, showWarnings=FALSE)
+  
+  
   # internal parameters
-  dir.create(path_tmp <- tempfile(pattern="dir"), showWarnings = FALSE) # consider to add as an optional parameter
   paths <- c()
-  paths["out"] <- if (!is.na(pm$path_out)) {pm$path_out} else {file.path(path_tmp,"out")}
-  paths["indices"] <- if (!is.na(pm$path_indices)) {pm$path_indices} else {file.path(path_tmp,"indices")}
-  paths["tiles"] <- if (!is.na(pm$path_tiles)) {pm$path_tiles} else {file.path(path_tmp,"tiles")}
-  paths["merged"] <- if (!is.na(pm$path_merged)) {pm$path_merged} else {file.path(path_tmp,"merged")}
-  paths["warped"] <- if (is.na(pm$mask_type)) {paths["out"]} else {file.path(path_tmp,"warped")}
+  paths["out"] <- if (!is.na(pm$path_out)) {pm$path_out} else {file.path(tmpdir,"out")}
+  paths["indices"] <- if (!is.na(pm$path_indices)) {pm$path_indices} else {file.path(tmpdir,"indices")}
+  paths["tiles"] <- if (!is.na(pm$path_tiles)) {pm$path_tiles} else {file.path(tmpdir,"tiles")}
+  paths["merged"] <- if (!is.na(pm$path_merged)) {pm$path_merged} else {file.path(tmpdir,"merged")}
+  paths["warped"] <- if (is.na(pm$mask_type)) {paths["out"]} else {file.path(tmpdir,"warped")}
   
   # accepted products (update together with the same variables in s2_gui() and in compute_s2_names())
   l1c_prods <- c("TOA")
@@ -804,6 +820,7 @@ sen2r <- function(param_list = NULL,
     # (now it skips, but analysing each single file)
     
     if (pm$online == TRUE) {
+      print(s2_list_l2a)
       if (length(s2_list_l2a)>0) {
         
         print_message(
@@ -820,6 +837,7 @@ sen2r <- function(param_list = NULL,
         
       }
       
+      print(s2_list_l1c)
       if (length(s2_list_l1c)>0) {
         
         print_message(
@@ -905,11 +923,22 @@ sen2r <- function(param_list = NULL,
           )
         }
         
-        s2_list_l2a_corrected <- sen2cor(names(s2_list_l1c_tocorrect),
-                                         l1c_dir = pm$path_l1c,
-                                         outdir = pm$path_l2a,
-                                         tiles = pm$s2tiles_selected,
-                                         parallel = TRUE)
+        s2_list_l2a_corrected <- sen2cor(
+          names(s2_list_l1c_tocorrect),
+          l1c_dir = pm$path_l1c,
+          outdir = pm$path_l2a,
+          tiles = pm$s2tiles_selected,
+          parallel = TRUE,
+          tmpdir = if (Sys.info()["sysname"] != "Windows" & 
+                       !is.null(mountpoint(tmpdir, "cifs"))) {
+            # if tmpdir is on a SAMBA mountpoint over Linux, 
+            # use a tmeporary directory different from the specified one
+            NA
+          } else {
+            file.path(tmpdir, "sen2cor")
+          }, 
+          rmtmp = TRUE # SAFE temporary archives are always deleted
+        )
         names(s2_list_l2a_corrected) <- basename(s2_list_l2a_corrected)
         s2_list_l2a <- c(s2_list_l2a,s2_list_l2a_corrected)
       }
@@ -932,8 +961,6 @@ sen2r <- function(param_list = NULL,
         date = TRUE,
         "Execution of sen2r session terminated."
       )
-      
-      unlink(path_tmp, recursive = TRUE) # probabily only empty directories will be deleted
       
       return(invisible(
         c(file.path(pm$path_l1c,names(s2_list_l1c)),
@@ -987,7 +1014,7 @@ sen2r <- function(param_list = NULL,
             s2_translate,
             infile = sel_prod,
             outdir = path["tiles"],
-            tmpdir = file.path(path_tmp,"tmp_tiles"),
+            tmpdir = file.path(tmpdir, "s2_translate_l1c"), rmtmp = rmtmp,
             prod_type = list_l1c_prods,
             format = tiles_outformat,
             tiles = pm$s2tiles_selected,
@@ -1015,7 +1042,7 @@ sen2r <- function(param_list = NULL,
           trace_function(
             s2_translate,
             infile = sel_prod,
-            tmpdir = file.path(path_tmp,"tmp_tiles"),
+            tmpdir = file.path(tmpdir, "s2_translate_l2a"), rmtmp = rmtmp,
             outdir = paths["tiles"],
             prod_type = list_l2a_prods,
             format = tiles_outformat,
@@ -1060,7 +1087,7 @@ sen2r <- function(param_list = NULL,
       infiles = s2names$tiles_names_req[file.exists(s2names$tiles_names_req)], # TODO add warning when sum(!file.exists(s2names$merged_names_new))>0
       outdir = paths["merged"],
       subdirs = pm$path_subdirs,
-      tmpdir = file.path(path_tmp,"tmp_merged"),
+      tmpdir = file.path(tmpdir, "s2_merge"), rmtmp = rmtmp,
       format = merged_outformat,
       overwrite = pm$overwrite,
       trace_files = s2names$merged_names_new
@@ -1124,7 +1151,8 @@ sen2r <- function(param_list = NULL,
                      function(x){fs2nc_getElements(x)$prod_type})
             ),
             co = if (warped_outformat=="GTiff") {paste0("COMPRESS=",pm$compression)},
-            overwrite = pm$overwrite
+            overwrite = pm$overwrite,
+            tmpdir = file.path(tmpdir, "gdal_warp"), rmtmp = rmtmp
           ), # TODO dstnodata value?
           error = print
         )
@@ -1150,7 +1178,8 @@ sen2r <- function(param_list = NULL,
                      function(x){fs2nc_getElements(x)$prod_type})
             ),
             co = if (pm$outformat=="GTiff") {paste0("COMPRESS=",pm$compression)},
-            overwrite = pm$overwrite
+            overwrite = pm$overwrite,
+            tmpdir = file.path(tmpdir, "gdal_warp"), rmtmp = rmtmp
           ), # TODO dstnodata value?
           error = print
         )
@@ -1230,7 +1259,7 @@ sen2r <- function(param_list = NULL,
           mask_type = pm$mask_type,
           max_mask = pm$max_mask,
           outdir = paths["out"],
-          tmpdir = file.path(path_tmp,"tmp_masked"),
+          tmpdir = file.path(tmpdir, "s2_mask"), rmtmp = rmtmp,
           format = pm$outformat,
           compress = pm$compression,
           subdirs = pm$path_subdirs,
@@ -1251,7 +1280,7 @@ sen2r <- function(param_list = NULL,
           mask_type = pm$mask_type,
           max_mask = pm$max_mask,
           outdir = paths["out"],
-          tmpdir = file.path(path_tmp,"tmp_masked"),
+          tmpdir = file.path(tmpdir, "s2_mask"), rmtmp = rmtmp,
           format = sr_masked_outformat,
           compress = pm$compression,
           subdirs = pm$path_subdirs,
@@ -1304,7 +1333,7 @@ sen2r <- function(param_list = NULL,
     "masked_names_new", "out_names_new", "indices_names_new"
   )]))
   # exclude temporary files
-  names_out <- names_out[!grepl(path_tmp, names_out, fixed=TRUE)]
+  names_out <- names_out[!grepl(tmpdir, names_out, fixed=TRUE)]
   names_out_created <- names_out[file.exists(nn(names_out))]
   
   
@@ -1341,7 +1370,7 @@ sen2r <- function(param_list = NULL,
       thumb_names_out <- trace_function(
         s2_thumbnails,
         infiles = thumb_names_req,
-        tmpdir = file.path(path_tmp,"tmp_thumbnails"),
+        tmpdir = file.path(tmpdir, "s2_thumbnails"), rmtmp = rmtmp,
         trace_files = c(thumb_names_new,paste0(thumb_names_new,".aux.xml"))
       )
       
@@ -1351,7 +1380,9 @@ sen2r <- function(param_list = NULL,
   
   
   ## 10. remove temporary files
-  unlink(path_tmp, recursive = TRUE)
+  if (rmtmp == TRUE) {
+    unlink(tmpdir, recursive=TRUE)
+  }
   
   # check if some files were not created
   names_missing <- names_out[!file.exists(nn(names_out))]

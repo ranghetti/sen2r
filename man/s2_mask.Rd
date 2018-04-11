@@ -6,11 +6,12 @@
 \title{Apply cloud masks}
 \usage{
 s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba", max_mask = 80,
-  outdir = "./masked", tmpdir = NA, format = NA, subdirs = NA,
-  compress = "DEFLATE", parallel = FALSE, overwrite = FALSE)
+  outdir = "./masked", tmpdir = NA, rmtmp = TRUE, format = NA,
+  subdirs = NA, compress = "DEFLATE", parallel = FALSE,
+  overwrite = FALSE)
 
 s2_perc_masked(infiles, maskfiles, mask_type = "cloud_medium_proba",
-  tmpdir = NA, parallel = FALSE)
+  tmpdir = NA, rmtmp = TRUE, parallel = FALSE)
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths
@@ -70,8 +71,11 @@ second case, its parent directory must exists).
 If it is a relative path, it is expanded from the common parent
 directory of \code{infiles}.}
 
-\item{tmpdir}{(optional) Path where intermediate VRT will be created.
-Default is in a temporary directory.}
+\item{tmpdir}{(optional) Path where intermediate files (VRT) will be created.
+Default is a temporary directory.}
+
+\item{rmtmp}{(optional) Logical: should temporary files be removed?
+(Default: TRUE)}
 
 \item{format}{(optional) Format of the output file (in a
 format recognised by GDAL). Default is the same format of input images

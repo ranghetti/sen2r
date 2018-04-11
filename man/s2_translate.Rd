@@ -5,9 +5,9 @@
 \title{Convert from SAFE format}
 \usage{
 s2_translate(infile, outdir = ".", subdirs = NA, tmpdir = NA,
-  prod_type = NULL, tiles = NA, res = "10m", format = "VRT",
-  compress = "DEFLATE", vrt_rel_paths = NA, utmzone = "",
-  overwrite = FALSE)
+  rmtmp = TRUE, prod_type = NULL, tiles = NA, res = "10m",
+  format = "VRT", compress = "DEFLATE", vrt_rel_paths = NA,
+  utmzone = "", overwrite = FALSE)
 }
 \arguments{
 \item{infile}{Full path of the input SAFE folder (alternatively,
@@ -24,10 +24,11 @@ placed in separated \code{outdir} subdirectories; if FALSE, they are placed in
 \code{outdir} directory; if NA (default), subdirectories are created only if
 \code{prod_type} has length > 1.}
 
-\item{tmpdir}{(optional) Path where intermediate VRT will be created.
-Default is in a hidden subdirectory (called \code{.vrt}) of the parent
-directory of the SAFE folder. Set \code{tmpdir=tempdir()} if you do not want to
-keep the intermediate files after reboot.}
+\item{tmpdir}{(optional) Path where intermediate files (VRT) will be created.
+Default is a temporary directory.}
+
+\item{rmtmp}{(optional) Logical: should temporary files be removed?
+(Default: TRUE)}
 
 \item{prod_type}{(optional) Vector of types to be produced as outputs
 (see \link{s2_shortname} for the list of accepted values). Default is

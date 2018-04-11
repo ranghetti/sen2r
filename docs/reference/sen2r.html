@@ -112,7 +112,8 @@ descriptions of all the other parameters).</p>
   <span class='kw'>outformat</span> <span class='kw'>=</span> <span class='st'>"GTiff"</span>, <span class='kw'>index_datatype</span> <span class='kw'>=</span> <span class='st'>"Int16"</span>, <span class='kw'>compression</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>,
   <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>path_l1c</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_l2a</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>path_merged</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_out</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>path_subdirs</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>thumbnails</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>use_python</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+  <span class='kw'>path_subdirs</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>thumbnails</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>use_python</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -415,6 +416,17 @@ if FALSE, this is skipped. Setting this to FALSE can bge useful on
 systems with problems with python, when <code>sen2r()</code> is intended
 to be used only for processing existing SAFE files (python is required
 in any case to download SAFE).</p></td>
+    </tr>
+    <tr>
+      <th>tmpdir</th>
+      <td><p>(optional) Path where intermediate files will be created.
+Default is a temporary directory (unless <code>outformat = "VRT"</code>: in this case,
+default is a subdirectory named ".vrt" within <code>path_out</code>).</p></td>
+    </tr>
+    <tr>
+      <th>rmtmp</th>
+      <td><p>(optional) Logical: should temporary files be removed?
+(Default: TRUE). <code>rmtmp</code> is forced to <code>FALSE</code> if <code>outformat = "VRT"</code>.</p></td>
     </tr>
     </table>
     

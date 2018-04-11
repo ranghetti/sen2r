@@ -17,8 +17,10 @@
 #'  placed in separated `outfile` subdirectories; if FALSE, they are placed in
 #'  `outfile` directory; if NA (default), subdirectories are created only if
 #'  `infiles` relate to more than a single product.
-#' @param tmpdir (optional) Path where intermediate VRT will be created.
-#'  Default is in a temporary directory.
+#' @param tmpdir (optional) Path where intermediate files (VRT) will be created.
+#'  Default is a temporary directory.
+#' @param rmtmp (optional) Logical: should temporary files be removed?
+#'  (Default: TRUE)
 #' @param format (optional) Format of the output file (in a
 #'  format recognised by GDAL). Default is to maintain each input format.
 #' @param compress (optional) In the case a GTiff format is
@@ -47,6 +49,7 @@ s2_merge <- function(infiles,
                      outdir=".",
                      subdirs=NA,
                      tmpdir=NA,
+                     rmtmp=TRUE,
                      format=NA,
                      compress="DEFLATE",
                      vrt_rel_paths=NA,
@@ -135,7 +138,7 @@ s2_merge <- function(infiles,
       "tiles with different projection will be reprojected.")
   }
   if (is.na(tmpdir)) {
-    tmpdir <- tempfile(pattern="dir")
+    tmpdir <- tempfile(pattern="s2merge_")
   }
   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
   
@@ -267,6 +270,11 @@ s2_merge <- function(infiles,
     
     outfiles <- c(outfiles, file.path(out_subdir,sel_outfile))
     
+  }
+  
+  # Remove temporary files
+  if (rmtmp == TRUE) {
+    unlink(tmpdir, recursive=TRUE)
   }
   
   return(outfiles)

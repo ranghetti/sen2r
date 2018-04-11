@@ -44,6 +44,11 @@
 #'  values for different `srcfiles` (use multiple calls of the functions).
 #' @param overwrite Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
+#' @param tmpdir (optional) Path where intermediate files (maskfile) 
+#'  will be created.
+#'  Default is a temporary directory.
+#' @param rmtmp (optional) Logical: should temporary files be removed?
+#'  (Default: TRUE)
 #' @param ... Additional parameters of [gdalwarp] or [gdal_translate]
 #'  (different from `s_srs`, `t_srs`, `te`, `tr`, `ts` and `of`).
 #' @return NULL
@@ -128,6 +133,8 @@ gdal_warp <- function(srcfiles,
                       r = NULL,
                       dstnodata = NULL,
                       overwrite = FALSE,
+                      tmpdir = NA,
+                      rmtmp = TRUE,
                       ...) {
   
   # check consistency between inputs and outputs
@@ -216,9 +223,17 @@ gdal_warp <- function(srcfiles,
     }
     # cast to multipolygon
     if (length(grep("POLYGON",st_geometry_type(mask)))>=1) {
-      st_write(st_cast(mask, "MULTIPOLYGON"),
-               mask_file <- paste0(tempfile(),".shp"),
-               quiet = TRUE)
+      if (is.na(tmpdir)) {
+        tmpdir <- tempfile(pattern="gdalwarp_")
+      }
+      dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
+      st_write(
+        st_cast(mask, "MULTIPOLYGON"),
+        mask_file <- file.path(
+          tmpdir, basename(tempfile(pattern = "mask_", fileext = ".shp"))
+        ),
+        quiet = TRUE
+      )
     } # if not, mask_polygon is not created
     
     # create mask_bbox if t_srs is specified;
@@ -366,6 +381,11 @@ gdal_warp <- function(srcfiles,
       
     } # end of overwrite IF cycle
     
+  }
+  
+  # Remove temporary files
+  if (rmtmp == TRUE) {
+    unlink(tmpdir, recursive=TRUE)
   }
   
 }

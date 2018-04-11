@@ -52,8 +52,10 @@
 #'  second case, its parent directory must exists).
 #'  If it is a relative path, it is expanded from the common parent
 #'  directory of `infiles`.
-#' @param tmpdir (optional) Path where intermediate VRT will be created.
-#'  Default is in a temporary directory.
+#' @param tmpdir (optional) Path where intermediate files (VRT) will be created.
+#'  Default is a temporary directory.
+#' @param rmtmp (optional) Logical: should temporary files be removed?
+#'  (Default: TRUE)
 #' @param format (optional) Format of the output file (in a
 #'  format recognised by GDAL). Default is the same format of input images
 #'  (or "GTiff" in case of VRT input images).
@@ -83,22 +85,24 @@
 #' @note License: GPL 3.0
 
 s2_mask <- function(infiles,
-                     maskfiles,
-                     mask_type="cloud_medium_proba",
-                     max_mask=80,
-                     outdir="./masked",
-                     tmpdir=NA,
-                     format=NA,
-                     subdirs=NA,
-                     compress="DEFLATE",
-                     parallel = FALSE,
-                     overwrite = FALSE) {
+                    maskfiles,
+                    mask_type = "cloud_medium_proba",
+                    max_mask = 80,
+                    outdir = "./masked",
+                    tmpdir = NA,
+                    rmtmp = TRUE,
+                    format = NA,
+                    subdirs = NA,
+                    compress = "DEFLATE",
+                    parallel = FALSE,
+                    overwrite = FALSE) {
   .s2_mask(infiles = infiles,
            maskfiles = maskfiles,
            mask_type = mask_type,
            max_mask = max_mask,
            outdir = outdir,
            tmpdir = tmpdir,
+           rmtmp = rmtmp,
            format = format,
            subdirs = subdirs,
            compress = compress,
@@ -108,17 +112,18 @@ s2_mask <- function(infiles,
 }
 
 .s2_mask <- function(infiles,
-                    maskfiles,
-                    mask_type="cloud_medium_proba",
-                    max_mask=80,
-                    outdir="./masked",
-                    tmpdir=NA,
-                    format=NA,
-                    subdirs=NA,
-                    compress="DEFLATE",
-                    parallel = FALSE,
-                    overwrite = FALSE,
-                    output_type = "s2_mask") { # determines if using s2_mask() or s2_perc_masked()
+                     maskfiles,
+                     mask_type = "cloud_medium_proba",
+                     max_mask = 80,
+                     outdir = "./masked",
+                     tmpdir = NA,
+                     rmtmp = TRUE,
+                     format = NA,
+                     subdirs = NA,
+                     compress = "DEFLATE",
+                     parallel = FALSE,
+                     overwrite = FALSE,
+                     output_type = "s2_mask") { # determines if using s2_mask() or s2_perc_masked()
   
   . <- NULL
   
@@ -162,7 +167,7 @@ s2_mask <- function(infiles,
   
   # Check tmpdir
   if (is.na(tmpdir)) {
-    tmpdir <- tempfile(pattern="dir")
+    tmpdir <- tempfile(pattern="s2mask_")
   }
   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
   
@@ -263,7 +268,10 @@ s2_mask <- function(infiles,
       # create global mask
       mask_tmpfiles <- character(0)
       for (i in seq_along(inmask@layers)) {
-        mask_tmpfiles <- c(tempfile(fileext=".tif"), mask_tmpfiles)
+        mask_tmpfiles <- c(
+          file.path(tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif"))), 
+          mask_tmpfiles
+        )
         raster::calc(inmask[[i]],
                      function(x){as.integer(!is.na(x) & !x %in% req_masks[[i]])},
                      filename = mask_tmpfiles[1],
@@ -273,7 +281,7 @@ s2_mask <- function(infiles,
       if(length(mask_tmpfiles)==1) {
         outmask <- mask_tmpfiles
       } else {
-        outmask <- tempfile(fileext=".tif")
+        outmask <- file.path(tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
         raster::overlay(stack(mask_tmpfiles),
                         fun = sum,
                         filename = outmask,
@@ -295,9 +303,11 @@ s2_mask <- function(infiles,
       # resample it
       if (any(suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")]) !=
               suppressWarnings(GDALinfo(outmask)[c("res.x","res.y")]))) {
-        gdal_warp(outmask,
-                  outmask_res <- tempfile(fileext=".tif"),
-                  ref = sel_infile)
+        gdal_warp(
+          outmask,
+          outmask_res <- file.path(tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif"))),
+          ref = sel_infile
+        )
       } else {
         outmask_res <- outmask
       }
@@ -359,6 +369,11 @@ s2_mask <- function(infiles,
     
   } # end on infiles cycle
   
+  # Remove temporary files
+  if (rmtmp == TRUE) {
+    unlink(tmpdir, recursive=TRUE)
+  }
+  
   if (output_type == "s2_mask") {
     return(outfiles)
   } else if (output_type == "perc") {
@@ -379,14 +394,16 @@ s2_mask <- function(infiles,
 
 s2_perc_masked <- function(infiles,
                            maskfiles,
-                           mask_type="cloud_medium_proba",
-                           tmpdir=NA,
+                           mask_type = "cloud_medium_proba",
+                           tmpdir = NA,
+                           rmtmp = TRUE,
                            parallel = FALSE) {
   .s2_mask(infiles = infiles,
            maskfiles = maskfiles,
            mask_type = mask_type,
            max_mask = 100,
            tmpdir = tmpdir,
+           rmtmp = rmtmp,
            parallel = parallel,
            output_type = "perc")
 }

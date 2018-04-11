@@ -5,7 +5,7 @@
 \title{Produce an RGB image from a singleband raster file.}
 \usage{
 raster2rgb(in_rast, out_file = NULL, palette = "generic_ndsi_2",
-  minval = -1, maxval = 1)
+  minval = -1, maxval = 1, tmpdir = NA)
 }
 \arguments{
 \item{in_rast}{Path of the input multiband raster.}
@@ -24,6 +24,9 @@ accepted.}
 \item{maxval}{(to be implemented) the value corresponding to the maximum
 value of the palette (for now, only 1 is used). A quantile will be also
 accepted.}
+
+\item{tmpdir}{(optional) Path where intermediate files (VRT) will be created.
+Default is a temporary directory.}
 }
 \value{
 The path of the output image; alternatively, the output image

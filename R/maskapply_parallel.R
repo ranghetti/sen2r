@@ -89,12 +89,18 @@ maskapply_parallel <- function(in_rast,
     `%DO%` <- `%dopar%`
   }
   
+  # define and create tmpdir
+  if (is.na(tmpdir)) {
+    tmpdir <- tempfile(pattern="maskapply_")
+  }
+  dir.create(tmpdir, showWarnings=FALSE)
+  
   #NOTE: FORK is more efficient on Linux because it does not make copies,  but on windows
   # we should use "PSOCK"
   cl <- makeCluster(n_cores, type = "FORK") 
   registerDoParallel(cl)
   out_paths <- foreach(i = 1:nlayers(in_rast), .packages = c("raster"), .combine=c)  %DO% {
-    out_path <- paste0(tempfile(), "_b" , i, ".tif")
+    out_path <- file.path(tmpdir, paste0(basename(tempfile(pattern = "maskapply_")), "_b" , i, ".tif"))
     r <- in_rast[[i]]
     s <- maskapply(r, m, 
                    na = NAflag,

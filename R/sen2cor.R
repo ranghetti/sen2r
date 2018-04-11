@@ -14,10 +14,17 @@
 #' @param proc_dir (optional) Directory where processing is applied.
 #'  If NA (default), processing is done in `l1c_dir` and output L2A product is 
 #'  then moved to `outdir`, unless `l1c_dir` is a subdirectory of a SAMBA mountpoint under Linux:
-#'  in this case, L1C input products are copied in a temporary directory, 
+#'  in this case, L1C input products are copied in a temporary directory
+#'  (specified with argument `tmpdir`), 
 #'  processing is done there and then L2A is moved to `outdir`. 
 #'  This is required under Linux systems when `l1c_dir` is a subdirectory of
 #'  a unit mounted with SAMBA, otherwise sen2cor would produce empty L2A products.
+#' @param tmpdir (optional) Path where processing is performed if a temporary
+#'  working directory is required (see argument `proc_dir`). Be sure `tmpdir`
+#'  not to be a SAMBA mountpoint under Linux.
+#'  Default is a temporary directory.
+#' @param rmtmp (optional) Logical: should temporary files be removed?
+#'  (Default: TRUE)
 #' @param tiles Vector of Sentinel-2 Tile strings (5-length character) to be 
 #'  processed (default: process all the tiles found in the input L1C products).
 #' @param parallel (optional) Logical: if TRUE, sen2cor instances are launched 
@@ -47,6 +54,7 @@
 #' }
 
 sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, 
+                    tmpdir = NA, rmtmp = TRUE,
                     tiles=NULL, parallel=FALSE, overwrite=FALSE) {
   
   # load sen2cor executable path
@@ -212,13 +220,25 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
           dirname(sel_l1c)!=dirname(sel_l2a) & length(sel_l2a_tiles_existing)>0 | # 2
           Sys.info()["sysname"] != "Windows" & !is.null(mountpoint(sel_l1c, "cifs")) # 3
         ) {
-          sel_proc_dir <- tempfile(pattern="sen2cor_")
+          if (is.na(tmpdir)) {
+            tmpdir <- tempfile(pattern="sen2cor_")
+          }
+          dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
+          # check that tmpdir is not on a mountpoint
+          if (Sys.info()["sysname"] != "Windows" & 
+              !is.null(mountpoint(tmpdir, "cifs"))) {
+            print_message(
+              type = "error",
+              tmpdir, "is on a SAMBA mounted unit, so it can not be used."
+            )
+          }
+          sel_proc_dir <- tmpdir
         }
       }
       
       # if proc_dir is [manually or automatically] set, copy sel_l1c
       if (!is.na(sel_proc_dir)) {
-        use_tempdir <- TRUE
+        use_tmpdir <- TRUE
         dir.create(sel_proc_dir, recursive=FALSE, showWarnings=FALSE)
         if (length(sel_l1c_tiles_unnecessary)>0) {
           # if some tiles is unnecessary, copy only necessary files
@@ -241,7 +261,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
         }
         sel_l1c <- file.path(sel_proc_dir, basename(sel_l1c))
       } else {
-        use_tempdir <- FALSE
+        use_tmpdir <- FALSE
       }
       
       # path of the L2A product where it is placed by sen2cor
@@ -254,7 +274,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
       )
       
       # apply sen2cor
-      trace_paths <- if (use_tempdir) {
+      trace_paths <- if (use_tmpdir) {
         c(sel_l1c, sen2cor_out_l2a)
       } else if (overwrite==TRUE | !file.exists(sen2cor_out_l2a)) {
         sen2cor_out_l2a
@@ -273,11 +293,13 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
       }
       
       # move output to the required output directory
-      if (use_tempdir | dirname(sen2cor_out_l2a)!=dirname(sel_l2a)) {
+      if (use_tmpdir | dirname(sen2cor_out_l2a)!=dirname(sel_l2a)) {
         file.copy(sen2cor_out_l2a, dirname(sel_l2a), recursive=TRUE, overwrite=TRUE)
-        unlink(sen2cor_out_l2a, recursive=TRUE)
+        if (rmtmp == TRUE) {
+          unlink(sen2cor_out_l2a, recursive=TRUE)
+        }
       } 
-      if (use_tempdir) {
+      if (use_tmpdir & rmtmp == TRUE) {
         unlink(sel_l1c, recursive=TRUE)
       }
       
@@ -289,6 +311,11 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
   
   if (n_cores>1) {
     stopCluster(cl)
+  }
+  
+  # Remove temporary directory
+  if (rmtmp == TRUE & !is.na(tmpdir)) {
+    unlink(tmpdir, recursive=TRUE)
   }
   
   return(l2a_prodlist)

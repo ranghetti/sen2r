@@ -16,7 +16,8 @@ sen2r(param_list = NULL, gui = NA, preprocess = TRUE,
   outformat = "GTiff", index_datatype = "Int16", compression = "DEFLATE",
   overwrite = FALSE, path_l1c = NA, path_l2a = NA, path_tiles = NA,
   path_merged = NA, path_out = NA, path_indices = NA,
-  path_subdirs = TRUE, thumbnails = TRUE, use_python = TRUE)
+  path_subdirs = TRUE, thumbnails = TRUE, use_python = TRUE,
+  tmpdir = NA, rmtmp = TRUE)
 }
 \arguments{
 \item{param_list}{(optional) List of input parameters:
@@ -235,6 +236,13 @@ if FALSE, this is skipped. Setting this to FALSE can bge useful on
 systems with problems with python, when \code{\link[=sen2r]{sen2r()}} is intended
 to be used only for processing existing SAFE files (python is required
 in any case to download SAFE).}
+
+\item{tmpdir}{(optional) Path where intermediate files will be created.
+Default is a temporary directory (unless \code{outformat = "VRT"}: in this case,
+default is a subdirectory named ".vrt" within \code{path_out}).}
+
+\item{rmtmp}{(optional) Logical: should temporary files be removed?
+(Default: TRUE). \code{rmtmp} is forced to \code{FALSE} if \code{outformat = "VRT"}.}
 }
 \value{
 A vector with the paths of the files which were created (excluded
