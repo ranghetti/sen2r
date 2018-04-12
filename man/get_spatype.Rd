@@ -12,7 +12,7 @@ vector or raster layer}
 
 \item{abort}{\code{logical} if TRUE the function aborts if \code{object} is not
 recognized as an R spatial file or valid vector or raster file; if FALSE,
-a warning is shown and `NA`` is returned.}
+a warning is shown and \code{NA} is returned.}
 }
 \value{
 character ("\emph{spobject}" | "\emph{sfobject}" | "\emph{rastobject} | "

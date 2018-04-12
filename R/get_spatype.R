@@ -103,7 +103,7 @@ get_vectype.Spatial <- function(in_vect, abort = TRUE) {
 #' @param abort If TRUE, and `in_rast` is neither a raster object or
 #'  filename, send an error message and abort, Default: TRUE
 #' @return `character` equal to "rastfile" (if `in_rast` is a raster file),
-#'   `rastobject` (if `in_rast` is a `R` raster object) or `NA`` if it is
+#'   `rastobject` (if `in_rast` is a `R` raster object) or `NA` if it is
 #'   neither (unless `abort` == TRUE)
 #' @note Functions [get_spatype], [get_rastype] and [get_vectype] come from
 #'  package [sprawl](http://lbusett.github.io/sprawl).
@@ -175,7 +175,7 @@ get_rastype.Raster <- function(in_rast, abort = TRUE) {
 #'  vector or raster layer
 #' @param abort `logical` if TRUE the function aborts if `object` is not
 #' recognized as an R spatial file or valid vector or raster file; if FALSE,
-#' a warning is shown and `NA`` is returned.
+#' a warning is shown and `NA` is returned.
 #' @return character (\"*spobject*\" | \"*sfobject*\" | \"*rastobject* | \"
 #' *vectfile*\" | *rastfile*), or `NA` if the input does not
 #' belong to any spatial category and abort == FALSE

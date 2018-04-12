@@ -15,7 +15,8 @@ filename, send an error message and abort, Default: TRUE}
 }
 \value{
 \code{character} equal to "rastfile" (if \code{in_rast} is a raster file),
-\code{rastobject} (if \code{in_rast} is a \code{R} raster object) or \code{NA`` if it is neither (unless}abort` == TRUE)
+\code{rastobject} (if \code{in_rast} is a \code{R} raster object) or \code{NA} if it is
+neither (unless \code{abort} == TRUE)
 }
 \description{
 Check if a \code{R} object or a filename correspond to a valid \code{Raster}
