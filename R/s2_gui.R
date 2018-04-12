@@ -1259,13 +1259,14 @@ s2_gui <- function(param_list = NULL,
         
         # reset and update the map
         react_map(base_map()) 
+        rv$draw_tiles_overlapping_ll <- st_transform(rv$draw_tiles_overlapping, 4326)
         leafletProxy("view_map") %>%
           clearShapes() %>%
           fitBounds(
-            lng1 = min(st_coordinates(rv$draw_tiles_overlapping)[,"X"]),
-            lat1 = min(st_coordinates(rv$draw_tiles_overlapping)[,"Y"]),
-            lng2 = max(st_coordinates(rv$draw_tiles_overlapping)[,"X"]),
-            lat2 = max(st_coordinates(rv$draw_tiles_overlapping)[,"Y"])
+            lng1 = min(st_coordinates(rv$draw_tiles_overlapping_ll)[,"X"]),
+            lat1 = min(st_coordinates(rv$draw_tiles_overlapping_ll)[,"Y"]),
+            lng2 = max(st_coordinates(rv$draw_tiles_overlapping_ll)[,"X"]),
+            lat2 = max(st_coordinates(rv$draw_tiles_overlapping_ll)[,"Y"])
           ) %>%
           addPolygons(data = rv$draw_tiles_overlapping,
                       group = "S2 tiles",
@@ -1423,13 +1424,14 @@ s2_gui <- function(param_list = NULL,
       
       # if bbox is valid, update the map
       if (attr(rv$bbox_polygon, "valid")) {
+        rv$bbox_ll <- st_bbox(st_transform(rv$bbox_polygon, 4326))
         leafletProxy("view_map_bbox") %>%
           clearShapes() %>%
           fitBounds(
-            lng1 = input$bbox_xmin-(input$bbox_xmax-input$bbox_xmin)/3,
-            lat1 = input$bbox_ymin-(input$bbox_ymax-input$bbox_ymin)/3,
-            lng2 = input$bbox_xmax+(input$bbox_xmax-input$bbox_xmin)/3,
-            lat2 = input$bbox_ymax+(input$bbox_ymax-input$bbox_ymin)/3
+            lng1 = as.numeric(rv$bbox_ll$xmin-(rv$bbox_ll$xmax-rv$bbox_ll$xmin)/3),
+            lat1 = as.numeric(rv$bbox_ll$ymin-(rv$bbox_ll$ymax-rv$bbox_ll$ymin)/3),
+            lng2 = as.numeric(rv$bbox_ll$xmax+(rv$bbox_ll$xmax-rv$bbox_ll$xmin)/3),
+            lat2 = as.numeric(rv$bbox_ll$ymax+(rv$bbox_ll$ymax-rv$bbox_ll$ymin)/3)
           ) %>%
           addPolygons(data = rv$bbox_polygon,
                       group = "Extent",
@@ -1549,13 +1551,14 @@ s2_gui <- function(param_list = NULL,
       
       if(attr(rv$vectfile_polygon, "valid")) {
         # if the vector is valid, update the map
+        rv$vectfile_polygon_ll <- st_transform(rv$vectfile_polygon, 4326)
         leafletProxy("view_map_vectfile") %>%
           clearShapes() %>%
           fitBounds(
-            lng1 = min(st_coordinates(rv$vectfile_polygon)[,"X"]),
-            lat1 = min(st_coordinates(rv$vectfile_polygon)[,"Y"]),
-            lng2 = max(st_coordinates(rv$vectfile_polygon)[,"X"]),
-            lat2 = max(st_coordinates(rv$vectfile_polygon)[,"Y"])
+            lng1 = min(st_coordinates(rv$vectfile_polygon_ll)[,"X"]),
+            lat1 = min(st_coordinates(rv$vectfile_polygon_ll)[,"Y"]),
+            lng2 = max(st_coordinates(rv$vectfile_polygon_ll)[,"X"]),
+            lat2 = max(st_coordinates(rv$vectfile_polygon_ll)[,"Y"])
           ) %>%
           addPolygons(data = rv$vectfile_polygon,
                       group = "Extent",
