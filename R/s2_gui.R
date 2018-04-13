@@ -411,11 +411,17 @@ s2_gui <- function(param_list = NULL,
                 
                 column(
                   width=6,
-                  radioButtons("timeperiod", label = "Time period type",
-                               choices = list("Full" = "full",
-                                              "Seasonal" = "seasonal"),
-                               selected = "full",
-                               inline = TRUE)
+                  radioButtons(
+                    "timeperiod", 
+                    label = span(
+                      "Time period type\u2000",
+                      actionLink("help_time_period", icon("question-circle"))
+                    ),
+                    choices = list("Full" = "full",
+                                   "Seasonal" = "seasonal"),
+                    selected = "full",
+                    inline = TRUE
+                  )
                 )
                 
               )
@@ -1154,6 +1160,20 @@ s2_gui <- function(param_list = NULL,
     
     ## Extent module ##
     
+    # Force to use spatial and temporal filters in online mode
+    observeEvent(input$online, {
+      if (input$online) {
+        updateRadioButtons(session, "query_time", selected = TRUE)
+        updateRadioButtons(session, "query_space", selected = TRUE)
+        disable("query_time")
+        disable("query_space")
+      } else {
+        enable("query_time")
+        enable("query_space")
+      }
+    })
+    
+    
     #-- Function to update the map and the list of tiles --#
     # it returns TRUE if the input extent source was correctly read, FALSE elsewhere.
     # argument extent_srouce determines which source to be used:
@@ -1795,8 +1815,20 @@ s2_gui <- function(param_list = NULL,
     })
     
     
+    # Disable clipping and masking if no spatial filter was enabled
+    observeEvent(input$query_space, {
+      if (input$query_space) {
+        enable("clip_on_extent")
+        enable("extent_as_mask")
+      } else {
+        updateRadioButtons(session, "clip_on_extent", selected = FALSE)
+        updateRadioButtons(session, "extent_as_mask", selected = FALSE)
+        disable("clip_on_extent")
+        disable("extent_as_mask")
+      }
+    })
     
-    
+
     ## Update resolution from reference file
     output$outres_message <- renderUI({
       if(input$use_reference==TRUE & "res" %in% input$reference_usefor) {
@@ -2044,6 +2076,30 @@ s2_gui <- function(param_list = NULL,
         easyClose = TRUE,
         footer = NULL
         ))
+    })
+    
+    observeEvent(input$help_time_period, {
+      showModal(modalDialog(
+        title = "Time period type",
+        p(HTML(
+          "<strong>Full</strong>:",
+          "the specified time window is entirely processed",
+          "(e.g., specifying a range from 2016-05-01 to 2018-09-30 will return",
+          "all the products in this time window which match the other parameters)."
+        )),
+        p(HTML(
+          "<strong>Seasonal</strong>:",
+          "the specified time window is processed from the first year to the",
+          "last year, in the seasonal time windows from the first",
+          "Julian day to the second Julian day",
+          "(e.g., specifying a range from 2016-05-01 to 2018-09-30 will return",
+          "all the products from 2016-05-01 to 2016-09-30, from 2016-05-01 to",
+          "2016-09-30 and from 2017-05-01 to 2017-09-30,",
+          "which also match the other parameters)."
+        )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
     })
     
     # observeEvent(input$help_dissolve_extent, {
