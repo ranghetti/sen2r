@@ -569,6 +569,7 @@ sen2r <- function(param_list = NULL,
         # list of SAFE (L1C) needed for required L1C
         s2_lists[["l1c"]] <- s2_list(spatial_extent = pm$extent,
                                      time_interval = pm$timewindow,
+                                     time_period = pm$timeperiod,
                                      tile = pm$s2tiles_selected,
                                      level = "L1C")
       }
@@ -576,6 +577,7 @@ sen2r <- function(param_list = NULL,
         # list of SAFE (L1C or/and L2A) needed for required L2A
         s2_lists[["l2a"]] <- s2_list(spatial_extent = pm$extent,
                                      time_interval = pm$timewindow,
+                                     time_period = pm$timeperiod,
                                      tile = pm$s2tiles_selected,
                                      level = if (pm$step_atmcorr=="auto") {
                                        "auto"

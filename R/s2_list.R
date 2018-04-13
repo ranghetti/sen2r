@@ -10,6 +10,13 @@
 #' @param orbit Single Sentinel-2 orbit number
 #' @param time_interval a temporal vector (class [POSIXct] or
 #'  [Date]) of length 1 (specific day) or 2 (time interval).
+#' @param time_period (optional) Character:
+#'  * "full" (default) means that all
+#'  the images included in the time window are considered;
+#'  * "seasonal" means that only the single seasonal periods in the
+#'  window are used (i.e., with a time window from 2015-06-01 to
+#'  2017-08-31, the periods 2015-06-01 to 2015-08-31, 2016-06-01
+#'  to 2016-08-31 and 2017-06-01 to 2017-08-31 are considered).
 #' @param level Character vector with one of the following:
 #'     - "auto" (default): check if level-2A is available on SciHub:
 #'         if so, list it; if not, list the corresponding level-1C
@@ -32,14 +39,38 @@
 #' @importFrom sf st_bbox st_read st_centroid st_polygon st_transform
 #'
 #' @examples \dontrun{
-#' pos <- sp::SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=sp::CRS("+init=epsg:4326"))
-#' time_window <- as.Date(c("2017-05-01","2017-07-30"))
-#' example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window)
+#' pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
+#' time_window <- as.Date(c("2016-05-01", "2017-07-30"))
+#' 
+#' # Full-period list
+#' example_s2_list <- s2_list(
+#'   spatial_extent = pos, 
+#'   tile = "32TNR", 
+#'   time_interval = time_window, 
+#'   orbit = "065"
+#' )
 #' print(example_s2_list)
+#' # Print the dates of the retrieved products
+#' as.vector(sort(sapply(names(example_s2_list), function(x) {
+#'   strftime(s2_getMetadata(x,"nameinfo")$sensing_datetime)
+#' })))
+#' 
+#' # Seasonal-period list
+#' example_s2_list <- s2_list(
+#'   spatial_extent = pos, 
+#'   tile = "32TNR", 
+#'   time_interval = time_window, 
+#'   time_period = "seasonal"
+#' )
+#' print(example_s2_list)
+#' # Print the dates of the retrieved products
+#' as.vector(sort(sapply(names(example_s2_list), function(x) {
+#'   strftime(s2_getMetadata(x,"nameinfo")$sensing_datetime)
+#' })))
 #' }
 
 s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parameters
-                    time_interval=NULL, # temporal parameters
+                    time_interval=NULL, time_period = "full", # temporal parameters
                     level="auto",
                     apihub=NULL,
                     max_cloud=110) {
@@ -115,8 +146,20 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
   if (length(time_interval)==1) {
     time_interval <- rep(time_interval,2)
   }
-  # convert in format taken by th function
-  time_interval <- strftime(time_interval,"%Y%m%d")
+  # split time_interval in case of seasonal download
+  time_intervals <- if (time_period == "full") {
+    data.frame(
+      "start" = strftime(time_interval[1], "%Y%m%d"), 
+      "end" = strftime(time_interval[2], "%Y%m%d"),
+      stringsAsFactors = FALSE
+    )
+  } else if (time_period == "seasonal") {
+    data.frame(
+      "start" = strftime(seq(time_interval[1], time_interval[2], by="year"), "%Y%m%d"),
+      "end" = strftime(rev(seq(time_interval[2], time_interval[1], by="-1 year")), "%Y%m%d"),
+      stringsAsFactors = FALSE
+    )
+  }
   
   # convert orbits to integer
   if (is.null(orbit)) {
@@ -160,34 +203,36 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
   
   # run the research of the list of products
   av_prod_tuple <- lapply(orbit, function(o) {
-    # py_capture_output was added not only to allow threating the python output
-    # as R message, but also because, on Windows, the following error was returned
-    # if the function was launched outside py_capture_output:
-    # Error in py_call_impl(callable, dots$args, dots$keywords) : 
-    #   IOError: [Errno 9] Bad file descriptor
-    # from a python console, the error did not appear (only inside reticulate).
-    py_output <- reticulate::py_capture_output(
-      py_return <- s2download$s2_download(
-        lat=lat, lon=lon, latmin=latmin, latmax=latmax, lonmin=lonmin, lonmax=lonmax,
-        start_date=time_interval[1], end_date=time_interval[2],
-        tile=r_to_py(tile),
-        orbit=r_to_py(o),
-        apihub=apihub,
-        max_cloud=max_cloud,
-        list_only=TRUE,
-        max_records=0, # TODO this is possible after an addition in Sentinel-download python script:
-        # cycle on product requests (one per 100 products) is interrupted after
-        # the first request of length 0.
-        corr_type=corr_type,
-        wget_path=dirname(binpaths$wget)
+    lapply(seq_len(nrow(time_intervals)), function(i) {
+      # py_capture_output was added not only to allow threating the python output
+      # as R message, but also because, on Windows, the following error was returned
+      # if the function was launched outside py_capture_output:
+      # Error in py_call_impl(callable, dots$args, dots$keywords) : 
+      #   IOError: [Errno 9] Bad file descriptor
+      # from a python console, the error did not appear (only inside reticulate).
+      py_output <- reticulate::py_capture_output(
+        py_return <- s2download$s2_download(
+          lat=lat, lon=lon, latmin=latmin, latmax=latmax, lonmin=lonmin, lonmax=lonmax,
+          start_date=time_intervals[i,1], end_date=time_intervals[i,2],
+          tile=r_to_py(tile),
+          orbit=r_to_py(o),
+          apihub=apihub,
+          max_cloud=max_cloud,
+          list_only=TRUE,
+          max_records=0, # TODO this is possible after an addition in Sentinel-download python script:
+          # cycle on product requests (one per 100 products) is interrupted after
+          # the first request of length 0.
+          corr_type=corr_type,
+          wget_path=dirname(binpaths$wget)
+        )
       )
-    )
-    message(py_output)
-    py_return
+      message(py_output)
+      py_return
+    })
   })
   
-  av_prod_list <- unlist(lapply(av_prod_tuple, function(x) {py_to_r(x)[[1]]}))
-  names(av_prod_list) <- unlist(lapply(av_prod_tuple, function(x) {py_to_r(x)[[2]]}))
+  av_prod_list <- unlist(lapply(av_prod_tuple, lapply, function(x) {py_to_r(x)[[1]]}))
+  names(av_prod_list) <- unlist(lapply(av_prod_tuple, lapply, function(x) {py_to_r(x)[[2]]}))
   
   # filter on tiles
   # (filtering within python code does not take effect with list_only=TRUE)
