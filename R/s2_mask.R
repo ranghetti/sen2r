@@ -266,99 +266,119 @@ s2_mask <- function(infiles,
       }
       
       # create global mask
-      mask_tmpfiles <- character(0)
+      mask_tmpfiles <- character(0) # files which compose the mask
+      naval_tmpfiles <- character(0) # files which determine the amount of NA
       for (i in seq_along(inmask@layers)) {
         mask_tmpfiles <- c(
-          file.path(tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif"))), 
-          mask_tmpfiles
+          mask_tmpfiles,
+          file.path(tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
         )
         raster::calc(inmask[[i]],
                      function(x){as.integer(!is.na(x) & !x %in% req_masks[[i]])},
-                     filename = mask_tmpfiles[1],
+                     filename = mask_tmpfiles[i],
+                     options  = "COMPRESS=LZW",
+                     datatype = "INT1U")
+        naval_tmpfiles <- c(
+          naval_tmpfiles,
+          file.path(tmpdir, basename(tempfile(pattern = "naval_", fileext = ".tif")))
+        )
+        raster::calc(inmask[[i]],
+                     function(x){as.integer(!is.na(x))},
+                     filename = naval_tmpfiles[i],
                      options  = "COMPRESS=LZW",
                      datatype = "INT1U")
       }
       if(length(mask_tmpfiles)==1) {
         outmask <- mask_tmpfiles
+        outnaval <- naval_tmpfiles
       } else {
         outmask <- file.path(tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
+        outnaval <- file.path(tmpdir, basename(tempfile(pattern = "naval_", fileext = ".tif")))
         raster::overlay(stack(mask_tmpfiles),
                         fun = sum,
                         filename = outmask,
                         options  = "COMPRESS=LZW",
                         datatype = "INT1U")
+        raster::overlay(stack(naval_tmpfiles),
+                        fun = sum,
+                        filename = outnaval,
+                        options  = "COMPRESS=LZW",
+                        datatype = "INT1U")
       }
       
       # compute the percentage of masked surface
-      perc_mask <- 100-mean(values(raster(outmask)),na.rm=TRUE)*100
+      perc_mask <- 100 * (
+        mean(values(raster(outnaval)),na.rm=TRUE) - 
+          mean(values(raster(outmask)),na.rm=TRUE)
+      ) / mean(values(raster(outnaval)),na.rm=TRUE)
       
       # if the requested output is this value, return it; else, continue masking
       if (output_type == "perc") {
         names(perc_mask) <- sel_infile
         outpercs <- c(outpercs, perc_mask)
       } else if (output_type == "s2_mask") {
-      
-      # if mask is at different resolution than inraster
-      # (e.g. 20m instead of 10m),
-      # resample it
-      if (any(suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")]) !=
-              suppressWarnings(GDALinfo(outmask)[c("res.x","res.y")]))) {
-        gdal_warp(
-          outmask,
-          outmask_res <- file.path(tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif"))),
-          ref = sel_infile
-        )
-      } else {
-        outmask_res <- outmask
-      }
-      
-      # load mask and evaluate if the output have to be produced
-      inraster <- raster::brick(sel_infile)
-      mask_rast <- raster::raster(outmask_res)
-
-      # if the image is sufficiently clean, mask it
-      if (is.na(max_mask) | perc_mask <= max_mask) {
         
-        if (sel_format!="VRT") {
-          raster::mask(
-            inraster,
-            raster::raster(outmask_res),
-            filename = sel_outfile,
-            maskvalue = 0,
-            updatevalue = sel_naflag,
-            updateNA = TRUE,
-            NAflag = sel_naflag,
-            datatype = dataType(inraster),
-            format = sel_format,
-            options = if(sel_format == "GTiff") {paste0("COMPRESS=",compress)},
-            overwrite = overwrite
+        # if mask is at different resolution than inraster
+        # (e.g. 20m instead of 10m),
+        # resample it
+        if (any(suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")]) !=
+                suppressWarnings(GDALinfo(outmask)[c("res.x","res.y")]))) {
+          gdal_warp(
+            outmask,
+            outmask_res <- file.path(tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif"))),
+            ref = sel_infile
           )
         } else {
-          maskapply_parallel(
-            inraster, 
-            raster(outmask_res), 
-            outpath = sel_outfile,
-            tmpdir = tmpdir,
-            binpaths = binpaths,
-            NAflag = sel_naflag,
-            parallel = parallel,
-            datatype = dataType(inraster),
-            overwrite = overwrite
-          )
+          outmask_res <- outmask
         }
         
+        # load mask and evaluate if the output have to be produced
+        inraster <- raster::brick(sel_infile)
+        mask_rast <- raster::raster(outmask_res)
         
-        # fix for envi extension (writeRaster use .envi)
-        if (sel_format=="ENVI" &
-            file.exists(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile))) {
-          file.rename(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),
-                      sel_outfile)
-          file.rename(paste0(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),".aux.xml"),
-                      paste0(sel_outfile,".aux.xml"))
-        }
+        # if the image is sufficiently clean, mask it
+        if (is.na(max_mask) | perc_mask <= max_mask) {
+          
+          if (sel_format!="VRT") {
+            raster::mask(
+              inraster,
+              raster::raster(outmask_res),
+              filename = sel_outfile,
+              maskvalue = 0,
+              updatevalue = sel_naflag,
+              updateNA = TRUE,
+              NAflag = sel_naflag,
+              datatype = dataType(inraster),
+              format = sel_format,
+              options = if(sel_format == "GTiff") {paste0("COMPRESS=",compress)},
+              overwrite = overwrite
+            )
+          } else {
+            maskapply_parallel(
+              inraster, 
+              raster(outmask_res), 
+              outpath = sel_outfile,
+              tmpdir = tmpdir,
+              binpaths = binpaths,
+              NAflag = sel_naflag,
+              parallel = parallel,
+              datatype = dataType(inraster),
+              overwrite = overwrite
+            )
+          }
+          
+          
+          # fix for envi extension (writeRaster use .envi)
+          if (sel_format=="ENVI" &
+              file.exists(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile))) {
+            file.rename(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),
+                        sel_outfile)
+            file.rename(paste0(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),".aux.xml"),
+                        paste0(sel_outfile,".aux.xml"))
+          }
+          
+        } # end of max_mask IF cycle
         
-      } # end of max_mask IF cycle
-      
       } # end of output_type IF cycle
       
     } # end of overwrite IF cycle
