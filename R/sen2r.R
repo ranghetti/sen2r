@@ -184,9 +184,11 @@
 #'  the temporary files); NULL otherwise.
 #'
 #' @import data.table
+#' @importFrom utils packageVersion
 #' @importFrom geojsonio geojson_json
 #' @importFrom jsonlite fromJSON
 #' @importFrom sf st_cast st_read st_combine
+#' @importFrom methods formalArgs
 #' @export
 
 
