@@ -19,10 +19,10 @@
 #' @importFrom mapedit editModUI
 #' @importFrom utils packageVersion
 #' @importFrom sf st_coordinates st_crs st_intersects st_polygon st_read st_bbox st_as_sfc st_transform
-#' @importFrom shiny a actionButton actionLink br callModule checkboxGroupInput
+#' @importFrom shiny a actionButton actionLink addResourcePath br callModule checkboxGroupInput
 #'  checkboxInput column conditionalPanel dateRangeInput div downloadButton downloadHandler em fileInput fluidRow h2 h3
 #'  helpText hr HTML htmlOutput icon incProgress isolate NS numericInput observe p
-#'  radioButtons reactive reactiveValues renderText renderUI runApp selectInput setProgress
+#'  radioButtons reactive reactiveVal reactiveValues removeModal renderText renderUI runApp selectInput setProgress
 #'  shinyApp showModal sliderInput span stopApp strong tagList textInput uiOutput updateCheckboxGroupInput
 #'  updateDateRangeInput updateSliderInput updateRadioButtons updateTextInput withMathJax
 #'  withProgress

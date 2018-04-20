@@ -13,7 +13,7 @@
 #' @importFrom shiny observeEvent reactive reactiveValues
 #' @importFrom leaflet.extras addDrawToolbar drawPolygonOptions drawRectangleOptions editToolbarOptions
 #' @importFrom leaflet renderLeaflet
-# #' @importFrom mapedit combine_list_of_sf st_as_sfc.geo_list
+#' @importFrom mapedit combine_list_of_sf st_as_sfc.geo_list st_as_sf.geo_list
 #' @import mapedit
 #' @note Slightly edited from [mapedit::editMod] in order to allow drawing only polygons.
 editModPoly <- function(

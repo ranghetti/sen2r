@@ -2,6 +2,7 @@
 title: "Interactive execution"
 output: rmarkdown::html_vignette
 vignette: >
+  %\VignetteIndexEntry{Interactive execution}
   %\VignetteEngine{knitr::knitr}
   %\usepackage[UTF-8]{inputenc}
 ---

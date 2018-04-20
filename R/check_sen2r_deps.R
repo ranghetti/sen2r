@@ -13,11 +13,11 @@
 #' the fist time, in order to avoid errors.
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
-#' @importFrom shiny actionButton br code conditionalPanel div em
+#' @importFrom shiny actionButton addResourcePath br code conditionalPanel div em
 #'  fluidPage fluidRow h3 helpText htmlOutput icon modalButton
 #'  modalDialog observe observeEvent outputOptions p reactive
-#'  reactiveFileReader reactiveValues renderText renderUI runApp
-#'  shinyApp showModal span strong textOutput uiOutput
+#'  reactiveFileReader reactivePoll reactiveValues renderText renderUI runApp
+#'  shinyApp showModal span strong textOutput uiOutput verbatimTextOutput
 #' @importFrom shinyjs hide html useShinyjs
 #' @importFrom shinyWidgets confirmSweetAlert
 #' @importFrom utils capture.output

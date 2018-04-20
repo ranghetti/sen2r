@@ -56,7 +56,7 @@
 #' @importFrom rgdal GDALinfo CRSargs
 #' @importFrom gdalUtils gdalwarp gdal_translate
 #' @importFrom sp CRS
-#' @importFrom sf st_transform st_geometry st_geometry_type st_write st_cast st_area st_bbox st_sfc st_polygon
+#' @importFrom sf st_transform st_geometry st_geometry_type st_write st_cast st_area st_bbox st_sfc st_polygon st_as_sf st_as_sfc
 #' @importFrom methods as
 #' @importFrom magrittr "%>%"
 #' @importFrom units ud_units

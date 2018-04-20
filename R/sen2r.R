@@ -191,8 +191,9 @@
 #' @importFrom utils packageVersion
 #' @importFrom geojsonio geojson_json
 #' @importFrom jsonlite fromJSON
-#' @importFrom sf st_cast st_read st_combine
+#' @importFrom sf st_cast st_read st_combine st_as_sf
 #' @importFrom methods formalArgs
+#' @importFrom stats na.omit
 #' @export
 
 
@@ -394,7 +395,7 @@ sen2r <- function(param_list = NULL,
   if (is(pm$extent, "character")) {
     pm$extent <- st_read(pm$extent, quiet=TRUE)
   } else if (is(pm$extent, "Spatial")) {
-    pm$extent <- st_as_st(pm$extent)
+    pm$extent <- st_as_sf(pm$extent)
   }
   
   # check extent_name
