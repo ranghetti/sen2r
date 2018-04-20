@@ -13,7 +13,7 @@
 #' @importFrom shiny observeEvent reactive reactiveValues
 #' @importFrom leaflet.extras addDrawToolbar drawPolygonOptions drawRectangleOptions editToolbarOptions
 #' @importFrom leaflet renderLeaflet
-#' @importFrom mapedit combine_list_of_sf st_as_sfc.geo_list st_as_sf.geo_list
+#' @importFrom utils getFromNamespace
 #' @import mapedit
 #' @note Slightly edited from [mapedit::editMod] in order to allow drawing only polygons.
 editModPoly <- function(
@@ -24,6 +24,12 @@ editModPoly <- function(
   record = FALSE,
   crs = 4326
 ) {
+  
+  # import unexported functions
+  st_as_sf_geo_list <- getFromNamespace("st_as_sf.geo_list", "mapedit")
+  st_as_sfc_geo_list <- getFromNamespace("st_as_sfc.geo_list", "mapedit")
+  combine_list_of_sf <- getFromNamespace("combine_list_of_sf", "mapedit")
+
   # check to see if addDrawToolbar has been already added to the map
   if(is.null(
     Find(
@@ -153,8 +159,8 @@ editModPoly <- function(
             init = NULL
           )
           
-          mapedit:::combine_list_of_sf(
-            lapply(features, mapedit:::st_as_sf.geo_list, crs = crs)
+          combine_list_of_sf(
+            lapply(features, st_as_sf_geo_list, crs = crs)
           )
         }
       )
@@ -162,7 +168,7 @@ editModPoly <- function(
       recorder <- lapply(
         recorder,
         function(evt) {
-          feature = mapedit:::st_as_sfc.geo_list(evt$feature, crs = crs)
+          feature = st_as_sfc_geo_list(evt$feature, crs = crs)
           list(evt = evt$event, timestamp = evt$timestamp, feature = feature)
         }
       )
