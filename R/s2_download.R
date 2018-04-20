@@ -124,7 +124,7 @@ s2_download <- function(s2_prodlist=NULL,
       no_download   = FALSE,
       write_dir     = outdir,
       file_list     = NULL,
-      downloader_path     = dirname(binpaths[[downloader]]),
+      downloader_path = dirname(binpaths[[if (downloader=="aria2") {"aria2c"} else {"wget"}]]),
       trace_funname = "s2download",
       trace_files   = file.path(outdir,c(filename,paste0(filename,".zip")))
     )

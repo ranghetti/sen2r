@@ -153,7 +153,10 @@ def download_s2product(filename,link,downloader,apihub,tile=None,no_download=Fal
 
     #==================================download  whole product
     if tile==None:
-        commande_wget='%s %s %s%s/%s "%s"'%(wg,auth,wg_opt,write_dir,filename+".zip",link)
+        if downloader=="wget":
+            commande_wget='%s %s %s%s/%s "%s"'%(wg,auth,wg_opt,write_dir,filename+".zip",link)
+        elif downloader=="aria2":
+            commande_wget='%s %s -d %s %s%s "%s"'%(wg,auth,write_dir,wg_opt,filename+".zip",link)
         #do not download the product if it was already downloaded and unzipped, or if no_download option was selected.
         unzipped_file_exists= os.path.exists(os.path.join(write_dir,filename))
         # print commande_wget
