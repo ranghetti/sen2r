@@ -1,5 +1,5 @@
 #' @title Apply cloud masks
-#' @description Apply a cloud mask to a Sentinel-2 product. Since
+#' @description [s2_mask] Applies a cloud mask to a Sentinel-2 product. Since
 #'  [raster] functions are used to perform computations, output files
 #'  are physical rasters (no output VRT is allowed).
 #' @param infiles A vector of input filenames. Input files are paths
@@ -52,8 +52,10 @@
 #'  second case, its parent directory must exists).
 #'  If it is a relative path, it is expanded from the common parent
 #'  directory of `infiles`.
-#' @param tmpdir (optional) Path where intermediate VRT will be created.
-#'  Default is in a temporary directory.
+#' @param tmpdir (optional) Path where intermediate files (VRT) will be created.
+#'  Default is a temporary directory.
+#' @param rmtmp (optional) Logical: should temporary files be removed?
+#'  (Default: TRUE)
 #' @param format (optional) Format of the output file (in a
 #'  format recognised by GDAL). Default is the same format of input images
 #'  (or "GTiff" in case of VRT input images).
@@ -73,7 +75,7 @@
 #'  multicore processing).
 #' @param overwrite (optional) Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
-#' @return A vector with the names of the created products.
+#' @return [s2_mask] returns a vector with the names of the created products.
 #' @export
 #' @importFrom rgdal GDALinfo
 #' @importFrom raster stack brick calc dataType mask overlay values
@@ -84,15 +86,44 @@
 
 s2_mask <- function(infiles,
                     maskfiles,
-                    mask_type="cloud_medium_proba",
-                    max_mask=80,
-                    outdir="./masked",
-                    tmpdir=NA,
-                    format=NA,
-                    subdirs=NA,
-                    compress="DEFLATE",
+                    mask_type = "cloud_medium_proba",
+                    max_mask = 80,
+                    outdir = "./masked",
+                    tmpdir = NA,
+                    rmtmp = TRUE,
+                    format = NA,
+                    subdirs = NA,
+                    compress = "DEFLATE",
                     parallel = FALSE,
                     overwrite = FALSE) {
+  .s2_mask(infiles = infiles,
+           maskfiles = maskfiles,
+           mask_type = mask_type,
+           max_mask = max_mask,
+           outdir = outdir,
+           tmpdir = tmpdir,
+           rmtmp = rmtmp,
+           format = format,
+           subdirs = subdirs,
+           compress = compress,
+           parallel = parallel,
+           overwrite = overwrite,
+           output_type = "s2_mask")
+}
+
+.s2_mask <- function(infiles,
+                     maskfiles,
+                     mask_type = "cloud_medium_proba",
+                     max_mask = 80,
+                     outdir = "./masked",
+                     tmpdir = NA,
+                     rmtmp = TRUE,
+                     format = NA,
+                     subdirs = NA,
+                     compress = "DEFLATE",
+                     parallel = FALSE,
+                     overwrite = FALSE,
+                     output_type = "s2_mask") { # determines if using s2_mask() or s2_perc_masked()
   
   . <- NULL
   
@@ -136,7 +167,7 @@ s2_mask <- function(infiles,
   
   # Check tmpdir
   if (is.na(tmpdir)) {
-    tmpdir <- tempfile(pattern="dir")
+    tmpdir <- tempfile(pattern="s2mask_")
   }
   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
   
@@ -180,7 +211,11 @@ s2_mask <- function(infiles,
   }
   
   ## Cycle on each file
-  outfiles <- character(0)
+  if (output_type == "s2_mask") {
+    outfiles <- character(0)
+  } else if (output_type == "perc") {
+    outpercs <- numeric(0)
+  }
   for (i in seq_along(infiles)) {
     sel_infile <- infiles[i]
     sel_infile_meta <- c(infiles_meta[i,])
@@ -231,95 +266,164 @@ s2_mask <- function(infiles,
       }
       
       # create global mask
-      mask_tmpfiles <- character(0)
+      mask_tmpfiles <- character(0) # files which compose the mask
+      naval_tmpfiles <- character(0) # files which determine the amount of NA
       for (i in seq_along(inmask@layers)) {
-        mask_tmpfiles <- c(tempfile(fileext=".tif"), mask_tmpfiles)
+        mask_tmpfiles <- c(
+          mask_tmpfiles,
+          file.path(tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
+        )
         raster::calc(inmask[[i]],
                      function(x){as.integer(!is.na(x) & !x %in% req_masks[[i]])},
-                     filename = mask_tmpfiles[1],
+                     filename = mask_tmpfiles[i],
+                     options  = "COMPRESS=LZW",
+                     datatype = "INT1U")
+        naval_tmpfiles <- c(
+          naval_tmpfiles,
+          file.path(tmpdir, basename(tempfile(pattern = "naval_", fileext = ".tif")))
+        )
+        raster::calc(inmask[[i]],
+                     function(x){as.integer(!is.na(x))},
+                     filename = naval_tmpfiles[i],
                      options  = "COMPRESS=LZW",
                      datatype = "INT1U")
       }
       if(length(mask_tmpfiles)==1) {
         outmask <- mask_tmpfiles
+        outnaval <- naval_tmpfiles
       } else {
-        outmask <- tempfile(fileext=".tif")
+        outmask <- file.path(tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
+        outnaval <- file.path(tmpdir, basename(tempfile(pattern = "naval_", fileext = ".tif")))
         raster::overlay(stack(mask_tmpfiles),
                         fun = sum,
                         filename = outmask,
                         options  = "COMPRESS=LZW",
                         datatype = "INT1U")
+        raster::overlay(stack(naval_tmpfiles),
+                        fun = sum,
+                        filename = outnaval,
+                        options  = "COMPRESS=LZW",
+                        datatype = "INT1U")
       }
       
-      # if mask is at different resolution than inraster
-      # (e.g. 20m instead of 10m),
-      # resample it
-      if (any(suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")]) !=
-              suppressWarnings(GDALinfo(outmask)[c("res.x","res.y")]))) {
-        gdal_warp(outmask,
-                  outmask_res <- tempfile(fileext=".tif"),
-                  ref = sel_infile)
-      } else {
-        outmask_res <- outmask
-      }
-      
-      # load mask and evaluate if the output have to be produced
-      inraster <- raster::brick(sel_infile)
-      mask_rast <- raster::raster(outmask_res)
       # compute the percentage of masked surface
-      perc_mask <- 100-mean(values(mask_rast),na.rm=TRUE)*100
+      perc_mask <- 100 * (
+        mean(values(raster(outnaval)),na.rm=TRUE) - 
+          mean(values(raster(outmask)),na.rm=TRUE)
+      ) / mean(values(raster(outnaval)),na.rm=TRUE)
       
-      # if the image is sufficiently clean, mask it
-      if (is.na(max_mask) | perc_mask <= max_mask) {
+      # if the requested output is this value, return it; else, continue masking
+      if (output_type == "perc") {
+        names(perc_mask) <- sel_infile
+        outpercs <- c(outpercs, perc_mask)
+      } else if (output_type == "s2_mask") {
         
-        if (sel_format!="VRT") {
-          raster::mask(
-            inraster,
-            raster::raster(outmask_res),
-            filename = sel_outfile,
-            maskvalue = 0,
-            updatevalue = sel_naflag,
-            updateNA = TRUE,
-            NAflag = sel_naflag,
-            datatype = dataType(inraster),
-            format = sel_format,
-            options = if(sel_format == "GTiff") {paste0("COMPRESS=",compress)},
-            overwrite = overwrite
+        # if mask is at different resolution than inraster
+        # (e.g. 20m instead of 10m),
+        # resample it
+        if (any(suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")]) !=
+                suppressWarnings(GDALinfo(outmask)[c("res.x","res.y")]))) {
+          gdal_warp(
+            outmask,
+            outmask_res <- file.path(tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif"))),
+            ref = sel_infile
           )
         } else {
-          maskapply_parallel(
-            inraster, 
-            raster(outmask_res), 
-            outpath = sel_outfile,
-            tmpdir = tmpdir,
-            binpaths = binpaths,
-            NAflag = sel_naflag,
-            parallel = parallel,
-            datatype = dataType(inraster),
-            overwrite = overwrite
-          )
+          outmask_res <- outmask
         }
         
+        # load mask and evaluate if the output have to be produced
+        inraster <- raster::brick(sel_infile)
+        mask_rast <- raster::raster(outmask_res)
         
-        # fix for envi extension (writeRaster use .envi)
-        if (sel_format=="ENVI" &
-            file.exists(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile))) {
-          file.rename(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),
-                      sel_outfile)
-          file.rename(paste0(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),".aux.xml"),
-                      paste0(sel_outfile,".aux.xml"))
-        }
+        # if the image is sufficiently clean, mask it
+        if (is.na(max_mask) | perc_mask <= max_mask) {
+          
+          if (sel_format!="VRT") {
+            raster::mask(
+              inraster,
+              raster::raster(outmask_res),
+              filename = sel_outfile,
+              maskvalue = 0,
+              updatevalue = sel_naflag,
+              updateNA = TRUE,
+              NAflag = sel_naflag,
+              datatype = dataType(inraster),
+              format = sel_format,
+              options = if(sel_format == "GTiff") {paste0("COMPRESS=",compress)},
+              overwrite = overwrite
+            )
+          } else {
+            maskapply_parallel(
+              inraster, 
+              raster(outmask_res), 
+              outpath = sel_outfile,
+              tmpdir = tmpdir,
+              binpaths = binpaths,
+              NAflag = sel_naflag,
+              parallel = parallel,
+              datatype = dataType(inraster),
+              overwrite = overwrite
+            )
+          }
+          
+          
+          # fix for envi extension (writeRaster use .envi)
+          if (sel_format=="ENVI" &
+              file.exists(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile))) {
+            file.rename(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),
+                        sel_outfile)
+            file.rename(paste0(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),".aux.xml"),
+                        paste0(sel_outfile,".aux.xml"))
+          }
+          
+        } # end of max_mask IF cycle
         
-      } # end of max_mask IF cycle
+      } # end of output_type IF cycle
       
     } # end of overwrite IF cycle
     
-    if (file.exists(sel_outfile)) {
+    if (output_type == "s2_mask" & file.exists(sel_outfile)) {
       outfiles <- c(outfiles, sel_outfile)
     }
     
   } # end on infiles cycle
   
-  return(outfiles)
+  # Remove temporary files
+  if (rmtmp == TRUE) {
+    unlink(tmpdir, recursive=TRUE)
+  }
   
+  if (output_type == "s2_mask") {
+    return(outfiles)
+  } else if (output_type == "perc") {
+    return(outpercs)
+  }
+  
+}
+
+
+#' @title Compute the percentage of cloud-masked surface
+#' @description [s2_perc_masked] computes the percentage of cloud-masked surface.
+#'  The function is similar to [s2_mask], but it returns percentages instead
+#'  of masked rasters.
+#' @return [s2_perc_masked] returns a names vector with the percentages 
+#'  of masked surtfaces.
+#' @rdname s2_mask
+#' @export
+
+s2_perc_masked <- function(infiles,
+                           maskfiles,
+                           mask_type = "cloud_medium_proba",
+                           tmpdir = NA,
+                           rmtmp = TRUE,
+                           parallel = FALSE) {
+  .s2_mask(infiles = infiles,
+           maskfiles = maskfiles,
+           mask_type = mask_type,
+           max_mask = 100,
+           tmpdir = tmpdir,
+           rmtmp = rmtmp,
+           parallel = parallel,
+           output_type = "perc")
 }

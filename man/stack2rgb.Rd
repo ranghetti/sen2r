@@ -5,7 +5,7 @@
 \title{Produce an RGB image from a multiband raster file.}
 \usage{
 stack2rgb(in_rast, out_file = NULL, bands = 1:3, minval = 0,
-  maxval = 10000)
+  maxval = 10000, tmpdir = NA)
 }
 \arguments{
 \item{in_rast}{Path of the input multiband raster.}
@@ -19,6 +19,9 @@ the three bands to be used respectively for red, green and blue.}
 \item{minval}{(optional) the value corresponding to black (default: 0).}
 
 \item{maxval}{(optional) the value corresponding to white (default: 10000).}
+
+\item{tmpdir}{(optional) Path where intermediate files will be created.
+Default is a temporary directory.}
 }
 \value{
 The path of the output image; alternatively, the output image

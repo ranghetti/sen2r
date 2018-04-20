@@ -7,7 +7,6 @@
 #' - GDAL
 #' - Wget
 #' - sen2cor
-#' - s2download
 #' 
 #' This function opens a GUI which allows to check that these dependencies
 #' are installed. This check is highly suggested before using the library for 
@@ -19,7 +18,7 @@
 #'  modalDialog observe observeEvent outputOptions p reactive
 #'  reactiveFileReader reactiveValues renderText renderUI runApp
 #'  shinyApp showModal span strong textOutput uiOutput
-#' @importFrom shinyjs html useShinyjs
+#' @importFrom shinyjs hide html useShinyjs
 #' @importFrom shinyWidgets confirmSweetAlert
 #' @importFrom utils capture.output
 #' @importFrom jsonlite fromJSON toJSON
@@ -36,7 +35,7 @@ check_sen2r_deps <- function() {
     # header
     shinyjs::useShinyjs(),
     
-    fluidRow(
+    fluidRow(column(
       title="Dependencies",
       width=12,
       
@@ -61,7 +60,7 @@ check_sen2r_deps <- function() {
           "it is required by the package, unless you choose to work offline."
         )),
         span(style="display:inline-block;vertical-align:center;padding-top:5px;",
-             actionButton("check_wget", "Check wget", width=200),
+             actionButton("check_wget", "Check Wget", width=200),
              "\u2000"),
         span(style="display:inline-block;vertical-align:center;",
              htmlOutput("check_wget_icon"))
@@ -70,8 +69,8 @@ check_sen2r_deps <- function() {
         # h3("Python"),
         # helpText(em(
         #   "Python is a mandatory dependency:",
-        #   "it is used by s2download scripts",
-        #   "and to retrieve metadata from SAFE products."
+        #   "it is used to download SAFE products",
+        #   "and to retrieve metadata from them."
         # )),
         # span(style="padding-top:5px;",
         #     actionButton("check_python", "Check Python", width=200)),
@@ -92,26 +91,17 @@ check_sen2r_deps <- function() {
       span(style="display:inline-block;vertical-align:center;",
            htmlOutput("check_sen2cor_icon")),
       
-      h3("s2download"),
-      helpText(em(
-        "s2download is a collection of python scripts used to find and download",
-        "Sentinel-2 products; it is required by the package, unless you choose",
-        "to work offline (using already downloaded SAFE products)."
-      )),
-      span(style="padding-top:5px;",
-           actionButton("check_s2download", "Check s2download scripts", width=200),
-           "\u2000"),
-      span(style="display:inline-block;vertical-align:center;",
-           htmlOutput("check_s2download_icon")),
-      
       hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
       uiOutput("footer_buttons")
       
-    ) # end of fluidRow Dependencies
+    )) # end of fluidRow Dependencies
     
   ) # end of fluidPage
   
   settings.server <- function(input, output, session) {
+    
+    # link to www directory and objects
+    addResourcePath("www", system.file("www", package="sen2r"))
     
     rv <- reactiveValues()
     
@@ -122,7 +112,7 @@ check_sen2r_deps <- function() {
     # list of dependencies
     dependencies <- c(
       "gdalbuildvrt", "gdal_translate", "gdalwarp", "gdal_calc", "gdaldem", "gdalinfo", "ogrinfo",
-      "python", "sen2cor", "s2download", "wget"
+      "python", "sen2cor", "wget"
     )
     # load binpaths
     binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
@@ -165,46 +155,182 @@ check_sen2r_deps <- function() {
       modalDialog(
         title = "GDAL check",
         size = "s",
-        conditionalPanel(
-          condition = "output.check_gdal_isvalid == 'NA'", 
-          p(style="text-align:center;font-size:500%;color:darkgrey;", "\u23F3")
-        ),
-        conditionalPanel(
-          condition = "output.check_gdal_isvalid == 'TRUE'", 
-          p(style="text-align:center;font-size:500%;color:darkgreen;", "\u2714")
-        ),
-        conditionalPanel(
-          condition = "output.check_gdal_isvalid == 'FALSE'", 
-          p(style="text-align:center;font-size:500%;color:red;", "\u2718")
-        ),
-        textOutput("check_gdal_outext"),
+        uiOutput("check_gdal_message"),
+        verbatimTextOutput("check_gdal_outmessages"),
         easyClose = FALSE,
-        footer = conditionalPanel(
-          condition = "output.check_gdal_isvalid != 'NA'",  
-          modalButton("\u2000Close", icon = icon("check"))
-        )
+        footer = NULL
       )
     })
+    
+    # use a reactive output for install GDAL message
+    # (this because otherwise it does not react to check_gdal_valid chages)
+    output$check_gdal_message <- renderUI({
+      if (is.na(rv$check_gdal_isvalid)) {
+        div(
+          align="center",
+          p(style="text-align:center;font-size:500%;color:darkgrey;", 
+            icon("cog", class = "fa-spin"))
+        )
+      } else if (!rv$check_gdal_isvalid) {
+        if (Sys.info()["sysname"] == "Windows") {
+          div(
+            p(style="text-align:center;font-size:500%;color:red;", 
+              icon("times-circle")),
+            p("GDAL needs to be installed.",
+              "To do it, download the OSGeo4W installer using the button below:",
+              "then, give the administrator rules when required,",
+              "choose the \"Advanced install\" and",
+              "continue clicking \"Next\";",
+              "when the window to chose the packages to install will appear,",
+              "check the package \"gdal-python\" and install it."),
+            hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+            div(style="text-align:right;", 
+                actionButton("install_gdal_button", strong("\u2000Download"), icon=icon("download")),
+                modalButton("\u2000Cancel", icon = icon("ban")))
+          )
+        } else {
+          div(
+            p(style="text-align:center;font-size:500%;color:red;", 
+              icon("times-circle")),
+            p("GDAL needs to be installed.",
+              "To do it, install the package \"python-gdal\",",
+              "then repeat this check."),
+            hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+            div(style="text-align:right;", 
+                modalButton("\u2000Close", icon = icon("check")))
+          )
+        }
+      } else if (rv$check_gdal_isvalid) {
+        div(
+          p(style="text-align:center;font-size:500%;color:darkgreen;", 
+            icon("check-circle")),
+          p("GDAL is correctly installed."),
+          hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+          div(style="text-align:right;", 
+              modalButton("\u2000Close", icon = icon("check")))
+        )
+      }
+    })
+    
+    # build the modal dialog
+    install_gdal_modal <- reactive({
+      modalDialog(
+        title = "Install GDAL",
+        size = "s",
+        uiOutput("install_gdal_message"),
+        easyClose = FALSE,
+        footer = NULL
+      )
+    })
+    
     
     # do the check when button is pressed
     observeEvent(input$check_gdal, {
       
-      # open modaldialog
-      showModal(check_gdal_modal())
-      
       # reset check value
       rv$check_gdal_isvalid <- NA # FIXME not working
       
+      # open modaldialog
+      showModal(check_gdal_modal())
+      
+      shinyjs::html(
+        "check_gdal_message",
+        as.character(div(
+          align="center",
+          p(style="text-align:center;font-size:500%;color:darkgrey;", 
+            icon("spinner", class = "fa-pulse"))
+        ))
+      )
+      
       # do the check
       withCallingHandlers({
-        shinyjs::html("check_gdal_outext", "")
+        shinyjs::html("check_gdal_outmessages", "")
         rv$check_gdal_isvalid <- check_gdal(abort = FALSE, force = TRUE)
       },
       message = function(m) {
-        shinyjs::html(id = "check_gdal_outext", html = m$message, add = TRUE)
+        shinyjs::html(id = "check_gdal_outmessages", html = m$message, add = TRUE)
       })
       
+      shinyjs::hide("check_gdal_outmessages")
+      
+      
     })
+    
+    # install osgeo
+    observeEvent(input$install_gdal_button, {
+      
+      showModal(install_gdal_modal())
+      
+      # create the text to show in the modaldialog
+      shinyjs::html(
+        "install_gdal_message", 
+        as.character(div(
+          br(),
+          p(style="color:darkgrey;text-align:center;font-size:500%;","\u23F3"),
+          p("Wait while the OSGeo4W installer is being downloaded...")
+        )),
+        add=FALSE
+      )
+      
+      # Download wget
+      osgeo4w_url <- paste0(
+        "http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86",
+        if (Sys.info()["machine"]=="x86-64") {"_64"},".exe"
+      )
+      osgeo4w_path <- tempfile(pattern="dir",fileext = ".exe")
+      # use wget instead of download.file() because the internal function
+      # fails in downloading .exe (the output file is different - biggger - from the source).
+      system(paste0(
+        "\"",binpaths()$wget, "\" -q \"", osgeo4w_url, 
+        "\" -O  \"", osgeo4w_path, "\""
+      ), intern=TRUE)
+      # download.file(osgeo4w_url, osgeo4w_path)
+      if (file.exists(osgeo4w_path)) {
+        
+        shinyjs::html(
+          "install_gdal_message", 
+          as.character(div(
+            p("OSGeo4W was correctly downloaded."),
+            p("The installer window was opened;",
+              "please install the package \"gdal-python\" following the instructions.")
+          )),
+          add = TRUE
+        )
+        
+        shell(osgeo4w_path)
+        
+        shinyjs::html(
+          "install_gdal_message", 
+          as.character(div(
+            p("The installation was terminated;",
+              "please repeat the check to be sure all was correctly installed."),
+            hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+            div(style="text-align:right;", 
+                modalButton("\u2000Close", icon = icon("check")))
+          )),
+          add = TRUE
+        )
+        
+        
+      } else {
+        
+        shinyjs::html(
+          "install_gdal_message", 
+          as.character(div(
+            p("Something went wrong during the download; please retry."),
+            hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+            div(style="text-align:right;", 
+                modalButton("\u2000Close", icon = icon("check")))
+          )),
+          add = TRUE
+        )
+        
+      }
+      
+      
+    })
+    
+    
     
     
     #-- Check Wget --#
@@ -230,34 +356,40 @@ check_sen2r_deps <- function() {
     })
     outputOptions(output, "check_wget_isvalid", suspendWhenHidden = FALSE)
     
+    output$check_wget_message <- renderUI({
+      if (is.na(rv$check_wget_isvalid)) {
+        ""
+      } else if (!rv$check_wget_isvalid) {
+        div(
+          align = "center",
+          p(style="color:red;text-align:center;font-size:500%;",
+            icon("times-circle")),
+          p("wget needs to be downloaded."),
+          hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+          div(style="text-align:right;",
+              actionButton("install_wget_button", strong("\u2000Download"), icon=icon("download")),
+              modalButton("\u2000Cancel", icon = icon("ban")))
+        )
+      } else if (rv$check_wget_isvalid) {
+        div(
+          align = "center",
+          p(style="text-align:center;font-size:500%;color:darkgreen;", 
+            icon("check-circle")),
+          p("Wget is correctly installed."),
+          hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+          div(style="text-align:right;", 
+              modalButton("\u2000Close", icon = icon("check")))
+        )
+      }
+    })
+    
     # build the modalDialog
     check_wget_modal <- modalDialog(
       title = "wget check",
       size = "s",
-      conditionalPanel(
-        condition = "output.check_wget_isvalid == 'TRUE'", 
-        div(
-          p(style="color:darkgreen;text-align:center;font-size:500%;","\u2714"),
-          p("wget is correctly installed.")
-        )
-      ),
-      conditionalPanel(
-        condition = "output.check_wget_isvalid == 'FALSE'", 
-        div(
-          p(style="color:red;text-align:center;font-size:500%;","\u2718"),
-          p("wget needs to be downloaded."),
-          actionButton("install_wget_button", strong("\u2000Download"), icon=icon("download")),
-          modalButton("\u2000Cancel", icon = icon("ban"))#,
-          # hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-          # verbatimTextOutput("install_wget_outext")
-        )
-      ),
-      uiOutput("install_wget_outext"),
+      uiOutput("check_wget_message"),
       easyClose = FALSE,
-      footer = conditionalPanel(
-        condition = "output.check_wget_isvalid == 'TRUE'",  
-        modalButton("\u2000Close", icon = icon("check"))
-      )
+      footer = NULL
     )
     
     # open the modaldialog when button is pressed
@@ -271,16 +403,17 @@ check_sen2r_deps <- function() {
     # install wget
     observeEvent(input$install_wget_button, {
       
-      # create the text to show in the modaldialog
       shinyjs::html(
-        "install_wget_outext", 
+        "check_wget_message", 
         as.character(div(
-          br(),
-          p(style="color:darkgrey;text-align:center;font-size:500%;","\u23F3"),
-          p("Wait while wget is being installed...")
+          align="center",
+          p(style="text-align:center;font-size:500%;color:darkgrey;", 
+            icon("cog", class = "fa-spin")),
+          p("Wait while Wget is being installed...")
         ))
       )
       
+      Sys.sleep(0.5)
       check_wget_outerr <- tryCatch(
         install_wget(),
         error = function(e) {print(e)}
@@ -288,17 +421,34 @@ check_sen2r_deps <- function() {
       
       # remove the text
       if (is(check_wget_outerr, "error")) {
-        rv$check_wget_isvalid <- FALSE
         shinyjs::html(
-          "install_wget_outext", 
+          "check_wget_message", 
           as.character(div(
-            br(), p("Some errors occurred:"),
-            p(code(check_wget_outerr))
+            align="center",
+            p(style="text-align:center;font-size:500%;color:red;", 
+              icon("times-circle")),
+            p("Some errors occurred:"),
+            p(code(check_wget_outerr)),
+            hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+            div(style="text-align:right;", 
+                modalButton("\u2000Close", icon = icon("check")))
           ))
         )
+        rv$check_wget_isvalid <- FALSE
       } else {
+        shinyjs::html(
+          "check_wget_message", 
+          as.character(div(
+            align="center",
+            p(style="text-align:center;font-size:500%;color:darkgreen;", 
+              icon("check-circle")),
+            p("Wget was correctly installed."),
+            hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+            div(style="text-align:right;", 
+                modalButton("\u2000Close", icon = icon("check")))
+          ))
+        )
         rv$check_wget_isvalid <- TRUE
-        shinyjs::html("install_wget_outext", "")
       }
       
     })
@@ -325,34 +475,40 @@ check_sen2r_deps <- function() {
     })
     outputOptions(output, "check_sen2cor_isvalid", suspendWhenHidden = FALSE)
     
+    output$check_sen2cor_message <- renderUI({
+      if (is.na(rv$check_sen2cor_isvalid)) {
+        ""
+      } else if (rv$check_sen2cor_isvalid) {
+        div(
+          align = "center",
+          p(style="color:darkgreen;text-align:center;font-size:500%;",
+            icon("check-circle")),
+          p("sen2cor is correctly installed."),
+          hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+          div(style="text-align:right;", 
+              modalButton("\u2000Close", icon = icon("check")))
+        )
+      } else {
+        div(
+          align = "center",
+          p(style="color:red;text-align:center;font-size:500%;",
+            icon("times-circle")),
+          p("sen2cor needs to be downloaded and installed."),
+          hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+          div(style="text-align:right;", 
+              actionButton("install_sen2cor_button", strong("\u2000Download"), icon=icon("download")),
+              modalButton("\u2000Cancel", icon = icon("ban")))
+        )
+      }
+    })
+    
     # build the modalDialog
     check_sen2cor_modal <- modalDialog(
       title = "sen2cor check",
       size = "s",
-      conditionalPanel(
-        condition = "output.check_sen2cor_isvalid == 'TRUE'", 
-        div(
-          p(style="color:darkgreen;text-align:center;font-size:500%;","\u2714"),
-          p("sen2cor is correctly installed.")
-        )
-      ),
-      conditionalPanel(
-        condition = "output.check_sen2cor_isvalid == 'FALSE'", 
-        div(
-          p(style="color:red;text-align:center;font-size:500%;","\u2718"),
-          p("sen2cor needs to be downloaded and installed."),
-          actionButton("install_sen2cor_button", strong("\u2000Download"), icon=icon("download")),
-          modalButton("\u2000Cancel", icon = icon("ban"))#,
-          # hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-          # verbatimTextOutput("install_sen2cor_outext")
-        )
-      ),
-      uiOutput("install_sen2cor_outext"),
+      uiOutput("check_sen2cor_message"),
       easyClose = FALSE,
-      footer = conditionalPanel(
-        condition = "output.check_sen2cor_isvalid == 'TRUE'",  
-        modalButton("\u2000Close", icon = icon("check"))
-      )
+      footer = NULL
     )
     
     # open the modaldialog when button is pressed
@@ -368,10 +524,11 @@ check_sen2r_deps <- function() {
       
       # create the text to show in the modaldialog
       shinyjs::html(
-        "install_sen2cor_outext", 
+        "check_sen2cor_message", 
         as.character(div(
-          br(),
-          p(style="color:darkgrey;text-align:center;font-size:500%;","\u23F3"),
+          align="center",
+          p(style="text-align:center;font-size:500%;color:darkgrey;", 
+            icon("cog", class = "fa-spin")),
           p("Wait while sen2cor is being installed...")
         ))
       )
@@ -388,142 +545,39 @@ check_sen2r_deps <- function() {
       if (is(check_sen2cor_outerr, "error")) {
         rv$check_sen2cor_isvalid <- FALSE
         shinyjs::html(
-          "install_sen2cor_outext", 
+          "check_sen2cor_message", 
           as.character(div(
-            br(), p("Some errors occurred:"),
             p(code(check_sen2cor_outmess)),
-            p(code(check_sen2cor_outerr))
+            p(code(check_sen2cor_outerr)),
+            hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+            div(style="text-align:right;", 
+                modalButton("\u2000Close", icon = icon("check")))
           ))
         )
       } else {
         rv$check_sen2cor_isvalid <- TRUE
-        shinyjs::html("install_sen2cor_outext", "")
-      }
-      
-    })
-    
-    
-    #-- Check s2download --#
-    
-    # build the icon of the check
-    observe({
-      input$check_s2download # redo when the button is pressed
-      rv$check_s2download_isvalid <- if (!is.null(binpaths()$s2download)) {
-        file.exists(file.path(binpaths()$s2download,"s2download.py")) &
-          file.exists(file.path(binpaths()$s2download,"Sentinel-download/Sentinel_download.py"))
-      } else {FALSE}
-    })
-    output$check_s2download_isvalid <- renderText(rv$check_s2download_isvalid)
-    output$check_s2download_icon <- renderUI({
-      if (is.na(rv$check_s2download_isvalid)) {
-        ""
-      } else if (rv$check_s2download_isvalid) {
-        span(style="color:darkgreen;", "\u2714")
-      } else {
-        span(style="color:red;", "\u2718")
-      }
-    })
-    outputOptions(output, "check_s2download_isvalid", suspendWhenHidden = FALSE)
-    
-    # build the modalDialog
-    check_s2download_modal <- modalDialog(
-      title = "s2download check",
-      size = "s",
-      conditionalPanel(
-        condition = "output.check_s2download_isvalid == 'TRUE'", 
-        div(
-          p(style="color:darkgreen;text-align:center;font-size:500%;","\u2714"),
-          p("s2download is correctly installed.")
-        )
-      ),
-      conditionalPanel(
-        condition = "output.check_s2download_isvalid == 'FALSE'", 
-        div(
-          p(style="color:red;text-align:center;font-size:500%;","\u2718"),
-          p("s2download needs to be downloaded."),
-          actionButton("install_s2download_button", strong("\u2000Download"), icon=icon("download")),
-          modalButton("\u2000Cancel", icon = icon("ban"))#,
-          # hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-          # verbatimTextOutput("install_s2download_outext")
-        )
-      ),
-      uiOutput("install_s2download_outext"),
-      easyClose = FALSE,
-      footer = conditionalPanel(
-        condition = "output.check_s2download_isvalid == 'TRUE'",  
-        modalButton("\u2000Close", icon = icon("check"))
-      )
-    )
-    
-    # open the modaldialog when button is pressed
-    observeEvent(input$check_s2download, {
-      
-      # on Windows, check Python before s2download
-      if (is.null(binpaths()$python) & Sys.info()["sysname"] == "Windows") {
-        
-        showModal(modalDialog(
-          size = "s",
-          p("Check GDAL before s2download",
-            "(since Python is needed by these scripts)."),
-          easyClose = TRUE,
-          footer = NULL
-        ))
-        
-      } else {
-        
-        # open the dialog
-        showModal(check_s2download_modal)
-        
-      }
-      
-    })
-    
-    # install s2download
-    observeEvent(input$install_s2download_button, {
-      
-      # create the text to show in the modaldialog
-      shinyjs::html(
-        "install_s2download_outext", 
-        as.character(div(
-          br(),
-          p(style="color:darkgrey;text-align:center;font-size:500%;","\u23F3"),
-          p("Wait while s2download is being installed...")
-        ))
-      )
-      
-      check_s2download_outmess <- capture.output(
-        check_s2download_outerr <- tryCatch(
-          .install_s2download(interactive = FALSE),
-          error = function(e) {print(e)}
-        ),
-        type = "message"
-      )
-      
-      # remove the text
-      if (is(check_s2download_outerr, "error")) {
-        rv$check_s2download_isvalid <- FALSE
         shinyjs::html(
-          "install_s2download_outext", 
+          "check_sen2cor_message", 
           as.character(div(
-            br(), p("Some errors occurred:"),
-            p(code(check_s2download_outmess)),
-            p(code(check_s2download_outerr))
+            align="center",
+            p(style="text-align:center;font-size:500%;color:darkgreen;", 
+              icon("check-circle")),
+            p("sen2cor was correctly installed."),
+            hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+            div(style="text-align:right;", 
+                modalButton("\u2000Close", icon = icon("check")))
           ))
         )
-      } else {
-        rv$check_s2download_isvalid <- TRUE
-        shinyjs::html("install_s2download_outext", "")
       }
       
     })
-    
     
     
     ##-- Footer buttons --##
     observe({
       rv$check_all_isvalid <- all(c(
         rv$check_gdal_isvalid, rv$check_wget_isvalid, 
-        rv$check_sen2cor_isvalid, rv$check_s2download_isvalid
+        rv$check_sen2cor_isvalid
       ))
     })
     
@@ -578,7 +632,10 @@ check_sen2r_deps <- function() {
   }
   
   
-  settings.shiny <- shinyApp(ui = settings.ui, server = settings.server)
+  settings.shiny <- shinyApp(
+    ui = settings.ui, server = settings.server,
+    options = list(width="400px", height="400px")
+  )
   
   # run
   if (interactive()) {

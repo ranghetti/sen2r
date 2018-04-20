@@ -44,6 +44,11 @@
 #'  values for different `srcfiles` (use multiple calls of the functions).
 #' @param overwrite Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
+#' @param tmpdir (optional) Path where intermediate files (maskfile) 
+#'  will be created.
+#'  Default is a temporary directory.
+#' @param rmtmp (optional) Logical: should temporary files be removed?
+#'  (Default: TRUE)
 #' @param ... Additional parameters of [gdalwarp] or [gdal_translate]
 #'  (different from `s_srs`, `t_srs`, `te`, `tr`, `ts` and `of`).
 #' @return NULL
@@ -55,8 +60,6 @@
 #' @importFrom methods as
 #' @importFrom magrittr "%>%"
 #' @importFrom units ud_units
-#' @importFrom sprawl cast_vect get_spatype reproj_extent
-#' @importClassesFrom sprawl sprawlext
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @examples
@@ -130,6 +133,8 @@ gdal_warp <- function(srcfiles,
                       r = NULL,
                       dstnodata = NULL,
                       overwrite = FALSE,
+                      tmpdir = NA,
+                      rmtmp = TRUE,
                       ...) {
   
   # check consistency between inputs and outputs
@@ -200,36 +205,37 @@ gdal_warp <- function(srcfiles,
   if (!is.null(mask)) {
     mask_type <- get_spatype(mask)
     # if it is a vector, set "te" to the bounding box (in t_srs)
-    if (mask_type %in% c("sfobject","spobject","vectfile")) {
-      mask <- cast_vect(mask,"sfobject")
-      # Check that the polygon is not empty
-      if (length(grep("POLYGON",st_geometry_type(mask)))>=1 &
-          st_area(st_geometry(mask)) <= 0*units::ud_units$m^2) {
-        print_message(
-          type = "error",
-          "The polygon provided as mask cannot be empty."
-        )
-      }
-      # cast to multipolygon
-      if (length(grep("POLYGON",st_geometry_type(mask)))>=1) {
-        st_write(st_cast(mask, "MULTIPOLYGON"),
-                 mask_file <- paste0(tempfile(),".shp"),
-                 quiet = TRUE)
-      } # if not, mask_polygon is not created
+    if (mask_type == "vectfile") {
+      mask <- st_read(mask)
+    } else if (mask_type == "spobject") {
+      mask <- st_as_sf(mask)
     } else if (mask_type == "rastfile") {
-      mask <- get_extent(mask)
+      mask <- st_as_sfc(st_bbox(raster(mask)))
+    } 
+    
+    # Check that the polygon is not empty
+    if (length(grep("POLYGON",st_geometry_type(mask)))>=1 &
+        st_area(st_geometry(mask)) <= 0*units::ud_units$m^2) {
+      print_message(
+        type = "error",
+        "The polygon provided as mask cannot be empty."
+      )
     }
-    if (is(mask, "sprawlext")) {
-      mask <- st_polygon(list(rbind(
-        c(mask@extent["xmin"], mask@extent["ymin"]),
-        c(mask@extent["xmin"], mask@extent["ymax"]),
-        c(mask@extent["xmax"], mask@extent["ymax"]),
-        c(mask@extent["xmax"], mask@extent["ymin"]),
-        c(mask@extent["xmin"], mask@extent["ymin"])))
-      ) %>%
-        st_sfc(crs = mask@proj4string)
-      # mask <- as(mask, "sfc_POLYGON")
-    }
+    # cast to multipolygon
+    if (length(grep("POLYGON",st_geometry_type(mask)))>=1) {
+      if (is.na(tmpdir)) {
+        tmpdir <- tempfile(pattern="gdalwarp_")
+      }
+      dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
+      st_write(
+        st_cast(mask, "MULTIPOLYGON"),
+        mask_file <- file.path(
+          tmpdir, basename(tempfile(pattern = "mask_", fileext = ".shp"))
+        ),
+        quiet = TRUE
+      )
+    } # if not, mask_polygon is not created
+    
     # create mask_bbox if t_srs is specified;
     # otherwise, create each time within srcfile cycle
     if (!is.null(t_srs)) {
@@ -257,12 +263,11 @@ gdal_warp <- function(srcfiles,
       sel_size <- sel_metadata[c("columns","rows")]
       sel_s_srs <- attr(sel_metadata, "projection") %>%
         CRS() %>% CRSargs()
-      sel_bbox <- matrix(
-        c(sel_ll, sel_ll + sel_size * sel_res),
-        ncol=2)
-      dimnames(sel_bbox) <- list(c("x","y"),c("min","max"))
-      sel_extent <- get_extent(sel_bbox, sel_s_srs)
-      sel_of <- ifelse (is.null(of), attr(sel_metadata, "driver"), of)
+      
+      sel_bbox <- c(sel_ll, sel_ll + sel_size * sel_res)
+      names(sel_bbox) <- c("xmin", "ymin", "xmax", "ymax")
+      sel_bbox <- st_bbox(sel_bbox, crs = sel_s_srs)
+      sel_of <- ifelse(is.null(of), attr(sel_metadata, "driver"), of)
       
       # set default parameter values (if not specified)
       sel_t_srs <- ifelse(is.null(t_srs), sel_s_srs, t_srs)
@@ -278,8 +283,13 @@ gdal_warp <- function(srcfiles,
       # get reprojected extent
       # (if already set it was referring to mask; in this case, to srcfile)
       sel_src_bbox <- suppressMessages(
-        matrix(reproj_extent(sel_extent, sel_t_srs)@extent, nrow=2, ncol=2)
+        matrix(
+          st_bbox(st_transform(st_as_sfc(sel_bbox), sel_t_srs)), 
+          nrow=2, ncol=2, 
+          dimnames=list(c("x","y"),c("min","max"))
+        )
       )
+      
       # dimnames(sel_src_bbox) <- list(c("x","y"), c("min","max"))
       
       # set the correct bounding box for srcfile
@@ -371,6 +381,11 @@ gdal_warp <- function(srcfiles,
       
     } # end of overwrite IF cycle
     
+  }
+  
+  # Remove temporary files
+  if (rmtmp == TRUE) {
+    unlink(tmpdir, recursive=TRUE)
   }
   
 }

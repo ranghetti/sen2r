@@ -51,7 +51,11 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   # check timewindow
   if (!anyNA(pm$timewindow)) {
     if (length(pm$timewindow)==1) {
-      pm$timewindow <- rep(pm$timewindow, 2)
+      if (is(pm$timewindow, "numeric") | is(pm$timewindow, "difftime")) {
+        pm$timewindow <- c(Sys.Date() - pm$timewindow, Sys.Date())
+      } else {
+        pm$timewindow <- rep(pm$timewindow, 2)
+      }
     } else if (length(pm$timewindow)>2) {
       print_message(
         type = type,
@@ -69,6 +73,9 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
         "Parameter 'timewindow' must be a Date object."
       )
     }
+  } else if (pm$online == TRUE) {
+    # in online mode, NA value is converted to last 90 days
+    pm$timewindow <- c(Sys.Date() - 90, Sys.Date())
   }
   
   # example of check

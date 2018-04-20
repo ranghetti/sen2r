@@ -10,15 +10,13 @@
 #' @return A character with the content of the parameter (NULL if the
 #'  parameter is not recognised) or the name of the projection, and an
 #'   attribute `proj4string` with the input projection checked using
-#'  [sprawl::check_proj4string].
+#'  [sf::st_crs()].
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note Python is needed.
 #' @export
 #' @importFrom reticulate r_to_py py_to_r
-#' @importFrom sprawl check_proj4string
-#' @importFrom sp CRS
-#' @importFrom rgdal showWKT
+#' @importFrom sf st_as_text st_crs
 #' @importFrom magrittr "%>%"
 #'
 #' @examples \dontrun{
@@ -30,20 +28,22 @@ projpar <- function(proj4string, par, abort = FALSE) {
   # import python modules
   py <- init_python()
   
-  proj4string_check <- check_proj4string(proj4string, abort=abort)
+  crs_check <- tryCatch(
+    st_crs2(proj4string), 
+    error = function(e) {st_crs(NA)}
+  )
   
-  if (proj4string_check == "invalid") {
+  if (is.na(crs_check$proj4string)) {
     return(NA)
   }
   
-  proj4_wkt <- proj4string_check %>%
-    showWKT() %>%
+  proj4_wkt <- st_as_text(crs_check) %>%
     r_to_py() %>%
     py$osr$SpatialReference()
   proj4_par <- proj4_wkt$GetAttrValue(par) %>%
     py_to_r()
   
-  attr(proj4_par, "proj4string") <- proj4string_check
+  attr(proj4_par, "proj4string") <- crs_check$proj4string
   
   return(proj4_par)
   

@@ -8,7 +8,7 @@
 #' @param path_out Path of the directory in which Sentinel-2
 #'  output products are generated.
 #' @param bbox (optional) Four-length numeric vector with the bounding box 
-#'  of the output products (xmin, ymin, xmax, ymax).
+#'  of the output products (xmin, ymin, xmax, ymax), in geographic coordinates.
 #' @param list_prods (optional) Character vector with the values of the
 #'  products to be processed (accepted values: "TOA", "BOA", "SCL",
 #'  "TCI"). Default is "BOA".
@@ -26,8 +26,8 @@
 #' @param overwrite (optional) Logical value: should existing output
 #'  files be overwritten? (default: FALSE).
 #' @importFrom geojsonio geojson_json
-#' @importFrom sprawl check_proj4string get_extent
 #' @importFrom methods as is
+#' @importFrom sf st_bbox st_as_sfc
 
 geograbber_process <- function(path_safe,
                                path_out,
@@ -51,15 +51,8 @@ geograbber_process <- function(path_safe,
         "vector (or leave it as NA)."
       )
     }
-    geojson_json(
-      as(
-        get_extent(
-          matrix(bbox,nrow=2), 
-          check_proj4string(4326)
-        ),
-        "sfc_POLYGON"
-      )
-    )
+    names(bbox) <- c("xmin", "ymin", "xmax", "ymax")
+    geojson_json(st_as_sfc(st_bbox(bbox, crs = 4326)))
   }
   
   # Launch processing

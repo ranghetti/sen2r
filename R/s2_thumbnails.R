@@ -9,6 +9,8 @@
 #'  the three bands to be used respectively for red, green and blue.
 #' @param minval (optional) the value corresponding to black (default: 0).
 #' @param maxval (optional) the value corresponding to white (default: 10000).
+#' @param tmpdir (optional) Path where intermediate files will be created.
+#'  Default is a temporary directory.
 #' @return The path of the output image; alternatively, the output image
 #'  as RasterBrick (if `out_rast = NULL`).
 #'  
@@ -21,7 +23,8 @@ stack2rgb <- function(in_rast,
                       out_file = NULL, 
                       bands = 1:3, 
                       minval = 0, 
-                      maxval = 1E4) {
+                      maxval = 1E4,
+                      tmpdir = NA) {
   
   # Load GDAL paths
   binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
@@ -35,9 +38,15 @@ stack2rgb <- function(in_rast,
     binpaths <- jsonlite::fromJSON(binpaths_file)
   }
   
+  # define and create tmpdir
+  if (is.na(tmpdir)) {
+    tmpdir <- tempfile(pattern="stack2rgb_")
+  }
+  dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
+  
   # Set output file
   return_raster <- if (is.null(out_file)) {
-    out_file <- tempfile()
+    out_file <- file.path(tmpdir, basename(tempfile(pattern = "stack2rgb_")))
     TRUE
   } else {
     FALSE
@@ -51,7 +60,7 @@ stack2rgb <- function(in_rast,
   # Compute RGB with gdal_calc
   # (an intermediate step creating a GeoTiff is required,
   # since gdal_calc is not able to write in JPEG format)
-  tif_path <- file.path(tempdir(), gsub("\\..+$","_temp.tif",basename(out_file)))
+  tif_path <- file.path(tmpdir, gsub("\\..+$","_temp.tif",basename(out_file)))
   system(
     paste0(
       binpaths$gdal_calc," ",
@@ -126,6 +135,8 @@ stack2rgb <- function(in_rast,
 #' @param maxval (to be implemented) the value corresponding to the maximum 
 #'  value of the palette (for now, only 1 is used). A quantile will be also 
 #'  accepted.
+#' @param tmpdir (optional) Path where intermediate files (VRT) will be created.
+#'  Default is a temporary directory.
 #' @return The path of the output image; alternatively, the output image
 #'  as RasterLayer (if `out_rast = NULL`).
 #'
@@ -138,7 +149,8 @@ raster2rgb <- function(in_rast,
                        out_file = NULL, 
                        palette = "generic_ndsi_2", 
                        minval = -1, 
-                       maxval = 1) {
+                       maxval = 1,
+                       tmpdir = NA) {
   # TODO minval, maxval: now they do not work,
   # add a code to read cpt file, rescale values and save as temp file
   
@@ -177,6 +189,12 @@ raster2rgb <- function(in_rast,
     palette <- palette_builtin[palette]
   }
   
+  # define and create tmpdir
+  if (is.na(tmpdir)) {
+    tmpdir <- tempfile(pattern="raster2rgb_")
+  }
+  dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
+  
   # Rescale palette, if necessary
   if (!names(palette) %in% c("SCL") & (minval!=-1 | maxval!=1)) {
     palette_txt <- strsplit(gsub("^ *(.*) *$","\\1",readLines(palette))," +")
@@ -188,13 +206,13 @@ raster2rgb <- function(in_rast,
     }
     writeLines(
       sapply(palette_txt_new, paste, collapse=" "), 
-      palette <- tempfile(fileext=".cpt")
+      palette <- file.path(tmpdir, basename(tempfile(fileext = ".cpt")))
     )
   }
   
   # Set output file
   return_raster <- if (is.null(out_file)) {
-    out_file <- tempfile()
+    out_file <- file.path(tmpdir, basename(tempfile(pattern = "raster2rgb_")))
     TRUE
   } else {
     FALSE
@@ -203,7 +221,7 @@ raster2rgb <- function(in_rast,
   # Compute RGB with gdaldem
   # (an intermediate step creating a GeoTiff is required,
   # since gdal_calc is not able to write in JPEG format)
-  tif_path <- file.path(tempdir(), gsub("\\..+$","_temp.tif",basename(out_file)))
+  tif_path <- file.path(tmpdir, gsub("\\..+$","_temp.tif",basename(out_file)))
   system(
     paste0(
       binpaths$gdaldem," color-relief ",
@@ -276,8 +294,10 @@ raster2rgb <- function(in_rast,
 #' @param outdir (optional) Full name of the existing output directory
 #'  where the files should be created.  Default is a subdirectory (named 
 #'  "thumbnails") of the parent directory of each input file.
-#' @param tmpdir (optional) Path where intermediate VRT will be created.
+#' @param tmpdir (optional) Path where intermediate files (VRT) will be created.
 #'  Default is a temporary directory.
+#' @param rmtmp (optional) Logical: should temporary files be removed?
+#'  (Default: TRUE)
 #' @param overwrite (optional) Logical value: should existing thumbnails be
 #'  overwritten? (default: TRUE)
 #' @return A vector with the names of the created images.
@@ -295,6 +315,7 @@ s2_thumbnails <- function(infiles,
                           scaleRange=NA,
                           outdir=NA,
                           tmpdir=NA,
+                          rmtmp=TRUE,
                           overwrite=FALSE) {
   
   # Check that GDAL suports JPEG JFIF format
@@ -302,7 +323,7 @@ s2_thumbnails <- function(infiles,
   
   # Set tmpdir
   if (is.na(tmpdir)) {
-    tmpdir <- tempfile(pattern="dir")
+    tmpdir <- tempfile(pattern="s2thumbnails_")
   }
   dir.create(tmpdir, recursive = FALSE, showWarnings = FALSE)
   
@@ -430,7 +451,8 @@ s2_thumbnails <- function(infiles,
           resized_path, 
           out_file = out_path,
           minval = scaleRange[1], 
-          maxval = scaleRange[2]
+          maxval = scaleRange[2],
+          tmpdir = tmpdir
         )
         
       } else if (sel_prod_type %in% c("TCI")) {
@@ -458,7 +480,8 @@ s2_thumbnails <- function(infiles,
             "generic_ndsi"
           },
           minval = scaleRange[1], 
-          maxval = scaleRange[2]
+          maxval = scaleRange[2],
+          tmpdir = tmpdir
         )
         
       }
@@ -468,6 +491,11 @@ s2_thumbnails <- function(infiles,
     out_names <- c(out_names, out_path)
     
   } # end of infiles cycle
+  
+  # Remove temporary files
+  if (rmtmp == TRUE) {
+    unlink(tmpdir, recursive=TRUE)
+  }
   
   print_message(
     type="message",

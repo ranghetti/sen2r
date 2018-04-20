@@ -31,7 +31,7 @@ init_python <- function() {
     
     # Try to search Python
     binpaths$python <- tryCatch(
-      normalizePath(py_discover_config(required_module = "gdal")$python),
+      normalize_path(py_discover_config(required_module = "gdal")$python),
       error = function(e) {NULL}
     )
     
@@ -57,6 +57,9 @@ init_python <- function() {
     
   }
   
+  # set the proper Python installation
+  use_python(binpaths$python, required = TRUE)
+  
   # import python modules
   # in Windows they are imported with import_from_path(), which grants to
   # use the chosen (osgeo for windows) python version.
@@ -76,8 +79,11 @@ init_python <- function() {
       )
     }
   }
+  # if (!dirname(binpaths$python) %in% py_to_r(py$sys$path)) {
+  #   py$sys$path$append(dirname(binpaths$python))
+  # }
   
-  use_python(binpaths$python)
+  # check for missing modules
   py_missing <- py_modules[!sapply(py_modules,py_module_available)]
   if (length(py_missing)>0) {
     print_message(

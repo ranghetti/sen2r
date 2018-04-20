@@ -101,14 +101,16 @@ downloading and correcting them.</p>
     
 
     <pre class="usage"><span class='fu'>s2_list</span>(<span class='kw'>spatial_extent</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>orbit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>max_cloud</span> <span class='kw'>=</span> <span class='fl'>110</span>)</pre>
+  <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>time_period</span> <span class='kw'>=</span> <span class='st'>"full"</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
+  <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>max_cloud</span> <span class='kw'>=</span> <span class='fl'>110</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>spatial_extent</th>
-      <td><p>A valid spatial object managed by <a href='http://www.rdocumentation.org/packages/sprawl/topics/get_extent'>sprawl::get_extent</a></p></td>
+      <td><p>A valid spatial object object of class <code>sf</code>,
+<code>sfc</code> or <code>sfg</code></p></td>
     </tr>
     <tr>
       <th>tile</th>
@@ -122,6 +124,17 @@ downloading and correcting them.</p>
       <th>time_interval</th>
       <td><p>a temporal vector (class POSIXct or
 Date) of length 1 (specific day) or 2 (time interval).</p></td>
+    </tr>
+    <tr>
+      <th>time_period</th>
+      <td><p>(optional) Character:</p><ul>
+<li><p>"full" (default) means that all
+the images included in the time window are considered;</p></li>
+<li><p>"seasonal" means that only the single seasonal periods in the
+window are used (i.e., with a time window from 2015-06-01 to
+2017-08-31, the periods 2015-06-01 to 2015-08-31, 2016-06-01
+to 2016-08-31 and 2017-06-01 to 2017-08-31 are considered).</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>level</th>
@@ -157,10 +170,34 @@ and its name the product name).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='no'>pos</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sp</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sp/topics/SpatialPoints'>SpatialPoints</a></span>(<span class='fu'>data.frame</span>(<span class='st'>"x"</span><span class='kw'>=</span><span class='fl'>12.0</span>,<span class='st'>"y"</span><span class='kw'>=</span><span class='fl'>44.8</span>), <span class='kw'>proj4string</span><span class='kw'>=</span><span class='kw pkg'>sp</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sp/topics/CRS-class'>CRS</a></span>(<span class='st'>"+init=epsg:4326"</span>))
-<span class='no'>time_window</span> <span class='kw'>&lt;-</span> <span class='fu'>as.Date</span>(<span class='fu'>c</span>(<span class='st'>"2017-05-01"</span>,<span class='st'>"2017-07-30"</span>))
-<span class='no'>example_s2_list</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_list</span>(<span class='kw'>spatial_extent</span><span class='kw'>=</span><span class='no'>pos</span>, <span class='kw'>tile</span><span class='kw'>=</span><span class='st'>"32TQQ"</span>, <span class='kw'>time_interval</span><span class='kw'>=</span><span class='no'>time_window</span>)
+<span class='no'>pos</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/sfc'>st_sfc</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/st'>st_point</a></span>(<span class='fu'>c</span>(<span class='fl'>9.85</span>,<span class='fl'>45.81</span>)), <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>)
+<span class='no'>time_window</span> <span class='kw'>&lt;-</span> <span class='fu'>as.Date</span>(<span class='fu'>c</span>(<span class='st'>"2016-05-01"</span>, <span class='st'>"2017-07-30"</span>))
+
+<span class='co'># Full-period list</span>
+<span class='no'>example_s2_list</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_list</span>(
+  <span class='kw'>spatial_extent</span> <span class='kw'>=</span> <span class='no'>pos</span>,
+  <span class='kw'>tile</span> <span class='kw'>=</span> <span class='st'>"32TNR"</span>,
+  <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='no'>time_window</span>,
+  <span class='kw'>orbit</span> <span class='kw'>=</span> <span class='st'>"065"</span>
+)
 <span class='fu'>print</span>(<span class='no'>example_s2_list</span>)
+<span class='co'># Print the dates of the retrieved products</span>
+<span class='fu'>as.vector</span>(<span class='fu'>sort</span>(<span class='fu'>sapply</span>(<span class='fu'>names</span>(<span class='no'>example_s2_list</span>), <span class='kw'>function</span>(<span class='no'>x</span>) {
+  <span class='fu'>strftime</span>(<span class='fu'><a href='s2_getMetadata.html'>s2_getMetadata</a></span>(<span class='no'>x</span>,<span class='st'>"nameinfo"</span>)$<span class='no'>sensing_datetime</span>)
+})))
+
+<span class='co'># Seasonal-period list</span>
+<span class='no'>example_s2_list</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_list</span>(
+  <span class='kw'>spatial_extent</span> <span class='kw'>=</span> <span class='no'>pos</span>,
+  <span class='kw'>tile</span> <span class='kw'>=</span> <span class='st'>"32TNR"</span>,
+  <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='no'>time_window</span>,
+  <span class='kw'>time_period</span> <span class='kw'>=</span> <span class='st'>"seasonal"</span>
+)
+<span class='fu'>print</span>(<span class='no'>example_s2_list</span>)
+<span class='co'># Print the dates of the retrieved products</span>
+<span class='fu'>as.vector</span>(<span class='fu'>sort</span>(<span class='fu'>sapply</span>(<span class='fu'>names</span>(<span class='no'>example_s2_list</span>), <span class='kw'>function</span>(<span class='no'>x</span>) {
+  <span class='fu'>strftime</span>(<span class='fu'><a href='s2_getMetadata.html'>s2_getMetadata</a></span>(<span class='no'>x</span>,<span class='st'>"nameinfo"</span>)$<span class='no'>sensing_datetime</span>)
+})))
 <span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

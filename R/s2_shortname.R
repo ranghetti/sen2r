@@ -50,8 +50,12 @@
 #'  resolution will be rescaled to `res`. Band 08 is used with `res = '10m'`,
 #'  band 08A with `res = '20m'` and `res = '60m'`.
 #' @param tiles (optional) Character vector with the desired output tile IDs 
-#'  (id specified IDs are not present in the input SAFE product, they are not
+#'  (if specified IDs are not present in the input SAFE product, they are not
 #'  produced). Default (NA) is to consider all the found tiles.
+#' @param force_tiles (optional) Logical: if FALSE (default), only already 
+#'  existing tiles (specified using the argument `tiles`) are used;
+#'  if TRUE, all specified tiles are considered. 
+#'  It takes effect only if `tiles` is not NA.
 #' @param full.name Logical value: if TRUE (default), all the input path
 #'  is maintained (if existing); if FALSE, only basename is returned.
 #' @param set.seed (internal parameter) Logical value: if TRUE, the
@@ -98,7 +102,9 @@
 #' }
 
 
-s2_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m", tiles=NA, full.name=TRUE, set.seed=NA, multiple_names=FALSE, abort=FALSE) {
+s2_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m", 
+                         tiles=NA, force_tiles=FALSE, full.name=TRUE, 
+                         set.seed=NA, multiple_names=FALSE, abort=FALSE) {
   
   # elements used by the function
   needed_metadata <- c("tiles","utm","mission","level","sensing_datetime","id_orbit","id_tile")
@@ -131,16 +137,28 @@ s2_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m", tiles=N
   if (is.null(tiles)) {tiles <- NA}
   if (anyNA(tiles)) {tiles <- NA} else if (all(tiles=="")) {tiles <- NA}
   
-  # Filter id_tile and tiles
-  if (!is.null(s2_metadata$id_tile) & !anyNA(tiles)) {
-    s2_metadata$id_tile <- s2_metadata$id_tile[s2_metadata$id_tile %in% tiles]
+  # Define tiles ID to use
+  # if tile_id (= tile as retrieved from product name) exists, 
+  # consider it; otherwise, use tiles (existing tile list)
+  prod_tiles <- if (!is.null(s2_metadata$id_tile)) {
+    s2_metadata$id_tile
+  } else {
+    s2_metadata$tiles
   }
-  if (!is.null(s2_metadata$tiles) & !anyNA(tiles)) {
-    s2_metadata$tiles <- s2_metadata$tiles[s2_metadata$tiles %in% tiles]
+  sel_tiles <- if (!anyNA(tiles)) {
+    # if tiles argument was specified, consider it
+    if (force_tiles==TRUE) {
+      tiles
+    } else {
+      prod_tiles[prod_tiles %in% tiles]
+    }
+  } else {
+    prod_tiles
   }
   
-  # check if id_tile is missing
-  if (is.null(s2_metadata$id_tile)) {
+  # if sel_tiles is missing or multiple tiles must be reduced to one,
+  # compute a random tile ID
+  if (is.null(sel_tiles) | length(sel_tiles)>1 & multiple_names==FALSE) {
     
     # set seed if requested
     if (set.seed) {
@@ -149,16 +167,12 @@ s2_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m", tiles=N
       set.seed(sel_seed)
     }
     
-    if (length(s2_metadata$tiles)==1 | multiple_names==TRUE) {
-      # if it contains only one tile, use that tile
-      # with more tiles, use those tiles if multiple names were requested
-      s2_metadata$id_tile <- s2_metadata$tiles
-    } else if (length(s2_metadata$utm)==1) {
+    if (length(s2_metadata$utm)==1) {
       # otherwise, use convention 1 if UTM zone is unique, 2 if not
-      s2_metadata$id_tile <- paste0(s2_metadata$utm,
+      sel_tiles <- paste0(s2_metadata$utm,
                                     str_pad(sample(1000,1)-1,3,"left","0"))
     } else {
-      s2_metadata$id_tile <- paste0(paste(LETTERS[sample(26,2,replace=TRUE)],collapse=""),
+      sel_tiles <- paste0(paste(LETTERS[sample(26,2,replace=TRUE)],collapse=""),
                                     str_pad(sample(1000,1)-1,3,"left","0"))
     }
     
@@ -200,7 +214,7 @@ s2_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m", tiles=N
     s2_metadata,
     paste0("S",mission,level,"_",
            strftime(s2_metadata$sensing_datetime,"%Y%m%d"),"_",
-           id_orbit,"_",id_tile,"_",prod_type,"_",substr(res,1,2))
+           id_orbit,"_",sel_tiles,"_",prod_type,"_",substr(res,1,2))
   )
   
   # check name length

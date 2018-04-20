@@ -6,7 +6,7 @@
 \usage{
 gdal_warp(srcfiles, dstfiles, of = NULL, ref = NULL, mask = NULL,
   tr = NULL, t_srs = NULL, r = NULL, dstnodata = NULL,
-  overwrite = FALSE, ...)
+  overwrite = FALSE, tmpdir = NA, rmtmp = TRUE, ...)
 }
 \arguments{
 \item{srcfiles}{A vector of input file paths (managed by GDAL).}
@@ -57,6 +57,13 @@ values for different \code{srcfiles} (use multiple calls of the functions).}
 
 \item{overwrite}{Logical value: should existing output files be
 overwritten? (default: FALSE)}
+
+\item{tmpdir}{(optional) Path where intermediate files (maskfile)
+will be created.
+Default is a temporary directory.}
+
+\item{rmtmp}{(optional) Logical: should temporary files be removed?
+(Default: TRUE)}
 
 \item{...}{Additional parameters of \link{gdalwarp} or \link{gdal_translate}
 (different from \code{s_srs}, \code{t_srs}, \code{te}, \code{tr}, \code{ts} and \code{of}).}

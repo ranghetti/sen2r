@@ -11,7 +11,6 @@ reference:
   - title: Find and download Sentinel-2 products
     desc: ~
     contents:
-      - '`install_s2download`'
       - '`s2_list`'
       - '`s2_download`'
       - '`sen2cor`'
@@ -41,6 +40,8 @@ reference:
       - '`mountpoint`'
       - '`trace_function`'
       - '`install_wget`'
+      - '`st_crs2`'
+      - '`normalize_path`'
   - title: Internal functions
     desc: (not exported)
     contents:
@@ -60,6 +61,9 @@ reference:
       - '`compute_s2_paths`'
       - '`maskapply_parallel`'
       - '`load_extent_bbox`'
+      - '`get_spatype`'
+      - '`get_rastype`'
+      - '`get_vectype`'
 navbar:
   type: inverse
   left:

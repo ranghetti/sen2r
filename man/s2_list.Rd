@@ -5,10 +5,12 @@
 \title{Retrieve list of available products.}
 \usage{
 s2_list(spatial_extent = NULL, tile = NULL, orbit = NULL,
-  time_interval = NULL, level = "auto", apihub = NULL, max_cloud = 110)
+  time_interval = NULL, time_period = "full", level = "auto",
+  apihub = NULL, max_cloud = 110)
 }
 \arguments{
-\item{spatial_extent}{A valid spatial object managed by \link[sprawl:get_extent]{sprawl::get_extent}}
+\item{spatial_extent}{A valid spatial object object of class \code{sf},
+\code{sfc} or \code{sfg}}
 
 \item{tile}{Single Sentinel-2 Tile string (5-length character)}
 
@@ -16,6 +18,16 @@ s2_list(spatial_extent = NULL, tile = NULL, orbit = NULL,
 
 \item{time_interval}{a temporal vector (class \link{POSIXct} or
 \link{Date}) of length 1 (specific day) or 2 (time interval).}
+
+\item{time_period}{(optional) Character:
+\itemize{
+\item "full" (default) means that all
+the images included in the time window are considered;
+\item "seasonal" means that only the single seasonal periods in the
+window are used (i.e., with a time window from 2015-06-01 to
+2017-08-31, the periods 2015-06-01 to 2015-08-31, 2016-06-01
+to 2016-08-31 and 2017-06-01 to 2017-08-31 are considered).
+}}
 
 \item{level}{Character vector with one of the following:
 - "auto" (default): check if level-2A is available on SciHub:
@@ -47,10 +59,34 @@ License: GPL 3.0
 }
 \examples{
 \dontrun{
-pos <- sp::SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=sp::CRS("+init=epsg:4326"))
-time_window <- as.Date(c("2017-05-01","2017-07-30"))
-example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window)
+pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
+time_window <- as.Date(c("2016-05-01", "2017-07-30"))
+
+# Full-period list
+example_s2_list <- s2_list(
+  spatial_extent = pos, 
+  tile = "32TNR", 
+  time_interval = time_window, 
+  orbit = "065"
+)
 print(example_s2_list)
+# Print the dates of the retrieved products
+as.vector(sort(sapply(names(example_s2_list), function(x) {
+  strftime(s2_getMetadata(x,"nameinfo")$sensing_datetime)
+})))
+
+# Seasonal-period list
+example_s2_list <- s2_list(
+  spatial_extent = pos, 
+  tile = "32TNR", 
+  time_interval = time_window, 
+  time_period = "seasonal"
+)
+print(example_s2_list)
+# Print the dates of the retrieved products
+as.vector(sort(sapply(names(example_s2_list), function(x) {
+  strftime(s2_getMetadata(x,"nameinfo")$sensing_datetime)
+})))
 }
 }
 \author{

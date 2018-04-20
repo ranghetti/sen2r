@@ -113,9 +113,27 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
     sen2cor_bin <- system.file("sen2cor", paste0("Sen2Cor-",sen2cor_version,"-win64"), "L2A_Process.bat", package="sen2r")
   }
   
+  # fix bug #71
+  script_tofix_path <- file.path(
+    if (Sys.info()["sysname"] == "Windows") {dirname(sen2cor_bin)} else {dirname(dirname(sen2cor_bin))},
+    "lib/python2.7/site-packages/sen2cor/L2A_Tables.py"
+  )
+  if (file.exists(script_tofix_path)) {
+    script_tofix <- readLines(script_tofix_path)
+    linenumber_tofix <- grep("t2a_split[2] + '_' + t2a_split[1] + '_' + t1c_split[10]", script_tofix, fixed=TRUE)
+    if (length(linenumber_tofix)>0) {
+      script_tofix[linenumber_tofix] <- gsub(
+        "t1c_split[10]", "t1c_split[-1]", 
+        script_tofix[linenumber_tofix], 
+        fixed = TRUE
+      )
+      writeLines(script_tofix, script_tofix_path)
+    }
+  }
+  
   # Save a text file with the L2A_Process path,
   # including also paths of GDAL apps
-  binpaths$sen2cor <- normalizePath(sen2cor_bin)
+  binpaths$sen2cor <- normalize_path(sen2cor_bin)
   writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
   
 }

@@ -5,7 +5,8 @@
 \title{Correct L1C products using sen2cor}
 \usage{
 sen2cor(l1c_prodlist = NULL, l1c_dir = NULL, outdir = NULL,
-  proc_dir = NA, tiles = NULL, parallel = FALSE, overwrite = FALSE)
+  proc_dir = NA, tmpdir = NA, rmtmp = TRUE, tiles = NULL,
+  parallel = FALSE, overwrite = FALSE)
 }
 \arguments{
 \item{l1c_prodlist}{List of L1C product names to be corrected. They can be both
@@ -22,10 +23,19 @@ If NULL (default), each product is left in the parent directory of \code{l1c_pro
 \item{proc_dir}{(optional) Directory where processing is applied.
 If NA (default), processing is done in \code{l1c_dir} and output L2A product is
 then moved to \code{outdir}, unless \code{l1c_dir} is a subdirectory of a SAMBA mountpoint under Linux:
-in this case, L1C input products are copied in a temporary directory,
+in this case, L1C input products are copied in a temporary directory
+(specified with argument \code{tmpdir}),
 processing is done there and then L2A is moved to \code{outdir}.
 This is required under Linux systems when \code{l1c_dir} is a subdirectory of
 a unit mounted with SAMBA, otherwise sen2cor would produce empty L2A products.}
+
+\item{tmpdir}{(optional) Path where processing is performed if a temporary
+working directory is required (see argument \code{proc_dir}). Be sure \code{tmpdir}
+not to be a SAMBA mountpoint under Linux.
+Default is a temporary directory.}
+
+\item{rmtmp}{(optional) Logical: should temporary files be removed?
+(Default: TRUE)}
 
 \item{tiles}{Vector of Sentinel-2 Tile strings (5-length character) to be
 processed (default: process all the tiles found in the input L1C products).}

@@ -17,8 +17,10 @@
 #'  placed in separated `outfile` subdirectories; if FALSE, they are placed in
 #'  `outfile` directory; if NA (default), subdirectories are created only if
 #'  `infiles` relate to more than a single product.
-#' @param tmpdir (optional) Path where intermediate VRT will be created.
-#'  Default is in a temporary directory.
+#' @param tmpdir (optional) Path where intermediate files (VRT) will be created.
+#'  Default is a temporary directory.
+#' @param rmtmp (optional) Logical: should temporary files be removed?
+#'  (Default: TRUE)
 #' @param format (optional) Format of the output file (in a
 #'  format recognised by GDAL). Default is to maintain each input format.
 #' @param compress (optional) In the case a GTiff format is
@@ -35,12 +37,10 @@
 #' @return A vector with the names of the merged products (just created or
 #'  already existing).
 #' @importFrom rgdal GDALinfo
-#' @importFrom sp CRS
 #' @importFrom magrittr "%>%"
-#' @importFrom sprawl check_proj4string
-#' @importFrom raster compareCRS
 #' @importFrom jsonlite fromJSON
 #' @import data.table
+#' @export
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 
@@ -49,6 +49,7 @@ s2_merge <- function(infiles,
                      outdir=".",
                      subdirs=NA,
                      tmpdir=NA,
+                     rmtmp=TRUE,
                      format=NA,
                      compress="DEFLATE",
                      vrt_rel_paths=NA,
@@ -93,7 +94,7 @@ s2_merge <- function(infiles,
     infiles_meta_gdal <- sapply(infiles, function(x) {attributes(GDALinfo(x))[c("driver","projection")]})
   )
   infiles_meta$format <- unlist(infiles_meta_gdal[1,])
-  infiles_meta$proj4string <- sapply(unlist(infiles_meta_gdal[2,]), function(x) {CRS(x)@projargs})
+  infiles_meta$proj4string <- sapply(unlist(infiles_meta_gdal[2,]), function(x) {st_crs2(x)$proj4string})
   # infiles_meta$NAflag <- sapply(infiles_meta_gdal[3,], function(x) {
   #   if (x[1,"hasNoDataValue"]==TRUE) {
   #     x[1,"NoDataValue"]
@@ -123,11 +124,12 @@ s2_merge <- function(infiles,
   # vector which identifies, for each infiles, if its projection is
   # different or not from out_crs
   diffcrs <- sapply(infiles_meta$proj4string, function(x) {
-    !compareCRS(CRS(x), CRS(out_crs))
+    st_crs2(x) != st_crs2(out_crs)
+    # !compareCRS(CRS(x), CRS(out_crs))
   })
   
   # Check out_crs
-  out_crs <- check_proj4string(out_crs)
+  out_crs <- st_crs2(out_crs)$proj4string
   # check the projections of input files
   if (any(diffcrs)) {
     print_message(
@@ -136,7 +138,7 @@ s2_merge <- function(infiles,
       "tiles with different projection will be reprojected.")
   }
   if (is.na(tmpdir)) {
-    tmpdir <- tempfile(pattern="dir")
+    tmpdir <- tempfile(pattern="s2merge_")
   }
   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
   
@@ -268,6 +270,11 @@ s2_merge <- function(infiles,
     
     outfiles <- c(outfiles, file.path(out_subdir,sel_outfile))
     
+  }
+  
+  # Remove temporary files
+  if (rmtmp == TRUE) {
+    unlink(tmpdir, recursive=TRUE)
   }
   
   return(outfiles)

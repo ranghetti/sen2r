@@ -14,10 +14,10 @@
 #'  placed in separated `outdir` subdirectories; if FALSE, they are placed in
 #'  `outdir` directory; if NA (default), subdirectories are created only if
 #'  `prod_type` has length > 1.
-#' @param tmpdir (optional) Path where intermediate VRT will be created.
-#'  Default is in a hidden subdirectory (called `.vrt`) of the parent
-#'  directory of the SAFE folder. Set `tmpdir=tempdir()` if you do not want to
-#'  keep the intermediate files after reboot.
+#' @param tmpdir (optional) Path where intermediate files (VRT) will be created.
+#'  Default is a temporary directory.
+#' @param rmtmp (optional) Logical: should temporary files be removed?
+#'  (Default: TRUE)
 #' @param prod_type (optional) Vector of types to be produced as outputs
 #'  (see [s2_shortname] for the list of accepted values). Default is
 #'  reflectance ("TOA" for level 1C, "BOA" for level 2A).
@@ -72,6 +72,7 @@ s2_translate <- function(infile,
                          outdir=".",
                          subdirs=NA,
                          tmpdir=NA,
+                         rmtmp=TRUE,
                          prod_type=NULL,
                          tiles=NA,
                          res="10m",
@@ -206,6 +207,12 @@ s2_translate <- function(infile,
     
     # TODO check that required bands are present
     
+    # define and create tmpdir
+    if (is.na(tmpdir)) {
+      tmpdir <- tempfile(pattern="s2translate_")
+    }
+    dir.create(tmpdir, showWarnings=FALSE)
+    
     # cycle on granules (with compact names, this runs only once; with old name, one or more)
     for (sel_granule in infile_meta$xml_granules) {
       
@@ -243,11 +250,6 @@ s2_translate <- function(infile,
           
           # create final vrt with all the bands (of select final raster with a single band)
           if (length(jp2_selbands)>1) {
-            # define and create tmpdir
-            if (is.na(tmpdir)) {
-              tmpdir <- tempfile(pattern="dir")
-            }
-            dir.create(tmpdir, showWarnings=FALSE)
             final_vrt_name <- ifelse(format=="VRT", out_name, paste0(tmpdir,"/",out_prefix,".vrt"))
             system(
               paste0(
@@ -290,6 +292,11 @@ s2_translate <- function(infile,
     } # end of sel_granule cycle
     
   } # end of prod_type cycle
+  
+  # Remove temporary files
+  if (rmtmp == TRUE) {
+    unlink(tmpdir, recursive=TRUE)
+  }
   
   print_message(
     type="message",

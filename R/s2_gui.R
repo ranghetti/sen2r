@@ -17,7 +17,8 @@
 #' @importFrom leaflet.extras addDrawToolbar editToolbarOptions
 #'  removeDrawToolbar
 #' @importFrom mapedit editModUI
-#' @importFrom sf st_coordinates st_intersects st_polygon st_read st_sf st_sfc st_transform
+#' @importFrom utils packageVersion
+#' @importFrom sf st_coordinates st_crs st_intersects st_polygon st_read st_bbox st_as_sfc st_transform
 #' @importFrom shiny a actionButton actionLink br callModule checkboxGroupInput
 #'  checkboxInput column conditionalPanel dateRangeInput div downloadButton downloadHandler em fileInput fluidRow h2 h3
 #'  helpText hr HTML htmlOutput icon incProgress isolate NS numericInput observe p
@@ -32,7 +33,6 @@
 #'  shinyFilesButton shinySaveButton
 #' @importFrom shinyjs delay disable enable
 #' @importFrom shinyWidgets sendSweetAlert
-#' @importFrom sprawl check_proj4string get_rastype get_vectype
 #' @importFrom stats setNames
 #' @importFrom utils unzip
 #'
@@ -58,9 +58,6 @@ s2_gui <- function(param_list = NULL,
   
   # TODO: populate parameter values with param_list content, if provided
   
-  # create tempdir
-  dir.create(tempdir(), showWarnings=FALSE)
-  
   # extract and import tiles kml
   s2tiles_kmz <- system.file("extdata","vector","s2_tiles.kmz",package="sen2r")
   s2tiles_kml <- gsub("\\.kmz$",".kml",s2tiles_kmz)
@@ -76,9 +73,19 @@ s2_gui <- function(param_list = NULL,
   
   # shiny
   s2_gui.ui <- dashboardPage(
-    dashboardHeader(title="sen2r"),
-    
-    dashboardSidebar(
+    title = "sen2r: an R toolbox to find, download and preprocess Sentinel-2 data",
+    header = dashboardHeader(),
+    sidebar = dashboardSidebar(
+      
+      # logo
+      div(
+        style = "text-align:center;padding-top:17px;padding-bottom:30px;",
+        a(
+          href='https://ranghetti.github.io/sen2r',
+          target = "_blank",
+          uiOutput("img_logo")
+        )
+      ),
       
       sidebarMenu(
         menuItem("Product selection", tabName = "tab_steps", icon = icon("image"))
@@ -106,6 +113,8 @@ s2_gui <- function(param_list = NULL,
       shinyjs::useShinyjs(),
       shiny::tags$head(shiny::tags$style(".darkbutton{background-color:#28353b;color:#b8c7ce;width:200px;")), # background color and font color
       shiny::tags$head(shiny::tags$script(src = "message-handler.js")), # for actionbuttons
+      shiny::tags$head(shiny::tags$link(rel="icon", href="favicon.ico")),
+      
       # shiny::tags$head(shiny::tags$script('
       #                                     var dimension = [0, 0];
       #                                     $(document).on("shiny:connected", function(e) {
@@ -120,7 +129,7 @@ s2_gui <- function(param_list = NULL,
       #                                     });
       #                                     ')), # return the width/height of the window (used to set map height)
       div(
-        style="position:absolute;top:250px;",
+        style="position:absolute;top:430px;",
         # # client-side buttons
         # p(style="margin-top:15pt;margin-left:11pt;",
         #   downloadButton("export_param", "\u2000Save options as...", class="darkbutton")
@@ -164,7 +173,6 @@ s2_gui <- function(param_list = NULL,
           )
         )
       )
-      
     ),
     
     dashboardBody(
@@ -404,11 +412,17 @@ s2_gui <- function(param_list = NULL,
                 
                 column(
                   width=6,
-                  radioButtons("timeperiod", label = "Time period type",
-                               choices = list("Full" = "full",
-                                              "Seasonal" = "seasonal"),
-                               selected = "full",
-                               inline = TRUE)
+                  radioButtons(
+                    "timeperiod", 
+                    label = span(
+                      "Time period type\u2000",
+                      actionLink("help_time_period", icon("question-circle"))
+                    ),
+                    choices = list("Full" = "full",
+                                   "Seasonal" = "seasonal"),
+                    selected = "full",
+                    inline = TRUE
+                  )
                 )
                 
               )
@@ -1005,6 +1019,12 @@ s2_gui <- function(param_list = NULL,
   
   s2_gui.server <- function(input, output, session) {
     
+    # link to www directory and objects
+    addResourcePath("www", system.file("www", package="sen2r"))
+    output$img_logo<-renderUI(
+      img(src='www/images/sen2r_logo_200px.png',height='133',width='200')
+    )
+    
     extendedname <- link <- longname <- name <- providers <- s2_formula_mathml <- NULL
     
     # initialise rv
@@ -1139,16 +1159,21 @@ s2_gui <- function(param_list = NULL,
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
     ## Extent module ##
+    
+    # Force to use spatial and temporal filters in online mode
+    observeEvent(input$online, {
+      if (input$online) {
+        updateRadioButtons(session, "query_time", selected = TRUE)
+        updateRadioButtons(session, "query_space", selected = TRUE)
+        disable("query_time")
+        disable("query_space")
+      } else {
+        enable("query_time")
+        enable("query_space")
+      }
+    })
+    
     
     #-- Function to update the map and the list of tiles --#
     # it returns TRUE if the input extent source was correctly read, FALSE elsewhere.
@@ -1162,61 +1187,25 @@ s2_gui <- function(param_list = NULL,
         
         # Bbox mode #
         
-        # create bbox from coordinates
-        sel_bbox <- if (!is.na(input$bbox_xmin) & !is.na(input$bbox_xmax) &
-                        !is.na(input$bbox_ymin) & !is.na(input$bbox_ymax) &
-                        !(is.null(rv$bboxproj) || is.na(rv$bboxproj))) {
-          if (input$bbox_xmin < input$bbox_xmax &
-              input$bbox_ymin < input$bbox_ymax) {
-            x <- st_sf(st_sfc(
-              st_polygon(list(matrix(
-                c(input$bbox_xmin,input$bbox_ymin,
-                  input$bbox_xmin,input$bbox_ymax,
-                  input$bbox_xmax,input$bbox_ymax,
-                  input$bbox_xmax,input$bbox_ymin,
-                  input$bbox_xmin,input$bbox_ymin),
-                ncol=2,
-                byrow=TRUE))),
-              crs = rv$bboxproj)) %>% st_transform(4326)
-            # attribute valid is used to know if continuing loading the new extent (TRUE) or not (FALSE)
-            attr(x, "valid") <- TRUE
-            # attribute new is used to update the list of selected tiles (if TRUE) or not (if FALSE)
-            attr(x, "new") <- TRUE 
-            x
-          } else {
-            x <- st_polygon(); attr(x, "valid") <- FALSE; x
-          }
+        # check that the polygon is valid
+        if (attr(rv$bbox_polygon, "valid")) {
+          rv$extent <- rv$bbox_polygon
+          attr(rv$extent, "new") <- TRUE
         } else {
-          x <- st_polygon(); attr(x, "valid") <- FALSE; x
-        }
-        
-        if (!attr(sel_bbox, "valid")) {
           return(FALSE)
         }
-        
-        rv$extent <- sel_bbox
         
       } else if (extent_source == "vectfile") {
         
         # Vectfile mode #
         
-        # check that the path is a valid vector file
-        sel_vectfile <- tryCatch(
-          {
-            x <- st_read(rv$vectfile_path, quiet=TRUE) %>% 
-              st_transform(4326)
-            attr(x, "valid") <- TRUE
-            attr(x, "new") <- TRUE
-            x
-          },
-          error = function(e) {x <- st_polygon(); attr(x, "valid") <- FALSE; x}
-        )
-        
-        if (!attr(sel_vectfile, "valid")) {
+        # check that the polygon is valid
+        if (attr(rv$vectfile_polygon, "valid")) {
+          rv$extent <- rv$vectfile_polygon
+          attr(rv$extent, "new") <- TRUE
+        } else {
           return(FALSE)
         }
-        
-        rv$extent <- sel_vectfile
         
       } else if (extent_source == "draw") {
         
@@ -1276,7 +1265,7 @@ s2_gui <- function(param_list = NULL,
       # 2. Update the list of overlapping tiles and the tiles on the map
       if(length(rv$extent) > 0) {
         
-        rv$draw_tiles_overlapping <- s2tiles[unique(unlist(suppressWarnings(st_intersects(st_transform(rv$extent,4326), s2tiles)))),]
+        rv$draw_tiles_overlapping <- s2tiles[unique(unlist(suppressMessages(st_intersects(st_transform(rv$extent,4326), s2tiles)))),]
         
         if (attr(rv$extent, "new")) {
           # update the list of tiles
@@ -1291,13 +1280,14 @@ s2_gui <- function(param_list = NULL,
         
         # reset and update the map
         react_map(base_map()) 
+        rv$draw_tiles_overlapping_ll <- st_transform(rv$draw_tiles_overlapping, 4326)
         leafletProxy("view_map") %>%
           clearShapes() %>%
           fitBounds(
-            lng1 = min(st_coordinates(rv$extent)[,"X"]),
-            lat1 = min(st_coordinates(rv$extent)[,"Y"]),
-            lng2 = max(st_coordinates(rv$extent)[,"X"]),
-            lat2 = max(st_coordinates(rv$extent)[,"Y"])
+            lng1 = min(st_coordinates(rv$draw_tiles_overlapping_ll)[,"X"]),
+            lat1 = min(st_coordinates(rv$draw_tiles_overlapping_ll)[,"Y"]),
+            lng2 = max(st_coordinates(rv$draw_tiles_overlapping_ll)[,"X"]),
+            lat2 = max(st_coordinates(rv$draw_tiles_overlapping_ll)[,"Y"])
           ) %>%
           addPolygons(data = rv$draw_tiles_overlapping,
                       group = "S2 tiles",
@@ -1390,13 +1380,13 @@ s2_gui <- function(param_list = NULL,
     # message for bboxproj
     output$bboxproj_message <- renderUI({
       bboxproj_validated <- tryCatch(
-        suppressWarnings(check_proj4string(input$bboxproj, abort=TRUE)),
-        error = function(e) {"invalid"}
-      )
+        st_crs2(input$bboxproj), 
+        error = function(e) {st_crs(NA)}
+      )$proj4string
       if (input$bboxproj=="") {
         rv$bboxproj <- NA
         ""
-      }  else if (bboxproj_validated=="invalid") {
+      } else if (is.na(bboxproj_validated)) {
         rv$bboxproj <- NA
         # span(style="color:red", "\u2718") # ballot
         span(style="color:red",
@@ -1411,10 +1401,76 @@ s2_gui <- function(param_list = NULL,
       }
     })
     
+    # create a new map (to be shown in modal dialog)
+    react_map_bbox <- reactiveVal(base_map())
+    output$view_map_bbox <- renderLeaflet({react_map_bbox()})
+    
     # Open modal dialog to edit bbox
     observeEvent(input$button_extent_bbox, {
       showModal(load_extent_bbox())
     })
+    
+    # update the map dinamically
+    observeEvent(c(
+      input$bbox_xmin, input$bbox_xmax, 
+      input$bbox_ymin, input$bbox_ymax, 
+      rv$bboxproj
+    ), {
+      
+      # Check that the bounding box is valid
+      if (!anyNA(c(input$bbox_xmin, input$bbox_xmax, 
+                   input$bbox_ymin, input$bbox_ymax)) & 
+          !(is.null(rv$bboxproj) || is.na(rv$bboxproj))) {
+        if (input$bbox_xmin != input$bbox_xmax &
+            input$bbox_ymin != input$bbox_ymax) {
+          # create the polygon
+          rv$bbox_polygon <- st_as_sfc(
+            st_bbox(
+              c("xmin" = input$bbox_xmin,
+                "ymin" = input$bbox_ymin,
+                "xmax" = input$bbox_xmax,
+                "ymax" = input$bbox_ymax), 
+              crs = rv$bboxproj
+            )
+          ) %>% st_transform(4326)
+          attr(rv$bbox_polygon, "valid") <- TRUE
+        } else {
+          rv$bbox_polygon <- st_polygon()
+          attr(rv$bbox_polygon, "valid") <- FALSE
+        }
+      } else {
+        rv$bbox_polygon <- st_polygon()
+        attr(rv$bbox_polygon, "valid") <- FALSE
+      }
+      
+      # if bbox is valid, update the map
+      if (attr(rv$bbox_polygon, "valid")) {
+        rv$bbox_ll <- st_bbox(st_transform(rv$bbox_polygon, 4326))
+        leafletProxy("view_map_bbox") %>%
+          clearShapes() %>%
+          fitBounds(
+            lng1 = as.numeric(rv$bbox_ll$xmin-(rv$bbox_ll$xmax-rv$bbox_ll$xmin)/3),
+            lat1 = as.numeric(rv$bbox_ll$ymin-(rv$bbox_ll$ymax-rv$bbox_ll$ymin)/3),
+            lng2 = as.numeric(rv$bbox_ll$xmax+(rv$bbox_ll$xmax-rv$bbox_ll$xmin)/3),
+            lat2 = as.numeric(rv$bbox_ll$ymax+(rv$bbox_ll$ymax-rv$bbox_ll$ymin)/3)
+          ) %>%
+          addPolygons(data = rv$bbox_polygon,
+                      group = "Extent",
+                      # label = ~tile_id,
+                      # labelOptions = labelOptions(noHide = TRUE, direction = "auto"),
+                      fill = TRUE,
+                      fillColor = "green",
+                      fillOpacity = .3,
+                      stroke = TRUE,
+                      weight = 3,
+                      color = "darkgreen") #%>%
+      } else {
+        # if bbox is not valid, reset the map
+        react_map_bbox(base_map())
+      }
+      
+    })
+    
     # use bbox
     observeEvent(input$save_extent_bbox, {
       # Add a progress bar while update_extent is running
@@ -1427,15 +1483,11 @@ s2_gui <- function(param_list = NULL,
             session, 
             title = "Invalid bounding box", 
             text = paste(
-              "Please insert a valid bounding box",
-              "(check i.e. that numeric values make sense with the chosen projection,",
-              "and that left easting \uFF1C right easting and",
-              "lower northing \uFF1C upper northing)."
+              "Please insert a valid bounding box."
             ), 
             type = "error",
             btn_labels = "Ok"
           )
-          
         }
         # Fake progress
         for (i in 1:10) {incProgress(1/10); Sys.sleep(0.1)}
@@ -1493,11 +1545,60 @@ s2_gui <- function(param_list = NULL,
       }
     })
     
+    # create a new map (to be shown in modal dialog)
+    react_map_vectfile <- reactiveVal(base_map())
+    output$view_map_vectfile <- renderLeaflet({react_map_vectfile()})
+    
     # Open modal dialog to load the vector file
     observeEvent(input$button_extent_vectfile, {
       rv$vectfile_path <- ""
       showModal(load_extent_vectfile())
     })
+    
+    # load the vector on the map
+    observeEvent(rv$vectfile_path, {
+      
+      # Check that the vector is valid
+      rv$vectfile_polygon <- tryCatch(
+        {
+          x <- st_read(rv$vectfile_path, quiet=TRUE) %>% 
+            st_transform(4326)
+          attr(x, "valid") <- TRUE
+          attr(x, "new") <- TRUE
+          x
+        },
+        error = function(e) {x <- st_polygon(); attr(x, "valid") <- FALSE; x}
+      )
+      
+      if(attr(rv$vectfile_polygon, "valid")) {
+        # if the vector is valid, update the map
+        rv$vectfile_polygon_ll <- st_transform(rv$vectfile_polygon, 4326)
+        leafletProxy("view_map_vectfile") %>%
+          clearShapes() %>%
+          fitBounds(
+            lng1 = min(st_coordinates(rv$vectfile_polygon_ll)[,"X"]),
+            lat1 = min(st_coordinates(rv$vectfile_polygon_ll)[,"Y"]),
+            lng2 = max(st_coordinates(rv$vectfile_polygon_ll)[,"X"]),
+            lat2 = max(st_coordinates(rv$vectfile_polygon_ll)[,"Y"])
+          ) %>%
+          addPolygons(data = rv$vectfile_polygon,
+                      group = "Extent",
+                      # label = ~tile_id,
+                      # labelOptions = labelOptions(noHide = TRUE, direction = "auto"),
+                      fill = TRUE,
+                      fillColor = "green",
+                      fillOpacity = .3,
+                      stroke = TRUE,
+                      weight = 3,
+                      color = "darkgreen") #%>%
+      } else {
+        # if the vector is not valid, reset the map
+        react_map_vectfile(base_map())
+      }
+      
+      
+    })
+    
     # use bbox
     observeEvent(input$save_extent_vectfile, {
       withProgress(message = 'Creating the extent...', value = 0, {
@@ -1523,13 +1624,13 @@ s2_gui <- function(param_list = NULL,
     # Open modal dialog to edit bbox
     observeEvent(input$button_extent_draw, {
       
-      
       # create a new namespace every time the button is pushed,
       # in order not to make mess between modules
       extent_ns_name <- paste0("editor_",sample(1E9,1))
       extent_ns <- NS(extent_ns_name)
       rv$extent_edits <- callModule(editModPoly, extent_ns_name, base_map())
       
+      # show the modal dialog
       showModal(load_extent_draw(extent_ns_name))
       
     })
@@ -1715,8 +1816,20 @@ s2_gui <- function(param_list = NULL,
     })
     
     
+    # Disable clipping and masking if no spatial filter was enabled
+    observeEvent(input$query_space, {
+      if (input$query_space) {
+        enable("clip_on_extent")
+        enable("extent_as_mask")
+      } else {
+        updateRadioButtons(session, "clip_on_extent", selected = FALSE)
+        updateRadioButtons(session, "extent_as_mask", selected = FALSE)
+        disable("clip_on_extent")
+        disable("extent_as_mask")
+      }
+    })
     
-    
+
     ## Update resolution from reference file
     output$outres_message <- renderUI({
       if(input$use_reference==TRUE & "res" %in% input$reference_usefor) {
@@ -1755,13 +1868,13 @@ s2_gui <- function(param_list = NULL,
         # else, take the specified one
       } else {
         
-        outproj_validated <- try(
-          suppressWarnings(check_proj4string(input$outproj, abort=TRUE)),
-          silent=TRUE
-        )
+        outproj_validated <- tryCatch(
+          st_crs2(input$outproj), 
+          error = function(e) {st_crs(NA)}
+        )$proj4string
         if (input$reproj==FALSE | input$outproj=="") {
           ""
-        }  else if (outproj_validated=="invalid") {
+        }  else if (is.na(outproj_validated)) {
           span(style="color:red",
                "Insert a valid projection (UTM timezone, EPSG code or PROJ4 string).")
         } else {
@@ -1964,6 +2077,30 @@ s2_gui <- function(param_list = NULL,
         easyClose = TRUE,
         footer = NULL
         ))
+    })
+    
+    observeEvent(input$help_time_period, {
+      showModal(modalDialog(
+        title = "Time period type",
+        p(HTML(
+          "<strong>Full</strong>:",
+          "the specified time window is entirely processed",
+          "(e.g., specifying a range from 2016-05-01 to 2018-09-30 will return",
+          "all the products in this time window which match the other parameters)."
+        )),
+        p(HTML(
+          "<strong>Seasonal</strong>:",
+          "the specified time window is processed from the first year to the",
+          "last year, in the seasonal time windows from the first",
+          "Julian day to the second Julian day",
+          "(e.g., specifying a range from 2016-05-01 to 2018-09-30 will return",
+          "all the products from 2016-05-01 to 2016-09-30, from 2016-05-01 to",
+          "2016-09-30 and from 2017-05-01 to 2017-09-30,",
+          "which also match the other parameters)."
+        )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
     })
     
     # observeEvent(input$help_dissolve_extent, {
@@ -2323,7 +2460,10 @@ s2_gui <- function(param_list = NULL,
       } else if (input$reproj==FALSE) {
         NA
       } else {
-        check_proj4string(input$outproj)
+        tryCatch(
+          st_crs2(input$outproj), 
+          error = function(e) {st_crs(NA)}
+        )$proj4string
       }
       # resampling methods ("nearest","bilinear","cubic","cubicspline","lanczos","average","mode")
       rl$resampling <- input$resampling
@@ -2479,7 +2619,7 @@ s2_gui <- function(param_list = NULL,
         #   type = "success",
         #   btn_labels = "Ok"
         # )
-
+        
       })
       
     }

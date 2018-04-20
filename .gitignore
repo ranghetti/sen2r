@@ -31,9 +31,7 @@
 .Rproj.user
  *.Rproj
 
- # dependencies (s2download, sen2cor, xslt)
- /s2download/
- /inst/s2download/
+ # dependencies (sen2cor, xslt)
  /sen2cor/
  /inst/sen2cor/
  /extdata/xslt/
@@ -41,6 +39,7 @@
  /query_results.xml
  /wget.exe
  /inst/wget.exe
+ *.pyc
  
  # path file
  /extdata/paths.json
@@ -53,3 +52,5 @@
  /inst/extdata/example_files/safe/
  /extdata/example_files/out/
  /inst/extdata/example_files/out/
+ /s2download/apihub.txt
+ /inst/s2download/apihub.txt

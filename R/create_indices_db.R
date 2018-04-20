@@ -78,6 +78,7 @@ create_indices_db <- function(xslt_path = NA,
   s2_htmlinternal <- htmlTreeParse(s2_path, useInternalNodes = TRUE) %>% xmlRoot()
   s2_html_table <- s2_html[["body"]][["div"]][["table"]]
   s2_htmlinternal_table <- s2_htmlinternal[["body"]][["div"]][["table"]]
+  unlink(s2_path)
   
   s2_table <- data.table(readHTMLTable(s2_htmlinternal_table, header=TRUE, stringsAsFactors=FALSE)[,1:3])
   setnames(s2_table, c( "Nr.\r\n      ", "Name\r\n      ","Abbrev.\r\n      "),
@@ -163,6 +164,10 @@ create_indices_db <- function(xslt_path = NA,
       gsub("par\\_([^0-9A-Za-z])", "\\1", .)  %>% # error in two indices
       gsub("\\\\left\\(", "(", .)  %>% # parenthesis
       gsub("\\\\right\\)", ")", .) # parenthesis
+    
+    # remove temporary files
+    unlink(tmp_infile)
+    unlink(tmp_outfile)
     
     n_iter <- 1
     while (length(grep("[{}]", tmp_latex))>0 & n_iter<=max_iter) {

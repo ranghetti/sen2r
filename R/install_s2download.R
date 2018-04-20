@@ -3,6 +3,8 @@
 #'  is a collection of python scripts used to download
 #'  and correct Sentinel-2 images, and it is required by this package.
 #'  This function clones them and installs a docker with sen2cor.
+#' @details This function is not yet required, since `s2download` scripts were
+#'  integrated in the package.
 #' @param inst_path Path where
 #'  [s2download](https://github.com/ranghetti/s2download) will be cloned
 #'  (default: a subdirectory of this package).
@@ -10,7 +12,6 @@
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
-#' @export
 #' @importFrom reticulate import_from_path import_builtins py_str use_python py_module_available py_to_r
 
 install_s2download <- function(inst_path = NA) {
@@ -65,7 +66,7 @@ install_s2download <- function(inst_path = NA) {
   
   # add missing binaries to binpaths
   for (d in dependencies[!dependencies %in% names(binpaths)]) {
-    binpaths[[d]] <- normalizePath(Sys.which(d))
+    binpaths[[d]] <- normalize_path(Sys.which(d))
   }
   writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
   
@@ -127,7 +128,7 @@ install_s2download <- function(inst_path = NA) {
   if (is(install_s2download_dependencies, "error")) {
     install_s2download_dependencies <- import_from_path(
       "install_dependencies", 
-      normalizePath(paste0(inst_path,"/")), 
+      normalize_path(paste0(inst_path,"/")), 
       convert=FALSE
     )
   }
@@ -144,7 +145,7 @@ install_s2download <- function(inst_path = NA) {
   } else {
     list("s2download" = NULL)
   }
-  binpaths$s2download <- normalizePath(inst_path)
+  binpaths$s2download <- normalize_path(inst_path)
   writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
   
 }
