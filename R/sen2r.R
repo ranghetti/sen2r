@@ -243,6 +243,8 @@ sen2r <- function(param_list = NULL,
                   tmpdir = NA,
                   rmtmp = TRUE) {
   
+  # to avoid NOTE on check
+  . <- NULL
   
   ### Preliminary settings ###
   

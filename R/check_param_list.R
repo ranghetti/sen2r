@@ -23,6 +23,9 @@
 
 check_param_list <- function(pm, type = "string", correct = TRUE) {
   
+  # to avoid NOTE on check
+  . <- NULL
+  
   # check the output type
   
   # check the format of pm object
