@@ -38,3 +38,7 @@ Imports:
   doParallel,
   units
 Roxygen: list(markdown = TRUE)
+Suggests:
+  knitr,
+  rmarkdown
+VignetteBuilder: knitr
