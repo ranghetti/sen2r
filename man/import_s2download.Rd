@@ -4,9 +4,12 @@
 \alias{import_s2download}
 \title{Import s2download python module}
 \usage{
-import_s2download(...)
+import_s2download(with_aria2 = TRUE, ...)
 }
 \arguments{
+\item{with_aria2}{(optional) Logical: if TRUE (default), the presence of
+aria2 is checked; if FALSE, only Wget and python are checked.}
+
 \item{...}{Optional parameters of \code{\link[reticulate]{import}}}
 }
 \value{
@@ -16,7 +19,8 @@ import_s2download(...)
 \href{https://github.com/ranghetti/s2download}{s2download} is
 a collection of python scripts used to download
 and correct Sentinel-2 images, and it is required by this package.
-This internal function check if they are installed and imports them.
+This internal function check if their dependences (python, wget and aria2)
+are installed, and imports the module.
 }
 \note{
 License: GPL 3.0

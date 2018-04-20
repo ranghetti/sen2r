@@ -223,7 +223,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
           # cycle on product requests (one per 100 products) is interrupted after
           # the first request of length 0.
           corr_type=corr_type,
-          wget_path=dirname(binpaths$wget)
+          downloader_path=dirname(binpaths$wget)
         )
       )
       message(py_output)

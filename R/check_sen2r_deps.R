@@ -13,11 +13,11 @@
 #' the fist time, in order to avoid errors.
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
-#' @importFrom shiny actionButton br code conditionalPanel div em
+#' @importFrom shiny actionButton addResourcePath br code conditionalPanel div em
 #'  fluidPage fluidRow h3 helpText htmlOutput icon modalButton
 #'  modalDialog observe observeEvent outputOptions p reactive
-#'  reactiveFileReader reactiveValues renderText renderUI runApp
-#'  shinyApp showModal span strong textOutput uiOutput
+#'  reactiveFileReader reactivePoll reactiveValues renderText renderUI runApp
+#'  shinyApp showModal span strong textOutput uiOutput verbatimTextOutput
 #' @importFrom shinyjs hide html useShinyjs
 #' @importFrom shinyWidgets confirmSweetAlert
 #' @importFrom utils capture.output
@@ -76,6 +76,18 @@ check_sen2r_deps <- function() {
         #     actionButton("check_python", "Check Python", width=200)),
         
       ),
+      
+      h3("aria2"),
+      helpText(em(
+        "aria2 is an alternative (faster) downloader downloader which can be",
+        "used to download SAFE archives;",
+        "its installation is optional."
+      )),
+      span(style="display:inline-block;vertical-align:center;padding-top:5px;",
+           actionButton("check_aria2", "Check aria2", width=200),
+           "\u2000"),
+      span(style="display:inline-block;vertical-align:center;",
+           htmlOutput("check_aria2_icon")),
       
       h3("sen2cor"),
       helpText(em(
@@ -454,6 +466,146 @@ check_sen2r_deps <- function() {
     })
     
     
+    #-- Check aria2 --#
+    
+    # build the icon of the check
+    observe({
+      input$check_aria2
+      rv$check_aria2_isvalid <- if (!is.null(binpaths()$aria2c)) {
+        file.exists(binpaths()$aria2c)
+      } else {FALSE}
+    })
+    output$check_aria2_isvalid <- renderText(rv$check_aria2_isvalid)
+    output$check_aria2_icon <- renderUI({
+      if (is.na(rv$check_aria2_isvalid)) {
+        ""
+      } else if (rv$check_aria2_isvalid) {
+        span(style="color:darkgreen;", "\u2714")
+      } else {
+        span(style="color:red;", "\u2718")
+      }
+    })
+    outputOptions(output, "check_aria2_isvalid", suspendWhenHidden = FALSE)
+    
+    output$check_aria2_message <- renderUI({
+      if (is.na(rv$check_aria2_isvalid)) {
+        ""
+      } else if (!rv$check_aria2_isvalid) {
+        div(
+          align = "center",
+          p(style="color:red;text-align:center;font-size:500%;",
+            icon("times-circle")),
+          if (Sys.info()["sysname"] == "Windows") {
+            div(
+              p("aria2 needs to be downloaded."),
+              hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+              div(style="text-align:right;",
+                  actionButton("install_aria2_button", strong("\u2000Download"), icon=icon("download")),
+                  modalButton("\u2000Cancel", icon = icon("ban")))
+            )
+          } else {
+            div(
+              p("aria2 needs to be installed",
+                "To do it, install the package \"aria2\",",
+                "then repeat this check."),
+              hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+              div(style="text-align:right;", 
+                  modalButton("\u2000Close", icon = icon("check")))
+            )
+          }
+        )
+      } else if (rv$check_aria2_isvalid) {
+        div(
+          align = "center",
+          p(style="text-align:center;font-size:500%;color:darkgreen;", 
+            icon("check-circle")),
+          p("aria2 is correctly installed."),
+          hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+          div(style="text-align:right;", 
+              modalButton("\u2000Close", icon = icon("check")))
+        )
+      }
+    })
+    
+    # build the modalDialog
+    check_aria2_modal <- modalDialog(
+      title = "aria2 check",
+      size = "s",
+      uiOutput("check_aria2_message"),
+      easyClose = FALSE,
+      footer = NULL
+    )
+    
+    # open the modaldialog when button is pressed
+    observeEvent(input$check_aria2, {
+      
+      # do the check
+      import_s2download(with_aria2 = TRUE)
+
+      # update the check
+      rv$check_aria2_isvalid <- if (file.exists(binpaths_file)) {
+        file.exists(fromJSON(binpaths_file)$aria2c)
+      } else {FALSE}
+
+      # open modaldialog
+      showModal(check_aria2_modal)
+
+    })
+    
+    # install aria2
+    observeEvent(input$install_aria2_button, {
+      
+      shinyjs::html(
+        "check_aria2_message", 
+        as.character(div(
+          align="center",
+          p(style="text-align:center;font-size:500%;color:darkgrey;", 
+            icon("cog", class = "fa-spin")),
+          p("Wait while aria2 is being installed...")
+        ))
+      )
+      
+      Sys.sleep(0.5)
+      check_aria2_outerr <- tryCatch(
+        install_aria2(),
+        error = function(e) {print(e)}
+      )
+      
+      # remove the text
+      if (is(check_aria2_outerr, "error")) {
+        shinyjs::html(
+          "check_aria2_message", 
+          as.character(div(
+            align="center",
+            p(style="text-align:center;font-size:500%;color:red;", 
+              icon("times-circle")),
+            p("Some errors occurred:"),
+            p(code(check_aria2_outerr)),
+            hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+            div(style="text-align:right;", 
+                modalButton("\u2000Close", icon = icon("check")))
+          ))
+        )
+        rv$check_aria2_isvalid <- FALSE
+      } else {
+        shinyjs::html(
+          "check_aria2_message", 
+          as.character(div(
+            align="center",
+            p(style="text-align:center;font-size:500%;color:darkgreen;", 
+              icon("check-circle")),
+            p("aria2 was correctly installed."),
+            hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+            div(style="text-align:right;", 
+                modalButton("\u2000Close", icon = icon("check")))
+          ))
+        )
+        rv$check_aria2_isvalid <- TRUE
+      }
+      
+    })
+    
+    
     #-- Check sen2cor --#
     
     # build the icon of the check
@@ -576,7 +728,7 @@ check_sen2r_deps <- function() {
     ##-- Footer buttons --##
     observe({
       rv$check_all_isvalid <- all(c(
-        rv$check_gdal_isvalid, rv$check_wget_isvalid, 
+        rv$check_gdal_isvalid, rv$check_wget_isvalid, rv$check_aria2_isvalid, 
         rv$check_sen2cor_isvalid
       ))
     })

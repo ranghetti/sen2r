@@ -18,7 +18,7 @@ and correct Sentinel-2 images, and it is required by this package.
 This function clones them and installs a docker with sen2cor.
 }
 \details{
-This function is not yet required, since \code{s2download} scripts were
+This function is deprecated, since \code{s2download} scripts were
 integrated in the package.
 }
 \note{

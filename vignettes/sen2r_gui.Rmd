@@ -1,0 +1,284 @@
+---
+title: "Interactive execution"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Interactive execution}
+  %\VignetteEngine{knitr::knitr}
+  %\usepackage[UTF-8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Launching the function 
+```{r, eval = FALSE}
+library(sen2r)
+sen2r()
+```
+allows to open the main 
+<span style="color:#5793dd;vertical-align:text-bottom;font-size:90%;font-weight:500;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:850;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:700;">r</span> 
+GUI, with which the user is able to easily set the required processing parameters.
+
+The GUI can be launched also with the function
+```{r, eval = FALSE}
+library(sen2r)
+sen2r()
+```
+The difference is that this function does not allow to directly start the processing,
+but only to set parameters and save a JSON parameter files (or return a list of parameters);
+moreover, `s2_gui()` does not accept parameter values as arguments.
+
+This page describes how to use the GUI in order to set your own processing chain.
+
+
+## Description of the GUI
+
+The GUI is composed of four main sheets:
+
+<p style="text-align:center;">
+  <a href="sen2r_gui_sheet1.jpg" target="_blank">
+    <img src="sen2r_gui_sheet1_small.png">
+  </a>
+  <a href="sen2r_gui_sheet2.jpg" target="_blank">
+    <img src="sen2r_gui_sheet2_small.png">
+  </a>
+  <a href="sen2r_gui_sheet3.jpg" target="_blank">
+    <img src="sen2r_gui_sheet3_small.png">
+  </a>
+  <a href="sen2r_gui_sheet4.jpg" target="_blank">
+    <img src="sen2r_gui_sheet4_small.png">
+  </a>
+</p>
+
+1. <span style="background-color:#F2F4F4;">[&nbsp;<i class="fa fa-image"></i>&#8192;Product selection&nbsp;](#product-selection)</span>
+    for settings about input SAFE images;
+2. <span style="background-color:#F2F4F4;">[&nbsp;<i class="fa fa-clone"></i>&#8192;Spatio-temporal selection&nbsp;](#spatio-temporal-selection)</span>
+    to set the spatial extent and the temporal time window to use for SAFE
+    querying and eventually to clip output images;
+3. <span style="background-color:#F2F4F4;">[&nbsp;<i class="fa fa-th"></i>&#8192;Processing options&nbsp;](#processing-options)</span>
+    (visible only if the type of processing selected in the first sheet is 
+    "Processed spatial files") for the settings relating to the spatial 
+    processing (clip, mask, set the geometry);
+4. <span style="background-color:#F2F4F4;">[&nbsp;<i class="fa fa-calculator"></i>&#8192;Spectral indices selection&nbsp;](#spectral-indices-selection)</span>
+    (visible only if "Spectral indices" is checked as selected product in the
+    first sheet) to choose output spectral indices.
+
+
+### <span style="background-color:#F2F4F4;">&nbsp;<i class="fa fa-image"></i>&#8192;Product selection&nbsp;</span>
+
+#### <span style="background-color:#F2F4F4;">&nbsp;Type of processing&nbsp;</span>
+The user can choose if his desider output is composed by SAFE archives
+(by choosing the first option) or by files in a custom format (with the second
+option).
+
+In the first case, products are only downloaded and eventually corrected with 
+**sen2cor**; the spatial processing is skipped (for this reason the sheet 
+<span style="background-color:#F2F4F4;">[&nbsp;<i class="fa fa-th"></i>&#8192;Processing options&nbsp;](#processing-options)</span>
+is not available).
+In the second case, products can be downloaded, corrected with **sen2cor** 
+and/or selected by an existing archive; they are used to perform spatial processing.
+
+#### <span style="background-color:#F2F4F4;">&nbsp;Select products and sensors&nbsp;</span>
+This box includes different options basing on the choice performed in the previous box 
+<span style="background-color:#F2F4F4;">[&nbsp;Type of processing&nbsp;](#type-of-processing)</span>.
+
+Selecting <span style="background-color:#F2F4F4;">&nbsp;Processed spatial files&nbsp;</span>
+the user can choose which products obtain as output
+(<span style="background-color:#F2F4F4;font-weight:bold;">&nbsp;Select products&nbsp;</span>).
+Currenty it is possible to choose among these ones:
+
+* <span style="background-color:#F2F4F4;">&nbsp;TOA (top-of-atmosphere) Reflectance&nbsp;</span>:
+    multiband rasters (one per image), in which each of the 12 band corresponds to a 
+    Sentinel-2 Level-1C spectral bands (see 
+    <a href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/resolutions/spatial" target="_blank">here</a>
+    for details).
+    Bands are ordered by wavelength (Band 1, Band 2, Band 3, etc.);
+    Band 8 and Band 8A are mutually exclusives (Band 8 if used if the desired 
+    output resolution is lower than 20 metres; Band 8A otherwise).
+* <span style="background-color:#F2F4F4;">&nbsp;BOA (bottom-of-atmosphere) Surface Reflectance&nbsp;</span>:
+    multiband rasters (one per image), in which each of the 11 band corresponds to a 
+    Sentinel-2 Level-2A spectral bands (the same as Level-1C ones, with the 
+    exception of Band 10, which is missing in Level-2A products).
+* <span style="background-color:#F2F4F4;">&nbsp;SCL (surface classification map)&nbsp;</span>:
+    singleband rasters (one per image), corresponding to the classification maps
+    generated by the Level-2A algorythm. Each pixel is automatically assigned
+    to one of the following classes:
+    - <font style=\"family:monospace;background-color:#000000;color:white;\">&#8194;0&#8194;</font>&#8194;No data
+    - <font style=\"family:monospace;background-color:#FF0000;color:white;\">&#8194;1&#8194;</font>&#8194;Saturated or defective
+    - <font style=\"family:monospace;background-color:#424142;color:white;\">&#8194;2&#8194;</font>&#8194;Dark area pixels
+    - <font style=\"family:monospace;background-color:#633400;color:white;\">&#8194;3&#8194;</font>&#8194;Cloud shadows
+    - <font style=\"family:monospace;background-color:#29f329;color:black;\">&#8194;4&#8194;</font>&#8194;Vegetation
+    - <font style=\"family:monospace;background-color:#ffff00;color:black;\">&#8194;5&#8194;</font>&#8194;Bare soils
+    - <font style=\"family:monospace;background-color:#0000ff;color:white;\">&#8194;6&#8194;</font>&#8194;Water
+    - <font style=\"family:monospace;background-color:#7b7d7b;color:white;\">&#8194;7&#8194;</font>&#8194;Cloud (low probability)
+    - <font style=\"family:monospace;background-color:#bdbebd;color:black;\">&#8194;8&#8194;</font>&#8194;Cloud (medium probability)
+    - <font style=\"family:monospace;background-color:#ffffff;color:black;\">&#8194;9&#8194;</font>&#8194;Cloud (high probability)
+    - <font style=\"family:monospace;background-color:#63cbff;color:black;\">&#8197;10&#8197;</font>&#8194;Thin cirrus
+    - <font style=\"family:monospace;background-color:#ff9aff;color:black;\">&#8197;11&#8197;</font>&#8194;Snow
+    
+    Notice that SCL is released at 20 metres resolution; so, if fthe user 
+    requires a lower non-native resolution, it will be rescaled.
+    For details about the Scene Classification algorythm, see 
+    <a href="https://sentinel.esa.int/web/sentinel/technical-guides/sentinel-2-msi/level-2a/algorithm" target="_blank">this page</a>.
+* <span style="background-color:#F2F4F4;">&nbsp;TCI (true-color) RGB 8-bit image&nbsp;</span>:
+    24-bit raster images containing the true colour image of the Level-2A,
+    as released in SAFE products. 
+    currently it can be produced only for shortname products (since oldname
+    ones do not include it).
+* <span style="background-color:#F2F4F4;">&nbsp;Spectral indices</span>:
+    singleband spectral indices, computed basing on BOA or TOA products.
+    When this option is checked, the sheet 
+    <span style="background-color:#F2F4F4;">[&nbsp;<i class="fa fa-calculator"></i>&#8192;Spectral indices selection&nbsp;](#spectral-indices-selection)</span>
+    appears and can be used to select the indices to be produced.
+    
+Basing on the products which were selected, the GUI determines which SAFE
+levels (Level-1C, Level-2A or both) are required; they are shown in the list
+<span style="background-color:#F2F4F4;font-weight:bold;">&nbsp;SAFE levels needed&nbsp;</span>.
+Basically, only Level-1C are required if the user chooses to produce only BOA
+reflectances, otherwise also Level-2A are required.
+Only Level-2A are required if the user chooses not to manually perform 
+atmospheric corrections (see 
+<span style="background-color:#F2F4F4;">[&nbsp;Atmospheric correction options&nbsp;](#atmospheric-correction-options)</span>).
+
+Finally, this box allows to limit the download and processing basing on the 
+source sensor (
+<span style="background-color:#F2F4F4;">&nbsp;Sentinel-2A&nbsp;</span> or 
+<span style="background-color:#F2F4F4;">&nbsp;Sentinel-2B&nbsp;</span>), 
+using the selector 
+<span style="background-color:#F2F4F4;font-weight:bold;">&nbsp;Select sensor&nbsp;</span>.
+
+If <span style="background-color:#F2F4F4;">&nbsp;Raw files in raw SAFE format&nbsp;</span>
+was selected as type of processing,
+the user can instead choose which SAFE level to produce
+(<span style="background-color:#F2F4F4;font-weight:bold;">&nbsp;Select products&nbsp;</span>:
+<span style="background-color:#F2F4F4;">&nbsp;Raw level-1C SAFE files&nbsp;</span>,
+<span style="background-color:#F2F4F4;">&nbsp;Raw level-2A SAFE files&nbsp;</span>
+or both)
+and limit the download and processing basing on the source sensor, as in the
+previous case.
+    
+#### <span style="background-color:#F2F4F4;">&nbsp;SAFE options&nbsp;</span>
+
+This box allows to set the options relating with SAFE products.
+
+Two selectors 
+(<span style="background-color:#F2F4F4;font-weight:bold;">&nbsp;Directory for level-1C SAFE products&nbsp;</span>
+and <span style="background-color:#F2F4F4;font-weight:bold;">&nbsp;Directory for level-2A SAFE products&nbsp;</span>)
+allows to set where to put SAFE Level-1C and Level-2A archives.
+The paths can be both written in the text boxes or selected with the buttons 
+<span style="background-color:#F2F4F4;border:1px solid darkgrey;border-radius:5px;">&nbsp;Select&nbsp;</span>.
+These two paths are used both for input and output SAFE products: 
+new downloaded or produced SAFE are placed there, and existing SAFE are read.
+
+The selector <span style="background-color:#F2F4F4;font-weight:bold;">&nbsp;Download mode&nbsp;</span>
+allows to choose to work online (new SAFE products can be downloaded)
+or offline (only existing SAFE Level-1C products are used; Level-2A can be both
+existing or produced from corresponding existing Level-1C).
+
+The selector <span style="background-color:#F2F4F4;font-weight:bold;">&nbsp;Overwrite existing SAFE products?&nbsp;</span>
+allows to choose if existing SAFE should be considered:
+if so, the research of existing products is performed before downloading them;
+otherwise, the SAFE directories are used only as output directories, and
+eventual existing products are replaced by products downloaded or produced by **sen2cor**.
+
+The selector <span style="background-color:#F2F4F4;font-weight:bold;">&nbsp;Delete raw SAFE files after processing?&nbsp;</span>,
+available only in online mode, allows to delete SAFE products after the processing
+(allowing to save space on disk).
+
+#### <span style="background-color:#F2F4F4;">&nbsp;Atmospheric correction options&nbsp;</span>
+This box allows to set options related to **sen2cor**.
+It is visible only if Level-2A was selected or needed in the box
+<span style="background-color:#F2F4F4;">[&nbsp;Select products and sensors&nbsp;](#select-products-and-sensors)</span>.
+
+Currently, only one selector 
+(<span style="background-color:#F2F4F4;font-weight:bold;">&nbsp;Method to obtain level-2A corrected images&nbsp;</span>)
+is present, determining if (and when) **sen2cor** should be used.
+
+* <span style="background-color:#F2F4F4;">&nbsp;Use only level-2A images available locally or online&nbsp;</span>:
+    sen2cor is never used locally: level-2A products are used only if they are
+    already available locally or if they can be downloaded from SciHub. 
+    This option is useful if sen2cor is not available locally, 
+    or if its use must be avoided at all.
+* <span style="background-color:#F2F4F4;">&nbsp;Use sen2cor only for level-2A products not available locally or online&nbsp;</span>:
+    level-2A images are first of all searched locally or online; 
+    only for not available products (with corresponding level-1C images available) 
+    sen2cor is used to produce them. 
+    This option is useful to optimize time of processing (downloading of level-2A
+    images is faster than producing them with sen2cor), and in most of the situations.
+* <span style="background-color:#F2F4F4;">&nbsp;Always correct level-1C images with sen2cor locally&nbsp;</span>:
+    if level-2A images are not available locally, they are corrected applying 
+    sen2cor to their corresponding level-1C images. 
+    This option can be used to reduce internet traffic if a level-1C archive 
+    is already available, or if both level-1C and level-2A products are 
+    required for outputs.
+
+
+### <span style="background-color:#F2F4F4;">&nbsp;<i class="fa fa-clone"></i>&#8192;Spatio-temporal selection&nbsp;</span>
+
+#### <span style="background-color:#F2F4F4;">&nbsp;Temporal parameters&nbsp;</span>
+In this box the user can specify the temporal window for which products have 
+to be found, downloaded or processed.
+
+If the tool is run in Online mode (see 
+<span style="background-color:#F2F4F4;">[&nbsp;SAFE options&nbsp;](#safe-options)</span>)
+the selection of a temporal window is mandatory; instead, in Offline mode
+the user can still apply a temporal filter, but this is not mandatory
+(if no parameters are specified, all the SAFE images found in the SAFE 
+directories are processed).
+For this reason, the first selector of the box 
+(<span style="background-color:#F2F4F4;">&nbsp;Use temporal filter?&nbsp;</span>)
+is visible only in Offline mode.
+
+Next selectors of the box appear only if this selector was set to Yes.
+
+In the selector 
+<span style="background-color:#F2F4F4;font-weight:bold;">&nbsp;Time interval&nbsp;</span>
+the user can specify the beginning and the ending date of the year
+(both writing them in the format YYYY-MM-DD or selecting them from the calendar).
+To search only a single date, it is possible to add the same value for both
+the beginning and the ending dates.
+
+Finally, it is possible to select one of the following time periods:
+
+* <span style="background-color:#F2F4F4;">&nbsp;Full&nbsp;</span>:
+    the specified time window is entirely processed (e.g., specifying a range
+    from 2016-05-01 to 2018-09-30 will return all the products in this 
+    time window which match the other parameters);
+* <span style="background-color:#F2F4F4;">&nbsp;Seasonal&nbsp;</span>:
+    the specified time window is processed from the first year to the
+    last year, in the seasonal time windows from the first Julian day to the 
+    second Julian day (e.g., specifying a range from 2016-05-01 to 2018-09-30 
+    will return all the products from 2016-05-01 to 2016-09-30, from 2016-05-01 
+    to 2016-09-30 and from 2017-05-01 to 2017-09-30, which also match 
+    the other parameters).
+
+#### <span style="background-color:#F2F4F4;">&nbsp;Spatial extent&nbsp;</span>
+In this box the user can specify the spatial extent for which products have 
+to be found, downloaded or processed.
+The same extent can be used for clipping the processed image (see
+<span style="background-color:#F2F4F4;">[&nbsp;<i class="fa fa-th"></i>&#8192;Processing options&nbsp;](#processing-options)</span>).
+
+As seen for the time window, also in this case the selection of an extent
+is mandatory in Online mode, and optional in Offline mode;
+in Offline mode a selector 
+<span style="background-color:#F2F4F4;font-weight=bold;">&nbsp;Use spatial filter/clip?&nbsp;</span>
+is visible to allow the user to do this choice.
+In case the user set it to No, all the images founded in the SAFE directories
+matching the other parameters are processed, and the extent of output products 
+corresponds to the extent of the selected tiles.
+
+Next selectors of the box appear only if this selector was set to Yes.
+
+The text field 
+<span style="background-color:#F2F4F4;font-weight=bold;">&nbsp;Extent name&nbsp;</span>
+allows to specify a name for the extent, which is used in the output file names.
+Notice that the name cannot contain spaces, points nor underscores, 
+and that it cannot be a five-length string with the same structure of a tile ID 
+(two numeric and three uppercase character values). 
+These restrictions were added in order not to make confusion in the structure of 
+file names.
+
+
+
+

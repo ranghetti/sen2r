@@ -96,14 +96,20 @@
     <p><a href='https://github.com/ranghetti/s2download'>s2download</a> is
 a collection of python scripts used to download
 and correct Sentinel-2 images, and it is required by this package.
-This internal function check if they are installed and imports them.</p>
+This internal function check if their dependences (python, wget and aria2)
+are installed, and imports the module.</p>
     
 
-    <pre class="usage"><span class='fu'>import_s2download</span>(<span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>import_s2download</span>(<span class='kw'>with_aria2</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>with_aria2</th>
+      <td><p>(optional) Logical: if TRUE (default), the presence of
+aria2 is checked; if FALSE, only Wget and python are checked.</p></td>
+    </tr>
     <tr>
       <th>...</th>
       <td><p>Optional parameters of <code><a href='http://www.rdocumentation.org/packages/reticulate/topics/import'>import</a></code></p></td>

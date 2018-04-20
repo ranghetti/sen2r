@@ -213,9 +213,8 @@ def s2_download(downloader="wget", lat=None, lon=None, latmin=None, lonmin=None,
                   start_date=None, end_date=None, orbit=None, tile=None, apihub=None,
                   max_cloud=100.0, l1c_dir=tempfile.gettempdir(), l2a_dir=tempfile.gettempdir(), outputcatalogs=None, max_records=1E3,
                   overwrite=False, offline=False, corr_type="auto", source="scihub", list_only=False,
-                  n_procs=None, current_dir = os.getcwd(), wget_path=''):
+                  n_procs=None, current_dir = os.getcwd(), downloader_path=''):
 
-    print "Wget_path s2_download: "+wget_path # FIXME remove
     # corr_type:
     # "no" simply downloads available L1C (source?)
     # "manual" downloads L1C (source?) and correct them with sen2cor (delete L1C?)
@@ -252,7 +251,7 @@ def s2_download(downloader="wget", lat=None, lon=None, latmin=None, lonmin=None,
                 (s2_urls,s2_filenames) = Sentinel_download(downloader=downloader, lat=lat, lon=lon, latmin=latmin, lonmin=lonmin, latmax=latmax, lonmax=lonmax,
                           start_date=start_date,level="L1C",end_date=end_date, no_download=False,
                           orbit=orbit, apihub=apihub, proxy=None, max_cloud=max_cloud, write_dir=l1c_dir,
-                          sentinel='S2',tile=tile, dhus=False, list_only=list_only, MaxRecords=max_records, wgetPath=wget_path)
+                          sentinel='S2',tile=tile, dhus=False, list_only=list_only, MaxRecords=max_records, downloaderPath=downloader_path)
 
             if (corr_type in ['manual']) & (list_only == False):
                 print("Call sen2cor on product ")
@@ -270,7 +269,7 @@ def s2_download(downloader="wget", lat=None, lon=None, latmin=None, lonmin=None,
             (s2_urls,s2_filenames) = Sentinel_download(downloader=downloader, lat=lat, lon=lon, latmin=latmin, lonmin=lonmin, latmax=latmax, lonmax=lonmax,
                       start_date=start_date,level="L2A",end_date=end_date, no_download=False,
                       orbit=orbit, apihub=apihub, proxy=None, max_cloud=max_cloud, write_dir=l2a_dir,
-                      sentinel='S2',tile=tile, dhus=False, list_only=list_only, MaxRecords=max_records,wgetPath=wget_path)
+                      sentinel='S2',tile=tile, dhus=False, list_only=list_only, MaxRecords=max_records,downloaderPath=downloader_path)
 
     elif corr_type in ['auto']:
 
@@ -289,13 +288,13 @@ def s2_download(downloader="wget", lat=None, lon=None, latmin=None, lonmin=None,
             (l1c_scihub_urls,l1c_scihub_filenames) = Sentinel_download(downloader=downloader, lat=lat, lon=lon, latmin=latmin, lonmin=lonmin, latmax=latmax, lonmax=lonmax,
                       start_date=start_date,level="L1C",end_date=end_date, no_download=False,
                       orbit=orbit, apihub=apihub, proxy=None, max_cloud=max_cloud, write_dir=l1c_dir,
-                      sentinel='S2',tile=tile, dhus=False, MaxRecords=max_records,list_only=True,wgetPath=wget_path)
+                      sentinel='S2',tile=tile, dhus=False, MaxRecords=max_records,list_only=True,downloaderPath=downloader_path)
 
             # scihub L2A:
             (l2a_scihub_urls,l2a_scihub_filenames) = Sentinel_download(downloader=downloader, lat=lat, lon=lon, latmin=latmin, lonmin=lonmin, latmax=latmax, lonmax=lonmax,
                       start_date=start_date,level="L2A",end_date=end_date, no_download=False,
                       orbit=orbit, apihub=apihub, proxy=None, max_cloud=max_cloud, write_dir=l2a_dir,
-                      sentinel='S2',tile=tile, dhus=False, MaxRecords=max_records,list_only=True,wgetPath=wget_path)
+                      sentinel='S2',tile=tile, dhus=False, MaxRecords=max_records,list_only=True,downloaderPath=downloader_path)
 
             l2a_scihub_names = [re.compile('^(.+)\_MSIL2A\_(.+)$').match(f).group(2) for f in l2a_scihub_filenames]
             l1c_scihub_names = [re.compile('^(.+)\_MSIL1C\_(.+)$').match(f).group(2) for f in l1c_scihub_filenames]
@@ -319,12 +318,12 @@ def s2_download(downloader="wget", lat=None, lon=None, latmin=None, lonmin=None,
                 Sentinel_download(downloader=downloader, lat=lat, lon=lon, latmin=latmin, lonmin=lonmin, latmax=latmax, lonmax=lonmax,
                         start_date=start_date,level="L2A",end_date=end_date, no_download=False,
                         orbit=orbit, apihub=apihub, proxy=None, max_cloud=max_cloud, write_dir=l2a_dir,
-                        sentinel='S2',tile=tile, dhus=False, MaxRecords=max_records, file_list=l2a_scihub_filenames,wgetPath=wget_path)
+                        sentinel='S2',tile=tile, dhus=False, MaxRecords=max_records, file_list=l2a_scihub_filenames,downloaderPath=downloader_path)
                 # download L1C from scihub when L2A are not available
                 Sentinel_download(downloader=downloader, lat=lat, lon=lon, latmin=latmin, lonmin=lonmin, latmax=latmax, lonmax=lonmax,
                         start_date=start_date,level="L1C",end_date=end_date, no_download=False,
                         orbit=orbit, apihub=apihub, proxy=None, max_cloud=max_cloud, write_dir=l1c_dir,
-                        sentinel='S2',tile=tile, dhus=False, MaxRecords=max_records, file_list=l1c_scihub_needed_filenames,wgetPath=wget_path)
+                        sentinel='S2',tile=tile, dhus=False, MaxRecords=max_records, file_list=l1c_scihub_needed_filenames,downloaderPath=downloader_path)
             else:
                 (s2_urls,s2_filenames) = (l1c_scihub_needed_urls+l2a_scihub_urls,l1c_scihub_needed_filenames+l2a_scihub_filenames)
 
@@ -364,7 +363,7 @@ if __name__ == "__main__":
     parser.add_argument("--corr_type", default="auto", help="")
     parser.add_argument("--source", default="scihub", help="")
     parser.add_argument("--n_procs", default=None, type=int, help="Number of parallel processes for sen2cor (default: half of CPUs number)")
-    parser.add_argument("--wget_path", help="Path in which the wget executable binary is (empty if this path is part of PATH environmental variable)",default='')
+    parser.add_argument("--downloader_path", help="Path in which the wget executable binary is (empty if this path is part of PATH environmental variable)",default='')
     options = parser.parse_args()
     s2_download(downloader=options.downloader, lat=options.lat, lon=options.lon,
                 latmin=options.latmin, lonmin=options.lonmin, latmax=options.latmax, lonmax=options.lonmax,
@@ -374,4 +373,4 @@ if __name__ == "__main__":
                 outputcatalogs=options.outputcatalogs, max_records=options.max_records,
                 overwrite=options.overwrite, offline=options.offline, list_only=options.list_only,
                 corr_type=options.corr_type, source=options.source, n_procs=options.n_procs,
-                current_dir=os.getcwd(), wget_path=options.wget_path)
+                current_dir=os.getcwd(), downloader_path=options.downloader_path)

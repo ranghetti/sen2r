@@ -92,7 +92,7 @@ def get_dir(dir_name,dir_url,product_dir_name,wg,auth,wg_opt,value):
 # ------------------------
 # Function to preprare wget command
 # (splitted from main function in order to be used both in main than in download_s2product)
-def wg_cmd(downloader,apihub,wget_path=''):
+def wg_cmd(downloader,apihub,downloader_path=''):
     #====================
     # read password file
     #====================
@@ -113,7 +113,11 @@ def wg_cmd(downloader,apihub,wget_path=''):
         os.remove('query_results.xml')
 
     if downloader=="aria2":
-        wg='aria2c --check-certificate=false'
+        if sys.platform.startswith('win'):
+            wg_bin=os.path.join(downloader_path,"aria2c.exe")
+        else:
+            wg_bin=os.path.join(downloader_path,"aria2c")
+        wg=wg_bin+' --check-certificate=false'
         auth='--http-user="%s" --http-passwd="%s"'%(account,passwd)
         search_output=" --continue -o query_results.xml"
         wg_opt=" -o "
@@ -123,10 +127,9 @@ def wg_cmd(downloader,apihub,wget_path=''):
             value="$value"
     else :
         if sys.platform.startswith('win'):
-            wg_bin=os.path.join(wget_path,"wget.exe")
+            wg_bin=os.path.join(downloader_path,"wget.exe")
         else:
-            wg_bin=os.path.join(wget_path,"wget")
-        #print "wg_bin: "+wget_path # FIXME remove
+            wg_bin=os.path.join(downloader_path,"wget")
         wg=wg_bin+" --no-check-certificate -q " # TODO added -q not to mess in R: create argument for it
         auth='--user="%s" --password="%s"'%(account,passwd)
         search_output="--output-document=query_results.xml"
@@ -143,14 +146,17 @@ def wg_cmd(downloader,apihub,wget_path=''):
 # ---------------------------------------------------------------
 # Function to download a product after having it in the file list
 # (this function was splitted from main function on order to allow using it with a file list)
-def download_s2product(filename,link,downloader,apihub,tile=None,no_download=False,write_dir='.',file_list=None,wget_path=''):
+def download_s2product(filename,link,downloader,apihub,tile=None,no_download=False,write_dir='.',file_list=None,downloader_path=''):
 
     # Compute wg parameters
-    (wg,auth,search_output,wg_opt,value) = wg_cmd(downloader,apihub,wget_path=wget_path)
+    (wg,auth,search_output,wg_opt,value) = wg_cmd(downloader,apihub,downloader_path=downloader_path)
 
     #==================================download  whole product
     if tile==None:
-        commande_wget='%s %s %s%s/%s "%s"'%(wg,auth,wg_opt,write_dir,filename+".zip",link)
+        if downloader=="wget":
+            commande_wget='%s %s %s%s/%s "%s"'%(wg,auth,wg_opt,write_dir,filename+".zip",link)
+        elif downloader=="aria2":
+            commande_wget='%s %s -d %s %s%s "%s"'%(wg,auth,write_dir,wg_opt,filename+".zip",link)
         #do not download the product if it was already downloaded and unzipped, or if no_download option was selected.
         unzipped_file_exists= os.path.exists(os.path.join(write_dir,filename))
         # print commande_wget
@@ -307,9 +313,9 @@ def download_s2product(filename,link,downloader,apihub,tile=None,no_download=Fal
 def Sentinel_download(downloader=None,lat=None,lon=None,latmin=None,latmax=None,lonmin=None,lonmax=None,
                       start_ingest_date=None,end_ingest_date=None,start_date=None,level="L1C",end_date=None,
                       orbit=None,apihub=None,proxy=None,no_download=False,max_cloud=110,write_dir='.',
-                      sentinel='S2',tile=None,dhus=False,MaxRecords=100,list_only=False,wgetPath='',file_list=None):
+                      sentinel='S2',tile=None,dhus=False,MaxRecords=100,list_only=False,downloaderPath='',file_list=None):
                         
-    #print "Wget_path Sentinel_download: "+wgetPath # FIXME remove
+    #print "downloader_path Sentinel_download: "+downloaderPath # FIXME remove
 
     url_search="https://scihub.copernicus.eu/apihub/search?q="
 
@@ -329,7 +335,7 @@ def Sentinel_download(downloader=None,lat=None,lon=None,latmin=None,latmax=None,
         print "The tile option (-t) can only be used for Sentinel-2"
         sys.exit(-1)
 
-    (wg,auth,search_output,wg_opt,value) = wg_cmd(downloader,apihub,wget_path=wgetPath)
+    (wg,auth,search_output,wg_opt,value) = wg_cmd(downloader,apihub,downloader_path=downloaderPath)
 
     producttype=None
     if sentinel=="S2":
@@ -473,7 +479,7 @@ def Sentinel_download(downloader=None,lat=None,lon=None,latmin=None,latmax=None,
                 list_filename.append(filename)
                 # otherwise, continue with the original code
                 if list_only is False:
-                    download_s2product(filename=filename,link=link,downloader=downloader,apihub=apihub,tile=tile,no_download=no_download,write_dir=write_dir,file_list=file_list,wget_path=wgetPath)
+                    download_s2product(filename=filename,link=link,downloader=downloader,apihub=apihub,tile=tile,no_download=no_download,write_dir=write_dir,file_list=file_list,downloader_path=downloaderPath)
 
 
     # ranghetti edit: if list_only, return products list
@@ -541,7 +547,7 @@ if __name__ == "__main__":
                 help="maximum number of records to download (default=100)",default=100)
         parser.add_option("--list_only",dest="list_only",action="store_true",  \
                 help="Only list available products, without downloading",default=False)
-        parser.add_option("--wgetPath", dest="wgetPath", action="store",type="string",  \
+        parser.add_option("--downloaderPath", dest="downloaderPath", action="store",type="string",  \
                 help="Path in which the wget executable binary is (empty if this path is part of PATH environmental variable)",default='')
 
 
@@ -552,4 +558,4 @@ if __name__ == "__main__":
     Sentinel_download(options.downloader,options.lat,options.lon,options.latmin,options.latmax,options.lonmin,options.lonmax,
                       options.start_ingest_date,options.end_ingest_date,options.start_date,options.level,options.end_date,
                       options.orbit,options.apihub,options.proxy,options.no_download,options.max_cloud,options.write_dir,
-                      options.sentinel,options.tile,options.dhus,options.MaxRecords,options.wgetPath,options.list_only)
+                      options.sentinel,options.tile,options.dhus,options.MaxRecords,options.downloaderPath,options.list_only)

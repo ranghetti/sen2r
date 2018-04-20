@@ -1,0 +1,2 @@
+/home/lranghetti/share/git/github/ggranga/fidolasen/inst/extdata/example_files/out/out_testgeograbber2/BOA/S2A2A_20170703_022__BOA_10.tif
+/tmp/Rtmpd6Id4m/sen2r_ab515ae3dd34/warped/SCL/S2A2A_20170703_022__SCL_10.tif

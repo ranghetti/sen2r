@@ -19,10 +19,10 @@
 #' @importFrom mapedit editModUI
 #' @importFrom utils packageVersion
 #' @importFrom sf st_coordinates st_crs st_intersects st_polygon st_read st_bbox st_as_sfc st_transform
-#' @importFrom shiny a actionButton actionLink br callModule checkboxGroupInput
+#' @importFrom shiny a actionButton actionLink addResourcePath br callModule checkboxGroupInput
 #'  checkboxInput column conditionalPanel dateRangeInput div downloadButton downloadHandler em fileInput fluidRow h2 h3
 #'  helpText hr HTML htmlOutput icon incProgress isolate NS numericInput observe p
-#'  radioButtons reactive reactiveValues renderText renderUI runApp selectInput setProgress
+#'  radioButtons reactive reactiveVal reactiveValues removeModal renderText renderUI runApp selectInput setProgress
 #'  shinyApp showModal sliderInput span stopApp strong tagList textInput uiOutput updateCheckboxGroupInput
 #'  updateDateRangeInput updateSliderInput updateRadioButtons updateTextInput withMathJax
 #'  withProgress
@@ -321,10 +321,24 @@ s2_gui <- function(param_list = NULL,
                 # SciHub credentials
                 conditionalPanel(
                   condition = "input.online == 'TRUE'",
-                  actionButton(
-                    "scihub",
-                    label = "\u2000Login in SciHub",
-                    icon=icon("user-circle")
+                  div(
+                    style = "padding-bottom:10px;",
+                    actionButton(
+                      "scihub",
+                      label = "\u2000Login in SciHub",
+                      icon=icon("user-circle")
+                    )
+                  ),
+                  radioButtons(
+                    "downloader",
+                    label = span(
+                      "Downloader\u2000",
+                      actionLink("help_downloader", icon("question-circle"))
+                    ),
+                    choiceNames = list("Wget", "aria2"),
+                    choiceValues = list("wget", "aria2"),
+                    selected = "wget",
+                    inline = TRUE
                   )
                 )
                 
@@ -1140,6 +1154,22 @@ s2_gui <- function(param_list = NULL,
                            selected = FALSE)
       } else {
         enable("online")
+      }
+    })
+    
+    # disable downloader aria2 if it is not installed
+    binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
+    binpaths <- if (file.exists(binpaths_file)) {
+      jsonlite::fromJSON(binpaths_file)
+    } else {
+      list("aria2" = NULL)
+    }
+    observeEvent(input$downloader, {
+      if (is.null(binpaths$aria2)) {
+        updateRadioButtons(session, "downloader", selected = "wget")
+        disable("downloader")
+      } else {
+        enable("downloader")
       }
     })
     
@@ -2014,6 +2044,35 @@ s2_gui <- function(param_list = NULL,
       ))
     })
     
+    observeEvent(input$help_downloader, {
+      showModal(modalDialog(
+        title = "Downloader",
+        p(HTML(
+          "This selector allows to choose which downloader will be used",
+          "to download Sentinel-2 SAFE archives."
+        )), 
+        p(HTML(
+          "<strong>Wget</strong> is the default downloader, which is natively",
+          "presenti in Linux systems and which can be installed in Windows",
+          "using the function <code>check_sen2r_deps()</code> (graphically) or",
+          "<code>install_wget()</code> (from commandline)."
+        )),
+        p(HTML(
+          "<strong><a href=\"https://aria2.github.io\" target=\"_blank\">aria2</a></strong>",
+          "is a faster downloader which can be installed in Linux systems",
+          "from the default install manager (in Ubuntu, install the package \"aria2\"),",
+          "or in Windows using the function <code>check_sen2r_deps()</code>",
+          "(graphically) or <code>install_aria2()</code> (from commandline)."
+        )),
+        p(HTML(
+          "This selector is active only in aria2 was already installed and",
+          "recognised (to recognise it, launch <code>check_sen2r_deps()</code>)."
+        )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+    
     observeEvent(input$fix_online, {
       showModal(modalDialog(
         title = "Download is not supported on Windows",
@@ -2377,6 +2436,7 @@ s2_gui <- function(param_list = NULL,
       rl$s2_levels <- c(if(safe_req$l1c==TRUE){"l1c"}, if(safe_req$l2a==TRUE){"l2a"}) # required S2 levels ("l1c","l2a")
       rl$sel_sensor <- input$sel_sensor # sensors to use ("s2a", "s2b")
       rl$online <- as.logical(input$online) # TRUE if online mode, FALSE if offline mode
+      rl$downloader <- input$downloader # downloader ("wget" or "aria2")
       rl$overwrite_safe <- as.logical(input$overwrite_safe) # TRUE to overwrite existing SAFE, FALSE not to
       rl$rm_safe <- input$rm_safe # "yes" to delete all SAFE, "l1c" to delete only l1c, "no" not to remove
       rl$step_atmcorr <- if (safe_req$l2a==TRUE) {input$step_atmcorr} else {"no"} # download_method in sen2cor: "auto", "l2a", "scihub" or "no"
@@ -2508,6 +2568,7 @@ s2_gui <- function(param_list = NULL,
         updateCheckboxGroupInput(session, "list_levels", selected = pl$s2_levels)
         updateCheckboxGroupInput(session, "sel_sensor", selected = pl$sel_sensor)
         updateRadioButtons(session, "online", selected = pl$online)
+        updateRadioButtons(session, "downloader", selected = pl$downloader)
         updateRadioButtons(session, "overwrite_safe", selected = pl$overwrite_safe)
         updateRadioButtons(session, "rm_safe", selected = pl$rm_safe)
         updateRadioButtons(session, "step_atmcorr", selected = pl$step_atmcorr)

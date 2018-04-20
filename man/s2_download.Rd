@@ -12,7 +12,7 @@ s2_download(s2_prodlist = NULL, downloader = "wget", apihub = NULL,
 (this must be the output of \link{s2_list} function).}
 
 \item{downloader}{Executable to use to download products
-(default: "wwget").}
+(default: "wget").}
 
 \item{apihub}{Path of the "apihub.txt" file containing credentials
 of scihub account. If NULL (default) the default credentials

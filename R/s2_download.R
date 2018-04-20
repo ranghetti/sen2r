@@ -6,7 +6,7 @@
 #' @param s2_prodlist List of the products to be downloaded
 #'  (this must be the output of [s2_list] function).
 #' @param downloader Executable to use to download products
-#'  (default: "wwget").
+#'  (default: "wget").
 #' @param apihub Path of the "apihub.txt" file containing credentials
 #'  of scihub account. If NULL (default) the default credentials
 #'  (username "user", password "user") will be used.
@@ -61,12 +61,27 @@ s2_download <- function(s2_prodlist=NULL,
   # import s2download
   s2download <- import_s2download(convert=FALSE)
   
-  # read the path of wget
+  # check downloader
+  if (!downloader %in% c("wget","aria2")) {
+    print_message(
+      type = "warning",
+      "Downloader \"",downloader,"\" not recognised ",
+      "(wget will be used)"
+    )
+    downloader <- "wget"
+  }
+  
+  # read the path of the downloader
   binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
   binpaths <- if (file.exists(binpaths_file)) {
     jsonlite::fromJSON(binpaths_file)
   } else {
-    list("wget" = install_wget())
+    if (downloader=="aria2") {
+      list("aria2" = install_aria2())
+    } else {
+      list("wget" = install_wget())
+    }
+    
   }
   
   # TODO add checks on the format of filename (one element output of s2_list)
@@ -109,7 +124,7 @@ s2_download <- function(s2_prodlist=NULL,
       no_download   = FALSE,
       write_dir     = outdir,
       file_list     = NULL,
-      wget_path     = dirname(binpaths$wget),
+      downloader_path = dirname(binpaths[[if (downloader=="aria2") {"aria2c"} else {"wget"}]]),
       trace_funname = "s2download",
       trace_files   = file.path(outdir,c(filename,paste0(filename,".zip")))
     )

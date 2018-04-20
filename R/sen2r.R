@@ -35,6 +35,10 @@
 #' @param online (optional) Logical: TRUE (default) to search for available
 #'  products on SciHub (and download if needed); FALSE to work
 #'  only with already downloaded SAFE products.
+#' @param downloader (optional) Character value corresponding to the executable
+#'  which should be used to download SAFE products. It could be one among 
+#'  "wget" (default) and "aria2". 
+#'  If aria2 is not installed, Wget will be used instead.
 #' @param overwrite_safe (optional) Logical: TRUE to overwrite existing
 #'  products with products found online or manually corrected,
 #'  FALSE (default) to skip download and atmospheric correction for
@@ -187,8 +191,9 @@
 #' @importFrom utils packageVersion
 #' @importFrom geojsonio geojson_json
 #' @importFrom jsonlite fromJSON
-#' @importFrom sf st_cast st_read st_combine
+#' @importFrom sf st_cast st_read st_combine st_as_sf
 #' @importFrom methods formalArgs
+#' @importFrom stats na.omit
 #' @export
 
 
@@ -198,6 +203,7 @@ sen2r <- function(param_list = NULL,
                   s2_levels = c("l2a"),
                   sel_sensor = c("s2a","s2b"),
                   online = TRUE,
+                  downloader = "wget",
                   overwrite_safe = FALSE,
                   rm_safe = "no",
                   step_atmcorr = "auto",
@@ -237,6 +243,8 @@ sen2r <- function(param_list = NULL,
                   tmpdir = NA,
                   rmtmp = TRUE) {
   
+  # to avoid NOTE on check
+  . <- NULL
   
   ### Preliminary settings ###
   
@@ -389,7 +397,7 @@ sen2r <- function(param_list = NULL,
   if (is(pm$extent, "character")) {
     pm$extent <- st_read(pm$extent, quiet=TRUE)
   } else if (is(pm$extent, "Spatial")) {
-    pm$extent <- st_as_st(pm$extent)
+    pm$extent <- st_as_sf(pm$extent)
   }
   
   # check extent_name
@@ -836,6 +844,7 @@ sen2r <- function(param_list = NULL,
         lapply(pm$s2tiles_selected, function(tile) {
           s2_download(s2_list_l2a,
                       outdir = pm$path_l2a,
+                      downloader = pm$downloader,
                       tile = tile)
         })
         
@@ -853,6 +862,7 @@ sen2r <- function(param_list = NULL,
         lapply(pm$s2tiles_selected, function(tile) {
           s2_download(s2_list_l1c,
                       outdir = pm$path_l1c,
+                      downloader = pm$downloader,
                       tile = tile)
         })
         # FIXME this operation can be very long with oldname products but tiled:

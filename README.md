@@ -81,7 +81,7 @@ in advanced mode, and checking the installation of `openjpeg` library. -->
 Usage
 -----
 
-The simpler way to use <span style="color:#5793dd;vertical-align:text-bottom;font-size:90%;font-weight:500;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:850;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:700;">r</span> is to execute it in interactive mode:
+The simplest way to use <span style="color:#5793dd;vertical-align:text-bottom;font-size:90%;font-weight:500;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:850;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:700;">r</span> is to execute it in interactive mode:
 
 ``` r
 library(sen2r)
@@ -90,7 +90,6 @@ sen2r()
 
 this opens a GUI which allows to set the required processing parameters, and then launches the main function.
 
-<!-- [![](man/figures/sen2r_gui_sheet1_small.png)](https://raw.githubusercontent.com/ranghetti/sen2r/devel/vignettes/sen2r_gui_sheet1.jpg) -->
 <p style="text-align:center;">
 <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet1.jpg" target="_blank"> <img src="man/figures/sen2r_gui_sheet1_small.png"> </a> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet2.jpg" target="_blank"> <img src="man/figures/sen2r_gui_sheet2_small.png"> </a> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet3.jpg" target="_blank"> <img src="man/figures/sen2r_gui_sheet3_small.png"> </a> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet4.jpg" target="_blank"> <img src="man/figures/sen2r_gui_sheet4_small.png"> </a>
 </p>
