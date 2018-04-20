@@ -1,0 +1,2 @@
+/tmp/RtmpExjTXU/dir41db3c59f42f/merged/BOA/S2A2A_20170703_022__BOA_10.vrt
+/tmp/RtmpExjTXU/dir41db3c59f42f/merged/SCL/S2A2A_20170703_022__SCL_10.vrt

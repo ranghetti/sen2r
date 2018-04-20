@@ -6,18 +6,18 @@
 \usage{
 sen2r(param_list = NULL, gui = NA, preprocess = TRUE,
   s2_levels = c("l2a"), sel_sensor = c("s2a", "s2b"), online = TRUE,
-  overwrite_safe = FALSE, rm_safe = "no", step_atmcorr = "auto",
-  timewindow = NA, timeperiod = "full", extent = NA, extent_name = "",
-  s2tiles_selected = NA, s2orbits_selected = NA, list_prods = c("BOA"),
-  list_indices = NA, index_source = "BOA", mask_type = NA,
-  max_mask = 100, clip_on_extent = TRUE, extent_as_mask = FALSE,
-  reference_path = NA, res = c(10, 10), res_s2 = "10m", unit = "Meter",
-  proj = NA, resampling = "near", resampling_scl = "near",
-  outformat = "GTiff", index_datatype = "Int16", compression = "DEFLATE",
-  overwrite = FALSE, path_l1c = NA, path_l2a = NA, path_tiles = NA,
-  path_merged = NA, path_out = NA, path_indices = NA,
-  path_subdirs = TRUE, thumbnails = TRUE, use_python = TRUE,
-  tmpdir = NA, rmtmp = TRUE)
+  downloader = "wget", overwrite_safe = FALSE, rm_safe = "no",
+  step_atmcorr = "auto", timewindow = NA, timeperiod = "full",
+  extent = NA, extent_name = "", s2tiles_selected = NA,
+  s2orbits_selected = NA, list_prods = c("BOA"), list_indices = NA,
+  index_source = "BOA", mask_type = NA, max_mask = 100,
+  clip_on_extent = TRUE, extent_as_mask = FALSE, reference_path = NA,
+  res = c(10, 10), res_s2 = "10m", unit = "Meter", proj = NA,
+  resampling = "near", resampling_scl = "near", outformat = "GTiff",
+  index_datatype = "Int16", compression = "DEFLATE", overwrite = FALSE,
+  path_l1c = NA, path_l2a = NA, path_tiles = NA, path_merged = NA,
+  path_out = NA, path_indices = NA, path_subdirs = TRUE,
+  thumbnails = TRUE, use_python = TRUE, tmpdir = NA, rmtmp = TRUE)
 }
 \arguments{
 \item{param_list}{(optional) List of input parameters:
@@ -56,6 +56,11 @@ Accepted values: "s2a" and "s2b"; default: c("s2a","s2b").}
 \item{online}{(optional) Logical: TRUE (default) to search for available
 products on SciHub (and download if needed); FALSE to work
 only with already downloaded SAFE products.}
+
+\item{downloader}{(optional) Character value corresponding to the executable
+which should be used to download SAFE products. It could be one among
+"wget" (default) and "aria2".
+If aria2 is not installed, Wget will be used instead.}
 
 \item{overwrite_safe}{(optional) Logical: TRUE to overwrite existing
 products with products found online or manually corrected,

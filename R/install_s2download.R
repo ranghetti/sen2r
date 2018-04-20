@@ -3,7 +3,7 @@
 #'  is a collection of python scripts used to download
 #'  and correct Sentinel-2 images, and it is required by this package.
 #'  This function clones them and installs a docker with sen2cor.
-#' @details This function is not yet required, since `s2download` scripts were
+#' @details This function is deprecated, since `s2download` scripts were
 #'  integrated in the package.
 #' @param inst_path Path where
 #'  [s2download](https://github.com/ranghetti/s2download) will be cloned
@@ -27,9 +27,6 @@ install_s2download <- function(inst_path = NA) {
   # define remote position of s2download
   s2download_ref <- "devel"
   s2download_url <- paste0("https://github.com/ranghetti/s2download/archive/",s2download_ref,".zip")
-  
-  # define the required binary dependencies
-  dependencies <- c("python","wget")
   
   # define inst_path (where to install or update)
   if (is.na(inst_path)) {
@@ -56,60 +53,6 @@ install_s2download <- function(inst_path = NA) {
     unlink(inst_path)
   }
   
-  # check that git, python2 and wget are installed
-  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-  binpaths <- if (file.exists(binpaths_file)) {
-    jsonlite::fromJSON(binpaths_file)
-  } else {
-    sapply(dependencies,function(x){x=NULL})
-  }
-  
-  # add missing binaries to binpaths
-  for (d in dependencies[!dependencies %in% names(binpaths)]) {
-    binpaths[[d]] <- normalize_path(Sys.which(d))
-  }
-  writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
-  
-  missing_dep <- dependencies[binpaths[dependencies]==""]
-  if (length(missing_dep)>0) {
-    
-    if (Sys.info()["sysname"] != "Windows") {
-      
-      # On Linux, send an error if something is missing
-      print_message(
-        type="error",
-        "Some dependencies (",paste(missing_dep,collapse=", "),") were not found in your system; ",
-        "please install them or update your system PATH. "
-      )
-      
-    } else {
-      
-      # On Windows, download and install (them) or inform how to install them)
-      
-      # Download wget
-      suppressMessages(install_wget())
-      
-      # If other ones are missing:
-      if (length(missing_dep[missing_dep!="wget"])>0) {
-        print_message(
-          type="error",
-          "Some dependencies (",paste(missing_dep,collapse=", "),") were not found in your system; ",
-          "please install them or update your system PATH.",
-          if ("python" %in% missing_dep) {paste0(
-            "\nTo install python, we suggest to use the OSGeo4W installer ",
-            "(http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86",
-            if (Sys.info()["machine"]=="x86-64") {"_64"},".exe), ",
-            "to choose the \"Advanced install\" and to check ",
-            "the package \"gdal-python\"."
-          )}
-        )
-      }
-      
-    }
-  } #TODO pip2 not working to install gitPython
-  
-  # checks the python version and import modules
-  py <- init_python()
   
   # clone the package and import the module
   s2download_zippath <- file.path(dirname(inst_path), "s2download.zip")
