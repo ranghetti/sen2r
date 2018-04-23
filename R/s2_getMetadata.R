@@ -107,7 +107,7 @@ s2_getMetadata <- function(s2, info="all") {
                              "elements" = c("mission","file_class","additional_product","centre","creation_datetime","orbit_number","id_tile","bandname","res")),
     "compactname_L1C_jp2" = list("regex" = "^T([A-Z0-9]{5})\\_([0-9]{8}T[0-9]{6})\\_(B[0-9A]{2})\\.jp2$",
                                  "elements" = c("id_tile","sensing_datetime","bandname")),
-    "compactname_L2A_jp2" = list("regex" = "^L2A\\_T([A-Z0-9]{5})\\_([0-9]{8}T[0-9]{6})\\_([0-9A-Z]{3})\\_([126]0m)\\.jp2$",
+    "compactname_L2A_jp2" = list("regex" = "^(?:L2A\\_)?T([A-Z0-9]{5})\\_([0-9]{8}T[0-9]{6})\\_([0-9A-Z]{3})\\_([126]0m)\\.jp2$",
                                  "elements" = c("id_tile","sensing_datetime","bandname","res"))) # here bandname can be also additional_product
   
   # import python modules

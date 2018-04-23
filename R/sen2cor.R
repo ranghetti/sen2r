@@ -1,7 +1,7 @@
 #' @title Correct L1C products using sen2cor
 #' @description The function uses sen2cor to manually correct L1C products.
 #'  Standalone version of 
-#'  [sen2cor 2.4.0](http://step.esa.int/main/third-party-plugins-2/sen2cor)
+#'  [sen2cor 2.5.5](http://step.esa.int/main/third-party-plugins-2/sen2cor)
 #'  is used.
 #' @param l1c_prodlist List of L1C product names to be corrected. They can be both
 #'  product names with full/relative path or only names of SAFE products (in this case, also
