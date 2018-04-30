@@ -166,41 +166,40 @@ compute_s2_paths <- function(pm,
       file.path(paths["merged"],
                 if(pm$path_subdirs==TRUE){fs2nc_getElements(merged_names_exp, format="data.frame")$prod_type}else{""},
                 .)
-    
-    # add existing files for merged
-    merged_names_exi <- if (!is.na(pm$path_merged)) {
-      all_names <- if (pm$path_subdirs==TRUE) {
-        list.files(file.path(pm$path_merged,list_prods), full.names=TRUE)
-      } else {
-        list.files(pm$path_merged, full.names=TRUE)
-      }
-      if (length(all_names)>0) {
-        all_meta <- data.table(suppressWarnings(fs2nc_getElements(all_names, abort=FALSE, format="data.frame")))
-        all_meta$names <- all_names
-        # filter
-        all_meta <- all_meta[
-          type != "unrecognised" &
-            prod_type %in% list_prods &
-            mission %in% toupper(substr(pm$sel_sensor,3,3)) & 
-            level %in% toupper(substr(pm$s2_levels,2,3)) &
-            file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
-          ,]
-        if (!is.null(pm$timewindow) & !anyNA(pm$timewindow) & !is.null(all_meta$sensing_date)) {
-          all_meta <- all_meta[
-            all_meta$sensing_date>=pm$timewindow[1] & 
-              all_meta$sensing_date<=pm$timewindow[2]
-            ,]
-        }
-        if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected) & !is.null(all_meta$id_orbit)) {
-          all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
-        }
-        all_meta$names
-      } else {
-        character(0)
-      }
-    }
-    merged_names_exp <- unique(c(merged_names_exp,merged_names_exi))
   }
+  # add existing files for merged
+  merged_names_exi <- if (!is.na(pm$path_merged)) {
+    all_names <- if (pm$path_subdirs==TRUE) {
+      list.files(file.path(pm$path_merged,list_prods), full.names=TRUE)
+    } else {
+      list.files(pm$path_merged, full.names=TRUE)
+    }
+    if (length(all_names)>0) {
+      all_meta <- data.table(suppressWarnings(fs2nc_getElements(all_names, abort=FALSE, format="data.frame")))
+      all_meta$names <- all_names
+      # filter
+      all_meta <- all_meta[
+        type != "unrecognised" &
+          prod_type %in% list_prods &
+          mission %in% toupper(substr(pm$sel_sensor,3,3)) & 
+          level %in% toupper(substr(pm$s2_levels,2,3)) &
+          file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
+        ,]
+      if (!is.null(pm$timewindow) & !anyNA(pm$timewindow) & !is.null(all_meta$sensing_date)) {
+        all_meta <- all_meta[
+          all_meta$sensing_date>=pm$timewindow[1] & 
+            all_meta$sensing_date<=pm$timewindow[2]
+          ,]
+      }
+      if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected) & !is.null(all_meta$id_orbit)) {
+        all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
+      }
+      all_meta$names
+    } else {
+      character(0)
+    }
+  }
+  merged_names_exp <- unique(c(merged_names_exp,merged_names_exi))
   
   
   # index which is TRUE for SCL products, FALSE for others
@@ -242,44 +241,43 @@ compute_s2_paths <- function(pm,
                        if(pm$path_subdirs==TRUE){basename(dirname(merged_names_exp))}else{""},
                        gsub(paste0(merged_ext,"$"),warped_ext,basename_warped_names_exp)))
     )
-    
-    # add existing files for warped
-    warped_names_exi <- if (is.na(pm$mask_type)) {
-      all_names <- if (pm$path_subdirs==TRUE) {
-        list.files(file.path(pm$path_out,list_prods), full.names=TRUE)
-      } else {
-        list.files(pm$path_out, full.names=TRUE)
-      }
-      if (length(all_names)>0) {
-        all_meta <- data.table(suppressWarnings(fs2nc_getElements(all_names, abort=FALSE, format="data.frame")))
-        all_meta$names <- all_names
-        # filter
-        all_meta <- all_meta[
-          type != "unrecognised" &
-            prod_type %in% list_prods &
-            mission %in% toupper(substr(pm$sel_sensor,3,3)) & 
-            level %in% toupper(substr(pm$s2_levels,2,3)) &
-            file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
-          ,]
-        if (!is.null(pm$timewindow) & !anyNA(pm$timewindow) & !is.null(all_meta$sensing_date)) {
-          all_meta <- all_meta[
-            all_meta$sensing_date>=pm$timewindow[1] & 
-              all_meta$sensing_date<=pm$timewindow[2]
-            ,]
-        }
-        if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected) & !is.null(all_meta$id_orbit)) {
-          all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
-        }
-        if (!is.null(pm$extent_name) & !anyNA(pm$extent_name) & !is.null(all_meta$extent_name)) {
-          all_meta <- all_meta[extent_name %in% pm$extent_name,]
-        }
-        all_meta$names
-      } else {
-        character(0)
-      }
-    }
-    warped_names_exp <- unique(c(warped_names_exp,warped_names_exi))
   }
+  # add existing files for warped
+  warped_names_exi <- if (is.na(pm$mask_type)) {
+    all_names <- if (pm$path_subdirs==TRUE) {
+      list.files(file.path(pm$path_out,list_prods), full.names=TRUE)
+    } else {
+      list.files(pm$path_out, full.names=TRUE)
+    }
+    if (length(all_names)>0) {
+      all_meta <- data.table(suppressWarnings(fs2nc_getElements(all_names, abort=FALSE, format="data.frame")))
+      all_meta$names <- all_names
+      # filter
+      all_meta <- all_meta[
+        type != "unrecognised" &
+          prod_type %in% list_prods &
+          mission %in% toupper(substr(pm$sel_sensor,3,3)) & 
+          level %in% toupper(substr(pm$s2_levels,2,3)) &
+          file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
+        ,]
+      if (!is.null(pm$timewindow) & !anyNA(pm$timewindow) & !is.null(all_meta$sensing_date)) {
+        all_meta <- all_meta[
+          all_meta$sensing_date>=pm$timewindow[1] & 
+            all_meta$sensing_date<=pm$timewindow[2]
+          ,]
+      }
+      if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected) & !is.null(all_meta$id_orbit)) {
+        all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
+      }
+      if (!is.null(pm$extent_name) & !anyNA(pm$extent_name) & !is.null(all_meta$extent_name)) {
+        all_meta <- all_meta[extent_name %in% pm$extent_name,]
+      }
+      all_meta$names
+    } else {
+      character(0)
+    }
+  }
+  warped_names_exp <- unique(c(warped_names_exp,warped_names_exi))
   
   # expected names for masked products
   # if clip_on_extent is required, mask warped, otherwise, mask merged
@@ -305,45 +303,44 @@ compute_s2_paths <- function(pm,
         masked_names_exp[masked_names_exp_sr_idx]
       )
     }
-    
-    # add existing files for masked
-    masked_names_exi <- if (!is.na(pm$mask_type)) {
-      all_names <- if (pm$path_subdirs==TRUE) {
-        list.files(file.path(pm$path_out,list_prods), full.names=TRUE)
-      } else {
-        list.files(pm$path_out, full.names=TRUE)
-      }
-      if (length(all_names)>0) {
-        all_meta <- data.table(suppressWarnings(fs2nc_getElements(all_names, abort=FALSE, format="data.frame")))
-        all_meta$names <- all_names
-        # filter
-        all_meta <- all_meta[
-          type != "unrecognised" &
-            prod_type %in% list_prods &
-            prod_type != "SCL" &
-            mission %in% toupper(substr(pm$sel_sensor,3,3)) & 
-            level %in% toupper(substr(pm$s2_levels,2,3)) &
-            file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
-          ,]
-        if (!is.null(pm$timewindow) & !anyNA(pm$timewindow) & !is.null(all_meta$sensing_date)) {
-          all_meta <- all_meta[
-            all_meta$sensing_date>=pm$timewindow[1] & 
-              all_meta$sensing_date<=pm$timewindow[2]
-            ,]
-        }
-        if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected) & !is.null(all_meta$id_orbit)) {
-          all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
-        }
-        if (!is.null(pm$extent_name) & !anyNA(pm$extent_name) & !is.null(all_meta$extent_name)) {
-          all_meta <- all_meta[extent_name %in% pm$extent_name,]
-        }
-        all_meta$names
-      } else {
-        character(0)
-      }
-    }
-    masked_names_exp <- unique(c(masked_names_exp,masked_names_exi))
   }
+  # add existing files for masked
+  masked_names_exi <- if (!is.na(pm$mask_type)) {
+    all_names <- if (pm$path_subdirs==TRUE) {
+      list.files(file.path(pm$path_out,list_prods), full.names=TRUE)
+    } else {
+      list.files(pm$path_out, full.names=TRUE)
+    }
+    if (length(all_names)>0) {
+      all_meta <- data.table(suppressWarnings(fs2nc_getElements(all_names, abort=FALSE, format="data.frame")))
+      all_meta$names <- all_names
+      # filter
+      all_meta <- all_meta[
+        type != "unrecognised" &
+          prod_type %in% list_prods &
+          prod_type != "SCL" &
+          mission %in% toupper(substr(pm$sel_sensor,3,3)) & 
+          level %in% toupper(substr(pm$s2_levels,2,3)) &
+          file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
+        ,]
+      if (!is.null(pm$timewindow) & !anyNA(pm$timewindow) & !is.null(all_meta$sensing_date)) {
+        all_meta <- all_meta[
+          all_meta$sensing_date>=pm$timewindow[1] & 
+            all_meta$sensing_date<=pm$timewindow[2]
+          ,]
+      }
+      if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected) & !is.null(all_meta$id_orbit)) {
+        all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
+      }
+      if (!is.null(pm$extent_name) & !anyNA(pm$extent_name) & !is.null(all_meta$extent_name)) {
+        all_meta <- all_meta[extent_name %in% pm$extent_name,]
+      }
+      all_meta$names
+    } else {
+      character(0)
+    }
+  }
+  masked_names_exp <- unique(c(masked_names_exp,masked_names_exi))
   
   # expected names for output products
   out_names_exp <- if (!is.na(pm$mask_type)) {
@@ -392,44 +389,43 @@ compute_s2_paths <- function(pm,
       }) %>%
       file.path(paths["indices"],.) %>%
       gsub(paste0(merged_ext,"$"),out_ext,.)
-    
-    # add existing files for indices
-    indices_names_exi <-  if (!is.na(pm$path_indices)) {
-      all_names <- if (pm$path_subdirs==TRUE) {
-        list.files(file.path(pm$path_indices,pm$list_indices), full.names=TRUE)
-      } else {
-        list.files(pm$path_indices, full.names=TRUE)
-      }
-      if (length(all_names)>0) {
-        all_meta <- data.table(suppressWarnings(fs2nc_getElements(all_names, abort=FALSE, format="data.frame")))
-        all_meta$names <- all_names
-        # filter
-        all_meta <- all_meta[
-          type != "unrecognised" &
-            prod_type %in% list_prods &
-            mission %in% toupper(substr(pm$sel_sensor,3,3)) & 
-            level %in% toupper(substr(pm$s2_levels,2,3)) &
-            file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
-          ,]
-        if (!is.null(pm$timewindow) & !anyNA(pm$timewindow) & !is.null(all_meta$sensing_date)) {
-          all_meta <- all_meta[
-            all_meta$sensing_date>=pm$timewindow[1] & 
-              all_meta$sensing_date<=pm$timewindow[2]
-            ,]
-        }
-        if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected) & !is.null(all_meta$id_orbit)) {
-          all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
-        }
-        if (!is.null(pm$extent_name) & !anyNA(pm$extent_name) & !is.null(all_meta$id_orbit)) {
-          all_meta <- all_meta[id_orbit %in% pm$extent_name,]
-        }
-        all_meta$names
-      } else {
-        character(0)
-      }
-    }
-    indices_names_exp <- unique(c(indices_names_exp,indices_names_exi))
   }
+  # add existing files for indices
+  indices_names_exi <-  if (!is.na(pm$path_indices)) {
+    all_names <- if (pm$path_subdirs==TRUE) {
+      list.files(file.path(pm$path_indices,pm$list_indices), full.names=TRUE)
+    } else {
+      list.files(pm$path_indices, full.names=TRUE)
+    }
+    if (length(all_names)>0) {
+      all_meta <- data.table(suppressWarnings(fs2nc_getElements(all_names, abort=FALSE, format="data.frame")))
+      all_meta$names <- all_names
+      # filter
+      all_meta <- all_meta[
+        type != "unrecognised" &
+          prod_type %in% list_prods &
+          mission %in% toupper(substr(pm$sel_sensor,3,3)) & 
+          level %in% toupper(substr(pm$s2_levels,2,3)) &
+          file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
+        ,]
+      if (!is.null(pm$timewindow) & !anyNA(pm$timewindow) & !is.null(all_meta$sensing_date)) {
+        all_meta <- all_meta[
+          all_meta$sensing_date>=pm$timewindow[1] & 
+            all_meta$sensing_date<=pm$timewindow[2]
+          ,]
+      }
+      if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected) & !is.null(all_meta$id_orbit)) {
+        all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
+      }
+      if (!is.null(pm$extent_name) & !anyNA(pm$extent_name) & !is.null(all_meta$id_orbit)) {
+        all_meta <- all_meta[id_orbit %in% pm$extent_name,]
+      }
+      all_meta$names
+    } else {
+      character(0)
+    }
+  }
+  indices_names_exp <- unique(c(indices_names_exp,indices_names_exi))
   
   
   # Filter names included in ignorelist
