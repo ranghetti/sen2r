@@ -6,6 +6,6 @@
     "IMPORTANT: sen2r depends on some external tools;",
     "before using it, it is strongly recommended to run function",
     " > check_sen2r_deps()",
-    "to check them and install the missign ones.",
+    "to check them and install the missing ones.",
     sep = "\n"))
 }

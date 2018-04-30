@@ -1,6 +1,6 @@
 
 # Draft for a tutorial of the package: for now it is a list of instructions
-# which can be runned sequentially to reproduce the package functions.
+# which can be run sequentially to reproduce the package functions.
 
 # devtools::install_github("lbusett/sprawl", ref="b7f1205cb0925d7fdcedb7ba1ac7a02825b415d2", force=TRUE)
 

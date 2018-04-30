@@ -288,7 +288,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
         paste(binpaths$sen2cor, "--refresh", sel_l1c),
         intern = Sys.info()["sysname"] == "Windows"
       )
-      if (TRUE) { # TODO define a way to check if sen2cor runned correctly
+      if (TRUE) { # TODO define a way to check if sen2cor ran correctly
         end_trace(sel_trace)
       } else {
         clean_trace(sel_trace)

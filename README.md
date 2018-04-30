@@ -59,6 +59,7 @@ To run the functions correctly, some external dependences are required:
 -   [**GDAL**](http://www.gdal.org) (with support for JP2OpenJPEG format): this is a mandatory dependency, needed for all the processing operations and to retrieve metadata from SAFE products;
 -   [**sen2cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor) is used to perform atmospheric correction of Sentinel-2 Level-1C products: it is required by the package, unless you choose not to correct products locally (using only Level-1C – TOA products or dowloading directly Level-2A products).
 -   **Wget** is the downloader used by the package; it is required to work online.
+-   [**aria2**](https://aria2.github.io) is an alternative downloader which can be used to faster the download of SAFE archives; it can be optionally installed and used.
 
 These dependences can be graphically checked launching the function
 

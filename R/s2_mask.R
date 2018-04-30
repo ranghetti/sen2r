@@ -311,6 +311,7 @@ s2_mask <- function(infiles,
         mean(values(raster(outnaval)),na.rm=TRUE) - 
           mean(values(raster(outmask)),na.rm=TRUE)
       ) / mean(values(raster(outnaval)),na.rm=TRUE)
+      if (!is.finite(perc_mask)) {perc_mask <- 100}
       
       # if the requested output is this value, return it; else, continue masking
       if (output_type == "perc") {
