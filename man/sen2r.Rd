@@ -17,7 +17,8 @@ sen2r(param_list = NULL, gui = NA, preprocess = TRUE,
   index_datatype = "Int16", compression = "DEFLATE", overwrite = FALSE,
   path_l1c = NA, path_l2a = NA, path_tiles = NA, path_merged = NA,
   path_out = NA, path_indices = NA, path_subdirs = TRUE,
-  thumbnails = TRUE, use_python = TRUE, tmpdir = NA, rmtmp = TRUE)
+  thumbnails = TRUE, parallel = TRUE, use_python = TRUE, tmpdir = NA,
+  rmtmp = TRUE)
 }
 \arguments{
 \item{param_list}{(optional) List of input parameters:
@@ -234,6 +235,15 @@ small images (width or height of 1024 pixels) with default colour palettes
 (for more details, see the help window in the GUI). They are placed in
 a subdirectory of the products names "thumbnails".
 If FALSE, they are not created.}
+
+\item{parallel}{(optional) Logical or integer: if TRUE (default), some
+functions (\link{sen2cor}, \link{s2_mask} and \link{s2_calcindices} for now)
+are executed using multiple cores in order to speed up the execution.
+The number of cores is automatically determined; specifying it is also
+possible (e.g. \code{parallel = 4}).
+If FALSE, the processing chain is forced to run with a single core
+(this can be useful if multiple \link{sen2r} instances are run in parallel).
+This argument can be set only in commandline mode, not using the GUI.}
 
 \item{use_python}{(optional) Logical: if TRUE (default), the presence of
 python in the system is checked before running the function;

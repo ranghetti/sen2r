@@ -131,6 +131,8 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
   # if parallel==TRUE, use doParallel
   n_cores <- if (is.numeric(parallel)) {
     as.integer(parallel)
+  } else if (parallel==FALSE) {
+    1
   } else {
     min(parallel::detectCores()-1, length(l1c_prodlist), 8) # use at most 8 cores
   }

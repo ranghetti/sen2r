@@ -173,6 +173,14 @@
 #'  (for more details, see the help window in the GUI). They are placed in
 #'  a subdirectory of the products names "thumbnails".
 #'  If FALSE, they are not created.
+#' @param parallel (optional) Logical or integer: if TRUE (default), some
+#'  functions ([sen2cor], [s2_mask] and [s2_calcindices] for now) 
+#'  are executed using multiple cores in order to speed up the execution.
+#'  The number of cores is automatically determined; specifying it is also 
+#'  possible (e.g. `parallel = 4`).
+#'  If FALSE, the processing chain is forced to run with a single core
+#'  (this can be useful if multiple [sen2r] instances are run in parallel).
+#'  This argument can be set only in commandline mode, not using the GUI.
 #' @param use_python (optional) Logical: if TRUE (default), the presence of
 #'  python in the system is checked before running the function; 
 #'  if FALSE, this is skipped. Setting this to FALSE can bge useful on 
@@ -239,6 +247,7 @@ sen2r <- function(param_list = NULL,
                   path_indices = NA,
                   path_subdirs = TRUE,
                   thumbnails = TRUE,
+                  parallel = TRUE,
                   use_python = TRUE,
                   tmpdir = NA,
                   rmtmp = TRUE) {
@@ -784,7 +793,7 @@ sen2r <- function(param_list = NULL,
         out_ext=out_ext, tiles_ext=tiles_ext, 
         merged_ext=merged_ext, warped_ext=warped_ext, sr_masked_ext=sr_masked_ext,
         force_tiles = TRUE,
-        ignorelist = ifelse(exists("ignorelist"), ignorelist, NULL)
+        ignorelist = if (exists("ignorelist")) {ignorelist} else {NULL}
       )
       
       # Check if processing is needed
@@ -942,7 +951,7 @@ sen2r <- function(param_list = NULL,
           l1c_dir = pm$path_l1c,
           outdir = pm$path_l2a,
           tiles = pm$s2tiles_selected,
-          parallel = TRUE,
+          parallel = pm$parallel,
           tmpdir = if (Sys.info()["sysname"] != "Windows" & 
                        !is.null(mountpoint(tmpdir, "cifs"))) {
             # if tmpdir is on a SAMBA mountpoint over Linux, 
@@ -1278,7 +1287,7 @@ sen2r <- function(param_list = NULL,
           compress = pm$compression,
           subdirs = pm$path_subdirs,
           overwrite = pm$overwrite,
-          parallel = FALSE, # TODO pass as parameter
+          parallel = pm$parallel,
           trace_files = s2names$out_names_new
         )
       } else {character(0)}
@@ -1299,7 +1308,7 @@ sen2r <- function(param_list = NULL,
           compress = pm$compression,
           subdirs = pm$path_subdirs,
           overwrite = pm$overwrite,
-          parallel = TRUE, # TODO pass as parameter
+          parallel = pm$parallel,
           trace_files = s2names$out_names_new
         )
       } else {character(0)}
@@ -1330,6 +1339,7 @@ sen2r <- function(param_list = NULL,
       dataType = pm$index_datatype,
       compress = pm$compression,
       overwrite = pm$overwrite,
+      parallel = pm$parallel,
       trace_files = s2names$indices_names_new
     )
     # indices_names <- s2_calcindices(s2names$out_names_req,

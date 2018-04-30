@@ -7,7 +7,7 @@
 s2_calcindices(infiles, indices, outdir = ".", parameters = NULL,
   source = c("TOA", "BOA"), format = NA, subdirs = NA,
   compress = "DEFLATE", dataType = "Int16", scaleFactor = NA,
-  overwrite = FALSE)
+  parallel = FALSE, overwrite = FALSE)
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths
@@ -68,6 +68,13 @@ is assigned to 255.}
 datatype is chosen (default values are 10000 for "Int16" and "UInt16",
 1E9 for "Int32" and "UInt32"). Notice that, using "UInt16" and "UInt32" types,
 negative values will be truncated to 0.}
+
+\item{parallel}{(optional) Logical: if TRUE, the function is run using parallel
+processing, to speed-up the computation for large rasters.
+The number of cores is automatically determined; specifying it is also
+possible (e.g. \code{parallel = 4}).
+If FALSE (default), single core processing is used.
+Multiprocess masking computation is always performed in singlecore mode}
 
 \item{overwrite}{Logical value: should existing output files be
 overwritten? (default: FALSE)}
