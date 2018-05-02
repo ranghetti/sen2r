@@ -17,7 +17,10 @@
 #' @param tmpdir (optional) Path where intermediate files (VRT) will be created.
 #'  Default is a temporary directory.
 #' @param rmtmp (optional) Logical: should temporary files be removed?
-#'  (Default: TRUE)
+#'  (Default: TRUE).
+#'  This parameter takes effect only if the output files are not VRT
+#'  (in this case temporary files cannot be deleted, because rasters of source
+#'  bands are included within them).
 #' @param prod_type (optional) Vector of types to be produced as outputs
 #'  (see [s2_shortname] for the list of accepted values). Default is
 #'  reflectance ("TOA" for level 1C, "BOA" for level 2A).
@@ -209,9 +212,18 @@ s2_translate <- function(infile,
     
     # define and create tmpdir
     if (is.na(tmpdir)) {
-      tmpdir <- tempfile(pattern="s2translate_")
+      tmpdir <- if (format == "VRT") {
+        rmtmp <- FALSE # force not to remove intermediate files
+        if (!missing(outdir)) {
+          file.path(outdir, ".vrt")
+        } else {
+          tempfile(pattern="s2translate_")
+        }
+      } else {
+        tempfile(pattern="s2translate_")
+      }
     }
-    dir.create(tmpdir, showWarnings=FALSE)
+    dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
     
     # cycle on granules (with compact names, this runs only once; with old name, one or more)
     for (sel_granule in infile_meta$xml_granules) {

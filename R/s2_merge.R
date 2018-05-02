@@ -20,7 +20,10 @@
 #' @param tmpdir (optional) Path where intermediate files (VRT) will be created.
 #'  Default is a temporary directory.
 #' @param rmtmp (optional) Logical: should temporary files be removed?
-#'  (Default: TRUE)
+#'  (Default: TRUE).
+#'  This parameter takes effect only if the output files are not VRT
+#'  (in this case temporary files cannot be deleted, because rasters of source
+#'  bands are included within them).
 #' @param format (optional) Format of the output file (in a
 #'  format recognised by GDAL). Default is to maintain each input format.
 #' @param compress (optional) In the case a GTiff format is
@@ -137,8 +140,26 @@ s2_merge <- function(infiles,
       "Not all the tiles are in the specified projection; ",
       "tiles with different projection will be reprojected.")
   }
+  
+  # define and create tmpdir
   if (is.na(tmpdir)) {
-    tmpdir <- tempfile(pattern="s2merge_")
+    tmpdir <- if (format == "VRT") {
+      rmtmp <- FALSE # force not to remove intermediate files
+      if (!missing(outdir)) {
+        autotmpdir <- FALSE # logical: TRUE if tmpdir should be specified 
+        # for each out file (when tmpdir was not specified and output files are vrt),
+        # FALSE if a single tmpdir should be used (otherwise)
+        file.path(outdir, ".vrt")
+      } else {
+        autotmpdir <- TRUE
+        tempfile(pattern="s2merge_")
+      }
+    } else {
+      autotmpdir <- FALSE
+      tempfile(pattern="s2merge_")
+    }
+  } else {
+    autotmpdir <- FALSE
   }
   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
   
@@ -215,13 +236,21 @@ s2_merge <- function(infiles,
     # define subdir
     out_subdir <- ifelse(subdirs, file.path(outdir,sel_infiles_meta[1,"prod_type"]), outdir)
     
+    # if tmpdir should vary for each file, define it
+    sel_tmpdir <- if (autotmpdir) {
+      file.path(out_subdir, ".vrt")
+    } else {
+      tmpdir
+    }
+    dir.create(sel_tmpdir, showWarnings=FALSE)
+    
     # if output already exists and overwrite==FALSE, do not proceed
     if (!file.exists(file.path(out_subdir,sel_outfile)) | overwrite==TRUE) {
       
       # build intermediate reprojected VRTs (if necessary)
       for (i in seq_len(sum(sel_diffcrs))) {
         reproj_vrt <- file.path(
-          tmpdir,
+          sel_tmpdir,
           gsub(paste0("\\.",sel_infiles_meta[sel_diffcrs,][i,"file_ext"],"$"),
                "_reproj.vrt",
                basename(sel_infiles[sel_diffcrs][i]))
@@ -239,7 +268,7 @@ s2_merge <- function(infiles,
       
       # merge tiles
       merged_vrt <- file.path(
-        tmpdir,
+        sel_tmpdir,
         gsub(paste0("\\.",sel_infiles_meta[1,"file_ext"],"$"),
              ".vrt",
              sel_outfile))

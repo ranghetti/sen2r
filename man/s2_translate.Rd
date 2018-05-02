@@ -28,7 +28,10 @@ placed in separated \code{outdir} subdirectories; if FALSE, they are placed in
 Default is a temporary directory.}
 
 \item{rmtmp}{(optional) Logical: should temporary files be removed?
-(Default: TRUE)}
+(Default: TRUE).
+This parameter takes effect only if the output files are not VRT
+(in this case temporary files cannot be deleted, because rasters of source
+bands are included within them).}
 
 \item{prod_type}{(optional) Vector of types to be produced as outputs
 (see \link{s2_shortname} for the list of accepted values). Default is

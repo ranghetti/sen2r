@@ -428,6 +428,7 @@ sen2r <- function(param_list = NULL,
     # if outformat is VRT, set as a subdirectory of path_out
     tmpdir <- if (pm$outformat == "VRT") {
       rmtmp = FALSE # force not to remove intermediate files
+      dir.create(pm$path_out, showWarnings=FALSE)
       file.path(pm$path_out, ".vrt")
     } else {
       tempfile(pattern="sen2r_")

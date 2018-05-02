@@ -55,7 +55,10 @@
 #' @param tmpdir (optional) Path where intermediate files (VRT) will be created.
 #'  Default is a temporary directory.
 #' @param rmtmp (optional) Logical: should temporary files be removed?
-#'  (Default: TRUE)
+#'  (Default: TRUE).
+#'  This parameter takes effect only if the output files are not VRT
+#'  (in this case temporary files cannot be deleted, because rasters of source
+#'  bands are included within them).
 #' @param format (optional) Format of the output file (in a
 #'  format recognised by GDAL). Default is the same format of input images
 #'  (or "GTiff" in case of VRT input images).
@@ -166,8 +169,25 @@ s2_mask <- function(infiles,
   }
   
   # Check tmpdir
+  # define and create tmpdir
   if (is.na(tmpdir)) {
-    tmpdir <- tempfile(pattern="s2mask_")
+    tmpdir <- if (format == "VRT") {
+      rmtmp <- FALSE # force not to remove intermediate files
+      if (!missing(outdir)) {
+        autotmpdir <- FALSE # logical: TRUE if tmpdir should be specified 
+        # for each out file (when tmpdir was not specified and output files are vrt),
+        # FALSE if a single tmpdir should be used (otherwise)
+        file.path(outdir, ".vrt")
+      } else {
+        autotmpdir <- TRUE
+        tempfile(pattern="s2mask_")
+      }
+    } else {
+      autotmpdir <- FALSE
+      tempfile(pattern="s2mask_")
+    }
+  } else {
+    autotmpdir <- FALSE
   }
   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
   
@@ -265,13 +285,21 @@ s2_mask <- function(infiles,
         sel_infile <- gsub("\\.vrt$",".tif",sel_infile)
       }
       
+      # if tmpdir should vary for each file, define it
+      sel_tmpdir <- if (autotmpdir) {
+        file.path(out_subdir, ".vrt")
+      } else {
+        tmpdir
+      }
+      dir.create(sel_tmpdir, showWarnings=FALSE)
+      
       # create global mask
       mask_tmpfiles <- character(0) # files which compose the mask
       naval_tmpfiles <- character(0) # files which determine the amount of NA
       for (i in seq_along(inmask@layers)) {
         mask_tmpfiles <- c(
           mask_tmpfiles,
-          file.path(tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
+          file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
         )
         raster::calc(inmask[[i]],
                      function(x){as.integer(!is.na(x) & !x %in% req_masks[[i]])},
@@ -280,7 +308,7 @@ s2_mask <- function(infiles,
                      datatype = "INT1U")
         naval_tmpfiles <- c(
           naval_tmpfiles,
-          file.path(tmpdir, basename(tempfile(pattern = "naval_", fileext = ".tif")))
+          file.path(sel_tmpdir, basename(tempfile(pattern = "naval_", fileext = ".tif")))
         )
         raster::calc(inmask[[i]],
                      function(x){as.integer(!is.na(x))},
@@ -292,8 +320,8 @@ s2_mask <- function(infiles,
         outmask <- mask_tmpfiles
         outnaval <- naval_tmpfiles
       } else {
-        outmask <- file.path(tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
-        outnaval <- file.path(tmpdir, basename(tempfile(pattern = "naval_", fileext = ".tif")))
+        outmask <- file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
+        outnaval <- file.path(sel_tmpdir, basename(tempfile(pattern = "naval_", fileext = ".tif")))
         raster::overlay(stack(mask_tmpfiles),
                         fun = sum,
                         filename = outmask,
@@ -326,7 +354,7 @@ s2_mask <- function(infiles,
                 suppressWarnings(GDALinfo(outmask)[c("res.x","res.y")]))) {
           gdal_warp(
             outmask,
-            outmask_res <- file.path(tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif"))),
+            outmask_res <- file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif"))),
             ref = sel_infile
           )
         } else {
@@ -359,7 +387,7 @@ s2_mask <- function(infiles,
               inraster, 
               raster(outmask_res), 
               outpath = sel_outfile,
-              tmpdir = tmpdir,
+              tmpdir = sel_tmpdir,
               binpaths = binpaths,
               NAflag = sel_naflag,
               parallel = parallel,
