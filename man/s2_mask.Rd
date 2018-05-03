@@ -75,7 +75,10 @@ directory of \code{infiles}.}
 Default is a temporary directory.}
 
 \item{rmtmp}{(optional) Logical: should temporary files be removed?
-(Default: TRUE)}
+(Default: TRUE).
+This parameter takes effect only if the output files are not VRT
+(in this case temporary files cannot be deleted, because rasters of source
+bands are included within them).}
 
 \item{format}{(optional) Format of the output file (in a
 format recognised by GDAL). Default is the same format of input images

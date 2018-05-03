@@ -137,7 +137,10 @@ Default is a temporary directory.</p></td>
     <tr>
       <th>rmtmp</th>
       <td><p>(optional) Logical: should temporary files be removed?
-(Default: TRUE)</p></td>
+(Default: TRUE).
+This parameter takes effect only if the output files are not VRT
+(in this case temporary files cannot be deleted, because rasters of source
+bands are included within them).</p></td>
     </tr>
     <tr>
       <th>format</th>

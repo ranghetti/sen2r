@@ -1,7 +1,7 @@
 #' @title Correct L1C products using sen2cor
 #' @description The function uses sen2cor to manually correct L1C products.
 #'  Standalone version of 
-#'  [sen2cor 2.4.0](http://step.esa.int/main/third-party-plugins-2/sen2cor)
+#'  [sen2cor 2.5.5](http://step.esa.int/main/third-party-plugins-2/sen2cor)
 #'  is used.
 #' @param l1c_prodlist List of L1C product names to be corrected. They can be both
 #'  product names with full/relative path or only names of SAFE products (in this case, also
@@ -131,6 +131,8 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
   # if parallel==TRUE, use doParallel
   n_cores <- if (is.numeric(parallel)) {
     as.integer(parallel)
+  } else if (parallel==FALSE) {
+    1
   } else {
     min(parallel::detectCores()-1, length(l1c_prodlist), 8) # use at most 8 cores
   }
@@ -286,7 +288,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
         paste(binpaths$sen2cor, "--refresh", sel_l1c),
         intern = Sys.info()["sysname"] == "Windows"
       )
-      if (TRUE) { # TODO define a way to check if sen2cor runned correctly
+      if (TRUE) { # TODO define a way to check if sen2cor ran correctly
         end_trace(sel_trace)
       } else {
         clean_trace(sel_trace)

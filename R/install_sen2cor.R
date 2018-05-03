@@ -1,6 +1,6 @@
 #' @title Download and install sen2cor.
 #' @description This function download and install standalone version of
-#'  [sen2cor 2.4.0](http://step.esa.int/main/third-party-plugins-2/sen2cor).
+#'  [sen2cor 2.5.5](http://step.esa.int/main/third-party-plugins-2/sen2cor).
 #' @param sen2cor_dir (optional) Path where sen2cor will be installed
 #'  (default: a subdirectory of the package path).
 #' @param force (optional) Logical: if TRUE, install even if it is already 
@@ -12,6 +12,7 @@
 #' @importFrom jsonlite toJSON fromJSON
 #' @importFrom utils download.file unzip
 #' @importFrom magrittr '%>%'
+#' @importFrom stringr str_pad
 #' @export
 #' @examples \dontrun{
 #' install_sen2cor()
@@ -28,7 +29,7 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
 .install_sen2cor <- function(sen2cor_dir=NA, force = FALSE, interactive = TRUE) {
   
   # sen2cor version
-  sen2cor_version <- package_version("2.4.0")
+  sen2cor_version <- package_version("2.5.5")
   
   # check if it is already installed
   binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
@@ -78,11 +79,19 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
   if (Sys.info()["sysname"] == "Linux") {
     sen2cor_url <- paste0("http://step.esa.int/thirdparties/sen2cor/",
                           sen2cor_version,
-                          "/Sen2Cor-",sen2cor_version,"-Linux64.run")
+                          "/Sen2Cor-",
+                          str_pad(sen2cor_version[,1],2,"left","0"),".",
+                          str_pad(sen2cor_version[,2],2,"left","0"),".",
+                          str_pad(sen2cor_version[,3],2,"left","0"),
+                          "-Linux64.run")
   } else if (Sys.info()["sysname"] == "Windows") {
     sen2cor_url <- paste0("http://step.esa.int/thirdparties/sen2cor/",
                           sen2cor_version,
-                          "/Sen2Cor-",sen2cor_version,"-win64.zip")
+                          "/Sen2Cor-",
+                          str_pad(sen2cor_version[,1],2,"left","0"),".",
+                          str_pad(sen2cor_version[,2],2,"left","0"),".",
+                          str_pad(sen2cor_version[,3],2,"left","0"),
+                          "-win64.zip")
   } else {
     print_message(
       type = "error",

@@ -56,7 +56,7 @@ existing)
 \description{
 The function uses sen2cor to manually correct L1C products.
 Standalone version of
-\href{http://step.esa.int/main/third-party-plugins-2/sen2cor}{sen2cor 2.4.0}
+\href{http://step.esa.int/main/third-party-plugins-2/sen2cor}{sen2cor 2.5.5}
 is used.
 }
 \note{

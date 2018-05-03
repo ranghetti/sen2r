@@ -78,6 +78,8 @@ maskapply_parallel <- function(in_rast,
   # Compute n_cores
   n_cores <- if (is.numeric(parallel)) {
     as.integer(parallel)
+  } else if (parallel==FALSE) {
+    1
   } else {
     min(parallel::detectCores()-1, 11) # use at most 11 cores
   }
@@ -95,10 +97,13 @@ maskapply_parallel <- function(in_rast,
   }
   dir.create(tmpdir, showWarnings=FALSE)
   
-  #NOTE: FORK is more efficient on Linux because it does not make copies,  but on windows
-  # we should use "PSOCK"
-  cl <- makeCluster(n_cores, type = "FORK") 
-  registerDoParallel(cl)
+  #NOTE: FORK is more efficient on Linux because it does not make copies;
+  # on windows we should use "PSOCK".
+  cl <- makeCluster(
+    n_cores, 
+    type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
+  )
+  if (n_cores > 1) {registerDoParallel(cl)}
   out_paths <- foreach(i = 1:nlayers(in_rast), .packages = c("raster"), .combine=c)  %DO% {
     out_path <- file.path(tmpdir, paste0(basename(tempfile(pattern = "maskapply_")), "_b" , i, ".tif"))
     r <- in_rast[[i]]
@@ -109,7 +114,7 @@ maskapply_parallel <- function(in_rast,
                    format = 'GTiff', overwrite = TRUE, options = c("COMPRESS=LZW"))
     out_path
   }
-  stopCluster(cl)
+  if (n_cores > 1) {stopCluster(cl)}
   
   # write output VRT
   system(

@@ -114,6 +114,8 @@
 <a href="http://step.esa.int/main/third-party-plugins-2/sen2cor"><strong>sen2cor</strong></a> is used to perform atmospheric correction of Sentinel-2 Level-1C products: it is required by the package, unless you choose not to correct products locally (using only Level-1C – TOA products or dowloading directly Level-2A products).</li>
 <li>
 <strong>Wget</strong> is the downloader used by the package; it is required to work online.</li>
+<li>
+<a href="https://aria2.github.io"><strong>aria2</strong></a> is an alternative downloader which can be used to faster the download of SAFE archives; it can be optionally installed and used.</li>
 </ul>
 <p>These dependences can be graphically checked launching the function</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(sen2r)
@@ -167,6 +169,15 @@ in advanced mode, and checking the installation of `openjpeg` library. -->
 <a href="#credits" class="anchor"></a>Credits</h2>
 <p><span style="color:#5793dd;vertical-align:text-bottom;font-size:90%;font-weight:500;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:850;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:700;">r</span> is being developed by Luigi Ranghetti and Lorenzo Busetto (<a href="http://www.irea.cnr.it">IREA-CNR</a>), and it is released under the <a href="https://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License version 3</a> (GPL‑3).</p>
 <p>The <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_logo_200px.png"><span style="color:#5793dd;vertical-align:text-bottom;font-size:90%;font-weight:500;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:850;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:700;">r</span> logo</a>, partially derived from the <a href="https://www.r-project.org/logo">R logo</a>, is released under the <a href="https://creativecommons.org/licenses/by-sa/4.0">Creative Commons Attribution-ShareAlike 4.0 International license</a> (CC-BY-SA 4.0).</p>
+<p>To cite this library, please use the following entry:</p>
+<p>Ranghetti, L. and Busetto, L. (2018). <em>sen2r: an R toolbox to find, download and preprocess Sentinel-2 data</em>. R package version 0.3.1. <a href="https://ranghetti.github.io/sen2r" class="uri">https://ranghetti.github.io/sen2r</a>.</p>
+<div class="sourceCode"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span class="va">@Manual</span>{<span class="ot">sen2r</span>,
+  <span class="dt">title</span>  = {sen2r: an R toolbox to find, download and preprocess Sentinel-2 data},
+  <span class="dt">author</span> = {Luigi Ranghetti and Lorenzo Busetto},
+  <span class="dt">year</span>   = {2018},
+  <span class="dt">note</span>   = {R package version 0.3.1},
+  <span class="dt">url</span>    = {https://ranghetti.github.io/sen2r},
+}</code></pre></div>
 </div>
 </div>
 </div>

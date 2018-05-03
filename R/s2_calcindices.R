@@ -51,10 +51,18 @@
 #'  datatype is chosen (default values are 10000 for "Int16" and "UInt16", 
 #'  1E9 for "Int32" and "UInt32"). Notice that, using "UInt16" and "UInt32" types,
 #'  negative values will be truncated to 0.
+#' @param parallel (optional) Logical: if TRUE, the function is run using parallel
+#'  processing, to speed-up the computation for large rasters.
+#'  The number of cores is automatically determined; specifying it is also 
+#'  possible (e.g. `parallel = 4`).
+#'  If FALSE (default), single core processing is used.
+#'  Multiprocess masking computation is always performed in singlecore mode
 #' @param overwrite Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
 #' @return A vector with the names of the created products.
 #' @export
+#' @importFrom doParallel registerDoParallel
+#' @importFrom parallel makeCluster stopCluster detectCores
 #' @importFrom jsonlite fromJSON
 #' @import data.table
 #' @importFrom rgdal GDALinfo
@@ -72,6 +80,7 @@ s2_calcindices <- function(infiles,
                            compress="DEFLATE",
                            dataType="Int16",
                            scaleFactor=NA,
+                           parallel = FALSE,
                            overwrite=FALSE) {
   
   prod_type <- . <- NULL
@@ -86,6 +95,22 @@ s2_calcindices <- function(infiles,
   if (is.null(binpaths$gdalinfo)) {
     check_gdal()
     binpaths <- jsonlite::fromJSON(binpaths_file)
+  }
+  
+  # Compute n_cores
+  n_cores <- if (is.numeric(parallel)) {
+    as.integer(parallel)
+  } else if (parallel==FALSE) {
+    1
+  } else {
+    min(parallel::detectCores()-1, 11) # use at most 11 cores
+  }
+  if (n_cores<=1) {
+    `%DO%` <- `%do%`
+    parallel <- FALSE
+    n_cores <- 1
+  } else {
+    `%DO%` <- `%dopar%`
   }
   
   # generate indices.json if missing and read it
@@ -149,8 +174,12 @@ s2_calcindices <- function(infiles,
   }
   
   # read TOA/BOA image
-  outfiles <- character(0)
-  for (i in seq_along(infiles)) {
+  cl <- makeCluster(
+    n_cores, 
+    type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
+  )
+  if (n_cores > 1) {registerDoParallel(cl)}
+  outfiles <- foreach(i = seq_along(infiles), .packages = c("raster"), .combine=c)  %DO% {
     sel_infile <- infiles[i]
     sel_infile_meta <- c(infiles_meta[i,])
     sel_format <- suppressWarnings(ifelse(
@@ -169,6 +198,8 @@ s2_calcindices <- function(infiles,
     }
     
     # compute single indices
+    # (this cycle is not parallelised)
+    sel_outfiles <- character(0)
     for (j in seq_along(indices)) {
       
       # extract parameters
@@ -245,11 +276,14 @@ s2_calcindices <- function(infiles,
         
       } # end of overwrite IF cycle
       
-      outfiles <- c(outfiles, file.path(out_subdir,sel_outfile))
+      sel_outfiles <- c(sel_outfiles, file.path(out_subdir,sel_outfile))
       
-    }
+    } # end of indices FOR cycle
+    
+    file.path(out_subdir,sel_outfiles)
     
   } # end cycle on infiles
+  if (n_cores > 1) {stopCluster(cl)}
   
   return(outfiles)
   

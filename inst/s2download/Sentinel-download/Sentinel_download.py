@@ -342,7 +342,7 @@ def Sentinel_download(downloader=None,lat=None,lon=None,latmin=None,latmax=None,
         if level=="L1C":
             producttype="S2MSI1C"
         elif  level=="L2A":
-            producttype="S2MSI2Ap"
+            producttype="S2MSI2A*"
     if geom=='point':
         query_geom='footprint:\\"Intersects(%f,%f)\\"'%(lat,lon)
 
