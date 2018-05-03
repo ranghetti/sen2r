@@ -114,3 +114,17 @@ Credits
 <span style="color:#5793dd;vertical-align:text-bottom;font-size:90%;font-weight:500;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:850;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:700;">r</span> is being developed by Luigi Ranghetti and Lorenzo Busetto ([IREA-CNR](http://www.irea.cnr.it)), and it is released under the [GNU General Public License version 3](https://www.gnu.org/licenses/gpl-3.0.html) (GPL‑3).
 
 The [<span style="color:#5793dd;vertical-align:text-bottom;font-size:90%;font-weight:500;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:850;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:700;">r</span> logo](https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_logo_200px.png), partially derived from the [R logo](https://www.r-project.org/logo), is released under the [Creative Commons Attribution-ShareAlike 4.0 International license](https://creativecommons.org/licenses/by-sa/4.0) (CC-BY-SA 4.0).
+
+To cite this library, please use the following entry:
+
+Ranghetti, L. and Busetto, L. (2018). *sen2r: an R toolbox to find, download and preprocess Sentinel-2 data*. R package version 0.3.1. <https://ranghetti.github.io/sen2r>.
+
+``` bibtex
+@Manual{sen2r,
+  title  = {sen2r: an R toolbox to find, download and preprocess Sentinel-2 data},
+  author = {Luigi Ranghetti and Lorenzo Busetto},
+  year   = {2018},
+  note   = {R package version 0.3.1},
+  url    = {https://ranghetti.github.io/sen2r},
+}
+```
