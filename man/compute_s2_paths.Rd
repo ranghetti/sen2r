@@ -42,7 +42,7 @@ A list, containing the following vectors:
 \code{indices_names_new}, \code{out_names_req}, \code{out_names_new},
 \code{masked_names_new}, \code{warped_names_req}, \code{warped_names_new},
 \code{merged_names_req}, \code{merged_names_new}, \code{tiles_names_req}, \code{tiles_names_new},
-\code{safe_names_l1c_req}, \code{safe_names_l1c_req}, \code{safe_names_l2a_req}.
+\code{safe_names_l1c_req}, \code{safe_names_l2a_req}.
 }
 \description{
 Internal function (to be used within \code{\link[=sen2r]{sen2r()}})

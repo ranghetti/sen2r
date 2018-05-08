@@ -646,6 +646,7 @@ sen2r <- function(param_list = NULL,
       
     }
     s2_list <- unlist(s2_lists)[!duplicated(unlist(lapply(s2_lists, names)))]
+    rm(s2_lists)
     
     # if s2_list is empty, exit 
     if (length(s2_list)==0) {
@@ -722,10 +723,11 @@ sen2r <- function(param_list = NULL,
           !gsub(
             "\\_OPER\\_","_USER_",
             gsub(
-              "^S2([AB])\\_((?:OPER\\_PRD\\_)?)MSIL1C\\_","S2\\1\\_\\2MSIL2A\\_",
+              "^S2([AB])\\_((?:OPER\\_PRD\\_)?)MSIL1C\\_([0-9T]{15})\\_N[0-9]{4}\\_",
+              "S2\\1\\_\\2MSIL2A\\_\\3\\_NXXXX\\_",
               names(s2_list_l1c)
             )
-          ) %in% names(s2_list_l2a)
+          ) %in% gsub("\\_N[0-9]{4}\\_", "_NXXXX_", names(s2_list_l2a))
           ]
       } else {
         s2_list_l1c
@@ -820,8 +822,13 @@ sen2r <- function(param_list = NULL,
     ## Generate the list of required SAFE
     if (pm$preprocess==TRUE) {
       # if preprocess is required, only the SAFE necessary to generate new files are considered
-      s2_list_l2a_req <- s2_list_l2a[names(s2_list_l2a) %in% basename(nn(s2names$safe_names_l2a_req))]
-      safe_names_l2a_reqout <- s2names$safe_names_l2a_req[!basename(nn(s2names$safe_names_l2a_req)) %in% names(s2_list_l2a)]
+      s2_list_l2a_req <- s2_list_l2a[
+          names(s2_list_l2a) %in% basename(nn(s2names$safe_names_l2a_req))
+        ]
+      safe_names_l2a_reqout <- s2names$safe_names_l2a_req[
+        !gsub("\\_N[0-9]{4}\\_", "_NXXXX_", basename(nn(s2names$safe_names_l2a_req))) %in% 
+          gsub("\\_N[0-9]{4}\\_", "_NXXXX_", names(s2_list_l2a))
+      ]
       safe_names_l1c_tocorrect <- gsub(
         "\\_USER\\_","_OPER_",
         gsub(
@@ -830,7 +837,8 @@ sen2r <- function(param_list = NULL,
         )
       )
       s2_list_l1c_req <- s2_list_l1c[
-        names(s2_list_l1c) %in% c(safe_names_l1c_tocorrect,basename(nn(s2names$safe_names_l1c_req)))
+        gsub("\\_N[0-9]{4}\\_", "_NXXXX_", names(s2_list_l1c)) %in% 
+          gsub("\\_N[0-9]{4}\\_", "_NXXXX_", c(safe_names_l1c_tocorrect,basename(nn(s2names$safe_names_l1c_req))))
         ]
       s2_dt <- s2_dt[name %in% c(names(s2_list_l1c_req),names(s2_list_l2a_req)),]
       s2_list_l1c <- s2_list_l1c_req
@@ -843,7 +851,7 @@ sen2r <- function(param_list = NULL,
     
     if (pm$online == TRUE) {
       print(s2_list_l2a)
-      if (length(s2_list_l2a)>0) {
+      if (any(!names(s2_list_l2a) %in% list.files(pm$path_l2a, "\\.SAFE$"))) {
         
         print_message(
           type = "message",
@@ -852,7 +860,7 @@ sen2r <- function(param_list = NULL,
         )
         
         lapply(pm$s2tiles_selected, function(tile) {
-          s2_download(s2_list_l2a,
+          s2_download(s2_list_l2a[s2_list_l2a[!names(s2_list_l2a) %in% list.files(pm$path_l2a, "\\.SAFE$")]],
                       outdir = pm$path_l2a,
                       downloader = pm$downloader,
                       tile = tile)
@@ -861,7 +869,7 @@ sen2r <- function(param_list = NULL,
       }
       
       print(s2_list_l1c)
-      if (length(s2_list_l1c)>0) {
+      if (any(!names(s2_list_l1c) %in% list.files(pm$path_l1c, "\\.SAFE$"))) {
         
         print_message(
           type = "message",
@@ -870,7 +878,7 @@ sen2r <- function(param_list = NULL,
         )
         
         lapply(pm$s2tiles_selected, function(tile) {
-          s2_download(s2_list_l1c,
+          s2_download(s2_list_l1c[!names(s2_list_l1c) %in% list.files(pm$path_l1c, "\\.SAFE$")],
                       outdir = pm$path_l1c,
                       downloader = pm$downloader,
                       tile = tile)

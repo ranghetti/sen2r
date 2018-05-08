@@ -35,7 +35,7 @@
 #' `indices_names_new`, `out_names_req`, `out_names_new`,
 #' `masked_names_new`, `warped_names_req`, `warped_names_new`, 
 #' `merged_names_req`, `merged_names_new`, `tiles_names_req`, `tiles_names_new`,
-#' `safe_names_l1c_req`, `safe_names_l1c_req`, `safe_names_l2a_req`.
+#' `safe_names_l1c_req`, `safe_names_l2a_req`.
 #' 
 #' @param pm List of input parameters.
 #' @param s2_list_l1c Names and paths of input SAFE level-1C products.
