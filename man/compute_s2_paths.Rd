@@ -5,8 +5,8 @@
 \title{Compute names of S2 file to be generated}
 \usage{
 compute_s2_paths(pm, s2_list_l1c, s2_list_l2a, paths, list_prods, out_ext,
-  tiles_ext, merged_ext, warped_ext, sr_masked_ext, force_tiles = FALSE,
-  ignorelist)
+  index_ext, tiles_ext, merged_ext, warped_ext, sr_masked_ext,
+  force_tiles = FALSE, ignorelist)
 }
 \arguments{
 \item{pm}{List of input parameters.}
@@ -22,6 +22,8 @@ named \code{"out"}, \code{"indices"}, \code{"tiles"}, \code{"merged"} and \code{
 products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").}
 
 \item{out_ext}{Extension (character) of output products.}
+
+\item{index_ext}{Extension (character) of index products.}
 
 \item{tiles_ext}{Extension (character) of tiled products.}
 

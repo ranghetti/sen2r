@@ -426,10 +426,17 @@ sen2r <- function(param_list = NULL,
   # define and create tmpdir
   if (is.na(tmpdir)) {
     # if outformat is VRT, set as a subdirectory of path_out
-    tmpdir <- if (pm$outformat == "VRT") {
+    tmpdir <- if (
+      pm$outformat == "VRT" & 
+      !all(is.na(pm[c("path_out","path_indices","path_tiles","path_merged")]))
+    ) {
       rmtmp = FALSE # force not to remove intermediate files
-      dir.create(pm$path_out, showWarnings=FALSE)
-      file.path(pm$path_out, ".vrt")
+      # use path_out if it is not NA, otherwise path_indices, otherwise path_tiles, otherwise path_merged
+      main_dir <- unlist(pm[c("path_out","path_indices","path_tiles","path_merged")])[
+        !is.na(pm[c("path_out","path_indices","path_tiles","path_merged")])
+        ][1]
+      dir.create(main_dir, showWarnings=FALSE)
+      file.path(main_dir, ".vrt")
     } else {
       tempfile(pattern="sen2r_")
     }
@@ -516,7 +523,7 @@ sen2r <- function(param_list = NULL,
   #   # unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(gdal$DMD_EXTENSIONS))," ")," "))[1]
   #   unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(py$gdal$DMD_EXTENSIONS))," ")," "))[1]
   # }
-  out_ext <- sel_driver[1,"ext"]
+  main_ext <- sel_driver[1,"ext"]
   
   
   #### SAFE Part (find, download, correct)
@@ -524,15 +531,22 @@ sen2r <- function(param_list = NULL,
   if (pm$preprocess == TRUE) {  
     
     ## Define output formats
+    if (!anyNA(pm$list_prods)) {
+      out_ext <- main_ext
+      out_outformat <- pm$outformat
+    } else {
+      out_ext <- "vrt"
+      out_outformat <- "VRT"
+    }
     if (!is.na(pm$path_tiles)) {
-      tiles_ext <- out_ext
+      tiles_ext <- main_ext
       tiles_outformat <- pm$outformat
     } else {
       tiles_ext <- "vrt"
       tiles_outformat <- "VRT"
     }
     if (!is.na(pm$path_merged)) {
-      merged_ext <- out_ext
+      merged_ext <- main_ext
       merged_outformat <- pm$outformat
     } else {
       merged_ext <- "vrt"
@@ -540,13 +554,13 @@ sen2r <- function(param_list = NULL,
     }
     if (is.na(pm$mask_type)) {
       warped_ext <- out_ext
-      warped_outformat <- pm$outformat
+      warped_outformat <- out_outformat
     } else {
       warped_ext <- "vrt"
       warped_outformat <- "VRT"
     }
     if (pm$index_source %in% pm$list_prods) {
-      sr_masked_ext <- out_ext
+      sr_masked_ext <- main_ext
       sr_masked_outformat <- pm$outformat
     } else {
       sr_masked_ext <- "vrt"
@@ -793,7 +807,7 @@ sen2r <- function(param_list = NULL,
         s2_list_l1c=s2_list_l1c, s2_list_l2a=s2_list_l2a_exp, 
         paths=paths, 
         list_prods=list_prods, 
-        out_ext=out_ext, tiles_ext=tiles_ext, 
+        out_ext=out_ext, index_ext=main_ext, tiles_ext=tiles_ext, 
         merged_ext=merged_ext, warped_ext=warped_ext, sr_masked_ext=sr_masked_ext,
         force_tiles = TRUE,
         ignorelist = if (exists("ignorelist")) {ignorelist} else {NULL}
@@ -823,12 +837,12 @@ sen2r <- function(param_list = NULL,
     if (pm$preprocess==TRUE) {
       # if preprocess is required, only the SAFE necessary to generate new files are considered
       s2_list_l2a_req <- s2_list_l2a[
-          names(s2_list_l2a) %in% basename(nn(s2names$safe_names_l2a_req))
+        names(s2_list_l2a) %in% basename(nn(s2names$safe_names_l2a_req))
         ]
       safe_names_l2a_reqout <- s2names$safe_names_l2a_req[
         !gsub("\\_N[0-9]{4}\\_", "_NXXXX_", basename(nn(s2names$safe_names_l2a_req))) %in% 
           gsub("\\_N[0-9]{4}\\_", "_NXXXX_", names(s2_list_l2a))
-      ]
+        ]
       safe_names_l1c_tocorrect <- gsub(
         "\\_USER\\_","_OPER_",
         gsub(
@@ -1015,7 +1029,7 @@ sen2r <- function(param_list = NULL,
     s2_list_l2a = if (exists("s2_list_l2a")) {s2_list_l2a} else {character(0)},
     paths=paths, 
     list_prods=list_prods, 
-    out_ext=out_ext, tiles_ext=tiles_ext, 
+    out_ext=out_ext, index_ext=main_ext, tiles_ext=tiles_ext, 
     merged_ext=merged_ext, warped_ext=warped_ext, sr_masked_ext=sr_masked_ext,
     force_tiles = FALSE,
     ignorelist = if (exists("ignorelist")) {ignorelist} else {NULL}
@@ -1199,7 +1213,7 @@ sen2r <- function(param_list = NULL,
           gdal_warp(
             s2names$merged_names_req[names_merged_req_scl_idx & file.exists(s2names$merged_names_req)],
             s2names$warped_names_reqout[names_merged_req_scl_idx & file.exists(s2names$merged_names_req)],
-            of = pm$outformat, # use physical files to speed up next steps
+            of = out_outformat, # use physical files to speed up next steps
             ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
             mask = s2_mask_extent,
             tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
@@ -1209,7 +1223,7 @@ sen2r <- function(param_list = NULL,
               sapply(s2names$merged_names_req[names_merged_req_scl_idx & file.exists(s2names$merged_names_req)],
                      function(x){fs2nc_getElements(x)$prod_type})
             ),
-            co = if (pm$outformat=="GTiff") {paste0("COMPRESS=",pm$compression)},
+            co = if (out_outformat=="GTiff") {paste0("COMPRESS=",pm$compression)},
             overwrite = pm$overwrite,
             tmpdir = file.path(tmpdir, "gdal_warp"), rmtmp = rmtmp
           ), # TODO dstnodata value?
@@ -1294,7 +1308,7 @@ sen2r <- function(param_list = NULL,
           max_mask = pm$max_mask,
           outdir = paths["out"],
           tmpdir = file.path(tmpdir, "s2_mask"), rmtmp = rmtmp,
-          format = pm$outformat,
+          format = out_outformat,
           compress = pm$compression,
           subdirs = pm$path_subdirs,
           overwrite = pm$overwrite,

@@ -45,6 +45,7 @@
 #' @param list_prods Character vector with the values of the
 #'  products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").
 #' @param out_ext Extension (character) of output products.
+#' @param index_ext Extension (character) of index products.
 #' @param tiles_ext Extension (character) of tiled products.
 #' @param merged_ext Extension (character) of merged products.
 #' @param warped_ext Extension (character) of warped products.
@@ -63,6 +64,7 @@ compute_s2_paths <- function(pm,
                              paths, 
                              list_prods, 
                              out_ext, 
+                             index_ext,
                              tiles_ext, 
                              merged_ext, 
                              warped_ext, 
@@ -379,7 +381,7 @@ compute_s2_paths <- function(pm,
              if (pm$clip_on_extent==TRUE) {pm$extent_name},"_",
              "<index>_",
              substr(res,1,2),".",
-             file_ext)] %>%
+             index_ext)] %>%
       expand.grid(pm$list_indices) %>%
       apply(1,function(x){
         file.path(
