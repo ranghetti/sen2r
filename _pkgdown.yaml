@@ -43,6 +43,7 @@ reference:
       - '`install_aria2`'
       - '`st_crs2`'
       - '`normalize_path`'
+      - '`smooth_mask`'
   - title: Internal functions
     desc: (not exported)
     contents:

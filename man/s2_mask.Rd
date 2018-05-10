@@ -5,10 +5,10 @@
 \alias{s2_perc_masked}
 \title{Apply cloud masks}
 \usage{
-s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba", max_mask = 80,
-  outdir = "./masked", tmpdir = NA, rmtmp = TRUE, format = NA,
-  subdirs = NA, compress = "DEFLATE", parallel = FALSE,
-  overwrite = FALSE)
+s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba", smooth = 250,
+  buffer = 250, max_mask = 80, outdir = "./masked", tmpdir = NA,
+  rmtmp = TRUE, format = NA, subdirs = NA, compress = "DEFLATE",
+  parallel = FALSE, overwrite = FALSE)
 
 s2_perc_masked(infiles, maskfiles, mask_type = "cloud_medium_proba",
   tmpdir = NA, rmtmp = TRUE, parallel = FALSE)
@@ -51,6 +51,14 @@ be used to mask classes 0 ("No data"), 8-9 ("Cloud (high or medium
 probability)") and 11 ("Snow");
 \item "opaque_clouds" (still to be implemented).
 }}
+
+\item{smooth}{(optional) Numerical (positive): should the mask be smoothed=the size (in the unit of
+\code{inmask}, typically metres) to be used as radius for the smoothing
+(the higher it is, the more smooth the output mask will result).}
+
+\item{buffer}{(optional) Numerical (positive or negative): the size of the
+buffer (in the unit of \code{inmask}, typically metres) to be applied to the
+masked area after smoothing it (positive to enlarge, negative to reduce).}
 
 \item{max_mask}{(optional) Numeric value (range 0 to 100), which represents
 the maximum percentage of allowed masked surface (by clouds or any other

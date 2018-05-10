@@ -1288,6 +1288,8 @@ sen2r <- function(param_list = NULL,
           } else {
             s2names$merged_names_exp[names_merged_exp_scl_idx]
           },
+          smooth = 0, # temporary
+          buffer = 0, # temporary
           mask_type = pm$mask_type,
           max_mask = pm$max_mask,
           outdir = paths["out"],
@@ -1310,6 +1312,8 @@ sen2r <- function(param_list = NULL,
             s2names$merged_names_exp[names_merged_exp_scl_idx]
           },
           mask_type = pm$mask_type,
+          smooth = 0, # temporary
+          buffer = 0, # temporary
           max_mask = pm$max_mask,
           outdir = paths["out"],
           tmpdir = file.path(tmpdir, "s2_mask"), rmtmp = rmtmp,

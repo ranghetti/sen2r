@@ -102,10 +102,10 @@ The function is similar to s2_mask, but it returns percentages instead
 of masked rasters.</p>
     
 
-    <pre class="usage"><span class='fu'>s2_mask</span>(<span class='no'>infiles</span>, <span class='no'>maskfiles</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='st'>"cloud_medium_proba"</span>, <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>80</span>,
-  <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"./masked"</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+    <pre class="usage"><span class='fu'>s2_mask</span>(<span class='no'>infiles</span>, <span class='no'>maskfiles</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='st'>"cloud_medium_proba"</span>, <span class='kw'>smooth</span> <span class='kw'>=</span> <span class='fl'>250</span>,
+  <span class='kw'>buffer</span> <span class='kw'>=</span> <span class='fl'>250</span>, <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>80</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"./masked"</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>,
+  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
 <span class='fu'>s2_perc_masked</span>(<span class='no'>infiles</span>, <span class='no'>maskfiles</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='st'>"cloud_medium_proba"</span>,
   <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
@@ -155,6 +155,18 @@ be used to mask classes 0 ("No data"), 8-9 ("Cloud (high or medium
 probability)") and 11 ("Snow");</p></li>
 <li><p>"opaque_clouds" (still to be implemented).</p></li>
 </ul></td>
+    </tr>
+    <tr>
+      <th>smooth</th>
+      <td><p>(optional) Numerical (positive): should the mask be smoothed=the size (in the unit of
+<code>inmask</code>, typically metres) to be used as radius for the smoothing
+(the higher it is, the more smooth the output mask will result).</p></td>
+    </tr>
+    <tr>
+      <th>buffer</th>
+      <td><p>(optional) Numerical (positive or negative): the size of the
+buffer (in the unit of <code>inmask</code>, typically metres) to be applied to the
+masked area after smoothing it (positive to enlarge, negative to reduce).</p></td>
     </tr>
     <tr>
       <th>max_mask</th>

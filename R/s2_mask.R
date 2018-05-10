@@ -35,6 +35,12 @@
 #'      be used to mask classes 0 ("No data"), 8-9 ("Cloud (high or medium 
 #'      probability)") and 11 ("Snow");
 #'  - "opaque_clouds" (still to be implemented).
+#' @param smooth (optional) Numerical (positive): should the mask be smoothed=the size (in the unit of
+#'  `inmask`, typically metres) to be used as radius for the smoothing
+#'  (the higher it is, the more smooth the output mask will result).
+#' @param buffer (optional) Numerical (positive or negative): the size of the 
+#'  buffer (in the unit of `inmask`, typically metres) to be applied to the 
+#'  masked area after smoothing it (positive to enlarge, negative to reduce).
 #' @param max_mask (optional) Numeric value (range 0 to 100), which represents
 #'  the maximum percentage of allowed masked surface (by clouds or any other 
 #'  type of mask chosen with argument `mask_type`) for producing outputs. 
@@ -90,6 +96,8 @@
 s2_mask <- function(infiles,
                     maskfiles,
                     mask_type = "cloud_medium_proba",
+                    smooth = 250,
+                    buffer = 250,
                     max_mask = 80,
                     outdir = "./masked",
                     tmpdir = NA,
@@ -102,6 +110,8 @@ s2_mask <- function(infiles,
   .s2_mask(infiles = infiles,
            maskfiles = maskfiles,
            mask_type = mask_type,
+           smooth = smooth,
+           buffer = buffer,
            max_mask = max_mask,
            outdir = outdir,
            tmpdir = tmpdir,
@@ -117,6 +127,8 @@ s2_mask <- function(infiles,
 .s2_mask <- function(infiles,
                      maskfiles,
                      mask_type = "cloud_medium_proba",
+                     smooth = 250,
+                     buffer = 250,
                      max_mask = 80,
                      outdir = "./masked",
                      tmpdir = NA,
@@ -346,32 +358,45 @@ s2_mask <- function(infiles,
         names(perc_mask) <- sel_infile
         outpercs <- c(outpercs, perc_mask)
       } else if (output_type == "s2_mask") {
-        
-        # if mask is at different resolution than inraster
-        # (e.g. 20m instead of 10m),
-        # resample it
-        if (any(suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")]) !=
-                suppressWarnings(GDALinfo(outmask)[c("res.x","res.y")]))) {
-          gdal_warp(
-            outmask,
-            outmask_res <- file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif"))),
-            ref = sel_infile
-          )
-        } else {
-          outmask_res <- outmask
-        }
-        
-        # load mask and evaluate if the output have to be produced
-        inraster <- raster::brick(sel_infile)
-        mask_rast <- raster::raster(outmask_res)
-        
+
+        # evaluate if the output have to be produced
         # if the image is sufficiently clean, mask it
         if (is.na(max_mask) | perc_mask <= max_mask) {
           
+          # if mask is at different resolution than inraster
+          # (e.g. 20m instead of 10m),
+          # resample it
+          if (any(suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")]) !=
+                  suppressWarnings(GDALinfo(outmask)[c("res.x","res.y")]))) {
+            gdal_warp(
+              outmask,
+              outmask_res <- file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif"))),
+              ref = sel_infile
+            )
+          } else {
+            outmask_res <- outmask
+          }
+
+          # apply the smoothing (if required)
+          outmask_smooth <- if (smooth > 0 & buffer != 0) {
+            # if the unit is not metres, approximate it
+            if (projpar(attr(suppressWarnings(GDALinfo(sel_infile)),"projection"), "Unit") == "degree") {
+              buffer <- buffer * 8.15e-6
+              smooth <- smooth * 8.15e-6
+            }
+            # apply the smooth to the mask
+            smooth_mask(outmask_res, radius = smooth, buffer = buffer, binpaths = binpaths, tmpdir = sel_tmpdir)
+          } else {
+            outmask_res
+          }
+
+          # load mask
+          inraster <- raster::brick(sel_infile)
+
           if (sel_format!="VRT") {
             raster::mask(
               inraster,
-              raster::raster(outmask_res),
+              raster(outmask_smooth),
               filename = sel_outfile,
               maskvalue = 0,
               updatevalue = sel_naflag,
@@ -385,7 +410,7 @@ s2_mask <- function(infiles,
           } else {
             maskapply_parallel(
               inraster, 
-              raster(outmask_res), 
+              raster(outmask_smooth), 
               outpath = sel_outfile,
               tmpdir = sel_tmpdir,
               binpaths = binpaths,
@@ -450,6 +475,8 @@ s2_perc_masked <- function(infiles,
   .s2_mask(infiles = infiles,
            maskfiles = maskfiles,
            mask_type = mask_type,
+           smooth = 0,
+           buffer = 0,
            max_mask = 100,
            tmpdir = tmpdir,
            rmtmp = rmtmp,
