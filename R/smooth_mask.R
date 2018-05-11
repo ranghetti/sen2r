@@ -1,5 +1,5 @@
 #' @title Buffer clound masks
-#' @description Internal function (used by [2s_mask]) which smooths
+#' @description Internal function (used by [s2_mask]) which smooths
 #'  and buffers a 0-1 mask image in order to reduce the roughness of the mask
 #'  obtained from SCL classification (which is done pixel by pixel).
 #'  See details.

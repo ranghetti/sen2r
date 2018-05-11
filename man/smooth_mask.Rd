@@ -27,7 +27,7 @@ masked area after smoothing it (positive to enlarge, negative to reduce).}
 The path of the smoothed mask.
 }
 \description{
-Internal function (used by \link{2s_mask}) which smooths
+Internal function (used by \link{s2_mask}) which smooths
 and buffers a 0-1 mask image in order to reduce the roughness of the mask
 obtained from SCL classification (which is done pixel by pixel).
 See details.
