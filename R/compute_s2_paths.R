@@ -50,7 +50,10 @@
 #' @param merged_ext Extension (character) of merged products.
 #' @param warped_ext Extension (character) of warped products.
 #' @param sr_masked_ext Extension (character) of masked products of SR products.
-#' @param force_tiles (optional) Logical: passed to [s2_shortname] (default: TRUE).
+#' @param force_tiles (optional) Logical: passed to [s2_shortname] (default: FALSE).
+#' @param check_tmp (optional) Logical: if TRUE (default), temporary files
+#'  are also searched when `_exi` names are computed; 
+#'  if FALSE, only non temporary files are searched.
 #' @param ignorelist Vector of output files to be ignored.
 #'
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
@@ -69,7 +72,8 @@ compute_s2_paths <- function(pm,
                              merged_ext, 
                              warped_ext, 
                              sr_masked_ext,
-                             force_tiles=FALSE,
+                             force_tiles = FALSE,
+                             check_tmp = TRUE,
                              ignorelist) {
   
   # accepted products (update together with the same variables in s2_gui() and in sen2r())
@@ -113,11 +117,11 @@ compute_s2_paths <- function(pm,
                        if("l2a" %in% pm$s2_levels) {tiles_l2a_names_exp})
   
   # add existing files for tiles
-  tiles_names_exi <- if (!is.na(pm$path_tiles)) {
+  tiles_names_exi <- if (!is.na(pm$path_tiles) | check_tmp == TRUE) {
     all_names <- if (pm$path_subdirs==TRUE) {
-      list.files(file.path(pm$path_tiles,list_prods), full.names=TRUE)
+      list.files(file.path(paths["tiles"],list_prods), full.names=TRUE)
     } else {
-      list.files(pm$path_tiles, full.names=TRUE)
+      list.files(paths["ti"], full.names=TRUE)
     }
     if (length(all_names)>0) {
       all_meta <- data.table(suppressWarnings(fs2nc_getElements(all_names, abort=FALSE, format="data.frame")))
@@ -170,11 +174,11 @@ compute_s2_paths <- function(pm,
                 .)
   }
   # add existing files for merged
-  merged_names_exi <- if (!is.na(pm$path_merged)) {
+  merged_names_exi <- if (!is.na(pm$path_merged) | check_tmp == TRUE) {
     all_names <- if (pm$path_subdirs==TRUE) {
-      list.files(file.path(pm$path_merged,list_prods), full.names=TRUE)
+      list.files(file.path(paths["merged"],list_prods), full.names=TRUE)
     } else {
-      list.files(pm$path_merged, full.names=TRUE)
+      list.files(paths["merged"], full.names=TRUE)
     }
     if (length(all_names)>0) {
       all_meta <- data.table(suppressWarnings(fs2nc_getElements(all_names, abort=FALSE, format="data.frame")))
@@ -245,11 +249,11 @@ compute_s2_paths <- function(pm,
     )
   }
   # add existing files for warped
-  warped_names_exi <- if (is.na(pm$mask_type)) {
+  warped_names_exi <- if (is.na(pm$mask_type) & (!is.na(pm$path_out) | check_tmp == TRUE)) {
     all_names <- if (pm$path_subdirs==TRUE) {
-      list.files(file.path(pm$path_out,list_prods), full.names=TRUE)
+      list.files(file.path(paths["out"],list_prods), full.names=TRUE)
     } else {
-      list.files(pm$path_out, full.names=TRUE)
+      list.files(paths["out"], full.names=TRUE)
     }
     if (length(all_names)>0) {
       all_meta <- data.table(suppressWarnings(fs2nc_getElements(all_names, abort=FALSE, format="data.frame")))
@@ -307,11 +311,11 @@ compute_s2_paths <- function(pm,
     }
   }
   # add existing files for masked
-  masked_names_exi <- if (!is.na(pm$mask_type)) {
+  masked_names_exi <- if (!is.na(pm$mask_type) & (!is.na(pm$path_out) | check_tmp == TRUE)) {
     all_names <- if (pm$path_subdirs==TRUE) {
-      list.files(file.path(pm$path_out,list_prods), full.names=TRUE)
+      list.files(file.path(paths["out"],list_prods), full.names=TRUE)
     } else {
-      list.files(pm$path_out, full.names=TRUE)
+      list.files(paths["out"], full.names=TRUE)
     }
     if (length(all_names)>0) {
       all_meta <- data.table(suppressWarnings(fs2nc_getElements(all_names, abort=FALSE, format="data.frame")))
@@ -393,11 +397,11 @@ compute_s2_paths <- function(pm,
       gsub(paste0(merged_ext,"$"),out_ext,.)
   }
   # add existing files for indices
-  indices_names_exi <-  if (!is.na(pm$path_indices)) {
+  indices_names_exi <-  if (!is.na(pm$path_indices) | check_tmp == TRUE) {
     all_names <- if (pm$path_subdirs==TRUE) {
-      list.files(file.path(pm$path_indices,pm$list_indices), full.names=TRUE)
+      list.files(file.path(paths["indices"],pm$list_indices), full.names=TRUE)
     } else {
-      list.files(pm$path_indices, full.names=TRUE)
+      list.files(paths["indices"], full.names=TRUE)
     }
     if (length(all_names)>0) {
       all_meta <- data.table(suppressWarnings(fs2nc_getElements(all_names, abort=FALSE, format="data.frame")))

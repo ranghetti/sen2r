@@ -102,7 +102,7 @@ is called twice (and to shorten the main function).</p>
 
     <pre class="usage"><span class='fu'>compute_s2_paths</span>(<span class='no'>pm</span>, <span class='no'>s2_list_l1c</span>, <span class='no'>s2_list_l2a</span>, <span class='no'>paths</span>, <span class='no'>list_prods</span>, <span class='no'>out_ext</span>,
   <span class='no'>index_ext</span>, <span class='no'>tiles_ext</span>, <span class='no'>merged_ext</span>, <span class='no'>warped_ext</span>, <span class='no'>sr_masked_ext</span>,
-  <span class='kw'>force_tiles</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>ignorelist</span>)</pre>
+  <span class='kw'>force_tiles</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>check_tmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>ignorelist</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -155,7 +155,13 @@ products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").</p></td>
     </tr>
     <tr>
       <th>force_tiles</th>
-      <td><p>(optional) Logical: passed to <a href='s2_shortname.html'>s2_shortname</a> (default: TRUE).</p></td>
+      <td><p>(optional) Logical: passed to <a href='s2_shortname.html'>s2_shortname</a> (default: FALSE).</p></td>
+    </tr>
+    <tr>
+      <th>check_tmp</th>
+      <td><p>(optional) Logical: if TRUE (default), temporary files
+are also searched when <code>_exi</code> names are computed;
+if FALSE, only non temporary files are searched.</p></td>
     </tr>
     <tr>
       <th>ignorelist</th>

@@ -6,7 +6,7 @@
 \usage{
 compute_s2_paths(pm, s2_list_l1c, s2_list_l2a, paths, list_prods, out_ext,
   index_ext, tiles_ext, merged_ext, warped_ext, sr_masked_ext,
-  force_tiles = FALSE, ignorelist)
+  force_tiles = FALSE, check_tmp = TRUE, ignorelist)
 }
 \arguments{
 \item{pm}{List of input parameters.}
@@ -33,7 +33,11 @@ products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").}
 
 \item{sr_masked_ext}{Extension (character) of masked products of SR products.}
 
-\item{force_tiles}{(optional) Logical: passed to \link{s2_shortname} (default: TRUE).}
+\item{force_tiles}{(optional) Logical: passed to \link{s2_shortname} (default: FALSE).}
+
+\item{check_tmp}{(optional) Logical: if TRUE (default), temporary files
+are also searched when \code{_exi} names are computed;
+if FALSE, only non temporary files are searched.}
 
 \item{ignorelist}{Vector of output files to be ignored.}
 }
