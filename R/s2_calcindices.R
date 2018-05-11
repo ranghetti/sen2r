@@ -39,6 +39,8 @@
 #'  placed in separated `outfile` subdirectories; if FALSE, they are placed in
 #'  `outfile` directory; if NA (default), subdirectories are created only if
 #'  more than a single spectral index is required.
+#' @param tmpdir (optional) Path where intermediate files (GTiff) will be 
+#'  created in case `format` is "VRT".
 #' @param compress (optional) In the case a GTiff format is
 #'  present, the compression indicated with this parameter is used.
 #' @param dataType (optional) Numeric datatype of the ouptut rasters.
@@ -77,6 +79,7 @@ s2_calcindices <- function(infiles,
                            source=c("TOA","BOA"),
                            format=NA,
                            subdirs=NA,
+                           tmpdir=NA,
                            compress="DEFLATE",
                            dataType="Int16",
                            scaleFactor=NA,
@@ -185,7 +188,6 @@ s2_calcindices <- function(infiles,
     sel_format <- suppressWarnings(ifelse(
       !is.na(format), format, attr(GDALinfo(sel_infile), "driver")
     ))
-    if (sel_format=="VRT") {sel_format <- "GTiff"}
     sel_out_ext <- gdal_formats[gdal_formats$name==sel_format,"ext"][1]
     
     # check bands to use
@@ -256,6 +258,27 @@ s2_calcindices <- function(infiles,
           sel_formula <- paste0("clip(100+100*(",sel_formula,"),0,200)")
         }
         
+        # if sel_format is VRT, create GTiff as intermediate source files
+        # (cannot create directly .tif files without breaking _req / _exi names)
+        if (sel_format == "VRT") {
+          
+          # define and create tmpdir
+          if (is.na(tmpdir)) {
+            tmpdir <- file.path(out_subdir, ".vrt")
+          }
+          dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
+          
+          sel_format0 <- "GTiff"
+          sel_out_ext0 <- gdal_formats[gdal_formats$name==sel_format0,"ext"][1]
+          out_subdir0 <- tmpdir
+          sel_outfile0 <- gsub(paste0(sel_out_ext,"$"), sel_out_ext0, sel_outfile)
+          
+        } else {
+          sel_format0 <- sel_format
+          out_subdir0 <- out_subdir
+          sel_outfile0 <- sel_outfile
+        }
+        
         # apply gdal_calc
         system(
           paste0(
@@ -263,16 +286,27 @@ s2_calcindices <- function(infiles,
             paste(apply(gdal_bands,1,function(l){
               paste0("-",l["letter"]," \"",sel_infile,"\" --",l["letter"],"_band=",which(gdal_bands$letter==l["letter"]))
             }), collapse=" ")," ",
-            "--outfile=\"",file.path(out_subdir,sel_outfile),"\" ",
+            "--outfile=\"",file.path(out_subdir0,sel_outfile0),"\" ",
             "--type=\"",dataType,"\" ",
             "--NoDataValue=",sel_nodata," ",
-            "--format=\"",sel_format,"\" ",
+            "--format=\"",sel_format0,"\" ",
             if (overwrite==TRUE) {"--overwrite "},
-            if (sel_format=="GTiff") {paste0("--co=\"COMPRESS=",toupper(compress),"\" ")},
+            if (sel_format0=="GTiff") {paste0("--co=\"COMPRESS=",toupper(compress),"\" ")},
             "--calc=\"",sel_formula,"\""
           ),
           intern = Sys.info()["sysname"] == "Windows"
         )
+        
+        if (sel_format == "VRT") {
+          system(
+            paste0(
+              binpaths$gdalbuildvrt," ",
+              "\"",file.path(out_subdir,sel_outfile),"\" ",
+              file.path(out_subdir0,sel_outfile0)
+            ),
+            intern = Sys.info()["sysname"] == "Windows"
+          )
+        }
         
       } # end of overwrite IF cycle
       
