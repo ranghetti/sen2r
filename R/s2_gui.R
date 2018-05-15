@@ -271,7 +271,7 @@ s2_gui <- function(param_list = NULL,
                       htmlOutput("path_l1c_errormess")),
                   div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                           shinyDirButton("path_l1c_sel", "Select", "Specify directory for level-1C SAFE products")),
-                      div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
+                      div(style="display:inline-block;vertical-align:top;width:calc(100% - 50pt - 3px);",
                           textInput("path_l1c_textin", NULL, "")))
                 )
               ),
@@ -286,7 +286,7 @@ s2_gui <- function(param_list = NULL,
                       htmlOutput("path_l2a_errormess")),
                   div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                           shinyDirButton("path_l2a_sel", "Select", "Specify directory for level-2A SAFE products")),
-                      div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
+                      div(style="display:inline-block;vertical-align:top;width:calc(100% - 50pt - 3px);",
                           textInput("path_l2a_textin", NULL, "")))
                 )
               )
@@ -587,7 +587,7 @@ s2_gui <- function(param_list = NULL,
                           htmlOutput("path_out_errormess")),
                       div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                               shinyDirButton("path_out_sel", "Select", "Specify directory for output processed products")),
-                          div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
+                          div(style="display:inline-block;vertical-align:top;width:calc(100% - 50pt - 3px);",
                               textInput("path_out_textin", NULL, ""))))
                 ),
                 
@@ -728,7 +728,7 @@ s2_gui <- function(param_list = NULL,
                           htmlOutput("path_tiles_errormess")),
                       div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                               shinyDirButton("path_tiles_sel", "Select", "Specify directory for single tiles in custom format")),
-                          div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
+                          div(style="display:inline-block;vertical-align:top;width:calc(100% - 50pt - 3px);",
                               textInput("path_tiles_textin", NULL, ""))))
                 )
               ),
@@ -742,7 +742,7 @@ s2_gui <- function(param_list = NULL,
                           htmlOutput("path_merged_errormess")),
                       div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                               shinyDirButton("path_merged_sel", "Select", "Specify directory for tiles spatially merged")),
-                          div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
+                          div(style="display:inline-block;vertical-align:top;width:calc(100% - 50pt - 3px);",
                               textInput("path_merged_textin", NULL, ""))))
                 )
               )
@@ -832,11 +832,11 @@ s2_gui <- function(param_list = NULL,
                     condition = "input.use_reference == 'TRUE'",
                     div(
                       div(
-                        style="display:inline-block;vertical-align:top;",
+                        style="display:inline-block;vertical-align:top;width:77pt;",
                         shinyFilesButton("reference_file_button", "Select raster", "Select reference file", multiple=FALSE),
                         "\u2001"),
                       div(
-                        style="display:inline-block;vertical-align:top;width:calc(100% - 88pt);",
+                        style="display:inline-block;vertical-align:top;width:calc(100% - 77pt - 3px);",
                         textInput("reference_file_textin", label = NULL, "", width="100%"))),
                     uiOutput("reference_file_message")
                     
@@ -964,7 +964,7 @@ s2_gui <- function(param_list = NULL,
                         htmlOutput("path_indices_errormess")),
                     div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                             shinyDirButton("path_indices_sel", "Select", "Specify directory for spectral indices")),
-                        div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
+                        div(style="display:inline-block;vertical-align:top;width:calc(100% - 50pt - 3px);",
                             textInput("path_indices_textin", NULL, ""))),
                     div(style="display:inline-block;vertical-align:top;",
                         actionButton("path_indices_cp", "Copy from directory for output processed products"))),
