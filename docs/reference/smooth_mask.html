@@ -99,7 +99,8 @@ obtained from SCL classification (which is done pixel by pixel).
 See details.</p>
     
 
-    <pre class="usage"><span class='fu'>smooth_mask</span>(<span class='no'>inmask</span>, <span class='no'>binpaths</span>, <span class='no'>tmpdir</span>, <span class='no'>radius</span>, <span class='no'>buffer</span>)</pre>
+    <pre class="usage"><span class='fu'>smooth_mask</span>(<span class='no'>inmask</span>, <span class='no'>binpaths</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fu'>tempdir</span>(), <span class='kw'>radius</span> <span class='kw'>=</span> <span class='fl'>250</span>,
+  <span class='kw'>buffer</span> <span class='kw'>=</span> <span class='fl'>250</span>, <span class='kw'>namask</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -129,6 +130,13 @@ Default is a temporary directory.</p></td>
       <td><p>(optional) Numerical (positive or negative): the size of the
 buffer (in the unit of <code>inmask</code>, typically metres) to be applied to the
 masked area after smoothing it (positive to enlarge, negative to reduce).</p></td>
+    </tr>
+    <tr>
+      <th>namask</th>
+      <td><p>(optional) The path of an input 0-1 mask where 0 represents
+the area of the original file with NA values (which should not be
+smoothed / buffered).
+Default (NULL) means that no NA values are presente.</p></td>
     </tr>
     </table>
     

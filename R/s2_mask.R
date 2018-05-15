@@ -347,10 +347,10 @@ s2_mask <- function(infiles,
       }
       
       # compute the percentage of masked surface
-      perc_mask <- 100 * (
-        mean(values(raster(outnaval)),na.rm=TRUE) - 
-          mean(values(raster(outmask)),na.rm=TRUE)
-      ) / mean(values(raster(outnaval)),na.rm=TRUE)
+      values_naval <- values(raster(outnaval))
+      mean_values_naval <- mean(values_naval, na.rm=TRUE)
+      mean_values_mask <- mean(values(raster(outmask)), na.rm=TRUE)
+      perc_mask <- 100 * (mean_values_naval - mean_values_mask) / mean_values_naval
       if (!is.finite(perc_mask)) {perc_mask <- 100}
       
       # if the requested output is this value, return it; else, continue masking
@@ -378,14 +378,19 @@ s2_mask <- function(infiles,
           }
 
           # apply the smoothing (if required)
-          outmask_smooth <- if (smooth > 0 & buffer != 0) {
+          outmask_smooth <- if (smooth > 0 | buffer != 0) {
             # if the unit is not metres, approximate it
             if (projpar(attr(suppressWarnings(GDALinfo(sel_infile)),"projection"), "Unit") == "degree") {
               buffer <- buffer * 8.15e-6
               smooth <- smooth * 8.15e-6
             }
             # apply the smooth to the mask
-            smooth_mask(outmask_res, radius = smooth, buffer = buffer, binpaths = binpaths, tmpdir = sel_tmpdir)
+            smooth_mask(
+              outmask_res, 
+              radius = smooth, buffer = buffer, 
+              namask = if (any(values_naval==0)) {outnaval} else {NULL}, # TODO NULL if no Nodata values are present
+              binpaths = binpaths, tmpdir = sel_tmpdir
+            )
           } else {
             outmask_res
           }

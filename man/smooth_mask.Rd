@@ -4,7 +4,8 @@
 \alias{smooth_mask}
 \title{Buffer clound masks}
 \usage{
-smooth_mask(inmask, binpaths, tmpdir, radius, buffer)
+smooth_mask(inmask, binpaths, tmpdir = tempdir(), radius = 250,
+  buffer = 250, namask = NULL)
 }
 \arguments{
 \item{inmask}{The path of the input 0-1 mask (where 0 represents the area
@@ -22,6 +23,11 @@ Default is a temporary directory.}
 \item{buffer}{(optional) Numerical (positive or negative): the size of the
 buffer (in the unit of \code{inmask}, typically metres) to be applied to the
 masked area after smoothing it (positive to enlarge, negative to reduce).}
+
+\item{namask}{(optional) The path of an input 0-1 mask where 0 represents
+the area of the original file with NA values (which should not be
+smoothed / buffered).
+Default (NULL) means that no NA values are presente.}
 }
 \value{
 The path of the smoothed mask.
