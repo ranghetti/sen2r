@@ -399,10 +399,15 @@ s2_thumbnails <- function(infiles,
       sel_infile_size <- suppressWarnings(GDALinfo(sel_infile_path)[c("rows","columns")])
       if (dim < max(sel_infile_size)) {
         out_size <- round(sel_infile_size * min(dim,max(sel_infile_size)) / max(sel_infile_size))
-        resized_path <- file.path(tmpdir, gsub("\\..+$","_resized.vrt",basename(sel_infile_path)))
+        resized_path <- file.path(tmpdir, gsub(
+          "\\..+$",
+          if (sel_prod_type %in% c("BOA","TOA")) {"_resized.tif"} else {"_resized.vrt"},
+          basename(sel_infile_path)
+        )) # GTiff is used for multiband images to avoid problems using gdal_calc (#82)
         system(
           paste0(
-            binpaths$gdalwarp," -of VRT ",
+            binpaths$gdalwarp,
+            if (sel_prod_type %in% c("BOA","TOA")) {" -of GTiff -co COMPRESS=LZW "} else {" -of VRT "},
             "-ts ",out_size[2]," ",out_size[1]," ",
             if (sel_prod_type %in% c("SCL")) {"-r mode "} else {"-r average "}, # resp. discrete or continuous values
             "\"",filterbands_path,"\" ",
