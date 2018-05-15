@@ -41,7 +41,7 @@
 #' @note License: GPL 3.0
 #' @importFrom jsonlite fromJSON
 #' @importFrom doParallel registerDoParallel
-#' @importFrom foreach foreach
+#' @importFrom foreach foreach "%do%" "%dopar%"
 #' @importFrom parallel detectCores makeCluster stopCluster
 #' @export
 #'

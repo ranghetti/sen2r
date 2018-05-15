@@ -1145,6 +1145,7 @@ sen2r <- function(param_list = NULL,
       subdirs = pm$path_subdirs,
       tmpdir = file.path(tmpdir, "s2_merge"), rmtmp = rmtmp,
       format = merged_outformat,
+      parallel = if (merged_outformat=="VRT") {FALSE} else {pm$parallel},
       overwrite = pm$overwrite,
       trace_files = s2names$merged_names_new
     )

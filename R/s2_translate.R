@@ -190,7 +190,7 @@ s2_translate <- function(infile,
   
   # create a file / set of files for each prod_type
   out_names <- character(0) # names of created files
-  for (sel_prod in prod_type) {
+  for (sel_prod in prod_type) {try({
     
     if (sel_prod %in% c("BOA","TOA")) {
       sel_type <- "MSI"
@@ -226,7 +226,7 @@ s2_translate <- function(infile,
     dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
     
     # cycle on granules (with compact names, this runs only once; with old name, one or more)
-    for (sel_granule in infile_meta$xml_granules) {
+    for (sel_granule in infile_meta$xml_granules) {try({
       
       sel_tile <- s2_getMetadata(dirname(sel_granule), "nameinfo")$id_tile
       
@@ -301,9 +301,9 @@ s2_translate <- function(infile,
         
       } # end of "sel_tile %in% tiles" IF cycle
       
-    } # end of sel_granule cycle
+    })} # end of sel_granule cycle
     
-  } # end of prod_type cycle
+  })} # end of prod_type cycle
   
   # Remove temporary files
   if (rmtmp == TRUE) {

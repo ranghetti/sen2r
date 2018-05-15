@@ -35,6 +35,11 @@
 #' @param out_crs (optional) proj4string (character) of the output CRS
 #'  (default: the CRS of the first input file). The tiles with CRS different
 #'  from `out_crs` will be reprojected (and a warning returned).
+#' @param parallel (optional) Logical: if TRUE, the function is run using parallel
+#'  processing, to speed-up the computation for large rasters.
+#'  The number of cores is automatically determined; specifying it is also 
+#'  possible (e.g. `parallel = 4`).
+#'  If FALSE (default), single core processing is used.
 #' @param overwrite Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
 #' @return A vector with the names of the merged products (just created or
@@ -42,6 +47,9 @@
 #' @importFrom rgdal GDALinfo
 #' @importFrom magrittr "%>%"
 #' @importFrom jsonlite fromJSON
+#' @importFrom foreach foreach "%do%" "%dopar%"
+#' @importFrom doParallel registerDoParallel
+#' @importFrom parallel makeCluster stopCluster detectCores
 #' @import data.table
 #' @export
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
@@ -57,6 +65,7 @@ s2_merge <- function(infiles,
                      compress="DEFLATE",
                      vrt_rel_paths=NA,
                      out_crs="",
+                     parallel = FALSE,
                      overwrite=FALSE) {
   
   # load output formats
@@ -87,6 +96,22 @@ s2_merge <- function(infiles,
   if (is.null(binpaths$gdalinfo)) {
     check_gdal()
     binpaths <- jsonlite::fromJSON(binpaths_file)
+  }
+  
+  # Compute n_cores
+  n_cores <- if (is.numeric(parallel)) {
+    as.integer(parallel)
+  } else if (parallel==FALSE) {
+    1
+  } else {
+    min(parallel::detectCores()-1, 11) # use at most 11 cores
+  }
+  if (n_cores<=1) {
+    `%DO%` <- `%do%`
+    parallel <- FALSE
+    n_cores <- 1
+  } else {
+    `%DO%` <- `%dopar%`
   }
   
   # Get files metadata
@@ -207,9 +232,16 @@ s2_merge <- function(infiles,
   }
   
   # merge single output products
-  outfiles <- character(0)
-  for (infiles_meta_grp in unique(infiles_meta_grps)) {
-    
+  cl <- makeCluster(
+    n_cores, 
+    type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
+  )
+  if (n_cores > 1) {registerDoParallel(cl)}
+  outfiles <- foreach(infiles_meta_grp = unique(infiles_meta_grps), 
+                      .packages = c("sen2r"), 
+                      .combine=c, 
+                      .errorhandling="remove")  %DO% {
+
     sel_infiles <- infiles[infiles_meta_grps == infiles_meta_grp]
     sel_infiles_meta <- infiles_meta[infiles_meta_grps == infiles_meta_grp,]
     sel_diffcrs <- diffcrs[infiles_meta_grps == infiles_meta_grp]
@@ -297,9 +329,10 @@ s2_merge <- function(infiles,
       
     } # end of overwrite IF cycle
     
-    outfiles <- c(outfiles, file.path(out_subdir,sel_outfile))
+    file.path(out_subdir,sel_outfile)
     
-  }
+  } # end of foreach cycle
+  if (n_cores > 1) {stopCluster(cl)}
   
   # Remove temporary files
   if (rmtmp == TRUE) {

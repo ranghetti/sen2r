@@ -248,7 +248,7 @@ s2_mask <- function(infiles,
   } else if (output_type == "perc") {
     outpercs <- numeric(0)
   }
-  for (i in seq_along(infiles)) {
+  for (i in seq_along(infiles)) {try({
     sel_infile <- infiles[i]
     sel_infile_meta <- c(infiles_meta[i,])
     sel_format <- suppressWarnings(ifelse(
@@ -446,7 +446,7 @@ s2_mask <- function(infiles,
       outfiles <- c(outfiles, sel_outfile)
     }
     
-  } # end on infiles cycle
+  })} # end on infiles cycle
   
   # Remove temporary files
   if (rmtmp == TRUE) {

@@ -63,6 +63,7 @@
 #'  overwritten? (default: FALSE)
 #' @return A vector with the names of the created products.
 #' @export
+#' @importFrom foreach foreach "%do%" "%dopar%"
 #' @importFrom doParallel registerDoParallel
 #' @importFrom parallel makeCluster stopCluster detectCores
 #' @importFrom jsonlite fromJSON
@@ -127,7 +128,7 @@ s2_calcindices <- function(infiles,
       if (!any(indices %in% indices_db$name)) {"The "} else {"Some of the "},
       "requested index names (\"",
       paste(indices[!indices %in% indices_db$name], collapse="\", \""),
-      ,"\") are not recognisable; please use accepted ",
+      "\") are not recognisable; please use accepted ",
       "values. To list accepted index names, type ",
       "'sort(list_indices(\"name\"))'.")
   }
@@ -182,7 +183,10 @@ s2_calcindices <- function(infiles,
     type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
   )
   if (n_cores > 1) {registerDoParallel(cl)}
-  outfiles <- foreach(i = seq_along(infiles), .packages = c("raster"), .combine=c)  %DO% {
+  outfiles <- foreach(i = seq_along(infiles), 
+                      .packages = c("raster","rgdal","sen2r"), 
+                      .combine=c, 
+                      .errorhandling="remove")  %DO% {
     sel_infile <- infiles[i]
     sel_infile_meta <- c(infiles_meta[i,])
     sel_format <- suppressWarnings(ifelse(

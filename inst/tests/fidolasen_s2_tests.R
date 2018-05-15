@@ -114,7 +114,8 @@ testthat::test_that(
       path_l1c = safe_dir,
       path_l2a = safe_dir,
       path_out = out_dir,
-      path_indices = out_dir
+      path_indices = out_dir,
+      parallel = 4
     ))
     
   }
