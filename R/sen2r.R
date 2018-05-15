@@ -107,6 +107,14 @@
 #'  Notice that the percentage is computed on non-NA values (if input images 
 #'  had previously been clipped and masked using a polygon, the percentage is
 #'  computed on the surface included in the masking polygons).
+#' @param mask_smooth (optional) Numeric positive value: the smoothing radius
+#'  (expressed in unit of measure of the output projection, typically metres)
+#'  to be applied to the cloud mask by function [s2_mask]. 
+#' @param mask_buffer (optional) Numeric value: the buffering radius
+#'  (expressed in unit of measure of the output projection, typically metres)
+#'  to be applied to the cloud mask by function [s2_mask]. 
+#'  Default value (0) means that no buffer is applied; a positive value causes
+#'  an enlargement of the masked area; a negative value cause a reducement.
 #' @param clip_on_extent (optional) Logical: if TRUE (default), output products
 #'  and indices are clipped to the selected extent (and resampled/reprojected);
 #'  if FALSE, the geometry and extension of the tiles is maintained.
@@ -226,6 +234,8 @@ sen2r <- function(param_list = NULL,
                   index_source = "BOA",
                   mask_type = NA,
                   max_mask = 100,
+                  mask_smooth = 0,
+                  mask_buffer = 0,
                   clip_on_extent = TRUE,
                   extent_as_mask = FALSE,
                   reference_path = NA,
@@ -1302,8 +1312,8 @@ sen2r <- function(param_list = NULL,
           } else {
             s2names$merged_names_exp[names_merged_exp_scl_idx]
           },
-          smooth = 0, # temporary
-          buffer = 0, # temporary
+          smooth = pm$mask_smooth,
+          buffer = pm$mask_buffer,
           mask_type = pm$mask_type,
           max_mask = pm$max_mask,
           outdir = paths["out"],
@@ -1326,8 +1336,8 @@ sen2r <- function(param_list = NULL,
             s2names$merged_names_exp[names_merged_exp_scl_idx]
           },
           mask_type = pm$mask_type,
-          smooth = 0, # temporary
-          buffer = 0, # temporary
+          smooth = pm$mask_smooth,
+          buffer = pm$mask_buffer,
           max_mask = pm$max_mask,
           outdir = paths["out"],
           tmpdir = file.path(tmpdir, "s2_mask"), rmtmp = rmtmp,

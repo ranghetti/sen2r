@@ -751,7 +751,7 @@ s2_gui <- function(param_list = NULL,
           ), # end of box "Output extent"
           
           box(
-            title="Atmospheric mask",
+            title=HTML("<i class=\"fa fa-wrench\">\u2000Cloud mask</i>"), #TODO modalDialog for managing (and explaining) cloud masking settings
             width=6,
             
             radioButtons(
@@ -806,9 +806,47 @@ s2_gui <- function(param_list = NULL,
                 )
               ),
               
-              sliderInput("max_masked_perc", "Maximum cloud cover",
-                          min = 0, max = 100, value = 80,
-                          step = 1, post = "%")
+              sliderInput(
+                "max_masked_perc", label = "Maximum allowed cloud cover",
+                min = 0, max = 100, value = 80,
+                step = 1, post = "%"
+              ),
+              
+              radioButtons(
+                "mask_apply_smooth", 
+                label = span(
+                  "Smooth / bufferize the cloud-covered surface?\u2000",
+                  actionLink("help_max_masked_perc", icon("question-circle"))
+                ),
+                choices = list("Yes" = TRUE,
+                               "No" = FALSE),
+                selected = FALSE,
+                inline = TRUE
+              ),
+              
+              conditionalPanel(
+                condition = "input.mask_apply_smooth == 'TRUE'",
+                
+                fluidRow(
+                  
+                  column(
+                    width=6,
+                    numericInput("mask_smooth", "Smooth (m)",
+                                 # width="100px",
+                                 value = 250,
+                                 min = 0)
+                  ),
+                  
+                  column(
+                    width=6,
+                    numericInput("mask_buffer", "Buffer (m)",
+                                 # width="100px",
+                                 value = 250)
+                  )
+
+                ) # end of smooth/buffer fluidRow
+              ) # endo if conditionalPanel mask_apply_smooth
+              
             ) # end of conditionalPanel atm_mask
             
           )), # end of fluidRow/box "Atmospheric mask"
@@ -2266,6 +2304,18 @@ s2_gui <- function(param_list = NULL,
       ))
     })
     
+    observeEvent(input$help_max_masked_perc, {
+      showModal(modalDialog(
+        title = "Smooth / bufferize the cloud-covered surface?",
+        p(HTML(
+          "This help will be added soon."
+        )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+      
+    
     observeEvent(input$help_clip_on_extent, {
       showModal(modalDialog(
         title = "Clip outputs on the selected extent?",
@@ -2481,6 +2531,8 @@ s2_gui <- function(param_list = NULL,
         input$atm_mask_type
       } # atmospheric masking (accepted types as in s2_mask())
       rl$max_mask <- input$max_masked_perc
+      rl$mask_smooth <- input$mask_smooth
+      rl$mask_buffer <- input$mask_buffer
       
       rl$clip_on_extent <- as.logical(input$clip_on_extent) # TRUE to clip (and warp) on the selected extent, FALSE to work at tiles/merged level
       rl$extent_as_mask <- as.logical(input$extent_as_mask) # TRUE to mask outside the polygons of extent, FALSE to use as boundig box
@@ -2608,6 +2660,8 @@ s2_gui <- function(param_list = NULL,
                            selected = ifelse(is.na(pl$mask_type),FALSE,TRUE))
         updateSliderInput(session, "max_masked_perc",
                           value = ifelse(is.na(pl$mask_type),80,pl$max_mask))
+        updateNumericInput(session, "mask_smooth", value = pl$mask_smooth)
+        updateNumericInput(session, "mask_buffer", value = pl$mask_buffer)
         updateRadioButtons(session, "atm_mask_type",
                            selected = ifelse(is.na(pl$mask_type),"cloud_medium_proba",pl$mask_type))
         updateRadioButtons(session, "atm_mask_custom",

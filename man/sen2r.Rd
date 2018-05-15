@@ -10,15 +10,15 @@ sen2r(param_list = NULL, gui = NA, preprocess = TRUE,
   step_atmcorr = "auto", timewindow = NA, timeperiod = "full",
   extent = NA, extent_name = "", s2tiles_selected = NA,
   s2orbits_selected = NA, list_prods = c("BOA"), list_indices = NA,
-  index_source = "BOA", mask_type = NA, max_mask = 100,
-  clip_on_extent = TRUE, extent_as_mask = FALSE, reference_path = NA,
-  res = c(10, 10), res_s2 = "10m", unit = "Meter", proj = NA,
-  resampling = "near", resampling_scl = "near", outformat = "GTiff",
-  index_datatype = "Int16", compression = "DEFLATE", overwrite = FALSE,
-  path_l1c = NA, path_l2a = NA, path_tiles = NA, path_merged = NA,
-  path_out = NA, path_indices = NA, path_subdirs = TRUE,
-  thumbnails = TRUE, parallel = TRUE, use_python = TRUE, tmpdir = NA,
-  rmtmp = TRUE)
+  index_source = "BOA", mask_type = NA, max_mask = 100, mask_smooth = 0,
+  mask_buffer = 0, clip_on_extent = TRUE, extent_as_mask = FALSE,
+  reference_path = NA, res = c(10, 10), res_s2 = "10m", unit = "Meter",
+  proj = NA, resampling = "near", resampling_scl = "near",
+  outformat = "GTiff", index_datatype = "Int16", compression = "DEFLATE",
+  overwrite = FALSE, path_l1c = NA, path_l2a = NA, path_tiles = NA,
+  path_merged = NA, path_out = NA, path_indices = NA,
+  path_subdirs = TRUE, thumbnails = TRUE, parallel = TRUE,
+  use_python = TRUE, tmpdir = NA, rmtmp = TRUE)
 }
 \arguments{
 \item{param_list}{(optional) List of input parameters:
@@ -148,6 +148,16 @@ Default value is 80.
 Notice that the percentage is computed on non-NA values (if input images
 had previously been clipped and masked using a polygon, the percentage is
 computed on the surface included in the masking polygons).}
+
+\item{mask_smooth}{(optional) Numeric positive value: the smoothing radius
+(expressed in unit of measure of the output projection, typically metres)
+to be applied to the cloud mask by function \link{s2_mask}.}
+
+\item{mask_buffer}{(optional) Numeric value: the buffering radius
+(expressed in unit of measure of the output projection, typically metres)
+to be applied to the cloud mask by function \link{s2_mask}.
+Default value (0) means that no buffer is applied; a positive value causes
+an enlargement of the masked area; a negative value cause a reducement.}
 
 \item{clip_on_extent}{(optional) Logical: if TRUE (default), output products
 and indices are clipped to the selected extent (and resampled/reprojected);
