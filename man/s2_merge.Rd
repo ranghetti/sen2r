@@ -6,7 +6,7 @@
 \usage{
 s2_merge(infiles, outdir = ".", subdirs = NA, tmpdir = NA, rmtmp = TRUE,
   format = NA, compress = "DEFLATE", vrt_rel_paths = NA, out_crs = "",
-  overwrite = FALSE)
+  parallel = FALSE, overwrite = FALSE)
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths
@@ -49,6 +49,12 @@ This takes effect only with \code{format = "VRT"}.}
 \item{out_crs}{(optional) proj4string (character) of the output CRS
 (default: the CRS of the first input file). The tiles with CRS different
 from \code{out_crs} will be reprojected (and a warning returned).}
+
+\item{parallel}{(optional) Logical: if TRUE, the function is run using parallel
+processing, to speed-up the computation for large rasters.
+The number of cores is automatically determined; specifying it is also
+possible (e.g. \code{parallel = 4}).
+If FALSE (default), single core processing is used.}
 
 \item{overwrite}{Logical value: should existing output files be
 overwritten? (default: FALSE)}

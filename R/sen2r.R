@@ -440,7 +440,6 @@ sen2r <- function(param_list = NULL,
       pm$outformat == "VRT" & 
       !all(is.na(pm[c("path_out","path_indices","path_tiles","path_merged")]))
     ) {
-      rmtmp = FALSE # force not to remove intermediate files
       # use path_out if it is not NA, otherwise path_indices, otherwise path_tiles, otherwise path_merged
       main_dir <- unlist(pm[c("path_out","path_indices","path_tiles","path_merged")])[
         !is.na(pm[c("path_out","path_indices","path_tiles","path_merged")])
@@ -450,6 +449,9 @@ sen2r <- function(param_list = NULL,
     } else {
       tempfile(pattern="sen2r_")
     }
+  }
+  if (pm$outformat == "VRT") {
+    rmtmp <- FALSE # force not to remove intermediate files
   }
   dir.create(tmpdir, showWarnings=FALSE)
   

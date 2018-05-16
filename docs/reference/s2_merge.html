@@ -101,7 +101,7 @@ input files.</p>
 
     <pre class="usage"><span class='fu'>s2_merge</span>(<span class='no'>infiles</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>vrt_rel_paths</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>out_crs</span> <span class='kw'>=</span> <span class='st'>""</span>,
-  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -164,6 +164,14 @@ This takes effect only with <code>format = "VRT"</code>.</p></td>
       <td><p>(optional) proj4string (character) of the output CRS
 (default: the CRS of the first input file). The tiles with CRS different
 from <code>out_crs</code> will be reprojected (and a warning returned).</p></td>
+    </tr>
+    <tr>
+      <th>parallel</th>
+      <td><p>(optional) Logical: if TRUE, the function is run using parallel
+processing, to speed-up the computation for large rasters.
+The number of cores is automatically determined; specifying it is also
+possible (e.g. <code>parallel = 4</code>).
+If FALSE (default), single core processing is used.</p></td>
     </tr>
     <tr>
       <th>overwrite</th>

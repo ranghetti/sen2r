@@ -184,7 +184,6 @@ s2_mask <- function(infiles,
   # define and create tmpdir
   if (is.na(tmpdir)) {
     tmpdir <- if (format == "VRT") {
-      rmtmp <- FALSE # force not to remove intermediate files
       if (!missing(outdir)) {
         autotmpdir <- FALSE # logical: TRUE if tmpdir should be specified 
         # for each out file (when tmpdir was not specified and output files are vrt),
@@ -200,6 +199,9 @@ s2_mask <- function(infiles,
     }
   } else {
     autotmpdir <- FALSE
+  }
+  if (format == "VRT") {
+    rmtmp <- FALSE # force not to remove intermediate files
   }
   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
   
@@ -254,6 +256,7 @@ s2_mask <- function(infiles,
     sel_format <- suppressWarnings(ifelse(
       !is.na(format), format, attr(GDALinfo(sel_infile), "driver")
     ))
+    sel_rmtmp <- ifelse(sel_format=="VRT", FALSE, rmtmp)
     sel_out_ext <- gdal_formats[gdal_formats$name==sel_format,"ext"][1]
     sel_naflag <- s2_defNA(sel_infile_meta$prod_type)
     
@@ -439,6 +442,10 @@ s2_mask <- function(infiles,
         } # end of max_mask IF cycle
         
       } # end of output_type IF cycle
+      
+      if (sel_rmtmp == TRUE) {
+        unlink(sel_tmpdir, recursive=TRUE) # FIXME check not to delete files created outside sel_ cycle!
+      }
       
     } # end of overwrite IF cycle
     
