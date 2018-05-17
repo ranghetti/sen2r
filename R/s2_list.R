@@ -226,7 +226,8 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
           downloader_path=dirname(binpaths$wget)
         )
       )
-      message(py_output)
+      # message(py_output) # do not show the output of the products found
+      # as formatted by Hagolle
       py_return
     })
   })
