@@ -189,16 +189,16 @@ s2_gui <- function(param_list = NULL,
             radioButtons(
               "preprocess", NULL,
               choiceNames = list(
-                "Processed spatial files (surface reflectance, spectral indices, ...) in custom format",
                 span(
                   "Raw files in ",
                   a("raw SAFE format",
                     href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/data-formats",
                     target="_blank"),
                   " (downloaded and/or corrected with sen2cor)"
-                )
+                ),
+                "Processed spatial files (surface reflectance, spectral indices, ...) in custom format"
               ),
-              choiceValues = list(TRUE, FALSE),
+              choiceValues = list(FALSE, TRUE),
               selected=TRUE,
               inline = FALSE
             )
