@@ -232,8 +232,13 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
     })
   })
   
-  av_prod_list <- unlist(lapply(av_prod_tuple, lapply, function(x) {py_to_r(x)[[1]]}))
-  names(av_prod_list) <- unlist(lapply(av_prod_tuple, lapply, function(x) {py_to_r(x)[[2]]}))
+  av_prod_list <- lapply(av_prod_tuple, lapply, function(x) {py_to_r(x)[[1]]})
+  if (is.character(try(unlist(av_prod_list)))) {
+    av_prod_list <- unlist(av_prod_list)
+    names(av_prod_list) <- unlist(lapply(av_prod_tuple, lapply, function(x) {py_to_r(x)[[2]]}))
+  } else {
+    av_prod_list <- character(0)
+  }
   
   # filter on tiles
   # (filtering within python code does not take effect with list_only=TRUE)
