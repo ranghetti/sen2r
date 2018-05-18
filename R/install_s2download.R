@@ -83,12 +83,8 @@ install_s2download <- function(inst_path = NA) {
   # and message in case all run ok.
   
   # Save a text file with the directory where s2download has been cloned
-  binpaths <- if (file.exists(binpaths_file)) {
-    jsonlite::fromJSON(binpaths_file)
-  } else {
-    list("s2download" = NULL)
-  }
+  binpaths <- load_binpaths()
   binpaths$s2download <- normalize_path(inst_path)
-  writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
+  writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
   
 }

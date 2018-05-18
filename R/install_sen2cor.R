@@ -32,12 +32,7 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
   sen2cor_version <- package_version("2.5.5")
   
   # check if it is already installed
-  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-  binpaths <- if (file.exists(binpaths_file)) {
-    jsonlite::fromJSON(binpaths_file)
-  } else {
-    list("sen2cor" = NULL)
-  }
+  binpaths <- load_binpaths()
   if (force != TRUE & !is.null(binpaths$sen2cor)) {
     sen2cor_bin <- binpaths$sen2cor 
     if (file.exists(sen2cor_bin)) {
@@ -47,7 +42,6 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
       )
       return(invisible(NULL))
     }
-    binpaths <- jsonlite::fromJSON(binpaths_file)
   }
   
   # define sen2cor_dir (where to install or update)
@@ -143,6 +137,6 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
   # Save a text file with the L2A_Process path,
   # including also paths of GDAL apps
   binpaths$sen2cor <- normalize_path(sen2cor_bin)
-  writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
+  writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
   
 }

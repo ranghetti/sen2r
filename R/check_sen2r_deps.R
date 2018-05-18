@@ -127,16 +127,7 @@ check_sen2r_deps <- function() {
       "python", "sen2cor", "wget"
     )
     # load binpaths
-    binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-    
-    binpaths <- reactivePoll(1000, session, function() {
-    }, function() {
-      if (file.exists(binpaths_file)) {
-        fromJSON(binpaths_file)
-      } else {
-        sapply(dependencies,function(x){x=NULL})
-      }
-    })
+    binpaths <- reactivePoll(1000, session, function() {}, load_binpaths)
     
     
     ##-- Perform checks of dependencies --##
@@ -543,9 +534,7 @@ check_sen2r_deps <- function() {
       import_s2download(with_aria2 = TRUE)
 
       # update the check
-      rv$check_aria2_isvalid <- if (file.exists(binpaths_file)) {
-        file.exists(fromJSON(binpaths_file)$aria2c)
-      } else {FALSE}
+      rv$check_aria2_isvalid <- load_binpaths()$aria2c
 
       # open modaldialog
       showModal(check_aria2_modal)

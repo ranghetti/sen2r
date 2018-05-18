@@ -91,16 +91,7 @@ s2_translate <- function(infile,
   }
   
   # Load GDAL paths
-  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-  binpaths <- if (file.exists(binpaths_file)) {
-    jsonlite::fromJSON(binpaths_file)
-  } else {
-    list("gdalinfo" = NULL)
-  }
-  if (is.null(binpaths$gdalinfo)) {
-    check_gdal()
-    binpaths <- jsonlite::fromJSON(binpaths_file)
-  }
+  binpaths <- load_binpaths("gdal")
   
   # check res (and use the resolutions >= specified res)
   if (!res %in% c("10m","20m","60m")) {
@@ -317,4 +308,3 @@ s2_translate <- function(infile,
   return(out_names)
   
 }
-

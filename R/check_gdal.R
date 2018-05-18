@@ -36,12 +36,7 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
   gdal_minversion <- package_version("2.1.3")
   
   # load the saved GDAL path, if exists
-  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-  binpaths <- if (file.exists(binpaths_file)) {
-    jsonlite::fromJSON(binpaths_file)
-  } else {
-    list("gdalinfo" = NULL)
-  }
+  binpaths <- load_binpaths()
   if (force != TRUE & !is.null(binpaths$gdalinfo)) {
     # print_message(
     #   type = "message",
@@ -155,7 +150,7 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
       binpaths[[x]] <- normalize_path(binpaths[[x]])
     }
   )
-  writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
+  writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
   
   print_message(
     type="message",

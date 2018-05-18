@@ -72,17 +72,7 @@ s2_download <- function(s2_prodlist=NULL,
   }
   
   # read the path of the downloader
-  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-  binpaths <- if (file.exists(binpaths_file)) {
-    jsonlite::fromJSON(binpaths_file)
-  } else {
-    if (downloader=="aria2") {
-      list("aria2" = install_aria2())
-    } else {
-      list("wget" = install_wget())
-    }
-    
-  }
+  binpaths <- load_binpaths(downloader)
   
   # TODO add checks on the format of filename (one element output of s2_list)
   

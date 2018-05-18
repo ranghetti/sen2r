@@ -1196,14 +1196,9 @@ s2_gui <- function(param_list = NULL,
     })
     
     # disable downloader aria2 if it is not installed
-    binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-    binpaths <- if (file.exists(binpaths_file)) {
-      jsonlite::fromJSON(binpaths_file)
-    } else {
-      list("aria2" = NULL)
-    }
+    binpaths <- load_binpaths()
     observeEvent(input$downloader, {
-      if (is.null(binpaths$aria2)) {
+      if (is.null(binpaths$aria2c)) {
         updateRadioButtons(session, "downloader", selected = "wget")
         disable("downloader")
       } else {

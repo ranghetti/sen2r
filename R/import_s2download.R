@@ -24,18 +24,7 @@ import_s2download <- function(with_aria2 = TRUE, ...) {
   s2download_path <- system.file("s2download", package="sen2r")
   
   # check that git, python2 and wget are installed
-  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-  binpaths <- if (file.exists(binpaths_file)) {
-    jsonlite::fromJSON(binpaths_file)
-  } else {
-    sapply(dependencies,function(x){x=NULL})
-  }
-  
-  # add missing binaries to binpaths
-  for (d in dependencies[!dependencies %in% names(binpaths)]) {
-    binpaths[[d]] <- normalize_path(Sys.which(d))
-  }
-  writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
+  binpaths <- load_binpaths(dependencies)
   
   missing_dep <- dependencies[binpaths[dependencies]==""]
   if (length(missing_dep)>0) {
@@ -78,16 +67,6 @@ import_s2download <- function(with_aria2 = TRUE, ...) {
   
   # checks the python version and import modules
   py <- init_python()
-  
-  # check that s2download and dependencies were cloned
-  # this ensures also that python2 and other dependencies are present)
-  # check if it is already installed
-  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-  binpaths <- if (file.exists(binpaths_file)) {
-    jsonlite::fromJSON(binpaths_file)
-  } else {
-    list("s2download" = NULL)
-  }
   
   # load s2download
   s2download <- tryCatch(

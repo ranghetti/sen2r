@@ -90,16 +90,7 @@ s2_calcindices <- function(infiles,
   prod_type <- . <- NULL
   
   # Load GDAL paths
-  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-  binpaths <- if (file.exists(binpaths_file)) {
-    jsonlite::fromJSON(binpaths_file)
-  } else {
-    list("gdalinfo" = NULL)
-  }
-  if (is.null(binpaths$gdalinfo)) {
-    check_gdal()
-    binpaths <- jsonlite::fromJSON(binpaths_file)
-  }
+  binpaths <- load_binpaths("gdal")
   
   # Compute n_cores
   n_cores <- if (is.numeric(parallel)) {
@@ -183,10 +174,14 @@ s2_calcindices <- function(infiles,
     type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
   )
   if (n_cores > 1) {registerDoParallel(cl)}
-  outfiles <- foreach(i = seq_along(infiles), 
-                      .packages = c("raster","rgdal","sen2r"), 
-                      .combine=c, 
-                      .errorhandling="remove")  %DO% {
+  
+  outfiles <- foreach(
+    i = seq_along(infiles), 
+    .packages = c("raster","rgdal","sen2r"), 
+    .combine=c, 
+    .errorhandling="remove"
+  )  %DO% {
+    
     sel_infile <- infiles[i]
     sel_infile_meta <- c(infiles_meta[i,])
     sel_format <- suppressWarnings(ifelse(

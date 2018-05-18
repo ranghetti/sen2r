@@ -30,14 +30,9 @@ install_aria2 <- function(aria2_dir = system.file(package="sen2r"),
   }
   
   # check if it is already installed
-  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-  binpaths <- if (file.exists(binpaths_file)) {
-    jsonlite::fromJSON(binpaths_file)
-  } else {
-    list("aria2" = NULL)
-  }
-  if (force != TRUE & !is.null(binpaths$aria2)) {
-    aria2_bin <- binpaths$aria2 
+  binpaths <- load_binpaths()
+  if (force != TRUE & !is.null(binpaths$aria2c)) {
+    aria2_bin <- binpaths$aria2c
     if (file.exists(aria2_bin)) {
       print_message(
         type = "message",
@@ -45,7 +40,6 @@ install_aria2 <- function(aria2_dir = system.file(package="sen2r"),
       )
       return(invisible(NULL))
     }
-    binpaths <- jsonlite::fromJSON(binpaths_file)
   }
   
   # Download aria2
@@ -66,11 +60,11 @@ install_aria2 <- function(aria2_dir = system.file(package="sen2r"),
     unlink(aria2_zip)
   }
   if (file.exists(aria2_path)) {
-    binpaths$aria2 <- aria2_path
-    writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
+    binpaths$aria2c <- aria2_path
+    writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
   }
   # # add to the path
-  # system(paste0('setx PATH "',binpaths$aria2,'"'), intern=TRUE)
+  # system(paste0('setx PATH "',binpaths$aria2c,'"'), intern=TRUE)
   
   aria2_path
   

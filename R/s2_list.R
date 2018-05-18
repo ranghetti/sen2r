@@ -175,12 +175,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
   s2download <- import_s2download(convert=FALSE)
   
   # read the path of wget
-  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-  binpaths <- if (file.exists(binpaths_file)) {
-    jsonlite::fromJSON(binpaths_file)
-  } else {
-    list("wget" = install_wget())
-  }
+  binpaths <- load_binpaths("wget")
   
   # link to apihub
   if (is.null(apihub)) {

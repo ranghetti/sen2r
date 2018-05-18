@@ -44,6 +44,7 @@ reference:
       - '`st_crs2`'
       - '`normalize_path`'
       - '`smooth_mask`'
+      - '`load_binpaths`'
   - title: Internal functions
     desc: (not exported)
     contents:

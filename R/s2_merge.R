@@ -87,16 +87,7 @@ s2_merge <- function(infiles,
   }
   
   # Load GDAL paths
-  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-  binpaths <- if (file.exists(binpaths_file)) {
-    jsonlite::fromJSON(binpaths_file)
-  } else {
-    list("gdalinfo" = NULL)
-  }
-  if (is.null(binpaths$gdalinfo)) {
-    check_gdal()
-    binpaths <- jsonlite::fromJSON(binpaths_file)
-  }
+  binpaths <- load_binpaths("gdal")
   
   # Compute n_cores
   n_cores <- if (is.numeric(parallel)) {
@@ -237,11 +228,13 @@ s2_merge <- function(infiles,
     type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
   )
   if (n_cores > 1) {registerDoParallel(cl)}
-  outfiles <- foreach(infiles_meta_grp = unique(infiles_meta_grps), 
-                      .packages = c("sen2r"), 
-                      .combine=c, 
-                      .errorhandling="remove")  %DO% {
-
+  outfiles <- foreach(
+    infiles_meta_grp = unique(infiles_meta_grps), 
+    .packages = c("sen2r"), 
+    .combine=c, 
+    .errorhandling="remove"
+  )  %DO% {
+    
     sel_infiles <- infiles[infiles_meta_grps == infiles_meta_grp]
     sel_infiles_meta <- infiles_meta[infiles_meta_grps == infiles_meta_grp,]
     sel_diffcrs <- diffcrs[infiles_meta_grps == infiles_meta_grp]

@@ -58,27 +58,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
                     tiles=NULL, parallel=FALSE, overwrite=FALSE) {
   
   # load sen2cor executable path
-  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-  binpaths <- if (file.exists(binpaths_file)) {
-    jsonlite::fromJSON(binpaths_file)
-  } else {
-    list("sen2cor" = NULL)
-  }
-  if (length(binpaths$sen2cor)==0) {
-    if (interactive()) {
-      print_message(
-        type="waiting",
-        "sen2cor was not found in your system; press ENTER to install, ESC to escape."
-      )
-    } else {
-      print_message(
-        type="message",
-        "sen2cor was not found in your system and will be installed."
-      )
-    }
-    install_sen2cor() %>% suppressMessages()
-    binpaths <- jsonlite::fromJSON(binpaths_file)
-  }
+  binpaths <- load_binpaths("sen2cor")
   
   # tiles NA -> NULL
   if (!is.null(tiles)) {
