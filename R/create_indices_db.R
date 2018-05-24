@@ -15,7 +15,7 @@
 #'  package installation). Edit this only to create the file in another
 #'  place for external use.
 #' @param force (optional) Logical: if FALSE (default), the db is created only
-#'  if missing or not updated; if TRUE, it is created in any case..
+#'  if missing or not updated; if TRUE, it is created in any case.
 #' @return NULL
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
@@ -40,9 +40,7 @@ create_indices_db <- function(xslt_path = NA,
     json_path <- file.path(system.file("extdata",package="sen2r"),"indices.json")
   }
   if (system.file("extdata","indices.json", package="sen2r") == json_path) {
-    json_version <- jsonlite::fromJSON(json_path)$pkg_version %>%
-      package_version()
-    if (force == FALSE & json_version >= packageVersion("sen2r")) {
+    if (force == FALSE) {
       return(invisible(NULL))
     }
   }

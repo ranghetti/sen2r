@@ -18,13 +18,26 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Find, download and preprocess Sentinel-2 images — sen2r" />
+
+<meta property="og:description" content="The function is a wrapper to perform the entire
+processing chain to find, download and pre-process Sentinel-2
+data. Input is a set of parameters that can be passed with a
+list or file (parameter param_list) or singularly (see the
+descriptions of all the other parameters)." />
+<meta name="twitter:card" content="summary" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -34,16 +47,14 @@
 <![endif]-->
 
 
-<!-- Google analytics -->
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-11080708-8"></script>
 <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-  ga('create', 'UA-11080708-8', 'auto');
-  ga('send', 'pageview');
-
+  gtag('config', 'UA-11080708-8');
 </script>
 
   </head>
@@ -59,8 +70,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">sen2r</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">sen2r</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.2</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -79,6 +94,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -86,12 +102,15 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Find, download and preprocess Sentinel-2 images</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/sen2r.R'><code>R/sen2r.R</code></a></small>
+    <div class="hidden name"><code>sen2r.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>The function is a wrapper to perform the entire
 processing chain to find, download and pre-process Sentinel-2
@@ -99,6 +118,7 @@ data. Input is a set of parameters that can be passed with a
 list or file (parameter <code>param_list</code>) or singularly (see the
 descriptions of all the other parameters).</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>sen2r</span>(<span class='kw'>param_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>gui</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>preprocess</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>s2_levels</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"l2a"</span>), <span class='kw'>sel_sensor</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"s2a"</span>, <span class='st'>"s2b"</span>), <span class='kw'>online</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
@@ -116,7 +136,7 @@ descriptions of all the other parameters).</p>
   <span class='kw'>path_subdirs</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>thumbnails</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>use_python</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
@@ -487,11 +507,14 @@ the temporary files); NULL otherwise.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

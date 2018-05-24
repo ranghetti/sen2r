@@ -18,13 +18,25 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Preprocess (clip, reproject, reshape, mask) SAFE products — geograbber_process" />
+
+<meta property="og:description" content="The function is a simplified wrapper of sen2r()
+to preprocess existing SAFE products. No online research is performed,
+neither sen2cor is applied to existing L1C products.
+Output products are GeoTIFF files clipped to a desired" />
+<meta name="twitter:card" content="summary" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -34,16 +46,14 @@
 <![endif]-->
 
 
-<!-- Google analytics -->
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-11080708-8"></script>
 <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-  ga('create', 'UA-11080708-8', 'auto');
-  ga('send', 'pageview');
-
+  gtag('config', 'UA-11080708-8');
 </script>
 
   </head>
@@ -59,8 +69,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">sen2r</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">sen2r</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.2</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -79,6 +93,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -86,24 +101,27 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Preprocess (clip, reproject, reshape, mask) SAFE products</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/geograbber_process.R'><code>R/geograbber_process.R</code></a></small>
+    <div class="hidden name"><code>geograbber_process.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>The function is a simplified wrapper of <code><a href='sen2r.html'>sen2r()</a></code>
 to preprocess existing SAFE products. No online research is performed,
 neither sen2cor is applied to existing L1C products.
 Output products are GeoTIFF files clipped to a desired</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>geograbber_process</span>(<span class='no'>path_safe</span>, <span class='no'>path_out</span>, <span class='kw'>bbox</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"BOA"</span>),
-  <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>proj</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>resampling</span> <span class='kw'>=</span> <span class='st'>"near"</span>,
-  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='no'>...</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
@@ -128,32 +146,21 @@ products to be processed (accepted values: "TOA", "BOA", "SCL",
 "TCI"). Default is "BOA".</p></td>
     </tr>
     <tr>
-      <th>mask_type</th>
-      <td><p>(optional) Character value which determines the categories
-in the Srface Classification Map to be masked (see <code><a href='s2_mask.html'>s2_mask()</a></code>
-for the accepted values). Default (NA) is not to mask.</p></td>
-    </tr>
-    <tr>
       <th>res</th>
       <td><p>(optional) Numerifc vector of length 2 with the x-y resolution
 for output products. NA (default) means that the resolution
 is keeped as native.</p></td>
     </tr>
     <tr>
-      <th>proj</th>
-      <td><p>(optional) Character string with the pro4string of the output
-resolution. default value (NA) means not to reproject.</p></td>
-    </tr>
-    <tr>
-      <th>resampling</th>
-      <td><p>(optional) Resampling method (one of the values supported
-by <code>gdal_translate</code>: "near" (default), "bilinear", "cubic",
-"cubicspline", "lanczos", "average" or "mode").</p></td>
-    </tr>
-    <tr>
-      <th>overwrite</th>
-      <td><p>(optional) Logical value: should existing output
-files be overwritten? (default: FALSE).</p></td>
+      <th>...</th>
+      <td><p>Other additional <a href='sen2r.html'>sen2r</a> arguments:
+<code>extent_name</code>, <code>list_indices</code>, <code>index_source</code>, <code>mask_type</code>, <code>max_mask</code>,
+<code>mask_smooth</code>, <code>mask_buffer</code>, <code>clip_on_extent</code>, <code>extent_as_mask</code>,
+<code>reference_path</code>, <code>res_s2</code>, <code>unit</code>, <code>proj</code>, <code>resampling</code>, <code>resampling_scl</code>,
+<code>outformat</code>, <code>index_datatype</code>, <code>compression</code>, <code>overwrite</code>, <code>path_tiles</code>,
+<code>path_merged</code>, <code>path_indices</code>, <code>path_subdirs</code>, <code>thumbnails</code>,
+<code>parallel</code>, <code>tmpdir</code>, <code>rmtmp</code>.
+See <a href='sen2r.html'>sen2r</a> documentation for details.</p></td>
     </tr>
     </table>
     
@@ -174,11 +181,14 @@ files be overwritten? (default: FALSE).</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+
