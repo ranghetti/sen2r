@@ -1,0 +1,578 @@
+{
+  "dop": [
+    {
+      "orbit": "001",
+      "doybase": 8
+    },
+    {
+      "orbit": "002",
+      "doybase": 9
+    },
+    {
+      "orbit": "003",
+      "doybase": 9
+    },
+    {
+      "orbit": "004",
+      "doybase": 9
+    },
+    {
+      "orbit": "005",
+      "doybase": 9
+    },
+    {
+      "orbit": "006",
+      "doybase": 9
+    },
+    {
+      "orbit": "007",
+      "doybase": 9
+    },
+    {
+      "orbit": "008",
+      "doybase": 9
+    },
+    {
+      "orbit": "009",
+      "doybase": 9
+    },
+    {
+      "orbit": "010",
+      "doybase": 9
+    },
+    {
+      "orbit": "011",
+      "doybase": 9
+    },
+    {
+      "orbit": "012",
+      "doybase": 9
+    },
+    {
+      "orbit": "013",
+      "doybase": 9
+    },
+    {
+      "orbit": "014",
+      "doybase": 9
+    },
+    {
+      "orbit": "015",
+      "doybase": 9
+    },
+    {
+      "orbit": "016",
+      "doybase": 0
+    },
+    {
+      "orbit": "017",
+      "doybase": 0
+    },
+    {
+      "orbit": "018",
+      "doybase": 0
+    },
+    {
+      "orbit": "019",
+      "doybase": 0
+    },
+    {
+      "orbit": "020",
+      "doybase": 0
+    },
+    {
+      "orbit": "021",
+      "doybase": 0
+    },
+    {
+      "orbit": "022",
+      "doybase": 0
+    },
+    {
+      "orbit": "023",
+      "doybase": 0
+    },
+    {
+      "orbit": "024",
+      "doybase": 0
+    },
+    {
+      "orbit": "025",
+      "doybase": 0
+    },
+    {
+      "orbit": "026",
+      "doybase": 0
+    },
+    {
+      "orbit": "027",
+      "doybase": 0
+    },
+    {
+      "orbit": "028",
+      "doybase": 0
+    },
+    {
+      "orbit": "029",
+      "doybase": 0
+    },
+    {
+      "orbit": "030",
+      "doybase": 1
+    },
+    {
+      "orbit": "031",
+      "doybase": 1
+    },
+    {
+      "orbit": "032",
+      "doybase": 1
+    },
+    {
+      "orbit": "033",
+      "doybase": 1
+    },
+    {
+      "orbit": "034",
+      "doybase": 1
+    },
+    {
+      "orbit": "035",
+      "doybase": 1
+    },
+    {
+      "orbit": "036",
+      "doybase": 1
+    },
+    {
+      "orbit": "037",
+      "doybase": 1
+    },
+    {
+      "orbit": "038",
+      "doybase": 1
+    },
+    {
+      "orbit": "039",
+      "doybase": 1
+    },
+    {
+      "orbit": "040",
+      "doybase": 1
+    },
+    {
+      "orbit": "041",
+      "doybase": 1
+    },
+    {
+      "orbit": "042",
+      "doybase": 1
+    },
+    {
+      "orbit": "043",
+      "doybase": 1
+    },
+    {
+      "orbit": "044",
+      "doybase": 1
+    },
+    {
+      "orbit": "045",
+      "doybase": 2
+    },
+    {
+      "orbit": "046",
+      "doybase": 2
+    },
+    {
+      "orbit": "047",
+      "doybase": 2
+    },
+    {
+      "orbit": "048",
+      "doybase": 2
+    },
+    {
+      "orbit": "049",
+      "doybase": 2
+    },
+    {
+      "orbit": "050",
+      "doybase": 2
+    },
+    {
+      "orbit": "051",
+      "doybase": 2
+    },
+    {
+      "orbit": "052",
+      "doybase": 2
+    },
+    {
+      "orbit": "053",
+      "doybase": 2
+    },
+    {
+      "orbit": "054",
+      "doybase": 2
+    },
+    {
+      "orbit": "055",
+      "doybase": 2
+    },
+    {
+      "orbit": "056",
+      "doybase": 2
+    },
+    {
+      "orbit": "057",
+      "doybase": 2
+    },
+    {
+      "orbit": "058",
+      "doybase": 2
+    },
+    {
+      "orbit": "059",
+      "doybase": 3
+    },
+    {
+      "orbit": "060",
+      "doybase": 3
+    },
+    {
+      "orbit": "061",
+      "doybase": 3
+    },
+    {
+      "orbit": "062",
+      "doybase": 3
+    },
+    {
+      "orbit": "063",
+      "doybase": 3
+    },
+    {
+      "orbit": "064",
+      "doybase": 3
+    },
+    {
+      "orbit": "065",
+      "doybase": 3
+    },
+    {
+      "orbit": "066",
+      "doybase": 3
+    },
+    {
+      "orbit": "067",
+      "doybase": 3
+    },
+    {
+      "orbit": "068",
+      "doybase": 3
+    },
+    {
+      "orbit": "069",
+      "doybase": 3
+    },
+    {
+      "orbit": "070",
+      "doybase": 3
+    },
+    {
+      "orbit": "071",
+      "doybase": 3
+    },
+    {
+      "orbit": "072",
+      "doybase": 3
+    },
+    {
+      "orbit": "073",
+      "doybase": 4
+    },
+    {
+      "orbit": "074",
+      "doybase": 4
+    },
+    {
+      "orbit": "075",
+      "doybase": 4
+    },
+    {
+      "orbit": "076",
+      "doybase": 4
+    },
+    {
+      "orbit": "077",
+      "doybase": 4
+    },
+    {
+      "orbit": "078",
+      "doybase": 4
+    },
+    {
+      "orbit": "079",
+      "doybase": 4
+    },
+    {
+      "orbit": "080",
+      "doybase": 4
+    },
+    {
+      "orbit": "081",
+      "doybase": 4
+    },
+    {
+      "orbit": "082",
+      "doybase": 4
+    },
+    {
+      "orbit": "083",
+      "doybase": 4
+    },
+    {
+      "orbit": "084",
+      "doybase": 4
+    },
+    {
+      "orbit": "085",
+      "doybase": 4
+    },
+    {
+      "orbit": "086",
+      "doybase": 4
+    },
+    {
+      "orbit": "087",
+      "doybase": 4
+    },
+    {
+      "orbit": "088",
+      "doybase": 5
+    },
+    {
+      "orbit": "089",
+      "doybase": 5
+    },
+    {
+      "orbit": "090",
+      "doybase": 5
+    },
+    {
+      "orbit": "091",
+      "doybase": 5
+    },
+    {
+      "orbit": "092",
+      "doybase": 5
+    },
+    {
+      "orbit": "093",
+      "doybase": 5
+    },
+    {
+      "orbit": "094",
+      "doybase": 5
+    },
+    {
+      "orbit": "095",
+      "doybase": 5
+    },
+    {
+      "orbit": "096",
+      "doybase": 5
+    },
+    {
+      "orbit": "097",
+      "doybase": 5
+    },
+    {
+      "orbit": "098",
+      "doybase": 5
+    },
+    {
+      "orbit": "099",
+      "doybase": 5
+    },
+    {
+      "orbit": "100",
+      "doybase": 5
+    },
+    {
+      "orbit": "101",
+      "doybase": 5
+    },
+    {
+      "orbit": "102",
+      "doybase": 6
+    },
+    {
+      "orbit": "103",
+      "doybase": 6
+    },
+    {
+      "orbit": "104",
+      "doybase": 6
+    },
+    {
+      "orbit": "105",
+      "doybase": 6
+    },
+    {
+      "orbit": "106",
+      "doybase": 6
+    },
+    {
+      "orbit": "107",
+      "doybase": 6
+    },
+    {
+      "orbit": "108",
+      "doybase": 6
+    },
+    {
+      "orbit": "109",
+      "doybase": 6
+    },
+    {
+      "orbit": "110",
+      "doybase": 6
+    },
+    {
+      "orbit": "111",
+      "doybase": 6
+    },
+    {
+      "orbit": "112",
+      "doybase": 6
+    },
+    {
+      "orbit": "113",
+      "doybase": 6
+    },
+    {
+      "orbit": "114",
+      "doybase": 6
+    },
+    {
+      "orbit": "115",
+      "doybase": 6
+    },
+    {
+      "orbit": "116",
+      "doybase": 7
+    },
+    {
+      "orbit": "117",
+      "doybase": 7
+    },
+    {
+      "orbit": "118",
+      "doybase": 7
+    },
+    {
+      "orbit": "119",
+      "doybase": 7
+    },
+    {
+      "orbit": "120",
+      "doybase": 7
+    },
+    {
+      "orbit": "121",
+      "doybase": 7
+    },
+    {
+      "orbit": "122",
+      "doybase": 7
+    },
+    {
+      "orbit": "123",
+      "doybase": 7
+    },
+    {
+      "orbit": "124",
+      "doybase": 7
+    },
+    {
+      "orbit": "125",
+      "doybase": 7
+    },
+    {
+      "orbit": "126",
+      "doybase": 7
+    },
+    {
+      "orbit": "127",
+      "doybase": 7
+    },
+    {
+      "orbit": "128",
+      "doybase": 7
+    },
+    {
+      "orbit": "129",
+      "doybase": 7
+    },
+    {
+      "orbit": "130",
+      "doybase": 7
+    },
+    {
+      "orbit": "131",
+      "doybase": 8
+    },
+    {
+      "orbit": "132",
+      "doybase": 8
+    },
+    {
+      "orbit": "133",
+      "doybase": 8
+    },
+    {
+      "orbit": "134",
+      "doybase": 8
+    },
+    {
+      "orbit": "135",
+      "doybase": 8
+    },
+    {
+      "orbit": "136",
+      "doybase": 8
+    },
+    {
+      "orbit": "137",
+      "doybase": 8
+    },
+    {
+      "orbit": "138",
+      "doybase": 8
+    },
+    {
+      "orbit": "139",
+      "doybase": 8
+    },
+    {
+      "orbit": "140",
+      "doybase": 8
+    },
+    {
+      "orbit": "141",
+      "doybase": 8
+    },
+    {
+      "orbit": "142",
+      "doybase": 8
+    },
+    {
+      "orbit": "143",
+      "doybase": 8
+    }
+  ],
+  "pkg_version": ["0.3.2"],
+  "creation_date": ["2018-05-23 15:23:15"]
+}

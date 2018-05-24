@@ -45,6 +45,7 @@ reference:
       - '`normalize_path`'
       - '`smooth_mask`'
       - '`load_binpaths`'
+      - '`s2_dop`'
   - title: Internal functions
     desc: (not exported)
     contents:
@@ -67,6 +68,7 @@ reference:
       - '`get_spatype`'
       - '`get_rastype`'
       - '`get_vectype`'
+      - '`create_s2_dop`'
 navbar:
   type: inverse
   left:
