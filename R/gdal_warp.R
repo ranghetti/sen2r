@@ -206,7 +206,7 @@ gdal_warp <- function(srcfiles,
     mask_type <- get_spatype(mask)
     # if it is a vector, set "te" to the bounding box (in t_srs)
     if (mask_type == "vectfile") {
-      mask <- st_read(mask)
+      mask <- st_read(mask, quiet=TRUE)
     } else if (mask_type == "spobject") {
       mask <- st_as_sf(mask)
     } else if (mask_type == "rastfile") {

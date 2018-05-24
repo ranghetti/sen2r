@@ -6,7 +6,7 @@
 \usage{
 s2_list(spatial_extent = NULL, tile = NULL, orbit = NULL,
   time_interval = NULL, time_period = "full", level = "auto",
-  apihub = NULL, max_cloud = 110)
+  ignore_ingestion_time = TRUE, apihub = NULL, max_cloud = 110)
 }
 \arguments{
 \item{spatial_extent}{A valid spatial object object of class \code{sf},
@@ -35,6 +35,17 @@ if so, list it; if not, list the corresponding level-1C
 product
 - "L1C": list available level-1C products
 - "L2A": list available level-2A products}
+
+\item{ignore_ingestion_time}{(optional) Logical: if TRUE (default),
+the research is performed basing only on the sensing date and time
+(the time in which the image was acquired), ignoring the ingestion date
+and time (the time the image was ingested).
+If FALSE, products with the ingestion time specified with \code{time_interval}
+are first of all filtered, and them the research is performed on the sensing
+time among them.
+\code{ignore_ingestion_time = TRUE} ensures to perform a complete research, but
+it is slower; setting it to \code{FALSE} speeds up, although some products could
+be ignored (but generally the ingestion date is the same of the sensing date).}
 
 \item{apihub}{Path of the "apihub.txt" file containing credentials
 of scihub account. If NULL (default) the default credentials

@@ -23,6 +23,16 @@
 #'         product
 #'     - "L1C": list available level-1C products
 #'     - "L2A": list available level-2A products
+#' @param ignore_ingestion_time (optional) Logical: if TRUE (default),
+#'  the research is performed basing only on the sensing date and time
+#'  (the time in which the image was acquired), ignoring the ingestion date
+#'  and time (the time the image was ingested). 
+#'  If FALSE, products with the ingestion time specified with `time_interval`
+#'  are first of all filtered, and them the research is performed on the sensing
+#'  time among them. 
+#'  `ignore_ingestion_time = TRUE` ensures to perform a complete research, but 
+#'  it is slower; setting it to `FALSE` speeds up, although some products could 
+#'  be ignored (but generally the ingestion date is the same of the sensing date).
 #' @param apihub Path of the "apihub.txt" file containing credentials
 #'  of scihub account. If NULL (default) the default credentials
 #'  (username "user", password "user") will be used.
@@ -72,6 +82,7 @@
 s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parameters
                     time_interval=NULL, time_period = "full", # temporal parameters
                     level="auto",
+                    ignore_ingestion_time = TRUE,
                     apihub=NULL,
                     max_cloud=110) {
   
@@ -209,6 +220,10 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
         py_return <- s2download$s2_download(
           lat=lat, lon=lon, latmin=latmin, latmax=latmax, lonmin=lonmin, lonmax=lonmax,
           start_date=time_intervals[i,1], end_date=time_intervals[i,2],
+          start_ingest_date=r_to_py(if (ignore_ingestion_time==FALSE) {time_intervals[i,1]} else {NULL}),
+          end_ingest_date=r_to_py(if (ignore_ingestion_time==FALSE) {time_intervals[i,2]} else {NULL}),
+          # start_ingest_date=time_intervals[i,1],
+          # end_ingest_date=time_intervals[i,2],
           tile=r_to_py(tile),
           orbit=r_to_py(o),
           apihub=apihub,
