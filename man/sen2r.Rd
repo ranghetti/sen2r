@@ -272,6 +272,12 @@ default is a subdirectory named ".vrt" within \code{path_out}).}
 \value{
 A vector with the paths of the files which were created (excluded
 the temporary files); NULL otherwise.
+The vector includes two attributes:
+\itemize{
+\item \code{cloudcovered} with the list of imags not created due to the higher
+percentage of cloud covered pixels;
+\item \code{missing} with the list of imags not created due to other reasons.
+}
 }
 \description{
 The function is a wrapper to perform the entire

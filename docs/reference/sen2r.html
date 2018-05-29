@@ -486,7 +486,13 @@ default is a subdirectory named ".vrt" within <code>path_out</code>).</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A vector with the paths of the files which were created (excluded
-the temporary files); NULL otherwise.</p>
+the temporary files); NULL otherwise.
+The vector includes two attributes:</p><ul>
+<li><p><code>cloudcovered</code> with the list of imags not created due to the higher
+percentage of cloud covered pixels;</p></li>
+<li><p><code>missing</code> with the list of imags not created due to other reasons.</p></li>
+</ul>
+
     
 
   </div>

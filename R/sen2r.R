@@ -202,6 +202,10 @@
 #'  (Default: TRUE). `rmtmp` is forced to `FALSE` if `outformat = "VRT"`.
 #' @return A vector with the paths of the files which were created (excluded
 #'  the temporary files); NULL otherwise.
+#'  The vector includes two attributes: 
+#'  - `cloudcovered` with the list of imags not created due to the higher 
+#'      percentage of cloud covered pixels;
+#'  - `missing` with the list of imags not created due to other reasons.
 #'
 #' @import data.table
 #' @importFrom utils packageVersion
@@ -583,11 +587,18 @@ sen2r <- function(param_list = NULL,
     # (see comment at #ignorePath)
     ignorelist <- if (is(param_list, "character")) {
       ignorelist_path <- gsub("\\.json$","_ignorelist.txt",param_list)
-      if (file.exists(ignorelist_path)) {
+      cloudlist_path <- gsub("\\.json$","_cloudlist.txt",param_list)
+      ignorelist0 <- if (file.exists(ignorelist_path)) {
         readLines(ignorelist_path)
       } else {
         character()
       }
+      cloudlist0 <- if (file.exists(cloudlist_path)) {
+        readLines(cloudlist_path)
+      } else {
+        character()
+      }
+      c(ignorelist0, cloudlist0)
     } else {
       character()
     }
@@ -803,11 +814,18 @@ sen2r <- function(param_list = NULL,
       # (see comment at #ignorePath)
       ignorelist <- if (is(param_list, "character")) {
         ignorelist_path <- gsub("\\.json$","_ignorelist.txt",param_list)
-        if (file.exists(ignorelist_path)) {
+        cloudlist_path <- gsub("\\.json$","_cloudlist.txt",param_list)
+        ignorelist0 <- if (file.exists(ignorelist_path)) {
           readLines(ignorelist_path)
         } else {
           character()
         }
+        cloudlist0 <- if (file.exists(cloudlist_path)) {
+          readLines(cloudlist_path)
+        } else {
+          character()
+        }
+        c(ignorelist0, cloudlist0)
       } else {
         character()
       }
@@ -1415,6 +1433,10 @@ sen2r <- function(param_list = NULL,
         )
       } else {character(0)}
       masked_names_out <- c(masked_names_out_nsr, masked_names_out_sr)
+      masked_names_notcreated <- c(
+        attr(masked_names_out_nsr, "toomasked"),
+        attr(masked_names_out_sr, "toomasked")
+      )
     }
     
   } # end of gdal_warp and s2_mask IF cycle
@@ -1445,6 +1467,33 @@ sen2r <- function(param_list = NULL,
       parallel = pm$parallel,
       trace_files = s2names$indices_names_new
     )
+    
+    # If some input file is not present due to higher cloud coverage,
+    # build the names of the indices not created for the same reason
+    if (length(masked_names_notcreated)>0) {
+      indices_names_notcreated <- data.table(
+        fs2nc_getElements(masked_names_notcreated, format="data.frame")
+      )[level %in% if(pm$index_source=="BOA"){"2A"}else{"1C"},
+        paste0("S2",
+               mission,
+               level,"_",
+               strftime(sensing_date,"%Y%m%d"),"_",
+               id_orbit,"_",
+               if (pm$clip_on_extent==TRUE) {pm$extent_name},"_",
+               "<index>_",
+               substr(res,1,2),".",
+               out_ext)] %>%
+        expand.grid(pm$list_indices) %>%
+        apply(1,function(x){
+          file.path(
+            if(pm$path_subdirs==TRUE){x[2]}else{""},
+            gsub("<index>",x[2],x[1])
+          )
+        }) %>%
+        file.path(paths["indices"],.) %>%
+        gsub(paste0(merged_ext,"$"),out_ext,.)
+    }
+    
     # indices_names <- s2_calcindices(s2names$out_names_req,
     #                                 indices=pm$list_indices,
     #                                 outdir=paths["indices"],
@@ -1512,15 +1561,28 @@ sen2r <- function(param_list = NULL,
   }
   
   # check if some files were not created
+  
+  names_cloudcovered <- nn(c(
+    if(exists("masked_names_notcreated")) {masked_names_notcreated},
+    if(exists("indices_names_notcreated")) {indices_names_notcreated}
+  ))
   names_missing <- names_out[!file.exists(nn(names_out))]
+  names_missing <- names_missing[!names_missing %in% names_cloudcovered]
+  
+  # Add attributes related to files not created
+  attr(names_out_created, "cloudcovered") <- names_cloudcovered
+  attr(names_out_created, "missing") <- names_missing
   
   # Note down the list of non created files (#ignorePath)
-  # (sometimes not all the output files are correctly created, i.e. because of
-  # old name SAFE products which do not include all the tiles.
+  # Sometimes not all the output files are correctly created:
+  # the main reason is the cloud coverage higher than the maximum allowed
+  # value (argument "max_mask"), but also some other unexpected reasons could
+  # happen, i.e. because of old name SAFE products which do not include all the tiles.
   # To prevent to try to create these files every time the function is called 
   # with the same parameter file, if param_list is a path, this list is noted
-  # in a hidden file, so to ignore them during next executions. 
-  # To try it again, delete the file or set overwrite = TRUE).
+  # in two hidden files ( one per file not created because of cloud coverage,
+  # one other for all the other reasons) so to ignore them during next executions. 
+  # To try it again, delete the files or set overwrite = TRUE).
   if (length(names_missing)>0) {
     ignorelist_path <- gsub("\\.json$","_ignorelist.txt",param_list)
     if (is(param_list, "character")) {
@@ -1530,14 +1592,29 @@ sen2r <- function(param_list = NULL,
       type="warning",
       "Some files were not created ",
       "(probably because the cloud coverage was higher than \"max_mask\"):\n\"",
-      paste(names_missing,collapse="\"\n\""),
+      paste(names_missing,collapse="\"\n\""),"\"",
       if (is(param_list, "character")) {paste0(
         "\"\nThese files will be skipped during next executions ",
         "from the current parameter file (\"",param_list,"\").\n",
         "To try again to build them, remove the file \"",
         ignorelist_path,"\"."
-      )} else {paste0(
-        "\""
+      )}
+    )
+  }
+  if (length(names_cloudcovered)>0) {
+    cloudlist_path <- gsub("\\.json$","_cloudlist.txt",param_list)
+    if (is(param_list, "character")) {
+      write(names_cloudcovered, cloudlist_path, append=TRUE)
+    }
+    print_message(
+      type="message",
+      "Some files were not created ",
+      "because the cloud coverage was higher than \"max_mask\":\n\"",
+      paste(names_cloudcovered,collapse="\"\n\""),"\"",
+      if (is(param_list, "character")) {paste0(
+        "\"\nThe list of these files was written in a hidden file ",
+        "(\"",param_list,"\"), ",
+        "so to be skipped during next executions."
       )}
     )
   }

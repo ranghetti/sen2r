@@ -85,6 +85,8 @@
 #' @param overwrite (optional) Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
 #' @return [s2_mask] returns a vector with the names of the created products.
+#'  An attribute "toomasked" contains the paths of the outputs which were not
+#'  created cause to the high percentage of cloud coverage.
 #' @export
 #' @importFrom rgdal GDALinfo
 #' @importFrom raster stack brick calc dataType mask overlay values
@@ -237,7 +239,9 @@ s2_mask <- function(infiles,
   
   ## Cycle on each file
   if (output_type == "s2_mask") {
-    outfiles <- character(0)
+    outfiles <- character(0) # vector with paths of created files
+    outfiles_toomasked <- character(0) # vector with the path of outputs which 
+    # were not created cause to the higher masked surface
   } else if (output_type == "perc") {
     outpercs <- numeric(0)
   }
@@ -352,7 +356,7 @@ s2_mask <- function(infiles,
         names(perc_mask) <- sel_infile
         outpercs <- c(outpercs, perc_mask)
       } else if (output_type == "s2_mask") {
-
+        
         # evaluate if the output have to be produced
         # if the image is sufficiently clean, mask it
         if (is.na(max_mask) | perc_mask <= max_mask) {
@@ -362,7 +366,7 @@ s2_mask <- function(infiles,
           # resample it
           if (any(suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")]) !=
                   suppressWarnings(GDALinfo(outmask)[c("res.x","res.y")]))) {
-            gdal_warp(
+            gdal_warp( # TODO use raster::aggregate
               outmask,
               outmask_res <- file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif"))),
               ref = sel_infile
@@ -370,7 +374,7 @@ s2_mask <- function(infiles,
           } else {
             outmask_res <- outmask
           }
-
+          
           # apply the smoothing (if required)
           outmask_smooth <- if (smooth > 0 | buffer != 0) {
             # if the unit is not metres, approximate it
@@ -388,10 +392,10 @@ s2_mask <- function(infiles,
           } else {
             outmask_res
           }
-
+          
           # load mask
           inraster <- raster::brick(sel_infile)
-
+          
           if (sel_format!="VRT") {
             raster::mask(
               inraster,
@@ -430,7 +434,9 @@ s2_mask <- function(infiles,
                         paste0(sel_outfile,".aux.xml"))
           }
           
-        } # end of max_mask IF cycle
+        } else { # end of max_mask IF cycle
+          outfiles_toomasked <- c(outfiles_toomasked, sel_outfile)
+        }
         
       } # end of output_type IF cycle
       
@@ -452,6 +458,7 @@ s2_mask <- function(infiles,
   }
   
   if (output_type == "s2_mask") {
+    attr(outfiles, "toomasked") <- outfiles_toomasked
     return(outfiles)
   } else if (output_type == "perc") {
     return(outpercs)

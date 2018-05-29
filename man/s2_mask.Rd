@@ -114,6 +114,8 @@ overwritten? (default: FALSE)}
 }
 \value{
 \link{s2_mask} returns a vector with the names of the created products.
+An attribute "toomasked" contains the paths of the outputs which were not
+created cause to the high percentage of cloud coverage.
 
 \link{s2_perc_masked} returns a names vector with the percentages
 of masked surtfaces.
