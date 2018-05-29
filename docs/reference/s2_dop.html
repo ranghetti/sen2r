@@ -146,8 +146,10 @@ Default is all the 143 orbits.</p></td>
       <td><p>Temporal window for querying: Date object
 of length 1 (single day) or 2 (time window).
 Is it possible to pass also integer (or difftime) values, which are
-interpreted as the next n days.
-Also values which can be interpreted as
+interpreted as the next n days (if positive) or the past n days
+(if negative).
+Also strings which can be interpreted as time ranges are accepted
+(see examples).
 Default is the next 10 days (one cycle).</p></td>
     </tr>
     <tr>
@@ -172,17 +174,17 @@ were found with the passed settings.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># All the passages in a cycle of 10 days over all the orbits</span>
 <span class='fu'>s2_dop</span>()</div><div class='output co'>#&gt;            date mission orbit
-#&gt;   1: 2018-05-24      2A   088
-#&gt;   2: 2018-05-24      2A   089
-#&gt;   3: 2018-05-24      2A   090
-#&gt;   4: 2018-05-24      2A   091
-#&gt;   5: 2018-05-24      2A   092
+#&gt;   1: 2018-05-29      2A   016
+#&gt;   2: 2018-05-29      2A   017
+#&gt;   3: 2018-05-29      2A   018
+#&gt;   4: 2018-05-29      2A   019
+#&gt;   5: 2018-05-29      2A   020
 #&gt;  ---                         
-#&gt; 282: 2018-06-02      2B   011
-#&gt; 283: 2018-06-02      2B   012
-#&gt; 284: 2018-06-02      2B   013
-#&gt; 285: 2018-06-02      2B   014
-#&gt; 286: 2018-06-02      2B   015</div><div class='input'>
+#&gt; 282: 2018-06-07      2B   083
+#&gt; 283: 2018-06-07      2B   084
+#&gt; 284: 2018-06-07      2B   085
+#&gt; 285: 2018-06-07      2B   086
+#&gt; 286: 2018-06-07      2B   087</div><div class='input'>
 <span class='co'># The passages in the current month over two orbits</span>
 <span class='fu'>s2_dop</span>(<span class='fu'>c</span>(<span class='st'>"022"</span>, <span class='st'>"065"</span>), <span class='st'>"this month"</span>)</div><div class='output co'>#&gt;           date mission orbit
 #&gt;  1: 2018-05-02      2A   065
@@ -198,10 +200,12 @@ were found with the passed settings.</p>
 #&gt; 11: 2018-05-27      2B   065
 #&gt; 12: 2018-05-29      2A   022</div><div class='input'>
 <span class='co'># The dates in which Sentinel-2A will pass in next six weeks over one orbit </span>
-<span class='fu'>s2_dop</span>(<span class='st'>"022"</span>, <span class='st'>"6 weeks"</span>, <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2A"</span>)$<span class='no'>date</span></div><div class='output co'>#&gt; [1] "2018-05-29" "2018-06-08" "2018-06-18" "2018-06-28"</div><div class='input'>
+<span class='fu'>s2_dop</span>(<span class='st'>"022"</span>, <span class='st'>"6 weeks"</span>, <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2A"</span>)$<span class='no'>date</span></div><div class='output co'>#&gt; [1] "2018-05-29" "2018-06-08" "2018-06-18" "2018-06-28" "2018-07-08"</div><div class='input'>
+<span class='co'># The date in which Sentinel-2A would be passed in the last 10 days over one orbit </span>
+<span class='fu'>s2_dop</span>(<span class='st'>"022"</span>, <span class='st'>"-10 days"</span>, <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2A"</span>)$<span class='no'>date</span></div><div class='output co'>#&gt; [1] "2018-05-29"</div><div class='input'>
 <span class='co'># All the orbits covered today</span>
-<span class='fu'>s2_dop</span>(<span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fu'>Sys.Date</span>(), <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2B"</span>)$<span class='no'>orbit</span></div><div class='output co'>#&gt;  [1] "016" "017" "018" "019" "020" "021" "022" "023" "024" "025" "026" "027"
-#&gt; [13] "028" "029"</div><div class='input'>
+<span class='fu'>s2_dop</span>(<span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fu'>Sys.Date</span>(), <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2B"</span>)$<span class='no'>orbit</span></div><div class='output co'>#&gt;  [1] "088" "089" "090" "091" "092" "093" "094" "095" "096" "097" "098" "099"
+#&gt; [13] "100" "101"</div><div class='input'>
 <span class='co'># The passages in a fixed time window for one orbit</span>
 <span class='fu'>s2_dop</span>(<span class='fl'>65</span>, <span class='fu'>as.Date</span>(<span class='fu'>c</span>(<span class='st'>"2018-08-01"</span>, <span class='st'>"2018-08-31"</span>)))</div><div class='output co'>#&gt;          date mission orbit
 #&gt; 1: 2018-08-05      2B   065

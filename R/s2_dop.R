@@ -15,8 +15,10 @@
 #' @param timewindow Temporal window for querying: Date object
 #'  of length 1 (single day) or 2 (time window). 
 #'  Is it possible to pass also integer (or difftime) values, which are 
-#'  interpreted as the next n days.
-#'  Also values which can be interpreted as 
+#'  interpreted as the next n days (if positive) or the past n days 
+#'  (if negative).
+#'  Also strings which can be interpreted as time ranges are accepted 
+#'  (see examples).
 #'  Default is the next 10 days (one cycle).
 #' @param mission (optional) Vector with the desired Sentinel-2 missions
 #'  ("2A", "2B" or both). Default is both.
@@ -41,6 +43,9 @@
 #' 
 #' # The dates in which Sentinel-2A will pass in next six weeks over one orbit 
 #' s2_dop("022", "6 weeks", mission = "2A")$date
+#' 
+#' # The date in which Sentinel-2A would be passed in the last 10 days over one orbit 
+#' s2_dop("022", "-10 days", mission = "2A")$date
 #' 
 #' # All the orbits covered today
 #' s2_dop(timewindow = Sys.Date(), mission = "2B")$orbit
@@ -119,9 +124,19 @@ s2_dop <- function(s2_orbits = 1:143,
     # otherwise, check if it is a recognised difftime string
     if (is.character(try_date)) {
       timewindow <- strsplit(timewindow, " ")[[1]]
+      if (timewindow[1]=="this") {
+        timewindow[1] <- 1
+      }
+      if (timewindow[1]=="next") {
+        timewindow <- timewindow[-1]
+      }
+      if (timewindow[1] %in% c("past","last")) {
+        timewindow <- timewindow[-1]
+        timewindow[1] <- paste0("-",timewindow[1])
+      }
       if (
         any(!grepl(
-          "^(([0-9]+)|(this)|(days?)|(weeks?)|(months?)|(years?))$", 
+          "^((\\-?[0-9]+)|(this)|(days?)|(weeks?)|(months?)|(years?))$", 
           tolower(timewindow)
         )) |
         length(timewindow) > 2
@@ -132,14 +147,11 @@ s2_dop <- function(s2_orbits = 1:143,
         )
       }
       if (length(timewindow)==1) {
-        if (grepl("^(([0-9]+)|(this))$", tolower(timewindow))) {
+        if (grepl("^((\\-?[0-9]+)|(this))$", tolower(timewindow))) {
           timewindow <- c(timewindow, "days")
         } else {
           timewindow <- c(1, timewindow)
         }
-      }
-      if (timewindow[1]=="this") {
-        timewindow[1] <- 1
       }
       timewindow_start <- switch(
         tolower(gsub("s$","",timewindow[2])),
@@ -148,8 +160,15 @@ s2_dop <- function(s2_orbits = 1:143,
         month = as.Date(strftime(Sys.Date(),"%Y-%m-01")),
         year = as.Date(strftime(Sys.Date(),"%Y-01-01"))
       )
-      timewindow <- seq(timewindow_start, length=2, by=paste(timewindow, collapse=" ")) + c(0,-1)
-      
+      timewindow_all <- if (as.integer(timewindow[1]) > 0) {
+        seq(timewindow_start, length=as.integer(timewindow[1])+1, by=timewindow[2])
+      } else {
+        sort(c(
+          seq(timewindow_start, length=2, by=timewindow[2])[2],
+          seq(timewindow_start, length=-as.integer(timewindow[1]), by=paste("-1",timewindow[2]))
+        ))
+      }
+      timewindow <- timewindow_all[c(1,length(timewindow_all))] + c(0,-1)
     }
   }
   

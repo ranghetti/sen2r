@@ -14,8 +14,10 @@ Default is all the 143 orbits.}
 \item{timewindow}{Temporal window for querying: Date object
 of length 1 (single day) or 2 (time window).
 Is it possible to pass also integer (or difftime) values, which are
-interpreted as the next n days.
-Also values which can be interpreted as
+interpreted as the next n days (if positive) or the past n days
+(if negative).
+Also strings which can be interpreted as time ranges are accepted
+(see examples).
 Default is the next 10 days (one cycle).}
 
 \item{mission}{(optional) Vector with the desired Sentinel-2 missions
@@ -51,6 +53,9 @@ s2_dop(c("022", "065"), "this month")
 
 # The dates in which Sentinel-2A will pass in next six weeks over one orbit 
 s2_dop("022", "6 weeks", mission = "2A")$date
+
+# The date in which Sentinel-2A would be passed in the last 10 days over one orbit 
+s2_dop("022", "-10 days", mission = "2A")$date
 
 # All the orbits covered today
 s2_dop(timewindow = Sys.Date(), mission = "2B")$orbit
