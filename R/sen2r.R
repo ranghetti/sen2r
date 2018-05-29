@@ -1590,8 +1590,7 @@ sen2r <- function(param_list = NULL,
     }
     print_message(
       type="warning",
-      "Some files were not created ",
-      "(probably because the cloud coverage was higher than \"max_mask\"):\n\"",
+      "Some files were not created:\n\"",
       paste(names_missing,collapse="\"\n\""),"\"",
       if (is(param_list, "character")) {paste0(
         "\"\nThese files will be skipped during next executions ",
@@ -1613,7 +1612,7 @@ sen2r <- function(param_list = NULL,
       paste(names_cloudcovered,collapse="\"\n\""),"\"",
       if (is(param_list, "character")) {paste0(
         "\"\nThe list of these files was written in a hidden file ",
-        "(\"",param_list,"\"), ",
+        "(\"",cloudlist_path,"\"), ",
         "so to be skipped during next executions."
       )}
     )
