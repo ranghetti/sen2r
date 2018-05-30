@@ -134,16 +134,16 @@ compute_s2_paths <- function(pm,
           level %in% toupper(substr(pm$s2_levels,2,3)) &
           file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
         ,]
-      if (!is.null(pm$timewindow) & !anyNA(pm$timewindow) & !is.null(all_meta$sensing_date)) {
+      if (length(pm$timewindow)>0 & !anyNA(pm$timewindow) & length(all_meta$sensing_date)>0) {
         all_meta <- all_meta[
           all_meta$sensing_date>=pm$timewindow[1] & 
             all_meta$sensing_date<=pm$timewindow[2]
           ,]
       }
-      if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected) & !is.null(all_meta$id_orbit)) {
+      if (length(pm$s2orbits_selected)>0 & !anyNA(pm$s2orbits_selected) & length(all_meta$id_orbit)>0) {
         all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
       }
-      if (!is.null(pm$s2tiles_selected) & !anyNA(pm$s2tiles_selected) & !is.null(all_meta$id_tile)) {
+      if (length(pm$s2tiles_selected)>0 & !anyNA(pm$s2tiles_selected) & length(all_meta$id_tile)>0) {
         all_meta <- all_meta[id_tile %in% pm$s2tiles_selected,]
       }
       all_meta$names
@@ -191,13 +191,13 @@ compute_s2_paths <- function(pm,
           level %in% toupper(substr(pm$s2_levels,2,3)) &
           file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
         ,]
-      if (!is.null(pm$timewindow) & !anyNA(pm$timewindow) & !is.null(all_meta$sensing_date)) {
+      if (length(pm$timewindow)>0 & !anyNA(pm$timewindow) & length(all_meta$sensing_date)>0) {
         all_meta <- all_meta[
           all_meta$sensing_date>=pm$timewindow[1] & 
             all_meta$sensing_date<=pm$timewindow[2]
           ,]
       }
-      if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected) & !is.null(all_meta$id_orbit)) {
+      if (length(pm$s2orbits_selected)>0 & !anyNA(pm$s2orbits_selected) & length(all_meta$id_orbit)>0) {
         all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
       }
       all_meta$names
@@ -266,16 +266,16 @@ compute_s2_paths <- function(pm,
           level %in% toupper(substr(pm$s2_levels,2,3)) &
           file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
         ,]
-      if (!is.null(pm$timewindow) & !anyNA(pm$timewindow) & !is.null(all_meta$sensing_date)) {
+      if (length(pm$timewindow)>0 & !anyNA(pm$timewindow) & length(all_meta$sensing_date)>0) {
         all_meta <- all_meta[
           all_meta$sensing_date>=pm$timewindow[1] & 
             all_meta$sensing_date<=pm$timewindow[2]
           ,]
       }
-      if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected) & !is.null(all_meta$id_orbit)) {
+      if (length(pm$s2orbits_selected)>0 & !anyNA(pm$s2orbits_selected) & length(all_meta$id_orbit)>0) {
         all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
       }
-      if (!is.null(pm$extent_name) & !anyNA(pm$extent_name) & !is.null(all_meta$extent_name)) {
+      if (length(pm$extent_name)>0 & !anyNA(pm$extent_name) & length(all_meta$extent_name)>0) {
         all_meta <- all_meta[extent_name %in% pm$extent_name,]
       }
       all_meta$names
@@ -300,7 +300,7 @@ compute_s2_paths <- function(pm,
                 gsub(paste0(merged_ext,"$"),out_ext,basename(nn(merged_names_exp[!names_merged_exp_scl_idx]))))
     }
     # use sr_masked_ext if necessary
-    if (!pm$index_source %in% pm$list_prods){
+    if (!pm$index_source %in% pm$list_prods) {
       masked_names_exp_sr_idx <- sapply(masked_names_exp,function(x){
         fs2nc_getElements(x)$prod_type
       })==pm$index_source
@@ -329,16 +329,16 @@ compute_s2_paths <- function(pm,
           level %in% toupper(substr(pm$s2_levels,2,3)) &
           file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
         ,]
-      if (!is.null(pm$timewindow) & !anyNA(pm$timewindow) & !is.null(all_meta$sensing_date)) {
+      if (length(pm$timewindow)>0 & !anyNA(pm$timewindow) & length(all_meta$sensing_date)>0) {
         all_meta <- all_meta[
           all_meta$sensing_date>=pm$timewindow[1] & 
             all_meta$sensing_date<=pm$timewindow[2]
           ,]
       }
-      if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected) & !is.null(all_meta$id_orbit)) {
+      if (length(pm$s2orbits_selected)>0 & !anyNA(pm$s2orbits_selected) & length(all_meta$id_orbit)>0) {
         all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
       }
-      if (!is.null(pm$extent_name) & !anyNA(pm$extent_name) & !is.null(all_meta$extent_name)) {
+      if (length(pm$extent_name)>0 & !anyNA(pm$extent_name) & length(all_meta$extent_name)>0) {
         all_meta <- all_meta[extent_name %in% pm$extent_name,]
       }
       all_meta$names
@@ -414,16 +414,16 @@ compute_s2_paths <- function(pm,
           level %in% toupper(substr(pm$s2_levels,2,3)) &
           file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
         ,]
-      if (!is.null(pm$timewindow) & !anyNA(pm$timewindow) & !is.null(all_meta$sensing_date)) {
+      if (length(pm$timewindow)>0 & !anyNA(pm$timewindow) & length(all_meta$sensing_date)>0) {
         all_meta <- all_meta[
           all_meta$sensing_date>=pm$timewindow[1] & 
             all_meta$sensing_date<=pm$timewindow[2]
           ,]
       }
-      if (!is.null(pm$s2orbits_selected) & !anyNA(pm$s2orbits_selected) & !is.null(all_meta$id_orbit)) {
+      if (length(pm$s2orbits_selected)>0 & !anyNA(pm$s2orbits_selected) & length(all_meta$id_orbit)>0) {
         all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
       }
-      if (!is.null(pm$extent_name) & !anyNA(pm$extent_name) & !is.null(all_meta$id_orbit)) {
+      if (length(pm$extent_name)>0 & !anyNA(pm$extent_name) & length(all_meta$id_orbit)>0) {
         all_meta <- all_meta[id_orbit %in% pm$extent_name,]
       }
       all_meta$names
