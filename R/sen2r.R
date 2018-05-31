@@ -1468,9 +1468,19 @@ sen2r <- function(param_list = NULL,
       trace_files = s2names$indices_names_new
     )
     
-    # If some input file is not present due to higher cloud coverage,
-    # build the names of the indices not created for the same reason
-    if (length(masked_names_notcreated)>0) {
+    # indices_names <- s2_calcindices(s2names$out_names_req,
+    #                                 indices=pm$list_indices,
+    #                                 outdir=paths["indices"],
+    #                                 subdirs=TRUE,
+    #                                 source=pm$index_source,
+    #                                 format=pm$outformat,
+    #                                 overwrite=pm$overwrite)
+  }
+  
+  # If some input file is not present due to higher cloud coverage,
+  # build the names of the indices not created for the same reason
+  if (exists("masked_names_notcreated")) {
+    if (length(masked_names_notcreated)>0 & length(s2names$out_names_req)>0) {
       indices_names_notcreated <- data.table(
         fs2nc_getElements(masked_names_notcreated, format="data.frame")
       )[level %in% if(pm$index_source=="BOA"){"2A"}else{"1C"},
@@ -1493,14 +1503,6 @@ sen2r <- function(param_list = NULL,
         file.path(paths["indices"],.) %>%
         gsub(paste0(merged_ext,"$"),out_ext,.)
     }
-    
-    # indices_names <- s2_calcindices(s2names$out_names_req,
-    #                                 indices=pm$list_indices,
-    #                                 outdir=paths["indices"],
-    #                                 subdirs=TRUE,
-    #                                 source=pm$index_source,
-    #                                 format=pm$outformat,
-    #                                 overwrite=pm$overwrite)
   }
   
   # check file which have been created
@@ -1561,13 +1563,13 @@ sen2r <- function(param_list = NULL,
   }
   
   # check if some files were not created
-  
   names_cloudcovered <- nn(c(
     if(exists("masked_names_notcreated")) {masked_names_notcreated},
     if(exists("indices_names_notcreated")) {indices_names_notcreated}
   ))
   names_missing <- names_out[!file.exists(nn(names_out))]
   names_missing <- names_missing[!names_missing %in% names_cloudcovered]
+  names_cloudcovered <- names_cloudcovered[!grepl(tmpdir, names_cloudcovered, fixed=TRUE)]
   
   # Add attributes related to files not created
   attr(names_out_created, "cloudcovered") <- names_cloudcovered

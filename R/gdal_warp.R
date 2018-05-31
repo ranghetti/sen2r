@@ -215,7 +215,7 @@ gdal_warp <- function(srcfiles,
     
     # Check that the polygon is not empty
     if (length(grep("POLYGON",st_geometry_type(mask)))>=1 &
-        st_area(st_geometry(mask)) <= 0*units::ud_units$m^2) {
+        sum(st_area(st_geometry(mask))) <= 0*units::ud_units$m^2) {
       print_message(
         type = "error",
         "The polygon provided as mask cannot be empty."
