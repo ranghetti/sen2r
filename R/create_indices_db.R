@@ -107,7 +107,7 @@ create_indices_db <- function(xslt_path = NA,
   # change name to some indices
   s2_table[grep("MIR/NIR Normalized Difference",s2_table$longname),name:="NDVI2"]
   s2_table[longname=="Transformed Soil Adjusted Vegetation Index 2",name:="TSAVI2"]
-  s2_table[longname=="Enhanced Vegetation Index 2 -2",name:="EVI3"]
+  s2_table[longname=="Enhanced Vegetation Index 2",name:="EVI3"]
   # remove indices without name
   n_index_toremove <- c(n_index_toremove, s2_table[name=="",n_index])
   # replacing duplicated indices
@@ -254,6 +254,7 @@ create_indices_db <- function(xslt_path = NA,
   # set as checked for indices ok after previous changes
   s2_table[name %in% c("NDVI","SAVI","MCARI","MCARI2","TCARI","ARVI","NDRE",
                        "BNDVI","GNDVI","NDII","TCI_idx","MSAVI","OSAVI",
+                       "NBR","EVI2",
                        "MTVI2","MCARI/MTVI2","TCARI/OSAVI"),checked:=TRUE]
   
   # set default parameter values
@@ -266,23 +267,32 @@ create_indices_db <- function(xslt_path = NA,
     longname = c(
       "Normalized Difference Flood Index B1B7",
       "Normalized Difference Flood Index B1B6",
-      "Normalize Difference Snow Index"
+      "Normalize Difference Snow Index",
+      "Normalized Burn Ratio 2",
+      "Mid-Infrared Burn Index",
+      "Char Soil Index"
     ),
-    name = c("NDFI","NDFI2","NDSI"),
+    name = c("NDFI","NDFI2","NDSI","NBR2","MIRBI","CSI"),
     link = c(
       "https://doi.org/10.1371/journal.pone.0088741",
       "https://doi.org/10.1371/journal.pone.0088741",
-      "https://doi.org/10.1007/978-90-481-2642-2_376"
+      "https://doi.org/10.1007/978-90-481-2642-2_376",
+      "https://landsat.usgs.gov/sites/default/files/documents/si_product_guide.pdf",
+      "https://doi.org/10.1080/01431160110053185",
+      "https://doi.org/10.1016/j.rse.2005.04.014"
     ),
     s2_formula = c(
       "(band_4-band_12)/(band_4+band_12)",
       "(band_4-band_11)/(band_4+band_11)",
-      "(band_3-band_11)/(band_3+band_11)"
+      "(band_3-band_11)/(band_3+band_11)",
+      "(band_11-band_12)/(band_11+band_12)",
+      "10*band_12-9.8*band_11+2",
+      "band_8/band_12"
     ),
-    checked = rep(TRUE,3),
-    a = c(NA,NA,NA),
-    b = c(NA,NA,NA),
-    x = c(NA,NA,NA)
+    checked = rep(TRUE,6),
+    a = c(NA,NA,NA,NA,NA,NA),
+    b = c(NA,NA,NA,NA,NA,NA),
+    x = c(NA,NA,NA,NA,NA,NA)
   )
   s2_table <- rbind(s2_table, s2_table_new, fill=TRUE)
   
