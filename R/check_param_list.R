@@ -17,6 +17,7 @@
 #'  
 #' @importFrom jsonlite fromJSON
 #' @importFrom methods is
+#' @importFrom stringr str_pad
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 
@@ -89,6 +90,10 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
     )
   }
   
+  # check s2orbits_selected
+  if (is(pm$s2orbits_selected, "numeric")) {
+    pm$s2orbits_selected <- str_pad(pm$s2orbits_selected, 3, "left", "0")
+  }
   
   # WIP 
   
