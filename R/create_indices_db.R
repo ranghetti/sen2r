@@ -270,14 +270,16 @@ create_indices_db <- function(xslt_path = NA,
       "Normalize Difference Snow Index",
       "Normalized Burn Ratio 2",
       "Mid-Infrared Burn Index",
+      "Mid-Infrared Burn Index / 10",
       "Char Soil Index"
     ),
-    name = c("NDFI","NDFI2","NDSI","NBR2","MIRBI","CSI"),
+    name = c("NDFI","NDFI2","NDSI","NBR2","MIRBI","MIRBI10","CSI"),
     link = c(
       "https://doi.org/10.1371/journal.pone.0088741",
       "https://doi.org/10.1371/journal.pone.0088741",
       "https://doi.org/10.1007/978-90-481-2642-2_376",
       "https://landsat.usgs.gov/sites/default/files/documents/si_product_guide.pdf",
+      "https://doi.org/10.1080/01431160110053185",
       "https://doi.org/10.1080/01431160110053185",
       "https://doi.org/10.1016/j.rse.2005.04.014"
     ),
@@ -287,12 +289,13 @@ create_indices_db <- function(xslt_path = NA,
       "(band_3-band_11)/(band_3+band_11)",
       "(band_11-band_12)/(band_11+band_12)",
       "10*band_12-9.8*band_11+2",
-      "band_8/band_12"
+      "band_12-.98*band_11+.2",
+      "(band_8)/(band_12)"
     ),
-    checked = rep(TRUE,6),
-    a = c(NA,NA,NA,NA,NA,NA),
-    b = c(NA,NA,NA,NA,NA,NA),
-    x = c(NA,NA,NA,NA,NA,NA)
+    checked = c(T,T,T,T,F,T,T),
+    a = c(NA,NA,NA,NA,NA,NA,NA),
+    b = c(NA,NA,NA,NA,NA,NA,NA),
+    x = c(NA,NA,NA,NA,NA,NA,NA)
   )
   s2_table <- rbind(s2_table, s2_table_new, fill=TRUE)
   
