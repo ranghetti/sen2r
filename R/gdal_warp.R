@@ -53,10 +53,9 @@
 #'  (different from `s_srs`, `t_srs`, `te`, `tr`, `ts` and `of`).
 #' @return NULL
 #' @export
-#' @importFrom rgdal GDALinfo CRSargs
+#' @importFrom rgdal GDALinfo
 #' @importFrom gdalUtils gdalwarp gdal_translate
-#' @importFrom sp CRS
-#' @importFrom sf st_transform st_geometry st_geometry_type st_write st_cast st_area st_bbox st_sfc st_polygon st_as_sf st_as_sfc
+#' @importFrom sf st_transform st_geometry st_geometry_type st_write st_cast st_area st_bbox st_sfc st_polygon st_as_sf st_as_sfc st_crs
 #' @importFrom methods as
 #' @importFrom magrittr "%>%"
 #' @importFrom units ud_units
@@ -165,6 +164,11 @@ gdal_warp <- function(srcfiles,
     }
   }
   
+  # check t_srs
+  if (is(t_srs, "crs")) {
+    t_srs <- t_srs$proj4string
+  }
+  
   # check output format
   if (!is.null(of)) {
     gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))
@@ -191,8 +195,7 @@ gdal_warp <- function(srcfiles,
       c(ref_ll, ref_ll + ref_size * ref_res),
       ncol=2)
     dimnames(ref_bbox) <- list(c("x","y"),c("min","max"))
-    t_srs <- attr(ref_metadata, "projection") %>%
-      CRS() %>% CRSargs()
+    t_srs <- st_crs(attr(ref_metadata, "projection"))$proj4string
     # round "tr" to ref grid
     if (is.null(tr)) {
       tr <- ref_res
@@ -261,8 +264,7 @@ gdal_warp <- function(srcfiles,
       sel_res <- sel_metadata[c("res.x","res.y")]
       sel_ll <- sel_metadata[c("ll.x","ll.y")]
       sel_size <- sel_metadata[c("columns","rows")]
-      sel_s_srs <- attr(sel_metadata, "projection") %>%
-        CRS() %>% CRSargs()
+      sel_s_srs <- st_crs(attr(sel_metadata, "projection"))$proj4string
       
       sel_bbox <- c(sel_ll, sel_ll + sel_size * sel_res)
       names(sel_bbox) <- c("xmin", "ymin", "xmax", "ymax")
@@ -270,12 +272,12 @@ gdal_warp <- function(srcfiles,
       sel_of <- ifelse(is.null(of), attr(sel_metadata, "driver"), of)
       
       # set default parameter values (if not specified)
-      sel_t_srs <- ifelse(is.null(t_srs), sel_s_srs, t_srs)
+      sel_t_srs <- if (is.null(t_srs)) {sel_s_srs} else {t_srs}
       sel_tr <- if (is.null(tr)) {sel_res} else {tr}
       # default method: near if the target resolution is lower than an half of the source,
       # mode elsewhere
       sel_r <- if (is.null(r)) {
-        ifelse(all(2*tr < sel_res), "near", "mode")
+        if (all(2*tr < sel_res)) {"near"} else {"mode"}
       } else {
         r
       }
