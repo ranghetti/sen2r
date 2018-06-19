@@ -2,9 +2,12 @@
 % Please edit documentation in R/s2_getMetadata.R
 \name{s2_getMetadata}
 \alias{s2_getMetadata}
+\alias{rm_invalid_safe}
 \title{Get information from S2 file name or metadata}
 \usage{
 s2_getMetadata(s2, info = "all")
+
+rm_invalid_safe(s2)
 }
 \arguments{
 \item{s2}{A Sentinel-2 product, being both a \code{character} (path of an
@@ -54,12 +57,18 @@ elements without needing the file to have been downloaded).
 }}
 }
 \value{
-A list of the output metadata.
+\code{s2_getMetadata()} returns a list of the output metadata;
+
+\code{rm_invalid_safe()} returns TRUE if the \code{s2} product was removed,
+FALSE elsewhere.
 }
 \description{
-The function scans a Sentinel2 product (main path, granule path,
-main / granule xml file or GDAL object) to retrieve information about
-the product.
+The function \code{s2_getMetadata()} scans a Sentinel2 product
+(main path, granule path, main / granule xml file or GDAL object)
+to retrieve information about the product.
+
+The accessory function \code{rm_invalid_safe()} remove a SAFE archive in the case
+it is not recognised by \code{s2_getMetadata()}.
 }
 \note{
 License: GPL 3.0
@@ -89,8 +98,12 @@ s2_getMetadata(s2_examplename, info=c("tiles", "level", "id_tile"))
 
 # Return a single information
 s2_getMetadata(s2_examplename, info="clouds")
+
+# Delete it if it is not recognised
+rm_invalid_safe(s2_examplename)
+
 }
 }
 \author{
-Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2017, 2018) \email{ranghetti.l@irea.cnr.it}
 }

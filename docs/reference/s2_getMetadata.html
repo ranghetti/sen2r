@@ -30,9 +30,11 @@
 
 <meta property="og:title" content="Get information from S2 file name or metadata — s2_getMetadata" />
 
-<meta property="og:description" content="The function scans a Sentinel2 product (main path, granule path,
-main / granule xml file or GDAL object) to retrieve information about
-the product." />
+<meta property="og:description" content="The function s2_getMetadata() scans a Sentinel2 product
+(main path, granule path, main / granule xml file or GDAL object)
+to retrieve information about the product.
+The accessory function rm_invalid_safe() remove a SAFE archive in the case
+it is not recognised by s2_getMetadata()." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -110,13 +112,17 @@ the product." />
 
     <div class="ref-description">
     
-    <p>The function scans a Sentinel2 product (main path, granule path,
-main / granule xml file or GDAL object) to retrieve information about
-the product.</p>
+    <p>The function <code>s2_getMetadata()</code> scans a Sentinel2 product
+(main path, granule path, main / granule xml file or GDAL object)
+to retrieve information about the product.</p>
+<p>The accessory function <code>rm_invalid_safe()</code> remove a SAFE archive in the case
+it is not recognised by <code>s2_getMetadata()</code>.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>s2_getMetadata</span>(<span class='no'>s2</span>, <span class='kw'>info</span> <span class='kw'>=</span> <span class='st'>"all"</span>)</pre>
+    <pre class="usage"><span class='fu'>s2_getMetadata</span>(<span class='no'>s2</span>, <span class='kw'>info</span> <span class='kw'>=</span> <span class='st'>"all"</span>)
+
+<span class='fu'>rm_invalid_safe</span>(<span class='no'>s2</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -173,7 +179,9 @@ elements without needing the file to have been downloaded).</p></li>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list of the output metadata.</p>
+    <p><code>s2_getMetadata()</code> returns a list of the output metadata;</p>
+<p><code>rm_invalid_safe()</code> returns TRUE if the <code>s2</code> product was removed,
+FALSE elsewhere.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
@@ -232,6 +240,10 @@ elements without needing the file to have been downloaded).</p></li>
 
 <span class='co'># Return a single information</span>
 <span class='fu'>s2_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"clouds"</span>)
+
+<span class='co'># Delete it if it is not recognised</span>
+<span class='fu'>rm_invalid_safe</span>(<span class='no'>s2_examplename</span>)
+
 <span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -248,7 +260,7 @@ elements without needing the file to have been downloaded).</p></li>
 
     <h2>Author</h2>
     
-Luigi Ranghetti, phD (2017) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a>
+Luigi Ranghetti, phD (2017, 2018) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a>
 
   </div>
 </div>
