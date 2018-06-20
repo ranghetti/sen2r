@@ -358,12 +358,12 @@ def Sentinel_download(downloader=None,lat=None,lon=None,latmin=None,latmax=None,
 
     # ingestion date
     if start_ingest_date!=None:
-        start_ingest_date=start_ingest_date+"T00:00:00.000Z"
+        start_ingest_date=start_ingest_date[:4]+"-"+start_ingest_date[4:6]+"-"+start_ingest_date[6:]+"T00:00:00.000Z"
     else :
         start_ingest_date="2015-06-23T00:00:00.000Z"
 
     if end_ingest_date!=None:
-        end_ingest_date=end_ingest_date+"T23:59:50.000Z"
+        end_ingest_date=end_ingest_date[:4]+"-"+end_ingest_date[4:6]+"-"+end_ingest_date[6:]+"T23:59:50.000Z"
     else:
         end_ingest_date="NOW"
 

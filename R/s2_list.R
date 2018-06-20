@@ -220,8 +220,8 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
         py_return <- s2download$s2_download(
           lat=lat, lon=lon, latmin=latmin, latmax=latmax, lonmin=lonmin, lonmax=lonmax,
           start_date=time_intervals[i,1], end_date=time_intervals[i,2],
-          start_ingest_date=r_to_py(if (ignore_ingestion_time==FALSE) {time_intervals[i,1]} else {NULL}),
-          end_ingest_date=r_to_py(if (ignore_ingestion_time==FALSE) {time_intervals[i,2]} else {NULL}),
+          start_ingest_date=if (ignore_ingestion_time==FALSE) {time_intervals[i,1]} else {r_to_py(NULL)},
+          end_ingest_date=if (ignore_ingestion_time==FALSE) {time_intervals[i,2]} else {r_to_py(NULL)},
           # start_ingest_date=time_intervals[i,1],
           # end_ingest_date=time_intervals[i,2],
           tile=r_to_py(tile),
@@ -256,7 +256,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
   # (using sen2r(), a complete filter on tiles is applied after downloading the product;
   # however, s2_download() would correctly download only required tiles)
   
-  if (!is.null(tile) & !is.null(av_prod_list)) {
+  if (!is.null(tile) & length(av_prod_list)>0) {
     av_prod_tiles <- lapply(names(av_prod_list), function(x) {
       s2_getMetadata(x, info="nameinfo")$id_tile %>%
         ifelse(is.null(.), NA, .) 
