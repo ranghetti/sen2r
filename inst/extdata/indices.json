@@ -1870,16 +1870,7 @@
       "longname": "Mid-Infrared Burn Index",
       "name": "MIRBI",
       "link": "https://doi.org/10.1080/01431160110053185",
-      "s2_formula": "10*band_12-9.8*band_11+2",
-      "checked": false,
-      "s2_formula_mathml": ""
-    },
-    {
-      "n_index": 300,
-      "longname": "Mid-Infrared Burn Index / 10",
-      "name": "MIRBI10",
-      "link": "https://doi.org/10.1080/01431160110053185",
-      "s2_formula": "band_12-.98*band_11+.2",
+      "s2_formula": "(1E-3*band_12)-(9.8E-4*band_11)+2E-4",
       "checked": true,
       "s2_formula_mathml": ""
     },
@@ -1894,5 +1885,5 @@
     }
   ],
   "pkg_version": ["0.3.2"],
-  "creation_date": ["2018-06-19 14:40:41"]
+  "creation_date": ["2018-06-21 14:46:47"]
 }
