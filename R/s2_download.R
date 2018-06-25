@@ -118,14 +118,17 @@ s2_download <- function(s2_prodlist=NULL,
       trace_funname = "s2download",
       trace_files   = file.path(outdir,c(filename,paste0(filename,".zip")))
     )
-    # s2download$download_s2product(filename=filename,
-    #                               link=link,
-    #                               downloader=downloader,
-    #                               apihub=apihub,
-    #                               tile=py_tile,
-    #                               no_download=FALSE,
-    #                               write_dir=outdir,
-    #                               file_list=NULL)
+    # s2download$download_s2product(
+    #   filename      = filename,
+    #   link          = link,
+    #   downloader    = downloader,
+    #   apihub        = apihub,
+    #   tile          = py_tile,
+    #   no_download   = FALSE,
+    #   write_dir     = outdir,
+    #   file_list     = NULL,
+    #   downloader_path = dirname(binpaths[[if (downloader=="aria2") {"aria2c"} else {"wget"}]])
+    # )
     
   }
   

@@ -41,7 +41,7 @@ testthat::test_that(
       step_atmcorr = "no",
       s2tiles_selected = c("32TNR","32TNS"),
       s2orbits_selected = "022",
-      timewindow = as.Date(c("2016-12-05","2016-12-15")),
+      timewindow = as.Date(c("2016-09-29","2016-10-06")),
       path_l1c = safe_dir,
       path_l2a = safe_dir
     ))

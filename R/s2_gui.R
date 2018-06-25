@@ -50,7 +50,7 @@ s2_gui <- function(param_list = NULL,
 # Internal function with parameter par_fun (parent function):
 # default is "parent", but it can be set with another value
 # for internal purposes.
-# For now, value "sto" is used when s2_gui() is launched from
+# For now, value "sen2r" is used when s2_gui() is launched from
 # sen2r(), and is used to change save button label.
 .s2_gui <- function(param_list = NULL,
                     par_fun = "parent",
@@ -151,7 +151,7 @@ s2_gui <- function(param_list = NULL,
         p(style="margin-top:20pt;",
           actionButton(
             "return_param",
-            label = if (par_fun=="sto") {
+            label = if (par_fun=="sen2r") {
               strong("\u2000Launch processing")
             } else {
               strong("\u2000Save and close GUI")
@@ -163,7 +163,7 @@ s2_gui <- function(param_list = NULL,
         p(style="margin-top:0pt;",
           actionButton(
             "exit_gui",
-            label = if (par_fun=="sto") {
+            label = if (par_fun=="sen2r") {
               "\u2000Close without processing"
             } else {
               "\u2000Close without saving"

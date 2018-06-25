@@ -145,7 +145,7 @@ def wg_cmd(downloader,apihub,downloader_path=''):
 
 # ---------------------------------------------------------------
 # Function to download a product after having it in the file list
-# (this function was splitted from main function on order to allow using it with a file list)
+# (this function was splitted from main function in order to allow using it with a file list)
 def download_s2product(filename,link,downloader,apihub,tile=None,no_download=False,write_dir='.',file_list=None,downloader_path=''):
 
     # Compute wg parameters
