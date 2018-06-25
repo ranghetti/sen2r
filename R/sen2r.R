@@ -35,6 +35,9 @@
 #' @param online (optional) Logical: TRUE (default) to search for available
 #'  products on SciHub (and download if needed); FALSE to work
 #'  only with already downloaded SAFE products.
+#' @param apihub Path of the text file containing credentials
+#'  of scihub account. If NA (default) the default credentials
+#'  (username "user", password "user") will be used.
 #' @param downloader (optional) Character value corresponding to the executable
 #'  which should be used to download SAFE products. It could be one among 
 #'  "wget" (default) and "aria2". 
@@ -223,6 +226,7 @@ sen2r <- function(param_list = NULL,
                   s2_levels = c("l2a"),
                   sel_sensor = c("s2a","s2b"),
                   online = TRUE,
+                  apihub = NA,
                   downloader = "wget",
                   overwrite_safe = FALSE,
                   rm_safe = "no",
@@ -628,7 +632,8 @@ sen2r <- function(param_list = NULL,
                                      time_interval = pm$timewindow,
                                      time_period = pm$timeperiod,
                                      tile = pm$s2tiles_selected,
-                                     level = "L1C")
+                                     level = "L1C",
+                                     apihub = pm$apihub)
       }
       if ("l2a" %in% pm$s2_levels) {
         # list of SAFE (L1C or/and L2A) needed for required L2A
@@ -642,7 +647,8 @@ sen2r <- function(param_list = NULL,
                                        "L2A"
                                      } else if (pm$step_atmcorr %in% c("scihub","no")) {
                                        "L1C"
-                                     })
+                                     },
+                                     apihub = pm$apihub)
       }
       
     } else {
@@ -909,7 +915,8 @@ sen2r <- function(param_list = NULL,
           s2_download(
             s2_list_l2a[!names(s2_list_l2a) %in% list.files(pm$path_l2a, "\\.SAFE$")],
             outdir = pm$path_l2a,
-            downloader = pm$downloader
+            downloader = pm$downloader,
+            apihub = pm$apihub
           )
         } else { # otherwise, launch one per tile
           lapply(pm$s2tiles_selected, function(tile) {
@@ -936,7 +943,8 @@ sen2r <- function(param_list = NULL,
               # ignored).
               outdir = pm$path_l2a,
               downloader = pm$downloader,
-              tile = tile
+              tile = tile,
+              apihub = pm$apihub
             )
           })
         }

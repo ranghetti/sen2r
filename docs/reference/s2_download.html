@@ -118,7 +118,7 @@ Input filename must be an element obtained with
     
     </div>
 
-    <pre class="usage"><span class='fu'>s2_download</span>(<span class='kw'>s2_prodlist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>downloader</span> <span class='kw'>=</span> <span class='st'>"wget"</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+    <pre class="usage"><span class='fu'>s2_download</span>(<span class='kw'>s2_prodlist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>downloader</span> <span class='kw'>=</span> <span class='st'>"wget"</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>tile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"."</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -137,7 +137,7 @@ Input filename must be an element obtained with
     <tr>
       <th>apihub</th>
       <td><p>Path of the "apihub.txt" file containing credentials
-of scihub account. If NULL (default) the default credentials
+of scihub account. If NA (default) the default credentials
 (username "user", password "user") will be used.</p></td>
     </tr>
     <tr>

@@ -122,7 +122,7 @@ downloading and correcting them.</p>
 
     <pre class="usage"><span class='fu'>s2_list</span>(<span class='kw'>spatial_extent</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>orbit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>time_period</span> <span class='kw'>=</span> <span class='st'>"full"</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
-  <span class='kw'>ignore_ingestion_time</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>max_cloud</span> <span class='kw'>=</span> <span class='fl'>110</span>)</pre>
+  <span class='kw'>ignore_ingestion_time</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>max_cloud</span> <span class='kw'>=</span> <span class='fl'>110</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -181,7 +181,7 @@ be ignored (but generally the ingestion date is the same of the sensing date).</
     <tr>
       <th>apihub</th>
       <td><p>Path of the "apihub.txt" file containing credentials
-of scihub account. If NULL (default) the default credentials
+of scihub account. If NA (default) the default credentials
 (username "user", password "user") will be used.</p></td>
     </tr>
     <tr>

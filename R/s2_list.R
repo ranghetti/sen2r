@@ -34,7 +34,7 @@
 #'  it is slower; setting it to `FALSE` speeds up, although some products could 
 #'  be ignored (but generally the ingestion date is the same of the sensing date).
 #' @param apihub Path of the "apihub.txt" file containing credentials
-#'  of scihub account. If NULL (default) the default credentials
+#'  of scihub account. If NA (default) the default credentials
 #'  (username "user", password "user") will be used.
 #' @param max_cloud Integer number (0-100) containing the maximum cloud
 #'  level of the tiles to be listed (default: no filter).
@@ -83,7 +83,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
                     time_interval=NULL, time_period = "full", # temporal parameters
                     level="auto",
                     ignore_ingestion_time = TRUE,
-                    apihub=NULL,
+                    apihub=NA,
                     max_cloud=110) {
   
   # convert input NA arguments in NULL
@@ -189,7 +189,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
   binpaths <- load_binpaths("wget")
   
   # link to apihub
-  if (is.null(apihub)) {
+  if (anyNA(apihub)) {
     apihub <- file.path(s2download$inst_path,"apihub.txt")
   }
   if (!file.exists(apihub)) {

@@ -31,7 +31,7 @@
 #' @importFrom shinyFiles getVolumes parseDirPath parseFilePaths parseSavePath
 #'  shinyDirButton shinyDirChoose shinyFileChoose shinyFileSave
 #'  shinyFilesButton shinySaveButton
-#' @importFrom shinyjs delay disable enable
+#' @importFrom shinyjs click delay disable enable
 #' @importFrom shinyWidgets sendSweetAlert
 #' @importFrom stats setNames
 #' @importFrom utils unzip
@@ -112,6 +112,7 @@ s2_gui <- function(param_list = NULL,
       HTML("<script src=\"message-handler.js\"></script>"),
       shinyjs::useShinyjs(),
       shiny::tags$head(shiny::tags$style(".darkbutton{background-color:#28353b;color:#b8c7ce;width:200px;")), # background color and font color
+      shiny::tags$head(shiny::tags$style(".scihub_savebutton{width:90px;")), # fixed width
       shiny::tags$head(shiny::tags$script(src = "message-handler.js")), # for actionbuttons
       shiny::tags$head(shiny::tags$link(rel="icon", href="favicon.ico")),
       
@@ -843,7 +844,7 @@ s2_gui <- function(param_list = NULL,
                                  # width="100px",
                                  value = 250)
                   )
-
+                  
                 ) # end of smooth/buffer fluidRow
               ) # endo if conditionalPanel mask_apply_smooth
               
@@ -1206,15 +1207,56 @@ s2_gui <- function(param_list = NULL,
       }
     })
     
-    
     # Edit scihub credentials
     observeEvent(input$scihub, {
-      showModal(scihub_modal())
+      
+      # open the modalDialog
+      showModal(scihub_modal(
+        username = if(!is.null(input$scihub_username)){input$scihub_username}else{NA},
+        password = if(!is.null(input$scihub_password)){input$scihub_password}else{NA}
+      ))
+      
+      # dummy variable to define which save button has to be used
+      output$switch_save_apihub <- renderText({
+        if (is.null(input$apihub_default)) {
+          ""
+        } else if (input$apihub_default) {
+          "default"
+        } else {
+          "custom"
+        }
+      })
+      outputOptions(output, "switch_save_apihub", suspendWhenHidden = FALSE)
+      
+      # initialise the shinyFiles Save as button
+      observe({
+        apihub_path_prev <- rv$apihub_path
+        shinyFileSave(input, "apihub_path_sel", roots=volumes, session=session)
+        apihub_path_raw <- parseSavePath(volumes, input$apihub_path_sel)
+        rv$apihub_path <- if (nrow(apihub_path_raw)>0) {
+          as.character(apihub_path_raw$datapath)
+        } else {
+          NA
+        }
+        if (!is.na(rv$apihub_path)) {
+          if (!rv$apihub_path %in% apihub_path_prev) {
+            # if a change in the path is detected (= the button has been used), 
+            # close the modalDialog
+            # FIXME if a user re-opne the modalDialog and does not change 
+            # user nor password, the "Save as..." button will not close the dialog
+            shinyjs::click("save_apihub")
+          }
+        }
+      })
+      
     })
     
     # save user/password
     observeEvent(input$save_apihub, {
-      write_scihub_login(input$scihub_username, input$scihub_password)
+      write_scihub_login(
+        input$scihub_username, input$scihub_password, 
+        apihub_path = if(!is.na(rv$apihub_path)){as.character(rv$apihub_path)}else{NA}
+      )
       removeModal()
     })
     
@@ -1892,7 +1934,7 @@ s2_gui <- function(param_list = NULL,
       }
     })
     
-
+    
     ## Update resolution from reference file
     output$outres_message <- renderUI({
       if(input$use_reference==TRUE & "res" %in% input$reference_usefor) {
@@ -2106,6 +2148,33 @@ s2_gui <- function(param_list = NULL,
       ))
     })
     
+    observeEvent(input$help_apihub, {
+      showModal(modalDialog(
+        title = "SciHub username and password",
+        p(HTML(
+          "For security reasons, the SciHub username and password",
+          "are not saved with the other parameters."
+        )), 
+        p(HTML(
+          "By default, they are stored in a txt file inside the package,",
+          "so to be the same for all the sen2r executions",
+          "(the user have to set them only once)."
+        )),
+        p(HTML(
+          "Since it is not possible to perform more than two queries at",
+          "the same time, it can be useful to change them for a specific",
+          "sen2r run (i.e. for a scheduled execution), in order not to",
+          "interfer with other runs.",
+          "In this case, this option can be checked, and the user and password",
+          "will be saved in a different file, and will be used for this run",
+          "(the path of the text file - and not the content - is added inside",
+          "the parameter file)."
+        )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+    
     observeEvent(input$fix_online, {
       showModal(modalDialog(
         title = "Download is not supported on Windows",
@@ -2309,7 +2378,7 @@ s2_gui <- function(param_list = NULL,
         footer = NULL
       ))
     })
-      
+    
     
     observeEvent(input$help_clip_on_extent, {
       showModal(modalDialog(
@@ -2598,6 +2667,9 @@ s2_gui <- function(param_list = NULL,
       rl$path_subdirs <- if (rl$preprocess==TRUE) {as.logical(input$path_subdirs)} else {NA} # logical (use subdirs)
       rl$thumbnails <- if (rl$preprocess==TRUE) {as.logical(input$check_thumbnails)} else {NA} # logical (create thumbnails)
       
+      # save apihub.txt path if it was customly set
+      if (!is.null(NULL) & !anyNA(NULL)) {rl$apihub_path <- rv$apihub_path}
+      
       # information about package version
       rl$pkg_version <- packageVersion("sen2r") %>% as.character()
       
@@ -2678,6 +2750,9 @@ s2_gui <- function(param_list = NULL,
         updateTextInput(session, "path_indices_textin", value = pl$path_indices)
         updateRadioButtons(session, "path_subdirs", selected = pl$path_subdirs)
         updateRadioButtons(session, "check_thumbnails", selected = pl$thumbnails)
+        
+        # update apihub path
+        rv$apihub_path <- pl$apihub_path
         
         # output geometry
         updateTextInput(session, "reference_file_textin", value = pl$reference_path)

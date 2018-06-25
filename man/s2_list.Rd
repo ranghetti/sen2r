@@ -6,7 +6,7 @@
 \usage{
 s2_list(spatial_extent = NULL, tile = NULL, orbit = NULL,
   time_interval = NULL, time_period = "full", level = "auto",
-  ignore_ingestion_time = TRUE, apihub = NULL, max_cloud = 110)
+  ignore_ingestion_time = TRUE, apihub = NA, max_cloud = 110)
 }
 \arguments{
 \item{spatial_extent}{A valid spatial object object of class \code{sf},
@@ -48,7 +48,7 @@ it is slower; setting it to \code{FALSE} speeds up, although some products could
 be ignored (but generally the ingestion date is the same of the sensing date).}
 
 \item{apihub}{Path of the "apihub.txt" file containing credentials
-of scihub account. If NULL (default) the default credentials
+of scihub account. If NA (default) the default credentials
 (username "user", password "user") will be used.}
 
 \item{max_cloud}{Integer number (0-100) containing the maximum cloud

@@ -15,6 +15,7 @@
 #' @note License: GPL 3.0
 #' @importFrom reticulate py_to_r
 #' @importFrom shiny a actionButton icon modalButton modalDialog passwordInput tagList textInput
+#' @importFrom shinyFiles shinyFileSave
 
 #' @name read_scihub_login
 #' @rdname scihub_login
@@ -82,10 +83,37 @@ scihub_modal <- function(username=NA, password=NA) {
     a("Register new account", href="https://scihub.copernicus.eu/dhus/#/self-registration", target="_blank"),
     "\u2000\u2014\u2000",
     a("Forgot password?", href="https://scihub.copernicus.eu/dhus/#/forgot-password", target="_blank"),
+    checkboxInput(
+      "apihub_default",
+      label = span(
+        "Store inside the package\u2000",
+        actionLink("help_apihub", icon("question-circle"))
+      ),
+      value = TRUE
+    ),
     easyClose = FALSE,
     footer = tagList(
-      actionButton("save_apihub", "\u2000Save", icon=icon("save")),
-      modalButton("\u2000Cancel", icon = icon("ban"))
+      div(style="display:inline-block;vertical-align:top;",
+          conditionalPanel(
+            condition = "output.switch_save_apihub == 'custom'",
+            shinySaveButton(
+              "apihub_path_sel", 
+              "Save as...", "Specify path for apihub text file", 
+              filetype=list(plain="txt"), 
+              class = "scihub_savebutton"
+            )
+          )),
+      div(style="display:inline-block;vertical-align:top;",
+          conditionalPanel(
+            condition = "output.switch_save_apihub == 'default'",
+            actionButton(
+              "save_apihub", "\u2000Save", 
+              icon=icon("save"), 
+              class = "scihub_savebutton"
+            )
+          )),
+      div(style="display:inline-block;vertical-align:top;",
+          modalButton("\u2000Cancel", icon = icon("ban")))
     )
   )
 }

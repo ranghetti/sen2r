@@ -4,7 +4,7 @@
 \alias{s2_download}
 \title{Download S2 products.}
 \usage{
-s2_download(s2_prodlist = NULL, downloader = "wget", apihub = NULL,
+s2_download(s2_prodlist = NULL, downloader = "wget", apihub = NA,
   tile = NULL, outdir = ".")
 }
 \arguments{
@@ -15,7 +15,7 @@ s2_download(s2_prodlist = NULL, downloader = "wget", apihub = NULL,
 (default: "wget").}
 
 \item{apihub}{Path of the "apihub.txt" file containing credentials
-of scihub account. If NULL (default) the default credentials
+of scihub account. If NA (default) the default credentials
 (username "user", password "user") will be used.}
 
 \item{tile}{Single Sentinel-2 Tile string (5-length character)}
