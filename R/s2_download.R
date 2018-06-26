@@ -77,7 +77,7 @@ s2_download <- function(s2_prodlist=NULL,
   # TODO add checks on the format of filename (one element output of s2_list)
   
   # link to apihub
-  if (anyNA(apihub)) {
+  if (is.null(apihub)) {
     apihub <- file.path(s2download$inst_path,"apihub.txt")
   }
   if (!file.exists(apihub)) {

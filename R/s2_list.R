@@ -189,7 +189,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
   binpaths <- load_binpaths("wget")
   
   # link to apihub
-  if (anyNA(apihub)) {
+  if (is.null(apihub)) {
     apihub <- file.path(s2download$inst_path,"apihub.txt")
   }
   if (!file.exists(apihub)) {
