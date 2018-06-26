@@ -19,6 +19,7 @@
 
 #' @name read_scihub_login
 #' @rdname scihub_login
+#' @export
 
 read_scihub_login <- function(apihub_path=NA) {
   
@@ -45,6 +46,7 @@ read_scihub_login <- function(apihub_path=NA) {
 
 #' @name write_scihub_login
 #' @rdname scihub_login
+#' @export
 
 write_scihub_login <- function(username, password, apihub_path=NA) {
   

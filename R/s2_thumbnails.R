@@ -18,6 +18,7 @@
 #' @note License: GPL 3.0
 #' @importFrom raster raster
 #' @importFrom jsonlite fromJSON
+#' @export
 
 stack2rgb <- function(in_rast, 
                       out_file = NULL, 
@@ -135,6 +136,7 @@ stack2rgb <- function(in_rast,
 #' @note License: GPL 3.0
 #' @importFrom raster raster
 #' @importFrom jsonlite fromJSON
+#' @export
 
 raster2rgb <- function(in_rast, 
                        out_file = NULL, 
