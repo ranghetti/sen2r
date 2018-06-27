@@ -22,6 +22,7 @@
 #' @importFrom shinyWidgets confirmSweetAlert
 #' @importFrom utils capture.output
 #' @importFrom jsonlite fromJSON toJSON
+#' @export
 #' @examples
 #' \dontrun{
 #' 
