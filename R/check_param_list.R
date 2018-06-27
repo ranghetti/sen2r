@@ -90,6 +90,19 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
     )
   }
   
+  # check SAFE paths
+  # if one of path_l1c and path_l2a is missing, copy from the other
+  # FIXME this is a workaround for parameter pm$s2_levels,
+  # whose default is c("l1c","l2a") even if L1C is not requested.
+  # Fix by removing it and retrieve it automatically.
+  if (sum(is.na(c(pm$path_l1c, pm$path_l2a)))==1) {
+    if (is.na(pm$path_l1c)) {
+      pm$path_l1c <- pm$path_l2a
+    } else {
+      pm$path_l2a <- pm$path_l1c
+    }
+  }
+  
   # check s2orbits_selected
   if (is(pm$s2orbits_selected, "numeric")) {
     pm$s2orbits_selected <- str_pad(pm$s2orbits_selected, 3, "left", "0")
