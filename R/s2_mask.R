@@ -216,6 +216,10 @@ s2_mask <- function(infiles,
     sapply(file.path(outdir,prod_types), dir.create, showWarnings=FALSE)
   }
   
+  # check smooth and buffer
+  if (anyNA(smooth)) {smooth <- 0}
+  if (anyNA(buffer)) {buffer <- 0}
+  
   # define required bands and formula to compute masks
   # accepted mask_type values: nodata, cloud_high_proba, cloud_medium_proba, cloud_low_proba, cloud_and_shadow, cloud_shadow_cirrus, opaque_clouds
   # structure of req_masks: list, names are prod_types, content are values of the files to set as 0, otherwise 1
