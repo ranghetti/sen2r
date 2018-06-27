@@ -81,7 +81,7 @@ maskapply_parallel <- function(in_rast,
   } else if (parallel==FALSE) {
     1
   } else {
-    min(parallel::detectCores()-1, 11) # use at most 11 cores
+    min(parallel::detectCores()-1, nlayers(in_rast), 11) # use at most 11 cores
   }
   if (n_cores<=1) {
     `%DO%` <- `%do%`

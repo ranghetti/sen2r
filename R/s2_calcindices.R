@@ -98,7 +98,7 @@ s2_calcindices <- function(infiles,
   } else if (parallel==FALSE) {
     1
   } else {
-    min(parallel::detectCores()-1, 11) # use at most 11 cores
+    min(parallel::detectCores()-1, length(infiles), 11) # use at most 11 cores
   }
   if (n_cores<=1) {
     `%DO%` <- `%do%`

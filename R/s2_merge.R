@@ -89,22 +89,6 @@ s2_merge <- function(infiles,
   # Load GDAL paths
   binpaths <- load_binpaths("gdal")
   
-  # Compute n_cores
-  n_cores <- if (is.numeric(parallel)) {
-    as.integer(parallel)
-  } else if (parallel==FALSE) {
-    1
-  } else {
-    min(parallel::detectCores()-1, 11) # use at most 11 cores
-  }
-  if (n_cores<=1) {
-    `%DO%` <- `%do%`
-    parallel <- FALSE
-    n_cores <- 1
-  } else {
-    `%DO%` <- `%dopar%`
-  }
-  
   # Get files metadata
   infiles_meta <- fs2nc_getElements(infiles, format="data.frame")
   # get metadata from GDALinfo (FIXME time expensive; check if it can be speeded up)
@@ -220,6 +204,22 @@ s2_merge <- function(infiles,
   }
   if (subdirs) {
     sapply(file.path(outdir,prod_types), dir.create, showWarnings=FALSE)
+  }
+  
+  # Compute n_cores
+  n_cores <- if (is.numeric(parallel)) {
+    as.integer(parallel)
+  } else if (parallel==FALSE) {
+    1
+  } else {
+    min(parallel::detectCores()-1, length(unique(infiles_meta_grps)), 11) # use at most 11 cores
+  }
+  if (n_cores<=1) {
+    `%DO%` <- `%do%`
+    parallel <- FALSE
+    n_cores <- 1
+  } else {
+    `%DO%` <- `%dopar%`
   }
   
   # merge single output products
