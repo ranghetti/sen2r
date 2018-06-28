@@ -6,7 +6,8 @@
 \usage{
 s2_merge(infiles, outdir = ".", subdirs = NA, tmpdir = NA, rmtmp = TRUE,
   format = NA, compress = "DEFLATE", vrt_rel_paths = NA, out_crs = "",
-  parallel = FALSE, overwrite = FALSE)
+  parallel = FALSE, overwrite = FALSE, .logfile_message = NA,
+  .log_output = NA)
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths

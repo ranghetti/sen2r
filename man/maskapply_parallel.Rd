@@ -6,7 +6,7 @@
 \usage{
 maskapply_parallel(in_rast, in_mask, outpath, tmpdir = NA, binpaths,
   NAflag = 0, parallel = TRUE, minrows = NULL, datatype = "INT2S",
-  overwrite = FALSE)
+  overwrite = FALSE, .logfile_message = NA, .log_output = NA)
 }
 \arguments{
 \item{in_rast}{Input raster Stack.}

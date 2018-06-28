@@ -7,7 +7,8 @@
 s2_calcindices(infiles, indices, outdir = ".", parameters = NULL,
   source = c("TOA", "BOA"), format = NA, subdirs = NA, tmpdir = NA,
   compress = "DEFLATE", dataType = "Int16", scaleFactor = NA,
-  parallel = FALSE, overwrite = FALSE)
+  parallel = FALSE, overwrite = FALSE, .logfile_message = NA,
+  .log_output = NA)
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths

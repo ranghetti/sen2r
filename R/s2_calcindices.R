@@ -85,7 +85,9 @@ s2_calcindices <- function(infiles,
                            dataType="Int16",
                            scaleFactor=NA,
                            parallel = FALSE,
-                           overwrite=FALSE) {
+                           overwrite=FALSE,
+                           .logfile_message=NA,
+                           .log_output=NA) {
   
   prod_type <- . <- NULL
   
@@ -188,6 +190,14 @@ s2_calcindices <- function(infiles,
     .combine=c, 
     .errorhandling="remove"
   )  %DO% {
+    
+    # redirect to log files
+    if (!is.na(.log_output)) {
+      sink(.log_output, split = TRUE, type = "output", append = TRUE)
+    }
+    if (!is.na(.logfile_message)) {
+      sink(.logfile_message, type="message")
+    }
     
     sel_infile <- infiles[i]
     sel_infile_meta <- c(infiles_meta[i,])

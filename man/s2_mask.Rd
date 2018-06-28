@@ -8,7 +8,8 @@
 s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba", smooth = 250,
   buffer = 250, max_mask = 80, outdir = "./masked", tmpdir = NA,
   rmtmp = TRUE, format = NA, subdirs = NA, compress = "DEFLATE",
-  parallel = FALSE, overwrite = FALSE)
+  parallel = FALSE, overwrite = FALSE, .logfile_message = NA,
+  .log_output = NA)
 
 s2_perc_masked(infiles, maskfiles, mask_type = "cloud_medium_proba",
   tmpdir = NA, rmtmp = TRUE, parallel = FALSE)
