@@ -203,6 +203,12 @@
 #'  default is a subdirectory named ".vrt" within `path_out`).
 #' @param rmtmp (optional) Logical: should temporary files be removed?
 #'  (Default: TRUE). `rmtmp` is forced to `FALSE` if `outformat = "VRT"`.
+#' @param log (optional) Character string with the path where the package 
+#'  messages will be redirected. 
+#'  Default (NA) is not to redirect (use standard output).
+#'  A two-length character with tho paths (which can also coincide)
+#'  can be used to redirect also the output: in this case, the first path 
+#'  is the path for messages, the second one for the output.
 #' @return A vector with the paths of the files which were created (excluded
 #'  the temporary files); NULL otherwise.
 #'  The vector includes two attributes: 
@@ -268,7 +274,133 @@ sen2r <- function(param_list = NULL,
                   parallel = TRUE,
                   use_python = TRUE,
                   tmpdir = NA,
-                  rmtmp = TRUE) {
+                  rmtmp = TRUE, 
+                  log = NA) {
+  
+  # sink to external files
+  log_output <- log[2]
+  log_message <- log[1]
+  if (!is.na(log_output)) {
+    dir.create(dirname(log_output), showWarnings=FALSE)
+    sink(log_output, split = TRUE, type = "output", append = TRUE)
+  }
+  if (!is.na(log_message)) {
+    dir.create(dirname(log_message), showWarnings=FALSE)
+    logfile = file(log_message, open = "a")
+    sink(logfile, type="message")
+  }
+  
+  # launch the function
+  .sen2r(param_list = param_list,
+         gui = gui,
+         preprocess = preprocess,
+         s2_levels = s2_levels,
+         sel_sensor = sel_sensor,
+         online = online,
+         apihub = apihub,
+         downloader = downloader,
+         overwrite_safe = overwrite_safe,
+         rm_safe = rm_safe,
+         step_atmcorr = step_atmcorr,
+         timewindow = timewindow,
+         timeperiod = timeperiod,
+         extent = extent,
+         extent_name = extent_name,
+         s2tiles_selected = s2tiles_selected,
+         s2orbits_selected = s2orbits_selected,
+         list_prods = list_prods,
+         list_indices = list_indices,
+         index_source = index_source,
+         mask_type = mask_type,
+         max_mask = max_mask,
+         mask_smooth = mask_smooth,
+         mask_buffer = mask_buffer,
+         clip_on_extent = clip_on_extent,
+         extent_as_mask = extent_as_mask,
+         reference_path = reference_path,
+         res = res,
+         res_s2 = res_s2,
+         unit = unit,
+         proj = proj,
+         resampling = resampling,
+         resampling_scl = resampling_scl,
+         outformat = outformat,
+         index_datatype = index_datatype,
+         compression = compression,
+         overwrite = overwrite,
+         path_l1c = path_l1c,
+         path_l2a = path_l2a,
+         path_tiles = path_tiles,
+         path_merged = path_merged,
+         path_out = path_out,
+         path_indices = path_indices,
+         path_subdirs = path_subdirs,
+         thumbnails = thumbnails,
+         parallel = parallel,
+         use_python = use_python,
+         tmpdir = tmpdir,
+         rmtmp = rmtmp)
+  
+  # stop sinking
+  if (!is.na(log_message)) {sink(type = "message")}
+  if (!is.na(log_output)) {sink(type = "output")}
+  
+}
+
+# Internal function, which is the "real" sen2r() function insider the use of sink
+# (this workaround was used in order to manage final sink() in those cases 
+# in which return() is used inside the function.)
+# TODO: manage also errors (.sen2r inside a trycatch; in case of errors, stop
+# passing the error message)
+.sen2r <- function(param_list,
+                   gui,
+                   preprocess,
+                   s2_levels,
+                   sel_sensor,
+                   online,
+                   apihub,
+                   downloader,
+                   overwrite_safe,
+                   rm_safe,
+                   step_atmcorr,
+                   timewindow,
+                   timeperiod,
+                   extent,
+                   extent_name,
+                   s2tiles_selected,
+                   s2orbits_selected,
+                   list_prods,
+                   list_indices,
+                   index_source,
+                   mask_type,
+                   max_mask,
+                   mask_smooth,
+                   mask_buffer,
+                   clip_on_extent,
+                   extent_as_mask,
+                   reference_path,
+                   res,
+                   res_s2,
+                   unit,
+                   proj,
+                   resampling,
+                   resampling_scl,
+                   outformat,
+                   index_datatype,
+                   compression,
+                   overwrite,
+                   path_l1c,
+                   path_l2a,
+                   path_tiles,
+                   path_merged,
+                   path_out,
+                   path_indices,
+                   path_subdirs,
+                   thumbnails,
+                   parallel,
+                   use_python,
+                   tmpdir,
+                   rmtmp) {
   
   # to avoid NOTE on check
   . <- NULL
@@ -313,17 +445,18 @@ sen2r <- function(param_list = NULL,
   ## 1. Read / import parameters ##
   
   # Read arguments with default values
-  pm_def <- formals("sen2r")
+  pm_def <- formals("sen2r") # use "sen2r" instead of ".sen2r" because this one has no defaults
+  pm_def <- pm_def[!names(pm_def) %in% c("log")] # remove "log" (argument of sen2r(), not .sen2r())
   # select arguments which are not parameters
   pm_def <- sapply(pm_def[!names(pm_def) %in% c("param_list","gui","use_python","tmpdir","rmtmp")], eval)
   
   # filter names of passed arguments
   pm_arg_passed <- logical(0)
-  for (i in seq_along(formalArgs("sen2r"))) {
-    pm_arg_passed[i] <- !do.call(missing, list(formalArgs("sen2r")[i]))
+  for (i in seq_along(formalArgs(".sen2r"))) {
+    pm_arg_passed[i] <- !do.call(missing, list(formalArgs(".sen2r")[i]))
   }
   # Read arguments with passed values
-  pm_arg <- sapply(formalArgs("sen2r")[pm_arg_passed], function(x){
+  pm_arg <- sapply(formalArgs(".sen2r")[pm_arg_passed], function(x){
     do.call(get, list(x))
   }, simplify=FALSE)
   # select arguments which are not parameters

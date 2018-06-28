@@ -19,7 +19,7 @@ sen2r(param_list = NULL, gui = NA, preprocess = TRUE,
   path_l1c = NA, path_l2a = NA, path_tiles = NA, path_merged = NA,
   path_out = NA, path_indices = NA, path_subdirs = TRUE,
   thumbnails = TRUE, parallel = TRUE, use_python = TRUE, tmpdir = NA,
-  rmtmp = TRUE)
+  rmtmp = TRUE, log = NA)
 }
 \arguments{
 \item{param_list}{(optional) List of input parameters:
@@ -273,6 +273,13 @@ default is a subdirectory named ".vrt" within \code{path_out}).}
 
 \item{rmtmp}{(optional) Logical: should temporary files be removed?
 (Default: TRUE). \code{rmtmp} is forced to \code{FALSE} if \code{outformat = "VRT"}.}
+
+\item{log}{(optional) Character string with the path where the package
+messages will be redirected.
+Default (NA) is not to redirect (use standard output).
+A two-length character with tho paths (which can also coincide)
+can be used to redirect also the output: in this case, the first path
+is the path for messages, the second one for the output.}
 }
 \value{
 A vector with the paths of the files which were created (excluded

@@ -173,7 +173,14 @@ s2_calcindices <- function(infiles,
     n_cores, 
     type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
   )
-  if (n_cores > 1) {registerDoParallel(cl)}
+  if (n_cores > 1) {
+    registerDoParallel(cl)
+    print_message(
+      type = "message",
+      date = TRUE,
+      "Starting parallel computation of indices..."
+    )
+  }
   
   outfiles <- foreach(
     i = seq_along(infiles), 
@@ -316,7 +323,14 @@ s2_calcindices <- function(infiles,
     file.path(out_subdir,sel_outfiles)
     
   } # end cycle on infiles
-  if (n_cores > 1) {stopCluster(cl)}
+  if (n_cores > 1) {
+    stopCluster(cl)
+    print_message(
+      type = "message",
+      date = TRUE,
+      "Parallel computation of indices done."
+    )
+  }
   
   return(outfiles)
   

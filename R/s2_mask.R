@@ -415,6 +415,11 @@ s2_mask <- function(infiles,
               overwrite = overwrite
             )
           } else {
+            print_message(
+              type = "message",
+              date = TRUE,
+              "Starting parallel application of masks on file",basename(i),"..."
+            )
             maskapply_parallel(
               inraster, 
               raster(outmask_smooth), 
@@ -425,6 +430,11 @@ s2_mask <- function(infiles,
               parallel = parallel,
               datatype = dataType(inraster),
               overwrite = overwrite
+            )
+            print_message(
+              type = "message",
+              date = TRUE,
+              "Parallel application of masks on file",basename(i),"done."
             )
           }
           
