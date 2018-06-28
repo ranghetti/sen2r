@@ -35,6 +35,12 @@ If FALSE (default), single core processing is used.}
 
 \item{overwrite}{(optional) Logical value: should existing output files be
 overwritten? (default: FALSE)}
+
+\item{.logfile_message}{(optional) Internal parameter
+(it is used when the function is called by \code{s2_mask()}).}
+
+\item{.log_output}{(optional) Internal parameter
+(it is used when the function is called by \code{s2_mask()}).}
 }
 \description{
 Internal function to apply cloud mask to SR products.

@@ -20,6 +20,10 @@
 #' @param datatype (optional) data type of the output raster.
 #' @param overwrite (optional) Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
+#' @param .logfile_message (optional) Internal parameter
+#'  (it is used when the function is called by `s2_mask()`).
+#' @param .log_output (optional) Internal parameter
+#'  (it is used when the function is called by `s2_mask()`).
 #' @return NULL
 #' @importFrom doParallel registerDoParallel
 #' @importFrom parallel makeCluster stopCluster detectCores

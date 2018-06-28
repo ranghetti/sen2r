@@ -42,6 +42,10 @@
 #'  If FALSE (default), single core processing is used.
 #' @param overwrite Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
+#' @param .logfile_message (optional) Internal parameter
+#'  (it is used when the function is called by `sen2r()`).
+#' @param .log_output (optional) Internal parameter
+#'  (it is used when the function is called by `sen2r()`).
 #' @return A vector with the names of the merged products (just created or
 #'  already existing).
 #' @importFrom rgdal GDALinfo
@@ -66,7 +70,9 @@ s2_merge <- function(infiles,
                      vrt_rel_paths=NA,
                      out_crs="",
                      parallel = FALSE,
-                     overwrite=FALSE) {
+                     overwrite=FALSE,
+                     .logfile_message=NA,
+                     .log_output=NA) {
   
   # load output formats
   gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))
@@ -234,6 +240,14 @@ s2_merge <- function(infiles,
     .combine=c, 
     .errorhandling="remove"
   )  %DO% {
+    
+    # redirect to log files
+    if (n_cores > 1 & !is.na(.log_output)) {
+      sink(.log_output, split = TRUE, type = "output", append = TRUE)
+    }
+    if (n_cores > 1 & !is.na(.logfile_message)) {
+      sink(.logfile_message, type="message")
+    }
     
     sel_infiles <- infiles[infiles_meta_grps == infiles_meta_grp]
     sel_infiles_meta <- infiles_meta[infiles_meta_grps == infiles_meta_grp,]

@@ -84,6 +84,10 @@
 #'  multicore processing).
 #' @param overwrite (optional) Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
+#' @param .logfile_message (optional) Internal parameter
+#'  (it is used when the function is called by `sen2r()`).
+#' @param .log_output (optional) Internal parameter
+#'  (it is used when the function is called by `sen2r()`).
 #' @return [s2_mask] returns a vector with the names of the created products.
 #'  An attribute "toomasked" contains the paths of the outputs which were not
 #'  created cause to the high percentage of cloud coverage.
@@ -108,7 +112,9 @@ s2_mask <- function(infiles,
                     subdirs = NA,
                     compress = "DEFLATE",
                     parallel = FALSE,
-                    overwrite = FALSE) {
+                    overwrite = FALSE,
+                    .logfile_message = NA,
+                    .log_output = NA) {
   .s2_mask(infiles = infiles,
            maskfiles = maskfiles,
            mask_type = mask_type,
@@ -123,7 +129,9 @@ s2_mask <- function(infiles,
            compress = compress,
            parallel = parallel,
            overwrite = overwrite,
-           output_type = "s2_mask")
+           output_type = "s2_mask",
+           .logfile_message = .logfile_message,
+           .log_output = .log_output)
 }
 
 .s2_mask <- function(infiles,
@@ -140,7 +148,9 @@ s2_mask <- function(infiles,
                      compress = "DEFLATE",
                      parallel = FALSE,
                      overwrite = FALSE,
-                     output_type = "s2_mask") { # determines if using s2_mask() or s2_perc_masked()
+                     output_type = "s2_mask", # determines if using s2_mask() or s2_perc_masked()
+                     .logfile_message = NA,
+                     .log_output = NA) {
   
   . <- NULL
   
@@ -418,7 +428,7 @@ s2_mask <- function(infiles,
             print_message(
               type = "message",
               date = TRUE,
-              "Starting parallel application of masks on file",basename(i),"..."
+              "Starting parallel application of masks on file ",basename(sel_infile),"..."
             )
             maskapply_parallel(
               inraster, 
@@ -429,12 +439,14 @@ s2_mask <- function(infiles,
               NAflag = sel_naflag,
               parallel = parallel,
               datatype = dataType(inraster),
-              overwrite = overwrite
+              overwrite = overwrite,
+              .logfile_message=.logfile_message, 
+              .log_output=.log_output
             )
             print_message(
               type = "message",
               date = TRUE,
-              "Parallel application of masks on file",basename(i),"done."
+              "Parallel application of masks on file ",basename(sel_infile)," done."
             )
           }
           

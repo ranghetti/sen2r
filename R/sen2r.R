@@ -286,60 +286,65 @@ sen2r <- function(param_list = NULL,
   }
   if (!is.na(log_message)) {
     dir.create(dirname(log_message), showWarnings=FALSE)
-    logfile = file(log_message, open = "a")
-    sink(logfile, type="message")
+    logfile_message = file(log_message, open = "a")
+    sink(logfile_message, type="message")
+  } else {
+    logfile_message = NA
   }
   
   # launch the function
-  .sen2r(param_list = param_list,
-         gui = gui,
-         preprocess = preprocess,
-         s2_levels = s2_levels,
-         sel_sensor = sel_sensor,
-         online = online,
-         apihub = apihub,
-         downloader = downloader,
-         overwrite_safe = overwrite_safe,
-         rm_safe = rm_safe,
-         step_atmcorr = step_atmcorr,
-         timewindow = timewindow,
-         timeperiod = timeperiod,
-         extent = extent,
-         extent_name = extent_name,
-         s2tiles_selected = s2tiles_selected,
-         s2orbits_selected = s2orbits_selected,
-         list_prods = list_prods,
-         list_indices = list_indices,
-         index_source = index_source,
-         mask_type = mask_type,
-         max_mask = max_mask,
-         mask_smooth = mask_smooth,
-         mask_buffer = mask_buffer,
-         clip_on_extent = clip_on_extent,
-         extent_as_mask = extent_as_mask,
-         reference_path = reference_path,
-         res = res,
-         res_s2 = res_s2,
-         unit = unit,
-         proj = proj,
-         resampling = resampling,
-         resampling_scl = resampling_scl,
-         outformat = outformat,
-         index_datatype = index_datatype,
-         compression = compression,
-         overwrite = overwrite,
-         path_l1c = path_l1c,
-         path_l2a = path_l2a,
-         path_tiles = path_tiles,
-         path_merged = path_merged,
-         path_out = path_out,
-         path_indices = path_indices,
-         path_subdirs = path_subdirs,
-         thumbnails = thumbnails,
-         parallel = parallel,
-         use_python = use_python,
-         tmpdir = tmpdir,
-         rmtmp = rmtmp)
+  .sen2r(
+    param_list = param_list,
+    gui = gui,
+    preprocess = preprocess,
+    s2_levels = s2_levels,
+    sel_sensor = sel_sensor,
+    online = online,
+    apihub = apihub,
+    downloader = downloader,
+    overwrite_safe = overwrite_safe,
+    rm_safe = rm_safe,
+    step_atmcorr = step_atmcorr,
+    timewindow = timewindow,
+    timeperiod = timeperiod,
+    extent = extent,
+    extent_name = extent_name,
+    s2tiles_selected = s2tiles_selected,
+    s2orbits_selected = s2orbits_selected,
+    list_prods = list_prods,
+    list_indices = list_indices,
+    index_source = index_source,
+    mask_type = mask_type,
+    max_mask = max_mask,
+    mask_smooth = mask_smooth,
+    mask_buffer = mask_buffer,
+    clip_on_extent = clip_on_extent,
+    extent_as_mask = extent_as_mask,
+    reference_path = reference_path,
+    res = res,
+    res_s2 = res_s2,
+    unit = unit,
+    proj = proj,
+    resampling = resampling,
+    resampling_scl = resampling_scl,
+    outformat = outformat,
+    index_datatype = index_datatype,
+    compression = compression,
+    overwrite = overwrite,
+    path_l1c = path_l1c,
+    path_l2a = path_l2a,
+    path_tiles = path_tiles,
+    path_merged = path_merged,
+    path_out = path_out,
+    path_indices = path_indices,
+    path_subdirs = path_subdirs,
+    thumbnails = thumbnails,
+    parallel = parallel,
+    use_python = use_python,
+    tmpdir = tmpdir,
+    rmtmp = rmtmp,
+    .logfile_message = logfile_message, .log_output = log_output
+  )
   
   # stop sinking
   if (!is.na(log_message)) {sink(type = "message")}
@@ -400,7 +405,9 @@ sen2r <- function(param_list = NULL,
                    parallel,
                    use_python,
                    tmpdir,
-                   rmtmp) {
+                   rmtmp,
+                   .logfile_message = NA, 
+                   .log_output = NA) {
   
   # to avoid NOTE on check
   . <- NULL
@@ -1218,6 +1225,7 @@ sen2r <- function(param_list = NULL,
           } else {
             file.path(tmpdir, "sen2cor")
           }, 
+          .logfile_message = .logfile_message, .log_output = .log_output,
           rmtmp = TRUE # SAFE temporary archives are always deleted
         )
         names(s2_list_l2a_corrected) <- basename(s2_list_l2a_corrected)
@@ -1372,6 +1380,7 @@ sen2r <- function(param_list = NULL,
       format = merged_outformat,
       parallel = if (merged_outformat=="VRT") {FALSE} else {pm$parallel},
       overwrite = pm$overwrite,
+      .logfile_message = .logfile_message, .log_output = .log_output,
       trace_files = s2names$merged_names_new
     )
     # merged_names_out <- s2_merge(s2names$merged_names_new,
@@ -1503,7 +1512,7 @@ sen2r <- function(param_list = NULL,
       print_message(
         type = "message",
         date = TRUE,
-        "Starting to apply atmospheric masks."
+        "Starting to apply cloud masks."
       )
       
       # index which is TRUE for SCL products, FALSE for others
@@ -1549,6 +1558,7 @@ sen2r <- function(param_list = NULL,
           subdirs = pm$path_subdirs,
           overwrite = pm$overwrite,
           parallel = pm$parallel,
+          .logfile_message = .logfile_message, .log_output = .log_output,
           trace_files = s2names$out_names_new
         )
       } else {character(0)}
@@ -1572,6 +1582,7 @@ sen2r <- function(param_list = NULL,
           subdirs = pm$path_subdirs,
           overwrite = pm$overwrite,
           parallel = pm$parallel,
+          .logfile_message = .logfile_message, .log_output = .log_output,
           trace_files = s2names$out_names_new
         )
       } else {character(0)}
@@ -1608,6 +1619,7 @@ sen2r <- function(param_list = NULL,
       compress = pm$compression,
       overwrite = pm$overwrite,
       parallel = pm$parallel,
+      .logfile_message = .logfile_message, .log_output = .log_output,
       trace_files = s2names$indices_names_new
     )
     

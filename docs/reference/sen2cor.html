@@ -120,7 +120,8 @@ is used.</p>
 
     <pre class="usage"><span class='fu'>sen2cor</span>(<span class='kw'>l1c_prodlist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>l1c_dir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>proc_dir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>tiles</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>.logfile_message</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>.log_output</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -182,6 +183,16 @@ possible (e.g. <code>parallel = 4</code>).</p></td>
       <th>overwrite</th>
       <td><p>Logical value: should existing output L2A products be overwritten?
 (default: FALSE)</p></td>
+    </tr>
+    <tr>
+      <th>.logfile_message</th>
+      <td><p>(optional) Internal parameter
+(it is used when the function is called by <code><a href='sen2r.html'>sen2r()</a></code>).</p></td>
+    </tr>
+    <tr>
+      <th>.log_output</th>
+      <td><p>(optional) Internal parameter
+(it is used when the function is called by <code><a href='sen2r.html'>sen2r()</a></code>).</p></td>
     </tr>
     </table>
     

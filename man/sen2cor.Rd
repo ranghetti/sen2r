@@ -49,6 +49,12 @@ possible (e.g. \code{parallel = 4}).}
 
 \item{overwrite}{Logical value: should existing output L2A products be overwritten?
 (default: FALSE)}
+
+\item{.logfile_message}{(optional) Internal parameter
+(it is used when the function is called by \code{sen2r()}).}
+
+\item{.log_output}{(optional) Internal parameter
+(it is used when the function is called by \code{sen2r()}).}
 }
 \value{
 Vector character with the list ot the output products (being corrected or already

@@ -34,6 +34,10 @@
 #'  possible (e.g. `parallel = 4`).
 #' @param overwrite Logical value: should existing output L2A products be overwritten?
 #'  (default: FALSE)
+#' @param .logfile_message (optional) Internal parameter
+#'  (it is used when the function is called by `sen2r()`).
+#' @param .log_output (optional) Internal parameter
+#'  (it is used when the function is called by `sen2r()`).
 #' @return Vector character with the list ot the output products (being corrected or already
 #'  existing)
 #'
@@ -55,7 +59,8 @@
 
 sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, 
                     tmpdir = NA, rmtmp = TRUE,
-                    tiles=NULL, parallel=FALSE, overwrite=FALSE) {
+                    tiles=NULL, parallel=FALSE, overwrite=FALSE,
+                    .logfile_message=NA, .log_output=NA) {
   
   # load sen2cor executable path
   binpaths <- load_binpaths("sen2cor")
@@ -136,6 +141,14 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
     .export = "mountpoint",
     .packages='sen2r'
   ) %DO% {
+    
+    # redirect to log files
+    if (!is.na(.log_output)) {
+      sink(.log_output, split = TRUE, type = "output", append = TRUE)
+    }
+    if (!is.na(.logfile_message)) {
+      sink(.logfile_message, type="message")
+    }
     
     # set paths
     sel_l1c <- l1c_prodlist[i]

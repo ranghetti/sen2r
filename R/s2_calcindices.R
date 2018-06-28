@@ -61,6 +61,10 @@
 #'  Multiprocess masking computation is always performed in singlecore mode
 #' @param overwrite Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
+#' @param .logfile_message (optional) Internal parameter
+#'  (it is used when the function is called by `sen2r()`).
+#' @param .log_output (optional) Internal parameter
+#'  (it is used when the function is called by `sen2r()`).
 #' @return A vector with the names of the created products.
 #' @export
 #' @importFrom foreach foreach "%do%" "%dopar%"
