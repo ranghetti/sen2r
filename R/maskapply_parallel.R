@@ -111,9 +111,12 @@ maskapply_parallel <- function(in_rast,
   )
   if (n_cores > 1) {registerDoParallel(cl)}
   out_paths <- foreach(i = 1:nlayers(in_rast), .packages = c("raster"), .combine=c)  %DO% {
+    
     # redirect to log files
     if (!is.na(.log_output)) {sink(.log_output, split = TRUE, type = "output", append = TRUE)}
     if (!is.na(.logfile_message)) {sink(.logfile_message, type="message")}
+    
+    # run code
     out_path <- file.path(tmpdir, paste0(basename(tempfile(pattern = "maskapply_")), "_b" , i, ".tif"))
     r <- in_rast[[i]]
     s <- maskapply(r, m, 
@@ -121,7 +124,13 @@ maskapply_parallel <- function(in_rast,
                    out_file = out_path,
                    n_cores,  datatype, minrows, 
                    format = 'GTiff', overwrite = TRUE, options = c("COMPRESS=LZW"))
+    
+    # stop sinking
+    if (!is.na(.log_message)) {sink(type = "message")}
+    if (!is.na(.log_output)) {sink(type = "output")}
+    
     out_path
+    
   }
   if (n_cores > 1) {stopCluster(cl)}
   

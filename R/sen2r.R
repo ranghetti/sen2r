@@ -293,7 +293,7 @@ sen2r <- function(param_list = NULL,
   }
   
   # launch the function
-  .sen2r(
+  sen2r:::.sen2r(
     param_list = param_list,
     gui = gui,
     preprocess = preprocess,
@@ -452,18 +452,20 @@ sen2r <- function(param_list = NULL,
   ## 1. Read / import parameters ##
   
   # Read arguments with default values
-  pm_def <- formals("sen2r") # use "sen2r" instead of ".sen2r" because this one has no defaults
+  pm_def <- formals(sen2r::sen2r) # use "sen2r" instead of ".sen2r" because this one has no defaults
   pm_def <- pm_def[!names(pm_def) %in% c("log")] # remove "log" (argument of sen2r(), not .sen2r())
   # select arguments which are not parameters
   pm_def <- sapply(pm_def[!names(pm_def) %in% c("param_list","gui","use_python","tmpdir","rmtmp")], eval)
   
   # filter names of passed arguments
+  sen2r_args <- formalArgs(sen2r:::.sen2r)
+  sen2r_args <- sen2r_args[!sen2r_args %in% c(".logfile_message",".log_output")]
   pm_arg_passed <- logical(0)
-  for (i in seq_along(formalArgs(".sen2r"))) {
-    pm_arg_passed[i] <- !do.call(missing, list(formalArgs(".sen2r")[i]))
+  for (i in seq_along(sen2r_args)) {
+    pm_arg_passed[i] <- !do.call(missing, list(sen2r_args[i]))
   }
   # Read arguments with passed values
-  pm_arg <- sapply(formalArgs(".sen2r")[pm_arg_passed], function(x){
+  pm_arg <- sapply(sen2r_args[pm_arg_passed], function(x){
     do.call(get, list(x))
   }, simplify=FALSE)
   # select arguments which are not parameters
