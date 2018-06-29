@@ -126,7 +126,7 @@ maskapply_parallel <- function(in_rast,
                    format = 'GTiff', overwrite = TRUE, options = c("COMPRESS=LZW"))
     
     # stop sinking
-    if (!is.na(.log_message)) {sink(type = "message")}
+    if (!is.na(.logfile_message)) {sink(type = "message")}
     if (!is.na(.log_output)) {sink(type = "output")}
     
     out_path
