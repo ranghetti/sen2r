@@ -292,9 +292,18 @@ sen2r <- function(param_list = NULL,
     logfile_message = NA
   }
   
+  # filter names of passed arguments
+  sen2r_args <- formalArgs(sen2r:::.sen2r)
+  sen2r_args <- sen2r_args[!sen2r_args %in% c(".logfile_message",".log_output")]
+  pm_arg_passed <- logical(0)
+  for (i in seq_along(sen2r_args)) {
+    pm_arg_passed[i] <- !do.call(missing, list(sen2r_args[i]))
+  }
+  
   # launch the function
   sen2r:::.sen2r(
     param_list = param_list,
+    pm_arg_passed = pm_arg_passed,
     gui = gui,
     preprocess = preprocess,
     s2_levels = s2_levels,
@@ -358,6 +367,7 @@ sen2r <- function(param_list = NULL,
 # TODO: manage also errors (.sen2r inside a trycatch; in case of errors, stop
 # passing the error message)
 .sen2r <- function(param_list,
+                   pm_arg_passed, # TODO workaround ($473), fix
                    gui,
                    preprocess,
                    s2_levels,
@@ -460,10 +470,12 @@ sen2r <- function(param_list = NULL,
   # filter names of passed arguments
   sen2r_args <- formalArgs(sen2r:::.sen2r)
   sen2r_args <- sen2r_args[!sen2r_args %in% c(".logfile_message",".log_output")]
-  pm_arg_passed <- logical(0)
-  for (i in seq_along(sen2r_args)) {
-    pm_arg_passed[i] <- !do.call(missing, list(sen2r_args[i]))
-  }
+  # FIXME $473 pm_arg_passed computed in the main function (otherwise nothing was missing).
+  # This is not elegant, find a better way to do it.
+  #   pm_arg_passed <- logical(0)
+  #   for (i in seq_along(sen2r_args)) {
+  #     pm_arg_passed[i] <- !do.call(missing, list(sen2r_args[i]))
+  #   }
   # Read arguments with passed values
   pm_arg <- sapply(sen2r_args[pm_arg_passed], function(x){
     do.call(get, list(x))
