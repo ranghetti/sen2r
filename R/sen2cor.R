@@ -312,8 +312,14 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
     
   } # end cycle on each product
   
-  if (n_cores>1) {
+  if (n_cores > 1) {
     stopCluster(cl)
+    if (!is.na(.log_output)) {
+      sink(.log_output, split = TRUE, type = "output", append = TRUE)
+    }
+    if (!is.na(.logfile_message)) {
+      sink(.logfile_message, type="message")
+    }
   }
   
   # Remove temporary directory

@@ -132,7 +132,15 @@ maskapply_parallel <- function(in_rast,
     out_path
     
   }
-  if (n_cores > 1) {stopCluster(cl)}
+  if (n_cores > 1) {
+    stopCluster(cl)
+    if (!is.na(.log_output)) {
+      sink(.log_output, split = TRUE, type = "output", append = TRUE)
+    }
+    if (!is.na(.logfile_message)) {
+      sink(.logfile_message, type="message")
+    }
+  }
   
   # write output VRT
   system(

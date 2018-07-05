@@ -343,7 +343,15 @@ s2_merge <- function(infiles,
     file.path(out_subdir,sel_outfile)
     
   } # end of foreach cycle
-  if (n_cores > 1) {stopCluster(cl)}
+  if (n_cores > 1) {
+    stopCluster(cl)
+    if (!is.na(.log_output)) {
+      sink(.log_output, split = TRUE, type = "output", append = TRUE)
+    }
+    if (!is.na(.logfile_message)) {
+      sink(.logfile_message, type="message")
+    }
+  }
   
   # Remove temporary files
   if (rmtmp == TRUE) {

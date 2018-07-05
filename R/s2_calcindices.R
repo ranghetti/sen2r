@@ -343,6 +343,12 @@ s2_calcindices <- function(infiles,
   } # end cycle on infiles
   if (n_cores > 1) {
     stopCluster(cl)
+    if (!is.na(.log_output)) {
+      sink(.log_output, split = TRUE, type = "output", append = TRUE)
+    }
+    if (!is.na(.logfile_message)) {
+      sink(.logfile_message, type="message")
+    }
     print_message(
       type = "message",
       date = TRUE,
