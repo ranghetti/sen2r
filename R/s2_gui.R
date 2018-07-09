@@ -172,6 +172,17 @@ s2_gui <- function(param_list = NULL,
             icon = icon("ban"),
             class = "darkbutton"
           )
+        ),
+        
+        p(style="margin-top:20pt;",
+          actionButton(
+            "open_github_doc",
+            label = "\u2000Open documentation",
+            icon = icon("info-circle"),
+            onclick ="window.open('https://ranghetti.github.io/sen2r', '_blank')",
+            # onclick ="window.open('https://ranghetti.github.io/sen2r/articles/sen2r_gui.html', '_blank')",
+            class = "darkbutton"
+          )
         )
       )
     ),
@@ -2595,8 +2606,8 @@ s2_gui <- function(param_list = NULL,
         input$atm_mask_type
       } # atmospheric masking (accepted types as in s2_mask())
       rl$max_mask <- input$max_masked_perc
-      rl$mask_smooth <- input$mask_smooth
-      rl$mask_buffer <- input$mask_buffer
+      rl$mask_smooth <- if (input$mask_apply_smooth) {input$mask_smooth} else {0}
+      rl$mask_buffer <- if (input$mask_apply_smooth) {input$mask_buffer} else {0}
       
       rl$clip_on_extent <- as.logical(input$clip_on_extent) # TRUE to clip (and warp) on the selected extent, FALSE to work at tiles/merged level
       rl$extent_as_mask <- as.logical(input$extent_as_mask) # TRUE to mask outside the polygons of extent, FALSE to use as boundig box
@@ -2727,6 +2738,8 @@ s2_gui <- function(param_list = NULL,
                            selected = ifelse(is.na(pl$mask_type),FALSE,TRUE))
         updateSliderInput(session, "max_masked_perc",
                           value = ifelse(is.na(pl$mask_type),80,pl$max_mask))
+        updateNumericInput(session, "mask_apply_smooth", 
+                           value = if (all(c(pl$mask_smooth, pl$mask_buffer)==0)) {FALSE} else {TRUE})
         updateNumericInput(session, "mask_smooth", value = pl$mask_smooth)
         updateNumericInput(session, "mask_buffer", value = pl$mask_buffer)
         updateRadioButtons(session, "atm_mask_type",
