@@ -397,15 +397,17 @@ s2_thumbnails <- function(infiles,
       if (anyNA(scaleRange)) {
         scaleRange <- if (sel_prod_type %in% c("BOA","TOA")) {
           c(0, switch(rgb_type, "SwirNirR" = 8000, "NirRG" = 7500, "RGB" = 2500))
-        } else if (sel_prod_type %in% c("Zscore")){
+        } else if (sel_prod_type %in% c("Zscore","rbias")){
           sel_infile_datatype <- attr(
             suppressWarnings(GDALinfo(sel_infile_path)),
             "df"
           )[1,"GDType"]
           if (grepl("^Float",sel_infile_datatype)) {
-            c(-3, 3)
+            if (sel_prod_type == "Zscore") {c(-3, 3)} else {c(-300, 300)}
           } else if (grepl("^Int",sel_infile_datatype)) {
             c(-3E3,3E3)
+          } else if (grepl("^Byte$",sel_infile_datatype)) {
+            c(0,200)
           }
         } else if (sel_prod_type %in% c("SCL")){
           rep(NA,2) # it is ignored
