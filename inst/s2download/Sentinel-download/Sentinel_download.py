@@ -315,8 +315,6 @@ def Sentinel_download(downloader=None,lat=None,lon=None,latmin=None,latmax=None,
                       orbit=None,apihub=None,proxy=None,no_download=False,max_cloud=110,write_dir='.',
                       sentinel='S2',tile=None,dhus=False,MaxRecords=100,list_only=False,downloaderPath='',file_list=None):
                         
-    #print "downloader_path Sentinel_download: "+downloaderPath # FIXME remove
-
     url_search="https://scihub.copernicus.eu/apihub/search?q="
 
     if lat==None or lon==None:
@@ -414,6 +412,7 @@ def Sentinel_download(downloader=None,lat=None,lon=None,latmin=None,latmax=None,
     # ranghetti edit: if list_only, do not download but save element to download later
     list_prod = list()
     list_filename = list()
+    list_date = list() # ranghetti edit
 
     for i in range(len(request_list)):
         os.system(request_list[i])
@@ -452,7 +451,8 @@ def Sentinel_download(downloader=None,lat=None,lon=None,latmin=None,latmax=None,
                 print "Please choose either S1 or S2"
                 sys.exit(-1)
 
-            if date_prod>=start_date and date_prod<=end_date:
+            # ranghetti edit: do not add product if another already exists for the same date
+            if date_prod>=start_date and date_prod<=end_date and date_prod not in list_date:
 
                 # print what has been found
                 print "\n==============================================="
@@ -477,6 +477,7 @@ def Sentinel_download(downloader=None,lat=None,lon=None,latmin=None,latmax=None,
                 # ranghetti edit: if lis_only, do not download but save element as to download later
                 list_prod.append(link)
                 list_filename.append(filename)
+                list_date.append(date_prod)
                 # otherwise, continue with the original code
                 if list_only is False:
                     download_s2product(filename=filename,link=link,downloader=downloader,apihub=apihub,tile=tile,no_download=no_download,write_dir=write_dir,file_list=file_list,downloader_path=downloaderPath)
