@@ -5,15 +5,15 @@
 \title{Find, download and preprocess Sentinel-2 images}
 \usage{
 sen2r(param_list = NULL, gui = NA, preprocess = TRUE,
-  s2_levels = c("l2a"), sel_sensor = c("s2a", "s2b"), online = TRUE,
-  apihub = NA, downloader = "wget", overwrite_safe = FALSE,
-  rm_safe = "no", step_atmcorr = "auto", timewindow = NA,
-  timeperiod = "full", extent = NA, extent_name = "",
+  s2_levels = c("l1c", "l2a"), sel_sensor = c("s2a", "s2b"),
+  online = TRUE, apihub = NA, downloader = "wget",
+  overwrite_safe = FALSE, rm_safe = "no", step_atmcorr = "auto",
+  timewindow = NA, timeperiod = "full", extent = NA, extent_name = "",
   s2tiles_selected = NA, s2orbits_selected = NA, list_prods = c("BOA"),
   list_indices = NA, index_source = "BOA", mask_type = NA,
   max_mask = 100, mask_smooth = 0, mask_buffer = 0,
   clip_on_extent = TRUE, extent_as_mask = FALSE, reference_path = NA,
-  res = c(10, 10), res_s2 = "10m", unit = "Meter", proj = NA,
+  res = NA, res_s2 = "10m", unit = "Meter", proj = NA,
   resampling = "near", resampling_scl = "near", outformat = "GTiff",
   index_datatype = "Int16", compression = "DEFLATE", overwrite = FALSE,
   path_l1c = NA, path_l2a = NA, path_tiles = NA, path_merged = NA,
@@ -176,7 +176,7 @@ within the bounding box are maintained.}
 reference grid. If NA (default), no reference is used.}
 
 \item{res}{(optional) Numerifc vector of length 2 with the x-y resolution
-for output products. Default: c(10,10). NA means that the resolution
+for output products. Default (NA) means that the resolution
 is keeped as native.}
 
 \item{res_s2}{(optional) Character value corresponding to the native Sentinel-2

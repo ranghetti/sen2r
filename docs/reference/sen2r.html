@@ -121,15 +121,15 @@ descriptions of all the other parameters).</p>
     </div>
 
     <pre class="usage"><span class='fu'>sen2r</span>(<span class='kw'>param_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>gui</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>preprocess</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>s2_levels</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"l2a"</span>), <span class='kw'>sel_sensor</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"s2a"</span>, <span class='st'>"s2b"</span>), <span class='kw'>online</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>downloader</span> <span class='kw'>=</span> <span class='st'>"wget"</span>, <span class='kw'>overwrite_safe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>rm_safe</span> <span class='kw'>=</span> <span class='st'>"no"</span>, <span class='kw'>step_atmcorr</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>timeperiod</span> <span class='kw'>=</span> <span class='st'>"full"</span>, <span class='kw'>extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>extent_name</span> <span class='kw'>=</span> <span class='st'>""</span>,
+  <span class='kw'>s2_levels</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"l1c"</span>, <span class='st'>"l2a"</span>), <span class='kw'>sel_sensor</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"s2a"</span>, <span class='st'>"s2b"</span>),
+  <span class='kw'>online</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>downloader</span> <span class='kw'>=</span> <span class='st'>"wget"</span>,
+  <span class='kw'>overwrite_safe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>rm_safe</span> <span class='kw'>=</span> <span class='st'>"no"</span>, <span class='kw'>step_atmcorr</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
+  <span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>timeperiod</span> <span class='kw'>=</span> <span class='st'>"full"</span>, <span class='kw'>extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>extent_name</span> <span class='kw'>=</span> <span class='st'>""</span>,
   <span class='kw'>s2tiles_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>s2orbits_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"BOA"</span>),
   <span class='kw'>list_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>index_source</span> <span class='kw'>=</span> <span class='st'>"BOA"</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>mask_smooth</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>mask_buffer</span> <span class='kw'>=</span> <span class='fl'>0</span>,
   <span class='kw'>clip_on_extent</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>extent_as_mask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>reference_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>res</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>10</span>, <span class='fl'>10</span>), <span class='kw'>res_s2</span> <span class='kw'>=</span> <span class='st'>"10m"</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"Meter"</span>, <span class='kw'>proj</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res_s2</span> <span class='kw'>=</span> <span class='st'>"10m"</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"Meter"</span>, <span class='kw'>proj</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>resampling</span> <span class='kw'>=</span> <span class='st'>"near"</span>, <span class='kw'>resampling_scl</span> <span class='kw'>=</span> <span class='st'>"near"</span>, <span class='kw'>outformat</span> <span class='kw'>=</span> <span class='st'>"GTiff"</span>,
   <span class='kw'>index_datatype</span> <span class='kw'>=</span> <span class='st'>"Int16"</span>, <span class='kw'>compression</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>path_l1c</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_l2a</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_merged</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
@@ -348,7 +348,7 @@ reference grid. If NA (default), no reference is used.</p></td>
     <tr>
       <th>res</th>
       <td><p>(optional) Numerifc vector of length 2 with the x-y resolution
-for output products. Default: c(10,10). NA means that the resolution
+for output products. Default (NA) means that the resolution
 is keeped as native.</p></td>
     </tr>
     <tr>
