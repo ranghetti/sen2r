@@ -127,7 +127,7 @@
 #' @param reference_path (optional) Path of the raster file to be used as a
 #'  reference grid. If NA (default), no reference is used.
 #' @param res (optional) Numerifc vector of length 2 with the x-y resolution
-#'  for output products. Default: c(10,10). NA means that the resolution
+#'  for output products. Default (NA) means that the resolution
 #'  is keeped as native.
 #' @param res_s2 (optional) Character value corresponding to the native Sentinel-2
 #'  resolution to be used. Accepted values are "10m" (default), "20m"
@@ -229,7 +229,7 @@
 sen2r <- function(param_list = NULL,
                   gui = NA,
                   preprocess = TRUE,
-                  s2_levels = c("l2a"),
+                  s2_levels = c("l1c","l2a"),
                   sel_sensor = c("s2a","s2b"),
                   online = TRUE,
                   apihub = NA,
@@ -253,7 +253,7 @@ sen2r <- function(param_list = NULL,
                   clip_on_extent = TRUE,
                   extent_as_mask = FALSE,
                   reference_path = NA,
-                  res = c(10,10),
+                  res = NA,
                   res_s2 = "10m",
                   unit = "Meter",
                   proj = NA,
