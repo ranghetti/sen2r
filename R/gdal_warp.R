@@ -312,10 +312,14 @@ gdal_warp <- function(srcfiles,
               matrix(nrow=2, ncol=2, dimnames=list(c("x","y"),c("min","max")))
             # get_extent() %>% as("matrix")
           }
-          sel_te <- (sel_mask_bbox - sel_ll) / sel_tr
-          sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
-          dimnames(sel_te) <- list(c("x","y"),c("min","max"))
-          sel_te <- sel_te * sel_tr + sel_ll
+          if (sel_t_srs == sel_s_srs) {
+            sel_te <- (sel_mask_bbox - sel_ll) / sel_tr
+            sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
+            dimnames(sel_te) <- list(c("x","y"),c("min","max"))
+            sel_te <- sel_te * sel_tr + sel_ll
+          } else {
+            sel_te <- sel_mask_bbox
+          }
         }
       } else {
         if (is.null(mask)) {
@@ -323,10 +327,14 @@ gdal_warp <- function(srcfiles,
           sel_te <- ref_bbox
         } else if (class(mask)=="logical" && is.na(mask)) {
           # ref provided & mask NA: use bbox of srcfile (reprojected and aligned to ref grid)
-          sel_te <- (sel_src_bbox - ref_ll) / sel_tr
-          sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
-          dimnames(sel_te) <- list(c("x","y"),c("min","max"))
-          sel_te <- sel_te * sel_tr + ref_ll
+          if (sel_t_srs == sel_s_srs) {
+            sel_te <- (sel_src_bbox - ref_ll) / sel_tr
+            sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
+            dimnames(sel_te) <- list(c("x","y"),c("min","max"))
+            sel_te <- sel_te * sel_tr + ref_ll
+          } else {
+            sel_te <- sel_mask_bbox
+          }
         } else {
           # ref provided & mask provided: use bbox of mask (reprojected and aligned to ref grid)
           sel_mask_bbox <- if (exists("mask_bbox")) {
@@ -337,10 +345,14 @@ gdal_warp <- function(srcfiles,
               matrix(nrow=2, ncol=2, dimnames=list(c("x","y"),c("min","max")))
             # get_extent() %>% as("matrix")
           }
-          sel_te <- (sel_mask_bbox - ref_ll) / sel_tr
-          sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
-          dimnames(sel_te) <- list(c("x","y"),c("min","max"))
-          sel_te <- sel_te * sel_tr + ref_ll
+          if (sel_t_srs == sel_s_srs) {
+            sel_te <- (sel_mask_bbox - ref_ll) / sel_tr
+            sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
+            dimnames(sel_te) <- list(c("x","y"),c("min","max"))
+            sel_te <- sel_te * sel_tr + ref_ll
+          } else {
+            sel_te <- sel_mask_bbox
+          }
         }
       }
       

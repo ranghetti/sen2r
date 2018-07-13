@@ -93,7 +93,7 @@
 #'  created cause to the high percentage of cloud coverage.
 #' @export
 #' @importFrom rgdal GDALinfo
-#' @importFrom raster stack brick calc dataType mask overlay values
+#' @importFrom raster brick calc dataType mask overlay stack values
 #' @importFrom jsonlite fromJSON
 #' @import data.table
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
@@ -380,13 +380,51 @@ s2_mask <- function(infiles,
           # resample it
           if (any(suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")]) !=
                   suppressWarnings(GDALinfo(outmask)[c("res.x","res.y")]))) {
-            gdal_warp( # TODO use raster::aggregate
+            gdal_warp( # DO NOT use raster::disaggregate (1. not faster, 2. it does not always provide the right resolution)
               outmask,
               outmask_res <- file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif"))),
               ref = sel_infile
             )
+#             outmask_res0 <- file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
+#             outmask_res <- file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
+#             disaggregate(
+#               raster(outmask),
+#               filename = outmask_res0,
+#               fact = round(
+#                 suppressWarnings(GDALinfo(outmask)[c("res.x","res.y")]) / 
+#                   suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")])
+#               ),
+#               method = "",
+#               options  = "COMPRESS=LZW",
+#               datatype = "INT1U"
+#             )
+#             if (any(suppressWarnings(GDALinfo(sel_infile)[c("rows","columns")]) !=
+#                     suppressWarnings(GDALinfo(outmask_res0)[c("rows","columns")]))) {
+#               crop(
+#                 raster(outmask_res0),
+#                 raster(sel_infile),
+#                 filename = outmask_res,
+#                 options  = "COMPRESS=LZW",
+#                 datatype = "INT1U"
+#               )
+#             } else {
+#               outmask_res <- outmask_res0
+#             }
           } else {
             outmask_res <- outmask
+          }
+
+          # the same for outnaval
+          if (any(suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")]) !=
+                  suppressWarnings(GDALinfo(outnaval)[c("res.x","res.y")])) & 
+              (smooth > 0 | buffer != 0)) {
+            gdal_warp(
+              outnaval,
+              outnaval_res <- file.path(sel_tmpdir, basename(tempfile(pattern = "naval_", fileext = ".tif"))),
+              ref = sel_infile
+            )
+          } else {
+            outnaval_res <- outnaval
           }
           
           # apply the smoothing (if required)
@@ -400,7 +438,7 @@ s2_mask <- function(infiles,
             smooth_mask(
               outmask_res, 
               radius = smooth, buffer = buffer, 
-              namask = if (any(values_naval==0)) {outnaval} else {NULL}, # TODO NULL if no Nodata values are present
+              namask = if (any(values_naval==0)) {outnaval_res} else {NULL}, # TODO NULL if no Nodata values are present
               binpaths = binpaths, tmpdir = sel_tmpdir
             )
           } else {
