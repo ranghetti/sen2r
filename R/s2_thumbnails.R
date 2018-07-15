@@ -372,13 +372,13 @@ s2_thumbnails <- function(infiles,
       
       # Resize input if necessary
       sel_infile_size <- suppressWarnings(GDALinfo(sel_infile_path)[c("rows","columns")])
+      resized_path <- file.path(tmpdir, gsub(
+        "\\..+$",
+        if (sel_prod_type %in% c("BOA","TOA")) {"_resized.tif"} else {"_resized.vrt"},
+        basename(sel_infile_path)
+      )) # GTiff is used for multiband images to avoid problems using gdal_calc (#82)
       if (dim < max(sel_infile_size)) {
         out_size <- round(sel_infile_size * min(dim,max(sel_infile_size)) / max(sel_infile_size))
-        resized_path <- file.path(tmpdir, gsub(
-          "\\..+$",
-          if (sel_prod_type %in% c("BOA","TOA")) {"_resized.tif"} else {"_resized.vrt"},
-          basename(sel_infile_path)
-        )) # GTiff is used for multiband images to avoid problems using gdal_calc (#82)
         system(
           paste0(
             binpaths$gdalwarp,
@@ -390,7 +390,18 @@ s2_thumbnails <- function(infiles,
           ), intern = Sys.info()["sysname"] == "Windows"
         )
       } else {
-        resized_path <- sel_infile_path
+        if (sel_prod_type %in% c("BOA","TOA")) {
+          system(
+            paste0(
+              binpaths$gdal_translate," ",
+              "-of GTiff -co COMPRESS=LZW ",
+              "\"",filterbands_path,"\" ",
+              "\"",resized_path,"\""
+            ), intern = Sys.info()["sysname"] == "Windows"
+          )
+        } else {
+          resized_path <- filterbands_path
+        }
       }
       
       # define scaleRange
