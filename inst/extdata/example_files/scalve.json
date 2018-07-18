@@ -41,5 +41,5 @@
   "path_indices": ["extdata/example_files/out"], // this must be edited or provided as argument
   "path_subdirs": [true],
   "thumbnails": [true],
-  "pkg_version": ["0.3.2"]
+  "pkg_version": ["0.3.3"]
 }
