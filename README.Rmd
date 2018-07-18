@@ -61,7 +61,7 @@ merging adjacent tiles, computing spectral indices from existing products)
 can also be performed using intermediate functions (see [usage](#usage)).
 
 ## Warning
-This package is under construction (current version is [pre-release 0.3.2](https://github.com/ranghetti/sen2r/releases/tag/v0.3.2)).
+This package is under construction (current version is [pre-release 0.3.3](https://github.com/ranghetti/sen2r/releases/tag/v0.3.3)).
 Please refer to the [crontab of release 0.4.0](https://github.com/ranghetti/sen2r/milestone/3)
 to know which implementations should already be performed.
 
@@ -195,14 +195,14 @@ is released under the [Creative Commons Attribution-ShareAlike 4.0 International
 
 To cite this library, please use the following entry:
 
-Ranghetti, L.\ and Busetto, L.\ (2018). *sen2r: an R toolbox to find, download and preprocess Sentinel-2 data*. R package version 0.3.2. DOI: [10.5281/zenodo.1240384](https://ranghetti.github.io/sen2r).
+Ranghetti, L.\ and Busetto, L.\ (2018). *sen2r: an R toolbox to find, download and preprocess Sentinel-2 data*. R package version 0.3.3. DOI: [10.5281/zenodo.1240384](https://ranghetti.github.io/sen2r).
 
 ```bibtex
 @Manual{sen2r,
   title  = {sen2r: an R toolbox to find, download and preprocess Sentinel-2 data},
   author = {Luigi Ranghetti and Lorenzo Busetto},
   year   = {2018},
-  note   = {R package version 0.3.2},
+  note   = {R package version 0.3.3},
   doi    = {10.5281/zenodo.1240384},
   url    = {https://ranghetti.github.io/sen2r},
 }

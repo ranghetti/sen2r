@@ -69,7 +69,6 @@ create_s2_dop <- function(json_path = NA, force = FALSE) {
   # with standard origin (1970-01-01)
   # (this is sufficient to compute dates of passage, since they are repeated 
   # with a period of 10 days)
-  prods_nameinfo[,SENSING_TIME:=as.POSIXct(SENSING_TIME)]
   s2_sel[,date:=as.Date(strftime(SENSING_TIME, "%Y-%m-%d"))]
   s2_sel[,doybase:=as.integer(date)%%10]
   s2_sel[mission=="2B",doybase:=(as.integer(date)+5)%%10]
@@ -95,6 +94,6 @@ create_s2_dop <- function(json_path = NA, force = FALSE) {
   )
   writeLines(toJSON(json_table, pretty=TRUE), json_path)
   
-  return(s2_dop_list)
+  return(json_path)
   
 }
