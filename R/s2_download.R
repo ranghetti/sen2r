@@ -39,7 +39,7 @@
 #' # downloads single product files)
 #'
 #' # Download a serie of products
-#' pos <- sp::SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=sp::CRS("+init=epsg:4326"))
+#' pos <- st_sfc(st_point(c(12.0, 44.8)), crs=st_crs(4326))
 #' time_window <- as.Date(c("2017-05-01","2017-07-30"))
 #' example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window)
 #' s2_download(example_s2_list, outdir=tempdir())

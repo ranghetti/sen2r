@@ -165,8 +165,17 @@ gdal_warp <- function(srcfiles,
   }
   
   # check t_srs
-  if (is(t_srs, "crs")) {
-    t_srs <- t_srs$proj4string
+  if (!is.null(t_srs)) {
+    if (is(t_srs, "crs")) {
+      t_srs <- t_srs$proj4string
+    } else if (!is.na(st_crs(t_srs)$proj4string)) {
+      t_srs <- st_crs(t_srs)$proj4string
+    } else {
+      print_message(
+        type = "error",
+        "The input CRS (",t_srs,") was not recognised."
+      )
+    }
   }
   
   # check output format
