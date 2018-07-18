@@ -552,6 +552,9 @@ sen2r <- function(param_list = NULL,
       "Launching GUI..."
     )
     
+    # Check parameters before opening the GUI
+    pm <- check_param_list(pm, type = "error", correct = TRUE)
+    
     pm <- .s2_gui(pm, par_fun = "sen2r")
     if (is.null(pm)) {
       print_message(
