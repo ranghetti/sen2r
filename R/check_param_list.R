@@ -52,6 +52,22 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   
   # TODO check package version and parameter names
   
+  # check_extent
+  if (!is.null(pm$extent) & !anyNA(pm$extent)) {
+    if (!is(pm$extent, "sf")) {
+      tryCatch(
+        pm$extent <- st_read(pm$extent, quiet = TRUE),
+        error = function(e) {
+          print_message(
+            type = "error",
+            "The extent is not in a managed format."
+          )
+        }
+      )
+    }
+
+  }
+
   # check timewindow
   if (!anyNA(pm$timewindow)) {
     if (length(pm$timewindow)==1) {
