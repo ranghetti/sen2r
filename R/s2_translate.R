@@ -22,7 +22,7 @@
 #'  (in this case temporary files cannot be deleted, because rasters of source
 #'  bands are included within them).
 #' @param prod_type (optional) Vector of types to be produced as outputs
-#'  (see [s2_shortname] for the list of accepted values). Default is
+#'  (see [safe_shortname] for the list of accepted values). Default is
 #'  reflectance ("TOA" for level 1C, "BOA" for level 2A).
 #' @param tiles (optional) Character vector with the desired output tile IDs 
 #'  (id specified IDs are not present in the input SAFE product, they are not
@@ -127,7 +127,7 @@ s2_translate <- function(infile,
   # Check GDAL installation
   check_gdal(abort=TRUE)
   # Retrieve xml required metadata
-  infile_meta <- s2_getMetadata(infile, c("xml_main","xml_granules","utm","level","tiles", "jp2list"))
+  infile_meta <- safe_getMetadata(infile, c("xml_main","xml_granules","utm","level","tiles", "jp2list"))
   infile_dir = dirname(infile_meta$xml_main)
   
   # define output directory
@@ -219,13 +219,13 @@ s2_translate <- function(infile,
     # cycle on granules (with compact names, this runs only once; with old name, one or more)
     for (sel_granule in infile_meta$xml_granules) {try({
       
-      sel_tile <- s2_getMetadata(dirname(sel_granule), "nameinfo")$id_tile
+      sel_tile <- safe_getMetadata(dirname(sel_granule), "nameinfo")$id_tile
       
       # continue only if sel_tile is within desired tiles
       if (anyNA(tiles) | sel_tile %in% tiles) {
         
         # define output basename
-        out_prefix <- s2_shortname(sel_granule, prod_type=sel_prod, res=res[1], full.name=FALSE, abort=TRUE)
+        out_prefix <- safe_shortname(sel_granule, prod_type=sel_prod, res=res[1], full.name=FALSE, abort=TRUE)
         # complete output filename
         out_name <- file.path(out_subdir,paste0(out_prefix,".",out_ext))
         

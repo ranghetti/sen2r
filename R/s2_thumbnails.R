@@ -251,8 +251,8 @@ raster2rgb <- function(in_rast,
 #'  of products already converted from SAFE format to a
 #'  format managed by GDAL (use [s2_translate] to do it);
 #'  their names must be in the sen2r naming convention
-#'  ([s2_shortname]).
-#' @param prod_type (optional) Output product (see [s2_shortname] for the 
+#'  ([safe_shortname]).
+#' @param prod_type (optional) Output product (see [safe_shortname] for the 
 #'  list of accepted products). If not provided, it is retrieved from the
 #'  file name.
 #' @param rgb_type (optional) For BOA and TOA products, this value determine
@@ -316,7 +316,7 @@ s2_thumbnails <- function(infiles,
   
   # Get files metadata
   if (is.na(prod_type)) {
-    infiles_meta <- data.table(fs2nc_getElements(infiles, format="data.frame"))
+    infiles_meta <- data.table(sen2r_getElements(infiles, format="data.frame"))
   }
   
   out_names <- character(0) # names of created files

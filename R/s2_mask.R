@@ -6,7 +6,7 @@
 #'  of products already converted from SAFE format to a
 #'  format managed by GDAL (use [s2_translate] to do it);
 #'  their names must be in the sen2r naming convention
-#'  ([s2_shortname]).
+#'  ([safe_shortname]).
 #' @param maskfiles A vector of filenames from which to take the
 #'  information about cloud coverage (for now, only SCL products
 #'  have been implemented). It is not necessary that `maskfiles`
@@ -14,7 +14,7 @@
 #'  of products already converted from SAFE format to a
 #'  format managed by GDAL (use [s2_translate] to do it);
 #'  their names must be in the sen2r naming convention
-#'  ([s2_shortname]).
+#'  ([safe_shortname]).
 #' @param mask_type (optional) Character vector which determines the type of
 #'  mask to be applied. Accepted values are:
 #'  - "nodata": mask pixels checked as "No data" in the SCL product;
@@ -209,8 +209,8 @@ s2_mask <- function(infiles,
   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
   
   # Get files metadata
-  infiles_meta <- data.table(fs2nc_getElements(infiles, format="data.frame"))
-  maskfiles_meta <- data.table(fs2nc_getElements(maskfiles, format="data.frame"))
+  infiles_meta <- data.table(sen2r_getElements(infiles, format="data.frame"))
+  maskfiles_meta <- data.table(sen2r_getElements(maskfiles, format="data.frame"))
   # suppressWarnings(
   #   infiles_meta_gdal <- sapply(infiles, function(x) {attributes(GDALinfo(x))[c("df")]})
   # )

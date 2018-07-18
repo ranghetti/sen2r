@@ -835,7 +835,7 @@ sen2r <- function(param_list = NULL,
       }
       s2_lists <- lapply(s2_lists, function(l) {
         sapply(l, function(x) {
-          tryCatch(s2_getMetadata(x, info="nameinfo")$level,
+          tryCatch(safe_getMetadata(x, info="nameinfo")$level,
                    error = function(e) NA)
         })
       })
@@ -880,7 +880,7 @@ sen2r <- function(param_list = NULL,
     
     # getting required metadata
     s2_dt <- lapply(names(s2_list), function(x) {
-      unlist(s2_getMetadata(x, info="nameinfo")) %>%
+      unlist(safe_getMetadata(x, info="nameinfo")) %>%
         t() %>%
         as.data.frame(stringsAsFactors=FALSE)
     }) %>%
@@ -1064,7 +1064,7 @@ sen2r <- function(param_list = NULL,
         
         # If all products are compactname, launch a single s2_download() instance
         if (all(sapply(names(s2_list_l2a), function(x) {
-          s2_getMetadata(x, "nameinfo")$version
+          safe_getMetadata(x, "nameinfo")$version
         }) == "compact")) {
           s2_download(
             s2_list_l2a[!names(s2_list_l2a) %in% list.files(pm$path_l2a, "\\.SAFE$")],
@@ -1115,7 +1115,7 @@ sen2r <- function(param_list = NULL,
         
         # If all products are compactname, launch a single s2_download() instance
         if (all(sapply(names(s2_list_l1c), function(x) {
-          s2_getMetadata(x, "nameinfo")$version
+          safe_getMetadata(x, "nameinfo")$version
         }) == "compact")) {
           s2_download(
             s2_list_l1c[!names(s2_list_l1c) %in% list.files(pm$path_l1c, "\\.SAFE$")],
@@ -1161,7 +1161,7 @@ sen2r <- function(param_list = NULL,
     
     # second filter on tiles (#filter2)
     s2_dt$id_tile <- lapply(file.path(ifelse(s2_dt$level=="1C",pm$path_l1c,pm$path_l2a),s2_dt[,name]), function(x) {
-      tryCatch(s2_getMetadata(x, "tiles"), error = function(e) {NULL})
+      tryCatch(safe_getMetadata(x, "tiles"), error = function(e) {NULL})
     }) %>%
       sapply(paste, collapse = " ") %>% as.character()
     if (all(!is.na(pm$s2tiles_selected)) & nrow(s2_dt)>0) {
@@ -1437,7 +1437,7 @@ sen2r <- function(param_list = NULL,
       
       if (any(!file.exists(s2names$warped_names_reqout)) | pm$overwrite==TRUE) {
         # index which is TRUE for SCL products, FALSE for others
-        names_merged_req_scl_idx <- fs2nc_getElements(s2names$merged_names_req,format="data.frame")$prod_type=="SCL"
+        names_merged_req_scl_idx <- sen2r_getElements(s2names$merged_names_req,format="data.frame")$prod_type=="SCL"
         # here trace_function() is not used, since argument "tr" matches multiple formal arguments.
         # manual cycle is performed.
         tracename_gdalwarp <- start_trace(s2names$warped_names_reqout[!names_merged_req_scl_idx], "gdal_warp")
@@ -1453,7 +1453,7 @@ sen2r <- function(param_list = NULL,
             r = pm$resampling,
             dstnodata = s2_defNA(
               sapply(s2names$merged_names_req[!names_merged_req_scl_idx & file.exists(s2names$merged_names_req)],
-                     function(x){fs2nc_getElements(x)$prod_type})
+                     function(x){sen2r_getElements(x)$prod_type})
             ),
             co = if (warped_outformat=="GTiff") {paste0("COMPRESS=",pm$compression)},
             overwrite = pm$overwrite,
@@ -1480,7 +1480,7 @@ sen2r <- function(param_list = NULL,
             r = pm$resampling_scl,
             dstnodata = s2_defNA(
               sapply(s2names$merged_names_req[names_merged_req_scl_idx & file.exists(s2names$merged_names_req)],
-                     function(x){fs2nc_getElements(x)$prod_type})
+                     function(x){sen2r_getElements(x)$prod_type})
             ),
             co = if (out_outformat=="GTiff") {paste0("COMPRESS=",pm$compression)},
             overwrite = pm$overwrite,
@@ -1530,8 +1530,8 @@ sen2r <- function(param_list = NULL,
       )
       
       # index which is TRUE for SCL products, FALSE for others
-      names_warped_exp_scl_idx <- fs2nc_getElements(s2names$warped_names_exp,format="data.frame")$prod_type=="SCL"
-      names_warped_req_scl_idx <- fs2nc_getElements(s2names$warped_names_req,format="data.frame")$prod_type=="SCL"
+      names_warped_exp_scl_idx <- sen2r_getElements(s2names$warped_names_exp,format="data.frame")$prod_type=="SCL"
+      names_warped_req_scl_idx <- sen2r_getElements(s2names$warped_names_req,format="data.frame")$prod_type=="SCL"
       # index which is TRUE for products to be atm. masked, FALSE for others
       names_warped_tomask_idx <- if ("SCL" %in% pm$list_prods) {
         names_warped_req_scl_idx>-1
@@ -1549,7 +1549,7 @@ sen2r <- function(param_list = NULL,
       masked_names_infiles_sr_idx <- any(!is.na(pm$list_indices)) & 
         !pm$index_source %in% pm$list_prods & 
         sapply(masked_names_infiles, function(x){
-          fs2nc_getElements(x)$prod_type==pm$index_source
+          sen2r_getElements(x)$prod_type==pm$index_source
         })
       
       masked_names_out_nsr <- if (length(masked_names_infiles[!masked_names_infiles_sr_idx])>0) {
@@ -1651,7 +1651,7 @@ sen2r <- function(param_list = NULL,
   if (exists("masked_names_notcreated")) {
     if (length(masked_names_notcreated)>0 & length(s2names$out_names_req)>0) {
       indices_names_notcreated <- data.table(
-        fs2nc_getElements(masked_names_notcreated, format="data.frame")
+        sen2r_getElements(masked_names_notcreated, format="data.frame")
       )[level %in% if(pm$index_source=="BOA"){"2A"}else{"1C"},
         paste0("S2",
                mission,
@@ -1707,7 +1707,7 @@ sen2r <- function(param_list = NULL,
           function(x) {
             gsub(
               "\\..+$",
-              if (fs2nc_getElements(x)$prod_type %in% c("SCL")) {".png"} else {".jpg"},
+              if (sen2r_getElements(x)$prod_type %in% c("SCL")) {".png"} else {".jpg"},
               x
             )
           }

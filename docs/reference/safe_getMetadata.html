@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get information from S2 file name or metadata — s2_getMetadata • An R toolbox to find, download an preprocess Sentinel-2 data</title>
+<title>Get information from S2 file name or metadata — safe_getMetadata • An R toolbox to find, download an preprocess Sentinel-2 data</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -28,13 +28,13 @@
 
 
 
-<meta property="og:title" content="Get information from S2 file name or metadata — s2_getMetadata" />
+<meta property="og:title" content="Get information from S2 file name or metadata — safe_getMetadata" />
 
-<meta property="og:description" content="The function s2_getMetadata() scans a Sentinel2 product
+<meta property="og:description" content="The function safe_getMetadata() scans a Sentinel2 product
 (main path, granule path, main / granule xml file or GDAL object)
 to retrieve information about the product.
 The accessory function rm_invalid_safe() remove a SAFE archive in the case
-it is not recognised by s2_getMetadata()." />
+it is not recognised by safe_getMetadata()." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -106,21 +106,21 @@ it is not recognised by s2_getMetadata()." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Get information from S2 file name or metadata</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/s2_getMetadata.R'><code>R/s2_getMetadata.R</code></a></small>
-    <div class="hidden name"><code>s2_getMetadata.Rd</code></div>
+    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/safe_getMetadata.R'><code>R/safe_getMetadata.R</code></a></small>
+    <div class="hidden name"><code>safe_getMetadata.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>The function <code>s2_getMetadata()</code> scans a Sentinel2 product
+    <p>The function <code>safe_getMetadata()</code> scans a Sentinel2 product
 (main path, granule path, main / granule xml file or GDAL object)
 to retrieve information about the product.</p>
 <p>The accessory function <code>rm_invalid_safe()</code> remove a SAFE archive in the case
-it is not recognised by <code>s2_getMetadata()</code>.</p>
+it is not recognised by <code>safe_getMetadata()</code>.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>s2_getMetadata</span>(<span class='no'>s2</span>, <span class='kw'>info</span> <span class='kw'>=</span> <span class='st'>"all"</span>)
+    <pre class="usage"><span class='fu'>safe_getMetadata</span>(<span class='no'>s2</span>, <span class='kw'>info</span> <span class='kw'>=</span> <span class='st'>"all"</span>)
 
 <span class='fu'>rm_invalid_safe</span>(<span class='no'>s2</span>)</pre>
     
@@ -179,7 +179,7 @@ elements without needing the file to have been downloaded).</p></li>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>s2_getMetadata()</code> returns a list of the output metadata;</p>
+    <p><code>safe_getMetadata()</code> returns a list of the output metadata;</p>
 <p><code>rm_invalid_safe()</code> returns TRUE if the <code>s2</code> product was removed,
 FALSE elsewhere.</p>
     
@@ -194,7 +194,7 @@ FALSE elsewhere.</p>
   <span class='st'>"/path/of/the/product/S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"</span>
 
 <span class='co'># Return only the information retrevable from the file names (files are not scanned)</span>
-<span class='fu'>s2_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"nameinfo"</span>)</div><div class='output co'>#&gt; $prod_type
+<span class='fu'>safe_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"nameinfo"</span>)</div><div class='output co'>#&gt; $prod_type
 #&gt; [1] "product"
 #&gt; 
 #&gt; $version
@@ -222,7 +222,7 @@ FALSE elsewhere.</p>
 #&gt; [1] "2017-06-03 10:10:26 UTC"
 #&gt; </div><div class='input'>
 <span class='co'># Return some specific information without scanning files</span>
-<span class='fu'>s2_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"nameinfo"</span>)[<span class='fu'>c</span>(<span class='st'>"level"</span>, <span class='st'>"id_tile"</span>)]</div><div class='output co'>#&gt; $level
+<span class='fu'>safe_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"nameinfo"</span>)[<span class='fu'>c</span>(<span class='st'>"level"</span>, <span class='st'>"id_tile"</span>)]</div><div class='output co'>#&gt; $level
 #&gt; [1] "1C"
 #&gt; 
 #&gt; $id_tile
@@ -230,16 +230,16 @@ FALSE elsewhere.</p>
 #&gt; </div><div class='input'>
 <span class='co'># Return a single information without scanning files</span>
 <span class='co'># (in this case, the output is a vector instead than a list)</span>
-<span class='fu'>s2_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"nameinfo"</span>)<span class='kw'>[[</span><span class='st'>"level"</span>]]</div><div class='output co'>#&gt; [1] "1C"</div><div class='input'>
+<span class='fu'>safe_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"nameinfo"</span>)<span class='kw'>[[</span><span class='st'>"level"</span>]]</div><div class='output co'>#&gt; [1] "1C"</div><div class='input'>
 </div><span class='co'># NOT RUN {</span>
 <span class='co'># Return all the available information</span>
-<span class='fu'>s2_getMetadata</span>(<span class='no'>s2_examplename</span>)
+<span class='fu'>safe_getMetadata</span>(<span class='no'>s2_examplename</span>)
 
 <span class='co'># Return some specific information</span>
-<span class='fu'>s2_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='st'>"tiles"</span>, <span class='st'>"level"</span>, <span class='st'>"id_tile"</span>))
+<span class='fu'>safe_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='st'>"tiles"</span>, <span class='st'>"level"</span>, <span class='st'>"id_tile"</span>))
 
 <span class='co'># Return a single information</span>
-<span class='fu'>s2_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"clouds"</span>)
+<span class='fu'>safe_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"clouds"</span>)
 
 <span class='co'># Delete it if it is not recognised</span>
 <span class='fu'>rm_invalid_safe</span>(<span class='no'>s2_examplename</span>)

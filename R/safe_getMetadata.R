@@ -1,10 +1,10 @@
 #' @title Get information from S2 file name or metadata
-#' @description The function `s2_getMetadata()` scans a Sentinel2 product 
+#' @description The function `safe_getMetadata()` scans a Sentinel2 product 
 #'  (main path, granule path, main / granule xml file or GDAL object) 
 #'  to retrieve information about the product.
 #'  
 #'  The accessory function `rm_invalid_safe()` remove a SAFE archive in the case
-#'  it is not recognised by `s2_getMetadata()`.
+#'  it is not recognised by `safe_getMetadata()`.
 #' @param s2 A Sentinel-2 product, being both a `character` (path of an
 #'  existing product, or simply product name) or python object of class
 #'  `osgeo.gdal.Dataset`. This input parameter
@@ -46,7 +46,7 @@
 #'      (see the second example for a workaround to scan for specific
 #'      elements without needing the file to have been downloaded).
 
-#' @return `s2_getMetadata()` returns a list of the output metadata;
+#' @return `safe_getMetadata()` returns a list of the output metadata;
 #' 
 #'  `rm_invalid_safe()` returns TRUE if the `s2` product was removed, 
 #'  FALSE elsewhere.
@@ -63,25 +63,25 @@
 #'   "/path/of/the/product/S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"
 #'
 #' # Return only the information retrevable from the file names (files are not scanned)
-#' s2_getMetadata(s2_examplename, info="nameinfo")
+#' safe_getMetadata(s2_examplename, info="nameinfo")
 #'
 #' # Return some specific information without scanning files
-#' s2_getMetadata(s2_examplename, info="nameinfo")[c("level", "id_tile")]
+#' safe_getMetadata(s2_examplename, info="nameinfo")[c("level", "id_tile")]
 #'
 #' # Return a single information without scanning files
 #' # (in this case, the output is a vector instead than a list)
-#' s2_getMetadata(s2_examplename, info="nameinfo")[["level"]]
+#' safe_getMetadata(s2_examplename, info="nameinfo")[["level"]]
 #'
 #' \dontrun{
 #'
 #' # Return all the available information
-#' s2_getMetadata(s2_examplename)
+#' safe_getMetadata(s2_examplename)
 #'
 #' # Return some specific information
-#' s2_getMetadata(s2_examplename, info=c("tiles", "level", "id_tile"))
+#' safe_getMetadata(s2_examplename, info=c("tiles", "level", "id_tile"))
 #'
 #' # Return a single information
-#' s2_getMetadata(s2_examplename, info="clouds")
+#' safe_getMetadata(s2_examplename, info="clouds")
 #' 
 #' # Delete it if it is not recognised
 #' rm_invalid_safe(s2_examplename)
@@ -94,22 +94,22 @@
 # - add check for format integrity
 
 
-s2_getMetadata <- function(s2, info="all") {
-  .s2_getMetadata(s2, info=info, action = "getmetadata")
+safe_getMetadata <- function(s2, info="all") {
+  .safe_getMetadata(s2, info=info, action = "getmetadata")
 }
 
 
 #' @name rm_invalid_safe
-#' @rdname s2_getMetadata
+#' @rdname safe_getMetadata
 #' @export
 rm_invalid_safe <- function(s2) {
-  .s2_getMetadata(s2, info="fileinfo", action = "rm_invalid")
+  .safe_getMetadata(s2, info="fileinfo", action = "rm_invalid")
 }
 
 
-# internal function: action="getmetadata" causes the execution of s2_getMetadata(),
+# internal function: action="getmetadata" causes the execution of safe_getMetadata(),
 # action="rm_invalid" causes the execution of rm_invalid_safe().
-.s2_getMetadata <- function(s2, info="all", action = "getmetadata") {
+.safe_getMetadata <- function(s2, info="all", action = "getmetadata") {
   
   # define regular expressions to identify products
   s2_regex <- list(

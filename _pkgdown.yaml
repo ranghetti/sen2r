@@ -26,9 +26,9 @@ reference:
   - title: Manage file names and metadata
     desc: ~
     contents:
-      - '`s2_getMetadata`'
-      - '`s2_shortname`'
-      - '`fs2nc_getElements`'
+      - '`safe_getMetadata`'
+      - '`safe_shortname`'
+      - '`sen2r_getElements`'
       - '`s2_dop`'
   - title: Install and configure dependencies
     desc: ~

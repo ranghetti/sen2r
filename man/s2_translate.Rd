@@ -34,7 +34,7 @@ This parameter takes effect only if the output files are not VRT
 bands are included within them).}
 
 \item{prod_type}{(optional) Vector of types to be produced as outputs
-(see \link{s2_shortname} for the list of accepted values). Default is
+(see \link{safe_shortname} for the list of accepted values). Default is
 reflectance ("TOA" for level 1C, "BOA" for level 2A).}
 
 \item{tiles}{(optional) Character vector with the desired output tile IDs

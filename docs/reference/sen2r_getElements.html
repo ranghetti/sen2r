@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get information from S2 short name — fs2nc_getElements • An R toolbox to find, download an preprocess Sentinel-2 data</title>
+<title>Get information from S2 short name — sen2r_getElements • An R toolbox to find, download an preprocess Sentinel-2 data</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -28,11 +28,11 @@
 
 
 
-<meta property="og:title" content="Get information from S2 short name — fs2nc_getElements" />
+<meta property="og:title" content="Get information from S2 short name — sen2r_getElements" />
 
 <meta property="og:description" content="This accessory function extracts metadata included in
 the name of a Sentinel-2 product which follows the sen2r
-naming convention (see s2_shortname)." />
+naming convention (see safe_shortname)." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -104,19 +104,19 @@ naming convention (see s2_shortname)." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Get information from S2 short name</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/fs2nc_getElements.R'><code>R/fs2nc_getElements.R</code></a></small>
-    <div class="hidden name"><code>fs2nc_getElements.Rd</code></div>
+    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/sen2r_getElements.R'><code>R/sen2r_getElements.R</code></a></small>
+    <div class="hidden name"><code>sen2r_getElements.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
     <p>This accessory function extracts metadata included in
 the name of a Sentinel-2 product which follows the sen2r
-naming convention (see <a href='s2_shortname.html'>s2_shortname</a>).</p>
+naming convention (see <a href='safe_shortname.html'>safe_shortname</a>).</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>fs2nc_getElements</span>(<span class='no'>s2_names</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"list"</span>, <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>sen2r_getElements</span>(<span class='no'>s2_names</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"list"</span>, <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -153,7 +153,7 @@ and a list with only the element "type"='unrecognised' is returned.</p></td>
   <span class='st'>"/path/of/the/product/S2A1C_20170603_022_32TQQ_TOA_20.tif"</span>
 
 <span class='co'># Return metadata</span>
-<span class='fu'>fs2nc_getElements</span>(<span class='no'>fs2nc_examplename</span>)</div><div class='output co'>#&gt; $type
+<span class='fu'>sen2r_getElements</span>(<span class='no'>fs2nc_examplename</span>)</div><div class='output co'>#&gt; $type
 #&gt; [1] "tile"
 #&gt; 
 #&gt; $mission

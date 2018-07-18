@@ -6,7 +6,7 @@
 #' @param infiles A vector of input filenames. Input files are paths
 #'  of products already converted from SAFE format to a format managed by
 #'  GDAL (use [s2_translate] to do it); their names must be in the
-#'  sen2r naming convention ([s2_shortname]).
+#'  sen2r naming convention ([safe_shortname]).
 #' @param outdir (optional) Full name of the output directory where
 #'  the files should be created (default: current directory).
 #'  `outdir` can bot be an existing or non-existing directory (in the
@@ -96,7 +96,7 @@ s2_merge <- function(infiles,
   binpaths <- load_binpaths("gdal")
   
   # Get files metadata
-  infiles_meta <- fs2nc_getElements(infiles, format="data.frame")
+  infiles_meta <- sen2r_getElements(infiles, format="data.frame")
   # get metadata from GDALinfo (FIXME time expensive; check if it can be speeded up)
   suppressWarnings(
     # infiles_meta_gdal <- sapply(infiles, function(x) {attributes(GDALinfo(x))[c("driver","projection","df")]})

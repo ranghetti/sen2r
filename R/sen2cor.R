@@ -99,7 +99,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
   # accept only input names which are L1C
   l1c_prodlist_level <- sapply(l1c_prodlist, function(x) {
     tryCatch(
-      s2_getMetadata(x, info = "level"),
+      safe_getMetadata(x, info = "level"),
       error = function(y){"wrong"}
     )
   })
@@ -164,13 +164,13 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
     # existing L1C tiles within input product
     sel_l1c_tiles_existing <- sapply(
       list.files(file.path(sel_l1c,"GRANULE")), 
-      function(x){s2_getMetadata(x,"nameinfo")$id_tile}
+      function(x){safe_getMetadata(x,"nameinfo")$id_tile}
     )
     # L2A tiles already existing
     sel_l2a_tiles_existing <- if (file.exists(sel_l2a)) {
       sapply(
         list.files(file.path(sel_l2a,"GRANULE")), 
-        function(x){s2_getMetadata(x,"nameinfo")$id_tile}
+        function(x){safe_getMetadata(x,"nameinfo")$id_tile}
       )
     } else {
       character(0)

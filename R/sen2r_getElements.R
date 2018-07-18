@@ -1,7 +1,7 @@
 #' @title Get information from S2 short name
 #' @description This accessory function extracts metadata included in
 #'  the name of a Sentinel-2 product which follows the sen2r
-#'  naming convention (see [s2_shortname]).
+#'  naming convention (see [safe_shortname]).
 #' @param s2_names A vector of Sentinel-2 product names in the
 #'  sen2r naming convention.
 #' @param format One between `list` of `data.frame`.
@@ -20,9 +20,9 @@
 #'   "/path/of/the/product/S2A1C_20170603_022_32TQQ_TOA_20.tif"
 #'
 #' # Return metadata
-#' fs2nc_getElements(fs2nc_examplename)
+#' sen2r_getElements(fs2nc_examplename)
 
-fs2nc_getElements <- function(s2_names, format="list", abort=TRUE) {
+sen2r_getElements <- function(s2_names, format="list", abort=TRUE) {
   
   # if input is NULL, return NULL
   if (is.null(s2_names)) {

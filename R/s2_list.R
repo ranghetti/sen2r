@@ -62,7 +62,7 @@
 #' print(example_s2_list)
 #' # Print the dates of the retrieved products
 #' as.vector(sort(sapply(names(example_s2_list), function(x) {
-#'   strftime(s2_getMetadata(x,"nameinfo")$sensing_datetime)
+#'   strftime(safe_getMetadata(x,"nameinfo")$sensing_datetime)
 #' })))
 #' 
 #' # Seasonal-period list
@@ -75,7 +75,7 @@
 #' print(example_s2_list)
 #' # Print the dates of the retrieved products
 #' as.vector(sort(sapply(names(example_s2_list), function(x) {
-#'   strftime(s2_getMetadata(x,"nameinfo")$sensing_datetime)
+#'   strftime(safe_getMetadata(x,"nameinfo")$sensing_datetime)
 #' })))
 #' }
 
@@ -258,7 +258,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
   
   if (!is.null(tile) & length(av_prod_list)>0) {
     av_prod_tiles <- lapply(names(av_prod_list), function(x) {
-      s2_getMetadata(x, info="nameinfo")$id_tile %>%
+      safe_getMetadata(x, info="nameinfo")$id_tile %>%
         ifelse(is.null(.), NA, .) 
     }) %>%
       unlist()

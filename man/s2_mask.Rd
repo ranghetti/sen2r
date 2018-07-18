@@ -19,7 +19,7 @@ s2_perc_masked(infiles, maskfiles, mask_type = "cloud_medium_proba",
 of products already converted from SAFE format to a
 format managed by GDAL (use \link{s2_translate} to do it);
 their names must be in the sen2r naming convention
-(\link{s2_shortname}).}
+(\link{safe_shortname}).}
 
 \item{maskfiles}{A vector of filenames from which to take the
 information about cloud coverage (for now, only SCL products
@@ -28,7 +28,7 @@ elements strictly match \code{infiles} ones. Input files are paths
 of products already converted from SAFE format to a
 format managed by GDAL (use \link{s2_translate} to do it);
 their names must be in the sen2r naming convention
-(\link{s2_shortname}).}
+(\link{safe_shortname}).}
 
 \item{mask_type}{(optional) Character vector which determines the type of
 mask to be applied. Accepted values are:

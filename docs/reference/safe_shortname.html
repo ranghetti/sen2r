@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Rename products using a shorten convention — s2_shortname • An R toolbox to find, download an preprocess Sentinel-2 data</title>
+<title>Rename products using a shorten convention — safe_shortname • An R toolbox to find, download an preprocess Sentinel-2 data</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -28,7 +28,7 @@
 
 
 
-<meta property="og:title" content="Rename products using a shorten convention — s2_shortname" />
+<meta property="og:title" content="Rename products using a shorten convention — safe_shortname" />
 
 <meta property="og:description" content="This function renames a Sentinel-2 product in order to
 obtain shorten names. See the details for the structure of the
@@ -106,8 +106,8 @@ names), since it is thought to be applied to entire products." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Rename products using a shorten convention</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/s2_shortname.R'><code>R/s2_shortname.R</code></a></small>
-    <div class="hidden name"><code>s2_shortname.Rd</code></div>
+    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/safe_shortname.R'><code>R/safe_shortname.R</code></a></small>
+    <div class="hidden name"><code>safe_shortname.Rd</code></div>
     </div>
 
     <div class="ref-description">
@@ -120,7 +120,7 @@ names), since it is thought to be applied to entire products.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>s2_shortname</span>(<span class='no'>prod_name</span>, <span class='kw'>prod_type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ext</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='st'>"10m"</span>,
+    <pre class="usage"><span class='fu'>safe_shortname</span>(<span class='no'>prod_name</span>, <span class='kw'>prod_type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ext</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='st'>"10m"</span>,
   <span class='kw'>tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>force_tiles</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>full.name</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>set.seed</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>multiple_names</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
@@ -244,17 +244,17 @@ day on the same tile);</p></li>
 <span class='no'>s2_existing_example</span> <span class='kw'>&lt;-</span> <span class='st'>"/replace/with/the/main/path/of/existing/product/with/oldname/convention"</span>
 
 <span class='co'># With compact names, it works also without scanning the file</span>
-<span class='fu'>s2_shortname</span>(<span class='no'>s2_compactname_example</span>, <span class='kw'>ext</span><span class='kw'>=</span><span class='st'>"tif"</span>)</div><div class='output co'>#&gt; [1] "/non/existing/path/S2A1C_20170603_022_32TQQ_TOA_10.tif"</div><div class='input'>
+<span class='fu'>safe_shortname</span>(<span class='no'>s2_compactname_example</span>, <span class='kw'>ext</span><span class='kw'>=</span><span class='st'>"tif"</span>)</div><div class='output co'>#&gt; [1] "/non/existing/path/S2A1C_20170603_022_32TQQ_TOA_10.tif"</div><div class='input'>
 <span class='co'># With old names, without scanning the file the id_tile is not retrieved,</span>
 <span class='co'># so the tile filed is replaced with a random sequence</span>
-<span class='fu'>unlist</span>(<span class='fu'>lapply</span>(<span class='fu'>rep</span>(<span class='no'>s2_oldname_example</span>,<span class='fl'>5</span>), <span class='no'>s2_shortname</span>, <span class='kw'>full.name</span><span class='kw'>=</span><span class='fl'>FALSE</span>))</div><div class='output co'>#&gt; [1] "S2A1C_20150704_022_CV600_TOA_10" "S2A1C_20150704_022_EA466_TOA_10"
+<span class='fu'>unlist</span>(<span class='fu'>lapply</span>(<span class='fu'>rep</span>(<span class='no'>s2_oldname_example</span>,<span class='fl'>5</span>), <span class='no'>safe_shortname</span>, <span class='kw'>full.name</span><span class='kw'>=</span><span class='fl'>FALSE</span>))</div><div class='output co'>#&gt; [1] "S2A1C_20150704_022_CV600_TOA_10" "S2A1C_20150704_022_EA466_TOA_10"
 #&gt; [3] "S2A1C_20150704_022_MH732_TOA_10" "S2A1C_20150704_022_UW174_TOA_10"
 #&gt; [5] "S2A1C_20150704_022_AI402_TOA_10"</div><div class='input'>
 </div><span class='co'># NOT RUN {</span>
 <span class='co'># If the file exists locally, the tile is retrieved from the content</span>
 <span class='co'># (if unique; if not, a random sequence is equally used, but it is</span>
 <span class='co'># always the same for the same product)</span>
-<span class='fu'>s2_shortname</span>(<span class='no'>s2_existing_example</span>, <span class='kw'>full.name</span><span class='kw'>=</span><span class='fl'>FALSE</span>)
+<span class='fu'>safe_shortname</span>(<span class='no'>s2_existing_example</span>, <span class='kw'>full.name</span><span class='kw'>=</span><span class='fl'>FALSE</span>)
 <span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

@@ -6,7 +6,7 @@
 #'  of BOA (or TOA) products already converted from SAFE format to a
 #'  format managed by GDAL (use [s2_translate] to do it);
 #'  their names must be in the sen2r naming convention
-#'  ([s2_shortname]).
+#'  ([safe_shortname]).
 #' @param indices Character vector with the names of the required
 #'  indices. Values should be included in names corresponding to the
 #'  Abbreviations of the following indices:
@@ -162,7 +162,7 @@ s2_calcindices <- function(infiles,
   }
   
   # Get files metadata
-  infiles_meta <- data.table(fs2nc_getElements(infiles, format="data.frame"))
+  infiles_meta <- data.table(sen2r_getElements(infiles, format="data.frame"))
   infiles <- infiles[infiles_meta$prod_type %in% source]
   infiles_meta <- infiles_meta[prod_type %in% source,]
   

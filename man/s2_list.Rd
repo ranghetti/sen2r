@@ -83,7 +83,7 @@ example_s2_list <- s2_list(
 print(example_s2_list)
 # Print the dates of the retrieved products
 as.vector(sort(sapply(names(example_s2_list), function(x) {
-  strftime(s2_getMetadata(x,"nameinfo")$sensing_datetime)
+  strftime(safe_getMetadata(x,"nameinfo")$sensing_datetime)
 })))
 
 # Seasonal-period list
@@ -96,7 +96,7 @@ example_s2_list <- s2_list(
 print(example_s2_list)
 # Print the dates of the retrieved products
 as.vector(sort(sapply(names(example_s2_list), function(x) {
-  strftime(s2_getMetadata(x,"nameinfo")$sensing_datetime)
+  strftime(safe_getMetadata(x,"nameinfo")$sensing_datetime)
 })))
 }
 }

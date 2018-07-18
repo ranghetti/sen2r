@@ -216,7 +216,7 @@ and its name the product name).</p>
 <span class='fu'>print</span>(<span class='no'>example_s2_list</span>)
 <span class='co'># Print the dates of the retrieved products</span>
 <span class='fu'>as.vector</span>(<span class='fu'>sort</span>(<span class='fu'>sapply</span>(<span class='fu'>names</span>(<span class='no'>example_s2_list</span>), <span class='kw'>function</span>(<span class='no'>x</span>) {
-  <span class='fu'>strftime</span>(<span class='fu'><a href='s2_getMetadata.html'>s2_getMetadata</a></span>(<span class='no'>x</span>,<span class='st'>"nameinfo"</span>)$<span class='no'>sensing_datetime</span>)
+  <span class='fu'>strftime</span>(<span class='fu'><a href='safe_getMetadata.html'>safe_getMetadata</a></span>(<span class='no'>x</span>,<span class='st'>"nameinfo"</span>)$<span class='no'>sensing_datetime</span>)
 })))
 
 <span class='co'># Seasonal-period list</span>
@@ -229,7 +229,7 @@ and its name the product name).</p>
 <span class='fu'>print</span>(<span class='no'>example_s2_list</span>)
 <span class='co'># Print the dates of the retrieved products</span>
 <span class='fu'>as.vector</span>(<span class='fu'>sort</span>(<span class='fu'>sapply</span>(<span class='fu'>names</span>(<span class='no'>example_s2_list</span>), <span class='kw'>function</span>(<span class='no'>x</span>) {
-  <span class='fu'>strftime</span>(<span class='fu'><a href='s2_getMetadata.html'>s2_getMetadata</a></span>(<span class='no'>x</span>,<span class='st'>"nameinfo"</span>)$<span class='no'>sensing_datetime</span>)
+  <span class='fu'>strftime</span>(<span class='fu'><a href='safe_getMetadata.html'>safe_getMetadata</a></span>(<span class='no'>x</span>,<span class='st'>"nameinfo"</span>)$<span class='no'>sensing_datetime</span>)
 })))
 <span class='co'># }</span></pre>
   </div>

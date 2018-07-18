@@ -88,21 +88,21 @@
 #' s2_existing_example <- "/replace/with/the/main/path/of/existing/product/with/oldname/convention"
 #'
 #' # With compact names, it works also without scanning the file
-#' s2_shortname(s2_compactname_example, ext="tif")
+#' safe_shortname(s2_compactname_example, ext="tif")
 #'
 #' # With old names, without scanning the file the id_tile is not retrieved,
 #' # so the tile filed is replaced with a random sequence
-#' unlist(lapply(rep(s2_oldname_example,5), s2_shortname, full.name=FALSE))
+#' unlist(lapply(rep(s2_oldname_example,5), safe_shortname, full.name=FALSE))
 #'
 #' \dontrun{
 #' # If the file exists locally, the tile is retrieved from the content
 #' # (if unique; if not, a random sequence is equally used, but it is
 #' # always the same for the same product)
-#' s2_shortname(s2_existing_example, full.name=FALSE)
+#' safe_shortname(s2_existing_example, full.name=FALSE)
 #' }
 
 
-s2_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m", 
+safe_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m", 
                          tiles=NA, force_tiles=FALSE, full.name=TRUE, 
                          set.seed=NA, multiple_names=FALSE, abort=FALSE) {
   
@@ -112,12 +112,12 @@ s2_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m",
   mandatory_metadata <- c("mission","level","sensing_datetime","id_orbit")
   
   if (file.exists(prod_name)) {
-    s2_metadata <- s2_getMetadata(prod_name, info=needed_metadata)
+    s2_metadata <- safe_getMetadata(prod_name, info=needed_metadata)
     if (is.na(set.seed)) {
       set.seed <- TRUE
     }
   } else {
-    s2_allmetadata <- s2_getMetadata(prod_name, info="nameinfo")
+    s2_allmetadata <- safe_getMetadata(prod_name, info="nameinfo")
     s2_metadata <- s2_allmetadata[names(s2_allmetadata)[names(s2_allmetadata) %in% needed_metadata]]
     if (is.na(set.seed)) {
       set.seed <- FALSE
