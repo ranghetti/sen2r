@@ -598,6 +598,11 @@ sen2r <- function(param_list = NULL,
     )
   }
   
+  # check parallel (workaroud)
+  # TODO add parallel to the GUI, and threat as a normal parameter
+  if (is.null(pm$parallel)) {pm$parallel <- parallel}
+  
+  
   # define and create tmpdir
   if (is.na(tmpdir)) {
     # if outformat is VRT, set as a subdirectory of path_out
