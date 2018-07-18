@@ -578,7 +578,7 @@ sen2r <- function(param_list = NULL,
   # TODO work in progress
   pm <- check_param_list(pm, type = "error", correct = TRUE)
   # convert from GeoJSON to sf
-  if (is(pm$extent, "character")) {
+  if (is(pm$extent, "character") | is(pm$extent, "geojson")) {
     pm$extent <- st_read(pm$extent, quiet=TRUE)
   } else if (is(pm$extent, "Spatial")) {
     pm$extent <- st_as_sf(pm$extent)
