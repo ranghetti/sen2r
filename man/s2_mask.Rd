@@ -5,10 +5,11 @@
 \alias{s2_perc_masked}
 \title{Apply cloud masks}
 \usage{
-s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba", max_mask = 80,
-  outdir = "./masked", tmpdir = NA, rmtmp = TRUE, format = NA,
-  subdirs = NA, compress = "DEFLATE", parallel = FALSE,
-  overwrite = FALSE)
+s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba", smooth = 250,
+  buffer = 250, max_mask = 80, outdir = "./masked", tmpdir = NA,
+  rmtmp = TRUE, format = NA, subdirs = NA, compress = "DEFLATE",
+  parallel = FALSE, overwrite = FALSE, .logfile_message = NA,
+  .log_output = NA)
 
 s2_perc_masked(infiles, maskfiles, mask_type = "cloud_medium_proba",
   tmpdir = NA, rmtmp = TRUE, parallel = FALSE)
@@ -18,7 +19,7 @@ s2_perc_masked(infiles, maskfiles, mask_type = "cloud_medium_proba",
 of products already converted from SAFE format to a
 format managed by GDAL (use \link{s2_translate} to do it);
 their names must be in the sen2r naming convention
-(\link{s2_shortname}).}
+(\link{safe_shortname}).}
 
 \item{maskfiles}{A vector of filenames from which to take the
 information about cloud coverage (for now, only SCL products
@@ -27,7 +28,7 @@ elements strictly match \code{infiles} ones. Input files are paths
 of products already converted from SAFE format to a
 format managed by GDAL (use \link{s2_translate} to do it);
 their names must be in the sen2r naming convention
-(\link{s2_shortname}).}
+(\link{safe_shortname}).}
 
 \item{mask_type}{(optional) Character vector which determines the type of
 mask to be applied. Accepted values are:
@@ -51,6 +52,14 @@ be used to mask classes 0 ("No data"), 8-9 ("Cloud (high or medium
 probability)") and 11 ("Snow");
 \item "opaque_clouds" (still to be implemented).
 }}
+
+\item{smooth}{(optional) Numerical (positive): should the mask be smoothed=the size (in the unit of
+\code{inmask}, typically metres) to be used as radius for the smoothing
+(the higher it is, the more smooth the output mask will result).}
+
+\item{buffer}{(optional) Numerical (positive or negative): the size of the
+buffer (in the unit of \code{inmask}, typically metres) to be applied to the
+masked area after smoothing it (positive to enlarge, negative to reduce).}
 
 \item{max_mask}{(optional) Numeric value (range 0 to 100), which represents
 the maximum percentage of allowed masked surface (by clouds or any other
@@ -103,9 +112,17 @@ multicore processing).}
 
 \item{overwrite}{(optional) Logical value: should existing output files be
 overwritten? (default: FALSE)}
+
+\item{.logfile_message}{(optional) Internal parameter
+(it is used when the function is called by \code{sen2r()}).}
+
+\item{.log_output}{(optional) Internal parameter
+(it is used when the function is called by \code{sen2r()}).}
 }
 \value{
 \link{s2_mask} returns a vector with the names of the created products.
+An attribute "toomasked" contains the paths of the outputs which were not
+created cause to the high percentage of cloud coverage.
 
 \link{s2_perc_masked} returns a names vector with the percentages
 of masked surtfaces.

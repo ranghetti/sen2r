@@ -6,7 +6,7 @@
 #'  of products already converted from SAFE format to a
 #'  format managed by GDAL (use [s2_translate] to do it);
 #'  their names must be in the sen2r naming convention
-#'  ([s2_shortname]).
+#'  ([safe_shortname]).
 #' @param maskfiles A vector of filenames from which to take the
 #'  information about cloud coverage (for now, only SCL products
 #'  have been implemented). It is not necessary that `maskfiles`
@@ -14,7 +14,7 @@
 #'  of products already converted from SAFE format to a
 #'  format managed by GDAL (use [s2_translate] to do it);
 #'  their names must be in the sen2r naming convention
-#'  ([s2_shortname]).
+#'  ([safe_shortname]).
 #' @param mask_type (optional) Character vector which determines the type of
 #'  mask to be applied. Accepted values are:
 #'  - "nodata": mask pixels checked as "No data" in the SCL product;
@@ -35,6 +35,12 @@
 #'      be used to mask classes 0 ("No data"), 8-9 ("Cloud (high or medium 
 #'      probability)") and 11 ("Snow");
 #'  - "opaque_clouds" (still to be implemented).
+#' @param smooth (optional) Numerical (positive): should the mask be smoothed=the size (in the unit of
+#'  `inmask`, typically metres) to be used as radius for the smoothing
+#'  (the higher it is, the more smooth the output mask will result).
+#' @param buffer (optional) Numerical (positive or negative): the size of the 
+#'  buffer (in the unit of `inmask`, typically metres) to be applied to the 
+#'  masked area after smoothing it (positive to enlarge, negative to reduce).
 #' @param max_mask (optional) Numeric value (range 0 to 100), which represents
 #'  the maximum percentage of allowed masked surface (by clouds or any other 
 #'  type of mask chosen with argument `mask_type`) for producing outputs. 
@@ -78,10 +84,16 @@
 #'  multicore processing).
 #' @param overwrite (optional) Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
+#' @param .logfile_message (optional) Internal parameter
+#'  (it is used when the function is called by `sen2r()`).
+#' @param .log_output (optional) Internal parameter
+#'  (it is used when the function is called by `sen2r()`).
 #' @return [s2_mask] returns a vector with the names of the created products.
+#'  An attribute "toomasked" contains the paths of the outputs which were not
+#'  created cause to the high percentage of cloud coverage.
 #' @export
 #' @importFrom rgdal GDALinfo
-#' @importFrom raster stack brick calc dataType mask overlay values
+#' @importFrom raster brick calc dataType mask overlay stack values
 #' @importFrom jsonlite fromJSON
 #' @import data.table
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
@@ -90,6 +102,8 @@
 s2_mask <- function(infiles,
                     maskfiles,
                     mask_type = "cloud_medium_proba",
+                    smooth = 250,
+                    buffer = 250,
                     max_mask = 80,
                     outdir = "./masked",
                     tmpdir = NA,
@@ -98,10 +112,14 @@ s2_mask <- function(infiles,
                     subdirs = NA,
                     compress = "DEFLATE",
                     parallel = FALSE,
-                    overwrite = FALSE) {
+                    overwrite = FALSE,
+                    .logfile_message = NA,
+                    .log_output = NA) {
   .s2_mask(infiles = infiles,
            maskfiles = maskfiles,
            mask_type = mask_type,
+           smooth = smooth,
+           buffer = buffer,
            max_mask = max_mask,
            outdir = outdir,
            tmpdir = tmpdir,
@@ -111,12 +129,16 @@ s2_mask <- function(infiles,
            compress = compress,
            parallel = parallel,
            overwrite = overwrite,
-           output_type = "s2_mask")
+           output_type = "s2_mask",
+           .logfile_message = .logfile_message,
+           .log_output = .log_output)
 }
 
 .s2_mask <- function(infiles,
                      maskfiles,
                      mask_type = "cloud_medium_proba",
+                     smooth = 250,
+                     buffer = 250,
                      max_mask = 80,
                      outdir = "./masked",
                      tmpdir = NA,
@@ -126,21 +148,14 @@ s2_mask <- function(infiles,
                      compress = "DEFLATE",
                      parallel = FALSE,
                      overwrite = FALSE,
-                     output_type = "s2_mask") { # determines if using s2_mask() or s2_perc_masked()
+                     output_type = "s2_mask", # determines if using s2_mask() or s2_perc_masked()
+                     .logfile_message = NA,
+                     .log_output = NA) {
   
   . <- NULL
   
   # Load GDAL paths
-  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-  binpaths <- if (file.exists(binpaths_file)) {
-    jsonlite::fromJSON(binpaths_file)
-  } else {
-    list("gdalinfo" = NULL)
-  }
-  if (is.null(binpaths$gdalinfo)) {
-    check_gdal()
-    binpaths <- jsonlite::fromJSON(binpaths_file)
-  }
+  binpaths <- load_binpaths("gdal")
   
   # Check that files exist
   if (!any(sapply(infiles, file.exists))) {
@@ -172,7 +187,6 @@ s2_mask <- function(infiles,
   # define and create tmpdir
   if (is.na(tmpdir)) {
     tmpdir <- if (format == "VRT") {
-      rmtmp <- FALSE # force not to remove intermediate files
       if (!missing(outdir)) {
         autotmpdir <- FALSE # logical: TRUE if tmpdir should be specified 
         # for each out file (when tmpdir was not specified and output files are vrt),
@@ -189,11 +203,14 @@ s2_mask <- function(infiles,
   } else {
     autotmpdir <- FALSE
   }
+  if (format == "VRT") {
+    rmtmp <- FALSE # force not to remove intermediate files
+  }
   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
   
   # Get files metadata
-  infiles_meta <- data.table(fs2nc_getElements(infiles, format="data.frame"))
-  maskfiles_meta <- data.table(fs2nc_getElements(maskfiles, format="data.frame"))
+  infiles_meta <- data.table(sen2r_getElements(infiles, format="data.frame"))
+  maskfiles_meta <- data.table(sen2r_getElements(maskfiles, format="data.frame"))
   # suppressWarnings(
   #   infiles_meta_gdal <- sapply(infiles, function(x) {attributes(GDALinfo(x))[c("df")]})
   # )
@@ -208,6 +225,10 @@ s2_mask <- function(infiles,
   if (subdirs) {
     sapply(file.path(outdir,prod_types), dir.create, showWarnings=FALSE)
   }
+  
+  # check smooth and buffer
+  if (anyNA(smooth)) {smooth <- 0}
+  if (anyNA(buffer)) {buffer <- 0}
   
   # define required bands and formula to compute masks
   # accepted mask_type values: nodata, cloud_high_proba, cloud_medium_proba, cloud_low_proba, cloud_and_shadow, cloud_shadow_cirrus, opaque_clouds
@@ -232,16 +253,19 @@ s2_mask <- function(infiles,
   
   ## Cycle on each file
   if (output_type == "s2_mask") {
-    outfiles <- character(0)
+    outfiles <- character(0) # vector with paths of created files
+    outfiles_toomasked <- character(0) # vector with the path of outputs which 
+    # were not created cause to the higher masked surface
   } else if (output_type == "perc") {
     outpercs <- numeric(0)
   }
-  for (i in seq_along(infiles)) {
+  for (i in seq_along(infiles)) {try({
     sel_infile <- infiles[i]
     sel_infile_meta <- c(infiles_meta[i,])
     sel_format <- suppressWarnings(ifelse(
       !is.na(format), format, attr(GDALinfo(sel_infile), "driver")
     ))
+    sel_rmtmp <- ifelse(sel_format=="VRT", FALSE, rmtmp)
     sel_out_ext <- gdal_formats[gdal_formats$name==sel_format,"ext"][1]
     sel_naflag <- s2_defNA(sel_infile_meta$prod_type)
     
@@ -335,10 +359,10 @@ s2_mask <- function(infiles,
       }
       
       # compute the percentage of masked surface
-      perc_mask <- 100 * (
-        mean(values(raster(outnaval)),na.rm=TRUE) - 
-          mean(values(raster(outmask)),na.rm=TRUE)
-      ) / mean(values(raster(outnaval)),na.rm=TRUE)
+      values_naval <- values(raster(outnaval))
+      mean_values_naval <- mean(values_naval, na.rm=TRUE)
+      mean_values_mask <- mean(values(raster(outmask)), na.rm=TRUE)
+      perc_mask <- 100 * (mean_values_naval - mean_values_mask) / mean_values_naval
       if (!is.finite(perc_mask)) {perc_mask <- 100}
       
       # if the requested output is this value, return it; else, continue masking
@@ -347,31 +371,87 @@ s2_mask <- function(infiles,
         outpercs <- c(outpercs, perc_mask)
       } else if (output_type == "s2_mask") {
         
-        # if mask is at different resolution than inraster
-        # (e.g. 20m instead of 10m),
-        # resample it
-        if (any(suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")]) !=
-                suppressWarnings(GDALinfo(outmask)[c("res.x","res.y")]))) {
-          gdal_warp(
-            outmask,
-            outmask_res <- file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif"))),
-            ref = sel_infile
-          )
-        } else {
-          outmask_res <- outmask
-        }
-        
-        # load mask and evaluate if the output have to be produced
-        inraster <- raster::brick(sel_infile)
-        mask_rast <- raster::raster(outmask_res)
-        
+        # evaluate if the output have to be produced
         # if the image is sufficiently clean, mask it
         if (is.na(max_mask) | perc_mask <= max_mask) {
+          
+          # if mask is at different resolution than inraster
+          # (e.g. 20m instead of 10m),
+          # resample it
+          if (any(suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")]) !=
+                  suppressWarnings(GDALinfo(outmask)[c("res.x","res.y")]))) {
+            gdal_warp( # DO NOT use raster::disaggregate (1. not faster, 2. it does not always provide the right resolution)
+              outmask,
+              outmask_res <- file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif"))),
+              ref = sel_infile
+            )
+#             outmask_res0 <- file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
+#             outmask_res <- file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
+#             disaggregate(
+#               raster(outmask),
+#               filename = outmask_res0,
+#               fact = round(
+#                 suppressWarnings(GDALinfo(outmask)[c("res.x","res.y")]) / 
+#                   suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")])
+#               ),
+#               method = "",
+#               options  = "COMPRESS=LZW",
+#               datatype = "INT1U"
+#             )
+#             if (any(suppressWarnings(GDALinfo(sel_infile)[c("rows","columns")]) !=
+#                     suppressWarnings(GDALinfo(outmask_res0)[c("rows","columns")]))) {
+#               crop(
+#                 raster(outmask_res0),
+#                 raster(sel_infile),
+#                 filename = outmask_res,
+#                 options  = "COMPRESS=LZW",
+#                 datatype = "INT1U"
+#               )
+#             } else {
+#               outmask_res <- outmask_res0
+#             }
+          } else {
+            outmask_res <- outmask
+          }
+
+          # the same for outnaval
+          if (any(suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")]) !=
+                  suppressWarnings(GDALinfo(outnaval)[c("res.x","res.y")])) & 
+              (smooth > 0 | buffer != 0)) {
+            gdal_warp(
+              outnaval,
+              outnaval_res <- file.path(sel_tmpdir, basename(tempfile(pattern = "naval_", fileext = ".tif"))),
+              ref = sel_infile
+            )
+          } else {
+            outnaval_res <- outnaval
+          }
+          
+          # apply the smoothing (if required)
+          outmask_smooth <- if (smooth > 0 | buffer != 0) {
+            # if the unit is not metres, approximate it
+            if (projpar(attr(suppressWarnings(GDALinfo(sel_infile)),"projection"), "Unit") == "degree") {
+              buffer <- buffer * 8.15e-6
+              smooth <- smooth * 8.15e-6
+            }
+            # apply the smooth to the mask
+            smooth_mask(
+              outmask_res, 
+              radius = smooth, buffer = buffer, 
+              namask = if (any(values_naval==0)) {outnaval_res} else {NULL}, # TODO NULL if no Nodata values are present
+              binpaths = binpaths, tmpdir = sel_tmpdir
+            )
+          } else {
+            outmask_res
+          }
+          
+          # load mask
+          inraster <- raster::brick(sel_infile)
           
           if (sel_format!="VRT") {
             raster::mask(
               inraster,
-              raster::raster(outmask_res),
+              raster(outmask_smooth),
               filename = sel_outfile,
               maskvalue = 0,
               updatevalue = sel_naflag,
@@ -383,16 +463,28 @@ s2_mask <- function(infiles,
               overwrite = overwrite
             )
           } else {
+            print_message(
+              type = "message",
+              date = TRUE,
+              "Starting parallel application of masks on file ",basename(sel_infile),"..."
+            )
             maskapply_parallel(
               inraster, 
-              raster(outmask_res), 
+              raster(outmask_smooth), 
               outpath = sel_outfile,
               tmpdir = sel_tmpdir,
               binpaths = binpaths,
               NAflag = sel_naflag,
               parallel = parallel,
               datatype = dataType(inraster),
-              overwrite = overwrite
+              overwrite = overwrite,
+              .logfile_message=.logfile_message, 
+              .log_output=.log_output
+            )
+            print_message(
+              type = "message",
+              date = TRUE,
+              "Parallel application of masks on file ",basename(sel_infile)," done."
             )
           }
           
@@ -406,9 +498,15 @@ s2_mask <- function(infiles,
                         paste0(sel_outfile,".aux.xml"))
           }
           
-        } # end of max_mask IF cycle
+        } else { # end of max_mask IF cycle
+          outfiles_toomasked <- c(outfiles_toomasked, sel_outfile)
+        }
         
       } # end of output_type IF cycle
+      
+      if (sel_rmtmp == TRUE) {
+        unlink(sel_tmpdir, recursive=TRUE) # FIXME check not to delete files created outside sel_ cycle!
+      }
       
     } # end of overwrite IF cycle
     
@@ -416,7 +514,7 @@ s2_mask <- function(infiles,
       outfiles <- c(outfiles, sel_outfile)
     }
     
-  } # end on infiles cycle
+  })} # end on infiles cycle
   
   # Remove temporary files
   if (rmtmp == TRUE) {
@@ -424,6 +522,7 @@ s2_mask <- function(infiles,
   }
   
   if (output_type == "s2_mask") {
+    attr(outfiles, "toomasked") <- outfiles_toomasked
     return(outfiles)
   } else if (output_type == "perc") {
     return(outpercs)
@@ -450,6 +549,8 @@ s2_perc_masked <- function(infiles,
   .s2_mask(infiles = infiles,
            maskfiles = maskfiles,
            mask_type = mask_type,
+           smooth = 0,
+           buffer = 0,
            max_mask = 100,
            tmpdir = tmpdir,
            rmtmp = rmtmp,

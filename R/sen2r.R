@@ -35,6 +35,9 @@
 #' @param online (optional) Logical: TRUE (default) to search for available
 #'  products on SciHub (and download if needed); FALSE to work
 #'  only with already downloaded SAFE products.
+#' @param apihub Path of the text file containing credentials
+#'  of scihub account. If NA (default) the default credentials
+#'  (username "user", password "user") will be used.
 #' @param downloader (optional) Character value corresponding to the executable
 #'  which should be used to download SAFE products. It could be one among 
 #'  "wget" (default) and "aria2". 
@@ -107,6 +110,14 @@
 #'  Notice that the percentage is computed on non-NA values (if input images 
 #'  had previously been clipped and masked using a polygon, the percentage is
 #'  computed on the surface included in the masking polygons).
+#' @param mask_smooth (optional) Numeric positive value: the smoothing radius
+#'  (expressed in unit of measure of the output projection, typically metres)
+#'  to be applied to the cloud mask by function [s2_mask]. 
+#' @param mask_buffer (optional) Numeric value: the buffering radius
+#'  (expressed in unit of measure of the output projection, typically metres)
+#'  to be applied to the cloud mask by function [s2_mask]. 
+#'  Default value (0) means that no buffer is applied; a positive value causes
+#'  an enlargement of the masked area; a negative value cause a reducement.
 #' @param clip_on_extent (optional) Logical: if TRUE (default), output products
 #'  and indices are clipped to the selected extent (and resampled/reprojected);
 #'  if FALSE, the geometry and extension of the tiles is maintained.
@@ -116,7 +127,7 @@
 #' @param reference_path (optional) Path of the raster file to be used as a
 #'  reference grid. If NA (default), no reference is used.
 #' @param res (optional) Numerifc vector of length 2 with the x-y resolution
-#'  for output products. Default: c(10,10). NA means that the resolution
+#'  for output products. Default (NA) means that the resolution
 #'  is keeped as native.
 #' @param res_s2 (optional) Character value corresponding to the native Sentinel-2
 #'  resolution to be used. Accepted values are "10m" (default), "20m"
@@ -192,8 +203,18 @@
 #'  default is a subdirectory named ".vrt" within `path_out`).
 #' @param rmtmp (optional) Logical: should temporary files be removed?
 #'  (Default: TRUE). `rmtmp` is forced to `FALSE` if `outformat = "VRT"`.
+#' @param log (optional) Character string with the path where the package 
+#'  messages will be redirected. 
+#'  Default (NA) is not to redirect (use standard output).
+#'  A two-length character with tho paths (which can also coincide)
+#'  can be used to redirect also the output: in this case, the first path 
+#'  is the path for messages, the second one for the output.
 #' @return A vector with the paths of the files which were created (excluded
 #'  the temporary files); NULL otherwise.
+#'  The vector includes two attributes: 
+#'  - `cloudcovered` with the list of imags not created due to the higher 
+#'      percentage of cloud covered pixels;
+#'  - `missing` with the list of imags not created due to other reasons.
 #'
 #' @import data.table
 #' @importFrom utils packageVersion
@@ -208,9 +229,10 @@
 sen2r <- function(param_list = NULL,
                   gui = NA,
                   preprocess = TRUE,
-                  s2_levels = c("l2a"),
+                  s2_levels = c("l1c","l2a"),
                   sel_sensor = c("s2a","s2b"),
                   online = TRUE,
+                  apihub = NA,
                   downloader = "wget",
                   overwrite_safe = FALSE,
                   rm_safe = "no",
@@ -226,10 +248,12 @@ sen2r <- function(param_list = NULL,
                   index_source = "BOA",
                   mask_type = NA,
                   max_mask = 100,
+                  mask_smooth = 0,
+                  mask_buffer = 0,
                   clip_on_extent = TRUE,
                   extent_as_mask = FALSE,
                   reference_path = NA,
-                  res = c(10,10),
+                  res = NA,
                   res_s2 = "10m",
                   unit = "Meter",
                   proj = NA,
@@ -250,7 +274,150 @@ sen2r <- function(param_list = NULL,
                   parallel = TRUE,
                   use_python = TRUE,
                   tmpdir = NA,
-                  rmtmp = TRUE) {
+                  rmtmp = TRUE, 
+                  log = NA) {
+  
+  # sink to external files
+  log_output <- log[2]
+  log_message <- log[1]
+  if (!is.na(log_output)) {
+    dir.create(dirname(log_output), showWarnings=FALSE)
+    sink(log_output, split = TRUE, type = "output", append = TRUE)
+  }
+  if (!is.na(log_message)) {
+    dir.create(dirname(log_message), showWarnings=FALSE)
+    logfile_message = file(log_message, open = "a")
+    sink(logfile_message, type="message")
+  } else {
+    logfile_message = NA
+  }
+  
+  # filter names of passed arguments
+  sen2r_args <- formalArgs(sen2r:::.sen2r)
+  sen2r_args <- sen2r_args[!sen2r_args %in% c(".logfile_message",".log_output")]
+  pm_arg_passed <- logical(0)
+  for (i in seq_along(sen2r_args)) {
+    pm_arg_passed[i] <- !do.call(missing, list(sen2r_args[i]))
+  }
+  
+  # launch the function
+  sen2r:::.sen2r(
+    param_list = param_list,
+    pm_arg_passed = pm_arg_passed,
+    gui = gui,
+    preprocess = preprocess,
+    s2_levels = s2_levels,
+    sel_sensor = sel_sensor,
+    online = online,
+    apihub = apihub,
+    downloader = downloader,
+    overwrite_safe = overwrite_safe,
+    rm_safe = rm_safe,
+    step_atmcorr = step_atmcorr,
+    timewindow = timewindow,
+    timeperiod = timeperiod,
+    extent = extent,
+    extent_name = extent_name,
+    s2tiles_selected = s2tiles_selected,
+    s2orbits_selected = s2orbits_selected,
+    list_prods = list_prods,
+    list_indices = list_indices,
+    index_source = index_source,
+    mask_type = mask_type,
+    max_mask = max_mask,
+    mask_smooth = mask_smooth,
+    mask_buffer = mask_buffer,
+    clip_on_extent = clip_on_extent,
+    extent_as_mask = extent_as_mask,
+    reference_path = reference_path,
+    res = res,
+    res_s2 = res_s2,
+    unit = unit,
+    proj = proj,
+    resampling = resampling,
+    resampling_scl = resampling_scl,
+    outformat = outformat,
+    index_datatype = index_datatype,
+    compression = compression,
+    overwrite = overwrite,
+    path_l1c = path_l1c,
+    path_l2a = path_l2a,
+    path_tiles = path_tiles,
+    path_merged = path_merged,
+    path_out = path_out,
+    path_indices = path_indices,
+    path_subdirs = path_subdirs,
+    thumbnails = thumbnails,
+    parallel = parallel,
+    use_python = use_python,
+    tmpdir = tmpdir,
+    rmtmp = rmtmp,
+    .logfile_message = logfile_message, .log_output = log_output
+  )
+  
+  # stop sinking
+  if (!is.na(log_message)) {sink(type = "message")}
+  if (!is.na(log_output)) {sink(type = "output")}
+  
+}
+
+# Internal function, which is the "real" sen2r() function insider the use of sink
+# (this workaround was used in order to manage final sink() in those cases 
+# in which return() is used inside the function.)
+# TODO: manage also errors (.sen2r inside a trycatch; in case of errors, stop
+# passing the error message)
+.sen2r <- function(param_list,
+                   pm_arg_passed, # TODO workaround ($473), fix
+                   gui,
+                   preprocess,
+                   s2_levels,
+                   sel_sensor,
+                   online,
+                   apihub,
+                   downloader,
+                   overwrite_safe,
+                   rm_safe,
+                   step_atmcorr,
+                   timewindow,
+                   timeperiod,
+                   extent,
+                   extent_name,
+                   s2tiles_selected,
+                   s2orbits_selected,
+                   list_prods,
+                   list_indices,
+                   index_source,
+                   mask_type,
+                   max_mask,
+                   mask_smooth,
+                   mask_buffer,
+                   clip_on_extent,
+                   extent_as_mask,
+                   reference_path,
+                   res,
+                   res_s2,
+                   unit,
+                   proj,
+                   resampling,
+                   resampling_scl,
+                   outformat,
+                   index_datatype,
+                   compression,
+                   overwrite,
+                   path_l1c,
+                   path_l2a,
+                   path_tiles,
+                   path_merged,
+                   path_out,
+                   path_indices,
+                   path_subdirs,
+                   thumbnails,
+                   parallel,
+                   use_python,
+                   tmpdir,
+                   rmtmp,
+                   .logfile_message = NA, 
+                   .log_output = NA) {
   
   # to avoid NOTE on check
   . <- NULL
@@ -295,17 +462,22 @@ sen2r <- function(param_list = NULL,
   ## 1. Read / import parameters ##
   
   # Read arguments with default values
-  pm_def <- formals("sen2r")
+  pm_def <- formals(sen2r::sen2r) # use "sen2r" instead of ".sen2r" because this one has no defaults
+  pm_def <- pm_def[!names(pm_def) %in% c("log")] # remove "log" (argument of sen2r(), not .sen2r())
   # select arguments which are not parameters
   pm_def <- sapply(pm_def[!names(pm_def) %in% c("param_list","gui","use_python","tmpdir","rmtmp")], eval)
   
   # filter names of passed arguments
-  pm_arg_passed <- logical(0)
-  for (i in seq_along(formalArgs("sen2r"))) {
-    pm_arg_passed[i] <- !do.call(missing, list(formalArgs("sen2r")[i]))
-  }
+  sen2r_args <- formalArgs(sen2r:::.sen2r)
+  sen2r_args <- sen2r_args[!sen2r_args %in% c(".logfile_message",".log_output")]
+  # FIXME $473 pm_arg_passed computed in the main function (otherwise nothing was missing).
+  # This is not elegant, find a better way to do it.
+  #   pm_arg_passed <- logical(0)
+  #   for (i in seq_along(sen2r_args)) {
+  #     pm_arg_passed[i] <- !do.call(missing, list(sen2r_args[i]))
+  #   }
   # Read arguments with passed values
-  pm_arg <- sapply(formalArgs("sen2r")[pm_arg_passed], function(x){
+  pm_arg <- sapply(sen2r_args[pm_arg_passed], function(x){
     do.call(get, list(x))
   }, simplify=FALSE)
   # select arguments which are not parameters
@@ -426,13 +598,22 @@ sen2r <- function(param_list = NULL,
   # define and create tmpdir
   if (is.na(tmpdir)) {
     # if outformat is VRT, set as a subdirectory of path_out
-    tmpdir <- if (pm$outformat == "VRT") {
-      rmtmp = FALSE # force not to remove intermediate files
-      dir.create(pm$path_out, showWarnings=FALSE)
-      file.path(pm$path_out, ".vrt")
+    tmpdir <- if (
+      pm$outformat == "VRT" & 
+      !all(is.na(pm[c("path_out","path_indices","path_tiles","path_merged")]))
+    ) {
+      # use path_out if it is not NA, otherwise path_indices, otherwise path_tiles, otherwise path_merged
+      main_dir <- unlist(pm[c("path_out","path_indices","path_tiles","path_merged")])[
+        !is.na(pm[c("path_out","path_indices","path_tiles","path_merged")])
+        ][1]
+      dir.create(main_dir, showWarnings=FALSE)
+      file.path(main_dir, ".vrt")
     } else {
       tempfile(pattern="sen2r_")
     }
+  }
+  if (pm$outformat == "VRT") {
+    rmtmp <- FALSE # force not to remove intermediate files
   }
   dir.create(tmpdir, showWarnings=FALSE)
   
@@ -516,7 +697,7 @@ sen2r <- function(param_list = NULL,
   #   # unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(gdal$DMD_EXTENSIONS))," ")," "))[1]
   #   unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(py$gdal$DMD_EXTENSIONS))," ")," "))[1]
   # }
-  out_ext <- sel_driver[1,"ext"]
+  main_ext <- sel_driver[1,"ext"]
   
   
   #### SAFE Part (find, download, correct)
@@ -524,15 +705,22 @@ sen2r <- function(param_list = NULL,
   if (pm$preprocess == TRUE) {  
     
     ## Define output formats
+    if (!anyNA(pm$list_prods)) {
+      out_ext <- main_ext
+      out_outformat <- pm$outformat
+    } else {
+      out_ext <- "vrt"
+      out_outformat <- "VRT"
+    }
     if (!is.na(pm$path_tiles)) {
-      tiles_ext <- out_ext
+      tiles_ext <- main_ext
       tiles_outformat <- pm$outformat
     } else {
       tiles_ext <- "vrt"
       tiles_outformat <- "VRT"
     }
     if (!is.na(pm$path_merged)) {
-      merged_ext <- out_ext
+      merged_ext <- main_ext
       merged_outformat <- pm$outformat
     } else {
       merged_ext <- "vrt"
@@ -540,13 +728,13 @@ sen2r <- function(param_list = NULL,
     }
     if (is.na(pm$mask_type)) {
       warped_ext <- out_ext
-      warped_outformat <- pm$outformat
+      warped_outformat <- out_outformat
     } else {
       warped_ext <- "vrt"
       warped_outformat <- "VRT"
     }
     if (pm$index_source %in% pm$list_prods) {
-      sr_masked_ext <- out_ext
+      sr_masked_ext <- main_ext
       sr_masked_outformat <- pm$outformat
     } else {
       sr_masked_ext <- "vrt"
@@ -557,11 +745,18 @@ sen2r <- function(param_list = NULL,
     # (see comment at #ignorePath)
     ignorelist <- if (is(param_list, "character")) {
       ignorelist_path <- gsub("\\.json$","_ignorelist.txt",param_list)
-      if (file.exists(ignorelist_path)) {
+      cloudlist_path <- gsub("\\.json$","_cloudlist.txt",param_list)
+      ignorelist0 <- if (file.exists(ignorelist_path)) {
         readLines(ignorelist_path)
       } else {
         character()
       }
+      cloudlist0 <- if (file.exists(cloudlist_path)) {
+        readLines(cloudlist_path)
+      } else {
+        character()
+      }
+      c(ignorelist0, cloudlist0)
     } else {
       character()
     }
@@ -591,7 +786,8 @@ sen2r <- function(param_list = NULL,
                                      time_interval = pm$timewindow,
                                      time_period = pm$timeperiod,
                                      tile = pm$s2tiles_selected,
-                                     level = "L1C")
+                                     level = "L1C",
+                                     apihub = pm$apihub)
       }
       if ("l2a" %in% pm$s2_levels) {
         # list of SAFE (L1C or/and L2A) needed for required L2A
@@ -605,7 +801,8 @@ sen2r <- function(param_list = NULL,
                                        "L2A"
                                      } else if (pm$step_atmcorr %in% c("scihub","no")) {
                                        "L1C"
-                                     })
+                                     },
+                                     apihub = pm$apihub)
       }
       
     } else {
@@ -638,7 +835,7 @@ sen2r <- function(param_list = NULL,
       }
       s2_lists <- lapply(s2_lists, function(l) {
         sapply(l, function(x) {
-          tryCatch(s2_getMetadata(x, info="nameinfo")$level,
+          tryCatch(safe_getMetadata(x, info="nameinfo")$level,
                    error = function(e) NA)
         })
       })
@@ -646,6 +843,7 @@ sen2r <- function(param_list = NULL,
       
     }
     s2_list <- unlist(s2_lists)[!duplicated(unlist(lapply(s2_lists, names)))]
+    rm(s2_lists)
     
     # if s2_list is empty, exit 
     if (length(s2_list)==0) {
@@ -682,7 +880,7 @@ sen2r <- function(param_list = NULL,
     
     # getting required metadata
     s2_dt <- lapply(names(s2_list), function(x) {
-      unlist(s2_getMetadata(x, info="nameinfo")) %>%
+      unlist(safe_getMetadata(x, info="nameinfo")) %>%
         t() %>%
         as.data.frame(stringsAsFactors=FALSE)
     }) %>%
@@ -722,10 +920,11 @@ sen2r <- function(param_list = NULL,
           !gsub(
             "\\_OPER\\_","_USER_",
             gsub(
-              "^S2([AB])\\_((?:OPER\\_PRD\\_)?)MSIL1C\\_","S2\\1\\_\\2MSIL2A\\_",
+              "^S2([AB])\\_((?:OPER\\_PRD\\_)?)MSIL1C\\_([0-9T]{15})\\_N[0-9]{4}\\_",
+              "S2\\1\\_\\2MSIL2A\\_\\3\\_NXXXX\\_",
               names(s2_list_l1c)
             )
-          ) %in% names(s2_list_l2a)
+          ) %in% gsub("\\_N[0-9]{4}\\_", "_NXXXX_", names(s2_list_l2a))
           ]
       } else {
         s2_list_l1c
@@ -775,11 +974,18 @@ sen2r <- function(param_list = NULL,
       # (see comment at #ignorePath)
       ignorelist <- if (is(param_list, "character")) {
         ignorelist_path <- gsub("\\.json$","_ignorelist.txt",param_list)
-        if (file.exists(ignorelist_path)) {
+        cloudlist_path <- gsub("\\.json$","_cloudlist.txt",param_list)
+        ignorelist0 <- if (file.exists(ignorelist_path)) {
           readLines(ignorelist_path)
         } else {
           character()
         }
+        cloudlist0 <- if (file.exists(cloudlist_path)) {
+          readLines(cloudlist_path)
+        } else {
+          character()
+        }
+        c(ignorelist0, cloudlist0)
       } else {
         character()
       }
@@ -791,7 +997,7 @@ sen2r <- function(param_list = NULL,
         s2_list_l1c=s2_list_l1c, s2_list_l2a=s2_list_l2a_exp, 
         paths=paths, 
         list_prods=list_prods, 
-        out_ext=out_ext, tiles_ext=tiles_ext, 
+        out_ext=out_ext, index_ext=main_ext, tiles_ext=tiles_ext, 
         merged_ext=merged_ext, warped_ext=warped_ext, sr_masked_ext=sr_masked_ext,
         force_tiles = TRUE,
         ignorelist = if (exists("ignorelist")) {ignorelist} else {NULL}
@@ -820,8 +1026,13 @@ sen2r <- function(param_list = NULL,
     ## Generate the list of required SAFE
     if (pm$preprocess==TRUE) {
       # if preprocess is required, only the SAFE necessary to generate new files are considered
-      s2_list_l2a_req <- s2_list_l2a[names(s2_list_l2a) %in% basename(nn(s2names$safe_names_l2a_req))]
-      safe_names_l2a_reqout <- s2names$safe_names_l2a_req[!basename(nn(s2names$safe_names_l2a_req)) %in% names(s2_list_l2a)]
+      s2_list_l2a_req <- s2_list_l2a[
+        names(s2_list_l2a) %in% basename(nn(s2names$safe_names_l2a_req))
+        ]
+      safe_names_l2a_reqout <- s2names$safe_names_l2a_req[
+        !gsub("\\_N[0-9]{4}\\_", "_NXXXX_", basename(nn(s2names$safe_names_l2a_req))) %in% 
+          gsub("\\_N[0-9]{4}\\_", "_NXXXX_", names(s2_list_l2a))
+        ]
       safe_names_l1c_tocorrect <- gsub(
         "\\_USER\\_","_OPER_",
         gsub(
@@ -830,7 +1041,8 @@ sen2r <- function(param_list = NULL,
         )
       )
       s2_list_l1c_req <- s2_list_l1c[
-        names(s2_list_l1c) %in% c(safe_names_l1c_tocorrect,basename(nn(s2names$safe_names_l1c_req)))
+        gsub("\\_N[0-9]{4}\\_", "_NXXXX_", names(s2_list_l1c)) %in% 
+          gsub("\\_N[0-9]{4}\\_", "_NXXXX_", c(safe_names_l1c_tocorrect,basename(nn(s2names$safe_names_l1c_req))))
         ]
       s2_dt <- s2_dt[name %in% c(names(s2_list_l1c_req),names(s2_list_l2a_req)),]
       s2_list_l1c <- s2_list_l1c_req
@@ -842,8 +1054,7 @@ sen2r <- function(param_list = NULL,
     # (now it skips, but analysing each single file)
     
     if (pm$online == TRUE) {
-      print(s2_list_l2a)
-      if (length(s2_list_l2a)>0) {
+      if (any(!names(s2_list_l2a) %in% list.files(pm$path_l2a, "\\.SAFE$"))) {
         
         print_message(
           type = "message",
@@ -851,17 +1062,50 @@ sen2r <- function(param_list = NULL,
           "Starting to download the required level-2A SAFE products."
         )
         
-        lapply(pm$s2tiles_selected, function(tile) {
-          s2_download(s2_list_l2a,
-                      outdir = pm$path_l2a,
-                      downloader = pm$downloader,
-                      tile = tile)
-        })
+        # If all products are compactname, launch a single s2_download() instance
+        if (all(sapply(names(s2_list_l2a), function(x) {
+          safe_getMetadata(x, "nameinfo")$version
+        }) == "compact")) {
+          s2_download(
+            s2_list_l2a[!names(s2_list_l2a) %in% list.files(pm$path_l2a, "\\.SAFE$")],
+            outdir = pm$path_l2a,
+            downloader = pm$downloader,
+            apihub = pm$apihub
+          )
+        } else { # otherwise, launch one per tile
+          lapply(pm$s2tiles_selected, function(tile) {
+            if (length(pm$s2tiles_selected) > 1) {
+              print_message(
+                type = "message",
+                date = TRUE,
+                "Cycle ",grep(tile, pm$s2tiles_selected),
+                " of ",length(pm$s2tiles_selected),
+                " (tile ",tile,
+                if (grep(tile, pm$s2tiles_selected)==1) {
+                  " and products with a compact name)"
+                } else {
+                  " within products with an old long name)"
+                }
+              )
+            }
+            s2_download(
+              s2_list_l2a, # ask to download all the images, 
+              # and not only the non existing ones,
+              # because of the cycle on tiles
+              # (with compactname products, all the zips are downloaded
+              # during the first execution, since argument "tile" is 
+              # ignored).
+              outdir = pm$path_l2a,
+              downloader = pm$downloader,
+              tile = tile,
+              apihub = pm$apihub
+            )
+          })
+        }
         
       }
       
-      print(s2_list_l1c)
-      if (length(s2_list_l1c)>0) {
+      if (any(!names(s2_list_l1c) %in% list.files(pm$path_l1c, "\\.SAFE$"))) {
         
         print_message(
           type = "message",
@@ -869,12 +1113,44 @@ sen2r <- function(param_list = NULL,
           "Starting to download the required level-1C SAFE products."
         )
         
-        lapply(pm$s2tiles_selected, function(tile) {
-          s2_download(s2_list_l1c,
-                      outdir = pm$path_l1c,
-                      downloader = pm$downloader,
-                      tile = tile)
-        })
+        # If all products are compactname, launch a single s2_download() instance
+        if (all(sapply(names(s2_list_l1c), function(x) {
+          safe_getMetadata(x, "nameinfo")$version
+        }) == "compact")) {
+          s2_download(
+            s2_list_l1c[!names(s2_list_l1c) %in% list.files(pm$path_l1c, "\\.SAFE$")],
+            outdir = pm$path_l1c,
+            downloader = pm$downloader
+          )
+        } else { # otherwise, launch one per tile
+          lapply(pm$s2tiles_selected, function(tile) {
+            if (length(pm$s2tiles_selected) > 1) {
+              print_message(
+                type = "message",
+                date = TRUE,
+                "Cycle ",grep(tile, pm$s2tiles_selected),
+                " of ",length(pm$s2tiles_selected),
+                " (tile ",tile,
+                if (grep(tile, pm$s2tiles_selected)==1) {
+                  " and products with a compact name)"
+                } else {
+                  " within products with an old long name)"
+                }
+              )
+            }
+            s2_download(
+              s2_list_l1c, # ask to download all the images, 
+              # and not only the non existing ones,
+              # because of the cycle on tiles
+              # (with compactname products, all the zips are downloaded
+              # during the first execution, since argument "tile" is 
+              # ignored).
+              outdir = pm$path_l1c,
+              downloader = pm$downloader,
+              tile = tile
+            )
+          })
+        }
         # FIXME this operation can be very long with oldname products but tiled:
         # Sentinel-download.py scans within single xml files and discharges
         # products without the selected tile, but for some reasons this
@@ -885,7 +1161,7 @@ sen2r <- function(param_list = NULL,
     
     # second filter on tiles (#filter2)
     s2_dt$id_tile <- lapply(file.path(ifelse(s2_dt$level=="1C",pm$path_l1c,pm$path_l2a),s2_dt[,name]), function(x) {
-      tryCatch(s2_getMetadata(x, "tiles"), error = function(e) {NULL})
+      tryCatch(safe_getMetadata(x, "tiles"), error = function(e) {NULL})
     }) %>%
       sapply(paste, collapse = " ") %>% as.character()
     if (all(!is.na(pm$s2tiles_selected)) & nrow(s2_dt)>0) {
@@ -953,14 +1229,17 @@ sen2r <- function(param_list = NULL,
           outdir = pm$path_l2a,
           tiles = pm$s2tiles_selected,
           parallel = pm$parallel,
-          tmpdir = if (Sys.info()["sysname"] != "Windows" & 
-                       !is.null(mountpoint(tmpdir, "cifs"))) {
+          tmpdir = if (
+            Sys.info()["sysname"] != "Windows" & 
+            any(attr(mountpoint(tmpdir), "protocol") %in% c("cifs", "nsfs"))
+          ) {
             # if tmpdir is on a SAMBA mountpoint over Linux, 
             # use a tmeporary directory different from the specified one
             NA
           } else {
             file.path(tmpdir, "sen2cor")
           }, 
+          .logfile_message = .logfile_message, .log_output = .log_output,
           rmtmp = TRUE # SAFE temporary archives are always deleted
         )
         names(s2_list_l2a_corrected) <- basename(s2_list_l2a_corrected)
@@ -1007,7 +1286,7 @@ sen2r <- function(param_list = NULL,
     s2_list_l2a = if (exists("s2_list_l2a")) {s2_list_l2a} else {character(0)},
     paths=paths, 
     list_prods=list_prods, 
-    out_ext=out_ext, tiles_ext=tiles_ext, 
+    out_ext=out_ext, index_ext=main_ext, tiles_ext=tiles_ext, 
     merged_ext=merged_ext, warped_ext=warped_ext, sr_masked_ext=sr_masked_ext,
     force_tiles = FALSE,
     ignorelist = if (exists("ignorelist")) {ignorelist} else {NULL}
@@ -1113,7 +1392,9 @@ sen2r <- function(param_list = NULL,
       subdirs = pm$path_subdirs,
       tmpdir = file.path(tmpdir, "s2_merge"), rmtmp = rmtmp,
       format = merged_outformat,
+      parallel = if (merged_outformat=="VRT") {FALSE} else {pm$parallel},
       overwrite = pm$overwrite,
+      .logfile_message = .logfile_message, .log_output = .log_output,
       trace_files = s2names$merged_names_new
     )
     # merged_names_out <- s2_merge(s2names$merged_names_new,
@@ -1156,7 +1437,7 @@ sen2r <- function(param_list = NULL,
       
       if (any(!file.exists(s2names$warped_names_reqout)) | pm$overwrite==TRUE) {
         # index which is TRUE for SCL products, FALSE for others
-        names_merged_req_scl_idx <- fs2nc_getElements(s2names$merged_names_req,format="data.frame")$prod_type=="SCL"
+        names_merged_req_scl_idx <- sen2r_getElements(s2names$merged_names_req,format="data.frame")$prod_type=="SCL"
         # here trace_function() is not used, since argument "tr" matches multiple formal arguments.
         # manual cycle is performed.
         tracename_gdalwarp <- start_trace(s2names$warped_names_reqout[!names_merged_req_scl_idx], "gdal_warp")
@@ -1172,7 +1453,7 @@ sen2r <- function(param_list = NULL,
             r = pm$resampling,
             dstnodata = s2_defNA(
               sapply(s2names$merged_names_req[!names_merged_req_scl_idx & file.exists(s2names$merged_names_req)],
-                     function(x){fs2nc_getElements(x)$prod_type})
+                     function(x){sen2r_getElements(x)$prod_type})
             ),
             co = if (warped_outformat=="GTiff") {paste0("COMPRESS=",pm$compression)},
             overwrite = pm$overwrite,
@@ -1191,7 +1472,7 @@ sen2r <- function(param_list = NULL,
           gdal_warp(
             s2names$merged_names_req[names_merged_req_scl_idx & file.exists(s2names$merged_names_req)],
             s2names$warped_names_reqout[names_merged_req_scl_idx & file.exists(s2names$merged_names_req)],
-            of = pm$outformat, # use physical files to speed up next steps
+            of = out_outformat, # use physical files to speed up next steps
             ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
             mask = s2_mask_extent,
             tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
@@ -1199,9 +1480,9 @@ sen2r <- function(param_list = NULL,
             r = pm$resampling_scl,
             dstnodata = s2_defNA(
               sapply(s2names$merged_names_req[names_merged_req_scl_idx & file.exists(s2names$merged_names_req)],
-                     function(x){fs2nc_getElements(x)$prod_type})
+                     function(x){sen2r_getElements(x)$prod_type})
             ),
-            co = if (pm$outformat=="GTiff") {paste0("COMPRESS=",pm$compression)},
+            co = if (out_outformat=="GTiff") {paste0("COMPRESS=",pm$compression)},
             overwrite = pm$overwrite,
             tmpdir = file.path(tmpdir, "gdal_warp"), rmtmp = rmtmp
           ), # TODO dstnodata value?
@@ -1245,12 +1526,12 @@ sen2r <- function(param_list = NULL,
       print_message(
         type = "message",
         date = TRUE,
-        "Starting to apply atmospheric masks."
+        "Starting to apply cloud masks."
       )
       
       # index which is TRUE for SCL products, FALSE for others
-      names_warped_exp_scl_idx <- fs2nc_getElements(s2names$warped_names_exp,format="data.frame")$prod_type=="SCL"
-      names_warped_req_scl_idx <- fs2nc_getElements(s2names$warped_names_req,format="data.frame")$prod_type=="SCL"
+      names_warped_exp_scl_idx <- sen2r_getElements(s2names$warped_names_exp,format="data.frame")$prod_type=="SCL"
+      names_warped_req_scl_idx <- sen2r_getElements(s2names$warped_names_req,format="data.frame")$prod_type=="SCL"
       # index which is TRUE for products to be atm. masked, FALSE for others
       names_warped_tomask_idx <- if ("SCL" %in% pm$list_prods) {
         names_warped_req_scl_idx>-1
@@ -1268,7 +1549,7 @@ sen2r <- function(param_list = NULL,
       masked_names_infiles_sr_idx <- any(!is.na(pm$list_indices)) & 
         !pm$index_source %in% pm$list_prods & 
         sapply(masked_names_infiles, function(x){
-          fs2nc_getElements(x)$prod_type==pm$index_source
+          sen2r_getElements(x)$prod_type==pm$index_source
         })
       
       masked_names_out_nsr <- if (length(masked_names_infiles[!masked_names_infiles_sr_idx])>0) {
@@ -1280,15 +1561,18 @@ sen2r <- function(param_list = NULL,
           } else {
             s2names$merged_names_exp[names_merged_exp_scl_idx]
           },
+          smooth = pm$mask_smooth,
+          buffer = pm$mask_buffer,
           mask_type = pm$mask_type,
           max_mask = pm$max_mask,
           outdir = paths["out"],
           tmpdir = file.path(tmpdir, "s2_mask"), rmtmp = rmtmp,
-          format = pm$outformat,
+          format = out_outformat,
           compress = pm$compression,
           subdirs = pm$path_subdirs,
           overwrite = pm$overwrite,
           parallel = pm$parallel,
+          .logfile_message = .logfile_message, .log_output = .log_output,
           trace_files = s2names$out_names_new
         )
       } else {character(0)}
@@ -1302,6 +1586,8 @@ sen2r <- function(param_list = NULL,
             s2names$merged_names_exp[names_merged_exp_scl_idx]
           },
           mask_type = pm$mask_type,
+          smooth = pm$mask_smooth,
+          buffer = pm$mask_buffer,
           max_mask = pm$max_mask,
           outdir = paths["out"],
           tmpdir = file.path(tmpdir, "s2_mask"), rmtmp = rmtmp,
@@ -1310,10 +1596,15 @@ sen2r <- function(param_list = NULL,
           subdirs = pm$path_subdirs,
           overwrite = pm$overwrite,
           parallel = pm$parallel,
+          .logfile_message = .logfile_message, .log_output = .log_output,
           trace_files = s2names$out_names_new
         )
       } else {character(0)}
       masked_names_out <- c(masked_names_out_nsr, masked_names_out_sr)
+      masked_names_notcreated <- c(
+        attr(masked_names_out_nsr, "toomasked"),
+        attr(masked_names_out_sr, "toomasked")
+      )
     }
     
   } # end of gdal_warp and s2_mask IF cycle
@@ -1335,14 +1626,17 @@ sen2r <- function(param_list = NULL,
       indices = pm$list_indices,
       outdir = paths["indices"],
       subdirs = TRUE,
+      tmpdir = file.path(tmpdir, "s2_calcindices"),
       source = pm$index_source,
       format = pm$outformat,
       dataType = pm$index_datatype,
       compress = pm$compression,
       overwrite = pm$overwrite,
       parallel = pm$parallel,
+      .logfile_message = .logfile_message, .log_output = .log_output,
       trace_files = s2names$indices_names_new
     )
+    
     # indices_names <- s2_calcindices(s2names$out_names_req,
     #                                 indices=pm$list_indices,
     #                                 outdir=paths["indices"],
@@ -1350,6 +1644,34 @@ sen2r <- function(param_list = NULL,
     #                                 source=pm$index_source,
     #                                 format=pm$outformat,
     #                                 overwrite=pm$overwrite)
+  }
+  
+  # If some input file is not present due to higher cloud coverage,
+  # build the names of the indices not created for the same reason
+  if (exists("masked_names_notcreated")) {
+    if (length(masked_names_notcreated)>0 & length(s2names$out_names_req)>0) {
+      indices_names_notcreated <- data.table(
+        sen2r_getElements(masked_names_notcreated, format="data.frame")
+      )[level %in% if(pm$index_source=="BOA"){"2A"}else{"1C"},
+        paste0("S2",
+               mission,
+               level,"_",
+               strftime(sensing_date,"%Y%m%d"),"_",
+               id_orbit,"_",
+               if (pm$clip_on_extent==TRUE) {pm$extent_name},"_",
+               "<index>_",
+               substr(res,1,2),".",
+               out_ext)] %>%
+        expand.grid(pm$list_indices) %>%
+        apply(1,function(x){
+          file.path(
+            if(pm$path_subdirs==TRUE){x[2]}else{""},
+            gsub("<index>",x[2],x[1])
+          )
+        }) %>%
+        file.path(paths["indices"],.) %>%
+        gsub(paste0(merged_ext,"$"),out_ext,.)
+    }
   }
   
   # check file which have been created
@@ -1385,7 +1707,7 @@ sen2r <- function(param_list = NULL,
           function(x) {
             gsub(
               "\\..+$",
-              if (fs2nc_getElements(x)$prod_type %in% c("SCL")) {".png"} else {".jpg"},
+              if (sen2r_getElements(x)$prod_type %in% c("SCL")) {".png"} else {".jpg"},
               x
             )
           }
@@ -1410,15 +1732,28 @@ sen2r <- function(param_list = NULL,
   }
   
   # check if some files were not created
+  names_cloudcovered <- nn(c(
+    if(exists("masked_names_notcreated")) {masked_names_notcreated},
+    if(exists("indices_names_notcreated")) {indices_names_notcreated}
+  ))
   names_missing <- names_out[!file.exists(nn(names_out))]
+  names_missing <- names_missing[!names_missing %in% names_cloudcovered]
+  names_cloudcovered <- names_cloudcovered[!grepl(tmpdir, names_cloudcovered, fixed=TRUE)]
+  
+  # Add attributes related to files not created
+  attr(names_out_created, "cloudcovered") <- names_cloudcovered
+  attr(names_out_created, "missing") <- names_missing
   
   # Note down the list of non created files (#ignorePath)
-  # (sometimes not all the output files are correctly created, i.e. because of
-  # old name SAFE products which do not include all the tiles.
+  # Sometimes not all the output files are correctly created:
+  # the main reason is the cloud coverage higher than the maximum allowed
+  # value (argument "max_mask"), but also some other unexpected reasons could
+  # happen, i.e. because of old name SAFE products which do not include all the tiles.
   # To prevent to try to create these files every time the function is called 
   # with the same parameter file, if param_list is a path, this list is noted
-  # in a hidden file, so to ignore them during next executions. 
-  # To try it again, delete the file or set overwrite = TRUE).
+  # in two hidden files ( one per file not created because of cloud coverage,
+  # one other for all the other reasons) so to ignore them during next executions. 
+  # To try it again, delete the files or set overwrite = TRUE).
   if (length(names_missing)>0) {
     ignorelist_path <- gsub("\\.json$","_ignorelist.txt",param_list)
     if (is(param_list, "character")) {
@@ -1426,16 +1761,30 @@ sen2r <- function(param_list = NULL,
     }
     print_message(
       type="warning",
-      "Some files were not created ",
-      "(probably because the cloud coverage was higher than \"max_mask\"):\n\"",
-      paste(names_missing,collapse="\"\n\""),
+      "Some files were not created:\n\"",
+      paste(names_missing,collapse="\"\n\""),"\"",
       if (is(param_list, "character")) {paste0(
         "\"\nThese files will be skipped during next executions ",
         "from the current parameter file (\"",param_list,"\").\n",
         "To try again to build them, remove the file \"",
         ignorelist_path,"\"."
-      )} else {paste0(
-        "\""
+      )}
+    )
+  }
+  if (length(names_cloudcovered)>0) {
+    cloudlist_path <- gsub("\\.json$","_cloudlist.txt",param_list)
+    if (is(param_list, "character")) {
+      write(names_cloudcovered, cloudlist_path, append=TRUE)
+    }
+    print_message(
+      type="message",
+      "Some files were not created ",
+      "because the cloud coverage was higher than \"max_mask\":\n\"",
+      paste(names_cloudcovered,collapse="\"\n\""),"\"",
+      if (is(param_list, "character")) {paste0(
+        "\"\nThe list of these files was written in a hidden file ",
+        "(\"",cloudlist_path,"\"), ",
+        "so to be skipped during next executions."
       )}
     )
   }

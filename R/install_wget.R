@@ -30,12 +30,7 @@ install_wget <- function(wget_dir = system.file(package="sen2r"),
   }
   
   # check if it is already installed
-  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-  binpaths <- if (file.exists(binpaths_file)) {
-    jsonlite::fromJSON(binpaths_file)
-  } else {
-    list("wget" = NULL)
-  }
+  binpaths <- load_binpaths()
   if (force != TRUE & !is.null(binpaths$wget)) {
     wget_bin <- binpaths$wget 
     if (file.exists(wget_bin)) {
@@ -45,7 +40,6 @@ install_wget <- function(wget_dir = system.file(package="sen2r"),
       )
       return(invisible(NULL))
     }
-    binpaths <- jsonlite::fromJSON(binpaths_file)
   }
 
   # Download wget
@@ -65,7 +59,7 @@ install_wget <- function(wget_dir = system.file(package="sen2r"),
     }
     if (file.exists(wget_path)) {
       binpaths$wget <- wget_path
-      writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
+      writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
     }
     # # add to the path
     # system(paste0('setx PATH "',binpaths$wget,'"'), intern=TRUE)

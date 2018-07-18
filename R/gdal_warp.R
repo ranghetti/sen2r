@@ -53,10 +53,9 @@
 #'  (different from `s_srs`, `t_srs`, `te`, `tr`, `ts` and `of`).
 #' @return NULL
 #' @export
-#' @importFrom rgdal GDALinfo CRSargs
+#' @importFrom rgdal GDALinfo
 #' @importFrom gdalUtils gdalwarp gdal_translate
-#' @importFrom sp CRS
-#' @importFrom sf st_transform st_geometry st_geometry_type st_write st_cast st_area st_bbox st_sfc st_polygon st_as_sf st_as_sfc
+#' @importFrom sf st_transform st_geometry st_geometry_type st_write st_cast st_area st_bbox st_sfc st_polygon st_as_sf st_as_sfc st_crs
 #' @importFrom methods as
 #' @importFrom magrittr "%>%"
 #' @importFrom units ud_units
@@ -165,6 +164,20 @@ gdal_warp <- function(srcfiles,
     }
   }
   
+  # check t_srs
+  if (!is.null(t_srs)) {
+    if (is(t_srs, "crs")) {
+      t_srs <- t_srs$proj4string
+    } else if (!is.na(st_crs(t_srs)$proj4string)) {
+      t_srs <- st_crs(t_srs)$proj4string
+    } else {
+      print_message(
+        type = "error",
+        "The input CRS (",t_srs,") was not recognised."
+      )
+    }
+  }
+  
   # check output format
   if (!is.null(of)) {
     gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))
@@ -191,8 +204,7 @@ gdal_warp <- function(srcfiles,
       c(ref_ll, ref_ll + ref_size * ref_res),
       ncol=2)
     dimnames(ref_bbox) <- list(c("x","y"),c("min","max"))
-    t_srs <- attr(ref_metadata, "projection") %>%
-      CRS() %>% CRSargs()
+    t_srs <- st_crs(attr(ref_metadata, "projection"))$proj4string
     # round "tr" to ref grid
     if (is.null(tr)) {
       tr <- ref_res
@@ -206,7 +218,7 @@ gdal_warp <- function(srcfiles,
     mask_type <- get_spatype(mask)
     # if it is a vector, set "te" to the bounding box (in t_srs)
     if (mask_type == "vectfile") {
-      mask <- st_read(mask)
+      mask <- st_read(mask, quiet=TRUE)
     } else if (mask_type == "spobject") {
       mask <- st_as_sf(mask)
     } else if (mask_type == "rastfile") {
@@ -215,7 +227,7 @@ gdal_warp <- function(srcfiles,
     
     # Check that the polygon is not empty
     if (length(grep("POLYGON",st_geometry_type(mask)))>=1 &
-        st_area(st_geometry(mask)) <= 0*units::ud_units$m^2) {
+        sum(st_area(st_geometry(mask))) <= 0*units::ud_units$m^2) {
       print_message(
         type = "error",
         "The polygon provided as mask cannot be empty."
@@ -261,8 +273,7 @@ gdal_warp <- function(srcfiles,
       sel_res <- sel_metadata[c("res.x","res.y")]
       sel_ll <- sel_metadata[c("ll.x","ll.y")]
       sel_size <- sel_metadata[c("columns","rows")]
-      sel_s_srs <- attr(sel_metadata, "projection") %>%
-        CRS() %>% CRSargs()
+      sel_s_srs <- st_crs(attr(sel_metadata, "projection"))$proj4string
       
       sel_bbox <- c(sel_ll, sel_ll + sel_size * sel_res)
       names(sel_bbox) <- c("xmin", "ymin", "xmax", "ymax")
@@ -270,12 +281,12 @@ gdal_warp <- function(srcfiles,
       sel_of <- ifelse(is.null(of), attr(sel_metadata, "driver"), of)
       
       # set default parameter values (if not specified)
-      sel_t_srs <- ifelse(is.null(t_srs), sel_s_srs, t_srs)
+      sel_t_srs <- if (is.null(t_srs)) {sel_s_srs} else {t_srs}
       sel_tr <- if (is.null(tr)) {sel_res} else {tr}
       # default method: near if the target resolution is lower than an half of the source,
       # mode elsewhere
       sel_r <- if (is.null(r)) {
-        ifelse(all(2*tr < sel_res), "near", "mode")
+        if (all(2*tr < sel_res)) {"near"} else {"mode"}
       } else {
         r
       }
@@ -310,10 +321,14 @@ gdal_warp <- function(srcfiles,
               matrix(nrow=2, ncol=2, dimnames=list(c("x","y"),c("min","max")))
             # get_extent() %>% as("matrix")
           }
-          sel_te <- (sel_mask_bbox - sel_ll) / sel_tr
-          sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
-          dimnames(sel_te) <- list(c("x","y"),c("min","max"))
-          sel_te <- sel_te * sel_tr + sel_ll
+          if (sel_t_srs == sel_s_srs) {
+            sel_te <- (sel_mask_bbox - sel_ll) / sel_tr
+            sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
+            dimnames(sel_te) <- list(c("x","y"),c("min","max"))
+            sel_te <- sel_te * sel_tr + sel_ll
+          } else {
+            sel_te <- sel_mask_bbox
+          }
         }
       } else {
         if (is.null(mask)) {
@@ -321,10 +336,14 @@ gdal_warp <- function(srcfiles,
           sel_te <- ref_bbox
         } else if (class(mask)=="logical" && is.na(mask)) {
           # ref provided & mask NA: use bbox of srcfile (reprojected and aligned to ref grid)
-          sel_te <- (sel_src_bbox - ref_ll) / sel_tr
-          sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
-          dimnames(sel_te) <- list(c("x","y"),c("min","max"))
-          sel_te <- sel_te * sel_tr + ref_ll
+          if (sel_t_srs == sel_s_srs) {
+            sel_te <- (sel_src_bbox - ref_ll) / sel_tr
+            sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
+            dimnames(sel_te) <- list(c("x","y"),c("min","max"))
+            sel_te <- sel_te * sel_tr + ref_ll
+          } else {
+            sel_te <- sel_mask_bbox
+          }
         } else {
           # ref provided & mask provided: use bbox of mask (reprojected and aligned to ref grid)
           sel_mask_bbox <- if (exists("mask_bbox")) {
@@ -335,10 +354,14 @@ gdal_warp <- function(srcfiles,
               matrix(nrow=2, ncol=2, dimnames=list(c("x","y"),c("min","max")))
             # get_extent() %>% as("matrix")
           }
-          sel_te <- (sel_mask_bbox - ref_ll) / sel_tr
-          sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
-          dimnames(sel_te) <- list(c("x","y"),c("min","max"))
-          sel_te <- sel_te * sel_tr + ref_ll
+          if (sel_t_srs == sel_s_srs) {
+            sel_te <- (sel_mask_bbox - ref_ll) / sel_tr
+            sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
+            dimnames(sel_te) <- list(c("x","y"),c("min","max"))
+            sel_te <- sel_te * sel_tr + ref_ll
+          } else {
+            sel_te <- sel_mask_bbox
+          }
         }
       }
       

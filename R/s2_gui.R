@@ -31,7 +31,7 @@
 #' @importFrom shinyFiles getVolumes parseDirPath parseFilePaths parseSavePath
 #'  shinyDirButton shinyDirChoose shinyFileChoose shinyFileSave
 #'  shinyFilesButton shinySaveButton
-#' @importFrom shinyjs delay disable enable
+#' @importFrom shinyjs click delay disable enable
 #' @importFrom shinyWidgets sendSweetAlert
 #' @importFrom stats setNames
 #' @importFrom utils unzip
@@ -50,7 +50,7 @@ s2_gui <- function(param_list = NULL,
 # Internal function with parameter par_fun (parent function):
 # default is "parent", but it can be set with another value
 # for internal purposes.
-# For now, value "sto" is used when s2_gui() is launched from
+# For now, value "sen2r" is used when s2_gui() is launched from
 # sen2r(), and is used to change save button label.
 .s2_gui <- function(param_list = NULL,
                     par_fun = "parent",
@@ -112,6 +112,7 @@ s2_gui <- function(param_list = NULL,
       HTML("<script src=\"message-handler.js\"></script>"),
       shinyjs::useShinyjs(),
       shiny::tags$head(shiny::tags$style(".darkbutton{background-color:#28353b;color:#b8c7ce;width:200px;")), # background color and font color
+      shiny::tags$head(shiny::tags$style(".scihub_savebutton{width:90px;")), # fixed width
       shiny::tags$head(shiny::tags$script(src = "message-handler.js")), # for actionbuttons
       shiny::tags$head(shiny::tags$link(rel="icon", href="favicon.ico")),
       
@@ -151,7 +152,7 @@ s2_gui <- function(param_list = NULL,
         p(style="margin-top:20pt;",
           actionButton(
             "return_param",
-            label = if (par_fun=="sto") {
+            label = if (par_fun=="sen2r") {
               strong("\u2000Launch processing")
             } else {
               strong("\u2000Save and close GUI")
@@ -163,12 +164,23 @@ s2_gui <- function(param_list = NULL,
         p(style="margin-top:0pt;",
           actionButton(
             "exit_gui",
-            label = if (par_fun=="sto") {
+            label = if (par_fun=="sen2r") {
               "\u2000Close without processing"
             } else {
               "\u2000Close without saving"
             },
             icon = icon("ban"),
+            class = "darkbutton"
+          )
+        ),
+        
+        p(style="margin-top:20pt;",
+          actionButton(
+            "open_github_doc",
+            label = "\u2000Open documentation",
+            icon = icon("info-circle"),
+            onclick ="window.open('https://ranghetti.github.io/sen2r', '_blank')",
+            # onclick ="window.open('https://ranghetti.github.io/sen2r/articles/sen2r_gui.html', '_blank')",
             class = "darkbutton"
           )
         )
@@ -189,16 +201,16 @@ s2_gui <- function(param_list = NULL,
             radioButtons(
               "preprocess", NULL,
               choiceNames = list(
-                "Processed spatial files (surface reflectance, spectral indices, ...) in custom format",
                 span(
                   "Raw files in ",
                   a("raw SAFE format",
                     href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/data-formats",
                     target="_blank"),
                   " (downloaded and/or corrected with sen2cor)"
-                )
+                ),
+                "Processed spatial files (surface reflectance, spectral indices, ...) in custom format"
               ),
-              choiceValues = list(TRUE, FALSE),
+              choiceValues = list(FALSE, TRUE),
               selected=TRUE,
               inline = FALSE
             )
@@ -271,7 +283,7 @@ s2_gui <- function(param_list = NULL,
                       htmlOutput("path_l1c_errormess")),
                   div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                           shinyDirButton("path_l1c_sel", "Select", "Specify directory for level-1C SAFE products")),
-                      div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
+                      div(style="display:inline-block;vertical-align:top;width:calc(100% - 50pt - 3px);",
                           textInput("path_l1c_textin", NULL, "")))
                 )
               ),
@@ -286,7 +298,7 @@ s2_gui <- function(param_list = NULL,
                       htmlOutput("path_l2a_errormess")),
                   div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                           shinyDirButton("path_l2a_sel", "Select", "Specify directory for level-2A SAFE products")),
-                      div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
+                      div(style="display:inline-block;vertical-align:top;width:calc(100% - 50pt - 3px);",
                           textInput("path_l2a_textin", NULL, "")))
                 )
               )
@@ -587,7 +599,7 @@ s2_gui <- function(param_list = NULL,
                           htmlOutput("path_out_errormess")),
                       div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                               shinyDirButton("path_out_sel", "Select", "Specify directory for output processed products")),
-                          div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
+                          div(style="display:inline-block;vertical-align:top;width:calc(100% - 50pt - 3px);",
                               textInput("path_out_textin", NULL, ""))))
                 ),
                 
@@ -728,7 +740,7 @@ s2_gui <- function(param_list = NULL,
                           htmlOutput("path_tiles_errormess")),
                       div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                               shinyDirButton("path_tiles_sel", "Select", "Specify directory for single tiles in custom format")),
-                          div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
+                          div(style="display:inline-block;vertical-align:top;width:calc(100% - 50pt - 3px);",
                               textInput("path_tiles_textin", NULL, ""))))
                 )
               ),
@@ -742,7 +754,7 @@ s2_gui <- function(param_list = NULL,
                           htmlOutput("path_merged_errormess")),
                       div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                               shinyDirButton("path_merged_sel", "Select", "Specify directory for tiles spatially merged")),
-                          div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
+                          div(style="display:inline-block;vertical-align:top;width:calc(100% - 50pt - 3px);",
                               textInput("path_merged_textin", NULL, ""))))
                 )
               )
@@ -751,7 +763,7 @@ s2_gui <- function(param_list = NULL,
           ), # end of box "Output extent"
           
           box(
-            title="Atmospheric mask",
+            title=HTML("<i class=\"fa fa-wrench\">\u2000Cloud mask</i>"), #TODO modalDialog for managing (and explaining) cloud masking settings
             width=6,
             
             radioButtons(
@@ -806,9 +818,47 @@ s2_gui <- function(param_list = NULL,
                 )
               ),
               
-              sliderInput("max_masked_perc", "Maximum cloud cover",
-                          min = 0, max = 100, value = 80,
-                          step = 1, post = "%")
+              sliderInput(
+                "max_masked_perc", label = "Maximum allowed cloud cover",
+                min = 0, max = 100, value = 80,
+                step = 1, post = "%"
+              ),
+              
+              radioButtons(
+                "mask_apply_smooth", 
+                label = span(
+                  "Smooth / bufferize the cloud-covered surface?\u2000",
+                  actionLink("help_max_masked_perc", icon("question-circle"))
+                ),
+                choices = list("Yes" = TRUE,
+                               "No" = FALSE),
+                selected = FALSE,
+                inline = TRUE
+              ),
+              
+              conditionalPanel(
+                condition = "input.mask_apply_smooth == 'TRUE'",
+                
+                fluidRow(
+                  
+                  column(
+                    width=6,
+                    numericInput("mask_smooth", "Smooth (m)",
+                                 # width="100px",
+                                 value = 250,
+                                 min = 0)
+                  ),
+                  
+                  column(
+                    width=6,
+                    numericInput("mask_buffer", "Buffer (m)",
+                                 # width="100px",
+                                 value = 250)
+                  )
+                  
+                ) # end of smooth/buffer fluidRow
+              ) # endo if conditionalPanel mask_apply_smooth
+              
             ) # end of conditionalPanel atm_mask
             
           )), # end of fluidRow/box "Atmospheric mask"
@@ -832,11 +882,11 @@ s2_gui <- function(param_list = NULL,
                     condition = "input.use_reference == 'TRUE'",
                     div(
                       div(
-                        style="display:inline-block;vertical-align:top;",
+                        style="display:inline-block;vertical-align:top;width:77pt;",
                         shinyFilesButton("reference_file_button", "Select raster", "Select reference file", multiple=FALSE),
                         "\u2001"),
                       div(
-                        style="display:inline-block;vertical-align:top;width:calc(100% - 88pt);",
+                        style="display:inline-block;vertical-align:top;width:calc(100% - 77pt - 3px);",
                         textInput("reference_file_textin", label = NULL, "", width="100%"))),
                     uiOutput("reference_file_message")
                     
@@ -964,7 +1014,7 @@ s2_gui <- function(param_list = NULL,
                         htmlOutput("path_indices_errormess")),
                     div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                             shinyDirButton("path_indices_sel", "Select", "Specify directory for spectral indices")),
-                        div(style="display:inline-block;vertical-align:top;width:calc(100% - 55pt);",
+                        div(style="display:inline-block;vertical-align:top;width:calc(100% - 50pt - 3px);",
                             textInput("path_indices_textin", NULL, ""))),
                     div(style="display:inline-block;vertical-align:top;",
                         actionButton("path_indices_cp", "Copy from directory for output processed products"))),
@@ -1158,14 +1208,9 @@ s2_gui <- function(param_list = NULL,
     })
     
     # disable downloader aria2 if it is not installed
-    binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-    binpaths <- if (file.exists(binpaths_file)) {
-      jsonlite::fromJSON(binpaths_file)
-    } else {
-      list("aria2" = NULL)
-    }
+    binpaths <- load_binpaths()
     observeEvent(input$downloader, {
-      if (is.null(binpaths$aria2)) {
+      if (is.null(binpaths$aria2c)) {
         updateRadioButtons(session, "downloader", selected = "wget")
         disable("downloader")
       } else {
@@ -1173,15 +1218,56 @@ s2_gui <- function(param_list = NULL,
       }
     })
     
-    
     # Edit scihub credentials
     observeEvent(input$scihub, {
-      showModal(scihub_modal())
+      
+      # open the modalDialog
+      showModal(scihub_modal(
+        username = if(!is.null(input$scihub_username)){input$scihub_username}else{NA},
+        password = if(!is.null(input$scihub_password)){input$scihub_password}else{NA}
+      ))
+      
+      # dummy variable to define which save button has to be used
+      output$switch_save_apihub <- renderText({
+        if (is.null(input$apihub_default)) {
+          ""
+        } else if (input$apihub_default) {
+          "default"
+        } else {
+          "custom"
+        }
+      })
+      outputOptions(output, "switch_save_apihub", suspendWhenHidden = FALSE)
+      
+      # initialise the shinyFiles Save as button
+      observe({
+        apihub_path_prev <- rv$apihub_path
+        shinyFileSave(input, "apihub_path_sel", roots=volumes, session=session)
+        apihub_path_raw <- parseSavePath(volumes, input$apihub_path_sel)
+        rv$apihub_path <- if (nrow(apihub_path_raw)>0) {
+          as.character(apihub_path_raw$datapath)
+        } else {
+          NA
+        }
+        if (!is.na(rv$apihub_path)) {
+          if (!rv$apihub_path %in% apihub_path_prev) {
+            # if a change in the path is detected (= the button has been used), 
+            # close the modalDialog
+            # FIXME if a user re-opne the modalDialog and does not change 
+            # user nor password, the "Save as..." button will not close the dialog
+            shinyjs::click("save_apihub")
+          }
+        }
+      })
+      
     })
     
     # save user/password
     observeEvent(input$save_apihub, {
-      write_scihub_login(input$scihub_username, input$scihub_password)
+      write_scihub_login(
+        input$scihub_username, input$scihub_password, 
+        apihub_path = if(!is.na(rv$apihub_path)){as.character(rv$apihub_path)}else{NA}
+      )
       removeModal()
     })
     
@@ -1859,7 +1945,7 @@ s2_gui <- function(param_list = NULL,
       }
     })
     
-
+    
     ## Update resolution from reference file
     output$outres_message <- renderUI({
       if(input$use_reference==TRUE & "res" %in% input$reference_usefor) {
@@ -2073,6 +2159,33 @@ s2_gui <- function(param_list = NULL,
       ))
     })
     
+    observeEvent(input$help_apihub, {
+      showModal(modalDialog(
+        title = "SciHub username and password",
+        p(HTML(
+          "For security reasons, the SciHub username and password",
+          "are not saved with the other parameters."
+        )), 
+        p(HTML(
+          "By default, they are stored in a txt file inside the package,",
+          "so to be the same for all the sen2r executions",
+          "(the user have to set them only once)."
+        )),
+        p(HTML(
+          "Since it is not possible to perform more than two queries at",
+          "the same time, it can be useful to change them for a specific",
+          "sen2r run (i.e. for a scheduled execution), in order not to",
+          "interfer with other runs.",
+          "In this case, this option can be checked, and the user and password",
+          "will be saved in a different file, and will be used for this run",
+          "(the path of the text file - and not the content - is added inside",
+          "the parameter file)."
+        )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+    
     observeEvent(input$fix_online, {
       showModal(modalDialog(
         title = "Download is not supported on Windows",
@@ -2265,6 +2378,18 @@ s2_gui <- function(param_list = NULL,
         footer = NULL
       ))
     })
+    
+    observeEvent(input$help_max_masked_perc, {
+      showModal(modalDialog(
+        title = "Smooth / bufferize the cloud-covered surface?",
+        p(HTML(
+          "This help will be added soon."
+        )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+    
     
     observeEvent(input$help_clip_on_extent, {
       showModal(modalDialog(
@@ -2481,6 +2606,8 @@ s2_gui <- function(param_list = NULL,
         input$atm_mask_type
       } # atmospheric masking (accepted types as in s2_mask())
       rl$max_mask <- input$max_masked_perc
+      rl$mask_smooth <- if (input$mask_apply_smooth) {input$mask_smooth} else {0}
+      rl$mask_buffer <- if (input$mask_apply_smooth) {input$mask_buffer} else {0}
       
       rl$clip_on_extent <- as.logical(input$clip_on_extent) # TRUE to clip (and warp) on the selected extent, FALSE to work at tiles/merged level
       rl$extent_as_mask <- as.logical(input$extent_as_mask) # TRUE to mask outside the polygons of extent, FALSE to use as boundig box
@@ -2551,6 +2678,9 @@ s2_gui <- function(param_list = NULL,
       rl$path_subdirs <- if (rl$preprocess==TRUE) {as.logical(input$path_subdirs)} else {NA} # logical (use subdirs)
       rl$thumbnails <- if (rl$preprocess==TRUE) {as.logical(input$check_thumbnails)} else {NA} # logical (create thumbnails)
       
+      # save apihub.txt path if it was customly set
+      if (!is.null(NULL) & !anyNA(NULL)) {rl$apihub_path <- rv$apihub_path}
+      
       # information about package version
       rl$pkg_version <- packageVersion("sen2r") %>% as.character()
       
@@ -2608,6 +2738,10 @@ s2_gui <- function(param_list = NULL,
                            selected = ifelse(is.na(pl$mask_type),FALSE,TRUE))
         updateSliderInput(session, "max_masked_perc",
                           value = ifelse(is.na(pl$mask_type),80,pl$max_mask))
+        updateNumericInput(session, "mask_apply_smooth", 
+                           value = if (all(c(pl$mask_smooth, pl$mask_buffer)==0)) {FALSE} else {TRUE})
+        updateNumericInput(session, "mask_smooth", value = pl$mask_smooth)
+        updateNumericInput(session, "mask_buffer", value = pl$mask_buffer)
         updateRadioButtons(session, "atm_mask_type",
                            selected = ifelse(is.na(pl$mask_type),"cloud_medium_proba",pl$mask_type))
         updateRadioButtons(session, "atm_mask_custom",
@@ -2629,6 +2763,9 @@ s2_gui <- function(param_list = NULL,
         updateTextInput(session, "path_indices_textin", value = pl$path_indices)
         updateRadioButtons(session, "path_subdirs", selected = pl$path_subdirs)
         updateRadioButtons(session, "check_thumbnails", selected = pl$thumbnails)
+        
+        # update apihub path
+        rv$apihub_path <- pl$apihub_path
         
         # output geometry
         updateTextInput(session, "reference_file_textin", value = pl$reference_path)

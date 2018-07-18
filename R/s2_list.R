@@ -23,8 +23,18 @@
 #'         product
 #'     - "L1C": list available level-1C products
 #'     - "L2A": list available level-2A products
+#' @param ignore_ingestion_time (optional) Logical: if TRUE (default),
+#'  the research is performed basing only on the sensing date and time
+#'  (the time in which the image was acquired), ignoring the ingestion date
+#'  and time (the time the image was ingested). 
+#'  If FALSE, products with the ingestion time specified with `time_interval`
+#'  are first of all filtered, and them the research is performed on the sensing
+#'  time among them. 
+#'  `ignore_ingestion_time = TRUE` ensures to perform a complete research, but 
+#'  it is slower; setting it to `FALSE` speeds up, although some products could 
+#'  be ignored (but generally the ingestion date is the same of the sensing date).
 #' @param apihub Path of the "apihub.txt" file containing credentials
-#'  of scihub account. If NULL (default) the default credentials
+#'  of scihub account. If NA (default) the default credentials
 #'  (username "user", password "user") will be used.
 #' @param max_cloud Integer number (0-100) containing the maximum cloud
 #'  level of the tiles to be listed (default: no filter).
@@ -52,7 +62,7 @@
 #' print(example_s2_list)
 #' # Print the dates of the retrieved products
 #' as.vector(sort(sapply(names(example_s2_list), function(x) {
-#'   strftime(s2_getMetadata(x,"nameinfo")$sensing_datetime)
+#'   strftime(safe_getMetadata(x,"nameinfo")$sensing_datetime)
 #' })))
 #' 
 #' # Seasonal-period list
@@ -65,14 +75,15 @@
 #' print(example_s2_list)
 #' # Print the dates of the retrieved products
 #' as.vector(sort(sapply(names(example_s2_list), function(x) {
-#'   strftime(s2_getMetadata(x,"nameinfo")$sensing_datetime)
+#'   strftime(safe_getMetadata(x,"nameinfo")$sensing_datetime)
 #' })))
 #' }
 
 s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parameters
                     time_interval=NULL, time_period = "full", # temporal parameters
                     level="auto",
-                    apihub=NULL,
+                    ignore_ingestion_time = TRUE,
+                    apihub=NA,
                     max_cloud=110) {
   
   # convert input NA arguments in NULL
@@ -175,12 +186,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
   s2download <- import_s2download(convert=FALSE)
   
   # read the path of wget
-  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-  binpaths <- if (file.exists(binpaths_file)) {
-    jsonlite::fromJSON(binpaths_file)
-  } else {
-    list("wget" = install_wget())
-  }
+  binpaths <- load_binpaths("wget")
   
   # link to apihub
   if (is.null(apihub)) {
@@ -214,6 +220,10 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
         py_return <- s2download$s2_download(
           lat=lat, lon=lon, latmin=latmin, latmax=latmax, lonmin=lonmin, lonmax=lonmax,
           start_date=time_intervals[i,1], end_date=time_intervals[i,2],
+          start_ingest_date=if (ignore_ingestion_time==FALSE) {time_intervals[i,1]} else {r_to_py(NULL)},
+          end_ingest_date=if (ignore_ingestion_time==FALSE) {time_intervals[i,2]} else {r_to_py(NULL)},
+          # start_ingest_date=time_intervals[i,1],
+          # end_ingest_date=time_intervals[i,2],
           tile=r_to_py(tile),
           orbit=r_to_py(o),
           apihub=apihub,
@@ -226,13 +236,19 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
           downloader_path=dirname(binpaths$wget)
         )
       )
-      message(py_output)
+      # message(py_output) # do not show the output of the products found
+      # as formatted by Hagolle
       py_return
     })
   })
   
-  av_prod_list <- unlist(lapply(av_prod_tuple, lapply, function(x) {py_to_r(x)[[1]]}))
-  names(av_prod_list) <- unlist(lapply(av_prod_tuple, lapply, function(x) {py_to_r(x)[[2]]}))
+  av_prod_list <- lapply(av_prod_tuple, lapply, function(x) {py_to_r(x)[[1]]})
+  if (is.character(try(unlist(av_prod_list)))) {
+    av_prod_list <- unlist(av_prod_list)
+    names(av_prod_list) <- unlist(lapply(av_prod_tuple, lapply, function(x) {py_to_r(x)[[2]]}))
+  } else {
+    av_prod_list <- character(0)
+  }
   
   # filter on tiles
   # (filtering within python code does not take effect with list_only=TRUE)
@@ -240,9 +256,9 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
   # (using sen2r(), a complete filter on tiles is applied after downloading the product;
   # however, s2_download() would correctly download only required tiles)
   
-  if (!is.null(tile) & !is.null(av_prod_list)) {
+  if (!is.null(tile) & length(av_prod_list)>0) {
     av_prod_tiles <- lapply(names(av_prod_list), function(x) {
-      s2_getMetadata(x, info="nameinfo")$id_tile %>%
+      safe_getMetadata(x, info="nameinfo")$id_tile %>%
         ifelse(is.null(.), NA, .) 
     }) %>%
       unlist()

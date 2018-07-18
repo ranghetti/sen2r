@@ -5,8 +5,8 @@
 \title{Compute names of S2 file to be generated}
 \usage{
 compute_s2_paths(pm, s2_list_l1c, s2_list_l2a, paths, list_prods, out_ext,
-  tiles_ext, merged_ext, warped_ext, sr_masked_ext, force_tiles = FALSE,
-  ignorelist)
+  index_ext, tiles_ext, merged_ext, warped_ext, sr_masked_ext,
+  force_tiles = FALSE, check_tmp = TRUE, ignorelist)
 }
 \arguments{
 \item{pm}{List of input parameters.}
@@ -23,6 +23,8 @@ products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").}
 
 \item{out_ext}{Extension (character) of output products.}
 
+\item{index_ext}{Extension (character) of index products.}
+
 \item{tiles_ext}{Extension (character) of tiled products.}
 
 \item{merged_ext}{Extension (character) of merged products.}
@@ -31,7 +33,11 @@ products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").}
 
 \item{sr_masked_ext}{Extension (character) of masked products of SR products.}
 
-\item{force_tiles}{(optional) Logical: passed to \link{s2_shortname} (default: TRUE).}
+\item{force_tiles}{(optional) Logical: passed to \link{safe_shortname} (default: FALSE).}
+
+\item{check_tmp}{(optional) Logical: if TRUE (default), temporary files
+are also searched when \code{_exi} names are computed;
+if FALSE, only non temporary files are searched.}
 
 \item{ignorelist}{Vector of output files to be ignored.}
 }
@@ -42,7 +48,7 @@ A list, containing the following vectors:
 \code{indices_names_new}, \code{out_names_req}, \code{out_names_new},
 \code{masked_names_new}, \code{warped_names_req}, \code{warped_names_new},
 \code{merged_names_req}, \code{merged_names_new}, \code{tiles_names_req}, \code{tiles_names_new},
-\code{safe_names_l1c_req}, \code{safe_names_l1c_req}, \code{safe_names_l2a_req}.
+\code{safe_names_l1c_req}, \code{safe_names_l2a_req}.
 }
 \description{
 Internal function (to be used within \code{\link[=sen2r]{sen2r()}})

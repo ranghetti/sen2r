@@ -6,13 +6,14 @@
 \usage{
 s2_merge(infiles, outdir = ".", subdirs = NA, tmpdir = NA, rmtmp = TRUE,
   format = NA, compress = "DEFLATE", vrt_rel_paths = NA, out_crs = "",
-  overwrite = FALSE)
+  parallel = FALSE, overwrite = FALSE, .logfile_message = NA,
+  .log_output = NA)
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths
 of products already converted from SAFE format to a format managed by
 GDAL (use \link{s2_translate} to do it); their names must be in the
-sen2r naming convention (\link{s2_shortname}).}
+sen2r naming convention (\link{safe_shortname}).}
 
 \item{outdir}{(optional) Full name of the output directory where
 the files should be created (default: current directory).
@@ -50,8 +51,20 @@ This takes effect only with \code{format = "VRT"}.}
 (default: the CRS of the first input file). The tiles with CRS different
 from \code{out_crs} will be reprojected (and a warning returned).}
 
+\item{parallel}{(optional) Logical: if TRUE, the function is run using parallel
+processing, to speed-up the computation for large rasters.
+The number of cores is automatically determined; specifying it is also
+possible (e.g. \code{parallel = 4}).
+If FALSE (default), single core processing is used.}
+
 \item{overwrite}{Logical value: should existing output files be
 overwritten? (default: FALSE)}
+
+\item{.logfile_message}{(optional) Internal parameter
+(it is used when the function is called by \code{sen2r()}).}
+
+\item{.log_output}{(optional) Internal parameter
+(it is used when the function is called by \code{sen2r()}).}
 }
 \value{
 A vector with the names of the merged products (just created or

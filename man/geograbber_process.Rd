@@ -5,8 +5,7 @@
 \title{Preprocess (clip, reproject, reshape, mask) SAFE products}
 \usage{
 geograbber_process(path_safe, path_out, bbox = NA, list_prods = c("BOA"),
-  mask_type = NA, res = NA, proj = NA, resampling = "near",
-  overwrite = FALSE)
+  res = NA, ...)
 }
 \arguments{
 \item{path_safe}{Path of the directory in which SAFE
@@ -22,23 +21,18 @@ of the output products (xmin, ymin, xmax, ymax), in geographic coordinates.}
 products to be processed (accepted values: "TOA", "BOA", "SCL",
 "TCI"). Default is "BOA".}
 
-\item{mask_type}{(optional) Character value which determines the categories
-in the Srface Classification Map to be masked (see \code{\link[=s2_mask]{s2_mask()}}
-for the accepted values). Default (NA) is not to mask.}
-
 \item{res}{(optional) Numerifc vector of length 2 with the x-y resolution
 for output products. NA (default) means that the resolution
 is keeped as native.}
 
-\item{proj}{(optional) Character string with the pro4string of the output
-resolution. default value (NA) means not to reproject.}
-
-\item{resampling}{(optional) Resampling method (one of the values supported
-by \code{gdal_translate}: "near" (default), "bilinear", "cubic",
-"cubicspline", "lanczos", "average" or "mode").}
-
-\item{overwrite}{(optional) Logical value: should existing output
-files be overwritten? (default: FALSE).}
+\item{...}{Other additional \link{sen2r} arguments:
+\code{extent_name}, \code{list_indices}, \code{index_source}, \code{mask_type}, \code{max_mask},
+\code{mask_smooth}, \code{mask_buffer}, \code{clip_on_extent}, \code{extent_as_mask},
+\code{reference_path}, \code{res_s2}, \code{unit}, \code{proj}, \code{resampling}, \code{resampling_scl},
+\code{outformat}, \code{index_datatype}, \code{compression}, \code{overwrite}, \code{path_tiles},
+\code{path_merged}, \code{path_indices}, \code{path_subdirs}, \code{thumbnails},
+\code{parallel}, \code{tmpdir}, \code{rmtmp}.
+See \link{sen2r} documentation for details.}
 }
 \description{
 The function is a simplified wrapper of \code{\link[=sen2r]{sen2r()}}

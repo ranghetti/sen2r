@@ -6,6 +6,7 @@
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @importFrom reticulate import import_builtins use_python py_module_available py_discover_config
+#' @export
 
 init_python <- function() {
   
@@ -19,12 +20,7 @@ init_python <- function() {
   
   # checks the python version
   # (if possible, use python2 for compatibility with s2download.py)
-  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-  binpaths <- if (file.exists(binpaths_file)) {
-    jsonlite::fromJSON(binpaths_file)
-  } else {
-    list("python"=NULL)
-  }
+  binpaths <- load_binpaths()
   
   # Search or install Python
   if (is.null(binpaths$python)) {
@@ -53,7 +49,7 @@ init_python <- function() {
       )
     }
     
-    writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
+    writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
     
   }
   

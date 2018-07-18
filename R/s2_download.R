@@ -8,7 +8,7 @@
 #' @param downloader Executable to use to download products
 #'  (default: "wget").
 #' @param apihub Path of the "apihub.txt" file containing credentials
-#'  of scihub account. If NULL (default) the default credentials
+#'  of scihub account. If NA (default) the default credentials
 #'  (username "user", password "user") will be used.
 #' @param tile Single Sentinel-2 Tile string (5-length character)
 #' @param outdir (optional) Full name of the existing output directory
@@ -39,7 +39,7 @@
 #' # downloads single product files)
 #'
 #' # Download a serie of products
-#' pos <- sp::SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=sp::CRS("+init=epsg:4326"))
+#' pos <- st_sfc(st_point(c(12.0, 44.8)), crs=st_crs(4326))
 #' time_window <- as.Date(c("2017-05-01","2017-07-30"))
 #' example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window)
 #' s2_download(example_s2_list, outdir=tempdir())
@@ -47,7 +47,7 @@
 
 s2_download <- function(s2_prodlist=NULL,
                         downloader="wget",
-                        apihub=NULL,
+                        apihub=NA,
                         tile=NULL,
                         outdir=".") {
   
@@ -72,17 +72,7 @@ s2_download <- function(s2_prodlist=NULL,
   }
   
   # read the path of the downloader
-  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-  binpaths <- if (file.exists(binpaths_file)) {
-    jsonlite::fromJSON(binpaths_file)
-  } else {
-    if (downloader=="aria2") {
-      list("aria2" = install_aria2())
-    } else {
-      list("wget" = install_wget())
-    }
-    
-  }
+  binpaths <- load_binpaths(downloader)
   
   # TODO add checks on the format of filename (one element output of s2_list)
   
@@ -99,7 +89,7 @@ s2_download <- function(s2_prodlist=NULL,
     link <- s2_prodlist[i]
     filename <- names(s2_prodlist[i])
     # download archive for compactname products
-    if (s2_getMetadata(filename, "nameinfo")$version=="compact") {
+    if (safe_getMetadata(filename, "nameinfo")$version=="compact") {
       py_tile <- r_to_py(NULL)
       unzip_tile <- TRUE
     } else {
@@ -128,14 +118,17 @@ s2_download <- function(s2_prodlist=NULL,
       trace_funname = "s2download",
       trace_files   = file.path(outdir,c(filename,paste0(filename,".zip")))
     )
-    # s2download$download_s2product(filename=filename,
-    #                               link=link,
-    #                               downloader=downloader,
-    #                               apihub=apihub,
-    #                               tile=py_tile,
-    #                               no_download=FALSE,
-    #                               write_dir=outdir,
-    #                               file_list=NULL)
+    # s2download$download_s2product(
+    #   filename      = filename,
+    #   link          = link,
+    #   downloader    = downloader,
+    #   apihub        = apihub,
+    #   tile          = py_tile,
+    #   no_download   = FALSE,
+    #   write_dir     = outdir,
+    #   file_list     = NULL,
+    #   downloader_path = dirname(binpaths[[if (downloader=="aria2") {"aria2c"} else {"wget"}]])
+    # )
     
   }
   

@@ -6,7 +6,7 @@
 #'  of BOA (or TOA) products already converted from SAFE format to a
 #'  format managed by GDAL (use [s2_translate] to do it);
 #'  their names must be in the sen2r naming convention
-#'  ([s2_shortname]).
+#'  ([safe_shortname]).
 #' @param indices Character vector with the names of the required
 #'  indices. Values should be included in names corresponding to the
 #'  Abbreviations of the following indices:
@@ -39,6 +39,8 @@
 #'  placed in separated `outfile` subdirectories; if FALSE, they are placed in
 #'  `outfile` directory; if NA (default), subdirectories are created only if
 #'  more than a single spectral index is required.
+#' @param tmpdir (optional) Path where intermediate files (GTiff) will be 
+#'  created in case `format` is "VRT".
 #' @param compress (optional) In the case a GTiff format is
 #'  present, the compression indicated with this parameter is used.
 #' @param dataType (optional) Numeric datatype of the ouptut rasters.
@@ -59,8 +61,13 @@
 #'  Multiprocess masking computation is always performed in singlecore mode
 #' @param overwrite Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
+#' @param .logfile_message (optional) Internal parameter
+#'  (it is used when the function is called by `sen2r()`).
+#' @param .log_output (optional) Internal parameter
+#'  (it is used when the function is called by `sen2r()`).
 #' @return A vector with the names of the created products.
 #' @export
+#' @importFrom foreach foreach "%do%" "%dopar%"
 #' @importFrom doParallel registerDoParallel
 #' @importFrom parallel makeCluster stopCluster detectCores
 #' @importFrom jsonlite fromJSON
@@ -77,25 +84,19 @@ s2_calcindices <- function(infiles,
                            source=c("TOA","BOA"),
                            format=NA,
                            subdirs=NA,
+                           tmpdir=NA,
                            compress="DEFLATE",
                            dataType="Int16",
                            scaleFactor=NA,
                            parallel = FALSE,
-                           overwrite=FALSE) {
+                           overwrite=FALSE,
+                           .logfile_message=NA,
+                           .log_output=NA) {
   
   prod_type <- . <- NULL
   
   # Load GDAL paths
-  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-  binpaths <- if (file.exists(binpaths_file)) {
-    jsonlite::fromJSON(binpaths_file)
-  } else {
-    list("gdalinfo" = NULL)
-  }
-  if (is.null(binpaths$gdalinfo)) {
-    check_gdal()
-    binpaths <- jsonlite::fromJSON(binpaths_file)
-  }
+  binpaths <- load_binpaths("gdal")
   
   # Compute n_cores
   n_cores <- if (is.numeric(parallel)) {
@@ -103,7 +104,7 @@ s2_calcindices <- function(infiles,
   } else if (parallel==FALSE) {
     1
   } else {
-    min(parallel::detectCores()-1, 11) # use at most 11 cores
+    min(parallel::detectCores()-1, length(infiles), 11) # use at most 11 cores
   }
   if (n_cores<=1) {
     `%DO%` <- `%do%`
@@ -124,7 +125,7 @@ s2_calcindices <- function(infiles,
       if (!any(indices %in% indices_db$name)) {"The "} else {"Some of the "},
       "requested index names (\"",
       paste(indices[!indices %in% indices_db$name], collapse="\", \""),
-      ,"\") are not recognisable; please use accepted ",
+      "\") are not recognisable; please use accepted ",
       "values. To list accepted index names, type ",
       "'sort(list_indices(\"name\"))'.")
   }
@@ -161,7 +162,7 @@ s2_calcindices <- function(infiles,
   }
   
   # Get files metadata
-  infiles_meta <- data.table(fs2nc_getElements(infiles, format="data.frame"))
+  infiles_meta <- data.table(sen2r_getElements(infiles, format="data.frame"))
   infiles <- infiles[infiles_meta$prod_type %in% source]
   infiles_meta <- infiles_meta[prod_type %in% source,]
   
@@ -178,14 +179,35 @@ s2_calcindices <- function(infiles,
     n_cores, 
     type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
   )
-  if (n_cores > 1) {registerDoParallel(cl)}
-  outfiles <- foreach(i = seq_along(infiles), .packages = c("raster"), .combine=c)  %DO% {
+  if (n_cores > 1) {
+    registerDoParallel(cl)
+    print_message(
+      type = "message",
+      date = TRUE,
+      "Starting parallel computation of indices..."
+    )
+  }
+  
+  outfiles <- foreach(
+    i = seq_along(infiles), 
+    .packages = c("raster","rgdal","sen2r"), 
+    .combine=c, 
+    .errorhandling="remove"
+  )  %DO% {
+    
+    # redirect to log files
+    if (!is.na(.log_output)) {
+      sink(.log_output, split = TRUE, type = "output", append = TRUE)
+    }
+    if (!is.na(.logfile_message)) {
+      sink(.logfile_message, type="message")
+    }
+    
     sel_infile <- infiles[i]
     sel_infile_meta <- c(infiles_meta[i,])
     sel_format <- suppressWarnings(ifelse(
       !is.na(format), format, attr(GDALinfo(sel_infile), "driver")
     ))
-    if (sel_format=="VRT") {sel_format <- "GTiff"}
     sel_out_ext <- gdal_formats[gdal_formats$name==sel_format,"ext"][1]
     
     # check bands to use
@@ -256,6 +278,27 @@ s2_calcindices <- function(infiles,
           sel_formula <- paste0("clip(100+100*(",sel_formula,"),0,200)")
         }
         
+        # if sel_format is VRT, create GTiff as intermediate source files
+        # (cannot create directly .tif files without breaking _req / _exi names)
+        if (sel_format == "VRT") {
+          
+          # define and create tmpdir
+          if (is.na(tmpdir)) {
+            tmpdir <- file.path(out_subdir, ".vrt")
+          }
+          dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
+          
+          sel_format0 <- "GTiff"
+          sel_out_ext0 <- gdal_formats[gdal_formats$name==sel_format0,"ext"][1]
+          out_subdir0 <- tmpdir
+          sel_outfile0 <- gsub(paste0(sel_out_ext,"$"), sel_out_ext0, sel_outfile)
+          
+        } else {
+          sel_format0 <- sel_format
+          out_subdir0 <- out_subdir
+          sel_outfile0 <- sel_outfile
+        }
+        
         # apply gdal_calc
         system(
           paste0(
@@ -263,16 +306,27 @@ s2_calcindices <- function(infiles,
             paste(apply(gdal_bands,1,function(l){
               paste0("-",l["letter"]," \"",sel_infile,"\" --",l["letter"],"_band=",which(gdal_bands$letter==l["letter"]))
             }), collapse=" ")," ",
-            "--outfile=\"",file.path(out_subdir,sel_outfile),"\" ",
+            "--outfile=\"",file.path(out_subdir0,sel_outfile0),"\" ",
             "--type=\"",dataType,"\" ",
             "--NoDataValue=",sel_nodata," ",
-            "--format=\"",sel_format,"\" ",
+            "--format=\"",sel_format0,"\" ",
             if (overwrite==TRUE) {"--overwrite "},
-            if (sel_format=="GTiff") {paste0("--co=\"COMPRESS=",toupper(compress),"\" ")},
+            if (sel_format0=="GTiff") {paste0("--co=\"COMPRESS=",toupper(compress),"\" ")},
             "--calc=\"",sel_formula,"\""
           ),
           intern = Sys.info()["sysname"] == "Windows"
         )
+        
+        if (sel_format == "VRT") {
+          system(
+            paste0(
+              binpaths$gdalbuildvrt," ",
+              "\"",file.path(out_subdir,sel_outfile),"\" ",
+              file.path(out_subdir0,sel_outfile0)
+            ),
+            intern = Sys.info()["sysname"] == "Windows"
+          )
+        }
         
       } # end of overwrite IF cycle
       
@@ -280,10 +334,27 @@ s2_calcindices <- function(infiles,
       
     } # end of indices FOR cycle
     
+    # stop sinking
+    if (!is.na(.logfile_message)) {sink(type = "message")}
+    if (!is.na(.log_output)) {sink(type = "output")}
+    
     file.path(out_subdir,sel_outfiles)
     
   } # end cycle on infiles
-  if (n_cores > 1) {stopCluster(cl)}
+  if (n_cores > 1) {
+    stopCluster(cl)
+    if (!is.na(.log_output)) {
+      sink(.log_output, split = TRUE, type = "output", append = TRUE)
+    }
+    if (!is.na(.logfile_message)) {
+      sink(.logfile_message, type="message")
+    }
+    print_message(
+      type = "message",
+      date = TRUE,
+      "Parallel computation of indices done."
+    )
+  }
   
   return(outfiles)
   

@@ -20,6 +20,10 @@
 #' @param datatype (optional) data type of the output raster.
 #' @param overwrite (optional) Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
+#' @param .logfile_message (optional) Internal parameter
+#'  (it is used when the function is called by `s2_mask()`).
+#' @param .log_output (optional) Internal parameter
+#'  (it is used when the function is called by `s2_mask()`).
 #' @return NULL
 #' @importFrom doParallel registerDoParallel
 #' @importFrom parallel makeCluster stopCluster detectCores
@@ -38,7 +42,9 @@ maskapply_parallel <- function(in_rast,
                                parallel = TRUE, 
                                minrows = NULL, 
                                datatype = "INT2S",
-                               overwrite = FALSE) {
+                               overwrite = FALSE,
+                               .logfile_message=NA,
+                               .log_output=NA) {
 
   #this function applies a mask by multiplying the mask with the input raster
   # processing is done by chinks of lines. Changing minrows affects the dimensions
@@ -53,7 +59,7 @@ maskapply_parallel <- function(in_rast,
       bs <- blockSize(out, minrows = minrows)
     }
     for (i in 1:bs$n) {
-      message("Processing chunk ", i, " of ", bs$n)
+      # message("Processing chunk ", i, " of ", bs$n)
       v   <- getValues(x, row = bs$row[i], nrows = bs$nrows[i])
       m   <- getValues(y, row = bs$row[i], nrows = bs$nrows[i])
       out <- writeValues(out, m*v+(1-m)*na, bs$row[i])
@@ -81,7 +87,7 @@ maskapply_parallel <- function(in_rast,
   } else if (parallel==FALSE) {
     1
   } else {
-    min(parallel::detectCores()-1, 11) # use at most 11 cores
+    min(parallel::detectCores()-1, nlayers(in_rast), 11) # use at most 11 cores
   }
   if (n_cores<=1) {
     `%DO%` <- `%do%`
@@ -105,6 +111,12 @@ maskapply_parallel <- function(in_rast,
   )
   if (n_cores > 1) {registerDoParallel(cl)}
   out_paths <- foreach(i = 1:nlayers(in_rast), .packages = c("raster"), .combine=c)  %DO% {
+    
+    # redirect to log files
+    if (!is.na(.log_output)) {sink(.log_output, split = TRUE, type = "output", append = TRUE)}
+    if (!is.na(.logfile_message)) {sink(.logfile_message, type="message")}
+    
+    # run code
     out_path <- file.path(tmpdir, paste0(basename(tempfile(pattern = "maskapply_")), "_b" , i, ".tif"))
     r <- in_rast[[i]]
     s <- maskapply(r, m, 
@@ -112,9 +124,23 @@ maskapply_parallel <- function(in_rast,
                    out_file = out_path,
                    n_cores,  datatype, minrows, 
                    format = 'GTiff', overwrite = TRUE, options = c("COMPRESS=LZW"))
+    
+    # stop sinking
+    if (!is.na(.logfile_message)) {sink(type = "message")}
+    if (!is.na(.log_output)) {sink(type = "output")}
+    
     out_path
+    
   }
-  if (n_cores > 1) {stopCluster(cl)}
+  if (n_cores > 1) {
+    stopCluster(cl)
+    if (!is.na(.log_output)) {
+      sink(.log_output, split = TRUE, type = "output", append = TRUE)
+    }
+    if (!is.na(.logfile_message)) {
+      sink(.logfile_message, type="message")
+    }
+  }
   
   # write output VRT
   system(

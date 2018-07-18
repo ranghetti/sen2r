@@ -5,16 +5,17 @@
 \title{Compute maps of spectral indices}
 \usage{
 s2_calcindices(infiles, indices, outdir = ".", parameters = NULL,
-  source = c("TOA", "BOA"), format = NA, subdirs = NA,
+  source = c("TOA", "BOA"), format = NA, subdirs = NA, tmpdir = NA,
   compress = "DEFLATE", dataType = "Int16", scaleFactor = NA,
-  parallel = FALSE, overwrite = FALSE)
+  parallel = FALSE, overwrite = FALSE, .logfile_message = NA,
+  .log_output = NA)
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths
 of BOA (or TOA) products already converted from SAFE format to a
 format managed by GDAL (use \link{s2_translate} to do it);
 their names must be in the sen2r naming convention
-(\link{s2_shortname}).}
+(\link{safe_shortname}).}
 
 \item{indices}{Character vector with the names of the required
 indices. Values should be included in names corresponding to the
@@ -54,6 +55,9 @@ placed in separated \code{outfile} subdirectories; if FALSE, they are placed in
 \code{outfile} directory; if NA (default), subdirectories are created only if
 more than a single spectral index is required.}
 
+\item{tmpdir}{(optional) Path where intermediate files (GTiff) will be
+created in case \code{format} is "VRT".}
+
 \item{compress}{(optional) In the case a GTiff format is
 present, the compression indicated with this parameter is used.}
 
@@ -78,6 +82,12 @@ Multiprocess masking computation is always performed in singlecore mode}
 
 \item{overwrite}{Logical value: should existing output files be
 overwritten? (default: FALSE)}
+
+\item{.logfile_message}{(optional) Internal parameter
+(it is used when the function is called by \code{sen2r()}).}
+
+\item{.log_output}{(optional) Internal parameter
+(it is used when the function is called by \code{sen2r()}).}
 }
 \value{
 A vector with the names of the created products.

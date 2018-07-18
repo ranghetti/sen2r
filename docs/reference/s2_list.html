@@ -18,13 +18,26 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Retrieve list of available products. — s2_list" />
+
+<meta property="og:description" content="The function retrieves the list of available Sentinel-2
+products basing on search criteria. It makes use of
+s2download
+python function only to retrieve the list of files, without
+downloading and correcting them." />
+<meta name="twitter:card" content="summary" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -34,16 +47,14 @@
 <![endif]-->
 
 
-<!-- Google analytics -->
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-11080708-8"></script>
 <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-  ga('create', 'UA-11080708-8', 'auto');
-  ga('send', 'pageview');
-
+  gtag('config', 'UA-11080708-8');
 </script>
 
   </head>
@@ -59,8 +70,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">sen2r</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">sen2r</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.2</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -79,6 +94,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -86,12 +102,15 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Retrieve list of available products.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/s2_list.R'><code>R/s2_list.R</code></a></small>
+    <div class="hidden name"><code>s2_list.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>The function retrieves the list of available Sentinel-2
 products basing on search criteria. It makes use of
@@ -99,12 +118,13 @@ products basing on search criteria. It makes use of
 python function only to retrieve the list of files, without
 downloading and correcting them.</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>s2_list</span>(<span class='kw'>spatial_extent</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>orbit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>time_period</span> <span class='kw'>=</span> <span class='st'>"full"</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
-  <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>max_cloud</span> <span class='kw'>=</span> <span class='fl'>110</span>)</pre>
+  <span class='kw'>ignore_ingestion_time</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>max_cloud</span> <span class='kw'>=</span> <span class='fl'>110</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
@@ -146,9 +166,22 @@ product
 - "L2A": list available level-2A products</p></td>
     </tr>
     <tr>
+      <th>ignore_ingestion_time</th>
+      <td><p>(optional) Logical: if TRUE (default),
+the research is performed basing only on the sensing date and time
+(the time in which the image was acquired), ignoring the ingestion date
+and time (the time the image was ingested).
+If FALSE, products with the ingestion time specified with <code>time_interval</code>
+are first of all filtered, and them the research is performed on the sensing
+time among them.
+<code>ignore_ingestion_time = TRUE</code> ensures to perform a complete research, but
+it is slower; setting it to <code>FALSE</code> speeds up, although some products could
+be ignored (but generally the ingestion date is the same of the sensing date).</p></td>
+    </tr>
+    <tr>
       <th>apihub</th>
       <td><p>Path of the "apihub.txt" file containing credentials
-of scihub account. If NULL (default) the default credentials
+of scihub account. If NA (default) the default credentials
 (username "user", password "user") will be used.</p></td>
     </tr>
     <tr>
@@ -183,7 +216,7 @@ and its name the product name).</p>
 <span class='fu'>print</span>(<span class='no'>example_s2_list</span>)
 <span class='co'># Print the dates of the retrieved products</span>
 <span class='fu'>as.vector</span>(<span class='fu'>sort</span>(<span class='fu'>sapply</span>(<span class='fu'>names</span>(<span class='no'>example_s2_list</span>), <span class='kw'>function</span>(<span class='no'>x</span>) {
-  <span class='fu'>strftime</span>(<span class='fu'><a href='s2_getMetadata.html'>s2_getMetadata</a></span>(<span class='no'>x</span>,<span class='st'>"nameinfo"</span>)$<span class='no'>sensing_datetime</span>)
+  <span class='fu'>strftime</span>(<span class='fu'><a href='safe_getMetadata.html'>safe_getMetadata</a></span>(<span class='no'>x</span>,<span class='st'>"nameinfo"</span>)$<span class='no'>sensing_datetime</span>)
 })))
 
 <span class='co'># Seasonal-period list</span>
@@ -196,7 +229,7 @@ and its name the product name).</p>
 <span class='fu'>print</span>(<span class='no'>example_s2_list</span>)
 <span class='co'># Print the dates of the retrieved products</span>
 <span class='fu'>as.vector</span>(<span class='fu'>sort</span>(<span class='fu'>sapply</span>(<span class='fu'>names</span>(<span class='no'>example_s2_list</span>), <span class='kw'>function</span>(<span class='no'>x</span>) {
-  <span class='fu'>strftime</span>(<span class='fu'><a href='s2_getMetadata.html'>s2_getMetadata</a></span>(<span class='no'>x</span>,<span class='st'>"nameinfo"</span>)$<span class='no'>sensing_datetime</span>)
+  <span class='fu'>strftime</span>(<span class='fu'><a href='safe_getMetadata.html'>safe_getMetadata</a></span>(<span class='no'>x</span>,<span class='st'>"nameinfo"</span>)$<span class='no'>sensing_datetime</span>)
 })))
 <span class='co'># }</span></pre>
   </div>
@@ -225,11 +258,14 @@ Luigi Ranghetti, phD (2017) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

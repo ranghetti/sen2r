@@ -13,9 +13,9 @@ s2_thumbnails(infiles, prod_type = NA, rgb_type = "SwirNirR", dim = 1024,
 of products already converted from SAFE format to a
 format managed by GDAL (use \link{s2_translate} to do it);
 their names must be in the sen2r naming convention
-(\link{s2_shortname}).}
+(\link{safe_shortname}).}
 
-\item{prod_type}{(optional) Output product (see \link{s2_shortname} for the
+\item{prod_type}{(optional) Output product (see \link{safe_shortname} for the
 list of accepted products). If not provided, it is retrieved from the
 file name.}
 

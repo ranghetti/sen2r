@@ -1,7 +1,10 @@
 #' @title Get information from S2 file name or metadata
-#' @description The function scans a Sentinel2 product (main path, granule path,
-#'  main / granule xml file or GDAL object) to retrieve information about
-#'  the product.
+#' @description The function `safe_getMetadata()` scans a Sentinel2 product 
+#'  (main path, granule path, main / granule xml file or GDAL object) 
+#'  to retrieve information about the product.
+#'  
+#'  The accessory function `rm_invalid_safe()` remove a SAFE archive in the case
+#'  it is not recognised by `safe_getMetadata()`.
 #' @param s2 A Sentinel-2 product, being both a `character` (path of an
 #'  existing product, or simply product name) or python object of class
 #'  `osgeo.gdal.Dataset`. This input parameter
@@ -43,9 +46,12 @@
 #'      (see the second example for a workaround to scan for specific
 #'      elements without needing the file to have been downloaded).
 
-#' @return A list of the output metadata.
+#' @return `safe_getMetadata()` returns a list of the output metadata;
+#' 
+#'  `rm_invalid_safe()` returns TRUE if the `s2` product was removed, 
+#'  FALSE elsewhere.
 #'
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2017, 2018) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @export
 #' @importFrom reticulate py_to_r
@@ -57,25 +63,29 @@
 #'   "/path/of/the/product/S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"
 #'
 #' # Return only the information retrevable from the file names (files are not scanned)
-#' s2_getMetadata(s2_examplename, info="nameinfo")
+#' safe_getMetadata(s2_examplename, info="nameinfo")
 #'
 #' # Return some specific information without scanning files
-#' s2_getMetadata(s2_examplename, info="nameinfo")[c("level", "id_tile")]
+#' safe_getMetadata(s2_examplename, info="nameinfo")[c("level", "id_tile")]
 #'
 #' # Return a single information without scanning files
 #' # (in this case, the output is a vector instead than a list)
-#' s2_getMetadata(s2_examplename, info="nameinfo")[["level"]]
+#' safe_getMetadata(s2_examplename, info="nameinfo")[["level"]]
 #'
 #' \dontrun{
 #'
 #' # Return all the available information
-#' s2_getMetadata(s2_examplename)
+#' safe_getMetadata(s2_examplename)
 #'
 #' # Return some specific information
-#' s2_getMetadata(s2_examplename, info=c("tiles", "level", "id_tile"))
+#' safe_getMetadata(s2_examplename, info=c("tiles", "level", "id_tile"))
 #'
 #' # Return a single information
-#' s2_getMetadata(s2_examplename, info="clouds")
+#' safe_getMetadata(s2_examplename, info="clouds")
+#' 
+#' # Delete it if it is not recognised
+#' rm_invalid_safe(s2_examplename)
+#' 
 #' }
 
 # TODO
@@ -83,7 +93,23 @@
 # - add a parameter which provides the list of the available options
 # - add check for format integrity
 
-s2_getMetadata <- function(s2, info="all") {
+
+safe_getMetadata <- function(s2, info="all") {
+  .safe_getMetadata(s2, info=info, action = "getmetadata")
+}
+
+
+#' @name rm_invalid_safe
+#' @rdname safe_getMetadata
+#' @export
+rm_invalid_safe <- function(s2) {
+  .safe_getMetadata(s2, info="fileinfo", action = "rm_invalid")
+}
+
+
+# internal function: action="getmetadata" causes the execution of safe_getMetadata(),
+# action="rm_invalid" causes the execution of rm_invalid_safe().
+.safe_getMetadata <- function(s2, info="all", action = "getmetadata") {
   
   # define regular expressions to identify products
   s2_regex <- list(
@@ -174,10 +200,15 @@ s2_getMetadata <- function(s2, info="all") {
             nameinfo_elements <- list(s2_regex$oldname_granule_xml$elements)
           }
         } else {
-          print_message(
-            type="error", 
-            "This product (",s2,") is not in the right format (not recognised)."
-          )
+          if (action == "getmetadata") {
+            print_message(
+              type="error", 
+              "This product (",s2,") is not in the right format (not recognised)."
+            )
+          } else if (action == "rm_invalid") {
+            unlink(s2, recursive=TRUE)
+            return(invisible(TRUE))
+          }
         }
       } else {
         if (length(grep(s2_regex$compactname_main_path$regex, s2_name))+length(grep(s2_regex$oldname_main_path$regex, s2_name))==1) {
@@ -203,10 +234,15 @@ s2_getMetadata <- function(s2, info="all") {
             nameinfo_elements <- list(s2_regex$oldname_granule_path$elements)
           }
         } else {
-          print_message(
-            type="error", 
-            "This product (",s2,") is not in the right format (not recognised)."
-          )
+          if (action == "getmetadata") {
+            print_message(
+              type="error", 
+              "This product (",s2,") is not in the right format (not recognised)."
+            )
+          } else if (action == "rm_invalid") {
+            unlink(s2, recursive=TRUE)
+            return(invisible(TRUE))
+          }
         }
       }
       
@@ -244,10 +280,15 @@ s2_getMetadata <- function(s2, info="all") {
               s2_granules_xml <- unlist(sapply(list.dirs(file.path(s2_path,"GRANULE"), recursive=FALSE, full.names=TRUE),
                                                list.files, s2_regex$oldname_granule_xml$regex, full.names=TRUE))
             } else if (length(oldname_main_xmlfile)==0) {
-              print_message(
-                type="error", 
-                "This product (",s2,") is not in the right format (not recognised)."
-              )
+              if (action == "getmetadata") {
+                print_message(
+                  type="error", 
+                  "This product (",s2,") is not in the right format (not recognised)."
+                )
+              } else if (action == "rm_invalid") {
+                unlink(s2, recursive=TRUE)
+                return(invisible(TRUE))
+              }
             } else {
               print_message(
                 type="error", 
@@ -283,10 +324,15 @@ s2_getMetadata <- function(s2, info="all") {
               s2_main_xml <- list.files(dirname(dirname(s2_path)), s2_regex$oldname_main_xml$regex, full.names=TRUE)
               s2_granules_xml <- s2_xml <- oldname_granule_xmlfile
             } else if (length(oldname_granule_xmlfile)==0) {
-              print_message(
-                type="error", 
-                "This product (",s2,") is not in the right format (not recognised)."
-              )
+              if (action == "getmetadata") {
+                print_message(
+                  type="error", 
+                  "This product (",s2,") is not in the right format (not recognised)."
+                )
+              } else if (action == "rm_invalid") {
+                unlink(s2, recursive=TRUE)
+                return(invisible(TRUE))
+              }
             }
           } else if (length(compactname_granule_xmlfile) == 1) {
             if (length(oldname_granule_xmlfile) == 0) {
@@ -301,10 +347,15 @@ s2_getMetadata <- function(s2, info="all") {
             }
           }
         } else if (length(oldname_granule_xmlfile) + length(compactname_granule_xmlfile) == 0) {
-          print_message(
-            type="error", 
-            "This product (",s2,") is not in the right format (not recognised)."
-          )
+          if (action == "getmetadata") {
+            print_message(
+              type="error", 
+              "This product (",s2,") is not in the right format (not recognised)."
+            )
+          } else if (action == "rm_invalid") {
+            unlink(s2, recursive=TRUE)
+            return(invisible(TRUE))
+          }
         } else {
           print_message(
             type="error", 
@@ -312,10 +363,15 @@ s2_getMetadata <- function(s2, info="all") {
           )
         }
       } else {
-        print_message(
-          type="error", 
-          "This product (",s2,") is not in the right format (not recognised)."
-        )
+        if (action == "getmetadata") {
+          print_message(
+            type="error", 
+            "This product (",s2,") is not in the right format (not recognised)."
+          )
+        } else if (action == "rm_invalid") {
+          unlink(s2, recursive=TRUE)
+          return(invisible(TRUE))
+        }
       }
       
       # metadata from file name are read
@@ -496,7 +552,9 @@ s2_getMetadata <- function(s2, info="all") {
   }
   
   # return
-  if (length(metadata)>1) {
+  if (action == "rm_invalid") {
+    return(invisible(FALSE))
+  } else if (length(metadata)>1) {
     return(metadata)
   } else {
     return(unlist(metadata))

@@ -34,6 +34,10 @@
 #'  possible (e.g. `parallel = 4`).
 #' @param overwrite Logical value: should existing output L2A products be overwritten?
 #'  (default: FALSE)
+#' @param .logfile_message (optional) Internal parameter
+#'  (it is used when the function is called by `sen2r()`).
+#' @param .log_output (optional) Internal parameter
+#'  (it is used when the function is called by `sen2r()`).
 #' @return Vector character with the list ot the output products (being corrected or already
 #'  existing)
 #'
@@ -41,12 +45,12 @@
 #' @note License: GPL 3.0
 #' @importFrom jsonlite fromJSON
 #' @importFrom doParallel registerDoParallel
-#' @importFrom foreach foreach
+#' @importFrom foreach foreach "%do%" "%dopar%"
 #' @importFrom parallel detectCores makeCluster stopCluster
 #' @export
 #'
 #' @examples \dontrun{
-#' pos <- sp::SpatialPoints(data.frame("x"=12.0,"y"=44.8), proj4string=sp::CRS("+init=epsg:4326"))
+#' pos <- st_sfc(st_point(c(12.0, 44.8)), crs=st_crs(4326))
 #' time_window <- as.Date(c("2017-05-01","2017-07-30"))
 #' example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window)
 #' s2_download(example_s2_list, outdir=tempdir())
@@ -55,30 +59,11 @@
 
 sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, 
                     tmpdir = NA, rmtmp = TRUE,
-                    tiles=NULL, parallel=FALSE, overwrite=FALSE) {
+                    tiles=NULL, parallel=FALSE, overwrite=FALSE,
+                    .logfile_message=NA, .log_output=NA) {
   
   # load sen2cor executable path
-  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-  binpaths <- if (file.exists(binpaths_file)) {
-    jsonlite::fromJSON(binpaths_file)
-  } else {
-    list("sen2cor" = NULL)
-  }
-  if (length(binpaths$sen2cor)==0) {
-    if (interactive()) {
-      print_message(
-        type="waiting",
-        "sen2cor was not found in your system; press ENTER to install, ESC to escape."
-      )
-    } else {
-      print_message(
-        type="message",
-        "sen2cor was not found in your system and will be installed."
-      )
-    }
-    install_sen2cor() %>% suppressMessages()
-    binpaths <- jsonlite::fromJSON(binpaths_file)
-  }
+  binpaths <- load_binpaths("sen2cor")
   
   # tiles NA -> NULL
   if (!is.null(tiles)) {
@@ -99,8 +84,10 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
   
   # check that proc_dir is not on a mountpoint
   if (!is.na(proc_dir)) {
-    if (Sys.info()["sysname"] != "Windows" & 
-        !is.null(mountpoint(proc_dir, "cifs"))) {
+    if (
+      Sys.info()["sysname"] != "Windows" & 
+      any(attr(mountpoint(proc_dir), "protocol") %in% c("cifs", "nsfs"))
+    ) {
       print_message(
         type = "warning",
         proc_dir, "is on a SAMBA mounted unit, so it will not be used."
@@ -112,7 +99,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
   # accept only input names which are L1C
   l1c_prodlist_level <- sapply(l1c_prodlist, function(x) {
     tryCatch(
-      s2_getMetadata(x, info = "level"),
+      safe_getMetadata(x, info = "level"),
       error = function(y){"wrong"}
     )
   })
@@ -155,6 +142,14 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
     .packages='sen2r'
   ) %DO% {
     
+    # redirect to log files
+    if (!is.na(.log_output)) {
+      sink(.log_output, split = TRUE, type = "output", append = TRUE)
+    }
+    if (!is.na(.logfile_message)) {
+      sink(.logfile_message, type="message")
+    }
+    
     # set paths
     sel_l1c <- l1c_prodlist[i]
     sel_l2a <- file.path(
@@ -169,13 +164,13 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
     # existing L1C tiles within input product
     sel_l1c_tiles_existing <- sapply(
       list.files(file.path(sel_l1c,"GRANULE")), 
-      function(x){s2_getMetadata(x,"nameinfo")$id_tile}
+      function(x){safe_getMetadata(x,"nameinfo")$id_tile}
     )
     # L2A tiles already existing
     sel_l2a_tiles_existing <- if (file.exists(sel_l2a)) {
       sapply(
         list.files(file.path(sel_l2a,"GRANULE")), 
-        function(x){s2_getMetadata(x,"nameinfo")$id_tile}
+        function(x){safe_getMetadata(x,"nameinfo")$id_tile}
       )
     } else {
       character(0)
@@ -220,15 +215,17 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
         if (
           length(sel_l1c_tiles_toavoid)>0 | # 1
           dirname(sel_l1c)!=dirname(sel_l2a) & length(sel_l2a_tiles_existing)>0 | # 2
-          Sys.info()["sysname"] != "Windows" & !is.null(mountpoint(sel_l1c, "cifs")) # 3
+          Sys.info()["sysname"] != "Windows" & any(attr(mountpoint(sel_l1c), "protocol") %in% c("cifs", "nsfs")) # 3
         ) {
           if (is.na(tmpdir)) {
             tmpdir <- tempfile(pattern="sen2cor_")
           }
           dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
           # check that tmpdir is not on a mountpoint
-          if (Sys.info()["sysname"] != "Windows" & 
-              !is.null(mountpoint(tmpdir, "cifs"))) {
+          if (
+            Sys.info()["sysname"] != "Windows" & 
+            any(attr(mountpoint(tmpdir), "protocol") %in% c("cifs", "nsfs"))
+          ) {
             print_message(
               type = "error",
               tmpdir, "is on a SAMBA mounted unit, so it can not be used."
@@ -307,12 +304,22 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
       
     } # end IF cycle on overwrite
     
+    # stop sinking
+    if (!is.na(.logfile_message)) {sink(type = "message")}
+    if (!is.na(.log_output)) {sink(type = "output")}
+    
     sel_l2a
     
   } # end cycle on each product
   
-  if (n_cores>1) {
+  if (n_cores > 1) {
     stopCluster(cl)
+    if (!is.na(.log_output)) {
+      sink(.log_output, split = TRUE, type = "output", append = TRUE)
+    }
+    if (!is.na(.logfile_message)) {
+      sink(.logfile_message, type="message")
+    }
   }
   
   # Remove temporary directory

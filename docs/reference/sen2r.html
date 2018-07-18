@@ -18,13 +18,26 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Find, download and preprocess Sentinel-2 images — sen2r" />
+
+<meta property="og:description" content="The function is a wrapper to perform the entire
+processing chain to find, download and pre-process Sentinel-2
+data. Input is a set of parameters that can be passed with a
+list or file (parameter param_list) or singularly (see the
+descriptions of all the other parameters)." />
+<meta name="twitter:card" content="summary" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -34,16 +47,14 @@
 <![endif]-->
 
 
-<!-- Google analytics -->
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-11080708-8"></script>
 <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-  ga('create', 'UA-11080708-8', 'auto');
-  ga('send', 'pageview');
-
+  gtag('config', 'UA-11080708-8');
 </script>
 
   </head>
@@ -59,8 +70,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">sen2r</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">sen2r</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.2</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -79,6 +94,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -86,12 +102,15 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Find, download and preprocess Sentinel-2 images</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/sen2r.R'><code>R/sen2r.R</code></a></small>
+    <div class="hidden name"><code>sen2r.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>The function is a wrapper to perform the entire
 processing chain to find, download and pre-process Sentinel-2
@@ -99,24 +118,26 @@ data. Input is a set of parameters that can be passed with a
 list or file (parameter <code>param_list</code>) or singularly (see the
 descriptions of all the other parameters).</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>sen2r</span>(<span class='kw'>param_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>gui</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>preprocess</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>s2_levels</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"l2a"</span>), <span class='kw'>sel_sensor</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"s2a"</span>, <span class='st'>"s2b"</span>), <span class='kw'>online</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>downloader</span> <span class='kw'>=</span> <span class='st'>"wget"</span>, <span class='kw'>overwrite_safe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>rm_safe</span> <span class='kw'>=</span> <span class='st'>"no"</span>,
-  <span class='kw'>step_atmcorr</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>timeperiod</span> <span class='kw'>=</span> <span class='st'>"full"</span>,
-  <span class='kw'>extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>extent_name</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>s2tiles_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>s2orbits_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"BOA"</span>), <span class='kw'>list_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>index_source</span> <span class='kw'>=</span> <span class='st'>"BOA"</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>100</span>,
+  <span class='kw'>s2_levels</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"l1c"</span>, <span class='st'>"l2a"</span>), <span class='kw'>sel_sensor</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"s2a"</span>, <span class='st'>"s2b"</span>),
+  <span class='kw'>online</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>downloader</span> <span class='kw'>=</span> <span class='st'>"wget"</span>,
+  <span class='kw'>overwrite_safe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>rm_safe</span> <span class='kw'>=</span> <span class='st'>"no"</span>, <span class='kw'>step_atmcorr</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
+  <span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>timeperiod</span> <span class='kw'>=</span> <span class='st'>"full"</span>, <span class='kw'>extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>extent_name</span> <span class='kw'>=</span> <span class='st'>""</span>,
+  <span class='kw'>s2tiles_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>s2orbits_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"BOA"</span>),
+  <span class='kw'>list_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>index_source</span> <span class='kw'>=</span> <span class='st'>"BOA"</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>mask_smooth</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>mask_buffer</span> <span class='kw'>=</span> <span class='fl'>0</span>,
   <span class='kw'>clip_on_extent</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>extent_as_mask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>reference_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>res</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>10</span>, <span class='fl'>10</span>), <span class='kw'>res_s2</span> <span class='kw'>=</span> <span class='st'>"10m"</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"Meter"</span>, <span class='kw'>proj</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res_s2</span> <span class='kw'>=</span> <span class='st'>"10m"</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"Meter"</span>, <span class='kw'>proj</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>resampling</span> <span class='kw'>=</span> <span class='st'>"near"</span>, <span class='kw'>resampling_scl</span> <span class='kw'>=</span> <span class='st'>"near"</span>, <span class='kw'>outformat</span> <span class='kw'>=</span> <span class='st'>"GTiff"</span>,
   <span class='kw'>index_datatype</span> <span class='kw'>=</span> <span class='st'>"Int16"</span>, <span class='kw'>compression</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>path_l1c</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_l2a</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_merged</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>path_out</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_subdirs</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>thumbnails</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>use_python</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+  <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>log</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
@@ -167,6 +188,12 @@ Accepted values: "s2a" and "s2b"; default: c("s2a","s2b").</p></td>
       <td><p>(optional) Logical: TRUE (default) to search for available
 products on SciHub (and download if needed); FALSE to work
 only with already downloaded SAFE products.</p></td>
+    </tr>
+    <tr>
+      <th>apihub</th>
+      <td><p>Path of the text file containing credentials
+of scihub account. If NA (default) the default credentials
+(username "user", password "user") will be used.</p></td>
     </tr>
     <tr>
       <th>downloader</th>
@@ -288,6 +315,20 @@ had previously been clipped and masked using a polygon, the percentage is
 computed on the surface included in the masking polygons).</p></td>
     </tr>
     <tr>
+      <th>mask_smooth</th>
+      <td><p>(optional) Numeric positive value: the smoothing radius
+(expressed in unit of measure of the output projection, typically metres)
+to be applied to the cloud mask by function <a href='s2_mask.html'>s2_mask</a>.</p></td>
+    </tr>
+    <tr>
+      <th>mask_buffer</th>
+      <td><p>(optional) Numeric value: the buffering radius
+(expressed in unit of measure of the output projection, typically metres)
+to be applied to the cloud mask by function <a href='s2_mask.html'>s2_mask</a>.
+Default value (0) means that no buffer is applied; a positive value causes
+an enlargement of the masked area; a negative value cause a reducement.</p></td>
+    </tr>
+    <tr>
       <th>clip_on_extent</th>
       <td><p>(optional) Logical: if TRUE (default), output products
 and indices are clipped to the selected extent (and resampled/reprojected);
@@ -307,7 +348,7 @@ reference grid. If NA (default), no reference is used.</p></td>
     <tr>
       <th>res</th>
       <td><p>(optional) Numerifc vector of length 2 with the x-y resolution
-for output products. Default: c(10,10). NA means that the resolution
+for output products. Default (NA) means that the resolution
 is keeped as native.</p></td>
     </tr>
     <tr>
@@ -447,12 +488,27 @@ default is a subdirectory named ".vrt" within <code>path_out</code>).</p></td>
       <td><p>(optional) Logical: should temporary files be removed?
 (Default: TRUE). <code>rmtmp</code> is forced to <code>FALSE</code> if <code>outformat = "VRT"</code>.</p></td>
     </tr>
+    <tr>
+      <th>log</th>
+      <td><p>(optional) Character string with the path where the package
+messages will be redirected.
+Default (NA) is not to redirect (use standard output).
+A two-length character with tho paths (which can also coincide)
+can be used to redirect also the output: in this case, the first path
+is the path for messages, the second one for the output.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A vector with the paths of the files which were created (excluded
-the temporary files); NULL otherwise.</p>
+the temporary files); NULL otherwise.
+The vector includes two attributes:</p><ul>
+<li><p><code>cloudcovered</code> with the list of imags not created due to the higher
+percentage of cloud covered pixels;</p></li>
+<li><p><code>missing</code> with the list of imags not created due to other reasons.</p></li>
+</ul>
+
     
 
   </div>
@@ -473,11 +529,14 @@ the temporary files); NULL otherwise.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

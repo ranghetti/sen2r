@@ -5,20 +5,21 @@
 \title{Find, download and preprocess Sentinel-2 images}
 \usage{
 sen2r(param_list = NULL, gui = NA, preprocess = TRUE,
-  s2_levels = c("l2a"), sel_sensor = c("s2a", "s2b"), online = TRUE,
-  downloader = "wget", overwrite_safe = FALSE, rm_safe = "no",
-  step_atmcorr = "auto", timewindow = NA, timeperiod = "full",
-  extent = NA, extent_name = "", s2tiles_selected = NA,
-  s2orbits_selected = NA, list_prods = c("BOA"), list_indices = NA,
-  index_source = "BOA", mask_type = NA, max_mask = 100,
+  s2_levels = c("l1c", "l2a"), sel_sensor = c("s2a", "s2b"),
+  online = TRUE, apihub = NA, downloader = "wget",
+  overwrite_safe = FALSE, rm_safe = "no", step_atmcorr = "auto",
+  timewindow = NA, timeperiod = "full", extent = NA, extent_name = "",
+  s2tiles_selected = NA, s2orbits_selected = NA, list_prods = c("BOA"),
+  list_indices = NA, index_source = "BOA", mask_type = NA,
+  max_mask = 100, mask_smooth = 0, mask_buffer = 0,
   clip_on_extent = TRUE, extent_as_mask = FALSE, reference_path = NA,
-  res = c(10, 10), res_s2 = "10m", unit = "Meter", proj = NA,
+  res = NA, res_s2 = "10m", unit = "Meter", proj = NA,
   resampling = "near", resampling_scl = "near", outformat = "GTiff",
   index_datatype = "Int16", compression = "DEFLATE", overwrite = FALSE,
   path_l1c = NA, path_l2a = NA, path_tiles = NA, path_merged = NA,
   path_out = NA, path_indices = NA, path_subdirs = TRUE,
   thumbnails = TRUE, parallel = TRUE, use_python = TRUE, tmpdir = NA,
-  rmtmp = TRUE)
+  rmtmp = TRUE, log = NA)
 }
 \arguments{
 \item{param_list}{(optional) List of input parameters:
@@ -57,6 +58,10 @@ Accepted values: "s2a" and "s2b"; default: c("s2a","s2b").}
 \item{online}{(optional) Logical: TRUE (default) to search for available
 products on SciHub (and download if needed); FALSE to work
 only with already downloaded SAFE products.}
+
+\item{apihub}{Path of the text file containing credentials
+of scihub account. If NA (default) the default credentials
+(username "user", password "user") will be used.}
 
 \item{downloader}{(optional) Character value corresponding to the executable
 which should be used to download SAFE products. It could be one among
@@ -149,6 +154,16 @@ Notice that the percentage is computed on non-NA values (if input images
 had previously been clipped and masked using a polygon, the percentage is
 computed on the surface included in the masking polygons).}
 
+\item{mask_smooth}{(optional) Numeric positive value: the smoothing radius
+(expressed in unit of measure of the output projection, typically metres)
+to be applied to the cloud mask by function \link{s2_mask}.}
+
+\item{mask_buffer}{(optional) Numeric value: the buffering radius
+(expressed in unit of measure of the output projection, typically metres)
+to be applied to the cloud mask by function \link{s2_mask}.
+Default value (0) means that no buffer is applied; a positive value causes
+an enlargement of the masked area; a negative value cause a reducement.}
+
 \item{clip_on_extent}{(optional) Logical: if TRUE (default), output products
 and indices are clipped to the selected extent (and resampled/reprojected);
 if FALSE, the geometry and extension of the tiles is maintained.}
@@ -161,7 +176,7 @@ within the bounding box are maintained.}
 reference grid. If NA (default), no reference is used.}
 
 \item{res}{(optional) Numerifc vector of length 2 with the x-y resolution
-for output products. Default: c(10,10). NA means that the resolution
+for output products. Default (NA) means that the resolution
 is keeped as native.}
 
 \item{res_s2}{(optional) Character value corresponding to the native Sentinel-2
@@ -258,10 +273,23 @@ default is a subdirectory named ".vrt" within \code{path_out}).}
 
 \item{rmtmp}{(optional) Logical: should temporary files be removed?
 (Default: TRUE). \code{rmtmp} is forced to \code{FALSE} if \code{outformat = "VRT"}.}
+
+\item{log}{(optional) Character string with the path where the package
+messages will be redirected.
+Default (NA) is not to redirect (use standard output).
+A two-length character with tho paths (which can also coincide)
+can be used to redirect also the output: in this case, the first path
+is the path for messages, the second one for the output.}
 }
 \value{
 A vector with the paths of the files which were created (excluded
 the temporary files); NULL otherwise.
+The vector includes two attributes:
+\itemize{
+\item \code{cloudcovered} with the list of imags not created due to the higher
+percentage of cloud covered pixels;
+\item \code{missing} with the list of imags not created due to other reasons.
+}
 }
 \description{
 The function is a wrapper to perform the entire

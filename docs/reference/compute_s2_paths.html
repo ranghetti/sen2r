@@ -18,13 +18,26 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Compute names of S2 file to be generated — compute_s2_paths" />
+
+<meta property="og:description" content="Internal function (to be used within sen2r())
+which computes the names of the required output image files
+(see details).
+The function was splitted from sen2r() because this code
+is called twice (and to shorten the main function)." />
+<meta name="twitter:card" content="summary" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -34,16 +47,14 @@
 <![endif]-->
 
 
-<!-- Google analytics -->
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-11080708-8"></script>
 <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-  ga('create', 'UA-11080708-8', 'auto');
-  ga('send', 'pageview');
-
+  gtag('config', 'UA-11080708-8');
 </script>
 
   </head>
@@ -59,8 +70,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">sen2r</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">sen2r</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.2</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -79,6 +94,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -86,12 +102,15 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Compute names of S2 file to be generated</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/compute_s2_paths.R'><code>R/compute_s2_paths.R</code></a></small>
+    <div class="hidden name"><code>compute_s2_paths.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Internal function (to be used within <code><a href='sen2r.html'>sen2r()</a></code>)
 which computes the names of the required output image files
@@ -99,12 +118,13 @@ which computes the names of the required output image files
 The function was splitted from <code><a href='sen2r.html'>sen2r()</a></code> because this code
 is called twice (and to shorten the main function).</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>compute_s2_paths</span>(<span class='no'>pm</span>, <span class='no'>s2_list_l1c</span>, <span class='no'>s2_list_l2a</span>, <span class='no'>paths</span>, <span class='no'>list_prods</span>, <span class='no'>out_ext</span>,
-  <span class='no'>tiles_ext</span>, <span class='no'>merged_ext</span>, <span class='no'>warped_ext</span>, <span class='no'>sr_masked_ext</span>, <span class='kw'>force_tiles</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='no'>ignorelist</span>)</pre>
+  <span class='no'>index_ext</span>, <span class='no'>tiles_ext</span>, <span class='no'>merged_ext</span>, <span class='no'>warped_ext</span>, <span class='no'>sr_masked_ext</span>,
+  <span class='kw'>force_tiles</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>check_tmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>ignorelist</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
@@ -134,6 +154,10 @@ products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").</p></td>
       <td><p>Extension (character) of output products.</p></td>
     </tr>
     <tr>
+      <th>index_ext</th>
+      <td><p>Extension (character) of index products.</p></td>
+    </tr>
+    <tr>
       <th>tiles_ext</th>
       <td><p>Extension (character) of tiled products.</p></td>
     </tr>
@@ -151,7 +175,13 @@ products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").</p></td>
     </tr>
     <tr>
       <th>force_tiles</th>
-      <td><p>(optional) Logical: passed to <a href='s2_shortname.html'>s2_shortname</a> (default: TRUE).</p></td>
+      <td><p>(optional) Logical: passed to <a href='safe_shortname.html'>safe_shortname</a> (default: FALSE).</p></td>
+    </tr>
+    <tr>
+      <th>check_tmp</th>
+      <td><p>(optional) Logical: if TRUE (default), temporary files
+are also searched when <code>_exi</code> names are computed;
+if FALSE, only non temporary files are searched.</p></td>
     </tr>
     <tr>
       <th>ignorelist</th>
@@ -167,7 +197,7 @@ products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").</p></td>
 <code>indices_names_new</code>, <code>out_names_req</code>, <code>out_names_new</code>,
 <code>masked_names_new</code>, <code>warped_names_req</code>, <code>warped_names_new</code>,
 <code>merged_names_req</code>, <code>merged_names_new</code>, <code>tiles_names_req</code>, <code>tiles_names_new</code>,
-<code>safe_names_l1c_req</code>, <code>safe_names_l1c_req</code>, <code>safe_names_l2a_req</code>.</p>
+<code>safe_names_l1c_req</code>, <code>safe_names_l2a_req</code>.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
@@ -229,11 +259,14 @@ Luigi Ranghetti, phD (2018) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

@@ -18,6 +18,7 @@
 #' @note License: GPL 3.0
 #' @importFrom raster raster
 #' @importFrom jsonlite fromJSON
+#' @export
 
 stack2rgb <- function(in_rast, 
                       out_file = NULL, 
@@ -27,16 +28,7 @@ stack2rgb <- function(in_rast,
                       tmpdir = NA) {
   
   # Load GDAL paths
-  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-  binpaths <- if (file.exists(binpaths_file)) {
-    jsonlite::fromJSON(binpaths_file)
-  } else {
-    list("gdalinfo" = NULL)
-  }
-  if (is.null(binpaths$gdalinfo)) {
-    check_gdal()
-    binpaths <- jsonlite::fromJSON(binpaths_file)
-  }
+  binpaths <- load_binpaths("gdal")
   
   # define and create tmpdir
   if (is.na(tmpdir)) {
@@ -144,6 +136,7 @@ stack2rgb <- function(in_rast,
 #' @note License: GPL 3.0
 #' @importFrom raster raster
 #' @importFrom jsonlite fromJSON
+#' @export
 
 raster2rgb <- function(in_rast, 
                        out_file = NULL, 
@@ -166,16 +159,7 @@ raster2rgb <- function(in_rast,
   )
   
   # Load GDAL paths
-  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-  binpaths <- if (file.exists(binpaths_file)) {
-    jsonlite::fromJSON(binpaths_file)
-  } else {
-    list("gdalinfo" = NULL)
-  }
-  if (is.null(binpaths$gdalinfo)) {
-    check_gdal()
-    binpaths <- jsonlite::fromJSON(binpaths_file)
-  }
+  binpaths <- load_binpaths("gdal")
   
   # Load palette
   if (!is.character(palette)) {
@@ -267,8 +251,8 @@ raster2rgb <- function(in_rast,
 #'  of products already converted from SAFE format to a
 #'  format managed by GDAL (use [s2_translate] to do it);
 #'  their names must be in the sen2r naming convention
-#'  ([s2_shortname]).
-#' @param prod_type (optional) Output product (see [s2_shortname] for the 
+#'  ([safe_shortname]).
+#' @param prod_type (optional) Output product (see [safe_shortname] for the 
 #'  list of accepted products). If not provided, it is retrieved from the
 #'  file name.
 #' @param rgb_type (optional) For BOA and TOA products, this value determine
@@ -328,20 +312,11 @@ s2_thumbnails <- function(infiles,
   dir.create(tmpdir, recursive = FALSE, showWarnings = FALSE)
   
   # Load GDAL paths
-  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-  binpaths <- if (file.exists(binpaths_file)) {
-    jsonlite::fromJSON(binpaths_file)
-  } else {
-    list("gdalinfo" = NULL)
-  }
-  if (is.null(binpaths$gdalinfo)) {
-    check_gdal()
-    binpaths <- jsonlite::fromJSON(binpaths_file)
-  }
+  binpaths <- load_binpaths("gdal")
   
   # Get files metadata
   if (is.na(prod_type)) {
-    infiles_meta <- data.table(fs2nc_getElements(infiles, format="data.frame"))
+    infiles_meta <- data.table(sen2r_getElements(infiles, format="data.frame"))
   }
   
   out_names <- character(0) # names of created files
@@ -397,12 +372,17 @@ s2_thumbnails <- function(infiles,
       
       # Resize input if necessary
       sel_infile_size <- suppressWarnings(GDALinfo(sel_infile_path)[c("rows","columns")])
+      resized_path <- file.path(tmpdir, gsub(
+        "\\..+$",
+        if (sel_prod_type %in% c("BOA","TOA")) {"_resized.tif"} else {"_resized.vrt"},
+        basename(sel_infile_path)
+      )) # GTiff is used for multiband images to avoid problems using gdal_calc (#82)
       if (dim < max(sel_infile_size)) {
         out_size <- round(sel_infile_size * min(dim,max(sel_infile_size)) / max(sel_infile_size))
-        resized_path <- file.path(tmpdir, gsub("\\..+$","_resized.vrt",basename(sel_infile_path)))
         system(
           paste0(
-            binpaths$gdalwarp," -of VRT ",
+            binpaths$gdalwarp,
+            if (sel_prod_type %in% c("BOA","TOA")) {" -of GTiff -co COMPRESS=LZW "} else {" -of VRT "},
             "-ts ",out_size[2]," ",out_size[1]," ",
             if (sel_prod_type %in% c("SCL")) {"-r mode "} else {"-r average "}, # resp. discrete or continuous values
             "\"",filterbands_path,"\" ",
@@ -410,22 +390,35 @@ s2_thumbnails <- function(infiles,
           ), intern = Sys.info()["sysname"] == "Windows"
         )
       } else {
-        resized_path <- sel_infile_path
+        if (sel_prod_type %in% c("BOA","TOA")) {
+          system(
+            paste0(
+              binpaths$gdal_translate," ",
+              "-of GTiff -co COMPRESS=LZW ",
+              "\"",filterbands_path,"\" ",
+              "\"",resized_path,"\""
+            ), intern = Sys.info()["sysname"] == "Windows"
+          )
+        } else {
+          resized_path <- filterbands_path
+        }
       }
       
       # define scaleRange
       if (anyNA(scaleRange)) {
         scaleRange <- if (sel_prod_type %in% c("BOA","TOA")) {
           c(0, switch(rgb_type, "SwirNirR" = 8000, "NirRG" = 7500, "RGB" = 2500))
-        } else if (sel_prod_type %in% c("Zscore")){
+        } else if (sel_prod_type %in% c("Zscore","rbias")){
           sel_infile_datatype <- attr(
             suppressWarnings(GDALinfo(sel_infile_path)),
             "df"
           )[1,"GDType"]
           if (grepl("^Float",sel_infile_datatype)) {
-            c(-3, 3)
+            if (sel_prod_type == "Zscore") {c(-3, 3)} else {c(-300, 300)}
           } else if (grepl("^Int",sel_infile_datatype)) {
             c(-3E3,3E3)
+          } else if (grepl("^Byte$",sel_infile_datatype)) {
+            c(0,200)
           }
         } else if (sel_prod_type %in% c("SCL")){
           rep(NA,2) # it is ignored

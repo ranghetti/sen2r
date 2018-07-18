@@ -17,37 +17,49 @@ reference:
   - title: Read and convert SAFE format
     desc: ~
     contents:
-      - '`s2_getMetadata`'
       - '`s2_translate`'
       - '`s2_merge`'
       - '`gdal_warp`'
       - '`s2_mask`'
       - '`s2_calcindices`'
+      - '`s2_thumbnails`'
+  - title: Manage file names and metadata
+    desc: ~
+    contents:
+      - '`safe_getMetadata`'
+      - '`safe_shortname`'
+      - '`sen2r_getElements`'
+      - '`s2_dop`'
+  - title: Install and configure dependencies
+    desc: ~
+    contents:
+      - '`check_sen2r_deps`'
+      - '`load_binpaths`'
+      - '`install_sen2cor`'
+      - '`install_wget`'
+      - '`install_aria2`'
+      - '`init_python`'
   - title: Accessory functions
+    desc: ~
     contents:
       - '`s2_gui`'
-      - '`check_sen2r_deps`'
-      - '`s2_shortname`'
-      - '`s2_thumbnails`'
-      - '`fs2nc_getElements`'
-      - '`install_sen2cor`'
+      - '`list_indices`'
+      - '`stack2rgb`'
+      - '`raster2rgb`'
       - '`expand_path`'
       - '`comsub`'
       - '`projname`'
       - '`abs2rel`'
       - '`gdal_abs2rel`'
-      - '`list_indices`'
       - '`mountpoint`'
       - '`trace_function`'
-      - '`install_wget`'
-      - '`install_aria2`'
       - '`st_crs2`'
       - '`normalize_path`'
+      - '`smooth_mask`'
   - title: Internal functions
     desc: (not exported)
     contents:
       - '`nn`'
-      - '`init_python`'
       - '`geograbber_process`'
       - '`import_s2download`'
       - '`print_message`'
@@ -57,14 +69,13 @@ reference:
       - '`read_scihub_login`'
       - '`check_param_list`'
       - '`s2_defNA`'
-      - '`stack2rgb`'
-      - '`raster2rgb`'
       - '`compute_s2_paths`'
       - '`maskapply_parallel`'
       - '`load_extent_bbox`'
       - '`get_spatype`'
       - '`get_rastype`'
       - '`get_vectype`'
+      - '`create_s2_dop`'
 navbar:
   type: inverse
   left:

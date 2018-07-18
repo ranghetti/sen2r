@@ -210,7 +210,7 @@ def Sentinel_download_google(start_date, end_date, outputcatalogs, max_cloud, ti
 
 
 def s2_download(downloader="wget", lat=None, lon=None, latmin=None, lonmin=None, latmax=None, lonmax=None,
-                  start_date=None, end_date=None, orbit=None, tile=None, apihub=None,
+                  start_date=None, end_date=None, start_ingest_date=None, end_ingest_date=None, orbit=None, tile=None, apihub=None,
                   max_cloud=100.0, l1c_dir=tempfile.gettempdir(), l2a_dir=tempfile.gettempdir(), outputcatalogs=None, max_records=1E3,
                   overwrite=False, offline=False, corr_type="auto", source="scihub", list_only=False,
                   n_procs=None, current_dir = os.getcwd(), downloader_path=''):
@@ -249,7 +249,7 @@ def s2_download(downloader="wget", lat=None, lon=None, latmin=None, lonmin=None,
             # Download L1C
             if offline is False:
                 (s2_urls,s2_filenames) = Sentinel_download(downloader=downloader, lat=lat, lon=lon, latmin=latmin, lonmin=lonmin, latmax=latmax, lonmax=lonmax,
-                          start_date=start_date,level="L1C",end_date=end_date, no_download=False,
+                          start_date=start_date, end_date=end_date, start_ingest_date=start_ingest_date, end_ingest_date=end_ingest_date, no_download=False, level="L1C",
                           orbit=orbit, apihub=apihub, proxy=None, max_cloud=max_cloud, write_dir=l1c_dir,
                           sentinel='S2',tile=tile, dhus=False, list_only=list_only, MaxRecords=max_records, downloaderPath=downloader_path)
 
@@ -267,7 +267,7 @@ def s2_download(downloader="wget", lat=None, lon=None, latmin=None, lonmin=None,
         # Download L2A
         if offline is False:
             (s2_urls,s2_filenames) = Sentinel_download(downloader=downloader, lat=lat, lon=lon, latmin=latmin, lonmin=lonmin, latmax=latmax, lonmax=lonmax,
-                      start_date=start_date,level="L2A",end_date=end_date, no_download=False,
+                      start_date=start_date, end_date=end_date, start_ingest_date=start_ingest_date, end_ingest_date=end_ingest_date, no_download=False, level="L2A",
                       orbit=orbit, apihub=apihub, proxy=None, max_cloud=max_cloud, write_dir=l2a_dir,
                       sentinel='S2',tile=tile, dhus=False, list_only=list_only, MaxRecords=max_records,downloaderPath=downloader_path)
 
@@ -286,18 +286,24 @@ def s2_download(downloader="wget", lat=None, lon=None, latmin=None, lonmin=None,
         if offline is False:
             # scihub L1C:
             (l1c_scihub_urls,l1c_scihub_filenames) = Sentinel_download(downloader=downloader, lat=lat, lon=lon, latmin=latmin, lonmin=lonmin, latmax=latmax, lonmax=lonmax,
-                      start_date=start_date,level="L1C",end_date=end_date, no_download=False,
+                      start_date=start_date, end_date=end_date, start_ingest_date=start_ingest_date, end_ingest_date=end_ingest_date, no_download=False, level="L1C",
                       orbit=orbit, apihub=apihub, proxy=None, max_cloud=max_cloud, write_dir=l1c_dir,
                       sentinel='S2',tile=tile, dhus=False, MaxRecords=max_records,list_only=True,downloaderPath=downloader_path)
 
             # scihub L2A:
             (l2a_scihub_urls,l2a_scihub_filenames) = Sentinel_download(downloader=downloader, lat=lat, lon=lon, latmin=latmin, lonmin=lonmin, latmax=latmax, lonmax=lonmax,
-                      start_date=start_date,level="L2A",end_date=end_date, no_download=False,
+                      start_date=start_date, end_date=end_date, start_ingest_date=start_ingest_date, end_ingest_date=end_ingest_date, no_download=False, level="L2A",
                       orbit=orbit, apihub=apihub, proxy=None, max_cloud=max_cloud, write_dir=l2a_dir,
                       sentinel='S2',tile=tile, dhus=False, MaxRecords=max_records,list_only=True,downloaderPath=downloader_path)
 
-            l2a_scihub_names = [re.compile('^(.+)\_MSIL2A\_(.+)$').match(f).group(2) for f in l2a_scihub_filenames]
-            l1c_scihub_names = [re.compile('^(.+)\_MSIL1C\_(.+)$').match(f).group(2) for f in l1c_scihub_filenames]
+            l2a_scihub_names_tuples = [re.compile('^(.+)\_MSIL2A\_([0-9]{8}T[0-9]{6})\_N[0-9]{4}\_(R[0-9]{3})\_(T[0-9A-Z]{5})\_[0-9]{8}T[0-9]{6}\.SAFE$').match(f).group(2,3,4) for f in l2a_scihub_filenames]
+            l1c_scihub_names_tuples = [re.compile('^(.+)\_MSIL1C\_([0-9]{8}T[0-9]{6})\_N[0-9]{4}\_(R[0-9]{3})\_(T[0-9A-Z]{5})\_[0-9]{8}T[0-9]{6}\.SAFE$').match(f).group(2,3,4) for f in l1c_scihub_filenames]
+            l1c_scihub_names = l2a_scihub_names = []
+            for f in l1c_scihub_names_tuples:
+                l1c_scihub_names.append('_'.join(f))
+            for f in l2a_scihub_names_tuples:
+                l2a_scihub_names.append('_'.join(f))
+
     #        l1c_google_names = [re.compile('^S2A\_MSIL2A\_(.+)$').match(os.path.basename(f)).group(1) for f in l1c_google_rawlist]
 
     #        if source == 'google':
@@ -316,12 +322,12 @@ def s2_download(downloader="wget", lat=None, lon=None, latmin=None, lonmin=None,
             if list_only == False:
                 # download L2A from scihub
                 Sentinel_download(downloader=downloader, lat=lat, lon=lon, latmin=latmin, lonmin=lonmin, latmax=latmax, lonmax=lonmax,
-                        start_date=start_date,level="L2A",end_date=end_date, no_download=False,
+                        start_date=start_date, end_date=end_date, start_ingest_date=start_ingest_date, end_ingest_date=end_ingest_date, no_download=False, level="L2A",
                         orbit=orbit, apihub=apihub, proxy=None, max_cloud=max_cloud, write_dir=l2a_dir,
                         sentinel='S2',tile=tile, dhus=False, MaxRecords=max_records, file_list=l2a_scihub_filenames,downloaderPath=downloader_path)
                 # download L1C from scihub when L2A are not available
                 Sentinel_download(downloader=downloader, lat=lat, lon=lon, latmin=latmin, lonmin=lonmin, latmax=latmax, lonmax=lonmax,
-                        start_date=start_date,level="L1C",end_date=end_date, no_download=False,
+                        start_date=start_date, end_date=end_date, start_ingest_date=start_ingest_date, end_ingest_date=end_ingest_date, no_download=False, level="L1C",
                         orbit=orbit, apihub=apihub, proxy=None, max_cloud=max_cloud, write_dir=l1c_dir,
                         sentinel='S2',tile=tile, dhus=False, MaxRecords=max_records, file_list=l1c_scihub_needed_filenames,downloaderPath=downloader_path)
             else:
@@ -349,6 +355,8 @@ if __name__ == "__main__":
     parser.add_argument("--lonmax", type=float, help="max longitude in decimal degrees",default=None)
     parser.add_argument("-d", "--start_date", help="start date, fmt('20151222')",default=None)
     parser.add_argument("-f","--end_date", help="end date, fmt('20151223')",default=None)
+    parser.add_argument("--start_ingest_date", help="start ingestion date, fmt('20151222')",default=None)
+    parser.add_argument("--end_ingest_date", help="end ingestion date, fmt('20151223')",default=None)
     parser.add_argument("-o","--orbit", help="Orbit Number", default=None)
     parser.add_argument("-t","--tile", help="Sentinel-2 Tile number",default=None)
     parser.add_argument("-a","--apihub", help="ESA apihub account and password file")
@@ -367,8 +375,9 @@ if __name__ == "__main__":
     options = parser.parse_args()
     s2_download(downloader=options.downloader, lat=options.lat, lon=options.lon,
                 latmin=options.latmin, lonmin=options.lonmin, latmax=options.latmax, lonmax=options.lonmax,
-                start_date=options.start_date, end_date=options.end_date, orbit=options.orbit,
-                tile=options.tile, apihub=options.apihub,
+                start_date=options.start_date, end_date=options.end_date, 
+                start_ingest_date=options.start_ingest_date, end_ingest_date=options.end_ingest_date, 
+                orbit=options.orbit, tile=options.tile, apihub=options.apihub,
                 max_cloud=options.max_cloud, l1c_dir=options.l1c_dir, l2a_dir=options.l2a_dir,
                 outputcatalogs=options.outputcatalogs, max_records=options.max_records,
                 overwrite=options.overwrite, offline=options.offline, list_only=options.list_only,

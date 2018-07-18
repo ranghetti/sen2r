@@ -18,7 +18,7 @@ package installation). Edit this only to create the file in another
 place for external use.}
 
 \item{force}{(optional) Logical: if FALSE (default), the db is created only
-if missing or not updated; if TRUE, it is created in any case..}
+if missing or not updated; if TRUE, it is created in any case.}
 }
 \description{
 The internal function checks if indices.json (the

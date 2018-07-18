@@ -47,7 +47,7 @@ example_s2_list <- unlist(lapply(sel_orbits, function(x){
 print(example_s2_list)
 
 ## 2) Download them
-s2_levels <- sapply(lapply(names(example_s2_list), s2_getMetadata, "nameinfo"), function(x){x$level})
+s2_levels <- sapply(lapply(names(example_s2_list), safe_getMetadata, "nameinfo"), function(x){x$level})
 example_s2_list_l1c <- example_s2_list[s2_levels=="1C"]
 example_s2_list_l2a <- example_s2_list[s2_levels=="2A"]
 
@@ -64,13 +64,13 @@ if (length(example_s2_list_l2a)>0) {
 ## 3) Convert in vrt
 dir.create(vrt_01_path<-file.path(vrt_path,"01_translate"),showWarnings=FALSE)
 for (sel_prod in list.files(l1c_path,"\\.SAFE$",full.names=TRUE)) {
-  if (!file.exists(file.path(vrt_01_path,basename(s2_shortname(sel_prod, ext="vrt"))))) { # FIXME
+  if (!file.exists(file.path(vrt_01_path,basename(safe_shortname(sel_prod, ext="vrt"))))) { # FIXME
     s2_translate(sel_prod, vrt_01_path, prod_type="TOA",
                  format="VRT", vrt_rel_paths=TRUE, subdirs=TRUE)
   }
 }
 for (sel_prod in list.files(l2a_path,"\\.SAFE$",full.names=TRUE)) {
-  if (!file.exists(file.path(vrt_01_path,basename(s2_shortname(sel_prod, ext="vrt"))))) { # FIXME
+  if (!file.exists(file.path(vrt_01_path,basename(safe_shortname(sel_prod, ext="vrt"))))) { # FIXME
     s2_translate(sel_prod, vrt_01_path, prod_type=sel_prod_types,
                  format="VRT", vrt_rel_paths=TRUE)
   }

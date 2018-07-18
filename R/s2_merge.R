@@ -6,7 +6,7 @@
 #' @param infiles A vector of input filenames. Input files are paths
 #'  of products already converted from SAFE format to a format managed by
 #'  GDAL (use [s2_translate] to do it); their names must be in the
-#'  sen2r naming convention ([s2_shortname]).
+#'  sen2r naming convention ([safe_shortname]).
 #' @param outdir (optional) Full name of the output directory where
 #'  the files should be created (default: current directory).
 #'  `outdir` can bot be an existing or non-existing directory (in the
@@ -35,13 +35,25 @@
 #' @param out_crs (optional) proj4string (character) of the output CRS
 #'  (default: the CRS of the first input file). The tiles with CRS different
 #'  from `out_crs` will be reprojected (and a warning returned).
+#' @param parallel (optional) Logical: if TRUE, the function is run using parallel
+#'  processing, to speed-up the computation for large rasters.
+#'  The number of cores is automatically determined; specifying it is also 
+#'  possible (e.g. `parallel = 4`).
+#'  If FALSE (default), single core processing is used.
 #' @param overwrite Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
+#' @param .logfile_message (optional) Internal parameter
+#'  (it is used when the function is called by `sen2r()`).
+#' @param .log_output (optional) Internal parameter
+#'  (it is used when the function is called by `sen2r()`).
 #' @return A vector with the names of the merged products (just created or
 #'  already existing).
 #' @importFrom rgdal GDALinfo
 #' @importFrom magrittr "%>%"
 #' @importFrom jsonlite fromJSON
+#' @importFrom foreach foreach "%do%" "%dopar%"
+#' @importFrom doParallel registerDoParallel
+#' @importFrom parallel makeCluster stopCluster detectCores
 #' @import data.table
 #' @export
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
@@ -57,7 +69,10 @@ s2_merge <- function(infiles,
                      compress="DEFLATE",
                      vrt_rel_paths=NA,
                      out_crs="",
-                     overwrite=FALSE) {
+                     parallel = FALSE,
+                     overwrite=FALSE,
+                     .logfile_message=NA,
+                     .log_output=NA) {
   
   # load output formats
   gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))
@@ -78,19 +93,10 @@ s2_merge <- function(infiles,
   }
   
   # Load GDAL paths
-  binpaths_file <- file.path(system.file("extdata",package="sen2r"),"paths.json")
-  binpaths <- if (file.exists(binpaths_file)) {
-    jsonlite::fromJSON(binpaths_file)
-  } else {
-    list("gdalinfo" = NULL)
-  }
-  if (is.null(binpaths$gdalinfo)) {
-    check_gdal()
-    binpaths <- jsonlite::fromJSON(binpaths_file)
-  }
+  binpaths <- load_binpaths("gdal")
   
   # Get files metadata
-  infiles_meta <- fs2nc_getElements(infiles, format="data.frame")
+  infiles_meta <- sen2r_getElements(infiles, format="data.frame")
   # get metadata from GDALinfo (FIXME time expensive; check if it can be speeded up)
   suppressWarnings(
     # infiles_meta_gdal <- sapply(infiles, function(x) {attributes(GDALinfo(x))[c("driver","projection","df")]})
@@ -206,9 +212,42 @@ s2_merge <- function(infiles,
     sapply(file.path(outdir,prod_types), dir.create, showWarnings=FALSE)
   }
   
+  # Compute n_cores
+  n_cores <- if (is.numeric(parallel)) {
+    as.integer(parallel)
+  } else if (parallel==FALSE) {
+    1
+  } else {
+    min(parallel::detectCores()-1, length(unique(infiles_meta_grps)), 11) # use at most 11 cores
+  }
+  if (n_cores<=1) {
+    `%DO%` <- `%do%`
+    parallel <- FALSE
+    n_cores <- 1
+  } else {
+    `%DO%` <- `%dopar%`
+  }
+  
   # merge single output products
-  outfiles <- character(0)
-  for (infiles_meta_grp in unique(infiles_meta_grps)) {
+  cl <- makeCluster(
+    n_cores, 
+    type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
+  )
+  if (n_cores > 1) {registerDoParallel(cl)}
+  outfiles <- foreach(
+    infiles_meta_grp = unique(infiles_meta_grps), 
+    .packages = c("sen2r"), 
+    .combine=c, 
+    .errorhandling="remove"
+  )  %DO% {
+    
+    # redirect to log files
+    if (n_cores > 1 & !is.na(.log_output)) {
+      sink(.log_output, split = TRUE, type = "output", append = TRUE)
+    }
+    if (n_cores > 1 & !is.na(.logfile_message)) {
+      sink(.logfile_message, type="message")
+    }
     
     sel_infiles <- infiles[infiles_meta_grps == infiles_meta_grp]
     sel_infiles_meta <- infiles_meta[infiles_meta_grps == infiles_meta_grp,]
@@ -297,8 +336,21 @@ s2_merge <- function(infiles,
       
     } # end of overwrite IF cycle
     
-    outfiles <- c(outfiles, file.path(out_subdir,sel_outfile))
+    # stop sinking
+    if (!is.na(.logfile_message)) {sink(type = "message")}
+    if (!is.na(.log_output)) {sink(type = "output")}
     
+    file.path(out_subdir,sel_outfile)
+    
+  } # end of foreach cycle
+  if (n_cores > 1) {
+    stopCluster(cl)
+    if (!is.na(.log_output)) {
+      sink(.log_output, split = TRUE, type = "output", append = TRUE)
+    }
+    if (!is.na(.logfile_message)) {
+      sink(.logfile_message, type="message")
+    }
   }
   
   # Remove temporary files
