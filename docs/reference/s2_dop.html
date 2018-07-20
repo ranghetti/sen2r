@@ -174,17 +174,17 @@ were found with the passed settings.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># All the passages in a cycle of 10 days over all the orbits</span>
 <span class='fu'>s2_dop</span>()</div><div class='output co'>#&gt;            date mission orbit
-#&gt;   1: 2018-07-18      2A   016
-#&gt;   2: 2018-07-18      2A   017
-#&gt;   3: 2018-07-18      2A   018
-#&gt;   4: 2018-07-18      2A   019
-#&gt;   5: 2018-07-18      2A   020
+#&gt;   1: 2018-07-20      2A   045
+#&gt;   2: 2018-07-20      2A   046
+#&gt;   3: 2018-07-20      2A   047
+#&gt;   4: 2018-07-20      2A   048
+#&gt;   5: 2018-07-20      2A   049
 #&gt;  ---                         
-#&gt; 282: 2018-07-27      2B   083
-#&gt; 283: 2018-07-27      2B   084
-#&gt; 284: 2018-07-27      2B   085
-#&gt; 285: 2018-07-27      2B   086
-#&gt; 286: 2018-07-27      2B   087</div><div class='input'>
+#&gt; 282: 2018-07-29      2B   111
+#&gt; 283: 2018-07-29      2B   112
+#&gt; 284: 2018-07-29      2B   113
+#&gt; 285: 2018-07-29      2B   114
+#&gt; 286: 2018-07-29      2B   115</div><div class='input'>
 <span class='co'># The passages in the current month over two orbits</span>
 <span class='fu'>s2_dop</span>(<span class='fu'>c</span>(<span class='st'>"022"</span>, <span class='st'>"065"</span>), <span class='st'>"this month"</span>)</div><div class='output co'>#&gt;           date mission orbit
 #&gt;  1: 2018-07-01      2A   065
@@ -205,8 +205,8 @@ were found with the passed settings.</p>
 <span class='co'># The date in which Sentinel-2A would be passed in the last 10 days over one orbit </span>
 <span class='fu'>s2_dop</span>(<span class='st'>"022"</span>, <span class='st'>"-10 days"</span>, <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2A"</span>)$<span class='no'>date</span></div><div class='output co'>#&gt; [1] "2018-07-18"</div><div class='input'>
 <span class='co'># All the orbits covered today</span>
-<span class='fu'>s2_dop</span>(<span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fu'>Sys.Date</span>(), <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2B"</span>)$<span class='no'>orbit</span></div><div class='output co'>#&gt;  [1] "088" "089" "090" "091" "092" "093" "094" "095" "096" "097" "098" "099"
-#&gt; [13] "100" "101"</div><div class='input'>
+<span class='fu'>s2_dop</span>(<span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fu'>Sys.Date</span>(), <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2B"</span>)$<span class='no'>orbit</span></div><div class='output co'>#&gt;  [1] "116" "117" "118" "119" "120" "121" "122" "123" "124" "125" "126" "127"
+#&gt; [13] "128" "129" "130"</div><div class='input'>
 <span class='co'># The passages in a fixed time window for one orbit</span>
 <span class='fu'>s2_dop</span>(<span class='fl'>65</span>, <span class='fu'>as.Date</span>(<span class='fu'>c</span>(<span class='st'>"2018-08-01"</span>, <span class='st'>"2018-08-31"</span>)))</div><div class='output co'>#&gt;          date mission orbit
 #&gt; 1: 2018-08-05      2B   065
