@@ -886,6 +886,9 @@ sen2r <- function(param_list = NULL,
     }
     
     
+    ## Searching for existing local SAFE equivalent to online ones
+    # (SAFE with the same metadata, except from baseline and ingestion date)
+    
     # getting required metadata
     s2_dt <- lapply(names(s2_list), function(x) {
       unlist(safe_getMetadata(x, info="nameinfo")) %>%
@@ -894,8 +897,39 @@ sen2r <- function(param_list = NULL,
     }) %>%
       rbindlist(fill=TRUE)
     s2_dt[,c("name","url"):=list(names(s2_list),s2_list)]
-    s2_dt[,c("sensing_datetime","creation_datetime"):=list(as.POSIXct(sensing_datetime, format="%s"),
-                                                           as.POSIXct(creation_datetime, format="%s"))]
+    s2_dt[,c("sensing_datetime","creation_datetime"):=
+            list(as.POSIXct(sensing_datetime, format="%s"),
+                 as.POSIXct(creation_datetime, format="%s"))]
+    
+    # list existing products and get metadata
+    s2_existing_list <- list.files(c(pm$path_l2a,pm$path_l1c), "\\.SAFE$")
+    s2_existing_dt <- lapply(s2_existing_list, function(x) {
+      unlist(safe_getMetadata(x, info="nameinfo")) %>%
+        t() %>%
+        as.data.frame(stringsAsFactors=FALSE)
+    }) %>%
+      rbindlist(fill=TRUE)
+    s2_existing_dt[,"name":=s2_existing_list]
+    s2_existing_dt[,c("sensing_datetime","creation_datetime"):=
+                     list(as.POSIXct(sensing_datetime, format="%s"),
+                          as.POSIXct(creation_datetime, format="%s"))]
+    
+    # make a vector with only metadata to be used for the comparison
+    s2_meta_pasted <- s2_dt[,list(
+      "V1" = paste(mission, level, strftime(sensing_datetime,"%y%m%d"), id_orbit, id_tile)
+    )]$V1
+    s2_existing_meta_pasted <- s2_existing_dt[,list(
+      "V1" = paste(mission, level, strftime(sensing_datetime,"%y%m%d"), id_orbit, id_tile)
+    )]$V1
+    s2_existing_list_touse <- s2_existing_dt[s2_existing_meta_pasted %in% s2_meta_pasted,]$name
+    
+    # replace found SAFE with existing equivalent ones
+    s2_list[!is.na(match(s2_meta_pasted, s2_existing_meta_pasted))] <- ""
+    names(s2_list)[!is.na(match(s2_meta_pasted, s2_existing_meta_pasted))] <-
+      s2_existing_list[na.omit(match(s2_meta_pasted, s2_existing_meta_pasted))]
+    
+    
+    # continue editing metadata
     if (is.null(s2_dt$id_tile)) {
       s2_dt$id_tile <- as.character(NA)
     }
