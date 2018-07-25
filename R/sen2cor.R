@@ -305,8 +305,12 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
     } # end IF cycle on overwrite
     
     # stop sinking
-    if (!is.na(.logfile_message)) {sink(type = "message")}
-    if (!is.na(.log_output)) {sink(type = "output")}
+    n_sink <- sink.number()
+    while (n_sink > 0) {
+      sink(type = "message")
+      sink(type = "output")
+      n_sink <- n_sink - 1
+    }
     
     sel_l2a
     
