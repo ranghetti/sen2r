@@ -356,9 +356,13 @@ sen2r <- function(param_list = NULL,
   )
   
   # stop sinking
-  if (!is.na(log_message)) {sink(type = "message")}
-  if (!is.na(log_output)) {sink(type = "output")}
-  
+  n_sink <- sink.number()
+  while (n_sink > 0) {
+    sink(type = "message")
+    sink(type = "output")
+    n_sink <- n_sink - 1
+  }
+
 }
 
 # Internal function, which is the "real" sen2r() function insider the use of sink
