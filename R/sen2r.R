@@ -446,7 +446,14 @@ sen2r <- function(param_list = NULL,
         NA
       }
     }
-    if (open_check_gui) {check_sen2r_deps()}
+    if (open_check_gui) {
+      check_sen2r_deps()
+      print_message(
+        type="message",
+        "Dependencies checked; please restart sen2r() now."
+      )
+      return(invisible(NULL))
+    }
   }
   
   # Starting execution
