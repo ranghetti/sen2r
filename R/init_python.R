@@ -49,23 +49,23 @@ init_python <- function() {
       )
     }
     
-    # On Windows, set the environment variable
-    if (Sys.info()["sysname"] == "Windows") {
-      pythonhome_new <- normalize_path(list.files(
-        file.path(dirname(dirname(paths$gdalinfo)),"apps"), 
-        pattern="^Python", 
-        full.names=TRUE
-      ))
-      pythonhome_exi <- normalize_path(Sys.getenv("PYTHONHOME"))
-      if (pythonhome_new != pythonhome_exi) {
-        Sys.setenv(PYTHONHOME = pythonhome_new)
-      }
-    }
-
     writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
     
   }
   
+  # On Windows, set the environment variable
+  if (Sys.info()["sysname"] == "Windows") {
+    pythonhome_new <- normalize_path(list.files(
+      file.path(dirname(dirname(paths$gdalinfo)),"apps"), 
+      pattern="^Python", 
+      full.names=TRUE
+    ))
+    pythonhome_exi <- normalize_path(Sys.getenv("PYTHONHOME"))
+    if (pythonhome_new != pythonhome_exi) {
+      Sys.setenv(PYTHONHOME = pythonhome_new)
+    }
+  }
+
   # set the proper Python installation
   use_python(binpaths$python, required = TRUE)
   
