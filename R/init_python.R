@@ -56,7 +56,7 @@ init_python <- function() {
   # On Windows, set the environment variable
   if (Sys.info()["sysname"] == "Windows") {
     pythonhome_new <- normalize_path(list.files(
-      file.path(dirname(dirname(paths$gdalinfo)),"apps"), 
+      file.path(dirname(dirname(binpaths$gdalinfo)),"apps"), 
       pattern="^Python", 
       full.names=TRUE
     ))
