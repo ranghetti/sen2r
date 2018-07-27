@@ -335,8 +335,12 @@ s2_calcindices <- function(infiles,
     } # end of indices FOR cycle
     
     # stop sinking
-    if (!is.na(.logfile_message)) {sink(type = "message")}
-    if (!is.na(.log_output)) {sink(type = "output")}
+    n_sink <- sink.number()
+    while (n_sink > 0) {
+      sink(type = "message")
+      sink(type = "output")
+      n_sink <- n_sink - 1
+    }
     
     file.path(out_subdir,sel_outfiles)
     

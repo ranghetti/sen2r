@@ -9,7 +9,7 @@ Created on Wed Jun  7 13:54:58 2017
 @contributor: Luigi Ranghetti <ranghetti.l @ irea.cnr.it>
 """
 
-import os,sys,math
+import os,sys,math,re
 import optparse
 from xml.dom import minidom
 from datetime import date
@@ -412,7 +412,7 @@ def Sentinel_download(downloader=None,lat=None,lon=None,latmin=None,latmax=None,
     # ranghetti edit: if list_only, do not download but save element to download later
     list_prod = list()
     list_filename = list()
-    list_date = list() # ranghetti edit
+    list_meta = list() # ranghetti edit
 
     for i in range(len(request_list)):
         os.system(request_list[i])
@@ -452,8 +452,12 @@ def Sentinel_download(downloader=None,lat=None,lon=None,latmin=None,latmax=None,
                 sys.exit(-1)
 
             # ranghetti edit: do not add product if another already exists for the same date
-            if date_prod>=start_date and date_prod<=end_date and date_prod not in list_date:
-
+            if re.search("^S2[AB]\\_MSI",filename):
+                meta_prod = re.sub("^S(2[AB])\\_MSIL([12][AC])\\_([0-9]{8})T[0-9]{6}\\_N[0-9]{4}\\_R([0-9]{3})\\_T([A-Z0-9]{5})\\_[0-9]{8}T[0-9]{6}\\.SAFE$", "\\1_\\2_\\3_\\4_\\5", filename)
+            else:
+                meta_prod = re.sub("^S(2[AB])\\_[A-Z]{4}\\_PRD\\_MSIL([12][AC])\\_.{4}\\_([0-9]{8})T[0-9]{6}\\_R([0-9]{3})\\_V[0-9]{8}T[0-9]{6}\\_[0-9]{8}T[0-9]{6}\\.SAFE$", "\\1_\\2_\\3_\\4", filename)
+            if date_prod>=start_date and date_prod<=end_date and meta_prod not in list_meta:
+              
                 # print what has been found
                 print "\n==============================================="
                 print date_prod,start_date,end_date
@@ -477,7 +481,7 @@ def Sentinel_download(downloader=None,lat=None,lon=None,latmin=None,latmax=None,
                 # ranghetti edit: if lis_only, do not download but save element as to download later
                 list_prod.append(link)
                 list_filename.append(filename)
-                list_date.append(date_prod)
+                list_meta.append(meta_prod)
                 # otherwise, continue with the original code
                 if list_only is False:
                     download_s2product(filename=filename,link=link,downloader=downloader,apihub=apihub,tile=tile,no_download=no_download,write_dir=write_dir,file_list=file_list,downloader_path=downloaderPath)
