@@ -59,9 +59,9 @@ init_python <- function() {
       file.path(dirname(dirname(binpaths$gdalinfo)),"apps"), 
       pattern="^Python", 
       full.names=TRUE
-    ))
+    ))[1]
     pythonhome_exi <- normalize_path(Sys.getenv("PYTHONHOME"))
-    if (pythonhome_new != pythonhome_exi) {
+    if (!pythonhome_exi %in% pythonhome_new) {
       Sys.setenv(PYTHONHOME = pythonhome_new)
     }
   }

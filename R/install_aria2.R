@@ -18,7 +18,7 @@ install_aria2 <- function(aria2_dir = system.file(package="sen2r"),
                          force = FALSE) {
   
   # define the versions to download (for Windows)
-  aria2_ver <- package_version("1.33.1")
+  aria2_ver <- package_version("1.34.0")
   
   # run only on Windows
   if (Sys.info()["sysname"] != "Windows") {
@@ -51,7 +51,12 @@ install_aria2 <- function(aria2_dir = system.file(package="sen2r"),
   )
   aria2_zip <- normalize_path(file.path(aria2_dir,"aria2.zip"), mustWork=FALSE)
   aria2_path <- normalize_path(file.path(aria2_dir,"aria2c.exe"), mustWork=FALSE)
-  download.file(aria2_url, aria2_zip)
+  
+  # download.file(aria2_url, aria2_zip) # problem with https
+  system(
+    paste(binpaths$wget, aria2_url, aria2_zip),
+    intern = Sys.info()["sysname"] == "Windows"
+  )
   if (file.exists(aria2_zip)) {
     unzip(zipfile = aria2_zip,
           files   = basename(aria2_path),

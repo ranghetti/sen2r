@@ -85,7 +85,8 @@ expand_path <- function(path, parent=getwd(), silent=TRUE, normalize=TRUE) {
 normalize_path <- function(path, ...) {
   
   if (Sys.info()["sysname"] == "Windows") {
-    utils::shortPathName(normalizePath(path, ...))
+    utils::shortPathName(normalizePath(gsub("\\\\$", "", path), ...))
+      
   } else {
     normalizePath(path, ...)
   }
