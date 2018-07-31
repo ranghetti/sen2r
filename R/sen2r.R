@@ -364,8 +364,12 @@ sen2r <- function(param_list = NULL,
   #   sink(type = "message"); close(logfile_message)
   #   n_sink_message <- sink.number("message")
   # }
-  sink(type = "output")
-  sink(type = "message"); close(logfile_message)
+  if (!is.na(log_output)) {
+    sink(type = "output")
+  }
+  if (!is.na(log_message)) {
+    sink(type = "message"); close(logfile_message)
+  }
   
 }
 
