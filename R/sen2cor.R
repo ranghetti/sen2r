@@ -34,7 +34,7 @@
 #'  possible (e.g. `parallel = 4`).
 #' @param overwrite Logical value: should existing output L2A products be overwritten?
 #'  (default: FALSE)
-#' @param .logfile_message (optional) Internal parameter
+#' @param .log_message (optional) Internal parameter
 #'  (it is used when the function is called by `sen2r()`).
 #' @param .log_output (optional) Internal parameter
 #'  (it is used when the function is called by `sen2r()`).
@@ -60,7 +60,7 @@
 sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, 
                     tmpdir = NA, rmtmp = TRUE,
                     tiles=NULL, parallel=FALSE, overwrite=FALSE,
-                    .logfile_message=NA, .log_output=NA) {
+                    .log_message=NA, .log_output=NA) {
   
   # load sen2cor executable path
   binpaths <- load_binpaths("sen2cor")
@@ -143,11 +143,14 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
   ) %DO% {
     
     # redirect to log files
-    if (!is.na(.log_output)) {
-      sink(.log_output, split = TRUE, type = "output", append = TRUE)
-    }
-    if (!is.na(.logfile_message)) {
-      sink(.logfile_message, type="message")
+    if (n_cores > 1) {
+      if (!is.na(.log_output)) {
+        sink(.log_output, split = TRUE, type = "output", append = TRUE)
+      }
+      if (!is.na(.log_message)) {
+        logfile_message = file(.log_message, open = "a")
+        sink(logfile_message, type="message")
+      }
     }
     
     # set paths
@@ -305,25 +308,20 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
     } # end IF cycle on overwrite
     
     # stop sinking
-    n_sink <- sink.number()
-    while (n_sink > 0) {
-      sink(type = "message")
-      sink(type = "output")
-      n_sink <- n_sink - 1
+    if (n_cores > 1) {
+      if (!is.na(.log_output)) {
+        sink(type = "output")
+      }
+      if (!is.na(.log_message)) {
+        sink(type = "message"); close(logfile_message)
+      }
     }
     
     sel_l2a
     
-  } # end cycle on each product
-  
+  } # end FOREACH cycle on each product
   if (n_cores > 1) {
     stopCluster(cl)
-    if (!is.na(.log_output)) {
-      sink(.log_output, split = TRUE, type = "output", append = TRUE)
-    }
-    if (!is.na(.logfile_message)) {
-      sink(.logfile_message, type="message")
-    }
   }
   
   # Remove temporary directory

@@ -126,7 +126,7 @@ of masked rasters.</p>
   <span class='kw'>buffer</span> <span class='kw'>=</span> <span class='fl'>250</span>, <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>80</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"./masked"</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>save_binary_mask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>.logfile_message</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>.log_output</span> <span class='kw'>=</span> <span class='fl'>NA</span>)
+  <span class='kw'>.log_message</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>.log_output</span> <span class='kw'>=</span> <span class='fl'>NA</span>)
 
 <span class='fu'>s2_perc_masked</span>(<span class='no'>infiles</span>, <span class='no'>maskfiles</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='st'>"cloud_medium_proba"</span>,
   <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
@@ -273,7 +273,7 @@ multicore processing).</p></td>
 overwritten? (default: FALSE)</p></td>
     </tr>
     <tr>
-      <th>.logfile_message</th>
+      <th>.log_message</th>
       <td><p>(optional) Internal parameter
 (it is used when the function is called by <code><a href='sen2r.html'>sen2r()</a></code>).</p></td>
     </tr>

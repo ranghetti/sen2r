@@ -288,13 +288,11 @@ sen2r <- function(param_list = NULL,
     dir.create(dirname(log_message), showWarnings=FALSE)
     logfile_message = file(log_message, open = "a")
     sink(logfile_message, type="message")
-  } else {
-    logfile_message = NA
   }
   
   # filter names of passed arguments
   sen2r_args <- formalArgs(sen2r:::.sen2r)
-  sen2r_args <- sen2r_args[!sen2r_args %in% c(".logfile_message",".log_output")]
+  sen2r_args <- sen2r_args[!sen2r_args %in% c(".log_message",".log_output")]
   pm_arg_passed <- logical(0)
   for (i in seq_along(sen2r_args)) {
     pm_arg_passed[i] <- !do.call(missing, list(sen2r_args[i]))
@@ -352,17 +350,23 @@ sen2r <- function(param_list = NULL,
     use_python = use_python,
     tmpdir = tmpdir,
     rmtmp = rmtmp,
-    .logfile_message = logfile_message, .log_output = log_output
+    .log_message = log_message, .log_output = log_output
   )
   
   # stop sinking
-  n_sink <- sink.number()
-  while (n_sink > 0) {
-    sink(type = "message")
-    sink(type = "output")
-    n_sink <- n_sink - 1
-  }
-
+  # n_sink_output <- sink.number("output")
+  # while (n_sink_output > 0) {
+  #   sink(type = "output")
+  #   n_sink_output <- sink.number("output")
+  # }
+  # n_sink_message <- sink.number("message")
+  # while (n_sink > 2) {
+  #   sink(type = "message"); close(logfile_message)
+  #   n_sink_message <- sink.number("message")
+  # }
+  sink(type = "output")
+  sink(type = "message"); close(logfile_message)
+  
 }
 
 # Internal function, which is the "real" sen2r() function insider the use of sink
@@ -420,7 +424,7 @@ sen2r <- function(param_list = NULL,
                    use_python,
                    tmpdir,
                    rmtmp,
-                   .logfile_message = NA, 
+                   .log_message = NA, 
                    .log_output = NA) {
   
   # to avoid NOTE on check
@@ -480,7 +484,7 @@ sen2r <- function(param_list = NULL,
   
   # filter names of passed arguments
   sen2r_args <- formalArgs(sen2r:::.sen2r)
-  sen2r_args <- sen2r_args[!sen2r_args %in% c(".logfile_message",".log_output")]
+  sen2r_args <- sen2r_args[!sen2r_args %in% c(".log_message",".log_output")]
   # FIXME $473 pm_arg_passed computed in the main function (otherwise nothing was missing).
   # This is not elegant, find a better way to do it.
   #   pm_arg_passed <- logical(0)
@@ -1292,7 +1296,7 @@ sen2r <- function(param_list = NULL,
           } else {
             file.path(tmpdir, "sen2cor")
           }, 
-          .logfile_message = .logfile_message, .log_output = .log_output,
+          .log_message = .log_message, .log_output = .log_output,
           rmtmp = TRUE # SAFE temporary archives are always deleted
         )
         names(s2_list_l2a_corrected) <- basename(s2_list_l2a_corrected)
@@ -1447,7 +1451,7 @@ sen2r <- function(param_list = NULL,
       format = merged_outformat,
       parallel = if (merged_outformat=="VRT") {FALSE} else {pm$parallel},
       overwrite = pm$overwrite,
-      .logfile_message = .logfile_message, .log_output = .log_output,
+      .log_message = .log_message, .log_output = .log_output,
       trace_files = s2names$merged_names_new
     )
     # merged_names_out <- s2_merge(s2names$merged_names_new,
@@ -1625,7 +1629,7 @@ sen2r <- function(param_list = NULL,
           subdirs = pm$path_subdirs,
           overwrite = pm$overwrite,
           parallel = pm$parallel,
-          .logfile_message = .logfile_message, .log_output = .log_output,
+          .log_message = .log_message, .log_output = .log_output,
           trace_files = s2names$out_names_new
         )
       } else {character(0)}
@@ -1649,7 +1653,7 @@ sen2r <- function(param_list = NULL,
           subdirs = pm$path_subdirs,
           overwrite = pm$overwrite,
           parallel = pm$parallel,
-          .logfile_message = .logfile_message, .log_output = .log_output,
+          .log_message = .log_message, .log_output = .log_output,
           trace_files = s2names$out_names_new
         )
       } else {character(0)}
@@ -1686,7 +1690,7 @@ sen2r <- function(param_list = NULL,
       compress = pm$compression,
       overwrite = pm$overwrite,
       parallel = pm$parallel,
-      .logfile_message = .logfile_message, .log_output = .log_output,
+      .log_message = .log_message, .log_output = .log_output,
       trace_files = s2names$indices_names_new
     )
     

@@ -9,7 +9,7 @@ s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba", smooth = 250,
   buffer = 250, max_mask = 80, outdir = "./masked", tmpdir = NA,
   rmtmp = TRUE, save_binary_mask = FALSE, format = NA, subdirs = NA,
   compress = "DEFLATE", parallel = FALSE, overwrite = FALSE,
-  .logfile_message = NA, .log_output = NA)
+  .log_message = NA, .log_output = NA)
 
 s2_perc_masked(infiles, maskfiles, mask_type = "cloud_medium_proba",
   tmpdir = NA, rmtmp = TRUE, parallel = FALSE)
@@ -124,7 +124,7 @@ multicore processing).}
 \item{overwrite}{(optional) Logical value: should existing output files be
 overwritten? (default: FALSE)}
 
-\item{.logfile_message}{(optional) Internal parameter
+\item{.log_message}{(optional) Internal parameter
 (it is used when the function is called by \code{sen2r()}).}
 
 \item{.log_output}{(optional) Internal parameter

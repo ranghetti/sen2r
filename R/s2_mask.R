@@ -94,7 +94,7 @@
 #'  multicore processing).
 #' @param overwrite (optional) Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
-#' @param .logfile_message (optional) Internal parameter
+#' @param .log_message (optional) Internal parameter
 #'  (it is used when the function is called by `sen2r()`).
 #' @param .log_output (optional) Internal parameter
 #'  (it is used when the function is called by `sen2r()`).
@@ -124,7 +124,7 @@ s2_mask <- function(infiles,
                     compress = "DEFLATE",
                     parallel = FALSE,
                     overwrite = FALSE,
-                    .logfile_message = NA,
+                    .log_message = NA,
                     .log_output = NA) {
   .s2_mask(infiles = infiles,
            maskfiles = maskfiles,
@@ -142,7 +142,7 @@ s2_mask <- function(infiles,
            parallel = parallel,
            overwrite = overwrite,
            output_type = "s2_mask",
-           .logfile_message = .logfile_message,
+           .log_message = .log_message,
            .log_output = .log_output)
 }
 
@@ -162,7 +162,7 @@ s2_mask <- function(infiles,
                      parallel = FALSE,
                      overwrite = FALSE,
                      output_type = "s2_mask", # determines if using s2_mask() or s2_perc_masked()
-                     .logfile_message = NA,
+                     .log_message = NA,
                      .log_output = NA) {
   
   . <- NULL
@@ -522,7 +522,7 @@ s2_mask <- function(infiles,
               parallel = parallel,
               datatype = dataType(inraster),
               overwrite = overwrite,
-              .logfile_message=.logfile_message, 
+              .log_message=.log_message, 
               .log_output=.log_output
             )
             print_message(

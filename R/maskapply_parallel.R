@@ -20,7 +20,7 @@
 #' @param datatype (optional) data type of the output raster.
 #' @param overwrite (optional) Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
-#' @param .logfile_message (optional) Internal parameter
+#' @param .log_message (optional) Internal parameter
 #'  (it is used when the function is called by `s2_mask()`).
 #' @param .log_output (optional) Internal parameter
 #'  (it is used when the function is called by `s2_mask()`).
@@ -43,7 +43,7 @@ maskapply_parallel <- function(in_rast,
                                minrows = NULL, 
                                datatype = "INT2S",
                                overwrite = FALSE,
-                               .logfile_message=NA,
+                               .log_message=NA,
                                .log_output=NA) {
 
   #this function applies a mask by multiplying the mask with the input raster
@@ -113,8 +113,15 @@ maskapply_parallel <- function(in_rast,
   out_paths <- foreach(i = 1:nlayers(in_rast), .packages = c("raster"), .combine=c)  %DO% {
     
     # redirect to log files
-    if (!is.na(.log_output)) {sink(.log_output, split = TRUE, type = "output", append = TRUE)}
-    if (!is.na(.logfile_message)) {sink(.logfile_message, type="message")}
+    if (n_cores > 1) {
+      if (!is.na(.log_output)) {
+        sink(.log_output, split = TRUE, type = "output", append = TRUE)
+      }
+      if (!is.na(.log_message)) {
+        logfile_message = file(.log_message, open = "a")
+        sink(logfile_message, type="message")
+      }
+    }
     
     # run code
     out_path <- file.path(tmpdir, paste0(basename(tempfile(pattern = "maskapply_")), "_b" , i, ".tif"))
@@ -126,24 +133,20 @@ maskapply_parallel <- function(in_rast,
                    format = 'GTiff', overwrite = TRUE, options = c("COMPRESS=LZW"))
     
     # stop sinking
-    n_sink <- sink.number()
-    while (n_sink > 0) {
-      sink(type = "message")
-      sink(type = "output")
-      n_sink <- n_sink - 1
+    if (n_cores > 1) {
+      if (!is.na(.log_output)) {
+        sink(type = "output")
+      }
+      if (!is.na(.log_message)) {
+        sink(type = "message"); close(logfile_message)
+      }
     }
     
     out_path
     
-  }
+  } # end of FOREACH cycle
   if (n_cores > 1) {
     stopCluster(cl)
-    if (!is.na(.log_output)) {
-      sink(.log_output, split = TRUE, type = "output", append = TRUE)
-    }
-    if (!is.na(.logfile_message)) {
-      sink(.logfile_message, type="message")
-    }
   }
   
   # write output VRT

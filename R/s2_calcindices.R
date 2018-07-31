@@ -61,7 +61,7 @@
 #'  Multiprocess masking computation is always performed in singlecore mode
 #' @param overwrite Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
-#' @param .logfile_message (optional) Internal parameter
+#' @param .log_message (optional) Internal parameter
 #'  (it is used when the function is called by `sen2r()`).
 #' @param .log_output (optional) Internal parameter
 #'  (it is used when the function is called by `sen2r()`).
@@ -90,7 +90,7 @@ s2_calcindices <- function(infiles,
                            scaleFactor=NA,
                            parallel = FALSE,
                            overwrite=FALSE,
-                           .logfile_message=NA,
+                           .log_message=NA,
                            .log_output=NA) {
   
   prod_type <- . <- NULL
@@ -196,11 +196,14 @@ s2_calcindices <- function(infiles,
   )  %DO% {
     
     # redirect to log files
-    if (!is.na(.log_output)) {
-      sink(.log_output, split = TRUE, type = "output", append = TRUE)
-    }
-    if (!is.na(.logfile_message)) {
-      sink(.logfile_message, type="message")
+    if (n_cores > 1) {
+      if (!is.na(.log_output)) {
+        sink(.log_output, split = TRUE, type = "output", append = TRUE)
+      }
+      if (!is.na(.log_message)) {
+        logfile_message = file(.log_message, open = "a")
+        sink(logfile_message, type="message")
+      }
     }
     
     sel_infile <- infiles[i]
@@ -335,11 +338,13 @@ s2_calcindices <- function(infiles,
     } # end of indices FOR cycle
     
     # stop sinking
-    n_sink <- sink.number()
-    while (n_sink > 0) {
-      sink(type = "message")
-      sink(type = "output")
-      n_sink <- n_sink - 1
+    if (n_cores > 1) {
+      if (!is.na(.log_output)) {
+        sink(type = "output")
+      }
+      if (!is.na(.log_message)) {
+        sink(type = "message"); close(logfile_message)
+      }
     }
     
     file.path(out_subdir,sel_outfiles)
@@ -347,12 +352,6 @@ s2_calcindices <- function(infiles,
   } # end cycle on infiles
   if (n_cores > 1) {
     stopCluster(cl)
-    if (!is.na(.log_output)) {
-      sink(.log_output, split = TRUE, type = "output", append = TRUE)
-    }
-    if (!is.na(.logfile_message)) {
-      sink(.logfile_message, type="message")
-    }
     print_message(
       type = "message",
       date = TRUE,

@@ -6,7 +6,7 @@
 \usage{
 maskapply_parallel(in_rast, in_mask, outpath, tmpdir = NA, binpaths,
   NAflag = 0, parallel = TRUE, minrows = NULL, datatype = "INT2S",
-  overwrite = FALSE, .logfile_message = NA, .log_output = NA)
+  overwrite = FALSE, .log_message = NA, .log_output = NA)
 }
 \arguments{
 \item{in_rast}{Input raster Stack.}
@@ -36,7 +36,7 @@ If FALSE (default), single core processing is used.}
 \item{overwrite}{(optional) Logical value: should existing output files be
 overwritten? (default: FALSE)}
 
-\item{.logfile_message}{(optional) Internal parameter
+\item{.log_message}{(optional) Internal parameter
 (it is used when the function is called by \code{s2_mask()}).}
 
 \item{.log_output}{(optional) Internal parameter

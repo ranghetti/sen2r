@@ -6,7 +6,7 @@
 \usage{
 s2_merge(infiles, outdir = ".", subdirs = NA, tmpdir = NA, rmtmp = TRUE,
   format = NA, compress = "DEFLATE", vrt_rel_paths = NA, out_crs = "",
-  parallel = FALSE, overwrite = FALSE, .logfile_message = NA,
+  parallel = FALSE, overwrite = FALSE, .log_message = NA,
   .log_output = NA)
 }
 \arguments{
@@ -60,7 +60,7 @@ If FALSE (default), single core processing is used.}
 \item{overwrite}{Logical value: should existing output files be
 overwritten? (default: FALSE)}
 
-\item{.logfile_message}{(optional) Internal parameter
+\item{.log_message}{(optional) Internal parameter
 (it is used when the function is called by \code{sen2r()}).}
 
 \item{.log_output}{(optional) Internal parameter
