@@ -921,7 +921,7 @@ sen2r <- function(param_list = NULL,
                  as.POSIXct(creation_datetime, format="%s"))]
     
     # list existing products and get metadata
-    s2_existing_list <- list.files(c(pm$path_l2a,pm$path_l1c), "\\.SAFE$")
+    s2_existing_list <- list.files(unique(c(pm$path_l2a,pm$path_l1c)), "\\.SAFE$")
     s2_isvalid <- sapply(s2_existing_list, safe_isvalid, info="nameinfo")
     s2_existing_list <- s2_existing_list[s2_isvalid]
     s2_existing_dt <- lapply(s2_existing_list, function(x) {
@@ -945,9 +945,11 @@ sen2r <- function(param_list = NULL,
     s2_existing_list_touse <- s2_existing_dt[s2_existing_meta_pasted %in% s2_meta_pasted,]$name
     
     # replace found SAFE with existing equivalent ones
-    s2_list[!is.na(match(s2_meta_pasted, s2_existing_meta_pasted))] <- ""
-    names(s2_list)[!is.na(match(s2_meta_pasted, s2_existing_meta_pasted))] <-
-      s2_existing_list[na.omit(match(s2_meta_pasted, s2_existing_meta_pasted))]
+    s2_dt[
+      !is.na(match(s2_meta_pasted, s2_existing_meta_pasted)),
+      name := s2_existing_list[na.omit(match(s2_meta_pasted, s2_existing_meta_pasted))]
+      ]
+    s2_dt[!is.na(match(s2_meta_pasted, s2_existing_meta_pasted)), url:=""]
     
     
     # continue editing metadata
