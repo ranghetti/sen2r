@@ -5,6 +5,9 @@
 #'  
 #'  The accessory function `rm_invalid_safe()` remove a SAFE archive in the case
 #'  it is not recognised by `safe_getMetadata()`.
+#'  
+#'  The accessory function `safe_isvalid()` scan the SAFE name to understand
+#'  if it is a valid SAFE.
 #' @param s2 A Sentinel-2 product, being both a `character` (path of an
 #'  existing product, or simply product name) or python object of class
 #'  `osgeo.gdal.Dataset`. This input parameter
@@ -45,12 +48,14 @@
 #'      to be present in the filesystem; in future this will be changed
 #'      (see the second example for a workaround to scan for specific
 #'      elements without needing the file to have been downloaded).
-
+#' @param abort Logical parameter: if TRUE (default), the function aborts 
+#'  in case `prod_type` is not recognised; if FALSE, a warning is shown.
 #' @return `safe_getMetadata()` returns a list of the output metadata;
 #' 
 #'  `rm_invalid_safe()` returns TRUE if the `s2` product was removed, 
 #'  FALSE elsewhere.
 #'
+#'  `safe_isvalid()` returns TRUE if the product is a valid SAFE, FALSE if not.
 #' @author Luigi Ranghetti, phD (2017, 2018) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @export
@@ -94,8 +99,8 @@
 # - add check for format integrity
 
 
-safe_getMetadata <- function(s2, info="all") {
-  .safe_getMetadata(s2, info=info, action = "getmetadata")
+safe_getMetadata <- function(s2, info="all", abort=TRUE) {
+  .safe_getMetadata(s2, info=info, abort=abort, action = "getmetadata")
 }
 
 
@@ -107,9 +112,17 @@ rm_invalid_safe <- function(s2) {
 }
 
 
+#' @name safe_isvalid
+#' @rdname safe_getMetadata
+#' @export
+safe_isvalid <- function(s2, info="fileinfo") {
+  .safe_getMetadata(s2, info=info, action = "isvalid")
+}
+
+
 # internal function: action="getmetadata" causes the execution of safe_getMetadata(),
 # action="rm_invalid" causes the execution of rm_invalid_safe().
-.safe_getMetadata <- function(s2, info="all", action = "getmetadata") {
+.safe_getMetadata <- function(s2, info="all", abort=FALSE, action = "getmetadata") {
   
   # define regular expressions to identify products
   s2_regex <- list(
@@ -164,6 +177,8 @@ rm_invalid_safe <- function(s2) {
     scan_file <- TRUE
   }
   
+  message_type <- ifelse(abort==TRUE, "error", "warning")
+  
   metadata <- list() # output object, with requested metadata
   
   # If s2 is a string, check it and retrieve file metadata
@@ -202,12 +217,15 @@ rm_invalid_safe <- function(s2) {
         } else {
           if (action == "getmetadata") {
             print_message(
-              type="error", 
+              type=message_type, 
               "This product (",s2,") is not in the right format (not recognised)."
             )
+            return(invisible(NULL))
           } else if (action == "rm_invalid") {
             unlink(s2, recursive=TRUE)
-            return(invisible(TRUE))
+            return(invisible(NULL))
+          } else if (action == "isvalid") {
+            return(FALSE)
           }
         }
       } else {
@@ -236,12 +254,15 @@ rm_invalid_safe <- function(s2) {
         } else {
           if (action == "getmetadata") {
             print_message(
-              type="error", 
+              type=message_type, 
               "This product (",s2,") is not in the right format (not recognised)."
             )
+            return(invisible(NULL))
           } else if (action == "rm_invalid") {
             unlink(s2, recursive=TRUE)
-            return(invisible(TRUE))
+            return(invisible(NULL))
+          } else if (action == "isvalid") {
+            return(FALSE)
           }
         }
       }
@@ -282,18 +303,22 @@ rm_invalid_safe <- function(s2) {
             } else if (length(oldname_main_xmlfile)==0) {
               if (action == "getmetadata") {
                 print_message(
-                  type="error", 
+                  type=message_type, 
                   "This product (",s2,") is not in the right format (not recognised)."
                 )
+                return(invisible(NULL))
               } else if (action == "rm_invalid") {
                 unlink(s2, recursive=TRUE)
-                return(invisible(TRUE))
+                return(invisible(NULL))
+              } else if (action == "isvalid") {
+                return(FALSE)
               }
             } else {
               print_message(
-                type="error", 
+                type=message_type, 
                 "This product (",s2,") is not in the right format (not univocally recognised)."
               )
+              return(invisible(NULL))
             }
           } else if (length(compactname_main_xmlfile)==1) {
             if (length(oldname_main_xmlfile)==0) {
@@ -303,16 +328,18 @@ rm_invalid_safe <- function(s2) {
                                                list.files, s2_regex$compactname_granule_xml$regex, full.names=TRUE))
             } else {
               print_message(
-                type="error", 
+                type=message_type, 
                 "This product (",s2,") is not in the right format (not univocally recognised)."
               )
+              return(invisible(NULL))
             }
           }
         } else {
           print_message(
-            type="error", 
+            type=message_type, 
             "This product (",s2,") is not in the right format (not univocally recognised)."
           )
+          return(invisible(NULL))
         }
       } else if (length(oldname_main_xmlfile)+length(compactname_main_xmlfile)==0) {
         if (length(oldname_granule_xmlfile)+length(compactname_granule_xmlfile)==1) {
@@ -326,12 +353,15 @@ rm_invalid_safe <- function(s2) {
             } else if (length(oldname_granule_xmlfile)==0) {
               if (action == "getmetadata") {
                 print_message(
-                  type="error", 
+                  type=message_type, 
                   "This product (",s2,") is not in the right format (not recognised)."
                 )
+                return(invisible(TRUE))
               } else if (action == "rm_invalid") {
                 unlink(s2, recursive=TRUE)
                 return(invisible(TRUE))
+              } else if (action == "isvalid") {
+                return(FALSE)
               }
             }
           } else if (length(compactname_granule_xmlfile) == 1) {
@@ -341,36 +371,44 @@ rm_invalid_safe <- function(s2) {
               s2_granules_xml <- s2_xml <- compactname_granule_xmlfile
             } else if (length(oldname_granule_xmlfile) == 1) {
               print_message(
-                type="error", 
+                type=message_type, 
                 "This product (",s2,") is not in the right format (not univocally recognised)."
               )
+              return(invisible(NULL))
             }
           }
         } else if (length(oldname_granule_xmlfile) + length(compactname_granule_xmlfile) == 0) {
           if (action == "getmetadata") {
             print_message(
-              type="error", 
+              type=message_type, 
               "This product (",s2,") is not in the right format (not recognised)."
             )
+            return(invisible(NULL))
           } else if (action == "rm_invalid") {
             unlink(s2, recursive=TRUE)
-            return(invisible(TRUE))
+            return(invisible(NULL))
+          } else if (action == "isvalid") {
+            return(FALSE)
           }
         } else {
           print_message(
-            type="error", 
+            type=message_type, 
             "This product (",s2,") is not in the right format (not univocally recognised)."
           )
+          return(invisible(NULL))
         }
       } else {
         if (action == "getmetadata") {
           print_message(
-            type="error", 
+            type=message_type, 
             "This product (",s2,") is not in the right format (not recognised)."
           )
+          return(invisible(NULL))
         } else if (action == "rm_invalid") {
           unlink(s2, recursive=TRUE)
-          return(invisible(TRUE))
+          return(invisible(NULL))
+        } else if (action == "isvalid") {
+          return(FALSE)
         }
       }
       
@@ -554,6 +592,8 @@ rm_invalid_safe <- function(s2) {
   # return
   if (action == "rm_invalid") {
     return(invisible(FALSE))
+  } else if (action == "isvalid") {
+    return(TRUE)
   } else if (length(metadata)>1) {
     return(metadata)
   } else {

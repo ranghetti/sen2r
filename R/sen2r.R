@@ -922,6 +922,8 @@ sen2r <- function(param_list = NULL,
     
     # list existing products and get metadata
     s2_existing_list <- list.files(c(pm$path_l2a,pm$path_l1c), "\\.SAFE$")
+    s2_isvalid <- sapply(s2_existing_list, safe_isvalid, info="nameinfo")
+    s2_existing_list <- s2_existing_list[s2_isvalid]
     s2_existing_dt <- lapply(s2_existing_list, function(x) {
       unlist(safe_getMetadata(x, info="nameinfo")) %>%
         t() %>%
