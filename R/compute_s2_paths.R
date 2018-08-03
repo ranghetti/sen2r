@@ -127,6 +127,10 @@ compute_s2_paths <- function(pm,
       all_meta <- data.table(suppressWarnings(sen2r_getElements(all_names, abort=FALSE, format="data.frame")))
       all_meta$names <- all_names
       # filter
+      if (is.null(all_meta$prod_type)) {all_meta$prod_type <- character()}
+      if (is.null(all_meta$mission)) {all_meta$mission <- character()}
+      if (is.null(all_meta$level)) {all_meta$level <- character()}
+      if (is.null(all_meta$file_ext)) {all_meta$file_ext <- character()}
       all_meta <- all_meta[
         type != "unrecognised" &
           prod_type %in% list_prods &
@@ -184,6 +188,10 @@ compute_s2_paths <- function(pm,
       all_meta <- data.table(suppressWarnings(sen2r_getElements(all_names, abort=FALSE, format="data.frame")))
       all_meta$names <- all_names
       # filter
+      if (is.null(all_meta$prod_type)) {all_meta$prod_type <- character()}
+      if (is.null(all_meta$mission)) {all_meta$mission <- character()}
+      if (is.null(all_meta$level)) {all_meta$level <- character()}
+      if (is.null(all_meta$file_ext)) {all_meta$file_ext <- character()}
       all_meta <- all_meta[
         type != "unrecognised" &
           prod_type %in% list_prods &
@@ -259,6 +267,10 @@ compute_s2_paths <- function(pm,
       all_meta <- data.table(suppressWarnings(sen2r_getElements(all_names, abort=FALSE, format="data.frame")))
       all_meta$names <- all_names
       # filter
+      if (is.null(all_meta$prod_type)) {all_meta$prod_type <- character()}
+      if (is.null(all_meta$mission)) {all_meta$mission <- character()}
+      if (is.null(all_meta$level)) {all_meta$level <- character()}
+      if (is.null(all_meta$file_ext)) {all_meta$file_ext <- character()}
       all_meta <- all_meta[
         type != "unrecognised" &
           prod_type %in% list_prods &
@@ -321,6 +333,10 @@ compute_s2_paths <- function(pm,
       all_meta <- data.table(suppressWarnings(sen2r_getElements(all_names, abort=FALSE, format="data.frame")))
       all_meta$names <- all_names
       # filter
+      if (is.null(all_meta$prod_type)) {all_meta$prod_type <- character()}
+      if (is.null(all_meta$mission)) {all_meta$mission <- character()}
+      if (is.null(all_meta$level)) {all_meta$level <- character()}
+      if (is.null(all_meta$file_ext)) {all_meta$file_ext <- character()}
       all_meta <- all_meta[
         type != "unrecognised" &
           prod_type %in% list_prods &
@@ -407,6 +423,10 @@ compute_s2_paths <- function(pm,
       all_meta <- data.table(suppressWarnings(sen2r_getElements(all_names, abort=FALSE, format="data.frame")))
       all_meta$names <- all_names
       # filter
+      if (is.null(all_meta$prod_type)) {all_meta$prod_type <- character()}
+      if (is.null(all_meta$mission)) {all_meta$mission <- character()}
+      if (is.null(all_meta$level)) {all_meta$level <- character()}
+      if (is.null(all_meta$file_ext)) {all_meta$file_ext <- character()}
       all_meta <- all_meta[
         type != "unrecognised" &
           prod_type %in% list_prods &
