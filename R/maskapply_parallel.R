@@ -58,7 +58,7 @@ maskapply_parallel <- function(in_rast,
     } else {
       bs <- blockSize(out, minrows = minrows)
     }
-    for (i in 1:bs$n) {
+    for (i in seq_len(bs$n)) {
       # message("Processing chunk ", i, " of ", bs$n)
       v   <- getValues(x, row = bs$row[i], nrows = bs$nrows[i])
       m   <- getValues(y, row = bs$row[i], nrows = bs$nrows[i])
@@ -110,7 +110,7 @@ maskapply_parallel <- function(in_rast,
     type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
   )
   if (n_cores > 1) {registerDoParallel(cl)}
-  out_paths <- foreach(i = 1:nlayers(in_rast), .packages = c("raster"), .combine=c)  %DO% {
+  out_paths <- foreach(i = seq_len(nlayers(in_rast)), .packages = c("raster"), .combine=c)  %DO% {
     
     # redirect to log files
     if (n_cores > 1) {
