@@ -84,7 +84,7 @@ s2_download <- function(s2_prodlist=NULL,
     print_message(type="error","File apihub.txt with the SciHub credentials is missing.") # TODO build it
   }
   
-  for (i in 1:length(s2_prodlist)) {
+  for (i in seq_len(length(s2_prodlist))) {
     
     link <- s2_prodlist[i]
     filename <- names(s2_prodlist[i])
@@ -100,7 +100,7 @@ s2_download <- function(s2_prodlist=NULL,
     print_message(
       type = "message",
       date = TRUE,
-      "Downloading product ",i," of ",length(s2_prodlist),
+      "Checking product ",i," of ",length(s2_prodlist),
       " (",filename,")..."
     )
     

@@ -922,45 +922,46 @@ sen2r <- function(param_list = NULL,
     
     # list existing products and get metadata
     s2_existing_list <- list.files(unique(c(pm$path_l2a,pm$path_l1c)), "\\.SAFE$")
-    s2_isvalid <- sapply(s2_existing_list, safe_isvalid, info="nameinfo")
-    s2_existing_list <- s2_existing_list[s2_isvalid]
-    s2_existing_dt <- lapply(s2_existing_list, function(x) {
-      unlist(safe_getMetadata(x, info="nameinfo")) %>%
-        t() %>%
-        as.data.frame(stringsAsFactors=FALSE)
-    }) %>%
-      rbindlist(fill=TRUE)
-    s2_existing_dt[,"name":=s2_existing_list]
-    s2_existing_dt[,c("sensing_datetime","creation_datetime"):=
-                     list(as.POSIXct(sensing_datetime, format="%s"),
-                          as.POSIXct(creation_datetime, format="%s"))]
-    
-    # make a vector with only metadata to be used for the comparison
-    s2_meta_pasted <- s2_dt[,list("V1" = paste(
-      mission, 
-      level, 
-      strftime(sensing_datetime,"%y%m%d"), 
-      id_orbit, 
-      ifelse(version=="compact", id_tile, "oldname")
-    ))]$V1
-    s2_existing_meta_pasted <- s2_existing_dt[,list("V1" = paste(
-      mission, 
-      level, 
-      strftime(sensing_datetime,"%y%m%d"), 
-      id_orbit, 
-      ifelse(version=="compact", id_tile, "oldname_existing")
-    ))]$V1
-    s2_existing_list_touse <- s2_existing_dt[s2_existing_meta_pasted %in% s2_meta_pasted,]$name
-    # s2_existing_list_touse cannot contain oldname products, since they are 
-    # always checked in case new tiles are required
-    
-    # replace found SAFE with existing equivalent ones
-    s2_dt[
-      !is.na(match(s2_meta_pasted, s2_existing_meta_pasted)),
-      name := s2_existing_list[na.omit(match(s2_meta_pasted, s2_existing_meta_pasted))]
-      ]
-    s2_dt[!is.na(match(s2_meta_pasted, s2_existing_meta_pasted)), url:=""]
-    
+    if (length(s2_existing_list)>0) {
+      s2_isvalid <- sapply(s2_existing_list, safe_isvalid, info="nameinfo")
+      s2_existing_list <- s2_existing_list[s2_isvalid]
+      s2_existing_dt <- lapply(s2_existing_list, function(x) {
+        unlist(safe_getMetadata(x, info="nameinfo")) %>%
+          t() %>%
+          as.data.frame(stringsAsFactors=FALSE)
+      }) %>%
+        rbindlist(fill=TRUE)
+      s2_existing_dt[,"name":=s2_existing_list]
+      s2_existing_dt[,c("sensing_datetime","creation_datetime"):=
+                       list(as.POSIXct(sensing_datetime, format="%s"),
+                            as.POSIXct(creation_datetime, format="%s"))]
+      
+      # make a vector with only metadata to be used for the comparison
+      s2_meta_pasted <- s2_dt[,list("V1" = paste(
+        mission, 
+        level, 
+        strftime(sensing_datetime,"%y%m%d"), 
+        id_orbit, 
+        ifelse(version=="compact", id_tile, "oldname")
+      ))]$V1
+      s2_existing_meta_pasted <- s2_existing_dt[,list("V1" = paste(
+        mission, 
+        level, 
+        strftime(sensing_datetime,"%y%m%d"), 
+        id_orbit, 
+        ifelse(version=="compact", id_tile, "oldname_existing")
+      ))]$V1
+      s2_existing_list_touse <- s2_existing_dt[s2_existing_meta_pasted %in% s2_meta_pasted,]$name
+      # s2_existing_list_touse cannot contain oldname products, since they are 
+      # always checked in case new tiles are required
+      
+      # replace found SAFE with existing equivalent ones
+      s2_dt[
+        !is.na(match(s2_meta_pasted, s2_existing_meta_pasted)),
+        name := s2_existing_list[na.omit(match(s2_meta_pasted, s2_existing_meta_pasted))]
+        ]
+      s2_dt[!is.na(match(s2_meta_pasted, s2_existing_meta_pasted)), url:=""]
+    }
     
     # continue editing metadata
     if (is.null(s2_dt$id_tile)) {
@@ -1129,8 +1130,7 @@ sen2r <- function(param_list = NULL,
     # (now it skips, but analysing each single file)
     
     if (pm$online == TRUE) {
-      if (any(!names(s2_list_l2a) %in% list.files(pm$path_l2a, "\\.SAFE$"))) {
-        
+
         print_message(
           type = "message",
           date = TRUE,
@@ -1177,11 +1177,13 @@ sen2r <- function(param_list = NULL,
             )
           })
         }
-        
-      }
       
-      if (any(!names(s2_list_l1c) %in% list.files(pm$path_l1c, "\\.SAFE$"))) {
-        
+      print_message(
+        type = "message", 
+        date = TRUE, 
+        "Download of level-2A SAFE products terminated."
+      )
+
         print_message(
           type = "message",
           date = TRUE,
@@ -1231,7 +1233,12 @@ sen2r <- function(param_list = NULL,
         # products without the selected tile, but for some reasons this
         # operation can be very time consuming. Find a way to avoid it.
         
-      }
+        print_message(
+          type = "message", 
+          date = TRUE, 
+          "Download of level-1C SAFE products terminated."
+        )
+
     }
     
     # second filter on tiles (#filter2)
