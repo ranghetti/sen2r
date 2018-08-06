@@ -936,13 +936,23 @@ sen2r <- function(param_list = NULL,
                           as.POSIXct(creation_datetime, format="%s"))]
     
     # make a vector with only metadata to be used for the comparison
-    s2_meta_pasted <- s2_dt[,list(
-      "V1" = paste(mission, level, strftime(sensing_datetime,"%y%m%d"), id_orbit, id_tile)
-    )]$V1
-    s2_existing_meta_pasted <- s2_existing_dt[,list(
-      "V1" = paste(mission, level, strftime(sensing_datetime,"%y%m%d"), id_orbit, id_tile)
-    )]$V1
+    s2_meta_pasted <- s2_dt[,list("V1" = paste(
+      mission, 
+      level, 
+      strftime(sensing_datetime,"%y%m%d"), 
+      id_orbit, 
+      ifelse(version=="compact", id_tile, "oldname")
+    ))]$V1
+    s2_existing_meta_pasted <- s2_existing_dt[,list("V1" = paste(
+      mission, 
+      level, 
+      strftime(sensing_datetime,"%y%m%d"), 
+      id_orbit, 
+      ifelse(version=="compact", id_tile, "oldname_existing")
+    ))]$V1
     s2_existing_list_touse <- s2_existing_dt[s2_existing_meta_pasted %in% s2_meta_pasted,]$name
+    # s2_existing_list_touse cannot contain oldname products, since they are 
+    # always checked in case new tiles are required
     
     # replace found SAFE with existing equivalent ones
     s2_dt[
