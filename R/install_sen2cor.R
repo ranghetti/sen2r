@@ -108,12 +108,16 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
     setwd(curr_dir)
     sen2cor_bin <- file.path(sen2cor_dir, "bin", "L2A_Process")
   } else if (Sys.info()["sysname"] == "Windows") {
-    unzip(zipfile = sen2cor_installer,
-          exdir   = sen2cor_dir,
-          unzip   = "internal") %>%
-      suppressWarnings()
+    suppressWarnings(unzip(
+      zipfile = sen2cor_installer,
+      exdir = sen2cor_dir,
+      unzip = "internal"
+    ))
     unlink(sen2cor_installer)
-    sen2cor_bin <- system.file("sen2cor", paste0("Sen2Cor-",sen2cor_version,"-win64"), "L2A_Process.bat", package="sen2r")
+    sen2cor_bin <- system.file(
+      "sen2cor", gsub("\\.zip$","",basename(sen2cor_installer)), "L2A_Process.bat", 
+      package="sen2r"
+    )
   }
   
   # fix bug #71
