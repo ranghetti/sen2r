@@ -1196,16 +1196,16 @@ s2_gui <- function(param_list = NULL,
       }
     })
     
-    # disable online mode on Windows
-    observe({
-      if (Sys.info()["sysname"] == "Windows") {
-        disable("online")
-        updateRadioButtons(session, "online",
-                           selected = FALSE)
-      } else {
-        enable("online")
-      }
-    })
+    # # disable online mode on Windows
+    # observe({
+    #   if (Sys.info()["sysname"] == "Windows") {
+    #     disable("online")
+    #     updateRadioButtons(session, "online",
+    #                        selected = FALSE)
+    #   } else {
+    #     enable("online")
+    #   }
+    # })
     
     # disable downloader aria2 if it is not installed
     binpaths <- load_binpaths()
