@@ -142,11 +142,21 @@ s2_gui <- function(param_list = NULL,
         #   )
         # ),
         # server-side buttons
-        p(style="margin-top:15pt;margin-left:11pt;",
-          shinySaveButton("export_param", "Save options as...", "Save parameters as ...", filetype=list(json="json"), class="darkbutton")
+        p(style="margin-top:15pt;",
+          shinySaveButton(
+            "export_param", 
+            "Save options as...", "Save parameters as ...", 
+            filetype=list(json="json"), 
+            class="darkbutton"
+          )
         ),
-        p(style="margin-top:5pt;margin-left:11pt;",
-          shinyFilesButton("import_param", "Load options", "Import a JSON file with parameters", multiple=FALSE, class="darkbutton")
+        p(style="margin-top:5pt;",
+          shinyFilesButton(
+            "import_param", 
+            "Load options", "Import a JSON file with parameters", 
+            multiple=FALSE, 
+            class="darkbutton"
+          )
         ),
         # actionButton("import_param_deactivated", label = "Load options", class = "darkbutton"),
         p(style="margin-top:20pt;",
