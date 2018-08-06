@@ -54,14 +54,24 @@ install_aria2 <- function(aria2_dir = system.file(package="sen2r"),
   
   # download.file(aria2_url, aria2_zip) # problem with https
   system(
-    paste(binpaths$wget, aria2_url, aria2_zip),
+    paste(binpaths$wget, aria2_url, "-O", aria2_zip),
     intern = Sys.info()["sysname"] == "Windows"
   )
   if (file.exists(aria2_zip)) {
-    unzip(zipfile = aria2_zip,
-          files   = basename(aria2_path),
-          exdir   = dirname(aria2_path),
-          unzip   = "internal")
+    aria2_filelist <- unzip(
+      zipfile = aria2_zip,
+      list = TRUE
+    )
+    aria2_filename <- aria2_filelist$Name[
+      grep(paste0(basename(aria2_path),"$"), aria2_filelist$Name)
+    ]
+    unzip(
+      zipfile = aria2_zip,
+      files = aria2_filename,
+      exdir = dirname(aria2_path),
+      junkpaths = TRUE,
+      unzip = "internal"
+    )
     unlink(aria2_zip)
   }
   if (file.exists(aria2_path)) {

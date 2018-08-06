@@ -536,7 +536,7 @@ check_sen2r_deps <- function() {
 
       # update the check
       rv$check_aria2_isvalid <- if (!is.null(load_binpaths()$aria2c)) {
-        load_binpaths()$aria2c
+        file.exists(binpaths()$aria2c)
       } else {
         FALSE
       }
