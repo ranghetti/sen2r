@@ -89,7 +89,9 @@ s2_download <- function(s2_prodlist=NULL,
     link <- s2_prodlist[i]
     filename <- names(s2_prodlist[i])
     # download archive for compactname products
-    if (safe_getMetadata(filename, "nameinfo")$version=="compact") {
+    # and for oldname on Windows, untile #107 will be solved
+    if (safe_getMetadata(filename, "nameinfo")$version=="compact" |
+        Sys.info()["sysname"] == "Windows") {
       py_tile <- r_to_py(NULL)
       unzip_tile <- TRUE
     } else {
