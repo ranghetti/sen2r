@@ -1381,7 +1381,7 @@ sen2r <- function(param_list = NULL,
           trace_function(
             s2_translate,
             infile = sel_prod,
-            outdir = path["tiles"],
+            outdir = paths["tiles"],
             tmpdir = file.path(tmpdir, "s2_translate_l1c"), rmtmp = rmtmp,
             prod_type = list_l1c_prods,
             format = tiles_outformat,
