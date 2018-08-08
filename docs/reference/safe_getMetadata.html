@@ -34,7 +34,9 @@
 (main path, granule path, main / granule xml file or GDAL object)
 to retrieve information about the product.
 The accessory function rm_invalid_safe() remove a SAFE archive in the case
-it is not recognised by safe_getMetadata()." />
+it is not recognised by safe_getMetadata().
+The accessory function safe_isvalid() scan the SAFE name to understand
+if it is a valid SAFE." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -117,12 +119,16 @@ it is not recognised by safe_getMetadata()." />
 to retrieve information about the product.</p>
 <p>The accessory function <code>rm_invalid_safe()</code> remove a SAFE archive in the case
 it is not recognised by <code>safe_getMetadata()</code>.</p>
+<p>The accessory function <code>safe_isvalid()</code> scan the SAFE name to understand
+if it is a valid SAFE.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>safe_getMetadata</span>(<span class='no'>s2</span>, <span class='kw'>info</span> <span class='kw'>=</span> <span class='st'>"all"</span>)
+    <pre class="usage"><span class='fu'>safe_getMetadata</span>(<span class='no'>s2</span>, <span class='kw'>info</span> <span class='kw'>=</span> <span class='st'>"all"</span>, <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
-<span class='fu'>rm_invalid_safe</span>(<span class='no'>s2</span>)</pre>
+<span class='fu'>rm_invalid_safe</span>(<span class='no'>s2</span>)
+
+<span class='fu'>safe_isvalid</span>(<span class='no'>s2</span>, <span class='kw'>info</span> <span class='kw'>=</span> <span class='st'>"fileinfo"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -175,6 +181,11 @@ to be present in the filesystem; in future this will be changed
 elements without needing the file to have been downloaded).</p></li>
 </ul></td>
     </tr>
+    <tr>
+      <th>abort</th>
+      <td><p>Logical parameter: if TRUE (default), the function aborts
+in case <code>prod_type</code> is not recognised; if FALSE, a warning is shown.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -182,6 +193,7 @@ elements without needing the file to have been downloaded).</p></li>
     <p><code>safe_getMetadata()</code> returns a list of the output metadata;</p>
 <p><code>rm_invalid_safe()</code> returns TRUE if the <code>s2</code> product was removed,
 FALSE elsewhere.</p>
+<p><code>safe_isvalid()</code> returns TRUE if the product is a valid SAFE, FALSE if not.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 

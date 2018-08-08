@@ -44,7 +44,7 @@ gdal_formats_db <- function(json_path = NA,
   
   # read GDAL drivers
   gdal_driver_list <- list()
-  for (i in 1:(py_to_r(gdal$GetDriverCount())-1)) {
+  for (i in seq_len((py_to_r(gdal$GetDriverCount())-1))) {
     gdal_driver_list[[i]] <- py$gdal$GetDriver(py$py$int(i))
   }
   

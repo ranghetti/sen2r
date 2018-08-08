@@ -42,7 +42,7 @@
 #'  If FALSE (default), single core processing is used.
 #' @param overwrite Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
-#' @param .logfile_message (optional) Internal parameter
+#' @param .log_message (optional) Internal parameter
 #'  (it is used when the function is called by `sen2r()`).
 #' @param .log_output (optional) Internal parameter
 #'  (it is used when the function is called by `sen2r()`).
@@ -71,7 +71,7 @@ s2_merge <- function(infiles,
                      out_crs="",
                      parallel = FALSE,
                      overwrite=FALSE,
-                     .logfile_message=NA,
+                     .log_message=NA,
                      .log_output=NA) {
   
   # load output formats
@@ -242,11 +242,14 @@ s2_merge <- function(infiles,
   )  %DO% {
     
     # redirect to log files
-    if (n_cores > 1 & !is.na(.log_output)) {
-      sink(.log_output, split = TRUE, type = "output", append = TRUE)
-    }
-    if (n_cores > 1 & !is.na(.logfile_message)) {
-      sink(.logfile_message, type="message")
+    if (n_cores > 1) {
+      if (!is.na(.log_output)) {
+        sink(.log_output, split = TRUE, type = "output", append = TRUE)
+      }
+      if (!is.na(.log_message)) {
+        logfile_message = file(.log_message, open = "a")
+        sink(logfile_message, type="message")
+      }
     }
     
     sel_infiles <- infiles[infiles_meta_grps == infiles_meta_grp]
@@ -337,11 +340,13 @@ s2_merge <- function(infiles,
     } # end of overwrite IF cycle
     
     # stop sinking
-    n_sink <- sink.number()
-    while (n_sink > 0) {
-      sink(type = "message")
-      sink(type = "output")
-      n_sink <- n_sink - 1
+    if (n_cores > 1) {
+      if (!is.na(.log_output)) {
+        sink(type = "output")
+      }
+      if (!is.na(.log_message)) {
+        sink(type = "message"); close(logfile_message)
+      }
     }
     
     file.path(out_subdir,sel_outfile)
@@ -349,12 +354,6 @@ s2_merge <- function(infiles,
   } # end of foreach cycle
   if (n_cores > 1) {
     stopCluster(cl)
-    if (!is.na(.log_output)) {
-      sink(.log_output, split = TRUE, type = "output", append = TRUE)
-    }
-    if (!is.na(.logfile_message)) {
-      sink(.logfile_message, type="message")
-    }
   }
   
   # Remove temporary files

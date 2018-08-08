@@ -124,9 +124,9 @@ of masked rasters.</p>
 
     <pre class="usage"><span class='fu'>s2_mask</span>(<span class='no'>infiles</span>, <span class='no'>maskfiles</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='st'>"cloud_medium_proba"</span>, <span class='kw'>smooth</span> <span class='kw'>=</span> <span class='fl'>250</span>,
   <span class='kw'>buffer</span> <span class='kw'>=</span> <span class='fl'>250</span>, <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>80</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"./masked"</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>,
-  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>.logfile_message</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>.log_output</span> <span class='kw'>=</span> <span class='fl'>NA</span>)
+  <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>save_binary_mask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>.log_message</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>.log_output</span> <span class='kw'>=</span> <span class='fl'>NA</span>)
 
 <span class='fu'>s2_perc_masked</span>(<span class='no'>infiles</span>, <span class='no'>maskfiles</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='st'>"cloud_medium_proba"</span>,
   <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
@@ -226,6 +226,19 @@ This parameter takes effect only if the output files are not VRT
 bands are included within them).</p></td>
     </tr>
     <tr>
+      <th>save_binary_mask</th>
+      <td><p>(optional) Logical: should binary masks be exported?
+Binary mask are intermediate rasters used to apply the cloud mask:
+pixel values can be 1 (no cloud mask), 0 (cloud mask) or NA (original NA
+value, i.e. because input rasters had been clipped on the extent polygons).
+If FALSE (default) they are not exported; if TRUE, they are exported
+as MSK prod type (so saved within <code>outdir</code>, in a subdirectory called "MSK"
+if <code>subdirs = TRUE</code>).
+Notice that the presence of "MSK" products is not checked before running
+<code><a href='sen2r.html'>sen2r()</a></code>, as done for the other products; this means that missing products
+which are not required to apply cloud masks will not be produced.</p></td>
+    </tr>
+    <tr>
       <th>format</th>
       <td><p>(optional) Format of the output file (in a
 format recognised by GDAL). Default is the same format of input images
@@ -260,7 +273,7 @@ multicore processing).</p></td>
 overwritten? (default: FALSE)</p></td>
     </tr>
     <tr>
-      <th>.logfile_message</th>
+      <th>.log_message</th>
       <td><p>(optional) Internal parameter
 (it is used when the function is called by <code><a href='sen2r.html'>sen2r()</a></code>).</p></td>
     </tr>

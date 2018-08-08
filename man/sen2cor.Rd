@@ -6,7 +6,7 @@
 \usage{
 sen2cor(l1c_prodlist = NULL, l1c_dir = NULL, outdir = NULL,
   proc_dir = NA, tmpdir = NA, rmtmp = TRUE, tiles = NULL,
-  parallel = FALSE, overwrite = FALSE, .logfile_message = NA,
+  parallel = FALSE, overwrite = FALSE, .log_message = NA,
   .log_output = NA)
 }
 \arguments{
@@ -50,7 +50,7 @@ possible (e.g. \code{parallel = 4}).}
 \item{overwrite}{Logical value: should existing output L2A products be overwritten?
 (default: FALSE)}
 
-\item{.logfile_message}{(optional) Internal parameter
+\item{.log_message}{(optional) Internal parameter
 (it is used when the function is called by \code{sen2r()}).}
 
 \item{.log_output}{(optional) Internal parameter

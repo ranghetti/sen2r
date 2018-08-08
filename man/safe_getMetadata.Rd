@@ -3,11 +3,14 @@
 \name{safe_getMetadata}
 \alias{safe_getMetadata}
 \alias{rm_invalid_safe}
+\alias{safe_isvalid}
 \title{Get information from S2 file name or metadata}
 \usage{
-safe_getMetadata(s2, info = "all")
+safe_getMetadata(s2, info = "all", abort = TRUE)
 
 rm_invalid_safe(s2)
+
+safe_isvalid(s2, info = "fileinfo")
 }
 \arguments{
 \item{s2}{A Sentinel-2 product, being both a \code{character} (path of an
@@ -55,12 +58,17 @@ to be present in the filesystem; in future this will be changed
 (see the second example for a workaround to scan for specific
 elements without needing the file to have been downloaded).
 }}
+
+\item{abort}{Logical parameter: if TRUE (default), the function aborts
+in case \code{prod_type} is not recognised; if FALSE, a warning is shown.}
 }
 \value{
 \code{safe_getMetadata()} returns a list of the output metadata;
 
 \code{rm_invalid_safe()} returns TRUE if the \code{s2} product was removed,
 FALSE elsewhere.
+
+\code{safe_isvalid()} returns TRUE if the product is a valid SAFE, FALSE if not.
 }
 \description{
 The function \code{safe_getMetadata()} scans a Sentinel2 product
@@ -69,6 +77,9 @@ to retrieve information about the product.
 
 The accessory function \code{rm_invalid_safe()} remove a SAFE archive in the case
 it is not recognised by \code{safe_getMetadata()}.
+
+The accessory function \code{safe_isvalid()} scan the SAFE name to understand
+if it is a valid SAFE.
 }
 \note{
 License: GPL 3.0

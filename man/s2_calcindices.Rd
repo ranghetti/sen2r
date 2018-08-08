@@ -7,7 +7,7 @@
 s2_calcindices(infiles, indices, outdir = ".", parameters = NULL,
   source = c("TOA", "BOA"), format = NA, subdirs = NA, tmpdir = NA,
   compress = "DEFLATE", dataType = "Int16", scaleFactor = NA,
-  parallel = FALSE, overwrite = FALSE, .logfile_message = NA,
+  parallel = FALSE, overwrite = FALSE, .log_message = NA,
   .log_output = NA)
 }
 \arguments{
@@ -83,7 +83,7 @@ Multiprocess masking computation is always performed in singlecore mode}
 \item{overwrite}{Logical value: should existing output files be
 overwritten? (default: FALSE)}
 
-\item{.logfile_message}{(optional) Internal parameter
+\item{.log_message}{(optional) Internal parameter
 (it is used when the function is called by \code{sen2r()}).}
 
 \item{.log_output}{(optional) Internal parameter

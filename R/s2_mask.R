@@ -65,6 +65,16 @@
 #'  This parameter takes effect only if the output files are not VRT
 #'  (in this case temporary files cannot be deleted, because rasters of source
 #'  bands are included within them).
+#' @param save_binary_mask (optional) Logical: should binary masks be exported?
+#'  Binary mask are intermediate rasters used to apply the cloud mask: 
+#'  pixel values can be 1 (no cloud mask), 0 (cloud mask) or NA (original NA
+#'  value, i.e. because input rasters had been clipped on the extent polygons).
+#'  If FALSE (default) they are not exported; if TRUE, they are exported
+#'  as MSK prod type (so saved within `outdir`, in a subdirectory called "MSK"
+#'  if `subdirs = TRUE`).
+#'  Notice that the presence of "MSK" products is not checked before running 
+#'  `sen2r()`, as done for the other products; this means that missing products
+#'  which are not required to apply cloud masks will not be produced.
 #' @param format (optional) Format of the output file (in a
 #'  format recognised by GDAL). Default is the same format of input images
 #'  (or "GTiff" in case of VRT input images).
@@ -84,7 +94,7 @@
 #'  multicore processing).
 #' @param overwrite (optional) Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
-#' @param .logfile_message (optional) Internal parameter
+#' @param .log_message (optional) Internal parameter
 #'  (it is used when the function is called by `sen2r()`).
 #' @param .log_output (optional) Internal parameter
 #'  (it is used when the function is called by `sen2r()`).
@@ -108,12 +118,13 @@ s2_mask <- function(infiles,
                     outdir = "./masked",
                     tmpdir = NA,
                     rmtmp = TRUE,
+                    save_binary_mask = FALSE,
                     format = NA,
                     subdirs = NA,
                     compress = "DEFLATE",
                     parallel = FALSE,
                     overwrite = FALSE,
-                    .logfile_message = NA,
+                    .log_message = NA,
                     .log_output = NA) {
   .s2_mask(infiles = infiles,
            maskfiles = maskfiles,
@@ -124,13 +135,14 @@ s2_mask <- function(infiles,
            outdir = outdir,
            tmpdir = tmpdir,
            rmtmp = rmtmp,
+           save_binary_mask = save_binary_mask,
            format = format,
            subdirs = subdirs,
            compress = compress,
            parallel = parallel,
            overwrite = overwrite,
            output_type = "s2_mask",
-           .logfile_message = .logfile_message,
+           .log_message = .log_message,
            .log_output = .log_output)
 }
 
@@ -143,13 +155,14 @@ s2_mask <- function(infiles,
                      outdir = "./masked",
                      tmpdir = NA,
                      rmtmp = TRUE,
+                     save_binary_mask = FALSE,
                      format = NA,
                      subdirs = NA,
                      compress = "DEFLATE",
                      parallel = FALSE,
                      overwrite = FALSE,
                      output_type = "s2_mask", # determines if using s2_mask() or s2_perc_masked()
-                     .logfile_message = NA,
+                     .log_message = NA,
                      .log_output = NA) {
   
   . <- NULL
@@ -365,6 +378,37 @@ s2_mask <- function(infiles,
       perc_mask <- 100 * (mean_values_naval - mean_values_mask) / mean_values_naval
       if (!is.finite(perc_mask)) {perc_mask <- 100}
       
+      # if the user required to save 0-1 masks, save them
+      if (save_binary_mask == TRUE) {
+        # define out MSK name
+        binmask <- file.path(
+          ifelse(subdirs, file.path(outdir,"MSK"), outdir),
+          gsub(paste0("\\.",infiles_meta[i,"file_ext"],"$"),
+               paste0(".",sel_out_ext),
+               gsub(paste0("\\_",infiles_meta[i,"prod_type"],"\\_"),
+                    "_MSK_",
+                    basename(sel_infile)))
+        )
+        # create subdir if missing
+        if (subdirs & !dir.exists(file.path(outdir,"MSK"))) {
+          dir.create(file.path(outdir,"MSK"))
+        }
+        # mask NA values
+        raster::mask(
+          raster(outmask),
+          raster(outnaval),
+          filename = binmask,
+          maskvalue = 0,
+          updatevalue = sel_naflag,
+          updateNA = TRUE,
+          NAflag = 255,
+          datatype = "INT1U",
+          format = sel_format,
+          options = if(sel_format == "GTiff") {paste0("COMPRESS=",compress)},
+          overwrite = overwrite
+        )
+      }
+      
       # if the requested output is this value, return it; else, continue masking
       if (output_type == "perc") {
         names(perc_mask) <- sel_infile
@@ -478,7 +522,7 @@ s2_mask <- function(infiles,
               parallel = parallel,
               datatype = dataType(inraster),
               overwrite = overwrite,
-              .logfile_message=.logfile_message, 
+              .log_message=.log_message, 
               .log_output=.log_output
             )
             print_message(

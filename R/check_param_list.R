@@ -82,11 +82,26 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
     pm$timewindow <- c(Sys.Date() - 90, Sys.Date())
   }
   
-  # example of check
+  # check output resolution
   if (!anyNA(pm$res) & any(pm$res <= 0)) {
     print_message(
       type = type,
-      "Output resolution (parameter \"res\" ) must be positive."
+      "Output custom resolution (parameter \"res\" ) must be positive."
+    )
+  }
+  if ((!anyNA(pm$res) & !is.null(pm$res)) & (!anyNA(pm$res_s2) & !is.null(pm$res_s2))) {
+    print_message(
+      type = "warning",
+      "Both native and custom resolution were provided; ",
+      "only custom one (\"res\") will be used."
+    )
+    pm$res_s2 <- NA
+  }
+  if (!anyNA(pm$res_s2) & any(!pm$res_s2 %in% c("10m", "20m", "60m"))) {
+    print_message(
+      type = type,
+      "Output native resolution (parameter \"res_s2\" ) is invalid ",
+      "(accepted values are '10m', '20m' and '60m')."
     )
   }
   

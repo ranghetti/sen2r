@@ -7,9 +7,9 @@
 \usage{
 s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba", smooth = 250,
   buffer = 250, max_mask = 80, outdir = "./masked", tmpdir = NA,
-  rmtmp = TRUE, format = NA, subdirs = NA, compress = "DEFLATE",
-  parallel = FALSE, overwrite = FALSE, .logfile_message = NA,
-  .log_output = NA)
+  rmtmp = TRUE, save_binary_mask = FALSE, format = NA, subdirs = NA,
+  compress = "DEFLATE", parallel = FALSE, overwrite = FALSE,
+  .log_message = NA, .log_output = NA)
 
 s2_perc_masked(infiles, maskfiles, mask_type = "cloud_medium_proba",
   tmpdir = NA, rmtmp = TRUE, parallel = FALSE)
@@ -89,6 +89,17 @@ This parameter takes effect only if the output files are not VRT
 (in this case temporary files cannot be deleted, because rasters of source
 bands are included within them).}
 
+\item{save_binary_mask}{(optional) Logical: should binary masks be exported?
+Binary mask are intermediate rasters used to apply the cloud mask:
+pixel values can be 1 (no cloud mask), 0 (cloud mask) or NA (original NA
+value, i.e. because input rasters had been clipped on the extent polygons).
+If FALSE (default) they are not exported; if TRUE, they are exported
+as MSK prod type (so saved within \code{outdir}, in a subdirectory called "MSK"
+if \code{subdirs = TRUE}).
+Notice that the presence of "MSK" products is not checked before running
+\code{sen2r()}, as done for the other products; this means that missing products
+which are not required to apply cloud masks will not be produced.}
+
 \item{format}{(optional) Format of the output file (in a
 format recognised by GDAL). Default is the same format of input images
 (or "GTiff" in case of VRT input images).}
@@ -113,7 +124,7 @@ multicore processing).}
 \item{overwrite}{(optional) Logical value: should existing output files be
 overwritten? (default: FALSE)}
 
-\item{.logfile_message}{(optional) Internal parameter
+\item{.log_message}{(optional) Internal parameter
 (it is used when the function is called by \code{sen2r()}).}
 
 \item{.log_output}{(optional) Internal parameter

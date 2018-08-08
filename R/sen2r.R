@@ -288,13 +288,11 @@ sen2r <- function(param_list = NULL,
     dir.create(dirname(log_message), showWarnings=FALSE)
     logfile_message = file(log_message, open = "a")
     sink(logfile_message, type="message")
-  } else {
-    logfile_message = NA
   }
   
   # filter names of passed arguments
   sen2r_args <- formalArgs(sen2r:::.sen2r)
-  sen2r_args <- sen2r_args[!sen2r_args %in% c(".logfile_message",".log_output")]
+  sen2r_args <- sen2r_args[!sen2r_args %in% c(".log_message",".log_output")]
   pm_arg_passed <- logical(0)
   for (i in seq_along(sen2r_args)) {
     pm_arg_passed[i] <- !do.call(missing, list(sen2r_args[i]))
@@ -352,17 +350,27 @@ sen2r <- function(param_list = NULL,
     use_python = use_python,
     tmpdir = tmpdir,
     rmtmp = rmtmp,
-    .logfile_message = logfile_message, .log_output = log_output
+    .log_message = log_message, .log_output = log_output
   )
   
   # stop sinking
-  n_sink <- sink.number()
-  while (n_sink > 0) {
-    sink(type = "message")
+  # n_sink_output <- sink.number("output")
+  # while (n_sink_output > 0) {
+  #   sink(type = "output")
+  #   n_sink_output <- sink.number("output")
+  # }
+  # n_sink_message <- sink.number("message")
+  # while (n_sink > 2) {
+  #   sink(type = "message"); close(logfile_message)
+  #   n_sink_message <- sink.number("message")
+  # }
+  if (!is.na(log_output)) {
     sink(type = "output")
-    n_sink <- n_sink - 1
   }
-
+  if (!is.na(log_message)) {
+    sink(type = "message"); close(logfile_message)
+  }
+  
 }
 
 # Internal function, which is the "real" sen2r() function insider the use of sink
@@ -420,7 +428,7 @@ sen2r <- function(param_list = NULL,
                    use_python,
                    tmpdir,
                    rmtmp,
-                   .logfile_message = NA, 
+                   .log_message = NA, 
                    .log_output = NA) {
   
   # to avoid NOTE on check
@@ -480,7 +488,7 @@ sen2r <- function(param_list = NULL,
   
   # filter names of passed arguments
   sen2r_args <- formalArgs(sen2r:::.sen2r)
-  sen2r_args <- sen2r_args[!sen2r_args %in% c(".logfile_message",".log_output")]
+  sen2r_args <- sen2r_args[!sen2r_args %in% c(".log_message",".log_output")]
   # FIXME $473 pm_arg_passed computed in the main function (otherwise nothing was missing).
   # This is not elegant, find a better way to do it.
   #   pm_arg_passed <- logical(0)
@@ -913,32 +921,47 @@ sen2r <- function(param_list = NULL,
                  as.POSIXct(creation_datetime, format="%s"))]
     
     # list existing products and get metadata
-    s2_existing_list <- list.files(c(pm$path_l2a,pm$path_l1c), "\\.SAFE$")
-    s2_existing_dt <- lapply(s2_existing_list, function(x) {
-      unlist(safe_getMetadata(x, info="nameinfo")) %>%
-        t() %>%
-        as.data.frame(stringsAsFactors=FALSE)
-    }) %>%
-      rbindlist(fill=TRUE)
-    s2_existing_dt[,"name":=s2_existing_list]
-    s2_existing_dt[,c("sensing_datetime","creation_datetime"):=
-                     list(as.POSIXct(sensing_datetime, format="%s"),
-                          as.POSIXct(creation_datetime, format="%s"))]
-    
-    # make a vector with only metadata to be used for the comparison
-    s2_meta_pasted <- s2_dt[,list(
-      "V1" = paste(mission, level, strftime(sensing_datetime,"%y%m%d"), id_orbit, id_tile)
-    )]$V1
-    s2_existing_meta_pasted <- s2_existing_dt[,list(
-      "V1" = paste(mission, level, strftime(sensing_datetime,"%y%m%d"), id_orbit, id_tile)
-    )]$V1
-    s2_existing_list_touse <- s2_existing_dt[s2_existing_meta_pasted %in% s2_meta_pasted,]$name
-    
-    # replace found SAFE with existing equivalent ones
-    s2_list[!is.na(match(s2_meta_pasted, s2_existing_meta_pasted))] <- ""
-    names(s2_list)[!is.na(match(s2_meta_pasted, s2_existing_meta_pasted))] <-
-      s2_existing_list[na.omit(match(s2_meta_pasted, s2_existing_meta_pasted))]
-    
+    s2_existing_list <- list.files(unique(c(pm$path_l2a,pm$path_l1c)), "\\.SAFE$")
+    if (length(s2_existing_list)>0) {
+      s2_isvalid <- sapply(s2_existing_list, safe_isvalid, info="nameinfo")
+      s2_existing_list <- s2_existing_list[s2_isvalid]
+      s2_existing_dt <- lapply(s2_existing_list, function(x) {
+        unlist(safe_getMetadata(x, info="nameinfo")) %>%
+          t() %>%
+          as.data.frame(stringsAsFactors=FALSE)
+      }) %>%
+        rbindlist(fill=TRUE)
+      s2_existing_dt[,"name":=s2_existing_list]
+      s2_existing_dt[,c("sensing_datetime","creation_datetime"):=
+                       list(as.POSIXct(sensing_datetime, format="%s"),
+                            as.POSIXct(creation_datetime, format="%s"))]
+      
+      # make a vector with only metadata to be used for the comparison
+      s2_meta_pasted <- s2_dt[,list("V1" = paste(
+        mission, 
+        level, 
+        strftime(sensing_datetime,"%y%m%d"), 
+        id_orbit, 
+        ifelse(version=="compact", id_tile, "oldname")
+      ))]$V1
+      s2_existing_meta_pasted <- s2_existing_dt[,list("V1" = paste(
+        mission, 
+        level, 
+        strftime(sensing_datetime,"%y%m%d"), 
+        id_orbit, 
+        ifelse(version=="compact", id_tile, "oldname_existing")
+      ))]$V1
+      s2_existing_list_touse <- s2_existing_dt[s2_existing_meta_pasted %in% s2_meta_pasted,]$name
+      # s2_existing_list_touse cannot contain oldname products, since they are 
+      # always checked in case new tiles are required
+      
+      # replace found SAFE with existing equivalent ones
+      s2_dt[
+        !is.na(match(s2_meta_pasted, s2_existing_meta_pasted)),
+        name := s2_existing_list[na.omit(match(s2_meta_pasted, s2_existing_meta_pasted))]
+        ]
+      s2_dt[!is.na(match(s2_meta_pasted, s2_existing_meta_pasted)), url:=""]
+    }
     
     # continue editing metadata
     if (is.null(s2_dt$id_tile)) {
@@ -1107,8 +1130,7 @@ sen2r <- function(param_list = NULL,
     # (now it skips, but analysing each single file)
     
     if (pm$online == TRUE) {
-      if (any(!names(s2_list_l2a) %in% list.files(pm$path_l2a, "\\.SAFE$"))) {
-        
+
         print_message(
           type = "message",
           date = TRUE,
@@ -1155,11 +1177,13 @@ sen2r <- function(param_list = NULL,
             )
           })
         }
-        
-      }
       
-      if (any(!names(s2_list_l1c) %in% list.files(pm$path_l1c, "\\.SAFE$"))) {
-        
+      print_message(
+        type = "message", 
+        date = TRUE, 
+        "Download of level-2A SAFE products terminated."
+      )
+
         print_message(
           type = "message",
           date = TRUE,
@@ -1209,7 +1233,12 @@ sen2r <- function(param_list = NULL,
         # products without the selected tile, but for some reasons this
         # operation can be very time consuming. Find a way to avoid it.
         
-      }
+        print_message(
+          type = "message", 
+          date = TRUE, 
+          "Download of level-1C SAFE products terminated."
+        )
+
     }
     
     # second filter on tiles (#filter2)
@@ -1282,17 +1311,16 @@ sen2r <- function(param_list = NULL,
           outdir = pm$path_l2a,
           tiles = pm$s2tiles_selected,
           parallel = pm$parallel,
-          tmpdir = if (
-            Sys.info()["sysname"] != "Windows" & 
-            any(attr(mountpoint(tmpdir), "protocol") %in% c("cifs", "nsfs"))
-          ) {
+          tmpdir = if (Sys.info()["sysname"] == "Windows") {
+            file.path(tmpdir, "sen2cor")
+          } else if (any(attr(mountpoint(tmpdir), "protocol") %in% c("cifs", "nsfs"))) {
             # if tmpdir is on a SAMBA mountpoint over Linux, 
             # use a tmeporary directory different from the specified one
             NA
           } else {
             file.path(tmpdir, "sen2cor")
           }, 
-          .logfile_message = .logfile_message, .log_output = .log_output,
+          .log_message = .log_message, .log_output = .log_output,
           rmtmp = TRUE # SAFE temporary archives are always deleted
         )
         names(s2_list_l2a_corrected) <- basename(s2_list_l2a_corrected)
@@ -1369,7 +1397,7 @@ sen2r <- function(param_list = NULL,
           trace_function(
             s2_translate,
             infile = sel_prod,
-            outdir = path["tiles"],
+            outdir = paths["tiles"],
             tmpdir = file.path(tmpdir, "s2_translate_l1c"), rmtmp = rmtmp,
             prod_type = list_l1c_prods,
             format = tiles_outformat,
@@ -1447,7 +1475,7 @@ sen2r <- function(param_list = NULL,
       format = merged_outformat,
       parallel = if (merged_outformat=="VRT") {FALSE} else {pm$parallel},
       overwrite = pm$overwrite,
-      .logfile_message = .logfile_message, .log_output = .log_output,
+      .log_message = .log_message, .log_output = .log_output,
       trace_files = s2names$merged_names_new
     )
     # merged_names_out <- s2_merge(s2names$merged_names_new,
@@ -1625,7 +1653,7 @@ sen2r <- function(param_list = NULL,
           subdirs = pm$path_subdirs,
           overwrite = pm$overwrite,
           parallel = pm$parallel,
-          .logfile_message = .logfile_message, .log_output = .log_output,
+          .log_message = .log_message, .log_output = .log_output,
           trace_files = s2names$out_names_new
         )
       } else {character(0)}
@@ -1649,7 +1677,7 @@ sen2r <- function(param_list = NULL,
           subdirs = pm$path_subdirs,
           overwrite = pm$overwrite,
           parallel = pm$parallel,
-          .logfile_message = .logfile_message, .log_output = .log_output,
+          .log_message = .log_message, .log_output = .log_output,
           trace_files = s2names$out_names_new
         )
       } else {character(0)}
@@ -1686,7 +1714,7 @@ sen2r <- function(param_list = NULL,
       compress = pm$compression,
       overwrite = pm$overwrite,
       parallel = pm$parallel,
-      .logfile_message = .logfile_message, .log_output = .log_output,
+      .log_message = .log_message, .log_output = .log_output,
       trace_files = s2names$indices_names_new
     )
     
