@@ -1311,10 +1311,9 @@ sen2r <- function(param_list = NULL,
           outdir = pm$path_l2a,
           tiles = pm$s2tiles_selected,
           parallel = pm$parallel,
-          tmpdir = if (
-            Sys.info()["sysname"] != "Windows" & 
-            any(attr(mountpoint(tmpdir), "protocol") %in% c("cifs", "nsfs"))
-          ) {
+          tmpdir = if (Sys.info()["sysname"] == "Windows") {
+            file.path(tmpdir, "sen2cor")
+          } else if (any(attr(mountpoint(tmpdir), "protocol") %in% c("cifs", "nsfs"))) {
             # if tmpdir is on a SAMBA mountpoint over Linux, 
             # use a tmeporary directory different from the specified one
             NA

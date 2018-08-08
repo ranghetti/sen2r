@@ -83,11 +83,8 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
   # }
   
   # check that proc_dir is not on a mountpoint
-  if (!is.na(proc_dir)) {
-    if (
-      Sys.info()["sysname"] != "Windows" & 
-      any(attr(mountpoint(proc_dir), "protocol") %in% c("cifs", "nsfs"))
-    ) {
+  if (!is.na(proc_dir) & Sys.info()["sysname"] != "Windows") {
+    if (any(attr(mountpoint(proc_dir), "protocol") %in% c("cifs", "nsfs"))) {
       print_message(
         type = "warning",
         proc_dir, "is on a SAMBA mounted unit, so it will not be used."
@@ -218,21 +215,20 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
         if (
           length(sel_l1c_tiles_toavoid)>0 | # 1
           dirname(sel_l1c)!=dirname(sel_l2a) & length(sel_l2a_tiles_existing)>0 | # 2
-          Sys.info()["sysname"] != "Windows" & any(attr(mountpoint(sel_l1c), "protocol") %in% c("cifs", "nsfs")) # 3
+          Sys.info()["sysname"] != "Windows" & any(attr(suppressWarnings(mountpoint(sel_l1c)), "protocol") %in% c("cifs", "nsfs")) # 3
         ) {
           if (is.na(tmpdir)) {
             tmpdir <- tempfile(pattern="sen2cor_")
           }
           dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
           # check that tmpdir is not on a mountpoint
-          if (
-            Sys.info()["sysname"] != "Windows" & 
-            any(attr(mountpoint(tmpdir), "protocol") %in% c("cifs", "nsfs"))
-          ) {
-            print_message(
-              type = "error",
-              tmpdir, "is on a SAMBA mounted unit, so it can not be used."
-            )
+          if (Sys.info()["sysname"] != "Windows") {
+            if (any(attr(mountpoint(tmpdir), "protocol") %in% c("cifs", "nsfs"))) {
+              print_message(
+                type = "error",
+                tmpdir, "is on a SAMBA mounted unit, so it can not be used."
+              )
+            }
           }
           sel_proc_dir <- tmpdir
         }
