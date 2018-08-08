@@ -34,7 +34,6 @@
 #' @importFrom shinyjs click delay disable enable
 #' @importFrom shinyWidgets sendSweetAlert
 #' @importFrom stats setNames
-#' @importFrom utils unzip
 #'
 #' @export
 
@@ -59,17 +58,7 @@ s2_gui <- function(param_list = NULL,
   # TODO: populate parameter values with param_list content, if provided
   
   # extract and import tiles kml
-  s2tiles_kmz <- system.file("extdata","vector","s2_tiles.kmz",package="sen2r")
-  s2tiles_kml <- gsub("\\.kmz$",".kml",s2tiles_kmz)
-  if (!file.exists(s2tiles_kml)) {
-    unzip(zipfile = s2tiles_kmz,
-          files   = basename(s2tiles_kml),
-          exdir   = dirname(s2tiles_kml),
-          unzip   = "internal")
-  }
-  s2tiles <- st_read(s2tiles_kml, stringsAsFactors=FALSE, quiet=TRUE)
-  s2tiles[,!names(s2tiles)%in%c("Name","geometry")] <- NULL
-  names(s2tiles) <- gsub("^Name$","tile_id",names(s2tiles))
+  s2tiles <- s2_tiles()
   
   # shiny
   s2_gui.ui <- dashboardPage(
