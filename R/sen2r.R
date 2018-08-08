@@ -922,7 +922,7 @@ sen2r <- function(param_list = NULL,
     
     # list existing products and get metadata
     s2_existing_list <- list.files(unique(c(pm$path_l2a,pm$path_l1c)), "\\.SAFE$")
-    if (length(s2_existing_list)>0) {
+    if (length(s2_existing_list) > 0 & pm$online == TRUE) {
       s2_isvalid <- sapply(s2_existing_list, safe_isvalid, info="nameinfo")
       s2_existing_list <- s2_existing_list[s2_isvalid]
       s2_existing_dt <- lapply(s2_existing_list, function(x) {
@@ -963,13 +963,20 @@ sen2r <- function(param_list = NULL,
       s2_dt[!is.na(match(s2_meta_pasted, s2_existing_meta_pasted)), url:=""]
     }
     
+    # removing duplicated products
+    # (in case of products with different baseline / ingestion time, keep the most recent one)
+    s2_dt <- s2_dt[order(-sensing_datetime, -creation_datetime, -id_baseline),]
+    s2_dt <- s2_dt[!duplicated(paste(
+      prod_type, version, mission, level,
+      sensing_datetime, id_orbit, ifelse(version=="compact", id_tile, "oldname")
+    )),]
+    
     # continue editing metadata
     if (is.null(s2_dt$id_tile)) {
       s2_dt$id_tile <- as.character(NA)
     }
     
-    s2_dt <- s2_dt[mission %in% toupper(substr(pm$sel_sensor,2,3)),][
-      order(-sensing_datetime),]
+    s2_dt <- s2_dt[mission %in% toupper(substr(pm$sel_sensor,2,3)),]
     if (!anyNA(pm$timewindow)) {
       s2_dt <- s2_dt[as.Date(sensing_datetime) >= pm$timewindow[1] &
                        as.Date(sensing_datetime) <= pm$timewindow[2],]
@@ -979,6 +986,12 @@ sen2r <- function(param_list = NULL,
     # (products will be filtered later: #filter2)
     if (all(!is.na(pm$s2tiles_selected))) {
       s2_dt <- s2_dt[id_tile %in% c(pm$s2tiles_selected,NA),]
+    } else if (all(st_is_valid(pm$extent))) {
+      # if no tiles were specified, select only tiles which overlap the extent
+      # (this to prevent to use unuseful SAFE in offline mode)
+      s2tiles <- s2_tiles()
+      s2tiles_sel <- s2tiles[lengths(st_overlaps(s2tiles, st_transform(pm$extent, st_crs(s2tiles)))) > 0,]
+      s2_dt <- s2_dt[id_tile %in% s2tiles_sel$tile_id,]
     }
     if (all(!is.na(pm$s2orbits_selected))) {
       s2_dt <- s2_dt[id_orbit %in% pm$s2orbits_selected,]
