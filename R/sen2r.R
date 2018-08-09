@@ -292,7 +292,7 @@ sen2r <- function(param_list = NULL,
   
   # filter names of passed arguments
   sen2r_args <- formalArgs(sen2r:::.sen2r)
-  sen2r_args <- sen2r_args[!sen2r_args %in% c(".log_message",".log_output")]
+  sen2r_args <- sen2r_args[!sen2r_args %in% c(".log_message",".log_output",".only_list_names")]
   pm_arg_passed <- logical(0)
   for (i in seq_along(sen2r_args)) {
     pm_arg_passed[i] <- !do.call(missing, list(sen2r_args[i]))
@@ -350,7 +350,8 @@ sen2r <- function(param_list = NULL,
     use_python = use_python,
     tmpdir = tmpdir,
     rmtmp = rmtmp,
-    .log_message = log_message, .log_output = log_output
+    .log_message = log_message, .log_output = log_output,
+    .only_list_names = FALSE
   )
   
   # stop sinking
@@ -429,7 +430,8 @@ sen2r <- function(param_list = NULL,
                    tmpdir,
                    rmtmp,
                    .log_message = NA, 
-                   .log_output = NA) {
+                   .log_output = NA,
+                   .only_list_names = FALSE) {
   
   # to avoid NOTE on check
   . <- NULL
@@ -1109,6 +1111,8 @@ sen2r <- function(param_list = NULL,
       
     } # end of pm$preprocess==TRUE IF cycle (names of required files)
     
+    # if list_sen2r_paths(): stop here
+    if (.only_list_names == TRUE) {return(s2names)}
     
     ### SAFE processing: download and atmospheric correction ###
     
@@ -1368,7 +1372,7 @@ sen2r <- function(param_list = NULL,
     
   } # end of SAFE dummy FOR cycle
   
-  if (pm$preprocess == FALSE) {
+  if (pm$preprocess == FALSE | .only_list_names == TRUE) {
     return(invisible(NULL))
   }
   
