@@ -1,0 +1,1 @@
+/home/lranghetti/share/git/github/ranghetti/sen2r/inst/extdata/example_files/out/out_test2/BOA/S2B2A_20180616_065_Scalve_BOA_10.tif
