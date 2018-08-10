@@ -784,15 +784,24 @@ s2_gui <- function(param_list = NULL,
             
             conditionalPanel(
               condition = "input.atm_mask == 'TRUE'",
-              selectInput("atm_mask_type", "Apply mask to:",
-                          choices = list("No data" = "nodata",
-                                         "No data or clouds (high probability)" = "cloud_high_proba",
-                                         "No data or clouds (high or medium probability)" = "cloud_medium_proba",
-                                         "No data or clouds (any probability)" = "cloud_low_proba",
-                                         "No data, clouds or cloud shadows" = "cloud_and_shadow",
-                                         "No data, clouds, cloud shadows or thin cirrus" = "cloud_shadow_cirrus",
-                                         "Custom mask" = "custom"),
-                          selected = "cloud_medium_proba"),
+              selectInput(
+                "atm_mask_type", 
+                label = span(
+                  "Apply mask to:\u2000",
+                  actionLink("help_mask_classes", icon("question-circle"))
+                ),
+                choices = list(
+                  "No data" = "nodata",
+                  "No data and clouds (high probability)" = "cloud_high_proba",
+                  "No data and clouds (high-medium prob.)" = "cloud_medium_proba",
+                  "No data and clouds (any probability)" = "cloud_low_proba",
+                  "No data, clouds and shadows" = "cloud_and_shadow",
+                  "All except clear-sky" = "clear_sky",
+                  "All except land surface" = "land",
+                  "Custom mask" = "custom"
+                ),
+                selected = "cloud_medium_proba"
+              ),
               
               conditionalPanel(
                 condition = "input.atm_mask_type == 'custom'",
