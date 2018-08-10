@@ -992,7 +992,7 @@ sen2r <- function(param_list = NULL,
       # if no tiles were specified, select only tiles which overlap the extent
       # (this to prevent to use unuseful SAFE in offline mode)
       s2tiles <- s2_tiles()
-      s2tiles_sel <- s2tiles[lengths(st_overlaps(s2tiles, st_transform(pm$extent, st_crs(s2tiles)))) > 0,]
+      s2tiles_sel <- s2tiles[lengths(st_intersects(s2tiles, st_transform(pm$extent, st_crs(s2tiles)))) > 0,]
       s2_dt <- s2_dt[id_tile %in% s2tiles_sel$tile_id,]
     }
     if (all(!is.na(pm$s2orbits_selected))) {
