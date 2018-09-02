@@ -112,18 +112,17 @@ safe_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m",
   mandatory_metadata <- c("mission","level","sensing_datetime","id_orbit")
   
   s2_metadata <- tryCatch({
-    m <- safe_getMetadata(prod_name, info=needed_metadata)
-    if (is.na(set.seed)) {
-      set.seed <- TRUE
-    }
-    m
+    safe_getMetadata(prod_name, info=needed_metadata)
   }, error = function(e) {
-    m <- safe_getMetadata(prod_name, info="nameinfo")[needed_metadata]
-    if (is.na(set.seed)) {
-      set.seed <- FALSE
-    }
-    m
+    safe_getMetadata(prod_name, info="nameinfo")[needed_metadata]
   })
+  
+  if (is.na(set.seed)) {
+    set.seed <- tryCatch({
+      safe_getMetadata(prod_name, info=needed_metadata)
+      TRUE
+    }, error = function(e) {FALSE})
+  }
 
   # check that necessary elements do not miss
   if (any(sapply(s2_metadata[mandatory_metadata],is.null))) {

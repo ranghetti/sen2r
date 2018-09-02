@@ -762,12 +762,15 @@ s2_gui <- function(param_list = NULL,
           ), # end of box "Output extent"
           
           box(
-            title=HTML("<i class=\"fa fa-wrench\">\u2000Cloud mask</i>"), #TODO modalDialog for managing (and explaining) cloud masking settings
+            title="Cloud mask",
             width=6,
             
             radioButtons(
               "atm_mask", 
-              label = "Mask cloud-covered pixels?",
+              label = span(
+                "Mask cloud-covered pixels?\u2000",
+                actionLink("help_mask", icon("question-circle"))
+              ),
               choices = list("Yes" = TRUE, "No" = FALSE),
               selected = FALSE,
               inline = TRUE
@@ -784,15 +787,24 @@ s2_gui <- function(param_list = NULL,
             
             conditionalPanel(
               condition = "input.atm_mask == 'TRUE'",
-              selectInput("atm_mask_type", "Apply mask to:",
-                          choices = list("No data" = "nodata",
-                                         "No data or clouds (high probability)" = "cloud_high_proba",
-                                         "No data or clouds (high or medium probability)" = "cloud_medium_proba",
-                                         "No data or clouds (any probability)" = "cloud_low_proba",
-                                         "No data, clouds or cloud shadows" = "cloud_and_shadow",
-                                         "No data, clouds, cloud shadows or thin cirrus" = "cloud_shadow_cirrus",
-                                         "Custom mask" = "custom"),
-                          selected = "cloud_medium_proba"),
+              selectInput(
+                "atm_mask_type", 
+                label = span(
+                  "Apply mask to:\u2000",
+                  actionLink("help_mask_classes", icon("question-circle"))
+                ),
+                choices = list(
+                  "No data" = "nodata",
+                  "No data and clouds (high probability)" = "cloud_high_proba",
+                  "No data and clouds (high-medium prob.)" = "cloud_medium_proba",
+                  "No data and clouds (any probability)" = "cloud_low_proba",
+                  "No data, clouds and shadows" = "cloud_and_shadow",
+                  "All except clear-sky" = "clear_sky",
+                  "All except land surface" = "land",
+                  "Custom mask" = "custom"
+                ),
+                selected = "cloud_medium_proba"
+              ),
               
               conditionalPanel(
                 condition = "input.atm_mask_type == 'custom'",
@@ -813,12 +825,16 @@ s2_gui <- function(param_list = NULL,
                     HTML("<font style=\"family:monospace;background-color:#ff9aff;color:black;\">\u200511\u2005</font>\u2002Snow")
                   ),
                   choiceValues = as.list(0:11),
-                  selected = list(0,8,9)
+                  selected = list(0,1,8,9)
                 )
               ),
               
               sliderInput(
-                "max_masked_perc", label = "Maximum allowed cloud cover",
+                "max_masked_perc", 
+                label = span(
+                  "Maximum allowed cloud cover",
+                  actionLink("help_masked_perc", icon("question-circle"))
+                ),
                 min = 0, max = 100, value = 80,
                 step = 1, post = "%"
               ),
@@ -827,7 +843,7 @@ s2_gui <- function(param_list = NULL,
                 "mask_apply_smooth", 
                 label = span(
                   "Smooth / bufferize the cloud-covered surface?\u2000",
-                  actionLink("help_max_masked_perc", icon("question-circle"))
+                  actionLink("help_mask_smooth", icon("question-circle"))
                 ),
                 choices = list("Yes" = TRUE,
                                "No" = FALSE),
@@ -2378,18 +2394,6 @@ s2_gui <- function(param_list = NULL,
       ))
     })
     
-    observeEvent(input$help_max_masked_perc, {
-      showModal(modalDialog(
-        title = "Smooth / bufferize the cloud-covered surface?",
-        p(HTML(
-          "This help will be added soon."
-        )),
-        easyClose = TRUE,
-        footer = NULL
-      ))
-    })
-    
-    
     observeEvent(input$help_clip_on_extent, {
       showModal(modalDialog(
         title = "Clip outputs on the selected extent?",
@@ -2406,6 +2410,165 @@ s2_gui <- function(param_list = NULL,
           "is used to select tiles overlapping it;",
           "output products maintain the full extent and the geometry of",
           "Sentinel-2 input tiles."
+        )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+    
+    observeEvent(input$help_mask, {
+      showModal(modalDialog(
+        title = "Mask cloud-covered pixels?",
+        p(HTML(
+          "<strong>Yes</strong>:",
+          "the pixels classified as clouds are set to NA.",
+          "The Surface Classification Map (SCL) included within Level-2A",
+          "products is used to mask clouds.",
+          "Use the selector below to define which classes have to be considered",
+          "as clouds."
+        )),
+        p(HTML(
+          "<strong>No</strong>:",
+          "this step is not performed."
+        )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+
+    observeEvent(input$help_mask_classes, {
+      showModal(modalDialog(
+        title = "Apply mask to:",
+        p(HTML(
+          "Select which type of mask have to be applied to rasters."
+        )),
+        p(HTML(
+          "It is possible to choose between seven predefinite masks,",
+          "or set a custom one."
+        )),
+        p(HTML(
+          "The predefinite ones are shown in order of masking rate:<ul>",
+          "<li><strong>No data:</strong> only missing values, i.e. areas without",
+          "data (class 0 within SCL, corresponding to areas not covered",
+          "by the current Sentinel orbit) or classified as \"Saturated or",
+          "defective\" (class 1), are set to NA;</li>",
+          "<li><strong>No data and clouds (high probability):</strong>",
+          "areas classified as missing values (classes 0 and 1) or highly",
+          "probably cloudy (class 9) are set to NA;</li>",
+          "<li><strong>No data and clouds (high-medium prob.):</strong>",
+          "areas classified as missing values (classes 0 and 1) or with a high",
+          "or medium cloud probability (resp. classes 9 and 8) ",
+          "are set to NA;</li>",
+          "<li><strong>No data and clouds (any probability):</strong>",
+          "areas classified as missing values (classes 0 and 1) or cloudly",
+          "(classes 7, 8 and 9) are set to NA;</li>",
+          "<li><strong>No data, clouds and shadows:</strong>",
+          "areas classified as missing values (classes 0 and 1), cloudly",
+          "(classes 7, 8 and 9) or shady (classes 2 and 3) are set to NA;</li>",
+          "<li><strong>All except clear-sky:</strong>",
+          "areas classified as missing values (classes 0 and 1), cloudly",
+          "(classes 7, 8 and 9), shady (classes 2 and 3) and as cirrus",
+          "(class 10) are set to NA (in other words, only pixels classified",
+          "as vegetation (class 4), bare soil (class 5), water (class 6) and",
+          "snow (class 11) are maintained);</li>",
+          "<li><strong>All except land surface:</strong>",
+          "areas classified as missing values (classes 0 and 1), cloudly",
+          "(classes 7, 8 and 9), shady (classes 2 and 3), as cirrus (class 10),",
+          "water (class 6) and snow (class 11) are set to NA (in other words,",
+          "only pixels classified as vegetation (class 4) and bare soil", 
+          "(class 5) are maintained);</li>",
+          "</ul>"
+        )),
+        p(HTML(
+          "If none of them is suitable for the user, it is possible to define",
+          "a custom mask by manually selecting the classes to be masked.",
+          "See the <a href='https://earth.esa.int/web/sentinel/technical-guides/sentinel-2-msi/level-2a/algorithm'",
+          "target='_blank'>classification algorythm</a> for further details."
+        )),
+        p(HTML(
+          "Notice that this functionality does not ensure to correctly mask",
+          "all the clouds: in fact, the SCL product is an automatic",
+          "classification performed by sen2cor, and it is subject to errors",
+          "(see i.e. <a href='https://elib.dlr.de/119324/1/S2-validation_meeting_Main-Knorn_20180128.pdf'",
+          "target='_blank'>this",
+          "report</a>)."
+        )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+
+    observeEvent(input$help_masked_perc, {
+      showModal(modalDialog(
+        title = "Maximum allowed cloud cover",
+        p(HTML(
+          "Set the maximum percentage of areas classified as cloudy which",
+          "should be tolerate.",
+          "If a higher value is computed, the output image is not produced."
+        )),
+        p(HTML(
+          "Notice that the cloud covered surface is computed",
+          "as the percentage of non-cloudy pixels on the total number",
+          "of pixels included in the extent.",
+          "So, if the user chosed not to mask outside the polygons used as extent,",
+          "the considered pixels are the pixels included in the bounding box",
+          "of the extent;",
+          "conversely, if the area outside the polygons has been masked,",
+          "the percentage is computed only on pixels within the polygons.",
+          "Moreover, if the user chosed not to clip on the extent,",
+          "the percentage is computed on all the pixels of the tile."
+        )),
+        p(HTML(
+          "Notice also two more details:<ul>",
+          "<li>the percentage is always computed on pixels, even if the user",
+          "chosed to smooth the mask and/or to apply a buffer;</li>",
+          "<li>pixels outside the current Sentinel-2 orbit (class 0 of SCL map)",
+          "are threated as other cloud-masked pixels; i.e., an image which is",
+          "50% nodata and with a 10% of the remaining pixels classified as cloudy",
+          "will be produced only if the maximum allowed cloud surface is set",
+          "> 55%.</li></ul>"
+        )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+    
+    observeEvent(input$help_mask_smooth, {
+      showModal(modalDialog(
+        title = "Smooth / bufferize the cloud-covered surface?",
+        size = "l",
+        p(HTML(
+          "By default, the cloud mask is applied at pixel level",
+          "(pixels classified as cloudy are masked singularly).",
+          "In this way, output image could appear grainy.",
+          "Moreover, sometimes pixels adiacent to masked areas could appear",
+          "cloudy in turn, so it could be useful to mask also cloud borders."
+        )),
+        p(HTML(
+          "To prevent producing grainy output images, cloud masks can be ",
+          "smoothed before applying them to output images.",
+          "This has the effect to remove isolated masked pixels (holes)",
+          " and to mask isolated non-masked pixels (isles).",
+          "In order to mask cloud borders, a buffer can be also applied to masks.",
+          "Using higher buffer radius will produce images with a higher",
+          "probability to be clean, but with a higher data loss."
+        )),
+        a(href="www/images/mask_types.jpg", target="_blank",
+          img(src="www/images/mask_types.jpg", width = "100%")),
+        p(HTML(
+          "The image above shows the effect of different smoothing / buffer",
+          "values (click on the figure to enlarge it).",
+          "Panel 1 shows a scene which was masked without applying any smoothing",
+          "nor a buffer; panels 2 to 9 shows different combination of",
+          "smoothing and buffer radiuses.",
+          "Applying a buffer without smoothing the mask results in emphatising",
+          "isolated masked pixels (panels 2 and 3), so this is a conservative",
+          "choice that implicates some data loss.",
+          "Conversely, using a smoothing radius allows not to loose isolated",
+          "masked pixels (e.g. small urban areas), but in this way it is",
+          "probably to maintain a high number of cloudy pixels (panels 4 and 7);",
+          "for this reason, it is commonly recommended to use a smoothing radius",
+          "in combination with a buffer radius with a similar magnitude (panel 5)."
         )),
         easyClose = TRUE,
         footer = NULL
