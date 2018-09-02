@@ -229,11 +229,13 @@ s2_merge <- function(infiles,
   }
   
   # merge single output products
-  cl <- makeCluster(
-    n_cores, 
-    type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
-  )
-  if (n_cores > 1) {registerDoParallel(cl)}
+  if (n_cores > 1) {
+    cl <- makeCluster(
+      n_cores, 
+      type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
+    )
+    registerDoParallel(cl)
+  }
   outfiles <- foreach(
     infiles_meta_grp = unique(infiles_meta_grps), 
     .packages = c("sen2r"), 
