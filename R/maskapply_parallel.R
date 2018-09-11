@@ -105,11 +105,13 @@ maskapply_parallel <- function(in_rast,
   
   #NOTE: FORK is more efficient on Linux because it does not make copies;
   # on windows we should use "PSOCK".
-  cl <- makeCluster(
-    n_cores, 
-    type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
-  )
-  if (n_cores > 1) {registerDoParallel(cl)}
+  if (n_cores > 1) {
+    cl <- makeCluster(
+      n_cores, 
+      type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
+    )
+    registerDoParallel(cl)
+  }
   out_paths <- foreach(i = seq_len(nlayers(in_rast)), .packages = c("raster"), .combine=c)  %DO% {
     
     # redirect to log files

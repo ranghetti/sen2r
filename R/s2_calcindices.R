@@ -175,11 +175,11 @@ s2_calcindices <- function(infiles,
   }
   
   # read TOA/BOA image
-  cl <- makeCluster(
-    n_cores, 
-    type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
-  )
   if (n_cores > 1) {
+    cl <- makeCluster(
+      n_cores, 
+      type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
+    )
     registerDoParallel(cl)
     print_message(
       type = "message",
