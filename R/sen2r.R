@@ -220,7 +220,7 @@
 #' @importFrom utils packageVersion
 #' @importFrom geojsonio geojson_json
 #' @importFrom jsonlite fromJSON
-#' @importFrom sf st_cast st_read st_combine st_as_sf
+#' @importFrom sf st_cast st_read st_combine st_as_sf st_is_valid
 #' @importFrom methods formalArgs
 #' @importFrom stats na.omit
 #' @export
