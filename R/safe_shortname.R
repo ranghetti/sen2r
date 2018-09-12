@@ -111,19 +111,19 @@ safe_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m",
   # elements mandatory to convert filename
   mandatory_metadata <- c("mission","level","sensing_datetime","id_orbit")
   
-  if (file.exists(prod_name)) {
-    s2_metadata <- safe_getMetadata(prod_name, info=needed_metadata)
-    if (is.na(set.seed)) {
-      set.seed <- TRUE
-    }
-  } else {
-    s2_allmetadata <- safe_getMetadata(prod_name, info="nameinfo")
-    s2_metadata <- s2_allmetadata[names(s2_allmetadata)[names(s2_allmetadata) %in% needed_metadata]]
-    if (is.na(set.seed)) {
-      set.seed <- FALSE
-    }
-  }
+  s2_metadata <- tryCatch({
+    safe_getMetadata(prod_name, info=needed_metadata)
+  }, error = function(e) {
+    safe_getMetadata(prod_name, info="nameinfo")[needed_metadata]
+  })
   
+  if (is.na(set.seed)) {
+    set.seed <- tryCatch({
+      safe_getMetadata(prod_name, info=needed_metadata)
+      TRUE
+    }, error = function(e) {FALSE})
+  }
+
   # check that necessary elements do not miss
   if (any(sapply(s2_metadata[mandatory_metadata],is.null))) {
     print_message(

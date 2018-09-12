@@ -30,6 +30,7 @@ reference:
       - '`safe_shortname`'
       - '`sen2r_getElements`'
       - '`s2_dop`'
+      - '`s2_tiles`'
   - title: Install and configure dependencies
     desc: ~
     contents:

@@ -292,7 +292,7 @@ sen2r <- function(param_list = NULL,
   
   # filter names of passed arguments
   sen2r_args <- formalArgs(sen2r:::.sen2r)
-  sen2r_args <- sen2r_args[!sen2r_args %in% c(".log_message",".log_output")]
+  sen2r_args <- sen2r_args[!sen2r_args %in% c(".log_message",".log_output",".only_list_names")]
   pm_arg_passed <- logical(0)
   for (i in seq_along(sen2r_args)) {
     pm_arg_passed[i] <- !do.call(missing, list(sen2r_args[i]))
@@ -350,7 +350,8 @@ sen2r <- function(param_list = NULL,
     use_python = use_python,
     tmpdir = tmpdir,
     rmtmp = rmtmp,
-    .log_message = log_message, .log_output = log_output
+    .log_message = log_message, .log_output = log_output,
+    .only_list_names = FALSE
   )
   
   # stop sinking
@@ -429,7 +430,8 @@ sen2r <- function(param_list = NULL,
                    tmpdir,
                    rmtmp,
                    .log_message = NA, 
-                   .log_output = NA) {
+                   .log_output = NA,
+                   .only_list_names = FALSE) {
   
   # to avoid NOTE on check
   . <- NULL
@@ -922,7 +924,7 @@ sen2r <- function(param_list = NULL,
     
     # list existing products and get metadata
     s2_existing_list <- list.files(unique(c(pm$path_l2a,pm$path_l1c)), "\\.SAFE$")
-    if (length(s2_existing_list)>0) {
+    if (length(s2_existing_list) > 0 & pm$online == TRUE) {
       s2_isvalid <- sapply(s2_existing_list, safe_isvalid, info="nameinfo")
       s2_existing_list <- s2_existing_list[s2_isvalid]
       s2_existing_dt <- lapply(s2_existing_list, function(x) {
@@ -963,13 +965,20 @@ sen2r <- function(param_list = NULL,
       s2_dt[!is.na(match(s2_meta_pasted, s2_existing_meta_pasted)), url:=""]
     }
     
+    # removing duplicated products
+    # (in case of products with different baseline / ingestion time, keep the most recent one)
+    s2_dt <- s2_dt[order(-sensing_datetime, -creation_datetime, -id_baseline),]
+    s2_dt <- s2_dt[!duplicated(paste(
+      prod_type, version, mission, level,
+      sensing_datetime, id_orbit, ifelse(version=="compact", id_tile, "oldname")
+    )),]
+    
     # continue editing metadata
     if (is.null(s2_dt$id_tile)) {
       s2_dt$id_tile <- as.character(NA)
     }
     
-    s2_dt <- s2_dt[mission %in% toupper(substr(pm$sel_sensor,2,3)),][
-      order(-sensing_datetime),]
+    s2_dt <- s2_dt[mission %in% toupper(substr(pm$sel_sensor,2,3)),]
     if (!anyNA(pm$timewindow)) {
       s2_dt <- s2_dt[as.Date(sensing_datetime) >= pm$timewindow[1] &
                        as.Date(sensing_datetime) <= pm$timewindow[2],]
@@ -979,6 +988,12 @@ sen2r <- function(param_list = NULL,
     # (products will be filtered later: #filter2)
     if (all(!is.na(pm$s2tiles_selected))) {
       s2_dt <- s2_dt[id_tile %in% c(pm$s2tiles_selected,NA),]
+    } else if (all(st_is_valid(pm$extent))) {
+      # if no tiles were specified, select only tiles which overlap the extent
+      # (this to prevent to use unuseful SAFE in offline mode)
+      s2tiles <- s2_tiles()
+      s2tiles_sel <- s2tiles[lengths(st_intersects(s2tiles, st_transform(pm$extent, st_crs(s2tiles)))) > 0,]
+      s2_dt <- s2_dt[id_tile %in% s2tiles_sel$tile_id,]
     }
     if (all(!is.na(pm$s2orbits_selected))) {
       s2_dt <- s2_dt[id_orbit %in% pm$s2orbits_selected,]
@@ -1096,6 +1111,8 @@ sen2r <- function(param_list = NULL,
       
     } # end of pm$preprocess==TRUE IF cycle (names of required files)
     
+    # if list_sen2r_paths(): stop here
+    if (.only_list_names == TRUE) {return(s2names)}
     
     ### SAFE processing: download and atmospheric correction ###
     
@@ -1130,115 +1147,115 @@ sen2r <- function(param_list = NULL,
     # (now it skips, but analysing each single file)
     
     if (pm$online == TRUE) {
-
-        print_message(
-          type = "message",
-          date = TRUE,
-          "Starting to download the required level-2A SAFE products."
+      
+      print_message(
+        type = "message",
+        date = TRUE,
+        "Starting to download the required level-2A SAFE products."
+      )
+      
+      # If all products are compactname, launch a single s2_download() instance
+      if (all(sapply(names(s2_list_l2a), function(x) {
+        safe_getMetadata(x, "nameinfo")$version
+      }) == "compact")) {
+        s2_download(
+          s2_list_l2a[!names(s2_list_l2a) %in% list.files(pm$path_l2a, "\\.SAFE$")],
+          outdir = pm$path_l2a,
+          downloader = pm$downloader,
+          apihub = pm$apihub
         )
-        
-        # If all products are compactname, launch a single s2_download() instance
-        if (all(sapply(names(s2_list_l2a), function(x) {
-          safe_getMetadata(x, "nameinfo")$version
-        }) == "compact")) {
+      } else { # otherwise, launch one per tile
+        lapply(pm$s2tiles_selected, function(tile) {
+          if (length(pm$s2tiles_selected) > 1) {
+            print_message(
+              type = "message",
+              date = TRUE,
+              "Cycle ",grep(tile, pm$s2tiles_selected),
+              " of ",length(pm$s2tiles_selected),
+              " (tile ",tile,
+              if (grep(tile, pm$s2tiles_selected)==1) {
+                " and products with a compact name)"
+              } else {
+                " within products with an old long name)"
+              }
+            )
+          }
           s2_download(
-            s2_list_l2a[!names(s2_list_l2a) %in% list.files(pm$path_l2a, "\\.SAFE$")],
+            s2_list_l2a, # ask to download all the images, 
+            # and not only the non existing ones,
+            # because of the cycle on tiles
+            # (with compactname products, all the zips are downloaded
+            # during the first execution, since argument "tile" is 
+            # ignored).
             outdir = pm$path_l2a,
             downloader = pm$downloader,
+            tile = tile,
             apihub = pm$apihub
           )
-        } else { # otherwise, launch one per tile
-          lapply(pm$s2tiles_selected, function(tile) {
-            if (length(pm$s2tiles_selected) > 1) {
-              print_message(
-                type = "message",
-                date = TRUE,
-                "Cycle ",grep(tile, pm$s2tiles_selected),
-                " of ",length(pm$s2tiles_selected),
-                " (tile ",tile,
-                if (grep(tile, pm$s2tiles_selected)==1) {
-                  " and products with a compact name)"
-                } else {
-                  " within products with an old long name)"
-                }
-              )
-            }
-            s2_download(
-              s2_list_l2a, # ask to download all the images, 
-              # and not only the non existing ones,
-              # because of the cycle on tiles
-              # (with compactname products, all the zips are downloaded
-              # during the first execution, since argument "tile" is 
-              # ignored).
-              outdir = pm$path_l2a,
-              downloader = pm$downloader,
-              tile = tile,
-              apihub = pm$apihub
-            )
-          })
-        }
+        })
+      }
       
       print_message(
         type = "message", 
         date = TRUE, 
         "Download of level-2A SAFE products terminated."
       )
-
-        print_message(
-          type = "message",
-          date = TRUE,
-          "Starting to download the required level-1C SAFE products."
+      
+      print_message(
+        type = "message",
+        date = TRUE,
+        "Starting to download the required level-1C SAFE products."
+      )
+      
+      # If all products are compactname, launch a single s2_download() instance
+      if (all(sapply(names(s2_list_l1c), function(x) {
+        safe_getMetadata(x, "nameinfo")$version
+      }) == "compact")) {
+        s2_download(
+          s2_list_l1c[!names(s2_list_l1c) %in% list.files(pm$path_l1c, "\\.SAFE$")],
+          outdir = pm$path_l1c,
+          downloader = pm$downloader
         )
-        
-        # If all products are compactname, launch a single s2_download() instance
-        if (all(sapply(names(s2_list_l1c), function(x) {
-          safe_getMetadata(x, "nameinfo")$version
-        }) == "compact")) {
-          s2_download(
-            s2_list_l1c[!names(s2_list_l1c) %in% list.files(pm$path_l1c, "\\.SAFE$")],
-            outdir = pm$path_l1c,
-            downloader = pm$downloader
-          )
-        } else { # otherwise, launch one per tile
-          lapply(pm$s2tiles_selected, function(tile) {
-            if (length(pm$s2tiles_selected) > 1) {
-              print_message(
-                type = "message",
-                date = TRUE,
-                "Cycle ",grep(tile, pm$s2tiles_selected),
-                " of ",length(pm$s2tiles_selected),
-                " (tile ",tile,
-                if (grep(tile, pm$s2tiles_selected)==1) {
-                  " and products with a compact name)"
-                } else {
-                  " within products with an old long name)"
-                }
-              )
-            }
-            s2_download(
-              s2_list_l1c, # ask to download all the images, 
-              # and not only the non existing ones,
-              # because of the cycle on tiles
-              # (with compactname products, all the zips are downloaded
-              # during the first execution, since argument "tile" is 
-              # ignored).
-              outdir = pm$path_l1c,
-              downloader = pm$downloader,
-              tile = tile
+      } else { # otherwise, launch one per tile
+        lapply(pm$s2tiles_selected, function(tile) {
+          if (length(pm$s2tiles_selected) > 1) {
+            print_message(
+              type = "message",
+              date = TRUE,
+              "Cycle ",grep(tile, pm$s2tiles_selected),
+              " of ",length(pm$s2tiles_selected),
+              " (tile ",tile,
+              if (grep(tile, pm$s2tiles_selected)==1) {
+                " and products with a compact name)"
+              } else {
+                " within products with an old long name)"
+              }
             )
-          })
-        }
-        # FIXME this operation can be very long with oldname products but tiled:
-        # Sentinel-download.py scans within single xml files and discharges
-        # products without the selected tile, but for some reasons this
-        # operation can be very time consuming. Find a way to avoid it.
-        
-        print_message(
-          type = "message", 
-          date = TRUE, 
-          "Download of level-1C SAFE products terminated."
-        )
-
+          }
+          s2_download(
+            s2_list_l1c, # ask to download all the images, 
+            # and not only the non existing ones,
+            # because of the cycle on tiles
+            # (with compactname products, all the zips are downloaded
+            # during the first execution, since argument "tile" is 
+            # ignored).
+            outdir = pm$path_l1c,
+            downloader = pm$downloader,
+            tile = tile
+          )
+        })
+      }
+      # FIXME this operation can be very long with oldname products but tiled:
+      # Sentinel-download.py scans within single xml files and discharges
+      # products without the selected tile, but for some reasons this
+      # operation can be very time consuming. Find a way to avoid it.
+      
+      print_message(
+        type = "message", 
+        date = TRUE, 
+        "Download of level-1C SAFE products terminated."
+      )
+      
     }
     
     # second filter on tiles (#filter2)
@@ -1355,7 +1372,7 @@ sen2r <- function(param_list = NULL,
     
   } # end of SAFE dummy FOR cycle
   
-  if (pm$preprocess == FALSE) {
+  if (pm$preprocess == FALSE | .only_list_names == TRUE) {
     return(invisible(NULL))
   }
   
