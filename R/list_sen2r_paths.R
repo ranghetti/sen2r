@@ -19,7 +19,6 @@
 #' @param extent_name `sen2r` argument (refer to [sen2r] documentation).
 #' @param s2tiles_selected `sen2r` argument (refer to [sen2r] documentation).
 #' @param s2orbits_selected `sen2r` argument (refer to [sen2r] documentation).
-#' @param list_prods `sen2r` argument (refer to [sen2r] documentation).
 #' @param list_indices `sen2r` argument (refer to [sen2r] documentation).
 #' @param index_source `sen2r` argument (refer to [sen2r] documentation).
 #' @param mask_type `sen2r` argument (refer to [sen2r] documentation).
