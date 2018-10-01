@@ -220,7 +220,7 @@
 #' @importFrom utils packageVersion
 #' @importFrom geojsonio geojson_json
 #' @importFrom jsonlite fromJSON
-#' @importFrom sf st_cast st_read st_combine st_as_sf
+#' @importFrom sf st_cast st_read st_combine st_as_sf st_is_valid
 #' @importFrom methods formalArgs
 #' @importFrom stats na.omit
 #' @export
@@ -967,7 +967,11 @@ sen2r <- function(param_list = NULL,
     
     # removing duplicated products
     # (in case of products with different baseline / ingestion time, keep the most recent one)
-    s2_dt <- s2_dt[order(-sensing_datetime, -creation_datetime, -id_baseline),]
+    s2_dt <- if (!is.null(s2_dt$id_baseline)) {
+      s2_dt[order(-sensing_datetime, -creation_datetime, -id_baseline),]
+    } else {
+      s2_dt[order(-sensing_datetime, -creation_datetime),]
+    }
     s2_dt <- s2_dt[!duplicated(paste(
       prod_type, version, mission, level,
       sensing_datetime, id_orbit, ifelse(version=="compact", id_tile, "oldname")
