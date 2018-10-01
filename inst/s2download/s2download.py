@@ -296,9 +296,12 @@ def s2_download(downloader="wget", lat=None, lon=None, latmin=None, lonmin=None,
                       orbit=orbit, apihub=apihub, proxy=None, max_cloud=max_cloud, write_dir=l2a_dir,
                       sentinel='S2',tile=tile, dhus=False, MaxRecords=max_records,list_only=True,downloaderPath=downloader_path)
 
-            l2a_scihub_names_tuples = [re.compile('^(.+)\_MSIL2A\_([0-9]{8}T[0-9]{6})\_N[0-9]{4}\_(R[0-9]{3})\_(T[0-9A-Z]{5})\_[0-9]{8}T[0-9]{6}\.SAFE$').match(f).group(2,3,4) for f in l2a_scihub_filenames]
-            l1c_scihub_names_tuples = [re.compile('^(.+)\_MSIL1C\_([0-9]{8}T[0-9]{6})\_N[0-9]{4}\_(R[0-9]{3})\_(T[0-9A-Z]{5})\_[0-9]{8}T[0-9]{6}\.SAFE$').match(f).group(2,3,4) for f in l1c_scihub_filenames]
-            l1c_scihub_names = l2a_scihub_names = []
+            l2a_scihub_names_match = [re.compile('^(.+)\_MSIL2A\_([0-9]{8}T[0-9]{6})\_N[0-9]{4}\_(R[0-9]{3})\_(T[0-9A-Z]{5})\_[0-9]{8}T[0-9]{6}\.SAFE$').match(f) for f in l2a_scihub_filenames]
+            l2a_scihub_names_tuples = [f.group(2,3,4) for f in l2a_scihub_names_match if f is not None]
+            l1c_scihub_names_match = [re.compile('^(.+)\_MSIL1C\_([0-9]{8}T[0-9]{6})\_N[0-9]{4}\_(R[0-9]{3})\_(T[0-9A-Z]{5})\_[0-9]{8}T[0-9]{6}\.SAFE$').match(f) for f in l1c_scihub_filenames]
+            l1c_scihub_names_tuples = [f.group(2,3,4) for f in l1c_scihub_names_match if f is not None]
+            l1c_scihub_names = []
+            l2a_scihub_names = []
             for f in l1c_scihub_names_tuples:
                 l1c_scihub_names.append('_'.join(f))
             for f in l2a_scihub_names_tuples:
