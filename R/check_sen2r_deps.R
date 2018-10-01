@@ -535,8 +535,8 @@ check_sen2r_deps <- function() {
       import_s2download(with_aria2 = TRUE)
 
       # update the check
-      rv$check_aria2_isvalid <- if (!is.null(load_binpaths()$aria2c)) {
-        file.exists(binpaths()$aria2c)
+      rv$check_aria2_isvalid <- if (!is.null(load_binpaths("aria2")$aria2c)) {
+        file.exists(load_binpaths()$aria2c)
       } else {
         FALSE
       }
