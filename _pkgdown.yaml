@@ -21,6 +21,7 @@ reference:
       - '`s2_merge`'
       - '`gdal_warp`'
       - '`s2_mask`'
+      - '`s2_rgb`'
       - '`s2_calcindices`'
       - '`s2_thumbnails`'
   - title: Manage file names and metadata

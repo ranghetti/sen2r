@@ -9,6 +9,14 @@
 #'  the three bands to be used respectively for red, green and blue.
 #' @param minval (optional) the value corresponding to black (default: 0).
 #' @param maxval (optional) the value corresponding to white (default: 10000).
+#' @param format (optional) Format of the output file (in a
+#'  format recognised by GDAL). Default is JPEG.
+#' @param compress (optional) In the case a GTiff format is
+#'  present, the compression indicated with this parameter is used.
+#'  In the case a JPEG format is present, the compression indicates the quality
+#'  (integer, 0-100).
+#'  In the case a GTiff format is presentand an integer 0-100 number is provided,
+#'  this is interpreted as the quality level of a JPEG compression.
 #' @param tmpdir (optional) Path where intermediate files will be created.
 #'  Default is a temporary directory.
 #' @return The path of the output image; alternatively, the output image
@@ -25,6 +33,8 @@ stack2rgb <- function(in_rast,
                       bands = 1:3, 
                       minval = 0, 
                       maxval = 1E4,
+                      format="JPEG",
+                      compress="90",
                       tmpdir = NA) {
   
   # Load GDAL paths
@@ -42,6 +52,17 @@ stack2rgb <- function(in_rast,
     TRUE
   } else {
     FALSE
+  }
+  
+  # Define format, compression and quality
+  co <- if (grepl("^[0-9]+$", compress)) {
+    if (format == "JPEG") {
+      paste0("-co \"QUALITY=",compress,"\" ")
+    } else {
+      paste0("-co \"COMPRESS=JPEG\" -co \"JPEG_QUALITY=",compress,"\" ")
+    }
+  } else {
+    paste0("-co \"COMPRESS=",compress,"\" ")
   }
   
   # Define formula
@@ -69,7 +90,9 @@ stack2rgb <- function(in_rast,
   system(
     paste0(
       binpaths$gdal_translate," ",
-      "-of \"JPEG\" -co \"QUALITY=90\" -ot \"Byte\" ",
+      "-of \"",format,"\" ",
+      co,
+      "-ot \"Byte\" ",
       "\"",tif_path,"\" \"",out_file,"\""
     ),
     intern = Sys.info()["sysname"] == "Windows"
@@ -340,7 +363,7 @@ s2_thumbnails <- function(infiles,
     out_path <- file.path(
       sel_outdir, 
       gsub(
-        "\\..+$",
+        "\\.[^\\.]+$",
         if (sel_prod_type %in% c("SCL")) {".png"} else {".jpg"}, # resp. discrete or continuous values
         basename(sel_infile_path)
       )
