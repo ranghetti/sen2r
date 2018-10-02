@@ -17,6 +17,7 @@
 #'  ([safe_shortname]).
 #' @param mask_type (optional) Character vector which determines the type of
 #'  mask to be applied. Accepted values are:
+#'  - "nomask": do not mask any pixel;
 #'  - "nodata": mask pixels checked as "No data" or "Saturated or defective" 
 #'      in the SCL product (all pixels with values are maintained);
 #'  - "cloud_high_proba": mask pixels checked as "No data", "Saturated or 
@@ -46,10 +47,12 @@
 #'  - "opaque_clouds" (still to be implemented).
 #' @param smooth (optional) Numerical (positive): should the mask be smoothed=the size (in the unit of
 #'  `inmask`, typically metres) to be used as radius for the smoothing
-#'  (the higher it is, the more smooth the output mask will result).
+#'  (the higher it is, the more smooth the output mask will result). 
+#'  Defaul is 20.
 #' @param buffer (optional) Numerical (positive or negative): the size of the 
 #'  buffer (in the unit of `inmask`, typically metres) to be applied to the 
 #'  masked area after smoothing it (positive to enlarge, negative to reduce).
+#'  Defaul is 10.
 #' @param max_mask (optional) Numeric value (range 0 to 100), which represents
 #'  the maximum percentage of allowed masked surface (by clouds or any other 
 #'  type of mask chosen with argument `mask_type`) for producing outputs. 
@@ -121,8 +124,8 @@
 s2_mask <- function(infiles,
                     maskfiles,
                     mask_type = "cloud_medium_proba",
-                    smooth = 250,
-                    buffer = 250,
+                    smooth = 20,
+                    buffer = 10,
                     max_mask = 80,
                     outdir = "./masked",
                     tmpdir = NA,
@@ -255,10 +258,10 @@ s2_mask <- function(infiles,
   # define required bands and formula to compute masks
   # accepted mask_type values: nodata, cloud_high_proba, cloud_medium_proba, cloud_low_proba, cloud_and_shadow, cloud_shadow_cirrus, opaque_clouds
   # structure of req_masks: list, names are prod_types, content are values of the files to set as 0, otherwise 1
-  if (mask_type == "nodata") {
+  if (mask_type == "nomask") {
+    req_masks <- list()
+  } else if (mask_type == "nodata") {
     req_masks <- list("SCL"=c(0:1))
-  } else if (mask_type == "cloud_high_proba") {
-    req_masks <- list("SCL"=c(0:1,9))
   } else if (mask_type == "cloud_medium_proba") {
     req_masks <- list("SCL"=c(0:1,8:9))
   } else if (mask_type == "cloud_low_proba") {
@@ -316,6 +319,18 @@ s2_mask <- function(infiles,
     # if output already exists and overwrite==FALSE, do not proceed
     if (!file.exists(sel_outfile) | overwrite==TRUE) {
       
+      # if no masking is required, "copy" input files
+      if (length(sel_maskfiles)==0) {
+        system(
+          paste0(
+            binpaths$gdal_translate," -of ",sel_format," ",
+            if (sel_format=="GTiff") {paste0("-co COMPRESS=",toupper(compress)," ")},
+            "\"",sel_infile,"\" ",
+            "\"",sel_outfile,"\""
+          ), intern = Sys.info()["sysname"] == "Windows"
+        )
+      } else {
+
       # load input rasters
       inmask <- raster::stack(sel_maskfiles)
       
@@ -562,6 +577,8 @@ s2_mask <- function(infiles,
       if (sel_rmtmp == TRUE) {
         unlink(sel_tmpdir, recursive=TRUE) # FIXME check not to delete files created outside sel_ cycle!
       }
+      
+      } # end of length(sel_maskfiles)==0 IF cycle
       
     } # end of overwrite IF cycle
     
