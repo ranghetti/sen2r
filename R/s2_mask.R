@@ -330,254 +330,254 @@ s2_mask <- function(infiles,
           ), intern = Sys.info()["sysname"] == "Windows"
         )
       } else {
-
-      # load input rasters
-      inmask <- raster::stack(sel_maskfiles)
-      
-      # path for bug #47
-      if (Sys.info()["sysname"] == "Windows" & gsub(".*\\.([^\\.]+)$","\\1",sel_infile)=="vrt") {
-        # on Windows, use input physical files
-        system(
-          paste0(
-            binpaths$gdal_translate," -of GTiff ",
-            paste0("-co COMPRESS=",toupper(compress)," "),
-            "\"",sel_infile,"\" ",
-            "\"",gsub("\\.vrt$",".tif",sel_infile),"\""
-          ), intern = TRUE
-        )
-        sel_infile <- gsub("\\.vrt$",".tif",sel_infile)
-      }
-      
-      # if tmpdir should vary for each file, define it
-      sel_tmpdir <- if (autotmpdir) {
-        file.path(out_subdir, ".vrt")
-      } else {
-        tmpdir
-      }
-      dir.create(sel_tmpdir, showWarnings=FALSE)
-      
-      # create global mask
-      mask_tmpfiles <- character(0) # files which compose the mask
-      naval_tmpfiles <- character(0) # files which determine the amount of NA
-      for (i in seq_along(inmask@layers)) {
-        mask_tmpfiles <- c(
-          mask_tmpfiles,
-          file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
-        )
-        raster::calc(inmask[[i]],
-                     function(x){as.integer(!is.na(x) & !x %in% req_masks[[i]])},
-                     filename = mask_tmpfiles[i],
-                     options  = "COMPRESS=LZW",
-                     datatype = "INT1U")
-        naval_tmpfiles <- c(
-          naval_tmpfiles,
-          file.path(sel_tmpdir, basename(tempfile(pattern = "naval_", fileext = ".tif")))
-        )
-        raster::calc(inmask[[i]],
-                     function(x){as.integer(!is.na(x))},
-                     filename = naval_tmpfiles[i],
-                     options  = "COMPRESS=LZW",
-                     datatype = "INT1U")
-      }
-      if(length(mask_tmpfiles)==1) {
-        outmask <- mask_tmpfiles
-        outnaval <- naval_tmpfiles
-      } else {
-        outmask <- file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
-        outnaval <- file.path(sel_tmpdir, basename(tempfile(pattern = "naval_", fileext = ".tif")))
-        raster::overlay(stack(mask_tmpfiles),
-                        fun = sum,
-                        filename = outmask,
-                        options  = "COMPRESS=LZW",
-                        datatype = "INT1U")
-        raster::overlay(stack(naval_tmpfiles),
-                        fun = sum,
-                        filename = outnaval,
-                        options  = "COMPRESS=LZW",
-                        datatype = "INT1U")
-      }
-      
-      # compute the percentage of masked surface
-      values_naval <- values(raster(outnaval))
-      mean_values_naval <- mean(values_naval, na.rm=TRUE)
-      mean_values_mask <- mean(values(raster(outmask)), na.rm=TRUE)
-      perc_mask <- 100 * (mean_values_naval - mean_values_mask) / mean_values_naval
-      if (!is.finite(perc_mask)) {perc_mask <- 100}
-      
-      # if the user required to save 0-1 masks, save them
-      if (save_binary_mask == TRUE) {
-        # define out MSK name
-        binmask <- file.path(
-          ifelse(subdirs, file.path(outdir,"MSK"), outdir),
-          gsub(paste0("\\.",infiles_meta[i,"file_ext"],"$"),
-               paste0(".",sel_out_ext),
-               gsub(paste0("\\_",infiles_meta[i,"prod_type"],"\\_"),
-                    "_MSK_",
-                    basename(sel_infile)))
-        )
-        # create subdir if missing
-        if (subdirs & !dir.exists(file.path(outdir,"MSK"))) {
-          dir.create(file.path(outdir,"MSK"))
-        }
-        # mask NA values
-        raster::mask(
-          raster(outmask),
-          raster(outnaval),
-          filename = binmask,
-          maskvalue = 0,
-          updatevalue = sel_naflag,
-          updateNA = TRUE,
-          NAflag = 255,
-          datatype = "INT1U",
-          format = sel_format,
-          options = if(sel_format == "GTiff") {paste0("COMPRESS=",compress)},
-          overwrite = overwrite
-        )
-      }
-      
-      # if the requested output is this value, return it; else, continue masking
-      if (output_type == "perc") {
-        names(perc_mask) <- sel_infile
-        outpercs <- c(outpercs, perc_mask)
-      } else if (output_type == "s2_mask") {
         
-        # evaluate if the output have to be produced
-        # if the image is sufficiently clean, mask it
-        if (is.na(max_mask) | perc_mask <= max_mask) {
-          
-          # if mask is at different resolution than inraster
-          # (e.g. 20m instead of 10m),
-          # resample it
-          if (any(suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")]) !=
-                  suppressWarnings(GDALinfo(outmask)[c("res.x","res.y")]))) {
-            gdal_warp( # DO NOT use raster::disaggregate (1. not faster, 2. it does not always provide the right resolution)
-              outmask,
-              outmask_res <- file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif"))),
-              ref = sel_infile
-            )
-#             outmask_res0 <- file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
-#             outmask_res <- file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
-#             disaggregate(
-#               raster(outmask),
-#               filename = outmask_res0,
-#               fact = round(
-#                 suppressWarnings(GDALinfo(outmask)[c("res.x","res.y")]) / 
-#                   suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")])
-#               ),
-#               method = "",
-#               options  = "COMPRESS=LZW",
-#               datatype = "INT1U"
-#             )
-#             if (any(suppressWarnings(GDALinfo(sel_infile)[c("rows","columns")]) !=
-#                     suppressWarnings(GDALinfo(outmask_res0)[c("rows","columns")]))) {
-#               crop(
-#                 raster(outmask_res0),
-#                 raster(sel_infile),
-#                 filename = outmask_res,
-#                 options  = "COMPRESS=LZW",
-#                 datatype = "INT1U"
-#               )
-#             } else {
-#               outmask_res <- outmask_res0
-#             }
-          } else {
-            outmask_res <- outmask
+        # load input rasters
+        inmask <- raster::stack(sel_maskfiles)
+        
+        # path for bug #47
+        if (Sys.info()["sysname"] == "Windows" & gsub(".*\\.([^\\.]+)$","\\1",sel_infile)=="vrt") {
+          # on Windows, use input physical files
+          system(
+            paste0(
+              binpaths$gdal_translate," -of GTiff ",
+              paste0("-co COMPRESS=",toupper(compress)," "),
+              "\"",sel_infile,"\" ",
+              "\"",gsub("\\.vrt$",".tif",sel_infile),"\""
+            ), intern = TRUE
+          )
+          sel_infile <- gsub("\\.vrt$",".tif",sel_infile)
+        }
+        
+        # if tmpdir should vary for each file, define it
+        sel_tmpdir <- if (autotmpdir) {
+          file.path(out_subdir, ".vrt")
+        } else {
+          tmpdir
+        }
+        dir.create(sel_tmpdir, showWarnings=FALSE)
+        
+        # create global mask
+        mask_tmpfiles <- character(0) # files which compose the mask
+        naval_tmpfiles <- character(0) # files which determine the amount of NA
+        for (i in seq_along(inmask@layers)) {
+          mask_tmpfiles <- c(
+            mask_tmpfiles,
+            file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
+          )
+          raster::calc(inmask[[i]],
+                       function(x){as.integer(!is.na(x) & !x %in% req_masks[[i]])},
+                       filename = mask_tmpfiles[i],
+                       options  = "COMPRESS=LZW",
+                       datatype = "INT1U")
+          naval_tmpfiles <- c(
+            naval_tmpfiles,
+            file.path(sel_tmpdir, basename(tempfile(pattern = "naval_", fileext = ".tif")))
+          )
+          raster::calc(inmask[[i]],
+                       function(x){as.integer(!is.na(x))},
+                       filename = naval_tmpfiles[i],
+                       options  = "COMPRESS=LZW",
+                       datatype = "INT1U")
+        }
+        if(length(mask_tmpfiles)==1) {
+          outmask <- mask_tmpfiles
+          outnaval <- naval_tmpfiles
+        } else {
+          outmask <- file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
+          outnaval <- file.path(sel_tmpdir, basename(tempfile(pattern = "naval_", fileext = ".tif")))
+          raster::overlay(stack(mask_tmpfiles),
+                          fun = sum,
+                          filename = outmask,
+                          options  = "COMPRESS=LZW",
+                          datatype = "INT1U")
+          raster::overlay(stack(naval_tmpfiles),
+                          fun = sum,
+                          filename = outnaval,
+                          options  = "COMPRESS=LZW",
+                          datatype = "INT1U")
+        }
+        
+        # compute the percentage of masked surface
+        values_naval <- values(raster(outnaval))
+        mean_values_naval <- mean(values_naval, na.rm=TRUE)
+        mean_values_mask <- mean(values(raster(outmask)), na.rm=TRUE)
+        perc_mask <- 100 * (mean_values_naval - mean_values_mask) / mean_values_naval
+        if (!is.finite(perc_mask)) {perc_mask <- 100}
+        
+        # if the user required to save 0-1 masks, save them
+        if (save_binary_mask == TRUE) {
+          # define out MSK name
+          binmask <- file.path(
+            ifelse(subdirs, file.path(outdir,"MSK"), outdir),
+            gsub(paste0("\\.",infiles_meta[i,"file_ext"],"$"),
+                 paste0(".",sel_out_ext),
+                 gsub(paste0("\\_",infiles_meta[i,"prod_type"],"\\_"),
+                      "_MSK_",
+                      basename(sel_infile)))
+          )
+          # create subdir if missing
+          if (subdirs & !dir.exists(file.path(outdir,"MSK"))) {
+            dir.create(file.path(outdir,"MSK"))
           }
-
-          # the same for outnaval
-          if (any(suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")]) !=
-                  suppressWarnings(GDALinfo(outnaval)[c("res.x","res.y")])) & 
-              (smooth > 0 | buffer != 0)) {
-            gdal_warp(
-              outnaval,
-              outnaval_res <- file.path(sel_tmpdir, basename(tempfile(pattern = "naval_", fileext = ".tif"))),
-              ref = sel_infile
-            )
-          } else {
-            outnaval_res <- outnaval
-          }
+          # mask NA values
+          raster::mask(
+            raster(outmask),
+            raster(outnaval),
+            filename = binmask,
+            maskvalue = 0,
+            updatevalue = sel_naflag,
+            updateNA = TRUE,
+            NAflag = 255,
+            datatype = "INT1U",
+            format = sel_format,
+            options = if(sel_format == "GTiff") {paste0("COMPRESS=",compress)},
+            overwrite = overwrite
+          )
+        }
+        
+        # if the requested output is this value, return it; else, continue masking
+        if (output_type == "perc") {
+          names(perc_mask) <- sel_infile
+          outpercs <- c(outpercs, perc_mask)
+        } else if (output_type == "s2_mask") {
           
-          # apply the smoothing (if required)
-          outmask_smooth <- if (smooth > 0 | buffer != 0) {
-            # if the unit is not metres, approximate it
-            if (projpar(attr(suppressWarnings(GDALinfo(sel_infile)),"projection"), "Unit") == "degree") {
-              buffer <- buffer * 8.15e-6
-              smooth <- smooth * 8.15e-6
+          # evaluate if the output have to be produced
+          # if the image is sufficiently clean, mask it
+          if (is.na(max_mask) | perc_mask <= max_mask) {
+            
+            # if mask is at different resolution than inraster
+            # (e.g. 20m instead of 10m),
+            # resample it
+            if (any(suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")]) !=
+                    suppressWarnings(GDALinfo(outmask)[c("res.x","res.y")]))) {
+              gdal_warp( # DO NOT use raster::disaggregate (1. not faster, 2. it does not always provide the right resolution)
+                outmask,
+                outmask_res <- file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif"))),
+                ref = sel_infile
+              )
+              #             outmask_res0 <- file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
+              #             outmask_res <- file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
+              #             disaggregate(
+              #               raster(outmask),
+              #               filename = outmask_res0,
+              #               fact = round(
+              #                 suppressWarnings(GDALinfo(outmask)[c("res.x","res.y")]) / 
+              #                   suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")])
+              #               ),
+              #               method = "",
+              #               options  = "COMPRESS=LZW",
+              #               datatype = "INT1U"
+              #             )
+              #             if (any(suppressWarnings(GDALinfo(sel_infile)[c("rows","columns")]) !=
+              #                     suppressWarnings(GDALinfo(outmask_res0)[c("rows","columns")]))) {
+              #               crop(
+              #                 raster(outmask_res0),
+              #                 raster(sel_infile),
+              #                 filename = outmask_res,
+              #                 options  = "COMPRESS=LZW",
+              #                 datatype = "INT1U"
+              #               )
+              #             } else {
+              #               outmask_res <- outmask_res0
+              #             }
+            } else {
+              outmask_res <- outmask
             }
-            # apply the smooth to the mask
-            smooth_mask(
-              outmask_res, 
-              radius = smooth, buffer = buffer, 
-              namask = if (any(values_naval==0)) {outnaval_res} else {NULL}, # TODO NULL if no Nodata values are present
-              binpaths = binpaths, tmpdir = sel_tmpdir
-            )
-          } else {
-            outmask_res
+            
+            # the same for outnaval
+            if (any(suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")]) !=
+                    suppressWarnings(GDALinfo(outnaval)[c("res.x","res.y")])) & 
+                (smooth > 0 | buffer != 0)) {
+              gdal_warp(
+                outnaval,
+                outnaval_res <- file.path(sel_tmpdir, basename(tempfile(pattern = "naval_", fileext = ".tif"))),
+                ref = sel_infile
+              )
+            } else {
+              outnaval_res <- outnaval
+            }
+            
+            # apply the smoothing (if required)
+            outmask_smooth <- if (smooth > 0 | buffer != 0) {
+              # if the unit is not metres, approximate it
+              if (projpar(attr(suppressWarnings(GDALinfo(sel_infile)),"projection"), "Unit") == "degree") {
+                buffer <- buffer * 8.15e-6
+                smooth <- smooth * 8.15e-6
+              }
+              # apply the smooth to the mask
+              smooth_mask(
+                outmask_res, 
+                radius = smooth, buffer = buffer, 
+                namask = if (any(values_naval==0)) {outnaval_res} else {NULL}, # TODO NULL if no Nodata values are present
+                binpaths = binpaths, tmpdir = sel_tmpdir
+              )
+            } else {
+              outmask_res
+            }
+            
+            # load mask
+            inraster <- raster::brick(sel_infile)
+            
+            if (sel_format!="VRT") {
+              raster::mask(
+                inraster,
+                raster(outmask_smooth),
+                filename = sel_outfile,
+                maskvalue = 0,
+                updatevalue = sel_naflag,
+                updateNA = TRUE,
+                NAflag = sel_naflag,
+                datatype = dataType(inraster),
+                format = sel_format,
+                options = if(sel_format == "GTiff") {paste0("COMPRESS=",compress)},
+                overwrite = overwrite
+              )
+            } else {
+              print_message(
+                type = "message",
+                date = TRUE,
+                "Starting parallel application of masks on file ",basename(sel_infile),"..."
+              )
+              maskapply_parallel(
+                inraster, 
+                raster(outmask_smooth), 
+                outpath = sel_outfile,
+                tmpdir = sel_tmpdir,
+                binpaths = binpaths,
+                NAflag = sel_naflag,
+                parallel = parallel,
+                datatype = dataType(inraster),
+                overwrite = overwrite,
+                .log_message=.log_message, 
+                .log_output=.log_output
+              )
+              print_message(
+                type = "message",
+                date = TRUE,
+                "Parallel application of masks on file ",basename(sel_infile)," done."
+              )
+            }
+            
+            
+            # fix for envi extension (writeRaster use .envi)
+            if (sel_format=="ENVI" &
+                file.exists(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile))) {
+              file.rename(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),
+                          sel_outfile)
+              file.rename(paste0(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),".aux.xml"),
+                          paste0(sel_outfile,".aux.xml"))
+            }
+            
+          } else { # end of max_mask IF cycle
+            outfiles_toomasked <- c(outfiles_toomasked, sel_outfile)
           }
           
-          # load mask
-          inraster <- raster::brick(sel_infile)
-          
-          if (sel_format!="VRT") {
-            raster::mask(
-              inraster,
-              raster(outmask_smooth),
-              filename = sel_outfile,
-              maskvalue = 0,
-              updatevalue = sel_naflag,
-              updateNA = TRUE,
-              NAflag = sel_naflag,
-              datatype = dataType(inraster),
-              format = sel_format,
-              options = if(sel_format == "GTiff") {paste0("COMPRESS=",compress)},
-              overwrite = overwrite
-            )
-          } else {
-            print_message(
-              type = "message",
-              date = TRUE,
-              "Starting parallel application of masks on file ",basename(sel_infile),"..."
-            )
-            maskapply_parallel(
-              inraster, 
-              raster(outmask_smooth), 
-              outpath = sel_outfile,
-              tmpdir = sel_tmpdir,
-              binpaths = binpaths,
-              NAflag = sel_naflag,
-              parallel = parallel,
-              datatype = dataType(inraster),
-              overwrite = overwrite,
-              .log_message=.log_message, 
-              .log_output=.log_output
-            )
-            print_message(
-              type = "message",
-              date = TRUE,
-              "Parallel application of masks on file ",basename(sel_infile)," done."
-            )
-          }
-          
-          
-          # fix for envi extension (writeRaster use .envi)
-          if (sel_format=="ENVI" &
-              file.exists(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile))) {
-            file.rename(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),
-                        sel_outfile)
-            file.rename(paste0(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),".aux.xml"),
-                        paste0(sel_outfile,".aux.xml"))
-          }
-          
-        } else { # end of max_mask IF cycle
-          outfiles_toomasked <- c(outfiles_toomasked, sel_outfile)
+        } # end of output_type IF cycle
+        
+        if (sel_rmtmp == TRUE) {
+          unlink(sel_tmpdir, recursive=TRUE) # FIXME check not to delete files created outside sel_ cycle!
         }
         
-      } # end of output_type IF cycle
-      
-      if (sel_rmtmp == TRUE) {
-        unlink(sel_tmpdir, recursive=TRUE) # FIXME check not to delete files created outside sel_ cycle!
-      }
-      
       } # end of length(sel_maskfiles)==0 IF cycle
       
     } # end of overwrite IF cycle
