@@ -191,79 +191,80 @@ s2_rgb <- function(infiles,
     
     
     # exclude non BOA-TOA products
-    if (!sel_prod_type %in% c("BOA","TOA")) {
+    out_names <- if (!sel_prod_type %in% c("BOA","TOA")) {
       print_message(
         type = "warning",
         "Product ",basename(sel_infile_path)," was not considered, ",
         "since this function is only for reflectance files."
       )
-      break
-    }
-    
-    
-    # Cycle on each rgb_bands combination
-    out_names <- foreach(sel_rgb_bands = rgb_bands, .combine = c) %do% {
-      sel_rgb_prodname <- paste0("RGB", paste(as.hexmode(sel_rgb_bands), collapse=""), substr(sel_prod_type,1,1))
+      character(0)
+    } else {
       
-      # Set output path
-      out_subdir <- ifelse(subdirs, file.path(sel_outdir,sel_rgb_prodname), outdir)
-      dir.create(out_subdir, recursive = FALSE, showWarnings = FALSE)
-      out_path <- file.path(
-        out_subdir, 
-        gsub(
-          paste0("\\_",sel_prod_type,"\\_"),
-          paste0("\\_",sel_rgb_prodname,"\\_"),
-          gsub("\\.[^\\.]+$", paste0(".",sel_out_ext), basename(sel_infile_path))
-        )
-      )
-      
-      # if output already exists and overwrite==FALSE, do not proceed
-      if (!file.exists(out_path) | overwrite==TRUE) {
+      # Cycle on each rgb_bands combination
+      foreach(sel_rgb_bands = rgb_bands, .combine = c) %do% {
+        sel_rgb_prodname <- paste0("RGB", paste(as.hexmode(sel_rgb_bands), collapse=""), substr(sel_prod_type,1,1))
         
-        # From Sentinel-2 band number to actual band numbert in the BOA
-        if (sel_prod_type=="BOA") {
-          sel_nbands <- ifelse(sel_rgb_bands>10, sel_rgb_bands-1, sel_rgb_bands)
-        }
-        
-        # Consider only the required bands
-        filterbands_path <- file.path(tmpdir, gsub("\\..+$","_filterbands.tif",basename(sel_infile_path)))
-        system(
-          paste0(
-            binpaths$gdal_translate," -of GTiff -co COMPRESS=LZW ",
-            "-b ",paste(sel_nbands, collapse=" -b ")," ",
-            "\"",sel_infile_path,"\" ",
-            "\"",filterbands_path,"\""
-          ), intern = Sys.info()["sysname"] == "Windows"
+        # Set output path
+        out_subdir <- ifelse(subdirs, file.path(sel_outdir,sel_rgb_prodname), outdir)
+        dir.create(out_subdir, recursive = FALSE, showWarnings = FALSE)
+        out_path <- file.path(
+          out_subdir, 
+          gsub(
+            paste0("\\_",sel_prod_type,"\\_"),
+            paste0("\\_",sel_rgb_prodname,"\\_"),
+            gsub("\\.[^\\.]+$", paste0(".",sel_out_ext), basename(sel_infile_path))
+          )
         )
         
-        # define scaleRange
-        sel_scaleRange <- if (anyNA(scaleRange)) {
-          c(0, switch(
-            sel_rgb_prodname, 
-            "RGB432T" = 2500, 
-            "RGB432B" = 2500, 
-            7500
-          ))
-        } else {
-          scaleRange
-        }
+        # if output already exists and overwrite==FALSE, do not proceed
+        if (!file.exists(out_path) | overwrite==TRUE) {
+          
+          # From Sentinel-2 band number to actual band numbert in the BOA
+          if (sel_prod_type=="BOA") {
+            sel_nbands <- ifelse(sel_rgb_bands>10, sel_rgb_bands-1, sel_rgb_bands)
+          }
+          
+          # Consider only the required bands
+          filterbands_path <- file.path(tmpdir, gsub("\\..+$","_filterbands.tif",basename(sel_infile_path)))
+          system(
+            paste0(
+              binpaths$gdal_translate," -of GTiff -co COMPRESS=LZW ",
+              "-b ",paste(sel_nbands, collapse=" -b ")," ",
+              "\"",sel_infile_path,"\" ",
+              "\"",filterbands_path,"\""
+            ), intern = Sys.info()["sysname"] == "Windows"
+          )
+          
+          # define scaleRange
+          sel_scaleRange <- if (anyNA(scaleRange)) {
+            c(0, switch(
+              sel_rgb_prodname, 
+              "RGB432T" = 2500, 
+              "RGB432B" = 2500, 
+              7500
+            ))
+          } else {
+            scaleRange
+          }
+          
+          # generate RGB basing on prod_type
+          stack2rgb(
+            filterbands_path, 
+            out_file = out_path,
+            minval = sel_scaleRange[1], 
+            maxval = sel_scaleRange[2],
+            format=sel_format,
+            compress="90",
+            tmpdir = tmpdir
+          )
+          
+        } # end of overwrite IF cycle
         
-        # generate RGB basing on prod_type
-        stack2rgb(
-          filterbands_path, 
-          out_file = out_path,
-          minval = sel_scaleRange[1], 
-          maxval = sel_scaleRange[2],
-          format=sel_format,
-          compress="90",
-          tmpdir = tmpdir
-        )
+        out_path
         
-      } # end of overwrite IF cycle
+      } # end of rgb_bands FOREACH cycle
       
-      out_path
-      
-    } # end of rgb_bands FOR cycle
+    } # end of !sel_prod_type %in% c("BOA","TOA") IF cycle
     
     # stop sinking
     if (n_cores > 1) {
@@ -277,7 +278,7 @@ s2_rgb <- function(infiles,
     
     out_names
     
-  } # end of infiles cycle
+  } # end of infiles FOREACH cycle
   if (n_cores > 1) {
     stopCluster(cl)
     print_message(
