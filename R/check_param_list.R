@@ -120,7 +120,7 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   
   # check output paths
   # (if no products are selected, set to NA)
-  if (!is.na(pm$path_out) & sum(!is.na(pm$list_prods))==0) {
+  if (!is.na(pm$path_out) & sum(!is.na(nn(pm$list_prods)))==0) {
     pm$path_out <- NA
   }
   if (!is.na(pm$path_indices) & sum(!is.na(pm$list_indices))==0) {
@@ -137,7 +137,11 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   
   # check consistency among mask_type and selected products
   # (if masking is selected but no prods or indices are selected, set to NA)
-  if (!is.na(pm$mask_type) & all(is.na(pm$list_indices)) & all(is.na(pm$list_prods[pm$list_prods!="SCL"]))) {
+  if (
+    !is.na(pm$mask_type) & 
+    all(is.na(nn(pm$list_indices))) & 
+    all(is.na(nn(pm$list_prods[pm$list_prods!="SCL"])))
+  ) {
     pm$mask_type <- NA
   } 
   

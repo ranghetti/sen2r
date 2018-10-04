@@ -231,7 +231,7 @@ compute_s2_paths <- function(pm,
   }
   names_merged_tomask_idx_boa <- if (
     !"BOA" %in% pm$list_prods & 
-    (is.na(pm$list_indices) | pm$index_source != "BOA")
+    (anyNA(pm$list_indices) | pm$index_source != "BOA")
   ) {
     sen2r_getElements(merged_names_exp,format="data.frame")$prod_type!="BOA"
   } else {
@@ -239,7 +239,7 @@ compute_s2_paths <- function(pm,
   }
   names_merged_tomask_idx_toa <- if (
     !"TOA" %in% pm$list_prods & 
-    (is.na(pm$list_indices) | pm$index_source != "TOA")
+    (anyNA(pm$list_indices) | pm$index_source != "TOA")
   ) {
     sen2r_getElements(merged_names_exp,format="data.frame")$prod_type!="TOA"
   } else {
