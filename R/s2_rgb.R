@@ -202,7 +202,7 @@ s2_rgb <- function(infiles,
     
     
     # Cycle on each rgb_bands combination
-    outnames <- foreach(sel_rgb_bands = rgb_bands, .combine = c) %do% {
+    out_names <- foreach(sel_rgb_bands = rgb_bands, .combine = c) %do% {
       sel_rgb_prodname <- paste0("RGB", paste(as.hexmode(sel_rgb_bands), collapse=""), substr(sel_prod_type,1,1))
       
       # Set output path
