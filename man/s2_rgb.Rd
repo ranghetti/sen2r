@@ -6,7 +6,8 @@
 \usage{
 s2_rgb(infiles, prod_type = NA, rgb_bands = 4:2, scaleRange = NA,
   outdir = NA, subdirs = NA, format = NA, compress = "DEFLATE",
-  tmpdir = NA, rmtmp = TRUE, overwrite = FALSE)
+  tmpdir = NA, rmtmp = TRUE, parallel = TRUE, overwrite = FALSE,
+  .log_message = NA, .log_output = NA)
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths
@@ -55,8 +56,20 @@ Default is a temporary directory.}
 \item{rmtmp}{(optional) Logical: should temporary files be removed?
 (Default: TRUE)}
 
+\item{parallel}{(optional) Logical: if TRUE, the function is run using parallel
+processing, to speed-up the computation for large rasters.
+The number of cores is automatically determined; specifying it is also
+possible (e.g. \code{parallel = 4}).
+If FALSE (default), single core processing is used.}
+
 \item{overwrite}{(optional) Logical value: should existing thumbnails be
 overwritten? (default: TRUE)}
+
+\item{.log_message}{(optional) Internal parameter
+(it is used when the function is called by \code{sen2r()}).}
+
+\item{.log_output}{(optional) Internal parameter
+(it is used when the function is called by \code{sen2r()}).}
 }
 \value{
 A vector with the names of the created images.

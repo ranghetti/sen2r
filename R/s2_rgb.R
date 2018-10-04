@@ -37,13 +37,26 @@
 #'  Default is a temporary directory.
 #' @param rmtmp (optional) Logical: should temporary files be removed?
 #'  (Default: TRUE)
+#' @param parallel (optional) Logical: if TRUE, the function is run using parallel
+#'  processing, to speed-up the computation for large rasters.
+#'  The number of cores is automatically determined; specifying it is also 
+#'  possible (e.g. `parallel = 4`).
+#'  If FALSE (default), single core processing is used.
 #' @param overwrite (optional) Logical value: should existing thumbnails be
 #'  overwritten? (default: TRUE)
+#' @param .log_message (optional) Internal parameter
+#'  (it is used when the function is called by `sen2r()`).
+#' @param .log_output (optional) Internal parameter
+#'  (it is used when the function is called by `sen2r()`).
 #' @return A vector with the names of the created images.
 #'
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @import data.table
+#' @importFrom foreach foreach "%do%" "%dopar%"
+#' @importFrom doParallel registerDoParallel
+#' @importFrom parallel makeCluster stopCluster detectCores
+#' @importFrom rgdal GDALinfo
 #' @importFrom jsonlite fromJSON
 #' @export
 
@@ -57,11 +70,14 @@ s2_rgb <- function(infiles,
                    compress="DEFLATE",
                    tmpdir=NA,
                    rmtmp=TRUE,
-                   overwrite=FALSE) {
+                   parallel=TRUE,
+                   overwrite=FALSE,
+                   .log_message=NA,
+                   .log_output=NA) {
   
   # Check that GDAL suports JPEG JFIF format
   # TODO
-
+  
   # Set tmpdir
   if (is.na(tmpdir)) {
     tmpdir <- tempfile(pattern="s2rgb_")
@@ -71,6 +87,22 @@ s2_rgb <- function(infiles,
   # Load GDAL paths
   binpaths <- load_binpaths("gdal")
   
+  # Compute n_cores
+  n_cores <- if (is.numeric(parallel)) {
+    as.integer(parallel)
+  } else if (parallel==FALSE) {
+    1
+  } else {
+    min(parallel::detectCores()-1, length(infiles), 11) # use at most 11 cores
+  }
+  if (n_cores<=1) {
+    `%DO%` <- `%do%`
+    parallel <- FALSE
+    n_cores <- 1
+  } else {
+    `%DO%` <- `%dopar%`
+  }
+  
   # Get files metadata
   if (is.na(prod_type)) {
     infiles_meta <- data.table(sen2r_getElements(infiles, format="data.frame"))
@@ -79,8 +111,8 @@ s2_rgb <- function(infiles,
   # check output format
   gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))
   if (!is.na(format)) {
-    sel_driver <- gdal_formats[gdal_formats$name==format,]
-    if (nrow(sel_driver)==0) {
+    driver <- gdal_formats[gdal_formats$name==format,]
+    if (nrow(driver)==0) {
       print_message(
         type="error",
         "Format \"",format,"\" is not recognised; ",
@@ -94,18 +126,47 @@ s2_rgb <- function(infiles,
   
   # create subdirs (if requested)
   if (!is.list(rgb_bands)) {rgb_bands <- list(rgb_bands)}
-  rgb_prodnames <- sapply(rgb_bands, function(x) {
-    paste0("RGB", paste(as.hexmode(x), collapse=""))
-  })
+  # rgb_prodnames <- sapply(rgb_bands, function(x) {
+  #   paste0("RGB", paste(as.hexmode(x), collapse=""))
+  # })
   if (is.na(subdirs)) {
     subdirs <- ifelse(length(rgb_bands)>1, TRUE, FALSE)
   }
-  if (subdirs) {
-    sapply(file.path(outdir,rgb_prodnames), dir.create, showWarnings=FALSE)
+  # if (subdirs) {
+  #   sapply(file.path(outdir,rgb_prodnames), dir.create, showWarnings=FALSE)
+  # }
+  
+  if (n_cores > 1) {
+    cl <- makeCluster(
+      n_cores, 
+      type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
+    )
+    registerDoParallel(cl)
+    print_message(
+      type = "message",
+      date = TRUE,
+      "Starting parallel production of RGB images..."
+    )
   }
   
-  out_names <- character(0) # names of created files
-  for (i in seq_along(infiles)) {
+  out_names <- foreach(
+    i = seq_along(infiles), 
+    .packages = c("foreach","rgdal","sen2r"), 
+    .combine=c, 
+    .errorhandling="remove"
+  ) %DO% {
+    
+    # redirect to log files
+    if (n_cores > 1) {
+      if (!is.na(.log_output)) {
+        sink(.log_output, split = TRUE, type = "output", append = TRUE)
+      }
+      if (!is.na(.log_message)) {
+        logfile_message = file(.log_message, open = "a")
+        sink(logfile_message, type="message")
+      }
+    }
+    
     sel_infile_path <- infiles[i]
     
     # set outdir
@@ -121,9 +182,13 @@ s2_rgb <- function(infiles,
     } else {
       prod_type
     }
-    sel_format <- suppressWarnings(ifelse(
-      !is.na(format), format, attr(GDALinfo(sel_infile_path), "driver")
-    ))
+    sel_format <- if (!is.na(format)) {
+      format
+    } else {
+      suppressWarnings(attr(GDALinfo(sel_infile_path), "driver"))
+    }
+    sel_out_ext <- gdal_formats[gdal_formats$name==sel_format,][1,"ext"]
+    
     
     # exclude non BOA-TOA products
     if (!sel_prod_type %in% c("BOA","TOA")) {
@@ -137,8 +202,8 @@ s2_rgb <- function(infiles,
     
     
     # Cycle on each rgb_bands combination
-    for (sel_rgb_bands in rgb_bands) {
-      sel_rgb_prodname <- paste0("RGB", paste(as.hexmode(sel_rgb_bands), collapse=""))
+    outnames <- foreach(sel_rgb_bands = rgb_bands, .combine = c) %do% {
+      sel_rgb_prodname <- paste0("RGB", paste(as.hexmode(sel_rgb_bands), collapse=""), substr(sel_prod_type,1,1))
       
       # Set output path
       out_subdir <- ifelse(subdirs, file.path(sel_outdir,sel_rgb_prodname), outdir)
@@ -148,39 +213,47 @@ s2_rgb <- function(infiles,
         gsub(
           paste0("\\_",sel_prod_type,"\\_"),
           paste0("\\_",sel_rgb_prodname,"\\_"),
-          basename(sel_infile_path)
+          gsub("\\.[^\\.]+$", paste0(".",sel_out_ext), basename(sel_infile_path))
         )
       )
       
       # if output already exists and overwrite==FALSE, do not proceed
       if (!file.exists(out_path) | overwrite==TRUE) {
         
+        # From Sentinel-2 band number to actual band numbert in the BOA
+        if (sel_prod_type=="BOA") {
+          sel_nbands <- ifelse(sel_rgb_bands>10, sel_rgb_bands-1, sel_rgb_bands)
+        }
+        
         # Consider only the required bands
         filterbands_path <- file.path(tmpdir, gsub("\\..+$","_filterbands.tif",basename(sel_infile_path)))
         system(
           paste0(
             binpaths$gdal_translate," -of GTiff -co COMPRESS=LZW ",
-            "-b ",paste(sel_rgb_bands, collapse=" -b ")," ",
+            "-b ",paste(sel_nbands, collapse=" -b ")," ",
             "\"",sel_infile_path,"\" ",
             "\"",filterbands_path,"\""
           ), intern = Sys.info()["sysname"] == "Windows"
         )
         
         # define scaleRange
-        if (anyNA(scaleRange)) {
-          scaleRange <- c(0, switch(
+        sel_scaleRange <- if (anyNA(scaleRange)) {
+          c(0, switch(
             sel_rgb_prodname, 
-            "RGB432" = 2500, 
+            "RGB432T" = 2500, 
+            "RGB432B" = 2500, 
             7500
           ))
+        } else {
+          scaleRange
         }
         
         # generate RGB basing on prod_type
         stack2rgb(
           filterbands_path, 
           out_file = out_path,
-          minval = scaleRange[1], 
-          maxval = scaleRange[2],
+          minval = sel_scaleRange[1], 
+          maxval = sel_scaleRange[2],
           format=sel_format,
           compress="90",
           tmpdir = tmpdir
@@ -188,11 +261,31 @@ s2_rgb <- function(infiles,
         
       } # end of overwrite IF cycle
       
-      out_names <- c(out_names, out_path)
+      out_path
       
     } # end of rgb_bands FOR cycle
-
+    
+    # stop sinking
+    if (n_cores > 1) {
+      if (!is.na(.log_output)) {
+        sink(type = "output")
+      }
+      if (!is.na(.log_message)) {
+        sink(type = "message"); close(logfile_message)
+      }
+    }
+    
+    out_names
+    
   } # end of infiles cycle
+  if (n_cores > 1) {
+    stopCluster(cl)
+    print_message(
+      type = "message",
+      date = TRUE,
+      "Parallel production of RGB images done."
+    )
+  }
   
   # Remove temporary files
   if (rmtmp == TRUE) {
@@ -201,7 +294,7 @@ s2_rgb <- function(infiles,
   
   print_message(
     type="message",
-    length(out_names)," output files were correctly created."
+    length(out_names)," output RGB files were correctly created."
   )
   return(out_names)
   

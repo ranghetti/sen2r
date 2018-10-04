@@ -471,7 +471,7 @@ s2_thumbnails <- function(infiles,
           tmpdir = tmpdir
         )
         
-      } else if (sel_prod_type %in% c("TCI")) {
+      } else if (grepl("^((TCI)|(RGB[0-9a-f]{3}[BT]))$" ,sel_prod_type)) {
         
         system(
           paste0(

@@ -50,6 +50,7 @@
 #' @param tiles_ext Extension (character) of tiled products.
 #' @param merged_ext Extension (character) of merged products.
 #' @param warped_ext Extension (character) of warped products.
+#' @param rgb_ext Extension (character) of RGB products.
 #' @param sr_masked_ext Extension (character) of masked products of SR products.
 #' @param force_tiles (optional) Logical: passed to [safe_shortname] (default: FALSE).
 #' @param check_tmp (optional) Logical: if TRUE (default), temporary files
@@ -72,6 +73,7 @@ compute_s2_paths <- function(pm,
                              tiles_ext, 
                              merged_ext, 
                              warped_ext, 
+                             rgb_ext, 
                              sr_masked_ext,
                              force_tiles = FALSE,
                              check_tmp = TRUE,
@@ -81,6 +83,8 @@ compute_s2_paths <- function(pm,
   l1c_prods <- c("TOA")
   l2a_prods <- c("BOA","SCL","TCI")
   
+  l1c_prods_regex <- paste0("^((",paste(l1c_prods,collapse=")|("),"))$")
+  l2a_prods_regex <- paste0("^((",paste(l2a_prods,collapse=")|("),"))$")
   # TODO load parameter file if pm is a path
   
   # load output formats
@@ -90,7 +94,7 @@ compute_s2_paths <- function(pm,
   
   # expected names for tiles
   tiles_l1c_names_exp <- lapply(file.path(pm$path_l1c,names(s2_list_l1c)), function(x){
-    lapply(list_prods[list_prods %in% l1c_prods], function(p){
+    lapply(list_prods[grepl(l1c_prods_regex, list_prods)], function(p){
       file.path(
         paths["tiles"],
         if(pm$path_subdirs==TRUE){p}else{""},
@@ -100,7 +104,7 @@ compute_s2_paths <- function(pm,
   }) %>% unlist()
   tiles_l1c_names_exp <- tiles_l1c_names_exp[!duplicated(tiles_l1c_names_exp)]
   tiles_l2a_names_exp <- lapply(file.path(pm$path_l2a,names(s2_list_l2a)), function(x){
-    lapply(list_prods[list_prods %in% l2a_prods], function(p){
+    lapply(list_prods[grepl(l2a_prods_regex, list_prods)], function(p){
       sel_av_tiles <- tryCatch(
         safe_getMetadata(x,"tiles"),
         error = function(e){safe_getMetadata(x,"nameinfo")$id_tile}
@@ -220,11 +224,29 @@ compute_s2_paths <- function(pm,
   # index which is TRUE for SCL products, FALSE for others
   names_merged_exp_scl_idx <- sen2r_getElements(merged_names_exp,format="data.frame")$prod_type=="SCL"
   # index which is TRUE for products to be atm. masked, FALSE for others
-  names_merged_tomask_idx <- if ("SCL" %in% pm$list_prods) {
-    names_merged_exp_scl_idx>-1
-  } else {
+  names_merged_tomask_idx_scl <- if (!"SCL" %in% pm$list_prods) {
     !names_merged_exp_scl_idx
+  } else {
+    rep(TRUE, length(merged_names_exp))
   }
+  names_merged_tomask_idx_boa <- if (
+    !"BOA" %in% pm$list_prods & 
+    (is.na(pm$list_indices) | pm$index_source != "BOA")
+  ) {
+    sen2r_getElements(merged_names_exp,format="data.frame")$prod_type!="BOA"
+  } else {
+    rep(TRUE, length(merged_names_exp))
+  }
+  names_merged_tomask_idx_toa <- if (
+    !"TOA" %in% pm$list_prods & 
+    (is.na(pm$list_indices) | pm$index_source != "TOA")
+  ) {
+    sen2r_getElements(merged_names_exp,format="data.frame")$prod_type!="TOA"
+  } else {
+    rep(TRUE, length(merged_names_exp))
+  }
+  names_merged_tomask_idx <- names_merged_tomask_idx_scl & 
+    names_merged_tomask_idx_boa & names_merged_tomask_idx_toa
   
   # expected names for warped products
   if (pm$clip_on_extent==FALSE | length(merged_names_exp)==0) {
@@ -298,6 +320,76 @@ compute_s2_paths <- function(pm,
   }
   warped_names_exp <- unique(c(warped_names_exp,warped_names_exi))
   
+  
+  # expected names for indices
+  if ((pm$clip_on_extent==TRUE & length(warped_names_exp)==0) | 
+      (pm$clip_on_extent==FALSE & length(merged_names_exp)==0) | 
+      anyNA(pm$list_rgb)) {
+    rgb_names_exp <- NULL
+  } else {
+    rgb_names_exp <- data.table(
+      sen2r_getElements(if (pm$clip_on_extent==TRUE) {warped_names_exp} else {merged_names_exp}, format="data.frame")
+    )[,paste0("S2",
+              mission,
+              level,"_",
+              strftime(sensing_date,"%Y%m%d"),"_",
+              id_orbit,"_",
+              if (pm$clip_on_extent==TRUE) {pm$extent_name},"_",
+              "<rgbname>_",
+              substr(res,1,2),".",
+              rgb_ext)] %>%
+      unique() %>%
+      expand.grid(pm$list_rgb) %>%
+      apply(1,function(x){
+        file.path(
+          if(pm$path_subdirs==TRUE){x[2]}else{""},
+          gsub("<rgbname>",x[2],x[1])
+        )
+      }) %>%
+      file.path(paths["rgb"],.)
+  }
+  # add existing files for indices
+  rgb_names_exi <-  if (!is.na(pm$path_rgb) | check_tmp == TRUE) {
+    all_names <- if (pm$path_subdirs==TRUE) {
+      list.files(file.path(paths["rgb"],pm$list_rgb), full.names=TRUE)
+    } else {
+      list.files(paths["rgb"], full.names=TRUE)
+    }
+    if (length(all_names)>0) {
+      all_meta <- data.table(suppressWarnings(sen2r_getElements(all_names, abort=FALSE, format="data.frame")))
+      all_meta$names <- all_names
+      # filter
+      if (is.null(all_meta$prod_type)) {all_meta$prod_type <- character()}
+      if (is.null(all_meta$mission)) {all_meta$mission <- character()}
+      if (is.null(all_meta$level)) {all_meta$level <- character()}
+      if (is.null(all_meta$file_ext)) {all_meta$file_ext <- character()}
+      all_meta <- all_meta[
+        type != "unrecognised" &
+          prod_type %in% list_prods &
+          mission %in% toupper(substr(pm$sel_sensor,3,3)) & 
+          level %in% toupper(substr(pm$s2_levels,2,3)) &
+          file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
+        ,]
+      if (length(pm$timewindow)>0 & !anyNA(pm$timewindow) & length(all_meta$sensing_date)>0) {
+        all_meta <- all_meta[
+          all_meta$sensing_date>=pm$timewindow[1] & 
+            all_meta$sensing_date<=pm$timewindow[2]
+          ,]
+      }
+      if (length(pm$s2orbits_selected)>0 & !anyNA(pm$s2orbits_selected) & length(all_meta$id_orbit)>0) {
+        all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
+      }
+      if (length(pm$extent_name)>0 & !anyNA(pm$extent_name) & length(all_meta$id_orbit)>0) {
+        all_meta <- all_meta[id_orbit %in% pm$extent_name,]
+      }
+      all_meta$names
+    } else {
+      character(0)
+    }
+  }
+  rgb_names_exp <- unique(c(rgb_names_exp,rgb_names_exi))
+  
+  
   # expected names for masked products
   # if clip_on_extent is required, mask warped, otherwise, mask merged
   if (is.na(pm$mask_type)) {
@@ -305,12 +397,12 @@ compute_s2_paths <- function(pm,
   } else {
     masked_names_exp <- if (pm$clip_on_extent==TRUE) {
       file.path(paths["out"],
-                if(pm$path_subdirs==TRUE){basename(dirname(nn(warped_names_exp[!names_merged_exp_scl_idx])))}else{""},
-                gsub(paste0(warped_ext,"$"),out_ext,basename(nn(warped_names_exp[!names_merged_exp_scl_idx]))))
+                if(pm$path_subdirs==TRUE){basename(dirname(nn(warped_names_exp[names_merged_tomask_idx])))}else{""},
+                gsub(paste0(warped_ext,"$"),out_ext,basename(nn(warped_names_exp[names_merged_tomask_idx]))))
     } else {
       file.path(paths["out"],
-                if(pm$path_subdirs==TRUE){basename(dirname(nn(merged_names_exp[!names_merged_exp_scl_idx])))}else{""},
-                gsub(paste0(merged_ext,"$"),out_ext,basename(nn(merged_names_exp[!names_merged_exp_scl_idx]))))
+                if(pm$path_subdirs==TRUE){basename(dirname(nn(merged_names_exp[names_merged_tomask_idx])))}else{""},
+                gsub(paste0(merged_ext,"$"),out_ext,basename(nn(merged_names_exp[names_merged_tomask_idx]))))
     }
     # use sr_masked_ext if necessary
     if (!pm$index_source %in% pm$list_prods) {
@@ -461,6 +553,7 @@ compute_s2_paths <- function(pm,
   warped_names_exp <- warped_names_exp[!warped_names_exp %in% ignorelist]
   masked_names_exp <- masked_names_exp[!masked_names_exp %in% ignorelist]
   out_names_exp <- out_names_exp[!out_names_exp %in% ignorelist]
+  rgb_names_exp <- rgb_names_exp[!rgb_names_exp %in% ignorelist]
   indices_names_exp <- indices_names_exp[!indices_names_exp %in% ignorelist]
   
   
@@ -472,6 +565,7 @@ compute_s2_paths <- function(pm,
   if (pm$overwrite==TRUE) {
     
     indices_names_new <- indices_names_exp
+    rgb_names_new <- rgb_names_exp
     out_names_req <- if (length(indices_names_exp)==0) {NULL} else {out_names_exp}
     out_names_new <- out_names_exp
     masked_names_new <- masked_names_exp
@@ -501,8 +595,9 @@ compute_s2_paths <- function(pm,
   } else {
     
     indices_names_new <- indices_names_exp[!file.exists(nn(indices_names_exp))]
+    rgb_names_new <- rgb_names_exp[!file.exists(nn(rgb_names_exp))]
     
-    # required output products
+    # required output products for indices
     out_basenames_req <- if (length(indices_names_new)==0) {
       NULL
     } else {
@@ -541,8 +636,33 @@ compute_s2_paths <- function(pm,
     }
     out_names_new <- out_names_new[!file.exists(nn(out_names_new))]
     
+    
     # index which is TRUE for SCL products, FALSE for others
     names_merged_new_out_idx <- sen2r_getElements(out_names_new,format="data.frame")$prod_type=="SCL"
+    
+    # required output products for RGB
+    basenames_reqforrgb <- if (length(rgb_names_new)==0) {
+      NULL
+    } else {
+      data.table(
+        sen2r_getElements(rgb_names_new, format="data.frame")
+      )[,paste0("S2",
+                mission,
+                level,"_",
+                strftime(sensing_date,"%Y%m%d"),"_",
+                id_orbit,"_",
+                if (pm$clip_on_extent==TRUE) {pm$extent_name},"_",
+                ifelse(level=="2A","BOA","TOA"),"_",
+                substr(res,1,2),".",
+                if (pm$clip_on_extent==TRUE) {warped_ext} else {merged_ext})] %>%
+        unique()
+    }
+    warped_names_req2 <- if (pm$clip_on_extent==TRUE) {
+      warped_names_exp[basename(nn(warped_names_exp)) %in% basenames_reqforrgb]
+    } else {NULL}
+    merged_names_req2 <- if (pm$clip_on_extent==FALSE) {
+      merged_names_exp[basename(nn(merged_names_exp)) %in% basenames_reqforrgb]
+    } else {NULL}
     
     # required masked and warped
     masked_names_new <- if (is.na(pm$mask_type)) {
@@ -550,7 +670,7 @@ compute_s2_paths <- function(pm,
     } else {
       out_names_new[sen2r_getElements(out_names_new, format="data.frame")$prod_type!="SCL"]
     }
-    warped_names_req <- if (pm$clip_on_extent==FALSE | length(out_names_new)==0) {
+    warped_names_req1 <- if (pm$clip_on_extent==FALSE | length(out_names_new)==0) {
       NULL
     } else if (is.na(pm$mask_type)) {
       out_names_exp[!names_merged_new_out_idx] # FIXME check!
@@ -565,6 +685,7 @@ compute_s2_paths <- function(pm,
         )
       )
     }
+    warped_names_req <- unique(c(warped_names_req1,warped_names_req2))
     warped_names_new <- warped_names_req[!file.exists(nn(warped_names_req))]
     
     # required merged
@@ -575,7 +696,7 @@ compute_s2_paths <- function(pm,
       gsub(paste0(out_ext,"$"),merged_ext,basename(nn(masked_names_new))) %>%
         gsub(paste0("\\_",pm$extent_name,"\\_"),"__",.)) %>%
       unique()
-    merged_names_req <- if (pm$clip_on_extent==TRUE) {
+    merged_names_req1 <- if (pm$clip_on_extent==TRUE) {
       merged_names_exp[basename(nn(merged_names_exp)) %in% merged_basenames_req]
     } else {
       c(
@@ -589,6 +710,7 @@ compute_s2_paths <- function(pm,
         }
       )
     }
+    merged_names_req <- unique(c(merged_names_req1,merged_names_req2))
     merged_names_new <- if (is.na(pm$path_merged)) {
       merged_names_req
     } else {
@@ -679,8 +801,10 @@ compute_s2_paths <- function(pm,
     "warped_names_exp" = warped_names_exp,
     "masked_names_exp" = masked_names_exp,
     "out_names_exp" = out_names_exp,
+    "rgb_names_exp" = rgb_names_exp,
     "indices_names_exp" = indices_names_exp,
     "indices_names_new" = indices_names_new,
+    "rgb_names_new" = rgb_names_new,
     "out_names_req" = out_names_req,
     "out_names_new" = out_names_new,
     "masked_names_new" = masked_names_new,

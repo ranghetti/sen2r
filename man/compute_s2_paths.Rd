@@ -6,7 +6,7 @@
 \title{Compute names of S2 file to be generated}
 \usage{
 compute_s2_paths(pm, s2_list_l1c, s2_list_l2a, paths, list_prods, out_ext,
-  index_ext, tiles_ext, merged_ext, warped_ext, sr_masked_ext,
+  index_ext, tiles_ext, merged_ext, warped_ext, rgb_ext, sr_masked_ext,
   force_tiles = FALSE, check_tmp = TRUE, ignorelist)
 
 list_sen2r_paths(param_list = NULL, gui = NA, preprocess = TRUE,
@@ -48,6 +48,8 @@ products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").}
 \item{merged_ext}{Extension (character) of merged products.}
 
 \item{warped_ext}{Extension (character) of warped products.}
+
+\item{rgb_ext}{Extension (character) of RGB products.}
 
 \item{sr_masked_ext}{Extension (character) of masked products of SR products.}
 

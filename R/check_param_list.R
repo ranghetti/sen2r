@@ -118,10 +118,57 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
     }
   }
   
+  # check output paths
+  # (if no products are selected, set to NA)
+  if (!is.na(pm$path_out) & sum(!is.na(pm$list_prods))==0) {
+    pm$path_out <- NA
+  }
+  if (!is.na(pm$path_indices) & sum(!is.na(pm$list_indices))==0) {
+    pm$path_indices <- NA
+  }
+  if (!is.na(pm$path_rgb) & sum(!is.na(pm$list_rgb))==0) {
+    pm$path_rgb <- NA
+  }
+  
   # check s2orbits_selected
   if (is(pm$s2orbits_selected, "numeric")) {
     pm$s2orbits_selected <- str_pad(pm$s2orbits_selected, 3, "left", "0")
   }
+  
+  # check consistency among mask_type and selected products
+  # (if masking is selected but no prods or indices are selected, set to NA)
+  if (!is.na(pm$mask_type) & all(is.na(pm$list_indices)) & all(is.na(pm$list_prods[pm$list_prods!="SCL"]))) {
+    pm$mask_type <- NA
+  } 
+  
+  # check bands numbers for required RGB
+  # (TOA:1-12; BOA: 1-9,11-12)
+  if (!is.na(pm$path_rgb) & sum(!is.na(pm$list_rgb))>0) {
+    rgb_bands <- lapply(
+      strsplit(gsub("^RGB([0-9a-f]{3})([BT])$","\\1",pm$list_rgb),""), 
+      function(x) {strtoi(paste0("0x",x))}
+    )
+    rgb_sources <- gsub("^RGB([0-9a-f]{3})([BT])$","\\2OA",pm$list_rgb)
+    rgb_list <- foreach(i = seq_along(pm$list_rgb), .combine=c) %do% {
+      if (any(
+        rgb_bands[[i]]<1 | 
+        rgb_bands[[i]]>12 | 
+        rgb_bands[[i]]==10 & rgb_sources[i]=="BOA"
+      )) {
+        print_message(
+          type = "warning",
+          "RGB ",pm$list_rgb[i]," can not be computed (bands out of range)."
+        )
+        character(0)
+      } else {
+        pm$list_rgb[i]
+      }
+    }
+    pm$list_rgb <- rgb_list
+  }
+
+  
+  
   
   # WIP 
   
