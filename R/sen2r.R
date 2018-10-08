@@ -108,6 +108,13 @@
 #' @param index_source (optional) Character value: if "BOA" (default), indices
 #'  are computed from BOA values; if "TOA", non corrected reflectances
 #'  are instead used (be careful to use this setting!).
+#' @param rgb_ranges (optional) Range of valid values to be used for RGB products.
+#'  If can be a 2-length integer vector (min-max for all the 3 bands) or a 6-length vector or 
+#'  3x2 matrix (min red, min green, min blue, max red, max green, max blue).
+#'  Default is to use c(0,2500) for bands 2, 3 and 4; c(0,7500) for other bands.
+#'  In case `list_rgb` is a vector of length > 1, `rgb_ranges` must be a list 
+#'  of the same length (otherwise, the same range vlaues will be used for all the RGB
+#'  products).
 #' @param mask_type (optional) Character value which determines the categories
 #'  in the Surface Classification Map to be masked (see [s2_mask()]
 #'  for the accepted values). Default (NA) is not to mask.
@@ -269,6 +276,7 @@ sen2r <- function(param_list = NULL,
                   list_rgb = NA,
                   list_indices = NA,
                   index_source = "BOA",
+                  rgb_ranges = NA,
                   mask_type = NA,
                   max_mask = 100,
                   mask_smooth = 0,
@@ -348,6 +356,7 @@ sen2r <- function(param_list = NULL,
     list_rgb = list_rgb,
     list_indices = list_indices,
     index_source = index_source,
+    rgb_ranges = rgb_ranges,
     mask_type = mask_type,
     max_mask = max_mask,
     mask_smooth = mask_smooth,
@@ -431,6 +440,7 @@ sen2r <- function(param_list = NULL,
                    list_rgb,
                    list_indices,
                    index_source,
+                   rgb_ranges,
                    mask_type,
                    max_mask,
                    mask_smooth,
@@ -1790,6 +1800,7 @@ sen2r <- function(param_list = NULL,
         strsplit(unique(gsub("^RGB([0-9a-f]{3})[BT]$","\\1",pm$list_rgb)),""), 
         function(x) {strtoi(paste0("0x",x))}
       ),
+      scaleRange = pm$rgb_ranges,
       outdir = paths["rgb"],
       subdirs = pm$path_subdirs,
       format = pm$rgb_outformat,

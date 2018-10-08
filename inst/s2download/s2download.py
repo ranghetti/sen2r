@@ -302,7 +302,7 @@ def s2_download(downloader="wget", lat=None, lon=None, latmin=None, lonmin=None,
             l2a_scihub_compactnames_match = [re.compile(s2_compactname_regex).match(f) for f in l2a_scihub_filenames]
             l2a_scihub_oldnames_tuples = [f.group(3,2,1) for f in l2a_scihub_oldnames_match if f is not None]
             l2a_scihub_compactnames_tuples = [f.group(1,2,3) for f in l2a_scihub_compactnames_match if f is not None]
-            l2a_scihub_names_match = l2a_scihub_compactnames_match + l2a_scihub_oldnames_tuples
+            l2a_scihub_names_tuples = l2a_scihub_compactnames_tuples + l2a_scihub_oldnames_tuples
             l1c_scihub_oldnames_match = [re.compile(s2_oldname_regex).match(f) for f in l1c_scihub_filenames]
             l1c_scihub_compactnames_match = [re.compile(s2_compactname_regex).match(f) for f in l1c_scihub_filenames]
             l1c_scihub_oldnames_tuples = [f.group(3,2,1) for f in l1c_scihub_oldnames_match if f is not None]

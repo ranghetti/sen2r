@@ -11,11 +11,11 @@ sen2r(param_list = NULL, gui = NA, preprocess = TRUE,
   timewindow = NA, timeperiod = "full", extent = NA, extent_name = "",
   s2tiles_selected = NA, s2orbits_selected = NA, list_prods = c("BOA"),
   list_rgb = NA, list_indices = NA, index_source = "BOA",
-  mask_type = NA, max_mask = 100, mask_smooth = 0, mask_buffer = 0,
-  clip_on_extent = TRUE, extent_as_mask = FALSE, reference_path = NA,
-  res = NA, res_s2 = "10m", unit = "Meter", proj = NA,
-  resampling = "near", resampling_scl = "near", outformat = "GTiff",
-  rgb_outformat = "GTiff", index_datatype = "Int16",
+  rgb_ranges = NA, mask_type = NA, max_mask = 100, mask_smooth = 0,
+  mask_buffer = 0, clip_on_extent = TRUE, extent_as_mask = FALSE,
+  reference_path = NA, res = NA, res_s2 = "10m", unit = "Meter",
+  proj = NA, resampling = "near", resampling_scl = "near",
+  outformat = "GTiff", rgb_outformat = "GTiff", index_datatype = "Int16",
   compression = "DEFLATE", rgb_compression = "90", overwrite = FALSE,
   path_l1c = NA, path_l2a = NA, path_tiles = NA, path_merged = NA,
   path_out = NA, path_rgb = NA, path_indices = NA, path_subdirs = TRUE,
@@ -152,6 +152,14 @@ spectral indices to be computed. Default is no one (NA).}
 \item{index_source}{(optional) Character value: if "BOA" (default), indices
 are computed from BOA values; if "TOA", non corrected reflectances
 are instead used (be careful to use this setting!).}
+
+\item{rgb_ranges}{(optional) Range of valid values to be used for RGB products.
+If can be a 2-length integer vector (min-max for all the 3 bands) or a 6-length vector or
+3x2 matrix (min red, min green, min blue, max red, max green, max blue).
+Default is to use c(0,2500) for bands 2, 3 and 4; c(0,7500) for other bands.
+In case \code{list_rgb} is a vector of length > 1, \code{rgb_ranges} must be a list
+of the same length (otherwise, the same range vlaues will be used for all the RGB
+products).}
 
 \item{mask_type}{(optional) Character value which determines the categories
 in the Surface Classification Map to be masked (see \code{\link[=s2_mask]{s2_mask()}}

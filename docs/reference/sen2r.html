@@ -127,11 +127,11 @@ descriptions of all the other parameters).</p>
   <span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>timeperiod</span> <span class='kw'>=</span> <span class='st'>"full"</span>, <span class='kw'>extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>extent_name</span> <span class='kw'>=</span> <span class='st'>""</span>,
   <span class='kw'>s2tiles_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>s2orbits_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"BOA"</span>),
   <span class='kw'>list_rgb</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>index_source</span> <span class='kw'>=</span> <span class='st'>"BOA"</span>,
-  <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>mask_smooth</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>mask_buffer</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>clip_on_extent</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>extent_as_mask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>reference_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res_s2</span> <span class='kw'>=</span> <span class='st'>"10m"</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"Meter"</span>, <span class='kw'>proj</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>resampling</span> <span class='kw'>=</span> <span class='st'>"near"</span>, <span class='kw'>resampling_scl</span> <span class='kw'>=</span> <span class='st'>"near"</span>, <span class='kw'>outformat</span> <span class='kw'>=</span> <span class='st'>"GTiff"</span>,
-  <span class='kw'>rgb_outformat</span> <span class='kw'>=</span> <span class='st'>"GTiff"</span>, <span class='kw'>index_datatype</span> <span class='kw'>=</span> <span class='st'>"Int16"</span>,
+  <span class='kw'>rgb_ranges</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>mask_smooth</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>mask_buffer</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>clip_on_extent</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>extent_as_mask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>reference_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res_s2</span> <span class='kw'>=</span> <span class='st'>"10m"</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"Meter"</span>,
+  <span class='kw'>proj</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>resampling</span> <span class='kw'>=</span> <span class='st'>"near"</span>, <span class='kw'>resampling_scl</span> <span class='kw'>=</span> <span class='st'>"near"</span>,
+  <span class='kw'>outformat</span> <span class='kw'>=</span> <span class='st'>"GTiff"</span>, <span class='kw'>rgb_outformat</span> <span class='kw'>=</span> <span class='st'>"GTiff"</span>, <span class='kw'>index_datatype</span> <span class='kw'>=</span> <span class='st'>"Int16"</span>,
   <span class='kw'>compression</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>rgb_compression</span> <span class='kw'>=</span> <span class='st'>"90"</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>path_l1c</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_l2a</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_merged</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>path_out</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_rgb</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_subdirs</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
@@ -309,6 +309,16 @@ spectral indices to be computed. Default is no one (NA).</p></td>
       <td><p>(optional) Character value: if "BOA" (default), indices
 are computed from BOA values; if "TOA", non corrected reflectances
 are instead used (be careful to use this setting!).</p></td>
+    </tr>
+    <tr>
+      <th>rgb_ranges</th>
+      <td><p>(optional) Range of valid values to be used for RGB products.
+If can be a 2-length integer vector (min-max for all the 3 bands) or a 6-length vector or
+3x2 matrix (min red, min green, min blue, max red, max green, max blue).
+Default is to use c(0,2500) for bands 2, 3 and 4; c(0,7500) for other bands.
+In case <code>list_rgb</code> is a vector of length &gt; 1, <code>rgb_ranges</code> must be a list
+of the same length (otherwise, the same range vlaues will be used for all the RGB
+products).</p></td>
     </tr>
     <tr>
       <th>mask_type</th>

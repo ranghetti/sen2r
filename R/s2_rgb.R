@@ -124,8 +124,19 @@ s2_rgb <- function(infiles,
     }
   }
   
-  # create subdirs (if requested)
+  # check rgb_bands and scaleRange
   if (!is.list(rgb_bands)) {rgb_bands <- list(rgb_bands)}
+  if (!is.list(scaleRange)) {
+    scaleRange <- rep(list(scaleRange), length(rgb_bands))
+  }
+  if (length(rgb_bands) != length(scaleRange)) {
+    print_message(
+      type="error",
+      "\"rgb_bands\" and \"scaleRange\" must be of the same length."
+    )
+  }
+  
+  # create subdirs (if requested)
   # rgb_prodnames <- sapply(rgb_bands, function(x) {
   #   paste0("RGB", paste(as.hexmode(x), collapse=""))
   # })
@@ -201,7 +212,7 @@ s2_rgb <- function(infiles,
     } else {
       
       # Cycle on each rgb_bands combination
-      foreach(sel_rgb_bands = rgb_bands, .combine = c) %do% {
+      foreach(sel_rgb_bands = rgb_bands, sel_scaleRange = scaleRange, .combine = c) %do% {
         sel_rgb_prodname <- paste0("RGB", paste(as.hexmode(sel_rgb_bands), collapse=""), substr(sel_prod_type,1,1))
         
         # Set output path
