@@ -12,7 +12,7 @@
 #'  bands to be used respectively for red, green and blue. 
 #'  Default is 4:2 (true colours).
 #'  It is also possible to pass a list of 3-length integer vectors
-#'  in order to create multiple RGB types for each input file. # TODO
+#'  in order to create multiple RGB types for each input file.
 #'  Notice that this is the [actual number name of the bands](
 #'  https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/resolutions/spatial):
 #'  so, to use i.e. BOA band 11 (1610nm) use the number 11, even if band 11 is
@@ -20,7 +20,7 @@
 #' @param scaleRange (optional) Range of valid values. If can be a 2-length
 #'  integer vector (min-max for all the 3 bands) or a 6-length vector or 
 #'  3x2 matrix (min red, min green, min blue, max red, max green, max blue).
-#'  Default is c(0,2500) for true colours RGB, c(0,7500) for others.
+#'  Default is to use c(0,2500) for bands 1-5; c(0,7500) bands 6-12.
 #' @param outdir (optional) Full name of the existing output directory
 #'  where the files should be created. Default is the same directory of 
 #'  input reflectance files. # FIXME use a subdir with product name
@@ -220,8 +220,10 @@ s2_rgb <- function(infiles,
         if (!file.exists(out_path) | overwrite==TRUE) {
           
           # From Sentinel-2 band number to actual band numbert in the BOA
-          if (sel_prod_type=="BOA") {
-            sel_nbands <- ifelse(sel_rgb_bands>10, sel_rgb_bands-1, sel_rgb_bands)
+          sel_nbands <- if (sel_prod_type=="BOA") {
+            ifelse(sel_rgb_bands>10, sel_rgb_bands-1, sel_rgb_bands)
+          } else {
+            sel_rgb_bands
           }
           
           # Consider only the required bands
@@ -237,22 +239,26 @@ s2_rgb <- function(infiles,
           
           # define scaleRange
           sel_scaleRange <- if (anyNA(scaleRange)) {
-            c(0, switch(
-              sel_rgb_prodname, 
-              "RGB432T" = 2500, 
-              "RGB432B" = 2500, 
-              7500
-            ))
+            # c(0, switch(
+            #   sel_rgb_prodname, 
+            #   "RGB432T" = 2500, 
+            #   "RGB432B" = 2500, 
+            #   7500
+            # ))
+            c(rep(0,3), ifelse(sel_nbands %in% 1:5, 2500, 7500))
           } else {
             scaleRange
           }
+          # convert from vector to matrix
+          sel_scaleRange <- matrix(sel_scaleRange,ncol=2)
+          
           
           # generate RGB basing on prod_type
           stack2rgb(
             filterbands_path, 
             out_file = out_path,
-            minval = sel_scaleRange[1], 
-            maxval = sel_scaleRange[2],
+            minval = sel_scaleRange[,1], 
+            maxval = sel_scaleRange[,2],
             format=sel_format,
             compress="90",
             tmpdir = tmpdir

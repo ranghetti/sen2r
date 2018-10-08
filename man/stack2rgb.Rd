@@ -16,9 +16,13 @@ stack2rgb(in_rast, out_file = NULL, bands = 1:3, minval = 0,
 \item{bands}{(optional) 3-length integer argument, with the position of
 the three bands to be used respectively for red, green and blue.}
 
-\item{minval}{(optional) the value corresponding to black (default: 0).}
+\item{minval}{(optional) the value corresponding to black (default: 0).
+Also a 3-length vector is accepted
+(min values for red, green and blue respectively).}
 
-\item{maxval}{(optional) the value corresponding to white (default: 10000).}
+\item{maxval}{(optional) the value corresponding to white (default: 10000).
+Also a 3-length vector is accepted
+(max values for red, green and blue respectively).}
 
 \item{format}{(optional) Format of the output file (in a
 format recognised by GDAL). Default is JPEG.}

@@ -8,7 +8,11 @@
 #' @param bands (optional) 3-length integer argument, with the position of 
 #'  the three bands to be used respectively for red, green and blue.
 #' @param minval (optional) the value corresponding to black (default: 0).
+#'  Also a 3-length vector is accepted 
+#'  (min values for red, green and blue respectively).
 #' @param maxval (optional) the value corresponding to white (default: 10000).
+#'  Also a 3-length vector is accepted 
+#'  (max values for red, green and blue respectively).
 #' @param format (optional) Format of the output file (in a
 #'  format recognised by GDAL). Default is JPEG.
 #' @param compress (optional) In the case a GTiff format is
@@ -54,6 +58,15 @@ stack2rgb <- function(in_rast,
     FALSE
   }
   
+  # Check minval-maxval length
+  if (!(length(minval) == 1 & length(maxval) == 1 |
+        length(minval) == 3 & length(maxval) == 3)) {
+    print_message(
+      type = "error",
+      "minval and maxval must be of length 1 or 3."
+    )
+  }
+  
   # Define format, compression and quality
   co <- if (grepl("^[0-9]+$", compress)) {
     if (format == "JPEG") {
@@ -65,39 +78,79 @@ stack2rgb <- function(in_rast,
     paste0("-co \"COMPRESS=",compress,"\" ")
   }
   
-  # Define formula
+  # Define formula (one if minval-maxval are unique, three elsewhere)
   gdal_formula <- paste0(
     "clip(A.astype(float),",minval,",",maxval,")*255/(",maxval,"-",minval,")+",minval
   )
   
-  # Compute RGB with gdal_calc
+  # Compute RGB with gdal_calc (same formula for all the 3 bands)
   # (an intermediate step creating a GeoTiff is required,
   # since gdal_calc is not able to write in JPEG format)
-  tif_path <- file.path(tmpdir, gsub("\\..+$","_temp.tif",basename(out_file)))
-  system(
-    paste0(
-      binpaths$gdal_calc," ",
-      "-A \"",in_rast,"\" --allBands=A ",
-      "--calc=\"",gdal_formula,"\" ",
-      "--outfile=\"",tif_path,"\" ",
-      "--type=\"Byte\" ",
-      "--NoDataValue=0 ",
-      "--format=\"GTiff\"  "
-      # "--format=\"JPEG\" --co=\"QUALITY=90\""
-    ),
-    intern = Sys.info()["sysname"] == "Windows"
-  )
+  
+  # if minmax is the same for all 3 bands, use a single step with gdal_calc;
+  # else, create 3 tiffs and merge them with gdalbuildvrt
+  if (length(minval) == 1) {
+    
+    interm_path <- file.path(tmpdir, gsub("\\..+$","_temp.tif"), basename(out_file))
+    
+    system(
+      paste0(
+        binpaths$gdal_calc," ",
+        "-A \"",in_rast,"\" --allBands=A ",
+        "--calc=\"",gdal_formula,"\" ",
+        "--outfile=\"",interm_path,"\" ",
+        "--type=\"Byte\" ",
+        "--NoDataValue=0 ",
+        "--format=\"GTiff\"  "
+      ),
+      intern = Sys.info()["sysname"] == "Windows"
+    )
+    
+  } else {
+    
+    interm_paths <- sapply(seq_along(minval), function(i) {file.path(
+      tmpdir, 
+      gsub("\\..+$",paste0("_temp",i,".tif"),basename(out_file))
+    )})
+    interm_path <- gsub("\\_temp1.tif$", "_temp.vrt", interm_paths[1])
+    
+    for (i in seq_along(minval)) {
+      system(
+        paste0(
+          binpaths$gdal_calc," ",
+          "-A \"",in_rast,"\" --A_band=",i," ",
+          "--calc=\"",gdal_formula[i],"\" ",
+          "--outfile=\"",interm_paths[i],"\" ",
+          "--type=\"Byte\" ",
+          "--NoDataValue=0 ",
+          "--format=\"GTiff\"  "
+        ),
+        intern = Sys.info()["sysname"] == "Windows"
+      )
+    }
+    system(
+      paste0(
+        binpaths$gdalbuildvrt," -separate ",
+        "\"",interm_path,"\" \"",paste(interm_paths,collapse="\" \""),"\""
+      ),
+      intern = Sys.info()["sysname"] == "Windows"
+    )
+    
+  }
+  
   system(
     paste0(
       binpaths$gdal_translate," ",
       "-of \"",format,"\" ",
       co,
       "-ot \"Byte\" ",
-      "\"",tif_path,"\" \"",out_file,"\""
+      "\"",interm_path,"\" \"",out_file,"\""
     ),
     intern = Sys.info()["sysname"] == "Windows"
   )
-  unlink(tif_path)
+  if (exists("interm_paths")) {sapply(interm_paths, unlink)}
+  unlink(interm_path)
+  
   
   # Return output raster
   if (return_raster) {

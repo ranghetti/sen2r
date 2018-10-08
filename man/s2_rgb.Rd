@@ -24,7 +24,7 @@ file name.}
 bands to be used respectively for red, green and blue.
 Default is 4:2 (true colours).
 It is also possible to pass a list of 3-length integer vectors
-in order to create multiple RGB types for each input file. # TODO
+in order to create multiple RGB types for each input file.
 Notice that this is the \href{https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/resolutions/spatial}{actual number name of the bands}:
 so, to use i.e. BOA band 11 (1610nm) use the number 11, even if band 11 is
 the 10th band of a BOA product (because band 10 is missing).}
@@ -32,7 +32,7 @@ the 10th band of a BOA product (because band 10 is missing).}
 \item{scaleRange}{(optional) Range of valid values. If can be a 2-length
 integer vector (min-max for all the 3 bands) or a 6-length vector or
 3x2 matrix (min red, min green, min blue, max red, max green, max blue).
-Default is c(0,2500) for true colours RGB, c(0,7500) for others.}
+Default is to use c(0,2500) for bands 1-5; c(0,7500) bands 6-12.}
 
 \item{outdir}{(optional) Full name of the existing output directory
 where the files should be created. Default is the same directory of
