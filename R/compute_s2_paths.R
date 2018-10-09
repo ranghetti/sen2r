@@ -34,8 +34,9 @@
 #' `tiles_names_exp`, `merged_names_exp`, `warped_names_exp`, 
 #' `masked_names_exp`, `out_names_exp`, `indices_names_exp`,
 #' `indices_names_new`, `out_names_req`, `out_names_new`,
-#' `masked_names_new`, `warped_names_req`, `warped_names_new`, 
-#' `merged_names_req`, `merged_names_new`, `tiles_names_req`, `tiles_names_new`,
+#' `masked_names_new`, `warped_names_req`, `warped_names_reqforrgb`, 
+#' `warped_names_new`,  `merged_names_req`, `merged_names_reqforrgb`,
+#' `merged_names_new`, `tiles_names_req`, `tiles_names_new`,
 #' `safe_names_l1c_req`, `safe_names_l2a_req`.
 #' 
 #' @param pm List of input parameters.
@@ -321,7 +322,7 @@ compute_s2_paths <- function(pm,
   warped_names_exp <- unique(c(warped_names_exp,warped_names_exi))
   
   
-  # expected names for indices
+  # expected names for RGB
   if ((pm$clip_on_extent==TRUE & length(warped_names_exp)==0) | 
       (pm$clip_on_extent==FALSE & length(merged_names_exp)==0) | 
       anyNA(pm$list_rgb)) {
@@ -657,10 +658,10 @@ compute_s2_paths <- function(pm,
                 if (pm$clip_on_extent==TRUE) {warped_ext} else {merged_ext})] %>%
         unique()
     }
-    warped_names_req2 <- if (pm$clip_on_extent==TRUE) {
+    warped_names_reqforrgb <- if (pm$clip_on_extent==TRUE) {
       warped_names_exp[basename(nn(warped_names_exp)) %in% basenames_reqforrgb]
     } else {NULL}
-    merged_names_req2 <- if (pm$clip_on_extent==FALSE) {
+    merged_names_reqforrgb <- if (pm$clip_on_extent==FALSE) {
       merged_names_exp[basename(nn(merged_names_exp)) %in% basenames_reqforrgb]
     } else {NULL}
     
@@ -685,7 +686,7 @@ compute_s2_paths <- function(pm,
         )
       )
     }
-    warped_names_req <- unique(c(warped_names_req1,warped_names_req2))
+    warped_names_req <- unique(c(warped_names_req1,warped_names_reqforrgb))
     warped_names_new <- warped_names_req[!file.exists(nn(warped_names_req))]
     
     # required merged
@@ -710,7 +711,7 @@ compute_s2_paths <- function(pm,
         }
       )
     }
-    merged_names_req <- unique(c(merged_names_req1,merged_names_req2))
+    merged_names_req <- unique(c(merged_names_req1,merged_names_reqforrgb))
     merged_names_new <- if (is.na(pm$path_merged)) {
       merged_names_req
     } else {
@@ -809,9 +810,11 @@ compute_s2_paths <- function(pm,
     "out_names_new" = out_names_new,
     "masked_names_new" = masked_names_new,
     "warped_names_req" = warped_names_req,
+    "warped_names_reqforrgb" = warped_names_reqforrgb,
     "warped_names_new" = warped_names_new,
     "warped_names_reqout" = warped_names_reqout,
     "merged_names_req" = merged_names_req,
+    "merged_names_reqforrgb" = merged_names_reqforrgb,
     "merged_names_new" = merged_names_new,
     "tiles_names_req" = tiles_names_req,
     "tiles_names_new" = tiles_names_new,

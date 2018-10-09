@@ -1056,7 +1056,7 @@ sen2r <- function(param_list = NULL,
     # otherwise, filter on tiles but keep also NA not to discard old name products.
     # (products will be filtered later: #filter2)
     if (all(!is.na(pm$s2tiles_selected))) {
-      s2_dt <- s2_dt[id_tile %in% c(pm$s2tiles_selected,NA),]
+      s2_dt <- s2_dt[id_tile %in% c(as.character(pm$s2tiles_selected),NA),]
     } else if (all(st_is_valid(pm$extent))) {
       # if no tiles were specified, select only tiles which overlap the extent
       # (this to prevent to use unuseful SAFE in offline mode)
@@ -1689,7 +1689,7 @@ sen2r <- function(param_list = NULL,
     #                           if(pm$path_subdirs==TRUE){basename(dirname(warped_names[!names_merged_exp_scl_idx]))}else{""},
     #                           gsub(paste0(warped_ext,"$"),out_ext,basename(warped_names[!names_merged_exp_scl_idx])))
     
-    if (!is.na(pm$mask_type)) {
+    if (!is.na(pm$mask_type) & length(s2names$masked_names_new)>0) {
       print_message(
         type = "message",
         date = TRUE,
@@ -1779,9 +1779,9 @@ sen2r <- function(param_list = NULL,
   
   ## 8a. Create RGB products ##
   rgb_names_infiles <- if (pm$clip_on_extent==TRUE) {
-    s2names$warped_names_req
+    s2names$warped_names_reqforrgb
   } else {
-    s2names$merged_names_req
+    s2names$merged_names_reqforrgb
   }
   
   if (sum(file.exists(nn(rgb_names_infiles)))>0) {
