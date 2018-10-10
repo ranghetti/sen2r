@@ -27,13 +27,13 @@
 #'  - "cloud_low_proba": mask pixels checked as "No data", "Saturated or 
 #'      defective" or "Cloud (any probability)" in the SCL product;
 #'  - "cloud_and_shadow": mask pixels checked as "No data", "Saturated or 
-#'      defective", "Cloud (any probability)", "Cloud shadow" or "Dark area"
+#'      defective", "Cloud (any probability)" or "Cloud shadow" 
 #'      in the SCL product;
 #'  - "clear_sky": mask pixels checked as "No data", "Saturated or 
-#'      defective", "Cloud (any probability)", "Cloud shadow", "Dark area"
+#'      defective", "Cloud (any probability)", "Cloud shadow"
 #'      or "Thin cirrus" in the SCL product
-#'      (only pixels classified as clear-sky surface - so "Vegetation", 
-#'      "Bare soil", "Water" or "Snow" - are maintained);
+#'      (only pixels classified as clear-sky surface - so "Dark area", 
+#'      "Vegetation", "Bare soil", "Water" or "Snow" - are maintained);
 #'  - "land": mask pixels checked as "No data", "Saturated or 
 #'      defective", "Cloud (any probability)", "Cloud shadow", "Dark area",
 #'      "Thin cirrus", "Water" or "Snow" in the SCL product
@@ -256,7 +256,7 @@ s2_mask <- function(infiles,
   if (anyNA(buffer)) {buffer <- 0}
   
   # define required bands and formula to compute masks
-  # accepted mask_type values: nodata, cloud_high_proba, cloud_medium_proba, cloud_low_proba, cloud_and_shadow, cloud_shadow_cirrus, opaque_clouds
+  # accepted mask_type values: nodata, cloud_high_proba, cloud_medium_proba, cloud_low_proba, cloud_and_shadow, clear_sky, land
   # structure of req_masks: list, names are prod_types, content are values of the files to set as 0, otherwise 1
   if (mask_type == "nomask") {
     req_masks <- list()
@@ -267,9 +267,9 @@ s2_mask <- function(infiles,
   } else if (mask_type == "cloud_low_proba") {
     req_masks <- list("SCL"=c(0:1,7:9))
   } else if (mask_type == "cloud_and_shadow") {
-    req_masks <- list("SCL"=c(0:3,7:9))
-  } else if (mask_type == "cloud_shadow_cirrus") {
-    req_masks <- list("SCL"=c(0:3,7:10))
+    req_masks <- list("SCL"=c(0:1,3,7:9))
+  } else if (mask_type == "clear_sky") {
+    req_masks <- list("SCL"=c(0:1,3,7:10))
   } else if (mask_type == "land") {
     req_masks <- list("SCL"=c(0:3,6:11))
   } else if (grepl("^scl\\_", mask_type)) {
