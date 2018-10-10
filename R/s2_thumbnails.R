@@ -91,7 +91,7 @@ stack2rgb <- function(in_rast,
   # else, create 3 tiffs and merge them with gdalbuildvrt
   if (length(minval) == 1) {
     
-    interm_path <- file.path(tmpdir, gsub("\\..+$","_temp.tif"), basename(out_file))
+    interm_path <- file.path(tmpdir, gsub("\\..+$","_temp.tif", basename(out_file)))
     
     system(
       paste0(

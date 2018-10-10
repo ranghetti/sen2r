@@ -249,7 +249,7 @@ s2_rgb <- function(infiles,
           )
           
           # define scaleRange
-          sel_scaleRange <- if (anyNA(scaleRange)) {
+          sel_scaleRange <- if (anyNA(sel_scaleRange)) {
             # c(0, switch(
             #   sel_rgb_prodname, 
             #   "RGB432T" = 2500, 
@@ -258,7 +258,7 @@ s2_rgb <- function(infiles,
             # ))
             c(rep(0,3), ifelse(sel_nbands %in% 1:5, 2500, 7500))
           } else {
-            scaleRange
+            sel_scaleRange
           }
           # convert from vector to matrix
           sel_scaleRange <- matrix(sel_scaleRange,ncol=2)
