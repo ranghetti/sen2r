@@ -18,7 +18,7 @@
 #'  modalDialog observe observeEvent outputOptions p reactive
 #'  reactiveFileReader reactivePoll reactiveValues renderText renderUI runApp
 #'  shinyApp showModal span strong textOutput uiOutput verbatimTextOutput
-#' @importFrom shinyjs hide html useShinyjs
+#' @importFrom shinyjs hide html useShinyjs extendShinyjs
 #' @importFrom shinyWidgets confirmSweetAlert
 #' @importFrom utils capture.output
 #' @importFrom jsonlite fromJSON toJSON
@@ -31,10 +31,13 @@
 
 check_sen2r_deps <- function() {
   
+  jscode <- "shinyjs.closeWindow = function() { window.close(); }"
+  
   settings.ui <- fluidPage(
     
     # header
     shinyjs::useShinyjs(),
+    extendShinyjs(text = jscode, functions = c("closeWindow")),
     
     fluidRow(column(
       title="Dependencies",
@@ -761,11 +764,13 @@ check_sen2r_deps <- function() {
           danger_mode = TRUE, btn_labels = c("Cancel", "Close window")
         )
       } else {
+        shinyjs::js$closeWindow()
         stopApp()
       }
     })
     observeEvent(input$confirm_close, {
       if (input$confirm_close) {
+        shinyjs::js$closeWindow()
         stopApp()
       }
     })
