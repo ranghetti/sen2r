@@ -569,6 +569,28 @@ compute_s2_paths <- function(pm,
     rgb_names_new <- rgb_names_exp
     out_names_req <- if (length(indices_names_exp)==0) {NULL} else {out_names_exp}
     out_names_new <- out_names_exp
+    basenames_reqforrgb <- if (length(rgb_names_new)==0) {
+      NULL
+    } else {
+      data.table(
+        sen2r_getElements(rgb_names_new, format="data.frame")
+      )[,paste0("S2",
+                mission,
+                level,"_",
+                strftime(sensing_date,"%Y%m%d"),"_",
+                id_orbit,"_",
+                if (pm$clip_on_extent==TRUE) {pm$extent_name},"_",
+                ifelse(level=="2A","BOA","TOA"),"_",
+                substr(res,1,2),".",
+                if (pm$clip_on_extent==TRUE) {warped_ext} else {merged_ext})] %>%
+        unique()
+    }
+    warped_names_reqforrgb <- if (pm$clip_on_extent==TRUE) {
+      warped_names_exp[basename(nn(warped_names_exp)) %in% basenames_reqforrgb]
+    } else {NULL}
+    merged_names_reqforrgb <- if (pm$clip_on_extent==FALSE) {
+      merged_names_exp[basename(nn(merged_names_exp)) %in% basenames_reqforrgb]
+    } else {NULL}
     masked_names_new <- masked_names_exp
     warped_names_req <- if (pm$clip_on_extent==FALSE | length(out_names_exp)==0) {
       NULL
