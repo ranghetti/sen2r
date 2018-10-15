@@ -31,7 +31,7 @@
 #' @importFrom shinyFiles getVolumes parseDirPath parseFilePaths parseSavePath
 #'  shinyDirButton shinyDirChoose shinyFileChoose shinyFileSave
 #'  shinyFilesButton shinySaveButton
-#' @importFrom shinyjs click delay disable enable
+#' @importFrom shinyjs click delay disable enable useShinyjs extendShinyjs
 #' @importFrom shinyWidgets sendSweetAlert
 #' @importFrom stats setNames
 #'
@@ -59,6 +59,8 @@ s2_gui <- function(param_list = NULL,
   
   # extract and import tiles kml
   s2tiles <- s2_tiles()
+  
+  jscode <- "shinyjs.closeWindow = function() { window.close(); }"
   
   # shiny
   s2_gui.ui <- dashboardPage(
@@ -100,6 +102,7 @@ s2_gui <- function(param_list = NULL,
       
       HTML("<script src=\"message-handler.js\"></script>"),
       shinyjs::useShinyjs(),
+      extendShinyjs(text = jscode, functions = c("closeWindow")),
       shiny::tags$head(shiny::tags$style(".darkbutton{background-color:#28353b;color:#b8c7ce;width:200px;")), # background color and font color
       shiny::tags$head(shiny::tags$style(".scihub_savebutton{width:90px;")), # fixed width
       shiny::tags$head(shiny::tags$script(src = "message-handler.js")), # for actionbuttons
@@ -2836,6 +2839,7 @@ s2_gui <- function(param_list = NULL,
       rl$path_tiles <- if (rl$preprocess==TRUE & input$keep_tiles==TRUE) {input$path_tiles_textin} else {NA} # path of entire tiled products
       rl$path_merged <- if (rl$preprocess==TRUE & input$keep_merged==TRUE) {input$path_merged_textin} else {NA} # path of entire tiled products
       rl$path_out <- if (rl$preprocess==TRUE & (length(input$list_prods)>1 | length(input$list_prods)>0 & !"indices" %in% input$list_prods)) {input$path_out_textin} else {NA} # path of output pre-processed products
+      rl$path_rgb <- rl$path_out # path of output pre-processed products # TODO add in GUI
       rl$path_indices <- if (rl$preprocess==TRUE & indices_req()==TRUE) {input$path_indices_textin} else {NA} # path of spectral indices
       rl$path_subdirs <- if (rl$preprocess==TRUE) {as.logical(input$path_subdirs)} else {NA} # logical (use subdirs)
       rl$thumbnails <- if (rl$preprocess==TRUE) {as.logical(input$check_thumbnails)} else {NA} # logical (create thumbnails)
@@ -2989,12 +2993,14 @@ s2_gui <- function(param_list = NULL,
       return_list <- create_return_list() # run creation of return_list
       check_param_result <- check_param(return_list)
       if (check_param_result) {
+        shinyjs::js$closeWindow()
         stopApp(return_list)
       }
     })
     
     # if Exit is pressend, exit from GUI
     observeEvent(input$exit_gui, {
+      shinyjs::js$closeWindow()
       stopApp()
     })
     
