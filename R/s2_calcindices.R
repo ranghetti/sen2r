@@ -261,7 +261,7 @@ s2_calcindices <- function(infiles,
         }
         for (sel_band in seq_len(nrow(gdal_bands))) {
           sel_formula <- gsub(paste0("([^0-9a-zA-Z])",gdal_bands[sel_band,"band"],"([^0-9a-zA-Z])"),
-                              paste0("\\1",gdal_bands[sel_band,"letter"],".astype(float)\\2"),
+                              paste0("\\1(",gdal_bands[sel_band,"letter"],".astype(float)/10000)\\2"),
                               sel_formula)
         }
         if (grepl("Int", dataType)) {

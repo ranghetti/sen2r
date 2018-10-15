@@ -107,7 +107,9 @@ create_indices_db <- function(xslt_path = NA,
   # change name to some indices
   s2_table[grep("MIR/NIR Normalized Difference",s2_table$longname),name:="NDVI2"]
   s2_table[longname=="Transformed Soil Adjusted Vegetation Index 2",name:="TSAVI2"]
-  s2_table[longname=="Enhanced Vegetation Index 2",name:="EVI3"]
+  s2_table[longname=="Modified Soil Adjusted Vegetation Index",name:="MSAVI2"]
+
+  
   # remove indices without name
   n_index_toremove <- c(n_index_toremove, s2_table[name=="",n_index])
   # replacing duplicated indices
@@ -253,7 +255,7 @@ create_indices_db <- function(xslt_path = NA,
   
   # set as checked for indices ok after previous changes
   s2_table[name %in% c("NDVI","SAVI","MCARI","MCARI2","TCARI","ARVI","NDRE",
-                       "BNDVI","GNDVI","NDII","TCI_idx","MSAVI","OSAVI",
+                       "BNDVI","GNDVI","NDII","TCI_idx","MSAVI2","OSAVI",
                        "NBR","EVI2",
                        "MTVI2","MCARI/MTVI2","TCARI/OSAVI"),checked:=TRUE]
   

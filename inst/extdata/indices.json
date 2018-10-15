@@ -238,10 +238,10 @@
     {
       "n_index": 33,
       "longname": "Enhanced Vegetation Index 2",
-      "name": "EVI3",
+      "name": "EVI2",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=237",
       "s2_formula": "2.4*(band_8-band_4)/(band_8+band_4+1)",
-      "checked": false,
+      "checked": true,
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mrow>\n   <mn>2.4<\/mn>\n   <mo>&amp;InvisibleTimes;<\/mo>\n   <mfrac>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mi mathcolor=\"#443399\">NIR<\/mi>\n       <mo>-<\/mo>\n       <mi mathcolor=\"#443399\">RED<\/mi>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mi mathcolor=\"#443399\">NIR<\/mi>\n       <mo>+<\/mo>\n       <mrow>\n        <mi mathcolor=\"#443399\">RED<\/mi>\n        <mo>+<\/mo>\n        <mn>1<\/mn>\n       <\/mrow>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n   <\/mfrac>\n  <\/mrow>\n <\/mrow>\n<\/math>"
     },
     {
@@ -526,7 +526,7 @@
     {
       "n_index": 80,
       "longname": "Modified Soil Adjusted Vegetation Index",
-      "name": "MSAVI",
+      "name": "MSAVI2",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=44",
       "s2_formula": "(2*band_8+1-sqrt(power((2*band_8+1),2)-8*(band_8-band_4)))/(2)",
       "checked": true,
@@ -1885,5 +1885,5 @@
     }
   ],
   "pkg_version": ["0.3.3"],
-  "creation_date": ["2018-07-18 14:53:10"]
+  "creation_date": ["2018-10-15 16:36:20"]
 }
