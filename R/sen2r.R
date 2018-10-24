@@ -1895,7 +1895,7 @@ sen2r <- function(param_list = NULL,
   
   ## 9. create thumbnails
   
-  if (thumbnails==TRUE) {
+  if (pm$thumbnails==TRUE) {
     
     thumb_names_req <- names_out_created
     
