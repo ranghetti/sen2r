@@ -2909,9 +2909,10 @@ s2_gui <- function(param_list = NULL,
         updateNumericInput(session, "mask_smooth", value = pl$mask_smooth)
         updateNumericInput(session, "mask_buffer", value = pl$mask_buffer)
         updateRadioButtons(session, "atm_mask_type",
-                           selected = ifelse(is.na(pl$mask_type),"cloud_medium_proba",pl$mask_type))
-        updateRadioButtons(session, "atm_mask_custom",
-                           selected = ifelse(grepl("^scl\\_",pl$mask_type),strsplit(pl$mask_type,"_")[[1]][-1],c(0,8:9)))
+                           selected = if (is.na(pl$mask_type)) {"cloud_medium_proba"} else
+                             if (grepl("^scl_",pl$mask_type)) {"custom"} else {pl$mask_type})
+        updateCheckboxGroupInput(session, "atm_mask_custom",
+                           selected = if (grepl("^scl\\_",pl$mask_type)) {strsplit(pl$mask_type,"_")[[1]][-1]} else {c(0,8:9)})
         updateRadioButtons(session, "index_source", selected = pl$index_source)
         updateRadioButtons(session, "clip_on_extent", selected = pl$clip_on_extent)
         updateRadioButtons(session, "extent_name_textin", selected = pl$extent_name)
