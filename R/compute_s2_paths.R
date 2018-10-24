@@ -523,7 +523,7 @@ compute_s2_paths <- function(pm,
       if (is.null(all_meta$file_ext)) {all_meta$file_ext <- character()}
       all_meta <- all_meta[
         type != "unrecognised" &
-          prod_type %in% list_prods &
+          prod_type %in% pm$list_indices &
           mission %in% toupper(substr(pm$sel_sensor,3,3)) & 
           level %in% toupper(substr(pm$s2_levels,2,3)) &
           file_ext == gdal_formats[gdal_formats$name==pm$outformat,"ext"]
@@ -538,7 +538,7 @@ compute_s2_paths <- function(pm,
         all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
       }
       if (length(pm$extent_name)>0 & !anyNA(pm$extent_name) & length(all_meta$id_orbit)>0) {
-        all_meta <- all_meta[id_orbit %in% pm$extent_name,]
+        all_meta <- all_meta[extent_name %in% pm$extent_name,]
       }
       all_meta$names
     } else {
