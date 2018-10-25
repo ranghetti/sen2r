@@ -10,14 +10,15 @@ sen2r(param_list = NULL, gui = NA, preprocess = TRUE,
   overwrite_safe = FALSE, rm_safe = "no", step_atmcorr = "auto",
   timewindow = NA, timeperiod = "full", extent = NA, extent_name = "",
   s2tiles_selected = NA, s2orbits_selected = NA, list_prods = c("BOA"),
-  list_indices = NA, index_source = "BOA", mask_type = NA,
-  max_mask = 100, mask_smooth = 0, mask_buffer = 0,
-  clip_on_extent = TRUE, extent_as_mask = FALSE, reference_path = NA,
-  res = NA, res_s2 = "10m", unit = "Meter", proj = NA,
-  resampling = "near", resampling_scl = "near", outformat = "GTiff",
-  index_datatype = "Int16", compression = "DEFLATE", overwrite = FALSE,
+  list_rgb = NA, list_indices = NA, index_source = "BOA",
+  rgb_ranges = NA, mask_type = NA, max_mask = 100, mask_smooth = 0,
+  mask_buffer = 0, clip_on_extent = TRUE, extent_as_mask = FALSE,
+  reference_path = NA, res = NA, res_s2 = "10m", unit = "Meter",
+  proj = NA, resampling = "near", resampling_scl = "near",
+  outformat = "GTiff", rgb_outformat = "GTiff", index_datatype = "Int16",
+  compression = "DEFLATE", rgb_compression = "90", overwrite = FALSE,
   path_l1c = NA, path_l2a = NA, path_tiles = NA, path_merged = NA,
-  path_out = NA, path_indices = NA, path_subdirs = TRUE,
+  path_out = NA, path_rgb = NA, path_indices = NA, path_subdirs = TRUE,
   thumbnails = TRUE, parallel = TRUE, use_python = TRUE, tmpdir = NA,
   rmtmp = TRUE, log = NA)
 }
@@ -132,12 +133,33 @@ all the accepted values are listed).}
 products to be processed (accepted values: "TOA", "BOA", "SCL",
 "TCI"). Default is "BOA".}
 
+\item{list_rgb}{(optional) Character vector with the values of the
+RGB images to be produced.
+Images are in the form xRGBrgb, when:
+\itemize{
+\item x is B (if source is BOA) or T (is source is TOA);
+\item r g and b are the the number of the bands to be used respectively
+for red, green and blue, in hexadecimal format.
+Notice that this is the \href{https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/resolutions/spatial}{actual number name of the bands}:
+so, to use i.e. BOA band 11 (1610nm) use the value "b", even if band 11 is
+the 10th band of a BOA product (because band 10 is missing).
+Default is no one (NA).
+}}
+
 \item{list_indices}{(optional) Character vector with the values of the
 spectral indices to be computed. Default is no one (NA).}
 
 \item{index_source}{(optional) Character value: if "BOA" (default), indices
 are computed from BOA values; if "TOA", non corrected reflectances
 are instead used (be careful to use this setting!).}
+
+\item{rgb_ranges}{(optional) Range of valid values to be used for RGB products.
+If can be a 2-length integer vector (min-max for all the 3 bands) or a 6-length vector or
+3x2 matrix (min red, min green, min blue, max red, max green, max blue).
+Default is to use c(0,2500) for bands 2, 3 and 4; c(0,7500) for other bands.
+In case \code{list_rgb} is a vector of length > 1, \code{rgb_ranges} must be a list
+of the same length (otherwise, the same range vlaues will be used for all the RGB
+products).}
 
 \item{mask_type}{(optional) Character value which determines the categories
 in the Surface Classification Map to be masked (see \code{\link[=s2_mask]{s2_mask()}}
@@ -200,12 +222,22 @@ by \code{gdal_translate}: "near" (default), "bilinear", "cubic",
 \item{outformat}{(optional) Format of the output file (in a
 format recognised by GDAL). Default is "GTiff".}
 
+\item{rgb_outformat}{(optional) Format of the output RGB products (in a
+format recognised by GDAL). Default is "GTiff".}
+
 \item{index_datatype}{(optional) Numeric datatype of the ouptut
 spectral indices (see \link{s2_calcindices}.}
 
 \item{compression}{(optional) In the case GTiff is chosen as
 output format, the compression indicated with this parameter is
 used (default is "DEFLATE").}
+
+\item{rgb_compression}{(optional) In the case GTiff is chosen as
+output format for RGB products, the compression indicated
+with this parameter is used (default is "DEFLATE").
+In the cases GTiff or JPEG are chosen as output format for RGB products,
+this parameter can also be a 1-100 integer value, which is interpreted
+as the compression level for a JPEG compression.}
 
 \item{overwrite}{(optional) Logical value: should existing output
 files be overwritten? (default: FALSE).}
@@ -234,6 +266,10 @@ the format specified with \code{outformat} parameter.}
 \item{path_out}{(optional) Path of the directory in which Sentinel-2
 output products are searched and/or generated.
 If not provided (default), a temporary directory is used.}
+
+\item{path_rgb}{(optional) Path of the directory in RGB products
+are searched and/or generated.
+If not provided (default), \code{path_out} is used.}
 
 \item{path_indices}{(optional) Path of the directory in which files of
 spectral indices are searched and/or generated.

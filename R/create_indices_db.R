@@ -107,7 +107,11 @@ create_indices_db <- function(xslt_path = NA,
   # change name to some indices
   s2_table[grep("MIR/NIR Normalized Difference",s2_table$longname),name:="NDVI2"]
   s2_table[longname=="Transformed Soil Adjusted Vegetation Index 2",name:="TSAVI2"]
-  s2_table[longname=="Enhanced Vegetation Index 2",name:="EVI3"]
+  s2_table[longname=="Modified Soil Adjusted Vegetation Index",name:="MSAVI2"]
+
+  # Change names containing "/"
+  s2_table[,name:=gsub("/",":",name)]
+  
   # remove indices without name
   n_index_toremove <- c(n_index_toremove, s2_table[name=="",n_index])
   # replacing duplicated indices
@@ -119,8 +123,8 @@ create_indices_db <- function(xslt_path = NA,
   n_index_toremove <- c(
     n_index_toremove,
     s2_table[name %in% c("CRI550","CRI700","GEMI","IR550","IR700","LWCI","mCRIG","mCRIRE","CCCI","Ctr6",
-                         "ND800/680","NLI","RARSa1","RARSa2","RARSa3","RARSa4","RARSc3","RARSc4",
-                         "mARI","NDVIc","RSR","SRSWIRI/NIR","SARVI","SQRT(IR/R)","TNDVI"),n_index]) # TODO some indices can be reintegrated
+                         "ND800:680","NLI","RARSa1","RARSa2","RARSa3","RARSa4","RARSc3","RARSc4",
+                         "mARI","NDVIc","RSR","SRSWIRI:NIR","SARVI","SQRT(IR:R)","TNDVI"),n_index]) # TODO some indices can be reintegrated
   # clean
   n_index_toremove <- sort(as.integer(n_index_toremove))
   s2_formula_mathml <- s2_formula_mathml[!s2_table$n_index %in% n_index_toremove]
@@ -182,8 +186,7 @@ create_indices_db <- function(xslt_path = NA,
   
   # last manual corrections on formulas
   s2_table[,s2_formula:=gsub("par\\_([0-9])", "band_\\1", s2_table$s2_formula)] # some bands were wrongly classified as parameters
-  s2_table$s2_formula[s2_table$name=="TCI"] <- gsub("band\\_1\\.5","1.5",s2_table[name=="TCI",s2_formula]) # specific error
-  s2_table$name[s2_table$name=="TCI"] <- "TCI_idx" # in order not to mess with TCI True Color Image product
+  s2_table$name[s2_table$name=="TCI"] <- "TCIdx" # in order not to mess with TCI True Color Image product
   s2_table$name[s2_table$name=="NDSI"] <- "NDSaI" # in order not to mess with Normalized Difference Snow Index
   
   # rename parameters (A, B, ...)
@@ -253,9 +256,9 @@ create_indices_db <- function(xslt_path = NA,
   
   # set as checked for indices ok after previous changes
   s2_table[name %in% c("NDVI","SAVI","MCARI","MCARI2","TCARI","ARVI","NDRE",
-                       "BNDVI","GNDVI","NDII","TCI_idx","MSAVI","OSAVI",
+                       "BNDVI","GNDVI","NDII","TCIdx","MSAVI2","OSAVI",
                        "NBR","EVI2",
-                       "MTVI2","MCARI/MTVI2","TCARI/OSAVI"),checked:=TRUE]
+                       "MTVI2","MCARI:MTVI2","TCARI:OSAVI"),checked:=TRUE]
   
   # set default parameter values
   s2_table[name=="SAVI", a:=0.5] # default value for L (here "a") parameter

@@ -5,8 +5,8 @@
 \alias{s2_perc_masked}
 \title{Apply cloud masks}
 \usage{
-s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba", smooth = 250,
-  buffer = 250, max_mask = 80, outdir = "./masked", tmpdir = NA,
+s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba", smooth = 20,
+  buffer = 10, max_mask = 80, outdir = "./masked", tmpdir = NA,
   rmtmp = TRUE, save_binary_mask = FALSE, format = NA, subdirs = NA,
   compress = "DEFLATE", parallel = FALSE, overwrite = FALSE,
   .log_message = NA, .log_output = NA)
@@ -33,6 +33,7 @@ their names must be in the sen2r naming convention
 \item{mask_type}{(optional) Character vector which determines the type of
 mask to be applied. Accepted values are:
 \itemize{
+\item "nomask": do not mask any pixel;
 \item "nodata": mask pixels checked as "No data" or "Saturated or defective"
 in the SCL product (all pixels with values are maintained);
 \item "cloud_high_proba": mask pixels checked as "No data", "Saturated or
@@ -42,13 +43,13 @@ defective" or "Cloud (high or medium probability)" in the SCL product;
 \item "cloud_low_proba": mask pixels checked as "No data", "Saturated or
 defective" or "Cloud (any probability)" in the SCL product;
 \item "cloud_and_shadow": mask pixels checked as "No data", "Saturated or
-defective", "Cloud (any probability)", "Cloud shadow" or "Dark area"
+defective", "Cloud (any probability)" or "Cloud shadow"
 in the SCL product;
 \item "clear_sky": mask pixels checked as "No data", "Saturated or
-defective", "Cloud (any probability)", "Cloud shadow", "Dark area"
+defective", "Cloud (any probability)", "Cloud shadow"
 or "Thin cirrus" in the SCL product
-(only pixels classified as clear-sky surface - so "Vegetation",
-"Bare soil", "Water" or "Snow" - are maintained);
+(only pixels classified as clear-sky surface - so "Dark area",
+"Vegetation", "Bare soil", "Water" or "Snow" - are maintained);
 \item "land": mask pixels checked as "No data", "Saturated or
 defective", "Cloud (any probability)", "Cloud shadow", "Dark area",
 "Thin cirrus", "Water" or "Snow" in the SCL product
@@ -64,11 +65,13 @@ probability)") and 11 ("Snow");
 
 \item{smooth}{(optional) Numerical (positive): should the mask be smoothed=the size (in the unit of
 \code{inmask}, typically metres) to be used as radius for the smoothing
-(the higher it is, the more smooth the output mask will result).}
+(the higher it is, the more smooth the output mask will result).
+Defaul is 20.}
 
 \item{buffer}{(optional) Numerical (positive or negative): the size of the
 buffer (in the unit of \code{inmask}, typically metres) to be applied to the
-masked area after smoothing it (positive to enlarge, negative to reduce).}
+masked area after smoothing it (positive to enlarge, negative to reduce).
+Defaul is 10.}
 
 \item{max_mask}{(optional) Numeric value (range 0 to 100), which represents
 the maximum percentage of allowed masked surface (by clouds or any other

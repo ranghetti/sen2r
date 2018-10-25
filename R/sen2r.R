@@ -92,11 +92,29 @@
 #' @param list_prods (optional) Character vector with the values of the
 #'  products to be processed (accepted values: "TOA", "BOA", "SCL",
 #'  "TCI"). Default is "BOA".
+#' @param list_rgb (optional) Character vector with the values of the
+#'  RGB images to be produced.
+#'  Images are in the form xRGBrgb, when:
+#'  - x is B (if source is BOA) or T (is source is TOA);
+#'  - r g and b are the the number of the bands to be used respectively
+#'      for red, green and blue, in hexadecimal format.
+#'      Notice that this is the [actual number name of the bands](
+#'      https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/resolutions/spatial):
+#'      so, to use i.e. BOA band 11 (1610nm) use the value "b", even if band 11 is
+#'      the 10th band of a BOA product (because band 10 is missing).
+#'  Default is no one (NA).
 #' @param list_indices (optional) Character vector with the values of the
 #'  spectral indices to be computed. Default is no one (NA).
 #' @param index_source (optional) Character value: if "BOA" (default), indices
 #'  are computed from BOA values; if "TOA", non corrected reflectances
 #'  are instead used (be careful to use this setting!).
+#' @param rgb_ranges (optional) Range of valid values to be used for RGB products.
+#'  If can be a 2-length integer vector (min-max for all the 3 bands) or a 6-length vector or 
+#'  3x2 matrix (min red, min green, min blue, max red, max green, max blue).
+#'  Default is to use c(0,2500) for bands 2, 3 and 4; c(0,7500) for other bands.
+#'  In case `list_rgb` is a vector of length > 1, `rgb_ranges` must be a list 
+#'  of the same length (otherwise, the same range vlaues will be used for all the RGB
+#'  products).
 #' @param mask_type (optional) Character value which determines the categories
 #'  in the Surface Classification Map to be masked (see [s2_mask()]
 #'  for the accepted values). Default (NA) is not to mask.
@@ -144,11 +162,19 @@
 #'  (for now, only SCL): one among "near" (default) and "mode".
 #' @param outformat (optional) Format of the output file (in a
 #'  format recognised by GDAL). Default is "GTiff".
+#' @param rgb_outformat (optional) Format of the output RGB products (in a
+#'  format recognised by GDAL). Default is "GTiff".
 #' @param index_datatype (optional) Numeric datatype of the ouptut 
 #'  spectral indices (see [s2_calcindices].
 #' @param compression (optional) In the case GTiff is chosen as
 #'  output format, the compression indicated with this parameter is
 #'  used (default is "DEFLATE").
+#' @param rgb_compression (optional) In the case GTiff is chosen as
+#'  output format for RGB products, the compression indicated 
+#'  with this parameter is used (default is "DEFLATE"). 
+#'  In the cases GTiff or JPEG are chosen as output format for RGB products,
+#'  this parameter can also be a 1-100 integer value, which is interpreted
+#'  as the compression level for a JPEG compression.
 #' @param overwrite (optional) Logical value: should existing output
 #'  files be overwritten? (default: FALSE).
 #' @param path_l1c (optional) Path of the directory in which Level-1C SAFE
@@ -171,6 +197,9 @@
 #' @param path_out (optional) Path of the directory in which Sentinel-2
 #'  output products are searched and/or generated.
 #'  If not provided (default), a temporary directory is used.
+#' @param path_rgb (optional) Path of the directory in RGB products
+#'  are searched and/or generated.
+#'  If not provided (default), `path_out` is used.
 #' @param path_indices (optional) Path of the directory in which files of
 #' spectral indices are searched and/or generated.
 #'  If not provided (default), `path_out` is used.
@@ -244,8 +273,10 @@ sen2r <- function(param_list = NULL,
                   s2tiles_selected = NA, # below re-defined for online mode
                   s2orbits_selected = NA, # temporary select all orbits (TODO implement)
                   list_prods = c("BOA"),
+                  list_rgb = NA,
                   list_indices = NA,
                   index_source = "BOA",
+                  rgb_ranges = NA,
                   mask_type = NA,
                   max_mask = 100,
                   mask_smooth = 0,
@@ -260,14 +291,17 @@ sen2r <- function(param_list = NULL,
                   resampling = "near",
                   resampling_scl = "near",
                   outformat = "GTiff",
+                  rgb_outformat = "GTiff",
                   index_datatype = "Int16",
                   compression = "DEFLATE",
+                  rgb_compression = "90",
                   overwrite = FALSE,
                   path_l1c = NA,
                   path_l2a = NA,
                   path_tiles = NA,
                   path_merged = NA,
                   path_out = NA,
+                  path_rgb = NA,
                   path_indices = NA,
                   path_subdirs = TRUE,
                   thumbnails = TRUE,
@@ -319,8 +353,10 @@ sen2r <- function(param_list = NULL,
     s2tiles_selected = s2tiles_selected,
     s2orbits_selected = s2orbits_selected,
     list_prods = list_prods,
+    list_rgb = list_rgb,
     list_indices = list_indices,
     index_source = index_source,
+    rgb_ranges = rgb_ranges,
     mask_type = mask_type,
     max_mask = max_mask,
     mask_smooth = mask_smooth,
@@ -335,14 +371,17 @@ sen2r <- function(param_list = NULL,
     resampling = resampling,
     resampling_scl = resampling_scl,
     outformat = outformat,
+    rgb_outformat = rgb_outformat,
     index_datatype = index_datatype,
     compression = compression,
+    rgb_compression = rgb_compression,
     overwrite = overwrite,
     path_l1c = path_l1c,
     path_l2a = path_l2a,
     path_tiles = path_tiles,
     path_merged = path_merged,
     path_out = path_out,
+    path_rgb = path_rgb,
     path_indices = path_indices,
     path_subdirs = path_subdirs,
     thumbnails = thumbnails,
@@ -398,8 +437,10 @@ sen2r <- function(param_list = NULL,
                    s2tiles_selected,
                    s2orbits_selected,
                    list_prods,
+                   list_rgb,
                    list_indices,
                    index_source,
+                   rgb_ranges,
                    mask_type,
                    max_mask,
                    mask_smooth,
@@ -414,14 +455,17 @@ sen2r <- function(param_list = NULL,
                    resampling,
                    resampling_scl,
                    outformat,
+                   rgb_outformat,
                    index_datatype,
                    compression,
+                   rgb_compression,
                    overwrite,
                    path_l1c,
                    path_l2a,
                    path_tiles,
                    path_merged,
                    path_out,
+                   path_rgb,
                    path_indices,
                    path_subdirs,
                    thumbnails,
@@ -629,11 +673,11 @@ sen2r <- function(param_list = NULL,
     # if outformat is VRT, set as a subdirectory of path_out
     tmpdir <- if (
       pm$outformat == "VRT" & 
-      !all(is.na(pm[c("path_out","path_indices","path_tiles","path_merged")]))
+      !all(is.na(pm[c("path_out","path_rgb","path_indices","path_tiles","path_merged")]))
     ) {
       # use path_out if it is not NA, otherwise path_indices, otherwise path_tiles, otherwise path_merged
-      main_dir <- unlist(pm[c("path_out","path_indices","path_tiles","path_merged")])[
-        !is.na(pm[c("path_out","path_indices","path_tiles","path_merged")])
+      main_dir <- unlist(pm[c("path_out","path_rgb","path_indices","path_tiles","path_merged")])[
+        !is.na(pm[c("path_out","path_rgb","path_indices","path_tiles","path_merged")])
         ][1]
       dir.create(main_dir, showWarnings=FALSE)
       file.path(main_dir, ".vrt")
@@ -650,6 +694,7 @@ sen2r <- function(param_list = NULL,
   # internal parameters
   paths <- c()
   paths["out"] <- if (!is.na(pm$path_out)) {pm$path_out} else {file.path(tmpdir,"out")}
+  paths["rgb"] <- if (!is.na(pm$path_rgb)) {pm$path_rgb} else {file.path(tmpdir,"rgb")}
   paths["indices"] <- if (!is.na(pm$path_indices)) {pm$path_indices} else {file.path(tmpdir,"indices")}
   paths["tiles"] <- if (!is.na(pm$path_tiles)) {pm$path_tiles} else {file.path(tmpdir,"tiles")}
   paths["merged"] <- if (!is.na(pm$path_merged)) {pm$path_merged} else {file.path(tmpdir,"merged")}
@@ -660,15 +705,23 @@ sen2r <- function(param_list = NULL,
   l2a_prods <- c("BOA","SCL","TCI")
   
   # if masking is required, produce also SCL
-  list_prods <- if (!is.na(pm$mask_type) & !"SCL" %in% pm$list_prods){
-    c(pm$list_prods,"SCL")
+  list_prods <- if (!is.na(pm$mask_type)) {
+    unique(c(pm$list_prods, "SCL"))
   } else {
     pm$list_prods
   }
-  # if some indices is required, compute also TOA or BOA
-  if (any(!is.na(pm$list_indices)) & !pm$index_source %in% pm$list_prods){
-    list_prods <- c(list_prods, pm$index_source)
+  # if some RGB are required, compute also TOA or BOA
+  if (any(!is.na(pm$list_rgb))) {
+    list_prods <- unique(c(
+      list_prods, 
+      paste0(unique(substr(pm$list_rgb,7,7)),"OA")
+    ))
   }
+  # if some indices are required, compute also TOA or BOA
+  if (any(!is.na(pm$list_indices))) {
+    list_prods <- unique(c(list_prods, pm$index_source))
+  }
+  list_prods <- list_prods[!is.na(list_prods)]
   
   # update s2_levels if processing is TRUE (retrieve from products)
   if (pm$preprocess==TRUE) {
@@ -680,7 +733,7 @@ sen2r <- function(param_list = NULL,
   
   # check that output parent directories exist, and create required paths
   parent_paths <- sapply(
-    pm[c("path_l1c","path_l2a","path_tiles","path_merged","path_out","path_indices")], 
+    pm[c("path_l1c","path_l2a","path_tiles","path_merged","path_out","path_rgb","path_indices")], 
     function(x){if(is.na(x)){NA}else{dirname(x)}}
   ) %>% unique() %>% na.omit() %>% as.character()
   paths_exist <- sapply(parent_paths, file.exists)
@@ -697,7 +750,7 @@ sen2r <- function(param_list = NULL,
     )
   }
   sapply(
-    pm[c("path_l1c","path_l2a","path_tiles","path_merged","path_out","path_indices")],
+    pm[c("path_l1c","path_l2a","path_tiles","path_merged","path_out","path_rgb","path_indices")],
     function(x) {if(is.na(x)){NA}else{dir.create(x, recursive = FALSE, showWarnings = FALSE)}}
   )
   
@@ -706,12 +759,25 @@ sen2r <- function(param_list = NULL,
   # sel_driver <- py$gdal$GetDriverByName(pm$outformat)
   gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))
   sel_driver <- gdal_formats[gdal_formats$name==pm$outformat,]
+  if (is.null(pm$rgb_outformat)) {pm$rgb_outformat <- pm$outformat} # to avoid errors
+  if (is.null(pm$rgb_compression)) {pm$rgb_compression <- pm$compression} # to avoid errors
+  sel_rgb_driver <- gdal_formats[gdal_formats$name==pm$rgb_outformat,]
   
   # if (is.null(py_to_r(sel_driver))) {
   if (nrow(sel_driver)==0) {
     print_message(
       type="error",
       "Format \"",pm$outformat,"\" is not recognised; ",
+      "please use one of the formats supported by your GDAL installation.\n\n",
+      "To list them, use the following command:\n",
+      "gdalUtils::gdalinfo(formats=TRUE)\n\n",
+      "To search for a specific format, use:\n",
+      "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
+  }
+  if (nrow(sel_rgb_driver)==0) {
+    print_message(
+      type="error",
+      "Format \"",pm$rgb_outformat,"\" is not recognised; ",
       "please use one of the formats supported by your GDAL installation.\n\n",
       "To list them, use the following command:\n",
       "gdalUtils::gdalinfo(formats=TRUE)\n\n",
@@ -727,6 +793,7 @@ sen2r <- function(param_list = NULL,
   #   unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(py$gdal$DMD_EXTENSIONS))," ")," "))[1]
   # }
   main_ext <- sel_driver[1,"ext"]
+  rgb_ext <- sel_rgb_driver[1,"ext"]
   
   
   #### SAFE Part (find, download, correct)
@@ -991,7 +1058,7 @@ sen2r <- function(param_list = NULL,
     # otherwise, filter on tiles but keep also NA not to discard old name products.
     # (products will be filtered later: #filter2)
     if (all(!is.na(pm$s2tiles_selected))) {
-      s2_dt <- s2_dt[id_tile %in% c(pm$s2tiles_selected,NA),]
+      s2_dt <- s2_dt[id_tile %in% c(as.character(pm$s2tiles_selected),NA),]
     } else if (all(st_is_valid(pm$extent))) {
       # if no tiles were specified, select only tiles which overlap the extent
       # (this to prevent to use unuseful SAFE in offline mode)
@@ -1092,15 +1159,15 @@ sen2r <- function(param_list = NULL,
         s2_list_l1c=s2_list_l1c, s2_list_l2a=s2_list_l2a_exp, 
         paths=paths, 
         list_prods=list_prods, 
-        out_ext=out_ext, index_ext=main_ext, tiles_ext=tiles_ext, 
-        merged_ext=merged_ext, warped_ext=warped_ext, sr_masked_ext=sr_masked_ext,
+        out_ext=out_ext, index_ext=main_ext, tiles_ext=tiles_ext, merged_ext=merged_ext, 
+        warped_ext=warped_ext, rgb_ext = rgb_ext, sr_masked_ext=sr_masked_ext,
         force_tiles = TRUE,
         ignorelist = if (exists("ignorelist")) {ignorelist} else {NULL}
       )
       
       # Check if processing is needed
       if (all(sapply(s2names[c(
-        "indices_names_new", "out_names_new", "masked_names_new", 
+        "indices_names_new", "rgb_names_new", "out_names_new", "masked_names_new", 
         "warped_names_new", "merged_names_new", "tiles_names_new"
       )], length) == 0)) {
         print_message(
@@ -1388,8 +1455,8 @@ sen2r <- function(param_list = NULL,
     s2_list_l2a = if (exists("s2_list_l2a")) {s2_list_l2a} else {character(0)},
     paths=paths, 
     list_prods=list_prods, 
-    out_ext=out_ext, index_ext=main_ext, tiles_ext=tiles_ext, 
-    merged_ext=merged_ext, warped_ext=warped_ext, sr_masked_ext=sr_masked_ext,
+    out_ext=out_ext, index_ext=main_ext, tiles_ext=tiles_ext, merged_ext=merged_ext, 
+    warped_ext=warped_ext, rgb_ext = rgb_ext, sr_masked_ext=sr_masked_ext,
     force_tiles = FALSE,
     ignorelist = if (exists("ignorelist")) {ignorelist} else {NULL}
   )
@@ -1624,7 +1691,7 @@ sen2r <- function(param_list = NULL,
     #                           if(pm$path_subdirs==TRUE){basename(dirname(warped_names[!names_merged_exp_scl_idx]))}else{""},
     #                           gsub(paste0(warped_ext,"$"),out_ext,basename(warped_names[!names_merged_exp_scl_idx])))
     
-    if (!is.na(pm$mask_type)) {
+    if (!is.na(pm$mask_type) & length(s2names$masked_names_new)>0) {
       print_message(
         type = "message",
         date = TRUE,
@@ -1711,6 +1778,46 @@ sen2r <- function(param_list = NULL,
     
   } # end of gdal_warp and s2_mask IF cycle
   
+  
+  ## 8a. Create RGB products ##
+  rgb_names_infiles <- if (pm$clip_on_extent==TRUE) {
+    s2names$warped_names_reqforrgb
+  } else {
+    s2names$merged_names_reqforrgb
+  }
+  
+  if (sum(file.exists(nn(rgb_names_infiles)))>0) {
+    
+    print_message(
+      type = "message",
+      date = TRUE,
+      "Producing required RGB images."
+    )
+    
+    dir.create(paths["rgb"], recursive=FALSE, showWarnings=FALSE)
+    rgb_names <- trace_function(
+      s2_rgb,
+      infiles = rgb_names_infiles[file.exists(rgb_names_infiles)],
+      rgb_bands = lapply(
+        strsplit(unique(gsub("^RGB([0-9a-f]{3})[BT]$","\\1",pm$list_rgb)),""), 
+        function(x) {strtoi(paste0("0x",x))}
+      ),
+      scaleRange = pm$rgb_ranges,
+      outdir = paths["rgb"],
+      subdirs = pm$path_subdirs,
+      format = pm$rgb_outformat,
+      compress = pm$rgb_compression,
+      tmpdir = file.path(tmpdir, "s2_rgb"),
+      rmtmp = rmtmp,
+      parallel = pm$parallel,
+      overwrite = pm$overwrite,
+      .log_message = .log_message, .log_output = .log_output,
+      trace_files = s2names$rgb_names_new
+    )
+    
+  }
+  
+  
   ## 8. Compute spectral indices ##
   # dir.create(file.path(paths["out"],pm$list_indices), recursive=FALSE, showWarnings = FALSE)
   if (sum(file.exists(nn(s2names$out_names_req)))>0) {
@@ -1727,7 +1834,7 @@ sen2r <- function(param_list = NULL,
       infiles = s2names$out_names_req[file.exists(s2names$out_names_req)],
       indices = pm$list_indices,
       outdir = paths["indices"],
-      subdirs = TRUE,
+      subdirs = pm$path_subdirs,
       tmpdir = file.path(tmpdir, "s2_calcindices"),
       source = pm$index_source,
       format = pm$outformat,
@@ -1779,7 +1886,7 @@ sen2r <- function(param_list = NULL,
   # check file which have been created
   names_out <- unique(unlist(s2names[c(
     "tiles_names_new", "merged_names_new", "warped_names_new",
-    "masked_names_new", "out_names_new", "indices_names_new"
+    "masked_names_new", "out_names_new", "rgb_names_new", "indices_names_new"
   )]))
   # exclude temporary files
   names_out <- names_out[!grepl(tmpdir, names_out, fixed=TRUE)]
@@ -1788,7 +1895,7 @@ sen2r <- function(param_list = NULL,
   
   ## 9. create thumbnails
   
-  if (thumbnails==TRUE) {
+  if (pm$thumbnails==TRUE) {
     
     thumb_names_req <- names_out_created
     

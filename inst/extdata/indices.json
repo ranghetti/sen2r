@@ -175,7 +175,7 @@
     {
       "n_index": 26,
       "longname": "Difference 678/500",
-      "name": "D678/500",
+      "name": "D678:500",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=481",
       "s2_formula": "band_4-band_2",
       "checked": false,
@@ -184,7 +184,7 @@
     {
       "n_index": 27,
       "longname": "Difference 800/550",
-      "name": "D800/550",
+      "name": "D800:550",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=398",
       "s2_formula": "band_8-band_3",
       "checked": false,
@@ -193,7 +193,7 @@
     {
       "n_index": 28,
       "longname": "Difference 800/680",
-      "name": "D800/680",
+      "name": "D800:680",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=403",
       "s2_formula": "band_8-band_4",
       "checked": false,
@@ -202,7 +202,7 @@
     {
       "n_index": 29,
       "longname": "Difference 833/658",
-      "name": "D833/658",
+      "name": "D833:658",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=551",
       "s2_formula": "band_8-band_4",
       "checked": false,
@@ -238,10 +238,10 @@
     {
       "n_index": 33,
       "longname": "Enhanced Vegetation Index 2",
-      "name": "EVI3",
+      "name": "EVI2",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=237",
       "s2_formula": "2.4*(band_8-band_4)/(band_8+band_4+1)",
-      "checked": false,
+      "checked": true,
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mrow>\n   <mn>2.4<\/mn>\n   <mo>&amp;InvisibleTimes;<\/mo>\n   <mfrac>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mi mathcolor=\"#443399\">NIR<\/mi>\n       <mo>-<\/mo>\n       <mi mathcolor=\"#443399\">RED<\/mi>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mi mathcolor=\"#443399\">NIR<\/mi>\n       <mo>+<\/mo>\n       <mrow>\n        <mi mathcolor=\"#443399\">RED<\/mi>\n        <mo>+<\/mo>\n        <mn>1<\/mn>\n       <\/mrow>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n   <\/mfrac>\n  <\/mrow>\n <\/mrow>\n<\/math>"
     },
     {
@@ -391,7 +391,7 @@
     {
       "n_index": 62,
       "longname": "MCARI/MTVI2",
-      "name": "MCARI/MTVI2",
+      "name": "MCARI:MTVI2",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=197",
       "s2_formula": "(((band_5-band_4)-0.2*(band_5-band_3))*((band_5)/(band_4)))/((1.5*(1.2*(band_8-band_3)-2.5*(band_4-band_3))/(sqrt(power((2*band_8+1),2)-(6*band_8-5*sqrt(band_4))-0.5))))",
       "checked": true,
@@ -400,7 +400,7 @@
     {
       "n_index": 63,
       "longname": "MCARI/OSAVI",
-      "name": "MCARI/OSAVI",
+      "name": "MCARI:OSAVI",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=192",
       "s2_formula": "((band_5-band_4)-0.2*(band_5-band_3)*((band_5)/(band_4)))/((1+0.16)*(band_8-band_4)/(band_8+band_4+0.16))",
       "checked": false,
@@ -517,7 +517,7 @@
     {
       "n_index": 79,
       "longname": "Modified Simple Ratio NIR/RED",
-      "name": "MSRNir/Red",
+      "name": "MSRNir:Red",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=362",
       "s2_formula": "(((band_8)/(band_4))-1)/(sqrt(((band_8)/(band_4))+1))",
       "checked": false,
@@ -526,7 +526,7 @@
     {
       "n_index": 80,
       "longname": "Modified Soil Adjusted Vegetation Index",
-      "name": "MSAVI",
+      "name": "MSAVI2",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=44",
       "s2_formula": "(2*band_8+1-sqrt(power((2*band_8+1),2)-8*(band_8-band_4)))/(2)",
       "checked": true,
@@ -607,7 +607,7 @@
     {
       "n_index": 90,
       "longname": "Normalized Difference 774/677",
-      "name": "ND774/677",
+      "name": "ND774:677",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=563",
       "s2_formula": "(band_7-band_4)/(band_7+band_4)",
       "checked": false,
@@ -625,7 +625,7 @@
     {
       "n_index": 92,
       "longname": "Normalized Difference 782/666",
-      "name": "ND782/666",
+      "name": "ND782:666",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=385",
       "s2_formula": "(band_7-band_4)/(band_7+band_4)",
       "checked": false,
@@ -634,7 +634,7 @@
     {
       "n_index": 93,
       "longname": "Normalized Difference 790/670",
-      "name": "ND790/670",
+      "name": "ND790:670",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=278",
       "s2_formula": "(band_7-band_4)/(band_7+band_4)",
       "checked": false,
@@ -643,7 +643,7 @@
     {
       "n_index": 94,
       "longname": "Normalized Difference 800/2170",
-      "name": "ND800/2170",
+      "name": "ND800:2170",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=462",
       "s2_formula": "(band_8-band_12)/(band_8+band_12)",
       "checked": false,
@@ -724,7 +724,7 @@
     {
       "n_index": 104,
       "longname": "Normalized Difference 827/668",
-      "name": "ND827/668",
+      "name": "ND827:668",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=528",
       "s2_formula": "(band_8-band_4)/(band_8+band_4)",
       "checked": false,
@@ -733,7 +733,7 @@
     {
       "n_index": 105,
       "longname": "Normalized Difference 833/1649 Infrared Index",
-      "name": "ND833/1649",
+      "name": "ND833:1649",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=554",
       "s2_formula": "(band_8-band_11)/(band_8+band_11)",
       "checked": false,
@@ -742,7 +742,7 @@
     {
       "n_index": 106,
       "longname": "Normalized Difference 833/658",
-      "name": "ND833/658",
+      "name": "ND833:658",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=550",
       "s2_formula": "(band_8-band_4)/(band_8+band_4)",
       "checked": false,
@@ -760,7 +760,7 @@
     {
       "n_index": 108,
       "longname": "Normalized Difference 895/675",
-      "name": "ND895/675",
+      "name": "ND895:675",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=544",
       "s2_formula": "(band_8-band_4)/(band_8+band_4)",
       "checked": false,
@@ -976,7 +976,7 @@
     {
       "n_index": 146,
       "longname": "Simple Ratio 1650/2218",
-      "name": "TM5/TM7",
+      "name": "TM5:TM7",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=337",
       "s2_formula": "(band_11)/(band_12)",
       "checked": false,
@@ -985,7 +985,7 @@
     {
       "n_index": 147,
       "longname": "Simple Ratio 440/740",
-      "name": "SR440/740",
+      "name": "SR440:740",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=415",
       "s2_formula": "(band_1)/(band_6)",
       "checked": false,
@@ -1003,7 +1003,7 @@
     {
       "n_index": 149,
       "longname": "Simple Ratio 520/670",
-      "name": "SR520/670",
+      "name": "SR520:670",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=321",
       "s2_formula": "(band_2)/(band_4)",
       "checked": false,
@@ -1012,7 +1012,7 @@
     {
       "n_index": 150,
       "longname": "Simple Ratio 550/670",
-      "name": "SR550/670",
+      "name": "SR550:670",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=316",
       "s2_formula": "(band_3)/(band_4)",
       "checked": false,
@@ -1030,7 +1030,7 @@
     {
       "n_index": 152,
       "longname": "Simple Ratio 550/800",
-      "name": "SR550/800",
+      "name": "SR550:800",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=397",
       "s2_formula": "(band_3)/(band_8)",
       "checked": false,
@@ -1048,7 +1048,7 @@
     {
       "n_index": 154,
       "longname": "Simple Ratio 560/658 GRVIhyper",
-      "name": "SR560/658",
+      "name": "SR560:658",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=552",
       "s2_formula": "(band_3)/(band_4)",
       "checked": false,
@@ -1057,7 +1057,7 @@
     {
       "n_index": 155,
       "longname": "Simple Ratio 672/550 Datt5",
-      "name": "SR672/550",
+      "name": "SR672:550",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=154",
       "s2_formula": "(band_4)/(band_3)",
       "checked": false,
@@ -1066,7 +1066,7 @@
     {
       "n_index": 156,
       "longname": "Simple Ratio 672/708",
-      "name": "SR672/708",
+      "name": "SR672:708",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=342",
       "s2_formula": "(band_4)/(band_5)",
       "checked": false,
@@ -1075,7 +1075,7 @@
     {
       "n_index": 157,
       "longname": "Simple Ratio 674/553",
-      "name": "SR674/553",
+      "name": "SR674:553",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=355",
       "s2_formula": "(band_4)/(band_3)",
       "checked": false,
@@ -1084,7 +1084,7 @@
     {
       "n_index": 158,
       "longname": "Simple Ratio 675/555",
-      "name": "SR675/555",
+      "name": "SR675:555",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=370",
       "s2_formula": "(band_4)/(band_3)",
       "checked": false,
@@ -1093,7 +1093,7 @@
     {
       "n_index": 159,
       "longname": "Simple Ratio 675/700",
-      "name": "SR675/700",
+      "name": "SR675:700",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=181",
       "s2_formula": "(band_4)/(band_5)",
       "checked": false,
@@ -1102,7 +1102,7 @@
     {
       "n_index": 160,
       "longname": "Simple Ratio 675/705",
-      "name": "SR675/705",
+      "name": "SR675:705",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=369",
       "s2_formula": "(band_4)/(band_5)",
       "checked": false,
@@ -1120,7 +1120,7 @@
     {
       "n_index": 162,
       "longname": "Simple Ratio 700/670",
-      "name": "SR700/670",
+      "name": "SR700:670",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=180",
       "s2_formula": "(band_5)/(band_4)",
       "checked": false,
@@ -1129,7 +1129,7 @@
     {
       "n_index": 163,
       "longname": "Simple Ratio 710/670",
-      "name": "SR710/670",
+      "name": "SR710:670",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=317",
       "s2_formula": "(band_5)/(band_4)",
       "checked": false,
@@ -1138,7 +1138,7 @@
     {
       "n_index": 164,
       "longname": "Simple Ratio 735/710",
-      "name": "SR735/710",
+      "name": "SR735:710",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=409",
       "s2_formula": "(band_6)/(band_5)",
       "checked": false,
@@ -1147,7 +1147,7 @@
     {
       "n_index": 165,
       "longname": "Simple Ratio 774/677",
-      "name": "SR774/677",
+      "name": "SR774:677",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=562",
       "s2_formula": "(band_7)/(band_4)",
       "checked": false,
@@ -1156,7 +1156,7 @@
     {
       "n_index": 166,
       "longname": "Simple Ratio 800/2170",
-      "name": "SR800/2170",
+      "name": "SR800:2170",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=427",
       "s2_formula": "(band_8)/(band_12)",
       "checked": false,
@@ -1183,7 +1183,7 @@
     {
       "n_index": 169,
       "longname": "Simple Ratio 800/550",
-      "name": "SR800/550",
+      "name": "SR800:550",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=123",
       "s2_formula": "(band_8)/(band_3)",
       "checked": false,
@@ -1219,7 +1219,7 @@
     {
       "n_index": 173,
       "longname": "Simple Ratio 800/680 Pigment Specific Simple Ratio (Cholophyll a) (PSSRa)",
-      "name": "SR800/680",
+      "name": "SR800:680",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=176",
       "s2_formula": "(band_8)/(band_4)",
       "checked": false,
@@ -1228,7 +1228,7 @@
     {
       "n_index": 174,
       "longname": "Simple Ratio 801/550 NIR/Green",
-      "name": "SR801/550",
+      "name": "SR801:550",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=346",
       "s2_formula": "(band_8)/(band_3)",
       "checked": false,
@@ -1237,7 +1237,7 @@
     {
       "n_index": 175,
       "longname": "Simple Ratio 801/670 NIR/Red",
-      "name": "SR801/670",
+      "name": "SR801:670",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=345",
       "s2_formula": "(band_8)/(band_4)",
       "checked": false,
@@ -1255,7 +1255,7 @@
     {
       "n_index": 177,
       "longname": "Simple Ratio 833/1649 MSIhyper",
-      "name": "SR833/1649",
+      "name": "SR833:1649",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=553",
       "s2_formula": "(band_8)/(band_11)",
       "checked": false,
@@ -1264,7 +1264,7 @@
     {
       "n_index": 178,
       "longname": "Simple Ratio 833/658",
-      "name": "SR833/658",
+      "name": "SR833:658",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=549",
       "s2_formula": "(band_8)/(band_4)",
       "checked": false,
@@ -1282,7 +1282,7 @@
     {
       "n_index": 180,
       "longname": "Simple Ratio 860/550",
-      "name": "SR860/550",
+      "name": "SR860:550",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=343",
       "s2_formula": "(band_8a)/(band_3)",
       "checked": false,
@@ -1291,7 +1291,7 @@
     {
       "n_index": 181,
       "longname": "Simple Ratio 860/708",
-      "name": "SR860/708",
+      "name": "SR860:708",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=344",
       "s2_formula": "(band_8a)/(band_5)",
       "checked": false,
@@ -1309,7 +1309,7 @@
     {
       "n_index": 183,
       "longname": "Simple Ratio MIR/Red Eisenhydroxid-Index",
-      "name": "SRMIR/Red",
+      "name": "SRMIR:Red",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=14",
       "s2_formula": "(band_12)/(band_4)",
       "checked": false,
@@ -1318,7 +1318,7 @@
     {
       "n_index": 184,
       "longname": "Simple Ratio NIR/700-715",
-      "name": "SRNir/700-715",
+      "name": "SRNir:700-715",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=366",
       "s2_formula": "(band_8)/(band_5)",
       "checked": false,
@@ -1336,7 +1336,7 @@
     {
       "n_index": 186,
       "longname": "Simple Ratio NIR/MIR",
-      "name": "SRNIR/MIR",
+      "name": "SRNIR:MIR",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=479",
       "s2_formula": "(band_8)/(band_12)",
       "checked": false,
@@ -1381,7 +1381,7 @@
     {
       "n_index": 191,
       "longname": "Simple Ratio Red/NIR Ratio Vegetation-Index",
-      "name": "SRRed/NIR",
+      "name": "SRRed:NIR",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=568",
       "s2_formula": "(band_4)/(band_8)",
       "checked": false,
@@ -1742,7 +1742,7 @@
     {
       "n_index": 237,
       "longname": "TCARI/OSAVI",
-      "name": "TCARI/OSAVI",
+      "name": "TCARI:OSAVI",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=191",
       "s2_formula": "(3*(band_5-band_4)-0.2*(band_5-band_3)*(band_5)/(band_4))/((1+0.16)*(band_8-band_4)/(band_8+band_4+0.16))",
       "checked": true,
@@ -1778,7 +1778,7 @@
     {
       "n_index": 243,
       "longname": "Triangular chlorophyll index",
-      "name": "TCI_idx",
+      "name": "TCIdx",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=392",
       "s2_formula": "1.2*(band_5-band_3)-1.5*(band_4-band_3)*sqrt((band_5)/(band_4))",
       "checked": true,
@@ -1885,5 +1885,5 @@
     }
   ],
   "pkg_version": ["0.3.3"],
-  "creation_date": ["2018-07-18 14:53:10"]
+  "creation_date": ["2018-10-24 11:00:35"]
 }

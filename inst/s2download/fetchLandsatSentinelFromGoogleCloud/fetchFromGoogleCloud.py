@@ -84,6 +84,11 @@ def findLandsatInCollectionMetadata(collection_file, cc_limit, date_start, date_
 
 def findS2InCollectionMetadata(collection_file, cc_limit, date_start, date_end, tile, latest = False):
     # This function queries the sentinel2 index catalogue and retrieves an url for the best image found
+    
+    if type(date_start) == type("string"):
+        date_start = datetime.datetime.strptime(date_start, '%Y-%m-%d')
+    if type(date_end) == type("string"):
+        date_end = datetime.datetime.strptime(date_end, '%Y-%m-%d')
         
     print("Searching for Sentinel-2 images in catalog...")
     cc_values = []

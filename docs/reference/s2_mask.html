@@ -122,8 +122,8 @@ of masked rasters.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>s2_mask</span>(<span class='no'>infiles</span>, <span class='no'>maskfiles</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='st'>"cloud_medium_proba"</span>, <span class='kw'>smooth</span> <span class='kw'>=</span> <span class='fl'>250</span>,
-  <span class='kw'>buffer</span> <span class='kw'>=</span> <span class='fl'>250</span>, <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>80</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"./masked"</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+    <pre class="usage"><span class='fu'>s2_mask</span>(<span class='no'>infiles</span>, <span class='no'>maskfiles</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='st'>"cloud_medium_proba"</span>, <span class='kw'>smooth</span> <span class='kw'>=</span> <span class='fl'>20</span>,
+  <span class='kw'>buffer</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>80</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"./masked"</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>save_binary_mask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>.log_message</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>.log_output</span> <span class='kw'>=</span> <span class='fl'>NA</span>)
@@ -157,6 +157,7 @@ their names must be in the sen2r naming convention
       <th>mask_type</th>
       <td><p>(optional) Character vector which determines the type of
 mask to be applied. Accepted values are:</p><ul>
+<li><p>"nomask": do not mask any pixel;</p></li>
 <li><p>"nodata": mask pixels checked as "No data" or "Saturated or defective"
 in the SCL product (all pixels with values are maintained);</p></li>
 <li><p>"cloud_high_proba": mask pixels checked as "No data", "Saturated or
@@ -166,13 +167,13 @@ defective" or "Cloud (high or medium probability)" in the SCL product;</p></li>
 <li><p>"cloud_low_proba": mask pixels checked as "No data", "Saturated or
 defective" or "Cloud (any probability)" in the SCL product;</p></li>
 <li><p>"cloud_and_shadow": mask pixels checked as "No data", "Saturated or
-defective", "Cloud (any probability)", "Cloud shadow" or "Dark area"
+defective", "Cloud (any probability)" or "Cloud shadow"
 in the SCL product;</p></li>
 <li><p>"clear_sky": mask pixels checked as "No data", "Saturated or
-defective", "Cloud (any probability)", "Cloud shadow", "Dark area"
+defective", "Cloud (any probability)", "Cloud shadow"
 or "Thin cirrus" in the SCL product
-(only pixels classified as clear-sky surface - so "Vegetation",
-"Bare soil", "Water" or "Snow" - are maintained);</p></li>
+(only pixels classified as clear-sky surface - so "Dark area",
+"Vegetation", "Bare soil", "Water" or "Snow" - are maintained);</p></li>
 <li><p>"land": mask pixels checked as "No data", "Saturated or
 defective", "Cloud (any probability)", "Cloud shadow", "Dark area",
 "Thin cirrus", "Water" or "Snow" in the SCL product
@@ -190,13 +191,15 @@ probability)") and 11 ("Snow");</p></li>
       <th>smooth</th>
       <td><p>(optional) Numerical (positive): should the mask be smoothed=the size (in the unit of
 <code>inmask</code>, typically metres) to be used as radius for the smoothing
-(the higher it is, the more smooth the output mask will result).</p></td>
+(the higher it is, the more smooth the output mask will result).
+Defaul is 20.</p></td>
     </tr>
     <tr>
       <th>buffer</th>
       <td><p>(optional) Numerical (positive or negative): the size of the
 buffer (in the unit of <code>inmask</code>, typically metres) to be applied to the
-masked area after smoothing it (positive to enlarge, negative to reduce).</p></td>
+masked area after smoothing it (positive to enlarge, negative to reduce).
+Defaul is 10.</p></td>
     </tr>
     <tr>
       <th>max_mask</th>

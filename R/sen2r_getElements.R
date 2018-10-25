@@ -31,11 +31,11 @@ sen2r_getElements <- function(s2_names, format="list", abort=TRUE) {
   
   # define regular expressions to identify products
   fs2nc_regex <- list(
-    "tile" = list("regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([0-9A-Z]{5})\\_([A-Z0-9\\-]+)\\_([126]0)\\.?([^\\_]*)$",
+    "tile" = list("regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([0-9A-Z]{5})\\_([A-Za-z0-9\\-\\:]+)\\_([126]0)\\.?([^\\_]*)$",
                   "elements" = c("mission","level","sensing_date","id_orbit","id_tile","prod_type","res","file_ext")),
-    "merged" = list("regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_\\_([A-Z0-9\\-]+)\\_([126]0)\\.?([^\\_]*)$",
+    "merged" = list("regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_\\_([A-Za-z0-9\\-\\:]+)\\_([126]0)\\.?([^\\_]*)$",
                     "elements" = c("mission","level","sensing_date","id_orbit","prod_type","res","file_ext")),
-    "clipped" = list("regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([^\\_\\.]+)\\_([A-Z0-9\\-]+)\\_([126]0)\\.?([^\\_]*)$",
+    "clipped" = list("regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([^\\_\\.]+)\\_([A-Za-z0-9\\-\\:]+)\\_([126]0)\\.?([^\\_]*)$",
                      "elements" = c("mission","level","sensing_date","id_orbit","extent_name","prod_type","res","file_ext")))
   
   metadata <- list() # output object, with requested metadata

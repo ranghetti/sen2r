@@ -6,7 +6,7 @@
 \title{Compute names of S2 file to be generated}
 \usage{
 compute_s2_paths(pm, s2_list_l1c, s2_list_l2a, paths, list_prods, out_ext,
-  index_ext, tiles_ext, merged_ext, warped_ext, sr_masked_ext,
+  index_ext, tiles_ext, merged_ext, warped_ext, rgb_ext, sr_masked_ext,
   force_tiles = FALSE, check_tmp = TRUE, ignorelist)
 
 list_sen2r_paths(param_list = NULL, gui = NA, preprocess = TRUE,
@@ -48,6 +48,8 @@ products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").}
 \item{merged_ext}{Extension (character) of merged products.}
 
 \item{warped_ext}{Extension (character) of warped products.}
+
+\item{rgb_ext}{Extension (character) of RGB products.}
 
 \item{sr_masked_ext}{Extension (character) of masked products of SR products.}
 
@@ -162,8 +164,9 @@ A list, containing the following vectors:
 \code{tiles_names_exp}, \code{merged_names_exp}, \code{warped_names_exp},
 \code{masked_names_exp}, \code{out_names_exp}, \code{indices_names_exp},
 \code{indices_names_new}, \code{out_names_req}, \code{out_names_new},
-\code{masked_names_new}, \code{warped_names_req}, \code{warped_names_new},
-\code{merged_names_req}, \code{merged_names_new}, \code{tiles_names_req}, \code{tiles_names_new},
+\code{masked_names_new}, \code{warped_names_req}, \code{warped_names_reqforrgb},
+\code{warped_names_new},  \code{merged_names_req}, \code{merged_names_reqforrgb},
+\code{merged_names_new}, \code{tiles_names_req}, \code{tiles_names_new},
 \code{safe_names_l1c_req}, \code{safe_names_l2a_req}.
 }
 \description{

@@ -296,9 +296,20 @@ def s2_download(downloader="wget", lat=None, lon=None, latmin=None, lonmin=None,
                       orbit=orbit, apihub=apihub, proxy=None, max_cloud=max_cloud, write_dir=l2a_dir,
                       sentinel='S2',tile=tile, dhus=False, MaxRecords=max_records,list_only=True,downloaderPath=downloader_path)
 
-            l2a_scihub_names_tuples = [re.compile('^(.+)\_MSIL2A\_([0-9]{8}T[0-9]{6})\_N[0-9]{4}\_(R[0-9]{3})\_(T[0-9A-Z]{5})\_[0-9]{8}T[0-9]{6}\.SAFE$').match(f).group(2,3,4) for f in l2a_scihub_filenames]
-            l1c_scihub_names_tuples = [re.compile('^(.+)\_MSIL1C\_([0-9]{8}T[0-9]{6})\_N[0-9]{4}\_(R[0-9]{3})\_(T[0-9A-Z]{5})\_[0-9]{8}T[0-9]{6}\.SAFE$').match(f).group(2,3,4) for f in l1c_scihub_filenames]
-            l1c_scihub_names = l2a_scihub_names = []
+            s2_compactname_regex = '^S2[AB]\_MSIL[12][AC]\_([0-9]{8}T[0-9]{6})\_N[0-9]{4}\_R([0-9]{3})\_T([A-Z0-9]{5})\_[0-9]{8}T[0-9]{6}\.SAFE$'
+            s2_oldname_regex = '^S2[AB]\_[A-Z]{4}\_(PRD)\_MSIL[12][AC]\_.{4}\_[0-9]{8}T[0-9]{6}\_R([0-9]{3})\_V[0-9]{8}T[0-9]{6}\_([0-9]{8}T[0-9]{6})\.SAFE$'
+            l2a_scihub_oldnames_match = [re.compile(s2_oldname_regex).match(f) for f in l2a_scihub_filenames]
+            l2a_scihub_compactnames_match = [re.compile(s2_compactname_regex).match(f) for f in l2a_scihub_filenames]
+            l2a_scihub_oldnames_tuples = [f.group(3,2,1) for f in l2a_scihub_oldnames_match if f is not None]
+            l2a_scihub_compactnames_tuples = [f.group(1,2,3) for f in l2a_scihub_compactnames_match if f is not None]
+            l2a_scihub_names_tuples = l2a_scihub_compactnames_tuples + l2a_scihub_oldnames_tuples
+            l1c_scihub_oldnames_match = [re.compile(s2_oldname_regex).match(f) for f in l1c_scihub_filenames]
+            l1c_scihub_compactnames_match = [re.compile(s2_compactname_regex).match(f) for f in l1c_scihub_filenames]
+            l1c_scihub_oldnames_tuples = [f.group(3,2,1) for f in l1c_scihub_oldnames_match if f is not None]
+            l1c_scihub_compactnames_tuples = [f.group(1,2,3) for f in l1c_scihub_compactnames_match if f is not None]
+            l1c_scihub_names_tuples = l1c_scihub_compactnames_tuples + l1c_scihub_oldnames_tuples
+            l1c_scihub_names = []
+            l2a_scihub_names = []
             for f in l1c_scihub_names_tuples:
                 l1c_scihub_names.append('_'.join(f))
             for f in l2a_scihub_names_tuples:

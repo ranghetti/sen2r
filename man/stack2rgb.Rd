@@ -5,7 +5,7 @@
 \title{Produce an RGB image from a multiband raster file.}
 \usage{
 stack2rgb(in_rast, out_file = NULL, bands = 1:3, minval = 0,
-  maxval = 10000, tmpdir = NA)
+  maxval = 10000, format = "JPEG", compress = "90", tmpdir = NA)
 }
 \arguments{
 \item{in_rast}{Path of the input multiband raster.}
@@ -16,9 +16,23 @@ stack2rgb(in_rast, out_file = NULL, bands = 1:3, minval = 0,
 \item{bands}{(optional) 3-length integer argument, with the position of
 the three bands to be used respectively for red, green and blue.}
 
-\item{minval}{(optional) the value corresponding to black (default: 0).}
+\item{minval}{(optional) the value corresponding to black (default: 0).
+Also a 3-length vector is accepted
+(min values for red, green and blue respectively).}
 
-\item{maxval}{(optional) the value corresponding to white (default: 10000).}
+\item{maxval}{(optional) the value corresponding to white (default: 10000).
+Also a 3-length vector is accepted
+(max values for red, green and blue respectively).}
+
+\item{format}{(optional) Format of the output file (in a
+format recognised by GDAL). Default is JPEG.}
+
+\item{compress}{(optional) In the case a GTiff format is
+present, the compression indicated with this parameter is used.
+In the case a JPEG format is present, the compression indicates the quality
+(integer, 0-100).
+In the case a GTiff format is presentand an integer 0-100 number is provided,
+this is interpreted as the quality level of a JPEG compression.}
 
 \item{tmpdir}{(optional) Path where intermediate files will be created.
 Default is a temporary directory.}
