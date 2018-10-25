@@ -262,6 +262,8 @@ s2_mask <- function(infiles,
     req_masks <- list()
   } else if (mask_type == "nodata") {
     req_masks <- list("SCL"=c(0:1))
+  } else if (mask_type == "cloud_high_proba") {
+    req_masks <- list("SCL"=c(0:1,9))
   } else if (mask_type == "cloud_medium_proba") {
     req_masks <- list("SCL"=c(0:1,8:9))
   } else if (mask_type == "cloud_low_proba") {
