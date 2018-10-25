@@ -43,13 +43,13 @@ defective" or "Cloud (high or medium probability)" in the SCL product;
 \item "cloud_low_proba": mask pixels checked as "No data", "Saturated or
 defective" or "Cloud (any probability)" in the SCL product;
 \item "cloud_and_shadow": mask pixels checked as "No data", "Saturated or
-defective", "Cloud (any probability)", "Cloud shadow" or "Dark area"
+defective", "Cloud (any probability)" or "Cloud shadow"
 in the SCL product;
 \item "clear_sky": mask pixels checked as "No data", "Saturated or
-defective", "Cloud (any probability)", "Cloud shadow", "Dark area"
+defective", "Cloud (any probability)", "Cloud shadow"
 or "Thin cirrus" in the SCL product
-(only pixels classified as clear-sky surface - so "Vegetation",
-"Bare soil", "Water" or "Snow" - are maintained);
+(only pixels classified as clear-sky surface - so "Dark area",
+"Vegetation", "Bare soil", "Water" or "Snow" - are maintained);
 \item "land": mask pixels checked as "No data", "Saturated or
 defective", "Cloud (any probability)", "Cloud shadow", "Dark area",
 "Thin cirrus", "Water" or "Snow" in the SCL product
