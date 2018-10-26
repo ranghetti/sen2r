@@ -1418,10 +1418,7 @@ sen2r <- function(param_list = NULL,
     }
     
     # delete SAFE, if required
-    if (pm$rm_safe == "all") {
-      unlink(file.path(pm$path_l1c,names(s2_list_l1c)), recursive=TRUE)
-      unlink(file.path(pm$path_l2a,names(s2_list_l2a)), recursive=TRUE)
-    } else if (pm$rm_safe == "l1c" & !("l1c" %in% pm$s2_levels)) {
+    if (!("l1c" %in% pm$s2_levels)) {
       unlink(file.path(pm$path_l1c,names(s2_list_l1c_tocorrect)), recursive=TRUE)
     }
     
@@ -1938,6 +1935,13 @@ sen2r <- function(param_list = NULL,
   ## 10. remove temporary files
   if (rmtmp == TRUE) {
     unlink(tmpdir, recursive=TRUE)
+  }
+  # delete SAFE, if required
+  if (pm$rm_safe == "all") {
+    unlink(file.path(pm$path_l1c,names(s2_list_l1c)), recursive=TRUE)
+    unlink(file.path(pm$path_l2a,names(s2_list_l2a)), recursive=TRUE)
+  } else if (pm$rm_safe == "l1c") {
+    unlink(file.path(pm$path_l1c,names(s2_list_l1c)), recursive=TRUE)
   }
   
   # check if some files were not created
