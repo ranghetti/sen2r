@@ -1418,7 +1418,7 @@ sen2r <- function(param_list = NULL,
     }
     
     # delete SAFE, if required
-    if (!("l1c" %in% pm$s2_levels)) {
+    if (!("l1c" %in% pm$s2_levels) & pm$rm_safe %in% c("all","l1c")) {
       unlink(file.path(pm$path_l1c,names(s2_list_l1c_tocorrect)), recursive=TRUE)
     }
     
