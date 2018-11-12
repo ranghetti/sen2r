@@ -32,8 +32,8 @@ mountpoint <- function(path, protocol=NA) {
   # extract paths
   mountpoints_paths <- gsub("^[^ ]+ on (.+) type ([^ ]+) .*$", "\\1", mountpoints)
   mountpoints_protocols <- gsub("^[^ ]+ on (.+) type ([^ ]+) .*$", "\\2", mountpoints)
-  mountpoints_paths <- mountpoints_paths[mountpoints_paths != "/"]
   mountpoints_protocols <- mountpoints_protocols[mountpoints_paths != "/"]
+  mountpoints_paths <- mountpoints_paths[mountpoints_paths != "/"]
   
   # limit to required protocols
   if (!is.na(protocol)) {

@@ -1418,10 +1418,7 @@ sen2r <- function(param_list = NULL,
     }
     
     # delete SAFE, if required
-    if (pm$rm_safe == "all") {
-      unlink(file.path(pm$path_l1c,names(s2_list_l1c)), recursive=TRUE)
-      unlink(file.path(pm$path_l2a,names(s2_list_l2a)), recursive=TRUE)
-    } else if (pm$rm_safe == "l1c" & !("l1c" %in% pm$s2_levels)) {
+    if (!("l1c" %in% pm$s2_levels) & pm$rm_safe %in% c("all","l1c")) {
       unlink(file.path(pm$path_l1c,names(s2_list_l1c_tocorrect)), recursive=TRUE)
     }
     
@@ -1699,21 +1696,35 @@ sen2r <- function(param_list = NULL,
       )
       
       # index which is TRUE for SCL products, FALSE for others
-      names_warped_exp_scl_idx <- sen2r_getElements(s2names$warped_names_exp,format="data.frame")$prod_type=="SCL"
-      names_warped_req_scl_idx <- sen2r_getElements(s2names$warped_names_req,format="data.frame")$prod_type=="SCL"
+      names_exp_scl_idx <- sen2r_getElements(
+        if (pm$clip_on_extent==TRUE) {
+          s2names$warped_names_exp
+        } else {
+          s2names$merged_names_exp
+        },
+        format="data.frame"
+      )$prod_type=="SCL"
+      names_req_scl_idx <- sen2r_getElements(
+        if (pm$clip_on_extent==TRUE) {
+          s2names$warped_names_req
+        } else {
+          s2names$merged_names_req
+        },
+        format="data.frame"
+      )$prod_type=="SCL"
       # index which is TRUE for products to be atm. masked, FALSE for others
-      names_warped_tomask_idx <- if ("SCL" %in% pm$list_prods) {
-        names_warped_req_scl_idx>-1
+      names_tomask_idx <- if ("SCL" %in% pm$list_prods) {
+        names_req_scl_idx>-1
       } else {
-        !names_warped_req_scl_idx
+        !names_req_scl_idx
       }
       
       # if SR outformat is different (because BOA was not required,
       # bur some indices are) launch s2_mask separately
       masked_names_infiles <- if (pm$clip_on_extent==TRUE) {
-        s2names$warped_names_req[names_warped_tomask_idx & file.exists(s2names$warped_names_req)]
+        s2names$warped_names_req[names_tomask_idx & file.exists(s2names$warped_names_req)]
       } else {
-        s2names$merged_names_req[names_merged_tomask_idx & file.exists(s2names$merged_names_req)]
+        s2names$merged_names_req[names_tomask_idx & file.exists(s2names$merged_names_req)]
       }
       masked_names_infiles_sr_idx <- any(!is.na(pm$list_indices)) & 
         !pm$index_source %in% pm$list_prods & 
@@ -1726,9 +1737,9 @@ sen2r <- function(param_list = NULL,
           s2_mask,
           infiles = masked_names_infiles[!masked_names_infiles_sr_idx],
           maskfiles = if (pm$clip_on_extent==TRUE) {
-            s2names$warped_names_exp[names_warped_exp_scl_idx]
+            s2names$warped_names_exp[names_exp_scl_idx]
           } else {
-            s2names$merged_names_exp[names_merged_exp_scl_idx]
+            s2names$merged_names_exp[names_exp_scl_idx]
           },
           smooth = pm$mask_smooth,
           buffer = pm$mask_buffer,
@@ -1750,9 +1761,9 @@ sen2r <- function(param_list = NULL,
           s2_mask,
           infiles = masked_names_infiles[masked_names_infiles_sr_idx],
           maskfiles = if (pm$clip_on_extent==TRUE) {
-            s2names$warped_names_exp[names_warped_exp_scl_idx]
+            s2names$warped_names_exp[names_exp_scl_idx]
           } else {
-            s2names$merged_names_exp[names_merged_exp_scl_idx]
+            s2names$merged_names_exp[names_exp_scl_idx]
           },
           mask_type = pm$mask_type,
           smooth = pm$mask_smooth,
@@ -1938,6 +1949,13 @@ sen2r <- function(param_list = NULL,
   ## 10. remove temporary files
   if (rmtmp == TRUE) {
     unlink(tmpdir, recursive=TRUE)
+  }
+  # delete SAFE, if required
+  if (pm$rm_safe == "all") {
+    unlink(file.path(pm$path_l1c,names(s2_list_l1c)), recursive=TRUE)
+    unlink(file.path(pm$path_l2a,names(s2_list_l2a)), recursive=TRUE)
+  } else if (pm$rm_safe == "l1c") {
+    unlink(file.path(pm$path_l1c,names(s2_list_l1c)), recursive=TRUE)
   }
   
   # check if some files were not created

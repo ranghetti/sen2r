@@ -176,7 +176,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
       character(0)
     }
     # L2A tiles required as output (already existing or not)
-    sel_l2a_tiles_required <- if (is.null(tiles)) {
+    sel_l2a_tiles_required <- if (length(tiles)==0) {
       sel_l1c_tiles_existing
     } else {
       sel_l1c_tiles_existing[sel_l1c_tiles_existing %in% tiles]
