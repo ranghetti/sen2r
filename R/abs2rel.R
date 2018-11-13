@@ -6,9 +6,9 @@
 #' @param path The path to be converted (if it is not absolute,
 #'  the current working directory is considered as its parent, and a
 #'  warning is shown).
-#' @param ref_path (optional) The reference path to be compared to
-#'  `path` to obtain the relative directory (default: current working
-#'  directory). *Important*: the path is considered as a directory
+#' @param ref_path The reference path to be compared to
+#'  `path` to obtain the relative directory.
+#'  *Important*: the path is considered as a directory
 #'  also if it is the path of a file!
 #' @param mustWork (optional) logical: if TRUE an error is given
 #'  if `path` or `ref_path` do not exists; if NA (default) then a
@@ -41,7 +41,7 @@
 #' suppressWarnings(abs2rel(in_path_4, ref_path, mustWork=FALSE))
 #'
 #' suppressWarnings(abs2rel(ref_path, ref_path))
-abs2rel <- function(path, ref_path=getwd(), mustWork=NA) {
+abs2rel <- function(path, ref_path, mustWork=NA) {
   
   # to avoid NOTE on check
   . <- NULL
