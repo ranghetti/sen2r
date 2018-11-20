@@ -6,6 +6,10 @@
 \usage{
 add_rgb_image(s2_bands)
 }
+\arguments{
+\item{s2_bands}{2-length list (one for TOA, one for BOA),
+each element being a list of S2 bands, as defined in \link{s2_gui}.}
+}
 \description{
 Modal dialog to define an RGB image.
 }

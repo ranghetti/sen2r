@@ -1,5 +1,7 @@
 #' @title Add RGB product
 #' @description Modal dialog to define an RGB image.
+#' @param s2_bands 2-length list (one for TOA, one for BOA),
+#'  each element being a list of S2 bands, as defined in [s2_gui].
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @importFrom shiny actionButton column fluidRow HTML icon modalButton
