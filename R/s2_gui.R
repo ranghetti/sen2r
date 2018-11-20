@@ -313,10 +313,11 @@ s2_gui <- function(param_list = NULL,
               )
             ), # end of fluidrow for safe directories
             
+            hr(style="margin-top: 0em; margin-bottom: 0.75em;"),
             
             fluidRow(
               column(
-                width=6,
+                width=3,
                 
                 # online_mode (online/offline mode)
                 radioButtons(
@@ -336,7 +337,7 @@ s2_gui <- function(param_list = NULL,
                   choiceNames = list("Online", "Offline"),
                   choiceValues = list(TRUE, FALSE),
                   selected = TRUE,
-                  inline = TRUE
+                  inline = FALSE
                 ),
                 
                 # SciHub credentials
@@ -349,7 +350,13 @@ s2_gui <- function(param_list = NULL,
                       label = "\u2000Login in SciHub",
                       icon=icon("user-circle")
                     )
-                  ),
+                  )
+                )
+              ),
+              column(
+                width=4,
+                conditionalPanel(
+                  condition = "input.online == 'TRUE'",
                   radioButtons(
                     "downloader",
                     label = span(
@@ -360,12 +367,21 @@ s2_gui <- function(param_list = NULL,
                     choiceValues = list("wget", "aria2"),
                     selected = "wget",
                     inline = TRUE
+                  ),
+                  sliderInput(
+                    "max_cloud_safe_perc", 
+                    label = span(
+                      "Max. SAFE cloud cover\u2000",
+                      actionLink("help_cloud_perc", icon("question-circle"))
+                    ),
+                    min = 0, max = 100, value = 100,
+                    step = 1, post = "%"
                   )
                 )
                 
               ),
               column(
-                width=6,
+                width=5,
                 
                 # overwrite SAFE
                 radioButtons(
@@ -389,6 +405,7 @@ s2_gui <- function(param_list = NULL,
                              inline = TRUE)
                 
               )
+              
             ) # end of fluidRow download / delete SAFE
             
           )), # end of fluidRow/box "SAFE options"
@@ -2408,6 +2425,31 @@ s2_gui <- function(param_list = NULL,
       ))
     })
     
+    observeEvent(input$help_cloud_perc, {
+      showModal(modalDialog(
+        title = "Maximum allowed SAFE cloud cover",
+        p(HTML(
+          "Set the maximum percentage of cloud covered area",
+          "used to search and download SAFE products."
+        )),
+        p(HTML(
+          "This value corresponds to the \"Cloud cover percentage\"",
+          "metadata present within SAFE products, and it is applied only",
+          "to non-existing archives (existing SAFE are always used),",
+          "and it is useful to limit the downloads of SAFE archives",
+          "and the time of processing."
+        )),
+        p(HTML(
+          "In order to set a limit of masked area which relates to the output",
+          "extent and the cloud mask set with processing options,",
+          "use the \"Maximum allowed cloud cover\" slider in the",
+          "\"Processing options\" tab."
+        )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+    
     observeEvent(input$help_apihub, {
       showModal(modalDialog(
         title = "SciHub username and password",
@@ -3007,6 +3049,7 @@ s2_gui <- function(param_list = NULL,
       rl$downloader <- input$downloader # downloader ("wget" or "aria2")
       rl$overwrite_safe <- as.logical(input$overwrite_safe) # TRUE to overwrite existing SAFE, FALSE not to
       rl$rm_safe <- input$rm_safe # "yes" to delete all SAFE, "l1c" to delete only l1c, "no" not to remove
+      rl$max_cloud_safe <- input$max_cloud_safe_perc # maximum SAFE cloud coverage (0-100)
       rl$step_atmcorr <- if (safe_req$l2a==TRUE) {input$step_atmcorr} else {"no"} # download_method in sen2cor: "auto", "l2a", "scihub" or "no"
       # rl$steps_reqout <- input$steps_reqout # vector of required outputs: "safe", "tiles", "clipped" (one or more)
       
@@ -3149,6 +3192,10 @@ s2_gui <- function(param_list = NULL,
         updateRadioButtons(session, "downloader", selected = pl$downloader)
         updateRadioButtons(session, "overwrite_safe", selected = pl$overwrite_safe)
         updateRadioButtons(session, "rm_safe", selected = pl$rm_safe)
+        updateSliderInput(
+          session, "max_cloud_safe_perc", 
+          value = if (!all(is.na(nn(pl$max_cloud_safe)))) {pl$max_cloud_safe} else {100}
+        )
         updateRadioButtons(session, "step_atmcorr", selected = pl$step_atmcorr)
         setProgress(0.2)
         
