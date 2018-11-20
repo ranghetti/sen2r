@@ -71,59 +71,15 @@ to know which implementations should already be performed.
 
 <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> 
 is supported over Linux and Windows operating systems;
-the support for Mac will be added soon.
+the support for Mac will be added in future.
 
-The package can be installed from GitHub with the R package **devtools**.
-To do it:
-
-1. install the package **devtools**, if missing:
-    ```{r, eval = FALSE}
-    install.packages("devtools")
-    ```
-2. load it and install 
-    <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span
-    style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span
-    style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:
-    ```{r, eval = FALSE}
-    library(devtools)
-    install_github("ranghetti/sen2r")
-    ```
-
-This will install the R package along with its R dependences,
-containing all the functions necessary to preprocess data. 
-
-To run the functions correctly, some external dependences are required:
-
-* [**GDAL**](http://www.gdal.org) (with support for JP2OpenJPEG format): 
-    this is a mandatory dependency, needed for all the processing operations 
-    and to retrieve metadata from SAFE products;
-* [**sen2cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor) 
-    is used to perform atmospheric correction of Sentinel-2 Level-1C products: 
-    it is required by the package, unless you choose not to correct products locally 
-    (using only Level-1C – TOA products or dowloading directly Level-2A products).
-* **Wget** is the downloader used by the package; it is required to work online.
-* [**aria2**](https://aria2.github.io) is an alternative downloader which
-    can be used to faster the download of SAFE archives; it can be optionally
-    installed and used.
-
-These dependences can be graphically checked launching the function
+The package can be installed from GitHub with the R package **remotes**:
 ```{r, eval = FALSE}
-library(sen2r)
-check_sen2r_deps()
+remotes::install_github("ranghetti/sen2r")
 ```
-This function opens a GUI which help to check that they are satisfied;
-if some of them are missing, follow the instructions provided by the GUI 
-to install them (on Windows, the GUI allows to install them directly).
 
-<!-- Atmospheric correction is performed using [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor): 
-the package will automatically download and install it at first use,
-or by running function [`install_sen2cor()`](reference/install_sen2cor.md).
-Please notice that the use of sen2cor algorythm was not yet possible under MAC.
-
-Preprocessing functions make use of [GDAL](http://www.gdal.org), which must 
-support JPEG2000 format. On Windows, it is strongly recommended to install it 
-using the [OSGeo4W installer](http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe)
-in advanced mode, and checking the installation of `openjpeg` library. -->
+For detailed instructions about installing the package (including dependencies),
+see the [Installation](articles/installation.md) page.
 
 ## Usage
 

@@ -15,17 +15,21 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Installing dependencies
 
-Before installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>, it is recommended to check that the following libraries are present:
+Before installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>, it is recommended to check [R](https://cran.r-project.org/bin/linux) (v. 3.4.4 or higher) and the following libraries to be present:
 
-- [libjq](https://stedolan.github.io/jq)
+- [GDAL](https://www.gdal.org), [PROJ](https://proj4.org) and [GEOS](https://trac.osgeo.org/geos)
     (required by [rgdal](https://r-forge.r-project.org/projects/rgdal)
     and [rgeos](https://r-forge.r-project.org/projects/rgeos));
 - [libjq](https://stedolan.github.io/jq)
     (required by [jqr](https://github.com/ropensci/jqr));
 - [protobuf](https://github.com/protocolbuffers/protobuf)
     (required by [protolite](https://github.com/jeroen/protolite));
-- [protobuf](https://github.com/protocolbuffers/protobuf)
-    (required by [geojsonio](https://github.com/ropensci/geojsonio)).
+- [V8](https://v8.dev)
+    (required by [geojsonio](https://github.com/ropensci/geojsonio));
+- [openssl](https://www.openssl.org)
+    (required by [openssl](https://github.com/jeroen/openssl));
+- [cairo](https://www.cairographics.org)
+    (required by [gdtools](https://github.com/davidgohel/gdtools)).
     
 Other binaries are required (or suggested), since they are used in runtime by the package:
 
@@ -42,32 +46,52 @@ Other binaries are required (or suggested), since they are used in runtime by th
 
 To install both package dependencies and runtime binaries:
 
-- On Debian and Ubuntu:
+- On Ubuntu 18.04 and higher:
     ```{bash, eval = FALSE}
-    sudo apt-get install -y gdal-bin python-gdal aria2 libudunits2-dev libgdal-dev libgeos-dev libproj-dev libjq-dev libprotobuf-dev protobuf-compiler libv8-dev
+    sudo apt-get install -y r-base gdal-bin python-gdal aria2 libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libv8-dev libssl-dev libcairo2-dev
     ```
-    Notice that, on Ubuntu 16.04 and lower, the repositories [ubuntugis](https://launchpad.net/~ubuntugis) and [opencpu](https://launchpad.net/~opencpu) must be added before installing the packages:
-    ```{bash, eval = FALSE}
-    sudo add-apt-repository -y ppa:opencpu/jq
-    sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
-    sudo apt-get update -q
-    ```
+    <!-- Notice that, on Ubuntu 16.04 and lower, the repositories [ubuntugis](https://launchpad.net/~ubuntugis) and [opencpu](https://launchpad.net/~opencpu) must be added before installing the packages: -->
+    <!-- ```{bash, eval = FALSE} -->
+    <!-- sudo add-apt-repository -y ppa:opencpu/jq -->
+    <!-- sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable -->
+    <!-- sudo apt-get update -q -->
+    <!-- ``` -->
+    <!-- On Debian Stretch, GDAL must be installed from backports repository: -->
+    <!-- ```{bash, eval = FALSE} -->
+    <!-- sudo su -->
+    <!-- echo "deb http://ftp.debian.org/debian stretch-backports main" >> /etc/apt/sources.list -->
+    <!-- exit -->
+    <!-- apt-get -t stretch-backports install gdal-bin python-gdal libgdal-dev -->
+    <!-- ``` -->
 - On Fedora:
     ```{bash, eval = FALSE}
-    sudo yum install gdal gdal-python aria2 gdal-devel proj-devel geos-devel udunits2-devel jq-devel protobuf-devel v8-314-devel
+    sudo yum install <r> gdal gdal-python aria2 gdal-devel proj-devel geos-devel udunits2-devel jq-devel protobuf-devel v8-314-devel openssl-devel cairo-devel
     ```
 - On ArchLinux:
     ```{bash, eval = FALSE}
-    sudo pacman -S gdal python-gdal aria2 geos proj jq protobuf
+    sudo pacman -S base-devel python-gdal wget aria2 jq protobuf git
     ```
     Package `v8`, available on [AUR](https://aur.archlinux.org/packages/v8), 
     is also required:
     ```{bash, eval = FALSE}
-    sudo pacman -S yay
-    yay -S v8
+    cd /tmp; git clone https://aur.archlinux.org/v8.git
+    cd v8; makepkg -si
     ```
 
 ### Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+
+Before proceeding, it is suggested to update the existing R packages:
+```{r, eval = FALSE}
+update.packages(ask = FALSE)
+```
+Doing that, the following warning could appear:
+```
+Warning in install.packages(update[instlib == l, "Package"], l, contriburl = contriburl,  :
+  'lib = "/usr/lib/R/library"' is not writable
+Would you like to use a personal library instead?  (y/n)
+```
+If so, press `y` and continue.
+Moreover, if no personal libraries already exist, it is asked to create a new one: ask `y` and continue.
 
 After that, the package can be installed from GitHub with the R package **remotes**.
 To do it:
@@ -98,7 +122,14 @@ install_sen2cor()
 
 ### Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
 
-The package can be installed from GitHub with the R package **remotes**.
+[R](https://cran.r-project.org/bin/windows/base) must be installed before proceeding.
+
+In the case it was already installed, it is suggested to update the existing R packages:
+```{r, eval = FALSE}
+update.packages(ask = FALSE)
+```
+
+<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be installed from GitHub with the R package **remotes**.
 To do it:
 
 1. install the package **remotes**, if missing:
@@ -117,7 +148,7 @@ To do it:
 This will install the R package along with its package dependencies,
 containing all the functions necessary to preprocess data. 
 
-### Installing dependencies
+### Installing runtime dependencies
 
 To run the functions correctly, some external dependences are required:
 
@@ -153,4 +184,4 @@ in advanced mode, and checking the installation of `openjpeg` library. -->
 
 ## On MacOS
 
-The support will be added in future.
+The support for MacOS will be added in future.
