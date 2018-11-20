@@ -32,7 +32,7 @@
 #'  shinyDirButton shinyDirChoose shinyFileChoose shinyFileSave
 #'  shinyFilesButton shinySaveButton
 #' @importFrom shinyjs click delay disable enable useShinyjs extendShinyjs
-#' @importFrom shinyWidgets sendSweetAlert
+#' @importFrom shinyWidgets sendSweetAlert updatePickerInput
 #' @importFrom stats setNames
 #'
 #' @export
