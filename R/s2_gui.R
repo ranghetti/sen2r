@@ -1908,7 +1908,7 @@ s2_gui <- function(param_list = NULL,
                                         list(name,extendedname)]
     })
     observe({
-      indices_rv$checked <- sort(input$list_indices)
+      indices_rv$checked <- sort(nn(input$list_indices))
     })
     
     output$check_indices <- renderUI({

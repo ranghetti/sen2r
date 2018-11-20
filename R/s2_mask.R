@@ -367,7 +367,7 @@ s2_mask <- function(infiles,
             file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
           )
           raster::calc(inmask[[i]],
-                       function(x){as.integer(!is.na(x) & !x %in% req_masks[[i]])},
+                       function(x){as.integer(!is.na(nn(x)) & !x %in% req_masks[[i]])},
                        filename = mask_tmpfiles[i],
                        options  = "COMPRESS=LZW",
                        datatype = "INT1U",
@@ -377,7 +377,7 @@ s2_mask <- function(infiles,
             file.path(sel_tmpdir, basename(tempfile(pattern = "naval_", fileext = ".tif")))
           )
           raster::calc(inmask[[i]],
-                       function(x){as.integer(!is.na(x))},
+                       function(x){as.integer(!is.na(nn(x)))},
                        filename = naval_tmpfiles[i],
                        options  = "COMPRESS=LZW",
                        datatype = "INT1U")
