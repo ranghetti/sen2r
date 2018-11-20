@@ -734,7 +734,7 @@ sen2r <- function(param_list = NULL,
   # check that output parent directories exist, and create required paths
   parent_paths <- sapply(
     pm[c("path_l1c","path_l2a","path_tiles","path_merged","path_out","path_rgb","path_indices")], 
-    function(x){if(is.na(x)){NA}else{dirname(x)}}
+    function(x){if(is.na(nn(x))){NA}else{dirname(x)}}
   ) %>% unique() %>% na.omit() %>% as.character()
   paths_exist <- sapply(parent_paths, file.exists)
   if (any(!paths_exist)) {
@@ -751,7 +751,7 @@ sen2r <- function(param_list = NULL,
   }
   sapply(
     pm[c("path_l1c","path_l2a","path_tiles","path_merged","path_out","path_rgb","path_indices")],
-    function(x) {if(is.na(x)){NA}else{dir.create(x, recursive = FALSE, showWarnings = FALSE)}}
+    function(x) {if(is.na(nn(x))){NA}else{dir.create(x, recursive = FALSE, showWarnings = FALSE)}}
   )
   
   
