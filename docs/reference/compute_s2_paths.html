@@ -141,9 +141,10 @@ if <a href='sen2r.html'>sen2r</a>.</p>
   <span class='kw'>s2_levels</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"l1c"</span>, <span class='st'>"l2a"</span>), <span class='kw'>sel_sensor</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"s2a"</span>, <span class='st'>"s2b"</span>),
   <span class='kw'>online</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>downloader</span> <span class='kw'>=</span> <span class='st'>"wget"</span>,
   <span class='kw'>overwrite_safe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>rm_safe</span> <span class='kw'>=</span> <span class='st'>"no"</span>, <span class='kw'>step_atmcorr</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
-  <span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>timeperiod</span> <span class='kw'>=</span> <span class='st'>"full"</span>, <span class='kw'>extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>extent_name</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>s2tiles_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>s2orbits_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"BOA"</span>), <span class='kw'>list_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>index_source</span> <span class='kw'>=</span> <span class='st'>"BOA"</span>,
+  <span class='kw'>max_cloud_safe</span> <span class='kw'>=</span> <span class='fl'>110</span>, <span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>timeperiod</span> <span class='kw'>=</span> <span class='st'>"full"</span>,
+  <span class='kw'>extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>extent_name</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>s2tiles_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>s2orbits_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"BOA"</span>), <span class='kw'>list_rgb</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>list_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>index_source</span> <span class='kw'>=</span> <span class='st'>"BOA"</span>, <span class='kw'>rgb_ranges</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>mask_smooth</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>mask_buffer</span> <span class='kw'>=</span> <span class='fl'>0</span>,
   <span class='kw'>clip_on_extent</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>extent_as_mask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>reference_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res_s2</span> <span class='kw'>=</span> <span class='st'>"10m"</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"Meter"</span>, <span class='kw'>proj</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
@@ -266,6 +267,10 @@ if FALSE, only non temporary files are searched.</p></td>
       <td><p><code>sen2r</code> argument (refer to <a href='sen2r.html'>sen2r</a> documentation).</p></td>
     </tr>
     <tr>
+      <th>max_cloud_safe</th>
+      <td><p><code>sen2r</code> argument (refer to <a href='sen2r.html'>sen2r</a> documentation).</p></td>
+    </tr>
+    <tr>
       <th>timewindow</th>
       <td><p><code>sen2r</code> argument (refer to <a href='sen2r.html'>sen2r</a> documentation).</p></td>
     </tr>
@@ -290,11 +295,19 @@ if FALSE, only non temporary files are searched.</p></td>
       <td><p><code>sen2r</code> argument (refer to <a href='sen2r.html'>sen2r</a> documentation).</p></td>
     </tr>
     <tr>
+      <th>list_rgb</th>
+      <td><p><code>sen2r</code> argument (refer to <a href='sen2r.html'>sen2r</a> documentation).</p></td>
+    </tr>
+    <tr>
       <th>list_indices</th>
       <td><p><code>sen2r</code> argument (refer to <a href='sen2r.html'>sen2r</a> documentation).</p></td>
     </tr>
     <tr>
       <th>index_source</th>
+      <td><p><code>sen2r</code> argument (refer to <a href='sen2r.html'>sen2r</a> documentation).</p></td>
+    </tr>
+    <tr>
+      <th>rgb_ranges</th>
       <td><p><code>sen2r</code> argument (refer to <a href='sen2r.html'>sen2r</a> documentation).</p></td>
     </tr>
     <tr>
@@ -415,6 +428,10 @@ if FALSE, only non temporary files are searched.</p></td>
     </tr>
     <tr>
       <th>log</th>
+      <td><p><code>sen2r</code> argument (refer to <a href='sen2r.html'>sen2r</a> documentation).</p></td>
+    </tr>
+    <tr>
+      <th>list_prods</th>
       <td><p><code>sen2r</code> argument (refer to <a href='sen2r.html'>sen2r</a> documentation).</p></td>
     </tr>
     </table>

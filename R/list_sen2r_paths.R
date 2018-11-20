@@ -13,14 +13,18 @@
 #' @param overwrite_safe `sen2r` argument (refer to [sen2r] documentation).
 #' @param rm_safe `sen2r` argument (refer to [sen2r] documentation).
 #' @param step_atmcorr `sen2r` argument (refer to [sen2r] documentation).
+#' @param max_cloud_safe `sen2r` argument (refer to [sen2r] documentation).
 #' @param timewindow `sen2r` argument (refer to [sen2r] documentation).
 #' @param timeperiod `sen2r` argument (refer to [sen2r] documentation).
 #' @param extent `sen2r` argument (refer to [sen2r] documentation).
 #' @param extent_name `sen2r` argument (refer to [sen2r] documentation).
 #' @param s2tiles_selected `sen2r` argument (refer to [sen2r] documentation).
 #' @param s2orbits_selected `sen2r` argument (refer to [sen2r] documentation).
+#' @param list_prods `sen2r` argument (refer to [sen2r] documentation).
+#' @param list_rgb `sen2r` argument (refer to [sen2r] documentation).
 #' @param list_indices `sen2r` argument (refer to [sen2r] documentation).
 #' @param index_source `sen2r` argument (refer to [sen2r] documentation).
+#' @param rgb_ranges `sen2r` argument (refer to [sen2r] documentation).
 #' @param mask_type `sen2r` argument (refer to [sen2r] documentation).
 #' @param max_mask `sen2r` argument (refer to [sen2r] documentation).
 #' @param mask_smooth `sen2r` argument (refer to [sen2r] documentation).
@@ -64,6 +68,7 @@ list_sen2r_paths <- function(param_list = NULL,
                              overwrite_safe = FALSE,
                              rm_safe = "no",
                              step_atmcorr = "auto",
+                             max_cloud_safe = 110,
                              timewindow = NA,
                              timeperiod = "full",
                              extent = NA,
@@ -71,8 +76,10 @@ list_sen2r_paths <- function(param_list = NULL,
                              s2tiles_selected = NA,
                              s2orbits_selected = NA,
                              list_prods = c("BOA"),
+                             list_rgb = NA,
                              list_indices = NA,
                              index_source = "BOA",
+                             rgb_ranges = NA,
                              mask_type = NA,
                              max_mask = 100,
                              mask_smooth = 0,
@@ -126,6 +133,7 @@ list_sen2r_paths <- function(param_list = NULL,
     overwrite_safe = overwrite_safe,
     rm_safe = rm_safe,
     step_atmcorr = step_atmcorr,
+    max_cloud_safe = max_cloud_safe,
     timewindow = timewindow,
     timeperiod = timeperiod,
     extent = extent,
@@ -133,8 +141,10 @@ list_sen2r_paths <- function(param_list = NULL,
     s2tiles_selected = s2tiles_selected,
     s2orbits_selected = s2orbits_selected,
     list_prods = list_prods,
+    list_rgb = list_rgb,
     list_indices = list_indices,
     index_source = index_source,
+    rgb_ranges = rgb_ranges,
     mask_type = mask_type,
     max_mask = max_mask,
     mask_smooth = mask_smooth,
