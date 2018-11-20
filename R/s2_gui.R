@@ -1133,12 +1133,12 @@ s2_gui <- function(param_list = NULL,
                   "new_rgb",
                   label = "\u2000Define custom RGB image",
                   icon = icon("plus")
-                )#,
-                # actionButton(
-                #   "rm_rgb",
-                #   label = "\u2000Remove unselected RGB from list",
-                #   icon = icon("trash-alt")
-                # )
+                ),
+                actionButton(
+                  "rm_rgb",
+                  label = "\u2000Remove unselected RGB from list",
+                  icon = icon("trash-alt")
+                )
                 
                 
                 
@@ -2139,7 +2139,7 @@ s2_gui <- function(param_list = NULL,
         input$band_r_range==input$band_g_range, 
         input$band_g_range==input$band_b_range
       ))) {
-        input$band_r_range*1E4
+        list(input$band_r_range*1E4)
       } else {
         list(t(matrix(
           c(input$band_r_range, input$band_g_range, input$band_b_range)*1E4,
