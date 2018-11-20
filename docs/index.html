@@ -8,8 +8,8 @@
 <title>An R toolbox to find, download and preprocess Sentinel-2 data • An R toolbox to find, download an preprocess Sentinel-2 data</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="jquery.sticky-kit.min.js"></script><script src="pkgdown.js"></script><meta property="og:title" content="An R toolbox to find, download and preprocess Sentinel-2 data">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
+<script src="pkgdown.js"></script><meta property="og:title" content="An R toolbox to find, download and preprocess Sentinel-2 data">
 <meta property="og:description" content="This package contains useful functions to preprocess Sentinel-2 imagery.
   This package is under construction.">
 <meta name="twitter:card" content="summary">
@@ -35,7 +35,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">sen2r</a>
+        <a class="navbar-link" href="index.html">An R toolbox to find, download an preprocess Sentinel-2 data</a>
         <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.3</span>
       </span>
     </div>
@@ -96,44 +96,10 @@
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p><span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> is supported over Linux and Windows operating systems; the support for Mac will be added soon.</p>
-<p>The package can be installed from GitHub with the R package <strong>devtools</strong>. To do it:</p>
-<ol style="list-style-type: decimal">
-<li>
-<p>install the package <strong>devtools</strong>, if missing:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">"devtools"</span>)</code></pre></div>
-</li>
-<li>
-<p>load it and install <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(devtools)
-<span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"ranghetti/sen2r"</span>)</code></pre></div>
-</li>
-</ol>
-<p>This will install the R package along with its R dependences, containing all the functions necessary to preprocess data.</p>
-<p>To run the functions correctly, some external dependences are required:</p>
-<ul>
-<li>
-<a href="http://www.gdal.org"><strong>GDAL</strong></a> (with support for JP2OpenJPEG format): this is a mandatory dependency, needed for all the processing operations and to retrieve metadata from SAFE products;</li>
-<li>
-<a href="http://step.esa.int/main/third-party-plugins-2/sen2cor"><strong>sen2cor</strong></a> is used to perform atmospheric correction of Sentinel-2 Level-1C products: it is required by the package, unless you choose not to correct products locally (using only Level-1C – TOA products or dowloading directly Level-2A products).</li>
-<li>
-<strong>Wget</strong> is the downloader used by the package; it is required to work online.</li>
-<li>
-<a href="https://aria2.github.io"><strong>aria2</strong></a> is an alternative downloader which can be used to faster the download of SAFE archives; it can be optionally installed and used.</li>
-</ul>
-<p>These dependences can be graphically checked launching the function</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(sen2r)
-<span class="kw"><a href="reference/check_sen2r_deps.html">check_sen2r_deps</a></span>()</code></pre></div>
-<p>This function opens a GUI which help to check that they are satisfied; if some of them are missing, follow the instructions provided by the GUI to install them (on Windows, the GUI allows to install them directly).</p>
-<!-- Atmospheric correction is performed using [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor): 
-the package will automatically download and install it at first use,
-or by running function [`install_sen2cor()`](reference/install_sen2cor.md).
-Please notice that the use of sen2cor algorythm was not yet possible under MAC.
-
-Preprocessing functions make use of [GDAL](http://www.gdal.org), which must 
-support JPEG2000 format. On Windows, it is strongly recommended to install it 
-using the [OSGeo4W installer](http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe)
-in advanced mode, and checking the installation of `openjpeg` library. -->
+<p><span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> is supported over Linux and Windows operating systems; the support for Mac will be added in future.</p>
+<p>The package can be installed from GitHub with the R package <strong>remotes</strong>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">remotes<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/remotes/topics/install_github">install_github</a></span>(<span class="st">"ranghetti/sen2r"</span>)</code></pre></div>
+<p>For detailed instructions about installing the package (including dependencies), see the <a href="articles/installation.html">Installation</a> page.</p>
 </div>
 <div id="usage" class="section level2">
 <h2 class="hasAnchor">
