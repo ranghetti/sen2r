@@ -165,8 +165,6 @@ if FALSE, only non temporary files are searched.}
 \item{rmtmp}{\code{sen2r} argument (refer to \link{sen2r} documentation).}
 
 \item{log}{\code{sen2r} argument (refer to \link{sen2r} documentation).}
-
-\item{list_prods}{\code{sen2r} argument (refer to \link{sen2r} documentation).}
 }
 \value{
 A list, containing the following vectors:
