@@ -94,7 +94,7 @@
 #'  "TCI"). Default is "BOA".
 #' @param list_rgb (optional) Character vector with the values of the
 #'  RGB images to be produced.
-#'  Images are in the form xRGBrgb, when:
+#'  Images are in the form RGBrgbx, when:
 #'  - x is B (if source is BOA) or T (is source is TOA);
 #'  - r g and b are the the number of the bands to be used respectively
 #'      for red, green and blue, in hexadecimal format.

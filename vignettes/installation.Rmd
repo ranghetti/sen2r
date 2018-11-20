@@ -1,0 +1,156 @@
+---
+title: "Installation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Installation}
+  %\VignetteEngine{knitr::knitr}
+  %\usepackage[UTF-8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## On Linux systems
+
+### Installing dependencies
+
+Before installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>, it is recommended to check that the following libraries are present:
+
+- [libjq](https://stedolan.github.io/jq)
+    (required by [rgdal](https://r-forge.r-project.org/projects/rgdal)
+    and [rgeos](https://r-forge.r-project.org/projects/rgeos));
+- [libjq](https://stedolan.github.io/jq)
+    (required by [jqr](https://github.com/ropensci/jqr));
+- [protobuf](https://github.com/protocolbuffers/protobuf)
+    (required by [protolite](https://github.com/jeroen/protolite));
+- [protobuf](https://github.com/protocolbuffers/protobuf)
+    (required by [geojsonio](https://github.com/ropensci/geojsonio)).
+    
+Other binaries are required (or suggested), since they are used in runtime by the package:
+
+* [**GDAL**](http://www.gdal.org) (with support for JP2OpenJPEG format): 
+    this is a mandatory dependency, needed for all the processing operations 
+    and to retrieve metadata from SAFE products;
+* [**sen2cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor) 
+    is used to perform atmospheric correction of Sentinel-2 Level-1C products: 
+    it is required by the package, unless you choose not to correct products locally 
+    (using only Level-1C – TOA products or dowloading directly Level-2A products).
+* [**aria2**](https://aria2.github.io) is an alternative downloader which
+    can be used to faster the download of SAFE archives; it can be optionally
+    installed and used.
+
+To install both package dependencies and runtime binaries:
+
+- On Debian and Ubuntu:
+    ```{bash, eval = FALSE}
+    sudo apt-get install -y gdal-bin python-gdal aria2 libudunits2-dev libgdal-dev libgeos-dev libproj-dev libjq-dev libprotobuf-dev protobuf-compiler libv8-dev
+    ```
+    Notice that, on Ubuntu 16.04 and lower, the repositories [ubuntugis](https://launchpad.net/~ubuntugis) and [opencpu](https://launchpad.net/~opencpu) must be added before installing the packages:
+    ```{bash, eval = FALSE}
+    sudo add-apt-repository -y ppa:opencpu/jq
+    sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
+    sudo apt-get update -q
+    ```
+- On Fedora:
+    ```{bash, eval = FALSE}
+    sudo yum install gdal gdal-python aria2 gdal-devel proj-devel geos-devel udunits2-devel jq-devel protobuf-devel v8-314-devel
+    ```
+- On ArchLinux:
+    ```{bash, eval = FALSE}
+    sudo pacman -S gdal python-gdal aria2 geos proj jq protobuf
+    ```
+    Package `v8`, available on [AUR](https://aur.archlinux.org/packages/v8), 
+    is also required:
+    ```{bash, eval = FALSE}
+    sudo pacman -S yay
+    yay -S v8
+    ```
+
+### Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+
+After that, the package can be installed from GitHub with the R package **remotes**.
+To do it:
+
+1. install the package **remotes**, if missing:
+    ```{r, eval = FALSE}
+    install.packages("remotes")
+    ```
+2. load it and install 
+    <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span
+    style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span
+    style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:
+    ```{r, eval = FALSE}
+    library(remotes)
+    install_github("ranghetti/sen2r")
+    ```
+
+This will install the R package along with its package dependencies,
+containing all the functions necessary to preprocess data. 
+
+Finally, **sen2cor** can be installed from R:
+```{r, eval = FALSE}
+library(sen2r)
+install_sen2cor()
+```
+
+## On Windows
+
+### Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+
+The package can be installed from GitHub with the R package **remotes**.
+To do it:
+
+1. install the package **remotes**, if missing:
+    ```{r, eval = FALSE}
+    install.packages("remotes")
+    ```
+2. load it and install 
+    <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span
+    style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span
+    style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:
+    ```{r, eval = FALSE}
+    library(remotes)
+    install_github("ranghetti/sen2r")
+    ```
+
+This will install the R package along with its package dependencies,
+containing all the functions necessary to preprocess data. 
+
+### Installing dependencies
+
+To run the functions correctly, some external dependences are required:
+
+* [**GDAL**](http://www.gdal.org) (with support for JP2OpenJPEG format): 
+    this is a mandatory dependency, needed for all the processing operations 
+    and to retrieve metadata from SAFE products;
+* [**sen2cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor) 
+    is used to perform atmospheric correction of Sentinel-2 Level-1C products: 
+    it is required by the package, unless you choose not to correct products locally 
+    (using only Level-1C – TOA products or dowloading directly Level-2A products).
+* **Wget** is the downloader used by the package; it is required to work online.
+* [**aria2**](https://aria2.github.io) is an alternative downloader which
+    can be used to faster the download of SAFE archives; it can be optionally
+    installed and used.
+
+These dependences can be graphically checked launching the function
+```{r, eval = FALSE}
+library(sen2r)
+check_sen2r_deps()
+```
+This function opens a GUI which help to check that they are satisfied;
+if some of them are missing, the GUI allows to install them directly.
+
+<!-- Atmospheric correction is performed using [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor): 
+the package will automatically download and install it at first use,
+or by running function [`install_sen2cor()`](reference/install_sen2cor.md).
+Please notice that the use of sen2cor algorythm was not yet possible under MAC.
+
+Preprocessing functions make use of [GDAL](http://www.gdal.org), which must 
+support JPEG2000 format. On Windows, it is strongly recommended to install it 
+using the [OSGeo4W installer](http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe)
+in advanced mode, and checking the installation of `openjpeg` library. -->
+
+## On MacOS
+
+The support will be added in future.

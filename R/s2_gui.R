@@ -94,6 +94,12 @@ s2_gui <- function(param_list = NULL,
           sidebarMenu(
             menuItem("Spectral indices selection", tabName = "tab_index", icon = icon("calculator"))
           )
+        ),
+        conditionalPanel(
+          condition = "input.list_prods.indexOf('rgbimages') != -1",
+          sidebarMenu(
+            menuItem("RGB images selection", tabName = "tab_rgb", icon = icon("palette"))
+          )
         )
       ),
       # sidebarMenu(
@@ -122,7 +128,7 @@ s2_gui <- function(param_list = NULL,
       #                                     });
       #                                     ')), # return the width/height of the window (used to set map height)
       div(
-        style="position:absolute;top:430px;",
+        style="position:absolute;top:460px;",
         # # client-side buttons
         # p(style="margin-top:15pt;margin-left:11pt;",
         #   downloadButton("export_param", "\u2000Save options as...", class="darkbutton")
@@ -233,8 +239,9 @@ s2_gui <- function(param_list = NULL,
                                                         "BOA (bottom-of-atmosphere) Surface Reflectance",
                                                         "SCL (surface classification map)",
                                                         "TCI (true-color) RGB 8-bit image",
-                                                        "Spectral indices"),
-                                     choiceValues = list("TOA", "BOA", "SCL", "TCI", "indices"),
+                                                        "Spectral indices",
+                                                        "RGB images"),
+                                     choiceValues = list("TOA", "BOA", "SCL", "TCI", "indices", "rgbimages"),
                                      selected = c("BOA"))#,
                 ),
                 conditionalPanel(
@@ -1092,7 +1099,54 @@ s2_gui <- function(param_list = NULL,
             )
           ) # end of conditionalpanel on tab_index
           
-        ) # end of tabItem tab_index
+        ), # end of tabItem tab_index
+        
+        
+        ### RGB images tab ###
+        tabItem(
+          tabName = "tab_rgb",
+          title="RGB images",
+          
+          conditionalPanel(
+            condition = "input.preprocess == 'TRUE'",
+            fluidRow(
+              box(
+                width=12,
+                title="RGB images selection",
+                
+                div(div(style="display:inline-block;vertical-align:top;",
+                        strong("Directory for RGB images: \u00a0")),
+                    div(style="display:inline-block;vertical-align:top;",
+                        htmlOutput("path_rgb_errormess")),
+                    div(div(style="display:inline-block;vertical-align:top;width:50pt;",
+                            shinyDirButton("path_rgb_sel", "Select", "Specify directory for RGB images")),
+                        div(style="display:inline-block;vertical-align:top;width:calc(100% - 50pt - 3px);",
+                            textInput("path_rgb_textin", NULL, ""))),
+                    div(style="display:inline-block;vertical-align:top;",
+                        actionButton("path_rgb_cp", "Copy from directory for output processed products"))),
+                
+                br(),
+                
+                uiOutput("checkbox_list_rgb"),
+                
+                actionButton(
+                  "new_rgb",
+                  label = "\u2000Define custom RGB image",
+                  icon = icon("plus")
+                )#,
+                # actionButton(
+                #   "rm_rgb",
+                #   label = "\u2000Remove unselected RGB from list",
+                #   icon = icon("trash-alt")
+                # )
+                
+                
+                
+              ) # end of box
+            ) # end of fluidRow
+          ) # end of conditionalpanel on tab_rgb
+          
+        ) # end of tabItem tab_rgb
         
       ) # end of tabItems
     ) # end of dashboardBody
@@ -1814,10 +1868,15 @@ s2_gui <- function(param_list = NULL,
       # "indices" %in% input$steps_reqout &
       !is.null(input$list_indices)
     })
+    rgb_req <- reactive({
+      !is.null(rv$list_rgb_ranges)
+    })
     # convert in output value to be used in conditionalPanel
     output$indices_req <- renderText(indices_req())
+    output$rgb_req <- renderText(rgb_req())
     # options to update these values also if not visible
     outputOptions(output, "indices_req", suspendWhenHidden = FALSE)
+    outputOptions(output, "rgb_req", suspendWhenHidden = FALSE)
     
     create_indices_db()
     indices_db <- data.table(list_indices(c("n_index","name","longname","s2_formula_mathml","link","checked")))
@@ -2044,6 +2103,168 @@ s2_gui <- function(param_list = NULL,
     ## end of geometry module ##
     
     
+    ## RGB module ##
+    
+    # list with the names of Sentinel-2 bands
+    s2_bands <- list("TOA" = list(
+      "Band 1 (443 nm)" = "band1",
+      "Band 2 (490 nm)" = "band2",
+      "Band 3 (560 nm)" = "band3",
+      "Band 4 (665 nm)" = "band4",
+      "Band 5 (705 nm)" = "band5",
+      "Band 6 (740 nm)" = "band6",
+      "Band 7 (783 nm)" = "band7",
+      "Band 8 (842 nm)" = "band8",
+      "Band 9 (940 nm)" = "band9",
+      "Band 10 (1375 nm)" = "band10",
+      "Band 11 (1610 nm)" = "band11",
+      "Band 12 (2190 nm)" = "band12"
+    ))
+    s2_bands[["BOA"]] <- s2_bands[["TOA"]][c(1:9,11:12)]
+    
+    # Define default RGB images
+    rv$list_rgb_ranges <- list(
+      "RGB432B" = c(0, 2500),
+      "RGB843B" = matrix(c(0, 0, 0, 7500, 2500, 2500), ncol = 2),
+      "RGBb84B" = matrix(c(0, 0, 0, 7500, 7500, 2500), ncol = 2)
+    )
+    
+    # Open modalDialog to add a new RGB
+    observeEvent(input$new_rgb, {
+      showModal(add_rgb_image(s2_bands))
+    })
+    # Add the new defined RGB
+    observeEvent(input$add_new_rgb, {
+      newrgb_ranges <- if (all(c(
+        input$band_r_range==input$band_g_range, 
+        input$band_g_range==input$band_b_range
+      ))) {
+        input$band_r_range*1E4
+      } else {
+        list(t(matrix(
+          c(input$band_r_range, input$band_g_range, input$band_b_range)*1E4,
+          nrow = 2
+        )))
+      }
+      names(newrgb_ranges) <- paste0(
+        "RGB", 
+        paste(as.hexmode(c(
+          as.integer(gsub("^band","",input$band_r)), 
+          as.integer(gsub("^band","",input$band_g)), 
+          as.integer(gsub("^band","",input$band_b))
+        )), collapse=""), 
+        substr(input$newrgb_source,1,1)
+      )
+      rv$list_rgb_ranges <- append(newrgb_ranges, rv$list_rgb_ranges)
+      # new added RGB replaces existing one, if it is was already present
+      rv$list_rgb_ranges <- rv$list_rgb_ranges[!duplicated(names(rv$list_rgb_ranges))]
+      # order by name
+      rv$list_rgb_ranges <- rv$list_rgb_ranges[order(names(rv$list_rgb_ranges))]
+      removeModal()
+    })
+    
+    # List of defined RGB images
+    output$checkbox_list_rgb <- renderUI({
+      checkboxGroupInput(
+        "list_rgbimages",
+        label = span(
+          "RGB images:\u2000",
+          actionLink("help_rgb", icon("question-circle"))
+        ),
+        # choiceNames = lapply(names(rv$list_rgb_ranges), HTML),
+        choiceNames = lapply(names(rv$list_rgb_ranges), function(x) {
+          ranges <- if (length(rv$list_rgb_ranges[[x]]) == 6) {
+            c("min_r"=1, "min_g"=2, "min_b"=3, "max_r"=4, "max_g"=5, "max_b"=6)
+          } else if (length(rv$list_rgb_ranges[[x]]) == 2) {
+            c("min_r"=1, "min_g"=1, "min_b"=1, "max_r"=2, "max_g"=2, "max_b"=2)
+          }
+          HTML(paste0(
+            "<strong>",x,":</strong> ",
+            "<ul><li><i>source:</i> ",substr(x,7,7),"OA</li>",
+            "<li><span style='color:red;'><i>red: </i>",
+            "band ",strtoi(paste0("0x", substr(x,4,4))),
+            " (reflectance range ",
+            rv$list_rgb_ranges[[x]][ranges["min_r"]]/1E4," \u2013 ",
+            rv$list_rgb_ranges[[x]][ranges["max_r"]]/1E4,")</span></li>",
+            "<li><span style='color:darkgreen;'><i>green: </i>",
+            "band ",strtoi(paste0("0x", substr(x,5,5))),
+            " (reflectance range ",
+            rv$list_rgb_ranges[[x]][ranges["min_g"]]/1E4," \u2013 ",
+            rv$list_rgb_ranges[[x]][ranges["max_g"]]/1E4,")</span></li>",
+            "<li><span style='color:blue;'><i>blue: </i>",
+            "band ",strtoi(paste0("0x", substr(x,6,6))),
+            " (reflectance range ",
+            rv$list_rgb_ranges[[x]][ranges["min_b"]]/1E4," \u2013 ",
+            rv$list_rgb_ranges[[x]][ranges["max_b"]]/1E4,")</span></li></ul>"
+          ))
+        }),
+        # choiceNames = lapply(indices_rv$filtered$name, function(x){span(x,icon("info-circle"))}),
+        choiceValues = as.list(names(rv$list_rgb_ranges)),
+        selected = input$list_rgbimages
+      )
+    })
+    outputOptions(output, "checkbox_list_rgb", suspendWhenHidden = FALSE)
+    # this to avoid errors in case a json were imported before activating checkbox_list_rgb
+    # TODO: with this trick, also indices_rv could be avoid and simplified
+    
+    # Remove selected RGB images
+    observeEvent(input$rm_rgb, {
+      rv$list_rgb_ranges <- rv$list_rgb_ranges[names(rv$list_rgb_ranges) %in% input$list_rgbimages]
+    })
+    
+    
+    # Update RGB bands and ranges when changing RGB source
+    observeEvent(input$newrgb_source, {
+      updatePickerInput(
+        session, "band_r", 
+        choices = s2_bands[[input$newrgb_source]],
+        selected = input$band_r
+      )
+      updatePickerInput(
+        session, "band_g", 
+        choices = s2_bands[[input$newrgb_source]],
+        selected = input$band_g
+      )
+      updatePickerInput(
+        session, "band_b", 
+        choices = s2_bands[[input$newrgb_source]],
+        selected = input$band_b
+      )
+    })
+    observeEvent(input$band_r, {
+      updateSliderInput(
+        session, "band_r_range",
+        value = if (input$band_r %in% paste0("band",1:5)) {
+          c(0, 0.25)
+        } else if (input$band_r %in% paste0("band",6:12)) {
+          c(0, 0.75)
+        }
+      )
+    })
+    observeEvent(input$band_g, {
+      updateSliderInput(
+        session, "band_g_range",
+        value = if (input$band_g %in% paste0("band",1:5)) {
+          c(0, 0.25)
+        } else if (input$band_g %in% paste0("band",6:12)) {
+          c(0, 0.75)
+        }
+      )
+    })
+    observeEvent(input$band_b, {
+      updateSliderInput(
+        session, "band_b_range",
+        value = if (input$band_b %in% paste0("band",1:5)) {
+          c(0, 0.25)
+        } else if (input$band_b %in% paste0("band",6:12)) {
+          c(0, 0.75)
+        }
+      )
+    })
+    
+    ## end of RGb module ##
+    
+    
     ## Path module ##
     
     # accessory functions to check that the new directory exists and is writable
@@ -2098,6 +2319,10 @@ s2_gui <- function(param_list = NULL,
       path_indices_string <- parseDirPath(volumes, input$path_indices_sel)
       updateTextInput(session, "path_indices_textin", value = path_indices_string)
     })
+    observe({
+      path_rgb_string <- parseDirPath(volumes, input$path_rgb_sel)
+      updateTextInput(session, "path_rgb_textin", value = path_rgb_string)
+    })
     
     # if path changes after using the textInput, update the value
     observe({
@@ -2118,10 +2343,16 @@ s2_gui <- function(param_list = NULL,
     observe({
       output$path_indices_errormess <- path_check(input$path_indices_textin)
     })
+    observe({
+      output$path_rgb_errormess <- path_check(input$path_rgb_textin)
+    })
     
-    # action button to copy indices_path from out_path
+    # action button to copy indices_path and rgb_path from out_path
     observeEvent(input$path_indices_cp, {
       updateTextInput(session, "path_indices_textin", value = input$path_out_textin)
+    })
+    observeEvent(input$path_rgb_cp, {
+      updateTextInput(session, "path_rgb_textin", value = input$path_out_textin)
     })
     
     ## Question messages
@@ -2438,7 +2669,7 @@ s2_gui <- function(param_list = NULL,
         footer = NULL
       ))
     })
-
+    
     observeEvent(input$help_mask_classes, {
       showModal(modalDialog(
         title = "Apply mask to:",
@@ -2500,7 +2731,7 @@ s2_gui <- function(param_list = NULL,
         footer = NULL
       ))
     })
-
+    
     observeEvent(input$help_masked_perc, {
       showModal(modalDialog(
         title = "Maximum allowed cloud cover",
@@ -2594,6 +2825,53 @@ s2_gui <- function(param_list = NULL,
           "(use only if you are not interested to the absolute values",
           "of the indices, and if the atmospheric disturbance in your area",
           "of interest is sufficiently uniform)."
+        )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+    
+    observeEvent(input$help_rgb, {
+      showModal(modalDialog(
+        title = "RGB images:",
+        p(HTML(
+          "RGB images can be built using different spectral bands.",
+          "To distinguish each other, the naming convention",
+          "\"<strong>x</strong>RGB<strong>rgb</strong>\", where:",
+          "<ul><li><strong>x</strong> is B (if source is BOA)",
+          "or T (is source is TOA);</li>",
+          "<li><strong>r</strong>, <strong>g</strong> and <strong>b</strong>",
+          "are the the number of the bands to be used respectively for red,",
+          "green and blue, in hexadecimal format",
+          "(so i.e. band 8 is 8, band 11 is b).</li></ul>"
+        )),
+        p(HTML(
+          "By default, three RGB images are defined:",
+          "<ul><li><strong>RGB432B</strong> is the true colour image,",
+          "computed from BOA, with all the three bands rescaled from",
+          "reflectance 0 (black) to 0.25 (white);</li>",
+          "<li><strong>RGB843B</strong> is the standard false colour image,",
+          "where NIR is represented as red, red as green and green as blue;",
+          "it is computed from BOA, and NIR band is rescaled from",
+          "reflectance 0 (black) to 0.75 (white),",
+          "while red and green from 0 to 0.25 (this because NIR reflectance",
+          "is usually higher than red and green);</li>",
+          "<li><strong>RGBb84B</strong> is a false colour image",
+          "commonly used to emphatise vegetated area,",
+          "in which SWIR is represented as red, NIR as green and red as blue;",
+          "it is computed from BOA, SWIR and NIR band are rescaled from",
+          "reflectance 0 (black) to 0.75 (white),",
+          "while red one from 0 to 0.25.</li></ul>"
+        )),
+        p(HTML(
+          "The button \"Define custom RGB image\" can be used to define",
+          "different combinations on bands, to compute images from TOA",
+          "or to change scale ranges."
+        )),
+        p(HTML(
+          "Notice that, after defining new images, they must be checked",
+          "in order to be computed (only checked products are considered,",
+          "as for spectral indices)."
         )),
         easyClose = TRUE,
         footer = NULL
@@ -2762,6 +3040,10 @@ s2_gui <- function(param_list = NULL,
       # product selection #
       rl$list_prods <- input$list_prods[!input$list_prods %in% "indices"] # TOA, BOA, SCL, TCI (for now)
       rl$list_indices <- if (indices_req()==TRUE & "indices" %in% input$list_prods) {input$list_indices} else {NA} # index names
+      rl$list_rgb <- if (rgb_req()==TRUE & "rgbimages" %in% input$list_prods) {input$list_rgbimages} else {NA} # RGB images names
+      rl$rgb_ranges <- if (rgb_req()==TRUE & "rgbimages" %in% input$list_prods) {
+        setNames(rv$list_rgb_ranges[input$list_rgbimages], NULL)
+      } else {NA} # RGB images names
       rl$index_source <- input$index_source # reflectance band for computing indices ("BOA" or "TOA")
       rl$mask_type <- if (input$atm_mask==FALSE) {
         NA
@@ -2839,7 +3121,7 @@ s2_gui <- function(param_list = NULL,
       rl$path_tiles <- if (rl$preprocess==TRUE & input$keep_tiles==TRUE) {input$path_tiles_textin} else {NA} # path of entire tiled products
       rl$path_merged <- if (rl$preprocess==TRUE & input$keep_merged==TRUE) {input$path_merged_textin} else {NA} # path of entire tiled products
       rl$path_out <- if (rl$preprocess==TRUE & (length(input$list_prods)>1 | length(input$list_prods)>0 & !"indices" %in% input$list_prods)) {input$path_out_textin} else {NA} # path of output pre-processed products
-      rl$path_rgb <- rl$path_out # path of output pre-processed products # TODO add in GUI
+      rl$path_rgb <- if (rl$preprocess==TRUE & rgb_req()==TRUE) {input$path_rgb_textin} else {NA} # path of RGB images
       rl$path_indices <- if (rl$preprocess==TRUE & indices_req()==TRUE) {input$path_indices_textin} else {NA} # path of spectral indices
       rl$path_subdirs <- if (rl$preprocess==TRUE) {as.logical(input$path_subdirs)} else {NA} # logical (use subdirs)
       rl$thumbnails <- if (rl$preprocess==TRUE) {as.logical(input$check_thumbnails)} else {NA} # logical (create thumbnails)
@@ -2891,15 +3173,19 @@ s2_gui <- function(param_list = NULL,
         if (all(is.na(pl$list_prods))) {pl$list_prods <- NULL}
         updateCheckboxGroupInput(
           session, "list_prods",
-          selected = if (any(!is.na(pl$list_indices))) {
-            c(pl$list_prods,"indices")
-          } else {
-            pl$list_prods
-          }
+          selected = c(
+            pl$list_prods,
+            if (any(!is.na(nn(pl$list_indices)))) {"indices"},
+            if (any(!is.na(nn(pl$list_rgb)))) {"rgbimages"}
+          )
         )
-        if (all(is.na(pl$list_indices))) {pl$list_indices <- NULL}
+        if (all(is.na(nn(pl$list_indices)))) {pl$list_indices <- NULL}
         indices_rv$checked <- pl$list_indices
         # updateCheckboxGroupInput(session, "list_indices", selected = pl$list_indices) # FIXME 1 not working since it is reactive
+        if (all(is.na(nn(pl$list_rgb)))) {pl$list_rgb <- NULL}
+        if (all(is.na(nn(pl$rgb_ranges)))) {pl$rgb_ranges <- NULL}
+        rv$list_rgb_ranges <- setNames(pl$rgb_ranges, pl$list_rgb)
+        updateCheckboxGroupInput(session, "list_rgbimages", selected = pl$list_rgb)
         updateRadioButtons(session, "atm_mask",
                            selected = ifelse(is.na(pl$mask_type),FALSE,TRUE))
         updateSliderInput(session, "max_masked_perc",
@@ -2912,12 +3198,12 @@ s2_gui <- function(param_list = NULL,
                            selected = if (is.na(pl$mask_type)) {"cloud_medium_proba"} else
                              if (grepl("^scl_",pl$mask_type)) {"custom"} else {pl$mask_type})
         updateCheckboxGroupInput(session, "atm_mask_custom",
-                           selected = if (grepl("^scl\\_",pl$mask_type)) {strsplit(pl$mask_type,"_")[[1]][-1]} else {c(0,8:9)})
+                                 selected = if (grepl("^scl\\_",pl$mask_type)) {strsplit(pl$mask_type,"_")[[1]][-1]} else {c(0,8:9)})
         updateRadioButtons(session, "index_source", selected = pl$index_source)
         updateRadioButtons(session, "clip_on_extent", selected = pl$clip_on_extent)
         updateRadioButtons(session, "extent_name_textin", selected = pl$extent_name)
-        updateRadioButtons(session, "keep_tiles", selected = ifelse(is.na(pl$path_tiles),FALSE,TRUE))
-        updateRadioButtons(session, "keep_merged", selected = ifelse(is.na(pl$path_merged),FALSE,TRUE))
+        updateRadioButtons(session, "keep_tiles", selected = ifelse(is.na(nn(pl$path_tiles)),FALSE,TRUE))
+        updateRadioButtons(session, "keep_merged", selected = ifelse(is.na(nn(pl$path_merged)),FALSE,TRUE))
         setProgress(0.6)
         
         
@@ -2928,6 +3214,7 @@ s2_gui <- function(param_list = NULL,
         updateTextInput(session, "path_merged_textin", value = pl$path_merged)
         updateTextInput(session, "path_out_textin", value = pl$path_out)
         updateTextInput(session, "path_indices_textin", value = pl$path_indices)
+        updateTextInput(session, "path_rgb_textin", value = pl$path_rgb)
         updateRadioButtons(session, "path_subdirs", selected = pl$path_subdirs)
         updateRadioButtons(session, "check_thumbnails", selected = pl$thumbnails)
         

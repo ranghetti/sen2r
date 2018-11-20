@@ -135,7 +135,7 @@ products to be processed (accepted values: "TOA", "BOA", "SCL",
 
 \item{list_rgb}{(optional) Character vector with the values of the
 RGB images to be produced.
-Images are in the form xRGBrgb, when:
+Images are in the form RGBrgbx, when:
 \itemize{
 \item x is B (if source is BOA) or T (is source is TOA);
 \item r g and b are the the number of the bands to be used respectively
