@@ -374,6 +374,10 @@ def Sentinel_download(downloader=None,lat=None,lon=None,latmin=None,latmax=None,
         query_producttype=" producttype:%s "%producttype
         query=query+query_producttype
 
+    if max_cloud < 100:
+        query_producttype=" cloudcoverpercentage:[0 TO %s]"%max_cloud
+        query=query+query_producttype
+
     # acquisition date
 
     if start_date!=None:
