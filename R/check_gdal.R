@@ -147,6 +147,7 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE) {
   
   # filter basing on the GDAL installation path defined with gdal_path
   if (!is.null(gdal_path)) {
+    gdal_path <- normalize_path(gdal_path)
     # if no GDAL installations match the gdal_path, use another one
     if (all(!grepl(gdal_path, gdal_dirs, fixed = TRUE))) {
       print_message(
