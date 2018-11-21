@@ -128,7 +128,7 @@ descriptions of all the other parameters).</p>
   <span class='kw'>online</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>downloader</span> <span class='kw'>=</span> <span class='st'>"wget"</span>,
   <span class='kw'>overwrite_safe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>rm_safe</span> <span class='kw'>=</span> <span class='st'>"no"</span>, <span class='kw'>step_atmcorr</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
   <span class='kw'>max_cloud_safe</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>timeperiod</span> <span class='kw'>=</span> <span class='st'>"full"</span>,
-  <span class='kw'>extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>extent_name</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>s2tiles_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>extent_name</span> <span class='kw'>=</span> <span class='st'>"sen2r"</span>, <span class='kw'>s2tiles_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>s2orbits_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"BOA"</span>), <span class='kw'>list_rgb</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>list_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>index_source</span> <span class='kw'>=</span> <span class='st'>"BOA"</span>, <span class='kw'>rgb_ranges</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>mask_smooth</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>mask_buffer</span> <span class='kw'>=</span> <span class='fl'>0</span>,
@@ -280,7 +280,7 @@ as default.</p></td>
     <tr>
       <th>extent_name</th>
       <td><p>(optional) Name of the area set as extent, to be used in
-the output file names. Default is to leave it blank. The name is an
+the output file names. Default is "sen2r" The name is an
 alphanumeric string which cannot contain points nor underscores, and that
 cannot be a five-length string with the same structure of a tile ID
 (two numeric and three uppercase character values).</p></td>

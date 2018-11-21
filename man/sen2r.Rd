@@ -9,7 +9,7 @@ sen2r(param_list = NULL, gui = NA, preprocess = TRUE,
   online = TRUE, apihub = NA, downloader = "wget",
   overwrite_safe = FALSE, rm_safe = "no", step_atmcorr = "auto",
   max_cloud_safe = 100, timewindow = NA, timeperiod = "full",
-  extent = NA, extent_name = "", s2tiles_selected = NA,
+  extent = NA, extent_name = "sen2r", s2tiles_selected = NA,
   s2orbits_selected = NA, list_prods = c("BOA"), list_rgb = NA,
   list_indices = NA, index_source = "BOA", rgb_ranges = NA,
   mask_type = NA, max_mask = 100, mask_smooth = 0, mask_buffer = 0,
@@ -129,7 +129,7 @@ all found tiles are entirely used); in online mode, a sample extent is used
 as default.}
 
 \item{extent_name}{(optional) Name of the area set as extent, to be used in
-the output file names. Default is to leave it blank. The name is an
+the output file names. Default is "sen2r" The name is an
 alphanumeric string which cannot contain points nor underscores, and that
 cannot be a five-length string with the same structure of a tile ID
 (two numeric and three uppercase character values).}
