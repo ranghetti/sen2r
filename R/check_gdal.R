@@ -4,6 +4,8 @@
 #' @param abort Logical parameter: if TRUE (default), the function aborts
 #'  in case no GDAL installation is found; if FALSE, a warning is shown
 #'  and FALSE is returned.
+#' @param gdal_path (optional) Character: the path in which GDAL must be
+#'  searched in. If NULL (default), search is performed in the whole file system.
 #' @param force (optional) Logical: if TRUE, install even if it is already 
 #'  installed (default is FALSE).
 #' @return Logical (invisible): TRUE in case the installation is ok, FALSE 
@@ -29,10 +31,14 @@
 # TODO check also python and GDAL outside install_s2download
 # (one could be interested only in preprocessing and not in downloading)
 
-check_gdal <- function(abort = TRUE, force = FALSE) {
+check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE) {
   
+browser()
   # set minimum GDAL version
   gdal_minversion <- package_version("2.1.2")
+  
+  # # normalize gdal_path
+  # normalize_path(gdal_path)
   
   # load the saved GDAL path, if exists
   binpaths <- load_binpaths()

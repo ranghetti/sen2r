@@ -4,12 +4,15 @@
 \alias{check_gdal}
 \title{Check GDAL installation}
 \usage{
-check_gdal(abort = TRUE, force = FALSE)
+check_gdal(abort = TRUE, gdal_path = NULL, force = FALSE)
 }
 \arguments{
 \item{abort}{Logical parameter: if TRUE (default), the function aborts
 in case no GDAL installation is found; if FALSE, a warning is shown
 and FALSE is returned.}
+
+\item{gdal_path}{(optional) Character: the path in which GDAL must be
+searched in. If NULL (default), search is performed in the whole file system.}
 
 \item{force}{(optional) Logical: if TRUE, install even if it is already
 installed (default is FALSE).}
@@ -20,8 +23,7 @@ if GDAL is missing and abort=FALSE (otherwise, the function stops).
 }
 \description{
 The function check that GDAL is installed and updated to
-the minimum required version (2.1.3, since previous versions do not
-manage SAFE format).
+the minimum required version (2.1.2).
 }
 \note{
 License: GPL 3.0
