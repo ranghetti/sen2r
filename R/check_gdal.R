@@ -108,7 +108,9 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE) {
   if (all(gdal_versions < gdal_minversion)) {
     print_message(
       type=message_type,
-      "GDAL version must be at least ", gdal_minversion, ". Please update it.")
+      "GDAL version must be at least ", as.character(gdal_minversion), 
+      ". Please update it."
+    )
     return(invisible(FALSE))
   }
   # filter GDAL installations repsecting the requisite

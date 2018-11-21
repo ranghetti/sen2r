@@ -24,12 +24,18 @@ Before installing <span style="color:#5793dd;vertical-align:top;font-size:90%;fo
     (required by [jqr](https://github.com/ropensci/jqr));
 - [protobuf](https://github.com/protocolbuffers/protobuf)
     (required by [protolite](https://github.com/jeroen/protolite));
-- [V8](https://v8.dev)
+- [V8](https://v8.dev) 3.14 branch
     (required by [geojsonio](https://github.com/ropensci/geojsonio));
 - [openssl](https://www.openssl.org)
     (required by [openssl](https://github.com/jeroen/openssl));
 - [cairo](https://www.cairographics.org)
-    (required by [gdtools](https://github.com/davidgohel/gdtools)).
+    (required by [gdtools](https://github.com/davidgohel/gdtools));
+- [libcurl](https://curl.haxx.se/libcurl)
+    (required by [curl](https://github.com/jeroen/curl));
+- [NetCDF](https://www.unidata.ucar.edu/software/netcdf)
+    (required by [ncdf4](https://github.com/mdsumner/ncdf4));
+- [libxml2](http://xmlsoft.org)
+    (required by [XML](https://cran.r-project.org/web/packages/XML/index.html)).
     
 Other binaries are required (or suggested), since they are used in runtime by the package:
 
@@ -46,37 +52,37 @@ Other binaries are required (or suggested), since they are used in runtime by th
 
 To install both package dependencies and runtime binaries:
 
-- On Ubuntu 18.04 and higher:
+- On Debian and Ubuntu:
     ```{bash, eval = FALSE}
-    sudo apt-get install -y r-base gdal-bin python-gdal aria2 libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libv8-dev libssl-dev libcairo2-dev
+    sudo apt-get install -y r-base gdal-bin python-gdal aria2 libpython-dev libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libv8-3.14-dev libssl-dev libcairo2-dev
     ```
-    <!-- Notice that, on Ubuntu 16.04 and lower, the repositories [ubuntugis](https://launchpad.net/~ubuntugis) and [opencpu](https://launchpad.net/~opencpu) must be added before installing the packages: -->
-    <!-- ```{bash, eval = FALSE} -->
-    <!-- sudo add-apt-repository -y ppa:opencpu/jq -->
-    <!-- sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable -->
-    <!-- sudo apt-get update -q -->
-    <!-- ``` -->
-    <!-- On Debian Stretch, GDAL must be installed from backports repository: -->
-    <!-- ```{bash, eval = FALSE} -->
-    <!-- sudo su -->
-    <!-- echo "deb http://ftp.debian.org/debian stretch-backports main" >> /etc/apt/sources.list -->
-    <!-- exit -->
-    <!-- apt-get -t stretch-backports install gdal-bin python-gdal libgdal-dev -->
-    <!-- ``` -->
+    On Debian, `proj-epsg` is also required:
+    ```{bash, eval = FALSE}
+    sudo apt-get install -y proj-epsg
+    ```
+    On Ubuntu 16.04 LTS Xenial and 14.04 LTS Trusty, the repositories [ubuntugis](https://launchpad.net/~ubuntugis) and [opencpu](https://launchpad.net/~opencpu) must be added before installing the packages:
+    ```{bash, eval = FALSE}
+    sudo add-apt-repository -y ppa:opencpu/jq
+    sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
+    sudo apt-get update -q
+    ```
+    Installation was tested over Debian 9 Stretch and Ubuntu 18.04 LTS Bionic; newer versions (Ubuntu > 18.04, Debian > 9) should work, like Ubuntu 16.04 LTS Xenial and 14.04 LTS Trusty should also do. Other releases (Debian &#8804; 8; Ubuntu non-LTS < 18.04; Ubuntu LTS &#8804; 12.04) are not supported.
 - On Fedora:
     ```{bash, eval = FALSE}
-    sudo yum install <r> gdal gdal-python aria2 gdal-devel proj-devel geos-devel udunits2-devel jq-devel protobuf-devel v8-314-devel openssl-devel cairo-devel
+    sudo yum install R gdal gdal-python aria2 python-devels gdal-devel proj-devel geos-devel udunits2-devel jq-devel protobuf-devel v8-314-devel openssl-devel cairo-devel libcurl-devel netcdf-devel libxml2-devel
     ```
+    Installation was tested over Fedora 29.
 - On ArchLinux:
     ```{bash, eval = FALSE}
-    sudo pacman -S base-devel python-gdal wget aria2 jq protobuf git
+    sudo pacman -S --noconfirm r base-devel gcc-fortran python-gdal wget aria2 jq protobuf git
+    cd /tmp; git clone https://aur.archlinux.org/gyp-git.git
+    cd gyp-git; makepkg -si --noconfirm
+    cd /tmp; git clone https://aur.archlinux.org/v8-3.14.git
+    cd v8-3.14; makepkg -si --noconfirm
+    cd /tmp; git clone https://aur.archlinux.org/udunits.git
+    cd udunits; makepkg -si --noconfirm
     ```
-    Package `v8`, available on [AUR](https://aur.archlinux.org/packages/v8), 
-    is also required:
-    ```{bash, eval = FALSE}
-    cd /tmp; git clone https://aur.archlinux.org/v8.git
-    cd v8; makepkg -si
-    ```
+    Installation was tested on date 2018-11-21.
 
 ### Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
 

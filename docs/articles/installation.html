@@ -92,11 +92,17 @@
 <li>
 <a href="https://github.com/protocolbuffers/protobuf">protobuf</a> (required by <a href="https://github.com/jeroen/protolite">protolite</a>);</li>
 <li>
-<a href="https://v8.dev">V8</a> (required by <a href="https://github.com/ropensci/geojsonio">geojsonio</a>);</li>
+<a href="https://v8.dev">V8</a> 3.14 branch (required by <a href="https://github.com/ropensci/geojsonio">geojsonio</a>);</li>
 <li>
 <a href="https://www.openssl.org">openssl</a> (required by <a href="https://github.com/jeroen/openssl">openssl</a>);</li>
 <li>
-<a href="https://www.cairographics.org">cairo</a> (required by <a href="https://github.com/davidgohel/gdtools">gdtools</a>).</li>
+<a href="https://www.cairographics.org">cairo</a> (required by <a href="https://github.com/davidgohel/gdtools">gdtools</a>);</li>
+<li>
+<a href="https://curl.haxx.se/libcurl">libcurl</a> (required by <a href="https://github.com/jeroen/curl">curl</a>);</li>
+<li>
+<a href="https://www.unidata.ucar.edu/software/netcdf">NetCDF</a> (required by <a href="https://github.com/mdsumner/ncdf4">ncdf4</a>);</li>
+<li>
+<a href="http://xmlsoft.org">libxml2</a> (required by <a href="https://cran.r-project.org/web/packages/XML/index.html">XML</a>).</li>
 </ul>
 <p>Other binaries are required (or suggested), since they are used in runtime by the package:</p>
 <ul>
@@ -110,32 +116,29 @@
 <p>To install both package dependencies and runtime binaries:</p>
 <ul>
 <li>
-<p>On Ubuntu 18.04 and higher:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> apt-get install -y r-base gdal-bin python-gdal aria2 libpython-dev libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libv8-dev libssl-dev libcairo2-dev</code></pre></div>
-<!-- Notice that, on Ubuntu 16.04 and lower, the repositories [ubuntugis](https://launchpad.net/~ubuntugis) and [opencpu](https://launchpad.net/~opencpu) must be added before installing the packages: -->
-<!-- ```{bash, eval = FALSE} -->
-<!-- sudo add-apt-repository -y ppa:opencpu/jq -->
-<!-- sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable -->
-<!-- sudo apt-get update -q -->
-<!-- ``` -->
-<!-- On Debian Stretch, GDAL must be installed from backports repository: -->
-<!-- ```{bash, eval = FALSE} -->
-<!-- sudo su -->
-<!-- echo "deb http://ftp.debian.org/debian stretch-backports main" >> /etc/apt/sources.list -->
-<!-- exit -->
-<!-- apt-get -t stretch-backports install gdal-bin python-gdal libgdal-dev -->
-<!-- ``` -->
-</li>
+<p>On Debian and Ubuntu:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> apt-get install -y r-base gdal-bin python-gdal aria2 libpython-dev libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libv8-3.14-dev libssl-dev libcairo2-dev</code></pre></div>
+<p>On Debian, <code>proj-epsg</code> is also required:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> apt-get install -y proj-epsg</code></pre></div>
+<p>On Ubuntu 16.04 LTS Xenial and 14.04 LTS Trusty, the repositories <a href="https://launchpad.net/~ubuntugis">ubuntugis</a> and <a href="https://launchpad.net/~opencpu">opencpu</a> must be added before installing the packages:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> add-apt-repository -y ppa:opencpu/jq
+<span class="fu">sudo</span> add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
+<span class="fu">sudo</span> apt-get update -q</code></pre></div>
+Installation was tested over Debian 9 Stretch and Ubuntu 18.04 LTS Bionic; newer versions (Ubuntu &gt; 18.04, Debian &gt; 9) should work, like Ubuntu 16.04 LTS Xenial and 14.04 LTS Trusty should also do. Other releases (Debian ≤ 8; Ubuntu non-LTS &lt; 18.04; Ubuntu LTS ≤ 12.04) are not supported.</li>
 <li>
 <p>On Fedora:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> yum install <span class="op">&lt;</span>r<span class="op">&gt;</span> gdal gdal-python aria2 gdal-devel proj-devel geos-devel udunits2-devel jq-devel protobuf-devel v8-314-devel openssl-devel cairo-devel</code></pre></div>
-</li>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> yum install R gdal gdal-python aria2 python-devels gdal-devel proj-devel geos-devel udunits2-devel jq-devel protobuf-devel v8-314-devel openssl-devel cairo-devel libcurl-devel netcdf-devel libxml2-devel</code></pre></div>
+Installation was tested over Fedora 29.</li>
 <li>
 <p>On ArchLinux:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> pacman -S base-devel python-gdal wget aria2 jq protobuf git</code></pre></div>
-<p>Package <code>v8</code>, available on <a href="https://aur.archlinux.org/packages/v8">AUR</a>, is also required:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/v8.git
-<span class="bu">cd</span> v8<span class="kw">;</span> <span class="ex">makepkg</span> -si</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> pacman -S --noconfirm r base-devel gcc-fortran python-gdal wget aria2 jq protobuf git
+<span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/gyp-git.git
+<span class="bu">cd</span> gyp-git<span class="kw">;</span> <span class="ex">makepkg</span> -si --noconfirm
+<span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/v8-3.14.git
+<span class="bu">cd</span> v8-3.14<span class="kw">;</span> <span class="ex">makepkg</span> -si --noconfirm
+<span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/udunits.git
+<span class="bu">cd</span> udunits<span class="kw">;</span> <span class="ex">makepkg</span> -si --noconfirm</code></pre></div>
+<p>Installation was tested on date 2018-11-21.</p>
 </li>
 </ul>
 </div>
