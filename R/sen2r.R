@@ -80,7 +80,7 @@
 #'  all found tiles are entirely used); in online mode, a sample extent is used
 #'  as default.
 #' @param extent_name (optional) Name of the area set as extent, to be used in
-#'  the output file names. Default is to leave it blank. The name is an 
+#'  the output file names. Default is "sen2r" The name is an 
 #'  alphanumeric string which cannot contain points nor underscores, and that 
 #'  cannot be a five-length string with the same structure of a tile ID
 #'  (two numeric and three uppercase character values).
@@ -269,7 +269,7 @@ sen2r <- function(param_list = NULL,
                   timewindow = NA,
                   timeperiod = "full",
                   extent = NA, # below re-defined as sample extent if online mode
-                  extent_name = "",
+                  extent_name = "sen2r",
                   s2tiles_selected = NA, # below re-defined for online mode
                   s2orbits_selected = NA, # temporary select all orbits (TODO implement)
                   list_prods = c("BOA"),

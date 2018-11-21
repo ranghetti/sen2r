@@ -483,7 +483,7 @@ s2_gui <- function(param_list = NULL,
                         actionLink("help_extent_name", icon("question-circle"))
                       )),
                   div(style="vertical-align:top;",
-                      textInput("extent_name_textin", NULL, "")),
+                      textInput("extent_name_textin", NULL, "sen2r")),
                   
                   # Buttons to load the extent with modal dialogs
                   strong("Specify the extent:\u2000"),
@@ -2324,10 +2324,11 @@ s2_gui <- function(param_list = NULL,
       showModal(modalDialog(
         title = "Name of the extent",
         p(
-          "Enter an alphanumeric label (which cannot contain spaces, points",
+          "Enter an alphanumeric label, which cannot contain spaces, points",
           "nor underscores, and that cannot be a five-length string with",
           "the same structure of a tile ID",
           "(two numeric and three uppercase character values).",
+          "The label can not be empty.",
           "This label is used in the output file names."
         ),
         easyClose = TRUE,
