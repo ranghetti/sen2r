@@ -711,6 +711,8 @@ sen2r <- function(param_list = NULL,
   
   # internal parameters
   paths <- c()
+  paths["L1C"] <- if (!is.na(pm$path_l1c)) {pm$path_l1c} else {file.path(tmpdir,"SAFE")}
+  paths["L2A"] <- if (!is.na(pm$path_l2a)) {pm$path_l2a} else {file.path(tmpdir,"SAFE")}
   paths["out"] <- if (!is.na(pm$path_out)) {pm$path_out} else {file.path(tmpdir,"out")}
   paths["rgb"] <- if (!is.na(pm$path_rgb)) {pm$path_rgb} else {file.path(tmpdir,"rgb")}
   paths["indices"] <- if (!is.na(pm$path_indices)) {pm$path_indices} else {file.path(tmpdir,"indices")}
@@ -925,16 +927,16 @@ sen2r <- function(param_list = NULL,
       
       # if offline mode, read the SAFE product list from folders and filter
       if ("l1c" %in% pm$s2_levels) {
-        s2_lists[["l1c"]] <- list.files(pm$path_l1c, "\\.SAFE$")
+        s2_lists[["l1c"]] <- list.files(paths["L1C"], "\\.SAFE$")
       }
       if ("l2a" %in% pm$s2_levels) {
         s2_lists[["l2a"]] <- if (pm$step_atmcorr=="l2a") {
-          list.files(pm$path_l2a, "\\.SAFE$")
+          list.files(paths["L2A"], "\\.SAFE$")
         } else if (pm$step_atmcorr %in% c("scihub","no")) {
-          list.files(pm$path_l1c, "\\.SAFE$")
+          list.files(paths["L1C"], "\\.SAFE$")
         } else if (pm$step_atmcorr=="auto") {
-          all_l1c <- list.files(pm$path_l1c, "\\.SAFE$")
-          all_l2a <- list.files(pm$path_l2a, "\\.SAFE$")
+          all_l1c <- list.files(paths["L1C"], "\\.SAFE$")
+          all_l2a <- list.files(paths["L2A"], "\\.SAFE$")
           c(
             all_l2a,
             all_l1c[
@@ -1010,7 +1012,7 @@ sen2r <- function(param_list = NULL,
                  as.POSIXct(creation_datetime, format="%s"))]
     
     # list existing products and get metadata
-    s2_existing_list <- list.files(unique(c(pm$path_l2a,pm$path_l1c)), "\\.SAFE$")
+    s2_existing_list <- list.files(unique(c(paths["L1C"],paths["L2A"])), "\\.SAFE$")
     if (length(s2_existing_list) > 0 & pm$online == TRUE) {
       s2_isvalid <- sapply(s2_existing_list, safe_isvalid, info="nameinfo")
       s2_existing_list <- s2_existing_list[s2_isvalid]
@@ -1250,8 +1252,8 @@ sen2r <- function(param_list = NULL,
         safe_getMetadata(x, "nameinfo")$version
       }) == "compact")) {
         s2_download(
-          s2_list_l2a[!names(s2_list_l2a) %in% list.files(pm$path_l2a, "\\.SAFE$")],
-          outdir = pm$path_l2a,
+          s2_list_l2a[!names(s2_list_l2a) %in% list.files(paths["L2A"], "\\.SAFE$")],
+          outdir = paths["L2A"],
           downloader = pm$downloader,
           apihub = pm$apihub
         )
@@ -1278,7 +1280,7 @@ sen2r <- function(param_list = NULL,
             # (with compactname products, all the zips are downloaded
             # during the first execution, since argument "tile" is 
             # ignored).
-            outdir = pm$path_l2a,
+            outdir = paths["L2A"],
             downloader = pm$downloader,
             tile = tile,
             apihub = pm$apihub
@@ -1303,8 +1305,8 @@ sen2r <- function(param_list = NULL,
         safe_getMetadata(x, "nameinfo")$version
       }) == "compact")) {
         s2_download(
-          s2_list_l1c[!names(s2_list_l1c) %in% list.files(pm$path_l1c, "\\.SAFE$")],
-          outdir = pm$path_l1c,
+          s2_list_l1c[!names(s2_list_l1c) %in% list.files(paths["L1C"], "\\.SAFE$")],
+          outdir = paths["L1C"],
           downloader = pm$downloader
         )
       } else { # otherwise, launch one per tile
@@ -1330,7 +1332,7 @@ sen2r <- function(param_list = NULL,
             # (with compactname products, all the zips are downloaded
             # during the first execution, since argument "tile" is 
             # ignored).
-            outdir = pm$path_l1c,
+            outdir = paths["L1C"],
             downloader = pm$downloader,
             tile = tile
           )
@@ -1350,9 +1352,14 @@ sen2r <- function(param_list = NULL,
     }
     
     # second filter on tiles (#filter2)
-    s2_dt$id_tile <- lapply(file.path(ifelse(s2_dt$level=="1C",pm$path_l1c,pm$path_l2a),s2_dt[,name]), function(x) {
-      tryCatch(safe_getMetadata(x, "tiles"), error = function(e) {NULL})
-    }) %>%
+    s2_dt$id_tile <- lapply(
+      file.path(
+        paths[if (s2_dt$level=="1C") {"L1C"} else {"L2A"} ],
+        s2_dt[,name]
+      ), function(x) {
+        tryCatch(safe_getMetadata(x, "tiles"), error = function(e) {NULL})
+      }
+    ) %>%
       sapply(paste, collapse = " ") %>% as.character()
     if (all(!is.na(pm$s2tiles_selected)) & nrow(s2_dt)>0) {
       # filter "elegant" using strsplit (fails with empty s2_dt)
@@ -1404,7 +1411,7 @@ sen2r <- function(param_list = NULL,
       
       if (length(s2_list_l1c_tocorrect)>0) {
         
-        if (sum(!file.path(pm$path_l1c,names(s2_list_l1c_tocorrect)) %>% file.exists()) > 0) {
+        if (sum(!file.path(paths["L1C"],names(s2_list_l1c_tocorrect)) %>% file.exists()) > 0) {
           print_message(
             type = "message",
             date = TRUE,
@@ -1415,8 +1422,8 @@ sen2r <- function(param_list = NULL,
         
         s2_list_l2a_corrected <- sen2cor(
           names(s2_list_l1c_tocorrect),
-          l1c_dir = pm$path_l1c,
-          outdir = pm$path_l2a,
+          l1c_dir = paths["L1C"],
+          outdir = paths["L2A"],
           tiles = pm$s2tiles_selected,
           parallel = pm$parallel,
           tmpdir = if (Sys.info()["sysname"] == "Windows") {
@@ -1439,7 +1446,7 @@ sen2r <- function(param_list = NULL,
     
     # delete SAFE, if required
     if (!("l1c" %in% pm$s2_levels) & pm$rm_safe %in% c("all","l1c")) {
-      unlink(file.path(pm$path_l1c,names(s2_list_l1c_tocorrect)), recursive=TRUE)
+      unlink(file.path(paths["L1C"],names(s2_list_l1c_tocorrect)), recursive=TRUE)
     }
     
     # if no processing is required, stop here # TODO see #TODO3 (end of file)
@@ -1452,8 +1459,8 @@ sen2r <- function(param_list = NULL,
       )
       
       return(invisible(
-        c(file.path(pm$path_l1c,names(s2_list_l1c)),
-          file.path(pm$path_l2a,names(s2_list_l2a)))
+        c(file.path(paths["L1C"],names(s2_list_l1c)),
+          file.path(paths["L2A"],names(s2_list_l2a)))
       ))
       
     }
@@ -1972,10 +1979,10 @@ sen2r <- function(param_list = NULL,
   }
   # delete SAFE, if required
   if (pm$rm_safe == "all") {
-    unlink(file.path(pm$path_l1c,names(s2_list_l1c)), recursive=TRUE)
-    unlink(file.path(pm$path_l2a,names(s2_list_l2a)), recursive=TRUE)
+    unlink(file.path(paths["L1C"],names(s2_list_l1c)), recursive=TRUE)
+    unlink(file.path(paths["L2A"],names(s2_list_l2a)), recursive=TRUE)
   } else if (pm$rm_safe == "l1c") {
-    unlink(file.path(pm$path_l1c,names(s2_list_l1c)), recursive=TRUE)
+    unlink(file.path(paths["L1C"],names(s2_list_l1c)), recursive=TRUE)
   }
   
   # check if some files were not created
