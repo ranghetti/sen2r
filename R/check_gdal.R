@@ -1,7 +1,6 @@
 #' @title Check GDAL installation
 #' @description The function check that GDAL is installed and updated to
-#'  the minimum required version (2.1.3, since previous versions do not
-#'  manage SAFE format).
+#'  the minimum required version (2.1.2).
 #' @param abort Logical parameter: if TRUE (default), the function aborts
 #'  in case no GDAL installation is found; if FALSE, a warning is shown
 #'  and FALSE is returned.
@@ -33,7 +32,7 @@
 check_gdal <- function(abort = TRUE, force = FALSE) {
   
   # set minimum GDAL version
-  gdal_minversion <- package_version("2.1.3")
+  gdal_minversion <- package_version("2.1.2")
   
   # load the saved GDAL path, if exists
   binpaths <- load_binpaths()
