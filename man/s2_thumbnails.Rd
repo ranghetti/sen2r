@@ -4,9 +4,9 @@
 \alias{s2_thumbnails}
 \title{Create thumbnails for S2 products.}
 \usage{
-s2_thumbnails(infiles, prod_type = NA, rgb_type = "SwirNirR", dim = 1024,
-  scaleRange = NA, outdir = NA, tmpdir = NA, rmtmp = TRUE,
-  overwrite = FALSE)
+s2_thumbnails(infiles, prod_type = NA, rgb_type = "SwirNirR",
+  dim = 1024, scaleRange = NA, outdir = NA, tmpdir = NA,
+  rmtmp = TRUE, overwrite = FALSE)
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths

@@ -105,6 +105,24 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
     )
   }
   
+  # check maximum cloud covers
+  if (all(is.na(nn(pm$max_cloud_safe)))) {
+    print_message(
+      type = "warning",
+      "Maximum SAFE cloud coverage was not specified; ",
+      "setting it to 100 (all SAFE are used)."
+    )
+    pm$max_cloud_safe <- 100
+  }
+  if (all(is.na(nn(pm$max_mask)))) {
+    print_message(
+      type = "warning",
+      "Maximum cloud coverage was not specified; ",
+      "setting it to 80 (default value)."
+    )
+    pm$max_mask <- 80
+  }
+  
   # check output resolution
   if (!anyNA(pm$res) & any(pm$res <= 0)) {
     print_message(

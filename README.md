@@ -35,50 +35,16 @@ This package is under construction (current version is [pre-release 0.3.3](https
 Installation
 ------------
 
-<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> is supported over Linux and Windows operating systems; the support for Mac will be added soon.
+<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> is supported over Linux and Windows operating systems; the support for Mac will be added in future.
 
-The package can be installed from GitHub with the R package **devtools**. To do it:
-
-1.  install the package **devtools**, if missing:
-
-    ``` r
-    install.packages("devtools")
-    ```
-
-2.  load it and install <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:
-
-    ``` r
-    library(devtools)
-    install_github("ranghetti/sen2r")
-    ```
-
-This will install the R package along with its R dependences, containing all the functions necessary to preprocess data.
-
-To run the functions correctly, some external dependences are required:
-
--   [**GDAL**](http://www.gdal.org) (with support for JP2OpenJPEG format): this is a mandatory dependency, needed for all the processing operations and to retrieve metadata from SAFE products;
--   [**sen2cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor) is used to perform atmospheric correction of Sentinel-2 Level-1C products: it is required by the package, unless you choose not to correct products locally (using only Level-1C – TOA products or dowloading directly Level-2A products).
--   **Wget** is the downloader used by the package; it is required to work online.
--   [**aria2**](https://aria2.github.io) is an alternative downloader which can be used to faster the download of SAFE archives; it can be optionally installed and used.
-
-These dependences can be graphically checked launching the function
+The package can be installed from GitHub with the R package **remotes**:
 
 ``` r
-library(sen2r)
-check_sen2r_deps()
+remotes::install_github("ranghetti/sen2r")
 ```
 
-This function opens a GUI which help to check that they are satisfied; if some of them are missing, follow the instructions provided by the GUI to install them (on Windows, the GUI allows to install them directly).
+For detailed instructions about installing the package (including dependencies), see the [Installation](articles/installation.md) page.
 
-<!-- Atmospheric correction is performed using [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor): 
-the package will automatically download and install it at first use,
-or by running function [`install_sen2cor()`](reference/install_sen2cor.md).
-Please notice that the use of sen2cor algorythm was not yet possible under MAC.
-
-Preprocessing functions make use of [GDAL](http://www.gdal.org), which must 
-support JPEG2000 format. On Windows, it is strongly recommended to install it 
-using the [OSGeo4W installer](http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe)
-in advanced mode, and checking the installation of `openjpeg` library. -->
 Usage
 -----
 
@@ -92,7 +58,7 @@ sen2r()
 this opens a GUI which allows to set the required processing parameters, and then launches the main function.
 
 <p style="text-align:center;">
-<a href="https://raw.githubusercontent.com/ranghetti/sen2r/master/man/figures/sen2r_gui_sheet1.jpg" target="_blank"> <img src="man/figures/sen2r_gui_sheet1_small.png"> </a> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/master/man/figures/sen2r_gui_sheet2.jpg" target="_blank"> <img src="man/figures/sen2r_gui_sheet2_small.png"> </a> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/master/man/figures/sen2r_gui_sheet3.jpg" target="_blank"> <img src="man/figures/sen2r_gui_sheet3_small.png"> </a> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/master/man/figures/sen2r_gui_sheet4.jpg" target="_blank"> <img src="man/figures/sen2r_gui_sheet4_small.png"> </a>
+<a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet1.jpg" target="_blank"> <img src="man/figures/sen2r_gui_sheet1_small.png"> </a> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet2.jpg" target="_blank"> <img src="man/figures/sen2r_gui_sheet2_small.png"> </a> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet3.jpg" target="_blank"> <img src="man/figures/sen2r_gui_sheet3_small.png"> </a> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet4.jpg" target="_blank"> <img src="man/figures/sen2r_gui_sheet4_small.png"> </a>
 </p>
 Alternatively, [`sen2r()`](reference/sen2r.md) can be launched with a list of parameters (created with [`s2_gui()`](reference/s2_gui.md)) or passing manually the parameters as arguments of the function (see [the documentation of the function](reference/sen2r.md) for further details).
 
@@ -111,10 +77,9 @@ Other specific functions can be used to run single steps separately:
 Credits
 -------
 
-<a href="http://www.irea.cnr.it" target="_blank"> <img src="man/figures/irea_logo_200px.png" height="100" align="left" style="padding-right: 100px;"/></a>
-<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> is being developed by Luigi Ranghetti and Lorenzo Busetto ([IREA-CNR](http://www.irea.cnr.it)), and it is released under the [GNU General Public License version 3](https://www.gnu.org/licenses/gpl-3.0.html) (GPL‑3).
+<a href="http://www.irea.cnr.it" target="_blank"> <img src="man/figures/irea_logo_200px.png" height="100" align="left" style="padding-right: 100px;"/></a> <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> is being developed by Luigi Ranghetti and Lorenzo Busetto ([IREA-CNR](http://www.irea.cnr.it)), and it is released under the [GNU General Public License version 3](https://www.gnu.org/licenses/gpl-3.0.html) (GPL‑3).
 
-The [<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> logo](https://raw.githubusercontent.com/ranghetti/sen2r/master/man/figures/sen2r_logo_200px.png), partially derived from the [R logo](https://www.r-project.org/logo), is released under the [Creative Commons Attribution-ShareAlike 4.0 International license](https://creativecommons.org/licenses/by-sa/4.0) (CC-BY-SA 4.0).
+The [<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> logo](https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_logo_200px.png), partially derived from the [R logo](https://www.r-project.org/logo), is released under the [Creative Commons Attribution-ShareAlike 4.0 International license](https://creativecommons.org/licenses/by-sa/4.0) (CC-BY-SA 4.0).
 
 To cite this library, please use the following entry:
 

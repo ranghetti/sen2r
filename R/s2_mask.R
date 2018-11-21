@@ -367,16 +367,17 @@ s2_mask <- function(infiles,
             file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
           )
           raster::calc(inmask[[i]],
-                       function(x){as.integer(!is.na(x) & !x %in% req_masks[[i]])},
+                       function(x){as.integer(!is.na(nn(x)) & !x %in% req_masks[[i]])},
                        filename = mask_tmpfiles[i],
                        options  = "COMPRESS=LZW",
-                       datatype = "INT1U")
+                       datatype = "INT1U",
+                       overwrite = TRUE)
           naval_tmpfiles <- c(
             naval_tmpfiles,
             file.path(sel_tmpdir, basename(tempfile(pattern = "naval_", fileext = ".tif")))
           )
           raster::calc(inmask[[i]],
-                       function(x){as.integer(!is.na(x))},
+                       function(x){as.integer(!is.na(nn(x)))},
                        filename = naval_tmpfiles[i],
                        options  = "COMPRESS=LZW",
                        datatype = "INT1U")
@@ -400,9 +401,14 @@ s2_mask <- function(infiles,
         }
         
         # compute the percentage of masked surface
-        values_naval <- values(raster(outnaval))
-        mean_values_naval <- mean(values_naval, na.rm=TRUE)
-        mean_values_mask <- mean(values(raster(outmask)), na.rm=TRUE)
+        
+        # This is as fast as previous, but memory friendly on large raster
+        mean_values_naval <- raster::cellStats(raster(outnaval), "mean", na.rm = TRUE)
+        mean_values_mask  <- raster::cellStats(raster(outmask), "mean", na.rm = TRUE)
+        # values_naval <- values(raster(outnaval))
+        # mean_values_naval <- mean(values_naval, na.rm=TRUE)
+        # mean_values_mask <- mean(values(raster(outmask)), na.rm=TRUE)
+        
         perc_mask <- 100 * (mean_values_naval - mean_values_mask) / mean_values_naval
         if (!is.finite(perc_mask)) {perc_mask <- 100}
         
@@ -507,10 +513,11 @@ s2_mask <- function(infiles,
                 smooth <- smooth * 8.15e-6
               }
               # apply the smooth to the mask
+              min_values_naval <- raster::cellStats(raster(outnaval), "min", na.rm = TRUE) 
               smooth_mask(
                 outmask_res, 
                 radius = smooth, buffer = buffer, 
-                namask = if (any(values_naval==0)) {outnaval_res} else {NULL}, # TODO NULL if no Nodata values are present
+                namask = if (min_values_naval==0) {outnaval_res} else {NULL}, # TODO NULL if no Nodata values are present
                 binpaths = binpaths, tmpdir = sel_tmpdir
               )
             } else {
@@ -520,45 +527,103 @@ s2_mask <- function(infiles,
             # load mask
             inraster <- raster::brick(sel_infile)
             
-            if (sel_format!="VRT") {
-              raster::mask(
-                inraster,
-                raster(outmask_smooth),
-                filename = sel_outfile,
-                maskvalue = 0,
-                updatevalue = sel_naflag,
-                updateNA = TRUE,
-                NAflag = sel_naflag,
-                datatype = dataType(inraster),
-                format = sel_format,
-                options = if(sel_format == "GTiff") {paste0("COMPRESS=",compress)},
+            # if (sel_format!="VRT") {
+            # t1 <- Sys.time()
+            # raster::mask(
+            #   inraster,
+            #   raster(outmask_smooth),
+            #   filename = sel_outfile,
+            #   maskvalue = 0,
+            #   updatevalue = sel_naflag,
+            #   updateNA = TRUE,
+            #   NAflag = sel_naflag,
+            #   datatype = dataType(inraster),
+            #   format = sel_format,
+            #   options = if(sel_format == "GTiff") {paste0("COMPRESS=",compress)},
+            #   overwrite = overwrite
+            # )
+            # t2 <- Sys.time()
+            # print(t2 - t1)
+            
+            # Maskapply
+            # maxmem <- get_freemem() / 2
+            maskapply_serial <- function(x, y, na, out_file = '', datatype, minrows = NULL,
+                                         overwrite = overwrite) {
+              out <- raster:::.copyWithProperties(x)
+              out <- writeStart(
+                out, 
+                gsub("\\.vrt$", ".tif", out_file), 
+                NAflag=na, 
+                datatype = datatype, 
+                format = ifelse(sel_format=="VRT","GTiff",sel_format), 
+                if(sel_format %in% c("GTiff","VRT")){options = c("COMPRESS=LZW")},
                 overwrite = overwrite
               )
-            } else {
-              print_message(
-                type = "message",
-                date = TRUE,
-                "Starting parallel application of masks on file ",basename(sel_infile),"..."
-              )
-              maskapply_parallel(
-                inraster, 
-                raster(outmask_smooth), 
-                outpath = sel_outfile,
-                tmpdir = sel_tmpdir,
-                binpaths = binpaths,
-                NAflag = sel_naflag,
-                parallel = parallel,
-                datatype = dataType(inraster),
-                overwrite = overwrite,
-                .log_message=.log_message, 
-                .log_output=.log_output
-              )
-              print_message(
-                type = "message",
-                date = TRUE,
-                "Parallel application of masks on file ",basename(sel_infile)," done."
-              )
+              #4 bytes per cell, nb + 1 bands (brick + mask), * 2 to account for a copy
+              # raster::rasterOptions(chunksize = 3e08)
+              bs <- blockSize(out, minblocks = 8)
+              # if (parallel) bs <- blockSize(out, n = bs$n * n_cores)
+              for (i in seq_len(bs$n)) {
+                message("Processing chunk ", i, " of ", bs$n)
+                
+                m   <- raster::getValuesBlock(y, row = bs$row[i], nrows = bs$nrows[i])
+                v   <- raster::getValuesBlock(x, row = bs$row[i], nrows = bs$nrows[i])
+                v[m == 0] <- NA
+                
+                out <- writeValues(out, v, bs$row[i])
+                gc()
+              }
+              out <- writeStop(out)
+              # raster::rasterOptions(chunksize = 1e08)
+              # gc()
+              #
+              #
+              # return(out)
             }
+            # t1 <- Sys.time()
+            #
+            # t1 <- Sys.time()
+            out <- maskapply_serial(x = inraster,
+                                    y =  raster(outmask_smooth),
+                                    out_file = sel_outfile,
+                                    na = sel_naflag,
+                                    datatype = dataType(inraster),
+                                    overwrite = TRUE)
+            file.rename(gsub("\\.vrt$", ".tif", sel_outfile), sel_outfile)
+            # gc()
+            # t2 <- Sys.time()
+            # print(t2 - t1)
+            
+            
+            # } else {
+            #   print_message(
+            #     type = "message",
+            #     date = TRUE,
+            #     "Starting parallel application of masks on file ",basename(sel_infile),"..."
+            #   )
+            #
+            #   t1 <- Sys.time()
+            #   maskapply_parallel(
+            #     inraster,
+            #     raster(outmask_smooth),
+            #     outpath = sel_outfile,
+            #     tmpdir = sel_tmpdir,
+            #     binpaths = binpaths,
+            #     NAflag = sel_naflag,
+            #     parallel = parallel,
+            #     datatype = dataType(inraster),
+            #     overwrite = overwrite,
+            #     .log_message=.log_message,
+            #     .log_output=.log_output
+            #   )
+            #   t2 <- Sys.time()
+            #   print(t2 - t1)
+            #   print_message(
+            #     type = "message",
+            #     date = TRUE,
+            #     "Parallel application of masks on file ",basename(sel_infile)," done."
+            #   )
+            # }
             
             
             # fix for envi extension (writeRaster use .envi)

@@ -5,11 +5,11 @@
 \alias{s2_perc_masked}
 \title{Apply cloud masks}
 \usage{
-s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba", smooth = 20,
-  buffer = 10, max_mask = 80, outdir = "./masked", tmpdir = NA,
-  rmtmp = TRUE, save_binary_mask = FALSE, format = NA, subdirs = NA,
-  compress = "DEFLATE", parallel = FALSE, overwrite = FALSE,
-  .log_message = NA, .log_output = NA)
+s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba",
+  smooth = 20, buffer = 10, max_mask = 80, outdir = "./masked",
+  tmpdir = NA, rmtmp = TRUE, save_binary_mask = FALSE, format = NA,
+  subdirs = NA, compress = "DEFLATE", parallel = FALSE,
+  overwrite = FALSE, .log_message = NA, .log_output = NA)
 
 s2_perc_masked(infiles, maskfiles, mask_type = "cloud_medium_proba",
   tmpdir = NA, rmtmp = TRUE, parallel = FALSE)
