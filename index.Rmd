@@ -81,13 +81,13 @@ remotes::install_github("ranghetti/sen2r")
 ```
 
 For detailed instructions about installing the package (including dependencies),
-see the [Installation](https://ranghetti.github.io/sen2r/articles/installation.html) page.
+see the [Installation](articles/installation.md) page.
 
 ### Run as Docker image
 
 A dockerised version of <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> is available [here](https://cloud.docker.com/repository/docker/ranghetti/sen2r).
 
-For detailed instructions about using it, see the page ["Run in a Docker container"](https://ranghetti.github.io/sen2r/articles/docker.html) page.
+For detailed instructions about using it, see the page ["Run in a Docker container"](articles/docker.md) page.
 
 
 ## Usage
@@ -118,33 +118,33 @@ and then launches the main function.
 </p>
 
 Alternatively, 
-[`sen2r()`](https://ranghetti.github.io/sen2r/reference/sen2r.html)
+[`sen2r()`](reference/sen2r.md)
 can be launched with a list of parameters (created with 
-[`s2_gui()`](https://ranghetti.github.io/sen2r/reference/s2_gui.html))
+[`s2_gui()`](reference/s2_gui.md))
 or passing manually the parameters as arguments of the function
-(see [the documentation of the function](https://ranghetti.github.io/sen2r/reference/sen2r.html) for further details).
+(see [the documentation of the function](reference/sen2r.md) for further details).
 
 Other specific functions can be used to run single steps separately:
 
-* [`s2_list()`](https://ranghetti.github.io/sen2r/reference/s2_list.html)
+* [`s2_list()`](reference/s2_list.md)
     to retrieve the list of available Sentinel-2 products basing on input parameters;
-* [`s2_download()`](https://ranghetti.github.io/sen2r/reference/s2_download.html)
+* [`s2_download()`](reference/s2_download.md)
     to download Sentinel-2 products;
 * [`sen2cor()`](reference/sen2cor.html)
     to correct level-1C products using [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor);
-* [`s2_translate()`](https://ranghetti.github.io/sen2r/reference/s2_translate.html)
+* [`s2_translate()`](reference/s2_translate.md)
     to convert Sentinel-2 products from SAFE format to a format managed by GDAL;
-* [`s2_merge()`](https://ranghetti.github.io/sen2r/reference/s2_merge.html)
+* [`s2_merge()`](reference/s2_merge.md)
     to merge Sentinel-2 tiles which have the same date and orbit;
-* [`gdal_warp()`](https://ranghetti.github.io/sen2r/reference/gdal_warp.html)
+* [`gdal_warp()`](reference/gdal_warp.md)
     to clip, reproject and warp raster files (this is a wrapper to call
     [gdal_translate](http://www.gdal.org/gdal_translate.html) or 
     [gdalwarp](http://www.gdal.org/gdalwarp.html) basing on input parameters);
-* [`s2_mask()`](https://ranghetti.github.io/sen2r/reference/s2_mask.html)
+* [`s2_mask()`](reference/s2_mask.md)
     to apply a cloud mask to Sentinel-2 products;
-* [`s2_calcindices()`](https://ranghetti.github.io/sen2r/reference/s2_calcindices.html)
+* [`s2_calcindices()`](reference/s2_calcindices.md)
     to compute maps of spectral indices from Sentinel-2 Surface Reflectance multiband raster files;
-* [`s2_thumbnails()`](https://ranghetti.github.io/sen2r/reference/s2_thumbnails.html)
+* [`s2_thumbnails()`](reference/s2_thumbnails.md)
     to generate RGB thumbnails (JPEG or PNG) of the products.
 
 ## Credits

@@ -11,7 +11,17 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## On Linux systems
+Instruction are provided separately for each OS:
+
+- [Install on Linux systems](#linux)
+- [Install on Windows](#windows)
+
+The support for MacOS will be added in future.
+
+Alternatively, <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be used [in a Docker container](docker.md).
+
+
+## <a id="linux"></a>On Linux systems
 
 ### Installing dependencies
 
@@ -124,7 +134,7 @@ library(sen2r)
 install_sen2cor()
 ```
 
-## On Windows
+## <a id="windows"></a>On Windows
 
 ### Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
 
@@ -188,6 +198,6 @@ support JPEG2000 format. On Windows, it is strongly recommended to install it
 using the [OSGeo4W installer](http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe)
 in advanced mode, and checking the installation of `openjpeg` library. -->
 
-## On MacOS
+## <a id="mac"></a>On MacOS
 
 The support for MacOS will be added in future.

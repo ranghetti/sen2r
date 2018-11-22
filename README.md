@@ -5,7 +5,6 @@
     -   [Usage](#usage)
     -   [Credits](#credits)
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
 [![Travis-CI Build Status](https://travis-ci.org/ranghetti/sen2r.svg?branch=master)](https://travis-ci.org/ranghetti/sen2r) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1240384.svg)](https://doi.org/10.5281/zenodo.1240384) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/sen2r)](https://cran.r-project.org/package=sen2r) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
 <img src="man/figures/sen2r_logo_200px.png" width="200" height="113" align="right" />
@@ -37,13 +36,21 @@ Installation
 
 <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> is supported over Linux and Windows operating systems; the support for Mac will be added in future.
 
+### Install locally
+
 The package can be installed from GitHub with the R package **remotes**:
 
 ``` r
 remotes::install_github("ranghetti/sen2r")
 ```
 
-For detailed instructions about installing the package (including dependencies), see the [Installation](articles/installation.md) page.
+For detailed instructions about installing the package (including dependencies), see the [Installation](https://ranghetti.github.io/sen2r/articles/installation.html) page.
+
+### Run as Docker image
+
+A dockerised version of <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> is available [here](https://cloud.docker.com/repository/docker/ranghetti/sen2r).
+
+For detailed instructions about using it, see the page ["Run in a Docker container"](https://ranghetti.github.io/sen2r/articles/docker.html) page.
 
 Usage
 -----
@@ -60,19 +67,19 @@ this opens a GUI which allows to set the required processing parameters, and the
 <p style="text-align:center;">
 <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet1.jpg" target="_blank"> <img src="man/figures/sen2r_gui_sheet1_small.png"> </a> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet2.jpg" target="_blank"> <img src="man/figures/sen2r_gui_sheet2_small.png"> </a> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet3.jpg" target="_blank"> <img src="man/figures/sen2r_gui_sheet3_small.png"> </a> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet4.jpg" target="_blank"> <img src="man/figures/sen2r_gui_sheet4_small.png"> </a>
 </p>
-Alternatively, [`sen2r()`](reference/sen2r.md) can be launched with a list of parameters (created with [`s2_gui()`](reference/s2_gui.md)) or passing manually the parameters as arguments of the function (see [the documentation of the function](reference/sen2r.md) for further details).
+Alternatively, [`sen2r()`](https://ranghetti.github.io/sen2r/reference/sen2r.html) can be launched with a list of parameters (created with [`s2_gui()`](https://ranghetti.github.io/sen2r/reference/s2_gui.html)) or passing manually the parameters as arguments of the function (see [the documentation of the function](https://ranghetti.github.io/sen2r/reference/sen2r.html) for further details).
 
 Other specific functions can be used to run single steps separately:
 
--   [`s2_list()`](reference/s2_list.md) to retrieve the list of available Sentinel-2 products basing on input parameters;
--   [`s2_download()`](reference/s2_download.md) to download Sentinel-2 products;
+-   [`s2_list()`](https://ranghetti.github.io/sen2r/reference/s2_list.html) to retrieve the list of available Sentinel-2 products basing on input parameters;
+-   [`s2_download()`](https://ranghetti.github.io/sen2r/reference/s2_download.html) to download Sentinel-2 products;
 -   [`sen2cor()`](reference/sen2cor.html) to correct level-1C products using [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor);
--   [`s2_translate()`](reference/s2_translate.md) to convert Sentinel-2 products from SAFE format to a format managed by GDAL;
--   [`s2_merge()`](reference/s2_merge.md) to merge Sentinel-2 tiles which have the same date and orbit;
--   [`gdal_warp()`](reference/gdal_warp.md) to clip, reproject and warp raster files (this is a wrapper to call [gdal\_translate](http://www.gdal.org/gdal_translate.html) or [gdalwarp](http://www.gdal.org/gdalwarp.html) basing on input parameters);
--   [`s2_mask()`](reference/s2_mask.md) to apply a cloud mask to Sentinel-2 products;
--   [`s2_calcindices()`](reference/s2_calcindices.md) to compute maps of spectral indices from Sentinel-2 Surface Reflectance multiband raster files;
--   [`s2_thumbnails()`](reference/s2_thumbnails.md) to generate RGB thumbnails (JPEG or PNG) of the products.
+-   [`s2_translate()`](https://ranghetti.github.io/sen2r/reference/s2_translate.html) to convert Sentinel-2 products from SAFE format to a format managed by GDAL;
+-   [`s2_merge()`](https://ranghetti.github.io/sen2r/reference/s2_merge.html) to merge Sentinel-2 tiles which have the same date and orbit;
+-   [`gdal_warp()`](https://ranghetti.github.io/sen2r/reference/gdal_warp.html) to clip, reproject and warp raster files (this is a wrapper to call [gdal\_translate](http://www.gdal.org/gdal_translate.html) or [gdalwarp](http://www.gdal.org/gdalwarp.html) basing on input parameters);
+-   [`s2_mask()`](https://ranghetti.github.io/sen2r/reference/s2_mask.html) to apply a cloud mask to Sentinel-2 products;
+-   [`s2_calcindices()`](https://ranghetti.github.io/sen2r/reference/s2_calcindices.html) to compute maps of spectral indices from Sentinel-2 Surface Reflectance multiband raster files;
+-   [`s2_thumbnails()`](https://ranghetti.github.io/sen2r/reference/s2_thumbnails.html) to generate RGB thumbnails (JPEG or PNG) of the products.
 
 Credits
 -------

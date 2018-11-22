@@ -1,0 +1,38 @@
+---
+title: "Run in a Docker container"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Installation}
+  %\VignetteEngine{knitr::knitr}
+  %\usepackage[UTF-8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+A dockerised version of <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> is available [here](https://cloud.docker.com/repository/docker/ranghetti/sen2r): it contains a working RStudio environment with the package <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> and all its dependencies (both R packages and runtime dependencies). It can be used in order to avoid troublings about compiling all the required R packages, or in case of problems with runtime dependencies (tipically GDAL over Windows).
+
+To use it:
+
+1. [install Docker CE](https://docs.docker.com/install) version 1.13 or higher;
+
+2. read the docker documentation in [Part 1](https://docs.docker.com/get-started);
+
+3. obtain the image of <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:
+    ```{bash, eval = FALSE}
+    docker pull ranghetti/sen2r:latest
+    ```
+    where `latest` corresponds to the software version in branch [master](https://github.com/ranghetti/sen2r/tree/master) (see [here](https://cloud.docker.com/repository/registry-1.docker.io/ranghetti/sen2r/tags) all the available docker tags);
+    
+4. run the docker:
+    ```{bash, eval = FALSE}
+    docker run --rm -e PASSWORD=sen2r -e USERID=$(id -u) -v $(pwd):/home/rstudio/host -p 8777:8787 ranghetti/sen2r
+    ```
+    where:
+    
+    - `-e PASSWORD=sen2r` is the password to be used to login;
+    - `-v $(pwd):/home/rstudio/host` means that the current directory will be mounted in the docker, and its content will be available in the subdirectory `host` of the docker folder tree (to mount a different directory, replace `$(pwd)` with the desired directory);
+    - `-p 8777:8787` means that the dockerised RStudio will be accessible from port 8777 (change it to use a different port).
+    
+5. access to the RStudio environment from [http://localhost:8777](http://localhost:8777), logging in with user `rstudio` and the password set as above.
