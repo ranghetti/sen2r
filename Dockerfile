@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
     rm -rf /var/lib/apt/lists/*
 
 # Install the package
-RUN R -e "devtools::install_github('ranghetti/sen2r', ref = 'master', dependencies = TRUE)"
+RUN R -e "devtools::install_github('ranghetti/sen2r', ref = 'devel', dependencies = TRUE)"
 
 # Install internal dependencies and configure
 RUN R -e 'sen2r:::load_binpaths(c("python", "wget", "aria2", "gdal", "sen2cor"))'
