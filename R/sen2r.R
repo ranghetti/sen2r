@@ -1353,10 +1353,8 @@ sen2r <- function(param_list = NULL,
     
     # second filter on tiles (#filter2)
     s2_dt$id_tile <- lapply(
-      file.path(
-        paths[if (s2_dt$level=="1C") {"L1C"} else {"L2A"} ],
-        s2_dt[,name]
-      ), function(x) {
+      file.path(paths[ifelse(s2_dt$level=="1C","L1C","L2A")], s2_dt[,name]), 
+      function(x) {
         tryCatch(safe_getMetadata(x, "tiles"), error = function(e) {NULL})
       }
     ) %>%
