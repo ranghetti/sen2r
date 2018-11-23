@@ -1,0 +1,203 @@
+---
+title: "Installation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Installation}
+  %\VignetteEngine{knitr::knitr}
+  %\usepackage[UTF-8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Instruction are provided separately for each OS:
+
+- [Install on Linux systems](#linux)
+- [Install on Windows](#windows)
+
+The support for MacOS will be added in future.
+
+Alternatively, <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be used [in a Docker container](docker.md).
+
+
+## <a id="linux"></a>On Linux systems
+
+### Installing dependencies
+
+Before installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>, it is recommended to check [R](https://cran.r-project.org/bin/linux) (v. 3.4.4 or higher) and the following libraries to be present:
+
+- [GDAL](https://www.gdal.org), [PROJ](https://proj4.org) and [GEOS](https://trac.osgeo.org/geos)
+    (required by [rgdal](https://r-forge.r-project.org/projects/rgdal)
+    and [rgeos](https://r-forge.r-project.org/projects/rgeos));
+- [libjq](https://stedolan.github.io/jq)
+    (required by [jqr](https://github.com/ropensci/jqr));
+- [protobuf](https://github.com/protocolbuffers/protobuf)
+    (required by [protolite](https://github.com/jeroen/protolite));
+- [V8](https://v8.dev) 3.14 branch
+    (required by [geojsonio](https://github.com/ropensci/geojsonio));
+- [openssl](https://www.openssl.org)
+    (required by [openssl](https://github.com/jeroen/openssl));
+- [cairo](https://www.cairographics.org)
+    (required by [gdtools](https://github.com/davidgohel/gdtools));
+- [libcurl](https://curl.haxx.se/libcurl)
+    (required by [curl](https://github.com/jeroen/curl));
+- [NetCDF](https://www.unidata.ucar.edu/software/netcdf)
+    (required by [ncdf4](https://github.com/mdsumner/ncdf4));
+- [libxml2](http://xmlsoft.org)
+    (required by [XML](https://cran.r-project.org/web/packages/XML/index.html)).
+    
+Other binaries are required (or suggested), since they are used in runtime by the package:
+
+* [**GDAL**](http://www.gdal.org) (with support for JP2OpenJPEG format): 
+    this is a mandatory dependency, needed for all the processing operations 
+    and to retrieve metadata from SAFE products;
+* [**sen2cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor) 
+    is used to perform atmospheric correction of Sentinel-2 Level-1C products: 
+    it is required by the package, unless you choose not to correct products locally 
+    (using only Level-1C – TOA products or dowloading directly Level-2A products).
+* [**aria2**](https://aria2.github.io) is an alternative downloader which
+    can be used to faster the download of SAFE archives; it can be optionally
+    installed and used.
+
+To install both package dependencies and runtime binaries:
+
+- On Debian and Ubuntu:
+    ```{bash, eval = FALSE}
+    sudo apt-get install -y r-base gdal-bin python-gdal aria2 libpython-dev libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libv8-3.14-dev libssl-dev libcairo2-dev
+    ```
+    On Debian, `proj-epsg` is also required:
+    ```{bash, eval = FALSE}
+    sudo apt-get install -y proj-epsg
+    ```
+    On Ubuntu 16.04 LTS Xenial and 14.04 LTS Trusty, the repositories [ubuntugis](https://launchpad.net/~ubuntugis) and [opencpu](https://launchpad.net/~opencpu) must be added before installing the packages:
+    ```{bash, eval = FALSE}
+    sudo add-apt-repository -y ppa:opencpu/jq
+    sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
+    sudo apt-get update -q
+    ```
+    Installation was tested over Debian 9 Stretch and Ubuntu 18.04 LTS Bionic; newer versions (Ubuntu > 18.04, Debian > 9) should work, like Ubuntu 16.04 LTS Xenial and 14.04 LTS Trusty should also do. Other releases (Debian &#8804; 8; Ubuntu non-LTS < 18.04; Ubuntu LTS &#8804; 12.04) are not supported.
+- On Fedora:
+    ```{bash, eval = FALSE}
+    sudo yum install R gdal gdal-python aria2 python-devels gdal-devel proj-devel geos-devel udunits2-devel jq-devel protobuf-devel v8-314-devel openssl-devel cairo-devel libcurl-devel netcdf-devel libxml2-devel
+    ```
+    Installation was tested over Fedora 29.
+- On ArchLinux:
+    ```{bash, eval = FALSE}
+    sudo pacman -S --noconfirm r base-devel gcc-fortran python-gdal wget aria2 jq protobuf git
+    cd /tmp; git clone https://aur.archlinux.org/gyp-git.git
+    cd gyp-git; makepkg -si --noconfirm
+    cd /tmp; git clone https://aur.archlinux.org/v8-3.14.git
+    cd v8-3.14; makepkg -si --noconfirm
+    cd /tmp; git clone https://aur.archlinux.org/udunits.git
+    cd udunits; makepkg -si --noconfirm
+    ```
+    Installation was tested on date 2018-11-21.
+
+### Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+
+Before proceeding, it is suggested to update the existing R packages:
+```{r, eval = FALSE}
+update.packages(ask = FALSE)
+```
+Doing that, the following warning could appear:
+```
+Warning in install.packages(update[instlib == l, "Package"], l, contriburl = contriburl,  :
+  'lib = "/usr/lib/R/library"' is not writable
+Would you like to use a personal library instead?  (y/n)
+```
+If so, press `y` and continue.
+Moreover, if no personal libraries already exist, it is asked to create a new one: ask `y` and continue.
+
+After that, the package can be installed from GitHub with the R package **remotes**.
+To do it:
+
+1. install the package **remotes**, if missing:
+    ```{r, eval = FALSE}
+    install.packages("remotes")
+    ```
+2. load it and install 
+    <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span
+    style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span
+    style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:
+    ```{r, eval = FALSE}
+    library(remotes)
+    install_github("ranghetti/sen2r")
+    ```
+
+This will install the R package along with its package dependencies,
+containing all the functions necessary to preprocess data. 
+
+Finally, **sen2cor** can be installed from R:
+```{r, eval = FALSE}
+library(sen2r)
+install_sen2cor()
+```
+
+## <a id="windows"></a>On Windows
+
+### Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+
+[R](https://cran.r-project.org/bin/windows/base) must be installed before proceeding.
+
+In the case it was already installed, it is suggested to update the existing R packages:
+```{r, eval = FALSE}
+update.packages(ask = FALSE)
+```
+
+<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be installed from GitHub with the R package **remotes**.
+To do it:
+
+1. install the package **remotes**, if missing:
+    ```{r, eval = FALSE}
+    install.packages("remotes")
+    ```
+2. load it and install 
+    <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span
+    style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span
+    style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:
+    ```{r, eval = FALSE}
+    library(remotes)
+    install_github("ranghetti/sen2r")
+    ```
+
+This will install the R package along with its package dependencies,
+containing all the functions necessary to preprocess data. 
+
+### Installing runtime dependencies
+
+To run the functions correctly, some external dependences are required:
+
+* [**GDAL**](http://www.gdal.org) (with support for JP2OpenJPEG format): 
+    this is a mandatory dependency, needed for all the processing operations 
+    and to retrieve metadata from SAFE products;
+* [**sen2cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor) 
+    is used to perform atmospheric correction of Sentinel-2 Level-1C products: 
+    it is required by the package, unless you choose not to correct products locally 
+    (using only Level-1C – TOA products or dowloading directly Level-2A products).
+* **Wget** is the downloader used by the package; it is required to work online.
+* [**aria2**](https://aria2.github.io) is an alternative downloader which
+    can be used to faster the download of SAFE archives; it can be optionally
+    installed and used.
+
+These dependences can be graphically checked launching the function
+```{r, eval = FALSE}
+library(sen2r)
+check_sen2r_deps()
+```
+This function opens a GUI which help to check that they are satisfied;
+if some of them are missing, the GUI allows to install them directly.
+
+<!-- Atmospheric correction is performed using [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor): 
+the package will automatically download and install it at first use,
+or by running function [`install_sen2cor()`](reference/install_sen2cor.md).
+Please notice that the use of sen2cor algorythm was not yet possible under MAC.
+
+Preprocessing functions make use of [GDAL](http://www.gdal.org), which must 
+support JPEG2000 format. On Windows, it is strongly recommended to install it 
+using the [OSGeo4W installer](http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe)
+in advanced mode, and checking the installation of `openjpeg` library. -->
+
+## <a id="mac"></a>On MacOS
+
+The support for MacOS will be added in future.

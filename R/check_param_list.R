@@ -82,6 +82,47 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
     pm$timewindow <- c(Sys.Date() - 90, Sys.Date())
   }
   
+  # check the extent name
+  if (is.na(pm$extent_name) || length(nn(pm$extent_name))==0 || pm$extent_name=="") {
+    print_message(
+      type = type,
+      "The extent name (parameter \"extent_name\" ) can not be empty."
+    )
+  }
+  if (grepl("[ \\.\\_]", pm$extent_name)) {
+    print_message(
+      type = type,
+      "The extent name (parameter \"extent_name\" ) can not contain ",
+      "spaces, points nor underscores."
+    )
+  }
+  if (grepl("^[0-9]{2}[A-Z]{3}$", pm$extent_name)) {
+    print_message(
+      type = type,
+      "The extent name (parameter \"extent_name\" ) can not cannot be ",
+      "a five-length string with the same structure of a tile ID",
+      "(two numeric and three uppercase character values)."
+    )
+  }
+  
+  # check maximum cloud covers
+  if (all(is.na(nn(pm$max_cloud_safe)))) {
+    print_message(
+      type = "warning",
+      "Maximum SAFE cloud coverage was not specified; ",
+      "setting it to 100 (all SAFE are used)."
+    )
+    pm$max_cloud_safe <- 100
+  }
+  if (all(is.na(nn(pm$max_mask)))) {
+    print_message(
+      type = "warning",
+      "Maximum cloud coverage was not specified; ",
+      "setting it to 80 (default value)."
+    )
+    pm$max_mask <- 80
+  }
+  
   # check output resolution
   if (!anyNA(pm$res) & any(pm$res <= 0)) {
     print_message(

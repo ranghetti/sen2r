@@ -6,7 +6,8 @@ output:
   fig_caption: no
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- IMPORTANT: do NOT edit README.Rmd! Edit index.Rmd instead,       -->
+<!-- and generate README.Rmd using inst/extdata/code/create_README.sh -->
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
@@ -66,64 +67,28 @@ Please refer to the [crontab of release 0.4.0](https://github.com/ranghetti/sen2
 to know which implementations should already be performed.
 
 
-
 ## Installation
 
 <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> 
 is supported over Linux and Windows operating systems;
-the support for Mac will be added soon.
+the support for Mac will be added in future.
 
-The package can be installed from GitHub with the R package **devtools**.
-To do it:
+### Install locally
 
-1. install the package **devtools**, if missing:
-    ```{r, eval = FALSE}
-    install.packages("devtools")
-    ```
-2. load it and install 
-    <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span
-    style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span
-    style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:
-    ```{r, eval = FALSE}
-    library(devtools)
-    install_github("ranghetti/sen2r")
-    ```
-
-This will install the R package along with its R dependences,
-containing all the functions necessary to preprocess data. 
-
-To run the functions correctly, some external dependences are required:
-
-* [**GDAL**](http://www.gdal.org) (with support for JP2OpenJPEG format): 
-    this is a mandatory dependency, needed for all the processing operations 
-    and to retrieve metadata from SAFE products;
-* [**sen2cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor) 
-    is used to perform atmospheric correction of Sentinel-2 Level-1C products: 
-    it is required by the package, unless you choose not to correct products locally 
-    (using only Level-1C – TOA products or dowloading directly Level-2A products).
-* **Wget** is the downloader used by the package; it is required to work online.
-* [**aria2**](https://aria2.github.io) is an alternative downloader which
-    can be used to faster the download of SAFE archives; it can be optionally
-    installed and used.
-
-These dependences can be graphically checked launching the function
+The package can be installed from GitHub with the R package **remotes**:
 ```{r, eval = FALSE}
-library(sen2r)
-check_sen2r_deps()
+remotes::install_github("ranghetti/sen2r")
 ```
-This function opens a GUI which help to check that they are satisfied;
-if some of them are missing, follow the instructions provided by the GUI 
-to install them (on Windows, the GUI allows to install them directly).
 
-<!-- Atmospheric correction is performed using [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor): 
-the package will automatically download and install it at first use,
-or by running function [`install_sen2cor()`](reference/install_sen2cor.md).
-Please notice that the use of sen2cor algorythm was not yet possible under MAC.
+For detailed instructions about installing the package (including dependencies),
+see the [Installation](https://ranghetti.github.io/sen2r/articles/installation.html) page.
 
-Preprocessing functions make use of [GDAL](http://www.gdal.org), which must 
-support JPEG2000 format. On Windows, it is strongly recommended to install it 
-using the [OSGeo4W installer](http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe)
-in advanced mode, and checking the installation of `openjpeg` library. -->
+### Run as Docker image
+
+A dockerised version of <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> is available [here](https://cloud.docker.com/repository/docker/ranghetti/sen2r).
+
+For detailed instructions about using it, see the page ["Run in a Docker container"](https://ranghetti.github.io/sen2r/articles/docker.html) page.
+
 
 ## Usage
 
@@ -153,33 +118,33 @@ and then launches the main function.
 </p>
 
 Alternatively, 
-[`sen2r()`](reference/sen2r.md)
+[`sen2r()`](https://ranghetti.github.io/sen2r/reference/sen2r.html)
 can be launched with a list of parameters (created with 
-[`s2_gui()`](reference/s2_gui.md))
+[`s2_gui()`](https://ranghetti.github.io/sen2r/reference/s2_gui.html))
 or passing manually the parameters as arguments of the function
-(see [the documentation of the function](reference/sen2r.md) for further details).
+(see [the documentation of the function](https://ranghetti.github.io/sen2r/reference/sen2r.html) for further details).
 
 Other specific functions can be used to run single steps separately:
 
-* [`s2_list()`](reference/s2_list.md)
+* [`s2_list()`](https://ranghetti.github.io/sen2r/reference/s2_list.html)
     to retrieve the list of available Sentinel-2 products basing on input parameters;
-* [`s2_download()`](reference/s2_download.md)
+* [`s2_download()`](https://ranghetti.github.io/sen2r/reference/s2_download.html)
     to download Sentinel-2 products;
 * [`sen2cor()`](reference/sen2cor.html)
     to correct level-1C products using [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor);
-* [`s2_translate()`](reference/s2_translate.md)
+* [`s2_translate()`](https://ranghetti.github.io/sen2r/reference/s2_translate.html)
     to convert Sentinel-2 products from SAFE format to a format managed by GDAL;
-* [`s2_merge()`](reference/s2_merge.md)
+* [`s2_merge()`](https://ranghetti.github.io/sen2r/reference/s2_merge.html)
     to merge Sentinel-2 tiles which have the same date and orbit;
-* [`gdal_warp()`](reference/gdal_warp.md)
+* [`gdal_warp()`](https://ranghetti.github.io/sen2r/reference/gdal_warp.html)
     to clip, reproject and warp raster files (this is a wrapper to call
     [gdal_translate](http://www.gdal.org/gdal_translate.html) or 
     [gdalwarp](http://www.gdal.org/gdalwarp.html) basing on input parameters);
-* [`s2_mask()`](reference/s2_mask.md)
+* [`s2_mask()`](https://ranghetti.github.io/sen2r/reference/s2_mask.html)
     to apply a cloud mask to Sentinel-2 products;
-* [`s2_calcindices()`](reference/s2_calcindices.md)
+* [`s2_calcindices()`](https://ranghetti.github.io/sen2r/reference/s2_calcindices.html)
     to compute maps of spectral indices from Sentinel-2 Surface Reflectance multiband raster files;
-* [`s2_thumbnails()`](reference/s2_thumbnails.md)
+* [`s2_thumbnails()`](https://ranghetti.github.io/sen2r/reference/s2_thumbnails.html)
     to generate RGB thumbnails (JPEG or PNG) of the products.
 
 ## Credits
@@ -208,4 +173,3 @@ Ranghetti, L.\ and Busetto, L.\ (2018). *sen2r: an R toolbox to find, download a
   url    = {https://ranghetti.github.io/sen2r},
 }
 ```
-

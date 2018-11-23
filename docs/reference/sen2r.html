@@ -21,9 +21,11 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 
@@ -36,6 +38,7 @@ data. Input is a set of parameters that can be passed with a
 list or file (parameter param_list) or singularly (see the
 descriptions of all the other parameters)." />
 <meta name="twitter:card" content="summary" />
+
 
 
 <!-- mathjax -->
@@ -71,7 +74,7 @@ descriptions of all the other parameters)." />
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">sen2r</a>
+        <a class="navbar-link" href="../index.html">An R toolbox to find, download an preprocess Sentinel-2 data</a>
         <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.3</span>
       </span>
     </div>
@@ -124,19 +127,20 @@ descriptions of all the other parameters).</p>
   <span class='kw'>s2_levels</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"l1c"</span>, <span class='st'>"l2a"</span>), <span class='kw'>sel_sensor</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"s2a"</span>, <span class='st'>"s2b"</span>),
   <span class='kw'>online</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>downloader</span> <span class='kw'>=</span> <span class='st'>"wget"</span>,
   <span class='kw'>overwrite_safe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>rm_safe</span> <span class='kw'>=</span> <span class='st'>"no"</span>, <span class='kw'>step_atmcorr</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
-  <span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>timeperiod</span> <span class='kw'>=</span> <span class='st'>"full"</span>, <span class='kw'>extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>extent_name</span> <span class='kw'>=</span> <span class='st'>""</span>,
-  <span class='kw'>s2tiles_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>s2orbits_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"BOA"</span>),
-  <span class='kw'>list_rgb</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>index_source</span> <span class='kw'>=</span> <span class='st'>"BOA"</span>,
-  <span class='kw'>rgb_ranges</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>mask_smooth</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>mask_buffer</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>clip_on_extent</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>extent_as_mask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>reference_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res_s2</span> <span class='kw'>=</span> <span class='st'>"10m"</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"Meter"</span>,
-  <span class='kw'>proj</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>resampling</span> <span class='kw'>=</span> <span class='st'>"near"</span>, <span class='kw'>resampling_scl</span> <span class='kw'>=</span> <span class='st'>"near"</span>,
-  <span class='kw'>outformat</span> <span class='kw'>=</span> <span class='st'>"GTiff"</span>, <span class='kw'>rgb_outformat</span> <span class='kw'>=</span> <span class='st'>"GTiff"</span>, <span class='kw'>index_datatype</span> <span class='kw'>=</span> <span class='st'>"Int16"</span>,
+  <span class='kw'>max_cloud_safe</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>timeperiod</span> <span class='kw'>=</span> <span class='st'>"full"</span>,
+  <span class='kw'>extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>extent_name</span> <span class='kw'>=</span> <span class='st'>"sen2r"</span>, <span class='kw'>s2tiles_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>s2orbits_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"BOA"</span>), <span class='kw'>list_rgb</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>list_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>index_source</span> <span class='kw'>=</span> <span class='st'>"BOA"</span>, <span class='kw'>rgb_ranges</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>mask_smooth</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>mask_buffer</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>clip_on_extent</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>extent_as_mask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>reference_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res_s2</span> <span class='kw'>=</span> <span class='st'>"10m"</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"Meter"</span>, <span class='kw'>proj</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>resampling</span> <span class='kw'>=</span> <span class='st'>"near"</span>, <span class='kw'>resampling_scl</span> <span class='kw'>=</span> <span class='st'>"near"</span>, <span class='kw'>outformat</span> <span class='kw'>=</span> <span class='st'>"GTiff"</span>,
+  <span class='kw'>rgb_outformat</span> <span class='kw'>=</span> <span class='st'>"GTiff"</span>, <span class='kw'>index_datatype</span> <span class='kw'>=</span> <span class='st'>"Int16"</span>,
   <span class='kw'>compression</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>rgb_compression</span> <span class='kw'>=</span> <span class='st'>"90"</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>path_l1c</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_l2a</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_merged</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>path_out</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_rgb</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_subdirs</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>thumbnails</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>use_python</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>log</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+  <span class='kw'>path_out</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_rgb</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>path_subdirs</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>thumbnails</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>use_python</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>log</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -233,6 +237,19 @@ makes use only of L1C products).</p></li>
 </ul></td>
     </tr>
     <tr>
+      <th>max_cloud_safe</th>
+      <td><p>(optional) Integer number (0-100) containing
+the maximum cloud level of each SAFE to be considered (default: no filter).
+It it used to limit the research of SAFE products to "good" images,
+so it is applied only to non-existing archives (existing SAFE are always
+used).
+In thish sense, this parameter is different from <code>max_mask</code>, which can be
+used to set a maximum cloud coverage over output extents.
+Notice also that this value is used to filter on the basis of the metadata
+"Cloud cover percentage" associated to each SAFE, so it is not based
+on the cloud mask defined with the processing options.</p></td>
+    </tr>
+    <tr>
       <th>timewindow</th>
       <td><p>(optional) Temporal window for querying: Date object
 of length 1 (single day) or 2 (time window). Default is NA, meaning that
@@ -263,7 +280,7 @@ as default.</p></td>
     <tr>
       <th>extent_name</th>
       <td><p>(optional) Name of the area set as extent, to be used in
-the output file names. Default is to leave it blank. The name is an
+the output file names. Default is "sen2r" The name is an
 alphanumeric string which cannot contain points nor underscores, and that
 cannot be a five-length string with the same structure of a tile ID
 (two numeric and three uppercase character values).</p></td>
@@ -289,7 +306,7 @@ products to be processed (accepted values: "TOA", "BOA", "SCL",
       <th>list_rgb</th>
       <td><p>(optional) Character vector with the values of the
 RGB images to be produced.
-Images are in the form xRGBrgb, when:</p><ul>
+Images are in the form RGBrgbx, when:</p><ul>
 <li><p>x is B (if source is BOA) or T (is source is TOA);</p></li>
 <li><p>r g and b are the the number of the bands to be used respectively
 for red, green and blue, in hexadecimal format.
@@ -313,6 +330,8 @@ are instead used (be careful to use this setting!).</p></td>
     <tr>
       <th>rgb_ranges</th>
       <td><p>(optional) Range of valid values to be used for RGB products.
+Values must be provided in the same scale used within SAFE and BOA/TOA
+products (0-10000, corresponding to reflectances * 10000).
 If can be a 2-length integer vector (min-max for all the 3 bands) or a 6-length vector or
 3x2 matrix (min red, min green, min blue, max red, max green, max blue).
 Default is to use c(0,2500) for bands 2, 3 and 4; c(0,7500) for other bands.
@@ -335,9 +354,13 @@ Images with a percentage of masked surface greater than <code>max_mask</code><!-
 are not processed (the list of expected output files which have not been
 generated is returned as an attribute, named "skipped").
 Default value is 80.
+This parameter is different from <code>max_cloud_safe</code>, because:</p><ol>
+<li><p>it is computed over the selected extent;</p></li>
+<li><p>it is computed basing on the cloud mask defined as above.
 Notice that the percentage is computed on non-NA values (if input images
 had previously been clipped and masked using a polygon, the percentage is
-computed on the surface included in the masking polygons).</p></td>
+computed on the surface included in the masking polygons).</p></li>
+</ol></td>
     </tr>
     <tr>
       <th>mask_smooth</th>

@@ -64,6 +64,15 @@ init_python <- function() {
     if (!pythonhome_exi %in% pythonhome_new) {
       Sys.setenv(PYTHONHOME = pythonhome_new)
     }
+    pythonpath_new <- normalize_path(list.files(pythonhome_new,"^Lib",full.names=TRUE))
+    pythonpath_exi <- normalize_path(Sys.getenv("PYTHONPATH"))
+    if (!pythonpath_exi %in% pythonpath_new) {
+      Sys.setenv(PYTHONPATH = pythonpath_new)
+    }
+    path_exi <- Sys.getenv("PATH")
+    if (!grepl(pythonhome_new, path_exi, fixed=TRUE)) {
+      Sys.setenv(PATH = paste0(pythonhome_new,";",Sys.getenv("PATH")))
+    }
   }
 
   # set the proper Python installation

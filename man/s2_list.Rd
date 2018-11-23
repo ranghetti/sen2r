@@ -6,7 +6,7 @@
 \usage{
 s2_list(spatial_extent = NULL, tile = NULL, orbit = NULL,
   time_interval = NULL, time_period = "full", level = "auto",
-  ignore_ingestion_time = TRUE, apihub = NA, max_cloud = 110)
+  ignore_ingestion_time = TRUE, apihub = NA, max_cloud = 100)
 }
 \arguments{
 \item{spatial_extent}{A valid spatial object object of class \code{sf},

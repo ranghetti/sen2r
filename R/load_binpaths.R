@@ -70,7 +70,7 @@ load_binpaths <- function(bins = NULL) {
   }
   
   # Check aria2
-  if ("aria2" %in% bins & is.null(binpaths$aria2c)) {
+  if (any(c("aria2","aria2c") %in% bins) & is.null(binpaths$aria2c)) {
     if (Sys.info()["sysname"] == "Windows") {
       suppressMessages(install_aria2())
     } else if (Sys.which("aria2c") != "") {

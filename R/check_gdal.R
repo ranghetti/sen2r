@@ -1,10 +1,11 @@
 #' @title Check GDAL installation
 #' @description The function check that GDAL is installed and updated to
-#'  the minimum required version (2.1.3, since previous versions do not
-#'  manage SAFE format).
+#'  the minimum required version (2.1.2).
 #' @param abort Logical parameter: if TRUE (default), the function aborts
 #'  in case no GDAL installation is found; if FALSE, a warning is shown
 #'  and FALSE is returned.
+#' @param gdal_path (optional) Character: the path in which GDAL must be
+#'  searched in. If NULL (default), search is performed in the whole file system.
 #' @param force (optional) Logical: if TRUE, install even if it is already 
 #'  installed (default is FALSE).
 #' @return Logical (invisible): TRUE in case the installation is ok, FALSE 
@@ -30,10 +31,13 @@
 # TODO check also python and GDAL outside install_s2download
 # (one could be interested only in preprocessing and not in downloading)
 
-check_gdal <- function(abort = TRUE, force = FALSE) {
+check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE) {
   
   # set minimum GDAL version
-  gdal_minversion <- package_version("2.1.3")
+  gdal_minversion <- package_version("2.1.2")
+  
+  # # normalize gdal_path
+  # normalize_path(gdal_path)
   
   # load the saved GDAL path, if exists
   binpaths <- load_binpaths()
@@ -51,7 +55,7 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
     type="message",
     "Searching for a valid GDAL installation...")
   gdal_check_fastpath <- tryCatch(
-    gdal_setInstallation(ignore.full_scan = TRUE, verbose = TRUE), 
+    gdal_setInstallation(ignore.full_scan = TRUE, verbose = FALSE), 
     error = print
   )
   
@@ -69,17 +73,19 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
       type="message",
       "GDAL was not found in the system PATH, search in the full ",
       "system (this could take some time, please wait)...")
-    gdal_setInstallation(ignore.full_scan = FALSE, verbose = TRUE)
+    gdal_setInstallation(ignore.full_scan = FALSE, verbose = FALSE)
+    # Check again if this found version supports OpenJPEG
+    gdal_check_jp2 <- tryCatch(
+      gdal_chooseInstallation(hasDrivers=c("JP2OpenJPEG")), 
+      error = print
+    )
   }
   
-  # Check again if this found version supports OpenJPEG
-  gdal_check_jp2 <- tryCatch(gdal_chooseInstallation(hasDrivers=c("JP2OpenJPEG")), error = print)
   
   # set message method
   message_type <- ifelse(abort==TRUE, "error", "warning")
   
   # If GDAL is not found, return FALSE
-  # (this should not happen, since GDAL is required by rgdal)
   if (is.null(getOption("gdalUtils_gdalPath")) | is(gdal_check_jp2, "error")) {
     print_message(
       type=message_type,
@@ -88,20 +94,38 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
     return(invisible(FALSE))
   }
   
-  # check requisites (minimum version)
-  gdal_version <- package_version(gsub("^GDAL ([0-9.]*)[0-9A-Za-z/., ]*", "\\1",
-                                       rgdal::getGDALVersionInfo(str = "--version")))
   
-  if (gdal_version < gdal_minversion) {
+  # Retrieve found GDAL installations
+  bin_ext <- ifelse(Sys.info()["sysname"] == "Windows", ".exe", "")
+  gdal_dirs <- normalize_path(sapply(getOption("gdalUtils_gdalPath"), function(x){x$path}))
+  gdalinfo_paths <- normalize_path(file.path(gdal_dirs,paste0("gdalinfo",bin_ext)))
+  gdal_versions <- package_version(gsub(
+    "^.*GDAL ([0-9\\.]+)\\,.*$", "\\1", 
+    sapply(paste(gdalinfo_paths, "--version"), system, intern = TRUE)
+  ))
+  
+  # check requisite 1: minimum version
+  if (all(gdal_versions < gdal_minversion)) {
     print_message(
       type=message_type,
-      "GDAL version must be at least ", gdal_minversion, ". Please update it.")
+      "GDAL version must be at least ", as.character(gdal_minversion), 
+      ". Please update it."
+    )
     return(invisible(FALSE))
   }
+  # filter GDAL installations respecting the requisite
+  gdal_dirs <- gdal_dirs[!gdal_versions < gdal_minversion]
+  gdalinfo_paths <- gdalinfo_paths[!gdal_versions < gdal_minversion]
+  gdal_versions <- gdal_versions[!gdal_versions < gdal_minversion]
+  # order by version
+  gdal_dirs <- gdal_dirs[order(gdal_versions, decreasing = TRUE)]
+  gdalinfo_paths <- gdalinfo_paths[order(gdal_versions, decreasing = TRUE)]
+  gdal_versions <- sort(gdal_versions, decreasing = TRUE)
   
-  # check requisites (JP2 support)
-  gdal_JP2support <- length(grep("JP2OpenJPEG", gdalUtils::gdalinfo(formats = TRUE))) > 0
-  if (!gdal_JP2support) {
+  # check requisite 2: JP2 support
+  gdal_formats <- sapply(paste(gdalinfo_paths, "--formats"), system, intern = TRUE, simplify = FALSE)
+  gdal_JP2support <- sapply(gdal_formats, function(x) {length(grepl("JP2OpenJPEG", x)) > 0})
+  if (all(!gdal_JP2support)) {
     print_message(
       type=message_type,
       "Your local GDAL installation does not support JPEG2000 (JP2OpenJPEG) format. ",
@@ -117,14 +141,49 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
       }
     )
     return(invisible(FALSE))
+  } 
+  # filter GDAL installations respecting the requisite
+  gdal_dirs <- gdal_dirs[gdal_JP2support]
+  gdalinfo_paths <- gdalinfo_paths[gdal_JP2support]
+  gdal_versions <- gdal_versions[gdal_JP2support]
+  
+  # in Windows, prefer default OSGeo version
+  if (Sys.info()["sysname"] == "Windows") {
+    gdal_order <- c(
+      grep("^C:\\\\OSGEO4~1", gdal_dirs), # 1: C:\OSGeo4W64
+      grep("^(?!C:\\\\OSGEO4~1).*OSGEO4", gdal_dirs, perl=TRUE), # 2: other paths containing OSGEO4~1
+      grep("^((?!OSGEO4).)*$", gdal_dirs, perl=TRUE) # 3: all other paths
+    )
+    gdal_dirs <- gdal_dirs[gdal_order]
+    gdalinfo_paths <- gdalinfo_paths[gdal_order]
+    gdal_versions <- gdal_versions[gdal_order]
   }
   
-  # set this version to be used with gdalUtils
-  gdal_chooseInstallation(hasDrivers=c("JP2OpenJPEG"))
+  
+  # filter basing on the GDAL installation path defined with gdal_path
+  if (!is.null(gdal_path)) {
+    gdal_path <- normalize_path(gdal_path)
+    # if no GDAL installations match the gdal_path, use another one
+    if (all(!grepl(gdal_path, gdal_dirs, fixed = TRUE))) {
+      print_message(
+        type="warning",
+        "No GDAL installations matching the requisites ",
+        "(version >= 2.1.2 and supporting JPEG2000 format) ",
+        "were found in \"",gdal_path,
+        "\", so another local GDAL installation is used."
+      )
+    } else {
+      gdal_dirs <- gdal_dirs[grepl(gdal_path, gdal_dirs, fixed = TRUE)]
+      gdalinfo_paths <- gdalinfo_paths[grepl(gdal_path, gdal_dirs, fixed = TRUE)]
+      gdal_versions <- gdal_versions[grepl(gdal_path, gdal_dirs, fixed = TRUE)]
+    }
+  }
+  
+  # set the version to be used with gdalUtils
+  gdal_setInstallation(search_path = gdal_dirs[1], rescan = TRUE)
   
   # save the path for use with external calls
-  bin_ext <- ifelse(Sys.info()["sysname"] == "Windows", ".exe", "")
-  gdal_dir <- getOption("gdalUtils_gdalPath")[[1]]$path
+  gdal_dir <- gdal_dirs[1]
   binpaths$gdalbuildvrt <- normalize_path(file.path(gdal_dir,paste0("gdalbuildvrt",bin_ext)))
   binpaths$gdal_translate <- normalize_path(file.path(gdal_dir,paste0("gdal_translate",bin_ext)))
   binpaths$gdalwarp <- normalize_path(file.path(gdal_dir,paste0("gdalwarp",bin_ext)))
@@ -154,7 +213,7 @@ check_gdal <- function(abort = TRUE, force = FALSE) {
   
   print_message(
     type="message",
-    "GDAL version in use: ", as.character(gdal_version))
+    "GDAL version in use: ", as.character(gdal_versions[1]))
   return(invisible(TRUE))
   
 }

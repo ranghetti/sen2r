@@ -4,8 +4,8 @@
 \alias{geograbber_process}
 \title{Preprocess (clip, reproject, reshape, mask) SAFE products}
 \usage{
-geograbber_process(path_safe, path_out, bbox = NA, list_prods = c("BOA"),
-  res = NA, ...)
+geograbber_process(path_safe, path_out, bbox = NA,
+  list_prods = c("BOA"), res = NA, ...)
 }
 \arguments{
 \item{path_safe}{Path of the directory in which SAFE

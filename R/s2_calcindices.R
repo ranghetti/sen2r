@@ -347,7 +347,7 @@ s2_calcindices <- function(infiles,
       }
     }
     
-    file.path(out_subdir,sel_outfiles)
+    sel_outfiles
     
   } # end cycle on infiles
   if (n_cores > 1) {

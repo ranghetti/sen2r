@@ -4,7 +4,8 @@
 \alias{install_aria2}
 \title{Download and install aria2.}
 \usage{
-install_aria2(aria2_dir = system.file(package = "sen2r"), force = FALSE)
+install_aria2(aria2_dir = system.file(package = "sen2r"),
+  force = FALSE)
 }
 \arguments{
 \item{aria2_dir}{(optional) Path where aria2 executable will be installed

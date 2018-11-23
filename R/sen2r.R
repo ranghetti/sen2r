@@ -61,6 +61,16 @@
 #'  otherwise they are skipped (sen2cor is never used);
 #'  * "no" means that L2A are not considered (processing chain
 #'  makes use only of L1C products).
+#' @param max_cloud_safe (optional) Integer number (0-100) containing 
+#'  the maximum cloud level of each SAFE to be considered (default: no filter).
+#'  It it used to limit the research of SAFE products to "good" images, 
+#'  so it is applied only to non-existing archives (existing SAFE are always 
+#'  used).
+#'  In thish sense, this parameter is different from `max_mask`, which can be
+#'  used to set a maximum cloud coverage over output extents.
+#'  Notice also that this value is used to filter on the basis of the metadata
+#'  "Cloud cover percentage" associated to each SAFE, so it is not based
+#'  on the cloud mask defined with the processing options.
 #' @param timewindow (optional) Temporal window for querying: Date object
 #'  of length 1 (single day) or 2 (time window). Default is NA, meaning that
 #'  no filters are used if online = FALSE, and all found images are processed;
@@ -80,7 +90,7 @@
 #'  all found tiles are entirely used); in online mode, a sample extent is used
 #'  as default.
 #' @param extent_name (optional) Name of the area set as extent, to be used in
-#'  the output file names. Default is to leave it blank. The name is an 
+#'  the output file names. Default is "sen2r" The name is an 
 #'  alphanumeric string which cannot contain points nor underscores, and that 
 #'  cannot be a five-length string with the same structure of a tile ID
 #'  (two numeric and three uppercase character values).
@@ -94,7 +104,7 @@
 #'  "TCI"). Default is "BOA".
 #' @param list_rgb (optional) Character vector with the values of the
 #'  RGB images to be produced.
-#'  Images are in the form xRGBrgb, when:
+#'  Images are in the form RGBrgbx, when:
 #'  - x is B (if source is BOA) or T (is source is TOA);
 #'  - r g and b are the the number of the bands to be used respectively
 #'      for red, green and blue, in hexadecimal format.
@@ -109,6 +119,8 @@
 #'  are computed from BOA values; if "TOA", non corrected reflectances
 #'  are instead used (be careful to use this setting!).
 #' @param rgb_ranges (optional) Range of valid values to be used for RGB products.
+#'  Values must be provided in the same scale used within SAFE and BOA/TOA
+#'  products (0-10000, corresponding to reflectances * 10000).
 #'  If can be a 2-length integer vector (min-max for all the 3 bands) or a 6-length vector or 
 #'  3x2 matrix (min red, min green, min blue, max red, max green, max blue).
 #'  Default is to use c(0,2500) for bands 2, 3 and 4; c(0,7500) for other bands.
@@ -125,6 +137,9 @@
 #'  are not processed (the list of expected output files which have not been 
 #'  generated is returned as an attribute, named "skipped"). 
 #'  Default value is 80.
+#'  This parameter is different from `max_cloud_safe`, because:
+#'  1. it is computed over the selected extent;
+#'  2. it is computed basing on the cloud mask defined as above.
 #'  Notice that the percentage is computed on non-NA values (if input images 
 #'  had previously been clipped and masked using a polygon, the percentage is
 #'  computed on the surface included in the masking polygons).
@@ -266,10 +281,11 @@ sen2r <- function(param_list = NULL,
                   overwrite_safe = FALSE,
                   rm_safe = "no",
                   step_atmcorr = "auto",
+                  max_cloud_safe = 100,
                   timewindow = NA,
                   timeperiod = "full",
                   extent = NA, # below re-defined as sample extent if online mode
-                  extent_name = "",
+                  extent_name = "sen2r",
                   s2tiles_selected = NA, # below re-defined for online mode
                   s2orbits_selected = NA, # temporary select all orbits (TODO implement)
                   list_prods = c("BOA"),
@@ -346,6 +362,7 @@ sen2r <- function(param_list = NULL,
     overwrite_safe = overwrite_safe,
     rm_safe = rm_safe,
     step_atmcorr = step_atmcorr,
+    max_cloud_safe = max_cloud_safe,
     timewindow = timewindow,
     timeperiod = timeperiod,
     extent = extent,
@@ -430,6 +447,7 @@ sen2r <- function(param_list = NULL,
                    overwrite_safe,
                    rm_safe,
                    step_atmcorr,
+                   max_cloud_safe,
                    timewindow,
                    timeperiod,
                    extent,
@@ -693,6 +711,8 @@ sen2r <- function(param_list = NULL,
   
   # internal parameters
   paths <- c()
+  paths["L1C"] <- if (!is.na(pm$path_l1c)) {pm$path_l1c} else {file.path(tmpdir,"SAFE")}
+  paths["L2A"] <- if (!is.na(pm$path_l2a)) {pm$path_l2a} else {file.path(tmpdir,"SAFE")}
   paths["out"] <- if (!is.na(pm$path_out)) {pm$path_out} else {file.path(tmpdir,"out")}
   paths["rgb"] <- if (!is.na(pm$path_rgb)) {pm$path_rgb} else {file.path(tmpdir,"rgb")}
   paths["indices"] <- if (!is.na(pm$path_indices)) {pm$path_indices} else {file.path(tmpdir,"indices")}
@@ -734,7 +754,7 @@ sen2r <- function(param_list = NULL,
   # check that output parent directories exist, and create required paths
   parent_paths <- sapply(
     pm[c("path_l1c","path_l2a","path_tiles","path_merged","path_out","path_rgb","path_indices")], 
-    function(x){if(is.na(x)){NA}else{dirname(x)}}
+    function(x){if(is.na(nn(x))){NA}else{dirname(x)}}
   ) %>% unique() %>% na.omit() %>% as.character()
   paths_exist <- sapply(parent_paths, file.exists)
   if (any(!paths_exist)) {
@@ -751,7 +771,7 @@ sen2r <- function(param_list = NULL,
   }
   sapply(
     pm[c("path_l1c","path_l2a","path_tiles","path_merged","path_out","path_rgb","path_indices")],
-    function(x) {if(is.na(x)){NA}else{dir.create(x, recursive = FALSE, showWarnings = FALSE)}}
+    function(x) {if(is.na(nn(x))){NA}else{dir.create(x, recursive = FALSE, showWarnings = FALSE)}}
   )
   
   
@@ -883,6 +903,7 @@ sen2r <- function(param_list = NULL,
                                      time_period = pm$timeperiod,
                                      tile = pm$s2tiles_selected,
                                      level = "L1C",
+                                     max_cloud = pm$max_cloud_safe,
                                      apihub = pm$apihub)
       }
       if ("l2a" %in% pm$s2_levels) {
@@ -898,6 +919,7 @@ sen2r <- function(param_list = NULL,
                                      } else if (pm$step_atmcorr %in% c("scihub","no")) {
                                        "L1C"
                                      },
+                                     max_cloud = pm$max_cloud_safe,
                                      apihub = pm$apihub)
       }
       
@@ -905,16 +927,16 @@ sen2r <- function(param_list = NULL,
       
       # if offline mode, read the SAFE product list from folders and filter
       if ("l1c" %in% pm$s2_levels) {
-        s2_lists[["l1c"]] <- list.files(pm$path_l1c, "\\.SAFE$")
+        s2_lists[["l1c"]] <- list.files(paths["L1C"], "\\.SAFE$")
       }
       if ("l2a" %in% pm$s2_levels) {
         s2_lists[["l2a"]] <- if (pm$step_atmcorr=="l2a") {
-          list.files(pm$path_l2a, "\\.SAFE$")
+          list.files(paths["L2A"], "\\.SAFE$")
         } else if (pm$step_atmcorr %in% c("scihub","no")) {
-          list.files(pm$path_l1c, "\\.SAFE$")
+          list.files(paths["L1C"], "\\.SAFE$")
         } else if (pm$step_atmcorr=="auto") {
-          all_l1c <- list.files(pm$path_l1c, "\\.SAFE$")
-          all_l2a <- list.files(pm$path_l2a, "\\.SAFE$")
+          all_l1c <- list.files(paths["L1C"], "\\.SAFE$")
+          all_l2a <- list.files(paths["L2A"], "\\.SAFE$")
           c(
             all_l2a,
             all_l1c[
@@ -990,7 +1012,7 @@ sen2r <- function(param_list = NULL,
                  as.POSIXct(creation_datetime, format="%s"))]
     
     # list existing products and get metadata
-    s2_existing_list <- list.files(unique(c(pm$path_l2a,pm$path_l1c)), "\\.SAFE$")
+    s2_existing_list <- list.files(unique(c(paths["L1C"],paths["L2A"])), "\\.SAFE$")
     if (length(s2_existing_list) > 0 & pm$online == TRUE) {
       s2_isvalid <- sapply(s2_existing_list, safe_isvalid, info="nameinfo")
       s2_existing_list <- s2_existing_list[s2_isvalid]
@@ -1230,8 +1252,8 @@ sen2r <- function(param_list = NULL,
         safe_getMetadata(x, "nameinfo")$version
       }) == "compact")) {
         s2_download(
-          s2_list_l2a[!names(s2_list_l2a) %in% list.files(pm$path_l2a, "\\.SAFE$")],
-          outdir = pm$path_l2a,
+          s2_list_l2a[!names(s2_list_l2a) %in% list.files(paths["L2A"], "\\.SAFE$")],
+          outdir = paths["L2A"],
           downloader = pm$downloader,
           apihub = pm$apihub
         )
@@ -1258,7 +1280,7 @@ sen2r <- function(param_list = NULL,
             # (with compactname products, all the zips are downloaded
             # during the first execution, since argument "tile" is 
             # ignored).
-            outdir = pm$path_l2a,
+            outdir = paths["L2A"],
             downloader = pm$downloader,
             tile = tile,
             apihub = pm$apihub
@@ -1283,8 +1305,8 @@ sen2r <- function(param_list = NULL,
         safe_getMetadata(x, "nameinfo")$version
       }) == "compact")) {
         s2_download(
-          s2_list_l1c[!names(s2_list_l1c) %in% list.files(pm$path_l1c, "\\.SAFE$")],
-          outdir = pm$path_l1c,
+          s2_list_l1c[!names(s2_list_l1c) %in% list.files(paths["L1C"], "\\.SAFE$")],
+          outdir = paths["L1C"],
           downloader = pm$downloader
         )
       } else { # otherwise, launch one per tile
@@ -1310,7 +1332,7 @@ sen2r <- function(param_list = NULL,
             # (with compactname products, all the zips are downloaded
             # during the first execution, since argument "tile" is 
             # ignored).
-            outdir = pm$path_l1c,
+            outdir = paths["L1C"],
             downloader = pm$downloader,
             tile = tile
           )
@@ -1330,9 +1352,12 @@ sen2r <- function(param_list = NULL,
     }
     
     # second filter on tiles (#filter2)
-    s2_dt$id_tile <- lapply(file.path(ifelse(s2_dt$level=="1C",pm$path_l1c,pm$path_l2a),s2_dt[,name]), function(x) {
-      tryCatch(safe_getMetadata(x, "tiles"), error = function(e) {NULL})
-    }) %>%
+    s2_dt$id_tile <- lapply(
+      file.path(paths[ifelse(s2_dt$level=="1C","L1C","L2A")], s2_dt[,name]), 
+      function(x) {
+        tryCatch(safe_getMetadata(x, "tiles"), error = function(e) {NULL})
+      }
+    ) %>%
       sapply(paste, collapse = " ") %>% as.character()
     if (all(!is.na(pm$s2tiles_selected)) & nrow(s2_dt)>0) {
       # filter "elegant" using strsplit (fails with empty s2_dt)
@@ -1384,7 +1409,7 @@ sen2r <- function(param_list = NULL,
       
       if (length(s2_list_l1c_tocorrect)>0) {
         
-        if (sum(!file.path(pm$path_l1c,names(s2_list_l1c_tocorrect)) %>% file.exists()) > 0) {
+        if (sum(!file.path(paths["L1C"],names(s2_list_l1c_tocorrect)) %>% file.exists()) > 0) {
           print_message(
             type = "message",
             date = TRUE,
@@ -1395,8 +1420,8 @@ sen2r <- function(param_list = NULL,
         
         s2_list_l2a_corrected <- sen2cor(
           names(s2_list_l1c_tocorrect),
-          l1c_dir = pm$path_l1c,
-          outdir = pm$path_l2a,
+          l1c_dir = paths["L1C"],
+          outdir = paths["L2A"],
           tiles = pm$s2tiles_selected,
           parallel = pm$parallel,
           tmpdir = if (Sys.info()["sysname"] == "Windows") {
@@ -1419,7 +1444,7 @@ sen2r <- function(param_list = NULL,
     
     # delete SAFE, if required
     if (!("l1c" %in% pm$s2_levels) & pm$rm_safe %in% c("all","l1c")) {
-      unlink(file.path(pm$path_l1c,names(s2_list_l1c_tocorrect)), recursive=TRUE)
+      unlink(file.path(paths["L1C"],names(s2_list_l1c_tocorrect)), recursive=TRUE)
     }
     
     # if no processing is required, stop here # TODO see #TODO3 (end of file)
@@ -1432,8 +1457,8 @@ sen2r <- function(param_list = NULL,
       )
       
       return(invisible(
-        c(file.path(pm$path_l1c,names(s2_list_l1c)),
-          file.path(pm$path_l2a,names(s2_list_l2a)))
+        c(file.path(paths["L1C"],names(s2_list_l1c)),
+          file.path(paths["L2A"],names(s2_list_l2a)))
       ))
       
     }
@@ -1952,10 +1977,10 @@ sen2r <- function(param_list = NULL,
   }
   # delete SAFE, if required
   if (pm$rm_safe == "all") {
-    unlink(file.path(pm$path_l1c,names(s2_list_l1c)), recursive=TRUE)
-    unlink(file.path(pm$path_l2a,names(s2_list_l2a)), recursive=TRUE)
+    unlink(file.path(paths["L1C"],names(s2_list_l1c)), recursive=TRUE)
+    unlink(file.path(paths["L2A"],names(s2_list_l2a)), recursive=TRUE)
   } else if (pm$rm_safe == "l1c") {
-    unlink(file.path(pm$path_l1c,names(s2_list_l1c)), recursive=TRUE)
+    unlink(file.path(paths["L1C"],names(s2_list_l1c)), recursive=TRUE)
   }
   
   # check if some files were not created

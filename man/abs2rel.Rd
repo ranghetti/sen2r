@@ -4,16 +4,16 @@
 \alias{abs2rel}
 \title{Convert a path to a relative path}
 \usage{
-abs2rel(path, ref_path = getwd(), mustWork = NA)
+abs2rel(path, ref_path, mustWork = NA)
 }
 \arguments{
 \item{path}{The path to be converted (if it is not absolute,
 the current working directory is considered as its parent, and a
 warning is shown).}
 
-\item{ref_path}{(optional) The reference path to be compared to
-\code{path} to obtain the relative directory (default: current working
-directory). \emph{Important}: the path is considered as a directory
+\item{ref_path}{The reference path to be compared to
+\code{path} to obtain the relative directory.
+\emph{Important}: the path is considered as a directory
 also if it is the path of a file!}
 
 \item{mustWork}{(optional) logical: if TRUE an error is given

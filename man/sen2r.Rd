@@ -8,19 +8,20 @@ sen2r(param_list = NULL, gui = NA, preprocess = TRUE,
   s2_levels = c("l1c", "l2a"), sel_sensor = c("s2a", "s2b"),
   online = TRUE, apihub = NA, downloader = "wget",
   overwrite_safe = FALSE, rm_safe = "no", step_atmcorr = "auto",
-  timewindow = NA, timeperiod = "full", extent = NA, extent_name = "",
-  s2tiles_selected = NA, s2orbits_selected = NA, list_prods = c("BOA"),
-  list_rgb = NA, list_indices = NA, index_source = "BOA",
-  rgb_ranges = NA, mask_type = NA, max_mask = 100, mask_smooth = 0,
-  mask_buffer = 0, clip_on_extent = TRUE, extent_as_mask = FALSE,
-  reference_path = NA, res = NA, res_s2 = "10m", unit = "Meter",
-  proj = NA, resampling = "near", resampling_scl = "near",
-  outformat = "GTiff", rgb_outformat = "GTiff", index_datatype = "Int16",
+  max_cloud_safe = 100, timewindow = NA, timeperiod = "full",
+  extent = NA, extent_name = "sen2r", s2tiles_selected = NA,
+  s2orbits_selected = NA, list_prods = c("BOA"), list_rgb = NA,
+  list_indices = NA, index_source = "BOA", rgb_ranges = NA,
+  mask_type = NA, max_mask = 100, mask_smooth = 0, mask_buffer = 0,
+  clip_on_extent = TRUE, extent_as_mask = FALSE, reference_path = NA,
+  res = NA, res_s2 = "10m", unit = "Meter", proj = NA,
+  resampling = "near", resampling_scl = "near", outformat = "GTiff",
+  rgb_outformat = "GTiff", index_datatype = "Int16",
   compression = "DEFLATE", rgb_compression = "90", overwrite = FALSE,
   path_l1c = NA, path_l2a = NA, path_tiles = NA, path_merged = NA,
-  path_out = NA, path_rgb = NA, path_indices = NA, path_subdirs = TRUE,
-  thumbnails = TRUE, parallel = TRUE, use_python = TRUE, tmpdir = NA,
-  rmtmp = TRUE, log = NA)
+  path_out = NA, path_rgb = NA, path_indices = NA,
+  path_subdirs = TRUE, thumbnails = TRUE, parallel = TRUE,
+  use_python = TRUE, tmpdir = NA, rmtmp = TRUE, log = NA)
 }
 \arguments{
 \item{param_list}{(optional) List of input parameters:
@@ -93,6 +94,17 @@ otherwise they are skipped (sen2cor is never used);
 makes use only of L1C products).
 }}
 
+\item{max_cloud_safe}{(optional) Integer number (0-100) containing
+the maximum cloud level of each SAFE to be considered (default: no filter).
+It it used to limit the research of SAFE products to "good" images,
+so it is applied only to non-existing archives (existing SAFE are always
+used).
+In thish sense, this parameter is different from \code{max_mask}, which can be
+used to set a maximum cloud coverage over output extents.
+Notice also that this value is used to filter on the basis of the metadata
+"Cloud cover percentage" associated to each SAFE, so it is not based
+on the cloud mask defined with the processing options.}
+
 \item{timewindow}{(optional) Temporal window for querying: Date object
 of length 1 (single day) or 2 (time window). Default is NA, meaning that
 no filters are used if online = FALSE, and all found images are processed;
@@ -117,7 +129,7 @@ all found tiles are entirely used); in online mode, a sample extent is used
 as default.}
 
 \item{extent_name}{(optional) Name of the area set as extent, to be used in
-the output file names. Default is to leave it blank. The name is an
+the output file names. Default is "sen2r" The name is an
 alphanumeric string which cannot contain points nor underscores, and that
 cannot be a five-length string with the same structure of a tile ID
 (two numeric and three uppercase character values).}
@@ -135,7 +147,7 @@ products to be processed (accepted values: "TOA", "BOA", "SCL",
 
 \item{list_rgb}{(optional) Character vector with the values of the
 RGB images to be produced.
-Images are in the form xRGBrgb, when:
+Images are in the form RGBrgbx, when:
 \itemize{
 \item x is B (if source is BOA) or T (is source is TOA);
 \item r g and b are the the number of the bands to be used respectively
@@ -154,6 +166,8 @@ are computed from BOA values; if "TOA", non corrected reflectances
 are instead used (be careful to use this setting!).}
 
 \item{rgb_ranges}{(optional) Range of valid values to be used for RGB products.
+Values must be provided in the same scale used within SAFE and BOA/TOA
+products (0-10000, corresponding to reflectances * 10000).
 If can be a 2-length integer vector (min-max for all the 3 bands) or a 6-length vector or
 3x2 matrix (min red, min green, min blue, max red, max green, max blue).
 Default is to use c(0,2500) for bands 2, 3 and 4; c(0,7500) for other bands.
@@ -172,9 +186,14 @@ Images with a percentage of masked surface greater than \code{max_mask}%
 are not processed (the list of expected output files which have not been
 generated is returned as an attribute, named "skipped").
 Default value is 80.
+This parameter is different from \code{max_cloud_safe}, because:
+\enumerate{
+\item it is computed over the selected extent;
+\item it is computed basing on the cloud mask defined as above.
 Notice that the percentage is computed on non-NA values (if input images
 had previously been clipped and masked using a polygon, the percentage is
-computed on the surface included in the masking polygons).}
+computed on the surface included in the masking polygons).
+}}
 
 \item{mask_smooth}{(optional) Numeric positive value: the smoothing radius
 (expressed in unit of measure of the output projection, typically metres)
