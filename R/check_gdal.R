@@ -95,7 +95,7 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE) {
   }
   
   
-  # Retreieve found GDAL installations
+  # Retrieve found GDAL installations
   bin_ext <- ifelse(Sys.info()["sysname"] == "Windows", ".exe", "")
   gdal_dirs <- normalize_path(sapply(getOption("gdalUtils_gdalPath"), function(x){x$path}))
   gdalinfo_paths <- normalize_path(file.path(gdal_dirs,paste0("gdalinfo",bin_ext)))
@@ -104,7 +104,7 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE) {
     sapply(paste(gdalinfo_paths, "--version"), system, intern = TRUE)
   ))
   
-  # check requisites (minimum version)
+  # check requisite 1: minimum version
   if (all(gdal_versions < gdal_minversion)) {
     print_message(
       type=message_type,
@@ -113,7 +113,7 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE) {
     )
     return(invisible(FALSE))
   }
-  # filter GDAL installations repsecting the requisite
+  # filter GDAL installations respecting the requisite
   gdal_dirs <- gdal_dirs[!gdal_versions < gdal_minversion]
   gdalinfo_paths <- gdalinfo_paths[!gdal_versions < gdal_minversion]
   gdal_versions <- gdal_versions[!gdal_versions < gdal_minversion]
@@ -122,7 +122,7 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE) {
   gdalinfo_paths <- gdalinfo_paths[order(gdal_versions, decreasing = TRUE)]
   gdal_versions <- sort(gdal_versions, decreasing = TRUE)
   
-  # check requisites (JP2 support)
+  # check requisite 2: JP2 support
   gdal_formats <- sapply(paste(gdalinfo_paths, "--formats"), system, intern = TRUE, simplify = FALSE)
   gdal_JP2support <- sapply(gdal_formats, function(x) {length(grepl("JP2OpenJPEG", x)) > 0})
   if (all(!gdal_JP2support)) {
@@ -142,10 +142,23 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE) {
     )
     return(invisible(FALSE))
   } 
-  # filter GDAL installations repsecting the requisite
+  # filter GDAL installations respecting the requisite
   gdal_dirs <- gdal_dirs[gdal_JP2support]
   gdalinfo_paths <- gdalinfo_paths[gdal_JP2support]
   gdal_versions <- gdal_versions[gdal_JP2support]
+  
+  # in Windows, prefer default OSGeo version
+  if (Sys.info()["sysname"] == "Windows") {
+    gdal_order <- c(
+      grep("^C:\\\\OSGEO4~1", gdal_dirs), # 1: C:\OSGeo4W64
+      grep("^(?!C:\\\\OSGEO4~1).*OSGEO4", gdal_dirs, perl=TRUE), # 2: other paths containing OSGEO4~1
+      grep("^((?!OSGEO4).)*$", gdal_dirs, perl=TRUE) # 3: all other paths
+    )
+    gdal_dirs <- gdal_dirs[gdal_order]
+    gdalinfo_paths <- gdalinfo_paths[gdal_order]
+    gdal_versions <- gdal_versions[gdal_order]
+  }
+  
   
   # filter basing on the GDAL installation path defined with gdal_path
   if (!is.null(gdal_path)) {
