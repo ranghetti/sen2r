@@ -237,15 +237,15 @@
 #'  (this can be useful if multiple [sen2r] instances are run in parallel).
 #'  This argument can be set only in commandline mode, not using the GUI.
 #' @processing_order (optional) Character string:
-#'  - "by_date" (default) is a new mode in which output products are grouped 
+#'  - "by_step" (default) is the legacy mode, in which processing is performed
+#'      step by step (merging tiles, warping, masking clouds, etc.).
+#'      If `parallel = TRUE`, parallelisation is applied within each step
+#'      (when internal functions can manage it).
+#'  - "by_date" is a new experimental mode in which output products are grouped 
 #'      by sensing date, and processing is performed date by date
 #'      (`if parallel = TRUE`, one core per group). 
 #'      Download annd atmospheric correction is always performed before other
 #'      steps.
-#'  - "by_step" is the old mode, in which processing is performed step by
-#'      step (merging tiles, warping, masking clouds, etc.).
-#'      If `parallel = TRUE`, parallelisation is applied within each step
-#'      (when internal functions can manage it).
 #' @param use_python (optional) Logical: if TRUE (default), the presence of
 #'  python in the system is checked before running the function; 
 #'  if FALSE, this is skipped. Setting this to FALSE can bge useful on 
@@ -332,7 +332,7 @@ sen2r <- function(param_list = NULL,
                   path_subdirs = TRUE,
                   thumbnails = TRUE,
                   parallel = TRUE,
-                  processing_order = "by_date",
+                  processing_order = "by_step",
                   use_python = TRUE,
                   tmpdir = NA,
                   rmtmp = TRUE, 
@@ -699,6 +699,14 @@ sen2r <- function(param_list = NULL,
   if (is.null(pm$parallel)) {pm$parallel <- parallel}
   if (is.null(pm$processing_order)) {pm$processing_order <- processing_order}
   # determine if parallelisation muts be applied to groups or to steps
+  if (!pm$processing_order %in% c("by_date","by_step")) {
+    print_message(
+      type = "warning",
+      "processing_order = \"",pm$processing_order,"\"not recognised, ",
+      "using default \"by_step\"."
+    )
+    pm$processing_order <- "by_step"
+  }
   if (pm$parallel == TRUE | is.numeric(pm$parallel)) {
     if (pm$processing_order == "by_step") {
       parallel_steps <- pm$parallel
