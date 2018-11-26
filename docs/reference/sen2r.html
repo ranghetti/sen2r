@@ -538,6 +538,20 @@ If FALSE, the processing chain is forced to run with a single core
 This argument can be set only in commandline mode, not using the GUI.</p></td>
     </tr>
     <tr>
+      <th>processing_order</th>
+      <td><p>(optional) Character string:</p><ul>
+<li><p>"by_step" (default) is the legacy mode, in which processing is performed
+step by step (merging tiles, warping, masking clouds, etc.).
+If <code>parallel = TRUE</code>, parallelisation is applied within each step
+(when internal functions can manage it).</p></li>
+<li><p>"by_date" is a new experimental mode in which output products are grouped
+by sensing date, and processing is performed date by date
+(<code>if parallel = TRUE</code>, one core per group).
+Download annd atmospheric correction is always performed before other
+steps.</p></li>
+</ul></td>
+    </tr>
+    <tr>
       <th>use_python</th>
       <td><p>(optional) Logical: if TRUE (default), the presence of
 python in the system is checked before running the function;

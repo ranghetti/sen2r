@@ -316,6 +316,19 @@ If FALSE, the processing chain is forced to run with a single core
 (this can be useful if multiple \link{sen2r} instances are run in parallel).
 This argument can be set only in commandline mode, not using the GUI.}
 
+\item{processing_order}{(optional) Character string:
+\itemize{
+\item "by_step" (default) is the legacy mode, in which processing is performed
+step by step (merging tiles, warping, masking clouds, etc.).
+If \code{parallel = TRUE}, parallelisation is applied within each step
+(when internal functions can manage it).
+\item "by_date" is a new experimental mode in which output products are grouped
+by sensing date, and processing is performed date by date
+(\code{if parallel = TRUE}, one core per group).
+Download annd atmospheric correction is always performed before other
+steps.
+}}
+
 \item{use_python}{(optional) Logical: if TRUE (default), the presence of
 python in the system is checked before running the function;
 if FALSE, this is skipped. Setting this to FALSE can bge useful on

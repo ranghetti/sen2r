@@ -50,6 +50,7 @@
 #' @param path_subdirs `sen2r` argument (refer to [sen2r] documentation).
 #' @param thumbnails `sen2r` argument (refer to [sen2r] documentation).
 #' @param parallel `sen2r` argument (refer to [sen2r] documentation).
+#' @param processing_order `sen2r` argument (refer to [sen2r] documentation).
 #' @param use_python `sen2r` argument (refer to [sen2r] documentation).
 #' @param tmpdir `sen2r` argument (refer to [sen2r] documentation).
 #' @param rmtmp `sen2r` argument (refer to [sen2r] documentation).
@@ -105,6 +106,7 @@ list_sen2r_paths <- function(param_list = NULL,
                              path_subdirs = TRUE,
                              thumbnails = TRUE,
                              parallel = TRUE,
+                             processing_order = "by_step",
                              use_python = TRUE,
                              tmpdir = NA,
                              rmtmp = TRUE, 
@@ -170,6 +172,7 @@ list_sen2r_paths <- function(param_list = NULL,
     path_subdirs = path_subdirs,
     thumbnails = thumbnails,
     parallel = parallel,
+    processing_order = processing_order,
     use_python = use_python,
     tmpdir = tmpdir,
     rmtmp = rmtmp,

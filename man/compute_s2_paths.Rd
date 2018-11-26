@@ -25,7 +25,8 @@ list_sen2r_paths(param_list = NULL, gui = NA, preprocess = TRUE,
   overwrite = FALSE, path_l1c = NA, path_l2a = NA, path_tiles = NA,
   path_merged = NA, path_out = NA, path_indices = NA,
   path_subdirs = TRUE, thumbnails = TRUE, parallel = TRUE,
-  use_python = TRUE, tmpdir = NA, rmtmp = TRUE, log = NA)
+  processing_order = "by_step", use_python = TRUE, tmpdir = NA,
+  rmtmp = TRUE, log = NA)
 }
 \arguments{
 \item{pm}{List of input parameters.}
@@ -157,6 +158,8 @@ if FALSE, only non temporary files are searched.}
 \item{thumbnails}{\code{sen2r} argument (refer to \link{sen2r} documentation).}
 
 \item{parallel}{\code{sen2r} argument (refer to \link{sen2r} documentation).}
+
+\item{processing_order}{\code{sen2r} argument (refer to \link{sen2r} documentation).}
 
 \item{use_python}{\code{sen2r} argument (refer to \link{sen2r} documentation).}
 

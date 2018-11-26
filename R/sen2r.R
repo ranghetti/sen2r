@@ -236,7 +236,7 @@
 #'  If FALSE, the processing chain is forced to run with a single core
 #'  (this can be useful if multiple [sen2r] instances are run in parallel).
 #'  This argument can be set only in commandline mode, not using the GUI.
-#' @processing_order (optional) Character string:
+#' @param processing_order (optional) Character string:
 #'  - "by_step" (default) is the legacy mode, in which processing is performed
 #'      step by step (merging tiles, warping, masking clouds, etc.).
 #'      If `parallel = TRUE`, parallelisation is applied within each step
