@@ -1314,7 +1314,7 @@ sen2r <- function(param_list = NULL,
         sort(unique(as.Date(s2_dt$sensing_datetime)))
       }
       sen2r_groups_A <- if (pm$processing_order %in% c(2,"by_date")) {
-        as.list(sen2r_dates_A)
+        setNames(as.list(sen2r_dates_A), sen2r_dates_A)
       } else if (pm$processing_order %in% c(4,"by_groups")) {
         suppressWarnings(split(
           sen2r_dates_A, 
