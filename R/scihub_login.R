@@ -14,6 +14,7 @@
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @importFrom reticulate py_to_r
+#' @importFrom stringr str_split_fixed
 #' @importFrom shiny a actionButton icon modalButton modalDialog passwordInput tagList textInput
 #' @importFrom shinyFiles shinyFileSave
 
@@ -33,23 +34,25 @@ read_scihub_login <- function(apihub_path=NA) {
   
   # return user and password
   if (file.exists(apihub_path)) {
-    readLines(apihub_path)[1] %>%
-      strsplit(" ") %>%
-      unlist()
+    readLines(apihub_path) %>%
+      str_split_fixed(" ", 2)
   } else {
     # if apihub does not exists, return default credentials
-    c("user","user")
+    matrix(c("user","user"), nrow = 1)
   }
   
 }
 
 
 #' @name write_scihub_login
+#' @param append Logical: if TRUE, new credentials are added 
+#'  to the ones existing within `apihub_path`; 
+#'  if FALSE (default), `apihub_path` is replaced with the new ones.
 #' @rdname scihub_login
 #' @export
 
-write_scihub_login <- function(username, password, apihub_path=NA) {
-  
+write_scihub_login <- function(username, password, apihub_path=NA, append=FALSE) {
+
   # if apihub_path is not specified, 
   # retrieve from the current s2download installation
   if (is.na(apihub_path)) {
@@ -58,30 +61,50 @@ write_scihub_login <- function(username, password, apihub_path=NA) {
     apihub_path <- file.path(py_to_r(s2download$inst_path),"apihub.txt")
   }
   
+  # if append is required, read the old file
+  # in order to exclude duplicated entries and 
+  # add the new credentials to the top instead that to the bottom
+  apihub <- matrix(c(username, password), nrow = 1)
+  if (append) {
+    apihub <- rbind(apihub, read_scihub_login(apihub_path))
+    apihub <- apihub[!duplicated(apihub[,1]),]
+  }
+  
   # write credentials
-  writeLines(
-    paste(username, password),
-    apihub_path
-  )
+  writeLines(apply(apihub, 1, paste, collapse=" "), apihub_path)
   
 }
 
-#' @name scihub_modal
-#' @rdname scihub_login
+
+# #' @name scihub_modal
+# #' @rdname scihub_login
 
 # write dialog content
-scihub_modal <- function(username=NA, password=NA) {
+.scihub_modal <- function() {
   # read scihub user/password
-  if (anyNA(c(username,password))) {
-    apihub <- read_scihub_login()
-    username <- apihub[1]
-    password <- apihub[2]
-  }
+  s2download <- import_s2download(convert=FALSE) # import s2download
+  apihub_path <- file.path(py_to_r(s2download$inst_path),"apihub.txt")
+  apihub <- read_scihub_login(apihub_path)
+  # launch modal
   modalDialog(
     title = "Set SciHub username and password",
     size = "s",
-    textInput("scihub_username", "Username", username),
-    passwordInput("scihub_password", "Password", password),
+    # checkboxInput(
+    #   "apihub_multiple", 
+    #   label = "Use multiple credentials",
+    #   value = FALSE
+    # ),
+    conditionalPanel(
+      condition = "input.apihub_multiple == 1",
+      if (nrow(apihub)>0) {
+        HTML(paste0(
+          "Existing usernames:<ul><li>",
+          paste(apihub[,1], collapse="</li><li>")
+        ))
+      }
+    ),
+    textInput("scihub_username", "Username", apihub[1,1]),
+    passwordInput("scihub_password", "Password", apihub[1,2]),
     a("Register new account", href="https://scihub.copernicus.eu/dhus/#/self-registration", target="_blank"),
     "\u2000\u2014\u2000",
     a("Forgot password?", href="https://scihub.copernicus.eu/dhus/#/forgot-password", target="_blank"),

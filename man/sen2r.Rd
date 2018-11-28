@@ -318,15 +318,28 @@ This argument can be set only in commandline mode, not using the GUI.}
 
 \item{processing_order}{(optional) Character string:
 \itemize{
-\item "by_step" (default) is the legacy mode, in which processing is performed
-step by step (merging tiles, warping, masking clouds, etc.).
+\item "1" or "by_step" (default) is the legacy mode, in which download and processing
+(merging tiles, warping, masking clouds, etc.) are performed step by step.
 If \code{parallel = TRUE}, parallelisation is applied within each step
 (when internal functions can manage it).
-\item "by_date" is a new experimental mode in which output products are grouped
-by sensing date, and processing is performed date by date
-(\code{if parallel = TRUE}, one core per group).
-Download annd atmospheric correction is always performed before other
-steps.
+This is the only accepted value in case \code{preprocess = FALSE}.
+\item "2" or "by_date" is a new experimental mode in which output products are grouped
+by sensing date; download and processing are performed date by date.
+Parallelisation is performed like in mode 1 (within each step).
+Although this is slightly slower than mode 1, it allow to delete SAFE
+products and/or temporary files after each date, so it is suitable
+for machines in which disk space is limited.
+\item "3" or "mixed" is another experimental mode in which download and atmospheric
+correction are performed first; then, processing (merging tiles,
+warping, masking clouds, etc.) is performed step by step.
+If \code{parallel = TRUE}, \code{sen2cor} is first parallelised (one core per
+SAFE), then one core per group is used for processing steps.
+This mode is normally the faster one.
+\item "4" or "by_groups" is similar to mode 2, but groups are larger (groups of
+n dates, where n is the number of cores which is used).
+Parallelisation is performed like in mode 3 within each group.
+It allows to take advantages both from speeding-up of mode 3 (although
+slightly slower) and better disk space managing of mode 2.
 }}
 
 \item{use_python}{(optional) Logical: if TRUE (default), the presence of

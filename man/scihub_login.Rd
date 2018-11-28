@@ -3,14 +3,12 @@
 \name{read_scihub_login}
 \alias{read_scihub_login}
 \alias{write_scihub_login}
-\alias{scihub_modal}
 \title{Import / export SciHub username and password}
 \usage{
 read_scihub_login(apihub_path = NA)
 
-write_scihub_login(username, password, apihub_path = NA)
-
-scihub_modal(username = NA, password = NA)
+write_scihub_login(username, password, apihub_path = NA,
+  append = FALSE)
 }
 \arguments{
 \item{apihub_path}{Path of the file in which login information is saved.
@@ -19,6 +17,10 @@ If NA (default) it is automatically read from \code{s2download} path.}
 \item{username}{SciHub username.}
 
 \item{password}{SciHub password.}
+
+\item{append}{Logical: if TRUE, new credentials are added
+to the ones existing within \code{apihub_path};
+if FALSE (default), \code{apihub_path} is replaced with the new ones.}
 }
 \description{
 Read the SciHub login information or save new username and

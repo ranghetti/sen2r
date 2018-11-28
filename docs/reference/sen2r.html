@@ -540,15 +540,28 @@ This argument can be set only in commandline mode, not using the GUI.</p></td>
     <tr>
       <th>processing_order</th>
       <td><p>(optional) Character string:</p><ul>
-<li><p>"by_step" (default) is the legacy mode, in which processing is performed
-step by step (merging tiles, warping, masking clouds, etc.).
+<li><p>"1" or "by_step" (default) is the legacy mode, in which download and processing
+(merging tiles, warping, masking clouds, etc.) are performed step by step.
 If <code>parallel = TRUE</code>, parallelisation is applied within each step
-(when internal functions can manage it).</p></li>
-<li><p>"by_date" is a new experimental mode in which output products are grouped
-by sensing date, and processing is performed date by date
-(<code>if parallel = TRUE</code>, one core per group).
-Download annd atmospheric correction is always performed before other
-steps.</p></li>
+(when internal functions can manage it).
+This is the only accepted value in case <code>preprocess = FALSE</code>.</p></li>
+<li><p>"2" or "by_date" is a new experimental mode in which output products are grouped
+by sensing date; download and processing are performed date by date.
+Parallelisation is performed like in mode 1 (within each step).
+Although this is slightly slower than mode 1, it allow to delete SAFE
+products and/or temporary files after each date, so it is suitable
+for machines in which disk space is limited.</p></li>
+<li><p>"3" or "mixed" is another experimental mode in which download and atmospheric
+correction are performed first; then, processing (merging tiles,
+warping, masking clouds, etc.) is performed step by step.
+If <code>parallel = TRUE</code>, <code>sen2cor</code> is first parallelised (one core per
+SAFE), then one core per group is used for processing steps.
+This mode is normally the faster one.</p></li>
+<li><p>"4" or "by_groups" is similar to mode 2, but groups are larger (groups of
+n dates, where n is the number of cores which is used).
+Parallelisation is performed like in mode 3 within each group.
+It allows to take advantages both from speeding-up of mode 3 (although
+slightly slower) and better disk space managing of mode 2.</p></li>
 </ul></td>
     </tr>
     <tr>

@@ -129,9 +129,8 @@ username and <code>user</code> password are used, but this can cause timeouts, s
 
     <pre class="usage"><span class='fu'>read_scihub_login</span>(<span class='kw'>apihub_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>)
 
-<span class='fu'>write_scihub_login</span>(<span class='no'>username</span>, <span class='no'>password</span>, <span class='kw'>apihub_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>)
-
-<span class='fu'>scihub_modal</span>(<span class='kw'>username</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>password</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+<span class='fu'>write_scihub_login</span>(<span class='no'>username</span>, <span class='no'>password</span>, <span class='kw'>apihub_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>append</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -148,6 +147,12 @@ If NA (default) it is automatically read from <code>s2download</code> path.</p><
     <tr>
       <th>password</th>
       <td><p>SciHub password.</p></td>
+    </tr>
+    <tr>
+      <th>append</th>
+      <td><p>Logical: if TRUE, new credentials are added
+to the ones existing within <code>apihub_path</code>;
+if FALSE (default), <code>apihub_path</code> is replaced with the new ones.</p></td>
     </tr>
     </table>
     

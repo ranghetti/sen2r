@@ -237,15 +237,28 @@
 #'  (this can be useful if multiple [sen2r] instances are run in parallel).
 #'  This argument can be set only in commandline mode, not using the GUI.
 #' @param processing_order (optional) Character string:
-#'  - "by_step" (default) is the legacy mode, in which processing is performed
-#'      step by step (merging tiles, warping, masking clouds, etc.).
+#'  - "1" or "by_step" (default) is the legacy mode, in which download and processing 
+#'      (merging tiles, warping, masking clouds, etc.) are performed step by step.
 #'      If `parallel = TRUE`, parallelisation is applied within each step
 #'      (when internal functions can manage it).
-#'  - "by_date" is a new experimental mode in which output products are grouped 
-#'      by sensing date, and processing is performed date by date
-#'      (`if parallel = TRUE`, one core per group). 
-#'      Download annd atmospheric correction is always performed before other
-#'      steps.
+#'      This is the only accepted value in case `preprocess = FALSE`.
+#'  - "2" or "by_date" is a new experimental mode in which output products are grouped 
+#'      by sensing date; download and processing are performed date by date.
+#'      Parallelisation is performed like in mode 1 (within each step).
+#'      Although this is slightly slower than mode 1, it allow to delete SAFE
+#'      products and/or temporary files after each date, so it is suitable
+#'      for machines in which disk space is limited.
+#'  - "3" or "mixed" is another experimental mode in which download and atmospheric 
+#'      correction are performed first; then, processing (merging tiles, 
+#'      warping, masking clouds, etc.) is performed step by step.
+#'      If `parallel = TRUE`, `sen2cor` is first parallelised (one core per 
+#'      SAFE), then one core per group is used for processing steps.
+#'      This mode is normally the faster one.
+#'  - "4" or "by_groups" is similar to mode 2, but groups are larger (groups of 
+#'      n dates, where n is the number of cores which is used).
+#'      Parallelisation is performed like in mode 3 within each group.
+#'      It allows to take advantages both from speeding-up of mode 3 (although 
+#'      slightly slower) and better disk space managing of mode 2.
 #' @param use_python (optional) Logical: if TRUE (default), the presence of
 #'  python in the system is checked before running the function; 
 #'  if FALSE, this is skipped. Setting this to FALSE can bge useful on 
@@ -699,7 +712,12 @@ sen2r <- function(param_list = NULL,
   if (is.null(pm$parallel)) {pm$parallel <- parallel}
   if (is.null(pm$processing_order)) {pm$processing_order <- processing_order}
   # determine if parallelisation muts be applied to groups or to steps
-  if (!pm$processing_order %in% c("by_date","by_step")) {
+  if (!pm$processing_order %in% c(
+    1,"by_step", 
+    2,"by_date", 
+    3,"mixed", 
+    4,"by_groups"
+  )) {
     print_message(
       type = "warning",
       "processing_order = \"",pm$processing_order,"\"not recognised, ",
@@ -707,17 +725,24 @@ sen2r <- function(param_list = NULL,
     )
     pm$processing_order <- "by_step"
   }
+  # here defined:
+  # parallel_steps: related to internal parallelisation of functions
+  # parallel_groups_A: related to "level 1" (download, sen2cor, processing) parallelisation
+  # parallel_groups_B: related to "level 2" (processing) parallelisation of each group_A
   if (pm$parallel == TRUE | is.numeric(pm$parallel)) {
-    if (pm$processing_order == "by_step") {
+    if (pm$processing_order %in% c(1,"by_step", 2,"by_date")) {
+      parallel_groups_A <- FALSE
+      parallel_groups_B <- FALSE
       parallel_steps <- pm$parallel
-      parallel_groups <- FALSE
-    } else if (pm$processing_order %in% c("by_date")) {
+    } else if (pm$processing_order %in% c(3,"mixed", 4,"by_groups")) {
+      parallel_groups_A <- FALSE
+      parallel_groups_B <- pm$parallel
       parallel_steps <- FALSE
-      parallel_groups <- pm$parallel
     }
   } else {
+    parallel_groups_A <- FALSE
+    parallel_groups_B <- FALSE
     parallel_steps <- FALSE
-    parallel_groups <- FALSE
   }
   
   
@@ -746,8 +771,6 @@ sen2r <- function(param_list = NULL,
   
   # internal parameters
   paths <- c()
-  paths["L1C"] <- if (!is.na(pm$path_l1c)) {pm$path_l1c} else {file.path(tmpdir,"SAFE")}
-  paths["L2A"] <- if (!is.na(pm$path_l2a)) {pm$path_l2a} else {file.path(tmpdir,"SAFE")}
   paths["out"] <- if (!is.na(pm$path_out)) {pm$path_out} else {file.path(tmpdir,"out")}
   paths["rgb"] <- if (!is.na(pm$path_rgb)) {pm$path_rgb} else {file.path(tmpdir,"rgb")}
   paths["indices"] <- if (!is.na(pm$path_indices)) {pm$path_indices} else {file.path(tmpdir,"indices")}
@@ -962,16 +985,16 @@ sen2r <- function(param_list = NULL,
       
       # if offline mode, read the SAFE product list from folders and filter
       if ("l1c" %in% pm$s2_levels) {
-        s2_lists[["l1c"]] <- list.files(paths["L1C"], "\\.SAFE$")
+        s2_lists[["l1c"]] <- list.files(pm$path_l1c, "\\.SAFE$")
       }
       if ("l2a" %in% pm$s2_levels) {
         s2_lists[["l2a"]] <- if (pm$step_atmcorr=="l2a") {
-          list.files(paths["L2A"], "\\.SAFE$")
+          list.files(pm$path_l2a, "\\.SAFE$")
         } else if (pm$step_atmcorr %in% c("scihub","no")) {
-          list.files(paths["L1C"], "\\.SAFE$")
+          list.files(pm$path_1c, "\\.SAFE$")
         } else if (pm$step_atmcorr=="auto") {
-          all_l1c <- list.files(paths["L1C"], "\\.SAFE$")
-          all_l2a <- list.files(paths["L2A"], "\\.SAFE$")
+          all_l1c <- list.files(pm$path_l1c, "\\.SAFE$")
+          all_l2a <- list.files(pm$path_l2a, "\\.SAFE$")
           c(
             all_l2a,
             all_l1c[
@@ -1047,7 +1070,7 @@ sen2r <- function(param_list = NULL,
                  as.POSIXct(creation_datetime, format="%s"))]
     
     # list existing products and get metadata
-    s2_existing_list <- list.files(unique(c(paths["L1C"],paths["L2A"])), "\\.SAFE$")
+    s2_existing_list <- list.files(unique(c(pm$path_l1c,pm$path_l2a)), "\\.SAFE$")
     if (length(s2_existing_list) > 0 & pm$online == TRUE) {
       s2_isvalid <- sapply(s2_existing_list, safe_isvalid, info="nameinfo")
       s2_existing_list <- s2_existing_list[s2_isvalid]
@@ -1270,6 +1293,177 @@ sen2r <- function(param_list = NULL,
       s2_list_l2a <- s2_list_l2a_req
     }
     
+    # Compute the maximum number of cores to be used
+    max_n_cores <- if (is.numeric(pm$parallel)) {
+      as.integer(pm$parallel)
+    } else if (pm$parallel == FALSE) {
+      1
+    } else {
+      min(parallel::detectCores()-1, 8) # use at most 8 cores,
+    }
+    
+    if (pm$processing_order %in% c(2,"by_date", 4,"by_groups")) {
+      
+      # Create processing groups
+      sen2r_dates_A <- if (pm$preprocess == TRUE) {
+        sort(unique(sen2r_getElements(
+          unlist(s2names[grep("_new",names(s2names))]), format = "data.frame"
+        )$sensing_date))
+      } else {
+        s2names <- list()
+        sort(unique(as.Date(s2_dt$sensing_datetime)))
+      }
+      sen2r_groups_A <- if (pm$processing_order %in% c(2,"by_date")) {
+        as.list(sen2r_dates_A)
+      } else if (pm$processing_order %in% c(4,"by_groups")) {
+        suppressWarnings(split(
+          sen2r_dates_A, 
+          seq_len(ceiling(length(sen2r_dates_A)/max_n_cores))
+        ))
+      }
+
+      # build groups
+      s2names_groups_A <- lapply(sen2r_groups_A, function(d) {
+        sapply(s2names, function(v) {
+          tryCatch(
+            v[sen2r_getElements(v, format = "data.frame")$sensing_date %in% d],
+            error = function(e) {
+              v[sapply(v, function(x) {
+                strftime(safe_getMetadata(x, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
+              }, USE.NAMES = FALSE) %in% as.character(d)]
+            })
+        }, simplify = FALSE)
+      })
+      s2_list_l1c_groups_A <- lapply(sen2r_groups_A, function(d) {
+        s2_list_l1c[
+          sapply(names(s2_list_l1c), function(s) {
+            strftime(safe_getMetadata(s, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
+          }) %in% as.character(d)
+          ]
+      })
+      s2_list_l2a_groups_A <- lapply(sen2r_groups_A, function(d) {
+        s2_list_l2a[
+          sapply(names(s2_list_l2a), function(s) {
+            strftime(safe_getMetadata(s, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
+          }) %in% as.character(d)
+          ]
+      })
+      s2_dt_groups_A <- lapply(sen2r_groups_A, function(d) {
+        s2_dt[
+          sapply(names(s2_list_l2a), function(s) {
+            strftime(safe_getMetadata(s, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
+          }) %in% as.character(d),
+          ]
+      })
+      names(s2names_groups_A) <- names(s2_list_l1c_groups_A) <-
+        names(s2_list_l2a_groups_A) <- names(s2_dt_groups_A) <- names(sen2r_groups_A)
+      
+    } else if (pm$processing_order %in% c(1,"by_step", 3,"mixed")) {
+      
+      s2names_groups_A <- list(s2names)
+      s2_list_l1c_groups_A <- list(s2_list_l1c)
+      s2_list_l2a_groups_A <- list(s2_list_l2a)
+      s2_dt_groups_A <- list(s2_dt)
+      names(s2names_groups_A) <- names(s2_list_l1c_groups_A) <-
+        names(s2_list_l2a_groups_A) <- names(s2_dt_groups_A) <- "unique"
+    
+    }
+
+    # Define n_apihubs, being the number of product groups within each group_A
+    apihubs <- read_scihub_login(pm$apihub)
+    n_apihubs <- min(nrow(apihubs), length(s2names_groups_A)) # this because
+    # it takes no sense to use more apihubs than groups
+    if (n_apihubs > 1 & pm$processing_order %in% c(4,"by_groups")) {
+      pm$apihub <- file.path(tmpdir,paste0("apihub_",seq_len(n_apihubs),".txt"))
+      for (i in seq_len(n_apihubs)) {
+        write_scihub_login(apihubs[i,1], apihubs[i,2], pm$apihub[i], append = FALSE)
+      }
+      if (pm$parallel == TRUE | is.numeric(pm$parallel)) {
+        parallel_groups_A <- pm$parallel
+        parallel_groups_B <- FALSE
+        parallel_steps <- FALSE
+      }
+    }
+    # they will be used in case of parallel execution of groups_A
+
+  } # end of SAFE dummy FOR cycle
+
+    # Initialise foreach cycle A
+    # Compute n_cores
+    n_cores_A <- if (is.numeric(parallel_groups_A)) {
+      as.integer(parallel_groups_A)
+    } else if (parallel_groups_A == FALSE) {
+      1
+    } else {
+      min(max_n_cores, length(s2names_groups_A), n_apihubs)
+      # limiting to n_apihubs because it takes no sense to use N cores
+      # for groups of n elements (N > n)
+    }
+    if (n_cores_A<=1) {
+      `%DO_A%` <- `%do%`
+      n_cores_A <- 1
+    } else {
+      `%DO_A%` <- `%dopar%`
+      cl <- makeCluster(
+        n_cores_A, 
+        type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
+      )
+      registerDoParallel(cl)
+    }
+    # Run processing by group
+    # 2 nested cycle:
+    # one internal FOREACH with n_cores_A groups,
+    # oe external with groups
+    # (this is necessary to ensure that 2 groups with the same apihub 
+    # cannot be executed in the same time)
+    outnames_list_A1 <- foreach(
+      sel_group_A = suppressWarnings(split(
+        seq_len(length(s2names_groups_A)), 
+        seq_len(ceiling(length(s2names_groups_A)/n_apihubs))
+      ))
+    ) %do% {
+
+    outnames_list_A2 <- foreach(
+      sel_s2names = s2names_groups_A[sel_group_A], 
+      sel_s2_list_l1c = s2_list_l1c_groups_A[sel_group_A],
+      sel_s2_list_l2a = s2_list_l2a_groups_A[sel_group_A],
+      sel_s2_dt = s2_dt_groups_A[sel_group_A],
+      i_group_A = match(names(s2names_groups_A[sel_group_A]), names(s2names_groups_A)), 
+      sel_apihub_path = pm$apihub,
+      .packages = c("sf", "sen2r")
+    ) %DO_A% {
+
+    # redirect to log files
+    if (n_cores_A > 1) {
+      if (!is.na(.log_output)) {
+        sink(.log_output, split = TRUE, type = "output", append = TRUE)
+      }
+      if (!is.na(.log_message)) {
+        logfile_message = file(.log_message, open = "a")
+        sink(logfile_message, type="message")
+      }
+    }
+    
+    if (length(s2names_groups_A) > 1) {
+      sen2r:::print_message(
+        type="message", 
+        date=TRUE,
+        "Processing group ",i_group_A," of ",length(s2names_groups_A),"..."
+      )
+    }
+
+    # Define per-group parameters
+    tmpdir_groupA <- file.path(tmpdir, basename(tempfile(pattern="group")))
+    dir.create(tmpdir_groupA, recursive = FALSE, showWarnings = FALSE)
+    paths["L1C"] <- if (!is.na(pm$path_l1c)) {pm$path_l1c} else {file.path(tmpdir_groupA,"SAFE")}
+    paths["L2A"] <- if (!is.na(pm$path_l2a)) {pm$path_l2a} else {file.path(tmpdir_groupA,"SAFE")}
+    paths["out"] <- if (!is.na(pm$path_out)) {pm$path_out} else {file.path(tmpdir_groupA,"out")}
+    paths["rgb"] <- if (!is.na(pm$path_rgb)) {pm$path_rgb} else {file.path(tmpdir_groupA,"rgb")}
+    paths["indices"] <- if (!is.na(pm$path_indices)) {pm$path_indices} else {file.path(tmpdir_groupA,"indices")}
+    paths["tiles"] <- if (!is.na(pm$path_tiles)) {pm$path_tiles} else {file.path(tmpdir_groupA,"tiles")}
+    paths["merged"] <- if (!is.na(pm$path_merged)) {pm$path_merged} else {file.path(tmpdir_groupA,"merged")}
+    paths["warped"] <- if (is.na(pm$mask_type)) {paths["out"]} else {file.path(tmpdir_groupA,"warped")}
+
     ## 3. Download required SAFE ##
     # TODO implement ovwerite/skip
     # (now it skips, but analysing each single file)
@@ -1283,14 +1477,14 @@ sen2r <- function(param_list = NULL,
       )
       
       # If all products are compactname, launch a single s2_download() instance
-      if (all(sapply(names(s2_list_l2a), function(x) {
+      if (all(sapply(names(sel_s2_list_l2a), function(x) {
         safe_getMetadata(x, "nameinfo")$version
       }) == "compact")) {
         s2_download(
-          s2_list_l2a[!names(s2_list_l2a) %in% list.files(paths["L2A"], "\\.SAFE$")],
+          sel_s2_list_l2a[!names(sel_s2_list_l2a) %in% list.files(paths["L2A"], "\\.SAFE$")],
           outdir = paths["L2A"],
           downloader = pm$downloader,
-          apihub = pm$apihub
+          apihub = sel_apihub_path
         )
       } else { # otherwise, launch one per tile
         lapply(pm$s2tiles_selected, function(tile) {
@@ -1309,7 +1503,7 @@ sen2r <- function(param_list = NULL,
             )
           }
           s2_download(
-            s2_list_l2a, # ask to download all the images, 
+            sel_s2_list_l2a, # ask to download all the images, 
             # and not only the non existing ones,
             # because of the cycle on tiles
             # (with compactname products, all the zips are downloaded
@@ -1318,7 +1512,7 @@ sen2r <- function(param_list = NULL,
             outdir = paths["L2A"],
             downloader = pm$downloader,
             tile = tile,
-            apihub = pm$apihub
+            apihub = sel_apihub_path
           )
         })
       }
@@ -1336,11 +1530,11 @@ sen2r <- function(param_list = NULL,
       )
       
       # If all products are compactname, launch a single s2_download() instance
-      if (all(sapply(names(s2_list_l1c), function(x) {
+      if (all(sapply(names(sel_s2_list_l1c), function(x) {
         safe_getMetadata(x, "nameinfo")$version
       }) == "compact")) {
         s2_download(
-          s2_list_l1c[!names(s2_list_l1c) %in% list.files(paths["L1C"], "\\.SAFE$")],
+          sel_s2_list_l1c[!names(sel_s2_list_l1c) %in% list.files(paths["L1C"], "\\.SAFE$")],
           outdir = paths["L1C"],
           downloader = pm$downloader
         )
@@ -1361,7 +1555,7 @@ sen2r <- function(param_list = NULL,
             )
           }
           s2_download(
-            s2_list_l1c, # ask to download all the images, 
+            sel_s2_list_l1c, # ask to download all the images, 
             # and not only the non existing ones,
             # because of the cycle on tiles
             # (with compactname products, all the zips are downloaded
@@ -1387,29 +1581,29 @@ sen2r <- function(param_list = NULL,
     }
     
     # second filter on tiles (#filter2)
-    s2_dt$id_tile <- lapply(
-      file.path(paths[ifelse(s2_dt$level=="1C","L1C","L2A")], s2_dt[,name]), 
+    sel_s2_dt$id_tile <- lapply(
+      file.path(paths[ifelse(sel_s2_dt$level=="1C","L1C","L2A")], sel_s2_dt[,name]), 
       function(x) {
         tryCatch(safe_getMetadata(x, "tiles"), error = function(e) {NULL})
       }
     ) %>%
       sapply(paste, collapse = " ") %>% as.character()
-    if (all(!is.na(pm$s2tiles_selected)) & nrow(s2_dt)>0) {
-      # filter "elegant" using strsplit (fails with empty s2_dt)
-      s2_dt <- s2_dt[sapply(strsplit(s2_dt$id_tile," "), function(x){
+    if (all(!is.na(pm$s2tiles_selected)) & nrow(sel_s2_dt)>0) {
+      # filter "elegant" using strsplit (fails with empty sel_s2_dt)
+      sel_s2_dt <- sel_s2_dt[sapply(strsplit(sel_s2_dt$id_tile," "), function(x){
         any(x %in% pm$s2tiles_selected)
       }),]
       # # filter "ugly" with regexp
-      # s2_dt <- s2_dt[grep(paste0("(",paste(pm$s2tiles_selected,collapse=")|("),")"), s2_dt$id_tile),]
+      # sel_s2_dt <- sel_s2_dt[grep(paste0("(",paste(pm$s2tiles_selected,collapse=")|("),")"), sel_s2_dt$id_tile),]
     }
     
     # remove duplicates (often for different creation dates, or same sensing dates and different sensing hours)
     # (placed here causes downloading more than the required tiles, but it is the only method to be sure not to exclude
     # some products with the required tiles and include others without them)
-    s2_dt <- s2_dt[order(-creation_datetime),]
-    s2_dt <- s2_dt[
+    sel_s2_dt <- sel_s2_dt[order(-creation_datetime),]
+    sel_s2_dt <- sel_s2_dt[
       !duplicated(
-        s2_dt[, list(
+        sel_s2_dt[, list(
           mission,
           level,
           id_orbit,
@@ -1419,32 +1613,32 @@ sen2r <- function(param_list = NULL,
       ),
       ]
     
-    # redefine s2_list_l1c/l2a
-    s2_list_l1c <- s2_dt[level=="1C",url] # list of required L1C
-    s2_list_l2a <- s2_dt[level=="2A",url] # list of required L2A
-    names(s2_list_l1c) <- s2_dt[level=="1C",name]
-    names(s2_list_l2a) <- s2_dt[level=="2A",name]
+    # redefine sel_s2_list_l1c/l2a
+    sel_s2_list_l1c <- sel_s2_dt[level=="1C",url] # list of required L1C
+    sel_s2_list_l2a <- sel_s2_dt[level=="2A",url] # list of required L2A
+    names(sel_s2_list_l1c) <- sel_s2_dt[level=="1C",name]
+    names(sel_s2_list_l2a) <- sel_s2_dt[level=="2A",name]
     
     ## Apply sen2cor
     if (pm$step_atmcorr %in% c("auto","scihub")) {
       
-      s2_list_l1c_tocorrect <- if (pm$overwrite_safe==FALSE) {
-        s2_list_l1c[
+      sel_s2_list_l1c_tocorrect <- if (pm$overwrite_safe==FALSE) {
+        sel_s2_list_l1c[
           !gsub(
             "\\_OPER\\_","_USER_",
             gsub(
               "^S2([AB])\\_((?:OPER\\_PRD\\_)?)MSIL1C\\_","S2\\1\\_\\2MSIL2A\\_",
-              names(s2_list_l1c)
+              names(sel_s2_list_l1c)
             )
-          ) %in% names(s2_list_l2a)
+          ) %in% names(sel_s2_list_l2a)
           ]
       } else {
-        s2_list_l1c
+        sel_s2_list_l1c
       }
       
-      if (length(s2_list_l1c_tocorrect)>0) {
+      if (length(sel_s2_list_l1c_tocorrect)>0) {
         
-        if (sum(!file.path(paths["L1C"],names(s2_list_l1c_tocorrect)) %>% file.exists()) > 0) {
+        if (sum(!file.path(paths["L1C"],names(sel_s2_list_l1c_tocorrect)) %>% file.exists()) > 0) {
           print_message(
             type = "message",
             date = TRUE,
@@ -1453,33 +1647,33 @@ sen2r <- function(param_list = NULL,
           )
         }
         
-        s2_list_l2a_corrected <- sen2cor(
-          names(s2_list_l1c_tocorrect),
+        sel_s2_list_l2a_corrected <- sen2cor(
+          names(sel_s2_list_l1c_tocorrect),
           l1c_dir = paths["L1C"],
           outdir = paths["L2A"],
           tiles = pm$s2tiles_selected,
           parallel = pm$parallel,
           tmpdir = if (Sys.info()["sysname"] == "Windows") {
-            file.path(tmpdir, "sen2cor")
-          } else if (any(attr(mountpoint(tmpdir), "protocol") %in% c("cifs", "nsfs"))) {
+            file.path(tmpdir_groupA, "sen2cor")
+          } else if (any(attr(mountpoint(tmpdir_groupA), "protocol") %in% c("cifs", "nsfs"))) {
             # if tmpdir is on a SAMBA mountpoint over Linux, 
             # use a tmeporary directory different from the specified one
             NA
           } else {
-            file.path(tmpdir, "sen2cor")
+            file.path(tmpdir_groupA, "sen2cor")
           }, 
           .log_message = .log_message, .log_output = .log_output,
           rmtmp = TRUE # SAFE temporary archives are always deleted
         )
-        names(s2_list_l2a_corrected) <- basename(s2_list_l2a_corrected)
-        s2_list_l2a <- c(s2_list_l2a,s2_list_l2a_corrected)
+        names(sel_s2_list_l2a_corrected) <- basename(sel_s2_list_l2a_corrected)
+        sel_s2_list_l2a <- c(sel_s2_list_l2a,sel_s2_list_l2a_corrected)
       }
       
     }
     
     # delete SAFE, if required
     if (!("l1c" %in% pm$s2_levels) & pm$rm_safe %in% c("all","l1c")) {
-      unlink(file.path(paths["L1C"],names(s2_list_l1c_tocorrect)), recursive=TRUE)
+      unlink(file.path(paths["L1C"],names(sel_s2_list_l1c_tocorrect)), recursive=TRUE)
     }
     
     # if no processing is required, stop here # TODO see #TODO3 (end of file)
@@ -1492,24 +1686,24 @@ sen2r <- function(param_list = NULL,
       )
       
       return(invisible(
-        c(file.path(paths["L1C"],names(s2_list_l1c)),
-          file.path(paths["L2A"],names(s2_list_l2a)))
+        c(file.path(paths["L1C"],names(sel_s2_list_l1c)),
+          file.path(paths["L2A"],names(sel_s2_list_l2a)))
       ))
       
     }
     
-  } # end of SAFE dummy FOR cycle
+  # } # end of SAFE dummy FOR cycle
   
-  if (pm$preprocess == FALSE | .only_list_names == TRUE) {
+  if (pm$preprocess == FALSE) {
     return(invisible(NULL))
   }
   
   # update names for output files (after #filter2)
   print_message(type = "message", date = TRUE, "Updating output names...")
-  s2names <- compute_s2_paths(
+  sel_s2names <- compute_s2_paths(
     pm=pm, 
-    s2_list_l1c = if (exists("s2_list_l1c")) {s2_list_l1c} else {character(0)},
-    s2_list_l2a = if (exists("s2_list_l2a")) {s2_list_l2a} else {character(0)},
+    s2_list_l1c = if (exists("sel_s2_list_l1c")) {sel_s2_list_l1c} else {character(0)},
+    s2_list_l2a = if (exists("sel_s2_list_l2a")) {sel_s2_list_l2a} else {character(0)},
     paths=paths, 
     list_prods=list_prods, 
     out_ext=out_ext, index_ext=main_ext, tiles_ext=tiles_ext, merged_ext=merged_ext, 
@@ -1521,18 +1715,16 @@ sen2r <- function(param_list = NULL,
   
   ### GDAL processing: convert SAFE, merge tiles, warp, mask and compute indices ###
   
-  # Create processing groups:
-  # - "by_date": one group per date
-  # - "by_step": a whole single group
-  if (pm$processing_order %in% c("by_date")) {
+  # Create processing groups
+  if (pm$processing_order %in% c(2,"by_date", 3,"mixed", 4,"by_groups")) {
     
     # build groups
-    sen2r_dates <- sort(unique(sen2r_getElements(
-      unlist(s2names[grep("_new",names(s2names))]), format = "data.frame"
-    )$sensing_date))
+    sen2r_dates_B <- sort(unique(nn(sen2r_getElements(
+      unlist(sel_s2names[grep("_new",names(sel_s2names))]), format = "data.frame"
+    )$sensing_date)))
     
-    s2names_groups <- lapply(sen2r_dates, function(d) {
-      sapply(s2names, function(v) {
+    s2names_groups_B <- lapply(sen2r_dates_B, function(d) {
+      sapply(sel_s2names, function(v) {
         tryCatch(
           v[sen2r_getElements(v, format = "data.frame")$sensing_date == d],
           error = function(e) {
@@ -1542,43 +1734,43 @@ sen2r <- function(param_list = NULL,
           })
       }, simplify = FALSE)
     })
-    names(s2names_groups) <- sen2r_dates
+    names(s2names_groups_B) <- sen2r_dates_B
     
-  } else if (pm$processing_order %in% c("by_step")) {
+  } else if (pm$processing_order %in% c(1,"by_step")) {
     
-    s2names_groups <- list(s2names)
+    s2names_groups_B <- list(sel_s2names)
     
   }
   
-  # Initialise foreach cycle
-  # Compute n_cores
-  n_cores <- if (is.numeric(parallel_groups)) {
-    as.integer(parallel_groups)
-  } else if (parallel_groups==FALSE) {
+  # Initialise foreach cycle 2
+  # Compute n_cores_B
+  n_cores_B <- if (is.numeric(parallel_groups_B)) {
+    as.integer(parallel_groups_B)
+  } else if (parallel_groups_B == FALSE) {
     1
   } else {
-    min(parallel::detectCores()-1, length(s2names_groups), 8) # use at most 8 cores
+    min(max_n_cores, length(s2names_groups_B)) # use at most 8 cores
   }
-  if (n_cores<=1) {
-    `%DO%` <- `%do%`
-    n_cores <- 1
+  if (n_cores_B<=1) {
+    `%DO_B%` <- `%do%`
+    n_cores_B <- 1
   } else {
-    `%DO%` <- `%dopar%`
+    `%DO_B%` <- `%dopar%`
     cl <- makeCluster(
-      n_cores, 
+      n_cores_B, 
       type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
     )
     registerDoParallel(cl)
   }
   # Run processing by group
-  outnames_list <- foreach(
-    sel_s2names = s2names_groups, 
-    group_i = seq_along(s2names_groups), 
+  outnames_list_B <- foreach(
+    sel_s2names = s2names_groups_B, 
+    i_group_B = seq_along(s2names_groups_B), 
     .packages = c("sf", "sen2r")
-  ) %DO% {
+  ) %DO_B% {
 
   # redirect to log files
-  if (n_cores > 1) {
+  if (n_cores_B > 1) {
     if (!is.na(.log_output)) {
       sink(.log_output, split = TRUE, type = "output", append = TRUE)
     }
@@ -1588,11 +1780,11 @@ sen2r <- function(param_list = NULL,
     }
   }
     
-  if (length(s2names_groups) > 1) {
+  if (length(s2names_groups_B) > 1) {
     sen2r:::print_message(
       type="message", 
       date=TRUE,
-      "Processing group ",group_i," of ",length(s2names_groups),"..."
+      "Processing group ",i_group_B," of ",length(s2names_groups_B),"..."
     )
   }
     
@@ -1618,7 +1810,7 @@ sen2r <- function(param_list = NULL,
             s2_translate,
             infile = sel_prod,
             outdir = paths["tiles"],
-            tmpdir = file.path(tmpdir, "s2_translate_l1c"), 
+            tmpdir = file.path(tmpdir_groupA, "s2_translate_l1c"), 
             rmtmp = FALSE,
             prod_type = list_l1c_prods,
             format = tiles_outformat,
@@ -1647,7 +1839,7 @@ sen2r <- function(param_list = NULL,
           trace_function(
             s2_translate,
             infile = sel_prod,
-            tmpdir = file.path(tmpdir, "s2_translate_l2a"), 
+            tmpdir = file.path(tmpdir_groupA, "s2_translate_l2a"), 
             rmtmp = FALSE,
             outdir = paths["tiles"],
             prod_type = list_l2a_prods,
@@ -1693,7 +1885,7 @@ sen2r <- function(param_list = NULL,
       infiles = sel_s2names$tiles_names_req[file.exists(sel_s2names$tiles_names_req)], # TODO add warning when sum(!file.exists(sel_s2names$merged_names_new))>0
       outdir = paths["merged"],
       subdirs = pm$path_subdirs,
-      tmpdir = file.path(tmpdir, "s2_merge"), 
+      tmpdir = file.path(tmpdir_groupA, "s2_merge"), 
       rmtmp = FALSE,
       format = merged_outformat,
       parallel = if (merged_outformat=="VRT") {FALSE} else {parallel_steps},
@@ -1761,7 +1953,7 @@ sen2r <- function(param_list = NULL,
             ),
             co = if (warped_outformat=="GTiff") {paste0("COMPRESS=",pm$compression)},
             overwrite = pm$overwrite,
-            tmpdir = file.path(tmpdir, "gdal_warp"), 
+            tmpdir = file.path(tmpdir_groupA, "gdal_warp"), 
             rmtmp = FALSE
           ), # TODO dstnodata value?
           error = print
@@ -1789,7 +1981,7 @@ sen2r <- function(param_list = NULL,
             ),
             co = if (out_outformat=="GTiff") {paste0("COMPRESS=",pm$compression)},
             overwrite = pm$overwrite,
-            tmpdir = file.path(tmpdir, "gdal_warp"), 
+            tmpdir = file.path(tmpdir_groupA, "gdal_warp"), 
             rmtmp = FALSE
           ), # TODO dstnodata value?
           error = print
@@ -1886,7 +2078,7 @@ sen2r <- function(param_list = NULL,
           mask_type = pm$mask_type,
           max_mask = pm$max_mask,
           outdir = paths["out"],
-          tmpdir = file.path(tmpdir, "s2_mask"),
+          tmpdir = file.path(tmpdir_groupA, "s2_mask"),
           rmtmp = FALSE,
           format = out_outformat,
           compress = pm$compression,
@@ -1911,7 +2103,7 @@ sen2r <- function(param_list = NULL,
           buffer = pm$mask_buffer,
           max_mask = pm$max_mask,
           outdir = paths["out"],
-          tmpdir = file.path(tmpdir, "s2_mask"), 
+          tmpdir = file.path(tmpdir_groupA, "s2_mask"), 
           rmtmp = FALSE,
           format = sr_masked_outformat,
           compress = pm$compression,
@@ -1960,7 +2152,7 @@ sen2r <- function(param_list = NULL,
       subdirs = pm$path_subdirs,
       format = pm$rgb_outformat,
       compress = pm$rgb_compression,
-      tmpdir = file.path(tmpdir, "s2_rgb"),
+      tmpdir = file.path(tmpdir_groupA, "s2_rgb"),
       rmtmp = FALSE,
       parallel = parallel_steps,
       overwrite = pm$overwrite,
@@ -1988,7 +2180,7 @@ sen2r <- function(param_list = NULL,
       indices = pm$list_indices,
       outdir = paths["indices"],
       subdirs = pm$path_subdirs,
-      tmpdir = file.path(tmpdir, "s2_calcindices"),
+      tmpdir = file.path(tmpdir_groupA, "s2_calcindices"),
       source = pm$index_source,
       format = pm$outformat,
       dataType = pm$index_datatype,
@@ -2069,7 +2261,7 @@ sen2r <- function(param_list = NULL,
     "masked_names_new", "out_names_new", "rgb_names_new", "indices_names_new"
   )]))
   # exclude temporary files
-  names_out <- names_out[!grepl(tmpdir, names_out, fixed=TRUE)]
+  names_out <- names_out[!grepl(tmpdir_groupA, names_out, fixed=TRUE)]
   names_out_created <- names_out[file.exists(nn(names_out))]
   
   
@@ -2106,7 +2298,7 @@ sen2r <- function(param_list = NULL,
       thumb_names_out <- trace_function(
         s2_thumbnails,
         infiles = thumb_names_req,
-        tmpdir = file.path(tmpdir, "s2_thumbnails"), 
+        tmpdir = file.path(tmpdir_groupA, "s2_thumbnails"), 
         rmtmp = FALSE,
         trace_files = c(thumb_names_new,paste0(thumb_names_new,".aux.xml"))
       )
@@ -2116,7 +2308,7 @@ sen2r <- function(param_list = NULL,
   } # end of thumbnails IF cycle
   
   # stop sinking
-  if (n_cores > 1) {
+  if (n_cores_B > 1) {
     if (!is.na(.log_output)) {
       sink(type = "output")
     }
@@ -2136,27 +2328,53 @@ sen2r <- function(param_list = NULL,
     ))
   )
   
-  } # end of s2names_groups FOREACH cycle
-  if (n_cores > 1) {
+  } # end of s2names_groups_B FOREACH cycle
+  if (n_cores_B > 1) {
     stopCluster(cl)
   }
-  names_out <- as.vector(unlist(lapply(outnames_list, function(x){x$out})))
-  names_out_created <- as.vector(unlist(lapply(outnames_list, function(x){x$out_created})))
-  names_cloudcovered <- as.vector(unlist(lapply(outnames_list, function(x){x$cloudcovered})))
-  
+
   ## 10. remove temporary files
   if (rmtmp == TRUE) {
-    unlink(tmpdir, recursive=TRUE)
+    unlink(tmpdir_groupA, recursive=TRUE)
   }
   # delete SAFE, if required
   if (pm$rm_safe == "all") {
-    unlink(file.path(paths["L1C"],names(s2_list_l1c)), recursive=TRUE)
-    unlink(file.path(paths["L2A"],names(s2_list_l2a)), recursive=TRUE)
+    unlink(file.path(paths["L1C"],names(sel_s2_list_l1c)), recursive=TRUE)
+    unlink(file.path(paths["L2A"],names(sel_s2_list_l2a)), recursive=TRUE)
   } else if (pm$rm_safe == "l1c") {
-    unlink(file.path(paths["L1C"],names(s2_list_l1c)), recursive=TRUE)
+    unlink(file.path(paths["L1C"],names(sel_s2_list_l1c)), recursive=TRUE)
   }
   
+  if (n_cores_A > 1) {
+    stopCluster(cl)
+  }
+  list(
+    "out" = as.vector(unlist(lapply(outnames_list_B, function(x){x$out}))),
+    "out_created" = as.vector(unlist(lapply(outnames_list_B, function(x){x$out_created}))),
+    "cloudcovered" = as.vector(unlist(lapply(outnames_list_B, function(x){x$cloudcovered})))
+  )
+
+  } # end of s2names_groups_A FOREACH 2/2 cycle (2 cycles)
+  if (pm$preprocess == FALSE | .only_list_names == TRUE) {
+    outnames_list_A2
+  } else {
+    list(
+      "out" = as.vector(unlist(lapply(outnames_list_A2, function(x){x$out}))),
+      "out_created" = as.vector(unlist(lapply(outnames_list_A2, function(x){x$out_created}))),
+      "cloudcovered" = as.vector(unlist(lapply(outnames_list_A2, function(x){x$cloudcovered})))
+    )
+  }
+  
+  } # end of s2names_groups_A FOREACH 1/2 cycle (2 cycles)
+
+  if (pm$preprocess == FALSE | .only_list_names == TRUE) {
+    return(unlist(outnames_list_A1))
+  }
+    
   # check if some files were not created
+  names_out <- as.vector(unlist(lapply(outnames_list_A1, function(x){x$out})))
+  names_out_created <- as.vector(unlist(lapply(outnames_list_A1, function(x){x$out_created})))
+  names_cloudcovered <- as.vector(unlist(lapply(outnames_list_A1, function(x){x$cloudcovered})))
   names_missing <- names_out[!file.exists(nn(names_out))]
   names_missing <- names_missing[!names_missing %in% names_cloudcovered]
   names_cloudcovered <- names_cloudcovered[!grepl(tmpdir, names_cloudcovered, fixed=TRUE)]
