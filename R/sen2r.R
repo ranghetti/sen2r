@@ -2201,7 +2201,7 @@ sen2r <- function(param_list = NULL,
   }
   
   # If some input file is not present due to higher cloud coverage,
-  # build the names of the indices / RGB images not created for the same reason
+  # build the names of the indices not created for the same reason
   if (exists("masked_names_notcreated")) {
     if (length(masked_names_notcreated)>0 & length(sel_s2names$out_names_req)>0) {
       indices_names_notcreated <- data.table(
@@ -2225,33 +2225,33 @@ sen2r <- function(param_list = NULL,
         }) %>%
         file.path(paths["indices"],.) %>%
         gsub(paste0(merged_ext,"$"),out_ext,.)
-      rgb_names_notcreated <- data.table(
-        sen2r_getElements(masked_names_notcreated, format="data.frame")
-      )[prod_type %in% c("BOA","TOA"),
-        paste0("S2",
-               mission,
-               level,"_",
-               strftime(sensing_date,"%Y%m%d"),"_",
-               id_orbit,"_",
-               if (pm$clip_on_extent==TRUE) {pm$extent_name},"_",
-               "<rgb",substr(prod_type,1,1),">_",
-               substr(res,1,2),".",
-               out_ext)] %>%
-        expand.grid(pm$list_rgb) %>%
-        apply(1,function(x) {
-          # consider only if sources (BOA/TOA) are coherent
-          if (gsub("^.+<rgb([BT])>.+$","\\1",x[1]) == substr(x[2],7,7)) {
-            file.path(
-              if(pm$path_subdirs==TRUE){x[2]}else{""},
-              gsub("<rgb[BT]>",x[2],x[1])
-            )
-          } else {
-            character(0)
-          }
-        }) %>%
-        unlist() %>%
-        file.path(paths["rgb"],.) %>%
-        gsub(paste0(merged_ext,"$"),out_ext,.)
+      # rgb_names_notcreated <- data.table(
+      #   sen2r_getElements(masked_names_notcreated, format="data.frame")
+      # )[prod_type %in% c("BOA","TOA"),
+      #   paste0("S2",
+      #          mission,
+      #          level,"_",
+      #          strftime(sensing_date,"%Y%m%d"),"_",
+      #          id_orbit,"_",
+      #          if (pm$clip_on_extent==TRUE) {pm$extent_name},"_",
+      #          "<rgb",substr(prod_type,1,1),">_",
+      #          substr(res,1,2),".",
+      #          out_ext)] %>%
+      #   expand.grid(pm$list_rgb) %>%
+      #   apply(1,function(x) {
+      #     # consider only if sources (BOA/TOA) are coherent
+      #     if (gsub("^.+<rgb([BT])>.+$","\\1",x[1]) == substr(x[2],7,7)) {
+      #       file.path(
+      #         if(pm$path_subdirs==TRUE){x[2]}else{""},
+      #         gsub("<rgb[BT]>",x[2],x[1])
+      #       )
+      #     } else {
+      #       character(0)
+      #     }
+      #   }) %>%
+      #   unlist() %>%
+      #   file.path(paths["rgb"],.) %>%
+      #   gsub(paste0(merged_ext,"$"),out_ext,.)
     }
   }
   
@@ -2323,8 +2323,8 @@ sen2r <- function(param_list = NULL,
     "out_created" = names_out_created,
     "cloudcovered" = nn(c(
       if(exists("masked_names_notcreated")) {masked_names_notcreated},
-      if(exists("indices_names_notcreated")) {indices_names_notcreated},
-      if(exists("rgb_names_notcreated")) {rgb_names_notcreated}
+      if(exists("indices_names_notcreated")) {indices_names_notcreated}#,
+      # if(exists("rgb_names_notcreated")) {rgb_names_notcreated}
     ))
   )
   
