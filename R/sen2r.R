@@ -1373,7 +1373,7 @@ sen2r <- function(param_list = NULL,
     apihubs <- read_scihub_login(pm$apihub)
     n_apihubs <- min(nrow(apihubs), length(s2names_groups_A)) # this because
     # it takes no sense to use more apihubs than groups
-    if (n_apihubs > 1 & pm$processing_order %in% c(4,"by_groups")) {
+    if (n_apihubs > 1 & pm$processing_order %in% c(2,"by_date")) {
       pm$apihub <- file.path(tmpdir,paste0("apihub_",seq_len(n_apihubs),".txt"))
       for (i in seq_len(n_apihubs)) {
         write_scihub_login(apihubs[i,1], apihubs[i,2], pm$apihub[i], append = FALSE)
