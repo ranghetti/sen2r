@@ -361,14 +361,14 @@ s2_mask <- function(infiles,
         # create global mask
         mask_tmpfiles <- character(0) # files which compose the mask
         naval_tmpfiles <- character(0) # files which determine the amount of NA
-        for (i in seq_along(inmask@layers)) {
+        for (j in seq_along(inmask@layers)) {
           mask_tmpfiles <- c(
             mask_tmpfiles,
             file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
           )
-          raster::calc(inmask[[i]],
-                       function(x){as.integer(!is.na(nn(x)) & !x %in% req_masks[[i]])},
-                       filename = mask_tmpfiles[i],
+          raster::calc(inmask[[j]],
+                       function(x){as.integer(!is.na(nn(x)) & !x %in% req_masks[[j]])},
+                       filename = mask_tmpfiles[j],
                        options  = "COMPRESS=LZW",
                        datatype = "INT1U",
                        overwrite = TRUE)
@@ -376,9 +376,9 @@ s2_mask <- function(infiles,
             naval_tmpfiles,
             file.path(sel_tmpdir, basename(tempfile(pattern = "naval_", fileext = ".tif")))
           )
-          raster::calc(inmask[[i]],
+          raster::calc(inmask[[j]],
                        function(x){as.integer(!is.na(nn(x)))},
-                       filename = naval_tmpfiles[i],
+                       filename = naval_tmpfiles[j],
                        options  = "COMPRESS=LZW",
                        datatype = "INT1U")
         }
@@ -563,14 +563,14 @@ s2_mask <- function(infiles,
               # raster::rasterOptions(chunksize = 3e08)
               bs <- blockSize(out, minblocks = 8)
               # if (parallel) bs <- blockSize(out, n = bs$n * n_cores)
-              for (i in seq_len(bs$n)) {
-                message("Processing chunk ", i, " of ", bs$n)
+              for (j in seq_len(bs$n)) {
+                message("Processing chunk ", j, " of ", bs$n)
                 
-                m   <- raster::getValuesBlock(y, row = bs$row[i], nrows = bs$nrows[i])
-                v   <- raster::getValuesBlock(x, row = bs$row[i], nrows = bs$nrows[i])
+                m   <- raster::getValuesBlock(y, row = bs$row[j], nrows = bs$nrows[j])
+                v   <- raster::getValuesBlock(x, row = bs$row[j], nrows = bs$nrows[j])
                 v[m == 0] <- NA
                 
-                out <- writeValues(out, v, bs$row[i])
+                out <- writeValues(out, v, bs$row[j])
                 gc()
               }
               out <- writeStop(out)
