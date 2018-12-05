@@ -30,7 +30,7 @@ Before installing <span style="color:#5793dd;vertical-align:top;font-size:90%;fo
 - [GDAL](https://www.gdal.org), [PROJ](https://proj4.org) and [GEOS](https://trac.osgeo.org/geos)
     (required by [rgdal](https://r-forge.r-project.org/projects/rgdal)
     and [rgeos](https://r-forge.r-project.org/projects/rgeos));
-- [libjq](https://stedolan.github.io/jq)
+- [jq](https://stedolan.github.io/jq)
     (required by [jqr](https://github.com/ropensci/jqr));
 - [protobuf](https://github.com/protocolbuffers/protobuf)
     (required by [protolite](https://github.com/jeroen/protolite));
@@ -60,7 +60,7 @@ Other binaries are required (or suggested), since they are used in runtime by th
     can be used to faster the download of SAFE archives; it can be optionally
     installed and used.
 
-To install both package dependencies and runtime binaries:
+To install both package dependencies and runtime binaries (excepting **sen2cor**, which is installed by <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>):
 
 - On Debian and Ubuntu:
     ```{bash, eval = FALSE}

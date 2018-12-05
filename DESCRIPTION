@@ -42,8 +42,7 @@ Imports:
   foreach,
   parallel,
   doParallel,
-  units,
-  lwgeom
+  units
 Suggests:
   knitr,
   rmarkdown

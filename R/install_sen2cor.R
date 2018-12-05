@@ -11,7 +11,7 @@
 #' @note License: GPL 3.0
 #' @importFrom jsonlite toJSON fromJSON
 #' @importFrom utils download.file unzip
-#' @importFrom magrittr '%>%'
+#' @importFrom magrittr "%>%"
 #' @importFrom stringr str_pad
 #' @export
 #' @examples \dontrun{
