@@ -1,7 +1,7 @@
 Package: sen2r
 Type: Package
 Title: An R toolbox to find, download and preprocess Sentinel-2 data
-Version: 0.3.3
+Version: 0.3.4
 Authors@R: c(person("Luigi", "Ranghetti", 
                     email = "ranghetti.l@irea.cnr.it", 
                     role = c("aut", "cre"), 
