@@ -5,7 +5,9 @@
     -   [Usage](#usage)
     -   [Credits](#credits)
 
-[![Travis-CI Build Status](https://travis-ci.org/ranghetti/sen2r.svg?branch=master)](https://travis-ci.org/ranghetti/sen2r) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1240384.svg)](https://doi.org/10.5281/zenodo.1240384) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/sen2r)](https://cran.r-project.org/package=sen2r) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
+<!-- IMPORTANT: do NOT edit README.Rmd! Edit index.Rmd instead,       -->
+<!-- and generate README.Rmd using inst/extdata/code/create_README.sh -->
+[![Travis-CI Build Status](https://travis-ci.org/ranghetti/sen2r.svg?branch=master)](https://travis-ci.org/ranghetti/sen2r) [![Docker Build Status](https://img.shields.io/docker/build/ranghetti/sen2r.svg)](https://hub.docker.com/r/ranghetti/sen2r) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1240384.svg)](https://doi.org/10.5281/zenodo.1240384) [![CRAN Status](http://www.r-pkg.org/badges/version/sen2r)](https://cran.r-project.org/package=sen2r) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
 <img src="man/figures/sen2r_logo_200px.png" width="200" height="113" align="right" />
 
@@ -29,7 +31,7 @@ The possibility to launch the processing with a set of parameters saved in a JSO
 Warning
 -------
 
-This package is under construction (current version is [pre-release 0.3.3](https://github.com/ranghetti/sen2r/releases/tag/v0.3.3)). Please refer to the [crontab of release 0.4.0](https://github.com/ranghetti/sen2r/milestone/3) to know which implementations should already be performed.
+This package is under construction (current version is [pre-release 0.3.4](https://github.com/ranghetti/sen2r/releases/tag/v0.3.4)). Please refer to the [crontab of release 0.4.0](https://github.com/ranghetti/sen2r/milestone/3) to know which implementations should already be performed.
 
 Installation
 ------------
@@ -90,14 +92,14 @@ The [<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:nor
 
 To cite this library, please use the following entry:
 
-Ranghetti, L. and Busetto, L. (2018). *sen2r: an R toolbox to find, download and preprocess Sentinel-2 data*. R package version 0.3.3. DOI: [10.5281/zenodo.1240384](https://ranghetti.github.io/sen2r).
+Ranghetti, L. and Busetto, L. (2018). *sen2r: an R toolbox to find, download and preprocess Sentinel-2 data*. R package version 0.3.4. DOI: [10.5281/zenodo.1240384](https://ranghetti.github.io/sen2r).
 
 ``` bibtex
 @Manual{sen2r,
   title  = {sen2r: an R toolbox to find, download and preprocess Sentinel-2 data},
   author = {Luigi Ranghetti and Lorenzo Busetto},
   year   = {2018},
-  note   = {R package version 0.3.3},
+  note   = {R package version 0.3.4},
   doi    = {10.5281/zenodo.1240384},
   url    = {https://ranghetti.github.io/sen2r},
 }
