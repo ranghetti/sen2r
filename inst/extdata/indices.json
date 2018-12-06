@@ -236,15 +236,6 @@
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mrow>\n   <mn>2.5<\/mn>\n   <mo>&amp;InvisibleTimes;<\/mo>\n   <mfrac>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mi mathcolor=\"#443399\">NIR<\/mi>\n       <mo>-<\/mo>\n       <mi mathcolor=\"#443399\">RED<\/mi>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mrow>\n        <mo>(<\/mo>\n        <mrow>\n         <mrow>\n          <mi mathcolor=\"#443399\">NIR<\/mi>\n          <mo>+<\/mo>\n          <mrow>\n           <mrow>\n            <mn>6<\/mn>\n            <mo>&amp;InvisibleTimes;<\/mo>\n            <mi mathcolor=\"#443399\">RED<\/mi>\n           <\/mrow>\n           <mo>-<\/mo>\n           <mrow>\n            <mn>7.5<\/mn>\n            <mo>&amp;InvisibleTimes;<\/mo>\n            <mi mathcolor=\"#443399\">BLUE<\/mi>\n           <\/mrow>\n          <\/mrow>\n         <\/mrow>\n        <\/mrow>\n        <mo>)<\/mo>\n       <\/mrow>\n       <mo>+<\/mo>\n       <mn>1<\/mn>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n   <\/mfrac>\n  <\/mrow>\n <\/mrow>\n<\/math>"
     },
     {
-      "n_index": 33,
-      "longname": "Enhanced Vegetation Index 2",
-      "name": "EVI2",
-      "link": "http://www.indexdatabase.de/db/i-single.php?id=237",
-      "s2_formula": "2.4*(band_8-band_4)/(band_8+band_4+1)",
-      "checked": true,
-      "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mrow>\n   <mn>2.4<\/mn>\n   <mo>&amp;InvisibleTimes;<\/mo>\n   <mfrac>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mi mathcolor=\"#443399\">NIR<\/mi>\n       <mo>-<\/mo>\n       <mi mathcolor=\"#443399\">RED<\/mi>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mi mathcolor=\"#443399\">NIR<\/mi>\n       <mo>+<\/mo>\n       <mrow>\n        <mi mathcolor=\"#443399\">RED<\/mi>\n        <mo>+<\/mo>\n        <mn>1<\/mn>\n       <\/mrow>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n   <\/mfrac>\n  <\/mrow>\n <\/mrow>\n<\/math>"
-    },
-    {
       "n_index": 34,
       "longname": "Enhanced Vegetation Index 2 -2",
       "name": "EVI2",
@@ -1885,5 +1876,5 @@
     }
   ],
   "pkg_version": ["0.3.3"],
-  "creation_date": ["2018-10-24 11:00:35"]
+  "creation_date": ["2018-11-26 14:23:32"]
 }

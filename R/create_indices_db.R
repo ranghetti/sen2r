@@ -117,14 +117,21 @@ create_indices_db <- function(xslt_path = NA,
   # replacing duplicated indices
   n_index_toremove <- c(
     n_index_toremove,
-    s2_table[longname %in% c("RDVI","RDVI2","Normalized Difference NIR/Green Green NDVI"),n_index])
+    s2_table[longname %in% c(
+      "RDVI",
+      "RDVI2",
+      "Normalized Difference NIR/Green Green NDVI",
+      "Enhanced Vegetation Index 2"
+    ),n_index])
   # (duplicated_indices <- unique(s2_table$name[duplicated(s2_table$name)]))
   # removing indices with incorrect formulas
   n_index_toremove <- c(
     n_index_toremove,
-    s2_table[name %in% c("CRI550","CRI700","GEMI","IR550","IR700","LWCI","mCRIG","mCRIRE","CCCI","Ctr6",
-                         "ND800:680","NLI","RARSa1","RARSa2","RARSa3","RARSa4","RARSc3","RARSc4",
-                         "mARI","NDVIc","RSR","SRSWIRI:NIR","SARVI","SQRT(IR:R)","TNDVI"),n_index]) # TODO some indices can be reintegrated
+    s2_table[name %in% c(
+      "CRI550","CRI700","GEMI","IR550","IR700","LWCI","mCRIG","mCRIRE","CCCI","Ctr6",
+      "ND800:680","NLI","RARSa1","RARSa2","RARSa3","RARSa4","RARSc3","RARSc4",
+      "mARI","NDVIc","RSR","SRSWIRI:NIR","SARVI","SQRT(IR:R)","TNDVI"
+    ),n_index]) # TODO some indices can be reintegrated
   # clean
   n_index_toremove <- sort(as.integer(n_index_toremove))
   s2_formula_mathml <- s2_formula_mathml[!s2_table$n_index %in% n_index_toremove]

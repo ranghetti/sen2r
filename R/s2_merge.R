@@ -180,7 +180,7 @@ s2_merge <- function(infiles,
     ref_file <- file.path(tmpdir,".ref_grid.vrt")
     system(
       paste0(
-        binpaths$gdaliwarp," ",
+        binpaths$gdalwarp," ",
         "-overwrite ",
         "-s_srs \"",infiles_meta[1,"proj4string"],"\" ",
         "-t_srs \"",out_crs,"\" ",

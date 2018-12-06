@@ -52,6 +52,14 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   
   # TODO check package version and parameter names
   
+  # check processing_order
+  if (length(nn(pm$processing_order) > 0)) {
+    if (pm$preprocess == FALSE) {
+      pm$processing_order <- "by_step"
+      # in case no preprocessing is required, "by_step" is the only accepted value
+    }
+  }
+  
   # check timewindow
   if (!anyNA(pm$timewindow)) {
     if (length(pm$timewindow)==1) {

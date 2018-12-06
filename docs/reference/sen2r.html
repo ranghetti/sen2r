@@ -140,7 +140,8 @@ descriptions of all the other parameters).</p>
   <span class='kw'>path_l1c</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_l2a</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_merged</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>path_out</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_rgb</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>path_subdirs</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>thumbnails</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>use_python</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>log</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+  <span class='kw'>processing_order</span> <span class='kw'>=</span> <span class='st'>"by_step"</span>, <span class='kw'>use_python</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>log</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -535,6 +536,33 @@ possible (e.g. <code>parallel = 4</code>).
 If FALSE, the processing chain is forced to run with a single core
 (this can be useful if multiple sen2r instances are run in parallel).
 This argument can be set only in commandline mode, not using the GUI.</p></td>
+    </tr>
+    <tr>
+      <th>processing_order</th>
+      <td><p>(optional) Character string:</p><ul>
+<li><p>"1" or "by_step" (default) is the legacy mode, in which download and processing
+(merging tiles, warping, masking clouds, etc.) are performed step by step.
+If <code>parallel = TRUE</code>, parallelisation is applied within each step
+(when internal functions can manage it).
+This is the only accepted value in case <code>preprocess = FALSE</code>.</p></li>
+<li><p>"2" or "by_date" is a new experimental mode in which output products are grouped
+by sensing date; download and processing are performed date by date.
+Parallelisation is performed like in mode 1 (within each step).
+Although this is slightly slower than mode 1, it allow to delete SAFE
+products and/or temporary files after each date, so it is suitable
+for machines in which disk space is limited.</p></li>
+<li><p>"3" or "mixed" is another experimental mode in which download and atmospheric
+correction are performed first; then, processing (merging tiles,
+warping, masking clouds, etc.) is performed step by step.
+If <code>parallel = TRUE</code>, <code>sen2cor</code> is first parallelised (one core per
+SAFE), then one core per group is used for processing steps.
+This mode is normally the faster one.</p></li>
+<li><p>"4" or "by_groups" is similar to mode 2, but groups are larger (groups of
+n dates, where n is the number of cores which is used).
+Parallelisation is performed like in mode 3 within each group.
+It allows to take advantages both from speeding-up of mode 3 (although
+slightly slower) and better disk space managing of mode 2.</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>use_python</th>

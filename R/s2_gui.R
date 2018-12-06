@@ -1311,10 +1311,11 @@ s2_gui <- function(param_list = NULL,
     observeEvent(input$scihub, {
       
       # open the modalDialog
-      showModal(scihub_modal(
-        username = if(!is.null(input$scihub_username)){input$scihub_username}else{NA},
-        password = if(!is.null(input$scihub_password)){input$scihub_password}else{NA}
-      ))
+      # showModal(.scihub_modal(
+      #   username = if(!is.null(input$scihub_username)){input$scihub_username}else{NA},
+      #   password = if(!is.null(input$scihub_password)){input$scihub_password}else{NA}
+      # ))
+      showModal(.scihub_modal())
       
       # dummy variable to define which save button has to be used
       output$switch_save_apihub <- renderText({
@@ -1355,7 +1356,8 @@ s2_gui <- function(param_list = NULL,
     observeEvent(input$save_apihub, {
       write_scihub_login(
         input$scihub_username, input$scihub_password, 
-        apihub_path = if(!is.na(rv$apihub_path)){as.character(rv$apihub_path)}else{NA}
+        apihub_path = if(!is.na(rv$apihub_path)){as.character(rv$apihub_path)}else{NA},
+        append = input$apihub_multiple
       )
       removeModal()
     })
@@ -3082,7 +3084,7 @@ s2_gui <- function(param_list = NULL,
       rl$s2orbits_selected <- NA # temporary select all orbits (TODO implement)
       
       # product selection #
-      rl$list_prods <- input$list_prods[!input$list_prods %in% "indices"] # TOA, BOA, SCL, TCI (for now)
+      rl$list_prods <- input$list_prods[!input$list_prods %in% c("indices","rgbimages")] # TOA, BOA, SCL, TCI (for now)
       rl$list_indices <- if (indices_req()==TRUE & "indices" %in% input$list_prods) {input$list_indices} else {NA} # index names
       rl$list_rgb <- if (rgb_req()==TRUE & "rgbimages" %in% input$list_prods) {input$list_rgbimages} else {NA} # RGB images names
       rl$rgb_ranges <- if (rgb_req()==TRUE & "rgbimages" %in% input$list_prods) {
