@@ -2201,7 +2201,7 @@ sen2r <- function(param_list = NULL,
   }
   
   # If some input file is not present due to higher cloud coverage,
-  # build the names of the indices not created for the same reason
+  # build the names of the indices / RGB images not created for the same reason
   if (exists("masked_names_notcreated")) {
     if (length(masked_names_notcreated)>0 & length(sel_s2names$out_names_req)>0) {
       indices_names_notcreated <- data.table(
