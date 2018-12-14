@@ -1357,7 +1357,8 @@ s2_gui <- function(param_list = NULL,
       write_scihub_login(
         input$scihub_username, input$scihub_password, 
         apihub_path = if(!is.na(rv$apihub_path)){as.character(rv$apihub_path)}else{NA},
-        append = input$apihub_multiple
+        # append = input$apihub_multiple # removed after disabling apihub multiple login from the gui
+        append = FALSE
       )
       removeModal()
     })
