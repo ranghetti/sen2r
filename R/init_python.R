@@ -64,7 +64,7 @@ init_python <- function() {
     if (!pythonhome_exi %in% pythonhome_new) {
       Sys.setenv(PYTHONHOME = pythonhome_new)
     }
-    pythonpath_new <- normalize_path(list.files(pythonhome_new,"^Lib",full.names=TRUE))
+    pythonpath_new <- normalize_path(list.files(pythonhome_new,"^[Ll]ib",full.names=TRUE))[1]
     pythonpath_exi <- normalize_path(Sys.getenv("PYTHONPATH"))
     if (!pythonpath_exi %in% pythonpath_new) {
       Sys.setenv(PYTHONPATH = pythonpath_new)
