@@ -937,9 +937,6 @@ sen2r <- function(param_list = NULL,
     
   }
   
-  for (dummy in TRUE) {
-    # dummy cycle, created only to allow "break" from this part
-    
     ### Find SAFE and compute the names of required files ###
     
     ## 2. List required products ##
@@ -1021,38 +1018,22 @@ sen2r <- function(param_list = NULL,
     s2_list <- unlist(s2_lists)[!duplicated(unlist(lapply(s2_lists, names)))]
     rm(s2_lists)
     
-    # if s2_list is empty, exit 
-    if (length(s2_list)==0) {
-      print_message(
-        type = "message",
-        date = TRUE,
-        "No SAFE products found with the parameters set ",
-        "(the searching parameters may be too restrictive, ",
-        "or the Copernicus Open Access Hub could be unavailable)."
-      )
-      break
-      # return(invisible(NULL))
-    }
-    
-    names(s2_list) <- gsub("^l[12][ac]\\.","",names(s2_list))
-    
     # If s2_list is empty, exit
     if (length(s2_list)==0) {
       print_message(
         type = "message",
         date = TRUE,
         if (pm$online==FALSE) {
-          paste0("No SAFE products which match the settings were found locally;\n ",
-                 "please download them or set different spatial/temporal extents.\n",
-                 "Execution halted.")
+          "No SAFE products which match the settings were found locally."
         } else {
-          paste0("No SAFE products matching the settings were found.")
+          "No SAFE products matching the settings were found."
         }
       )
-      break
-      # return(invisible(NULL))
     }
     
+    if (length(nn(s2_list))>0) {
+      names(s2_list) <- gsub("^l[12][ac]\\.","",names(s2_list))
+    }
     
     ## Searching for existing local SAFE equivalent to online ones
     # (SAFE with the same metadata, except from baseline and ingestion date)
@@ -1064,7 +1045,14 @@ sen2r <- function(param_list = NULL,
         as.data.frame(stringsAsFactors=FALSE)
     }) %>%
       rbindlist(fill=TRUE)
-    s2_dt[,c("name","url"):=list(names(s2_list),s2_list)]
+    if (nrow(s2_dt)==0) {
+      # generate column names for empty dt (to avoid errors)
+      s2_dt <- as.data.table(safe_getMetadata(
+        "S2A_MSIL2A_20000101T000000_N0200_R001_T01TAA_20000101T000000.SAFE", 
+        info="nameinfo"
+      ), stringsAsFactors = FALSE)[-1,]
+    }
+    s2_dt[,c("name","url"):=list(nn(names(s2_list)),nn(s2_list))]
     s2_dt[,c("sensing_datetime","creation_datetime"):=
             list(as.POSIXct(sensing_datetime, format="%s"),
                  as.POSIXct(creation_datetime, format="%s"))]
@@ -1189,26 +1177,6 @@ sen2r <- function(param_list = NULL,
       s2_list_l2a_exp <- s2_list_l2a
     }
     
-    # If s2_list is empty, exit (second time)
-    if (nrow(s2_dt)==0) {
-      print_message(
-        type = "message",
-        date = TRUE,
-        if (pm$online==FALSE) {
-          paste0("No SAFE products which match the settings were found locally; ",
-                 "please download them or set different tile or orbit IDs.\n",
-                 "Execution halted."
-          )
-        } else {
-          paste0("No SAFE products matching the settings were found.")
-        }
-      )
-      break
-      # return(invisible(NULL))
-    }
-    
-    
-    
     # if preprocess is required, define output names
     if (pm$preprocess == TRUE) {  
       
@@ -1250,13 +1218,27 @@ sen2r <- function(param_list = NULL,
         "indices_names_new", "rgb_names_new", "out_names_new", "masked_names_new", 
         "warped_names_new", "merged_names_new", "tiles_names_new"
       )], length) == 0)) {
-        print_message(
-          type = "message",
-          date = TRUE,
-          "All the required output files already exist; nothing to do.\n ",
-          "To reprocess, run sen2r() with the argument overwrite = TRUE\n ",
-          "or specify a different output directory."
-        )
+        if (all(sapply(s2names[c(
+          "indices_names_exp", "rgb_names_exp", "out_names_exp", "masked_names_exp", 
+          "warped_names_exp", "merged_names_exp", "tiles_names_exp"
+        )], length) == 0)) {
+          print_message(
+            type = "message",
+            date = TRUE,
+            "No output products matching the settings were found; \nplease ",
+            if (pm$online == FALSE) {"try in online mode, \nor "},
+            "specify less restrictive settings."
+          )
+        } else {
+          print_message(
+            type = "message",
+            date = TRUE,
+            "All the required output files already exist; nothing to do.\n",
+            "To reprocess, run sen2r() with the argument overwrite = TRUE,\nor ",
+            if (pm$online == FALSE) {"try running sen2r() in online mode, or "},
+            "specify a different output directory."
+          )
+        }
         return(invisible(NULL))
       }
       
@@ -1385,8 +1367,6 @@ sen2r <- function(param_list = NULL,
       }
     }
     # they will be used in case of parallel execution of groups_A
-
-  } # end of SAFE dummy FOR cycle
 
     # Initialise foreach cycle A
     # Compute n_cores
@@ -1692,7 +1672,6 @@ sen2r <- function(param_list = NULL,
       
     }
     
-  # } # end of SAFE dummy FOR cycle
   
   if (pm$preprocess == FALSE) {
     return(invisible(NULL))
