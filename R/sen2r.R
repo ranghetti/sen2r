@@ -1352,7 +1352,7 @@ sen2r <- function(param_list = NULL,
     }
 
     # Define n_apihubs, being the number of product groups within each group_A
-    apihubs <- read_scihub_login(pm$apihub)
+    apihubs <- read_scihub_login(if (length(nn(pm$apihub) > 0)) {pm$apihub} else {NA})
     n_apihubs <- min(nrow(apihubs), length(s2names_groups_A)) # this because
     # it takes no sense to use more apihubs than groups
     if (n_apihubs > 1 & pm$processing_order %in% c(2,"by_date")) {
