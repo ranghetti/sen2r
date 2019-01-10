@@ -1365,6 +1365,8 @@ sen2r <- function(param_list = NULL,
       parallel_groups_B <- FALSE
       parallel_steps <- FALSE
     }
+  } else {
+    pm$apihub <- apihubs[1,]
   }
   # they will be used in case of parallel execution of groups_A
   

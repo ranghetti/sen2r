@@ -3154,11 +3154,13 @@ s2_gui <- function(param_list = NULL,
                                "outformat" %in% input$reference_usefor,
                              reference()$outformat,
                              input$outformat)
+      rl$rgb_outformat <- rl$outformat # TODO add a widget to set it
       rl$index_datatype <- input$index_datatype
       # output compression ("LZW", "DEFLATE" etc.)
       rl$compression <- ifelse(rl$outformat=="GTiff",
                                input$compression,
                                NA)
+      rl$rgb_compression <- rl$compression # TODO add a widget to set it
       # overwrite or skip existing files (logical)
       rl$overwrite <- as.logical(input$overwrite)
       
@@ -3234,7 +3236,7 @@ s2_gui <- function(param_list = NULL,
         indices_rv$checked <- pl$list_indices
         # updateCheckboxGroupInput(session, "list_indices", selected = pl$list_indices) # FIXME 1 not working since it is reactive
         if (all(is.na(nn(pl$list_rgb)))) {pl$list_rgb <- NULL}
-        if (all(is.na(nn(pl$rgb_ranges)))) {pl$rgb_ranges <- NULL}
+        if (all(is.na(nn(pl$list_rgb))) && all(is.na(nn(pl$rgb_ranges)))) {pl$rgb_ranges <- NULL}
         rv$list_rgb_ranges <- setNames(pl$rgb_ranges, pl$list_rgb)
         updateCheckboxGroupInput(session, "list_rgbimages", selected = pl$list_rgb)
         updateRadioButtons(session, "atm_mask",
@@ -3330,6 +3332,8 @@ s2_gui <- function(param_list = NULL,
     # if Return is pressend, exit from GUI and return values
     observeEvent(input$return_param, {
       return_list <- create_return_list() # run creation of return_list
+      # add parameters not modified by the GUI
+      return_list <- c(return_list, param_list[!names(param_list) %in% names(return_list)])
       check_param_result <- check_param(return_list)
       if (check_param_result) {
         shinyjs::js$closeWindow()
