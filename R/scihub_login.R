@@ -26,7 +26,7 @@ read_scihub_login <- function(apihub_path=NA) {
   
   # if apihub_path is not specified, 
   # retrieve from the current s2download installation
-  if (is.na(apihub_path)) {
+  if (any(c(is.na(apihub_path), is.null(apihub_path)))) {
     # import s2download
     s2download <- import_s2download(convert=FALSE)
     apihub_path <- file.path(py_to_r(s2download$inst_path),"apihub.txt")
@@ -55,7 +55,7 @@ write_scihub_login <- function(username, password, apihub_path=NA, append=FALSE)
 
   # if apihub_path is not specified, 
   # retrieve from the current s2download installation
-  if (is.na(apihub_path)) {
+  if (any(c(is.na(apihub_path), is.null(apihub_path)))) {
     # import s2download
     s2download <- import_s2download(convert=FALSE)
     apihub_path <- file.path(py_to_r(s2download$inst_path),"apihub.txt")
