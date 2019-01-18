@@ -1339,7 +1339,7 @@ s2_gui <- function(param_list = NULL,
         } else {
           NA
         }
-        if (!is.na(rv$apihub_path)) {
+        if (!any(c(is.na(rv$apihub_path), length(nn(rv$apihub_path)==0)))) {
           if (!rv$apihub_path %in% apihub_path_prev) {
             # if a change in the path is detected (= the button has been used), 
             # close the modalDialog
@@ -1356,7 +1356,7 @@ s2_gui <- function(param_list = NULL,
     observeEvent(input$save_apihub, {
       write_scihub_login(
         input$scihub_username, input$scihub_password, 
-        apihub_path = if(!is.na(rv$apihub_path)){as.character(rv$apihub_path)}else{NA},
+        apihub_path = as.character(rv$apihub_path),
         # append = input$apihub_multiple # removed after disabling apihub multiple login from the gui
         append = FALSE
       )
