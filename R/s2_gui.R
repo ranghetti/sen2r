@@ -1339,7 +1339,7 @@ s2_gui <- function(param_list = NULL,
         } else {
           NA
         }
-        if (!any(c(is.na(rv$apihub_path), length(nn(rv$apihub_path)==0)))) {
+        if (!any(c(is.na(rv$apihub_path), length(nn(rv$apihub_path))==0))) {
           if (!rv$apihub_path %in% apihub_path_prev) {
             # if a change in the path is detected (= the button has been used), 
             # close the modalDialog
