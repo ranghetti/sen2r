@@ -18,11 +18,11 @@
 #'  removeDrawToolbar
 #' @importFrom mapedit editModUI
 #' @importFrom utils packageVersion
-#' @importFrom sf st_coordinates st_crs st_intersects st_polygon st_read st_bbox st_as_sfc st_transform
+#' @importFrom sf st_coordinates st_crs st_geometry st_intersects st_polygon st_read st_bbox st_as_sfc st_transform
 #' @importFrom shiny a actionButton actionLink addResourcePath br callModule checkboxGroupInput
 #'  checkboxInput column conditionalPanel dateRangeInput div downloadButton downloadHandler em fileInput fluidRow h2 h3
 #'  helpText hr HTML htmlOutput icon incProgress isolate NS numericInput observe p
-#'  radioButtons reactive reactiveVal reactiveValues removeModal renderText renderUI runApp selectInput setProgress
+#'  radioButtons reactive reactiveVal reactiveValues removeModal renderText renderUI req runApp selectInput setProgress
 #'  shinyApp showModal sliderInput span stopApp strong tagList textInput uiOutput updateCheckboxGroupInput
 #'  updateDateRangeInput updateSliderInput updateRadioButtons updateTextInput withMathJax
 #'  withProgress
@@ -1423,6 +1423,7 @@ s2_gui <- function(param_list = NULL,
         # namespace for extent selection
         sel_drawn <- if (!is.null(rv$extent_edits()$finished)) {
           x <- rv$extent_edits()$finished
+          names(sf::st_geometry(x)) <- NULL
           attr(x, "valid") <- TRUE
           attr(x, "new") <- TRUE
           x
@@ -1445,6 +1446,7 @@ s2_gui <- function(param_list = NULL,
         } else {
           x <- st_read(custom_source, quiet=TRUE) %>% 
             st_transform(4326)
+          names(sf::st_geometry(x)) <- NULL
           attr(x, "valid") <- TRUE
           attr(x, "new") <- TRUE
           x
@@ -1475,6 +1477,7 @@ s2_gui <- function(param_list = NULL,
       if(length(rv$extent) > 0) {
         
         rv$draw_tiles_overlapping <- s2tiles[unique(unlist(suppressMessages(st_intersects(st_transform(rv$extent,4326), s2tiles)))),]
+        names(sf::st_geometry(rv$draw_tiles_overlapping)) <- NULL
         
         if (attr(rv$extent, "new")) {
           # update the list of tiles
@@ -1749,7 +1752,7 @@ s2_gui <- function(param_list = NULL,
           file.rename(input$path_vectfile_sel$datapath[i], path_vectfile_sel_new_datapath[i])
         }
         rv$vectfile_path <- path_vectfile_sel_new_datapath[
-          input$path_vectfile_sel$type=="application/x-esri-shape"
+          grepl("\\.shp$", input$path_vectfile_sel$name)
           ]
       }
     })
@@ -1766,12 +1769,14 @@ s2_gui <- function(param_list = NULL,
     
     # load the vector on the map
     observeEvent(rv$vectfile_path, {
+      req(rv$vectfile_path)
       
       # Check that the vector is valid
       rv$vectfile_polygon <- tryCatch(
         {
           x <- st_read(rv$vectfile_path, quiet=TRUE) %>% 
             st_transform(4326)
+          names(sf::st_geometry(x)) <- NULL
           attr(x, "valid") <- TRUE
           attr(x, "new") <- TRUE
           x
