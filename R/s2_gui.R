@@ -11,9 +11,9 @@
 #' @importFrom jsonlite fromJSON toJSON
 #' @import data.table
 #' @importFrom geojsonio geojson_json
-#' @importFrom leaflet addLayersControl addPolygons addProviderTiles
+#' @importFrom leaflet addLayersControl addMapPane addPolygons addProviderTiles
 #'  addTiles clearShapes fitBounds hideGroup labelOptions layersControlOptions
-#'  leaflet leafletOutput leafletProxy
+#'  leaflet leafletOutput leafletProxy pathOptions removeShape
 #' @importFrom leaflet.extras addDrawToolbar editToolbarOptions
 #'  removeDrawToolbar
 #' @importFrom mapedit editModUI
@@ -282,10 +282,10 @@ s2_gui <- function(param_list = NULL,
             
             fluidRow(
               # L1C directory
-              conditionalPanel(
-                condition = "output.req_l1c == 'TRUE'",
-                column(
-                  width=6,
+              column(
+                width=6,
+                conditionalPanel(
+                  condition = "output.req_l1c == 'TRUE'",
                   div(style="display:inline-block;vertical-align:top;",
                       strong("Directory for level-1C SAFE products: \u00a0")),
                   div(style="display:inline-block;vertical-align:top;",
@@ -297,10 +297,10 @@ s2_gui <- function(param_list = NULL,
                 )
               ),
               # L2A directory
-              conditionalPanel(
-                condition = "output.req_l2a == 'TRUE'",
-                column(
-                  width=6,
+              column(
+                width=6,
+                conditionalPanel(
+                  condition = "output.req_l2a == 'TRUE'",
                   div(style="display:inline-block;vertical-align:top;",
                       strong("Directory for level-2A SAFE products: \u00a0")),
                   div(style="display:inline-block;vertical-align:top;",
@@ -458,12 +458,12 @@ s2_gui <- function(param_list = NULL,
               fluidRow(
                 
                 column(
-                  width=6,
+                  width=8,
                   dateRangeInput("timewindow", label = "Time interval")
                 ),
                 
                 column(
-                  width=6,
+                  width=4,
                   radioButtons(
                     "timeperiod", 
                     label = span(
@@ -534,51 +534,78 @@ s2_gui <- function(param_list = NULL,
                   )
                 ),
                 
-                # Select tiles and orbits
                 column(
-                  width=4,
-                  div(
-                    pickerInput(
-                      "tiles_checkbox", "Tiles selected",
-                      choices = character(0),
-                      options = list(
-                        `selected-text-format` = "count > 3",
-                        `live-search` = TRUE,
-                        title = "All overlapping tiles"
-                      ), 
-                      multiple = TRUE
+                  width=8,
+                  fluidRow(
+                    
+                    # Select tiles and orbits
+                    column(
+                      width=6,
+                      pickerInput(
+                        "tiles_checkbox", "Tiles selected",
+                        choices = character(0),
+                        options = list(
+                          `selected-text-format` = "count > 3",
+                          `live-search` = TRUE,
+                          `actions-box` = TRUE, 
+                          title = "All overlapping tiles"
+                        ), 
+                        multiple = TRUE
+                      )
                     ),
-                    pickerInput(
-                      "orbits_checkbox", "Orbits selected", 
-                      choices = str_pad(1:143, 3, "left", "0"), 
-                      options = list(
-                        `selected-text-format` = "count > 6",
-                        `live-search` = TRUE,
-                        title = "All overlapping orbits"
-                      ), 
-                      multiple = TRUE
+                    
+                    column(
+                      width=6,
+                      pickerInput(
+                        "orbits_checkbox", 
+                        span(
+                          "Orbits selected\u2000",
+                          actionLink("help_orbits", icon("question-circle"))
+                        ), 
+                        choices = str_pad(1:143, 3, "left", "0"), 
+                        options = list(
+                          `selected-text-format` = "count > 6",
+                          `live-search` = TRUE,
+                          `actions-box` = TRUE, 
+                          title = "All overlapping orbits"
+                        ), 
+                        multiple = TRUE
+                      )
+                      # helpText(em("Not yet implemented."))
                     )
-                    # helpText(em("Not yet implemented."))
-                  )
-                ),
-                
-                # Specify the extent name and upload the map
-                column(
-                  width=4,
-                  textInput(
-                    "extent_name_textin", 
-                    span(
-                      strong("Extent name:\u2000"),
-                      actionLink("help_extent_name", icon("question-circle"))
-                    ), 
-                    "sen2r"
                   ),
-                  actionButton(
-                    "button_refresh_map",
-                    label = "\u2000Refresh the map",
-                    width = "100%",
-                    icon=icon("retweet")
+                  
+                  hr(style="margin-top: 0px; margin-bottom: 13px;"),
+                  
+                  # Specify the extent name and upload the map
+                  fluidRow(
+                    
+                    column(
+                      width=6,
+                      textInput(
+                        "extent_name_textin", 
+                        span(
+                          strong("Extent name:\u2000"),
+                          actionLink("help_extent_name", icon("question-circle"))
+                        ), 
+                        "sen2r"
+                      )
+                    ),
+                    
+                    column(
+                      width=6,
+                      div(
+                        style="margin-top:25px;padding-bottom:10px;",
+                        actionButton(
+                          "button_refresh_map",
+                          label = "\u2000Refresh the map",
+                          width = "100%",
+                          icon=icon("retweet")
+                        )
+                      )
+                    )
                   )
+                  
                 )
                 
                 # TODO Multipart geometries: do not remove this part of code;
@@ -1264,21 +1291,24 @@ s2_gui <- function(param_list = NULL,
     # Message for levels needed
     output$levels_message <- renderUI({
       div(
+        style="height:50px;",
         strong("SAFE levels needed:"),
         br(),
         if (safe_req$l1c==FALSE & safe_req$l2a==FALSE) {
-          (span(style="color:red", "Select at least one product or index."))
+          span(style="color:red", "Select at least one product or index.")
         },
         if (safe_req$l1c==TRUE) {
-          a("Level-1C", href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-1c", target="_blank")
-          # "Level-1C"
+          a("Level-1C", 
+            href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-1c", 
+            target="_blank")
         },
         if (safe_req$l1c==TRUE & safe_req$l2a==TRUE) {
           br()
         },
         if (safe_req$l2a==TRUE) {
-          a("Level-2A", href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-2a", target="_blank")
-          # "Level-2A"
+          a("Level-2A", 
+            href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-2a", 
+            target="_blank")
         }
       )
     })
@@ -1511,8 +1541,8 @@ s2_gui <- function(param_list = NULL,
           # )
           updatePickerInput(
             session, "tiles_checkbox",
-            choices = rv$draw_tiles_overlapping$tile_id,
-            selected = rv$draw_tiles_overlapping$tile_id
+            choices = rv$draw_tiles_overlapping$tile_id#,
+            # selected = rv$draw_tiles_overlapping$tile_id
           )
         }
         
@@ -1527,19 +1557,24 @@ s2_gui <- function(param_list = NULL,
             lng2 = max(st_coordinates(rv$draw_tiles_overlapping_ll)[,"X"]),
             lat2 = max(st_coordinates(rv$draw_tiles_overlapping_ll)[,"Y"])
           ) %>%
-          addPolygons(data = rv$draw_tiles_overlapping,
-                      group = "S2 tiles",
-                      label = ~tile_id,
-                      labelOptions = labelOptions(noHide = TRUE, direction = "auto"),
-                      fill = TRUE,
-                      fillColor = "orange",
-                      fillOpacity = .3,
-                      stroke = TRUE,
-                      weight = 3,
-                      color = "red") %>%
+          addPolygons(
+            data = rv$draw_tiles_overlapping,
+            group = "S2 tiles",
+            options = pathOptions(pane = "tiles_selected"),
+            layerId = ~tile_id,
+            label = ~tile_id,
+            labelOptions = labelOptions(noHide = TRUE, direction = "auto"),
+            fill = TRUE,
+            fillColor = "orange",
+            fillOpacity = .3,
+            stroke = TRUE,
+            weight = 3,
+            color = "red"
+          ) %>%
           # add extent
           addPolygons(data = rv$extent,
                       group = "Extent",
+                      options = pathOptions(pane = "extent"),
                       # label = ~tile_id,
                       # labelOptions = labelOptions(noHide = TRUE, direction = "auto"),
                       fill = TRUE,
@@ -1590,6 +1625,11 @@ s2_gui <- function(param_list = NULL,
         # addTiles(paste0("https://{s}.tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png",
         #                 if (!is.na(thunderforest_api)) {paste0("?apikey=",thunderforest_api)}),
         #          group = "Metal or death") %>%
+        
+        # Order group
+        addMapPane("extent", zIndex = 430) %>%
+        addMapPane("tiles_selected", zIndex = 420) %>%
+        addMapPane("tiles_notselected", zIndex = 410) %>%
         
         # view and controls
         addLayersControl(
@@ -1901,6 +1941,48 @@ s2_gui <- function(param_list = NULL,
         update_extent(extent_source="fake")
         for (i in 1:10) {incProgress(1/10); Sys.sleep(0.1)}
       })
+    })
+    
+    
+    #- Update tile colours when single tiles are [de]activated -#
+    observeEvent(input$tiles_checkbox, ignoreNULL = FALSE, {
+      req(rv$draw_tiles_overlapping)
+      rv$draw_tiles_overlapping$selected <- rv$draw_tiles_overlapping$tile_id %in% input$tiles_checkbox
+      # rv$draw_tiles_overlapping$colour <- ifelse(rv$draw_tiles_overlapping$selected | !any(rv$draw_tiles_overlapping$selected), "red", "grey")
+      # rv$draw_tiles_overlapping$fillcolour <- ifelse(rv$draw_tiles_overlapping$selected | !any(rv$draw_tiles_overlapping$selected), "orange", "lightgrey")
+      leafletProxy("view_map") %>%
+        removeShape(rv$draw_tiles_overlapping$tile_id) %>%
+        addPolygons(
+          data = rv$draw_tiles_overlapping[rv$draw_tiles_overlapping$selected | !any(rv$draw_tiles_overlapping$selected),],
+          group = "S2 tiles",
+          options = pathOptions(pane = "tiles_selected"),
+          layerId = ~tile_id,
+          label = ~tile_id,
+          labelOptions = labelOptions(noHide = TRUE, direction = "auto"),
+          fill = TRUE,
+          fillColor = "orange",
+          fillOpacity = .3,
+          stroke = TRUE,
+          weight = 3,
+          color = "red"
+        ) 
+      if (!all(rv$draw_tiles_overlapping$selected) & any(rv$draw_tiles_overlapping$selected)) {
+        leafletProxy("view_map") %>%
+          addPolygons(
+            data = rv$draw_tiles_overlapping[!rv$draw_tiles_overlapping$selected,],
+            group = "S2 tiles",
+            options = pathOptions(pane = "tiles_notselected"),
+            layerId = ~tile_id,
+            label = ~tile_id,
+            labelOptions = labelOptions(noHide = TRUE, direction = "auto"),
+            fill = TRUE,
+            fillColor = "lightgrey",
+            fillOpacity = .3,
+            stroke = TRUE,
+            weight = 3,
+            color = "grey"
+          )
+      }
     })
     
     
@@ -2626,6 +2708,27 @@ s2_gui <- function(param_list = NULL,
     #     footer = NULL
     #   ))
     # })
+    
+    observeEvent(input$help_orbits, {
+      showModal(modalDialog(
+        title = "Tiles and orbits selected",
+        p(HTML(
+          "Selectors \"Tiles selected\" and \"Orbits selected\" allow to",
+          "restrict the processing to the specified tiles and <a href=",
+          "'https://sentinel.esa.int/web/sentinel/missions/sentinel-2/satellite-description/orbit'",
+          "target='_blank'>orbits</a>.",
+          "The list of tiles which can be selected is dynamically updated",
+          "basing on the selected extent",
+          "(only tiles overlapping the extent are shown),",
+          "as well as the colour of tiles shown in the map is dynamically set",
+          "(selected tiles are shown in red, unselected ones in grey).",
+          "Instead, the list of orbits is static, and orbits are not shown",
+          "on the map."
+        )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
     
     observeEvent(input$help_extent_name, {
       showModal(modalDialog(
