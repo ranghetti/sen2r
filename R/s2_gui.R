@@ -3457,7 +3457,7 @@ s2_gui <- function(param_list = NULL,
         shinyjs::delay(5E3, {
           update_extent("imported", custom_source = pl$extent)
           updatePickerInput(session, "tiles_checkbox", selected = if(length(nn(pl$s2tiles_selected))>0) {pl$s2tiles_selected} else {NA})
-          
+          rv$update_tiles_on_map <- sample(1E6, 1) # update the [un]selected tiles on the map
         })
         updatePickerInput(session, "orbits_checkbox", selected = if(length(nn(pl$s2orbits_selected))>0) {pl$s2orbits_selected} else {NA})
         setProgress(1)
