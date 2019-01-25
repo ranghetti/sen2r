@@ -5,6 +5,7 @@
 #' @note License: GPL 3.0
 #' @importFrom shiny actionButton div fileInput htmlOutput icon modalButton modalDialog
 #'  numericInput span tagList textInput
+#' @importFrom shinyFiles shinyFilesButton
 
 #' @name load_extent_bbox
 #' @rdname load_extent
@@ -17,7 +18,7 @@ load_extent_bbox <- function() {
         width=4,
         strong("Insert the coordinates of the bounding box:"),
         div(
-          style="width:200px;position:relative;margin-left:40px;top:0px;",
+          style="width:200px;position:relative;margin-left:40px;top:0px;margin-top:5px;",
           numericInput(
             "bbox_ymax", 
             label = span(style="font-weight:normal;color:grey", "upper northing"),
@@ -55,7 +56,7 @@ load_extent_bbox <- function() {
         strong("Specify the projection of the coordinates:"),
         div(
           div(
-            style="display:inline-block;position:relative;",
+            style="display:inline-block;position:relative;margin-top:5px;",
             textInput("bboxproj", NULL,
                       value="4326", width="190px")
           ),
@@ -85,23 +86,20 @@ load_extent_vectfile <- function() {
   modalDialog(
     title = "Select vector file",
     size = "m",
-    helpText(em(
-      p("Chose the vector file to be used as extent."),
-      p("To upload a shapefile, select all the related files",
-        "(at most the .shp, .shx, .dbf and .prj ones must be present).")
-    )),
-    # div(div(style="display:inline-block;vertical-align:top;width:50pt;", # FIXME 2 choosing file with the button the extent is not drawn yet, and the toolbar is not added/removed changing extent_type
-    #         shinyFilesButton("path_vectfile_sel",
-    #                          "Select",
-    #                          "Specify the file to be used as extent",
-    #                          multiple = FALSE)),
-    #     div(style="display:inline-block;vertical-align:top;",
-    #         textInput("path_vectfile_textin", NULL, ""))),
-    fileInput("path_vectfile_sel",
-              "Select",
-              multiple = TRUE),
-    div(style="display:inline-block;vertical-align:top;",
-        htmlOutput("path_vectfile_errormess")),
+    div(
+      style="display:inline-block;vertical-align:top;margin-bottom:10px;",
+      shinyFilesButton(
+        "path_vectfile_sel", "Select",
+        "Specify the file to be used as extent",
+        multiple = FALSE
+      )
+    ),
+    div(
+      style="display:inline-block;vertical-align:middle;padding-left:10px;",
+      helpText(em(
+        p("Chose the vector file to be used as extent.")
+      ))
+    ),
     leafletOutput("view_map_vectfile", height=400, width="100%"),
     easyClose = FALSE,
     footer = tagList(

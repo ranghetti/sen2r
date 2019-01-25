@@ -13,7 +13,7 @@
 #' @importFrom geojsonio geojson_json
 #' @importFrom leaflet addLayersControl addMapPane addPolygons addProviderTiles
 #'  addTiles clearShapes fitBounds hideGroup labelOptions layersControlOptions
-#'  leaflet leafletOutput leafletProxy pathOptions removeShape
+#'  leaflet leafletOutput leafletProxy pathOptions removeLayersControl removeShape
 #' @importFrom leaflet.extras addDrawToolbar editToolbarOptions
 #'  removeDrawToolbar
 #' @importFrom mapedit editModUI
@@ -78,27 +78,30 @@ s2_gui <- function(param_list = NULL,
         )
       ),
       
-      sidebarMenu(
-        menuItem("Product selection", tabName = "tab_steps", icon = icon("image"))
-      ),
-      sidebarMenu(
-        menuItem("Spatio-temporal selection", tabName = "tab_query", icon = icon("clone"))
-      ),
-      conditionalPanel(
-        condition = "input.preprocess == 'TRUE'",
+      div(
+        style="position:absolute;top:230px;",
         sidebarMenu(
-          menuItem("Processing options", tabName = "tab_prepro", icon = icon("th"))
+          menuItem("Product selection", tabName = "tab_steps", icon = icon("image"))
+        ),
+        sidebarMenu(
+          menuItem("Spatio-temporal selection", tabName = "tab_query", icon = icon("clone"))
         ),
         conditionalPanel(
-          condition = "input.list_prods.indexOf('indices') != -1",
+          condition = "input.preprocess == 'TRUE'",
           sidebarMenu(
-            menuItem("Spectral indices selection", tabName = "tab_index", icon = icon("calculator"))
-          )
-        ),
-        conditionalPanel(
-          condition = "input.list_prods.indexOf('rgbimages') != -1",
-          sidebarMenu(
-            menuItem("RGB images selection", tabName = "tab_rgb", icon = icon("palette"))
+            menuItem("Processing options", tabName = "tab_prepro", icon = icon("th"))
+          ),
+          conditionalPanel(
+            condition = "input.list_prods.indexOf('indices') != -1",
+            sidebarMenu(
+              menuItem("Spectral indices selection", tabName = "tab_index", icon = icon("calculator"))
+            )
+          ),
+          conditionalPanel(
+            condition = "input.list_prods.indexOf('rgbimages') != -1",
+            sidebarMenu(
+              menuItem("RGB images selection", tabName = "tab_rgb", icon = icon("palette"))
+            )
           )
         )
       ),
@@ -205,6 +208,7 @@ s2_gui <- function(param_list = NULL,
           fluidRow(box(
             title="Type of processing",
             width=12,
+            collapsible = TRUE,
             radioButtons(
               "preprocess", NULL,
               choiceNames = list(
@@ -226,6 +230,7 @@ s2_gui <- function(param_list = NULL,
           fluidRow(box(
             title="Select products and sensors",
             width=12,
+            collapsible = TRUE,
             
             fluidRow(
               column(
@@ -279,6 +284,7 @@ s2_gui <- function(param_list = NULL,
           fluidRow(box(
             title="SAFE options",
             width=12,
+            collapsible = TRUE,
             
             fluidRow(
               # L1C directory
@@ -286,7 +292,7 @@ s2_gui <- function(param_list = NULL,
                 width=6,
                 conditionalPanel(
                   condition = "output.req_l1c == 'TRUE'",
-                  div(style="display:inline-block;vertical-align:top;",
+                  div(style="display:inline-block;vertical-align:top;padding-bottom:5px;",
                       strong("Directory for level-1C SAFE products: \u00a0")),
                   div(style="display:inline-block;vertical-align:top;",
                       htmlOutput("path_l1c_errormess")),
@@ -301,7 +307,7 @@ s2_gui <- function(param_list = NULL,
                 width=6,
                 conditionalPanel(
                   condition = "output.req_l2a == 'TRUE'",
-                  div(style="display:inline-block;vertical-align:top;",
+                  div(style="display:inline-block;vertical-align:top;padding-bottom:5px;",
                       strong("Directory for level-2A SAFE products: \u00a0")),
                   div(style="display:inline-block;vertical-align:top;",
                       htmlOutput("path_l2a_errormess")),
@@ -415,6 +421,7 @@ s2_gui <- function(param_list = NULL,
             fluidRow(box(
               title="Atmospheric correction options",
               width=12,
+              collapsible = TRUE,
               # step_atmcorr (perform or not sen2cor and how)
               # uiOutput("step_atmcorr")
               radioButtons(
@@ -443,6 +450,7 @@ s2_gui <- function(param_list = NULL,
           fluidRow(box(
             title="Temporal parameters",
             width=12,
+            collapsible = TRUE,
             
             conditionalPanel(
               condition = "input.online == 'FALSE'",
@@ -485,6 +493,7 @@ s2_gui <- function(param_list = NULL,
           fluidRow(box(
             title="Spatial extent",
             width=12,
+            collapsible = TRUE,
             
             conditionalPanel(
               condition = "input.online == 'FALSE'",
@@ -662,13 +671,14 @@ s2_gui <- function(param_list = NULL,
           fluidRow(box(
             title="Output files",
             width=12,
+            collapsible = TRUE,
             
             fluidRow(
               column(
                 width=12,
                 conditionalPanel(
                   condition = "input.list_prods.length > 1 || (input.list_prods.length > 0 && input.list_prods.indexOf('indices') == -1)",
-                  div(div(style="display:inline-block;vertical-align:top;",
+                  div(div(style="display:inline-block;vertical-align:top;padding-bottom:5px;",
                           strong("Directory for output processed products: \u00a0")),
                       div(style="display:inline-block;vertical-align:top;",
                           htmlOutput("path_out_errormess")),
@@ -753,6 +763,7 @@ s2_gui <- function(param_list = NULL,
           fluidRow(box(
             width=6,
             title = "Ouptut extent",
+            collapsible = TRUE,
             
             fluidRow(
               column(
@@ -840,6 +851,7 @@ s2_gui <- function(param_list = NULL,
           box(
             title="Cloud mask",
             width=6,
+            collapsible = TRUE,
             
             radioButtons(
               "atm_mask", 
@@ -959,6 +971,7 @@ s2_gui <- function(param_list = NULL,
             fluidRow(box(
               width=12,
               title = "Output geometry",
+              collapsible = TRUE,
               
               fluidRow( # fluidrow for spatial reference
                 
@@ -1098,8 +1111,9 @@ s2_gui <- function(param_list = NULL,
               box(
                 width=8,
                 title="Spectral indices selection",
+                collapsible = TRUE,
                 
-                div(div(style="display:inline-block;vertical-align:top;",
+                div(div(style="display:inline-block;vertical-align:top;padding-bottom:5px;",
                         strong("Directory for spectral indices: \u00a0")),
                     div(style="display:inline-block;vertical-align:top;",
                         htmlOutput("path_indices_errormess")),
@@ -1179,8 +1193,9 @@ s2_gui <- function(param_list = NULL,
               box(
                 width=12,
                 title="RGB images selection",
+                collapsible = TRUE,
                 
-                div(div(style="display:inline-block;vertical-align:top;",
+                div(div(style="display:inline-block;vertical-align:top;padding-bottom:5px;",
                         strong("Directory for RGB images: \u00a0")),
                     div(style="display:inline-block;vertical-align:top;",
                         htmlOutput("path_rgb_errormess")),
@@ -1195,15 +1210,21 @@ s2_gui <- function(param_list = NULL,
                 
                 uiOutput("checkbox_list_rgb"),
                 
-                actionButton(
-                  "new_rgb",
-                  label = "\u2000Define custom RGB image",
-                  icon = icon("plus")
+                div(
+                  style = "display:inline-block;padding-top:10px;padding-right:10px;",
+                  actionButton(
+                    "new_rgb",
+                    label = "\u2000Define custom RGB image",
+                    icon = icon("plus")
+                  )
                 ),
-                actionButton(
-                  "rm_rgb",
-                  label = "\u2000Remove unselected RGB from list",
-                  icon = icon("trash-alt")
+                div(
+                  style = "display:inline-block;padding-top:10px;",
+                  actionButton(
+                    "rm_rgb",
+                    label = "\u2000Remove unselected RGB from list",
+                    icon = icon("trash-alt")
+                  )
                 )
                 
                 
@@ -1291,9 +1312,8 @@ s2_gui <- function(param_list = NULL,
     # Message for levels needed
     output$levels_message <- renderUI({
       div(
-        style="height:50px;",
-        strong("SAFE levels needed:"),
-        br(),
+        style="height:55px;",
+        div(style="padding-bottom:5px;", strong("SAFE levels needed:")),
         if (safe_req$l1c==FALSE & safe_req$l2a==FALSE) {
           span(style="color:red", "Select at least one product or index.")
         },
@@ -1557,32 +1577,24 @@ s2_gui <- function(param_list = NULL,
             lng2 = max(st_coordinates(rv$draw_tiles_overlapping_ll)[,"X"]),
             lat2 = max(st_coordinates(rv$draw_tiles_overlapping_ll)[,"Y"])
           ) %>%
+          # add extent
           addPolygons(
-            data = rv$draw_tiles_overlapping,
-            group = "S2 tiles",
-            options = pathOptions(pane = "tiles_selected"),
-            layerId = ~tile_id,
-            label = ~tile_id,
-            labelOptions = labelOptions(noHide = TRUE, direction = "auto"),
+            data = rv$extent,
+            group = "Extent",
+            options = pathOptions(pane = "extent"),
+            # label = ~tile_id,
+            # labelOptions = labelOptions(noHide = TRUE, direction = "auto"),
             fill = TRUE,
-            fillColor = "orange",
+            fillColor = "green",
             fillOpacity = .3,
             stroke = TRUE,
             weight = 3,
-            color = "red"
-          ) %>%
-          # add extent
-          addPolygons(data = rv$extent,
-                      group = "Extent",
-                      options = pathOptions(pane = "extent"),
-                      # label = ~tile_id,
-                      # labelOptions = labelOptions(noHide = TRUE, direction = "auto"),
-                      fill = TRUE,
-                      fillColor = "green",
-                      fillOpacity = .3,
-                      stroke = TRUE,
-                      weight = 3,
-                      color = "darkgreen") #%>%
+            color = "darkgreen"
+          )
+        
+        # update the [un]selected tiles on the map
+        rv$update_tiles_on_map <- sample(1E6, 1)
+        
       } else {
         rv$draw_tiles_overlapping <- NULL
         # empty the list of tiles
@@ -1634,12 +1646,18 @@ s2_gui <- function(param_list = NULL,
         # view and controls
         addLayersControl(
           baseGroups = c("OpenStreetMap", "OpenTopoMap", "CartoDB", "Satellite"),
+          options = layersControlOptions(collapsed = TRUE)
+        )
+    }
+    react_map <- reactiveVal({
+      base_map() %>% 
+        removeLayersControl() %>%
+        addLayersControl(
+          baseGroups = c("OpenStreetMap", "OpenTopoMap", "CartoDB", "Satellite"),
           overlayGroups = c("S2 tiles","Extent"),
           options = layersControlOptions(collapsed = TRUE)
-        ) %>%
-        hideGroup(c("Light names","Dark names"))
-    }
-    react_map <- reactiveVal({base_map()})
+        )
+    })
     output$view_map <- renderLeaflet({react_map()})
     # # renderUI of the leaflet so to update dinamically the width
     # output$view_map_leaflet <- renderUI({
@@ -1774,51 +1792,58 @@ s2_gui <- function(param_list = NULL,
     
     #- Vector file mode -#
     
-    # if 
+    shinyFileChoose(input, "path_vectfile_sel", roots=volumes, session=session)
     observeEvent(input$path_vectfile_sel, {
-      uploaded_exts <- gsub("^.+\\.(.+)$","\\1",input$path_vectfile_sel$name)
-      # checks
-      if (length(unique(gsub("\\..+$","",input$path_vectfile_sel$name))) > 1) {
-        # if more than one vector were chosen, give an alert and do not use the file
-        sendSweetAlert(
-          session, 
-          title = "Invalid vector", 
-          text = paste(
-            "Please select a single vector",
-            "(multiple selection is allowed only for shapefiles)."
-          ),
-          type = "error",
-          btn_labels = "Ok"
-        )
-        rv$vectfile_path <- ""
-      } else if (length(uploaded_exts) == 1 && !uploaded_exts %in% c("shp","shx","dbf","prj")) {
-        # if a single file was chosen and it is not a shapefile, use it
-        rv$vectfile_path <- input$path_vectfile_sel$datapath
-      } else if (anyNA(match(c("shp","shx","dbf","prj"),uploaded_exts))) {
-        # if a shapefile was chosen but some files are missing, do not use it
-        sendSweetAlert(
-          session, 
-          title = "Incomplete shapefile", 
-          text = paste(
-            "Please select all the files of the shapefile",
-            "(at most .shp, .shx, .prj, .dbf)."
-          ),
-          type = "error",
-          btn_labels = "Ok"
-        )
-        rv$vectfile_path <- ""
+      # uploaded_exts <- gsub("^.+\\.(.+)$","\\1",input$path_vectfile_sel$name)
+      # # checks
+      # if (length(unique(gsub("\\..+$","",input$path_vectfile_sel$name))) > 1) {
+      #   # if more than one vector were chosen, give an alert and do not use the file
+      #   sendSweetAlert(
+      #     session, 
+      #     title = "Invalid vector", 
+      #     text = paste(
+      #       "Please select a single vector",
+      #       "(multiple selection is allowed only for shapefiles)."
+      #     ),
+      #     type = "error",
+      #     btn_labels = "Ok"
+      #   )
+      #   rv$vectfile_path <- ""
+      # } else if (length(uploaded_exts) == 1 && !uploaded_exts %in% c("shp","shx","dbf","prj")) {
+      #   # if a single file was chosen and it is not a shapefile, use it
+      #   rv$vectfile_path <- input$path_vectfile_sel$datapath
+      # } else if (anyNA(match(c("shp","shx","dbf","prj"),uploaded_exts))) {
+      #   # if a shapefile was chosen but some files are missing, do not use it
+      #   sendSweetAlert(
+      #     session, 
+      #     title = "Incomplete shapefile", 
+      #     text = paste(
+      #       "Please select all the files of the shapefile",
+      #       "(at most .shp, .shx, .prj, .dbf)."
+      #     ),
+      #     type = "error",
+      #     btn_labels = "Ok"
+      #   )
+      #   rv$vectfile_path <- ""
+      # } else {
+      #   # if a shapefile was chosen and all the files are present,
+      #   # rename the uploaded files in order to have the same filename and use them
+      # 
+      #   path_vectfile_sel_new_datapath <- file.path(
+      #     dirname(input$path_vectfile_sel$datapath), input$path_vectfile_sel$name
+      #   )
+      #   for(i in seq_len(nrow(input$path_vectfile_sel))) {
+      #     file.rename(input$path_vectfile_sel$datapath[i], path_vectfile_sel_new_datapath[i])
+      #   }
+      #   rv$vectfile_path <- path_vectfile_sel_new_datapath[
+      #     grepl("\\.shp$", input$path_vectfile_sel$name)
+      #     ]
+      # }
+      vectfile_path <- parseFilePaths(volumes,input$path_vectfile_sel)
+      rv$vectfile_path <- if (nrow(vectfile_path)>0) {
+        as.character(vectfile_path$datapath)
       } else {
-        # if a shapefile was chosen and all the files are present,
-        # rename the uploaded files in order to have the same filename and use them
-        path_vectfile_sel_new_datapath <- file.path(
-          dirname(input$path_vectfile_sel$datapath), input$path_vectfile_sel$name
-        )
-        for(i in seq_len(nrow(input$path_vectfile_sel))) {
-          file.rename(input$path_vectfile_sel$datapath[i], path_vectfile_sel_new_datapath[i])
-        }
-        rv$vectfile_path <- path_vectfile_sel_new_datapath[
-          grepl("\\.shp$", input$path_vectfile_sel$name)
-          ]
+        NULL
       }
     })
     
@@ -1869,7 +1894,7 @@ s2_gui <- function(param_list = NULL,
                       fillOpacity = .3,
                       stroke = TRUE,
                       weight = 3,
-                      color = "darkgreen") #%>%
+                      color = "darkgreen")
       } else {
         # if the vector is not valid, reset the map
         react_map_vectfile(base_map())
@@ -1945,7 +1970,7 @@ s2_gui <- function(param_list = NULL,
     
     
     #- Update tile colours when single tiles are [de]activated -#
-    observeEvent(input$tiles_checkbox, ignoreNULL = FALSE, {
+    observeEvent(c(input$tiles_checkbox, rv$update_tiles_on_map), ignoreNULL = FALSE, {
       req(rv$draw_tiles_overlapping)
       rv$draw_tiles_overlapping$selected <- rv$draw_tiles_overlapping$tile_id %in% input$tiles_checkbox
       # rv$draw_tiles_overlapping$colour <- ifelse(rv$draw_tiles_overlapping$selected | !any(rv$draw_tiles_overlapping$selected), "red", "grey")
@@ -2059,6 +2084,7 @@ s2_gui <- function(param_list = NULL,
       extendedname <- link <- longname <- name <- providers <- s2_formula_mathml <- NULL
       return(box(
         width=12,
+        collapsible = TRUE,
         title=indices_db[name==index,name],
         p(em(indices_db[name==index,longname])),
         p(strong("Formula:"),
@@ -2074,7 +2100,9 @@ s2_gui <- function(param_list = NULL,
     output$show_formula <- renderUI({
       column(
         width=4,
-        lapply(indices_rv$checked, index_details)
+        fluidRow(
+          lapply(indices_rv$checked, index_details)
+        )
       )
     })
     
@@ -3504,7 +3532,6 @@ s2_gui <- function(param_list = NULL,
     observeEvent(input$import_param, {
       
       # server-side button
-      import_param_path <- input$import_param
       import_param_path <- parseFilePaths(volumes,input$import_param)
       rv$imported_param <- if (nrow(import_param_path)>0) {
         import_param_path$datapath %>%
@@ -3529,9 +3556,8 @@ s2_gui <- function(param_list = NULL,
     })
     
     observeEvent(param_list, {
-      if (!is.null(param_list)) {
-        import_param_list(param_list)
-      }
+      req(param_list)
+      import_param_list(param_list)
     })
     
     ## end of path module ##
