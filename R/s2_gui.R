@@ -32,7 +32,7 @@
 #'  shinyDirButton shinyDirChoose shinyFileChoose shinyFileSave
 #'  shinyFilesButton shinySaveButton
 #' @importFrom shinyjs click delay disable enable useShinyjs extendShinyjs
-#' @importFrom shinyWidgets sendSweetAlert updatePickerInput
+#' @importFrom shinyWidgets sendSweetAlert pickerInput updatePickerInput
 #' @importFrom stats setNames
 #'
 #' @export
@@ -156,7 +156,6 @@ s2_gui <- function(param_list = NULL,
             class="darkbutton"
           )
         ),
-        # actionButton("import_param_deactivated", label = "Load options", class = "darkbutton"),
         p(style="margin-top:20pt;",
           actionButton(
             "return_param",
@@ -499,64 +498,86 @@ s2_gui <- function(param_list = NULL,
               condition = "input.query_space == 'TRUE'",
               fluidRow(
                 
+                # Buttons to load the extent with modal dialogs
                 column(
-                  width=6,
-                  
-                  div(style="display:inline-block;vertical-align:top;",
-                      span(
-                        strong("Extent name:\u2000"),
-                        actionLink("help_extent_name", icon("question-circle"))
-                      )),
-                  div(style="vertical-align:top;",
-                      textInput("extent_name_textin", NULL, "sen2r")),
-                  
-                  # Buttons to load the extent with modal dialogs
-                  strong("Specify the extent:\u2000"),
-                  span(
-                    div(style="padding-top:5px;",
-                        actionButton(
-                          "button_extent_bbox",
-                          label = "\u2000Specify a bounding box",
-                          width = 200,
-                          icon=icon("object-group")
-                        )),
-                    div(style="padding-top:10px;",
-                        actionButton(
-                          "button_extent_vectfile",
-                          label = "\u2000Load a vector file",
-                          width = 200,
-                          icon=icon("upload")
-                        )),
-                    div(style="padding-top:10px;",
-                        actionButton(
-                          "button_extent_draw",
-                          label = "\u2000Draw it on the map",
-                          width = 200,
-                          icon=icon("paint-brush")
-                        )),
-                    div(style="padding-top:10px;padding-bottom:10px;",
-                        actionButton(
-                          "button_refresh_map",
-                          label = "\u2000Reload the extent on map",
-                          width = 200,
-                          icon=icon("retweet")
-                        ))
+                  width=4,
+                  div(
+                    style="padding-bottom:5px;",
+                    strong("Specify the extent:\u2000")
+                  ),
+                  div(
+                    style="padding-bottom:10px;",
+                    actionButton(
+                      "button_extent_bbox",
+                      label = "\u2000Set a bounding box",
+                      width = "100%",
+                      icon=icon("object-group")
+                    )
+                  ),
+                  div(
+                    style="padding-bottom:10px;",
+                    actionButton(
+                      "button_extent_vectfile",
+                      label = "\u2000Load a vector file",
+                      width = "100%",
+                      icon=icon("upload")
+                    )
+                  ),
+                  div(
+                    style="padding-bottom:10px;",
+                    actionButton(
+                      "button_extent_draw",
+                      label = "\u2000Draw it on the map",
+                      width = "100%",
+                      icon=icon("paint-brush")
+                    )
                   )
-                  
                 ),
                 
+                # Select tiles and orbits
                 column(
-                  width=6,
+                  width=4,
                   div(
-                    checkboxGroupInput(
-                      "tiles_checkbox",
-                      "Tiles selected",
+                    pickerInput(
+                      "tiles_checkbox", "Tiles selected",
                       choices = character(0),
-                      selected = character(0),
-                      inline = FALSE
+                      options = list(
+                        `selected-text-format` = "count > 3",
+                        `live-search` = TRUE,
+                        title = "All overlapping tiles"
+                      ), 
+                      multiple = TRUE
                     ),
-                    strong("Orbits selected"),
-                    helpText(em("Not yet implemented."))
+                    pickerInput(
+                      "orbits_checkbox", "Orbits selected", 
+                      choices = str_pad(1:143, 3, "left", "0"), 
+                      options = list(
+                        `selected-text-format` = "count > 6",
+                        `live-search` = TRUE,
+                        title = "All overlapping orbits"
+                      ), 
+                      multiple = TRUE
+                    )
+                    # helpText(em("Not yet implemented."))
+                  )
+                ),
+                
+                # Specify the extent name and upload the map
+                column(
+                  width=4,
+                  textInput(
+                    "extent_name_textin", 
+                    span(
+                      strong("Extent name:\u2000"),
+                      actionLink("help_extent_name", icon("question-circle"))
+                    ), 
+                    "sen2r"
+                  ),
+                  actionButton(
+                    "button_refresh_map",
+                    label = "\u2000Refresh the map",
+                    width = "100%",
+                    icon=icon("retweet")
                   )
                 )
                 
@@ -1481,12 +1502,17 @@ s2_gui <- function(param_list = NULL,
         
         if (attr(rv$extent, "new")) {
           # update the list of tiles
-          updateCheckboxGroupInput(
+          # updateCheckboxGroupInput(
+          #   session, "tiles_checkbox",
+          #   choiceNames = lapply(rv$draw_tiles_overlapping$tile_id, span, style="family:monospace;"),
+          #   choiceValues = rv$draw_tiles_overlapping$tile_id,
+          #   selected = rv$draw_tiles_overlapping$tile_id,
+          #   inline = nrow(rv$draw_tiles_overlapping) > 12 # inline if they are many
+          # )
+          updatePickerInput(
             session, "tiles_checkbox",
-            choiceNames = lapply(rv$draw_tiles_overlapping$tile_id, span, style="family:monospace;"),
-            choiceValues = rv$draw_tiles_overlapping$tile_id,
-            selected = rv$draw_tiles_overlapping$tile_id,
-            inline = nrow(rv$draw_tiles_overlapping) > 8 # inline if they are many
+            choices = rv$draw_tiles_overlapping$tile_id,
+            selected = rv$draw_tiles_overlapping$tile_id
           )
         }
         
@@ -1525,8 +1551,7 @@ s2_gui <- function(param_list = NULL,
       } else {
         rv$draw_tiles_overlapping <- NULL
         # empty the list of tiles
-        updateCheckboxGroupInput(session, "tiles_checkbox",
-                                 choices = NULL)
+        updatePickerInput(session, "tiles_checkbox", choices = character(0))
         # reset the map
         react_map(base_map())
         # leafletProxy("view_map") %>%
@@ -1558,10 +1583,10 @@ s2_gui <- function(param_list = NULL,
                  group = "Satellite") %>%
         # addProviderTiles(providers$CartoDB.PositronOnlyLabels, group = "Dark names") %>%
         addTiles("https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_only_labels/{z}/{x}/{y}.png",
-                 group = "Light names") %>%
+                 group = "Satellite") %>%
         # addProviderTiles(providers$CartoDB.DarkMatterOnlyLabels, group = "Dark names") %>%
-        addTiles("https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_only_labels/{z}/{x}/{y}.png",
-                 group = "Dark names") %>%
+        # addTiles("https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_only_labels/{z}/{x}/{y}.png",
+        #          group = "Dark names") %>%
         # addTiles(paste0("https://{s}.tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png",
         #                 if (!is.na(thunderforest_api)) {paste0("?apikey=",thunderforest_api)}),
         #          group = "Metal or death") %>%
@@ -1569,8 +1594,8 @@ s2_gui <- function(param_list = NULL,
         # view and controls
         addLayersControl(
           baseGroups = c("OpenStreetMap", "OpenTopoMap", "CartoDB", "Satellite"),
-          overlayGroups = c("Light names","Dark names","S2 tiles","Extent"),
-          options = layersControlOptions(collapsed = FALSE)
+          overlayGroups = c("S2 tiles","Extent"),
+          options = layersControlOptions(collapsed = TRUE)
         ) %>%
         hideGroup(c("Light names","Dark names"))
     }
@@ -2989,23 +3014,6 @@ s2_gui <- function(param_list = NULL,
       ))
     })
     
-    observeEvent(input$import_param_deactivated, {
-      showModal(modalDialog(
-        title = "Issue with import parameter function",
-        p(HTML(
-          "The function used to import parameter list was temporary",
-          "deactivated, due to an incompatibility with another module.",
-          "To import a JSON option file, launch <tt>sen2r()</tt>",
-          "function with the path of the file as argument:"
-        )),
-        p(HTML(
-          "<tt>sen2r(param_list = \"/path/of/the/file.json\")</tt>"
-        )),
-        easyClose = TRUE,
-        footer = NULL
-      ))
-    })
-    
     
     ## Exit and save
     
@@ -3083,12 +3091,16 @@ s2_gui <- function(param_list = NULL,
       } else {
         NA
       }
-      rl$s2tiles_selected <- if (input$query_space == TRUE & !is.null(input$tiles_checkbox)) {
+      rl$s2tiles_selected <- if (input$query_space == TRUE & length(nn(input$tiles_checkbox)>0)) {
         input$tiles_checkbox
       } else {
         NA
       } # selected tile IDs
-      rl$s2orbits_selected <- NA # temporary select all orbits (TODO implement)
+      rl$s2orbits_selected <- if (input$query_space == TRUE & length(nn(input$orbits_checkbox)>0)) {
+        input$orbits_checkbox
+      } else {
+        NA
+      } # selected orbit IDs
       
       # product selection #
       rl$list_prods <- input$list_prods[!input$list_prods %in% c("indices","rgbimages")] # TOA, BOA, SCL, TCI (for now)
@@ -3313,10 +3325,10 @@ s2_gui <- function(param_list = NULL,
         # (the delay is required to update the map after the map is charged)
         shinyjs::delay(5E3, {
           update_extent("imported", custom_source = pl$extent)
-          updateCheckboxGroupInput(session, "tiles_checkbox",
-                                   selected = pl$s2tiles_selected)
+          updatePickerInput(session, "tiles_checkbox", selected = if(length(nn(pl$s2tiles_selected))>0) {pl$s2tiles_selected} else {NA})
           
         })
+        updatePickerInput(session, "orbits_checkbox", selected = if(length(nn(pl$s2orbits_selected))>0) {pl$s2orbits_selected} else {NA})
         setProgress(1)
         # sendSweetAlert(
         #   session, 
@@ -3354,7 +3366,7 @@ s2_gui <- function(param_list = NULL,
     })
     
     # if Export is pressed, export the values (using server-side button)
-    observe({
+    observeEvent(input$export_param, {
       shinyFileSave(input, "export_param", roots=volumes, session=session)
       export_param_path <- parseSavePath(volumes, input$export_param)
       if (nrow(export_param_path)>0) {
