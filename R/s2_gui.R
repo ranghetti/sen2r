@@ -57,9 +57,6 @@ s2_gui <- function(param_list = NULL,
   
   # TODO: populate parameter values with param_list content, if provided
   
-  # extract and import tiles kml
-  s2tiles <- s2_tiles()
-  
   jscode <- "shinyjs.closeWindow = function() { window.close(); }"
   
   # shiny
@@ -988,11 +985,17 @@ s2_gui <- function(param_list = NULL,
                       div(
                         style="display:inline-block;vertical-align:top;width:77pt;",
                         shinyFilesButton("reference_file_button", "Select raster", "Select reference file", multiple=FALSE),
-                        "\u2001"),
+                        "\u2001"
+                      ),
                       div(
-                        style="display:inline-block;vertical-align:top;width:calc(100% - 77pt - 3px);",
-                        textInput("reference_file_textin", label = NULL, "", width="100%"))),
-                    uiOutput("reference_file_message")
+                        style="display:inline-block;vertical-align:top;width:calc(100% - 77pt - 10px - 10pt);",
+                        textInput("reference_file_textin", label = NULL, "", width="100%")
+                      ),
+                      div(
+                        style="display:inline-block;vertical-align:top;width:10pt;padding-left:5px;",
+                        uiOutput("reference_file_message")
+                      )
+                    )
                     
                   )
                 ), # end of column reference
@@ -1022,11 +1025,14 @@ s2_gui <- function(param_list = NULL,
                   strong("Spatial resolution"),
                   conditionalPanel(
                     condition = "input.use_reference == 'FALSE' || input.reference_usefor.indexOf('res') < 0",
-                    radioButtons("rescale", label = NULL,
-                                 choices = list("Native" = FALSE,
-                                                "Custom" = TRUE),
-                                 selected = FALSE,
-                                 inline = TRUE),
+                    div(
+                      style="margin-top:0.25em;",
+                      radioButtons("rescale", label = NULL,
+                                   choices = list("Native" = FALSE,
+                                                  "Custom" = TRUE),
+                                   selected = FALSE,
+                                   inline = TRUE)
+                    ),
                     conditionalPanel(
                       condition = "input.rescale == 'FALSE'",
                       radioButtons("resolution_s2", label = "Specify resolution",
@@ -1052,7 +1058,7 @@ s2_gui <- function(param_list = NULL,
                 column(
                   width=4,
                   
-                  strong("Output projection"),
+                  div(style="margin-bottom:-0.25em;", strong("Output projection")),
                   conditionalPanel(
                     condition = "input.use_reference == 'FALSE' || input.reference_usefor.indexOf('proj') < 0",
                     radioButtons("reproj", label = NULL,
@@ -1242,6 +1248,24 @@ s2_gui <- function(param_list = NULL,
   
   s2_gui.server <- function(input, output, session) {
     
+    # open a waiting modal dialog
+    modalDialog(
+      div(
+        p(
+          style = paste0("text-align:center;font-size:500%;color:grey;"),
+          icon("spinner", class = "fa-pulse")
+        ),
+        p(
+          style = paste0("text-align:center;"),
+          "GUI is initialising, please wait..."
+        )
+      ),
+      size = "s",
+      easyClose = FALSE,
+      footer = NULL
+    ) %>%
+      shiny::showModal()
+    
     # link to www directory and objects
     addResourcePath("www", system.file("www", package="sen2r"))
     output$img_logo<-renderUI(
@@ -1256,6 +1280,10 @@ s2_gui <- function(param_list = NULL,
     
     # get server volumes
     volumes <- c("Home"=path.expand("~"), getVolumes()())
+    
+    # extract and import tiles kml
+    s2tiles <- s2_tiles()
+    
     
     ## Steps module ##
     
@@ -2165,6 +2193,8 @@ s2_gui <- function(param_list = NULL,
           span(style="color:darkgreen", "\u2001\u2714") # check
         } else if (!is.null(input$reference_file_button)) {
           span(style="color:red", "\u2001\u2718") # ballot
+        } else {
+          ""
         }
       })
     })
@@ -2186,20 +2216,23 @@ s2_gui <- function(param_list = NULL,
     
     ## Update resolution from reference file
     output$outres_message <- renderUI({
-      if(input$use_reference==TRUE & "res" %in% input$reference_usefor) {
-        if (!is.null(reference())) {
-          span(style="color:darkgreen",
-               paste0(
-                 paste(reference()$res,
-                       collapse="\u2006\u00d7\u2006"),  # shortspace times shortspace
-                 switch(reference()$unit,
-                        Degree="\u00b0",  # shortspace degree
-                        Meter="\u2006m",  # shortspace m
-                        "")))
-        } else {
-          span(style="color:grey",
-               "Specify a valid raster file.")
-        }
+      if (input$use_reference==TRUE & "res" %in% input$reference_usefor) {
+        div(
+          style = "padding-top:0.25em;",
+          if (!is.null(reference())) {
+            span(style="color:darkgreen",
+                 paste0(
+                   paste(reference()$res,
+                         collapse="\u2006\u00d7\u2006"),  # shortspace times shortspace
+                   switch(reference()$unit,
+                          Degree="\u00b0",  # shortspace degree
+                          Meter="\u2006m",  # shortspace m
+                          "")))
+          } else {
+            span(style="color:grey",
+                 "Specify a valid raster file.")
+          }
+        )
       } else {
         ""
       }
@@ -2211,13 +2244,16 @@ s2_gui <- function(param_list = NULL,
       # if required, take from reference raster
       if(input$use_reference==TRUE & "proj" %in% input$reference_usefor) {
         
-        if (!is.null(reference())) {
-          span(style="color:darkgreen",
-               projname(reference()$proj))
-        } else {
-          span(style="color:grey",
-               "Specify a valid raster file.")
-        }
+        div(
+          style = "padding-top:0.5em;",
+          if (!is.null(reference())) {
+            span(style="color:darkgreen",
+                 projname(reference()$proj))
+          } else {
+            span(style="color:grey",
+                 "Specify a valid raster file.")
+          }
+        )
         
         # else, take the specified one
       } else {
@@ -3566,6 +3602,9 @@ s2_gui <- function(param_list = NULL,
     session$onSessionEnded(function() {
       stopApp()
     })
+    
+    # Remove waiting modal dialog
+    removeModal()
     
   } # end of s2_gui.server function
   
