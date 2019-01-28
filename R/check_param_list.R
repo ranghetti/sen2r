@@ -169,14 +169,18 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   
   # check output paths
   # (if no products are selected, set to NA)
-  if (!is.na(pm$path_out) & sum(!is.na(nn(pm$list_prods)))==0) {
-    pm$path_out <- NA
-  }
-  if (!is.na(pm$path_indices) & sum(!is.na(pm$list_indices))==0) {
+  if (sum(!is.na(pm$list_indices))==0) {
     pm$path_indices <- NA
+  } else if (is.na(pm$path_indices) | pm$path_indices=="") {
+    pm$path_indices <- pm$path_out
   }
-  if (!is.na(pm$path_rgb) & sum(!is.na(pm$list_rgb))==0) {
+  if (sum(!is.na(pm$list_rgb))==0) {
     pm$path_rgb <- NA
+  } else if (is.na(pm$path_rgb) | pm$path_rgb=="") {
+    pm$path_rgb <- pm$path_out
+  }
+  if (sum(!is.na(nn(pm$list_prods)))==0) {
+    pm$path_out <- NA
   }
   
   # check s2orbits_selected

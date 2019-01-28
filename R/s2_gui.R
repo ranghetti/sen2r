@@ -1126,11 +1126,7 @@ s2_gui <- function(param_list = NULL,
                     div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                             shinyDirButton("path_indices_sel", "Select", "Specify directory for spectral indices")),
                         div(style="display:inline-block;vertical-align:top;width:calc(100% - 50pt - 3px);",
-                            textInput("path_indices_textin", NULL, ""))),
-                    div(style="display:inline-block;vertical-align:top;",
-                        actionButton("path_indices_cp", "Copy from directory for output processed products"))),
-                
-                br(),
+                            textInput("path_indices_textin", NULL, "", placeholder = "The same used for output products")))),
                 
                 fluidRow(
                   column(
@@ -1208,11 +1204,7 @@ s2_gui <- function(param_list = NULL,
                     div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                             shinyDirButton("path_rgb_sel", "Select", "Specify directory for RGB images")),
                         div(style="display:inline-block;vertical-align:top;width:calc(100% - 50pt - 3px);",
-                            textInput("path_rgb_textin", NULL, ""))),
-                    div(style="display:inline-block;vertical-align:top;",
-                        actionButton("path_rgb_cp", "Copy from directory for output processed products"))),
-                
-                br(),
+                            textInput("path_rgb_textin", NULL, "", placeholder = "The same used for output products")))),
                 
                 uiOutput("checkbox_list_rgb"),
                 
@@ -2544,13 +2536,13 @@ s2_gui <- function(param_list = NULL,
       output$path_rgb_errormess <- path_check(input$path_rgb_textin)
     })
     
-    # action button to copy indices_path and rgb_path from out_path
-    observeEvent(input$path_indices_cp, {
-      updateTextInput(session, "path_indices_textin", value = input$path_out_textin)
-    })
-    observeEvent(input$path_rgb_cp, {
-      updateTextInput(session, "path_rgb_textin", value = input$path_out_textin)
-    })
+    # # action button to copy indices_path and rgb_path from out_path
+    # observeEvent(input$path_indices_cp, {
+    #   updateTextInput(session, "path_indices_textin", value = input$path_out_textin)
+    # })
+    # observeEvent(input$path_rgb_cp, {
+    #   updateTextInput(session, "path_rgb_textin", value = input$path_out_textin)
+    # })
     
     ## Question messages
     
