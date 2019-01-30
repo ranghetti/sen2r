@@ -11,6 +11,9 @@
 #'  two candidate tiles is returned (the first in alphabetical order).
 #' @param out_format character: if "sf", the spatial object of the overlapping tiles
 #'  is returned; if "id" (default), a character vector with the tile IDs.
+#' @param .s2tiles output of [s2_tiles()] function (it is possible to pass it
+#'  in order to speed up the execution;
+#'  otherwise leave to NULL and it will be generated within the function).
 #' @return the tiles intersecting the extent (see argument `out_format`).
 #' @export
 #' @importFrom sf st_area st_combine st_difference st_intersection 

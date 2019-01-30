@@ -26,7 +26,7 @@
 #' # a path with a common parent with ref_path
 #' (in_path_1 <- system.file(package="gdalUtils"))
 #' # a path included in ref_path
-#' (in_path_2 <- system.file("R", "abs2rel.R", package="sen2r"))
+#' (in_path_2 <- system.file("R/abs2rel.R", package="sen2r"))
 #' # a path external to ref_path (in Linux)
 #' (in_path_3 <- system.file(package="base"))
 #' # an unexisting path
