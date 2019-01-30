@@ -1,0 +1,2 @@
+/home/lranghetti/share/git/github/ranghetti/sen2r/inst/extdata/example_files/out/out_test2/BOA/S2A2A_20180807_022_Scalve_BOA_10.tif
+/tmp/RtmpGXQijQ/sen2r_26ea4b1afda5/group26ea5884bc2/warped/SCL/S2A2A_20180807_022_Scalve_SCL_10.tif

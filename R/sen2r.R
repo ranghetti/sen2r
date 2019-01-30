@@ -953,29 +953,41 @@ sen2r <- function(param_list = NULL,
     # if online mode, retrieve list with s2_list() basing on parameters
     if ("l1c" %in% pm$s2_levels) {
       # list of SAFE (L1C) needed for required L1C
-      s2_lists[["l1c"]] <- s2_list(spatial_extent = pm$extent,
-                                   time_interval = pm$timewindow,
-                                   time_period = pm$timeperiod,
-                                   tile = pm$s2tiles_selected,
-                                   level = "L1C",
-                                   max_cloud = pm$max_cloud_safe,
-                                   apihub = pm$apihub)
+      s2_lists[["l1c"]] <- s2_list(
+        spatial_extent = pm$extent,
+        time_interval = pm$timewindow,
+        time_period = pm$timeperiod,
+        tile = if (any(length(nn(pm$s2tiles_selected))==0, all(is.na(pm$s2tiles_selected)))) {
+          tiles_intersects(pm$extent)
+        } else {
+          pm$s2tiles_selected
+        },
+        level = "L1C",
+        max_cloud = pm$max_cloud_safe,
+        apihub = pm$apihub
+      )
     }
     if ("l2a" %in% pm$s2_levels) {
       # list of SAFE (L1C or/and L2A) needed for required L2A
-      s2_lists[["l2a"]] <- s2_list(spatial_extent = pm$extent,
-                                   time_interval = pm$timewindow,
-                                   time_period = pm$timeperiod,
-                                   tile = pm$s2tiles_selected,
-                                   level = if (pm$step_atmcorr=="auto") {
-                                     "auto"
-                                   } else if (pm$step_atmcorr=="l2a") {
-                                     "L2A"
-                                   } else if (pm$step_atmcorr %in% c("scihub","no")) {
-                                     "L1C"
-                                   },
-                                   max_cloud = pm$max_cloud_safe,
-                                   apihub = pm$apihub)
+      s2_lists[["l2a"]] <- s2_list(
+        spatial_extent = pm$extent,
+        time_interval = pm$timewindow,
+        time_period = pm$timeperiod,
+        tile = if (any(length(nn(pm$s2tiles_selected))==0, all(is.na(pm$s2tiles_selected)))) {
+          tiles_intersects(pm$extent)
+        } else {
+          pm$s2tiles_selected
+        },
+        level = if (pm$step_atmcorr=="auto") {
+          "auto"
+        } else if (pm$step_atmcorr=="l2a") {
+          "L2A"
+        } else if (pm$step_atmcorr %in% c("scihub","no")) {
+          "L1C"
+        },
+        max_cloud = pm$max_cloud_safe,
+        apihub = pm$apihub
+      )
     }
     
   } else {
@@ -1125,14 +1137,13 @@ sen2r <- function(param_list = NULL,
   # if pm$s2tiles_selected contains NA, do not filter on tiles now;
   # otherwise, filter on tiles but keep also NA not to discard old name products.
   # (products will be filtered later: #filter2)
-  if (all(!is.na(pm$s2tiles_selected))) {
+  if (!any(length(nn(pm$s2tiles_selected))==0, all(is.na(pm$s2tiles_selected)))) {
     s2_dt <- s2_dt[id_tile %in% c(as.character(pm$s2tiles_selected),NA),]
   } else if (all(st_is_valid(pm$extent))) {
     # if no tiles were specified, select only tiles which overlap the extent
     # (this to prevent to use unuseful SAFE in offline mode)
-    s2tiles <- s2_tiles()
-    s2tiles_sel <- s2tiles[lengths(st_intersects(s2tiles, st_transform(pm$extent, st_crs(s2tiles)))) > 0,]
-    s2_dt <- s2_dt[id_tile %in% s2tiles_sel$tile_id,]
+    s2tiles_sel_id <- tiles_intersects(pm$extent)
+    s2_dt <- s2_dt[id_tile %in% s2tiles_sel_id,]
   }
   if (all(!is.na(pm$s2orbits_selected))) {
     s2_dt <- s2_dt[id_orbit %in% pm$s2orbits_selected,]
@@ -1568,7 +1579,7 @@ sen2r <- function(param_list = NULL,
         }
       ) %>%
         sapply(paste, collapse = " ") %>% as.character()
-      if (all(!is.na(pm$s2tiles_selected)) & nrow(sel_s2_dt)>0) {
+      if (!any(length(nn(pm$s2tiles_selected))==0, all(is.na(pm$s2tiles_selected))) & nrow(sel_s2_dt)>0) {
         # filter "elegant" using strsplit (fails with empty sel_s2_dt)
         sel_s2_dt <- sel_s2_dt[sapply(strsplit(sel_s2_dt$id_tile," "), function(x){
           any(x %in% pm$s2tiles_selected)

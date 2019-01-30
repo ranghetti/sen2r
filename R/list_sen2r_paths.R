@@ -38,14 +38,17 @@
 #' @param resampling `sen2r` argument (refer to [sen2r] documentation).
 #' @param resampling_scl `sen2r` argument (refer to [sen2r] documentation).
 #' @param outformat `sen2r` argument (refer to [sen2r] documentation).
+#' @param rgb_outformat `sen2r` argument (refer to [sen2r] documentation).
 #' @param index_datatype `sen2r` argument (refer to [sen2r] documentation).
 #' @param compression `sen2r` argument (refer to [sen2r] documentation).
+#' @param rgb_compression `sen2r` argument (refer to [sen2r] documentation).
 #' @param overwrite `sen2r` argument (refer to [sen2r] documentation).
 #' @param path_l1c `sen2r` argument (refer to [sen2r] documentation).
 #' @param path_l2a `sen2r` argument (refer to [sen2r] documentation).
 #' @param path_tiles `sen2r` argument (refer to [sen2r] documentation).
 #' @param path_merged `sen2r` argument (refer to [sen2r] documentation).
 #' @param path_out `sen2r` argument (refer to [sen2r] documentation).
+#' @param path_rgb `sen2r` argument (refer to [sen2r] documentation).
 #' @param path_indices `sen2r` argument (refer to [sen2r] documentation).
 #' @param path_subdirs `sen2r` argument (refer to [sen2r] documentation).
 #' @param thumbnails `sen2r` argument (refer to [sen2r] documentation).
@@ -94,14 +97,17 @@ list_sen2r_paths <- function(param_list = NULL,
                              resampling = "near",
                              resampling_scl = "near",
                              outformat = "GTiff",
+                             rgb_outformat = "GTiff",
                              index_datatype = "Int16",
                              compression = "DEFLATE",
+                             rgb_compression = "90",
                              overwrite = FALSE,
                              path_l1c = NA,
                              path_l2a = NA,
                              path_tiles = NA,
                              path_merged = NA,
                              path_out = NA,
+                             path_rgb = NA,
                              path_indices = NA,
                              path_subdirs = TRUE,
                              thumbnails = TRUE,
@@ -160,14 +166,17 @@ list_sen2r_paths <- function(param_list = NULL,
     resampling = resampling,
     resampling_scl = resampling_scl,
     outformat = outformat,
+    rgb_outformat = rgb_outformat,
     index_datatype = index_datatype,
     compression = compression,
+    rgb_compression = rgb_compression,
     overwrite = overwrite,
     path_l1c = path_l1c,
     path_l2a = path_l2a,
     path_tiles = path_tiles,
     path_merged = path_merged,
     path_out = path_out,
+    path_rgb = path_rgb,
     path_indices = path_indices,
     path_subdirs = path_subdirs,
     thumbnails = thumbnails,

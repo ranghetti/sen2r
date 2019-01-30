@@ -1567,7 +1567,7 @@ s2_gui <- function(param_list = NULL,
       # 2. Update the list of overlapping tiles and the tiles on the map
       if(length(rv$extent) > 0) {
         
-        rv$draw_tiles_overlapping <- s2tiles[unique(unlist(suppressMessages(st_intersects(st_transform(rv$extent,4326), s2tiles)))),]
+        rv$draw_tiles_overlapping <- tiles_intersects(rv$extent, all=TRUE, out_format="sf", .s2tiles=s2tiles)
         names(sf::st_geometry(rv$draw_tiles_overlapping)) <- NULL
         
         if (attr(rv$extent, "new")) {
@@ -1581,8 +1581,8 @@ s2_gui <- function(param_list = NULL,
           # )
           updatePickerInput(
             session, "tiles_checkbox",
-            choices = rv$draw_tiles_overlapping$tile_id#,
-            # selected = rv$draw_tiles_overlapping$tile_id
+            choices = rv$draw_tiles_overlapping$tile_id,
+            selected = tiles_intersects(rv$extent, .s2tiles = rv$draw_tiles_overlapping)
           )
         }
         

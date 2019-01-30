@@ -151,9 +151,10 @@ if <a href='sen2r.html'>sen2r</a>.</p>
   <span class='kw'>clip_on_extent</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>extent_as_mask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>reference_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res_s2</span> <span class='kw'>=</span> <span class='st'>"10m"</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"Meter"</span>, <span class='kw'>proj</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>resampling</span> <span class='kw'>=</span> <span class='st'>"near"</span>, <span class='kw'>resampling_scl</span> <span class='kw'>=</span> <span class='st'>"near"</span>, <span class='kw'>outformat</span> <span class='kw'>=</span> <span class='st'>"GTiff"</span>,
-  <span class='kw'>index_datatype</span> <span class='kw'>=</span> <span class='st'>"Int16"</span>, <span class='kw'>compression</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>,
-  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>path_l1c</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_l2a</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>path_merged</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_out</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>rgb_outformat</span> <span class='kw'>=</span> <span class='st'>"GTiff"</span>, <span class='kw'>index_datatype</span> <span class='kw'>=</span> <span class='st'>"Int16"</span>,
+  <span class='kw'>compression</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>rgb_compression</span> <span class='kw'>=</span> <span class='st'>"90"</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>path_l1c</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_l2a</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_merged</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>path_out</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_rgb</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>path_subdirs</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>thumbnails</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>processing_order</span> <span class='kw'>=</span> <span class='st'>"by_step"</span>, <span class='kw'>use_python</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>log</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
@@ -370,11 +371,19 @@ if FALSE, only non temporary files are searched.</p></td>
       <td><p><code>sen2r</code> argument (refer to <a href='sen2r.html'>sen2r</a> documentation).</p></td>
     </tr>
     <tr>
+      <th>rgb_outformat</th>
+      <td><p><code>sen2r</code> argument (refer to <a href='sen2r.html'>sen2r</a> documentation).</p></td>
+    </tr>
+    <tr>
       <th>index_datatype</th>
       <td><p><code>sen2r</code> argument (refer to <a href='sen2r.html'>sen2r</a> documentation).</p></td>
     </tr>
     <tr>
       <th>compression</th>
+      <td><p><code>sen2r</code> argument (refer to <a href='sen2r.html'>sen2r</a> documentation).</p></td>
+    </tr>
+    <tr>
+      <th>rgb_compression</th>
       <td><p><code>sen2r</code> argument (refer to <a href='sen2r.html'>sen2r</a> documentation).</p></td>
     </tr>
     <tr>
@@ -399,6 +408,10 @@ if FALSE, only non temporary files are searched.</p></td>
     </tr>
     <tr>
       <th>path_out</th>
+      <td><p><code>sen2r</code> argument (refer to <a href='sen2r.html'>sen2r</a> documentation).</p></td>
+    </tr>
+    <tr>
+      <th>path_rgb</th>
       <td><p><code>sen2r</code> argument (refer to <a href='sen2r.html'>sen2r</a> documentation).</p></td>
     </tr>
     <tr>

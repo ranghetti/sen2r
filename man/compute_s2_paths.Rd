@@ -21,9 +21,10 @@ list_sen2r_paths(param_list = NULL, gui = NA, preprocess = TRUE,
   clip_on_extent = TRUE, extent_as_mask = FALSE, reference_path = NA,
   res = NA, res_s2 = "10m", unit = "Meter", proj = NA,
   resampling = "near", resampling_scl = "near", outformat = "GTiff",
-  index_datatype = "Int16", compression = "DEFLATE",
-  overwrite = FALSE, path_l1c = NA, path_l2a = NA, path_tiles = NA,
-  path_merged = NA, path_out = NA, path_indices = NA,
+  rgb_outformat = "GTiff", index_datatype = "Int16",
+  compression = "DEFLATE", rgb_compression = "90", overwrite = FALSE,
+  path_l1c = NA, path_l2a = NA, path_tiles = NA, path_merged = NA,
+  path_out = NA, path_rgb = NA, path_indices = NA,
   path_subdirs = TRUE, thumbnails = TRUE, parallel = TRUE,
   processing_order = "by_step", use_python = TRUE, tmpdir = NA,
   rmtmp = TRUE, log = NA)
@@ -135,9 +136,13 @@ if FALSE, only non temporary files are searched.}
 
 \item{outformat}{\code{sen2r} argument (refer to \link{sen2r} documentation).}
 
+\item{rgb_outformat}{\code{sen2r} argument (refer to \link{sen2r} documentation).}
+
 \item{index_datatype}{\code{sen2r} argument (refer to \link{sen2r} documentation).}
 
 \item{compression}{\code{sen2r} argument (refer to \link{sen2r} documentation).}
+
+\item{rgb_compression}{\code{sen2r} argument (refer to \link{sen2r} documentation).}
 
 \item{overwrite}{\code{sen2r} argument (refer to \link{sen2r} documentation).}
 
@@ -150,6 +155,8 @@ if FALSE, only non temporary files are searched.}
 \item{path_merged}{\code{sen2r} argument (refer to \link{sen2r} documentation).}
 
 \item{path_out}{\code{sen2r} argument (refer to \link{sen2r} documentation).}
+
+\item{path_rgb}{\code{sen2r} argument (refer to \link{sen2r} documentation).}
 
 \item{path_indices}{\code{sen2r} argument (refer to \link{sen2r} documentation).}
 

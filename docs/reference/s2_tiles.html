@@ -129,10 +129,13 @@
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>s2tiles</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_tiles</span>()</div><span class='co'># NOT RUN {</span>
+    <pre class="examples"><div class='input'><span class='co'># Retrieve all the tiles</span>
+<span class='no'>s2tiles</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_tiles</span>()
+
+<span class='co'># Show a subset of all the tiles</span>
 <span class='no'>s2tiles_it</span> <span class='kw'>&lt;-</span> <span class='no'>s2tiles</span>[<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/grep'>grep</a></span>(<span class='st'>"^3[23]T"</span>, <span class='no'>s2tiles</span>$<span class='no'>tile_id</span>),]
-<span class='kw pkg'>mapview</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/mapview/topics/mapView'>mapview</a></span>(<span class='no'>s2tiles_it</span>)
-<span class='co'># }</span></pre>
+<span class='no'>s2_coords</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_coordinates'>st_coordinates</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/warning'>suppressWarnings</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/geos_unary'>st_centroid</a></span>(<span class='no'>s2tiles_it</span>)))
+<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>s2tiles_it</span>$<span class='no'>geometry</span>)</div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/text'>text</a></span>(<span class='no'>s2_coords</span>[,<span class='fl'>1</span>], <span class='no'>s2_coords</span>[,<span class='fl'>2</span>], <span class='no'>s2tiles_it</span>$<span class='no'>tile_id</span>, <span class='kw'>cex</span><span class='kw'>=</span><span class='fl'>0.5</span>)</div><div class='img'><img src='s2_tiles-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
