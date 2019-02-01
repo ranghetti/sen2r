@@ -1,5 +1,5 @@
 
--   [An R toolbox to find, download and preprocess Sentinel-2 data](#an-r-toolbox-to-find-download-and-preprocess-sentinel-2-data)
+-   [R toolbox to find, download and preprocess Sentinel-2 data](#r-toolbox-to-find-download-and-preprocess-sentinel-2-data)
     -   [Warning](#warning)
     -   [Installation](#installation)
     -   [Usage](#usage)
@@ -11,8 +11,8 @@
 
 <img src="man/figures/sen2r_logo_200px.png" width="200" height="113" align="right" />
 
-An R toolbox to find, download and preprocess Sentinel-2 data
-=============================================================
+R toolbox to find, download and preprocess Sentinel-2 data
+==========================================================
 
 <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> is an R library which helps to download and preprocess Sentinel-2 optical images. The purpose of the functions contained in the library is to provide the instruments required to easily perform (and eventually automate) all the steps necessary to build a complete Sentinel-2 processing chain, without the need of any manual intervention nor the needing to manually integrate any external tool.
 
@@ -67,7 +67,7 @@ sen2r()
 this opens a GUI which allows to set the required processing parameters, and then launches the main function.
 
 <p style="text-align:center;">
-<a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet1.jpg" target="_blank"> <img src="man/figures/sen2r_gui_sheet1_small.png"> </a> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet2.jpg" target="_blank"> <img src="man/figures/sen2r_gui_sheet2_small.png"> </a> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet3.jpg" target="_blank"> <img src="man/figures/sen2r_gui_sheet3_small.png"> </a> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet4.jpg" target="_blank"> <img src="man/figures/sen2r_gui_sheet4_small.png"> </a>
+<a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet1.png" target="_blank"> <img src="man/figures/sen2r_gui_sheet1_small.png"> </a> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet2.png" target="_blank"> <img src="man/figures/sen2r_gui_sheet2_small.png"> </a> <br/> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet3.png" target="_blank"> <img src="man/figures/sen2r_gui_sheet3_small.png"> </a> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet4.png" target="_blank"> <img src="man/figures/sen2r_gui_sheet4_small.png"> </a> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet5.png" target="_blank"> <img src="man/figures/sen2r_gui_sheet5_small.png"> </a>
 </p>
 Alternatively, [`sen2r()`](https://ranghetti.github.io/sen2r/reference/sen2r.html) can be launched with a list of parameters (created with [`s2_gui()`](https://ranghetti.github.io/sen2r/reference/s2_gui.html)) or passing manually the parameters as arguments of the function (see [the documentation of the function](https://ranghetti.github.io/sen2r/reference/sen2r.html) for further details).
 
@@ -90,9 +90,11 @@ Credits
 
 The [<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> logo](https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_logo_200px.png), partially derived from the [R logo](https://www.r-project.org/logo), is released under the [Creative Commons Attribution-ShareAlike 4.0 International license](https://creativecommons.org/licenses/by-sa/4.0) (CC-BY-SA 4.0).
 
+The functionalities to search and download SAFE tiles are based on the Python tool [Sentinel-download](https://github.com/olivierhagolle/Sentinel-download) by Olivier Hagolle, released under the [GNU General Public License version 2](https://www.gnu.org/licenses/gpl-2.0.html) (GPL‑2).
+
 To cite this library, please use the following entry:
 
-Ranghetti, L. and Busetto, L. (2018). *sen2r: an R toolbox to find, download and preprocess Sentinel-2 data*. R package version 0.3.4. DOI: [10.5281/zenodo.1240384](https://ranghetti.github.io/sen2r).
+Ranghetti, L. and Busetto, L. (2018). *sen2r: an R toolbox to find, download and preprocess Sentinel-2 data*. R package version 0.3.4. DOI: [10.5281/zenodo.1240384](https://dx.doi.org/10.5281/zenodo.1240384). URL: <https://ranghetti.github.io/sen2r>.
 
 ``` bibtex
 @Manual{sen2r,

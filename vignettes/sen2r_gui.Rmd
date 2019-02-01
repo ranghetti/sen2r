@@ -37,17 +37,21 @@ This page describes how to use the GUI in order to set your own processing chain
 The GUI is composed of four main sheets:
 
 <p style="text-align:center;">
-  <a href="sen2r_gui_sheet1.jpg" target="_blank">
+  <a href="sen2r_gui_sheet1.png" target="_blank">
     <img src="sen2r_gui_sheet1_small.png">
   </a>
-  <a href="sen2r_gui_sheet2.jpg" target="_blank">
+  <a href="sen2r_gui_sheet2.png" target="_blank">
     <img src="sen2r_gui_sheet2_small.png">
   </a>
-  <a href="sen2r_gui_sheet3.jpg" target="_blank">
+  <br/>
+  <a href="sen2r_gui_sheet3.png" target="_blank">
     <img src="sen2r_gui_sheet3_small.png">
   </a>
-  <a href="sen2r_gui_sheet4.jpg" target="_blank">
+  <a href="sen2r_gui_sheet4.png" target="_blank">
     <img src="sen2r_gui_sheet4_small.png">
+  </a>
+  <a href="sen2r_gui_sheet5.png" target="_blank">
+    <img src="sen2r_gui_sheet5_small.png">
   </a>
 </p>
 

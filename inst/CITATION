@@ -1,0 +1,21 @@
+citHeader(paste(
+  "sen2r is being developed by Luigi Ranghetti and Lorenzo Busetto (IREA-CNR),",
+  "and it is released under the GNU General Public License version 3 (GPL‑3).",
+  "To cite package 'sen2r' in publications use:"
+))
+
+citEntry(
+  entry        = "Manual",
+  author       = "Luigi Ranghetti and Lorenzo Busetto",
+  title        = "sen2r: an R toolbox to find, download and preprocess Sentinel-2 data",
+  year         = "2018",
+  note         = "R package version 0.3.4",
+  doi          = "10.5281/zenodo.1240384",
+  url          = "https://ranghetti.github.io/sen2r",
+  textVersion  = paste(
+    "L. Ranghetti, L. Busetto (2018).",
+    "sen2r: an R toolbox to find, download and preprocess Sentinel-2 data.",
+    "R package version 0.3.4. DOI: 10.5281/zenodo.1240384.",
+    "URL: https://ranghetti.github.io/sen2r/."
+  )
+)
