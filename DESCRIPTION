@@ -42,7 +42,8 @@ Imports:
   foreach,
   parallel,
   doParallel,
-  units
+  units,
+  lwgeom
 Remotes: 
   r-spatial/lwgeom
 Suggests:
