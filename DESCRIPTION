@@ -44,8 +44,6 @@ Imports:
   doParallel,
   units,
   lwgeom
-Remotes: 
-  r-spatial/lwgeom
 Suggests:
   knitr,
   rmarkdown

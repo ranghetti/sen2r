@@ -12,6 +12,9 @@ RUN apt-get update && apt-get install -y \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
+# Install lwgeom from remote (https://github.com/rocker-org/geospatial/issues/17)
+RUN R -e "remotes::install_github('r-spatial/lwgeom', dependencies = TRUE)"
+
 # Install the package
 RUN R -e "remotes::install_github('ranghetti/sen2r', ref = 'devel', dependencies = TRUE)"
 
