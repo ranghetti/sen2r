@@ -40,8 +40,11 @@ projpar <- function(proj4string, par, abort = FALSE) {
   proj4_wkt <- st_as_text(crs_check) %>%
     r_to_py() %>%
     py$osr$SpatialReference()
-  proj4_par <- proj4_wkt$GetAttrValue(par) %>%
-    py_to_r()
+  proj4_par <- proj4_wkt$GetAttrValue(par)
+  if (!is(proj4_par, "character")) {
+    proj4_par <- py_to_r(proj4_par)
+  }
+    
   
   attr(proj4_par, "proj4string") <- crs_check$proj4string
   
