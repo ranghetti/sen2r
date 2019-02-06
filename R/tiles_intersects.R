@@ -51,7 +51,10 @@ tiles_intersects <- function(extent, all = FALSE, out_format = "id", .s2tiles=NU
   }
   
   # Extent to longlat
-  extent <- st_transform(extent,4326)$geometry
+  extent <- st_transform(extent,4326)
+  if (is(extent,"sf")) {
+    extent <- extent$geometry
+  }
   
   # Select all the tiles which intersects the extent
   tiles_intersecting_all <- s2tiles[unique(unlist(suppressMessages(
