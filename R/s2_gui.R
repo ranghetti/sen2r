@@ -327,15 +327,15 @@ s2_gui <- function(param_list = NULL,
                   "online",
                   label = span(
                     "Download mode\u2000",
-                    actionLink("help_online", icon("question-circle")),
-                    if (Sys.info()["sysname"] == "Windows") {
-                      span(
-                        "\u2000",
-                        actionLink("fix_online", icon("warning"))
-                      )
-                    } else {
-                      
-                    }
+                    actionLink("help_online", icon("question-circle"))#,
+                    # if (Sys.info()["sysname"] == "Windows") {
+                    #   span(
+                    #     "\u2000",
+                    #     actionLink("fix_online", icon("warning"))
+                    #   )
+                    # } else {
+                    #   
+                    # }
                   ),
                   choiceNames = list("Online", "Offline"),
                   choiceValues = list(TRUE, FALSE),
@@ -2649,17 +2649,17 @@ s2_gui <- function(param_list = NULL,
       ))
     })
     
-    observeEvent(input$fix_online, {
-      showModal(modalDialog(
-        title = "Download is not supported on Windows",
-        p(
-          "Currently, finding and downloading SAFE products is possible",
-          "only over Linux systems. This will be fixed in a future release."
-        ),
-        easyClose = TRUE,
-        footer = NULL
-      ))
-    })
+    # observeEvent(input$fix_online, {
+    #   showModal(modalDialog(
+    #     title = "Download is not supported on Windows",
+    #     p(
+    #       "Currently, finding and downloading SAFE products is possible",
+    #       "only over Linux systems. This will be fixed in a future release."
+    #     ),
+    #     easyClose = TRUE,
+    #     footer = NULL
+    #   ))
+    # })
     
     observeEvent(input$help_overwrite_safe, {
       showModal(modalDialog(
