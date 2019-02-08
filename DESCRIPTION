@@ -46,7 +46,8 @@ Imports:
   lwgeom
 Suggests:
   knitr,
-  rmarkdown
+  rmarkdown,
+  geojsonlint
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
