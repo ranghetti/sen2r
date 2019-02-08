@@ -4,5 +4,4 @@ pkgdown_sha: ~
 articles:
   docker: docker.html
   installation: installation.html
-  sen2r_gui: sen2r_gui.html
 
