@@ -215,9 +215,9 @@ s2_calcindices <- function(infiles,
     
     # check bands to use
     if (sel_infile_meta$prod_type=="TOA") {
-      gdal_bands <- data.frame("letter"=LETTERS[1:12],"band"=paste0("band_",1:12))
+      gdal_bands <- data.frame("letter"=LETTERS[1:12],"number"=1:12,"band"=paste0("band_",1:12), stringsAsFactors = FALSE)
     } else if (sel_infile_meta$prod_type=="BOA") {
-      gdal_bands <- data.frame("letter"=LETTERS[1:11],"band"=paste0("band_",c(1:9,11:12)))
+      gdal_bands <- data.frame("letter"=LETTERS[1:11],"number"=1:11,"band"=paste0("band_",c(1:9,11:12)), stringsAsFactors = FALSE)
     } else {
       print_message(type="error", "Internal error (this should not happen).")
     }
@@ -319,6 +319,55 @@ s2_calcindices <- function(infiles,
           ),
           intern = Sys.info()["sysname"] == "Windows"
         )
+        
+        
+        
+        
+        
+        
+        
+        # prova usando raster
+        
+        sel_formula <- indices_info[j,"s2_formula"]
+        sel_brick <- raster::brick(sel_infile)
+        
+        for (sel_par in c("a","b","x")) {
+          sel_formula <- gsub(paste0("([^0-9a-zA-Z])par\\_",sel_par,"([^0-9a-zA-Z])"),
+                              paste0("\\1",get(sel_par),"\\2"),
+                              sel_formula)
+        }
+        for (sel_band in seq_len(nrow(gdal_bands))) {
+          sel_formula <- gsub(paste0("([^0-9a-zA-Z])",gdal_bands[sel_band,"band"],"([^0-9a-zA-Z])"),
+                              paste0("\\1(y[[",gdal_bands[sel_band,"number"],"]]/10000)\\2"),
+                              sel_formula)
+        }
+        
+        
+        power <- function(x,y) {x^y} # FIXME sposta in cima
+        
+        # computing using raster
+        raster::calc(
+          sel_brick,
+          function(y) {eval(parse(text = sel_formula))},
+          filename = file.path(out_subdir0,sel_outfile0),
+          NAflag = sel_nodata,
+          datatype = convert_datatype(dataType),
+          format = sel_format0,
+          options = if(sel_format0 == "GTiff") {paste0("COMPRESS=",compress)},
+          overwrite = overwrite
+        )
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         if (sel_format == "VRT") {
           system(
