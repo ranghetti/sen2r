@@ -11,11 +11,11 @@ citEntry(
   year         = "2019",
   note         = "R package version 1.0.0",
   doi          = "10.5281/zenodo.1240384",
-  url          = "https://ranghetti.github.io/sen2r",
+  url          = "http://sen2r.ranghetti.info",
   textVersion  = paste(
     "L. Ranghetti, L. Busetto (2018).",
     "sen2r: an R toolbox to find, download and preprocess Sentinel-2 data.",
     "R package version 0.3.4. DOI: 10.5281/zenodo.1240384.",
-    "URL: https://ranghetti.github.io/sen2r/."
+    "URL: http://sen2r.ranghetti.info/."
   )
 )

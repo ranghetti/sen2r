@@ -1,0 +1,4 @@
+/tmp/RtmpoxUxk5/sen2r_3a6323bfb939/group3a631452c63d/tiles/BOA/S2B2A_20180805_065_32TNR_BOA_10.vrt
+/tmp/RtmpoxUxk5/sen2r_3a6323bfb939/group3a631452c63d/tiles/BOA/S2B2A_20180805_065_32TNS_BOA_10.vrt
+/tmp/RtmpoxUxk5/sen2r_3a6323bfb939/group3a631452c63d/tiles/SCL/S2B2A_20180805_065_32TNR_SCL_10.vrt
+/tmp/RtmpoxUxk5/sen2r_3a6323bfb939/group3a631452c63d/tiles/SCL/S2B2A_20180805_065_32TNS_SCL_10.vrt

@@ -40,13 +40,13 @@ The package can be installed from GitHub with the R package **remotes**:
 remotes::install_github("ranghetti/sen2r")
 ```
 
-For detailed instructions about installing the package (including dependencies), see the [Installation](https://ranghetti.github.io/sen2r/articles/installation.html) page.
+For detailed instructions about installing the package (including dependencies), see the [Installation](http://sen2r.ranghetti.info/articles/installation.html) page.
 
 ### Run as Docker image
 
 A dockerised version of <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> is available [here](https://cloud.docker.com/repository/docker/ranghetti/sen2r).
 
-For detailed instructions about using it, see the page ["Run in a Docker container"](https://ranghetti.github.io/sen2r/articles/docker.html) page.
+For detailed instructions about using it, see the page ["Run in a Docker container"](http://sen2r.ranghetti.info/articles/docker.html) page.
 
 Usage
 -----
@@ -63,20 +63,20 @@ this opens a GUI which allows to set the required processing parameters, and the
 <p style="text-align:center;">
 <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet1.png" target="_blank"> <img src="man/figures/sen2r_gui_sheet1_small.png"> </a> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet2.png" target="_blank"> <img src="man/figures/sen2r_gui_sheet2_small.png"> </a> <br/> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet3.png" target="_blank"> <img src="man/figures/sen2r_gui_sheet3_small.png"> </a> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet4.png" target="_blank"> <img src="man/figures/sen2r_gui_sheet4_small.png"> </a> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet5.png" target="_blank"> <img src="man/figures/sen2r_gui_sheet5_small.png"> </a>
 </p>
-Alternatively, [`sen2r()`](https://ranghetti.github.io/sen2r/reference/sen2r.html) can be launched with a list of parameters (created with [`s2_gui()`](https://ranghetti.github.io/sen2r/reference/s2_gui.html)) or passing manually the parameters as arguments of the function (see [the documentation of the function](https://ranghetti.github.io/sen2r/reference/sen2r.html) for further details).
+Alternatively, [`sen2r()`](http://sen2r.ranghetti.info/reference/sen2r.html) can be launched with a list of parameters (created with [`s2_gui()`](http://sen2r.ranghetti.info/reference/s2_gui.html)) or passing manually the parameters as arguments of the function (see [the documentation of the function](http://sen2r.ranghetti.info/reference/sen2r.html) for further details).
 
 Other specific functions can be used to run single steps separately:
 
--   [`s2_list()`](https://ranghetti.github.io/sen2r/reference/s2_list.html) to retrieve the list of available Sentinel-2 products basing on input parameters;
--   [`s2_download()`](https://ranghetti.github.io/sen2r/reference/s2_download.html) to download Sentinel-2 products;
+-   [`s2_list()`](http://sen2r.ranghetti.info/reference/s2_list.html) to retrieve the list of available Sentinel-2 products basing on input parameters;
+-   [`s2_download()`](http://sen2r.ranghetti.info/reference/s2_download.html) to download Sentinel-2 products;
 -   [`sen2cor()`](reference/sen2cor.html) to correct level-1C products using [Sen2Cor](http://step.esa.int/main/third-party-plugins-2/sen2cor);
--   [`s2_translate()`](https://ranghetti.github.io/sen2r/reference/s2_translate.html) to convert Sentinel-2 products from SAFE format to a format managed by GDAL;
--   [`s2_merge()`](https://ranghetti.github.io/sen2r/reference/s2_merge.html) to merge Sentinel-2 tiles which have the same date and orbit;
--   [`gdal_warp()`](https://ranghetti.github.io/sen2r/reference/gdal_warp.html) to clip, reproject and warp raster files (this is a wrapper to call [gdal\_translate](http://www.gdal.org/gdal_translate.html) or [gdalwarp](http://www.gdal.org/gdalwarp.html) basing on input parameters);
--   [`s2_mask()`](https://ranghetti.github.io/sen2r/reference/s2_mask.html) to apply a cloud mask to Sentinel-2 products;
--   [`s2_rgb()`](https://ranghetti.github.io/sen2r/reference/s2_rgb.html) to generate RGB images from Sentinel-2 Surface Reflectance multiband raster files;
--   [`s2_calcindices()`](https://ranghetti.github.io/sen2r/reference/s2_calcindices.html) to compute maps of spectral indices from Sentinel-2 Surface Reflectance multiband raster files;
--   [`s2_thumbnails()`](https://ranghetti.github.io/sen2r/reference/s2_thumbnails.html) to generate RGB thumbnails (JPEG or PNG) of the products.
+-   [`s2_translate()`](http://sen2r.ranghetti.info/reference/s2_translate.html) to convert Sentinel-2 products from SAFE format to a format managed by GDAL;
+-   [`s2_merge()`](http://sen2r.ranghetti.info/reference/s2_merge.html) to merge Sentinel-2 tiles which have the same date and orbit;
+-   [`gdal_warp()`](http://sen2r.ranghetti.info/reference/gdal_warp.html) to clip, reproject and warp raster files (this is a wrapper to call [gdal\_translate](http://www.gdal.org/gdal_translate.html) or [gdalwarp](http://www.gdal.org/gdalwarp.html) basing on input parameters);
+-   [`s2_mask()`](http://sen2r.ranghetti.info/reference/s2_mask.html) to apply a cloud mask to Sentinel-2 products;
+-   [`s2_rgb()`](http://sen2r.ranghetti.info/reference/s2_rgb.html) to generate RGB images from Sentinel-2 Surface Reflectance multiband raster files;
+-   [`s2_calcindices()`](http://sen2r.ranghetti.info/reference/s2_calcindices.html) to compute maps of spectral indices from Sentinel-2 Surface Reflectance multiband raster files;
+-   [`s2_thumbnails()`](http://sen2r.ranghetti.info/reference/s2_thumbnails.html) to generate RGB thumbnails (JPEG or PNG) of the products.
 
 Credits
 -------
@@ -89,7 +89,7 @@ The functionalities to search and download SAFE tiles are based on the Python to
 
 To cite this library, please use the following entry:
 
-Ranghetti, L. and Busetto, L. (2019). *sen2r: an R toolbox to find, download and preprocess Sentinel-2 data*. R package version 1.0.0. DOI: [10.5281/zenodo.1240384](https://dx.doi.org/10.5281/zenodo.1240384). URL: <https://ranghetti.github.io/sen2r>.
+Ranghetti, L. and Busetto, L. (2019). *sen2r: an R toolbox to find, download and preprocess Sentinel-2 data*. R package version 1.0.0. DOI: [10.5281/zenodo.1240384](https://dx.doi.org/10.5281/zenodo.1240384). URL: <http://sen2r.ranghetti.info>.
 
 ``` bibtex
 @Manual{sen2r,
@@ -98,6 +98,6 @@ Ranghetti, L. and Busetto, L. (2019). *sen2r: an R toolbox to find, download a
   year   = {2019},
   note   = {R package version 1.0.0},
   doi    = {10.5281/zenodo.1240384},
-  url    = {https://ranghetti.github.io/sen2r},
+  url    = {http://sen2r.ranghetti.info},
 }
 ```

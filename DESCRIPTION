@@ -14,7 +14,7 @@ Description: This package contains useful functions to preprocess Sentinel-2 ima
   This package is under construction.
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
-URL: https://ranghetti.github.io/sen2r, https://github.com/ranghetti/sen2r
+URL: http://sen2r.ranghetti.info, https://github.com/ranghetti/sen2r
 BugReports: https://github.com/ranghetti/sen2r/issues
 Imports:
   reticulate,

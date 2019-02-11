@@ -2,7 +2,7 @@
   packageStartupMessage(paste(
     "Welcome to sen2r. To use the package from a GUI, launch",
     " > sen2r()",
-    "Documentation: https://ranghetti.github.io/sen2r",
+    "Documentation: http://sen2r.ranghetti.info",
     if (Sys.info()["sysname"] == "Windows") {
       paste(
         "\nIMPORTANT: sen2r depends on some external tools;",
