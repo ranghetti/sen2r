@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">An R toolbox to find, download an preprocess Sentinel-2 data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -83,18 +83,13 @@
 <p>In particular, <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> allows to:</p>
 <ul>
 <li>retrieve the list of available products on a selected area (which can be provided by specifying a bounding box, by loading a vector file or by drawing it on a map) in a given time window;</li>
-<li>download the required SAFE Level-1C products, or retrieve the required SAFE Level-2A products by downloading them (if available) or downloading the corresponding Level-1C and correcting them with <strong>sen2cor</strong>;</li>
+<li>download the required SAFE Level-1C products, or retrieve the required SAFE Level-2A products by downloading them (if available) or downloading the corresponding Level-1C and correcting them with <strong>Sen2Cor</strong>;</li>
 <li>obtain the required products (Top of Atmosphere radiances, Bottom of Atmosphere reflectances, Surface Classification Maps, True Colour Images) clipped on the specified area (adjacent tiles belonging to the same frame are merged);</li>
 <li>mask cloudy pixels (using the Surface Classification Map as masking layer);</li>
-<li>computing spectral indices.</li>
+<li>computing spectral indices and RGB images.</li>
 </ul>
 <p>Setting the execution of this processing chain is particularly easy using the <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> GUI, which allows to set the parameters, to directly launch the main function or to save them in a JSON file which can be used to launch the processing at a later stage.</p>
-<p>The possibility to launch the processing with a set of parameters saved in a JSON file (or directly passed as function arguments) makes easy to build scripts to automatically update an archive of Sentinel-2 products. Specific processing operations (i.e. applying <strong>sen2cor</strong> on Level-1c SAFE products, merging adjacent tiles, computing spectral indices from existing products) can also be performed using intermediate functions (see <a href="#usage">usage</a>).</p>
-<div id="warning" class="section level2">
-<h2 class="hasAnchor">
-<a href="#warning" class="anchor"></a>Warning</h2>
-<p>This package is under construction (current version is <a href="https://github.com/ranghetti/sen2r/releases/tag/v0.3.4">pre-release 0.3.4</a>). Please refer to the <a href="https://github.com/ranghetti/sen2r/milestone/3">crontab of release 0.4.0</a> to know which implementations should already be performed.</p>
-</div>
+<p>The possibility to launch the processing with a set of parameters saved in a JSON file (or directly passed as function arguments) makes easy to build scripts to automatically update an archive of Sentinel-2 products. Specific processing operations (i.e. applying <strong>Sen2Cor</strong> on Level-1c SAFE products, merging adjacent tiles, computing spectral indices from existing products) can also be performed using intermediate functions (see <a href="#usage">usage</a>).</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
@@ -131,7 +126,7 @@
 <li>
 <a href="reference/s2_download.html"><code><a href="reference/s2_download.html">s2_download()</a></code></a> to download Sentinel-2 products;</li>
 <li>
-<a href="reference/sen2cor.html"><code><a href="reference/sen2cor.html">sen2cor()</a></code></a> to correct level-1C products using <a href="http://step.esa.int/main/third-party-plugins-2/sen2cor">sen2cor</a>;</li>
+<a href="reference/sen2cor.html"><code><a href="reference/sen2cor.html">sen2cor()</a></code></a> to correct level-1C products using <a href="http://step.esa.int/main/third-party-plugins-2/sen2cor">Sen2Cor</a>;</li>
 <li>
 <a href="reference/s2_translate.html"><code><a href="reference/s2_translate.html">s2_translate()</a></code></a> to convert Sentinel-2 products from SAFE format to a format managed by GDAL;</li>
 <li>
@@ -140,6 +135,8 @@
 <a href="reference/gdal_warp.html"><code><a href="reference/gdal_warp.html">gdal_warp()</a></code></a> to clip, reproject and warp raster files (this is a wrapper to call <a href="http://www.gdal.org/gdal_translate.html">gdal_translate</a> or <a href="http://www.gdal.org/gdalwarp.html">gdalwarp</a> basing on input parameters);</li>
 <li>
 <a href="reference/s2_mask.html"><code><a href="reference/s2_mask.html">s2_mask()</a></code></a> to apply a cloud mask to Sentinel-2 products;</li>
+<li>
+<a href="reference/s2_rgb.html"><code><a href="reference/s2_rgb.html">s2_rgb()</a></code></a> to generate RGB images from Sentinel-2 Surface Reflectance multiband raster files;</li>
 <li>
 <a href="reference/s2_calcindices.html"><code><a href="reference/s2_calcindices.html">s2_calcindices()</a></code></a> to compute maps of spectral indices from Sentinel-2 Surface Reflectance multiband raster files;</li>
 <li>
@@ -153,12 +150,12 @@
 <p>The <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_logo_200px.png"><span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> logo</a>, partially derived from the <a href="https://www.r-project.org/logo">R logo</a>, is released under the <a href="https://creativecommons.org/licenses/by-sa/4.0">Creative Commons Attribution-ShareAlike 4.0 International license</a> (CC-BY-SA 4.0).</p>
 <p>The functionalities to search and download SAFE tiles are based on the Python tool <a href="https://github.com/olivierhagolle/Sentinel-download">Sentinel-download</a> by Olivier Hagolle, released under the <a href="https://www.gnu.org/licenses/gpl-2.0.html">GNU General Public License version 2</a> (GPL‑2).</p>
 <p>To cite this library, please use the following entry:</p>
-<p>Ranghetti, L. and Busetto, L. (2018). <em>sen2r: an R toolbox to find, download and preprocess Sentinel-2 data</em>. R package version 0.3.4. DOI: <a href="https://dx.doi.org/10.5281/zenodo.1240384">10.5281/zenodo.1240384</a>. URL: <a href="https://ranghetti.github.io/sen2r" class="uri">https://ranghetti.github.io/sen2r</a>.</p>
+<p>Ranghetti, L. and Busetto, L. (2019). <em>sen2r: an R toolbox to find, download and preprocess Sentinel-2 data</em>. R package version 1.0.0. DOI: <a href="https://dx.doi.org/10.5281/zenodo.1240384">10.5281/zenodo.1240384</a>. URL: <a href="https://ranghetti.github.io/sen2r" class="uri">https://ranghetti.github.io/sen2r</a>.</p>
 <div class="sourceCode"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span class="va">@Manual</span>{<span class="ot">sen2r</span>,
   <span class="dt">title</span>  = {sen2r: an R toolbox to find, download and preprocess Sentinel-2 data},
   <span class="dt">author</span> = {Luigi Ranghetti and Lorenzo Busetto},
-  <span class="dt">year</span>   = {2018},
-  <span class="dt">note</span>   = {R package version 0.3.4},
+  <span class="dt">year</span>   = {2019},
+  <span class="dt">note</span>   = {R package version 1.0.0},
   <span class="dt">doi</span>    = {10.5281/zenodo.1240384},
   <span class="dt">url</span>    = {https://ranghetti.github.io/sen2r},
 }</code></pre></div>

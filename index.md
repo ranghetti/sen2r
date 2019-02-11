@@ -1,6 +1,5 @@
 
 -   [R toolbox to find, download and preprocess Sentinel-2 data](#r-toolbox-to-find-download-and-preprocess-sentinel-2-data)
-    -   [Warning](#warning)
     -   [Installation](#installation)
     -   [Usage](#usage)
     -   [Credits](#credits)
@@ -19,19 +18,14 @@ R toolbox to find, download and preprocess Sentinel-2 data
 In particular, <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> allows to:
 
 -   retrieve the list of available products on a selected area (which can be provided by specifying a bounding box, by loading a vector file or by drawing it on a map) in a given time window;
--   download the required SAFE Level-1C products, or retrieve the required SAFE Level-2A products by downloading them (if available) or downloading the corresponding Level-1C and correcting them with **sen2cor**;
+-   download the required SAFE Level-1C products, or retrieve the required SAFE Level-2A products by downloading them (if available) or downloading the corresponding Level-1C and correcting them with **Sen2Cor**;
 -   obtain the required products (Top of Atmosphere radiances, Bottom of Atmosphere reflectances, Surface Classification Maps, True Colour Images) clipped on the specified area (adjacent tiles belonging to the same frame are merged);
 -   mask cloudy pixels (using the Surface Classification Map as masking layer);
--   computing spectral indices.
+-   computing spectral indices and RGB images.
 
 Setting the execution of this processing chain is particularly easy using the <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> GUI, which allows to set the parameters, to directly launch the main function or to save them in a JSON file which can be used to launch the processing at a later stage.
 
-The possibility to launch the processing with a set of parameters saved in a JSON file (or directly passed as function arguments) makes easy to build scripts to automatically update an archive of Sentinel-2 products. Specific processing operations (i.e. applying **sen2cor** on Level-1c SAFE products, merging adjacent tiles, computing spectral indices from existing products) can also be performed using intermediate functions (see [usage](#usage)).
-
-Warning
--------
-
-This package is under construction (current version is [pre-release 0.3.4](https://github.com/ranghetti/sen2r/releases/tag/v0.3.4)). Please refer to the [crontab of release 0.4.0](https://github.com/ranghetti/sen2r/milestone/3) to know which implementations should already be performed.
+The possibility to launch the processing with a set of parameters saved in a JSON file (or directly passed as function arguments) makes easy to build scripts to automatically update an archive of Sentinel-2 products. Specific processing operations (i.e. applying **Sen2Cor** on Level-1c SAFE products, merging adjacent tiles, computing spectral indices from existing products) can also be performed using intermediate functions (see [usage](#usage)).
 
 Installation
 ------------
@@ -75,11 +69,12 @@ Other specific functions can be used to run single steps separately:
 
 -   [`s2_list()`](reference/s2_list.md) to retrieve the list of available Sentinel-2 products basing on input parameters;
 -   [`s2_download()`](reference/s2_download.md) to download Sentinel-2 products;
--   [`sen2cor()`](reference/sen2cor.html) to correct level-1C products using [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor);
+-   [`sen2cor()`](reference/sen2cor.html) to correct level-1C products using [Sen2Cor](http://step.esa.int/main/third-party-plugins-2/sen2cor);
 -   [`s2_translate()`](reference/s2_translate.md) to convert Sentinel-2 products from SAFE format to a format managed by GDAL;
 -   [`s2_merge()`](reference/s2_merge.md) to merge Sentinel-2 tiles which have the same date and orbit;
 -   [`gdal_warp()`](reference/gdal_warp.md) to clip, reproject and warp raster files (this is a wrapper to call [gdal\_translate](http://www.gdal.org/gdal_translate.html) or [gdalwarp](http://www.gdal.org/gdalwarp.html) basing on input parameters);
 -   [`s2_mask()`](reference/s2_mask.md) to apply a cloud mask to Sentinel-2 products;
+-   [`s2_rgb()`](reference/s2_rgb.md) to generate RGB images from Sentinel-2 Surface Reflectance multiband raster files;
 -   [`s2_calcindices()`](reference/s2_calcindices.md) to compute maps of spectral indices from Sentinel-2 Surface Reflectance multiband raster files;
 -   [`s2_thumbnails()`](reference/s2_thumbnails.md) to generate RGB thumbnails (JPEG or PNG) of the products.
 
@@ -94,14 +89,14 @@ The functionalities to search and download SAFE tiles are based on the Python to
 
 To cite this library, please use the following entry:
 
-Ranghetti, L. and Busetto, L. (2018). *sen2r: an R toolbox to find, download and preprocess Sentinel-2 data*. R package version 0.3.4. DOI: [10.5281/zenodo.1240384](https://dx.doi.org/10.5281/zenodo.1240384). URL: <https://ranghetti.github.io/sen2r>.
+Ranghetti, L. and Busetto, L. (2019). *sen2r: an R toolbox to find, download and preprocess Sentinel-2 data*. R package version 1.0.0. DOI: [10.5281/zenodo.1240384](https://dx.doi.org/10.5281/zenodo.1240384). URL: <https://ranghetti.github.io/sen2r>.
 
 ``` bibtex
 @Manual{sen2r,
   title  = {sen2r: an R toolbox to find, download and preprocess Sentinel-2 data},
   author = {Luigi Ranghetti and Lorenzo Busetto},
-  year   = {2018},
-  note   = {R package version 0.3.4},
+  year   = {2019},
+  note   = {R package version 1.0.0},
   doi    = {10.5281/zenodo.1240384},
   url    = {https://ranghetti.github.io/sen2r},
 }

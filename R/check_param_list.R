@@ -154,6 +154,17 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
     )
   }
   
+  # Compute S2 resolution to be used
+  if (any(!pm$res_s2 %in% c("10m","20m","60m"))) {
+    pm$res_s2 <- if (as.integer(mean(pm$res)) >= 60) {"60m"} else if (as.integer(mean(pm$res)) >= 20) {"20m"} else {"10m"}
+  }
+  
+  # Duplicate res if it is a 1-length value
+  if (length(pm$res) == 1) {
+    pm$res <- rep(pm$res, 2)
+  }
+  
+  
   # check SAFE paths
   # if one of path_l1c and path_l2a is missing, copy from the other
   # FIXME this is a workaround for parameter pm$s2_levels,

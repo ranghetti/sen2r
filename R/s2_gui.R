@@ -327,15 +327,15 @@ s2_gui <- function(param_list = NULL,
                   "online",
                   label = span(
                     "Download mode\u2000",
-                    actionLink("help_online", icon("question-circle")),
-                    if (Sys.info()["sysname"] == "Windows") {
-                      span(
-                        "\u2000",
-                        actionLink("fix_online", icon("warning"))
-                      )
-                    } else {
-                      
-                    }
+                    actionLink("help_online", icon("question-circle"))#,
+                    # if (Sys.info()["sysname"] == "Windows") {
+                    #   span(
+                    #     "\u2000",
+                    #     actionLink("fix_online", icon("warning"))
+                    #   )
+                    # } else {
+                    #   
+                    # }
                   ),
                   choiceNames = list("Online", "Offline"),
                   choiceValues = list(TRUE, FALSE),
@@ -2649,17 +2649,17 @@ s2_gui <- function(param_list = NULL,
       ))
     })
     
-    observeEvent(input$fix_online, {
-      showModal(modalDialog(
-        title = "Download is not supported on Windows",
-        p(
-          "Currently, finding and downloading SAFE products is possible",
-          "only over Linux systems. This will be fixed in a future release."
-        ),
-        easyClose = TRUE,
-        footer = NULL
-      ))
-    })
+    # observeEvent(input$fix_online, {
+    #   showModal(modalDialog(
+    #     title = "Download is not supported on Windows",
+    #     p(
+    #       "Currently, finding and downloading SAFE products is possible",
+    #       "only over Linux systems. This will be fixed in a future release."
+    #     ),
+    #     easyClose = TRUE,
+    #     footer = NULL
+    #   ))
+    # })
     
     observeEvent(input$help_overwrite_safe, {
       showModal(modalDialog(
@@ -3400,7 +3400,7 @@ s2_gui <- function(param_list = NULL,
         setProgress(0.4)
         
         # product selection
-        if (all(is.na(pl$list_prods))) {pl$list_prods <- NULL}
+        if (all(is.na(pl$list_prods))) {pl$list_prods <- character(0)}
         updateCheckboxGroupInput(
           session, "list_prods",
           selected = c(
@@ -3409,11 +3409,11 @@ s2_gui <- function(param_list = NULL,
             if (any(!is.na(nn(pl$list_rgb)))) {"rgbimages"}
           )
         )
-        if (all(is.na(nn(pl$list_indices)))) {pl$list_indices <- NULL}
+        if (all(is.na(nn(pl$list_indices)))) {pl$list_indices <- character(0)}
         indices_rv$checked <- pl$list_indices
         # updateCheckboxGroupInput(session, "list_indices", selected = pl$list_indices) # FIXME 1 not working since it is reactive
-        if (all(is.na(nn(pl$list_rgb)))) {pl$list_rgb <- NULL}
-        if (all(is.na(nn(pl$list_rgb))) && all(is.na(nn(pl$rgb_ranges)))) {pl$rgb_ranges <- NULL}
+        if (all(is.na(nn(pl$list_rgb)))) {pl$list_rgb <- character(0)}
+        if (all(is.na(nn(pl$list_rgb))) && all(is.na(nn(pl$rgb_ranges)))) {pl$rgb_ranges <- character(0)}
         rv$list_rgb_ranges <- setNames(pl$rgb_ranges, pl$list_rgb)
         updateCheckboxGroupInput(session, "list_rgbimages", selected = pl$list_rgb)
         updateRadioButtons(session, "atm_mask",

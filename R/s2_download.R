@@ -102,7 +102,7 @@ s2_download <- function(s2_prodlist=NULL,
     print_message(
       type = "message",
       date = TRUE,
-      "Checking product ",i," of ",length(s2_prodlist),
+      "Downloading (if missing) product ",i," of ",length(s2_prodlist),
       " (",filename,")..."
     )
     
