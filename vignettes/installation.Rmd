@@ -34,7 +34,7 @@ Before installing <span style="color:#5793dd;vertical-align:top;font-size:90%;fo
     (required by [jqr](https://github.com/ropensci/jqr));
 - [protobuf](https://github.com/protocolbuffers/protobuf)
     (required by [protolite](https://github.com/jeroen/protolite));
-- [V8](https://v8.dev) 3.14 branch
+- [V8](https://v8.dev)
     (required by [geojsonio](https://github.com/ropensci/geojsonio));
 - [openssl](https://www.openssl.org)
     (required by [openssl](https://github.com/jeroen/openssl));
@@ -64,7 +64,7 @@ To install both package dependencies and runtime binaries (excepting **sen2cor**
 
 - On Debian and Ubuntu:
     ```{bash, eval = FALSE}
-    sudo apt-get install -y r-base gdal-bin python-gdal aria2 libpython-dev libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libv8-3.14-dev libssl-dev libcairo2-dev
+    sudo apt-get install -y r-base gdal-bin python-gdal aria2 libpython-dev libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libv8-dev libssl-dev libcairo2-dev
     ```
     On Debian, `proj-epsg` is also required:
     ```{bash, eval = FALSE}
@@ -79,7 +79,7 @@ To install both package dependencies and runtime binaries (excepting **sen2cor**
     Installation was tested over Debian 9 Stretch and Ubuntu 18.04 LTS Bionic; newer versions (Ubuntu > 18.04, Debian > 9) should work, like Ubuntu 16.04 LTS Xenial and 14.04 LTS Trusty should also do. Other releases (Debian &#8804; 8; Ubuntu non-LTS < 18.04; Ubuntu LTS &#8804; 12.04) are not supported.
 - On Fedora:
     ```{bash, eval = FALSE}
-    sudo yum install R gdal gdal-python aria2 python-devels gdal-devel proj-devel geos-devel udunits2-devel jq-devel protobuf-devel v8-314-devel openssl-devel cairo-devel libcurl-devel netcdf-devel libxml2-devel
+    sudo yum install R gdal gdal-python aria2 python-devels gdal-devel proj-devel geos-devel udunits2-devel jq-devel protobuf-devel v8-devel openssl-devel cairo-devel libcurl-devel netcdf-devel libxml2-devel
     ```
     Installation was tested over Fedora 29.
 - On ArchLinux:
@@ -87,8 +87,8 @@ To install both package dependencies and runtime binaries (excepting **sen2cor**
     sudo pacman -S --noconfirm r base-devel gcc-fortran python-gdal wget aria2 jq protobuf git
     cd /tmp; git clone https://aur.archlinux.org/gyp-git.git
     cd gyp-git; makepkg -si --noconfirm
-    cd /tmp; git clone https://aur.archlinux.org/v8-3.14.git
-    cd v8-3.14; makepkg -si --noconfirm
+    cd /tmp; git clone https://aur.archlinux.org/v8.git
+    cd v8; makepkg -si --noconfirm
     cd /tmp; git clone https://aur.archlinux.org/udunits.git
     cd udunits; makepkg -si --noconfirm
     ```
