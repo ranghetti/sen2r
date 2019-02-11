@@ -8,8 +8,8 @@ citEntry(
   entry        = "Manual",
   author       = "Luigi Ranghetti and Lorenzo Busetto",
   title        = "sen2r: an R toolbox to find, download and preprocess Sentinel-2 data",
-  year         = "2018",
-  note         = "R package version 0.3.4",
+  year         = "2019",
+  note         = "R package version 1.0.0",
   doi          = "10.5281/zenodo.1240384",
   url          = "https://ranghetti.github.io/sen2r",
   textVersion  = paste(
