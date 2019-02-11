@@ -100,7 +100,7 @@
 <li>
 <a href="https://github.com/protocolbuffers/protobuf">protobuf</a> (required by <a href="https://github.com/jeroen/protolite">protolite</a>);</li>
 <li>
-<a href="https://v8.dev">V8</a> 3.14 branch (required by <a href="https://github.com/ropensci/geojsonio">geojsonio</a>);</li>
+<a href="https://v8.dev">V8</a> (required by <a href="https://github.com/ropensci/geojsonio">geojsonio</a>);</li>
 <li>
 <a href="https://www.openssl.org">openssl</a> (required by <a href="https://github.com/jeroen/openssl">openssl</a>);</li>
 <li>
@@ -125,7 +125,7 @@
 <ul>
 <li>
 <p>On Debian and Ubuntu:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> apt-get install -y r-base gdal-bin python-gdal aria2 libpython-dev libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libv8-3.14-dev libssl-dev libcairo2-dev</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> apt-get install -y r-base gdal-bin python-gdal aria2 libpython-dev libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libv8-dev libssl-dev libcairo2-dev</code></pre></div>
 <p>On Debian, <code>proj-epsg</code> is also required:</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> apt-get install -y proj-epsg</code></pre></div>
 <p>On Ubuntu 16.04 LTS Xenial and 14.04 LTS Trusty, the repositories <a href="https://launchpad.net/~ubuntugis">ubuntugis</a> and <a href="https://launchpad.net/~opencpu">opencpu</a> must be added before installing the packages:</p>
@@ -135,15 +135,15 @@
 Installation was tested over Debian 9 Stretch and Ubuntu 18.04 LTS Bionic; newer versions (Ubuntu &gt; 18.04, Debian &gt; 9) should work, like Ubuntu 16.04 LTS Xenial and 14.04 LTS Trusty should also do. Other releases (Debian ≤ 8; Ubuntu non-LTS &lt; 18.04; Ubuntu LTS ≤ 12.04) are not supported.</li>
 <li>
 <p>On Fedora:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> yum install R gdal gdal-python aria2 python-devels gdal-devel proj-devel geos-devel udunits2-devel jq-devel protobuf-devel v8-314-devel openssl-devel cairo-devel libcurl-devel netcdf-devel libxml2-devel</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> yum install R gdal gdal-python aria2 python-devels gdal-devel proj-devel geos-devel udunits2-devel jq-devel protobuf-devel v8-devel openssl-devel cairo-devel libcurl-devel netcdf-devel libxml2-devel</code></pre></div>
 Installation was tested over Fedora 29.</li>
 <li>
 <p>On ArchLinux:</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> pacman -S --noconfirm r base-devel gcc-fortran python-gdal wget aria2 jq protobuf git
 <span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/gyp-git.git
 <span class="bu">cd</span> gyp-git<span class="kw">;</span> <span class="ex">makepkg</span> -si --noconfirm
-<span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/v8-3.14.git
-<span class="bu">cd</span> v8-3.14<span class="kw">;</span> <span class="ex">makepkg</span> -si --noconfirm
+<span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/v8.git
+<span class="bu">cd</span> v8<span class="kw">;</span> <span class="ex">makepkg</span> -si --noconfirm
 <span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/udunits.git
 <span class="bu">cd</span> udunits<span class="kw">;</span> <span class="ex">makepkg</span> -si --noconfirm</code></pre></div>
 <p>Installation was tested on date 2018-11-21.</p>
