@@ -165,7 +165,7 @@ The functionalities to search and download SAFE tiles are based on the Python to
 
 To cite this library, please use the following entry:
 
-Ranghetti, L.\ and Busetto, L.\ (`r strftime(Sys.Date(),"%Y")`). *sen2r: an R toolbox to find, download and preprocess Sentinel-2 data*. R package version `r packageVersion("sen2r")`. DOI: [10.5281/zenodo.1240384](https://dx.doi.org/10.5281/zenodo.1240384). URL: [https://ranghetti.github.io/sen2r](https://ranghetti.github.io/sen2r).
+Ranghetti, L.\ and Busetto, L.\ (`r strftime(Sys.Date(),"%Y")`). *sen2r: an R toolbox to find, download and preprocess Sentinel-2 data*. R package version `r packageVersion("sen2r")`. DOI: [10.5281/zenodo.1240384](https://dx.doi.org/10.5281/zenodo.1240384). URL: [http://sen2r.ranghetti.info](http://sen2r.ranghetti.info).
 
 ```bibtex
 @Manual{sen2r,
@@ -174,6 +174,6 @@ Ranghetti, L.\ and Busetto, L.\ (`r strftime(Sys.Date(),"%Y")`). *sen2r: an R to
   year   = {`r strftime(Sys.Date(),"%Y")`},
   note   = {R package version `r packageVersion("sen2r")`},
   doi    = {10.5281/zenodo.1240384},
-  url    = {https://ranghetti.github.io/sen2r},
+  url    = {http://sen2r.ranghetti.info},
 }
 ```

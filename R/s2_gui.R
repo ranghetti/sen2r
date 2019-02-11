@@ -69,7 +69,7 @@ s2_gui <- function(param_list = NULL,
       div(
         style = "text-align:center;padding-top:17px;padding-bottom:30px;",
         a(
-          href='https://ranghetti.github.io/sen2r',
+          href='http://sen2r.ranghetti.info',
           target = "_blank",
           uiOutput("img_logo")
         )
@@ -186,8 +186,8 @@ s2_gui <- function(param_list = NULL,
             "open_github_doc",
             label = "\u2000Open documentation",
             icon = icon("info-circle"),
-            onclick ="window.open('https://ranghetti.github.io/sen2r', '_blank')",
-            # onclick ="window.open('https://ranghetti.github.io/sen2r/articles/sen2r_gui.html', '_blank')",
+            onclick ="window.open('http://sen2r.ranghetti.info', '_blank')",
+            # onclick ="window.open('http://sen2r.ranghetti.info/articles/sen2r_gui.html', '_blank')",
             class = "darkbutton"
           )
         )

@@ -87,8 +87,8 @@ To install both package dependencies and runtime binaries (excepting **sen2cor**
     sudo pacman -S --noconfirm r base-devel gcc-fortran python-gdal wget aria2 jq protobuf git
     cd /tmp; git clone https://aur.archlinux.org/gyp-git.git
     cd gyp-git; makepkg -si --noconfirm
-    cd /tmp; git clone https://aur.archlinux.org/v8.git
-    cd v8; makepkg -si --noconfirm
+    cd /tmp; git clone https://aur.archlinux.org/v8-3.14.git
+    cd v8-3.14; makepkg -si --noconfirm
     cd /tmp; git clone https://aur.archlinux.org/udunits.git
     cd udunits; makepkg -si --noconfirm
     ```

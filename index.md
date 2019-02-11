@@ -89,7 +89,7 @@ The functionalities to search and download SAFE tiles are based on the Python to
 
 To cite this library, please use the following entry:
 
-Ranghetti, L. and Busetto, L. (2019). *sen2r: an R toolbox to find, download and preprocess Sentinel-2 data*. R package version 1.0.0. DOI: [10.5281/zenodo.1240384](https://dx.doi.org/10.5281/zenodo.1240384). URL: <https://ranghetti.github.io/sen2r>.
+Ranghetti, L. and Busetto, L. (2019). *sen2r: an R toolbox to find, download and preprocess Sentinel-2 data*. R package version 1.0.0. DOI: [10.5281/zenodo.1240384](https://dx.doi.org/10.5281/zenodo.1240384). URL: <http://sen2r.ranghetti.info>.
 
 ``` bibtex
 @Manual{sen2r,
@@ -98,6 +98,6 @@ Ranghetti, L. and Busetto, L. (2019). *sen2r: an R toolbox to find, download a
   year   = {2019},
   note   = {R package version 1.0.0},
   doi    = {10.5281/zenodo.1240384},
-  url    = {https://ranghetti.github.io/sen2r},
+  url    = {http://sen2r.ranghetti.info},
 }
 ```
