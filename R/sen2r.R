@@ -1000,7 +1000,7 @@ sen2r <- function(param_list = NULL,
       s2_lists[["l2a"]] <- if (pm$step_atmcorr=="l2a") {
         list.files(pm$path_l2a, "\\.SAFE$")
       } else if (pm$step_atmcorr %in% c("scihub","no")) {
-        list.files(pm$path_1c, "\\.SAFE$")
+        list.files(pm$path_l1c, "\\.SAFE$")
       } else if (pm$step_atmcorr=="auto") {
         all_l1c <- list.files(pm$path_l1c, "\\.SAFE$")
         all_l2a <- list.files(pm$path_l2a, "\\.SAFE$")
