@@ -301,32 +301,35 @@ s2_calcindices <- function(infiles,
           out_subdir0 <- out_subdir
           sel_outfile0 <- sel_outfile
         }
-        
-        # apply gdal_calc
-        system(
-          paste0(
-            binpaths$gdal_calc," ",
-            paste(apply(gdal_bands,1,function(l){
-              paste0("-",l["letter"]," \"",sel_infile,"\" --",l["letter"],"_band=",which(gdal_bands$letter==l["letter"]))
-            }), collapse=" ")," ",
-            "--outfile=\"",file.path(out_subdir0,sel_outfile0),"\" ",
-            "--type=\"",dataType,"\" ",
-            "--NoDataValue=",sel_nodata," ",
-            "--format=\"",sel_format0,"\" ",
-            if (overwrite==TRUE) {"--overwrite "},
-            if (sel_format0=="GTiff") {paste0("--co=\"COMPRESS=",toupper(compress),"\" ")},
-            "--calc=\"",sel_formula,"\""
-          ),
-          intern = Sys.info()["sysname"] == "Windows"
-        )
-        
-        
+
+        # # apply gdal_calc
+        # system(
+        #   paste0(
+        #     binpaths$gdal_calc," ",
+        #     paste(apply(gdal_bands,1,function(l){
+        #       paste0("-",l["letter"]," \"",sel_infile,"\" --",l["letter"],"_band=",which(gdal_bands$letter==l["letter"]))
+        #     }), collapse=" ")," ",
+        #     "--outfile=\"",file.path(out_subdir0,sel_outfile0),"\" ",
+        #     "--type=\"",dataType,"\" ",
+        #     "--NoDataValue=",sel_nodata," ",
+        #     "--format=\"",sel_format0,"\" ",
+        #     if (overwrite==TRUE) {"--overwrite "},
+        #     if (sel_format0=="GTiff") {paste0("--co=\"COMPRESS=",toupper(compress),"\" ")},
+        #     "--calc=\"",sel_formula,"\""
+        #   ),
+        #   intern = Sys.info()["sysname"] == "Windows"
+        # )
         
         
         
         
         
-        # prova usando raster
+        
+        
+        
+        ### Prova usando raster
+        
+        
         
         sel_formula <- indices_info[j,"s2_formula"]
         sel_brick <- raster::brick(sel_infile)
