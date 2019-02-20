@@ -53,6 +53,13 @@
 #'  datatype is chosen (default values are 10000 for "Int16" and "UInt16",
 #'  1E9 for "Int32" and "UInt32"). Notice that, using "UInt16" and "UInt32" types,
 #'  negative values will be truncated to 0.
+#' @param proc_mode (optional) Character: if `"gdal_calc"` (default), 
+#'  gdal_calc routines are used to compute indices; 
+#'  if `"raster"`, R functions are instead used.
+#'  **Note**: there is a difference in which the two modes manage values out 
+#'  of ranges (e.g. -32768 to 32767 in Int16 and 0 to 255 in Byte): 
+#'  "raster" mode set these values to NA, "gdal_calc"mode clip them to the
+#'  minimum/maximum values.
 #' @param parallel (optional) Logical: if TRUE, the function is run using parallel
 #'  processing, to speed-up the computation for large rasters.
 #'  The number of cores is automatically determined; specifying it is also
@@ -73,6 +80,7 @@
 #' @importFrom jsonlite fromJSON
 #' @import data.table
 #' @importFrom rgdal GDALinfo
+#' @importFrom raster blockSize brick getValues raster writeStart writeStop writeValues
 #' @importFrom magrittr "%>%"
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
@@ -88,16 +96,68 @@ s2_calcindices <- function(infiles,
                            compress="DEFLATE",
                            dataType="Int16",
                            scaleFactor=NA,
+                           proc_mode="gdal_calc",
                            parallel = FALSE,
                            overwrite=FALSE,
                            .log_message=NA,
                            .log_output=NA) {
-
+  
   prod_type <- . <- NULL
-
+  
+  # Internal function 1
+  power <- function(x,y) {x^y}
+  
+  # Internal function 2
+  calcindex <- function(x,
+                        sel_formula,
+                        out_file,
+                        NAflag = -32768,
+                        sel_format = "GTiff",
+                        compress = "LZW",
+                        datatype = "INT2S",
+                        overwrite = FALSE,
+                        minrows = NULL) {
+    
+    out <- raster(x)
+    out <- writeStart(
+      out, out_file, 
+      NAflag = NAflag, 
+      datatype = datatype, 
+      format = ifelse(sel_format=="VRT", "GTiff", sel_format), 
+      if(sel_format %in% c("GTiff","VRT")){options = paste0("COMPRESS=",compress)},
+      overwrite = overwrite
+    )
+    
+    # x <- brick(infiles)
+    if (is.null(minrows)) {
+      bs <- blockSize(out)
+    } else {
+      bs <- blockSize(out, minrows = minrows)
+    }
+    for (i in seq_len(bs$n)) {
+      message("Processing chunk ", i, " of ", bs$n)
+      v <- getValues(x, row = bs$row[i], nrows = bs$nrows[i])
+      v_out <- round(eval(parse(text = sel_formula)))
+      # m   <- getValues(y, row = bs$row[i], nrows = bs$nrows[i])
+      out <- writeValues(out, v_out, bs$row[i])
+    }
+    out <- writeStop(out)
+    NULL
+  }
+  
   # Load GDAL paths
   binpaths <- load_binpaths("gdal")
-
+  
+  # Check proc_mode
+  if (!proc_mode %in% c("gdal_calc", "raster")) {
+    print_message(
+      type = "warning",
+      "proc_mode = \"",proc_mode,"\" is not recognised; ",
+      "switching to \"gdal_calc\"."
+    )
+    proc_mode <- "gdal_calc"
+  }
+  
   # Compute n_cores
   n_cores <- if (is.numeric(parallel)) {
     as.integer(parallel)
@@ -113,11 +173,11 @@ s2_calcindices <- function(infiles,
   } else {
     `%DO%` <- `%dopar%`
   }
-
+  
   # generate indices.json if missing and read it
   create_indices_db()
   indices_db <- list_indices(c("n_index","name","longname","s2_formula","a","b","x"))
-
+  
   # check that the required indices exists
   if (!all(indices %in% indices_db$name)) {
     print_message(
@@ -139,7 +199,7 @@ s2_calcindices <- function(infiles,
   }
   # extract needed indices_db
   indices_info <- indices_db[match(indices,indices_db$name),]
-
+  
   # check output format
   gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))
   if (!is.na(format)) {
@@ -155,17 +215,22 @@ s2_calcindices <- function(infiles,
         "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
     }
   }
-
-  # assign scaleFactor value
+  
+  # assign scaleFactor and nodata values
   if (grepl("Int",dataType) & is.na(scaleFactor)) {
     scaleFactor <- ifelse(grepl("Int32",dataType),1E9,1E4)
   }
-
+  sel_nodata <- switch(
+    dataType,
+    Int16=-2^15, UInt16=2^16-1, Int32=-2^31, UInt32=2^32-1,
+    Float32=-9999, Float64=-9999, Byte=255
+  )
+  
   # Get files metadata
   infiles_meta <- data.table(sen2r_getElements(infiles, format="data.frame"))
   infiles <- infiles[infiles_meta$prod_type %in% source]
   infiles_meta <- infiles_meta[prod_type %in% source,]
-
+  
   # create subdirs (if requested)
   if (is.na(subdirs)) {
     subdirs <- ifelse(length(indices)>1, TRUE, FALSE)
@@ -173,7 +238,7 @@ s2_calcindices <- function(infiles,
   if (subdirs) {
     sapply(file.path(outdir,indices), dir.create, showWarnings=FALSE)
   }
-
+  
   # read TOA/BOA image
   if (n_cores > 1) {
     cl <- makeCluster(
@@ -187,14 +252,14 @@ s2_calcindices <- function(infiles,
       "Starting parallel computation of indices..."
     )
   }
-
+  
   outfiles <- foreach(
     i = seq_along(infiles),
     .packages = c("raster","rgdal","sen2r"),
     .combine=c,
     .errorhandling="remove"
   )  %DO% {
-
+    
     # redirect to log files
     if (n_cores > 1) {
       if (!is.na(.log_output)) {
@@ -205,14 +270,14 @@ s2_calcindices <- function(infiles,
         sink(logfile_message, type="message")
       }
     }
-
+    
     sel_infile <- infiles[i]
     sel_infile_meta <- c(infiles_meta[i,])
     sel_format <- suppressWarnings(ifelse(
       !is.na(format), format, attr(GDALinfo(sel_infile), "driver")
     ))
     sel_out_ext <- gdal_formats[gdal_formats$name==sel_format,"ext"][1]
-
+    
     # check bands to use
     if (sel_infile_meta$prod_type=="TOA") {
       gdal_bands <- data.frame("letter"=LETTERS[1:12],"number"=1:12,"band"=paste0("band_",1:12), stringsAsFactors = FALSE)
@@ -221,15 +286,15 @@ s2_calcindices <- function(infiles,
     } else {
       print_message(type="error", "Internal error (this should not happen).")
     }
-
+    
     # compute single indices
     # (this cycle is not parallelised)
     sel_outfiles <- character(0)
     for (j in seq_along(indices)) {
-
+      
       # extract parameters
       sel_parameters <- parameters[[indices[j]]]
-
+      
       # define output filename
       sel_outfile <- paste0(
         "S2",sel_infile_meta$mission,sel_infile_meta$level,"_",
@@ -242,172 +307,111 @@ s2_calcindices <- function(infiles,
         indices_info[j,"name"],"_",
         gsub("m$","",sel_infile_meta$res),".",
         sel_out_ext)
-
+      
       # define subdir
       out_subdir <- ifelse(subdirs, file.path(outdir,indices[j]), outdir)
-
+      
       # if output already exists and overwrite==FALSE, do not proceed
       if (!file.exists(file.path(out_subdir,sel_outfile)) | overwrite==TRUE) {
-
+        
+        
         # change index formula to be used with bands
         for (sel_par in c("a","b","x")) {
           assign(sel_par, if (is.null(sel_parameters[[sel_par]])) {indices_info[j,sel_par]} else {sel_parameters[[sel_par]]})
         }
         sel_formula <- indices_info[j,"s2_formula"]
+        
         for (sel_par in c("a","b","x")) {
           sel_formula <- gsub(paste0("([^0-9a-zA-Z])par\\_",sel_par,"([^0-9a-zA-Z])"),
                               paste0("\\1",get(sel_par),"\\2"),
                               sel_formula)
         }
-        for (sel_band in seq_len(nrow(gdal_bands))) {
-          sel_formula <- gsub(paste0("([^0-9a-zA-Z])",gdal_bands[sel_band,"band"],"([^0-9a-zA-Z])"),
-                              paste0("\\1(",gdal_bands[sel_band,"letter"],".astype(float)/10000)\\2"),
-                              sel_formula)
+        
+        # Edit formula basing on proc_mode
+        if (proc_mode == "gdal_calc") {
+          for (sel_band in seq_len(nrow(gdal_bands))) {
+            sel_formula <- gsub(paste0("([^0-9a-zA-Z])",gdal_bands[sel_band,"band"],"([^0-9a-zA-Z])"),
+                                paste0("\\1(",gdal_bands[sel_band,"letter"],".astype(float)/10000)\\2"),
+                                sel_formula)
+          }
+          if (grepl("Int", dataType)) {
+            sel_formula <- paste0(
+              "clip(",
+              scaleFactor,"*(",sel_formula,"),",
+              switch(dataType, Int16=-2^15+2, UInt16=0, Int32=-2^31+4, UInt32=0),",",
+              switch(dataType, Int16=2^15-1, UInt16=2^16-2, Int32=2^31-3, UInt32=2^32-4),")"
+            )
+          }
+          if (dataType == "Byte") {
+            sel_formula <- paste0("clip(100+100*(",sel_formula,"),0,200)")
+          }
+        } else if (proc_mode == "raster") {
+          for (sel_band in seq_len(nrow(gdal_bands))) {
+            sel_formula <- gsub(paste0("([^0-9a-zA-Z])",gdal_bands[sel_band,"band"],"([^0-9a-zA-Z])"),
+                                paste0("\\1(v[,",gdal_bands[sel_band,"number"],"]/10000)\\2"),
+                                sel_formula)
+          }
+          if (grepl("Int", dataType)) {
+            sel_formula <- paste0(scaleFactor,"*(",sel_formula,")")
+          }
+          if (dataType == "Byte") {
+            sel_formula <- paste0("100+100*(",sel_formula,")")
+          }
+          
         }
-        if (grepl("Int", dataType)) {
-          sel_formula <- paste0(
-            "clip(",
-            scaleFactor,"*(",sel_formula,"),",
-            switch(dataType, Int16=-2^15+2, UInt16=0, Int32=-2^31+4, UInt32=0),",",
-            switch(dataType, Int16=2^15-1, UInt16=2^16-2, Int32=2^31-3, UInt32=2^32-4),")"
-          )
-        }
-        sel_nodata <- switch(
-          dataType,
-          Int16=-2^15, UInt16=2^16-1, Int32=-2^31, UInt32=2^32-1,
-          Float32=-9999, Float64=-9999, Byte=255
-        )
-        if (dataType == "Byte") {
-          sel_formula <- paste0("clip(100+100*(",sel_formula,"),0,200)")
-        }
-
+        
         # if sel_format is VRT, create GTiff as intermediate source files
         # (cannot create directly .tif files without breaking _req / _exi names)
         if (sel_format == "VRT") {
-
+          
           # define and create tmpdir
           if (is.na(tmpdir)) {
             tmpdir <- file.path(out_subdir, ".vrt")
           }
           dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
-
+          
           sel_format0 <- "GTiff"
           sel_out_ext0 <- gdal_formats[gdal_formats$name==sel_format0,"ext"][1]
           out_subdir0 <- tmpdir
           sel_outfile0 <- gsub(paste0(sel_out_ext,"$"), sel_out_ext0, sel_outfile)
-
+          
         } else {
           sel_format0 <- sel_format
           out_subdir0 <- out_subdir
           sel_outfile0 <- sel_outfile
         }
-
-        # # apply gdal_calc
-        # system(
-        #   paste0(
-        #     binpaths$gdal_calc," ",
-        #     paste(apply(gdal_bands,1,function(l){
-        #       paste0("-",l["letter"]," \"",sel_infile,"\" --",l["letter"],"_band=",which(gdal_bands$letter==l["letter"]))
-        #     }), collapse=" ")," ",
-        #     "--outfile=\"",file.path(out_subdir0,sel_outfile0),"\" ",
-        #     "--type=\"",dataType,"\" ",
-        #     "--NoDataValue=",sel_nodata," ",
-        #     "--format=\"",sel_format0,"\" ",
-        #     if (overwrite==TRUE) {"--overwrite "},
-        #     if (sel_format0=="GTiff") {paste0("--co=\"COMPRESS=",toupper(compress),"\" ")},
-        #     "--calc=\"",sel_formula,"\""
-        #   ),
-        #   intern = Sys.info()["sysname"] == "Windows"
-        # )
-
-        ### Prova usando raster
-
-        sel_formula <- indices_info[j,"s2_formula"]
-        sel_brick <- raster::brick(sel_infile)
-
-        for (sel_par in c("a","b","x")) {
-          sel_formula <- gsub(paste0("([^0-9a-zA-Z])par\\_",sel_par,"([^0-9a-zA-Z])"),
-                              paste0("\\1",get(sel_par),"\\2"),
-                              sel_formula)
+        
+        # Launch the processing
+        if (proc_mode == "gdal_calc") {
+          system(
+            paste0(
+              binpaths$gdal_calc," ",
+              paste(apply(gdal_bands,1,function(l){
+                paste0("-",l["letter"]," \"",sel_infile,"\" --",l["letter"],"_band=",which(gdal_bands$letter==l["letter"]))
+              }), collapse=" ")," ",
+              "--outfile=\"",file.path(out_subdir0,sel_outfile0),"\" ",
+              "--type=\"",dataType,"\" ",
+              "--NoDataValue=",sel_nodata," ",
+              "--format=\"",sel_format0,"\" ",
+              if (overwrite==TRUE) {"--overwrite "},
+              if (sel_format0=="GTiff") {paste0("--co=\"COMPRESS=",toupper(compress),"\" ")},
+              "--calc=\"",sel_formula,"\""
+            ),
+            intern = Sys.info()["sysname"] == "Windows"
+          )
+        } else if (proc_mode == "raster") {
+          calcindex(
+            raster::brick(sel_infile),
+            sel_formula,
+            out_file = file.path(out_subdir0,sel_outfile0),
+            NAflag = sel_nodata,
+            sel_format = sel_format0,
+            compress = compress,
+            datatype = convert_datatype(dataType),
+            overwrite = overwrite
+          )
         }
-        for (sel_band in seq_len(nrow(gdal_bands))) {
-          sel_formula <- gsub(paste0("([^0-9a-zA-Z])",gdal_bands[sel_band,"band"],"([^0-9a-zA-Z])"),
-                              paste0("\\1(v[ ,",gdal_bands[sel_band,"number"],"]/10000)\\2"),
-                              sel_formula)
-        }
-
-        sel_formula <- paste0("10000 * ", sel_formula)
-
-
-        power <- function(x,y) {x^y} # FIXME sposta in cima
-
-        calcindex <- function(x,
-                              sel_formula,
-                              out_file,
-                              NAflag,
-                              format,
-                              datatype,
-                              overwrite = FALSE,
-                              minrows = NULL) {
-
-          out <- raster(x)
-          out <- writeStart(out, out_file, NAflag=NAflag, overwrite = overwrite,
-                            datatype = datatype)
-
-          if (sel_format0 == "GTiff") {
-            options = paste0("COMPRESS=",compress)
-          } else {
-            options = ""
-          }
-          # x <- brick(infiles)
-          if (is.null(minrows)) {
-            bs <- blockSize(out)
-          } else {
-            bs <- blockSize(out, minrows = minrows)
-          }
-          for (i in seq_len(bs$n)) {
-            message("Processing chunk ", i, " of ", bs$n)
-            v   <- getValues(x, row = bs$row[i], nrows = bs$nrows[i])
-            v_out <- round(eval(parse(text = sel_formula)))
-            # m   <- getValues(y, row = bs$row[i], nrows = bs$nrows[i])
-            out <- writeValues(out, v_out, bs$row[i])
-          }
-          out <- writeStop(out)
-          NULL
-        }
-
-        calcindex(sel_brick,
-                  sel_formula,
-                  out_file = file.path(out_subdir0,sel_outfile0),
-                  NAflag = sel_nodata,
-                  format = sel_format0,
-                  datatype = convert_datatype(dataType),
-                  overwrite = overwrite)
-
-        # computing using raster
-        # raster::calc(
-        #   sel_brick,
-        #   function(y) {eval(parse(text = sel_formula))},
-        #   filename = file.path(out_subdir0,sel_outfile0),
-        #   NAflag = sel_nodata,
-        #   datatype = convert_datatype(dataType),
-        #   format = sel_format0,
-        #   options = if(sel_format0 == "GTiff") {paste0("COMPRESS=",compress)},
-        #   overwrite = overwrite
-        # )
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
         if (sel_format == "VRT") {
           system(
             paste0(
@@ -418,13 +422,13 @@ s2_calcindices <- function(infiles,
             intern = Sys.info()["sysname"] == "Windows"
           )
         }
-
+        
       } # end of overwrite IF cycle
-
+      
       sel_outfiles <- c(sel_outfiles, file.path(out_subdir,sel_outfile))
-
+      
     } # end of indices FOR cycle
-
+    
     # stop sinking
     if (n_cores > 1) {
       if (!is.na(.log_output)) {
@@ -434,9 +438,9 @@ s2_calcindices <- function(infiles,
         sink(type = "message"); close(logfile_message)
       }
     }
-
+    
     sel_outfiles
-
+    
   } # end cycle on infiles
   if (n_cores > 1) {
     stopCluster(cl)
@@ -446,7 +450,7 @@ s2_calcindices <- function(infiles,
       "Parallel computation of indices done."
     )
   }
-
+  
   return(outfiles)
-
+  
 }

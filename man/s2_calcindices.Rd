@@ -7,8 +7,8 @@
 s2_calcindices(infiles, indices, outdir = ".", parameters = NULL,
   source = c("TOA", "BOA"), format = NA, subdirs = NA, tmpdir = NA,
   compress = "DEFLATE", dataType = "Int16", scaleFactor = NA,
-  parallel = FALSE, overwrite = FALSE, .log_message = NA,
-  .log_output = NA)
+  proc_mode = "gdal_calc", parallel = FALSE, overwrite = FALSE,
+  .log_message = NA, .log_output = NA)
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths
@@ -72,6 +72,14 @@ is assigned to 255.}
 datatype is chosen (default values are 10000 for "Int16" and "UInt16",
 1E9 for "Int32" and "UInt32"). Notice that, using "UInt16" and "UInt32" types,
 negative values will be truncated to 0.}
+
+\item{proc_mode}{(optional) Character: if \code{"gdal_calc"} (default),
+gdal_calc routines are used to compute indices;
+if \code{"raster"}, R functions are instead used.
+\strong{Note}: there is a difference in which the two modes manage values out
+of ranges (e.g. -32768 to 32767 in Int16 and 0 to 255 in Byte):
+"raster" mode set these values to NA, "gdal_calc"mode clip them to the
+minimum/maximum values.}
 
 \item{parallel}{(optional) Logical: if TRUE, the function is run using parallel
 processing, to speed-up the computation for large rasters.
