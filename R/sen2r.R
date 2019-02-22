@@ -712,6 +712,13 @@ sen2r <- function(param_list = NULL,
   if (is.null(pm$parallel)) {pm$parallel <- parallel}
   if (is.null(pm$processing_order)) {pm$processing_order <- processing_order}
   # determine if parallelisation muts be applied to groups or to steps
+  if (pm$preprocess == FALSE & !pm$processing_order %in% c(1,"by_step")) {
+    print_message(
+      type = "warning",
+      "only processing_order = \"by_step\" is accepted if preprocess = FALSE."
+    )
+    pm$processing_order <- "by_step"
+  }
   if (!pm$processing_order %in% c(
     1,"by_step", 
     2,"by_date", 
@@ -1256,7 +1263,7 @@ sen2r <- function(param_list = NULL,
   } # end of pm$preprocess==TRUE IF cycle (names of required files)
   
   # if list_sen2r_paths(): stop here
-  if (.only_list_names == TRUE) {return(s2names)}
+  if (pm$preprocess == TRUE & .only_list_names == TRUE) {return(s2names)}
   
   ### SAFE processing: download and atmospheric correction ###
   
@@ -1353,7 +1360,9 @@ sen2r <- function(param_list = NULL,
     
   } else if (pm$processing_order %in% c(1,"by_step", 3,"mixed")) {
     
-    s2names_groups_A <- list(s2names)
+    # if preprocess == FALSE, create dummy s2names variables 
+    # used only to allow entering in cycle A
+    s2names_groups_A <- if (pm$preprocess == TRUE) {list(s2names)} else {"dummy"}
     s2_list_l1c_groups_A <- list(s2_list_l1c)
     s2_list_l2a_groups_A <- list(s2_list_l2a)
     s2_dt_groups_A <- list(s2_dt)
@@ -1660,11 +1669,11 @@ sen2r <- function(param_list = NULL,
           sel_s2_list_l2a <- c(sel_s2_list_l2a,sel_s2_list_l2a_corrected)
         }
         
-      }
-      
-      # delete SAFE, if required
-      if (!("l1c" %in% pm$s2_levels) & pm$rm_safe %in% c("all","l1c")) {
-        unlink(file.path(paths["L1C"],names(sel_s2_list_l1c_tocorrect)), recursive=TRUE)
+        # delete SAFE, if required
+        if (!("l1c" %in% pm$s2_levels) & pm$rm_safe %in% c("all","l1c")) {
+          unlink(file.path(paths["L1C"],names(sel_s2_list_l1c_tocorrect)), recursive=TRUE)
+        }
+        
       }
       
       # if no processing is required, stop here # TODO see #TODO3 (end of file)
