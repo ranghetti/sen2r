@@ -30,8 +30,9 @@
 # TODO check also python and GDAL outside install_s2download
 # (one could be interested only in preprocessing and not in downloading)
 
-check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE) {
+check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, ignore.full_scan = TRUE) {
   
+browser()
   # set minimum GDAL version
   gdal_minversion <- package_version("2.1.2")
   
@@ -54,7 +55,7 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE) {
     type="message",
     "Searching for a valid GDAL installation...")
   gdal_check_fastpath <- tryCatch(
-    gdal_setInstallation(ignore.full_scan = TRUE, verbose = FALSE), 
+    gdal_setInstallation(ignore.full_scan = ignore.full_scan, verbose = FALSE), 
     error = print
   )
   
