@@ -32,7 +32,6 @@
 
 check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, ignore.full_scan = TRUE) {
   
-browser()
   # set minimum GDAL version
   gdal_minversion <- package_version("2.1.2")
   
@@ -100,7 +99,7 @@ browser()
   gdal_dirs <- normalize_path(sapply(getOption("gdalUtils_gdalPath"), function(x){x$path}))
   gdalinfo_paths <- normalize_path(file.path(gdal_dirs,paste0("gdalinfo",bin_ext)))
   gdal_versions <- package_version(gsub(
-    "^.*GDAL ([0-9\\.]+)\\,.*$", "\\1", 
+    "^.*GDAL ([0-9\\.]+)[^0-9].*$", "\\1", 
     sapply(paste(gdalinfo_paths, "--version"), system, intern = TRUE)
   ))
   
