@@ -8,6 +8,10 @@
 #'  searched in. If NULL (default), search is performed in the whole file system.
 #' @param force (optional) Logical: if TRUE, install even if it is already 
 #'  installed (default is FALSE).
+#' @param ignore.full_scan (optional) Logical: argument passed 
+#'  to [gdal_setInstallation] (default is TRUE; set to FALSE in case
+#'  of problems with the retrieved GDAL installation, e.g. when an undesired
+#'  GDAL version is retrieved and the user wants to associate another one).
 #' @return Logical (invisible): TRUE in case the installation is ok, FALSE 
 #'  if GDAL is missing and abort=FALSE (otherwise, the function stops).
 #'
