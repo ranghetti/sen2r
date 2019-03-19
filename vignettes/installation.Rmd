@@ -170,7 +170,10 @@ To run the functions correctly, some external dependences are required:
 
 * [**GDAL**](http://www.gdal.org) (with support for JP2OpenJPEG format): 
     this is a mandatory dependency, needed for all the processing operations 
-    and to retrieve metadata from SAFE products;
+    and to retrieve metadata from SAFE products
+    (to avoid incompatibilities, it is _strongly recommended_ to use 
+    a GDAL installation provided with the 
+    [OSGeo4W intaller](https://qgis.org/it/site/forusers/download.html));
 * [**sen2cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor) 
     is used to perform atmospheric correction of Sentinel-2 Level-1C products: 
     it is required by the package, unless you choose not to correct products locally 

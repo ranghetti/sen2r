@@ -124,8 +124,8 @@ are physical rasters (no output VRT is allowed).</p>
     <pre class="usage"><span class='fu'>s2_calcindices</span>(<span class='no'>infiles</span>, <span class='no'>indices</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='kw'>parameters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>source</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"TOA"</span>, <span class='st'>"BOA"</span>), <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>dataType</span> <span class='kw'>=</span> <span class='st'>"Int16"</span>, <span class='kw'>scaleFactor</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>.log_message</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>.log_output</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+  <span class='kw'>proc_mode</span> <span class='kw'>=</span> <span class='st'>"raster"</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>.log_message</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>.log_output</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -213,6 +213,16 @@ is assigned to 255.</p></td>
 datatype is chosen (default values are 10000 for "Int16" and "UInt16",
 1E9 for "Int32" and "UInt32"). Notice that, using "UInt16" and "UInt32" types,
 negative values will be truncated to 0.</p></td>
+    </tr>
+    <tr>
+      <th>proc_mode</th>
+      <td><p>(optional) Character: if <code>"gdal_calc"</code>,
+gdal_calc routines are used to compute indices;
+if <code>"raster"</code> (default), R functions are instead used.
+<strong>Note</strong>: there is a difference in which the two modes manage values out
+of ranges (e.g. -32768 to 32767 in Int16 and 0 to 255 in Byte):
+"raster" mode set these values to NA, "gdal_calc"mode clip them to the
+minimum/maximum values.</p></td>
     </tr>
     <tr>
       <th>parallel</th>

@@ -8,6 +8,10 @@
 #'  searched in. If NULL (default), search is performed in the whole file system.
 #' @param force (optional) Logical: if TRUE, install even if it is already 
 #'  installed (default is FALSE).
+#' @param ignore.full_scan (optional) Logical: argument passed 
+#'  to [gdal_setInstallation] (default is TRUE; set to FALSE in case
+#'  of problems with the retrieved GDAL installation, e.g. when an undesired
+#'  GDAL version is retrieved and the user wants to associate another one).
 #' @return Logical (invisible): TRUE in case the installation is ok, FALSE 
 #'  if GDAL is missing and abort=FALSE (otherwise, the function stops).
 #'
@@ -30,7 +34,7 @@
 # TODO check also python and GDAL outside install_s2download
 # (one could be interested only in preprocessing and not in downloading)
 
-check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE) {
+check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, ignore.full_scan = TRUE) {
   
   # set minimum GDAL version
   gdal_minversion <- package_version("2.1.2")
@@ -54,7 +58,7 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE) {
     type="message",
     "Searching for a valid GDAL installation...")
   gdal_check_fastpath <- tryCatch(
-    gdal_setInstallation(ignore.full_scan = TRUE, verbose = FALSE), 
+    gdal_setInstallation(ignore.full_scan = ignore.full_scan, verbose = FALSE), 
     error = print
   )
   
@@ -99,7 +103,7 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE) {
   gdal_dirs <- normalize_path(sapply(getOption("gdalUtils_gdalPath"), function(x){x$path}))
   gdalinfo_paths <- normalize_path(file.path(gdal_dirs,paste0("gdalinfo",bin_ext)))
   gdal_versions <- package_version(gsub(
-    "^.*GDAL ([0-9\\.]+)\\,.*$", "\\1", 
+    "^.*GDAL ([0-9\\.]+)[^0-9].*$", "\\1", 
     sapply(paste(gdalinfo_paths, "--version"), system, intern = TRUE)
   ))
   

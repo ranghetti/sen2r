@@ -4,7 +4,8 @@
 \alias{check_gdal}
 \title{Check GDAL installation}
 \usage{
-check_gdal(abort = TRUE, gdal_path = NULL, force = FALSE)
+check_gdal(abort = TRUE, gdal_path = NULL, force = FALSE,
+  ignore.full_scan = TRUE)
 }
 \arguments{
 \item{abort}{Logical parameter: if TRUE (default), the function aborts
@@ -16,6 +17,11 @@ searched in. If NULL (default), search is performed in the whole file system.}
 
 \item{force}{(optional) Logical: if TRUE, install even if it is already
 installed (default is FALSE).}
+
+\item{ignore.full_scan}{(optional) Logical: argument passed
+to \link{gdal_setInstallation} (default is TRUE; set to FALSE in case
+of problems with the retrieved GDAL installation, e.g. when an undesired
+GDAL version is retrieved and the user wants to associate another one).}
 }
 \value{
 Logical (invisible): TRUE in case the installation is ok, FALSE

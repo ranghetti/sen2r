@@ -53,9 +53,9 @@
 #'  datatype is chosen (default values are 10000 for "Int16" and "UInt16",
 #'  1E9 for "Int32" and "UInt32"). Notice that, using "UInt16" and "UInt32" types,
 #'  negative values will be truncated to 0.
-#' @param proc_mode (optional) Character: if `"gdal_calc"` (default), 
+#' @param proc_mode (optional) Character: if `"gdal_calc"`, 
 #'  gdal_calc routines are used to compute indices; 
-#'  if `"raster"`, R functions are instead used.
+#'  if `"raster"` (default), R functions are instead used.
 #'  **Note**: there is a difference in which the two modes manage values out 
 #'  of ranges (e.g. -32768 to 32767 in Int16 and 0 to 255 in Byte): 
 #'  "raster" mode set these values to NA, "gdal_calc"mode clip them to the
@@ -96,7 +96,7 @@ s2_calcindices <- function(infiles,
                            compress="DEFLATE",
                            dataType="Int16",
                            scaleFactor=NA,
-                           proc_mode="gdal_calc",
+                           proc_mode="raster",
                            parallel = FALSE,
                            overwrite=FALSE,
                            .log_message=NA,
@@ -329,9 +329,9 @@ s2_calcindices <- function(infiles,
         
         # Edit formula basing on proc_mode
         if (proc_mode == "gdal_calc") {
-          for (sel_band in seq_len(nrow(gdal_bands))) {
-            sel_formula <- gsub(paste0("([^0-9a-zA-Z])",gdal_bands[sel_band,"band"],"([^0-9a-zA-Z])"),
-                                paste0("\\1(",gdal_bands[sel_band,"letter"],".astype(float)/10000)\\2"),
+          for (sel_band in rev(seq_len(nrow(gdal_bands)))) {
+            sel_formula <- gsub(gdal_bands[sel_band,"band"],
+                                paste0("(",gdal_bands[sel_band,"letter"],".astype(float)/10000)"),
                                 sel_formula)
           }
           if (grepl("Int", dataType)) {
@@ -346,9 +346,9 @@ s2_calcindices <- function(infiles,
             sel_formula <- paste0("clip(100+100*(",sel_formula,"),0,200)")
           }
         } else if (proc_mode == "raster") {
-          for (sel_band in seq_len(nrow(gdal_bands))) {
-            sel_formula <- gsub(paste0("([^0-9a-zA-Z])",gdal_bands[sel_band,"band"],"([^0-9a-zA-Z])"),
-                                paste0("\\1(v[,",gdal_bands[sel_band,"number"],"]/10000)\\2"),
+          for (sel_band in rev(seq_len(nrow(gdal_bands)))) {
+            sel_formula <- gsub(gdal_bands[sel_band,"band"],
+                                paste0("(v[,",gdal_bands[sel_band,"number"],"]/10000)"),
                                 sel_formula)
           }
           if (grepl("Int", dataType)) {
