@@ -6,6 +6,9 @@ cache: packages
 r_packages:
   - RPostgreSQL
 
+r_github_packages:
+  - r-spatial/lwgeom
+
 apt_packages:
   - libgdal-dev
   - libproj-dev
