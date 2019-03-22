@@ -42,9 +42,10 @@ remotes::install_github("ranghetti/sen2r")
 
 For detailed instructions about installing the package (including dependencies), see the [Installation](http://sen2r.ranghetti.info/articles/installation.html) page.
 
-### Run as Docker image
+### Run as 
+image
 
-A dockerised version of <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> is available [here](https://cloud.docker.com/repository/docker/ranghetti/sen2r).
+A dockerised version of <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> is available [here](https://hub.docker.com/r/ranghetti/sen2r).
 
 For detailed instructions about using it, see the page ["Run in a Docker container"](http://sen2r.ranghetti.info/articles/docker.html) page.
 
