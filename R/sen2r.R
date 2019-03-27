@@ -2327,6 +2327,8 @@ sen2r <- function(param_list = NULL,
           ))
         )
         
+        gc()
+        
       } # end of s2names_groups_B FOREACH cycle
       if (n_cores_B > 1) {
         stopCluster(cl)
@@ -2353,6 +2355,8 @@ sen2r <- function(param_list = NULL,
         "cloudcovered" = as.vector(unlist(lapply(outnames_list_B, function(x){x$cloudcovered})))
       )
       
+      gc()
+      
     } # end of s2names_groups_A FOREACH 2/2 cycle (2 cycles)
     if (pm$preprocess == FALSE | .only_list_names == TRUE) {
       outnames_list_A2
@@ -2363,6 +2367,8 @@ sen2r <- function(param_list = NULL,
         "cloudcovered" = as.vector(unlist(lapply(outnames_list_A2, function(x){x$cloudcovered})))
       )
     }
+    
+    gc()
     
   } # end of s2names_groups_A FOREACH 1/2 cycle (2 cycles)
   
@@ -2433,6 +2439,8 @@ sen2r <- function(param_list = NULL,
     date = TRUE,
     "Execution of sen2r session terminated."
   )
+  
+  gc()
   
   # Return output file paths
   return(names_out_created)
