@@ -2057,7 +2057,10 @@ s2_gui <- function(param_list = NULL,
     outputOptions(output, "rgb_req", suspendWhenHidden = FALSE)
     
     create_indices_db()
-    indices_db <- data.table(list_indices(c("n_index","name","longname","s2_formula_mathml","link","checked")))
+    indices_db <- data.table(list_indices(
+      c("n_index","name","longname","s2_formula_mathml","link","checked"),
+      all = TRUE
+    ))
     check_mark <- icon("check") %>%
       span(style="color:darkgreen;", .) %>%
       as.character() %>%

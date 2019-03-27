@@ -12,6 +12,9 @@
 #'  - `checked`: logical (TRUE for verified indices);
 #'  - `a`, `b`, `x`: parameter values (NA for non required parameters).
 #' @param pattern A regular expression on index names.
+#' @param all Logical: if TRUE, all the indices retrieved from 
+#'  [IDB](http://www.indexdatabase.de/db/is.php?sensor_id=96) are returned;
+#'  if FALSE (default), only indices checked by the authors are returned.
 #' @return A data.frame with the required information. The table contains
 #'  also the following attributes:
 #'  - `creation_date`: timestamp of the creation date of the indices archive;
@@ -26,7 +29,7 @@
 #' list_indices(c("name","longname"))
 #' }
 
-list_indices <- function(values, pattern="") {
+list_indices <- function(values, pattern="", all=FALSE) {
   
   # generate indices.json if missing
   create_indices_db()
@@ -41,6 +44,12 @@ list_indices <- function(values, pattern="") {
       indices$indices[[sel_par]] <- as.numeric(NA)
     }
   }
+  
+  #filter only checked indices
+  if (all == FALSE) {
+    indices$indices <- indices$indices[indices$indices$checked,]
+  }
+  
   indices$indices <- indices$indices[grep(pattern,indices$indices$name),values]
   attr(indices$indices, "pkg_version") <- package_version(indices$pkg_version)
   attr(indices$indices, "creation_date") <- as.POSIXct(indices$creation_date)

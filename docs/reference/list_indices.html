@@ -119,7 +119,7 @@ computable with the package.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>list_indices</span>(<span class='no'>values</span>, <span class='kw'>pattern</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
+    <pre class="usage"><span class='fu'>list_indices</span>(<span class='no'>values</span>, <span class='kw'>pattern</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>all</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -141,6 +141,12 @@ one or more within the followings:</p><ul>
     <tr>
       <th>pattern</th>
       <td><p>A regular expression on index names.</p></td>
+    </tr>
+    <tr>
+      <th>all</th>
+      <td><p>Logical: if TRUE, all the indices retrieved from
+<a href='http://www.indexdatabase.de/db/is.php?sensor_id=96'>IDB</a> are returned;
+if FALSE (default), only indices checked by the authors are returned.</p></td>
     </tr>
     </table>
     

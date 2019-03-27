@@ -4,7 +4,7 @@
 \alias{list_indices}
 \title{List spectral indices}
 \usage{
-list_indices(values, pattern = "")
+list_indices(values, pattern = "", all = FALSE)
 }
 \arguments{
 \item{values}{A vector of attributes which will be returned, being
@@ -21,6 +21,10 @@ one or more within the followings:
 }}
 
 \item{pattern}{A regular expression on index names.}
+
+\item{all}{Logical: if TRUE, all the indices retrieved from
+\href{http://www.indexdatabase.de/db/is.php?sensor_id=96}{IDB} are returned;
+if FALSE (default), only indices checked by the authors are returned.}
 }
 \value{
 A data.frame with the required information. The table contains
