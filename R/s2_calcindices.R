@@ -105,9 +105,6 @@ s2_calcindices <- function(infiles,
   prod_type <- . <- NULL
   
   # Internal function 1
-  power <- function(x,y) {x^y}
-  
-  # Internal function 2
   calcindex <- function(x,
                         sel_formula,
                         out_file,
@@ -117,6 +114,9 @@ s2_calcindices <- function(infiles,
                         datatype = "INT2S",
                         overwrite = FALSE,
                         minrows = NULL) {
+    
+    # Internal function 2
+    power <- function(x,y) {x^y}
     
     out <- raster(x)
     out <- writeStart(
