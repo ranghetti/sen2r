@@ -2316,6 +2316,8 @@ sen2r <- function(param_list = NULL,
           }
         }
         
+        gc()
+        
         # check if some files were not created
         list(
           "out" = names_out,
@@ -2347,6 +2349,9 @@ sen2r <- function(param_list = NULL,
       if (n_cores_A > 1) {
         stopCluster(cl)
       }
+      
+      gc()
+      
       list(
         "out" = as.vector(unlist(lapply(outnames_list_B, function(x){x$out}))),
         "out_created" = as.vector(unlist(lapply(outnames_list_B, function(x){x$out_created}))),
@@ -2354,6 +2359,7 @@ sen2r <- function(param_list = NULL,
       )
       
     } # end of s2names_groups_A FOREACH 2/2 cycle (2 cycles)
+    gc()
     if (pm$preprocess == FALSE | .only_list_names == TRUE) {
       outnames_list_A2
     } else {
@@ -2433,6 +2439,8 @@ sen2r <- function(param_list = NULL,
     date = TRUE,
     "Execution of sen2r session terminated."
   )
+  
+  gc()
   
   # Return output file paths
   return(names_out_created)

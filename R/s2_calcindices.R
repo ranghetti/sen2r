@@ -105,9 +105,6 @@ s2_calcindices <- function(infiles,
   prod_type <- . <- NULL
   
   # Internal function 1
-  power <- function(x,y) {x^y}
-  
-  # Internal function 2
   calcindex <- function(x,
                         sel_formula,
                         out_file,
@@ -117,6 +114,9 @@ s2_calcindices <- function(infiles,
                         datatype = "INT2S",
                         overwrite = FALSE,
                         minrows = NULL) {
+    
+    # Internal function 2
+    power <- function(x,y) {x^y}
     
     out <- raster(x)
     out <- writeStart(
@@ -176,7 +176,10 @@ s2_calcindices <- function(infiles,
   
   # generate indices.json if missing and read it
   create_indices_db()
-  indices_db <- list_indices(c("n_index","name","longname","s2_formula","a","b","x"))
+  indices_db <- list_indices(
+    c("n_index","name","longname","s2_formula","a","b","x"),
+    all = TRUE
+  )
   
   # check that the required indices exists
   if (!all(indices %in% indices_db$name)) {
@@ -187,7 +190,7 @@ s2_calcindices <- function(infiles,
       paste(indices[!indices %in% indices_db$name], collapse="\", \""),
       "\") are not recognisable; please use accepted ",
       "values. To list accepted index names, type ",
-      "'sort(list_indices(\"name\"))'.")
+      "'sort(list_indices(\"name\", all=TRUE))'.")
   }
   if (!all(indices %in% indices_db$name)) {
     print_message(
