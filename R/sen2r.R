@@ -2316,6 +2316,8 @@ sen2r <- function(param_list = NULL,
           }
         }
         
+        gc()
+        
         # check if some files were not created
         list(
           "out" = names_out,
@@ -2326,8 +2328,6 @@ sen2r <- function(param_list = NULL,
             # if(exists("rgb_names_notcreated")) {rgb_names_notcreated}
           ))
         )
-        
-        gc()
         
       } # end of s2names_groups_B FOREACH cycle
       if (n_cores_B > 1) {
@@ -2349,15 +2349,17 @@ sen2r <- function(param_list = NULL,
       if (n_cores_A > 1) {
         stopCluster(cl)
       }
+      
+      gc()
+      
       list(
         "out" = as.vector(unlist(lapply(outnames_list_B, function(x){x$out}))),
         "out_created" = as.vector(unlist(lapply(outnames_list_B, function(x){x$out_created}))),
         "cloudcovered" = as.vector(unlist(lapply(outnames_list_B, function(x){x$cloudcovered})))
       )
       
-      gc()
-      
     } # end of s2names_groups_A FOREACH 2/2 cycle (2 cycles)
+    gc()
     if (pm$preprocess == FALSE | .only_list_names == TRUE) {
       outnames_list_A2
     } else {
@@ -2367,8 +2369,6 @@ sen2r <- function(param_list = NULL,
         "cloudcovered" = as.vector(unlist(lapply(outnames_list_A2, function(x){x$cloudcovered})))
       )
     }
-    
-    gc()
     
   } # end of s2names_groups_A FOREACH 1/2 cycle (2 cycles)
   
