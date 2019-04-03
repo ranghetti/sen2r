@@ -1821,7 +1821,7 @@
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mn>0.1<\/mn>\n       <mo>&amp;InvisibleTimes;<\/mo>\n       <mi mathcolor=\"#443399\">NIR<\/mi>\n      <\/mrow>\n      <mo>-<\/mo>\n      <mi mathcolor=\"#443399\">RED<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mn>0.1<\/mn>\n       <mo>&amp;InvisibleTimes;<\/mo>\n       <mi mathcolor=\"#443399\">NIR<\/mi>\n      <\/mrow>\n      <mo>+<\/mo>\n      <mi mathcolor=\"#443399\">RED<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
     },
     {
-      "n_index": 300,
+      "n_index": 301,
       "longname": "Normalized Difference Flood Index B1B7",
       "name": "NDFI",
       "link": "https://doi.org/10.1371/journal.pone.0088741",
@@ -1830,7 +1830,7 @@
       "s2_formula_mathml": ""
     },
     {
-      "n_index": 300,
+      "n_index": 302,
       "longname": "Normalized Difference Flood Index B1B6",
       "name": "NDFI2",
       "link": "https://doi.org/10.1371/journal.pone.0088741",
@@ -1839,7 +1839,7 @@
       "s2_formula_mathml": ""
     },
     {
-      "n_index": 300,
+      "n_index": 303,
       "longname": "Normalize Difference Snow Index",
       "name": "NDSI",
       "link": "https://doi.org/10.1007/978-90-481-2642-2_376",
@@ -1848,7 +1848,7 @@
       "s2_formula_mathml": ""
     },
     {
-      "n_index": 300,
+      "n_index": 304,
       "longname": "Normalized Burn Ratio 2",
       "name": "NBR2",
       "link": "https://landsat.usgs.gov/sites/default/files/documents/si_product_guide.pdf",
@@ -1857,7 +1857,7 @@
       "s2_formula_mathml": ""
     },
     {
-      "n_index": 300,
+      "n_index": 305,
       "longname": "Mid-Infrared Burn Index",
       "name": "MIRBI",
       "link": "https://doi.org/10.1080/01431160110053185",
@@ -1866,7 +1866,7 @@
       "s2_formula_mathml": ""
     },
     {
-      "n_index": 300,
+      "n_index": 306,
       "longname": "Char Soil Index",
       "name": "CSI",
       "link": "https://doi.org/10.1016/j.rse.2005.04.014",
@@ -1875,6 +1875,6 @@
       "s2_formula_mathml": ""
     }
   ],
-  "pkg_version": ["0.3.3"],
-  "creation_date": ["2018-11-26 14:23:32"]
+  "pkg_version": ["1.0.0"],
+  "creation_date": ["2019-04-03 17:45:46"]
 }
