@@ -326,6 +326,28 @@ create_indices_db <- function(xslt_path = NA,
       s2_formula = "(band_8)/(band_12)",
       checked = TRUE,
       a = NA, b = NA, x = NA
+    ),
+    "CRred" = data.frame(
+      n_index = 307,
+      longname = "Continuum Removal in the red",
+      name = "CRred",
+      link = "Panigada et al. 2019 (in press)",
+      s2_formula = "(band_4)/(band_3+par_x*(band_6-band_3))",
+      checked = FALSE,
+      a = ((664.6-559.8)/(740.5-559.8)), # reflectances for Sentinel-2A
+      b = ((664.9-559.0)/(739.1-559.0)), # reflectances for Sentinel-2B 
+      x = (( 665 - 560 )/( 740 - 560 ))  # standard reflectance values
+    ),
+    "BDred" = data.frame(
+      n_index = 307,
+      longname = "Band Depth in the red",
+      name = "BDred",
+      link = "Panigada et al. 2019 (in press)",
+      s2_formula = "1-(band_4)/(band_3+par_x*(band_6-band_3))",
+      checked = FALSE,
+      a = ((664.6-559.8)/(740.5-559.8)), # reflectances for Sentinel-2A
+      b = ((664.9-559.0)/(739.1-559.0)), # reflectances for Sentinel-2B 
+      x = (( 665 - 560 )/( 740 - 560 ))  # standard reflectance values
     )#,
   ))
   
@@ -361,6 +383,6 @@ create_indices_db <- function(xslt_path = NA,
     "pkg_version" = as.character(packageVersion("sen2r")),
     "creation_date" = as.character(Sys.time())
   )
-  writeLines(jsonlite::toJSON(json_table, pretty=TRUE), json_path)
+  writeLines(jsonlite::toJSON(json_table, digits=NA, pretty=TRUE), json_path)
   return(invisible(NULL))
 }

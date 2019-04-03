@@ -1873,6 +1873,30 @@
       "s2_formula": "(band_8)/(band_12)",
       "checked": true,
       "s2_formula_mathml": ""
+    },
+    {
+      "n_index": 307,
+      "longname": "Continuum Removal in the red",
+      "name": "CRred",
+      "link": "Panigada et al. 2019 (in press)",
+      "s2_formula": "(band_4)/(band_3+par_x*(band_6-band_3))",
+      "checked": false,
+      "a": 0.579966795794134,
+      "b": 0.588006662965019,
+      "x": 0.583333333333333,
+      "s2_formula_mathml": ""
+    },
+    {
+      "n_index": 307,
+      "longname": "Band Depth in the red",
+      "name": "BDred",
+      "link": "Panigada et al. 2019 (in press)",
+      "s2_formula": "1-(band_4)/(band_3+par_x*(band_6-band_3))",
+      "checked": false,
+      "a": 0.579966795794134,
+      "b": 0.588006662965019,
+      "x": 0.583333333333333,
+      "s2_formula_mathml": ""
     }
   ],
   "pkg_version": ["1.0.1"],
