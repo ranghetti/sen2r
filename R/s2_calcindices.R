@@ -177,7 +177,7 @@ s2_calcindices <- function(infiles,
   # generate indices.json if missing and read it
   create_indices_db()
   indices_db <- list_indices(
-    c("n_index","name","longname","s2_formula","a","b","x"),
+    c("n_index","name","longname","s2_formula","a","b","c","d"),
     all = TRUE
   )
   
@@ -314,14 +314,23 @@ s2_calcindices <- function(infiles,
       # if output already exists and overwrite==FALSE, do not proceed
       if (!file.exists(file.path(out_subdir,sel_outfile)) | overwrite==TRUE) {
         
+        # if indices[j] requires different parameters basing on sensor,
+        # retrieve the correct information (replace all except index name)
+        # (for now, this is done "by hand" since only CR indices requires it)
+        if (indices[j] %in% c("CRred","BDred","CRred2")) {
+          sel_index_info <- indices_db[indices_db$name==paste0(indices[j],"_2",sel_infile_meta$mission),]
+          sel_index_info$name <- indices[j]
+        } else {
+          sel_index_info <- indices_info[j,]
+        }
         
         # change index formula to be used with bands
-        for (sel_par in c("a","b","x")) {
-          assign(sel_par, if (is.null(sel_parameters[[sel_par]])) {indices_info[j,sel_par]} else {sel_parameters[[sel_par]]})
+        for (sel_par in c("a","b","c","d")) {
+          assign(sel_par, if (is.null(sel_parameters[[sel_par]])) {sel_index_info[,sel_par]} else {sel_parameters[[sel_par]]})
         }
-        sel_formula <- indices_info[j,"s2_formula"]
+        sel_formula <- sel_index_info[,"s2_formula"]
         
-        for (sel_par in c("a","b","x")) {
+        for (sel_par in c("a","b","c","d")) {
           sel_formula <- gsub(paste0("([^0-9a-zA-Z])par\\_",sel_par,"([^0-9a-zA-Z])"),
                               paste0("\\1",get(sel_par),"\\2"),
                               sel_formula)
