@@ -329,28 +329,28 @@ create_indices_db <- function(xslt_path = NA,
       s2_formula = "(band_4)/(band_3+par_a*(band_6-band_3))",
       checked = TRUE
     ),
-    "CRred_2A" = data.frame(
+    "CRred-2A" = data.frame(
       n_index = 308,
       longname = "Continuum Removal in the red (Sentinel-2A reflectances)",
-      name = "CRred_2A",
+      name = "CRred-2A",
       link = "Panigada et al. 2019 (in press)",
       s2_formula = "(band_4)/(band_3+par_a*(band_6-band_3))",
       checked = FALSE,
       a = ((664.6-559.8)/(740.5-559.8)) # reflectances for S2A
     ),
-    "CRred_2B" = data.frame(
+    "CRred-2B" = data.frame(
       n_index = 309,
       longname = "Continuum Removal in the red (Sentinel-2B reflectances)",
-      name = "CRred_2B",
+      name = "CRred-2B",
       link = "Panigada et al. 2019 (in press)",
       s2_formula = "(band_4)/(band_3+par_a*(band_6-band_3))",
       checked = FALSE,
       a = ((664.9-559.0)/(739.1-559.0)) # reflectances for S2B 
     ),
-    "CRred_0" = data.frame(
+    "CRred-0" = data.frame(
       n_index = 310,
       longname = "Continuum Removal in the red (standard reflectances)",
-      name = "CRred_0",
+      name = "CRred-0",
       link = "Panigada et al. 2019 (in press)",
       s2_formula = "(band_4)/(band_3+par_a*(band_6-band_3))",
       checked = FALSE,
@@ -364,28 +364,28 @@ create_indices_db <- function(xslt_path = NA,
       s2_formula = "1-(band_4)/(band_3+par_a*(band_6-band_3))",
       checked = TRUE
     ),
-    "BDred_2A" = data.frame(
+    "BDred-2A" = data.frame(
       n_index = 312,
       longname = "Band Depth in the red (Sentinel-2A reflectances)",
-      name = "BDred_2A",
+      name = "BDred-2A",
       link = "Panigada et al. 2019 (in press)",
       s2_formula = "1-(band_4)/(band_3+par_a*(band_6-band_3))",
       checked = FALSE,
       a = ((664.6-559.8)/(740.5-559.8)) # reflectances for S2A
     ),
-    "BDred_2B" = data.frame(
+    "BDred-2B" = data.frame(
       n_index = 313,
       longname = "Band Depth in the red (Sentinel-2B reflectances)",
-      name = "BDred_2B",
+      name = "BDred-2B",
       link = "Panigada et al. 2019 (in press)",
       s2_formula = "1-(band_4)/(band_3+par_a*(band_6-band_3))",
       checked = FALSE,
       a = ((664.9-559.0)/(739.1-559.0)) # reflectances for S2B 
     ),
-    "BDred_0" = data.frame(
+    "BDred-0" = data.frame(
       n_index = 314,
       longname = "Band Depth in the red (standard reflectances)",
-      name = "BDred_0",
+      name = "BDred-0",
       link = "Panigada et al. 2019 (in press)",
       s2_formula = "1-(band_4)/(band_3+par_a*(band_6-band_3))",
       checked = FALSE,
@@ -399,28 +399,28 @@ create_indices_db <- function(xslt_path = NA,
       s2_formula = "(((par_b-par_a)*(band_4+band_3)+(par_c-par_b)*(band_5+band_4)+(par_d-par_c)*(band_6+band_5))/((par_d-par_a)*(band_6+band_3)))",
       checked = FALSE
     ),
-    "CRred2_2A" = data.frame(
+    "CRred2-2A" = data.frame(
       n_index = 316,
       longname = "Continuum Removal in the red 2 (Sentinel-2A reflectances)",
-      name = "CRred2_2A",
+      name = "CRred2-2A",
       link = "",
       s2_formula = "(((par_b-par_a)*(band_4+band_3)+(par_c-par_b)*(band_5+band_4)+(par_d-par_c)*(band_6+band_5))/((par_d-par_a)*(band_6+band_3)))",
       checked = FALSE,
       a = 559.8, b = 664.6, c = 704.1, d = 740.5 # reflectances for S2A
     ),
-    "CRred2_2B" = data.frame(
+    "CRred2-2B" = data.frame(
       n_index = 317,
       longname = "Continuum Removal in the red 2 (Sentinel-2B reflectances)",
-      name = "CRred2_2B",
+      name = "CRred2-2B",
       link = "",
       s2_formula = "(((par_b-par_a)*(band_4+band_3)+(par_c-par_b)*(band_5+band_4)+(par_d-par_c)*(band_6+band_5))/((par_d-par_a)*(band_6+band_3)))",
       checked = FALSE,
       a = 559.0, b = 664.9, c = 703.8, d = 739.1 # reflectances for S2B
     ),
-    "CRred2_0" = data.frame(
+    "CRred2-0" = data.frame(
       n_index = 318,
       longname = "Continuum Removal in the red 2 (standard reflectances)",
-      name = "CRred2_0",
+      name = "CRred2-0",
       link = "",
       s2_formula = "(((par_b-par_a)*(band_4+band_3)+(par_c-par_b)*(band_5+band_4)+(par_d-par_c)*(band_6+band_5))/((par_d-par_a)*(band_6+band_3)))",
       checked = FALSE,
