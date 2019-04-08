@@ -318,7 +318,7 @@ s2_calcindices <- function(infiles,
         # retrieve the correct information (replace all except index name)
         # (for now, this is done "by hand" since only CR indices requires it)
         if (indices[j] %in% c("CRred","BDred","CRred2")) {
-          sel_index_info <- indices_db[indices_db$name==paste0(indices[j],"_2",sel_infile_meta$mission),]
+          sel_index_info <- indices_db[indices_db$name==paste0(indices[j],"-2",sel_infile_meta$mission),]
           sel_index_info$name <- indices[j]
         } else {
           sel_index_info <- indices_info[j,]
@@ -419,6 +419,14 @@ s2_calcindices <- function(infiles,
             datatype = convert_datatype(dataType),
             overwrite = overwrite
           )
+          # fix for envi extension (writeRaster use .envi)
+          if (sel_format=="ENVI" &
+              file.exists(gsub(paste0("\\.",sel_out_ext,"$"),".envi",file.path(out_subdir0,sel_outfile0)))) {
+            file.rename(gsub(paste0("\\.",sel_out_ext,"$"),".envi",file.path(out_subdir0,sel_outfile0)),
+                        file.path(out_subdir0,sel_outfile0))
+            file.rename(paste0(gsub(paste0("\\.",sel_out_ext,"$"),".envi",file.path(out_subdir0,sel_outfile0)),".aux.xml"),
+                        paste0(file.path(out_subdir0,sel_outfile0),".aux.xml"))
+          }
         }
         
         if (sel_format == "VRT") {
