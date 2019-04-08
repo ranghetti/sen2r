@@ -1324,35 +1324,45 @@ sen2r <- function(param_list = NULL,
     
     # build groups
     s2names_groups_A <- lapply(sen2r_groups_A, function(d) {
+      d_string <- strftime(d, "%Y%m%d")
       sapply(s2names, function(v) {
-        tryCatch(
-          v[sen2r_getElements(v, format = "data.table")$sensing_date %in% d],
-          error = function(e) {
-            v[sapply(v, function(x) {
-              strftime(safe_getMetadata(x, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
-            }, USE.NAMES = FALSE) %in% as.character(d)]
-          })
+        # tryCatch(
+        #   v[sen2r_getElements(v, format = "data.table")$sensing_date %in% d],
+        #   error = function(e) {
+        #     v[sapply(v, function(x) {
+        #       strftime(safe_getMetadata(x, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
+        #     }, USE.NAMES = FALSE) %in% as.character(d)]
+        #   })
+        v[grepl(paste0("[12][ABC]\\_",d_string), basename(nn(v)))] # less meticulous, but faster
       }, simplify = FALSE)
     })
     s2_list_l1c_groups_A <- lapply(sen2r_groups_A, function(d) {
-      s2_list_l1c[
-        sapply(names(s2_list_l1c), function(s) {
-          strftime(safe_getMetadata(s, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
-        }) %in% as.character(d)
-        ]
+      d_string <- strftime(d, "%Y%m%d")
+      # s2_list_l1c[
+      #   sapply(names(s2_list_l1c), function(s) {
+      #     strftime(safe_getMetadata(s, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
+      #   }) %in% as.character(d)
+      #   ]
+      s2_list_l1c[grepl(paste0("[12][ABC]\\_",d_string), names(s2_list_l1c))] # less meticulous, but faster
     })
     s2_list_l2a_groups_A <- lapply(sen2r_groups_A, function(d) {
-      s2_list_l2a[
-        sapply(names(s2_list_l2a), function(s) {
-          strftime(safe_getMetadata(s, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
-        }) %in% as.character(d)
-        ]
+      d_string <- strftime(d, "%Y%m%d")
+      # s2_list_l2a[
+      #   sapply(names(s2_list_l2a), function(s) {
+      #     strftime(safe_getMetadata(s, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
+      #   }) %in% as.character(d)
+      #   ]
+      s2_list_l2a[grepl(paste0("[12][ABC]\\_",d_string), names(s2_list_l2a))] # less meticulous, but faster
     })
     s2_dt_groups_A <- lapply(sen2r_groups_A, function(d) {
       s2_dt[
-        sapply(names(s2_list_l2a), function(s) {
-          strftime(safe_getMetadata(s, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
-        }) %in% as.character(d),
+        # sapply(names(s2_list_l2a), function(s) {
+        #   strftime(safe_getMetadata(s, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
+        # }) %in% as.character(d),
+        as.Date(
+          gsub("^S2[AB]\\_MSIL[12][AC]\\_([0-9]{8})T.+$", "\\1", names(s2_list_l2a)),
+          "%Y%m%d"
+        ) %in% d, # less meticulous, but faster
         ]
     })
     names(s2names_groups_A) <- names(s2_list_l1c_groups_A) <-
@@ -1724,14 +1734,16 @@ sen2r <- function(param_list = NULL,
         )$sensing_date)))
         
         s2names_groups_B <- lapply(sen2r_dates_B, function(d) {
+          d_string <- strftime(d, "%Y%m%d")
           sapply(sel_s2names, function(v) {
-            tryCatch(
-              v[sen2r_getElements(v, format = "data.table")$sensing_date == d],
-              error = function(e) {
-                v[as.Date(sapply(v, function(x) {
-                  strftime(safe_getMetadata(x, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
-                }, USE.NAMES = FALSE)) == d]
-              })
+            # tryCatch(
+            #   v[sen2r_getElements(v, format = "data.table")$sensing_date == d],
+            #   error = function(e) {
+            #     v[as.Date(sapply(v, function(x) {
+            #       strftime(safe_getMetadata(x, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
+            #     }, USE.NAMES = FALSE)) == d]
+            #   })
+            v[grepl(paste0("[12][ABC]\\_",d_string), basename(nn(v)))] # less meticulous, but faster
           }, simplify = FALSE)
         })
         names(s2names_groups_B) <- sen2r_dates_B
