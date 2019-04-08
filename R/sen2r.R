@@ -1307,7 +1307,7 @@ sen2r <- function(param_list = NULL,
     # Create processing groups
     sen2r_dates_A <- if (pm$preprocess == TRUE) {
       sort(unique(sen2r_getElements(
-        unlist(s2names[grep("_new",names(s2names))]), format = "data.frame"
+        unlist(s2names[grep("_new",names(s2names))]), format = "data.table"
       )$sensing_date))
     } else {
       s2names <- list()
@@ -1326,7 +1326,7 @@ sen2r <- function(param_list = NULL,
     s2names_groups_A <- lapply(sen2r_groups_A, function(d) {
       sapply(s2names, function(v) {
         tryCatch(
-          v[sen2r_getElements(v, format = "data.frame")$sensing_date %in% d],
+          v[sen2r_getElements(v, format = "data.table")$sensing_date %in% d],
           error = function(e) {
             v[sapply(v, function(x) {
               strftime(safe_getMetadata(x, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
@@ -1719,13 +1719,14 @@ sen2r <- function(param_list = NULL,
         
         # build groups
         sen2r_dates_B <- sort(unique(nn(sen2r_getElements(
-          unlist(sel_s2names[grep("_new",names(sel_s2names))]), format = "data.frame"
+          unlist(sel_s2names[grep("_new",names(sel_s2names))]), 
+          format = "data.table"
         )$sensing_date)))
         
         s2names_groups_B <- lapply(sen2r_dates_B, function(d) {
           sapply(sel_s2names, function(v) {
             tryCatch(
-              v[sen2r_getElements(v, format = "data.frame")$sensing_date == d],
+              v[sen2r_getElements(v, format = "data.table")$sensing_date == d],
               error = function(e) {
                 v[as.Date(sapply(v, function(x) {
                   strftime(safe_getMetadata(x, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
@@ -1932,7 +1933,7 @@ sen2r <- function(param_list = NULL,
             
             if (any(!file.exists(sel_s2names$warped_names_reqout)) | pm$overwrite==TRUE) {
               # index which is TRUE for SCL products, FALSE for others
-              names_merged_req_scl_idx <- sen2r_getElements(sel_s2names$merged_names_req,format="data.frame")$prod_type=="SCL"
+              names_merged_req_scl_idx <- sen2r_getElements(sel_s2names$merged_names_req,format="data.table")$prod_type=="SCL"
               # here trace_function() is not used, since argument "tr" matches multiple formal arguments.
               # manual cycle is performed.
               tracename_gdalwarp <- start_trace(sel_s2names$warped_names_reqout[!names_merged_req_scl_idx], "gdal_warp")
@@ -2033,7 +2034,7 @@ sen2r <- function(param_list = NULL,
               } else {
                 sel_s2names$merged_names_exp
               },
-              format="data.frame"
+              format="data.table"
             )$prod_type=="SCL"
             names_req_scl_idx <- sen2r_getElements(
               if (pm$clip_on_extent==TRUE) {
@@ -2041,7 +2042,7 @@ sen2r <- function(param_list = NULL,
               } else {
                 sel_s2names$merged_names_req
               },
-              format="data.frame"
+              format="data.table"
             )$prod_type=="SCL"
             # index which is TRUE for products to be atm. masked, FALSE for others
             names_tomask_idx <- if ("SCL" %in% pm$list_prods) {
@@ -2203,8 +2204,8 @@ sen2r <- function(param_list = NULL,
         # build the names of the indices / RGB images not created for the same reason
         if (exists("masked_names_notcreated")) {
           if (length(masked_names_notcreated)>0 & length(sel_s2names$out_names_req)>0) {
-            indices_names_notcreated <- data.table(
-              sen2r_getElements(masked_names_notcreated, format="data.frame")
+            indices_names_notcreated <- sen2r_getElements(
+              masked_names_notcreated, format="data.table"
             )[prod_type == pm$index_source,
               paste0("S2",
                      mission,
@@ -2224,8 +2225,8 @@ sen2r <- function(param_list = NULL,
               }) %>%
               file.path(paths["indices"],.) %>%
               gsub(paste0(merged_ext,"$"),out_ext,.)
-            # rgb_names_notcreated <- data.table(
-            #   sen2r_getElements(masked_names_notcreated, format="data.frame")
+            # rgb_names_notcreated <- sen2r_getElements(
+            #   masked_names_notcreated, format="data.table"
             # )[prod_type %in% c("BOA","TOA"),
             #   paste0("S2",
             #          mission,

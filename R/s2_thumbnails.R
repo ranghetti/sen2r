@@ -392,7 +392,7 @@ s2_thumbnails <- function(infiles,
   
   # Get files metadata
   if (is.na(prod_type)) {
-    infiles_meta <- data.table(sen2r_getElements(infiles, format="data.frame"))
+    infiles_meta <- sen2r_getElements(infiles, format="data.table")
   }
   
   out_names <- character(0) # names of created files

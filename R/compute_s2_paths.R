@@ -130,7 +130,7 @@ compute_s2_paths <- function(pm,
       list.files(paths["ti"], full.names=TRUE)
     }
     if (length(all_names)>0) {
-      all_meta <- data.table(suppressWarnings(sen2r_getElements(all_names, abort=FALSE, format="data.frame")))
+      all_meta <- suppressWarnings(sen2r_getElements(all_names, abort=FALSE, format="data.table"))
       all_meta$names <- all_names
       # filter
       if (is.null(all_meta$prod_type)) {all_meta$prod_type <- character()}
@@ -167,8 +167,8 @@ compute_s2_paths <- function(pm,
   if (length(tiles_names_exp)==0) {
     merged_names_exp <- NULL
   } else {
-    merged_names_exp <- data.table(
-      sen2r_getElements(tiles_names_exp, format="data.frame")
+    merged_names_exp <- sen2r_getElements(
+      tiles_names_exp, format="data.table"
     )[,paste0("S2",
               mission,
               level,"_",
@@ -180,7 +180,7 @@ compute_s2_paths <- function(pm,
     merged_names_exp <- merged_names_exp[!duplicated(merged_names_exp)]
     merged_names_exp <- gsub(paste0(tiles_ext,"$"),merged_ext,merged_names_exp) %>%
       file.path(paths["merged"],
-                if(pm$path_subdirs==TRUE){sen2r_getElements(merged_names_exp, format="data.frame")$prod_type}else{""},
+                if(pm$path_subdirs==TRUE){sen2r_getElements(merged_names_exp, format="data.table")$prod_type}else{""},
                 .)
   }
   # add existing files for merged
@@ -191,7 +191,7 @@ compute_s2_paths <- function(pm,
       list.files(paths["merged"], full.names=TRUE)
     }
     if (length(all_names)>0) {
-      all_meta <- data.table(suppressWarnings(sen2r_getElements(all_names, abort=FALSE, format="data.frame")))
+      all_meta <- suppressWarnings(sen2r_getElements(all_names, abort=FALSE, format="data.table"))
       all_meta$names <- all_names
       # filter
       if (is.null(all_meta$prod_type)) {all_meta$prod_type <- character()}
@@ -223,7 +223,7 @@ compute_s2_paths <- function(pm,
   
   
   # index which is TRUE for SCL products, FALSE for others
-  names_merged_exp_scl_idx <- sen2r_getElements(merged_names_exp,format="data.frame")$prod_type=="SCL"
+  names_merged_exp_scl_idx <- sen2r_getElements(merged_names_exp,format="data.table")$prod_type=="SCL"
   # index which is TRUE for products to be atm. masked, FALSE for others
   names_merged_tomask_idx_scl <- if (!"SCL" %in% pm$list_prods) {
     !names_merged_exp_scl_idx
@@ -234,7 +234,7 @@ compute_s2_paths <- function(pm,
     !"BOA" %in% pm$list_prods & 
     (anyNA(pm$list_indices) | pm$index_source != "BOA")
   ) {
-    sen2r_getElements(merged_names_exp,format="data.frame")$prod_type!="BOA"
+    sen2r_getElements(merged_names_exp,format="data.table")$prod_type!="BOA"
   } else {
     rep(TRUE, length(merged_names_exp))
   }
@@ -242,7 +242,7 @@ compute_s2_paths <- function(pm,
     !"TOA" %in% pm$list_prods & 
     (anyNA(pm$list_indices) | pm$index_source != "TOA")
   ) {
-    sen2r_getElements(merged_names_exp,format="data.frame")$prod_type!="TOA"
+    sen2r_getElements(merged_names_exp,format="data.table")$prod_type!="TOA"
   } else {
     rep(TRUE, length(merged_names_exp))
   }
@@ -253,8 +253,8 @@ compute_s2_paths <- function(pm,
   if (pm$clip_on_extent==FALSE | length(merged_names_exp)==0) {
     warped_names_exp <- NULL
   } else {
-    basename_warped_names_exp <- data.table(
-      sen2r_getElements(merged_names_exp, format="data.frame")
+    basename_warped_names_exp <- sen2r_getElements(
+      merged_names_exp, format="data.table"
     )[,paste0("S2",
               mission,
               level,"_",
@@ -288,7 +288,7 @@ compute_s2_paths <- function(pm,
       list.files(paths["out"], full.names=TRUE)
     }
     if (length(all_names)>0) {
-      all_meta <- data.table(suppressWarnings(sen2r_getElements(all_names, abort=FALSE, format="data.frame")))
+      all_meta <- suppressWarnings(sen2r_getElements(all_names, abort=FALSE, format="data.table"))
       all_meta$names <- all_names
       # filter
       if (is.null(all_meta$prod_type)) {all_meta$prod_type <- character()}
@@ -328,8 +328,9 @@ compute_s2_paths <- function(pm,
       anyNA(pm$list_rgb)) {
     rgb_names_exp <- NULL
   } else {
-    rgb_names_exp <- data.table(
-      sen2r_getElements(if (pm$clip_on_extent==TRUE) {warped_names_exp} else {merged_names_exp}, format="data.frame")
+    rgb_names_exp <- sen2r_getElements(
+      if (pm$clip_on_extent==TRUE) {warped_names_exp} else {merged_names_exp}, 
+      format="data.table"
     )[,paste0("S2",
               mission,
               level,"_",
@@ -357,7 +358,7 @@ compute_s2_paths <- function(pm,
       list.files(paths["rgb"], full.names=TRUE)
     }
     if (length(all_names)>0) {
-      all_meta <- data.table(suppressWarnings(sen2r_getElements(all_names, abort=FALSE, format="data.frame")))
+      all_meta <- suppressWarnings(sen2r_getElements(all_names, abort=FALSE, format="data.table"))
       all_meta$names <- all_names
       # filter
       if (is.null(all_meta$prod_type)) {all_meta$prod_type <- character()}
@@ -424,7 +425,7 @@ compute_s2_paths <- function(pm,
       list.files(paths["out"], full.names=TRUE)
     }
     if (length(all_names)>0) {
-      all_meta <- data.table(suppressWarnings(sen2r_getElements(all_names, abort=FALSE, format="data.frame")))
+      all_meta <- suppressWarnings(sen2r_getElements(all_names, abort=FALSE, format="data.table"))
       all_meta$names <- all_names
       # filter
       if (is.null(all_meta$prod_type)) {all_meta$prod_type <- character()}
@@ -484,8 +485,8 @@ compute_s2_paths <- function(pm,
     } else {
       c("1C","2A")
     }
-    indices_names_exp <- data.table(
-      sen2r_getElements(out_names_exp, format="data.frame")
+    indices_names_exp <- sen2r_getElements(
+      out_names_exp, format="data.table"
     )[level %in% level_for_indices,
       paste0("S2",
              mission,
@@ -514,7 +515,7 @@ compute_s2_paths <- function(pm,
       list.files(paths["indices"], full.names=TRUE)
     }
     if (length(all_names)>0) {
-      all_meta <- data.table(suppressWarnings(sen2r_getElements(all_names, abort=FALSE, format="data.frame")))
+      all_meta <- suppressWarnings(sen2r_getElements(all_names, abort=FALSE, format="data.table"))
       all_meta$names <- all_names
       # filter
       if (is.null(all_meta$prod_type)) {all_meta$prod_type <- character()}
@@ -572,17 +573,17 @@ compute_s2_paths <- function(pm,
     basenames_reqforrgb <- if (length(rgb_names_new)==0) {
       NULL
     } else {
-      data.table(
-        sen2r_getElements(rgb_names_new, format="data.frame")
-      )[,paste0("S2",
-                mission,
-                level,"_",
-                strftime(sensing_date,"%Y%m%d"),"_",
-                id_orbit,"_",
-                if (pm$clip_on_extent==TRUE) {pm$extent_name},"_",
-                ifelse(level=="2A","BOA","TOA"),"_",
-                substr(res,1,2),".",
-                if (pm$clip_on_extent==TRUE) {warped_ext} else {merged_ext})] %>%
+      sen2r_getElements(rgb_names_new, format="data.table")[,paste0(
+        "S2",
+        mission,
+        level,"_",
+        strftime(sensing_date,"%Y%m%d"),"_",
+        id_orbit,"_",
+        if (pm$clip_on_extent==TRUE) {pm$extent_name},"_",
+        ifelse(level=="2A","BOA","TOA"),"_",
+        substr(res,1,2),".",
+        if (pm$clip_on_extent==TRUE) {warped_ext} else {merged_ext}
+      )] %>%
         unique()
     }
     warped_names_reqforrgb <- if (pm$clip_on_extent==TRUE) {
@@ -624,8 +625,7 @@ compute_s2_paths <- function(pm,
     out_basenames_req <- if (length(indices_names_new)==0) {
       NULL
     } else {
-      data.table(
-        sen2r_getElements(indices_names_new, format="data.frame")
+      sen2r_getElements(indices_names_new, format="data.table"
       )[,paste0("S2",
                 mission,
                 level,"_",
@@ -643,7 +643,7 @@ compute_s2_paths <- function(pm,
       unique(c(
         out_names_req,
         if (!is.na(pm$mask_type) & !"SCL" %in% pm$list_prods) {
-          out_names_exp[sen2r_getElements(out_names_exp, format="data.frame")$prod_type!="SCL"]
+          out_names_exp[sen2r_getElements(out_names_exp, format="data.table")$prod_type!="SCL"]
         } else {
           out_names_exp
         }
@@ -654,7 +654,7 @@ compute_s2_paths <- function(pm,
       # if some output needs to be created with masking, include the creation of SCL
       out_names_new <- unique(c(
         out_names_new,
-        out_names_exp[sen2r_getElements(out_names_exp, format="data.frame")$prod_type=="SCL"]
+        out_names_exp[sen2r_getElements(out_names_exp, format="data.table")$prod_type=="SCL"]
       ))
     }
     out_names_new <- out_names_new[!file.exists(nn(out_names_new))]
@@ -667,8 +667,8 @@ compute_s2_paths <- function(pm,
     basenames_reqforrgb <- if (length(rgb_names_new)==0) {
       NULL
     } else {
-      data.table(
-        sen2r_getElements(rgb_names_new, format="data.frame")
+      sen2r_getElements(
+        rgb_names_new, format="data.table"
       )[,paste0("S2",
                 mission,
                 level,"_",
@@ -691,7 +691,7 @@ compute_s2_paths <- function(pm,
     masked_names_new <- if (is.na(pm$mask_type)) {
       NULL
     } else {
-      out_names_new[sen2r_getElements(out_names_new, format="data.frame")$prod_type!="SCL"]
+      out_names_new[sen2r_getElements(out_names_new, format="data.table")$prod_type!="SCL"]
     }
     warped_names_req1 <- if (pm$clip_on_extent==FALSE | length(out_names_new)==0) {
       NULL
@@ -729,7 +729,7 @@ compute_s2_paths <- function(pm,
           gsub(paste0(out_ext,"$"),merged_ext,basename(nn(out_names_new)))
         ),
         if (is.na(pm$mask_type) & !"SCL" %in% pm$list_prods & length(out_names_new)>0) {
-          out_names_exp[sen2r_getElements(out_names_req, format="data.frame")$prod_type=="SCL"]
+          out_names_exp[sen2r_getElements(out_names_req, format="data.table")$prod_type=="SCL"]
         }
       )
     }
@@ -760,7 +760,7 @@ compute_s2_paths <- function(pm,
     if (length(tiles_names_new)==0) {
       safe_names_l1c_req <- safe_names_l2a_req <- NULL
     } else {
-      tiles_dt_new <- data.table(sen2r_getElements(tiles_names_new,format="data.frame"))
+      tiles_dt_new <- sen2r_getElements(tiles_names_new,format="data.table")
       safe_dt_av <- lapply(c(names(s2_list_l1c),names(s2_list_l2a)), function(x) {
         unlist(safe_getMetadata(x, info=c("nameinfo"))) %>%
           t() %>%

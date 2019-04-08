@@ -234,8 +234,8 @@ s2_mask <- function(infiles,
   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
   
   # Get files metadata
-  infiles_meta <- data.table(sen2r_getElements(infiles, format="data.frame"))
-  maskfiles_meta <- data.table(sen2r_getElements(maskfiles, format="data.frame"))
+  infiles_meta <- sen2r_getElements(infiles, format="data.table")
+  maskfiles_meta <- sen2r_getElements(maskfiles, format="data.table")
   # suppressWarnings(
   #   infiles_meta_gdal <- sapply(infiles, function(x) {attributes(GDALinfo(x))[c("df")]})
   # )

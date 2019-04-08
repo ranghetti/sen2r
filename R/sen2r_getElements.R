@@ -4,7 +4,7 @@
 #'  naming convention (see [safe_shortname]).
 #' @param s2_names A vector of Sentinel-2 product names in the
 #'  sen2r naming convention.
-#' @param format One between `list` of `data.frame`.
+#' @param format One between `list`, `data.frame` or `data.table`.
 #' @param abort Logical parameter: if TRUE (default), the function aborts 
 #'  in case any of `s2_names` is not recognised; if FALSE, a warning is shown,
 #'  and a list with only the element "type"='unrecognised' is returned.
@@ -13,7 +13,7 @@
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @export
-#' @importFrom data.table as.data.table
+#' @importFrom data.table rbindlist
 #' @examples
 #' # Define product name
 #' fs2nc_examplename <-
@@ -81,14 +81,16 @@ sen2r_getElements <- function(s2_names, format="list", abort=TRUE) {
   } # end of prod cycle
   
   # return output
-  if (format=="data.frame") {
-    return(as.data.frame(
-      do.call(
-        "rbind", 
-        c(lapply(metadata, as.data.table, stringsAsFactors=FALSE), 
-          fill=TRUE)
-      )
-    ))
+  if (format %in% c("data.frame", "data.table")) {
+    metadata <- rbindlist(
+      lapply(metadata, as.data.frame, stringsAsFactors=FALSE), 
+      fill=TRUE, use.names=TRUE
+    )
+    if (format=="data.frame") {
+      return(as.data.frame(metadata))
+    } else if (format=="data.table") {
+      return(metadata)
+    }
   }
   
   if (format!="list") {
