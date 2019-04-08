@@ -105,7 +105,7 @@ s2_rgb <- function(infiles,
   
   # Get files metadata
   if (is.na(prod_type)) {
-    infiles_meta <- sen2r_getElements(infiles, format="data.table")
+    infiles_meta <- sen2r_getElements(infiles)
   }
   
   # check output format

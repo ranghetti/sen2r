@@ -230,7 +230,7 @@ s2_calcindices <- function(infiles,
   )
   
   # Get files metadata
-  infiles_meta <- sen2r_getElements(infiles, format="data.table")
+  infiles_meta <- sen2r_getElements(infiles)
   infiles <- infiles[infiles_meta$prod_type %in% source]
   infiles_meta <- infiles_meta[prod_type %in% source,]
   

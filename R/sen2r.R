@@ -1307,7 +1307,7 @@ sen2r <- function(param_list = NULL,
     # Create processing groups
     sen2r_dates_A <- if (pm$preprocess == TRUE) {
       sort(unique(sen2r_getElements(
-        unlist(s2names[grep("_new",names(s2names))]), format = "data.table"
+        unlist(s2names[grep("_new",names(s2names))])
       )$sensing_date))
     } else {
       s2names <- list()
@@ -1327,7 +1327,7 @@ sen2r <- function(param_list = NULL,
       d_string <- strftime(d, "%Y%m%d")
       sapply(s2names, function(v) {
         # tryCatch(
-        #   v[sen2r_getElements(v, format = "data.table")$sensing_date %in% d],
+        #   v[sen2r_getElements(v)$sensing_date %in% d],
         #   error = function(e) {
         #     v[sapply(v, function(x) {
         #       strftime(safe_getMetadata(x, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
@@ -1729,15 +1729,14 @@ sen2r <- function(param_list = NULL,
         
         # build groups
         sen2r_dates_B <- sort(unique(nn(sen2r_getElements(
-          unlist(sel_s2names[grep("_new",names(sel_s2names))]), 
-          format = "data.table"
+          unlist(sel_s2names[grep("_new",names(sel_s2names))])
         )$sensing_date)))
         
         s2names_groups_B <- lapply(sen2r_dates_B, function(d) {
           d_string <- strftime(d, "%Y%m%d")
           sapply(sel_s2names, function(v) {
             # tryCatch(
-            #   v[sen2r_getElements(v, format = "data.table")$sensing_date == d],
+            #   v[sen2r_getElements(v)$sensing_date == d],
             #   error = function(e) {
             #     v[as.Date(sapply(v, function(x) {
             #       strftime(safe_getMetadata(x, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
@@ -1959,10 +1958,10 @@ sen2r <- function(param_list = NULL,
                   tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
                   t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
                   r = pm$resampling,
-                  dstnodata = s2_defNA(
-                    sapply(sel_s2names$merged_names_req[!names_merged_req_scl_idx & file.exists(sel_s2names$merged_names_req)],
-                           function(x){sen2r_getElements(x)$prod_type})
-                  ),
+                  dstnodata = s2_defNA(sen2r_getElements(
+                    sel_s2names$merged_names_req[!names_merged_req_scl_idx & file.exists(sel_s2names$merged_names_req)],
+                    format="data.table"
+                  )),
                   co = if (warped_outformat=="GTiff") {paste0("COMPRESS=",pm$compression)},
                   overwrite = pm$overwrite,
                   tmpdir = file.path(tmpdir_groupA, "gdal_warp"), 
@@ -1987,10 +1986,10 @@ sen2r <- function(param_list = NULL,
                   tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
                   t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
                   r = pm$resampling_scl,
-                  dstnodata = s2_defNA(
-                    sapply(sel_s2names$merged_names_req[names_merged_req_scl_idx & file.exists(sel_s2names$merged_names_req)],
-                           function(x){sen2r_getElements(x)$prod_type})
-                  ),
+                  dstnodata = s2_defNA(sen2r_getElements(
+                    sel_s2names$merged_names_req[names_merged_req_scl_idx & file.exists(sel_s2names$merged_names_req)],
+                    format="data.table"
+                  )),
                   co = if (out_outformat=="GTiff") {paste0("COMPRESS=",pm$compression)},
                   overwrite = pm$overwrite,
                   tmpdir = file.path(tmpdir_groupA, "gdal_warp"), 
@@ -2072,10 +2071,8 @@ sen2r <- function(param_list = NULL,
             }
             masked_names_infiles_sr_idx <- any(!is.na(pm$list_indices)) & 
               !pm$index_source %in% pm$list_prods & 
-              sapply(masked_names_infiles, function(x){
-                sen2r_getElements(x)$prod_type==pm$index_source
-              })
-            
+              sen2r_getElements(masked_names_infiles, format="data.table")$prod_type==pm$index_source
+
             masked_names_out_nsr <- if (length(masked_names_infiles[!masked_names_infiles_sr_idx])>0) {
               trace_function(
                 s2_mask,
