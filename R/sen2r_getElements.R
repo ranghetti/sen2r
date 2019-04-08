@@ -89,9 +89,9 @@ sen2r_getElements <- function(s2_names, format="data.table", abort=TRUE) {
   
   # return output
   if (format == "data.table") {
-    return(metadata)
+    return(data.table(metadata))
   } else if (format == "data.frame") {
-    return(as.data.frame(metadata))
+    return(metadata)
   } else if (format == "list") {
     meta_list <- lapply(seq_along(s2_names), function(i) {
       l <- as.list(metadata[i,])
