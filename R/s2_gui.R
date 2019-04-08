@@ -31,8 +31,8 @@
 #' @importFrom shinyFiles getVolumes parseDirPath parseFilePaths parseSavePath
 #'  shinyDirButton shinyDirChoose shinyFileChoose shinyFileSave
 #'  shinyFilesButton shinySaveButton
-#' @importFrom shinyjs click delay disable enable useShinyjs extendShinyjs
-#' @importFrom shinyWidgets sendSweetAlert pickerInput updatePickerInput
+#' @importFrom shinyjs click delay disable enable hidden toggle useShinyjs extendShinyjs
+#' @importFrom shinyWidgets sendSweetAlert switchInput pickerInput updatePickerInput
 #' @importFrom stats setNames
 #'
 #' @export
@@ -81,7 +81,7 @@ s2_gui <- function(param_list = NULL,
           menuItem("Product selection", tabName = "tab_steps", icon = icon("image"))
         ),
         sidebarMenu(
-          menuItem("Spatio-temporal selection", tabName = "tab_query", icon = icon("clone"))
+          menuItem("Spatial-temporal selection", tabName = "tab_query", icon = icon("clone"))
         ),
         conditionalPanel(
           condition = "input.preprocess == 'TRUE'",
@@ -143,7 +143,7 @@ s2_gui <- function(param_list = NULL,
         p(style="margin-top:15pt;",
           shinySaveButton(
             "export_param", 
-            "Save options as...", "Save parameters as ...", 
+            "Save options as...", "Save parameters as...", 
             filetype=list(json="json"), 
             class="darkbutton"
           )
@@ -151,7 +151,15 @@ s2_gui <- function(param_list = NULL,
         p(style="margin-top:5pt;",
           shinyFilesButton(
             "import_param", 
-            "Load options", "Import a JSON file with parameters", 
+            "Load options...", "Import a JSON file with parameters", 
+            multiple=FALSE, 
+            class="darkbutton"
+          )
+        ),
+        p(style="margin-top:20pt;",
+          shinyFilesButton(
+            "save_log", 
+            "Create log...", "Create a log file...", 
             multiple=FALSE, 
             class="darkbutton"
           )
@@ -214,7 +222,7 @@ s2_gui <- function(param_list = NULL,
                   a("raw SAFE format",
                     href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/data-formats",
                     target="_blank"),
-                  " (downloaded and/or corrected with sen2cor)"
+                  " (downloaded and/or corrected with Sen2Cor)"
                 ),
                 "Processed spatial files (surface reflectance, spectral indices, ...) in custom format"
               ),
@@ -225,7 +233,7 @@ s2_gui <- function(param_list = NULL,
           )),
           
           fluidRow(box(
-            title="Select products and sensors",
+            title="Products and sensors",
             width=12,
             collapsible = TRUE,
             
@@ -378,7 +386,8 @@ s2_gui <- function(param_list = NULL,
                       actionLink("help_cloud_perc", icon("question-circle"))
                     ),
                     min = 0, max = 100, value = 100,
-                    step = 1, post = "%"
+                    step = 1, post = "%",
+                    ticks = FALSE
                   )
                 )
                 
@@ -416,7 +425,7 @@ s2_gui <- function(param_list = NULL,
           conditionalPanel(
             condition = "output.req_l2a == 'TRUE'",
             fluidRow(box(
-              title="Atmospheric correction options",
+              title="Atmospheric correction",
               width=12,
               collapsible = TRUE,
               # step_atmcorr (perform or not sen2cor and how)
@@ -429,8 +438,8 @@ s2_gui <- function(param_list = NULL,
                 ),
                 choiceNames = list(
                   "Use only level-2A images available locally or online",
-                  "Use sen2cor only for level-2A products not available locally or online",
-                  "Always correct level-1C images with sen2cor locally"
+                  "Use Sen2Cor only for level-2A products not available locally or online",
+                  "Always correct level-1C images with Sen2Cor locally"
                 ),
                 choiceValues = list("l2a","auto", "scihub"),
                 selected = "auto")
@@ -445,7 +454,7 @@ s2_gui <- function(param_list = NULL,
           tabName = "tab_query",
           
           fluidRow(box(
-            title="Temporal parameters",
+            title="Temporal range",
             width=12,
             collapsible = TRUE,
             
@@ -485,10 +494,10 @@ s2_gui <- function(param_list = NULL,
               )
             ) # end of conditionalPanel on temporal query
             
-          )), # end of fluidRow/box "Temporal parameters"
+          )), # end of fluidRow/box "Temporal range"
           
           fluidRow(box(
-            title="Spatial extent",
+            title="Area of interest",
             width=12,
             collapsible = TRUE,
             
@@ -655,7 +664,7 @@ s2_gui <- function(param_list = NULL,
               
             ) # end of conditionalPanel on spatial query
             
-          )) # end of fluidRow/box "Spatial extent"
+          )) # end of fluidRow/box "Area of interest"
           
         ), # end of tabItem tab_query
         
@@ -759,7 +768,7 @@ s2_gui <- function(param_list = NULL,
           
           fluidRow(box(
             width=6,
-            title = "Ouptut extent",
+            title = "Output extent",
             collapsible = TRUE,
             
             fluidRow(
@@ -867,7 +876,7 @@ s2_gui <- function(param_list = NULL,
                    p(stype="margin-bottom:15pt",
                      "SCL is required to mask products, so Level-2A SAFE ",
                      "are also required. Return to \"Product selection\" menu ",
-                     "to check sen2cor settings."))
+                     "to check Sen2Cor settings."))
             ),
             
             conditionalPanel(
@@ -921,7 +930,8 @@ s2_gui <- function(param_list = NULL,
                   actionLink("help_masked_perc", icon("question-circle"))
                 ),
                 min = 0, max = 100, value = 80,
-                step = 1, post = "%"
+                step = 1, post = "%",
+                ticks = FALSE
               ),
               
               radioButtons(
@@ -963,144 +973,221 @@ s2_gui <- function(param_list = NULL,
             
           )), # end of fluidRow/box "Atmospheric mask"
           
-          conditionalPanel(
-            condition = "input.clip_on_extent == 'TRUE'",
-            fluidRow(box(
-              width=12,
-              title = "Output geometry",
-              collapsible = TRUE,
-              
-              fluidRow( # fluidrow for spatial reference
+          fluidRow(
+            conditionalPanel(
+              condition = "input.clip_on_extent == 'TRUE'",
+              box(
+                width=8,
+                title = "Output geometry",
+                collapsible = TRUE,
                 
-                column(
-                  width=8,
-                  radioButtons("use_reference", label = "Use an existing raster to define the output grid?",
-                               choices = list("Yes" = TRUE,
-                                              "No" = FALSE),
-                               selected = FALSE,
-                               inline = TRUE),
+                radioButtons("use_reference", label = "Use an existing raster to define the output grid?",
+                             choices = list("Yes" = TRUE,
+                                            "No" = FALSE),
+                             selected = FALSE,
+                             inline = TRUE),
+                conditionalPanel(
+                  condition = "input.use_reference == 'TRUE'",
+                  div(
+                    div(
+                      style="display:inline-block;vertical-align:top;width:77pt;",
+                      shinyFilesButton("reference_file_button", "Select raster", "Select reference file", multiple=FALSE),
+                      "\u2001"
+                    ),
+                    div(
+                      style="display:inline-block;vertical-align:top;width:calc(100% - 77pt - 10px - 10pt);",
+                      textInput("reference_file_textin", label = NULL, "", width="100%")
+                    ),
+                    div(
+                      style="display:inline-block;vertical-align:top;width:10pt;padding-left:5px;",
+                      uiOutput("reference_file_message")
+                    )
+                    
+                  ), # end of column reference
+                  
                   conditionalPanel(
                     condition = "input.use_reference == 'TRUE'",
                     div(
                       div(
-                        style="display:inline-block;vertical-align:top;width:77pt;",
-                        shinyFilesButton("reference_file_button", "Select raster", "Select reference file", multiple=FALSE),
-                        "\u2001"
+                        style = "display:inline-block;vertical-align:top;padding-top:2px;",
+                        strong("Use the file to define:\u2001")
                       ),
                       div(
-                        style="display:inline-block;vertical-align:top;width:calc(100% - 77pt - 10px - 10pt);",
-                        textInput("reference_file_textin", label = NULL, "", width="100%")
-                      ),
-                      div(
-                        style="display:inline-block;vertical-align:top;width:10pt;padding-left:5px;",
-                        uiOutput("reference_file_message")
+                        style = "display:inline-block;vertical-align:top;",
+                        checkboxGroupInput(
+                          "reference_usefor", label = NULL,
+                          choices = list("Projection" = "proj",
+                                         "Resolution" = "res"),
+                          #"Extent" = "ext", # TODO
+                          # "Output format" = "outformat"),
+                          selected = c("proj","res"),
+                          inline = TRUE
+                        )
                       )
                     )
-                    
-                  )
-                ), # end of column reference
+                  ) # end of its conditional panel
+                  
+                ), # end of fluidrow for spatial reference
                 
-                conditionalPanel(
-                  condition = "input.use_reference == 'TRUE'",
+                hr(style="margin-top: 0em; margin-bottom: 0.75em;"),
+                
+                fluidRow( # fluidrow for output geometry settings
+                  
                   column(
-                    width=4,
-                    checkboxGroupInput("reference_usefor", label = "Use the file to define:",
-                                       choices = list("Projection" = "proj",
-                                                      "Resolution" = "res"),
-                                       #"Extent" = "ext", # TODO
-                                       # "Output format" = "outformat"),
-                                       selected = c("proj","res"))
-                  ) # end of column use reference for
-                ) # end of its conditional panel
-                
-              ), # end of fluidrow for spatial reference
-              
-              hr(style="margin-top: 0em; margin-bottom: 0.75em;"),
-              
-              fluidRow( # fluidrow for output geometry settings
-                
-                column(
-                  width=4,
-                  
-                  strong("Spatial resolution"),
-                  conditionalPanel(
-                    condition = "input.use_reference == 'FALSE' || input.reference_usefor.indexOf('res') < 0",
-                    div(
-                      style="margin-top:0.25em;",
-                      radioButtons("rescale", label = NULL,
-                                   choices = list("Native" = FALSE,
-                                                  "Custom" = TRUE),
-                                   selected = FALSE,
-                                   inline = TRUE)
-                    ),
-                    conditionalPanel(
-                      condition = "input.rescale == 'FALSE'",
-                      radioButtons("resolution_s2", label = "Specify resolution",
-                                   choices = list("10 metres" = "10m",
-                                                  "20 metres" = "20m",
-                                                  "60 metres" = "60m"),
-                                   selected = "10m")
-                    ),
-                    conditionalPanel(
-                      condition = "input.rescale == 'TRUE'",
-                      numericInput("resolution_custom", "Specify resolution (in metres)",
-                                   # width="100px",
-                                   value = 10,
-                                   min = 0)
-                    )
+                    width=6,
                     
-                  ),
-                  
-                  htmlOutput("outres_message")
-                  
-                ), # end of column spatial resolution
-                
-                column(
-                  width=4,
-                  
-                  div(style="margin-bottom:-0.25em;", strong("Output projection")),
-                  conditionalPanel(
-                    condition = "input.use_reference == 'FALSE' || input.reference_usefor.indexOf('proj') < 0",
-                    radioButtons("reproj", label = NULL,
-                                 choices = list("Input projection (do not reproject)" = FALSE,
-                                                "Custom projection" = TRUE),
-                                 selected = FALSE),
+                    strong("Spatial resolution"),
                     conditionalPanel(
-                      condition = "input.reproj == 'TRUE'",
-                      textInput("outproj", NULL,
-                                value=character(0), width="100%")
-                    )
-                  ),
+                      condition = "input.use_reference == 'FALSE' || input.reference_usefor.indexOf('res') < 0",
+                      div(
+                        style="margin-top:0.25em;",
+                        radioButtons("rescale", label = NULL,
+                                     choices = list("Native" = FALSE,
+                                                    "Custom" = TRUE),
+                                     selected = FALSE,
+                                     inline = TRUE)
+                      ),
+                      conditionalPanel(
+                        condition = "input.rescale == 'FALSE'",
+                        radioButtons("resolution_s2", label = "Specify resolution",
+                                     choices = list("10 metres" = "10m",
+                                                    "20 metres" = "20m",
+                                                    "60 metres" = "60m"),
+                                     selected = "10m")
+                      ),
+                      conditionalPanel(
+                        condition = "input.rescale == 'TRUE'",
+                        numericInput("resolution_custom", "Specify resolution (in metres)",
+                                     # width="100px",
+                                     value = 10,
+                                     min = 0)
+                      )
+                      
+                    ),
+                    
+                    htmlOutput("outres_message")
+                    
+                  ), # end of column spatial resolution
                   
-                  htmlOutput("outproj_message")
-                  
-                ), # end of column output projection
-                
-                column(
-                  width=4,
-                  selectInput("resampling", label = "Resampling method",
-                              choices = list("Nearest neighbour" = "near",
-                                             "Average" = "average",
-                                             "Bilinear" = "bilinear",
-                                             "Cubic" = "cubic",
-                                             "Cubic spline" = "cubicspline",
-                                             "Lanczos windowed sinc" = "lanczos",
-                                             "Mode" = "mode"),
-                              selected = "near"),
-                  conditionalPanel(
-                    condition = "input.list_prods.indexOf('SCL') != -1", # add here any additional discrete product
-                    selectInput("resampling_scl", label = "Resampling method for SCL",
+                  column(
+                    width=6,
+                    
+                    div(style="margin-bottom:-0.25em;", strong("Output projection")),
+                    conditionalPanel(
+                      condition = "input.use_reference == 'FALSE' || input.reference_usefor.indexOf('proj') < 0",
+                      radioButtons("reproj", label = NULL,
+                                   choices = list("Input projection (do not reproject)" = FALSE,
+                                                  "Custom projection" = TRUE),
+                                   selected = FALSE),
+                      conditionalPanel(
+                        condition = "input.reproj == 'TRUE'",
+                        textInput("outproj", NULL,
+                                  value=character(0), width="100%")
+                      )
+                    ),
+                    
+                    htmlOutput("outproj_message"),
+                    
+                    # ), # end of column output projection
+                    # 
+                    # column(
+                    #   width=4,
+                    selectInput("resampling", label = "Resampling method",
                                 choices = list("Nearest neighbour" = "near",
+                                               "Average" = "average",
+                                               "Bilinear" = "bilinear",
+                                               "Cubic" = "cubic",
+                                               "Cubic spline" = "cubicspline",
+                                               "Lanczos windowed sinc" = "lanczos",
                                                "Mode" = "mode"),
-                                selected = "near")
-                    
-                  )
-                ) # end of column resampling method
+                                selected = "near"),
+                    conditionalPanel(
+                      condition = "input.list_prods.indexOf('SCL') != -1", # add here any additional discrete product
+                      selectInput("resampling_scl", label = "Resampling method for SCL",
+                                  choices = list("Nearest neighbour" = "near",
+                                                 "Mode" = "mode"),
+                                  selected = "near")
+                      
+                    )
+                  ) # end of column resampling method
+                  
+                ) # end of fluidrow for output geometry settings
                 
-              ) # end of fluidrow for output geometry settings
+              ) # end of column "Output geometry"
+            ), # end of conditionalpanel on output geometry
+            
+            box(
+              width=4,
+              title = span(
+                "Processing order",
+                # "Processing order / parallelisation",
+                span(
+                  style = "font-size:smaller;", "\u2000", 
+                  actionLink("info_parallelisation", icon("info-circle"))
+                )
+              ),
+              collapsible = TRUE,
               
-            )) # end of fluidrow/box "Output geometry"
-          ) # end of conditionalpanel on output geometry
+              # processing order
+              # column(
+              #   width=4,
+              # radioButtons(
+              selectInput(
+                "processing_order",
+                span(
+                  "Processing order\u2000",
+                  actionLink("help_processing_order", icon("question-circle"))
+                ),
+                choices = list(
+                  "Process by groups" = "by_groups",
+                  "Process by date" = "by_date",
+                  "Mixed processing" = "mixed",
+                  "Process step by step" = "by_step"
+                ),
+                selected = "by_groups",
+                width = "200%"
+              ),
+              # ),
+              # 
+              # # parallelise?
+              # column(
+              #   width=3, 
+              radioButtons(
+                "parallel",
+                label = span("Parallel computation?"),
+                choiceNames = list("Yes", "No"),
+                choiceValues = list(TRUE, FALSE),
+                selected = TRUE,
+                inline = TRUE
+              ),
+              # ),
+              # 
+              # # number of cores
+              # column(
+              #   width=5, 
+              conditionalPanel(
+                condition = "input.parallel == 'TRUE'",
+                div(
+                  p(strong("Number of CPU cores")),
+                  switchInput(
+                    "n_cores_auto", 
+                    value = TRUE,
+                    size = "mini",
+                    onLabel = "Auto", offLabel = "Manual"
+                  ),
+                  hidden(sliderInput(
+                    "n_cores", label = NULL,
+                    min = 1, max = 8, 
+                    value = 6,
+                    ticks = FALSE
+                  ))
+                )
+                
+              ) # end of  "Processing order / parallelisation"
+              
+            )
+            
+          ) # end of fluidRow output geometry / parallelisation
           
         ), # end of tabItem tab_prepro
         
@@ -1453,6 +1540,11 @@ s2_gui <- function(param_list = NULL,
         append = FALSE
       )
       removeModal()
+    })
+    
+    ## Parallelisation / processing order
+    observeEvent(input$n_cores_auto, ignoreInit = TRUE, {
+      toggle("n_cores")
     })
     
     ## end of steps module ##
@@ -2554,7 +2646,7 @@ s2_gui <- function(param_list = NULL,
         title = "Download mode",
         p(HTML(
           "Selecting <strong>Online</strong> mode, the user must specify",
-          "a spatial extent and a temporal window (in \"Spatio-temporal",
+          "a spatial extent and a temporal window (in \"Spatial-temporal",
           "selection\" tab), and the list of required products is searched",
           "online (an internet connection is required);",
           "missing SAFE products are then downloaded."
@@ -2562,7 +2654,7 @@ s2_gui <- function(param_list = NULL,
         p(HTML(
           "In <strong>Offline</strong> mode, only already available SAFE",
           "products are used (level-2A images can be produced locally",
-          "with sen2cor if the corresponding level-1C images are available);",
+          "with Sen2Cor if the corresponding level-1C images are available);",
           "the user can still filter them spatially and temporally,",
           "but this is not mandatory (if no parameters are specified,",
           "all the SAFE images are processed).")),
@@ -2670,7 +2762,7 @@ s2_gui <- function(param_list = NULL,
         p(HTML(
           "<strong>Yes</strong>:",
           "re-download all images matching the parameters set in",
-          "\"Spatio-temporal selection\" tab and re-apply sen2cor if needed."
+          "\"Spatial-temporal selection\" tab and re-apply Sen2Cor if needed."
         )),
         p(HTML(
           "<strong>No</strong>:",
@@ -2688,26 +2780,26 @@ s2_gui <- function(param_list = NULL,
         title = "Method to obtain level-2A corrected images",
         p(HTML(
           "<strong>Use only level-2A images available locally or online</strong>:",
-          "sen2cor is never used locally: level-2A products are used only",
+          "Sen2Cor is never used locally: level-2A products are used only",
           "if they are already available locally or if they can be downloaded",
           "from SciHub.",
-          "This option is useful if sen2cor is not available locally,",
+          "This option is useful if Sen2Cor is not available locally,",
           "or if its use must be avoided at all."
         )),
         p(HTML(
-          "<strong>Use sen2cor only for level-2A products not available",
+          "<strong>Use Sen2Cor only for level-2A products not available",
           "locally or online</strong>:",
           "level-2A images are first of all searched locally or online;",
           "only for not available products (with corresponding level-1C images",
-          "available) sen2cor is used to produce them.",
+          "available) Sen2Cor is used to produce them.",
           "This option is useful to optimize time of processing",
           "(downloading of level-2A images is faster than producing them","
-          with sen2cor), and in most of the situations."
+          with Sen2Cor), and in most of the situations."
         )),
         p(HTML(
-          "<strong>Always correct level-1C images with sen2cor locally</strong>:",
+          "<strong>Always correct level-1C images with Sen2Cor locally</strong>:",
           "If level-2A images are not available locally, they are corrected",
-          "applying sen2cor to their corresponding level-1C images.",
+          "applying Sen2Cor to their corresponding level-1C images.",
           "This option can be used to reduce internet traffic if a level-1C",
           "archive is already available, or if both level-1C and level-2A",
           "products are required for outputs."
@@ -2872,14 +2964,14 @@ s2_gui <- function(param_list = NULL,
         title = "Clip outputs on the selected extent?",
         p(HTML(
           "<strong>Yes</strong>:",
-          "the extent selected in the tab \"Spatio-temporal selection\"",
+          "the extent selected in the tab \"Spatial-temporal selection\"",
           "is used as extent for output products.",
           "The user can pass other geometry parameters in the box",
           "\"Output geometry\"."
         )),
         p(HTML(
           "<strong>No</strong>:",
-          "the extent selected in the tab \"Spatio-temporal selection\"",
+          "the extent selected in the tab \"Spatial-temporal selection\"",
           "is used to select tiles overlapping it;",
           "output products maintain the full extent and the geometry of",
           "Sentinel-2 input tiles."
@@ -2961,7 +3053,7 @@ s2_gui <- function(param_list = NULL,
         p(HTML(
           "Notice that this functionality does not ensure to correctly mask",
           "all the clouds: in fact, the SCL product is an automatic",
-          "classification performed by sen2cor, and it is subject to errors",
+          "classification performed by Sen2Cor, and it is subject to errors",
           "(see i.e. <a href='https://elib.dlr.de/119324/1/S2-validation_meeting_Main-Knorn_20180128.pdf'",
           "target='_blank'>this",
           "report</a>)."
