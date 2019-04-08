@@ -153,8 +153,8 @@ compute_s2_paths <- function(pm,
       if (length(pm$s2orbits_selected)>0 & !anyNA(pm$s2orbits_selected) & length(all_meta$id_orbit)>0) {
         all_meta <- all_meta[id_orbit %in% pm$s2orbits_selected,]
       }
-      if (length(pm$s2tiles_selected)>0 & !anyNA(pm$s2tiles_selected) & length(all_meta$id_tile)>0) {
-        all_meta <- all_meta[id_tile %in% pm$s2tiles_selected,]
+      if (length(pm$s2tiles_selected)>0 & !anyNA(pm$s2tiles_selected) & length(all_meta$extent_name)>0) {
+        all_meta <- all_meta[extent_name %in% pm$s2tiles_selected,]
       }
       all_meta$names
     } else {

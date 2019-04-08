@@ -259,7 +259,7 @@ s2_merge <- function(infiles,
     sel_diffcrs <- diffcrs[infiles_meta_grps == infiles_meta_grp]
     
     # Check that there are not duplicated tiles
-    if (any(duplicated(sel_infiles_meta$id_tile))) {
+    if (any(duplicated(sel_infiles_meta$extent_name))) {
       print_message(type="error", "Internal error (duplicated id_tile).")
     }
     
