@@ -1961,7 +1961,7 @@ sen2r <- function(param_list = NULL,
                   dstnodata = s2_defNA(sen2r_getElements(
                     sel_s2names$merged_names_req[!names_merged_req_scl_idx & file.exists(sel_s2names$merged_names_req)],
                     format="data.table"
-                  )),
+                  )$prod_type),
                   co = if (warped_outformat=="GTiff") {paste0("COMPRESS=",pm$compression)},
                   overwrite = pm$overwrite,
                   tmpdir = file.path(tmpdir_groupA, "gdal_warp"), 
@@ -1989,7 +1989,7 @@ sen2r <- function(param_list = NULL,
                   dstnodata = s2_defNA(sen2r_getElements(
                     sel_s2names$merged_names_req[names_merged_req_scl_idx & file.exists(sel_s2names$merged_names_req)],
                     format="data.table"
-                  )),
+                  )$prod_type),
                   co = if (out_outformat=="GTiff") {paste0("COMPRESS=",pm$compression)},
                   overwrite = pm$overwrite,
                   tmpdir = file.path(tmpdir_groupA, "gdal_warp"), 
