@@ -4,20 +4,20 @@
 \alias{sen2r_getElements}
 \title{Get information from S2 short name}
 \usage{
-sen2r_getElements(s2_names, format = "list", abort = TRUE)
+sen2r_getElements(s2_names, format = "data.table", abort = TRUE)
 }
 \arguments{
 \item{s2_names}{A vector of Sentinel-2 product names in the
 sen2r naming convention.}
 
-\item{format}{One between \code{list} of \code{data.frame}.}
+\item{format}{One between \code{data.table} (default), \code{data.frame} and \code{list}.}
 
 \item{abort}{Logical parameter: if TRUE (default), the function aborts
 in case any of \code{s2_names} is not recognised; if FALSE, a warning is shown,
 and a list with only the element "type"='unrecognised' is returned.}
 }
 \value{
-A list or a data.frame of the output metadata.
+A data.table, data.frame or list of the output metadata.
 }
 \description{
 This accessory function extracts metadata included in
@@ -36,5 +36,5 @@ fs2nc_examplename <-
 sen2r_getElements(fs2nc_examplename)
 }
 \author{
-Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{ranghetti.l@irea.cnr.it}
 }

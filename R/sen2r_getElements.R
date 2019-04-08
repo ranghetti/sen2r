@@ -13,7 +13,7 @@
 #' @author Luigi Ranghetti, phD (2019) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @export
-#' @importFrom data.table rbindlist
+#' @import data.table
 #' @examples
 #' # Define product name
 #' fs2nc_examplename <-
@@ -61,18 +61,21 @@ sen2r_getElements <- function(s2_names, format="data.table", abort=TRUE) {
   }
   # specific formattations
   metadata[,"sensing_date"] <- as.Date(metadata[,"sensing_date"], format="%Y%m%d")
-  metadata[,"res"] <- paste0(metadata[,"res"],"m")
-
-  # retrieve type
-  metadata$type <- ifelse(
-    !grepl(fs2nc_regex$regex,s2_names), "unrecognised",
-    ifelse(
-      grepl("[0-9]{2}[A-Z]{3}",metadata$extent_name), "tile",
+  if (nrow(metadata)>0) {
+    metadata[,"res"] <- paste0(metadata[,"res"],"m")
+    # retrieve type
+    metadata$type <- ifelse(
+      !grepl(fs2nc_regex$regex,s2_names), "unrecognised",
       ifelse(
-        metadata$extent_name=="", "merged", "clipped"
+        grepl("[0-9]{2}[A-Z]{3}",metadata$extent_name), "tile",
+        ifelse(
+          metadata$extent_name=="", "merged", "clipped"
+        )
       )
     )
-  )
+  } else {
+    metadata$type <- as.character(metadata$type)
+  }
   
   # manage unrecognised files 
   if (sum(metadata$type=="unrecognised") > 0) {
