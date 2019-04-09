@@ -17,9 +17,6 @@
 install_wget <- function(wget_dir = system.file(package="sen2r"), 
                          force = FALSE) {
   
-  # define the versions to download (for Windows)
-  wget_ver <- package_version("1.19.4")
-
   # run only on Windows
   if (Sys.info()["sysname"] != "Windows") {
     print_message(
@@ -41,29 +38,42 @@ install_wget <- function(wget_dir = system.file(package="sen2r"),
       return(invisible(NULL))
     }
   }
-
-  # Download wget
-    wget_url <- paste0(
-      "https://eternallybored.org/misc/wget/releases/wget-", wget_ver, 
-      if (Sys.info()["machine"]=="x86-64") {"-win64"} else {"-win32"}, ".zip"
+  
+  # Check the latest available version
+  download.file(
+    "https://eternallybored.org/misc/wget/releases",
+    wget_htmlfile <- tempfile()
+  )
+  wget_html <- readLines(wget_htmlfile)
+  wget_ver <- sort(package_version(unique(
+    gsub(
+      "^.+>wget\\-([0-9\\.]+)\\-win[36][24]\\.zip<.+$", "\\1", 
+      wget_html[grep("^.+>wget\\-([0-9\\.]+)\\-win[36][24]\\.zip<.+$",wget_html)]
     )
-    wget_zip <- normalize_path(file.path(wget_dir,"wget.zip"), mustWork=FALSE)
-    wget_path <- normalize_path(file.path(wget_dir,"wget.exe"), mustWork=FALSE)
-    download.file(wget_url, wget_zip)
-    if (file.exists(wget_zip)) {
-      unzip(zipfile = wget_zip,
-            files   = basename(wget_path),
-            exdir   = dirname(wget_path),
-            unzip   = "internal")
-      unlink(wget_zip)
-    }
-    if (file.exists(wget_path)) {
-      binpaths$wget <- wget_path
-      writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
-    }
-    # # add to the path
-    # system(paste0('setx PATH "',binpaths$wget,'"'), intern=TRUE)
-    
-    wget_path
+  )), decreasing=TRUE)[1]
+  
+  # Download wget
+  wget_url <- paste0(
+    "https://eternallybored.org/misc/wget/releases/wget-", wget_ver, 
+    if (Sys.info()["machine"]=="x86-64") {"-win64"} else {"-win32"}, ".zip"
+  )
+  wget_zip <- normalize_path(file.path(wget_dir,"wget.zip"), mustWork=FALSE)
+  wget_path <- normalize_path(file.path(wget_dir,"wget.exe"), mustWork=FALSE)
+  download.file(wget_url, wget_zip)
+  if (file.exists(wget_zip)) {
+    unzip(zipfile = wget_zip,
+          files   = basename(wget_path),
+          exdir   = dirname(wget_path),
+          unzip   = "internal")
+    unlink(wget_zip)
+  }
+  if (file.exists(wget_path)) {
+    binpaths$wget <- wget_path
+    writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
+  }
+  # # add to the path
+  # system(paste0('setx PATH "',binpaths$wget,'"'), intern=TRUE)
+  
+  wget_path
   
 }

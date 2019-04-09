@@ -17,9 +17,6 @@
 install_aria2 <- function(aria2_dir = system.file(package="sen2r"), 
                          force = FALSE) {
   
-  # define the versions to download (for Windows)
-  aria2_ver <- package_version("1.34.0")
-  
   # run only on Windows
   if (Sys.info()["sysname"] != "Windows") {
     print_message(
@@ -41,6 +38,19 @@ install_aria2 <- function(aria2_dir = system.file(package="sen2r"),
       return(invisible(NULL))
     }
   }
+  
+  # Check the latest available version
+  download.file(
+    "https://github.com/aria2/aria2/releases/latest",
+    aria2_htmlfile <- tempfile()
+  )
+  aria2_html <- readLines(aria2_htmlfile)
+  aria2_ver <- sort(package_version(unique(
+    gsub(
+      "^.+release\\-[0-9\\.]+/aria2\\-([0-9\\.]+)\\-win\\-[36][24]bit\\-build1\\.zip.+$", "\\1", 
+      aria2_html[grep("^.+release\\-[0-9\\.]+/aria2\\-([0-9\\.]+)\\-win\\-[36][24]bit\\-build1\\.zip.+$",aria2_html)]
+    )
+  )), decreasing=TRUE)[1]
   
   # Download aria2
   aria2_url <- paste0(
