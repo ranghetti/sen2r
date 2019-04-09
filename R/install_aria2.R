@@ -40,9 +40,12 @@ install_aria2 <- function(aria2_dir = system.file(package="sen2r"),
   }
   
   # Check the latest available version
-  download.file(
-    "https://github.com/aria2/aria2/releases/latest",
-    aria2_htmlfile <- tempfile()
+  system(
+    paste(
+      binpaths$wget, "https://github.com/aria2/aria2/releases/latest", "-O", 
+      aria2_htmlfile <- tempfile()
+    ),
+    intern = Sys.info()["sysname"] == "Windows"
   )
   aria2_html <- readLines(aria2_htmlfile)
   aria2_ver <- sort(package_version(unique(
