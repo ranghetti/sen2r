@@ -75,7 +75,7 @@ naming convention (see safe_shortname)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">An R toolbox to find, download an preprocess Sentinel-2 data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.1</span>
       </span>
     </div>
 
@@ -121,7 +121,7 @@ naming convention (see <a href='safe_shortname.html'>safe_shortname</a>).</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>sen2r_getElements</span>(<span class='no'>s2_names</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"list"</span>, <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>sen2r_getElements</span>(<span class='no'>s2_names</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"data.table"</span>, <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -133,7 +133,7 @@ sen2r naming convention.</p></td>
     </tr>
     <tr>
       <th>format</th>
-      <td><p>One between <code>list</code> of <code>data.frame</code>.</p></td>
+      <td><p>One between <code>data.table</code> (default), <code>data.frame</code> and <code>list</code>.</p></td>
     </tr>
     <tr>
       <th>abort</th>
@@ -145,7 +145,7 @@ and a list with only the element "type"='unrecognised' is returned.</p></td>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list or a data.frame of the output metadata.</p>
+    <p>A data.table, data.frame or list of the output metadata.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
@@ -158,33 +158,8 @@ and a list with only the element "type"='unrecognised' is returned.</p></td>
   <span class='st'>"/path/of/the/product/S2A1C_20170603_022_32TQQ_TOA_20.tif"</span>
 
 <span class='co'># Return metadata</span>
-<span class='fu'>sen2r_getElements</span>(<span class='no'>fs2nc_examplename</span>)</div><div class='output co'>#&gt; $type
-#&gt; [1] "tile"
-#&gt; 
-#&gt; $mission
-#&gt; [1] "A"
-#&gt; 
-#&gt; $level
-#&gt; [1] "1C"
-#&gt; 
-#&gt; $sensing_date
-#&gt; [1] "2017-06-03"
-#&gt; 
-#&gt; $id_orbit
-#&gt; [1] "022"
-#&gt; 
-#&gt; $id_tile
-#&gt; [1] "32TQQ"
-#&gt; 
-#&gt; $prod_type
-#&gt; [1] "TOA"
-#&gt; 
-#&gt; $res
-#&gt; [1] "20m"
-#&gt; 
-#&gt; $file_ext
-#&gt; [1] "tif"
-#&gt; </div></pre>
+<span class='fu'>sen2r_getElements</span>(<span class='no'>fs2nc_examplename</span>)</div><div class='output co'>#&gt;    type mission level sensing_date id_orbit extent_name prod_type res file_ext
+#&gt; 1: tile       A    1C   2017-06-03      022       32TQQ       TOA 20m      tif</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -199,7 +174,7 @@ and a list with only the element "type"='unrecognised' is returned.</p></td>
     </ul>
 
     <h2>Author</h2>
-    <p>Luigi Ranghetti, phD (2017) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p>
+    <p>Luigi Ranghetti, phD (2019) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p>
   </div>
 </div>
 
