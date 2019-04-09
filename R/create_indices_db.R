@@ -108,7 +108,7 @@ create_indices_db <- function(xslt_path = NA,
   s2_table[grep("MIR/NIR Normalized Difference",s2_table$longname),name:="NDVI2"]
   s2_table[longname=="Transformed Soil Adjusted Vegetation Index 2",name:="TSAVI2"]
   s2_table[longname=="Modified Soil Adjusted Vegetation Index",name:="MSAVI2"]
-
+  
   # Change names containing "/"
   s2_table[,name:=gsub("/",":",name)]
   
@@ -272,38 +272,68 @@ create_indices_db <- function(xslt_path = NA,
   s2_table[name=="ARVI", a:=1] # default value for gamma (here "a") parameter
   
   # add missing indices
-  s2_table_new <- data.table(
-    n_index = 300,
-    longname = c(
-      "Normalized Difference Flood Index B1B7",
-      "Normalized Difference Flood Index B1B6",
-      "Normalize Difference Snow Index",
-      "Normalized Burn Ratio 2",
-      "Mid-Infrared Burn Index",
-      "Char Soil Index"
+  s2_table_new <- rbindlist(list(
+    "NDFI" = data.frame(
+      n_index = 301,
+      longname = "Normalized Difference Flood Index B1B7",
+      name = "NDFI",
+      link = "https://doi.org/10.1371/journal.pone.0088741",
+      s2_formula = "(band_4-band_12)/(band_4+band_12)",
+      checked = TRUE,
+      a = NA, b = NA, x = NA
     ),
-    name = c("NDFI","NDFI2","NDSI","NBR2","MIRBI","CSI"),
-    link = c(
-      "https://doi.org/10.1371/journal.pone.0088741",
-      "https://doi.org/10.1371/journal.pone.0088741",
-      "https://doi.org/10.1007/978-90-481-2642-2_376",
-      "https://landsat.usgs.gov/sites/default/files/documents/si_product_guide.pdf",
-      "https://doi.org/10.1080/01431160110053185",
-      "https://doi.org/10.1016/j.rse.2005.04.014"
+    "NDFI2" = data.frame(
+      n_index = 302,
+      longname = "Normalized Difference Flood Index B1B6",
+      name = "NDFI2",
+      link = "https://doi.org/10.1371/journal.pone.0088741",
+      s2_formula = "(band_4-band_11)/(band_4+band_11)",
+      checked = TRUE,
+      a = NA, b = NA, x = NA
     ),
-    s2_formula = c(
-      "(band_4-band_12)/(band_4+band_12)",
-      "(band_4-band_11)/(band_4+band_11)",
-      "(band_3-band_11)/(band_3+band_11)",
-      "(band_11-band_12)/(band_11+band_12)",
-      "(1E-3*band_12)-(9.8E-4*band_11)+2E-4",
-      "(band_8)/(band_12)"
+    "NDSI" = data.frame(
+      n_index = 303,
+      longname = "Normalize Difference Snow Index",
+      name = "NDSI",
+      link = "https://doi.org/10.1007/978-90-481-2642-2_376",
+      s2_formula = "(band_3-band_11)/(band_3+band_11)",
+      checked = TRUE,
+      a = NA, b = NA, x = NA
     ),
-    checked = c(T,T,T,T,T,T),
-    a = c(NA,NA,NA,NA,NA,NA),
-    b = c(NA,NA,NA,NA,NA,NA),
-    x = c(NA,NA,NA,NA,NA,NA)
-  )
+    "NBR2" = data.frame(
+      n_index = 304,
+      longname = "Normalized Burn Ratio 2",
+      name = "NBR2",
+      link = "https://landsat.usgs.gov/sites/default/files/documents/si_product_guide.pdf",
+      s2_formula = "(band_11-band_12)/(band_11+band_12)",
+      checked = TRUE,
+      a = NA, b = NA, x = NA
+    ),
+    "MIRBI" = data.frame(
+      n_index = 305,
+      longname = "Mid-Infrared Burn Index",
+      name = "MIRBI",
+      link = "https://doi.org/10.1080/01431160110053185",
+      s2_formula = "(1E-3*band_12)-(9.8E-4*band_11)+2E-4",
+      checked = TRUE,
+      a = NA, b = NA, x = NA
+    ),
+    "CSI" = data.frame(
+      n_index = 306,
+      longname = "Char Soil Index",
+      name = "CSI",
+      link = "https://doi.org/10.1016/j.rse.2005.04.014",
+      s2_formula = "(band_8)/(band_12)",
+      checked = TRUE,
+      a = NA, b = NA, x = NA
+    )#,
+  ))
+  
+  s2_table_new[,n_index:=as.integer(n_index)]
+  s2_table_new[,longname:=as.character(longname)]
+  s2_table_new[,name:=as.character(name)]
+  s2_table_new[,link:=as.character(link)]
+  s2_table_new[,s2_formula:=as.character(s2_formula)]
   s2_table <- rbind(s2_table, s2_table_new, fill=TRUE)
   
   # add empty elements in MathML formulas

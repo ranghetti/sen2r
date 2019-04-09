@@ -230,7 +230,7 @@ s2_calcindices <- function(infiles,
   )
   
   # Get files metadata
-  infiles_meta <- data.table(sen2r_getElements(infiles, format="data.frame"))
+  infiles_meta <- sen2r_getElements(infiles)
   infiles <- infiles[infiles_meta$prod_type %in% source]
   infiles_meta <- infiles_meta[prod_type %in% source,]
   
@@ -303,10 +303,7 @@ s2_calcindices <- function(infiles,
         "S2",sel_infile_meta$mission,sel_infile_meta$level,"_",
         strftime(sel_infile_meta$sensing_date,"%Y%m%d"),"_",
         sel_infile_meta$id_orbit,"_",
-        switch(sel_infile_meta$type,
-               tile = sel_infile_meta$id_tile,
-               clipped = sel_infile_meta$extent_name,
-               ""),"_",
+        sel_infile_meta$extent_name,"_",
         indices_info[j,"name"],"_",
         gsub("m$","",sel_infile_meta$res),".",
         sel_out_ext)
