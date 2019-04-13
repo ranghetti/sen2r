@@ -110,7 +110,7 @@ create_indices_db <- function(xslt_path = NA,
   s2_table[longname=="Modified Soil Adjusted Vegetation Index",name:="MSAVI2"]
   
   # Change names containing "/"
-  s2_table[,name:=gsub("/",":",name)]
+  s2_table[,name:=gsub("/","-",name)]
   
   # remove indices without name
   n_index_toremove <- c(n_index_toremove, s2_table[name=="",n_index])
