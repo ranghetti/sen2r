@@ -9,6 +9,7 @@
 #'
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
+#' @importFrom httr GET write_disk
 #' @export
 #' @examples \dontrun{
 #' install_aria2()
@@ -19,6 +20,7 @@ install_aria2 <- function(aria2_dir = system.file(package="sen2r"),
   
   # define the versions to download (for Windows)
   aria2_ver <- package_version("1.34.0")
+  arch_ver <- if (Sys.info()["machine"]=="x86-64") {"64"} else {"32"}
   
   # run only on Windows
   if (Sys.info()["sysname"] != "Windows") {
@@ -45,18 +47,12 @@ install_aria2 <- function(aria2_dir = system.file(package="sen2r"),
   # Download aria2
   aria2_url <- paste0(
     "https://github.com/aria2/aria2/releases/download/release-", aria2_ver, 
-    "/aria2-", aria2_ver,
-    if (Sys.info()["machine"]=="x86-64") {"-win-64bit"} else {"-win-32bit"}, 
-    "-build1.zip"
+    "/aria2-", aria2_ver, "-win-", arch_ver, "bit-build1.zip"
   )
   aria2_zip <- normalize_path(file.path(aria2_dir,"aria2.zip"), mustWork=FALSE)
   aria2_path <- normalize_path(file.path(aria2_dir,"aria2c.exe"), mustWork=FALSE)
   
-  download.file(aria2_url, aria2_zip) # problem with https
-  # system(
-  #   paste(binpaths$wget, aria2_url, "-O", aria2_zip),
-  #   intern = Sys.info()["sysname"] == "Windows"
-  # )
+  GET(aria2_url, write_disk(aria2_zip, overwrite=TRUE))
   if (file.exists(aria2_zip)) {
     aria2_filelist <- unzip(
       zipfile = aria2_zip,

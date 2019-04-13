@@ -43,7 +43,8 @@ Imports:
   parallel,
   doParallel,
   units,
-  lwgeom
+  lwgeom,
+  httr
 Suggests:
   knitr,
   rmarkdown,
