@@ -9,6 +9,7 @@
 #'
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
+#' @importFrom httr GET write_disk
 #' @export
 #' @examples \dontrun{
 #' install_wget()
@@ -16,6 +17,10 @@
 
 install_wget <- function(wget_dir = system.file(package="sen2r"), 
                          force = FALSE) {
+  
+  # define the versions to download (for Windows)
+  wget_ver <- package_version("1.19.4")
+  arch_ver <- if (Sys.info()["machine"]=="x86-64") {"64"} else {"32"}
   
   # run only on Windows
   if (Sys.info()["sysname"] != "Windows") {
@@ -39,34 +44,36 @@ install_wget <- function(wget_dir = system.file(package="sen2r"),
     }
   }
   
-  # Check the latest available version
-  download.file(
-    "https://eternallybored.org/misc/wget/releases",
-    wget_htmlfile <- tempfile()
-  )
-  wget_html <- readLines(wget_htmlfile)
-  wget_ver <- sort(package_version(unique(
-    gsub(
-      "^.+>wget\\-([0-9\\.]+)\\-win[36][24]\\.zip<.+$", "\\1", 
-      wget_html[grep("^.+>wget\\-([0-9\\.]+)\\-win[36][24]\\.zip<.+$",wget_html)]
-    )
-  )), decreasing=TRUE)[1]
+  # Download wget
+  
+  # downloading zip provided errors sice 2019-04-11 due to redirection;
+  # switching to downloading .exe using httr
+  # wget_url <- paste0(
+  #   "https://eternallybored.org/misc/wget/releases/old/wget-",
+  #   wget_ver, "-win", arch_ver, ".zip"
+  # )
+  
+  # this was disabled since last version (1.20.3) was bugged
+  # # Check the latest available version
+  # download.file(
+  #   "https://eternallybored.org/misc/wget/releases",
+  #   wget_htmlfile <- tempfile()
+  # )
+  # wget_html <- readLines(wget_htmlfile)
+  # wget_ver <- sort(package_version(unique(
+  #   gsub(
+  #     "^.+>wget\\-([0-9\\.]+)\\-win[36][24]\\.zip<.+$", "\\1",
+  #     wget_html[grep("^.+>wget\\-([0-9\\.]+)\\-win[36][24]\\.zip<.+$",wget_html)]
+  #   )
+  # )), decreasing=TRUE)[1]
   
   # Download wget
   wget_url <- paste0(
-    "https://eternallybored.org/misc/wget/releases/wget-", wget_ver, 
-    if (Sys.info()["machine"]=="x86-64") {"-win64"} else {"-win32"}, ".zip"
+    "https://eternallybored.org/misc/wget/", wget_ver, "/",
+    arch_ver, "/wget.exe"
   )
-  wget_zip <- normalize_path(file.path(wget_dir,"wget.zip"), mustWork=FALSE)
   wget_path <- normalize_path(file.path(wget_dir,"wget.exe"), mustWork=FALSE)
-  download.file(wget_url, wget_zip)
-  if (file.exists(wget_zip)) {
-    unzip(zipfile = wget_zip,
-          files   = basename(wget_path),
-          exdir   = dirname(wget_path),
-          unzip   = "internal")
-    unlink(wget_zip)
-  }
+  GET(wget_url, write_disk(wget_path, overwrite=TRUE))
   if (file.exists(wget_path)) {
     binpaths$wget <- wget_path
     writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))

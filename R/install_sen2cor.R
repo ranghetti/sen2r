@@ -13,6 +13,7 @@
 #' @importFrom utils download.file unzip
 #' @importFrom magrittr "%>%"
 #' @importFrom stringr str_pad
+#' @importFrom httr GET write_disk
 #' @export
 #' @examples \dontrun{
 #' install_sen2cor()
@@ -95,7 +96,8 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
   sen2cor_installer <- file.path(sen2cor_dir, basename(sen2cor_url))
   
   # download, extract and delete archive
-  download.file(sen2cor_url, destfile = sen2cor_installer)
+  GET(sen2cor_url, write_disk(sen2cor_installer, overwrite=TRUE))
+  # download.file(sen2cor_url, destfile = sen2cor_installer)
   if (Sys.info()["sysname"] == "Linux") {
     curr_dir <- getwd()
     setwd(sen2cor_dir)
