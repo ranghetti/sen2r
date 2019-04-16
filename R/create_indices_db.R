@@ -265,7 +265,7 @@ create_indices_db <- function(xslt_path = NA,
   s2_table[name %in% c("NDVI","SAVI","MCARI","MCARI2","TCARI","ARVI","NDRE",
                        "BNDVI","GNDVI","NDII","TCIdx","MSAVI2","OSAVI",
                        "NBR","EVI2",
-                       "MTVI2","MCARI:MTVI2","TCARI:OSAVI"),checked:=TRUE]
+                       "MTVI2","MCARI-MTVI2","TCARI-OSAVI"),checked:=TRUE]
   
   # set default parameter values
   s2_table[name=="SAVI", a:=0.5] # default value for L (here "a") parameter
