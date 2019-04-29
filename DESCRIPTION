@@ -23,6 +23,7 @@ Imports:
   stringr,
   rgdal,
   gdalUtils,
+  dplyr,
   magrittr,
   sp,
   sf,
