@@ -2,7 +2,7 @@
 title: "Run in a Docker container"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Installation}
+  %\VignetteIndexEntry{Run in a Docker container}
   %\VignetteEngine{knitr::knitr}
   %\usepackage[UTF-8]{inputenc}
 ---
