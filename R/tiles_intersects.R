@@ -40,7 +40,7 @@
 #' 
 #' # Spatial object with the overlapping S2 tiles
 #' sel_tiles <- tiles_intersects(ex_extent, all = TRUE, out_format = "sf")
-#' plot(::st_geometry(sel_tiles)); plot(::st_geometry(ex_extent), add=TRUE, col="yellow")
+#' plot(sf::st_geometry(sel_tiles)); plot(sf::st_geometry(ex_extent), add=TRUE, col="yellow")
 
 tiles_intersects <- function(extent, all = FALSE, out_format = "id", .s2tiles=NULL) {
   
