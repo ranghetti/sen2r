@@ -18,6 +18,7 @@
 #' @export
 #' @importFrom sf st_area st_combine st_difference st_geometry st_intersection 
 #'  st_intersects st_transform st_union
+#' @importFrom dplyr summarise group_by
 #' @author Luigi Ranghetti, phD (2019) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @examples
@@ -39,7 +40,7 @@
 #' 
 #' # Spatial object with the overlapping S2 tiles
 #' sel_tiles <- tiles_intersects(ex_extent, all = TRUE, out_format = "sf")
-#' plot(::st_geometry(sel_tiles)); plot(::st_geometry(ex_extent), add=TRUE, col="yellow")
+#' plot(sf::st_geometry(sel_tiles)); plot(sf::st_geometry(ex_extent), add=TRUE, col="yellow")
 
 tiles_intersects <- function(extent, all = FALSE, out_format = "id", .s2tiles=NULL) {
   
@@ -71,7 +72,7 @@ tiles_intersects <- function(extent, all = FALSE, out_format = "id", .s2tiles=NU
       # (with the exception of already discharged ones)
       sel_tile_notoverlap <- suppressMessages(st_difference(
         st_geometry(s2tiles), 
-        st_union(st_combine(
+        summarise(group_by(
           tiles_intersecting_all[tiles_intersects & tiles_intersecting_all$tile_id != sel_tile$tile_id,]
         ))
       ))
