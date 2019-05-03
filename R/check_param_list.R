@@ -165,6 +165,24 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   }
   
   
+  # check RGB objects
+  if (all(is.array(pm$rgb_ranges), length(dim(pm$rgb_ranges)) > 2)) {
+    pm$rgb_ranges <- asplit(pm$rgb_ranges, 1)
+  }
+  if (is.matrix(pm$rgb_ranges)) {
+    pm$rgb_ranges <- list(pm$rgb_ranges)
+  }
+  if (all(is.na(pm$list_rgb), length(nn(pm$rgb_ranges))==0)) { # for compatibility
+    pm$rgb_ranges <- NA
+  }
+  if (length(pm$rgb_ranges) != length(pm$list_rgb)) {
+    print_message(
+      type = type,
+      "\"rgb_ranges\" and \"list_rgb\" must be of the same length."
+    )
+    pm$rgb_ranges <- pm$list_rgb <- NA
+  }
+  
   # check SAFE paths
   # if one of path_l1c and path_l2a is missing, copy from the other
   # FIXME this is a workaround for parameter pm$s2_levels,

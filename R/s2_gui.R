@@ -3267,8 +3267,10 @@ s2_gui <- function(param_list = NULL,
       # product selection #
       rl$list_prods <- input$list_prods[!input$list_prods %in% c("indices","rgbimages")] # TOA, BOA, SCL, TCI (for now)
       rl$list_indices <- if (indices_req()==TRUE & "indices" %in% input$list_prods) {input$list_indices} else {NA} # index names
-      rl$list_rgb <- if (rgb_req()==TRUE & "rgbimages" %in% input$list_prods) {input$list_rgbimages} else {NA} # RGB images names
-      rl$rgb_ranges <- if (rgb_req()==TRUE & "rgbimages" %in% input$list_prods) {
+      rl$list_rgb <- if (all(rgb_req()==TRUE, "rgbimages" %in% input$list_prods, length(input$list_rgbimages)>0)) {
+        input$list_rgbimages
+      } else {NA} # RGB images names
+      rl$rgb_ranges <- if (all(rgb_req()==TRUE, "rgbimages" %in% input$list_prods, length(input$list_rgbimages)>0)) {
         setNames(rv$list_rgb_ranges[input$list_rgbimages], NULL)
       } else {NA} # RGB images names
       rl$index_source <- input$index_source # reflectance band for computing indices ("BOA" or "TOA")
