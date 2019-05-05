@@ -169,27 +169,23 @@ in the SCL product (all pixels with values are maintained);</p></li>
 defective" or "Cloud (high probability)" in the SCL product;</p></li>
 <li><p>"cloud_medium_proba": mask pixels checked as "No data", "Saturated or
 defective" or "Cloud (high or medium probability)" in the SCL product;</p></li>
-<li><p>"cloud_low_proba": mask pixels checked as "No data", "Saturated or
-defective" or "Cloud (any probability)" in the SCL product;</p></li>
 <li><p>"cloud_and_shadow": mask pixels checked as "No data", "Saturated or
-defective", "Cloud (any probability)" or "Cloud shadow"
+defective", "Cloud (high or medium probability)" or "Cloud shadow"
 in the SCL product;</p></li>
 <li><p>"clear_sky": mask pixels checked as "No data", "Saturated or
-defective", "Cloud (any probability)", "Cloud shadow"
-or "Thin cirrus" in the SCL product
+defective", "Cloud (high or medium probability)", "Cloud shadow",
+"Unclassified" or "Thin cirrus" in the SCL product
 (only pixels classified as clear-sky surface - so "Dark area",
 "Vegetation", "Bare soil", "Water" or "Snow" - are maintained);</p></li>
 <li><p>"land": mask pixels checked as "No data", "Saturated or
-defective", "Cloud (any probability)", "Cloud shadow", "Dark area",
-"Thin cirrus", "Water" or "Snow" in the SCL product
+defective", "Cloud (high or medium probability)", "Cloud shadow", "Dark area",
+"Unclassified", "Thin cirrus", "Water" or "Snow" in the SCL product
 (only pixels classified as land surface - so "Vegetation" or
 "Bare soil" - are maintained);</p></li>
 <li><p>a string in the following form: "scl_n_m_n", where n, m and n are one or
-more SCL class numbers (e.g. "scl_0_8_9_11"): mask pixels corresponding
-to the classes specified in the string. E.g. string "scl_0_8_9_11" can
+more SCL class numbers. E.g. string "scl_0_8_9_11" can
 be used to mask classes 0 ("No data"), 8-9 ("Cloud (high or medium
-probability)") and 11 ("Snow");</p></li>
-<li><p>"opaque_clouds" (still to be implemented).</p></li>
+probability)") and 11 ("Snow").</p></li>
 </ul></td>
     </tr>
     <tr>

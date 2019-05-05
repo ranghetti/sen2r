@@ -24,27 +24,23 @@
 #'      defective" or "Cloud (high probability)" in the SCL product;
 #'  - "cloud_medium_proba": mask pixels checked as "No data", "Saturated or 
 #'      defective" or "Cloud (high or medium probability)" in the SCL product;
-#'  - "cloud_low_proba": mask pixels checked as "No data", "Saturated or 
-#'      defective" or "Cloud (any probability)" in the SCL product;
 #'  - "cloud_and_shadow": mask pixels checked as "No data", "Saturated or 
-#'      defective", "Cloud (any probability)" or "Cloud shadow" 
+#'      defective", "Cloud (high or medium probability)" or "Cloud shadow" 
 #'      in the SCL product;
 #'  - "clear_sky": mask pixels checked as "No data", "Saturated or 
-#'      defective", "Cloud (any probability)", "Cloud shadow"
-#'      or "Thin cirrus" in the SCL product
+#'      defective", "Cloud (high or medium probability)", "Cloud shadow",
+#'      "Unclassified" or "Thin cirrus" in the SCL product
 #'      (only pixels classified as clear-sky surface - so "Dark area", 
 #'      "Vegetation", "Bare soil", "Water" or "Snow" - are maintained);
 #'  - "land": mask pixels checked as "No data", "Saturated or 
-#'      defective", "Cloud (any probability)", "Cloud shadow", "Dark area",
-#'      "Thin cirrus", "Water" or "Snow" in the SCL product
+#'      defective", "Cloud (high or medium probability)", "Cloud shadow", "Dark area",
+#'      "Unclassified", "Thin cirrus", "Water" or "Snow" in the SCL product
 #'      (only pixels classified as land surface - so "Vegetation" or 
 #'      "Bare soil" - are maintained);
 #'  - a string in the following form: "scl_n_m_n", where n, m and n are one or
-#'      more SCL class numbers (e.g. "scl_0_8_9_11"): mask pixels corresponding
-#'      to the classes specified in the string. E.g. string "scl_0_8_9_11" can
+#'      more SCL class numbers. E.g. string "scl_0_8_9_11" can
 #'      be used to mask classes 0 ("No data"), 8-9 ("Cloud (high or medium 
-#'      probability)") and 11 ("Snow");
-#'  - "opaque_clouds" (still to be implemented).
+#'      probability)") and 11 ("Snow").
 #' @param smooth (optional) Numerical (positive): should the mask be smoothed=the size (in the unit of
 #'  `inmask`, typically metres) to be used as radius for the smoothing
 #'  (the higher it is, the more smooth the output mask will result). 
@@ -266,18 +262,16 @@ s2_mask <- function(infiles,
     req_masks <- list("SCL"=c(0:1,9))
   } else if (mask_type == "cloud_medium_proba") {
     req_masks <- list("SCL"=c(0:1,8:9))
-  } else if (mask_type == "cloud_low_proba") {
+  } else if (mask_type == "cloud_low_proba") { # left for compatibility
     req_masks <- list("SCL"=c(0:1,7:9))
-  } else if (mask_type == "cloud_and_shadow") {
-    req_masks <- list("SCL"=c(0:1,3,7:9))
+  } else if (mask_type == "cloud_and_shadow") { # changed! class 7 no more masked
+    req_masks <- list("SCL"=c(0:1,3,8:9))
   } else if (mask_type == "clear_sky") {
     req_masks <- list("SCL"=c(0:1,3,7:10))
   } else if (mask_type == "land") {
     req_masks <- list("SCL"=c(0:3,6:11))
   } else if (grepl("^scl\\_", mask_type)) {
     req_masks <- list("SCL"=strsplit(mask_type,"_")[[1]][-1])
-  } else if (mask_type == "opaque_clouds") {
-    print_message(type="error", "Mask type 'opaque_clouds' has not been yet implemented.")
   }
   
   ## Cycle on each file
