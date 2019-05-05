@@ -279,6 +279,7 @@ create_indices_db <- function(xslt_path = NA,
       name = "NDFI",
       link = "https://doi.org/10.1371/journal.pone.0088741",
       s2_formula = "(band_4-band_12)/(band_4+band_12)",
+      s2_formula_mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">RED</mi>\n      <mo>-</mo>\n      <mi mathcolor=\"#443399\">SWIR2</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">RED</mi>\n      <mo>+</mo>\n      <mi mathcolor=\"#443399\">SWIR2</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n  </mfrac>\n </mrow>\n</math>",
       checked = TRUE,
       a = NA, b = NA, x = NA
     ),
@@ -288,6 +289,7 @@ create_indices_db <- function(xslt_path = NA,
       name = "NDFI2",
       link = "https://doi.org/10.1371/journal.pone.0088741",
       s2_formula = "(band_4-band_11)/(band_4+band_11)",
+      s2_formula_mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">RED</mi>\n      <mo>-</mo>\n      <mi mathcolor=\"#443399\">SWIR1</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">RED</mi>\n      <mo>+</mo>\n      <mi mathcolor=\"#443399\">SWIR1</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n  </mfrac>\n </mrow>\n</math>",
       checked = TRUE,
       a = NA, b = NA, x = NA
     ),
@@ -296,6 +298,7 @@ create_indices_db <- function(xslt_path = NA,
       longname = "Normalize Difference Snow Index",
       name = "NDSI",
       link = "https://doi.org/10.1007/978-90-481-2642-2_376",
+      s2_formula_mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">GREEN</mi>\n      <mo>-</mo>\n      <mi mathcolor=\"#443399\">SWIR1</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">GREEN</mi>\n      <mo>+</mo>\n      <mi mathcolor=\"#443399\">SWIR1</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n  </mfrac>\n </mrow>\n</math>",
       s2_formula = "(band_3-band_11)/(band_3+band_11)",
       checked = TRUE,
       a = NA, b = NA, x = NA
@@ -306,6 +309,7 @@ create_indices_db <- function(xslt_path = NA,
       name = "NBR2",
       link = "https://landsat.usgs.gov/sites/default/files/documents/si_product_guide.pdf",
       s2_formula = "(band_11-band_12)/(band_11+band_12)",
+      s2_formula_mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">SWIR1</mi>\n      <mo>-</mo>\n      <mi mathcolor=\"#443399\">SWIR2</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">SWIR1</mi>\n      <mo>+</mo>\n      <mi mathcolor=\"#443399\">SWIR2</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n  </mfrac>\n </mrow>\n</math>",
       checked = TRUE,
       a = NA, b = NA, x = NA
     ),
@@ -324,22 +328,30 @@ create_indices_db <- function(xslt_path = NA,
       name = "CSI",
       link = "https://doi.org/10.1016/j.rse.2005.04.014",
       s2_formula = "(band_8)/(band_12)",
+      s2_formula_mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR</mi>\n      </mrow>\n    </mrow>\n   </mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">SWIR</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n  </mfrac>\n </mrow>\n</math>",
       checked = TRUE,
       a = NA, b = NA, x = NA
     )#,
-  ))
+  ), fill = TRUE)
   
   s2_table_new[,n_index:=as.integer(n_index)]
   s2_table_new[,longname:=as.character(longname)]
   s2_table_new[,name:=as.character(name)]
   s2_table_new[,link:=as.character(link)]
   s2_table_new[,s2_formula:=as.character(s2_formula)]
+  s2_table_new[,s2_formula_mathml:=as.character(s2_formula_mathml)]
   s2_table <- rbind(s2_table, s2_table_new, fill=TRUE)
   
   # add empty elements in MathML formulas
   for (i in length(s2_formula_mathml) + seq_len(nrow(s2_table) - length(s2_formula_mathml))) {
-    s2_formula_mathml[[i]] <- NA
-    s2_formula_mathml_general[[i]] <- NA
+    s2_formula_mathml[[i]] <- if (!is.na(s2_table$s2_formula_mathml[i])) {
+      xmlRoot(
+        htmlTreeParse(s2_table$s2_formula_mathml[i], useInternalNodes = FALSE)
+      )[["body"]][["math"]]
+    } else {
+      NA
+    }
+    s2_formula_mathml_general[[i]] <- s2_formula_mathml[[i]]
   }
   
   
