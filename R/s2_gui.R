@@ -3570,7 +3570,9 @@ s2_gui <- function(param_list = NULL,
         import_param_path$datapath %>%
           as.character() %>%
           readLines() %>%
-          fromJSON()
+          fromJSON() %>%
+          check_param_list(type = "error", correct = TRUE)
+        
       } else {
         NULL
       }

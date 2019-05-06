@@ -610,6 +610,9 @@ sen2r <- function(param_list = NULL,
   pm[names(pm_list)] <- pm_list
   pm[names(pm_arg)] <- pm_arg
   
+  # Check parameters
+  pm <- check_param_list(pm, type = "error", correct = TRUE)
+  
   # if gui argument was not specified, use default value
   if (is.na(gui)) {
     gui <- if (is.null(param_list)) {TRUE} else {FALSE}
@@ -660,9 +663,6 @@ sen2r <- function(param_list = NULL,
       date = TRUE,
       "Launching GUI..."
     )
-    
-    # Check parameters before opening the GUI
-    pm <- check_param_list(pm, type = "error", correct = TRUE)
     
     pm <- .s2_gui(pm, par_fun = "sen2r")
     if (is.null(pm)) {
