@@ -24,7 +24,7 @@
 #'  helpText hr HTML htmlOutput icon incProgress isolate NS numericInput observe p
 #'  radioButtons reactive reactiveVal reactiveValues removeModal renderText renderUI req runApp selectInput setProgress
 #'  shinyApp showModal sliderInput span stopApp strong tagList textInput uiOutput updateCheckboxGroupInput
-#'  updateDateRangeInput updateSliderInput updateRadioButtons updateTextInput withMathJax
+#'  updateDateRangeInput updateSliderInput updateSelectInput updateRadioButtons updateTextInput withMathJax
 #'  withProgress
 #' @importFrom shinydashboard box dashboardBody dashboardHeader dashboardPage
 #'  dashboardSidebar menuItem sidebarMenu tabItem tabItems
@@ -32,7 +32,7 @@
 #'  shinyDirButton shinyDirChoose shinyFileChoose shinyFileSave
 #'  shinyFilesButton shinySaveButton
 #' @importFrom shinyjs click delay disable enable hidden toggle useShinyjs extendShinyjs
-#' @importFrom shinyWidgets sendSweetAlert switchInput pickerInput updatePickerInput
+#' @importFrom shinyWidgets sendSweetAlert switchInput pickerInput updatePickerInput updateSwitchInput
 #' @importFrom stats setNames
 #'
 #' @export
@@ -3627,6 +3627,14 @@ s2_gui <- function(param_list = NULL,
         updateRadioButtons(session, "path_subdirs", selected = pl$path_subdirs)
         updateRadioButtons(session, "check_thumbnails", selected = pl$thumbnails)
         
+        # update logs and parallelisation
+        if (!is.na(pl$log[1])) {rv$log_path <- pl$log[1]}
+        parallel <- if (is.numeric(pl$parallel)) {pl$parallel>1} else {as.logical(pl$parallel)}
+        updateRadioButtons(session, "parallel", selected = parallel)
+        if (parallel) {updateSwitchInput(session, "n_cores_auto", value = !is.numeric(pl$parallel))}
+        if (parallel & is.numeric(pl$parallel)) {updateSliderInput(session, "n_cores", value = pl$parallel)}
+        updateSelectInput(session, "processing_order", selected = pl$processing_order)
+          
         # update apihub path
         rv$apihub_path <- pl$apihub_path
         

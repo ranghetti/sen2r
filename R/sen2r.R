@@ -701,6 +701,26 @@ sen2r <- function(param_list = NULL,
   ## Check consistency of parameters
   # TODO work in progress
   pm <- check_param_list(pm, type = "error", correct = TRUE)
+  
+  # extract logfile (is set)
+  if (all(length(nn(pm$log))>0, !is.na(pm$log))) {
+    if (!is.na(pm$log[2]) & is.na(.log_output)) {
+      .log_output <- pm$log[2]
+      dir.create(dirname(.log_output), showWarnings=FALSE)
+      sink(.log_output, split = TRUE, type = "output", append = TRUE)
+    }
+    if (!is.na(pm$log[1]) & is.na(.log_message)) {
+      .log_message <- pm$log[1]
+      print_message(
+        type = "message",
+        "Output messages are redirected to log file \"",.log_message,"\"."
+      )
+      dir.create(dirname(.log_message), showWarnings=FALSE)
+      logfile_message = file(.log_message, open = "a")
+      sink(logfile_message, type="message")
+    }
+  }
+
   # convert from GeoJSON to sf
   if (is(pm$extent, "character") | is(pm$extent, "geojson")) {
     pm$extent <- st_read(pm$extent, quiet=TRUE)
