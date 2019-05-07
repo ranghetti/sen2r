@@ -1796,8 +1796,8 @@ sen2r <- function(param_list = NULL,
         if (is.na(.log_message) & i_group_A == 1) {
           sen2r:::print_message(
             type="message", 
-            "Note: during this phase, logging messages are not shown ",
-            "output, since it is not possible to send it to standard output.\n",
+            "Note: logging messages are not shown during this phase, ",
+            "since it is not possible to send it to standard output.\n",
             "To see them, send messages to an external log file ",
             "or use a different processing order (by_date or by_steps)."
           )
