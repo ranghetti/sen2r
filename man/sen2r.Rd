@@ -21,7 +21,7 @@ sen2r(param_list = NULL, gui = NA, preprocess = TRUE,
   path_l1c = NA, path_l2a = NA, path_tiles = NA, path_merged = NA,
   path_out = NA, path_rgb = NA, path_indices = NA,
   path_subdirs = TRUE, thumbnails = TRUE, parallel = TRUE,
-  processing_order = "by_step", use_python = TRUE, tmpdir = NA,
+  processing_order = "by_groups", use_python = TRUE, tmpdir = NA,
   rmtmp = TRUE, log = NA)
 }
 \arguments{
@@ -317,29 +317,48 @@ If FALSE, the processing chain is forced to run with a single core
 This argument can be set only in commandline mode, not using the GUI.}
 
 \item{processing_order}{(optional) Character string:
+order used to execute the processing chain (this affects the speed
+of computation and the usage of system resources).
+Values can be one of the followings:
 \itemize{
-\item "1" or "by_step" (default) is the legacy mode, in which download and processing
-(merging tiles, warping, masking clouds, etc.) are performed step by step.
-If \code{parallel = TRUE}, parallelisation is applied within each step
-(when internal functions can manage it).
-This is the only accepted value in case \code{preprocess = FALSE}.
-\item "2" or "by_date" is a new experimental mode in which output products are grouped
-by sensing date; download and processing are performed date by date.
-Parallelisation is performed like in mode 1 (within each step).
-Although this is slightly slower than mode 1, it allow to delete SAFE
-products and/or temporary files after each date, so it is suitable
-for machines in which disk space is limited.
-\item "3" or "mixed" is another experimental mode in which download and atmospheric
-correction are performed first; then, processing (merging tiles,
-warping, masking clouds, etc.) is performed step by step.
-If \code{parallel = TRUE}, \code{sen2cor} is first parallelised (one core per
-SAFE), then one core per group is used for processing steps.
-This mode is normally the faster one.
-\item "4" or "by_groups" is similar to mode 2, but groups are larger (groups of
-n dates, where n is the number of cores which is used).
-Parallelisation is performed like in mode 3 within each group.
-It allows to take advantages both from speeding-up of mode 3 (although
-slightly slower) and better disk space managing of mode 2.
+\item "4" or "by_groups" (default):
+it provides a good compromise between processing speed and disk usage.
+Processing is done as follows:
+\enumerate{
+\item the list of required SAFE and output product names is computed;
+\item the required dates are grouped in $g$ groups, where
+$g$ is the number of dates divided by the number of CPU;
+\item groups are then processed sequentially; for each group:
+\itemize{
+\item the required SAFE archives are downloaded;
+\item Sen2Cor is applied in parallel using one core per L1C SAFE archive;
+\item the remaining processing operations are executed using parallel
+R sessions (one core for each date).
+}
+}
+\item "2" or "by_date":
+this allows minimising the requirements of disk usage
+(in particular if SAFE archives are deleted after processing).
+It is similar to the default execution, but each group is composed
+by a single date: so the disk space occupied by SAFE archives
+and temporary files is lower,
+but it is generally slower than the default one because
+parallel computation over dates for products' generation is not possible.
+\item "3" or "mixed":
+this allows maximising CPU usage and processing speed.
+The cycle on groups is ignored, and all the required SAFE are
+first of all downloaded and/or produced, and then dates are
+processed in parallel.
+This mode is faster than the default mode, but it requires
+all SAFE archives to be downloaded and processed before performing
+subsequent steps, thus increasing disk space requirements.
+\item "1" or "by_step":
+this is the legacy mode, in which the cycle on groups is ignored
+as well as the parallel computation over dates.
+All SAFEs are first downloaded/processed, then the processing steps
+are performed sequentially.
+This mode is similar to the previous one in terms of disk usage
+but it is slightly slower; its advantage are the lower RAM requirements.
 }}
 
 \item{use_python}{(optional) Logical: if TRUE (default), the presence of

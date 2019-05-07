@@ -3140,6 +3140,83 @@ s2_gui <- function(param_list = NULL,
       ))
     })
     
+    observeEvent(input$info_parallelisation, {
+      showModal(modalDialog(
+        title = "Processing order and parallelisation",
+        size = "s",
+        p(HTML(
+          "Settings of this box do not influence the produced output files,",
+          "but only the order used to produce them and the exploitment",
+          "of multiple CPU cores to speed up computation."
+        )),
+        p(HTML(
+          "If you are not confident with these settings, use the default values."
+        )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+    
+    observeEvent(input$help_processing_order, {
+      showModal(modalDialog(
+        title = "Processing order",
+        p(HTML(
+          "The order used to execute the processing chain affects the speed",
+          "of computation and the usage of system resources.",
+          "Changing this setting can be useful to optimise system performance,",
+          "particularly if the user is processing a high amount of data",
+          "(a large area of interest and/or an extensive time window)."
+        )),
+        p(HTML(
+          "The four available orders are described below."
+        )),
+        p(HTML(
+          "<strong>Process by groups</strong> (default):",
+          "it provides a good compromise between processing speed and disk usage.",
+          "Processing is done as follows:<ul>",
+          "<li>the list of required SAFE and output product names is computed;</li>",
+          "<li>the required dates are grouped in <em>g</em> groups, where",
+          "<em>g</em> is the number of dates divided by the number of CPU;</li>",
+          "<li>groups are then processed sequentially; for each group:<ul>",
+          "<li>the required SAFE archives are downloaded;</li>",
+          "<li>Sen2Cor is applied in parallel using one core per L1C SAFE archive;</li>",
+          "<li>the remaining processing operations are executed using parallel",
+          "R sessions (one core for each date).</li></ul></ul>"
+        )),
+        p(HTML(
+          "<strong>Process by date</strong>:",
+          "this allows minimising the requirements of disk usage",
+          "(in particular if SAFE archives are deleted after processing).",
+          "It is similar to the default execution, but each group is composed",
+          "by a single date: so the disk space occupied by SAFE archives",
+          "and temporary files is lower,",
+          "but it is generally slower than the default one because",
+          "parallel computation over dates for products' generation is not possible."
+        )),
+        p(HTML(
+          "<strong>Mixed processing</strong>:",
+          "this allows maximising CPU usage and processing speed.",
+          "The cycle on groups is ignored, and all the required SAFE are",
+          "first of all downloaded and/or produced, and then dates are",
+          "processed in parallel.",
+          "This mode is faster than the default mode, but it requires",
+          "all SAFE archives to be downloaded and processed before performing",
+          "subsequent steps, thus increasing disk space requirements."
+        )),
+        p(HTML(
+          "<strong>Process step by step</strong>:",
+          "this is the legacy mode, in which the cycle on groups is ignored",
+          "as well as the parallel computation over dates.",
+          "All SAFEs are first downloaded/processed, then the processing steps",
+          "are performed sequentially.",
+          "This mode is similar to the previous one in terms of disk usage",
+          "but it is slightly slower; its advantage are the lower RAM requirements."
+        )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+    
     observeEvent(input$help_index_source, {
       showModal(modalDialog(
         title = "Build indices from:",

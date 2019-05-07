@@ -180,17 +180,17 @@ were found with the passed settings.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># All the passages in a cycle of 10 days over all the orbits</span>
 <span class='fu'>s2_dop</span>()</div><div class='output co'>#&gt;            date mission orbit
-#&gt;   1: 2019-05-03      2A   002
-#&gt;   2: 2019-05-03      2A   003
-#&gt;   3: 2019-05-03      2A   004
-#&gt;   4: 2019-05-03      2A   005
-#&gt;   5: 2019-05-03      2A   006
+#&gt;   1: 2019-05-07      2A   059
+#&gt;   2: 2019-05-07      2A   060
+#&gt;   3: 2019-05-07      2A   061
+#&gt;   4: 2019-05-07      2A   062
+#&gt;   5: 2019-05-07      2A   063
 #&gt;  ---                         
-#&gt; 282: 2019-05-12      2B   068
-#&gt; 283: 2019-05-12      2B   069
-#&gt; 284: 2019-05-12      2B   070
-#&gt; 285: 2019-05-12      2B   071
-#&gt; 286: 2019-05-12      2B   072</div><div class='input'>
+#&gt; 282: 2019-05-16      2B   126
+#&gt; 283: 2019-05-16      2B   127
+#&gt; 284: 2019-05-16      2B   128
+#&gt; 285: 2019-05-16      2B   129
+#&gt; 286: 2019-05-16      2B   130</div><div class='input'>
 <span class='co'># The passages in the current month over two orbits</span>
 <span class='fu'>s2_dop</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"022"</span>, <span class='st'>"065"</span>), <span class='st'>"this month"</span>)</div><div class='output co'>#&gt;           date mission orbit
 #&gt;  1: 2019-05-02      2B   065
@@ -206,12 +206,12 @@ were found with the passed settings.</p>
 #&gt; 11: 2019-05-27      2A   065
 #&gt; 12: 2019-05-29      2B   022</div><div class='input'>
 <span class='co'># The dates in which Sentinel-2A will pass in next six weeks over one orbit </span>
-<span class='fu'>s2_dop</span>(<span class='st'>"022"</span>, <span class='st'>"6 weeks"</span>, <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2A"</span>)$<span class='no'>date</span></div><div class='output co'>#&gt; [1] "2019-05-04" "2019-05-14" "2019-05-24" "2019-06-03"</div><div class='input'>
+<span class='fu'>s2_dop</span>(<span class='st'>"022"</span>, <span class='st'>"6 weeks"</span>, <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2A"</span>)$<span class='no'>date</span></div><div class='output co'>#&gt; [1] "2019-05-14" "2019-05-24" "2019-06-03" "2019-06-13"</div><div class='input'>
 <span class='co'># The date in which Sentinel-2A would be passed in the last 10 days over one orbit </span>
-<span class='fu'>s2_dop</span>(<span class='st'>"022"</span>, <span class='st'>"-10 days"</span>, <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2A"</span>)$<span class='no'>date</span></div><div class='output co'>#&gt; [1] "2019-04-24"</div><div class='input'>
+<span class='fu'>s2_dop</span>(<span class='st'>"022"</span>, <span class='st'>"-10 days"</span>, <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2A"</span>)$<span class='no'>date</span></div><div class='output co'>#&gt; [1] "2019-05-04"</div><div class='input'>
 <span class='co'># All the orbits covered today</span>
-<span class='fu'>s2_dop</span>(<span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Sys.time'>Sys.Date</a></span>(), <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2B"</span>)$<span class='no'>orbit</span></div><div class='output co'>#&gt;  [1] "073" "074" "075" "076" "077" "078" "079" "080" "081" "082" "083" "084"
-#&gt; [13] "085" "086" "087"</div><div class='input'>
+<span class='fu'>s2_dop</span>(<span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Sys.time'>Sys.Date</a></span>(), <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2B"</span>)$<span class='no'>orbit</span></div><div class='output co'>#&gt;  [1] "001" "131" "132" "133" "134" "135" "136" "137" "138" "139" "140" "141"
+#&gt; [13] "142" "143"</div><div class='input'>
 <span class='co'># The passages in a fixed time window for one orbit</span>
 <span class='fu'>s2_dop</span>(<span class='fl'>65</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/as.Date'>as.Date</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"2018-08-01"</span>, <span class='st'>"2018-08-31"</span>)))</div><div class='output co'>#&gt;          date mission orbit
 #&gt; 1: 2018-08-05      2B   065
