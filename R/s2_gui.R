@@ -157,10 +157,10 @@ s2_gui <- function(param_list = NULL,
           )
         ),
         p(style="margin-top:20pt;",
-          shinyFilesButton(
+          shinySaveButton(
             "save_log", 
             "Create log...", "Create a log file...", 
-            multiple=FALSE, 
+            filetype=list(logfile="log", textfile="txt"), 
             class="darkbutton"
           )
         ),
@@ -3526,6 +3526,11 @@ s2_gui <- function(param_list = NULL,
       rl$path_subdirs <- if (rl$preprocess==TRUE) {as.logical(input$path_subdirs)} else {NA} # logical (use subdirs)
       rl$thumbnails <- if (rl$preprocess==TRUE) {as.logical(input$check_thumbnails)} else {NA} # logical (create thumbnails)
       
+      # logs and parallelisation
+      rl$log <- if (!is.null(rv$log_path)) {rv$log_path} else {NA}
+      rl$parallel <- if (input$parallel==FALSE) {FALSE} else if (input$n_cores_auto==TRUE) {TRUE} else {input$n_cores}
+      rl$processing_order <- input$processing_order
+
       # save apihub.txt path if it was customly set
       if (!is.null(NULL) & !anyNA(NULL)) {rl$apihub_path <- rv$apihub_path}
       
@@ -3757,6 +3762,12 @@ s2_gui <- function(param_list = NULL,
         import_param_list(rv$imported_param)
         rv$imported_param <- NULL
       }
+    })
+    
+    # if Create log is pressed, set the paramtere to sink the log
+    observeEvent(input$save_log, {
+      shinyFileSave(input, "save_log", roots=volumes, session=session)
+      rv$log_path <- parseSavePath(volumes, input$save_log)$datapath
     })
     
     observeEvent(param_list, {
