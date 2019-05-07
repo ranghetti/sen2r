@@ -29,8 +29,8 @@
 #' @note License: GPL 3.0
 
 print_message <- function(..., type, sep="", date=FALSE, date_format="") {
-  message_string <- paste(if (date) {
-    paste0("[",strftime(Sys.time(), format=date_format),"]")
+  message_string <- paste0(if (date) {
+    paste0("[",strftime(Sys.time(), format=date_format),"] ")
   }, paste(c(...), collapse=sep))
   switch(
     type,

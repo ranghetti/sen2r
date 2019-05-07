@@ -1348,7 +1348,7 @@ sen2r <- function(param_list = NULL,
         #       strftime(safe_getMetadata(x, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
         #     }, USE.NAMES = FALSE) %in% as.character(d)]
         #   })
-        v[grepl(paste0("[12][ABC]\\_",d_string), basename(nn(v)))] # less meticulous, but faster
+        v[grepl(paste0("[12][ABC]\\_((",paste(d_string,collapse=")|("),"))"), basename(nn(v)))] # less meticulous, but faster
       }, simplify = FALSE)
     })
     s2_list_l1c_groups_A <- lapply(sen2r_groups_A, function(d) {
@@ -1358,7 +1358,7 @@ sen2r <- function(param_list = NULL,
       #     strftime(safe_getMetadata(s, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
       #   }) %in% as.character(d)
       #   ]
-      s2_list_l1c[grepl(paste0("[12][ABC]\\_",d_string), names(s2_list_l1c))] # less meticulous, but faster
+      s2_list_l1c[grepl(paste0("[12][ABC]\\_((",paste(d_string,collapse=")|("),"))"), names(s2_list_l1c))] # less meticulous, but faster
     })
     s2_list_l2a_groups_A <- lapply(sen2r_groups_A, function(d) {
       d_string <- strftime(d, "%Y%m%d")
@@ -1367,7 +1367,7 @@ sen2r <- function(param_list = NULL,
       #     strftime(safe_getMetadata(s, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
       #   }) %in% as.character(d)
       #   ]
-      s2_list_l2a[grepl(paste0("[12][ABC]\\_",d_string), names(s2_list_l2a))] # less meticulous, but faster
+      s2_list_l2a[grepl(paste0("[12][ABC]\\_((",paste(d_string,collapse=")|("),"))"), names(s2_list_l2a))] # less meticulous, but faster
     })
     s2_dt_groups_A <- lapply(sen2r_groups_A, function(d) {
       s2_dt[
@@ -1416,7 +1416,7 @@ sen2r <- function(param_list = NULL,
   # Initialise foreach cycle A
   # Compute n_cores
   n_cores_A <- if (is.numeric(parallel_groups_A)) {
-    as.integer(parallel_groups_A)
+    min(as.integer(parallel_groups_A), length(s2names_groups_A))
   } else if (parallel_groups_A == FALSE) {
     1
   } else {
@@ -1757,7 +1757,7 @@ sen2r <- function(param_list = NULL,
             #       strftime(safe_getMetadata(x, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
             #     }, USE.NAMES = FALSE)) == d]
             #   })
-            v[grepl(paste0("[12][ABC]\\_",d_string), basename(nn(v)))] # less meticulous, but faster
+            v[grepl(paste0("[12][ABC]\\_((",paste(d_string,collapse=")|("),"))"), basename(nn(v)))] # less meticulous, but faster
           }, simplify = FALSE)
         })
         names(s2names_groups_B) <- sen2r_dates_B
@@ -1771,7 +1771,7 @@ sen2r <- function(param_list = NULL,
       # Initialise foreach cycle 2
       # Compute n_cores_B
       n_cores_B <- if (is.numeric(parallel_groups_B)) {
-        as.integer(parallel_groups_B)
+        min(as.integer(parallel_groups_B), length(s2names_groups_B))
       } else if (parallel_groups_B == FALSE) {
         1
       } else {
@@ -1787,6 +1787,21 @@ sen2r <- function(param_list = NULL,
           type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
         )
         registerDoParallel(cl)
+        sen2r:::print_message(
+          type="message", 
+          date=TRUE,
+          "Starting running processing operations on multiple (",n_cores_B,
+          ") parallel cores..."
+        )
+        if (is.na(.log_message) & i_group_A == 1) {
+          sen2r:::print_message(
+            type="message", 
+            "Note: during this phase, logging messages are not shown ",
+            "output, since it is not possible to send it to standard output.\n",
+            "To see them, send messages to an external log file ",
+            "or use a different processing order (by_date or by_steps)."
+          )
+        }
       }
       # Run processing by group
       outnames_list_B <- foreach(
@@ -2357,6 +2372,11 @@ sen2r <- function(param_list = NULL,
       } # end of s2names_groups_B FOREACH cycle
       if (n_cores_B > 1) {
         stopCluster(cl)
+        sen2r:::print_message(
+          type="message", 
+          date=TRUE,
+          "Processing operations on multiple parallel cores was done."
+        )
       }
       
       ## 10. remove temporary files
@@ -2371,10 +2391,6 @@ sen2r <- function(param_list = NULL,
         unlink(file.path(paths["L1C"],names(sel_s2_list_l1c)), recursive=TRUE)
       }
       
-      if (n_cores_A > 1) {
-        stopCluster(cl)
-      }
-      
       gc()
       
       list(
@@ -2385,6 +2401,10 @@ sen2r <- function(param_list = NULL,
       
     } # end of s2names_groups_A FOREACH 2/2 cycle (2 cycles)
     gc()
+    if (n_cores_A > 1) {
+      stopCluster(cl)
+    }
+    
     if (pm$preprocess == FALSE | .only_list_names == TRUE) {
       outnames_list_A2
     } else {
