@@ -65,13 +65,13 @@ tiles_intersects <- function(extent, all = FALSE, out_format = "id", .s2tiles=NU
   tiles_intersects <- rep(TRUE, nrow(tiles_intersecting_all))
   
   # Cycle on tiles
-  if (all == FALSE) {
+  if (length(tiles_intersects) > 1 & all == FALSE) {
     for (i in rev(seq_len(nrow(tiles_intersecting_all)))) {
       sel_tile <- tiles_intersecting_all[i,]
       # intersection between extent and portion of tiles not overlapping other tiles
       # (with the exception of already discharged ones)
       sel_tile_notoverlap <- suppressMessages(st_difference(
-        st_geometry(s2tiles), 
+        st_geometry(tiles_intersecting_all), 
         summarise(group_by(
           tiles_intersecting_all[tiles_intersects & tiles_intersecting_all$tile_id != sel_tile$tile_id,]
         ))
