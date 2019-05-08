@@ -3530,7 +3530,7 @@ s2_gui <- function(param_list = NULL,
       rl$log <- if (!is.null(rv$log_path)) {rv$log_path} else {NA}
       rl$parallel <- if (input$parallel==FALSE) {FALSE} else if (input$n_cores_auto==TRUE) {TRUE} else {input$n_cores}
       rl$processing_order <- input$processing_order
-
+      
       # save apihub.txt path if it was customly set
       if (!is.null(NULL) & !anyNA(NULL)) {rl$apihub_path <- rv$apihub_path}
       
@@ -3634,7 +3634,7 @@ s2_gui <- function(param_list = NULL,
         if (parallel) {updateSwitchInput(session, "n_cores_auto", value = !is.numeric(pl$parallel))}
         if (parallel & is.numeric(pl$parallel)) {updateSliderInput(session, "n_cores", value = pl$parallel)}
         updateSelectInput(session, "processing_order", selected = pl$processing_order)
-          
+        
         # update apihub path
         rv$apihub_path <- pl$apihub_path
         
@@ -3771,6 +3771,11 @@ s2_gui <- function(param_list = NULL,
         rv$imported_param <- NULL
       }
     })
+    
+    # disable log button if logging was already doing
+    if (all(!is.na(param_list$log))) {
+      disable("save_log")
+    }
     
     # if Create log is pressed, set the paramtere to sink the log
     observeEvent(input$save_log, {

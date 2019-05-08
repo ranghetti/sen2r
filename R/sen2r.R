@@ -367,21 +367,19 @@ sen2r <- function(param_list = NULL,
                   log = NA) {
   
   # sink to external files
-  log_output <- log[2]
-  log_message <- log[1]
-  if (!is.na(log_output)) {
-    dir.create(dirname(log_output), showWarnings=FALSE)
-    sink(log_output, split = TRUE, type = "output", append = TRUE)
+  if (!is.na(log[2])) {
+    dir.create(dirname(log[2]), showWarnings=FALSE)
+    sink(log[2], split = TRUE, type = "output", append = TRUE)
   }
-  if (!is.na(log_message)) {
-    dir.create(dirname(log_message), showWarnings=FALSE)
-    logfile_message = file(log_message, open = "a")
+  if (!is.na(log[1])) {
+    dir.create(dirname(log[1]), showWarnings=FALSE)
+    logfile_message = file(log[1], open = "a")
     sink(logfile_message, type="message")
   }
   
   # filter names of passed arguments
   sen2r_args <- formalArgs(sen2r:::.sen2r)
-  sen2r_args <- sen2r_args[!sen2r_args %in% c(".log_message",".log_output",".only_list_names")]
+  sen2r_args <- sen2r_args[!sen2r_args %in% c(".only_list_names")]
   pm_arg_passed <- logical(0)
   for (i in seq_along(sen2r_args)) {
     pm_arg_passed[i] <- !do.call(missing, list(sen2r_args[i]))
@@ -446,7 +444,7 @@ sen2r <- function(param_list = NULL,
     use_python = use_python,
     tmpdir = tmpdir,
     rmtmp = rmtmp,
-    .log_message = log_message, .log_output = log_output,
+    log = log,
     .only_list_names = FALSE
   )
   
@@ -461,11 +459,15 @@ sen2r <- function(param_list = NULL,
   #   sink(type = "message"); close(logfile_message)
   #   n_sink_message <- sink.number("message")
   # }
-  if (!is.na(log_output)) {
+  if (!is.na(log[2])) {
     sink(type = "output")
   }
-  if (!is.na(log_message)) {
+  if (!is.na(log[1])) {
     sink(type = "message"); close(logfile_message)
+  }
+  if (exists("internal_log")) {
+    sink(type = "message")
+    rm(internal_log)
   }
   
 }
@@ -532,8 +534,7 @@ sen2r <- function(param_list = NULL,
                    use_python,
                    tmpdir,
                    rmtmp,
-                   .log_message = NA, 
-                   .log_output = NA,
+                   log,
                    .only_list_names = FALSE) {
   
   # to avoid NOTE on check
@@ -587,13 +588,11 @@ sen2r <- function(param_list = NULL,
   
   # Read arguments with default values
   pm_def <- formals(sen2r::sen2r) # use "sen2r" instead of ".sen2r" because this one has no defaults
-  pm_def <- pm_def[!names(pm_def) %in% c("log")] # remove "log" (argument of sen2r(), not .sen2r())
   # select arguments which are not parameters
   pm_def <- sapply(pm_def[!names(pm_def) %in% c("param_list","gui","use_python","tmpdir","rmtmp")], eval)
   
   # filter names of passed arguments
   sen2r_args <- formalArgs(sen2r:::.sen2r)
-  sen2r_args <- sen2r_args[!sen2r_args %in% c(".log_message",".log_output")]
   # FIXME $473 pm_arg_passed computed in the main function (otherwise nothing was missing).
   # This is not elegant, find a better way to do it.
   #   pm_arg_passed <- logical(0)
@@ -671,6 +670,7 @@ sen2r <- function(param_list = NULL,
   }
   
   ## Open GUI (if required)
+  pm_prev <- pm # used to check if the log was added in the GUI
   if (gui==TRUE) {
     
     print_message(
@@ -702,25 +702,26 @@ sen2r <- function(param_list = NULL,
   # TODO work in progress
   pm <- check_param_list(pm, type = "error", correct = TRUE)
   
-  # extract logfile (is set)
-  if (all(length(nn(pm$log))>0, !is.na(pm$log))) {
-    if (!is.na(pm$log[2]) & is.na(.log_output)) {
-      .log_output <- pm$log[2]
-      dir.create(dirname(.log_output), showWarnings=FALSE)
-      sink(.log_output, split = TRUE, type = "output", append = TRUE)
-    }
-    if (!is.na(pm$log[1]) & is.na(.log_message)) {
-      .log_message <- pm$log[1]
+  # Set log variables
+  # stop logging if it was already going on
+  # start logging in case it was defined / redefined in the GUI
+  if (all(is.na(pm_prev$log), length(nn(pm$log))>0, !is.na(pm$log))) {
+    if (!is.na(pm$log[1]) & is.na(pm_prev$log[1])) {
       print_message(
         type = "message",
-        "Output messages are redirected to log file \"",.log_message,"\"."
+        "Output messages are redirected to log file \"",pm$log[1],"\"."
       )
-      dir.create(dirname(.log_message), showWarnings=FALSE)
-      logfile_message = file(.log_message, open = "a")
+      dir.create(dirname(pm$log[1]), showWarnings=FALSE)
+      logfile_message = file(pm$log[1], open = "a")
       sink(logfile_message, type="message")
+      internal_log <<- pm$log[1] # workaround to stop sinking in the external function
     }
   }
-
+  rm(pm_prev)
+  # define log variables
+  .log_message <- log[1]
+  .log_output <- log[2]
+  
   # convert from GeoJSON to sf
   if (is(pm$extent, "character") | is(pm$extent, "geojson")) {
     pm$extent <- st_read(pm$extent, quiet=TRUE)
@@ -1759,7 +1760,7 @@ sen2r <- function(param_list = NULL,
       
       ### GDAL processing: convert SAFE, merge tiles, warp, mask and compute indices ###
       
-      # Create processing groups
+      # Create processing groups (dates)
       if (pm$processing_order %in% c(2,"by_date", 3,"mixed", 4,"by_groups")) {
         
         # build groups
@@ -1845,7 +1846,8 @@ sen2r <- function(param_list = NULL,
           sen2r:::print_message(
             type="message", 
             date=TRUE,
-            "Processing group ",i_group_B," of ",length(s2names_groups_B),"..."
+            "Processing date ",i_group_B," of ",length(s2names_groups_B),
+            " in group ",i_group_A," of ",length(s2names_groups_A),"..."
           )
         }
         
@@ -2122,7 +2124,7 @@ sen2r <- function(param_list = NULL,
             masked_names_infiles_sr_idx <- any(!is.na(pm$list_indices)) & 
               !pm$index_source %in% pm$list_prods & 
               sen2r_getElements(masked_names_infiles, format="data.table")$prod_type==pm$index_source
-
+            
             masked_names_out_nsr <- if (length(masked_names_infiles[!masked_names_infiles_sr_idx])>0) {
               trace_function(
                 s2_mask,
