@@ -214,7 +214,7 @@ s2_merge <- function(infiles,
   
   # Compute n_cores
   n_cores <- if (is.numeric(parallel)) {
-    as.integer(parallel)
+    min(as.integer(parallel), length(unique(infiles_meta_grps)))
   } else if (parallel==FALSE) {
     1
   } else {

@@ -83,7 +83,7 @@ maskapply_parallel <- function(in_rast,
   
   # Compute n_cores
   n_cores <- if (is.numeric(parallel)) {
-    as.integer(parallel)
+    min(as.integer(parallel), nlayers(in_rast))
   } else if (parallel==FALSE) {
     1
   } else {

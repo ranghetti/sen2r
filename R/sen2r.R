@@ -237,28 +237,43 @@
 #'  (this can be useful if multiple [sen2r] instances are run in parallel).
 #'  This argument can be set only in commandline mode, not using the GUI.
 #' @param processing_order (optional) Character string:
-#'  - "1" or "by_step" (default) is the legacy mode, in which download and processing 
-#'      (merging tiles, warping, masking clouds, etc.) are performed step by step.
-#'      If `parallel = TRUE`, parallelisation is applied within each step
-#'      (when internal functions can manage it).
-#'      This is the only accepted value in case `preprocess = FALSE`.
-#'  - "2" or "by_date" is a new experimental mode in which output products are grouped 
-#'      by sensing date; download and processing are performed date by date.
-#'      Parallelisation is performed like in mode 1 (within each step).
-#'      Although this is slightly slower than mode 1, it allow to delete SAFE
-#'      products and/or temporary files after each date, so it is suitable
-#'      for machines in which disk space is limited.
-#'  - "3" or "mixed" is another experimental mode in which download and atmospheric 
-#'      correction are performed first; then, processing (merging tiles, 
-#'      warping, masking clouds, etc.) is performed step by step.
-#'      If `parallel = TRUE`, `sen2cor` is first parallelised (one core per 
-#'      SAFE), then one core per group is used for processing steps.
-#'      This mode is normally the faster one.
-#'  - "4" or "by_groups" is similar to mode 2, but groups are larger (groups of 
-#'      n dates, where n is the number of cores which is used).
-#'      Parallelisation is performed like in mode 3 within each group.
-#'      It allows to take advantages both from speeding-up of mode 3 (although 
-#'      slightly slower) and better disk space managing of mode 2.
+#'  order used to execute the processing chain (this affects the speed
+#'  of computation and the usage of system resources).
+#'  Values can be one of the followings:
+#'  - "4" or "by_groups" (default):
+#'      it provides a good compromise between processing speed and disk usage.
+#'      Processing is done as follows:
+#'      1. the list of required SAFE and output product names is computed;
+#'      2. the required dates are grouped in $g$ groups, where
+#'          $g$ is the number of dates divided by the number of CPU;
+#'      3. groups are then processed sequentially; for each group:
+#'          - the required SAFE archives are downloaded;
+#'          - Sen2Cor is applied in parallel using one core per L1C SAFE archive;
+#'          - the remaining processing operations are executed using parallel
+#'              R sessions (one core for each date).
+#'  - "2" or "by_date":
+#'      this allows minimising the requirements of disk usage
+#'      (in particular if SAFE archives are deleted after processing).
+#'      It is similar to the default execution, but each group is composed
+#'      by a single date: so the disk space occupied by SAFE archives
+#'      and temporary files is lower,
+#'      but it is generally slower than the default one because
+#'      parallel computation over dates for products' generation is not possible.
+#'  - "3" or "mixed":
+#'      this allows maximising CPU usage and processing speed.
+#'      The cycle on groups is ignored, and all the required SAFE are
+#'      first of all downloaded and/or produced, and then dates are
+#'      processed in parallel.
+#'      This mode is faster than the default mode, but it requires
+#'      all SAFE archives to be downloaded and processed before performing
+#'      subsequent steps, thus increasing disk space requirements.
+#'  - "1" or "by_step":
+#'      this is the legacy mode, in which the cycle on groups is ignored
+#'      as well as the parallel computation over dates.
+#'      All SAFEs are first downloaded/processed, then the processing steps
+#'      are performed sequentially.
+#'      This mode is similar to the previous one in terms of disk usage
+#'      but it is slightly slower; its advantage are the lower RAM requirements.
 #' @param use_python (optional) Logical: if TRUE (default), the presence of
 #'  python in the system is checked before running the function; 
 #'  if FALSE, this is skipped. Setting this to FALSE can bge useful on 
@@ -345,28 +360,26 @@ sen2r <- function(param_list = NULL,
                   path_subdirs = TRUE,
                   thumbnails = TRUE,
                   parallel = TRUE,
-                  processing_order = "by_step",
+                  processing_order = "by_groups",
                   use_python = TRUE,
                   tmpdir = NA,
                   rmtmp = TRUE, 
                   log = NA) {
   
   # sink to external files
-  log_output <- log[2]
-  log_message <- log[1]
-  if (!is.na(log_output)) {
-    dir.create(dirname(log_output), showWarnings=FALSE)
-    sink(log_output, split = TRUE, type = "output", append = TRUE)
+  if (!is.na(log[2])) {
+    dir.create(dirname(log[2]), showWarnings=FALSE)
+    sink(log[2], split = TRUE, type = "output", append = TRUE)
   }
-  if (!is.na(log_message)) {
-    dir.create(dirname(log_message), showWarnings=FALSE)
-    logfile_message = file(log_message, open = "a")
+  if (!is.na(log[1])) {
+    dir.create(dirname(log[1]), showWarnings=FALSE)
+    logfile_message = file(log[1], open = "a")
     sink(logfile_message, type="message")
   }
   
   # filter names of passed arguments
   sen2r_args <- formalArgs(sen2r:::.sen2r)
-  sen2r_args <- sen2r_args[!sen2r_args %in% c(".log_message",".log_output",".only_list_names")]
+  sen2r_args <- sen2r_args[!sen2r_args %in% c(".only_list_names")]
   pm_arg_passed <- logical(0)
   for (i in seq_along(sen2r_args)) {
     pm_arg_passed[i] <- !do.call(missing, list(sen2r_args[i]))
@@ -431,7 +444,7 @@ sen2r <- function(param_list = NULL,
     use_python = use_python,
     tmpdir = tmpdir,
     rmtmp = rmtmp,
-    .log_message = log_message, .log_output = log_output,
+    log = log,
     .only_list_names = FALSE
   )
   
@@ -446,11 +459,15 @@ sen2r <- function(param_list = NULL,
   #   sink(type = "message"); close(logfile_message)
   #   n_sink_message <- sink.number("message")
   # }
-  if (!is.na(log_output)) {
+  if (!is.na(log[2])) {
     sink(type = "output")
   }
-  if (!is.na(log_message)) {
+  if (!is.na(log[1])) {
     sink(type = "message"); close(logfile_message)
+  }
+  if (exists("internal_log")) {
+    sink(type = "message")
+    rm(internal_log)
   }
   
 }
@@ -517,8 +534,7 @@ sen2r <- function(param_list = NULL,
                    use_python,
                    tmpdir,
                    rmtmp,
-                   .log_message = NA, 
-                   .log_output = NA,
+                   log,
                    .only_list_names = FALSE) {
   
   # to avoid NOTE on check
@@ -572,13 +588,11 @@ sen2r <- function(param_list = NULL,
   
   # Read arguments with default values
   pm_def <- formals(sen2r::sen2r) # use "sen2r" instead of ".sen2r" because this one has no defaults
-  pm_def <- pm_def[!names(pm_def) %in% c("log")] # remove "log" (argument of sen2r(), not .sen2r())
   # select arguments which are not parameters
   pm_def <- sapply(pm_def[!names(pm_def) %in% c("param_list","gui","use_python","tmpdir","rmtmp")], eval)
   
   # filter names of passed arguments
   sen2r_args <- formalArgs(sen2r:::.sen2r)
-  sen2r_args <- sen2r_args[!sen2r_args %in% c(".log_message",".log_output")]
   # FIXME $473 pm_arg_passed computed in the main function (otherwise nothing was missing).
   # This is not elegant, find a better way to do it.
   #   pm_arg_passed <- logical(0)
@@ -609,6 +623,9 @@ sen2r <- function(param_list = NULL,
   pm <- pm_def
   pm[names(pm_list)] <- pm_list
   pm[names(pm_arg)] <- pm_arg
+  
+  # Check parameters
+  pm <- check_param_list(pm, type = "error", correct = TRUE)
   
   # if gui argument was not specified, use default value
   if (is.na(gui)) {
@@ -653,6 +670,7 @@ sen2r <- function(param_list = NULL,
   }
   
   ## Open GUI (if required)
+  pm_prev <- pm # used to check if the log was added in the GUI
   if (gui==TRUE) {
     
     print_message(
@@ -660,9 +678,6 @@ sen2r <- function(param_list = NULL,
       date = TRUE,
       "Launching GUI..."
     )
-    
-    # Check parameters before opening the GUI
-    pm <- check_param_list(pm, type = "error", correct = TRUE)
     
     pm <- .s2_gui(pm, par_fun = "sen2r")
     if (is.null(pm)) {
@@ -686,6 +701,27 @@ sen2r <- function(param_list = NULL,
   ## Check consistency of parameters
   # TODO work in progress
   pm <- check_param_list(pm, type = "error", correct = TRUE)
+  
+  # Set log variables
+  # stop logging if it was already going on
+  # start logging in case it was defined / redefined in the GUI
+  if (all(is.na(pm_prev$log), length(nn(pm$log))>0, !is.na(pm$log))) {
+    if (!is.na(pm$log[1]) & is.na(pm_prev$log[1])) {
+      print_message(
+        type = "message",
+        "Output messages are redirected to log file \"",pm$log[1],"\"."
+      )
+      dir.create(dirname(pm$log[1]), showWarnings=FALSE)
+      logfile_message = file(pm$log[1], open = "a")
+      sink(logfile_message, type="message")
+      internal_log <<- pm$log[1] # workaround to stop sinking in the external function
+    }
+  }
+  rm(pm_prev)
+  # define log variables
+  .log_message <- log[1]
+  .log_output <- log[2]
+  
   # convert from GeoJSON to sf
   if (is(pm$extent, "character") | is(pm$extent, "geojson")) {
     pm$extent <- st_read(pm$extent, quiet=TRUE)
@@ -1333,7 +1369,7 @@ sen2r <- function(param_list = NULL,
         #       strftime(safe_getMetadata(x, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
         #     }, USE.NAMES = FALSE) %in% as.character(d)]
         #   })
-        v[grepl(paste0("[12][ABC]\\_",d_string), basename(nn(v)))] # less meticulous, but faster
+        v[grepl(paste0("[12][ABC]\\_((",paste(d_string,collapse=")|("),"))"), basename(nn(v)))] # less meticulous, but faster
       }, simplify = FALSE)
     })
     s2_list_l1c_groups_A <- lapply(sen2r_groups_A, function(d) {
@@ -1343,7 +1379,7 @@ sen2r <- function(param_list = NULL,
       #     strftime(safe_getMetadata(s, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
       #   }) %in% as.character(d)
       #   ]
-      s2_list_l1c[grepl(paste0("[12][ABC]\\_",d_string), names(s2_list_l1c))] # less meticulous, but faster
+      s2_list_l1c[grepl(paste0("[12][ABC]\\_((",paste(d_string,collapse=")|("),"))"), names(s2_list_l1c))] # less meticulous, but faster
     })
     s2_list_l2a_groups_A <- lapply(sen2r_groups_A, function(d) {
       d_string <- strftime(d, "%Y%m%d")
@@ -1352,7 +1388,7 @@ sen2r <- function(param_list = NULL,
       #     strftime(safe_getMetadata(s, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
       #   }) %in% as.character(d)
       #   ]
-      s2_list_l2a[grepl(paste0("[12][ABC]\\_",d_string), names(s2_list_l2a))] # less meticulous, but faster
+      s2_list_l2a[grepl(paste0("[12][ABC]\\_((",paste(d_string,collapse=")|("),"))"), names(s2_list_l2a))] # less meticulous, but faster
     })
     s2_dt_groups_A <- lapply(sen2r_groups_A, function(d) {
       s2_dt[
@@ -1401,7 +1437,7 @@ sen2r <- function(param_list = NULL,
   # Initialise foreach cycle A
   # Compute n_cores
   n_cores_A <- if (is.numeric(parallel_groups_A)) {
-    as.integer(parallel_groups_A)
+    min(as.integer(parallel_groups_A), length(s2names_groups_A))
   } else if (parallel_groups_A == FALSE) {
     1
   } else {
@@ -1724,7 +1760,7 @@ sen2r <- function(param_list = NULL,
       
       ### GDAL processing: convert SAFE, merge tiles, warp, mask and compute indices ###
       
-      # Create processing groups
+      # Create processing groups (dates)
       if (pm$processing_order %in% c(2,"by_date", 3,"mixed", 4,"by_groups")) {
         
         # build groups
@@ -1742,7 +1778,7 @@ sen2r <- function(param_list = NULL,
             #       strftime(safe_getMetadata(x, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
             #     }, USE.NAMES = FALSE)) == d]
             #   })
-            v[grepl(paste0("[12][ABC]\\_",d_string), basename(nn(v)))] # less meticulous, but faster
+            v[grepl(paste0("[12][ABC]\\_((",paste(d_string,collapse=")|("),"))"), basename(nn(v)))] # less meticulous, but faster
           }, simplify = FALSE)
         })
         names(s2names_groups_B) <- sen2r_dates_B
@@ -1756,7 +1792,7 @@ sen2r <- function(param_list = NULL,
       # Initialise foreach cycle 2
       # Compute n_cores_B
       n_cores_B <- if (is.numeric(parallel_groups_B)) {
-        as.integer(parallel_groups_B)
+        min(as.integer(parallel_groups_B), length(s2names_groups_B))
       } else if (parallel_groups_B == FALSE) {
         1
       } else {
@@ -1772,6 +1808,21 @@ sen2r <- function(param_list = NULL,
           type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
         )
         registerDoParallel(cl)
+        sen2r:::print_message(
+          type="message", 
+          date=TRUE,
+          "Starting running processing operations on multiple (",n_cores_B,
+          ") parallel cores..."
+        )
+        if (is.na(.log_message) & i_group_A == 1) {
+          sen2r:::print_message(
+            type="message", 
+            "Note: logging messages are not shown during this phase, ",
+            "since it is not possible to send it to standard output.\n",
+            "To see them, send messages to an external log file ",
+            "or use a different processing order (by_date or by_steps)."
+          )
+        }
       }
       # Run processing by group
       outnames_list_B <- foreach(
@@ -1795,7 +1846,8 @@ sen2r <- function(param_list = NULL,
           sen2r:::print_message(
             type="message", 
             date=TRUE,
-            "Processing group ",i_group_B," of ",length(s2names_groups_B),"..."
+            "Processing date ",i_group_B," of ",length(s2names_groups_B),
+            " in group ",i_group_A," of ",length(s2names_groups_A),"..."
           )
         }
         
@@ -2072,7 +2124,7 @@ sen2r <- function(param_list = NULL,
             masked_names_infiles_sr_idx <- any(!is.na(pm$list_indices)) & 
               !pm$index_source %in% pm$list_prods & 
               sen2r_getElements(masked_names_infiles, format="data.table")$prod_type==pm$index_source
-
+            
             masked_names_out_nsr <- if (length(masked_names_infiles[!masked_names_infiles_sr_idx])>0) {
               trace_function(
                 s2_mask,
@@ -2342,6 +2394,11 @@ sen2r <- function(param_list = NULL,
       } # end of s2names_groups_B FOREACH cycle
       if (n_cores_B > 1) {
         stopCluster(cl)
+        sen2r:::print_message(
+          type="message", 
+          date=TRUE,
+          "Processing operations on multiple parallel cores was done."
+        )
       }
       
       ## 10. remove temporary files
@@ -2356,10 +2413,6 @@ sen2r <- function(param_list = NULL,
         unlink(file.path(paths["L1C"],names(sel_s2_list_l1c)), recursive=TRUE)
       }
       
-      if (n_cores_A > 1) {
-        stopCluster(cl)
-      }
-      
       gc()
       
       list(
@@ -2370,6 +2423,10 @@ sen2r <- function(param_list = NULL,
       
     } # end of s2names_groups_A FOREACH 2/2 cycle (2 cycles)
     gc()
+    if (n_cores_A > 1) {
+      stopCluster(cl)
+    }
+    
     if (pm$preprocess == FALSE | .only_list_names == TRUE) {
       outnames_list_A2
     } else {

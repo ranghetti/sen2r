@@ -160,7 +160,7 @@ s2_calcindices <- function(infiles,
   
   # Compute n_cores
   n_cores <- if (is.numeric(parallel)) {
-    as.integer(parallel)
+    min(as.integer(parallel), length(infiles))
   } else if (parallel==FALSE) {
     1
   } else {

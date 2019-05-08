@@ -114,7 +114,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
   ## Cycle on each file
   # if parallel==TRUE, use doParallel
   n_cores <- if (is.numeric(parallel)) {
-    as.integer(parallel)
+    min(as.integer(parallel), length(l1c_prodlist))
   } else if (parallel==FALSE) {
     1
   } else {

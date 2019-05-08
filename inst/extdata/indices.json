@@ -1845,7 +1845,7 @@
       "link": "https://doi.org/10.1371/journal.pone.0088741",
       "s2_formula": "(band_4-band_12)/(band_4+band_12)",
       "checked": true,
-      "s2_formula_mathml": ""
+      "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">RED<\/mi>\n      <mo>-<\/mo>\n      <mi mathcolor=\"#443399\">SWIR2<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">RED<\/mi>\n      <mo>+<\/mo>\n      <mi mathcolor=\"#443399\">SWIR2<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
     },
     {
       "n_index": 302,
@@ -1854,7 +1854,7 @@
       "link": "https://doi.org/10.1371/journal.pone.0088741",
       "s2_formula": "(band_4-band_11)/(band_4+band_11)",
       "checked": true,
-      "s2_formula_mathml": ""
+      "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">RED<\/mi>\n      <mo>-<\/mo>\n      <mi mathcolor=\"#443399\">SWIR1<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">RED<\/mi>\n      <mo>+<\/mo>\n      <mi mathcolor=\"#443399\">SWIR1<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
     },
     {
       "n_index": 303,
@@ -1863,7 +1863,7 @@
       "link": "https://doi.org/10.1007/978-90-481-2642-2_376",
       "s2_formula": "(band_3-band_11)/(band_3+band_11)",
       "checked": true,
-      "s2_formula_mathml": ""
+      "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">GREEN<\/mi>\n      <mo>-<\/mo>\n      <mi mathcolor=\"#443399\">SWIR1<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">GREEN<\/mi>\n      <mo>+<\/mo>\n      <mi mathcolor=\"#443399\">SWIR1<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
     },
     {
       "n_index": 304,
@@ -1872,7 +1872,7 @@
       "link": "https://landsat.usgs.gov/sites/default/files/documents/si_product_guide.pdf",
       "s2_formula": "(band_11-band_12)/(band_11+band_12)",
       "checked": true,
-      "s2_formula_mathml": ""
+      "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">SWIR1<\/mi>\n      <mo>-<\/mo>\n      <mi mathcolor=\"#443399\">SWIR2<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">SWIR1<\/mi>\n      <mo>+<\/mo>\n      <mi mathcolor=\"#443399\">SWIR2<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
     },
     {
       "n_index": 305,
@@ -1890,9 +1890,9 @@
       "link": "https://doi.org/10.1016/j.rse.2005.04.014",
       "s2_formula": "(band_8)/(band_12)",
       "checked": true,
-      "s2_formula_mathml": ""
+      "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">SWIR<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
     }
   ],
   "pkg_version": ["1.0.1"],
-  "creation_date": ["2019-04-16 13:22:10"]
+  "creation_date": ["2019-05-05 15:56:46"]
 }
