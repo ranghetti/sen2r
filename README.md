@@ -7,7 +7,7 @@
 
 <!-- IMPORTANT: do NOT edit README.Rmd! Edit index.Rmd instead,       -->
 <!-- and generate README.Rmd using inst/extdata/code/create_README.sh -->
-[![Travis-CI Build Status](https://travis-ci.org/ranghetti/sen2r.svg?branch=master)](https://travis-ci.org/ranghetti/sen2r) ![Docker Automated build](https://img.shields.io/docker/automated/ranghetti/sen2r.svg) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1240384.svg)](https://doi.org/10.5281/zenodo.1240384) [![CRAN Status](http://www.r-pkg.org/badges/version/sen2r)](https://cran.r-project.org/package=sen2r) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0) [![Contributor Covenant](http://sen2r.ranghetti.info/https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CONDUCT.html)
+[![Travis-CI Build Status](https://travis-ci.org/ranghetti/sen2r.svg?branch=master)](https://travis-ci.org/ranghetti/sen2r) ![Docker Automated build](https://img.shields.io/docker/automated/ranghetti/sen2r.svg) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1240384.svg)](https://doi.org/10.5281/zenodo.1240384) [![CRAN Status](http://www.r-pkg.org/badges/version/sen2r)](https://cran.r-project.org/package=sen2r) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](http://sen2r.ranghetti.info/CONDUCT.html)
 
 <img src="man/figures/sen2r_logo_200px.png" width="200" height="113" align="right" />
 
