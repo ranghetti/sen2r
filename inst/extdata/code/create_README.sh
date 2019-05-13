@@ -6,4 +6,4 @@
 
 # Launch the script from the main sen2r directory
 
-sed -e "s/](\(.*\)\.md)/](http:\/\/sen2r.ranghetti.info\/\1\.html)/g" index.Rmd > README.Rmd
+sed -e "s/](\([^\(\)]*\)\.md)/](http:\/\/sen2r.ranghetti.info\/\1\.html)/g" index.Rmd > README.Rmd
