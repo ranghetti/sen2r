@@ -1396,7 +1396,7 @@ sen2r <- function(param_list = NULL,
         #   strftime(safe_getMetadata(s, info="nameinfo")$sensing_datetime, "%Y-%m-%d")
         # }) %in% as.character(d),
         as.Date(
-          gsub("^S2[AB]\\_MSIL[12][AC]\\_([0-9]{8})T.+$", "\\1", names(s2_list_l2a)),
+          gsub("^S2[AB]\\_MSIL[12][AC]\\_([0-9]{8})T.+$", "\\1", name),
           "%Y%m%d"
         ) %in% d, # less meticulous, but faster
         ]
