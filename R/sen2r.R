@@ -467,7 +467,7 @@ sen2r <- function(param_list = NULL,
   }
   if (exists("internal_log")) {
     sink(type = "message")
-    rm(internal_log)
+    suppressWarnings(rm(internal_log))
   }
   
 }
@@ -719,8 +719,8 @@ sen2r <- function(param_list = NULL,
   }
   rm(pm_prev)
   # define log variables
-  .log_message <- log[1]
-  .log_output <- log[2]
+  .log_message <- pm$log[1]
+  .log_output <- pm$log[2]
   
   # convert from GeoJSON to sf
   if (is(pm$extent, "character") | is(pm$extent, "geojson")) {
