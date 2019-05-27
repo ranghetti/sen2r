@@ -16,9 +16,8 @@
 #'  otherwise leave to NULL and it will be generated within the function).
 #' @return the tiles intersecting the extent (see argument `out_format`).
 #' @export
-#' @importFrom sf st_area st_combine st_difference st_geometry st_intersection 
+#' @importFrom sf st_area st_combine st_crs st_difference st_geometry 
 #'  st_intersects st_transform st_union
-#' @importFrom dplyr summarise group_by
 #' @author Luigi Ranghetti, phD (2019) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @examples
@@ -47,8 +46,10 @@ tiles_intersects <- function(extent, all = FALSE, out_format = "id", .s2tiles=NU
   # Load S2 tiles
   s2tiles <- if (is.null(.s2tiles)) {
     s2_tiles()
-  } else {
+  } else if (st_crs(.s2tiles) == st_crs(4326)) {
     .s2tiles
+  } else {
+    st_transform(.s2tiles, 4326)
   }
   
   # Extent to longlat
@@ -70,22 +71,22 @@ tiles_intersects <- function(extent, all = FALSE, out_format = "id", .s2tiles=NU
       sel_tile <- tiles_intersecting_all[i,]
       # intersection between extent and portion of tiles not overlapping other tiles
       # (with the exception of already discharged ones)
-      sel_tile_notoverlap <- suppressMessages(st_difference(
+      sel_tile_notoverlap <- if (
+        any(tiles_intersects & tiles_intersecting_all$tile_id != sel_tile$tile_id)
+      ) {
+        suppressMessages(st_difference(
         st_geometry(tiles_intersecting_all), 
-        summarise(group_by(
+        st_union(
           tiles_intersecting_all[tiles_intersects & tiles_intersecting_all$tile_id != sel_tile$tile_id,]
-        ))
+        )
       ))
-      # Clip the portion ot the extent exclusive if sel_tile
-      extent_intersection <- suppressMessages(st_intersection(
-        extent,
-        sel_tile_notoverlap
+      } else {
+        st_geometry(tiles_intersecting_all)
+      }
+      # Check if any portion ot the extent is exclusive of sel_tile
+      tiles_intersects[i] <- any(suppressMessages(
+        st_intersects(extent, sel_tile_notoverlap, sparse = FALSE)
       ))
-      # TRUE if extent_intersection is not empty, else FALSE
-      tiles_intersects[i] <- all(
-        length(extent_intersection) > 0, 
-        as.numeric(st_area(extent_intersection)) > 0
-      )
     }
   }
   
