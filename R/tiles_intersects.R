@@ -16,7 +16,7 @@
 #'  otherwise leave to NULL and it will be generated within the function).
 #' @return the tiles intersecting the extent (see argument `out_format`).
 #' @export
-#' @importFrom sf st_area st_combine st_crs st_difference st_geometry 
+#' @importFrom sf st_area st_crs st_difference st_geometry 
 #'  st_intersects st_transform st_union
 #' @author Luigi Ranghetti, phD (2019) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
@@ -75,11 +75,11 @@ tiles_intersects <- function(extent, all = FALSE, out_format = "id", .s2tiles=NU
         any(tiles_intersects & tiles_intersecting_all$tile_id != sel_tile$tile_id)
       ) {
         suppressMessages(st_difference(
-        st_geometry(tiles_intersecting_all), 
-        st_union(
-          tiles_intersecting_all[tiles_intersects & tiles_intersecting_all$tile_id != sel_tile$tile_id,]
-        )
-      ))
+          st_geometry(tiles_intersecting_all), 
+          st_union(
+            tiles_intersecting_all[tiles_intersects & tiles_intersecting_all$tile_id != sel_tile$tile_id,]
+          )
+        ))
       } else {
         st_geometry(tiles_intersecting_all)
       }
