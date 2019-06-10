@@ -137,7 +137,14 @@ s2_calcindices <- function(infiles,
     for (i in seq_len(bs$n)) {
       message("Processing chunk ", i, " of ", bs$n)
       v <- getValues(x, row = bs$row[i], nrows = bs$nrows[i])
-      v_out <- round(eval(parse(text = sel_formula)))
+      if (grepl("^Float", dataType)) {
+        v <- apply(v, 2, as.numeric)
+        v_out <- eval(parse(text = sel_formula))
+      } else {
+        v_out <- round(eval(parse(text = sel_formula)))
+      }
+        
+      
       # m   <- getValues(y, row = bs$row[i], nrows = bs$nrows[i])
       out <- writeValues(out, v_out, bs$row[i])
     }
