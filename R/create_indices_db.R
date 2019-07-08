@@ -262,10 +262,13 @@ create_indices_db <- function(xslt_path = NA,
            s2_formula := gsub("band_1","band_2",s2_formula)] # B2 to B1 (Blue)
   
   # set as checked for indices ok after previous changes
-  s2_table[name %in% c("NDVI","SAVI","MCARI","MCARI2","TCARI","ARVI","NDRE",
-                       "BNDVI","GNDVI","NDII","TCIdx","MSAVI2","OSAVI",
-                       "NBR","EVI2",
-                       "MTVI2","MCARI-MTVI2","TCARI-OSAVI"),checked:=TRUE]
+  s2_table[name %in% c(
+    "NDVI","SAVI","MCARI","MCARI2","TCARI","ARVI","NDRE",
+    "BNDVI","GNDVI","NDII","TCIdx","MSAVI2","OSAVI",
+    "NBR",#"EVI2",
+    "SIPI1", "PSSRb1", "NDII", "MSI", "EVI", "Chlred-edge", "ARI", # sentinel-hub
+    "MTVI2","MCARI-MTVI2","TCARI-OSAVI"
+  ),checked:=TRUE]
   
   # set default parameter values
   s2_table[name=="SAVI", a:=0.5] # default value for L (here "a") parameter
@@ -329,6 +332,26 @@ create_indices_db <- function(xslt_path = NA,
       link = "https://doi.org/10.1016/j.rse.2005.04.014",
       s2_formula = "(band_8)/(band_12)",
       s2_formula_mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR</mi>\n      </mrow>\n    </mrow>\n   </mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">SWIR</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n  </mfrac>\n </mrow>\n</math>",
+      checked = TRUE,
+      a = NA, b = NA, x = NA
+    ),
+    "NDWI" = data.frame(
+      n_index = 307,
+      longname = "Normalized Difference Water Index",
+      name = "NDWI",
+      link = "https://www.sentinel-hub.com/eoproducts/ndwi-normalized-difference-water-index",
+      s2_formula = "(band_8-band_11)/(band_8+band_11)",
+      s2_formula_mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR</mi>\n      <mo>-</mo>\n      <mi mathcolor=\"#443399\">SWIR1</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR</mi>\n      <mo>+</mo>\n      <mi mathcolor=\"#443399\">SWIR1</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n  </mfrac>\n </mrow>\n</math>",
+      checked = TRUE,
+      a = NA, b = NA, x = NA
+    ),
+    "NDWI2" = data.frame(
+      n_index = 308,
+      longname = "Normalized Difference Water Index 2",
+      name = "NDWI2",
+      link = "https://www.tandfonline.com/doi/abs/10.1080/01431169608948714",
+      s2_formula = "(band_3-band_8)/(band_3+band_8)",
+      s2_formula_mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">GREEN</mi>\n      <mo>-</mo>\n      <mi mathcolor=\"#443399\">NIR</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">GREEN</mi>\n      <mo>+</mo>\n      <mi mathcolor=\"#443399\">NIR</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n  </mfrac>\n </mrow>\n</math>",
       checked = TRUE,
       a = NA, b = NA, x = NA
     )#,
