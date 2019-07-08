@@ -336,7 +336,7 @@ create_indices_db <- function(xslt_path = NA,
       a = NA, b = NA, x = NA
     ),
     "NDWI" = data.frame(
-      n_index = 307,
+      n_index = 319,
       longname = "Normalized Difference Water Index",
       name = "NDWI",
       link = "https://www.sentinel-hub.com/eoproducts/ndwi-normalized-difference-water-index",
@@ -346,7 +346,7 @@ create_indices_db <- function(xslt_path = NA,
       a = NA, b = NA, x = NA
     ),
     "NDWI2" = data.frame(
-      n_index = 308,
+      n_index = 320,
       longname = "Normalized Difference Water Index 2",
       name = "NDWI2",
       link = "https://www.tandfonline.com/doi/abs/10.1080/01431169608948714",

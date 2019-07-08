@@ -1893,7 +1893,7 @@
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">SWIR<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
     },
     {
-      "n_index": 307,
+      "n_index": 319,
       "longname": "Normalized Difference Water Index",
       "name": "NDWI",
       "link": "https://www.sentinel-hub.com/eoproducts/ndwi-normalized-difference-water-index",
@@ -1902,7 +1902,7 @@
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR<\/mi>\n      <mo>-<\/mo>\n      <mi mathcolor=\"#443399\">SWIR1<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR<\/mi>\n      <mo>+<\/mo>\n      <mi mathcolor=\"#443399\">SWIR1<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
     },
     {
-      "n_index": 308,
+      "n_index": 320,
       "longname": "Normalized Difference Water Index 2",
       "name": "NDWI2",
       "link": "https://www.tandfonline.com/doi/abs/10.1080/01431169608948714",
@@ -1912,5 +1912,5 @@
     }
   ],
   "pkg_version": ["1.0.2"],
-  "creation_date": ["2019-07-08 16:05:56"]
+  "creation_date": ["2019-07-08 16:17:48"]
 }
