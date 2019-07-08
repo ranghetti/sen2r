@@ -199,12 +199,12 @@ create_indices_db <- function(xslt_path = NA,
   # rename parameters (A, B, ...)
   s2_table[,s2_formula:=gsub("par\\_([aALyY]r?)", "par_a", s2_table$s2_formula)] # first parameters (a, A, ar, y, Y, L) -> "a"
   s2_table[,s2_formula:=gsub("par\\_([bB])", "par_b", s2_table$s2_formula)] # second parameters (b, B) -> "b"
-  s2_table[,s2_formula:=gsub("par\\_([X])", "par_x", s2_table$s2_formula)] # third parameters ("X") -> "x"
+  s2_table[,s2_formula:=gsub("par\\_([X])", "par_c", s2_table$s2_formula)] # third parameters ("X") -> "c"
   
   ## Test expressions
   # build a data.frame with random values
-  test_df <- runif(16,0,1)
-  names(test_df) <- c(paste0("band_",c(1:12,"8a")),"par_a","par_b","par_x")
+  test_df <- runif(17,0,1)
+  names(test_df) <- c(paste0("band_",c(1:12,"8a")),"par_a","par_b","par_c","par_d")
   test_df <- as.data.frame(t(test_df))
   # define power() as in numpy
   power <- function(x,y){x^y}
@@ -248,7 +248,7 @@ create_indices_db <- function(xslt_path = NA,
   # logical: FALSE for not checked, TRUE for checked
   s2_table$checked <- FALSE
   # numerics: values for index parameters
-  s2_table$x <- s2_table$b <- s2_table$a <- as.numeric(NA)
+  s2_table$d <- s2_table$c <- s2_table$b <- s2_table$a <- as.numeric(NA)
   
   # by default, make all these changes
   # (only bands named as "RED", "BLUE" and "NIR" are changed, because
@@ -303,8 +303,7 @@ create_indices_db <- function(xslt_path = NA,
       link = "https://doi.org/10.1007/978-90-481-2642-2_376",
       s2_formula_mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">GREEN</mi>\n      <mo>-</mo>\n      <mi mathcolor=\"#443399\">SWIR1</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">GREEN</mi>\n      <mo>+</mo>\n      <mi mathcolor=\"#443399\">SWIR1</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n  </mfrac>\n </mrow>\n</math>",
       s2_formula = "(band_3-band_11)/(band_3+band_11)",
-      checked = TRUE,
-      a = NA, b = NA, x = NA
+      checked = TRUE
     ),
     "NBR2" = data.frame(
       n_index = 304,
@@ -322,8 +321,7 @@ create_indices_db <- function(xslt_path = NA,
       name = "MIRBI",
       link = "https://doi.org/10.1080/01431160110053185",
       s2_formula = "(1E-3*band_12)-(9.8E-4*band_11)+2E-4",
-      checked = TRUE,
-      a = NA, b = NA, x = NA
+      checked = TRUE
     ),
     "CSI" = data.frame(
       n_index = 306,
@@ -334,6 +332,111 @@ create_indices_db <- function(xslt_path = NA,
       s2_formula_mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR</mi>\n      </mrow>\n    </mrow>\n   </mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">SWIR</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n  </mfrac>\n </mrow>\n</math>",
       checked = TRUE,
       a = NA, b = NA, x = NA
+    ),
+    "CRred" = data.frame(
+      n_index = 307,
+      longname = "Continuum Removal in the red",
+      name = "CRred",
+      link = "Panigada et al. 2019 (in press)",
+      s2_formula = "(band_4)/(band_3+par_a*(band_6-band_3))",
+      checked = TRUE
+    ),
+    "CRred-2A" = data.frame(
+      n_index = 308,
+      longname = "Continuum Removal in the red (Sentinel-2A reflectances)",
+      name = "CRred-2A",
+      link = "Panigada et al. 2019 (in press)",
+      s2_formula = "(band_4)/(band_3+par_a*(band_6-band_3))",
+      checked = FALSE,
+      a = ((664.6-559.8)/(740.5-559.8)) # reflectances for S2A
+    ),
+    "CRred-2B" = data.frame(
+      n_index = 309,
+      longname = "Continuum Removal in the red (Sentinel-2B reflectances)",
+      name = "CRred-2B",
+      link = "Panigada et al. 2019 (in press)",
+      s2_formula = "(band_4)/(band_3+par_a*(band_6-band_3))",
+      checked = FALSE,
+      a = ((664.9-559.0)/(739.1-559.0)) # reflectances for S2B 
+    ),
+    "CRred-0" = data.frame(
+      n_index = 310,
+      longname = "Continuum Removal in the red (standard reflectances)",
+      name = "CRred-0",
+      link = "Panigada et al. 2019 (in press)",
+      s2_formula = "(band_4)/(band_3+par_a*(band_6-band_3))",
+      checked = FALSE,
+      a = ((665-560)/(740-560)) # standard reflectances
+    ),
+    "BDred" = data.frame(
+      n_index = 311,
+      longname = "Band Depth in the red",
+      name = "BDred",
+      link = "Panigada et al. 2019 (in press)",
+      s2_formula = "1-(band_4)/(band_3+par_a*(band_6-band_3))",
+      checked = TRUE
+    ),
+    "BDred-2A" = data.frame(
+      n_index = 312,
+      longname = "Band Depth in the red (Sentinel-2A reflectances)",
+      name = "BDred-2A",
+      link = "Panigada et al. 2019 (in press)",
+      s2_formula = "1-(band_4)/(band_3+par_a*(band_6-band_3))",
+      checked = FALSE,
+      a = ((664.6-559.8)/(740.5-559.8)) # reflectances for S2A
+    ),
+    "BDred-2B" = data.frame(
+      n_index = 313,
+      longname = "Band Depth in the red (Sentinel-2B reflectances)",
+      name = "BDred-2B",
+      link = "Panigada et al. 2019 (in press)",
+      s2_formula = "1-(band_4)/(band_3+par_a*(band_6-band_3))",
+      checked = FALSE,
+      a = ((664.9-559.0)/(739.1-559.0)) # reflectances for S2B 
+    ),
+    "BDred-0" = data.frame(
+      n_index = 314,
+      longname = "Band Depth in the red (standard reflectances)",
+      name = "BDred-0",
+      link = "Panigada et al. 2019 (in press)",
+      s2_formula = "1-(band_4)/(band_3+par_a*(band_6-band_3))",
+      checked = FALSE,
+      a = ((665-560)/(740-560)) # standard reflectances
+    ),
+    "CRred2" = data.frame(
+      n_index = 315,
+      longname = "Continuum Removal in the red 2",
+      name = "CRred2",
+      link = "",
+      s2_formula = "(((par_b-par_a)*(band_4+band_3)+(par_c-par_b)*(band_5+band_4)+(par_d-par_c)*(band_6+band_5))/((par_d-par_a)*(band_6+band_3)))",
+      checked = FALSE
+    ),
+    "CRred2-2A" = data.frame(
+      n_index = 316,
+      longname = "Continuum Removal in the red 2 (Sentinel-2A reflectances)",
+      name = "CRred2-2A",
+      link = "",
+      s2_formula = "(((par_b-par_a)*(band_4+band_3)+(par_c-par_b)*(band_5+band_4)+(par_d-par_c)*(band_6+band_5))/((par_d-par_a)*(band_6+band_3)))",
+      checked = FALSE,
+      a = 559.8, b = 664.6, c = 704.1, d = 740.5 # reflectances for S2A
+    ),
+    "CRred2-2B" = data.frame(
+      n_index = 317,
+      longname = "Continuum Removal in the red 2 (Sentinel-2B reflectances)",
+      name = "CRred2-2B",
+      link = "",
+      s2_formula = "(((par_b-par_a)*(band_4+band_3)+(par_c-par_b)*(band_5+band_4)+(par_d-par_c)*(band_6+band_5))/((par_d-par_a)*(band_6+band_3)))",
+      checked = FALSE,
+      a = 559.0, b = 664.9, c = 703.8, d = 739.1 # reflectances for S2B
+    ),
+    "CRred2-0" = data.frame(
+      n_index = 318,
+      longname = "Continuum Removal in the red 2 (standard reflectances)",
+      name = "CRred2-0",
+      link = "",
+      s2_formula = "(((par_b-par_a)*(band_4+band_3)+(par_c-par_b)*(band_5+band_4)+(par_d-par_c)*(band_6+band_5))/((par_d-par_a)*(band_6+band_3)))",
+      checked = FALSE,
+      a = 560, b = 665, c = 704, d = 740 # standard reflectances
     ),
     "NDWI" = data.frame(
       n_index = 319,
@@ -354,8 +457,8 @@ create_indices_db <- function(xslt_path = NA,
       s2_formula_mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">GREEN</mi>\n      <mo>-</mo>\n      <mi mathcolor=\"#443399\">NIR</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">GREEN</mi>\n      <mo>+</mo>\n      <mi mathcolor=\"#443399\">NIR</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n  </mfrac>\n </mrow>\n</math>",
       checked = TRUE,
       a = NA, b = NA, x = NA
-    )#,
-  ), fill = TRUE)
+    )
+  ), fill=TRUE)
   
   s2_table_new[,n_index:=as.integer(n_index)]
   s2_table_new[,longname:=as.character(longname)]
@@ -396,6 +499,6 @@ create_indices_db <- function(xslt_path = NA,
     "pkg_version" = as.character(packageVersion("sen2r")),
     "creation_date" = as.character(Sys.time())
   )
-  writeLines(jsonlite::toJSON(json_table, pretty=TRUE), json_path)
+  writeLines(jsonlite::toJSON(json_table, digits=NA, pretty=TRUE), json_path)
   return(invisible(NULL))
 }
