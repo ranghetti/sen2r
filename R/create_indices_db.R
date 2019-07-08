@@ -333,26 +333,6 @@ create_indices_db <- function(xslt_path = NA,
       checked = TRUE,
       a = NA, b = NA, x = NA
     ),
-    "NDWI" = data.frame(
-      n_index = 319,
-      longname = "Normalized Difference Water Index",
-      name = "NDWI",
-      link = "https://www.sentinel-hub.com/eoproducts/ndwi-normalized-difference-water-index",
-      s2_formula = "(band_8-band_11)/(band_8+band_11)",
-      s2_formula_mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR</mi>\n      <mo>-</mo>\n      <mi mathcolor=\"#443399\">SWIR1</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR</mi>\n      <mo>+</mo>\n      <mi mathcolor=\"#443399\">SWIR1</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n  </mfrac>\n </mrow>\n</math>",
-      checked = TRUE,
-      a = NA, b = NA, x = NA
-    ),
-    "NDWI2" = data.frame(
-      n_index = 320,
-      longname = "Normalized Difference Water Index 2",
-      name = "NDWI2",
-      link = "https://www.tandfonline.com/doi/abs/10.1080/01431169608948714",
-      s2_formula = "(band_3-band_8)/(band_3+band_8)",
-      s2_formula_mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">GREEN</mi>\n      <mo>-</mo>\n      <mi mathcolor=\"#443399\">NIR</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">GREEN</mi>\n      <mo>+</mo>\n      <mi mathcolor=\"#443399\">NIR</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n  </mfrac>\n </mrow>\n</math>",
-      checked = TRUE,
-      a = NA, b = NA, x = NA
-    ),
     "CRred" = data.frame(
       n_index = 307,
       longname = "Continuum Removal in the red",
@@ -457,6 +437,26 @@ create_indices_db <- function(xslt_path = NA,
       s2_formula = "(((par_b-par_a)*(band_4+band_3)+(par_c-par_b)*(band_5+band_4)+(par_d-par_c)*(band_6+band_5))/((par_d-par_a)*(band_6+band_3)))",
       checked = FALSE,
       a = 560, b = 665, c = 704, d = 740 # standard reflectances
+    ),
+    "NDWI" = data.frame(
+      n_index = 319,
+      longname = "Normalized Difference Water Index",
+      name = "NDWI",
+      link = "https://www.sentinel-hub.com/eoproducts/ndwi-normalized-difference-water-index",
+      s2_formula = "(band_8-band_11)/(band_8+band_11)",
+      s2_formula_mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR</mi>\n      <mo>-</mo>\n      <mi mathcolor=\"#443399\">SWIR1</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR</mi>\n      <mo>+</mo>\n      <mi mathcolor=\"#443399\">SWIR1</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n  </mfrac>\n </mrow>\n</math>",
+      checked = TRUE,
+      a = NA, b = NA, x = NA
+    ),
+    "NDWI2" = data.frame(
+      n_index = 320,
+      longname = "Normalized Difference Water Index 2",
+      name = "NDWI2",
+      link = "https://www.tandfonline.com/doi/abs/10.1080/01431169608948714",
+      s2_formula = "(band_3-band_8)/(band_3+band_8)",
+      s2_formula_mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">GREEN</mi>\n      <mo>-</mo>\n      <mi mathcolor=\"#443399\">NIR</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">GREEN</mi>\n      <mo>+</mo>\n      <mi mathcolor=\"#443399\">NIR</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n  </mfrac>\n </mrow>\n</math>",
+      checked = TRUE,
+      a = NA, b = NA, x = NA
     )
   ), fill=TRUE)
   
