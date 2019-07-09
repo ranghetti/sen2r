@@ -338,6 +338,9 @@ s2_merge <- function(infiles,
         gdal_abs2rel(file.path(out_subdir,sel_outfile))
       }
       
+      # fix for envi extension (writeRaster use .envi)
+      if (sel_outformat=="ENVI")  {fix_envi_format(file.path(out_subdir,sel_outfile))}
+      
     } # end of overwrite IF cycle
     
     # stop sinking

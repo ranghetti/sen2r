@@ -643,13 +643,7 @@ s2_mask <- function(infiles,
             
             
             # fix for envi extension (writeRaster use .envi)
-            if (sel_format=="ENVI" &
-                file.exists(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile))) {
-              file.rename(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),
-                          sel_outfile)
-              file.rename(paste0(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),".aux.xml"),
-                          paste0(sel_outfile,".aux.xml"))
-            }
+            if (sel_format=="ENVI")  {fix_envi_format(sel_outfile)}
             
           } else { # end of max_mask IF cycle
             outfiles_toomasked <- c(outfiles_toomasked, sel_outfile)

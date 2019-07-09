@@ -278,6 +278,9 @@ s2_rgb <- function(infiles,
             tmpdir = tmpdir
           )
           
+          # fix for envi extension (writeRaster use .envi)
+          if (sel_format=="ENVI")  {fix_envi_format(out_path)}
+          
         } # end of overwrite IF cycle
         
         out_path

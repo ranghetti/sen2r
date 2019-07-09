@@ -423,15 +423,9 @@ s2_calcindices <- function(infiles,
             datatype = convert_datatype(dataType),
             overwrite = overwrite
           )
-          # fix for envi extension (writeRaster use .envi)
-          if (sel_format=="ENVI" &
-              file.exists(gsub(paste0("\\.",sel_out_ext,"$"),".envi",file.path(out_subdir0,sel_outfile0)))) {
-            file.rename(gsub(paste0("\\.",sel_out_ext,"$"),".envi",file.path(out_subdir0,sel_outfile0)),
-                        file.path(out_subdir0,sel_outfile0))
-            file.rename(paste0(gsub(paste0("\\.",sel_out_ext,"$"),".envi",file.path(out_subdir0,sel_outfile0)),".aux.xml"),
-                        paste0(file.path(out_subdir0,sel_outfile0),".aux.xml"))
-          }
         }
+        # fix for envi extension (writeRaster use .envi)
+        if (sel_format0=="ENVI")  {fix_envi_format(file.path(out_subdir0,sel_outfile0))}
         
         if (sel_format == "VRT") {
           system(

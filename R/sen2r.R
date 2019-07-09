@@ -2090,8 +2090,14 @@ sen2r <- function(param_list = NULL,
                   overwrite = pm$overwrite,
                   tmpdir = file.path(tmpdir_groupA, "gdal_warp"),
                   rmtmp = FALSE
-                ), # TODO dstnodata value?
-                error = print
+                )
+                # fix for envi extension (writeRaster use .envi)
+                if (warped_outformat=="ENVI")  {fix_envi_format(
+                  sel_s2names$warped_names_reqout[!names_merged_req_scl_idx & file.exists(sel_s2names$merged_names_req)]
+                )}
+                
+              }, # TODO dstnodata value?
+              error = print
               )
               if (is(trace_gdalwarp, "error")) {
                 clean_trace(tracename_gdalwarp)
@@ -2119,8 +2125,13 @@ sen2r <- function(param_list = NULL,
                   overwrite = pm$overwrite,
                   tmpdir = file.path(tmpdir_groupA, "gdal_warp"),
                   rmtmp = FALSE
-                ), # TODO dstnodata value?
-                error = print
+                )
+                # fix for envi extension (writeRaster use .envi)
+                if (out_outformat=="ENVI")  {fix_envi_format(
+                  sel_s2names$warped_names_reqout[names_merged_req_scl_idx & file.exists(sel_s2names$merged_names_req)]
+                )}
+              }, # TODO dstnodata value?
+              error = print
               )
               if (is(trace_gdalwarp, "error")) {
                 clean_trace(tracename_gdalwarp)

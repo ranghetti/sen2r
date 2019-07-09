@@ -286,6 +286,9 @@ s2_translate <- function(infile,
             }
           }
           
+          # fix for envi extension (writeRaster use .envi)
+          if (format=="ENVI")  {fix_envi_format(out_name)}
+          
         } # end of "overwite" IF cycle
         
         out_names <- c(out_names, out_name)
