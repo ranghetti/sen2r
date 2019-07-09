@@ -33,7 +33,7 @@
       "name": "ARI",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=214",
       "s2_formula": "(1)/(band_3)-(1)/(band_5)",
-      "checked": false,
+      "checked": true,
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mrow>\n   <mfrac>\n    <mrow>\n     <mn>1<\/mn>\n    <\/mrow>\n    <mrow>\n     <mi mathcolor=\"#443399\">550nm<\/mi>\n    <\/mrow>\n   <\/mfrac>\n   <mo>-<\/mo>\n   <mfrac>\n    <mrow>\n     <mn>1<\/mn>\n    <\/mrow>\n    <mrow>\n     <mi mathcolor=\"#443399\">700nm<\/mi>\n    <\/mrow>\n   <\/mfrac>\n  <\/mrow>\n <\/mrow>\n<\/math>"
     },
     {
@@ -124,7 +124,7 @@
       "name": "Chlred-edge",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=252",
       "s2_formula": "power(((band_7)/(band_5)),(-1))",
-      "checked": false,
+      "checked": true,
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <msup>\n   <mrow>\n    <mo>(<\/mo>\n    <mrow>\n     <mfrac>\n      <mrow>\n       <mi mathcolor=\"#443399\">[760:800]<\/mi>\n      <\/mrow>\n      <mrow>\n       <mi mathcolor=\"#443399\">[690:720]<\/mi>\n      <\/mrow>\n     <\/mfrac>\n    <\/mrow>\n    <mo>)<\/mo>\n   <\/mrow>\n   <mrow>\n    <mo>(<\/mo>\n    <mrow>\n     <mn>-1<\/mn>\n    <\/mrow>\n    <mo>)<\/mo>\n   <\/mrow>\n  <\/msup>\n <\/mrow>\n<\/math>"
     },
     {
@@ -232,7 +232,7 @@
       "name": "EVI",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=16",
       "s2_formula": "2.5*(band_8-band_4)/((band_8+6*band_4-7.5*band_2)+1)",
-      "checked": false,
+      "checked": true,
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mrow>\n   <mn>2.5<\/mn>\n   <mo>&amp;InvisibleTimes;<\/mo>\n   <mfrac>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mi mathcolor=\"#443399\">NIR<\/mi>\n       <mo>-<\/mo>\n       <mi mathcolor=\"#443399\">RED<\/mi>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mrow>\n        <mo>(<\/mo>\n        <mrow>\n         <mrow>\n          <mi mathcolor=\"#443399\">NIR<\/mi>\n          <mo>+<\/mo>\n          <mrow>\n           <mrow>\n            <mn>6<\/mn>\n            <mo>&amp;InvisibleTimes;<\/mo>\n            <mi mathcolor=\"#443399\">RED<\/mi>\n           <\/mrow>\n           <mo>-<\/mo>\n           <mrow>\n            <mn>7.5<\/mn>\n            <mo>&amp;InvisibleTimes;<\/mo>\n            <mi mathcolor=\"#443399\">BLUE<\/mi>\n           <\/mrow>\n          <\/mrow>\n         <\/mrow>\n        <\/mrow>\n        <mo>)<\/mo>\n       <\/mrow>\n       <mo>+<\/mo>\n       <mn>1<\/mn>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n   <\/mfrac>\n  <\/mrow>\n <\/mrow>\n<\/math>"
     },
     {
@@ -241,7 +241,7 @@
       "name": "EVI2",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=576",
       "s2_formula": "2.5*(band_8-band_4)/(band_8+2.4*band_4+1)",
-      "checked": true,
+      "checked": false,
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mrow>\n   <mn>2.5<\/mn>\n   <mo>&amp;InvisibleTimes;<\/mo>\n   <mfrac>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mi mathcolor=\"#443399\">NIR<\/mi>\n       <mo>-<\/mo>\n       <mi mathcolor=\"#443399\">RED<\/mi>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mi mathcolor=\"#443399\">NIR<\/mi>\n       <mo>+<\/mo>\n       <mrow>\n        <mrow>\n         <mn>2.4<\/mn>\n         <mo>&amp;InvisibleTimes;<\/mo>\n         <mi mathcolor=\"#443399\">RED<\/mi>\n        <\/mrow>\n        <mo>+<\/mo>\n        <mn>1<\/mn>\n       <\/mrow>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n   <\/mfrac>\n  <\/mrow>\n <\/mrow>\n<\/math>"
     },
     {
@@ -970,7 +970,7 @@
       "name": "MSI",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=48",
       "s2_formula": "(band_11)/(band_8)",
-      "checked": false,
+      "checked": true,
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mi mathcolor=\"#443399\">1600nm<\/mi>\n   <\/mrow>\n   <mrow>\n    <mi mathcolor=\"#443399\">820nm<\/mi>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
     },
     {
@@ -1195,7 +1195,7 @@
       "name": "PSSRb1",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=283",
       "s2_formula": "(band_8)/(band_4)",
-      "checked": false,
+      "checked": true,
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mi mathcolor=\"#443399\">800nm<\/mi>\n   <\/mrow>\n   <mrow>\n    <mi mathcolor=\"#443399\">650nm<\/mi>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
     },
     {
@@ -1673,7 +1673,7 @@
       "name": "SIPI1",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=90",
       "s2_formula": "(band_8-band_1)/(band_8-band_4)",
-      "checked": false,
+      "checked": true,
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">800nm<\/mi>\n      <mo>-<\/mo>\n      <mi mathcolor=\"#443399\">445nm<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">800nm<\/mi>\n      <mo>-<\/mo>\n      <mi mathcolor=\"#443399\">680nm<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
     },
     {
@@ -1771,7 +1771,7 @@
       "longname": "Transformed Soil Adjusted Vegetation Index",
       "name": "TSAVI",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=97",
-      "s2_formula": "(par_b*(band_8-par_b*band_4-par_a))/(band_4+par_b*(band_8-par_a)+par_x*(1+power(par_b,2)))",
+      "s2_formula": "(par_b*(band_8-par_b*band_4-par_a))/(band_4+par_b*(band_8-par_a)+par_c*(1+power(par_b,2)))",
       "checked": false,
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">B<\/mi>\n      <mo>&amp;InvisibleTimes;<\/mo>\n      <mrow>\n       <mo>(<\/mo>\n       <mrow>\n        <mrow>\n         <mi mathcolor=\"#443399\">NIR<\/mi>\n         <mo>-<\/mo>\n         <mrow>\n          <mrow>\n           <mi mathcolor=\"#443399\">B<\/mi>\n           <mo>·<\/mo>\n           <mi mathcolor=\"#443399\">R<\/mi>\n          <\/mrow>\n          <mo>-<\/mo>\n          <mi mathcolor=\"#443399\">A<\/mi>\n         <\/mrow>\n        <\/mrow>\n       <\/mrow>\n       <mo>)<\/mo>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">RED<\/mi>\n      <mo>+<\/mo>\n      <mrow>\n       <mrow>\n        <mi mathcolor=\"#443399\">B<\/mi>\n        <mo>&amp;InvisibleTimes;<\/mo>\n        <mrow>\n         <mo>(<\/mo>\n         <mrow>\n          <mrow>\n           <mi mathcolor=\"#443399\">NIR<\/mi>\n           <mo>-<\/mo>\n           <mi mathcolor=\"#443399\">A<\/mi>\n          <\/mrow>\n         <\/mrow>\n         <mo>)<\/mo>\n        <\/mrow>\n       <\/mrow>\n       <mo>+<\/mo>\n       <mrow>\n        <mi mathcolor=\"#443399\">X<\/mi>\n        <mo>&amp;InvisibleTimes;<\/mo>\n        <mrow>\n         <mo>(<\/mo>\n         <mrow>\n          <mrow>\n           <mn>1<\/mn>\n           <mo>+<\/mo>\n           <msup>\n            <mi mathcolor=\"#443399\">B<\/mi>\n            <mn>2<\/mn>\n           <\/msup>\n          <\/mrow>\n         <\/mrow>\n         <mo>)<\/mo>\n        <\/mrow>\n       <\/mrow>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
     },
@@ -1891,8 +1891,152 @@
       "s2_formula": "(band_8)/(band_12)",
       "checked": true,
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">SWIR<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
+    },
+    {
+      "n_index": 307,
+      "longname": "Continuum Removal in the red",
+      "name": "CRred",
+      "link": "Panigada et al. 2019 (in press)",
+      "s2_formula": "(band_4)/(band_3+par_a*(band_6-band_3))",
+      "checked": true,
+      "s2_formula_mathml": ""
+    },
+    {
+      "n_index": 308,
+      "longname": "Continuum Removal in the red (Sentinel-2A reflectances)",
+      "name": "CRred-2A",
+      "link": "Panigada et al. 2019 (in press)",
+      "s2_formula": "(band_4)/(band_3+par_a*(band_6-band_3))",
+      "checked": false,
+      "a": 0.579966795794134,
+      "s2_formula_mathml": ""
+    },
+    {
+      "n_index": 309,
+      "longname": "Continuum Removal in the red (Sentinel-2B reflectances)",
+      "name": "CRred-2B",
+      "link": "Panigada et al. 2019 (in press)",
+      "s2_formula": "(band_4)/(band_3+par_a*(band_6-band_3))",
+      "checked": false,
+      "a": 0.588006662965019,
+      "s2_formula_mathml": ""
+    },
+    {
+      "n_index": 310,
+      "longname": "Continuum Removal in the red (standard reflectances)",
+      "name": "CRred-0",
+      "link": "Panigada et al. 2019 (in press)",
+      "s2_formula": "(band_4)/(band_3+par_a*(band_6-band_3))",
+      "checked": false,
+      "a": 0.583333333333333,
+      "s2_formula_mathml": ""
+    },
+    {
+      "n_index": 311,
+      "longname": "Band Depth in the red",
+      "name": "BDred",
+      "link": "Panigada et al. 2019 (in press)",
+      "s2_formula": "1-(band_4)/(band_3+par_a*(band_6-band_3))",
+      "checked": true,
+      "s2_formula_mathml": ""
+    },
+    {
+      "n_index": 312,
+      "longname": "Band Depth in the red (Sentinel-2A reflectances)",
+      "name": "BDred-2A",
+      "link": "Panigada et al. 2019 (in press)",
+      "s2_formula": "1-(band_4)/(band_3+par_a*(band_6-band_3))",
+      "checked": false,
+      "a": 0.579966795794134,
+      "s2_formula_mathml": ""
+    },
+    {
+      "n_index": 313,
+      "longname": "Band Depth in the red (Sentinel-2B reflectances)",
+      "name": "BDred-2B",
+      "link": "Panigada et al. 2019 (in press)",
+      "s2_formula": "1-(band_4)/(band_3+par_a*(band_6-band_3))",
+      "checked": false,
+      "a": 0.588006662965019,
+      "s2_formula_mathml": ""
+    },
+    {
+      "n_index": 314,
+      "longname": "Band Depth in the red (standard reflectances)",
+      "name": "BDred-0",
+      "link": "Panigada et al. 2019 (in press)",
+      "s2_formula": "1-(band_4)/(band_3+par_a*(band_6-band_3))",
+      "checked": false,
+      "a": 0.583333333333333,
+      "s2_formula_mathml": ""
+    },
+    {
+      "n_index": 315,
+      "longname": "Continuum Removal in the red 2",
+      "name": "CRred2",
+      "link": "",
+      "s2_formula": "(((par_b-par_a)*(band_4+band_3)+(par_c-par_b)*(band_5+band_4)+(par_d-par_c)*(band_6+band_5))/((par_d-par_a)*(band_6+band_3)))",
+      "checked": false,
+      "s2_formula_mathml": ""
+    },
+    {
+      "n_index": 316,
+      "longname": "Continuum Removal in the red 2 (Sentinel-2A reflectances)",
+      "name": "CRred2-2A",
+      "link": "",
+      "s2_formula": "(((par_b-par_a)*(band_4+band_3)+(par_c-par_b)*(band_5+band_4)+(par_d-par_c)*(band_6+band_5))/((par_d-par_a)*(band_6+band_3)))",
+      "checked": false,
+      "a": 559.8,
+      "b": 664.6,
+      "c": 704.1,
+      "d": 740.5,
+      "s2_formula_mathml": ""
+    },
+    {
+      "n_index": 317,
+      "longname": "Continuum Removal in the red 2 (Sentinel-2B reflectances)",
+      "name": "CRred2-2B",
+      "link": "",
+      "s2_formula": "(((par_b-par_a)*(band_4+band_3)+(par_c-par_b)*(band_5+band_4)+(par_d-par_c)*(band_6+band_5))/((par_d-par_a)*(band_6+band_3)))",
+      "checked": false,
+      "a": 559,
+      "b": 664.9,
+      "c": 703.8,
+      "d": 739.1,
+      "s2_formula_mathml": ""
+    },
+    {
+      "n_index": 318,
+      "longname": "Continuum Removal in the red 2 (standard reflectances)",
+      "name": "CRred2-0",
+      "link": "",
+      "s2_formula": "(((par_b-par_a)*(band_4+band_3)+(par_c-par_b)*(band_5+band_4)+(par_d-par_c)*(band_6+band_5))/((par_d-par_a)*(band_6+band_3)))",
+      "checked": false,
+      "a": 560,
+      "b": 665,
+      "c": 704,
+      "d": 740,
+      "s2_formula_mathml": ""
+    },
+    {
+      "n_index": 319,
+      "longname": "Normalized Difference Water Index",
+      "name": "NDWI",
+      "link": "https://www.sentinel-hub.com/eoproducts/ndwi-normalized-difference-water-index",
+      "s2_formula": "(band_8-band_11)/(band_8+band_11)",
+      "checked": true,
+      "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR<\/mi>\n      <mo>-<\/mo>\n      <mi mathcolor=\"#443399\">SWIR1<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR<\/mi>\n      <mo>+<\/mo>\n      <mi mathcolor=\"#443399\">SWIR1<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
+    },
+    {
+      "n_index": 320,
+      "longname": "Normalized Difference Water Index 2",
+      "name": "NDWI2",
+      "link": "https://www.tandfonline.com/doi/abs/10.1080/01431169608948714",
+      "s2_formula": "(band_3-band_8)/(band_3+band_8)",
+      "checked": true,
+      "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">GREEN<\/mi>\n      <mo>-<\/mo>\n      <mi mathcolor=\"#443399\">NIR<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">GREEN<\/mi>\n      <mo>+<\/mo>\n      <mi mathcolor=\"#443399\">NIR<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
     }
   ],
   "pkg_version": ["1.0.2"],
-  "creation_date": ["2019-05-08 10:40:09"]
+  "creation_date": ["2019-07-08 16:30:20"]
 }
