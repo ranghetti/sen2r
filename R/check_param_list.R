@@ -59,9 +59,9 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
       print_message(
         type = "warning",
         paste0("Parameter \"",sel_par,"\" was not specified; ",
-               "setting it to the default ('",pm_def[[pm_arg]],"').")
+               "setting it to the default ('",pm_def[[sel_par]],"').")
       )
-      pm[[pm_arg]] <- pm_def[[pm_arg]]
+      pm[[sel_par]] <- pm_def[[sel_par]]
     }
   }
   
@@ -81,9 +81,9 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
       print_message(
         type = type,
         paste0("Parameter \"",sel_par,"\" must be of length 1; ",
-               "only the first element ('",pm[[pm_arg]][1],"') is used.")
+               "only the first element ('",pm[[sel_par]][1],"') is used.")
       )
-      pm[[pm_arg]] <- pm[[pm_arg]][1]
+      pm[[sel_par]] <- pm[[sel_par]][1]
     }
   }
   
@@ -97,9 +97,9 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
       print_message(
         type = type,
         paste0("Parameter \"",sel_par,"\" must be TRUE or FALSE; ",
-               "setting it to the default (",pm_def[[pm_arg]],").")
+               "setting it to the default (",pm_def[[sel_par]],").")
       )
-      pm[[pm_arg]] <- pm_def[[pm_arg]]
+      pm[[sel_par]] <- pm_def[[sel_par]]
     }
   }
   
