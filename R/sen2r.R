@@ -722,13 +722,6 @@ sen2r <- function(param_list = NULL,
   .log_message <- pm$log[1]
   .log_output <- pm$log[2]
   
-  # convert from GeoJSON to sf
-  if (is(pm$extent, "character") | is(pm$extent, "geojson")) {
-    pm$extent <- st_read(pm$extent, quiet=TRUE)
-  } else if (is(pm$extent, "Spatial")) {
-    pm$extent <- st_as_sf(pm$extent)
-  }
-  
   # check extent_name
   if (grepl("^[0-9A-Z]{5}$",extent_name)) {
     print_message(

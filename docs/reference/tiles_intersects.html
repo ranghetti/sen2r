@@ -169,7 +169,7 @@ otherwise leave to NULL and it will be generated within the function).</p></td>
 <span class='no'>ex_extent</span> <span class='kw'>&lt;-</span> <span class='no'>ex_extent</span>[<span class='no'>ex_extent</span>$<span class='no'>description</span> <span class='kw'>==</span> <span class='st'>"Schilpario"</span>,]
 
 <span class='co'># Tile ID of the required S2 tile</span>
-<span class='fu'>tiles_intersects</span>(<span class='no'>ex_extent</span>)</div><div class='output co'>#&gt; <span class='message'>Linking to GEOS 3.6.2, GDAL 2.2.3, PROJ 4.9.3</span></div><div class='output co'>#&gt; [1] "32TNS"</div><div class='input'>
+<span class='fu'>tiles_intersects</span>(<span class='no'>ex_extent</span>)</div><div class='output co'>#&gt; [1] "32TNS"</div><div class='input'>
 <span class='co'># Tile ID of all the overlapping S2 tiles</span>
 <span class='fu'>tiles_intersects</span>(<span class='no'>ex_extent</span>, <span class='kw'>all</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] "32TNR" "32TNS"</div><div class='input'>
 <span class='co'># Spatial object with the required tile</span>
