@@ -65,6 +65,18 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
   # load sen2cor executable path
   binpaths <- load_binpaths("sen2cor")
   
+  # get version
+  sen2cor_version_raw0 <- system(paste(binpaths$sen2cor, "-h"), intern = TRUE)
+  sen2cor_version_raw1 <- sen2cor_version_raw0[grep(
+    "^Sentinel\\-2 Level 2A Processor \\(Sen2Cor\\)\\. Version:", 
+    sen2cor_version_raw0
+  )]
+  sen2cor_version <- package_version(gsub(
+    "^Sentinel\\-2 Level 2A Processor \\(Sen2Cor\\)\\. Version: ([2-9]+\\.[0-9]+\\.[0-9]+),.*$",
+    "\\1",
+    sen2cor_version_raw1
+  ))
+  
   # tiles NA -> NULL
   if (!is.null(tiles)) {
     if (all(is.na(tiles))) {tiles <- character(0)}
@@ -281,13 +293,31 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
       }
       sel_trace <- start_trace(trace_paths, "sen2cor")
       system(
-        paste(binpaths$sen2cor, "--refresh", sel_l1c),
+        # paste(binpaths$sen2cor, "--refresh", sel_l1c),
+        paste(
+          binpaths$sen2cor, 
+          if (sen2cor_version>=package_version("2.8.0")) {paste("--output_dir", sen2cor_out_l2a)},
+          if (sen2cor_version<package_version("2.8.0")) {"--refresh"},
+          sel_l1c
+        ),
         intern = Sys.info()["sysname"] == "Windows"
       )
       if (TRUE) { # TODO define a way to check if sen2cor ran correctly
         end_trace(sel_trace)
       } else {
         clean_trace(sel_trace)
+      }
+      
+      # correct sen2cor_out_l2a
+      # (starting from v. 2.8.0, L2A baseline and creation date are different from L1C ones)
+      if (sen2cor_version>=package_version("2.8.0")) {
+        sen2cor_out_l2a_basename <- list.files(sen2cor_out_l2a, "\\.SAFE$")
+        file.rename(
+          file.path(sen2cor_out_l2a,sen2cor_out_l2a_basename),
+          file.path(dirname(sen2cor_out_l2a),sen2cor_out_l2a_basename)
+        )
+        file.remove(sen2cor_out_l2a)
+        sen2cor_out_l2a <- file.path(dirname(sen2cor_out_l2a),sen2cor_out_l2a_basename)
       }
       
       # move output to the required output directory

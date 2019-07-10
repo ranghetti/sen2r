@@ -3,6 +3,8 @@
 #'  [sen2cor 2.5.5](http://step.esa.int/main/third-party-plugins-2/sen2cor).
 #' @param sen2cor_dir (optional) Path where sen2cor will be installed
 #'  (default: a subdirectory of the package path).
+#' @param version (optional) Character: Sen2Cor version (one among
+#'  '2.5.5' - default - and '2.8.0').
 #' @param force (optional) Logical: if TRUE, install even if it is already 
 #'  installed (default is FALSE).
 #' @return NULL
@@ -19,18 +21,30 @@
 #' install_sen2cor()
 #' }
 
-install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
+install_sen2cor <- function(sen2cor_dir=NA, version="2.5.5", force = FALSE) {
   .install_sen2cor(
     sen2cor_dir = sen2cor_dir, 
+    version = version,
     force = force, 
     interactive = TRUE
   )
 }
 
-.install_sen2cor <- function(sen2cor_dir=NA, force = FALSE, interactive = TRUE) {
+.install_sen2cor <- function(
+  sen2cor_dir=NA, 
+  version="2.5.5", 
+  force = FALSE, 
+  interactive = TRUE
+) {
   
-  # sen2cor version
-  sen2cor_version <- package_version("2.5.5")
+  # check sen2cor version
+  if (!as.character(version) %in% c("2.5.5", "2.8.0")) {
+    print_message(
+      type = "error",
+      "Only Sen2Cor versions '2.5.5' and '2.8.0' are currently supported."
+    )
+  }
+  version <- package_version(version)
   
   # check if it is already installed
   binpaths <- load_binpaths()
@@ -47,7 +61,10 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
   
   # define sen2cor_dir (where to install or update)
   if (is.na(sen2cor_dir)) {
-    sen2cor_dir <- file.path(system.file(package="sen2r"),"sen2cor")
+    sen2cor_dir <- file.path(
+      system.file(package="sen2r"),
+      paste0("sen2cor_",gsub("\\.","-",version))
+    )
   }
   if (!file.exists(sen2cor_dir)) {
     dir.create(sen2cor_dir, recursive=FALSE, showWarnings = FALSE)
@@ -73,19 +90,19 @@ install_sen2cor <- function(sen2cor_dir=NA, force = FALSE) {
   # Set path
   if (Sys.info()["sysname"] == "Linux") {
     sen2cor_url <- paste0("http://step.esa.int/thirdparties/sen2cor/",
-                          sen2cor_version,
+                          version,
                           "/Sen2Cor-",
-                          str_pad(sen2cor_version[,1],2,"left","0"),".",
-                          str_pad(sen2cor_version[,2],2,"left","0"),".",
-                          str_pad(sen2cor_version[,3],2,"left","0"),
+                          str_pad(version[,1],2,"left","0"),".",
+                          str_pad(version[,2],2,"left","0"),".",
+                          str_pad(version[,3],2,"left","0"),
                           "-Linux64.run")
   } else if (Sys.info()["sysname"] == "Windows") {
     sen2cor_url <- paste0("http://step.esa.int/thirdparties/sen2cor/",
-                          sen2cor_version,
+                          version,
                           "/Sen2Cor-",
-                          str_pad(sen2cor_version[,1],2,"left","0"),".",
-                          str_pad(sen2cor_version[,2],2,"left","0"),".",
-                          str_pad(sen2cor_version[,3],2,"left","0"),
+                          str_pad(version[,1],2,"left","0"),".",
+                          str_pad(version[,2],2,"left","0"),".",
+                          str_pad(version[,3],2,"left","0"),
                           "-win64.zip")
   } else {
     print_message(
