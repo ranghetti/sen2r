@@ -1,8 +1,12 @@
 #' @title Fix ENVI outputs
 #' @description Internal function which changes some elements of output ENVI
-#'  files: file extension is set to .dat if .envi is found,
-#'  and band names are set in the header file (in particular, SR band names
-#'  include wavelengths and names like NIR, SWIR).
+#'  files: 
+#'  - file extension is set to .dat if .envi (in case of files created
+#'      by 'writeRaster`) is found, and the header is edited properly,
+#'  - and band names are set in the header file (in particular, SR band names
+#'      include wavelengths and names like NIR, SWIR; other products shows the
+#'      product name as band name);
+#'  - SCL headers include information about class names and colours.
 #' @param infiles A vector of input filenames, in the
 #'  sen2r naming convention ([safe_shortname]) and ENVI format.
 #' @return NULL (the function performs file changes).
@@ -100,7 +104,7 @@ fix_envi_format <- function(infiles) {
         rns_length <- 1
       }
       
-      # Replace content
+      # If information is retrieved (raw header), replace content
       chech_rn <- all(
         all(diff(c(rn_0,rns))==1), # band numbers must be consecutive in the hdr file
         length(rns)==rns_length # check band number
@@ -112,11 +116,23 @@ fix_envi_format <- function(infiles) {
           gsub("^( *)Band [0-9]+(\\ *[\\,\\}])$", "\\2", hdr_content[rns])
         )
         hdr_content[filename_rn] <- gsub(infile.envi, infile.dat, hdr_content[filename_rn], fixed = TRUE)
+        if (infile_meta$prod_type == "SCL") {
+          # SCL: set class names and colours
+          hdr_content <- c(
+            hdr_content,
+            "classes = 12",
+            "class lookup = {",
+            paste0("  0,   0,   0, 255,   0,   0,  66,  65,  66,  99,  52,   0,  41, ",
+                   "243,  41, 255, 255,   0,   0,   0, 255, 123, 125, 123, 189, 190, ",
+                   "189, 255, 255, 255,  99, 203, 255, 255, 154, 255}"),
+            "class names = {",
+            paste0("No_data, Saturated or defective, Dark area pixels, Cloud shadows, ",
+                   "Vegetation, Not vegetated, Water, Unclassified, Cloud (medium ",
+                   "probability), Cloud (high probability), Thin cirrus, Snow}")
+          )
+        }
         writeLines(hdr_content, infile.hdr)
-      } else {
-        # TODO error message
       }
-      
       
     }
     
