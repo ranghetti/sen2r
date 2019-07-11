@@ -698,7 +698,7 @@ compute_s2_paths <- function(pm,
     warped_names_req1 <- if (pm$clip_on_extent==FALSE | length(out_names_new)==0) {
       NULL
     } else if (is.na(pm$mask_type)) {
-      out_names_exp[!names_merged_new_out_idx] # FIXME check!
+      out_names_new[!names_merged_new_out_idx] # FIXME check!
     } else {
       file.path(
         paths["warped"],

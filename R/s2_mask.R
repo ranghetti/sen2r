@@ -544,9 +544,12 @@ s2_mask <- function(infiles,
             maskapply_serial <- function(x, y, na, out_file = '', datatype, minrows = NULL,
                                          overwrite = overwrite) {
               out <- raster:::.copyWithProperties(x)
+              if (grepl("\\.vrt$", out_file)) {
+                out_file <- gsub("\\.vrt$", ".tif", out_file)
+              }
               out <- writeStart(
                 out, 
-                gsub("\\.vrt$", ".tif", out_file), 
+                out_file, 
                 NAflag=na, 
                 datatype = datatype, 
                 format = ifelse(sel_format=="VRT","GTiff",sel_format), 
@@ -583,7 +586,10 @@ s2_mask <- function(infiles,
                                     na = sel_naflag,
                                     datatype = dataType(inraster),
                                     overwrite = TRUE)
-            file.rename(gsub("\\.vrt$", ".tif", sel_outfile), sel_outfile)
+            if (grepl("\\.vrt$", sel_outfile)) {
+              file.rename(gsub("\\.vrt$", ".tif", sel_outfile), sel_outfile)
+            }
+            
             # gc()
             # t2 <- Sys.time()
             # print(t2 - t1)
