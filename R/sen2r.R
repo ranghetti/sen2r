@@ -813,6 +813,7 @@ sen2r <- function(param_list = NULL,
   paths["tiles"] <- if (!is.na(pm$path_tiles)) {pm$path_tiles} else {file.path(tmpdir,"tiles")}
   paths["merged"] <- if (!is.na(pm$path_merged)) {pm$path_merged} else {file.path(tmpdir,"merged")}
   paths["warped"] <- if (is.na(pm$mask_type)) {paths["out"]} else {file.path(tmpdir,"warped")}
+  paths["out_scl"] <- if ("SCL" %in% pm$list_prods) {paths["out"]} else {file.path(tmpdir,"out_scl")}
   
   # accepted products (update together with the same variables in s2_gui() and in compute_s2_names())
   l1c_prods <- c("TOA")
