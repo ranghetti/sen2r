@@ -6,7 +6,6 @@
 \title{Compute names of S2 file to be generated}
 \usage{
 compute_s2_paths(pm, s2_list_l1c, s2_list_l2a, paths, list_prods, out_ext,
-  index_ext, tiles_ext, merged_ext, warped_ext, rgb_ext, sr_masked_ext,
   force_tiles = FALSE, check_tmp = TRUE, ignorelist)
 
 list_sen2r_paths(param_list = NULL, gui = NA, preprocess = TRUE,
@@ -37,24 +36,14 @@ list_sen2r_paths(param_list = NULL, gui = NA, preprocess = TRUE,
 \item{s2_list_l2a}{Names and paths of input SAFE level-2A products.}
 
 \item{paths}{Named vector of required paths. It must contain elements
-named \code{"out"}, \code{"indices"}, \code{"tiles"}, \code{"merged"} and \code{"warped"}.}
+named \code{"tiles"}, \code{"merged"}, \code{"warped"}, \code{"warped_scl"}, \code{"rgb"}, \code{"masked"}
+and \code{"warped"}.}
 
 \item{list_prods}{Character vector with the values of the
 products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").}
 
-\item{out_ext}{Extension (character) of output products.}
-
-\item{index_ext}{Extension (character) of index products.}
-
-\item{tiles_ext}{Extension (character) of tiled products.}
-
-\item{merged_ext}{Extension (character) of merged products.}
-
-\item{warped_ext}{Extension (character) of warped products.}
-
-\item{rgb_ext}{Extension (character) of RGB products.}
-
-\item{sr_masked_ext}{Extension (character) of masked products of SR products.}
+\item{out_ext}{Character names vector of extensions of output products
+(it must contain elements with the same names of argument \code{paths}).}
 
 \item{force_tiles}{(optional) Logical: passed to \link{safe_shortname} (default: FALSE).}
 
@@ -177,14 +166,13 @@ if FALSE, only non temporary files are searched.}
 \item{log}{\code{sen2r} argument (refer to \link{sen2r} documentation).}
 }
 \value{
-A list, containing the following vectors:
-\code{tiles_names_exp}, \code{merged_names_exp}, \code{warped_names_exp},
-\code{masked_names_exp}, \code{out_names_exp}, \code{indices_names_exp},
-\code{indices_names_new}, \code{out_names_req}, \code{out_names_new},
-\code{masked_names_new}, \code{warped_names_req}, \code{warped_names_reqforrgb},
-\code{warped_names_new},  \code{merged_names_req}, \code{merged_names_reqforrgb},
-\code{merged_names_new}, \code{tiles_names_req}, \code{tiles_names_new},
-\code{safe_names_l1c_req}, \code{safe_names_l2a_req}.
+A nested list:
+\itemize{
+\item first elements are \code{exi}, \code{exp}, \code{req} and \code{new};
+\item second elements deal with the processing step: \code{tiles}, \code{merged},
+\code{warped}, \code{warped_scl}, \code{rgb}, \code{masked} and \code{indices};
+\item third elements are related to output products.
+}
 }
 \description{
 \code{compute_s2_paths} is an internal function
@@ -203,38 +191,30 @@ if \link{sen2r}.
 \code{compute_s2_paths} is structured in the following way:
 \enumerate{
 \item Retrieve the file names expected to be present at the
-end of the processing chain (suffix \code{_exp}):
-\itemize{
-\item \code{tiles_names_}
-\item \code{merged_names_}
-\item \code{warped_names_}
-\item \code{masked_names_}
-\item \code{out_names_} (= \code{warped_names_} or \code{subset(warped_names_)+masked_names_})
-\item \code{indices_names_}
-}
+end of the processing chain (element \code{exp}) and already existing (\code{exi});
 \item Compute the file names expected to be created
-(suffixes \code{_req} and \code{_new}, see below)
+(elements \code{req} and \code{new}, see below)
 (this operation is done in reverse order).
 
-Meaning of the suffixes \code{_exp}, \code{_req} and \code{_new}
-(here and for all the script):
+Meaning of the elements \code{exi}, \code{exp}, \code{req} and \code{new}
+(here and for all the script), which are defined foe each processing step:
 \itemize{
-\item \code{_exp}: full names of the files expected to be present at the
+\item \code{exi}: full names of the files already existing before launching the
+processing chain;
+\item \code{exp}: full names of the files expected to be present at the
 end of the processing chain (already existing or not);
-\item \code{_req}: names of the files required for the next step
-(e.g. tiles_names_req are required to perform s2_merge())
-\item \code{_new}: names of the required files not existing yet (expected
+\item \code{req}: names of the files required by the step;
+\item \code{new}: names of the required files not existing yet (expected
 to be created).
 }
 }
 
 With \code{overwrite=TRUE}, all these vectors are equal
-(e.g. \code{merged_names_exp = merged_names_req = merged_names_new}),
 because all is overwritten.
 }
 \note{
 License: GPL 3.0
 }
 \author{
-Luigi Ranghetti, phD (2018) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{ranghetti.l@irea.cnr.it}
 }

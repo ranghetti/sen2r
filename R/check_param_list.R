@@ -366,7 +366,7 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   if (all(is.na(pm$list_rgb), length(nn(pm$rgb_ranges))==0)) { # for compatibility
     pm$rgb_ranges <- NA
   }
-  if (length(pm$rgb_ranges) != length(pm$list_rgb)) {
+  if (!all(is.na(pm$rgb_ranges)) & length(pm$rgb_ranges) != length(pm$list_rgb)) {
     print_message(
       type = type,
       "\"rgb_ranges\" and \"list_rgb\" must be of the same length."
@@ -724,23 +724,6 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   } 
   
   
-  # -- path_out --
-  if (sum(!is.na(nn(pm$list_prods)))==0) {
-    pm$path_out <- NA
-  }
-  if (all(!is.na(pm$path_out), pm$path_out != "")) {
-    if(!dir.exists(pm$path_out)) {
-      if(!dir.exists(dirname(pm$path_out))) {
-        print_message(
-          type = type,
-          "Directory \"",dirname(pm$path_out),"\" does not exist ",
-          "(it must be created before continuing)."
-        )
-      }
-    }
-  } 
-  
-  
   # -- path_rgb --
   if (sum(!is.na(pm$list_rgb))==0) {
     pm$path_rgb <- NA
@@ -772,6 +755,23 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
         print_message(
           type = type,
           "Directory \"",dirname(pm$path_indices),"\" does not exist ",
+          "(it must be created before continuing)."
+        )
+      }
+    }
+  } 
+  
+  
+  # -- path_out --
+  if (sum(!is.na(nn(pm$list_prods)))==0) {
+    pm$path_out <- NA
+  }
+  if (all(!is.na(pm$path_out), pm$path_out != "")) {
+    if(!dir.exists(pm$path_out)) {
+      if(!dir.exists(dirname(pm$path_out))) {
+        print_message(
+          type = type,
+          "Directory \"",dirname(pm$path_out),"\" does not exist ",
           "(it must be created before continuing)."
         )
       }
