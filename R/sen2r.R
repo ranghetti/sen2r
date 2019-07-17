@@ -1216,7 +1216,6 @@ sen2r <- function(param_list = NULL,
     )
 
     # export needed variables
-    paths <- attr(s2names, "paths")
     out_ext <- attr(s2names, "out_ext")
     
     ## Define output formats
@@ -1577,7 +1576,7 @@ sen2r <- function(param_list = NULL,
       
       # second filter on tiles (#filter2)
       sel_s2_dt$id_tile <- lapply(
-        file.path(paths[ifelse(sel_s2_dt$level=="1C","L1C","L2A")], sel_s2_dt[,name]), 
+        file.path(if (sel_s2_dt$level=="1C") {path_l1c} else {path_l2a}, sel_s2_dt[,name]), 
         function(x) {
           tryCatch(safe_getMetadata(x, "tiles"), error = function(e) {NULL})
         }
@@ -1704,6 +1703,9 @@ sen2r <- function(param_list = NULL,
         force_tiles = FALSE,
         ignorelist = if (exists("ignorelist")) {ignorelist} else {NULL}
       )
+      
+      # export needed variables
+      paths <- attr(sel_s2names, "paths")
       
       
       ### GDAL processing: convert SAFE, merge tiles, warp, mask and compute indices ###
