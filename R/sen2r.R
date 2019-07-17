@@ -805,16 +805,8 @@ sen2r <- function(param_list = NULL,
   dir.create(tmpdir, showWarnings=FALSE)
   
   
-  # internal parameters
-  paths <- c()
-  paths["tiles"] <- if (!is.na(pm$path_tiles)) {pm$path_tiles} else {file.path(tmpdir,"tiles")}
-  paths["merged"] <- if (!is.na(pm$path_merged)) {pm$path_merged} else if (!is.na(pm$path_out) & !pm$clip_on_extent & is.na(pm$mask_type)) {pm$path_out} else {file.path(tmpdir,"merged")}
-  paths["warped"] <- if (!is.na(pm$path_out) & is.na(pm$mask_type)) {pm$path_out} else {file.path(tmpdir,"warped")}
-  paths["warped_scl"] <- if ("SCL" %in% pm$list_prods) {pm$path_out} else {file.path(tmpdir,"warped")}
-  paths["rgb"] <- if (!is.na(pm$path_rgb)) {pm$path_rgb} else {file.path(tmpdir,"rgb")}
-  paths["masked"] <- if (!is.na(pm$path_out)) {pm$path_out} else {file.path(tmpdir,"masked")}
-  paths["indices"] <- if (!is.na(pm$path_indices)) {pm$path_indices} else {file.path(tmpdir,"indices")}
-  
+  # # internal parameters
+
   # accepted products (update together with the same variables in s2_gui() and in compute_s2_names())
   l1c_prods <- c("TOA")
   l2a_prods <- c("BOA","SCL","TCI")
@@ -1216,16 +1208,20 @@ sen2r <- function(param_list = NULL,
     s2names <- compute_s2_paths(
       pm=pm, 
       s2_list_l1c=s2_list_l1c, s2_list_l2a=s2_list_l2a_exp, 
-      paths=paths, 
+      tmpdir=tmpdir, 
       list_prods=list_prods, 
       main_ext = main_ext, rgb_ext = rgb_ext,
       force_tiles = TRUE,
       ignorelist = if (exists("ignorelist")) {ignorelist} else {NULL}
     )
+
+    # export needed variables
+    paths <- attr(s2names, "paths")
+    out_ext <- attr(s2names, "out_ext")
     
     ## Define output formats
-    out_format <- sapply(names(attr(s2names, "out_ext")), function(prod) {
-      gdal_formats[gdal_formats$ext==attr(s2names, "out_ext")[[prod]],"name"]
+    out_format <- sapply(names(out_ext), function(prod) {
+      gdal_formats[gdal_formats$ext==out_ext[[prod]],"name"]
     })
     
     # Check if processing is needed
@@ -1460,16 +1456,9 @@ sen2r <- function(param_list = NULL,
       # Define per-group parameters
       tmpdir_groupA <- file.path(tmpdir, basename(tempfile(pattern="group")))
       dir.create(tmpdir_groupA, recursive = FALSE, showWarnings = FALSE)
-      paths["L1C"] <- if (!is.na(pm$path_l1c)) {pm$path_l1c} else {file.path(tmpdir_groupA,"SAFE")}
-      paths["L2A"] <- if (!is.na(pm$path_l2a)) {pm$path_l2a} else {file.path(tmpdir_groupA,"SAFE")}
-      paths["tiles"] <- if (!is.na(pm$path_tiles)) {pm$path_tiles} else {file.path(tmpdir_groupA,"tiles")}
-      paths["merged"] <- if (!is.na(pm$path_merged)) {pm$path_merged} else if (!is.na(pm$path_out) & !pm$clip_on_extent & is.na(pm$mask_type)) {pm$path_out} else {file.path(tmpdir_groupA,"merged")}
-      paths["warped"] <- if (!is.na(pm$path_out) & is.na(pm$mask_type)) {pm$path_out} else {file.path(tmpdir_groupA,"warped")}
-      paths["warped_scl"] <- if ("SCL" %in% pm$list_prods) {pm$path_out} else {file.path(tmpdir_groupA,"warped")}
-      paths["rgb"] <- if (!is.na(pm$path_rgb)) {pm$path_rgb} else {file.path(tmpdir_groupA,"rgb")}
-      paths["masked"] <- if (!is.na(pm$path_out)) {pm$path_out} else {file.path(tmpdir_groupA,"masked")}
-      paths["indices"] <- if (!is.na(pm$path_indices)) {pm$path_indices} else {file.path(tmpdir_groupA,"indices")}
-      
+      path_l1c <- if (!is.na(pm$path_l1c)) {pm$path_l1c} else {file.path(tmpdir_groupA,"SAFE")}
+      path_l2a <- if (!is.na(pm$path_l2a)) {pm$path_l2a} else {file.path(tmpdir_groupA,"SAFE")}
+
       ## 3. Download required SAFE ##
       # TODO implement ovwerite/skip
       # (now it skips, but analysing each single file)
@@ -1487,8 +1476,8 @@ sen2r <- function(param_list = NULL,
           safe_getMetadata(x, "nameinfo")$version
         }) == "compact")) {
           s2_download(
-            sel_s2_list_l2a[!names(sel_s2_list_l2a) %in% list.files(paths["L2A"], "\\.SAFE$")],
-            outdir = paths["L2A"],
+            sel_s2_list_l2a[!names(sel_s2_list_l2a) %in% list.files(path_l2a, "\\.SAFE$")],
+            outdir = path_l2a,
             downloader = pm$downloader,
             apihub = sel_apihub_path
           )
@@ -1515,7 +1504,7 @@ sen2r <- function(param_list = NULL,
               # (with compactname products, all the zips are downloaded
               # during the first execution, since argument "tile" is 
               # ignored).
-              outdir = paths["L2A"],
+              outdir = path_l2a,
               downloader = pm$downloader,
               tile = tile,
               apihub = sel_apihub_path
@@ -1540,8 +1529,8 @@ sen2r <- function(param_list = NULL,
           safe_getMetadata(x, "nameinfo")$version
         }) == "compact")) {
           s2_download(
-            sel_s2_list_l1c[!names(sel_s2_list_l1c) %in% list.files(paths["L1C"], "\\.SAFE$")],
-            outdir = paths["L1C"],
+            sel_s2_list_l1c[!names(sel_s2_list_l1c) %in% list.files(path_l1c, "\\.SAFE$")],
+            outdir = path_l1c,
             downloader = pm$downloader
           )
         } else { # otherwise, launch one per tile
@@ -1567,7 +1556,7 @@ sen2r <- function(param_list = NULL,
               # (with compactname products, all the zips are downloaded
               # during the first execution, since argument "tile" is 
               # ignored).
-              outdir = paths["L1C"],
+              outdir = path_l1c,
               downloader = pm$downloader,
               tile = tile
             )
@@ -1644,7 +1633,7 @@ sen2r <- function(param_list = NULL,
         
         if (length(sel_s2_list_l1c_tocorrect)>0) {
           
-          if (sum(!file.path(paths["L1C"],names(sel_s2_list_l1c_tocorrect)) %>% file.exists()) > 0) {
+          if (sum(!file.path(path_l1c,names(sel_s2_list_l1c_tocorrect)) %>% file.exists()) > 0) {
             print_message(
               type = "message",
               date = TRUE,
@@ -1655,8 +1644,8 @@ sen2r <- function(param_list = NULL,
           
           sel_s2_list_l2a_corrected <- sen2cor(
             names(sel_s2_list_l1c_tocorrect),
-            l1c_dir = paths["L1C"],
-            outdir = paths["L2A"],
+            l1c_dir = path_l1c,
+            outdir = path_l2a,
             tiles = pm$s2tiles_selected,
             parallel = pm$parallel,
             tmpdir = if (Sys.info()["sysname"] == "Windows") {
@@ -1677,7 +1666,7 @@ sen2r <- function(param_list = NULL,
         
         # delete SAFE, if required
         if (!("l1c" %in% pm$s2_levels) & pm$rm_safe %in% c("all","l1c")) {
-          unlink(file.path(paths["L1C"],names(sel_s2_list_l1c_tocorrect)), recursive=TRUE)
+          unlink(file.path(path_l1c,names(sel_s2_list_l1c_tocorrect)), recursive=TRUE)
         }
         
       }
@@ -1692,8 +1681,8 @@ sen2r <- function(param_list = NULL,
         )
         
         return(invisible(
-          c(file.path(paths["L1C"],names(sel_s2_list_l1c)),
-            file.path(paths["L2A"],names(sel_s2_list_l2a)))
+          c(file.path(path_l1c,names(sel_s2_list_l1c)),
+            file.path(path_l2a,names(sel_s2_list_l2a)))
         ))
         
       }
@@ -1709,7 +1698,7 @@ sen2r <- function(param_list = NULL,
         pm=pm, 
         s2_list_l1c = if (exists("sel_s2_list_l1c")) {sel_s2_list_l1c} else {character(0)},
         s2_list_l2a = if (exists("sel_s2_list_l2a")) {sel_s2_list_l2a} else {character(0)},
-        paths=paths, 
+        tmpdir=tmpdir_groupA, 
         list_prods=list_prods, 
         main_ext = main_ext, rgb_ext = rgb_ext,
         force_tiles = FALSE,
@@ -2176,7 +2165,7 @@ sen2r <- function(param_list = NULL,
                      if (pm$clip_on_extent) {pm$extent_name},"_",
                      "<index>_",
                      substr(res,1,2),".",
-                     attr(s2names, "out_ext")["masked"])] %>%
+                     out_ext["masked"])] %>%
               expand.grid(pm$list_indices) %>%
               apply(1,function(x){
                 file.path(
@@ -2185,7 +2174,7 @@ sen2r <- function(param_list = NULL,
                 )
               }) %>%
               file.path(paths["indices"],.) %>%
-              gsub(paste0(attr(s2names, "out_ext")["merged"],"$"),attr(s2names, "out_ext")["masked"],.)
+              gsub(paste0(out_ext["merged"],"$"),out_ext["masked"],.)
             # rgb_names_notcreated <- sen2r_getElements(
             #   masked_names_notcreated, format="data.table"
             # )[prod_type %in% c("BOA","TOA"),
@@ -2304,10 +2293,10 @@ sen2r <- function(param_list = NULL,
       }
       # delete SAFE, if required
       if (pm$rm_safe == "all") {
-        unlink(file.path(paths["L1C"],names(sel_s2_list_l1c)), recursive=TRUE)
-        unlink(file.path(paths["L2A"],names(sel_s2_list_l2a)), recursive=TRUE)
+        unlink(file.path(path_l1c,names(sel_s2_list_l1c)), recursive=TRUE)
+        unlink(file.path(path_l2a,names(sel_s2_list_l2a)), recursive=TRUE)
       } else if (pm$rm_safe == "l1c") {
-        unlink(file.path(paths["L1C"],names(sel_s2_list_l1c)), recursive=TRUE)
+        unlink(file.path(path_l1c,names(sel_s2_list_l1c)), recursive=TRUE)
       }
       
       gc()

@@ -53,7 +53,7 @@
 compute_s2_paths <- function(pm, 
                              s2_list_l1c, 
                              s2_list_l2a, 
-                             paths, 
+                             tmpdir,
                              list_prods, 
                              main_ext, rgb_ext, 
                              force_tiles = FALSE,
@@ -90,7 +90,7 @@ compute_s2_paths <- function(pm,
     "tiles" = !is.na(pm$path_tiles),
     "merged" = !is.na(pm$path_merged) | !is.na(pm$path_out) & !steps_todo[["warped"]] & !steps_todo[["masked"]],
     "warped" = length(pm$list_prods[!is.na(pm$list_prods) & pm$list_prods != "SCL"]) > 0 & !steps_todo[["masked"]] & pm$clip_on_extent,
-    "warped_scl" = "SCL" %in% pm$list_prods & pm$clip_on_extent,
+    "warped_scl" = "SCL" %in% pm$list_prods | pm$clip_on_extent,
     "rgb" = steps_todo[["rgb"]],
     "masked" = length(pm$list_prods[pm$list_prods != "SCL"]) > 0 & steps_todo[["masked"]],
     "indices" = steps_todo[["indices"]]
@@ -118,6 +118,20 @@ compute_s2_paths <- function(pm,
     "masked.scl" = if (steps_todo["warped"]) {"warped_scl"} else {"merged"},
     "indices" = if (steps_todo["masked"]) {"masked"} else if (steps_todo["warped"]) {"warped"} else {"merged"}
   )
+  
+  # Paths
+  paths <- c(
+    "L1C" = if (!is.na(pm$path_l1c)) {pm$path_l1c} else {file.path(tmpdir,"SAFE")},
+    "L2A" = if (!is.na(pm$path_l2a)) {pm$path_l2a} else {file.path(tmpdir,"SAFE")},
+    "tiles" = if (output_req["tiles"]) {pm$path_tiles} else {file.path(tmpdir,"tiles")},
+    "merged" = if (!is.na(pm$path_merged)) {pm$path_merged} else if (!is.na(pm$path_out) & !steps_todo[["warped"]] & !steps_todo[["masked"]]) {pm$path_out} else {file.path(tmpdir,"merged")},
+    "warped" = if (output_req["warped"]) {pm$path_out} else {file.path(tmpdir,"warped")},
+    "warped_scl" = if (output_req["warped_scl"]) {pm$path_out} else {file.path(tmpdir,"warped")},
+    "rgb" = if (output_req["rgb"]) {pm$path_rgb} else {file.path(tmpdir,"rgb")},
+    "masked" = if (output_req["masked"]) {pm$path_out} else {file.path(tmpdir,"masked")},
+    "indices" = if (output_req["indices"]) {pm$path_indices} else {file.path(tmpdir,"indices")}
+  )
+  
   
   # Paths (additions for compatibility)
   # paths passed as argument
@@ -185,7 +199,7 @@ compute_s2_paths <- function(pm,
     "warped" = sapply(list_prods[list_prods != "SCL"], function(prod) {
       list.files(
         file.path(paths["warped"], if (pm$path_subdirs) {prod}), 
-        paste0("^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([^\\_\\.]*)\\_(",prod,")\\_(",out_ext["warped"],")$"),
+        paste0("^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([^\\_\\.]*)\\_(",prod,")\\_([126]0)\\.?(",out_ext["warped"],")$"),
         full.names=TRUE
       )
     }, simplify = FALSE, USE.NAMES = TRUE),
@@ -318,7 +332,7 @@ compute_s2_paths <- function(pm,
   # merged
   if (steps_todo["merged"]) {
     exp_paths[["merged"]] <- sapply(list_prods, function(prod) {
-      if (length(exp_paths[[output_dep["merged"]]][[prod]]) == 0) {
+      expaths <- if (length(exp_paths[[output_dep["merged"]]][[prod]]) == 0) {
         character(0)
       } else {
         sen2r_getElements(exp_paths[[output_dep["merged"]]][[prod]])[,paste0(
@@ -335,17 +349,17 @@ compute_s2_paths <- function(pm,
           paths["merged"],
           if (pm$path_subdirs) {prod} else {""},
           .
-        ) %>%
-        c(exi_paths[["merged"]][[prod]]) %>%
-        unlist() %>% nn() %>% remove_duplicates()
+        )
       }
+      c(expaths, exi_paths[["merged"]][[prod]]) %>%
+        unlist() %>% nn() %>% remove_duplicates()
     }, simplify = FALSE, USE.NAMES = TRUE)
   }
   
   # warped
   if (steps_todo["warped"]) {
     exp_paths[["warped"]] <- sapply(list_prods[list_prods != "SCL"], function(prod) {
-      if (length(exp_paths[[output_dep["warped"]]][[prod]]) == 0) {
+      expaths <- if (length(exp_paths[[output_dep["warped"]]][[prod]]) == 0) {
         character(0)
       } else {
         sen2r_getElements(exp_paths[[output_dep["warped"]]][[prod]])[,paste0(
@@ -363,17 +377,17 @@ compute_s2_paths <- function(pm,
           paths["warped"],
           if (pm$path_subdirs) {prod} else {""},
           .
-        ) %>%
-        c(exi_paths[["warped"]][[prod]]) %>%
-        unlist() %>% nn() %>% remove_duplicates()
+        )
       }
+      c(expaths, exi_paths[["warped"]][[prod]]) %>%
+        unlist() %>% nn() %>% remove_duplicates()
     }, simplify = FALSE, USE.NAMES = TRUE)
   }
   
   # SCL
   if (steps_todo["warped_scl"]) {
     exp_paths[["warped_scl"]] <- sapply(list_prods[list_prods == "SCL"], function(prod) {
-      if (length(exp_paths[[output_dep["warped_scl"]]][[prod]]) == 0) {
+      expaths <- if (length(exp_paths[[output_dep["warped_scl"]]][[prod]]) == 0) {
         character(0)
       } else {
         sen2r_getElements(exp_paths[[output_dep["warped_scl"]]][[prod]])[,paste0(
@@ -391,17 +405,17 @@ compute_s2_paths <- function(pm,
           paths["warped_scl"],
           if (pm$path_subdirs) {prod} else {""},
           .
-        ) %>%
-        c(exi_paths[["warped_scl"]][[prod]]) %>%
-        unlist() %>% nn() %>% remove_duplicates()
+        )
       }
+      c(expaths, exi_paths[["warped_scl"]][[prod]]) %>%
+        unlist() %>% nn() %>% remove_duplicates()
     }, simplify = FALSE, USE.NAMES = TRUE)
   }
   
   # RGB
   if (steps_todo["rgb"]) {
     exp_paths[["rgb"]] <- sapply(list_rgb, function(prod) {
-      if (length(unlist(exp_paths[[output_dep["rgb"]]])) == 0) {
+      expaths <- if (length(unlist(exp_paths[[output_dep["rgb"]]])) == 0) {
         character(0)
       } else {
         sen2r_getElements(unlist(exp_paths[[output_dep["rgb"]]]))[
@@ -423,17 +437,17 @@ compute_s2_paths <- function(pm,
           if(pm$path_subdirs) {prod} else {""},
           .
         ) %>%
-        gsub("<rgbname>", prod , .)  %>%
-        c(exi_paths[["rgb"]][[prod]]) %>%
-        unlist() %>% nn() %>% remove_duplicates()
+        gsub("<rgbname>", prod , .)
       }
+      c(expaths, exi_paths[["rgb"]][[prod]]) %>%
+        unlist() %>% nn() %>% remove_duplicates()
     }, simplify = FALSE, USE.NAMES = TRUE)
   }
   
   # masked
   if (steps_todo["masked"]) {
     exp_paths[["masked"]] <- sapply(list_prods[list_prods != "SCL"], function(prod) {
-      if (length(exp_paths[[output_dep["masked.nonscl"]]][[prod]]) == 0) {
+      expaths <- if (length(exp_paths[[output_dep["masked.nonscl"]]][[prod]]) == 0) {
         character(0)
       } else {
         sen2r_getElements(exp_paths[[output_dep["masked.nonscl"]]][[prod]])[,paste0(
@@ -451,17 +465,17 @@ compute_s2_paths <- function(pm,
           paths["masked"],
           if (pm$path_subdirs) {prod} else {""},
           .
-        ) %>%
-        c(exi_paths$masked[[prod]]) %>%
-        unlist() %>% nn() %>% remove_duplicates()
+        )
       }
+      c(expaths, exi_paths$masked[[prod]]) %>%
+        unlist() %>% nn() %>% remove_duplicates()
     }, simplify = FALSE, USE.NAMES = TRUE)
   }
   
   # indices
   if (steps_todo["indices"]) {
     exp_paths[["indices"]] <- sapply(list_indices, function(prod) {
-      if (length(unlist(exp_paths[[output_dep["indices"]]])) == 0) {
+      expaths <- if (length(unlist(exp_paths[[output_dep["indices"]]])) == 0) {
         character(0)
       } else {
         sen2r_getElements(unlist(exp_paths[[output_dep["indices"]]]))[
@@ -482,10 +496,10 @@ compute_s2_paths <- function(pm,
           if (pm$path_subdirs) {prod} else {""},
           .
         ) %>%
-        gsub("<index>", prod , .) %>%
-        c(exi_paths$indices[[prod]]) %>%
-        unlist() %>% nn() %>% remove_duplicates()
+          gsub("<index>", prod , .)
       }
+      c(expaths, exi_paths$indices[[prod]]) %>%
+        unlist() %>% nn() %>% remove_duplicates()
     }, simplify = FALSE, USE.NAMES = TRUE)
   }
   
@@ -753,6 +767,7 @@ compute_s2_paths <- function(pm,
   attr(outnames, "is_req") <- output_req
   attr(outnames, "out_ext") <- out_ext
   attr(outnames, "which_dep") <- output_dep
+  attr(outnames, "paths") <- paths
   outnames
 
 }
