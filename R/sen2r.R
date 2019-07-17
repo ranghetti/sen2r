@@ -2090,11 +2090,13 @@ sen2r <- function(param_list = NULL,
           )
           
           dir.create(paths["rgb"], recursive=FALSE, showWarnings=FALSE)
-          rgb_names <- trace_function(
+          
+          if (sum(file.exists(nn(sel_s2names$req$rgb[["TOA"]])))>0) {
+            rgb_names <- trace_function(
             s2_rgb,
-            infiles = unlist(sel_s2names$req$rgb)[file.exists(unlist(sel_s2names$req$rgb))],
+            infiles = sel_s2names$req$rgb[["TOA"]][file.exists(sel_s2names$req$rgb[["TOA"]])],
             rgb_bands = lapply(
-              strsplit(unique(gsub("^RGB([0-9a-f]{3})[BT]$","\\1",pm$list_rgb)),""), 
+              strsplit(unique(gsub("^RGB([0-9a-f]{3})T$","\\1",pm$list_rgb[grepl("T$",pm$list_rgb)])),""), 
               function(x) {strtoi(paste0("0x",x))}
             ),
             scaleRange = pm$rgb_ranges,
@@ -2107,9 +2109,30 @@ sen2r <- function(param_list = NULL,
             parallel = parallel_steps,
             overwrite = pm$overwrite,
             .log_message = .log_message, .log_output = .log_output,
-            trace_files = unlist(sel_s2names$new$rgb)
+            trace_files = unlist(sel_s2names$new$rgb)[grepl("T$",names(unlist(sel_s2names$new$rgb)))]
           )
-          
+          }
+          if (sum(file.exists(nn(sel_s2names$req$rgb[["BOA"]])))>0) {
+            rgb_names <- trace_function(
+              s2_rgb,
+              infiles = sel_s2names$req$rgb[["BOA"]][file.exists(sel_s2names$req$rgb[["BOA"]])],
+              rgb_bands = lapply(
+                strsplit(unique(gsub("^RGB([0-9a-f]{3})B$","\\1",pm$list_rgb[grepl("B$",pm$list_rgb)])),""), 
+                function(x) {strtoi(paste0("0x",x))}
+              ),
+              scaleRange = pm$rgb_ranges,
+              outdir = paths["rgb"],
+              subdirs = pm$path_subdirs,
+              format = out_format["rgb"],
+              compress = pm$rgb_compression,
+              tmpdir = file.path(tmpdir_groupA, "s2_rgb"),
+              rmtmp = FALSE,
+              parallel = parallel_steps,
+              overwrite = pm$overwrite,
+              .log_message = .log_message, .log_output = .log_output,
+              trace_files = unlist(sel_s2names$new$rgb)[grepl("B$",names(unlist(sel_s2names$new$rgb)))]
+            )
+          }
         }
         
         
