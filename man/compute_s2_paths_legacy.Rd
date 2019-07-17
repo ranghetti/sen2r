@@ -5,7 +5,7 @@
 \title{Compute names of S2 file to be generated (old function)}
 \usage{
 compute_s2_paths_legacy(pm, s2_list_l1c, s2_list_l2a, paths, list_prods,
-  out_ext, force_tiles = FALSE, check_tmp = TRUE, ignorelist)
+  main_ext, rgb_ext, force_tiles = FALSE, check_tmp = TRUE, ignorelist)
 }
 \arguments{
 \item{pm}{List of input parameters.}
@@ -20,7 +20,9 @@ named \code{"out"}, \code{"indices"}, \code{"tiles"}, \code{"merged"} and \code{
 \item{list_prods}{Character vector with the values of the
 products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").}
 
-\item{out_ext}{Extension (character) of output products.}
+\item{main_ext}{File extension corresponding to pm$outformat.}
+
+\item{rgb_ext}{File extension corresponding to pm$rgb_outformat.}
 
 \item{force_tiles}{(optional) Logical: passed to \link{safe_shortname} (default: FALSE).}
 
@@ -29,18 +31,6 @@ are also searched when \code{_exi} names are computed;
 if FALSE, only non temporary files are searched.}
 
 \item{ignorelist}{Vector of output files to be ignored.}
-
-\item{index_ext}{Extension (character) of index products.}
-
-\item{tiles_ext}{Extension (character) of tiled products.}
-
-\item{merged_ext}{Extension (character) of merged products.}
-
-\item{warped_ext}{Extension (character) of warped products.}
-
-\item{rgb_ext}{Extension (character) of RGB products.}
-
-\item{sr_masked_ext}{Extension (character) of masked products of SR products.}
 }
 \value{
 A list, containing the following vectors:

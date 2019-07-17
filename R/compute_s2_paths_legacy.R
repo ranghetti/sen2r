@@ -47,13 +47,8 @@
 #'  named `"out"`, `"indices"`, `"tiles"`, `"merged"` and `"warped"`.
 #' @param list_prods Character vector with the values of the
 #'  products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").
-#' @param out_ext Extension (character) of output products.
-#' @param index_ext Extension (character) of index products.
-#' @param tiles_ext Extension (character) of tiled products.
-#' @param merged_ext Extension (character) of merged products.
-#' @param warped_ext Extension (character) of warped products.
-#' @param rgb_ext Extension (character) of RGB products.
-#' @param sr_masked_ext Extension (character) of masked products of SR products.
+#' @param main_ext File extension corresponding to pm$outformat.
+#' @param rgb_ext File extension corresponding to pm$rgb_outformat.
 #' @param force_tiles (optional) Logical: passed to [safe_shortname] (default: FALSE).
 #' @param check_tmp (optional) Logical: if TRUE (default), temporary files
 #'  are also searched when `_exi` names are computed; 
@@ -69,7 +64,7 @@ compute_s2_paths_legacy <- function(pm,
                              s2_list_l2a, 
                              paths, 
                              list_prods, 
-                             out_ext, 
+                             main_ext, rgb_ext, 
                              # index_ext,
                              # tiles_ext, 
                              # merged_ext, 

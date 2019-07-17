@@ -915,26 +915,6 @@ sen2r <- function(param_list = NULL,
   # if preprocess is required, define output formats
   if (pm$preprocess == TRUE) {  
     
-    ## Define output formats
-    out_ext <- c(
-      "tiles" = if (!is.na(pm$path_tiles)) main_ext else "vrt",
-      "merged" = if (!is.na(pm$path_merged)) main_ext else "vrt",
-      "warped" = if (is.na(pm$mask_type)) main_ext else "vrt",
-      "warped_scl" = main_ext,
-      "rgb" = rgb_ext,
-      "masked" = main_ext,
-      "indices" = main_ext
-    )
-    out_format <- c(
-      "tiles" = if (!is.na(pm$path_tiles)) pm$outformat else "VRT",
-      "merged" = if (!is.na(pm$path_merged)) pm$outformat else "VRT",
-      "warped" = if (is.na(pm$mask_type)) pm$outformat else "VRT",
-      "warped_scl" = pm$outformat,
-      "rgb" = pm$rgb_outformat,
-      "masked" = pm$outformat,
-      "indices" = pm$outformat
-    )
-
     # Import path of files to ignore, if exists
     # (see comment at #ignorePath)
     ignorelist <- if (is(param_list, "character")) {
@@ -1238,10 +1218,15 @@ sen2r <- function(param_list = NULL,
       s2_list_l1c=s2_list_l1c, s2_list_l2a=s2_list_l2a_exp, 
       paths=paths, 
       list_prods=list_prods, 
-      out_ext = out_ext,
+      main_ext = main_ext, rgb_ext = rgb_ext,
       force_tiles = TRUE,
       ignorelist = if (exists("ignorelist")) {ignorelist} else {NULL}
     )
+    
+    ## Define output formats
+    out_format <- sapply(names(attr(s2names, "out_ext")), function(prod) {
+      gdal_formats[gdal_formats$ext==attr(s2names, "out_ext")[[prod]],"name"]
+    })
     
     # Check if processing is needed
     if (all(unlist(sapply(s2names$new, sapply, length)) == 0)) {
@@ -1726,7 +1711,7 @@ sen2r <- function(param_list = NULL,
         s2_list_l2a = if (exists("sel_s2_list_l2a")) {sel_s2_list_l2a} else {character(0)},
         paths=paths, 
         list_prods=list_prods, 
-        out_ext = out_ext,
+        main_ext = main_ext, rgb_ext = rgb_ext,
         force_tiles = FALSE,
         ignorelist = if (exists("ignorelist")) {ignorelist} else {NULL}
       )
@@ -1944,10 +1929,8 @@ sen2r <- function(param_list = NULL,
         } # end of s2_merge IF cycle
         
         
+        ## 6. Clip, rescale, reproject ##
         if (sum(file.exists(nn(unlist(c(sel_s2names$req$warped,sel_s2names$req$warped_scl)))))>0) {
-          
-          ## 6. Clip, rescale, reproject ##
-          if (pm$clip_on_extent==TRUE) {
             
             print_message(
               type = "message",
@@ -2061,10 +2044,13 @@ sen2r <- function(param_list = NULL,
               #           overwrite = pm$overwrite)
             }
             
-          } # end of gdal_warp IF clip_on_extent cycle
-          
-          ## 7. Apply mask ##
-          # FIXME understand if this should be done before warping (if so, how to manage virtual/physical files?)
+        } # end of gdal_warp IF cycle
+        
+        
+        ## 7. Apply mask ##
+        # FIXME understand if this should be done before warping (if so, how to manage virtual/physical files?)
+        if (sum(file.exists(nn(unlist(sel_s2names$req$masked))))>0) {
+  
           # masked_names <- file.path(paths["out"],
           #                           if(pm$path_subdirs==TRUE){basename(dirname(warped_names[!names_merged_exp_scl_idx]))}else{""},
           #                           gsub(paste0(warped_ext,"$"),out_ext,basename(warped_names[!names_merged_exp_scl_idx])))
@@ -2190,7 +2176,7 @@ sen2r <- function(param_list = NULL,
                      if (pm$clip_on_extent) {pm$extent_name},"_",
                      "<index>_",
                      substr(res,1,2),".",
-                     out_ext["masked"])] %>%
+                     attr(s2names, "out_ext")["masked"])] %>%
               expand.grid(pm$list_indices) %>%
               apply(1,function(x){
                 file.path(
@@ -2199,7 +2185,7 @@ sen2r <- function(param_list = NULL,
                 )
               }) %>%
               file.path(paths["indices"],.) %>%
-              gsub(paste0(out_ext["merged"],"$"),out_ext["masked"],.)
+              gsub(paste0(attr(s2names, "out_ext")["merged"],"$"),attr(s2names, "out_ext")["masked"],.)
             # rgb_names_notcreated <- sen2r_getElements(
             #   masked_names_notcreated, format="data.table"
             # )[prod_type %in% c("BOA","TOA"),

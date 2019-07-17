@@ -38,8 +38,8 @@
 #'  and `"warped"`.
 #' @param list_prods Character vector with the values of the
 #'  products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").
-#' @param out_ext Character names vector of extensions of output products
-#'  (it must contain elements with the same names of argument `paths`).
+#' @param main_ext File extension corresponding to pm$outformat.
+#' @param rgb_ext File extension corresponding to pm$rgb_outformat.
 #' @param force_tiles (optional) Logical: passed to [safe_shortname] (default: FALSE).
 #' @param check_tmp (optional) Logical: if TRUE (default), temporary files
 #'  are also searched when `_exi` names are computed; 
@@ -55,7 +55,7 @@ compute_s2_paths <- function(pm,
                              s2_list_l2a, 
                              paths, 
                              list_prods, 
-                             out_ext, 
+                             main_ext, rgb_ext, 
                              force_tiles = FALSE,
                              check_tmp = TRUE,
                              ignorelist) {
@@ -89,15 +89,23 @@ compute_s2_paths <- function(pm,
   output_req <- c(
     "tiles" = !is.na(pm$path_tiles),
     "merged" = !is.na(pm$path_merged) | !is.na(pm$path_out) & !steps_todo[["warped"]] & !steps_todo[["masked"]],
-    "warped" = length(list_prods[list_prods != "SCL"]) > 0 & !steps_todo[["masked"]],
-    "warped_scl" = "SCL" %in% pm$list_prods,
+    "warped" = length(pm$list_prods[!is.na(pm$list_prods) & pm$list_prods != "SCL"]) > 0 & !steps_todo[["masked"]] & pm$clip_on_extent,
+    "warped_scl" = "SCL" %in% pm$list_prods & pm$clip_on_extent,
     "rgb" = steps_todo[["rgb"]],
-    "masked" = length(list_prods[list_prods != "SCL"]) > 0 & steps_todo[["masked"]],
+    "masked" = length(pm$list_prods[pm$list_prods != "SCL"]) > 0 & steps_todo[["masked"]],
     "indices" = steps_todo[["indices"]]
   )
-  
+
   # File extensions
-  # out_ext passed as argument
+  out_ext <- c(
+    "tiles" = if (output_req["tiles"]) main_ext else "vrt",
+    "merged" = if (output_req["merged"]) main_ext else "vrt",
+    "warped" = if (output_req["warped"]) main_ext else "vrt",
+    "warped_scl" = main_ext,
+    "rgb" = rgb_ext,
+    "masked" = main_ext,
+    "indices" = main_ext
+  )
   
   # Order of requirements
   output_dep <- c(
@@ -558,7 +566,7 @@ compute_s2_paths <- function(pm,
       )[,paste0(
         "S2",
         mission,
-        level,"_",
+        "2A","_",
         strftime(sensing_date,"%Y%m%d"),"_",
         id_orbit,"_", 
         ExtentName,"_",
@@ -740,6 +748,11 @@ compute_s2_paths <- function(pm,
     }
   }
   
-  list("exi" = exi_paths, "exp" = exp_paths, "new" = new_paths, "req" = req_paths)
-  
+  outnames <- list("exi" = exi_paths, "exp" = exp_paths, "new" = new_paths, "req" = req_paths)
+  attr(outnames, "is_todo") <- steps_todo
+  attr(outnames, "is_req") <- output_req
+  attr(outnames, "out_ext") <- out_ext
+  attr(outnames, "which_dep") <- output_dep
+  outnames
+
 }
