@@ -46,6 +46,9 @@ maskapply_parallel <- function(in_rast,
                                .log_message=NA,
                                .log_output=NA) {
 
+  # to avoid NOTE on check
+  i <- NULL
+  
   #this function applies a mask by multiplying the mask with the input raster
   # processing is done by chinks of lines. Changing minrows affects the dimensions
   # of "chunks" and affects (slightly) speed, and majorly memory footprint

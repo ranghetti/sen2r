@@ -18,6 +18,9 @@
 
 create_s2_dop <- function(json_path = NA, force = FALSE) {
   
+  # to avoid NOTE on check
+  . <- SENSING_TIME <- utm <- GRANULE_ID <- orbit <- PRODUCT_ID <- mission <- doybase <- NULL
+  
   # check if the json already exists, and if the version is updated
   if (is.na(json_path)) {
     json_path <- file.path(system.file("extdata", package="sen2r"), "doybase.json")

@@ -366,6 +366,9 @@ sen2r <- function(param_list = NULL,
                   rmtmp = TRUE, 
                   log = NA) {
   
+  # to avoid NOTE on check
+  internal_log <- NULL
+  
   # sink to external files
   if (!is.na(log[2])) {
     dir.create(dirname(log[2]), showWarnings=FALSE)
@@ -378,7 +381,7 @@ sen2r <- function(param_list = NULL,
   }
   
   # filter names of passed arguments
-  sen2r_args <- formalArgs(sen2r:::.sen2r)
+  sen2r_args <- formalArgs(.sen2r)
   sen2r_args <- sen2r_args[!sen2r_args %in% c(".only_list_names")]
   pm_arg_passed <- logical(0)
   for (i in seq_along(sen2r_args)) {
@@ -386,7 +389,7 @@ sen2r <- function(param_list = NULL,
   }
   
   # launch the function
-  sen2r:::.sen2r(
+  .sen2r(
     param_list = param_list,
     pm_arg_passed = pm_arg_passed,
     gui = gui,
@@ -465,9 +468,9 @@ sen2r <- function(param_list = NULL,
   if (!is.na(log[1])) {
     sink(type = "message"); close(logfile_message)
   }
-  if (exists("internal_log")) {
+  if (!is.null(internal_log)) {
     sink(type = "message")
-    suppressWarnings(rm(internal_log))
+    internal_log <- NULL
   }
   
 }
@@ -538,7 +541,9 @@ sen2r <- function(param_list = NULL,
                    .only_list_names = FALSE) {
   
   # to avoid NOTE on check
-  . <- NULL
+  . <- sensing_datetime <- creation_datetime <- mission <- level <- id_orbit <- 
+    id_tile <- name <- id_baseline <- prod_type <- name <- sel_group_A <- 
+    i_group_A <- sel_apihub_path <- i_group_B <- sensing_date <- NULL
   
   ### Preliminary settings ###
   
@@ -592,7 +597,7 @@ sen2r <- function(param_list = NULL,
   pm_def <- sapply(pm_def[!names(pm_def) %in% c("param_list","gui","use_python","tmpdir","rmtmp")], eval)
   
   # filter names of passed arguments
-  sen2r_args <- formalArgs(sen2r:::.sen2r)
+  sen2r_args <- formalArgs(.sen2r)
   # FIXME $473 pm_arg_passed computed in the main function (otherwise nothing was missing).
   # This is not elegant, find a better way to do it.
   #   pm_arg_passed <- logical(0)
@@ -1445,7 +1450,7 @@ sen2r <- function(param_list = NULL,
       }
       
       if (length(s2names_groups_A) > 1) {
-        sen2r:::print_message(
+        print_message(
           type="message", 
           date=TRUE,
           "Processing group ",i_group_A," of ",length(s2names_groups_A),"..."
@@ -1762,14 +1767,14 @@ sen2r <- function(param_list = NULL,
           type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
         )
         registerDoParallel(cl)
-        sen2r:::print_message(
+        print_message(
           type="message", 
           date=TRUE,
           "Starting running processing operations on multiple (",n_cores_B,
           ") parallel cores..."
         )
         if (is.na(.log_message) & i_group_A == 1) {
-          sen2r:::print_message(
+          print_message(
             type="message", 
             "Note: logging messages are not shown during this phase, ",
             "since it is not possible to send it to standard output.\n",
@@ -1797,7 +1802,7 @@ sen2r <- function(param_list = NULL,
         }
         
         if (length(s2names_groups_B) > 1) {
-          sen2r:::print_message(
+          print_message(
             type="message", 
             date=TRUE,
             "Processing date ",i_group_B," of ",length(s2names_groups_B),
@@ -2305,7 +2310,7 @@ sen2r <- function(param_list = NULL,
       } # end of s2names_groups_B FOREACH cycle
       if (n_cores_B > 1) {
         stopCluster(cl)
-        sen2r:::print_message(
+        print_message(
           type="message", 
           date=TRUE,
           "Processing operations on multiple parallel cores was done."

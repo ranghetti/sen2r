@@ -26,6 +26,9 @@
 gdal_formats_db <- function(json_path = NA,
                             force = FALSE) {
   
+  # to avoid NOTE on check
+  gdal <- NULL
+  
   # check if gdal_formats.json already exists, and if the version is updated
   # we assume that a new version of gdal_formats.json is created at every new package update
   if (is.na(json_path)) {

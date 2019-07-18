@@ -75,6 +75,11 @@ compute_s2_paths_legacy <- function(pm,
                              check_tmp = TRUE,
                              ignorelist) {
   
+  # to avoid NOTE on check
+  . <- type <- mission <- level <- id_orbit <- extent_name <- file_ext <-
+    mission <- level <- sensing_date <- id_orbit <- prod_type <- res <- 
+    sensing_datetime <- id_tile <- NULL
+  
   # for compatibility
   index_ext <- out_ext["indices"]
   tiles_ext <- out_ext["tiles"]

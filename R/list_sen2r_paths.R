@@ -119,7 +119,7 @@ list_sen2r_paths <- function(param_list = NULL,
                              log = NA) {
   
   # filter names of passed arguments
-  sen2r_args <- formalArgs(sen2r:::.sen2r)
+  sen2r_args <- formalArgs(.sen2r)
   sen2r_args <- sen2r_args[!sen2r_args %in% c(".log_message",".log_output",".only_list_names")]
   pm_arg_passed <- logical(0)
   for (i in seq_along(sen2r_args)) {
@@ -127,7 +127,7 @@ list_sen2r_paths <- function(param_list = NULL,
   }
   
   # launch the function
-  sen2r:::.sen2r(
+  .sen2r(
     param_list = param_list,
     pm_arg_passed = pm_arg_passed,
     gui = gui,

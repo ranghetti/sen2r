@@ -75,6 +75,9 @@ s2_rgb <- function(infiles,
                    .log_message=NA,
                    .log_output=NA) {
   
+  # to avoid NOTE on check
+  i <- sel_rgb_bands <- NULL
+  
   # Check that GDAL suports JPEG JFIF format
   # TODO
   

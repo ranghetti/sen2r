@@ -32,7 +32,7 @@ create_indices_db <- function(xslt_path = NA,
                               force = FALSE) {
   
   # to avoid NOTE on check
-  n_index <- name <- longname <- . <- s2_formula <- type <- NULL
+  . <- n_index <- name <- longname <- s2_formula <- type <- checked <- link <- NULL
   
   # check if indices.json already exists, and if the version is updated
   # we assume that a new version of indices.json is created at every new ackage update

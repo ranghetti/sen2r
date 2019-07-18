@@ -61,6 +61,9 @@ s2_dop <- function(s2_orbits = 1:143,
                    timewindow = "10 days", 
                    mission = c("2A", "2B")) {
   
+  # to avoid NOTE on check
+  type <- orbit <- doybase <- orbit <- NULL
+  
   # generate doybase.json if missing
   json_path <- create_s2_dop()
   s2_dop_dt <- data.table(jsonlite::fromJSON(json_path)$dop)

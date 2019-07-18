@@ -74,6 +74,9 @@ s2_merge <- function(infiles,
                      .log_message=NA,
                      .log_output=NA) {
   
+  # to avoid NOTE on check
+  infiles_meta_grp <- NULL
+  
   # load output formats
   gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))
   

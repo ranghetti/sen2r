@@ -60,6 +60,11 @@ compute_s2_paths <- function(pm,
                              check_tmp = TRUE,
                              ignorelist) {
   
+  # to avoid NOTE on check
+  . <- type <- mission <- level <- id_orbit <- extent_name <- file_ext <-
+    mission <- level <- sensing_date <- id_orbit <- prod_type <- res <- 
+    sensing_datetime <- id_tile <- NULL
+  
 
   # Preliminary settings
   list_prods <- list_prods[!is.na(nn(list_prods))]

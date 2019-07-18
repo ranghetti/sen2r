@@ -25,7 +25,7 @@
 check_param_list <- function(pm, type = "string", correct = TRUE) {
   
   # to avoid NOTE on check
-  . <- NULL
+  . <- valid_s2tiles <- reference_path <- NULL
   
   # check the output type
   

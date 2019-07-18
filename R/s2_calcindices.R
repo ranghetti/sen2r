@@ -102,7 +102,8 @@ s2_calcindices <- function(infiles,
                            .log_message=NA,
                            .log_output=NA) {
   
-  prod_type <- . <- NULL
+  # to avoid NOTE on check
+  prod_type <- . <- i <- NULL
   
   # Internal function 1
   calcindex <- function(x,

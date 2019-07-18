@@ -19,13 +19,15 @@
 #' @importFrom mapedit editModUI
 #' @importFrom utils packageVersion
 #' @importFrom sf st_coordinates st_crs st_geometry st_intersects st_polygon st_read st_bbox st_as_sfc st_transform
-#' @importFrom shiny a actionButton actionLink addResourcePath br callModule checkboxGroupInput
-#'  checkboxInput column conditionalPanel dateRangeInput div downloadButton downloadHandler em fileInput fluidRow h2 h3
-#'  helpText hr HTML htmlOutput icon incProgress isolate NS numericInput observe p
-#'  radioButtons reactive reactiveVal reactiveValues removeModal renderText renderUI req runApp selectInput setProgress
-#'  shinyApp showModal sliderInput span stopApp strong tagList textInput uiOutput updateCheckboxGroupInput
-#'  updateDateRangeInput updateSliderInput updateSelectInput updateRadioButtons updateTextInput withMathJax
-#'  withProgress
+#' @importFrom shiny a actionButton actionLink addResourcePath br callModule 
+#'  checkboxGroupInput checkboxInput column conditionalPanel dateRangeInput 
+#'  div downloadButton downloadHandler em fileInput fluidRow h2 h3 helpText hr 
+#'  HTML htmlOutput icon img incProgress isolate NS numericInput observe p
+#'  radioButtons reactive reactiveVal reactiveValues removeModal renderText 
+#'  renderUI req runApp selectInput setProgress shinyApp showModal sliderInput 
+#'  span stopApp strong tagList textInput uiOutput updateCheckboxGroupInput
+#'  updateDateRangeInput updateNumericInput updateSliderInput updateSelectInput 
+#'  updateRadioButtons updateTextInput withMathJax withProgress
 #' @importFrom shinydashboard box dashboardBody dashboardHeader dashboardPage
 #'  dashboardSidebar menuItem sidebarMenu tabItem tabItems
 #' @importFrom shinyFiles getVolumes parseDirPath parseFilePaths parseSavePath
@@ -1326,6 +1328,9 @@ s2_gui <- function(param_list = NULL,
   ) # end of s2_gui.ui dashboardPage
   
   s2_gui.server <- function(input, output, session) {
+    
+    # to avoid NOTE on check
+    . <- checked <- NULL
     
     # open a waiting modal dialog
     modalDialog(

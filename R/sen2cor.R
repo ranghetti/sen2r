@@ -62,6 +62,9 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
                     tiles=NULL, parallel=FALSE, overwrite=FALSE,
                     .log_message=NA, .log_output=NA) {
   
+  # to avoid NOTE on check
+  i <- NULL
+  
   # load sen2cor executable path
   binpaths <- load_binpaths("sen2cor")
   
