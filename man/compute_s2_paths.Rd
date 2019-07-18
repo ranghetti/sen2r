@@ -35,7 +35,7 @@ list_sen2r_paths(param_list = NULL, gui = NA, preprocess = TRUE,
 
 \item{s2_list_l2a}{Names and paths of input SAFE level-2A products.}
 
-\item{tmpdir}{\code{sen2r} argument (refer to \link{sen2r} documentation).}
+\item{tmpdir}{Path of the temporary directory.}
 
 \item{list_prods}{Character vector with the values of the
 products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").}
@@ -162,9 +162,7 @@ if FALSE, only non temporary files are searched.}
 
 \item{log}{\code{sen2r} argument (refer to \link{sen2r} documentation).}
 
-\item{paths}{Named vector of required paths. It must contain elements
-named \code{"tiles"}, \code{"merged"}, \code{"warped"}, \code{"warped_scl"}, \code{"rgb"}, \code{"masked"}
-and \code{"warped"}.}
+\item{tmpdir}{\code{sen2r} argument (refer to \link{sen2r} documentation).}
 }
 \value{
 A nested list:

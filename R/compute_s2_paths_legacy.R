@@ -43,8 +43,7 @@
 #' @param pm List of input parameters.
 #' @param s2_list_l1c Names and paths of input SAFE level-1C products.
 #' @param s2_list_l2a Names and paths of input SAFE level-2A products.
-#' @param paths Named vector of required paths. It must contain elements
-#'  named `"out"`, `"indices"`, `"tiles"`, `"merged"` and `"warped"`.
+#' @param tmpdir Path of the temporary directory.
 #' @param list_prods Character vector with the values of the
 #'  products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").
 #' @param main_ext File extension corresponding to pm$outformat.

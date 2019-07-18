@@ -14,9 +14,6 @@ compute_s2_paths_legacy(pm, s2_list_l1c, s2_list_l2a, paths, list_prods,
 
 \item{s2_list_l2a}{Names and paths of input SAFE level-2A products.}
 
-\item{paths}{Named vector of required paths. It must contain elements
-named \code{"out"}, \code{"indices"}, \code{"tiles"}, \code{"merged"} and \code{"warped"}.}
-
 \item{list_prods}{Character vector with the values of the
 products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").}
 
@@ -31,6 +28,8 @@ are also searched when \code{_exi} names are computed;
 if FALSE, only non temporary files are searched.}
 
 \item{ignorelist}{Vector of output files to be ignored.}
+
+\item{tmpdir}{Path of the temporary directory.}
 }
 \value{
 A list, containing the following vectors:
