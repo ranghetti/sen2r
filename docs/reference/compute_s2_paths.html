@@ -135,9 +135,8 @@ if <a href='sen2r.html'>sen2r</a>.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>compute_s2_paths</span>(<span class='no'>pm</span>, <span class='no'>s2_list_l1c</span>, <span class='no'>s2_list_l2a</span>, <span class='no'>paths</span>, <span class='no'>list_prods</span>, <span class='no'>out_ext</span>,
-  <span class='no'>index_ext</span>, <span class='no'>tiles_ext</span>, <span class='no'>merged_ext</span>, <span class='no'>warped_ext</span>, <span class='no'>rgb_ext</span>, <span class='no'>sr_masked_ext</span>,
-  <span class='kw'>force_tiles</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>check_tmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>ignorelist</span>)
+    <pre class="usage"><span class='fu'>compute_s2_paths</span>(<span class='no'>pm</span>, <span class='no'>s2_list_l1c</span>, <span class='no'>s2_list_l2a</span>, <span class='no'>tmpdir</span>, <span class='no'>list_prods</span>,
+  <span class='no'>main_ext</span>, <span class='no'>rgb_ext</span>, <span class='kw'>force_tiles</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>check_tmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>ignorelist</span>)
 
 <span class='fu'>list_sen2r_paths</span>(<span class='kw'>param_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>gui</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>preprocess</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>s2_levels</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"l1c"</span>, <span class='st'>"l2a"</span>), <span class='kw'>sel_sensor</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"s2a"</span>, <span class='st'>"s2b"</span>),
@@ -175,9 +174,8 @@ if <a href='sen2r.html'>sen2r</a>.</p>
       <td><p>Names and paths of input SAFE level-2A products.</p></td>
     </tr>
     <tr>
-      <th>paths</th>
-      <td><p>Named vector of required paths. It must contain elements
-named <code>"out"</code>, <code>"indices"</code>, <code>"tiles"</code>, <code>"merged"</code> and <code>"warped"</code>.</p></td>
+      <th>tmpdir</th>
+      <td><p><code>sen2r</code> argument (refer to <a href='sen2r.html'>sen2r</a> documentation).</p></td>
     </tr>
     <tr>
       <th>list_prods</th>
@@ -185,32 +183,12 @@ named <code>"out"</code>, <code>"indices"</code>, <code>"tiles"</code>, <code>"m
 products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").</p></td>
     </tr>
     <tr>
-      <th>out_ext</th>
-      <td><p>Extension (character) of output products.</p></td>
-    </tr>
-    <tr>
-      <th>index_ext</th>
-      <td><p>Extension (character) of index products.</p></td>
-    </tr>
-    <tr>
-      <th>tiles_ext</th>
-      <td><p>Extension (character) of tiled products.</p></td>
-    </tr>
-    <tr>
-      <th>merged_ext</th>
-      <td><p>Extension (character) of merged products.</p></td>
-    </tr>
-    <tr>
-      <th>warped_ext</th>
-      <td><p>Extension (character) of warped products.</p></td>
+      <th>main_ext</th>
+      <td><p>File extension corresponding to pm$outformat.</p></td>
     </tr>
     <tr>
       <th>rgb_ext</th>
-      <td><p>Extension (character) of RGB products.</p></td>
-    </tr>
-    <tr>
-      <th>sr_masked_ext</th>
-      <td><p>Extension (character) of masked products of SR products.</p></td>
+      <td><p>File extension corresponding to pm$rgb_outformat.</p></td>
     </tr>
     <tr>
       <th>force_tiles</th>
@@ -439,10 +417,6 @@ if FALSE, only non temporary files are searched.</p></td>
       <td><p><code>sen2r</code> argument (refer to <a href='sen2r.html'>sen2r</a> documentation).</p></td>
     </tr>
     <tr>
-      <th>tmpdir</th>
-      <td><p><code>sen2r</code> argument (refer to <a href='sen2r.html'>sen2r</a> documentation).</p></td>
-    </tr>
-    <tr>
       <th>rmtmp</th>
       <td><p><code>sen2r</code> argument (refer to <a href='sen2r.html'>sen2r</a> documentation).</p></td>
     </tr>
@@ -450,46 +424,44 @@ if FALSE, only non temporary files are searched.</p></td>
       <th>log</th>
       <td><p><code>sen2r</code> argument (refer to <a href='sen2r.html'>sen2r</a> documentation).</p></td>
     </tr>
+    <tr>
+      <th>paths</th>
+      <td><p>Named vector of required paths. It must contain elements
+named <code>"tiles"</code>, <code>"merged"</code>, <code>"warped"</code>, <code>"warped_scl"</code>, <code>"rgb"</code>, <code>"masked"</code>
+and <code>"warped"</code>.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list, containing the following vectors:
-<code>tiles_names_exp</code>, <code>merged_names_exp</code>, <code>warped_names_exp</code>,
-<code>masked_names_exp</code>, <code>out_names_exp</code>, <code>indices_names_exp</code>,
-<code>indices_names_new</code>, <code>out_names_req</code>, <code>out_names_new</code>,
-<code>masked_names_new</code>, <code>warped_names_req</code>, <code>warped_names_reqforrgb</code>,
-<code>warped_names_new</code>,  <code>merged_names_req</code>, <code>merged_names_reqforrgb</code>,
-<code>merged_names_new</code>, <code>tiles_names_req</code>, <code>tiles_names_new</code>,
-<code>safe_names_l1c_req</code>, <code>safe_names_l2a_req</code>.</p>
+    <p>A nested list:</p><ul>
+<li><p>first elements are <code>exi</code>, <code>exp</code>, <code>req</code> and <code>new</code>;</p></li>
+<li><p>second elements deal with the processing step: <code>tiles</code>, <code>merged</code>,
+<code>warped</code>, <code>warped_scl</code>, <code>rgb</code>, <code>masked</code> and <code>indices</code>;</p></li>
+<li><p>third elements are related to output products.</p></li>
+</ul>
+
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p><code>compute_s2_paths</code> is structured in the following way:</p><ol>
 <li><p>Retrieve the file names expected to be present at the
-end of the processing chain (suffix <code>_exp</code>):</p><ul>
-<li><p><code>tiles_names_</code></p></li>
-<li><p><code>merged_names_</code></p></li>
-<li><p><code>warped_names_</code></p></li>
-<li><p><code>masked_names_</code></p></li>
-<li><p><code>out_names_</code> (= <code>warped_names_</code> or <code>subset(warped_names_)+masked_names_</code>)</p></li>
-<li><p><code>indices_names_</code></p></li>
-</ul></li>
+end of the processing chain (element <code>exp</code>) and already existing (<code>exi</code>);</p></li>
 <li><p>Compute the file names expected to be created
-(suffixes <code>_req</code> and <code>_new</code>, see below)
+(elements <code>req</code> and <code>new</code>, see below)
 (this operation is done in reverse order).</p>
-<p>Meaning of the suffixes <code>_exp</code>, <code>_req</code> and <code>_new</code>
-(here and for all the script):</p><ul>
-<li><p><code>_exp</code>: full names of the files expected to be present at the
+<p>Meaning of the elements <code>exi</code>, <code>exp</code>, <code>req</code> and <code>new</code>
+(here and for all the script), which are defined foe each processing step:</p><ul>
+<li><p><code>exi</code>: full names of the files already existing before launching the
+processing chain;</p></li>
+<li><p><code>exp</code>: full names of the files expected to be present at the
 end of the processing chain (already existing or not);</p></li>
-<li><p><code>_req</code>: names of the files required for the next step
-(e.g. tiles_names_req are required to perform s2_merge())</p></li>
-<li><p><code>_new</code>: names of the required files not existing yet (expected
+<li><p><code>req</code>: names of the files required by the step;</p></li>
+<li><p><code>new</code>: names of the required files not existing yet (expected
 to be created).</p></li>
 </ul></li>
 </ol>
     <p>With <code>overwrite=TRUE</code>, all these vectors are equal
-(e.g. <code>merged_names_exp = merged_names_req = merged_names_new</code>),
 because all is overwritten.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
@@ -511,7 +483,7 @@ because all is overwritten.</p>
           </ul>
 
     <h2>Author</h2>
-    <p>Luigi Ranghetti, phD (2018) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p>
+    <p>Luigi Ranghetti, phD (2019) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p>
   </div>
 </div>
 
