@@ -1,3 +1,0 @@
-/tmp/RtmpeH0oWx/dirc7431febd270/tiles/TCI/S2A2A_20160512_065_32TMR_TCI_10.vrt
-/tmp/RtmpeH0oWx/dirc7431febd270/tiles/TCI/S2A2A_20160502_065_32TMR_TCI_10.vrt
-/tmp/RtmpeH0oWx/dirc7431febd270/tiles/TCI/S2A2A_20160422_065_32TMR_TCI_10.vrt

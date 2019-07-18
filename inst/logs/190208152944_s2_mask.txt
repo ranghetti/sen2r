@@ -1,6 +1,0 @@
-/home/lranghetti/share/git/github/ranghetti/sen2r/inst/extdata/example_files/out/out_test2/BOA/S2A2A_20180810_065_Scalve_BOA_10.tif
-/home/lranghetti/share/git/github/ranghetti/sen2r/inst/extdata/example_files/out/out_test2/BOA/S2A2A_20180807_022_Scalve_BOA_10.tif
-/home/lranghetti/share/git/github/ranghetti/sen2r/inst/extdata/example_files/out/out_test2/BOA/S2B2A_20180805_065_Scalve_BOA_10.tif
-/tmp/Rtmpv3tlvr/sen2r_68b631ff75ec/group68b62f0de626/warped/SCL/S2A2A_20180810_065_Scalve_SCL_10.tif
-/tmp/Rtmpv3tlvr/sen2r_68b631ff75ec/group68b62f0de626/warped/SCL/S2A2A_20180807_022_Scalve_SCL_10.tif
-/tmp/Rtmpv3tlvr/sen2r_68b631ff75ec/group68b62f0de626/warped/SCL/S2B2A_20180805_065_Scalve_SCL_10.tif

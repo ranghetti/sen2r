@@ -1,3 +1,0 @@
-/tmp/Rtmpv3tlvr/sen2r_68b62961ca69/group68b6840d9e9/warped/BOA/S2A2A_20180810_065_Scalve_BOA_10.vrt
-/tmp/Rtmpv3tlvr/sen2r_68b62961ca69/group68b6840d9e9/warped/BOA/S2A2A_20180807_022_Scalve_BOA_10.vrt
-/tmp/Rtmpv3tlvr/sen2r_68b62961ca69/group68b6840d9e9/warped/BOA/S2B2A_20180805_065_Scalve_BOA_10.vrt
