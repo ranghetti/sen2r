@@ -87,7 +87,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
                     max_cloud=100) {
   
   # to avoid NOTE on check
-  i <- NULL
+  . <- i <- NULL
   
   # convert input NA arguments in NULL
   for (a in c("spatial_extent","tile","orbit","time_interval","apihub")) {

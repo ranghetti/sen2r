@@ -55,7 +55,6 @@
 #' @param parallel `sen2r` argument (refer to [sen2r] documentation).
 #' @param processing_order `sen2r` argument (refer to [sen2r] documentation).
 #' @param use_python `sen2r` argument (refer to [sen2r] documentation).
-#' @param tmpdir `sen2r` argument (refer to [sen2r] documentation).
 #' @param rmtmp `sen2r` argument (refer to [sen2r] documentation).
 #' @param log `sen2r` argument (refer to [sen2r] documentation).
 #' @rdname compute_s2_paths
@@ -185,7 +184,7 @@ list_sen2r_paths <- function(param_list = NULL,
     use_python = use_python,
     tmpdir = tmpdir,
     rmtmp = rmtmp,
-    .log_message = NA, .log_output = NA,
+    log = NA,
     .only_list_names = TRUE
   )
   

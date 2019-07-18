@@ -40,7 +40,7 @@
 #' @param rgb_ext File extension corresponding to pm$rgb_outformat.
 #' @param force_tiles (optional) Logical: passed to [safe_shortname] (default: FALSE).
 #' @param check_tmp (optional) Logical: if TRUE (default), temporary files
-#'  are also searched when `_exi` names are computed; 
+#'  are also searched when `exi` names are computed; 
 #'  if FALSE, only non temporary files are searched.
 #' @param ignorelist Vector of output files to be ignored.
 #'

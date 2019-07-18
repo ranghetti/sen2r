@@ -47,7 +47,7 @@ products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").}
 \item{force_tiles}{(optional) Logical: passed to \link{safe_shortname} (default: FALSE).}
 
 \item{check_tmp}{(optional) Logical: if TRUE (default), temporary files
-are also searched when \code{_exi} names are computed;
+are also searched when \code{exi} names are computed;
 if FALSE, only non temporary files are searched.}
 
 \item{ignorelist}{Vector of output files to be ignored.}
@@ -161,8 +161,6 @@ if FALSE, only non temporary files are searched.}
 \item{rmtmp}{\code{sen2r} argument (refer to \link{sen2r} documentation).}
 
 \item{log}{\code{sen2r} argument (refer to \link{sen2r} documentation).}
-
-\item{tmpdir}{\code{sen2r} argument (refer to \link{sen2r} documentation).}
 }
 \value{
 A nested list:

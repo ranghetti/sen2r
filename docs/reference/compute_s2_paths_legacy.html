@@ -148,6 +148,11 @@ This function is deprecated, <a href='compute_s2_paths.html'>compute_s2_paths</a
       <td><p>Names and paths of input SAFE level-2A products.</p></td>
     </tr>
     <tr>
+      <th>paths</th>
+      <td><p>Named vector of required paths. It must contain elements
+named <code>"out"</code>, <code>"indices"</code>, <code>"tiles"</code>, <code>"merged"</code> and <code>"warped"</code>.</p></td>
+    </tr>
+    <tr>
       <th>list_prods</th>
       <td><p>Character vector with the values of the
 products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").</p></td>
@@ -173,10 +178,6 @@ if FALSE, only non temporary files are searched.</p></td>
     <tr>
       <th>ignorelist</th>
       <td><p>Vector of output files to be ignored.</p></td>
-    </tr>
-    <tr>
-      <th>tmpdir</th>
-      <td><p>Path of the temporary directory.</p></td>
     </tr>
     </table>
     
