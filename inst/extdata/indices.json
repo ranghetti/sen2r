@@ -1897,7 +1897,7 @@
       "longname": "Continuum Removal in the red",
       "name": "CRred",
       "link": "Panigada et al. 2019 (in press)",
-      "s2_formula": "(band_4)/(band_3+par_a*(band_6-band_3))",
+      "s2_formula": "clip((band_4)/(band_3+par_a*(band_6-band_3)),0,1)",
       "checked": true,
       "s2_formula_mathml": ""
     },
@@ -1906,7 +1906,7 @@
       "longname": "Continuum Removal in the red (Sentinel-2A reflectances)",
       "name": "CRred-2A",
       "link": "Panigada et al. 2019 (in press)",
-      "s2_formula": "(band_4)/(band_3+par_a*(band_6-band_3))",
+      "s2_formula": "clip((band_4)/(band_3+par_a*(band_6-band_3)),0,1)",
       "checked": false,
       "a": 0.579966795794134,
       "s2_formula_mathml": ""
@@ -1916,7 +1916,7 @@
       "longname": "Continuum Removal in the red (Sentinel-2B reflectances)",
       "name": "CRred-2B",
       "link": "Panigada et al. 2019 (in press)",
-      "s2_formula": "(band_4)/(band_3+par_a*(band_6-band_3))",
+      "s2_formula": "clip((band_4)/(band_3+par_a*(band_6-band_3)),0,1)",
       "checked": false,
       "a": 0.588006662965019,
       "s2_formula_mathml": ""
@@ -1926,7 +1926,7 @@
       "longname": "Continuum Removal in the red (standard reflectances)",
       "name": "CRred-0",
       "link": "Panigada et al. 2019 (in press)",
-      "s2_formula": "(band_4)/(band_3+par_a*(band_6-band_3))",
+      "s2_formula": "clip((band_4)/(band_3+par_a*(band_6-band_3)),0,1)",
       "checked": false,
       "a": 0.583333333333333,
       "s2_formula_mathml": ""
@@ -1936,7 +1936,7 @@
       "longname": "Band Depth in the red",
       "name": "BDred",
       "link": "Panigada et al. 2019 (in press)",
-      "s2_formula": "1-(band_4)/(band_3+par_a*(band_6-band_3))",
+      "s2_formula": "clip(1-(band_4)/(band_3+par_a*(band_6-band_3)),0,1)",
       "checked": true,
       "s2_formula_mathml": ""
     },
@@ -1945,7 +1945,7 @@
       "longname": "Band Depth in the red (Sentinel-2A reflectances)",
       "name": "BDred-2A",
       "link": "Panigada et al. 2019 (in press)",
-      "s2_formula": "1-(band_4)/(band_3+par_a*(band_6-band_3))",
+      "s2_formula": "clip(1-(band_4)/(band_3+par_a*(band_6-band_3)),0,1)",
       "checked": false,
       "a": 0.579966795794134,
       "s2_formula_mathml": ""
@@ -1955,7 +1955,7 @@
       "longname": "Band Depth in the red (Sentinel-2B reflectances)",
       "name": "BDred-2B",
       "link": "Panigada et al. 2019 (in press)",
-      "s2_formula": "1-(band_4)/(band_3+par_a*(band_6-band_3))",
+      "s2_formula": "clip(1-(band_4)/(band_3+par_a*(band_6-band_3)),0,1)",
       "checked": false,
       "a": 0.588006662965019,
       "s2_formula_mathml": ""
@@ -1965,7 +1965,7 @@
       "longname": "Band Depth in the red (standard reflectances)",
       "name": "BDred-0",
       "link": "Panigada et al. 2019 (in press)",
-      "s2_formula": "1-(band_4)/(band_3+par_a*(band_6-band_3))",
+      "s2_formula": "clip(1-(band_4)/(band_3+par_a*(band_6-band_3)),0,1)",
       "checked": false,
       "a": 0.583333333333333,
       "s2_formula_mathml": ""
@@ -1975,7 +1975,7 @@
       "longname": "Continuum Removal in the red 2",
       "name": "CRred2",
       "link": "",
-      "s2_formula": "(((par_b-par_a)*(band_4+band_3)+(par_c-par_b)*(band_5+band_4)+(par_d-par_c)*(band_6+band_5))/((par_d-par_a)*(band_6+band_3)))",
+      "s2_formula": "clip((((par_b-par_a)*(band_4+band_3)+(par_c-par_b)*(band_5+band_4)+(par_d-par_c)*(band_6+band_5))/((par_d-par_a)*(band_6+band_3))),0,1)",
       "checked": false,
       "s2_formula_mathml": ""
     },
@@ -1984,7 +1984,7 @@
       "longname": "Continuum Removal in the red 2 (Sentinel-2A reflectances)",
       "name": "CRred2-2A",
       "link": "",
-      "s2_formula": "(((par_b-par_a)*(band_4+band_3)+(par_c-par_b)*(band_5+band_4)+(par_d-par_c)*(band_6+band_5))/((par_d-par_a)*(band_6+band_3)))",
+      "s2_formula": "clip((((par_b-par_a)*(band_4+band_3)+(par_c-par_b)*(band_5+band_4)+(par_d-par_c)*(band_6+band_5))/((par_d-par_a)*(band_6+band_3))),0,1)",
       "checked": false,
       "a": 559.8,
       "b": 664.6,
@@ -1997,7 +1997,7 @@
       "longname": "Continuum Removal in the red 2 (Sentinel-2B reflectances)",
       "name": "CRred2-2B",
       "link": "",
-      "s2_formula": "(((par_b-par_a)*(band_4+band_3)+(par_c-par_b)*(band_5+band_4)+(par_d-par_c)*(band_6+band_5))/((par_d-par_a)*(band_6+band_3)))",
+      "s2_formula": "clip((((par_b-par_a)*(band_4+band_3)+(par_c-par_b)*(band_5+band_4)+(par_d-par_c)*(band_6+band_5))/((par_d-par_a)*(band_6+band_3))),0,1)",
       "checked": false,
       "a": 559,
       "b": 664.9,
@@ -2010,7 +2010,7 @@
       "longname": "Continuum Removal in the red 2 (standard reflectances)",
       "name": "CRred2-0",
       "link": "",
-      "s2_formula": "(((par_b-par_a)*(band_4+band_3)+(par_c-par_b)*(band_5+band_4)+(par_d-par_c)*(band_6+band_5))/((par_d-par_a)*(band_6+band_3)))",
+      "s2_formula": "clip((((par_b-par_a)*(band_4+band_3)+(par_c-par_b)*(band_5+band_4)+(par_d-par_c)*(band_6+band_5))/((par_d-par_a)*(band_6+band_3))),0,1)",
       "checked": false,
       "a": 560,
       "b": 665,
@@ -2038,5 +2038,5 @@
     }
   ],
   "pkg_version": ["1.0.2"],
-  "creation_date": ["2019-07-08 16:30:20"]
+  "creation_date": ["2019-07-23 14:01:10"]
 }
