@@ -102,7 +102,8 @@ s2_calcindices <- function(infiles,
                            .log_message=NA,
                            .log_output=NA) {
   
-  prod_type <- . <- NULL
+  # to avoid NOTE on check
+  prod_type <- . <- i <- NULL
   
   # Internal function 1
   calcindex <- function(x,
@@ -117,6 +118,7 @@ s2_calcindices <- function(infiles,
     
     # Internal function 2
     power <- function(x,y) {x^y}
+    clip <- function(x,min,max) {(x+min+2*max+abs(x-min)-abs(x+min-2*max+abs(x-min)))/4}
     
     out <- raster(x)
     out <- writeStart(
@@ -143,7 +145,7 @@ s2_calcindices <- function(infiles,
       } else {
         v_out <- round(eval(parse(text = sel_formula)))
       }
-        
+      
       
       # m   <- getValues(y, row = bs$row[i], nrows = bs$nrows[i])
       out <- writeValues(out, v_out, bs$row[i])
@@ -350,30 +352,25 @@ s2_calcindices <- function(infiles,
                                 paste0("(",gdal_bands[sel_band,"letter"],".astype(float)/10000)"),
                                 sel_formula)
           }
-          if (grepl("Int", dataType)) {
-            sel_formula <- paste0(
-              "clip(",
-              scaleFactor,"*(",sel_formula,"),",
-              switch(dataType, Int16=-2^15+2, UInt16=0, Int32=-2^31+4, UInt32=0),",",
-              switch(dataType, Int16=2^15-1, UInt16=2^16-2, Int32=2^31-3, UInt32=2^32-4),")"
-            )
-          }
-          if (dataType == "Byte") {
-            sel_formula <- paste0("clip(100+100*(",sel_formula,"),0,200)")
-          }
         } else if (proc_mode == "raster") {
           for (sel_band in rev(seq_len(nrow(gdal_bands)))) {
             sel_formula <- gsub(gdal_bands[sel_band,"band"],
                                 paste0("(v[,",gdal_bands[sel_band,"number"],"]/10000)"),
                                 sel_formula)
           }
-          if (grepl("Int", dataType)) {
-            sel_formula <- paste0(scaleFactor,"*(",sel_formula,")")
-          }
-          if (dataType == "Byte") {
-            sel_formula <- paste0("100+100*(",sel_formula,")")
-          }
-          
+        }
+        
+        # Clip within the datatype range
+        if (grepl("Int", dataType)) {
+          sel_formula <- paste0(
+            "clip(",
+            scaleFactor,"*(",sel_formula,"),",
+            switch(dataType, Int16=-2^15+2, UInt16=0, Int32=-2^31+4, UInt32=0),",",
+            switch(dataType, Int16=2^15-1, UInt16=2^16-2, Int32=2^31-3, UInt32=2^32-4),")"
+          )
+        }
+        if (dataType == "Byte") {
+          sel_formula <- paste0("clip(100+100*(",sel_formula,"),0,200)")
         }
         
         # if sel_format is VRT, create GTiff as intermediate source files
