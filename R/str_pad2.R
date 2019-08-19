@@ -10,6 +10,7 @@
 #' @param side Side on which padding character is added (left, right or both).
 #' @param pad Single padding character (default is a space).
 #' @return A character vector.
+#' @export
 #' @examples
 #' rbind(
 #'   str_pad2("hadley", 30, "left"),
