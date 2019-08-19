@@ -24,7 +24,6 @@ Imports:
   rgdal,
   gdalUtils,
   magrittr,
-  sp,
   sf,
   data.table,
   raster,

@@ -56,7 +56,7 @@ projpar <- function(proj4string, par, abort = FALSE) {
 #' @name projname
 #' @rdname projpar
 #' @export
-#' @importFrom sp is.projected CRS
+#' @importFrom sf st_is_longlat st_crs
 #' @examples \dontrun{
 #' projname("+init=epsg:4326")
 #' }
@@ -64,8 +64,7 @@ projpar <- function(proj4string, par, abort = FALSE) {
 projname <- function(proj4string, abort = FALSE) {
   
   proj4_name <- projpar(proj4string, "geogcs")
-  
-  if (is.projected(CRS(attr(proj4_name, "proj4string")))) {
+  if (!st_is_longlat(st_crs(attr(proj4_name, "proj4string")))) {
     proj4_name <- projpar(proj4string, "projcs")
   }
   proj4_name <- gsub("\\_"," ",proj4_name)
