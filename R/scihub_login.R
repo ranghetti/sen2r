@@ -14,7 +14,6 @@
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @importFrom reticulate py_to_r
-#' @importFrom stringr str_split_fixed
 #' @importFrom shiny a actionButton icon modalButton modalDialog passwordInput tagList textInput
 #' @importFrom shinyFiles shinyFileSave
 
@@ -35,7 +34,7 @@ read_scihub_login <- function(apihub_path=NA) {
   # return user and password
   if (file.exists(apihub_path)) {
     readLines(apihub_path) %>%
-      str_split_fixed(" ", 2)
+      strsplit(" ") %>% sapply(c) %>% t()
   } else {
     # if apihub does not exists, return default credentials
     matrix(c("user","user"), nrow = 1)

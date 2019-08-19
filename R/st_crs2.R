@@ -13,7 +13,6 @@
 #'  if \code{wkt} is given, return \code{crs} object for well-known-text representation \code{wkt}; 
 #'  if \code{x} is of class \code{sf} or \code{sfc}, return its \code{crs} object.
 #' @details See [sf::st_crs] for details.
-#' @importFrom stringr str_pad
 #' @importFrom sf st_crs
 #' @export
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
@@ -31,7 +30,7 @@ st_crs2 <- function(x, ...) {
   sel_crs <- if (grepl("^(([0-5]?[0-9])|60)[Nn]?$", x)) {
     paste0(
       "+init=epsg:326", 
-      str_pad(
+      str_pad2(
         gsub("^(([0-5]?[0-9])|60)[Nn]?$", "\\1", x),
         2, "left", "0"
       )
@@ -39,7 +38,7 @@ st_crs2 <- function(x, ...) {
   } else if (grepl("^(([0-5]?[0-9])|60)[Ss]$", x)) {
     paste0(
       "+init=epsg:327", 
-      str_pad(
+      str_pad2(
         gsub("^(([0-5]?[0-9])|60)[Ss]$", "\\1", x),
         2, "left", "0"
       )

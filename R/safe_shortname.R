@@ -76,7 +76,6 @@
 #' @note License: GPL 3.0
 #' @export
 #' @importFrom digest digest
-#' @importFrom stringr str_pad
 
 #' @examples
 #' # Define product names
@@ -170,10 +169,10 @@ safe_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m",
     if (length(s2_metadata$utm)==1) {
       # otherwise, use convention 1 if UTM zone is unique, 2 if not
       sel_tiles <- paste0(s2_metadata$utm,
-                                    str_pad(sample(1000,1)-1,3,"left","0"))
+                                    str_pad2(sample(1000,1)-1,3,"left","0"))
     } else {
       sel_tiles <- paste0(paste(LETTERS[sample(26,2,replace=TRUE)],collapse=""),
-                                    str_pad(sample(1000,1)-1,3,"left","0"))
+                                    str_pad2(sample(1000,1)-1,3,"left","0"))
     }
     
   }

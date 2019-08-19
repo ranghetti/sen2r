@@ -29,7 +29,6 @@
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @import data.table
-#' @importFrom stringr str_pad
 #' @importFrom jsonlite fromJSON
 #' @importFrom methods is
 #' @export
@@ -82,7 +81,7 @@ s2_dop <- function(s2_orbits = 1:143,
   
   ## Check s2_orbits
   if (is.numeric(s2_orbits)) {
-    s2_orbits <- str_pad(as.integer(s2_orbits), 3, "left", "0")
+    s2_orbits <- str_pad2(as.integer(s2_orbits), 3, "left", "0")
   }
   
   ## Check mission
