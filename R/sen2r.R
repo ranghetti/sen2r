@@ -366,9 +366,6 @@ sen2r <- function(param_list = NULL,
                   rmtmp = TRUE, 
                   log = NA) {
   
-  # to avoid NOTE on check
-  internal_log <- NULL
-  
   # sink to external files
   if (!is.na(log[2])) {
     dir.create(dirname(log[2]), showWarnings=FALSE)
@@ -387,6 +384,9 @@ sen2r <- function(param_list = NULL,
   for (i in seq_along(sen2r_args)) {
     pm_arg_passed[i] <- !do.call(missing, list(sen2r_args[i]))
   }
+  
+  # environment to store internal_log variable
+  sen2r_env <- new.env()
   
   # launch the function
   .sen2r(
@@ -468,9 +468,9 @@ sen2r <- function(param_list = NULL,
   if (!is.na(log[1])) {
     sink(type = "message"); close(logfile_message)
   }
-  if (!is.null(internal_log)) {
+  if (!is.null(sen2r_env$internal_log)) {
     sink(type = "message")
-    internal_log <- NULL
+    sen2r_env$internal_log <- NULL
   }
   
 }
@@ -719,7 +719,7 @@ sen2r <- function(param_list = NULL,
       dir.create(dirname(pm$log[1]), showWarnings=FALSE)
       logfile_message = file(pm$log[1], open = "a")
       sink(logfile_message, type="message")
-      internal_log <<- pm$log[1] # workaround to stop sinking in the external function
+      assign("internal_log", pm$log[1], envir = sen2r_env) # workaround to stop sinking in the external function
     }
   }
   rm(pm_prev)
