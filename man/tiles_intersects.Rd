@@ -36,6 +36,7 @@ which overlap a provided extent.
 License: GPL 3.0
 }
 \examples{
+\dontrun{
 ex_extent <- sf::st_read(
   system.file("extdata/example_files/scalve.kml", package="sen2r"),
   quiet = TRUE
@@ -55,6 +56,7 @@ plot(sf::st_geometry(sel_tiles)); plot(sf::st_geometry(ex_extent), add=TRUE, col
 # Spatial object with the overlapping S2 tiles
 sel_tiles <- tiles_intersects(ex_extent, all = TRUE, out_format = "sf")
 plot(sf::st_geometry(sel_tiles)); plot(sf::st_geometry(ex_extent), add=TRUE, col="yellow")
+}
 }
 \author{
 Luigi Ranghetti, phD (2019) \email{ranghetti.l@irea.cnr.it}

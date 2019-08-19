@@ -149,9 +149,6 @@ safe_isvalid <- function(s2, info="fileinfo") {
     "compactname_L2A_jp2" = list("regex" = "^(?:L2A\\_)?T([A-Z0-9]{5})\\_([0-9]{8}T[0-9]{6})\\_([0-9A-Z]{3})\\_([126]0m)\\.jp2$",
                                  "elements" = c("id_tile","sensing_datetime","bandname","res"))) # here bandname can be also additional_product
   
-  # import python modules
-  py <- init_python()
-  
   # define all possible elements to scan
   info_base <- c("prod_type", "version") # information always retrieved
   info_general <- c("tiles", "utm", "xml_main", "xml_granules") # information retrieved if the product is scanned
@@ -529,6 +526,9 @@ safe_isvalid <- function(s2, info="fileinfo") {
     
     # if necessary, read the file for further metadata
     if (any(info_gdal %in% info)) {
+      
+      # import python modules
+      py <- init_python()
       
       s2_gdal <- py$gdal$Open(s2_xml)
       # in case of error (old names), try to read a single granule

@@ -125,27 +125,27 @@
 <ul>
 <li>
 <p>On Debian and Ubuntu:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> apt-get install -y r-base gdal-bin python-gdal aria2 libpython-dev libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libv8-dev libssl-dev libcairo2-dev</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="fu">sudo</span> apt-get install -y r-base gdal-bin python-gdal aria2 libpython-dev libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libv8-dev libssl-dev libcairo2-dev</a></code></pre></div>
 <p>On Debian, <code>proj-epsg</code> is also required:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> apt-get install -y proj-epsg</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="fu">sudo</span> apt-get install -y proj-epsg</a></code></pre></div>
 <p>On Ubuntu 16.04 LTS Xenial and 14.04 LTS Trusty, the repositories <a href="https://launchpad.net/~ubuntugis">ubuntugis</a> and <a href="https://launchpad.net/~opencpu">opencpu</a> must be added before installing the packages:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> add-apt-repository -y ppa:opencpu/jq
-<span class="fu">sudo</span> add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
-<span class="fu">sudo</span> apt-get update -q</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="fu">sudo</span> add-apt-repository -y ppa:opencpu/jq</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="fu">sudo</span> add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="fu">sudo</span> apt-get update -q</a></code></pre></div>
 Installation was tested over Debian 9 Stretch and Ubuntu 18.04 LTS Bionic; newer versions (Ubuntu &gt; 18.04, Debian &gt; 9) should work, like Ubuntu 16.04 LTS Xenial and 14.04 LTS Trusty should also do. Other releases (Debian ≤ 8; Ubuntu non-LTS &lt; 18.04; Ubuntu LTS ≤ 12.04) are not supported.</li>
 <li>
 <p>On Fedora:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> yum install R gdal gdal-python aria2 python-devels gdal-devel proj-devel geos-devel udunits2-devel jq-devel protobuf-devel v8-devel openssl-devel cairo-devel libcurl-devel netcdf-devel libxml2-devel</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="fu">sudo</span> yum install R gdal gdal-python aria2 python-devels gdal-devel proj-devel geos-devel udunits2-devel jq-devel protobuf-devel v8-devel openssl-devel cairo-devel libcurl-devel netcdf-devel libxml2-devel</a></code></pre></div>
 Installation was tested over Fedora 29.</li>
 <li>
 <p>On ArchLinux:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> pacman -S --noconfirm r base-devel gcc-fortran python-gdal wget aria2 jq protobuf git
-<span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/gyp-git.git
-<span class="bu">cd</span> gyp-git<span class="kw">;</span> <span class="ex">makepkg</span> -si --noconfirm
-<span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/v8-3.14.git
-<span class="bu">cd</span> v8-3.14<span class="kw">;</span> <span class="ex">makepkg</span> -si --noconfirm
-<span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/udunits.git
-<span class="bu">cd</span> udunits<span class="kw">;</span> <span class="ex">makepkg</span> -si --noconfirm</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="fu">sudo</span> pacman -S --noconfirm r base-devel gcc-fortran python-gdal wget aria2 jq protobuf git</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/gyp-git.git</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="bu">cd</span> gyp-git<span class="kw">;</span> <span class="ex">makepkg</span> -si --noconfirm</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/v8-3.14.git</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="bu">cd</span> v8-3.14<span class="kw">;</span> <span class="ex">makepkg</span> -si --noconfirm</a>
+<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/udunits.git</a>
+<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="bu">cd</span> udunits<span class="kw">;</span> <span class="ex">makepkg</span> -si --noconfirm</a></code></pre></div>
 <p>Installation was tested on date 2018-11-21.</p>
 </li>
 </ul>
@@ -155,7 +155,7 @@ Installation was tested over Fedora 29.</li>
 <a href="#installing-sen2r" class="anchor"></a>Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
 </h3>
 <p>Before proceeding, it is suggested to update the existing R packages:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/update.packages">update.packages</a></span>(<span class="dt">ask =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/update.packages">update.packages</a></span>(<span class="dt">ask =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 <p>Doing that, the following warning could appear:</p>
 <pre><code>Warning in install.packages(update[instlib == l, "Package"], l, contriburl = contriburl,  :
   'lib = "/usr/lib/R/library"' is not writable
@@ -165,18 +165,18 @@ Would you like to use a personal library instead?  (y/n)</code></pre>
 <ol style="list-style-type: decimal">
 <li>
 <p>install the package <strong>remotes</strong>, if missing:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"remotes"</span>)</code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"remotes"</span>)</a></code></pre></div>
 </li>
 <li>
 <p>load it and install <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(remotes)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/remotes/topics/install_github">install_github</a></span>(<span class="st">"ranghetti/sen2r"</span>)</code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(remotes)</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/remotes/topics/install_github">install_github</a></span>(<span class="st">"ranghetti/sen2r"</span>)</a></code></pre></div>
 </li>
 </ol>
 <p>This will install the R package along with its package dependencies, containing all the functions necessary to preprocess data.</p>
 <p>Finally, <strong>sen2cor</strong> can be installed from R:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(sen2r)
-<span class="kw"><a href="../reference/install_sen2cor.html">install_sen2cor</a></span>()</code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(sen2r)</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="kw"><a href="../reference/install_sen2cor.html">install_sen2cor</a></span>()</a></code></pre></div>
 </div>
 </div>
 <div id="on-windows" class="section level2">
@@ -188,17 +188,17 @@ Would you like to use a personal library instead?  (y/n)</code></pre>
 </h3>
 <p><a href="https://cran.r-project.org/bin/windows/base">R</a> must be installed before proceeding.</p>
 <p>In the case it was already installed, it is suggested to update the existing R packages:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/update.packages">update.packages</a></span>(<span class="dt">ask =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/update.packages">update.packages</a></span>(<span class="dt">ask =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 <p><span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be installed from GitHub with the R package <strong>remotes</strong>. To do it:</p>
 <ol style="list-style-type: decimal">
 <li>
 <p>install the package <strong>remotes</strong>, if missing:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"remotes"</span>)</code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"remotes"</span>)</a></code></pre></div>
 </li>
 <li>
 <p>load it and install <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(remotes)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/remotes/topics/install_github">install_github</a></span>(<span class="st">"ranghetti/sen2r"</span>)</code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(remotes)</a>
+<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/remotes/topics/install_github">install_github</a></span>(<span class="st">"ranghetti/sen2r"</span>)</a></code></pre></div>
 </li>
 </ol>
 <p>This will install the R package along with its package dependencies, containing all the functions necessary to preprocess data.</p>
@@ -218,8 +218,8 @@ Would you like to use a personal library instead?  (y/n)</code></pre>
 <a href="https://aria2.github.io"><strong>aria2</strong></a> is an alternative downloader which can be used to faster the download of SAFE archives; it can be optionally installed and used.</li>
 </ul>
 <p>These dependences can be graphically checked launching the function</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(sen2r)
-<span class="kw"><a href="../reference/check_sen2r_deps.html">check_sen2r_deps</a></span>()</code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(sen2r)</a>
+<a class="sourceLine" id="cb14-2" data-line-number="2"><span class="kw"><a href="../reference/check_sen2r_deps.html">check_sen2r_deps</a></span>()</a></code></pre></div>
 <p>This function opens a GUI which help to check that they are satisfied; if some of them are missing, the GUI allows to install them directly.</p>
 <!-- Atmospheric correction is performed using [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor): 
 the package will automatically download and install it at first use,

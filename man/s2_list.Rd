@@ -61,7 +61,7 @@ and its name the product name).
 \description{
 The function retrieves the list of available Sentinel-2
 products basing on search criteria. It makes use of
-\href{https://github.com/ranghetti/s2download}{s2download}
+\code{s2download} (see \link{import_s2download})
 python function only to retrieve the list of files, without
 downloading and correcting them.
 }

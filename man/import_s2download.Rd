@@ -16,7 +16,7 @@ aria2 is checked; if FALSE, only Wget and python are checked.}
 \code{s2download} python module
 }
 \description{
-\href{https://github.com/ranghetti/s2download}{s2download} is
+\code{s2download} is
 a collection of python scripts used to download
 and correct Sentinel-2 images, and it is required by this package.
 This internal function check if their dependences (python, wget and aria2)

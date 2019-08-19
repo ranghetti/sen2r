@@ -543,7 +543,14 @@ s2_mask <- function(infiles,
             # maxmem <- get_freemem() / 2
             maskapply_serial <- function(x, y, na, out_file = '', datatype, minrows = NULL,
                                          overwrite = overwrite) {
-              out <- raster:::.copyWithProperties(x)
+              if (inherits(x, "RasterStackBrick")) {
+                out <- brick(x, values = FALSE)
+              }
+              else {
+                out <- raster(x)
+                out@legend <- x@legend
+              }
+              
               if (grepl("\\.vrt$", out_file)) {
                 out_file <- gsub("\\.vrt$", ".tif", out_file)
               }

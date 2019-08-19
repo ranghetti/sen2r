@@ -448,6 +448,7 @@ sen2r <- function(param_list = NULL,
     tmpdir = tmpdir,
     rmtmp = rmtmp,
     log = log,
+    globenv = sen2r_env,
     .only_list_names = FALSE
   )
   
@@ -538,6 +539,7 @@ sen2r <- function(param_list = NULL,
                    tmpdir,
                    rmtmp,
                    log,
+                   globenv,
                    .only_list_names = FALSE) {
   
   # to avoid NOTE on check
@@ -719,7 +721,7 @@ sen2r <- function(param_list = NULL,
       dir.create(dirname(pm$log[1]), showWarnings=FALSE)
       logfile_message = file(pm$log[1], open = "a")
       sink(logfile_message, type="message")
-      assign("internal_log", pm$log[1], envir = sen2r_env) # workaround to stop sinking in the external function
+      assign("internal_log", pm$log[1], envir = globenv) # workaround to stop sinking in the external function
     }
   }
   rm(pm_prev)

@@ -4,3 +4,8 @@
 ^.*\.yaml$
 ^README\.R?md$
 ^WIP$
+CONDUCT.md
+Dockerfile
+docs
+index.R?md
+utils

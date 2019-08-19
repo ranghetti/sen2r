@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Import s2download python module — import_s2download • An R toolbox to find, download an preprocess Sentinel-2 data</title>
+<title>Pad a string. — str_pad2 • An R toolbox to find, download an preprocess Sentinel-2 data</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,13 +30,12 @@
 
 
 
-<meta property="og:title" content="Import s2download python module — import_s2download" />
+<meta property="og:title" content="Pad a string. — str_pad2" />
 
-<meta property="og:description" content="s2download is
-a collection of python scripts used to download
-and correct Sentinel-2 images, and it is required by this package.
-This internal function check if their dependences (python, wget and aria2)
-are installed, and imports the module." />
+<meta property="og:description" content="Vectorised over string, width and pad.
+This is an internal function doing the same thing of stringr::str_pad
+(execpting for parameters 'width' and 'length' which must be of length 1),
+but without depending on package stringi." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -110,46 +109,63 @@ are installed, and imports the module." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Import s2download python module</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/import_s2download.R'><code>R/import_s2download.R</code></a></small>
-    <div class="hidden name"><code>import_s2download.Rd</code></div>
+    <h1>Pad a string.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/str_pad2.R'><code>R/str_pad2.R</code></a></small>
+    <div class="hidden name"><code>str_pad2.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p><code>s2download</code> is
-a collection of python scripts used to download
-and correct Sentinel-2 images, and it is required by this package.
-This internal function check if their dependences (python, wget and aria2)
-are installed, and imports the module.</p>
+    <p>Vectorised over <code>string</code>, <code>width</code> and <code>pad</code>.
+This is an internal function doing the same thing of <a href='https://stringr.tidyverse.org/reference/str_pad.html'>stringr::str_pad</a>
+(execpting for parameters <code>'width'</code> and <code>'length'</code> which must be of length 1),
+but without depending on package <code>stringi</code>.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>import_s2download</span>(<span class='kw'>with_aria2</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>str_pad2</span>(<span class='no'>string</span>, <span class='no'>width</span>, <span class='kw'>side</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"left"</span>, <span class='st'>"right"</span>, <span class='st'>"both"</span>), <span class='kw'>pad</span> <span class='kw'>=</span> <span class='st'>" "</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>with_aria2</th>
-      <td><p>(optional) Logical: if TRUE (default), the presence of
-aria2 is checked; if FALSE, only Wget and python are checked.</p></td>
+      <th>string</th>
+      <td><p>A character vector.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Optional parameters of <code><a href='https://www.rdocumentation.org/packages/reticulate/topics/import'>import</a></code></p></td>
+      <th>width</th>
+      <td><p>Minimum width of padded strings.</p></td>
+    </tr>
+    <tr>
+      <th>side</th>
+      <td><p>Side on which padding character is added (left, right or both).</p></td>
+    </tr>
+    <tr>
+      <th>pad</th>
+      <td><p>Single padding character (default is a space).</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>s2download</code> python module</p>
-    
-    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
-
-    <p>License: GPL 3.0</p>
+    <p>A character vector.</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>rbind</a></span>(
+  <span class='fu'>str_pad2</span>(<span class='st'>"hadley"</span>, <span class='fl'>30</span>, <span class='st'>"left"</span>),
+  <span class='fu'>str_pad2</span>(<span class='st'>"hadley"</span>, <span class='fl'>30</span>, <span class='st'>"right"</span>),
+  <span class='fu'>str_pad2</span>(<span class='st'>"hadley"</span>, <span class='fl'>30</span>, <span class='st'>"both"</span>)
+)</div><div class='output co'>#&gt;      hadley                          
+#&gt; [1,] "                        hadley"
+#&gt; [2,] "hadley                        "
+#&gt; [3,] "            hadley            "</div><div class='input'>
+<span class='co'># All arguments are vectorised except side</span>
+<span class='fu'>str_pad2</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"a"</span>, <span class='st'>"abc"</span>, <span class='st'>"abcdef"</span>), <span class='fl'>10</span>)</div><div class='output co'>#&gt;            a          abc       abcdef 
+#&gt; "         a" "       abc" "    abcdef" </div><div class='input'>
+<span class='co'># Longer strings are returned unchanged</span>
+<span class='fu'>str_pad2</span>(<span class='st'>"hadley"</span>, <span class='fl'>3</span>)</div><div class='output co'>#&gt;   hadley 
+#&gt; "hadley" </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -157,12 +173,10 @@ aria2 is checked; if FALSE, only Wget and python are checked.</p></td>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
-      <li><a href="#note">Note</a></li>
-          </ul>
-
-    <h2>Author</h2>
-    <p>Luigi Ranghetti, phD (2017) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p>
   </div>
 </div>
 

@@ -20,7 +20,7 @@
 #'  st_intersects st_transform st_union
 #' @author Luigi Ranghetti, phD (2019) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
-#' @examples
+#' @examples \dontrun{
 #' ex_extent <- sf::st_read(
 #'   system.file("extdata/example_files/scalve.kml", package="sen2r"),
 #'   quiet = TRUE
@@ -40,6 +40,7 @@
 #' # Spatial object with the overlapping S2 tiles
 #' sel_tiles <- tiles_intersects(ex_extent, all = TRUE, out_format = "sf")
 #' plot(sf::st_geometry(sel_tiles)); plot(sf::st_geometry(ex_extent), add=TRUE, col="yellow")
+#' }
 
 tiles_intersects <- function(extent, all = FALSE, out_format = "id", .s2tiles=NULL) {
   
