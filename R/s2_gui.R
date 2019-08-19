@@ -579,7 +579,7 @@ s2_gui <- function(param_list = NULL,
                           "Orbits selected\u2000",
                           actionLink("help_orbits", icon("question-circle"))
                         ), 
-                        choices = str_pad(1:143, 3, "left", "0"), 
+                        choices = str_pad2(1:143, 3, "left", "0"), 
                         options = list(
                           `selected-text-format` = "count > 6",
                           `live-search` = TRUE,
