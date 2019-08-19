@@ -93,9 +93,9 @@ compute_s2_paths <- function(pm,
     "tiles" = !is.na(pm$path_tiles),
     "merged" = !is.na(pm$path_merged) | !is.na(pm$path_out) & !steps_todo[["warped"]] & !steps_todo[["masked"]],
     "warped" = length(pm$list_prods[!is.na(pm$list_prods) & pm$list_prods != "SCL"]) > 0 & !steps_todo[["masked"]] & pm$clip_on_extent,
-    "warped_scl" = "SCL" %in% pm$list_prods | pm$clip_on_extent,
+    "warped_scl" = "SCL" %in% pm$list_prods,
     "rgb" = steps_todo[["rgb"]],
-    "masked" = length(pm$list_prods[pm$list_prods != "SCL"]) > 0 & steps_todo[["masked"]],
+    "masked" = length(pm$list_prods[all(!is.na(pm$list_prods), pm$list_prods != "SCL")]) > 0 & steps_todo[["masked"]],
     "indices" = steps_todo[["indices"]]
   )
 
