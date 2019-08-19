@@ -48,7 +48,15 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
     )
   }
   
-
+  
+  ## == Checks to be run first ==
+  
+  # -- Add NA on empty product lists --
+  if (length(nn(pm$list_prods)) == 0) {pm$list_prods <- NA}
+  if (length(nn(pm$list_rgb)) == 0) {pm$list_rgb <- NA}
+  if (length(nn(pm$list_indices)) == 0) {pm$list_indices <- NA}
+  
+    
   ## == Recurrent check ==
   
   # -- Missing parameters: if a parameter is missing, set it to the default --
