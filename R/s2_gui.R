@@ -18,6 +18,7 @@
 #'  removeDrawToolbar
 #' @importFrom mapedit editModUI
 #' @importFrom utils packageVersion
+#' @importFrom stars read_stars
 #' @importFrom sf st_coordinates st_crs st_geometry st_intersects st_polygon st_read st_bbox st_as_sfc st_transform
 #' @importFrom shiny a actionButton actionLink addResourcePath br callModule 
 #'  checkboxGroupInput checkboxInput column conditionalPanel dateRangeInput 
@@ -2243,31 +2244,29 @@ s2_gui <- function(param_list = NULL,
       if (!is.null(input$reference_file_button)) {
         
         reference_path <- input$reference_file_textin
-        reference_spatype <- try(
-          get_rastype(reference_path),
-          silent=TRUE)
-        if (reference_spatype == "rastfile") {
+        reference_stars <- try(
+          read_stars(reference_path, proxy = TRUE),
+          silent=TRUE
+        )
+        if (!is(reference_stars, "try-error")) {
           
           # get metadata
-          ref_metadata <- suppressWarnings(GDALinfo(reference_path))
-          ref_res <- ref_metadata[c("res.x","res.y")]
-          ref_ll <- ref_metadata[c("ll.x","ll.y")]
-          ref_size <- ref_metadata[c("columns","rows")]
-          ref_bbox <- matrix(
-            c(ref_ll, ref_ll + ref_size * ref_res),
-            ncol=2)
-          dimnames(ref_bbox) <- list(c("x","y"),c("min","max"))
-          ref_unit <- attr(ref_metadata, "projection") %>%
-            projpar("unit")
-          ref_proj <- attr(ref_unit, "proj4string")
-          ref_outformat <- attr(ref_metadata, "driver")
+          # ref_metadata <- suppressWarnings(GDALinfo(reference_path))
+          ref_res <- sapply(st_dimensions(reference_stars), function(xy){abs(xy$delta)})
+          ref_size <- sapply(st_dimensions(reference_stars), function(xy){xy$to})
+          ref_bbox <- st_bbox(reference_stars)
+          ref_proj <- st_crs(reference_stars)$proj4string
+          ref_unit <- projpar(ref_proj, "unit")
+          # ref_outformat <- attr(ref_metadata, "driver")
           
-          return(list("metadata" = ref_metadata,
-                      "res" = ref_res,
-                      "bbox" = ref_bbox,
-                      "proj" = ref_proj,
-                      "unit" = ref_unit,
-                      "outformat" = ref_outformat))
+          return(list(
+            "metadata" = ref_metadata,
+            "res" = ref_res,
+            "bbox" = ref_bbox,
+            "proj" = ref_proj,
+            "unit" = ref_unit#,
+            # "outformat" = ref_outformat
+          ))
         }
         
       }
