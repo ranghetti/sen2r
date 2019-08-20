@@ -28,6 +28,7 @@ Imports:
   gdalUtils,
   magrittr,
   sf,
+  stars,
   data.table,
   raster,
   XML,
