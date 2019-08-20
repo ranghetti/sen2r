@@ -1,7 +1,7 @@
 #' @title Retrieve list of available products.
 #' @description The function retrieves the list of available Sentinel-2
 #'  products basing on search criteria. It makes use of
-#'  `s2download` (see [import_s2download])
+#'  [s2download](https://github.com/ranghetti/s2download)
 #'  python function only to retrieve the list of files, without
 #'  downloading and correcting them.
 #' @param spatial_extent A valid spatial object object of class `sf`,
@@ -23,25 +23,20 @@
 #'         product
 #'     - "L1C": list available level-1C products
 #'     - "L2A": list available level-2A products
-#' @param ignore_ingestion_time (optional) Logical: if TRUE (default),
-#'  the research is performed basing only on the sensing date and time
-#'  (the time in which the image was acquired), ignoring the ingestion date
-#'  and time (the time the image was ingested). 
-#'  If FALSE, products with the ingestion time specified with `time_interval`
-#'  are first of all filtered, and them the research is performed on the sensing
-#'  time among them. 
-#'  `ignore_ingestion_time = TRUE` ensures to perform a complete research, but 
-#'  it is slower; setting it to `FALSE` speeds up, although some products could 
-#'  be ignored (but generally the ingestion date is the same of the sensing date).
 #' @param apihub Path of the "apihub.txt" file containing credentials
 #'  of scihub account. If NA (default) the default credentials
 #'  (username "user", password "user") will be used.
 #' @param max_cloud Integer number (0-100) containing the maximum cloud
 #'  level of the tiles to be listed (default: no filter).
-#' @return A vector of available products (being each element an URL,
-#'  and its name the product name).
+#' @param output_type Character: if 'vector' (default), the function returns
+#'  a vector or URLs, whose names are the SAFE names;
+#'  if 'data.table', the output is a data.table with metadata.
+#' @return Basing on the value of argument `output_type``,
+#'  a vector of available products (being each element an URL
+#'  and its name the product name), or a data.table with product metadata.
 #'
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Lorenzo Busetto, phD (2019) \email{lbusett@@gmail.com}
+#' @author Luigi Ranghetti, phD (2019) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @export
 #' @importFrom reticulate py_to_r r_to_py
@@ -51,12 +46,12 @@
 #' @examples \dontrun{
 #' pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
 #' time_window <- as.Date(c("2016-05-01", "2017-07-30"))
-#' 
+#'
 #' # Full-period list
 #' example_s2_list <- s2_list(
-#'   spatial_extent = pos, 
-#'   tile = "32TNR", 
-#'   time_interval = time_window, 
+#'   spatial_extent = pos,
+#'   tile = "32TNR",
+#'   time_interval = time_window,
 #'   orbit = "065"
 #' )
 #' print(example_s2_list)
@@ -64,12 +59,12 @@
 #' as.vector(sort(sapply(names(example_s2_list), function(x) {
 #'   strftime(safe_getMetadata(x,"nameinfo")$sensing_datetime)
 #' })))
-#' 
+#'
 #' # Seasonal-period list
 #' example_s2_list <- s2_list(
-#'   spatial_extent = pos, 
-#'   tile = "32TNR", 
-#'   time_interval = time_window, 
+#'   spatial_extent = pos,
+#'   tile = "32TNR",
+#'   time_interval = time_window,
 #'   time_period = "seasonal"
 #' )
 #' print(example_s2_list)
@@ -82,9 +77,9 @@
 s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parameters
                     time_interval=NULL, time_period = "full", # temporal parameters
                     level="auto",
-                    ignore_ingestion_time = TRUE,
                     apihub=NA,
-                    max_cloud=100) {
+                    max_cloud=100,
+                    output_type = "vector") {
   
   # to avoid NOTE on check
   . <- i <- NULL
@@ -120,22 +115,14 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
       )
     } else {
       # extract and import tiles kml
-      s2tiles_kmz <- system.file("extdata","vector","s2_tiles.kmz",package="sen2r")
-      s2tiles_kml <- gsub("\\.kmz$",".kml",s2tiles_kmz)
-      if (!file.exists(s2tiles_kml)) {
-        unzip(zipfile = s2tiles_kmz,
-              files   = basename(s2tiles_kml),
-              exdir   = dirname(s2tiles_kml),
-              unzip   = "internal")
-      }
-      s2tiles <- st_read(s2tiles_kml, stringsAsFactors=FALSE, quiet=TRUE)
+      s2tiles <- s2_tiles()
       # take the the selected tiles as extent
-      # (this will result in the selection of more tiles, cause to overlapping 
+      # (this will result in the selection of more tiles, cause to overlapping
       # areas; it is filtered in s2_download, but it is slow: FIXME).
       # It is not possible to use tile centroids, because tile of external areas
       # of orbits could not be included).
       spatial_extent <- suppressWarnings(
-        s2tiles[s2tiles$Name %in% tile,] #%>%
+        s2tiles[s2tiles$tile_id %in% tile,] #%>%
         # sf::st_centroid()
       )
     }
@@ -163,14 +150,14 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
   # split time_interval in case of seasonal download
   time_intervals <- if (time_period == "full") {
     data.frame(
-      "start" = strftime(time_interval[1], "%Y%m%d"), 
-      "end" = strftime(time_interval[2], "%Y%m%d"),
+      "start" = time_interval[1],
+      "end"   = time_interval[2],
       stringsAsFactors = FALSE
     )
   } else if (time_period == "seasonal") {
     data.frame(
-      "start" = strftime(seq(time_interval[1], time_interval[2], by="year"), "%Y%m%d"),
-      "end" = strftime(rev(seq(time_interval[2], time_interval[1], by="-1 year")), "%Y%m%d"),
+      "start" = strftime(seq(time_interval[1], time_interval[2], by = "year"), "%Y-%m-%d"),
+      "end"   = strftime(rev(seq(time_interval[2], time_interval[1], by = "-1 year")), "%Y-%m-%d"),
       stringsAsFactors = FALSE
     )
   }
@@ -185,91 +172,146 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
     }
   }
   
-  # import s2download
-  s2download <- import_s2download(convert=FALSE)
-  
-  # read the path of wget
-  binpaths <- load_binpaths("wget")
-  
   # link to apihub
   if (is.null(apihub)) {
-    apihub <- file.path(s2download$inst_path,"apihub.txt")
+    apihub <- system.file("extdata/apihub.txt", package="sen2r")
   }
+  user <- as.character(read.table(apihub)[1,1])
+  pwd <- as.character(read.table(apihub)[1,2])
   if (!file.exists(apihub)) {
     print_message(
       type="error",
       "File apihub.txt with the SciHub credentials is missing."
-    ) # TODO build it
+    )
   }
   
-  # set corr_type
-  corr_type <- switch(
-    level,
-    auto = "auto",
-    L1C  = "no",
-    L2A  = "scihub",
-    "auto")
+  foot <- ifelse(
+    inherits(spatial_extent, "sfc_POINT"),
+    paste0('footprint:%22Intersects(',paste(as.numeric(st_coordinates(spatial_extent)[c(2,1)]), collapse = ",%20"),')%22'),
+    paste0('footprint:%22Intersects(', sf::st_as_text(sf::st_geometry(spatial_extent)),')%22')
+  )
   
-  # run the research of the list of products
-  av_prod_tuple <- lapply(orbit, function(o) {
-    lapply(seq_len(nrow(time_intervals)), function(i) {
-      # py_capture_output was added not only to allow threating the python output
-      # as R message, but also because, on Windows, the following error was returned
-      # if the function was launched outside py_capture_output:
-      # Error in py_call_impl(callable, dots$args, dots$keywords) : 
-      #   IOError: [Errno 9] Bad file descriptor
-      # from a python console, the error did not appear (only inside reticulate).
-      py_output <- reticulate::py_capture_output(
-        py_return <- s2download$s2_download(
-          lat=lat, lon=lon, latmin=latmin, latmax=latmax, lonmin=lonmin, lonmax=lonmax,
-          start_date=time_intervals[i,1], end_date=time_intervals[i,2],
-          start_ingest_date=if (ignore_ingestion_time==FALSE) {time_intervals[i,1]} else {r_to_py(NULL)},
-          end_ingest_date=if (ignore_ingestion_time==FALSE) {time_intervals[i,2]} else {r_to_py(NULL)},
-          # start_ingest_date=time_intervals[i,1],
-          # end_ingest_date=time_intervals[i,2],
-          tile=r_to_py(tile),
-          orbit=r_to_py(o),
-          apihub=apihub,
-          max_cloud=max_cloud,
-          list_only=TRUE,
-          max_records=0, # TODO this is possible after an addition in Sentinel-download python script:
-          # cycle on product requests (one per 100 products) is interrupted after
-          # the first request of length 0.
-          corr_type=corr_type,
-          downloader_path=dirname(binpaths$wget)
-        )
+  n_entries <- 1
+  out_list <- list()
+  
+  for (t_int in seq_len(nrow(time_intervals))) {
+    
+    rows      <- 100
+    start     <- 0
+    end_query <- FALSE
+    
+    while (!end_query) {
+      
+      query_string <- paste0(
+        'https://scihub.copernicus.eu/dhus//search?',
+        'start=', start,
+        '&rows=', rows,
+        '&q=', foot,
+        ' AND platformname:Sentinel-2 ',
+        ' AND beginposition:[', time_intervals[t_int,1], 'T00:00:00.000Z',
+        ' TO ', time_intervals[t_int,2], 'T23:59:59.000Z]',
+        ' AND cloudcoverpercentage:[0 TO ', max_cloud,']'
       )
-      # message(py_output) # do not show the output of the products found
-      # as formatted by Hagolle
-      py_return
-    })
-  })
+      query_string = gsub(" ", "%20",query_string)
+      query_string = gsub("\\[", "%5b",query_string)
+      query_string = gsub("\\]", "%5d",query_string)
+      
+      out_query <- httr::GET(query_string, httr::authenticate(user, pwd))
+      out_xml   <- httr::content(out_query, as = "parsed", encoding = "UTF-8")
+      tmp_list  <- xml2::as_list(out_xml)
+      
+      
+      for (ll in seq_along(tmp_list[[1]])) {
+        
+        in_entry <- xml2::xml_child(out_xml,ll) %>%
+          as.character(.) %>%
+          strsplit(., "\n")
+        
+        if (length(which(grepl("<link href=", in_entry[[1]]))) != 0) {
+          
+          in_entry <- in_entry[[1]]
+          
+          title <- in_entry[which(grepl("<title>", in_entry))] %>%
+            gsub("^.*<title>([^<]+)</title>.*$", "\\1", .)
+          
+          url <- in_entry[which(grepl("<link href=", in_entry))] %>%
+            gsub("^.*<link href=\"([^\"]+)\"/>.*$", "\\1", .)
+          
+          orbit <- in_entry[which(grepl("relativeorbitnumber", in_entry))] %>%
+            gsub("^.*<int name=\"relativeorbitnumber\">([^<]+)</int>.*$", "\\1", .) %>%
+            as.numeric() %>% sprintf("%03i", .)
+          
+          ccov <- in_entry[which(grepl("cloudcoverpercentage", in_entry))] %>%
+            gsub("^.*<double name=\"cloudcoverpercentage\">([^<]+)</double>.*$", "\\1", .) %>%
+            as.numeric()
+          
+          proclev <- in_entry[which(grepl("processinglevel", in_entry))] %>%
+            gsub("^.*<str name=\"processinglevel\">([^<]+)</str>.*$", "\\1", .)
+          
+          sensor <- in_entry[which(grepl("platformserialidentifier", in_entry))] %>%
+            gsub("^.*<str name=\"platformserialidentifier\">([^<]+)</str>.*$", "\\1", .)
+          
+          tileid <- in_entry[which(grepl("name=\"tileid\"", in_entry))] %>%
+            gsub("^.*<str name=\"tileid\">([^<]+)</str>.*$", "\\1", .)
+          
+          sensdate <- in_entry[which(grepl("name=\"endposition\"", in_entry))] %>%
+            gsub("^.*<date name=\"endposition\">([0-9\\-]+)T[0-9\\:\\.]+Z</date>.*$", "\\1", .) %>%
+            as.Date()
+          
+          if (length(tileid) == 0 ) {
+            tileid <- gsub("^.+_T([0-9]{2}[A-Z]{3})_.+$", "\\1", title)
+          }
+          # print(paste0(title, ".SAFE"))
+          out_list[[n_entries]] <- data.frame(
+            name             = paste0(title, ".SAFE"),
+            url              = url,
+            orbit            = orbit,
+            date             = sensdate,
+            ccov             = ccov,
+            proclev          = proclev,
+            sensor           = sensor,
+            tileid           = tileid,
+            stringsAsFactors = FALSE
+          )
+          n_entries <- n_entries + 1
+        }
+      }
+      
+      if (length(tmp_list[[1]]) - 14 != rows) {
+        end_query <- TRUE
+      } else {
+        start <- start + rows
+      }
+    }
+    
+  }
+  out_dt <- rbindlist(out_list)
   
-  av_prod_list <- lapply(av_prod_tuple, lapply, function(x) {py_to_r(x)[[1]]})
-  if (is.character(try(unlist(av_prod_list)))) {
-    av_prod_list <- unlist(av_prod_list)
-    names(av_prod_list) <- unlist(lapply(av_prod_tuple, lapply, function(x) {py_to_r(x)[[2]]}))
+  # remove "wrong" orbits if needed
+  if (!is.null(tile)) {
+    out_dt <- out_dt[tileid %in% tile,]
+  }
+  
+  if (!is.null(orbit)) {
+    out_dt <- out_dt[orbit %in% sprintf("%03i", as.numeric(orbit)),]
+  }
+  
+  if (level == "L1C") {
+    out_dt <- out_dt[proclev == "Level-1C",]
+  } else if (level == "L2A") {
+    out_dt <- out_dt[grepl("^Level-2Ap?$", proclev),]
   } else {
-    av_prod_list <- character(0)
+    out_dt <- out_dt[order(-proclev),]
+    out_dt <- out_dt[,head(.SD, 1),  by = .(date, orbit)]
   }
+  out_dt <- out_dt[order(date),]
   
-  # filter on tiles
-  # (filtering within python code does not take effect with list_only=TRUE)
-  # The filter is applied only on compactname products
-  # (using sen2r(), a complete filter on tiles is applied after downloading the product;
-  # however, s2_download() would correctly download only required tiles)
-  
-  if (!is.null(tile) & length(av_prod_list)>0) {
-    av_prod_tiles <- lapply(names(av_prod_list), function(x) {
-      safe_getMetadata(x, info="nameinfo")$id_tile %>%
-        ifelse(is.null(.), NA, .) 
-    }) %>%
-      unlist()
-    av_prod_list <- av_prod_list[av_prod_tiles %in% tile | is.na(av_prod_tiles)]
+  if (output_type == "data.table") {
+    return(out_dt)
+  } else {
+    out_vector <- out_dt$url
+    names(out_vector) <- out_dt$name
+    return(out_vector)
   }
-  
-  return(av_prod_list)
-  
-  # TODO add all the checks!
   
 }
