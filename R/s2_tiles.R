@@ -32,15 +32,15 @@ s2_tiles <- function() {
   
   # extract and import tiles kml
   s2tiles_url <- "https://sentinel.esa.int/documents/247904/1955685/S2A_OPER_GIP_TILPAR_MPC__20151209T095117_V20150622T000000_21000101T000000_B00.kml"
-  s2tiles_kml <- file.path(system.file("extdata",package="sen2r"), "vector", "s2_tiles.kml")
-  if (!file.exists(s2tiles_kml)) {
+  s2tiles_rds <- file.path(system.file("extdata",package="sen2r"), "vector", "s2_tiles.rds")
+  if (!file.exists(s2tiles_rds)) {
     print_message(
       date = TRUE,
       type = "message",
       "Downloading and creating the vector of Sentinel-2 tiles ",
       "(this happens once)..."
     )
-    dir.create(dirname(s2tiles_kml), showWarnings = FALSE)
+    dir.create(dirname(s2tiles_rds), showWarnings = FALSE)
     GET(s2tiles_url, write_disk(s2tiles_raw <- tempfile(fileext = ".kml")), overwrite=TRUE)
     s2tiles <- st_read(s2tiles_raw, stringsAsFactors=FALSE, quiet=TRUE)
     s2tiles <- s2tiles[,"Name"] %>%
@@ -49,8 +49,8 @@ s2_tiles <- function() {
       aggregate(list(.$Name), function(x) x[1]) %>% # group polygons by id
       st_cast("MULTIPOLYGON")
     names(s2tiles) <- gsub("^Name$","tile_id",names(s2tiles))
-    st_write(s2tiles[,"tile_id"], s2tiles_kml, quiet = TRUE)
+    saveRDS(s2tiles[,"tile_id"], s2tiles_rds)
   }
-  st_read(s2tiles_kml, stringsAsFactors=FALSE, quiet=TRUE)
+  readRDS(s2tiles_rds)
   
 }
