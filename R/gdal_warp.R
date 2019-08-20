@@ -215,16 +215,26 @@ gdal_warp <- function(srcfiles,
   
   # if "mask" is specified, take "mask" and "te" from it
   if (!is.null(mask)) {
-    mask_type <- get_spatype(mask)
-    # if it is a vector, set "te" to the bounding box (in t_srs)
-    if (mask_type == "vectfile") {
-      mask <- st_read(mask, quiet=TRUE)
-    } else if (mask_type == "spobject") {
-      mask <- st_as_sf(mask)
-    } else if (mask_type == "rastfile") {
-      mask <- st_as_sfc(st_bbox(raster(mask)))
-    } 
-    
+    mask <- if (is(mask, "sf") | is(mask, "sfc")) {
+      st_sf(mask)
+    } else if (is(mask, "Spatial")) {
+      st_as_sf(mask)
+    } else if (is(mask, "Raster") | is(mask, "stars")) {
+      st_as_sfc(st_bbox(mask))
+    } else if (is(mask, "character")) {
+      mask0 <- try(st_read(mask, quiet=TRUE), silent = TRUE)
+      if (is(mask0, "sf")) {
+        mask0
+      } else {
+        mask1 <- try(read_stars(mask, proxy=TRUE), silent = TRUE)
+        if (is(mask0, "stars")) {
+        st_as_sfc(st_bbox(mask1))
+        } else {
+          stop("'mask' is not a recognised spatial file.")
+        }
+      }
+    }
+
     # Check that the polygon is not empty
     if (length(grep("POLYGON",st_geometry_type(mask)))>=1 &
         sum(st_area(st_geometry(mask))) <= 0*units::ud_units$m^2) {
