@@ -25,7 +25,7 @@
 #'   system.file("extdata/example_files/scalve.kml", package="sen2r"),
 #'   quiet = TRUE
 #' )
-#' ex_extent <- ex_extent[ex_extent$description == "Schilpario",]
+#' ex_extent <- ex_extent[ex_extent$Description == "Schilpario",]
 #' 
 #' # Tile ID of the required S2 tile
 #' tiles_intersects(ex_extent)

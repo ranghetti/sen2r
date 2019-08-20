@@ -3,7 +3,8 @@
 #' @return An sf spatial object containing the extent of the tiles.
 #' @export
 #' @importFrom sf st_read
-#' @importFrom utils unzip
+#' @importFrom httr GET write_disk
+# #' @importFrom utils unzip
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @examples 
@@ -18,18 +19,36 @@
 
 s2_tiles <- function() {
   
+  # # extract and import tiles kml
+  # if (!file.exists(s2tiles_kml)) {
+  #   unzip(zipfile = s2tiles_kmz,
+  #         files   = basename(s2tiles_kml),
+  #         exdir   = dirname(s2tiles_kml),
+  #         unzip   = "internal")
+  # }
+  
   # extract and import tiles kml
-  s2tiles_kmz <- system.file("extdata","vector","s2_tiles.kmz",package="sen2r")
-  s2tiles_kml <- gsub("\\.kmz$",".kml",s2tiles_kmz)
+  # s2tiles_kmz <- system.file("extdata","vector","s2_tiles.kmz",package="sen2r")
+  # s2tiles_kml <- gsub("\\.kmz$",".kml",s2tiles_kmz)
+  s2tiles_url <- "https://sentinel.esa.int/documents/247904/1955685/S2A_OPER_GIP_TILPAR_MPC__20151209T095117_V20150622T000000_21000101T000000_B00.kml"
+  s2tiles_kml <- file.path(system.file("extdata",package="sen2r"), "vector","s2_tiles.kml")
   if (!file.exists(s2tiles_kml)) {
-    unzip(zipfile = s2tiles_kmz,
-          files   = basename(s2tiles_kml),
-          exdir   = dirname(s2tiles_kml),
-          unzip   = "internal")
+    # unzip(zipfile = s2tiles_kmz,
+    #       files   = basename(s2tiles_kml),
+    #       exdir   = dirname(s2tiles_kml),
+    #       unzip   = "internal")
+browser()
+    dir.create(dirname(s2tiles_kml), showWarnings = FALSE)
+    GET(s2tiles_url, write_disk(s2tiles_raw <- tempfile(fileext = ".kml")), overwrite=TRUE)
+    s2tiles <- st_read(s2tiles_raw, stringsAsFactors=FALSE, quiet=TRUE)
+    s2tiles[,!names(s2tiles)%in%c("Name","geometry")] <- NULL
+    names(s2tiles) <- gsub("^Name$","tile_id",names(s2tiles))
+    
+    # TODO here Z to polygon
+    
+    st_write(s2tiles, s2tiles_kml)
+    
   }
-  s2tiles <- st_read(s2tiles_kml, stringsAsFactors=FALSE, quiet=TRUE)
-  s2tiles[,!names(s2tiles)%in%c("Name","geometry")] <- NULL
-  names(s2tiles) <- gsub("^Name$","tile_id",names(s2tiles))
-  s2tiles
+  st_read(s2tiles_kml, stringsAsFactors=FALSE, quiet=TRUE)
   
 }
