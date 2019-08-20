@@ -34,7 +34,7 @@
 
 <meta property="og:description" content="The function retrieves the list of available Sentinel-2
 products basing on search criteria. It makes use of
-s2download
+s2download (see import_s2download)
 python function only to retrieve the list of files, without
 downloading and correcting them." />
 <meta name="twitter:card" content="summary" />
@@ -119,7 +119,7 @@ downloading and correcting them." />
     
     <p>The function retrieves the list of available Sentinel-2
 products basing on search criteria. It makes use of
-<a href='https://github.com/ranghetti/s2download'>s2download</a>
+<code>s2download</code> (see <a href='import_s2download.html'>import_s2download</a>)
 python function only to retrieve the list of files, without
 downloading and correcting them.</p>
     
@@ -127,7 +127,7 @@ downloading and correcting them.</p>
 
     <pre class="usage"><span class='fu'>s2_list</span>(<span class='kw'>spatial_extent</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>orbit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>time_period</span> <span class='kw'>=</span> <span class='st'>"full"</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
-  <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>max_cloud</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>output_type</span> <span class='kw'>=</span> <span class='st'>"vector"</span>)</pre>
+  <span class='kw'>ignore_ingestion_time</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>max_cloud</span> <span class='kw'>=</span> <span class='fl'>100</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -171,6 +171,19 @@ product
 - "L2A": list available level-2A products</p></td>
     </tr>
     <tr>
+      <th>ignore_ingestion_time</th>
+      <td><p>(optional) Logical: if TRUE (default),
+the research is performed basing only on the sensing date and time
+(the time in which the image was acquired), ignoring the ingestion date
+and time (the time the image was ingested).
+If FALSE, products with the ingestion time specified with <code>time_interval</code>
+are first of all filtered, and them the research is performed on the sensing
+time among them.
+<code>ignore_ingestion_time = TRUE</code> ensures to perform a complete research, but
+it is slower; setting it to <code>FALSE</code> speeds up, although some products could
+be ignored (but generally the ingestion date is the same of the sensing date).</p></td>
+    </tr>
+    <tr>
       <th>apihub</th>
       <td><p>Path of the "apihub.txt" file containing credentials
 of scihub account. If NA (default) the default credentials
@@ -181,19 +194,12 @@ of scihub account. If NA (default) the default credentials
       <td><p>Integer number (0-100) containing the maximum cloud
 level of the tiles to be listed (default: no filter).</p></td>
     </tr>
-    <tr>
-      <th>output_type</th>
-      <td><p>Character: if 'vector' (default), the function returns
-a vector or URLs, whose names are the SAFE names;
-if 'data.table', the output is a data.table with metadata.</p></td>
-    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Basing on the value of argument `output_type``,
-a vector of available products (being each element an URL
-and its name the product name), or a data.table with product metadata.</p>
+    <p>A vector of available products (being each element an URL,
+and its name the product name).</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
@@ -245,8 +251,7 @@ and its name the product name), or a data.table with product metadata.</p>
     </ul>
 
     <h2>Author</h2>
-    <p>Lorenzo Busetto, phD (2019) <a href='mailto:lbusett@gmail.com'>lbusett@gmail.com</a></p>
-<p>Luigi Ranghetti, phD (2019) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p>
+    <p>Luigi Ranghetti, phD (2017) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p>
   </div>
 </div>
 
