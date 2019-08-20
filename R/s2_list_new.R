@@ -38,9 +38,13 @@
 #' @author Lorenzo Busetto, phD (2019) \email{lbusett@@gmail.com}
 #' @author Luigi Ranghetti, phD (2019) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
-#' @importFrom reticulate py_to_r r_to_py
+#' @import data.table
+#' @importFrom methods is
 #' @importFrom magrittr "%>%"
-#' @importFrom sf st_bbox st_read st_centroid st_polygon st_transform
+#' @importFrom sf st_as_sfc st_as_text st_bbox st_coordinates st_geometry
+#' @importFrom httr GET authenticate content
+#' @importFrom XML htmlTreeParse saveXML xmlRoot
+#' @importFrom utils head read.table
 #'
 #' @examples \dontrun{
 #' pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
@@ -177,7 +181,7 @@ s2_list_new <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial pa
   foot <- ifelse(
     inherits(spatial_extent, "sfc_POINT"),
     paste0('footprint:%22Intersects(',paste(as.numeric(st_coordinates(spatial_extent)[c(2,1)]), collapse = ",%20"),')%22'),
-    paste0('footprint:%22Intersects(', sf::st_as_text(sf::st_geometry(spatial_extent)),')%22')
+    paste0('footprint:%22Intersects(', st_as_text(st_geometry(spatial_extent)),')%22')
   )
   
   n_entries <- 1
@@ -205,15 +209,15 @@ s2_list_new <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial pa
       query_string = gsub("\\[", "%5b",query_string)
       query_string = gsub("\\]", "%5d",query_string)
       
-      out_query <- httr::GET(query_string, httr::authenticate(user, pwd))
-      out_xml   <- httr::content(out_query, as = "parsed", encoding = "UTF-8")
-      tmp_list  <- xml2::as_list(out_xml)
+      out_query <- GET(query_string, authenticate(user, pwd))
+      out_xml   <- content(out_query, as = "parsed", encoding = "UTF-8")
+      out_xml_list <- htmlTreeParse(out_xml, useInternalNodes = TRUE) %>% xmlRoot()
+      out_xml_list <- out_xml_list[["body"]][["feed"]]
       
       
-      for (ll in seq_along(tmp_list[[1]])) {
+      for (ll in which(names(out_xml_list)=="entry")) {
         
-        in_entry <- xml2::xml_child(out_xml,ll) %>%
-          as.character(.) %>%
+        in_entry <- saveXML(out_xml_list[[ll]]) %>%
           strsplit(., "\n")
         
         if (length(which(grepl("<link href=", in_entry[[1]]))) != 0) {
@@ -266,7 +270,7 @@ s2_list_new <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial pa
         }
       }
       
-      if (length(tmp_list[[1]]) - 14 != rows) {
+      if (sum(names(out_xml_list)=="entry") != rows) {
         end_query <- TRUE
       } else {
         start <- start + rows
