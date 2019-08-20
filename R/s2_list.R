@@ -126,20 +126,10 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
         # sf::st_centroid()
       )
     }
-  }
-  
-  # checks on inputs
-  spatext <- st_bbox(st_transform(spatial_extent, 4326))
-  
-  # pass lat,lon if the bounding box is a point or line; latmin,latmax,lonmin,lonmax if it is a rectangle
-  if (spatext["xmin"]==spatext["xmax"] || spatext["ymin"]==spatext["ymax"]) {
-    lon <- mean(spatext["xmin"], spatext["xmax"])
-    lat <- mean(spatext["ymin"], spatext["ymax"])
-    lonmin <- lonmax <- latmin <- latmax <- NULL
   } else {
-    lonmin <- spatext["xmin"]; lonmax <- spatext["xmax"]
-    latmin <- spatext["ymin"]; latmax <- spatext["ymax"]
-    lon <- lat <- NULL
+    # # dissolve spatial extent to multipolygon
+    # spatial_extent <- st_union(spatial_extent)
+    spatial_extent <- st_as_sfc(st_bbox(spatial_extent))
   }
   
   # checks on dates
@@ -296,15 +286,21 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
     out_dt <- out_dt[orbit %in% sprintf("%03i", as.numeric(orbit)),]
   }
   
+  if (nrow(out_dt) == 0) {return(character(0))}
   if (level == "L1C") {
     out_dt <- out_dt[proclev == "Level-1C",]
   } else if (level == "L2A") {
     out_dt <- out_dt[grepl("^Level-2Ap?$", proclev),]
-  } else {
+  } else if (level == "auto") {
     out_dt <- out_dt[order(-proclev),]
     out_dt <- out_dt[,head(.SD, 1),  by = .(date, orbit)]
   }
+  if (nrow(out_dt) == 0) {return(character(0))}
   out_dt <- out_dt[order(date),]
+  
+  # FIXME remove this part of code when s2_download will be rewritten
+  out_dt$url <- gsub("/\\$value", "/\\\\$value", out_dt$url) %>%
+    gsub("/dhus/", "/apihub/", .)
   
   if (output_type == "data.table") {
     return(out_dt)
