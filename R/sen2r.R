@@ -961,6 +961,7 @@ sen2r <- function(param_list = NULL,
         } else {
           pm$s2tiles_selected
         },
+        orbit = pm$s2orbits_selected,
         level = "L1C",
         max_cloud = pm$max_cloud_safe,
         apihub = pm$apihub
@@ -977,6 +978,7 @@ sen2r <- function(param_list = NULL,
         } else {
           pm$s2tiles_selected
         },
+        orbit = pm$s2orbits_selected,
         level = if (pm$step_atmcorr=="auto") {
           "auto"
         } else if (pm$step_atmcorr=="l2a") {
