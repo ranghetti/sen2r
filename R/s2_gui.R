@@ -360,8 +360,8 @@ s2_gui <- function(param_list = NULL,
                   div(
                     style = "padding-bottom:10px;",
                     actionButton(
-                      "scihub",
-                      label = "\u2000Login in SciHub",
+                      "scihub_md",
+                      label = "\u2000Login to SciHub",
                       icon=icon("user-circle")
                     )
                   )
@@ -1493,7 +1493,7 @@ s2_gui <- function(param_list = NULL,
     })
     
     # Edit scihub credentials
-    observeEvent(input$scihub, {
+    observeEvent(input$scihub_md, {
       
       # open the modalDialog
       # showModal(.scihub_modal(
@@ -1501,6 +1501,17 @@ s2_gui <- function(param_list = NULL,
       #   password = if(!is.null(input$scihub_password)){input$scihub_password}else{NA}
       # ))
       showModal(.scihub_modal())
+      
+      # do not activate save button until bot have been provided
+      observeEvent(c(input$scihub_username, input$scihub_password), {
+        if (any(input$scihub_username == "", input$scihub_password == "")) {
+          disable("save_apihub")
+          disable("apihub_path_sel")
+        } else {
+          enable("save_apihub")
+          enable("apihub_path_sel")
+        }
+      })
       
       # dummy variable to define which save button has to be used
       output$switch_save_apihub <- renderText({
@@ -3697,15 +3708,91 @@ s2_gui <- function(param_list = NULL,
       
     }
     
-    # if Return is pressend, exit from GUI and return values
+    # if Return is pressend:
     observeEvent(input$return_param, {
-      return_list <- create_return_list() # run creation of return_list
-      # add parameters not modified by the GUI
-      return_list <- c(return_list, param_list[!names(param_list) %in% names(return_list)])
-      check_param_result <- check_param(return_list)
-      if (check_param_result) {
-        shinyjs::js$closeWindow()
-        stopApp(return_list)
+      if (
+        if (any(length(nn(rv$apihub_path)) == 0, anyNA(rv$apihub_path))) {
+          !file.exists(file.path(system.file("extdata", package="sen2r"), "apihub.txt"))
+        } else {
+          !file.exists(rv$apihub_path)
+        }
+      ) {
+        
+        # alert if apihub does not exists
+        sendSweetAlert(
+          session,
+          "Missing SciHub credentials",
+          paste0(
+            "Please specify your SciHub credentials using the button ",
+            "\"Login to SciHub\" in the \"Product selection\" sheet."
+          ),
+          type = "error"
+        )
+        
+      } else if (length(c(
+        input$list_prods[!input$list_prods %in% c("indices","rgbimages")], 
+        input$list_indices, 
+        input$list_rgb
+      )) == 0) {
+        
+        # alert if no products were specified
+        sendSweetAlert(
+          session, NULL,
+          paste0(
+            "Please select at least one product, spectral index or RGB image",
+            "before continuing."
+          ),
+          type = "error"
+        )
+        
+      } else if (length(input$sel_sensor) == 0) {
+        
+        # alert if no sensors were specified
+        sendSweetAlert(
+          session, NULL,
+          "Please select at least one sensor before continuing.",
+          type = "error"
+        )
+        
+      } else if (output$req_l1c & input$path_l1c_textin == "") {
+        
+        # directory missing
+        sendSweetAlert(
+          session, NULL,
+          "Please specify the directory for Level-1C SAFE products before continuing.",
+          type = "error"
+        )
+        
+      } else if (output$req_l2a & input$path_l2a_textin == "") {
+        
+        # directory missing
+        sendSweetAlert(
+          session, NULL,
+          "Please specify the directory for Level-2A SAFE products before continuing.",
+          type = "error"
+        )
+        
+      } else if (input$path_out_textin == "") {
+        
+        # directory missing
+        sendSweetAlert(
+          session, NULL,
+          "Please specify the directory for output products before continuing.",
+          type = "error"
+        )
+
+      } else {
+        
+        # if all checks passed, exit from GUI and return values
+        return_list <- create_return_list() # run creation of return_list
+        # add parameters not modified by the GUI
+        return_list <- c(return_list, param_list[!names(param_list) %in% names(return_list)])
+        check_param_result <- check_param(return_list)
+        if (check_param_result) {
+          shinyjs::js$closeWindow()
+          stopApp(return_list)
+        }
+        
       }
     })
     
