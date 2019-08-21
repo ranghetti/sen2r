@@ -58,7 +58,7 @@ s2_tiles <- function() {
     # )
     
     GET(
-      "https://raw.githubusercontent.com/ranghetti/sen2r/master/utils/vector/s2_tiles.rds",
+      "https://raw.githubusercontent.com/ranghetti/sen2r/devel/utils/vector/s2_tiles.rds", # FIXME use master
       write_disk(file.path(system.file("extdata",package="sen2r"), "vector", "s2_tiles.rds")),
       overwrite=TRUE
     )
