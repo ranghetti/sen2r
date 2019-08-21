@@ -379,7 +379,7 @@ sen2r <- function(param_list = NULL,
   
   # filter names of passed arguments
   sen2r_args <- formalArgs(.sen2r)
-  sen2r_args <- sen2r_args[!sen2r_args %in% c(".only_list_names")]
+  sen2r_args <- sen2r_args[!sen2r_args %in% c(".only_list_names", "globenv")]
   pm_arg_passed <- logical(0)
   for (i in seq_along(sen2r_args)) {
     pm_arg_passed[i] <- !do.call(missing, list(sen2r_args[i]))
