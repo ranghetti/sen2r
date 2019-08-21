@@ -31,9 +31,9 @@ s2_tiles <- function() {
   . <- NULL # to avoid NOTE on check
   
   # extract and import tiles kml
-  s2tiles_url <- "https://sentinel.esa.int/documents/247904/1955685/S2A_OPER_GIP_TILPAR_MPC__20151209T095117_V20150622T000000_21000101T000000_B00.kml"
   s2tiles_rds <- file.path(system.file("extdata",package="sen2r"), "vector", "s2_tiles.rds")
   if (!file.exists(s2tiles_rds)) {
+    
     print_message(
       date = TRUE,
       type = "message",
@@ -41,15 +41,28 @@ s2_tiles <- function() {
       "(this happens once)..."
     )
     dir.create(dirname(s2tiles_rds), showWarnings = FALSE)
-    GET(s2tiles_url, write_disk(s2tiles_raw <- tempfile(fileext = ".kml")), overwrite=TRUE)
-    s2tiles <- st_read(s2tiles_raw, stringsAsFactors=FALSE, quiet=TRUE)
-    s2tiles <- s2tiles[,"Name"] %>%
-      st_zm() %>% # remove Z column
-      st_collection_extract("POLYGON") %>% # from GEOMETRY to POLYGON
-      aggregate(list(.$Name), function(x) x[1]) %>% # group polygons by id
-      st_cast("MULTIPOLYGON")
-    names(s2tiles) <- gsub("^Name$","tile_id",names(s2tiles))
-    saveRDS(s2tiles[,"tile_id"], s2tiles_rds)
+    
+    # # instructions to create the file from ESA original file
+    # s2tiles_url <- "https://sentinel.esa.int/documents/247904/1955685/S2A_OPER_GIP_TILPAR_MPC__20151209T095117_V20150622T000000_21000101T000000_B00.kml"
+    # GET(s2tiles_url, write_disk(s2tiles_raw <- tempfile(fileext = ".kml")), overwrite=TRUE)
+    # s2tiles <- st_read(s2tiles_raw, stringsAsFactors=FALSE, quiet=TRUE)
+    # s2tiles <- s2tiles[,"Name"] %>%
+    #   st_zm() %>% # remove Z column
+    #   st_collection_extract("POLYGON") %>% # from GEOMETRY to POLYGON
+    #   aggregate(list(.$Name), function(x) x[1]) %>% # group polygons by id
+    #   st_cast("MULTIPOLYGON")
+    # names(s2tiles) <- gsub("^Name$","tile_id",names(s2tiles))
+    # saveRDS(
+    #   s2tiles[,"tile_id"], 
+    #   file.path(dirname(system.file(package="sen2r")), "utils/vector/s2_tiles.rds")
+    # )
+    
+    GET(
+      "https://raw.githubusercontent.com/ranghetti/sen2r/master/utils/vector/s2_tiles.rds",
+      write_disk(file.path(system.file("extdata",package="sen2r"), "vector", "s2_tiles.rds")),
+      overwrite=TRUE
+    )
+    
   }
   readRDS(s2tiles_rds)
   
