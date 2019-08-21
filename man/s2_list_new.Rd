@@ -5,19 +5,20 @@
 \title{Retrieve list of available products.}
 \usage{
 s2_list_new(spatial_extent = NULL, tile = NULL, orbit = NULL,
-  time_interval = NULL, time_period = "full", level = "auto",
-  apihub = NA, max_cloud = 100, output_type = "vector")
+  time_interval = c(Sys.Date() - 10, Sys.Date()), time_period = "full",
+  level = "auto", apihub = NA, max_cloud = 100,
+  output_type = "vector")
 }
 \arguments{
 \item{spatial_extent}{A valid spatial object object of class \code{sf},
 \code{sfc} or \code{sfg}}
 
-\item{tile}{Single Sentinel-2 Tile string (5-length character)}
+\item{tile}{\code{string array} Sentinel-2 Tiles to be considered string (5-length character)}
 
-\item{orbit}{Single Sentinel-2 orbit number}
+\item{orbit}{\code{string array} Sentinel-2 orbit numbers to be considered}
 
-\item{time_interval}{a temporal vector (class \link{POSIXct} or
-\link{Date}) of length 1 (specific day) or 2 (time interval).}
+\item{time_interval}{Dates to be considered, as a temporal vector (class \link{POSIXct} or
+\link{Date}, or string in \code{YYYY-mm-dd} format) of length 1 (specific day) or 2 (time interval).}
 
 \item{time_period}{(optional) Character:
 \itemize{

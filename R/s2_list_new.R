@@ -6,10 +6,10 @@
 #'  downloading and correcting them.
 #' @param spatial_extent A valid spatial object object of class `sf`,
 #'  `sfc` or `sfg`
-#' @param tile Single Sentinel-2 Tile string (5-length character)
-#' @param orbit Single Sentinel-2 orbit number
-#' @param time_interval a temporal vector (class [POSIXct] or
-#'  [Date]) of length 1 (specific day) or 2 (time interval).
+#' @param tile  `string array` Sentinel-2 Tiles to be considered string (5-length character)
+#' @param orbit `string array` Sentinel-2 orbit numbers to be considered
+#' @param time_interval Dates to be considered, as a temporal vector (class [POSIXct] or
+#'  [Date], or string in `YYYY-mm-dd` format) of length 1 (specific day) or 2 (time interval).
 #' @param time_period (optional) Character:
 #'  * "full" (default) means that all
 #'  the images included in the time window are considered;
@@ -41,7 +41,9 @@
 #' @import data.table
 #' @importFrom methods is
 #' @importFrom magrittr "%>%"
-#' @importFrom sf st_as_sfc st_as_text st_bbox st_coordinates st_geometry
+#' @importFrom sf st_as_sfc st_sfc st_point st_as_text st_bbox st_coordinates
+#'  st_geometry st_intersection st_geometry st_convex_hull st_transform st_cast
+#'  st_union st_simplify
 #' @importFrom httr GET authenticate content
 #' @importFrom XML htmlTreeParse saveXML xmlRoot
 #' @importFrom utils head read.table
@@ -77,30 +79,45 @@
 #' })))
 #' }
 
-s2_list_new <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parameters
-                        time_interval=c(Sys.Date()-10, Sys.Date()), time_period = "full", # temporal parameters
-                        level="auto",
-                        apihub=NA,
-                        max_cloud=100,
+s2_list_new <- function(spatial_extent = NULL,
+                        tile           = NULL,
+                        orbit          = NULL, # spatial parameters
+                        time_interval = c(Sys.Date() - 10, Sys.Date()), time_period = "full", # temporal parameters
+                        level       = "auto",
+                        apihub      = NA,
+                        max_cloud   = 100,
                         output_type = "vector") {
-  
+
+  if (!level %in% c("auto", "L2A", "L1C")) {
+    stop("`level` must be \"auto\", \"L2A\" or  \"L1C\"")
+  }
+
+  if (!time_period %in% c("full", "seasonal")) {
+    stop("`level` must be \"full\" or  \"seasonal\"")
+  }
+
+  if (inherits(try(as.Date(time_interval)), "try-error")) {
+    stop("`time_interval` must be of class `Date`, `POSIXct` or `character` cohercible
+         to Date (YYYY-mm-dd). Aborting!")
+  }
+
   # to avoid NOTE on check
   . <- i <- NULL
-  
+
   # convert input NA arguments in NULL
   for (a in c("spatial_extent","tile","orbit","time_interval","apihub")) {
     if (suppressWarnings(all(is.na(get(a))))) {
       assign(a,NULL)
     }
   }
-  
+
   # check if spatial_extent was provided
   spatial_extent_exists <- if (!exists("spatial_extent")) {
     FALSE
   } else if (is.null(spatial_extent)) {
     FALSE
   } else if (is(spatial_extent, "POLYGON")) {
-    if (length(spatial_extent)==0) {
+    if (length(spatial_extent) == 0) {
       FALSE
     } else {
       TRUE
@@ -108,52 +125,70 @@ s2_list_new <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial pa
   } else {
     TRUE
   }
-  
-  # if not, retrieve it from tile
-  if (!spatial_extent_exists) {
-    if (is.null(tile)) {
-      print_message(
-        type = "error",
-        "At least one parameter among spatial_extent and tile must be specified."
-      )
+
+  # verify that spatial_extent is `sf` or `sfc`, and convert to `sfc`
+  if (spatial_extent_exists) {
+    if (!inherits(spatial_extent, c("sf", "sfc"))){
+      stop("`spatial_extent` is not a `sf` or `sfc` object. Aborting!")
     } else {
-      # extract and import tiles kml
-      s2tiles <- s2_tiles()
-      # take the the selected tiles as extent
-      # (this will result in the selection of more tiles, cause to overlapping
-      # areas; it is filtered in s2_download, but it is slow: FIXME).
-      # It is not possible to use tile centroids, because tile of external areas
-      # of orbits could not be included).
-      spatial_extent <- suppressWarnings(
-        s2tiles[s2tiles$tile_id %in% tile,] #%>%
-        # sf::st_centroid()
-      )
+      spatial_extent <- sf::st_geometry(spatial_extent) %>%
+        sf::st_transform(4326)
     }
-  } else {
-    # # dissolve spatial extent to multipolygon
-    spatial_extent <- st_union(spatial_extent)
-    
+  }
+
+  # if not, retrieve it from tile
+  if (all(!spatial_extent_exists, is.null(tile))) {
+    print_message(
+      type = "error",
+      "At least one parameter among spatial_extent and tile must be specified."
+    )
+  }
+  # load tiles borders if needed.
+  if (any(!spatial_extent_exists, is.null(tile))) {
+    # extract and import tiles kml
+    s2tiles <- s2_tiles()
+  }
+
+  # take the the selected tiles as extent if needed
+  # (this will result in the selection of more tiles, cause to overlapping
+  # areas; it is filtered in s2_download, but it is slow: FIXME).
+  # It is not possible to use tile centroids, because tile of external areas
+  # of orbits could not be included).
+  if (!spatial_extent_exists & !is.null(tile)) {
+    spatial_extent <- suppressWarnings(
+      sf::st_cast(sf::st_geometry(s2tiles[s2tiles$tile_id %in% tile,]), "POLYGON")
+    )
+  }
+
+  # if (spatial_extent_exists) {
+  spatial_extent_or <- spatial_extent
+  spatial_extent    <- suppressWarnings(sf::st_union(spatial_extent))
+  # If spatial_extent is not point, simplify polygon if needed / convert to bbox
+  if (inherits(spatial_extent, "sfc_POLYGON")) {
+
     # if spatial_extent has too many vertices, simplify it
-    spatial_extent_or <- spatial_extent
-    dtolerance <- with(as.list(st_bbox(spatial_extent)), sqrt((xmax-xmin)^2 + (ymax-ymin)^2))/500
-    # initial dtolerance value: 0.5% maximum distance 
+    dtolerance <- with(as.list(sf::st_bbox(spatial_extent)), sqrt((xmax - xmin)^2 + (ymax - ymin)^2))/500
+    # initial dtolerance value: 0.5% maximum distance
     n_while = 0
-    while (length(suppressWarnings(st_cast(spatial_extent, "POINT"))) > 30) {
+    while (length(suppressWarnings(sf::st_cast(spatial_extent, "POINT"))) > 30) {
       if (n_while < 10) {
-        spatial_extent <- suppressWarnings(st_simplify(spatial_extent_or, dTolerance = dtolerance))
-        dtolerance <- dtolerance * 2
-        n_while <- n_while + 1
+        spatial_extent <- suppressWarnings(sf::st_simplify(spatial_extent_or, dTolerance = dtolerance))
+        dtolerance     <- dtolerance * 2
+        n_while        <- n_while + 1
       } else {
-        spatial_extent <- st_as_sfc(st_bbox(spatial_extent_or))
+        spatial_extent <- sf::st_as_sfc(sf::st_bbox(spatial_extent_or))
       }
     }
-    
-    
+
+  } else if (!inherits(spatial_extent, "sfc_POINT")) {
+    # spatial_extent <- st_as_sfc(sf::st_bbox(spatial_extent_or))
+    spatial_extent <- sf::st_convex_hull(spatial_extent)
   }
-  
+  # }
+
   # checks on dates
   # TODO add checks on format
-  if (length(time_interval)==1) {
+  if (length(time_interval) == 1) {
     time_interval <- rep(time_interval,2)
   }
   # split time_interval in case of seasonal download
@@ -170,47 +205,49 @@ s2_list_new <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial pa
       stringsAsFactors = FALSE
     )
   }
-  
-  # convert orbits to integer
-  if (is.null(orbit)) {
-    orbit <- list(NULL)
-  } else {
+  if (!is.null(orbit)) {
     orbit <- as.integer(orbit)
-    if (anyNA(orbit)) {
-      orbit <- list(NULL)
+    if (any(is.na(orbit))) {
+      stop("`orbit` must be integer or cohercible to integer. Aborting!")
     }
   }
-  
+
+  if (!is.numeric(max_cloud)) {
+    stop("`max_cloud` must be integer [0,100]. Aborting!")
+  }
+
   # link to apihub
   if (is.null(apihub)) {
     apihub <- system.file("extdata/apihub.txt", package="sen2r")
   }
-  user <- as.character(read.table(apihub)[1,1])
-  pwd <- as.character(read.table(apihub)[1,2])
+
   if (!file.exists(apihub)) {
     print_message(
-      type="error",
-      "File apihub.txt with the SciHub credentials is missing."
+      type = "error",
+      "File apihub.txt with the SciHub credentials is missing. Use function `write_scihub_login` to initialize it. "
     )
+  } else {
+    user <- as.character(read.table(apihub)[1,1])
+    pwd <- as.character(read.table(apihub)[1,2])
   }
-  
+
   foot <- ifelse(
     inherits(spatial_extent, "sfc_POINT"),
-    paste0('footprint:%22Intersects(',paste(as.numeric(st_coordinates(spatial_extent)[c(2,1)]), collapse = ",%20"),')%22'),
-    paste0('footprint:%22Intersects(', st_as_text(st_geometry(spatial_extent)),')%22')
+    paste0('footprint:%22Intersects(', paste(as.numeric(sf::st_coordinates(spatial_extent)[c(2,1)]), collapse = ",%20"),')%22'),
+    paste0('footprint:%22Intersects(', sf::st_as_text(sf::st_geometry(spatial_extent)),')%22')
   )
-  
+
   n_entries <- 1
   out_list <- list()
-  
+
   for (t_int in seq_len(nrow(time_intervals))) {
-    
+
     rows      <- 100
     start     <- 0
     end_query <- FALSE
-    
+
     while (!end_query) {
-      
+
       query_string <- paste0(
         'https://scihub.copernicus.eu/dhus//search?',
         'start=', start,
@@ -221,52 +258,52 @@ s2_list_new <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial pa
         ' TO ', time_intervals[t_int,2], 'T23:59:59.000Z]',
         ' AND cloudcoverpercentage:[0 TO ', max_cloud,']'
       )
-      query_string = gsub(" ", "%20",query_string)
-      query_string = gsub("\\[", "%5b",query_string)
-      query_string = gsub("\\]", "%5d",query_string)
-      
-      out_query <- GET(query_string, authenticate(user, pwd))
-      out_xml   <- content(out_query, as = "parsed", encoding = "UTF-8")
-      out_xml_list <- htmlTreeParse(out_xml, useInternalNodes = TRUE) %>% xmlRoot()
+      query_string <- gsub(" ", "%20",query_string)
+      query_string <- gsub("\\[", "%5b",query_string)
+      query_string <- gsub("\\]", "%5d",query_string)
+
+      out_query    <- httr::GET(query_string, authenticate(user, pwd))
+      out_xml      <- httr::content(out_query, as = "parsed", encoding = "UTF-8")
+      out_xml_list <- XML::htmlTreeParse(out_xml, useInternalNodes = TRUE) %>% XML::xmlRoot()
       out_xml_list <- out_xml_list[["body"]][["feed"]]
-      
-      
+
+
       for (ll in which(names(out_xml_list)=="entry")) {
-        
-        in_entry <- saveXML(out_xml_list[[ll]]) %>%
+
+        in_entry <- XML::saveXML(out_xml_list[[ll]]) %>%
           strsplit(., "\n")
-        
+
         if (length(which(grepl("<link href=", in_entry[[1]]))) != 0) {
-          
+
           in_entry <- in_entry[[1]]
-          
+
           title <- in_entry[which(grepl("<title>", in_entry))] %>%
             gsub("^.*<title>([^<]+)</title>.*$", "\\1", .)
-          
+
           url <- in_entry[which(grepl("<link href=", in_entry))] %>%
             gsub("^.*<link href=\"([^\"]+)\"/>.*$", "\\1", .)
-          
-          orbit <- in_entry[which(grepl("relativeorbitnumber", in_entry))] %>%
+
+          orbitid <- in_entry[which(grepl("relativeorbitnumber", in_entry))] %>%
             gsub("^.*<int name=\"relativeorbitnumber\">([^<]+)</int>.*$", "\\1", .) %>%
             as.numeric() %>% sprintf("%03i", .)
-          
+
           ccov <- in_entry[which(grepl("cloudcoverpercentage", in_entry))] %>%
             gsub("^.*<double name=\"cloudcoverpercentage\">([^<]+)</double>.*$", "\\1", .) %>%
             as.numeric()
-          
+
           proclev <- in_entry[which(grepl("processinglevel", in_entry))] %>%
             gsub("^.*<str name=\"processinglevel\">([^<]+)</str>.*$", "\\1", .)
-          
+
           sensor <- in_entry[which(grepl("platformserialidentifier", in_entry))] %>%
             gsub("^.*<str name=\"platformserialidentifier\">([^<]+)</str>.*$", "\\1", .)
-          
+
           tileid <- in_entry[which(grepl("name=\"tileid\"", in_entry))] %>%
             gsub("^.*<str name=\"tileid\">([^<]+)</str>.*$", "\\1", .)
-          
+
           sensdate <- in_entry[which(grepl("name=\"endposition\"", in_entry))] %>%
             gsub("^.*<date name=\"endposition\">([0-9\\-]+)T[0-9\\:\\.]+Z</date>.*$", "\\1", .) %>%
             as.Date()
-          
+
           if (length(tileid) == 0 ) {
             tileid <- gsub("^.+_T([0-9]{2}[A-Z]{3})_.+$", "\\1", title)
           }
@@ -274,7 +311,7 @@ s2_list_new <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial pa
           out_list[[n_entries]] <- data.frame(
             name             = paste0(title, ".SAFE"),
             url              = url,
-            orbit            = orbit,
+            orbitid          = orbitid,
             date             = sensdate,
             ccov             = ccov,
             proclev          = proclev,
@@ -285,27 +322,32 @@ s2_list_new <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial pa
           n_entries <- n_entries + 1
         }
       }
-      
+
       if (sum(names(out_xml_list)=="entry") != rows) {
         end_query <- TRUE
       } else {
         start <- start + rows
       }
     }
-    
+
   }
   out_dt <- rbindlist(out_list)
+
   if (nrow(out_dt) == 0) {return(character(0))}
-  
-  # remove "wrong" orbits if needed
+
+  # remove "wrong" tiles and orbits if needed
   if (!is.null(tile)) {
     out_dt <- out_dt[tileid %in% tile,]
+  } else {
+    sel_s2tiles <- suppressMessages(suppressWarnings(
+      sf::st_intersection(s2tiles, spatial_extent_or)))
+    out_dt <- out_dt[tileid %in% unique(sel_s2tiles$tile_id),]
   }
-  
+
   if (!is.null(orbit)) {
-    out_dt <- out_dt[orbit %in% sprintf("%03i", as.numeric(orbit)),]
+    out_dt <- out_dt[orbitid %in% sprintf("%03i", as.numeric(orbit)),]
   }
-  
+
   if (nrow(out_dt) == 0) {return(character(0))}
   if (level == "L1C") {
     out_dt <- out_dt[proclev == "Level-1C",]
@@ -313,21 +355,20 @@ s2_list_new <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial pa
     out_dt <- out_dt[grepl("^Level-2Ap?$", proclev),]
   } else if (level == "auto") {
     out_dt <- out_dt[order(-proclev),]
-    out_dt <- out_dt[,head(.SD, 1),  by = .(date, orbit)]
+    out_dt <- out_dt[,head(.SD, 1),  by = .(date, orbitid)]
   }
   if (nrow(out_dt) == 0) {return(character(0))}
   out_dt <- out_dt[order(date),]
-  
+
   # FIXME remove this part of code when s2_download will be rewritten
   out_dt$url <- gsub("/\\$value", "/\\\\$value", out_dt$url) %>%
     gsub("/dhus/", "/apihub/", .)
-  
+
   if (output_type == "data.table") {
     return(out_dt)
   } else {
-    out_vector <- out_dt$url
+    out_vector        <- out_dt$url
     names(out_vector) <- out_dt$name
     return(out_vector)
   }
-  
 }

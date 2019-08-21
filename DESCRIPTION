@@ -49,9 +49,10 @@ Imports:
   lwgeom,
   httr
 Suggests:
-  knitr,
-  rmarkdown,
-  geojsonlint
+    knitr,
+    rmarkdown,
+    geojsonlint,
+    testthat (>= 2.1.0)
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
