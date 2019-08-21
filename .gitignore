@@ -32,7 +32,7 @@
  /wget.exe
  /inst/wget.exe
  *.pyc
- 
+
  # path file
  /extdata/paths.json
  /inst/extdata/paths.json
@@ -43,6 +43,7 @@
  /inst/extdata/example_files/safe/
  /extdata/example_files/out/
  /inst/extdata/example_files/out/
+ /inst/extdata/testdata/example_files/safe/
  /s2download/apihub.txt
  /inst/s2download/apihub.txt
 inst/doc
