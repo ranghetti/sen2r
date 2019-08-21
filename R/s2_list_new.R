@@ -78,7 +78,7 @@
 #' }
 
 s2_list_new <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parameters
-                        time_interval=NULL, time_period = "full", # temporal parameters
+                        time_interval=c(Sys.Date()-10, Sys.Date()), time_period = "full", # temporal parameters
                         level="auto",
                         apihub=NA,
                         max_cloud=100,
@@ -131,8 +131,24 @@ s2_list_new <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial pa
     }
   } else {
     # # dissolve spatial extent to multipolygon
-    # spatial_extent <- st_union(spatial_extent)
-    spatial_extent <- st_as_sfc(st_bbox(spatial_extent))
+    spatial_extent <- st_union(spatial_extent)
+    
+    # if spatial_extent has too many vertices, simplify it
+    spatial_extent_or <- spatial_extent
+    dtolerance <- with(as.list(st_bbox(spatial_extent)), sqrt((xmax-xmin)^2 + (ymax-ymin)^2))/500
+    # initial dtolerance value: 0.5% maximum distance 
+    n_while = 0
+    while (length(suppressWarnings(st_cast(spatial_extent, "POINT"))) > 30) {
+      if (n_while < 10) {
+        spatial_extent <- suppressWarnings(st_simplify(spatial_extent_or, dTolerance = dtolerance))
+        dtolerance <- dtolerance * 2
+        n_while <- n_while + 1
+      } else {
+        spatial_extent <- st_as_sfc(st_bbox(spatial_extent_or))
+      }
+    }
+    
+    
   }
   
   # checks on dates
@@ -279,6 +295,7 @@ s2_list_new <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial pa
     
   }
   out_dt <- rbindlist(out_list)
+  if (nrow(out_dt) == 0) {return(character(0))}
   
   # remove "wrong" orbits if needed
   if (!is.null(tile)) {
