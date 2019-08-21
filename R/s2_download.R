@@ -8,8 +8,8 @@
 #' @param downloader Executable to use to download products
 #'  (default: "wget").
 #' @param apihub Path of the "apihub.txt" file containing credentials
-#'  of scihub account. If NA (default) the default credentials
-#'  (username "user", password "user") will be used.
+#'  of scihub account.
+#'  If NA (default), the default location inside the package will be used.
 #' @param tile Single Sentinel-2 Tile string (5-length character)
 #' @param outdir (optional) Full name of the existing output directory
 #'  where the files should be created (default: current directory).
@@ -77,8 +77,8 @@ s2_download <- function(s2_prodlist=NULL,
   # TODO add checks on the format of filename (one element output of s2_list)
   
   # link to apihub
-  if (is.null(apihub)) {
-    apihub <- file.path(s2download$inst_path,"apihub.txt")
+  if (is.na(apihub)) {
+    apihub <- file.path(system.file("extdata", package="sen2r"), "apihub.txt")
   }
   if (!file.exists(apihub)) {
     print_message(type="error","File apihub.txt with the SciHub credentials is missing.") # TODO build it

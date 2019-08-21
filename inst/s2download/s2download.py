@@ -229,7 +229,7 @@ def s2_download(downloader="wget", lat=None, lon=None, latmin=None, lonmin=None,
     # if no apithub path was provided, use default
     if apihub is None:
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        apihub = script_dir+"/apihub.txt"
+        apihub = script_dir+"/../extdata/apihub.txt"
 
     # Download L1C products (if requested)
     if corr_type in ["no","manual"]:

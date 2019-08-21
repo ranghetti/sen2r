@@ -36,8 +36,8 @@
 #'  products on SciHub (and download if needed); FALSE to work
 #'  only with already downloaded SAFE products.
 #' @param apihub Path of the text file containing credentials
-#'  of scihub account. If NA (default) the default credentials
-#'  (username "user", password "user") will be used.
+#'  of scihub account.
+#'  If NA (default), the default location inside the package will be used.
 #' @param downloader (optional) Character value corresponding to the executable
 #'  which should be used to download SAFE products. It could be one among 
 #'  "wget" (default) and "aria2". 

@@ -1,13 +1,13 @@
 #' @title Import / export SciHub username and password
 #' @description Read the SciHub login information or save new username and
 #'  password. Login information is stored in a file `apihub.txt` inside the
-#'  directory of `s2download`. This functions allow to read or write this
+#'  "extdata" directory. This functions allow to read or write this
 #'  file, and to edit them from inside the GUI.
 #'  Remember that, in case login information is not provided, default `user` 
 #'  username and `user` password are used, but this can cause timeouts, since
 #'  [a limit of two parallel downloads per user exists](https://scihub.copernicus.eu/twiki/do/view/SciHubWebPortal/APIHubDescription).
 #' @param apihub_path Path of the file in which login information is saved.
-#'  If NA (default) it is automatically read from `s2download` path.
+#'  If NA (default) it is automatically read from the package default location.
 #' @param username SciHub username.
 #' @param password SciHub password.
 #' @return NULL
@@ -24,11 +24,9 @@
 read_scihub_login <- function(apihub_path=NA) {
   
   # if apihub_path is not specified, 
-  # retrieve from the current s2download installation
+  # retrieve from the current installation
   if (any(c(is.na(apihub_path), length(nn(apihub_path))==0))) {
-    # import s2download
-    s2download <- import_s2download(convert=FALSE)
-    apihub_path <- file.path(py_to_r(s2download$inst_path),"apihub.txt")
+    apihub_path <- file.path(system.file("extdata", package="sen2r"), "apihub.txt")
   }
   
   # return user and password
@@ -36,8 +34,8 @@ read_scihub_login <- function(apihub_path=NA) {
     readLines(apihub_path) %>%
       strsplit(" ") %>% sapply(c) %>% t()
   } else {
-    # if apihub does not exists, return default credentials
-    matrix(c("user","user"), nrow = 1)
+    # if apihub does not exists, return empty credentials
+    matrix(c("",""), nrow = 1)
   }
   
 }
@@ -53,11 +51,10 @@ read_scihub_login <- function(apihub_path=NA) {
 write_scihub_login <- function(username, password, apihub_path=NA, append=FALSE) {
 
   # if apihub_path is not specified, 
-  # retrieve from the current s2download installation
+  # retrieve from the current installation
   if (any(c(is.na(apihub_path), length(nn(apihub_path))==0))) {
-    # import s2download
-    s2download <- import_s2download(convert=FALSE)
-    apihub_path <- file.path(py_to_r(s2download$inst_path),"apihub.txt")
+    apihub_path <- file.path(system.file("extdata", package="sen2r"), "apihub.txt")
+    dir.create(dirname(apihub_path), showWarnings = FALSE)
   }
   
   # if append is required, read the old file
@@ -81,8 +78,7 @@ write_scihub_login <- function(username, password, apihub_path=NA, append=FALSE)
 # write dialog content
 .scihub_modal <- function() {
   # read scihub user/password
-  s2download <- import_s2download(convert=FALSE) # import s2download
-  apihub_path <- file.path(py_to_r(s2download$inst_path),"apihub.txt")
+  apihub_path <- file.path(system.file("extdata", package="sen2r"), "apihub.txt")
   apihub <- read_scihub_login(apihub_path)
   # launch modal
   modalDialog(

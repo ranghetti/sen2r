@@ -34,8 +34,8 @@
 #'  it is slower; setting it to `FALSE` speeds up, although some products could 
 #'  be ignored (but generally the ingestion date is the same of the sensing date).
 #' @param apihub Path of the "apihub.txt" file containing credentials
-#'  of scihub account. If NA (default) the default credentials
-#'  (username "user", password "user") will be used.
+#'  of scihub account.
+#'  If NA (default), the default location inside the package will be used.
 #' @param max_cloud Integer number (0-100) containing the maximum cloud
 #'  level of the tiles to be listed (default: no filter).
 #' @return A vector of available products (being each element an URL,
@@ -185,7 +185,7 @@ s2_list <- function(spatial_extent=NULL, tile=NULL, orbit=NULL, # spatial parame
   
   # link to apihub
   if (is.null(apihub)) {
-    apihub <- file.path(s2download$inst_path,"apihub.txt")
+    apihub <- file.path(system.file("extdata", package="sen2r"), "apihub.txt")
   }
   if (!file.exists(apihub)) {
     print_message(
