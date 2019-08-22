@@ -88,30 +88,30 @@ s2_list_new <- function(spatial_extent = NULL,
                         apihub = NA,
                         max_cloud = 100,
                         output_type = "vector") {
-
+  
   if (!level %in% c("auto", "L2A", "L1C")) {
     stop("`level` must be \"auto\", \"L2A\" or  \"L1C\"")
   }
-
+  
   if (!time_period %in% c("full", "seasonal")) {
     stop("`level` must be \"full\" or  \"seasonal\"")
   }
-
+  
   if (inherits(try(as.Date(time_interval)), "try-error")) {
     stop("`time_interval` must be of class `Date`, `POSIXct` or `character` cohercible
          to Date (YYYY-mm-dd). Aborting!")
   }
-
+  
   # to avoid NOTE on check
   . <- i <- NULL
-
+  
   # convert input NA arguments in NULL
   for (a in c("spatial_extent","tile","orbit","time_interval","apihub")) {
     if (suppressWarnings(all(is.na(get(a))))) {
       assign(a,NULL)
     }
   }
-
+  
   # check if spatial_extent was provided
   spatial_extent_exists <- if (!exists("spatial_extent")) {
     FALSE
@@ -126,7 +126,7 @@ s2_list_new <- function(spatial_extent = NULL,
   } else {
     TRUE
   }
-
+  
   # verify that spatial_extent is `sf` or `sfc`, and convert to `sfc`
   if (spatial_extent_exists) {
     if (!inherits(spatial_extent, c("sf", "sfc"))){
@@ -136,7 +136,7 @@ s2_list_new <- function(spatial_extent = NULL,
         sf::st_transform(4326)
     }
   }
-
+  
   # if not, retrieve it from tile
   if (all(!spatial_extent_exists, is.null(tile))) {
     print_message(
@@ -149,7 +149,7 @@ s2_list_new <- function(spatial_extent = NULL,
     # extract and import tiles kml
     s2tiles <- s2_tiles()
   }
-
+  
   # take the the selected tiles as extent if needed
   # (this will result in the selection of more tiles, cause to overlapping
   # areas; it is filtered in s2_download, but it is slow: FIXME).
@@ -160,12 +160,12 @@ s2_list_new <- function(spatial_extent = NULL,
       sf::st_cast(sf::st_geometry(s2tiles[s2tiles$tile_id %in% tile,]), "POLYGON")
     )
   }
-
+  
   spatial_extent    <- suppressWarnings(sf::st_union(spatial_extent))
   spatial_extent_or <- spatial_extent
   # If spatial_extent is not point, simplify polygon if needed / convert to bbox
   if (inherits(spatial_extent, "sfc_POLYGON")) {
-
+    
     # if spatial_extent has too many vertices, simplify it
     dtolerance <- with(as.list(sf::st_bbox(spatial_extent)), sqrt((xmax - xmin)^2 + (ymax - ymin)^2))/500
     # initial dtolerance value: 0.5% maximum distance
@@ -179,13 +179,13 @@ s2_list_new <- function(spatial_extent = NULL,
         spatial_extent <- sf::st_as_sfc(sf::st_bbox(spatial_extent_or))
       }
     }
-
+    
   } else if (!inherits(spatial_extent, "sfc_POINT")) {
     # spatial_extent <- st_as_sfc(sf::st_bbox(spatial_extent_or))
     spatial_extent <- sf::st_convex_hull(spatial_extent)
   }
   # }
-
+  
   # checks on dates
   # TODO add checks on format
   if (length(time_interval) == 1) {
@@ -211,11 +211,11 @@ s2_list_new <- function(spatial_extent = NULL,
       stop("`orbit` must be integer or cohercible to integer. Aborting!")
     }
   }
-
+  
   if (!is.numeric(max_cloud)) {
     stop("`max_cloud` must be integer [0,100]. Aborting!")
   }
-
+  
   # link to apihub
   if (is.null(apihub)) {
     apihub <- file.path(system.file("extdata", package="sen2r"), "apihub.txt")
@@ -223,7 +223,7 @@ s2_list_new <- function(spatial_extent = NULL,
   } else {
     attr(apihub, "default") <- FALSE
   }
-
+  
   if (!file.exists(apihub)) {
     print_message(
       type = "error",
@@ -239,24 +239,24 @@ s2_list_new <- function(spatial_extent = NULL,
     user <- as.character(read.table(apihub)[1,1])
     pwd <- as.character(read.table(apihub)[1,2])
   }
-
+  
   foot <- ifelse(
     inherits(spatial_extent, "sfc_POINT"),
     paste0('footprint:%22Intersects(', paste(as.numeric(sf::st_coordinates(spatial_extent)[c(2,1)]), collapse = ",%20"),')%22'),
     paste0('footprint:%22Intersects(', sf::st_as_text(sf::st_geometry(spatial_extent)),')%22')
   )
-
+  
   n_entries <- 1
   out_list <- list()
-
+  
   for (t_int in seq_len(nrow(time_intervals))) {
-
+    
     rows      <- 100
     start     <- 0
     end_query <- FALSE
-
+    
     while (!end_query) {
-
+      
       query_string <- paste0(
         'https://scihub.copernicus.eu/dhus//search?',
         'start=', start,
@@ -270,53 +270,53 @@ s2_list_new <- function(spatial_extent = NULL,
       query_string <- gsub(" ", "%20",query_string)
       query_string <- gsub("\\[", "%5b",query_string)
       query_string <- gsub("\\]", "%5d",query_string)
-
+      
       out_query    <- httr::GET(query_string, authenticate(user, pwd))
       out_xml      <- httr::content(out_query, as = "parsed", encoding = "UTF-8")
       out_xml_list <- XML::htmlTreeParse(out_xml, useInternalNodes = TRUE) %>% XML::xmlRoot()
       out_xml_list <- out_xml_list[["body"]][["feed"]]
-
-
+      
+      
       for (ll in which(names(out_xml_list)=="entry")) {
-
+        
         in_entry <- XML::saveXML(out_xml_list[[ll]]) %>%
           strsplit(., "\n")
-
+        
         if (length(which(grepl("<link href=", in_entry[[1]]))) != 0) {
-
+          
           in_entry <- in_entry[[1]]
-
+          
           title <- in_entry[which(grepl("<title>", in_entry))] %>%
             gsub("^.*<title>([^<]+)</title>.*$", "\\1", .)
-
+          
           url <- in_entry[which(grepl("<link href=", in_entry))] %>%
             gsub("^.*<link href=\"([^\"]+)\"/>.*$", "\\1", .)
-
+          
           orbitid <- in_entry[which(grepl("relativeorbitnumber", in_entry))] %>%
             gsub("^.*<int name=\"relativeorbitnumber\">([^<]+)</int>.*$", "\\1", .) %>%
             as.numeric() %>% sprintf("%03i", .)
-
+          
           ccov <- in_entry[which(grepl("cloudcoverpercentage", in_entry))] %>%
             gsub("^.*<double name=\"cloudcoverpercentage\">([^<]+)</double>.*$", "\\1", .) %>%
             as.numeric()
-
+          
           proclev <- in_entry[which(grepl("processinglevel", in_entry))] %>%
             gsub("^.*<str name=\"processinglevel\">([^<]+)</str>.*$", "\\1", .)
-
+          
           sensor <- in_entry[which(grepl("platformserialidentifier", in_entry))] %>%
             gsub("^.*<str name=\"platformserialidentifier\">([^<]+)</str>.*$", "\\1", .)
-
+          
           tileid <- in_entry[which(grepl("name=\"tileid\"", in_entry))] %>%
             gsub("^.*<str name=\"tileid\">([^<]+)</str>.*$", "\\1", .)
-
+          
           sensdate <- in_entry[which(grepl("name=\"endposition\"", in_entry))] %>%
             gsub("^.*<date name=\"endposition\">([0-9\\-]+)T[0-9\\:\\.]+Z</date>.*$", "\\1", .) %>%
             as.Date()
-
+          
           proctime <- in_entry[which(grepl("name=\"ingestiondate\"", in_entry))] %>%
             gsub("^.*<date name=\"ingestiondate\">([0-9\\-]+)T([0-9\\:\\.]+)Z</date>.*$", "\\1 \\2", .) %>%
             as.POSIXct()
-
+          
           if (length(tileid) == 0 ) {
             tileid <- gsub("^.+_T([0-9]{2}[A-Z]{3})_.+$", "\\1", title)
           }
@@ -336,19 +336,19 @@ s2_list_new <- function(spatial_extent = NULL,
           n_entries <- n_entries + 1
         }
       }
-
+      
       if (sum(names(out_xml_list)=="entry") != rows) {
         end_query <- TRUE
       } else {
         start <- start + rows
       }
     }
-
+    
   }
   out_dt <- rbindlist(out_list)
-
+  
   if (nrow(out_dt) == 0) {return(character(0))}
-
+  
   # remove "wrong" tiles and orbits if needed
   if (!is.null(tile)) {
     out_dt <- out_dt[tileid %in% tile,]
@@ -357,11 +357,11 @@ s2_list_new <- function(spatial_extent = NULL,
       sf::st_intersection(s2tiles, spatial_extent_or)))
     out_dt <- out_dt[tileid %in% unique(sel_s2tiles$tile_id),]
   }
-
+  
   if (!is.null(orbit)) {
     out_dt <- out_dt[orbitid %in% sprintf("%03i", as.numeric(orbit)),]
   }
-
+  
   if (nrow(out_dt) == 0) {return(character(0))}
   if (level == "L1C") {
     out_dt <- out_dt[proclev == "Level-1C",]
@@ -373,11 +373,11 @@ s2_list_new <- function(spatial_extent = NULL,
   }
   if (nrow(out_dt) == 0) {return(character(0))}
   out_dt <- out_dt[order(date),]
-
+  
   # FIXME remove this part of code when s2_download will be rewritten
   out_dt$url <- gsub("/\\$value", "/\\\\$value", out_dt$url) %>%
     gsub("/dhus/", "/apihub/", .)
-
+  
   if (output_type == "data.table") {
     return(out_dt)
   } else {
