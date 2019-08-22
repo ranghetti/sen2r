@@ -80,12 +80,13 @@
 #' }
 
 s2_list_new <- function(spatial_extent = NULL,
-                        tile           = NULL,
-                        orbit          = NULL, # spatial parameters
-                        time_interval = c(Sys.Date() - 10, Sys.Date()), time_period = "full", # temporal parameters
-                        level       = "auto",
-                        apihub      = NA,
-                        max_cloud   = 100,
+                        tile = NULL,
+                        orbit = NULL, # spatial parameters
+                        time_interval = c(Sys.Date() - 10, Sys.Date()), 
+                        time_period = "full", # temporal parameters
+                        level = "auto",
+                        apihub = NA,
+                        max_cloud = 100,
                         output_type = "vector") {
 
   if (!level %in% c("auto", "L2A", "L1C")) {
@@ -160,9 +161,8 @@ s2_list_new <- function(spatial_extent = NULL,
     )
   }
 
-  # if (spatial_extent_exists) {
-  spatial_extent_or <- spatial_extent
   spatial_extent    <- suppressWarnings(sf::st_union(spatial_extent))
+  spatial_extent_or <- spatial_extent
   # If spatial_extent is not point, simplify polygon if needed / convert to bbox
   if (inherits(spatial_extent, "sfc_POLYGON")) {
 
@@ -218,13 +218,22 @@ s2_list_new <- function(spatial_extent = NULL,
 
   # link to apihub
   if (is.null(apihub)) {
-    apihub <- system.file("extdata/apihub.txt", package="sen2r")
+    apihub <- file.path(system.file("extdata", package="sen2r"), "apihub.txt")
+    attr(apihub, "default") <- TRUE
+  } else {
+    attr(apihub, "default") <- FALSE
   }
 
   if (!file.exists(apihub)) {
     print_message(
       type = "error",
-      "File apihub.txt with the SciHub credentials is missing. Use function `write_scihub_login` to initialize it. "
+      if (attr(apihub, "default")) {paste0(
+        "The user mus save his SciHub credentials in sen2r. ",
+        "To do it, launch the function write_scihub_login('<username>', '<password>') ",
+        "or add them using the sen2r() GUI."
+      )} else {paste0(
+        "The file \"",apihub,"\" does not exist."
+      )}
     )
   } else {
     user <- as.character(read.table(apihub)[1,1])
@@ -304,6 +313,10 @@ s2_list_new <- function(spatial_extent = NULL,
             gsub("^.*<date name=\"endposition\">([0-9\\-]+)T[0-9\\:\\.]+Z</date>.*$", "\\1", .) %>%
             as.Date()
 
+          proctime <- in_entry[which(grepl("name=\"ingestiondate\"", in_entry))] %>%
+            gsub("^.*<date name=\"ingestiondate\">([0-9\\-]+)T([0-9\\:\\.]+)Z</date>.*$", "\\1 \\2", .) %>%
+            as.POSIXct()
+
           if (length(tileid) == 0 ) {
             tileid <- gsub("^.+_T([0-9]{2}[A-Z]{3})_.+$", "\\1", title)
           }
@@ -313,6 +326,7 @@ s2_list_new <- function(spatial_extent = NULL,
             url              = url,
             orbitid          = orbitid,
             date             = sensdate,
+            proctime         = proctime,
             ccov             = ccov,
             proclev          = proclev,
             sensor           = sensor,
@@ -354,8 +368,8 @@ s2_list_new <- function(spatial_extent = NULL,
   } else if (level == "L2A") {
     out_dt <- out_dt[grepl("^Level-2Ap?$", proclev),]
   } else if (level == "auto") {
-    out_dt <- out_dt[order(-proclev),]
-    out_dt <- out_dt[,head(.SD, 1),  by = .(date, orbitid)]
+    out_dt <- out_dt[order(-proclev,-proctime),]
+    out_dt <- out_dt[,head(.SD, 1),  by = .(date, tileid, orbitid)]
   }
   if (nrow(out_dt) == 0) {return(character(0))}
   out_dt <- out_dt[order(date),]
