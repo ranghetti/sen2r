@@ -48,8 +48,8 @@ it is slower; setting it to \code{FALSE} speeds up, although some products could
 be ignored (but generally the ingestion date is the same of the sensing date).}
 
 \item{apihub}{Path of the "apihub.txt" file containing credentials
-of scihub account. If NA (default) the default credentials
-(username "user", password "user") will be used.}
+of scihub account.
+If NA (default), the default location inside the package will be used.}
 
 \item{max_cloud}{Integer number (0-100) containing the maximum cloud
 level of the tiles to be listed (default: no filter).}

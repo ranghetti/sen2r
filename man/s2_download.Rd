@@ -15,8 +15,8 @@ s2_download(s2_prodlist = NULL, downloader = "wget", apihub = NA,
 (default: "wget").}
 
 \item{apihub}{Path of the "apihub.txt" file containing credentials
-of scihub account. If NA (default) the default credentials
-(username "user", password "user") will be used.}
+of scihub account.
+If NA (default), the default location inside the package will be used.}
 
 \item{tile}{Single Sentinel-2 Tile string (5-length character)}
 

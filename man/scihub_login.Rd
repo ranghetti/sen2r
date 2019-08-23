@@ -12,7 +12,7 @@ write_scihub_login(username, password, apihub_path = NA,
 }
 \arguments{
 \item{apihub_path}{Path of the file in which login information is saved.
-If NA (default) it is automatically read from \code{s2download} path.}
+If NA (default) it is automatically read from the package default location.}
 
 \item{username}{SciHub username.}
 
@@ -25,7 +25,7 @@ if FALSE (default), \code{apihub_path} is replaced with the new ones.}
 \description{
 Read the SciHub login information or save new username and
 password. Login information is stored in a file \code{apihub.txt} inside the
-directory of \code{s2download}. This functions allow to read or write this
+"extdata" directory. This functions allow to read or write this
 file, and to edit them from inside the GUI.
 Remember that, in case login information is not provided, default \code{user}
 username and \code{user} password are used, but this can cause timeouts, since
