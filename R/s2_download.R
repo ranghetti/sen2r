@@ -13,11 +13,13 @@
 #' @param tile Single Sentinel-2 Tile string (5-length character)
 #' @param outdir (optional) Full name of the existing output directory
 #'  where the files should be created (default: current directory).
+#' @param overwrite_safe `logical` if FALSE, and a SAFE that should be downloaded is
+#'  already present in outdir, download is skipped, Default: FALSE
 #' @return NULL
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
-#' @importFrom reticulate r_to_py
+#' @importFrom httr GET RETRY authenticate progress write_disk
 #' @export
 #'
 #' @examples \dontrun{
@@ -31,7 +33,10 @@
 #'
 #' # Download the whole product
 #' s2_download(single_s2, outdir=tempdir())
-#'
+#' 
+#' #' # Download the whole product - using aria2
+#' s2_download(single_s2, outdir=tempdir(), downloader = "aria2)
+#' 
 #' # Download a specific tile
 #' s2_download(single_s2, tile="32TQQ", outdir=tempdir())
 #' # (for products with compact names, the two above commands produce equivalent
@@ -45,11 +50,11 @@
 #' s2_download(example_s2_list, outdir=tempdir())
 #' }
 
-s2_download <- function(s2_prodlist=NULL,
-                        downloader="wget",
-                        apihub=NA,
-                        tile=NULL,
-                        outdir=".") {
+s2_download <- function(s2_prodlist = NULL,
+                        downloader  = "wget",
+                        apihub      = NA,
+                        tile        = NULL,
+                        outdir      = ".") {
   
   # convert input NA arguments in NULL
   for (a in c("s2_prodlist","tile","apihub")) {
@@ -60,6 +65,7 @@ s2_download <- function(s2_prodlist=NULL,
   
   # import s2download
   s2download <- import_s2download(convert=FALSE)
+  creds      <- read_scihub_login(apihub)
   
   # check downloader
   if (!downloader %in% c("wget","aria2")) {
@@ -70,56 +76,81 @@ s2_download <- function(s2_prodlist=NULL,
     )
     downloader <- "wget"
   }
-  
-  # read the path of the downloader
-  binpaths <- load_binpaths(downloader)
-  
-  # TODO add checks on the format of filename (one element output of s2_list)
-  
-  # link to apihub
-  if (is.na(apihub)) {
-    apihub <- file.path(system.file("extdata", package="sen2r"), "apihub.txt")
-  }
-  if (!file.exists(apihub)) {
-    print_message(type="error","File apihub.txt with the SciHub credentials is missing.") # TODO build it
-  }
-  
+
   for (i in seq_len(length(s2_prodlist))) {
     
     link <- s2_prodlist[i]
     filename <- names(s2_prodlist[i])
-    # download archive for compactname products
-    # and for oldname on Windows, untile #107 will be solved
-    if (safe_getMetadata(filename, "nameinfo")$version=="compact" |
-        Sys.info()["sysname"] == "Windows") {
-      py_tile <- r_to_py(NULL)
-      unzip_tile <- TRUE
-    } else {
-      py_tile <- r_to_py(tile)
-      unzip_tile <- FALSE
-    }
+    filename <- file.path(outdir, paste0(filename,".zip"))
     
     print_message(
       type = "message",
       date = TRUE,
-      "Downloading (if missing) product ",i," of ",length(s2_prodlist),
+      "Downloading Sentinel image ", i," of ",length(s2_prodlist),
       " (",filename,")..."
     )
     
-    trace_function(
-      s2download$download_s2product,
-      filename      = filename,
-      link          = link,
-      downloader    = downloader,
-      apihub        = apihub,
-      tile          = py_tile,
-      no_download   = FALSE,
-      write_dir     = outdir,
-      file_list     = NULL,
-      downloader_path = dirname(binpaths[[if (downloader=="aria2") {"aria2c"} else {"wget"}]]),
-      trace_funname = "s2download",
-      trace_files   = file.path(outdir,c(filename,paste0(filename,".zip")))
-    )
+    if (downloader == "wget") {
+
+      download <- httr::RETRY("GET",
+                              url = as.character(link),
+                              httr::authenticate(creds[1], creds[2]),
+                              times = 10,
+                              httr::progress(),
+                              httr::write_disk(filename,
+                                               overwrite = TRUE))
+    } else {
+      
+      aria_string <- paste0(
+        Sys.which("aria2c"), " -x 2 --check-certificate=false -d ",
+        dirname(filename),
+        " -o ", basename(filename),
+        " ", "\"", as.character(gsub("/\\$value", "/\\\\$value", link)), "\"",
+        " --allow-overwrite --file-allocation=none --retry-wait=2",
+        " --http-user=",   "\"", creds[1], "\"",
+        " --http-passwd=", "\"", creds[2], "\"",
+        " --max-tries=10")
+      
+      download <- try(system(aria_string,
+                             intern = Sys.info()["sysname"] == "Windows"))
+    }
+    # lnk2 <- "https://scihub.copernicus.eu/apihub/odata/v1/Products('c7142722-42bf-4f93-b8c5-59fd1792c430')/\\$value"
+    if (!inherits(download, "try-error")) {
+      unzip(filename, exdir = dirname(filename))
+      unlink(filename)
+    } else {
+      stop("Download of file", link, "failed more than 10 times. Internet connection or scihub may be down. Aborting!")
+    }
+
+    #   OBSOLETE ! Luigi, decide 
+    
+    # download archive for compactname products
+    # and for oldname on Windows, untile #107 will be solved
+    # if (safe_getMetadata(filename, "nameinfo")$version=="compact" |
+    #     Sys.info()["sysname"] == "Windows") {
+    #   py_tile <- r_to_py(NULL)
+    #   unzip_tile <- TRUE
+    # } else {
+    #   py_tile <- r_to_py(tile)
+    #   unzip_tile <- FALSE
+    # }
+    
+    
+    
+    # trace_function(
+    #   s2download$download_s2product,
+    #   filename      = filename,
+    #   link          = link,
+    #   downloader    = downloader,
+    #   apihub        = apihub,
+    #   tile          = py_tile,
+    #   no_download   = FALSE,
+    #   write_dir     = outdir,
+    #   file_list     = NULL,
+    #   downloader_path = dirname(binpaths[[if (downloader=="aria2") {"aria2c"} else {"wget"}]]),
+    #   trace_funname = "s2download",
+    #   trace_files   = file.path(outdir,c(filename,paste0(filename,".zip")))
+    # )
     # s2download$download_s2product(
     #   filename      = filename,
     #   link          = link,
