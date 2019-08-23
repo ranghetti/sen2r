@@ -34,6 +34,9 @@ read_scihub_login <- function(apihub_path=NA) {
   # retrieve from the current installation
   if (any(c(is.na(apihub_path), length(nn(apihub_path))==0))) {
     apihub_path <- file.path(system.file("extdata", package="sen2r"), "apihub.txt")
+    attr(apihub_path, "default") <- TRUE
+  } else {
+    attr(apihub_path, "default") <- FALSE
   }
   
   # return user and password
@@ -41,8 +44,14 @@ read_scihub_login <- function(apihub_path=NA) {
     readLines(apihub_path) %>%
       strsplit(" ") %>% sapply(c) %>% t()
   } else {
-    # if apihub does not exists, return empty credentials
-    matrix(c("",""), nrow = 1)
+    # if apihub does not exists, return an error
+    print_message(
+      type="error",
+      "File apihub.txt with the SciHub credentials is missing. ",
+      if (attr(apihub_path, "default")) {
+        "Launch function write_scihub_login('<username>', '<password>') to create it."
+      }
+    )
   }
   
 }
@@ -70,10 +79,10 @@ check_scihub_login <- function(username, password) {
 
 
 #' @name write_scihub_login
-#' @param check Logical: if TRUE, new credentials are checked
+#' @param check Logical: if TRUE (default), new credentials are checked
 #'  before writing them on `apihub_path` (if they are invalid, an error 
 #'  is provided); 
-#'  if FALSE (default), they are directly written.
+#'  if FALSE, they are directly written.
 #' @param append Logical: if TRUE, new credentials are added 
 #'  to the ones existing within `apihub_path`; 
 #'  if FALSE (default), `apihub_path` is replaced with the new ones.
@@ -83,9 +92,9 @@ check_scihub_login <- function(username, password) {
 
 write_scihub_login <- function(username, password, 
                                apihub_path = NA, 
-                               check = FALSE, 
+                               check = TRUE, 
                                append = FALSE) {
-
+  
   # check credentials (if required)
   if (check == TRUE) {
     if (!check_scihub_login(username, password)) {
@@ -96,7 +105,7 @@ write_scihub_login <- function(username, password,
       )
     }
   }
-
+  
   # if apihub_path is not specified, 
   # retrieve from the current installation
   if (any(c(is.na(apihub_path), length(nn(apihub_path))==0))) {

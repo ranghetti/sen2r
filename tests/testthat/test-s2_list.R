@@ -93,7 +93,7 @@ testthat::test_that(
       output_type = "data.table"
     )
     testthat::expect_equal(length(s2_list_test$orbitid), 34)
-
+    
     # reproject
     pos <- sf::st_transform(pos, 32632)
     s2_list_test <- s2_list(
@@ -192,7 +192,7 @@ testthat::test_that(
     )
     testthat::expect_equal(length(s2_list_test$proclev), 11)
     testthat::expect_equal(unique(s2_list_test$proclev), c("Level-1C" , "Level-2Ap"))
-
+    
     s2_list_test <- s2_list(
       spatial_extent = pos,
       tile = "32TNR",
@@ -203,7 +203,7 @@ testthat::test_that(
     )
     testthat::expect_equal(length(s2_list_test$proclev), 11)
     testthat::expect_equal(unique(s2_list_test$proclev), c("Level-1C"))
-
+    
   })
 
 testthat::test_that(
@@ -214,7 +214,7 @@ testthat::test_that(
       spatial_extent = "pos",
       time_interval = as.Date(c("2017-05-01", "2017-06-30"),
       )))
-
+    
     # wrong dates
     testthat::expect_error(s2_list(
       spatial_extent = pos,

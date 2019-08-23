@@ -131,7 +131,7 @@ file, and to edit them from inside the GUI.</p>
 
 <span class='fu'>check_scihub_login</span>(<span class='no'>username</span>, <span class='no'>password</span>)
 
-<span class='fu'>write_scihub_login</span>(<span class='no'>username</span>, <span class='no'>password</span>, <span class='kw'>apihub_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>check</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+<span class='fu'>write_scihub_login</span>(<span class='no'>username</span>, <span class='no'>password</span>, <span class='kw'>apihub_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>check</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>append</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -152,10 +152,10 @@ If NA (default) it is automatically read from the package default location.</p><
     </tr>
     <tr>
       <th>check</th>
-      <td><p>Logical: if TRUE, new credentials are checked
+      <td><p>Logical: if TRUE (default), new credentials are checked
 before writing them on <code>apihub_path</code> (if they are invalid, an error
 is provided);
-if FALSE (default), they are directly written.</p></td>
+if FALSE, they are directly written.</p></td>
     </tr>
     <tr>
       <th>append</th>

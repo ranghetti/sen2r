@@ -55,7 +55,7 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   if (length(nn(pm$list_rgb)) == 0) {pm$list_rgb <- NA}
   if (length(nn(pm$list_indices)) == 0) {pm$list_indices <- NA}
   
-    
+  
   ## == Recurrent check ==
   
   # -- Missing parameters: if a parameter is missing, set it to the default --
@@ -112,13 +112,13 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   
   
   ## == Specific checks on parameters ==
-
+  
   
   # -- preprocess --
-
+  
   
   # -- s2_levels --
-
+  
   
   # -- sel_sensor --
   if (all(!pm$sel_sensor %in% c("s2a", "s2b"))) {
@@ -128,10 +128,10 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
     )
     pm$sel_sensor <- pm_def$sel_sensor
   }
-
+  
   
   # -- online --
-
+  
   
   # -- downloader --
   if (!pm$downloader %in% c("wget", "aria2")) {
@@ -396,7 +396,7 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   if (!pm$mask_type %in% c(NA, "nodata", "cloud_high_proba", "cloud_medium_proba", 
                            "cloud_low_proba", "cloud_and_shadow", "clear_sky", "land") &
       !grepl("^scl_[\\_0-9]+$", pm$mask_type)
-      ) {
+  ) {
     print_message(
       type = type,
       "Parameter \"mask_type\" is not accepted (setting to the default)."
@@ -591,7 +591,7 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   
   # -- resampling --
   if (!pm$resampling %in% c("near", "mode", "bilinear", "cubic", 
-                           "cubicspline", "lanczos", "average", "mode")) {
+                            "cubicspline", "lanczos", "average", "mode")) {
     print_message(
       type = type,
       "Parameter \"resampling\" is not accepted (setting to the default)."
@@ -787,7 +787,7 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   
   
   # -- path_subdirs --
-
+  
   
   # -- thumbnails --
   

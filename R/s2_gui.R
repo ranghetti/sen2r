@@ -1553,7 +1553,8 @@ s2_gui <- function(param_list = NULL,
         input$scihub_username, input$scihub_password, 
         apihub_path = as.character(rv$apihub_path),
         # append = input$apihub_multiple # removed after disabling apihub multiple login from the gui
-        append = FALSE
+        append = FALSE,
+        check = FALSE
       )
       removeModal()
     })
@@ -2791,7 +2792,7 @@ s2_gui <- function(param_list = NULL,
         )),
         easyClose = TRUE,
         footer = NULL
-        ))
+      ))
     })
     
     observeEvent(input$help_time_period, {
@@ -3750,7 +3751,7 @@ s2_gui <- function(param_list = NULL,
           "Please specify the directory for output products before continuing.",
           type = "error"
         )
-
+        
       } else {
         
         # if all checks passed, exit from GUI and return values

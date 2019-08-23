@@ -81,26 +81,35 @@
 #' }
 
 s2_list <- function(spatial_extent = NULL,
-                        tile = NULL,
-                        orbit = NULL, # spatial parameters
-                        time_interval = c(Sys.Date() - 10, Sys.Date()), 
-                        time_period = "full", # temporal parameters
-                        level = "auto",
-                        apihub = NA,
-                        max_cloud = 100,
-                        output_type = "vector") {
+                    tile = NULL,
+                    orbit = NULL, # spatial parameters
+                    time_interval = c(Sys.Date() - 10, Sys.Date()), 
+                    time_period = "full", # temporal parameters
+                    level = "auto",
+                    apihub = NA,
+                    max_cloud = 100,
+                    output_type = "vector") {
   
   if (!level %in% c("auto", "L2A", "L1C")) {
-    stop("`level` must be \"auto\", \"L2A\" or  \"L1C\"")
+    print_message(
+      type = "error",
+      "`level` must be \"auto\", \"L2A\" or \"L1C\""
+    )
   }
   
   if (!time_period %in% c("full", "seasonal")) {
-    stop("`level` must be \"full\" or  \"seasonal\"")
+    print_message(
+      type = "error",
+      "`level` must be \"full\" or  \"seasonal\""
+    )
   }
   
   if (inherits(try(as.Date(time_interval)), "try-error")) {
-    stop("`time_interval` must be of class `Date`, `POSIXct` or `character` cohercible
-         to Date (YYYY-mm-dd). Aborting!")
+    print_message(
+      type = "error",
+      "`time_interval` must be of class `Date`, `POSIXct` or `character` ",
+      "cohercible to Date (YYYY-mm-dd)."
+    )
   }
   
   # to avoid NOTE on check
@@ -131,7 +140,10 @@ s2_list <- function(spatial_extent = NULL,
   # verify that spatial_extent is `sf` or `sfc`, and convert to `sfc`
   if (spatial_extent_exists) {
     if (!inherits(spatial_extent, c("sf", "sfc"))){
-      stop("`spatial_extent` is not a `sf` or `sfc` object. Aborting!")
+      print_message(
+        type = "error",
+        "`spatial_extent` is not a `sf` or `sfc` object."
+      )
     } else {
       spatial_extent <- sf::st_geometry(spatial_extent) %>%
         sf::st_transform(4326)
@@ -209,17 +221,23 @@ s2_list <- function(spatial_extent = NULL,
   if (!is.null(orbit)) {
     orbit <- as.integer(orbit)
     if (any(is.na(orbit))) {
-      stop("`orbit` must be integer or cohercible to integer. Aborting!")
+      print_message(
+        type = "error",
+        "`orbit` must be integer or cohercible to integer."
+      )
     }
   }
   
   if (!is.numeric(max_cloud)) {
-    stop("`max_cloud` must be integer [0,100]. Aborting!")
+    print_message(
+      type = "error",
+      "`max_cloud` must be integer [0,100]."
+    )
   }
   
   # Get credentials
   creds <- read_scihub_login(apihub)
-
+  
   foot <- ifelse(
     inherits(spatial_extent, "sfc_POINT"),
     paste0('footprint:%22Intersects(', paste(as.numeric(sf::st_coordinates(spatial_extent)[c(2,1)]), collapse = ",%20"),')%22'),

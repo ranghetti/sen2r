@@ -366,7 +366,7 @@ sen2r <- function(param_list = NULL,
                   rmtmp = TRUE,
                   log = NA) {
   
-
+  
   # sink to external files
   if (!is.na(log[2])) {
     dir.create(dirname(log[2]), showWarnings=FALSE)
@@ -1391,7 +1391,7 @@ sen2r <- function(param_list = NULL,
   if (n_apihubs > 1 & pm$processing_order %in% c(2,"by_date")) {
     pm$apihub <- file.path(tmpdir,paste0("apihub_",seq_len(n_apihubs),".txt"))
     for (i in seq_len(n_apihubs)) {
-      write_scihub_login(apihubs[i,1], apihubs[i,2], pm$apihub[i], append = FALSE)
+      write_scihub_login(apihubs[i,1], apihubs[i,2], pm$apihub[i], append = FALSE, check = FALSE)
     }
     if (pm$parallel == TRUE | is.numeric(pm$parallel)) {
       parallel_groups_A <- pm$parallel

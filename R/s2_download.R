@@ -25,7 +25,7 @@
 #'
 #' @examples \dontrun{
 #' single_s2 <- paste0("https://scihub.copernicus.eu/apihub/odata/v1/",
-#'   "Products('c7142722-42bf-4f93-b8c5-59fd1792c430')/\\$value")
+#'   "Products(\'c7142722-42bf-4f93-b8c5-59fd1792c430\')/$value")
 #' names(single_s2) <- "S2A_MSIL1C_20170613T101031_N0205_R022_T32TQQ_20170613T101608.SAFE"
 #' # (this is equivalent to:
 #' # single_s2 <- example_s2_list[1]
@@ -36,7 +36,7 @@
 #' s2_download(single_s2, outdir=tempdir())
 #' 
 #' #' # Download the whole product - using aria2
-#' s2_download(single_s2, outdir=tempdir(), downloader = "aria2)
+#' s2_download(single_s2, outdir=tempdir(), downloader = "aria2")
 #' 
 #' # Download a specific tile
 #' s2_download(single_s2, tile="32TQQ", outdir=tempdir())
@@ -76,9 +76,9 @@ s2_download <- function(s2_prodlist = NULL,
     )
     downloader <- "builtin"
   }
-
+  
   for (i in seq_len(length(s2_prodlist))) {
-
+    
     link <- s2_prodlist[i]
     filename <- file.path(outdir, paste0(names(s2_prodlist[i]),".zip"))
     
@@ -90,7 +90,7 @@ s2_download <- function(s2_prodlist = NULL,
     )
     
     if (downloader %in% c("builtin", "wget")) { # wget left for compatibility
-
+      
       download <- httr::RETRY(
         verb = "GET",
         url = as.character(link),
@@ -99,7 +99,7 @@ s2_download <- function(s2_prodlist = NULL,
         httr::progress(),
         httr::write_disk(filename, overwrite = TRUE)
       )
-
+      
     } else if (grepl("^aria2c?$", downloader)) {
       
       binpaths <- load_binpaths("aria2")
@@ -151,7 +151,7 @@ s2_download <- function(s2_prodlist = NULL,
         file.remove(md5file)
       }
     }
-
+    
   }
   
   return(invisible(NULL))

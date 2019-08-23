@@ -10,7 +10,7 @@ read_scihub_login(apihub_path = NA)
 
 check_scihub_login(username, password)
 
-write_scihub_login(username, password, apihub_path = NA, check = FALSE,
+write_scihub_login(username, password, apihub_path = NA, check = TRUE,
   append = FALSE)
 }
 \arguments{
@@ -21,10 +21,10 @@ If NA (default) it is automatically read from the package default location.}
 
 \item{password}{SciHub password.}
 
-\item{check}{Logical: if TRUE, new credentials are checked
+\item{check}{Logical: if TRUE (default), new credentials are checked
 before writing them on \code{apihub_path} (if they are invalid, an error
 is provided);
-if FALSE (default), they are directly written.}
+if FALSE, they are directly written.}
 
 \item{append}{Logical: if TRUE, new credentials are added
 to the ones existing within \code{apihub_path};
