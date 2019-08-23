@@ -8,6 +8,9 @@
 #'  Linux. It is not necessary, since a gdal_formats.json file is
 #'  present in the package, but can be used to update the list in accordance
 #'  with the formats actually managed by your GDAl installation.
+#' @param gdalDrivers Function `gdalDrivers()` from package `rgdal`,
+#'  which must be passed manually (this is a workaround to avoid importing
+#'  `rgdal` as dependency).
 #' @param json_path (optional) The path of the output JSON file.
 #'  *Warning*: to create a file which wil be usable by the package,
 #'  this option must be left to NA (default location is within the
@@ -22,7 +25,8 @@
 #' @importFrom jsonlite toJSON fromJSON
 #' @importFrom utils packageVersion
 
-gdal_formats_db <- function(json_path = NA,
+gdal_formats_db <- function(gdalDrivers,
+                            json_path = NA,
                             force = FALSE) {
   
   # to avoid NOTE on check
@@ -70,7 +74,7 @@ gdal_formats_db <- function(json_path = NA,
   )
   
   # read other information using rgdal
-  gdal_drivers <- rgdal::gdalDrivers()
+  gdal_drivers <- gdalDrivers()
   
   gdal_drivers <- merge(gdal_drivers, gdal_driver_namext, by="name", all.x=TRUE)
   

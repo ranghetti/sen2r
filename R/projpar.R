@@ -1,8 +1,7 @@
 #' @title Return a parameter used in a WRT projection
 #' @description Return the value of a parameter (or the name) present in
 #'  the WKT of the given proj4string.
-#' @param proj4string The proj4string to be named (a character or a [CRS]
-#'  object).
+#' @param proj4string The proj4string to be named.
 #' @param par Character corresponding to the parameter name.
 #' @param abort logical: if TRUE, the function aborts in case an invalid
 #'  proj4string is passed; if FALSE (default), the function returns NA,

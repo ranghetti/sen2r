@@ -133,11 +133,17 @@ with the formats actually managed by your GDAl installation.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>gdal_formats_db</span>(<span class='kw'>json_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>gdal_formats_db</span>(<span class='no'>gdalDrivers</span>, <span class='kw'>json_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>gdalDrivers</th>
+      <td><p>Function <code>gdalDrivers()</code> from package <code>rgdal</code>,
+which must be passed manually (this is a workaround to avoid importing
+<code>rgdal</code> as dependency).</p></td>
+    </tr>
     <tr>
       <th>json_path</th>
       <td><p>(optional) The path of the output JSON file.

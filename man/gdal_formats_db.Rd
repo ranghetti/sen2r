@@ -4,9 +4,13 @@
 \alias{gdal_formats_db}
 \title{Create the database of GDAL supported formats}
 \usage{
-gdal_formats_db(json_path = NA, force = FALSE)
+gdal_formats_db(gdalDrivers, json_path = NA, force = FALSE)
 }
 \arguments{
+\item{gdalDrivers}{Function \code{gdalDrivers()} from package \code{rgdal},
+which must be passed manually (this is a workaround to avoid importing
+\code{rgdal} as dependency).}
+
 \item{json_path}{(optional) The path of the output JSON file.
 \emph{Warning}: to create a file which wil be usable by the package,
 this option must be left to NA (default location is within the

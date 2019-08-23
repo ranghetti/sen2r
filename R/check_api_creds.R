@@ -12,7 +12,7 @@
 #' @rdname check_api_creds
 #' @author Lorenzo Busetto, phD (2019) \email{busetto.l@@irea.cnr.it}
 #' @note License: GPL 3.0
-#' @importFrom httr GET authenticate
+#' @importFrom httr GET authenticate handle
 check_api_creds <- function(user, pwd) {
   h1 <- httr::handle("")
   check_creds <- httr::GET(
