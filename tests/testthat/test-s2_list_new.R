@@ -1,5 +1,6 @@
 context("Test s2_list")
-skip_on_cran()
+testthat::skip_on_cran()
+testthat::skip_on_travis()
 testthat::test_that(
   "Tests on s2_list - Single tile, single orbit, no pos", {
     s2_list_test <- s2_list_new(
@@ -101,6 +102,31 @@ testthat::test_that(
       output_type = "data.table"
     )
     testthat::expect_equal(length(s2_list_test$orbitid), 34)
+  })
+
+testthat::test_that(
+  "Tests on s2_list - polygon, multiple tiles, multiple orbits", {
+    pos <-  sf::st_as_sfc(sf::st_bbox(
+      c("xmin" = 7, "ymin" = 44, "xmax" = 13, "ymax" = 47),
+      "crs" = sf::st_crs(4326)
+    ))
+    time_window <- as.Date(c("2016-05-01", "2016-05-10"))
+    s2_list_test <- s2_list_new(
+      spatial_extent = pos,
+      time_interval = time_window
+    )
+    testthat::expect_equal(length(s2_list_test), 69)
+  })
+
+testthat::test_that(
+  "Tests on s2_list - point, single tile, large time window", {
+    pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
+    time_window <- as.Date(c("2016-05-01", "2019-05-10"))
+    s2_list_test <- s2_list_new(
+      spatial_extent = pos,
+      time_interval = time_window
+    )
+    testthat::expect_equal(length(s2_list_test$orbitid), 182)
   })
 
 testthat::test_that(
