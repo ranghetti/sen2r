@@ -53,11 +53,11 @@
 #'  (different from `s_srs`, `t_srs`, `te`, `tr`, `ts` and `of`).
 #' @return NULL
 #' @export
-#' @importFrom rgdal GDALinfo
 #' @importFrom gdalUtils gdalwarp gdal_translate
 #' @importFrom sf st_transform st_geometry st_geometry_type st_write st_cast 
 #'  st_area st_bbox st_sfc st_sf st_polygon st_as_sf st_as_sfc st_as_sf st_crs
 #' @importFrom methods as
+#' @importFrom stars read_stars
 #' @importFrom magrittr "%>%"
 #' @importFrom units ud_units
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
@@ -187,25 +187,25 @@ gdal_warp <- function(srcfiles,
       print_message(
         type="error",
         "Format \"",of,"\" is not recognised; ",
-        "please use one of the formats supported by your GDAL installation.\n\n",
-        "To list them, use the following command:\n",
-        "gdalUtils::gdalinfo(formats=TRUE)\n\n",
-        "To search for a specific format, use:\n",
-        "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
+        "please use one of the formats supported by your GDAL installation."#\n\n",
+        # "To list them, use the following command:\n",
+        # "gdalUtils::gdalinfo(formats=TRUE)\n\n",
+        # "To search for a specific format, use:\n",
+        # "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]"
+      )
     }
   }
   
   # if "ref" is specified, read ref parameters
   if (!is.null(ref)) {
-    ref_metadata <- suppressWarnings(GDALinfo(ref))
-    ref_res <- ref_metadata[c("res.x","res.y")]
-    ref_ll <- ref_metadata[c("ll.x","ll.y")]
-    ref_size <- ref_metadata[c("columns","rows")]
-    ref_bbox <- matrix(
-      c(ref_ll, ref_ll + ref_size * ref_res),
-      ncol=2)
-    dimnames(ref_bbox) <- list(c("x","y"),c("min","max"))
-    t_srs <- st_crs(attr(ref_metadata, "projection"))$proj4string
+    ref_metadata <- raster_metadata(ref, format = "list")[[1]]
+    ref_res <- ref_metadata$res
+    ref_size <- ref_metadata$size
+    t_srs <- ref_metadata$proj$proj4string
+    ref_bbox <- ref_metadata$bbox
+    ref_ll <- ref_bbox[c("xmin","ymin")]
+    sel_of <- ifelse(is.null(of), ref_metadata$outformat, of)
+    
     # round "tr" to ref grid
     if (is.null(tr)) {
       tr <- ref_res
@@ -280,16 +280,13 @@ gdal_warp <- function(srcfiles,
     if (!file.exists(dstfile) | overwrite==TRUE) {
       
       # read infile parameters
-      sel_metadata <- suppressWarnings(GDALinfo(srcfile))
-      sel_res <- sel_metadata[c("res.x","res.y")]
-      sel_ll <- sel_metadata[c("ll.x","ll.y")]
-      sel_size <- sel_metadata[c("columns","rows")]
-      sel_s_srs <- st_crs(attr(sel_metadata, "projection"))$proj4string
-      
-      sel_bbox <- c(sel_ll, sel_ll + sel_size * sel_res)
-      names(sel_bbox) <- c("xmin", "ymin", "xmax", "ymax")
-      sel_bbox <- st_bbox(sel_bbox, crs = sel_s_srs)
-      sel_of <- ifelse(is.null(of), attr(sel_metadata, "driver"), of)
+      sel_metadata <- raster_metadata(srcfile, format = "list")[[1]]
+      sel_res <- sel_metadata$res
+      sel_size <- sel_metadata$size
+      sel_s_srs <- sel_metadata$proj$proj4string
+      sel_bbox <- sel_metadata$bbox
+      sel_ll <- sel_bbox[c("xmin","ymin")]
+      sel_of <- ifelse(is.null(of), sel_metadata$outformat, of)
       
       # set default parameter values (if not specified)
       sel_t_srs <- if (is.null(t_srs)) {sel_s_srs} else {t_srs}

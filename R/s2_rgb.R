@@ -56,7 +56,6 @@
 #' @importFrom foreach foreach "%do%" "%dopar%"
 #' @importFrom doParallel registerDoParallel
 #' @importFrom parallel makeCluster stopCluster detectCores
-#' @importFrom rgdal GDALinfo
 #' @importFrom jsonlite fromJSON
 #' @export
 
@@ -119,11 +118,12 @@ s2_rgb <- function(infiles,
       print_message(
         type="error",
         "Format \"",format,"\" is not recognised; ",
-        "please use one of the formats supported by your GDAL installation.\n\n",
-        "To list them, use the following command:\n",
-        "gdalUtils::gdalinfo(formats=TRUE)\n\n",
-        "To search for a specific format, use:\n",
-        "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
+        "please use one of the formats supported by your GDAL installation."#\n\n",
+        # "To list them, use the following command:\n",
+        # "gdalUtils::gdalinfo(formats=TRUE)\n\n",
+        # "To search for a specific format, use:\n",
+        # "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]"
+      )
     }
   }
   
@@ -199,7 +199,7 @@ s2_rgb <- function(infiles,
     sel_format <- if (!is.na(format)) {
       format
     } else {
-      suppressWarnings(attr(GDALinfo(sel_infile_path), "driver"))
+      raster_metadata(sel_infile_path, "outformat", format = "list")[[1]]$outformat
     }
     sel_out_ext <- gdal_formats[gdal_formats$name==sel_format,][1,"ext"]
     

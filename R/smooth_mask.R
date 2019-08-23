@@ -20,7 +20,6 @@
 #'  Default (NULL) means that no NA values are presente.
 #' @return The path of the smoothed mask.
 #' @export
-#' @importFrom rgdal GDALinfo
 #' @importFrom methods is
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
@@ -42,7 +41,8 @@ smooth_mask <- function(inmask, binpaths, tmpdir = tempdir(), radius = 250, buff
   
   # convert radius and buffer from metres to number of pixels
   # (as required by gdal_fillnodata)
-  inmask_res <- mean(suppressWarnings(GDALinfo(inmask_path0)[c("res.x","res.y")]))
+  inmask_res <- mean(raster_metadata(inmask_path0, "res", format = "list")[[1]]$res)
+  
   radius_npx <- abs(radius / inmask_res)
   buffer_npx <- buffer / inmask_res
 

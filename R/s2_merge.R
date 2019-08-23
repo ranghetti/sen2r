@@ -48,7 +48,6 @@
 #'  (it is used when the function is called by `sen2r()`).
 #' @return A vector with the names of the merged products (just created or
 #'  already existing).
-#' @importFrom rgdal GDALinfo
 #' @importFrom magrittr "%>%"
 #' @importFrom jsonlite fromJSON
 #' @importFrom foreach foreach "%do%" "%dopar%"
@@ -100,13 +99,10 @@ s2_merge <- function(infiles,
   
   # Get files metadata
   infiles_meta <- sen2r_getElements(infiles, format="data.frame")
-  # get metadata from GDALinfo (FIXME time expensive; check if it can be speeded up)
-  suppressWarnings(
-    # infiles_meta_gdal <- sapply(infiles, function(x) {attributes(GDALinfo(x))[c("driver","projection","df")]})
-    infiles_meta_gdal <- sapply(infiles, function(x) {attributes(GDALinfo(x))[c("driver","projection")]})
-  )
-  infiles_meta$format <- unlist(infiles_meta_gdal[1,])
-  infiles_meta$proj4string <- sapply(unlist(infiles_meta_gdal[2,]), function(x) {st_crs2(x)$proj4string})
+  # get metadata
+  infiles_meta_gdal <- raster_metadata(infiles, c("outformat", "proj"), format = "data.table")
+  infiles_meta$format <- infiles_meta_gdal$outformat
+  infiles_meta$proj4string <- infiles_meta_gdal$proj
   # infiles_meta$NAflag <- sapply(infiles_meta_gdal[3,], function(x) {
   #   if (x[1,"hasNoDataValue"]==TRUE) {
   #     x[1,"NoDataValue"]

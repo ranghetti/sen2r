@@ -20,7 +20,6 @@
 #' @note License: GPL 3.0
 #' @importFrom reticulate py_to_r
 #' @importFrom jsonlite toJSON fromJSON
-#' @importFrom rgdal gdalDrivers
 #' @importFrom utils packageVersion
 
 gdal_formats_db <- function(json_path = NA,
@@ -71,7 +70,7 @@ gdal_formats_db <- function(json_path = NA,
   )
   
   # read other information using rgdal
-  gdal_drivers <- gdalDrivers()
+  gdal_drivers <- rgdal::gdalDrivers()
   
   gdal_drivers <- merge(gdal_drivers, gdal_driver_namext, by="name", all.x=TRUE)
   

@@ -79,7 +79,6 @@
 #' @importFrom parallel makeCluster stopCluster detectCores
 #' @importFrom jsonlite fromJSON
 #' @import data.table
-#' @importFrom rgdal GDALinfo
 #' @importFrom raster blockSize brick getValues raster writeStart writeStop writeValues
 #' @importFrom magrittr "%>%"
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
@@ -220,11 +219,12 @@ s2_calcindices <- function(infiles,
       print_message(
         type="error",
         "Format \"",format,"\" is not recognised; ",
-        "please use one of the formats supported by your GDAL installation.\n\n",
-        "To list them, use the following command:\n",
-        "gdalUtils::gdalinfo(formats=TRUE)\n\n",
-        "To search for a specific format, use:\n",
-        "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
+        "please use one of the formats supported by your GDAL installation."#\n\n",
+        # "To list them, use the following command:\n",
+        # "gdalUtils::gdalinfo(formats=TRUE)\n\n",
+        # "To search for a specific format, use:\n",
+        # "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]"
+      )
     }
   }
   
@@ -285,9 +285,9 @@ s2_calcindices <- function(infiles,
     
     sel_infile <- infiles[i]
     sel_infile_meta <- c(infiles_meta[i,])
-    sel_format <- suppressWarnings(ifelse(
-      !is.na(format), format, attr(GDALinfo(sel_infile), "driver")
-    ))
+    sel_format <- suppressWarnings(
+      ifelse(!is.na(format), format, raster_metadata(sel_infile, "outformat", format = "list")[[1]]$outformat)
+    )
     sel_out_ext <- gdal_formats[gdal_formats$name==sel_format,"ext"][1]
     
     # check bands to use

@@ -18,7 +18,6 @@
 #'  removeDrawToolbar
 #' @importFrom mapedit editModUI
 #' @importFrom utils packageVersion
-#' @importFrom stars read_stars st_dimensions
 #' @importFrom sf st_coordinates st_crs st_geometry st_intersects st_polygon st_read st_bbox st_as_sfc st_transform
 #' @importFrom shiny a actionButton actionLink addResourcePath br callModule 
 #'  checkboxGroupInput checkboxInput column conditionalPanel dateRangeInput 
@@ -2251,39 +2250,10 @@ s2_gui <- function(param_list = NULL,
     shinyFileChoose(input, "reference_file_button", roots = volumes)
     
     reference <- reactive({
-      
       if (!is.null(input$reference_file_button)) {
-        
-        reference_path <- input$reference_file_textin
-        reference_stars <- try(
-          read_stars(reference_path, proxy = TRUE),
-          silent=TRUE
-        )
-        if (!is(reference_stars, "try-error")) {
-          
-          # get metadata
-          # ref_metadata <- suppressWarnings(GDALinfo(reference_path))
-          ref_res <- sapply(st_dimensions(reference_stars), function(xy){abs(xy$delta)})
-          # ref_size <- sapply(st_dimensions(reference_stars), function(xy){xy$to})
-          ref_bbox <- st_bbox(reference_stars)
-          ref_proj <- st_crs(reference_stars)$proj4string
-          ref_unit <- projpar(ref_proj, "unit")
-          # ref_outformat <- attr(ref_metadata, "driver")
-          
-          return(list(
-            # "metadata" = ref_metadata,
-            "res" = ref_res,
-            "bbox" = ref_bbox,
-            "proj" = ref_proj,
-            "unit" = ref_unit#,
-            # "outformat" = ref_outformat
-          ))
-        }
-        
+        test_reference <- raster_metadata(input$reference_file_textin, format = "list")[[1]]
+        if (test_reference$isvalid) {test_reference}
       }
-      
-      return(invisible(NULL))
-      
     })
     
     observe({
@@ -2350,7 +2320,7 @@ s2_gui <- function(param_list = NULL,
           style = "padding-top:0.5em;",
           if (!is.null(reference())) {
             span(style="color:darkgreen",
-                 projname(reference()$proj))
+                 projname(reference()$proj$proj4string))
           } else {
             span(style="color:grey",
                  "Specify a valid raster file.")
@@ -3503,7 +3473,7 @@ s2_gui <- function(param_list = NULL,
       # output proj4string
       rl$proj <- if (input$use_reference==TRUE &
                      "proj" %in% input$reference_usefor) {
-        reference()$proj
+        reference()$proj$proj4string
       } else if (input$reproj==FALSE) {
         NA
       } else {

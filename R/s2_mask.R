@@ -110,7 +110,6 @@
 #'  An attribute "toomasked" contains the paths of the outputs which were not
 #'  created cause to the high percentage of cloud coverage.
 #' @export
-#' @importFrom rgdal GDALinfo
 #' @importFrom raster brick calc dataType mask overlay stack values
 #' @importFrom jsonlite fromJSON
 #' @import data.table
@@ -230,16 +229,17 @@ s2_mask <- function(infiles,
   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
   
   # Get files metadata
-  infiles_meta <- sen2r_getElements(infiles, format="data.table")
-  maskfiles_meta <- sen2r_getElements(maskfiles, format="data.table")
+  infiles_meta_sen2r <- sen2r_getElements(infiles, format="data.table")
+  infiles_meta_raster <- raster_metadata(infiles, c("res", "outformat", "unit"), format="data.table")
+  maskfiles_meta_sen2r <- sen2r_getElements(maskfiles, format="data.table")
   # suppressWarnings(
-  #   infiles_meta_gdal <- sapply(infiles, function(x) {attributes(GDALinfo(x))[c("df")]})
+  #   infiles_meta_sen2r_gdal <- sapply(infiles, function(x) {attributes(GDALinfo(x))[c("df")]})
   # )
   
   # create outdir if not existing
   dir.create(outdir, recursive=FALSE, showWarnings=FALSE)
   # create subdirs (if requested)
-  prod_types <- unique(infiles_meta$prod_type)
+  prod_types <- unique(infiles_meta_sen2r$prod_type)
   if (is.na(subdirs)) {
     subdirs <- ifelse(length(prod_types)>1, TRUE, FALSE)
   }
@@ -284,31 +284,31 @@ s2_mask <- function(infiles,
   }
   for (i in seq_along(infiles)) {try({
     sel_infile <- infiles[i]
-    sel_infile_meta <- c(infiles_meta[i,])
-    sel_format <- suppressWarnings(ifelse(
-      !is.na(format), format, attr(GDALinfo(sel_infile), "driver")
-    ))
+    sel_infile_meta_sen2r <- c(infiles_meta_sen2r[i,])
+    sel_infile_meta_raster <- c(infiles_meta_raster[i,])
+browser()
+    sel_format <- sel_infile_meta_raster$outformat
     sel_rmtmp <- ifelse(sel_format=="VRT", FALSE, rmtmp)
     sel_out_ext <- gdal_formats[gdal_formats$name==sel_format,"ext"][1]
-    sel_naflag <- s2_defNA(sel_infile_meta$prod_type)
+    sel_naflag <- s2_defNA(sel_infile_meta_sen2r$prod_type)
     
     # check that infile has the correct maskfile
     sel_maskfiles <- sapply(names(req_masks), function(m) {
-      maskfiles[which(maskfiles_meta$prod_type==m &
-                        maskfiles_meta$type==sel_infile_meta$type &
-                        maskfiles_meta$mission==sel_infile_meta$mission &
-                        maskfiles_meta$sensing_date==sel_infile_meta$sensing_date &
-                        maskfiles_meta$id_orbit==sel_infile_meta$id_orbit &
-                        maskfiles_meta$res==sel_infile_meta$res)][1]
+      maskfiles[which(maskfiles_meta_sen2r$prod_type==m &
+                        maskfiles_meta_sen2r$type==sel_infile_meta_sen2r$type &
+                        maskfiles_meta_sen2r$mission==sel_infile_meta_sen2r$mission &
+                        maskfiles_meta_sen2r$sensing_date==sel_infile_meta_sen2r$sensing_date &
+                        maskfiles_meta_sen2r$id_orbit==sel_infile_meta_sen2r$id_orbit &
+                        maskfiles_meta_sen2r$res==sel_infile_meta_sen2r$res)][1]
     })
     
     # define subdir
-    out_subdir <- ifelse(subdirs, file.path(outdir,infiles_meta[i,"prod_type"]), outdir)
+    out_subdir <- ifelse(subdirs, file.path(outdir,infiles_meta_sen2r[i,"prod_type"]), outdir)
     
     # define out name (a vrt for all except the last mask)
     sel_outfile <- file.path(
       out_subdir,
-      gsub(paste0("\\.",infiles_meta[i,"file_ext"],"$"),
+      gsub(paste0("\\.",infiles_meta_sen2r[i,"file_ext"],"$"),
            paste0(".",sel_out_ext),
            basename(sel_infile)))
     
@@ -411,9 +411,9 @@ s2_mask <- function(infiles,
           # define out MSK name
           binmask <- file.path(
             ifelse(subdirs, file.path(outdir,"MSK"), outdir),
-            gsub(paste0("\\.",infiles_meta[i,"file_ext"],"$"),
+            gsub(paste0("\\.",infiles_meta_sen2r[i,"file_ext"],"$"),
                  paste0(".",sel_out_ext),
-                 gsub(paste0("\\_",infiles_meta[i,"prod_type"],"\\_"),
+                 gsub(paste0("\\_",infiles_meta_sen2r[i,"prod_type"],"\\_"),
                       "_MSK_",
                       basename(sel_infile)))
           )
@@ -450,8 +450,11 @@ s2_mask <- function(infiles,
             # if mask is at different resolution than inraster
             # (e.g. 20m instead of 10m),
             # resample it
-            if (any(suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")]) !=
-                    suppressWarnings(GDALinfo(outmask)[c("res.x","res.y")]))) {
+browser()
+            if (any(
+              unlist(sel_infile_meta_raster[c("res.x","res.y")]) !=
+              unlist(raster_metadata(outmask, "res", format = "list")[[1]]$res)
+            )) {
               gdal_warp( # DO NOT use raster::disaggregate (1. not faster, 2. it does not always provide the right resolution)
                 outmask,
                 outmask_res <- file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif"))),
@@ -487,9 +490,13 @@ s2_mask <- function(infiles,
             }
             
             # the same for outnaval
-            if (any(suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")]) !=
-                    suppressWarnings(GDALinfo(outnaval)[c("res.x","res.y")])) & 
-                (smooth > 0 | buffer != 0)) {
+            if (
+              any(
+                unlist(sel_infile_meta_raster[c("res.x","res.y")]) !=
+                unlist(raster_metadata(outnaval, "res", format = "list")[[1]]$res)
+              ) & 
+              (smooth > 0 | buffer != 0)
+            ) {
               gdal_warp(
                 outnaval,
                 outnaval_res <- file.path(sel_tmpdir, basename(tempfile(pattern = "naval_", fileext = ".tif"))),
@@ -502,7 +509,7 @@ s2_mask <- function(infiles,
             # apply the smoothing (if required)
             outmask_smooth <- if (smooth > 0 | buffer != 0) {
               # if the unit is not metres, approximate it
-              if (projpar(attr(suppressWarnings(GDALinfo(sel_infile)),"projection"), "Unit") == "degree") {
+              if (sel_infile_meta_raster$unit == "degree") {
                 buffer <- buffer * 8.15e-6
                 smooth <- smooth * 8.15e-6
               }
