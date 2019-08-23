@@ -216,30 +216,9 @@ s2_list_new <- function(spatial_extent = NULL,
     stop("`max_cloud` must be integer [0,100]. Aborting!")
   }
   
-  # link to apihub
-  if (is.null(apihub)) {
-    apihub <- file.path(system.file("extdata", package="sen2r"), "apihub.txt")
-    attr(apihub, "default") <- TRUE
-  } else {
-    attr(apihub, "default") <- FALSE
-  }
-  
-  if (!file.exists(apihub)) {
-    print_message(
-      type = "error",
-      if (attr(apihub, "default")) {paste0(
-        "The user mus save his SciHub credentials in sen2r. ",
-        "To do it, launch the function write_scihub_login('<username>', '<password>') ",
-        "or add them using the sen2r() GUI."
-      )} else {paste0(
-        "The file \"",apihub,"\" does not exist."
-      )}
-    )
-  } else {
-    user <- as.character(read.table(apihub)[1,1])
-    pwd <- as.character(read.table(apihub)[1,2])
-  }
-  
+  # Get credentials
+  creds <- read_scihub_login(apihub)
+
   foot <- ifelse(
     inherits(spatial_extent, "sfc_POINT"),
     paste0('footprint:%22Intersects(', paste(as.numeric(sf::st_coordinates(spatial_extent)[c(2,1)]), collapse = ",%20"),')%22'),
@@ -271,7 +250,7 @@ s2_list_new <- function(spatial_extent = NULL,
       query_string <- gsub("\\[", "%5b",query_string)
       query_string <- gsub("\\]", "%5d",query_string)
       
-      out_query    <- httr::GET(query_string, authenticate(user, pwd))
+      out_query    <- httr::GET(query_string, authenticate(creds[1], creds[2]))
       out_xml      <- httr::content(out_query, as = "parsed", encoding = "UTF-8")
       out_xml_list <- XML::htmlTreeParse(out_xml, useInternalNodes = TRUE) %>% XML::xmlRoot()
       out_xml_list <- out_xml_list[["body"]][["feed"]]
@@ -375,8 +354,8 @@ s2_list_new <- function(spatial_extent = NULL,
   out_dt <- out_dt[order(date),]
   
   # FIXME remove this part of code when s2_download will be rewritten
-  out_dt$url <- gsub("/\\$value", "/\\\\$value", out_dt$url) %>%
-    gsub("/dhus/", "/apihub/", .)
+  # out_dt$url <- gsub("/\\$value", "/\\\\$value", out_dt$url) %>%
+  #   gsub("/dhus/", "/apihub/", .)
   
   if (output_type == "data.table") {
     return(out_dt)
