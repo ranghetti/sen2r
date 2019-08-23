@@ -10,6 +10,8 @@
 #'  }
 #' }
 #' @rdname check_api_creds
+#' @author Lorenzo Busetto Ranghetti, phD (2019) \email{busetto.l@@irea.cnr.it}
+#' @note License: GPL 3.0
 #' @importFrom httr GET authenticate
 check_api_creds <- function(user, pwd) {
   h1 <- httr::handle("")
