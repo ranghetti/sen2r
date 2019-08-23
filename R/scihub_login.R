@@ -1,21 +1,28 @@
-#' @title Import / export SciHub username and password
-#' @description Read the SciHub login information or save new username and
-#'  password. Login information is stored in a file `apihub.txt` inside the
+#' @title Import / export / check SciHub username and password
+#' @description Read the SciHub login information (`read_scihub_login()`), 
+#'  save new username and password (`write_scihub_login()`)
+#'  or chech their validity (`check_scihub_login()`). 
+#'  Login information is stored in a file `apihub.txt` inside the
 #'  "extdata" directory. This functions allow to read or write this
 #'  file, and to edit them from inside the GUI.
-#'  Remember that, in case login information is not provided, default `user` 
-#'  username and `user` password are used, but this can cause timeouts, since
-#'  [a limit of two parallel downloads per user exists](https://scihub.copernicus.eu/twiki/do/view/SciHubWebPortal/APIHubDescription).
 #' @param apihub_path Path of the file in which login information is saved.
 #'  If NA (default) it is automatically read from the package default location.
 #' @param username SciHub username.
 #' @param password SciHub password.
-#' @return NULL
+#' @return `read_scihub_login` returns a matrix of credentials, 
+#'  in which `username` is in the first column, `password` in the second.
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @importFrom reticulate py_to_r
 #' @importFrom shiny a actionButton icon modalButton modalDialog passwordInput tagList textInput
 #' @importFrom shinyFiles shinyFileSave
+#' @examples \dontrun{
+#' if (interactive()) {
+#'   check_scihub_login("user", "user")
+#'   write_scihub_login("user", "user")
+#'   read_scihub_login()
+#' }
+#' }
 
 #' @name read_scihub_login
 #' @rdname scihub_login
@@ -41,14 +48,54 @@ read_scihub_login <- function(apihub_path=NA) {
 }
 
 
-#' @name write_scihub_login
-#' @param append Logical: if TRUE, new credentials are added 
-#'  to the ones existing within `apihub_path`; 
-#'  if FALSE (default), `apihub_path` is replaced with the new ones.
+#' @name check_scihub_login
+#' @return `check_scihub_login` returns TRUE if credentials are valid, 
+#'  FALSE elsewhere.
+#' @importFrom httr GET authenticate handle
+#' @author Lorenzo Busetto, phD (2019) \email{busetto.l@@irea.cnr.it}
 #' @rdname scihub_login
 #' @export
 
-write_scihub_login <- function(username, password, apihub_path=NA, append=FALSE) {
+check_scihub_login <- function(username, password) {
+  check_creds <- httr::GET(
+    url = "https://scihub.copernicus.eu/apihub/odata/v1",
+    handle = httr::handle(""), 
+    httr::authenticate(username, password))
+  if (check_creds$status == "401") {
+    FALSE
+  } else {
+    TRUE
+  }
+}
+
+
+#' @name write_scihub_login
+#' @param check Logical: if TRUE, new credentials are checked
+#'  before writing them on `apihub_path` (if they are invalid, an error 
+#'  is provided); 
+#'  if FALSE (default), they are directly written.
+#' @param append Logical: if TRUE, new credentials are added 
+#'  to the ones existing within `apihub_path`; 
+#'  if FALSE (default), `apihub_path` is replaced with the new ones.
+#' @return `write_scihub_login` returns NULL.
+#' @rdname scihub_login
+#' @export
+
+write_scihub_login <- function(username, password, 
+                               apihub_path = NA, 
+                               check = FALSE, 
+                               append = FALSE) {
+
+  # check credentials (if required)
+  if (check == TRUE) {
+    if (!check_scihub_login(username, password)) {
+      print_message(
+        type = "error",
+        "The provided credentials are not valid, ",
+        "so the will not be saved."
+      )
+    }
+  }
 
   # if apihub_path is not specified, 
   # retrieve from the current installation
@@ -64,6 +111,7 @@ write_scihub_login <- function(username, password, apihub_path=NA, append=FALSE)
   if (append) {
     apihub <- rbind(apihub, read_scihub_login(apihub_path))
     apihub <- apihub[!duplicated(apihub[,1]),]
+    apihub <- matrix(apihub, ncol = 2)
   }
   
   # write credentials
@@ -137,4 +185,3 @@ write_scihub_login <- function(username, password, apihub_path=NA, append=FALSE)
     )
   )
 }
-
