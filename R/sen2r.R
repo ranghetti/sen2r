@@ -366,9 +366,7 @@ sen2r <- function(param_list = NULL,
                   rmtmp = TRUE,
                   log = NA) {
   
-  s2_list <- s2_list_new
-  
-  
+
   # sink to external files
   if (!is.na(log[2])) {
     dir.create(dirname(log[2]), showWarnings=FALSE)
