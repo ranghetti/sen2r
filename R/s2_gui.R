@@ -18,7 +18,7 @@
 #'  removeDrawToolbar
 #' @importFrom mapedit editModUI
 #' @importFrom utils packageVersion
-#' @importFrom stars read_stars
+#' @importFrom stars read_stars st_dimensions
 #' @importFrom sf st_coordinates st_crs st_geometry st_intersects st_polygon st_read st_bbox st_as_sfc st_transform
 #' @importFrom shiny a actionButton actionLink addResourcePath br callModule 
 #'  checkboxGroupInput checkboxInput column conditionalPanel dateRangeInput 
@@ -2264,14 +2264,14 @@ s2_gui <- function(param_list = NULL,
           # get metadata
           # ref_metadata <- suppressWarnings(GDALinfo(reference_path))
           ref_res <- sapply(st_dimensions(reference_stars), function(xy){abs(xy$delta)})
-          ref_size <- sapply(st_dimensions(reference_stars), function(xy){xy$to})
+          # ref_size <- sapply(st_dimensions(reference_stars), function(xy){xy$to})
           ref_bbox <- st_bbox(reference_stars)
           ref_proj <- st_crs(reference_stars)$proj4string
           ref_unit <- projpar(ref_proj, "unit")
           # ref_outformat <- attr(ref_metadata, "driver")
           
           return(list(
-            "metadata" = ref_metadata,
+            # "metadata" = ref_metadata,
             "res" = ref_res,
             "bbox" = ref_bbox,
             "proj" = ref_proj,
