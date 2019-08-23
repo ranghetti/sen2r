@@ -4,7 +4,7 @@
 \alias{s2_download}
 \title{Download S2 products.}
 \usage{
-s2_download(s2_prodlist = NULL, downloader = "wget", apihub = NA,
+s2_download(s2_prodlist = NULL, downloader = "builtin", apihub = NA,
   tile = NULL, outdir = ".")
 }
 \arguments{
@@ -12,7 +12,8 @@ s2_download(s2_prodlist = NULL, downloader = "wget", apihub = NA,
 (this must be the output of \link{s2_list} function).}
 
 \item{downloader}{Executable to use to download products
-(default: "wget").}
+(default: "builtin"). Alternatives are "builtin" or "aria2"
+(this requires aria2c to be installed).}
 
 \item{apihub}{Path of the "apihub.txt" file containing credentials
 of scihub account.

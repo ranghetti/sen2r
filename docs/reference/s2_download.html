@@ -123,7 +123,7 @@ Input filename must be an element obtained with
     
     </div>
 
-    <pre class="usage"><span class='fu'>s2_download</span>(<span class='kw'>s2_prodlist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>downloader</span> <span class='kw'>=</span> <span class='st'>"wget"</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+    <pre class="usage"><span class='fu'>s2_download</span>(<span class='kw'>s2_prodlist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>downloader</span> <span class='kw'>=</span> <span class='st'>"builtin"</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>tile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"."</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -137,7 +137,8 @@ Input filename must be an element obtained with
     <tr>
       <th>downloader</th>
       <td><p>Executable to use to download products
-(default: "wget").</p></td>
+(default: "builtin"). Alternatives are "builtin" or "aria2"
+(this requires aria2c to be installed).</p></td>
     </tr>
     <tr>
       <th>apihub</th>
@@ -154,6 +155,11 @@ If NA (default), the default location inside the package will be used.</p></td>
       <td><p>(optional) Full name of the existing output directory
 where the files should be created (default: current directory).</p></td>
     </tr>
+    <tr>
+      <th>overwrite_safe</th>
+      <td><p><code>logical</code> if FALSE, and a SAFE that should be downloaded is
+already present in outdir, download is skipped, Default: FALSE</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
@@ -161,31 +167,6 @@ where the files should be created (default: current directory).</p></td>
     <p>License: GPL 3.0</p>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='no'>single_s2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/paste'>paste0</a></span>(<span class='st'>"https://scihub.copernicus.eu/apihub/odata/v1/"</span>,
-  <span class='st'>"Products(\'c7142722-42bf-4f93-b8c5-59fd1792c430\')/\\$value"</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>single_s2</span>) <span class='kw'>&lt;-</span> <span class='st'>"S2A_MSIL1C_20170613T101031_N0205_R022_T32TQQ_20170613T101608.SAFE"</span>
-<span class='co'># (this is equivalent to:</span>
-<span class='co'># single_s2 &lt;- example_s2_list[1]</span>
-<span class='co'># where example_s2_list is the output of the example of the</span>
-<span class='co'># s2_list() function)</span>
-
-<span class='co'># Download the whole product</span>
-<span class='fu'>s2_download</span>(<span class='no'>single_s2</span>, <span class='kw'>outdir</span><span class='kw'>=</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/tempfile'>tempdir</a></span>())
-
-<span class='co'># Download a specific tile</span>
-<span class='fu'>s2_download</span>(<span class='no'>single_s2</span>, <span class='kw'>tile</span><span class='kw'>=</span><span class='st'>"32TQQ"</span>, <span class='kw'>outdir</span><span class='kw'>=</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/tempfile'>tempdir</a></span>())
-<span class='co'># (for products with compact names, the two above commands produce equivalent</span>
-<span class='co'># results: the first one downloads a SAFE archive, while the second one</span>
-<span class='co'># downloads single product files)</span>
-
-<span class='co'># Download a serie of products</span>
-<span class='no'>pos</span> <span class='kw'>&lt;-</span> <span class='fu'>st_sfc</span>(<span class='fu'>st_point</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>12.0</span>, <span class='fl'>44.8</span>)), <span class='kw'>crs</span><span class='kw'>=</span><span class='fu'>st_crs</span>(<span class='fl'>4326</span>))
-<span class='no'>time_window</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/as.Date'>as.Date</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"2017-05-01"</span>,<span class='st'>"2017-07-30"</span>))
-<span class='no'>example_s2_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='s2_list.html'>s2_list</a></span>(<span class='kw'>spatial_extent</span><span class='kw'>=</span><span class='no'>pos</span>, <span class='kw'>tile</span><span class='kw'>=</span><span class='st'>"32TQQ"</span>, <span class='kw'>time_interval</span><span class='kw'>=</span><span class='no'>time_window</span>)
-<span class='fu'>s2_download</span>(<span class='no'>example_s2_list</span>, <span class='kw'>outdir</span><span class='kw'>=</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/tempfile'>tempdir</a></span>())
-<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -193,9 +174,7 @@ where the files should be created (default: current directory).</p></td>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#note">Note</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+          </ul>
 
     <h2>Author</h2>
     <p>Luigi Ranghetti, phD (2017) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p>

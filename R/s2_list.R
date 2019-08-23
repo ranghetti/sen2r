@@ -354,10 +354,6 @@ s2_list <- function(spatial_extent = NULL,
   if (nrow(out_dt) == 0) {return(character(0))}
   out_dt <- out_dt[order(date),]
   
-  # FIXME remove this part of code when s2_download will be rewritten
-  # out_dt$url <- gsub("/\\$value", "/\\\\$value", out_dt$url) %>%
-  #   gsub("/dhus/", "/apihub/", .)
-  
   if (output_type == "data.table") {
     return(out_dt)
   } else {
