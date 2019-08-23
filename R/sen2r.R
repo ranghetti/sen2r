@@ -26,7 +26,7 @@
 #'  and atmospheric correction).
 #' @param s2_levels (optional) Character vector of length 1 or 2, with
 #'  Sentinel-2 levels required for processing steps or as output.
-#'  This parameter is used only if `preprocess = FALSE` (otherwise, the 
+#'  This parameter is used only if `preprocess = FALSE` (otherwise, the
 #'  required levels are derived from `list_prods`).
 #'  Accepted values: "l1c" and "l2a"; default: "l2a".
 #' @param sel_sensor (optional) Character vector of length 1 or 2, with
@@ -39,8 +39,8 @@
 #'  of scihub account.
 #'  If NA (default), the default location inside the package will be used.
 #' @param downloader (optional) Character value corresponding to the executable
-#'  which should be used to download SAFE products. It could be one among 
-#'  "wget" (default) and "aria2". 
+#'  which should be used to download SAFE products. It could be one among
+#'  "wget" (default) and "aria2".
 #'  If aria2 is not installed, Wget will be used instead.
 #' @param overwrite_safe (optional) Logical: TRUE to overwrite existing
 #'  products with products found online or manually corrected,
@@ -61,10 +61,10 @@
 #'  otherwise they are skipped (sen2cor is never used);
 #'  * "no" means that L2A are not considered (processing chain
 #'  makes use only of L1C products).
-#' @param max_cloud_safe (optional) Integer number (0-100) containing 
+#' @param max_cloud_safe (optional) Integer number (0-100) containing
 #'  the maximum cloud level of each SAFE to be considered (default: no filter).
-#'  It it used to limit the research of SAFE products to "good" images, 
-#'  so it is applied only to non-existing archives (existing SAFE are always 
+#'  It it used to limit the research of SAFE products to "good" images,
+#'  so it is applied only to non-existing archives (existing SAFE are always
 #'  used).
 #'  In thish sense, this parameter is different from `max_mask`, which can be
 #'  used to set a maximum cloud coverage over output extents.
@@ -75,7 +75,7 @@
 #'  of length 1 (single day) or 2 (time window). Default is NA, meaning that
 #'  no filters are used if online = FALSE, and all found images are processed;
 #'  if online = TRUE, last 90 days are processed.
-#'  Is it possible to pass also integer (or difftime) values, which are 
+#'  Is it possible to pass also integer (or difftime) values, which are
 #'  interpreted as the last n days.
 #' @param timeperiod (optional) Character:
 #'  * "full" (default) means that all
@@ -85,13 +85,13 @@
 #'  2017-08-31, the periods 2015-06-01 to 2015-08-31, 2016-06-01
 #'  to 2016-08-31 and 2017-06-01 to 2017-08-31 are considered).
 #' @param extent (optional) Spatial extent on which to clip products (it can
-#'  be both the path of a vector file or a geoJSON). 
+#'  be both the path of a vector file or a geoJSON).
 #'  Default is NA for offline mode (meaning no extent:
 #'  all found tiles are entirely used); in online mode, a sample extent is used
 #'  as default.
 #' @param extent_name (optional) Name of the area set as extent, to be used in
-#'  the output file names. Default is "sen2r" The name is an 
-#'  alphanumeric string which cannot contain points nor underscores, and that 
+#'  the output file names. Default is "sen2r" The name is an
+#'  alphanumeric string which cannot contain points nor underscores, and that
 #'  cannot be a five-length string with the same structure of a tile ID
 #'  (two numeric and three uppercase character values).
 #' @param s2tiles_selected (optional) Character vector with the Sentinel-2
@@ -121,34 +121,34 @@
 #' @param rgb_ranges (optional) Range of valid values to be used for RGB products.
 #'  Values must be provided in the same scale used within SAFE and BOA/TOA
 #'  products (0-10000, corresponding to reflectances * 10000).
-#'  If can be a 2-length integer vector (min-max for all the 3 bands) or a 6-length vector or 
+#'  If can be a 2-length integer vector (min-max for all the 3 bands) or a 6-length vector or
 #'  3x2 matrix (min red, min green, min blue, max red, max green, max blue).
 #'  Default is to use c(0,2500) for bands 2, 3 and 4; c(0,7500) for other bands.
-#'  In case `list_rgb` is a vector of length > 1, `rgb_ranges` must be a list 
+#'  In case `list_rgb` is a vector of length > 1, `rgb_ranges` must be a list
 #'  of the same length (otherwise, the same range vlaues will be used for all the RGB
 #'  products).
 #' @param mask_type (optional) Character value which determines the categories
 #'  in the Surface Classification Map to be masked (see [s2_mask()]
 #'  for the accepted values). Default (NA) is not to mask.
 #' @param max_mask (optional) Numeric value (range 0 to 100), which represents
-#'  the maximum percentage of allowed masked surface (by clouds or any other 
-#'  type of mask chosen with argument `mask_type`) for producing outputs. 
+#'  the maximum percentage of allowed masked surface (by clouds or any other
+#'  type of mask chosen with argument `mask_type`) for producing outputs.
 #'  Images with a percentage of masked surface greater than `max_mask`%
-#'  are not processed (the list of expected output files which have not been 
-#'  generated is returned as an attribute, named "skipped"). 
+#'  are not processed (the list of expected output files which have not been
+#'  generated is returned as an attribute, named "skipped").
 #'  Default value is 80.
 #'  This parameter is different from `max_cloud_safe`, because:
 #'  1. it is computed over the selected extent;
 #'  2. it is computed basing on the cloud mask defined as above.
-#'  Notice that the percentage is computed on non-NA values (if input images 
+#'  Notice that the percentage is computed on non-NA values (if input images
 #'  had previously been clipped and masked using a polygon, the percentage is
 #'  computed on the surface included in the masking polygons).
 #' @param mask_smooth (optional) Numeric positive value: the smoothing radius
 #'  (expressed in unit of measure of the output projection, typically metres)
-#'  to be applied to the cloud mask by function [s2_mask]. 
+#'  to be applied to the cloud mask by function [s2_mask].
 #' @param mask_buffer (optional) Numeric value: the buffering radius
 #'  (expressed in unit of measure of the output projection, typically metres)
-#'  to be applied to the cloud mask by function [s2_mask]. 
+#'  to be applied to the cloud mask by function [s2_mask].
 #'  Default value (0) means that no buffer is applied; a positive value causes
 #'  an enlargement of the masked area; a negative value cause a reducement.
 #' @param clip_on_extent (optional) Logical: if TRUE (default), output products
@@ -179,14 +179,14 @@
 #'  format recognised by GDAL). Default is "GTiff".
 #' @param rgb_outformat (optional) Format of the output RGB products (in a
 #'  format recognised by GDAL). Default is "GTiff".
-#' @param index_datatype (optional) Numeric datatype of the ouptut 
+#' @param index_datatype (optional) Numeric datatype of the ouptut
 #'  spectral indices (see [s2_calcindices].
 #' @param compression (optional) In the case GTiff is chosen as
 #'  output format, the compression indicated with this parameter is
 #'  used (default is "DEFLATE").
 #' @param rgb_compression (optional) In the case GTiff is chosen as
-#'  output format for RGB products, the compression indicated 
-#'  with this parameter is used (default is "DEFLATE"). 
+#'  output format for RGB products, the compression indicated
+#'  with this parameter is used (default is "DEFLATE").
 #'  In the cases GTiff or JPEG are chosen as output format for RGB products,
 #'  this parameter can also be a 1-100 integer value, which is interpreted
 #'  as the compression level for a JPEG compression.
@@ -229,9 +229,9 @@
 #'  a subdirectory of the products names "thumbnails".
 #'  If FALSE, they are not created.
 #' @param parallel (optional) Logical or integer: if TRUE (default), some
-#'  functions ([sen2cor], [s2_mask] and [s2_calcindices] for now) 
+#'  functions ([sen2cor], [s2_mask] and [s2_calcindices] for now)
 #'  are executed using multiple cores in order to speed up the execution.
-#'  The number of cores is automatically determined; specifying it is also 
+#'  The number of cores is automatically determined; specifying it is also
 #'  possible (e.g. `parallel = 4`).
 #'  If FALSE, the processing chain is forced to run with a single core
 #'  (this can be useful if multiple [sen2r] instances are run in parallel).
@@ -275,8 +275,8 @@
 #'      This mode is similar to the previous one in terms of disk usage
 #'      but it is slightly slower; its advantage are the lower RAM requirements.
 #' @param use_python (optional) Logical: if TRUE (default), the presence of
-#'  python in the system is checked before running the function; 
-#'  if FALSE, this is skipped. Setting this to FALSE can bge useful on 
+#'  python in the system is checked before running the function;
+#'  if FALSE, this is skipped. Setting this to FALSE can bge useful on
 #'  systems with problems with python, when [sen2r()] is intended
 #'  to be used only for processing existing SAFE files (python is required
 #'  in any case to download SAFE).
@@ -285,16 +285,16 @@
 #'  default is a subdirectory named ".vrt" within `path_out`).
 #' @param rmtmp (optional) Logical: should temporary files be removed?
 #'  (Default: TRUE). `rmtmp` is forced to `FALSE` if `outformat = "VRT"`.
-#' @param log (optional) Character string with the path where the package 
-#'  messages will be redirected. 
+#' @param log (optional) Character string with the path where the package
+#'  messages will be redirected.
 #'  Default (NA) is not to redirect (use standard output).
 #'  A two-length character with tho paths (which can also coincide)
-#'  can be used to redirect also the output: in this case, the first path 
+#'  can be used to redirect also the output: in this case, the first path
 #'  is the path for messages, the second one for the output.
 #' @return A vector with the paths of the files which were created (excluded
 #'  the temporary files); NULL otherwise.
-#'  The vector includes two attributes: 
-#'  - `cloudcovered` with the list of imags not created due to the higher 
+#'  The vector includes two attributes:
+#'  - `cloudcovered` with the list of imags not created due to the higher
 #'      percentage of cloud covered pixels;
 #'  - `missing` with the list of imags not created due to other reasons.
 #'
@@ -363,8 +363,11 @@ sen2r <- function(param_list = NULL,
                   processing_order = "by_groups",
                   use_python = TRUE,
                   tmpdir = NA,
-                  rmtmp = TRUE, 
+                  rmtmp = TRUE,
                   log = NA) {
+  
+  s2_list <- s2_list_new
+  
   
   # sink to external files
   if (!is.na(log[2])) {
@@ -477,7 +480,7 @@ sen2r <- function(param_list = NULL,
 }
 
 # Internal function, which is the "real" sen2r() function insider the use of sink
-# (this workaround was used in order to manage final sink() in those cases 
+# (this workaround was used in order to manage final sink() in those cases
 # in which return() is used inside the function.)
 # TODO: manage also errors (.sen2r inside a trycatch; in case of errors, stop
 # passing the error message)
@@ -543,8 +546,8 @@ sen2r <- function(param_list = NULL,
                    .only_list_names = FALSE) {
   
   # to avoid NOTE on check
-  . <- sensing_datetime <- creation_datetime <- mission <- level <- id_orbit <- 
-    id_tile <- name <- id_baseline <- prod_type <- name <- sel_group_A <- 
+  . <- sensing_datetime <- creation_datetime <- mission <- level <- id_orbit <-
+    id_tile <- name <- id_baseline <- prod_type <- name <- sel_group_A <-
     i_group_A <- sel_apihub_path <- i_group_B <- sensing_date <- NULL
   
   ### Preliminary settings ###
@@ -756,9 +759,9 @@ sen2r <- function(param_list = NULL,
     pm$processing_order <- "by_step"
   }
   if (!pm$processing_order %in% c(
-    1,"by_step", 
-    2,"by_date", 
-    3,"mixed", 
+    1,"by_step",
+    2,"by_date",
+    3,"mixed",
     4,"by_groups"
   )) {
     print_message(
@@ -793,7 +796,7 @@ sen2r <- function(param_list = NULL,
   if (is.na(tmpdir)) {
     # if outformat is VRT, set as a subdirectory of path_out
     tmpdir <- if (
-      pm$outformat == "VRT" & 
+      pm$outformat == "VRT" &
       !all(is.na(pm[c("path_out","path_rgb","path_indices","path_tiles","path_merged")]))
     ) {
       # use path_out if it is not NA, otherwise path_indices, otherwise path_tiles, otherwise path_merged
@@ -813,7 +816,7 @@ sen2r <- function(param_list = NULL,
   
   
   # # internal parameters
-
+  
   # accepted products (update together with the same variables in s2_gui() and in compute_s2_names())
   l1c_prods <- c("TOA")
   l2a_prods <- c("BOA","SCL","TCI")
@@ -827,7 +830,7 @@ sen2r <- function(param_list = NULL,
   # if some RGB are required, compute also TOA or BOA
   if (any(!is.na(pm$list_rgb))) {
     list_prods <- unique(c(
-      list_prods, 
+      list_prods,
       paste0(unique(substr(pm$list_rgb,7,7)),"OA")
     ))
   }
@@ -847,7 +850,7 @@ sen2r <- function(param_list = NULL,
   
   # check that output parent directories exist, and create required paths
   parent_paths <- sapply(
-    pm[c("path_l1c","path_l2a","path_tiles","path_merged","path_out","path_rgb","path_indices")], 
+    pm[c("path_l1c","path_l2a","path_tiles","path_merged","path_out","path_rgb","path_indices")],
     function(x){if(is.na(nn(x))){NA}else{dirname(x)}}
   ) %>% unique() %>% na.omit() %>% as.character()
   paths_exist <- sapply(parent_paths, file.exists)
@@ -912,7 +915,7 @@ sen2r <- function(param_list = NULL,
   
   #### SAFE Part (find, download, correct)
   # if preprocess is required, define output formats
-  if (pm$preprocess == TRUE) {  
+  if (pm$preprocess == TRUE) {
     
     # Import path of files to ignore, if exists
     # (see comment at #ignorePath)
@@ -1061,7 +1064,7 @@ sen2r <- function(param_list = NULL,
   if (nrow(s2_dt)==0) {
     # generate column names for empty dt (to avoid errors)
     s2_dt <- as.data.table(safe_getMetadata(
-      "S2A_MSIL2A_20000101T000000_N0200_R001_T01TAA_20000101T000000.SAFE", 
+      "S2A_MSIL2A_20000101T000000_N0200_R001_T01TAA_20000101T000000.SAFE",
       info="nameinfo"
     ), stringsAsFactors = FALSE)[-1,]
   }
@@ -1088,29 +1091,32 @@ sen2r <- function(param_list = NULL,
     
     # make a vector with only metadata to be used for the comparison
     s2_meta_pasted <- s2_dt[,list("V1" = paste(
-      mission, 
-      level, 
-      strftime(sensing_datetime,"%y%m%d"), 
-      id_orbit, 
+      mission,
+      level,
+      strftime(sensing_datetime,"%y%m%d"),
+      id_orbit,
       ifelse(version=="compact", id_tile, "oldname")
     ))]$V1
     s2_existing_meta_pasted <- s2_existing_dt[,list("V1" = paste(
-      mission, 
-      level, 
-      strftime(sensing_datetime,"%y%m%d"), 
-      id_orbit, 
+      mission,
+      level,
+      strftime(sensing_datetime,"%y%m%d"),
+      id_orbit,
       ifelse(version=="compact", id_tile, "oldname_existing")
     ))]$V1
     s2_existing_list_touse <- s2_existing_dt[s2_existing_meta_pasted %in% s2_meta_pasted,]$name
-    # s2_existing_list_touse cannot contain oldname products, since they are 
+    # s2_existing_list_touse cannot contain oldname products, since they are
     # always checked in case new tiles are required
     
     # replace found SAFE with existing equivalent ones
-    s2_dt[
-      !is.na(match(s2_meta_pasted, s2_existing_meta_pasted)),
-      name := s2_existing_list[na.omit(match(s2_meta_pasted, s2_existing_meta_pasted))]
-      ]
-    s2_dt[!is.na(match(s2_meta_pasted, s2_existing_meta_pasted)), url:=""]
+    # (only if overwrite SAFE = FALSE)
+    if (!pm$overwrite_safe) {
+      s2_dt[
+        !is.na(match(s2_meta_pasted, s2_existing_meta_pasted)),
+        name := s2_existing_list[na.omit(match(s2_meta_pasted, s2_existing_meta_pasted))]
+        ]
+      s2_dt[!is.na(match(s2_meta_pasted, s2_existing_meta_pasted)), url:=""]
+    }
   }
   
   # removing duplicated products
@@ -1190,7 +1196,7 @@ sen2r <- function(param_list = NULL,
   }
   
   # if preprocess is required, define output names
-  if (pm$preprocess == TRUE) {  
+  if (pm$preprocess == TRUE) {
     
     # Import path of files to ignore, if exists
     # (see comment at #ignorePath)
@@ -1215,15 +1221,15 @@ sen2r <- function(param_list = NULL,
     # compute names for required files (SAFE req)
     print_message(type = "message", date = TRUE, "Computing output names...")
     s2names <- compute_s2_paths(
-      pm=pm, 
-      s2_list_l1c=s2_list_l1c, s2_list_l2a=s2_list_l2a_exp, 
-      tmpdir=tmpdir, 
-      list_prods=list_prods, 
+      pm=pm,
+      s2_list_l1c=s2_list_l1c, s2_list_l2a=s2_list_l2a_exp,
+      tmpdir=tmpdir,
+      list_prods=list_prods,
       main_ext = main_ext, rgb_ext = rgb_ext,
       force_tiles = TRUE,
       ignorelist = if (exists("ignorelist")) {ignorelist} else {NULL}
     )
-
+    
     # export needed variables
     out_ext <- attr(s2names, "out_ext")
     
@@ -1269,7 +1275,7 @@ sen2r <- function(param_list = NULL,
       names(s2_list_l2a) %in% basename(nn(s2names$req$tiles$L2A))
       ]
     safe_names_l2a_reqout <- s2names$req$tiles$L2A[
-      !gsub("\\_N[0-9]{4}\\_", "_NXXXX_", basename(nn(s2names$req$tiles$L2A))) %in% 
+      !gsub("\\_N[0-9]{4}\\_", "_NXXXX_", basename(nn(s2names$req$tiles$L2A))) %in%
         gsub("\\_N[0-9]{4}\\_", "_NXXXX_", names(s2_list_l2a))
       ]
     safe_names_l1c_tocorrect <- gsub(
@@ -1280,7 +1286,7 @@ sen2r <- function(param_list = NULL,
       )
     )
     s2_list_l1c_req <- s2_list_l1c[
-      gsub("\\_N[0-9]{4}\\_", "_NXXXX_", names(s2_list_l1c)) %in% 
+      gsub("\\_N[0-9]{4}\\_", "_NXXXX_", names(s2_list_l1c)) %in%
         gsub("\\_N[0-9]{4}\\_", "_NXXXX_", c(safe_names_l1c_tocorrect,basename(nn(s2names$req$tiles$L1C))))
       ]
     s2_dt <- s2_dt[name %in% c(names(s2_list_l1c_req),names(s2_list_l2a_req)),]
@@ -1312,7 +1318,7 @@ sen2r <- function(param_list = NULL,
       setNames(as.list(sen2r_dates_A), sen2r_dates_A)
     } else if (pm$processing_order %in% c(4,"by_groups")) {
       suppressWarnings(split(
-        sen2r_dates_A, 
+        sen2r_dates_A,
         seq_len(ceiling(length(sen2r_dates_A)/max_n_cores))
       ))
     }
@@ -1369,7 +1375,7 @@ sen2r <- function(param_list = NULL,
     
   } else if (pm$processing_order %in% c(1,"by_step", 3,"mixed")) {
     
-    # if preprocess == FALSE, create dummy s2names variables 
+    # if preprocess == FALSE, create dummy s2names variables
     # used only to allow entering in cycle A
     s2names_groups_A <- if (pm$preprocess == TRUE) {list(s2names)} else {"dummy"}
     s2_list_l1c_groups_A <- list(s2_list_l1c)
@@ -1414,7 +1420,7 @@ sen2r <- function(param_list = NULL,
   } else {
     `%DO_A%` <- `%dopar%`
     cl <- makeCluster(
-      n_cores_A, 
+      n_cores_A,
       type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
     )
     registerDoParallel(cl)
@@ -1423,21 +1429,23 @@ sen2r <- function(param_list = NULL,
   # 2 nested cycle:
   # one internal FOREACH with n_cores_A groups,
   # oe external with groups
-  # (this is necessary to ensure that 2 groups with the same apihub 
+  # (this is necessary to ensure that 2 groups with the same apihub
   # cannot be executed in the same time)
+  # 
+  
   outnames_list_A1 <- foreach(
     sel_group_A = suppressWarnings(split(
-      seq_len(length(s2names_groups_A)), 
+      seq_len(length(s2names_groups_A)),
       seq_len(ceiling(length(s2names_groups_A)/n_apihubs))
     ))
   ) %do% {
     
     outnames_list_A2 <- foreach(
-      sel_s2names = s2names_groups_A[sel_group_A], 
+      sel_s2names = s2names_groups_A[sel_group_A],
       sel_s2_list_l1c = s2_list_l1c_groups_A[sel_group_A],
       sel_s2_list_l2a = s2_list_l2a_groups_A[sel_group_A],
       sel_s2_dt = s2_dt_groups_A[sel_group_A],
-      i_group_A = match(names(s2names_groups_A[sel_group_A]), names(s2names_groups_A)), 
+      i_group_A = match(names(s2names_groups_A[sel_group_A]), names(s2names_groups_A)),
       sel_apihub_path = pm$apihub,
       .packages = c("sf", "sen2r")
     ) %DO_A% {
@@ -1455,7 +1463,7 @@ sen2r <- function(param_list = NULL,
       
       if (length(s2names_groups_A) > 1) {
         print_message(
-          type="message", 
+          type="message",
           date=TRUE,
           "Processing group ",i_group_A," of ",length(s2names_groups_A),"..."
         )
@@ -1466,7 +1474,7 @@ sen2r <- function(param_list = NULL,
       dir.create(tmpdir_groupA, recursive = FALSE, showWarnings = FALSE)
       path_l1c <- if (!is.na(pm$path_l1c)) {pm$path_l1c} else {file.path(tmpdir_groupA,"SAFE")}
       path_l2a <- if (!is.na(pm$path_l2a)) {pm$path_l2a} else {file.path(tmpdir_groupA,"SAFE")}
-
+      
       ## 3. Download required SAFE ##
       # TODO implement ovwerite/skip
       # (now it skips, but analysing each single file)
@@ -1483,8 +1491,24 @@ sen2r <- function(param_list = NULL,
         if (all(sapply(names(sel_s2_list_l2a), function(x) {
           safe_getMetadata(x, "nameinfo")$version
         }) == "compact")) {
+          # If OVERWRITE == TRUE, use the full list. Otherwise, download only the missing ones
+          if (pm$overwrite_safe) {
+            s2_to_download <- sel_s2_list_l2a
+          } else {
+            s2_to_download <- sel_s2_list_l2a[!names(sel_s2_list_l2a) %in% list.files(path_l2a, "\\.SAFE$")]
+            s2_to_skip     <- names(sel_s2_list_l2a[names(sel_s2_list_l2a) %in% list.files(path_l2a, "\\.SAFE$")])
+            if (length(s2_to_skip) != 0) {
+              message("Images ", paste(s2_to_skip, collapse = ";"),
+                      " are already on your system and will be skipped.",
+                      " Set `overwrite_safe` to TRUE to re-download them")
+            } 
+            if (length(s2_to_download) != 0) {
+              message("No L2A images needed")
+            } 
+          }
+          
           s2_download(
-            sel_s2_list_l2a[!names(sel_s2_list_l2a) %in% list.files(path_l2a, "\\.SAFE$")],
+            s2_to_download,
             outdir = path_l2a,
             downloader = pm$downloader,
             apihub = sel_apihub_path
@@ -1506,11 +1530,11 @@ sen2r <- function(param_list = NULL,
               )
             }
             s2_download(
-              sel_s2_list_l2a, # ask to download all the images, 
+              sel_s2_list_l2a, # ask to download all the images,
               # and not only the non existing ones,
               # because of the cycle on tiles
               # (with compactname products, all the zips are downloaded
-              # during the first execution, since argument "tile" is 
+              # during the first execution, since argument "tile" is
               # ignored).
               outdir = path_l2a,
               downloader = pm$downloader,
@@ -1521,8 +1545,8 @@ sen2r <- function(param_list = NULL,
         }
         
         print_message(
-          type = "message", 
-          date = TRUE, 
+          type = "message",
+          date = TRUE,
           "Download of level-2A SAFE products terminated."
         )
         
@@ -1536,6 +1560,25 @@ sen2r <- function(param_list = NULL,
         if (all(sapply(names(sel_s2_list_l1c), function(x) {
           safe_getMetadata(x, "nameinfo")$version
         }) == "compact")) {
+          
+          # If OVERWRITE == TRUE, use the full list. Otherwise, download only the missing ones
+          if (pm$overwrite_safe) {
+            s2_to_download <- sel_s2_list_l1c
+          } else {
+            s2_to_download <- sel_s2_list_l1c[!names(sel_s2_list_l1c) %in% list.files(path_l1c, "\\.SAFE$")]
+            s2_to_skip <- sel_s2_list_l1c[names(sel_s2_list_l1c) %in% list.files(path_l1c, "\\.SAFE$")]  
+            if (length(s2_to_skip) != 0) {
+              message("Images ", paste(names(s2_to_skip), collapse = ";"), 
+                      " are already on your system and will be skipped.", 
+                      " Set `overwrite_safe` to TRUE to re-download them")                
+            }
+            
+            if (length(s2_to_download) == 0) {
+              message("No L1C images needed")
+            }
+            
+          }
+          
           s2_download(
             sel_s2_list_l1c[!names(sel_s2_list_l1c) %in% list.files(path_l1c, "\\.SAFE$")],
             outdir = path_l1c,
@@ -1558,11 +1601,11 @@ sen2r <- function(param_list = NULL,
               )
             }
             s2_download(
-              sel_s2_list_l1c, # ask to download all the images, 
+              sel_s2_list_l1c, # ask to download all the images,
               # and not only the non existing ones,
               # because of the cycle on tiles
               # (with compactname products, all the zips are downloaded
-              # during the first execution, since argument "tile" is 
+              # during the first execution, since argument "tile" is
               # ignored).
               outdir = path_l1c,
               downloader = pm$downloader,
@@ -1576,8 +1619,8 @@ sen2r <- function(param_list = NULL,
         # operation can be very time consuming. Find a way to avoid it.
         
         print_message(
-          type = "message", 
-          date = TRUE, 
+          type = "message",
+          date = TRUE,
           "Download of level-1C SAFE products terminated."
         )
         
@@ -1588,7 +1631,7 @@ sen2r <- function(param_list = NULL,
         file.path(
           sapply(sel_s2_dt$level, switch, `1C`=path_l1c, `2A`=path_l2a),
           sel_s2_dt[,name]
-        ), 
+        ),
         function(x) {
           tryCatch(safe_getMetadata(x, "tiles"), error = function(e) {NULL})
         }
@@ -1662,12 +1705,12 @@ sen2r <- function(param_list = NULL,
             tmpdir = if (Sys.info()["sysname"] == "Windows") {
               file.path(tmpdir_groupA, "sen2cor")
             } else if (any(attr(mountpoint(tmpdir_groupA), "protocol") %in% c("cifs", "nsfs"))) {
-              # if tmpdir is on a SAMBA mountpoint over Linux, 
+              # if tmpdir is on a SAMBA mountpoint over Linux,
               # use a tmeporary directory different from the specified one
               NA
             } else {
               file.path(tmpdir_groupA, "sen2cor")
-            }, 
+            },
             .log_message = .log_message, .log_output = .log_output,
             rmtmp = TRUE # SAFE temporary archives are always deleted
           )
@@ -1706,11 +1749,11 @@ sen2r <- function(param_list = NULL,
       # update names for output files (after #filter2)
       print_message(type = "message", date = TRUE, "Updating output names...")
       sel_s2names <- compute_s2_paths(
-        pm=pm, 
+        pm=pm,
         s2_list_l1c = if (exists("sel_s2_list_l1c")) {sel_s2_list_l1c} else {character(0)},
         s2_list_l2a = if (exists("sel_s2_list_l2a")) {sel_s2_list_l2a} else {character(0)},
-        tmpdir=tmpdir_groupA, 
-        list_prods=list_prods, 
+        tmpdir=tmpdir_groupA,
+        list_prods=list_prods,
         main_ext = main_ext, rgb_ext = rgb_ext,
         force_tiles = FALSE,
         ignorelist = if (exists("ignorelist")) {ignorelist} else {NULL}
@@ -1770,19 +1813,19 @@ sen2r <- function(param_list = NULL,
       } else {
         `%DO_B%` <- `%dopar%`
         cl <- makeCluster(
-          n_cores_B, 
+          n_cores_B,
           type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
         )
         registerDoParallel(cl)
         print_message(
-          type="message", 
+          type="message",
           date=TRUE,
           "Starting running processing operations on multiple (",n_cores_B,
           ") parallel cores..."
         )
         if (is.na(.log_message) & i_group_A == 1) {
           print_message(
-            type="message", 
+            type="message",
             "Note: logging messages are not shown during this phase, ",
             "since it is not possible to send it to standard output.\n",
             "To see them, send messages to an external log file ",
@@ -1792,8 +1835,8 @@ sen2r <- function(param_list = NULL,
       }
       # Run processing by group
       outnames_list_B <- foreach(
-        sel_s2names = s2names_groups_B, 
-        i_group_B = seq_along(s2names_groups_B), 
+        sel_s2names = s2names_groups_B,
+        i_group_B = seq_along(s2names_groups_B),
         .packages = c("sf", "sen2r")
       ) %DO_B% {
         
@@ -1810,7 +1853,7 @@ sen2r <- function(param_list = NULL,
         
         if (length(s2names_groups_B) > 1) {
           print_message(
-            type="message", 
+            type="message",
             date=TRUE,
             "Processing date ",i_group_B," of ",length(s2names_groups_B),
             " in group ",i_group_A," of ",length(s2names_groups_A),"..."
@@ -1839,7 +1882,7 @@ sen2r <- function(param_list = NULL,
                   s2_translate,
                   infile = sel_prod,
                   outdir = paths["tiles"],
-                  tmpdir = file.path(tmpdir_groupA, "s2_translate_l1c"), 
+                  tmpdir = file.path(tmpdir_groupA, "s2_translate_l1c"),
                   rmtmp = FALSE,
                   prod_type = list_l1c_prods,
                   format = out_format["tiles"],
@@ -1868,7 +1911,7 @@ sen2r <- function(param_list = NULL,
                 trace_function(
                   s2_translate,
                   infile = sel_prod,
-                  tmpdir = file.path(tmpdir_groupA, "s2_translate_l2a"), 
+                  tmpdir = file.path(tmpdir_groupA, "s2_translate_l2a"),
                   rmtmp = FALSE,
                   outdir = paths["tiles"],
                   prod_type = list_l2a_prods,
@@ -1914,7 +1957,7 @@ sen2r <- function(param_list = NULL,
             infiles = unlist(sel_s2names$req$merged)[file.exists(unlist(sel_s2names$req$merged))], # TODO add warning when sum(!file.exists(sel_s2names$merged_names_new))>0
             outdir = paths["merged"],
             subdirs = pm$path_subdirs,
-            tmpdir = file.path(tmpdir_groupA, "s2_merge"), 
+            tmpdir = file.path(tmpdir_groupA, "s2_merge"),
             rmtmp = FALSE,
             format = out_format["merged"],
             parallel = if (out_format["merged"]=="VRT") {FALSE} else {parallel_steps},
@@ -1934,89 +1977,61 @@ sen2r <- function(param_list = NULL,
         
         ## 6. Clip, rescale, reproject ##
         if (sum(file.exists(nn(unlist(c(sel_s2names$req$warped,sel_s2names$req$warped_scl)))))>0) {
-            
-            print_message(
-              type = "message",
-              date = TRUE,
-              "Starting to edit geometry (clip, reproject, rescale)."
-            )
-            
-            # compute required names
-            warped_nonscl_reqout <- sapply(names(sel_s2names$req$warped), function(prod) {
-              sel_s2names$exp$warped[[prod]][
-                sel_s2names$exp$merged[[prod]] %in% sel_s2names$req$warped[[prod]]
-                ]
-            }, simplify = FALSE, USE.NAMES = TRUE)
-            warped_scl_reqout <- list(
-              "SCL" = sel_s2names$exp$warped_scl[["SCL"]][
-                sel_s2names$exp$merged[["SCL"]] %in% sel_s2names$req$warped_scl[["SCL"]]
-                ]
-            )
-            
-            dir.create(paths["warped"], recursive=FALSE, showWarnings=FALSE)
-            # create mask
-            s2_mask_extent <- if (is(pm$extent, "vector") && is.na(pm$extent)) {
-              NULL
-            } else if (anyNA(pm$extent$geometry)) { # FIXME check on telemod tiffs
-              NULL
-            } else if (pm$extent_as_mask==TRUE) {
-              pm$extent %>% st_combine() # TODO remove this when multiple extents will be allowed
-            } else {
-              suppressWarnings(st_cast(st_cast(pm$extent,"POLYGON"), "LINESTRING")) %>%
-                st_combine() # TODO remove this when multiple extents will be allowed
-            }  # TODO add support for multiple extents
-            
-            if(pm$path_subdirs==TRUE){
-              sapply(unique(dirname(unlist(c(warped_nonscl_reqout,warped_scl_reqout)))),dir.create,showWarnings=FALSE)
-            }
-            
-            if (any(!file.exists(nn(unlist(warped_nonscl_reqout)))) | pm$overwrite==TRUE) {
-              # here trace_function() is not used, since argument "tr" matches multiple formal arguments.
-              # manual cycle is performed.
-              for (sel_prod in names(sel_s2names$req$warped)) {
-                tracename_gdalwarp <- start_trace(warped_nonscl_reqout[[sel_prod]], "gdal_warp")
-                trace_gdalwarp <- tryCatch(
-                  gdal_warp(
-                    sel_s2names$req$warped[[sel_prod]],
-                    warped_nonscl_reqout[[sel_prod]],
-                    of = out_format["warped"],
-                    ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
-                    mask = s2_mask_extent,
-                    tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
-                    t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
-                    r = pm$resampling,
-                    dstnodata = s2_defNA(sel_prod),
-                    co = if (out_format["warped"]=="GTiff") {paste0("COMPRESS=",pm$compression)},
-                    overwrite = pm$overwrite,
-                    tmpdir = file.path(tmpdir_groupA, "gdal_warp"), 
-                    rmtmp = FALSE
-                  ), # TODO dstnodata value?
-                  error = print
-                )
-                if (is(trace_gdalwarp, "error")) {
-                  clean_trace(tracename_gdalwarp)
-                  stop(trace_gdalwarp)
-                } else {
-                  end_trace(tracename_gdalwarp)
-                }
-              }
-            }
-            if (any(!file.exists(nn(warped_scl_reqout[["SCL"]]))) | pm$overwrite==TRUE) {
-              tracename_gdalwarp <- start_trace(warped_scl_reqout[["SCL"]], "gdal_warp")
+          
+          print_message(
+            type = "message",
+            date = TRUE,
+            "Starting to edit geometry (clip, reproject, rescale)."
+          )
+          
+          # compute required names
+          warped_nonscl_reqout <- sapply(names(sel_s2names$req$warped), function(prod) {
+            sel_s2names$exp$warped[[prod]][
+              sel_s2names$exp$merged[[prod]] %in% sel_s2names$req$warped[[prod]]
+              ]
+          }, simplify = FALSE, USE.NAMES = TRUE)
+          warped_scl_reqout <- list(
+            "SCL" = sel_s2names$exp$warped_scl[["SCL"]][
+              sel_s2names$exp$merged[["SCL"]] %in% sel_s2names$req$warped_scl[["SCL"]]
+              ]
+          )
+          
+          dir.create(paths["warped"], recursive=FALSE, showWarnings=FALSE)
+          # create mask
+          s2_mask_extent <- if (is(pm$extent, "vector") && is.na(pm$extent)) {
+            NULL
+          } else if (anyNA(pm$extent$geometry)) { # FIXME check on telemod tiffs
+            NULL
+          } else if (pm$extent_as_mask==TRUE) {
+            pm$extent %>% st_combine() # TODO remove this when multiple extents will be allowed
+          } else {
+            suppressWarnings(st_cast(st_cast(pm$extent,"POLYGON"), "LINESTRING")) %>%
+              st_combine() # TODO remove this when multiple extents will be allowed
+          }  # TODO add support for multiple extents
+          
+          if(pm$path_subdirs==TRUE){
+            sapply(unique(dirname(unlist(c(warped_nonscl_reqout,warped_scl_reqout)))),dir.create,showWarnings=FALSE)
+          }
+          
+          if (any(!file.exists(nn(unlist(warped_nonscl_reqout)))) | pm$overwrite==TRUE) {
+            # here trace_function() is not used, since argument "tr" matches multiple formal arguments.
+            # manual cycle is performed.
+            for (sel_prod in names(sel_s2names$req$warped)) {
+              tracename_gdalwarp <- start_trace(warped_nonscl_reqout[[sel_prod]], "gdal_warp")
               trace_gdalwarp <- tryCatch(
                 gdal_warp(
-                  sel_s2names$req$warped_scl[["SCL"]],
-                  warped_scl_reqout[["SCL"]],
-                  of = out_format["warped_scl"], # use physical files to speed up next steps
+                  sel_s2names$req$warped[[sel_prod]],
+                  warped_nonscl_reqout[[sel_prod]],
+                  of = out_format["warped"],
                   ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
                   mask = s2_mask_extent,
                   tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
-                  t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
-                  r = pm$resampling_scl,
-                  dstnodata = s2_defNA("SCL"),
-                  co = if (out_format["warped_scl"]=="GTiff") {paste0("COMPRESS=",pm$compression)},
+                  t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
+                  r = pm$resampling,
+                  dstnodata = s2_defNA(sel_prod),
+                  co = if (out_format["warped"]=="GTiff") {paste0("COMPRESS=",pm$compression)},
                   overwrite = pm$overwrite,
-                  tmpdir = file.path(tmpdir_groupA, "gdal_warp"), 
+                  tmpdir = file.path(tmpdir_groupA, "gdal_warp"),
                   rmtmp = FALSE
                 ), # TODO dstnodata value?
                 error = print
@@ -2027,33 +2042,61 @@ sen2r <- function(param_list = NULL,
               } else {
                 end_trace(tracename_gdalwarp)
               }
-              # gdal_warp(sel_s2names$merged_names_req[!names_merged_req_scl_idx],
-              #           sel_s2names$warped_names_reqout[!names_merged_req_scl_idx],
-              #           of = warped_outformat,
-              #           ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
-              #           mask = s2_mask_extent,
-              #           tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
-              #           t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
-              #           r = pm$resampling,
-              #           overwrite = pm$overwrite) # TODO dstnodata value?
-              # gdal_warp(sel_s2names$merged_names_req[names_merged_req_scl_idx],
-              #           sel_s2names$warped_names_reqout[names_merged_req_scl_idx],
-              #           of = pm$outformat, # use physical files to speed up next steps
-              #           ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
-              #           mask = s2_mask_extent,
-              #           tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
-              #           t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
-              #           r = pm$resampling_scl,
-              #           overwrite = pm$overwrite)
             }
-            
+          }
+          if (any(!file.exists(nn(warped_scl_reqout[["SCL"]]))) | pm$overwrite==TRUE) {
+            tracename_gdalwarp <- start_trace(warped_scl_reqout[["SCL"]], "gdal_warp")
+            trace_gdalwarp <- tryCatch(
+              gdal_warp(
+                sel_s2names$req$warped_scl[["SCL"]],
+                warped_scl_reqout[["SCL"]],
+                of = out_format["warped_scl"], # use physical files to speed up next steps
+                ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
+                mask = s2_mask_extent,
+                tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
+                t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
+                r = pm$resampling_scl,
+                dstnodata = s2_defNA("SCL"),
+                co = if (out_format["warped_scl"]=="GTiff") {paste0("COMPRESS=",pm$compression)},
+                overwrite = pm$overwrite,
+                tmpdir = file.path(tmpdir_groupA, "gdal_warp"),
+                rmtmp = FALSE
+              ), # TODO dstnodata value?
+              error = print
+            )
+            if (is(trace_gdalwarp, "error")) {
+              clean_trace(tracename_gdalwarp)
+              stop(trace_gdalwarp)
+            } else {
+              end_trace(tracename_gdalwarp)
+            }
+            # gdal_warp(sel_s2names$merged_names_req[!names_merged_req_scl_idx],
+            #           sel_s2names$warped_names_reqout[!names_merged_req_scl_idx],
+            #           of = warped_outformat,
+            #           ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
+            #           mask = s2_mask_extent,
+            #           tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
+            #           t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
+            #           r = pm$resampling,
+            #           overwrite = pm$overwrite) # TODO dstnodata value?
+            # gdal_warp(sel_s2names$merged_names_req[names_merged_req_scl_idx],
+            #           sel_s2names$warped_names_reqout[names_merged_req_scl_idx],
+            #           of = pm$outformat, # use physical files to speed up next steps
+            #           ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
+            #           mask = s2_mask_extent,
+            #           tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
+            #           t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
+            #           r = pm$resampling_scl,
+            #           overwrite = pm$overwrite)
+          }
+          
         } # end of gdal_warp IF cycle
         
         
         ## 7. Apply mask ##
         # FIXME understand if this should be done before warping (if so, how to manage virtual/physical files?)
         if (sum(file.exists(nn(unlist(sel_s2names$req$masked))))>0) {
-  
+          
           # masked_names <- file.path(paths["out"],
           #                           if(pm$path_subdirs==TRUE){basename(dirname(warped_names[!names_merged_exp_scl_idx]))}else{""},
           #                           gsub(paste0(warped_ext,"$"),out_ext,basename(warped_names[!names_merged_exp_scl_idx])))
@@ -2075,7 +2118,7 @@ sen2r <- function(param_list = NULL,
                 buffer = pm$mask_buffer,
                 max_mask = pm$max_mask,
                 outdir = paths["masked"],
-                tmpdir = file.path(tmpdir_groupA, "s2_mask"), 
+                tmpdir = file.path(tmpdir_groupA, "s2_mask"),
                 rmtmp = FALSE,
                 format = out_format["masked"],
                 compress = pm$compression,
@@ -2107,31 +2150,31 @@ sen2r <- function(param_list = NULL,
           
           if (sum(file.exists(nn(sel_s2names$req$rgb[["TOA"]])))>0) {
             rgb_names <- trace_function(
-            s2_rgb,
-            infiles = sel_s2names$req$rgb[["TOA"]][file.exists(sel_s2names$req$rgb[["TOA"]])],
-            rgb_bands = lapply(
-              strsplit(unique(gsub("^RGB([0-9a-f]{3})T$","\\1",pm$list_rgb[grepl("T$",pm$list_rgb)])),""), 
-              function(x) {strtoi(paste0("0x",x))}
-            ),
-            scaleRange = pm$rgb_ranges,
-            outdir = paths["rgb"],
-            subdirs = pm$path_subdirs,
-            format = out_format["rgb"],
-            compress = pm$rgb_compression,
-            tmpdir = file.path(tmpdir_groupA, "s2_rgb"),
-            rmtmp = FALSE,
-            parallel = parallel_steps,
-            overwrite = pm$overwrite,
-            .log_message = .log_message, .log_output = .log_output,
-            trace_files = unlist(sel_s2names$new$rgb)[grepl("T$",names(unlist(sel_s2names$new$rgb)))]
-          )
+              s2_rgb,
+              infiles = sel_s2names$req$rgb[["TOA"]][file.exists(sel_s2names$req$rgb[["TOA"]])],
+              rgb_bands = lapply(
+                strsplit(unique(gsub("^RGB([0-9a-f]{3})T$","\\1",pm$list_rgb[grepl("T$",pm$list_rgb)])),""),
+                function(x) {strtoi(paste0("0x",x))}
+              ),
+              scaleRange = pm$rgb_ranges,
+              outdir = paths["rgb"],
+              subdirs = pm$path_subdirs,
+              format = out_format["rgb"],
+              compress = pm$rgb_compression,
+              tmpdir = file.path(tmpdir_groupA, "s2_rgb"),
+              rmtmp = FALSE,
+              parallel = parallel_steps,
+              overwrite = pm$overwrite,
+              .log_message = .log_message, .log_output = .log_output,
+              trace_files = unlist(sel_s2names$new$rgb)[grepl("T$",names(unlist(sel_s2names$new$rgb)))]
+            )
           }
           if (sum(file.exists(nn(sel_s2names$req$rgb[["BOA"]])))>0) {
             rgb_names <- trace_function(
               s2_rgb,
               infiles = sel_s2names$req$rgb[["BOA"]][file.exists(sel_s2names$req$rgb[["BOA"]])],
               rgb_bands = lapply(
-                strsplit(unique(gsub("^RGB([0-9a-f]{3})B$","\\1",pm$list_rgb[grepl("B$",pm$list_rgb)])),""), 
+                strsplit(unique(gsub("^RGB([0-9a-f]{3})B$","\\1",pm$list_rgb[grepl("B$",pm$list_rgb)])),""),
                 function(x) {strtoi(paste0("0x",x))}
               ),
               scaleRange = pm$rgb_ranges,
@@ -2265,10 +2308,10 @@ sen2r <- function(param_list = NULL,
             
             # define expected output names
             thumb_names_new <- file.path(
-              dirname(thumb_names_req), 
+              dirname(thumb_names_req),
               "thumbnails",
               sapply(
-                basename(thumb_names_req), 
+                basename(thumb_names_req),
                 function(x) {
                   gsub(
                     "\\..+$",
@@ -2282,7 +2325,7 @@ sen2r <- function(param_list = NULL,
             thumb_names_out <- trace_function(
               s2_thumbnails,
               infiles = thumb_names_req,
-              tmpdir = file.path(tmpdir_groupA, "s2_thumbnails"), 
+              tmpdir = file.path(tmpdir_groupA, "s2_thumbnails"),
               rmtmp = FALSE,
               trace_files = c(thumb_names_new,paste0(thumb_names_new,".aux.xml"))
             )
@@ -2318,7 +2361,7 @@ sen2r <- function(param_list = NULL,
       if (n_cores_B > 1) {
         stopCluster(cl)
         print_message(
-          type="message", 
+          type="message",
           date=TRUE,
           "Processing operations on multiple parallel cores was done."
         )
@@ -2383,10 +2426,10 @@ sen2r <- function(param_list = NULL,
   # the main reason is the cloud coverage higher than the maximum allowed
   # value (argument "max_mask"), but also some other unexpected reasons could
   # happen, i.e. because of old name SAFE products which do not include all the tiles.
-  # To prevent to try to create these files every time the function is called 
+  # To prevent to try to create these files every time the function is called
   # with the same parameter file, if param_list is a path, this list is noted
   # in two hidden files ( one per file not created because of cloud coverage,
-  # one other for all the other reasons) so to ignore them during next executions. 
+  # one other for all the other reasons) so to ignore them during next executions.
   # To try it again, delete the files or set overwrite = TRUE).
   if (length(names_missing)>0) {
     ignorelist_path <- gsub("\\.json$","_ignorelist.txt",param_list)
