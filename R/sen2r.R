@@ -871,7 +871,7 @@ sen2r <- function(param_list = NULL,
   
   # check output format
   # sel_driver <- py$gdal$GetDriverByName(pm$outformat)
-  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))$drivers
   sel_driver <- gdal_formats[gdal_formats$name==pm$outformat,]
   if (is.null(pm$rgb_outformat)) {pm$rgb_outformat <- pm$outformat} # to avoid errors
   if (is.null(pm$rgb_compression)) {pm$rgb_compression <- pm$compression} # to avoid errors

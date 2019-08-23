@@ -55,7 +55,8 @@
 #' @export
 #' @importFrom rgdal GDALinfo
 #' @importFrom gdalUtils gdalwarp gdal_translate
-#' @importFrom sf st_transform st_geometry st_geometry_type st_write st_cast st_area st_bbox st_sfc st_polygon st_as_sf st_as_sfc st_crs
+#' @importFrom sf st_transform st_geometry st_geometry_type st_write st_cast 
+#'  st_area st_bbox st_sfc st_sf st_polygon st_as_sf st_as_sfc st_as_sf st_crs
 #' @importFrom methods as
 #' @importFrom magrittr "%>%"
 #' @importFrom units ud_units
@@ -180,7 +181,7 @@ gdal_warp <- function(srcfiles,
   
   # check output format
   if (!is.null(of)) {
-    gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))
+    gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))$drivers
     sel_driver <- gdal_formats[gdal_formats$name==of,]
     if (nrow(sel_driver)==0) {
       print_message(

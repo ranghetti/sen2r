@@ -98,7 +98,7 @@ compute_s2_paths_legacy <- function(pm,
   # TODO load parameter file if pm is a path
   
   # load output formats
-  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))$drivers
   
   ## Define output file names and lists ##
   

@@ -112,7 +112,7 @@ s2_rgb <- function(infiles,
   }
   
   # check output format
-  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))$drivers
   if (!is.na(format)) {
     driver <- gdal_formats[gdal_formats$name==format,]
     if (nrow(driver)==0) {

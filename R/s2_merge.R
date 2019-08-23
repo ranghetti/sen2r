@@ -78,7 +78,7 @@ s2_merge <- function(infiles,
   infiles_meta_grp <- NULL
   
   # load output formats
-  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))$drivers
   
   # Define vrt_rel_paths
   if (is.na(vrt_rel_paths)) {

@@ -37,7 +37,7 @@ gdal_formats_db <- function(json_path = NA,
   if (system.file("extdata","gdal_formats.json", package="sen2r") == json_path) {
     json_version <- jsonlite::fromJSON(json_path)$pkg_version %>%
       package_version()
-    if (force == FALSE & json_version >= packageVersion("sen2r")) {
+    if (all(force == FALSE, length(json_version)>0, json_version >= packageVersion("sen2r"))) {
       return(invisible(NULL))
     }
   }
@@ -47,7 +47,7 @@ gdal_formats_db <- function(json_path = NA,
   
   # read GDAL drivers
   gdal_driver_list <- list()
-  for (i in seq_len((py_to_r(gdal$GetDriverCount())-1))) {
+  for (i in seq_len((py_to_r(py$gdal$GetDriverCount())-1))) {
     gdal_driver_list[[i]] <- py$gdal$GetDriver(py$py$int(i))
   }
   
@@ -79,8 +79,14 @@ gdal_formats_db <- function(json_path = NA,
   gdal_drivers[gdal_drivers$name=="VRT","ext"] <- "vrt"
   gdal_drivers[gdal_drivers$name=="ENVI","ext"] <- "dat"
   
+  json_table <- list(
+    "drivers" = gdal_drivers,
+    "pkg_version" = as.character(packageVersion("sen2r")),
+    "creation_date" = as.character(Sys.time())
+  )
+  
   ## Convert in JSON
-  writeLines(jsonlite::toJSON(gdal_drivers, pretty=TRUE), json_path)
+  writeLines(jsonlite::toJSON(json_table, pretty=TRUE), json_path)
   return(invisible(NULL))
   
 }

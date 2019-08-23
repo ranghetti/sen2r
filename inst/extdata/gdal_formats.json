@@ -1,1090 +1,1094 @@
-[
-  {
-    "name": "AAIGrid",
-    "long_name": "Arc/Info ASCII Grid",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": "asc"
-  },
-  {
-    "name": "ACE2",
-    "long_name": "ACE2",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": "ACE2"
-  },
-  {
-    "name": "ADRG",
-    "long_name": "ARC Digitized Raster Graphics",
-    "create": true,
-    "copy": false,
-    "isRaster": true,
-    "ext": "gen"
-  },
-  {
-    "name": "AIG",
-    "long_name": "Arc/Info Binary Grid",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "AirSAR",
-    "long_name": "AirSAR Polarimetric Image",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "ARG",
-    "long_name": "Azavea Raster Grid format",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "BAG",
-    "long_name": "Bathymetry Attributed Grid",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "BIGGIF",
-    "long_name": "Graphics Interchange Format (.gif)",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": "gif"
-  },
-  {
-    "name": "BLX",
-    "long_name": "Magellan topo (.blx)",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": "blx"
-  },
-  {
-    "name": "BMP",
-    "long_name": "MS Windows Device Independent Bitmap",
-    "create": true,
-    "copy": false,
-    "isRaster": true,
-    "ext": "bmp"
-  },
-  {
-    "name": "BSB",
-    "long_name": "Maptech BSB Nautical Charts",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "BT",
-    "long_name": "VTP .bt (Binary Terrain) 1.3 Format",
-    "create": true,
-    "copy": false,
-    "isRaster": true,
-    "ext": "bt"
-  },
-  {
-    "name": "CAD",
-    "long_name": "AutoCAD Driver",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": "dwg"
-  },
-  {
-    "name": "CALS",
-    "long_name": "CALS (Type 1)",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": ".cal"
-  },
-  {
-    "name": "CEOS",
-    "long_name": "CEOS Image",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "COASP",
-    "long_name": "DRDC COASP SAR Processor Raster",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": "hdr"
-  },
-  {
-    "name": "COSAR",
-    "long_name": "COSAR Annotated Binary Matrix (TerraSAR-X)",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "CPG",
-    "long_name": "Convair PolGASP",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "CTable2",
-    "long_name": "CTable2 Datum Grid Shift",
-    "create": true,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "CTG",
-    "long_name": "USGS LULC Composite Theme Grid",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "DERIVED",
-    "long_name": "Derived datasets using VRT pixel functions",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "DIMAP",
-    "long_name": "SPOT DIMAP",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "DIPEx",
-    "long_name": "DIPEx",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "DODS",
-    "long_name": "DAP 3.x servers",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "DOQ1",
-    "long_name": "USGS DOQ (Old Style)",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "DOQ2",
-    "long_name": "USGS DOQ (New Style)",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "DTED",
-    "long_name": "DTED Elevation Raster",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": "dt0"
-  },
-  {
-    "name": "E00GRID",
-    "long_name": "Arc/Info Export E00 GRID",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": "e00"
-  },
-  {
-    "name": "ECRGTOC",
-    "long_name": "ECRG TOC format",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": "xml"
-  },
-  {
-    "name": "EHdr",
-    "long_name": "ESRI .hdr Labelled",
-    "create": true,
-    "copy": true,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "EIR",
-    "long_name": "Erdas Imagine Raw",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "ELAS",
-    "long_name": "ELAS",
-    "create": true,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "ENVI",
-    "long_name": "ENVI .hdr Labelled",
-    "create": true,
-    "copy": false,
-    "isRaster": true,
-    "ext": "dat"
-  },
-  {
-    "name": "EPSILON",
-    "long_name": "Epsilon wavelets",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "ERS",
-    "long_name": "ERMapper .ers Labelled",
-    "create": true,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "ESAT",
-    "long_name": "Envisat Image Format",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": "n1"
-  },
-  {
-    "name": "FAST",
-    "long_name": "EOSAT FAST Format",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "FIT",
-    "long_name": "FIT Image",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "FujiBAS",
-    "long_name": "Fuji BAS Scanner Image",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "GenBin",
-    "long_name": "Generic Binary (.hdr Labelled)",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "GFF",
-    "long_name": "Ground-based SAR Applications Testbed File Format (.gff)",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": "gff"
-  },
-  {
-    "name": "GIF",
-    "long_name": "Graphics Interchange Format (.gif)",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": "gif"
-  },
-  {
-    "name": "GMT",
-    "long_name": "GMT NetCDF Grid Format",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": "nc"
-  },
-  {
-    "name": "GPKG",
-    "long_name": "GeoPackage",
-    "create": true,
-    "copy": true,
-    "isRaster": true,
-    "ext": "gpkg"
-  },
-  {
-    "name": "GRASSASCIIGrid",
-    "long_name": "GRASS ASCII Grid",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "GRIB",
-    "long_name": "GRIdded Binary (.grb)",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": "grb"
-  },
-  {
-    "name": "GS7BG",
-    "long_name": "Golden Software 7 Binary Grid (.grd)",
-    "create": true,
-    "copy": true,
-    "isRaster": true,
-    "ext": "grd"
-  },
-  {
-    "name": "GSAG",
-    "long_name": "Golden Software ASCII Grid (.grd)",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": "grd"
-  },
-  {
-    "name": "GSBG",
-    "long_name": "Golden Software Binary Grid (.grd)",
-    "create": true,
-    "copy": true,
-    "isRaster": true,
-    "ext": "grd"
-  },
-  {
-    "name": "GSC",
-    "long_name": "GSC Geogrid",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "GTiff",
-    "long_name": "GeoTIFF",
-    "create": true,
-    "copy": true,
-    "isRaster": true,
-    "ext": "tif"
-  },
-  {
-    "name": "GTX",
-    "long_name": "NOAA Vertical Datum .GTX",
-    "create": true,
-    "copy": false,
-    "isRaster": true,
-    "ext": "gtx"
-  },
-  {
-    "name": "GXF",
-    "long_name": "GeoSoft Grid Exchange Format",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": "gxf"
-  },
-  {
-    "name": "HDF4",
-    "long_name": "Hierarchical Data Format Release 4",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": "hdf"
-  },
-  {
-    "name": "HDF4Image",
-    "long_name": "HDF4 Dataset",
-    "create": true,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "HDF5",
-    "long_name": "Hierarchical Data Format Release 5",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": "hdf5"
-  },
-  {
-    "name": "HDF5Image",
-    "long_name": "HDF5 Dataset",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "HF2",
-    "long_name": "HF2/HFZ heightfield raster",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": "hf2"
-  },
-  {
-    "name": "HFA",
-    "long_name": "Erdas Imagine Images (.img)",
-    "create": true,
-    "copy": true,
-    "isRaster": true,
-    "ext": "img"
-  },
-  {
-    "name": "HTTP",
-    "long_name": "HTTP Fetching Wrapper",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "IDA",
-    "long_name": "Image Data and Analysis",
-    "create": true,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "ILWIS",
-    "long_name": "ILWIS Raster Map",
-    "create": true,
-    "copy": true,
-    "isRaster": true,
-    "ext": "mpr/mpl"
-  },
-  {
-    "name": "INGR",
-    "long_name": "Intergraph Raster",
-    "create": true,
-    "copy": true,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "IRIS",
-    "long_name": "IRIS data (.PPI, .CAPPi etc)",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": "ppi"
-  },
-  {
-    "name": "ISCE",
-    "long_name": "ISCE raster",
-    "create": true,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "ISIS2",
-    "long_name": "USGS Astrogeology ISIS cube (Version 2)",
-    "create": true,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "ISIS3",
-    "long_name": "USGS Astrogeology ISIS cube (Version 3)",
-    "create": true,
-    "copy": true,
-    "isRaster": true,
-    "ext": "lbl"
-  },
-  {
-    "name": "JAXAPALSAR",
-    "long_name": "JAXA PALSAR Product Reader (Level 1.1/1.5)",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "JDEM",
-    "long_name": "Japanese DEM (.mem)",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": "mem"
-  },
-  {
-    "name": "JP2OpenJPEG",
-    "long_name": "JPEG-2000 driver based on OpenJPEG library",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": "jp2"
-  },
-  {
-    "name": "JPEG",
-    "long_name": "JPEG JFIF",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": "jpg"
-  },
-  {
-    "name": "KMLSUPEROVERLAY",
-    "long_name": "Kml Super Overlay",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "KRO",
-    "long_name": "KOLOR Raw",
-    "create": true,
-    "copy": false,
-    "isRaster": true,
-    "ext": "kro"
-  },
-  {
-    "name": "L1B",
-    "long_name": "NOAA Polar Orbiter Level 1b Data Set",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "LAN",
-    "long_name": "Erdas .LAN/.GIS",
-    "create": true,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "LCP",
-    "long_name": "FARSITE v.4 Landscape File (.lcp)",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": "lcp"
-  },
-  {
-    "name": "Leveller",
-    "long_name": "Leveller heightfield",
-    "create": true,
-    "copy": false,
-    "isRaster": true,
-    "ext": "ter"
-  },
-  {
-    "name": "LOSLAS",
-    "long_name": "NADCON .los/.las Datum Grid Shift",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "MAP",
-    "long_name": "OziExplorer .MAP",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "MBTiles",
-    "long_name": "MBTiles",
-    "create": true,
-    "copy": true,
-    "isRaster": true,
-    "ext": "mbtiles"
-  },
-  {
-    "name": "MEM",
-    "long_name": "In Memory Raster",
-    "create": true,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "MFF",
-    "long_name": "Vexcel MFF Raster",
-    "create": true,
-    "copy": true,
-    "isRaster": true,
-    "ext": "hdr"
-  },
-  {
-    "name": "MFF2",
-    "long_name": "Vexcel MFF2 (HKV) Raster",
-    "create": true,
-    "copy": true,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "MRF",
-    "long_name": "Meta Raster Format",
-    "create": true,
-    "copy": true,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "MSGN",
-    "long_name": "EUMETSAT Archive native (.nat)",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": "nat"
-  },
-  {
-    "name": "NDF",
-    "long_name": "NLAPS Data Format",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "netCDF",
-    "long_name": "Network Common Data Format",
-    "create": true,
-    "copy": true,
-    "isRaster": true,
-    "ext": "nc"
-  },
-  {
-    "name": "NGSGEOID",
-    "long_name": "NOAA NGS Geoid Height Grids",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": "bin"
-  },
-  {
-    "name": "NITF",
-    "long_name": "National Imagery Transmission Format",
-    "create": true,
-    "copy": true,
-    "isRaster": true,
-    "ext": "ntf"
-  },
-  {
-    "name": "NTv2",
-    "long_name": "NTv2 Datum Grid Shift",
-    "create": true,
-    "copy": false,
-    "isRaster": true,
-    "ext": "gsb"
-  },
-  {
-    "name": "NWT_GRC",
-    "long_name": "Northwood Classified Grid Format .grc/.tab",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": "grc"
-  },
-  {
-    "name": "NWT_GRD",
-    "long_name": "Northwood Numeric Grid Format .grd/.tab",
-    "create": true,
-    "copy": true,
-    "isRaster": true,
-    "ext": "grd"
-  },
-  {
-    "name": "OGDI",
-    "long_name": "OGDI Bridge",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "OZI",
-    "long_name": "OziExplorer Image File",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "PAux",
-    "long_name": "PCI .aux Labelled",
-    "create": true,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "PCIDSK",
-    "long_name": "PCIDSK Database File",
-    "create": true,
-    "copy": false,
-    "isRaster": true,
-    "ext": "pix"
-  },
-  {
-    "name": "PCRaster",
-    "long_name": "PCRaster Raster File",
-    "create": true,
-    "copy": true,
-    "isRaster": true,
-    "ext": "map"
-  },
-  {
-    "name": "PDF",
-    "long_name": "Geospatial PDF",
-    "create": true,
-    "copy": true,
-    "isRaster": true,
-    "ext": "pdf"
-  },
-  {
-    "name": "PDS",
-    "long_name": "NASA Planetary Data System",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "PLMOSAIC",
-    "long_name": "Planet Labs Mosaics API",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "PLSCENES",
-    "long_name": "Planet Labs Scenes API",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "PNG",
-    "long_name": "Portable Network Graphics",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": "png"
-  },
-  {
-    "name": "PNM",
-    "long_name": "Portable Pixmap Format (netpbm)",
-    "create": true,
-    "copy": false,
-    "isRaster": true,
-    "ext": "pnm"
-  },
-  {
-    "name": "PostGISRaster",
-    "long_name": "PostGIS Raster driver",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "PRF",
-    "long_name": "Racurs PHOTOMOD PRF",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": "prf"
-  },
-  {
-    "name": "R",
-    "long_name": "R Object Data Store",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": "rda"
-  },
-  {
-    "name": "Rasterlite",
-    "long_name": "Rasterlite",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": "sqlite"
-  },
-  {
-    "name": "RIK",
-    "long_name": "Swedish Grid RIK (.rik)",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": "rik"
-  },
-  {
-    "name": "RMF",
-    "long_name": "Raster Matrix Format",
-    "create": true,
-    "copy": false,
-    "isRaster": true,
-    "ext": "rsw"
-  },
-  {
-    "name": "ROI_PAC",
-    "long_name": "ROI_PAC raster",
-    "create": true,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "RPFTOC",
-    "long_name": "Raster Product Format TOC format",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": "toc"
-  },
-  {
-    "name": "RRASTER",
-    "long_name": "R Raster",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": "grd"
-  },
-  {
-    "name": "RS2",
-    "long_name": "RadarSat 2 XML Product",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "RST",
-    "long_name": "Idrisi Raster A.1",
-    "create": true,
-    "copy": true,
-    "isRaster": true,
-    "ext": "rst"
-  },
-  {
-    "name": "SAFE",
-    "long_name": "Sentinel-1 SAR SAFE Product",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "SAGA",
-    "long_name": "SAGA GIS Binary Grid (.sdat)",
-    "create": true,
-    "copy": true,
-    "isRaster": true,
-    "ext": "sdat"
-  },
-  {
-    "name": "SAR_CEOS",
-    "long_name": "CEOS SAR Image",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "SDTS",
-    "long_name": "SDTS Raster",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": "ddf"
-  },
-  {
-    "name": "SENTINEL2",
-    "long_name": "Sentinel 2",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "SGI",
-    "long_name": "SGI Image File Format 1.0",
-    "create": true,
-    "copy": false,
-    "isRaster": true,
-    "ext": "rgb"
-  },
-  {
-    "name": "SNODAS",
-    "long_name": "Snow Data Assimilation System",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": "hdr"
-  },
-  {
-    "name": "SRP",
-    "long_name": "Standard Raster Product (ASRP/USRP)",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": "img"
-  },
-  {
-    "name": "SRTMHGT",
-    "long_name": "SRTMHGT File Format",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": "hgt"
-  },
-  {
-    "name": "Terragen",
-    "long_name": "Terragen heightfield",
-    "create": true,
-    "copy": false,
-    "isRaster": true,
-    "ext": "ter"
-  },
-  {
-    "name": "TIL",
-    "long_name": "EarthWatch .TIL",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "TSX",
-    "long_name": "TerraSAR-X Product",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "USGSDEM",
-    "long_name": "USGS Optional ASCII DEM (and CDED)",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": "dem"
-  },
-  {
-    "name": "VICAR",
-    "long_name": "MIPL VICAR file",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "VRT",
-    "long_name": "Virtual Raster",
-    "create": true,
-    "copy": true,
-    "isRaster": true,
-    "ext": "vrt"
-  },
-  {
-    "name": "WCS",
-    "long_name": "OGC Web Coverage Service",
-    "create": false,
-    "copy": false,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "WEBP",
-    "long_name": "WEBP",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": "webp"
-  },
-  {
-    "name": "WMS",
-    "long_name": "OGC Web Map Service",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "WMTS",
-    "long_name": "OGC Web Mab Tile Service",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": ""
-  },
-  {
-    "name": "XPM",
-    "long_name": "X11 PixMap Format",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": "xpm"
-  },
-  {
-    "name": "XYZ",
-    "long_name": "ASCII Gridded XYZ",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": "xyz"
-  },
-  {
-    "name": "ZMap",
-    "long_name": "ZMap Plus Grid",
-    "create": false,
-    "copy": true,
-    "isRaster": true,
-    "ext": "dat"
-  }
-  ]
+{
+  "drivers": [
+    {
+      "name": "AAIGrid",
+      "long_name": "Arc/Info ASCII Grid",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": "asc"
+    },
+    {
+      "name": "ACE2",
+      "long_name": "ACE2",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": "ACE2"
+    },
+    {
+      "name": "ADRG",
+      "long_name": "ARC Digitized Raster Graphics",
+      "create": true,
+      "copy": false,
+      "isRaster": true,
+      "ext": "gen"
+    },
+    {
+      "name": "AIG",
+      "long_name": "Arc/Info Binary Grid",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "AirSAR",
+      "long_name": "AirSAR Polarimetric Image",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "ARG",
+      "long_name": "Azavea Raster Grid format",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "BAG",
+      "long_name": "Bathymetry Attributed Grid",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "BIGGIF",
+      "long_name": "Graphics Interchange Format (.gif)",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": "gif"
+    },
+    {
+      "name": "BLX",
+      "long_name": "Magellan topo (.blx)",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": "blx"
+    },
+    {
+      "name": "BMP",
+      "long_name": "MS Windows Device Independent Bitmap",
+      "create": true,
+      "copy": false,
+      "isRaster": true,
+      "ext": "bmp"
+    },
+    {
+      "name": "BSB",
+      "long_name": "Maptech BSB Nautical Charts",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "BT",
+      "long_name": "VTP .bt (Binary Terrain) 1.3 Format",
+      "create": true,
+      "copy": false,
+      "isRaster": true,
+      "ext": "bt"
+    },
+    {
+      "name": "CAD",
+      "long_name": "AutoCAD Driver",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": "dwg"
+    },
+    {
+      "name": "CALS",
+      "long_name": "CALS (Type 1)",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": ".cal"
+    },
+    {
+      "name": "CEOS",
+      "long_name": "CEOS Image",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "COASP",
+      "long_name": "DRDC COASP SAR Processor Raster",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": "hdr"
+    },
+    {
+      "name": "COSAR",
+      "long_name": "COSAR Annotated Binary Matrix (TerraSAR-X)",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "CPG",
+      "long_name": "Convair PolGASP",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "CTable2",
+      "long_name": "CTable2 Datum Grid Shift",
+      "create": true,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "CTG",
+      "long_name": "USGS LULC Composite Theme Grid",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "DERIVED",
+      "long_name": "Derived datasets using VRT pixel functions",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "DIMAP",
+      "long_name": "SPOT DIMAP",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "DIPEx",
+      "long_name": "DIPEx",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "DODS",
+      "long_name": "DAP 3.x servers",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "DOQ1",
+      "long_name": "USGS DOQ (Old Style)",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "DOQ2",
+      "long_name": "USGS DOQ (New Style)",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "DTED",
+      "long_name": "DTED Elevation Raster",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": "dt0"
+    },
+    {
+      "name": "E00GRID",
+      "long_name": "Arc/Info Export E00 GRID",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": "e00"
+    },
+    {
+      "name": "ECRGTOC",
+      "long_name": "ECRG TOC format",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": "xml"
+    },
+    {
+      "name": "EHdr",
+      "long_name": "ESRI .hdr Labelled",
+      "create": true,
+      "copy": true,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "EIR",
+      "long_name": "Erdas Imagine Raw",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "ELAS",
+      "long_name": "ELAS",
+      "create": true,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "ENVI",
+      "long_name": "ENVI .hdr Labelled",
+      "create": true,
+      "copy": false,
+      "isRaster": true,
+      "ext": "dat"
+    },
+    {
+      "name": "EPSILON",
+      "long_name": "Epsilon wavelets",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "ERS",
+      "long_name": "ERMapper .ers Labelled",
+      "create": true,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "ESAT",
+      "long_name": "Envisat Image Format",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": "n1"
+    },
+    {
+      "name": "FAST",
+      "long_name": "EOSAT FAST Format",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "FIT",
+      "long_name": "FIT Image",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "FujiBAS",
+      "long_name": "Fuji BAS Scanner Image",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "GenBin",
+      "long_name": "Generic Binary (.hdr Labelled)",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "GFF",
+      "long_name": "Ground-based SAR Applications Testbed File Format (.gff)",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": "gff"
+    },
+    {
+      "name": "GIF",
+      "long_name": "Graphics Interchange Format (.gif)",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": "gif"
+    },
+    {
+      "name": "GMT",
+      "long_name": "GMT NetCDF Grid Format",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": "nc"
+    },
+    {
+      "name": "GPKG",
+      "long_name": "GeoPackage",
+      "create": true,
+      "copy": true,
+      "isRaster": true,
+      "ext": "gpkg"
+    },
+    {
+      "name": "GRASSASCIIGrid",
+      "long_name": "GRASS ASCII Grid",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "GRIB",
+      "long_name": "GRIdded Binary (.grb)",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": "grb"
+    },
+    {
+      "name": "GS7BG",
+      "long_name": "Golden Software 7 Binary Grid (.grd)",
+      "create": true,
+      "copy": true,
+      "isRaster": true,
+      "ext": "grd"
+    },
+    {
+      "name": "GSAG",
+      "long_name": "Golden Software ASCII Grid (.grd)",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": "grd"
+    },
+    {
+      "name": "GSBG",
+      "long_name": "Golden Software Binary Grid (.grd)",
+      "create": true,
+      "copy": true,
+      "isRaster": true,
+      "ext": "grd"
+    },
+    {
+      "name": "GSC",
+      "long_name": "GSC Geogrid",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "GTiff",
+      "long_name": "GeoTIFF",
+      "create": true,
+      "copy": true,
+      "isRaster": true,
+      "ext": "tif"
+    },
+    {
+      "name": "GTX",
+      "long_name": "NOAA Vertical Datum .GTX",
+      "create": true,
+      "copy": false,
+      "isRaster": true,
+      "ext": "gtx"
+    },
+    {
+      "name": "GXF",
+      "long_name": "GeoSoft Grid Exchange Format",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": "gxf"
+    },
+    {
+      "name": "HDF4",
+      "long_name": "Hierarchical Data Format Release 4",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": "hdf"
+    },
+    {
+      "name": "HDF4Image",
+      "long_name": "HDF4 Dataset",
+      "create": true,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "HDF5",
+      "long_name": "Hierarchical Data Format Release 5",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": "hdf5"
+    },
+    {
+      "name": "HDF5Image",
+      "long_name": "HDF5 Dataset",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "HF2",
+      "long_name": "HF2/HFZ heightfield raster",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": "hf2"
+    },
+    {
+      "name": "HFA",
+      "long_name": "Erdas Imagine Images (.img)",
+      "create": true,
+      "copy": true,
+      "isRaster": true,
+      "ext": "img"
+    },
+    {
+      "name": "HTTP",
+      "long_name": "HTTP Fetching Wrapper",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "IDA",
+      "long_name": "Image Data and Analysis",
+      "create": true,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "ILWIS",
+      "long_name": "ILWIS Raster Map",
+      "create": true,
+      "copy": true,
+      "isRaster": true,
+      "ext": "mpr/mpl"
+    },
+    {
+      "name": "INGR",
+      "long_name": "Intergraph Raster",
+      "create": true,
+      "copy": true,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "IRIS",
+      "long_name": "IRIS data (.PPI, .CAPPi etc)",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": "ppi"
+    },
+    {
+      "name": "ISCE",
+      "long_name": "ISCE raster",
+      "create": true,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "ISIS2",
+      "long_name": "USGS Astrogeology ISIS cube (Version 2)",
+      "create": true,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "ISIS3",
+      "long_name": "USGS Astrogeology ISIS cube (Version 3)",
+      "create": true,
+      "copy": true,
+      "isRaster": true,
+      "ext": "lbl"
+    },
+    {
+      "name": "JAXAPALSAR",
+      "long_name": "JAXA PALSAR Product Reader (Level 1.1/1.5)",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "JDEM",
+      "long_name": "Japanese DEM (.mem)",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": "mem"
+    },
+    {
+      "name": "JP2OpenJPEG",
+      "long_name": "JPEG-2000 driver based on OpenJPEG library",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": "jp2"
+    },
+    {
+      "name": "JPEG",
+      "long_name": "JPEG JFIF",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": "jpg"
+    },
+    {
+      "name": "KMLSUPEROVERLAY",
+      "long_name": "Kml Super Overlay",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "KRO",
+      "long_name": "KOLOR Raw",
+      "create": true,
+      "copy": false,
+      "isRaster": true,
+      "ext": "kro"
+    },
+    {
+      "name": "L1B",
+      "long_name": "NOAA Polar Orbiter Level 1b Data Set",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "LAN",
+      "long_name": "Erdas .LAN/.GIS",
+      "create": true,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "LCP",
+      "long_name": "FARSITE v.4 Landscape File (.lcp)",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": "lcp"
+    },
+    {
+      "name": "Leveller",
+      "long_name": "Leveller heightfield",
+      "create": true,
+      "copy": false,
+      "isRaster": true,
+      "ext": "ter"
+    },
+    {
+      "name": "LOSLAS",
+      "long_name": "NADCON .los/.las Datum Grid Shift",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "MAP",
+      "long_name": "OziExplorer .MAP",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "MBTiles",
+      "long_name": "MBTiles",
+      "create": true,
+      "copy": true,
+      "isRaster": true,
+      "ext": "mbtiles"
+    },
+    {
+      "name": "MEM",
+      "long_name": "In Memory Raster",
+      "create": true,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "MFF",
+      "long_name": "Vexcel MFF Raster",
+      "create": true,
+      "copy": true,
+      "isRaster": true,
+      "ext": "hdr"
+    },
+    {
+      "name": "MFF2",
+      "long_name": "Vexcel MFF2 (HKV) Raster",
+      "create": true,
+      "copy": true,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "MRF",
+      "long_name": "Meta Raster Format",
+      "create": true,
+      "copy": true,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "MSGN",
+      "long_name": "EUMETSAT Archive native (.nat)",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": "nat"
+    },
+    {
+      "name": "NDF",
+      "long_name": "NLAPS Data Format",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "netCDF",
+      "long_name": "Network Common Data Format",
+      "create": true,
+      "copy": true,
+      "isRaster": true,
+      "ext": "nc"
+    },
+    {
+      "name": "NGSGEOID",
+      "long_name": "NOAA NGS Geoid Height Grids",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": "bin"
+    },
+    {
+      "name": "NITF",
+      "long_name": "National Imagery Transmission Format",
+      "create": true,
+      "copy": true,
+      "isRaster": true,
+      "ext": "ntf"
+    },
+    {
+      "name": "NTv2",
+      "long_name": "NTv2 Datum Grid Shift",
+      "create": true,
+      "copy": false,
+      "isRaster": true,
+      "ext": "gsb"
+    },
+    {
+      "name": "NWT_GRC",
+      "long_name": "Northwood Classified Grid Format .grc/.tab",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": "grc"
+    },
+    {
+      "name": "NWT_GRD",
+      "long_name": "Northwood Numeric Grid Format .grd/.tab",
+      "create": true,
+      "copy": true,
+      "isRaster": true,
+      "ext": "grd"
+    },
+    {
+      "name": "OGDI",
+      "long_name": "OGDI Bridge",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "OZI",
+      "long_name": "OziExplorer Image File",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "PAux",
+      "long_name": "PCI .aux Labelled",
+      "create": true,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "PCIDSK",
+      "long_name": "PCIDSK Database File",
+      "create": true,
+      "copy": false,
+      "isRaster": true,
+      "ext": "pix"
+    },
+    {
+      "name": "PCRaster",
+      "long_name": "PCRaster Raster File",
+      "create": true,
+      "copy": true,
+      "isRaster": true,
+      "ext": "map"
+    },
+    {
+      "name": "PDF",
+      "long_name": "Geospatial PDF",
+      "create": true,
+      "copy": true,
+      "isRaster": true,
+      "ext": "pdf"
+    },
+    {
+      "name": "PDS",
+      "long_name": "NASA Planetary Data System",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "PLMOSAIC",
+      "long_name": "Planet Labs Mosaics API",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "PLSCENES",
+      "long_name": "Planet Labs Scenes API",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "PNG",
+      "long_name": "Portable Network Graphics",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": "png"
+    },
+    {
+      "name": "PNM",
+      "long_name": "Portable Pixmap Format (netpbm)",
+      "create": true,
+      "copy": false,
+      "isRaster": true,
+      "ext": "pnm"
+    },
+    {
+      "name": "PostGISRaster",
+      "long_name": "PostGIS Raster driver",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "PRF",
+      "long_name": "Racurs PHOTOMOD PRF",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": "prf"
+    },
+    {
+      "name": "R",
+      "long_name": "R Object Data Store",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": "rda"
+    },
+    {
+      "name": "Rasterlite",
+      "long_name": "Rasterlite",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": "sqlite"
+    },
+    {
+      "name": "RIK",
+      "long_name": "Swedish Grid RIK (.rik)",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": "rik"
+    },
+    {
+      "name": "RMF",
+      "long_name": "Raster Matrix Format",
+      "create": true,
+      "copy": false,
+      "isRaster": true,
+      "ext": "rsw"
+    },
+    {
+      "name": "ROI_PAC",
+      "long_name": "ROI_PAC raster",
+      "create": true,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "RPFTOC",
+      "long_name": "Raster Product Format TOC format",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": "toc"
+    },
+    {
+      "name": "RRASTER",
+      "long_name": "R Raster",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": "grd"
+    },
+    {
+      "name": "RS2",
+      "long_name": "RadarSat 2 XML Product",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "RST",
+      "long_name": "Idrisi Raster A.1",
+      "create": true,
+      "copy": true,
+      "isRaster": true,
+      "ext": "rst"
+    },
+    {
+      "name": "SAFE",
+      "long_name": "Sentinel-1 SAR SAFE Product",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "SAGA",
+      "long_name": "SAGA GIS Binary Grid (.sdat)",
+      "create": true,
+      "copy": true,
+      "isRaster": true,
+      "ext": "sdat"
+    },
+    {
+      "name": "SAR_CEOS",
+      "long_name": "CEOS SAR Image",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "SDTS",
+      "long_name": "SDTS Raster",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": "ddf"
+    },
+    {
+      "name": "SENTINEL2",
+      "long_name": "Sentinel 2",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "SGI",
+      "long_name": "SGI Image File Format 1.0",
+      "create": true,
+      "copy": false,
+      "isRaster": true,
+      "ext": "rgb"
+    },
+    {
+      "name": "SNODAS",
+      "long_name": "Snow Data Assimilation System",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": "hdr"
+    },
+    {
+      "name": "SRP",
+      "long_name": "Standard Raster Product (ASRP/USRP)",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": "img"
+    },
+    {
+      "name": "SRTMHGT",
+      "long_name": "SRTMHGT File Format",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": "hgt"
+    },
+    {
+      "name": "Terragen",
+      "long_name": "Terragen heightfield",
+      "create": true,
+      "copy": false,
+      "isRaster": true,
+      "ext": "ter"
+    },
+    {
+      "name": "TIL",
+      "long_name": "EarthWatch .TIL",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "TSX",
+      "long_name": "TerraSAR-X Product",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "USGSDEM",
+      "long_name": "USGS Optional ASCII DEM (and CDED)",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": "dem"
+    },
+    {
+      "name": "VICAR",
+      "long_name": "MIPL VICAR file",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "VRT",
+      "long_name": "Virtual Raster",
+      "create": true,
+      "copy": true,
+      "isRaster": true,
+      "ext": "vrt"
+    },
+    {
+      "name": "WCS",
+      "long_name": "OGC Web Coverage Service",
+      "create": false,
+      "copy": false,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "WEBP",
+      "long_name": "WEBP",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": "webp"
+    },
+    {
+      "name": "WMS",
+      "long_name": "OGC Web Map Service",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "WMTS",
+      "long_name": "OGC Web Mab Tile Service",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": ""
+    },
+    {
+      "name": "XPM",
+      "long_name": "X11 PixMap Format",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": "xpm"
+    },
+    {
+      "name": "XYZ",
+      "long_name": "ASCII Gridded XYZ",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": "xyz"
+    },
+    {
+      "name": "ZMap",
+      "long_name": "ZMap Plus Grid",
+      "create": false,
+      "copy": true,
+      "isRaster": true,
+      "ext": "dat"
+    }
+  ],
+  "pkg_version": ["1.0.2"],
+  "creation_date": ["2019-08-23 09:26:46"]
+}
