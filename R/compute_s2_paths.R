@@ -134,7 +134,7 @@ compute_s2_paths <- function(pm,
     "masked" = if (output_req["masked"]) {pm$path_out} else {file.path(tmpdir,"masked")},
     "indices" = if (output_req["indices"]) {pm$path_indices} else {file.path(tmpdir,"indices")}
   )
-  
+
   
   # Paths (additions for compatibility)
   # paths passed as argument

@@ -10,7 +10,7 @@ sen2r(param_list = NULL, gui = NA, preprocess = TRUE,
   overwrite_safe = FALSE, rm_safe = "no", step_atmcorr = "auto",
   max_cloud_safe = 100, timewindow = NA, timeperiod = "full",
   extent = NA, extent_name = "sen2r", s2tiles_selected = NA,
-  s2orbits_selected = NA, list_prods = c("BOA"), list_rgb = NA,
+  s2orbits_selected = NA, list_prods = NA, list_rgb = NA,
   list_indices = NA, index_source = "BOA", rgb_ranges = NA,
   mask_type = NA, max_mask = 100, mask_smooth = 0, mask_buffer = 0,
   clip_on_extent = TRUE, extent_as_mask = FALSE, reference_path = NA,
@@ -144,7 +144,7 @@ all the accepted values are listed).}
 
 \item{list_prods}{(optional) Character vector with the values of the
 products to be processed (accepted values: "TOA", "BOA", "SCL",
-"TCI"). Default is "BOA".}
+"TCI"). Default is no one (NA).}
 
 \item{list_rgb}{(optional) Character vector with the values of the
 RGB images to be produced.

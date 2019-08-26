@@ -101,7 +101,7 @@
 #'  all the accepted values are listed).
 #' @param list_prods (optional) Character vector with the values of the
 #'  products to be processed (accepted values: "TOA", "BOA", "SCL",
-#'  "TCI"). Default is "BOA".
+#'  "TCI"). Default is no one (NA).
 #' @param list_rgb (optional) Character vector with the values of the
 #'  RGB images to be produced.
 #'  Images are in the form RGBrgbx, when:
@@ -326,7 +326,7 @@ sen2r <- function(param_list = NULL,
                   extent_name = "sen2r",
                   s2tiles_selected = NA, # below re-defined for online mode
                   s2orbits_selected = NA, # temporary select all orbits (TODO implement)
-                  list_prods = c("BOA"),
+                  list_prods = NA,
                   list_rgb = NA,
                   list_indices = NA,
                   index_source = "BOA",
