@@ -2056,51 +2056,51 @@ sen2r <- function(param_list = NULL,
             }
           }
           if (length(nn(warped_scl_reqout[["SCL"]])) > 0) {
-          if (any(!file.exists(nn(warped_scl_reqout[["SCL"]]))) | pm$overwrite==TRUE) {
-            tracename_gdalwarp <- start_trace(warped_scl_reqout[["SCL"]], "gdal_warp")
-            trace_gdalwarp <- tryCatch(
-              gdal_warp(
-                sel_s2names$req$warped_scl[["SCL"]],
-                warped_scl_reqout[["SCL"]],
-                of = out_format["warped_scl"], # use physical files to speed up next steps
-                ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
-                mask = s2_mask_extent,
-                tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
-                t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
-                r = pm$resampling_scl,
-                dstnodata = s2_defNA("SCL"),
-                co = if (out_format["warped_scl"]=="GTiff") {paste0("COMPRESS=",pm$compression)},
-                overwrite = pm$overwrite,
-                tmpdir = file.path(tmpdir_groupA, "gdal_warp"),
-                rmtmp = FALSE
-              ), # TODO dstnodata value?
-              error = print
-            )
-            if (is(trace_gdalwarp, "error")) {
-              clean_trace(tracename_gdalwarp)
-              stop(trace_gdalwarp)
-            } else {
-              end_trace(tracename_gdalwarp)
+            if (any(!file.exists(nn(warped_scl_reqout[["SCL"]]))) | pm$overwrite==TRUE) {
+              tracename_gdalwarp <- start_trace(warped_scl_reqout[["SCL"]], "gdal_warp")
+              trace_gdalwarp <- tryCatch(
+                gdal_warp(
+                  sel_s2names$req$warped_scl[["SCL"]],
+                  warped_scl_reqout[["SCL"]],
+                  of = out_format["warped_scl"], # use physical files to speed up next steps
+                  ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
+                  mask = s2_mask_extent,
+                  tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
+                  t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
+                  r = pm$resampling_scl,
+                  dstnodata = s2_defNA("SCL"),
+                  co = if (out_format["warped_scl"]=="GTiff") {paste0("COMPRESS=",pm$compression)},
+                  overwrite = pm$overwrite,
+                  tmpdir = file.path(tmpdir_groupA, "gdal_warp"),
+                  rmtmp = FALSE
+                ), # TODO dstnodata value?
+                error = print
+              )
+              if (is(trace_gdalwarp, "error")) {
+                clean_trace(tracename_gdalwarp)
+                stop(trace_gdalwarp)
+              } else {
+                end_trace(tracename_gdalwarp)
+              }
+              # gdal_warp(sel_s2names$merged_names_req[!names_merged_req_scl_idx],
+              #           sel_s2names$warped_names_reqout[!names_merged_req_scl_idx],
+              #           of = warped_outformat,
+              #           ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
+              #           mask = s2_mask_extent,
+              #           tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
+              #           t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
+              #           r = pm$resampling,
+              #           overwrite = pm$overwrite) # TODO dstnodata value?
+              # gdal_warp(sel_s2names$merged_names_req[names_merged_req_scl_idx],
+              #           sel_s2names$warped_names_reqout[names_merged_req_scl_idx],
+              #           of = pm$outformat, # use physical files to speed up next steps
+              #           ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
+              #           mask = s2_mask_extent,
+              #           tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
+              #           t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
+              #           r = pm$resampling_scl,
+              #           overwrite = pm$overwrite)
             }
-            # gdal_warp(sel_s2names$merged_names_req[!names_merged_req_scl_idx],
-            #           sel_s2names$warped_names_reqout[!names_merged_req_scl_idx],
-            #           of = warped_outformat,
-            #           ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
-            #           mask = s2_mask_extent,
-            #           tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
-            #           t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
-            #           r = pm$resampling,
-            #           overwrite = pm$overwrite) # TODO dstnodata value?
-            # gdal_warp(sel_s2names$merged_names_req[names_merged_req_scl_idx],
-            #           sel_s2names$warped_names_reqout[names_merged_req_scl_idx],
-            #           of = pm$outformat, # use physical files to speed up next steps
-            #           ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
-            #           mask = s2_mask_extent,
-            #           tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
-            #           t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
-            #           r = pm$resampling_scl,
-            #           overwrite = pm$overwrite)
-          }
           }
           
         } # end of gdal_warp IF cycle
