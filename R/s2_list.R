@@ -176,24 +176,30 @@ s2_list <- function(spatial_extent = NULL,
   
   spatial_extent    <- suppressWarnings(sf::st_union(spatial_extent))
   spatial_extent_or <- spatial_extent
-  # If spatial_extent is not point, simplify polygon if needed / convert to bbox
-  if (inherits(spatial_extent, "sfc_POLYGON")) {
-    
-    # if spatial_extent has too many vertices, simplify it
-    dtolerance <- with(as.list(sf::st_bbox(spatial_extent)), sqrt((xmax - xmin)^2 + (ymax - ymin)^2))/500
-    # initial dtolerance value: 0.5% maximum distance
-    n_while = 0
-    while (length(suppressWarnings(sf::st_cast(spatial_extent, "POINT"))) > 30) {
-      if (n_while < 10) {
-        spatial_extent <- suppressWarnings(sf::st_simplify(spatial_extent_or, dTolerance = dtolerance))
-        dtolerance     <- dtolerance * 2
-        n_while        <- n_while + 1
-      } else {
-        spatial_extent <- sf::st_as_sfc(sf::st_bbox(spatial_extent_or))
-      }
-    }
-    
-  } else if (!inherits(spatial_extent, "sfc_POINT")) {
+  
+  # # If spatial_extent is not point, simplify polygon if needed / convert to bbox
+  # NOTE: simplifiying polygons was disabled because this could result in a smaller polygon
+  # (loosing products).
+  # Minimum convex hull will be used, which could instead cause the selection of more
+  # products than needed.
+  # if (inherits(spatial_extent, "sfc_POLYGON")) {
+  #   
+  #   # if spatial_extent has too many vertices, simplify it
+  #   dtolerance <- with(as.list(sf::st_bbox(spatial_extent)), sqrt((xmax - xmin)^2 + (ymax - ymin)^2))/500
+  #   # initial dtolerance value: 0.5% maximum distance
+  #   n_while = 0
+  #   while (length(suppressWarnings(sf::st_cast(spatial_extent, "POINT"))) > 30) {
+  #     if (n_while < 10) {
+  #       spatial_extent <- suppressWarnings(sf::st_simplify(spatial_extent_or, dTolerance = dtolerance))
+  #       dtolerance     <- dtolerance * 2
+  #       n_while        <- n_while + 1
+  #     } else {
+  #       spatial_extent <- sf::st_as_sfc(sf::st_bbox(spatial_extent_or))
+  #     }
+  #   }
+  #   
+  # } else 
+  if (!inherits(spatial_extent, "sfc_POINT")) {
     # spatial_extent <- st_as_sfc(sf::st_bbox(spatial_extent_or))
     spatial_extent <- sf::st_convex_hull(spatial_extent)
   }
