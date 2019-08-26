@@ -162,8 +162,6 @@ The [<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:nor
 partially derived from the [R logo](https://www.r-project.org/logo),
 is released under the [Creative Commons Attribution-ShareAlike 4.0 International license](https://creativecommons.org/licenses/by-sa/4.0) (CC-BY-SA 4.0).
 
-The functionalities to search and download SAFE tiles are based on the Python tool [Sentinel-download](https://github.com/olivierhagolle/Sentinel-download) by Olivier Hagolle, released under the [GNU General Public License version 2](https://www.gnu.org/licenses/gpl-2.0.html) (GPL‑2).
-
 To cite this library, please use the following entry:
 
 Ranghetti, L.\ and Busetto, L.\ (`r strftime(Sys.Date(),"%Y")`). *sen2r: an R toolbox to find, download and preprocess Sentinel-2 data*. R package version `r packageVersion("sen2r")`. DOI: [10.5281/zenodo.1240384](https://dx.doi.org/10.5281/zenodo.1240384). URL: [http://sen2r.ranghetti.info](http://sen2r.ranghetti.info).

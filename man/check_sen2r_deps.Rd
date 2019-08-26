@@ -15,7 +15,6 @@ This package needs some external dependencies to run:
 \itemize{
 \item Python
 \item GDAL
-\item Wget
 \item sen2cor
 }
 

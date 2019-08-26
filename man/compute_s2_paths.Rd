@@ -10,7 +10,7 @@ compute_s2_paths(pm, s2_list_l1c, s2_list_l2a, tmpdir, list_prods,
 
 list_sen2r_paths(param_list = NULL, gui = NA, preprocess = TRUE,
   s2_levels = c("l1c", "l2a"), sel_sensor = c("s2a", "s2b"),
-  online = TRUE, apihub = NA, downloader = "wget",
+  online = TRUE, apihub = NA, downloader = "builtin",
   overwrite_safe = FALSE, rm_safe = "no", step_atmcorr = "auto",
   max_cloud_safe = 100, timewindow = NA, timeperiod = "full",
   extent = NA, extent_name = "sen2r", s2tiles_selected = NA,

@@ -6,7 +6,7 @@
 \usage{
 sen2r(param_list = NULL, gui = NA, preprocess = TRUE,
   s2_levels = c("l1c", "l2a"), sel_sensor = c("s2a", "s2b"),
-  online = TRUE, apihub = NA, downloader = "wget",
+  online = TRUE, apihub = NA, downloader = "builtin",
   overwrite_safe = FALSE, rm_safe = "no", step_atmcorr = "auto",
   max_cloud_safe = 100, timewindow = NA, timeperiod = "full",
   extent = NA, extent_name = "sen2r", s2tiles_selected = NA,
@@ -68,8 +68,8 @@ If NA (default), the default location inside the package will be used.}
 
 \item{downloader}{(optional) Character value corresponding to the executable
 which should be used to download SAFE products. It could be one among
-"wget" (default) and "aria2".
-If aria2 is not installed, Wget will be used instead.}
+"builtin" (default) and "aria2".
+If aria2 is not installed, built-in method will be used instead.}
 
 \item{overwrite_safe}{(optional) Logical: TRUE to overwrite existing
 products with products found online or manually corrected,

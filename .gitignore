@@ -30,10 +30,8 @@ vignettes/*.pdf
 /extdata/xslt/
 /inst/extdata/xslt/
 /query_results.xml
-/wget.exe
 /inst/aria2.exe
 /aria2.exe
-/inst/wget.exe
 *.pyc
 
 # path file
@@ -49,5 +47,5 @@ vignettes/*.pdf
 /inst/extdata/example_files/out/
 /logs/
 /inst/logs/
-/s2download/apihub.txt
-/inst/s2download/apihub.txt
+/extdata/apihub.txt
+/inst/extdata/apihub.txt

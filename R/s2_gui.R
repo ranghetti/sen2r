@@ -376,9 +376,9 @@ s2_gui <- function(param_list = NULL,
                       "Downloader\u2000",
                       actionLink("help_downloader", icon("question-circle"))
                     ),
-                    choiceNames = list("Wget", "aria2"),
-                    choiceValues = list("wget", "aria2"),
-                    selected = "wget",
+                    choiceNames = list("Built-in", "aria2"),
+                    choiceValues = list("builtin", "aria2"),
+                    selected = "builtin",
                     inline = TRUE
                   ),
                   sliderInput(
@@ -1484,7 +1484,7 @@ s2_gui <- function(param_list = NULL,
     binpaths <- load_binpaths()
     observeEvent(input$downloader, {
       if (is.null(binpaths$aria2c)) {
-        updateRadioButtons(session, "downloader", selected = "wget")
+        updateRadioButtons(session, "downloader", selected = "builtin")
         disable("downloader")
       } else {
         enable("downloader")
@@ -2657,10 +2657,8 @@ s2_gui <- function(param_list = NULL,
           "to download Sentinel-2 SAFE archives."
         )), 
         p(HTML(
-          "<strong>Wget</strong> is the default downloader, which is natively",
-          "presenti in Linux systems and which can be installed in Windows",
-          "using the function <code>check_sen2r_deps()</code> (graphically) or",
-          "<code>install_wget()</code> (from commandline)."
+          "<strong>Built-in</strong> is the downloader which is used by default",
+          "through the package 'httr'."
         )),
         p(HTML(
           "<strong><a href=\"https://aria2.github.io\" target=\"_blank\">aria2</a></strong>",
@@ -3381,7 +3379,7 @@ s2_gui <- function(param_list = NULL,
       rl$s2_levels <- c(if(safe_req$l1c==TRUE){"l1c"}, if(safe_req$l2a==TRUE){"l2a"}) # required S2 levels ("l1c","l2a")
       rl$sel_sensor <- input$sel_sensor # sensors to use ("s2a", "s2b")
       rl$online <- as.logical(input$online) # TRUE if online mode, FALSE if offline mode
-      rl$downloader <- input$downloader # downloader ("wget" or "aria2")
+      rl$downloader <- input$downloader # downloader ("builtin" or "aria2")
       rl$overwrite_safe <- as.logical(input$overwrite_safe) # TRUE to overwrite existing SAFE, FALSE not to
       rl$rm_safe <- input$rm_safe # "yes" to delete all SAFE, "l1c" to delete only l1c, "no" not to remove
       rl$max_cloud_safe <- input$max_cloud_safe_perc # maximum SAFE cloud coverage (0-100)

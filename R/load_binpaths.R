@@ -2,7 +2,7 @@
 #' @description Internal function to load the paths of executables 
 #'  from the JSON where they are saved when installed.
 #' @param bins Character vector with one of more of the following values:
-#'  "gdal", sen2cor", "wget", "aria2", "python".
+#'  "gdal", sen2cor", "aria2", "python".
 #'  If an executable corresponding to the passed `bins` value is not found
 #'  in the JSON, it is installed (Windows) or checked (Linux).
 #' @return The list of the paths
@@ -56,17 +56,6 @@ load_binpaths <- function(bins = NULL) {
     }
     install_sen2cor() %>% suppressMessages()
     binpaths <- jsonlite::fromJSON(binpaths_file)
-  }
-  
-  # Check wget
-  if ("wget" %in% bins & is.null(binpaths$wget)) {
-    if (Sys.info()["sysname"] == "Windows") {
-      suppressMessages(install_wget())
-    } else if (Sys.which("wget") != "") {
-      binpaths$wget <- normalizePath(Sys.which("wget"))
-      writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
-      binpaths <- jsonlite::fromJSON(binpaths_file)
-    }
   }
   
   # Check aria2

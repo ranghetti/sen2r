@@ -38,7 +38,6 @@ reference:
       - '`check_sen2r_deps`'
       - '`load_binpaths`'
       - '`install_sen2cor`'
-      - '`install_wget`'
       - '`install_aria2`'
       - '`init_python`'
   - title: Accessory functions

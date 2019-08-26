@@ -40,8 +40,8 @@
 #'  If NA (default), the default location inside the package will be used.
 #' @param downloader (optional) Character value corresponding to the executable
 #'  which should be used to download SAFE products. It could be one among
-#'  "wget" (default) and "aria2".
-#'  If aria2 is not installed, Wget will be used instead.
+#'  "builtin" (default) and "aria2".
+#'  If aria2 is not installed, built-in method will be used instead.
 #' @param overwrite_safe (optional) Logical: TRUE to overwrite existing
 #'  products with products found online or manually corrected,
 #'  FALSE (default) to skip download and atmospheric correction for
@@ -315,7 +315,7 @@ sen2r <- function(param_list = NULL,
                   sel_sensor = c("s2a","s2b"),
                   online = TRUE,
                   apihub = NA,
-                  downloader = "wget",
+                  downloader = "builtin",
                   overwrite_safe = FALSE,
                   rm_safe = "no",
                   step_atmcorr = "auto",

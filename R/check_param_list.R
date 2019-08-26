@@ -136,10 +136,10 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   
   
   # -- downloader --
-  if (!pm$downloader %in% c("wget", "aria2")) {
+  if (!pm$downloader %in% c("builtin", "aria2")) {
     print_message(
       type = type,
-      "Parameter \"downloader\" must be 'wget' or 'aria2' (setting to the default)."
+      "Parameter \"downloader\" must be 'builtin' or 'aria2' (setting to the default)."
     )
     pm$downloader <- pm_def$downloader
   }

@@ -1,9 +1,6 @@
 #' @title Retrieve list of available products.
 #' @description The function retrieves the list of available Sentinel-2
-#'  products basing on search criteria. It makes use of
-#'  [s2download](https://github.com/ranghetti/s2download)
-#'  python function only to retrieve the list of files, without
-#'  downloading and correcting them.
+#'  products basing on search criteria.
 #' @param spatial_extent A valid spatial object object of class `sf`,
 #'  `sfc` or `sfg`
 #' @param tile  `string array` Sentinel-2 Tiles to be considered string (5-length character)
