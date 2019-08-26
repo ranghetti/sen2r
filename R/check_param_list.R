@@ -755,7 +755,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
         )
       }
     }
-  } else if (all(length(nn(pm$list_rgb)) > 0, check_paths)) {
+  } else if (all(length(nn(pm$list_rgb[!is.na(pm$list_rgb)])) > 0, check_paths)) {
     print_message(
       type = type,
       "Neither parameter \"path_rgb\" nor \"path_out\" were specified; ",
@@ -780,7 +780,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
         )
       }
     }
-  } else if (all(length(nn(pm$list_indices)) > 0, check_paths)) {
+  } else if (all(length(nn(pm$list_indices[!is.na(pm$list_indices)])) > 0, check_paths)) {
     print_message(
       type = type,
       "Neither parameter \"path_indices\" nor \"path_out\" were specified; ",
@@ -803,7 +803,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
         )
       }
     }
-  } else if (all(length(nn(pm$list_prods)) > 0, check_paths)) {
+  } else if (all(length(nn(pm$list_prods[!is.na(pm$list_prods)])) > 0, check_paths)) {
     print_message(
       type = type,
       "Parameter \"path_out\" was not specified; ",
