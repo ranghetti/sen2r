@@ -4,12 +4,16 @@
 \alias{check_param_list}
 \title{Check a parameter list}
 \usage{
-check_param_list(pm, type = "string", correct = TRUE)
+check_param_list(pm, type = "string", check_paths = FALSE,
+  correct = TRUE)
 }
 \arguments{
 \item{pm}{List of parameters or path of a JSON parameter file.}
 
 \item{type}{Type of the output (see \link{print_message} for details).}
+
+\item{check_paths}{Logical: if TRUE, the function checks required output
+paths to be provided; if FALSE (default) these checks are skipped.}
 
 \item{correct}{Logical: if TRUE (default), the function corrects
 some incoherences (e.g. timewindow of length 1 is transformed in length 2)

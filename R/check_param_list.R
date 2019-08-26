@@ -4,6 +4,8 @@
 #'  parameters.
 #' @param pm List of parameters or path of a JSON parameter file.
 #' @param type Type of the output (see [print_message] for details).
+#' @param check_paths Logical: if TRUE, the function checks required output
+#'  paths to be provided; if FALSE (default) these checks are skipped.
 #' @param correct Logical: if TRUE (default), the function corrects
 #'  some incoherences (e.g. timewindow of length 1 is transformed in length 2)
 #'  and returns the corrected list as output; if false, only checking is 
@@ -21,7 +23,7 @@
 #' @note License: GPL 3.0
 
 
-check_param_list <- function(pm, type = "string", correct = TRUE) {
+check_param_list <- function(pm, type = "string", check_paths = FALSE, correct = TRUE) {
   
   # to avoid NOTE on check
   . <- valid_s2tiles <- reference_path <- NULL
@@ -686,7 +688,13 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
         )
       }
     }
-  } 
+  } else if (check_paths) {
+    print_message(
+      type = type,
+      "Neither parameter \"path_l1c\" nor \"path_l2a\" were specified; ",
+      "please provide the path of an existing directory for almost one of the two."
+    )
+  }
   
   
   # -- path_l2a --
@@ -747,7 +755,13 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
         )
       }
     }
-  } 
+  } else if (all(length(nn(pm$list_rgb)) > 0, check_paths)) {
+    print_message(
+      type = type,
+      "Neither parameter \"path_rgb\" nor \"path_out\" were specified; ",
+      "please provide the path of an existing directory for almost one of the two."
+    )
+  }
   
   
   # -- path_indices --
@@ -766,7 +780,13 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
         )
       }
     }
-  } 
+  } else if (all(length(nn(pm$list_indices)) > 0, check_paths)) {
+    print_message(
+      type = type,
+      "Neither parameter \"path_indices\" nor \"path_out\" were specified; ",
+      "please provide the path of an existing directory for almost one of the two."
+    )
+  }
   
   
   # -- path_out --
@@ -783,7 +803,13 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
         )
       }
     }
-  } 
+  } else if (all(length(nn(pm$list_prods)) > 0, check_paths)) {
+    print_message(
+      type = type,
+      "Parameter \"path_out\" was not specified; ",
+      "please provide the path of an existing directory."
+    )
+  }
   
   
   # -- path_subdirs --
@@ -833,7 +859,7 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   )) {
     pm$parallel <- floor(pm$parallel)
   }
-    
+  
   
   # -- processing_order --
   if (length(nn(pm$processing_order) > 0)) {

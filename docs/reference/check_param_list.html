@@ -121,7 +121,8 @@ parameters.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>check_param_list</span>(<span class='no'>pm</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"string"</span>, <span class='kw'>correct</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>check_param_list</span>(<span class='no'>pm</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"string"</span>, <span class='kw'>check_paths</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>correct</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -133,6 +134,11 @@ parameters.</p>
     <tr>
       <th>type</th>
       <td><p>Type of the output (see <a href='print_message.html'>print_message</a> for details).</p></td>
+    </tr>
+    <tr>
+      <th>check_paths</th>
+      <td><p>Logical: if TRUE, the function checks required output
+paths to be provided; if FALSE (default) these checks are skipped.</p></td>
     </tr>
     <tr>
       <th>correct</th>

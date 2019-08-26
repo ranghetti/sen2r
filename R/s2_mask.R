@@ -449,7 +449,6 @@ s2_mask <- function(infiles,
             # if mask is at different resolution than inraster
             # (e.g. 20m instead of 10m),
             # resample it
-browser()
             if (any(
               unlist(sel_infile_meta_raster[c("res.x","res.y")]) !=
               unlist(raster_metadata(outmask, "res", format = "list")[[1]]$res)

@@ -633,7 +633,7 @@ sen2r <- function(param_list = NULL,
   pm[names(pm_arg)] <- pm_arg
   
   # Check parameters
-  pm <- check_param_list(pm, type = "error", correct = TRUE)
+  pm <- check_param_list(pm, type = "error", check_paths = FALSE, correct = TRUE)
   
   # if gui argument was not specified, use default value
   if (is.na(gui)) {
@@ -708,7 +708,7 @@ sen2r <- function(param_list = NULL,
   
   ## Check consistency of parameters
   # TODO work in progress
-  pm <- check_param_list(pm, type = "error", correct = TRUE)
+  pm <- check_param_list(pm, type = "error", check_paths = TRUE, correct = TRUE)
   
   # Set log variables
   # stop logging if it was already going on
@@ -1145,7 +1145,7 @@ sen2r <- function(param_list = NULL,
   if (!pm$online && is.na(pm$extent) && is.na(pm$s2tiles_selected)) {
     pm$s2tiles_selected <- unique(s2_dt$id_tile)
   }
-
+  
   # add check so that in offline mode if specified date is not available, we fail gracefully  
   if (!pm$online && nrow(s2_dt) == 0) {
     print_message(type = "error",
