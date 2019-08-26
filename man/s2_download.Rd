@@ -23,9 +23,6 @@ If NA (default), the default location inside the package will be used.}
 
 \item{outdir}{(optional) Full name of the existing output directory
 where the files should be created (default: current directory).}
-
-\item{overwrite_safe}{\code{logical} if FALSE, and a SAFE that should be downloaded is
-already present in outdir, download is skipped, Default: FALSE}
 }
 \description{
 The function downloads a single S2 product.
