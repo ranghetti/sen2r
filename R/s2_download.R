@@ -14,8 +14,6 @@
 #' @param tile Single Sentinel-2 Tile string (5-length character)
 #' @param outdir (optional) Full name of the existing output directory
 #'  where the files should be created (default: current directory).
-#' @param overwrite_safe `logical` if FALSE, and a SAFE that should be downloaded is
-#'  already present in outdir, download is skipped, Default: FALSE
 #' @return NULL
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
