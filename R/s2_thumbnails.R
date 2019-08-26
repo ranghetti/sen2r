@@ -447,7 +447,7 @@ s2_thumbnails <- function(infiles,
       }
       
       # Resize input if necessary
-      sel_infile_size <- raster_metadata(sel_infile_path, "size", format = "list")$size
+      sel_infile_size <- raster_metadata(sel_infile_path, "size", format = "list")[[1]]$size
       resized_path <- file.path(tmpdir, gsub(
         "\\..+$",
         if (sel_prod_type %in% c("BOA","TOA")) {"_resized.tif"} else {"_resized.vrt"},

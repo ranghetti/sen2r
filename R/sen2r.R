@@ -104,7 +104,7 @@
 #'  "TCI"). Default is no one (NA).
 #' @param list_rgb (optional) Character vector with the values of the
 #'  RGB images to be produced.
-#'  Images are in the form RGBrgbx, when:
+#'  Images are in the form RGBrgbx, where:
 #'  - x is B (if source is BOA) or T (is source is TOA);
 #'  - r g and b are the the number of the bands to be used respectively
 #'      for red, green and blue, in hexadecimal format.
@@ -112,6 +112,7 @@
 #'      https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/resolutions/spatial):
 #'      so, to use i.e. BOA band 11 (1610nm) use the value "b", even if band 11 is
 #'      the 10th band of a BOA product (because band 10 is missing).
+#'  (e.g., RGB432B, RGB843B)
 #'  Default is no one (NA).
 #' @param list_indices (optional) Character vector with the values of the
 #'  spectral indices to be computed. Default is no one (NA).

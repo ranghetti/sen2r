@@ -692,7 +692,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
     print_message(
       type = type,
       "Neither parameter \"path_l1c\" nor \"path_l2a\" were specified; ",
-      "please provide the path of an existing directory for almost one of the two."
+      "please provide the path of an existing directory for at least one of the two."
     )
   }
   
@@ -738,7 +738,6 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
     }
   } 
   
-  
   # -- path_rgb --
   if (sum(!is.na(pm$list_rgb))==0) {
     pm$path_rgb <- NA
@@ -759,7 +758,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
     print_message(
       type = type,
       "Neither parameter \"path_rgb\" nor \"path_out\" were specified; ",
-      "please provide the path of an existing directory for almost one of the two."
+      "please provide the path of an existing directory for at least one of the two."
     )
   }
   
@@ -784,11 +783,10 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
     print_message(
       type = type,
       "Neither parameter \"path_indices\" nor \"path_out\" were specified; ",
-      "please provide the path of an existing directory for almost one of the two."
+      "please provide the path of an existing directory for at least one of the two."
     )
   }
-  
-  
+
   # -- path_out --
   if (sum(!is.na(nn(pm$list_prods)))==0) {
     pm$path_out <- NA

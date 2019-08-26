@@ -303,7 +303,7 @@ s2_calcindices <- function(infiles,
     # (this cycle is not parallelised)
     sel_outfiles <- character(0)
     for (j in seq_along(indices)) {
-      
+      print_message(paste0("Computing index: ", indices[j]), type = "message")
       # extract parameters
       sel_parameters <- parameters[[indices[j]]]
       
