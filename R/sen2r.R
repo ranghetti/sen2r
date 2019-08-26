@@ -2055,6 +2055,7 @@ sen2r <- function(param_list = NULL,
               }
             }
           }
+          if (length(nn(warped_scl_reqout[["SCL"]])) > 0) {
           if (any(!file.exists(nn(warped_scl_reqout[["SCL"]]))) | pm$overwrite==TRUE) {
             tracename_gdalwarp <- start_trace(warped_scl_reqout[["SCL"]], "gdal_warp")
             trace_gdalwarp <- tryCatch(
@@ -2099,6 +2100,7 @@ sen2r <- function(param_list = NULL,
             #           t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
             #           r = pm$resampling_scl,
             #           overwrite = pm$overwrite)
+          }
           }
           
         } # end of gdal_warp IF cycle
