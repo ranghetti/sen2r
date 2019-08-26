@@ -1139,12 +1139,25 @@ sen2r <- function(param_list = NULL,
     s2_dt <- s2_dt[as.Date(sensing_datetime) >= pm$timewindow[1] &
                      as.Date(sensing_datetime) <= pm$timewindow[2],]
   }
+  
+  # add check so that in offline mode if extent or tiles are not specified 
+  # all tiles are used
+  if (!pm$online && is.na(pm$extent) && is.na(pm$s2tiles_selected)) {
+    pm$s2tiles_selected <- unique(s2_dt$id_tile)
+  }
+
+  # add check so that in offline mode if specified date is not available, we fail gracefully  
+  if (!pm$online && nrow(s2_dt) == 0) {
+    print_message(type = "error",
+                  message_string = "There are no images on your machine acquired",
+                  "in the specified time period. Aborting!")
+  }
   # if pm$s2tiles_selected contains NA, do not filter on tiles now;
   # otherwise, filter on tiles but keep also NA not to discard old name products.
   # (products will be filtered later: #filter2)
   if (!any(length(nn(pm$s2tiles_selected))==0, all(is.na(pm$s2tiles_selected)))) {
     s2_dt <- s2_dt[id_tile %in% c(as.character(pm$s2tiles_selected),NA),]
-  } else if (all(st_is_valid(pm$extent))) {
+  } else if (is.na(pm$extent) || all(st_is_valid(pm$extent))) {
     # if no tiles were specified, select only tiles which overlap the extent
     # (this to prevent to use unuseful SAFE in offline mode)
     s2tiles_sel_id <- tiles_intersects(pm$extent)

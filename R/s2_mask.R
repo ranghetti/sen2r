@@ -284,13 +284,12 @@ s2_mask <- function(infiles,
   }
   for (i in seq_along(infiles)) {try({
     sel_infile <- infiles[i]
-    sel_infile_meta_sen2r <- c(infiles_meta_sen2r[i,])
+    sel_infile_meta_sen2r  <- c(infiles_meta_sen2r[i,])
     sel_infile_meta_raster <- c(infiles_meta_raster[i,])
-browser()
-    sel_format <- sel_infile_meta_raster$outformat
-    sel_rmtmp <- ifelse(sel_format=="VRT", FALSE, rmtmp)
+    sel_format  <- sel_infile_meta_raster$outformat
+    sel_rmtmp   <- ifelse(sel_format == "VRT", FALSE, rmtmp)
     sel_out_ext <- gdal_formats[gdal_formats$name==sel_format,"ext"][1]
-    sel_naflag <- s2_defNA(sel_infile_meta_sen2r$prod_type)
+    sel_naflag  <- s2_defNA(sel_infile_meta_sen2r$prod_type)
     
     # check that infile has the correct maskfile
     sel_maskfiles <- sapply(names(req_masks), function(m) {

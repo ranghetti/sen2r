@@ -248,7 +248,7 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
       error = function(e) {
         print_message(
           type = type,
-          "Extent can not be read."
+          "Extent can not be read from the specified file or string."
         )
       }
     )

@@ -23,13 +23,13 @@ testthat::test_that(
   })
 
 testthat::test_that(
-  "Tests on s2_list - Multiple tiles, no orbits, nopos", {
+  "Tests on s2_list - Multiple tiles, multiple orbits, pos", {
     s2_list_test <- s2_list(
       tile = c("32TNR", "32TMR"),
       time_interval = as.Date(c("2017-05-01", "2017-08-01")),
       output_type = "data.table"
     )
-    testthat::expect_equal(length(s2_list_test$tile), 36)
+    testthat::expect_equal(length(s2_list_test$tile), 49)
     testthat::expect_equal(unique(s2_list_test$tile), c("32TNR", "32TMR"))
   })
 
@@ -58,6 +58,7 @@ testthat::test_that(
 
 testthat::test_that(
   "Tests on s2_list - Cloudiness", {
+    pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
     s2_list_test <- s2_list(
       spatial_extent        = pos,
       tile                  = "32TNR",
@@ -85,7 +86,7 @@ testthat::test_that(
   "Tests on s2_list - multipoint", {
     pp <- data.frame(x = c(6, 9.95),
                      y = c(45.81, 45.95))
-    pos <-  sf::st_as_sf(pp, coords = c("x","y")) %>% st_set_crs(4326)
+    pos <-  sf::st_as_sf(pp, coords = c("x","y")) %>% sf::st_set_crs(4326)
     time_window <- as.Date(c("2016-05-01", "2016-08-01"))
     s2_list_test <- s2_list(
       spatial_extent = pos,
@@ -126,7 +127,7 @@ testthat::test_that(
       spatial_extent = pos,
       time_interval = time_window
     )
-    testthat::expect_equal(length(s2_list_test$orbitid), 182)
+    testthat::expect_equal(length(s2_list_test), 182)
   })
 
 testthat::test_that(
