@@ -43,6 +43,7 @@ vignettes/*.pdf
 /extdata/example_files/safe/
 /inst/extdata/example_files/safe/
 /inst/extdata/testdata/example_files/safe/
+/inst/extdata/testdata/example_files/out/
 /extdata/example_files/out/
 /inst/extdata/example_files/out/
 /logs/

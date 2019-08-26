@@ -1,3 +1,11 @@
+example_dir <- system.file("extdata/example_files", package = "sen2r")
+dir.create(example_dir, showWarnings = FALSE)
+safe_dir <- file.path(example_dir, "safe")
+dir.create(safe_dir, showWarnings = FALSE)
+dir.create(file.path(safe_dir, "L2A"), showWarnings = FALSE)
+dir.create(file.path(safe_dir, "L1C"), showWarnings = FALSE)
+dir.create(file.path(example_dir, "out"), showWarnings = FALSE)
+
 context("Test s2_merge and translate when stitching 2 tiles with no clipping")
 testthat::skip_on_cran()
 testthat::skip_on_travis()
