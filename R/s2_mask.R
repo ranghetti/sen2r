@@ -284,12 +284,12 @@ s2_mask <- function(infiles,
   }
   for (i in seq_along(infiles)) {try({
     sel_infile <- infiles[i]
-    sel_infile_meta_sen2r  <- c(infiles_meta_sen2r[i,])
+    sel_infile_meta_sen2r <- c(infiles_meta_sen2r[i,])
     sel_infile_meta_raster <- c(infiles_meta_raster[i,])
-    sel_format  <- sel_infile_meta_raster$outformat
-    sel_rmtmp   <- ifelse(sel_format == "VRT", FALSE, rmtmp)
+    sel_format <- sel_infile_meta_raster$outformat
+    sel_rmtmp <- ifelse(sel_format == "VRT", FALSE, rmtmp)
     sel_out_ext <- gdal_formats[gdal_formats$name==sel_format,"ext"][1]
-    sel_naflag  <- s2_defNA(sel_infile_meta_sen2r$prod_type)
+    sel_naflag <- s2_defNA(sel_infile_meta_sen2r$prod_type)
     
     # check that infile has the correct maskfile
     sel_maskfiles <- sapply(names(req_masks), function(m) {
@@ -397,7 +397,7 @@ s2_mask <- function(infiles,
         
         # This is as fast as previous, but memory friendly on large raster
         mean_values_naval <- raster::cellStats(raster(outnaval), "mean", na.rm = TRUE)
-        mean_values_mask  <- raster::cellStats(raster(outmask), "mean", na.rm = TRUE)
+        mean_values_mask <- raster::cellStats(raster(outmask), "mean", na.rm = TRUE)
         # values_naval <- values(raster(outnaval))
         # mean_values_naval <- mean(values_naval, na.rm=TRUE)
         # mean_values_mask <- mean(values(raster(outmask)), na.rm=TRUE)
@@ -576,8 +576,8 @@ browser()
               for (j in seq_len(bs$n)) {
                 message("Processing chunk ", j, " of ", bs$n)
                 
-                m   <- raster::getValuesBlock(y, row = bs$row[j], nrows = bs$nrows[j])
-                v   <- raster::getValuesBlock(x, row = bs$row[j], nrows = bs$nrows[j])
+                m <- raster::getValuesBlock(y, row = bs$row[j], nrows = bs$nrows[j])
+                v <- raster::getValuesBlock(x, row = bs$row[j], nrows = bs$nrows[j])
                 v[m == 0] <- NA
                 
                 out <- writeValues(out, v, bs$row[j])

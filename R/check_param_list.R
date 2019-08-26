@@ -97,7 +97,7 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   # -- Logical parameters: check them to be TRUE or FALSE
   pm_logical <- c(
     "preprocess", "online", "overwrite_safe", "clip_on_extent", 
-    "extent_as_mask", "path_subdirs", "thumbnails", "overwrite", "parallel"
+    "extent_as_mask", "path_subdirs", "thumbnails", "overwrite"
   )
   for (sel_par in pm_logical) {
     if (any(!is(pm[[sel_par]], "logical"), !pm[[sel_par]] %in% c(TRUE,FALSE))) {
@@ -815,7 +815,25 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   
   
   # -- parallel --
-  
+  if (all(
+    !is(pm$parallel, "logical"), !pm$parallel %in% c(TRUE,FALSE),
+    !is(pm$parallel, "numeric"), pm$parallel > 0
+  )) {
+    print_message(
+      type = type,
+      "Parameter \"",sel_par,"\" must be TRUE or FALSE, ",
+      "or a positive integer value; ",
+      "setting it to the default (",pm_def$parallel,")."
+    )
+    pm$parallel <- pm_def$parallel
+  }
+  if (all(
+    is(pm$parallel, "numeric"),
+    !is(pm$parallel, "integer")
+  )) {
+    pm$parallel <- floor(pm$parallel)
+  }
+    
   
   # -- processing_order --
   if (length(nn(pm$processing_order) > 0)) {
