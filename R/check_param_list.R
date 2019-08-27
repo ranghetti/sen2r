@@ -191,16 +191,6 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   }
   
   
-  # -- step_atmcorr --
-  if (!pm$step_atmcorr %in% c("auto", "scihub", "l2a", "no")) {
-    print_message(
-      type = type,
-      "Parameter \"step_atmcorr\" must be one among 'auto', 'scihub', 'l2a' ",
-      "and 'no' (setting to the default)."
-    )
-    pm$step_atmcorr <- pm_def$step_atmcorr
-  }
-  
   # -- timewindow --
   if (!anyNA(pm$timewindow)) {
     if (length(pm$timewindow)==1) {
@@ -677,7 +667,28 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
     } else {
       pm$path_l2a <- pm$path_l1c
     }
+  # -- step_atmcorr --
+  if (!pm$step_atmcorr == "no") {
+    print_message(
+      type = "warning",
+      "Value \"no\" for parameter \"step_atmcorr\" is deprecated ",
+      "(\"l2a\" will be used)."
+    )
+    pm$step_atmcorr <- "l2a"
+    pm$step_atmcorr <- pm_def$step_atmcorr
+  } else if (!pm$step_atmcorr %in% c("auto", "scihub", "l2a")) {
+    print_message(
+      type = type,
+      "Parameter \"step_atmcorr\" must be one among 'auto', 'scihub' and 'l2a' ",
+      "(setting to the default)."
+    )
+    pm$step_atmcorr <- pm_def$step_atmcorr
   }
+  if (all("l1c" %in% pm$s2_levels, check_paths)) {
+  }
+  
+  
+  # -- path_l1c --
   if (all(!is.na(pm$path_l1c), pm$path_l1c != "")) {
     if(!dir.exists(pm$path_l1c)) {
       if(!dir.exists(dirname(pm$path_l1c))) {

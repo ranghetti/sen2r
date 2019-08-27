@@ -58,9 +58,7 @@
 #'  * "scihub" means that sen2cor is always used from L1C products
 #'  downloaded from SciHub;
 #'  * "l2a" means that they are downloaded if available on SciHub,
-#'  otherwise they are skipped (sen2cor is never used);
-#'  * "no" means that L2A are not considered (processing chain
-#'  makes use only of L1C products).
+#'  otherwise they are skipped (sen2cor is never used).
 #' @param max_cloud_safe (optional) Integer number (0-100) containing
 #'  the maximum cloud level of each SAFE to be considered (default: no filter).
 #'  It it used to limit the research of SAFE products to "good" images,
@@ -816,7 +814,7 @@ sen2r <- function(param_list = NULL,
   
   # # internal parameters
   
-  # accepted products (update together with the same variables in s2_gui() and in compute_s2_names())
+  # accepted products (update together with the same variables in s2_gui(), check_s2_list() and in compute_s2_names())
   l1c_prods <- c("TOA")
   l2a_prods <- c("BOA","SCL","TCI")
   
@@ -985,7 +983,7 @@ sen2r <- function(param_list = NULL,
           "auto"
         } else if (pm$step_atmcorr=="l2a") {
           "L2A"
-        } else if (pm$step_atmcorr %in% c("scihub","no")) {
+        } else if (pm$step_atmcorr %in% c("scihub")) {
           "L1C"
         },
         max_cloud = pm$max_cloud_safe,
@@ -1002,7 +1000,7 @@ sen2r <- function(param_list = NULL,
     if ("l2a" %in% pm$s2_levels) {
       s2_lists[["l2a"]] <- if (pm$step_atmcorr=="l2a") {
         list.files(pm$path_l2a, "\\.SAFE$")
-      } else if (pm$step_atmcorr %in% c("scihub","no")) {
+      } else if (pm$step_atmcorr %in% c("scihub")) {
         list.files(pm$path_l1c, "\\.SAFE$")
       } else if (pm$step_atmcorr=="auto") {
         all_l1c <- list.files(pm$path_l1c, "\\.SAFE$")
