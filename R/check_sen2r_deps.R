@@ -385,10 +385,10 @@ check_sen2r_deps <- function() {
       } else {
         FALSE
       }
-
+      
       # open modaldialog
       showModal(check_aria2_modal)
-
+      
     })
     
     # install aria2

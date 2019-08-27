@@ -63,7 +63,7 @@ compute_s2_paths <- function(pm,
     mission <- level <- sensing_date <- id_orbit <- prod_type <- res <- 
     sensing_datetime <- id_tile <- NULL
   
-
+  
   # Preliminary settings
   list_prods <- list_prods[!is.na(nn(list_prods))]
   list_rgb <- pm$list_rgb[!is.na(nn(pm$list_rgb))]
@@ -98,7 +98,7 @@ compute_s2_paths <- function(pm,
     "masked" = length(pm$list_prods[all(!is.na(pm$list_prods), pm$list_prods != "SCL")]) > 0 & steps_todo[["masked"]],
     "indices" = steps_todo[["indices"]]
   )
-
+  
   # File extensions
   out_ext <- c(
     "tiles" = if (output_req["tiles"]) main_ext else "vrt",
@@ -134,11 +134,11 @@ compute_s2_paths <- function(pm,
     "masked" = if (output_req["masked"]) {pm$path_out} else {file.path(tmpdir,"masked")},
     "indices" = if (output_req["indices"]) {pm$path_indices} else {file.path(tmpdir,"indices")}
   )
-
+  
   
   # Paths (additions for compatibility)
   # paths passed as argument
-
+  
   # Out extent name
   ExtentName <- if (steps_todo["warped"]) {pm$extent_name} else {""}
   
@@ -300,7 +300,7 @@ compute_s2_paths <- function(pm,
     sapply(x, function(y) {y[!y %in% ignorelist]}, simplify = FALSE, USE.NAMES = FALSE)
   }, simplify = FALSE, USE.NAMES = TRUE)
   
-
+  
   ## Expected files
   exp_paths <- list()
   
@@ -339,20 +339,20 @@ compute_s2_paths <- function(pm,
         character(0)
       } else {
         sen2r_getElements(exp_paths[[output_dep["merged"]]][[prod]])[,paste0(
-        "S2",
-        mission,
-        level,"_",
-        strftime(sensing_date,"%Y%m%d"),"_",
-        id_orbit,"__",
-        prod_type,"_",
-        substr(res,1,2),".",
-        out_ext["merged"]
-      )] %>%
-        file.path(
-          paths["merged"],
-          if (pm$path_subdirs) {prod} else {""},
-          .
-        )
+          "S2",
+          mission,
+          level,"_",
+          strftime(sensing_date,"%Y%m%d"),"_",
+          id_orbit,"__",
+          prod_type,"_",
+          substr(res,1,2),".",
+          out_ext["merged"]
+        )] %>%
+          file.path(
+            paths["merged"],
+            if (pm$path_subdirs) {prod} else {""},
+            .
+          )
       }
       c(expaths, exi_paths[["merged"]][[prod]]) %>%
         unlist() %>% nn() %>% remove_duplicates()
@@ -366,21 +366,21 @@ compute_s2_paths <- function(pm,
         character(0)
       } else {
         sen2r_getElements(exp_paths[[output_dep["warped"]]][[prod]])[,paste0(
-        "S2",
-        mission,
-        level,"_",
-        strftime(sensing_date,"%Y%m%d"),"_",
-        id_orbit,"_", 
-        ExtentName,"_",
-        prod_type,"_",
-        substr(res,1,2),".",
-        out_ext["warped"]
-      )] %>%
-        file.path(
-          paths["warped"],
-          if (pm$path_subdirs) {prod} else {""},
-          .
-        )
+          "S2",
+          mission,
+          level,"_",
+          strftime(sensing_date,"%Y%m%d"),"_",
+          id_orbit,"_", 
+          ExtentName,"_",
+          prod_type,"_",
+          substr(res,1,2),".",
+          out_ext["warped"]
+        )] %>%
+          file.path(
+            paths["warped"],
+            if (pm$path_subdirs) {prod} else {""},
+            .
+          )
       }
       c(expaths, exi_paths[["warped"]][[prod]]) %>%
         unlist() %>% nn() %>% remove_duplicates()
@@ -394,21 +394,21 @@ compute_s2_paths <- function(pm,
         character(0)
       } else {
         sen2r_getElements(exp_paths[[output_dep["warped_scl"]]][[prod]])[,paste0(
-        "S2",
-        mission,
-        level,"_",
-        strftime(sensing_date,"%Y%m%d"),"_",
-        id_orbit,"_", 
-        ExtentName,"_",
-        prod_type,"_",
-        substr(res,1,2),".",
-        out_ext["warped_scl"]
-      )] %>%
-        file.path(
-          paths["warped_scl"],
-          if (pm$path_subdirs) {prod} else {""},
-          .
-        )
+          "S2",
+          mission,
+          level,"_",
+          strftime(sensing_date,"%Y%m%d"),"_",
+          id_orbit,"_", 
+          ExtentName,"_",
+          prod_type,"_",
+          substr(res,1,2),".",
+          out_ext["warped_scl"]
+        )] %>%
+          file.path(
+            paths["warped_scl"],
+            if (pm$path_subdirs) {prod} else {""},
+            .
+          )
       }
       c(expaths, exi_paths[["warped_scl"]][[prod]]) %>%
         unlist() %>% nn() %>% remove_duplicates()
@@ -422,25 +422,25 @@ compute_s2_paths <- function(pm,
         character(0)
       } else {
         sen2r_getElements(unlist(exp_paths[[output_dep["rgb"]]]))[
-        level == switch(substr(prod,7,7), T = "1C", B = "2A"),
-        paste0(
-          "S2",
-          mission,
-          level,"_",
-          strftime(sensing_date,"%Y%m%d"),"_",
-          id_orbit,"_",
-          ExtentName,"_",
-          "<rgbname>_",
-          substr(res,1,2),".",
-          out_ext["rgb"]
-        )] %>%
-        unique() %>%
-        file.path(
-          paths["rgb"],
-          if(pm$path_subdirs) {prod} else {""},
-          .
-        ) %>%
-        gsub("<rgbname>", prod , .)
+          level == switch(substr(prod,7,7), T = "1C", B = "2A"),
+          paste0(
+            "S2",
+            mission,
+            level,"_",
+            strftime(sensing_date,"%Y%m%d"),"_",
+            id_orbit,"_",
+            ExtentName,"_",
+            "<rgbname>_",
+            substr(res,1,2),".",
+            out_ext["rgb"]
+          )] %>%
+          unique() %>%
+          file.path(
+            paths["rgb"],
+            if(pm$path_subdirs) {prod} else {""},
+            .
+          ) %>%
+          gsub("<rgbname>", prod , .)
       }
       c(expaths, exi_paths[["rgb"]][[prod]]) %>%
         unlist() %>% nn() %>% remove_duplicates()
@@ -454,21 +454,21 @@ compute_s2_paths <- function(pm,
         character(0)
       } else {
         sen2r_getElements(exp_paths[[output_dep["masked.nonscl"]]][[prod]])[,paste0(
-        "S2",
-        mission,
-        level,"_",
-        strftime(sensing_date,"%Y%m%d"),"_",
-        id_orbit,"_", 
-        ExtentName,"_",
-        prod_type,"_",
-        substr(res,1,2),".",
-        out_ext["masked"]
-      )] %>%
-        file.path(
-          paths["masked"],
-          if (pm$path_subdirs) {prod} else {""},
-          .
-        )
+          "S2",
+          mission,
+          level,"_",
+          strftime(sensing_date,"%Y%m%d"),"_",
+          id_orbit,"_", 
+          ExtentName,"_",
+          prod_type,"_",
+          substr(res,1,2),".",
+          out_ext["masked"]
+        )] %>%
+          file.path(
+            paths["masked"],
+            if (pm$path_subdirs) {prod} else {""},
+            .
+          )
       }
       c(expaths, exi_paths$masked[[prod]]) %>%
         unlist() %>% nn() %>% remove_duplicates()
@@ -482,23 +482,23 @@ compute_s2_paths <- function(pm,
         character(0)
       } else {
         sen2r_getElements(unlist(exp_paths[[output_dep["indices"]]]))[
-        level %in% level_for_indices,
-        paste0(
-          "S2",
-          mission,
-          level,"_",
-          strftime(sensing_date,"%Y%m%d"),"_",
-          id_orbit,"_", 
-          ExtentName,"_",
-          "<index>_",
-          substr(res,1,2),".",
-          out_ext["indices"]
-        )] %>%
-        file.path(
-          paths["indices"],
-          if (pm$path_subdirs) {prod} else {""},
-          .
-        ) %>%
+          level %in% level_for_indices,
+          paste0(
+            "S2",
+            mission,
+            level,"_",
+            strftime(sensing_date,"%Y%m%d"),"_",
+            id_orbit,"_", 
+            ExtentName,"_",
+            "<index>_",
+            substr(res,1,2),".",
+            out_ext["indices"]
+          )] %>%
+          file.path(
+            paths["indices"],
+            if (pm$path_subdirs) {prod} else {""},
+            .
+          ) %>%
           gsub("<index>", prod , .)
       }
       c(expaths, exi_paths$indices[[prod]]) %>%
@@ -513,7 +513,7 @@ compute_s2_paths <- function(pm,
     }, simplify = FALSE, USE.NAMES = FALSE)
   }, simplify = FALSE, USE.NAMES = TRUE)
   
-
+  
   ## New (missing) and required files
   new_paths <- req_paths <- list()
   
@@ -772,5 +772,5 @@ compute_s2_paths <- function(pm,
   attr(outnames, "which_dep") <- output_dep
   attr(outnames, "paths") <- paths
   outnames
-
+  
 }

@@ -25,7 +25,7 @@
 #' @note License: GPL 3.0
 
 smooth_mask <- function(inmask, binpaths, tmpdir = tempdir(), radius = 250, buffer = 250, namask = NULL) {
-
+  
   # if inmask is a raster use the path (it should not happen)
   inmask_path0 <- if (is(inmask, "character")) {
     inmask
@@ -45,8 +45,8 @@ smooth_mask <- function(inmask, binpaths, tmpdir = tempdir(), radius = 250, buff
   
   radius_npx <- abs(radius / inmask_res)
   buffer_npx <- buffer / inmask_res
-
-
+  
+  
   # 1. set inmask=1 (clear sky) and namask=0 (nodata) to NA
   inmask_path1 <- file.path(tmpdir,basename(tempfile(pattern = "mask_", fileext = ".tif")))
   if (!is.null(namask)) {
@@ -198,5 +198,5 @@ smooth_mask <- function(inmask, binpaths, tmpdir = tempdir(), radius = 250, buff
   } else {
     inmask_path9
   }
-
+  
 }
