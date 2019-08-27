@@ -683,7 +683,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
       if (any(list_prods %in% l2a_prods)) {"l2a"}
     )
   }
-
+  
   
   # -- step_atmcorr --
   if (!pm$step_atmcorr == "no") {
@@ -701,8 +701,6 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
       "(setting to the default)."
     )
     pm$step_atmcorr <- pm_def$step_atmcorr
-  }
-  if (all("l1c" %in% pm$s2_levels, check_paths)) {
   }
   
   
@@ -821,7 +819,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
       "please provide the path of an existing directory for at least one of the two."
     )
   }
-
+  
   # -- path_out --
   if (sum(!is.na(nn(pm$list_prods)))==0) {
     pm$path_out <- NA

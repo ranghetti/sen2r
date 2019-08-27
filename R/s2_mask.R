@@ -41,14 +41,14 @@
 #'      more SCL class numbers. E.g. string "scl_0_8_9_11" can
 #'      be used to mask classes 0 ("No data"), 8-9 ("Cloud (high or medium 
 #'      probability)") and 11 ("Snow").
-#' @param smooth (optional) Numerical (positive): should the mask be smoothed=the size (in the unit of
+#' @param smooth (optional) Numerical (positive): the size (in the unit of
 #'  `inmask`, typically metres) to be used as radius for the smoothing
 #'  (the higher it is, the more smooth the output mask will result). 
-#'  Defaul is 20.
+#'  Defaul is 0 (no smoothing is applied).
 #' @param buffer (optional) Numerical (positive or negative): the size of the 
 #'  buffer (in the unit of `inmask`, typically metres) to be applied to the 
 #'  masked area after smoothing it (positive to enlarge, negative to reduce).
-#'  Defaul is 10.
+#'  Defaul is 0 (no buffer).
 #' @param max_mask (optional) Numeric value (range 0 to 100), which represents
 #'  the maximum percentage of allowed masked surface (by clouds or any other 
 #'  type of mask chosen with argument `mask_type`) for producing outputs. 
@@ -119,8 +119,8 @@
 s2_mask <- function(infiles,
                     maskfiles,
                     mask_type = "cloud_medium_proba",
-                    smooth = 20,
-                    buffer = 10,
+                    smooth = 0,
+                    buffer = 0,
                     max_mask = 80,
                     outdir = "./masked",
                     tmpdir = NA,
