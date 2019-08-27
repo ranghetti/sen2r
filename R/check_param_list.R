@@ -686,7 +686,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   
   
   # -- step_atmcorr --
-  if (!pm$step_atmcorr == "no") {
+  if (pm$step_atmcorr == "no") {
     print_message(
       type = "warning",
       "Value \"no\" for parameter \"step_atmcorr\" is deprecated ",
