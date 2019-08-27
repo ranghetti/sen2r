@@ -693,7 +693,6 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
       "(\"l2a\" will be used)."
     )
     pm$step_atmcorr <- "l2a"
-    pm$step_atmcorr <- pm_def$step_atmcorr
   } else if (!pm$step_atmcorr %in% c("auto", "scihub", "l2a")) {
     print_message(
       type = type,

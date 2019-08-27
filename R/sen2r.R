@@ -1756,6 +1756,43 @@ sen2r <- function(param_list = NULL,
         return(invisible(NULL))
       }
       
+      # Couple L1C and L2A SAFE if both are required for the same products
+      if (all(c("l1c", "l2a") %in% pm$s2_levels)) {
+        s2_meta_l2a <- lapply(names(sel_s2_list_l2a), function(x) {
+          unlist(safe_getMetadata(x, info="nameinfo")) %>%
+            t() %>%
+            as.data.frame(stringsAsFactors=FALSE)
+        }) %>%
+          rbindlist(fill=TRUE) %>%
+          .[,list(mission, sensing_datetime, id_orbit, id_tile)] %>%
+          apply(1, paste, collapse = "_")
+        s2_meta_l1c <- lapply(names(sel_s2_list_l1c), function(x) {
+          unlist(safe_getMetadata(x, info="nameinfo")) %>%
+            t() %>%
+            as.data.frame(stringsAsFactors=FALSE)
+        }) %>%
+          rbindlist(fill=TRUE) %>%
+          .[,list(mission, sensing_datetime, id_orbit, id_tile)] %>%
+          apply(1, paste, collapse = "_")
+        s2_l2a_orphan <- !s2_meta_l2a %in% s2_meta_l1c
+        s2_l1c_orphan <- !s2_meta_l1c %in% s2_meta_l2a
+        if (any(s2_l2a_orphan, s2_l1c_orphan)) {
+          print_message(
+            type = "warning", 
+            "Some SAFE archive is present only as Level-1C or Level-2A, ",
+            "while both are required. ",
+            "To prevent errors, only coupled products will be used. ",
+            if (any(s2_l1c_orphan)) {paste0(
+              "This issue can be avoided by setting argument \"step_atmcorr\" ",
+              "to 'auto' or 'scihub', or \"online\" to TRUE, ",
+              "so that missing Level-2A can be produced or downloaded."
+            )}
+          )
+          sel_s2_list_l2a <- sel_s2_list_l2a[!s2_l2a_orphan]
+          sel_s2_list_l1c <- sel_s2_list_l1c[!s2_l1c_orphan]
+        }
+      }
+      
       # update names for output files (after #filter2)
       print_message(type = "message", date = TRUE, "Updating output names...")
       sel_s2names <- compute_s2_paths(
