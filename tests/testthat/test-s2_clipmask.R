@@ -35,6 +35,35 @@ testthat::test_that(
     })
 
 testthat::test_that(
+    "Tests on clip BOA on extent, custom mask with smooth/buffer", {
+        sen2r(
+            gui = FALSE,
+            online = FALSE,
+            s2_levels = "l2a",
+            step_atmcorr = "l2a",
+            extent = file.path(example_dir, "scalve.kml"),
+            extent_name = "Scalve",
+            extent_as_mask = TRUE,
+            timewindow = as.Date("2017-07-03"),
+            list_prods = "BOA",
+            mask_type = "scl_0_8_9_11",
+            mask_smooth = 20, 
+            mask_buffer = 10,
+            path_l1c = file.path(safe_dir, "L1C"),
+            path_l2a = file.path(safe_dir, "L2A"),
+            path_out = out_dir
+        )
+        exp_fileout <- file.path(out_dir, "BOA/S2A2A_20170703_022_Scalve_BOA_10.vrt")
+        testthat::expect_true(file.exists(exp_fileout))
+        # r <- raster::brick(exp_fileout)
+        # testthat::expect_equal(raster::nlayers(r), 11)
+        # testthat::expect_equal(dim(r), c(1479,1911,11))
+        # testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 798.848, tolerance = 1e-06)
+        unlink(exp_fileout)
+    })
+
+
+testthat::test_that(
     "Tests on clip BOA on extent - do not create if cloudiness > threshold", {
         testthat::expect_warning(sen2r(
             gui = FALSE,
