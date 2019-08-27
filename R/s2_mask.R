@@ -286,7 +286,11 @@ s2_mask <- function(infiles,
     sel_infile <- infiles[i]
     sel_infile_meta_sen2r <- c(infiles_meta_sen2r[i,])
     sel_infile_meta_raster <- c(infiles_meta_raster[i,])
-    sel_format <- sel_infile_meta_raster$outformat
+    sel_format <- if (is.na(format)) {
+      sel_infile_meta_raster$outformat
+    } else {
+      format
+    }
     sel_rmtmp <- ifelse(sel_format == "VRT", FALSE, rmtmp)
     sel_out_ext <- gdal_formats[gdal_formats$name==sel_format,"ext"][1]
     sel_naflag <- s2_defNA(sel_infile_meta_sen2r$prod_type)
