@@ -827,7 +827,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   }
   for (i in 1:2) {
     if (all(!is.na(pm$log[i]), pm$log[i] != "")) {
-      if(!dir.exists(pm$log[i])) {
+      if(!dir.exists(dirname(pm$log[i]))) {
         print_message(
           type = type,
           "Directory \"",dirname(pm$log[i]),"\" does not exist ",
