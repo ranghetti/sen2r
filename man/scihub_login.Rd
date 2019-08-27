@@ -3,12 +3,15 @@
 \name{read_scihub_login}
 \alias{read_scihub_login}
 \alias{check_scihub_login}
+\alias{check_scihub_connection}
 \alias{write_scihub_login}
 \title{Import / export / check SciHub username and password}
 \usage{
 read_scihub_login(apihub_path = NA)
 
 check_scihub_login(username, password)
+
+check_scihub_connection()
 
 write_scihub_login(username, password, apihub_path = NA, check = TRUE,
   append = FALSE)
@@ -37,6 +40,9 @@ in which \code{username} is in the first column, \code{password} in the second.
 \code{check_scihub_login} returns TRUE if credentials are valid,
 FALSE elsewhere.
 
+\code{check_scihub_connection} returns TRUE if internet connection is available
+and scihub is accessible. FALSE otherwise.
+
 \code{write_scihub_login} returns NULL.
 }
 \description{
@@ -61,6 +67,8 @@ if (interactive()) {
 }
 \author{
 Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
+
+Lorenzo Busetto, phD (2019) \email{busetto.l@irea.cnr.it}
 
 Lorenzo Busetto, phD (2019) \email{busetto.l@irea.cnr.it}
 }

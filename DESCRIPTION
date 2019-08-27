@@ -20,7 +20,7 @@ License: GPL-3
 Encoding: UTF-8
 URL: http://sen2r.ranghetti.info, https://github.com/ranghetti/sen2r
 BugReports: https://github.com/ranghetti/sen2r/issues
-Imports:
+Imports: 
   reticulate,
   methods,
   digest,
@@ -47,10 +47,11 @@ Imports:
   units,
   lwgeom,
   httr
-Suggests:
+Suggests: 
+    geojsonlint,
+    httptest,
     knitr,
     rmarkdown,
-    geojsonlint,
     testthat (>= 2.1.0)
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
