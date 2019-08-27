@@ -709,6 +709,16 @@ sen2r <- function(param_list = NULL,
   # TODO work in progress
   pm <- check_param_list(pm, type = "error", check_paths = TRUE, correct = TRUE)
   
+  # if ONLINE check internet connection and scihub credentials
+  if (pm$online) {
+    if (!check_scihub_connection()) {
+      print_message(type = "error", 
+                    "Impossible to reach the scihub server.",
+                    "Internet connection or SciHub may be down.", 
+                    "Aborting!")
+    }
+  }
+  
   # Set log variables
   # stop logging if it was already going on
   # start logging in case it was defined / redefined in the GUI

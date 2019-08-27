@@ -77,6 +77,25 @@ check_scihub_login <- function(username, password) {
   }
 }
 
+#' @name check_scihub_connection
+#' @return `check_scihub_connection` returns TRUE if internet connection is available 
+#'  and scihub is accessible. FALSE otherwise. 
+#' @importFrom httr RETRY handle
+#' @author Lorenzo Busetto, phD (2019) \email{busetto.l@@irea.cnr.it}
+#' @rdname scihub_login
+#' @export
+check_scihub_connection <- function() {
+  check_online <- try(httr::RETRY("GET",
+    url = "https://scihub.copernicus.eu/apihub/",
+    handle = httr::handle("")))
+  
+  if (inherits(check_online, "try-error")) {
+    FALSE
+  } else {
+    TRUE
+  }
+}
+
 
 #' @name write_scihub_login
 #' @param check Logical: if TRUE (default), new credentials are checked
@@ -127,6 +146,8 @@ write_scihub_login <- function(username, password,
   writeLines(apply(apihub, 1, paste, collapse=" "), apihub_path)
   
 }
+
+
 
 
 # #' @name scihub_modal
