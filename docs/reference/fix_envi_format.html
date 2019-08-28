@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Import / export / check SciHub username and password — read_scihub_login • An R toolbox to find, download an preprocess Sentinel-2 data</title>
+<title>Fix ENVI outputs — fix_envi_format • An R toolbox to find, download an preprocess Sentinel-2 data</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,14 +30,17 @@
 
 
 
-<meta property="og:title" content="Import / export / check SciHub username and password — read_scihub_login" />
+<meta property="og:title" content="Fix ENVI outputs — fix_envi_format" />
 
-<meta property="og:description" content="Read the SciHub login information (read_scihub_login()),
-save new username and password (write_scihub_login())
-or chech their validity (check_scihub_login()).
-Login information is stored in a file apihub.txt inside the
-&quot;extdata&quot; directory. This functions allow to read or write this
-file, and to edit them from inside the GUI." />
+<meta property="og:description" content="Internal function which changes some elements of output ENVI
+files:
+file extension is set to .dat if .envi (in case of files created
+by 'writeRaster`) is found, and the header is edited properly,
+and band names are set in the header file (in particular, SR band names
+include wavelengths and names like NIR, SWIR; other products shows the
+product name as band name);
+SCL headers include information about class names and colours.
+" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -111,85 +114,46 @@ file, and to edit them from inside the GUI." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Import / export / check SciHub username and password</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/scihub_login.R'><code>R/scihub_login.R</code></a></small>
-    <div class="hidden name"><code>scihub_login.Rd</code></div>
+    <h1>Fix ENVI outputs</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/fix_envi_format.R'><code>R/fix_envi_format.R</code></a></small>
+    <div class="hidden name"><code>fix_envi_format.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Read the SciHub login information (<code>read_scihub_login()</code>),
-save new username and password (<code>write_scihub_login()</code>)
-or chech their validity (<code>check_scihub_login()</code>).
-Login information is stored in a file <code>apihub.txt</code> inside the
-"extdata" directory. This functions allow to read or write this
-file, and to edit them from inside the GUI.</p>
+    <p>Internal function which changes some elements of output ENVI
+files:</p><ul>
+<li><p>file extension is set to .dat if .envi (in case of files created
+by 'writeRaster`) is found, and the header is edited properly,</p></li>
+<li><p>and band names are set in the header file (in particular, SR band names
+include wavelengths and names like NIR, SWIR; other products shows the
+product name as band name);</p></li>
+<li><p>SCL headers include information about class names and colours.</p></li>
+</ul>
     
     </div>
 
-    <pre class="usage"><span class='fu'>read_scihub_login</span>(<span class='kw'>apihub_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>)
-
-<span class='fu'>check_scihub_login</span>(<span class='no'>username</span>, <span class='no'>password</span>)
-
-<span class='fu'>check_scihub_connection</span>()
-
-<span class='fu'>write_scihub_login</span>(<span class='no'>username</span>, <span class='no'>password</span>, <span class='kw'>apihub_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>check</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>append</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>fix_envi_format</span>(<span class='no'>infiles</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>apihub_path</th>
-      <td><p>Path of the file in which login information is saved.
-If NA (default) it is automatically read from the package default location.</p></td>
-    </tr>
-    <tr>
-      <th>username</th>
-      <td><p>SciHub username.</p></td>
-    </tr>
-    <tr>
-      <th>password</th>
-      <td><p>SciHub password.</p></td>
-    </tr>
-    <tr>
-      <th>check</th>
-      <td><p>Logical: if TRUE (default), new credentials are checked
-before writing them on <code>apihub_path</code> (if they are invalid, an error
-is provided);
-if FALSE, they are directly written.</p></td>
-    </tr>
-    <tr>
-      <th>append</th>
-      <td><p>Logical: if TRUE, new credentials are added
-to the ones existing within <code>apihub_path</code>;
-if FALSE (default), <code>apihub_path</code> is replaced with the new ones.</p></td>
+      <th>infiles</th>
+      <td><p>A vector of input filenames, in the
+sen2r naming convention (<a href='safe_shortname.html'>safe_shortname</a>) and ENVI format.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>read_scihub_login</code> returns a matrix of credentials,
-in which <code>username</code> is in the first column, <code>password</code> in the second.</p>
-<p><code>check_scihub_login</code> returns TRUE if credentials are valid,
-FALSE elsewhere.</p>
-<p><code>check_scihub_connection</code> returns TRUE if internet connection
-is available and SciHub is accessible, FALSE otherwise.</p>
-<p><code>write_scihub_login</code> returns NULL.</p>
+    <p>NULL (the function performs file changes).</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='kw'>if</span> (<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/interactive'>interactive</a></span>()) {
-  <span class='fu'>check_scihub_login</span>(<span class='st'>"user"</span>, <span class='st'>"user"</span>)
-  <span class='fu'>write_scihub_login</span>(<span class='st'>"user"</span>, <span class='st'>"user"</span>)
-  <span class='fu'>read_scihub_login</span>()
-}
-<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -199,13 +163,10 @@ is available and SciHub is accessible, FALSE otherwise.</p>
       <li><a href="#value">Value</a></li>
 
       <li><a href="#note">Note</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+          </ul>
 
     <h2>Author</h2>
-    <p>Luigi Ranghetti, phD (2017) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p>
-<p>Lorenzo Busetto, phD (2019) <a href='mailto:busetto.l@irea.cnr.it'>busetto.l@irea.cnr.it</a></p>
+    <p>Luigi Ranghetti, phD (2019) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p>
   </div>
 </div>
 

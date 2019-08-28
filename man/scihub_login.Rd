@@ -40,8 +40,8 @@ in which \code{username} is in the first column, \code{password} in the second.
 \code{check_scihub_login} returns TRUE if credentials are valid,
 FALSE elsewhere.
 
-\code{check_scihub_connection} returns TRUE if internet connection is available
-and scihub is accessible. FALSE otherwise.
+\code{check_scihub_connection} returns TRUE if internet connection
+is available and SciHub is accessible, FALSE otherwise.
 
 \code{write_scihub_login} returns NULL.
 }
@@ -67,8 +67,6 @@ if (interactive()) {
 }
 \author{
 Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
-
-Lorenzo Busetto, phD (2019) \email{busetto.l@irea.cnr.it}
 
 Lorenzo Busetto, phD (2019) \email{busetto.l@irea.cnr.it}
 }

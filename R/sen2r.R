@@ -2075,7 +2075,7 @@ sen2r <- function(param_list = NULL,
             # manual cycle is performed.
             for (sel_prod in names(sel_s2names$req$warped)) {
               tracename_gdalwarp <- start_trace(warped_nonscl_reqout[[sel_prod]], "gdal_warp")
-              trace_gdalwarp <- tryCatch(
+              trace_gdalwarp <- tryCatch({
                 gdal_warp(
                   sel_s2names$req$warped[[sel_prod]],
                   warped_nonscl_reqout[[sel_prod]],
@@ -2095,10 +2095,7 @@ sen2r <- function(param_list = NULL,
                 if (warped_outformat=="ENVI")  {fix_envi_format(
                   sel_s2names$warped_names_reqout[!names_merged_req_scl_idx & file.exists(sel_s2names$merged_names_req)]
                 )}
-                
-              }, # TODO dstnodata value?
-              error = print
-              )
+              }, error = print)
               if (is(trace_gdalwarp, "error")) {
                 clean_trace(tracename_gdalwarp)
                 stop(trace_gdalwarp)
@@ -2110,7 +2107,7 @@ sen2r <- function(param_list = NULL,
           if (length(nn(warped_scl_reqout[["SCL"]])) > 0) {
             if (any(!file.exists(nn(warped_scl_reqout[["SCL"]]))) | pm$overwrite==TRUE) {
               tracename_gdalwarp <- start_trace(warped_scl_reqout[["SCL"]], "gdal_warp")
-              trace_gdalwarp <- tryCatch(
+              trace_gdalwarp <- tryCatch({
                 gdal_warp(
                   sel_s2names$req$warped_scl[["SCL"]],
                   warped_scl_reqout[["SCL"]],
@@ -2130,9 +2127,7 @@ sen2r <- function(param_list = NULL,
                 if (out_outformat=="ENVI")  {fix_envi_format(
                   sel_s2names$warped_names_reqout[names_merged_req_scl_idx & file.exists(sel_s2names$merged_names_req)]
                 )}
-              }, # TODO dstnodata value?
-              error = print
-              )
+              }, error = print)
               if (is(trace_gdalwarp, "error")) {
                 clean_trace(tracename_gdalwarp)
                 stop(trace_gdalwarp)
