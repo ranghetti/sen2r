@@ -14,9 +14,12 @@
 #' @param tile Single Sentinel-2 Tile string (5-length character)
 #' @param outdir (optional) Full name of the existing output directory
 #'  where the files should be created (default: current directory).
+#' @param overwrite Logical value: should existing output archives be
+#'  overwritten? (default: FALSE)
 #' @return NULL
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Lorenzo Busetto, phD (2019) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @importFrom httr GET RETRY authenticate progress write_disk
 #' @export
@@ -53,7 +56,8 @@ s2_download <- function(s2_prodlist = NULL,
                         downloader  = "builtin",
                         apihub      = NA,
                         tile        = NULL,
-                        outdir      = ".") {
+                        outdir      = ".",
+                        overwrite = FALSE) {
   
   # convert input NA arguments in NULL
   for (a in c("s2_prodlist","tile","apihub")) {
@@ -78,75 +82,94 @@ s2_download <- function(s2_prodlist = NULL,
   for (i in seq_len(length(s2_prodlist))) {
     
     link <- s2_prodlist[i]
-    filename <- file.path(outdir, paste0(names(s2_prodlist[i]),".zip"))
+    zip_path <- file.path(outdir, paste0(names(s2_prodlist[i]),".zip"))
+    safe_path <- gsub("\\.zip$", "", zip_path)
     
-    print_message(
-      type = "message",
-      date = TRUE,
-      "Downloading Sentinel image ", i," of ",length(s2_prodlist),
-      " (",basename(filename),")..."
-    )
-    
-    if (downloader %in% c("builtin", "wget")) { # wget left for compatibility
+    if (any(overwrite == TRUE, !file.exists(safe_path))) {
       
-      download <- httr::RETRY(
-        verb = "GET",
-        url = as.character(link),
-        config = httr::authenticate(creds[1], creds[2]),
-        times = 10,
-        httr::progress(),
-        httr::write_disk(filename, overwrite = TRUE)
-      )
-      
-    } else if (grepl("^aria2c?$", downloader)) {
-      
-      binpaths <- load_binpaths("aria2")
-      aria_string <- paste0(
-        binpaths$aria2c, " -x 2 --check-certificate=false -d ",
-        dirname(filename),
-        " -o ", basename(filename),
-        " ", "\"", as.character(gsub("/\\$value", "/\\\\$value", link)), "\"",
-        " --allow-overwrite --file-allocation=none --retry-wait=2",
-        " --http-user=",   "\"", creds[1], "\"",
-        " --http-passwd=", "\"", creds[2], "\"",
-        " --max-tries=10"
-      )
-      download <- try({
-        system(aria_string, intern = Sys.info()["sysname"] == "Windows")
-      })
-      
-    }
-    
-    if (inherits(download, "try-error")) {
-      suppressWarnings(file.remove(filename))
-      suppressWarnings(file.remove(paste0(filename,".aria2")))
       print_message(
-        type = "error",
-        "Download of file", link, "failed more than 10 times. ",
-        "Internet connection or SciHub may be down."
+        type = "message",
+        date = TRUE,
+        "Downloading Sentinel-2 image ", i," of ",length(s2_prodlist),
+        " (",basename(safe_path),")..."
       )
-    } else {
-      # check md5
-      sel_md5 <- httr::GET(
-        url = gsub("\\$value$", "Checksum/Value/$value", as.character(link)),
-        config = httr::authenticate(creds[1], creds[2]),
-        httr::write_disk(md5file <- tempfile(), overwrite = TRUE),
-        times = 10
-      )
-      check_md5 <- toupper(readLines(md5file, warn = FALSE)) == toupper(tools::md5sum(filename))
-      file.remove(md5file)
-      if (!check_md5) {
-        file.remove(filename)
+      
+      if (downloader %in% c("builtin", "wget")) { # wget left for compatibility
+        
+        download <- httr::RETRY(
+          verb = "GET",
+          url = as.character(link),
+          config = httr::authenticate(creds[1], creds[2]),
+          times = 10,
+          httr::progress(),
+          httr::write_disk(zip_path, overwrite = TRUE)
+        )
+        
+      } else if (grepl("^aria2c?$", downloader)) {
+        
+        binpaths <- load_binpaths("aria2")
+        aria_string <- paste0(
+          binpaths$aria2c, " -x 2 --check-certificate=false -d ",
+          dirname(zip_path),
+          " -o ", basename(zip_path),
+          " ", "\"", as.character(gsub("/\\$value", "/\\\\$value", link)), "\"",
+          " --allow-overwrite --file-allocation=none --retry-wait=2",
+          " --http-user=",   "\"", creds[1], "\"",
+          " --http-passwd=", "\"", creds[2], "\"",
+          " --max-tries=10"
+        )
+        download <- try({
+          system(aria_string, intern = Sys.info()["sysname"] == "Windows")
+        })
+        
+      }
+      
+      if (inherits(download, "try-error")) {
+        suppressWarnings(file.remove(zip_path))
+        suppressWarnings(file.remove(paste0(zip_path,".aria2")))
         print_message(
           type = "error",
-          "Download of file", link, "was incomplete (Md%sum check failed). ",
-          "Please retry to launch the download."
+          "Download of file", link, "failed more than 10 times. ",
+          "Internet connection or SciHub may be down."
         )
       } else {
-        # unzip
-        unzip(filename, exdir = dirname(filename))
-        file.remove(filename)
+        # check md5
+        sel_md5 <- httr::GET(
+          url = gsub("\\$value$", "Checksum/Value/$value", as.character(link)),
+          config = httr::authenticate(creds[1], creds[2]),
+          httr::write_disk(md5file <- tempfile(), overwrite = TRUE),
+          times = 10
+        )
+        check_md5 <- toupper(readLines(md5file, warn = FALSE)) == toupper(tools::md5sum(zip_path))
+        file.remove(md5file)
+        if (!check_md5) {
+          file.remove(zip_path)
+          print_message(
+            type = "error",
+            "Download of file", link, "was incomplete (Md%sum check failed). ",
+            "Please retry to launch the download."
+          )
+        } else {
+          # remove existing SAFE
+          if (dir.exists(safe_path)) {
+            unlink(safe_path, recursive = TRUE)
+          }
+          # unzip
+          unzip(zip_path, exdir = dirname(zip_path))
+          file.remove(zip_path)
+        }
       }
+      
+    } else {
+      
+      print_message(
+        type = "message",
+        date = TRUE,
+        "Skipping Sentinel-2 image ", i," of ",length(s2_prodlist),
+        " (",basename(safe_path),") ",
+        "since the corresponding folder already exists."
+      )
+      
     }
     
   }

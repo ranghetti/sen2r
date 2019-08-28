@@ -5,7 +5,7 @@
 \title{Download S2 products.}
 \usage{
 s2_download(s2_prodlist = NULL, downloader = "builtin", apihub = NA,
-  tile = NULL, outdir = ".")
+  tile = NULL, outdir = ".", overwrite = FALSE)
 }
 \arguments{
 \item{s2_prodlist}{List of the products to be downloaded
@@ -23,6 +23,9 @@ If NA (default), the default location inside the package will be used.}
 
 \item{outdir}{(optional) Full name of the existing output directory
 where the files should be created (default: current directory).}
+
+\item{overwrite}{Logical value: should existing output archives be
+overwritten? (default: FALSE)}
 }
 \description{
 The function downloads a single S2 product.
@@ -64,4 +67,6 @@ s2_download(example_s2_list, outdir=tempdir())
 }
 \author{
 Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
+
+Lorenzo Busetto, phD (2019) \email{ranghetti.l@irea.cnr.it}
 }

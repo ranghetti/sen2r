@@ -1531,7 +1531,8 @@ sen2r <- function(param_list = NULL,
             s2_to_download,
             outdir = path_l2a,
             downloader = pm$downloader,
-            apihub = sel_apihub_path
+            apihub = sel_apihub_path,
+            overwrite = pm$overwrite_safe
           )
         } else { # otherwise, launch one per tile
           lapply(pm$s2tiles_selected, function(tile) {
@@ -1559,7 +1560,8 @@ sen2r <- function(param_list = NULL,
               outdir = path_l2a,
               downloader = pm$downloader,
               tile = tile,
-              apihub = sel_apihub_path
+              apihub = sel_apihub_path,
+              overwrite = pm$overwrite_safe
             )
           })
         }
@@ -1602,7 +1604,8 @@ sen2r <- function(param_list = NULL,
           s2_download(
             sel_s2_list_l1c[!names(sel_s2_list_l1c) %in% list.files(path_l1c, "\\.SAFE$")],
             outdir = path_l1c,
-            downloader = pm$downloader
+            downloader = pm$downloader,
+            overwrite = pm$overwrite_safe
           )
         } else { # otherwise, launch one per tile
           lapply(pm$s2tiles_selected, function(tile) {
@@ -1629,7 +1632,8 @@ sen2r <- function(param_list = NULL,
               # ignored).
               outdir = path_l1c,
               downloader = pm$downloader,
-              tile = tile
+              tile = tile,
+              overwrite = pm$overwrite_safe
             )
           })
         }
