@@ -90,9 +90,7 @@ produce L2A;
 \item "scihub" means that sen2cor is always used from L1C products
 downloaded from SciHub;
 \item "l2a" means that they are downloaded if available on SciHub,
-otherwise they are skipped (sen2cor is never used);
-\item "no" means that L2A are not considered (processing chain
-makes use only of L1C products).
+otherwise they are skipped (sen2cor is never used).
 }}
 
 \item{max_cloud_safe}{(optional) Integer number (0-100) containing
@@ -148,7 +146,7 @@ products to be processed (accepted values: "TOA", "BOA", "SCL",
 
 \item{list_rgb}{(optional) Character vector with the values of the
 RGB images to be produced.
-Images are in the form RGBrgbx, when:
+Images are in the form RGBrgbx, where:
 \itemize{
 \item x is B (if source is BOA) or T (is source is TOA);
 \item r g and b are the the number of the bands to be used respectively
@@ -156,6 +154,7 @@ for red, green and blue, in hexadecimal format.
 Notice that this is the \href{https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/resolutions/spatial}{actual number name of the bands}:
 so, to use i.e. BOA band 11 (1610nm) use the value "b", even if band 11 is
 the 10th band of a BOA product (because band 10 is missing).
+(e.g., RGB432B, RGB843B)
 Default is no one (NA).
 }}
 

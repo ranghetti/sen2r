@@ -229,13 +229,13 @@ gdal_warp <- function(srcfiles,
       } else {
         mask1 <- try(read_stars(mask, proxy=TRUE), silent = TRUE)
         if (is(mask0, "stars")) {
-        st_as_sfc(st_bbox(mask1))
+          st_as_sfc(st_bbox(mask1))
         } else {
           stop("'mask' is not a recognised spatial file.")
         }
       }
     }
-
+    
     # Check that the polygon is not empty
     if (length(grep("POLYGON",st_geometry_type(mask)))>=1 &
         sum(st_area(st_geometry(mask))) <= 0*units::ud_units$m^2) {

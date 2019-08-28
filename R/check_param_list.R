@@ -119,9 +119,6 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   # -- preprocess --
   
   
-  # -- s2_levels --
-  
-  
   # -- sel_sensor --
   if (all(!pm$sel_sensor %in% c("s2a", "s2b"))) {
     print_message(
@@ -190,16 +187,6 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
     pm$max_cloud_safe <- 0
   }
   
-  
-  # -- step_atmcorr --
-  if (!pm$step_atmcorr %in% c("auto", "scihub", "l2a", "no")) {
-    print_message(
-      type = type,
-      "Parameter \"step_atmcorr\" must be one among 'auto', 'scihub', 'l2a' ",
-      "and 'no' (setting to the default)."
-    )
-    pm$step_atmcorr <- pm_def$step_atmcorr
-  }
   
   # -- timewindow --
   if (!anyNA(pm$timewindow)) {
@@ -666,18 +653,57 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   # -- overwrite --
   
   
-  # -- path_l1c --
-  # if one of path_l1c and path_l2a is missing, copy from the other
-  # FIXME this is a workaround for parameter pm$s2_levels,
-  # whose default is c("l1c","l2a") even if L1C is not requested.
-  # Fix by removing it and retrieve it automatically.
-  if (sum(is.na(c(pm$path_l1c, pm$path_l2a)))==1) {
-    if (is.na(pm$path_l1c)) {
-      pm$path_l1c <- pm$path_l2a
+  # -- s2_levels --
+  # (moved here because it needs other checked parameters)
+  l1c_prods <- c("TOA")
+  l2a_prods <- c("BOA","SCL","TCI")
+  # Automatically compute s2_levels if processing is TRUE (retrieve from products)
+  if (pm$preprocess==TRUE) {
+    # List required products (exmplicitly or implicitly)
+    # 1. if masking is required, produce also SCL
+    list_prods <- if (!is.na(pm$mask_type)) {
+      unique(c(pm$list_prods, "SCL"))
     } else {
-      pm$path_l2a <- pm$path_l1c
+      pm$list_prods
     }
+    # 2. if some RGB are required, compute also TOA or BOA
+    if (any(!is.na(pm$list_rgb))) {
+      list_prods <- unique(c(
+        list_prods,
+        paste0(unique(substr(pm$list_rgb,7,7)),"OA")
+      ))
+    }
+    # 3. if some indices are required, compute also TOA or BOA
+    if (any(!is.na(pm$list_indices))) {
+      list_prods <- unique(c(list_prods, pm$index_source))
+    }
+    list_prods <- list_prods[!is.na(list_prods)]
+    pm$s2_levels <- c(
+      if (any(list_prods %in% l1c_prods)) {"l1c"},
+      if (any(list_prods %in% l2a_prods)) {"l2a"}
+    )
   }
+  
+  
+  # -- step_atmcorr --
+  if (pm$step_atmcorr == "no") {
+    print_message(
+      type = "warning",
+      "Value \"no\" for parameter \"step_atmcorr\" is deprecated ",
+      "(\"l2a\" will be used)."
+    )
+    pm$step_atmcorr <- "l2a"
+  } else if (!pm$step_atmcorr %in% c("auto", "scihub", "l2a")) {
+    print_message(
+      type = type,
+      "Parameter \"step_atmcorr\" must be one among 'auto', 'scihub' and 'l2a' ",
+      "(setting to the default)."
+    )
+    pm$step_atmcorr <- pm_def$step_atmcorr
+  }
+  
+  
+  # -- path_l1c --
   if (all(!is.na(pm$path_l1c), pm$path_l1c != "")) {
     if(!dir.exists(pm$path_l1c)) {
       if(!dir.exists(dirname(pm$path_l1c))) {
@@ -688,11 +714,11 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
         )
       }
     }
-  } else if (check_paths) {
+  } else if (all("l1c" %in% pm$s2_levels, check_paths)) {
     print_message(
       type = type,
-      "Neither parameter \"path_l1c\" nor \"path_l2a\" were specified; ",
-      "please provide the path of an existing directory for at least one of the two."
+      "Parameter \"path_l1c\" was not specified; ",
+      "please provide the path of an existing directory."
     )
   }
   
@@ -708,7 +734,13 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
         )
       }
     }
-  } 
+  } else if (all("l2a" %in% pm$s2_levels, check_paths)) {
+    print_message(
+      type = type,
+      "Parameter \"path_l2a\" was not specified; ",
+      "please provide the path of an existing directory."
+    )
+  }
   
   
   # -- path_tiles --
@@ -786,7 +818,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
       "please provide the path of an existing directory for at least one of the two."
     )
   }
-
+  
   # -- path_out --
   if (sum(!is.na(nn(pm$list_prods)))==0) {
     pm$path_out <- NA

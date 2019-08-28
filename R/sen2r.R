@@ -58,9 +58,7 @@
 #'  * "scihub" means that sen2cor is always used from L1C products
 #'  downloaded from SciHub;
 #'  * "l2a" means that they are downloaded if available on SciHub,
-#'  otherwise they are skipped (sen2cor is never used);
-#'  * "no" means that L2A are not considered (processing chain
-#'  makes use only of L1C products).
+#'  otherwise they are skipped (sen2cor is never used).
 #' @param max_cloud_safe (optional) Integer number (0-100) containing
 #'  the maximum cloud level of each SAFE to be considered (default: no filter).
 #'  It it used to limit the research of SAFE products to "good" images,
@@ -711,6 +709,16 @@ sen2r <- function(param_list = NULL,
   # TODO work in progress
   pm <- check_param_list(pm, type = "error", check_paths = TRUE, correct = TRUE)
   
+  # if ONLINE check internet connection and scihub credentials
+  if (pm$online) {
+    if (!check_scihub_connection()) {
+      print_message(type = "error", 
+                    "Impossible to reach the scihub server.",
+                    "Internet connection or SciHub may be down.", 
+                    "Aborting!")
+    }
+  }
+  
   # Set log variables
   # stop logging if it was already going on
   # start logging in case it was defined / redefined in the GUI
@@ -816,7 +824,7 @@ sen2r <- function(param_list = NULL,
   
   # # internal parameters
   
-  # accepted products (update together with the same variables in s2_gui() and in compute_s2_names())
+  # accepted products (update together with the same variables in s2_gui(), check_s2_list() and in compute_s2_names())
   l1c_prods <- c("TOA")
   l2a_prods <- c("BOA","SCL","TCI")
   
@@ -985,7 +993,7 @@ sen2r <- function(param_list = NULL,
           "auto"
         } else if (pm$step_atmcorr=="l2a") {
           "L2A"
-        } else if (pm$step_atmcorr %in% c("scihub","no")) {
+        } else if (pm$step_atmcorr %in% c("scihub")) {
           "L1C"
         },
         max_cloud = pm$max_cloud_safe,
@@ -1002,7 +1010,7 @@ sen2r <- function(param_list = NULL,
     if ("l2a" %in% pm$s2_levels) {
       s2_lists[["l2a"]] <- if (pm$step_atmcorr=="l2a") {
         list.files(pm$path_l2a, "\\.SAFE$")
-      } else if (pm$step_atmcorr %in% c("scihub","no")) {
+      } else if (pm$step_atmcorr %in% c("scihub")) {
         list.files(pm$path_l1c, "\\.SAFE$")
       } else if (pm$step_atmcorr=="auto") {
         all_l1c <- list.files(pm$path_l1c, "\\.SAFE$")
@@ -1756,6 +1764,43 @@ sen2r <- function(param_list = NULL,
       
       if (pm$preprocess == FALSE) {
         return(invisible(NULL))
+      }
+      
+      # Couple L1C and L2A SAFE if both are required for the same products
+      if (all(c("l1c", "l2a") %in% pm$s2_levels)) {
+        s2_meta_l2a <- lapply(names(sel_s2_list_l2a), function(x) {
+          unlist(safe_getMetadata(x, info="nameinfo")) %>%
+            t() %>%
+            as.data.frame(stringsAsFactors=FALSE)
+        }) %>%
+          rbindlist(fill=TRUE) %>%
+          .[,list(mission, sensing_datetime, id_orbit, id_tile)] %>%
+          apply(1, paste, collapse = "_")
+        s2_meta_l1c <- lapply(names(sel_s2_list_l1c), function(x) {
+          unlist(safe_getMetadata(x, info="nameinfo")) %>%
+            t() %>%
+            as.data.frame(stringsAsFactors=FALSE)
+        }) %>%
+          rbindlist(fill=TRUE) %>%
+          .[,list(mission, sensing_datetime, id_orbit, id_tile)] %>%
+          apply(1, paste, collapse = "_")
+        s2_l2a_orphan <- !s2_meta_l2a %in% s2_meta_l1c
+        s2_l1c_orphan <- !s2_meta_l1c %in% s2_meta_l2a
+        if (any(s2_l2a_orphan, s2_l1c_orphan)) {
+          print_message(
+            type = "warning", 
+            "Some SAFE archive is present only as Level-1C or Level-2A, ",
+            "while both are required. ",
+            "To prevent errors, only coupled products will be used. ",
+            if (any(s2_l1c_orphan)) {paste0(
+              "This issue can be avoided by setting argument \"step_atmcorr\" ",
+              "to 'auto' or 'scihub', or \"online\" to TRUE, ",
+              "so that missing Level-2A can be produced or downloaded."
+            )}
+          )
+          sel_s2_list_l2a <- sel_s2_list_l2a[!s2_l2a_orphan]
+          sel_s2_list_l1c <- sel_s2_list_l1c[!s2_l1c_orphan]
+        }
       }
       
       # update names for output files (after #filter2)
