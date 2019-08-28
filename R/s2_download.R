@@ -117,7 +117,7 @@ s2_download <- function(s2_prodlist = NULL,
       
     }
     
-    if (!inherits(download, "try-error")) {
+    if (inherits(download, "try-error")) {
       suppressWarnings(file.remove(filename))
       suppressWarnings(file.remove(paste0(filename,".aria2")))
       print_message(
@@ -146,7 +146,6 @@ s2_download <- function(s2_prodlist = NULL,
         # unzip
         unzip(filename, exdir = dirname(filename))
         file.remove(filename)
-        file.remove(md5file)
       }
     }
     
