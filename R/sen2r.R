@@ -883,31 +883,8 @@ sen2r <- function(param_list = NULL,
   # sel_driver <- py$gdal$GetDriverByName(pm$outformat)
   gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))$drivers
   sel_driver <- gdal_formats[gdal_formats$name==pm$outformat,]
-  if (is.null(pm$rgb_outformat)) {pm$rgb_outformat <- pm$outformat} # to avoid errors
-  if (is.null(pm$rgb_compression)) {pm$rgb_compression <- pm$compression} # to avoid errors
   sel_rgb_driver <- gdal_formats[gdal_formats$name==pm$rgb_outformat,]
   
-  # if (is.null(py_to_r(sel_driver))) {
-  if (nrow(sel_driver)==0) {
-    print_message(
-      type="error",
-      "Format \"",pm$outformat,"\" is not recognised; ",
-      "please use one of the formats supported by your GDAL installation.\n\n",
-      "To list them, use the following command:\n",
-      "gdalUtils::gdalinfo(formats=TRUE)\n\n",
-      "To search for a specific format, use:\n",
-      "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
-  }
-  if (nrow(sel_rgb_driver)==0) {
-    print_message(
-      type="error",
-      "Format \"",pm$rgb_outformat,"\" is not recognised; ",
-      "please use one of the formats supported by your GDAL installation.\n\n",
-      "To list them, use the following command:\n",
-      "gdalUtils::gdalinfo(formats=TRUE)\n\n",
-      "To search for a specific format, use:\n",
-      "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
-  }
   # define output extension
   
   # out_ext <- if (pm$outformat=="ENVI") {
@@ -916,8 +893,6 @@ sen2r <- function(param_list = NULL,
   #   # unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(gdal$DMD_EXTENSIONS))," ")," "))[1]
   #   unlist(strsplit(paste0(py_to_r(sel_driver$GetMetadataItem(py$gdal$DMD_EXTENSIONS))," ")," "))[1]
   # }
-  main_ext <- sel_driver[1,"ext"]
-  rgb_ext <- sel_rgb_driver[1,"ext"]
   
   
   #### SAFE Part (find, download, correct)
@@ -1245,19 +1220,14 @@ sen2r <- function(param_list = NULL,
       s2_list_l1c=s2_list_l1c, s2_list_l2a=s2_list_l2a_exp,
       tmpdir=tmpdir,
       list_prods=list_prods,
-      main_ext = main_ext, rgb_ext = rgb_ext,
       force_tiles = TRUE,
       ignorelist = if (exists("ignorelist")) {ignorelist} else {NULL}
     )
     
     # export needed variables
     out_ext <- attr(s2names, "out_ext")
-    
-    ## Define output formats
-    out_format <- sapply(names(out_ext), function(prod) {
-      gdal_formats[gdal_formats$ext==out_ext[[prod]],"name"]
-    })
-    
+    out_format <- attr(s2names, "out_format")
+
     # Check if processing is needed
     if (all(unlist(sapply(s2names$new, sapply, length)) == 0)) {
       if (all(unlist(sapply(s2names$exp, sapply, length)) == 0)) {
@@ -1815,7 +1785,6 @@ sen2r <- function(param_list = NULL,
         s2_list_l2a = if (exists("sel_s2_list_l2a")) {sel_s2_list_l2a} else {character(0)},
         tmpdir=tmpdir_groupA,
         list_prods=list_prods,
-        main_ext = main_ext, rgb_ext = rgb_ext,
         force_tiles = FALSE,
         ignorelist = if (exists("ignorelist")) {ignorelist} else {NULL}
       )

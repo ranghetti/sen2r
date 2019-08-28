@@ -36,8 +36,6 @@
 #' @param tmpdir Path of the temporary directory.
 #' @param list_prods Character vector with the values of the
 #'  products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").
-#' @param main_ext File extension corresponding to pm$outformat.
-#' @param rgb_ext File extension corresponding to pm$rgb_outformat.
 #' @param force_tiles (optional) Logical: passed to [safe_shortname] (default: FALSE).
 #' @param check_tmp (optional) Logical: if TRUE (default), temporary files
 #'  are also searched when `exi` names are computed; 
@@ -53,7 +51,6 @@ compute_s2_paths <- function(pm,
                              s2_list_l2a, 
                              tmpdir,
                              list_prods, 
-                             main_ext, rgb_ext, 
                              force_tiles = FALSE,
                              check_tmp = TRUE,
                              ignorelist) {
@@ -99,7 +96,39 @@ compute_s2_paths <- function(pm,
     "indices" = steps_todo[["indices"]]
   )
   
+  # File formats
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))$drivers
+  sel_driver <- gdal_formats[gdal_formats$name==pm$outformat,]
+  sel_rgb_driver <- gdal_formats[gdal_formats$name==pm$rgb_outformat,]
+  if (nrow(sel_driver)==0) {
+    print_message(
+      type="error",
+      "Format \"",pm$outformat,"\" is not recognised; ",
+      "please use one of the formats supported by your GDAL installation."
+    )
+  }
+  if (nrow(sel_rgb_driver)==0) {
+    print_message(
+      type="error",
+      "Format \"",pm$rgb_outformat,"\" is not recognised; ",
+      "please use one of the formats supported by your GDAL installation."
+    )
+  }
+  main_format <- sel_driver[1,"name"]
+  rgb_format <- sel_rgb_driver[1,"name"]
+  out_format <- c(
+    "tiles" = if (output_req["tiles"]) main_format else "VRT",
+    "merged" = if (output_req["merged"]) main_format else "VRT",
+    "warped" = if (output_req["warped"]) main_format else "VRT",
+    "warped_scl" = main_format,
+    "rgb" = rgb_format,
+    "masked" = main_format,
+    "indices" = main_format
+  )
+  
   # File extensions
+  main_ext <- sel_driver[1,"ext"]
+  rgb_ext <- sel_rgb_driver[1,"ext"]
   out_ext <- c(
     "tiles" = if (output_req["tiles"]) main_ext else "vrt",
     "merged" = if (output_req["merged"]) main_ext else "vrt",
@@ -769,6 +798,7 @@ compute_s2_paths <- function(pm,
   attr(outnames, "is_todo") <- steps_todo
   attr(outnames, "is_req") <- output_req
   attr(outnames, "out_ext") <- out_ext
+  attr(outnames, "out_format") <- out_format
   attr(outnames, "which_dep") <- output_dep
   attr(outnames, "paths") <- paths
   outnames

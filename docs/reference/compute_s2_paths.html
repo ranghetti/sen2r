@@ -136,7 +136,7 @@ if <a href='sen2r.html'>sen2r</a>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>compute_s2_paths</span>(<span class='no'>pm</span>, <span class='no'>s2_list_l1c</span>, <span class='no'>s2_list_l2a</span>, <span class='no'>tmpdir</span>, <span class='no'>list_prods</span>,
-  <span class='no'>main_ext</span>, <span class='no'>rgb_ext</span>, <span class='kw'>force_tiles</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>check_tmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>ignorelist</span>)
+  <span class='kw'>force_tiles</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>check_tmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>ignorelist</span>)
 
 <span class='fu'>list_sen2r_paths</span>(<span class='kw'>param_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>gui</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>preprocess</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>s2_levels</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"l1c"</span>, <span class='st'>"l2a"</span>), <span class='kw'>sel_sensor</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"s2a"</span>, <span class='st'>"s2b"</span>),
@@ -181,14 +181,6 @@ if <a href='sen2r.html'>sen2r</a>.</p>
       <th>list_prods</th>
       <td><p>Character vector with the values of the
 products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").</p></td>
-    </tr>
-    <tr>
-      <th>main_ext</th>
-      <td><p>File extension corresponding to pm$outformat.</p></td>
-    </tr>
-    <tr>
-      <th>rgb_ext</th>
-      <td><p>File extension corresponding to pm$rgb_outformat.</p></td>
     </tr>
     <tr>
       <th>force_tiles</th>
