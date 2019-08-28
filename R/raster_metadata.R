@@ -130,7 +130,7 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
       }
         
       if ("type" %in% meta) {
-        out_list[[i]][["type"]] <- metadata_raw[grepl("Band", metadata_raw)][1] %>%
+        out_list[[i]][["type"]] <- metadata_raw[grepl("Band [0-9]+.+Type ?=", metadata_raw)][1] %>%
           gsub("Band [0-9]+.+Type ?= ?([A-Za-z0-9]+),.*$", "\\1", .)
       }
 

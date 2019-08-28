@@ -2059,14 +2059,14 @@ sen2r <- function(param_list = NULL,
                   t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
                   r = pm$resampling,
                   dstnodata = s2_defNA(sel_prod),
-                  co = if (out_format["warped"]=="GTiff") {paste0("COMPRESS=",pm$compression)} else {NULL},
+                  co = if (out_format["warped"]=="GTiff") {paste0("COMPRESS=",pm$compression)},
                   overwrite = pm$overwrite,
                   tmpdir = file.path(tmpdir_groupA, "gdal_warp"),
                   rmtmp = FALSE
                 )
                 # fix for envi extension (writeRaster use .envi)
                 if (out_format["warped"]=="ENVI")  {fix_envi_format(
-                  sel_s2names$warped_names_reqout[!names_merged_req_scl_idx & file.exists(sel_s2names$merged_names_req)]
+                  unlist(warped_nonscl_reqout)[file.exists(unlist(warped_nonscl_reqout))]
                 )}
               }, error = print)
               if (is(trace_gdalwarp, "error")) {
@@ -2098,7 +2098,7 @@ sen2r <- function(param_list = NULL,
                 )
                 # fix for envi extension (writeRaster use .envi)
                 if (out_format["warped"]=="ENVI")  {fix_envi_format(
-                  sel_s2names$warped_names_reqout[names_merged_req_scl_idx & file.exists(sel_s2names$merged_names_req)]
+                  unlist(warped_scl_reqout)[file.exists(unlist(warped_scl_reqout))]
                 )}
               }, error = print)
               if (is(trace_gdalwarp, "error")) {
@@ -2365,7 +2365,8 @@ sen2r <- function(param_list = NULL,
               infiles = thumb_names_req,
               tmpdir = file.path(tmpdir_groupA, "s2_thumbnails"),
               rmtmp = FALSE,
-              trace_files = c(thumb_names_new,paste0(thumb_names_new,".aux.xml"))
+              trace_files = c(thumb_names_new,paste0(thumb_names_new,".aux.xml")),
+              overwrite = pm$overwrite
             )
             
           }

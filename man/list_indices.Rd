@@ -44,7 +44,14 @@ License: GPL 3.0
 }
 \examples{
 \dontrun{
+# Show index names
 list_indices(c("name","longname"))
+
+# Return the MSAVI2 formula
+list_indices("s2_formula", "^MSAVI2$")
+
+# Return all index names (including unchecked)
+list_indices("name", all = TRUE)
 }
 }
 \author{
