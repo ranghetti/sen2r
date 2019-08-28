@@ -9,6 +9,9 @@
 #' @param dstfiles A vector of corresponding output file paths.
 #' @param of The output format (use the short format name). Default is
 #'  the format of every input filename.
+#' @param co Character. Passes a creation option to the output format driver. 
+#'  Multiple -co options may be listed. See format specific documentation 
+#'  for legal creation options for each format.
 #' @param ref Path of the raster taken as reference: if provided,
 #'  parameters regarding the output grid (alignment, resolution and
 #'  extent) are taken from this raster. To set differently some of
@@ -126,6 +129,7 @@
 gdal_warp <- function(srcfiles,
                       dstfiles,
                       of = NULL,
+                      co = NULL,
                       ref = NULL,
                       mask = NULL,
                       tr = NULL,
@@ -397,6 +401,9 @@ gdal_warp <- function(srcfiles,
           "tr = sel_tr, "
         },
         "of = sel_of, ",
+        if (!is.null(co)) {
+          "co = co, "
+        },
         "r = sel_r, ",
         if (!is.null(sel_nodata)) {
           if (is.na(sel_nodata)) {

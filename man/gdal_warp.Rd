@@ -4,9 +4,10 @@
 \alias{gdal_warp}
 \title{Clip, reproject and warp raster files}
 \usage{
-gdal_warp(srcfiles, dstfiles, of = NULL, ref = NULL, mask = NULL,
-  tr = NULL, t_srs = NULL, r = NULL, dstnodata = NULL,
-  overwrite = FALSE, tmpdir = NA, rmtmp = TRUE, ...)
+gdal_warp(srcfiles, dstfiles, of = NULL, co = NULL, ref = NULL,
+  mask = NULL, tr = NULL, t_srs = NULL, r = NULL,
+  dstnodata = NULL, overwrite = FALSE, tmpdir = NA, rmtmp = TRUE,
+  ...)
 }
 \arguments{
 \item{srcfiles}{A vector of input file paths (managed by GDAL).}
@@ -15,6 +16,10 @@ gdal_warp(srcfiles, dstfiles, of = NULL, ref = NULL, mask = NULL,
 
 \item{of}{The output format (use the short format name). Default is
 the format of every input filename.}
+
+\item{co}{Character. Passes a creation option to the output format driver.
+Multiple -co options may be listed. See format specific documentation
+for legal creation options for each format.}
 
 \item{ref}{Path of the raster taken as reference: if provided,
 parameters regarding the output grid (alignment, resolution and
