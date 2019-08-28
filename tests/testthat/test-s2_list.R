@@ -1,6 +1,7 @@
 context("Test s2_list")
 testthat::skip_on_cran()
 testthat::skip_on_travis()
+
 testthat::test_that(
   "Tests on s2_list - Single tile, single orbit, no pos", {
     s2_list_test <- s2_list(
@@ -11,7 +12,8 @@ testthat::test_that(
     )
     testthat::expect_equal(length(s2_list_test$orbit), 13)
     testthat::expect_equal(unique(s2_list_test$orbit), "065")
-  })
+  }
+)
 
 testthat::test_that(
   "Tests on s2_list - Single tile, no orbits, nopos", {
@@ -20,7 +22,8 @@ testthat::test_that(
       time_interval = as.Date(c("2017-05-01", "2017-08-01"))
     )
     testthat::expect_equal(length(s2_list_test), 25)
-  })
+  }
+)
 
 testthat::test_that(
   "Tests on s2_list - Multiple tiles, multiple orbits, pos", {
@@ -31,7 +34,8 @@ testthat::test_that(
     )
     testthat::expect_equal(length(s2_list_test$tile), 49)
     testthat::expect_equal(unique(s2_list_test$tile), c("32TNR", "32TMR"))
-  })
+  }
+)
 
 testthat::test_that(
   "Tests on s2_list - single orbit, point pos, no tile", {
@@ -42,7 +46,8 @@ testthat::test_that(
       orbit = "065"
     )
     testthat::expect_equal(length(s2_list_test), 13)
-  })
+  }
+)
 
 testthat::test_that(
   "Tests on s2_list - Single tile, single orbit, pos, tile", {
@@ -54,7 +59,8 @@ testthat::test_that(
       orbit = "065"
     )
     testthat::expect_equal(length(s2_list_test), 13)
-  })
+  }
+)
 
 testthat::test_that(
   "Tests on s2_list - Cloudiness", {
@@ -67,7 +73,8 @@ testthat::test_that(
       max_cloud             = 50
     )
     testthat::expect_equal(length(s2_list_test), 4)
-  })
+  }
+)
 
 
 testthat::test_that(
@@ -80,7 +87,8 @@ testthat::test_that(
       time_interval = time_window
     )
     testthat::expect_equal(length(s2_list_test), 17)
-  })
+  }
+)
 
 testthat::test_that(
   "Tests on s2_list - multipoint", {
@@ -103,7 +111,8 @@ testthat::test_that(
       output_type = "data.table"
     )
     testthat::expect_equal(length(s2_list_test$orbitid), 34)
-  })
+  }
+)
 
 testthat::test_that(
   "Tests on s2_list - polygon, multiple tiles, multiple orbits", {
@@ -117,7 +126,8 @@ testthat::test_that(
       time_interval = time_window
     )
     testthat::expect_equal(length(s2_list_test), 69)
-  })
+  }
+)
 
 testthat::test_that(
   "Tests on s2_list - point, single tile, large time window", {
@@ -128,7 +138,8 @@ testthat::test_that(
       time_interval = time_window
     )
     testthat::expect_equal(length(s2_list_test), 182)
-  })
+  }
+)
 
 testthat::test_that(
   "Tests on s2_list - Single tile, multi orbit - no images", {
@@ -139,7 +150,8 @@ testthat::test_that(
       time_interval = as.Date(c("2016-05-01", "2016-05-01"))
     )
     testthat::expect_equal(length(s2_list_test), 0)
-  })
+  }
+)
 
 testthat::test_that(
   "Tests on s2_list - Single tile, multi orbit - seasonal", {
@@ -152,7 +164,8 @@ testthat::test_that(
       orbit = "065"
     )
     testthat::expect_equal(length(s2_list_test), 22)
-  })
+  }
+)
 
 testthat::test_that(
   "Tests on s2_list - seasonal - single year", {
@@ -165,7 +178,8 @@ testthat::test_that(
       orbit = "065"
     )
     testthat::expect_equal(length(s2_list_test), 6)
-  })
+  }
+)
 
 testthat::test_that(
   "Tests on s2_list - seasonal - single year", {
@@ -179,7 +193,9 @@ testthat::test_that(
       orbit = "065"
     )
     testthat::expect_equal(length(s2_list_test), 6)
-  })
+  }
+)
+
 testthat::test_that(
   "Tests on s2_list - process level", {
     pos          <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
@@ -204,8 +220,8 @@ testthat::test_that(
     )
     testthat::expect_equal(length(s2_list_test$proclev), 11)
     testthat::expect_equal(unique(s2_list_test$proclev), c("Level-1C"))
-    
-  })
+  }
+)
 
 testthat::test_that(
   "Parameter errors", {
@@ -221,5 +237,5 @@ testthat::test_that(
       spatial_extent = pos,
       time_interval = c("2017-05-XX", "2017-06-30"),
     ))
-  })
-
+  }
+)
