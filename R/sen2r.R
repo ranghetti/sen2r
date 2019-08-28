@@ -2086,13 +2086,13 @@ sen2r <- function(param_list = NULL,
                   t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
                   r = pm$resampling,
                   dstnodata = s2_defNA(sel_prod),
-                  co = if (out_format["warped"]=="GTiff") {paste0("COMPRESS=",pm$compression)},
+                  co = if (out_format["warped"]=="GTiff") {paste0("COMPRESS=",pm$compression)} else {NULL},
                   overwrite = pm$overwrite,
                   tmpdir = file.path(tmpdir_groupA, "gdal_warp"),
                   rmtmp = FALSE
                 )
                 # fix for envi extension (writeRaster use .envi)
-                if (warped_outformat=="ENVI")  {fix_envi_format(
+                if (out_format["warped"]=="ENVI")  {fix_envi_format(
                   sel_s2names$warped_names_reqout[!names_merged_req_scl_idx & file.exists(sel_s2names$merged_names_req)]
                 )}
               }, error = print)
@@ -2124,7 +2124,7 @@ sen2r <- function(param_list = NULL,
                   rmtmp = FALSE
                 )
                 # fix for envi extension (writeRaster use .envi)
-                if (out_outformat=="ENVI")  {fix_envi_format(
+                if (out_format["warped"]=="ENVI")  {fix_envi_format(
                   sel_s2names$warped_names_reqout[names_merged_req_scl_idx & file.exists(sel_s2names$merged_names_req)]
                 )}
               }, error = print)
