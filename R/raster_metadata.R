@@ -104,7 +104,7 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
         out_list[[i]][["res"]] <- ref_res
       }
       if ("size" %in% meta) {
-        out_list[[i]][["size"]] <- ref_res
+        out_list[[i]][["size"]] <- ref_size
       }
       if ("nbands" %in% meta) {
         out_list[[i]][["nbands"]] <- ref_nbands
