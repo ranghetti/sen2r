@@ -611,6 +611,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   
   
   # -- rgb_outformat --
+  if (anyNA(pm$rgb_outformat)) {pm$rgb_outformat <- pm$outformat}
   if (!pm$rgb_outformat %in% gdal_formats$name) {
     print_message(
       type = type,
@@ -641,6 +642,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   
   
   # -- rgb_compression --
+  if (anyNA(pm$rgb_compression)) {pm$rgb_compression <- pm$compression}
   if (!as.character(pm$rgb_compression) %in% c(NA, "NONE", "LZW", "DEFLATE", "PACKBITS", "JPEG", 1:100)) {
     print_message(
       type = type,
