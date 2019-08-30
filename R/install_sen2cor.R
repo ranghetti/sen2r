@@ -20,7 +20,7 @@
 #' install_sen2cor()
 #' }
 
-install_sen2cor <- function(sen2cor_dir=NA, version="2.5.5", force = FALSE) {
+install_sen2cor <- function(sen2cor_dir=NA, version="2.8.0", force = FALSE) {
   .install_sen2cor(
     sen2cor_dir = sen2cor_dir, 
     version = version,
@@ -52,7 +52,7 @@ install_sen2cor <- function(sen2cor_dir=NA, version="2.5.5", force = FALSE) {
     if (file.exists(sen2cor_bin)) {
       print_message(
         type = "message",
-        "sen2cor is already installed; to overwrite, set force = TRUE."
+        "Sen2Cor is already installed; to overwrite, set force = TRUE."
       )
       return(invisible(NULL))
     }

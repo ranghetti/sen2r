@@ -23,10 +23,9 @@ vignettes/*.pdf
 *.knit.md
 .Rproj.user
 *.Rproj
-/sen2cor/
-/inst/sen2cor/
 # dependencies (sen2cor, xslt)
- /inst/sen2cor_2-5-5/
+/inst/sen2cor_2-[58]-[50]/
+/sen2cor_2-[58]-[50]/
 /extdata/xslt/
 /inst/extdata/xslt/
 /query_results.xml
@@ -42,10 +41,12 @@ vignettes/*.pdf
 /inst/extdata/vector/s2_tiles.rds
 /extdata/example_files/safe/
 /inst/extdata/example_files/safe/
+/extdata/testdata/example_files/safe/
 /inst/extdata/testdata/example_files/safe/
-/inst/extdata/testdata/example_files/out/
 /extdata/example_files/out/
 /inst/extdata/example_files/out/
+/extdata/testdata/example_files/out/
+/inst/extdata/testdata/example_files/out/
 /logs/
 /inst/logs/
 /extdata/apihub.txt
