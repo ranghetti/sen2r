@@ -482,7 +482,14 @@ compute_s2_paths <- function(pm,
       expaths <- if (length(exp_paths[[output_dep["masked.nonscl"]]][[prod]]) == 0) {
         character(0)
       } else {
-        sen2r_getElements(exp_paths[[output_dep["masked.nonscl"]]][[prod]])[,paste0(
+        # select only files for which a corresponding mask is available
+        canbemasked <- sen2r_getElements(
+          exp_paths[[output_dep["masked.nonscl"]]][[prod]]
+        )[,paste(sensing_date,id_orbit,ExtentName)] %in%
+          sen2r_getElements(
+            exp_paths[[output_dep["masked.scl"]]][["SCL"]]
+          )[,paste(sensing_date,id_orbit,ExtentName)]
+        sen2r_getElements(exp_paths[[output_dep["masked.nonscl"]]][[prod]])[canbemasked, paste0(
           "S2",
           mission,
           level,"_",
