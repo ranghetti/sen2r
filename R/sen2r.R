@@ -1213,6 +1213,43 @@ sen2r <- function(param_list = NULL,
       character()
     }
     
+    # Couple L1C and L2A SAFE if both are required for the same products
+    if (all(c("l1c", "l2a") %in% pm$s2_levels)) {
+      s2_meta_l2a <- lapply(names(s2_list_l2a_exp), function(x) {
+        unlist(safe_getMetadata(x, info="nameinfo")) %>%
+          t() %>%
+          as.data.frame(stringsAsFactors=FALSE)
+      }) %>%
+        rbindlist(fill=TRUE) %>%
+        .[,list(mission, sensing_datetime, id_orbit, id_tile)] %>%
+        apply(1, paste, collapse = "_")
+      s2_meta_l1c <- lapply(names(s2_list_l1c), function(x) {
+        unlist(safe_getMetadata(x, info="nameinfo")) %>%
+          t() %>%
+          as.data.frame(stringsAsFactors=FALSE)
+      }) %>%
+        rbindlist(fill=TRUE) %>%
+        .[,list(mission, sensing_datetime, id_orbit, id_tile)] %>%
+        apply(1, paste, collapse = "_")
+      s2_l2a_orphan <- !s2_meta_l2a %in% s2_meta_l1c
+      s2_l1c_orphan <- !s2_meta_l1c %in% s2_meta_l2a
+      if (any(s2_l2a_orphan, s2_l1c_orphan)) {
+        print_message(
+          type = "warning",
+          "Some SAFE archive is present only as Level-1C or Level-2A, ",
+          "while both are required. ",
+          "To prevent errors, only coupled products will be used. ",
+          if (any(s2_l1c_orphan)) {paste0(
+            "This issue can be avoided by setting argument \"step_atmcorr\" ",
+            "to 'auto' or 'scihub', or \"online\" to TRUE, ",
+            "so that missing Level-2A can be produced or downloaded."
+          )}
+        )
+        s2_list_l2a_exp <- s2_list_l2a_exp[!s2_l2a_orphan]
+        s2_list_l1c <- s2_list_l1c[!s2_l1c_orphan]
+      }
+    }
+    
     # compute names for required files (SAFE req)
     print_message(type = "message", date = TRUE, "Computing output names...")
     s2names <- compute_s2_paths(
@@ -1260,6 +1297,7 @@ sen2r <- function(param_list = NULL,
   
   ## Generate the list of required SAFE
   if (pm$preprocess==TRUE) {
+
     # if preprocess is required, only the SAFE necessary to generate new files are considered
     s2_list_l2a_req <- s2_list_l2a[
       names(s2_list_l2a) %in% basename(nn(s2names$req$tiles$L2A))
@@ -1488,7 +1526,7 @@ sen2r <- function(param_list = NULL,
             s2_to_download <- sel_s2_list_l2a[!names(sel_s2_list_l2a) %in% list.files(path_l2a, "\\.SAFE$")]
             s2_to_skip     <- names(sel_s2_list_l2a[names(sel_s2_list_l2a) %in% list.files(path_l2a, "\\.SAFE$")])
             if (length(s2_to_skip) != 0) {
-              message("Images ", paste(s2_to_skip, collapse = ";"),
+              message("Images ", paste(s2_to_skip, collapse = ", "),
                       " are already on your system and will be skipped.",
                       " Set `overwrite_safe` to TRUE to re-download them")
             } 
@@ -1560,7 +1598,7 @@ sen2r <- function(param_list = NULL,
             s2_to_download <- sel_s2_list_l1c[!names(sel_s2_list_l1c) %in% list.files(path_l1c, "\\.SAFE$")]
             s2_to_skip <- sel_s2_list_l1c[names(sel_s2_list_l1c) %in% list.files(path_l1c, "\\.SAFE$")]  
             if (length(s2_to_skip) != 0) {
-              message("Images ", paste(names(s2_to_skip), collapse = ";"), 
+              message("Images ", paste(names(s2_to_skip), collapse = ", "), 
                       " are already on your system and will be skipped.", 
                       " Set `overwrite_safe` to TRUE to re-download them")                
             }
@@ -1620,25 +1658,25 @@ sen2r <- function(param_list = NULL,
         
       }
       
-      # second filter on tiles (#filter2)
-      sel_s2_dt$id_tile <- lapply(
-        file.path(
-          sapply(sel_s2_dt$level, switch, `1C`=path_l1c, `2A`=path_l2a),
-          sel_s2_dt[,name]
-        ),
-        function(x) {
-          tryCatch(safe_getMetadata(x, "tiles"), error = function(e) {NULL})
-        }
-      ) %>%
-        sapply(paste, collapse = " ") %>% as.character()
-      if (!any(length(nn(pm$s2tiles_selected))==0, all(is.na(pm$s2tiles_selected))) & nrow(sel_s2_dt)>0) {
-        # filter "elegant" using strsplit (fails with empty sel_s2_dt)
-        sel_s2_dt <- sel_s2_dt[sapply(strsplit(sel_s2_dt$id_tile," "), function(x){
-          any(x %in% pm$s2tiles_selected)
-        }),]
-        # # filter "ugly" with regexp
-        # sel_s2_dt <- sel_s2_dt[grep(paste0("(",paste(pm$s2tiles_selected,collapse=")|("),")"), sel_s2_dt$id_tile),]
-      }
+      # # second filter on tiles (#filter2)
+      # sel_s2_dt$id_tile <- lapply(
+      #   file.path(
+      #     sapply(sel_s2_dt$level, switch, `1C`=path_l1c, `2A`=path_l2a),
+      #     sel_s2_dt[,name]
+      #   ),
+      #   function(x) {
+      #     tryCatch(safe_getMetadata(x, "tiles"), error = function(e) {NULL})
+      #   }
+      # ) %>%
+      #   sapply(paste, collapse = " ") %>% as.character()
+      # if (!any(length(nn(pm$s2tiles_selected))==0, all(is.na(pm$s2tiles_selected))) & nrow(sel_s2_dt)>0) {
+      #   # filter "elegant" using strsplit (fails with empty sel_s2_dt)
+      #   sel_s2_dt <- sel_s2_dt[sapply(strsplit(sel_s2_dt$id_tile," "), function(x){
+      #     any(x %in% pm$s2tiles_selected)
+      #   }),]
+      #   # # filter "ugly" with regexp
+      #   # sel_s2_dt <- sel_s2_dt[grep(paste0("(",paste(pm$s2tiles_selected,collapse=")|("),")"), sel_s2_dt$id_tile),]
+      # }
       
       # remove duplicates (often for different creation dates, or same sensing dates and different sensing hours)
       # (placed here causes downloading more than the required tiles, but it is the only method to be sure not to exclude
@@ -1740,43 +1778,6 @@ sen2r <- function(param_list = NULL,
         return(invisible(NULL))
       }
       
-      # Couple L1C and L2A SAFE if both are required for the same products
-      if (all(c("l1c", "l2a") %in% pm$s2_levels)) {
-        s2_meta_l2a <- lapply(names(sel_s2_list_l2a), function(x) {
-          unlist(safe_getMetadata(x, info="nameinfo")) %>%
-            t() %>%
-            as.data.frame(stringsAsFactors=FALSE)
-        }) %>%
-          rbindlist(fill=TRUE) %>%
-          .[,list(mission, sensing_datetime, id_orbit, id_tile)] %>%
-          apply(1, paste, collapse = "_")
-        s2_meta_l1c <- lapply(names(sel_s2_list_l1c), function(x) {
-          unlist(safe_getMetadata(x, info="nameinfo")) %>%
-            t() %>%
-            as.data.frame(stringsAsFactors=FALSE)
-        }) %>%
-          rbindlist(fill=TRUE) %>%
-          .[,list(mission, sensing_datetime, id_orbit, id_tile)] %>%
-          apply(1, paste, collapse = "_")
-        s2_l2a_orphan <- !s2_meta_l2a %in% s2_meta_l1c
-        s2_l1c_orphan <- !s2_meta_l1c %in% s2_meta_l2a
-        if (any(s2_l2a_orphan, s2_l1c_orphan)) {
-          print_message(
-            type = "warning", 
-            "Some SAFE archive is present only as Level-1C or Level-2A, ",
-            "while both are required. ",
-            "To prevent errors, only coupled products will be used. ",
-            if (any(s2_l1c_orphan)) {paste0(
-              "This issue can be avoided by setting argument \"step_atmcorr\" ",
-              "to 'auto' or 'scihub', or \"online\" to TRUE, ",
-              "so that missing Level-2A can be produced or downloaded."
-            )}
-          )
-          sel_s2_list_l2a <- sel_s2_list_l2a[!s2_l2a_orphan]
-          sel_s2_list_l1c <- sel_s2_list_l1c[!s2_l1c_orphan]
-        }
-      }
-      
       # update names for output files (after #filter2)
       print_message(type = "message", date = TRUE, "Updating output names...")
       sel_s2names <- compute_s2_paths(
@@ -1791,8 +1792,7 @@ sen2r <- function(param_list = NULL,
       
       # export needed variables
       paths <- attr(sel_s2names, "paths")
-      
-      
+
       ### GDAL processing: convert SAFE, merge tiles, warp, mask and compute indices ###
       
       # Create processing groups (dates)
