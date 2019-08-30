@@ -10,12 +10,12 @@ dir.create(file.path(safe_dir, "L2A"), showWarnings = FALSE)
 dir.create(file.path(safe_dir, "L1C"), showWarnings = FALSE)
 
 
+outdir_2 <- file.path(tempdir(), "out_test2")
+exp_outpath_2 <- file.path(outdir_2, "BOA", "S2A2A_20170703_022_Scalve_BOA_10.tif")
 testthat::test_that(
   "Tests on clip and mask BOA on extent", {
     
-    outdir_2 <- file.path(tempdir(), "out_test2")
     dir.create(dirname(outdir_2), showWarnings = FALSE)
-    exp_outpath_2 <- file.path(outdir_2, "BOA", "S2A2A_20170703_022_Scalve_BOA_10.tif")
     unlink(exp_outpath_2)
     sen2r(
       gui = FALSE,
@@ -58,8 +58,8 @@ testthat::test_that(
     
     # test on raster values
     r <- raster::brick(exp_outpath_2)
-    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 3728.321, tolerance = 1e-06)
-    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 1417518)
+    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 3800.772, tolerance = 1e-3)
+    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 1417518, tolerance = 1e-03)
     
     # test thumbnails
     exp_outpath_t_2 <- file.path(
@@ -94,12 +94,12 @@ testthat::test_that(
 )
 
 
+outdir_3 <- file.path(tempdir(), "out_test3")
+exp_outpath_3 <- file.path(outdir_3, "S2A1C_20170703_022_Scalve_TOA_20.dat")
 testthat::test_that(
   "Tests on clip TOA on extent, reproject and resize and save as ENVI", {
     
-    outdir_3 <- file.path(tempdir(), "out_test3")
     dir.create(dirname(outdir_3), showWarnings = FALSE)
-    exp_outpath_3 <- file.path(outdir_3, "S2A1C_20170703_022_Scalve_TOA_20.dat")
     sen2r(
       gui = FALSE,
       online = FALSE,
@@ -137,7 +137,7 @@ testthat::test_that(
     testthat::expect_equal(
       exp_meta_r[,c("xmin", "xmax", "ymin", "ymax")], 
       data.frame("xmin" = 113909, "xmax" = 133284, "ymin" = 5097856, "ymax" = 5112431),
-      tolerance = 1e-4
+      tolerance = 1e-3
     )
     testthat::expect_equal(sf::st_crs(exp_meta_r$proj), sf::st_crs(32633))
     testthat::expect_equal(exp_meta_r$type, "UInt16")
@@ -186,12 +186,14 @@ testthat::test_that(
 )
 
 
+outdir_4 <- file.path(tempdir(), "out_test4")
+exp_outpath_4 <- file.path(outdir_4, "SCL/S2A2A_20170703_022_Scalve_SCL_10.vrt")
 testthat::test_that(
   "Tests on clip SCL on extent, reproject with a reference raster and save as VRT", {
     
-    outdir_4 <- file.path(tempdir(), "out_test4")
+    testthat::expect_true(dir.exists(outdir_3))
+    testthat::expect_true(file.exists(exp_outpath_3))
     dir.create(dirname(outdir_4), showWarnings = FALSE)
-    exp_outpath_4 <- file.path(outdir_4, "SCL/S2A2A_20170703_022_Scalve_SCL_10.vrt")
     sen2r(
       gui = FALSE,
       online = FALSE,
@@ -226,7 +228,7 @@ testthat::test_that(
         c("xmin" = 113909, "ymin" = 5097856, "xmax" = 133284, "ymax" = 5112431),
         crs = sf::st_crs(32633)
       ),
-      tolerance = 1e-4
+      tolerance = 1e-3
     )
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "VRT")
@@ -235,7 +237,7 @@ testthat::test_that(
     exp_meta_s <- sen2r_getElements(exp_outpath_4)
     testthat::expect_equal(exp_meta_s$type, "clipped")
     testthat::expect_equal(exp_meta_s$sensing_date, as.Date("2017-07-03"))
-    testthat::expect_equal(exp_meta_s$prod_type, "TOA")
+    testthat::expect_equal(exp_meta_s$prod_type, "SCL")
     testthat::expect_equal(exp_meta_s$extent_name, "Scalve")
     
     # test on raster values
@@ -263,3 +265,108 @@ testthat::test_that(
     
   }
 )
+
+
+# TODO: direct test on gdal_warp()
+
+
+context("Test gdalwarp_grid()")
+testthat::skip_on_cran()
+testthat::skip_on_travis()
+
+testthat::test_that(
+  "Test on repshaping with gdalwarp_grid()", {
+    
+    testthat::expect_true(all(dir.exists(c(outdir_2,outdir_3))))
+    testthat::expect_true(all(file.exists(exp_outpath_2,exp_outpath_3)))
+    exp_outpath_4b <- file.path(tempdir(), "S2A2A_20170703_022_Scalve_BOA_10_UTM33.tif")
+    unlink(exp_outpath_4b)
+    gdalwarp_grid(
+      srcfiles = exp_outpath_2, 
+      dstfiles = exp_outpath_4b, 
+      ref = exp_outpath_3
+    )
+    
+    # test on raster metadata
+    exp_meta_r <- raster_metadata(exp_outpath_4b, format = "data.frame")
+    testthat::expect_equal(names(exp_meta_r), c(
+      "path", "valid", "res.x", "res.y", "size.x", "size.y", "nbands", 
+      "xmin", "ymin", "xmax", "ymax", "proj", "unit", "outformat", "type"
+    ))
+    testthat::expect_equal(exp_meta_r[,c("size.x", "size.y")], data.frame("size.x"=808, "size.y"=648))
+    testthat::expect_equal(exp_meta_r[,c("res.x", "res.y")], data.frame("res.x"=25, "res.y"=25))
+    testthat::expect_equal(exp_meta_r$nbands, 11)
+    testthat::expect_equal(
+      exp_meta_r[,c("xmin", "xmax", "ymin", "ymax")], 
+      data.frame("xmin" = 113434.4, "xmax" = 133634.4, "ymin" = 5096906, "ymax" = 5113106),
+      tolerance = 1e-3
+    )
+    testthat::expect_equal(sf::st_crs(exp_meta_r$proj), sf::st_crs(32633))
+    testthat::expect_equal(exp_meta_r$type, "UInt16")
+    testthat::expect_equal(exp_meta_r$outformat, "GTiff")
+    
+    # expect error on sen2r metadata with unstandard name
+    exp_meta_s <- testthat::expect_error(
+      sen2r_getElements(exp_outpath_4b),
+      regexp = "not recognised"
+    )
+    
+    # test on raster values
+    r <- raster::brick(exp_outpath_4b)
+    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 3800.733, tolerance = 1e-03)
+    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 297406, tolerance = 1e-03)
+    
+  }
+)
+
+
+# context("Test conversion from/to VRT with relative paths to/from VRT with absolute paths")
+# testthat::skip_on_cran()
+# testthat::skip_on_travis()
+# 
+# abs_file <- exp_outpath_4
+# rel_file <- file.path(tempdir(), "S2A2A_20170703_022_Scalve_SCL_10_rel.vrt")
+# testthat::test_that(
+#   "Tests on gdal_abs2rel()", {
+#     
+#     testthat::expect_true(dir.exists(outdir_4))
+#     testthat::expect_true(file.exists(abs_file))
+#     
+#     abs_content <- readLines(abs_file)
+#     abs_path <- gsub(
+#       "^.* relativeToVRT=\"0\">(.*)</.*", "\\1",
+#       abs_content[grepl("relativeToVRT", abs_content)]
+#     )
+#     testthat::expect_true(grepl("^/", abs_path))
+#     
+#     gdal_abs2rel(abs_file, out_vrt = rel_file)
+#     testthat::expect_true(file.exists(rel_file))
+#     
+#   }
+# )
+#     
+# 
+# testthat::test_that(
+#   "Tests on gdal_rel2abs()", {
+#     
+#     rel_content <- readLines(rel_file)
+#     rel_path <- gsub(
+#       "^.* relativeToVRT=\"1\">(.*)</.*", "\\1",
+#       rel_content[grepl("relativeToVRT", rel_content)]
+#     )
+#     testthat::expect_true(grepl("^\\.\\.?/", rel_path))
+#     
+#     setwd(dirname(abs_file))
+#     testthat::expect_true(file.exists(rel_path))
+#     gdal_rel2abs(rel_file)
+#     testthat::expect_true(file.exists(rel_file))
+#     
+#     abs_content <- readLines(rel_file)
+#     abs_path <- gsub(
+#       "^.* relativeToVRT=\"0\">(.*)</.*", "\\1",
+#       abs_content[grepl("relativeToVRT", abs_content)]
+#     )
+#     testthat::expect_true(grepl("^/", abs_path))
+#     
+#   }
+# )

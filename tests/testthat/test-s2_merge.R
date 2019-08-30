@@ -11,7 +11,7 @@ dir.create(file.path(safe_dir, "L1C"), showWarnings = FALSE)
 
 
 testthat::test_that(
-  "Tests on s2_list - Single tile, single orbit, no pos", {
+  "Tests on merge all found tiles in offline mode", {
     
     outdir_1 <- file.path(tempdir(), "out_test1")
     dir.create(dirname(outdir_1), showWarnings = FALSE)
@@ -19,7 +19,7 @@ testthat::test_that(
     unlink(exp_outpath_1)
     sen2r(
       gui = FALSE,
-      online = TRUE,
+      online = FALSE,
       step_atmcorr = "l2a", # to avoid checks on Sen2Cor
       extent = NA,
       timewindow = as.Date("2017-07-03"),
@@ -56,6 +56,32 @@ testthat::test_that(
     # test on raster values
     r <- raster::raster(exp_outpath_1)
     testthat::expect_equal(raster::cellStats(r, "mean"), 4.729521, tolerance = 1e-06)
+    
+  }
+)
+
+
+testthat::test_that(
+  "Expect error with no extent and tiles specified in online mode", {
+    
+    outdir_1c <- file.path(tempdir(), "out_test1c")
+    dir.create(dirname(outdir_1c), showWarnings = FALSE)
+    testthat::expect_error(
+      sen2r(
+        gui = FALSE,
+        online = TRUE,
+        step_atmcorr = "l2a", # to avoid checks on Sen2Cor
+        extent = NA,
+        timewindow = as.Date("2017-07-03"),
+        list_prods = "BOA",
+        clip_on_extent = FALSE,
+        path_l2a = file.path(safe_dir, "L2A"),
+        path_out = outdir_1c, 
+        overwrite = TRUE,
+        thumbnails = FALSE
+      ),
+      regexp = "[Aa]lmost one parameter among 'extent' and 's2tiles_selected' must be provided"
+    )
     
   }
 )

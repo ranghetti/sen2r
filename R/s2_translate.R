@@ -145,9 +145,11 @@ s2_translate <- function(infile,
   if (format=="GTiff") {
     if (!compress %in% c("JPEG","LZW","PACKBITS","DEFLATE","CCITTRLE",
                          "CCITTFAX3","CCITTFAX4","LZMA","NONE")) {
-      print_message(type="warning",
-                    "'",toupper(compress),"' is not a valid compression value; ",
-                    "the default 'DEFLATE' value will be used.")
+      print_message(
+        type="warning",
+        "'",toupper(compress),"' is not a valid compression value; ",
+        "the default 'DEFLATE' value will be used."
+      )
       compress <- "DEFLATE"
     }
   }

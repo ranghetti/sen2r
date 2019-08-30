@@ -712,10 +712,11 @@ sen2r <- function(param_list = NULL,
   # if ONLINE check internet connection and scihub credentials
   if (pm$online) {
     if (!check_scihub_connection()) {
-      print_message(type = "error", 
-                    "Impossible to reach the scihub server.",
-                    "Internet connection or SciHub may be down.", 
-                    "Aborting!")
+      print_message(
+        type = "error", 
+        "Impossible to reach the SciHub server ",
+        "(internet connection or SciHub may be down)." 
+      )
     }
   }
   
@@ -1132,9 +1133,11 @@ sen2r <- function(param_list = NULL,
   
   # add check so that in offline mode if specified date is not available, we fail gracefully  
   if (!pm$online && nrow(s2_dt) == 0) {
-    print_message(type = "error",
-                  message_string = "There are no images on your machine acquired",
-                  "in the specified time period. Aborting!")
+    print_message(
+      type = "error",
+      "There are no images on your machine acquired ",
+      "in the specified time period."
+    )
   }
   # if pm$s2tiles_selected contains NA, do not filter on tiles now;
   # otherwise, filter on tiles but keep also NA not to discard old name products.
@@ -1264,7 +1267,7 @@ sen2r <- function(param_list = NULL,
     # export needed variables
     out_ext <- attr(s2names, "out_ext")
     out_format <- attr(s2names, "out_format")
-
+    
     # Check if processing is needed
     if (all(unlist(sapply(s2names$new, sapply, length)) == 0)) {
       if (all(unlist(sapply(s2names$exp, sapply, length)) == 0)) {
@@ -1297,7 +1300,7 @@ sen2r <- function(param_list = NULL,
   
   ## Generate the list of required SAFE
   if (pm$preprocess==TRUE) {
-
+    
     # if preprocess is required, only the SAFE necessary to generate new files are considered
     s2_list_l2a_req <- s2_list_l2a[
       names(s2_list_l2a) %in% basename(nn(s2names$req$tiles$L2A))
@@ -1792,7 +1795,7 @@ sen2r <- function(param_list = NULL,
       
       # export needed variables
       paths <- attr(sel_s2names, "paths")
-
+      
       ### GDAL processing: convert SAFE, merge tiles, warp, mask and compute indices ###
       
       # Create processing groups (dates)

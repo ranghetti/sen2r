@@ -10,7 +10,7 @@ dir.create(file.path(safe_dir, "L2A"), showWarnings = FALSE)
 dir.create(file.path(safe_dir, "L1C"), showWarnings = FALSE)
 
 testthat::test_that(
-  "Tests on base mask", {
+  "Tests on base mask on BOA", {
     
     outdir_5 <- file.path(tempdir(), "out_test5")
     dir.create(dirname(outdir_5), showWarnings = FALSE)
@@ -49,19 +49,19 @@ testthat::test_that(
     
     # test on raster values
     r <- raster::raster(exp_outpath_5)
-    testthat::expect_equal(raster::cellStats(r, "mean"), 711.8902, tolerance = 1e-6)
-    testthat::expect_equal(raster::cellStats(r, "countNA"), 1986263)
+    testthat::expect_equal(raster::cellStats(r, "mean"), 884.4695, tolerance = 1e-6)
+    testthat::expect_equal(raster::cellStats(r, "countNA"), 1986322)
 
   }
 )
 
 
 testthat::test_that(
-  "Tests on custom mask sith smoothing and buffering", {
+  "Tests on custom mask on TOA with smoothing and buffering", {
     
     outdir_6 <- file.path(tempdir(), "out_test6")
     dir.create(dirname(outdir_6), showWarnings = FALSE)
-    exp_outpath_6 <- file.path(outdir_6, "BOA", "S2A2A_20170703_022_Scalve_BOA_10.tif")
+    exp_outpath_6 <- file.path(outdir_6, "TOA", "S2A1C_20170703_022_Scalve_TOA_10.tif")
     unlink(exp_outpath_6)
     sen2r(
       gui = FALSE,
@@ -71,10 +71,11 @@ testthat::test_that(
       extent_name = "Scalve",
       extent_as_mask = FALSE,
       timewindow = as.Date("2017-07-03"),
-      list_prods = "BOA",
+      list_prods = "TOA",
       mask_type = "scl_0_8_9_11",
       mask_buffer = 10,
       mask_smooth = 20,
+      path_l1c = file.path(safe_dir, "L1C"),
       path_l2a = file.path(safe_dir, "L2A"),
       path_out = outdir_6,
       thumbnails = FALSE
@@ -85,7 +86,7 @@ testthat::test_that(
     exp_meta_r <- raster_metadata(exp_outpath_6, format = "list")[[1]]
     testthat::expect_equal(exp_meta_r$size, c("x"=1911, "y"=1479))
     testthat::expect_equal(exp_meta_r$res, c("x"=10, "y"=10))
-    testthat::expect_equal(exp_meta_r$nbands, 11)
+    testthat::expect_equal(exp_meta_r$nbands, 12)
     testthat::expect_equal(
       exp_meta_r$bbox, 
       sf::st_bbox(
@@ -98,7 +99,7 @@ testthat::test_that(
     
     # test on raster values
     r <- raster::raster(exp_outpath_6)
-    testthat::expect_equal(raster::cellStats(r, "mean"), 502.8809, tolerance = 1e-6)
+    testthat::expect_equal(raster::cellStats(r, "mean"), 1317.727, tolerance = 1e-6)
     testthat::expect_equal(raster::cellStats(r, "countNA"), 1077985)
     
   }

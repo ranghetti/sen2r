@@ -1,4 +1,4 @@
-context("Test s2_list")
+context("Test s2_list() and safe_getMetadata(info = 'nameinfo')")
 testthat::skip_on_cran()
 testthat::skip_on_travis()
 
@@ -10,8 +10,27 @@ testthat::test_that(
       orbit = "065",
       output_type = "data.table"
     )
-    testthat::expect_equal(length(s2_list_test$orbit), 13)
+    testthat::expect_equal(nrow(s2_list_test), 13)
+    testthat::expect_gte(min(s2_list_test$date), as.Date("2017-05-01"))
+    testthat::expect_lte(max(s2_list_test$date), as.Date("2017-08-01"))
+    testthat::expect_equal(unique(s2_list_test$tileid), "32TNR")
     testthat::expect_equal(unique(s2_list_test$orbit), "065")
+    testthat::expect_equal(mean(s2_list_test$ccov), 36.69096, tolerance = 1e-6)
+    testthat::expect_equal(
+      grepl("^https://scihub\\.copernicus\\.eu",s2_list_test$url),
+      rep(TRUE, 13)
+    )
+    
+    # test safe_getMetadata
+    safe_metadata <- safe_getMetadata(s2_list_test[order(date),]$name[1], info = "nameinfo")
+    testthat::expect_is(safe_metadata, "list")
+    testthat::expect_equal(safe_metadata$prod_type, "product")
+    testthat::expect_equal(safe_metadata$version, "compact")
+    testthat::expect_equal(safe_metadata$mission, "2A")
+    testthat::expect_equal(safe_metadata$level, "2A")
+    testthat::expect_equal(as.Date(safe_metadata$sensing_datetime), as.Date("2017-05-07"))
+    testthat::expect_equal(safe_metadata$id_orbit, "065")
+    testthat::expect_equal(safe_metadata$id_tile, "32TNR")
   }
 )
 
@@ -19,9 +38,14 @@ testthat::test_that(
   "Tests on s2_list - Single tile, no orbits, nopos", {
     s2_list_test <- s2_list(
       tile = "32TNR",
-      time_interval = as.Date(c("2017-05-01", "2017-08-01"))
+      time_interval = as.Date(c("2017-05-01", "2017-08-01")),
+      output_type = "vector"
     )
     testthat::expect_equal(length(s2_list_test), 25)
+    testthat::expect_is(
+      safe_getMetadata(names(s2_list_test)[1], info = "nameinfo"), 
+      "list"
+    )
   }
 )
 
@@ -32,8 +56,27 @@ testthat::test_that(
       time_interval = as.Date(c("2017-05-01", "2017-08-01")),
       output_type = "data.table"
     )
-    testthat::expect_equal(length(s2_list_test$tile), 49)
-    testthat::expect_equal(unique(s2_list_test$tile), c("32TNR", "32TMR"))
+    testthat::expect_equal(nrow(s2_list_test), 49)
+    testthat::expect_equal(unique(s2_list_test$tileid), c("32TNR", "32TMR"))
+    testthat::expect_gte(min(s2_list_test$date), as.Date("2017-05-01"))
+    testthat::expect_lte(max(s2_list_test$date), as.Date("2017-08-01"))
+    testthat::expect_equal(unique(s2_list_test$orbit), c("022", "065", "108"))
+    testthat::expect_equal(mean(s2_list_test$ccov), 37.38271, tolerance = 1e-6)
+    testthat::expect_equal(
+      grepl("^https://scihub\\.copernicus\\.eu",s2_list_test$url),
+      rep(TRUE, 49)
+    )
+    
+    # test safe_getMetadata
+    safe_metadata <- sapply(s2_list_test[order(date),]$name, safe_getMetadata, info = "nameinfo")
+    testthat::expect_is(safe_metadata, "matrix")
+    testthat::expect_equal(dim(safe_metadata), c(9,49))
+    testthat::expect_equal(unique(unlist(safe_metadata["prod_type",])), "product")
+    testthat::expect_equal(unique(unlist(safe_metadata["version",])), "compact")
+    testthat::expect_equal(unique(unlist(safe_metadata["mission",])), c("2A","2B"))
+    testthat::expect_equal(unique(unlist(safe_metadata["level",])), c("1C","2A"))
+    testthat::expect_equal(unique(unlist(safe_metadata["id_orbit",])), c("022", "065", "108"))
+    testthat::expect_equal(unique(unlist(safe_metadata["id_tile",])), c("32TNR", "32TMR"))
   }
 )
 
@@ -76,7 +119,6 @@ testthat::test_that(
   }
 )
 
-
 testthat::test_that(
   "Tests on s2_list - Single tile, multi orbit", {
     pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
@@ -102,7 +144,7 @@ testthat::test_that(
       output_type = "data.table"
     )
     testthat::expect_equal(length(s2_list_test$orbitid), 34)
-    
+
     # reproject
     pos <- sf::st_transform(pos, 32632)
     s2_list_test <- s2_list(
@@ -150,6 +192,9 @@ testthat::test_that(
       time_interval = as.Date(c("2016-05-01", "2016-05-01"))
     )
     testthat::expect_equal(length(s2_list_test), 0)
+    testthat::expect_null(
+      safe_getMetadata(names(s2_list_test)[1], info = "nameinfo") 
+    )
   }
 )
 
@@ -209,7 +254,12 @@ testthat::test_that(
     )
     testthat::expect_equal(length(s2_list_test$proclev), 11)
     testthat::expect_equal(unique(s2_list_test$proclev), c("Level-1C" , "Level-2Ap"))
-    
+    # test safe_getMetadata
+    safe_metadata <- sapply(s2_list_test[order(date),]$name, safe_getMetadata, info = "nameinfo")
+    testthat::expect_is(safe_metadata, "matrix")
+    testthat::expect_equal(dim(safe_metadata), c(9,11))
+    testthat::expect_equal(unique(unlist(safe_metadata["level",])), c("1C","2A"))
+
     s2_list_test <- s2_list(
       spatial_extent = pos,
       tile = "32TNR",
@@ -220,22 +270,34 @@ testthat::test_that(
     )
     testthat::expect_equal(length(s2_list_test$proclev), 11)
     testthat::expect_equal(unique(s2_list_test$proclev), c("Level-1C"))
+    # test safe_getMetadata
+    safe_metadata <- sapply(s2_list_test[order(date),]$name, safe_getMetadata, info = "nameinfo")
+    testthat::expect_is(safe_metadata, "matrix")
+    testthat::expect_equal(dim(safe_metadata), c(9,11))
+    testthat::expect_equal(unique(unlist(safe_metadata["level",])), "1C")
   }
 )
 
 testthat::test_that(
   "Parameter errors", {
-    pos          <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
+    pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
+    
     #wrong extent
-    testthat::expect_error(s2_list(
-      spatial_extent = "pos",
-      time_interval = as.Date(c("2017-05-01", "2017-06-30"),
-      )))
+    testthat::expect_error(
+      s2_list(
+        spatial_extent = "pos",
+        time_interval = as.Date(c("2017-05-01", "2017-06-30"))
+      ),
+      regexp = "`spatial_extent` is not a `sf` or `sfc` object"
+    )
     
     # wrong dates
-    testthat::expect_error(s2_list(
-      spatial_extent = pos,
-      time_interval = c("2017-05-XX", "2017-06-30"),
-    ))
+    testthat::expect_error(
+      s2_list(
+        spatial_extent = pos,
+        time_interval = c("2017-05-XX", "2017-06-30")
+      ),
+      regexp = "`time_interval` must be of class .+ cohercible to Date"
+    )
   }
 )

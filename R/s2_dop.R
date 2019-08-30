@@ -83,6 +83,18 @@ s2_dop <- function(s2_orbits = 1:143,
   if (is.numeric(s2_orbits)) {
     s2_orbits <- str_pad2(as.integer(s2_orbits), 3, "left", "0")
   }
+  if (any(
+    as.character(suppressWarnings(as.integer(s2_orbits)), 3, "left", "0") != gsub("^0+", "", s2_orbits), 
+    is.na(suppressWarnings(as.integer(s2_orbits))), 
+    suppressWarnings(as.integer(s2_orbits))<0,
+    suppressWarnings(as.integer(s2_orbits))>143
+  )) {
+    print_message(
+      type = "error",
+      "Parameter 's2_orbits' contains invalid Sentinel-2 orbits."
+    )
+  }
+  
   
   ## Check mission
   if (!all(grepl("^2[AB]$", mission))) {

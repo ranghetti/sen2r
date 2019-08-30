@@ -262,6 +262,17 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
     valid_s2orbits <- pm$s2tiles_selected[!pm$s2tiles_selected %in% invalid_s2orbits]
     pm$s2tiles_selected <- if (length(nn(valid_s2tiles)) == 0) {NA} else {valid_s2tiles}
   }
+  if (all(
+    pm$online,
+    all(is.na(pm$extent)) || length(nn(pm$extent))==0,
+    all(is.na(pm$s2tiles_selected)) || length(nn(pm$s2tiles_selected))==0
+  )) {
+    print_message(
+      type = type,
+      "In online mode, almost one parameter among 'extent' and ",
+      "'s2tiles_selected' must be provided."
+    )
+  }
   
   
   # -- s2orbits_selected --
