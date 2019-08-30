@@ -76,10 +76,10 @@ gdalwarp_grid <- function(srcfiles,
     dstfile <- dstfiles[i]
     
     # read infile parameters
-    sel_metadata <- raster_metadata(srcfile, c("proj", "bbox"), format = "list")[[1]]
+    sel_metadata <- raster_metadata(srcfile, c("proj", "bbox", "outformat"), format = "list")[[1]]
     sel_proj <- sel_metadata$proj
     sel_bbox <- sel_metadata$bbox
-    of <- ifelse (is.null(of), attr(sel_metadata, "driver"), of)
+    of <- ifelse (is.null(of), sel_metadata$outformat, of)
     
     # get reprojected extent
     out_bbox <- matrix(
@@ -90,9 +90,6 @@ gdalwarp_grid <- function(srcfiles,
     
     # allineate out_extent to ref grid
     out_bbox_mod <- round((out_bbox - ref_min) / ref_res) * ref_res + ref_min
-
-    
-    
     
     
     # warp
