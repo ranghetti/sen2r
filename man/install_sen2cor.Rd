@@ -4,7 +4,7 @@
 \alias{install_sen2cor}
 \title{Download and install sen2cor.}
 \usage{
-install_sen2cor(sen2cor_dir = NA, version = "2.5.5", force = FALSE)
+install_sen2cor(sen2cor_dir = NA, version = "2.8.0", force = FALSE)
 }
 \arguments{
 \item{sen2cor_dir}{(optional) Path where sen2cor will be installed
