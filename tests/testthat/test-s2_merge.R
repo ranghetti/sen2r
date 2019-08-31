@@ -1,6 +1,6 @@
 context("Test s2_merge and translate when stitching 2 tiles with no clipping")
 testthat::skip_on_cran()
-testthat::skip_on_travis()
+# testthat::skip_on_travis()
 
 example_dir <- system.file("extdata/example_files", package = "sen2r")
 dir.create(example_dir, showWarnings = FALSE)
@@ -55,7 +55,7 @@ testthat::test_that(
     
     # test on raster values
     r <- raster::raster(exp_outpath_1)
-    testthat::expect_equal(raster::cellStats(r, "mean"), 4.729521, tolerance = 1e-06)
+    testthat::expect_equal(raster::cellStats(r, "mean"), 4.729521, tolerance = 1e-3)
     
   }
 )

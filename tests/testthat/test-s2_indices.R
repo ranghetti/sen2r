@@ -1,4 +1,6 @@
 context("Test create_indices_db()")
+testthat::skip_on_cran()
+testthat::skip_on_travis()
 
 example_dir <- system.file("extdata/example_files", package = "sen2r")
 dir.create(example_dir, showWarnings = FALSE)
@@ -44,7 +46,7 @@ testthat::test_that(
 
 context("Test compute spectral indices")
 testthat::skip_on_cran()
-testthat::skip_on_travis()
+# testthat::skip_on_travis()
 
 outdir_11 <- file.path(tempdir(), "out_test11")
 dir.create(dirname(outdir_11), showWarnings = FALSE)

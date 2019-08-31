@@ -1,6 +1,6 @@
 context("Test compute RGB images")
 testthat::skip_on_cran()
-testthat::skip_on_travis()
+# testthat::skip_on_travis()
 
 example_dir <- system.file("extdata/example_files", package = "sen2r")
 dir.create(example_dir, showWarnings = FALSE)
@@ -66,8 +66,8 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_16[2])
-    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 162.4022, tolerance = 1e-06)
-    testthat::expect_equal(sum(is.na(exp_stars[[1]])), 4218143)
+    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 162.4022, tolerance = 1e-3)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]])), 4218143, tolerance = 1e-3)
     rm(exp_stars)
     
     # test thumbnails
@@ -147,9 +147,9 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_17)
-    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 145.3712, tolerance = 1e-06)
-    testthat::expect_equal(mean(exp_stars[[2]], na.rm=TRUE), 147.6188, tolerance = 1e-06)
-    testthat::expect_equal(sum(is.na(exp_stars[[1]])), 4238865)
+    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 145.3712, tolerance = 1e-3)
+    testthat::expect_equal(mean(exp_stars[[2]], na.rm=TRUE), 147.6188, tolerance = 1e-3)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]])), 4238865, tolerance = 1e-3)
     rm(exp_stars)
 
   }

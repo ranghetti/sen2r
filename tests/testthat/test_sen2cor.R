@@ -1,28 +1,6 @@
-context("Test sen2cor()")
+context("Test Sen2Cor installation")
 testthat::skip_on_cran()
-testthat::skip_on_travis()
-
-# NOTE: these tests require a high amount of time,
-# so running Sen2Cor is disabled by default if SAFE archives are already present.
-# To perform the test also on Sen2Cor, replace 'test_sen2cor = FALSE' with 'TRUE'.
-# To test the Sen2Cor installation, replace 'test_download = FALSE' with 'TRUE'.
-test_sen2cor = TRUE
-test_download = TRUE
-
-example_dir <- system.file("extdata/example_files", package = "sen2r")
-dir.create(example_dir, showWarnings = FALSE)
-safe_dir <- file.path(example_dir, "safe")
-dir.create(safe_dir, showWarnings = FALSE)
-dir.create(file.path(safe_dir, "L2A"), showWarnings = FALSE)
-dir.create(file.path(safe_dir, "L1C"), showWarnings = FALSE)
-s2_l1c_prods <- file.path(safe_dir, "L1C", c(
-  "S2A_MSIL1C_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE",
-  "S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE"
-))
-s2_l2a_prods <- file.path(safe_dir, "L2A", c(
-  "S2A_MSIL2A_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE",
-  "S2A_MSIL2A_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE"
-))
+# testthat::skip_on_travis()
 
 
 testthat::test_that(
@@ -38,7 +16,7 @@ testthat::test_that(
       system.file(package="sen2r"),
       paste0("sen2cor_",gsub("\\.","-",sen2cor_def_version))
     )
-    if (test_download) {unlink(sen2cor_inst_dir, recursive=TRUE)}
+    unlink(sen2cor_inst_dir, recursive=TRUE)
     
     install_sen2cor()
     
@@ -88,6 +66,31 @@ testthat::test_that(
     
   }
 )
+
+
+context("Test Sen2Cor")
+testthat::skip_on_cran()
+# testthat::skip_on_travis()
+
+# NOTE: these tests require a high amount of time,
+# so running Sen2Cor is disabled by default if SAFE archives are already present.
+# To perform the test also on Sen2Cor, replace 'test_sen2cor = FALSE' with 'TRUE'.
+test_sen2cor = FALSE
+
+example_dir <- system.file("extdata/example_files", package = "sen2r")
+dir.create(example_dir, showWarnings = FALSE)
+safe_dir <- file.path(example_dir, "safe")
+dir.create(safe_dir, showWarnings = FALSE)
+dir.create(file.path(safe_dir, "L2A"), showWarnings = FALSE)
+dir.create(file.path(safe_dir, "L1C"), showWarnings = FALSE)
+s2_l1c_prods <- file.path(safe_dir, "L1C", c(
+  "S2A_MSIL1C_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE",
+  "S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE"
+))
+s2_l2a_prods <- file.path(safe_dir, "L2A", c(
+  "S2A_MSIL2A_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE",
+  "S2A_MSIL2A_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE"
+))
 
 
 testthat::test_that(

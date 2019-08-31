@@ -1,6 +1,6 @@
 context("Test warping (clip, reproject, resize)")
 testthat::skip_on_cran()
-testthat::skip_on_travis()
+# testthat::skip_on_travis()
 
 example_dir <- system.file("extdata/example_files", package = "sen2r")
 dir.create(example_dir, showWarnings = FALSE)
@@ -272,7 +272,7 @@ testthat::test_that(
 
 context("Test gdalwarp_grid()")
 testthat::skip_on_cran()
-testthat::skip_on_travis()
+# testthat::skip_on_travis()
 
 testthat::test_that(
   "Test on repshaping with gdalwarp_grid()", {

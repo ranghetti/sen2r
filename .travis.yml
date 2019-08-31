@@ -21,6 +21,7 @@ apt_packages:
   - libjq-dev
   - python-numpy
   - python-gdal
+  - aria2
 
 before_install:
   - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
