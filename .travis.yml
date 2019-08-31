@@ -39,6 +39,11 @@ env:
     - R_CHECK_ARGS="--no-build-vignettes --no-manual --as-cran"
     - R_CHECK_TIMINGS_="0"
 
+script: 
+  - |
+    R CMD build .
+    travis_wait 20 R CMD check packageName*tar.gz
+
 notifications:
   email:
     on_success: change
