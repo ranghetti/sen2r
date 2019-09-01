@@ -47,7 +47,8 @@ Imports:
   units,
   lwgeom,
   httr
-Suggests: 
+Suggests:
+    spelling, 
     geojsonlint,
     httptest,
     knitr,
@@ -56,3 +57,4 @@ Suggests:
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
+Language: en-GB
