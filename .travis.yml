@@ -30,7 +30,7 @@ before_install:
 
 script: 
   - R CMD build .
-  - travis_wait 40 R CMD check *tar.gz
+  - travis_wait 120 R CMD check *tar.gz
 
 after_success:
   - Rscript -e 'covr::codecov(line_exclusions = c("R/s2_gui.R", "R/add_rgb_image.R", "R/geograbber_process.R", "R/editModPoly.R", "R/install_aria2.R", "R/install_sen2cor.R", "R/create_s2_dop.R"))'

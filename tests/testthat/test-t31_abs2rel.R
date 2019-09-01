@@ -1,4 +1,6 @@
 context("Test abs2rel()")
+testthat::skip_on_cran()
+testthat::skip_on_travis()
 
 # the reference path
 ref_path <- system.file(package="sen2r")
