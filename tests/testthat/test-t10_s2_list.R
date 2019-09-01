@@ -1,6 +1,6 @@
 context("Test s2_list() and safe_getMetadata(info = 'nameinfo')")
 testthat::skip_on_cran()
-# testthat::skip_on_travis()
+testthat::skip_on_travis()
 
 testthat::test_that(
   "Tests on s2_list - Single tile, single orbit, no pos", {
