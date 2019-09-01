@@ -29,12 +29,11 @@ before_install:
   - sudo apt-get install -y libgdal-dev libproj-dev libv8-dev libprotobuf-dev libudunits2-dev netcdf-bin libv8-dev libjq-dev
 
 script: 
-  -|
-    R CMD build .
-    travis_wait 40 R CMD check sen2r*tar.gz
+  - R CMD build .
+  - travis_wait 40 R CMD check *tar.gz
 
 after_success:
-  - Rscript -e 'covr::codecov(line_exclusions = c("R/s2_gui.R", "R/add_rgb_image.R", "R/geograbber_process.R", "R/editModPoly.R", "R/install_aria2.R", "R/install_sen2cor.R"))'
+  - Rscript -e 'covr::codecov(line_exclusions = c("R/s2_gui.R", "R/add_rgb_image.R", "R/geograbber_process.R", "R/editModPoly.R", "R/install_aria2.R", "R/install_sen2cor.R", "R/create_s2_dop.R"))'
 
 env:
   global:
