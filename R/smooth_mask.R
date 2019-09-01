@@ -1,10 +1,10 @@
-#' @title Buffer clound masks
+#' @title Buffer cloud masks
 #' @description Internal function (used by [s2_mask]) which smooths
 #'  and buffers a 0-1 mask image in order to reduce the roughness of the mask
 #'  obtained from SCL classification (which is done pixel by pixel).
 #'  See details.
 #' @param inmask The path of the input 0-1 mask (where 0 represents the area
-#'  to be masked, 1 the cleen surface).
+#'  to be masked, 1 the clean surface).
 #' @param binpaths list of paths of binaries.
 #' @param tmpdir (optional) Path where intermediate files (VRT) will be created.
 #'  Default is a temporary directory.
@@ -17,7 +17,7 @@
 #' @param namask (optional) The path of an input 0-1 mask where 0 represents 
 #'  the area of the original file with NA values (which should not be 
 #'  smoothed / buffered).
-#'  Default (NULL) means that no NA values are presente.
+#'  Default (NULL) means that no NA values are present.
 #' @return The path of the smoothed mask.
 #' @export
 #' @importFrom methods is

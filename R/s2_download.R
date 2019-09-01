@@ -9,7 +9,7 @@
 #'  (default: "builtin"). Alternatives are "builtin" or "aria2"
 #'  (this requires aria2c to be installed).
 #' @param apihub Path of the "apihub.txt" file containing credentials
-#'  of scihub account.
+#'  of SciHub account.
 #'  If NA (default), the default location inside the package will be used.
 #' @param tile Single Sentinel-2 Tile string (5-length character)
 #' @param outdir (optional) Full name of the existing output directory

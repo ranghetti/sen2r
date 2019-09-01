@@ -172,7 +172,7 @@ A nested list:
 (to be used within \code{\link[=sen2r]{sen2r()}})
 which computes the names of the required output image files
 (see details).
-The function was splitted from \code{\link[=sen2r]{sen2r()}} because this code
+The function was split from \code{\link[=sen2r]{sen2r()}} because this code
 is called twice (and to shorten the main function).
 
 \code{list_sen2r_paths} is a wrapper of \link{sen2r}, which runs

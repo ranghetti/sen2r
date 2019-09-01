@@ -42,7 +42,7 @@ projection is never taken from \code{mask}.}
 \item{t_srs}{Target spatial reference set (character). The coordinate
 systems that can be passed are anything supported by the
 OGRSpatialReference.SetFromUserInput() call, which includes EPSG
-PCS and GCSes (ie. EPSG:4296), PROJ.4 declarations (as above),
+PCS and GCSes (i.e. EPSG:4296), PROJ.4 declarations (as above),
 or the name of a .prf file containing well known text.}
 
 \item{r}{Resampling_method ("near"|"bilinear"|"cubic"|"cubicspline"|
@@ -76,7 +76,7 @@ Default is a temporary directory.}
 \description{
 The function applies \link{gdal_translate} or \link{gdalwarp}
 to clip, reproject and/or warp raster files. The choice of the
-algorythm is based on the comparison between input and output
+algorithm is based on the comparison between input and output
 projections (\link{gdal_translate} if they are equal, \link{gdalwarp} elsewhere).
 If not specified, the output format of each file is the same of the
 corresponding source file.

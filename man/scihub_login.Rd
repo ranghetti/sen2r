@@ -48,7 +48,7 @@ is available and SciHub is accessible, FALSE otherwise.
 \description{
 Read the SciHub login information (\code{read_scihub_login()}),
 save new username and password (\code{write_scihub_login()})
-or chech their validity (\code{check_scihub_login()}).
+or check their validity (\code{check_scihub_login()}).
 Login information is stored in a file \code{apihub.txt} inside the
 "extdata" directory. This functions allow to read or write this
 file, and to edit them from inside the GUI.

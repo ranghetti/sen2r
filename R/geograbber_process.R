@@ -12,9 +12,9 @@
 #' @param list_prods (optional) Character vector with the values of the
 #'  products to be processed (accepted values: "TOA", "BOA", "SCL",
 #'  "TCI"). Default is "BOA".
-#' @param res (optional) Numerifc vector of length 2 with the x-y resolution
+#' @param res (optional) Numeric vector of length 2 with the x-y resolution
 #'  for output products. NA (default) means that the resolution
-#'  is keeped as native.
+#'  is kept as native.
 #' @param ... Other additional [sen2r] arguments:
 #'  `extent_name`, `list_indices`, `index_source`, `mask_type`, `max_mask`, 
 #'  `mask_smooth`, `mask_buffer`, `clip_on_extent`, `extent_as_mask`, 

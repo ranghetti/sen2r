@@ -20,7 +20,7 @@ sen2r(param_list = NULL, gui = NA, preprocess = TRUE,
   compression = "DEFLATE", rgb_compression = "90", overwrite = FALSE,
   path_l1c = NA, path_l2a = NA, path_tiles = NA, path_merged = NA,
   path_out = NA, path_rgb = NA, path_indices = NA,
-  path_subdirs = TRUE, thumbnails = TRUE, parallel = TRUE,
+  path_subdirs = TRUE, thumbnails = TRUE, parallel = FALSE,
   processing_order = "by_groups", use_python = TRUE, tmpdir = NA,
   rmtmp = TRUE, log = NA)
 }
@@ -63,7 +63,7 @@ products on SciHub (and download if needed); FALSE to work
 only with already downloaded SAFE products.}
 
 \item{apihub}{Path of the text file containing credentials
-of scihub account.
+of SciHub account.
 If NA (default), the default location inside the package will be used.}
 
 \item{downloader}{(optional) Character value corresponding to the executable
@@ -84,10 +84,10 @@ not to delete; "l1c" to delete only Level-1C products.}
 Level-2A SAFE products:
 \itemize{
 \item "auto" (default) means that L2A is first
-searched on SciHub: if found, it is dowloaded, if not, the
+searched on SciHub: if found, it is downloaded, if not, the
 corresponding Level-1C is downloaded and sen2cor is used to
 produce L2A;
-\item "scihub" means that sen2cor is always used from L1C products
+\item "scihub" means that Sen2Cor is always used from L1C products
 downloaded from SciHub;
 \item "l2a" means that they are downloaded if available on SciHub,
 otherwise they are skipped (sen2cor is never used).
@@ -98,7 +98,7 @@ the maximum cloud level of each SAFE to be considered (default: no filter).
 It it used to limit the research of SAFE products to "good" images,
 so it is applied only to non-existing archives (existing SAFE are always
 used).
-In thish sense, this parameter is different from \code{max_mask}, which can be
+In this sense, this parameter is different from \code{max_mask}, which can be
 used to set a maximum cloud coverage over output extents.
 Notice also that this value is used to filter on the basis of the metadata
 "Cloud cover percentage" associated to each SAFE, so it is not based
@@ -172,7 +172,7 @@ If can be a 2-length integer vector (min-max for all the 3 bands) or a 6-length 
 3x2 matrix (min red, min green, min blue, max red, max green, max blue).
 Default is to use c(0,2500) for bands 2, 3 and 4; c(0,7500) for other bands.
 In case \code{list_rgb} is a vector of length > 1, \code{rgb_ranges} must be a list
-of the same length (otherwise, the same range vlaues will be used for all the RGB
+of the same length (otherwise, the same range values will be used for all the RGB
 products).}
 
 \item{mask_type}{(optional) Character value which determines the categories
@@ -203,7 +203,7 @@ to be applied to the cloud mask by function \link{s2_mask}.}
 (expressed in unit of measure of the output projection, typically metres)
 to be applied to the cloud mask by function \link{s2_mask}.
 Default value (0) means that no buffer is applied; a positive value causes
-an enlargement of the masked area; a negative value cause a reducement.}
+an enlargement of the masked area; a negative value cause a reduction.}
 
 \item{clip_on_extent}{(optional) Logical: if TRUE (default), output products
 and indices are clipped to the selected extent (and resampled/reprojected);
@@ -216,9 +216,9 @@ within the bounding box are maintained.}
 \item{reference_path}{(optional) Path of the raster file to be used as a
 reference grid. If NA (default), no reference is used.}
 
-\item{res}{(optional) Numerifc vector of length 2 with the x-y resolution
+\item{res}{(optional) Numeric vector of length 2 with the x-y resolution
 for output products. Default (NA) means that the resolution
-is keeped as native.}
+is kept as native.}
 
 \item{res_s2}{(optional) Character value corresponding to the native Sentinel-2
 resolution to be used. Accepted values are "10m" (default), "20m"
@@ -244,7 +244,7 @@ format recognised by GDAL). Default is "GTiff".}
 \item{rgb_outformat}{(optional) Format of the output RGB products (in a
 format recognised by GDAL). Default is "GTiff".}
 
-\item{index_datatype}{(optional) Numeric datatype of the ouptut
+\item{index_datatype}{(optional) Numeric datatype of the output
 spectral indices (see \link{s2_calcindices}.}
 
 \item{compression}{(optional) In the case GTiff is chosen as
@@ -306,14 +306,13 @@ small images (width or height of 1024 pixels) with default colour palettes
 a subdirectory of the products names "thumbnails".
 If FALSE, they are not created.}
 
-\item{parallel}{(optional) Logical or integer: if TRUE (default), some
-functions (\link{sen2cor}, \link{s2_mask} and \link{s2_calcindices} for now)
-are executed using multiple cores in order to speed up the execution.
+\item{parallel}{(optional) Logical or integer: setting to TRUE, the processing
+is executed using multiple cores in order to speed up the execution.
+Parallelisation is performed on groups of dates.
 The number of cores is automatically determined; specifying it is also
 possible (e.g. \code{parallel = 4}).
-If FALSE, the processing chain is forced to run with a single core
-(this can be useful if multiple \link{sen2r} instances are run in parallel).
-This argument can be set only in commandline mode, not using the GUI.}
+If FALSE (default), the processing chain is forced to run with a single core
+(this can be useful if multiple \link{sen2r} instances are run in parallel).}
 
 \item{processing_order}{(optional) Character string:
 order used to execute the processing chain (this affects the speed
@@ -354,8 +353,8 @@ subsequent steps, thus increasing disk space requirements.
 \item "1" or "by_step":
 this is the legacy mode, in which the cycle on groups is ignored
 as well as the parallel computation over dates.
-All SAFEs are first downloaded/processed, then the processing steps
-are performed sequentially.
+All SAFE archives are first downloaded/processed,
+then the processing steps are performed sequentially.
 This mode is similar to the previous one in terms of disk usage
 but it is slightly slower; its advantage are the lower RAM requirements.
 }}
@@ -377,7 +376,7 @@ default is a subdirectory named ".vrt" within \code{path_out}).}
 \item{log}{(optional) Character string with the path where the package
 messages will be redirected.
 Default (NA) is not to redirect (use standard output).
-A two-length character with tho paths (which can also coincide)
+A two-length character with two paths (which can also coincide)
 can be used to redirect also the output: in this case, the first path
 is the path for messages, the second one for the output.}
 }
@@ -386,9 +385,9 @@ A vector with the paths of the files which were created (excluded
 the temporary files); NULL otherwise.
 The vector includes two attributes:
 \itemize{
-\item \code{cloudcovered} with the list of imags not created due to the higher
+\item \code{cloudcovered} with the list of images not created due to the higher
 percentage of cloud covered pixels;
-\item \code{missing} with the list of imags not created due to other reasons.
+\item \code{missing} with the list of images not created due to other reasons.
 }
 }
 \description{

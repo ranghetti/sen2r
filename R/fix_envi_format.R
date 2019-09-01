@@ -105,11 +105,11 @@ fix_envi_format <- function(infiles) {
       }
       
       # If information is retrieved (raw header), replace content
-      chech_rn <- all(
+      check_rn <- all(
         all(diff(c(rn_0,rns))==1), # band numbers must be consecutive in the hdr file
         length(rns)==rns_length # check band number
       )
-      if (chech_rn) {
+      if (check_rn) {
         hdr_content[rns] <- paste0(
           gsub("^( *)Band [0-9]+(\\ *[\\,\\}])$", "\\1", hdr_content[rns]),
           sel_s2_bands,

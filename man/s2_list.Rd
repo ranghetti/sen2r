@@ -38,7 +38,7 @@ product
 - "L2A": list available level-2A products}
 
 \item{apihub}{Path of the "apihub.txt" file containing credentials
-of scihub account.
+of SciHub account.
 If NA (default), the default location inside the package will be used.}
 
 \item{max_cloud}{Integer number (0-100) containing the maximum cloud

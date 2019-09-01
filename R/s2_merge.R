@@ -13,7 +13,7 @@
 #'  second case, its parent directory must exists).
 #'  If it is a relative path, it is expanded from the common parent
 #'  directory of `infiles`.
-#' @param subdirs (optional) Logical: if TRUE, differet output products are
+#' @param subdirs (optional) Logical: if TRUE, different output products are
 #'  placed in separated `outfile` subdirectories; if FALSE, they are placed in
 #'  `outfile` directory; if NA (default), subdirectories are created only if
 #'  `infiles` relate to more than a single product.

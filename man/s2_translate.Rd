@@ -19,7 +19,7 @@ the files should be created (default: current directory).
 second case, its parent directory must exists).
 If it is a relative path, it is expanded from the directory of \code{infile}.}
 
-\item{subdirs}{(optional) Logical: if TRUE, differet output products are
+\item{subdirs}{(optional) Logical: if TRUE, different output products are
 placed in separated \code{outdir} subdirectories; if FALSE, they are placed in
 \code{outdir} directory; if NA (default), subdirectories are created only if
 \code{prod_type} has length > 1.}

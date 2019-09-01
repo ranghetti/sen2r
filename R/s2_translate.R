@@ -10,7 +10,7 @@
 #'  `outdir` can bot be an existing or non-existing directory (in the
 #'  second case, its parent directory must exists).
 #'  If it is a relative path, it is expanded from the directory of `infile`.
-#' @param subdirs (optional) Logical: if TRUE, differet output products are
+#' @param subdirs (optional) Logical: if TRUE, different output products are
 #'  placed in separated `outdir` subdirectories; if FALSE, they are placed in
 #'  `outdir` directory; if NA (default), subdirectories are created only if
 #'  `prod_type` has length > 1.

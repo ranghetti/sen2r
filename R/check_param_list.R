@@ -1,6 +1,6 @@
 #' @title Check a parameter list
 #' @description Check that the parameter list (or JSON parameter file)
-#'  is in the correct format, and then speficied values are coherent with 
+#'  is in the correct format, and then specified values are coherent with 
 #'  parameters.
 #' @param pm List of parameters or path of a JSON parameter file.
 #' @param type Type of the output (see [print_message] for details).

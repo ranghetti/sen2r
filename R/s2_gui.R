@@ -3,7 +3,7 @@
 #'  chain of Sentinel-2 products.
 #' @param param_list List of parameters for initialising the GUI values
 #'  (if empty, default values are used).
-#' @param thunderforest_api Character value with the API for thinderforest
+#' @param thunderforest_api Character value with the API for thunderforest
 #'  layers (now not used).
 #' @return A list of parameters.
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
@@ -3032,7 +3032,7 @@ s2_gui <- function(param_list = NULL,
           "If none of them is suitable for the user, it is possible to define",
           "a custom mask by manually selecting the classes to be masked.",
           "See the <a href='https://earth.esa.int/web/sentinel/technical-guides/sentinel-2-msi/level-2a/algorithm'",
-          "target='_blank'>classification algorythm</a> for further details."
+          "target='_blank'>classification algorithm</a> for further details."
         )),
         p(HTML(
           "Notice that this functionality does not ensure to correctly mask",
@@ -3191,8 +3191,8 @@ s2_gui <- function(param_list = NULL,
           "<strong>Process step by step</strong>:",
           "this is the legacy mode, in which the cycle on groups is ignored",
           "as well as the parallel computation over dates.",
-          "All SAFEs are first downloaded/processed, then the processing steps",
-          "are performed sequentially.",
+          "All SAFE archives are first downloaded/processed,",
+          "then the processing steps are performed sequentially.",
           "This mode is similar to the previous one in terms of disk usage",
           "but it is slightly slower; its advantage are the lower RAM requirements."
         )),

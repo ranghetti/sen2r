@@ -61,11 +61,11 @@ created in case \code{format} is "VRT".}
 \item{compress}{(optional) In the case a GTiff format is
 present, the compression indicated with this parameter is used.}
 
-\item{dataType}{(optional) Numeric datatype of the ouptut rasters.
+\item{dataType}{(optional) Numeric datatype of the output rasters.
 if "Float32" or "Float64" is chosen, numeric values are not rescaled;
 if "Int16" (default) or "UInt16", values are multiplicated by \code{scaleFactor} argument;
 if "Byte", values are shifted by 100, multiplicated by 100 and truncated
-at 200 (so that range -1 to 1 is coherced to 0-200), and nodata value
+at 200 (so that range -1 to 1 is coerced to 0-200), and nodata value
 is assigned to 255.}
 
 \item{scaleFactor}{(optional) Scale factor for output values when an integer

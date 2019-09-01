@@ -30,7 +30,7 @@ If no errors occur, output is the corrected parameter list if
 }
 \description{
 Check that the parameter list (or JSON parameter file)
-is in the correct format, and then speficied values are coherent with
+is in the correct format, and then specified values are coherent with
 parameters.
 }
 \note{

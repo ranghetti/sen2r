@@ -47,7 +47,7 @@ A list, containing the following vectors:
 (to be used within \code{\link[=sen2r]{sen2r()}})
 which computes the names of the required output image files
 (see details).
-The function was splitted from \code{\link[=sen2r]{sen2r()}} because this code
+The function was split from \code{\link[=sen2r]{sen2r()}} because this code
 is called twice (and to shorten the main function).
 This function is deprecated, \link{compute_s2_paths} is used instead.
 }

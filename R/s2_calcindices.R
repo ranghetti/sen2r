@@ -43,11 +43,11 @@
 #'  created in case `format` is "VRT".
 #' @param compress (optional) In the case a GTiff format is
 #'  present, the compression indicated with this parameter is used.
-#' @param dataType (optional) Numeric datatype of the ouptut rasters.
+#' @param dataType (optional) Numeric datatype of the output rasters.
 #'  if "Float32" or "Float64" is chosen, numeric values are not rescaled;
 #'  if "Int16" (default) or "UInt16", values are multiplicated by `scaleFactor` argument;
 #'  if "Byte", values are shifted by 100, multiplicated by 100 and truncated
-#'  at 200 (so that range -1 to 1 is coherced to 0-200), and nodata value
+#'  at 200 (so that range -1 to 1 is coerced to 0-200), and nodata value
 #'  is assigned to 255.
 #' @param scaleFactor (optional) Scale factor for output values when an integer
 #'  datatype is chosen (default values are 10000 for "Int16" and "UInt16",

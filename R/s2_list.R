@@ -21,7 +21,7 @@
 #'     - "L1C": list available level-1C products
 #'     - "L2A": list available level-2A products
 #' @param apihub Path of the "apihub.txt" file containing credentials
-#'  of scihub account.
+#'  of SciHub account.
 #'  If NA (default), the default location inside the package will be used.
 #' @param max_cloud Integer number (0-100) containing the maximum cloud
 #'  level of the tiles to be listed (default: no filter).

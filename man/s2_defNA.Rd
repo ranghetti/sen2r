@@ -10,7 +10,7 @@ s2_defNA(prod_types)
 \item{prod_types}{Character vector of the input product types}
 }
 \value{
-Numeric NA values (NA not to seet any NA value), corresponding to
+Numeric NA values (NA not to set any NA value), corresponding to
 \code{prod_types}.
 }
 \description{

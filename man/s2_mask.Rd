@@ -62,12 +62,12 @@ probability)") and 11 ("Snow").
 \item{smooth}{(optional) Numerical (positive): the size (in the unit of
 \code{inmask}, typically metres) to be used as radius for the smoothing
 (the higher it is, the more smooth the output mask will result).
-Defaul is 0 (no smoothing is applied).}
+Default is 0 (no smoothing is applied).}
 
 \item{buffer}{(optional) Numerical (positive or negative): the size of the
 buffer (in the unit of \code{inmask}, typically metres) to be applied to the
 masked area after smoothing it (positive to enlarge, negative to reduce).
-Defaul is 0 (no buffer).}
+Default is 0 (no buffer).}
 
 \item{max_mask}{(optional) Numeric value (range 0 to 100), which represents
 the maximum percentage of allowed masked surface (by clouds or any other
@@ -144,7 +144,7 @@ An attribute "toomasked" contains the paths of the outputs which were not
 created cause to the high percentage of cloud coverage.
 
 \link{s2_perc_masked} returns a names vector with the percentages
-of masked surtfaces.
+of masked surfaces.
 }
 \description{
 \link{s2_mask} Applies a cloud mask to a Sentinel-2 product. Since

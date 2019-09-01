@@ -3,7 +3,7 @@
 #'  (to be used within [sen2r()])
 #'  which computes the names of the required output image files
 #'  (see details). 
-#'  The function was splitted from [sen2r()] because this code
+#'  The function was split from [sen2r()] because this code
 #'  is called twice (and to shorten the main function).
 #'  This function is deprecated, [compute_s2_paths] is used instead.
 #' @details `compute_s2_paths_legacy` was structured in the following way:

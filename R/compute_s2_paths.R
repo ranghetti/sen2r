@@ -3,7 +3,7 @@
 #'  (to be used within [sen2r()])
 #'  which computes the names of the required output image files
 #'  (see details). 
-#'  The function was splitted from [sen2r()] because this code
+#'  The function was split from [sen2r()] because this code
 #'  is called twice (and to shorten the main function).
 #' @details `compute_s2_paths` is structured in the following way:
 #' 1. Retrieve the file names expected to be present at the

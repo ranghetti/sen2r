@@ -1,7 +1,7 @@
 #' @title Clip, reproject and warp raster files
 #' @description The function applies [gdal_translate] or [gdalwarp]
 #'  to clip, reproject and/or warp raster files. The choice of the
-#'  algorythm is based on the comparison between input and output
+#'  algorithm is based on the comparison between input and output
 #'  projections ([gdal_translate] if they are equal, [gdalwarp] elsewhere).
 #'  If not specified, the output format of each file is the same of the
 #'  corresponding source file.
@@ -30,7 +30,7 @@
 #' @param t_srs Target spatial reference set (character). The coordinate
 #'  systems that can be passed are anything supported by the
 #'  OGRSpatialReference.SetFromUserInput() call, which includes EPSG
-#'  PCS and GCSes (ie. EPSG:4296), PROJ.4 declarations (as above),
+#'  PCS and GCSes (i.e. EPSG:4296), PROJ.4 declarations (as above),
 #'  or the name of a .prf file containing well known text.
 #' @param r Resampling_method ("near"|"bilinear"|"cubic"|"cubicspline"|
 #' "lanczos"|"average"|"mode"|"max"|"min"|"med"|"q1"|"q3").

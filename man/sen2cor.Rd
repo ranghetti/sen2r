@@ -2,7 +2,7 @@
 % Please edit documentation in R/sen2cor.R
 \name{sen2cor}
 \alias{sen2cor}
-\title{Correct L1C products using sen2cor}
+\title{Correct L1C products using Sen2Cor}
 \usage{
 sen2cor(l1c_prodlist = NULL, l1c_dir = NULL, outdir = NULL,
   proc_dir = NA, tmpdir = NA, rmtmp = TRUE, tiles = NULL,
@@ -28,7 +28,7 @@ in this case, L1C input products are copied in a temporary directory
 (specified with argument \code{tmpdir}),
 processing is done there and then L2A is moved to \code{outdir}.
 This is required under Linux systems when \code{l1c_dir} is a subdirectory of
-a unit mounted with SAMBA, otherwise sen2cor would produce empty L2A products.}
+a unit mounted with SAMBA, otherwise Sen2Cor would produce empty L2A products.}
 
 \item{tmpdir}{(optional) Path where processing is performed if a temporary
 working directory is required (see argument \code{proc_dir}). Be sure \code{tmpdir}
@@ -41,7 +41,7 @@ Default is a temporary directory.}
 \item{tiles}{Vector of Sentinel-2 Tile strings (5-length character) to be
 processed (default: process all the tiles found in the input L1C products).}
 
-\item{parallel}{(optional) Logical: if TRUE, sen2cor instances are launched
+\item{parallel}{(optional) Logical: if TRUE, Sen2Cor instances are launched
 in parallel using multiple cores; if FALSE (default), they are launched in
 series on a single core.
 The number of cores is automatically determined; specifying it is also
@@ -61,7 +61,7 @@ Vector character with the list ot the output products (being corrected or alread
 existing)
 }
 \description{
-The function uses sen2cor to manually correct L1C products.
+The function uses Sen2Cor to manually correct L1C products.
 Standalone version of
 \href{http://step.esa.int/main/third-party-plugins-2/sen2cor}{sen2cor 2.5.5}
 is used.

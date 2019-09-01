@@ -35,7 +35,7 @@ The function allows to know which Sentinel-2 passages should
 pass over certain orbits during a defined time interval.
 Dates are intended to be in UTC time.
 Notice that this is the expected calendar: some unexpected events
-(e.g. techical problems, or early working phases during first stages of
+(e.g. technical problems, or early working phases during first stages of
 acquisition) could cause the data unavailability even if an
 acquisition was expected.
 Notice also that some orbits (030, 073 and 116) acquire across UTC midnight:

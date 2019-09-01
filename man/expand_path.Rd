@@ -29,7 +29,7 @@ The path eventually expanded.
 \description{
 Accessory function which checks if a path is absolute or relative;
 if relative, use a specified parent directory instead than the working
-dorectory to expand it.
+directory to expand it.
 Useful for functions which accept more than one path as arguments,
 in which one of them contains the absolute position, and the others
 do not.

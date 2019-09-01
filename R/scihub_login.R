@@ -1,7 +1,7 @@
 #' @title Import / export / check SciHub username and password
 #' @description Read the SciHub login information (`read_scihub_login()`), 
 #'  save new username and password (`write_scihub_login()`)
-#'  or chech their validity (`check_scihub_login()`). 
+#'  or check their validity (`check_scihub_login()`). 
 #'  Login information is stored in a file `apihub.txt` inside the
 #'  "extdata" directory. This functions allow to read or write this
 #'  file, and to edit them from inside the GUI.

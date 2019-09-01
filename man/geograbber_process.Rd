@@ -21,9 +21,9 @@ of the output products (xmin, ymin, xmax, ymax), in geographic coordinates.}
 products to be processed (accepted values: "TOA", "BOA", "SCL",
 "TCI"). Default is "BOA".}
 
-\item{res}{(optional) Numerifc vector of length 2 with the x-y resolution
+\item{res}{(optional) Numeric vector of length 2 with the x-y resolution
 for output products. NA (default) means that the resolution
-is keeped as native.}
+is kept as native.}
 
 \item{...}{Other additional \link{sen2r} arguments:
 \code{extent_name}, \code{list_indices}, \code{index_source}, \code{mask_type}, \code{max_mask},

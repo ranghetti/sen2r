@@ -14,7 +14,7 @@ tiles_intersects(extent, all = FALSE, out_format = "id",
 provided;
 if FALSE (default), unnecessary tiles are skipped.
 Unnecessary tiles are tiles which overlaps the extent for an area already
-coveder by another tile.
+covered by another tile.
 In case the extent is all included in an overlapping area, only one of the
 two candidate tiles is returned (the first in alphabetical order).}
 

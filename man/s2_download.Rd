@@ -16,7 +16,7 @@ s2_download(s2_prodlist = NULL, downloader = "builtin", apihub = NA,
 (this requires aria2c to be installed).}
 
 \item{apihub}{Path of the "apihub.txt" file containing credentials
-of scihub account.
+of SciHub account.
 If NA (default), the default location inside the package will be used.}
 
 \item{tile}{Single Sentinel-2 Tile string (5-length character)}

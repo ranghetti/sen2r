@@ -36,7 +36,7 @@
 #'  products on SciHub (and download if needed); FALSE to work
 #'  only with already downloaded SAFE products.
 #' @param apihub Path of the text file containing credentials
-#'  of scihub account.
+#'  of SciHub account.
 #'  If NA (default), the default location inside the package will be used.
 #' @param downloader (optional) Character value corresponding to the executable
 #'  which should be used to download SAFE products. It could be one among
@@ -52,10 +52,10 @@
 #' @param step_atmcorr (optional) Character vector to determine how to obtain
 #'  Level-2A SAFE products:
 #'  * "auto" (default) means that L2A is first
-#'  searched on SciHub: if found, it is dowloaded, if not, the
+#'  searched on SciHub: if found, it is downloaded, if not, the
 #'  corresponding Level-1C is downloaded and sen2cor is used to
 #'  produce L2A;
-#'  * "scihub" means that sen2cor is always used from L1C products
+#'  * "scihub" means that Sen2Cor is always used from L1C products
 #'  downloaded from SciHub;
 #'  * "l2a" means that they are downloaded if available on SciHub,
 #'  otherwise they are skipped (sen2cor is never used).
@@ -64,7 +64,7 @@
 #'  It it used to limit the research of SAFE products to "good" images,
 #'  so it is applied only to non-existing archives (existing SAFE are always
 #'  used).
-#'  In thish sense, this parameter is different from `max_mask`, which can be
+#'  In this sense, this parameter is different from `max_mask`, which can be
 #'  used to set a maximum cloud coverage over output extents.
 #'  Notice also that this value is used to filter on the basis of the metadata
 #'  "Cloud cover percentage" associated to each SAFE, so it is not based
@@ -124,7 +124,7 @@
 #'  3x2 matrix (min red, min green, min blue, max red, max green, max blue).
 #'  Default is to use c(0,2500) for bands 2, 3 and 4; c(0,7500) for other bands.
 #'  In case `list_rgb` is a vector of length > 1, `rgb_ranges` must be a list
-#'  of the same length (otherwise, the same range vlaues will be used for all the RGB
+#'  of the same length (otherwise, the same range values will be used for all the RGB
 #'  products).
 #' @param mask_type (optional) Character value which determines the categories
 #'  in the Surface Classification Map to be masked (see [s2_mask()]
@@ -149,7 +149,7 @@
 #'  (expressed in unit of measure of the output projection, typically metres)
 #'  to be applied to the cloud mask by function [s2_mask].
 #'  Default value (0) means that no buffer is applied; a positive value causes
-#'  an enlargement of the masked area; a negative value cause a reducement.
+#'  an enlargement of the masked area; a negative value cause a reduction.
 #' @param clip_on_extent (optional) Logical: if TRUE (default), output products
 #'  and indices are clipped to the selected extent (and resampled/reprojected);
 #'  if FALSE, the geometry and extension of the tiles is maintained.
@@ -158,9 +158,9 @@
 #'  within the bounding box are maintained.
 #' @param reference_path (optional) Path of the raster file to be used as a
 #'  reference grid. If NA (default), no reference is used.
-#' @param res (optional) Numerifc vector of length 2 with the x-y resolution
+#' @param res (optional) Numeric vector of length 2 with the x-y resolution
 #'  for output products. Default (NA) means that the resolution
-#'  is keeped as native.
+#'  is kept as native.
 #' @param res_s2 (optional) Character value corresponding to the native Sentinel-2
 #'  resolution to be used. Accepted values are "10m" (default), "20m"
 #'  and "60m".
@@ -178,7 +178,7 @@
 #'  format recognised by GDAL). Default is "GTiff".
 #' @param rgb_outformat (optional) Format of the output RGB products (in a
 #'  format recognised by GDAL). Default is "GTiff".
-#' @param index_datatype (optional) Numeric datatype of the ouptut
+#' @param index_datatype (optional) Numeric datatype of the output
 #'  spectral indices (see [s2_calcindices].
 #' @param compression (optional) In the case GTiff is chosen as
 #'  output format, the compression indicated with this parameter is
@@ -227,14 +227,13 @@
 #'  (for more details, see the help window in the GUI). They are placed in
 #'  a subdirectory of the products names "thumbnails".
 #'  If FALSE, they are not created.
-#' @param parallel (optional) Logical or integer: if TRUE (default), some
-#'  functions ([sen2cor], [s2_mask] and [s2_calcindices] for now)
-#'  are executed using multiple cores in order to speed up the execution.
+#' @param parallel (optional) Logical or integer: setting to TRUE, the processing
+#'  is executed using multiple cores in order to speed up the execution.
+#'  Parallelisation is performed on groups of dates.
 #'  The number of cores is automatically determined; specifying it is also
 #'  possible (e.g. `parallel = 4`).
-#'  If FALSE, the processing chain is forced to run with a single core
+#'  If FALSE (default), the processing chain is forced to run with a single core
 #'  (this can be useful if multiple [sen2r] instances are run in parallel).
-#'  This argument can be set only in commandline mode, not using the GUI.
 #' @param processing_order (optional) Character string:
 #'  order used to execute the processing chain (this affects the speed
 #'  of computation and the usage of system resources).
@@ -269,8 +268,8 @@
 #'  - "1" or "by_step":
 #'      this is the legacy mode, in which the cycle on groups is ignored
 #'      as well as the parallel computation over dates.
-#'      All SAFEs are first downloaded/processed, then the processing steps
-#'      are performed sequentially.
+#'      All SAFE archives are first downloaded/processed,
+#'      then the processing steps are performed sequentially.
 #'      This mode is similar to the previous one in terms of disk usage
 #'      but it is slightly slower; its advantage are the lower RAM requirements.
 #' @param use_python (optional) Logical: if TRUE (default), the presence of
@@ -287,15 +286,15 @@
 #' @param log (optional) Character string with the path where the package
 #'  messages will be redirected.
 #'  Default (NA) is not to redirect (use standard output).
-#'  A two-length character with tho paths (which can also coincide)
+#'  A two-length character with two paths (which can also coincide)
 #'  can be used to redirect also the output: in this case, the first path
 #'  is the path for messages, the second one for the output.
 #' @return A vector with the paths of the files which were created (excluded
 #'  the temporary files); NULL otherwise.
 #'  The vector includes two attributes:
-#'  - `cloudcovered` with the list of imags not created due to the higher
+#'  - `cloudcovered` with the list of images not created due to the higher
 #'      percentage of cloud covered pixels;
-#'  - `missing` with the list of imags not created due to other reasons.
+#'  - `missing` with the list of images not created due to other reasons.
 #'
 #' @import data.table
 #' @importFrom utils packageVersion

@@ -12,7 +12,7 @@ which must be passed manually (this is a workaround to avoid importing
 \code{rgdal} as dependency).}
 
 \item{json_path}{(optional) The path of the output JSON file.
-\emph{Warning}: to create a file which wil be usable by the package,
+\emph{Warning}: to create a file which will be usable by the package,
 this option must be left to NA (default location is within the
 package installation). Edit this only to create the file in another
 place for external use.}
@@ -29,7 +29,7 @@ a GDAL driver with \code{reticulate} functions when the package \code{sen2r}
 was already charged, this function can be used only from from
 Linux. It is not necessary, since a gdal_formats.json file is
 present in the package, but can be used to update the list in accordance
-with the formats actually managed by your GDAl installation.
+with the formats actually managed by your GDAL installation.
 }
 \note{
 License: GPL 3.0

@@ -73,7 +73,7 @@ check_sen2r_deps <- function() {
         "Level-1C products: it is required by the package,",
         "unless you choose not to correct products locally",
         "(using only Level-1C \u2013 TOA products",
-        "or dowloading directly Level-2A products)."
+        "or downloading directly Level-2A products)."
       )),
       span(style="display:inline-block;vertical-align:center;padding-top:5px;",
            actionButton("check_sen2cor", "Check sen2cor", width=200),

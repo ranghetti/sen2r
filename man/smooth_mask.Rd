@@ -2,14 +2,14 @@
 % Please edit documentation in R/smooth_mask.R
 \name{smooth_mask}
 \alias{smooth_mask}
-\title{Buffer clound masks}
+\title{Buffer cloud masks}
 \usage{
 smooth_mask(inmask, binpaths, tmpdir = tempdir(), radius = 250,
   buffer = 250, namask = NULL)
 }
 \arguments{
 \item{inmask}{The path of the input 0-1 mask (where 0 represents the area
-to be masked, 1 the cleen surface).}
+to be masked, 1 the clean surface).}
 
 \item{binpaths}{list of paths of binaries.}
 
@@ -27,7 +27,7 @@ masked area after smoothing it (positive to enlarge, negative to reduce).}
 \item{namask}{(optional) The path of an input 0-1 mask where 0 represents
 the area of the original file with NA values (which should not be
 smoothed / buffered).
-Default (NULL) means that no NA values are presente.}
+Default (NULL) means that no NA values are present.}
 }
 \value{
 The path of the smoothed mask.

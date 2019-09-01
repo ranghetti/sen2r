@@ -3,7 +3,7 @@
 #'  each product type (except for spectral indices, whose NA value is 
 #'  managed by [s2_calcindices]).
 #' @param prod_types Character vector of the input product types
-#' @return Numeric NA values (NA not to seet any NA value), corresponding to 
+#' @return Numeric NA values (NA not to set any NA value), corresponding to 
 #'  `prod_types`.
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #'
