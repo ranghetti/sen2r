@@ -37,6 +37,9 @@
 
 raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
   
+  # to avoid NOTE on check
+  . <- NULL
+  
   # levels requiring a stars object
   meta_lev_stars <- c("res", "size", "bbox", "proj", "unit")
   # levels requiring a gdalinfo output

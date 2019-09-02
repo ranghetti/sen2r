@@ -5,7 +5,8 @@
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
-#' @importFrom reticulate import import_builtins use_python py_module_available py_discover_config
+#' @importFrom reticulate import import_from_path import_builtins 
+#'  use_python py_module_available py_discover_config
 #' @export
 
 init_python <- function() {
