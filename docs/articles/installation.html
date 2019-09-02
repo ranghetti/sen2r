@@ -209,7 +209,11 @@ Would you like to use a personal library instead?  (y/n)</code></pre>
 <p>To run the functions correctly, some external dependences are required:</p>
 <ul>
 <li>
-<a href="http://www.gdal.org"><strong>GDAL</strong></a> (with support for JP2OpenJPEG format): this is a mandatory dependency, needed for all the processing operations and to retrieve metadata from SAFE products (to avoid incompatibilities, it is <em>strongly recommended</em> to use a GDAL installation provided with the <a href="https://qgis.org/it/site/forusers/download.html">OSGeo4W installer</a>);</li>
+<a href="http://www.gdal.org"><strong>GDAL</strong></a> (with support for JP2OpenJPEG format): this is a mandatory dependency, needed for all the processing operations and to retrieve metadata from SAFE products. To avoid incompatibilities, starting from <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+<ol start="22" style="list-style-type: lower-alpha">
+<li>1.1.0 it is <em>strictly mandatory</em> to use a GDAL installation provided with the <a href="https://qgis.org/it/site/forusers/download.html">OSGeo4W installer</a>): if this requirement is not satisfied, it is possible to install GDAL with OSGeo4W directly from R (see below);</li>
+</ol>
+</li>
 <li>
 <a href="http://step.esa.int/main/third-party-plugins-2/sen2cor"><strong>sen2cor</strong></a> is used to perform atmospheric correction of Sentinel-2 Level-1C products: it is required by the package, unless you choose not to correct products locally (using only Level-1C – TOA products or downloading directly Level-2A products).</li>
 <li>

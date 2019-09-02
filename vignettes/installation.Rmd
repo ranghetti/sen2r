@@ -179,7 +179,7 @@ To run the functions correctly, some external dependences are required:
     a GDAL installation provided with the 
     [OSGeo4W installer](https://qgis.org/it/site/forusers/download.html)):
     if this requirement is not satisfied, it is possible to install GDAL
-    with OSGEo4W directly from R (see below);
+    with OSGeo4W directly from R (see below);
 * [**sen2cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor) 
     is used to perform atmospheric correction of Sentinel-2 Level-1C products: 
     it is required by the package, unless you choose not to correct products locally 

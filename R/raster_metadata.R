@@ -15,7 +15,7 @@
 #' @importFrom stars read_stars st_dimensions
 #' @importFrom sf st_bbox st_crs
 #' @importFrom methods is
-#' @examples
+#' @examples \dontrun{
 #' # Define product names
 #' examplenames <- c(
 #'   system.file("tif/L7_ETMs.tif", package="stars"),
@@ -34,6 +34,7 @@
 #' # Output with an invalid raster
 #' examplenames <- c(examplenames, system.file("extdata/gdal_formats.json", package="sen2r"))
 #' raster_metadata(examplenames)
+#' }
 
 raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
   

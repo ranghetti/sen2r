@@ -10,10 +10,7 @@
 #' @param indices Character vector with the names of the required
 #'  indices. Values should be included in names corresponding to the
 #'  Abbreviations of the following indices:
-#'  [IDB](http://www.indexdatabase.de/db/is.php?sensor_id=96)
-#'  FIXME the list of the accepted values is a subset; this reference
-#'  will be replaced with an internal html page integrated in the
-#'  shiny interface).
+#'  [IDB](http://www.indexdatabase.de/db/is.php?sensor_id=96).
 #' @param outdir (optional) Full name of the output directory where
 #'  the files should be created (default: current directory).
 #'  `outdir` can bot be an existing or non-existing directory (in the

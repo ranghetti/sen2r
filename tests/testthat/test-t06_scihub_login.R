@@ -1,4 +1,6 @@
 context("check connection")
+testthat::skip_on_cran()
+# testthat::skip_on_travis()
 
 test_that("check internet connection on internal function", {
   expect_equal(check_scihub_connection(), TRUE)
@@ -32,6 +34,8 @@ test_that("check internet connection and fail if missing", {
 
 
 context("read / write SciHub login")
+testthat::skip_on_cran()
+# testthat::skip_on_travis()
 
 test_that("check reading / writing credentials", {
   write_scihub_login("user", "user")
@@ -46,6 +50,8 @@ test_that("check reading / writing credentials", {
 
 
 context("check SciHub login")
+testthat::skip_on_cran()
+# testthat::skip_on_travis()
 
 test_that("check_scihub_login works as expected", {
   
