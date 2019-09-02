@@ -47,7 +47,16 @@ check_sen2r_deps <- function() {
       helpText(em(
         "GDAL is a mandatory dependency of the package:",
         "it is needed for all the processing operations",
-        "and to retrieve metadata from SAFE products"
+        "and to retrieve metadata from SAFE products.",
+        if (Sys.info()["sysname"] == "Windows") {span(
+          "Starting from version 1.1.0, on Windows",
+          strong("it is strictly required to install GDAL using OSGeo4W"),
+          "in order to avoid errors.",
+          "To satisfy this requirement, click on \"Check GDAL\" and,",
+          "whenever the search of a valid installation will finish, download",
+          "the OSGeo4W installer and install it in the default directory",
+          "(or, in any case, maintain the directory name \"OSGeo4W64\")."
+        )}
       )),
       span(style="display:inline-block;vertical-align:center;padding-top:5px;",
            actionButton("check_gdal", "Check GDAL", width=200),
@@ -157,13 +166,16 @@ check_sen2r_deps <- function() {
           div(
             p(style="text-align:center;font-size:500%;color:red;", 
               icon("times-circle")),
-            p("GDAL needs to be installed.",
-              "To do it, download the OSGeo4W installer using the button below:",
-              "then, give the administrator rules when required,",
-              "choose the \"Advanced install\" and",
-              "continue clicking \"Next\";",
-              "when the window to chose the packages to install will appear,",
-              "check the package \"gdal-python\" and install it."),
+            p(HTML(
+              "GDAL needs to be installed. To do it:<ol>",
+              "<li>download the OSGeo4W installer using the button below;</li>",
+              "<li>when the file will be automatically opened,",
+              "give the administrator rules when required;</li>",
+              "<li>choose the \"Advanced install\";</li>",
+              "<li>continue clicking \"Next\";</li>",
+              "<li>when the window for choosing the packages to install will appear,",
+              "check the package \"gdal-python\" and install it.</li></ol>"
+            )),
             hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
             div(style="text-align:right;", 
                 actionButton("install_gdal_button", strong("\u2000Download"), icon=icon("download")),
