@@ -1632,7 +1632,9 @@ s2_gui <- function(param_list = NULL,
         sel_imported_extent <- if (is.null(custom_source) | anyNA(custom_source)) {
           x <- st_polygon(); attr(x, "valid") <- FALSE; x
         } else {
-          x <- st_read(custom_source, quiet=TRUE) %>% 
+          x <- if (is.character(custom_source)) {
+            st_read(custom_source, quiet=TRUE)
+          } else {custom_source} %>% 
             st_transform(4326)
           names(sf::st_geometry(x)) <- NULL
           attr(x, "valid") <- TRUE
