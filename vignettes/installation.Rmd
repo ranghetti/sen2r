@@ -55,7 +55,7 @@ Other binaries are required (or suggested), since they are used in runtime by th
 * [**sen2cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor) 
     is used to perform atmospheric correction of Sentinel-2 Level-1C products: 
     it is required by the package, unless you choose not to correct products locally 
-    (using only Level-1C – TOA products or dowloading directly Level-2A products).
+    (using only Level-1C – TOA products or downloading directly Level-2A products).
 * [**aria2**](https://aria2.github.io) is an alternative downloader which
     can be used to faster the download of SAFE archives; it can be optionally
     installed and used.
@@ -173,11 +173,11 @@ To run the functions correctly, some external dependences are required:
     and to retrieve metadata from SAFE products
     (to avoid incompatibilities, it is _strongly recommended_ to use 
     a GDAL installation provided with the 
-    [OSGeo4W intaller](https://qgis.org/it/site/forusers/download.html));
+    [OSGeo4W installer](https://qgis.org/it/site/forusers/download.html));
 * [**sen2cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor) 
     is used to perform atmospheric correction of Sentinel-2 Level-1C products: 
     it is required by the package, unless you choose not to correct products locally 
-    (using only Level-1C – TOA products or dowloading directly Level-2A products).
+    (using only Level-1C – TOA products or downloading directly Level-2A products).
 * **Wget** is the downloader used by the package; it is required to work online.
 * [**aria2**](https://aria2.github.io) is an alternative downloader which
     can be used to faster the download of SAFE archives; it can be optionally

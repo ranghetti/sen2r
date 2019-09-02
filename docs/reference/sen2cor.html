@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Correct L1C products using sen2cor — sen2cor • An R toolbox to find, download an preprocess Sentinel-2 data</title>
+<title>Correct L1C products using Sen2Cor — sen2cor • An R toolbox to find, download an preprocess Sentinel-2 data</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Correct L1C products using sen2cor — sen2cor" />
+<meta property="og:title" content="Correct L1C products using Sen2Cor — sen2cor" />
 
-<meta property="og:description" content="The function uses sen2cor to manually correct L1C products.
+<meta property="og:description" content="The function uses Sen2Cor to manually correct L1C products.
 Standalone version of
 sen2cor 2.5.5
 is used." />
@@ -76,7 +76,7 @@ is used." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">An R toolbox to find, download an preprocess Sentinel-2 data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -109,14 +109,14 @@ is used." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Correct L1C products using sen2cor</h1>
+    <h1>Correct L1C products using Sen2Cor</h1>
     <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/sen2cor.R'><code>R/sen2cor.R</code></a></small>
     <div class="hidden name"><code>sen2cor.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>The function uses sen2cor to manually correct L1C products.
+    <p>The function uses Sen2Cor to manually correct L1C products.
 Standalone version of
 <a href='http://step.esa.int/main/third-party-plugins-2/sen2cor'>sen2cor 2.5.5</a>
 is used.</p>
@@ -157,7 +157,7 @@ in this case, L1C input products are copied in a temporary directory
 (specified with argument <code>tmpdir</code>),
 processing is done there and then L2A is moved to <code>outdir</code>.
 This is required under Linux systems when <code>l1c_dir</code> is a subdirectory of
-a unit mounted with SAMBA, otherwise sen2cor would produce empty L2A products.</p></td>
+a unit mounted with SAMBA, otherwise Sen2Cor would produce empty L2A products.</p></td>
     </tr>
     <tr>
       <th>tmpdir</th>
@@ -178,7 +178,7 @@ processed (default: process all the tiles found in the input L1C products).</p><
     </tr>
     <tr>
       <th>parallel</th>
-      <td><p>(optional) Logical: if TRUE, sen2cor instances are launched
+      <td><p>(optional) Logical: if TRUE, Sen2Cor instances are launched
 in parallel using multiple cores; if FALSE (default), they are launched in
 series on a single core.
 The number of cores is automatically determined; specifying it is also

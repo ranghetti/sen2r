@@ -4,9 +4,10 @@
 \alias{gdal_warp}
 \title{Clip, reproject and warp raster files}
 \usage{
-gdal_warp(srcfiles, dstfiles, of = NULL, ref = NULL, mask = NULL,
-  tr = NULL, t_srs = NULL, r = NULL, dstnodata = NULL,
-  overwrite = FALSE, tmpdir = NA, rmtmp = TRUE, ...)
+gdal_warp(srcfiles, dstfiles, of = NULL, co = NULL, ref = NULL,
+  mask = NULL, tr = NULL, t_srs = NULL, r = NULL,
+  dstnodata = NULL, overwrite = FALSE, tmpdir = NA, rmtmp = TRUE,
+  ...)
 }
 \arguments{
 \item{srcfiles}{A vector of input file paths (managed by GDAL).}
@@ -15,6 +16,10 @@ gdal_warp(srcfiles, dstfiles, of = NULL, ref = NULL, mask = NULL,
 
 \item{of}{The output format (use the short format name). Default is
 the format of every input filename.}
+
+\item{co}{Character. Passes a creation option to the output format driver.
+Multiple -co options may be listed. See format specific documentation
+for legal creation options for each format.}
 
 \item{ref}{Path of the raster taken as reference: if provided,
 parameters regarding the output grid (alignment, resolution and
@@ -37,7 +42,7 @@ projection is never taken from \code{mask}.}
 \item{t_srs}{Target spatial reference set (character). The coordinate
 systems that can be passed are anything supported by the
 OGRSpatialReference.SetFromUserInput() call, which includes EPSG
-PCS and GCSes (ie. EPSG:4296), PROJ.4 declarations (as above),
+PCS and GCSes (i.e. EPSG:4296), PROJ.4 declarations (as above),
 or the name of a .prf file containing well known text.}
 
 \item{r}{Resampling_method ("near"|"bilinear"|"cubic"|"cubicspline"|
@@ -71,7 +76,7 @@ Default is a temporary directory.}
 \description{
 The function applies \link{gdal_translate} or \link{gdalwarp}
 to clip, reproject and/or warp raster files. The choice of the
-algorythm is based on the comparison between input and output
+algorithm is based on the comparison between input and output
 projections (\link{gdal_translate} if they are equal, \link{gdalwarp} elsewhere).
 If not specified, the output format of each file is the same of the
 corresponding source file.

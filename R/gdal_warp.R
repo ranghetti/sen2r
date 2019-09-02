@@ -1,7 +1,7 @@
 #' @title Clip, reproject and warp raster files
 #' @description The function applies [gdal_translate] or [gdalwarp]
 #'  to clip, reproject and/or warp raster files. The choice of the
-#'  algorythm is based on the comparison between input and output
+#'  algorithm is based on the comparison between input and output
 #'  projections ([gdal_translate] if they are equal, [gdalwarp] elsewhere).
 #'  If not specified, the output format of each file is the same of the
 #'  corresponding source file.
@@ -9,6 +9,9 @@
 #' @param dstfiles A vector of corresponding output file paths.
 #' @param of The output format (use the short format name). Default is
 #'  the format of every input filename.
+#' @param co Character. Passes a creation option to the output format driver. 
+#'  Multiple -co options may be listed. See format specific documentation 
+#'  for legal creation options for each format.
 #' @param ref Path of the raster taken as reference: if provided,
 #'  parameters regarding the output grid (alignment, resolution and
 #'  extent) are taken from this raster. To set differently some of
@@ -27,7 +30,7 @@
 #' @param t_srs Target spatial reference set (character). The coordinate
 #'  systems that can be passed are anything supported by the
 #'  OGRSpatialReference.SetFromUserInput() call, which includes EPSG
-#'  PCS and GCSes (ie. EPSG:4296), PROJ.4 declarations (as above),
+#'  PCS and GCSes (i.e. EPSG:4296), PROJ.4 declarations (as above),
 #'  or the name of a .prf file containing well known text.
 #' @param r Resampling_method ("near"|"bilinear"|"cubic"|"cubicspline"|
 #' "lanczos"|"average"|"mode"|"max"|"min"|"med"|"q1"|"q3").
@@ -53,10 +56,11 @@
 #'  (different from `s_srs`, `t_srs`, `te`, `tr`, `ts` and `of`).
 #' @return NULL
 #' @export
-#' @importFrom rgdal GDALinfo
 #' @importFrom gdalUtils gdalwarp gdal_translate
-#' @importFrom sf st_transform st_geometry st_geometry_type st_write st_cast st_area st_bbox st_sfc st_polygon st_as_sf st_as_sfc st_crs
+#' @importFrom sf st_transform st_geometry st_geometry_type st_write st_cast st_zm
+#'  st_area st_bbox st_sfc st_sf st_polygon st_as_sf st_as_sfc st_as_sf st_crs
 #' @importFrom methods as
+#' @importFrom stars read_stars
 #' @importFrom magrittr "%>%"
 #' @importFrom units ud_units
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
@@ -125,6 +129,7 @@
 gdal_warp <- function(srcfiles,
                       dstfiles,
                       of = NULL,
+                      co = NULL,
                       ref = NULL,
                       mask = NULL,
                       tr = NULL,
@@ -180,31 +185,31 @@ gdal_warp <- function(srcfiles,
   
   # check output format
   if (!is.null(of)) {
-    gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))
+    gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))$drivers
     sel_driver <- gdal_formats[gdal_formats$name==of,]
     if (nrow(sel_driver)==0) {
       print_message(
         type="error",
         "Format \"",of,"\" is not recognised; ",
-        "please use one of the formats supported by your GDAL installation.\n\n",
-        "To list them, use the following command:\n",
-        "gdalUtils::gdalinfo(formats=TRUE)\n\n",
-        "To search for a specific format, use:\n",
-        "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
+        "please use one of the formats supported by your GDAL installation."#\n\n",
+        # "To list them, use the following command:\n",
+        # "gdalUtils::gdalinfo(formats=TRUE)\n\n",
+        # "To search for a specific format, use:\n",
+        # "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]"
+      )
     }
   }
   
   # if "ref" is specified, read ref parameters
   if (!is.null(ref)) {
-    ref_metadata <- suppressWarnings(GDALinfo(ref))
-    ref_res <- ref_metadata[c("res.x","res.y")]
-    ref_ll <- ref_metadata[c("ll.x","ll.y")]
-    ref_size <- ref_metadata[c("columns","rows")]
-    ref_bbox <- matrix(
-      c(ref_ll, ref_ll + ref_size * ref_res),
-      ncol=2)
-    dimnames(ref_bbox) <- list(c("x","y"),c("min","max"))
-    t_srs <- st_crs(attr(ref_metadata, "projection"))$proj4string
+    ref_metadata <- raster_metadata(ref, format = "list")[[1]]
+    ref_res <- ref_metadata$res
+    ref_size <- ref_metadata$size
+    t_srs <- ref_metadata$proj$proj4string
+    ref_bbox <- ref_metadata$bbox
+    ref_ll <- ref_bbox[c("xmin","ymin")]
+    sel_of <- ifelse(is.null(of), ref_metadata$outformat, of)
+    
     # round "tr" to ref grid
     if (is.null(tr)) {
       tr <- ref_res
@@ -215,15 +220,25 @@ gdal_warp <- function(srcfiles,
   
   # if "mask" is specified, take "mask" and "te" from it
   if (!is.null(mask)) {
-    mask_type <- get_spatype(mask)
-    # if it is a vector, set "te" to the bounding box (in t_srs)
-    if (mask_type == "vectfile") {
-      mask <- st_read(mask, quiet=TRUE)
-    } else if (mask_type == "spobject") {
-      mask <- st_as_sf(mask)
-    } else if (mask_type == "rastfile") {
-      mask <- st_as_sfc(st_bbox(raster(mask)))
-    } 
+    mask <- if (is(mask, "sf") | is(mask, "sfc")) {
+      st_sf(mask)
+    } else if (is(mask, "Spatial")) {
+      st_as_sf(mask)
+    } else if (is(mask, "Raster") | is(mask, "stars")) {
+      st_as_sfc(st_bbox(mask))
+    } else if (is(mask, "character")) {
+      mask0 <- try(st_read(mask, quiet=TRUE), silent = TRUE)
+      if (is(mask0, "sf")) {
+        mask0
+      } else {
+        mask1 <- try(read_stars(mask, proxy=TRUE), silent = TRUE)
+        if (is(mask0, "stars")) {
+          st_as_sfc(st_bbox(mask1))
+        } else {
+          stop("'mask' is not a recognised spatial file.")
+        }
+      }
+    } %>% st_zm()
     
     # Check that the polygon is not empty
     if (length(grep("POLYGON",st_geometry_type(mask)))>=1 &
@@ -269,16 +284,13 @@ gdal_warp <- function(srcfiles,
     if (!file.exists(dstfile) | overwrite==TRUE) {
       
       # read infile parameters
-      sel_metadata <- suppressWarnings(GDALinfo(srcfile))
-      sel_res <- sel_metadata[c("res.x","res.y")]
-      sel_ll <- sel_metadata[c("ll.x","ll.y")]
-      sel_size <- sel_metadata[c("columns","rows")]
-      sel_s_srs <- st_crs(attr(sel_metadata, "projection"))$proj4string
-      
-      sel_bbox <- c(sel_ll, sel_ll + sel_size * sel_res)
-      names(sel_bbox) <- c("xmin", "ymin", "xmax", "ymax")
-      sel_bbox <- st_bbox(sel_bbox, crs = sel_s_srs)
-      sel_of <- ifelse(is.null(of), attr(sel_metadata, "driver"), of)
+      sel_metadata <- raster_metadata(srcfile, format = "list")[[1]]
+      sel_res <- sel_metadata$res
+      sel_size <- sel_metadata$size
+      sel_s_srs <- sel_metadata$proj$proj4string
+      sel_bbox <- sel_metadata$bbox
+      sel_ll <- sel_bbox[c("xmin","ymin")]
+      sel_of <- ifelse(is.null(of), sel_metadata$outformat, of)
       
       # set default parameter values (if not specified)
       sel_t_srs <- if (is.null(t_srs)) {sel_s_srs} else {t_srs}
@@ -389,6 +401,9 @@ gdal_warp <- function(srcfiles,
           "tr = sel_tr, "
         },
         "of = sel_of, ",
+        if (!is.null(co)) {
+          "co = co, "
+        },
         "r = sel_r, ",
         if (!is.null(sel_nodata)) {
           if (is.na(sel_nodata)) {

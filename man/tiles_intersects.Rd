@@ -14,7 +14,7 @@ tiles_intersects(extent, all = FALSE, out_format = "id",
 provided;
 if FALSE (default), unnecessary tiles are skipped.
 Unnecessary tiles are tiles which overlaps the extent for an area already
-coveder by another tile.
+covered by another tile.
 In case the extent is all included in an overlapping area, only one of the
 two candidate tiles is returned (the first in alphabetical order).}
 
@@ -36,11 +36,12 @@ which overlap a provided extent.
 License: GPL 3.0
 }
 \examples{
+\dontrun{
 ex_extent <- sf::st_read(
   system.file("extdata/example_files/scalve.kml", package="sen2r"),
   quiet = TRUE
 )
-ex_extent <- ex_extent[ex_extent$description == "Schilpario",]
+ex_extent <- ex_extent[ex_extent$Description == "Schilpario",]
 
 # Tile ID of the required S2 tile
 tiles_intersects(ex_extent)
@@ -55,6 +56,7 @@ plot(sf::st_geometry(sel_tiles)); plot(sf::st_geometry(ex_extent), add=TRUE, col
 # Spatial object with the overlapping S2 tiles
 sel_tiles <- tiles_intersects(ex_extent, all = TRUE, out_format = "sf")
 plot(sf::st_geometry(sel_tiles)); plot(sf::st_geometry(ex_extent), add=TRUE, col="yellow")
+}
 }
 \author{
 Luigi Ranghetti, phD (2019) \email{ranghetti.l@irea.cnr.it}

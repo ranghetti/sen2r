@@ -2,7 +2,7 @@
 #' @description The internal function build a database with the base DOY of 
 #'  passage across each Sentinel-2A orbit (which is used in function `s2_dop`).
 #' @param json_path (optional) The path of the output JSON file.
-#'  *Warning*: to create a file which wil be usable by the package,
+#'  *Warning*: to create a file which will be usable by the package,
 #'  this option must be left to NA (default location is within the
 #'  package installation). Edit this only to create the file in another
 #'  place for external use.

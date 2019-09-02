@@ -2,38 +2,71 @@
 % Please edit documentation in R/scihub_login.R
 \name{read_scihub_login}
 \alias{read_scihub_login}
+\alias{check_scihub_login}
+\alias{check_scihub_connection}
 \alias{write_scihub_login}
-\title{Import / export SciHub username and password}
+\title{Import / export / check SciHub username and password}
 \usage{
 read_scihub_login(apihub_path = NA)
 
-write_scihub_login(username, password, apihub_path = NA,
+check_scihub_login(username, password)
+
+check_scihub_connection()
+
+write_scihub_login(username, password, apihub_path = NA, check = TRUE,
   append = FALSE)
 }
 \arguments{
 \item{apihub_path}{Path of the file in which login information is saved.
-If NA (default) it is automatically read from \code{s2download} path.}
+If NA (default) it is automatically read from the package default location.}
 
 \item{username}{SciHub username.}
 
 \item{password}{SciHub password.}
 
+\item{check}{Logical: if TRUE (default), new credentials are checked
+before writing them on \code{apihub_path} (if they are invalid, an error
+is provided);
+if FALSE, they are directly written.}
+
 \item{append}{Logical: if TRUE, new credentials are added
 to the ones existing within \code{apihub_path};
 if FALSE (default), \code{apihub_path} is replaced with the new ones.}
 }
+\value{
+\code{read_scihub_login} returns a matrix of credentials,
+in which \code{username} is in the first column, \code{password} in the second.
+
+\code{check_scihub_login} returns TRUE if credentials are valid,
+FALSE elsewhere.
+
+\code{check_scihub_connection} returns TRUE if internet connection
+is available and SciHub is accessible, FALSE otherwise.
+
+\code{write_scihub_login} returns NULL.
+}
 \description{
-Read the SciHub login information or save new username and
-password. Login information is stored in a file \code{apihub.txt} inside the
-directory of \code{s2download}. This functions allow to read or write this
+Read the SciHub login information (\code{read_scihub_login()}),
+save new username and password (\code{write_scihub_login()})
+or check their validity (\code{check_scihub_login()}).
+Login information is stored in a file \code{apihub.txt} inside the
+"extdata" directory. This functions allow to read or write this
 file, and to edit them from inside the GUI.
-Remember that, in case login information is not provided, default \code{user}
-username and \code{user} password are used, but this can cause timeouts, since
-\href{https://scihub.copernicus.eu/twiki/do/view/SciHubWebPortal/APIHubDescription}{a limit of two parallel downloads per user exists}.
 }
 \note{
 License: GPL 3.0
 }
+\examples{
+\dontrun{
+if (interactive()) {
+  check_scihub_login("user", "user")
+  write_scihub_login("user", "user")
+  read_scihub_login()
+}
+}
+}
 \author{
 Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
+
+Lorenzo Busetto, phD (2019) \email{busetto.l@irea.cnr.it}
 }

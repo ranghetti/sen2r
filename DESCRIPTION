@@ -1,7 +1,7 @@
 Package: sen2r
 Type: Package
-Title: An R toolbox to find, download and preprocess Sentinel-2 data
-Version: 1.0.2
+Title: An R Toolbox to Find, Download and Process Sentinel-2 Data
+Version: 1.1.0
 Authors@R: c(person("Luigi", "Ranghetti", 
                     email = "ranghetti.l@irea.cnr.it", 
                     role = c("aut", "cre"), 
@@ -10,22 +10,24 @@ Authors@R: c(person("Luigi", "Ranghetti",
                     email = "lbusett@gmail.com", 
                     role = c("aut"),
                     comment = c(ORCID = "0000-0001-9634-6038")))
-Description: This package contains useful functions to preprocess Sentinel-2 imagery.
-  This package is under construction.
-License: GPL-3 + file LICENSE
+Description: Functions to download Sentinel-2 optical images 
+ and perform preliminary processing operations. 
+ 'sen2r' provides the instruments required to easily perform 
+ (and eventually automate) the steps necessary to build a complete 
+ Sentinel-2 processing chain.
+ A Graphical User Interface to facilitate data processing is also provided.
+License: GPL-3
 Encoding: UTF-8
 URL: http://sen2r.ranghetti.info, https://github.com/ranghetti/sen2r
 BugReports: https://github.com/ranghetti/sen2r/issues
-Imports:
+Imports: 
   reticulate,
   methods,
   digest,
-  stringr,
-  rgdal,
   gdalUtils,
   magrittr,
-  sp,
   sf,
+  stars,
   data.table,
   raster,
   XML,
@@ -43,12 +45,15 @@ Imports:
   parallel,
   doParallel,
   units,
-  lwgeom,
   httr
 Suggests:
-  knitr,
-  rmarkdown,
-  geojsonlint
+    spelling, 
+    geojsonlint,
+    httptest,
+    knitr,
+    rmarkdown,
+    testthat (>= 2.1.0)
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
+Language: en-GB

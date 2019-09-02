@@ -1,5 +1,5 @@
-#' @title Correct L1C products using sen2cor
-#' @description The function uses sen2cor to manually correct L1C products.
+#' @title Correct L1C products using Sen2Cor
+#' @description The function uses Sen2Cor to manually correct L1C products.
 #'  Standalone version of 
 #'  [sen2cor 2.5.5](http://step.esa.int/main/third-party-plugins-2/sen2cor)
 #'  is used.
@@ -18,7 +18,7 @@
 #'  (specified with argument `tmpdir`), 
 #'  processing is done there and then L2A is moved to `outdir`. 
 #'  This is required under Linux systems when `l1c_dir` is a subdirectory of
-#'  a unit mounted with SAMBA, otherwise sen2cor would produce empty L2A products.
+#'  a unit mounted with SAMBA, otherwise Sen2Cor would produce empty L2A products.
 #' @param tmpdir (optional) Path where processing is performed if a temporary
 #'  working directory is required (see argument `proc_dir`). Be sure `tmpdir`
 #'  not to be a SAMBA mountpoint under Linux.
@@ -27,7 +27,7 @@
 #'  (Default: TRUE)
 #' @param tiles Vector of Sentinel-2 Tile strings (5-length character) to be 
 #'  processed (default: process all the tiles found in the input L1C products).
-#' @param parallel (optional) Logical: if TRUE, sen2cor instances are launched 
+#' @param parallel (optional) Logical: if TRUE, Sen2Cor instances are launched 
 #'  in parallel using multiple cores; if FALSE (default), they are launched in 
 #'  series on a single core. 
 #'  The number of cores is automatically determined; specifying it is also 
@@ -65,7 +65,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
   # to avoid NOTE on check
   i <- NULL
   
-  # load sen2cor executable path
+  # load Sen2Cor executable path
   binpaths <- load_binpaths("sen2cor")
   
   # get version
@@ -217,7 +217,9 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
     if (overwrite==TRUE | length(sel_l2a_tiles_tocorrect)>0) {
       
       # if output exists (and overwrite==TRUE), delete it
-      if (overwrite==TRUE) {unlink(sel_l2a)}
+      if (overwrite==TRUE) {
+        unlink(sel_l2a, recursive = TRUE)
+      }
       
       # set a temporary proc_dir in the following three cases:
       # 1) if some L1C tiles need to be manually excluded;
@@ -298,7 +300,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
       system(
         # paste(binpaths$sen2cor, "--refresh", sel_l1c),
         paste(
-          binpaths$sen2cor, 
+          binpaths$sen2cor,
           if (sen2cor_version>=package_version("2.8.0")) {paste("--output_dir", sen2cor_out_l2a)},
           if (sen2cor_version<package_version("2.8.0")) {"--refresh"},
           sel_l1c
@@ -321,6 +323,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
         )
         file.remove(sen2cor_out_l2a)
         sen2cor_out_l2a <- file.path(dirname(sen2cor_out_l2a),sen2cor_out_l2a_basename)
+        sel_l2a <- file.path(dirname(sel_l2a), sen2cor_out_l2a_basename)
       }
       
       # move output to the required output directory

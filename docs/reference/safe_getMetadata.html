@@ -79,7 +79,7 @@ if it is a valid SAFE." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">An R toolbox to find, download an preprocess Sentinel-2 data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -154,7 +154,7 @@ option <code>info = "nameinfo"</code> (see below).</p></td>
       <td><p>(optional) A character vector with the list of the metadata
 which should be provided.
 Accepted values are:</p><ul>
-<li><p><code>"all"</code> (default): all the retrevable metadata are provided;</p></li>
+<li><p><code>"all"</code> (default): all the retrievable metadata are provided;</p></li>
 <li><p><code>"fileinfo"</code>: only the metadata obtained by scanning the file name
 and product structure (without opening it with GDAL) are provided.</p></li>
 <li><p><code>"nameinfo"</code>: only the metadata obtained by scanning the file name
@@ -171,7 +171,7 @@ followings):</p><ul>
 <li><p><code>"level"</code> ('1C' or '2A');</p></li>
 <li><p><code>"creation_datetime"</code>, <code>"id_tile"</code>, <code>"mission"</code>, <code>"centre"</code>,
 <code>"file_class"</code>, <code>"id_orbit"</code>, <code>"orbit_number"</code>,
-<code>"sensing_datetime"</code>, <code>"id_baseline"</code>: metadata speficic of
+<code>"sensing_datetime"</code>, <code>"id_baseline"</code>: metadata specific of
 the product type and version (they are returned only if
 obtainable for the specified input);</p></li>
 <li><p><code>"clouds"</code>, <code>"direction"</code>, <code>"orbit_n"</code>, <code>"preview_url"</code>,
@@ -210,7 +210,7 @@ FALSE elsewhere.</p>
 <span class='no'>s2_examplename</span> <span class='kw'>&lt;-</span>
   <span class='st'>"/path/of/the/product/S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"</span>
 
-<span class='co'># Return only the information retrevable from the file names (files are not scanned)</span>
+<span class='co'># Return only the information retrievable from the file names (files are not scanned)</span>
 <span class='fu'>safe_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"nameinfo"</span>)</div><div class='output co'>#&gt; $prod_type
 #&gt; [1] "product"
 #&gt; 

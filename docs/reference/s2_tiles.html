@@ -73,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">An R toolbox to find, download an preprocess Sentinel-2 data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -129,13 +129,24 @@
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Retrieve all the tiles</span>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='co'># Retrieve all the tiles</span>
 <span class='no'>s2tiles</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_tiles</span>()
 
-<span class='co'># Show a subset of all the tiles</span>
-<span class='no'>s2tiles_it</span> <span class='kw'>&lt;-</span> <span class='no'>s2tiles</span>[<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/grep'>grep</a></span>(<span class='st'>"^3[23]T"</span>, <span class='no'>s2tiles</span>$<span class='no'>tile_id</span>),]
+<span class='co'># Extract a subset of all the tiles</span>
+<span class='kw pkg'>httr</span><span class='kw ns'>::</span><span class='fu'><a href='https://httr.r-lib.org/reference/GET.html'>GET</a></span>(
+  <span class='st'>"https://biogeo.ucdavis.edu/data/gadm3.6/Rsf/gadm36_ITA_0_sf.rds"</span>,
+  <span class='kw pkg'>httr</span><span class='kw ns'>::</span><span class='fu'><a href='https://httr.r-lib.org/reference/write_disk.html'>write_disk</a></span>(<span class='no'>it_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/tempfile'>tempfile</a></span>())
+)
+<span class='no'>it</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/readRDS'>readRDS</a></span>(<span class='no'>it_path</span>)
+<span class='no'>s2tiles_it</span> <span class='kw'>&lt;-</span> <span class='no'>s2tiles</span>[<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/geos_binary_pred'>st_intersects</a></span>(<span class='no'>it</span>, <span class='no'>s2tiles</span>)<span class='kw'>[[</span><span class='fl'>1</span>]],]
 <span class='no'>s2_coords</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_coordinates'>st_coordinates</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/warning'>suppressWarnings</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/geos_unary'>st_centroid</a></span>(<span class='no'>s2tiles_it</span>)))
-<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>s2tiles_it</span>$<span class='no'>geometry</span>)</div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/text'>text</a></span>(<span class='no'>s2_coords</span>[,<span class='fl'>1</span>], <span class='no'>s2_coords</span>[,<span class='fl'>2</span>], <span class='no'>s2tiles_it</span>$<span class='no'>tile_id</span>, <span class='kw'>cex</span><span class='kw'>=</span><span class='fl'>0.5</span>)</div><div class='img'><img src='s2_tiles-1.png' alt='' width='700' height='433' /></div></pre>
+
+<span class='co'># Show the tiles</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>s2tiles_it</span>$<span class='no'>geometry</span>, <span class='kw'>border</span> <span class='kw'>=</span> <span class='st'>"blue"</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>it</span>$<span class='no'>geometry</span>, <span class='kw'>border</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/text'>text</a></span>(<span class='no'>s2_coords</span>[,<span class='fl'>1</span>], <span class='no'>s2_coords</span>[,<span class='fl'>2</span>], <span class='no'>s2tiles_it</span>$<span class='no'>tile_id</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>, <span class='kw'>cex</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -149,7 +160,7 @@
     </ul>
 
     <h2>Author</h2>
-    <p>Luigi Ranghetti, phD (2018) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p>
+    <p>Luigi Ranghetti, phD (2019) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p>
   </div>
 </div>
 

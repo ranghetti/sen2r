@@ -5,7 +5,8 @@
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
-#' @importFrom reticulate import import_builtins use_python py_module_available py_discover_config
+#' @importFrom reticulate import import_from_path import_builtins 
+#'  use_python py_module_available py_discover_config
 #' @export
 
 init_python <- function() {
@@ -19,7 +20,6 @@ init_python <- function() {
   }
   
   # checks the python version
-  # (if possible, use python2 for compatibility with s2download.py)
   binpaths <- load_binpaths()
   
   # Search or install Python

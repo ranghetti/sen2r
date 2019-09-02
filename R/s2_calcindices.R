@@ -43,11 +43,11 @@
 #'  created in case `format` is "VRT".
 #' @param compress (optional) In the case a GTiff format is
 #'  present, the compression indicated with this parameter is used.
-#' @param dataType (optional) Numeric datatype of the ouptut rasters.
+#' @param dataType (optional) Numeric datatype of the output rasters.
 #'  if "Float32" or "Float64" is chosen, numeric values are not rescaled;
 #'  if "Int16" (default) or "UInt16", values are multiplicated by `scaleFactor` argument;
 #'  if "Byte", values are shifted by 100, multiplicated by 100 and truncated
-#'  at 200 (so that range -1 to 1 is coherced to 0-200), and nodata value
+#'  at 200 (so that range -1 to 1 is coerced to 0-200), and nodata value
 #'  is assigned to 255.
 #' @param scaleFactor (optional) Scale factor for output values when an integer
 #'  datatype is chosen (default values are 10000 for "Int16" and "UInt16",
@@ -79,7 +79,6 @@
 #' @importFrom parallel makeCluster stopCluster detectCores
 #' @importFrom jsonlite fromJSON
 #' @import data.table
-#' @importFrom rgdal GDALinfo
 #' @importFrom raster blockSize brick getValues raster writeStart writeStop writeValues
 #' @importFrom magrittr "%>%"
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
@@ -213,18 +212,19 @@ s2_calcindices <- function(infiles,
   indices_info <- indices_db[match(indices,indices_db$name),]
   
   # check output format
-  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))$drivers
   if (!is.na(format)) {
     sel_driver <- gdal_formats[gdal_formats$name==format,]
     if (nrow(sel_driver)==0) {
       print_message(
         type="error",
         "Format \"",format,"\" is not recognised; ",
-        "please use one of the formats supported by your GDAL installation.\n\n",
-        "To list them, use the following command:\n",
-        "gdalUtils::gdalinfo(formats=TRUE)\n\n",
-        "To search for a specific format, use:\n",
-        "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
+        "please use one of the formats supported by your GDAL installation."#\n\n",
+        # "To list them, use the following command:\n",
+        # "gdalUtils::gdalinfo(formats=TRUE)\n\n",
+        # "To search for a specific format, use:\n",
+        # "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]"
+      )
     }
   }
   
@@ -285,9 +285,9 @@ s2_calcindices <- function(infiles,
     
     sel_infile <- infiles[i]
     sel_infile_meta <- c(infiles_meta[i,])
-    sel_format <- suppressWarnings(ifelse(
-      !is.na(format), format, attr(GDALinfo(sel_infile), "driver")
-    ))
+    sel_format <- suppressWarnings(
+      ifelse(!is.na(format), format, raster_metadata(sel_infile, "outformat", format = "list")[[1]]$outformat)
+    )
     sel_out_ext <- gdal_formats[gdal_formats$name==sel_format,"ext"][1]
     
     # check bands to use
@@ -303,7 +303,7 @@ s2_calcindices <- function(infiles,
     # (this cycle is not parallelised)
     sel_outfiles <- character(0)
     for (j in seq_along(indices)) {
-      
+      print_message(paste0("Computing index: ", indices[j]), type = "message")
       # extract parameters
       sel_parameters <- parameters[[indices[j]]]
       
@@ -423,15 +423,9 @@ s2_calcindices <- function(infiles,
             datatype = convert_datatype(dataType),
             overwrite = overwrite
           )
-          # fix for envi extension (writeRaster use .envi)
-          if (sel_format=="ENVI" &
-              file.exists(gsub(paste0("\\.",sel_out_ext,"$"),".envi",file.path(out_subdir0,sel_outfile0)))) {
-            file.rename(gsub(paste0("\\.",sel_out_ext,"$"),".envi",file.path(out_subdir0,sel_outfile0)),
-                        file.path(out_subdir0,sel_outfile0))
-            file.rename(paste0(gsub(paste0("\\.",sel_out_ext,"$"),".envi",file.path(out_subdir0,sel_outfile0)),".aux.xml"),
-                        paste0(file.path(out_subdir0,sel_outfile0),".aux.xml"))
-          }
         }
+        # fix for envi extension (writeRaster use .envi)
+        if (sel_format0=="ENVI")  {fix_envi_format(file.path(out_subdir0,sel_outfile0))}
         
         if (sel_format == "VRT") {
           system(

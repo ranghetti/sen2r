@@ -8,7 +8,7 @@ create_s2_dop(json_path = NA, force = FALSE)
 }
 \arguments{
 \item{json_path}{(optional) The path of the output JSON file.
-\emph{Warning}: to create a file which wil be usable by the package,
+\emph{Warning}: to create a file which will be usable by the package,
 this option must be left to NA (default location is within the
 package installation). Edit this only to create the file in another
 place for external use.}

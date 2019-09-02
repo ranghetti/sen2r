@@ -1,0 +1,131 @@
+# Tests to perform on sen2r() processing chains.
+
+# Please notice that these tests are not though to cover all the possible
+# processing types possible with this package.
+
+
+context("sen2r S2 examples")
+testthat::test_that(
+    "Tests on sto", {
+        
+        library(testthat)
+        library(magrittr)
+        
+        skip_on_cran()
+        skip_on_travis()
+        
+        ### Test 1: download
+        context("Test 1: download SAFE tiles (zip)")
+        example_dir <- system.file("extdata","testdata/example_files", package="sen2r")
+        dir.create(example_dir)
+        safe_dir <- file.path(example_dir, "safe")
+        dir.create(safe_dir)
+        dir.create(file.path(safe_dir, "L2A"))
+        dir.create(file.path(safe_dir, "L1C"))
+        system.time(sen2r(
+            gui               = FALSE,
+            online            = TRUE,
+            preprocess        = FALSE,
+            overwrite_safe    = TRUE,
+            s2_levels         = "l2a",
+            step_atmcorr      = "l2a",
+            s2tiles_selected  = c("32TNR","32TNS"),
+            s2orbits_selected = "022",
+            timewindow        = as.Date(c("2017-07-03")),
+            path_l1c          = file.path(safe_dir, "L1C"),
+            path_l2a          = file.path(safe_dir, "L2A"), 
+            downloader        = "aria2"
+        ))
+        
+        
+        
+        ### Test 2: download (old & compact name)
+        context("Test 2: download SAFE tiles (zip & files)")
+        system.time(sen2r(
+            gui               = FALSE,
+            online            = TRUE,
+            preprocess        = FALSE,
+            s2_levels         = "l1c",
+            step_atmcorr      = "no",
+            s2tiles_selected  = c("32TNR","32TNS"),
+            s2orbits_selected = "022",
+            timewindow        = as.Date(c("2016-09-29","2016-10-06")),
+            path_l1c          = file.path(safe_dir, "L1C"),
+            path_l2a          = file.path(safe_dir, "L2A"),
+            downloader = "aria2"
+        ))
+        
+        ### Test 3: sen2cor
+        context("Test 3: apply sen2cor")
+        system.time(sen2r(
+            gui               = FALSE,
+            online            = FALSE,
+            preprocess        = FALSE,
+            s2_levels         = "l2a",
+            step_atmcorr      = "scihub",
+            s2tiles_selected  = c("32TNR","32TNS"),
+            s2orbits_selected = "022",
+            timewindow        = as.Date(c("2016-09-29","2016-10-06")),
+            path_l1c          = file.path(safe_dir, "L1C"),
+            path_l2a          = file.path(safe_dir, "L2A")
+        ))
+        
+        ### Test 4: translate and merge
+        context("Test 4: translate and merge two tiles, while clipping on a subset")
+        out_dir <- file.path(example_dir, "out", "out_test1")
+        dir.create(dirname(out_dir), showWarnings = FALSE)
+        system.time(sen2r(
+            gui = FALSE,
+            online = FALSE,
+            s2_levels = "l2a",
+            step_atmcorr = "no",
+            extent = NA,
+            timewindow = as.Date("2017-07-03"),
+            list_prods = "SCL",
+            mask_type = NA,
+            path_l1c = file.path(safe_dir, "L1C"),
+            path_l2a = file.path(safe_dir, "L2A"),
+            path_out = out_dir
+        )) 
+        
+        ### Test 5: clip and mask
+        context("Test 5: clip and mask")
+        out_dir <- file.path(example_dir, "out", "out_test2")
+        system.time(sen2r(
+            gui = FALSE,
+            online = FALSE,
+            s2_levels = "l2a",
+            step_atmcorr = "l2a",
+            extent = file.path(example_dir, "scalve.kml"),
+            extent_name = "Scalve",
+            extent_as_mask = TRUE,
+            timewindow = as.Date("2017-07-03"),
+            list_prods = "BOA",
+            mask_type = "cloud_medium_proba",
+            path_l1c = safe_dir,
+            path_l2a = safe_dir,
+            path_out = out_dir
+        ))
+        
+        ### Test 6: create spectral indices
+        context("Test 6: spectral indices")
+        out_dir <- file.path(example_dir, "out", "out_test3")
+        system.time(sen2r(
+            gui = FALSE,
+            online = FALSE,
+            s2_levels = "l2a",
+            step_atmcorr = "l2a",
+            extent = file.path(example_dir, "scalve.kml"),
+            extent_name = "Scalve",
+            extent_as_mask = TRUE,
+            timewindow = as.Date("2017-07-03"),
+            list_indices = c("NDVI","MSAVI","MCARI","NDRE"),
+            mask_type = NA,
+            path_l1c = safe_dir,
+            path_l2a = safe_dir,
+            path_out = out_dir,
+            path_indices = out_dir,
+            parallel = 4
+        ))
+    }
+)

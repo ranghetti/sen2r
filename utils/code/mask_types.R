@@ -25,7 +25,7 @@ for (s in c(0,30,100)) {
       s2_levels = "l2a",
       step_atmcorr = "l2a",
       extent = sel_extent,
-      extent_name = paste0("s",stringr::str_pad(s,3,"left","0"),"b",stringr::str_pad(b,3,"left","0")),
+      extent_name = paste0("s",str_pad2(s,3,"left","0"),"b",str_pad2(b,3,"left","0")),
       extent_as_mask = FALSE,
       timewindow = as.Date("2018-08-05"),
       list_prods = c("TCI","SCL"),

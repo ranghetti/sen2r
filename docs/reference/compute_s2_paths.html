@@ -36,7 +36,7 @@
 (to be used within sen2r())
 which computes the names of the required output image files
 (see details).
-The function was splitted from sen2r() because this code
+The function was split from sen2r() because this code
 is called twice (and to shorten the main function).
 list_sen2r_paths is a wrapper of sen2r, which runs
 sen2r until compute_s2_paths is called, returning the same list.
@@ -82,7 +82,7 @@ if sen2r." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">An R toolbox to find, download an preprocess Sentinel-2 data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -126,7 +126,7 @@ if sen2r." />
 (to be used within <code><a href='sen2r.html'>sen2r()</a></code>)
 which computes the names of the required output image files
 (see details).
-The function was splitted from <code><a href='sen2r.html'>sen2r()</a></code> because this code
+The function was split from <code><a href='sen2r.html'>sen2r()</a></code> because this code
 is called twice (and to shorten the main function).</p>
 <p><code>list_sen2r_paths</code> is a wrapper of <a href='sen2r.html'>sen2r</a>, which runs
 <a href='sen2r.html'>sen2r</a> until compute_s2_paths is called, returning the same list.
@@ -136,11 +136,11 @@ if <a href='sen2r.html'>sen2r</a>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>compute_s2_paths</span>(<span class='no'>pm</span>, <span class='no'>s2_list_l1c</span>, <span class='no'>s2_list_l2a</span>, <span class='no'>tmpdir</span>, <span class='no'>list_prods</span>,
-  <span class='no'>main_ext</span>, <span class='no'>rgb_ext</span>, <span class='kw'>force_tiles</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>check_tmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>ignorelist</span>)
+  <span class='kw'>force_tiles</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>check_tmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>ignorelist</span>)
 
 <span class='fu'>list_sen2r_paths</span>(<span class='kw'>param_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>gui</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>preprocess</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>s2_levels</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"l1c"</span>, <span class='st'>"l2a"</span>), <span class='kw'>sel_sensor</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"s2a"</span>, <span class='st'>"s2b"</span>),
-  <span class='kw'>online</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>downloader</span> <span class='kw'>=</span> <span class='st'>"wget"</span>,
+  <span class='kw'>online</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>downloader</span> <span class='kw'>=</span> <span class='st'>"builtin"</span>,
   <span class='kw'>overwrite_safe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>rm_safe</span> <span class='kw'>=</span> <span class='st'>"no"</span>, <span class='kw'>step_atmcorr</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
   <span class='kw'>max_cloud_safe</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>timeperiod</span> <span class='kw'>=</span> <span class='st'>"full"</span>,
   <span class='kw'>extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>extent_name</span> <span class='kw'>=</span> <span class='st'>"sen2r"</span>, <span class='kw'>s2tiles_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
@@ -181,14 +181,6 @@ if <a href='sen2r.html'>sen2r</a>.</p>
       <th>list_prods</th>
       <td><p>Character vector with the values of the
 products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").</p></td>
-    </tr>
-    <tr>
-      <th>main_ext</th>
-      <td><p>File extension corresponding to pm$outformat.</p></td>
-    </tr>
-    <tr>
-      <th>rgb_ext</th>
-      <td><p>File extension corresponding to pm$rgb_outformat.</p></td>
     </tr>
     <tr>
       <th>force_tiles</th>

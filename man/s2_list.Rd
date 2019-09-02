@@ -5,19 +5,20 @@
 \title{Retrieve list of available products.}
 \usage{
 s2_list(spatial_extent = NULL, tile = NULL, orbit = NULL,
-  time_interval = NULL, time_period = "full", level = "auto",
-  ignore_ingestion_time = TRUE, apihub = NA, max_cloud = 100)
+  time_interval = c(Sys.Date() - 10, Sys.Date()), time_period = "full",
+  level = "auto", apihub = NA, max_cloud = 100,
+  output_type = "vector")
 }
 \arguments{
 \item{spatial_extent}{A valid spatial object object of class \code{sf},
 \code{sfc} or \code{sfg}}
 
-\item{tile}{Single Sentinel-2 Tile string (5-length character)}
+\item{tile}{\code{string array} Sentinel-2 Tiles to be considered string (5-length character)}
 
-\item{orbit}{Single Sentinel-2 orbit number}
+\item{orbit}{\code{string array} Sentinel-2 orbit numbers to be considered}
 
-\item{time_interval}{a temporal vector (class \link{POSIXct} or
-\link{Date}) of length 1 (specific day) or 2 (time interval).}
+\item{time_interval}{Dates to be considered, as a temporal vector (class \link{POSIXct} or
+\link{Date}, or string in \code{YYYY-mm-dd} format) of length 1 (specific day) or 2 (time interval).}
 
 \item{time_period}{(optional) Character:
 \itemize{
@@ -36,34 +37,25 @@ product
 - "L1C": list available level-1C products
 - "L2A": list available level-2A products}
 
-\item{ignore_ingestion_time}{(optional) Logical: if TRUE (default),
-the research is performed basing only on the sensing date and time
-(the time in which the image was acquired), ignoring the ingestion date
-and time (the time the image was ingested).
-If FALSE, products with the ingestion time specified with \code{time_interval}
-are first of all filtered, and them the research is performed on the sensing
-time among them.
-\code{ignore_ingestion_time = TRUE} ensures to perform a complete research, but
-it is slower; setting it to \code{FALSE} speeds up, although some products could
-be ignored (but generally the ingestion date is the same of the sensing date).}
-
 \item{apihub}{Path of the "apihub.txt" file containing credentials
-of scihub account. If NA (default) the default credentials
-(username "user", password "user") will be used.}
+of SciHub account.
+If NA (default), the default location inside the package will be used.}
 
 \item{max_cloud}{Integer number (0-100) containing the maximum cloud
 level of the tiles to be listed (default: no filter).}
+
+\item{output_type}{Character: if 'vector' (default), the function returns
+a vector or URLs, whose names are the SAFE names;
+if 'data.table', the output is a data.table with metadata.}
 }
 \value{
-A vector of available products (being each element an URL,
-and its name the product name).
+Basing on the value of argument `output_type``,
+a vector of available products (being each element an URL
+and its name the product name), or a data.table with product metadata.
 }
 \description{
 The function retrieves the list of available Sentinel-2
-products basing on search criteria. It makes use of
-\href{https://github.com/ranghetti/s2download}{s2download}
-python function only to retrieve the list of files, without
-downloading and correcting them.
+products basing on search criteria.
 }
 \note{
 License: GPL 3.0
@@ -75,9 +67,9 @@ time_window <- as.Date(c("2016-05-01", "2017-07-30"))
 
 # Full-period list
 example_s2_list <- s2_list(
-  spatial_extent = pos, 
-  tile = "32TNR", 
-  time_interval = time_window, 
+  spatial_extent = pos,
+  tile = "32TNR",
+  time_interval = time_window,
   orbit = "065"
 )
 print(example_s2_list)
@@ -88,9 +80,9 @@ as.vector(sort(sapply(names(example_s2_list), function(x) {
 
 # Seasonal-period list
 example_s2_list <- s2_list(
-  spatial_extent = pos, 
-  tile = "32TNR", 
-  time_interval = time_window, 
+  spatial_extent = pos,
+  tile = "32TNR",
+  time_interval = time_window,
   time_period = "seasonal"
 )
 print(example_s2_list)
@@ -101,5 +93,7 @@ as.vector(sort(sapply(names(example_s2_list), function(x) {
 }
 }
 \author{
-Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
+Lorenzo Busetto, phD (2019) \email{lbusett@gmail.com}
+
+Luigi Ranghetti, phD (2019) \email{ranghetti.l@irea.cnr.it}
 }

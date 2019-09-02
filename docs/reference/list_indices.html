@@ -74,7 +74,7 @@ computable with the package." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">An R toolbox to find, download an preprocess Sentinel-2 data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -167,7 +167,14 @@ create the indices archive.</p></li>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='co'># Show index names</span>
 <span class='fu'>list_indices</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"name"</span>,<span class='st'>"longname"</span>))
+
+<span class='co'># Return the MSAVI2 formula</span>
+<span class='fu'>list_indices</span>(<span class='st'>"s2_formula"</span>, <span class='st'>"^MSAVI2$"</span>)
+
+<span class='co'># Return all index names (including unchecked)</span>
+<span class='fu'>list_indices</span>(<span class='st'>"name"</span>, <span class='kw'>all</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 <span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

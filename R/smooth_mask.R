@@ -1,10 +1,10 @@
-#' @title Buffer clound masks
+#' @title Buffer cloud masks
 #' @description Internal function (used by [s2_mask]) which smooths
 #'  and buffers a 0-1 mask image in order to reduce the roughness of the mask
 #'  obtained from SCL classification (which is done pixel by pixel).
 #'  See details.
 #' @param inmask The path of the input 0-1 mask (where 0 represents the area
-#'  to be masked, 1 the cleen surface).
+#'  to be masked, 1 the clean surface).
 #' @param binpaths list of paths of binaries.
 #' @param tmpdir (optional) Path where intermediate files (VRT) will be created.
 #'  Default is a temporary directory.
@@ -17,16 +17,15 @@
 #' @param namask (optional) The path of an input 0-1 mask where 0 represents 
 #'  the area of the original file with NA values (which should not be 
 #'  smoothed / buffered).
-#'  Default (NULL) means that no NA values are presente.
+#'  Default (NULL) means that no NA values are present.
 #' @return The path of the smoothed mask.
 #' @export
-#' @importFrom rgdal GDALinfo
 #' @importFrom methods is
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 
 smooth_mask <- function(inmask, binpaths, tmpdir = tempdir(), radius = 250, buffer = 250, namask = NULL) {
-
+  
   # if inmask is a raster use the path (it should not happen)
   inmask_path0 <- if (is(inmask, "character")) {
     inmask
@@ -42,11 +41,12 @@ smooth_mask <- function(inmask, binpaths, tmpdir = tempdir(), radius = 250, buff
   
   # convert radius and buffer from metres to number of pixels
   # (as required by gdal_fillnodata)
-  inmask_res <- mean(suppressWarnings(GDALinfo(inmask_path0)[c("res.x","res.y")]))
+  inmask_res <- mean(raster_metadata(inmask_path0, "res", format = "list")[[1]]$res)
+  
   radius_npx <- abs(radius / inmask_res)
   buffer_npx <- buffer / inmask_res
-
-
+  
+  
   # 1. set inmask=1 (clear sky) and namask=0 (nodata) to NA
   inmask_path1 <- file.path(tmpdir,basename(tempfile(pattern = "mask_", fileext = ".tif")))
   if (!is.null(namask)) {
@@ -198,5 +198,5 @@ smooth_mask <- function(inmask, binpaths, tmpdir = tempdir(), radius = 250, buff
   } else {
     inmask_path9
   }
-
+  
 }

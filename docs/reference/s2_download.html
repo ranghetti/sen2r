@@ -76,7 +76,7 @@ s2_list function
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">An R toolbox to find, download an preprocess Sentinel-2 data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -123,8 +123,8 @@ Input filename must be an element obtained with
     
     </div>
 
-    <pre class="usage"><span class='fu'>s2_download</span>(<span class='kw'>s2_prodlist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>downloader</span> <span class='kw'>=</span> <span class='st'>"wget"</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>tile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"."</span>)</pre>
+    <pre class="usage"><span class='fu'>s2_download</span>(<span class='kw'>s2_prodlist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>downloader</span> <span class='kw'>=</span> <span class='st'>"builtin"</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>tile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -137,13 +137,14 @@ Input filename must be an element obtained with
     <tr>
       <th>downloader</th>
       <td><p>Executable to use to download products
-(default: "wget").</p></td>
+(default: "builtin"). Alternatives are "builtin" or "aria2"
+(this requires aria2c to be installed).</p></td>
     </tr>
     <tr>
       <th>apihub</th>
       <td><p>Path of the "apihub.txt" file containing credentials
-of scihub account. If NA (default) the default credentials
-(username "user", password "user") will be used.</p></td>
+of SciHub account.
+If NA (default), the default location inside the package will be used.</p></td>
     </tr>
     <tr>
       <th>tile</th>
@@ -153,6 +154,11 @@ of scihub account. If NA (default) the default credentials
       <th>outdir</th>
       <td><p>(optional) Full name of the existing output directory
 where the files should be created (default: current directory).</p></td>
+    </tr>
+    <tr>
+      <th>overwrite</th>
+      <td><p>Logical value: should existing output archives be
+overwritten? (default: FALSE)</p></td>
     </tr>
     </table>
     
@@ -164,7 +170,7 @@ where the files should be created (default: current directory).</p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># NOT RUN {</span>
 <span class='no'>single_s2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/paste'>paste0</a></span>(<span class='st'>"https://scihub.copernicus.eu/apihub/odata/v1/"</span>,
-  <span class='st'>"Products(\'c7142722-42bf-4f93-b8c5-59fd1792c430\')/\\$value"</span>)
+  <span class='st'>"Products(\'c7142722-42bf-4f93-b8c5-59fd1792c430\')/$value"</span>)
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>single_s2</span>) <span class='kw'>&lt;-</span> <span class='st'>"S2A_MSIL1C_20170613T101031_N0205_R022_T32TQQ_20170613T101608.SAFE"</span>
 <span class='co'># (this is equivalent to:</span>
 <span class='co'># single_s2 &lt;- example_s2_list[1]</span>
@@ -173,6 +179,9 @@ where the files should be created (default: current directory).</p></td>
 
 <span class='co'># Download the whole product</span>
 <span class='fu'>s2_download</span>(<span class='no'>single_s2</span>, <span class='kw'>outdir</span><span class='kw'>=</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/tempfile'>tempdir</a></span>())
+
+<span class='co'>#' # Download the whole product - using aria2</span>
+<span class='fu'>s2_download</span>(<span class='no'>single_s2</span>, <span class='kw'>outdir</span><span class='kw'>=</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/tempfile'>tempdir</a></span>(), <span class='kw'>downloader</span> <span class='kw'>=</span> <span class='st'>"aria2"</span>)
 
 <span class='co'># Download a specific tile</span>
 <span class='fu'>s2_download</span>(<span class='no'>single_s2</span>, <span class='kw'>tile</span><span class='kw'>=</span><span class='st'>"32TQQ"</span>, <span class='kw'>outdir</span><span class='kw'>=</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/tempfile'>tempdir</a></span>())
@@ -199,6 +208,7 @@ where the files should be created (default: current directory).</p></td>
 
     <h2>Author</h2>
     <p>Luigi Ranghetti, phD (2017) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p>
+<p>Lorenzo Busetto, phD (2019) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p>
   </div>
 </div>
 

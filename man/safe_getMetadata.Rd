@@ -26,7 +26,7 @@ option \code{info = "nameinfo"} (see below).}
 which should be provided.
 Accepted values are:
 \itemize{
-\item \code{"all"} (default): all the retrevable metadata are provided;
+\item \code{"all"} (default): all the retrievable metadata are provided;
 \item \code{"fileinfo"}: only the metadata obtained by scanning the file name
 and product structure (without opening it with GDAL) are provided.
 \item \code{"nameinfo"}: only the metadata obtained by scanning the file name
@@ -44,7 +44,7 @@ followings):
 \item \code{"level"} ('1C' or '2A');
 \item \code{"creation_datetime"}, \code{"id_tile"}, \code{"mission"}, \code{"centre"},
 \code{"file_class"}, \code{"id_orbit"}, \code{"orbit_number"},
-\code{"sensing_datetime"}, \code{"id_baseline"}: metadata speficic of
+\code{"sensing_datetime"}, \code{"id_baseline"}: metadata specific of
 the product type and version (they are returned only if
 obtainable for the specified input);
 \item \code{"clouds"}, \code{"direction"}, \code{"orbit_n"}, \code{"preview_url"},
@@ -89,7 +89,7 @@ License: GPL 3.0
 s2_examplename <-
   "/path/of/the/product/S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"
 
-# Return only the information retrevable from the file names (files are not scanned)
+# Return only the information retrievable from the file names (files are not scanned)
 safe_getMetadata(s2_examplename, info="nameinfo")
 
 # Return some specific information without scanning files

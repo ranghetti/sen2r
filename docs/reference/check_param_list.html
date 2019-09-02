@@ -33,7 +33,7 @@
 <meta property="og:title" content="Check a parameter list — check_param_list" />
 
 <meta property="og:description" content="Check that the parameter list (or JSON parameter file)
-is in the correct format, and then speficied values are coherent with
+is in the correct format, and then specified values are coherent with
 parameters." />
 <meta name="twitter:card" content="summary" />
 
@@ -75,7 +75,7 @@ parameters." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">An R toolbox to find, download an preprocess Sentinel-2 data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -116,12 +116,13 @@ parameters." />
     <div class="ref-description">
     
     <p>Check that the parameter list (or JSON parameter file)
-is in the correct format, and then speficied values are coherent with
+is in the correct format, and then specified values are coherent with
 parameters.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>check_param_list</span>(<span class='no'>pm</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"string"</span>, <span class='kw'>correct</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>check_param_list</span>(<span class='no'>pm</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"string"</span>, <span class='kw'>check_paths</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>correct</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -133,6 +134,11 @@ parameters.</p>
     <tr>
       <th>type</th>
       <td><p>Type of the output (see <a href='print_message.html'>print_message</a> for details).</p></td>
+    </tr>
+    <tr>
+      <th>check_paths</th>
+      <td><p>Logical: if TRUE, the function checks required output
+paths to be provided; if FALSE (default) these checks are skipped.</p></td>
     </tr>
     <tr>
       <th>correct</th>

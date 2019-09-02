@@ -10,7 +10,7 @@
 #'  `outdir` can bot be an existing or non-existing directory (in the
 #'  second case, its parent directory must exists).
 #'  If it is a relative path, it is expanded from the directory of `infile`.
-#' @param subdirs (optional) Logical: if TRUE, differet output products are
+#' @param subdirs (optional) Logical: if TRUE, different output products are
 #'  placed in separated `outdir` subdirectories; if FALSE, they are placed in
 #'  `outdir` directory; if NA (default), subdirectories are created only if
 #'  `prod_type` has length > 1.
@@ -111,7 +111,7 @@ s2_translate <- function(infile,
   if (anyNA(tiles)) {tiles <- NA} else if (all(tiles=="")) {tiles <- NA}
   
   # check output format
-  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))$drivers
   sel_driver <- gdal_formats[gdal_formats$name==format,]
   if (nrow(sel_driver)==0) {
     print_message(
@@ -145,9 +145,11 @@ s2_translate <- function(infile,
   if (format=="GTiff") {
     if (!compress %in% c("JPEG","LZW","PACKBITS","DEFLATE","CCITTRLE",
                          "CCITTFAX3","CCITTFAX4","LZMA","NONE")) {
-      print_message(type="warning",
-                    "'",toupper(compress),"' is not a valid compression value; ",
-                    "the default 'DEFLATE' value will be used.")
+      print_message(
+        type="warning",
+        "'",toupper(compress),"' is not a valid compression value; ",
+        "the default 'DEFLATE' value will be used."
+      )
       compress <- "DEFLATE"
     }
   }
@@ -285,6 +287,9 @@ s2_translate <- function(infile,
               gdal_abs2rel(out_name)
             }
           }
+          
+          # fix for envi extension (writeRaster use .envi)
+          if (format=="ENVI")  {fix_envi_format(out_name)}
           
         } # end of "overwite" IF cycle
         

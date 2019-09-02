@@ -22,7 +22,7 @@ second case, its parent directory must exists).
 If it is a relative path, it is expanded from the common parent
 directory of \code{infiles}.}
 
-\item{subdirs}{(optional) Logical: if TRUE, differet output products are
+\item{subdirs}{(optional) Logical: if TRUE, different output products are
 placed in separated \code{outfile} subdirectories; if FALSE, they are placed in
 \code{outfile} directory; if NA (default), subdirectories are created only if
 \code{infiles} relate to more than a single product.}

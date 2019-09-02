@@ -5,7 +5,6 @@
 #' @details This package needs some external dependencies to run:
 #' - Python
 #' - GDAL
-#' - Wget
 #' - sen2cor
 #' 
 #' This function opens a GUI which allows to check that these dependencies
@@ -21,6 +20,7 @@
 #' @importFrom shinyjs hide html useShinyjs extendShinyjs
 #' @importFrom shinyWidgets confirmSweetAlert
 #' @importFrom utils capture.output
+#' @importFrom httr GET
 #' @importFrom jsonlite fromJSON toJSON
 #' @export
 #' @examples
@@ -55,32 +55,6 @@ check_sen2r_deps <- function() {
       span(style="display:inline-block;vertical-align:center;",
            htmlOutput("check_gdal_icon")),
       
-      conditionalPanel(
-        condition = "output.os_name == 'Windows'",
-        
-        h3("Wget"),
-        helpText(em(
-          "Wget is the downloader used by the package;",
-          "it is required by the package, unless you choose to work offline."
-        )),
-        span(style="display:inline-block;vertical-align:center;padding-top:5px;",
-             actionButton("check_wget", "Check Wget", width=200),
-             "\u2000"),
-        span(style="display:inline-block;vertical-align:center;",
-             htmlOutput("check_wget_icon"))
-        
-        # Do not check Python (always present in Linux, and provided by GDAL in Windows)
-        # h3("Python"),
-        # helpText(em(
-        #   "Python is a mandatory dependency:",
-        #   "it is used to download SAFE products",
-        #   "and to retrieve metadata from them."
-        # )),
-        # span(style="padding-top:5px;",
-        #     actionButton("check_python", "Check Python", width=200)),
-        
-      ),
-      
       h3("aria2"),
       helpText(em(
         "aria2 is an alternative (faster) downloader downloader which can be",
@@ -99,7 +73,7 @@ check_sen2r_deps <- function() {
         "Level-1C products: it is required by the package,",
         "unless you choose not to correct products locally",
         "(using only Level-1C \u2013 TOA products",
-        "or dowloading directly Level-2A products)."
+        "or downloading directly Level-2A products)."
       )),
       span(style="display:inline-block;vertical-align:center;padding-top:5px;",
            actionButton("check_sen2cor", "Check sen2cor", width=200),
@@ -128,7 +102,7 @@ check_sen2r_deps <- function() {
     # list of dependencies
     dependencies <- c(
       "gdalbuildvrt", "gdal_translate", "gdalwarp", "gdal_calc", "gdaldem", "gdalinfo", "ogrinfo",
-      "python", "sen2cor", "wget"
+      "python", "sen2cor"
     )
     # load binpaths
     binpaths <- reactivePoll(1000, session, function() {}, load_binpaths)
@@ -279,19 +253,13 @@ check_sen2r_deps <- function() {
         add=FALSE
       )
       
-      # Download wget
+      # Download osgeo4w
       osgeo4w_url <- paste0(
         "http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86",
         if (Sys.info()["machine"]=="x86-64") {"_64"},".exe"
       )
       osgeo4w_path <- tempfile(pattern="dir",fileext = ".exe")
-      # use wget instead of download.file() because the internal function
-      # fails in downloading .exe (the output file is different - biggger - from the source).
-      system(paste0(
-        "\"",binpaths()$wget, "\" -q \"", osgeo4w_url, 
-        "\" -O  \"", osgeo4w_path, "\""
-      ), intern=TRUE)
-      # download.file(osgeo4w_url, osgeo4w_path)
+      GET(osgeo4w_url, write_disk(osgeo4w_path, overwrite=TRUE))
       if (file.exists(osgeo4w_path)) {
         
         shinyjs::html(
@@ -334,129 +302,6 @@ check_sen2r_deps <- function() {
         
       }
       
-      
-    })
-    
-    
-    
-    
-    #-- Check Wget --#
-    
-    # build the icon of the check
-    observe({
-      input$check_wget
-      rv$check_wget_isvalid <- if (Sys.info()["sysname"] != "Windows") {
-        TRUE
-      } else if (!is.null(binpaths()$wget)) {
-        file.exists(binpaths()$wget)
-      } else {FALSE}
-    })
-    output$check_wget_isvalid <- renderText(rv$check_wget_isvalid)
-    output$check_wget_icon <- renderUI({
-      if (is.na(rv$check_wget_isvalid)) {
-        ""
-      } else if (rv$check_wget_isvalid) {
-        span(style="color:darkgreen;", "\u2714")
-      } else {
-        span(style="color:red;", "\u2718")
-      }
-    })
-    outputOptions(output, "check_wget_isvalid", suspendWhenHidden = FALSE)
-    
-    output$check_wget_message <- renderUI({
-      if (is.na(rv$check_wget_isvalid)) {
-        ""
-      } else if (!rv$check_wget_isvalid) {
-        div(
-          align = "center",
-          p(style="color:red;text-align:center;font-size:500%;",
-            icon("times-circle")),
-          p("wget needs to be downloaded."),
-          hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-          div(style="text-align:right;",
-              actionButton("install_wget_button", strong("\u2000Download"), icon=icon("download")),
-              modalButton("\u2000Cancel", icon = icon("ban")))
-        )
-      } else if (rv$check_wget_isvalid) {
-        div(
-          align = "center",
-          p(style="text-align:center;font-size:500%;color:darkgreen;", 
-            icon("check-circle")),
-          p("Wget is correctly installed."),
-          hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-          div(style="text-align:right;", 
-              modalButton("\u2000Close", icon = icon("check")))
-        )
-      }
-    })
-    
-    # build the modalDialog
-    check_wget_modal <- modalDialog(
-      title = "wget check",
-      size = "s",
-      uiOutput("check_wget_message"),
-      easyClose = FALSE,
-      footer = NULL
-    )
-    
-    # open the modaldialog when button is pressed
-    observeEvent(input$check_wget, {
-      
-      # open the dialog
-      showModal(check_wget_modal)
-      
-    })
-    
-    # install wget
-    observeEvent(input$install_wget_button, {
-      
-      shinyjs::html(
-        "check_wget_message", 
-        as.character(div(
-          align="center",
-          p(style="text-align:center;font-size:500%;color:darkgrey;", 
-            icon("cog", class = "fa-spin")),
-          p("Wait while Wget is being installed...")
-        ))
-      )
-      
-      Sys.sleep(0.5)
-      check_wget_outerr <- tryCatch(
-        install_wget(),
-        error = function(e) {print(e)}
-      )
-      
-      # remove the text
-      if (is(check_wget_outerr, "error")) {
-        shinyjs::html(
-          "check_wget_message", 
-          as.character(div(
-            align="center",
-            p(style="text-align:center;font-size:500%;color:red;", 
-              icon("times-circle")),
-            p("Some errors occurred:"),
-            p(code(check_wget_outerr)),
-            hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-            div(style="text-align:right;", 
-                modalButton("\u2000Close", icon = icon("check")))
-          ))
-        )
-        rv$check_wget_isvalid <- FALSE
-      } else {
-        shinyjs::html(
-          "check_wget_message", 
-          as.character(div(
-            align="center",
-            p(style="text-align:center;font-size:500%;color:darkgreen;", 
-              icon("check-circle")),
-            p("Wget was correctly installed."),
-            hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-            div(style="text-align:right;", 
-                modalButton("\u2000Close", icon = icon("check")))
-          ))
-        )
-        rv$check_wget_isvalid <- TRUE
-      }
       
     })
     
@@ -534,19 +379,16 @@ check_sen2r_deps <- function() {
     # open the modaldialog when button is pressed
     observeEvent(input$check_aria2, {
       
-      # do the check
-      import_s2download(with_aria2 = TRUE)
-
       # update the check
       rv$check_aria2_isvalid <- if (!is.null(load_binpaths("aria2")$aria2c)) {
         file.exists(load_binpaths()$aria2c)
       } else {
         FALSE
       }
-
+      
       # open modaldialog
       showModal(check_aria2_modal)
-
+      
     })
     
     # install aria2
@@ -725,7 +567,7 @@ check_sen2r_deps <- function() {
     ##-- Footer buttons --##
     observe({
       rv$check_all_isvalid <- all(c(
-        rv$check_gdal_isvalid, rv$check_wget_isvalid, rv$check_aria2_isvalid, 
+        rv$check_gdal_isvalid, rv$check_aria2_isvalid, 
         rv$check_sen2cor_isvalid
       ))
     })

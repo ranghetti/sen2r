@@ -6,11 +6,11 @@
 \title{Compute names of S2 file to be generated}
 \usage{
 compute_s2_paths(pm, s2_list_l1c, s2_list_l2a, tmpdir, list_prods,
-  main_ext, rgb_ext, force_tiles = FALSE, check_tmp = TRUE, ignorelist)
+  force_tiles = FALSE, check_tmp = TRUE, ignorelist)
 
 list_sen2r_paths(param_list = NULL, gui = NA, preprocess = TRUE,
   s2_levels = c("l1c", "l2a"), sel_sensor = c("s2a", "s2b"),
-  online = TRUE, apihub = NA, downloader = "wget",
+  online = TRUE, apihub = NA, downloader = "builtin",
   overwrite_safe = FALSE, rm_safe = "no", step_atmcorr = "auto",
   max_cloud_safe = 100, timewindow = NA, timeperiod = "full",
   extent = NA, extent_name = "sen2r", s2tiles_selected = NA,
@@ -39,10 +39,6 @@ list_sen2r_paths(param_list = NULL, gui = NA, preprocess = TRUE,
 
 \item{list_prods}{Character vector with the values of the
 products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").}
-
-\item{main_ext}{File extension corresponding to pm$outformat.}
-
-\item{rgb_ext}{File extension corresponding to pm$rgb_outformat.}
 
 \item{force_tiles}{(optional) Logical: passed to \link{safe_shortname} (default: FALSE).}
 
@@ -176,7 +172,7 @@ A nested list:
 (to be used within \code{\link[=sen2r]{sen2r()}})
 which computes the names of the required output image files
 (see details).
-The function was splitted from \code{\link[=sen2r]{sen2r()}} because this code
+The function was split from \code{\link[=sen2r]{sen2r()}} because this code
 is called twice (and to shorten the main function).
 
 \code{list_sen2r_paths} is a wrapper of \link{sen2r}, which runs

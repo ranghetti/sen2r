@@ -1,9 +1,11 @@
 #' @title Check a parameter list
 #' @description Check that the parameter list (or JSON parameter file)
-#'  is in the correct format, and then speficied values are coherent with 
+#'  is in the correct format, and then specified values are coherent with 
 #'  parameters.
 #' @param pm List of parameters or path of a JSON parameter file.
 #' @param type Type of the output (see [print_message] for details).
+#' @param check_paths Logical: if TRUE, the function checks required output
+#'  paths to be provided; if FALSE (default) these checks are skipped.
 #' @param correct Logical: if TRUE (default), the function corrects
 #'  some incoherences (e.g. timewindow of length 1 is transformed in length 2)
 #'  and returns the corrected list as output; if false, only checking is 
@@ -17,12 +19,11 @@
 #'  
 #' @importFrom jsonlite fromJSON
 #' @importFrom methods is
-#' @importFrom stringr str_pad
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 
 
-check_param_list <- function(pm, type = "string", correct = TRUE) {
+check_param_list <- function(pm, type = "string", check_paths = FALSE, correct = TRUE) {
   
   # to avoid NOTE on check
   . <- valid_s2tiles <- reference_path <- NULL
@@ -48,7 +49,15 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
     )
   }
   
-
+  
+  ## == Checks to be run first ==
+  
+  # -- Add NA on empty product lists --
+  if (length(nn(pm$list_prods)) == 0) {pm$list_prods <- NA}
+  if (length(nn(pm$list_rgb)) == 0) {pm$list_rgb <- NA}
+  if (length(nn(pm$list_indices)) == 0) {pm$list_indices <- NA}
+  
+  
   ## == Recurrent check ==
   
   # -- Missing parameters: if a parameter is missing, set it to the default --
@@ -90,7 +99,7 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   # -- Logical parameters: check them to be TRUE or FALSE
   pm_logical <- c(
     "preprocess", "online", "overwrite_safe", "clip_on_extent", 
-    "extent_as_mask", "path_subdirs", "thumbnails", "overwrite", "parallel"
+    "extent_as_mask", "path_subdirs", "thumbnails", "overwrite"
   )
   for (sel_par in pm_logical) {
     if (any(!is(pm[[sel_par]], "logical"), !pm[[sel_par]] %in% c(TRUE,FALSE))) {
@@ -105,13 +114,10 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   
   
   ## == Specific checks on parameters ==
-
+  
   
   # -- preprocess --
-
   
-  # -- s2_levels --
-
   
   # -- sel_sensor --
   if (all(!pm$sel_sensor %in% c("s2a", "s2b"))) {
@@ -121,16 +127,16 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
     )
     pm$sel_sensor <- pm_def$sel_sensor
   }
-
+  
   
   # -- online --
-
+  
   
   # -- downloader --
-  if (!pm$downloader %in% c("wget", "aria2")) {
+  if (!pm$downloader %in% c("builtin", "aria2")) {
     print_message(
       type = type,
-      "Parameter \"downloader\" must be 'wget' or 'aria2' (setting to the default)."
+      "Parameter \"downloader\" must be 'builtin' or 'aria2' (setting to the default)."
     )
     pm$downloader <- pm_def$downloader
   }
@@ -182,16 +188,6 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   }
   
   
-  # -- step_atmcorr --
-  if (!pm$step_atmcorr %in% c("auto", "scihub", "l2a", "no")) {
-    print_message(
-      type = type,
-      "Parameter \"step_atmcorr\" must be one among 'auto', 'scihub', 'l2a' ",
-      "and 'no' (setting to the default)."
-    )
-    pm$step_atmcorr <- pm_def$step_atmcorr
-  }
-  
   # -- timewindow --
   if (!anyNA(pm$timewindow)) {
     if (length(pm$timewindow)==1) {
@@ -241,7 +237,7 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
       error = function(e) {
         print_message(
           type = type,
-          "Extent can not be read."
+          "Extent can not be read from the specified file or string."
         )
       }
     )
@@ -266,11 +262,22 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
     valid_s2orbits <- pm$s2tiles_selected[!pm$s2tiles_selected %in% invalid_s2orbits]
     pm$s2tiles_selected <- if (length(nn(valid_s2tiles)) == 0) {NA} else {valid_s2tiles}
   }
+  if (all(
+    pm$online,
+    all(is.na(pm$extent)) || length(nn(pm$extent))==0,
+    all(is.na(pm$s2tiles_selected)) || length(nn(pm$s2tiles_selected))==0
+  )) {
+    print_message(
+      type = type,
+      "In online mode, almost one parameter among 'extent' and ",
+      "'s2tiles_selected' must be provided."
+    )
+  }
   
   
   # -- s2orbits_selected --
   if (is(pm$s2orbits_selected, "numeric")) {
-    pm$s2orbits_selected <- str_pad(pm$s2orbits_selected, 3, "left", "0")
+    pm$s2orbits_selected <- str_pad2(pm$s2orbits_selected, 3, "left", "0")
   }
   invalid_s2orbits <- pm$s2orbits_selected[
     !is.na(pm$s2orbits_selected) &
@@ -389,7 +396,7 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   if (!pm$mask_type %in% c(NA, "nodata", "cloud_high_proba", "cloud_medium_proba", 
                            "cloud_low_proba", "cloud_and_shadow", "clear_sky", "land") &
       !grepl("^scl_[\\_0-9]+$", pm$mask_type)
-      ) {
+  ) {
     print_message(
       type = type,
       "Parameter \"mask_type\" is not accepted (setting to the default)."
@@ -584,7 +591,7 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   
   # -- resampling --
   if (!pm$resampling %in% c("near", "mode", "bilinear", "cubic", 
-                           "cubicspline", "lanczos", "average", "mode")) {
+                            "cubicspline", "lanczos", "average", "mode")) {
     print_message(
       type = type,
       "Parameter \"resampling\" is not accepted (setting to the default)."
@@ -604,7 +611,7 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   
   
   # -- outformat --
-  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))$drivers
   if (!pm$outformat %in% gdal_formats$name) {
     print_message(
       type = type,
@@ -615,6 +622,7 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   
   
   # -- rgb_outformat --
+  if (anyNA(pm$rgb_outformat)) {pm$rgb_outformat <- pm$outformat}
   if (!pm$rgb_outformat %in% gdal_formats$name) {
     print_message(
       type = type,
@@ -645,6 +653,7 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   
   
   # -- rgb_compression --
+  if (anyNA(pm$rgb_compression)) {pm$rgb_compression <- pm$compression}
   if (!as.character(pm$rgb_compression) %in% c(NA, "NONE", "LZW", "DEFLATE", "PACKBITS", "JPEG", 1:100)) {
     print_message(
       type = type,
@@ -657,18 +666,57 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   # -- overwrite --
   
   
-  # -- path_l1c --
-  # if one of path_l1c and path_l2a is missing, copy from the other
-  # FIXME this is a workaround for parameter pm$s2_levels,
-  # whose default is c("l1c","l2a") even if L1C is not requested.
-  # Fix by removing it and retrieve it automatically.
-  if (sum(is.na(c(pm$path_l1c, pm$path_l2a)))==1) {
-    if (is.na(pm$path_l1c)) {
-      pm$path_l1c <- pm$path_l2a
+  # -- s2_levels --
+  # (moved here because it needs other checked parameters)
+  l1c_prods <- c("TOA")
+  l2a_prods <- c("BOA","SCL","TCI")
+  # Automatically compute s2_levels if processing is TRUE (retrieve from products)
+  if (pm$preprocess==TRUE) {
+    # List required products (exmplicitly or implicitly)
+    # 1. if masking is required, produce also SCL
+    list_prods <- if (!is.na(pm$mask_type)) {
+      unique(c(pm$list_prods, "SCL"))
     } else {
-      pm$path_l2a <- pm$path_l1c
+      pm$list_prods
     }
+    # 2. if some RGB are required, compute also TOA or BOA
+    if (any(!is.na(pm$list_rgb))) {
+      list_prods <- unique(c(
+        list_prods,
+        paste0(unique(substr(pm$list_rgb,7,7)),"OA")
+      ))
+    }
+    # 3. if some indices are required, compute also TOA or BOA
+    if (any(!is.na(pm$list_indices))) {
+      list_prods <- unique(c(list_prods, pm$index_source))
+    }
+    list_prods <- list_prods[!is.na(list_prods)]
+    pm$s2_levels <- c(
+      if (any(list_prods %in% l1c_prods)) {"l1c"},
+      if (any(list_prods %in% l2a_prods)) {"l2a"}
+    )
   }
+  
+  
+  # -- step_atmcorr --
+  if (pm$step_atmcorr == "no") {
+    print_message(
+      type = "warning",
+      "Value \"no\" for parameter \"step_atmcorr\" is deprecated ",
+      "(\"l2a\" will be used)."
+    )
+    pm$step_atmcorr <- "l2a"
+  } else if (!pm$step_atmcorr %in% c("auto", "scihub", "l2a")) {
+    print_message(
+      type = type,
+      "Parameter \"step_atmcorr\" must be one among 'auto', 'scihub' and 'l2a' ",
+      "(setting to the default)."
+    )
+    pm$step_atmcorr <- pm_def$step_atmcorr
+  }
+  
+  
+  # -- path_l1c --
   if (all(!is.na(pm$path_l1c), pm$path_l1c != "")) {
     if(!dir.exists(pm$path_l1c)) {
       if(!dir.exists(dirname(pm$path_l1c))) {
@@ -679,7 +727,13 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
         )
       }
     }
-  } 
+  } else if (all("l1c" %in% pm$s2_levels, check_paths)) {
+    print_message(
+      type = type,
+      "Parameter \"path_l1c\" was not specified; ",
+      "please provide the path of an existing directory."
+    )
+  }
   
   
   # -- path_l2a --
@@ -693,7 +747,13 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
         )
       }
     }
-  } 
+  } else if (all("l2a" %in% pm$s2_levels, check_paths)) {
+    print_message(
+      type = type,
+      "Parameter \"path_l2a\" was not specified; ",
+      "please provide the path of an existing directory."
+    )
+  }
   
   
   # -- path_tiles --
@@ -723,7 +783,6 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
     }
   } 
   
-  
   # -- path_rgb --
   if (sum(!is.na(pm$list_rgb))==0) {
     pm$path_rgb <- NA
@@ -740,7 +799,13 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
         )
       }
     }
-  } 
+  } else if (all(length(nn(pm$list_rgb[!is.na(pm$list_rgb)])) > 0, check_paths)) {
+    print_message(
+      type = type,
+      "Neither parameter \"path_rgb\" nor \"path_out\" were specified; ",
+      "please provide the path of an existing directory for at least one of the two."
+    )
+  }
   
   
   # -- path_indices --
@@ -759,8 +824,13 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
         )
       }
     }
-  } 
-  
+  } else if (all(length(nn(pm$list_indices[!is.na(pm$list_indices)])) > 0, check_paths)) {
+    print_message(
+      type = type,
+      "Neither parameter \"path_indices\" nor \"path_out\" were specified; ",
+      "please provide the path of an existing directory for at least one of the two."
+    )
+  }
   
   # -- path_out --
   if (sum(!is.na(nn(pm$list_prods)))==0) {
@@ -776,11 +846,17 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
         )
       }
     }
-  } 
+  } else if (all(length(nn(pm$list_prods[!is.na(pm$list_prods)])) > 0, check_paths)) {
+    print_message(
+      type = type,
+      "Parameter \"path_out\" was not specified; ",
+      "please provide the path of an existing directory."
+    )
+  }
   
   
   # -- path_subdirs --
-
+  
   
   # -- thumbnails --
   
@@ -796,7 +872,7 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   }
   for (i in 1:2) {
     if (all(!is.na(pm$log[i]), pm$log[i] != "")) {
-      if(!dir.exists(pm$log[i])) {
+      if(!dir.exists(dirname(pm$log[i]))) {
         print_message(
           type = type,
           "Directory \"",dirname(pm$log[i]),"\" does not exist ",
@@ -808,6 +884,24 @@ check_param_list <- function(pm, type = "string", correct = TRUE) {
   
   
   # -- parallel --
+  if (all(
+    !is(pm$parallel, "logical"), !pm$parallel %in% c(TRUE,FALSE),
+    !is(pm$parallel, "numeric"), pm$parallel > 0
+  )) {
+    print_message(
+      type = type,
+      "Parameter \"",sel_par,"\" must be TRUE or FALSE, ",
+      "or a positive integer value; ",
+      "setting it to the default (",pm_def$parallel,")."
+    )
+    pm$parallel <- pm_def$parallel
+  }
+  if (all(
+    is(pm$parallel, "numeric"),
+    !is(pm$parallel, "integer")
+  )) {
+    pm$parallel <- floor(pm$parallel)
+  }
   
   
   # -- processing_order --

@@ -3,7 +3,7 @@
 #'  pass over certain orbits during a defined time interval.
 #'  Dates are intended to be in UTC time.
 #'  Notice that this is the expected calendar: some unexpected events
-#'  (e.g. techical problems, or early working phases during first stages of
+#'  (e.g. technical problems, or early working phases during first stages of
 #'  acquisition) could cause the data unavailability even if an 
 #'  acquisition was expected.
 #'  Notice also that some orbits (030, 073 and 116) acquire across UTC midnight:
@@ -29,7 +29,6 @@
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @import data.table
-#' @importFrom stringr str_pad
 #' @importFrom jsonlite fromJSON
 #' @importFrom methods is
 #' @export
@@ -82,8 +81,20 @@ s2_dop <- function(s2_orbits = 1:143,
   
   ## Check s2_orbits
   if (is.numeric(s2_orbits)) {
-    s2_orbits <- str_pad(as.integer(s2_orbits), 3, "left", "0")
+    s2_orbits <- str_pad2(as.integer(s2_orbits), 3, "left", "0")
   }
+  if (any(
+    as.character(suppressWarnings(as.integer(s2_orbits)), 3, "left", "0") != gsub("^0+", "", s2_orbits), 
+    is.na(suppressWarnings(as.integer(s2_orbits))), 
+    suppressWarnings(as.integer(s2_orbits))<0,
+    suppressWarnings(as.integer(s2_orbits))>143
+  )) {
+    print_message(
+      type = "error",
+      "Parameter 's2_orbits' contains invalid Sentinel-2 orbits."
+    )
+  }
+  
   
   ## Check mission
   if (!all(grepl("^2[AB]$", mission))) {

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Buffer clound masks — smooth_mask • An R toolbox to find, download an preprocess Sentinel-2 data</title>
+<title>Buffer cloud masks — smooth_mask • An R toolbox to find, download an preprocess Sentinel-2 data</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,7 @@
 
 
 
-<meta property="og:title" content="Buffer clound masks — smooth_mask" />
+<meta property="og:title" content="Buffer cloud masks — smooth_mask" />
 
 <meta property="og:description" content="Internal function (used by s2_mask) which smooths
 and buffers a 0-1 mask image in order to reduce the roughness of the mask
@@ -76,7 +76,7 @@ See details." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">An R toolbox to find, download an preprocess Sentinel-2 data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -109,7 +109,7 @@ See details." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Buffer clound masks</h1>
+    <h1>Buffer cloud masks</h1>
     <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/smooth_mask.R'><code>R/smooth_mask.R</code></a></small>
     <div class="hidden name"><code>smooth_mask.Rd</code></div>
     </div>
@@ -132,7 +132,7 @@ See details.</p>
     <tr>
       <th>inmask</th>
       <td><p>The path of the input 0-1 mask (where 0 represents the area
-to be masked, 1 the cleen surface).</p></td>
+to be masked, 1 the clean surface).</p></td>
     </tr>
     <tr>
       <th>binpaths</th>
@@ -160,7 +160,7 @@ masked area after smoothing it (positive to enlarge, negative to reduce).</p></t
       <td><p>(optional) The path of an input 0-1 mask where 0 represents
 the area of the original file with NA values (which should not be
 smoothed / buffered).
-Default (NULL) means that no NA values are presente.</p></td>
+Default (NULL) means that no NA values are present.</p></td>
     </tr>
     </table>
     

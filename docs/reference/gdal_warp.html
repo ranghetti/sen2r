@@ -34,7 +34,7 @@
 
 <meta property="og:description" content="The function applies gdal_translate or gdalwarp
 to clip, reproject and/or warp raster files. The choice of the
-algorythm is based on the comparison between input and output
+algorithm is based on the comparison between input and output
 projections (gdal_translate if they are equal, gdalwarp elsewhere).
 If not specified, the output format of each file is the same of the
 corresponding source file." />
@@ -78,7 +78,7 @@ corresponding source file." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">An R toolbox to find, download an preprocess Sentinel-2 data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -120,16 +120,17 @@ corresponding source file." />
     
     <p>The function applies gdal_translate or gdalwarp
 to clip, reproject and/or warp raster files. The choice of the
-algorythm is based on the comparison between input and output
+algorithm is based on the comparison between input and output
 projections (gdal_translate if they are equal, gdalwarp elsewhere).
 If not specified, the output format of each file is the same of the
 corresponding source file.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>, <span class='no'>dstfiles</span>, <span class='kw'>of</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ref</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>mask</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>tr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>t_srs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>r</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>dstnodata</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>, <span class='no'>dstfiles</span>, <span class='kw'>of</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>co</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ref</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>mask</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>t_srs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>r</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>dstnodata</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -146,6 +147,12 @@ corresponding source file.</p>
       <th>of</th>
       <td><p>The output format (use the short format name). Default is
 the format of every input filename.</p></td>
+    </tr>
+    <tr>
+      <th>co</th>
+      <td><p>Character. Passes a creation option to the output format driver.
+Multiple -co options may be listed. See format specific documentation
+for legal creation options for each format.</p></td>
     </tr>
     <tr>
       <th>ref</th>
@@ -176,7 +183,7 @@ projection is never taken from <code>mask</code>.</p></td>
       <td><p>Target spatial reference set (character). The coordinate
 systems that can be passed are anything supported by the
 OGRSpatialReference.SetFromUserInput() call, which includes EPSG
-PCS and GCSes (ie. EPSG:4296), PROJ.4 declarations (as above),
+PCS and GCSes (i.e. EPSG:4296), PROJ.4 declarations (as above),
 or the name of a .prf file containing well known text.</p></td>
     </tr>
     <tr>

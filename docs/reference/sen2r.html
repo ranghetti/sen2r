@@ -77,7 +77,7 @@ descriptions of all the other parameters)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">An R toolbox to find, download an preprocess Sentinel-2 data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -127,11 +127,11 @@ descriptions of all the other parameters).</p>
 
     <pre class="usage"><span class='fu'>sen2r</span>(<span class='kw'>param_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>gui</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>preprocess</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>s2_levels</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"l1c"</span>, <span class='st'>"l2a"</span>), <span class='kw'>sel_sensor</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"s2a"</span>, <span class='st'>"s2b"</span>),
-  <span class='kw'>online</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>downloader</span> <span class='kw'>=</span> <span class='st'>"wget"</span>,
+  <span class='kw'>online</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>downloader</span> <span class='kw'>=</span> <span class='st'>"builtin"</span>,
   <span class='kw'>overwrite_safe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>rm_safe</span> <span class='kw'>=</span> <span class='st'>"no"</span>, <span class='kw'>step_atmcorr</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
   <span class='kw'>max_cloud_safe</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>timeperiod</span> <span class='kw'>=</span> <span class='st'>"full"</span>,
   <span class='kw'>extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>extent_name</span> <span class='kw'>=</span> <span class='st'>"sen2r"</span>, <span class='kw'>s2tiles_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>s2orbits_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"BOA"</span>), <span class='kw'>list_rgb</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>s2orbits_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_rgb</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>list_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>index_source</span> <span class='kw'>=</span> <span class='st'>"BOA"</span>, <span class='kw'>rgb_ranges</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>mask_smooth</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>mask_buffer</span> <span class='kw'>=</span> <span class='fl'>0</span>,
   <span class='kw'>clip_on_extent</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>extent_as_mask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>reference_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
@@ -141,7 +141,7 @@ descriptions of all the other parameters).</p>
   <span class='kw'>compression</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>rgb_compression</span> <span class='kw'>=</span> <span class='st'>"90"</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>path_l1c</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_l2a</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_merged</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>path_out</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_rgb</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>path_subdirs</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>thumbnails</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>path_subdirs</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>thumbnails</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>processing_order</span> <span class='kw'>=</span> <span class='st'>"by_groups"</span>, <span class='kw'>use_python</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>log</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
     
@@ -200,15 +200,15 @@ only with already downloaded SAFE products.</p></td>
     <tr>
       <th>apihub</th>
       <td><p>Path of the text file containing credentials
-of scihub account. If NA (default) the default credentials
-(username "user", password "user") will be used.</p></td>
+of SciHub account.
+If NA (default), the default location inside the package will be used.</p></td>
     </tr>
     <tr>
       <th>downloader</th>
       <td><p>(optional) Character value corresponding to the executable
 which should be used to download SAFE products. It could be one among
-"wget" (default) and "aria2".
-If aria2 is not installed, Wget will be used instead.</p></td>
+"builtin" (default) and "aria2".
+If aria2 is not installed, built-in method will be used instead.</p></td>
     </tr>
     <tr>
       <th>overwrite_safe</th>
@@ -228,15 +228,13 @@ not to delete; "l1c" to delete only Level-1C products.</p></td>
       <td><p>(optional) Character vector to determine how to obtain
 Level-2A SAFE products:</p><ul>
 <li><p>"auto" (default) means that L2A is first
-searched on SciHub: if found, it is dowloaded, if not, the
+searched on SciHub: if found, it is downloaded, if not, the
 corresponding Level-1C is downloaded and sen2cor is used to
 produce L2A;</p></li>
-<li><p>"scihub" means that sen2cor is always used from L1C products
+<li><p>"scihub" means that Sen2Cor is always used from L1C products
 downloaded from SciHub;</p></li>
 <li><p>"l2a" means that they are downloaded if available on SciHub,
-otherwise they are skipped (sen2cor is never used);</p></li>
-<li><p>"no" means that L2A are not considered (processing chain
-makes use only of L1C products).</p></li>
+otherwise they are skipped (sen2cor is never used).</p></li>
 </ul></td>
     </tr>
     <tr>
@@ -246,7 +244,7 @@ the maximum cloud level of each SAFE to be considered (default: no filter).
 It it used to limit the research of SAFE products to "good" images,
 so it is applied only to non-existing archives (existing SAFE are always
 used).
-In thish sense, this parameter is different from <code>max_mask</code>, which can be
+In this sense, this parameter is different from <code>max_mask</code>, which can be
 used to set a maximum cloud coverage over output extents.
 Notice also that this value is used to filter on the basis of the metadata
 "Cloud cover percentage" associated to each SAFE, so it is not based
@@ -303,19 +301,20 @@ all the accepted values are listed).</p></td>
       <th>list_prods</th>
       <td><p>(optional) Character vector with the values of the
 products to be processed (accepted values: "TOA", "BOA", "SCL",
-"TCI"). Default is "BOA".</p></td>
+"TCI"). Default is no one (NA).</p></td>
     </tr>
     <tr>
       <th>list_rgb</th>
       <td><p>(optional) Character vector with the values of the
 RGB images to be produced.
-Images are in the form RGBrgbx, when:</p><ul>
+Images are in the form RGBrgbx, where:</p><ul>
 <li><p>x is B (if source is BOA) or T (is source is TOA);</p></li>
 <li><p>r g and b are the the number of the bands to be used respectively
 for red, green and blue, in hexadecimal format.
 Notice that this is the <a href='https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/resolutions/spatial'>actual number name of the bands</a>:
 so, to use i.e. BOA band 11 (1610nm) use the value "b", even if band 11 is
 the 10th band of a BOA product (because band 10 is missing).
+(e.g., RGB432B, RGB843B)
 Default is no one (NA).</p></li>
 </ul></td>
     </tr>
@@ -339,7 +338,7 @@ If can be a 2-length integer vector (min-max for all the 3 bands) or a 6-length 
 3x2 matrix (min red, min green, min blue, max red, max green, max blue).
 Default is to use c(0,2500) for bands 2, 3 and 4; c(0,7500) for other bands.
 In case <code>list_rgb</code> is a vector of length &gt; 1, <code>rgb_ranges</code> must be a list
-of the same length (otherwise, the same range vlaues will be used for all the RGB
+of the same length (otherwise, the same range values will be used for all the RGB
 products).</p></td>
     </tr>
     <tr>
@@ -377,7 +376,7 @@ to be applied to the cloud mask by function <a href='s2_mask.html'>s2_mask</a>.<
 (expressed in unit of measure of the output projection, typically metres)
 to be applied to the cloud mask by function <a href='s2_mask.html'>s2_mask</a>.
 Default value (0) means that no buffer is applied; a positive value causes
-an enlargement of the masked area; a negative value cause a reducement.</p></td>
+an enlargement of the masked area; a negative value cause a reduction.</p></td>
     </tr>
     <tr>
       <th>clip_on_extent</th>
@@ -398,9 +397,9 @@ reference grid. If NA (default), no reference is used.</p></td>
     </tr>
     <tr>
       <th>res</th>
-      <td><p>(optional) Numerifc vector of length 2 with the x-y resolution
+      <td><p>(optional) Numeric vector of length 2 with the x-y resolution
 for output products. Default (NA) means that the resolution
-is keeped as native.</p></td>
+is kept as native.</p></td>
     </tr>
     <tr>
       <th>res_s2</th>
@@ -442,7 +441,7 @@ format recognised by GDAL). Default is "GTiff".</p></td>
     </tr>
     <tr>
       <th>index_datatype</th>
-      <td><p>(optional) Numeric datatype of the ouptut
+      <td><p>(optional) Numeric datatype of the output
 spectral indices (see <a href='s2_calcindices.html'>s2_calcindices</a>.</p></td>
     </tr>
     <tr>
@@ -530,14 +529,13 @@ If FALSE, they are not created.</p></td>
     </tr>
     <tr>
       <th>parallel</th>
-      <td><p>(optional) Logical or integer: if TRUE (default), some
-functions (<a href='sen2cor.html'>sen2cor</a>, <a href='s2_mask.html'>s2_mask</a> and <a href='s2_calcindices.html'>s2_calcindices</a> for now)
-are executed using multiple cores in order to speed up the execution.
+      <td><p>(optional) Logical or integer: setting to TRUE, the processing
+is executed using multiple cores in order to speed up the execution.
+Parallelisation is performed on groups of dates.
 The number of cores is automatically determined; specifying it is also
 possible (e.g. <code>parallel = 4</code>).
-If FALSE, the processing chain is forced to run with a single core
-(this can be useful if multiple sen2r instances are run in parallel).
-This argument can be set only in commandline mode, not using the GUI.</p></td>
+If FALSE (default), the processing chain is forced to run with a single core
+(this can be useful if multiple sen2r instances are run in parallel).</p></td>
     </tr>
     <tr>
       <th>processing_order</th>
@@ -577,8 +575,8 @@ subsequent steps, thus increasing disk space requirements.</p></li>
 <li><p>"1" or "by_step":
 this is the legacy mode, in which the cycle on groups is ignored
 as well as the parallel computation over dates.
-All SAFEs are first downloaded/processed, then the processing steps
-are performed sequentially.
+All SAFE archives are first downloaded/processed,
+then the processing steps are performed sequentially.
 This mode is similar to the previous one in terms of disk usage
 but it is slightly slower; its advantage are the lower RAM requirements.</p></li>
 </ul></td>
@@ -608,7 +606,7 @@ default is a subdirectory named ".vrt" within <code>path_out</code>).</p></td>
       <td><p>(optional) Character string with the path where the package
 messages will be redirected.
 Default (NA) is not to redirect (use standard output).
-A two-length character with tho paths (which can also coincide)
+A two-length character with two paths (which can also coincide)
 can be used to redirect also the output: in this case, the first path
 is the path for messages, the second one for the output.</p></td>
     </tr>
@@ -619,9 +617,9 @@ is the path for messages, the second one for the output.</p></td>
     <p>A vector with the paths of the files which were created (excluded
 the temporary files); NULL otherwise.
 The vector includes two attributes:</p><ul>
-<li><p><code>cloudcovered</code> with the list of imags not created due to the higher
+<li><p><code>cloudcovered</code> with the list of images not created due to the higher
 percentage of cloud covered pixels;</p></li>
-<li><p><code>missing</code> with the list of imags not created due to other reasons.</p></li>
+<li><p><code>missing</code> with the list of images not created due to other reasons.</p></li>
 </ul>
 
     

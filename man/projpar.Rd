@@ -10,8 +10,7 @@ projpar(proj4string, par, abort = FALSE)
 projname(proj4string, abort = FALSE)
 }
 \arguments{
-\item{proj4string}{The proj4string to be named (a character or a \link{CRS}
-object).}
+\item{proj4string}{The proj4string to be named.}
 
 \item{par}{Character corresponding to the parameter name.}
 

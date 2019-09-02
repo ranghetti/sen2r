@@ -16,12 +16,15 @@ RUN apt-get update && apt-get install -y \
 RUN R -e "remotes::install_github('r-spatial/lwgeom', dependencies = TRUE)"
 
 # Install the package
-RUN R -e "remotes::install_github('ranghetti/sen2r', ref = 'devel', dependencies = TRUE)"
+RUN R -e "remotes::install_github('ranghetti/sen2r', ref = 'master', dependencies = TRUE)"
 
 # Install internal dependencies and configure
-RUN R -e 'sen2r:::load_binpaths(c("python", "wget", "aria2", "gdal", "sen2cor"))'
+RUN R -e 'sen2r:::load_binpaths(c("python", "aria2", "gdal", "sen2cor"))'
+
+# Download vector of S2 tiles
+RUN R -e 'sen2r::s2_tiles()'
 
 # Allow user rstudio to use sen2cor
 RUN mkdir /root/sen2cor/2.5/log && \
     chmod -R 0777 /root && \
-    chmod -R 0777 /usr/local/lib/R/site-library/sen2r/sen2cor
+    chmod -R 0777 /usr/local/lib/R/site-library/sen2r/sen2cor_2-5-5

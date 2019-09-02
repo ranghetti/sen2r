@@ -31,7 +31,7 @@ format recognised by GDAL). Default is JPEG.}
 present, the compression indicated with this parameter is used.
 In the case a JPEG format is present, the compression indicates the quality
 (integer, 0-100).
-In the case a GTiff format is presentand an integer 0-100 number is provided,
+In the case a GTiff format is present and an integer 0-100 number is provided,
 this is interpreted as the quality level of a JPEG compression.}
 
 \item{tmpdir}{(optional) Path where intermediate files will be created.

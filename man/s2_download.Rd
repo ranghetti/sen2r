@@ -4,24 +4,28 @@
 \alias{s2_download}
 \title{Download S2 products.}
 \usage{
-s2_download(s2_prodlist = NULL, downloader = "wget", apihub = NA,
-  tile = NULL, outdir = ".")
+s2_download(s2_prodlist = NULL, downloader = "builtin", apihub = NA,
+  tile = NULL, outdir = ".", overwrite = FALSE)
 }
 \arguments{
 \item{s2_prodlist}{List of the products to be downloaded
 (this must be the output of \link{s2_list} function).}
 
 \item{downloader}{Executable to use to download products
-(default: "wget").}
+(default: "builtin"). Alternatives are "builtin" or "aria2"
+(this requires aria2c to be installed).}
 
 \item{apihub}{Path of the "apihub.txt" file containing credentials
-of scihub account. If NA (default) the default credentials
-(username "user", password "user") will be used.}
+of SciHub account.
+If NA (default), the default location inside the package will be used.}
 
 \item{tile}{Single Sentinel-2 Tile string (5-length character)}
 
 \item{outdir}{(optional) Full name of the existing output directory
 where the files should be created (default: current directory).}
+
+\item{overwrite}{Logical value: should existing output archives be
+overwritten? (default: FALSE)}
 }
 \description{
 The function downloads a single S2 product.
@@ -35,7 +39,7 @@ License: GPL 3.0
 \examples{
 \dontrun{
 single_s2 <- paste0("https://scihub.copernicus.eu/apihub/odata/v1/",
-  "Products(\\'c7142722-42bf-4f93-b8c5-59fd1792c430\\')/\\\\$value")
+  "Products(\\'c7142722-42bf-4f93-b8c5-59fd1792c430\\')/$value")
 names(single_s2) <- "S2A_MSIL1C_20170613T101031_N0205_R022_T32TQQ_20170613T101608.SAFE"
 # (this is equivalent to:
 # single_s2 <- example_s2_list[1]
@@ -44,6 +48,9 @@ names(single_s2) <- "S2A_MSIL1C_20170613T101031_N0205_R022_T32TQQ_20170613T10160
 
 # Download the whole product
 s2_download(single_s2, outdir=tempdir())
+
+#' # Download the whole product - using aria2
+s2_download(single_s2, outdir=tempdir(), downloader = "aria2")
 
 # Download a specific tile
 s2_download(single_s2, tile="32TQQ", outdir=tempdir())
@@ -60,4 +67,6 @@ s2_download(example_s2_list, outdir=tempdir())
 }
 \author{
 Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
+
+Lorenzo Busetto, phD (2019) \email{ranghetti.l@irea.cnr.it}
 }

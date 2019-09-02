@@ -13,7 +13,7 @@
 #'  second case, its parent directory must exists).
 #'  If it is a relative path, it is expanded from the common parent
 #'  directory of `infiles`.
-#' @param subdirs (optional) Logical: if TRUE, differet output products are
+#' @param subdirs (optional) Logical: if TRUE, different output products are
 #'  placed in separated `outfile` subdirectories; if FALSE, they are placed in
 #'  `outfile` directory; if NA (default), subdirectories are created only if
 #'  `infiles` relate to more than a single product.
@@ -48,7 +48,6 @@
 #'  (it is used when the function is called by `sen2r()`).
 #' @return A vector with the names of the merged products (just created or
 #'  already existing).
-#' @importFrom rgdal GDALinfo
 #' @importFrom magrittr "%>%"
 #' @importFrom jsonlite fromJSON
 #' @importFrom foreach foreach "%do%" "%dopar%"
@@ -78,7 +77,7 @@ s2_merge <- function(infiles,
   infiles_meta_grp <- NULL
   
   # load output formats
-  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))$drivers
   
   # Define vrt_rel_paths
   if (is.na(vrt_rel_paths)) {
@@ -100,13 +99,10 @@ s2_merge <- function(infiles,
   
   # Get files metadata
   infiles_meta <- sen2r_getElements(infiles, format="data.frame")
-  # get metadata from GDALinfo (FIXME time expensive; check if it can be speeded up)
-  suppressWarnings(
-    # infiles_meta_gdal <- sapply(infiles, function(x) {attributes(GDALinfo(x))[c("driver","projection","df")]})
-    infiles_meta_gdal <- sapply(infiles, function(x) {attributes(GDALinfo(x))[c("driver","projection")]})
-  )
-  infiles_meta$format <- unlist(infiles_meta_gdal[1,])
-  infiles_meta$proj4string <- sapply(unlist(infiles_meta_gdal[2,]), function(x) {st_crs2(x)$proj4string})
+  # get metadata
+  infiles_meta_gdal <- raster_metadata(infiles, c("outformat", "proj"), format = "data.table")
+  infiles_meta$format <- infiles_meta_gdal$outformat
+  infiles_meta$proj4string <- infiles_meta_gdal$proj
   # infiles_meta$NAflag <- sapply(infiles_meta_gdal[3,], function(x) {
   #   if (x[1,"hasNoDataValue"]==TRUE) {
   #     x[1,"NoDataValue"]
@@ -341,6 +337,9 @@ s2_merge <- function(infiles,
       if (sel_outformat=="VRT" & vrt_rel_paths) {
         gdal_abs2rel(file.path(out_subdir,sel_outfile))
       }
+      
+      # fix for envi extension (writeRaster use .envi)
+      if (sel_outformat=="ENVI")  {fix_envi_format(file.path(out_subdir,sel_outfile))}
       
     } # end of overwrite IF cycle
     

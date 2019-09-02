@@ -41,14 +41,14 @@
 #'      more SCL class numbers. E.g. string "scl_0_8_9_11" can
 #'      be used to mask classes 0 ("No data"), 8-9 ("Cloud (high or medium 
 #'      probability)") and 11 ("Snow").
-#' @param smooth (optional) Numerical (positive): should the mask be smoothed=the size (in the unit of
+#' @param smooth (optional) Numerical (positive): the size (in the unit of
 #'  `inmask`, typically metres) to be used as radius for the smoothing
 #'  (the higher it is, the more smooth the output mask will result). 
-#'  Defaul is 20.
+#'  Default is 0 (no smoothing is applied).
 #' @param buffer (optional) Numerical (positive or negative): the size of the 
 #'  buffer (in the unit of `inmask`, typically metres) to be applied to the 
 #'  masked area after smoothing it (positive to enlarge, negative to reduce).
-#'  Defaul is 10.
+#'  Default is 0 (no buffer).
 #' @param max_mask (optional) Numeric value (range 0 to 100), which represents
 #'  the maximum percentage of allowed masked surface (by clouds or any other 
 #'  type of mask chosen with argument `mask_type`) for producing outputs. 
@@ -110,7 +110,6 @@
 #'  An attribute "toomasked" contains the paths of the outputs which were not
 #'  created cause to the high percentage of cloud coverage.
 #' @export
-#' @importFrom rgdal GDALinfo
 #' @importFrom raster brick calc dataType mask overlay stack values
 #' @importFrom jsonlite fromJSON
 #' @import data.table
@@ -120,8 +119,8 @@
 s2_mask <- function(infiles,
                     maskfiles,
                     mask_type = "cloud_medium_proba",
-                    smooth = 20,
-                    buffer = 10,
+                    smooth = 0,
+                    buffer = 0,
                     max_mask = 80,
                     outdir = "./masked",
                     tmpdir = NA,
@@ -189,7 +188,7 @@ s2_mask <- function(infiles,
   }
   
   # check output format
-  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))
+  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))$drivers
   if (!is.na(format)) {
     sel_driver <- gdal_formats[gdal_formats$name==format,]
     if (nrow(sel_driver)==0) {
@@ -230,16 +229,14 @@ s2_mask <- function(infiles,
   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
   
   # Get files metadata
-  infiles_meta <- sen2r_getElements(infiles, format="data.table")
-  maskfiles_meta <- sen2r_getElements(maskfiles, format="data.table")
-  # suppressWarnings(
-  #   infiles_meta_gdal <- sapply(infiles, function(x) {attributes(GDALinfo(x))[c("df")]})
-  # )
-  
+  infiles_meta_sen2r <- sen2r_getElements(infiles, format="data.table")
+  infiles_meta_raster <- raster_metadata(infiles, c("res", "outformat", "unit"), format="data.table")
+  maskfiles_meta_sen2r <- sen2r_getElements(maskfiles, format="data.table")
+
   # create outdir if not existing
   dir.create(outdir, recursive=FALSE, showWarnings=FALSE)
   # create subdirs (if requested)
-  prod_types <- unique(infiles_meta$prod_type)
+  prod_types <- unique(infiles_meta_sen2r$prod_type)
   if (is.na(subdirs)) {
     subdirs <- ifelse(length(prod_types)>1, TRUE, FALSE)
   }
@@ -284,31 +281,34 @@ s2_mask <- function(infiles,
   }
   for (i in seq_along(infiles)) {try({
     sel_infile <- infiles[i]
-    sel_infile_meta <- c(infiles_meta[i,])
-    sel_format <- suppressWarnings(ifelse(
-      !is.na(format), format, attr(GDALinfo(sel_infile), "driver")
-    ))
-    sel_rmtmp <- ifelse(sel_format=="VRT", FALSE, rmtmp)
+    sel_infile_meta_sen2r <- c(infiles_meta_sen2r[i,])
+    sel_infile_meta_raster <- c(infiles_meta_raster[i,])
+    sel_format <- if (is.na(format)) {
+      sel_infile_meta_raster$outformat
+    } else {
+      format
+    }
+    sel_rmtmp <- ifelse(sel_format == "VRT", FALSE, rmtmp)
     sel_out_ext <- gdal_formats[gdal_formats$name==sel_format,"ext"][1]
-    sel_naflag <- s2_defNA(sel_infile_meta$prod_type)
+    sel_naflag <- s2_defNA(sel_infile_meta_sen2r$prod_type)
     
     # check that infile has the correct maskfile
     sel_maskfiles <- sapply(names(req_masks), function(m) {
-      maskfiles[which(maskfiles_meta$prod_type==m &
-                        maskfiles_meta$type==sel_infile_meta$type &
-                        maskfiles_meta$mission==sel_infile_meta$mission &
-                        maskfiles_meta$sensing_date==sel_infile_meta$sensing_date &
-                        maskfiles_meta$id_orbit==sel_infile_meta$id_orbit &
-                        maskfiles_meta$res==sel_infile_meta$res)][1]
+      maskfiles[which(maskfiles_meta_sen2r$prod_type==m &
+                        maskfiles_meta_sen2r$type==sel_infile_meta_sen2r$type &
+                        maskfiles_meta_sen2r$mission==sel_infile_meta_sen2r$mission &
+                        maskfiles_meta_sen2r$sensing_date==sel_infile_meta_sen2r$sensing_date &
+                        maskfiles_meta_sen2r$id_orbit==sel_infile_meta_sen2r$id_orbit &
+                        maskfiles_meta_sen2r$res==sel_infile_meta_sen2r$res)][1]
     })
     
     # define subdir
-    out_subdir <- ifelse(subdirs, file.path(outdir,infiles_meta[i,"prod_type"]), outdir)
+    out_subdir <- ifelse(subdirs, file.path(outdir,infiles_meta_sen2r[i,"prod_type"]), outdir)
     
     # define out name (a vrt for all except the last mask)
     sel_outfile <- file.path(
       out_subdir,
-      gsub(paste0("\\.",infiles_meta[i,"file_ext"],"$"),
+      gsub(paste0("\\.",infiles_meta_sen2r[i,"file_ext"],"$"),
            paste0(".",sel_out_ext),
            basename(sel_infile)))
     
@@ -398,11 +398,8 @@ s2_mask <- function(infiles,
         
         # This is as fast as previous, but memory friendly on large raster
         mean_values_naval <- raster::cellStats(raster(outnaval), "mean", na.rm = TRUE)
-        mean_values_mask  <- raster::cellStats(raster(outmask), "mean", na.rm = TRUE)
-        # values_naval <- values(raster(outnaval))
-        # mean_values_naval <- mean(values_naval, na.rm=TRUE)
-        # mean_values_mask <- mean(values(raster(outmask)), na.rm=TRUE)
-        
+        mean_values_mask <- raster::cellStats(raster(outmask), "mean", na.rm = TRUE)
+
         perc_mask <- 100 * (mean_values_naval - mean_values_mask) / mean_values_naval
         if (!is.finite(perc_mask)) {perc_mask <- 100}
         
@@ -411,9 +408,9 @@ s2_mask <- function(infiles,
           # define out MSK name
           binmask <- file.path(
             ifelse(subdirs, file.path(outdir,"MSK"), outdir),
-            gsub(paste0("\\.",infiles_meta[i,"file_ext"],"$"),
+            gsub(paste0("\\.",infiles_meta_sen2r[i,"file_ext"],"$"),
                  paste0(".",sel_out_ext),
-                 gsub(paste0("\\_",infiles_meta[i,"prod_type"],"\\_"),
+                 gsub(paste0("\\_",infiles_meta_sen2r[i,"prod_type"],"\\_"),
                       "_MSK_",
                       basename(sel_infile)))
           )
@@ -450,46 +447,27 @@ s2_mask <- function(infiles,
             # if mask is at different resolution than inraster
             # (e.g. 20m instead of 10m),
             # resample it
-            if (any(suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")]) !=
-                    suppressWarnings(GDALinfo(outmask)[c("res.x","res.y")]))) {
+            if (any(
+              unlist(sel_infile_meta_raster[c("res.x","res.y")]) !=
+              unlist(raster_metadata(outmask, "res", format = "list")[[1]]$res)
+            )) {
               gdal_warp( # DO NOT use raster::disaggregate (1. not faster, 2. it does not always provide the right resolution)
                 outmask,
                 outmask_res <- file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif"))),
                 ref = sel_infile
               )
-              #             outmask_res0 <- file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
-              #             outmask_res <- file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
-              #             disaggregate(
-              #               raster(outmask),
-              #               filename = outmask_res0,
-              #               fact = round(
-              #                 suppressWarnings(GDALinfo(outmask)[c("res.x","res.y")]) / 
-              #                   suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")])
-              #               ),
-              #               method = "",
-              #               options  = "COMPRESS=LZW",
-              #               datatype = "INT1U"
-              #             )
-              #             if (any(suppressWarnings(GDALinfo(sel_infile)[c("rows","columns")]) !=
-              #                     suppressWarnings(GDALinfo(outmask_res0)[c("rows","columns")]))) {
-              #               crop(
-              #                 raster(outmask_res0),
-              #                 raster(sel_infile),
-              #                 filename = outmask_res,
-              #                 options  = "COMPRESS=LZW",
-              #                 datatype = "INT1U"
-              #               )
-              #             } else {
-              #               outmask_res <- outmask_res0
-              #             }
             } else {
               outmask_res <- outmask
             }
             
             # the same for outnaval
-            if (any(suppressWarnings(GDALinfo(sel_infile)[c("res.x","res.y")]) !=
-                    suppressWarnings(GDALinfo(outnaval)[c("res.x","res.y")])) & 
-                (smooth > 0 | buffer != 0)) {
+            if (
+              any(
+                unlist(sel_infile_meta_raster[c("res.x","res.y")]) !=
+                unlist(raster_metadata(outnaval, "res", format = "list")[[1]]$res)
+              ) & 
+              (smooth > 0 | buffer != 0)
+            ) {
               gdal_warp(
                 outnaval,
                 outnaval_res <- file.path(sel_tmpdir, basename(tempfile(pattern = "naval_", fileext = ".tif"))),
@@ -502,7 +480,7 @@ s2_mask <- function(infiles,
             # apply the smoothing (if required)
             outmask_smooth <- if (smooth > 0 | buffer != 0) {
               # if the unit is not metres, approximate it
-              if (projpar(attr(suppressWarnings(GDALinfo(sel_infile)),"projection"), "Unit") == "degree") {
+              if (sel_infile_meta_raster$unit == "degree") {
                 buffer <- buffer * 8.15e-6
                 smooth <- smooth * 8.15e-6
               }
@@ -521,29 +499,17 @@ s2_mask <- function(infiles,
             # load mask
             inraster <- raster::brick(sel_infile)
             
-            # if (sel_format!="VRT") {
-            # t1 <- Sys.time()
-            # raster::mask(
-            #   inraster,
-            #   raster(outmask_smooth),
-            #   filename = sel_outfile,
-            #   maskvalue = 0,
-            #   updatevalue = sel_naflag,
-            #   updateNA = TRUE,
-            #   NAflag = sel_naflag,
-            #   datatype = dataType(inraster),
-            #   format = sel_format,
-            #   options = if(sel_format == "GTiff") {paste0("COMPRESS=",compress)},
-            #   overwrite = overwrite
-            # )
-            # t2 <- Sys.time()
-            # print(t2 - t1)
-            
             # Maskapply
-            # maxmem <- get_freemem() / 2
             maskapply_serial <- function(x, y, na, out_file = '', datatype, minrows = NULL,
                                          overwrite = overwrite) {
-              out <- raster:::.copyWithProperties(x)
+              if (inherits(x, "RasterStackBrick")) {
+                out <- brick(x, values = FALSE)
+              }
+              else {
+                out <- raster(x)
+                out@legend <- x@legend
+              }
+              
               if (grepl("\\.vrt$", out_file)) {
                 out_file <- gsub("\\.vrt$", ".tif", out_file)
               }
@@ -557,29 +523,19 @@ s2_mask <- function(infiles,
                 overwrite = overwrite
               )
               #4 bytes per cell, nb + 1 bands (brick + mask), * 2 to account for a copy
-              # raster::rasterOptions(chunksize = 3e08)
               bs <- blockSize(out, minblocks = 8)
-              # if (parallel) bs <- blockSize(out, n = bs$n * n_cores)
               for (j in seq_len(bs$n)) {
                 message("Processing chunk ", j, " of ", bs$n)
                 
-                m   <- raster::getValuesBlock(y, row = bs$row[j], nrows = bs$nrows[j])
-                v   <- raster::getValuesBlock(x, row = bs$row[j], nrows = bs$nrows[j])
+                m <- raster::getValuesBlock(y, row = bs$row[j], nrows = bs$nrows[j])
+                v <- raster::getValuesBlock(x, row = bs$row[j], nrows = bs$nrows[j])
                 v[m == 0] <- NA
                 
                 out <- writeValues(out, v, bs$row[j])
                 gc()
               }
               out <- writeStop(out)
-              # raster::rasterOptions(chunksize = 1e08)
-              # gc()
-              #
-              #
-              # return(out)
             }
-            # t1 <- Sys.time()
-            #
-            # t1 <- Sys.time()
             out <- maskapply_serial(x = inraster,
                                     y =  raster(outmask_smooth),
                                     out_file = sel_outfile,
@@ -590,50 +546,8 @@ s2_mask <- function(infiles,
               file.rename(gsub("\\.vrt$", ".tif", sel_outfile), sel_outfile)
             }
             
-            # gc()
-            # t2 <- Sys.time()
-            # print(t2 - t1)
-            
-            
-            # } else {
-            #   print_message(
-            #     type = "message",
-            #     date = TRUE,
-            #     "Starting parallel application of masks on file ",basename(sel_infile),"..."
-            #   )
-            #
-            #   t1 <- Sys.time()
-            #   maskapply_parallel(
-            #     inraster,
-            #     raster(outmask_smooth),
-            #     outpath = sel_outfile,
-            #     tmpdir = sel_tmpdir,
-            #     binpaths = binpaths,
-            #     NAflag = sel_naflag,
-            #     parallel = parallel,
-            #     datatype = dataType(inraster),
-            #     overwrite = overwrite,
-            #     .log_message=.log_message,
-            #     .log_output=.log_output
-            #   )
-            #   t2 <- Sys.time()
-            #   print(t2 - t1)
-            #   print_message(
-            #     type = "message",
-            #     date = TRUE,
-            #     "Parallel application of masks on file ",basename(sel_infile)," done."
-            #   )
-            # }
-            
-            
             # fix for envi extension (writeRaster use .envi)
-            if (sel_format=="ENVI" &
-                file.exists(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile))) {
-              file.rename(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),
-                          sel_outfile)
-              file.rename(paste0(gsub(paste0("\\.",sel_out_ext,"$"),".envi",sel_outfile),".aux.xml"),
-                          paste0(sel_outfile,".aux.xml"))
-            }
+            if (sel_format=="ENVI")  {fix_envi_format(sel_outfile)}
             
           } else { # end of max_mask IF cycle
             outfiles_toomasked <- c(outfiles_toomasked, sel_outfile)
@@ -675,7 +589,7 @@ s2_mask <- function(infiles,
 #'  The function is similar to [s2_mask], but it returns percentages instead
 #'  of masked rasters.
 #' @return [s2_perc_masked] returns a names vector with the percentages 
-#'  of masked surtfaces.
+#'  of masked surfaces.
 #' @rdname s2_mask
 #' @export
 

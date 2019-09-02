@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Import / export SciHub username and password — read_scihub_login • An R toolbox to find, download an preprocess Sentinel-2 data</title>
+<title>Import / export / check SciHub username and password — read_scihub_login • An R toolbox to find, download an preprocess Sentinel-2 data</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,15 +30,14 @@
 
 
 
-<meta property="og:title" content="Import / export SciHub username and password — read_scihub_login" />
+<meta property="og:title" content="Import / export / check SciHub username and password — read_scihub_login" />
 
-<meta property="og:description" content="Read the SciHub login information or save new username and
-password. Login information is stored in a file apihub.txt inside the
-directory of s2download. This functions allow to read or write this
-file, and to edit them from inside the GUI.
-Remember that, in case login information is not provided, default user
-username and user password are used, but this can cause timeouts, since
-a limit of two parallel downloads per user exists." />
+<meta property="og:description" content="Read the SciHub login information (read_scihub_login()),
+save new username and password (write_scihub_login())
+or check their validity (check_scihub_login()).
+Login information is stored in a file apihub.txt inside the
+&quot;extdata&quot; directory. This functions allow to read or write this
+file, and to edit them from inside the GUI." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -79,7 +78,7 @@ a limit of two parallel downloads per user exists." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">An R toolbox to find, download an preprocess Sentinel-2 data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -112,26 +111,29 @@ a limit of two parallel downloads per user exists." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Import / export SciHub username and password</h1>
+    <h1>Import / export / check SciHub username and password</h1>
     <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/scihub_login.R'><code>R/scihub_login.R</code></a></small>
     <div class="hidden name"><code>scihub_login.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Read the SciHub login information or save new username and
-password. Login information is stored in a file <code>apihub.txt</code> inside the
-directory of <code>s2download</code>. This functions allow to read or write this
-file, and to edit them from inside the GUI.
-Remember that, in case login information is not provided, default <code>user</code>
-username and <code>user</code> password are used, but this can cause timeouts, since
-<a href='https://scihub.copernicus.eu/twiki/do/view/SciHubWebPortal/APIHubDescription'>a limit of two parallel downloads per user exists</a>.</p>
+    <p>Read the SciHub login information (<code>read_scihub_login()</code>),
+save new username and password (<code>write_scihub_login()</code>)
+or check their validity (<code>check_scihub_login()</code>).
+Login information is stored in a file <code>apihub.txt</code> inside the
+"extdata" directory. This functions allow to read or write this
+file, and to edit them from inside the GUI.</p>
     
     </div>
 
     <pre class="usage"><span class='fu'>read_scihub_login</span>(<span class='kw'>apihub_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>)
 
-<span class='fu'>write_scihub_login</span>(<span class='no'>username</span>, <span class='no'>password</span>, <span class='kw'>apihub_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+<span class='fu'>check_scihub_login</span>(<span class='no'>username</span>, <span class='no'>password</span>)
+
+<span class='fu'>check_scihub_connection</span>()
+
+<span class='fu'>write_scihub_login</span>(<span class='no'>username</span>, <span class='no'>password</span>, <span class='kw'>apihub_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>check</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>append</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -140,7 +142,7 @@ username and <code>user</code> password are used, but this can cause timeouts, s
     <tr>
       <th>apihub_path</th>
       <td><p>Path of the file in which login information is saved.
-If NA (default) it is automatically read from <code>s2download</code> path.</p></td>
+If NA (default) it is automatically read from the package default location.</p></td>
     </tr>
     <tr>
       <th>username</th>
@@ -151,6 +153,13 @@ If NA (default) it is automatically read from <code>s2download</code> path.</p><
       <td><p>SciHub password.</p></td>
     </tr>
     <tr>
+      <th>check</th>
+      <td><p>Logical: if TRUE (default), new credentials are checked
+before writing them on <code>apihub_path</code> (if they are invalid, an error
+is provided);
+if FALSE, they are directly written.</p></td>
+    </tr>
+    <tr>
       <th>append</th>
       <td><p>Logical: if TRUE, new credentials are added
 to the ones existing within <code>apihub_path</code>;
@@ -158,22 +167,45 @@ if FALSE (default), <code>apihub_path</code> is replaced with the new ones.</p><
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p><code>read_scihub_login</code> returns a matrix of credentials,
+in which <code>username</code> is in the first column, <code>password</code> in the second.</p>
+<p><code>check_scihub_login</code> returns TRUE if credentials are valid,
+FALSE elsewhere.</p>
+<p><code>check_scihub_connection</code> returns TRUE if internet connection
+is available and SciHub is accessible, FALSE otherwise.</p>
+<p><code>write_scihub_login</code> returns NULL.</p>
+    
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='kw'>if</span> (<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/interactive'>interactive</a></span>()) {
+  <span class='fu'>check_scihub_login</span>(<span class='st'>"user"</span>, <span class='st'>"user"</span>)
+  <span class='fu'>write_scihub_login</span>(<span class='st'>"user"</span>, <span class='st'>"user"</span>)
+  <span class='fu'>read_scihub_login</span>()
+}
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
+      <li><a href="#value">Value</a></li>
+
       <li><a href="#note">Note</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     <p>Luigi Ranghetti, phD (2017) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p>
+<p>Lorenzo Busetto, phD (2019) <a href='mailto:busetto.l@irea.cnr.it'>busetto.l@irea.cnr.it</a></p>
   </div>
 </div>
 

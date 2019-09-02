@@ -19,7 +19,7 @@
 #'  present, the compression indicated with this parameter is used.
 #'  In the case a JPEG format is present, the compression indicates the quality
 #'  (integer, 0-100).
-#'  In the case a GTiff format is presentand an integer 0-100 number is provided,
+#'  In the case a GTiff format is present and an integer 0-100 number is provided,
 #'  this is interpreted as the quality level of a JPEG compression.
 #' @param tmpdir (optional) Path where intermediate files will be created.
 #'  Default is a temporary directory.
@@ -447,7 +447,7 @@ s2_thumbnails <- function(infiles,
       }
       
       # Resize input if necessary
-      sel_infile_size <- suppressWarnings(GDALinfo(sel_infile_path)[c("rows","columns")])
+      sel_infile_size <- raster_metadata(sel_infile_path, "size", format = "list")[[1]]$size
       resized_path <- file.path(tmpdir, gsub(
         "\\..+$",
         if (sel_prod_type %in% c("BOA","TOA")) {"_resized.tif"} else {"_resized.vrt"},
@@ -459,7 +459,7 @@ s2_thumbnails <- function(infiles,
           paste0(
             binpaths$gdalwarp,
             if (sel_prod_type %in% c("BOA","TOA")) {" -of GTiff -co COMPRESS=LZW "} else {" -of VRT "},
-            "-ts ",out_size[2]," ",out_size[1]," ",
+            "-ts ",out_size[1]," ",out_size[2]," ",
             if (sel_prod_type %in% c("SCL")) {"-r mode "} else {"-r average "}, # resp. discrete or continuous values
             "\"",filterbands_path,"\" ",
             "\"",resized_path,"\""
@@ -485,10 +485,7 @@ s2_thumbnails <- function(infiles,
         scaleRange <- if (sel_prod_type %in% c("BOA","TOA")) {
           c(0, switch(rgb_type, "SwirNirR" = 8000, "NirRG" = 7500, "RGB" = 2500))
         } else if (sel_prod_type %in% c("Zscore","rbias")){
-          sel_infile_datatype <- attr(
-            suppressWarnings(GDALinfo(sel_infile_path)),
-            "df"
-          )[1,"GDType"]
+          sel_infile_datatype <- raster_metadata(sel_infile_path)$type
           if (grepl("^Float",sel_infile_datatype)) {
             if (sel_prod_type == "Zscore") {c(-3, 3)} else {c(-300, 300)}
           } else if (grepl("^Int",sel_infile_datatype)) {
@@ -499,10 +496,7 @@ s2_thumbnails <- function(infiles,
         } else if (sel_prod_type %in% c("SCL")){
           rep(NA,2) # it is ignored
         } else { # spectral indices
-          sel_infile_datatype <- attr(
-            suppressWarnings(GDALinfo(sel_infile_path)),
-            "df"
-          )[1,"GDType"]
+          sel_infile_datatype <- raster_metadata(sel_infile_path)$type
           if (grepl("^Float",sel_infile_datatype)) {
             c(-1, 1)
           } else if (grepl("^Int",sel_infile_datatype)) {

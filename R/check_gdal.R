@@ -31,9 +31,6 @@
 #' getOption("gdalUtils_gdalPath")
 #' }
 
-# TODO check also python and GDAL outside install_s2download
-# (one could be interested only in preprocessing and not in downloading)
-
 check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, ignore.full_scan = TRUE) {
   
   # set minimum GDAL version

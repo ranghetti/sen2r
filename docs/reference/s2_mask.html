@@ -78,7 +78,7 @@ of masked rasters." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">An R toolbox to find, download an preprocess Sentinel-2 data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -128,7 +128,7 @@ of masked rasters.</p>
     </div>
 
     <pre class="usage"><span class='fu'>s2_mask</span>(<span class='no'>infiles</span>, <span class='no'>maskfiles</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='st'>"cloud_medium_proba"</span>,
-  <span class='kw'>smooth</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>buffer</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>80</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"./masked"</span>,
+  <span class='kw'>smooth</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>buffer</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>80</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"./masked"</span>,
   <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>save_binary_mask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>.log_message</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>.log_output</span> <span class='kw'>=</span> <span class='fl'>NA</span>)
@@ -190,17 +190,17 @@ probability)") and 11 ("Snow").</p></li>
     </tr>
     <tr>
       <th>smooth</th>
-      <td><p>(optional) Numerical (positive): should the mask be smoothed=the size (in the unit of
+      <td><p>(optional) Numerical (positive): the size (in the unit of
 <code>inmask</code>, typically metres) to be used as radius for the smoothing
 (the higher it is, the more smooth the output mask will result).
-Defaul is 20.</p></td>
+Default is 0 (no smoothing is applied).</p></td>
     </tr>
     <tr>
       <th>buffer</th>
       <td><p>(optional) Numerical (positive or negative): the size of the
 buffer (in the unit of <code>inmask</code>, typically metres) to be applied to the
 masked area after smoothing it (positive to enlarge, negative to reduce).
-Defaul is 10.</p></td>
+Default is 0 (no buffer).</p></td>
     </tr>
     <tr>
       <th>max_mask</th>
@@ -303,7 +303,7 @@ overwritten? (default: FALSE)</p></td>
 An attribute "toomasked" contains the paths of the outputs which were not
 created cause to the high percentage of cloud coverage.</p>
 <p>s2_perc_masked returns a names vector with the percentages
-of masked surtfaces.</p>
+of masked surfaces.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 

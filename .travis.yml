@@ -1,10 +1,11 @@
 language: R
 sudo: required
-dist: trusty
+dist: bionic
 cache: packages
 
 r_packages:
   - RPostgreSQL
+  - covr
 
 r_github_packages:
   - r-spatial/lwgeom
@@ -21,15 +22,18 @@ apt_packages:
   - libjq-dev
   - python-numpy
   - python-gdal
+  - aria2
 
 before_install:
-  - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
-  - sudo add-apt-repository -y ppa:opencpu/jq --yes
   - sudo apt-get -qq update
   - sudo apt-get install -y libgdal-dev libproj-dev libv8-dev libprotobuf-dev libudunits2-dev netcdf-bin libv8-dev libjq-dev
 
+script: 
+  - R CMD build .
+  - travis_wait 120 R CMD check *tar.gz
+
 after_success:
-  - Rscript -e 'covr::codecov()'
+  - Rscript -e 'covr::codecov(line_exclusions = c("R/s2_gui.R", "R/add_rgb_image.R", "R/geograbber_process.R", "R/editModPoly.R", "R/install_aria2.R", "R/install_sen2cor.R", "R/create_s2_dop.R"))'
 
 env:
   global:

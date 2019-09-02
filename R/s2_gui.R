@@ -3,7 +3,7 @@
 #'  chain of Sentinel-2 products.
 #' @param param_list List of parameters for initialising the GUI values
 #'  (if empty, default values are used).
-#' @param thunderforest_api Character value with the API for thinderforest
+#' @param thunderforest_api Character value with the API for thunderforest
 #'  layers (now not used).
 #' @return A list of parameters.
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
@@ -18,7 +18,8 @@
 #'  removeDrawToolbar
 #' @importFrom mapedit editModUI
 #' @importFrom utils packageVersion
-#' @importFrom sf st_coordinates st_crs st_geometry st_intersects st_polygon st_read st_bbox st_as_sfc st_transform
+#' @importFrom sf st_coordinates st_crs st_geometry st_intersects st_polygon 
+#'  st_zm st_read st_bbox st_as_sfc st_transform
 #' @importFrom shiny a actionButton actionLink addResourcePath br callModule 
 #'  checkboxGroupInput checkboxInput column conditionalPanel dateRangeInput 
 #'  div downloadButton downloadHandler em fileInput fluidRow h2 h3 helpText hr 
@@ -359,8 +360,8 @@ s2_gui <- function(param_list = NULL,
                   div(
                     style = "padding-bottom:10px;",
                     actionButton(
-                      "scihub",
-                      label = "\u2000Login in SciHub",
+                      "scihub_md",
+                      label = "\u2000Login to SciHub",
                       icon=icon("user-circle")
                     )
                   )
@@ -376,9 +377,9 @@ s2_gui <- function(param_list = NULL,
                       "Downloader\u2000",
                       actionLink("help_downloader", icon("question-circle"))
                     ),
-                    choiceNames = list("Wget", "aria2"),
-                    choiceValues = list("wget", "aria2"),
-                    selected = "wget",
+                    choiceNames = list("Built-in", "aria2"),
+                    choiceValues = list("builtin", "aria2"),
+                    selected = "builtin",
                     inline = TRUE
                   ),
                   sliderInput(
@@ -579,7 +580,7 @@ s2_gui <- function(param_list = NULL,
                           "Orbits selected\u2000",
                           actionLink("help_orbits", icon("question-circle"))
                         ), 
-                        choices = str_pad(1:143, 3, "left", "0"), 
+                        choices = str_pad2(1:143, 3, "left", "0"), 
                         options = list(
                           `selected-text-format` = "count > 6",
                           `live-search` = TRUE,
@@ -1484,7 +1485,7 @@ s2_gui <- function(param_list = NULL,
     binpaths <- load_binpaths()
     observeEvent(input$downloader, {
       if (is.null(binpaths$aria2c)) {
-        updateRadioButtons(session, "downloader", selected = "wget")
+        updateRadioButtons(session, "downloader", selected = "builtin")
         disable("downloader")
       } else {
         enable("downloader")
@@ -1492,7 +1493,7 @@ s2_gui <- function(param_list = NULL,
     })
     
     # Edit scihub credentials
-    observeEvent(input$scihub, {
+    observeEvent(input$scihub_md, {
       
       # open the modalDialog
       # showModal(.scihub_modal(
@@ -1500,6 +1501,17 @@ s2_gui <- function(param_list = NULL,
       #   password = if(!is.null(input$scihub_password)){input$scihub_password}else{NA}
       # ))
       showModal(.scihub_modal())
+      
+      # do not activate save button until bot have been provided
+      observeEvent(c(input$scihub_username, input$scihub_password), {
+        if (any(input$scihub_username == "", input$scihub_password == "")) {
+          disable("save_apihub")
+          disable("apihub_path_sel")
+        } else {
+          enable("save_apihub")
+          enable("apihub_path_sel")
+        }
+      })
       
       # dummy variable to define which save button has to be used
       output$switch_save_apihub <- renderText({
@@ -1542,7 +1554,8 @@ s2_gui <- function(param_list = NULL,
         input$scihub_username, input$scihub_password, 
         apihub_path = as.character(rv$apihub_path),
         # append = input$apihub_multiple # removed after disabling apihub multiple login from the gui
-        append = FALSE
+        append = FALSE,
+        check = FALSE
       )
       removeModal()
     })
@@ -1635,6 +1648,7 @@ s2_gui <- function(param_list = NULL,
           x <- if (is.character(custom_source)) {
             st_read(custom_source, quiet=TRUE)
           } else {custom_source} %>% 
+            st_zm() %>%
             st_transform(4326)
           names(sf::st_geometry(x)) <- NULL
           attr(x, "valid") <- TRUE
@@ -1984,6 +1998,7 @@ s2_gui <- function(param_list = NULL,
       rv$vectfile_polygon <- tryCatch(
         {
           x <- st_read(rv$vectfile_path, quiet=TRUE) %>% 
+            st_zm() %>%
             st_transform(4326)
           names(sf::st_geometry(x)) <- NULL
           attr(x, "valid") <- TRUE
@@ -2241,41 +2256,10 @@ s2_gui <- function(param_list = NULL,
     shinyFileChoose(input, "reference_file_button", roots = volumes)
     
     reference <- reactive({
-      
       if (!is.null(input$reference_file_button)) {
-        
-        reference_path <- input$reference_file_textin
-        reference_spatype <- try(
-          get_rastype(reference_path),
-          silent=TRUE)
-        if (reference_spatype == "rastfile") {
-          
-          # get metadata
-          ref_metadata <- suppressWarnings(GDALinfo(reference_path))
-          ref_res <- ref_metadata[c("res.x","res.y")]
-          ref_ll <- ref_metadata[c("ll.x","ll.y")]
-          ref_size <- ref_metadata[c("columns","rows")]
-          ref_bbox <- matrix(
-            c(ref_ll, ref_ll + ref_size * ref_res),
-            ncol=2)
-          dimnames(ref_bbox) <- list(c("x","y"),c("min","max"))
-          ref_unit <- attr(ref_metadata, "projection") %>%
-            projpar("unit")
-          ref_proj <- attr(ref_unit, "proj4string")
-          ref_outformat <- attr(ref_metadata, "driver")
-          
-          return(list("metadata" = ref_metadata,
-                      "res" = ref_res,
-                      "bbox" = ref_bbox,
-                      "proj" = ref_proj,
-                      "unit" = ref_unit,
-                      "outformat" = ref_outformat))
-        }
-        
+        test_reference <- raster_metadata(input$reference_file_textin, format = "list")[[1]]
+        if (test_reference$isvalid) {test_reference}
       }
-      
-      return(invisible(NULL))
-      
     })
     
     observe({
@@ -2342,7 +2326,7 @@ s2_gui <- function(param_list = NULL,
           style = "padding-top:0.5em;",
           if (!is.null(reference())) {
             span(style="color:darkgreen",
-                 projname(reference()$proj))
+                 projname(reference()$proj$proj4string))
           } else {
             span(style="color:grey",
                  "Specify a valid raster file.")
@@ -2678,10 +2662,8 @@ s2_gui <- function(param_list = NULL,
           "to download Sentinel-2 SAFE archives."
         )), 
         p(HTML(
-          "<strong>Wget</strong> is the default downloader, which is natively",
-          "presenti in Linux systems and which can be installed in Windows",
-          "using the function <code>check_sen2r_deps()</code> (graphically) or",
-          "<code>install_wget()</code> (from commandline)."
+          "<strong>Built-in</strong> is the downloader which is used by default",
+          "through the package 'httr'."
         )),
         p(HTML(
           "<strong><a href=\"https://aria2.github.io\" target=\"_blank\">aria2</a></strong>",
@@ -2813,7 +2795,7 @@ s2_gui <- function(param_list = NULL,
         )),
         easyClose = TRUE,
         footer = NULL
-        ))
+      ))
     })
     
     observeEvent(input$help_time_period, {
@@ -3055,7 +3037,7 @@ s2_gui <- function(param_list = NULL,
           "If none of them is suitable for the user, it is possible to define",
           "a custom mask by manually selecting the classes to be masked.",
           "See the <a href='https://earth.esa.int/web/sentinel/technical-guides/sentinel-2-msi/level-2a/algorithm'",
-          "target='_blank'>classification algorythm</a> for further details."
+          "target='_blank'>classification algorithm</a> for further details."
         )),
         p(HTML(
           "Notice that this functionality does not ensure to correctly mask",
@@ -3214,8 +3196,8 @@ s2_gui <- function(param_list = NULL,
           "<strong>Process step by step</strong>:",
           "this is the legacy mode, in which the cycle on groups is ignored",
           "as well as the parallel computation over dates.",
-          "All SAFEs are first downloaded/processed, then the processing steps",
-          "are performed sequentially.",
+          "All SAFE archives are first downloaded/processed,",
+          "then the processing steps are performed sequentially.",
           "This mode is similar to the previous one in terms of disk usage",
           "but it is slightly slower; its advantage are the lower RAM requirements."
         )),
@@ -3402,7 +3384,7 @@ s2_gui <- function(param_list = NULL,
       rl$s2_levels <- c(if(safe_req$l1c==TRUE){"l1c"}, if(safe_req$l2a==TRUE){"l2a"}) # required S2 levels ("l1c","l2a")
       rl$sel_sensor <- input$sel_sensor # sensors to use ("s2a", "s2b")
       rl$online <- as.logical(input$online) # TRUE if online mode, FALSE if offline mode
-      rl$downloader <- input$downloader # downloader ("wget" or "aria2")
+      rl$downloader <- input$downloader # downloader ("builtin" or "aria2")
       rl$overwrite_safe <- as.logical(input$overwrite_safe) # TRUE to overwrite existing SAFE, FALSE not to
       rl$rm_safe <- input$rm_safe # "yes" to delete all SAFE, "l1c" to delete only l1c, "no" not to remove
       rl$max_cloud_safe <- input$max_cloud_safe_perc # maximum SAFE cloud coverage (0-100)
@@ -3495,7 +3477,7 @@ s2_gui <- function(param_list = NULL,
       # output proj4string
       rl$proj <- if (input$use_reference==TRUE &
                      "proj" %in% input$reference_usefor) {
-        reference()$proj
+        reference()$proj$proj4string
       } else if (input$reproj==FALSE) {
         NA
       } else {
@@ -3700,15 +3682,91 @@ s2_gui <- function(param_list = NULL,
       
     }
     
-    # if Return is pressend, exit from GUI and return values
+    # if Return is pressend:
     observeEvent(input$return_param, {
-      return_list <- create_return_list() # run creation of return_list
-      # add parameters not modified by the GUI
-      return_list <- c(return_list, param_list[!names(param_list) %in% names(return_list)])
-      check_param_result <- check_param(return_list)
-      if (check_param_result) {
-        shinyjs::js$closeWindow()
-        stopApp(return_list)
+      if (
+        if (any(length(nn(rv$apihub_path)) == 0, anyNA(rv$apihub_path))) {
+          !file.exists(file.path(system.file("extdata", package="sen2r"), "apihub.txt"))
+        } else {
+          !file.exists(rv$apihub_path)
+        }
+      ) {
+        
+        # alert if apihub does not exists
+        sendSweetAlert(
+          session,
+          "Missing SciHub credentials",
+          paste0(
+            "Please specify your SciHub credentials using the button ",
+            "\"Login to SciHub\" in the \"Product selection\" sheet."
+          ),
+          type = "error"
+        )
+        
+      } else if (length(c(
+        input$list_prods[!input$list_prods %in% c("indices","rgbimages")], 
+        input$list_indices, 
+        input$list_rgb
+      )) == 0) {
+        
+        # alert if no products were specified
+        sendSweetAlert(
+          session, NULL,
+          paste0(
+            "Please select at least one product, spectral index or RGB image",
+            "before continuing."
+          ),
+          type = "error"
+        )
+        
+      } else if (length(input$sel_sensor) == 0) {
+        
+        # alert if no sensors were specified
+        sendSweetAlert(
+          session, NULL,
+          "Please select at least one sensor before continuing.",
+          type = "error"
+        )
+        
+      } else if (output$req_l1c & input$path_l1c_textin == "") {
+        
+        # directory missing
+        sendSweetAlert(
+          session, NULL,
+          "Please specify the directory for Level-1C SAFE products before continuing.",
+          type = "error"
+        )
+        
+      } else if (output$req_l2a & input$path_l2a_textin == "") {
+        
+        # directory missing
+        sendSweetAlert(
+          session, NULL,
+          "Please specify the directory for Level-2A SAFE products before continuing.",
+          type = "error"
+        )
+        
+      } else if (input$path_out_textin == "") {
+        
+        # directory missing
+        sendSweetAlert(
+          session, NULL,
+          "Please specify the directory for output products before continuing.",
+          type = "error"
+        )
+        
+      } else {
+        
+        # if all checks passed, exit from GUI and return values
+        return_list <- create_return_list() # run creation of return_list
+        # add parameters not modified by the GUI
+        return_list <- c(return_list, param_list[!names(param_list) %in% names(return_list)])
+        check_param_result <- check_param(return_list)
+        if (check_param_result) {
+          shinyjs::js$closeWindow()
+          stopApp(return_list)
+        }
+        
       }
     })
     

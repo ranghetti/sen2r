@@ -14,14 +14,13 @@
 #' @importFrom jsonlite toJSON fromJSON
 #' @importFrom utils download.file unzip
 #' @importFrom magrittr "%>%"
-#' @importFrom stringr str_pad
 #' @importFrom httr GET write_disk
 #' @export
 #' @examples \dontrun{
 #' install_sen2cor()
 #' }
 
-install_sen2cor <- function(sen2cor_dir=NA, version="2.5.5", force = FALSE) {
+install_sen2cor <- function(sen2cor_dir=NA, version="2.8.0", force = FALSE) {
   .install_sen2cor(
     sen2cor_dir = sen2cor_dir, 
     version = version,
@@ -53,7 +52,7 @@ install_sen2cor <- function(sen2cor_dir=NA, version="2.5.5", force = FALSE) {
     if (file.exists(sen2cor_bin)) {
       print_message(
         type = "message",
-        "sen2cor is already installed; to overwrite, set force = TRUE."
+        "Sen2Cor is already installed; to overwrite, set force = TRUE."
       )
       return(invisible(NULL))
     }
@@ -92,17 +91,17 @@ install_sen2cor <- function(sen2cor_dir=NA, version="2.5.5", force = FALSE) {
     sen2cor_url <- paste0("http://step.esa.int/thirdparties/sen2cor/",
                           version,
                           "/Sen2Cor-",
-                          str_pad(version[,1],2,"left","0"),".",
-                          str_pad(version[,2],2,"left","0"),".",
-                          str_pad(version[,3],2,"left","0"),
+                          str_pad2(version[,1],2,"left","0"),".",
+                          str_pad2(version[,2],2,"left","0"),".",
+                          str_pad2(version[,3],2,"left","0"),
                           "-Linux64.run")
   } else if (Sys.info()["sysname"] == "Windows") {
     sen2cor_url <- paste0("http://step.esa.int/thirdparties/sen2cor/",
                           version,
                           "/Sen2Cor-",
-                          str_pad(version[,1],2,"left","0"),".",
-                          str_pad(version[,2],2,"left","0"),".",
-                          str_pad(version[,3],2,"left","0"),
+                          str_pad2(version[,1],2,"left","0"),".",
+                          str_pad2(version[,2],2,"left","0"),".",
+                          str_pad2(version[,3],2,"left","0"),
                           "-win64.zip")
   } else {
     print_message(

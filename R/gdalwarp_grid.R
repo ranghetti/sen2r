@@ -11,7 +11,6 @@
 #' @param ... Additional parameters of [gdalwarp] (different from `s_srs`,
 #'  `t_srs`, `te`, `tr`, `ts` and `of`).
 #' @return NULL
-#' @importFrom rgdal GDALinfo
 #' @importFrom gdalUtils gdalwarp
 #' @importFrom methods as
 #' @importFrom reticulate py_to_r
@@ -39,10 +38,10 @@ gdalwarp_grid <- function(srcfiles,
   py <- init_python()
   
   # read ref parameters
-  ref_metadata <- suppressWarnings(GDALinfo(ref))
-  ref_res <- ref_metadata[c("res.x","res.y")]
-  ref_min <- ref_metadata[c("ll.x","ll.y")]
-  ref_proj <- attr(ref_metadata, "projection")
+  ref_metadata <- raster_metadata(ref, c("res", "bbox", "proj"), format = "list")[[1]]
+  ref_res <- ref_metadata$res
+  ref_min <- ref_metadata$bbox[c("xmin","ymin")]
+  ref_proj <- ref_metadata$proj
   
   # check consistency between inputs and outputs
   if (length(srcfiles) != length(dstfiles)) {
@@ -77,15 +76,10 @@ gdalwarp_grid <- function(srcfiles,
     dstfile <- dstfiles[i]
     
     # read infile parameters
-    sel_metadata <- suppressWarnings(GDALinfo(srcfile))
-    sel_res <- sel_metadata[c("res.x","res.y")]
-    sel_proj <- attr(sel_metadata, "projection")
-    sel_bbox <- c(
-      sel_metadata[c("ll.x","ll.y")],
-      sel_metadata[c("ll.x","ll.y")] + sel_metadata[c("rows","columns")] * sel_res)
-    names(sel_bbox) <- c("xmin", "ymin", "xmax", "ymax")
-    sel_bbox <- st_bbox(sel_bbox, crs = sel_proj)
-    of <- ifelse (is.null(of), attr(sel_metadata, "driver"), of)
+    sel_metadata <- raster_metadata(srcfile, c("proj", "bbox", "outformat"), format = "list")[[1]]
+    sel_proj <- sel_metadata$proj
+    sel_bbox <- sel_metadata$bbox
+    of <- ifelse (is.null(of), sel_metadata$outformat, of)
     
     # get reprojected extent
     out_bbox <- matrix(
@@ -96,16 +90,13 @@ gdalwarp_grid <- function(srcfiles,
     
     # allineate out_extent to ref grid
     out_bbox_mod <- round((out_bbox - ref_min) / ref_res) * ref_res + ref_min
-
-    
-    
     
     
     # warp
     # (using gdalwarp() instead of calling gdalwarp from system() is a bit slower,
     # but it easily allows to pass additional parameters)
     gdalwarp(srcfile = srcfile, dstfile = dstfile,
-             s_srs = sel_proj, t_srs = ref_proj,
+             s_srs = sel_proj$proj4string, t_srs = ref_proj$proj4string,
              te = c(out_bbox_mod),
              tr = ref_res,
              of = of,

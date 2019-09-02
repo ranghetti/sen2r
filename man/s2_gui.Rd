@@ -10,7 +10,7 @@ s2_gui(param_list = NULL, thunderforest_api = NA)
 \item{param_list}{List of parameters for initialising the GUI values
 (if empty, default values are used).}
 
-\item{thunderforest_api}{Character value with the API for thinderforest
+\item{thunderforest_api}{Character value with the API for thunderforest
 layers (now not used).}
 }
 \value{
