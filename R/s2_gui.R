@@ -18,7 +18,8 @@
 #'  removeDrawToolbar
 #' @importFrom mapedit editModUI
 #' @importFrom utils packageVersion
-#' @importFrom sf st_coordinates st_crs st_geometry st_intersects st_polygon st_read st_bbox st_as_sfc st_transform
+#' @importFrom sf st_coordinates st_crs st_geometry st_intersects st_polygon 
+#'  st_zm st_read st_bbox st_as_sfc st_transform
 #' @importFrom shiny a actionButton actionLink addResourcePath br callModule 
 #'  checkboxGroupInput checkboxInput column conditionalPanel dateRangeInput 
 #'  div downloadButton downloadHandler em fileInput fluidRow h2 h3 helpText hr 
@@ -1647,6 +1648,7 @@ s2_gui <- function(param_list = NULL,
           x <- if (is.character(custom_source)) {
             st_read(custom_source, quiet=TRUE)
           } else {custom_source} %>% 
+            st_zm() %>%
             st_transform(4326)
           names(sf::st_geometry(x)) <- NULL
           attr(x, "valid") <- TRUE
@@ -1996,6 +1998,7 @@ s2_gui <- function(param_list = NULL,
       rv$vectfile_polygon <- tryCatch(
         {
           x <- st_read(rv$vectfile_path, quiet=TRUE) %>% 
+            st_zm() %>%
             st_transform(4326)
           names(sf::st_geometry(x)) <- NULL
           attr(x, "valid") <- TRUE
