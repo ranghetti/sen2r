@@ -1,7 +1,7 @@
 Package: sen2r
 Type: Package
 Title: An R Toolbox to Find, Download and Process Sentinel-2 Data
-Version: 1.0.2
+Version: 1.1.0
 Authors@R: c(person("Luigi", "Ranghetti", 
                     email = "ranghetti.l@irea.cnr.it", 
                     role = c("aut", "cre"), 
@@ -45,7 +45,6 @@ Imports:
   parallel,
   doParallel,
   units,
-  lwgeom,
   httr
 Suggests:
     spelling, 
