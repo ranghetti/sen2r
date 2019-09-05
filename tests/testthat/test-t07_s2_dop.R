@@ -7,8 +7,8 @@ testthat::test_that(
     dop_out <- s2_dop()
     testthat::expect_is(dop_out, "data.table")
     testthat::expect_equal(names(dop_out), c("date", "mission", "orbit"))
-    testthat::expect_gte(min(dop_out$date), Sys.Date())
-    testthat::expect_lte(max(dop_out$date), Sys.Date()+9)
+    testthat::expect_true(min(dop_out$date) >= Sys.Date())
+    testthat::expect_true(max(dop_out$date) <= Sys.Date()+9)
     testthat::expect_true(all(dop_out$orbit %in% str_pad2(1:143, 3, "left", "0")))
   }
 )
@@ -26,8 +26,8 @@ testthat::test_that(
   "The dates in which Sentinel-2A will pass in next six weeks over one orbit", {
     dop_out <- s2_dop("022", "6 weeks", mission = "2A")$date
     testthat::expect_is(dop_out, "Date")
-    testthat::expect_gte(min(dop_out), Sys.Date())
-    testthat::expect_lte(max(dop_out), Sys.Date()+6*7-1)
+    testthat::expect_true(min(dop_out) >= Sys.Date())
+    testthat::expect_true(max(dop_out) <= Sys.Date()+6*7-1)
   }
 )
 
@@ -36,8 +36,8 @@ testthat::test_that(
     dop_out <- s2_dop("022", "-10 days", mission = "2A")$date
     testthat::expect_is(dop_out, "Date")
     testthat::expect_equal(length(dop_out), 1)
-    testthat::expect_gte(dop_out, Sys.Date()-9)
-    testthat::expect_lte(dop_out, Sys.Date())
+    testthat::expect_true(dop_out >= Sys.Date()-9)
+    testthat::expect_true(dop_out <= Sys.Date())
   }
 )
 
@@ -53,8 +53,8 @@ testthat::test_that(
   "The passages in a fixed time window for one orbit", {
     dop_out <- s2_dop(65, as.Date(c("2018-08-01", "2018-08-31")))
     testthat::expect_is(dop_out, "data.table")
-    testthat::expect_gte(min(dop_out$date), as.Date("2018-08-01"))
-    testthat::expect_lte(max(dop_out$date), as.Date("2018-08-31"))
+    testthat::expect_true(min(dop_out$date) >= as.Date("2018-08-01"))
+    testthat::expect_true(max(dop_out$date) <= as.Date("2018-08-31"))
     testthat::expect_true(all(dop_out$orbit %in% str_pad2(1:143, 3, "left", "0")))
     testthat::expect_true(all(dop_out$mission %in% c("2A", "2B")))
   }

@@ -365,7 +365,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   
   # -- rgb_ranges --
   if (all(is.array(pm$rgb_ranges), length(dim(pm$rgb_ranges)) > 2)) {
-    pm$rgb_ranges <- asplit(pm$rgb_ranges, 1)
+    pm$rgb_ranges <- split(pm$rgb_ranges, nrow(pm$rgb_ranges))
   }
   if (is.matrix(pm$rgb_ranges)) {
     pm$rgb_ranges <- list(pm$rgb_ranges)

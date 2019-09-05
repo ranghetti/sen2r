@@ -11,8 +11,8 @@ testthat::test_that(
       output_type = "data.table"
     )
     testthat::expect_equal(nrow(s2_list_test), 13)
-    testthat::expect_gte(min(s2_list_test$date), as.Date("2017-05-01"))
-    testthat::expect_lte(max(s2_list_test$date), as.Date("2017-08-01"))
+    testthat::expect_true(min(s2_list_test$date) >= as.Date("2017-05-01"))
+    testthat::expect_true(max(s2_list_test$date) <= as.Date("2017-08-01"))
     testthat::expect_equal(unique(s2_list_test$tileid), "32TNR")
     testthat::expect_equal(unique(s2_list_test$orbit), "065")
     testthat::expect_equal(mean(s2_list_test$ccov), 36.69096, tolerance = 1e-6)
@@ -58,8 +58,8 @@ testthat::test_that(
     )
     testthat::expect_equal(nrow(s2_list_test), 49)
     testthat::expect_equal(unique(s2_list_test$tileid), c("32TNR", "32TMR"))
-    testthat::expect_gte(min(s2_list_test$date), as.Date("2017-05-01"))
-    testthat::expect_lte(max(s2_list_test$date), as.Date("2017-08-01"))
+    testthat::expect_true(min(s2_list_test$date) >= as.Date("2017-05-01"))
+    testthat::expect_true(max(s2_list_test$date) <= as.Date("2017-08-01"))
     testthat::expect_equal(unique(s2_list_test$orbit), c("022", "065", "108"))
     testthat::expect_equal(mean(s2_list_test$ccov), 37.38271, tolerance = 1e-6)
     testthat::expect_equal(
