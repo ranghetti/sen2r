@@ -45,7 +45,7 @@ Before installing <span style="color:#5793dd;vertical-align:top;font-size:90%;fo
 - [NetCDF](https://www.unidata.ucar.edu/software/netcdf)
     (required by [ncdf4](https://github.com/mdsumner/ncdf4));
 - [libxml2](http://xmlsoft.org)
-    (required by [XML](https://cran.r-project.org/web/packages/XML/index.html)).
+    (required by [XML](https://CRAN.R-project.org/package=XML)).
     
 Other binaries are required (or suggested), since they are used in runtime by the package:
 

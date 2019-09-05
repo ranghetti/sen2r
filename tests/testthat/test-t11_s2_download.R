@@ -5,7 +5,7 @@ testthat::skip_on_travis()
 # NOTE: these tests require a high amount of time (depending on connection speed),
 # so the download is disabled by default if SAFE archives are already present.
 # To perform the test also on download, replace 'test_download = FALSE' with 'TRUE'.
-test_download = TRUE
+test_download = FALSE
 
 example_dir <- system.file("extdata/example_files", package = "sen2r")
 dir.create(example_dir, showWarnings = FALSE)
