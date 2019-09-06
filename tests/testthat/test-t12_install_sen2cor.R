@@ -28,13 +28,22 @@ testthat::test_that(
     install_sen2cor()
     
     testthat::expect_true(dir.exists(sen2cor_inst_dir))
-    testthat::expect_true(file.exists(file.path(sen2cor_inst_dir, "bin/L2A_Process")))
-    testthat::expect_false(any(grepl("^Sen2Cor\\-", list.files(sen2cor_inst_dir))))
-    testthat::expect_true(file.exists(paste0(
-      "~/sen2cor/",
-      sen2cor_def_version$major,".",sen2cor_def_version$minor,
-      "/cfg/L2A_GIPP.xml"
-    )))
+    if (Sys.info()["sysname"] == "Windows") {
+      testthat::expect_true(any(grepl("^Sen2Cor\\-", list.files(sen2cor_inst_dir))))
+      sen2cor_inst_dir <- file.path(
+        sen2cor_inst_dir,
+        list.files(sen2cor_inst_dir)[grepl("^Sen2Cor\\-", list.files(sen2cor_inst_dir))][1]
+      )
+      testthat::expect_true(file.exists(file.path(sen2cor_inst_dir, "L2A_Process.bat")))
+    } else {
+      testthat::expect_false(any(grepl("^Sen2Cor\\-", list.files(sen2cor_inst_dir))))
+      testthat::expect_true(file.exists(file.path(sen2cor_inst_dir, "bin/L2A_Process")))
+      testthat::expect_true(file.exists(paste0(
+        "~/sen2cor/",
+        sen2cor_def_version$major,".",sen2cor_def_version$minor,
+        "/cfg/L2A_GIPP.xml"
+      )))
+    }
     
   }
 )

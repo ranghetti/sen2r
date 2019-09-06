@@ -132,10 +132,18 @@ install_sen2cor <- function(sen2cor_dir=NA, version="2.8.0", force = FALSE) {
       unzip = "internal"
     ))
     unlink(sen2cor_installer)
-    sen2cor_bin <- system.file(
-      "sen2cor", gsub("\\.zip$","",basename(sen2cor_installer)), "L2A_Process.bat", 
-      package="sen2r"
+    sen2cor_bin <- file.path(
+      sen2cor_dir, 
+      gsub("\\.zip$","",basename(sen2cor_installer)), 
+      "L2A_Process.bat"
     )
+    if (!file.exists(sen2cor_bin)) {
+      print_message(
+        type = "error",
+        "Something went wrong during the installation of Sen2Cor, ",
+        "try reinstalling it or contact the package maintainer."
+      )
+    }
   }
   
   # fix bug #71
