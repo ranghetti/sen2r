@@ -101,7 +101,6 @@ clean_trace <- function(tracename) {
 
 #' @name trace_function
 #' @rdname trace_function
-#' @export
 trace_function <- function(trace_fun, trace_files, trace_funname=NA, ...) {
   
   # Start tracing
@@ -131,7 +130,6 @@ trace_function <- function(trace_fun, trace_files, trace_funname=NA, ...) {
 
 #' @name clean_traces
 #' @rdname trace_function
-#' @export
 clean_traces <- function(trace_funname=NA) {
   
   # import the content of the path in which trace txt files are placed

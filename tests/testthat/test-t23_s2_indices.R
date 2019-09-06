@@ -2,6 +2,13 @@ context("Test compute spectral indices")
 testthat::skip_on_cran()
 testthat::skip_on_travis()
 
+example_dir <- system.file("extdata/example_files", package = "sen2r")
+dir.create(example_dir, showWarnings = FALSE)
+safe_dir <- file.path(example_dir, "safe")
+dir.create(safe_dir, showWarnings = FALSE)
+dir.create(file.path(safe_dir, "L2A"), showWarnings = FALSE)
+dir.create(file.path(safe_dir, "L1C"), showWarnings = FALSE)
+
 outdir_11 <- file.path(tempdir(), "out_test11")
 dir.create(dirname(outdir_11), showWarnings = FALSE)
 testthat::test_that(

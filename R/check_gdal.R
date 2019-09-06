@@ -19,6 +19,7 @@
 #' @note License: GPL 3.0
 #' @importFrom gdalUtils gdal_setInstallation gdal_chooseInstallation
 #' @importFrom jsonlite fromJSON
+#' @export
 #' @examples
 #' \dontrun{
 #'

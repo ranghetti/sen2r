@@ -3746,12 +3746,56 @@ s2_gui <- function(param_list = NULL,
           type = "error"
         )
         
-      } else if (input$path_out_textin == "") {
+      } else if (
+        length(input$list_prods[!input$list_prods %in% c("indices","rgbimages")]) > 0 & 
+        input$path_out_textin == ""
+      ) {
         
         # directory missing
         sendSweetAlert(
           session, NULL,
           "Please specify the directory for output products before continuing.",
+          type = "error"
+        )
+        
+      } else if (
+        length(input$list_indices) > 0 & 
+        input$path_out_textin == "" &
+        input$path_indices_textin == ""
+      ) {
+        
+        # directory missing
+        sendSweetAlert(
+          session, NULL,
+          span("Please specify at least one among the directories for spectral",
+               "indices and for output products before continuing."),
+          type = "error"
+        )
+        
+      } else if (
+        length(input$list_rgb) > 0 & 
+        input$path_out_textin == "" &
+        input$path_rgb_textin == ""
+      ) {
+        
+        # directory missing
+        sendSweetAlert(
+          session, NULL,
+          span("Please specify at least one among the directories for RGB",
+               "images and for output products before continuing."),
+          type = "error"
+        )
+        
+      } else if (all(
+        input$online == TRUE,
+        length(nn(rv$extent)) == 0,
+        length(nn(input$tiles_checkbox)) == 0
+      )) {
+
+        # directory missing
+        sendSweetAlert(
+          session, NULL,
+          "Please specify the extent.",
           type = "error"
         )
         
