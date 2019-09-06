@@ -30,16 +30,18 @@ testthat::test_that(
   }
 )
 
-testthat::test_that(
-  "Test a path external to ref_path (in Linux)", {
-    testthat::expect_warning(
-      test_path <- abs2rel(in_path_3, ref_path),
-      regexp = "have not a common parent directory"
-    )
-    testthat::expect_gt(nchar(test_path), 0)
-    testthat::expect_true(grepl("^/", test_path))
-  }
-)
+if (Sys.info()["sysname"] != "Windows") {
+  testthat::test_that(
+    "Test a path external to ref_path (in Linux)", {
+      testthat::expect_warning(
+        test_path <- abs2rel(in_path_3, ref_path),
+        regexp = "have not a common parent directory"
+      )
+      testthat::expect_gt(nchar(test_path), 0)
+      testthat::expect_true(grepl("^/", test_path))
+    }
+  )
+}
 
 testthat::test_that(
   "Test an unexisting path", {

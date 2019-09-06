@@ -2,7 +2,7 @@
 % Please edit documentation in R/install_sen2cor.R
 \name{install_sen2cor}
 \alias{install_sen2cor}
-\title{Download and install sen2cor.}
+\title{Download and install Sen2Cor.}
 \usage{
 install_sen2cor(sen2cor_dir = NA, version = "2.8.0", force = FALSE)
 }
@@ -11,14 +11,14 @@ install_sen2cor(sen2cor_dir = NA, version = "2.8.0", force = FALSE)
 (default: a subdirectory of the package path).}
 
 \item{version}{(optional) Character: Sen2Cor version (one among
-'2.5.5' - default - and '2.8.0').}
+'2.8.0' - default - and '2.5.5').}
 
 \item{force}{(optional) Logical: if TRUE, install even if it is already
 installed (default is FALSE).}
 }
 \description{
 This function download and install standalone version of
-\href{http://step.esa.int/main/third-party-plugins-2/sen2cor}{sen2cor 2.5.5}.
+\href{http://step.esa.int/main/third-party-plugins-2/sen2cor}{Sen2Cor 2.8.0}.
 }
 \note{
 License: GPL 3.0

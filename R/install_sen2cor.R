@@ -1,10 +1,10 @@
-#' @title Download and install sen2cor.
+#' @title Download and install Sen2Cor.
 #' @description This function download and install standalone version of
-#'  [sen2cor 2.5.5](http://step.esa.int/main/third-party-plugins-2/sen2cor).
+#'  [Sen2Cor 2.8.0](http://step.esa.int/main/third-party-plugins-2/sen2cor).
 #' @param sen2cor_dir (optional) Path where sen2cor will be installed
 #'  (default: a subdirectory of the package path).
 #' @param version (optional) Character: Sen2Cor version (one among
-#'  '2.5.5' - default - and '2.8.0').
+#'  '2.8.0' - default - and '2.5.5').
 #' @param force (optional) Logical: if TRUE, install even if it is already 
 #'  installed (default is FALSE).
 #' @return NULL
@@ -31,12 +31,12 @@ install_sen2cor <- function(sen2cor_dir=NA, version="2.8.0", force = FALSE) {
 
 .install_sen2cor <- function(
   sen2cor_dir=NA, 
-  version="2.5.5", 
+  version="2.8.0", 
   force = FALSE, 
   interactive = TRUE
 ) {
   
-  # check sen2cor version
+  # check Sen2Cor version
   if (!as.character(version) %in% c("2.5.5", "2.8.0")) {
     print_message(
       type = "error",
@@ -106,7 +106,7 @@ install_sen2cor <- function(sen2cor_dir=NA, version="2.8.0", force = FALSE) {
   } else {
     print_message(
       type = "error",
-      "Installing sen2cor on ", Sys.info()["sysname"], " was not yet implemented."
+      "Installing Sen2Cor on ", Sys.info()["sysname"], " was not yet implemented."
     )
   }
   sen2cor_installer <- file.path(sen2cor_dir, basename(sen2cor_url))

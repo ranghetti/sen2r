@@ -5,7 +5,7 @@
 #' @details This package needs some external dependencies to run:
 #' - Python
 #' - GDAL
-#' - sen2cor
+#' - Sen2Cor
 #' 
 #' This function opens a GUI which allows to check that these dependencies
 #' are installed. This check is highly suggested before using the library for 
@@ -76,16 +76,16 @@ check_sen2r_deps <- function() {
       span(style="display:inline-block;vertical-align:center;",
            htmlOutput("check_aria2_icon")),
       
-      h3("sen2cor"),
+      h3("Sen2Cor"),
       helpText(em(
-        "sen2cor is used to perform atmospheric correction of Sentinel-2",
+        "Sen2Cor is used to perform atmospheric correction of Sentinel-2",
         "Level-1C products: it is required by the package,",
         "unless you choose not to correct products locally",
         "(using only Level-1C \u2013 TOA products",
         "or downloading directly Level-2A products)."
       )),
       span(style="display:inline-block;vertical-align:center;padding-top:5px;",
-           actionButton("check_sen2cor", "Check sen2cor", width=200),
+           actionButton("check_sen2cor", "Check Sen2Cor", width=200),
            "\u2000"),
       span(style="display:inline-block;vertical-align:center;",
            htmlOutput("check_sen2cor_icon")),
@@ -290,7 +290,8 @@ check_sen2r_deps <- function() {
           "install_gdal_message", 
           as.character(div(
             p("The installation was terminated;",
-              "please repeat the check to be sure all was correctly installed."),
+              "please close the interface,",strong("restart R"),
+              "and repeat the check to be sure all was correctly installed."),
             hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
             div(style="text-align:right;", 
                 modalButton("\u2000Close", icon = icon("check")))
@@ -486,7 +487,7 @@ check_sen2r_deps <- function() {
           align = "center",
           p(style="color:darkgreen;text-align:center;font-size:500%;",
             icon("check-circle")),
-          p("sen2cor is correctly installed."),
+          p("Sen2Cor is correctly installed."),
           hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
           div(style="text-align:right;", 
               modalButton("\u2000Close", icon = icon("check")))
@@ -496,7 +497,7 @@ check_sen2r_deps <- function() {
           align = "center",
           p(style="color:red;text-align:center;font-size:500%;",
             icon("times-circle")),
-          p("sen2cor needs to be downloaded and installed."),
+          p("Sen2Cor needs to be downloaded and installed."),
           hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
           div(style="text-align:right;", 
               actionButton("install_sen2cor_button", strong("\u2000Download"), icon=icon("download")),
@@ -507,7 +508,7 @@ check_sen2r_deps <- function() {
     
     # build the modalDialog
     check_sen2cor_modal <- modalDialog(
-      title = "sen2cor check",
+      title = "Sen2Cor check",
       size = "s",
       uiOutput("check_sen2cor_message"),
       easyClose = FALSE,
@@ -532,7 +533,7 @@ check_sen2r_deps <- function() {
           align="center",
           p(style="text-align:center;font-size:500%;color:darkgrey;", 
             icon("cog", class = "fa-spin")),
-          p("Wait while sen2cor is being installed...")
+          p("Wait while Sen2Cor is being installed...")
         ))
       )
       
@@ -565,7 +566,7 @@ check_sen2r_deps <- function() {
             align="center",
             p(style="text-align:center;font-size:500%;color:darkgreen;", 
               icon("check-circle")),
-            p("sen2cor was correctly installed."),
+            p("Sen2Cor was correctly installed."),
             hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
             div(style="text-align:right;", 
                 modalButton("\u2000Close", icon = icon("check")))
