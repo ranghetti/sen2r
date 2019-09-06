@@ -23,7 +23,7 @@
 #'  Default is to use c(0,2500) for bands 1-5; c(0,7500) bands 6-12.
 #' @param outdir (optional) Full name of the existing output directory
 #'  where the files should be created. Default is the same directory of 
-#'  input reflectance files. # FIXME use a subdir with product name
+#'  input reflectance files.
 #' @param subdirs (optional) Logical: if TRUE, different indices are
 #'  placed in separated `outfile` subdirectories; if FALSE, they are placed in
 #'  `outfile` directory; if NA (default), subdirectories are created only if

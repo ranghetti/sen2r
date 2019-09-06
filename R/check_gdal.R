@@ -19,6 +19,7 @@
 #' @note License: GPL 3.0
 #' @importFrom gdalUtils gdal_setInstallation gdal_chooseInstallation
 #' @importFrom jsonlite fromJSON
+#' @export
 #' @examples
 #' \dontrun{
 #'
@@ -122,8 +123,25 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, ignore.ful
   gdalinfo_paths <- gdalinfo_paths[order(gdal_versions, decreasing = TRUE)]
   gdal_versions <- sort(gdal_versions, decreasing = TRUE)
   
+  # in Windows, prefer (filter, from v. 1.1.0) default OSGeo version
+  if (Sys.info()["sysname"] == "Windows") {
+    gdal_order <- c(
+      grep("^C:\\\\OSGEO4~1", gdal_dirs), # 1: C:\OSGeo4W64
+      grep("^(?!C:\\\\OSGEO4~1).*OSGEO4", gdal_dirs, perl=TRUE)#, # 2: other paths containing OSGEO4~1
+      # grep("^((?!OSGEO4).)*$", gdal_dirs, perl=TRUE) # 3: all other paths
+      # other paths were disabled to avoid selecting other installations
+    )
+    gdal_dirs <- gdal_dirs[gdal_order]
+    gdalinfo_paths <- gdalinfo_paths[gdal_order]
+    gdal_versions <- gdal_versions[gdal_order]
+  }
+  
   # check requisite 2: JP2 support
-  gdal_formats <- sapply(paste(gdalinfo_paths, "--formats"), system, intern = TRUE, simplify = FALSE)
+  gdal_formats <- if (length(gdalinfo_paths) > 0) {
+    sapply(paste(gdalinfo_paths, "--formats"), system, intern = TRUE, simplify = FALSE)
+  } else {
+    character(0)
+  }
   gdal_JP2support <- sapply(gdal_formats, function(x) {length(grepl("JP2OpenJPEG", x)) > 0})
   if (all(!gdal_JP2support)) {
     print_message(
@@ -132,11 +150,11 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, ignore.ful
       "Please install JP2OpenJPEG support and recompile GDAL.",
       if (Sys.info()["sysname"] == "Windows" & message_type=="error") {
         paste0(
-          "\nWe recommend to use the OSGeo4W installer ",
+          "\nUsing the OSGeo4W installer ",
           "(http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86",
           if (Sys.info()["machine"]=="x86-64") {"_64"},".exe), ",
-          "to choose the \"Advanced install\" and ",
-          "to check the packages \"gdal-python\" and \"openjpeg\"."
+          "choose the \"Advanced install\" and ",
+          "check the packages \"gdal-python\" and \"openjpeg\"."
         )
       }
     )
@@ -146,18 +164,6 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, ignore.ful
   gdal_dirs <- gdal_dirs[gdal_JP2support]
   gdalinfo_paths <- gdalinfo_paths[gdal_JP2support]
   gdal_versions <- gdal_versions[gdal_JP2support]
-  
-  # in Windows, prefer default OSGeo version
-  if (Sys.info()["sysname"] == "Windows") {
-    gdal_order <- c(
-      grep("^C:\\\\OSGEO4~1", gdal_dirs), # 1: C:\OSGeo4W64
-      grep("^(?!C:\\\\OSGEO4~1).*OSGEO4", gdal_dirs, perl=TRUE), # 2: other paths containing OSGEO4~1
-      grep("^((?!OSGEO4).)*$", gdal_dirs, perl=TRUE) # 3: all other paths
-    )
-    gdal_dirs <- gdal_dirs[gdal_order]
-    gdalinfo_paths <- gdalinfo_paths[gdal_order]
-    gdal_versions <- gdal_versions[gdal_order]
-  }
   
   
   # filter basing on the GDAL installation path defined with gdal_path

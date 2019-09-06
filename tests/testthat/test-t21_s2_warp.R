@@ -100,7 +100,8 @@ testthat::test_that(
   "Tests on clip TOA on extent, reproject and resize and save as ENVI", {
     
     dir.create(dirname(outdir_3), showWarnings = FALSE)
-    sen2r(
+    testthat::expect_warning(
+      sen2r(
       gui = FALSE,
       online = FALSE,
       step_atmcorr = "l2a", # to avoid checks on Sen2Cor
@@ -118,6 +119,8 @@ testthat::test_that(
       path_out = outdir_3,
       path_subdirs = FALSE,
       overwrite = TRUE
+    ),
+    regexp = "[Bb]oth native and custom resolution were provided" # FIXME 
     )
     expect_true(all(file.exists(c(
       exp_outpath_3,

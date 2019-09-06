@@ -150,130 +150,26 @@ Alternatively meta = 'all' (default) allows to return all metadata.</p></td>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Define product names</span>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='co'># Define product names</span>
 <span class='no'>examplenames</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(
   <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"tif/L7_ETMs.tif"</span>, <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"stars"</span>),
   <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"nc/bcsd_obs_1999.nc"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"stars"</span>)
 )
 
 <span class='co'># Return metadata as data.table</span>
-<span class='fu'>raster_metadata</span>(<span class='no'>examplenames</span>)</div><div class='output co'>#&gt;                                                                            path
-#&gt; 1:     /home/lranghetti/R/x86_64-pc-linux-gnu-library/3.6/stars/tif/L7_ETMs.tif
-#&gt; 2: /home/lranghetti/R/x86_64-pc-linux-gnu-library/3.6/stars/nc/bcsd_obs_1999.nc
-#&gt;    valid  res.x  res.y size.x size.y nbands     xmin    ymin       xmax
-#&gt; 1:  TRUE 28.500 28.500    349    352      6 288776.3 9110729 298722.750
-#&gt; 2:  TRUE  0.125  0.125     81     33     12    -85.0      33    -74.875
-#&gt;           ymax
-#&gt; 1: 9120760.750
-#&gt; 2:      37.125
-#&gt;                                                                               proj
-#&gt; 1: +proj=utm +zone=25 +south +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs
-#&gt; 2:                                                                            &lt;NA&gt;
-#&gt;     unit outformat type
-#&gt; 1: Meter     GTiff Byte
-#&gt; 2:  &lt;NA&gt;    netCDF &lt;NA&gt;</div><div class='input'>
+<span class='fu'>raster_metadata</span>(<span class='no'>examplenames</span>)
+
 <span class='co'># Return metadata as list</span>
-<span class='fu'>raster_metadata</span>(<span class='no'>examplenames</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"list"</span>)</div><div class='output co'>#&gt; [[1]]
-#&gt; [[1]]$path
-#&gt; [1] "/home/lranghetti/R/x86_64-pc-linux-gnu-library/3.6/stars/tif/L7_ETMs.tif"
-#&gt; 
-#&gt; [[1]]$valid
-#&gt; [1] TRUE
-#&gt; 
-#&gt; [[1]]$res
-#&gt;    x    y 
-#&gt; 28.5 28.5 
-#&gt; 
-#&gt; [[1]]$size
-#&gt;   x   y 
-#&gt; 349 352 
-#&gt; 
-#&gt; [[1]]$nbands
-#&gt; [1] 6
-#&gt; 
-#&gt; [[1]]$bbox
-#&gt;      xmin      ymin      xmax      ymax 
-#&gt;  288776.3 9110728.8  298722.8 9120760.8 
-#&gt; 
-#&gt; [[1]]$proj
-#&gt; Coordinate Reference System:
-#&gt;   No EPSG code
-#&gt;   proj4string: "+proj=utm +zone=25 +south +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
-#&gt; 
-#&gt; [[1]]$unit
-#&gt; [1] "Meter"
-#&gt; 
-#&gt; [[1]]$outformat
-#&gt; [1] "GTiff"
-#&gt; 
-#&gt; [[1]]$type
-#&gt; [1] "Byte"
-#&gt; 
-#&gt; 
-#&gt; [[2]]
-#&gt; [[2]]$path
-#&gt; [1] "/home/lranghetti/R/x86_64-pc-linux-gnu-library/3.6/stars/nc/bcsd_obs_1999.nc"
-#&gt; 
-#&gt; [[2]]$valid
-#&gt; [1] TRUE
-#&gt; 
-#&gt; [[2]]$res
-#&gt;     x     y 
-#&gt; 0.125 0.125 
-#&gt; 
-#&gt; [[2]]$size
-#&gt;  x  y 
-#&gt; 81 33 
-#&gt; 
-#&gt; [[2]]$nbands
-#&gt; [1] 12
-#&gt; 
-#&gt; [[2]]$bbox
-#&gt;    xmin    ymin    xmax    ymax 
-#&gt; -85.000  33.000 -74.875  37.125 
-#&gt; 
-#&gt; [[2]]$proj
-#&gt; Coordinate Reference System: NA
-#&gt; 
-#&gt; [[2]]$unit
-#&gt; [1] NA
-#&gt; 
-#&gt; [[2]]$outformat
-#&gt; [1] "netCDF"
-#&gt; 
-#&gt; [[2]]$type
-#&gt; [1] NA
-#&gt; 
-#&gt; </div><div class='input'>
+<span class='fu'>raster_metadata</span>(<span class='no'>examplenames</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"list"</span>)
+
 <span class='co'># Return only two metadata</span>
-<span class='fu'>raster_metadata</span>(<span class='no'>examplenames</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"res"</span>, <span class='st'>"unit"</span>))</div><div class='output co'>#&gt;                                                                            path
-#&gt; 1:     /home/lranghetti/R/x86_64-pc-linux-gnu-library/3.6/stars/tif/L7_ETMs.tif
-#&gt; 2: /home/lranghetti/R/x86_64-pc-linux-gnu-library/3.6/stars/nc/bcsd_obs_1999.nc
-#&gt;    valid  res.x  res.y  unit
-#&gt; 1:  TRUE 28.500 28.500 Meter
-#&gt; 2:  TRUE  0.125  0.125  &lt;NA&gt;</div><div class='input'>
+<span class='fu'>raster_metadata</span>(<span class='no'>examplenames</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"res"</span>, <span class='st'>"unit"</span>))
+
 <span class='co'># Output with an invalid raster</span>
 <span class='no'>examplenames</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='no'>examplenames</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata/gdal_formats.json"</span>, <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"sen2r"</span>))
-<span class='fu'>raster_metadata</span>(<span class='no'>examplenames</span>)</div><div class='output co'>#&gt; trying to read file: /home/lranghetti/share/git/github/ranghetti/sen2r/inst/extdata/gdal_formats.json</div><div class='output co'>#&gt;                                                                                path
-#&gt; 1:         /home/lranghetti/R/x86_64-pc-linux-gnu-library/3.6/stars/tif/L7_ETMs.tif
-#&gt; 2:     /home/lranghetti/R/x86_64-pc-linux-gnu-library/3.6/stars/nc/bcsd_obs_1999.nc
-#&gt; 3: /home/lranghetti/share/git/github/ranghetti/sen2r/inst/extdata/gdal_formats.json
-#&gt;    valid  res.x  res.y size.x size.y nbands     xmin    ymin       xmax
-#&gt; 1:  TRUE 28.500 28.500    349    352      6 288776.3 9110729 298722.750
-#&gt; 2:  TRUE  0.125  0.125     81     33     12    -85.0      33    -74.875
-#&gt; 3: FALSE     NA     NA     NA     NA     NA       NA      NA         NA
-#&gt;           ymax
-#&gt; 1: 9120760.750
-#&gt; 2:      37.125
-#&gt; 3:          NA
-#&gt;                                                                               proj
-#&gt; 1: +proj=utm +zone=25 +south +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs
-#&gt; 2:                                                                            &lt;NA&gt;
-#&gt; 3:                                                                            &lt;NA&gt;
-#&gt;     unit outformat type
-#&gt; 1: Meter     GTiff Byte
-#&gt; 2:  &lt;NA&gt;    netCDF &lt;NA&gt;
-#&gt; 3:  &lt;NA&gt;      &lt;NA&gt; &lt;NA&gt;</div></pre>
+<span class='fu'>raster_metadata</span>(<span class='no'>examplenames</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

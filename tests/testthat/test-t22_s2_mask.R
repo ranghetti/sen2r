@@ -100,7 +100,7 @@ testthat::test_that(
     # test on raster values
     r <- raster::raster(exp_outpath_6)
     testthat::expect_equal(raster::cellStats(r, "mean"), 1317.727, tolerance = 1e-3)
-    testthat::expect_equal(raster::cellStats(r, "countNA"), 1077985)
+    testthat::expect_equal(raster::cellStats(r, "countNA"), 1077985, tolerance = 1e-3)
     
   }
 )
@@ -157,7 +157,7 @@ testthat::test_that(
     
     # test on raster values
     r <- raster::brick(exp_outpath_7[2])
-    testthat::expect_equal(mean(raster::cellStats(r, "mean")), 151.8003, tolerance = 1e-3)
+    testthat::expect_equal(mean(raster::cellStats(r, "mean")), 151.8003, tolerance = 1e-2)
 
   }
 )

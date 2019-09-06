@@ -19,7 +19,6 @@
 #'  smoothed / buffered).
 #'  Default (NULL) means that no NA values are present.
 #' @return The path of the smoothed mask.
-#' @export
 #' @importFrom methods is
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
