@@ -8,21 +8,25 @@
 
 <title>Get information from S2 file name or metadata — safe_getMetadata • An R toolbox to find, download an preprocess Sentinel-2 data</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,8 +34,8 @@
 
 
 
-<meta property="og:title" content="Get information from S2 file name or metadata — safe_getMetadata" />
 
+<meta property="og:title" content="Get information from S2 file name or metadata — safe_getMetadata" />
 <meta property="og:description" content="The function safe_getMetadata() scans a Sentinel2 product
 (main path, granule path, main / granule xml file or GDAL object)
 to retrieve information about the product.
@@ -40,6 +44,7 @@ it is not recognised by safe_getMetadata().
 The accessory function safe_isvalid() scan the SAFE name to understand
 if it is a valid SAFE." />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -62,6 +67,7 @@ if it is a valid SAFE." />
 
   gtag('config', 'UA-11080708-8');
 </script>
+
 
   </head>
 
@@ -92,7 +98,6 @@ if it is a valid SAFE." />
   <a href="../reference/index.html">Function reference</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/ranghetti/sen2r/">
@@ -107,6 +112,7 @@ if it is a valid SAFE." />
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -118,7 +124,6 @@ if it is a valid SAFE." />
     </div>
 
     <div class="ref-description">
-    
     <p>The function <code>safe_getMetadata()</code> scans a Sentinel2 product
 (main path, granule path, main / granule xml file or GDAL object)
 to retrieve information about the product.</p>
@@ -126,7 +131,6 @@ to retrieve information about the product.</p>
 it is not recognised by <code>safe_getMetadata()</code>.</p>
 <p>The accessory function <code>safe_isvalid()</code> scan the SAFE name to understand
 if it is a valid SAFE.</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>safe_getMetadata</span>(<span class='no'>s2</span>, <span class='kw'>info</span> <span class='kw'>=</span> <span class='st'>"all"</span>, <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
@@ -134,7 +138,7 @@ if it is a valid SAFE.</p>
 <span class='fu'>rm_invalid_safe</span>(<span class='no'>s2</span>)
 
 <span class='fu'>safe_isvalid</span>(<span class='no'>s2</span>, <span class='kw'>info</span> <span class='kw'>=</span> <span class='st'>"fileinfo"</span>)</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -192,18 +196,16 @@ elements without needing the file to have been downloaded).</p></li>
 in case <code>prod_type</code> is not recognised; if FALSE, a warning is shown.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p><code>safe_getMetadata()</code> returns a list of the output metadata;</p>
 <p><code>rm_invalid_safe()</code> returns TRUE if the <code>s2</code> product was removed,
 FALSE elsewhere.</p>
 <p><code>safe_isvalid()</code> returns TRUE if the product is a valid SAFE, FALSE if not.</p>
-    
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Define product name</span>
@@ -239,7 +241,7 @@ FALSE elsewhere.</p>
 #&gt; [1] "2017-06-03 10:10:26 UTC"
 #&gt; </div><div class='input'>
 <span class='co'># Return some specific information without scanning files</span>
-<span class='fu'>safe_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"nameinfo"</span>)[<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"level"</span>, <span class='st'>"id_tile"</span>)]</div><div class='output co'>#&gt; $level
+<span class='fu'>safe_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"nameinfo"</span>)[<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"level"</span>, <span class='st'>"id_tile"</span>)]</div><div class='output co'>#&gt; $level
 #&gt; [1] "1C"
 #&gt; 
 #&gt; $id_tile
@@ -248,12 +250,13 @@ FALSE elsewhere.</p>
 <span class='co'># Return a single information without scanning files</span>
 <span class='co'># (in this case, the output is a vector instead than a list)</span>
 <span class='fu'>safe_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"nameinfo"</span>)<span class='kw'>[[</span><span class='st'>"level"</span>]]</div><div class='output co'>#&gt; [1] "1C"</div><div class='input'>
-</div><span class='co'># NOT RUN {</span>
+<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+
 <span class='co'># Return all the available information</span>
 <span class='fu'>safe_getMetadata</span>(<span class='no'>s2_examplename</span>)
 
 <span class='co'># Return some specific information</span>
-<span class='fu'>safe_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"tiles"</span>, <span class='st'>"level"</span>, <span class='st'>"id_tile"</span>))
+<span class='fu'>safe_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"tiles"</span>, <span class='st'>"level"</span>, <span class='st'>"id_tile"</span>))
 
 <span class='co'># Return a single information</span>
 <span class='fu'>safe_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"clouds"</span>)
@@ -261,17 +264,14 @@ FALSE elsewhere.</p>
 <span class='co'># Delete it if it is not recognised</span>
 <span class='fu'>rm_invalid_safe</span>(<span class='no'>s2_examplename</span>)
 
-<span class='co'># }</span></pre>
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#value">Value</a></li>
-
       <li><a href="#note">Note</a></li>
-      
       <li><a href="#examples">Examples</a></li>
     </ul>
 
@@ -280,19 +280,23 @@ FALSE elsewhere.</p>
   </div>
 </div>
 
+
       <footer>
       <div class="copyright">
   <p>Developed by Luigi Ranghetti, Lorenzo Busetto.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 
