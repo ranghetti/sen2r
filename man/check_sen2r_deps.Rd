@@ -15,7 +15,7 @@ This package needs some external dependencies to run:
 \itemize{
 \item Python
 \item GDAL
-\item sen2cor
+\item Sen2Cor
 }
 
 This function opens a GUI which allows to check that these dependencies
