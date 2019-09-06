@@ -14,7 +14,7 @@ reference:
       - '`s2_list`'
       - '`s2_download`'
       - '`sen2cor`'
-      - '`scihub_login`'
+      - '`read_scihub_login`'
   - title: Read and convert SAFE format
     desc: ~
     contents:
