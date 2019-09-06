@@ -3728,7 +3728,7 @@ s2_gui <- function(param_list = NULL,
           type = "error"
         )
         
-      } else if (output$req_l1c & input$path_l1c_textin == "") {
+      } else if (safe_req$l1c & input$path_l1c_textin == "") {
         
         # directory missing
         sendSweetAlert(
@@ -3737,7 +3737,7 @@ s2_gui <- function(param_list = NULL,
           type = "error"
         )
         
-      } else if (output$req_l2a & input$path_l2a_textin == "") {
+      } else if (safe_req$l2a & input$path_l2a_textin == "") {
         
         # directory missing
         sendSweetAlert(
