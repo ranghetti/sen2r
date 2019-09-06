@@ -8,21 +8,25 @@
 
 <title>Return the Dates Of Passage over some orbits — s2_dop • An R toolbox to find, download an preprocess Sentinel-2 data</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,8 +34,8 @@
 
 
 
-<meta property="og:title" content="Return the Dates Of Passage over some orbits — s2_dop" />
 
+<meta property="og:title" content="Return the Dates Of Passage over some orbits — s2_dop" />
 <meta property="og:description" content="The function allows to know which Sentinel-2 passages should
 pass over certain orbits during a defined time interval.
 Dates are intended to be in UTC time.
@@ -43,6 +47,7 @@ Notice also that some orbits (030, 073 and 116) acquire across UTC midnight:
 in this cases, the date is assumed to be the one of the acquisition after
 midnight (which corresponds to the date in local time)." />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -65,6 +70,7 @@ midnight (which corresponds to the date in local time)." />
 
   gtag('config', 'UA-11080708-8');
 </script>
+
 
   </head>
 
@@ -95,7 +101,6 @@ midnight (which corresponds to the date in local time)." />
   <a href="../reference/index.html">Function reference</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/ranghetti/sen2r/">
@@ -110,6 +115,7 @@ midnight (which corresponds to the date in local time)." />
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -121,7 +127,6 @@ midnight (which corresponds to the date in local time)." />
     </div>
 
     <div class="ref-description">
-    
     <p>The function allows to know which Sentinel-2 passages should
 pass over certain orbits during a defined time interval.
 Dates are intended to be in UTC time.
@@ -132,12 +137,11 @@ acquisition was expected.
 Notice also that some orbits (030, 073 and 116) acquire across UTC midnight:
 in this cases, the date is assumed to be the one of the acquisition after
 midnight (which corresponds to the date in local time).</p>
-    
     </div>
 
-    <pre class="usage"><span class='fu'>s2_dop</span>(<span class='kw'>s2_orbits</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>143</span>, <span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='st'>"10 days"</span>, <span class='kw'>mission</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"2A"</span>,
+    <pre class="usage"><span class='fu'>s2_dop</span>(<span class='kw'>s2_orbits</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>143</span>, <span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='st'>"10 days"</span>, <span class='kw'>mission</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"2A"</span>,
   <span class='st'>"2B"</span>))</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -164,18 +168,16 @@ Default is the next 10 days (one cycle).</p></td>
 ("2A", "2B" or both). Default is both.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A data table with the dates (column "date"), the missions
 (column "mission") and the orbits (column "orbit").
 An empty data table with the same structure is returned if no passages
 were found with the passed settings.</p>
-    
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># All the passages in a cycle of 10 days over all the orbits</span>
@@ -192,7 +194,7 @@ were found with the passed settings.</p>
 #&gt; 285: 2019-09-15      2B   014
 #&gt; 286: 2019-09-15      2B   015</div><div class='input'>
 <span class='co'># The passages in the current month over two orbits</span>
-<span class='fu'>s2_dop</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"022"</span>, <span class='st'>"065"</span>), <span class='st'>"this month"</span>)</div><div class='output co'>#&gt;           date mission orbit
+<span class='fu'>s2_dop</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"022"</span>, <span class='st'>"065"</span>), <span class='st'>"this month"</span>)</div><div class='output co'>#&gt;           date mission orbit
 #&gt;  1: 2019-09-01      2A   022
 #&gt;  2: 2019-09-04      2A   065
 #&gt;  3: 2019-09-06      2B   022
@@ -210,10 +212,10 @@ were found with the passed settings.</p>
 <span class='co'># The date in which Sentinel-2A would be passed in the last 10 days over one orbit </span>
 <span class='fu'>s2_dop</span>(<span class='st'>"022"</span>, <span class='st'>"-10 days"</span>, <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2A"</span>)$<span class='no'>date</span></div><div class='output co'>#&gt; [1] "2019-09-01"</div><div class='input'>
 <span class='co'># All the orbits covered today</span>
-<span class='fu'>s2_dop</span>(<span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Sys.time'>Sys.Date</a></span>(), <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2B"</span>)$<span class='no'>orbit</span></div><div class='output co'>#&gt;  [1] "016" "017" "018" "019" "020" "021" "022" "023" "024" "025" "026" "027"
+<span class='fu'>s2_dop</span>(<span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span>(), <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2B"</span>)$<span class='no'>orbit</span></div><div class='output co'>#&gt;  [1] "016" "017" "018" "019" "020" "021" "022" "023" "024" "025" "026" "027"
 #&gt; [13] "028" "029"</div><div class='input'>
 <span class='co'># The passages in a fixed time window for one orbit</span>
-<span class='fu'>s2_dop</span>(<span class='fl'>65</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/as.Date'>as.Date</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"2018-08-01"</span>, <span class='st'>"2018-08-31"</span>)))</div><div class='output co'>#&gt;          date mission orbit
+<span class='fu'>s2_dop</span>(<span class='fl'>65</span>, <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"2018-08-01"</span>, <span class='st'>"2018-08-31"</span>)))</div><div class='output co'>#&gt;          date mission orbit
 #&gt; 1: 2018-08-05      2B   065
 #&gt; 2: 2018-08-10      2A   065
 #&gt; 3: 2018-08-15      2B   065
@@ -227,11 +229,8 @@ were found with the passed settings.</p>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#value">Value</a></li>
-
       <li><a href="#note">Note</a></li>
-      
       <li><a href="#examples">Examples</a></li>
     </ul>
 
@@ -240,19 +239,23 @@ were found with the passed settings.</p>
   </div>
 </div>
 
+
       <footer>
       <div class="copyright">
   <p>Developed by Luigi Ranghetti, Lorenzo Busetto.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 

@@ -8,21 +8,25 @@
 
 <title>Retrieve list of available products. — s2_list • An R toolbox to find, download an preprocess Sentinel-2 data</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,11 +34,12 @@
 
 
 
-<meta property="og:title" content="Retrieve list of available products. — s2_list" />
 
+<meta property="og:title" content="Retrieve list of available products. — s2_list" />
 <meta property="og:description" content="The function retrieves the list of available Sentinel-2
 products basing on search criteria." />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -57,6 +62,7 @@ products basing on search criteria." />
 
   gtag('config', 'UA-11080708-8');
 </script>
+
 
   </head>
 
@@ -87,7 +93,6 @@ products basing on search criteria." />
   <a href="../reference/index.html">Function reference</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/ranghetti/sen2r/">
@@ -102,6 +107,7 @@ products basing on search criteria." />
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -113,17 +119,15 @@ products basing on search criteria." />
     </div>
 
     <div class="ref-description">
-    
     <p>The function retrieves the list of available Sentinel-2
 products basing on search criteria.</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>s2_list</span>(<span class='kw'>spatial_extent</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>orbit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Sys.time'>Sys.Date</a></span>() - <span class='fl'>10</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Sys.time'>Sys.Date</a></span>()), <span class='kw'>time_period</span> <span class='kw'>=</span> <span class='st'>"full"</span>,
+  <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span>() - <span class='fl'>10</span>, <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span>()), <span class='kw'>time_period</span> <span class='kw'>=</span> <span class='st'>"full"</span>,
   <span class='kw'>level</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>max_cloud</span> <span class='kw'>=</span> <span class='fl'>100</span>,
   <span class='kw'>output_type</span> <span class='kw'>=</span> <span class='st'>"vector"</span>)</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -142,8 +146,8 @@ products basing on search criteria.</p>
     </tr>
     <tr>
       <th>time_interval</th>
-      <td><p>Dates to be considered, as a temporal vector (class <a href='https://www.rdocumentation.org/packages/base/topics/DateTimeClasses'>POSIXct</a> or
-<a href='https://www.rdocumentation.org/packages/base/topics/Dates'>Date</a>, or string in <code>YYYY-mm-dd</code> format) of length 1 (specific day) or 2 (time interval).</p></td>
+      <td><p>Dates to be considered, as a temporal vector (class <a href='https://rdrr.io/r/base/DateTimeClasses.html'>POSIXct</a> or
+<a href='https://rdrr.io/r/base/Dates.html'>Date</a>, or string in <code>YYYY-mm-dd</code> format) of length 1 (specific day) or 2 (time interval).</p></td>
     </tr>
     <tr>
       <th>time_period</th>
@@ -183,22 +187,20 @@ a vector or URLs, whose names are the SAFE names;
 if 'data.table', the output is a data.table with metadata.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Basing on the value of argument `output_type``,
 a vector of available products (being each element an URL
 and its name the product name), or a data.table with product metadata.</p>
-    
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='no'>pos</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/sfc'>st_sfc</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st'>st_point</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>9.85</span>,<span class='fl'>45.81</span>)), <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>)
-<span class='no'>time_window</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/as.Date'>as.Date</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"2016-05-01"</span>, <span class='st'>"2017-07-30"</span>))
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='no'>pos</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/sfc.html'>st_sfc</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st.html'>st_point</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>9.85</span>,<span class='fl'>45.81</span>)), <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>)
+<span class='no'>time_window</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"2016-05-01"</span>, <span class='st'>"2017-07-30"</span>))
 
 <span class='co'># Full-period list</span>
 <span class='no'>example_s2_list</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_list</span>(
@@ -207,10 +209,10 @@ and its name the product name), or a data.table with product metadata.</p>
   <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='no'>time_window</span>,
   <span class='kw'>orbit</span> <span class='kw'>=</span> <span class='st'>"065"</span>
 )
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>example_s2_list</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>example_s2_list</span>)
 <span class='co'># Print the dates of the retrieved products</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/vector'>as.vector</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/sort'>sort</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/lapply'>sapply</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>example_s2_list</span>), <span class='kw'>function</span>(<span class='no'>x</span>) {
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/strptime'>strftime</a></span>(<span class='fu'><a href='safe_getMetadata.html'>safe_getMetadata</a></span>(<span class='no'>x</span>,<span class='st'>"nameinfo"</span>)$<span class='no'>sensing_datetime</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/vector.html'>as.vector</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>sapply</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>example_s2_list</span>), <span class='kw'>function</span>(<span class='no'>x</span>) {
+  <span class='fu'><a href='https://rdrr.io/r/base/strptime.html'>strftime</a></span>(<span class='fu'><a href='safe_getMetadata.html'>safe_getMetadata</a></span>(<span class='no'>x</span>,<span class='st'>"nameinfo"</span>)$<span class='no'>sensing_datetime</span>)
 })))
 
 <span class='co'># Seasonal-period list</span>
@@ -220,22 +222,19 @@ and its name the product name), or a data.table with product metadata.</p>
   <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='no'>time_window</span>,
   <span class='kw'>time_period</span> <span class='kw'>=</span> <span class='st'>"seasonal"</span>
 )
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>example_s2_list</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>example_s2_list</span>)
 <span class='co'># Print the dates of the retrieved products</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/vector'>as.vector</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/sort'>sort</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/lapply'>sapply</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>example_s2_list</span>), <span class='kw'>function</span>(<span class='no'>x</span>) {
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/strptime'>strftime</a></span>(<span class='fu'><a href='safe_getMetadata.html'>safe_getMetadata</a></span>(<span class='no'>x</span>,<span class='st'>"nameinfo"</span>)$<span class='no'>sensing_datetime</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/vector.html'>as.vector</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>sapply</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>example_s2_list</span>), <span class='kw'>function</span>(<span class='no'>x</span>) {
+  <span class='fu'><a href='https://rdrr.io/r/base/strptime.html'>strftime</a></span>(<span class='fu'><a href='safe_getMetadata.html'>safe_getMetadata</a></span>(<span class='no'>x</span>,<span class='st'>"nameinfo"</span>)$<span class='no'>sensing_datetime</span>)
 })))
-<span class='co'># }</span></pre>
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#value">Value</a></li>
-
       <li><a href="#note">Note</a></li>
-      
       <li><a href="#examples">Examples</a></li>
     </ul>
 
@@ -245,19 +244,23 @@ and its name the product name), or a data.table with product metadata.</p>
   </div>
 </div>
 
+
       <footer>
       <div class="copyright">
   <p>Developed by Luigi Ranghetti, Lorenzo Busetto.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 

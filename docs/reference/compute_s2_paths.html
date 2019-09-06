@@ -8,21 +8,25 @@
 
 <title>Compute names of S2 file to be generated — compute_s2_paths • An R toolbox to find, download an preprocess Sentinel-2 data</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,8 +34,8 @@
 
 
 
-<meta property="og:title" content="Compute names of S2 file to be generated — compute_s2_paths" />
 
+<meta property="og:title" content="Compute names of S2 file to be generated — compute_s2_paths" />
 <meta property="og:description" content="compute_s2_paths is an internal function
 (to be used within sen2r())
 which computes the names of the required output image files
@@ -43,6 +47,7 @@ sen2r until compute_s2_paths is called, returning the same list.
 It is a simple way to call compute_s2_paths with the same arguments
 if sen2r." />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -65,6 +70,7 @@ if sen2r." />
 
   gtag('config', 'UA-11080708-8');
 </script>
+
 
   </head>
 
@@ -95,7 +101,6 @@ if sen2r." />
   <a href="../reference/index.html">Function reference</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/ranghetti/sen2r/">
@@ -110,6 +115,7 @@ if sen2r." />
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -121,7 +127,6 @@ if sen2r." />
     </div>
 
     <div class="ref-description">
-    
     <p><code>compute_s2_paths</code> is an internal function
 (to be used within <code><a href='sen2r.html'>sen2r()</a></code>)
 which computes the names of the required output image files
@@ -132,19 +137,18 @@ is called twice (and to shorten the main function).</p>
 <a href='sen2r.html'>sen2r</a> until compute_s2_paths is called, returning the same list.
 It is a simple way to call compute_s2_paths with the same arguments
 if <a href='sen2r.html'>sen2r</a>.</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>compute_s2_paths</span>(<span class='no'>pm</span>, <span class='no'>s2_list_l1c</span>, <span class='no'>s2_list_l2a</span>, <span class='no'>tmpdir</span>, <span class='no'>list_prods</span>,
   <span class='kw'>force_tiles</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>check_tmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>ignorelist</span>)
 
 <span class='fu'>list_sen2r_paths</span>(<span class='kw'>param_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>gui</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>preprocess</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>s2_levels</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"l1c"</span>, <span class='st'>"l2a"</span>), <span class='kw'>sel_sensor</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"s2a"</span>, <span class='st'>"s2b"</span>),
+  <span class='kw'>s2_levels</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"l1c"</span>, <span class='st'>"l2a"</span>), <span class='kw'>sel_sensor</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"s2a"</span>, <span class='st'>"s2b"</span>),
   <span class='kw'>online</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>downloader</span> <span class='kw'>=</span> <span class='st'>"builtin"</span>,
   <span class='kw'>overwrite_safe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>rm_safe</span> <span class='kw'>=</span> <span class='st'>"no"</span>, <span class='kw'>step_atmcorr</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
   <span class='kw'>max_cloud_safe</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>timeperiod</span> <span class='kw'>=</span> <span class='st'>"full"</span>,
   <span class='kw'>extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>extent_name</span> <span class='kw'>=</span> <span class='st'>"sen2r"</span>, <span class='kw'>s2tiles_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>s2orbits_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"BOA"</span>), <span class='kw'>list_rgb</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>s2orbits_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"BOA"</span>), <span class='kw'>list_rgb</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>list_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>index_source</span> <span class='kw'>=</span> <span class='st'>"BOA"</span>, <span class='kw'>rgb_ranges</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>mask_smooth</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>mask_buffer</span> <span class='kw'>=</span> <span class='fl'>0</span>,
   <span class='kw'>clip_on_extent</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>extent_as_mask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>reference_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
@@ -157,7 +161,7 @@ if <a href='sen2r.html'>sen2r</a>.</p>
   <span class='kw'>path_subdirs</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>thumbnails</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>processing_order</span> <span class='kw'>=</span> <span class='st'>"by_step"</span>, <span class='kw'>use_python</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>log</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -417,7 +421,7 @@ if FALSE, only non temporary files are searched.</p></td>
       <td><p><code>sen2r</code> argument (refer to <a href='sen2r.html'>sen2r</a> documentation).</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A nested list:</p><ul>
@@ -427,7 +431,6 @@ if FALSE, only non temporary files are searched.</p></td>
 <li><p>third elements are related to output products.</p></li>
 </ul>
 
-    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p><code>compute_s2_paths</code> is structured in the following way:</p><ol>
@@ -447,31 +450,28 @@ end of the processing chain (already existing or not);</p></li>
 to be created).</p></li>
 </ul></li>
 </ol>
-    <p>With <code>overwrite=TRUE</code>, all these vectors are equal
+
+<p>With <code>overwrite=TRUE</code>, all these vectors are equal
 because all is overwritten.</p>
-    
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
-    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#value">Value</a></li>
-
       <li><a href="#details">Details</a></li>
-
       <li><a href="#note">Note</a></li>
-          </ul>
+    </ul>
 
     <h2>Author</h2>
     <p>Luigi Ranghetti, phD (2019) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p>
   </div>
 </div>
+
 
       <footer>
       <div class="copyright">
@@ -479,13 +479,16 @@ because all is overwritten.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 
