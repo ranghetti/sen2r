@@ -14,6 +14,7 @@ reference:
       - '`s2_list`'
       - '`s2_download`'
       - '`sen2cor`'
+      - '`scihub_login`'
   - title: Read and convert SAFE format
     desc: ~
     contents:
@@ -29,6 +30,7 @@ reference:
     contents:
       - '`safe_getMetadata`'
       - '`safe_shortname`'
+      - '`raster_metadata`'
       - '`sen2r_getElements`'
       - '`s2_dop`'
       - '`s2_tiles`'
@@ -39,24 +41,21 @@ reference:
       - '`load_binpaths`'
       - '`install_sen2cor`'
       - '`install_aria2`'
-      - '`init_python`'
+      - '`check_gdal`'
   - title: Accessory functions
     desc: ~
     contents:
       - '`s2_gui`'
       - '`list_indices`'
-      - '`stack2rgb`'
-      - '`raster2rgb`'
       - '`expand_path`'
       - '`comsub`'
       - '`projname`'
       - '`abs2rel`'
       - '`gdal_abs2rel`'
       - '`mountpoint`'
-      - '`trace_function`'
       - '`st_crs2`'
+      - '`str_pad2`'
       - '`normalize_path`'
-      - '`smooth_mask`'
       - '`tiles_intersects`'
 navbar:
   type: inverse

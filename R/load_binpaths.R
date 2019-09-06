@@ -10,6 +10,7 @@
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @importFrom jsonlite fromJSON
+#' @export
 #' @examples
 #' \dontrun{
 #'
