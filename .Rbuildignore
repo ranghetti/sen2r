@@ -10,3 +10,4 @@
 ^index\.R?md$
 ^utils$
 ^LICENSE\.md$
+^cran\-comments\.md$
