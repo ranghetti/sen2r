@@ -26,7 +26,7 @@ testthat::test_that(
   "The dates in which Sentinel-2A will pass in next six weeks over one orbit", {
     dop_out <- s2_dop("022", "6 weeks", mission = "2A")$date
     testthat::expect_is(dop_out, "Date")
-    testthat::expect_true(min(dop_out) >= Sys.Date())
+    testthat::expect_true(min(dop_out) >= Sys.Date()-6)
     testthat::expect_true(max(dop_out) <= Sys.Date()+6*7-1)
   }
 )
