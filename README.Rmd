@@ -66,10 +66,6 @@ can also be performed using intermediate functions (see [usage](#usage)).
 
 ## Installation
 
-<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> 
-is supported over Linux and Windows operating systems;
-the support for Mac will be added in future.
-
 ### Install locally
 
 The package can be installed from GitHub with the R package **remotes**:

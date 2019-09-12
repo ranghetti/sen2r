@@ -59,14 +59,9 @@ build scripts to automatically update an archive of Sentinel-2 products.
 Specific processing operations (i.e. applying **Sen2Cor** on Level-1c
 SAFE products, merging adjacent tiles, computing spectral indices from
 existing products) can also be performed using intermediate functions
-(see
-[usage](#usage)).
+(see [usage](#usage)).
 
 ## Installation
-
-<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
-is supported over Linux and Windows operating systems; the support for
-Mac will be added in future.
 
 ### Install locally
 
@@ -172,7 +167,7 @@ International license](https://creativecommons.org/licenses/by-sa/4.0)
 To cite this library, please use the following entry:
 
 Ranghetti, L. and Busetto, L. (2019). *sen2r: an R toolbox to find,
-download and preprocess Sentinel-2 data*. R package version 1.0.2. DOI:
+download and preprocess Sentinel-2 data*. R package version 1.1.0. DOI:
 [10.5281/zenodo.1240384](https://dx.doi.org/10.5281/zenodo.1240384).
 URL: <http://sen2r.ranghetti.info>.
 
@@ -181,7 +176,7 @@ URL: <http://sen2r.ranghetti.info>.
   title  = {sen2r: an R toolbox to find, download and preprocess Sentinel-2 data},
   author = {Luigi Ranghetti and Lorenzo Busetto},
   year   = {2019},
-  note   = {R package version 1.0.2},
+  note   = {R package version 1.1.0},
   doi    = {10.5281/zenodo.1240384},
   url    = {http://sen2r.ranghetti.info},
 }

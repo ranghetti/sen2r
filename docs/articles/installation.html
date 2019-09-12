@@ -82,14 +82,14 @@
     
 <p>Instruction are provided separately for each OS:</p>
 <ul>
-<li><a href="#linux">Install on Linux systems</a></li>
-<li><a href="#windows">Install on Windows</a></li>
+<li><a href="#on-linux-systems">Install on Linux systems</a></li>
+<li><a href="#on-windows">Install on Windows</a></li>
+<li><a href="#on-macos">Install on MacOS</a></li>
 </ul>
-<p>The support for MacOS will be added in future.</p>
 <p>Alternatively, <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be used <a href="docker.html">in a Docker container</a>.</p>
 <div id="on-linux-systems" class="section level2">
 <h2 class="hasAnchor">
-<a href="#on-linux-systems" class="anchor"></a><a id="linux"></a>On Linux systems</h2>
+<a href="#on-linux-systems" class="anchor"></a><i class="fa fa-linux" aria-hidden="true"></i> On Linux systems</h2>
 <div id="installing-dependencies" class="section level3">
 <h3 class="hasAnchor">
 <a href="#installing-dependencies" class="anchor"></a>Installing dependencies</h3>
@@ -183,7 +183,7 @@ Would you like to use a personal library instead?  (y/n)</code></pre>
 </div>
 <div id="on-windows" class="section level2">
 <h2 class="hasAnchor">
-<a href="#on-windows" class="anchor"></a><a id="windows"></a>On Windows</h2>
+<a href="#on-windows" class="anchor"></a><i class="fa fa-windows" aria-hidden="true"></i> On Windows</h2>
 <div id="installing-sen2r-1" class="section level3">
 <h3 class="hasAnchor">
 <a href="#installing-sen2r-1" class="anchor"></a>Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
@@ -213,13 +213,11 @@ Would you like to use a personal library instead?  (y/n)</code></pre>
 <li>
 <a href="http://www.gdal.org"><strong>GDAL</strong></a> (with support for JP2OpenJPEG format): this is a mandatory dependency, needed for all the processing operations and to retrieve metadata from SAFE products. To avoid incompatibilities, starting from <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
 <ol start="22" style="list-style-type: lower-alpha">
-<li>1.1.0 it is <em>strictly mandatory</em> to use a GDAL installation provided with the <a href="https://qgis.org/it/site/forusers/download.html">OSGeo4W installer</a>): if this requirement is not satisfied, it is possible to install GDAL with OSGeo4W directly from R (see below);</li>
+<li>1.1.0 it is <em>strictly mandatory</em> to use a GDAL installation provided with the <a href="https://qgis.org/it/site/forusers/download.html">OSGeo4W installer</a>: if this requirement is not satisfied, it is possible to install GDAL with OSGeo4W directly from R (see below);</li>
 </ol>
 </li>
 <li>
 <a href="http://step.esa.int/main/third-party-plugins-2/sen2cor"><strong>sen2cor</strong></a> is used to perform atmospheric correction of Sentinel-2 Level-1C products: it is required by the package, unless you choose not to correct products locally (using only Level-1C – TOA products or downloading directly Level-2A products).</li>
-<li>
-<strong>Wget</strong> is the downloader used by the package; it is required to work online.</li>
 <li>
 <a href="https://aria2.github.io"><strong>aria2</strong></a> is an alternative downloader which can be used to faster the download of SAFE archives; it can be optionally installed and used.</li>
 </ul>
@@ -240,8 +238,65 @@ in advanced mode, and checking the installation of `openjpeg` library. -->
 </div>
 <div id="on-macos" class="section level2">
 <h2 class="hasAnchor">
-<a href="#on-macos" class="anchor"></a><a id="mac"></a>On MacOS</h2>
-<p>The support for MacOS will be added in future.</p>
+<a href="#on-macos" class="anchor"></a><i class="fa fa-apple" aria-hidden="true"></i> On MacOS</h2>
+<div id="installing-gdal" class="section level3">
+<h3 class="hasAnchor">
+<a href="#installing-gdal" class="anchor"></a>Installing GDAL</h3>
+<p>In order to avoid incompatibilities with GDAL, starting from <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> v. 1.1.0 it is <em>strictly mandatory</em> to use a GDAL installation provided with the <a href="https://github.com/OSGeo/homebrew-osgeo4mac">OSGeo Homebrew repository</a>. To do it:</p>
+<ol style="list-style-type: decimal">
+<li>
+<p>if Homebrew is missing on your system, install it opening a terminal and typing:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="ex">/usr/bin/ruby</span> -e <span class="st">"</span><span class="va">$(</span><span class="ex">curl</span> -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span class="va">)</span><span class="st">"</span></a></code></pre></div>
+(see <a href="https://brew.sh/">the Homebrew webpage</a> for details);</li>
+<li>
+<p>install GDAL by typing:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="ex">brew</span> tap osgeo/osgeo4mac</a>
+<a class="sourceLine" id="cb16-2" data-line-number="2"><span class="ex">brew</span> install osgeo-gdal-python</a></code></pre></div>
+<p>(see <a href="https://github.com/OSGeo/homebrew-osgeo4mac">the OSGeo Homebrew webpage</a> for details). At this step, an error could be returned in case another GDAL installation was already present; in this case, follow the instruction returned in the terminal to solve it (probably some packages must be unlinked with the instructions <code>brew unlink &lt;package&gt;</code>).</p>
+</li>
+</ol>
+</div>
+<div id="installing-sen2r-2" class="section level3">
+<h3 class="hasAnchor">
+<a href="#installing-sen2r-2" class="anchor"></a>Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+</h3>
+<p><a href="https://cran.r-project.org/bin/windows/base">R</a> must be installed before proceeding.</p>
+<p>In the case it was already installed, it is suggested to update the existing R packages:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/update.packages.html">update.packages</a></span>(<span class="dt">ask =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<p>Packages can be installed using the compiled binaries, except from <strong>sp</strong>, <strong>sf</strong>, <strong>rgdal</strong> and <strong>rgeos</strong>, which are recommended to be compiled. To do it, use the command</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"sp"</span>, <span class="st">"sf"</span>, <span class="st">"rgdal"</span>, <span class="st">"rgeos"</span>), <span class="dt">type =</span> <span class="st">"source"</span>)</a></code></pre></div>
+<p><strong>after</strong> having installed GDAL as described above.</p>
+<p><span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be installed from GitHub with the R package <strong>remotes</strong>. To do it:</p>
+<ol style="list-style-type: decimal">
+<li>
+<p>install the package <strong>remotes</strong>, if missing:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"remotes"</span>)</a></code></pre></div>
+</li>
+<li>
+<p>load it and install <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(remotes)</a>
+<a class="sourceLine" id="cb20-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/pkg/remotes/man/install_github.html">install_github</a></span>(<span class="st">"ranghetti/sen2r"</span>)</a></code></pre></div>
+</li>
+</ol>
+<p>This will install the R package along with its package dependencies, containing all the functions necessary to preprocess data.</p>
+</div>
+<div id="installing-runtime-dependencies-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#installing-runtime-dependencies-1" class="anchor"></a>Installing runtime dependencies</h3>
+<p>To run the functions correctly, some external dependences are required:</p>
+<ul>
+<li>
+<a href="http://www.gdal.org"><strong>GDAL</strong></a> (with support for JP2OpenJPEG format): this is a mandatory dependency, needed for all the processing operations and to retrieve metadata from SAFE products. If the previous instructions were followed, it was already installed;</li>
+<li>
+<a href="http://step.esa.int/main/third-party-plugins-2/sen2cor"><strong>sen2cor</strong></a> is used to perform atmospheric correction of Sentinel-2 Level-1C products: it is required by the package, unless you choose not to correct products locally (using only Level-1C – TOA products or downloading directly Level-2A products).</li>
+<li>
+<a href="https://aria2.github.io"><strong>aria2</strong></a> is an alternative downloader which can be used to faster the download of SAFE archives; it can be optionally installed and used.</li>
+</ul>
+<p>These dependences can be graphically checked launching the function</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(sen2r)</a>
+<a class="sourceLine" id="cb21-2" data-line-number="2"><span class="kw"><a href="../reference/check_sen2r_deps.html">check_sen2r_deps</a></span>()</a></code></pre></div>
+<p>This function opens a GUI which help to check that they are satisfied; if some of them are missing, the GUI allows to install them directly.</p>
+</div>
 </div>
   </div>
 
@@ -251,12 +306,9 @@ in advanced mode, and checking the installation of `openjpeg` library. -->
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li>
-<a href="#on-linux-systems"></a><a id="linux" href="NA"></a>On Linux systems</li>
-      <li>
-<a href="#on-windows"></a><a id="windows" href="NA"></a>On Windows</li>
-      <li>
-<a href="#on-macos"></a><a id="mac" href="NA"></a>On MacOS</li>
+<li><a href="#on-linux-systems"><i class="fa fa-linux" aria-hidden="true"></i> On Linux systems</a></li>
+      <li><a href="#on-windows"><i class="fa fa-windows" aria-hidden="true"></i> On Windows</a></li>
+      <li><a href="#on-macos"><i class="fa fa-apple" aria-hidden="true"></i> On MacOS</a></li>
       </ul>
 </div>
       </div>
