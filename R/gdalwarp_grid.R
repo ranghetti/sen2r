@@ -8,10 +8,9 @@
 #' @param ref Path of the raster taken as reference.
 #' @param of The output format (use the short format name). Default is
 #'  the format of every input filename.
-#' @param ... Additional parameters of [gdalwarp] (different from `s_srs`,
-#'  `t_srs`, `te`, `tr`, `ts` and `of`).
+#' @param r Resampling_method ("near"|"bilinear"|"cubic"|"cubicspline"|
+#' "lanczos"|"average"|"mode"|"max"|"min"|"med"|"q1"|"q3").
 #' @return NULL
-#' @importFrom gdalUtils gdalwarp
 #' @importFrom methods as
 #' @importFrom reticulate py_to_r
 #' @importFrom sf st_as_sfc
@@ -32,7 +31,7 @@ gdalwarp_grid <- function(srcfiles,
                           dstfiles,
                           ref,
                           of = NULL,
-                          ...) {
+                          r = NULL) {
   
   # import python modules
   py <- init_python()
@@ -93,15 +92,20 @@ gdalwarp_grid <- function(srcfiles,
     
     
     # warp
-    # (using gdalwarp() instead of calling gdalwarp from system() is a bit slower,
-    # but it easily allows to pass additional parameters)
-    gdalwarp(srcfile = srcfile, dstfile = dstfile,
-             s_srs = sel_proj$proj4string, t_srs = ref_proj$proj4string,
-             te = c(out_bbox_mod),
-             tr = ref_res,
-             of = of,
-             ...)
-    
+    system(
+      paste0(
+        load_binpaths()$gdalwarp," ",
+        "-s_srs \"",sel_proj$proj4string,"\" ",
+        "-t_srs \"",ref_proj$proj4string,"\" ",
+        "-te ",paste(out_bbox_mod, collapse = " ")," ",
+        "-tr ",paste(ref_res, collapse = " ")," ",
+        if (!is.null(r)) {paste0("-r ",r," ")},
+        if (!is.null(of)) {paste0("-of ",of," ")},
+        "\"",srcfile,"\" ",
+        "\"",dstfile,"\""),
+      intern = Sys.info()["sysname"] == "Windows"
+    )
+
   }
   
 }

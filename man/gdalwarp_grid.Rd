@@ -4,7 +4,7 @@
 \alias{gdalwarp_grid}
 \title{Warp basing on the grid of another file}
 \usage{
-gdalwarp_grid(srcfiles, dstfiles, ref, of = NULL, ...)
+gdalwarp_grid(srcfiles, dstfiles, ref, of = NULL, r = NULL)
 }
 \arguments{
 \item{srcfiles}{A vector of input file paths (managed by GDAL).}
@@ -16,8 +16,8 @@ gdalwarp_grid(srcfiles, dstfiles, ref, of = NULL, ...)
 \item{of}{The output format (use the short format name). Default is
 the format of every input filename.}
 
-\item{...}{Additional parameters of \link{gdalwarp} (different from \code{s_srs},
-\code{t_srs}, \code{te}, \code{tr}, \code{ts} and \code{of}).}
+\item{r}{Resampling_method ("near"|"bilinear"|"cubic"|"cubicspline"|
+"lanczos"|"average"|"mode"|"max"|"min"|"med"|"q1"|"q3").}
 }
 \description{
 The function apply \link{gdalwarp} to build rasters with the
