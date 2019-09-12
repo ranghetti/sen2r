@@ -284,12 +284,12 @@ Some fixes:
 
 This version allows to perform all basic operations with Sentinel-2 data: finding and downloading the required tiles (on Linux), correcting them with sen2cor, processing them (merging adiacent tiles, clipping, reprojecting, rescaling, applying atmospheric mask) to create output multiband files (in a format managed by GDAL) and spectral indices.
 
-The version follows the issued scheduled for [milestone 0.3.0](https://github.com/ranghetti/fidolasen/milestone/1); future improvements with Sentinel-2 data are scheduled for [release 0.4.0](https://github.com/ranghetti/fidolasen/milestone/3).
+The version follows the issued scheduled for [milestone 0.3.0](https://github.com/ranghetti/sen2r/milestone/1); future improvements with Sentinel-2 data are scheduled for [release 0.4.0](https://github.com/ranghetti/sen2r/milestone/3).
 
 
 # Version 0.2.0
 
-This is an intermediate version, which does not allow yet to perform a complete workflow, but it allows to manually find ([`s2_list.R`](http://10.0.1.230:8787/files/share/git/github/ggranga/fidolasen/docs/reference/s2_list.html)), download ([`s2_download.R`](http://10.0.1.230:8787/files/share/git/github/ggranga/fidolasen/docs/reference/s2_download.html)), correct ([`s2_sen2cor.R`](http://10.0.1.230:8787/files/share/git/github/ggranga/fidolasen/docs/reference/s2_sen2cor.html)), translate in a format managed by GDAL ([`s2_translate.R`](http://10.0.1.230:8787/files/share/git/github/ggranga/fidolasen/docs/reference/s2_translate.html)) and merge by orbit number ([`s2_merge.R`](http://10.0.1.230:8787/files/share/git/github/ggranga/fidolasen/docs/reference/s2_merge.html)) Sentinel-2 data.
+This is an intermediate version, which does not allow yet to perform a complete workflow, but it allows to manually find (`s2_list()`), download (`s2_download()`), correct (`s2_sen2cor()`), translate in a format managed by GDAL (`s2_translate()`) and merge by orbit number (`s2_merge()`) Sentinel-2 data.
 
-An example of possible manual workflow is shown in the temporary  script [`tutorial.R`](https://github.com/ggranga/fidolasen/blob/master/WIP/tutorial.R).
-For a complete automatic workflow on Sentinel-2 data, wait [version 0.3.0](https://github.com/ggranga/fidolasen/milestone/1).
+An example of possible manual workflow is shown in the temporary script `WIP/tutorial.R`.
+For a complete automatic workflow on Sentinel-2 data, wait [version 0.3.0](https://github.com/ranghetti/sen2r/milestone/1).
