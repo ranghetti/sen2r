@@ -6,8 +6,7 @@
 \usage{
 gdal_warp(srcfiles, dstfiles, of = NULL, co = NULL, ref = NULL,
   mask = NULL, tr = NULL, t_srs = NULL, r = NULL,
-  dstnodata = NULL, overwrite = FALSE, tmpdir = NA, rmtmp = TRUE,
-  ...)
+  dstnodata = NULL, overwrite = FALSE, tmpdir = NA, rmtmp = TRUE)
 }
 \arguments{
 \item{srcfiles}{A vector of input file paths (managed by GDAL).}
@@ -69,15 +68,10 @@ Default is a temporary directory.}
 
 \item{rmtmp}{(optional) Logical: should temporary files be removed?
 (Default: TRUE)}
-
-\item{...}{Additional parameters of \link{gdalwarp} or \link{gdal_translate}
-(different from \code{s_srs}, \code{t_srs}, \code{te}, \code{tr}, \code{ts} and \code{of}).}
 }
 \description{
-The function applies \link{gdal_translate} or \link{gdalwarp}
-to clip, reproject and/or warp raster files. The choice of the
-algorithm is based on the comparison between input and output
-projections (\link{gdal_translate} if they are equal, \link{gdalwarp} elsewhere).
+The function applies \code{gdalwarp}
+to clip, reproject and/or warp raster files.
 If not specified, the output format of each file is the same of the
 corresponding source file.
 }

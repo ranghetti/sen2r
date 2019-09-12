@@ -36,10 +36,8 @@
 
 
 <meta property="og:title" content="Clip, reproject and warp raster files — gdal_warp" />
-<meta property="og:description" content="The function applies gdal_translate or gdalwarp
-to clip, reproject and/or warp raster files. The choice of the
-algorithm is based on the comparison between input and output
-projections (gdal_translate if they are equal, gdalwarp elsewhere).
+<meta property="og:description" content="The function applies gdalwarp
+to clip, reproject and/or warp raster files.
 If not specified, the output format of each file is the same of the
 corresponding source file." />
 <meta name="twitter:card" content="summary" />
@@ -123,18 +121,15 @@ corresponding source file." />
     </div>
 
     <div class="ref-description">
-    <p>The function applies gdal_translate or gdalwarp
-to clip, reproject and/or warp raster files. The choice of the
-algorithm is based on the comparison between input and output
-projections (gdal_translate if they are equal, gdalwarp elsewhere).
+    <p>The function applies <code>gdalwarp</code>
+to clip, reproject and/or warp raster files.
 If not specified, the output format of each file is the same of the
 corresponding source file.</p>
     </div>
 
     <pre class="usage"><span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>, <span class='no'>dstfiles</span>, <span class='kw'>of</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>co</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ref</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>mask</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>t_srs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>r</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>dstnodata</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>...</span>)</pre>
+  <span class='kw'>dstnodata</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -224,11 +219,6 @@ Default is a temporary directory.</p></td>
       <th>rmtmp</th>
       <td><p>(optional) Logical: should temporary files be removed?
 (Default: TRUE)</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Additional parameters of gdalwarp or gdal_translate
-(different from <code>s_srs</code>, <code>t_srs</code>, <code>te</code>, <code>tr</code>, <code>ts</code> and <code>of</code>).</p></td>
     </tr>
     </table>
 

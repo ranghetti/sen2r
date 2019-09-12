@@ -25,9 +25,9 @@ testthat::test_that(
     # )
     s2_l2a_list <- c(
       "S2A_MSIL2A_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE" = 
-        "https://scihub.copernicus.eu/dhus/odata/v1/Products('50f281e9-26ed-4d52-b394-18a4040c88b7')/$value",
+        "https://scihub.copernicus.eu/apihub/odata/v1/Products('50f281e9-26ed-4d52-b394-18a4040c88b7')/$value",
       "S2A_MSIL2A_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE" = 
-        "https://scihub.copernicus.eu/dhus/odata/v1/Products('b4b6b897-a03a-4f3c-b78d-974066574aed')/$value"
+        "https://scihub.copernicus.eu/apihub/odata/v1/Products('b4b6b897-a03a-4f3c-b78d-974066574aed')/$value"
     )
     s2_download(
       s2_l2a_list,
@@ -103,9 +103,9 @@ testthat::test_that(
     # )
     s2_l1c_list <- c(
       "S2A_MSIL1C_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE" = 
-        "https://scihub.copernicus.eu/dhus/odata/v1/Products('432572ed-450b-408f-99b5-23877bd229da')/$value",
+        "https://scihub.copernicus.eu/apihub/odata/v1/Products('432572ed-450b-408f-99b5-23877bd229da')/$value",
       "S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE" = 
-        "https://scihub.copernicus.eu/dhus/odata/v1/Products('5f590bcb-ee55-4a20-8e75-bde99f5b93d4')/$value"
+        "https://scihub.copernicus.eu/apihub/odata/v1/Products('5f590bcb-ee55-4a20-8e75-bde99f5b93d4')/$value"
     )
     s2_download(
       s2_l1c_list,

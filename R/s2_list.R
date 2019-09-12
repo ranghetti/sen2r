@@ -238,8 +238,24 @@ s2_list <- function(spatial_extent = NULL,
     )
   }
   
+  # Check connection
+  if (!check_scihub_connection()) {
+    print_message(
+      type = "error", 
+      "Impossible to reach the SciHub server ",
+      "(internet connection or SciHub may be down)." 
+    )
+  }
+  
   # Get credentials
   creds <- read_scihub_login(apihub)
+  if (!check_scihub_login(creds[1,1], creds[1,2])) {
+    print_message(
+      type = "error", 
+      "SciHub credentials are not correct, ",
+      "please check them." 
+    )
+  }
   
   foot <- ifelse(
     inherits(spatial_extent, "sfc_POINT"),
@@ -259,7 +275,7 @@ s2_list <- function(spatial_extent = NULL,
     while (!end_query) {
       
       query_string <- paste0(
-        'https://scihub.copernicus.eu/dhus//search?',
+        'https://scihub.copernicus.eu/apihub/search?',
         'start=', start,
         '&rows=', rows,
         '&q=', foot,
@@ -272,7 +288,7 @@ s2_list <- function(spatial_extent = NULL,
       query_string <- gsub("\\[", "%5b",query_string)
       query_string <- gsub("\\]", "%5d",query_string)
       
-      out_query    <- httr::GET(query_string, authenticate(creds[1], creds[2]))
+      out_query    <- httr::GET(query_string, authenticate(creds[1,1], creds[1,2]))
       out_xml      <- httr::content(out_query, as = "parsed", encoding = "UTF-8")
       out_xml_list <- XML::htmlTreeParse(out_xml, useInternalNodes = TRUE) %>% XML::xmlRoot()
       out_xml_list <- out_xml_list[["body"]][["feed"]]

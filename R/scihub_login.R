@@ -176,9 +176,9 @@ write_scihub_login <- function(username, password,
     ),
     textInput("scihub_username", "Username", apihub[1,1]),
     passwordInput("scihub_password", "Password", apihub[1,2]),
-    a("Register new account", href="https://scihub.copernicus.eu/dhus/#/self-registration", target="_blank"),
+    a("Register new account", href="https://scihub.copernicus.eu/apihub/#/self-registration", target="_blank"),
     "\u2000\u2014\u2000",
-    a("Forgot password?", href="https://scihub.copernicus.eu/dhus/#/forgot-password", target="_blank"),
+    a("Forgot password?", href="https://scihub.copernicus.eu/apihub/#/forgot-password", target="_blank"),
     checkboxInput(
       "apihub_default",
       label = span(

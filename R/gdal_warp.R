@@ -1,8 +1,6 @@
 #' @title Clip, reproject and warp raster files
-#' @description The function applies [gdal_translate] or [gdalwarp]
-#'  to clip, reproject and/or warp raster files. The choice of the
-#'  algorithm is based on the comparison between input and output
-#'  projections ([gdal_translate] if they are equal, [gdalwarp] elsewhere).
+#' @description The function applies `gdalwarp`
+#'  to clip, reproject and/or warp raster files.
 #'  If not specified, the output format of each file is the same of the
 #'  corresponding source file.
 #' @param srcfiles A vector of input file paths (managed by GDAL).
@@ -52,11 +50,8 @@
 #'  Default is a temporary directory.
 #' @param rmtmp (optional) Logical: should temporary files be removed?
 #'  (Default: TRUE)
-#' @param ... Additional parameters of [gdalwarp] or [gdal_translate]
-#'  (different from `s_srs`, `t_srs`, `te`, `tr`, `ts` and `of`).
 #' @return NULL
 #' @export
-#' @importFrom gdalUtils gdalwarp gdal_translate
 #' @importFrom sf st_transform st_geometry st_geometry_type st_write st_cast st_zm
 #'  st_area st_bbox st_sfc st_sf st_polygon st_as_sf st_as_sfc st_as_sf st_crs
 #' @importFrom methods as
@@ -138,8 +133,7 @@ gdal_warp <- function(srcfiles,
                       dstnodata = NULL,
                       overwrite = FALSE,
                       tmpdir = NA,
-                      rmtmp = TRUE,
-                      ...) {
+                      rmtmp = TRUE) {
   
   # check consistency between inputs and outputs
   if (length(srcfiles) != length(dstfiles)) {
@@ -274,6 +268,9 @@ gdal_warp <- function(srcfiles,
     }
   }
   
+  # load binpaths
+  binpaths <- load_binpaths()
+  
   # cycle on each srcfile
   for (i in seq_along(srcfiles)) {
     srcfile <- srcfiles[i]
@@ -380,42 +377,30 @@ gdal_warp <- function(srcfiles,
       # finally, apply gdal_warp or gdal_translate
       # temporary leave only gdal_warp to avoid some problems
       # (e.g., translating a 1001x1001 20m to 10m results in 2002x2002 instead of 200[12]x200[12])
-      # if (compareCRS(CRS(sel_t_srs), CRS(sel_s_srs)) & !exists("mask_file")) {
-      #   gdal_translate(src_dataset = srcfile, dst_dataset = dstfile,
-      #            projwin = sel_te[c(1,4,3,2)],
-      #            tr = sel_tr,
-      #            of = sel_of,
-      #            r = sel_r,
-      #            a_nodata = dstnodata,
-      #            ...)
-      # } else {
-      
-      gdalwarp_expr <- paste0(
-        "gdalwarp(srcfile = srcfile, dstfile = dstfile, ",
-        "s_srs = sel_s_srs, t_srs = sel_t_srs, ",
-        "te = c(sel_te), ",
-        if (exists("mask_file")) {
-          "cutline = mask_file, "
-        },
-        if (!is.null(tr)) {
-          "tr = sel_tr, "
-        },
-        "of = sel_of, ",
-        if (!is.null(co)) {
-          "co = co, "
-        },
-        "r = sel_r, ",
-        if (!is.null(sel_nodata)) {
-          if (is.na(sel_nodata)) {
-            "dstnodata = NULL, "
-          } else {
-            "dstnodata = sel_nodata, "
-          }
-        },
-        "overwrite = ",overwrite,", ",
-        "...)")
-      eval(parse(text=gdalwarp_expr))
-      # }
+      system(
+        paste0(
+          binpaths$gdalwarp," ",
+          "-s_srs \"",sel_s_srs,"\" ",
+          "-t_srs \"",sel_t_srs,"\" ",
+          "-te ",paste(sel_te, collapse = " ")," ",
+          if (exists("mask_file")) {paste0("-cutline \"",mask_file,"\" ")},
+          if (!is.null(tr)) {paste0("-tr ",paste(sel_tr, collapse = " ")," ")},
+          if (!is.null(of)) {paste0("-of ",sel_of," ")},
+          if (!is.null(co)) {paste0("-co \"",co, "\" ")},
+          "-r ",sel_r," ",
+          if (!is.null(sel_nodata)) {
+            if (is.na(sel_nodata)) {
+              "-dstnodata None "
+            } else {
+              paste0("-dstnodata ",sel_nodata," ")
+            }
+          },
+          if (overwrite) {"-overwrite "},
+          "\"",srcfile,"\" ",
+          "\"",dstfile,"\""
+        ),
+        intern = Sys.info()["sysname"] == "Windows"
+      )
       
     } # end of overwrite IF cycle
     

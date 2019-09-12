@@ -24,7 +24,6 @@ Imports:
   reticulate,
   methods,
   digest,
-  gdalUtils,
   magrittr,
   sf,
   stars,

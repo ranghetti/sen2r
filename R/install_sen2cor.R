@@ -103,6 +103,14 @@ install_sen2cor <- function(sen2cor_dir=NA, version="2.8.0", force = FALSE) {
                           str_pad2(version[,2],2,"left","0"),".",
                           str_pad2(version[,3],2,"left","0"),
                           "-win64.zip")
+  } else if (Sys.info()["sysname"] == "Darwin") {
+    sen2cor_url <- paste0("http://step.esa.int/thirdparties/sen2cor/",
+                          version,
+                          "/Sen2Cor-",
+                          str_pad2(version[,1],2,"left","0"),".",
+                          str_pad2(version[,2],2,"left","0"),".",
+                          str_pad2(version[,3],2,"left","0"),
+                          "-Darwin64.run")
   } else {
     print_message(
       type = "error",
@@ -114,7 +122,7 @@ install_sen2cor <- function(sen2cor_dir=NA, version="2.8.0", force = FALSE) {
   # download, extract and delete archive
   GET(sen2cor_url, write_disk(sen2cor_installer, overwrite=TRUE))
   # download.file(sen2cor_url, destfile = sen2cor_installer)
-  if (Sys.info()["sysname"] == "Linux") {
+  if (Sys.info()["sysname"] %in% c("Linux","Darwin")) {
     curr_dir <- getwd()
     setwd(sen2cor_dir)
     # os.chmod(sen2cor_installer, 0755)

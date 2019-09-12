@@ -7,105 +7,126 @@
 #' @param gdal_path (optional) Character: the path in which GDAL must be
 #'  searched in. If NULL (default), search is performed in the whole file system.
 #' @param force (optional) Logical: if TRUE, install even if it is already 
-#'  installed (default is FALSE).
-#' @param ignore.full_scan (optional) Logical: argument passed 
-#'  to [gdal_setInstallation] (default is TRUE; set to FALSE in case
-#'  of problems with the retrieved GDAL installation, e.g. when an undesired
-#'  GDAL version is retrieved and the user wants to associate another one).
+#'  installed (default is FALSE). Notice that, defining `gdal_path`, GDAL is 
+#'  searched again even if `"force" = FALSE` in case the existing installation
+#'  is not in `gdal_path`.
+#' @param full_scan (optional) Logical: in Linux and MacOS, if `gdal_path` was 
+#'  not manually defined, GDAL is searched within the system path in case this 
+#'  argument is left to default value FALSE; instead, if TRUE, a full search is
+#'  performed. In Windows, if the default OSGeo directory `C:\\OSGeo4W64` exists,
+#'  GDAL is searched there, instead in the main directory `C:\\`; setting 
+#'  `full_scan` to TRUE, is is always searched in the whole `C:\\`.
+#'  This argument takes no effect if `gdal_path` was defined, since, in that case,
+#'  a full search is always performed in `gdal_path`.
 #' @return Logical (invisible): TRUE in case the installation is ok, FALSE 
 #'  if GDAL is missing and abort=FALSE (otherwise, the function stops).
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
-#' @importFrom gdalUtils gdal_setInstallation gdal_chooseInstallation
-#' @importFrom jsonlite fromJSON
+#' @importFrom jsonlite toJSON
 #' @export
 #' @examples
 #' \dontrun{
 #'
-#' # Remove previous GDAL information
-#' options("gdalUtils_gdalPath" = NULL)
-#' getOption("gdalUtils_gdalPath")
-#'
 #' # Use function
 #' check_gdal()
-#' getOption("gdalUtils_gdalPath")
+#' 
+#' # Check GDAL was imported
+#' load_binpaths()$gdalinfo
 #' }
 
-check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, ignore.full_scan = TRUE) {
+check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan = FALSE) {
   
   # set minimum GDAL version
   gdal_minversion <- package_version("2.1.2")
   
-  # # normalize gdal_path
-  # normalize_path(gdal_path)
-  
   # load the saved GDAL path, if exists
   binpaths <- load_binpaths()
-  if (force != TRUE & !is.null(binpaths$gdalinfo)) {
-    # print_message(
-    #   type = "message",
-    #   "GDAL is already set; to reconfigure it, set force = TRUE."
-    # )
-    gdal_setInstallation(search_path=dirname(binpaths$gdalinfo), rescan=TRUE)
-    return(invisible(TRUE))
-  }
-  
-  # If GDAL is not found, search for it
-  print_message(
-    type="message",
-    "Searching for a valid GDAL installation...")
-  gdal_check_fastpath <- tryCatch(
-    gdal_setInstallation(ignore.full_scan = ignore.full_scan, verbose = FALSE), 
-    error = print
-  )
-  
-  # Check if this found version supports OpenJPEG
-  gdal_check_jp2 <- tryCatch(
-    gdal_chooseInstallation(hasDrivers=c("JP2OpenJPEG")), 
-    error = print
-  )
-  
-  # If GDAL is not found, or if found version does not support JP2, perform a full search
-  if (is.null(getOption("gdalUtils_gdalPath")) |
-      is(gdal_check_jp2, "error") |
-      is(gdal_check_fastpath, "error")) {
-    print_message(
-      type="message",
-      "GDAL was not found in the system PATH, search in the full ",
-      "system (this could take some time, please wait)...")
-    gdal_setInstallation(ignore.full_scan = FALSE, verbose = FALSE)
-    # Check again if this found version supports OpenJPEG
-    gdal_check_jp2 <- tryCatch(
-      gdal_chooseInstallation(hasDrivers=c("JP2OpenJPEG")), 
-      error = print
-    )
-  }
-  
   
   # set message method
   message_type <- ifelse(abort==TRUE, "error", "warning")
   
-  # If GDAL is not found, return FALSE
-  if (is.null(getOption("gdalUtils_gdalPath")) | is(gdal_check_jp2, "error")) {
-    print_message(
-      type=message_type,
-      "GDAL was not found, please install it."
+  # check gdal_path
+  if (!is.null(gdal_path)) {
+    tryCatch(
+      gdal_path <- normalize_path(gdal_path, mustWork = TRUE),
+      error = function(e) {
+        print_message(
+          type = message_type,
+          "The directory passed as main GDAL path does not exist."
+        )
+        return(invisible(FALSE))
+      }
     )
-    return(invisible(FALSE))
+  } else {
+    gdal_path <- ""
   }
+
+  # If GDAL is not found, search for it
+  if (any(
+    is.null(binpaths$gdalinfo), !file.exists(nn(binpaths$gdalinfo)),
+    force == TRUE, 
+    !grepl(gdal_path, normalize_path(nn(binpaths$gdalinfo)))
+  )) {
+    
+    print_message(
+      type="message",
+      "Searching for a valid GDAL installation",
+      if (gdal_path != "") {paste0(
+        " (this could take a long time, ",
+        "depending on the content of \"gdal_path\")"
+      )} else if (full_scan == TRUE) {paste0(
+        " (a full scan in the whole file system was required, ",
+        "this generally takes a long time)"
+      )},
+      "..."
+    )
+
+    if (Sys.info()["sysname"] %in% c("Linux", "Darwin")) {
+      paths_gdalinfo <- if (all(full_scan == FALSE, gdal_path == "")) {
+        Sys.which("gdalinfo")
+      } else {
+        list.files(
+          if (gdal_path == "") {"/"} else {gdal_path},
+          "^gdalinfo$", recursive = TRUE, full.names = TRUE
+        )
+      }
+    } else if (Sys.info()["sysname"] == "Windows") {
+      if (gdal_path == "") {
+        if (all(full_scan == FALSE, dir.exists("C:\\\\OSGEO4~1"))) {
+          gdal_path <- "C:\\\\OSGEO4~1"
+        } else {
+          gdal_path <- "C:"
+        }
+      }
+      paths_gdalinfo <- list.files(
+        gdal_path, "gdalinfo\\.exe$", recursive = TRUE, full.names = TRUE
+      )
+    }
+    paths_gdalinfo <- normalize_path(paths_gdalinfo)
+    
+    if (any(length(paths_gdalinfo) == 0, paths_gdalinfo == "")) {
+      print_message(
+        type=message_type,
+        "GDAL was not found",
+        if (gdal_path != "") {" within the defined GDAL path"},
+        ", please install it",
+        if (gdal_path != "") {" or define another value for argument \"gdal_path\""},
+        "."
+      )
+      return(invisible(FALSE))
+    }
+    
+  } else {
+    paths_gdalinfo <- binpaths$gdalinfo
+  } # end of path retrieval
   
   
-  # Retrieve found GDAL installations
-  bin_ext <- ifelse(Sys.info()["sysname"] == "Windows", ".exe", "")
-  gdal_dirs <- normalize_path(sapply(getOption("gdalUtils_gdalPath"), function(x){x$path}))
-  gdalinfo_paths <- normalize_path(file.path(gdal_dirs,paste0("gdalinfo",bin_ext)))
+  ## Check requisite 1: minimum version
   gdal_versions <- package_version(gsub(
     "^.*GDAL ([0-9\\.]+)[^0-9].*$", "\\1", 
-    sapply(paste(gdalinfo_paths, "--version"), system, intern = TRUE)
+    sapply(paste(paths_gdalinfo, "--version"), system, intern = TRUE)
   ))
-  
-  # check requisite 1: minimum version
   if (all(gdal_versions < gdal_minversion)) {
     print_message(
       type=message_type,
@@ -114,118 +135,149 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, ignore.ful
     )
     return(invisible(FALSE))
   }
-  # filter GDAL installations respecting the requisite
-  gdal_dirs <- gdal_dirs[!gdal_versions < gdal_minversion]
-  gdalinfo_paths <- gdalinfo_paths[!gdal_versions < gdal_minversion]
+  paths_gdalinfo <- paths_gdalinfo[!gdal_versions < gdal_minversion]
   gdal_versions <- gdal_versions[!gdal_versions < gdal_minversion]
   # order by version
-  gdal_dirs <- gdal_dirs[order(gdal_versions, decreasing = TRUE)]
-  gdalinfo_paths <- gdalinfo_paths[order(gdal_versions, decreasing = TRUE)]
+  paths_gdalinfo <- paths_gdalinfo[order(gdal_versions, decreasing = TRUE)]
   gdal_versions <- sort(gdal_versions, decreasing = TRUE)
   
-  # in Windows, prefer (filter, from v. 1.1.0) default OSGeo version
-  if (Sys.info()["sysname"] == "Windows") {
-    gdal_order <- c(
-      grep("^C:\\\\OSGEO4~1", gdal_dirs), # 1: C:\OSGeo4W64
-      grep("^(?!C:\\\\OSGEO4~1).*OSGEO4", gdal_dirs, perl=TRUE)#, # 2: other paths containing OSGEO4~1
-      # grep("^((?!OSGEO4).)*$", gdal_dirs, perl=TRUE) # 3: all other paths
-      # other paths were disabled to avoid selecting other installations
-    )
-    gdal_dirs <- gdal_dirs[gdal_order]
-    gdalinfo_paths <- gdalinfo_paths[gdal_order]
-    gdal_versions <- gdal_versions[gdal_order]
-  }
   
-  # check requisite 2: JP2 support
-  gdal_formats <- if (length(gdalinfo_paths) > 0) {
-    sapply(paste(gdalinfo_paths, "--formats"), system, intern = TRUE, simplify = FALSE)
-  } else {
-    character(0)
-  }
-  gdal_JP2support <- sapply(gdal_formats, function(x) {length(grepl("JP2OpenJPEG", x)) > 0})
-  if (all(!gdal_JP2support)) {
+  ## Check requisite 2: OpenJPEG support
+  gdal_check_jp2 <- sapply(paths_gdalinfo, function(path) {
+    gdal_formats <- system(paste0(path," --formats"), intern = TRUE)
+    any(grepl("JP2OpenJPEG", gdal_formats))
+  })
+  if (!any(gdal_check_jp2)) {
     print_message(
       type=message_type,
       "Your local GDAL installation does not support JPEG2000 (JP2OpenJPEG) format. ",
       "Please install JP2OpenJPEG support and recompile GDAL.",
-      if (Sys.info()["sysname"] == "Windows" & message_type=="error") {
-        paste0(
-          "\nUsing the OSGeo4W installer ",
-          "(http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86",
-          if (Sys.info()["machine"]=="x86-64") {"_64"},".exe), ",
-          "choose the \"Advanced install\" and ",
-          "check the packages \"gdal-python\" and \"openjpeg\"."
-        )
-      }
+      if (Sys.info()["sysname"] == "Windows") {paste0(
+        "\nUsing the OSGeo4W installer ",
+        "(http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86",
+        if (Sys.info()["machine"]=="x86-64") {"_64"},".exe), ",
+        "choose the \"Advanced install\" and ",
+        "check the packages \"gdal-python\" and \"openjpeg\"."
+      )}
     )
     return(invisible(FALSE))
-  } 
-  # filter GDAL installations respecting the requisite
-  gdal_dirs <- gdal_dirs[gdal_JP2support]
-  gdalinfo_paths <- gdalinfo_paths[gdal_JP2support]
-  gdal_versions <- gdal_versions[gdal_JP2support]
-  
-  
-  # filter basing on the GDAL installation path defined with gdal_path
-  if (!is.null(gdal_path)) {
-    gdal_path <- normalize_path(gdal_path)
-    # if no GDAL installations match the gdal_path, use another one
-    if (all(!grepl(gdal_path, gdal_dirs, fixed = TRUE))) {
-      print_message(
-        type="warning",
-        "No GDAL installations matching the requisites ",
-        "(version >= 2.1.2 and supporting JPEG2000 format) ",
-        "were found in \"",gdal_path,
-        "\", so another local GDAL installation is used."
-      )
-    } else {
-      gdal_dirs <- gdal_dirs[grepl(gdal_path, gdal_dirs, fixed = TRUE)]
-      gdalinfo_paths <- gdalinfo_paths[grepl(gdal_path, gdal_dirs, fixed = TRUE)]
-      gdal_versions <- gdal_versions[grepl(gdal_path, gdal_dirs, fixed = TRUE)]
-    }
   }
+  paths_gdalinfo <- paths_gdalinfo[gdal_check_jp2]
+  gdal_versions <- gdal_versions[gdal_check_jp2]
   
-  # set the version to be used with gdalUtils
-  gdal_setInstallation(search_path = gdal_dirs[1], rescan = TRUE)
+  
+  ## Check requisite 3: in Windows and Mac, use only OSGeo version
+  if (Sys.info()["sysname"] != "Linux") {
+    gdal_osgeo_order <- if (Sys.info()["sysname"] == "Windows") {
+      unique(c(
+        # 1: C:\OSGeo4W64
+        grep("^C:\\\\OSGEO4~1", paths_gdalinfo),
+        # 2. paths in which osgeo4w-setup.exe exists wtogether with gdalinfo.exe
+        which(file.exists(file.path(dirname(paths_gdalinfo),"osgeo4w-setup.exe"))),
+        # 3: paths containing OSGEO4~1
+        grep("OSGEO4", paths_gdalinfo, perl=TRUE)#,
+        # # 4: all other paths (disabled to avoid selecting other installations)
+        # grep("^((?!OSGEO4).)*$", gdal_dirs, perl=TRUE)
+      ))
+    } else if (Sys.info()["sysname"] == "Darwin") {
+      grep("/osgeo\\-gdal/", paths_gdalinfo)
+    }
+    if (length(gdal_osgeo_order) == 0) {
+      print_message(
+        type=message_type,
+        if (Sys.info()["sysname"] == "Windows") {paste0(
+          "You do not have a local GDAL environment installed with OSGeo4W, ",
+          "which is a mandatory requirement since sen2r v. 1.1.0. ",
+          "\nPlease install GDAL using the OSGeo4W installer ",
+          "(http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86",
+          if (Sys.info()["machine"]=="x86-64") {"_64"},".exe), ",
+          "choosing the \"Advanced install\" and ",
+          "checking the packages \"gdal-python\" and \"openjpeg\"."
+        )} else if (Sys.info()["sysname"] == "Darwin") {paste0(
+          "You do not have a local GDAL environment installed with OSGeo Homebrew, ",
+          "which is a mandatory requirement since sen2r v. 1.1.0. ",
+          "\nPlease install GDAL from the OSGeo repository: ",
+          "\n1. install Homebrew (https://brew.sh/);",
+          "\n2. open a terminal and type ",
+          "\n   \"brew install osgeo-gdal-python\""
+        )}
+      )
+      return(invisible(FALSE))
+    }
+    paths_gdalinfo <- paths_gdalinfo[gdal_osgeo_order]
+    gdal_versions <- gdal_versions[gdal_osgeo_order]
+  }
+
+  
+  ## Check requisite 3: Python executables exist
+  paths_gdalcalc <- file.path(
+    if (Sys.info()["sysname"] == "Darwin") {
+      gsub("/osgeo\\-gdal/", "/osgeo-gdal-python/", dirname(paths_gdalinfo))
+    } else { 
+      dirname(paths_gdalinfo)
+    },
+    "gdal_calc.py"
+  )
+  gdal_check_py <- file.exists(paths_gdalcalc)
+  
+  
+  if (!any(gdal_check_py)) {
+    print_message(
+      type=message_type,
+      "You do not have installed phe Python GDAL executables.",
+      if (Sys.info()["sysname"] == "Windows") {paste0(
+        "\nUsing the OSGeo4W installer ",
+        "(http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86",
+        if (Sys.info()["machine"]=="x86-64") {"_64"},".exe), ",
+        "choose the \"Advanced install\" and ",
+        "check the package \"gdal-python\"."
+      )} else if (Sys.info()["sysname"] == "Darwin") {paste0(
+        "To do it, open a terminal and type ",
+        "\"brew install osgeo-gdal-python\"."
+      )}
+    )
+    return(invisible(FALSE))
+  }
+  paths_gdalinfo <- paths_gdalinfo[gdal_check_py]
+  paths_gdalcalc <- paths_gdalcalc[gdal_check_py]
+  gdal_versions <- gdal_versions[gdal_check_py]
+  
+  
   
   # save the path for use with external calls
-  gdal_dir <- gdal_dirs[1]
-  binpaths$gdalbuildvrt <- normalize_path(file.path(gdal_dir,paste0("gdalbuildvrt",bin_ext)))
-  binpaths$gdal_translate <- normalize_path(file.path(gdal_dir,paste0("gdal_translate",bin_ext)))
-  binpaths$gdalwarp <- normalize_path(file.path(gdal_dir,paste0("gdalwarp",bin_ext)))
-  binpaths$gdal_calc <- if (Sys.info()["sysname"] == "Windows") {
-    binpaths$python <- normalize_path(file.path(gdal_dir,paste0("python",bin_ext)))
-    paste0(binpaths$python," ",normalize_path(file.path(gdal_dir,"gdal_calc.py")))
-  } else { 
-    normalize_path(file.path(gdal_dir,"gdal_calc.py"))
-  }
-  binpaths$gdal_polygonize <- if (Sys.info()["sysname"] == "Windows") {
-    binpaths$python <- normalize_path(file.path(gdal_dir,paste0("python",bin_ext)))
-    paste0(binpaths$python," ",normalize_path(file.path(gdal_dir,"gdal_polygonize.py")))
-  } else { 
-    normalize_path(file.path(gdal_dir,"gdal_polygonize.py"))
-  }
-  binpaths$gdal_fillnodata <- if (Sys.info()["sysname"] == "Windows") {
-    binpaths$python <- normalize_path(file.path(gdal_dir,paste0("python",bin_ext)))
-    paste0(binpaths$python," ",normalize_path(file.path(gdal_dir,"gdal_fillnodata.py")))
-  } else { 
-    normalize_path(file.path(gdal_dir,"gdal_fillnodata.py"))
-  }
-  binpaths$gdaldem <- normalize_path(file.path(gdal_dir,paste0("gdaldem",bin_ext)))
+  gdal_dir <- dirname(paths_gdalinfo)[1]
+  gdal_py_dir <- dirname(paths_gdalcalc)[1]
+  gdal_version <- gdal_versions[1]
+  bin_ext <- ifelse(Sys.info()["sysname"] == "Windows", ".exe", "")
   binpaths$gdalinfo <- normalize_path(file.path(gdal_dir,paste0("gdalinfo",bin_ext)))
   binpaths$ogrinfo <- normalize_path(file.path(gdal_dir,paste0("ogrinfo",bin_ext)))
-  
-  lapply(
-    c("gdalbuildvrt","gdal_translate","gdalwarp","gdaldem","gdalinfo","ogrinfo"), 
-    function(x){
-      binpaths[[x]] <- normalize_path(binpaths[[x]])
-    }
-  )
+  binpaths$gdal_translate <- normalize_path(file.path(gdal_dir,paste0("gdal_translate",bin_ext)))
+  binpaths$gdalwarp <- normalize_path(file.path(gdal_dir,paste0("gdalwarp",bin_ext)))
+  binpaths$gdalbuildvrt <- normalize_path(file.path(gdal_dir,paste0("gdalbuildvrt",bin_ext)))
+  binpaths$gdaldem <- normalize_path(file.path(gdal_dir,paste0("gdaldem",bin_ext)))
+  if (Sys.info()["sysname"] == "Windows") {
+    binpaths$python <- normalize_path(file.path(gdal_dir,paste0("python",bin_ext)))
+  }
+  binpaths$gdal_calc <- if (Sys.info()["sysname"] == "Windows") {
+    paste0(binpaths$python," ",normalize_path(file.path(gdal_py_dir,"gdal_calc.py")))
+  } else { 
+    normalize_path(file.path(gdal_py_dir,"gdal_calc.py"))
+  }
+  binpaths$gdal_polygonize <- if (Sys.info()["sysname"] == "Windows") {
+    paste0(binpaths$python," ",normalize_path(file.path(gdal_py_dir,"gdal_polygonize.py")))
+  } else { 
+    normalize_path(file.path(gdal_py_dir,"gdal_polygonize.py"))
+  }
+  binpaths$gdal_fillnodata <- if (Sys.info()["sysname"] == "Windows") {
+    paste0(binpaths$python," ",normalize_path(file.path(gdal_py_dir,"gdal_fillnodata.py")))
+  } else { 
+    normalize_path(file.path(gdal_py_dir,"gdal_fillnodata.py"))
+  }
   writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
   
   print_message(
     type="message",
-    "GDAL version in use: ", as.character(gdal_versions[1]))
+    "GDAL version in use: ", as.character(gdal_version))
   return(invisible(TRUE))
   
 }
