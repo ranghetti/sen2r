@@ -70,10 +70,8 @@ Default is a temporary directory.}
 (Default: TRUE)}
 }
 \description{
-The function applies \link{gdal_translate} or \link{gdalwarp}
-to clip, reproject and/or warp raster files. The choice of the
-algorithm is based on the comparison between input and output
-projections (\link{gdal_translate} if they are equal, \link{gdalwarp} elsewhere).
+The function applies \code{gdalwarp}
+to clip, reproject and/or warp raster files.
 If not specified, the output format of each file is the same of the
 corresponding source file.
 }

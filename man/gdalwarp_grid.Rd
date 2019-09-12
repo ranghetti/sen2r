@@ -20,7 +20,7 @@ the format of every input filename.}
 "lanczos"|"average"|"mode"|"max"|"min"|"med"|"q1"|"q3").}
 }
 \description{
-The function apply \link{gdalwarp} to build rasters with the
+The function apply `gdalwarp`` to build rasters with the
 same projection, resolution and grid alignment of another raster.
 If not specified, the output format of each file is the same of the
 corresponding source file.

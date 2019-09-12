@@ -1,8 +1,6 @@
 #' @title Clip, reproject and warp raster files
-#' @description The function applies [gdal_translate] or [gdalwarp]
-#'  to clip, reproject and/or warp raster files. The choice of the
-#'  algorithm is based on the comparison between input and output
-#'  projections ([gdal_translate] if they are equal, [gdalwarp] elsewhere).
+#' @description The function applies `gdalwarp`
+#'  to clip, reproject and/or warp raster files.
 #'  If not specified, the output format of each file is the same of the
 #'  corresponding source file.
 #' @param srcfiles A vector of input file paths (managed by GDAL).
