@@ -36,6 +36,8 @@
 
 
 <meta property="og:title" content="Check GDAL installation — check_gdal" />
+<meta property="og:description" content="The function check that GDAL is installed and updated to
+the minimum required version (2.1.2)." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -117,6 +119,8 @@
     </div>
 
     <div class="ref-description">
+    <p>The function check that GDAL is installed and updated to
+the minimum required version (2.1.2).</p>
     </div>
 
     <pre class="usage"><span class='fu'>check_gdal</span>(<span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>gdal_path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
@@ -148,37 +152,43 @@ is not in <code>gdal_path</code>.</p></td>
       <td><p>(optional) Logical: in Linux and MacOS, if <code>gdal_path</code> was
 not manually defined, GDAL is searched within the system path in case this
 argument is left to default value FALSE; instead, if TRUE, a full search is
-performed. In Windows, if the default OSGeo directory <code>C:64</code> exists,
-GDAL is searched there, instead in the main directory <code>C:}; setting
-<code>full_scan</code> to TRUE, is is always searched in the whole <code>C:}.
+performed. In Windows, if the default OSGeo directory <code>C:\OSGeo4W64</code> exists,
+GDAL is searched there, instead in the main directory <code>C:\</code>; setting
+<code>full_scan</code> to TRUE, is is always searched in the whole <code>C:\</code>.
 This argument takes no effect if <code>gdal_path</code> was defined, since, in that case,
-a full search is always performed in <code>gdal_path</code>.</code>
-</code>
-
-Logical (invisible): TRUE in case the installation is ok, FALSE
-if GDAL is missing and abort=FALSE (otherwise, the function stops).
-
-
-The function check that GDAL is installed and updated to
-the minimum required version (2.1.2).
-
-
-License: GPL 3.0
-
-
-
-Luigi Ranghetti, phD (2017) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p></td>
+a full search is always performed in <code>gdal_path</code>.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>Logical (invisible): TRUE in case the installation is ok, FALSE
+if GDAL is missing and abort=FALSE (otherwise, the function stops).</p>
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>License: GPL 3.0</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+
+<span class='co'># Use function</span>
+<span class='fu'>check_gdal</span>()
+
+<span class='co'># Check GDAL was imported</span>
+<span class='fu'><a href='load_binpaths.html'>load_binpaths</a></span>()$<span class='no'>gdalinfo</span>
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
+      <li><a href="#note">Note</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
+    <h2>Author</h2>
+    <p>Luigi Ranghetti, phD (2017) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p>
   </div>
 </div>
 

@@ -13,9 +13,9 @@
 #' @param full_scan (optional) Logical: in Linux and MacOS, if `gdal_path` was 
 #'  not manually defined, GDAL is searched within the system path in case this 
 #'  argument is left to default value FALSE; instead, if TRUE, a full search is
-#'  performed. In Windows, if the default OSGeo directory `C:\OSGeo4W64` exists,
-#'  GDAL is searched there, instead in the main directory `C:\`; setting 
-#'  `full_scan` to TRUE, is is always searched in the whole `C:\`.
+#'  performed. In Windows, if the default OSGeo directory `C:\\OSGeo4W64` exists,
+#'  GDAL is searched there, instead in the main directory `C:\\`; setting 
+#'  `full_scan` to TRUE, is is always searched in the whole `C:\\`.
 #'  This argument takes no effect if `gdal_path` was defined, since, in that case,
 #'  a full search is always performed in `gdal_path`.
 #' @return Logical (invisible): TRUE in case the installation is ok, FALSE 
@@ -81,7 +81,7 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
       )},
       "..."
     )
-    
+
     if (Sys.info()["sysname"] %in% c("Linux", "Darwin")) {
       paths_gdalinfo <- if (all(full_scan == FALSE, gdal_path == "")) {
         Sys.which("gdalinfo")
@@ -117,6 +117,8 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
       return(invisible(FALSE))
     }
     
+  } else {
+    paths_gdalinfo <- binpaths$gdalinfo
   } # end of path retrieval
   
   
