@@ -135,6 +135,8 @@
 <ul>
 <li>
 <code><a href="../reference/s2_list.html">s2_list()</a></code> and <code><a href="../reference/s2_download.html">s2_download()</a></code> now use internal methods instead of calling python function derived from s2download scripts by Hagolle (this substantially improve the speed of SAFE search), which were removed.</li>
+<li>
+<strong><code>sen2r</code></strong> is now supported also on MacOS.</li>
 </ul>
 </div>
 <div id="newremoved-dependencies" class="section level2">
@@ -142,7 +144,7 @@
 <a href="#newremoved-dependencies" class="anchor"></a>New/removed dependencies</h2>
 <ul>
 <li>Remove <strong><code>sp</code></strong> and <strong><code>rgdal</code></strong> from explicit dependencies.</li>
-<li>Remove <strong><code>stringr</code></strong> dependency.</li>
+<li>Remove <strong><code>stringr</code></strong> and <strong><code>gdalUtils</code></strong> dependencies.</li>
 <li>Add <strong><code>stars</code></strong> dependency.</li>
 </ul>
 </div>
@@ -166,6 +168,7 @@
 <ul>
 <li>Packages stability was improved by adding test functions, working with <strong><code>testthat</code></strong>.</li>
 <li>S2 tiles are not provided as kmz within the package, but a rds file is downloaded after installing the package (in this way, package installation is lighter, and S2 tiles are read faster).</li>
+<li>Function <code><a href="../reference/check_gdal.html">check_gdal()</a></code> was rewritten without using <strong><code>gdalUtils</code></strong>, in order to be simpler and faster.</li>
 <li>Some new indices were added:
 <ul>
 <li>NDWI-NDWI2 (<a href='https://github.com/ranghetti/sen2r/issues/184'>#184</a>);</li>

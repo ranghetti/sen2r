@@ -10,10 +10,11 @@
 
 ## Major changes
 * `s2_list()` and `s2_download()` now use internal methods instead of calling python function derived from s2download scripts by Hagolle (this substantially improve the speed of SAFE search), which were removed.
+* **`sen2r`** is now supported also on MacOS.
 
 ## New/removed dependencies
 * Remove **`sp`** and **`rgdal`** from explicit dependencies.
-* Remove **`stringr`** dependency.
+* Remove **`stringr`** and **`gdalUtils`** dependencies.
 * Add **`stars`** dependency.
 
 ## New functions
@@ -25,6 +26,7 @@
 ## Other changes
 * Packages stability was improved by adding test functions, working with **`testthat`**.
 * S2 tiles are not provided as kmz within the package, but a rds file is downloaded after installing the package (in this way, package installation is lighter, and S2 tiles are read faster).
+* Function `check_gdal()` was rewritten without using **`gdalUtils`**, in order to be simpler and faster.
 * Some new indices were added:
     - NDWI-NDWI2 (#184);
     - CRred-BDred-CRred2 (#168);
