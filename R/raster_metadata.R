@@ -72,17 +72,17 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
         , silent = TRUE
       )))
     }
-    if (meta_gdalinfo) {
+    sel_raster_isvalid <- if (meta_stars) {
+      !is(sel_raster, "try-error")
+    } else {
+      !is(metadata_raw, "try-error")
+    }
+    if (meta_gdalinfo & sel_raster_isvalid) {
       metadata_raw <- suppressWarnings(suppressMessages(try(
         sf::gdal_utils("info", raster_path, quiet = TRUE) %>% 
           strsplit("\n") %>% unlist() %>% trimws(),
         silent = TRUE
       )))
-    }
-    sel_raster_isvalid <- if (meta_stars) {
-      !is(sel_raster, "try-error")
-    } else {
-      !is(metadata_raw, "try-error")
     }
     
     # read metadata
