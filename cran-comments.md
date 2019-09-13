@@ -10,5 +10,10 @@
 * [R-hub] macOS 10.11 El Capitan, R-release (experimental)
 
 ## R CMD check results
-There were no ERRORs, WARNINGs or NOTEs. 
+There were no ERRORs or WARNINGs. 
 
+There was 1 NOTE:
+
+* checking CRAN incoming feasibility ... NOTE
+    Maintainer: 'Luigi Ranghetti <ranghetti.l@irea.cnr.it>'
+    New submission
