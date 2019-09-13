@@ -17,7 +17,7 @@ Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff6
 
 <img src="man/figures/sen2r_logo_200px.png" width="200" height="113" align="right" />
 
-# R toolbox to find, download and preprocess Sentinel-2 data
+# sen2r: Find, Download and Process Sentinel-2 Data
 
 <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
 is an R library which helps to download and preprocess Sentinel-2
@@ -178,14 +178,14 @@ International license](https://creativecommons.org/licenses/by-sa/4.0)
 
 To cite this library, please use the following entry:
 
-Ranghetti, L. and Busetto, L. (2019). *sen2r: an R toolbox to find,
-download and preprocess Sentinel-2 data*. R package version 1.1.0. DOI:
+Ranghetti, L. and Busetto, L. (2019). *sen2r: Find, Download and Process
+Sentinel-2 Data*. R package version 1.1.0. DOI:
 [10.5281/zenodo.1240384](https://dx.doi.org/10.5281/zenodo.1240384).
 URL: <http://sen2r.ranghetti.info>.
 
 ``` bibtex
 @Manual{sen2r,
-  title  = {sen2r: an R toolbox to find, download and preprocess Sentinel-2 data},
+  title  = {sen2r: Find, Download and Process Sentinel-2 Data},
   author = {Luigi Ranghetti and Lorenzo Busetto},
   year   = {2019},
   note   = {R package version 1.1.0},

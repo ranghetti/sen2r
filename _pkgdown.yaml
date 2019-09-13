@@ -1,4 +1,4 @@
-title: "An R toolbox to find, download an preprocess Sentinel-2 data"
+title: "sen2r: Find, Download and Process Sentinel-2 Data"
 template:
   params:
     bootswatch: yeti

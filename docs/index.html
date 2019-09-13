@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>An R Toolbox to Find, Download and Process Sentinel-2 Data • An R toolbox to find, download an preprocess Sentinel-2 data</title>
+<title>Find, Download and Process Sentinel-2 Data • sen2r: Find, Download and Process Sentinel-2 Data</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="An R Toolbox to Find, Download and Process Sentinel-2 Data">
+<script src="pkgdown.js"></script><meta property="og:title" content="Find, Download and Process Sentinel-2 Data">
 <meta property="og:description" content="Functions to download Sentinel-2 optical images 
  and perform preliminary processing operations. 
  sen2r provides the instruments required to easily perform 
@@ -41,7 +41,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">An R toolbox to find, download an preprocess Sentinel-2 data</a>
+        <a class="navbar-link" href="index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
@@ -77,9 +77,9 @@
 
 <p><a href="https://travis-ci.org/ranghetti/sen2r"><img src="https://travis-ci.org/ranghetti/sen2r.svg?branch=master" alt="Travis-CI Build Status"></a> <img src="https://img.shields.io/docker/automated/ranghetti/sen2r.svg" alt="Docker Automated build"><a href="https://doi.org/10.5281/zenodo.1240384"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.1240384.svg" alt="DOI"></a> <a href="https://cran.r-project.org/package=sen2r"><img src="http://www.r-pkg.org/badges/version/sen2r" alt="CRAN Status"></a> <a href="http://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg" alt="License: GPL v3"></a> <a href="CONDUCT.html"><img src="https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg" alt="Contributor Covenant"></a></p>
 <p><img src="reference/figures/sen2r_logo_200px.png" width="200" height="113" align="right"></p>
-<div id="r-toolbox-to-find-download-and-preprocess-sentinel-2-data" class="section level1">
+<div id="sen2r-find-download-and-process-sentinel-2-data" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#r-toolbox-to-find-download-and-preprocess-sentinel-2-data" class="anchor"></a>R toolbox to find, download and preprocess Sentinel-2 data</h1></div>
+<a href="#sen2r-find-download-and-process-sentinel-2-data" class="anchor"></a>sen2r: Find, Download and Process Sentinel-2 Data</h1></div>
 <p><span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> is an R library which helps to download and preprocess Sentinel-2 optical images. The purpose of the functions contained in the library is to provide the instruments required to easily perform (and eventually automate) all the steps necessary to build a complete Sentinel-2 processing chain, without the need of any manual intervention nor the needing to manually integrate any external tool.</p>
 <p>In particular, <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> allows to:</p>
 <ul>
@@ -159,9 +159,9 @@
 <p><a href="http://www.irea.cnr.it" target="_blank"> <img src="reference/figures/irea_logo_200px.png" height="100" align="left" style="padding-right: 100px;"></a> <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> is being developed by Luigi Ranghetti and Lorenzo Busetto (<a href="http://www.irea.cnr.it">IREA-CNR</a>), and it is released under the <a href="https://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License version 3</a> (GPL‑3).</p>
 <p>The <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_logo_200px.png"><span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> logo</a>, partially derived from the <a href="https://www.r-project.org/logo">R logo</a>, is released under the <a href="https://creativecommons.org/licenses/by-sa/4.0">Creative Commons Attribution-ShareAlike 4.0 International license</a> (CC-BY-SA 4.0).</p>
 <p>To cite this library, please use the following entry:</p>
-<p>Ranghetti, L. and Busetto, L. (2019). <em>sen2r: an R toolbox to find, download and preprocess Sentinel-2 data</em>. R package version 1.1.0. DOI: <a href="https://dx.doi.org/10.5281/zenodo.1240384">10.5281/zenodo.1240384</a>. URL: <a href="http://sen2r.ranghetti.info" class="uri">http://sen2r.ranghetti.info</a>.</p>
+<p>Ranghetti, L. and Busetto, L. (2019). <em>sen2r: Find, Download and Process Sentinel-2 Data</em>. R package version 1.1.0. DOI: <a href="https://dx.doi.org/10.5281/zenodo.1240384">10.5281/zenodo.1240384</a>. URL: <a href="http://sen2r.ranghetti.info" class="uri">http://sen2r.ranghetti.info</a>.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="va">@Manual</span>{<span class="ot">sen2r</span>,</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">  <span class="dt">title</span>  = {sen2r: an R toolbox to find, download and preprocess Sentinel-2 data},</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">  <span class="dt">title</span>  = {sen2r: Find, Download and Process Sentinel-2 Data},</a>
 <a class="sourceLine" id="cb3-3" data-line-number="3">  <span class="dt">author</span> = {Luigi Ranghetti and Lorenzo Busetto},</a>
 <a class="sourceLine" id="cb3-4" data-line-number="4">  <span class="dt">year</span>   = {2019},</a>
 <a class="sourceLine" id="cb3-5" data-line-number="5">  <span class="dt">note</span>   = {R package version 1.1.0},</a>
