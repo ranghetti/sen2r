@@ -17,7 +17,7 @@ Instruction are provided separately for each OS:
 - [Install on Windows](#on-windows)
 - [Install on MacOS](#on-macos)
 
-Alternatively, <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be used [in a Docker container](docker.md).
+Alternatively, <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be used [in a Docker container](docker.html).
 
 
 ## <i class="fa fa-linux" aria-hidden="true"></i> On Linux systems

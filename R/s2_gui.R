@@ -64,7 +64,7 @@ s2_gui <- function(param_list = NULL,
   
   # shiny
   s2_gui.ui <- dashboardPage(
-    title = "sen2r: an R toolbox to find, download and preprocess Sentinel-2 data",
+    title = "sen2r: Find, Download and Process Sentinel-2 Data",
     header = dashboardHeader(),
     sidebar = dashboardSidebar(
       
