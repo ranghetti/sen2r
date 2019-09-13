@@ -50,7 +50,7 @@
 - add MathML code for some custom spectral indices
 
 ## New dependencies
-- `httr`: a change in wget available version for Windows (1.20.3 instead than 1.19.4) caused the old link to break; moreover, downloading wget using the new link was not possible with `download.file()` due to a redirect. So, httr dependency was introduced, and downlod of wget, aria2 and sen2cor is now performed with GET function.
+- `httr`: a change in Wget available version for Windows (1.20.3 instead than 1.19.4) caused the old link to break; moreover, downloading Wget using the new link was not possible with `download.file()` due to a redirect. So, httr dependency was introduced, and download of Wget, aria2 and sen2cor is now performed with GET function.
 - `dplyr`: the internal function `tiles_intersects()` now perform dissolve operations over polygons of S2 tiles using `dplyr` commands (`group_by()` and `summarise()`).
 
 ## Minor improvements
@@ -138,7 +138,7 @@ First stable release of package **sen2r**! See the announcement [here](https://l
 ### Fixes
 * **Important fix**: fix indices computation (before that, indices with additive values were wrongly generated).
 * Avoid errors when a SAFE directory exists but not in the right format
-* Fix the fiddly error which caused several blocks when startig `s2_merge()` or `s2_calcindices()`
+* Fix the fiddly error which caused several blocks when starting `s2_merge()` or `s2_calcindices()`
 * Fix searching oldname products with "auto" corr_type
 * Fix loading a custom mask from json parameter file
 * remove duplicated EVI2 index
@@ -183,7 +183,7 @@ This is an improvement of version 0.3.1, with several fixes and improvements.
 
 ### GUI changes
 
-* Major GUI improvements in the definition of the extent: now the main map is used only to show the extent and the tiles, while the definition of the extent (drawn, specified with a bounding box or taken from a loaded polygon) is donee in separate maps (this allows to avoid many errors).
+* Major GUI improvements in the definition of the extent: now the main map is used only to show the extent and the tiles, while the definition of the extent (drawn, specified with a bounding box or taken from a loaded polygon) is done in separate maps (this allows to avoid many errors).
 
 * Add radiobutton for index datatype, to choose the datatype when an index is generated.
 
@@ -207,7 +207,7 @@ In general, now the whole processing chain can be optionally launched in single 
 ### Addition to existing functions
 
 * Improvement in integer / byte data types for generation of indices: 
-Int16 is now the default data type; chosing an integer data type the output values are clipped on the valid format range, and the scaling factor can be chosen by the user; chosing Byte, interval -1 to 1 is coherced to 0-200 (with nodata=255).
+Int16 is now the default data type; choosing an integer data type the output values are clipped on the valid format range, and the scaling factor can be chosen by the user; chosing Byte, interval -1 to 1 is coerced to 0-200 (with nodata=255).
 
 * Use standard nodata values to compute indices.
 
@@ -219,7 +219,7 @@ now it is possible to define masks with a custom combination of SCL classes to b
 * Allow argument "timewindow" in `sen2r()` to be a single integer value, which is interpreted as the period between today and *n* days ago.
 
 * Uniform temporary directories (#73).
-Now the principal functions have the parameters tmpdir and rmtmp to set the temporary directory and the choice to delete /not to delete temporary files. Only two exceptions: create_indices_db() uses a fixed temporary directory (since it is a function intended not to be run by endusers); sen2cor() launched from sen2r() uses a default temporary directory if tempdir is in a SAMBA mountpoint over Windows.
+Now the principal functions have the parameters tmpdir and rmtmp to set the temporary directory and the choice to delete /not to delete temporary files. Only two exceptions: create_indices_db() uses a fixed temporary directory (since it is a function intended not to be run by end users); sen2cor() launched from sen2r() uses a default temporary directory if tempdir is in a SAMBA mountpoint over Windows.
 
 ### Other changes
 
@@ -242,7 +242,7 @@ stack2rgb() now works with GDAL routines; gdalwarp is used instead than gdal_tra
 Now on Windows all the modules are imported using import_from_path() in init_python(), which is called anywhere modules are needed.
 
 * Fix unrecognised osgeo in Windows.
-When running gdal_calc in Windows with multiple Python installlations, the wrong one (i.e. Anaconda) is used, and "no module names osgeo" error is returned.
+When running gdal_calc in Windows with multiple Python installations, the wrong one (i.e. Anaconda) is used, and "no module names osgeo" error is returned.
 
 * Other minor fixes.
 
@@ -263,7 +263,7 @@ Changes:
 - Add "tiles" argument to consider only specified tiles
 - Add the possibility to download products over Windows (#49)
 - Add extent_name in the GUI (#58)
-- Add automatic installation of wget on Windows
+- Add automatic installation of Wget on Windows
 - Add support for TCI thumbnail
 
 Some fixes:
@@ -282,7 +282,7 @@ Some fixes:
 
 # Version 0.3.0
 
-This version allows to perform all basic operations with Sentinel-2 data: finding and downloading the required tiles (on Linux), correcting them with sen2cor, processing them (merging adiacent tiles, clipping, reprojecting, rescaling, applying atmospheric mask) to create output multiband files (in a format managed by GDAL) and spectral indices.
+This version allows to perform all basic operations with Sentinel-2 data: finding and downloading the required tiles (on Linux), correcting them with sen2cor, processing them (merging adjacent tiles, clipping, reprojecting, rescaling, applying atmospheric mask) to create output multiband files (in a format managed by GDAL) and spectral indices.
 
 The version follows the issued scheduled for [milestone 0.3.0](https://github.com/ranghetti/sen2r/milestone/1); future improvements with Sentinel-2 data are scheduled for [release 0.4.0](https://github.com/ranghetti/sen2r/milestone/3).
 
