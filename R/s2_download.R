@@ -137,19 +137,28 @@ s2_download <- function(s2_prodlist = NULL,
         )
       } else {
         # check md5
-        sel_md5 <- httr::GET(
-          url = gsub("\\$value$", "Checksum/Value/$value", as.character(link)),
-          config = httr::authenticate(creds[1], creds[2]),
-          httr::write_disk(md5file <- tempfile(), overwrite = TRUE),
-          times = 10
-        )
-        check_md5 <- toupper(readLines(md5file, warn = FALSE)) == toupper(tools::md5sum(zip_path))
-        file.remove(md5file)
-        if (!check_md5) {
+        check_md5 <- tryCatch({
+          sel_md5 <- httr::GET(
+            url = gsub("\\$value$", "Checksum/Value/$value", as.character(link)),
+            config = httr::authenticate(creds[1], creds[2]),
+            httr::write_disk(md5file <- tempfile(), overwrite = TRUE),
+            times = 10
+          )
+          md5 <- toupper(readLines(md5file, warn = FALSE)) == toupper(tools::md5sum(zip_path))
+          file.remove(md5file)
+          md5
+        }, error = function(e) {logical(0)})
+        if (length(check_md5) == 0) {
+          print_message(
+            type = "warning",
+            "File ", names(link), " cannot be checked. ",
+            "Please verify if the download was successful."
+          )
+        } else if (!check_md5) {
           file.remove(zip_path)
           print_message(
             type = "error",
-            "Download of file", link, "was incomplete (Md%sum check failed). ",
+            "Download of file ", names(link), " was incomplete (Md5sum check failed). ",
             "Please retry to launch the download."
           )
         } else {
