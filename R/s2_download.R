@@ -161,15 +161,14 @@ s2_download <- function(s2_prodlist = NULL,
             "Download of file ", names(link), " was incomplete (Md5sum check failed). ",
             "Please retry to launch the download."
           )
-        } else {
-          # remove existing SAFE
-          if (dir.exists(safe_path)) {
-            unlink(safe_path, recursive = TRUE)
-          }
-          # unzip
-          unzip(zip_path, exdir = dirname(zip_path))
-          file.remove(zip_path)
         }
+        # remove existing SAFE
+        if (dir.exists(safe_path)) {
+          unlink(safe_path, recursive = TRUE)
+        }
+        # unzip
+        unzip(zip_path, exdir = dirname(zip_path))
+        file.remove(zip_path)
       }
       
     } else {
