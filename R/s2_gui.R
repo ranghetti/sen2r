@@ -3665,7 +3665,7 @@ s2_gui <- function(param_list = NULL,
     observeEvent(input$return_param, {
       if (
         if (any(length(nn(rv$apihub_path)) == 0, anyNA(rv$apihub_path))) {
-          !file.exists(file.path(system.file("extdata", package="sen2r"), "apihub.txt"))
+          !file.exists(file.path(dirname(attr(load_binpaths(), "path")), "apihub.txt"))
         } else {
           !file.exists(rv$apihub_path)
         }

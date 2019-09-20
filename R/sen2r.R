@@ -550,7 +550,7 @@ sen2r <- function(param_list = NULL,
   
   # If it is the first time that the package is used,
   # ask for opening the GUI to install dependencies
-  if (interactive() & !file.exists(system.file("extdata","paths.json", package="sen2r"))) {
+  if (interactive() & !file.exists(attr(load_binpaths(), "path"))) {
     open_check_gui <- NA
     while(is.na(open_check_gui)) {
       open_check_gui_prompt <- print_message(

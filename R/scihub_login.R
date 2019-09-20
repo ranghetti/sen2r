@@ -33,7 +33,8 @@ read_scihub_login <- function(apihub_path=NA) {
   # if apihub_path is not specified, 
   # retrieve from the current installation
   if (any(c(is.na(apihub_path), length(nn(apihub_path))==0))) {
-    apihub_path <- file.path(system.file("extdata", package="sen2r"), "apihub.txt")
+    # apihub_path <- file.path(system.file("extdata", package="sen2r"), "apihub.txt")
+    apihub_path <- file.path(dirname(attr(load_binpaths(), "path")), "apihub.txt")
     attr(apihub_path, "default") <- TRUE
   } else {
     attr(apihub_path, "default") <- FALSE
@@ -126,7 +127,7 @@ write_scihub_login <- function(username, password,
   # if apihub_path is not specified, 
   # retrieve from the current installation
   if (any(c(is.na(apihub_path), length(nn(apihub_path))==0))) {
-    apihub_path <- file.path(system.file("extdata", package="sen2r"), "apihub.txt")
+    apihub_path <- file.path(dirname(attr(load_binpaths(), "path")), "apihub.txt")
     dir.create(dirname(apihub_path), showWarnings = FALSE)
   }
   
@@ -154,7 +155,7 @@ write_scihub_login <- function(username, password,
 # write dialog content
 .scihub_modal <- function() {
   # read scihub user/password
-  apihub_path <- file.path(system.file("extdata", package="sen2r"), "apihub.txt")
+  apihub_path <- file.path(dirname(attr(load_binpaths(), "path")), "apihub.txt")
   apihub <- read_scihub_login(apihub_path)
   # launch modal
   modalDialog(
