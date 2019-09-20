@@ -19,6 +19,8 @@
 #'  shinyApp showModal span strong textOutput uiOutput verbatimTextOutput
 #' @importFrom shinyjs hide html useShinyjs extendShinyjs disabled disable enable
 #' @importFrom shinyWidgets confirmSweetAlert
+#' @importFrom shinyFiles getVolumes parseDirPath parseFilePaths
+#'  shinyDirButton shinyDirChoose shinyFileChoose shinyFilesButton
 #' @importFrom utils capture.output
 #' @importFrom httr GET
 #' @importFrom jsonlite fromJSON toJSON
@@ -371,7 +373,7 @@ check_sen2r_deps <- function() {
                   p("Please provide the path of a directory ",
                     "in which installing it:"),
                   div(div(style="display:inline-block;vertical-align:top;width:50pt;",
-                          shinyFilesDirButton("path_newaria2_sel", "Select", "Specify directory in which installing aria2")),
+                          shinyDirButton("path_newaria2_sel", "Select", "Specify directory in which installing aria2")),
                       div(style="display:inline-block;vertical-align:top;width:180px;",
                           textInput("path_newaria2_textin", NULL, ""))),
                   div(style="height:20px;vertical-aling:top;",
@@ -511,7 +513,7 @@ browser()
     observeEvent(input$check_aria2, {
       
       # update the check
-      rv$check_aria2_isvalid <- if (!is.null(load_binpaths()$aria2c)) {
+      rv$check_aria2_isvalid <- if (!is.null(suppressWarnings(load_binpaths("aria2c")))) {
         file.exists(load_binpaths()$aria2c)
       } else {
         FALSE
