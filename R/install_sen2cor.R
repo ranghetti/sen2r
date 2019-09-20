@@ -124,6 +124,7 @@ install_sen2cor <- function(sen2cor_dir=NA, version="2.8.0", force = FALSE) {
   # download.file(sen2cor_url, destfile = sen2cor_installer)
   if (Sys.info()["sysname"] %in% c("Linux","Darwin")) {
     curr_dir <- getwd()
+    on.exit(setwd(curr_dir))
     setwd(sen2cor_dir)
     # os.chmod(sen2cor_installer, 0755)
     system(
