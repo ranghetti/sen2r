@@ -354,12 +354,11 @@ check_sen2r_deps <- function() {
         ""
       } else if (!rv$check_aria2_isvalid) {
         div(
-          align = "center",
+          align = if (Sys.info()["sysname"] == "Windows") {"left"} else {"center"},
           p(style="color:red;text-align:center;font-size:500%;",
             icon("times-circle")),
           if (Sys.info()["sysname"] == "Windows") {
             div(
-              
               p("aria2 needs to be linked to sen2r, or downloaded if missing."),
               radioButtons(
                 "aria2_link_or_install", NULL,
@@ -445,61 +444,35 @@ check_sen2r_deps <- function() {
       updateTextInput(session, "path_newaria2_textin", value = path_newaria2_string)
     })
     observeEvent(input$path_exiaria2_textin, {
-      path_exiaria2_errormess <- path_check(
-        input$path_exiaria2_textin, 
-        mustbe_writable = FALSE, 
-        mustbe_empty = FALSE
-      )
-      if (TRUE %in% attr(path_exiaria2_errormess, "isvalid")) {
-        exiaria2_exists <- file.exists(input$path_exiaria2_textin)
-        if (exiaria2_exists) {
-          output$path_exiaria2_errormess <- path_exiaria2_errormess
-          enable("link_aria2_button")
-        } else {
-          output$path_exiaria2_errormess <- renderUI(span(
-            style="color:red",
-            "\u2718 (aria2 was not found here)"
-          ))
-          disable("link_aria2_button")
-        }
-      } else {
-        output$path_exiaria2_errormess <- path_exiaria2_errormess
+      if (any(length(input$path_exiaria2_textin)==0, input$path_exiaria2_textin[1]=="")) {
+        output$path_exiaria2_errormess <- renderText("")
         disable("link_aria2_button")
+      } else if (!file.exists(input$path_exiaria2_textin)) {
+        output$path_exiaria2_errormess <- renderUI(span(
+          style="color:red",
+          "\u2718 (the file does not exist)"
+        ))
+        disable("link_aria2_button")
+      } else if (!grepl("^aria2c?\\.exe$", basename(input$path_exiaria2_textin))) {
+        output$path_exiaria2_errormess <- renderUI(span(
+          style="color:red",
+          "\u2718 (this is not aria2c.exe)"
+        ))
+        disable("link_aria2_button")
+      } else {
+        output$path_exiaria2_errormess <- renderUI(span(
+          style="color:darkgreen",
+          "\u2714"
+        ))
+        enable("link_aria2_button")
       }
     })
     shinyFileChoose(input, "path_exiaria2_sel", roots = volumes)
     observeEvent(input$path_exiaria2_sel, {
-browser()
-      path_exiaria2_string <- parseFilesPath(volumes, input$path_exiaria2_sel)$datapath
+      path_exiaria2_string <- parseFilePaths(volumes, input$path_exiaria2_sel)$datapath
       updateTextInput(session, "path_exiaria2_textin", value = path_exiaria2_string)
     })
-    
-    
-    
-    
-    
-    
-    
-    observeEvent(input$path_aria2_textin, {
-browser()
-      path_aria2_errormess <- path_check(
-        input$path_aria2_textin, 
-        mustbe_writable = TRUE, 
-        mustbe_empty = FALSE
-      )
-      output$path_aria2_errormess <- path_aria2_errormess
-      if (TRUE %in% attr(path_aria2_errormess, "isvalid")) {
-        enable("install_aria2_button")
-      } else {
-        disable("install_aria2_button")
-      }
-    })
-    shinyDirChoose(input, "path_aria2_sel", roots = volumes)
-    observeEvent(input$path_aria2_sel, {
-      path_aria2_string <- parseDirPath(volumes, input$path_aria2_sel)
-      updateTextInput(session, "path_aria2_textin", value = path_aria2_string)
-    })
-    
+
     # build the modalDialog
     check_aria2_modal <- modalDialog(
       title = "aria2 check",
@@ -539,7 +512,7 @@ browser()
       
       Sys.sleep(0.5)
       check_aria2_outerr <- tryCatch(
-        install_aria2(),
+        install_aria2(input$path_newaria2_textin),
         error = function(e) {print(e)}
       )
       
@@ -575,6 +548,15 @@ browser()
         rv$check_aria2_isvalid <- TRUE
       }
       
+    })
+    
+    # link an existing aria2
+    observeEvent(input$link_aria2_button, {
+      binpaths_content <- load_binpaths()
+      binpaths_content$aria2c <- normalize_path(input$path_exiaria2_textin)
+      writeLines(jsonlite::toJSON(binpaths_content, pretty=TRUE), attr(binpaths(), "path"))
+      rv$check_aria2_isvalid <- TRUE
+      removeModal()
     })
     
     
@@ -747,7 +729,7 @@ browser()
       
       check_sen2cor_outmess <- capture.output(
         check_sen2cor_outerr <- tryCatch(
-          .install_sen2cor(interactive = FALSE),
+          .install_sen2cor(input$path_newsen2cor_textin, interactive = FALSE),
           error = function(e) {print(e)}
         ),
         type = "message"
