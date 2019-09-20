@@ -8,20 +8,21 @@
 
 ask_permission <- function() {
   
-  settings_dir <- "~/.sen2r"
+  settings_dir <- normalize_path("~/.sen2r", mustWork = FALSE)
   
   if (!dir.exists(settings_dir)) {
     message(paste(
-      "sen2r would like to create a hidden folder in your home directory, ",
-      "named '.sen2r', in which storing two text files:",
+      "\nsen2r would like to create a hidden folder in your home directory, ",
+      paste0("named '",settings_dir,"', "),
+      "in which storing two text files:",
       "- 'paths.json', containing the paths of sen2r runtime dependencies ",
       "   (GDAL, aria2, Sen2Cor), and",
       "- 'apihub.txt', ini which saving the user's SciHub credentials.\n",
       "Do you authorise this?\n",
-      "Yes - folder '.sen2r' will be created permanently, and the two ",
+      "Yes: folder '.sen2r' will be created permanently, and the two ",
       "   text files will be created and updated when needed. ",
       "   You will not see this message anymore.\n",
-      "No - a temporary folder will be used and will be lost when exiting ",
+      "No: a temporary folder will be used and will be lost when exiting ",
       "   R. You will see this message every time you will restart R.\n",
       sep = "\n"
     ))
