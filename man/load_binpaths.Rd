@@ -10,7 +10,7 @@ load_binpaths(bins = NULL)
 \item{bins}{Character vector with one of more of the following values:
 "gdal", sen2cor", "aria2", "python".
 If an executable corresponding to the passed \code{bins} value is not found
-in the JSON, it is installed (Windows) or checked (Linux).}
+in the JSON, it is checked (when possible).}
 }
 \value{
 The list of the paths
