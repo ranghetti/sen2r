@@ -88,7 +88,7 @@ gdalwarp_grid <- function(srcfiles,
     )
     
     # allineate out_extent to ref grid
-    out_bbox_mod <- round((out_bbox - ref_min) / ref_res) * ref_res + ref_min
+    out_bbox_mod <- ceiling((out_bbox - ref_min) / ref_res) * ref_res + ref_min
     
     
     # warp
