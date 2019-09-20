@@ -44,30 +44,24 @@ load_binpaths <- function(bins = NULL) {
   
   # Check sen2cor
   if ("sen2cor" %in% bins & is.null(binpaths$sen2cor)) {
-    if (interactive()) {
-      print_message(
-        type="waiting",
-        "sen2cor was not found in your system; press ENTER to install, ESC to escape."
-      )
-    } else {
-      print_message(
-        type="message",
-        "sen2cor was not found in your system and will be installed."
-      )
-    }
-    install_sen2cor() %>% suppressMessages()
-    binpaths <- jsonlite::fromJSON(binpaths_file)
+    print_message(
+      type="error",
+      "sen2cor was not found in your system; press install it ",
+      "using the function install_sen2cor()."
+    )
   }
   
   # Check aria2
   if (any(c("aria2","aria2c") %in% bins) & is.null(binpaths$aria2c)) {
-    if (Sys.info()["sysname"] == "Windows") {
-      suppressMessages(install_aria2())
-    } else if (Sys.which("aria2c") != "") {
-      binpaths$aria2c <- normalizePath(Sys.which("aria2c"))
-      writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
-      binpaths <- jsonlite::fromJSON(binpaths_file)
-    }
+    print_message(
+      type="error",
+      "aria2 was not found in your system; press install ",
+      if (Sys.info()["sysname"] == "Windows") {
+        "it using the function install_aria2()."
+      } else {
+        "the package \"aria2\"."
+      }
+    )
   }
   
   # Check python

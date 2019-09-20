@@ -17,7 +17,7 @@
 #'  modalDialog observe observeEvent outputOptions p reactive
 #'  reactiveFileReader reactivePoll reactiveValues renderText renderUI runApp
 #'  shinyApp showModal span strong textOutput uiOutput verbatimTextOutput
-#' @importFrom shinyjs hide html useShinyjs extendShinyjs
+#' @importFrom shinyjs hide html useShinyjs extendShinyjs disabled disable enable
 #' @importFrom shinyWidgets confirmSweetAlert
 #' @importFrom utils capture.output
 #' @importFrom httr GET
@@ -32,6 +32,13 @@
 check_sen2r_deps <- function() {
   
   jscode <- "shinyjs.closeWindow = function() { window.close(); }"
+  
+  # get server volumes
+  volumes <- c(
+    "Home" = path.expand("~"), 
+    "sen2r" = system.file(package = "sen2r"),
+    getVolumes()()
+  )
   
   settings.ui <- fluidPage(
     
@@ -350,11 +357,47 @@ check_sen2r_deps <- function() {
             icon("times-circle")),
           if (Sys.info()["sysname"] == "Windows") {
             div(
-              p("aria2 needs to be downloaded."),
-              hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-              div(style="text-align:right;",
-                  actionButton("install_aria2_button", strong("\u2000Download"), icon=icon("download")),
-                  modalButton("\u2000Cancel", icon = icon("ban")))
+              
+              p("aria2 needs to be linked to sen2r, or downloaded if missing."),
+              radioButtons(
+                "aria2_link_or_install", NULL,
+                c("Download a new aria2 binary" = "install",
+                  "Set the path of an existing binary" = "link"),
+                selected = "install"
+              ),
+              conditionalPanel(
+                condition = "input.aria2_link_or_install == 'install'",
+                div(
+                  p("Please provide the path of a directory ",
+                    "in which installing it:"),
+                  div(div(style="display:inline-block;vertical-align:top;width:50pt;",
+                          shinyFilesDirButton("path_newaria2_sel", "Select", "Specify directory in which installing aria2")),
+                      div(style="display:inline-block;vertical-align:top;width:180px;",
+                          textInput("path_newaria2_textin", NULL, ""))),
+                  div(style="height:20px;vertical-aling:top;",
+                      htmlOutput("path_newaria2_errormess")),
+                  hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+                  div(style="text-align:right;", 
+                      disabled(actionButton("install_aria2_button", strong("\u2000Download"), icon=icon("download"))),
+                      modalButton("\u2000Cancel", icon = icon("ban")))
+                )
+              ),
+              conditionalPanel(
+                condition = "input.aria2_link_or_install == 'link'",
+                div(
+                  p("Please provide the path of an existing aria2 binary:"),
+                  div(div(style="display:inline-block;vertical-align:top;width:50pt;",
+                          shinyFilesButton("path_exiaria2_sel", "Select", "Specify the aria2 path", multiple = FALSE)),
+                      div(style="display:inline-block;vertical-align:top;width:180px;",
+                          textInput("path_exiaria2_textin", NULL, ""))),
+                  div(style="height:20px;vertical-aling:top;",
+                      htmlOutput("path_exiaria2_errormess")),
+                  hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+                  div(style="text-align:right;", 
+                      disabled(actionButton("link_aria2_button", strong("\u2000Ok"), icon=icon("check"))),
+                      modalButton("\u2000Cancel", icon = icon("ban")))
+                )
+              )
             )
           } else {
             div(
@@ -380,6 +423,81 @@ check_sen2r_deps <- function() {
       }
     })
     
+    # check the aria2 path
+    observeEvent(input$path_newaria2_textin, {
+      path_newaria2_errormess <- path_check(
+        input$path_newaria2_textin, 
+        mustbe_writable = TRUE, 
+        mustbe_empty = FALSE
+      )
+      output$path_newaria2_errormess <- path_newaria2_errormess
+      if (TRUE %in% attr(path_newaria2_errormess, "isvalid")) {
+        enable("install_aria2_button")
+      } else {
+        disable("install_aria2_button")
+      }
+    })
+    shinyDirChoose(input, "path_newaria2_sel", roots = volumes)
+    observeEvent(input$path_newaria2_sel, {
+      path_newaria2_string <- parseDirPath(volumes, input$path_newaria2_sel)
+      updateTextInput(session, "path_newaria2_textin", value = path_newaria2_string)
+    })
+    observeEvent(input$path_exiaria2_textin, {
+      path_exiaria2_errormess <- path_check(
+        input$path_exiaria2_textin, 
+        mustbe_writable = FALSE, 
+        mustbe_empty = FALSE
+      )
+      if (TRUE %in% attr(path_exiaria2_errormess, "isvalid")) {
+        exiaria2_exists <- file.exists(input$path_exiaria2_textin)
+        if (exiaria2_exists) {
+          output$path_exiaria2_errormess <- path_exiaria2_errormess
+          enable("link_aria2_button")
+        } else {
+          output$path_exiaria2_errormess <- renderUI(span(
+            style="color:red",
+            "\u2718 (aria2 was not found here)"
+          ))
+          disable("link_aria2_button")
+        }
+      } else {
+        output$path_exiaria2_errormess <- path_exiaria2_errormess
+        disable("link_aria2_button")
+      }
+    })
+    shinyFileChoose(input, "path_exiaria2_sel", roots = volumes)
+    observeEvent(input$path_exiaria2_sel, {
+browser()
+      path_exiaria2_string <- parseFilesPath(volumes, input$path_exiaria2_sel)$datapath
+      updateTextInput(session, "path_exiaria2_textin", value = path_exiaria2_string)
+    })
+    
+    
+    
+    
+    
+    
+    
+    observeEvent(input$path_aria2_textin, {
+browser()
+      path_aria2_errormess <- path_check(
+        input$path_aria2_textin, 
+        mustbe_writable = TRUE, 
+        mustbe_empty = FALSE
+      )
+      output$path_aria2_errormess <- path_aria2_errormess
+      if (TRUE %in% attr(path_aria2_errormess, "isvalid")) {
+        enable("install_aria2_button")
+      } else {
+        disable("install_aria2_button")
+      }
+    })
+    shinyDirChoose(input, "path_aria2_sel", roots = volumes)
+    observeEvent(input$path_aria2_sel, {
+      path_aria2_string <- parseDirPath(volumes, input$path_aria2_sel)
+      updateTextInput(session, "path_aria2_textin", value = path_aria2_string)
+    })
+    
     # build the modalDialog
     check_aria2_modal <- modalDialog(
       title = "aria2 check",
@@ -393,7 +511,7 @@ check_sen2r_deps <- function() {
     observeEvent(input$check_aria2, {
       
       # update the check
-      rv$check_aria2_isvalid <- if (!is.null(load_binpaths("aria2")$aria2c)) {
+      rv$check_aria2_isvalid <- if (!is.null(load_binpaths()$aria2c)) {
         file.exists(load_binpaths()$aria2c)
       } else {
         FALSE
@@ -494,17 +612,105 @@ check_sen2r_deps <- function() {
         )
       } else {
         div(
-          align = "center",
+          align = "left",
           p(style="color:red;text-align:center;font-size:500%;",
             icon("times-circle")),
-          p("Sen2Cor needs to be downloaded and installed."),
-          hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-          div(style="text-align:right;", 
-              actionButton("install_sen2cor_button", strong("\u2000Download"), icon=icon("download")),
-              modalButton("\u2000Cancel", icon = icon("ban")))
+          p("Sen2Cor needs to be linked to sen2r, or downloaded if missing."),
+          radioButtons(
+            "sen2cor_link_or_install", NULL,
+            c("Install a new Sen2Cor environment" = "install",
+              "Set the path of an existing Sen2Cor" = "link"),
+            selected = "install"
+          ),
+          conditionalPanel(
+            condition = "input.sen2cor_link_or_install == 'install'",
+            div(
+              p("Please provide the path of an empty directory ",
+                "in which installing it:"),
+              div(div(style="display:inline-block;vertical-align:top;width:50pt;",
+                      shinyDirButton("path_newsen2cor_sel", "Select", "Specify directory in which installing Sen2Cor")),
+                  div(style="display:inline-block;vertical-align:top;width:180px;",
+                      textInput("path_newsen2cor_textin", NULL, ""))),
+              div(style="height:20px;vertical-aling:top;",
+                  htmlOutput("path_newsen2cor_errormess")),
+              hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+              div(style="text-align:right;", 
+                  disabled(actionButton("install_sen2cor_button", strong("\u2000Download"), icon=icon("download"))),
+                  modalButton("\u2000Cancel", icon = icon("ban")))
+            )
+          ),
+          conditionalPanel(
+            condition = "input.sen2cor_link_or_install == 'link'",
+            div(
+              p("Please provide the path of the directory ",
+                "in which Sen2Cor is currently installed:"),
+              div(div(style="display:inline-block;vertical-align:top;width:50pt;",
+                      shinyDirButton("path_exisen2cor_sel", "Select", "Specify directory in which Sen2Cor is installed")),
+                  div(style="display:inline-block;vertical-align:top;width:180px;",
+                      textInput("path_exisen2cor_textin", NULL, ""))),
+              div(style="height:20px;vertical-aling:top;",
+                  htmlOutput("path_exisen2cor_errormess")),
+              hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+              div(style="text-align:right;", 
+                  disabled(actionButton("link_sen2cor_button", strong("\u2000Ok"), icon=icon("check"))),
+                  modalButton("\u2000Cancel", icon = icon("ban")))
+            )
+          )
         )
       }
     })
+    
+    # check the Sen2Cor paths
+    observeEvent(input$path_newsen2cor_textin, {
+      path_newsen2cor_errormess <- path_check(
+        input$path_newsen2cor_textin, 
+        mustbe_writable = TRUE, 
+        mustbe_empty = TRUE
+      )
+      output$path_newsen2cor_errormess <- path_newsen2cor_errormess
+      if (TRUE %in% attr(path_newsen2cor_errormess, "isvalid")) {
+        enable("install_sen2cor_button")
+      } else {
+        disable("install_sen2cor_button")
+      }
+    })
+    shinyDirChoose(input, "path_newsen2cor_sel", roots = volumes)
+    observeEvent(input$path_newsen2cor_sel, {
+      path_newsen2cor_string <- parseDirPath(volumes, input$path_newsen2cor_sel)
+      updateTextInput(session, "path_newsen2cor_textin", value = path_newsen2cor_string)
+    })
+    observeEvent(input$path_exisen2cor_textin, {
+      path_exisen2cor_errormess <- path_check(
+        input$path_exisen2cor_textin, 
+        mustbe_writable = FALSE, 
+        mustbe_empty = FALSE
+      )
+      if (TRUE %in% attr(path_exisen2cor_errormess, "isvalid")) {
+        exisen2cor_exists <- file.exists(file.path(
+          input$path_exisen2cor_textin, "bin",
+          if (Sys.info()["sysname"] == "Windows") {"L2A_Process.bat"} else {"L2A_Process"}
+        ))
+        if (exisen2cor_exists) {
+          output$path_exisen2cor_errormess <- path_exisen2cor_errormess
+          enable("link_sen2cor_button")
+        } else {
+          output$path_exisen2cor_errormess <- renderUI(span(
+            style="color:red",
+            "\u2718 (Sen2Cor was not found here)"
+          ))
+          disable("link_sen2cor_button")
+        }
+      } else {
+        output$path_exisen2cor_errormess <- path_exisen2cor_errormess
+        disable("link_sen2cor_button")
+      }
+    })
+    shinyDirChoose(input, "path_exisen2cor_sel", roots = volumes)
+    observeEvent(input$path_exisen2cor_sel, {
+      path_exisen2cor_string <- parseDirPath(volumes, input$path_exisen2cor_sel)
+      updateTextInput(session, "path_exisen2cor_textin", value = path_exisen2cor_string)
+    })
+    
     
     # build the modalDialog
     check_sen2cor_modal <- modalDialog(
@@ -576,6 +782,18 @@ check_sen2r_deps <- function() {
       
     })
     
+
+    # link an existing sen2cor
+    observeEvent(input$link_sen2cor_button, {
+      binpaths_content <- load_binpaths()
+      binpaths_content$sen2cor <- normalize_path(file.path(
+        input$path_exisen2cor_textin, "bin",
+        if (Sys.info()["sysname"] == "Windows") {"L2A_Process.bat"} else {"L2A_Process"}
+      ))
+      writeLines(jsonlite::toJSON(binpaths_content, pretty=TRUE), attr(binpaths(), "path"))
+      rv$check_sen2cor_isvalid <- TRUE
+      removeModal()
+    })
     
     ##-- Footer buttons --##
     observe({
