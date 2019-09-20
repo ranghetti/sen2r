@@ -4,7 +4,7 @@
 #' @param bins Character vector with one of more of the following values:
 #'  "gdal", sen2cor", "aria2", "python".
 #'  If an executable corresponding to the passed `bins` value is not found
-#'  in the JSON, it is installed (Windows) or checked (Linux).
+#'  in the JSON, it is checked (when possible).
 #' @return The list of the paths
 #'
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
@@ -44,29 +44,29 @@ load_binpaths <- function(bins = NULL) {
   
   # Check sen2cor
   if ("sen2cor" %in% bins & is.null(binpaths$sen2cor)) {
-    if (interactive()) {
-      print_message(
-        type="waiting",
-        "sen2cor was not found in your system; press ENTER to install, ESC to escape."
-      )
-    } else {
-      print_message(
-        type="message",
-        "sen2cor was not found in your system and will be installed."
-      )
-    }
-    install_sen2cor() %>% suppressMessages()
-    binpaths <- jsonlite::fromJSON(binpaths_file)
+    print_message(
+      type="warning",
+      "Sen2Cor was not found in your system; you can install it ",
+      "using the function install_sen2cor()."
+    )
   }
   
   # Check aria2
   if (any(c("aria2","aria2c") %in% bins) & is.null(binpaths$aria2c)) {
-    if (Sys.info()["sysname"] == "Windows") {
-      suppressMessages(install_aria2())
-    } else if (Sys.which("aria2c") != "") {
+    if (Sys.which("aria2c") != "") {
       binpaths$aria2c <- normalizePath(Sys.which("aria2c"))
       writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
       binpaths <- jsonlite::fromJSON(binpaths_file)
+    } else {
+      print_message(
+        type="warning",
+        "aria2 was not found in your system; press install ",
+        if (Sys.info()["sysname"] == "Windows") {
+          "it using the function install_aria2()."
+        } else {
+          "the system package \"aria2\"."
+        }
+      )
     }
   }
   
