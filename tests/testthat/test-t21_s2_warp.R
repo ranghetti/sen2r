@@ -274,21 +274,25 @@ testthat::test_that(
 
 
 context("Test gdalwarp_grid()")
-testthat::skip_on_cran()
+# testthat::skip_on_cran()
 # testthat::skip_on_travis()
 
 testthat::test_that(
   "Test on repshaping with gdalwarp_grid()", {
     
-    testthat::expect_true(all(dir.exists(c(outdir_2,outdir_3))))
-    testthat::expect_true(all(file.exists(exp_outpath_2,exp_outpath_3)))
-    exp_outpath_4b <- file.path(tempdir(), "S2A2A_20170703_022_Scalve_BOA_10_UTM33.tif")
-    unlink(exp_outpath_4b)
-    gdalwarp_grid(
-      srcfiles = exp_outpath_2, 
-      dstfiles = exp_outpath_4b, 
-      ref = exp_outpath_3
+    ex_sel <- system.file(
+      "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_BOA_10.tif",
+      package = "sen2r"
     )
+    ex_ref <- system.file(
+      "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_SCL_10.tif",
+      package = "sen2r"
+    )
+    exp_outpath_4b <- tempfile(fileext = "_BOA_out.tif")
+    testthat::expect_true(all(file.exists(ex_sel,ex_ref)))
+
+    unlink(exp_outpath_4b)
+    sen2r:::gdalwarp_grid(srcfiles = ex_sel, dstfiles = exp_outpath_4b, ref = ex_ref)
     
     # test on raster metadata
     exp_meta_r <- raster_metadata(exp_outpath_4b, format = "data.frame")
@@ -296,15 +300,14 @@ testthat::test_that(
       "path", "valid", "res.x", "res.y", "size.x", "size.y", "nbands", 
       "xmin", "ymin", "xmax", "ymax", "proj", "unit", "outformat", "type"
     ))
-    testthat::expect_equal(exp_meta_r[,c("size.x", "size.y")], data.frame("size.x"=808, "size.y"=648))
-    testthat::expect_equal(exp_meta_r[,c("res.x", "res.y")], data.frame("res.x"=25, "res.y"=25))
+    testthat::expect_equal(exp_meta_r[,c("size.x", "size.y")], data.frame("size.x"=12, "size.y"=21))
+    testthat::expect_equal(exp_meta_r[,c("res.x", "res.y")], data.frame("res.x"=20, "res.y"=20))
     testthat::expect_equal(exp_meta_r$nbands, 11)
     testthat::expect_equal(
       exp_meta_r[,c("xmin", "xmax", "ymin", "ymax")], 
-      data.frame("xmin" = 113434.4, "xmax" = 133634.4, "ymin" = 5096906, "ymax" = 5113106),
-      tolerance = 1e-3
+      data.frame("xmin" = 580560, "xmax" = 580800, "ymin" = 5101700, "ymax" = 5102120)
     )
-    testthat::expect_equal(sf::st_crs(exp_meta_r$proj), sf::st_crs(32633))
+    testthat::expect_equal(sf::st_crs(exp_meta_r$proj), sf::st_crs(32632))
     testthat::expect_equal(exp_meta_r$type, "UInt16")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
@@ -316,8 +319,8 @@ testthat::test_that(
     
     # test on raster values
     r <- raster::brick(exp_outpath_4b)
-    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 3800.733, tolerance = 1e-03)
-    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 297406, tolerance = 1e-03)
+    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 1316.556, tolerance = 1e-03)
+    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 0, tolerance = 1e-03)
     
   }
 )

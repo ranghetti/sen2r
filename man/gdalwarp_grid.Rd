@@ -32,15 +32,26 @@ corresponding source file.
 License: GPL 3.0
 }
 \examples{
-\dontrun{
-ex_sel <- c("/path/of/existing/input/file.tif",
-            "/path/of/existing/input/anotherfile.jp2")
-ex_ref <- "/path/of/the/reference/file.jp2"
-ex_out <- c("/path/of/the/output/file.tif",
-            "/path/of/the/output/anotherfile.jp2")
 
-sen2r:::gdalwarp_grid(ex_sel, ex_out, ex_ref, dstnodata=0, overwrite=TRUE)
-}
+# Define file names
+ex_sel <- system.file(
+  "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_BOA_10.tif",
+  package = "sen2r"
+)
+ex_ref <- system.file(
+  "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_SCL_10.tif",
+  package = "sen2r"
+)
+ex_out <- tempfile(fileext = "_BOA_out.tif")
+
+# Run function
+sen2r:::gdalwarp_grid(ex_sel, ex_out, ref = ex_ref)
+
+# Show output
+par(mfrow = c(1,3))
+raster::plotRGB(raster::brick(ex_sel), 4, 3, 2, scale = 3500)
+raster::plot(raster::raster(ex_ref), legend = FALSE, axes = FALSE)
+raster::plotRGB(raster::brick(ex_out), 4, 3, 2, scale = 3500)
 }
 \author{
 Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
