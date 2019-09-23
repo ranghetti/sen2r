@@ -10,7 +10,7 @@
 #'  the format of every input filename.
 #' @param r Resampling_method ("near"|"bilinear"|"cubic"|"cubicspline"|
 #' "lanczos"|"average"|"mode"|"max"|"min"|"med"|"q1"|"q3").
-#' @return NULL
+#' @return NULL (the function is called for its side effects)
 #' @importFrom methods as
 #' @importFrom reticulate py_to_r
 #' @importFrom sf st_as_sfc

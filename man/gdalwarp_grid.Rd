@@ -19,6 +19,9 @@ the format of every input filename.}
 \item{r}{Resampling_method ("near"|"bilinear"|"cubic"|"cubicspline"|
 "lanczos"|"average"|"mode"|"max"|"min"|"med"|"q1"|"q3").}
 }
+\value{
+NULL (the function is called for its side effects)
+}
 \description{
 The function apply `gdalwarp`` to build rasters with the
 same projection, resolution and grid alignment of another raster.

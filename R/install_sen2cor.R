@@ -6,7 +6,7 @@
 #'  '2.8.0' - default - and '2.5.5').
 #' @param force (optional) Logical: if TRUE, install even if it is already 
 #'  installed (default is FALSE).
-#' @return NULL
+#' @return NULL (the function is called for its side effects)
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0

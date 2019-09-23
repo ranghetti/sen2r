@@ -1,7 +1,7 @@
 #' @title Check package dependencies
 #' @description The function allows to graphically check that all the
 #'  dependencies are installed.
-#' @return NULL
+#' @return NULL (the function is called for its side effects)
 #' @details This package needs some external dependencies to run:
 #' - Python
 #' - GDAL

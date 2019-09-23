@@ -69,6 +69,9 @@ Default is a temporary directory.}
 \item{rmtmp}{(optional) Logical: should temporary files be removed?
 (Default: TRUE)}
 }
+\value{
+NULL (the function is called for its side effects)
+}
 \description{
 The function applies \code{gdalwarp}
 to clip, reproject and/or warp raster files.

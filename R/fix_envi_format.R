@@ -9,7 +9,7 @@
 #'  - SCL headers include information about class names and colours.
 #' @param infiles A vector of input filenames, in the
 #'  sen2r naming convention ([safe_shortname]) and ENVI format.
-#' @return NULL (the function performs file changes).
+#' @return NULL (the function is called for its side effects)
 #' @importFrom jsonlite fromJSON
 #' @author Luigi Ranghetti, phD (2019) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0

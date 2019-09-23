@@ -16,7 +16,7 @@
 #'  where the files should be created (default: current directory).
 #' @param overwrite Logical value: should existing output archives be
 #'  overwritten? (default: FALSE)
-#' @return NULL
+#' @return NULL (the function is called for its side effects)
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @author Lorenzo Busetto, phD (2019) \email{ranghetti.l@@irea.cnr.it}

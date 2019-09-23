@@ -15,6 +15,9 @@ gdal_rel2abs(in_vrt, out_vrt = NA)
 \item{out_vrt}{(optional) The path of the output VRT file (default
 is to overwrite \code{in_vrt}).}
 }
+\value{
+NULL (the function is called for its side effects)
+}
 \description{
 The two functions read the content of a GDAL virtual
 file (VRT) and check the presence of paths to linked files.

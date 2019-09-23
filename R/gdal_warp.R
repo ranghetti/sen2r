@@ -50,7 +50,7 @@
 #'  Default is a temporary directory.
 #' @param rmtmp (optional) Logical: should temporary files be removed?
 #'  (Default: TRUE)
-#' @return NULL
+#' @return NULL (the function is called for its side effects)
 #' @export
 #' @importFrom sf st_transform st_geometry st_geometry_type st_write st_cast st_zm
 #'  st_area st_bbox st_sfc st_sf st_polygon st_as_sf st_as_sfc st_as_sf st_crs

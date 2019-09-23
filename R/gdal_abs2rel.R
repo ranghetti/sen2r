@@ -9,7 +9,7 @@
 #' @param in_vrt The path of the VRT to be read.
 #' @param out_vrt (optional) The path of the output VRT file (default
 #'  is to overwrite `in_vrt`).
-#' @return NULL
+#' @return NULL (the function is called for its side effects)
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @export

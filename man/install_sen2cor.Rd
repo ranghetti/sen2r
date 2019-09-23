@@ -15,6 +15,9 @@ install_sen2cor(sen2cor_dir, version = "2.8.0", force = FALSE)
 \item{force}{(optional) Logical: if TRUE, install even if it is already
 installed (default is FALSE).}
 }
+\value{
+NULL (the function is called for its side effects)
+}
 \description{
 This function download and install standalone version of
 \href{http://step.esa.int/main/third-party-plugins-2/sen2cor}{Sen2Cor 2.8.0}.
