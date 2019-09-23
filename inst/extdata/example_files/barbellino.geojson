@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "barbellino",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::32632" } },
+"features": [
+{ "type": "Feature", "properties": { }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 580560.0, 5101700.0 ], [ 580680.0, 5101700.0 ], [ 580800.0, 5101820.0 ], [ 580800.0, 5102120.0 ], [ 580660.0, 5102120.0 ], [ 580560.0, 5102020.0 ], [ 580560.0, 5101700.0 ] ] ] } }
+]
+}
