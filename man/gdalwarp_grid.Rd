@@ -32,7 +32,7 @@ corresponding source file.
 License: GPL 3.0
 }
 \examples{
-
+\donttest{
 # Define file names
 ex_sel <- system.file(
   "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_BOA_10.tif",
@@ -52,6 +52,7 @@ par(mfrow = c(1,3))
 raster::plotRGB(raster::brick(ex_sel), 4, 3, 2, scale = 3500)
 raster::plot(raster::raster(ex_ref), legend = FALSE, axes = FALSE)
 raster::plotRGB(raster::brick(ex_out), 4, 3, 2, scale = 3500)
+}
 }
 \author{
 Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
