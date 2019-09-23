@@ -61,10 +61,10 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
   meta_stars <- any(meta %in% meta_lev_stars)
   meta_gdalinfo <- any(meta %in% meta_lev_gdalinfo)
   
-    
+  
   out_list <- list()
   for (i in seq_along(raster_paths)) {
-
+    
     raster_path <- raster_paths[i]
     if (meta_stars) {
       sel_raster <- suppressWarnings(suppressMessages(try(
@@ -72,17 +72,17 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
         , silent = TRUE
       )))
     }
-    sel_raster_isvalid <- if (meta_stars) {
-      !is(sel_raster, "try-error")
-    } else {
-      !is(metadata_raw, "try-error")
-    }
-    if (meta_gdalinfo & sel_raster_isvalid) {
+    if (meta_gdalinfo) {
       metadata_raw <- suppressWarnings(suppressMessages(try(
         sf::gdal_utils("info", raster_path, quiet = TRUE) %>% 
           strsplit("\n") %>% unlist() %>% trimws(),
         silent = TRUE
       )))
+    }
+    sel_raster_isvalid <- if (meta_stars) {
+      !is(sel_raster, "try-error")
+    } else {
+      !is(metadata_raw, "try-error")
     }
     
     # read metadata
@@ -132,12 +132,12 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
         out_list[[i]][["outformat"]] <- metadata_raw[grepl("Driver:", metadata_raw)] %>%
           gsub("Driver: ?([A-Za-z0-9_]+)/.*$", "\\1", .)
       }
-        
+      
       if ("type" %in% meta) {
         out_list[[i]][["type"]] <- metadata_raw[grepl("Band [0-9]+.+Type ?=", metadata_raw)][1] %>%
           gsub("Band [0-9]+.+Type ?= ?([A-Za-z0-9]+),.*$", "\\1", .)
       }
-
+      
       # if (format %in% c("data.frame", "data.table")) {
       #   data.frame(
       #     "path" = raster_path,
@@ -173,7 +173,7 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
     }
     
   } # end of foreach cycle
-
+  
   if (format %in% c("data.frame", "data.table")) {
     out_dt <- rbindlist(lapply(out_list, function(l) {
       sel_dt <- data.frame(
@@ -211,5 +211,5 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
   } else if (format == "list") {
     out_list
   }
-
+  
 }
