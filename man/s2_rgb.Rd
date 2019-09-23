@@ -80,6 +80,29 @@ Function to create RGB images from Sentinel-2 reflectances.
 \note{
 License: GPL 3.0
 }
+\examples{
+# Define file names
+ex_in <- system.file(
+  "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_BOA_10.tif",
+  package = "sen2r"
+)
+
+# Run function
+ex_out <- s2_rgb(
+  infiles = ex_in,
+  rgb_bands = list(c(11,8,4),c(9,5,4)),
+  scaleRange = list(c(0,7500), matrix(c(rep(0,3),8500,6000,4000),ncol=2)),
+  outdir = tempdir(),
+  compress = 50
+)
+ex_out
+
+# Show output
+par(mfrow = c(1,3))
+raster::plotRGB(raster::brick(ex_in), 4, 3, 2, scale = 3500)
+raster::plotRGB(raster::brick(ex_out[1]))
+raster::plotRGB(raster::brick(ex_out[2]))
+}
 \author{
 Luigi Ranghetti, phD (2018) \email{ranghetti.l@irea.cnr.it}
 }

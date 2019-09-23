@@ -148,7 +148,7 @@ s2_merge <- function(infiles,
   
   # define and create tmpdir
   if (is.na(tmpdir)) {
-    tmpdir <- if (format == "VRT") {
+    tmpdir <- if (all(!is.na(format), format == "VRT")) {
       rmtmp <- FALSE # force not to remove intermediate files
       if (!missing(outdir)) {
         autotmpdir <- FALSE # logical: TRUE if tmpdir should be specified 

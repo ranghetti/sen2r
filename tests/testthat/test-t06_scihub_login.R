@@ -1,5 +1,5 @@
 context("check connection")
-testthat::skip_on_cran()
+# testthat::skip_on_cran()
 # testthat::skip_on_travis()
 
 test_that("check internet connection on internal function", {
@@ -8,6 +8,14 @@ test_that("check internet connection on internal function", {
     httptest::without_internet(check_scihub_connection()),
     FALSE
   )
+})
+
+test_that("check GDAL", {
+  # this test must be launched before testing sen2r() in case paths.json is missing,
+  # to avoid asking for launching the check_sen2r_deps() GUI
+  expect_message(
+    check_gdal(),
+    "Searching for a valid GDAL installation...")
 })
 
 test_that("check internet connection and fail if missing", {

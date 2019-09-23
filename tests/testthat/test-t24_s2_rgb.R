@@ -1,4 +1,4 @@
-context("Test compute RGB images")
+context("Test compute RGB images - main function")
 testthat::skip_on_cran()
 testthat::skip_on_travis()
 
@@ -10,15 +10,15 @@ dir.create(file.path(safe_dir, "L2A"), showWarnings = FALSE)
 dir.create(file.path(safe_dir, "L1C"), showWarnings = FALSE)
 
 
-outdir_16 <- file.path(tempdir(), "out_test16")
-dir.create(dirname(outdir_16), showWarnings = FALSE)
-exp_outpath_16 <- file.path(
-  outdir_16, c("BOA","RGB432T","RGBb84B","RGB843B"), 
-  paste0("S2A",c("2A","1C","2A","2A"),"_20170703_022_Scalve_",c("BOA","RGB432T","RGBb84B","RGB843B"),"_10.tif")
-)
 testthat::test_that(
   "Tests on indices computation, on unrequired BOA, with clip ", {
     
+    outdir_16 <- file.path(tempdir(), "out_test16")
+    dir.create(dirname(outdir_16), showWarnings = FALSE)
+    exp_outpath_16 <- file.path(
+      outdir_16, c("BOA","RGB432T","RGBb84B","RGB843B"), 
+      paste0("S2A",c("2A","1C","2A","2A"),"_20170703_022_Scalve_",c("BOA","RGB432T","RGBb84B","RGB843B"),"_10.tif")
+    )
     unlink(exp_outpath_16)
     sen2r(
       gui = FALSE,
@@ -103,34 +103,35 @@ testthat::test_that(
 )
 
 
+context("Test compute RGB images - main s2_rgb()")
+# testthat::skip_on_cran()
+# testthat::skip_on_travis()
+
 testthat::test_that(
   "Tests on function s2_rgb()", {
     
-    testthat::expect_true(all(file.exists(exp_outpath_16)))
+    outdir_17 <- file.path(tempdir(), "out_test17")
+    dir.create(outdir_17, showWarnings = FALSE)
     exp_outpath_17 <- file.path(
-      outdir_16, c("RGBb84B","RGB954B"), 
-      paste0("S2A2A_20170703_022_Scalve_",c("RGBb84B","RGB954B"),"_10.tif")
+      outdir_17, c("RGBb84B","RGB954B"), 
+      paste0("S2A2A_20170703_022_Barbellino_",c("RGBb84B","RGB954B"),"_10.tif")
     )
-    unlink(exp_outpath_17[2])
+    unlink(exp_outpath_17)
     s2_rgb(
-      exp_outpath_16[1],
+      infiles = file.path(ref_dir, "S2A2A_20170703_022_Barbellino_BOA_10.tif"),
       rgb_bands = list(c(11,8,4),c(9,5,4)),
       scaleRange = list(c(0,7500), matrix(c(rep(0,3),8500,6000,4000),ncol=2)),
-      outdir = outdir_16,
+      outdir = outdir_17,
       compress = 50,
       parallel = FALSE
     )
     testthat::expect_true(all(file.exists(exp_outpath_17)))
     
-    # test that existing file were not re-created
-    exp_info_r <- file.info(exp_outpath_17)
-    testthat::expect_true(exp_info_r[1,"ctime"] < exp_info_r[2,"ctime"])
-    
     # test on raster metadata
     exp_meta_r <- raster_metadata(exp_outpath_17) # default format: data.table
     testthat::expect_equal(
       exp_meta_r[,c("size.x", "size.y")], 
-      data.table("size.x"=rep(1911,2), "size.y"=1479)
+      data.table("size.x"=rep(24,2), "size.y"=42)
     )
     testthat::expect_equal(
       exp_meta_r[,c("res.x", "res.y")], 
@@ -139,7 +140,7 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$nbands, c(3,3))
     testthat::expect_equal(
       exp_meta_r[1,c("xmin", "xmax", "ymin", "ymax")], 
-      data.table("xmin" = 578590, "xmax" = 597700, "ymin" = 5086740, "ymax" = 5101530) 
+      data.table("xmin" = 580560, "xmax" = 580800, "ymin" = 5101700, "ymax" = 5102120) 
     )
     testthat::expect_equal(sf::st_crs(exp_meta_r$proj[2]), sf::st_crs(32632))
     testthat::expect_equal(exp_meta_r$type, rep("Byte",2))
@@ -147,9 +148,9 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_17)
-    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 145.3712, tolerance = 1e-3)
-    testthat::expect_equal(mean(exp_stars[[2]], na.rm=TRUE), 147.6188, tolerance = 1e-3)
-    testthat::expect_equal(sum(is.na(exp_stars[[1]])), 4238865, tolerance = 1e-3)
+    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 66.7342, tolerance = 1e-3)
+    testthat::expect_equal(mean(exp_stars[[2]], na.rm=TRUE), 71.76323, tolerance = 1e-3)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]])), 18, tolerance = 1e-3) #zeros
     rm(exp_stars)
 
   }

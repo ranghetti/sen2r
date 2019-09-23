@@ -205,7 +205,7 @@ s2_translate <- function(infile,
     
     # define and create tmpdir
     if (is.na(tmpdir)) {
-      tmpdir <- if (format == "VRT") {
+      tmpdir <- if (all(!is.na(format), format == "VRT")) {
         rmtmp <- FALSE # force not to remove intermediate files
         if (!missing(outdir)) {
           file.path(outdir, ".vrt")

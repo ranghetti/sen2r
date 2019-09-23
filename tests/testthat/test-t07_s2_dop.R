@@ -1,5 +1,5 @@
 context("Test s2_dop()")
-testthat::skip_on_cran()
+# testthat::skip_on_cran()
 # testthat::skip_on_travis()
 
 testthat::test_that(

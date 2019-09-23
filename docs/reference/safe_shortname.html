@@ -254,9 +254,9 @@ day on the same tile);</p></li>
 <span class='fu'>safe_shortname</span>(<span class='no'>s2_compactname_example</span>, <span class='kw'>ext</span><span class='kw'>=</span><span class='st'>"tif"</span>)</div><div class='output co'>#&gt; [1] "/non/existing/path/S2A1C_20170603_022_32TQQ_TOA_10.tif"</div><div class='input'>
 <span class='co'># With old names, without scanning the file the id_tile is not retrieved,</span>
 <span class='co'># so the tile filed is replaced with a random sequence</span>
-<span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='no'>s2_oldname_example</span>,<span class='fl'>5</span>), <span class='no'>safe_shortname</span>, <span class='kw'>full.name</span><span class='kw'>=</span><span class='fl'>FALSE</span>))</div><div class='output co'>#&gt; [1] "S2A1C_20150704_022_MW459_TOA_10" "S2A1C_20150704_022_EF878_TOA_10"
-#&gt; [3] "S2A1C_20150704_022_OD997_TOA_10" "S2A1C_20150704_022_IE516_TOA_10"
-#&gt; [5] "S2A1C_20150704_022_XO076_TOA_10"</div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='no'>s2_oldname_example</span>,<span class='fl'>5</span>), <span class='no'>safe_shortname</span>, <span class='kw'>full.name</span><span class='kw'>=</span><span class='fl'>FALSE</span>))</div><div class='output co'>#&gt; [1] "S2A1C_20150704_022_XO076_TOA_10" "S2A1C_20150704_022_BW426_TOA_10"
+#&gt; [3] "S2A1C_20150704_022_KE468_TOA_10" "S2A1C_20150704_022_LB069_TOA_10"
+#&gt; [5] "S2A1C_20150704_022_DP673_TOA_10"</div><div class='input'>
 <span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='co'># If the file exists locally, the tile is retrieved from the content</span>
 <span class='co'># (if unique; if not, a random sequence is equally used, but it is</span>

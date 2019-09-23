@@ -80,6 +80,26 @@
 #' @importFrom magrittr "%>%"
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
+#' @examples
+#' # Define file names
+#' ex_in <- system.file(
+#'   "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_BOA_10.tif",
+#'   package = "sen2r"
+#' )
+#'
+#' # Run function
+#' ex_out <- s2_calcindices(
+#'   infiles = ex_in,
+#'   indices = "EVI",
+#'   outdir = tempdir(),
+#'   dataType = "Float32"
+#' )
+#' ex_out
+#' 
+#' # Show output
+#' par(mfrow = c(1,2))
+#' raster::plotRGB(raster::brick(ex_in), 4, 3, 2, scale = 3500)
+#' raster::plot(raster::raster(ex_out), axes = FALSE)
 
 s2_calcindices <- function(infiles,
                            indices,
