@@ -9,7 +9,7 @@
 #' @examples \dontrun{
 #' basename(NULL) # error
 #' basename(character()) # ok
-#' basename(nn(NULL)) # ok
+#' basename(sen2r:::nn(NULL)) # ok
 #' }
 
 nn <- function(x) {if (is.null(x)) character(0) else x}

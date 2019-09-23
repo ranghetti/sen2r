@@ -23,7 +23,7 @@ License: GPL 3.0
 \dontrun{
 basename(NULL) # error
 basename(character()) # ok
-basename(nn(NULL)) # ok
+basename(sen2r:::nn(NULL)) # ok
 }
 }
 \author{

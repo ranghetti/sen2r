@@ -36,7 +36,7 @@ ex_ref <- "/path/of/the/reference/file.jp2"
 ex_out <- c("/path/of/the/output/file.tif",
             "/path/of/the/output/anotherfile.jp2")
 
-gdalwarp_grid(ex_sel, ex_out, ex_ref, dstnodata=0, overwrite=TRUE)
+sen2r:::gdalwarp_grid(ex_sel, ex_out, ex_ref, dstnodata=0, overwrite=TRUE)
 }
 }
 \author{

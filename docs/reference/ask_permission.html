@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Download and install aria2. — install_aria2 • sen2r: Find, Download and Process Sentinel-2 Data</title>
+<title>Ask permission to write settings on disk — ask_permission • sen2r: Find, Download and Process Sentinel-2 Data</title>
 
 
 <!-- jquery -->
@@ -35,9 +35,9 @@
 
 
 
-<meta property="og:title" content="Download and install aria2. — install_aria2" />
-<meta property="og:description" content="This function download and install standalone version of
-aria2 for Windows." />
+<meta property="og:title" content="Ask permission to write settings on disk — ask_permission" />
+<meta property="og:description" content="Ask users for permission to create a .sen2r settings directory,
+in which to store the files paths.json and apihub.txt." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -113,55 +113,37 @@ aria2 for Windows." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Download and install aria2.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/install_aria2.R'><code>R/install_aria2.R</code></a></small>
-    <div class="hidden name"><code>install_aria2.Rd</code></div>
+    <h1>Ask permission to write settings on disk</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/ask_permission.R'><code>R/ask_permission.R</code></a></small>
+    <div class="hidden name"><code>ask_permission.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function download and install standalone version of
-<a href='https://aria2.github.io'>aria2</a> for Windows.</p>
+    <p>Ask users for permission to create a .sen2r settings directory,
+in which to store the files paths.json and apihub.txt.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>install_aria2</span>(<span class='no'>aria2_dir</span>, <span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>ask_permission</span>()</pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>aria2_dir</th>
-      <td><p>Path where aria2 executable will be installed.</p></td>
-    </tr>
-    <tr>
-      <th>force</th>
-      <td><p>(optional) Logical: if TRUE, install even if it is already
-installed (default is FALSE).</p></td>
-    </tr>
-    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The path of aria2</p>
+    <p>'logical' if TRUE, the user authorised saving in this directory.</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'>install_aria2</span>()
-}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
       <li><a href="#note">Note</a></li>
-      <li><a href="#examples">Examples</a></li>
     </ul>
 
     <h2>Author</h2>
-    <p>Luigi Ranghetti, phD (2018) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p>
+    <p>Lorenzo Busetto, phD (2019) <a href='mailto:lbusett@gmail.com'>lbusett@gmail.com</a></p>
+<p>Luigi Ranghetti, phD (2019) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p>
   </div>
 </div>
 

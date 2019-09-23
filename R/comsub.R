@@ -37,8 +37,3 @@ comsub <- function(data, sep="") {
   }
   paste(c(data_spl[[1]][seq_len(which_max)],""), collapse=sep)
 }
-
-
-
-
-
