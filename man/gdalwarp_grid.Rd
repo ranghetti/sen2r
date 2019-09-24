@@ -2,7 +2,7 @@
 % Please edit documentation in R/gdalwarp_grid.R
 \name{gdalwarp_grid}
 \alias{gdalwarp_grid}
-\title{Warp basing on the grid of another file}
+\title{Warp a raster file aligning it on the grid of another file}
 \usage{
 gdalwarp_grid(srcfiles, dstfiles, ref, of = NULL, r = NULL)
 }
@@ -23,7 +23,7 @@ the format of every input filename.}
 NULL (the function is called for its side effects)
 }
 \description{
-The function apply `gdalwarp`` to build rasters with the
+The function applies \code{gdalwarp} to build rasters with the
 same projection, resolution and grid alignment of another raster.
 If not specified, the output format of each file is the same of the
 corresponding source file.

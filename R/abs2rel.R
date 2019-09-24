@@ -71,7 +71,7 @@ abs2rel <- function(path, ref_path, mustWork=NA) {
     print_message(
       type="warning",
       "Input (",path,") and reference (",ref_path,
-      ") paths have not a common parent directory; ",
+      ") paths do not have a common parent directory; ",
       "an absolute path is returned.")
     return(path)
   }

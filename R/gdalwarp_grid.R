@@ -1,5 +1,5 @@
-#' @title Warp basing on the grid of another file
-#' @description The function apply `gdalwarp`` to build rasters with the
+#' @title Warp a raster file aligning it on the grid of another file
+#' @description The function applies `gdalwarp` to build rasters with the
 #'  same projection, resolution and grid alignment of another raster.
 #'  If not specified, the output format of each file is the same of the
 #'  corresponding source file.

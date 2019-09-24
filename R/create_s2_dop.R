@@ -32,6 +32,8 @@ create_s2_dop <- function(json_path = NA, force = FALSE) {
   }
   
   # Take products names from Google
+  
+  # nocov start
   download.file(
     "https://storage.googleapis.com/gcp-public-data-sentinel-2/index.csv.gz",
     s2_store <- tempfile(fileext = ".gz")
@@ -98,5 +100,5 @@ create_s2_dop <- function(json_path = NA, force = FALSE) {
   writeLines(toJSON(json_table, pretty=TRUE), json_path)
   
   return(json_path)
-  
+  # nocov start
 }

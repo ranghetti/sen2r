@@ -189,7 +189,7 @@ Default value is 80.
 This parameter is different from \code{max_cloud_safe}, because:
 \enumerate{
 \item it is computed over the selected extent;
-\item it is computed basing on the cloud mask defined as above.
+\item it is computed starting from the cloud mask defined as above.
 Notice that the percentage is computed on non-NA values (if input images
 had previously been clipped and masked using a polygon, the percentage is
 computed on the surface included in the masking polygons).
@@ -396,4 +396,10 @@ processing chain to find, download and pre-process Sentinel-2
 data. Input is a set of parameters that can be passed with a
 list or file (parameter \code{param_list}) or singularly (see the
 descriptions of all the other parameters).
+}
+\examples{
+ \dontrun{
+
+}
+
 }

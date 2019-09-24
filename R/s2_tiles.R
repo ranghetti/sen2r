@@ -33,7 +33,7 @@ s2_tiles <- function() {
   # extract and import tiles kml
   s2tiles_rds <- file.path(system.file("extdata",package="sen2r"), "vector", "s2_tiles.rds")
   if (!file.exists(s2tiles_rds)) {
-    
+  # nocov start 
     print_message(
       date = TRUE,
       type = "message",
@@ -62,7 +62,7 @@ s2_tiles <- function() {
       write_disk(file.path(system.file("extdata",package="sen2r"), "vector", "s2_tiles.rds")),
       overwrite=TRUE
     )
-    
+    # nocov end
   }
   readRDS(s2tiles_rds)
   

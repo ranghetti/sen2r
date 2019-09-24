@@ -138,7 +138,7 @@
 #'  Default value is 80.
 #'  This parameter is different from `max_cloud_safe`, because:
 #'  1. it is computed over the selected extent;
-#'  2. it is computed basing on the cloud mask defined as above.
+#'  2. it is computed starting from the cloud mask defined as above.
 #'  Notice that the percentage is computed on non-NA values (if input images
 #'  had previously been clipped and masked using a polygon, the percentage is
 #'  computed on the surface included in the masking polygons).
@@ -304,6 +304,11 @@
 #' @importFrom methods formalArgs
 #' @importFrom stats na.omit
 #' @export
+#' 
+#' @examples  \dontrun{
+#' 
+#' }
+#' 
 
 
 sen2r <- function(param_list = NULL,

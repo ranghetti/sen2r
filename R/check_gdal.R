@@ -68,7 +68,7 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
     force == TRUE, 
     !grepl(gdal_path, normalize_path(nn(binpaths$gdalinfo)))
   )) {
-    
+    # nocov start
     print_message(
       type="message",
       "Searching for a valid GDAL installation",
@@ -121,6 +121,7 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
     paths_gdalinfo <- binpaths$gdalinfo
   } # end of path retrieval
   
+  # nocov end
   
   ## Check requisite 1: minimum version
   gdal_versions <- package_version(gsub(

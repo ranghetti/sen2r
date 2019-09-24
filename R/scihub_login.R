@@ -153,7 +153,7 @@ write_scihub_login <- function(username, password,
 # #' @rdname scihub_login
 
 # write dialog content
-.scihub_modal <- function() {
+.scihub_modal <- function() { #nocov start
   # read scihub user/password
   apihub_path <- file.path(dirname(attr(load_binpaths(), "path")), "apihub.txt")
   apihub <- read_scihub_login(apihub_path)
@@ -213,4 +213,5 @@ write_scihub_login <- function(username, password,
           modalButton("\u2000Cancel", icon = icon("ban")))
     )
   )
+  #nocov end
 }

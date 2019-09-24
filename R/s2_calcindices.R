@@ -103,20 +103,20 @@
 
 s2_calcindices <- function(infiles,
                            indices,
-                           outdir=".",
-                           parameters=NULL,
-                           source=c("TOA","BOA"),
-                           format=NA,
-                           subdirs=NA,
-                           tmpdir=NA,
-                           compress="DEFLATE",
-                           dataType="Int16",
-                           scaleFactor=NA,
-                           proc_mode="raster",
-                           parallel = FALSE,
-                           overwrite=FALSE,
-                           .log_message=NA,
-                           .log_output=NA) {
+                           outdir       = ".",
+                           parameters   = NULL,
+                           source       = c("TOA","BOA"),
+                           format       = NA,
+                           subdirs      = NA,
+                           tmpdir       = NA,
+                           compress     = "DEFLATE",
+                           dataType     = "Int16",
+                           scaleFactor  = NA,
+                           proc_mode    = "raster",
+                           parallel     = FALSE,
+                           overwrite    = FALSE,
+                           .log_message = NA,
+                           .log_output  = NA) {
   
   # to avoid NOTE on check
   prod_type <- . <- i <- NULL
@@ -233,7 +233,7 @@ s2_calcindices <- function(infiles,
   # check output format
   gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))$drivers
   if (!is.na(format)) {
-    sel_driver <- gdal_formats[gdal_formats$name==format,]
+    sel_driver <- gdal_formats[gdal_formats$name == format,]
     if (nrow(sel_driver)==0) {
       print_message(
         type="error",
@@ -364,7 +364,7 @@ s2_calcindices <- function(infiles,
                               sel_formula)
         }
         
-        # Edit formula basing on proc_mode
+        # Edit formula depending on proc_mode
         if (proc_mode == "gdal_calc") {
           for (sel_band in rev(seq_len(nrow(gdal_bands)))) {
             sel_formula <- gsub(gdal_bands[sel_band,"band"],

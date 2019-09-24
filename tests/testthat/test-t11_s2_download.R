@@ -44,8 +44,8 @@ testthat::test_that(
       "GRANULE/L2A_T32TNR_A010601_20170703T101041",
       "IMG_DATA/R10m/L2A_T32TNR_20170703T101021_B02_10m.jp2"
     ), format = "list")[[1]]
-    testthat::expect_equal(exp_meta_ex$size, c("x"=10980, "y"=10980))
-    testthat::expect_equal(exp_meta_ex$res, c("x"=10, "y"=10))
+    testthat::expect_equal(exp_meta_ex$size, c("x" = 10980, "y" = 10980))
+    testthat::expect_equal(exp_meta_ex$res, c("x"  = 10,    "y" = 10))
     testthat::expect_equal(
       exp_meta_ex$bbox, 
       sf::st_bbox(
@@ -122,8 +122,8 @@ testthat::test_that(
       "GRANULE/L1C_T32TNR_A010601_20170703T101041", 
       "IMG_DATA/T32TNR_20170703T101021_B01.jp2"
     ), format = "list")[[1]]
-    testthat::expect_equal(exp_meta_ex$size, c("x"=1830, "y"=1830))
-    testthat::expect_equal(exp_meta_ex$res, c("x"=60, "y"=60))
+    testthat::expect_equal(exp_meta_ex$size, c("x" = 1830, "y" = 1830))
+    testthat::expect_equal(exp_meta_ex$res, c("x"  = 60,   "y" = 60))
     testthat::expect_equal(
       exp_meta_ex$bbox, 
       sf::st_bbox(

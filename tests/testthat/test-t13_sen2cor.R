@@ -5,7 +5,7 @@ testthat::skip_on_travis()
 # NOTE: these tests require a high amount of time,
 # so running Sen2Cor is disabled by default if SAFE archives are already present.
 # To perform the test also on Sen2Cor, replace 'test_sen2cor = FALSE' with 'TRUE'.
-test_sen2cor = FALSE
+test_sen2cor = TRUE
 
 example_dir <- system.file("extdata/example_files", package = "sen2r")
 dir.create(example_dir, showWarnings = FALSE)

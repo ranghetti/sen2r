@@ -8,7 +8,7 @@ safe_dir <- file.path(example_dir, "safe")
 dir.create(safe_dir, showWarnings = FALSE)
 dir.create(file.path(safe_dir, "L2A"), showWarnings = FALSE)
 dir.create(file.path(safe_dir, "L1C"), showWarnings = FALSE)
-
+ref_dir <- system.file("extdata/example_files/out_ref", package = "sen2r")
 
 testthat::test_that(
   "Tests on indices computation, on unrequired BOA, with clip ", {

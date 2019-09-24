@@ -50,7 +50,7 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
   # check metadata to be returned
   if (all(meta == "all")) {
     meta <- c("res", "size", "nbands", "bbox", "proj", "unit", "outformat", "type")
-  } else if (any(!meta %in% meta_lev)) {
+  } else if (any(! meta %in% meta_lev)) {
     print_message(
       type = "error",
       "argument 'meta' must contain one of more among '",
@@ -58,7 +58,7 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
     )
   }
   # metadata groups
-  meta_stars <- any(meta %in% meta_lev_stars)
+  meta_stars    <- any(meta %in% meta_lev_stars)
   meta_gdalinfo <- any(meta %in% meta_lev_gdalinfo)
   
   
