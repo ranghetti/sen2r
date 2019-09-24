@@ -41,7 +41,7 @@ the minimum required version (2.1.2).
 License: GPL 3.0
 }
 \examples{
-\dontest{
+\donttest{
 
 # Use function
 check_gdal()

@@ -26,7 +26,7 @@
 #' @importFrom jsonlite toJSON
 #' @export
 #' @examples
-#' \dontest{
+#' \donttest{
 #'
 #' # Use function
 #' check_gdal()
