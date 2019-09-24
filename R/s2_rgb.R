@@ -58,7 +58,7 @@
 #' @importFrom parallel makeCluster stopCluster detectCores
 #' @importFrom jsonlite fromJSON
 #' @export
-#' @examples
+#' @examples \donttest{
 #' # Define file names
 #' ex_in <- system.file(
 #'   "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_BOA_10.tif",
@@ -80,6 +80,7 @@
 #' raster::plotRGB(raster::brick(ex_in), 4, 3, 2, scale = 3500)
 #' raster::plotRGB(raster::brick(ex_out[1]))
 #' raster::plotRGB(raster::brick(ex_out[2]))
+#' }
 
 s2_rgb <- function(infiles, 
                    prod_type=NA,

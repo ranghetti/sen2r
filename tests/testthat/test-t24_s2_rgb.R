@@ -104,8 +104,8 @@ testthat::test_that(
 
 
 context("Test compute RGB images - main s2_rgb()")
-# testthat::skip_on_cran()
-# testthat::skip_on_travis()
+testthat::skip_on_cran() # since it uses runtime GDAL
+testthat::skip_on_travis()
 
 testthat::test_that(
   "Tests on function s2_rgb()", {
