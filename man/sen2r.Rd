@@ -397,3 +397,9 @@ data. Input is a set of parameters that can be passed with a
 list or file (parameter \code{param_list}) or singularly (see the
 descriptions of all the other parameters).
 }
+\examples{
+# Open an interactive section
+if (interactive()) {
+  sen2r()
+}
+}

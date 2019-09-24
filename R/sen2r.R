@@ -304,6 +304,11 @@
 #' @importFrom methods formalArgs
 #' @importFrom stats na.omit
 #' @export
+#' @examples
+#' # Open an interactive section
+#' if (interactive()) {
+#'   sen2r()
+#' }
 
 
 sen2r <- function(param_list = NULL,
