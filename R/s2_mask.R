@@ -462,13 +462,10 @@ s2_mask <- function(infiles,
             }
             
             # the same for outnaval
-            if (
-              any(
-                unlist(sel_infile_meta_raster[c("res.x","res.y")]) !=
-                unlist(raster_metadata(outnaval, "res", format = "list")[[1]]$res)
-              ) & 
-              (smooth > 0 | buffer != 0)
-            ) {
+            if (any(
+              unlist(sel_infile_meta_raster[c("res.x","res.y")]) !=
+              unlist(raster_metadata(outnaval, "res", format = "list")[[1]]$res)
+            )) {
               gdal_warp(
                 outnaval,
                 outnaval_res <- file.path(sel_tmpdir, basename(tempfile(pattern = "naval_", fileext = ".tif"))),
