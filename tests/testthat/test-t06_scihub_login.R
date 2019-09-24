@@ -1,4 +1,4 @@
-context("check connection")
+context("check connection - specific function")
 # testthat::skip_on_cran()
 # testthat::skip_on_travis()
 
@@ -10,11 +10,44 @@ test_that("check internet connection on internal function", {
   )
 })
 
+
+context("read / write SciHub login")
+# testthat::skip_on_cran()
+# testthat::skip_on_travis()
+
+test_that("check reading / writing credentials", {
+  write_scihub_login("user", "user")
+  testthat::expect_error(
+    write_scihub_login("user2", "user2"),
+    regexp = "[Tt]he provided credentials are not valid"
+  )
+  write_scihub_login("user", "user", apihub_path = apitmp <- tempfile())
+  creds <- read_scihub_login(apihub_path = apitmp)
+  testthat::expect_equal(creds[1,], c("user", "user"))
+})
+
+
+context("check SciHub login")
+# testthat::skip_on_cran()
+# testthat::skip_on_travis()
+
+test_that("check_scihub_login works as expected", {
+  
+  expect_false(check_scihub_login("BastianoCoimbraDeLaCoronilla", "yAcevedo!"))
+  expect_true(check_scihub_login("user", "user"))
+  
+})
+
+
+context("check connection - main functions")
+testthat::skip_on_cran()
+testthat::skip_on_travis()
+
 test_that("check GDAL", {
   # this test must be launched before testing sen2r() in case paths.json is missing,
   # to avoid asking for launching the check_sen2r_deps() GUI
   expect_message(
-    check_gdal(),
+    check_gdal(force = TRUE),
     "Searching for a valid GDAL installation...")
 })
 
@@ -38,32 +71,4 @@ test_that("check internet connection and fail if missing", {
     )), 
     regexp = "[Ii]nternet connection or SciHub may be down"
   )
-})
-
-
-context("read / write SciHub login")
-testthat::skip_on_cran()
-# testthat::skip_on_travis()
-
-test_that("check reading / writing credentials", {
-  write_scihub_login("user", "user")
-  testthat::expect_error(
-    write_scihub_login("user2", "user2"),
-    regexp = "[Tt]he provided credentials are not valid"
-  )
-  write_scihub_login("user", "user", apihub_path = apitmp <- tempfile())
-  creds <- read_scihub_login(apihub_path = apitmp)
-  testthat::expect_equal(creds[1,], c("user", "user"))
-})
-
-
-context("check SciHub login")
-testthat::skip_on_cran()
-# testthat::skip_on_travis()
-
-test_that("check_scihub_login works as expected", {
-  
-  expect_false(check_scihub_login("aaaa", "hiovdhaoivheados"))
-  expect_true(check_scihub_login("user", "user"))
-  
 })
