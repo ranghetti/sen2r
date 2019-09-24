@@ -82,6 +82,7 @@ corresponding source file.
 License: GPL 3.0
 }
 \examples{
+\donttest{
 #' # Define file names
 ex_sel <- system.file(
   "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_RGB432B_10.tif",
@@ -102,7 +103,6 @@ gdal_warp(ex_sel, test1, mask = crop_line)
 test2 <- tempfile(fileext = "_test2.tif")
 gdal_warp(ex_sel, test2, mask = crop_poly)
 
-\donttest{
 # Show output
 crop_bbox <- sf::st_as_sfc(sf::st_bbox(crop_line))
 par(mfrow = c(1,3), mar = rep(0,4))
@@ -113,19 +113,16 @@ image(stars::read_stars(test1), rgb = 1:3)
 plot(crop_bbox, add = TRUE, border = "red", lwd = 2)
 image(stars::read_stars(test2), rgb = 1:3)
 plot(crop_line, add = TRUE, col = "blue", lwd = 2)
-}
 
 # Warp on a reference raster
 test3 <- tempfile(fileext = "_test3.tif")
 gdal_warp(ex_sel, test3, ref = ex_ref)
 
-\donttest{
 # Show output
 par(mfrow = c(1,3))
 par(mar = rep(0,4)); image(stars::read_stars(ex_sel), rgb = 1:3)
 par(mar = rep(2/3,4)); image(stars::read_stars(ex_ref))
 par(mar = rep(0,4)); image(stars::read_stars(test3), rgb = 1:3)
-}
 
 # Reproject all the input file
 test4 <- tempfile(fileext = "_test4.tif")
@@ -139,7 +136,6 @@ gdal_warp(ex_sel, test5, t_srs = "+init=epsg:32631", mask = stars::read_stars(te
 test6 <- tempfile(fileext = "_test6.tif")
 gdal_warp(ex_sel, test6, t_srs = "+init=epsg:32631", mask = crop_poly)
 
-\donttest{
 # Show output
 crop_line_31N <- sf::st_transform(crop_line, 32631)
 test1_bbox <- sf::st_as_sfc(sf::st_bbox(stars::read_stars(test1)))
@@ -153,7 +149,6 @@ image(stars::read_stars(test5), rgb = 1:3)
 plot(test1_bbox_31N, add = TRUE, border = "red", lwd = 2)
 image(stars::read_stars(test6), rgb = 1:3)
 plot(crop_line_31N, add = TRUE, col = "blue", lwd = 2)
-}
 
 # Use a reference raster with a different projection
 test7 <- tempfile(fileext = "_test7.tif")
@@ -168,7 +163,6 @@ gdal_warp(ex_sel, test8, mask = stars::read_stars(test1), ref = test6)
 test9 <- tempfile(fileext = "_test9.tif")
 gdal_warp(ex_sel, test9, mask = crop_poly, ref = test6)
 
-\donttest{
 # Show output
 par(mfrow = c(1,4), mar = rep(0,4))
 image(stars::read_stars(ex_sel), rgb = 1:3)
