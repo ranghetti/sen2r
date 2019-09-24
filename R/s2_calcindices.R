@@ -171,7 +171,7 @@ s2_calcindices <- function(infiles,
   }
   
   # Load GDAL paths
-  binpaths <- if (any(proc_mode == "gdal_calc", format == "VRT")) {
+  binpaths <- if (proc_mode == "gdal_calc" | all(!is.na(format), format == "VRT")) {
     load_binpaths("gdal")
   } else {NULL}
   
