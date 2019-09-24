@@ -330,6 +330,9 @@ context("Test gdal_warp()")
 testthat::skip_on_cran() # becaue it uses runtime GDAL
 testthat::skip_on_travis()
 
+crop_poly <- system.file("extdata/example_files/dam.geojson", package = "sen2r")
+crop_line <- sf::st_cast(sf::read_sf(crop_poly), "LINESTRING")
+
 testthat::test_that(
   "Simple clip", {
     

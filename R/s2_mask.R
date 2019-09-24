@@ -435,37 +435,6 @@ s2_mask <- function(infiles,
         perc_mask <- 100 * (mean_values_naval - mean_values_mask) / mean_values_naval
         if (!is.finite(perc_mask)) {perc_mask <- 100}
         
-        # if the user required to save 0-1 masks, save them
-        if (save_binary_mask == TRUE) {
-          # define out MSK name
-          binmask <- file.path(
-            ifelse(subdirs, file.path(outdir,"MSK"), outdir),
-            gsub(paste0("\\.",infiles_meta_sen2r[i,"file_ext"],"$"),
-                 paste0(".",sel_out_ext),
-                 gsub(paste0("\\_",infiles_meta_sen2r[i,"prod_type"],"\\_"),
-                      "_MSK_",
-                      basename(sel_infile)))
-          )
-          # create subdir if missing
-          if (subdirs & !dir.exists(file.path(outdir,"MSK"))) {
-            dir.create(file.path(outdir,"MSK"))
-          }
-          # mask NA values
-          raster::mask(
-            raster(outmask),
-            raster(outnaval),
-            filename = binmask,
-            maskvalue = 0,
-            updatevalue = sel_naflag,
-            updateNA = TRUE,
-            NAflag = 255,
-            datatype = "INT1U",
-            format = sel_format,
-            options = if(sel_format == "GTiff") {paste0("COMPRESS=",compress)},
-            overwrite = overwrite
-          )
-        }
-        
         # if the requested output is this value, return it; else, continue masking
         if (output_type == "perc") {
           names(perc_mask) <- sel_infile
@@ -526,6 +495,39 @@ s2_mask <- function(infiles,
               )
             } else {
               outmask_res
+            }
+            
+            # if the user required to save 0-1 masks, save them
+            if (save_binary_mask == TRUE) {
+              # define out MSK name
+              binmask <- file.path(
+                ifelse(subdirs, file.path(outdir,"MSK"), outdir),
+                gsub(paste0("\\.",infiles_meta_sen2r[i,"file_ext"],"$"),
+                     paste0(".",sel_out_ext),
+                     gsub(paste0("\\_",infiles_meta_sen2r[i,"prod_type"],"\\_"),
+                          "_MSK_",
+                          basename(sel_infile)))
+              )
+              # create subdir if missing
+              if (subdirs & !dir.exists(file.path(outdir,"MSK"))) {
+                dir.create(file.path(outdir,"MSK"))
+              }
+              if (any(!file.exists(binmask), overwrite == TRUE)) {
+                # mask NA values
+                raster::mask(
+                  raster(outmask_smooth),
+                  raster(outnaval_res),
+                  filename = binmask,
+                  maskvalue = 0,
+                  updatevalue = sel_naflag,
+                  updateNA = TRUE,
+                  NAflag = 255,
+                  datatype = "INT1U",
+                  format = sel_format,
+                  options = if(sel_format == "GTiff") {paste0("COMPRESS=",compress)},
+                  overwrite = overwrite
+                )
+              }
             }
             
             # load mask

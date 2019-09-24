@@ -81,6 +81,7 @@ Function to create RGB images from Sentinel-2 reflectances.
 License: GPL 3.0
 }
 \examples{
+\donttest{
 # Define file names
 ex_in <- system.file(
   "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_BOA_10.tif",
@@ -102,6 +103,7 @@ par(mfrow = c(1,3))
 raster::plotRGB(raster::brick(ex_in), 4, 3, 2, scale = 3500)
 raster::plotRGB(raster::brick(ex_out[1]))
 raster::plotRGB(raster::brick(ex_out[2]))
+}
 }
 \author{
 Luigi Ranghetti, phD (2018) \email{ranghetti.l@irea.cnr.it}
