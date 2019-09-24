@@ -37,7 +37,7 @@
 
 <meta property="og:title" content="Check a path — path_check" />
 <meta property="og:description" content="Accessory functions to check that a directory exists and
-is writable (to be used in a Shiny context)" />
+the user have write permissions on it (to be used in a Shiny context)" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -120,7 +120,7 @@ is writable (to be used in a Shiny context)" />
 
     <div class="ref-description">
     <p>Accessory functions to check that a directory exists and
-is writable (to be used in a Shiny context)</p>
+the user have write permissions on it (to be used in a Shiny context)</p>
     </div>
 
     <pre class="usage"><span class='fu'>path_check</span>(<span class='no'>path</span>, <span class='kw'>mustbe_empty</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>mustbe_writable</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
@@ -130,7 +130,7 @@ is writable (to be used in a Shiny context)</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>path</th>
-      <td><p><code>string</code> fullpath to a folder</p></td>
+      <td><p><code>string</code> full path to a folder</p></td>
     </tr>
     <tr>
       <th>mustbe_empty</th>
@@ -138,7 +138,8 @@ is writable (to be used in a Shiny context)</p>
     </tr>
     <tr>
       <th>mustbe_writable</th>
-      <td><p><code>logical</code> if TRUE, accept only writable directories</p></td>
+      <td><p><code>logical</code> if TRUE, accept only directories with write
+permissions</p></td>
     </tr>
     </table>
 

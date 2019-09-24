@@ -18,7 +18,8 @@
 #' @importFrom sf st_as_text st_crs
 #' @importFrom magrittr "%>%"
 #'
-#' @examples \dontrun{
+#' @examples
+#' \donttest{
 #' projpar("+init=epsg:4326", "Unit")
 #' }
 
@@ -56,7 +57,8 @@ projpar <- function(proj4string, par, abort = FALSE) {
 #' @rdname projpar
 #' @export
 #' @importFrom sf st_is_longlat st_crs
-#' @examples \dontrun{
+#' @examples
+#' \donttest{
 #' projname("+init=epsg:4326")
 #' }
 

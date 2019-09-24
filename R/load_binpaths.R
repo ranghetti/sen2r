@@ -12,13 +12,16 @@
 #' @importFrom jsonlite fromJSON
 #' @export
 #' @examples
-#' \dontrun{
-#'
+#' \donttest{
 #' # Load only existing paths
 #' binpaths <- load_binpaths()
+#' binpaths
+#' }
 #' 
+#' \dontrun{
 #' # Load paths, forcing to check GDAL and sen2cor
 #' binpaths <- load_binpaths(c("gdal", "sen2cor"))
+#' binpaths
 #' }
 
 

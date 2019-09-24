@@ -7,15 +7,16 @@
 path_check(path, mustbe_empty = FALSE, mustbe_writable = TRUE)
 }
 \arguments{
-\item{path}{\code{string} fullpath to a folder}
+\item{path}{\code{string} full path to a folder}
 
 \item{mustbe_empty}{\code{logical} if TRUE, accept only empty directories}
 
-\item{mustbe_writable}{\code{logical} if TRUE, accept only writable directories}
+\item{mustbe_writable}{\code{logical} if TRUE, accept only directories with write
+permissions}
 }
 \description{
 Accessory functions to check that a directory exists and
-is writable (to be used in a Shiny context)
+the user have write permissions on it (to be used in a Shiny context)
 }
 \author{
 Luigi Ranghetti, PhD (2019) \email{ranghetti.l@irea.cnr.it}

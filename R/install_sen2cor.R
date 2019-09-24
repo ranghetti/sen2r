@@ -15,7 +15,8 @@
 #' @importFrom magrittr "%>%"
 #' @importFrom httr GET write_disk
 #' @export
-#' @examples \dontrun{
+#' @examples
+#' \dontrun{
 #' install_sen2cor()
 #' }
 

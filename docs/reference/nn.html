@@ -142,11 +142,7 @@ This is sometimes needed not to return error when applying some functions.</p>
     <p>License: GPL 3.0</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/base/basename.html'>basename</a></span>(<span class='kw'>NULL</span>) <span class='co'># error</span>
-<span class='fu'><a href='https://rdrr.io/r/base/basename.html'>basename</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span>()) <span class='co'># ok</span>
-<span class='fu'><a href='https://rdrr.io/r/base/basename.html'>basename</a></span>(<span class='kw pkg'>sen2r</span><span class='kw ns'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/sen2r/man/nn.html'>nn</a></span>(<span class='kw'>NULL</span>)) <span class='co'># ok</span>
-}</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/conditions.html'>tryCatch</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/basename.html'>basename</a></span>(<span class='kw'>NULL</span>), <span class='kw'>error</span> <span class='kw'>=</span> <span class='no'>print</span>) <span class='co'># error</span></div><div class='output co'>#&gt; &lt;simpleError in basename(NULL): richiesti argomenti di tipo vector&gt;</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/basename.html'>basename</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span>()) <span class='co'># ok</span></div><div class='output co'>#&gt; character(0)</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/basename.html'>basename</a></span>(<span class='kw pkg'>sen2r</span><span class='kw ns'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/sen2r/man/nn.html'>nn</a></span>(<span class='kw'>NULL</span>)) <span class='co'># ok</span></div><div class='output co'>#&gt; character(0)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

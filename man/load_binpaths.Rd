@@ -23,13 +23,16 @@ from the JSON where they are saved when installed.
 License: GPL 3.0
 }
 \examples{
-\dontrun{
-
+\donttest{
 # Load only existing paths
 binpaths <- load_binpaths()
+binpaths
+}
 
+\dontrun{
 # Load paths, forcing to check GDAL and sen2cor
 binpaths <- load_binpaths(c("gdal", "sen2cor"))
+binpaths
 }
 }
 \author{

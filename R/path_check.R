@@ -1,9 +1,10 @@
 #' @title Check a path
 #' @description Accessory functions to check that a directory exists and
-#'  is writable (to be used in a Shiny context)
-#' @param path `string` fullpath to a folder
+#'  the user have write permissions on it (to be used in a Shiny context)
+#' @param path `string` full path to a folder
 #' @param mustbe_empty `logical` if TRUE, accept only empty directories
-#' @param mustbe_writable `logical` if TRUE, accept only writable directories
+#' @param mustbe_writable `logical` if TRUE, accept only directories with write 
+#'  permissions
 #' @rdname path_check
 #' @author Luigi Ranghetti, PhD (2019) \email{ranghetti.l@@irea.cnr.it}
 #' @author Lorenzo Busetto, PhD (2019) \email{lbusett@@gmail.com>}
@@ -25,7 +26,7 @@ path_check <- function(path, mustbe_empty = FALSE, mustbe_writable = TRUE) {
     } else if (mustbe_writable == TRUE & file.access(path, mode=2)<0) {
       out <- renderUI(span(
         style="color:red",
-        "\u2718 (the directory is not writable)"
+        "\u2718 (missing write permissions)"
       ))
       attr(out, "isvalid") <- FALSE
     } else {

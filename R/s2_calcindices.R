@@ -98,8 +98,8 @@
 #' 
 #' # Show output
 #' par(mfrow = c(1,2))
-#' raster::plotRGB(raster::brick(ex_in), 4, 3, 2, scale = 3500)
-#' raster::plot(raster::raster(ex_out), axes = FALSE)
+#' par(mar = rep(0,4)); image(stars::read_stars(ex_in), rgb = 4:2, maxColorValue = 3500)
+#' par(mar = rep(2/3,4)); image(stars::read_stars(ex_out))
 
 s2_calcindices <- function(infiles,
                            indices,

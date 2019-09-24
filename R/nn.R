@@ -6,11 +6,10 @@
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #'
-#' @examples \dontrun{
-#' basename(NULL) # error
+#' @examples
+#' tryCatch(basename(NULL), error = print) # error
 #' basename(character()) # ok
 #' basename(sen2r:::nn(NULL)) # ok
-#' }
 
 nn <- function(x) {if (is.null(x)) character(0) else x}
 

@@ -43,7 +43,6 @@ computable with the package.
 License: GPL 3.0
 }
 \examples{
-\dontrun{
 # Show index names
 list_indices(c("name","longname"))
 
@@ -52,7 +51,6 @@ list_indices("s2_formula", "^MSAVI2$")
 
 # Return all index names (including unchecked)
 list_indices("name", all = TRUE)
-}
 }
 \author{
 Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}

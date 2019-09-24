@@ -24,6 +24,7 @@ License: GPL 3.0
 }
 \examples{
 \dontrun{
+# Run only on Windows
 install_aria2()
 }
 }

@@ -145,13 +145,52 @@ in the JSON, it is checked (when possible).</p></td>
     <p>License: GPL 3.0</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
 <span class='co'># Load only existing paths</span>
 <span class='no'>binpaths</span> <span class='kw'>&lt;-</span> <span class='fu'>load_binpaths</span>()
+<span class='no'>binpaths</span></div><div class='output co'>#&gt; $gdalinfo
+#&gt; [1] "/usr/bin/gdalinfo"
+#&gt; 
+#&gt; $ogrinfo
+#&gt; [1] "/usr/bin/ogrinfo"
+#&gt; 
+#&gt; $gdal_translate
+#&gt; [1] "/usr/bin/gdal_translate"
+#&gt; 
+#&gt; $gdalwarp
+#&gt; [1] "/usr/bin/gdalwarp"
+#&gt; 
+#&gt; $gdalbuildvrt
+#&gt; [1] "/usr/bin/gdalbuildvrt"
+#&gt; 
+#&gt; $gdaldem
+#&gt; [1] "/usr/bin/gdaldem"
+#&gt; 
+#&gt; $gdal_calc
+#&gt; [1] "/usr/bin/gdal_calc.py"
+#&gt; 
+#&gt; $gdal_polygonize
+#&gt; [1] "/usr/bin/gdal_polygonize.py"
+#&gt; 
+#&gt; $gdal_fillnodata
+#&gt; [1] "/usr/bin/gdal_fillnodata.py"
+#&gt; 
+#&gt; $python
+#&gt; [1] "/usr/bin/python2.7"
+#&gt; 
+#&gt; $aria2c
+#&gt; [1] "/usr/bin/aria2c"
+#&gt; 
+#&gt; $sen2cor
+#&gt; [1] "/home/lranghetti/sen2cor/sen2cor_280/bin/L2A_Process"
+#&gt; 
+#&gt; attr(,"path")
+#&gt; [1] "~/.sen2r/paths.json"</div><div class='input'><span class='co'># }</span>
 
+<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='co'># Load paths, forcing to check GDAL and sen2cor</span>
 <span class='no'>binpaths</span> <span class='kw'>&lt;-</span> <span class='fu'>load_binpaths</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"gdal"</span>, <span class='st'>"sen2cor"</span>))
+<span class='no'>binpaths</span>
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

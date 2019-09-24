@@ -20,11 +20,9 @@ This is sometimes needed not to return error when applying some functions.
 License: GPL 3.0
 }
 \examples{
-\dontrun{
-basename(NULL) # error
+tryCatch(basename(NULL), error = print) # error
 basename(character()) # ok
 basename(sen2r:::nn(NULL)) # ok
-}
 }
 \author{
 Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
