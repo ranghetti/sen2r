@@ -16,7 +16,7 @@
 #' @importFrom sf st_as_sfc
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
-#' @examples \donttest{
+#' @examples
 #' # Define file names
 #' ex_sel <- system.file(
 #'   "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_BOA_10.tif",
@@ -31,11 +31,12 @@
 #' # Run function
 #' sen2r:::gdalwarp_grid(ex_sel, ex_out, ref = ex_ref)
 #' 
+#' \donttest{
 #' # Show output
 #' par(mfrow = c(1,3))
-#' raster::plotRGB(raster::brick(ex_sel), 4, 3, 2, scale = 3500)
-#' raster::plot(raster::raster(ex_ref), legend = FALSE, axes = FALSE)
-#' raster::plotRGB(raster::brick(ex_out), 4, 3, 2, scale = 3500)
+#' par(mar = rep(0,4)); image(stars::read_stars(ex_sel), rgb = 4:2, maxColorValue = 3500)
+#' par(mar = rep(2/3,4)); image(stars::read_stars(ex_ref))
+#' par(mar = rep(0,4)); image(stars::read_stars(ex_out), rgb = 4:2, maxColorValue = 3500)
 #' }
 
 gdalwarp_grid <- function(srcfiles,
