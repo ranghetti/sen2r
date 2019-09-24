@@ -171,16 +171,18 @@ s2_calcindices <- function(infiles,
   }
   
   # Load GDAL paths
-  binpaths <- load_binpaths("gdal")
+  binpaths <- if (any(proc_mode == "gdal_calc", format == "VRT")) {
+    load_binpaths("gdal")
+  } else {NULL}
   
   # Check proc_mode
   if (!proc_mode %in% c("gdal_calc", "raster")) {
     print_message(
       type = "warning",
       "proc_mode = \"",proc_mode,"\" is not recognised; ",
-      "switching to \"gdal_calc\"."
+      "switching to \"raster\"."
     )
-    proc_mode <- "gdal_calc"
+    proc_mode <- "raster"
   }
   
   # Compute n_cores
@@ -443,6 +445,10 @@ s2_calcindices <- function(infiles,
         }
         # fix for envi extension (writeRaster use .envi)
         if (sel_format0=="ENVI")  {fix_envi_format(file.path(out_subdir0,sel_outfile0))}
+        
+        if (is.null("binpaths")) {
+          binpaths <- load_binpaths("gdal")
+        }
         
         if (sel_format == "VRT") {
           system(
