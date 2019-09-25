@@ -100,5 +100,5 @@ create_s2_dop <- function(json_path = NA, force = FALSE) {
   writeLines(toJSON(json_table, pretty=TRUE), json_path)
   
   return(json_path)
-  # nocov start
+  # nocov end
 }

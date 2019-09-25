@@ -20,18 +20,18 @@ testthat::test_that(
     )
     unlink(exp_outpath_11)
     sen2r(
-      gui = FALSE,
-      online = TRUE,
-      step_atmcorr = "l2a", # to avoid checks on Sen2Cor
-      extent = file.path(example_dir, "scalve.kml"),
-      extent_name = "Scalve",
+      gui            = FALSE,
+      online         = TRUE,
+      step_atmcorr   = "l2a", # to avoid checks on Sen2Cor
+      extent         = file.path(example_dir, "scalve.kml"),
+      extent_name    = "Scalve",
       extent_as_mask = TRUE,
-      timewindow = as.Date("2017-07-03"),
-      list_indices = c("NDVI","MSAVI2"),
-      mask_type = NA,
-      path_out = outdir_11,
-      path_l2a = file.path(safe_dir, "L2A"),
-      parallel = FALSE
+      timewindow     = as.Date("2017-07-03"),
+      list_indices   = c("NDVI","MSAVI2"),
+      mask_type      = NA,
+      path_out       = outdir_11,
+      path_l2a       = file.path(safe_dir, "L2A"),
+      parallel       = FALSE
     )
     testthat::expect_true(all(file.exists(exp_outpath_11)))
     

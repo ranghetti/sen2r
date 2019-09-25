@@ -102,23 +102,23 @@ testthat::test_that(
     dir.create(dirname(outdir_3), showWarnings = FALSE)
     testthat::expect_warning(
       sen2r(
-      gui = FALSE,
-      online = FALSE,
-      step_atmcorr = "l2a", # to avoid checks on Sen2Cor
-      extent = file.path(example_dir, "scalve.kml"),
-      extent_name = "Scalve",
+      gui            = FALSE,
+      online         = FALSE,
+      step_atmcorr   = "l2a", # to avoid checks on Sen2Cor
+      extent         = file.path(example_dir, "scalve.kml"),
+      extent_name    = "Scalve",
       extent_as_mask = FALSE,
-      timewindow = as.Date("2017-07-03"),
-      list_prods = "TOA",
-      mask_type = NA,
-      proj = 32633,
-      res = c(25, 25), res_s2 = NA,
-      resampling = "average",
-      outformat = "ENVI",
-      path_l1c = file.path(safe_dir, "L1C"),
-      path_out = outdir_3,
-      path_subdirs = FALSE,
-      overwrite = TRUE
+      timewindow     = as.Date("2017-07-03"),
+      list_prods     = "TOA",
+      mask_type      = NA,
+      proj           = 32633,
+      res            = c(25, 25), res_s2 = NA,
+      resampling     = "average",
+      outformat      = "ENVI",
+      path_l1c       = file.path(safe_dir, "L1C"),
+      path_out       = outdir_3,
+      path_subdirs   = FALSE,
+      overwrite      = TRUE
     ),
     regexp = "[Bb]oth native and custom resolution were provided" # FIXME 
     )
@@ -332,11 +332,11 @@ testthat::skip_on_travis()
 
 crop_poly <- system.file("extdata/example_files/dam.geojson", package = "sen2r")
 crop_line <- sf::st_cast(sf::read_sf(crop_poly), "LINESTRING")
+test1 <- tempfile(fileext = "_test1.tif")
 
 testthat::test_that(
   "Simple clip", {
     
-    test1 <- tempfile(fileext = "_test1.tif")
     gdal_warp(ex_sel, test1, mask = crop_line)
     
     # test on raster metadata
@@ -462,6 +462,7 @@ testthat::test_that(
 testthat::test_that(
   "Reproject and clip on a bounding box", {
     
+    
     test5 <- tempfile(fileext = "_test5.tif")
     gdal_warp(ex_sel, test5, t_srs = "+init=epsg:32631", mask = stars::read_stars(test1))
     
@@ -489,10 +490,10 @@ testthat::test_that(
   }
 )
 
+test6 <- tempfile(fileext = "_test6.tif")
 testthat::test_that(
   "Reproject and clip on polygon (masking outside)", {
     
-    test6 <- tempfile(fileext = "_test6.tif")
     gdal_warp(ex_sel, test6, t_srs = "+init=epsg:32631", mask = crop_poly)
     
     # test on raster metadata
@@ -527,8 +528,9 @@ testthat::test_that(
     
     # test on raster metadata
     exp_meta_r <- raster_metadata(test7, format = "list")[[1]]
-    testthat::expect_equal(exp_meta_r$size, c("x"=6, "y"=25))
-    testthat::expect_equal(exp_meta_r$res, c("x"=10.67998, "y"=10.21008 ), tolerance = 1e-3)
+    testthat::expect_equal(exp_meta_r$size, c("x" = 6, "y" = 25))
+    testthat::expect_equal(exp_meta_r$res,  c("x" = 10.67998, "y" = 10.21008 ),
+                           tolerance = 1e-3)
     testthat::expect_equal(exp_meta_r$nbands, 3)
     testthat::expect_equal(
       exp_meta_r$bbox, 

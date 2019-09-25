@@ -228,13 +228,13 @@ s2_merge <- function(infiles,
   }
   
   # merge single output products
-  if (n_cores > 1) {
+  if (n_cores > 1) { # nocov start
     cl <- makeCluster(
       n_cores, 
       type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
     )
     registerDoParallel(cl)
-  }
+  } # nocov end
   outfiles <- foreach(
     infiles_meta_grp = unique(infiles_meta_grps), 
     .packages = c("sen2r"), 
@@ -243,7 +243,7 @@ s2_merge <- function(infiles,
   )  %DO% {
     
     # redirect to log files
-    if (n_cores > 1) {
+    if (n_cores > 1) { # nocov start
       if (!is.na(.log_output)) {
         sink(.log_output, split = TRUE, type = "output", append = TRUE)
       }
@@ -251,7 +251,7 @@ s2_merge <- function(infiles,
         logfile_message = file(.log_message, open = "a")
         sink(logfile_message, type="message")
       }
-    }
+    } # nocov end
     
     sel_infiles <- infiles[infiles_meta_grps == infiles_meta_grp]
     sel_infiles_meta <- infiles_meta[infiles_meta_grps == infiles_meta_grp,]
@@ -344,21 +344,21 @@ s2_merge <- function(infiles,
     } # end of overwrite IF cycle
     
     # stop sinking
-    if (n_cores > 1) {
+    if (n_cores > 1) { # nocov start
       if (!is.na(.log_output)) {
         sink(type = "output")
       }
       if (!is.na(.log_message)) {
         sink(type = "message"); close(logfile_message)
       }
-    }
+    } # nocov end
     
     file.path(out_subdir,sel_outfile)
     
   } # end of foreach cycle
-  if (n_cores > 1) {
+  if (n_cores > 1) { # nocov start
     stopCluster(cl)
-  }
+  } # nocov end
   
   # Remove temporary files
   if (rmtmp == TRUE) {

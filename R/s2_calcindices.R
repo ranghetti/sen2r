@@ -271,7 +271,7 @@ s2_calcindices <- function(infiles,
   }
   
   # read TOA/BOA image
-  if (n_cores > 1) {
+  if (n_cores > 1) { # nocov start
     cl <- makeCluster(
       n_cores,
       type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
@@ -282,7 +282,7 @@ s2_calcindices <- function(infiles,
       date = TRUE,
       "Starting parallel computation of indices..."
     )
-  }
+  } # nocov end
   
   outfiles <- foreach(
     i = seq_along(infiles),
@@ -292,7 +292,7 @@ s2_calcindices <- function(infiles,
   )  %DO% {
     
     # redirect to log files
-    if (n_cores > 1) {
+    if (n_cores > 1) { # nocov start
       if (!is.na(.log_output)) {
         sink(.log_output, split = TRUE, type = "output", append = TRUE)
       }
@@ -300,7 +300,7 @@ s2_calcindices <- function(infiles,
         logfile_message = file(.log_message, open = "a")
         sink(logfile_message, type="message")
       }
-    }
+    } # nocov end
     
     sel_infile <- infiles[i]
     sel_infile_meta <- c(infiles_meta[i,])
@@ -468,26 +468,26 @@ s2_calcindices <- function(infiles,
     } # end of indices FOR cycle
     
     # stop sinking
-    if (n_cores > 1) {
+    if (n_cores > 1) { # nocov start
       if (!is.na(.log_output)) {
         sink(type = "output")
       }
       if (!is.na(.log_message)) {
         sink(type = "message"); close(logfile_message)
       }
-    }
+    } # nocov end
     
     sel_outfiles
     
   } # end cycle on infiles
-  if (n_cores > 1) {
+  if (n_cores > 1) { # nocov start
     stopCluster(cl)
     print_message(
       type = "message",
       date = TRUE,
       "Parallel computation of indices done."
     )
-  }
+  } # nocov end
   
   return(outfiles)
   

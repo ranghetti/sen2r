@@ -62,7 +62,7 @@ projpar <- function(proj4string, par, abort = FALSE) {
 #' projname("+init=epsg:4326")
 #' }
 
-projname <- function(proj4string, abort = FALSE) {
+projname <- function(proj4string, abort = FALSE) { # nocov start
   
   proj4_name <- projpar(proj4string, "geogcs")
   if (!st_is_longlat(st_crs(attr(proj4_name, "proj4string")))) {
@@ -72,4 +72,4 @@ projname <- function(proj4string, abort = FALSE) {
   
   return(proj4_name)
   
-}
+}  # nocov end

@@ -480,7 +480,3 @@ image(stars::read_stars(thumb_4[grep("RGB432B", thumb_4)]), rgb = 1:3)
 image(stars::read_stars(thumb_4[grep("RGB843B", thumb_4)]), rgb = 1:3)
 }
 }
-
-}
-
-}

@@ -174,7 +174,7 @@ s2_rgb <- function(infiles,
   #   sapply(file.path(outdir,rgb_prodnames), dir.create, showWarnings=FALSE)
   # }
   
-  if (n_cores > 1) {
+  if (n_cores > 1) { # nocov start
     cl <- makeCluster(
       n_cores, 
       type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
@@ -185,7 +185,7 @@ s2_rgb <- function(infiles,
       date = TRUE,
       "Starting parallel production of RGB images..."
     )
-  }
+  } # nocov end
   
   out_names <- foreach(
     i = seq_along(infiles), 
@@ -195,7 +195,7 @@ s2_rgb <- function(infiles,
   ) %DO% {
     
     # redirect to log files
-    if (n_cores > 1) {
+    if (n_cores > 1) { # nocov start
       if (!is.na(.log_output)) {
         sink(.log_output, split = TRUE, type = "output", append = TRUE)
       }
@@ -203,7 +203,7 @@ s2_rgb <- function(infiles,
         logfile_message = file(.log_message, open = "a")
         sink(logfile_message, type="message")
       }
-    }
+    } # nocov end
     
     sel_infile_path <- infiles[i]
     
@@ -314,26 +314,26 @@ s2_rgb <- function(infiles,
     } # end of !sel_prod_type %in% c("BOA","TOA") IF cycle
     
     # stop sinking
-    if (n_cores > 1) {
+    if (n_cores > 1) { # nocov start
       if (!is.na(.log_output)) {
         sink(type = "output")
       }
       if (!is.na(.log_message)) {
         sink(type = "message"); close(logfile_message)
       }
-    }
+    } # nocov end
     
     out_names
     
   } # end of infiles FOREACH cycle
-  if (n_cores > 1) {
+  if (n_cores > 1) { # nocov start
     stopCluster(cl)
     print_message(
       type = "message",
       date = TRUE,
       "Parallel production of RGB images done."
     )
-  }
+  } # nocov end
   
   # Remove temporary files
   if (rmtmp == TRUE) {

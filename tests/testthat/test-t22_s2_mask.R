@@ -17,18 +17,18 @@ testthat::test_that(
     exp_outpath_5 <- file.path(outdir_5, "BOA", "S2A2A_20170703_022_Scalve_BOA_10.tif")
     unlink(exp_outpath_5)
     sen2r(
-      gui = FALSE,
-      online = TRUE,
-      step_atmcorr = "l2a", # to avoid checks on Sen2Cor
-      extent = file.path(example_dir, "scalve.kml"),
-      extent_name = "Scalve",
+      gui            = FALSE,
+      online         = TRUE,
+      step_atmcorr   = "l2a", # to avoid checks on Sen2Cor
+      extent         = file.path(example_dir, "scalve.kml"),
+      extent_name    = "Scalve",
       extent_as_mask = TRUE,
-      timewindow = as.Date("2017-07-03"),
-      list_prods = "BOA",
-      mask_type = "cloud_high_proba",
-      path_l2a = file.path(safe_dir, "L2A"),
-      path_out = outdir_5,
-      thumbnails = FALSE
+      timewindow     = as.Date("2017-07-03"),
+      list_prods     = "BOA",
+      mask_type      = "cloud_high_proba",
+      path_l2a       = file.path(safe_dir, "L2A"),
+      path_out       = outdir_5,
+      thumbnails     = FALSE
     )
     expect_true(file.exists(exp_outpath_5))
     
@@ -62,20 +62,26 @@ context("Test mask - s2_mask()")
 ref_dir <- system.file("extdata/example_files/out_ref", package = "sen2r")
 
 testthat::test_that(
-  "Tests on custom mask on TOA with smoothing and buffering", {
+  "Tests on custom mask on TOA with smoothing and buffering, with save binary mask", {
     
     outdir_6 <- file.path(tempdir(), "out_test6")
     dir.create(dirname(outdir_6), showWarnings = FALSE)
-    exp_outpath_6 <- file.path(outdir_6, "TOA", "S2A1C_20170703_022_Barbellino_TOA_10.tif")
+    exp_outpath_6   <- file.path(outdir_6, "TOA", "S2A1C_20170703_022_Barbellino_TOA_10.tif")
+    exp_outpath_msk <- file.path(outdir_6, "MSK", "S2A1C_20170703_022_Barbellino_MSK_10.tif")
     unlink(exp_outpath_6)
+    unlink(exp_outpath_msk)
     s2_mask(
-      infiles = file.path(ref_dir, "S2A1C_20170703_022_Barbellino_TOA_10.tif"),
-      maskfiles = file.path(ref_dir, "S2A2A_20170703_022_Barbellino_SCL_10.tif"),
-      mask_type = "clear_sky",
-      outdir = outdir_6,
-      subdirs = TRUE
+      infiles          = file.path(ref_dir, "S2A1C_20170703_022_Barbellino_TOA_10.tif"),
+      maskfiles        = file.path(ref_dir, "S2A2A_20170703_022_Barbellino_SCL_10.tif"),
+      mask_type        = "clear_sky",
+      outdir           = outdir_6,
+      subdirs          = TRUE, 
+      smooth           = 10,
+      buffer           = 10,
+      save_binary_mask = TRUE
     )
     expect_true(file.exists(exp_outpath_6))
+    expect_true(file.exists(exp_outpath_msk))
     
     # test on raster metadata
     exp_meta_r <- raster_metadata(exp_outpath_6, format = "list")[[1]]
@@ -91,12 +97,21 @@ testthat::test_that(
     )
     testthat::expect_equal(exp_meta_r$type, "UInt16")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
-    
+
     # test on raster values
     r <- raster::raster(exp_outpath_6)
-    testthat::expect_equal(raster::cellStats(r, "mean"), 1433.497, tolerance = 1e-3)
-    testthat::expect_equal(raster::cellStats(r, "countNA"), 388)
+    testthat::expect_equal(raster::cellStats(r, "mean"), 1435.579, tolerance = 1e-4)
+    testthat::expect_equal(raster::cellStats(r, "countNA"), 346)
+
     
+    exp_meta_msk <- raster_metadata(exp_outpath_msk, format = "list")[[1]]
+    testthat::expect_equal(exp_meta_msk$size, c("x" = 24, "y" = 42))
+    testthat::expect_equal(exp_meta_msk$type, "Byte")
+    
+    r <- raster::raster(exp_outpath_msk)
+    testthat::expect_equal(raster::cellStats(r, "max"), 1, tolerance = 1e-3)
+    testthat::expect_equal(raster::cellStats(r, "min"), 0, tolerance = 1e-3)
+        
   }
 )
 
@@ -109,12 +124,12 @@ testthat::test_that(
     exp_outpath_7 <- file.path(outdir_7, "BOA", "S2A2A_20170703_022_Barbellino_BOA_10.tif")
     unlink(exp_outpath_7)
     s2_mask(
-      infiles = file.path(ref_dir, "S2A2A_20170703_022_Barbellino_BOA_10.tif"),
+      infiles   = file.path(ref_dir, "S2A2A_20170703_022_Barbellino_BOA_10.tif"),
       maskfiles = file.path(ref_dir, "S2A2A_20170703_022_Barbellino_SCL_10.tif"),
       mask_type = "clear_sky",
-      max_mask = 20,
-      outdir = outdir_7,
-      subdirs = TRUE
+      max_mask  = 20,
+      outdir    = outdir_7,
+      subdirs   = TRUE
     )
     testthat::expect_false(file.exists(exp_outpath_7))
 
