@@ -1,17 +1,103 @@
 # sen2r v. 1.1.0
 
 ## Resubmission
-This is a resubmission. In this version:
+This is a resubmission. Please find attached the comments made by the reviewer
+(which we thanks for her effort) and our related edits.
 
-* the title was edited as requested by the reviewer
-    (from "An R Toolbox to Find, Download and Process Sentinel-2 Data"
-    to "Find, Download and Process Sentinel-2 Data"),
-    not only in DESCRIPTION but in the whole documentation;
-    
-* invalid file URI `docker.md` from inst/doc/installation.html was fixed;
+> \dontrun{} should be only used if the example really cannot be executed
+(e.g. because of missing additional software, missing API keys, ...) by
+the user. That's why wrapping examples in \dontrun{} adds the comment
+("# Not run:") as a warning for the user.
+Seems mostly not necessary.
+Please unwrap the examples if they are executable in < 5 sec, or create
+additionally small toy examples to allow automatic testing (then replace
+\dontrun with \donttest).
+You could also replace \dontrun{} with \donttest, but it would be
+preferable to have automatic checks for functions.
 
-* the description was not edited, sice we have not yet any reference to methods 
-    to add in (we submitted a paper regarding them, but currently it is under review).
+We carefully checked the use of \dontrun and \donttest within functions.
+Now \donttest is used wherever automatic checks cannot be executed
+(in most of the cases, where runtime GDAL binaries - which are not
+installed on CRAN, Travis etc., are used).
+\dontrun is instead used only if the examples are not immediately reproducible
+(e.g. because example input filenames do not correspond to existing files,
+or for functions which install something on disk).
+
+> Couldn't find the files necessary for gdalwarp_grid.Rd e.g.
+Please add small files needed for the examples in the inst/extdata
+subfolder of your package and use system.file() to get the correct
+package path.
+
+We added the directory inst/extdata/example_files/out_ref, containing small
+example files used by function examples, including `gdalwarp_grid.R`.
+Reference documentations were improved to make use of these files.
+
+> You have examples for unexported functions which cannot run in this way.
+Please either add packagename::: to the function calls in the examples,
+omit these examples or export these functions.
+e.g.: gdalwarp_grid.Rd, nn.Rd
+
+We ceched all the package functions, and we find this king of problem only
+in the two functions gdalwarp_grid.R and nn.R, which we fixed.
+
+> You write information messages to the console that cannot be easily
+suppressed.
+Instead of print()/cat() rather use message()/warning()  or
+if(verbose)cat(..) if you really have to write text to the console.
+(except for print() and summary() functions)
+
+The functions provided by the package use an internal function `print_message()`
+to manage the outputs, which can write as error, warning or message.
+No cat / print are explicitly used.
+Different outputs could be printed by runtime executables called by R functions.
+
+> Please ensure that your functions do not write by default or in your
+examples/vignettes/tests in the user's home filespace (including the
+package directory and getwd()). That is not allowed by CRAN policies.
+Please only write/save files if the user has specified a directory in
+the function themselves. Therefore please omit any default path =
+getwd() in writing functions.
+In your examples/vignettes/tests you can write to tempdir().
+
+The package was writing within the package direcotry for the following reasons:
+1. install Sen2Cor;
+2. install aria2;
+3. write the paths of the runtime dependencies in the file extdata/paths.json;
+4. write the SciHub credentials in the file inst/apihub.txt.
+
+These situations were managed as follows:
+- firsts two functions were modified in order to explicitly expect the output 
+    path as argument;
+- the permission to write within paths.json and apihub.txt is now asked 
+    to the user.
+
+> In several functions the return value is NULL, however, it would be
+better to use stop() as it "stops execution of the current expression
+and executes an error action.".
+Please change the code (or \value{} in the documentation).
+
+Some functions return NULL since they do not produce R outputs, but files.
+Using `stop()` would generate an error, even if the functions work properly.
+In these case, the entry 
+`@return NULL `
+was replaced with a clearer
+`@return NULL (the function is called for its side effects)`.
+
+> Please make sure that you do not change the user's options, par or
+working directory. If you really have to do so, please ensure with an
+*immediate* call of on.exit() that the settings are reset when the
+function is exited: e.g. install_sen2cor()
+...
+oldwd <- getwd()           # code line i
+on.exit(setwd(oldwd))      # code line i+1
+...
+If you're not familiar with the function, please check ?on.exit. This
+function makes it possible to restore options before exiting a function
+even if the function breaks. Therefore it needs to be called immediately
+after the option change within a function.
+
+The only default value which is modified by the packages is the `setwd()` 
+instruction cited by the reviewer, which was fixed as suggested.
 
 
 ## Test environments
