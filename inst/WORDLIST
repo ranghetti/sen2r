@@ -12,6 +12,7 @@ calcindices
 chosing
 cloudcovered
 CNR
+com
 cpt
 CRred
 crs
@@ -50,6 +51,8 @@ GEOS
 GeoTIFF
 getElements
 getMetadata
+getSpatialData
+github
 GTiff
 gui
 Hagolle
@@ -124,6 +127,7 @@ rgeos
 rmtmp
 RStudio
 SALTO
+Schwalb
 scihub
 SciHub
 scl
@@ -166,6 +170,7 @@ UInt
 vrt
 VRT
 Wget
+Willmann
 WKT
 writeRaster
 Xenial

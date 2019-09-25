@@ -311,10 +311,9 @@
 #'   sen2r()
 #' }
 #' 
-#' # Launch a processing from a saved JSON file
+#' # Launch a processing from a saved JSON file (here we use an internal function 
+#' # to create a testing json file - this is not intended to be used by final users)
 #' json_path <- sen2r:::build_example_param_file()
-#' # (internal function to create a json file;
-#' # this is not intended to be used by final users)
 #' 
 #' out_paths_2 <- sen2r(json_path)
 #' # Notice that passing the path of a JSON file results in launching 
@@ -337,7 +336,7 @@
 #'   path_out = out_dir_3
 #' )
 #' 
-#' # Launch a processing based on a JSON file, but some different parameters
+#' # Launch a processing based on a JSON file, but changing some parameters
 #' # (e.g., the same processing on a different extent)
 #' out_dir_4 <- tempfile(pattern = "Scalve_")
 #' out_paths_4 <- sen2r(

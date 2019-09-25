@@ -37,7 +37,7 @@ Please either add packagename::: to the function calls in the examples,
 omit these examples or export these functions.
 e.g.: gdalwarp_grid.Rd, nn.Rd
 
-We ceched all the package functions, and we find this king of problem only
+We checked all the package functions, and found this kind of problem only
 in the two functions gdalwarp_grid.R and nn.R, which we fixed.
 
 > You write information messages to the console that cannot be easily
@@ -66,17 +66,18 @@ The package was writing within the package direcotry for the following reasons:
 4. write the SciHub credentials in the file inst/apihub.txt.
 
 These situations were managed as follows:
-- firsts two functions were modified in order to explicitly expect the output 
+- first two functions were modified in order to explicitly expect the output 
     path as argument;
-- the permission to write within paths.json and apihub.txt is now asked 
-    to the user.
+- the permission to write within paths.json and apihub.txt in the user's home 
+   is now asked to the user.
 
 > In several functions the return value is NULL, however, it would be
 better to use stop() as it "stops execution of the current expression
 and executes an error action.".
 Please change the code (or \value{} in the documentation).
 
-Some functions return NULL since they do not produce R outputs, but files.
+Some functions return NULL since they are not used to produce R outputs, but 
+to crate/modify files, or install libraries.
 Using `stop()` would generate an error, even if the functions work properly.
 In these case, the entry 
 `@return NULL `
@@ -96,8 +97,9 @@ function makes it possible to restore options before exiting a function
 even if the function breaks. Therefore it needs to be called immediately
 after the option change within a function.
 
-The only default value which is modified by the packages is the `setwd()` 
-instruction cited by the reviewer, which was fixed as suggested.
+The only default value which was modified by the packages was the `setwd()` 
+instruction cited by the reviewer in function `install_sen2cor`. 
+This was fixed as suggested.
 
 
 ## Test environments
