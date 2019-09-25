@@ -10,7 +10,9 @@
 #' @note License: GPL 3.0
 #' @importFrom httr GET write_disk
 #' @export
-#' @examples \dontrun{
+#' @examples
+#' \dontrun{
+#' # Run only on Windows
 #' install_aria2()
 #' }
 

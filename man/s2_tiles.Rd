@@ -16,7 +16,6 @@ Load the vector object of the Sentinel-2 tiles.
 License: GPL 3.0
 }
 \examples{
-\dontrun{
 # Retrieve all the tiles
 s2tiles <- s2_tiles()
 
@@ -26,14 +25,13 @@ httr::GET(
   httr::write_disk(it_path <- tempfile())
 )
 it <- readRDS(it_path)
-s2tiles_it <- s2tiles[sf::st_intersects(it, s2tiles)[[1]],]
+s2tiles_it <- s2tiles[suppressMessages(sf::st_intersects(it, s2tiles))[[1]],]
 s2_coords <- sf::st_coordinates(suppressWarnings(sf::st_centroid(s2tiles_it)))
 
 # Show the tiles
 plot(s2tiles_it$geometry, border = "blue")
 plot(it$geometry, border = "red", add = TRUE)
 text(s2_coords[,1], s2_coords[,2], s2tiles_it$tile_id, col = "blue", cex = 0.5)
-}
 }
 \author{
 Luigi Ranghetti, phD (2019) \email{ranghetti.l@irea.cnr.it}

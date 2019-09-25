@@ -398,7 +398,11 @@ list or file (parameter \code{param_list}) or singularly (see the
 descriptions of all the other parameters).
 }
 \examples{
- \dontrun{
+# Open an interactive section
+if (interactive()) {
+  sen2r()
+}
+}
 
 }
 

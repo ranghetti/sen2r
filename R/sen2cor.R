@@ -49,7 +49,8 @@
 #' @importFrom parallel detectCores makeCluster stopCluster
 #' @export
 #'
-#' @examples \dontrun{
+#' @examples
+#' \dontrun{
 #' pos <- st_sfc(st_point(c(12.0, 44.8)), crs=st_crs(4326))
 #' time_window <- as.Date(c("2017-05-01","2017-07-30"))
 #' example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window)

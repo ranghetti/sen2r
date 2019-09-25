@@ -16,13 +16,11 @@
 #' @importFrom reticulate py_to_r
 #' @importFrom shiny a actionButton icon modalButton modalDialog passwordInput tagList textInput
 #' @importFrom shinyFiles shinyFileSave
-#' @examples \dontrun{
-#' if (interactive()) {
+#' @examples
 #'   check_scihub_login("user", "user")
 #'   write_scihub_login("user", "user")
 #'   read_scihub_login()
-#' }
-#' }
+#'   check_scihub_connection()
 
 #' @name read_scihub_login
 #' @rdname scihub_login

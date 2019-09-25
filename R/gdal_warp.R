@@ -60,7 +60,8 @@
 #' @importFrom units ud_units
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
-#' @examples \donttest{
+#' @examples
+#' \donttest{
 #' #' # Define file names
 #' ex_sel <- system.file(
 #'   "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_RGB432B_10.tif",

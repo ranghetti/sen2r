@@ -115,7 +115,8 @@
 #' @import data.table
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
-#' @examples \donttest{
+#' @examples
+#' \donttest{
 #' # Define file names
 #' ex_in <- system.file(
 #'   "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_RGB432B_10.tif",
@@ -137,9 +138,9 @@
 #' 
 #' # Show output
 #' par(mfrow = c(1,3))
-#' raster::plotRGB(raster::brick(ex_in))
-#' raster::plot(raster::raster(ex_mask), legend = FALSE, axes = FALSE)
-#' raster::plotRGB(raster::brick(ex_out), colNA = "red")
+#' par(mar = rep(0,4)); image(stars::read_stars(ex_in), rgb = 1:3)
+#' par(mar = rep(2/3,4)); image(stars::read_stars(ex_mask))
+#' par(mar = rep(0,4)); image(stars::read_stars(ex_out), rgb = 1:3)
 #' }
 
 s2_mask <- function(infiles,

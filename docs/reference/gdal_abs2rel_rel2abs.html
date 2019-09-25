@@ -165,13 +165,21 @@ is to overwrite <code>in_vrt</code>).</p></td>
     <p>License: GPL 3.0</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>example_vrt</span> <span class='kw'>&lt;-</span> <span class='st'>"/TODO/example/s2_translate.vrt"</span>
-<span class='no'>rel_vrt</span> <span class='kw'>&lt;-</span> <span class='st'>"/TODO/example/s2_translate_rel.vrt"</span>
-<span class='no'>abs_vrt</span> <span class='kw'>&lt;-</span> <span class='st'>"/TODO/example/s2_translate_abs.vrt"</span>
-<span class='fu'>gdal_abs2rel</span>(<span class='no'>example_vrt</span>, <span class='no'>rel_vrt</span>)
-<span class='fu'>gdal_rel2abs</span>(<span class='no'>example_vrt</span>, <span class='no'>abs_vrt</span>)
-}</div></pre>
+    <pre class="examples"><div class='input'><span class='co'># Load a VRT containing a relative path</span>
+<span class='no'>ex_vrt</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(
+  <span class='st'>"extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_RGB432B_10.vrt"</span>,
+  <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"sen2r"</span>
+)
+<span class='no'>abs_vrt</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(<span class='kw'>fileext</span> <span class='kw'>=</span> <span class='st'>"_abs.vrt"</span>)
+<span class='no'>rel_vrt</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(<span class='kw'>fileext</span> <span class='kw'>=</span> <span class='st'>"_rel.vrt"</span>)
+<span class='fu'>gdal_rel2abs</span>(<span class='no'>ex_vrt</span>, <span class='no'>abs_vrt</span>)
+<span class='fu'>gdal_abs2rel</span>(<span class='no'>ex_vrt</span>, <span class='no'>rel_vrt</span>)
+
+<span class='co'># Show differences</span>
+<span class='no'>ex_vrt_content</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readLines.html'>readLines</a></span>(<span class='no'>ex_vrt</span>)
+<span class='no'>abs_vrt_content</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readLines.html'>readLines</a></span>(<span class='no'>abs_vrt</span>)
+<span class='no'>rel_vrt_content</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readLines.html'>readLines</a></span>(<span class='no'>rel_vrt</span>)
+<span class='no'>ex_vrt_content</span>[<span class='no'>ex_vrt_content</span> <span class='kw'>!=</span> <span class='no'>abs_vrt_content</span>] <span class='co'># Original line</span></div><div class='output co'>#&gt; [1] "    &lt;SourceDataset relativeToVRT=\"1\"&gt;S2A2A_20170703_022_Barbellino_RGB432B_10.tif&lt;/SourceDataset&gt;"</div><div class='input'><span class='no'>abs_vrt_content</span>[<span class='no'>ex_vrt_content</span> <span class='kw'>!=</span> <span class='no'>abs_vrt_content</span>] <span class='co'># Modified line</span></div><div class='output co'>#&gt; [1] "    &lt;SourceDataset relativeToVRT=\"0\"&gt;/home/lranghetti/share/git/github/ranghetti/sen2r/inst/extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_RGB432B_10.tif&lt;/SourceDataset&gt;"</div><div class='input'><span class='no'>rel_vrt_content</span>[<span class='no'>ex_vrt_content</span> <span class='kw'>!=</span> <span class='no'>rel_vrt_content</span>] <span class='co'># No edits</span></div><div class='output co'>#&gt; character(0)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

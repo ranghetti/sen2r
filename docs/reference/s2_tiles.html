@@ -132,24 +132,24 @@
     <p>License: GPL 3.0</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='co'># Retrieve all the tiles</span>
+    <pre class="examples"><div class='input'><span class='co'># Retrieve all the tiles</span>
 <span class='no'>s2tiles</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_tiles</span>()
 
 <span class='co'># Extract a subset of all the tiles</span>
 <span class='kw pkg'>httr</span><span class='kw ns'>::</span><span class='fu'><a href='https://httr.r-lib.org/reference/GET.html'>GET</a></span>(
   <span class='st'>"https://biogeo.ucdavis.edu/data/gadm3.6/Rsf/gadm36_ITA_0_sf.rds"</span>,
   <span class='kw pkg'>httr</span><span class='kw ns'>::</span><span class='fu'><a href='https://httr.r-lib.org/reference/write_disk.html'>write_disk</a></span>(<span class='no'>it_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>())
-)
-<span class='no'>it</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span>(<span class='no'>it_path</span>)
-<span class='no'>s2tiles_it</span> <span class='kw'>&lt;-</span> <span class='no'>s2tiles</span>[<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/geos_binary_pred.html'>st_intersects</a></span>(<span class='no'>it</span>, <span class='no'>s2tiles</span>)<span class='kw'>[[</span><span class='fl'>1</span>]],]
+)</div><div class='output co'>#&gt; Response [https://data.biogeo.ucdavis.edu/data/gadm3.6/Rsf/gadm36_ITA_0_sf.rds]
+#&gt;   Date: 2019-09-24 14:48
+#&gt;   Status: 200
+#&gt;   Content-Type: &lt;unknown&gt;
+#&gt;   Size: 975 kB
+#&gt; &lt;ON DISK&gt;  /tmp/RtmpZWdi9d/filef2485fb14af5</div><div class='input'><span class='no'>it</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span>(<span class='no'>it_path</span>)
+<span class='no'>s2tiles_it</span> <span class='kw'>&lt;-</span> <span class='no'>s2tiles</span>[<span class='fu'><a href='https://rdrr.io/r/base/message.html'>suppressMessages</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/geos_binary_pred.html'>st_intersects</a></span>(<span class='no'>it</span>, <span class='no'>s2tiles</span>))<span class='kw'>[[</span><span class='fl'>1</span>]],]
 <span class='no'>s2_coords</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_coordinates.html'>st_coordinates</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/warning.html'>suppressWarnings</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/geos_unary.html'>st_centroid</a></span>(<span class='no'>s2tiles_it</span>)))
 
 <span class='co'># Show the tiles</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>s2tiles_it</span>$<span class='no'>geometry</span>, <span class='kw'>border</span> <span class='kw'>=</span> <span class='st'>"blue"</span>)
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>it</span>$<span class='no'>geometry</span>, <span class='kw'>border</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-<span class='fu'><a href='https://rdrr.io/r/graphics/text.html'>text</a></span>(<span class='no'>s2_coords</span>[,<span class='fl'>1</span>], <span class='no'>s2_coords</span>[,<span class='fl'>2</span>], <span class='no'>s2tiles_it</span>$<span class='no'>tile_id</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>, <span class='kw'>cex</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)
-}</div></pre>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>s2tiles_it</span>$<span class='no'>geometry</span>, <span class='kw'>border</span> <span class='kw'>=</span> <span class='st'>"blue"</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>it</span>$<span class='no'>geometry</span>, <span class='kw'>border</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/text.html'>text</a></span>(<span class='no'>s2_coords</span>[,<span class='fl'>1</span>], <span class='no'>s2_coords</span>[,<span class='fl'>2</span>], <span class='no'>s2tiles_it</span>$<span class='no'>tile_id</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>, <span class='kw'>cex</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)</div><div class='img'><img src='s2_tiles-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

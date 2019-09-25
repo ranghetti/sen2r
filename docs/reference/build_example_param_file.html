@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check a path — path_check • sen2r: Find, Download and Process Sentinel-2 Data</title>
+<title>Build an example JSON parameter file — build_example_param_file • sen2r: Find, Download and Process Sentinel-2 Data</title>
 
 
 <!-- jquery -->
@@ -35,9 +35,10 @@
 
 
 
-<meta property="og:title" content="Check a path — path_check" />
-<meta property="og:description" content="Accessory functions to check that a directory exists and
-the user have write permissions on it (to be used in a Shiny context)" />
+<meta property="og:title" content="Build an example JSON parameter file — build_example_param_file" />
+<meta property="og:description" content="Function used to write JSON parameter file.
+A function is provided instead than a json file to ensure
+directories to match the user folder tree." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -113,47 +114,56 @@ the user have write permissions on it (to be used in a Shiny context)" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check a path</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/path_check.R'><code>R/path_check.R</code></a></small>
-    <div class="hidden name"><code>path_check.Rd</code></div>
+    <h1>Build an example JSON parameter file</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/build_example_param_file.R'><code>R/build_example_param_file.R</code></a></small>
+    <div class="hidden name"><code>build_example_param_file.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Accessory functions to check that a directory exists and
-the user have write permissions on it (to be used in a Shiny context)</p>
+    <p>Function used to write JSON parameter file.
+A function is provided instead than a json file to ensure
+directories to match the user folder tree.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>path_check</span>(<span class='no'>path</span>, <span class='kw'>mustbe_empty</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>mustbe_writable</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>build_example_param_file</span>(<span class='kw'>json_path</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(<span class='kw'>fileext</span> <span class='kw'>=</span>
+  <span class='st'>"_sen2r_params.json"</span>), <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>path</th>
-      <td><p><code>string</code> full path to a folder</p></td>
+      <th>json_path</th>
+      <td><p>Path of the output file. Default is to save it on a
+temporary file, whose path is returned.</p></td>
     </tr>
     <tr>
-      <th>mustbe_empty</th>
-      <td><p><code>logical</code> if TRUE, accept only empty directories</p></td>
-    </tr>
-    <tr>
-      <th>mustbe_writable</th>
-      <td><p><code>logical</code> if TRUE, accept only directories with write
-permissions</p></td>
+      <th>overwrite</th>
+      <td><p>Logical value: should existing output file be
+overwritten? (default: TRUE)</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>The path of the created file.</p>
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>License: GPL 3.0</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw pkg'>sen2r</span><span class='kw ns'>:::</span><span class='fu'>build_example_param_file</span>()</div><div class='output co'>#&gt; [1] "/tmp/RtmpLtNBav/file91d95755b252_sen2r_params.json"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
+      <li><a href="#note">Note</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
     <h2>Author</h2>
-    <p>Luigi Ranghetti, PhD (2019) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p>
-<p>Lorenzo Busetto, PhD (2019) <a href='mailto:lbusett@gmail.com>'>lbusett@gmail.com></a></p>
+    <p>Luigi Ranghetti, phD (2019) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p>
   </div>
 </div>
 

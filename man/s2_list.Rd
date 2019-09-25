@@ -61,7 +61,7 @@ products satisfying given search criteria.
 License: GPL 3.0
 }
 \examples{
-\dontrun{
+\donttest{
 pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
 time_window <- as.Date(c("2016-05-01", "2017-07-30"))
 

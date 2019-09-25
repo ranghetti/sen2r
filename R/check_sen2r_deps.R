@@ -26,9 +26,8 @@
 #' @importFrom jsonlite fromJSON toJSON
 #' @export
 #' @examples
-#' \dontrun{
-#' 
-#' check_sen2r_deps()
+#' if (interactive()) {
+#'   check_sen2r_deps()
 #' }
 
 check_sen2r_deps <- function() {
