@@ -377,7 +377,7 @@ s2_thumbnails <- function(infiles,
                           tmpdir=NA,
                           rmtmp=TRUE,
                           overwrite=FALSE) {
-  
+
   # Check that GDAL suports JPEG JFIF format
   # TODO
   
@@ -481,8 +481,8 @@ s2_thumbnails <- function(infiles,
       }
       
       # define scaleRange
-      if (anyNA(scaleRange)) {
-        scaleRange <- if (sel_prod_type %in% c("BOA","TOA")) {
+      sel_scaleRange <- if (anyNA(scaleRange)) {
+        if (sel_prod_type %in% c("BOA","TOA")) {
           c(0, switch(rgb_type, "SwirNirR" = 8000, "NirRG" = 7500, "RGB" = 2500))
         } else if (sel_prod_type %in% c("Zscore","rbias")){
           sel_infile_datatype <- raster_metadata(sel_infile_path)$type
@@ -505,6 +505,8 @@ s2_thumbnails <- function(infiles,
             c(0,200)
           }
         }
+      } else {
+        scaleRange
       }
       
       # generate RGB basing on prod_type
@@ -513,8 +515,8 @@ s2_thumbnails <- function(infiles,
         stack2rgb(
           resized_path, 
           out_file = out_path,
-          minval = scaleRange[1], 
-          maxval = scaleRange[2],
+          minval = sel_scaleRange[1], 
+          maxval = sel_scaleRange[2],
           tmpdir = tmpdir
         )
         
@@ -542,8 +544,8 @@ s2_thumbnails <- function(infiles,
           } else {
             "generic_ndsi"
           },
-          minval = scaleRange[1], 
-          maxval = scaleRange[2],
+          minval = sel_scaleRange[1], 
+          maxval = sel_scaleRange[2],
           tmpdir = tmpdir
         )
         
