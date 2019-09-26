@@ -34,18 +34,20 @@ examplenames <- c(
     package = "sen2r")
 )
 
+\donttest{
 # Return metadata as data.table
 raster_metadata(examplenames)
+}
 
-# Return metadata as list
-raster_metadata(examplenames, format = "list")
+# Return some metadata as data.table
+raster_metadata(examplenames, c("res", "size", "bbox", "outformat"))
 
-# Return only two metadata
-raster_metadata(examplenames, c("res", "unit"))
+# Return some metadata as list
+raster_metadata(examplenames, c("res", "size", "bbox", "proj"), format = "list")
 
 # Output with an invalid raster
 examplenames <- c(examplenames, system.file("share/gdal_formats.json", package="sen2r"))
-raster_metadata(examplenames)
+raster_metadata(examplenames, c("bbox", "proj"))
 }
 \author{
 Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}

@@ -120,7 +120,10 @@ testthat::test_that(
     testthat::expect_true(all(file.exists(exp_outpath_12)))
     
     # test on raster metadata
-    exp_meta_r <- raster_metadata(exp_outpath_12) # default format: data.table
+    exp_meta_r <- raster_metadata(
+      exp_outpath_12, 
+      c("size", "res", "bbox", "proj", "type", "outformat")
+    )
     testthat::expect_equal(
       exp_meta_r[,c("size.x", "size.y")], 
       data.table("size.x"=24, "size.y"=42)
@@ -129,7 +132,6 @@ testthat::test_that(
       exp_meta_r[,c("res.x", "res.y")], 
       data.table("res.x"=10, "res.y"=10)
     )
-    testthat::expect_equal(exp_meta_r$nbands, 1)
     testthat::expect_equal(
       exp_meta_r[1,c("xmin", "xmax", "ymin", "ymax")], 
       data.table("xmin" = 580560, "xmax" = 580800, "ymin" = 5101700, "ymax" = 5102120) 
@@ -182,7 +184,10 @@ testthat::test_that(
     testthat::expect_true(exp_info_r[1,"ctime"] < exp_info_r[2,"ctime"])
     
     # test on raster metadata
-    exp_meta_r <- raster_metadata(exp_outpath_13[2]) # default format: data.table
+    exp_meta_r <- raster_metadata(
+      exp_outpath_13[2], 
+      c("size", "res", "bbox", "proj", "type", "outformat")
+    )
     testthat::expect_equal(
       exp_meta_r[,c("size.x", "size.y")], 
       data.table("size.x"=24, "size.y"=42)
@@ -191,7 +196,6 @@ testthat::test_that(
       exp_meta_r[,c("res.x", "res.y")], 
       data.table("res.x"=10, "res.y"=10)
     )
-    testthat::expect_equal(exp_meta_r$nbands, 1)
     testthat::expect_equal(
       exp_meta_r[,c("xmin", "xmax", "ymin", "ymax")], 
       data.table("xmin" = 580560, "xmax" = 580800, "ymin" = 5101700, "ymax" = 5102120) 
@@ -233,10 +237,13 @@ testthat::test_that(
     testthat::expect_true(file.exists(exp_outpath_15))
     
     # test on raster metadata
-    exp_meta_r <- raster_metadata(exp_outpath_15, format = "list")[[1]]
+    exp_meta_r <- raster_metadata(
+      exp_outpath_15, 
+      c("size", "res", "bbox", "proj", "type", "outformat"),
+      format = "list"
+    )[[1]]
     testthat::expect_equal(exp_meta_r$size, c("x"=24, "y"=42))
     testthat::expect_equal(exp_meta_r$res, c("x"=10, "y"=10))
-    testthat::expect_equal(exp_meta_r$nbands, 1)
     testthat::expect_equal(exp_meta_r$bbox, sf::st_bbox(
       c("xmin" = 580560, "xmax" = 580800, "ymin" = 5101700, "ymax" = 5102120),
       crs = sf::st_crs(32632)
