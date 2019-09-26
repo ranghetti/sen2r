@@ -23,9 +23,9 @@ create_s2_dop <- function(json_path = NA, force = FALSE) {
   
   # check if the json already exists, and if the version is updated
   if (is.na(json_path)) {
-    json_path <- file.path(system.file("extdata", package="sen2r"), "doybase.json")
+    json_path <- file.path(system.file("share", package="sen2r"), "doybase.json")
   }
-  if (system.file("extdata","doybase.json", package="sen2r") == json_path) {
+  if (system.file("share/doybase.json", package="sen2r") == json_path) {
     if (force == FALSE) {
       return(json_path)
     }

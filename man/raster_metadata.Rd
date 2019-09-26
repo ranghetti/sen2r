@@ -30,7 +30,7 @@ License: GPL 3.0
 examplenames <- c(
   system.file("tif/L7_ETMs.tif", package="stars"),
   system.file("nc/bcsd_obs_1999.nc", package = "stars"),
-  system.file("extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_BOA_10.tif",
+  system.file("data/out/S2A2A_20170703_022_Barbellino_BOA_10.tif",
     package = "sen2r")
 )
 
@@ -44,7 +44,7 @@ raster_metadata(examplenames, format = "list")
 raster_metadata(examplenames, c("res", "unit"))
 
 # Output with an invalid raster
-examplenames <- c(examplenames, system.file("extdata/gdal_formats.json", package="sen2r"))
+examplenames <- c(examplenames, system.file("share/gdal_formats.json", package="sen2r"))
 raster_metadata(examplenames)
 }
 \author{

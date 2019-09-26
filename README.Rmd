@@ -6,8 +6,8 @@ output:
   fig_caption: no
 ---
 
-<!-- IMPORTANT: do NOT edit README.Rmd! Edit index.Rmd instead,       -->
-<!-- and generate README.Rmd using inst/extdata/code/create_README.sh -->
+<!-- IMPORTANT: do NOT edit README.Rmd! Edit index.Rmd instead, -->
+<!-- and generate README.Rmd using utils/code/create_README.sh  -->
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(

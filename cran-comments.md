@@ -32,7 +32,7 @@ Please add small files needed for the examples in the inst/extdata
 subfolder of your package and use system.file() to get the correct
 package path.
 
-We added the directory inst/extdata/example_files/out_ref, containing small
+We added the directory inst/data/out, containing small
 example files used by function examples, including `gdalwarp_grid.R`.
 Reference documentations were improved to make use of these files.
 
@@ -67,13 +67,15 @@ The package was writing within the package direcotry for the following reasons:
 1. install Sen2Cor;
 2. install aria2;
 3. write the paths of the runtime dependencies in the file extdata/paths.json;
-4. write the SciHub credentials in the file inst/apihub.txt.
+4. write the SciHub credentials in the file inst/apihub.txt;
+5. write some logs in inst/extdata/logs;
+6. download the file s2_tiles.rds in inst/extdata/vector/s2_tiles.rds.
 
 These situations were managed as follows:
-- first two functions were modified in order to explicitly expect the output 
+- first two functions were modified in order to require the output 
     path as argument;
-- the permission to write within paths.json and apihub.txt in the user's home 
-   is now asked to the user.
+- files 3-6 are now saved in the subfolder ".sen2r" in the user's home 
+   directory; the permission to do it is now asked to the user.
 
 > In several functions the return value is NULL, however, it would be
 better to use stop() as it "stops execution of the current expression

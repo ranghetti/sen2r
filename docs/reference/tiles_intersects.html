@@ -165,7 +165,7 @@ otherwise leave to NULL and it will be generated within the function).</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>ex_extent</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_read.html'>st_read</a></span>(
-  <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/example_files/scalve.kml"</span>, <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"sen2r"</span>),
+  <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"data/vector/scalve.kml"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"sen2r"</span>),
   <span class='kw'>quiet</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )
 <span class='no'>ex_extent</span> <span class='kw'>&lt;-</span> <span class='no'>ex_extent</span>[<span class='no'>ex_extent</span>$<span class='no'>description</span> <span class='kw'>==</span> <span class='st'>"Schilpario"</span>,]

@@ -5,10 +5,10 @@ library(sen2r)
 library(ggimage)
 
 # Define directories and parameters
-example_dir <- system.file("extdata","example_files", package="sen2r")
-safe_dir <- file.path(example_dir, "safe")
-out_dir <- file.path(example_dir, "out", "out_masktypes")
-dir.create(out_dir, recursive=TRUE)
+safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
+dir.create(safe_dir, showWarnings = FALSE)
+out_dir <- tempfile(pattern = "out_masktypes_")
+dir.create(out_dir)
 
 sel_extent <- st_as_sfc(st_bbox(
   c("xmin"=583E3, "ymin"=5094E3, "xmax"=590E3, "ymax"=5098E3),
@@ -30,7 +30,7 @@ for (s in c(0,30,100)) {
       timewindow = as.Date("2018-08-05"),
       list_prods = c("TCI","SCL"),
       mask_type = "scl_0_1_2_3_7_8_9_11", mask_smooth=s, mask_buffer=b,
-      path_l1c = safe1_dir,
+      path_l1c = safe_dir,
       path_l2a = safe_dir,
       path_out = out_dir,
       # tmpdir = file.path(out_dir,"tmp2"),

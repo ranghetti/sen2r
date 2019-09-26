@@ -13,5 +13,3 @@
 ^LICENSE\.md$
 ^cran\-comments\.md$
 ^CRAN-RELEASE$
-inst/extdata/example_files/safe/
-inst/extdata/vector/s2_tiles.rds

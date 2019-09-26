@@ -2,9 +2,7 @@
 # testthat::skip_on_cran()
 # testthat::skip_on_travis()
 # 
-# example_dir <- system.file("extdata/example_files", package = "sen2r")
-# dir.create(example_dir, showWarnings = FALSE)
-# safe_dir <- file.path(example_dir, "safe")
+# safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
 # dir.create(safe_dir, showWarnings = FALSE)
 # 
 # 
@@ -24,7 +22,7 @@
 #       create_indices_db(json_path = newjson_path, force = TRUE)
 #     )
 #     testthat::expect_gt(out_time["elapsed"], 10)
-#     defjson <- jsonlite::fromJSON(system.file("extdata/indices.json",package="sen2r"))
+#     defjson <- jsonlite::fromJSON(system.file("share/indices.json",package="sen2r"))
 #     newjson <- jsonlite::fromJSON(newjson_path)
 #     testthat::expect_is(newjson, "list")
 #     testthat::expect_is(newjson$indices, "data.frame")

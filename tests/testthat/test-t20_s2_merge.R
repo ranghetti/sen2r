@@ -2,9 +2,7 @@ context("Test s2_merge and translate when stitching 2 tiles with no clipping")
 testthat::skip_on_cran() # because using runtime GDAL
 testthat::skip_on_travis() # because required SAFE do not exists
 
-example_dir <- system.file("extdata/example_files", package = "sen2r")
-dir.create(example_dir, showWarnings = FALSE)
-safe_dir <- file.path(example_dir, "safe")
+safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
 dir.create(safe_dir, showWarnings = FALSE)
 
 

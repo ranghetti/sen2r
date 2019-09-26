@@ -23,31 +23,3 @@ vignettes/*.pdf
 *.knit.md
 .Rproj.user
 *.Rproj
-# dependencies (sen2cor, xslt)
-/inst/sen2cor_2-[58]-[50]/
-/sen2cor_2-[58]-[50]/
-/extdata/xslt/
-/inst/extdata/xslt/
-/query_results.xml
-/inst/aria2.exe
-/aria2.exe
-*.pyc
-
-# path file
-/extdata/paths.json
-/inst/extdata/paths.json
-# other files
-/extdata/vector/s2_tiles.rds
-/inst/extdata/vector/s2_tiles.rds
-/extdata/example_files/safe/
-/inst/extdata/example_files/safe/
-/extdata/testdata/example_files/safe/
-/inst/extdata/testdata/example_files/safe/
-/extdata/example_files/out/
-/inst/extdata/example_files/out/
-/extdata/testdata/example_files/out/
-/inst/extdata/testdata/example_files/out/
-/logs/
-/inst/logs/
-/extdata/apihub.txt
-/inst/extdata/apihub.txt

@@ -2,9 +2,7 @@ context("Test mask - main function")
 testthat::skip_on_cran() # because using runtime GDAL
 testthat::skip_on_travis() # because required SAFE do not exists
 
-example_dir <- system.file("extdata/example_files", package = "sen2r")
-dir.create(example_dir, showWarnings = FALSE)
-safe_dir <- file.path(example_dir, "safe")
+safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
 dir.create(safe_dir, showWarnings = FALSE)
 
 testthat::test_that(
@@ -18,7 +16,7 @@ testthat::test_that(
       gui = FALSE,
       online = TRUE,
       step_atmcorr = "l2a", # to avoid checks on Sen2Cor
-      extent = file.path(example_dir, "scalve.kml"),
+      extent = system.file("data/vector/scalve.kml", package = "sen2r"),
       extent_name = "Scalve",
       extent_as_mask = TRUE,
       timewindow = as.Date("2017-07-03"),
@@ -57,7 +55,7 @@ testthat::test_that(
 context("Test mask - s2_mask()")
 # testthat::skip_on_cran()
 # testthat::skip_on_travis()
-ref_dir <- system.file("extdata/example_files/out_ref", package = "sen2r")
+ref_dir <- system.file("data/out", package = "sen2r")
 
 testthat::test_that(
   "Tests on custom mask on TOA with smoothing and buffering, with save binary mask", {

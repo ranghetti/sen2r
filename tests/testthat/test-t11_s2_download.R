@@ -7,9 +7,7 @@ testthat::skip_on_travis()
 # To perform the test also on download, replace 'test_download = FALSE' with 'TRUE'.
 test_download = FALSE
 
-example_dir <- system.file("extdata/example_files", package = "sen2r")
-dir.create(example_dir, showWarnings = FALSE)
-safe_dir <- file.path(example_dir, "safe")
+safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
 dir.create(safe_dir, showWarnings = FALSE)
 
 

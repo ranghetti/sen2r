@@ -37,7 +37,7 @@ License: GPL 3.0
 }
 \examples{
 ex_extent <- sf::st_read(
-  system.file("extdata/example_files/scalve.kml", package="sen2r"),
+  system.file("data/vector/scalve.kml", package = "sen2r"),
   quiet = TRUE
 )
 ex_extent <- ex_extent[ex_extent$description == "Schilpario",]

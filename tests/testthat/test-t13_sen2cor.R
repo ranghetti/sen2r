@@ -7,9 +7,7 @@ testthat::skip_on_travis()
 # To perform the test also on Sen2Cor, replace 'test_sen2cor = FALSE' with 'TRUE'.
 test_sen2cor = FALSE
 
-example_dir <- system.file("extdata/example_files", package = "sen2r")
-dir.create(example_dir, showWarnings = FALSE)
-safe_dir <- file.path(example_dir, "safe")
+safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
 dir.create(safe_dir, showWarnings = FALSE)
 s2_l1c_prods <- file.path(safe_dir, c(
   "S2A_MSIL1C_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE",
@@ -121,5 +119,3 @@ if (test_sen2cor) {
     }
   )
 }
-
-

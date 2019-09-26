@@ -320,12 +320,12 @@
 #' # a session without opening the gui, unless gui = TRUE is passed.
 #' 
 #' # Launch a processing using function arguments
-#' safe_dir <- file.path(system.file("extdata/example_files", package = "sen2r"), "safe")
+#' safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
 #' out_dir_3 <- tempfile(pattern = "Barbellino_")
 #' out_paths_3 <- sen2r(
 #'   gui = FALSE,
 #'   step_atmcorr = "l2a",
-#'   extent = system.file("extdata/example_files/barbellino.geojson", package = "sen2r"),
+#'   extent = system.file("data/vector/barbellino.geojson", package = "sen2r"),
 #'   extent_name = "Barbellino",
 #'   timewindow = as.Date("2017-07-03"),
 #'   list_prods = c("TOA","BOA","SCL"),
@@ -341,7 +341,7 @@
 #' out_dir_4 <- tempfile(pattern = "Scalve_")
 #' out_paths_4 <- sen2r(
 #'   param_list = json_path,
-#'   extent = system.file("extdata/example_files/scalve.kml", package = "sen2r"),
+#'   extent = system.file("data/vector/scalve.kml", package = "sen2r"),
 #'   extent_name = "Scalve",
 #'   path_out = out_dir_4
 #' )
@@ -969,7 +969,7 @@ sen2r <- function(param_list = NULL,
   
   # check output format
   # sel_driver <- py$gdal$GetDriverByName(pm$outformat)
-  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))$drivers
+  gdal_formats <- fromJSON(system.file("share/gdal_formats.json",package="sen2r"))$drivers
   sel_driver <- gdal_formats[gdal_formats$name==pm$outformat,]
   sel_rgb_driver <- gdal_formats[gdal_formats$name==pm$rgb_outformat,]
   

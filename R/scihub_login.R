@@ -3,8 +3,8 @@
 #'  save new username and password (`write_scihub_login()`)
 #'  or check their validity (`check_scihub_login()`).
 #'  Login information is stored in a file `apihub.txt` inside the
-#'  "extdata" directory. This functions allow to read or write this
-#'  file, and to edit them from inside the GUI.
+#'  ".sen2r" subfolder of the home directory. This functions allow to read
+#'  or write this file, and to edit them from inside the GUI.
 #' @param apihub_path Path of the file in which login information is saved.
 #'  If NA (default) it is automatically read from the package default location.
 #' @param username SciHub username.
@@ -31,7 +31,6 @@ read_scihub_login <- function(apihub_path=NA) {
   # if apihub_path is not specified,
   # retrieve from the current installation
   if (any(c(is.na(apihub_path), length(nn(apihub_path))==0))) {
-    # apihub_path <- file.path(system.file("extdata", package="sen2r"), "apihub.txt")
     apihub_path <- file.path(dirname(attr(load_binpaths(), "path")), "apihub.txt")
     attr(apihub_path, "default") <- TRUE
   } else {

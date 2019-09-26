@@ -2,9 +2,7 @@ context("Test warping (clip, reproject, resize)")
 testthat::skip_on_cran() # because using runtime GDAL
 testthat::skip_on_travis() # because required SAFE do not exists
 
-example_dir <- system.file("extdata/example_files", package = "sen2r")
-dir.create(example_dir, showWarnings = FALSE)
-safe_dir <- file.path(example_dir, "safe")
+safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
 dir.create(safe_dir, showWarnings = FALSE)
 
 
@@ -19,7 +17,7 @@ testthat::test_that(
       gui = FALSE,
       online = TRUE,
       step_atmcorr = "l2a", # to avoid checks on Sen2Cor
-      extent = file.path(example_dir, "scalve.kml"),
+      extent = system.file("data/vector/scalve.kml", package = "sen2r"),
       extent_name = "Scalve",
       extent_as_mask = TRUE,
       timewindow = as.Date("2017-07-03"),
@@ -103,7 +101,7 @@ testthat::test_that(
       gui = FALSE,
       online = FALSE,
       step_atmcorr = "l2a", # to avoid checks on Sen2Cor
-      extent = file.path(example_dir, "scalve.kml"),
+      extent = system.file("data/vector/scalve.kml", package = "sen2r"),
       extent_name = "Scalve",
       extent_as_mask = FALSE,
       timewindow = as.Date("2017-07-03"),
@@ -199,7 +197,7 @@ testthat::test_that(
       gui = FALSE,
       online = FALSE,
       step_atmcorr = "l2a", # to avoid checks on Sen2Cor
-      extent = file.path(example_dir, "scalve.kml"),
+      extent = system.file("data/vector/scalve.kml", package = "sen2r"),
       extent_name = "Scalve",
       extent_as_mask = FALSE,
       timewindow = as.Date("2017-07-03"),
@@ -276,11 +274,11 @@ testthat::skip_on_cran() # because using runtime GDAL
 # testthat::skip_on_travis()
 
 ex_sel <- system.file(
-  "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_RGB432B_10.tif",
+  "data/out/S2A2A_20170703_022_Barbellino_RGB432B_10.tif",
   package = "sen2r"
 )
 ex_ref <- system.file(
-  "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_SCL_10.tif",
+  "data/out/S2A2A_20170703_022_Barbellino_SCL_10.tif",
   package = "sen2r"
 )
 testthat::test_that(
@@ -328,7 +326,7 @@ context("Test gdal_warp()")
 testthat::skip_on_cran() # because using runtime GDAL
 # testthat::skip_on_travis()
 
-crop_poly <- system.file("extdata/example_files/dam.geojson", package = "sen2r")
+crop_poly <- system.file("data/vector/dam.geojson", package = "sen2r")
 crop_line <- sf::st_cast(sf::read_sf(crop_poly), "LINESTRING")
 test1 <- tempfile(fileext = "_test1.tif")
 

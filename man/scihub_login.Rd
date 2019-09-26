@@ -50,8 +50,8 @@ Read the SciHub login information (\code{read_scihub_login()}),
 save new username and password (\code{write_scihub_login()})
 or check their validity (\code{check_scihub_login()}).
 Login information is stored in a file \code{apihub.txt} inside the
-"extdata" directory. This functions allow to read or write this
-file, and to edit them from inside the GUI.
+".sen2r" subfolder of the home directory. This functions allow to read
+or write this file, and to edit them from inside the GUI.
 }
 \note{
 License: GPL 3.0

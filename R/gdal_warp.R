@@ -64,14 +64,14 @@
 #' \donttest{
 #' #' # Define file names
 #' ex_sel <- system.file(
-#'   "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_RGB432B_10.tif",
+#'   "data/out/S2A2A_20170703_022_Barbellino_RGB432B_10.tif",
 #'   package = "sen2r"
 #' )
 #' ex_ref <- system.file(
-#'   "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_SCL_10.tif",
+#'   "data/out/S2A2A_20170703_022_Barbellino_SCL_10.tif",
 #'   package = "sen2r"
 #' )
-#' crop_poly <- system.file("extdata/example_files/dam.geojson", package = "sen2r")
+#' crop_poly <- system.file("data/vector/dam.geojson", package = "sen2r")
 #' crop_line <- sf::st_cast(sf::read_sf(crop_poly), "LINESTRING")
 #'
 #' # Simple clip
@@ -212,7 +212,7 @@ gdal_warp <- function(srcfiles,
   
   # check output format
   if (!is.null(of)) {
-    gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))$drivers
+    gdal_formats <- fromJSON(system.file("share/gdal_formats.json",package="sen2r"))$drivers
     sel_driver <- gdal_formats[gdal_formats$name==of,]
     if (nrow(sel_driver)==0) {
       print_message(

@@ -38,7 +38,7 @@ License: GPL 3.0
 \examples{
 # Load a VRT containing a relative path
 ex_vrt <- system.file(
-  "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_RGB432B_10.vrt", 
+  "data/out/S2A2A_20170703_022_Barbellino_RGB432B_10.vrt", 
   package = "sen2r"
 )
 abs_vrt <- tempfile(fileext = "_abs.vrt")

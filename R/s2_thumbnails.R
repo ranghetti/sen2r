@@ -228,10 +228,10 @@ raster2rgb <- function(in_rast,
   
   # Define builtin palette paths
   palette_builtin <- c(
-    "SCL" = system.file("extdata","palettes","SCL.txt", package="sen2r"),
-    "NDVI" = system.file("extdata","palettes","NDVI.cpt", package="sen2r"),
-    "generic_ndsi" = system.file("extdata","palettes","NDSI.cpt", package="sen2r"),
-    "Zscore" = system.file("extdata","palettes","Zscore.cpt", package="sen2r")
+    "SCL" = system.file("share/palettes/SCL.txt", package="sen2r"),
+    "NDVI" = system.file("share/palettes/NDVI.cpt", package="sen2r"),
+    "generic_ndsi" = system.file("share/palettes/NDSI.cpt", package="sen2r"),
+    "Zscore" = system.file("share/palettes/Zscore.cpt", package="sen2r")
   )
   
   # Load GDAL paths

@@ -119,11 +119,11 @@
 #' \donttest{
 #' # Define file names
 #' ex_in <- system.file(
-#'   "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_RGB432B_10.tif",
+#'   "data/out/S2A2A_20170703_022_Barbellino_RGB432B_10.tif",
 #'   package = "sen2r"
 #' )
 #' ex_mask <- system.file(
-#'   "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_SCL_10.tif",
+#'   "data/out/S2A2A_20170703_022_Barbellino_SCL_10.tif",
 #'   package = "sen2r"
 #' )
 #'
@@ -215,7 +215,7 @@ s2_mask <- function(infiles,
   }
   
   # check output format
-  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))$drivers
+  gdal_formats <- fromJSON(system.file("share/gdal_formats.json",package="sen2r"))$drivers
   if (!is.na(format)) {
     sel_driver <- gdal_formats[gdal_formats$name==format,]
     if (nrow(sel_driver)==0) {

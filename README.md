@@ -1,7 +1,7 @@
 
-<!-- IMPORTANT: do NOT edit README.Rmd! Edit index.Rmd instead,       -->
+<!-- IMPORTANT: do NOT edit README.Rmd! Edit index.Rmd instead, -->
 
-<!-- and generate README.Rmd using inst/extdata/code/create_README.sh -->
+<!-- and generate README.Rmd using utils/code/create_README.sh  -->
 
 [![Travis-CI Build
 Status](https://travis-ci.org/ranghetti/sen2r.svg?branch=master)](https://travis-ci.org/ranghetti/sen2r)
