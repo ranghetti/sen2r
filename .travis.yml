@@ -27,6 +27,7 @@ apt_packages:
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y libgdal-dev libproj-dev libv8-dev libprotobuf-dev libudunits2-dev netcdf-bin libv8-dev libjq-dev
+  - sudo apt-get install -y gdal-bin python-gdal
 
 script: 
   - R CMD build .

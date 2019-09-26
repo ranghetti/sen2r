@@ -214,7 +214,7 @@ testthat::test_that(
 
 context("Test compute spectral indices - s2_calcindices(), GDAL method")
 testthat::skip_on_cran() # because needs runtime GDAL
-testthat::skip_on_travis()
+# testthat::skip_on_travis()
 testthat::test_that(
   "Tests on indices computation with function s2_calcidices(), gdal method", {
     

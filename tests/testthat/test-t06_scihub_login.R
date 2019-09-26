@@ -41,7 +41,7 @@ test_that("check_scihub_login works as expected", {
 
 context("check connection - main functions")
 testthat::skip_on_cran()
-testthat::skip_on_travis()
+# testthat::skip_on_travis()
 
 test_that("check GDAL", {
   # this test must be launched before testing sen2r() in case paths.json is missing,
