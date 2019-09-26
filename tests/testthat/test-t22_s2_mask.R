@@ -15,11 +15,11 @@ testthat::test_that(
     exp_outpath_5 <- file.path(outdir_5, "BOA", "S2A2A_20170703_022_Scalve_BOA_10.tif")
     unlink(exp_outpath_5)
     sen2r(
-      gui            = FALSE,
-      online         = TRUE,
-      step_atmcorr   = "l2a", # to avoid checks on Sen2Cor
-      extent         = file.path(example_dir, "scalve.kml"),
-      extent_name    = "Scalve",
+      gui = FALSE,
+      online = TRUE,
+      step_atmcorr = "l2a", # to avoid checks on Sen2Cor
+      extent = file.path(example_dir, "scalve.kml"),
+      extent_name = "Scalve",
       extent_as_mask = TRUE,
       timewindow = as.Date("2017-07-03"),
       list_prods = "BOA",
@@ -64,18 +64,18 @@ testthat::test_that(
     
     outdir_6 <- file.path(tempdir(), "out_test6")
     dir.create(dirname(outdir_6), showWarnings = FALSE)
-    exp_outpath_6   <- file.path(outdir_6, "TOA", "S2A1C_20170703_022_Barbellino_TOA_10.tif")
+    exp_outpath_6 <- file.path(outdir_6, "TOA", "S2A1C_20170703_022_Barbellino_TOA_10.tif")
     exp_outpath_msk <- file.path(outdir_6, "MSK", "S2A1C_20170703_022_Barbellino_MSK_10.tif")
     unlink(exp_outpath_6)
     unlink(exp_outpath_msk)
     s2_mask(
-      infiles          = file.path(ref_dir, "S2A1C_20170703_022_Barbellino_TOA_10.tif"),
-      maskfiles        = file.path(ref_dir, "S2A2A_20170703_022_Barbellino_SCL_10.tif"),
-      mask_type        = "clear_sky",
-      outdir           = outdir_6,
-      subdirs          = TRUE, 
-      smooth           = 10,
-      buffer           = 10,
+      infiles = file.path(ref_dir, "S2A1C_20170703_022_Barbellino_TOA_10.tif"),
+      maskfiles = file.path(ref_dir, "S2A2A_20170703_022_Barbellino_SCL_10.tif"),
+      mask_type = "clear_sky",
+      outdir = outdir_6,
+      subdirs = TRUE, 
+      smooth = 10,
+      buffer = 10,
       save_binary_mask = TRUE
     )
     expect_true(file.exists(exp_outpath_6))
@@ -122,12 +122,12 @@ testthat::test_that(
     exp_outpath_7 <- file.path(outdir_7, "BOA", "S2A2A_20170703_022_Barbellino_BOA_10.tif")
     unlink(exp_outpath_7)
     s2_mask(
-      infiles   = file.path(ref_dir, "S2A2A_20170703_022_Barbellino_BOA_10.tif"),
+      infiles = file.path(ref_dir, "S2A2A_20170703_022_Barbellino_BOA_10.tif"),
       maskfiles = file.path(ref_dir, "S2A2A_20170703_022_Barbellino_SCL_10.tif"),
       mask_type = "clear_sky",
-      max_mask  = 20,
-      outdir    = outdir_7,
-      subdirs   = TRUE
+      max_mask = 20,
+      outdir = outdir_7,
+      subdirs = TRUE
     )
     testthat::expect_false(file.exists(exp_outpath_7))
 

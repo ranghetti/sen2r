@@ -50,11 +50,11 @@
 #'  datatype is chosen (default values are 10000 for "Int16" and "UInt16",
 #'  1E9 for "Int32" and "UInt32"). Notice that, using "UInt16" and "UInt32" types,
 #'  negative values will be truncated to 0.
-#' @param proc_mode (optional) Character: if `"gdal_calc"`, 
-#'  gdal_calc routines are used to compute indices; 
+#' @param proc_mode (optional) Character: if `"gdal_calc"`,
+#'  gdal_calc routines are used to compute indices;
 #'  if `"raster"` (default), R functions are instead used.
-#'  **Note**: there is a difference in which the two modes manage values out 
-#'  of ranges (e.g. -32768 to 32767 in Int16 and 0 to 255 in Byte): 
+#'  **Note**: there is a difference in which the two modes manage values out
+#'  of ranges (e.g. -32768 to 32767 in Int16 and 0 to 255 in Byte):
 #'  "raster" mode set these values to NA, "gdal_calc"mode clip them to the
 #'  minimum/maximum values.
 #' @param parallel (optional) Logical: if TRUE, the function is run using parallel
@@ -95,7 +95,7 @@
 #'   dataType = "Float32"
 #' )
 #' ex_out
-#' 
+#'
 #' # Show output
 #' par(mfrow = c(1,2))
 #' par(mar = rep(0,4)); image(stars::read_stars(ex_in), rgb = 4:2, maxColorValue = 3500)
@@ -103,20 +103,20 @@
 
 s2_calcindices <- function(infiles,
                            indices,
-                           outdir       = ".",
-                           parameters   = NULL,
-                           source       = c("TOA","BOA"),
-                           format       = NA,
-                           subdirs      = NA,
-                           tmpdir       = NA,
-                           compress     = "DEFLATE",
-                           dataType     = "Int16",
-                           scaleFactor  = NA,
-                           proc_mode    = "raster",
-                           parallel     = FALSE,
-                           overwrite    = FALSE,
+                           outdir = ".",
+                           parameters = NULL,
+                           source = c("TOA","BOA"),
+                           format = NA,
+                           subdirs = NA,
+                           tmpdir = NA,
+                           compress = "DEFLATE",
+                           dataType = "Int16",
+                           scaleFactor = NA,
+                           proc_mode = "raster",
+                           parallel = FALSE,
+                           overwrite = FALSE,
                            .log_message = NA,
-                           .log_output  = NA) {
+                           .log_output = NA) {
   
   # to avoid NOTE on check
   prod_type <- . <- i <- NULL
@@ -138,10 +138,10 @@ s2_calcindices <- function(infiles,
     
     out <- raster(x)
     out <- writeStart(
-      out, out_file, 
-      NAflag = NAflag, 
-      datatype = datatype, 
-      format = ifelse(sel_format=="VRT", "GTiff", sel_format), 
+      out, out_file,
+      NAflag = NAflag,
+      datatype = datatype,
+      format = ifelse(sel_format=="VRT", "GTiff", sel_format),
       if(sel_format %in% c("GTiff","VRT")){options = paste0("COMPRESS=",compress)},
       overwrite = overwrite
     )
@@ -163,7 +163,7 @@ s2_calcindices <- function(infiles,
       }
       
       
-      # m   <- getValues(y, row = bs$row[i], nrows = bs$nrows[i])
+      # m <- getValues(y, row = bs$row[i], nrows = bs$nrows[i])
       out <- writeValues(out, v_out, bs$row[i])
     }
     out <- writeStop(out)
@@ -289,7 +289,7 @@ s2_calcindices <- function(infiles,
     .packages = c("raster","sen2r"),
     .combine=c,
     .errorhandling="remove"
-  )  %DO% {
+  ) %DO% {
     
     # redirect to log files
     if (n_cores > 1) { # nocov start
@@ -444,7 +444,7 @@ s2_calcindices <- function(infiles,
           )
         }
         # fix for envi extension (writeRaster use .envi)
-        if (sel_format0=="ENVI")  {fix_envi_format(file.path(out_subdir0,sel_outfile0))}
+        if (sel_format0=="ENVI") {fix_envi_format(file.path(out_subdir0,sel_outfile0))}
         
         if (is.null("binpaths")) {
           binpaths <- load_binpaths("gdal")

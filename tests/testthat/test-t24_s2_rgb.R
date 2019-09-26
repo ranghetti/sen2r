@@ -19,11 +19,11 @@ testthat::test_that(
     )
     unlink(exp_outpath_16)
     sen2r(
-      gui            = FALSE,
-      online         = TRUE,
-      step_atmcorr   = "l2a", # to avoid checks on Sen2Cor
-      extent         = file.path(example_dir, "scalve.kml"),
-      extent_name    = "Scalve",
+      gui = FALSE,
+      online = TRUE,
+      step_atmcorr = "l2a", # to avoid checks on Sen2Cor
+      extent = file.path(example_dir, "scalve.kml"),
+      extent_name = "Scalve",
       extent_as_mask = TRUE,
       timewindow = as.Date("2017-07-03"),
       list_prods = "BOA",

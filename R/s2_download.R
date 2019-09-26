@@ -24,7 +24,7 @@
 #' @importFrom httr GET RETRY authenticate progress write_disk
 #' @export
 #'
-#' @examples 
+#' @examples
 #' \dontrun{
 #' single_s2 <- paste0("https://scihub.copernicus.eu/apihub/odata/v1/",
 #'   "Products(\'c7142722-42bf-4f93-b8c5-59fd1792c430\')/$value")
@@ -36,10 +36,10 @@
 #'
 #' # Download the whole product
 #' s2_download(single_s2, outdir=tempdir())
-#' 
+#'
 #' #' # Download the whole product - using aria2
 #' s2_download(single_s2, outdir=tempdir(), downloader = "aria2")
-#' 
+#'
 #' # Download a specific tile
 #' s2_download(single_s2, tile="32TQQ", outdir=tempdir())
 #' # (for products with compact names, the two above commands produce equivalent
@@ -54,10 +54,10 @@
 #' }
 
 s2_download <- function(s2_prodlist = NULL,
-                        downloader  = "builtin",
-                        apihub      = NA,
-                        tile        = NULL,
-                        outdir      = ".",
+                        downloader = "builtin",
+                        apihub = NA,
+                        tile = NULL,
+                        outdir = ".",
                         overwrite = FALSE) {
   
   # convert input NA arguments in NULL
@@ -118,7 +118,7 @@ s2_download <- function(s2_prodlist = NULL,
           " -o ", basename(zip_path),
           " ", "\"", as.character(link), "\"",
           " --allow-overwrite --file-allocation=none --retry-wait=2",
-          " --http-user=",   "\"", creds[1], "\"",
+          " --http-user=", "\"", creds[1], "\"",
           " --http-passwd=", "\"", creds[2], "\"",
           " --max-tries=10"
         )

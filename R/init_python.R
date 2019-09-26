@@ -39,7 +39,7 @@ init_python <- function() {
           paste0(
             "\nIt is recommended to install it together with GDAL using the OSGeo4W ",
             "installer (GDAL is required for processing operations).\n",
-            "Download it from  http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86",
+            "Download it from http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86",
             if (Sys.info()["machine"]=="x86-64") {"_64"},".exe, ",
             "then choose the \"Advanced install\" and ",
             "check the package \"gdal-python\"."

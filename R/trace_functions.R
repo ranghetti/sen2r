@@ -1,10 +1,10 @@
 #' @title Trace functions which create files
-#' @description Some functions create output files during their execution; 
+#' @description Some functions create output files during their execution;
 #'  some of them are slow, so the probability that something goes wrong
 #'  during their execution is not null, with the consequence that output
-#'  files are incomplete, or that undesired temporary files are left on 
+#'  files are incomplete, or that undesired temporary files are left on
 #'  the filesystem.
-#'  
+#'
 #'  This functions is though to manage these situations.
 #'
 #'  [trace_function] runs a function and checks if errors occur during its execution;
@@ -14,15 +14,15 @@
 #'  intended to be created by the function are saved within the package, so that
 #'  they can be easily deleted in a second time; to do it, simply
 #'  run [clean_traces].
-#'  
-#'  Other intermediate functions are used internally: 
+#'
+#'  Other intermediate functions are used internally:
 #'  [start_trace] saves the paths of the files intended to be created within
 #'  a text file;
-#'  [end_trace] deletes this text file (it is used by [trace_function] when 
+#'  [end_trace] deletes this text file (it is used by [trace_function] when
 #'  a function stops without errors);
 #'  [clean_trace] deletes this text file and the intended output files (it is
 #'  used by [trace_function] when a function stops with errors).
-#'  
+#'
 #' @param trace_fun The function to be run.
 #' @param ... Arguments of the function `fun`
 #' @param trace_files Vector of the files intended to be created by `fun`
@@ -43,8 +43,8 @@
 start_trace <- function(trace_files, trace_funname) {
   
   # path in which trace txt files are placed
-  trace_path <- file.path(system.file(package="sen2r"),"logs") 
-  dir.create(trace_path, showWarnings = FALSE) 
+  trace_path <- file.path(system.file(package="sen2r"),"logs")
+  dir.create(trace_path, showWarnings = FALSE)
   
   # define name of the tracelog
   tracename <- file.path(

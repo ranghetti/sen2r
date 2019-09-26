@@ -21,5 +21,5 @@ the user have write permissions on it (to be used in a Shiny context)
 \author{
 Luigi Ranghetti, PhD (2019) \email{ranghetti.l@irea.cnr.it}
 
-Lorenzo Busetto, PhD (2019) \email{lbusett@gmail.com>}
+Lorenzo Busetto, PhD (2019) \email{lbusett@gmail.com}
 }

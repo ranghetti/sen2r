@@ -3,7 +3,7 @@
 #'  products satisfying given search criteria. 
 #' @param spatial_extent A valid spatial object object of class `sf`,
 #'  `sfc` or `sfg`
-#' @param tile  `string array` Sentinel-2 Tiles to be considered string (5-length character)
+#' @param tile `string array` Sentinel-2 Tiles to be considered string (5-length character)
 #' @param orbit `string array` Sentinel-2 orbit numbers to be considered
 #' @param time_interval Dates to be considered, as a temporal vector (class [POSIXct] or
 #'  [Date], or string in `YYYY-mm-dd` format) of length 1 (specific day) or 2 (time interval).
@@ -100,7 +100,7 @@ s2_list <- function(spatial_extent = NULL,
   if (!time_period %in% c("full", "seasonal")) {
     print_message(
       type = "error",
-      "`level` must be \"full\" or  \"seasonal\""
+      "`level` must be \"full\" or \"seasonal\""
     )
   }
   
@@ -174,7 +174,7 @@ s2_list <- function(spatial_extent = NULL,
     )
   }
   
-  spatial_extent    <- suppressWarnings(sf::st_union(spatial_extent))
+  spatial_extent <- suppressWarnings(sf::st_union(spatial_extent))
   spatial_extent_or <- spatial_extent
   
   # # If spatial_extent is not point, simplify polygon if needed / convert to bbox
@@ -191,8 +191,8 @@ s2_list <- function(spatial_extent = NULL,
   #   while (length(suppressWarnings(sf::st_cast(spatial_extent, "POINT"))) > 30) {
   #     if (n_while < 10) {
   #       spatial_extent <- suppressWarnings(sf::st_simplify(spatial_extent_or, dTolerance = dtolerance))
-  #       dtolerance     <- dtolerance * 2
-  #       n_while        <- n_while + 1
+  #       dtolerance <- dtolerance * 2
+  #       n_while <- n_while + 1
   #     } else {
   #       spatial_extent <- sf::st_as_sfc(sf::st_bbox(spatial_extent_or))
   #     }
@@ -214,13 +214,13 @@ s2_list <- function(spatial_extent = NULL,
   time_intervals <- if (time_period == "full") {
     data.frame(
       "start" = time_interval[1],
-      "end"   = time_interval[2],
+      "end" = time_interval[2],
       stringsAsFactors = FALSE
     )
   } else if (time_period == "seasonal") {
     data.frame(
       "start" = strftime(seq(time_interval[1], time_interval[2], by = "year"), "%Y-%m-%d"),
-      "end"   = strftime(rev(seq(time_interval[2], time_interval[1], by = "-1 year")), "%Y-%m-%d"),
+      "end" = strftime(rev(seq(time_interval[2], time_interval[1], by = "-1 year")), "%Y-%m-%d"),
       stringsAsFactors = FALSE
     )
   }
@@ -271,8 +271,8 @@ s2_list <- function(spatial_extent = NULL,
   
   for (t_int in seq_len(nrow(time_intervals))) {
     
-    rows      <- 100
-    start     <- 0
+    rows <- 100
+    start <- 0
     end_query <- FALSE
     
     while (!end_query) {
@@ -291,8 +291,8 @@ s2_list <- function(spatial_extent = NULL,
       query_string <- gsub("\\[", "%5b",query_string)
       query_string <- gsub("\\]", "%5d",query_string)
       
-      out_query    <- httr::GET(query_string, authenticate(creds[1,1], creds[1,2]))
-      out_xml      <- httr::content(out_query, as = "parsed", encoding = "UTF-8")
+      out_query <- httr::GET(query_string, authenticate(creds[1,1], creds[1,2]))
+      out_xml <- httr::content(out_query, as = "parsed", encoding = "UTF-8")
       out_xml_list <- XML::htmlTreeParse(out_xml, useInternalNodes = TRUE) %>% XML::xmlRoot()
       out_xml_list <- out_xml_list[["body"]][["feed"]]
       
@@ -342,15 +342,15 @@ s2_list <- function(spatial_extent = NULL,
           }
           # print(paste0(title, ".SAFE"))
           out_list[[n_entries]] <- data.frame(
-            name             = paste0(title, ".SAFE"),
-            url              = url,
-            orbitid          = orbitid,
-            date             = sensdate,
-            proctime         = proctime,
-            ccov             = ccov,
-            proclev          = proclev,
-            sensor           = sensor,
-            tileid           = tileid,
+            name = paste0(title, ".SAFE"),
+            url = url,
+            orbitid = orbitid,
+            date = sensdate,
+            proctime = proctime,
+            ccov = ccov,
+            proclev = proclev,
+            sensor = sensor,
+            tileid = tileid,
             stringsAsFactors = FALSE
           )
           n_entries <- n_entries + 1
@@ -389,7 +389,7 @@ s2_list <- function(spatial_extent = NULL,
     out_dt <- out_dt[grepl("^Level-2Ap?$", proclev),]
   } else if (level == "auto") {
     out_dt <- out_dt[order(-proclev,-proctime),]
-    out_dt <- out_dt[,head(.SD, 1),  by = .(date, tileid, orbitid)]
+    out_dt <- out_dt[,head(.SD, 1), by = .(date, tileid, orbitid)]
   }
   if (nrow(out_dt) == 0) {return(character(0))}
   out_dt <- out_dt[order(date),]
@@ -397,7 +397,7 @@ s2_list <- function(spatial_extent = NULL,
   if (output_type == "data.table") {
     return(out_dt)
   } else {
-    out_vector        <- out_dt$url
+    out_vector <- out_dt$url
     names(out_vector) <- out_dt$name
     return(out_vector)
   }

@@ -140,11 +140,11 @@
   <span class='st'>"https://biogeo.ucdavis.edu/data/gadm3.6/Rsf/gadm36_ITA_0_sf.rds"</span>,
   <span class='kw pkg'>httr</span><span class='kw ns'>::</span><span class='fu'><a href='https://httr.r-lib.org/reference/write_disk.html'>write_disk</a></span>(<span class='no'>it_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>())
 )</div><div class='output co'>#&gt; Response [https://data.biogeo.ucdavis.edu/data/gadm3.6/Rsf/gadm36_ITA_0_sf.rds]
-#&gt;   Date: 2019-09-25 08:47
+#&gt;   Date: 2019-09-26 08:35
 #&gt;   Status: 200
 #&gt;   Content-Type: &lt;unknown&gt;
 #&gt;   Size: 975 kB
-#&gt; &lt;ON DISK&gt;  /tmp/RtmpV6xJ6U/filecf615adf63a9</div><div class='input'><span class='no'>it</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span>(<span class='no'>it_path</span>)
+#&gt; &lt;ON DISK&gt;  /tmp/RtmpDC4Ymh/fileb0b821ba587c</div><div class='input'><span class='no'>it</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span>(<span class='no'>it_path</span>)
 <span class='no'>s2tiles_it</span> <span class='kw'>&lt;-</span> <span class='no'>s2tiles</span>[<span class='fu'><a href='https://rdrr.io/r/base/message.html'>suppressMessages</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/geos_binary_pred.html'>st_intersects</a></span>(<span class='no'>it</span>, <span class='no'>s2tiles</span>))<span class='kw'>[[</span><span class='fl'>1</span>]],]
 <span class='no'>s2_coords</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_coordinates.html'>st_coordinates</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/warning.html'>suppressWarnings</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/geos_unary.html'>st_centroid</a></span>(<span class='no'>s2tiles_it</span>)))
 

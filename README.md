@@ -127,7 +127,7 @@ details).
 Other specific functions can be used to run single steps separately:
 
   - [`s2_list()`](http://sen2r.ranghetti.info/reference/s2_list.html) to
-    retrieve the list of available Sentinel-2 products basing on input
+    retrieve the list of available Sentinel-2 products based on input
     parameters;
   - [`s2_download()`](http://sen2r.ranghetti.info/reference/s2_download.html)
     to download Sentinel-2 products;
@@ -143,7 +143,7 @@ Other specific functions can be used to run single steps separately:
   - [`gdal_warp()`](http://sen2r.ranghetti.info/reference/gdal_warp.html)
     to clip, reproject and warp raster files (this is a wrapper to call
     [gdal\_translate](http://www.gdal.org/gdal_translate.html) or
-    [gdalwarp](http://www.gdal.org/gdalwarp.html) basing on input
+    [gdalwarp](http://www.gdal.org/gdalwarp.html) based on input
     parameters);
   - [`s2_mask()`](http://sen2r.ranghetti.info/reference/s2_mask.html) to
     apply a cloud mask to Sentinel-2 products;

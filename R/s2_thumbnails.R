@@ -1,17 +1,17 @@
 #' @title Produce an RGB image from a multiband raster file.
 #' @description Internal function to create JPEG images from a multiband raster
-#'  file. This function is used by [s2_thumbnails], and it will be exported 
+#'  file. This function is used by [s2_thumbnails], and it will be exported
 #'  when it would be more generalised.
 #' @param in_rast Path of the input multiband raster.
 #' @param out_file (optional) Path of the output RGB JPEG image; if NULL
 #'  (default), a RasterBrick will be returned.
-#' @param bands (optional) 3-length integer argument, with the position of 
+#' @param bands (optional) 3-length integer argument, with the position of
 #'  the three bands to be used respectively for red, green and blue.
 #' @param minval (optional) the value corresponding to black (default: 0).
-#'  Also a 3-length vector is accepted 
+#'  Also a 3-length vector is accepted
 #'  (min values for red, green and blue respectively).
 #' @param maxval (optional) the value corresponding to white (default: 10000).
-#'  Also a 3-length vector is accepted 
+#'  Also a 3-length vector is accepted
 #'  (max values for red, green and blue respectively).
 #' @param format (optional) Format of the output file (in a
 #'  format recognised by GDAL). Default is JPEG.
@@ -25,17 +25,17 @@
 #'  Default is a temporary directory.
 #' @return The path of the output image; alternatively, the output image
 #'  as RasterBrick (if `out_rast = NULL`).
-#'  
+#'
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @importFrom raster raster
 #' @importFrom jsonlite fromJSON
 #' @export
 
-stack2rgb <- function(in_rast, 
-                      out_file = NULL, 
-                      bands = 1:3, 
-                      minval = 0, 
+stack2rgb <- function(in_rast,
+                      out_file = NULL,
+                      bands = 1:3,
+                      minval = 0,
                       maxval = 1E4,
                       format="JPEG",
                       compress="90",
@@ -101,7 +101,7 @@ stack2rgb <- function(in_rast,
         "--outfile=\"",interm_path,"\" ",
         "--type=\"Byte\" ",
         "--NoDataValue=0 ",
-        "--format=\"GTiff\"  "
+        "--format=\"GTiff\" "
       ),
       intern = Sys.info()["sysname"] == "Windows"
     )
@@ -109,7 +109,7 @@ stack2rgb <- function(in_rast,
   } else {
     
     interm_paths <- sapply(seq_along(minval), function(i) {file.path(
-      tmpdir, 
+      tmpdir,
       gsub("\\..+$",paste0("_temp",i,".tif"),basename(out_file))
     )})
     interm_path <- gsub("\\_temp1.tif$", "_temp.vrt", interm_paths[1])
@@ -123,7 +123,7 @@ stack2rgb <- function(in_rast,
           "--outfile=\"",interm_paths[i],"\" ",
           "--type=\"Byte\" ",
           "--NoDataValue=0 ",
-          "--format=\"GTiff\"  "
+          "--format=\"GTiff\" "
         ),
         intern = Sys.info()["sysname"] == "Windows"
       )
@@ -167,14 +167,14 @@ stack2rgb <- function(in_rast,
   #     as.integer(min(max(x[[bands[3]]],minval),maxval)*255/(maxval-minval)+minval)
   #   )
   # })
-  # 
+  #
   # # Return output raster
   # if (is.null(out_file)) {
   #   return(out_rast)
   # } else {
   #   suppressWarnings(
   #     writeGDAL(
-  #       as(out_rast, "SpatialGridDataFrame"), 
+  #       as(out_rast, "SpatialGridDataFrame"),
   #       out_file,
   #       drivername="JPEG",
   #       type="Byte",
@@ -188,20 +188,20 @@ stack2rgb <- function(in_rast,
 
 
 #' @title Produce an RGB image from a singleband raster file.
-#' @description Internal function to create JPEG or PNG images from a 
-#'  singleband raster file. This function is used by [s2_thumbnails], 
+#' @description Internal function to create JPEG or PNG images from a
+#'  singleband raster file. This function is used by [s2_thumbnails],
 #'  and it will be exported when it would be more generalised.
 #' @param in_rast Path of the input multiband raster.
 #' @param out_file (optional) Path of the output RGB JPEG image; if NULL
 #'  (default), a RasterLayer will be returned.
 #' @param palette Path of the palette file to be used (cpt or txt),
-#'  or character value of a builtin palette ("SCL", "NDVI", the default 
+#'  or character value of a builtin palette ("SCL", "NDVI", the default
 #'  "generic_ndsi" or "generic_ndsi_2").
-#' @param minval (to be implemented) the value corresponding to the minimum 
-#'  value of the palette (for now, only -1 is used). A quantile will be also 
+#' @param minval (to be implemented) the value corresponding to the minimum
+#'  value of the palette (for now, only -1 is used). A quantile will be also
 #'  accepted.
-#' @param maxval (to be implemented) the value corresponding to the maximum 
-#'  value of the palette (for now, only 1 is used). A quantile will be also 
+#' @param maxval (to be implemented) the value corresponding to the maximum
+#'  value of the palette (for now, only 1 is used). A quantile will be also
 #'  accepted.
 #' @param tmpdir (optional) Path where intermediate files (VRT) will be created.
 #'  Default is a temporary directory.
@@ -214,10 +214,10 @@ stack2rgb <- function(in_rast,
 #' @importFrom jsonlite fromJSON
 #' @export
 
-raster2rgb <- function(in_rast, 
-                       out_file = NULL, 
-                       palette = "generic_ndsi_2", 
-                       minval = -1, 
+raster2rgb <- function(in_rast,
+                       out_file = NULL,
+                       palette = "generic_ndsi_2",
+                       minval = -1,
                        maxval = 1,
                        tmpdir = NA) {
   # TODO minval, maxval: now they do not work,
@@ -265,7 +265,7 @@ raster2rgb <- function(in_rast,
       }
     }
     writeLines(
-      sapply(palette_txt_new, paste, collapse=" "), 
+      sapply(palette_txt_new, paste, collapse=" "),
       palette <- file.path(tmpdir, basename(tempfile(fileext = ".cpt")))
     )
   }
@@ -320,7 +320,7 @@ raster2rgb <- function(in_rast,
 #' @description Function to create thumbnail images for Sentinel-2
 #'  products. BOA and TOA multiband images are rendered as false colour
 #'  JPEG images; SCL maps are rendered as 8-bit PNG;
-#'  other singleband images (like spectral indices) are rendered as 
+#'  other singleband images (like spectral indices) are rendered as
 #'  JPEG images with a standard colour palette.
 #'  Output images are georeferenced.
 #' @param infiles A vector of input filenames. Input files are paths
@@ -328,7 +328,7 @@ raster2rgb <- function(in_rast,
 #'  format managed by GDAL (use [s2_translate] to do it);
 #'  their names must be in the sen2r naming convention
 #'  ([safe_shortname]).
-#' @param prod_type (optional) Output product (see [safe_shortname] for the 
+#' @param prod_type (optional) Output product (see [safe_shortname] for the
 #'  list of accepted products). If not provided, it is retrieved from the
 #'  file name.
 #' @param rgb_type (optional) For BOA and TOA products, this value determine
@@ -336,23 +336,23 @@ raster2rgb <- function(in_rast,
 #'  * `"SwirNirR"` (default) for SWIR-NIR-Red;
 #'  * `"NirRG"` for NIR-Red-Green;
 #'  * `"RGB"` for true colours;
-#'  
-#' @param dim Integer value, with the maximum greater dimension in pixels (width or 
-#'  height) of the output images (default: 1024 px). 
+#'
+#' @param dim Integer value, with the maximum greater dimension in pixels (width or
+#'  height) of the output images (default: 1024 px).
 #'  If this is lower than the corresponding dimension of the maps, maps are
 #'  rescaled before producing the thumbnails; otherwise the original dimensions
-#'  are maintained. 
+#'  are maintained.
 #'  To keep the original size in any case, set `dim = Inf`.
-#' @param scaleRange (optional) Range of valid values. If not specified 
-#'  (default), it is automatically retrieved from the product type. 
-#'  Default ranges for BOA and TOA products are 0 to 8000 
+#' @param scaleRange (optional) Range of valid values. If not specified
+#'  (default), it is automatically retrieved from the product type.
+#'  Default ranges for BOA and TOA products are 0 to 8000
 #'  (`rgb_type = "SwirNirR"`), 0 to 7500 (`"NirRG"`) and 0 to 2500 (`"RGB"`).
 #'  For spectral indices, default range is -1 to 1 for Float products, -10000
-#'  to 10000 for Int and 0 to 200 for Byte; for "Zscore" products, default 
+#'  to 10000 for Int and 0 to 200 for Byte; for "Zscore" products, default
 #'  range is -3 to 3 for Float and -3000 to 3000 for Int.
-#'  It can be useful i.e. to stretch BOA "dark" products. 
+#'  It can be useful i.e. to stretch BOA "dark" products.
 #' @param outdir (optional) Full name of the existing output directory
-#'  where the files should be created.  Default is a subdirectory (named 
+#'  where the files should be created. Default is a subdirectory (named
 #'  "thumbnails") of the parent directory of each input file.
 #' @param tmpdir (optional) Path where intermediate files (VRT) will be created.
 #'  Default is a temporary directory.
@@ -368,16 +368,16 @@ raster2rgb <- function(in_rast,
 #' @importFrom jsonlite fromJSON
 #' @export
 
-s2_thumbnails <- function(infiles, 
+s2_thumbnails <- function(infiles,
                           prod_type=NA, # TODO implement (for now only NOA / TOA)
                           rgb_type="SwirNirR",
-                          dim=1024, 
+                          dim=1024,
                           scaleRange=NA,
                           outdir=NA,
                           tmpdir=NA,
                           rmtmp=TRUE,
                           overwrite=FALSE) {
-
+  
   # Check that GDAL suports JPEG JFIF format
   # TODO
   
@@ -414,7 +414,7 @@ s2_thumbnails <- function(infiles,
     
     # Set output path
     out_path <- file.path(
-      sel_outdir, 
+      sel_outdir,
       gsub(
         "\\.[^\\.]+$",
         if (sel_prod_type %in% c("SCL")) {".png"} else {".jpg"}, # resp. discrete or continuous values
@@ -513,9 +513,9 @@ s2_thumbnails <- function(infiles,
       if (sel_prod_type %in% c("BOA","TOA")) {
         
         stack2rgb(
-          resized_path, 
+          resized_path,
           out_file = out_path,
-          minval = sel_scaleRange[1], 
+          minval = sel_scaleRange[1],
           maxval = sel_scaleRange[2],
           tmpdir = tmpdir
         )
@@ -535,8 +535,8 @@ s2_thumbnails <- function(infiles,
       } else {
         
         raster2rgb(
-          resized_path, 
-          out_file = out_path, 
+          resized_path,
+          out_file = out_path,
           palette = if (sel_prod_type %in% c("SCL")) {
             sel_prod_type
           } else if (grepl("\\-Z$",sel_prod_type) | sel_prod_type=="Zscore") {
@@ -544,7 +544,7 @@ s2_thumbnails <- function(infiles,
           } else {
             "generic_ndsi"
           },
-          minval = sel_scaleRange[1], 
+          minval = sel_scaleRange[1],
           maxval = sel_scaleRange[2],
           tmpdir = tmpdir
         )

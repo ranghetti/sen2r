@@ -100,11 +100,11 @@ testthat::test_that(
     dir.create(dirname(outdir_3), showWarnings = FALSE)
     testthat::expect_warning(
       sen2r(
-      gui            = FALSE,
-      online         = FALSE,
-      step_atmcorr   = "l2a", # to avoid checks on Sen2Cor
-      extent         = file.path(example_dir, "scalve.kml"),
-      extent_name    = "Scalve",
+      gui = FALSE,
+      online = FALSE,
+      step_atmcorr = "l2a", # to avoid checks on Sen2Cor
+      extent = file.path(example_dir, "scalve.kml"),
+      extent_name = "Scalve",
       extent_as_mask = FALSE,
       timewindow = as.Date("2017-07-03"),
       list_prods = "TOA",
@@ -527,8 +527,10 @@ testthat::test_that(
     # test on raster metadata
     exp_meta_r <- raster_metadata(test7, format = "list")[[1]]
     testthat::expect_equal(exp_meta_r$size, c("x" = 6, "y" = 25))
-    testthat::expect_equal(exp_meta_r$res,  c("x" = 10.67998, "y" = 10.21008 ),
-                           tolerance = 1e-3)
+    testthat::expect_equal(
+      exp_meta_r$res, c("x" = 10.67998, "y" = 10.21008),
+      tolerance = 1e-3
+    )
     testthat::expect_equal(exp_meta_r$nbands, 3)
     testthat::expect_equal(
       exp_meta_r$bbox, 

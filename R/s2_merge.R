@@ -28,16 +28,16 @@
 #'  format recognised by GDAL). Default is to maintain each input format.
 #' @param compress (optional) In the case a GTiff format is
 #'  present, the compression indicated with this parameter is used.
-#' @param vrt_rel_paths (optional) Logical: if TRUE (default on Linux), 
+#' @param vrt_rel_paths (optional) Logical: if TRUE (default on Linux),
 #'  the paths present in the VRT output file are relative to the VRT position;
-#'  if FALSE (default on Windows), they are absolute. 
+#'  if FALSE (default on Windows), they are absolute.
 #'  This takes effect only with `format = "VRT"`.
 #' @param out_crs (optional) proj4string (character) of the output CRS
 #'  (default: the CRS of the first input file). The tiles with CRS different
 #'  from `out_crs` will be reprojected (and a warning returned).
 #' @param parallel (optional) Logical: if TRUE, the function is run using parallel
 #'  processing, to speed-up the computation for large rasters.
-#'  The number of cores is automatically determined; specifying it is also 
+#'  The number of cores is automatically determined; specifying it is also
 #'  possible (e.g. `parallel = 4`).
 #'  If FALSE (default), single core processing is used.
 #' @param overwrite Logical value: should existing output files be
@@ -151,7 +151,7 @@ s2_merge <- function(infiles,
     tmpdir <- if (all(!is.na(format), format == "VRT")) {
       rmtmp <- FALSE # force not to remove intermediate files
       if (!missing(outdir)) {
-        autotmpdir <- FALSE # logical: TRUE if tmpdir should be specified 
+        autotmpdir <- FALSE # logical: TRUE if tmpdir should be specified
         # for each out file (when tmpdir was not specified and output files are vrt),
         # FALSE if a single tmpdir should be used (otherwise)
         file.path(outdir, ".vrt")
@@ -230,17 +230,17 @@ s2_merge <- function(infiles,
   # merge single output products
   if (n_cores > 1) { # nocov start
     cl <- makeCluster(
-      n_cores, 
+      n_cores,
       type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
     )
     registerDoParallel(cl)
   } # nocov end
   outfiles <- foreach(
-    infiles_meta_grp = unique(infiles_meta_grps), 
-    .packages = c("sen2r"), 
-    .combine=c, 
+    infiles_meta_grp = unique(infiles_meta_grps),
+    .packages = c("sen2r"),
+    .combine=c,
     .errorhandling="remove"
-  )  %DO% {
+  ) %DO% {
     
     # redirect to log files
     if (n_cores > 1) { # nocov start
@@ -339,7 +339,7 @@ s2_merge <- function(infiles,
       }
       
       # fix for envi extension (writeRaster use .envi)
-      if (sel_outformat=="ENVI")  {fix_envi_format(file.path(out_subdir,sel_outfile))}
+      if (sel_outformat=="ENVI") {fix_envi_format(file.path(out_subdir,sel_outfile))}
       
     } # end of overwrite IF cycle
     

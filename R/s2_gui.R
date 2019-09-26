@@ -18,16 +18,16 @@
 #'  removeDrawToolbar
 #' @importFrom mapedit editModUI
 #' @importFrom utils packageVersion
-#' @importFrom sf st_coordinates st_crs st_geometry st_intersects st_polygon 
+#' @importFrom sf st_coordinates st_crs st_geometry st_intersects st_polygon
 #'  st_zm st_read st_bbox st_as_sfc st_transform
-#' @importFrom shiny a actionButton actionLink addResourcePath br callModule 
-#'  checkboxGroupInput checkboxInput column conditionalPanel dateRangeInput 
-#'  div downloadButton downloadHandler em fileInput fluidRow h2 h3 helpText hr 
+#' @importFrom shiny a actionButton actionLink addResourcePath br callModule
+#'  checkboxGroupInput checkboxInput column conditionalPanel dateRangeInput
+#'  div downloadButton downloadHandler em fileInput fluidRow h2 h3 helpText hr
 #'  HTML htmlOutput icon img incProgress isolate NS numericInput observe p
-#'  radioButtons reactive reactiveVal reactiveValues removeModal renderText 
-#'  renderUI req runApp selectInput setProgress shinyApp showModal sliderInput 
+#'  radioButtons reactive reactiveVal reactiveValues removeModal renderText
+#'  renderUI req runApp selectInput setProgress shinyApp showModal sliderInput
 #'  span stopApp strong tagList textInput uiOutput updateCheckboxGroupInput
-#'  updateDateRangeInput updateNumericInput updateSliderInput updateSelectInput 
+#'  updateDateRangeInput updateNumericInput updateSliderInput updateSelectInput
 #'  updateRadioButtons updateTextInput withMathJax withProgress
 #' @importFrom shinydashboard box dashboardBody dashboardHeader dashboardPage
 #'  dashboardSidebar menuItem sidebarMenu tabItem tabItems
@@ -138,32 +138,32 @@ s2_gui <- function(param_list = NULL,
         # ),
         # p(style="margin-top:5pt;margin-left:11pt;",
         #   fileInput(
-        #     "import_param", label = NULL, buttonLabel = "Load options", 
+        #     "import_param", label = NULL, buttonLabel = "Load options",
         #     accept = "application/json", multiple = FALSE#, class = "darkbutton"
         #   )
         # ),
         # server-side buttons
         p(style="margin-top:15pt;",
           shinySaveButton(
-            "export_param", 
-            "Save options as...", "Save parameters as...", 
-            filetype=list(json="json"), 
+            "export_param",
+            "Save options as...", "Save parameters as...",
+            filetype=list(json="json"),
             class="darkbutton"
           )
         ),
         p(style="margin-top:5pt;",
           shinyFilesButton(
-            "import_param", 
-            "Load options...", "Import a JSON file with parameters", 
-            multiple=FALSE, 
+            "import_param",
+            "Load options...", "Import a JSON file with parameters",
+            multiple=FALSE,
             class="darkbutton"
           )
         ),
         p(style="margin-top:20pt;",
           shinySaveButton(
-            "save_log", 
-            "Create log...", "Create a log file...", 
-            filetype=list(logfile="log", textfile="txt"), 
+            "save_log",
+            "Create log...", "Create a log file...",
+            filetype=list(logfile="log", textfile="txt"),
             class="darkbutton"
           )
         ),
@@ -383,7 +383,7 @@ s2_gui <- function(param_list = NULL,
                     inline = TRUE
                   ),
                   sliderInput(
-                    "max_cloud_safe_perc", 
+                    "max_cloud_safe_perc",
                     label = span(
                       "Max. SAFE cloud cover\u2000",
                       actionLink("help_cloud_perc", icon("question-circle"))
@@ -482,7 +482,7 @@ s2_gui <- function(param_list = NULL,
                 column(
                   width=4,
                   radioButtons(
-                    "timeperiod", 
+                    "timeperiod",
                     label = span(
                       "Time period type\u2000",
                       actionLink("help_time_period", icon("question-circle"))
@@ -565,9 +565,9 @@ s2_gui <- function(param_list = NULL,
                         options = list(
                           `selected-text-format` = "count > 3",
                           `live-search` = TRUE,
-                          `actions-box` = TRUE, 
+                          `actions-box` = TRUE,
                           title = "All overlapping tiles"
-                        ), 
+                        ),
                         multiple = TRUE
                       )
                     ),
@@ -575,18 +575,18 @@ s2_gui <- function(param_list = NULL,
                     column(
                       width=6,
                       pickerInput(
-                        "orbits_checkbox", 
+                        "orbits_checkbox",
                         span(
                           "Orbits selected\u2000",
                           actionLink("help_orbits", icon("question-circle"))
-                        ), 
-                        choices = str_pad2(1:143, 3, "left", "0"), 
+                        ),
+                        choices = str_pad2(1:143, 3, "left", "0"),
                         options = list(
                           `selected-text-format` = "count > 6",
                           `live-search` = TRUE,
-                          `actions-box` = TRUE, 
+                          `actions-box` = TRUE,
                           title = "All overlapping orbits"
-                        ), 
+                        ),
                         multiple = TRUE
                       )
                       # helpText(em("Not yet implemented."))
@@ -601,11 +601,11 @@ s2_gui <- function(param_list = NULL,
                     column(
                       width=6,
                       textInput(
-                        "extent_name_textin", 
+                        "extent_name_textin",
                         span(
                           strong("Extent name:\u2000"),
                           actionLink("help_extent_name", icon("question-circle"))
-                        ), 
+                        ),
                         "sen2r"
                       )
                     ),
@@ -863,7 +863,7 @@ s2_gui <- function(param_list = NULL,
             collapsible = TRUE,
             
             radioButtons(
-              "atm_mask", 
+              "atm_mask",
               label = span(
                 "Mask cloud-covered pixels?\u2000",
                 actionLink("help_mask", icon("question-circle"))
@@ -885,7 +885,7 @@ s2_gui <- function(param_list = NULL,
             conditionalPanel(
               condition = "input.atm_mask == 'TRUE'",
               selectInput(
-                "atm_mask_type", 
+                "atm_mask_type",
                 label = span(
                   "Apply mask to:\u2000",
                   actionLink("help_mask_classes", icon("question-circle"))
@@ -927,7 +927,7 @@ s2_gui <- function(param_list = NULL,
               ),
               
               sliderInput(
-                "max_masked_perc", 
+                "max_masked_perc",
                 label = span(
                   "Maximum allowed cloud cover",
                   actionLink("help_masked_perc", icon("question-circle"))
@@ -938,7 +938,7 @@ s2_gui <- function(param_list = NULL,
               ),
               
               radioButtons(
-                "mask_apply_smooth", 
+                "mask_apply_smooth",
                 label = span(
                   "Smooth / bufferize the cloud-covered surface?\u2000",
                   actionLink("help_mask_smooth", icon("question-circle"))
@@ -1125,7 +1125,7 @@ s2_gui <- function(param_list = NULL,
                 "Processing order",
                 # "Processing order / parallelisation",
                 span(
-                  style = "font-size:smaller;", "\u2000", 
+                  style = "font-size:smaller;", "\u2000",
                   actionLink("info_parallelisation", icon("info-circle"))
                 )
               ),
@@ -1154,7 +1154,7 @@ s2_gui <- function(param_list = NULL,
               # 
               # # parallelise?
               # column(
-              #   width=3, 
+              #   width=3,
               radioButtons(
                 "parallel",
                 label = span("Parallel computation?"),
@@ -1167,26 +1167,26 @@ s2_gui <- function(param_list = NULL,
               # 
               # # number of cores
               # column(
-              #   width=5, 
+              #   width=5,
               conditionalPanel(
                 condition = "input.parallel == 'TRUE'",
                 div(
                   p(strong("Number of CPU cores")),
                   switchInput(
-                    "n_cores_auto", 
+                    "n_cores_auto",
                     value = TRUE,
                     size = "mini",
                     onLabel = "Auto", offLabel = "Manual"
                   ),
                   hidden(sliderInput(
                     "n_cores", label = NULL,
-                    min = 1, max = 8, 
+                    min = 1, max = 8,
                     value = 6,
                     ticks = FALSE
                   ))
                 )
                 
-              ) # end of  "Processing order / parallelisation"
+              ) # end of "Processing order / parallelisation"
               
             )
             
@@ -1406,7 +1406,7 @@ s2_gui <- function(param_list = NULL,
                                        (is.null(input$list_indices) |
                                         !is.null(input$list_indices) & input$index_source=="BOA")) {TRUE} else {FALSE}
       } else {
-        safe_req$l1c <- if ("l1c" %in% input$list_levels | 
+        safe_req$l1c <- if ("l1c" %in% input$list_levels |
                             input$step_atmcorr %in% c("auto","scihub")) {TRUE} else {FALSE}
         safe_req$l2a <- if ("l2a" %in% input$list_levels) {TRUE} else {FALSE}
         safe_req$l2a_onlytomask <- FALSE
@@ -1431,16 +1431,16 @@ s2_gui <- function(param_list = NULL,
           span(style="color:red", "Select at least one product or index.")
         },
         if (safe_req$l1c==TRUE) {
-          a("Level-1C", 
-            href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-1c", 
+          a("Level-1C",
+            href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-1c",
             target="_blank")
         },
         if (safe_req$l1c==TRUE & safe_req$l2a==TRUE) {
           br()
         },
         if (safe_req$l2a==TRUE) {
-          a("Level-2A", 
-            href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-2a", 
+          a("Level-2A",
+            href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-2a",
             target="_blank")
         }
       )
@@ -1537,9 +1537,9 @@ s2_gui <- function(param_list = NULL,
         }
         if (!any(c(is.na(rv$apihub_path), length(nn(rv$apihub_path))==0))) {
           if (!rv$apihub_path %in% apihub_path_prev) {
-            # if a change in the path is detected (= the button has been used), 
+            # if a change in the path is detected (= the button has been used),
             # close the modalDialog
-            # FIXME if a user re-opne the modalDialog and does not change 
+            # FIXME if a user re-opne the modalDialog and does not change
             # user nor password, the "Save as..." button will not close the dialog
             shinyjs::click("save_apihub")
           }
@@ -1551,7 +1551,7 @@ s2_gui <- function(param_list = NULL,
     # save user/password
     observeEvent(input$save_apihub, {
       write_scihub_login(
-        input$scihub_username, input$scihub_password, 
+        input$scihub_username, input$scihub_password,
         apihub_path = as.character(rv$apihub_path),
         # append = input$apihub_multiple # removed after disabling apihub multiple login from the gui
         append = FALSE,
@@ -1647,7 +1647,7 @@ s2_gui <- function(param_list = NULL,
         } else {
           x <- if (is.character(custom_source)) {
             st_read(custom_source, quiet=TRUE)
-          } else {custom_source} %>% 
+          } else {custom_source} %>%
             st_zm() %>%
             st_transform(4326)
           names(sf::st_geometry(x)) <- NULL
@@ -1700,7 +1700,7 @@ s2_gui <- function(param_list = NULL,
         }
         
         # reset and update the map
-        react_map(base_map()) 
+        react_map(base_map())
         rv$draw_tiles_overlapping_ll <- st_transform(rv$draw_tiles_overlapping, 4326)
         leafletProxy("view_map") %>%
           clearShapes() %>%
@@ -1783,7 +1783,7 @@ s2_gui <- function(param_list = NULL,
         )
     }
     react_map <- reactiveVal({
-      base_map() %>% 
+      base_map() %>%
         removeLayersControl() %>%
         addLayersControl(
           baseGroups = c("OpenStreetMap", "OpenTopoMap", "CartoDB", "Satellite"),
@@ -1808,7 +1808,7 @@ s2_gui <- function(param_list = NULL,
     # message for bboxproj
     output$bboxproj_message <- renderUI({
       bboxproj_validated <- tryCatch(
-        st_crs2(input$bboxproj), 
+        st_crs2(input$bboxproj),
         error = function(e) {st_crs(NA)}
       )$proj4string
       if (input$bboxproj=="") {
@@ -1840,14 +1840,14 @@ s2_gui <- function(param_list = NULL,
     
     # update the map dinamically
     observeEvent(c(
-      input$bbox_xmin, input$bbox_xmax, 
-      input$bbox_ymin, input$bbox_ymax, 
+      input$bbox_xmin, input$bbox_xmax,
+      input$bbox_ymin, input$bbox_ymax,
       rv$bboxproj
     ), {
       
       # Check that the bounding box is valid
-      if (!anyNA(c(input$bbox_xmin, input$bbox_xmax, 
-                   input$bbox_ymin, input$bbox_ymax)) & 
+      if (!anyNA(c(input$bbox_xmin, input$bbox_xmax,
+                   input$bbox_ymin, input$bbox_ymax)) &
           !(is.null(rv$bboxproj) || is.na(rv$bboxproj))) {
         if (input$bbox_xmin != input$bbox_xmax &
             input$bbox_ymin != input$bbox_ymax) {
@@ -1857,7 +1857,7 @@ s2_gui <- function(param_list = NULL,
               c("xmin" = input$bbox_xmin,
                 "ymin" = input$bbox_ymin,
                 "xmax" = input$bbox_xmax,
-                "ymax" = input$bbox_ymax), 
+                "ymax" = input$bbox_ymax),
               crs = rv$bboxproj
             )
           ) %>% st_transform(4326)
@@ -1908,11 +1908,11 @@ s2_gui <- function(param_list = NULL,
           removeModal()
         } else {
           sendSweetAlert(
-            session, 
-            title = "Invalid bounding box", 
+            session,
+            title = "Invalid bounding box",
             text = paste(
               "Please insert a valid bounding box."
-            ), 
+            ),
             type = "error",
             btn_labels = "Ok"
           )
@@ -1932,8 +1932,8 @@ s2_gui <- function(param_list = NULL,
       # if (length(unique(gsub("\\..+$","",input$path_vectfile_sel$name))) > 1) {
       #   # if more than one vector were chosen, give an alert and do not use the file
       #   sendSweetAlert(
-      #     session, 
-      #     title = "Invalid vector", 
+      #     session,
+      #     title = "Invalid vector",
       #     text = paste(
       #       "Please select a single vector",
       #       "(multiple selection is allowed only for shapefiles)."
@@ -1948,8 +1948,8 @@ s2_gui <- function(param_list = NULL,
       # } else if (anyNA(match(c("shp","shx","dbf","prj"),uploaded_exts))) {
       #   # if a shapefile was chosen but some files are missing, do not use it
       #   sendSweetAlert(
-      #     session, 
-      #     title = "Incomplete shapefile", 
+      #     session,
+      #     title = "Incomplete shapefile",
       #     text = paste(
       #       "Please select all the files of the shapefile",
       #       "(at most .shp, .shx, .prj, .dbf)."
@@ -1997,7 +1997,7 @@ s2_gui <- function(param_list = NULL,
       # Check that the vector is valid
       rv$vectfile_polygon <- tryCatch(
         {
-          x <- st_read(rv$vectfile_path, quiet=TRUE) %>% 
+          x <- st_read(rv$vectfile_path, quiet=TRUE) %>%
             st_zm() %>%
             st_transform(4326)
           names(sf::st_geometry(x)) <- NULL
@@ -2045,8 +2045,8 @@ s2_gui <- function(param_list = NULL,
           removeModal()
         } else {
           sendSweetAlert(
-            session, 
-            title = "Please specify a valid vector file.", 
+            session,
+            title = "Please specify a valid vector file.",
             text = NULL,
             type = "error",
             btn_labels = "Ok"
@@ -2081,8 +2081,8 @@ s2_gui <- function(param_list = NULL,
           removeModal()
         } else {
           sendSweetAlert(
-            session, 
-            title = "Please draw a valid extent.", 
+            session,
+            title = "Please draw a valid extent.",
             text = NULL,
             type = "error",
             btn_labels = "Ok"
@@ -2124,7 +2124,7 @@ s2_gui <- function(param_list = NULL,
           stroke = TRUE,
           weight = 3,
           color = "red"
-        ) 
+        )
       if (!all(rv$draw_tiles_overlapping$selected) & any(rv$draw_tiles_overlapping$selected)) {
         leafletProxy("view_map") %>%
           addPolygons(
@@ -2301,10 +2301,10 @@ s2_gui <- function(param_list = NULL,
             span(style="color:darkgreen",
                  paste0(
                    paste(reference()$res,
-                         collapse="\u2006\u00d7\u2006"),  # shortspace times shortspace
+                         collapse="\u2006\u00d7\u2006"), # shortspace times shortspace
                    switch(reference()$unit,
-                          Degree="\u00b0",  # shortspace degree
-                          Meter="\u2006m",  # shortspace m
+                          Degree="\u00b0", # shortspace degree
+                          Meter="\u2006m", # shortspace m
                           "")))
           } else {
             span(style="color:grey",
@@ -2337,12 +2337,12 @@ s2_gui <- function(param_list = NULL,
       } else {
         
         outproj_validated <- tryCatch(
-          st_crs2(input$outproj), 
+          st_crs2(input$outproj),
           error = function(e) {st_crs(NA)}
         )$proj4string
         if (input$reproj==FALSE | input$outproj=="") {
           ""
-        }  else if (is.na(outproj_validated)) {
+        } else if (is.na(outproj_validated)) {
           span(style="color:red",
                "Insert a valid projection (UTM timezone, EPSG code or PROJ4 string).")
         } else {
@@ -2411,7 +2411,7 @@ s2_gui <- function(param_list = NULL,
     # Add the new defined RGB
     observeEvent(input$add_new_rgb, {
       newrgb_ranges <- if (all(c(
-        input$band_r_range==input$band_g_range, 
+        input$band_r_range==input$band_g_range,
         input$band_g_range==input$band_b_range
       ))) {
         list(input$band_r_range*1E4)
@@ -2422,12 +2422,12 @@ s2_gui <- function(param_list = NULL,
         )))
       }
       names(newrgb_ranges) <- paste0(
-        "RGB", 
+        "RGB",
         paste(as.hexmode(c(
-          as.integer(gsub("^band","",input$band_r)), 
-          as.integer(gsub("^band","",input$band_g)), 
+          as.integer(gsub("^band","",input$band_r)),
+          as.integer(gsub("^band","",input$band_g)),
           as.integer(gsub("^band","",input$band_b))
-        )), collapse=""), 
+        )), collapse=""),
         substr(input$newrgb_source,1,1)
       )
       rv$list_rgb_ranges <- append(newrgb_ranges, rv$list_rgb_ranges)
@@ -2491,17 +2491,17 @@ s2_gui <- function(param_list = NULL,
     # Update RGB bands and ranges when changing RGB source
     observeEvent(input$newrgb_source, {
       updatePickerInput(
-        session, "band_r", 
+        session, "band_r",
         choices = s2_bands[[input$newrgb_source]],
         selected = input$band_r
       )
       updatePickerInput(
-        session, "band_g", 
+        session, "band_g",
         choices = s2_bands[[input$newrgb_source]],
         selected = input$band_g
       )
       updatePickerInput(
-        session, "band_b", 
+        session, "band_b",
         choices = s2_bands[[input$newrgb_source]],
         selected = input$band_b
       )
@@ -2639,7 +2639,7 @@ s2_gui <- function(param_list = NULL,
         p(HTML(
           "This selector allows to choose which downloader will be used",
           "to download Sentinel-2 SAFE archives."
-        )), 
+        )),
         p(HTML(
           "<strong>Built-in</strong> is the downloader which is used by default",
           "through the package 'httr'."
@@ -2691,7 +2691,7 @@ s2_gui <- function(param_list = NULL,
         p(HTML(
           "For security reasons, the SciHub username and password",
           "are not saved with the other parameters."
-        )), 
+        )),
         p(HTML(
           "By default, they are stored in a txt file inside the package,",
           "so to be the same for all the sen2r executions",
@@ -3008,7 +3008,7 @@ s2_gui <- function(param_list = NULL,
           "areas classified as missing values (classes 0 and 1), cloudly",
           "(classes 7, 8 and 9), shady (classes 2 and 3), as cirrus (class 10),",
           "water (class 6) and snow (class 11) are set to NA (in other words,",
-          "only pixels classified as vegetation (class 4) and bare soil", 
+          "only pixels classified as vegetation (class 4) and bare soil",
           "(class 5) are maintained);</li>",
           "</ul>"
         )),
@@ -3461,7 +3461,7 @@ s2_gui <- function(param_list = NULL,
         NA
       } else {
         tryCatch(
-          st_crs2(input$outproj), 
+          st_crs2(input$outproj),
           error = function(e) {st_crs(NA)}
         )$proj4string
       }
@@ -3523,7 +3523,7 @@ s2_gui <- function(param_list = NULL,
         updateRadioButtons(session, "overwrite_safe", selected = pl$overwrite_safe)
         updateRadioButtons(session, "rm_safe", selected = pl$rm_safe)
         updateSliderInput(
-          session, "max_cloud_safe_perc", 
+          session, "max_cloud_safe_perc",
           value = if (!all(is.na(nn(pl$max_cloud_safe)))) {pl$max_cloud_safe} else {100}
         )
         updateRadioButtons(session, "step_atmcorr", selected = pl$step_atmcorr)
@@ -3567,7 +3567,7 @@ s2_gui <- function(param_list = NULL,
                            selected = ifelse(is.na(pl$mask_type),FALSE,TRUE))
         updateSliderInput(session, "max_masked_perc",
                           value = ifelse(is.na(pl$mask_type),80,pl$max_mask))
-        updateNumericInput(session, "mask_apply_smooth", 
+        updateNumericInput(session, "mask_apply_smooth",
                            value = if (all(c(pl$mask_smooth, pl$mask_buffer)==0)) {FALSE} else {TRUE})
         updateNumericInput(session, "mask_smooth", value = pl$mask_smooth)
         updateNumericInput(session, "mask_buffer", value = pl$mask_buffer)
@@ -3645,8 +3645,8 @@ s2_gui <- function(param_list = NULL,
         updatePickerInput(session, "orbits_checkbox", selected = if(length(nn(pl$s2orbits_selected))>0) {pl$s2orbits_selected} else {NA})
         setProgress(1)
         # sendSweetAlert(
-        #   session, 
-        #   title = "Parameters loaded.", 
+        #   session,
+        #   title = "Parameters loaded.",
         #   text = paste(
         #     "Parameters were correctly loaded.",
         #     "If you do not see the selected extent on the map, please use",
@@ -3683,8 +3683,8 @@ s2_gui <- function(param_list = NULL,
         )
         
       } else if (length(c(
-        input$list_prods[!input$list_prods %in% c("indices","rgbimages")], 
-        input$list_indices, 
+        input$list_prods[!input$list_prods %in% c("indices","rgbimages")],
+        input$list_indices,
         input$list_rgb
       )) == 0) {
         
@@ -3726,7 +3726,7 @@ s2_gui <- function(param_list = NULL,
         )
         
       } else if (
-        length(input$list_prods[!input$list_prods %in% c("indices","rgbimages")]) > 0 & 
+        length(input$list_prods[!input$list_prods %in% c("indices","rgbimages")]) > 0 &
         input$path_out_textin == ""
       ) {
         
@@ -3738,7 +3738,7 @@ s2_gui <- function(param_list = NULL,
         )
         
       } else if (
-        length(input$list_indices) > 0 & 
+        length(input$list_indices) > 0 &
         input$path_out_textin == "" &
         input$path_indices_textin == ""
       ) {
@@ -3752,7 +3752,7 @@ s2_gui <- function(param_list = NULL,
         )
         
       } else if (
-        length(input$list_rgb) > 0 & 
+        length(input$list_rgb) > 0 &
         input$path_out_textin == "" &
         input$path_rgb_textin == ""
       ) {
@@ -3770,7 +3770,7 @@ s2_gui <- function(param_list = NULL,
         length(nn(rv$extent)) == 0,
         length(nn(input$tiles_checkbox)) == 0
       )) {
-
+        
         # directory missing
         sendSweetAlert(
           session, NULL,

@@ -404,12 +404,12 @@ if (interactive()) {
   sen2r()
 }
 
-# Launch a processing from a saved JSON file (here we use an internal function 
+# Launch a processing from a saved JSON file (here we use an internal function
 # to create a testing json file - this is not intended to be used by final users)
 json_path <- sen2r:::build_example_param_file()
 
 out_paths_2 <- sen2r(json_path)
-# Notice that passing the path of a JSON file results in launching 
+# Notice that passing the path of a JSON file results in launching
 # a session without opening the gui, unless gui = TRUE is passed.
 
 # Launch a processing using function arguments
@@ -470,7 +470,7 @@ image(stars::read_stars(thumb_4[grep("BOA", thumb_4)]), rgb = 1:3)
 image(stars::read_stars(thumb_4[grep("SCL", thumb_4)]), rgb = 1:3)
 
 par(mfrow = c(1,2), mar = rep(0,4))
-image(stars::read_stars(thumb_4[grep("MSAVI2", thumb_4)]), rgb = 1:3) 
+image(stars::read_stars(thumb_4[grep("MSAVI2", thumb_4)]), rgb = 1:3)
 image(stars::read_stars(thumb_4[grep("NDVI", thumb_4)]), rgb = 1:3)
 
 par(mfrow = c(1,3), mar = rep(0,4))

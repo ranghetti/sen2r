@@ -72,4 +72,4 @@ projname <- function(proj4string, abort = FALSE) { # nocov start
   
   return(proj4_name)
   
-}  # nocov end
+} # nocov end

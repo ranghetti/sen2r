@@ -1,7 +1,7 @@
 #' @title Import / export / check SciHub username and password
-#' @description Read the SciHub login information (`read_scihub_login()`), 
+#' @description Read the SciHub login information (`read_scihub_login()`),
 #'  save new username and password (`write_scihub_login()`)
-#'  or check their validity (`check_scihub_login()`). 
+#'  or check their validity (`check_scihub_login()`).
 #'  Login information is stored in a file `apihub.txt` inside the
 #'  "extdata" directory. This functions allow to read or write this
 #'  file, and to edit them from inside the GUI.
@@ -9,7 +9,7 @@
 #'  If NA (default) it is automatically read from the package default location.
 #' @param username SciHub username.
 #' @param password SciHub password.
-#' @return `read_scihub_login` returns a matrix of credentials, 
+#' @return `read_scihub_login` returns a matrix of credentials,
 #'  in which `username` is in the first column, `password` in the second.
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
@@ -28,7 +28,7 @@
 
 read_scihub_login <- function(apihub_path=NA) {
   
-  # if apihub_path is not specified, 
+  # if apihub_path is not specified,
   # retrieve from the current installation
   if (any(c(is.na(apihub_path), length(nn(apihub_path))==0))) {
     # apihub_path <- file.path(system.file("extdata", package="sen2r"), "apihub.txt")
@@ -57,17 +57,17 @@ read_scihub_login <- function(apihub_path=NA) {
 
 
 #' @name check_scihub_login
-#' @return `check_scihub_login` returns TRUE if credentials are valid, 
+#' @return `check_scihub_login` returns TRUE if credentials are valid,
 #'  FALSE elsewhere.
 #' @importFrom httr GET authenticate handle
-#' @author Lorenzo Busetto, phD (2019) \email{busetto.l@@irea.cnr.it}
+#' @author Lorenzo Busetto, phD (2019) \email{lbusett@@gmail.com}
 #' @rdname scihub_login
 #' @export
 
 check_scihub_login <- function(username, password) {
   check_creds <- httr::GET(
     url = "https://scihub.copernicus.eu/apihub/odata/v1",
-    handle = httr::handle(""), 
+    handle = httr::handle(""),
     httr::authenticate(username, password))
   if (check_creds$status == "401") {
     FALSE
@@ -77,8 +77,8 @@ check_scihub_login <- function(username, password) {
 }
 
 #' @name check_scihub_connection
-#' @return `check_scihub_connection` returns TRUE if internet connection 
-#'  is available and SciHub is accessible, FALSE otherwise. 
+#' @return `check_scihub_connection` returns TRUE if internet connection
+#'  is available and SciHub is accessible, FALSE otherwise.
 #' @importFrom httr RETRY handle
 #' @rdname scihub_login
 #' @export
@@ -96,19 +96,19 @@ check_scihub_connection <- function() {
 
 #' @name write_scihub_login
 #' @param check Logical: if TRUE (default), new credentials are checked
-#'  before writing them on `apihub_path` (if they are invalid, an error 
-#'  is provided); 
+#'  before writing them on `apihub_path` (if they are invalid, an error
+#'  is provided);
 #'  if FALSE, they are directly written.
-#' @param append Logical: if TRUE, new credentials are added 
-#'  to the ones existing within `apihub_path`; 
+#' @param append Logical: if TRUE, new credentials are added
+#'  to the ones existing within `apihub_path`;
 #'  if FALSE (default), `apihub_path` is replaced with the new ones.
 #' @return `write_scihub_login` returns NULL.
 #' @rdname scihub_login
 #' @export
 
-write_scihub_login <- function(username, password, 
-                               apihub_path = NA, 
-                               check = TRUE, 
+write_scihub_login <- function(username, password,
+                               apihub_path = NA,
+                               check = TRUE,
                                append = FALSE) {
   
   # check credentials (if required)
@@ -122,7 +122,7 @@ write_scihub_login <- function(username, password,
     }
   }
   
-  # if apihub_path is not specified, 
+  # if apihub_path is not specified,
   # retrieve from the current installation
   if (any(c(is.na(apihub_path), length(nn(apihub_path))==0))) {
     apihub_path <- file.path(dirname(attr(load_binpaths(), "path")), "apihub.txt")
@@ -130,7 +130,7 @@ write_scihub_login <- function(username, password,
   }
   
   # if append is required, read the old file
-  # in order to exclude duplicated entries and 
+  # in order to exclude duplicated entries and
   # add the new credentials to the top instead that to the bottom
   apihub <- matrix(c(username, password), nrow = 1)
   if (append) {
@@ -160,7 +160,7 @@ write_scihub_login <- function(username, password,
     title = "Set SciHub username and password",
     size = "s",
     # checkboxInput(
-    #   "apihub_multiple", 
+    #   "apihub_multiple",
     #   label = "Use multiple credentials",
     #   value = FALSE
     # ),
@@ -192,9 +192,9 @@ write_scihub_login <- function(username, password,
           conditionalPanel(
             condition = "output.switch_save_apihub == 'custom'",
             shinySaveButton(
-              "apihub_path_sel", 
-              "Save as...", "Specify path for apihub text file", 
-              filetype=list(plain="txt"), 
+              "apihub_path_sel",
+              "Save as...", "Specify path for apihub text file",
+              filetype=list(plain="txt"),
               class = "scihub_savebutton"
             )
           )),
@@ -202,8 +202,8 @@ write_scihub_login <- function(username, password,
           conditionalPanel(
             condition = "output.switch_save_apihub == 'default'",
             actionButton(
-              "save_apihub", "\u2000Save", 
-              icon=icon("save"), 
+              "save_apihub", "\u2000Save",
+              icon=icon("save"),
               class = "scihub_savebutton"
             )
           )),

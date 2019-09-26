@@ -11,11 +11,11 @@
 #' @param radius (optional) Numerical (positive): the size (in the unit of
 #'  `inmask`, typically metres) to be used as radius for the smoothing
 #'  (the higher it is, the more smooth the output mask will result).
-#' @param buffer (optional) Numerical (positive or negative): the size of the 
-#'  buffer (in the unit of `inmask`, typically metres) to be applied to the 
+#' @param buffer (optional) Numerical (positive or negative): the size of the
+#'  buffer (in the unit of `inmask`, typically metres) to be applied to the
 #'  masked area after smoothing it (positive to enlarge, negative to reduce).
-#' @param namask (optional) The path of an input 0-1 mask where 0 represents 
-#'  the area of the original file with NA values (which should not be 
+#' @param namask (optional) The path of an input 0-1 mask where 0 represents
+#'  the area of the original file with NA values (which should not be
 #'  smoothed / buffered).
 #'  Default (NULL) means that no NA values are present.
 #' @return The path of the smoothed mask.
@@ -140,7 +140,7 @@ smooth_mask <- function(inmask, binpaths, tmpdir = tempdir(), radius = 250, buff
     intern = Sys.info()["sysname"] == "Windows"
   )
   
-  # 7-8 if buffer_npx > 0 
+  # 7-8 if buffer_npx > 0
   if (buffer_npx > 0) {
     
     # 7. invert the image: set inmask=0 (clouds) and namask=0 (nodata) to NA

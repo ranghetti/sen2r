@@ -1,6 +1,6 @@
 #' @title Get information from S2 file name or metadata
-#' @description The function `safe_getMetadata()` scans a Sentinel2 product 
-#'  (main path, granule path, main / granule xml file or GDAL object) 
+#' @description The function `safe_getMetadata()` scans a Sentinel2 product
+#'  (main path, granule path, main / granule xml file or GDAL object)
 #'  to retrieve information about the product.
 #'  
 #'  The accessory function `rm_invalid_safe()` remove a SAFE archive in the case
@@ -48,11 +48,11 @@
 #'      to be present in the filesystem; in future this will be changed
 #'      (see the second example for a workaround to scan for specific
 #'      elements without needing the file to have been downloaded).
-#' @param abort Logical parameter: if TRUE (default), the function aborts 
+#' @param abort Logical parameter: if TRUE (default), the function aborts
 #'  in case `prod_type` is not recognised; if FALSE, a warning is shown.
 #' @return `safe_getMetadata()` returns a list of the output metadata;
 #' 
-#'  `rm_invalid_safe()` returns TRUE if the `s2` product was removed, 
+#'  `rm_invalid_safe()` returns TRUE if the `s2` product was removed,
 #'  FALSE elsewhere.
 #'
 #'  `safe_isvalid()` returns TRUE if the product is a valid SAFE, FALSE if not.
@@ -214,7 +214,7 @@ safe_isvalid <- function(s2, info="fileinfo") {
         } else {
           if (action == "getmetadata") {
             print_message(
-              type=message_type, 
+              type=message_type,
               "This product (",s2,") is not in the right format (not recognised)."
             )
             return(invisible(NULL))
@@ -251,7 +251,7 @@ safe_isvalid <- function(s2, info="fileinfo") {
         } else {
           if (action == "getmetadata") {
             print_message(
-              type=message_type, 
+              type=message_type,
               "This product (",s2,") is not in the right format (not recognised)."
             )
             return(invisible(NULL))
@@ -300,7 +300,7 @@ safe_isvalid <- function(s2, info="fileinfo") {
             } else if (length(oldname_main_xmlfile)==0) {
               if (action == "getmetadata") {
                 print_message(
-                  type=message_type, 
+                  type=message_type,
                   "This product (",s2,") is not in the right format (not recognised)."
                 )
                 return(invisible(NULL))
@@ -312,7 +312,7 @@ safe_isvalid <- function(s2, info="fileinfo") {
               }
             } else {
               print_message(
-                type=message_type, 
+                type=message_type,
                 "This product (",s2,") is not in the right format (not univocally recognised)."
               )
               return(invisible(NULL))
@@ -325,7 +325,7 @@ safe_isvalid <- function(s2, info="fileinfo") {
                                                list.files, s2_regex$compactname_granule_xml$regex, full.names=TRUE))
             } else {
               print_message(
-                type=message_type, 
+                type=message_type,
                 "This product (",s2,") is not in the right format (not univocally recognised)."
               )
               return(invisible(NULL))
@@ -333,7 +333,7 @@ safe_isvalid <- function(s2, info="fileinfo") {
           }
         } else {
           print_message(
-            type=message_type, 
+            type=message_type,
             "This product (",s2,") is not in the right format (not univocally recognised)."
           )
           return(invisible(NULL))
@@ -350,7 +350,7 @@ safe_isvalid <- function(s2, info="fileinfo") {
             } else if (length(oldname_granule_xmlfile)==0) {
               if (action == "getmetadata") {
                 print_message(
-                  type=message_type, 
+                  type=message_type,
                   "This product (",s2,") is not in the right format (not recognised)."
                 )
                 return(invisible(TRUE))
@@ -368,7 +368,7 @@ safe_isvalid <- function(s2, info="fileinfo") {
               s2_granules_xml <- s2_xml <- compactname_granule_xmlfile
             } else if (length(oldname_granule_xmlfile) == 1) {
               print_message(
-                type=message_type, 
+                type=message_type,
                 "This product (",s2,") is not in the right format (not univocally recognised)."
               )
               return(invisible(NULL))
@@ -377,7 +377,7 @@ safe_isvalid <- function(s2, info="fileinfo") {
         } else if (length(oldname_granule_xmlfile) + length(compactname_granule_xmlfile) == 0) {
           if (action == "getmetadata") {
             print_message(
-              type=message_type, 
+              type=message_type,
               "This product (",s2,") is not in the right format (not recognised)."
             )
             return(invisible(NULL))
@@ -389,7 +389,7 @@ safe_isvalid <- function(s2, info="fileinfo") {
           }
         } else {
           print_message(
-            type=message_type, 
+            type=message_type,
             "This product (",s2,") is not in the right format (not univocally recognised)."
           )
           return(invisible(NULL))
@@ -397,7 +397,7 @@ safe_isvalid <- function(s2, info="fileinfo") {
       } else {
         if (action == "getmetadata") {
           print_message(
-            type=message_type, 
+            type=message_type,
             "This product (",s2,") is not in the right format (not recognised)."
           )
           return(invisible(NULL))

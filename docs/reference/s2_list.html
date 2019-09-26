@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Retrieve list of available products. — s2_list • sen2r: Find, Download and Process Sentinel-2 Data</title>
+<title>Retrieve list of available S2 products. — s2_list • sen2r: Find, Download and Process Sentinel-2 Data</title>
 
 
 <!-- jquery -->
@@ -35,9 +35,9 @@
 
 
 
-<meta property="og:title" content="Retrieve list of available products. — s2_list" />
+<meta property="og:title" content="Retrieve list of available S2 products. — s2_list" />
 <meta property="og:description" content="The function retrieves the list of available Sentinel-2
-products basing on search criteria." />
+products satisfying given search criteria." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -113,14 +113,14 @@ products basing on search criteria." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Retrieve list of available products.</h1>
+    <h1>Retrieve list of available S2 products.</h1>
     <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/s2_list.R'><code>R/s2_list.R</code></a></small>
     <div class="hidden name"><code>s2_list.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>The function retrieves the list of available Sentinel-2
-products basing on search criteria.</p>
+products satisfying given search criteria.</p>
     </div>
 
     <pre class="usage"><span class='fu'>s2_list</span>(<span class='kw'>spatial_extent</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>orbit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
@@ -190,7 +190,7 @@ if 'data.table', the output is a data.table with metadata.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Basing on the value of argument `output_type``,
+    <p>Depending on the value of argument `output_type``,
 a vector of available products (being each element an URL
 and its name the product name), or a data.table with product metadata.</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
@@ -408,7 +408,9 @@ and its name the product name), or a data.table with product metadata.</p>
     </ul>
 
     <h2>Author</h2>
-    <p>Lorenzo Busetto, phD (2019) <a href='mailto:lbusett@gmail.com'>lbusett@gmail.com</a></p>
+    <p>Lorenzo Busetto, phD (2019) <a href='mailto:lbusett@gmail.com'>lbusett@gmail.com</a> - Inspired by
+function <code>getSentinel_query</code> of package <code>getSpatialData</code> by J. Schwalb-Willmann
+(https://github.com/16EAGLE/getSpatialData)</p>
 <p>Luigi Ranghetti, phD (2019) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p>
   </div>
 </div>

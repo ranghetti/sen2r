@@ -1,6 +1,6 @@
 #' @title Fix ENVI outputs
 #' @description Internal function which changes some elements of output ENVI
-#'  files: 
+#'  files:
 #'  - file extension is set to .dat if .envi (in case of files created
 #'      by 'writeRaster`) is found, and the header is edited properly,
 #'  - and band names are set in the header file (in particular, SR band names
@@ -55,7 +55,7 @@ fix_envi_format <- function(infiles) {
   s2_bands[["BOA"]][["B"]] <- s2_bands[["TOA"]][["B"]][c(1:9,11:12)]
   s2_bands[["RGB"]] <- c("Red","Green","Blue")
   
-  # cycle on infiles 
+  # cycle on infiles
   for (infile in infiles) {
     
     # file metadata
@@ -136,6 +136,6 @@ fix_envi_format <- function(infiles) {
       
     }
     
-  } # end of infiles FOR cycle 
+  } # end of infiles FOR cycle
   
 }

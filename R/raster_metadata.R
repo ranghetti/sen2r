@@ -20,19 +20,19 @@
 #' examplenames <- c(
 #'   system.file("tif/L7_ETMs.tif", package="stars"),
 #'   system.file("nc/bcsd_obs_1999.nc", package = "stars"),
-#'   system.file("extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_BOA_10.tif", 
+#'   system.file("extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_BOA_10.tif",
 #'     package = "sen2r")
 #' )
 #'
 #' # Return metadata as data.table
 #' raster_metadata(examplenames)
-#' 
+#'
 #' # Return metadata as list
 #' raster_metadata(examplenames, format = "list")
-#' 
+#'
 #' # Return only two metadata
 #' raster_metadata(examplenames, c("res", "unit"))
-#' 
+#'
 #' # Output with an invalid raster
 #' examplenames <- c(examplenames, system.file("extdata/gdal_formats.json", package="sen2r"))
 #' raster_metadata(examplenames)
@@ -59,7 +59,7 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
     )
   }
   # metadata groups
-  meta_stars    <- any(meta %in% meta_lev_stars)
+  meta_stars <- any(meta %in% meta_lev_stars)
   meta_gdalinfo <- any(meta %in% meta_lev_gdalinfo)
   
   
@@ -75,7 +75,7 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
     }
     if (meta_gdalinfo) {
       metadata_raw <- suppressWarnings(suppressMessages(try(
-        sf::gdal_utils("info", raster_path, quiet = TRUE) %>% 
+        sf::gdal_utils("info", raster_path, quiet = TRUE) %>%
           strsplit("\n") %>% unlist() %>% trimws(),
         silent = TRUE
       )))

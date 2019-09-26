@@ -7,7 +7,7 @@
 #'  permissions
 #' @rdname path_check
 #' @author Luigi Ranghetti, PhD (2019) \email{ranghetti.l@@irea.cnr.it}
-#' @author Lorenzo Busetto, PhD (2019) \email{lbusett@@gmail.com>}
+#' @author Lorenzo Busetto, PhD (2019) \email{lbusett@@gmail.com}
 #' @importFrom shiny renderUI span renderText
 path_check <- function(path, mustbe_empty = FALSE, mustbe_writable = TRUE) {
   if (all(length(path)>0, path[1]!="")) {

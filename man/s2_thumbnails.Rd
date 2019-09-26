@@ -44,7 +44,7 @@ range is -3 to 3 for Float and -3000 to 3000 for Int.
 It can be useful i.e. to stretch BOA "dark" products.}
 
 \item{outdir}{(optional) Full name of the existing output directory
-where the files should be created.  Default is a subdirectory (named
+where the files should be created. Default is a subdirectory (named
 "thumbnails") of the parent directory of each input file.}
 
 \item{tmpdir}{(optional) Path where intermediate files (VRT) will be created.

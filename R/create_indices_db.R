@@ -164,14 +164,14 @@ create_indices_db <- function(xslt_path = NA,
       gsub("\\\\textcolor\\[rgb\\]\\{[0-9\\.\\,]+\\}", "\\\\var", .) %>% # RGB indications are variable names
       gsub(paste0("\\\\mathrm",parent_regex), "\\1", ., perl=TRUE) %>% # remove mathrm
       gsub("\\\\left\\|([^|]+)\\\\right\\|", "abs(\\1)", .) %>% # abs
-      gsub("\u00B7", "*", .)  %>% # replace muddle point
-      gsub("\\\\times", "*", .)  %>% # replace times
-      gsub("\\\\&InvisibleTimes;", "*", .)  %>% # remove invisibles multiplications
-      gsub("\u0096", "-band_", .)  %>% # unicode START OF GUARDED AREA as "-"
-      gsub("\\\\var\\{([0-9][0-9a]?)\\}", "band\\_\\1", .)  %>% # recognise band names
-      gsub("\\\\var\\{([^}]+)\\}", "par\\_\\1", .)  %>% # recognise other elements as parameters
-      gsub("par\\_([^0-9A-Za-z])", "\\1", .)  %>% # error in two indices
-      gsub("\\\\left\\(", "(", .)  %>% # parenthesis
+      gsub("\u00B7", "*", .) %>% # replace muddle point
+      gsub("\\\\times", "*", .) %>% # replace times
+      gsub("\\\\&InvisibleTimes;", "*", .) %>% # remove invisibles multiplications
+      gsub("\u0096", "-band_", .) %>% # unicode START OF GUARDED AREA as "-"
+      gsub("\\\\var\\{([0-9][0-9a]?)\\}", "band\\_\\1", .) %>% # recognise band names
+      gsub("\\\\var\\{([^}]+)\\}", "par\\_\\1", .) %>% # recognise other elements as parameters
+      gsub("par\\_([^0-9A-Za-z])", "\\1", .) %>% # error in two indices
+      gsub("\\\\left\\(", "(", .) %>% # parenthesis
       gsub("\\\\right\\)", ")", .) # parenthesis
     
     # remove temporary files
@@ -357,7 +357,7 @@ create_indices_db <- function(xslt_path = NA,
       link = "Panigada et al. 2019 (in press)",
       s2_formula = "clip((band_4)/(band_3+par_a*(band_6-band_3)),0,1)",
       checked = FALSE,
-      a = ((664.9-559.0)/(739.1-559.0)) # reflectances for S2B 
+      a = ((664.9-559.0)/(739.1-559.0)) # reflectances for S2B
     ),
     "CRred-0" = data.frame(
       n_index = 310,
@@ -392,7 +392,7 @@ create_indices_db <- function(xslt_path = NA,
       link = "Panigada et al. 2019 (in press)",
       s2_formula = "clip(1-(band_4)/(band_3+par_a*(band_6-band_3)),0,1)",
       checked = FALSE,
-      a = ((664.9-559.0)/(739.1-559.0)) # reflectances for S2B 
+      a = ((664.9-559.0)/(739.1-559.0)) # reflectances for S2B
     ),
     "BDred-0" = data.frame(
       n_index = 314,

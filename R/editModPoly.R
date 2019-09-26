@@ -5,7 +5,7 @@
 #' @param session Shiny server function session
 #' @param leafmap leaflet map to use for Selection
 #' @param targetLayerId \code{character} identifier of layer to edit, delete
-#' @param sf \code{logical} to return simple features.  \code{sf=FALSE} will return
+#' @param sf \code{logical} to return simple features. \code{sf=FALSE} will return
 #'          \code{GeoJSON}.
 #' @param record \code{logical} to record all edits for future playback.
 #' @param crs CRS (EPSG) to be used

@@ -121,7 +121,7 @@ documentation of the function](reference/sen2r.md) for further details).
 Other specific functions can be used to run single steps separately:
 
   - [`s2_list()`](reference/s2_list.md) to retrieve the list of
-    available Sentinel-2 products basing on input parameters;
+    available Sentinel-2 products based on input parameters;
   - [`s2_download()`](reference/s2_download.md) to download Sentinel-2
     products;
   - [`sen2cor()`](reference/sen2cor.html) to correct level-1C products
@@ -134,7 +134,7 @@ Other specific functions can be used to run single steps separately:
   - [`gdal_warp()`](reference/gdal_warp.md) to clip, reproject and warp
     raster files (this is a wrapper to call
     [gdal\_translate](http://www.gdal.org/gdal_translate.html) or
-    [gdalwarp](http://www.gdal.org/gdalwarp.html) basing on input
+    [gdalwarp](http://www.gdal.org/gdalwarp.html) based on input
     parameters);
   - [`s2_mask()`](reference/s2_mask.md) to apply a cloud mask to
     Sentinel-2 products;

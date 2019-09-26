@@ -18,45 +18,45 @@
 #' @param mask_type (optional) Character vector which determines the type of
 #'  mask to be applied. Accepted values are:
 #'  - "nomask": do not mask any pixel;
-#'  - "nodata": mask pixels checked as "No data" or "Saturated or defective" 
+#'  - "nodata": mask pixels checked as "No data" or "Saturated or defective"
 #'      in the SCL product (all pixels with values are maintained);
-#'  - "cloud_high_proba": mask pixels checked as "No data", "Saturated or 
+#'  - "cloud_high_proba": mask pixels checked as "No data", "Saturated or
 #'      defective" or "Cloud (high probability)" in the SCL product;
-#'  - "cloud_medium_proba": mask pixels checked as "No data", "Saturated or 
+#'  - "cloud_medium_proba": mask pixels checked as "No data", "Saturated or
 #'      defective" or "Cloud (high or medium probability)" in the SCL product;
-#'  - "cloud_and_shadow": mask pixels checked as "No data", "Saturated or 
-#'      defective", "Cloud (high or medium probability)" or "Cloud shadow" 
+#'  - "cloud_and_shadow": mask pixels checked as "No data", "Saturated or
+#'      defective", "Cloud (high or medium probability)" or "Cloud shadow"
 #'      in the SCL product;
-#'  - "clear_sky": mask pixels checked as "No data", "Saturated or 
+#'  - "clear_sky": mask pixels checked as "No data", "Saturated or
 #'      defective", "Cloud (high or medium probability)", "Cloud shadow",
 #'      "Unclassified" or "Thin cirrus" in the SCL product
-#'      (only pixels classified as clear-sky surface - so "Dark area", 
+#'      (only pixels classified as clear-sky surface - so "Dark area",
 #'      "Vegetation", "Bare soil", "Water" or "Snow" - are maintained);
-#'  - "land": mask pixels checked as "No data", "Saturated or 
+#'  - "land": mask pixels checked as "No data", "Saturated or
 #'      defective", "Cloud (high or medium probability)", "Cloud shadow", "Dark area",
 #'      "Unclassified", "Thin cirrus", "Water" or "Snow" in the SCL product
-#'      (only pixels classified as land surface - so "Vegetation" or 
+#'      (only pixels classified as land surface - so "Vegetation" or
 #'      "Bare soil" - are maintained);
 #'  - a string in the following form: "scl_n_m_n", where n, m and n are one or
 #'      more SCL class numbers. E.g. string "scl_0_8_9_11" can
-#'      be used to mask classes 0 ("No data"), 8-9 ("Cloud (high or medium 
+#'      be used to mask classes 0 ("No data"), 8-9 ("Cloud (high or medium
 #'      probability)") and 11 ("Snow").
 #' @param smooth (optional) Numerical (positive): the size (in the unit of
 #'  `inmask`, typically metres) to be used as radius for the smoothing
-#'  (the higher it is, the more smooth the output mask will result). 
+#'  (the higher it is, the more smooth the output mask will result).
 #'  Default is 0 (no smoothing is applied).
-#' @param buffer (optional) Numerical (positive or negative): the size of the 
-#'  buffer (in the unit of `inmask`, typically metres) to be applied to the 
+#' @param buffer (optional) Numerical (positive or negative): the size of the
+#'  buffer (in the unit of `inmask`, typically metres) to be applied to the
 #'  masked area after smoothing it (positive to enlarge, negative to reduce).
 #'  Default is 0 (no buffer).
 #' @param max_mask (optional) Numeric value (range 0 to 100), which represents
-#'  the maximum percentage of allowed masked surface (by clouds or any other 
-#'  type of mask chosen with argument `mask_type`) for producing outputs. 
+#'  the maximum percentage of allowed masked surface (by clouds or any other
+#'  type of mask chosen with argument `mask_type`) for producing outputs.
 #'  Images with a percentage of masked surface greater than `max_mask`%
-#'  are not processed (the list of expected output files which have not been 
-#'  generated is returned as an attribute, named "skipped"). 
+#'  are not processed (the list of expected output files which have not been
+#'  generated is returned as an attribute, named "skipped").
 #'  Default value is 80.
-#'  Notice that the percentage is computed on non-NA values (if input images 
+#'  Notice that the percentage is computed on non-NA values (if input images
 #'  had previously been clipped and masked using a polygon, the percentage is
 #'  computed on the surface included in the masking polygons).
 #' @param outdir (optional) Full name of the output directory where
@@ -74,13 +74,13 @@
 #'  (in this case temporary files cannot be deleted, because rasters of source
 #'  bands are included within them).
 #' @param save_binary_mask (optional) Logical: should binary masks be exported?
-#'  Binary mask are intermediate rasters used to apply the cloud mask: 
+#'  Binary mask are intermediate rasters used to apply the cloud mask:
 #'  pixel values can be 1 (no cloud mask), 0 (cloud mask) or NA (original NA
 #'  value, i.e. because input rasters had been clipped on the extent polygons).
 #'  If FALSE (default) they are not exported; if TRUE, they are exported
 #'  as MSK prod type (so saved within `outdir`, in a subdirectory called "MSK"
 #'  if `subdirs = TRUE`).
-#'  Notice that the presence of "MSK" products is not checked before running 
+#'  Notice that the presence of "MSK" products is not checked before running
 #'  `sen2r()`, as done for the other products; this means that missing products
 #'  which are not required to apply cloud masks will not be produced.
 #' @param format (optional) Format of the output file (in a
@@ -94,7 +94,7 @@
 #'  present, the compression indicated with this parameter is used.
 #' @param parallel (optional) Logical: if TRUE, masking is conducted using parallel
 #'  processing, to speed-up the computation for large rasters.
-#'  The number of cores is automatically determined; specifying it is also 
+#'  The number of cores is automatically determined; specifying it is also
 #'  possible (e.g. `parallel = 4`).
 #'  If FALSE (default), single core processing is used.
 #'  Multiprocess masking computation is always performed in singlecore mode
@@ -135,7 +135,7 @@
 #'   outdir = tempdir()
 #' )
 #' ex_out
-#' 
+#'
 #' # Show output
 #' par(mfrow = c(1,3))
 #' par(mar = rep(0,4)); image(stars::read_stars(ex_in), rgb = 1:3)
@@ -235,7 +235,7 @@ s2_mask <- function(infiles,
   if (is.na(tmpdir)) {
     tmpdir <- if (all(!is.na(format), format == "VRT")) {
       if (!missing(outdir)) {
-        autotmpdir <- FALSE # logical: TRUE if tmpdir should be specified 
+        autotmpdir <- FALSE # logical: TRUE if tmpdir should be specified
         # for each out file (when tmpdir was not specified and output files are vrt),
         # FALSE if a single tmpdir should be used (otherwise)
         file.path(outdir, ".vrt")
@@ -259,7 +259,7 @@ s2_mask <- function(infiles,
   infiles_meta_sen2r <- sen2r_getElements(infiles, format="data.table")
   infiles_meta_raster <- raster_metadata(infiles, c("res", "outformat", "unit"), format="data.table")
   maskfiles_meta_sen2r <- sen2r_getElements(maskfiles, format="data.table")
-
+  
   # create outdir if not existing
   if (!dir.exists(dirname(outdir))) {
     print_message(
@@ -307,7 +307,7 @@ s2_mask <- function(infiles,
   ## Cycle on each file
   if (output_type == "s2_mask") {
     outfiles <- character(0) # vector with paths of created files
-    outfiles_toomasked <- character(0) # vector with the path of outputs which 
+    outfiles_toomasked <- character(0) # vector with the path of outputs which
     # were not created cause to the higher masked surface
   } else if (output_type == "perc") {
     outpercs <- numeric(0)
@@ -396,7 +396,7 @@ s2_mask <- function(infiles,
           raster::calc(inmask[[j]],
                        function(x){as.integer(!is.na(nn(x)) & !x %in% req_masks[[j]])},
                        filename = mask_tmpfiles[j],
-                       options  = "COMPRESS=LZW",
+                       options = "COMPRESS=LZW",
                        datatype = "INT1U",
                        overwrite = TRUE)
           naval_tmpfiles <- c(
@@ -406,7 +406,7 @@ s2_mask <- function(infiles,
           raster::calc(inmask[[j]],
                        function(x){as.integer(!is.na(nn(x)))},
                        filename = naval_tmpfiles[j],
-                       options  = "COMPRESS=LZW",
+                       options = "COMPRESS=LZW",
                        datatype = "INT1U")
         }
         if(length(mask_tmpfiles)==1) {
@@ -418,12 +418,12 @@ s2_mask <- function(infiles,
           raster::overlay(stack(mask_tmpfiles),
                           fun = sum,
                           filename = outmask,
-                          options  = "COMPRESS=LZW",
+                          options = "COMPRESS=LZW",
                           datatype = "INT1U")
           raster::overlay(stack(naval_tmpfiles),
                           fun = sum,
                           filename = outnaval,
-                          options  = "COMPRESS=LZW",
+                          options = "COMPRESS=LZW",
                           datatype = "INT1U")
         }
         
@@ -432,7 +432,7 @@ s2_mask <- function(infiles,
         # This is as fast as previous, but memory friendly on large raster
         mean_values_naval <- raster::cellStats(raster(outnaval), "mean", na.rm = TRUE)
         mean_values_mask <- raster::cellStats(raster(outmask), "mean", na.rm = TRUE)
-
+        
         perc_mask <- 100 * (mean_values_naval - mean_values_mask) / mean_values_naval
         if (!is.finite(perc_mask)) {perc_mask <- 100}
         
@@ -484,10 +484,10 @@ s2_mask <- function(infiles,
                 smooth <- smooth * 8.15e-6
               }
               # apply the smooth to the mask
-              min_values_naval <- raster::cellStats(raster(outnaval), "min", na.rm = TRUE) 
+              min_values_naval <- raster::cellStats(raster(outnaval), "min", na.rm = TRUE)
               smooth_mask(
-                outmask_res, 
-                radius = smooth, buffer = buffer, 
+                outmask_res,
+                radius = smooth, buffer = buffer,
                 namask = if (min_values_naval==0) {outnaval_res} else {NULL}, # TODO NULL if no Nodata values are present
                 binpaths = binpaths, tmpdir = sel_tmpdir
               )
@@ -546,11 +546,11 @@ s2_mask <- function(infiles,
                 out_file <- gsub("\\.vrt$", ".tif", out_file)
               }
               out <- writeStart(
-                out, 
-                out_file, 
-                NAflag=na, 
-                datatype = datatype, 
-                format = ifelse(sel_format=="VRT","GTiff",sel_format), 
+                out,
+                out_file,
+                NAflag=na,
+                datatype = datatype,
+                format = ifelse(sel_format=="VRT","GTiff",sel_format),
                 if(sel_format %in% c("GTiff","VRT")){options = c("COMPRESS=LZW")},
                 overwrite = overwrite
               )
@@ -569,7 +569,7 @@ s2_mask <- function(infiles,
               out <- writeStop(out)
             }
             out <- maskapply_serial(x = inraster,
-                                    y =  raster(outmask_smooth),
+                                    y = raster(outmask_smooth),
                                     out_file = sel_outfile,
                                     na = sel_naflag,
                                     datatype = dataType(inraster),
@@ -579,7 +579,7 @@ s2_mask <- function(infiles,
             }
             
             # fix for envi extension (writeRaster use .envi)
-            if (sel_format=="ENVI")  {fix_envi_format(sel_outfile)}
+            if (sel_format=="ENVI") {fix_envi_format(sel_outfile)}
             
           } else { # end of max_mask IF cycle
             outfiles_toomasked <- c(outfiles_toomasked, sel_outfile)
@@ -620,7 +620,7 @@ s2_mask <- function(infiles,
 #' @description [s2_perc_masked] computes the percentage of cloud-masked surface.
 #'  The function is similar to [s2_mask], but it returns percentages instead
 #'  of masked rasters.
-#' @return [s2_perc_masked] returns a names vector with the percentages 
+#' @return [s2_perc_masked] returns a names vector with the percentages
 #'  of masked surfaces.
 #' @rdname s2_mask
 #' @export

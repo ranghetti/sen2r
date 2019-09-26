@@ -28,7 +28,7 @@ these values, specify also other values of \code{mask} and/or \code{tr}.
 
 \item{mask}{Spatial path or object from which to take the extent
 of output files. If it is a polygon, this is used as masking layer;
-otherwise, only the bounding box  is considered. If both \code{ref}
+otherwise, only the bounding box is considered. If both \code{ref}
 and \code{mask} are provided, this parameter will overlay the extent of the
 reference raster. In order to take only the grid from \code{res} and not
 to clip on its extent, set \code{mask=NA}. Notice that the output

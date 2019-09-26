@@ -8,7 +8,7 @@
 #' - Sen2Cor
 #' 
 #' This function opens a GUI which allows to check that these dependencies
-#' are installed. This check is highly suggested before using the library for 
+#' are installed. This check is highly suggested before using the library for
 #' the fist time, in order to avoid errors.
 #' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
@@ -36,7 +36,7 @@ check_sen2r_deps <- function() {
   
   # get server volumes
   volumes <- c(
-    "Home" = path.expand("~"), 
+    "Home" = path.expand("~"),
     "sen2r" = system.file(package = "sen2r"),
     getVolumes()()
   )
@@ -112,7 +112,7 @@ check_sen2r_deps <- function() {
     
     rv <- reactiveValues()
     
-    # output OS name (to be used in conditionalPanel)  
+    # output OS name (to be used in conditionalPanel)
     output$os_name <- renderText(Sys.info()["sysname"])
     outputOptions(output, "os_name", suspendWhenHidden = FALSE)
     
@@ -166,13 +166,13 @@ check_sen2r_deps <- function() {
       if (is.na(rv$check_gdal_isvalid)) {
         div(
           align="center",
-          p(style="text-align:center;font-size:500%;color:darkgrey;", 
+          p(style="text-align:center;font-size:500%;color:darkgrey;",
             icon("cog", class = "fa-spin"))
         )
       } else if (!rv$check_gdal_isvalid) {
         if (Sys.info()["sysname"] == "Windows") {
           div(
-            p(style="text-align:center;font-size:500%;color:red;", 
+            p(style="text-align:center;font-size:500%;color:red;",
               icon("times-circle")),
             p(HTML(
               "GDAL needs to be installed. To do it:<ol>",
@@ -185,29 +185,29 @@ check_sen2r_deps <- function() {
               "check the package \"gdal-python\" and install it.</li></ol>"
             )),
             hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-            div(style="text-align:right;", 
+            div(style="text-align:right;",
                 actionButton("install_gdal_button", strong("\u2000Download"), icon=icon("download")),
                 modalButton("\u2000Cancel", icon = icon("ban")))
           )
         } else {
           div(
-            p(style="text-align:center;font-size:500%;color:red;", 
+            p(style="text-align:center;font-size:500%;color:red;",
               icon("times-circle")),
             p("GDAL needs to be installed.",
               "To do it, install the package \"python-gdal\",",
               "then repeat this check."),
             hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-            div(style="text-align:right;", 
+            div(style="text-align:right;",
                 modalButton("\u2000Close", icon = icon("check")))
           )
         }
       } else if (rv$check_gdal_isvalid) {
         div(
-          p(style="text-align:center;font-size:500%;color:darkgreen;", 
+          p(style="text-align:center;font-size:500%;color:darkgreen;",
             icon("check-circle")),
           p("GDAL is correctly installed."),
           hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-          div(style="text-align:right;", 
+          div(style="text-align:right;",
               modalButton("\u2000Close", icon = icon("check")))
         )
       }
@@ -238,7 +238,7 @@ check_sen2r_deps <- function() {
         "check_gdal_message",
         as.character(div(
           align="center",
-          p(style="text-align:center;font-size:500%;color:darkgrey;", 
+          p(style="text-align:center;font-size:500%;color:darkgrey;",
             icon("spinner", class = "fa-pulse"))
         ))
       )
@@ -264,7 +264,7 @@ check_sen2r_deps <- function() {
       
       # create the text to show in the modaldialog
       shinyjs::html(
-        "install_gdal_message", 
+        "install_gdal_message",
         as.character(div(
           br(),
           p(style="color:darkgrey;text-align:center;font-size:500%;","\u23F3"),
@@ -283,7 +283,7 @@ check_sen2r_deps <- function() {
       if (file.exists(osgeo4w_path)) {
         
         shinyjs::html(
-          "install_gdal_message", 
+          "install_gdal_message",
           as.character(div(
             p("OSGeo4W was correctly downloaded."),
             p("The installer window was opened;",
@@ -295,13 +295,13 @@ check_sen2r_deps <- function() {
         shell(osgeo4w_path)
         
         shinyjs::html(
-          "install_gdal_message", 
+          "install_gdal_message",
           as.character(div(
             p("The installation was terminated;",
               "please close the interface,",strong("restart R"),
               "and repeat the check to be sure all was correctly installed."),
             hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-            div(style="text-align:right;", 
+            div(style="text-align:right;",
                 modalButton("\u2000Close", icon = icon("check")))
           )),
           add = TRUE
@@ -311,11 +311,11 @@ check_sen2r_deps <- function() {
       } else {
         
         shinyjs::html(
-          "install_gdal_message", 
+          "install_gdal_message",
           as.character(div(
             p("Something went wrong during the download; please retry."),
             hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-            div(style="text-align:right;", 
+            div(style="text-align:right;",
                 modalButton("\u2000Close", icon = icon("check")))
           )),
           add = TRUE
@@ -377,7 +377,7 @@ check_sen2r_deps <- function() {
                   div(style="height:20px;vertical-aling:top;",
                       htmlOutput("path_newaria2_errormess")),
                   hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-                  div(style="text-align:right;", 
+                  div(style="text-align:right;",
                       disabled(actionButton("install_aria2_button", strong("\u2000Download"), icon=icon("download"))),
                       modalButton("\u2000Cancel", icon = icon("ban")))
                 )
@@ -393,7 +393,7 @@ check_sen2r_deps <- function() {
                   div(style="height:20px;vertical-aling:top;",
                       htmlOutput("path_exiaria2_errormess")),
                   hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-                  div(style="text-align:right;", 
+                  div(style="text-align:right;",
                       disabled(actionButton("link_aria2_button", strong("\u2000Ok"), icon=icon("check"))),
                       modalButton("\u2000Cancel", icon = icon("ban")))
                 )
@@ -405,7 +405,7 @@ check_sen2r_deps <- function() {
                 "To do it, install the package \"aria2\",",
                 "then repeat this check."),
               hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-              div(style="text-align:right;", 
+              div(style="text-align:right;",
                   modalButton("\u2000Close", icon = icon("check")))
             )
           }
@@ -413,11 +413,11 @@ check_sen2r_deps <- function() {
       } else if (rv$check_aria2_isvalid) {
         div(
           align = "center",
-          p(style="text-align:center;font-size:500%;color:darkgreen;", 
+          p(style="text-align:center;font-size:500%;color:darkgreen;",
             icon("check-circle")),
           p("aria2 is correctly installed."),
           hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-          div(style="text-align:right;", 
+          div(style="text-align:right;",
               modalButton("\u2000Close", icon = icon("check")))
         )
       }
@@ -426,8 +426,8 @@ check_sen2r_deps <- function() {
     # check the aria2 path
     observeEvent(input$path_newaria2_textin, {
       path_newaria2_errormess <- path_check(
-        input$path_newaria2_textin, 
-        mustbe_writable = TRUE, 
+        input$path_newaria2_textin,
+        mustbe_writable = TRUE,
         mustbe_empty = FALSE
       )
       output$path_newaria2_errormess <- path_newaria2_errormess
@@ -471,7 +471,7 @@ check_sen2r_deps <- function() {
       path_exiaria2_string <- parseFilePaths(volumes, input$path_exiaria2_sel)$datapath
       updateTextInput(session, "path_exiaria2_textin", value = path_exiaria2_string)
     })
-
+    
     # build the modalDialog
     check_aria2_modal <- modalDialog(
       title = "aria2 check",
@@ -500,10 +500,10 @@ check_sen2r_deps <- function() {
     observeEvent(input$install_aria2_button, {
       
       shinyjs::html(
-        "check_aria2_message", 
+        "check_aria2_message",
         as.character(div(
           align="center",
-          p(style="text-align:center;font-size:500%;color:darkgrey;", 
+          p(style="text-align:center;font-size:500%;color:darkgrey;",
             icon("cog", class = "fa-spin")),
           p("Wait while aria2 is being installed...")
         ))
@@ -518,29 +518,29 @@ check_sen2r_deps <- function() {
       # remove the text
       if (is(check_aria2_outerr, "error")) {
         shinyjs::html(
-          "check_aria2_message", 
+          "check_aria2_message",
           as.character(div(
             align="center",
-            p(style="text-align:center;font-size:500%;color:red;", 
+            p(style="text-align:center;font-size:500%;color:red;",
               icon("times-circle")),
             p("Some errors occurred:"),
             p(code(check_aria2_outerr)),
             hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-            div(style="text-align:right;", 
+            div(style="text-align:right;",
                 modalButton("\u2000Close", icon = icon("check")))
           ))
         )
         rv$check_aria2_isvalid <- FALSE
       } else {
         shinyjs::html(
-          "check_aria2_message", 
+          "check_aria2_message",
           as.character(div(
             align="center",
-            p(style="text-align:center;font-size:500%;color:darkgreen;", 
+            p(style="text-align:center;font-size:500%;color:darkgreen;",
               icon("check-circle")),
             p("aria2 was correctly installed."),
             hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-            div(style="text-align:right;", 
+            div(style="text-align:right;",
                 modalButton("\u2000Close", icon = icon("check")))
           ))
         )
@@ -590,7 +590,7 @@ check_sen2r_deps <- function() {
             icon("check-circle")),
           p("Sen2Cor is correctly installed."),
           hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-          div(style="text-align:right;", 
+          div(style="text-align:right;",
               modalButton("\u2000Close", icon = icon("check")))
         )
       } else {
@@ -617,7 +617,7 @@ check_sen2r_deps <- function() {
               div(style="height:20px;vertical-aling:top;",
                   htmlOutput("path_newsen2cor_errormess")),
               hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-              div(style="text-align:right;", 
+              div(style="text-align:right;",
                   disabled(actionButton("install_sen2cor_button", strong("\u2000Download"), icon=icon("download"))),
                   modalButton("\u2000Cancel", icon = icon("ban")))
             )
@@ -634,7 +634,7 @@ check_sen2r_deps <- function() {
               div(style="height:20px;vertical-aling:top;",
                   htmlOutput("path_exisen2cor_errormess")),
               hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-              div(style="text-align:right;", 
+              div(style="text-align:right;",
                   disabled(actionButton("link_sen2cor_button", strong("\u2000Ok"), icon=icon("check"))),
                   modalButton("\u2000Cancel", icon = icon("ban")))
             )
@@ -646,8 +646,8 @@ check_sen2r_deps <- function() {
     # check the Sen2Cor paths
     observeEvent(input$path_newsen2cor_textin, {
       path_newsen2cor_errormess <- path_check(
-        input$path_newsen2cor_textin, 
-        mustbe_writable = TRUE, 
+        input$path_newsen2cor_textin,
+        mustbe_writable = TRUE,
         mustbe_empty = TRUE
       )
       output$path_newsen2cor_errormess <- path_newsen2cor_errormess
@@ -664,8 +664,8 @@ check_sen2r_deps <- function() {
     })
     observeEvent(input$path_exisen2cor_textin, {
       path_exisen2cor_errormess <- path_check(
-        input$path_exisen2cor_textin, 
-        mustbe_writable = FALSE, 
+        input$path_exisen2cor_textin,
+        mustbe_writable = FALSE,
         mustbe_empty = FALSE
       )
       if (TRUE %in% attr(path_exisen2cor_errormess, "isvalid")) {
@@ -717,10 +717,10 @@ check_sen2r_deps <- function() {
       
       # create the text to show in the modaldialog
       shinyjs::html(
-        "check_sen2cor_message", 
+        "check_sen2cor_message",
         as.character(div(
           align="center",
-          p(style="text-align:center;font-size:500%;color:darkgrey;", 
+          p(style="text-align:center;font-size:500%;color:darkgrey;",
             icon("cog", class = "fa-spin")),
           p("Wait while Sen2Cor is being installed...")
         ))
@@ -738,26 +738,26 @@ check_sen2r_deps <- function() {
       if (is(check_sen2cor_outerr, "error")) {
         rv$check_sen2cor_isvalid <- FALSE
         shinyjs::html(
-          "check_sen2cor_message", 
+          "check_sen2cor_message",
           as.character(div(
             p(code(check_sen2cor_outmess)),
             p(code(check_sen2cor_outerr)),
             hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-            div(style="text-align:right;", 
+            div(style="text-align:right;",
                 modalButton("\u2000Close", icon = icon("check")))
           ))
         )
       } else {
         rv$check_sen2cor_isvalid <- TRUE
         shinyjs::html(
-          "check_sen2cor_message", 
+          "check_sen2cor_message",
           as.character(div(
             align="center",
-            p(style="text-align:center;font-size:500%;color:darkgreen;", 
+            p(style="text-align:center;font-size:500%;color:darkgreen;",
               icon("check-circle")),
             p("Sen2Cor was correctly installed."),
             hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-            div(style="text-align:right;", 
+            div(style="text-align:right;",
                 modalButton("\u2000Close", icon = icon("check")))
           ))
         )
@@ -765,7 +765,7 @@ check_sen2r_deps <- function() {
       
     })
     
-
+    
     # link an existing sen2cor
     observeEvent(input$link_sen2cor_button, {
       binpaths_content <- load_binpaths()
@@ -781,7 +781,7 @@ check_sen2r_deps <- function() {
     ##-- Footer buttons --##
     observe({
       rv$check_all_isvalid <- all(c(
-        rv$check_gdal_isvalid, rv$check_aria2_isvalid, 
+        rv$check_gdal_isvalid, rv$check_aria2_isvalid,
         rv$check_sen2cor_isvalid
       ))
     })
@@ -797,8 +797,8 @@ check_sen2r_deps <- function() {
           # actionButton("close_gui", "\u2000Close", icon = icon("check"), class = "darkbutton")
         },
         actionButton(
-          "close_gui", "\u2000Close", 
-          icon = icon(ifelse(rv$check_all_isvalid, "check", "exclamation-triangle")), 
+          "close_gui", "\u2000Close",
+          icon = icon(ifelse(rv$check_all_isvalid, "check", "exclamation-triangle")),
           class = "darkbutton"
         )
         
@@ -816,7 +816,7 @@ check_sen2r_deps <- function() {
             "Are you sure do you want to quit? ",
             "Running the package with unsatisfied ",
             "dependencies can lead to errors."
-          ), 
+          ),
           danger_mode = TRUE, btn_labels = c("Cancel", "Close window")
         )
       } else {

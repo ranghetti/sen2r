@@ -9,14 +9,16 @@ testthat::test_that(
         # Return metadata
         meta <- sen2r_getElements(fs2nc_examplename)
         testthat::expect_is(meta, "data.table")
-        testthat::expect_equal(meta, data.table(type = "tile", mission = "A",
-                                                level = "1C", 
-                                                sensing_date = structure(17320, class = "Date"), 
-                                                id_orbit = "022",
-                                                extent_name = "32TQQ",
-                                                prod_type = "TOA", 
-                                                res = "20m", 
-                                                file_ext = "tif"))
+        testthat::expect_equal(meta, data.table(
+            type = "tile", mission = "A",
+            level = "1C", 
+            sensing_date = structure(17320, class = "Date"), 
+            id_orbit = "022",
+            extent_name = "32TQQ",
+            prod_type = "TOA", 
+            res = "20m", 
+            file_ext = "tif")
+        )
         
         meta <- sen2r_getElements(fs2nc_examplename, format = "data.frame")
         testthat::expect_is(meta, "data.frame")

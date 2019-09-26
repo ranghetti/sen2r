@@ -52,10 +52,10 @@ s2_dop()
 # The passages in the current month over two orbits
 s2_dop(c("022", "065"), "this month")
 
-# The dates in which Sentinel-2A will pass in next six weeks over one orbit 
+# The dates in which Sentinel-2A will pass in next six weeks over one orbit
 s2_dop("022", "6 weeks", mission = "2A")$date
 
-# The date in which Sentinel-2A would be passed in the last 10 days over one orbit 
+# The date in which Sentinel-2A would be passed in the last 10 days over one orbit
 s2_dop("022", "-10 days", mission = "2A")$date
 
 # All the orbits covered today

@@ -116,7 +116,7 @@ if (test_sen2cor) {
       testthat::expect_true(all(dir.exists(sen2cor_out)))
       testthat::expect_gt(run_time["elapsed"], 60)
       
-      # TODO copy checks from test above  
+      # TODO copy checks from test above
       
     }
   )

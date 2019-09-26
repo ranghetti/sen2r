@@ -7,8 +7,8 @@
 #' @param dstfiles A vector of corresponding output file paths.
 #' @param of The output format (use the short format name). Default is
 #'  the format of every input filename.
-#' @param co Character. Passes a creation option to the output format driver. 
-#'  Multiple -co options may be listed. See format specific documentation 
+#' @param co Character. Passes a creation option to the output format driver.
+#'  Multiple -co options may be listed. See format specific documentation
 #'  for legal creation options for each format.
 #' @param ref Path of the raster taken as reference: if provided,
 #'  parameters regarding the output grid (alignment, resolution and
@@ -17,7 +17,7 @@
 #'  `t_srs` parameter value is always ignored when `ref` is provided.
 #' @param mask Spatial path or object from which to take the extent
 #'  of output files. If it is a polygon, this is used as masking layer;
-#'  otherwise, only the bounding box  is considered. If both `ref`
+#'  otherwise, only the bounding box is considered. If both `ref`
 #'  and `mask` are provided, this parameter will overlay the extent of the
 #'  reference raster. In order to take only the grid from `res` and not
 #'  to clip on its extent, set `mask=NA`. Notice that the output
@@ -45,7 +45,7 @@
 #'  values for different `srcfiles` (use multiple calls of the functions).
 #' @param overwrite Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
-#' @param tmpdir (optional) Path where intermediate files (maskfile) 
+#' @param tmpdir (optional) Path where intermediate files (maskfile)
 #'  will be created.
 #'  Default is a temporary directory.
 #' @param rmtmp (optional) Logical: should temporary files be removed?
@@ -73,7 +73,7 @@
 #' )
 #' crop_poly <- system.file("extdata/example_files/dam.geojson", package = "sen2r")
 #' crop_line <- sf::st_cast(sf::read_sf(crop_poly), "LINESTRING")
-#' 
+#'
 #' # Simple clip
 #' test1 <- tempfile(fileext = "_test1.tif")
 #' gdal_warp(ex_sel, test1, mask = crop_line)
@@ -81,7 +81,7 @@
 #' # Clip and mask
 #' test2 <- tempfile(fileext = "_test2.tif")
 #' gdal_warp(ex_sel, test2, mask = crop_poly)
-#' 
+#'
 #' # Show output
 #' crop_bbox <- sf::st_as_sfc(sf::st_bbox(crop_line))
 #' par(mfrow = c(1,3), mar = rep(0,4))
@@ -92,7 +92,7 @@
 #' plot(crop_bbox, add = TRUE, border = "red", lwd = 2)
 #' image(stars::read_stars(test2), rgb = 1:3)
 #' plot(crop_line, add = TRUE, col = "blue", lwd = 2)
-#' 
+#'
 #' # Warp on a reference raster
 #' test3 <- tempfile(fileext = "_test3.tif")
 #' gdal_warp(ex_sel, test3, ref = ex_ref)
@@ -102,7 +102,7 @@
 #' par(mar = rep(0,4)); image(stars::read_stars(ex_sel), rgb = 1:3)
 #' par(mar = rep(2/3,4)); image(stars::read_stars(ex_ref))
 #' par(mar = rep(0,4)); image(stars::read_stars(test3), rgb = 1:3)
-#' 
+#'
 #' # Reproject all the input file
 #' test4 <- tempfile(fileext = "_test4.tif")
 #' gdal_warp(ex_sel, test4, t_srs = "+init=epsg:32631")
@@ -110,7 +110,7 @@
 #' # Reproject and clip on a bounding box
 #' test5 <- tempfile(fileext = "_test5.tif")
 #' gdal_warp(ex_sel, test5, t_srs = "+init=epsg:32631", mask = stars::read_stars(test1))
-#' 
+#'
 #' # Reproject and clip on polygon (masking outside)
 #' test6 <- tempfile(fileext = "_test6.tif")
 #' gdal_warp(ex_sel, test6, t_srs = "+init=epsg:32631", mask = crop_poly)
@@ -128,20 +128,20 @@
 #' plot(test1_bbox_31N, add = TRUE, border = "red", lwd = 2)
 #' image(stars::read_stars(test6), rgb = 1:3)
 #' plot(crop_line_31N, add = TRUE, col = "blue", lwd = 2)
-#' 
+#'
 #' # Use a reference raster with a different projection
 #' test7 <- tempfile(fileext = "_test7.tif")
 #' gdal_warp(ex_sel, test7, ref = test6)
-#' 
+#'
 #' # Use a reference raster with a different projection
 #' # and specify a different bounding box
 #' test8 <- tempfile(fileext = "_test8.tif")
 #' gdal_warp(ex_sel, test8, mask = stars::read_stars(test1), ref = test6)
-#' 
+#'
 #' # Use a reference raster with a different projection and a mask
 #' test9 <- tempfile(fileext = "_test9.tif")
 #' gdal_warp(ex_sel, test9, mask = crop_poly, ref = test6)
-#' 
+#'
 #' # Show output
 #' par(mfrow = c(1,4), mar = rep(0,4))
 #' image(stars::read_stars(ex_sel), rgb = 1:3)
@@ -171,7 +171,7 @@ gdal_warp <- function(srcfiles,
   # check consistency between inputs and outputs
   if (length(srcfiles) != length(dstfiles)) {
     print_message(
-      type="error", 
+      type="error",
       "\"srcfiles\" (\"",
       paste(srcfiles, collapse="\", \""),
       "\") and \"dstfiles\" (\"",
@@ -186,7 +186,7 @@ gdal_warp <- function(srcfiles,
       dstnodata <- rep(dstnodata, length(srcfiles))
     } else if (length(dstnodata)!=length(srcfiles)) {
       print_message(
-        type="error", 
+        type="error",
         "\"dstnodata\" must be of length 1",
         if (length(srcfiles) > 1) {
           paste0(" or ",length(srcfiles))
@@ -294,7 +294,7 @@ gdal_warp <- function(srcfiles,
     # otherwise, create each time within srcfile cycle
     if (!is.null(t_srs)) {
       mask_bbox <- st_transform(mask, t_srs) %>%
-        st_bbox() %>% 
+        st_bbox() %>%
         matrix(nrow=2, ncol=2, dimnames=list(c("x","y"),c("min","max")))
       # extent() %>% bbox()
       # get_extent() %>% as("matrix")
@@ -337,8 +337,8 @@ gdal_warp <- function(srcfiles,
       # (if already set it was referring to mask; in this case, to srcfile)
       sel_src_bbox <- suppressMessages(
         matrix(
-          st_bbox(st_transform(st_as_sfc(sel_bbox), sel_t_srs)), 
-          nrow=2, ncol=2, 
+          st_bbox(st_transform(st_as_sfc(sel_bbox), sel_t_srs)),
+          nrow=2, ncol=2,
           dimnames=list(c("x","y"),c("min","max"))
         )
       )
@@ -359,7 +359,7 @@ gdal_warp <- function(srcfiles,
             mask_bbox
           } else {
             st_transform(mask, sel_t_srs) %>%
-              st_bbox() %>% 
+              st_bbox() %>%
               matrix(nrow=2, ncol=2, dimnames=list(c("x","y"),c("min","max")))
             # get_extent() %>% as("matrix")
           }
@@ -392,7 +392,7 @@ gdal_warp <- function(srcfiles,
             mask_bbox
           } else {
             st_transform(mask, sel_t_srs) %>%
-              st_bbox() %>% 
+              st_bbox() %>%
               matrix(nrow=2, ncol=2, dimnames=list(c("x","y"),c("min","max")))
             # get_extent() %>% as("matrix")
           }

@@ -29,9 +29,9 @@
 
 geograbber_process <- function(path_safe,
                                path_out,
-                               bbox       = NA,
+                               bbox = NA,
                                list_prods = c("BOA"),
-                               res        = NA,
+                               res = NA,
                                ...
 ) {
   
@@ -53,27 +53,27 @@ geograbber_process <- function(path_safe,
   # Launch processing
   sen2r(
     # parameters passed by this function
-    extent            = extent,
-    list_prods        = list_prods,
-    res               = res,
-    path_l1c          = path_safe,
-    path_l2a          = path_safe,
-    path_out          = path_out,
+    extent = extent,
+    list_prods = list_prods,
+    res = res,
+    path_l1c = path_safe,
+    path_l2a = path_safe,
+    path_out = path_out,
     # fixed parameters (related to search an d manage SAFE)
-    param_list        = NULL,
-    gui               = FALSE,
-    preprocess        = TRUE,
-    s2_levels         = NA,
-    sel_sensor        = c("s2a","s2b"),
-    online            = FALSE,
-    overwrite_safe    = FALSE,
-    rm_safe           = FALSE,
-    step_atmcorr      = "no",
-    timewindow        = NA,
-    timeperiod        = "full",
-    s2tiles_selected  = NA,
+    param_list = NULL,
+    gui = FALSE,
+    preprocess = TRUE,
+    s2_levels = NA,
+    sel_sensor = c("s2a","s2b"),
+    online = FALSE,
+    overwrite_safe = FALSE,
+    rm_safe = FALSE,
+    step_atmcorr = "no",
+    timewindow = NA,
+    timeperiod = "full",
+    s2tiles_selected = NA,
     s2orbits_selected = NA,
-    use_python        = FALSE,
+    use_python = FALSE,
     # other additional parameters
     ...
   )

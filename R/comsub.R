@@ -33,7 +33,7 @@ comsub <- function(data, sep="") {
       apply(2, function(i){!length(unique(i))==1}) %>%
       which.max() -1
   } else {
-    length(data_spl[[1]]) - 1 # FIXME ok for dir  with "/", but not with ""
+    length(data_spl[[1]]) - 1 # FIXME ok for dir with "/", but not with ""
   }
   paste(c(data_spl[[1]][seq_len(which_max)],""), collapse=sep)
 }

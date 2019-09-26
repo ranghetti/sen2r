@@ -9,6 +9,6 @@ testthat::test_that(
         testthat::expect_equal(st_crs2(32609)[["proj4string"]], "+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs")
         testthat::expect_equal(st_crs2(9)[["proj4string"]], "+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs")
         testthat::expect_equal(st_crs2("9N")[["proj4string"]], "+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs")
-        testthat::expect_equal(st_crs2("9S")[["proj4string"]], "+proj=utm +zone=9 +south +datum=WGS84 +units=m +no_defs")        	
+        testthat::expect_equal(st_crs2("9S")[["proj4string"]], "+proj=utm +zone=9 +south +datum=WGS84 +units=m +no_defs")
         testthat::expect_error(st_crs2("wrong"))
     })

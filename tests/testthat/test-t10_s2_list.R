@@ -109,11 +109,11 @@ testthat::test_that(
   "Tests on s2_list - Cloudiness", {
     pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
     s2_list_test <- s2_list(
-      spatial_extent        = pos,
-      tile                  = "32TNR",
-      time_interval         = as.Date(c("2016-05-01", "2016-08-01")),
-      orbit                 = "065",
-      max_cloud             = 50
+      spatial_extent = pos,
+      tile = "32TNR",
+      time_interval = as.Date(c("2016-05-01", "2016-08-01")),
+      orbit = "065",
+      max_cloud = 50
     )
     testthat::expect_equal(length(s2_list_test), 4)
   }
@@ -136,7 +136,7 @@ testthat::test_that(
   "Tests on s2_list - multipoint", {
     pp <- data.frame(x = c(6, 9.95),
                      y = c(45.81, 45.95))
-    pos <-  sf::st_as_sf(pp, coords = c("x","y")) %>% sf::st_set_crs(4326)
+    pos <- sf::st_as_sf(pp, coords = c("x","y")) %>% sf::st_set_crs(4326)
     time_window <- as.Date(c("2016-05-01", "2016-08-01"))
     s2_list_test <- s2_list(
       spatial_extent = pos,
@@ -158,7 +158,7 @@ testthat::test_that(
 
 testthat::test_that(
   "Tests on s2_list - polygon, multiple tiles, multiple orbits", {
-    pos <-  sf::st_as_sfc(sf::st_bbox(
+    pos <- sf::st_as_sfc(sf::st_bbox(
       c("xmin" = 7, "ymin" = 44, "xmax" = 13, "ymax" = 47),
       "crs" = sf::st_crs(4326)
     ))
@@ -200,7 +200,7 @@ testthat::test_that(
 
 testthat::test_that(
   "Tests on s2_list - Single tile, multi orbit - seasonal", {
-    pos          <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
+    pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
     s2_list_test <- s2_list(
       spatial_extent = pos,
       tile = "32TNR",
@@ -214,7 +214,7 @@ testthat::test_that(
 
 testthat::test_that(
   "Tests on s2_list - seasonal - single year", {
-    pos          <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
+    pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
     s2_list_test <- s2_list(
       spatial_extent = pos,
       tile = "32TNR",
@@ -228,7 +228,7 @@ testthat::test_that(
 
 testthat::test_that(
   "Tests on s2_list - seasonal - single year", {
-    pos          <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
+    pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
     s2_list_test <- s2_list(
       spatial_extent = pos,
       tile = "32TNR",
@@ -243,7 +243,7 @@ testthat::test_that(
 
 testthat::test_that(
   "Tests on s2_list - process level", {
-    pos          <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
+    pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
     s2_list_test <- s2_list(
       spatial_extent = pos,
       tile = "32TNR",
