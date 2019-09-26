@@ -48,5 +48,5 @@ examplenames <- c(examplenames, system.file("share/gdal_formats.json", package="
 raster_metadata(examplenames)
 }
 \author{
-Luigi Ranghetti, phD (2019) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

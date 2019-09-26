@@ -11,7 +11,7 @@
 #'  (together with a warning message).
 #'  An attribute "protocol" contains the protocol of the mountpoint.
 #'
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @export
 

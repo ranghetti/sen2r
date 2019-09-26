@@ -79,5 +79,5 @@ sen2cor(names(example_s2_list)[1], l1c_dir=tempdir(), outdir=tempdir())
 }
 }
 \author{
-Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

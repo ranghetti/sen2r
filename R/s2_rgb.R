@@ -50,7 +50,7 @@
 #'  (it is used when the function is called by `sen2r()`).
 #' @return A vector with the names of the created images.
 #'
-#' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @import data.table
 #' @importFrom foreach foreach "%do%" "%dopar%"

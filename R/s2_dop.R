@@ -26,7 +26,7 @@
 #' (column "mission") and the orbits (column "orbit").
 #' An empty data table with the same structure is returned if no passages
 #'  were found with the passed settings.
-#' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @import data.table
 #' @importFrom jsonlite fromJSON

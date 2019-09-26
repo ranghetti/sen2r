@@ -47,7 +47,7 @@
 #'  overwritten? (default: FALSE)
 #' @return A vector with the names of the created output files
 #'   (just created or already existing).
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @importFrom jsonlite fromJSON
 #' @export

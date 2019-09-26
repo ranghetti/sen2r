@@ -34,5 +34,5 @@ comsub(strings)
 comsub(strings, sep="/")
 }
 \author{
-Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

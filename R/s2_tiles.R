@@ -7,7 +7,7 @@
 #' @importFrom sf st_read st_zm st_collection_extract st_write st_cast
 #' @importFrom httr GET write_disk
 #' @importFrom stats aggregate
-#' @author Luigi Ranghetti, phD (2019) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @examples
 #' # Retrieve all the tiles

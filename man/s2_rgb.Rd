@@ -106,5 +106,5 @@ image(stars::read_stars(ex_out[2]), rgb = 1:3)
 }
 }
 \author{
-Luigi Ranghetti, phD (2018) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

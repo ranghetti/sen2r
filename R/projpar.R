@@ -11,7 +11,7 @@
 #'   attribute `proj4string` with the input projection checked using
 #'  [sf::st_crs()].
 #'
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note Python is needed.
 #' @export
 #' @importFrom reticulate r_to_py py_to_r

@@ -65,5 +65,5 @@ used by \link{trace_function} when a function stops with errors).
 License: GPL 3.0
 }
 \author{
-Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

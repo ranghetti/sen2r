@@ -29,5 +29,5 @@ License: GPL 3.0
 sen2r:::build_example_param_file()
 }
 \author{
-Luigi Ranghetti, phD (2019) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

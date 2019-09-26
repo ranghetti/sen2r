@@ -19,5 +19,5 @@ License: GPL 3.0
 \author{
 Lorenzo Busetto, phD (2019) \email{lbusett@gmail.com}
 
-Luigi Ranghetti, phD (2019) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

@@ -40,5 +40,5 @@ st_crs2("9N")
 st_crs2("09S")
 }
 \author{
-Luigi Ranghetti, phD (2018) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

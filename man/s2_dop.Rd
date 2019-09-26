@@ -68,5 +68,5 @@ s2_dop(65, as.Date(c("2018-08-01", "2018-08-31")))
 s2_dop(22, "2018-08-16", mission = "2A")
 }
 \author{
-Luigi Ranghetti, phD (2018) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

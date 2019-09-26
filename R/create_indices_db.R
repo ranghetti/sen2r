@@ -17,7 +17,7 @@
 #' @param force (optional) Logical: if FALSE (default), the db is created only
 #'  if missing or not updated; if TRUE, it is created in any case.
 #' @return NULL (the function is called for its side effects)
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @import data.table
 #' @importFrom XML htmlTreeParse xmlRoot readHTMLTable xmlAttrs saveXML

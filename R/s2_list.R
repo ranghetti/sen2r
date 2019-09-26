@@ -35,7 +35,7 @@
 #' @author Lorenzo Busetto, phD (2019) \email{lbusett@@gmail.com} - Inspired by 
 #'  function `getSentinel_query` of package `getSpatialData` by J. Schwalb-Willmann
 #'  (https://github.com/16EAGLE/getSpatialData)
-#' @author Luigi Ranghetti, phD (2019) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @import data.table
 #' @importFrom methods is

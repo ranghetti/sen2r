@@ -55,5 +55,5 @@ abs_vrt_content[ex_vrt_content != abs_vrt_content] # Modified line
 rel_vrt_content[ex_vrt_content != rel_vrt_content] # No edits
 }
 \author{
-Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

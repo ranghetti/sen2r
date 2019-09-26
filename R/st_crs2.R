@@ -15,7 +15,7 @@
 #' @details See [sf::st_crs] for details.
 #' @importFrom sf st_crs
 #' @export
-#' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @examples 
 #' st_crs2("+init=epsg:32609")

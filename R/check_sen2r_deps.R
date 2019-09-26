@@ -10,7 +10,7 @@
 #' This function opens a GUI which allows to check that these dependencies
 #' are installed. This check is highly suggested before using the library for
 #' the fist time, in order to avoid errors.
-#' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @importFrom shiny actionButton addResourcePath br code conditionalPanel div em
 #'  fluidPage fluidRow h3 helpText htmlOutput icon modalButton

@@ -7,7 +7,7 @@
 #'  in the JSON, it is checked (when possible).
 #' @return The list of the paths
 #'
-#' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @importFrom jsonlite fromJSON
 #' @export

@@ -11,7 +11,7 @@
 #'  sen2r naming convention ([safe_shortname]) and ENVI format.
 #' @return NULL (the function is called for its side effects)
 #' @importFrom jsonlite fromJSON
-#' @author Luigi Ranghetti, phD (2019) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 
 fix_envi_format <- function(infiles) {

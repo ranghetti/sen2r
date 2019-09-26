@@ -53,5 +53,5 @@ list_indices("s2_formula", "^MSAVI2$")
 list_indices("name", all = TRUE)
 }
 \author{
-Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

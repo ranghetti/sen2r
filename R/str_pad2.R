@@ -1,15 +1,15 @@
-#' Pad a string.
-#'
-#' Vectorised over `string`, `width` and `pad`.
-#' This is an internal function doing the same thing of [stringr::str_pad]
-#' (except for parameters `'width'` and `'length'` which must be of length 1),
-#' but without depending on package `stringi`.
-#'
+#' @title Pad a string.
+#' @description Vectorised over `string`, `width` and `pad`.
+#'  This is an internal function doing the same thing of [stringr::str_pad]
+#'  (except for parameters `'width'` and `'length'` which must be of length 1),
+#'  but without depending on package `stringi`.
 #' @param string A character vector.
 #' @param width Minimum width of padded strings.
 #' @param side Side on which padding character is added (left, right or both).
 #' @param pad Single padding character (default is a space).
 #' @return A character vector.
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @note License: GPL 3.0
 #' @export
 #' @examples
 #' rbind(

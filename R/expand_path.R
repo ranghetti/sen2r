@@ -19,7 +19,7 @@
 #' @return The path eventually expanded.
 #' @export
 #' @importFrom magrittr "%>%"
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 
 
@@ -78,7 +78,7 @@ expand_path <- function(path, parent=getwd(), silent=TRUE, normalize=TRUE) {
 #' @param ... additional parameters passed to [normalizePath] (i.e. mustWork).
 #' @return The paths normalized.
 #' @export
-#' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 
 

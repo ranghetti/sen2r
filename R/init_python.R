@@ -3,7 +3,7 @@
 #'  required in the package are present; if so, load the base modules.
 #' @return A list with the required modules.
 #'
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @importFrom reticulate import import_from_path import_builtins 
 #'  use_python py_module_available py_discover_config

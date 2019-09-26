@@ -22,5 +22,5 @@ and \code{shortPathName(normalizePath())} in Windows.
 License: GPL 3.0
 }
 \author{
-Luigi Ranghetti, phD (2018) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

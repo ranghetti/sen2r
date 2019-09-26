@@ -26,7 +26,7 @@
 #' @return The path of the output image; alternatively, the output image
 #'  as RasterBrick (if `out_rast = NULL`).
 #'
-#' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @importFrom raster raster
 #' @importFrom jsonlite fromJSON
@@ -208,7 +208,7 @@ stack2rgb <- function(in_rast,
 #' @return The path of the output image; alternatively, the output image
 #'  as RasterLayer (if `out_rast = NULL`).
 #'
-#' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @importFrom raster raster
 #' @importFrom jsonlite fromJSON
@@ -362,7 +362,7 @@ raster2rgb <- function(in_rast,
 #'  overwritten? (default: TRUE)
 #' @return A vector with the names of the created images.
 #'
-#' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @import data.table
 #' @importFrom jsonlite fromJSON

@@ -20,7 +20,7 @@
 #'  Default (NULL) means that no NA values are present.
 #' @return The path of the smoothed mask.
 #' @importFrom methods is
-#' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 
 smooth_mask <- function(inmask, binpaths, tmpdir = tempdir(), radius = 250, buffer = 250, namask = NULL) {

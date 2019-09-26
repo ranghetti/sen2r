@@ -36,5 +36,5 @@ fs2nc_examplename <-
 sen2r_getElements(fs2nc_examplename)
 }
 \author{
-Luigi Ranghetti, phD (2019) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

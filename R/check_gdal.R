@@ -21,7 +21,7 @@
 #' @return Logical (invisible): TRUE in case the installation is ok, FALSE
 #'  if GDAL is missing and abort=FALSE (otherwise, the function stops).
 #'
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @importFrom jsonlite toJSON
 #' @export

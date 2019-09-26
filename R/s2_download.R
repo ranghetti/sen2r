@@ -18,8 +18,8 @@
 #'  overwritten? (default: FALSE)
 #' @return NULL (the function is called for its side effects)
 #'
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
-#' @author Lorenzo Busetto, phD (2019) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @author Lorenzo Busetto, phD (2019) \email{lbusett@@gmail.com}
 #' @note License: GPL 3.0
 #' @importFrom httr GET RETRY authenticate progress write_disk
 #' @export

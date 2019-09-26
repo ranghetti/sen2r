@@ -56,7 +56,7 @@
 #'  FALSE elsewhere.
 #'
 #'  `safe_isvalid()` returns TRUE if the product is a valid SAFE, FALSE if not.
-#' @author Luigi Ranghetti, phD (2017, 2018) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @export
 #' @importFrom reticulate py_to_r

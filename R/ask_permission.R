@@ -3,7 +3,7 @@
 #'  in which to store the files paths.json and apihub.txt.
 #' @return 'logical' if TRUE, the user authorised saving in this directory.
 #' @author Lorenzo Busetto, phD (2019) \email{lbusett@@gmail.com}
-#' @author Luigi Ranghetti, phD (2019) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 
 ask_permission <- function() {

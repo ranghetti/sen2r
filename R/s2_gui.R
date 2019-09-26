@@ -6,7 +6,7 @@
 #' @param thunderforest_api Character value with the API for thunderforest
 #'  layers (now not used).
 #' @return A list of parameters.
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @importFrom jsonlite fromJSON toJSON
 #' @import data.table

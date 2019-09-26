@@ -36,5 +36,5 @@ plot(it$geometry, border = "red", add = TRUE)
 text(s2_coords[,1], s2_coords[,2], s2tiles_it$tile_id, col = "blue", cex = 0.5)
 }
 \author{
-Luigi Ranghetti, phD (2019) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

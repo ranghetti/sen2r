@@ -8,7 +8,7 @@
 #'  overwritten? (default: TRUE)
 #' @return The path of the created file.
 #'
-#' @author Luigi Ranghetti, phD (2019) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @importFrom jsonlite toJSON
 #' @examples

@@ -69,7 +69,7 @@ s2_download(example_s2_list, outdir=tempdir())
 }
 }
 \author{
-Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 
-Lorenzo Busetto, phD (2019) \email{ranghetti.l@irea.cnr.it}
+Lorenzo Busetto, phD (2019) \email{lbusett@gmail.com}
 }

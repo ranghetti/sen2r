@@ -6,7 +6,7 @@
 #' @param mustbe_writable `logical` if TRUE, accept only directories with write 
 #'  permissions
 #' @rdname path_check
-#' @author Luigi Ranghetti, PhD (2019) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @author Lorenzo Busetto, PhD (2019) \email{lbusett@@gmail.com}
 #' @importFrom shiny renderUI span renderText
 path_check <- function(path, mustbe_empty = FALSE, mustbe_writable = TRUE) {

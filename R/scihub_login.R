@@ -11,7 +11,7 @@
 #' @param password SciHub password.
 #' @return `read_scihub_login` returns a matrix of credentials,
 #'  in which `username` is in the first column, `password` in the second.
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @importFrom reticulate py_to_r
 #' @importFrom shiny a actionButton icon modalButton modalDialog passwordInput tagList textInput

@@ -1,7 +1,7 @@
 #' @title Insert an extent
 #' @description Internal functions and modal dialogs to specify an extent
 #'  in the GUI.
-#' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @importFrom shiny actionButton div fileInput htmlOutput icon modalButton modalDialog
 #'  numericInput span tagList textInput

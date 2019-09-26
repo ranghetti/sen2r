@@ -42,7 +42,7 @@
 #'  if FALSE, only non temporary files are searched.
 #' @param ignorelist Vector of output files to be ignored.
 #'
-#' @author Luigi Ranghetti, phD (2019) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @import data.table
 

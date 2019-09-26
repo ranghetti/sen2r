@@ -123,5 +123,5 @@ There were no ERRORs or WARNINGs.
 There was 1 NOTE:
 
 * checking CRAN incoming feasibility ... NOTE
-    Maintainer: 'Luigi Ranghetti <ranghetti.l@irea.cnr.it>'
+    Maintainer: 'Luigi Ranghetti <luigi@ranghetti.info>'
     New submission

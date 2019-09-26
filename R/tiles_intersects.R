@@ -18,7 +18,7 @@
 #' @export
 #' @importFrom sf st_area st_crs st_difference st_geometry 
 #'  st_intersects st_transform st_union
-#' @author Luigi Ranghetti, phD (2019) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @examples
 #' ex_extent <- sf::st_read(

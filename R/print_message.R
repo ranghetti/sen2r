@@ -25,7 +25,7 @@
 #'  "\%Y-\%m-\%d \%H:\%M:\%S".
 #' @return Message (in the defined format).
 #'
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 
 print_message <- function(..., type, sep="", date=FALSE, date_format="") {

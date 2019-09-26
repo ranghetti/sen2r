@@ -116,5 +116,5 @@ rm_invalid_safe(s2_examplename)
 }
 }
 \author{
-Luigi Ranghetti, phD (2017, 2018) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

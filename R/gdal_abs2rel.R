@@ -10,7 +10,7 @@
 #' @param out_vrt (optional) The path of the output VRT file (default
 #'  is to overwrite `in_vrt`).
 #' @return NULL (the function is called for its side effects)
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @export
 #' @importFrom magrittr "%>%"
