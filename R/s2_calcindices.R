@@ -286,7 +286,7 @@ s2_calcindices <- function(infiles,
   
   outfiles <- foreach(
     i = seq_along(infiles),
-    .packages = c("raster","rgdal","sen2r"),
+    .packages = c("raster","sen2r"),
     .combine=c,
     .errorhandling="remove"
   )  %DO% {

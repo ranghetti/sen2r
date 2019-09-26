@@ -189,7 +189,7 @@ s2_rgb <- function(infiles,
   
   out_names <- foreach(
     i = seq_along(infiles), 
-    .packages = c("foreach","rgdal","sen2r"), 
+    .packages = c("foreach","sen2r"), 
     .combine=c, 
     .errorhandling="remove"
   ) %DO% {

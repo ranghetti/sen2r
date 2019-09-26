@@ -6,8 +6,6 @@ example_dir <- system.file("extdata/example_files", package = "sen2r")
 dir.create(example_dir, showWarnings = FALSE)
 safe_dir <- file.path(example_dir, "safe")
 dir.create(safe_dir, showWarnings = FALSE)
-dir.create(file.path(safe_dir, "L2A"), showWarnings = FALSE)
-dir.create(file.path(safe_dir, "L1C"), showWarnings = FALSE)
 ref_dir <- system.file("extdata/example_files/out_ref", package = "sen2r")
 
 testthat::test_that(
@@ -27,14 +25,14 @@ testthat::test_that(
       extent         = file.path(example_dir, "scalve.kml"),
       extent_name    = "Scalve",
       extent_as_mask = TRUE,
-      timewindow     = as.Date("2017-07-03"),
-      list_prods     = "BOA",
-      list_rgb       = c("RGB432T","RGBb84B","RGB843B"),
-      mask_type      = NA,
-      path_out       = outdir_16,
-      path_l1c       = file.path(safe_dir, "L1C"),
-      path_l2a       = file.path(safe_dir, "L2A"),
-      parallel       = FALSE
+      timewindow = as.Date("2017-07-03"),
+      list_prods = "BOA",
+      list_rgb = c("RGB432T","RGBb84B","RGB843B"),
+      mask_type = NA,
+      path_out = outdir_16,
+      path_l1c = safe_dir,
+      path_l2a = safe_dir,
+      parallel = FALSE
     )
     testthat::expect_true(all(file.exists(exp_outpath_16)))
     

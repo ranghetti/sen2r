@@ -6,8 +6,6 @@ example_dir <- system.file("extdata/example_files", package = "sen2r")
 dir.create(example_dir, showWarnings = FALSE)
 safe_dir <- file.path(example_dir, "safe")
 dir.create(safe_dir, showWarnings = FALSE)
-dir.create(file.path(safe_dir, "L2A"), showWarnings = FALSE)
-dir.create(file.path(safe_dir, "L1C"), showWarnings = FALSE)
 
 
 outdir_2 <- file.path(tempdir(), "out_test2")
@@ -27,7 +25,7 @@ testthat::test_that(
       timewindow = as.Date("2017-07-03"),
       list_prods = "BOA",
       mask_type = NA,
-      path_l2a = file.path(safe_dir, "L2A"),
+      path_l2a = safe_dir,
       path_out = outdir_2
     )
     expect_true(file.exists(exp_outpath_2))
@@ -108,17 +106,17 @@ testthat::test_that(
       extent         = file.path(example_dir, "scalve.kml"),
       extent_name    = "Scalve",
       extent_as_mask = FALSE,
-      timewindow     = as.Date("2017-07-03"),
-      list_prods     = "TOA",
-      mask_type      = NA,
-      proj           = 32633,
-      res            = c(25, 25), res_s2 = NA,
-      resampling     = "average",
-      outformat      = "ENVI",
-      path_l1c       = file.path(safe_dir, "L1C"),
-      path_out       = outdir_3,
-      path_subdirs   = FALSE,
-      overwrite      = TRUE
+      timewindow = as.Date("2017-07-03"),
+      list_prods = "TOA",
+      mask_type = NA,
+      proj = 32633,
+      res = c(25, 25), res_s2 = NA,
+      resampling = "average",
+      outformat = "ENVI",
+      path_l1c = safe_dir,
+      path_out = outdir_3,
+      path_subdirs = FALSE,
+      overwrite = TRUE
     ),
     regexp = "[Bb]oth native and custom resolution were provided" # FIXME 
     )
@@ -210,7 +208,7 @@ testthat::test_that(
       reference_path = exp_outpath_3,
       resampling_scl = "mode",
       outformat = "VRT",
-      path_l2a = file.path(safe_dir, "L2A"),
+      path_l2a = safe_dir,
       path_out = outdir_4,
       tmpdir = outdir_4, rmtmp = FALSE,
       overwrite = TRUE

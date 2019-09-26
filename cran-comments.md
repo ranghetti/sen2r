@@ -23,6 +23,10 @@ installed on CRAN, Travis etc., are used).
 (e.g. because example input filenames do not correspond to existing files,
 or for functions which install something on disk).
 
+Regarding package testing, we wrote test functions at tests/testthat, granting
+an overall package coverage of XX% 
+(most of them cannot be run automatically for the reason described above).
+
 > Couldn't find the files necessary for gdalwarp_grid.Rd e.g.
 Please add small files needed for the examples in the inst/extdata
 subfolder of your package and use system.file() to get the correct

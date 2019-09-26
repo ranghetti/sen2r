@@ -11,8 +11,6 @@ example_dir <- system.file("extdata/example_files", package = "sen2r")
 dir.create(example_dir, showWarnings = FALSE)
 safe_dir <- file.path(example_dir, "safe")
 dir.create(safe_dir, showWarnings = FALSE)
-dir.create(file.path(safe_dir, "L2A"), showWarnings = FALSE)
-dir.create(file.path(safe_dir, "L1C"), showWarnings = FALSE)
 
 
 testthat::test_that(
@@ -32,10 +30,10 @@ testthat::test_that(
     suppressWarnings(s2_download(
       s2_l2a_list,
       downloader = "builtin",
-      outdir = file.path(safe_dir, "L2A"),
+      outdir = safe_dir,
       overwrite = test_download
     )) # suppressWarnings used to manage possible warnings for skept Md5sum checks
-    exp_outsafe_1 <- file.path(safe_dir, "L2A", names(s2_l2a_list))
+    exp_outsafe_1 <- file.path(safe_dir, names(s2_l2a_list))
     testthat::expect_true(all(file.exists(exp_outsafe_1)))
     
     # test raster metadata
@@ -110,10 +108,10 @@ testthat::test_that(
     suppressWarnings(s2_download(
       s2_l1c_list,
       downloader = "aria2",
-      outdir = file.path(safe_dir, "L1C"),
+      outdir = safe_dir,
       overwrite = test_download
     )) # suppressWarnings used to manage possible warnings for skept Md5sum checks
-    exp_outsafe_2 <- file.path(safe_dir, "L1C", names(s2_l1c_list))
+    exp_outsafe_2 <- file.path(safe_dir, names(s2_l1c_list))
     testthat::expect_true(all(file.exists(exp_outsafe_2)))
     
     # test raster metadata

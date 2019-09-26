@@ -11,13 +11,11 @@ example_dir <- system.file("extdata/example_files", package = "sen2r")
 dir.create(example_dir, showWarnings = FALSE)
 safe_dir <- file.path(example_dir, "safe")
 dir.create(safe_dir, showWarnings = FALSE)
-dir.create(file.path(safe_dir, "L2A"), showWarnings = FALSE)
-dir.create(file.path(safe_dir, "L1C"), showWarnings = FALSE)
-s2_l1c_prods <- file.path(safe_dir, "L1C", c(
+s2_l1c_prods <- file.path(safe_dir, c(
   "S2A_MSIL1C_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE",
   "S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE"
 ))
-s2_l2a_prods <- file.path(safe_dir, "L2A", c(
+s2_l2a_prods <- file.path(safe_dir, c(
   "S2A_MSIL2A_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE",
   "S2A_MSIL2A_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE"
 ))
@@ -31,8 +29,8 @@ testthat::test_that(
     run_time <- system.time(
       sen2cor_out <- sen2cor(
         basename(s2_l1c_prods[1]), 
-        l1c_dir = file.path(safe_dir, "L1C"),
-        outdir = file.path(safe_dir, "L2A")
+        l1c_dir = safe_dir,
+        outdir = safe_dir,
       )
     )
     testthat::expect_equal(sen2cor_out, s2_l2a_prods[1])
@@ -52,7 +50,7 @@ if (test_sen2cor) {
       run_time <- system.time(
         sen2cor_out <- sen2cor(
           s2_l1c_prods[2], 
-          outdir = file.path(safe_dir, "L2A")
+          outdir = safe_dir
         )
       )
       testthat::expect_true(dir.exists(sen2cor_out))
@@ -110,7 +108,7 @@ if (test_sen2cor) {
       run_time <- system.time(
         sen2cor_out <- sen2cor(
           s2_l1c_prods, 
-          outdir = file.path(safe_dir, "L2A"),
+          outdir = safe_dir,
           parallel = TRUE,
           overwrite = TRUE
         )

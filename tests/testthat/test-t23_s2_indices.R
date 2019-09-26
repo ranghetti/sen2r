@@ -6,8 +6,6 @@ example_dir <- system.file("extdata/example_files", package = "sen2r")
 dir.create(example_dir, showWarnings = FALSE)
 safe_dir <- file.path(example_dir, "safe")
 dir.create(safe_dir, showWarnings = FALSE)
-dir.create(file.path(safe_dir, "L2A"), showWarnings = FALSE)
-dir.create(file.path(safe_dir, "L1C"), showWarnings = FALSE)
 
 testthat::test_that(
   "Tests on indices computation, on unrequired BOA, with clip ", {
@@ -26,12 +24,12 @@ testthat::test_that(
       extent         = file.path(example_dir, "scalve.kml"),
       extent_name    = "Scalve",
       extent_as_mask = TRUE,
-      timewindow     = as.Date("2017-07-03"),
-      list_indices   = c("NDVI","MSAVI2"),
-      mask_type      = NA,
-      path_out       = outdir_11,
-      path_l2a       = file.path(safe_dir, "L2A"),
-      parallel       = FALSE
+      timewindow = as.Date("2017-07-03"),
+      list_indices = c("NDVI","MSAVI2"),
+      mask_type = NA,
+      path_out = outdir_11,
+      path_l2a = safe_dir,
+      parallel = FALSE
     )
     testthat::expect_true(all(file.exists(exp_outpath_11)))
     
