@@ -485,7 +485,9 @@ check_sen2r_deps <- function() {
     observeEvent(input$check_aria2, {
       
       # update the check
-      rv$check_aria2_isvalid <- if (!is.null(suppressWarnings(load_binpaths("aria2c")))) {
+      rv$check_aria2_isvalid <- if (
+        !is.null(suppressWarnings(load_binpaths("aria2c")$aria2c))
+      ) {
         file.exists(load_binpaths()$aria2c)
       } else {
         FALSE
