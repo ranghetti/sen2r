@@ -40,7 +40,7 @@ test_that("check_scihub_login works as expected", {
 
 
 context("check connection - main functions")
-testthat::skip_on_cran()
+testthat::skip_on_cran() # because calling runtime GDAL
 # testthat::skip_on_travis()
 
 test_that("check GDAL", {

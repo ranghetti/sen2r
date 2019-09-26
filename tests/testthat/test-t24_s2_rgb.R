@@ -1,6 +1,6 @@
 context("Test compute RGB images - main function")
-testthat::skip_on_cran()
-testthat::skip_on_travis()
+testthat::skip_on_cran() # because using runtime GDAL
+# testthat::skip_on_travis()
 
 example_dir <- system.file("extdata/example_files", package = "sen2r")
 dir.create(example_dir, showWarnings = FALSE)
@@ -102,8 +102,8 @@ testthat::test_that(
 
 
 context("Test compute RGB images - main s2_rgb()")
-testthat::skip_on_cran() # since it uses runtime GDAL
-testthat::skip_on_travis()
+testthat::skip_on_cran() # because using runtime GDAL
+# testthat::skip_on_travis()
 
 testthat::test_that(
   "Tests on function s2_rgb()", {

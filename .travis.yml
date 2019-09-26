@@ -1,7 +1,10 @@
 language: R
 sudo: required
-dist: bionic
+dist: xenial
 cache: packages
+r:
+  - release
+  - devel
 
 r_packages:
   - RPostgreSQL

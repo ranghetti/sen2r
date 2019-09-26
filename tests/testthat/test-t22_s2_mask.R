@@ -1,6 +1,6 @@
 context("Test mask - main function")
-testthat::skip_on_cran()
-testthat::skip_on_travis()
+testthat::skip_on_cran() # because using runtime GDAL
+# testthat::skip_on_travis()
 
 example_dir <- system.file("extdata/example_files", package = "sen2r")
 dir.create(example_dir, showWarnings = FALSE)

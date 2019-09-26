@@ -55,5 +55,5 @@ suppressWarnings(abs2rel(in_path_4, ref_path, mustWork=FALSE))
 suppressWarnings(abs2rel(ref_path, ref_path))
 }
 \author{
-Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2017) \email{luigi.ranghetti@gmail.com}
 }

@@ -1,7 +1,6 @@
 context("Test st_crs2")
 # testthat::skip_on_cran()
 # testthat::skip_on_travis()
-# 
 
 testthat::test_that(
     "Tests on st_crs2", {

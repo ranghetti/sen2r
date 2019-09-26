@@ -15,7 +15,7 @@
 #'  warning; if FALSE nothing is shown.
 #' @return The relative path
 #'
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2017) \email{luigi.ranghetti@@gmail.com}
 #' @note License: GPL 3.0
 #' @export
 #' @importFrom magrittr "%>%"

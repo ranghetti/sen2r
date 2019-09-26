@@ -1,6 +1,6 @@
 context("Test warping (clip, reproject, resize)")
-testthat::skip_on_cran()
-testthat::skip_on_travis()
+testthat::skip_on_cran() # because using runtime GDAL
+# testthat::skip_on_travis()
 
 example_dir <- system.file("extdata/example_files", package = "sen2r")
 dir.create(example_dir, showWarnings = FALSE)
@@ -272,8 +272,8 @@ testthat::test_that(
 
 
 context("Test gdalwarp_grid()")
-testthat::skip_on_cran() # becaue it uses runtime GDAL
-testthat::skip_on_travis()
+testthat::skip_on_cran() # because using runtime GDAL
+# testthat::skip_on_travis()
 
 ex_sel <- system.file(
   "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_RGB432B_10.tif",
@@ -325,8 +325,8 @@ testthat::test_that(
 
 
 context("Test gdal_warp()")
-testthat::skip_on_cran() # becaue it uses runtime GDAL
-testthat::skip_on_travis()
+testthat::skip_on_cran() # because using runtime GDAL
+# testthat::skip_on_travis()
 
 crop_poly <- system.file("extdata/example_files/dam.geojson", package = "sen2r")
 crop_line <- sf::st_cast(sf::read_sf(crop_poly), "LINESTRING")
