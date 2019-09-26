@@ -1,5 +1,7 @@
 #' @title Load Sentinel-2 tiles
 #' @description Load the vector object of the Sentinel-2 tiles.
+#'  When the function is run for the first time, it downloads the vector file
+#'  from the sen2r GitHub repository and it saves it on disk.
 #' @return An sf spatial object containing the extent of the tiles.
 #' @export
 #' @importFrom sf st_read st_zm st_collection_extract st_write st_cast
@@ -30,16 +32,15 @@ s2_tiles <- function() {
   . <- NULL # to avoid NOTE on check
   
   # extract and import tiles kml
-  s2tiles_rds <- file.path(system.file("extdata",package="sen2r"), "vector", "s2_tiles.rds")
+  s2tiles_rds <- file.path(dirname(attr(load_binpaths(), "path")), "s2_tiles.rds")
   if (!file.exists(s2tiles_rds)) {
-  # nocov start 
+    # nocov start
     print_message(
       date = TRUE,
       type = "message",
       "Downloading and creating the vector of Sentinel-2 tiles ",
       "(this happens once)..."
     )
-    dir.create(dirname(s2tiles_rds), showWarnings = FALSE)
     
     # # instructions to create the file from ESA original file
     # s2tiles_url <- "https://sentinel.esa.int/documents/247904/1955685/S2A_OPER_GIP_TILPAR_MPC__20151209T095117_V20150622T000000_21000101T000000_B00.kml"
@@ -53,12 +54,12 @@ s2_tiles <- function() {
     # names(s2tiles) <- gsub("^Name$","tile_id",names(s2tiles))
     # saveRDS(
     #   s2tiles[,"tile_id"], 
-    #   file.path(dirname(system.file(package="sen2r")), "utils/vector/s2_tiles.rds")
+    #   file.path(dirname(attr(load_binpaths(), "path")), "s2_tiles.rds")
     # )
     
     GET(
       "https://raw.githubusercontent.com/ranghetti/sen2r/devel/utils/vector/s2_tiles.rds", # FIXME use master
-      write_disk(file.path(system.file("extdata",package="sen2r"), "vector", "s2_tiles.rds")),
+      write_disk(file.path(dirname(attr(load_binpaths(), "path")), "s2_tiles.rds")),
       overwrite=TRUE
     )
     # nocov end

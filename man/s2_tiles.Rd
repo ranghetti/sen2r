@@ -11,6 +11,8 @@ An sf spatial object containing the extent of the tiles.
 }
 \description{
 Load the vector object of the Sentinel-2 tiles.
+When the function is run for the first time, it downloads the vector file
+from the sen2r GitHub repository and it saves it on disk.
 }
 \note{
 License: GPL 3.0

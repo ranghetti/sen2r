@@ -55,7 +55,7 @@ create_indices_db <- function(xslt_path = NA,
   
   # set XSLT path
   if (is.na(xslt_path)) {
-    xslt_path <- file.path(system.file(package="sen2r"),"extdata","xslt")
+    xslt_path <- file.path(dirname(attr(load_binpaths(), "path")),"xslt")
   }
   
   # if missing, download xsltml to convert from MathML to LaTeX: http://fhoerni.free.fr/comp/xslt.html
