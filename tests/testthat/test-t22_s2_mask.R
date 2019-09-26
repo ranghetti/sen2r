@@ -47,7 +47,7 @@ testthat::test_that(
     r <- raster::raster(exp_outpath_5)
     testthat::expect_equal(raster::cellStats(r, "mean"), 884.4695, tolerance = 1e-3)
     testthat::expect_equal(raster::cellStats(r, "countNA"), 1986322)
-
+    
   }
 )
 
@@ -93,12 +93,12 @@ testthat::test_that(
     )
     testthat::expect_equal(exp_meta_r$type, "UInt16")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
-
+    
     # test on raster values
     r <- raster::raster(exp_outpath_6)
     testthat::expect_equal(raster::cellStats(r, "mean"), 1435.579, tolerance = 1e-4)
     testthat::expect_equal(raster::cellStats(r, "countNA"), 346)
-
+    
     
     exp_meta_msk <- raster_metadata(exp_outpath_msk, format = "list")[[1]]
     testthat::expect_equal(exp_meta_msk$size, c("x" = 24, "y" = 42))
@@ -107,7 +107,7 @@ testthat::test_that(
     r <- raster::raster(exp_outpath_msk)
     testthat::expect_equal(raster::cellStats(r, "max"), 1, tolerance = 1e-3)
     testthat::expect_equal(raster::cellStats(r, "min"), 0, tolerance = 1e-3)
-        
+    
   }
 )
 
@@ -128,7 +128,7 @@ testthat::test_that(
       subdirs = TRUE
     )
     testthat::expect_false(file.exists(exp_outpath_7))
-
+    
     # test on raster metadata
     exp_meta_r <- raster_metadata(exp_outpath_7, format = "list")
     testthat::expect_equal(names(exp_meta_r[[1]]), c("path", "valid"))

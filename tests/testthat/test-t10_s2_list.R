@@ -144,7 +144,7 @@ testthat::test_that(
       output_type = "data.table"
     )
     testthat::expect_equal(length(s2_list_test$orbitid), 34)
-
+    
     # reproject
     pos <- sf::st_transform(pos, 32632)
     s2_list_test <- s2_list(
@@ -259,7 +259,7 @@ testthat::test_that(
     testthat::expect_is(safe_metadata, "matrix")
     testthat::expect_equal(dim(safe_metadata), c(9,11))
     testthat::expect_equal(unique(unlist(safe_metadata["level",])), c("1C","2A"))
-
+    
     s2_list_test <- s2_list(
       spatial_extent = pos,
       tile = "32TNR",

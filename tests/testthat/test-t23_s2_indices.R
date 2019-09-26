@@ -153,7 +153,7 @@ testthat::test_that(
     testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 0.3529976, tolerance = 1e-3)
     testthat::expect_equal(sum(is.na(exp_stars[[1]])), 0)
     rm(exp_stars)
-
+    
   }
 )
 
@@ -180,7 +180,7 @@ testthat::test_that(
     # test that existing file were not re-created
     exp_info_r <- file.info(exp_outpath_13)
     testthat::expect_true(exp_info_r[1,"ctime"] < exp_info_r[2,"ctime"])
-
+    
     # test on raster metadata
     exp_meta_r <- raster_metadata(exp_outpath_13[2]) # default format: data.table
     testthat::expect_equal(

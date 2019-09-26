@@ -98,25 +98,25 @@ testthat::test_that(
     dir.create(dirname(outdir_3), showWarnings = FALSE)
     testthat::expect_warning(
       sen2r(
-      gui = FALSE,
-      online = FALSE,
-      step_atmcorr = "l2a", # to avoid checks on Sen2Cor
-      extent = system.file("data/vector/scalve.kml", package = "sen2r"),
-      extent_name = "Scalve",
-      extent_as_mask = FALSE,
-      timewindow = as.Date("2017-07-03"),
-      list_prods = "TOA",
-      mask_type = NA,
-      proj = 32633,
-      res = c(25, 25), res_s2 = NA,
-      resampling = "average",
-      outformat = "ENVI",
-      path_l1c = safe_dir,
-      path_out = outdir_3,
-      path_subdirs = FALSE,
-      overwrite = TRUE
-    ),
-    regexp = "[Bb]oth native and custom resolution were provided" # FIXME 
+        gui = FALSE,
+        online = FALSE,
+        step_atmcorr = "l2a", # to avoid checks on Sen2Cor
+        extent = system.file("data/vector/scalve.kml", package = "sen2r"),
+        extent_name = "Scalve",
+        extent_as_mask = FALSE,
+        timewindow = as.Date("2017-07-03"),
+        list_prods = "TOA",
+        mask_type = NA,
+        proj = 32633,
+        res = c(25, 25), res_s2 = NA,
+        resampling = "average",
+        outformat = "ENVI",
+        path_l1c = safe_dir,
+        path_out = outdir_3,
+        path_subdirs = FALSE,
+        overwrite = TRUE
+      ),
+      regexp = "[Bb]oth native and custom resolution were provided" # FIXME 
     )
     expect_true(all(file.exists(c(
       exp_outpath_3,

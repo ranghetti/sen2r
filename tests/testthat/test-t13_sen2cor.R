@@ -93,10 +93,10 @@ if (test_sen2cor) {
       testthat::expect_equal(safe_metadata$utm, 32)
       testthat::expect_equal(safe_metadata$direction, "DESCENDING")
       testthat::expect_equal(safe_metadata$orbit_n, "22")
-
+      
     }
   )
-
+  
   
   testthat::test_that(
     "Tests a multicore Sen2Cor run", {

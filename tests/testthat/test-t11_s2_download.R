@@ -84,7 +84,7 @@ testthat::test_that(
     testthat::expect_equal(safe_metadata2$tiles, "32TNR")
     testthat::expect_equal(safe_metadata2$level, "2A")
     testthat::expect_equal(safe_metadata2$id_tile, safe_metadata2$tiles)
-
+    
   }
 )
 

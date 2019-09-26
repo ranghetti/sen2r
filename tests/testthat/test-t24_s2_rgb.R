@@ -148,6 +148,6 @@ testthat::test_that(
     testthat::expect_equal(mean(exp_stars[[2]], na.rm=TRUE), 71.76323, tolerance = 1e-3)
     testthat::expect_equal(sum(is.na(exp_stars[[1]])), 18, tolerance = 1e-3) #zeros
     rm(exp_stars)
-
+    
   }
 )
