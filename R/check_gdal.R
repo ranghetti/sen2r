@@ -93,10 +93,10 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
       }
     } else if (Sys.info()["sysname"] == "Windows") {
       if (gdal_path == "") {
-        if (all(full_scan == FALSE, dir.exists("C:\\\\OSGEO4~1"))) {
-          gdal_path <- "C:\\\\OSGEO4~1"
+        if (all(full_scan == FALSE, dir.exists("C:\\OSGEO4~1"))) {
+          gdal_path <- "C:\\OSGEO4~1\\"
         } else {
-          gdal_path <- "C:"
+          gdal_path <- "C:\\"
         }
       }
       paths_gdalinfo <- list.files(
@@ -173,10 +173,10 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
       unique(c(
         # 1: C:\OSGeo4W64
         grep("^C:\\\\OSGEO4~1", paths_gdalinfo),
-        # 2. paths in which osgeo4w-setup.exe exists wtogether with gdalinfo.exe
-        which(file.exists(file.path(dirname(paths_gdalinfo),"osgeo4w-setup.exe"))),
-        # 3: paths containing OSGEO4~1
-        grep("OSGEO4", paths_gdalinfo, perl=TRUE)#,
+        # 2: paths containing OSGEO4~1
+        grep("OSGEO4", paths_gdalinfo, perl=TRUE),
+        # 3. paths in which osgeo4w-setup.exe exists wtogether with gdalinfo.exe
+        which(file.exists(file.path(dirname(paths_gdalinfo),"osgeo4w-setup.exe")))#,
         # # 4: all other paths (disabled to avoid selecting other installations)
         # grep("^((?!OSGEO4).)*$", gdal_dirs, perl=TRUE)
       ))
