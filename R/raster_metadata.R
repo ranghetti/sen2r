@@ -15,11 +15,13 @@
 #' @importFrom stars read_stars st_dimensions
 #' @importFrom sf st_bbox st_crs
 #' @importFrom methods is
-#' @examples \dontrun{
+#' @examples
 #' # Define product names
 #' examplenames <- c(
 #'   system.file("tif/L7_ETMs.tif", package="stars"),
-#'   system.file("nc/bcsd_obs_1999.nc", package = "stars")
+#'   system.file("nc/bcsd_obs_1999.nc", package = "stars"),
+#'   system.file("extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_BOA_10.tif", 
+#'     package = "sen2r")
 #' )
 #'
 #' # Return metadata as data.table
@@ -34,7 +36,6 @@
 #' # Output with an invalid raster
 #' examplenames <- c(examplenames, system.file("extdata/gdal_formats.json", package="sen2r"))
 #' raster_metadata(examplenames)
-#' }
 
 raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
   
@@ -50,7 +51,7 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
   # check metadata to be returned
   if (all(meta == "all")) {
     meta <- c("res", "size", "nbands", "bbox", "proj", "unit", "outformat", "type")
-  } else if (any(!meta %in% meta_lev)) {
+  } else if (any(! meta %in% meta_lev)) {
     print_message(
       type = "error",
       "argument 'meta' must contain one of more among '",
@@ -58,13 +59,13 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
     )
   }
   # metadata groups
-  meta_stars <- any(meta %in% meta_lev_stars)
+  meta_stars    <- any(meta %in% meta_lev_stars)
   meta_gdalinfo <- any(meta %in% meta_lev_gdalinfo)
   
-    
+  
   out_list <- list()
   for (i in seq_along(raster_paths)) {
-
+    
     raster_path <- raster_paths[i]
     if (meta_stars) {
       sel_raster <- suppressWarnings(suppressMessages(try(
@@ -132,12 +133,12 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
         out_list[[i]][["outformat"]] <- metadata_raw[grepl("Driver:", metadata_raw)] %>%
           gsub("Driver: ?([A-Za-z0-9_]+)/.*$", "\\1", .)
       }
-        
+      
       if ("type" %in% meta) {
         out_list[[i]][["type"]] <- metadata_raw[grepl("Band [0-9]+.+Type ?=", metadata_raw)][1] %>%
           gsub("Band [0-9]+.+Type ?= ?([A-Za-z0-9]+),.*$", "\\1", .)
       }
-
+      
       # if (format %in% c("data.frame", "data.table")) {
       #   data.frame(
       #     "path" = raster_path,
@@ -173,7 +174,7 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
     }
     
   } # end of foreach cycle
-
+  
   if (format %in% c("data.frame", "data.table")) {
     out_dt <- rbindlist(lapply(out_list, function(l) {
       sel_dt <- data.frame(
@@ -211,5 +212,5 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
   } else if (format == "list") {
     out_list
   }
-
+  
 }

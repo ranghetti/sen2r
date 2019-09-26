@@ -32,10 +32,10 @@ the WKT of the given proj4string.
 Python is needed.
 }
 \examples{
-\dontrun{
+\donttest{
 projpar("+init=epsg:4326", "Unit")
 }
-\dontrun{
+\donttest{
 projname("+init=epsg:4326")
 }
 }

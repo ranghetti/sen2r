@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Select the tiles intersecting the extent — tiles_intersects • An R toolbox to find, download an preprocess Sentinel-2 data</title>
+<title>Select the tiles intersecting the extent — tiles_intersects • sen2r: Find, Download and Process Sentinel-2 Data</title>
 
 
 <!-- jquery -->
@@ -79,7 +79,7 @@ which overlap a provided extent." />
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">An R toolbox to find, download an preprocess Sentinel-2 data</a>
+        <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
@@ -164,27 +164,22 @@ otherwise leave to NULL and it will be generated within the function).</p></td>
     <p>License: GPL 3.0</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>ex_extent</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_read.html'>st_read</a></span>(
+    <pre class="examples"><div class='input'><span class='no'>ex_extent</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_read.html'>st_read</a></span>(
   <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/example_files/scalve.kml"</span>, <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"sen2r"</span>),
   <span class='kw'>quiet</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )
-<span class='no'>ex_extent</span> <span class='kw'>&lt;-</span> <span class='no'>ex_extent</span>[<span class='no'>ex_extent</span>$<span class='no'>Description</span> <span class='kw'>==</span> <span class='st'>"Schilpario"</span>,]
+<span class='no'>ex_extent</span> <span class='kw'>&lt;-</span> <span class='no'>ex_extent</span>[<span class='no'>ex_extent</span>$<span class='no'>description</span> <span class='kw'>==</span> <span class='st'>"Schilpario"</span>,]
 
 <span class='co'># Tile ID of the required S2 tile</span>
-<span class='fu'>tiles_intersects</span>(<span class='no'>ex_extent</span>)
-
+<span class='fu'>tiles_intersects</span>(<span class='no'>ex_extent</span>)</div><div class='output co'>#&gt; [1] "32TNS"</div><div class='input'>
 <span class='co'># Tile ID of all the overlapping S2 tiles</span>
-<span class='fu'>tiles_intersects</span>(<span class='no'>ex_extent</span>, <span class='kw'>all</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-
+<span class='fu'>tiles_intersects</span>(<span class='no'>ex_extent</span>, <span class='kw'>all</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] "32TNR" "32TNS"</div><div class='input'>
 <span class='co'># Spatial object with the required tile</span>
 <span class='no'>sel_tiles</span> <span class='kw'>&lt;-</span> <span class='fu'>tiles_intersects</span>(<span class='no'>ex_extent</span>, <span class='kw'>out_format</span> <span class='kw'>=</span> <span class='st'>"sf"</span>)
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>(<span class='no'>sel_tiles</span>)); <span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>(<span class='no'>ex_extent</span>), <span class='kw'>add</span><span class='kw'>=</span><span class='fl'>TRUE</span>, <span class='kw'>col</span><span class='kw'>=</span><span class='st'>"yellow"</span>)
-
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>(<span class='no'>sel_tiles</span>)); <span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>(<span class='no'>ex_extent</span>), <span class='kw'>add</span><span class='kw'>=</span><span class='fl'>TRUE</span>, <span class='kw'>col</span><span class='kw'>=</span><span class='st'>"yellow"</span>)</div><div class='img'><img src='tiles_intersects-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Spatial object with the overlapping S2 tiles</span>
 <span class='no'>sel_tiles</span> <span class='kw'>&lt;-</span> <span class='fu'>tiles_intersects</span>(<span class='no'>ex_extent</span>, <span class='kw'>all</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>out_format</span> <span class='kw'>=</span> <span class='st'>"sf"</span>)
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>(<span class='no'>sel_tiles</span>)); <span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>(<span class='no'>ex_extent</span>), <span class='kw'>add</span><span class='kw'>=</span><span class='fl'>TRUE</span>, <span class='kw'>col</span><span class='kw'>=</span><span class='st'>"yellow"</span>)
-}</div></pre>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>(<span class='no'>sel_tiles</span>)); <span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>(<span class='no'>ex_extent</span>), <span class='kw'>add</span><span class='kw'>=</span><span class='fl'>TRUE</span>, <span class='kw'>col</span><span class='kw'>=</span><span class='st'>"yellow"</span>)</div><div class='img'><img src='tiles_intersects-2.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

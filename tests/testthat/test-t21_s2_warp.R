@@ -6,8 +6,6 @@ example_dir <- system.file("extdata/example_files", package = "sen2r")
 dir.create(example_dir, showWarnings = FALSE)
 safe_dir <- file.path(example_dir, "safe")
 dir.create(safe_dir, showWarnings = FALSE)
-dir.create(file.path(safe_dir, "L2A"), showWarnings = FALSE)
-dir.create(file.path(safe_dir, "L1C"), showWarnings = FALSE)
 
 
 outdir_2 <- file.path(tempdir(), "out_test2")
@@ -27,7 +25,7 @@ testthat::test_that(
       timewindow = as.Date("2017-07-03"),
       list_prods = "BOA",
       mask_type = NA,
-      path_l2a = file.path(safe_dir, "L2A"),
+      path_l2a = safe_dir,
       path_out = outdir_2
     )
     expect_true(file.exists(exp_outpath_2))
@@ -102,11 +100,11 @@ testthat::test_that(
     dir.create(dirname(outdir_3), showWarnings = FALSE)
     testthat::expect_warning(
       sen2r(
-      gui = FALSE,
-      online = FALSE,
-      step_atmcorr = "l2a", # to avoid checks on Sen2Cor
-      extent = file.path(example_dir, "scalve.kml"),
-      extent_name = "Scalve",
+      gui            = FALSE,
+      online         = FALSE,
+      step_atmcorr   = "l2a", # to avoid checks on Sen2Cor
+      extent         = file.path(example_dir, "scalve.kml"),
+      extent_name    = "Scalve",
       extent_as_mask = FALSE,
       timewindow = as.Date("2017-07-03"),
       list_prods = "TOA",
@@ -115,7 +113,7 @@ testthat::test_that(
       res = c(25, 25), res_s2 = NA,
       resampling = "average",
       outformat = "ENVI",
-      path_l1c = file.path(safe_dir, "L1C"),
+      path_l1c = safe_dir,
       path_out = outdir_3,
       path_subdirs = FALSE,
       overwrite = TRUE
@@ -210,7 +208,7 @@ testthat::test_that(
       reference_path = exp_outpath_3,
       resampling_scl = "mode",
       outformat = "VRT",
-      path_l2a = file.path(safe_dir, "L2A"),
+      path_l2a = safe_dir,
       path_out = outdir_4,
       tmpdir = outdir_4, rmtmp = FALSE,
       overwrite = TRUE
@@ -274,21 +272,25 @@ testthat::test_that(
 
 
 context("Test gdalwarp_grid()")
-testthat::skip_on_cran()
-# testthat::skip_on_travis()
+testthat::skip_on_cran() # becaue it uses runtime GDAL
+testthat::skip_on_travis()
 
+ex_sel <- system.file(
+  "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_RGB432B_10.tif",
+  package = "sen2r"
+)
+ex_ref <- system.file(
+  "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_SCL_10.tif",
+  package = "sen2r"
+)
 testthat::test_that(
-  "Test on repshaping with gdalwarp_grid()", {
+  "Test on reshaping with gdalwarp_grid()", {
     
-    testthat::expect_true(all(dir.exists(c(outdir_2,outdir_3))))
-    testthat::expect_true(all(file.exists(exp_outpath_2,exp_outpath_3)))
-    exp_outpath_4b <- file.path(tempdir(), "S2A2A_20170703_022_Scalve_BOA_10_UTM33.tif")
+    exp_outpath_4b <- tempfile(fileext = "_BOA_out.tif")
+    testthat::expect_true(all(file.exists(ex_sel,ex_ref)))
+    
     unlink(exp_outpath_4b)
-    gdalwarp_grid(
-      srcfiles = exp_outpath_2, 
-      dstfiles = exp_outpath_4b, 
-      ref = exp_outpath_3
-    )
+    sen2r:::gdalwarp_grid(srcfiles = ex_sel, dstfiles = exp_outpath_4b, ref = ex_ref)
     
     # test on raster metadata
     exp_meta_r <- raster_metadata(exp_outpath_4b, format = "data.frame")
@@ -296,16 +298,15 @@ testthat::test_that(
       "path", "valid", "res.x", "res.y", "size.x", "size.y", "nbands", 
       "xmin", "ymin", "xmax", "ymax", "proj", "unit", "outformat", "type"
     ))
-    testthat::expect_equal(exp_meta_r[,c("size.x", "size.y")], data.frame("size.x"=808, "size.y"=648))
-    testthat::expect_equal(exp_meta_r[,c("res.x", "res.y")], data.frame("res.x"=25, "res.y"=25))
-    testthat::expect_equal(exp_meta_r$nbands, 11)
+    testthat::expect_equal(exp_meta_r[,c("size.x", "size.y")], data.frame("size.x"=12, "size.y"=21))
+    testthat::expect_equal(exp_meta_r[,c("res.x", "res.y")], data.frame("res.x"=20, "res.y"=20))
+    testthat::expect_equal(exp_meta_r$nbands, 3)
     testthat::expect_equal(
       exp_meta_r[,c("xmin", "xmax", "ymin", "ymax")], 
-      data.frame("xmin" = 113434.4, "xmax" = 133634.4, "ymin" = 5096906, "ymax" = 5113106),
-      tolerance = 1e-3
+      data.frame("xmin" = 580560, "xmax" = 580800, "ymin" = 5101700, "ymax" = 5102120)
     )
-    testthat::expect_equal(sf::st_crs(exp_meta_r$proj), sf::st_crs(32633))
-    testthat::expect_equal(exp_meta_r$type, "UInt16")
+    testthat::expect_equal(sf::st_crs(exp_meta_r$proj), sf::st_crs(32632))
+    testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # expect error on sen2r metadata with unstandard name
@@ -316,12 +317,297 @@ testthat::test_that(
     
     # test on raster values
     r <- raster::brick(exp_outpath_4b)
-    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 3800.733, tolerance = 1e-03)
-    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 297406, tolerance = 1e-03)
+    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 105.0556, tolerance = 1e-03)
+    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 0, tolerance = 1e-03)
     
   }
 )
 
+
+context("Test gdal_warp()")
+testthat::skip_on_cran() # becaue it uses runtime GDAL
+testthat::skip_on_travis()
+
+crop_poly <- system.file("extdata/example_files/dam.geojson", package = "sen2r")
+crop_line <- sf::st_cast(sf::read_sf(crop_poly), "LINESTRING")
+test1 <- tempfile(fileext = "_test1.tif")
+
+testthat::test_that(
+  "Simple clip", {
+    
+    gdal_warp(ex_sel, test1, mask = crop_line)
+    
+    # test on raster metadata
+    exp_meta_r <- raster_metadata(test1, format = "list")[[1]]
+    testthat::expect_equal(names(exp_meta_r), c(
+      "path", "valid", "res", "size", "nbands", "bbox", "proj", "unit", "outformat", "type"
+    ))
+    testthat::expect_equal(exp_meta_r$size, c("x"=8, "y"=26))
+    testthat::expect_equal(exp_meta_r$res, c("x"=10, "y"=10))
+    testthat::expect_equal(exp_meta_r$nbands, 3)
+    testthat::expect_equal(
+      exp_meta_r$bbox, 
+      sf::st_bbox(
+        c("xmin" = 580620, "ymin" = 5101790, "xmax" = 580700, "ymax" = 5102050),
+        crs = sf::st_crs(32632)
+      )
+    )
+    testthat::expect_equal(exp_meta_r$type, "Byte")
+    testthat::expect_equal(exp_meta_r$outformat, "GTiff")
+    
+    # test on raster values
+    r <- raster::brick(test1)
+    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 100.6298, tolerance = 1e-03)
+    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 0)
+    
+    # tests on sen2r metadata
+    exp_meta_s <- testthat::expect_error(
+      sen2r_getElements(test1),
+      regexp = "not recognised"
+    )
+    
+  }
+)
+
+testthat::test_that(
+  "Clip and mask", {
+    
+    test2 <- tempfile(fileext = "_test2.tif")
+    gdal_warp(ex_sel, test2, mask = crop_poly)
+    
+    # test on raster metadata
+    exp_meta_r <- raster_metadata(test2, format = "list")[[1]]
+    testthat::expect_equal(exp_meta_r$size, c("x"=8, "y"=26))
+    testthat::expect_equal(exp_meta_r$res, c("x"=10, "y"=10))
+    testthat::expect_equal(exp_meta_r$nbands, 3)
+    testthat::expect_equal(
+      exp_meta_r$bbox, 
+      sf::st_bbox(
+        c("xmin" = 580620, "ymin" = 5101790, "xmax" = 580700, "ymax" = 5102050),
+        crs = sf::st_crs(32632)
+      )
+    )
+    testthat::expect_equal(exp_meta_r$type, "Byte")
+    testthat::expect_equal(exp_meta_r$outformat, "GTiff")
+    
+    # test on raster values
+    r <- raster::brick(test2)
+    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 122.4337, tolerance = 1e-03)
+    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 125, tolerance = 1e-03)
+    
+  }
+)
+
+testthat::test_that(
+  "Clip and mask", {
+    
+    test3 <- tempfile(fileext = "_test3.tif")
+    gdal_warp(ex_sel, test3, ref = ex_ref)
+    
+    # test on raster metadata
+    exp_meta_r <- raster_metadata(test3, format = "list")[[1]]
+    testthat::expect_equal(exp_meta_r$size, c("x"=12, "y"=21))
+    testthat::expect_equal(exp_meta_r$res, c("x"=20, "y"=20))
+    testthat::expect_equal(exp_meta_r$nbands, 3)
+    testthat::expect_equal(
+      exp_meta_r$bbox, 
+      sf::st_bbox(
+        c("xmin" = 580560, "ymin" = 5101700, "xmax" = 580800, "ymax" = 5102120),
+        crs = sf::st_crs(32632)
+      )
+    )
+    testthat::expect_equal(exp_meta_r$type, "Byte")
+    testthat::expect_equal(exp_meta_r$outformat, "GTiff")
+    
+    # test on raster values
+    r <- raster::brick(test3)
+    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 103.4643, tolerance = 1e-03)
+    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 0)
+    
+  }
+)
+
+testthat::test_that(
+  "Reproject all the input file", {
+    
+    test4 <- tempfile(fileext = "_test4.tif")
+    gdal_warp(ex_sel, test4, t_srs = "+init=epsg:32631")
+    
+    # test on raster metadata
+    exp_meta_r <- raster_metadata(test4, format = "list")[[1]]
+    testthat::expect_equal(exp_meta_r$size, c("x"=27, "y"=44))
+    testthat::expect_equal(exp_meta_r$res, c("x"=10.07, "y"=9.97), tolerance = 1e-3)
+    testthat::expect_equal(exp_meta_r$nbands, 3)
+    testthat::expect_equal(
+      exp_meta_r$bbox, 
+      sf::st_bbox(
+        c("xmin" = 1044533, "ymin" = 5125330, "xmax" = 1044805, "ymax" = 5125769),
+        crs = sf::st_crs(32631)
+      ),
+      tolerance = 1e-3
+    )
+    testthat::expect_equal(exp_meta_r$type, "Byte")
+    testthat::expect_equal(exp_meta_r$outformat, "GTiff")
+    
+    # test on raster values
+    r <- raster::brick(test4)
+    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 104.3775, tolerance = 1e-03)
+    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 176, tolerance = 1e-3)
+    
+  }
+)
+
+testthat::test_that(
+  "Reproject and clip on a bounding box", {
+    
+    
+    test5 <- tempfile(fileext = "_test5.tif")
+    gdal_warp(ex_sel, test5, t_srs = "+init=epsg:32631", mask = stars::read_stars(test1))
+    
+    # test on raster metadata
+    exp_meta_r <- raster_metadata(test5, format = "list")[[1]]
+    testthat::expect_equal(exp_meta_r$size, c("x"=10, "y"=27))
+    testthat::expect_equal(exp_meta_r$res, c("x"=9.98, "y"=9.86), tolerance = 1e-3)
+    testthat::expect_equal(exp_meta_r$nbands, 3)
+    testthat::expect_equal(
+      exp_meta_r$bbox, 
+      sf::st_bbox(
+        c("xmin" = 1044599, "ymin" = 5125425, "xmax" = 1044698, "ymax" = 5125691),
+        crs = sf::st_crs(32631)
+      ),
+      tolerance = 1e-3
+    )
+    testthat::expect_equal(exp_meta_r$type, "Byte")
+    testthat::expect_equal(exp_meta_r$outformat, "GTiff")
+    
+    # test on raster values
+    r <- raster::brick(test5)
+    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 100.7103, tolerance = 1e-03)
+    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 56, tolerance = 1e-3)
+    
+  }
+)
+
+test6 <- tempfile(fileext = "_test6.tif")
+testthat::test_that(
+  "Reproject and clip on polygon (masking outside)", {
+    
+    gdal_warp(ex_sel, test6, t_srs = "+init=epsg:32631", mask = crop_poly)
+    
+    # test on raster metadata
+    exp_meta_r <- raster_metadata(test6, format = "list")[[1]]
+    testthat::expect_equal(exp_meta_r$size, c("x"=6, "y"=25))
+    testthat::expect_equal(exp_meta_r$res, c("x"=10.7, "y"=10.2), tolerance = 1e-2)
+    testthat::expect_equal(exp_meta_r$nbands, 3)
+    testthat::expect_equal(
+      exp_meta_r$bbox, 
+      sf::st_bbox(
+        c("xmin" = 1044599, "ymin" = 5125425, "xmax" = 1044698, "ymax" = 5125691),
+        crs = sf::st_crs(32631)
+      ),
+      tolerance = 1e-3
+    )
+    testthat::expect_equal(exp_meta_r$type, "Byte")
+    testthat::expect_equal(exp_meta_r$outformat, "GTiff")
+    
+    # test on raster values
+    r <- raster::brick(test6)
+    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 123.5974, tolerance = 1e-03)
+    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 73, tolerance = 1e-3)
+    
+  }
+)
+
+testthat::test_that(
+  "Use a reference raster with a different projection", {
+    
+    test7 <- tempfile(fileext = "_test7.tif")
+    gdal_warp(ex_sel, test7, ref = test6)
+    
+    # test on raster metadata
+    exp_meta_r <- raster_metadata(test7, format = "list")[[1]]
+    testthat::expect_equal(exp_meta_r$size, c("x" = 6, "y" = 25))
+    testthat::expect_equal(exp_meta_r$res,  c("x" = 10.67998, "y" = 10.21008 ),
+                           tolerance = 1e-3)
+    testthat::expect_equal(exp_meta_r$nbands, 3)
+    testthat::expect_equal(
+      exp_meta_r$bbox, 
+      sf::st_bbox(
+        c("xmin" = 1044599, "ymin" = 5125425, "xmax" = 1044698, "ymax" = 5125691),
+        crs = sf::st_crs(32631)
+      ),
+      tolerance = 1e-3
+    )
+    testthat::expect_equal(exp_meta_r$type, "Byte")
+    testthat::expect_equal(exp_meta_r$outformat, "GTiff")
+    
+    # test on raster values
+    r <- raster::brick(test7)
+    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 99.14, tolerance = 1e-03)
+    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 0)
+    
+  }
+)
+
+testthat::test_that(
+  "...and specify a different bounding box", {
+    
+    test8 <- tempfile(fileext = "_test8.tif")
+    gdal_warp(ex_sel, test8, mask = stars::read_stars(test1), ref = test6)
+    
+    # test on raster metadata
+    exp_meta_r <- raster_metadata(test8, format = "list")[[1]]
+    testthat::expect_equal(exp_meta_r$size, c("x"=9, "y"=26))
+    testthat::expect_equal(exp_meta_r$res, c("x"=10.67998, "y"=10.21008 ), tolerance = 1e-3)
+    testthat::expect_equal(exp_meta_r$nbands, 3)
+    testthat::expect_equal(
+      exp_meta_r$bbox, 
+      sf::st_bbox(
+        c("xmin" = 1044599, "ymin" = 5125425, "xmax" = 1044698, "ymax" = 5125691),
+        crs = sf::st_crs(32631)
+      ),
+      tolerance = 1e-3
+    )
+    testthat::expect_equal(exp_meta_r$type, "Byte")
+    testthat::expect_equal(exp_meta_r$outformat, "GTiff")
+    
+    # test on raster values
+    r <- raster::brick(test8)
+    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 97.9814, tolerance = 1e-03)
+    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 19, tolerance = 1e-3)
+    
+  }
+)
+
+testthat::test_that(
+  "Use a reference raster with a different projection and a mask", {
+    
+    test9 <- tempfile(fileext = "_test9.tif")
+    gdal_warp(ex_sel, test9, mask = crop_poly, ref = test6)
+    
+    # test on raster metadata
+    exp_meta_r <- raster_metadata(test9, format = "list")[[1]]
+    testthat::expect_equal(exp_meta_r$size, c("x"=6, "y"=25))
+    testthat::expect_equal(exp_meta_r$res, c("x"=10.67998, "y"=10.21008 ), tolerance = 1e-3)
+    testthat::expect_equal(exp_meta_r$nbands, 3)
+    testthat::expect_equal(
+      exp_meta_r$bbox, 
+      sf::st_bbox(
+        c("xmin" = 1044599, "ymin" = 5125425, "xmax" = 1044698, "ymax" = 5125691),
+        crs = sf::st_crs(32631)
+      ),
+      tolerance = 1e-3
+    )
+    testthat::expect_equal(exp_meta_r$type, "Byte")
+    testthat::expect_equal(exp_meta_r$outformat, "GTiff")
+    
+    # test on raster values
+    r <- raster::brick(test9)
+    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 114.433, tolerance = 1e-03)
+    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 53, tolerance = 1e-3)
+    
+  }
+)
 
 # context("Test conversion from/to VRT with relative paths to/from VRT with absolute paths")
 # testthat::skip_on_cran()

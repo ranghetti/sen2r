@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 
 <img src="man/figures/sen2r_logo_200px.png" width="200" height="113" align="right" />
 
-# R toolbox to find, download and preprocess Sentinel-2 data
+# sen2r: Find, Download and Process Sentinel-2 Data
 
 <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> 
 is an R library which helps to download and preprocess Sentinel-2 optical images.
@@ -124,7 +124,7 @@ or passing manually the parameters as arguments of the function
 Other specific functions can be used to run single steps separately:
 
 * [`s2_list()`](reference/s2_list.md)
-    to retrieve the list of available Sentinel-2 products basing on input parameters;
+    to retrieve the list of available Sentinel-2 products based on input parameters;
 * [`s2_download()`](reference/s2_download.md)
     to download Sentinel-2 products;
 * [`sen2cor()`](reference/sen2cor.html)
@@ -136,7 +136,7 @@ Other specific functions can be used to run single steps separately:
 * [`gdal_warp()`](reference/gdal_warp.md)
     to clip, reproject and warp raster files (this is a wrapper to call
     [gdal_translate](http://www.gdal.org/gdal_translate.html) or 
-    [gdalwarp](http://www.gdal.org/gdalwarp.html) basing on input parameters);
+    [gdalwarp](http://www.gdal.org/gdalwarp.html) based on input parameters);
 * [`s2_mask()`](reference/s2_mask.md)
     to apply a cloud mask to Sentinel-2 products;
 * [`s2_rgb()`](reference/s2_rgb.md)
@@ -160,11 +160,11 @@ is released under the [Creative Commons Attribution-ShareAlike 4.0 International
 
 To cite this library, please use the following entry:
 
-Ranghetti, L.\ and Busetto, L.\ (`r strftime(Sys.Date(),"%Y")`). *sen2r: an R toolbox to find, download and preprocess Sentinel-2 data*. R package version `r packageVersion("sen2r")`. DOI: [10.5281/zenodo.1240384](https://dx.doi.org/10.5281/zenodo.1240384). URL: [http://sen2r.ranghetti.info](http://sen2r.ranghetti.info).
+Ranghetti, L.\ and Busetto, L.\ (`r strftime(Sys.Date(),"%Y")`). *sen2r: Find, Download and Process Sentinel-2 Data*. R package version `r packageVersion("sen2r")`. DOI: [10.5281/zenodo.1240384](https://dx.doi.org/10.5281/zenodo.1240384). URL: [http://sen2r.ranghetti.info](http://sen2r.ranghetti.info).
 
 ```bibtex
 @Manual{sen2r,
-  title  = {sen2r: an R toolbox to find, download and preprocess Sentinel-2 data},
+  title  = {sen2r: Find, Download and Process Sentinel-2 Data},
   author = {Luigi Ranghetti and Lorenzo Busetto},
   year   = {`r strftime(Sys.Date(),"%Y")`},
   note   = {R package version `r packageVersion("sen2r")`},

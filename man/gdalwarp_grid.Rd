@@ -2,7 +2,7 @@
 % Please edit documentation in R/gdalwarp_grid.R
 \name{gdalwarp_grid}
 \alias{gdalwarp_grid}
-\title{Warp basing on the grid of another file}
+\title{Warp a raster file aligning it on the grid of another file}
 \usage{
 gdalwarp_grid(srcfiles, dstfiles, ref, of = NULL, r = NULL)
 }
@@ -19,8 +19,11 @@ the format of every input filename.}
 \item{r}{Resampling_method ("near"|"bilinear"|"cubic"|"cubicspline"|
 "lanczos"|"average"|"mode"|"max"|"min"|"med"|"q1"|"q3").}
 }
+\value{
+NULL (the function is called for its side effects)
+}
 \description{
-The function apply \link{gdalwarp} to build rasters with the
+The function applies \code{gdalwarp} to build rasters with the
 same projection, resolution and grid alignment of another raster.
 If not specified, the output format of each file is the same of the
 corresponding source file.
@@ -29,14 +32,26 @@ corresponding source file.
 License: GPL 3.0
 }
 \examples{
-\dontrun{
-ex_sel <- c("/path/of/existing/input/file.tif",
-            "/path/of/existing/input/anotherfile.jp2")
-ex_ref <- "/path/of/the/reference/file.jp2"
-ex_out <- c("/path/of/the/output/file.tif",
-            "/path/of/the/output/anotherfile.jp2")
+# Define file names
+ex_sel <- system.file(
+  "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_BOA_10.tif",
+  package = "sen2r"
+)
+ex_ref <- system.file(
+  "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_SCL_10.tif",
+  package = "sen2r"
+)
+ex_out <- tempfile(fileext = "_BOA_out.tif")
 
-gdalwarp_grid(ex_sel, ex_out, ex_ref, dstnodata=0, overwrite=TRUE)
+# Run function
+sen2r:::gdalwarp_grid(ex_sel, ex_out, ref = ex_ref)
+
+\donttest{
+# Show output
+par(mfrow = c(1,3))
+par(mar = rep(0,4)); image(stars::read_stars(ex_sel), rgb = 4:2, maxColorValue = 3500)
+par(mar = rep(2/3,4)); image(stars::read_stars(ex_ref))
+par(mar = rep(0,4)); image(stars::read_stars(ex_out), rgb = 4:2, maxColorValue = 3500)
 }
 }
 \author{

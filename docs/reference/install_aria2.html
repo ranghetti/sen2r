@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Download and install aria2. — install_aria2 • An R toolbox to find, download an preprocess Sentinel-2 data</title>
+<title>Download and install aria2. — install_aria2 • sen2r: Find, Download and Process Sentinel-2 Data</title>
 
 
 <!-- jquery -->
@@ -79,7 +79,7 @@ aria2 for Windows." />
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">An R toolbox to find, download an preprocess Sentinel-2 data</a>
+        <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
@@ -123,16 +123,14 @@ aria2 for Windows." />
 <a href='https://aria2.github.io'>aria2</a> for Windows.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>install_aria2</span>(<span class='kw'>aria2_dir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"sen2r"</span>),
-  <span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>install_aria2</span>(<span class='no'>aria2_dir</span>, <span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>aria2_dir</th>
-      <td><p>(optional) Path where aria2 executable will be installed
-(default: the package path).</p></td>
+      <td><p>Path where aria2 executable will be installed.</p></td>
     </tr>
     <tr>
       <th>force</th>
@@ -150,6 +148,7 @@ installed (default is FALSE).</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='co'># Run only on Windows</span>
 <span class='fu'>install_aria2</span>()
 }</div></pre>
   </div>

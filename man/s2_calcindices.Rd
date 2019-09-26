@@ -105,6 +105,27 @@ are physical rasters (no output VRT is allowed).
 \note{
 License: GPL 3.0
 }
+\examples{
+# Define file names
+ex_in <- system.file(
+  "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_BOA_10.tif",
+  package = "sen2r"
+)
+
+# Run function
+ex_out <- s2_calcindices(
+  infiles = ex_in,
+  indices = "EVI",
+  outdir = tempdir(),
+  dataType = "Float32"
+)
+ex_out
+
+# Show output
+par(mfrow = c(1,2))
+par(mar = rep(0,4)); image(stars::read_stars(ex_in), rgb = 4:2, maxColorValue = 3500)
+par(mar = rep(2/3,4)); image(stars::read_stars(ex_out))
+}
 \author{
 Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
 }

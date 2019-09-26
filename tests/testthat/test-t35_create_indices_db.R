@@ -6,8 +6,6 @@
 # dir.create(example_dir, showWarnings = FALSE)
 # safe_dir <- file.path(example_dir, "safe")
 # dir.create(safe_dir, showWarnings = FALSE)
-# dir.create(file.path(safe_dir, "L2A"), showWarnings = FALSE)
-# dir.create(file.path(safe_dir, "L1C"), showWarnings = FALSE)
 # 
 # 
 # testthat::test_that(

@@ -17,7 +17,7 @@ Instruction are provided separately for each OS:
 - [Install on Windows](#on-windows)
 - [Install on MacOS](#on-macos)
 
-Alternatively, <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be used [in a Docker container](docker.md).
+Alternatively, <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be used [in a Docker container](docker.html).
 
 
 ## <i class="fa fa-linux" aria-hidden="true"></i> On Linux systems
@@ -51,7 +51,7 @@ Other binaries are required (or suggested), since they are used in runtime by th
 * [**GDAL**](http://www.gdal.org) (with support for JP2OpenJPEG format): 
     this is a mandatory dependency, needed for all the processing operations 
     and to retrieve metadata from SAFE products;
-* [**sen2cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor) 
+* [**Sen2Cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor) 
     is used to perform atmospheric correction of Sentinel-2 Level-1C products: 
     it is required by the package, unless you choose not to correct products locally 
     (using only Level-1C – TOA products or downloading directly Level-2A products).
@@ -179,7 +179,7 @@ To run the functions correctly, some external dependences are required:
     [OSGeo4W installer](https://qgis.org/it/site/forusers/download.html):
     if this requirement is not satisfied, it is possible to install GDAL
     with OSGeo4W directly from R (see below);
-* [**sen2cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor) 
+* [**Sen2Cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor) 
     is used to perform atmospheric correction of Sentinel-2 Level-1C products: 
     it is required by the package, unless you choose not to correct products locally 
     (using only Level-1C – TOA products or downloading directly Level-2A products).
@@ -275,7 +275,7 @@ To run the functions correctly, some external dependences are required:
     this is a mandatory dependency, needed for all the processing operations 
     and to retrieve metadata from SAFE products.
     If the previous instructions were followed, it was already installed;
-* [**sen2cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor) 
+* [**Sen2Cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor) 
     is used to perform atmospheric correction of Sentinel-2 Level-1C products: 
     it is required by the package, unless you choose not to correct products locally 
     (using only Level-1C – TOA products or downloading directly Level-2A products).

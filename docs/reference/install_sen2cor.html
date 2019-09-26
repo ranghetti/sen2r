@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Download and install Sen2Cor. — install_sen2cor • An R toolbox to find, download an preprocess Sentinel-2 data</title>
+<title>Download and install Sen2Cor. — install_sen2cor • sen2r: Find, Download and Process Sentinel-2 Data</title>
 
 
 <!-- jquery -->
@@ -79,7 +79,7 @@ Sen2Cor 2.8.0." />
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">An R toolbox to find, download an preprocess Sentinel-2 data</a>
+        <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
@@ -123,15 +123,14 @@ Sen2Cor 2.8.0." />
 <a href='http://step.esa.int/main/third-party-plugins-2/sen2cor'>Sen2Cor 2.8.0</a>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>install_sen2cor</span>(<span class='kw'>sen2cor_dir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>version</span> <span class='kw'>=</span> <span class='st'>"2.8.0"</span>, <span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>install_sen2cor</span>(<span class='no'>sen2cor_dir</span>, <span class='kw'>version</span> <span class='kw'>=</span> <span class='st'>"2.8.0"</span>, <span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>sen2cor_dir</th>
-      <td><p>(optional) Path where sen2cor will be installed
-(default: a subdirectory of the package path).</p></td>
+      <td><p>Path where sen2cor will be installed.</p></td>
     </tr>
     <tr>
       <th>version</th>
@@ -145,6 +144,9 @@ installed (default is FALSE).</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>NULL (the function is called for its side effects)</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
@@ -158,6 +160,7 @@ installed (default is FALSE).</p></td>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
       <li><a href="#note">Note</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>

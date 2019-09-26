@@ -25,7 +25,7 @@
 #' @import data.table
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
-#' @examples \dontrun{
+#' @examples
 #' # Show index names
 #' list_indices(c("name","longname"))
 #' 
@@ -34,7 +34,6 @@
 #' 
 #' # Return all index names (including unchecked)
 #' list_indices("name", all = TRUE)
-#' }
 
 list_indices <- function(values, pattern="", all=FALSE) {
   

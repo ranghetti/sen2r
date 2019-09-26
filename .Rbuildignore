@@ -1,6 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.travis\.yml$
+^\.covrignore\.yml$
 ^.*\.yaml$
 ^README\.R?md$
 ^WIP$
@@ -11,3 +12,6 @@
 ^utils$
 ^LICENSE\.md$
 ^cran\-comments\.md$
+^CRAN-RELEASE$
+inst/extdata/example_files/safe/
+inst/extdata/vector/s2_tiles.rds

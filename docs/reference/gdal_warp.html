@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Clip, reproject and warp raster files — gdal_warp • An R toolbox to find, download an preprocess Sentinel-2 data</title>
+<title>Clip, reproject and warp raster files — gdal_warp • sen2r: Find, Download and Process Sentinel-2 Data</title>
 
 
 <!-- jquery -->
@@ -36,10 +36,8 @@
 
 
 <meta property="og:title" content="Clip, reproject and warp raster files — gdal_warp" />
-<meta property="og:description" content="The function applies gdal_translate or gdalwarp
-to clip, reproject and/or warp raster files. The choice of the
-algorithm is based on the comparison between input and output
-projections (gdal_translate if they are equal, gdalwarp elsewhere).
+<meta property="og:description" content="The function applies gdalwarp
+to clip, reproject and/or warp raster files.
 If not specified, the output format of each file is the same of the
 corresponding source file." />
 <meta name="twitter:card" content="summary" />
@@ -83,7 +81,7 @@ corresponding source file." />
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">An R toolbox to find, download an preprocess Sentinel-2 data</a>
+        <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
@@ -123,10 +121,8 @@ corresponding source file." />
     </div>
 
     <div class="ref-description">
-    <p>The function applies gdal_translate or gdalwarp
-to clip, reproject and/or warp raster files. The choice of the
-algorithm is based on the comparison between input and output
-projections (gdal_translate if they are equal, gdalwarp elsewhere).
+    <p>The function applies <code>gdalwarp</code>
+to clip, reproject and/or warp raster files.
 If not specified, the output format of each file is the same of the
 corresponding source file.</p>
     </div>
@@ -169,7 +165,7 @@ these values, specify also other values of <code>mask</code> and/or <code>tr</co
       <th>mask</th>
       <td><p>Spatial path or object from which to take the extent
 of output files. If it is a polygon, this is used as masking layer;
-otherwise, only the bounding box  is considered;. If both <code>ref</code>
+otherwise, only the bounding box  is considered. If both <code>ref</code>
 and <code>mask</code> are provided, this parameter will overlay the extent of the
 reference raster. In order to take only the grid from <code>res</code> and not
 to clip on its extent, set <code>mask=NA</code>. Notice that the output
@@ -226,75 +222,106 @@ Default is a temporary directory.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>NULL (the function is called for its side effects)</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>srcfiles</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"/path/of/a/s2/file.tif"</span>,
-              <span class='st'>"/path/of/another/s2/file.tif"</span>)
-<span class='no'>crop_poly</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"/path/of/a/polygon/vector.shp"</span>)
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+<span class='co'>#' # Define file names</span>
+<span class='no'>ex_sel</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(
+  <span class='st'>"extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_RGB432B_10.tif"</span>,
+  <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"sen2r"</span>
+)
+<span class='no'>ex_ref</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(
+  <span class='st'>"extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_SCL_10.tif"</span>,
+  <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"sen2r"</span>
+)
+<span class='no'>crop_poly</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/example_files/dam.geojson"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"sen2r"</span>)
+<span class='no'>crop_line</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_cast.html'>st_cast</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_read.html'>read_sf</a></span>(<span class='no'>crop_poly</span>), <span class='st'>"LINESTRING"</span>)
 
 <span class='co'># Simple clip</span>
-<span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>[<span class='fl'>1</span>],
-          <span class='no'>test0_clip</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(),<span class='st'>"test0_clip.tif"</span>),
-          <span class='kw'>mask</span> <span class='kw'>=</span> <span class='fu'>get_extent</span>(<span class='no'>crop_poly</span>))
+<span class='no'>test1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(<span class='kw'>fileext</span> <span class='kw'>=</span> <span class='st'>"_test1.tif"</span>)
+<span class='fu'>gdal_warp</span>(<span class='no'>ex_sel</span>, <span class='no'>test1</span>, <span class='kw'>mask</span> <span class='kw'>=</span> <span class='no'>crop_line</span>)
 
 <span class='co'># Clip and mask</span>
-<span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>,
-          <span class='no'>test0_mask</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(),<span class='st'>"test0_mask.tif"</span>),
-                          <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>()),
-          <span class='kw'>mask</span> <span class='kw'>=</span> <span class='no'>crop_poly</span>)
+<span class='no'>test2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(<span class='kw'>fileext</span> <span class='kw'>=</span> <span class='st'>"_test2.tif"</span>)
+<span class='fu'>gdal_warp</span>(<span class='no'>ex_sel</span>, <span class='no'>test2</span>, <span class='kw'>mask</span> <span class='kw'>=</span> <span class='no'>crop_poly</span>)
 
+<span class='co'># Show output</span>
+<span class='no'>crop_bbox</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_as_sfc.html'>st_as_sfc</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_bbox.html'>st_bbox</a></span>(<span class='no'>crop_line</span>))
+<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='kw'>mfrow</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>3</span>), <span class='kw'>mar</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>,<span class='fl'>4</span>))
+<span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>ex_sel</span>), <span class='kw'>rgb</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>3</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>crop_line</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>crop_bbox</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>border</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>test1</span>), <span class='kw'>rgb</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>3</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>crop_bbox</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>border</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>test2</span>), <span class='kw'>rgb</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>3</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>crop_line</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='img'><img src='gdal_warp-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Warp on a reference raster</span>
-<span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>[<span class='fl'>1</span>],
-          <span class='no'>test1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(),<span class='st'>"test1.tif"</span>),
-          <span class='kw'>ref</span> <span class='kw'>=</span> <span class='no'>test0_mask</span>[<span class='fl'>1</span>])
+<span class='no'>test3</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(<span class='kw'>fileext</span> <span class='kw'>=</span> <span class='st'>"_test3.tif"</span>)
+<span class='fu'>gdal_warp</span>(<span class='no'>ex_sel</span>, <span class='no'>test3</span>, <span class='kw'>ref</span> <span class='kw'>=</span> <span class='no'>ex_ref</span>)
 
+<span class='co'># Show output</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='kw'>mfrow</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>3</span>))
+<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='kw'>mar</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>,<span class='fl'>4</span>)); <span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>ex_sel</span>), <span class='kw'>rgb</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>3</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='kw'>mar</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>2</span>/<span class='fl'>3</span>,<span class='fl'>4</span>)); <span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>ex_ref</span>))
+<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='kw'>mar</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>,<span class='fl'>4</span>)); <span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>test3</span>), <span class='kw'>rgb</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>3</span>)</div><div class='img'><img src='gdal_warp-2.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Reproject all the input file</span>
-<span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>[<span class='fl'>1</span>],
-          <span class='no'>test2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(),<span class='st'>"test2.tif"</span>),
-          <span class='kw'>t_srs</span> <span class='kw'>=</span> <span class='st'>"+init=epsg:32631"</span>)
+<span class='no'>test4</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(<span class='kw'>fileext</span> <span class='kw'>=</span> <span class='st'>"_test4.tif"</span>)
+<span class='fu'>gdal_warp</span>(<span class='no'>ex_sel</span>, <span class='no'>test4</span>, <span class='kw'>t_srs</span> <span class='kw'>=</span> <span class='st'>"+init=epsg:32631"</span>)
 
 <span class='co'># Reproject and clip on a bounding box</span>
-<span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>[<span class='fl'>1</span>],
-          <span class='no'>test3a</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(),<span class='st'>"test3a.tif"</span>),
-          <span class='kw'>mask</span> <span class='kw'>=</span> <span class='fu'>get_extent</span>(<span class='no'>crop_poly</span>),
-          <span class='kw'>t_srs</span> <span class='kw'>=</span> <span class='st'>"+init=epsg:32631"</span>)
+<span class='no'>test5</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(<span class='kw'>fileext</span> <span class='kw'>=</span> <span class='st'>"_test5.tif"</span>)
+<span class='fu'>gdal_warp</span>(<span class='no'>ex_sel</span>, <span class='no'>test5</span>, <span class='kw'>t_srs</span> <span class='kw'>=</span> <span class='st'>"+init=epsg:32631"</span>, <span class='kw'>mask</span> <span class='kw'>=</span> <span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>test1</span>))
+
 <span class='co'># Reproject and clip on polygon (masking outside)</span>
-<span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>[<span class='fl'>1</span>],
-          <span class='no'>test3b</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(),<span class='st'>"test3b.tif"</span>),
-          <span class='kw'>mask</span> <span class='kw'>=</span> <span class='no'>crop_poly</span>,
-          <span class='kw'>t_srs</span> <span class='kw'>=</span> <span class='st'>"+init=epsg:32631"</span>)
-<span class='co'># Workaround to clip on a bounding box without</span>
-<span class='co'># enlarging it too much (cause of the reprojection)</span>
-<span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>[<span class='fl'>1</span>],
-          <span class='no'>test3c</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(),<span class='st'>"test3c.tif"</span>),
-          <span class='kw'>mask</span> <span class='kw'>=</span> <span class='fu'>st_cast</span>(<span class='no'>crop_poly</span>,<span class='st'>"LINESTRING"</span>),
-          <span class='kw'>t_srs</span> <span class='kw'>=</span> <span class='st'>"+init=epsg:32631"</span>)
+<span class='no'>test6</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(<span class='kw'>fileext</span> <span class='kw'>=</span> <span class='st'>"_test6.tif"</span>)
+<span class='fu'>gdal_warp</span>(<span class='no'>ex_sel</span>, <span class='no'>test6</span>, <span class='kw'>t_srs</span> <span class='kw'>=</span> <span class='st'>"+init=epsg:32631"</span>, <span class='kw'>mask</span> <span class='kw'>=</span> <span class='no'>crop_poly</span>)
+
+<span class='co'># Show output</span>
+<span class='no'>crop_line_31N</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_transform.html'>st_transform</a></span>(<span class='no'>crop_line</span>, <span class='fl'>32631</span>)
+<span class='no'>test1_bbox</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_as_sfc.html'>st_as_sfc</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_bbox.html'>st_bbox</a></span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>test1</span>)))
+<span class='no'>test1_bbox_31N</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_transform.html'>st_transform</a></span>(<span class='no'>test1_bbox</span>, <span class='fl'>32631</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='kw'>mfrow</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>4</span>), <span class='kw'>mar</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>,<span class='fl'>4</span>))
+<span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>ex_sel</span>), <span class='kw'>rgb</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>3</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>crop_line</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>test1_bbox</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>border</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>test4</span>), <span class='kw'>rgb</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>3</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>test5</span>), <span class='kw'>rgb</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>3</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>test1_bbox_31N</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>border</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>test6</span>), <span class='kw'>rgb</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>3</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>crop_line_31N</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='img'><img src='gdal_warp-3.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Use a reference raster with a different projection</span>
+<span class='no'>test7</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(<span class='kw'>fileext</span> <span class='kw'>=</span> <span class='st'>"_test7.tif"</span>)
+<span class='fu'>gdal_warp</span>(<span class='no'>ex_sel</span>, <span class='no'>test7</span>, <span class='kw'>ref</span> <span class='kw'>=</span> <span class='no'>test6</span>)
 
 <span class='co'># Use a reference raster with a different projection</span>
-<span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>[<span class='fl'>1</span>],
-          <span class='no'>test4a</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(),<span class='st'>"test4a.tif"</span>),
-          <span class='kw'>ref</span> <span class='kw'>=</span> <span class='no'>test3b</span>)
-<span class='co'># Use a reference raster with a different projection</span>
 <span class='co'># and specify a different bounding box</span>
-<span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>[<span class='fl'>1</span>],
-          <span class='no'>test4b</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(),<span class='st'>"test4b.tif"</span>),
-          <span class='kw'>mask</span> <span class='kw'>=</span> <span class='no'>test0_clip</span>,
-          <span class='kw'>ref</span> <span class='kw'>=</span> <span class='no'>test3b</span>)
+<span class='no'>test8</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(<span class='kw'>fileext</span> <span class='kw'>=</span> <span class='st'>"_test8.tif"</span>)
+<span class='fu'>gdal_warp</span>(<span class='no'>ex_sel</span>, <span class='no'>test8</span>, <span class='kw'>mask</span> <span class='kw'>=</span> <span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>test1</span>), <span class='kw'>ref</span> <span class='kw'>=</span> <span class='no'>test6</span>)
+
 <span class='co'># Use a reference raster with a different projection and a mask</span>
-<span class='fu'>gdal_warp</span>(<span class='no'>srcfiles</span>[<span class='fl'>1</span>],
-          <span class='no'>test4c</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(),<span class='st'>"test4c.tif"</span>),
-          <span class='kw'>mask</span> <span class='kw'>=</span> <span class='no'>crop_poly</span>,
-          <span class='kw'>ref</span> <span class='kw'>=</span> <span class='no'>test3b</span>)
-}</div></pre>
+<span class='no'>test9</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(<span class='kw'>fileext</span> <span class='kw'>=</span> <span class='st'>"_test9.tif"</span>)
+<span class='fu'>gdal_warp</span>(<span class='no'>ex_sel</span>, <span class='no'>test9</span>, <span class='kw'>mask</span> <span class='kw'>=</span> <span class='no'>crop_poly</span>, <span class='kw'>ref</span> <span class='kw'>=</span> <span class='no'>test6</span>)
+
+<span class='co'># Show output</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='kw'>mfrow</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>4</span>), <span class='kw'>mar</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>,<span class='fl'>4</span>))
+<span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>ex_sel</span>), <span class='kw'>rgb</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>3</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>crop_line</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>test7</span>), <span class='kw'>rgb</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>3</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>crop_line_31N</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>test8</span>), <span class='kw'>rgb</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>3</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>test1_bbox_31N</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>border</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>test9</span>), <span class='kw'>rgb</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>3</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>crop_line_31N</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='img'><img src='gdal_warp-4.png' alt='' width='700' height='433' /></div><div class='input'># }
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
       <li><a href="#note">Note</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>

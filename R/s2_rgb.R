@@ -58,6 +58,30 @@
 #' @importFrom parallel makeCluster stopCluster detectCores
 #' @importFrom jsonlite fromJSON
 #' @export
+#' @examples
+#' \donttest{
+#' # Define file names
+#' ex_in <- system.file(
+#'   "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_BOA_10.tif",
+#'   package = "sen2r"
+#' )
+#'
+#' # Run function
+#' ex_out <- s2_rgb(
+#'   infiles = ex_in,
+#'   rgb_bands = list(c(11,8,4),c(9,5,4)),
+#'   scaleRange = list(c(0,7500), matrix(c(rep(0,3),8500,6000,4000),ncol=2)),
+#'   outdir = tempdir(),
+#'   compress = 50
+#' )
+#' ex_out
+#' 
+#' # Show output
+#' par(mfrow = c(1,3), mar = rep(0,4))
+#' image(stars::read_stars(ex_in), rgb = 4:2, maxColorValue = 3500)
+#' image(stars::read_stars(ex_out[1]), rgb = 1:3)
+#' image(stars::read_stars(ex_out[2]), rgb = 1:3)
+#' }
 
 s2_rgb <- function(infiles, 
                    prod_type=NA,
@@ -150,7 +174,7 @@ s2_rgb <- function(infiles,
   #   sapply(file.path(outdir,rgb_prodnames), dir.create, showWarnings=FALSE)
   # }
   
-  if (n_cores > 1) {
+  if (n_cores > 1) { # nocov start
     cl <- makeCluster(
       n_cores, 
       type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
@@ -161,17 +185,17 @@ s2_rgb <- function(infiles,
       date = TRUE,
       "Starting parallel production of RGB images..."
     )
-  }
+  } # nocov end
   
   out_names <- foreach(
     i = seq_along(infiles), 
-    .packages = c("foreach","rgdal","sen2r"), 
+    .packages = c("foreach","sen2r"), 
     .combine=c, 
     .errorhandling="remove"
   ) %DO% {
     
     # redirect to log files
-    if (n_cores > 1) {
+    if (n_cores > 1) { # nocov start
       if (!is.na(.log_output)) {
         sink(.log_output, split = TRUE, type = "output", append = TRUE)
       }
@@ -179,7 +203,7 @@ s2_rgb <- function(infiles,
         logfile_message = file(.log_message, open = "a")
         sink(logfile_message, type="message")
       }
-    }
+    } # nocov end
     
     sel_infile_path <- infiles[i]
     
@@ -290,26 +314,26 @@ s2_rgb <- function(infiles,
     } # end of !sel_prod_type %in% c("BOA","TOA") IF cycle
     
     # stop sinking
-    if (n_cores > 1) {
+    if (n_cores > 1) { # nocov start
       if (!is.na(.log_output)) {
         sink(type = "output")
       }
       if (!is.na(.log_message)) {
         sink(type = "message"); close(logfile_message)
       }
-    }
+    } # nocov end
     
     out_names
     
   } # end of infiles FOREACH cycle
-  if (n_cores > 1) {
+  if (n_cores > 1) { # nocov start
     stopCluster(cl)
     print_message(
       type = "message",
       date = TRUE,
       "Parallel production of RGB images done."
     )
-  }
+  } # nocov end
   
   # Remove temporary files
   if (rmtmp == TRUE) {

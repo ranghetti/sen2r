@@ -89,7 +89,7 @@
 #' @param subdirs (optional) Logical: if TRUE, different indices are
 #'  placed in separated `outfile` subdirectories; if FALSE, they are placed in
 #'  `outfile` directory; if NA (default), subdirectories are created only if
-#'  more than a single spectral index is required.
+#'  more than a single product is required.
 #' @param compress (optional) In the case a GTiff format is
 #'  present, the compression indicated with this parameter is used.
 #' @param parallel (optional) Logical: if TRUE, masking is conducted using parallel
@@ -115,6 +115,33 @@
 #' @import data.table
 #' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
+#' @examples
+#' \donttest{
+#' # Define file names
+#' ex_in <- system.file(
+#'   "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_RGB432B_10.tif",
+#'   package = "sen2r"
+#' )
+#' ex_mask <- system.file(
+#'   "extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_SCL_10.tif",
+#'   package = "sen2r"
+#' )
+#'
+#' # Run function
+#' ex_out <- s2_mask(
+#'   infiles = ex_in,
+#'   maskfiles = ex_mask,
+#'   mask_type = "clear_sky",
+#'   outdir = tempdir()
+#' )
+#' ex_out
+#' 
+#' # Show output
+#' par(mfrow = c(1,3))
+#' par(mar = rep(0,4)); image(stars::read_stars(ex_in), rgb = 1:3)
+#' par(mar = rep(2/3,4)); image(stars::read_stars(ex_mask))
+#' par(mar = rep(0,4)); image(stars::read_stars(ex_out), rgb = 1:3)
+#' }
 
 s2_mask <- function(infiles,
                     maskfiles,
@@ -206,7 +233,7 @@ s2_mask <- function(infiles,
   # Check tmpdir
   # define and create tmpdir
   if (is.na(tmpdir)) {
-    tmpdir <- if (format == "VRT") {
+    tmpdir <- if (all(!is.na(format), format == "VRT")) {
       if (!missing(outdir)) {
         autotmpdir <- FALSE # logical: TRUE if tmpdir should be specified 
         # for each out file (when tmpdir was not specified and output files are vrt),
@@ -223,7 +250,7 @@ s2_mask <- function(infiles,
   } else {
     autotmpdir <- FALSE
   }
-  if (format == "VRT") {
+  if (all(!is.na(format), format == "VRT")) {
     rmtmp <- FALSE # force not to remove intermediate files
   }
   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
@@ -234,6 +261,12 @@ s2_mask <- function(infiles,
   maskfiles_meta_sen2r <- sen2r_getElements(maskfiles, format="data.table")
 
   # create outdir if not existing
+  if (!dir.exists(dirname(outdir))) {
+    print_message(
+      type = "error",
+      "Directory '",dirname(outdir),"' does not exists."
+    )
+  }
   dir.create(outdir, recursive=FALSE, showWarnings=FALSE)
   # create subdirs (if requested)
   prod_types <- unique(infiles_meta_sen2r$prod_type)
@@ -403,37 +436,6 @@ s2_mask <- function(infiles,
         perc_mask <- 100 * (mean_values_naval - mean_values_mask) / mean_values_naval
         if (!is.finite(perc_mask)) {perc_mask <- 100}
         
-        # if the user required to save 0-1 masks, save them
-        if (save_binary_mask == TRUE) {
-          # define out MSK name
-          binmask <- file.path(
-            ifelse(subdirs, file.path(outdir,"MSK"), outdir),
-            gsub(paste0("\\.",infiles_meta_sen2r[i,"file_ext"],"$"),
-                 paste0(".",sel_out_ext),
-                 gsub(paste0("\\_",infiles_meta_sen2r[i,"prod_type"],"\\_"),
-                      "_MSK_",
-                      basename(sel_infile)))
-          )
-          # create subdir if missing
-          if (subdirs & !dir.exists(file.path(outdir,"MSK"))) {
-            dir.create(file.path(outdir,"MSK"))
-          }
-          # mask NA values
-          raster::mask(
-            raster(outmask),
-            raster(outnaval),
-            filename = binmask,
-            maskvalue = 0,
-            updatevalue = sel_naflag,
-            updateNA = TRUE,
-            NAflag = 255,
-            datatype = "INT1U",
-            format = sel_format,
-            options = if(sel_format == "GTiff") {paste0("COMPRESS=",compress)},
-            overwrite = overwrite
-          )
-        }
-        
         # if the requested output is this value, return it; else, continue masking
         if (output_type == "perc") {
           names(perc_mask) <- sel_infile
@@ -461,13 +463,10 @@ s2_mask <- function(infiles,
             }
             
             # the same for outnaval
-            if (
-              any(
-                unlist(sel_infile_meta_raster[c("res.x","res.y")]) !=
-                unlist(raster_metadata(outnaval, "res", format = "list")[[1]]$res)
-              ) & 
-              (smooth > 0 | buffer != 0)
-            ) {
+            if (any(
+              unlist(sel_infile_meta_raster[c("res.x","res.y")]) !=
+              unlist(raster_metadata(outnaval, "res", format = "list")[[1]]$res)
+            )) {
               gdal_warp(
                 outnaval,
                 outnaval_res <- file.path(sel_tmpdir, basename(tempfile(pattern = "naval_", fileext = ".tif"))),
@@ -494,6 +493,39 @@ s2_mask <- function(infiles,
               )
             } else {
               outmask_res
+            }
+            
+            # if the user required to save 0-1 masks, save them
+            if (save_binary_mask == TRUE) {
+              # define out MSK name
+              binmask <- file.path(
+                ifelse(subdirs, file.path(outdir,"MSK"), outdir),
+                gsub(paste0("\\.",infiles_meta_sen2r[i,"file_ext"],"$"),
+                     paste0(".",sel_out_ext),
+                     gsub(paste0("\\_",infiles_meta_sen2r[i,"prod_type"],"\\_"),
+                          "_MSK_",
+                          basename(sel_infile)))
+              )
+              # create subdir if missing
+              if (subdirs & !dir.exists(file.path(outdir,"MSK"))) {
+                dir.create(file.path(outdir,"MSK"))
+              }
+              if (any(!file.exists(binmask), overwrite == TRUE)) {
+                # mask NA values
+                raster::mask(
+                  raster(outmask_smooth),
+                  raster(outnaval_res),
+                  filename = binmask,
+                  maskvalue = 0,
+                  updatevalue = sel_naflag,
+                  updateNA = TRUE,
+                  NAflag = 255,
+                  datatype = "INT1U",
+                  format = sel_format,
+                  options = if(sel_format == "GTiff") {paste0("COMPRESS=",compress)},
+                  overwrite = overwrite
+                )
+              }
             }
             
             # load mask

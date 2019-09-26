@@ -20,8 +20,6 @@ testthat::test_that(
         dir.create(example_dir)
         safe_dir <- file.path(example_dir, "safe")
         dir.create(safe_dir)
-        dir.create(file.path(safe_dir, "L2A"))
-        dir.create(file.path(safe_dir, "L1C"))
         system.time(sen2r(
             gui               = FALSE,
             online            = TRUE,
@@ -32,8 +30,8 @@ testthat::test_that(
             s2tiles_selected  = c("32TNR","32TNS"),
             s2orbits_selected = "022",
             timewindow        = as.Date(c("2017-07-03")),
-            path_l1c          = file.path(safe_dir, "L1C"),
-            path_l2a          = file.path(safe_dir, "L2A"), 
+            path_l1c          = safe_dir,
+            path_l2a          = safe_dir,
             downloader        = "aria2"
         ))
         
@@ -50,8 +48,8 @@ testthat::test_that(
             s2tiles_selected  = c("32TNR","32TNS"),
             s2orbits_selected = "022",
             timewindow        = as.Date(c("2016-09-29","2016-10-06")),
-            path_l1c          = file.path(safe_dir, "L1C"),
-            path_l2a          = file.path(safe_dir, "L2A"),
+            path_l1c          = safe_dir,
+            path_l2a          = safe_dir,
             downloader = "aria2"
         ))
         
@@ -66,8 +64,8 @@ testthat::test_that(
             s2tiles_selected  = c("32TNR","32TNS"),
             s2orbits_selected = "022",
             timewindow        = as.Date(c("2016-09-29","2016-10-06")),
-            path_l1c          = file.path(safe_dir, "L1C"),
-            path_l2a          = file.path(safe_dir, "L2A")
+            path_l1c          = safe_dir,
+            path_l2a          = safe_dir
         ))
         
         ### Test 4: translate and merge
@@ -83,8 +81,8 @@ testthat::test_that(
             timewindow = as.Date("2017-07-03"),
             list_prods = "SCL",
             mask_type = NA,
-            path_l1c = file.path(safe_dir, "L1C"),
-            path_l2a = file.path(safe_dir, "L2A"),
+            path_l1c = safe_dir,
+            path_l2a = safe_dir,
             path_out = out_dir
         )) 
         

@@ -57,13 +57,10 @@ file, and to edit them from inside the GUI.
 License: GPL 3.0
 }
 \examples{
-\dontrun{
-if (interactive()) {
   check_scihub_login("user", "user")
   write_scihub_login("user", "user")
   read_scihub_login()
-}
-}
+  check_scihub_connection()
 }
 \author{
 Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}

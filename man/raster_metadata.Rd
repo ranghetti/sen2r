@@ -26,11 +26,12 @@ a vector of raster paths.
 License: GPL 3.0
 }
 \examples{
-\dontrun{
 # Define product names
 examplenames <- c(
   system.file("tif/L7_ETMs.tif", package="stars"),
-  system.file("nc/bcsd_obs_1999.nc", package = "stars")
+  system.file("nc/bcsd_obs_1999.nc", package = "stars"),
+  system.file("extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_BOA_10.tif", 
+    package = "sen2r")
 )
 
 # Return metadata as data.table
@@ -45,7 +46,6 @@ raster_metadata(examplenames, c("res", "unit"))
 # Output with an invalid raster
 examplenames <- c(examplenames, system.file("extdata/gdal_formats.json", package="sen2r"))
 raster_metadata(examplenames)
-}
 }
 \author{
 Luigi Ranghetti, phD (2019) \email{ranghetti.l@irea.cnr.it}

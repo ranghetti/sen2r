@@ -1,6 +1,6 @@
-#' @title Retrieve list of available products.
+#' @title Retrieve list of available S2 products.
 #' @description The function retrieves the list of available Sentinel-2
-#'  products basing on search criteria.
+#'  products satisfying given search criteria. 
 #' @param spatial_extent A valid spatial object object of class `sf`,
 #'  `sfc` or `sfg`
 #' @param tile  `string array` Sentinel-2 Tiles to be considered string (5-length character)
@@ -28,11 +28,13 @@
 #' @param output_type Character: if 'vector' (default), the function returns
 #'  a vector or URLs, whose names are the SAFE names;
 #'  if 'data.table', the output is a data.table with metadata.
-#' @return Basing on the value of argument `output_type``,
+#' @return Depending on the value of argument `output_type``,
 #'  a vector of available products (being each element an URL
 #'  and its name the product name), or a data.table with product metadata.
 #'
-#' @author Lorenzo Busetto, phD (2019) \email{lbusett@@gmail.com}
+#' @author Lorenzo Busetto, phD (2019) \email{lbusett@@gmail.com} - Inspired by 
+#'  function `getSentinel_query` of package `getSpatialData` by J. Schwalb-Willmann
+#'  (https://github.com/16EAGLE/getSpatialData)
 #' @author Luigi Ranghetti, phD (2019) \email{ranghetti.l@@irea.cnr.it}
 #' @note License: GPL 3.0
 #' @import data.table
@@ -46,7 +48,8 @@
 #' @importFrom utils head read.table
 #' @export
 #'
-#' @examples \dontrun{
+#' @examples
+#' \donttest{
 #' pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
 #' time_window <- as.Date(c("2016-05-01", "2017-07-30"))
 #'

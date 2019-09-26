@@ -64,7 +64,7 @@ s2_gui <- function(param_list = NULL,
   
   # shiny
   s2_gui.ui <- dashboardPage(
-    title = "sen2r: an R toolbox to find, download and preprocess Sentinel-2 data",
+    title = "sen2r: Find, Download and Process Sentinel-2 Data",
     header = dashboardHeader(),
     sidebar = dashboardSidebar(
       
@@ -2541,27 +2541,6 @@ s2_gui <- function(param_list = NULL,
     
     
     ## Path module ##
-    
-    # accessory functions to check that the new directory exists and is writable
-    path_check <- function(path) {
-      if (length(path)>0 & path[1]!="") {
-        if (!dir.exists(path)) {
-          return(renderUI(span(style="color:red",
-                               "\u2718 (the directory does not exist)")))
-        } else if (file.access(path, mode=2)<0) {
-          return(renderUI(span(style="color:red",
-                               "\u2718 (the directory is not writable)")))
-        } else {
-          return(renderUI(span(style="color:darkgreen",
-                               "\u2714")))
-        }
-        #
-      } else {
-        return(renderText(""))
-      }
-    }
-    
-    
     shinyDirChoose(input, "path_l1c_sel", roots = volumes)
     shinyDirChoose(input, "path_l2a_sel", roots = volumes)
     shinyDirChoose(input, "path_tiles_sel", roots = volumes)
@@ -3686,7 +3665,7 @@ s2_gui <- function(param_list = NULL,
     observeEvent(input$return_param, {
       if (
         if (any(length(nn(rv$apihub_path)) == 0, anyNA(rv$apihub_path))) {
-          !file.exists(file.path(system.file("extdata", package="sen2r"), "apihub.txt"))
+          !file.exists(file.path(dirname(attr(load_binpaths(), "path")), "apihub.txt"))
         } else {
           !file.exists(rv$apihub_path)
         }

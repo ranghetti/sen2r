@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Changelog • An R toolbox to find, download an preprocess Sentinel-2 data</title>
+<title>Changelog • sen2r: Find, Download and Process Sentinel-2 Data</title>
 
 
 <!-- jquery -->
@@ -76,7 +76,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">An R toolbox to find, download an preprocess Sentinel-2 data</a>
+        <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
@@ -135,6 +135,8 @@
 <ul>
 <li>
 <code><a href="../reference/s2_list.html">s2_list()</a></code> and <code><a href="../reference/s2_download.html">s2_download()</a></code> now use internal methods instead of calling python function derived from s2download scripts by Hagolle (this substantially improve the speed of SAFE search), which were removed.</li>
+<li>
+<strong><code>sen2r</code></strong> is now supported also on MacOS.</li>
 </ul>
 </div>
 <div id="newremoved-dependencies" class="section level2">
@@ -142,7 +144,7 @@
 <a href="#newremoved-dependencies" class="anchor"></a>New/removed dependencies</h2>
 <ul>
 <li>Remove <strong><code>sp</code></strong> and <strong><code>rgdal</code></strong> from explicit dependencies.</li>
-<li>Remove <strong><code>stringr</code></strong> dependency.</li>
+<li>Remove <strong><code>stringr</code></strong> and <strong><code>gdalUtils</code></strong> dependencies.</li>
 <li>Add <strong><code>stars</code></strong> dependency.</li>
 </ul>
 </div>
@@ -166,6 +168,7 @@
 <ul>
 <li>Packages stability was improved by adding test functions, working with <strong><code>testthat</code></strong>.</li>
 <li>S2 tiles are not provided as kmz within the package, but a rds file is downloaded after installing the package (in this way, package installation is lighter, and S2 tiles are read faster).</li>
+<li>Function <code><a href="../reference/check_gdal.html">check_gdal()</a></code> was rewritten without using <strong><code>gdalUtils</code></strong>, in order to be simpler and faster.</li>
 <li>Some new indices were added:
 <ul>
 <li>NDWI-NDWI2 (<a href='https://github.com/ranghetti/sen2r/issues/184'>#184</a>);</li>
@@ -208,7 +211,7 @@
 <a href="#new-dependencies" class="anchor"></a>New dependencies</h2>
 <ul>
 <li>
-<code>httr</code>: a change in wget available version for Windows (1.20.3 instead than 1.19.4) caused the old link to break; moreover, downloading wget using the new link was not possible with <code><a href="https://rdrr.io/r/utils/download.file.html">download.file()</a></code> due to a redirect. So, httr dependency was introduced, and downlod of wget, aria2 and sen2cor is now performed with GET function.</li>
+<code>httr</code>: a change in Wget available version for Windows (1.20.3 instead than 1.19.4) caused the old link to break; moreover, downloading Wget using the new link was not possible with <code><a href="https://rdrr.io/r/utils/download.file.html">download.file()</a></code> due to a redirect. So, httr dependency was introduced, and download of Wget, aria2 and sen2cor is now performed with GET function.</li>
 <li>
 <code>dplyr</code>: the internal function <code><a href="../reference/tiles_intersects.html">tiles_intersects()</a></code> now perform dissolve operations over polygons of S2 tiles using <code>dplyr</code> commands (<code>group_by()</code> and <code>summarise()</code>).</li>
 </ul>
@@ -361,7 +364,7 @@
 <li>
 <strong>Important fix</strong>: fix indices computation (before that, indices with additive values were wrongly generated).</li>
 <li>Avoid errors when a SAFE directory exists but not in the right format</li>
-<li>Fix the fiddly error which caused several blocks when startig <code><a href="../reference/s2_merge.html">s2_merge()</a></code> or <code><a href="../reference/s2_calcindices.html">s2_calcindices()</a></code>
+<li>Fix the fiddly error which caused several blocks when starting <code><a href="../reference/s2_merge.html">s2_merge()</a></code> or <code><a href="../reference/s2_calcindices.html">s2_calcindices()</a></code>
 </li>
 <li>Fix searching oldname products with “auto” corr_type</li>
 <li>Fix loading a custom mask from json parameter file</li>
@@ -424,7 +427,7 @@
 <h3 class="hasAnchor">
 <a href="#gui-changes-1" class="anchor"></a>GUI changes</h3>
 <ul>
-<li><p>Major GUI improvements in the definition of the extent: now the main map is used only to show the extent and the tiles, while the definition of the extent (drawn, specified with a bounding box or taken from a loaded polygon) is donee in separate maps (this allows to avoid many errors).</p></li>
+<li><p>Major GUI improvements in the definition of the extent: now the main map is used only to show the extent and the tiles, while the definition of the extent (drawn, specified with a bounding box or taken from a loaded polygon) is done in separate maps (this allows to avoid many errors).</p></li>
 <li><p>Add radiobutton for index datatype, to choose the datatype when an index is generated.</p></li>
 <li><p>Add maximum cloud cover threshold.</p></li>
 <li><p>Implement seasonal time period (<a href='https://github.com/ranghetti/sen2r/issues/74'>#74</a>).</p></li>
@@ -449,12 +452,12 @@
 <h3 class="hasAnchor">
 <a href="#addition-to-existing-functions" class="anchor"></a>Addition to existing functions</h3>
 <ul>
-<li><p>Improvement in integer / byte data types for generation of indices: Int16 is now the default data type; chosing an integer data type the output values are clipped on the valid format range, and the scaling factor can be chosen by the user; chosing Byte, interval -1 to 1 is coherced to 0-200 (with nodata=255).</p></li>
+<li><p>Improvement in integer / byte data types for generation of indices: Int16 is now the default data type; choosing an integer data type the output values are clipped on the valid format range, and the scaling factor can be chosen by the user; chosing Byte, interval -1 to 1 is coerced to 0-200 (with nodata=255).</p></li>
 <li><p>Use standard nodata values to compute indices.</p></li>
 <li><p>Return the list of created files after processing.</p></li>
 <li><p>Accept custom mask combinations: now it is possible to define masks with a custom combination of SCL classes to be masked.</p></li>
 <li><p>Allow argument “timewindow” in <code><a href="../reference/sen2r.html">sen2r()</a></code> to be a single integer value, which is interpreted as the period between today and <em>n</em> days ago.</p></li>
-<li><p>Uniform temporary directories (<a href='https://github.com/ranghetti/sen2r/issues/73'>#73</a>). Now the principal functions have the parameters tmpdir and rmtmp to set the temporary directory and the choice to delete /not to delete temporary files. Only two exceptions: create_indices_db() uses a fixed temporary directory (since it is a function intended not to be run by endusers); sen2cor() launched from sen2r() uses a default temporary directory if tempdir is in a SAMBA mountpoint over Windows.</p></li>
+<li><p>Uniform temporary directories (<a href='https://github.com/ranghetti/sen2r/issues/73'>#73</a>). Now the principal functions have the parameters tmpdir and rmtmp to set the temporary directory and the choice to delete /not to delete temporary files. Only two exceptions: create_indices_db() uses a fixed temporary directory (since it is a function intended not to be run by end users); sen2cor() launched from sen2r() uses a default temporary directory if tempdir is in a SAMBA mountpoint over Windows.</p></li>
 </ul>
 </div>
 <div id="other-changes-1" class="section level3">
@@ -474,7 +477,7 @@
 <ul>
 <li><p>Avoid blurs and artifices in thumbnails. stack2rgb() now works with GDAL routines; gdalwarp is used instead than gdal_translate for reducing the size of input images (to avoid averaging NA values, which produced blurs on borders of BOA thumbnails); intermediate GTiff files are used to bypass the presence of artifices in SCL PNG thumbnails and to produce JPEG multiband TOA/BOA thumbnails.</p></li>
 <li><p>Load python modules correctly. Now on Windows all the modules are imported using import_from_path() in init_python(), which is called anywhere modules are needed.</p></li>
-<li><p>Fix unrecognised osgeo in Windows. When running gdal_calc in Windows with multiple Python installlations, the wrong one (i.e. Anaconda) is used, and “no module names osgeo” error is returned.</p></li>
+<li><p>Fix unrecognised osgeo in Windows. When running gdal_calc in Windows with multiple Python installations, the wrong one (i.e. Anaconda) is used, and “no module names osgeo” error is returned.</p></li>
 <li><p>Other minor fixes.</p></li>
 </ul>
 </div>
@@ -496,7 +499,7 @@
 <li>Add “tiles” argument to consider only specified tiles</li>
 <li>Add the possibility to download products over Windows (<a href='https://github.com/ranghetti/sen2r/issues/49'>#49</a>)</li>
 <li>Add extent_name in the GUI (<a href='https://github.com/ranghetti/sen2r/issues/58'>#58</a>)</li>
-<li>Add automatic installation of wget on Windows</li>
+<li>Add automatic installation of Wget on Windows</li>
 <li>Add support for TCI thumbnail</li>
 </ul>
 <p>Some fixes:</p>
@@ -517,7 +520,7 @@
     <div id="version-0-3-0" class="section level1">
 <h1 class="page-header">
 <a href="#version-0-3-0" class="anchor"></a>Version 0.3.0</h1>
-<p>This version allows to perform all basic operations with Sentinel-2 data: finding and downloading the required tiles (on Linux), correcting them with sen2cor, processing them (merging adiacent tiles, clipping, reprojecting, rescaling, applying atmospheric mask) to create output multiband files (in a format managed by GDAL) and spectral indices.</p>
+<p>This version allows to perform all basic operations with Sentinel-2 data: finding and downloading the required tiles (on Linux), correcting them with sen2cor, processing them (merging adjacent tiles, clipping, reprojecting, rescaling, applying atmospheric mask) to create output multiband files (in a format managed by GDAL) and spectral indices.</p>
 <p>The version follows the issued scheduled for <a href="https://github.com/ranghetti/sen2r/milestone/1">milestone 0.3.0</a>; future improvements with Sentinel-2 data are scheduled for <a href="https://github.com/ranghetti/sen2r/milestone/3">release 0.4.0</a>.</p>
 </div>
     <div id="version-0-2-0" class="section level1">

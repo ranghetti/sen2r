@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Load the paths of external executables — load_binpaths • An R toolbox to find, download an preprocess Sentinel-2 data</title>
+<title>Load the paths of external executables — load_binpaths • sen2r: Find, Download and Process Sentinel-2 Data</title>
 
 
 <!-- jquery -->
@@ -79,7 +79,7 @@ from the JSON where they are saved when installed." />
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">An R toolbox to find, download an preprocess Sentinel-2 data</a>
+        <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
@@ -133,7 +133,7 @@ from the JSON where they are saved when installed.</p>
       <td><p>Character vector with one of more of the following values:
 "gdal", sen2cor", "aria2", "python".
 If an executable corresponding to the passed <code>bins</code> value is not found
-in the JSON, it is installed (Windows) or checked (Linux).</p></td>
+in the JSON, it is checked (when possible).</p></td>
     </tr>
     </table>
 
@@ -145,13 +145,52 @@ in the JSON, it is installed (Windows) or checked (Linux).</p></td>
     <p>License: GPL 3.0</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
 <span class='co'># Load only existing paths</span>
 <span class='no'>binpaths</span> <span class='kw'>&lt;-</span> <span class='fu'>load_binpaths</span>()
+<span class='no'>binpaths</span></div><div class='output co'>#&gt; $gdalinfo
+#&gt; [1] "/usr/bin/gdalinfo"
+#&gt; 
+#&gt; $ogrinfo
+#&gt; [1] "/usr/bin/ogrinfo"
+#&gt; 
+#&gt; $gdal_translate
+#&gt; [1] "/usr/bin/gdal_translate"
+#&gt; 
+#&gt; $gdalwarp
+#&gt; [1] "/usr/bin/gdalwarp"
+#&gt; 
+#&gt; $gdalbuildvrt
+#&gt; [1] "/usr/bin/gdalbuildvrt"
+#&gt; 
+#&gt; $gdaldem
+#&gt; [1] "/usr/bin/gdaldem"
+#&gt; 
+#&gt; $gdal_calc
+#&gt; [1] "/usr/bin/gdal_calc.py"
+#&gt; 
+#&gt; $gdal_polygonize
+#&gt; [1] "/usr/bin/gdal_polygonize.py"
+#&gt; 
+#&gt; $gdal_fillnodata
+#&gt; [1] "/usr/bin/gdal_fillnodata.py"
+#&gt; 
+#&gt; $python
+#&gt; [1] "/usr/bin/python2.7"
+#&gt; 
+#&gt; $aria2c
+#&gt; [1] "/usr/bin/aria2c"
+#&gt; 
+#&gt; $sen2cor
+#&gt; [1] "/home/lranghetti/sen2cor/sen2cor_280/bin/L2A_Process"
+#&gt; 
+#&gt; attr(,"path")
+#&gt; [1] "~/.sen2r/paths.json"</div><div class='input'><span class='co'># }</span>
 
+<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='co'># Load paths, forcing to check GDAL and sen2cor</span>
 <span class='no'>binpaths</span> <span class='kw'>&lt;-</span> <span class='fu'>load_binpaths</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"gdal"</span>, <span class='st'>"sen2cor"</span>))
+<span class='no'>binpaths</span>
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

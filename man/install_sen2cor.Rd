@@ -4,17 +4,19 @@
 \alias{install_sen2cor}
 \title{Download and install Sen2Cor.}
 \usage{
-install_sen2cor(sen2cor_dir = NA, version = "2.8.0", force = FALSE)
+install_sen2cor(sen2cor_dir, version = "2.8.0", force = FALSE)
 }
 \arguments{
-\item{sen2cor_dir}{(optional) Path where sen2cor will be installed
-(default: a subdirectory of the package path).}
+\item{sen2cor_dir}{Path where sen2cor will be installed.}
 
 \item{version}{(optional) Character: Sen2Cor version (one among
 '2.8.0' - default - and '2.5.5').}
 
 \item{force}{(optional) Logical: if TRUE, install even if it is already
 installed (default is FALSE).}
+}
+\value{
+NULL (the function is called for its side effects)
 }
 \description{
 This function download and install standalone version of

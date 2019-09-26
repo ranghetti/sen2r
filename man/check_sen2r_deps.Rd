@@ -6,6 +6,9 @@
 \usage{
 check_sen2r_deps()
 }
+\value{
+NULL (the function is called for its side effects)
+}
 \description{
 The function allows to graphically check that all the
 dependencies are installed.
@@ -26,9 +29,8 @@ the fist time, in order to avoid errors.
 License: GPL 3.0
 }
 \examples{
-\dontrun{
-
-check_sen2r_deps()
+if (interactive()) {
+  check_sen2r_deps()
 }
 }
 \author{

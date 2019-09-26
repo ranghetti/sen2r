@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>List spectral indices — list_indices • An R toolbox to find, download an preprocess Sentinel-2 data</title>
+<title>List spectral indices — list_indices • sen2r: Find, Download and Process Sentinel-2 Data</title>
 
 
 <!-- jquery -->
@@ -79,7 +79,7 @@ computable with the package." />
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">An R toolbox to find, download an preprocess Sentinel-2 data</a>
+        <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
@@ -168,16 +168,142 @@ create the indices archive.</p></li>
     <p>License: GPL 3.0</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='co'># Show index names</span>
-<span class='fu'>list_indices</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"name"</span>,<span class='st'>"longname"</span>))
-
+    <pre class="examples"><div class='input'><span class='co'># Show index names</span>
+<span class='fu'>list_indices</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"name"</span>,<span class='st'>"longname"</span>))</div><div class='output co'>#&gt;            name
+#&gt; 4           ARI
+#&gt; 6          ARVI
+#&gt; 14  Chlred-edge
+#&gt; 26          EVI
+#&gt; 34        GNDVI
+#&gt; 43  MCARI-MTVI2
+#&gt; 51        MCARI
+#&gt; 53       MCARI2
+#&gt; 58       MSAVI2
+#&gt; 61        MTVI2
+#&gt; 78         NDII
+#&gt; 88        BNDVI
+#&gt; 90         NDVI
+#&gt; 91         NDRE
+#&gt; 92          NBR
+#&gt; 96        OSAVI
+#&gt; 108         MSI
+#&gt; 133      PSSRb1
+#&gt; 181        SAVI
+#&gt; 186       SIPI1
+#&gt; 195 TCARI-OSAVI
+#&gt; 196       TCARI
+#&gt; 199       TCIdx
+#&gt; 205        NDFI
+#&gt; 206       NDFI2
+#&gt; 207        NDSI
+#&gt; 208        NBR2
+#&gt; 209       MIRBI
+#&gt; 210         CSI
+#&gt; 211       CRred
+#&gt; 215       BDred
+#&gt; 223        NDWI
+#&gt; 224       NDWI2
+#&gt;                                                                                         longname
+#&gt; 4                                                                  Anthocyanin reflectance index
+#&gt; 6                                                     Atmospherically Resistant Vegetation Index
+#&gt; 14                                                                          Chlorophyll Red-Edge
+#&gt; 26                                                                     Enhanced Vegetation Index
+#&gt; 34                                                  Green Normalized Difference Vegetation Index
+#&gt; 43                                                                                   MCARI/MTVI2
+#&gt; 51                                          Modified Chlorophyll Absorption in Reflectance Index
+#&gt; 53                                        Modified Chlorophyll Absorption in Reflectance Index 2
+#&gt; 58                                                       Modified Soil Adjusted Vegetation Index
+#&gt; 61                                                        Modified Triangular Vegetation Index 2
+#&gt; 78                                                           Normalized Difference 819/1600 NDII
+#&gt; 88                    Normalized Difference NIR/Blue Blue-normalized difference vegetation index
+#&gt; 90  Normalized Difference NIR/Red Normalized Difference Vegetation Index, Calibrated NDVI - CDVI
+#&gt; 91                              Normalized Difference NIR/Rededge Normalized Difference Red-Edge
+#&gt; 92                                          Normalized Difference NIR/SWIR Normalized Burn Ratio
+#&gt; 96                                                      Optimized Soil Adjusted Vegetation Index
+#&gt; 108                                                  Simple Ratio 1600/820 Moisture Stress Index
+#&gt; 133                                        Simple Ratio 800/650 Pigment specific simple ratio B1
+#&gt; 181                                                               Soil Adjusted Vegetation Index
+#&gt; 186                                                          Structure Intensive Pigment Index 1
+#&gt; 195                                                                                  TCARI/OSAVI
+#&gt; 196                                                     Transformed Chlorophyll Absorbtion Ratio
+#&gt; 199                                                                 Triangular chlorophyll index
+#&gt; 205                                                       Normalized Difference Flood Index B1B7
+#&gt; 206                                                       Normalized Difference Flood Index B1B6
+#&gt; 207                                                              Normalize Difference Snow Index
+#&gt; 208                                                                      Normalized Burn Ratio 2
+#&gt; 209                                                                      Mid-Infrared Burn Index
+#&gt; 210                                                                              Char Soil Index
+#&gt; 211                                                                 Continuum Removal in the red
+#&gt; 215                                                                        Band Depth in the red
+#&gt; 223                                                            Normalized Difference Water Index
+#&gt; 224                                                          Normalized Difference Water Index 2</div><div class='input'>
 <span class='co'># Return the MSAVI2 formula</span>
-<span class='fu'>list_indices</span>(<span class='st'>"s2_formula"</span>, <span class='st'>"^MSAVI2$"</span>)
-
+<span class='fu'>list_indices</span>(<span class='st'>"s2_formula"</span>, <span class='st'>"^MSAVI2$"</span>)</div><div class='output co'>#&gt; [1] "(2*band_8+1-sqrt(power((2*band_8+1),2)-8*(band_8-band_4)))/(2)"
+#&gt; attr(,"pkg_version")
+#&gt; [1] ‘1.1.0’
+#&gt; attr(,"creation_date")
+#&gt; [1] "2019-09-02 12:18:15 CEST"</div><div class='input'>
 <span class='co'># Return all index names (including unchecked)</span>
-<span class='fu'>list_indices</span>(<span class='st'>"name"</span>, <span class='kw'>all</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-}</div></pre>
+<span class='fu'>list_indices</span>(<span class='st'>"name"</span>, <span class='kw'>all</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;   [1] "ATSAVI"        "AFRI1600"      "AFRI2100"      "ARI"          
+#&gt;   [5] "AVI"           "ARVI"          "ARVI2"         "BWDRVI"       
+#&gt;   [9] "BRI"           "CARI"          "Chlgreen"      "CIgreen"      
+#&gt;  [13] "CIrededge"     "Chlred-edge"   "CVI"           "CI"           
+#&gt;  [17] "Datt1"         "Datt4"         "Datt6"         "D678-500"     
+#&gt;  [21] "D800-550"      "D800-680"      "D833-658"      "GDVI"         
+#&gt;  [25] "DVIMSS"        "EVI"           "EVI2"          "EPI"          
+#&gt;  [29] "Fe2+"          "Fe3+"          "GVMI"          "GARI"         
+#&gt;  [33] "GLI"           "GNDVI"         "GOSAVI"        "GSAVI"        
+#&gt;  [37] "GBNDVI"        "GRNDVI"        "IVI"           "IPVI"         
+#&gt;  [41] "I"             "LCI"           "MCARI-MTVI2"   "MCARI-OSAVI"  
+#&gt;  [45] "MVI"           "MGVI"          "MNSI"          "MSBI"         
+#&gt;  [49] "MYVI"          "mND680"        "MCARI"         "MCARI1"       
+#&gt;  [53] "MCARI2"        "mNDVI"         "mSR"           "MSR670"       
+#&gt;  [57] "MSRNir-Red"    "MSAVI2"        "MSAVIhyper"    "MTVI1"        
+#&gt;  [61] "MTVI2"         "Norm G"        "Norm NIR"      "Norm R"       
+#&gt;  [65] "PPR"           "PVR"           "ND774-677"     "GNDVIhyper"   
+#&gt;  [69] "ND782-666"     "ND790-670"     "ND800-2170"    "PSNDc2"       
+#&gt;  [73] "PSNDc1"        "GNDVIhyper2"   "PSNDb1"        "PSNDa1"       
+#&gt;  [77] "ND800-680"     "NDII"          "NDII2"         "NDMI"         
+#&gt;  [81] "ND827-668"     "ND833-1649"    "ND833-658"     "SIWSI"        
+#&gt;  [85] "ND895-675"     "NGRDI"         "NDVI2"         "BNDVI"        
+#&gt;  [89] "MNDVI"         "NDVI"          "NDRE"          "NBR"          
+#&gt;  [93] "RI"            "NDSaI"         "NDVI690-710"   "OSAVI"        
+#&gt;  [97] "PNDVI"         "PVI"           "Rededge1"      "Rededge2"     
+#&gt; [101] "RBNDVI"        "REP"           "Rre"           "RDVI"         
+#&gt; [105] "SAVImir"       "IF"            "MSI2"          "MSI"          
+#&gt; [109] "TM5-TM7"       "SR440-740"     "BGI"           "SR520-670"    
+#&gt; [113] "SR550-670"     "DSWI-4"        "SR550-800"     "GI"           
+#&gt; [117] "SR560-658"     "SR672-550"     "SR672-708"     "SR674-553"    
+#&gt; [121] "SR675-555"     "SR675-700"     "SR675-705"     "SR700"        
+#&gt; [125] "SR700-670"     "SR710-670"     "SR735-710"     "SR774-677"    
+#&gt; [129] "SR800-2170"    "PSSRc2"        "PSSRc1"        "SR800-550"    
+#&gt; [133] "PSSRb1"        "RVI"           "PSSRa1"        "SR800-680"    
+#&gt; [137] "SR801-550"     "SR801-670"     "PBI"           "SR833-1649"   
+#&gt; [141] "SR833-658"     "Datt2"         "SR860-550"     "SR860-708"    
+#&gt; [145] "RDI"           "SRMIR-Red"     "SRNir-700-715" "GRVI"         
+#&gt; [149] "SRNIR-MIR"     "DVI"           "RRI1"          "IO"           
+#&gt; [153] "RGR"           "SRRed-NIR"     "SB1580"        "SB2100"       
+#&gt; [157] "SB2130"        "SB2180"        "SB2218"        "SB2240"       
+#&gt; [161] "SB2250"        "SB2270"        "SB2280"        "SB460"        
+#&gt; [165] "BB3"           "SR495"         "SB550"         "SB555"        
+#&gt; [169] "SB655"         "SB660"         "SB670"         "SB675"        
+#&gt; [173] "BB1"           "SB700"         "SB703"         "SB705"        
+#&gt; [177] "SB735"         "SB801"         "SB850"         "SB885"        
+#&gt; [181] "SAVI"          "SBL"           "SAVI2"         "SLAVI"        
+#&gt; [185] "SQRT(IR-R)"    "SIPI1"         "SIPI3"         "SBI"          
+#&gt; [189] "GVIMSS"        "NSIMSS"        "SBIMSS"        "GVI"          
+#&gt; [193] "WET"           "YVIMSS"        "TCARI-OSAVI"   "TCARI"        
+#&gt; [197] "TSAVI"         "TSAVI2"        "TCIdx"         "VI700"        
+#&gt; [201] "VARIgreen"     "VARIrededge"   "WDVI"          "WDRVI"        
+#&gt; [205] "NDFI"          "NDFI2"         "NDSI"          "NBR2"         
+#&gt; [209] "MIRBI"         "CSI"           "CRred"         "CRred-2A"     
+#&gt; [213] "CRred-2B"      "CRred-0"       "BDred"         "BDred-2A"     
+#&gt; [217] "BDred-2B"      "BDred-0"       "CRred2"        "CRred2-2A"    
+#&gt; [221] "CRred2-2B"     "CRred2-0"      "NDWI"          "NDWI2"        
+#&gt; attr(,"pkg_version")
+#&gt; [1] ‘1.1.0’
+#&gt; attr(,"creation_date")
+#&gt; [1] "2019-09-02 12:18:15 CEST"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

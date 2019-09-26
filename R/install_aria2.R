@@ -1,8 +1,7 @@
 #' @title Download and install aria2.
 #' @description This function download and install standalone version of
 #'  [aria2](https://aria2.github.io) for Windows.
-#' @param aria2_dir (optional) Path where aria2 executable will be installed
-#'  (default: the package path).
+#' @param aria2_dir Path where aria2 executable will be installed.
 #' @param force (optional) Logical: if TRUE, install even if it is already 
 #'  installed (default is FALSE).
 #' @return The path of aria2
@@ -11,12 +10,13 @@
 #' @note License: GPL 3.0
 #' @importFrom httr GET write_disk
 #' @export
-#' @examples \dontrun{
+#' @examples
+#' \dontrun{
+#' # Run only on Windows
 #' install_aria2()
 #' }
 
-install_aria2 <- function(aria2_dir = system.file(package="sen2r"), 
-                          force = FALSE) {
+install_aria2 <- function(aria2_dir, force = FALSE) {
   
   # define the versions to download (for Windows)
   aria2_ver <- package_version("1.34.0")

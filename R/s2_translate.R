@@ -51,7 +51,8 @@
 #' @note License: GPL 3.0
 #' @importFrom jsonlite fromJSON
 #' @export
-#' @examples \dontrun{
+#' @examples
+#' \dontrun{
 #' s2_l1c_example <- file.path(
 #'   "/existing/path",
 #'   "S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE")
@@ -205,7 +206,7 @@ s2_translate <- function(infile,
     
     # define and create tmpdir
     if (is.na(tmpdir)) {
-      tmpdir <- if (format == "VRT") {
+      tmpdir <- if (all(!is.na(format), format == "VRT")) {
         rmtmp <- FALSE # force not to remove intermediate files
         if (!missing(outdir)) {
           file.path(outdir, ".vrt")

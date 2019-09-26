@@ -2,7 +2,7 @@
 % Please edit documentation in R/s2_list.R
 \name{s2_list}
 \alias{s2_list}
-\title{Retrieve list of available products.}
+\title{Retrieve list of available S2 products.}
 \usage{
 s2_list(spatial_extent = NULL, tile = NULL, orbit = NULL,
   time_interval = c(Sys.Date() - 10, Sys.Date()), time_period = "full",
@@ -49,19 +49,19 @@ a vector or URLs, whose names are the SAFE names;
 if 'data.table', the output is a data.table with metadata.}
 }
 \value{
-Basing on the value of argument `output_type``,
+Depending on the value of argument `output_type``,
 a vector of available products (being each element an URL
 and its name the product name), or a data.table with product metadata.
 }
 \description{
 The function retrieves the list of available Sentinel-2
-products basing on search criteria.
+products satisfying given search criteria.
 }
 \note{
 License: GPL 3.0
 }
 \examples{
-\dontrun{
+\donttest{
 pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
 time_window <- as.Date(c("2016-05-01", "2017-07-30"))
 
@@ -93,7 +93,9 @@ as.vector(sort(sapply(names(example_s2_list), function(x) {
 }
 }
 \author{
-Lorenzo Busetto, phD (2019) \email{lbusett@gmail.com}
+Lorenzo Busetto, phD (2019) \email{lbusett@gmail.com} - Inspired by
+function \code{getSentinel_query} of package \code{getSpatialData} by J. Schwalb-Willmann
+(https://github.com/16EAGLE/getSpatialData)
 
 Luigi Ranghetti, phD (2019) \email{ranghetti.l@irea.cnr.it}
 }

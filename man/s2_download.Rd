@@ -27,6 +27,9 @@ where the files should be created (default: current directory).}
 \item{overwrite}{Logical value: should existing output archives be
 overwritten? (default: FALSE)}
 }
+\value{
+NULL (the function is called for its side effects)
+}
 \description{
 The function downloads a single S2 product.
 Input filename must be an element obtained with

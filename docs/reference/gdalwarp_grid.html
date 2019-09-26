@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Warp basing on the grid of another file — gdalwarp_grid • An R toolbox to find, download an preprocess Sentinel-2 data</title>
+<title>Warp basing on the grid of another file — gdalwarp_grid • sen2r: Find, Download and Process Sentinel-2 Data</title>
 
 
 <!-- jquery -->
@@ -36,7 +36,7 @@
 
 
 <meta property="og:title" content="Warp basing on the grid of another file — gdalwarp_grid" />
-<meta property="og:description" content="The function apply gdalwarp to build rasters with the
+<meta property="og:description" content="The function apply `gdalwarp`` to build rasters with the
 same projection, resolution and grid alignment of another raster.
 If not specified, the output format of each file is the same of the
 corresponding source file." />
@@ -81,7 +81,7 @@ corresponding source file." />
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">An R toolbox to find, download an preprocess Sentinel-2 data</a>
+        <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
@@ -121,7 +121,7 @@ corresponding source file." />
     </div>
 
     <div class="ref-description">
-    <p>The function apply gdalwarp to build rasters with the
+    <p>The function apply `gdalwarp`` to build rasters with the
 same projection, resolution and grid alignment of another raster.
 If not specified, the output format of each file is the same of the
 corresponding source file.</p>
@@ -156,25 +156,41 @@ the format of every input filename.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>NULL (the function is called for its side effects)</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>ex_sel</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"/path/of/existing/input/file.tif"</span>,
-            <span class='st'>"/path/of/existing/input/anotherfile.jp2"</span>)
-<span class='no'>ex_ref</span> <span class='kw'>&lt;-</span> <span class='st'>"/path/of/the/reference/file.jp2"</span>
-<span class='no'>ex_out</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"/path/of/the/output/file.tif"</span>,
-            <span class='st'>"/path/of/the/output/anotherfile.jp2"</span>)
+    <pre class="examples"><div class='input'><span class='co'># Define file names</span>
+<span class='no'>ex_sel</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(
+  <span class='st'>"extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_BOA_10.tif"</span>,
+  <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"sen2r"</span>
+)
+<span class='no'>ex_ref</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(
+  <span class='st'>"extdata/example_files/out_ref/S2A2A_20170703_022_Barbellino_SCL_10.tif"</span>,
+  <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"sen2r"</span>
+)
+<span class='no'>ex_out</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(<span class='kw'>fileext</span> <span class='kw'>=</span> <span class='st'>"_BOA_out.tif"</span>)
 
-<span class='fu'>gdalwarp_grid</span>(<span class='no'>ex_sel</span>, <span class='no'>ex_out</span>, <span class='no'>ex_ref</span>, <span class='kw'>dstnodata</span><span class='kw'>=</span><span class='fl'>0</span>, <span class='kw'>overwrite</span><span class='kw'>=</span><span class='fl'>TRUE</span>)
-}</div></pre>
+<span class='co'># Run function</span>
+<span class='kw pkg'>sen2r</span><span class='kw ns'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/sen2r/man/gdalwarp_grid.html'>gdalwarp_grid</a></span>(<span class='no'>ex_sel</span>, <span class='no'>ex_out</span>, <span class='kw'>ref</span> <span class='kw'>=</span> <span class='no'>ex_ref</span>)
+
+<span class='co'># \donttest{</span>
+<span class='co'># Show output</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='kw'>mfrow</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>3</span>))
+<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='kw'>mar</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>,<span class='fl'>4</span>)); <span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>ex_sel</span>), <span class='kw'>rgb</span> <span class='kw'>=</span> <span class='fl'>4</span>:<span class='fl'>2</span>, <span class='kw'>maxColorValue</span> <span class='kw'>=</span> <span class='fl'>3500</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='kw'>mar</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>2</span>/<span class='fl'>3</span>,<span class='fl'>4</span>)); <span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>ex_ref</span>))
+<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='kw'>mar</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>,<span class='fl'>4</span>)); <span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>ex_out</span>), <span class='kw'>rgb</span> <span class='kw'>=</span> <span class='fl'>4</span>:<span class='fl'>2</span>, <span class='kw'>maxColorValue</span> <span class='kw'>=</span> <span class='fl'>3500</span>)</div><div class='img'><img src='gdalwarp_grid-1.png' alt='' width='700' height='433' /></div><div class='input'># }
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
       <li><a href="#note">Note</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>
