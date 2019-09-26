@@ -14,7 +14,7 @@
 #' @note License: GPL 3.0
 #' @importFrom shiny actionButton addResourcePath br code conditionalPanel div em
 #'  fluidPage fluidRow h3 helpText htmlOutput icon modalButton
-#'  modalDialog observe observeEvent outputOptions p reactive
+#'  modalDialog observe observeEvent outputOptions p reactive radioButtons
 #'  reactiveFileReader reactivePoll reactiveValues renderText renderUI runApp
 #'  shinyApp showModal span strong textOutput uiOutput verbatimTextOutput
 #' @importFrom shinyjs hide html useShinyjs extendShinyjs disabled disable enable
@@ -618,6 +618,18 @@ check_sen2r_deps <- function() {
                       textInput("path_newsen2cor_textin", NULL, ""))),
               div(style="height:20px;vertical-aling:top;",
                   htmlOutput("path_newsen2cor_errormess")),
+              radioButtons(
+                "sen2cor_version", "Sen2Cor version to be installed:",
+                c("Stable version (2.5.5)" = "2.5.5",
+                  "Newer, lighter version (2.8.0)" = "2.8.0"),
+                selected = "2.5.5"
+              ),
+              shiny::tags$small(em(p(
+                "Sen2Cor 2.8.0 is faster and makes use of less RAM, but",
+                "it only works for SAFE products version >= 14.2 and",
+                "some problems were encountered running it on Windows;",
+                "it is recommended to use Sen2Cor 2.5.5."
+              ))),
               hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
               div(style="text-align:right;",
                   disabled(actionButton("install_sen2cor_button", strong("\u2000Download"), icon=icon("download"))),
@@ -730,7 +742,11 @@ check_sen2r_deps <- function() {
       
       check_sen2cor_outmess <- capture.output(
         check_sen2cor_outerr <- tryCatch(
-          .install_sen2cor(input$path_newsen2cor_textin, interactive = FALSE),
+          .install_sen2cor(
+            input$path_newsen2cor_textin, 
+            version = input$sen2cor_version, 
+            interactive = FALSE
+          ),
           error = function(e) {print(e)}
         ),
         type = "message"
