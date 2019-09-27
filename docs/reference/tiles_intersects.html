@@ -168,7 +168,7 @@ otherwise leave to NULL and it will be generated within the function).</p></td>
   <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"data/vector/scalve.kml"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"sen2r"</span>),
   <span class='kw'>quiet</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )
-<span class='no'>ex_extent</span> <span class='kw'>&lt;-</span> <span class='no'>ex_extent</span>[<span class='no'>ex_extent</span>$<span class='no'>description</span> <span class='kw'>==</span> <span class='st'>"Schilpario"</span>,]
+<span class='no'>ex_extent</span> <span class='kw'>&lt;-</span> <span class='no'>ex_extent</span>[<span class='fl'>1</span>,]
 
 <span class='co'># Tile ID of the required S2 tile</span>
 <span class='fu'>tiles_intersects</span>(<span class='no'>ex_extent</span>)</div><div class='output co'>#&gt; [1] "32TNS"</div><div class='input'>

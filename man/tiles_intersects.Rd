@@ -37,10 +37,10 @@ License: GPL 3.0
 }
 \examples{
 ex_extent <- sf::st_read(
-  system.file("data/vector/scalve.kml", package = "sen2r"),
+  system.file("extdata/vector/scalve.kml", package = "sen2r"),
   quiet = TRUE
 )
-ex_extent <- ex_extent[ex_extent$description == "Schilpario",]
+ex_extent <- ex_extent[1,]
 
 # Tile ID of the required S2 tile
 tiles_intersects(ex_extent)
