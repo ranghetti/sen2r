@@ -67,7 +67,10 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
   i <- NULL
   
   # load Sen2Cor executable path
-  binpaths <- load_binpaths("sen2cor")
+  binpaths <- tryCatch(
+    load_binpaths("sen2cor"),
+    warning = stop
+  )
   
   # get version
   sen2cor_version_raw0 <- system(paste(binpaths$sen2cor, "-h"), intern = TRUE)
