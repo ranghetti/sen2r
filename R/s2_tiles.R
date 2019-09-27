@@ -15,17 +15,19 @@
 #' 
 #' # Extract a subset of all the tiles
 #' httr::GET(
-#'   "https://biogeo.ucdavis.edu/data/gadm3.6/Rsf/gadm36_ITA_0_sf.rds", 
-#'   httr::write_disk(it_path <- tempfile())
+#'   "https://biogeo.ucdavis.edu/data/gadm3.6/Rsf/gadm36_CHE_0_sf.rds", 
+#'   httr::write_disk(ch_path <- tempfile())
 #' )
-#' it <- readRDS(it_path)
-#' s2tiles_it <- s2tiles[suppressMessages(sf::st_intersects(it, s2tiles))[[1]],]
-#' s2_coords <- sf::st_coordinates(suppressWarnings(sf::st_centroid(s2tiles_it)))
+#' ch <- readRDS(ch_path)
+#' s2tiles_ch <- s2tiles[suppressMessages(sf::st_intersects(ch, s2tiles))[[1]],]
+#' s2_coords <- sf::st_coordinates(suppressWarnings(sf::st_centroid(s2tiles_ch)))
 #' 
 #' # Show the tiles
-#' plot(s2tiles_it$geometry, border = "blue")
-#' plot(it$geometry, border = "red", add = TRUE)
-#' text(s2_coords[,1], s2_coords[,2], s2tiles_it$tile_id, col = "blue", cex = 0.5)
+#' plot(s2tiles_ch$geometry, border = "blue")
+#' plot(ch$geometry, border = "red", add = TRUE)
+#' text(s2_coords[,1], s2_coords[,2], s2tiles_ch$tile_id, col = "blue", cex = .75)
+#' 
+#' # Use function tiles_intersects() to exclude unuseful tiles.
 
 s2_tiles <- function() {
   
