@@ -37,9 +37,9 @@ create_indices_db <- function(xslt_path = NA,
   # check if indices.json already exists, and if the version is updated
   # we assume that a new version of indices.json is created at every new ackage update
   if (is.na(json_path)) {
-    json_path <- file.path(system.file("share",package="sen2r"),"indices.json")
+    json_path <- file.path(system.file("extdata/settings",package="sen2r"),"indices.json")
   }
-  if (system.file("share/indices.json", package="sen2r") == json_path) {
+  if (system.file("extdata/settings/indices.json", package="sen2r") == json_path) {
     if (force == FALSE) {
       return(invisible(NULL))
     }

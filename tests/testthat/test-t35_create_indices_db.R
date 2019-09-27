@@ -22,7 +22,7 @@
 #       create_indices_db(json_path = newjson_path, force = TRUE)
 #     )
 #     testthat::expect_gt(out_time["elapsed"], 10)
-#     defjson <- jsonlite::fromJSON(system.file("share/indices.json",package="sen2r"))
+#     defjson <- jsonlite::fromJSON(system.file("extdata/settings/indices.json",package="sen2r"))
 #     newjson <- jsonlite::fromJSON(newjson_path)
 #     testthat::expect_is(newjson, "list")
 #     testthat::expect_is(newjson$indices, "data.frame")

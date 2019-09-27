@@ -20,7 +20,7 @@
 #' examplenames <- c(
 #'   system.file("tif/L7_ETMs.tif", package="stars"),
 #'   system.file("nc/bcsd_obs_1999.nc", package = "stars"),
-#'   system.file("data/out/S2A2A_20170703_022_Barbellino_BOA_10.tif",
+#'   system.file("extdata/out/S2A2A_20170703_022_Barbellino_BOA_10.tif",
 #'     package = "sen2r")
 #' )
 #'
@@ -36,7 +36,10 @@
 #' raster_metadata(examplenames, c("res", "size", "bbox", "proj"), format = "list")
 #'
 #' # Output with an invalid raster
-#' examplenames <- c(examplenames, system.file("share/gdal_formats.json", package="sen2r"))
+#' examplenames <- c(
+#'   examplenames, 
+#'   system.file("extdata/settings/gdal_formats.json", package="sen2r")
+#' )
 #' raster_metadata(examplenames, c("bbox", "proj"))
 
 raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {

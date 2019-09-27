@@ -19,7 +19,7 @@ testthat::test_that(
       gui = FALSE,
       online = TRUE,
       step_atmcorr = "l2a", # to avoid checks on Sen2Cor
-      extent = system.file("data/vector/scalve.kml", package = "sen2r"),
+      extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
       extent_name = "Scalve",
       extent_as_mask = TRUE,
       timewindow = as.Date("2017-07-03"),
@@ -101,7 +101,7 @@ testthat::test_that(
 context("Test compute spectral indices - s2_calcindices()")
 # testthat::skip_on_cran()
 # testthat::skip_on_travis()
-ref_dir <- system.file("data/out", package = "sen2r")
+ref_dir <- system.file("extdata/out", package = "sen2r")
 
 outdir_12 <- file.path(tempdir(), "out_test12")
 testthat::test_that(

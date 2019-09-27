@@ -156,16 +156,16 @@ Alternatively meta = 'all' (default) allows to return all metadata.</p></td>
 <span class='no'>examplenames</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(
   <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"tif/L7_ETMs.tif"</span>, <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"stars"</span>),
   <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"nc/bcsd_obs_1999.nc"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"stars"</span>),
-  <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"data/out/S2A2A_20170703_022_Barbellino_BOA_10.tif"</span>,
+  <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/out/S2A2A_20170703_022_Barbellino_BOA_10.tif"</span>,
     <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"sen2r"</span>)
 )
 
 <span class='co'># \donttest{</span>
 <span class='co'># Return metadata as data.table</span>
-<span class='fu'>raster_metadata</span>(<span class='no'>examplenames</span>)</div><div class='output co'>#&gt;                                                                                                        path
-#&gt; 1:                                 /home/lranghetti/R/x86_64-pc-linux-gnu-library/3.6/stars/tif/L7_ETMs.tif
-#&gt; 2:                             /home/lranghetti/R/x86_64-pc-linux-gnu-library/3.6/stars/nc/bcsd_obs_1999.nc
-#&gt; 3: /home/lranghetti/share/git/github/ranghetti/sen2r/inst/data/out/S2A2A_20170703_022_Barbellino_BOA_10.tif
+<span class='fu'>raster_metadata</span>(<span class='no'>examplenames</span>)</div><div class='output co'>#&gt;                                                                                                           path
+#&gt; 1:                                    /home/lranghetti/R/x86_64-pc-linux-gnu-library/3.6/stars/tif/L7_ETMs.tif
+#&gt; 2:                                /home/lranghetti/R/x86_64-pc-linux-gnu-library/3.6/stars/nc/bcsd_obs_1999.nc
+#&gt; 3: /home/lranghetti/share/git/github/ranghetti/sen2r/inst/extdata/out/S2A2A_20170703_022_Barbellino_BOA_10.tif
 #&gt;    valid  res.x  res.y size.x size.y nbands     xmin    ymin       xmax
 #&gt; 1:  TRUE 28.500 28.500    349    352      6 288776.3 9110729 298722.750
 #&gt; 2:  TRUE  0.125  0.125     81     33     12    -85.0      33    -74.875
@@ -184,10 +184,10 @@ Alternatively meta = 'all' (default) allows to return all metadata.</p></td>
 #&gt; 3: Meter     GTiff UInt16</div><div class='input'><span class='co'># }</span>
 
 <span class='co'># Return some metadata as data.table</span>
-<span class='fu'>raster_metadata</span>(<span class='no'>examplenames</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"res"</span>, <span class='st'>"size"</span>, <span class='st'>"bbox"</span>, <span class='st'>"outformat"</span>))</div><div class='output co'>#&gt;                                                                                                        path
-#&gt; 1:                                 /home/lranghetti/R/x86_64-pc-linux-gnu-library/3.6/stars/tif/L7_ETMs.tif
-#&gt; 2:                             /home/lranghetti/R/x86_64-pc-linux-gnu-library/3.6/stars/nc/bcsd_obs_1999.nc
-#&gt; 3: /home/lranghetti/share/git/github/ranghetti/sen2r/inst/data/out/S2A2A_20170703_022_Barbellino_BOA_10.tif
+<span class='fu'>raster_metadata</span>(<span class='no'>examplenames</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"res"</span>, <span class='st'>"size"</span>, <span class='st'>"bbox"</span>, <span class='st'>"outformat"</span>))</div><div class='output co'>#&gt;                                                                                                           path
+#&gt; 1:                                    /home/lranghetti/R/x86_64-pc-linux-gnu-library/3.6/stars/tif/L7_ETMs.tif
+#&gt; 2:                                /home/lranghetti/R/x86_64-pc-linux-gnu-library/3.6/stars/nc/bcsd_obs_1999.nc
+#&gt; 3: /home/lranghetti/share/git/github/ranghetti/sen2r/inst/extdata/out/S2A2A_20170703_022_Barbellino_BOA_10.tif
 #&gt;    valid  res.x  res.y size.x size.y     xmin    ymin       xmax        ymax
 #&gt; 1:  TRUE 28.500 28.500    349    352 288776.3 9110729 298722.750 9120760.750
 #&gt; 2:  TRUE  0.125  0.125     81     33    -85.0      33    -74.875      37.125
@@ -247,7 +247,7 @@ Alternatively meta = 'all' (default) allows to return all metadata.</p></td>
 #&gt; 
 #&gt; [[3]]
 #&gt; [[3]]$path
-#&gt; [1] "/home/lranghetti/share/git/github/ranghetti/sen2r/inst/data/out/S2A2A_20170703_022_Barbellino_BOA_10.tif"
+#&gt; [1] "/home/lranghetti/share/git/github/ranghetti/sen2r/inst/extdata/out/S2A2A_20170703_022_Barbellino_BOA_10.tif"
 #&gt; 
 #&gt; [[3]]$valid
 #&gt; [1] TRUE
@@ -271,12 +271,15 @@ Alternatively meta = 'all' (default) allows to return all metadata.</p></td>
 #&gt; 
 #&gt; </div><div class='input'>
 <span class='co'># Output with an invalid raster</span>
-<span class='no'>examplenames</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>examplenames</span>, <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"share/gdal_formats.json"</span>, <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"sen2r"</span>))
-<span class='fu'>raster_metadata</span>(<span class='no'>examplenames</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"bbox"</span>, <span class='st'>"proj"</span>))</div><div class='output co'>#&gt; trying to read file: /home/lranghetti/share/git/github/ranghetti/sen2r/inst/share/gdal_formats.json</div><div class='output co'>#&gt;                                                                                                        path
-#&gt; 1:                                 /home/lranghetti/R/x86_64-pc-linux-gnu-library/3.6/stars/tif/L7_ETMs.tif
-#&gt; 2:                             /home/lranghetti/R/x86_64-pc-linux-gnu-library/3.6/stars/nc/bcsd_obs_1999.nc
-#&gt; 3: /home/lranghetti/share/git/github/ranghetti/sen2r/inst/data/out/S2A2A_20170703_022_Barbellino_BOA_10.tif
-#&gt; 4:                           /home/lranghetti/share/git/github/ranghetti/sen2r/inst/share/gdal_formats.json
+<span class='no'>examplenames</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(
+  <span class='no'>examplenames</span>,
+  <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/settings/gdal_formats.json"</span>, <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"sen2r"</span>)
+)
+<span class='fu'>raster_metadata</span>(<span class='no'>examplenames</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"bbox"</span>, <span class='st'>"proj"</span>))</div><div class='output co'>#&gt; trying to read file: /home/lranghetti/share/git/github/ranghetti/sen2r/inst/extdata/settings/gdal_formats.json</div><div class='output co'>#&gt;                                                                                                           path
+#&gt; 1:                                    /home/lranghetti/R/x86_64-pc-linux-gnu-library/3.6/stars/tif/L7_ETMs.tif
+#&gt; 2:                                /home/lranghetti/R/x86_64-pc-linux-gnu-library/3.6/stars/nc/bcsd_obs_1999.nc
+#&gt; 3: /home/lranghetti/share/git/github/ranghetti/sen2r/inst/extdata/out/S2A2A_20170703_022_Barbellino_BOA_10.tif
+#&gt; 4:                   /home/lranghetti/share/git/github/ranghetti/sen2r/inst/extdata/settings/gdal_formats.json
 #&gt;    valid     xmin    ymin       xmax        ymax
 #&gt; 1:  TRUE 288776.3 9110729 298722.750 9120760.750
 #&gt; 2:  TRUE    -85.0      33    -74.875      37.125

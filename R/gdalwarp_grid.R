@@ -20,11 +20,11 @@
 #' \donttest{
 #' # Define file names
 #' ex_sel <- system.file(
-#'   "data/out/S2A2A_20170703_022_Barbellino_BOA_10.tif",
+#'   "extdata/out/S2A2A_20170703_022_Barbellino_BOA_10.tif",
 #'   package = "sen2r"
 #' )
 #' ex_ref <- system.file(
-#'   "data/out/S2A2A_20170703_022_Barbellino_SCL_10.tif",
+#'   "extdata/out/S2A2A_20170703_022_Barbellino_SCL_10.tif",
 #'   package = "sen2r"
 #' )
 #' ex_out <- tempfile(fileext = "_BOA_out.tif")

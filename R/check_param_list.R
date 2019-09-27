@@ -611,7 +611,9 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   
   
   # -- outformat --
-  gdal_formats <- fromJSON(system.file("share/gdal_formats.json",package="sen2r"))$drivers
+  gdal_formats <- fromJSON(
+    system.file("extdata/settings/gdal_formats.json",package="sen2r")
+  )$drivers
   if (!pm$outformat %in% gdal_formats$name) {
     print_message(
       type = type,

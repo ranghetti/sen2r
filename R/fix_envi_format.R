@@ -17,7 +17,9 @@
 fix_envi_format <- function(infiles) {
   
   # load file extension for ENVI file
-  gdal_formats <- fromJSON(system.file("share/gdal_formats.json",package="sen2r"))$drivers
+  gdal_formats <- fromJSON(
+    system.file("extdata/settings/gdal_formats.json",package="sen2r")
+  )$drivers
   envi_ext <- gdal_formats[gdal_formats$name=="ENVI","ext"][1]
   
   # list with the names of Sentinel-2 bands

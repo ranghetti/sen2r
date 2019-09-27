@@ -418,7 +418,7 @@ out_dir_3 <- tempfile(pattern = "Barbellino_")
 out_paths_3 <- sen2r(
   gui = FALSE,
   step_atmcorr = "l2a",
-  extent = system.file("data/vector/barbellino.geojson", package = "sen2r"),
+  extent = system.file("extdata/vector/barbellino.geojson", package = "sen2r"),
   extent_name = "Barbellino",
   timewindow = as.Date("2017-07-03"),
   list_prods = c("TOA","BOA","SCL"),
@@ -434,7 +434,7 @@ out_paths_3 <- sen2r(
 out_dir_4 <- tempfile(pattern = "Scalve_")
 out_paths_4 <- sen2r(
   param_list = json_path,
-  extent = system.file("data/vector/scalve.kml", package = "sen2r"),
+  extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
   extent_name = "Scalve",
   path_out = out_dir_4
 )

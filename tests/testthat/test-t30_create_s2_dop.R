@@ -23,7 +23,7 @@
 #         create_s2_dop(json_path = newjson_path, force = TRUE)
 #       )
 #       testthat::expect_gt(out_time["elapsed"], 10)
-#       defjson <- jsonlite::fromJSON(system.file("share/doybase.json",package="sen2r"))
+#       defjson <- jsonlite::fromJSON(system.file("extdata/settings/doybase.json",package="sen2r"))
 #       newjson <- jsonlite::fromJSON(newjson_path)
 #       testthat::expect_is(newjson, "list")
 #       testthat::expect_is(newjson$dop, "data.frame")

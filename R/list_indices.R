@@ -41,7 +41,7 @@ list_indices <- function(values, pattern="", all=FALSE) {
   create_indices_db()
   
   # read indices database
-  json_path <- system.file("share/indices.json",package="sen2r")
+  json_path <- system.file("extdata/settings/indices.json",package="sen2r")
   indices <- jsonlite::fromJSON(json_path)
   
   # select requested values from the table

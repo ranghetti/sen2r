@@ -32,7 +32,7 @@ Please add small files needed for the examples in the inst/extdata
 subfolder of your package and use system.file() to get the correct
 package path.
 
-We added the directory inst/data/out, containing small
+We added the directory inst/extdata/out, containing small
 example files used by function examples, including `gdalwarp_grid.R`.
 Reference documentations were improved to make use of these files.
 

@@ -17,7 +17,7 @@ testthat::test_that(
       gui = FALSE,
       online = TRUE,
       step_atmcorr = "l2a", # to avoid checks on Sen2Cor
-      extent = system.file("data/vector/scalve.kml", package = "sen2r"),
+      extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
       extent_name = "Scalve",
       extent_as_mask = TRUE,
       timewindow = as.Date("2017-07-03"),
@@ -101,7 +101,7 @@ testthat::test_that(
         gui = FALSE,
         online = FALSE,
         step_atmcorr = "l2a", # to avoid checks on Sen2Cor
-        extent = system.file("data/vector/scalve.kml", package = "sen2r"),
+        extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
         extent_name = "Scalve",
         extent_as_mask = FALSE,
         timewindow = as.Date("2017-07-03"),
@@ -197,7 +197,7 @@ testthat::test_that(
       gui = FALSE,
       online = FALSE,
       step_atmcorr = "l2a", # to avoid checks on Sen2Cor
-      extent = system.file("data/vector/scalve.kml", package = "sen2r"),
+      extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
       extent_name = "Scalve",
       extent_as_mask = FALSE,
       timewindow = as.Date("2017-07-03"),
@@ -274,11 +274,11 @@ testthat::skip_on_cran() # because using runtime GDAL
 # testthat::skip_on_travis()
 
 ex_sel <- system.file(
-  "data/out/S2A2A_20170703_022_Barbellino_RGB432B_10.tif",
+  "extdata/out/S2A2A_20170703_022_Barbellino_RGB432B_10.tif",
   package = "sen2r"
 )
 ex_ref <- system.file(
-  "data/out/S2A2A_20170703_022_Barbellino_SCL_10.tif",
+  "extdata/out/S2A2A_20170703_022_Barbellino_SCL_10.tif",
   package = "sen2r"
 )
 testthat::test_that(

@@ -97,7 +97,7 @@ compute_s2_paths <- function(pm,
   )
   
   # File formats
-  gdal_formats <- fromJSON(system.file("share/gdal_formats.json",package="sen2r"))$drivers
+  gdal_formats <- fromJSON(system.file("extdata/settings/gdal_formats.json",package="sen2r"))$drivers
   sel_driver <- gdal_formats[gdal_formats$name==pm$outformat,]
   sel_rgb_driver <- gdal_formats[gdal_formats$name==pm$rgb_outformat,]
   if (nrow(sel_driver)==0) {

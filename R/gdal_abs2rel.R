@@ -19,7 +19,7 @@
 #' @examples
 #' # Load a VRT containing a relative path
 #' ex_vrt <- system.file(
-#'   "data/out/S2A2A_20170703_022_Barbellino_RGB432B_10.vrt", 
+#'   "extdata/out/S2A2A_20170703_022_Barbellino_RGB432B_10.vrt", 
 #'   package = "sen2r"
 #' )
 #' abs_vrt <- tempfile(fileext = "_abs.vrt")
