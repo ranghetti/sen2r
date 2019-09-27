@@ -9,21 +9,32 @@
 #' @param in_vrt The path of the VRT to be read.
 #' @param out_vrt (optional) The path of the output VRT file (default
 #'  is to overwrite `in_vrt`).
-#' @return NULL
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @return NULL (the function is called for its side effects)
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @export
 #' @importFrom magrittr "%>%"
 #' @name gdal_abs2rel
 #' @rdname gdal_abs2rel_rel2abs
 #' @examples
-#' \dontrun{
-#' example_vrt <- "/TODO/example/s2_translate.vrt"
-#' rel_vrt <- "/TODO/example/s2_translate_rel.vrt"
-#' abs_vrt <- "/TODO/example/s2_translate_abs.vrt"
-#' gdal_abs2rel(example_vrt, rel_vrt)
-#' gdal_rel2abs(example_vrt, abs_vrt)
-#' }
+#' # Load a VRT containing a relative path
+#' ex_vrt <- system.file(
+#'   "extdata/out/S2A2A_20170703_022_Barbellino_RGB432B_10.vrt", 
+#'   package = "sen2r"
+#' )
+#' abs_vrt <- tempfile(fileext = "_abs.vrt")
+#' rel_vrt <- tempfile(fileext = "_rel.vrt")
+#' gdal_rel2abs(ex_vrt, abs_vrt)
+#' gdal_abs2rel(ex_vrt, rel_vrt)
+#' 
+#' # Show differences
+#' ex_vrt_content <- readLines(ex_vrt)
+#' abs_vrt_content <- readLines(abs_vrt)
+#' rel_vrt_content <- readLines(rel_vrt)
+#' ex_vrt_content[ex_vrt_content != abs_vrt_content] # Original line
+#' abs_vrt_content[ex_vrt_content != abs_vrt_content] # Modified line
+#' rel_vrt_content[ex_vrt_content != rel_vrt_content] # No edits
+
 gdal_abs2rel <- function(in_vrt, out_vrt=NA) {
   
   # to avoid NOTE on check

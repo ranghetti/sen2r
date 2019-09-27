@@ -24,7 +24,7 @@
 #' @param prod_type (optional) Vector of types to be produced as outputs
 #'  (see [safe_shortname] for the list of accepted values). Default is
 #'  reflectance ("TOA" for level 1C, "BOA" for level 2A).
-#' @param tiles (optional) Character vector with the desired output tile IDs 
+#' @param tiles (optional) Character vector with the desired output tile IDs
 #'  (id specified IDs are not present in the input SAFE product, they are not
 #'  produced). Default (NA) is to process all the found tiles.
 #' @param res (optional) Spatial resolution (one between '10m', '20m' or '60m');
@@ -35,9 +35,9 @@
 #'  format recognised by GDAL). Default value is "VRT" (Virtual Raster).
 #' @param compress (optional) In the case a GTiff format is
 #'  chosen, the compression indicated with this parameter is used.
-#' @param vrt_rel_paths (optional) Logical: if TRUE (default on Linux), 
+#' @param vrt_rel_paths (optional) Logical: if TRUE (default on Linux),
 #'  the paths present in the VRT output file are relative to the VRT position;
-#'  if FALSE (default on Windows), they are absolute. 
+#'  if FALSE (default on Windows), they are absolute.
 #'  This takes effect only with `format = "VRT"`.
 #' @param utmzone (optional) UTM zone of output products (default:
 #'  the first one retrieved from input granules). Note that this function
@@ -47,11 +47,12 @@
 #'  overwritten? (default: FALSE)
 #' @return A vector with the names of the created output files
 #'   (just created or already existing).
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @importFrom jsonlite fromJSON
 #' @export
-#' @examples \dontrun{
+#' @examples
+#' \dontrun{
 #' s2_l1c_example <- file.path(
 #'   "/existing/path",
 #'   "S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE")
@@ -111,7 +112,9 @@ s2_translate <- function(infile,
   if (anyNA(tiles)) {tiles <- NA} else if (all(tiles=="")) {tiles <- NA}
   
   # check output format
-  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))$drivers
+  gdal_formats <- fromJSON(
+    system.file("extdata/settings/gdal_formats.json",package="sen2r")
+  )$drivers
   sel_driver <- gdal_formats[gdal_formats$name==format,]
   if (nrow(sel_driver)==0) {
     print_message(
@@ -205,7 +208,7 @@ s2_translate <- function(infile,
     
     # define and create tmpdir
     if (is.na(tmpdir)) {
-      tmpdir <- if (format == "VRT") {
+      tmpdir <- if (all(!is.na(format), format == "VRT")) {
         rmtmp <- FALSE # force not to remove intermediate files
         if (!missing(outdir)) {
           file.path(outdir, ".vrt")
@@ -289,7 +292,7 @@ s2_translate <- function(infile,
           }
           
           # fix for envi extension (writeRaster use .envi)
-          if (format=="ENVI")  {fix_envi_format(out_name)}
+          if (format=="ENVI") {fix_envi_format(out_name)}
           
         } # end of "overwite" IF cycle
         

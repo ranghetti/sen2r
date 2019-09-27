@@ -50,11 +50,11 @@
 #'  datatype is chosen (default values are 10000 for "Int16" and "UInt16",
 #'  1E9 for "Int32" and "UInt32"). Notice that, using "UInt16" and "UInt32" types,
 #'  negative values will be truncated to 0.
-#' @param proc_mode (optional) Character: if `"gdal_calc"`, 
-#'  gdal_calc routines are used to compute indices; 
+#' @param proc_mode (optional) Character: if `"gdal_calc"`,
+#'  gdal_calc routines are used to compute indices;
 #'  if `"raster"` (default), R functions are instead used.
-#'  **Note**: there is a difference in which the two modes manage values out 
-#'  of ranges (e.g. -32768 to 32767 in Int16 and 0 to 255 in Byte): 
+#'  **Note**: there is a difference in which the two modes manage values out
+#'  of ranges (e.g. -32768 to 32767 in Int16 and 0 to 255 in Byte):
 #'  "raster" mode set these values to NA, "gdal_calc"mode clip them to the
 #'  minimum/maximum values.
 #' @param parallel (optional) Logical: if TRUE, the function is run using parallel
@@ -78,25 +78,45 @@
 #' @import data.table
 #' @importFrom raster blockSize brick getValues raster writeStart writeStop writeValues
 #' @importFrom magrittr "%>%"
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
+#' @examples
+#' # Define file names
+#' ex_in <- system.file(
+#'   "extdata/out/S2A2A_20170703_022_Barbellino_BOA_10.tif",
+#'   package = "sen2r"
+#' )
+#'
+#' # Run function
+#' ex_out <- s2_calcindices(
+#'   infiles = ex_in,
+#'   indices = "EVI",
+#'   outdir = tempdir(),
+#'   dataType = "Float32"
+#' )
+#' ex_out
+#'
+#' # Show output
+#' par(mfrow = c(1,2))
+#' par(mar = rep(0,4)); image(stars::read_stars(ex_in), rgb = 4:2, maxColorValue = 3500)
+#' par(mar = rep(2/3,4)); image(stars::read_stars(ex_out))
 
 s2_calcindices <- function(infiles,
                            indices,
-                           outdir=".",
-                           parameters=NULL,
-                           source=c("TOA","BOA"),
-                           format=NA,
-                           subdirs=NA,
-                           tmpdir=NA,
-                           compress="DEFLATE",
-                           dataType="Int16",
-                           scaleFactor=NA,
-                           proc_mode="raster",
+                           outdir = ".",
+                           parameters = NULL,
+                           source = c("TOA","BOA"),
+                           format = NA,
+                           subdirs = NA,
+                           tmpdir = NA,
+                           compress = "DEFLATE",
+                           dataType = "Int16",
+                           scaleFactor = NA,
+                           proc_mode = "raster",
                            parallel = FALSE,
-                           overwrite=FALSE,
-                           .log_message=NA,
-                           .log_output=NA) {
+                           overwrite = FALSE,
+                           .log_message = NA,
+                           .log_output = NA) {
   
   # to avoid NOTE on check
   prod_type <- . <- i <- NULL
@@ -118,10 +138,10 @@ s2_calcindices <- function(infiles,
     
     out <- raster(x)
     out <- writeStart(
-      out, out_file, 
-      NAflag = NAflag, 
-      datatype = datatype, 
-      format = ifelse(sel_format=="VRT", "GTiff", sel_format), 
+      out, out_file,
+      NAflag = NAflag,
+      datatype = datatype,
+      format = ifelse(sel_format=="VRT", "GTiff", sel_format),
       if(sel_format %in% c("GTiff","VRT")){options = paste0("COMPRESS=",compress)},
       overwrite = overwrite
     )
@@ -143,7 +163,7 @@ s2_calcindices <- function(infiles,
       }
       
       
-      # m   <- getValues(y, row = bs$row[i], nrows = bs$nrows[i])
+      # m <- getValues(y, row = bs$row[i], nrows = bs$nrows[i])
       out <- writeValues(out, v_out, bs$row[i])
     }
     out <- writeStop(out)
@@ -151,16 +171,18 @@ s2_calcindices <- function(infiles,
   }
   
   # Load GDAL paths
-  binpaths <- load_binpaths("gdal")
+  binpaths <- if (proc_mode == "gdal_calc" | all(!is.na(format), format == "VRT")) {
+    load_binpaths("gdal")
+  } else {NULL}
   
   # Check proc_mode
   if (!proc_mode %in% c("gdal_calc", "raster")) {
     print_message(
       type = "warning",
       "proc_mode = \"",proc_mode,"\" is not recognised; ",
-      "switching to \"gdal_calc\"."
+      "switching to \"raster\"."
     )
-    proc_mode <- "gdal_calc"
+    proc_mode <- "raster"
   }
   
   # Compute n_cores
@@ -209,9 +231,9 @@ s2_calcindices <- function(infiles,
   indices_info <- indices_db[match(indices,indices_db$name),]
   
   # check output format
-  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))$drivers
+  gdal_formats <- fromJSON(system.file("extdata/settings/gdal_formats.json",package="sen2r"))$drivers
   if (!is.na(format)) {
-    sel_driver <- gdal_formats[gdal_formats$name==format,]
+    sel_driver <- gdal_formats[gdal_formats$name == format,]
     if (nrow(sel_driver)==0) {
       print_message(
         type="error",
@@ -249,7 +271,7 @@ s2_calcindices <- function(infiles,
   }
   
   # read TOA/BOA image
-  if (n_cores > 1) {
+  if (n_cores > 1) { # nocov start
     cl <- makeCluster(
       n_cores,
       type = if (Sys.info()["sysname"] == "Windows") {"PSOCK"} else {"FORK"}
@@ -260,17 +282,17 @@ s2_calcindices <- function(infiles,
       date = TRUE,
       "Starting parallel computation of indices..."
     )
-  }
+  } # nocov end
   
   outfiles <- foreach(
     i = seq_along(infiles),
-    .packages = c("raster","rgdal","sen2r"),
+    .packages = c("raster","sen2r"),
     .combine=c,
     .errorhandling="remove"
-  )  %DO% {
+  ) %DO% {
     
     # redirect to log files
-    if (n_cores > 1) {
+    if (n_cores > 1) { # nocov start
       if (!is.na(.log_output)) {
         sink(.log_output, split = TRUE, type = "output", append = TRUE)
       }
@@ -278,7 +300,7 @@ s2_calcindices <- function(infiles,
         logfile_message = file(.log_message, open = "a")
         sink(logfile_message, type="message")
       }
-    }
+    } # nocov end
     
     sel_infile <- infiles[i]
     sel_infile_meta <- c(infiles_meta[i,])
@@ -342,7 +364,7 @@ s2_calcindices <- function(infiles,
                               sel_formula)
         }
         
-        # Edit formula basing on proc_mode
+        # Edit formula depending on proc_mode
         if (proc_mode == "gdal_calc") {
           for (sel_band in rev(seq_len(nrow(gdal_bands)))) {
             sel_formula <- gsub(gdal_bands[sel_band,"band"],
@@ -422,7 +444,11 @@ s2_calcindices <- function(infiles,
           )
         }
         # fix for envi extension (writeRaster use .envi)
-        if (sel_format0=="ENVI")  {fix_envi_format(file.path(out_subdir0,sel_outfile0))}
+        if (sel_format0=="ENVI") {fix_envi_format(file.path(out_subdir0,sel_outfile0))}
+        
+        if (is.null("binpaths")) {
+          binpaths <- load_binpaths("gdal")
+        }
         
         if (sel_format == "VRT") {
           system(
@@ -442,26 +468,26 @@ s2_calcindices <- function(infiles,
     } # end of indices FOR cycle
     
     # stop sinking
-    if (n_cores > 1) {
+    if (n_cores > 1) { # nocov start
       if (!is.na(.log_output)) {
         sink(type = "output")
       }
       if (!is.na(.log_message)) {
         sink(type = "message"); close(logfile_message)
       }
-    }
+    } # nocov end
     
     sel_outfiles
     
   } # end cycle on infiles
-  if (n_cores > 1) {
+  if (n_cores > 1) { # nocov start
     stopCluster(cl)
     print_message(
       type = "message",
       date = TRUE,
       "Parallel computation of indices done."
     )
-  }
+  } # nocov end
   
   return(outfiles)
   

@@ -72,7 +72,7 @@
 #'  `prod_type` is not recognised; if FALSE (default), a warning is shown.
 #' @return Output product name
 #'
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @export
 #' @importFrom digest digest

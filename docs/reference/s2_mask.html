@@ -266,7 +266,7 @@ format recognised by GDAL). Default is the same format of input images
       <td><p>(optional) Logical: if TRUE, different indices are
 placed in separated <code>outfile</code> subdirectories; if FALSE, they are placed in
 <code>outfile</code> directory; if NA (default), subdirectories are created only if
-more than a single spectral index is required.</p></td>
+more than a single product is required.</p></td>
     </tr>
     <tr>
       <th>compress</th>
@@ -312,6 +312,33 @@ of masked surfaces.</p>
 
     <p>License: GPL 3.0</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+<span class='co'># Define file names</span>
+<span class='no'>ex_in</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(
+  <span class='st'>"extdata/out/S2A2A_20170703_022_Barbellino_RGB432B_10.tif"</span>,
+  <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"sen2r"</span>
+)
+<span class='no'>ex_mask</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(
+  <span class='st'>"extdata/out/S2A2A_20170703_022_Barbellino_SCL_10.tif"</span>,
+  <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"sen2r"</span>
+)
+
+<span class='co'># Run function</span>
+<span class='no'>ex_out</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_mask</span>(
+  <span class='kw'>infiles</span> <span class='kw'>=</span> <span class='no'>ex_in</span>,
+  <span class='kw'>maskfiles</span> <span class='kw'>=</span> <span class='no'>ex_mask</span>,
+  <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='st'>"clear_sky"</span>,
+  <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>()
+)</div><div class='output co'>#&gt; <span class='message'>Processing chunk 1 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 2 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 3 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 4 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 5 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 6 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 7 of 7</span></div><div class='input'><span class='no'>ex_out</span></div><div class='output co'>#&gt; [1] "/tmp/RtmpVg9A62/S2A2A_20170703_022_Barbellino_RGB432B_10.tif"
+#&gt; attr(,"toomasked")
+#&gt; character(0)</div><div class='input'>
+<span class='co'># Show output</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='kw'>mfrow</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>3</span>))
+<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='kw'>mar</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>,<span class='fl'>4</span>)); <span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>ex_in</span>), <span class='kw'>rgb</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>3</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='kw'>mar</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>2</span>/<span class='fl'>3</span>,<span class='fl'>4</span>)); <span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>ex_mask</span>))
+<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='kw'>mar</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>,<span class='fl'>4</span>)); <span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>ex_out</span>), <span class='kw'>rgb</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>3</span>)</div><div class='img'><img src='s2_mask-1.png' alt='' width='700' height='433' /></div><div class='input'># }
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -319,10 +346,11 @@ of masked surfaces.</p>
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
       <li><a href="#note">Note</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
     <h2>Author</h2>
-    <p>Luigi Ranghetti, phD (2017) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p>
+    <p>Luigi Ranghetti, phD (2019) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
   </div>
 </div>
 

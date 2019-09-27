@@ -1,6 +1,6 @@
 #' @title Fix ENVI outputs
 #' @description Internal function which changes some elements of output ENVI
-#'  files: 
+#'  files:
 #'  - file extension is set to .dat if .envi (in case of files created
 #'      by 'writeRaster`) is found, and the header is edited properly,
 #'  - and band names are set in the header file (in particular, SR band names
@@ -9,15 +9,17 @@
 #'  - SCL headers include information about class names and colours.
 #' @param infiles A vector of input filenames, in the
 #'  sen2r naming convention ([safe_shortname]) and ENVI format.
-#' @return NULL (the function performs file changes).
+#' @return NULL (the function is called for its side effects)
 #' @importFrom jsonlite fromJSON
-#' @author Luigi Ranghetti, phD (2019) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 
 fix_envi_format <- function(infiles) {
   
   # load file extension for ENVI file
-  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))$drivers
+  gdal_formats <- fromJSON(
+    system.file("extdata/settings/gdal_formats.json",package="sen2r")
+  )$drivers
   envi_ext <- gdal_formats[gdal_formats$name=="ENVI","ext"][1]
   
   # list with the names of Sentinel-2 bands
@@ -55,7 +57,7 @@ fix_envi_format <- function(infiles) {
   s2_bands[["BOA"]][["B"]] <- s2_bands[["TOA"]][["B"]][c(1:9,11:12)]
   s2_bands[["RGB"]] <- c("Red","Green","Blue")
   
-  # cycle on infiles 
+  # cycle on infiles
   for (infile in infiles) {
     
     # file metadata
@@ -136,6 +138,6 @@ fix_envi_format <- function(infiles) {
       
     }
     
-  } # end of infiles FOR cycle 
+  } # end of infiles FOR cycle
   
 }

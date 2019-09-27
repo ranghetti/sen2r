@@ -18,8 +18,8 @@
 #'  place for external use.
 #' @param force (optional) Logical: if FALSE (default), the db is created only
 #'  if missing or not updated; if TRUE, it is created in any case..
-#' @return NULL
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @return NULL (the function is called for its side effects)
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @importFrom reticulate py_to_r
 #' @importFrom jsonlite toJSON fromJSON
@@ -35,9 +35,9 @@ gdal_formats_db <- function(gdalDrivers,
   # check if gdal_formats.json already exists, and if the version is updated
   # we assume that a new version of gdal_formats.json is created at every new package update
   if (is.na(json_path)) {
-    json_path <- file.path(system.file("extdata",package="sen2r"),"gdal_formats.json")
+    json_path <- file.path(system.file("extdata/settings",package="sen2r"),"gdal_formats.json")
   }
-  if (system.file("extdata","gdal_formats.json", package="sen2r") == json_path) {
+  if (system.file("extdata/settings/gdal_formats.json", package="sen2r") == json_path) {
     json_version <- jsonlite::fromJSON(json_path)$pkg_version %>%
       package_version()
     if (all(force == FALSE, length(json_version)>0, json_version >= packageVersion("sen2r"))) {

@@ -11,7 +11,7 @@ fix_envi_format(infiles)
 sen2r naming convention (\link{safe_shortname}) and ENVI format.}
 }
 \value{
-NULL (the function performs file changes).
+NULL (the function is called for its side effects)
 }
 \description{
 Internal function which changes some elements of output ENVI
@@ -29,5 +29,5 @@ product name as band name);
 License: GPL 3.0
 }
 \author{
-Luigi Ranghetti, phD (2019) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

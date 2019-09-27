@@ -6,8 +6,8 @@ output:
   fig_caption: no
 ---
 
-<!-- IMPORTANT: do NOT edit README.Rmd! Edit index.Rmd instead,       -->
-<!-- and generate README.Rmd using inst/extdata/code/create_README.sh -->
+<!-- IMPORTANT: do NOT edit README.Rmd! Edit index.Rmd instead, -->
+<!-- and generate README.Rmd using utils/code/create_README.sh  -->
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
@@ -28,18 +28,18 @@ knitr::opts_chunk$set(
 
 # sen2r: Find, Download and Process Sentinel-2 Data
 
-<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> 
+<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
 is an R library which helps to download and preprocess Sentinel-2 optical images.
 The purpose of the functions contained in the library is to provide the instruments
-required to easily perform (and eventually automate) all the steps necessary 
-to build a complete Sentinel-2 processing chain, without the need of any manual 
+required to easily perform (and eventually automate) all the steps necessary
+to build a complete Sentinel-2 processing chain, without the need of any manual
 intervention nor the needing to manually integrate any external tool.
 
-In particular, 
-<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> 
+In particular,
+<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
 allows to:
 
-* retrieve the list of available products on a selected area 
+* retrieve the list of available products on a selected area
     (which can be provided by specifying a bounding box, by loading a vector file
     or by drawing it on a map) in a given time window;
 * download the required SAFE Level-1C products, or
@@ -51,8 +51,8 @@ allows to:
 * mask cloudy pixels (using the Surface Classification Map as masking layer);
 * computing spectral indices and RGB images.
 
-Setting the execution of this processing chain is particularly easy using the 
-<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> 
+Setting the execution of this processing chain is particularly easy using the
+<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
 GUI, which allows to set the parameters, to directly launch the main function
 or to save them in a JSON file which can be used to launch the processing at a later stage.
 
@@ -85,9 +85,9 @@ For detailed instructions about using it, see the page ["Run in a Docker contain
 
 ## Usage
 
-The simplest way to use 
-<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> 
-is to execute it in interactive mode: 
+The simplest way to use
+<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+is to execute it in interactive mode:
 ```{r, eval = FALSE}
 library(sen2r)
 sen2r()
@@ -114,9 +114,9 @@ and then launches the main function.
   </a>
 </p>
 
-Alternatively, 
+Alternatively,
 [`sen2r()`](http://sen2r.ranghetti.info/reference/sen2r.html)
-can be launched with a list of parameters (created with 
+can be launched with a list of parameters (created with
 [`s2_gui()`](http://sen2r.ranghetti.info/reference/s2_gui.html))
 or passing manually the parameters as arguments of the function
 (see [the documentation of the function](http://sen2r.ranghetti.info/reference/sen2r.html) for further details).
@@ -124,7 +124,7 @@ or passing manually the parameters as arguments of the function
 Other specific functions can be used to run single steps separately:
 
 * [`s2_list()`](http://sen2r.ranghetti.info/reference/s2_list.html)
-    to retrieve the list of available Sentinel-2 products basing on input parameters;
+    to retrieve the list of available Sentinel-2 products based on input parameters;
 * [`s2_download()`](http://sen2r.ranghetti.info/reference/s2_download.html)
     to download Sentinel-2 products;
 * [`sen2cor()`](reference/sen2cor.html)
@@ -135,8 +135,8 @@ Other specific functions can be used to run single steps separately:
     to merge Sentinel-2 tiles which have the same date and orbit;
 * [`gdal_warp()`](http://sen2r.ranghetti.info/reference/gdal_warp.html)
     to clip, reproject and warp raster files (this is a wrapper to call
-    [gdal_translate](http://www.gdal.org/gdal_translate.html) or 
-    [gdalwarp](http://www.gdal.org/gdalwarp.html) basing on input parameters);
+    [gdal_translate](http://www.gdal.org/gdal_translate.html) or
+    [gdalwarp](http://www.gdal.org/gdalwarp.html) based on input parameters);
 * [`s2_mask()`](http://sen2r.ranghetti.info/reference/s2_mask.html)
     to apply a cloud mask to Sentinel-2 products;
 * [`s2_rgb()`](http://sen2r.ranghetti.info/reference/s2_rgb.html)
@@ -148,13 +148,13 @@ Other specific functions can be used to run single steps separately:
 
 ## Credits
 
-<a href="http://www.irea.cnr.it" target="_blank"> <img src="man/figures/irea_logo_200px.png" height="100" align="left" style="padding-right: 100px;"/></a> 
-<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> 
+<a href="http://www.irea.cnr.it" target="_blank"> <img src="man/figures/irea_logo_200px.png" height="100" align="left" style="padding-right: 100px;"/></a>
+<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
 is being developed by Luigi Ranghetti and Lorenzo Busetto
 ([IREA-CNR](http://www.irea.cnr.it)),
 and it is released under the [GNU General Public License version 3](https://www.gnu.org/licenses/gpl-3.0.html) (GPL‑3).
 
-The [<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> logo](https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_logo_200px.png), 
+The [<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> logo](https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_logo_200px.png),
 partially derived from the [R logo](https://www.r-project.org/logo),
 is released under the [Creative Commons Attribution-ShareAlike 4.0 International license](https://creativecommons.org/licenses/by-sa/4.0) (CC-BY-SA 4.0).
 

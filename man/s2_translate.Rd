@@ -100,5 +100,5 @@ s2_translate(s2_example, format="ENVI", prod_type=c("BOA","TCI","SCL"),
 }
 }
 \author{
-Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

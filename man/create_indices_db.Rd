@@ -20,12 +20,15 @@ place for external use.}
 \item{force}{(optional) Logical: if FALSE (default), the db is created only
 if missing or not updated; if TRUE, it is created in any case.}
 }
+\value{
+NULL (the function is called for its side effects)
+}
 \description{
 The internal function checks if indices.json (the
 database of spectral indices) already exists; if not, it
 downloads source files and creates it.
 Since this function depends on xsltproc executable (available
-inly for Linux), this function can be used only from from
+only for Linux), this function can be used only from from
 Linux. It is not necessary, since a indices.json file is
 present in the package.
 }
@@ -33,5 +36,5 @@ present in the package.
 License: GPL 3.0
 }
 \author{
-Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

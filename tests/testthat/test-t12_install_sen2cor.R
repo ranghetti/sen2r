@@ -2,6 +2,11 @@ context("Test Sen2Cor installation")
 testthat::skip_on_cran()
 testthat::skip_on_travis()
 
+# NOTE: these tests require a high amount of time (depending on connection speed),
+# so the installation is disabled by default if Sen2Cor is already installed.
+# To perform the download of Sen2Cor, replace 'test_download = FALSE' with 'TRUE'.
+test_download = FALSE
+
 testthat::test_that(
   "Test that a mismatching Sen2Cor version causes error", {
     testthat::expect_error(
@@ -19,15 +24,17 @@ testthat::test_that(
       regexp = "[Oo]nly Sen2Cor versions .+ are currently supported"
     )
     sen2cor_def_version <- package_version("2.8.0")
-    sen2cor_inst_dir <- file.path(
-      system.file(package="sen2r"),
-      paste0("sen2cor_",gsub("\\.","-",sen2cor_def_version))
-    )
-    unlink(sen2cor_inst_dir, recursive=TRUE)
+    sen2cor_inst_dir <- dirname(dirname(sen2r:::nn(sen2r:::load_binpaths()$sen2cor)))
     
-    install_sen2cor()
+    if (test_download | length(sen2cor_inst_dir) == 0){ 
+      unlink(sen2cor_inst_dir, recursive = TRUE)
+      install_sen2cor(sen2cor_inst_dir)
+    }
     
-    testthat::expect_true(dir.exists(sen2cor_inst_dir))
+    testthat::expect_true(dir.exists(dirname(sen2r:::load_binpaths()$sen2cor)))
+    testver <- system2(sen2r:::load_binpaths()$sen2cor, "-h", stdout = TRUE)
+    testthat::expect_true(grepl("2\\.[85]\\.[05]", testver[grep("Version", testver)]))
+    
     if (Sys.info()["sysname"] == "Windows") {
       testthat::expect_true(any(grepl("^Sen2Cor\\-", list.files(sen2cor_inst_dir))))
       sen2cor_inst_dir <- file.path(

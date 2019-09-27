@@ -15,7 +15,7 @@ st_crs2(x, ...)
 If \code{x} is 0 < numeric <= 60, return \code{crs} object for UTM timezone \code{x} N;
 if \code{x} is numeric > 60, return \code{crs} object for SRID \code{x};
 if \code{x} is character in the form \code{nn}, \code{nnN} or \code{nnS}, being \code{nn} a number 0 < nn <= 60,
-return  \code{crs} object for UTM timezone \code{x} N or \code{x} S (N if not specified);
+return \code{crs} object for UTM timezone \code{x} N or \code{x} S (N if not specified);
 if \code{x} is a different character, return \code{crs} object for proj4string \code{x};
 if \code{wkt} is given, return \code{crs} object for well-known-text representation \code{wkt};
 if \code{x} is of class \code{sf} or \code{sfc}, return its \code{crs} object.
@@ -40,5 +40,5 @@ st_crs2("9N")
 st_crs2("09S")
 }
 \author{
-Luigi Ranghetti, phD (2018) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

@@ -24,6 +24,9 @@ This is an internal function doing the same thing of \link[stringr:str_pad]{stri
 (except for parameters \code{'width'} and \code{'length'} which must be of length 1),
 but without depending on package \code{stringi}.
 }
+\note{
+License: GPL 3.0
+}
 \examples{
 rbind(
   str_pad2("hadley", 30, "left"),
@@ -36,4 +39,7 @@ str_pad2(c("a", "abc", "abcdef"), 10)
 
 # Longer strings are returned unchanged
 str_pad2("hadley", 3)
+}
+\author{
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

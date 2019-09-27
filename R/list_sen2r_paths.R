@@ -114,7 +114,7 @@ list_sen2r_paths <- function(param_list = NULL,
                              processing_order = "by_step",
                              use_python = TRUE,
                              tmpdir = NA,
-                             rmtmp = TRUE, 
+                             rmtmp = TRUE,
                              log = NA) {
   
   # filter names of passed arguments

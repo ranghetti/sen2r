@@ -3,7 +3,7 @@
 #'  database of spectral indices) already exists; if not, it
 #'  downloads source files and creates it.
 #'  Since this function depends on xsltproc executable (available
-#'  inly for Linux), this function can be used only from from
+#'  only for Linux), this function can be used only from from
 #'  Linux. It is not necessary, since a indices.json file is
 #'  present in the package.
 #' @param xslt_path (optional) The path where to install `xsltml`,
@@ -16,8 +16,8 @@
 #'  place for external use.
 #' @param force (optional) Logical: if FALSE (default), the db is created only
 #'  if missing or not updated; if TRUE, it is created in any case.
-#' @return NULL
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @return NULL (the function is called for its side effects)
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @import data.table
 #' @importFrom XML htmlTreeParse xmlRoot readHTMLTable xmlAttrs saveXML
@@ -37,9 +37,9 @@ create_indices_db <- function(xslt_path = NA,
   # check if indices.json already exists, and if the version is updated
   # we assume that a new version of indices.json is created at every new ackage update
   if (is.na(json_path)) {
-    json_path <- file.path(system.file("extdata",package="sen2r"),"indices.json")
+    json_path <- file.path(system.file("extdata/settings",package="sen2r"),"indices.json")
   }
-  if (system.file("extdata","indices.json", package="sen2r") == json_path) {
+  if (system.file("extdata/settings/indices.json", package="sen2r") == json_path) {
     if (force == FALSE) {
       return(invisible(NULL))
     }
@@ -55,7 +55,7 @@ create_indices_db <- function(xslt_path = NA,
   
   # set XSLT path
   if (is.na(xslt_path)) {
-    xslt_path <- file.path(system.file(package="sen2r"),"extdata","xslt")
+    xslt_path <- file.path(dirname(attr(load_binpaths(), "path")),"xslt")
   }
   
   # if missing, download xsltml to convert from MathML to LaTeX: http://fhoerni.free.fr/comp/xslt.html
@@ -164,14 +164,14 @@ create_indices_db <- function(xslt_path = NA,
       gsub("\\\\textcolor\\[rgb\\]\\{[0-9\\.\\,]+\\}", "\\\\var", .) %>% # RGB indications are variable names
       gsub(paste0("\\\\mathrm",parent_regex), "\\1", ., perl=TRUE) %>% # remove mathrm
       gsub("\\\\left\\|([^|]+)\\\\right\\|", "abs(\\1)", .) %>% # abs
-      gsub("\u00B7", "*", .)  %>% # replace muddle point
-      gsub("\\\\times", "*", .)  %>% # replace times
-      gsub("\\\\&InvisibleTimes;", "*", .)  %>% # remove invisibles multiplications
-      gsub("\u0096", "-band_", .)  %>% # unicode START OF GUARDED AREA as "-"
-      gsub("\\\\var\\{([0-9][0-9a]?)\\}", "band\\_\\1", .)  %>% # recognise band names
-      gsub("\\\\var\\{([^}]+)\\}", "par\\_\\1", .)  %>% # recognise other elements as parameters
-      gsub("par\\_([^0-9A-Za-z])", "\\1", .)  %>% # error in two indices
-      gsub("\\\\left\\(", "(", .)  %>% # parenthesis
+      gsub("\u00B7", "*", .) %>% # replace muddle point
+      gsub("\\\\times", "*", .) %>% # replace times
+      gsub("\\\\&InvisibleTimes;", "*", .) %>% # remove invisibles multiplications
+      gsub("\u0096", "-band_", .) %>% # unicode START OF GUARDED AREA as "-"
+      gsub("\\\\var\\{([0-9][0-9a]?)\\}", "band\\_\\1", .) %>% # recognise band names
+      gsub("\\\\var\\{([^}]+)\\}", "par\\_\\1", .) %>% # recognise other elements as parameters
+      gsub("par\\_([^0-9A-Za-z])", "\\1", .) %>% # error in two indices
+      gsub("\\\\left\\(", "(", .) %>% # parenthesis
       gsub("\\\\right\\)", ")", .) # parenthesis
     
     # remove temporary files
@@ -357,7 +357,7 @@ create_indices_db <- function(xslt_path = NA,
       link = "Panigada et al. 2019 (in press)",
       s2_formula = "clip((band_4)/(band_3+par_a*(band_6-band_3)),0,1)",
       checked = FALSE,
-      a = ((664.9-559.0)/(739.1-559.0)) # reflectances for S2B 
+      a = ((664.9-559.0)/(739.1-559.0)) # reflectances for S2B
     ),
     "CRred-0" = data.frame(
       n_index = 310,
@@ -392,7 +392,7 @@ create_indices_db <- function(xslt_path = NA,
       link = "Panigada et al. 2019 (in press)",
       s2_formula = "clip(1-(band_4)/(band_3+par_a*(band_6-band_3)),0,1)",
       checked = FALSE,
-      a = ((664.9-559.0)/(739.1-559.0)) # reflectances for S2B 
+      a = ((664.9-559.0)/(739.1-559.0)) # reflectances for S2B
     ),
     "BDred-0" = data.frame(
       n_index = 314,

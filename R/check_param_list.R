@@ -1,6 +1,6 @@
 #' @title Check a parameter list
 #' @description Check that the parameter list (or JSON parameter file)
-#'  is in the correct format, and then specified values are coherent with 
+#'  is in the correct format, and then specified values are coherent with
 #'  parameters.
 #' @param pm List of parameters or path of a JSON parameter file.
 #' @param type Type of the output (see [print_message] for details).
@@ -8,18 +8,18 @@
 #'  paths to be provided; if FALSE (default) these checks are skipped.
 #' @param correct Logical: if TRUE (default), the function corrects
 #'  some incoherences (e.g. timewindow of length 1 is transformed in length 2)
-#'  and returns the corrected list as output; if false, only checking is 
+#'  and returns the corrected list as output; if false, only checking is
 #'  performed, and the output is NULL if no errors occur.
-#' @return In case of errors, depending on `type` argument, output can be 
-#'  a vector of errors (if `type = "string"`), 
+#' @return In case of errors, depending on `type` argument, output can be
+#'  a vector of errors (if `type = "string"`),
 #'  the first error occurred (if `type = "error"`)
-#'  or a set of warnings (if `type = "warning"`). 
-#'  If no errors occur, output is the corrected parameter list if 
+#'  or a set of warnings (if `type = "warning"`).
+#'  If no errors occur, output is the corrected parameter list if
 #'  `correct = TRUE` or NULL otherwise.
 #'  
 #' @importFrom jsonlite fromJSON
 #' @importFrom methods is
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 
 
@@ -76,13 +76,13 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   
   # -- Parameters of length 1: check length
   pm_length1 <- c(
-    "preprocess", "online", "downloader", "overwrite_safe", "rm_safe", 
+    "preprocess", "online", "downloader", "overwrite_safe", "rm_safe",
     "step_atmcorr", "max_cloud_safe", "timeperiod", "extent_name", "index_source",
-    "mask_type", "max_mask", "mask_smooth", "mask_buffer", "clip_on_extent", 
-    "extent_as_mask", "reference_path", "res_s2", "unit", "proj", "resampling", 
-    "resampling_scl", "outformat", "rgb_outformat", "index_datatype", 
-    "compression", "rgb_compression", "overwrite", "path_l1c", "path_l2a", 
-    "path_tiles", "path_merged", "path_out", "path_rgb", "path_indices", 
+    "mask_type", "max_mask", "mask_smooth", "mask_buffer", "clip_on_extent",
+    "extent_as_mask", "reference_path", "res_s2", "unit", "proj", "resampling",
+    "resampling_scl", "outformat", "rgb_outformat", "index_datatype",
+    "compression", "rgb_compression", "overwrite", "path_l1c", "path_l2a",
+    "path_tiles", "path_merged", "path_out", "path_rgb", "path_indices",
     "path_subdirs", "thumbnails", "parallel", "processing_order"
   )
   for (sel_par in pm_length1) {
@@ -98,7 +98,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   
   # -- Logical parameters: check them to be TRUE or FALSE
   pm_logical <- c(
-    "preprocess", "online", "overwrite_safe", "clip_on_extent", 
+    "preprocess", "online", "overwrite_safe", "clip_on_extent",
     "extent_as_mask", "path_subdirs", "thumbnails", "overwrite"
   )
   for (sel_par in pm_logical) {
@@ -249,7 +249,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   # -- s2tiles_selected --
   pm$s2tiles_selected <- toupper(pm$s2tiles_selected)
   invalid_s2tiles <- pm$s2tiles_selected[
-    !is.na(pm$s2tiles_selected) & 
+    !is.na(pm$s2tiles_selected) &
       !grepl("^[0-9]{2}[A-Z]{3}$", pm$s2tiles_selected)
     ]
   if (length(nn(invalid_s2tiles)) > 0) {
@@ -340,14 +340,14 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   pm$list_rgb <- pm$list_rgb[!is.na(pm$list_rgb) & !pm$list_rgb %in% invalid_rgb]
   if (length(nn(pm$list_rgb))>0) {
     rgb_bands <- lapply(
-      strsplit(gsub("^RGB([0-9a-f]{3})([BT])$","\\1",pm$list_rgb),""), 
+      strsplit(gsub("^RGB([0-9a-f]{3})([BT])$","\\1",pm$list_rgb),""),
       function(x) {strtoi(paste0("0x",x))}
     )
     rgb_sources <- gsub("^RGB([0-9a-f]{3})([BT])$","\\2OA",pm$list_rgb)
     rgb_list <- foreach(i = seq_along(pm$list_rgb), .combine=c) %do% {
       if (any(
-        rgb_bands[[i]]<1 | 
-        rgb_bands[[i]]>12 | 
+        rgb_bands[[i]]<1 |
+        rgb_bands[[i]]>12 |
         rgb_bands[[i]]==10 & rgb_sources[i]=="BOA"
       )) {
         print_message(
@@ -393,7 +393,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   
   
   # -- mask_type --
-  if (!pm$mask_type %in% c(NA, "nodata", "cloud_high_proba", "cloud_medium_proba", 
+  if (!pm$mask_type %in% c(NA, "nodata", "cloud_high_proba", "cloud_medium_proba",
                            "cloud_low_proba", "cloud_and_shadow", "clear_sky", "land") &
       !grepl("^scl_[\\_0-9]+$", pm$mask_type)
   ) {
@@ -406,12 +406,12 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   # check consistency among mask_type and selected products
   # (if masking is selected but no prods or indices are selected, set to NA)
   if (
-    !is.na(pm$mask_type) & 
-    all(is.na(nn(pm$list_indices))) & 
+    !is.na(pm$mask_type) &
+    all(is.na(nn(pm$list_indices))) &
     all(is.na(nn(pm$list_prods[pm$list_prods!="SCL"])))
   ) {
     pm$mask_type <- NA
-  } 
+  }
   
   
   # -- max_mask --
@@ -518,7 +518,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
       )
       pm$reference_path <- pm_def$reference_path
     }
-  } 
+  }
   
   
   # -- res --
@@ -590,7 +590,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   
   
   # -- resampling --
-  if (!pm$resampling %in% c("near", "mode", "bilinear", "cubic", 
+  if (!pm$resampling %in% c("near", "mode", "bilinear", "cubic",
                             "cubicspline", "lanczos", "average", "mode")) {
     print_message(
       type = type,
@@ -611,7 +611,9 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   
   
   # -- outformat --
-  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))$drivers
+  gdal_formats <- fromJSON(
+    system.file("extdata/settings/gdal_formats.json",package="sen2r")
+  )$drivers
   if (!pm$outformat %in% gdal_formats$name) {
     print_message(
       type = type,
@@ -767,7 +769,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
         )
       }
     }
-  } 
+  }
   
   
   # -- path_merged --
@@ -781,7 +783,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
         )
       }
     }
-  } 
+  }
   
   # -- path_rgb --
   if (sum(!is.na(pm$list_rgb))==0) {
@@ -879,7 +881,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
           "(it must be created before continuing)."
         )
       }
-    } 
+    }
   }
   
   

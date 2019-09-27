@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Retrieve list of available products. — s2_list • sen2r: Find, Download and Process Sentinel-2 Data</title>
+<title>Retrieve list of available S2 products. — s2_list • sen2r: Find, Download and Process Sentinel-2 Data</title>
 
 
 <!-- jquery -->
@@ -35,9 +35,9 @@
 
 
 
-<meta property="og:title" content="Retrieve list of available products. — s2_list" />
+<meta property="og:title" content="Retrieve list of available S2 products. — s2_list" />
 <meta property="og:description" content="The function retrieves the list of available Sentinel-2
-products basing on search criteria." />
+products satisfying given search criteria." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -113,14 +113,14 @@ products basing on search criteria." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Retrieve list of available products.</h1>
+    <h1>Retrieve list of available S2 products.</h1>
     <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/s2_list.R'><code>R/s2_list.R</code></a></small>
     <div class="hidden name"><code>s2_list.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>The function retrieves the list of available Sentinel-2
-products basing on search criteria.</p>
+products satisfying given search criteria.</p>
     </div>
 
     <pre class="usage"><span class='fu'>s2_list</span>(<span class='kw'>spatial_extent</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>orbit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
@@ -190,7 +190,7 @@ if 'data.table', the output is a data.table with metadata.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Basing on the value of argument `output_type``,
+    <p>Depending on the value of argument `output_type``,
 a vector of available products (being each element an URL
 and its name the product name), or a data.table with product metadata.</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
@@ -198,7 +198,7 @@ and its name the product name), or a data.table with product metadata.</p>
     <p>License: GPL 3.0</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
 <span class='no'>pos</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/sfc.html'>st_sfc</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st.html'>st_point</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>9.85</span>,<span class='fl'>45.81</span>)), <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>)
 <span class='no'>time_window</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"2016-05-01"</span>, <span class='st'>"2017-07-30"</span>))
 
@@ -209,12 +209,118 @@ and its name the product name), or a data.table with product metadata.</p>
   <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='no'>time_window</span>,
   <span class='kw'>orbit</span> <span class='kw'>=</span> <span class='st'>"065"</span>
 )
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>example_s2_list</span>)
-<span class='co'># Print the dates of the retrieved products</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>example_s2_list</span>)</div><div class='output co'>#&gt;                                      S2A_MSIL1C_20160502T102032_N0201_R065_T32TNR_20160502T102027.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('fde01d3f-8a0d-46cb-b65d-3e32eff93f1d')/$value" 
+#&gt;                                      S2A_MSIL1C_20160512T102032_N0202_R065_T32TNR_20160512T102029.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('4b785773-ba94-49b2-ae81-9b4b08749f70')/$value" 
+#&gt;                                      S2A_MSIL1C_20160522T102032_N0202_R065_T32TNR_20160522T102029.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('4abf7965-0b26-431b-8708-74de427c0112')/$value" 
+#&gt;                                      S2A_MSIL1C_20160611T102032_N0202_R065_T32TNR_20160611T102026.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('68afcf6b-4ec6-48da-9b65-6cd41ff47a49')/$value" 
+#&gt;                                      S2A_MSIL1C_20160621T102022_N0204_R065_T32TNR_20160621T102024.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('9bb6d780-c226-4f59-bad0-1daedfdce9d5')/$value" 
+#&gt;                                      S2A_MSIL1C_20160701T102022_N0204_R065_T32TNR_20160701T102057.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('c6577b64-789e-4f7b-ba9e-a58dc4248462')/$value" 
+#&gt;                                      S2A_MSIL1C_20160711T102032_N0204_R065_T32TNR_20160711T102030.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('b61a343c-7f2d-4852-9455-09ee9f31ac35')/$value" 
+#&gt;                                      S2A_MSIL1C_20160721T102032_N0204_R065_T32TNR_20160721T102059.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('694e76ee-308e-4497-8016-87c23974247b')/$value" 
+#&gt;                                      S2A_MSIL1C_20160731T102032_N0204_R065_T32TNR_20160731T102107.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('b7a5f55b-a17e-4fc0-a4a8-9f17f1224df5')/$value" 
+#&gt;                                      S2A_MSIL1C_20160810T102032_N0204_R065_T32TNR_20160810T102044.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('a0508149-b79b-4792-8ead-00784847120b')/$value" 
+#&gt;                                      S2A_MSIL1C_20160820T102022_N0204_R065_T32TNR_20160820T102112.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('1319a17f-8611-4d3d-b4fd-1d38180625b0')/$value" 
+#&gt;                                      S2A_MSIL1C_20160830T102022_N0204_R065_T32TNR_20160830T102052.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('848b6310-f11d-407c-acff-9f48bd76d73e')/$value" 
+#&gt;                                      S2A_MSIL1C_20160909T102022_N0204_R065_T32TNR_20160909T102108.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('846a0222-321c-4caf-8606-40f4719b5356')/$value" 
+#&gt;                                      S2A_MSIL1C_20160919T102022_N0204_R065_T32TNR_20160919T102112.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('e7f860fa-8534-4bb1-aaf5-85271669bf8d')/$value" 
+#&gt;                                      S2A_MSIL1C_20160929T102022_N0204_R065_T32TNR_20160929T102344.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('38fd8601-6b61-4079-9007-21aa5d0659a4')/$value" 
+#&gt;                                      S2A_MSIL1C_20161009T102022_N0204_R065_T32TNR_20161009T102522.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('326c2d14-8da3-47a0-86e5-abbc993c22c4')/$value" 
+#&gt;                                      S2A_MSIL1C_20161019T102032_N0204_R065_T32TNR_20161019T102353.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('02aea734-113c-47e9-9edc-7bb8002b17a1')/$value" 
+#&gt;                                      S2A_MSIL1C_20161029T102132_N0204_R065_T32TNR_20161029T102445.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('6f6edccf-457e-489d-8b5b-8c7e50238905')/$value" 
+#&gt;                                      S2A_MSIL1C_20161108T102232_N0204_R065_T32TNR_20161108T102425.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('dc94e0b3-942c-4448-b6cc-1284f8c62705')/$value" 
+#&gt;                                      S2A_MSIL1C_20161118T102322_N0204_R065_T32TNR_20161118T102318.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('f42fd006-841d-442c-8f02-d02bcc9b294f')/$value" 
+#&gt;                                      S2A_MSIL1C_20161128T102352_N0204_R065_T32TNR_20161128T102354.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('e0610a2c-f257-42de-8914-40a0636c18bd')/$value" 
+#&gt;                                      S2A_MSIL1C_20161208T102422_N0204_R065_T32TNR_20161208T102418.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('64e4337a-c64e-4c23-a653-4cde2d6249a1')/$value" 
+#&gt;                                      S2A_MSIL1C_20161218T102432_N0204_R065_T32TNR_20161218T102606.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('69ad2f6a-a792-460b-af8b-6c0c9f574ea7')/$value" 
+#&gt;                                      S2A_MSIL1C_20161228T102432_N0204_R065_T32TNR_20161228T102428.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('35dc5ae4-ff15-4411-9e0a-7e34c428cd99')/$value" 
+#&gt;                                      S2A_MSIL1C_20170107T102401_N0204_R065_T32TNR_20170107T102658.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('77fde160-69ff-455c-a36a-3748fc057647')/$value" 
+#&gt;                                      S2A_MSIL1C_20170127T102301_N0204_R065_T32TNR_20170127T102258.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('b4b682db-daf0-40d9-9ea7-4f25423fbc42')/$value" 
+#&gt;                                      S2A_MSIL1C_20170206T102211_N0204_R065_T32TNR_20170206T102733.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('ff5d2847-2f53-4875-8d77-d321d6202842')/$value" 
+#&gt;                                      S2A_MSIL1C_20170216T102101_N0204_R065_T32TNR_20170216T102204.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('03d18e2e-0e93-4d7f-a798-9c726d65b5b6')/$value" 
+#&gt;                                      S2A_MSIL1C_20170226T102021_N0204_R065_T32TNR_20170226T102458.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('cb1c6d1c-a6ef-44f6-9ca6-5c5d7d468676')/$value" 
+#&gt;                                      S2A_MSIL1C_20170308T102021_N0204_R065_T32TNR_20170308T102514.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('cda64177-76ca-47b2-a00c-d1606cdc204e')/$value" 
+#&gt;                                      S2A_MSIL1C_20170318T102011_N0204_R065_T32TNR_20170318T102014.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('d9a705d6-1fd7-408b-ae12-984f5261372f')/$value" 
+#&gt;                                      S2A_MSIL1C_20170328T102021_N0204_R065_T32TNR_20170328T102018.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('38b0ffe1-7970-4dc1-8fa7-4264b7c5f46b')/$value" 
+#&gt;                                      S2A_MSIL1C_20170407T102021_N0204_R065_T32TNR_20170407T102343.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('a8b2d2e7-ff89-47cb-bd65-7d906de54353')/$value" 
+#&gt;                                      S2A_MSIL1C_20170417T102021_N0204_R065_T32TNR_20170417T102334.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('f43021b5-cdae-4f51-beaa-fa458b6e3692')/$value" 
+#&gt;                                      S2A_MSIL2A_20170427T102031_N0205_R065_T32TNR_20170427T102025.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('6ad22bb6-42d3-4fcf-915e-4f4a6df1cc62')/$value" 
+#&gt;                                      S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value" 
+#&gt;                                      S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" 
+#&gt;                                      S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" 
+#&gt;                                      S2A_MSIL2A_20170606T102031_N0205_R065_T32TNR_20170606T102456.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('dba86700-3d0a-4f40-97d2-c5d10b702f90')/$value" 
+#&gt;                                      S2A_MSIL2A_20170616T102021_N0205_R065_T32TNR_20170616T102331.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('4bcd07d6-935c-4ff0-875b-b881255d791b')/$value" 
+#&gt;                                      S2A_MSIL2A_20170626T102021_N0205_R065_T32TNR_20170626T102321.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('812bc59b-a6a8-41a7-b9be-b6424c04c7e7')/$value" 
+#&gt;                                      S2B_MSIL1C_20170701T102029_N0205_R065_T32TNR_20170701T102338.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('eec60424-00d5-43b9-8a7e-1c14d7de05b0')/$value" 
+#&gt;                                      S2A_MSIL2A_20170706T102021_N0205_R065_T32TNR_20170706T102301.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('1b893590-7550-4b98-bead-355ad059da37')/$value" 
+#&gt;                                      S2B_MSIL1C_20170711T102029_N0205_R065_T32TNR_20170711T102309.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('14b4a092-2979-4722-b037-c385339b8453')/$value" 
+#&gt;                                      S2A_MSIL1C_20170716T102021_N0205_R065_T32TNR_20170716T102324.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('4958be4f-d88c-45c5-adab-afc7c44a1374')/$value" 
+#&gt;                                      S2B_MSIL1C_20170721T102029_N0205_R065_T32TNR_20170721T102331.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('0684761e-b7d2-4512-a2a5-ead864c57806')/$value" 
+#&gt;                                      S2A_MSIL2A_20170726T102021_N0205_R065_T32TNR_20170726T102259.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('10ee1711-c04f-442a-a878-e9ac275ab011')/$value" </div><div class='input'><span class='co'># Print the dates of the retrieved products</span>
 <span class='fu'><a href='https://rdrr.io/r/base/vector.html'>as.vector</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>sapply</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>example_s2_list</span>), <span class='kw'>function</span>(<span class='no'>x</span>) {
   <span class='fu'><a href='https://rdrr.io/r/base/strptime.html'>strftime</a></span>(<span class='fu'><a href='safe_getMetadata.html'>safe_getMetadata</a></span>(<span class='no'>x</span>,<span class='st'>"nameinfo"</span>)$<span class='no'>sensing_datetime</span>)
-})))
-
+})))</div><div class='output co'>#&gt;  [1] "2016-05-02 12:20:32" "2016-05-12 12:20:32" "2016-05-22 12:20:32"
+#&gt;  [4] "2016-06-11 12:20:32" "2016-06-21 12:20:22" "2016-07-01 12:20:22"
+#&gt;  [7] "2016-07-11 12:20:32" "2016-07-21 12:20:32" "2016-07-31 12:20:32"
+#&gt; [10] "2016-08-10 12:20:32" "2016-08-20 12:20:22" "2016-08-30 12:20:22"
+#&gt; [13] "2016-09-09 12:20:22" "2016-09-19 12:20:22" "2016-09-29 12:20:22"
+#&gt; [16] "2016-10-09 12:20:22" "2016-10-19 12:20:32" "2016-10-29 12:21:32"
+#&gt; [19] "2016-11-08 11:22:32" "2016-11-18 11:23:22" "2016-11-28 11:23:52"
+#&gt; [22] "2016-12-08 11:24:22" "2016-12-18 11:24:32" "2016-12-28 11:24:32"
+#&gt; [25] "2017-01-07 11:24:01" "2017-01-27 11:23:01" "2017-02-06 11:22:11"
+#&gt; [28] "2017-02-16 11:21:01" "2017-02-26 11:20:21" "2017-03-08 11:20:21"
+#&gt; [31] "2017-03-18 11:20:11" "2017-03-28 12:20:21" "2017-04-07 12:20:21"
+#&gt; [34] "2017-04-17 12:20:21" "2017-04-27 12:20:31" "2017-05-07 12:20:31"
+#&gt; [37] "2017-05-17 12:20:31" "2017-05-27 12:20:31" "2017-06-06 12:20:31"
+#&gt; [40] "2017-06-16 12:20:21" "2017-06-26 12:20:21" "2017-07-01 12:20:29"
+#&gt; [43] "2017-07-06 12:20:21" "2017-07-11 12:20:29" "2017-07-16 12:20:21"
+#&gt; [46] "2017-07-21 12:20:29" "2017-07-26 12:20:21"</div><div class='input'>
 <span class='co'># Seasonal-period list</span>
 <span class='no'>example_s2_list</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_list</span>(
   <span class='kw'>spatial_extent</span> <span class='kw'>=</span> <span class='no'>pos</span>,
@@ -222,12 +328,75 @@ and its name the product name), or a data.table with product metadata.</p>
   <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='no'>time_window</span>,
   <span class='kw'>time_period</span> <span class='kw'>=</span> <span class='st'>"seasonal"</span>
 )
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>example_s2_list</span>)
-<span class='co'># Print the dates of the retrieved products</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>example_s2_list</span>)</div><div class='output co'>#&gt;                                      S2A_MSIL1C_20160502T102032_N0201_R065_T32TNR_20160502T102027.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('fde01d3f-8a0d-46cb-b65d-3e32eff93f1d')/$value" 
+#&gt;                                      S2A_MSIL1C_20160509T101032_N0202_R022_T32TNR_20160509T101645.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('abf24c65-2ff6-4c9a-9309-425425475d36')/$value" 
+#&gt;                                      S2A_MSIL1C_20160512T102032_N0202_R065_T32TNR_20160512T102029.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('4b785773-ba94-49b2-ae81-9b4b08749f70')/$value" 
+#&gt;                                      S2A_MSIL1C_20160519T101032_N0202_R022_T32TNR_20160519T101312.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('e1f000b8-e9c3-421b-88c2-08a9046d1a82')/$value" 
+#&gt;                                      S2A_MSIL1C_20160522T102032_N0202_R065_T32TNR_20160522T102029.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('4abf7965-0b26-431b-8708-74de427c0112')/$value" 
+#&gt;                                      S2A_MSIL1C_20160529T101032_N0202_R022_T32TNR_20160529T101030.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('6b88233c-0445-4769-9af8-d7fd9c4a2567')/$value" 
+#&gt;                                      S2A_MSIL1C_20160608T101032_N0202_R022_T32TNR_20160608T101220.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('789b8971-45d1-4917-a588-fec1696a8c46')/$value" 
+#&gt;                                      S2A_MSIL1C_20160611T102032_N0202_R065_T32TNR_20160611T102026.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('68afcf6b-4ec6-48da-9b65-6cd41ff47a49')/$value" 
+#&gt;                                      S2A_MSIL1C_20160618T101032_N0204_R022_T32TNR_20160618T101515.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('e8b6a8c1-04e9-4c58-bd1e-ff93318a852a')/$value" 
+#&gt;                                      S2A_MSIL1C_20160621T102022_N0204_R065_T32TNR_20160621T102024.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('9bb6d780-c226-4f59-bad0-1daedfdce9d5')/$value" 
+#&gt;                                      S2A_MSIL1C_20160628T101032_N0204_R022_T32TNR_20160628T101026.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('f1a23872-a307-4b7f-abfb-e9785250b790')/$value" 
+#&gt;                                      S2A_MSIL1C_20160701T102022_N0204_R065_T32TNR_20160701T102057.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('c6577b64-789e-4f7b-ba9e-a58dc4248462')/$value" 
+#&gt;                                      S2A_MSIL1C_20160708T101032_N0204_R022_T32TNR_20160708T101602.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('12f38f8c-37c0-4ed3-8412-61e32e6d38ca')/$value" 
+#&gt;                                      S2A_MSIL1C_20160711T102032_N0204_R065_T32TNR_20160711T102030.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('b61a343c-7f2d-4852-9455-09ee9f31ac35')/$value" 
+#&gt;                                      S2A_MSIL1C_20160718T101032_N0204_R022_T32TNR_20160718T101028.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('fd770e3f-cb11-4a1a-90e7-077b319a0b9a')/$value" 
+#&gt;                                      S2A_MSIL1C_20160721T102032_N0204_R065_T32TNR_20160721T102059.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('694e76ee-308e-4497-8016-87c23974247b')/$value" 
+#&gt;                                      S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value" 
+#&gt;                                      S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" 
+#&gt;                                      S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" 
+#&gt;                                      S2A_MSIL2A_20170606T102031_N0205_R065_T32TNR_20170606T102456.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('dba86700-3d0a-4f40-97d2-c5d10b702f90')/$value" 
+#&gt;                                      S2A_MSIL2A_20170616T102021_N0205_R065_T32TNR_20170616T102331.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('4bcd07d6-935c-4ff0-875b-b881255d791b')/$value" 
+#&gt;                                      S2A_MSIL2A_20170626T102021_N0205_R065_T32TNR_20170626T102321.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('812bc59b-a6a8-41a7-b9be-b6424c04c7e7')/$value" 
+#&gt;                                      S2B_MSIL1C_20170701T102029_N0205_R065_T32TNR_20170701T102338.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('eec60424-00d5-43b9-8a7e-1c14d7de05b0')/$value" 
+#&gt;                                      S2A_MSIL2A_20170706T102021_N0205_R065_T32TNR_20170706T102301.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('1b893590-7550-4b98-bead-355ad059da37')/$value" 
+#&gt;                                      S2B_MSIL1C_20170711T102029_N0205_R065_T32TNR_20170711T102309.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('14b4a092-2979-4722-b037-c385339b8453')/$value" 
+#&gt;                                      S2A_MSIL1C_20170716T102021_N0205_R065_T32TNR_20170716T102324.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('4958be4f-d88c-45c5-adab-afc7c44a1374')/$value" 
+#&gt;                                      S2B_MSIL1C_20170721T102029_N0205_R065_T32TNR_20170721T102331.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('0684761e-b7d2-4512-a2a5-ead864c57806')/$value" 
+#&gt;                                      S2A_MSIL2A_20170726T102021_N0205_R065_T32TNR_20170726T102259.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('10ee1711-c04f-442a-a878-e9ac275ab011')/$value" </div><div class='input'><span class='co'># Print the dates of the retrieved products</span>
 <span class='fu'><a href='https://rdrr.io/r/base/vector.html'>as.vector</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>sapply</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>example_s2_list</span>), <span class='kw'>function</span>(<span class='no'>x</span>) {
   <span class='fu'><a href='https://rdrr.io/r/base/strptime.html'>strftime</a></span>(<span class='fu'><a href='safe_getMetadata.html'>safe_getMetadata</a></span>(<span class='no'>x</span>,<span class='st'>"nameinfo"</span>)$<span class='no'>sensing_datetime</span>)
-})))
-}</div></pre>
+})))</div><div class='output co'>#&gt;  [1] "2016-05-02 12:20:32" "2016-05-09 12:10:32" "2016-05-12 12:20:32"
+#&gt;  [4] "2016-05-19 12:10:32" "2016-05-22 12:20:32" "2016-05-29 12:10:32"
+#&gt;  [7] "2016-06-08 12:10:32" "2016-06-11 12:20:32" "2016-06-18 12:10:32"
+#&gt; [10] "2016-06-21 12:20:22" "2016-06-28 12:10:32" "2016-07-01 12:20:22"
+#&gt; [13] "2016-07-08 12:10:32" "2016-07-11 12:20:32" "2016-07-18 12:10:32"
+#&gt; [16] "2016-07-21 12:20:32" "2017-05-07 12:20:31" "2017-05-17 12:20:31"
+#&gt; [19] "2017-05-27 12:20:31" "2017-06-06 12:20:31" "2017-06-16 12:20:21"
+#&gt; [22] "2017-06-26 12:20:21" "2017-07-01 12:20:29" "2017-07-06 12:20:21"
+#&gt; [25] "2017-07-11 12:20:29" "2017-07-16 12:20:21" "2017-07-21 12:20:29"
+#&gt; [28] "2017-07-26 12:20:21"</div><div class='input'># }
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -239,8 +408,10 @@ and its name the product name), or a data.table with product metadata.</p>
     </ul>
 
     <h2>Author</h2>
-    <p>Lorenzo Busetto, phD (2019) <a href='mailto:lbusett@gmail.com'>lbusett@gmail.com</a></p>
-<p>Luigi Ranghetti, phD (2019) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p>
+    <p>Lorenzo Busetto, phD (2019) <a href='mailto:lbusett@gmail.com'>lbusett@gmail.com</a> - Inspired by
+function <code>getSentinel_query</code> of package <code>getSpatialData</code> by J. Schwalb-Willmann
+(https://github.com/16EAGLE/getSpatialData)</p>
+<p>Luigi Ranghetti, phD (2019) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
   </div>
 </div>
 

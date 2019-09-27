@@ -7,12 +7,8 @@ testthat::skip_on_travis()
 # To perform the test also on download, replace 'test_download = FALSE' with 'TRUE'.
 test_download = FALSE
 
-example_dir <- system.file("extdata/example_files", package = "sen2r")
-dir.create(example_dir, showWarnings = FALSE)
-safe_dir <- file.path(example_dir, "safe")
+safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
 dir.create(safe_dir, showWarnings = FALSE)
-dir.create(file.path(safe_dir, "L2A"), showWarnings = FALSE)
-dir.create(file.path(safe_dir, "L1C"), showWarnings = FALSE)
 
 
 testthat::test_that(
@@ -32,10 +28,10 @@ testthat::test_that(
     suppressWarnings(s2_download(
       s2_l2a_list,
       downloader = "builtin",
-      outdir = file.path(safe_dir, "L2A"),
+      outdir = safe_dir,
       overwrite = test_download
     )) # suppressWarnings used to manage possible warnings for skept Md5sum checks
-    exp_outsafe_1 <- file.path(safe_dir, "L2A", names(s2_l2a_list))
+    exp_outsafe_1 <- file.path(safe_dir, names(s2_l2a_list))
     testthat::expect_true(all(file.exists(exp_outsafe_1)))
     
     # test raster metadata
@@ -44,8 +40,8 @@ testthat::test_that(
       "GRANULE/L2A_T32TNR_A010601_20170703T101041",
       "IMG_DATA/R10m/L2A_T32TNR_20170703T101021_B02_10m.jp2"
     ), format = "list")[[1]]
-    testthat::expect_equal(exp_meta_ex$size, c("x"=10980, "y"=10980))
-    testthat::expect_equal(exp_meta_ex$res, c("x"=10, "y"=10))
+    testthat::expect_equal(exp_meta_ex$size, c("x" = 10980, "y" = 10980))
+    testthat::expect_equal(exp_meta_ex$res, c("x"  = 10,    "y" = 10))
     testthat::expect_equal(
       exp_meta_ex$bbox, 
       sf::st_bbox(
@@ -88,7 +84,7 @@ testthat::test_that(
     testthat::expect_equal(safe_metadata2$tiles, "32TNR")
     testthat::expect_equal(safe_metadata2$level, "2A")
     testthat::expect_equal(safe_metadata2$id_tile, safe_metadata2$tiles)
-
+    
   }
 )
 
@@ -110,10 +106,10 @@ testthat::test_that(
     suppressWarnings(s2_download(
       s2_l1c_list,
       downloader = "aria2",
-      outdir = file.path(safe_dir, "L1C"),
+      outdir = safe_dir,
       overwrite = test_download
     )) # suppressWarnings used to manage possible warnings for skept Md5sum checks
-    exp_outsafe_2 <- file.path(safe_dir, "L1C", names(s2_l1c_list))
+    exp_outsafe_2 <- file.path(safe_dir, names(s2_l1c_list))
     testthat::expect_true(all(file.exists(exp_outsafe_2)))
     
     # test raster metadata
@@ -122,8 +118,8 @@ testthat::test_that(
       "GRANULE/L1C_T32TNR_A010601_20170703T101041", 
       "IMG_DATA/T32TNR_20170703T101021_B01.jp2"
     ), format = "list")[[1]]
-    testthat::expect_equal(exp_meta_ex$size, c("x"=1830, "y"=1830))
-    testthat::expect_equal(exp_meta_ex$res, c("x"=60, "y"=60))
+    testthat::expect_equal(exp_meta_ex$size, c("x" = 1830, "y" = 1830))
+    testthat::expect_equal(exp_meta_ex$res, c("x"  = 60,   "y" = 60))
     testthat::expect_equal(
       exp_meta_ex$bbox, 
       sf::st_bbox(

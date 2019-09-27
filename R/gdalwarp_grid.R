@@ -1,5 +1,5 @@
-#' @title Warp basing on the grid of another file
-#' @description The function apply `gdalwarp`` to build rasters with the
+#' @title Warp a raster file aligning it on the grid of another file
+#' @description The function applies `gdalwarp` to build rasters with the
 #'  same projection, resolution and grid alignment of another raster.
 #'  If not specified, the output format of each file is the same of the
 #'  corresponding source file.
@@ -10,21 +10,33 @@
 #'  the format of every input filename.
 #' @param r Resampling_method ("near"|"bilinear"|"cubic"|"cubicspline"|
 #' "lanczos"|"average"|"mode"|"max"|"min"|"med"|"q1"|"q3").
-#' @return NULL
+#' @return NULL (the function is called for its side effects)
 #' @importFrom methods as
 #' @importFrom reticulate py_to_r
 #' @importFrom sf st_as_sfc
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @examples
-#' \dontrun{
-#' ex_sel <- c("/path/of/existing/input/file.tif",
-#'             "/path/of/existing/input/anotherfile.jp2")
-#' ex_ref <- "/path/of/the/reference/file.jp2"
-#' ex_out <- c("/path/of/the/output/file.tif",
-#'             "/path/of/the/output/anotherfile.jp2")
+#' \donttest{
+#' # Define file names
+#' ex_sel <- system.file(
+#'   "extdata/out/S2A2A_20170703_022_Barbellino_BOA_10.tif",
+#'   package = "sen2r"
+#' )
+#' ex_ref <- system.file(
+#'   "extdata/out/S2A2A_20170703_022_Barbellino_SCL_10.tif",
+#'   package = "sen2r"
+#' )
+#' ex_out <- tempfile(fileext = "_BOA_out.tif")
 #'
-#' gdalwarp_grid(ex_sel, ex_out, ex_ref, dstnodata=0, overwrite=TRUE)
+#' # Run function
+#' sen2r:::gdalwarp_grid(ex_sel, ex_out, ref = ex_ref)
+#' 
+#' # Show output
+#' par(mfrow = c(1,3))
+#' par(mar = rep(0,4)); image(stars::read_stars(ex_sel), rgb = 4:2, maxColorValue = 3500)
+#' par(mar = rep(2/3,4)); image(stars::read_stars(ex_ref))
+#' par(mar = rep(0,4)); image(stars::read_stars(ex_out), rgb = 4:2, maxColorValue = 3500)
 #' }
 
 gdalwarp_grid <- function(srcfiles,
@@ -88,7 +100,7 @@ gdalwarp_grid <- function(srcfiles,
     )
     
     # allineate out_extent to ref grid
-    out_bbox_mod <- round((out_bbox - ref_min) / ref_res) * ref_res + ref_min
+    out_bbox_mod <- ceiling((out_bbox - ref_min) / ref_res) * ref_res + ref_min
     
     
     # warp

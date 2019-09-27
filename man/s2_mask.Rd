@@ -115,7 +115,7 @@ format recognised by GDAL). Default is the same format of input images
 \item{subdirs}{(optional) Logical: if TRUE, different indices are
 placed in separated \code{outfile} subdirectories; if FALSE, they are placed in
 \code{outfile} directory; if NA (default), subdirectories are created only if
-more than a single spectral index is required.}
+more than a single product is required.}
 
 \item{compress}{(optional) In the case a GTiff format is
 present, the compression indicated with this parameter is used.}
@@ -158,6 +158,34 @@ of masked rasters.
 \note{
 License: GPL 3.0
 }
+\examples{
+\donttest{
+# Define file names
+ex_in <- system.file(
+  "extdata/out/S2A2A_20170703_022_Barbellino_RGB432B_10.tif",
+  package = "sen2r"
+)
+ex_mask <- system.file(
+  "extdata/out/S2A2A_20170703_022_Barbellino_SCL_10.tif",
+  package = "sen2r"
+)
+
+# Run function
+ex_out <- s2_mask(
+  infiles = ex_in,
+  maskfiles = ex_mask,
+  mask_type = "clear_sky",
+  outdir = tempdir()
+)
+ex_out
+
+# Show output
+par(mfrow = c(1,3))
+par(mar = rep(0,4)); image(stars::read_stars(ex_in), rgb = 1:3)
+par(mar = rep(2/3,4)); image(stars::read_stars(ex_mask))
+par(mar = rep(0,4)); image(stars::read_stars(ex_out), rgb = 1:3)
+}
+}
 \author{
-Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

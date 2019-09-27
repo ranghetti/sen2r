@@ -23,9 +23,9 @@
 #' @export
 #' @importFrom jsonlite fromJSON
 #' @import data.table
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
-#' @examples \dontrun{
+#' @examples
 #' # Show index names
 #' list_indices(c("name","longname"))
 #' 
@@ -34,7 +34,6 @@
 #' 
 #' # Return all index names (including unchecked)
 #' list_indices("name", all = TRUE)
-#' }
 
 list_indices <- function(values, pattern="", all=FALSE) {
   
@@ -42,7 +41,7 @@ list_indices <- function(values, pattern="", all=FALSE) {
   create_indices_db()
   
   # read indices database
-  json_path <- system.file("extdata","indices.json",package="sen2r")
+  json_path <- system.file("extdata/settings/indices.json",package="sen2r")
   indices <- jsonlite::fromJSON(json_path)
   
   # select requested values from the table

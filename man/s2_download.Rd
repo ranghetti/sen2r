@@ -27,6 +27,9 @@ where the files should be created (default: current directory).}
 \item{overwrite}{Logical value: should existing output archives be
 overwritten? (default: FALSE)}
 }
+\value{
+NULL (the function is called for its side effects)
+}
 \description{
 The function downloads a single S2 product.
 Input filename must be an element obtained with
@@ -66,7 +69,7 @@ s2_download(example_s2_list, outdir=tempdir())
 }
 }
 \author{
-Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 
-Lorenzo Busetto, phD (2019) \email{ranghetti.l@irea.cnr.it}
+Lorenzo Busetto, phD (2019) \email{lbusett@gmail.com}
 }

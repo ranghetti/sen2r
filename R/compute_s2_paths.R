@@ -2,7 +2,7 @@
 #' @description `compute_s2_paths` is an internal function
 #'  (to be used within [sen2r()])
 #'  which computes the names of the required output image files
-#'  (see details). 
+#'  (see details).
 #'  The function was split from [sen2r()] because this code
 #'  is called twice (and to shorten the main function).
 #' @details `compute_s2_paths` is structured in the following way:
@@ -38,26 +38,26 @@
 #'  products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").
 #' @param force_tiles (optional) Logical: passed to [safe_shortname] (default: FALSE).
 #' @param check_tmp (optional) Logical: if TRUE (default), temporary files
-#'  are also searched when `exi` names are computed; 
+#'  are also searched when `exi` names are computed;
 #'  if FALSE, only non temporary files are searched.
 #' @param ignorelist Vector of output files to be ignored.
 #'
-#' @author Luigi Ranghetti, phD (2019) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @import data.table
 
-compute_s2_paths <- function(pm, 
-                             s2_list_l1c, 
-                             s2_list_l2a, 
+compute_s2_paths <- function(pm,
+                             s2_list_l1c,
+                             s2_list_l2a,
                              tmpdir,
-                             list_prods, 
+                             list_prods,
                              force_tiles = FALSE,
                              check_tmp = TRUE,
                              ignorelist) {
   
   # to avoid NOTE on check
   . <- type <- mission <- level <- id_orbit <- extent_name <- file_ext <-
-    mission <- level <- sensing_date <- id_orbit <- prod_type <- res <- 
+    mission <- level <- sensing_date <- id_orbit <- prod_type <- res <-
     sensing_datetime <- id_tile <- NULL
   
   
@@ -97,7 +97,7 @@ compute_s2_paths <- function(pm,
   )
   
   # File formats
-  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))$drivers
+  gdal_formats <- fromJSON(system.file("extdata/settings/gdal_formats.json",package="sen2r"))$drivers
   sel_driver <- gdal_formats[gdal_formats$name==pm$outformat,]
   sel_rgb_driver <- gdal_formats[gdal_formats$name==pm$rgb_outformat,]
   if (nrow(sel_driver)==0) {
@@ -183,14 +183,14 @@ compute_s2_paths <- function(pm,
   # function to remove duplicate elements of a vector
   remove_duplicates <- function(x) {x[!duplicated(x)]}
   
-  # function to merge exp_paths (files required as outputs) 
+  # function to merge exp_paths (files required as outputs)
   # to req_paths (files required as intermediate steps)
   merge_exp_req <- function(exp_paths, req_paths, step) {
     sapply(names(exp_paths[[step]]), function(prod) {
       c(
-        if (output_req[step]) {exp_paths[[step]][[prod]]}, 
+        if (output_req[step]) {exp_paths[[step]][[prod]]},
         unlist(sapply(
-          req_paths[gsub("\\..*$","",names(which(output_dep==step)))], 
+          req_paths[gsub("\\..*$","",names(which(output_dep==step)))],
           function(sellist) {sellist[[prod]]}
         ))
       ) %>%
@@ -216,49 +216,49 @@ compute_s2_paths <- function(pm,
   exi_paths <- list(
     "tiles" = sapply(list_prods, function(prod) {
       list.files(
-        file.path(paths["tiles"], if (pm$path_subdirs) {prod}), 
+        file.path(paths["tiles"], if (pm$path_subdirs) {prod}),
         paste0("^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([0-9]{2}[A-Z]{3})\\_(",prod,")\\_([126]0)\\.?(",out_ext["tiles"],")$"),
         full.names=TRUE
       )
     }, simplify = FALSE, USE.NAMES = TRUE),
     "merged" = sapply(list_prods[list_prods != "SCL"], function(prod) {
       list.files(
-        file.path(paths["merged"], if (pm$path_subdirs) {prod}), 
+        file.path(paths["merged"], if (pm$path_subdirs) {prod}),
         paste0("^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_\\_(",prod,")\\_([126]0)\\.?(",out_ext["merged"],")$"),
         full.names=TRUE
       )
     }, simplify = FALSE, USE.NAMES = TRUE),
     "warped" = sapply(list_prods[list_prods != "SCL"], function(prod) {
       list.files(
-        file.path(paths["warped"], if (pm$path_subdirs) {prod}), 
+        file.path(paths["warped"], if (pm$path_subdirs) {prod}),
         paste0("^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([^\\_\\.]*)\\_(",prod,")\\_([126]0)\\.?(",out_ext["warped"],")$"),
         full.names=TRUE
       )
     }, simplify = FALSE, USE.NAMES = TRUE),
     "warped_scl" = sapply(list_prods[list_prods == "SCL"], function(prod) {
       list.files(
-        file.path(paths["warped_scl"], if (pm$path_subdirs) {prod}), 
+        file.path(paths["warped_scl"], if (pm$path_subdirs) {prod}),
         paste0("^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([^\\_\\.]*)\\_(",prod,")\\_([126]0)\\.?(",out_ext["warped_scl"],")$"),
         full.names=TRUE
       )
     }, simplify = FALSE, USE.NAMES = TRUE),
     "rgb" = sapply(list_rgb, function(prod) {
       list.files(
-        file.path(paths["rgb"], if (pm$path_subdirs) {prod}), 
+        file.path(paths["rgb"], if (pm$path_subdirs) {prod}),
         paste0("^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([^\\_\\.]*)\\_(",prod,")\\_([126]0)\\.?(",out_ext["rgb"],")$"),
         full.names=TRUE
       )
     }, simplify = FALSE, USE.NAMES = TRUE),
     "masked" = sapply(list_prods[list_prods != "SCL"], function(prod) {
       list.files(
-        file.path(paths["masked"], if (pm$path_subdirs) {prod}), 
+        file.path(paths["masked"], if (pm$path_subdirs) {prod}),
         paste0("^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([^\\_\\.]*)\\_(",prod,")\\_([126]0)\\.?(",out_ext["masked"],")$"),
         full.names=TRUE
       )
     }, simplify = FALSE, USE.NAMES = TRUE),
     "indices" = sapply(list_indices, function(prod) {
       list.files(
-        file.path(paths["indices"], if (pm$path_subdirs) {prod}), 
+        file.path(paths["indices"], if (pm$path_subdirs) {prod}),
         paste0("^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([^\\_\\.]*)\\_(",prod,")\\_([126]0)\\.?(",out_ext["indices"],")$"),
         full.names=TRUE
       )
@@ -276,12 +276,12 @@ compute_s2_paths <- function(pm,
       if (is.null(table$file_ext)) {table$file_ext <- character()}
       table <- table[
         type != "unrecognised" &
-          mission %in% toupper(substr(pm$sel_sensor,3,3)) & 
+          mission %in% toupper(substr(pm$sel_sensor,3,3)) &
           level %in% toupper(substr(pm$s2_levels,2,3))
         ,]
       if (length(pm$timewindow)>0 & !anyNA(pm$timewindow) & length(table$sensing_date)>0) {
         table <- table[
-          table$sensing_date>=pm$timewindow[1] & 
+          table$sensing_date>=pm$timewindow[1] &
             table$sensing_date<=pm$timewindow[2]
           ,]
       }
@@ -348,8 +348,8 @@ compute_s2_paths <- function(pm,
             paths["tiles"],
             if (pm$path_subdirs) {prod} else {""},
             basename(safe_shortname(
-              safe, prod_type=prod, ext=out_ext["tiles"], 
-              res=pm$res_s2, tiles=pm$s2tiles_selected, 
+              safe, prod_type=prod, ext=out_ext["tiles"],
+              res=pm$res_s2, tiles=pm$s2tiles_selected,
               force_tiles=force_tiles, multiple_names=TRUE
             ))
           )
@@ -399,7 +399,7 @@ compute_s2_paths <- function(pm,
           mission,
           level,"_",
           strftime(sensing_date,"%Y%m%d"),"_",
-          id_orbit,"_", 
+          id_orbit,"_",
           ExtentName,"_",
           prod_type,"_",
           substr(res,1,2),".",
@@ -427,7 +427,7 @@ compute_s2_paths <- function(pm,
           mission,
           level,"_",
           strftime(sensing_date,"%Y%m%d"),"_",
-          id_orbit,"_", 
+          id_orbit,"_",
           ExtentName,"_",
           prod_type,"_",
           substr(res,1,2),".",
@@ -494,7 +494,7 @@ compute_s2_paths <- function(pm,
           mission,
           level,"_",
           strftime(sensing_date,"%Y%m%d"),"_",
-          id_orbit,"_", 
+          id_orbit,"_",
           ExtentName,"_",
           prod_type,"_",
           substr(res,1,2),".",
@@ -524,7 +524,7 @@ compute_s2_paths <- function(pm,
             mission,
             level,"_",
             strftime(sensing_date,"%Y%m%d"),"_",
-            id_orbit,"_", 
+            id_orbit,"_",
             ExtentName,"_",
             "<index>_",
             substr(res,1,2),".",
@@ -568,7 +568,7 @@ compute_s2_paths <- function(pm,
           mission,
           level,"_",
           strftime(sensing_date,"%Y%m%d"),"_",
-          id_orbit,"_", 
+          id_orbit,"_",
           ExtentName,"_",
           pm$index_source,"_",
           substr(res,1,2),".",
@@ -597,7 +597,7 @@ compute_s2_paths <- function(pm,
             mission,
             level,"_",
             strftime(sensing_date,"%Y%m%d"),"_",
-            id_orbit,"_", 
+            id_orbit,"_",
             ExtentName,"_",
             prod,"_",
             substr(res,1,2),".",
@@ -621,7 +621,7 @@ compute_s2_paths <- function(pm,
         mission,
         "2A","_",
         strftime(sensing_date,"%Y%m%d"),"_",
-        id_orbit,"_", 
+        id_orbit,"_",
         ExtentName,"_",
         "SCL","_",
         substr(res,1,2),".",
@@ -652,7 +652,7 @@ compute_s2_paths <- function(pm,
             mission,
             level,"_",
             strftime(sensing_date,"%Y%m%d"),"_",
-            id_orbit,"_", 
+            id_orbit,"_",
             ExtentName,"_",
             prod,"_",
             substr(res,1,2),".",
@@ -682,7 +682,7 @@ compute_s2_paths <- function(pm,
             mission,
             level,"_",
             strftime(sensing_date,"%Y%m%d"),"_",
-            id_orbit,"_", 
+            id_orbit,"_",
             "_",
             "SCL","_",
             substr(res,1,2),".",
@@ -712,7 +712,7 @@ compute_s2_paths <- function(pm,
             mission,
             level,"_",
             strftime(sensing_date,"%Y%m%d"),"_",
-            id_orbit,"_", 
+            id_orbit,"_",
             "_",
             prod,"_",
             substr(res,1,2),".",
@@ -742,7 +742,7 @@ compute_s2_paths <- function(pm,
             mission,
             level,"_",
             strftime(sensing_date,"%Y%m%d"),"_",
-            id_orbit,"_", 
+            id_orbit,"_",
             "[0-9]{2}[A-Z]{3}_",
             prod,"_",
             substr(res,1,2),".",

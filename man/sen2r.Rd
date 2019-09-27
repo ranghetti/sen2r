@@ -189,7 +189,7 @@ Default value is 80.
 This parameter is different from \code{max_cloud_safe}, because:
 \enumerate{
 \item it is computed over the selected extent;
-\item it is computed basing on the cloud mask defined as above.
+\item it is computed starting from the cloud mask defined as above.
 Notice that the percentage is computed on non-NA values (if input images
 had previously been clipped and masked using a polygon, the percentage is
 computed on the surface included in the masking polygons).
@@ -396,4 +396,86 @@ processing chain to find, download and pre-process Sentinel-2
 data. Input is a set of parameters that can be passed with a
 list or file (parameter \code{param_list}) or singularly (see the
 descriptions of all the other parameters).
+}
+\examples{
+\donttest{
+# Open an interactive section
+if (interactive()) {
+  sen2r()
+}
+
+# Launch a processing from a saved JSON file (here we use an internal function
+# to create a testing json file - this is not intended to be used by final users)
+json_path <- sen2r:::build_example_param_file()
+
+out_paths_2 <- sen2r(json_path)
+# Notice that passing the path of a JSON file results in launching
+# a session without opening the gui, unless gui = TRUE is passed.
+
+# Launch a processing using function arguments
+safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
+out_dir_3 <- tempfile(pattern = "Barbellino_")
+out_paths_3 <- sen2r(
+  gui = FALSE,
+  step_atmcorr = "l2a",
+  extent = system.file("extdata/vector/barbellino.geojson", package = "sen2r"),
+  extent_name = "Barbellino",
+  timewindow = as.Date("2017-07-03"),
+  list_prods = c("TOA","BOA","SCL"),
+  list_indices = c("NDVI","MSAVI2"),
+  list_rgb = c("RGB432T", "RGB432B", "RGB843B"),
+  path_l1c = safe_dir,
+  path_l2a = safe_dir,
+  path_out = out_dir_3
+)
+
+# Launch a processing based on a JSON file, but changing some parameters
+# (e.g., the same processing on a different extent)
+out_dir_4 <- tempfile(pattern = "Scalve_")
+out_paths_4 <- sen2r(
+  param_list = json_path,
+  extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
+  extent_name = "Scalve",
+  path_out = out_dir_4
+)
+
+
+# Show outputs (loading thumbnails)
+
+# Generate thumbnails names
+thumb_2 <- file.path(dirname(out_paths_2), "thumbnails", gsub("tif$", "jpg", basename(out_paths_2)))
+thumb_2[grep("SCL", thumb_2)] <-
+  gsub("jpg$", "png", thumb_2[grep("SCL", thumb_2)])
+thumb_4 <- file.path(dirname(out_paths_4), "thumbnails", gsub("tif$", "jpg", basename(out_paths_4)))
+thumb_4[grep("SCL", thumb_4)] <-
+  gsub("jpg$", "png", thumb_4[grep("SCL", thumb_4)])
+  
+par(mfrow = c(1,3), mar = rep(0,4))
+image(stars::read_stars(thumb_2[grep("TOA", thumb_2)]), rgb = 1:3)
+image(stars::read_stars(thumb_2[grep("BOA", thumb_2)]), rgb = 1:3)
+image(stars::read_stars(thumb_2[grep("SCL", thumb_2)]), rgb = 1:3)
+
+par(mfrow = c(1,2), mar = rep(0,4))
+image(stars::read_stars(thumb_2[grep("MSAVI2", thumb_2)]), rgb = 1:3)
+image(stars::read_stars(thumb_2[grep("NDVI", thumb_2)]), rgb = 1:3)
+
+par(mfrow = c(1,3), mar = rep(0,4))
+image(stars::read_stars(thumb_2[grep("RGB432T", thumb_2)]), rgb = 1:3)
+image(stars::read_stars(thumb_2[grep("RGB432B", thumb_2)]), rgb = 1:3)
+image(stars::read_stars(thumb_2[grep("RGB843B", thumb_2)]), rgb = 1:3)
+
+par(mfrow = c(1,3), mar = rep(0,4))
+image(stars::read_stars(thumb_4[grep("TOA", thumb_4)]), rgb = 1:3)
+image(stars::read_stars(thumb_4[grep("BOA", thumb_4)]), rgb = 1:3)
+image(stars::read_stars(thumb_4[grep("SCL", thumb_4)]), rgb = 1:3)
+
+par(mfrow = c(1,2), mar = rep(0,4))
+image(stars::read_stars(thumb_4[grep("MSAVI2", thumb_4)]), rgb = 1:3)
+image(stars::read_stars(thumb_4[grep("NDVI", thumb_4)]), rgb = 1:3)
+
+par(mfrow = c(1,3), mar = rep(0,4))
+image(stars::read_stars(thumb_4[grep("RGB432T", thumb_4)]), rgb = 1:3)
+image(stars::read_stars(thumb_4[grep("RGB432B", thumb_4)]), rgb = 1:3)
+image(stars::read_stars(thumb_4[grep("RGB843B", thumb_4)]), rgb = 1:3)
+}
 }

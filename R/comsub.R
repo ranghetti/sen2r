@@ -8,7 +8,7 @@
 #'  " " to compare words instead of characters.
 #' @return A character with the longest common initial substring
 #'
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note Modified from a suggestion taken from
 #'  [stackoverflow](https://stackoverflow.com/questions/28273716/r-implementation-for-finding-the-longest-common-starting-substrings-in-a-set-of).
 #' @export
@@ -33,12 +33,7 @@ comsub <- function(data, sep="") {
       apply(2, function(i){!length(unique(i))==1}) %>%
       which.max() -1
   } else {
-    length(data_spl[[1]]) - 1 # FIXME ok for dir  with "/", but not with ""
+    length(data_spl[[1]]) - 1 # FIXME ok for dir with "/", but not with ""
   }
   paste(c(data_spl[[1]][seq_len(which_max)],""), collapse=sep)
 }
-
-
-
-
-

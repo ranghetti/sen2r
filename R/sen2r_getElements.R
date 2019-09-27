@@ -10,7 +10,7 @@
 #'  and a list with only the element "type"='unrecognised' is returned.
 #' @return A data.table, data.frame or list of the output metadata.
 #'
-#' @author Luigi Ranghetti, phD (2019) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @export
 #' @import data.table

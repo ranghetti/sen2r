@@ -9,6 +9,9 @@
 * Sen2Cor v. 2.8.0 (faster and using less memory) is now installed by default.
 
 ## Major changes
+* **`sen2r`** package directory is no more used to store files, but a subfolder `.sen2r` of the user Home directory is created and used. 
+    In this way, reinstalling sen2r will not require anymore to reinstall runtime dependencies / to reconfigure the package. 
+    The permission to write on this folder is asked to the user when the package is loaded for the first time.
 * `s2_list()` and `s2_download()` now use internal methods instead of calling python function derived from s2download scripts by Hagolle (this substantially improve the speed of SAFE search), which were removed.
 * **`sen2r`** is now supported also on MacOS.
 
@@ -22,6 +25,7 @@
 * `raster_metadata()`, to get raster metadata, without rgdal dependency.
 * `check_scihub_login()` to check if SciHub credentials are right.
 * `check_scihub_connection()` to check for internet connectivity.
+* `build_example_param_file()` (not exported) to build an example parameter file.
 
 ## Other changes
 * Packages stability was improved by adding test functions, working with **`testthat`**.
@@ -35,8 +39,10 @@
 * Several "soft" error/warning messages were introduced.
 * ENVI headers now includes some information about band names (TOA/BOA) and SCL classes.
 * Coupling SAFE: in offline mode, if some L2A products exists but not the corresponding L1C, and TOA-derived products are required, only the "coupled" SAFE archives are used.
+* Small base example files were added to the package for testing purposes.
+* Sen2Cor version which the user wants to install can be chosen in the GUI.
+* Documentation was updated and improved, in particular adding function examples.
 * Unused old code was removed.
-* Documentation was updated.
 * Several bugs were fixed.
 
 

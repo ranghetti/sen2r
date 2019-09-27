@@ -1,19 +1,15 @@
-context("Test compute spectral indices")
-testthat::skip_on_cran()
-testthat::skip_on_travis()
+context("Test compute spectral indices - main function")
+testthat::skip_on_cran() # because using runtime GDAL
+testthat::skip_on_travis() # because required SAFE do not exists
 
-example_dir <- system.file("extdata/example_files", package = "sen2r")
-dir.create(example_dir, showWarnings = FALSE)
-safe_dir <- file.path(example_dir, "safe")
+safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
 dir.create(safe_dir, showWarnings = FALSE)
-dir.create(file.path(safe_dir, "L2A"), showWarnings = FALSE)
-dir.create(file.path(safe_dir, "L1C"), showWarnings = FALSE)
 
-outdir_11 <- file.path(tempdir(), "out_test11")
-dir.create(dirname(outdir_11), showWarnings = FALSE)
 testthat::test_that(
   "Tests on indices computation, on unrequired BOA, with clip ", {
     
+    outdir_11 <- file.path(tempdir(), "out_test11")
+    dir.create(dirname(outdir_11), showWarnings = FALSE)
     exp_outpath_11 <- file.path(
       outdir_11, c("NDVI","MSAVI2"), 
       c("S2A2A_20170703_022_Scalve_NDVI_10.tif","S2A2A_20170703_022_Scalve_MSAVI2_10.tif")
@@ -23,14 +19,14 @@ testthat::test_that(
       gui = FALSE,
       online = TRUE,
       step_atmcorr = "l2a", # to avoid checks on Sen2Cor
-      extent = file.path(example_dir, "scalve.kml"),
+      extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
       extent_name = "Scalve",
       extent_as_mask = TRUE,
       timewindow = as.Date("2017-07-03"),
       list_indices = c("NDVI","MSAVI2"),
       mask_type = NA,
       path_out = outdir_11,
-      path_l2a = file.path(safe_dir, "L2A"),
+      path_l2a = safe_dir,
       parallel = FALSE
     )
     testthat::expect_true(all(file.exists(exp_outpath_11)))
@@ -102,74 +98,63 @@ testthat::test_that(
 )
 
 
+context("Test compute spectral indices - s2_calcindices()")
+# testthat::skip_on_cran()
+# testthat::skip_on_travis()
+ref_dir <- system.file("extdata/out", package = "sen2r")
+
+outdir_12 <- file.path(tempdir(), "out_test12")
 testthat::test_that(
   "Tests on indices computation, on required TOA, type Float, with clip and mask ", {
     
-    testthat::expect_true(dir.exists(outdir_11))
-    exp_outpath_12 <- file.path(
-      outdir_11, c("TOA","EVI"), 
-      c("S2A1C_20170703_022_Scalve_TOA_10.tif","S2A1C_20170703_022_Scalve_EVI_10.tif")
-    )
-    sen2r(
-      gui = FALSE,
-      online = FALSE,
-      step_atmcorr = "l2a", # to avoid checks on Sen2Cor
-      extent = file.path(example_dir, "scalve.kml"),
-      extent_name = "Scalve",
-      extent_as_mask = TRUE,
-      timewindow = as.Date("2017-07-03"),
-      list_prods = "TOA",
-      list_indices = "EVI",
-      index_source = "TOA",
-      index_datatype = "Float32",
-      mask_type = "cloud_and_shadow",
-      path_out = outdir_11,
-      path_l1c = file.path(safe_dir, "L1C"),
-      path_l2a = file.path(safe_dir, "L2A"),
-      parallel = FALSE,
-      overwrite = TRUE
+    dir.create(outdir_12, showWarnings = FALSE)
+    exp_outpath_12 <- file.path(outdir_12, "S2A1C_20170703_022_Barbellino_EVI_10.tif")
+    unlink(exp_outpath_12)
+    s2_calcindices(
+      infiles = file.path(ref_dir, "S2A1C_20170703_022_Barbellino_TOA_10.tif"),
+      indices = "EVI",
+      source = "TOA",
+      outdir = outdir_12,
+      dataType = "Float32"
     )
     testthat::expect_true(all(file.exists(exp_outpath_12)))
     
     # test on raster metadata
-    exp_meta_r <- raster_metadata(exp_outpath_12) # default format: data.table
+    exp_meta_r <- raster_metadata(
+      exp_outpath_12, 
+      c("size", "res", "bbox", "proj", "type", "outformat")
+    )
     testthat::expect_equal(
       exp_meta_r[,c("size.x", "size.y")], 
-      data.table("size.x"=rep(1911,2), "size.y"=rep(1479))
+      data.table("size.x"=24, "size.y"=42)
     )
     testthat::expect_equal(
       exp_meta_r[,c("res.x", "res.y")], 
-      data.table("res.x"=rep(10,2), "res.y"=rep(10,2))
+      data.table("res.x"=10, "res.y"=10)
     )
-    testthat::expect_equal(exp_meta_r$nbands, c(12,1))
     testthat::expect_equal(
       exp_meta_r[1,c("xmin", "xmax", "ymin", "ymax")], 
-      data.table("xmin" = 578590, "xmax" = 597700, "ymin" = 5086740, "ymax" = 5101530) 
+      data.table("xmin" = 580560, "xmax" = 580800, "ymin" = 5101700, "ymax" = 5102120) 
     )
-    testthat::expect_equal(sf::st_crs(exp_meta_r$proj[2]), sf::st_crs(32632))
-    testthat::expect_equal(exp_meta_r$type, c("UInt16","Float32"))
-    testthat::expect_equal(exp_meta_r$outformat, rep("GTiff",2)) # default value
+    testthat::expect_equal(sf::st_crs(exp_meta_r$proj), sf::st_crs(32632))
+    testthat::expect_equal(exp_meta_r$type, "Float32")
+    testthat::expect_equal(exp_meta_r$outformat, "GTiff") # default value
     
     # tests on sen2r metadata
     exp_meta_s <- sen2r_getElements(exp_outpath_12)
-    testthat::expect_equal(exp_meta_s$type, rep("clipped",2))
-    testthat::expect_equal(exp_meta_s$sensing_date, rep(as.Date("2017-07-03"),2))
-    testthat::expect_equal(exp_meta_s$prod_type, c("TOA", "EVI"))
-    testthat::expect_equal(exp_meta_s$level, c("1C", "1C"))
-    testthat::expect_equal(exp_meta_s$extent_name, rep("Scalve",2))
+    testthat::expect_equal(exp_meta_s$type, "clipped")
+    testthat::expect_equal(exp_meta_s$sensing_date, as.Date("2017-07-03"))
+    testthat::expect_equal(exp_meta_s$prod_type, "EVI")
+    testthat::expect_equal(exp_meta_s$level, "1C")
+    testthat::expect_equal(exp_meta_s$extent_name, "Barbellino")
     
     # test on raster values
-    r1 <- raster::stack(exp_outpath_12[1])
-    r2 <- raster::raster(exp_outpath_12[2])
+    r <- raster::raster(exp_outpath_12)
     # test on raster values
-    exp_stars1 <- stars::read_stars(exp_outpath_12[1])
-    exp_stars2 <- stars::read_stars(exp_outpath_12[2])
-    testthat::expect_equal(mean(exp_stars1[[1]][,,3], na.rm=TRUE), 974.1352, tolerance = 1e-3)
-    testthat::expect_equal(mean(exp_stars2[[1]], na.rm=TRUE), 0.5943244, tolerance = 1e-3)
-    testthat::expect_equal(sum(is.na(exp_stars1[[1]])), 2086841*12, tolerance = 1e-3)
-    testthat::expect_equal(sum(is.na(exp_stars2[[1]])), 2086841, tolerance = 1e-3)
-    rm(exp_stars1)
-    rm(exp_stars2)
+    exp_stars <- stars::read_stars(exp_outpath_12)
+    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 0.3529976, tolerance = 1e-3)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]])), 0)
+    rm(exp_stars)
     
   }
 )
@@ -178,51 +163,42 @@ testthat::test_that(
 testthat::test_that(
   "Tests on indices computation, on existing TOA, type Byte", {
     
-    testthat::expect_true(dir.exists(outdir_11))
+    testthat::expect_true(dir.exists(outdir_12))
     exp_outpath_13 <- file.path(
-      outdir_11, c("TOA","NDRE"), 
-      c("S2A1C_20170703_022_Scalve_TOA_10.tif","S2A1C_20170703_022_Scalve_NDRE_10.tif")
+      outdir_12,
+      c("S2A1C_20170703_022_Barbellino_EVI_10.tif", "S2A1C_20170703_022_Barbellino_NDRE_10.tif")
     )
     unlink(exp_outpath_13[2])
-    sen2r(
-      gui = FALSE,
-      online = FALSE,
-      step_atmcorr = "l2a", # to avoid checks on Sen2Cor
-      extent = file.path(example_dir, "scalve.kml"),
-      extent_name = "Scalve",
-      extent_as_mask = TRUE,
-      timewindow = as.Date("2017-07-03"),
-      list_prods = "TOA",
-      list_indices = "NDRE",
-      index_source = "TOA",
-      index_datatype = "Byte",
-      mask_type = "cloud_and_shadow",
-      path_out = outdir_11,
-      path_l1c = file.path(safe_dir, "L1C"),
-      path_l2a = file.path(safe_dir, "L2A"),
-      parallel = FALSE,
-      overwrite = FALSE
+    s2_calcindices(
+      infiles = file.path(ref_dir, "S2A1C_20170703_022_Barbellino_TOA_10.tif"),
+      indices = c("EVI", "NDRE"),
+      source = "TOA",
+      outdir = outdir_12,
+      dataType = "Byte",
+      subdirs = FALSE
     )
     testthat::expect_true(all(file.exists(exp_outpath_13)))
     
     # test that existing file were not re-created
     exp_info_r <- file.info(exp_outpath_13)
     testthat::expect_true(exp_info_r[1,"ctime"] < exp_info_r[2,"ctime"])
-
+    
     # test on raster metadata
-    exp_meta_r <- raster_metadata(exp_outpath_13[2]) # default format: data.table
+    exp_meta_r <- raster_metadata(
+      exp_outpath_13[2], 
+      c("size", "res", "bbox", "proj", "type", "outformat")
+    )
     testthat::expect_equal(
       exp_meta_r[,c("size.x", "size.y")], 
-      data.table("size.x"=1911, "size.y"=1479)
+      data.table("size.x"=24, "size.y"=42)
     )
     testthat::expect_equal(
       exp_meta_r[,c("res.x", "res.y")], 
       data.table("res.x"=10, "res.y"=10)
     )
-    testthat::expect_equal(exp_meta_r$nbands, 1)
     testthat::expect_equal(
       exp_meta_r[,c("xmin", "xmax", "ymin", "ymax")], 
-      data.table("xmin" = 578590, "xmax" = 597700, "ymin" = 5086740, "ymax" = 5101530) 
+      data.table("xmin" = 580560, "xmax" = 580800, "ymin" = 5101700, "ymax" = 5102120) 
     )
     testthat::expect_equal(sf::st_crs(exp_meta_r$proj), sf::st_crs(32632))
     testthat::expect_equal(exp_meta_r$type, "Byte")
@@ -230,68 +206,28 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_13[2])
-    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 145.1642, tolerance = 1e-3)
-    testthat::expect_equal(sum(is.na(exp_stars[[1]])), 2086841, tolerance = 1e-3)
+    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 125.0298, tolerance = 1e-3)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]])), 0)
     rm(exp_stars)
     
   }
 )
 
 
-testthat::test_that(
-  "Tests on indices computation with function s2_calcidices(), raster method", {
-    
-    testthat::expect_true(dir.exists(outdir_11))
-    exp_outpath_12_1 <- file.path(outdir_11, "TOA", "S2A1C_20170703_022_Scalve_TOA_10.tif")
-    testthat::expect_true(file.exists(exp_outpath_12_1))
-    exp_outpath_14 <- file.path(outdir_11, "S2A1C_20170703_022_Scalve_MCARI_10.dat")
-    s2_calcindices(
-      exp_outpath_12_1, "MCARI", 
-      outdir = dirname(dirname(exp_outpath_12_1)),
-      source = "TOA",
-      scaleFactor = 100,
-      overwrite = TRUE,
-      format = "ENVI"
-    )
-    expect_true(all(file.exists(c(
-      exp_outpath_14,
-      gsub("dat$", "hdr", exp_outpath_14),
-      paste0(exp_outpath_14,".aux.xml")
-    ))))
-    
-    # test on raster metadata
-    exp_meta_r <- raster_metadata(exp_outpath_14, format = "list")[[1]]
-    testthat::expect_equal(exp_meta_r$size, c("x"=1911, "y"=1479))
-    testthat::expect_equal(exp_meta_r$res, c("x"=10, "y"=10))
-    testthat::expect_equal(exp_meta_r$nbands, 1)
-    testthat::expect_equal(exp_meta_r$bbox, sf::st_bbox(
-        c("xmin" = 578590, "xmax" = 597700, "ymin" = 5086740, "ymax" = 5101530),
-        crs = sf::st_crs(32632)
-    ))
-    testthat::expect_equal(exp_meta_r$type, "Int16")
-    testthat::expect_equal(exp_meta_r$outformat, "ENVI")
-    
-    # test on raster values
-    exp_stars <- stars::read_stars(exp_outpath_14)
-    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 7.098357, tolerance = 1e-3)
-    testthat::expect_equal(sum(is.na(exp_stars[[1]])), 2086841, tolerance = 1e-3)
-    rm(exp_stars)
-    
-  }
-)
-
-
+context("Test compute spectral indices - s2_calcindices(), GDAL method")
+testthat::skip_on_cran() # because using runtime GDAL
+# testthat::skip_on_travis()
 testthat::test_that(
   "Tests on indices computation with function s2_calcidices(), gdal method", {
     
-    testthat::expect_true(dir.exists(outdir_11))
-    exp_outpath_12_1 <- file.path(outdir_11, "TOA", "S2A1C_20170703_022_Scalve_TOA_10.tif")
-    testthat::expect_true(file.exists(exp_outpath_12_1))
-    exp_outpath_15 <- file.path(outdir_11, "OSAVI", "S2A1C_20170703_022_Scalve_OSAVI_10.tif")
+    outdir_15 <- file.path(tempdir(), "out_test15")
+    dir.create(outdir_15, showWarnings = FALSE)
+    exp_outpath_15 <- file.path(outdir_15, "OSAVI", "S2A1C_20170703_022_Barbellino_OSAVI_10.tif")
     unlink(exp_outpath_15)
     s2_calcindices(
-      exp_outpath_12_1, "OSAVI", 
-      outdir = dirname(dirname(exp_outpath_12_1)),
+      infiles = file.path(ref_dir, "S2A1C_20170703_022_Barbellino_TOA_10.tif"),
+      indices = "OSAVI", 
+      outdir = dirname(dirname(exp_outpath_15)),
       subdirs = TRUE,
       source = "TOA",
       dataType = "Int32",
@@ -301,12 +237,15 @@ testthat::test_that(
     testthat::expect_true(file.exists(exp_outpath_15))
     
     # test on raster metadata
-    exp_meta_r <- raster_metadata(exp_outpath_15, format = "list")[[1]]
-    testthat::expect_equal(exp_meta_r$size, c("x"=1911, "y"=1479))
+    exp_meta_r <- raster_metadata(
+      exp_outpath_15, 
+      c("size", "res", "bbox", "proj", "type", "outformat"),
+      format = "list"
+    )[[1]]
+    testthat::expect_equal(exp_meta_r$size, c("x"=24, "y"=42))
     testthat::expect_equal(exp_meta_r$res, c("x"=10, "y"=10))
-    testthat::expect_equal(exp_meta_r$nbands, 1)
     testthat::expect_equal(exp_meta_r$bbox, sf::st_bbox(
-      c("xmin" = 578590, "xmax" = 597700, "ymin" = 5086740, "ymax" = 5101530),
+      c("xmin" = 580560, "xmax" = 580800, "ymin" = 5101700, "ymax" = 5102120),
       crs = sf::st_crs(32632)
     ))
     testthat::expect_equal(exp_meta_r$type, "Int32")
@@ -314,8 +253,8 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_15)
-    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 488113.3, tolerance = 1e-3)
-    testthat::expect_equal(sum(is.na(exp_stars[[1]])), 2086841, tolerance = 1e-3)
+    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 273120.8, tolerance = 1e-3)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]])), 0)
     rm(exp_stars)
     
   }

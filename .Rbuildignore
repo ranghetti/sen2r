@@ -1,6 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.travis\.yml$
+^\.covrignore\.yml$
 ^.*\.yaml$
 ^README\.R?md$
 ^WIP$

@@ -3,7 +3,7 @@
 #'  required in the package are present; if so, load the base modules.
 #' @return A list with the required modules.
 #'
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @importFrom reticulate import import_from_path import_builtins 
 #'  use_python py_module_available py_discover_config
@@ -39,7 +39,7 @@ init_python <- function() {
           paste0(
             "\nIt is recommended to install it together with GDAL using the OSGeo4W ",
             "installer (GDAL is required for processing operations).\n",
-            "Download it from  http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86",
+            "Download it from http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86",
             if (Sys.info()["machine"]=="x86-64") {"_64"},".exe, ",
             "then choose the \"Advanced install\" and ",
             "check the package \"gdal-python\"."

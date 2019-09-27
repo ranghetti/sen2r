@@ -4,60 +4,60 @@
 #'  Dates are intended to be in UTC time.
 #'  Notice that this is the expected calendar: some unexpected events
 #'  (e.g. technical problems, or early working phases during first stages of
-#'  acquisition) could cause the data unavailability even if an 
+#'  acquisition) could cause the data unavailability even if an
 #'  acquisition was expected.
 #'  Notice also that some orbits (030, 073 and 116) acquire across UTC midnight:
-#'  in this cases, the date is assumed to be the one of the acquisition after 
+#'  in this cases, the date is assumed to be the one of the acquisition after
 #'  midnight (which corresponds to the date in local time).
-#' @param s2_orbits A vector of Sentinel-2 orbits (as integer numbers 
+#' @param s2_orbits A vector of Sentinel-2 orbits (as integer numbers
 #'  or 3-length character).
 #'  Default is all the 143 orbits.
 #' @param timewindow Temporal window for querying: Date object
-#'  of length 1 (single day) or 2 (time window). 
-#'  Is it possible to pass also integer (or difftime) values, which are 
-#'  interpreted as the next n days (if positive) or the past n days 
+#'  of length 1 (single day) or 2 (time window).
+#'  Is it possible to pass also integer (or difftime) values, which are
+#'  interpreted as the next n days (if positive) or the past n days
 #'  (if negative).
-#'  Also strings which can be interpreted as time ranges are accepted 
+#'  Also strings which can be interpreted as time ranges are accepted
 #'  (see examples).
 #'  Default is the next 10 days (one cycle).
 #' @param mission (optional) Vector with the desired Sentinel-2 missions
 #'  ("2A", "2B" or both). Default is both.
-#' @return A data table with the dates (column "date"), the missions 
+#' @return A data table with the dates (column "date"), the missions
 #' (column "mission") and the orbits (column "orbit").
 #' An empty data table with the same structure is returned if no passages
 #'  were found with the passed settings.
-#' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @import data.table
 #' @importFrom jsonlite fromJSON
 #' @importFrom methods is
 #' @export
-#' 
+#'
 #' @examples
 #' # All the passages in a cycle of 10 days over all the orbits
 #' s2_dop()
-#' 
+#'
 #' # The passages in the current month over two orbits
 #' s2_dop(c("022", "065"), "this month")
-#' 
-#' # The dates in which Sentinel-2A will pass in next six weeks over one orbit 
+#'
+#' # The dates in which Sentinel-2A will pass in next six weeks over one orbit
 #' s2_dop("022", "6 weeks", mission = "2A")$date
-#' 
-#' # The date in which Sentinel-2A would be passed in the last 10 days over one orbit 
+#'
+#' # The date in which Sentinel-2A would be passed in the last 10 days over one orbit
 #' s2_dop("022", "-10 days", mission = "2A")$date
-#' 
+#'
 #' # All the orbits covered today
 #' s2_dop(timewindow = Sys.Date(), mission = "2B")$orbit
-#' 
+#'
 #' # The passages in a fixed time window for one orbit
 #' s2_dop(65, as.Date(c("2018-08-01", "2018-08-31")))
-#' 
+#'
 #' # A research with no passages found
 #' s2_dop(22, "2018-08-16", mission = "2A")
 
 
-s2_dop <- function(s2_orbits = 1:143, 
-                   timewindow = "10 days", 
+s2_dop <- function(s2_orbits = 1:143,
+                   timewindow = "10 days",
                    mission = c("2A", "2B")) {
   
   # to avoid NOTE on check
@@ -73,7 +73,7 @@ s2_dop <- function(s2_orbits = 1:143,
       data.table(
         "date" = as.Date(character(0)),
         "mission" = character(0),
-        "orbit" = character(0), 
+        "orbit" = character(0),
         stringsAsFactors = FALSE
       )
     )
@@ -84,8 +84,8 @@ s2_dop <- function(s2_orbits = 1:143,
     s2_orbits <- str_pad2(as.integer(s2_orbits), 3, "left", "0")
   }
   if (any(
-    as.character(suppressWarnings(as.integer(s2_orbits)), 3, "left", "0") != gsub("^0+", "", s2_orbits), 
-    is.na(suppressWarnings(as.integer(s2_orbits))), 
+    as.character(suppressWarnings(as.integer(s2_orbits)), 3, "left", "0") != gsub("^0+", "", s2_orbits),
+    is.na(suppressWarnings(as.integer(s2_orbits))),
     suppressWarnings(as.integer(s2_orbits))<0,
     suppressWarnings(as.integer(s2_orbits))>143
   )) {
@@ -150,7 +150,7 @@ s2_dop <- function(s2_orbits = 1:143,
       }
       if (
         any(!grepl(
-          "^((\\-?[0-9]+)|(this)|(days?)|(weeks?)|(months?)|(years?))$", 
+          "^((\\-?[0-9]+)|(this)|(days?)|(weeks?)|(months?)|(years?))$",
           tolower(timewindow)
         )) |
         length(timewindow) > 2
@@ -207,7 +207,7 @@ s2_dop <- function(s2_orbits = 1:143,
   dates_all <- seq(timewindow[1], timewindow[2], by = "day")
   
   
-  ## Compute the dates 
+  ## Compute the dates
   sel_dop_dt <- s2_dop_dt[orbit %in% s2_orbits,]
   s2a_dates <- if ("2A" %in% mission) {
     dates_all[(as.integer(dates_all)%%10) %in% sel_dop_dt$doybase]
@@ -224,9 +224,9 @@ s2_dop <- function(s2_orbits = 1:143,
   s2_missions <- c(rep("2A", length(s2a_dates)), rep("2B", length(s2b_dates)))
   s2_data <- rbindlist(lapply(seq_along(s2_missions), function(i) {
     expand.grid(
-      "date" = c(s2a_dates, s2b_dates)[i], 
-      "mission" = s2_missions[i], 
-      "orbit" = c(s2a_orbits, s2b_orbits)[[i]], 
+      "date" = c(s2a_dates, s2b_dates)[i],
+      "mission" = s2_missions[i],
+      "orbit" = c(s2a_orbits, s2b_orbits)[[i]],
       stringsAsFactors = FALSE
     )
   }))
@@ -236,7 +236,7 @@ s2_dop <- function(s2_orbits = 1:143,
     setorder(s2_data, date, mission, orbit)
     # Remove unexisting records
     s2_data <- s2_data[
-      mission == "2A" & date >= "2015-06-27" | 
+      mission == "2A" & date >= "2015-06-27" |
         mission == "2B" & date >= "2017-06-29"
       ]
     return(s2_data)
@@ -245,7 +245,7 @@ s2_dop <- function(s2_orbits = 1:143,
       data.table(
         "date" = as.Date(character(0)),
         "mission" = character(0),
-        "orbit" = character(0), 
+        "orbit" = character(0),
         stringsAsFactors = FALSE
       )
     )

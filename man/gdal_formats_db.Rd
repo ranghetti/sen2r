@@ -20,6 +20,9 @@ place for external use.}
 \item{force}{(optional) Logical: if FALSE (default), the db is created only
 if missing or not updated; if TRUE, it is created in any case..}
 }
+\value{
+NULL (the function is called for its side effects)
+}
 \description{
 The internal function checks if gdal_formats.json (the
 database of spectral indices) already exists; if not, it
@@ -35,5 +38,5 @@ with the formats actually managed by your GDAL installation.
 License: GPL 3.0
 }
 \author{
-Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

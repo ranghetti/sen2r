@@ -1,38 +1,38 @@
 #' @title Download and install Sen2Cor.
 #' @description This function download and install standalone version of
 #'  [Sen2Cor 2.8.0](http://step.esa.int/main/third-party-plugins-2/sen2cor).
-#' @param sen2cor_dir (optional) Path where sen2cor will be installed
-#'  (default: a subdirectory of the package path).
+#' @param sen2cor_dir Path where sen2cor will be installed.
 #' @param version (optional) Character: Sen2Cor version (one among
 #'  '2.8.0' - default - and '2.5.5').
-#' @param force (optional) Logical: if TRUE, install even if it is already 
+#' @param force (optional) Logical: if TRUE, install even if it is already
 #'  installed (default is FALSE).
-#' @return NULL
+#' @return NULL (the function is called for its side effects)
 #'
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @importFrom jsonlite toJSON fromJSON
 #' @importFrom utils download.file unzip
 #' @importFrom magrittr "%>%"
 #' @importFrom httr GET write_disk
 #' @export
-#' @examples \dontrun{
+#' @examples
+#' \dontrun{
 #' install_sen2cor()
 #' }
 
-install_sen2cor <- function(sen2cor_dir=NA, version="2.8.0", force = FALSE) {
+install_sen2cor <- function(sen2cor_dir, version="2.8.0", force = FALSE) {
   .install_sen2cor(
-    sen2cor_dir = sen2cor_dir, 
+    sen2cor_dir = sen2cor_dir,
     version = version,
-    force = force, 
+    force = force,
     interactive = TRUE
   )
 }
 
 .install_sen2cor <- function(
-  sen2cor_dir=NA, 
-  version="2.8.0", 
-  force = FALSE, 
+  sen2cor_dir,
+  version="2.8.0",
+  force = FALSE,
   interactive = TRUE
 ) {
   
@@ -48,7 +48,7 @@ install_sen2cor <- function(sen2cor_dir=NA, version="2.8.0", force = FALSE) {
   # check if it is already installed
   binpaths <- load_binpaths()
   if (force != TRUE & !is.null(binpaths$sen2cor)) {
-    sen2cor_bin <- binpaths$sen2cor 
+    sen2cor_bin <- binpaths$sen2cor
     if (file.exists(sen2cor_bin)) {
       print_message(
         type = "message",
@@ -59,12 +59,6 @@ install_sen2cor <- function(sen2cor_dir=NA, version="2.8.0", force = FALSE) {
   }
   
   # define sen2cor_dir (where to install or update)
-  if (is.na(sen2cor_dir)) {
-    sen2cor_dir <- file.path(
-      system.file(package="sen2r"),
-      paste0("sen2cor_",gsub("\\.","-",version))
-    )
-  }
   if (!file.exists(sen2cor_dir)) {
     dir.create(sen2cor_dir, recursive=FALSE, showWarnings = FALSE)
   } else if (!file.info(sen2cor_dir)$isdir) {
@@ -124,6 +118,7 @@ install_sen2cor <- function(sen2cor_dir=NA, version="2.8.0", force = FALSE) {
   # download.file(sen2cor_url, destfile = sen2cor_installer)
   if (Sys.info()["sysname"] %in% c("Linux","Darwin")) {
     curr_dir <- getwd()
+    on.exit(setwd(curr_dir))
     setwd(sen2cor_dir)
     # os.chmod(sen2cor_installer, 0755)
     system(
@@ -141,8 +136,8 @@ install_sen2cor <- function(sen2cor_dir=NA, version="2.8.0", force = FALSE) {
     ))
     unlink(sen2cor_installer)
     sen2cor_bin <- file.path(
-      sen2cor_dir, 
-      gsub("\\.zip$","",basename(sen2cor_installer)), 
+      sen2cor_dir,
+      gsub("\\.zip$","",basename(sen2cor_installer)),
       "L2A_Process.bat"
     )
     if (!file.exists(sen2cor_bin)) {
@@ -164,8 +159,8 @@ install_sen2cor <- function(sen2cor_dir=NA, version="2.8.0", force = FALSE) {
     linenumber_tofix <- grep("t2a_split[2] + '_' + t2a_split[1] + '_' + t1c_split[10]", script_tofix, fixed=TRUE)
     if (length(linenumber_tofix)>0) {
       script_tofix[linenumber_tofix] <- gsub(
-        "t1c_split[10]", "t1c_split[-1]", 
-        script_tofix[linenumber_tofix], 
+        "t1c_split[10]", "t1c_split[-1]",
+        script_tofix[linenumber_tofix],
         fixed = TRUE
       )
       writeLines(script_tofix, script_tofix_path)

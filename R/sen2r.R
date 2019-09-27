@@ -138,7 +138,7 @@
 #'  Default value is 80.
 #'  This parameter is different from `max_cloud_safe`, because:
 #'  1. it is computed over the selected extent;
-#'  2. it is computed basing on the cloud mask defined as above.
+#'  2. it is computed starting from the cloud mask defined as above.
 #'  Notice that the percentage is computed on non-NA values (if input images
 #'  had previously been clipped and masked using a polygon, the percentage is
 #'  computed on the surface included in the masking polygons).
@@ -304,6 +304,88 @@
 #' @importFrom methods formalArgs
 #' @importFrom stats na.omit
 #' @export
+#' @examples
+#' \donttest{
+#' # Open an interactive section
+#' if (interactive()) {
+#'   sen2r()
+#' }
+#' 
+#' # Launch a processing from a saved JSON file (here we use an internal function
+#' # to create a testing json file - this is not intended to be used by final users)
+#' json_path <- sen2r:::build_example_param_file()
+#' 
+#' out_paths_2 <- sen2r(json_path)
+#' # Notice that passing the path of a JSON file results in launching
+#' # a session without opening the gui, unless gui = TRUE is passed.
+#' 
+#' # Launch a processing using function arguments
+#' safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
+#' out_dir_3 <- tempfile(pattern = "Barbellino_")
+#' out_paths_3 <- sen2r(
+#'   gui = FALSE,
+#'   step_atmcorr = "l2a",
+#'   extent = system.file("extdata/vector/barbellino.geojson", package = "sen2r"),
+#'   extent_name = "Barbellino",
+#'   timewindow = as.Date("2017-07-03"),
+#'   list_prods = c("TOA","BOA","SCL"),
+#'   list_indices = c("NDVI","MSAVI2"),
+#'   list_rgb = c("RGB432T", "RGB432B", "RGB843B"),
+#'   path_l1c = safe_dir,
+#'   path_l2a = safe_dir,
+#'   path_out = out_dir_3
+#' )
+#' 
+#' # Launch a processing based on a JSON file, but changing some parameters
+#' # (e.g., the same processing on a different extent)
+#' out_dir_4 <- tempfile(pattern = "Scalve_")
+#' out_paths_4 <- sen2r(
+#'   param_list = json_path,
+#'   extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
+#'   extent_name = "Scalve",
+#'   path_out = out_dir_4
+#' )
+#' 
+#' 
+#' # Show outputs (loading thumbnails)
+#' 
+#' # Generate thumbnails names
+#' thumb_2 <- file.path(dirname(out_paths_2), "thumbnails", gsub("tif$", "jpg", basename(out_paths_2)))
+#' thumb_2[grep("SCL", thumb_2)] <-
+#'   gsub("jpg$", "png", thumb_2[grep("SCL", thumb_2)])
+#' thumb_4 <- file.path(dirname(out_paths_4), "thumbnails", gsub("tif$", "jpg", basename(out_paths_4)))
+#' thumb_4[grep("SCL", thumb_4)] <-
+#'   gsub("jpg$", "png", thumb_4[grep("SCL", thumb_4)])
+#'   
+#' par(mfrow = c(1,3), mar = rep(0,4))
+#' image(stars::read_stars(thumb_2[grep("TOA", thumb_2)]), rgb = 1:3)
+#' image(stars::read_stars(thumb_2[grep("BOA", thumb_2)]), rgb = 1:3)
+#' image(stars::read_stars(thumb_2[grep("SCL", thumb_2)]), rgb = 1:3)
+#' 
+#' par(mfrow = c(1,2), mar = rep(0,4))
+#' image(stars::read_stars(thumb_2[grep("MSAVI2", thumb_2)]), rgb = 1:3)
+#' image(stars::read_stars(thumb_2[grep("NDVI", thumb_2)]), rgb = 1:3)
+#' 
+#' par(mfrow = c(1,3), mar = rep(0,4))
+#' image(stars::read_stars(thumb_2[grep("RGB432T", thumb_2)]), rgb = 1:3)
+#' image(stars::read_stars(thumb_2[grep("RGB432B", thumb_2)]), rgb = 1:3)
+#' image(stars::read_stars(thumb_2[grep("RGB843B", thumb_2)]), rgb = 1:3)
+#' 
+#' par(mfrow = c(1,3), mar = rep(0,4))
+#' image(stars::read_stars(thumb_4[grep("TOA", thumb_4)]), rgb = 1:3)
+#' image(stars::read_stars(thumb_4[grep("BOA", thumb_4)]), rgb = 1:3)
+#' image(stars::read_stars(thumb_4[grep("SCL", thumb_4)]), rgb = 1:3)
+#' 
+#' par(mfrow = c(1,2), mar = rep(0,4))
+#' image(stars::read_stars(thumb_4[grep("MSAVI2", thumb_4)]), rgb = 1:3)
+#' image(stars::read_stars(thumb_4[grep("NDVI", thumb_4)]), rgb = 1:3)
+#' 
+#' par(mfrow = c(1,3), mar = rep(0,4))
+#' image(stars::read_stars(thumb_4[grep("RGB432T", thumb_4)]), rgb = 1:3)
+#' image(stars::read_stars(thumb_4[grep("RGB432B", thumb_4)]), rgb = 1:3)
+#' image(stars::read_stars(thumb_4[grep("RGB843B", thumb_4)]), rgb = 1:3)
+#' }
+
 
 
 sen2r <- function(param_list = NULL,
@@ -388,7 +470,7 @@ sen2r <- function(param_list = NULL,
   sen2r_env <- new.env()
   
   # launch the function
-  .sen2r(
+  names_out_created <- .sen2r(
     param_list = param_list,
     pm_arg_passed = pm_arg_passed,
     gui = gui,
@@ -473,6 +555,8 @@ sen2r <- function(param_list = NULL,
     sen2r_env$internal_log <- NULL
   }
   
+  return(invisible(names_out_created))
+  
 }
 
 # Internal function, which is the "real" sen2r() function insider the use of sink
@@ -550,7 +634,7 @@ sen2r <- function(param_list = NULL,
   
   # If it is the first time that the package is used,
   # ask for opening the GUI to install dependencies
-  if (interactive() & !file.exists(system.file("extdata","paths.json", package="sen2r"))) {
+  if (interactive() & !file.exists(attr(load_binpaths(), "path"))) {
     open_check_gui <- NA
     while(is.na(open_check_gui)) {
       open_check_gui_prompt <- print_message(
@@ -637,8 +721,8 @@ sen2r <- function(param_list = NULL,
   
   # Check parameters
   pm <- check_param_list(
-    pm, 
-    type = if (gui) {"message"} else {"error"}, 
+    pm,
+    type = if (gui) {"message"} else {"error"},
     check_paths = FALSE, correct = TRUE
   )
   
@@ -716,9 +800,9 @@ sen2r <- function(param_list = NULL,
   if (pm$online) {
     if (!check_scihub_connection()) {
       print_message(
-        type = "error", 
+        type = "error",
         "Impossible to reach the SciHub server ",
-        "(internet connection or SciHub may be down)." 
+        "(internet connection or SciHub may be down)."
       )
     }
   }
@@ -885,7 +969,9 @@ sen2r <- function(param_list = NULL,
   
   # check output format
   # sel_driver <- py$gdal$GetDriverByName(pm$outformat)
-  gdal_formats <- fromJSON(system.file("extdata","gdal_formats.json",package="sen2r"))$drivers
+  gdal_formats <- fromJSON(
+    system.file("extdata/settings/gdal_formats.json",package="sen2r")
+  )$drivers
   sel_driver <- gdal_formats[gdal_formats$name==pm$outformat,]
   sel_rgb_driver <- gdal_formats[gdal_formats$name==pm$rgb_outformat,]
   
@@ -1128,13 +1214,13 @@ sen2r <- function(param_list = NULL,
                      as.Date(sensing_datetime) <= pm$timewindow[2],]
   }
   
-  # add check so that in offline mode if extent or tiles are not specified 
+  # add check so that in offline mode if extent or tiles are not specified
   # all tiles are used
   if (!pm$online && is.na(pm$extent) && is.na(pm$s2tiles_selected)) {
     pm$s2tiles_selected <- unique(s2_dt$id_tile)
   }
   
-  # add check so that in offline mode if specified date is not available, we fail gracefully  
+  # add check so that in offline mode if specified date is not available, we fail gracefully
   if (!pm$online && nrow(s2_dt) == 0) {
     print_message(
       type = "error",
@@ -1530,15 +1616,15 @@ sen2r <- function(param_list = NULL,
             s2_to_download <- sel_s2_list_l2a
           } else {
             s2_to_download <- sel_s2_list_l2a[!names(sel_s2_list_l2a) %in% list.files(path_l2a, "\\.SAFE$")]
-            s2_to_skip     <- names(sel_s2_list_l2a[names(sel_s2_list_l2a) %in% list.files(path_l2a, "\\.SAFE$")])
+            s2_to_skip <- names(sel_s2_list_l2a[names(sel_s2_list_l2a) %in% list.files(path_l2a, "\\.SAFE$")])
             if (length(s2_to_skip) != 0) {
               message("Images ", paste(s2_to_skip, collapse = ", "),
                       " are already on your system and will be skipped.",
                       " Set `overwrite_safe` to TRUE to re-download them")
-            } 
+            }
             if (length(s2_to_download) != 0) {
               message("No L2A images needed")
-            } 
+            }
           }
           
           s2_download(
@@ -1602,11 +1688,14 @@ sen2r <- function(param_list = NULL,
             s2_to_download <- sel_s2_list_l1c
           } else {
             s2_to_download <- sel_s2_list_l1c[!names(sel_s2_list_l1c) %in% list.files(path_l1c, "\\.SAFE$")]
-            s2_to_skip <- sel_s2_list_l1c[names(sel_s2_list_l1c) %in% list.files(path_l1c, "\\.SAFE$")]  
+            s2_to_skip <- sel_s2_list_l1c[names(sel_s2_list_l1c) %in% list.files(path_l1c, "\\.SAFE$")]
             if (length(s2_to_skip) != 0) {
-              message("Images ", paste(names(s2_to_skip), collapse = ", "), 
-                      " are already on your system and will be skipped.", 
-                      " Set `overwrite_safe` to TRUE to re-download them")                
+              print_message(
+                type = "message",
+                "Images ", paste(names(s2_to_skip), collapse = ", "),
+                " are already on your system and will be skipped.",
+                " Set `overwrite_safe` to TRUE to re-download them."
+              )
             }
             
             if (length(s2_to_download) == 0) {
@@ -1725,7 +1814,7 @@ sen2r <- function(param_list = NULL,
         
         if (length(sel_s2_list_l1c_tocorrect)>0) {
           
-          if (sum(!file.path(path_l1c,names(sel_s2_list_l1c_tocorrect)) %>% file.exists()) > 0) {
+          if (sum(file.path(path_l1c,names(sel_s2_list_l1c_tocorrect)) %>% file.exists()) > 0) {
             print_message(
               type = "message",
               date = TRUE,
@@ -2043,7 +2132,7 @@ sen2r <- function(param_list = NULL,
           } else {
             suppressWarnings(st_cast(st_cast(pm$extent,"POLYGON"), "LINESTRING")) %>%
               st_combine() # TODO remove this when multiple extents will be allowed
-          }  # TODO add support for multiple extents
+          } # TODO add support for multiple extents
           
           if(pm$path_subdirs==TRUE){
             sapply(unique(dirname(unlist(c(warped_nonscl_reqout,warped_scl_reqout)))),dir.create,showWarnings=FALSE)
@@ -2071,7 +2160,7 @@ sen2r <- function(param_list = NULL,
                   rmtmp = FALSE
                 )
                 # fix for envi extension (writeRaster use .envi)
-                if (out_format["warped"]=="ENVI")  {fix_envi_format(
+                if (out_format["warped"]=="ENVI") {fix_envi_format(
                   unlist(warped_nonscl_reqout)[file.exists(unlist(warped_nonscl_reqout))]
                 )}
               }, error = print)
@@ -2103,7 +2192,7 @@ sen2r <- function(param_list = NULL,
                   rmtmp = FALSE
                 )
                 # fix for envi extension (writeRaster use .envi)
-                if (out_format["warped"]=="ENVI")  {fix_envi_format(
+                if (out_format["warped"]=="ENVI") {fix_envi_format(
                   unlist(warped_scl_reqout)[file.exists(unlist(warped_scl_reqout))]
                 )}
               }, error = print)
@@ -2200,7 +2289,7 @@ sen2r <- function(param_list = NULL,
                 strsplit(unique(gsub("^RGB([0-9a-f]{3})T$","\\1",pm$list_rgb[grepl("T$",pm$list_rgb)])),""),
                 function(x) {strtoi(paste0("0x",x))}
               ),
-              scaleRange = pm$rgb_ranges,
+              scaleRange = pm$rgb_ranges[grepl("T$",pm$list_rgb)],
               outdir = paths["rgb"],
               subdirs = pm$path_subdirs,
               format = out_format["rgb"],
@@ -2221,7 +2310,7 @@ sen2r <- function(param_list = NULL,
                 strsplit(unique(gsub("^RGB([0-9a-f]{3})B$","\\1",pm$list_rgb[grepl("B$",pm$list_rgb)])),""),
                 function(x) {strtoi(paste0("0x",x))}
               ),
-              scaleRange = pm$rgb_ranges,
+              scaleRange = pm$rgb_ranges[grepl("B$",pm$list_rgb)],
               outdir = paths["rgb"],
               subdirs = pm$path_subdirs,
               format = out_format["rgb"],
@@ -2521,7 +2610,7 @@ sen2r <- function(param_list = NULL,
   gc()
   
   # Return output file paths
-  return(names_out_created)
+  return(invisible(names_out_created))
   # TODO add also SAFE created files (here and at line #TODO3)
   
 }

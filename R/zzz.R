@@ -14,4 +14,11 @@
     },
     sep = "\n"
   ))
+  
+  if (interactive()) {
+    permission <- ask_permission()
+  } else {
+    permission <- FALSE
+  }
+  
 }

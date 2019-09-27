@@ -9,7 +9,7 @@
 #' @param force (optional) Logical: if FALSE (default), the db is created only
 #'  if missing or not updated; if TRUE, it is created in any case.
 #' @return The path of the json file
-#' @author Luigi Ranghetti, phD (2018) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @import data.table
 #' @importFrom jsonlite toJSON fromJSON
@@ -23,15 +23,17 @@ create_s2_dop <- function(json_path = NA, force = FALSE) {
   
   # check if the json already exists, and if the version is updated
   if (is.na(json_path)) {
-    json_path <- file.path(system.file("extdata", package="sen2r"), "doybase.json")
+    json_path <- file.path(system.file("extdata/settings", package="sen2r"), "doybase.json")
   }
-  if (system.file("extdata","doybase.json", package="sen2r") == json_path) {
+  if (system.file("extdata/settings/doybase.json", package="sen2r") == json_path) {
     if (force == FALSE) {
       return(json_path)
     }
   }
   
   # Take products names from Google
+  
+  # nocov start
   download.file(
     "https://storage.googleapis.com/gcp-public-data-sentinel-2/index.csv.gz",
     s2_store <- tempfile(fileext = ".gz")
@@ -98,5 +100,5 @@ create_s2_dop <- function(json_path = NA, force = FALSE) {
   writeLines(toJSON(json_table, pretty=TRUE), json_path)
   
   return(json_path)
-  
+  # nocov end
 }

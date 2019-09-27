@@ -2,7 +2,7 @@
 % Please edit documentation in R/expand_path.R
 \name{normalize_path}
 \alias{normalize_path}
-\title{Express file paths in canonical Form basing on the operating system}
+\title{Express file paths in canonical Form depending on the operating system}
 \usage{
 normalize_path(path, ...)
 }
@@ -22,5 +22,5 @@ and \code{shortPathName(normalizePath())} in Windows.
 License: GPL 3.0
 }
 \author{
-Luigi Ranghetti, phD (2018) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

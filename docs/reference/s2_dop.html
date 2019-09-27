@@ -182,17 +182,17 @@ were found with the passed settings.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># All the passages in a cycle of 10 days over all the orbits</span>
 <span class='fu'>s2_dop</span>()</div><div class='output co'>#&gt;            date mission orbit
-#&gt;   1: 2019-09-13      2A   045
-#&gt;   2: 2019-09-13      2A   046
-#&gt;   3: 2019-09-13      2A   047
-#&gt;   4: 2019-09-13      2A   048
-#&gt;   5: 2019-09-13      2A   049
+#&gt;   1: 2019-09-27      2A   102
+#&gt;   2: 2019-09-27      2A   103
+#&gt;   3: 2019-09-27      2A   104
+#&gt;   4: 2019-09-27      2A   105
+#&gt;   5: 2019-09-27      2A   106
 #&gt;  ---                         
-#&gt; 282: 2019-09-22      2B   111
-#&gt; 283: 2019-09-22      2B   112
-#&gt; 284: 2019-09-22      2B   113
-#&gt; 285: 2019-09-22      2B   114
-#&gt; 286: 2019-09-22      2B   115</div><div class='input'>
+#&gt; 282: 2019-10-06      2B   025
+#&gt; 283: 2019-10-06      2B   026
+#&gt; 284: 2019-10-06      2B   027
+#&gt; 285: 2019-10-06      2B   028
+#&gt; 286: 2019-10-06      2B   029</div><div class='input'>
 <span class='co'># The passages in the current month over two orbits</span>
 <span class='fu'>s2_dop</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"022"</span>, <span class='st'>"065"</span>), <span class='st'>"this month"</span>)</div><div class='output co'>#&gt;           date mission orbit
 #&gt;  1: 2019-09-01      2A   022
@@ -207,13 +207,13 @@ were found with the passed settings.</p>
 #&gt; 10: 2019-09-24      2A   065
 #&gt; 11: 2019-09-26      2B   022
 #&gt; 12: 2019-09-29      2B   065</div><div class='input'>
-<span class='co'># The dates in which Sentinel-2A will pass in next six weeks over one orbit </span>
-<span class='fu'>s2_dop</span>(<span class='st'>"022"</span>, <span class='st'>"6 weeks"</span>, <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2A"</span>)$<span class='no'>date</span></div><div class='output co'>#&gt; [1] "2019-09-11" "2019-09-21" "2019-10-01" "2019-10-11"</div><div class='input'>
-<span class='co'># The date in which Sentinel-2A would be passed in the last 10 days over one orbit </span>
-<span class='fu'>s2_dop</span>(<span class='st'>"022"</span>, <span class='st'>"-10 days"</span>, <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2A"</span>)$<span class='no'>date</span></div><div class='output co'>#&gt; [1] "2019-09-11"</div><div class='input'>
+<span class='co'># The dates in which Sentinel-2A will pass in next six weeks over one orbit</span>
+<span class='fu'>s2_dop</span>(<span class='st'>"022"</span>, <span class='st'>"6 weeks"</span>, <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2A"</span>)$<span class='no'>date</span></div><div class='output co'>#&gt; [1] "2019-10-01" "2019-10-11" "2019-10-21" "2019-10-31"</div><div class='input'>
+<span class='co'># The date in which Sentinel-2A would be passed in the last 10 days over one orbit</span>
+<span class='fu'>s2_dop</span>(<span class='st'>"022"</span>, <span class='st'>"-10 days"</span>, <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2A"</span>)$<span class='no'>date</span></div><div class='output co'>#&gt; [1] "2019-09-21"</div><div class='input'>
 <span class='co'># All the orbits covered today</span>
-<span class='fu'>s2_dop</span>(<span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span>(), <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2B"</span>)$<span class='no'>orbit</span></div><div class='output co'>#&gt;  [1] "116" "117" "118" "119" "120" "121" "122" "123" "124" "125" "126" "127"
-#&gt; [13] "128" "129" "130"</div><div class='input'>
+<span class='fu'>s2_dop</span>(<span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span>(), <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2B"</span>)$<span class='no'>orbit</span></div><div class='output co'>#&gt;  [1] "030" "031" "032" "033" "034" "035" "036" "037" "038" "039" "040" "041"
+#&gt; [13] "042" "043" "044"</div><div class='input'>
 <span class='co'># The passages in a fixed time window for one orbit</span>
 <span class='fu'>s2_dop</span>(<span class='fl'>65</span>, <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"2018-08-01"</span>, <span class='st'>"2018-08-31"</span>)))</div><div class='output co'>#&gt;          date mission orbit
 #&gt; 1: 2018-08-05      2B   065
@@ -235,7 +235,7 @@ were found with the passed settings.</p>
     </ul>
 
     <h2>Author</h2>
-    <p>Luigi Ranghetti, phD (2018) <a href='mailto:ranghetti.l@irea.cnr.it'>ranghetti.l@irea.cnr.it</a></p>
+    <p>Luigi Ranghetti, phD (2019) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
   </div>
 </div>
 

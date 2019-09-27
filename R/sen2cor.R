@@ -1,6 +1,6 @@
 #' @title Correct L1C products using Sen2Cor
 #' @description The function uses Sen2Cor to manually correct L1C products.
-#'  Standalone version of 
+#'  Standalone version of
 #'  [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor)
 #'  (version 2.8.0 or 2.5.5) is used.
 #' @param l1c_prodlist List of L1C product names to be corrected. They can be both
@@ -12,11 +12,11 @@
 #' @param outdir Directory where output L2A products will be placed.
 #'  If NULL (default), each product is left in the parent directory of `l1c_prodlist`.
 #' @param proc_dir (optional) Directory where processing is applied.
-#'  If NA (default), processing is done in `l1c_dir` and output L2A product is 
+#'  If NA (default), processing is done in `l1c_dir` and output L2A product is
 #'  then moved to `outdir`, unless `l1c_dir` is a subdirectory of a SAMBA mountpoint under Linux:
 #'  in this case, L1C input products are copied in a temporary directory
-#'  (specified with argument `tmpdir`), 
-#'  processing is done there and then L2A is moved to `outdir`. 
+#'  (specified with argument `tmpdir`),
+#'  processing is done there and then L2A is moved to `outdir`.
 #'  This is required under Linux systems when `l1c_dir` is a subdirectory of
 #'  a unit mounted with SAMBA, otherwise Sen2Cor would produce empty L2A products.
 #' @param tmpdir (optional) Path where processing is performed if a temporary
@@ -25,12 +25,12 @@
 #'  Default is a temporary directory.
 #' @param rmtmp (optional) Logical: should temporary files be removed?
 #'  (Default: TRUE)
-#' @param tiles Vector of Sentinel-2 Tile strings (5-length character) to be 
+#' @param tiles Vector of Sentinel-2 Tile strings (5-length character) to be
 #'  processed (default: process all the tiles found in the input L1C products).
-#' @param parallel (optional) Logical: if TRUE, Sen2Cor instances are launched 
-#'  in parallel using multiple cores; if FALSE (default), they are launched in 
-#'  series on a single core. 
-#'  The number of cores is automatically determined; specifying it is also 
+#' @param parallel (optional) Logical: if TRUE, Sen2Cor instances are launched
+#'  in parallel using multiple cores; if FALSE (default), they are launched in
+#'  series on a single core.
+#'  The number of cores is automatically determined; specifying it is also
 #'  possible (e.g. `parallel = 4`).
 #' @param overwrite Logical value: should existing output L2A products be overwritten?
 #'  (default: FALSE)
@@ -41,7 +41,7 @@
 #' @return Vector character with the list ot the output products (being corrected or already
 #'  existing)
 #'
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @importFrom jsonlite fromJSON
 #' @importFrom doParallel registerDoParallel
@@ -49,7 +49,8 @@
 #' @importFrom parallel detectCores makeCluster stopCluster
 #' @export
 #'
-#' @examples \dontrun{
+#' @examples
+#' \dontrun{
 #' pos <- st_sfc(st_point(c(12.0, 44.8)), crs=st_crs(4326))
 #' time_window <- as.Date(c("2017-05-01","2017-07-30"))
 #' example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window)
@@ -57,7 +58,7 @@
 #' sen2cor(names(example_s2_list)[1], l1c_dir=tempdir(), outdir=tempdir())
 #' }
 
-sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA, 
+sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
                     tmpdir = NA, rmtmp = TRUE,
                     tiles=NULL, parallel=FALSE, overwrite=FALSE,
                     .log_message=NA, .log_output=NA) {
@@ -71,7 +72,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
   # get version
   sen2cor_version_raw0 <- system(paste(binpaths$sen2cor, "-h"), intern = TRUE)
   sen2cor_version_raw1 <- sen2cor_version_raw0[grep(
-    "^Sentinel\\-2 Level 2A Processor \\(Sen2Cor\\)\\. Version:", 
+    "^Sentinel\\-2 Level 2A Processor \\(Sen2Cor\\)\\. Version:",
     sen2cor_version_raw0
   )]
   sen2cor_version <- package_version(gsub(
@@ -148,14 +149,14 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
   
   # cycle on eacjh product
   l2a_prodlist <- foreach(
-    i=seq_along(l1c_prodlist), 
+    i=seq_along(l1c_prodlist),
     .combine=c,
     .export = "mountpoint",
     .packages='sen2r'
   ) %DO% {
     
     # redirect to log files
-    if (n_cores > 1) {
+    if (n_cores > 1) { # nocov start
       if (!is.na(.log_output)) {
         sink(.log_output, split = TRUE, type = "output", append = TRUE)
       }
@@ -163,7 +164,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
         logfile_message = file(.log_message, open = "a")
         sink(logfile_message, type="message")
       }
-    }
+    } # nocov end
     
     # set paths
     sel_l1c <- l1c_prodlist[i]
@@ -175,16 +176,30 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
       )
     ) # path of the L2A product where it should be placed definitively
     
+    # Check if a "comparable" file already excists
+    # (in case using Sen2cor 2.8.0, this is necessary in order not to 
+    # re-correct L1C products every time)
+    sel_l2a_regex <- gsub(
+      "^S(2[AB])\\_MSIL([12][AC])\\_([0-9]{8}T[0-9]{6})\\_N([0-9]{4})\\_R([0-9]{3})\\_T([A-Z0-9]{5})\\_([0-9]{8}T[0-9]{6})\\.SAFE$",
+      "^S\\1\\\\_MSIL\\2\\\\_\\3\\\\_N[0-9]{4}\\\\_R\\5\\\\_T\\6\\\\_[0-9]{8}T[0-9]{6}\\\\.SAFE$",
+      basename(sel_l2a)
+    )
+    sel_l2a_exi <- list.files(dirname(sel_l2a), sel_l2a_regex, full.names = TRUE)
+    if (length(sel_l2a_exi) > 0) {
+      sel_l2a <- sel_l2a_exi[1]
+    }
+    # TODO order by baseline, ingestion date
+
     ## Set the tiles vectors (existing, required, ...)
     # existing L1C tiles within input product
     sel_l1c_tiles_existing <- sapply(
-      list.files(file.path(sel_l1c,"GRANULE")), 
+      list.files(file.path(sel_l1c,"GRANULE")),
       function(x){safe_getMetadata(x,"nameinfo")$id_tile}
     )
     # L2A tiles already existing
     sel_l2a_tiles_existing <- if (file.exists(sel_l2a)) {
       sapply(
-        list.files(file.path(sel_l2a,"GRANULE")), 
+        list.files(file.path(sel_l2a,"GRANULE")),
         function(x){safe_getMetadata(x,"nameinfo")$id_tile}
       )
     } else {
@@ -332,7 +347,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
         if (rmtmp == TRUE) {
           unlink(sen2cor_out_l2a, recursive=TRUE)
         }
-      } 
+      }
       if (use_tmpdir & rmtmp == TRUE) {
         unlink(sel_l1c, recursive=TRUE)
       }
@@ -340,21 +355,21 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
     } # end IF cycle on overwrite
     
     # stop sinking
-    if (n_cores > 1) {
+    if (n_cores > 1) { # nocov start
       if (!is.na(.log_output)) {
         sink(type = "output")
       }
       if (!is.na(.log_message)) {
         sink(type = "message"); close(logfile_message)
       }
-    }
+    } # nocov end
     
     sel_l2a
     
   } # end FOREACH cycle on each product
-  if (n_cores > 1) {
+  if (n_cores > 1) { # nocov start
     stopCluster(cl)
-  }
+  } # nocov end
   
   # Remove temporary directory
   if (rmtmp == TRUE & !is.na(tmpdir)) {

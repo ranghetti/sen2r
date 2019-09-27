@@ -4,12 +4,10 @@
 \alias{install_aria2}
 \title{Download and install aria2.}
 \usage{
-install_aria2(aria2_dir = system.file(package = "sen2r"),
-  force = FALSE)
+install_aria2(aria2_dir, force = FALSE)
 }
 \arguments{
-\item{aria2_dir}{(optional) Path where aria2 executable will be installed
-(default: the package path).}
+\item{aria2_dir}{Path where aria2 executable will be installed.}
 
 \item{force}{(optional) Logical: if TRUE, install even if it is already
 installed (default is FALSE).}
@@ -26,9 +24,10 @@ License: GPL 3.0
 }
 \examples{
 \dontrun{
+# Run only on Windows
 install_aria2()
 }
 }
 \author{
-Luigi Ranghetti, phD (2018) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

@@ -134,6 +134,8 @@
 <a href="#major-changes" class="anchor"></a>Major changes</h2>
 <ul>
 <li>
+<strong><code>sen2r</code></strong> package directory is no more used to store files, but a subfolder <code>.sen2r</code> of the user Home directory is created and used. In this way, reinstalling sen2r will not require anymore to reinstall runtime dependencies / to reconfigure the package. The permission to write on this folder is asked to the user when the package is loaded for the first time.</li>
+<li>
 <code><a href="../reference/s2_list.html">s2_list()</a></code> and <code><a href="../reference/s2_download.html">s2_download()</a></code> now use internal methods instead of calling python function derived from s2download scripts by Hagolle (this substantially improve the speed of SAFE search), which were removed.</li>
 <li>
 <strong><code>sen2r</code></strong> is now supported also on MacOS.</li>
@@ -160,6 +162,8 @@
 <code><a href="../reference/scihub_login.html">check_scihub_login()</a></code> to check if SciHub credentials are right.</li>
 <li>
 <code><a href="../reference/scihub_login.html">check_scihub_connection()</a></code> to check for internet connectivity.</li>
+<li>
+<code><a href="../reference/build_example_param_file.html">build_example_param_file()</a></code> (not exported) to build an example parameter file.</li>
 </ul>
 </div>
 <div id="other-changes" class="section level2">
@@ -180,8 +184,10 @@
 <li>Several “soft” error/warning messages were introduced.</li>
 <li>ENVI headers now includes some information about band names (TOA/BOA) and SCL classes.</li>
 <li>Coupling SAFE: in offline mode, if some L2A products exists but not the corresponding L1C, and TOA-derived products are required, only the “coupled” SAFE archives are used.</li>
+<li>Small base example files were added to the package for testing purposes.</li>
+<li>Sen2Cor version which the user wants to install can be chosen in the GUI.</li>
+<li>Documentation was updated and improved, in particular adding function examples.</li>
 <li>Unused old code was removed.</li>
-<li>Documentation was updated.</li>
 <li>Several bugs were fixed.</li>
 </ul>
 </div>

@@ -18,7 +18,7 @@ editModPoly(input, output, session, leafmap, targetLayerId = NULL,
 
 \item{targetLayerId}{\code{character} identifier of layer to edit, delete}
 
-\item{sf}{\code{logical} to return simple features.  \code{sf=FALSE} will return
+\item{sf}{\code{logical} to return simple features. \code{sf=FALSE} will return
 \code{GeoJSON}.}
 
 \item{record}{\code{logical} to record all edits for future playback.}

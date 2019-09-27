@@ -41,7 +41,7 @@ the minimum required version (2.1.2).
 License: GPL 3.0
 }
 \examples{
-\dontrun{
+\donttest{
 
 # Use function
 check_gdal()
@@ -51,5 +51,5 @@ load_binpaths()$gdalinfo
 }
 }
 \author{
-Luigi Ranghetti, phD (2017) \email{ranghetti.l@irea.cnr.it}
+Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

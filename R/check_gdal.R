@@ -6,31 +6,31 @@
 #'  and FALSE is returned.
 #' @param gdal_path (optional) Character: the path in which GDAL must be
 #'  searched in. If NULL (default), search is performed in the whole file system.
-#' @param force (optional) Logical: if TRUE, install even if it is already 
-#'  installed (default is FALSE). Notice that, defining `gdal_path`, GDAL is 
+#' @param force (optional) Logical: if TRUE, install even if it is already
+#'  installed (default is FALSE). Notice that, defining `gdal_path`, GDAL is
 #'  searched again even if `"force" = FALSE` in case the existing installation
 #'  is not in `gdal_path`.
-#' @param full_scan (optional) Logical: in Linux and MacOS, if `gdal_path` was 
-#'  not manually defined, GDAL is searched within the system path in case this 
+#' @param full_scan (optional) Logical: in Linux and MacOS, if `gdal_path` was
+#'  not manually defined, GDAL is searched within the system path in case this
 #'  argument is left to default value FALSE; instead, if TRUE, a full search is
 #'  performed. In Windows, if the default OSGeo directory `C:\\OSGeo4W64` exists,
-#'  GDAL is searched there, instead in the main directory `C:\\`; setting 
+#'  GDAL is searched there, instead in the main directory `C:\\`; setting
 #'  `full_scan` to TRUE, is is always searched in the whole `C:\\`.
 #'  This argument takes no effect if `gdal_path` was defined, since, in that case,
 #'  a full search is always performed in `gdal_path`.
-#' @return Logical (invisible): TRUE in case the installation is ok, FALSE 
+#' @return Logical (invisible): TRUE in case the installation is ok, FALSE
 #'  if GDAL is missing and abort=FALSE (otherwise, the function stops).
 #'
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @importFrom jsonlite toJSON
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'
 #' # Use function
 #' check_gdal()
-#' 
+#'
 #' # Check GDAL was imported
 #' load_binpaths()$gdalinfo
 #' }
@@ -61,14 +61,14 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
   } else {
     gdal_path <- ""
   }
-
+  
   # If GDAL is not found, search for it
   if (any(
     is.null(binpaths$gdalinfo), !file.exists(nn(binpaths$gdalinfo)),
-    force == TRUE, 
+    force == TRUE,
     !grepl(gdal_path, normalize_path(nn(binpaths$gdalinfo)))
   )) {
-    
+    # nocov start
     print_message(
       type="message",
       "Searching for a valid GDAL installation",
@@ -81,7 +81,7 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
       )},
       "..."
     )
-
+    
     if (Sys.info()["sysname"] %in% c("Linux", "Darwin")) {
       paths_gdalinfo <- if (all(full_scan == FALSE, gdal_path == "")) {
         Sys.which("gdalinfo")
@@ -93,10 +93,10 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
       }
     } else if (Sys.info()["sysname"] == "Windows") {
       if (gdal_path == "") {
-        if (all(full_scan == FALSE, dir.exists("C:\\\\OSGEO4~1"))) {
-          gdal_path <- "C:\\\\OSGEO4~1"
+        if (all(full_scan == FALSE, dir.exists("C:\\OSGEO4~1"))) {
+          gdal_path <- "C:\\OSGEO4~1\\"
         } else {
-          gdal_path <- "C:"
+          gdal_path <- "C:\\"
         }
       }
       paths_gdalinfo <- list.files(
@@ -121,16 +121,17 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
     paths_gdalinfo <- binpaths$gdalinfo
   } # end of path retrieval
   
+  # nocov end
   
   ## Check requisite 1: minimum version
   gdal_versions <- package_version(gsub(
-    "^.*GDAL ([0-9\\.]+)[^0-9].*$", "\\1", 
+    "^.*GDAL ([0-9\\.]+)[^0-9].*$", "\\1",
     sapply(paste(paths_gdalinfo, "--version"), system, intern = TRUE)
   ))
   if (all(gdal_versions < gdal_minversion)) {
     print_message(
       type=message_type,
-      "GDAL version must be at least ", as.character(gdal_minversion), 
+      "GDAL version must be at least ", as.character(gdal_minversion),
       ". Please update it."
     )
     return(invisible(FALSE))
@@ -172,10 +173,10 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
       unique(c(
         # 1: C:\OSGeo4W64
         grep("^C:\\\\OSGEO4~1", paths_gdalinfo),
-        # 2. paths in which osgeo4w-setup.exe exists wtogether with gdalinfo.exe
-        which(file.exists(file.path(dirname(paths_gdalinfo),"osgeo4w-setup.exe"))),
-        # 3: paths containing OSGEO4~1
-        grep("OSGEO4", paths_gdalinfo, perl=TRUE)#,
+        # 2: paths containing OSGEO4~1
+        grep("OSGEO4", paths_gdalinfo, perl=TRUE),
+        # 3. paths in which osgeo4w-setup.exe exists wtogether with gdalinfo.exe
+        which(file.exists(file.path(dirname(paths_gdalinfo),"osgeo4w-setup.exe")))#,
         # # 4: all other paths (disabled to avoid selecting other installations)
         # grep("^((?!OSGEO4).)*$", gdal_dirs, perl=TRUE)
       ))
@@ -207,13 +208,13 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
     paths_gdalinfo <- paths_gdalinfo[gdal_osgeo_order]
     gdal_versions <- gdal_versions[gdal_osgeo_order]
   }
-
+  
   
   ## Check requisite 3: Python executables exist
   paths_gdalcalc <- file.path(
     if (Sys.info()["sysname"] == "Darwin") {
       gsub("/osgeo\\-gdal/", "/osgeo-gdal-python/", dirname(paths_gdalinfo))
-    } else { 
+    } else {
       dirname(paths_gdalinfo)
     },
     "gdal_calc.py"
@@ -260,17 +261,17 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
   }
   binpaths$gdal_calc <- if (Sys.info()["sysname"] == "Windows") {
     paste0(binpaths$python," ",normalize_path(file.path(gdal_py_dir,"gdal_calc.py")))
-  } else { 
+  } else {
     normalize_path(file.path(gdal_py_dir,"gdal_calc.py"))
   }
   binpaths$gdal_polygonize <- if (Sys.info()["sysname"] == "Windows") {
     paste0(binpaths$python," ",normalize_path(file.path(gdal_py_dir,"gdal_polygonize.py")))
-  } else { 
+  } else {
     normalize_path(file.path(gdal_py_dir,"gdal_polygonize.py"))
   }
   binpaths$gdal_fillnodata <- if (Sys.info()["sysname"] == "Windows") {
     paste0(binpaths$python," ",normalize_path(file.path(gdal_py_dir,"gdal_fillnodata.py")))
-  } else { 
+  } else {
     normalize_path(file.path(gdal_py_dir,"gdal_fillnodata.py"))
   }
   writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))

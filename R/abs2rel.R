@@ -15,7 +15,7 @@
 #'  warning; if FALSE nothing is shown.
 #' @return The relative path
 #'
-#' @author Luigi Ranghetti, phD (2017) \email{ranghetti.l@@irea.cnr.it}
+#' @author Luigi Ranghetti, phD (2017) \email{luigi.ranghetti@@gmail.com}
 #' @note License: GPL 3.0
 #' @export
 #' @importFrom magrittr "%>%"
@@ -71,7 +71,7 @@ abs2rel <- function(path, ref_path, mustWork=NA) {
     print_message(
       type="warning",
       "Input (",path,") and reference (",ref_path,
-      ") paths have not a common parent directory; ",
+      ") paths do not have a common parent directory; ",
       "an absolute path is returned.")
     return(path)
   }
