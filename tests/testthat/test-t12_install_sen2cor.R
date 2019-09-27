@@ -24,9 +24,9 @@ testthat::test_that(
       regexp = "[Oo]nly Sen2Cor versions .+ are currently supported"
     )
     sen2cor_def_version <- package_version("2.8.0")
-    sen2cor_inst_dir <- dirname(dirname(sen2r:::nn(sen2r:::load_binpaths()$sen2cor)))
+    sen2cor_inst_dir <- file.path(dirname(attr(load_binpaths(), "path")), "sen2cor")
     
-    if (test_download | length(sen2cor_inst_dir) == 0){ 
+    if (test_download | length(sen2cor_inst_dir) == 0) {
       unlink(sen2cor_inst_dir, recursive = TRUE)
       install_sen2cor(sen2cor_inst_dir)
     }
