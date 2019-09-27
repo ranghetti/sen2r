@@ -6,7 +6,6 @@
 * Default values for `"smoothing"` and `"buffer"` arguments in `s2_mask()` are now `0` (like in `sen2r()`) instead than 10/20 m.
 * Set `parallel = FALSE` as default in `sen2r()` (parallelisation must be explicitly required).
 * Since old name products were repackaged by ESA, these products are no longer supported.
-* Sen2Cor v. 2.8.0 (faster and using less memory) is now installed by default.
 
 ## Major changes
 * **`sen2r`** package directory is no more used to store files, but a subfolder `.sen2r` of the user Home directory is created and used. 

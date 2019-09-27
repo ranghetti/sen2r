@@ -1,9 +1,9 @@
 #' @title Download and install Sen2Cor.
 #' @description This function download and install standalone version of
-#'  [Sen2Cor 2.8.0](http://step.esa.int/main/third-party-plugins-2/sen2cor).
+#'  [Sen2Cor](http://step.esa.int/main/third-party-plugins-2/sen2cor).
 #' @param sen2cor_dir Path where sen2cor will be installed.
 #' @param version (optional) Character: Sen2Cor version (one among
-#'  '2.8.0' - default - and '2.5.5').
+#'  '2.5.5' - default - and '2.8.0').
 #' @param force (optional) Logical: if TRUE, install even if it is already
 #'  installed (default is FALSE).
 #' @return NULL (the function is called for its side effects)
@@ -20,7 +20,7 @@
 #' install_sen2cor()
 #' }
 
-install_sen2cor <- function(sen2cor_dir, version="2.8.0", force = FALSE) {
+install_sen2cor <- function(sen2cor_dir, version="2.5.5", force = FALSE) {
   .install_sen2cor(
     sen2cor_dir = sen2cor_dir,
     version = version,
@@ -31,7 +31,7 @@ install_sen2cor <- function(sen2cor_dir, version="2.8.0", force = FALSE) {
 
 .install_sen2cor <- function(
   sen2cor_dir,
-  version="2.8.0",
+  version="2.5.5",
   force = FALSE,
   interactive = TRUE
 ) {

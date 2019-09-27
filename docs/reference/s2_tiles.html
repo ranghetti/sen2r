@@ -144,11 +144,11 @@ from the sen2r GitHub repository and it saves it on disk.</p>
   <span class='st'>"https://biogeo.ucdavis.edu/data/gadm3.6/Rsf/gadm36_CHE_0_sf.rds"</span>,
   <span class='kw pkg'>httr</span><span class='kw ns'>::</span><span class='fu'><a href='https://httr.r-lib.org/reference/write_disk.html'>write_disk</a></span>(<span class='no'>ch_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>())
 )</div><div class='output co'>#&gt; Response [https://data.biogeo.ucdavis.edu/data/gadm3.6/Rsf/gadm36_CHE_0_sf.rds]
-#&gt;   Date: 2019-09-27 09:39
+#&gt;   Date: 2019-09-27 14:22
 #&gt;   Status: 200
 #&gt;   Content-Type: &lt;unknown&gt;
 #&gt;   Size: 112 kB
-#&gt; &lt;ON DISK&gt;  /tmp/Rtmpa9EnAd/file581031d5a429</div><div class='input'><span class='no'>ch</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span>(<span class='no'>ch_path</span>)
+#&gt; &lt;ON DISK&gt;  /tmp/RtmpW3nBlB/file81643acdb6d9</div><div class='input'><span class='no'>ch</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span>(<span class='no'>ch_path</span>)
 <span class='no'>s2tiles_ch</span> <span class='kw'>&lt;-</span> <span class='no'>s2tiles</span>[<span class='fu'><a href='https://rdrr.io/r/base/message.html'>suppressMessages</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/geos_binary_pred.html'>st_intersects</a></span>(<span class='no'>ch</span>, <span class='no'>s2tiles</span>))<span class='kw'>[[</span><span class='fl'>1</span>]],]
 <span class='no'>s2_coords</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_coordinates.html'>st_coordinates</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/warning.html'>suppressWarnings</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/geos_unary.html'>st_centroid</a></span>(<span class='no'>s2tiles_ch</span>)))
 
