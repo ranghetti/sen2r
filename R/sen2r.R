@@ -1814,7 +1814,7 @@ sen2r <- function(param_list = NULL,
         
         if (length(sel_s2_list_l1c_tocorrect)>0) {
           
-          if (sum(!file.path(path_l1c,names(sel_s2_list_l1c_tocorrect)) %>% file.exists()) > 0) {
+          if (sum(file.path(path_l1c,names(sel_s2_list_l1c_tocorrect)) %>% file.exists()) > 0) {
             print_message(
               type = "message",
               date = TRUE,

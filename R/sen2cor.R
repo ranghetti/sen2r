@@ -176,6 +176,20 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
       )
     ) # path of the L2A product where it should be placed definitively
     
+    # Check if a "comparable" file already excists
+    # (in case using Sen2cor 2.8.0, this is necessary in order not to 
+    # re-correct L1C products every time)
+    sel_l2a_regex <- gsub(
+      "^S(2[AB])\\_MSIL([12][AC])\\_([0-9]{8}T[0-9]{6})\\_N([0-9]{4})\\_R([0-9]{3})\\_T([A-Z0-9]{5})\\_([0-9]{8}T[0-9]{6})\\.SAFE$",
+      "^S\\1\\\\_MSIL\\2\\\\_\\3\\\\_N[0-9]{4}\\\\_R\\5\\\\_T\\6\\\\_[0-9]{8}T[0-9]{6}\\\\.SAFE$",
+      basename(sel_l2a)
+    )
+    sel_l2a_exi <- list.files(dirname(sel_l2a), sel_l2a_regex, full.names = TRUE)
+    if (length(sel_l2a_exi) > 0) {
+      sel_l2a <- sel_l2a_exi[1]
+    }
+    # TODO order by baseline, ingestion date
+
     ## Set the tiles vectors (existing, required, ...)
     # existing L1C tiles within input product
     sel_l1c_tiles_existing <- sapply(
