@@ -326,7 +326,7 @@ context("Test gdal_warp()")
 testthat::skip_on_cran() # because using runtime GDAL
 # testthat::skip_on_travis()
 
-crop_poly <- system.file("data/vector/dam.geojson", package = "sen2r")
+crop_poly <- system.file("extdata/vector/dam.geojson", package = "sen2r")
 crop_line <- sf::st_cast(sf::read_sf(crop_poly), "LINESTRING")
 test1 <- tempfile(fileext = "_test1.tif")
 
