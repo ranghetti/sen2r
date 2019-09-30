@@ -361,7 +361,7 @@ but it is slightly slower; its advantage are the lower RAM requirements.
 
 \item{use_python}{(optional) Logical: if TRUE (default), the presence of
 python in the system is checked before running the function;
-if FALSE, this is skipped. Setting this to FALSE can bge useful on
+if FALSE, this is skipped. Setting this to FALSE can be useful on
 systems with problems with python, when \code{\link[=sen2r]{sen2r()}} is intended
 to be used only for processing existing SAFE files (python is required
 in any case to download SAFE).}
