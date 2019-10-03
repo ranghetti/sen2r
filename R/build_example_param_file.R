@@ -11,6 +11,7 @@
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @importFrom jsonlite toJSON
+#' @export
 #' @examples
 #' sen2r:::build_example_param_file()
 

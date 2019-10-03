@@ -97,9 +97,10 @@
 #' ex_out
 #'
 #' # Show output
-#' par(mfrow = c(1,2))
-#' par(mar = rep(0,4)); image(stars::read_stars(ex_in), rgb = 4:2, maxColorValue = 3500)
+#' oldpar <- par(mfrow = c(1,2), mar = rep(0,4))
+#' image(stars::read_stars(ex_in), rgb = 4:2, maxColorValue = 3500)
 #' par(mar = rep(2/3,4)); image(stars::read_stars(ex_out))
+#' par(oldpar)
 
 s2_calcindices <- function(infiles,
                            indices,

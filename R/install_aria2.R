@@ -13,7 +13,8 @@
 #' @examples
 #' \dontrun{
 #' # Run only on Windows
-#' install_aria2()
+#' install_aria2(aria2_dir = tempdir())
+#' # ( use a non-temporary folder path instead of tempdir() )
 #' }
 
 install_aria2 <- function(aria2_dir, force = FALSE) {

@@ -77,10 +77,11 @@
 #' ex_out
 #' 
 #' # Show output
-#' par(mfrow = c(1,3), mar = rep(0,4))
+#' oldpar <- par(mfrow = c(1,3), mar = rep(0,4))
 #' image(stars::read_stars(ex_in), rgb = 4:2, maxColorValue = 3500)
 #' image(stars::read_stars(ex_out[1]), rgb = 1:3)
 #' image(stars::read_stars(ex_out[2]), rgb = 1:3)
+#' par(oldpar)
 #' }
 
 s2_rgb <- function(infiles, 

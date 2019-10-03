@@ -60,7 +60,7 @@ load_binpaths <- function(bins = NULL) {
   # Check aria2
   if (any(c("aria2","aria2c") %in% bins) & is.null(binpaths$aria2c)) {
     if (Sys.which("aria2c") != "") {
-      binpaths$aria2c <- normalizePath(Sys.which("aria2c"))
+      binpaths$aria2c <- normalize_path(Sys.which("aria2c"))
       writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
       binpaths <- jsonlite::fromJSON(binpaths_file)
     } else {

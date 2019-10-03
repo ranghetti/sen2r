@@ -27,7 +27,8 @@ License: GPL 3.0
 }
 \examples{
 \dontrun{
-install_sen2cor()
+install_sen2cor(sen2cor_dir = tempdir())
+# ( use a non-temporary folder path instead of tempdir() )
 }
 }
 \author{

@@ -25,7 +25,8 @@ License: GPL 3.0
 \examples{
 \dontrun{
 # Run only on Windows
-install_aria2()
+install_aria2(aria2_dir = tempdir())
+# ( use a non-temporary folder path instead of tempdir() )
 }
 }
 \author{

@@ -361,7 +361,7 @@ but it is slightly slower; its advantage are the lower RAM requirements.
 
 \item{use_python}{(optional) Logical: if TRUE (default), the presence of
 python in the system is checked before running the function;
-if FALSE, this is skipped. Setting this to FALSE can bge useful on
+if FALSE, this is skipped. Setting this to FALSE can be useful on
 systems with problems with python, when \code{\link[=sen2r]{sen2r()}} is intended
 to be used only for processing existing SAFE files (python is required
 in any case to download SAFE).}
@@ -450,7 +450,7 @@ thumb_4 <- file.path(dirname(out_paths_4), "thumbnails", gsub("tif$", "jpg", bas
 thumb_4[grep("SCL", thumb_4)] <-
   gsub("jpg$", "png", thumb_4[grep("SCL", thumb_4)])
   
-par(mfrow = c(1,3), mar = rep(0,4))
+oldpar <- par(mfrow = c(1,3), mar = rep(0,4))
 image(stars::read_stars(thumb_2[grep("TOA", thumb_2)]), rgb = 1:3)
 image(stars::read_stars(thumb_2[grep("BOA", thumb_2)]), rgb = 1:3)
 image(stars::read_stars(thumb_2[grep("SCL", thumb_2)]), rgb = 1:3)
@@ -477,5 +477,7 @@ par(mfrow = c(1,3), mar = rep(0,4))
 image(stars::read_stars(thumb_4[grep("RGB432T", thumb_4)]), rgb = 1:3)
 image(stars::read_stars(thumb_4[grep("RGB432B", thumb_4)]), rgb = 1:3)
 image(stars::read_stars(thumb_4[grep("RGB843B", thumb_4)]), rgb = 1:3)
+
+par(oldpar)
 }
 }

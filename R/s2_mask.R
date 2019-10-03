@@ -137,10 +137,11 @@
 #' ex_out
 #'
 #' # Show output
-#' par(mfrow = c(1,3))
+#' oldpar <- par(mfrow = c(1,3))
 #' par(mar = rep(0,4)); image(stars::read_stars(ex_in), rgb = 1:3)
 #' par(mar = rep(2/3,4)); image(stars::read_stars(ex_mask))
 #' par(mar = rep(0,4)); image(stars::read_stars(ex_out), rgb = 1:3)
+#' par(oldpar)
 #' }
 
 s2_mask <- function(infiles,

@@ -4,108 +4,85 @@
 This is a resubmission. Please find attached the comments made by the reviewer
 (which we thanks for her effort) and our related edits.
 
-> \dontrun{} should be only used if the example really cannot be executed
-(e.g. because of missing additional software, missing API keys, ...) by
-the user. That's why wrapping examples in \dontrun{} adds the comment
-("# Not run:") as a warning for the user.
-Seems mostly not necessary.
-Please unwrap the examples if they are executable in < 5 sec, or create
-additionally small toy examples to allow automatic testing (then replace
-\dontrun with \donttest).
-You could also replace \dontrun{} with \donttest, but it would be
-preferable to have automatic checks for functions.
+> Please always make sure to reset to user's options, wd or par after you
+changed it in examples and vignettes.
+e.g. in gdalwarp_grid.Rd, and more...:
+oldpar <- par(mfrow = c(1,2))
+...
+par(oldpar)
 
-We carefully checked the use of \dontrun and \donttest within functions.
-Now \donttest is used wherever automatic checks cannot be executed
-(in most of the cases, where runtime GDAL binaries - which are not
-installed on CRAN, Travis etc., are used).
-\dontrun is instead used only if the examples are not immediately reproducible
+We checked the use of `par()`, restoring the previous settings whenever it
+was used (commit a778ef2c0934ff6df27c666a94346098cfa221e5).
+Working directory and user options were never changed.
+
+> Please add all system requirements to the DESCRIPTION file.
+"Dependencies external to the R system should be listed in the
+‘SystemRequirements’ field, [...]".
+
+System requirements were added to the DESCRIPTION file
+(commit e2f1f82c52af13238b6ab3088d54b1c77704a4a9).
+
+> "\dontrun is instead used only if the examples are not immediately reproducible
 (e.g. because example input filenames do not correspond to existing files,
-or for functions which install something on disk).
+or for functions which install something on disk)."
+Also necassary in safe_getMetadata.Rd?
+In this example also use system.file() to get a path.
 
-Regarding package testing, we wrote test functions at tests/testthat, granting
-an high package coverage (most of them cannot be run automatically 
-for the reason described above).
+Function `safe_getMetadata()` requires the SAFE archive to exist,
+unless `info` argument is set to `"nameinfo"`.
+We cannot add a sample SAFE archive to the package (so referring to it using
+`system.file()`), due to the huge file size of SAFE archives.
+So, `\dontrun{}` is necessary for the examples in which `info != "nameinfo"`.
+Nevertheless, we edited the examples
+(commit 1d2af51e9f00c7ac98778cf9e2834af0e72c662d)
+in order to provide the instructions for a sample SAFE download
+(included in `\dontrun{}` for the reason above),
+so that examples can refer to it instead than to a fake SAFE path.
 
-> Couldn't find the files necessary for gdalwarp_grid.Rd e.g.
-Please add small files needed for the examples in the inst/extdata
-subfolder of your package and use system.file() to get the correct
-package path.
-
-We added the directory inst/extdata/out, containing small
-example files used by function examples, including `gdalwarp_grid.R`.
-Reference documentations were improved to make use of these files.
-
-> You have examples for unexported functions which cannot run in this way.
-Please either add packagename::: to the function calls in the examples,
-omit these examples or export these functions.
-e.g.: gdalwarp_grid.Rd, nn.Rd
-
-We checked all the package functions, and found this kind of problem only
-in the two functions gdalwarp_grid.R and nn.R, which we fixed.
-
-> You write information messages to the console that cannot be easily
-suppressed.
-Instead of print()/cat() rather use message()/warning()  or
-if(verbose)cat(..) if you really have to write text to the console.
-(except for print() and summary() functions)
-
-The functions provided by the package use an internal function `print_message()`
-to manage the outputs, which can write as error, warning or message.
-No cat / print are explicitly used.
-Different outputs could be printed by runtime executables called by R functions.
-
-> Please ensure that your functions do not write by default or in your
+>>> Please ensure that your functions do not write by default or in your
 examples/vignettes/tests in the user's home filespace (including the
 package directory and getwd()). That is not allowed by CRAN policies.
-Please only write/save files if the user has specified a directory in
-the function themselves. Therefore please omit any default path =
-getwd() in writing functions.
-In your examples/vignettes/tests you can write to tempdir().
-
-The package was writing within the package direcotry for the following reasons:
-1. install Sen2Cor;
-2. install aria2;
-3. write the paths of the runtime dependencies in the file extdata/paths.json;
-4. write the SciHub credentials in the file inst/apihub.txt;
-5. write some logs in inst/extdata/logs;
-6. download the file s2_tiles.rds in inst/extdata/vector/s2_tiles.rds.
-
-These situations were managed as follows:
-- first two functions were modified in order to require the output 
+[...]
+>> 
+>> The package was writing within the package direcotry for the following reasons:
+>> 1. install Sen2Cor;
+>> 2. install aria2;
+>> [...]
+>> These situations were managed as follows:
+>> - first two functions were modified in order to require the output 
     path as argument;
-- files 3-6 are now saved in the subfolder ".sen2r" in the user's home 
-   directory; the permission to do it is now asked to the user.
+>> [...]
+> 
+> That is great. However, now the examples lack directories. Please add
+tempdir() and write a comment for users to change the directory.
 
-> In several functions the return value is NULL, however, it would be
-better to use stop() as it "stops execution of the current expression
-and executes an error action.".
-Please change the code (or \value{} in the documentation).
+This was done in commit 368a9fa68e9c4d2aef297ca3aff2e5cd8f117f19.
 
-Some functions return NULL since they are not used to produce R outputs, but 
+>> Some functions return NULL since they are not used to produce R outputs, but
 to crate/modify files, or install libraries.
 Using `stop()` would generate an error, even if the functions work properly.
 In these case, the entry 
 `@return NULL `
 was replaced with a clearer
 `@return NULL (the function is called for its side effects)`.
+> 
+> I'm not sure this happend also in safe_getMetadata()?
 
-> Please make sure that you do not change the user's options, par or
-working directory. If you really have to do so, please ensure with an
-*immediate* call of on.exit() that the settings are reset when the
-function is exited: e.g. install_sen2cor()
-...
-oldwd <- getwd()           # code line i
-on.exit(setwd(oldwd))      # code line i+1
-...
-If you're not familiar with the function, please check ?on.exit. This
-function makes it possible to restore options before exiting a function
-even if the function breaks. Therefore it needs to be called immediately
-after the option change within a function.
-
-The only default value which was modified by the packages was the `setwd()` 
-instruction cited by the reviewer in function `install_sen2cor`. 
-This was fixed as suggested.
+Yes. In this function, the argument `abort` determines if the function would
+return a warning (if `abort = FALSE`) or a message (if `abort = TRUE`) 
+before exiting. For this reason, the syntax
+```
+print_message(
+  type=message_type,
+  "Exit message"
+)
+return(invisible(NULL))
+```
+is used instead than
+```
+stop("Exit message")
+```
+The two are equivalent in case `abort = TRUE`.
 
 
 ## Test environments
