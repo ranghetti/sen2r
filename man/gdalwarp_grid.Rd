@@ -48,10 +48,11 @@ ex_out <- tempfile(fileext = "_BOA_out.tif")
 sen2r:::gdalwarp_grid(ex_sel, ex_out, ref = ex_ref)
 
 # Show output
-par(mfrow = c(1,3))
-par(mar = rep(0,4)); image(stars::read_stars(ex_sel), rgb = 4:2, maxColorValue = 3500)
+oldpar <- par(mfrow = c(1,3), mar = rep(0,4))
+image(stars::read_stars(ex_sel), rgb = 4:2, maxColorValue = 3500)
 par(mar = rep(2/3,4)); image(stars::read_stars(ex_ref))
 par(mar = rep(0,4)); image(stars::read_stars(ex_out), rgb = 4:2, maxColorValue = 3500)
+par(oldpar)
 }
 }
 \author{

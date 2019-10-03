@@ -645,6 +645,7 @@ testthat::test_that(
 #     )
 #     testthat::expect_true(grepl("^\\.\\.?/", rel_path))
 #     
+#     oldwd <- getwd()
 #     setwd(dirname(abs_file))
 #     testthat::expect_true(file.exists(rel_path))
 #     gdal_rel2abs(rel_file)
@@ -656,6 +657,7 @@ testthat::test_that(
 #       abs_content[grepl("relativeToVRT", abs_content)]
 #     )
 #     testthat::expect_true(grepl("^/", abs_path))
+#     setwd(oldwd)
 #     
 #   }
 # )
