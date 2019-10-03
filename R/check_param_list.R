@@ -269,7 +269,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   )) {
     print_message(
       type = type,
-      "In online mode, almost one parameter among 'extent' and ",
+      "In online mode, at least one parameter among 'extent' and ",
       "'s2tiles_selected' must be provided."
     )
   }
