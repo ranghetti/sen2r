@@ -64,8 +64,7 @@
 #'
 #' @examples
 #' # Define product name
-#' s2_examplename <-
-#'   "/path/of/the/product/S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"
+#' s2_examplename <- "S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE"
 #'
 #' # Return only the information retrievable from the file names (files are not scanned)
 #' safe_getMetadata(s2_examplename, info="nameinfo")
@@ -78,18 +77,24 @@
 #' safe_getMetadata(s2_examplename, info="nameinfo")[["level"]]
 #'
 #' \dontrun{
+#' # Download a sample SAFE archive (this can take a while)
+#' s2_exampleurl <- paste0("https://scihub.copernicus.eu/apihub/odata/v1/",
+#'   "Products(\'5f590bcb-ee55-4a20-8e75-bde99f5b93d4\')/$value")
+#' names(s2_exampleurl) <- "S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE"
+#' s2_download(s2_exampleurl, outdir=tempdir())
+#' s2_examplepath <- file.path(tempdir(), names(s2_exampleurl))
 #'
 #' # Return all the available information
-#' safe_getMetadata(s2_examplename)
+#' safe_getMetadata(s2_examplepath)
 #'
 #' # Return some specific information
-#' safe_getMetadata(s2_examplename, info=c("tiles", "level", "id_tile"))
+#' safe_getMetadata(s2_examplepath, info=c("tiles", "level", "id_tile"))
 #'
 #' # Return a single information
-#' safe_getMetadata(s2_examplename, info="clouds")
+#' safe_getMetadata(s2_examplepath, info="orbit_n")
 #' 
 #' # Delete it if it is not recognised
-#' rm_invalid_safe(s2_examplename)
+#' rm_invalid_safe(s2_examplepath)
 #' 
 #' }
 
