@@ -45,8 +45,12 @@ reference:
   - title: Accessory functions
     desc: ~
     contents:
+      - '`build_example_param_file`'
       - '`s2_gui`'
       - '`list_indices`'
+      - '`tiles_intersects`'
+  - title: Generic accessory functions
+    desc: ~
       - '`expand_path`'
       - '`comsub`'
       - '`projname`'
@@ -56,7 +60,6 @@ reference:
       - '`st_crs2`'
       - '`str_pad2`'
       - '`normalize_path`'
-      - '`tiles_intersects`'
 navbar:
   type: inverse
   left:
