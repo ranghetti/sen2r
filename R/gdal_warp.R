@@ -48,6 +48,7 @@
 #' @param tmpdir (optional) Path where intermediate files (maskfile)
 #'  will be created.
 #'  Default is a temporary directory.
+#'  If `tmpdir` is a non-empty folder, a random subdirectory will be used.
 #' @param rmtmp (optional) Logical: should temporary files be removed?
 #'  (Default: TRUE)
 #' @return NULL (the function is called for its side effects)
@@ -283,6 +284,8 @@ gdal_warp <- function(srcfiles,
     if (length(grep("POLYGON",st_geometry_type(mask)))>=1) {
       if (is.na(tmpdir)) {
         tmpdir <- tempfile(pattern="gdalwarp_")
+      } else if (dir.exists(tmpdir)) {
+        tmpdir <- file.path(tmpdir, basename(tempfile(pattern="gdalwarp_")))
       }
       dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
       st_write(

@@ -23,6 +23,7 @@
 #'  this is interpreted as the quality level of a JPEG compression.
 #' @param tmpdir (optional) Path where intermediate files will be created.
 #'  Default is a temporary directory.
+#' @param rmtmp (optional) Logical: should temporary files be removed?
 #' @return The path of the output image; alternatively, the output image
 #'  as RasterBrick (if `out_rast = NULL`).
 #'
@@ -47,6 +48,8 @@ stack2rgb <- function(in_rast,
   # define and create tmpdir
   if (is.na(tmpdir)) {
     tmpdir <- tempfile(pattern="stack2rgb_")
+  } else if (dir.exists(tmpdir)) {
+    tmpdir <- file.path(tmpdir, basename(tempfile(pattern="stack2rgb_")))
   }
   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
   
@@ -252,6 +255,8 @@ raster2rgb <- function(in_rast,
   # define and create tmpdir
   if (is.na(tmpdir)) {
     tmpdir <- tempfile(pattern="raster2rgb_")
+  } else if (dir.exists(tmpdir)) {
+    tmpdir <- file.path(tmpdir, basename(tempfile(pattern="raster2rgb_")))
   }
   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
   
@@ -384,6 +389,8 @@ s2_thumbnails <- function(infiles,
   # Set tmpdir
   if (is.na(tmpdir)) {
     tmpdir <- tempfile(pattern="s2thumbnails_")
+  } else if (dir.exists(tmpdir)) {
+    tmpdir <- file.path(tmpdir, basename(tempfile(pattern="s2thumbnails_")))
   }
   dir.create(tmpdir, recursive = FALSE, showWarnings = FALSE)
   

@@ -28,7 +28,8 @@ placed in separated \code{outfile} subdirectories; if FALSE, they are placed in
 \code{infiles} relate to more than a single product.}
 
 \item{tmpdir}{(optional) Path where intermediate files (VRT) will be created.
-Default is a temporary directory.}
+Default is a temporary directory.
+If \code{tmpdir} is a non-empty folder, a random subdirectory will be used.}
 
 \item{rmtmp}{(optional) Logical: should temporary files be removed?
 (Default: TRUE).

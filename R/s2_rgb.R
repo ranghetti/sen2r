@@ -35,6 +35,7 @@
 #'  present, the compression indicated with this parameter is used.
 #' @param tmpdir (optional) Path where intermediate files (VRT) will be created.
 #'  Default is a temporary directory.
+#'  If `tmpdir` is a non-empty folder, a random subdirectory will be used.
 #' @param rmtmp (optional) Logical: should temporary files be removed?
 #'  (Default: TRUE)
 #' @param parallel (optional) Logical: if TRUE, the function is run using parallel
@@ -108,6 +109,8 @@ s2_rgb <- function(infiles,
   # Set tmpdir
   if (is.na(tmpdir)) {
     tmpdir <- tempfile(pattern="s2rgb_")
+  } else if (dir.exists(tmpdir)) {
+    tmpdir <- file.path(tmpdir, basename(tempfile(pattern="s2rgb_")))
   }
   dir.create(tmpdir, recursive = FALSE, showWarnings = FALSE)
   
