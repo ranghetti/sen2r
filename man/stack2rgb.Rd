@@ -35,9 +35,8 @@ In the case a GTiff format is present and an integer 0-100 number is provided,
 this is interpreted as the quality level of a JPEG compression.}
 
 \item{tmpdir}{(optional) Path where intermediate files will be created.
-Default is a temporary directory.}
-
-\item{rmtmp}{(optional) Logical: should temporary files be removed?}
+Default is a temporary directory.
+If \code{tmpdir} is a non-empty folder, a random subdirectory will be used.}
 }
 \value{
 The path of the output image; alternatively, the output image
