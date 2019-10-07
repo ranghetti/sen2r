@@ -33,7 +33,8 @@ a unit mounted with SAMBA, otherwise Sen2Cor would produce empty L2A products.}
 \item{tmpdir}{(optional) Path where processing is performed if a temporary
 working directory is required (see argument \code{proc_dir}). Be sure \code{tmpdir}
 not to be a SAMBA mountpoint under Linux.
-Default is a temporary directory.}
+Default is a temporary directory.
+If \code{tmpdir} is a non-empty folder, a random subdirectory will be used.}
 
 \item{rmtmp}{(optional) Logical: should temporary files be removed?
 (Default: TRUE)}

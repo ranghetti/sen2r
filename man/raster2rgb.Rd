@@ -26,7 +26,8 @@ value of the palette (for now, only 1 is used). A quantile will be also
 accepted.}
 
 \item{tmpdir}{(optional) Path where intermediate files (VRT) will be created.
-Default is a temporary directory.}
+Default is a temporary directory.
+If \code{tmpdir} is a non-empty folder, a random subdirectory will be used.}
 }
 \value{
 The path of the output image; alternatively, the output image

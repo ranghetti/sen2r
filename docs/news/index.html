@@ -126,6 +126,7 @@
 <li>Default values for <code>"smoothing"</code> and <code>"buffer"</code> arguments in <code><a href="../reference/s2_mask.html">s2_mask()</a></code> are now <code>0</code> (like in <code><a href="../reference/sen2r.html">sen2r()</a></code>) instead than 10/20 m.</li>
 <li>Set <code>parallel = FALSE</code> as default in <code><a href="../reference/sen2r.html">sen2r()</a></code> (parallelisation must be explicitly required).</li>
 <li>Since old name products were repackaged by ESA, these products are no longer supported.</li>
+<li>In the case the users manually defines the path to be used as temporary directory and this directory already exists, a casual subdirectory of the user-defined folder is used (this to prevent to accidentally delete existing files).</li>
 </ul>
 </div>
 <div id="major-changes" class="section level2">

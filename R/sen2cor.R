@@ -23,6 +23,7 @@
 #'  working directory is required (see argument `proc_dir`). Be sure `tmpdir`
 #'  not to be a SAMBA mountpoint under Linux.
 #'  Default is a temporary directory.
+#'  If `tmpdir` is a non-empty folder, a random subdirectory will be used.
 #' @param rmtmp (optional) Logical: should temporary files be removed?
 #'  (Default: TRUE)
 #' @param tiles Vector of Sentinel-2 Tile strings (5-length character) to be
@@ -254,6 +255,8 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
         ) {
           if (is.na(tmpdir)) {
             tmpdir <- tempfile(pattern="sen2cor_")
+          } else if (dir.exists(tmpdir)) {
+            tmpdir <- file.path(tmpdir, basename(tempfile(pattern="sen2cor_")))
           }
           dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
           # check that tmpdir is not on a mountpoint

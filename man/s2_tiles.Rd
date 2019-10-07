@@ -23,7 +23,7 @@ s2tiles <- s2_tiles()
 
 # Extract a subset of all the tiles
 httr::GET(
-  "https://biogeo.ucdavis.edu/data/gadm3.6/Rsf/gadm36_CHE_0_sf.rds", 
+  "https://raw.githubusercontent.com/ranghetti/sen2r/devel/utils/vector/ch_bound.rds", 
   httr::write_disk(ch_path <- tempfile())
 )
 ch <- readRDS(ch_path)

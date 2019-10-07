@@ -19,6 +19,7 @@
 #'  `infiles` relate to more than a single product.
 #' @param tmpdir (optional) Path where intermediate files (VRT) will be created.
 #'  Default is a temporary directory.
+#'  If `tmpdir` is a non-empty folder, a random subdirectory will be used.
 #' @param rmtmp (optional) Logical: should temporary files be removed?
 #'  (Default: TRUE).
 #'  This parameter takes effect only if the output files are not VRT
@@ -166,6 +167,9 @@ s2_merge <- function(infiles,
       tempfile(pattern="s2merge_")
     }
   } else {
+    if (dir.exists(tmpdir)) {
+      tmpdir <- file.path(tmpdir, basename(tempfile(pattern="s2merge_")))
+    }
     autotmpdir <- FALSE
   }
   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)

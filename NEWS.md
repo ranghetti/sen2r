@@ -6,6 +6,7 @@
 * Default values for `"smoothing"` and `"buffer"` arguments in `s2_mask()` are now `0` (like in `sen2r()`) instead than 10/20 m.
 * Set `parallel = FALSE` as default in `sen2r()` (parallelisation must be explicitly required).
 * Since old name products were repackaged by ESA, these products are no longer supported.
+* In the case the users manually defines the path to be used as temporary directory and this directory already exists, a casual subdirectory of the user-defined folder is used (this to prevent to accidentally delete existing files).
 
 ## Major changes
 * **`sen2r`** package directory is no more used to store files, but a subfolder `.sen2r` of the user Home directory is created and used. 

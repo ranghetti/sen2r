@@ -23,6 +23,7 @@
 #'  this is interpreted as the quality level of a JPEG compression.
 #' @param tmpdir (optional) Path where intermediate files will be created.
 #'  Default is a temporary directory.
+#'  If `tmpdir` is a non-empty folder, a random subdirectory will be used.
 #' @return The path of the output image; alternatively, the output image
 #'  as RasterBrick (if `out_rast = NULL`).
 #'
@@ -47,6 +48,8 @@ stack2rgb <- function(in_rast,
   # define and create tmpdir
   if (is.na(tmpdir)) {
     tmpdir <- tempfile(pattern="stack2rgb_")
+  } else if (dir.exists(tmpdir)) {
+    tmpdir <- file.path(tmpdir, basename(tempfile(pattern="stack2rgb_")))
   }
   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
   
@@ -205,6 +208,7 @@ stack2rgb <- function(in_rast,
 #'  accepted.
 #' @param tmpdir (optional) Path where intermediate files (VRT) will be created.
 #'  Default is a temporary directory.
+#'  If `tmpdir` is a non-empty folder, a random subdirectory will be used.
 #' @return The path of the output image; alternatively, the output image
 #'  as RasterLayer (if `out_rast = NULL`).
 #'
@@ -252,6 +256,8 @@ raster2rgb <- function(in_rast,
   # define and create tmpdir
   if (is.na(tmpdir)) {
     tmpdir <- tempfile(pattern="raster2rgb_")
+  } else if (dir.exists(tmpdir)) {
+    tmpdir <- file.path(tmpdir, basename(tempfile(pattern="raster2rgb_")))
   }
   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
   
@@ -356,6 +362,7 @@ raster2rgb <- function(in_rast,
 #'  "thumbnails") of the parent directory of each input file.
 #' @param tmpdir (optional) Path where intermediate files (VRT) will be created.
 #'  Default is a temporary directory.
+#'  If `tmpdir` is a non-empty folder, a random subdirectory will be used.
 #' @param rmtmp (optional) Logical: should temporary files be removed?
 #'  (Default: TRUE)
 #' @param overwrite (optional) Logical value: should existing thumbnails be
@@ -384,6 +391,8 @@ s2_thumbnails <- function(infiles,
   # Set tmpdir
   if (is.na(tmpdir)) {
     tmpdir <- tempfile(pattern="s2thumbnails_")
+  } else if (dir.exists(tmpdir)) {
+    tmpdir <- file.path(tmpdir, basename(tempfile(pattern="s2thumbnails_")))
   }
   dir.create(tmpdir, recursive = FALSE, showWarnings = FALSE)
   
