@@ -24,7 +24,7 @@
 #' 
 #' # Show the tiles
 #' plot(s2tiles_ch$geometry, border = "blue")
-#' plot(ch$geometry, border = "red", add = TRUE)
+#' plot(ch, border = "red", add = TRUE)
 #' text(s2_coords[,1], s2_coords[,2], s2tiles_ch$tile_id, col = "blue", cex = .75)
 #' 
 #' # Use function tiles_intersects() to exclude unuseful tiles.
