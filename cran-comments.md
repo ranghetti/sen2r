@@ -4,85 +4,25 @@
 This is a resubmission. Please find attached the comments made by the reviewer
 (which we thanks for her effort) and our related edits.
 
-> Please always make sure to reset to user's options, wd or par after you
-changed it in examples and vignettes.
-e.g. in gdalwarp_grid.Rd, and more...:
-oldpar <- par(mfrow = c(1,2))
-...
-par(oldpar)
+> Thanks, please check whether sen2cor (and maybe other software) has to
+be declared in the SystemRequirements field of the DESCRIPTION file.
 
-We checked the use of `par()`, restoring the previous settings whenever it
-was used (commit a778ef2c0934ff6df27c666a94346098cfa221e5).
-Working directory and user options were never changed.
+Sen2Cor is not a system dependency, in the sense that there is not an installer
+which have to be run with administration rules (Windows) or a package which can
+be installed with a package manager or a source code to be compiled (Unix),
+but there is an archive which can be manually extracted with user permissions
+and run by the user who extracted it.
+In other words, Sen2Cor cannot be found with a sys.which call.
+Moreover, it is not a mandatory requirement, while the package can be used
+without it if the user does not require to perform an atmospheric correction 
+of Sentinel-2 images.
+So, in our opinion, it should not be declared in the SystemRequirements 
+field of the DESCRIPTION file.
 
-> Please add all system requirements to the DESCRIPTION file.
-"Dependencies external to the R system should be listed in the
-‘SystemRequirements’ field, [...]".
+> Please do not install software in your tests.
 
-System requirements were added to the DESCRIPTION file
-(commit e2f1f82c52af13238b6ab3088d54b1c77704a4a9).
-
-> "\dontrun is instead used only if the examples are not immediately reproducible
-(e.g. because example input filenames do not correspond to existing files,
-or for functions which install something on disk)."
-Also necassary in safe_getMetadata.Rd?
-In this example also use system.file() to get a path.
-
-Function `safe_getMetadata()` requires the SAFE archive to exist,
-unless `info` argument is set to `"nameinfo"`.
-We cannot add a sample SAFE archive to the package (so referring to it using
-`system.file()`), due to the huge file size of SAFE archives.
-So, `\dontrun{}` is necessary for the examples in which `info != "nameinfo"`.
-Nevertheless, we edited the examples
-(commit 1d2af51e9f00c7ac98778cf9e2834af0e72c662d)
-in order to provide the instructions for a sample SAFE download
-(included in `\dontrun{}` for the reason above),
-so that examples can refer to it instead than to a fake SAFE path.
-
->>> Please ensure that your functions do not write by default or in your
-examples/vignettes/tests in the user's home filespace (including the
-package directory and getwd()). That is not allowed by CRAN policies.
-[...]
->> 
->> The package was writing within the package direcotry for the following reasons:
->> 1. install Sen2Cor;
->> 2. install aria2;
->> [...]
->> These situations were managed as follows:
->> - first two functions were modified in order to require the output 
-    path as argument;
->> [...]
-> 
-> That is great. However, now the examples lack directories. Please add
-tempdir() and write a comment for users to change the directory.
-
-This was done in commit 368a9fa68e9c4d2aef297ca3aff2e5cd8f117f19.
-
->> Some functions return NULL since they are not used to produce R outputs, but
-to crate/modify files, or install libraries.
-Using `stop()` would generate an error, even if the functions work properly.
-In these case, the entry 
-`@return NULL `
-was replaced with a clearer
-`@return NULL (the function is called for its side effects)`.
-> 
-> I'm not sure this happend also in safe_getMetadata()?
-
-Yes. In this function, the argument `abort` determines if the function would
-return a warning (if `abort = FALSE`) or a message (if `abort = TRUE`) 
-before exiting. For this reason, the syntax
-```
-print_message(
-  type=message_type,
-  "Exit message"
-)
-return(invisible(NULL))
-```
-is used instead than
-```
-stop("Exit message")
-```
-The two are equivalent in case `abort = TRUE`.
+We commented the test code for the function `install_sen2cor()`
+(commit f21281230d093911d47ce43b3f64a64ce23bc146).
 
 
 ## Test environments
