@@ -1016,7 +1016,7 @@ sen2r <- function(param_list = NULL,
   ### Find SAFE and compute the names of required files ###
   
   ## 2. List required products ##
-  s2_lists <- list()
+  s2_lists <- s2_lists_lta <- list()
   
   if (pm$online == TRUE) {
     
@@ -1041,8 +1041,12 @@ sen2r <- function(param_list = NULL,
         orbit = pm$s2orbits_selected,
         level = "L1C",
         max_cloud = pm$max_cloud_safe,
+        availability = "check",
         apihub = pm$apihub
       )
+      # split available online products from LTA ones
+      s2_lists_lta[["l1c"]] <- s2_lists[["l1c"]][attr(s2_lists[["l1c"]], "lta")]
+      s2_lists[["l1c"]] <- s2_lists[["l1c"]][attr(s2_lists[["l1c"]], "online")]
     }
     if ("l2a" %in% pm$s2_levels) {
       # list of SAFE (L1C or/and L2A) needed for required L2A
@@ -1064,8 +1068,12 @@ sen2r <- function(param_list = NULL,
           "L1C"
         },
         max_cloud = pm$max_cloud_safe,
+        availability = "check",
         apihub = pm$apihub
       )
+      # split available online products from LTA ones
+      s2_lists_lta[["l2a"]] <- s2_lists[["l2a"]][attr(s2_lists[["l2a"]], "lta")]
+      s2_lists[["l2a"]] <- s2_lists[["l2a"]][attr(s2_lists[["l2a"]], "online")]
     }
     
   } else {
@@ -1106,7 +1114,14 @@ sen2r <- function(param_list = NULL,
     
   }
   s2_list <- unlist(s2_lists)[!duplicated(unlist(lapply(s2_lists, names)))]
-  rm(s2_lists)
+  s2_list_lta <- unlist(s2_lists_lta)[!duplicated(unlist(lapply(s2_lists_lta, names)))]
+  rm(s2_lists, s2_lists_lta)
+  
+  # If s2_list_lta is not empty, order products from LTA
+  s2_list_ordered <- .s2_order(
+    s2_list_lta, 
+    .s2_availability = rep(FALSE, length(s2_list_lta))
+  )
   
   # If s2_list is empty, exit
   if (length(s2_list)==0) {

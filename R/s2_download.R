@@ -1,8 +1,8 @@
 #' @title Download S2 products.
-#' @description The function downloads a single S2 product.
-#'  Input filename must be an element obtained with
+#' @description The function downloads S2 products.
+#'  Input filenames must be elements obtained with
 #'  [s2_list] function
-#'  (the content must be a URL, and the name the product name).
+#'  (each element must be a URL, and the name the product name).
 #' @param s2_prodlist List of the products to be downloaded
 #'  (this must be the output of [s2_list] function).
 #' @param downloader Executable to use to download products
@@ -11,9 +11,12 @@
 #' @param apihub Path of the "apihub.txt" file containing credentials
 #'  of SciHub account.
 #'  If NA (default), the default location inside the package will be used.
-#' @param tile Single Sentinel-2 Tile string (5-length character)
+#' @param tile Deprecated argument
 #' @param outdir (optional) Full name of the existing output directory
 #'  where the files should be created (default: current directory).
+#' @param order_lta Logical: if TRUE (default), products which are not available
+#'  for direct download are ordered from the Long Term Archive;
+#'  if FALSE, they are simply skipped.
 #' @param overwrite Logical value: should existing output archives be
 #'  overwritten? (default: FALSE)
 #' @return NULL (the function is called for its side effects)
@@ -22,6 +25,7 @@
 #' @author Lorenzo Busetto, phD (2019) \email{lbusett@@gmail.com}
 #' @note License: GPL 3.0
 #' @importFrom httr GET RETRY authenticate progress write_disk
+#' @importFrom foreach foreach "%do%"
 #' @export
 #'
 #' @examples
@@ -40,12 +44,6 @@
 #' #' # Download the whole product - using aria2
 #' s2_download(single_s2, outdir=tempdir(), downloader = "aria2")
 #'
-#' # Download a specific tile
-#' s2_download(single_s2, tile="32TQQ", outdir=tempdir())
-#' # (for products with compact names, the two above commands produce equivalent
-#' # results: the first one downloads a SAFE archive, while the second one
-#' # downloads single product files)
-#'
 #' # Download a serie of products
 #' pos <- st_sfc(st_point(c(12.0, 44.8)), crs=st_crs(4326))
 #' time_window <- as.Date(c("2017-05-01","2017-07-30"))
@@ -53,15 +51,47 @@
 #' s2_download(example_s2_list, outdir=tempdir())
 #' }
 
-s2_download <- function(s2_prodlist = NULL,
-                        downloader = "builtin",
-                        apihub = NA,
-                        tile = NULL,
-                        outdir = ".",
-                        overwrite = FALSE) {
+s2_download <- function(
+  s2_prodlist = NULL,
+  downloader = "builtin",
+  apihub = NA,
+  tile = NULL,
+  outdir = ".",
+  order_lta = TRUE,
+  overwrite = FALSE
+) {
+  
+  # warn for deprecated arguments
+  if (!missing("tile")) {
+    warning("argument 'tile' is deprecated and will not be used")
+  }
+  
+  .s2_download(
+    s2_prodlist = s2_prodlist,
+    downloader = downloader,
+    apihub = apihub,
+    outdir = outdir,
+    order_lta = order_lta,
+    overwrite = overwrite,
+    .s2_availability = NULL
+  )
+  
+}
+
+# internal function, used internally in order not to repeat the check
+# for online availability
+.s2_download <- function(
+  s2_prodlist = NULL,
+  downloader = "builtin",
+  apihub = NA,
+  outdir = ".",
+  order_lta = TRUE,
+  overwrite = FALSE,
+  .s2_availability = NULL
+) {
   
   # convert input NA arguments in NULL
-  for (a in c("s2_prodlist","tile","apihub")) {
+  for (a in c("s2_prodlist", "apihub")) {
     if (suppressWarnings(all(is.na(get(a))))) {
       assign(a,NULL)
     }
@@ -80,7 +110,28 @@ s2_download <- function(s2_prodlist = NULL,
     downloader <- "builtin"
   }
   
-  for (i in seq_len(length(s2_prodlist))) {
+  # Split products to be downloaded from products to be ordered
+  s2_availability <- if (is.null(.s2_availability)) {
+    print_message(
+      type = "message",
+      date = TRUE,
+      "Check if products are available for download..."
+    )
+    safe_is_online(s2_prodlist)
+  } else {
+    .s2_availability
+  }
+
+  
+  # Order products stored from the Long Term Archive
+  if (order_lta == TRUE) {
+    ordered_products <- .s2_order(s2_prodlist, .s2_availability = s2_availability)
+  }
+
+  
+  ## Download products available for download
+  
+  for (i in which(s2_availability)) {
     
     link <- s2_prodlist[i]
     zip_path <- file.path(outdir, paste0(names(s2_prodlist[i]),".zip"))
@@ -91,8 +142,8 @@ s2_download <- function(s2_prodlist = NULL,
       print_message(
         type = "message",
         date = TRUE,
-        "Downloading Sentinel-2 image ", i," of ",length(s2_prodlist),
-        " (",basename(safe_path),")..."
+        "Downloading Sentinel-2 image ", which(i == which(s2_availability)),
+        " of ",sum(s2_availability)," (",basename(safe_path),")..."
       )
       
       if (downloader %in% c("builtin", "wget")) { # wget left for compatibility
@@ -127,6 +178,16 @@ s2_download <- function(s2_prodlist = NULL,
         })
         
       }
+
+      # check if the user asked to download a LTA product
+      download_is_lta <- if (inherits(download, "response")) {
+        download$status_code == 202
+      } else if (inherits(download, "integer")) {
+        download == 22
+      } else FALSE
+      if (download_is_lta) {
+        # TODO
+      }
       
       if (inherits(download, "try-error")) {
         suppressWarnings(file.remove(zip_path))
@@ -142,8 +203,7 @@ s2_download <- function(s2_prodlist = NULL,
           sel_md5 <- httr::GET(
             url = gsub("\\$value$", "Checksum/Value/$value", as.character(link)),
             config = httr::authenticate(creds[1], creds[2]),
-            httr::write_disk(md5file <- tempfile(), overwrite = TRUE),
-            times = 10
+            httr::write_disk(md5file <- tempfile(), overwrite = TRUE)
           )
           md5 <- toupper(readLines(md5file, warn = FALSE)) == toupper(tools::md5sum(zip_path))
           file.remove(md5file)
@@ -177,8 +237,8 @@ s2_download <- function(s2_prodlist = NULL,
       print_message(
         type = "message",
         date = TRUE,
-        "Skipping Sentinel-2 image ", i," of ",length(s2_prodlist),
-        " (",basename(safe_path),") ",
+        "Skipping Sentinel-2 image ", i," of ",which(i == which(s2_availability)),
+        " of ",sum(s2_availability),") ",
         "since the corresponding folder already exists."
       )
       
