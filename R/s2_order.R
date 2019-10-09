@@ -6,6 +6,9 @@
 #' @param apihub Path of the "apihub.txt" file containing credentials
 #'  of SciHub account.
 #'  If NA (default), the default location inside the package will be used.
+#' @param delay Numeric: time frame (in seconds) to leave between two 
+#'  consecutive orders. Default is 5 seconds: use a higher value if you 
+#'  encountered errors (i.e. not all the products were correctly ordered).
 #' @return A named vector, containing the selection of `s2_prodlist` elements 
 #'  which were ordered.
 #'  Moreover, the vector includes two attributes:
@@ -21,26 +24,27 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' single_s2 <- paste0("https://scihub.copernicus.eu/apihub/odata/v1/",
-#'   "Products(\'c7142722-42bf-4f93-b8c5-59fd1792c430\')/$value")
-#' names(single_s2) <- "S2A_MSIL1C_20170613T101031_N0205_R022_T32TQQ_20170613T101608.SAFE"
-#' # (this is equivalent to:
-#' # single_s2 <- example_s2_list[1]
-#' # where example_s2_list is the output of the example of the
-#' # s2_list() function)
+#' \donttest{
+#' # Generate the lists of products
+#' pos <- sf::st_sfc(sf::st_point(c(-57.8815,-51.6954)), crs = 4326)
+#' time_window <- as.Date(c("2018-02-21", "2018-03-20"))
+#' list_safe <- s2_list(spatial_extent = pos, time_interval = time_window)
+#' print(list_safe)
+#' # (at the time the documentation was written, this list was containing 5
+#' # archives already available online and 2 stored in the Long Term Archive)
 #'
-#' # Order the product
-#' ordered_prods <- s2_order(single_s2)
-#' }
+#' # Order the products
+#' ordered_prods <- s2_order(list_safe)
 #' 
 #' # Check in a second time if the product was made available
 #' safe_is_online(ordered_prods)
+#' }
 
-s2_order <- function(s2_prodlist = NULL, apihub = NA) {
+s2_order <- function(s2_prodlist = NULL, apihub = NA, delay = 5) {
   .s2_order(
     s2_prodlist = s2_prodlist,
     apihub = apihub,
+    delay = delay,
     .s2_availability = NULL
   )
 }
@@ -50,6 +54,7 @@ s2_order <- function(s2_prodlist = NULL, apihub = NA) {
 .s2_order <- function(
   s2_prodlist = NULL,
   apihub = NA,
+  delay = 5,
   .s2_availability = NULL
 ) {
   
@@ -96,6 +101,10 @@ s2_order <- function(s2_prodlist = NULL, apihub = NA) {
     )
   }
   ordered_products <- foreach(i = which(!s2_availability), .combine = c) %do% {
+    # delay after previous order
+    if (i != which(!s2_availability)[1]) {
+      Sys.sleep(delay)
+    }
     # order products
     make_order <- httr::GET(
       url = as.character(s2_prodlist[i]),
@@ -129,7 +138,8 @@ s2_order <- function(s2_prodlist = NULL, apihub = NA) {
       type = "warning",
       date = TRUE,
       sum(!ordered_products)," of ",sum(!s2_availability)," Sentinel-2 images ",
-      "were not correctly ordered; please retry later."
+      "were not correctly ordered. ",
+      "Try using a higher value for the argument \"delay\"."
     )
   }
   

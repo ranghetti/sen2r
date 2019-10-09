@@ -4,7 +4,7 @@
 \alias{s2_order}
 \title{Order S2 products.}
 \usage{
-s2_order(s2_prodlist = NULL, apihub = NA)
+s2_order(s2_prodlist = NULL, apihub = NA, delay = 5)
 }
 \arguments{
 \item{s2_prodlist}{List of the products to be ordered
@@ -13,6 +13,10 @@ s2_order(s2_prodlist = NULL, apihub = NA)
 \item{apihub}{Path of the "apihub.txt" file containing credentials
 of SciHub account.
 If NA (default), the default location inside the package will be used.}
+
+\item{delay}{Numeric: time frame (in seconds) to leave between two
+consecutive orders. Default is 5 seconds: use a higher value if you
+encountered errors (i.e. not all the products were correctly ordered).}
 }
 \value{
 A named vector, containing the selection of \code{s2_prodlist} elements
@@ -33,21 +37,21 @@ The function orders S2 products from Long Term Archive
 License: GPL 3.0
 }
 \examples{
-\dontrun{
-single_s2 <- paste0("https://scihub.copernicus.eu/apihub/odata/v1/",
-  "Products(\\'c7142722-42bf-4f93-b8c5-59fd1792c430\\')/$value")
-names(single_s2) <- "S2A_MSIL1C_20170613T101031_N0205_R022_T32TQQ_20170613T101608.SAFE"
-# (this is equivalent to:
-# single_s2 <- example_s2_list[1]
-# where example_s2_list is the output of the example of the
-# s2_list() function)
+\donttest{
+# Generate the lists of products
+pos <- sf::st_sfc(sf::st_point(c(-57.8815,-51.6954)), crs = 4326)
+time_window <- as.Date(c("2018-02-21", "2018-03-20"))
+list_safe <- s2_list(spatial_extent = pos, time_interval = time_window)
+print(list_safe)
+# (at the time the documentation was written, this list was containing 5
+# archives already available online and 2 stored in the Long Term Archive)
 
-# Order the product
-ordered_prods <- s2_order(single_s2)
-}
+# Order the products
+ordered_prods <- s2_order(list_safe)
 
 # Check in a second time if the product was made available
 safe_is_online(ordered_prods)
+}
 }
 \author{
 Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}

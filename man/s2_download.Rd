@@ -59,11 +59,11 @@ s2_download(single_s2, outdir=tempdir())
 #' # Download the whole product - using aria2
 s2_download(single_s2, outdir=tempdir(), downloader = "aria2")
 
-# Download a serie of products
-pos <- st_sfc(st_point(c(12.0, 44.8)), crs=st_crs(4326))
-time_window <- as.Date(c("2017-05-01","2017-07-30"))
-example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window)
-s2_download(example_s2_list, outdir=tempdir())
+# Download more products, ordering the ones stored in the Long Term Archive
+pos <- sf::st_sfc(sf::st_point(c(-57.8815,-51.6954)), crs = 4326)
+time_window <- as.Date(c("2018-02-21", "2018-03-20"))
+list_safe <- s2_list(spatial_extent = pos, time_interval = time_window)
+s2_download(list_safe, outdir=tempdir())
 }
 }
 \author{
