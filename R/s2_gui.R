@@ -351,7 +351,7 @@ s2_gui <- function(param_list = NULL,
                   choiceNames = list("Online", "Offline"),
                   choiceValues = list(TRUE, FALSE),
                   selected = TRUE,
-                  inline = FALSE
+                  inline = TRUE
                 ),
                 
                 # SciHub credentials
@@ -359,10 +359,18 @@ s2_gui <- function(param_list = NULL,
                   condition = "input.online == 'TRUE'",
                   div(
                     style = "padding-bottom:10px;",
+                    checkboxInput(
+                      "make_lta_order",
+                      label = span(
+                        "Order from LTA\u2000",
+                        actionLink("help_lta_order", icon("question-circle"))
+                      ),
+                      value = TRUE
+                    ),
                     actionButton(
                       "scihub_md",
                       label = "\u2000Login to SciHub",
-                      icon=icon("user-circle")
+                      icon = icon("user-circle")
                     )
                   )
                 )
@@ -2633,6 +2641,37 @@ s2_gui <- function(param_list = NULL,
       ))
     })
     
+    observeEvent(input$help_lta_order, {
+      showModal(modalDialog(
+        title = "Order from LTA",
+        p(HTML(
+          "Starting from September 2019, SAFE archives older than 12 months",
+          "(Level-1C) or 18 months (Level-2A) are generally not available",
+          "for direct download, but must be ordered from the Long Term Archive",
+          "(see <a href='https://inthub.copernicus.eu/userguide/LongTermArchive'",
+          "target='_blank'>this page</a> for any details)."
+        )),
+        p(HTML(
+          "Checking this option, products which are not available for direct",
+          "download are ordered, so to be available at a later time.",
+          "There is no way to know when the will be made available; the user",
+          "can re-launch the same sen2r processing chain at a later time:",
+          "in this way, when missing SAFE archives will be made available",
+          "they will be downloaded and the output prodcut archive will be updated."
+        )),
+        p(HTML(
+          "Alternatively, specific non-interactive functions are available",
+          "to manage orders (see",
+          "<a href='https://sen2r.ranghetti.info/reference/safe_is_online.html'",
+          "target='_blank'><tt>safe_is_online()</tt></a> and",
+          "<a href='https://sen2r.ranghetti.info/reference/s2_order.html'",
+          "target='_blank'><tt>s2_order()</tt></a>)."
+        )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+    
     observeEvent(input$help_downloader, {
       showModal(modalDialog(
         title = "Downloader",
@@ -3692,7 +3731,7 @@ s2_gui <- function(param_list = NULL,
         sendSweetAlert(
           session, NULL,
           paste0(
-            "Please select at least one product, spectral index or RGB image",
+            "Please select at least one product, spectral index or RGB image ",
             "before continuing."
           ),
           type = "error"

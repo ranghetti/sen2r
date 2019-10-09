@@ -13,6 +13,7 @@ chosing
 cloudcovered
 CNR
 com
+copernicus
 cpt
 CRred
 crs
@@ -33,6 +34,7 @@ envi
 ENVI
 EPSG
 etc
+eu
 EVI
 fasterize
 fidolasen
@@ -71,6 +73,8 @@ kmz
 lanczos
 libcurl
 libxml
+LongTermArchive
+lta
 lwgeom
 maskfile
 MathML
@@ -91,6 +95,7 @@ NIR
 nn
 nodata
 nomask
+notordered
 OGRSpatialReference
 oldname
 opencpu
@@ -166,6 +171,7 @@ toomasked
 troublings
 ubuntugis
 UInt
+userguide
 vrt
 VRT
 Wget
