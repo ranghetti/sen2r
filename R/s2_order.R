@@ -1,26 +1,38 @@
 #' @title Order S2 products.
 #' @description The function orders S2 products from Long Term Archive
 #'  (https://scihub.copernicus.eu/userguide/LongTermArchive).
-#' @param s2_prodlist List of the products to be ordered
+#' @param s2_prodlist Named character: list of the products to be ordered
 #'  (this must be the output of [s2_list] function).
-#' @param apihub Path of the "apihub.txt" file containing credentials
-#'  of SciHub account.
-#'  If NA (default), the default location inside the package will be used.
+#'  Alternatively, it can be the path of a JSON file exported by a previous
+#'  execution of [s2_order], in case the user wants, for any reason, to 
+#'  resubmit the order.
+#' @param export_prodlist Logical or character: if TRUE (default), 
+#'  the list of ordered products is saved in a JSON text file, so to be easily 
+#'  retrievable at a later stage with [safe_is_online] or [s2_download];
+#'  if FALSE, no output files are generated.
+#'  It is also possible to pass the path of an existing folder in which the 
+#'  JSON file will be saved (otherwise, a default path is used).
 #' @param delay Numeric: time frame (in seconds) to leave between two 
 #'  consecutive orders. Default is 5 seconds: use a higher value if you 
 #'  encountered errors (i.e. not all the products were correctly ordered).
+#' @param apihub Path of the "apihub.txt" file containing credentials
+#'  of SciHub account.
+#'  If NA (default), the default location inside the package will be used.
 #' @return A named vector, containing the selection of `s2_prodlist` elements 
 #'  which were ordered.
-#'  Moreover, the vector includes two attributes:
+#'  Moreover, the vector includes the following attributes:
 #'  - "available" with the elements of `s2_prodlist` which were already
 #'      available for download,
 #'  - "notordered" with the elements of `s2_prodlist` which were not ordered
-#'      for any reasons.
+#'      for any reasons,
+#'  - "path" (only if argument `export_prodlist` is not FALSE) with the path of
+#'      the text file in which the list of the ordered products was saved.
 #'
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @importFrom httr GET authenticate 
 #' @importFrom foreach foreach "%do%"
+#' @importFrom jsonlite fromJSON toJSON
 #' @export
 #'
 #' @examples
@@ -37,14 +49,21 @@
 #' ordered_prods <- s2_order(list_safe)
 #' 
 #' # Check in a second time if the product was made available
-#' safe_is_online(ordered_prods)
+#' (order_path <- attr(ordered_prods, "path"))
+#' safe_is_online(order_path)
 #' }
 
-s2_order <- function(s2_prodlist = NULL, apihub = NA, delay = 5) {
+s2_order <- function(
+  s2_prodlist = NULL, 
+  export_prodlist = TRUE, 
+  delay = 5, 
+  apihub = NA
+) {
   .s2_order(
     s2_prodlist = s2_prodlist,
-    apihub = apihub,
+    export_prodlist = export_prodlist, 
     delay = delay,
+    apihub = apihub,
     .s2_availability = NULL
   )
 }
@@ -53,16 +72,40 @@ s2_order <- function(s2_prodlist = NULL, apihub = NA, delay = 5) {
 # for online availability
 .s2_order <- function(
   s2_prodlist = NULL,
-  apihub = NA,
+  export_prodlist = TRUE, 
   delay = 5,
+  apihub = NA,
   .s2_availability = NULL
 ) {
   
   # convert input NA arguments in NULL
-  for (a in c("s2_prodlist", "apihub")) {
+  for (a in c("s2_prodlist", "export_prodlist", "apihub")) {
     if (suppressWarnings(all(is.na(get(a))))) {
       assign(a,NULL)
     }
+  }
+  
+  # check export_prodlist
+  if (all(is.character(export_prodlist), length(export_prodlist) > 0)) {
+    if (!dir.exists(export_prodlist)) {
+      print_message(
+        type = "error", 
+        "Argument 'export_prodlist' must be TRUE, FALSE or the path of an existing folder."
+      )
+    }
+  }
+  
+  # check delay to be numeric
+  if (any(length(delay) == 0, !is.numeric(delay))) {
+    print_message(
+      type = "error", 
+      "Argument 'delay' must be numeric"
+    )
+  }
+  
+  # import s2_prodlist if it is a path
+  if (all(length(s2_prodlist) == 1, file.exists(s2_prodlist))) {
+    s2_prodlist <- unlist(fromJSON(s2_prodlist))
   }
   
   # read credentials
@@ -119,6 +162,26 @@ s2_order <- function(s2_prodlist = NULL, apihub = NA, delay = 5) {
   out_list <- s2_prodlist[!s2_availability][ordered_products]
   attr(out_list, "available") <- s2_prodlist[s2_availability]
   attr(out_list, "notordered") <- s2_prodlist[!s2_availability][!nn(ordered_products)]
+  order_time <- Sys.time()
+  
+  # export prodlist, unless export_prodlist == FALSE
+  if (any(export_prodlist != FALSE) & length(out_list) > 0) {
+    prodlist_dir <- if (is.logical(export_prodlist)) {
+      file.path(dirname(attr(load_binpaths(), "path")), "lta_orders")
+    } else {
+      export_prodlist
+    }
+    dir.create(prodlist_dir, showWarnings = FALSE)
+    prodlist_path <- file.path(
+      prodlist_dir,
+      strftime(order_time, format = "lta_%Y%m%d_%H%M%S.json")
+    )
+    writeLines(
+      toJSON(as.list(out_list), pretty = TRUE),
+      prodlist_path
+    )
+    attr(out_list, "path") <- prodlist_path
+  }
   
   if (sum(ordered_products) > 0) {
     print_message(
@@ -128,9 +191,12 @@ s2_order <- function(s2_prodlist = NULL, apihub = NA, delay = 5) {
       "were correctly ordered. ",
       "You can check at a later time if the ordered products were made available ",
       "using the command:\n\n",
-      'safe_is_online(c(\n  "',
-      paste(out_list, collapse = '",\n  "'),
-      '"\n))\n'
+      if (is.null(attr(out_list, "path"))) {paste0(
+        'safe_is_online(c(\n  "',paste(out_list, collapse = '",\n  "'),'"\n))'
+      )} else {paste0(
+        'safe_is_online("',attr(out_list, "path"),'")'
+      )},
+      "\n"
     )
   }
   if (sum(!nn(ordered_products)) > 0) {
@@ -144,5 +210,5 @@ s2_order <- function(s2_prodlist = NULL, apihub = NA, delay = 5) {
   }
   
   return(out_list)
-
+  
 }

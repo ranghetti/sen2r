@@ -7,15 +7,17 @@
 safe_is_online(s2_prodlist = NULL, apihub = NA)
 }
 \arguments{
-\item{s2_prodlist}{List of the products to be checked
-(this must be the output of \link{s2_list} function).}
+\item{s2_prodlist}{Named character: list of the products to be checked
+(this must be the output of \link{s2_list} function).
+Alternatively, it can be the path of a JSON file exported by \link{s2_order}.}
 
 \item{apihub}{Path of the "apihub.txt" file containing credentials
 of SciHub account.
 If NA (default), the default location inside the package will be used.}
 }
 \value{
-A logical vector of the same length and names of \code{s2_prodlist},
+A logical vector of the same length and names of the SAFE products
+passed with \code{s2_prodlist},
 in which each element is TRUE if the corresponding SAFE archive is
 available for download, FALSE if it is not or NA in case of errors with
 the SAFE url.

@@ -42,7 +42,7 @@ testthat::test_that(
     #   s2_order_1 <- s2_order(s2_list_1),
     #   paste0(length(s2_list_1)," Sentinel\\-2 images are already available and will not be ordered.")
     # )
-    testthat::expect_equal(names(attributes(s2_order_1)), c("names","available","notordered"))
+    testthat::expect_true(all(names(attributes(s2_order_1)) %in% c("names","available","notordered","path")))
     testthat::expect_length(
       c(s2_order_1, attr(s2_order_1, "available"), attr(s2_order_1, "notordered")),
       length(s2_list_1)
@@ -50,6 +50,7 @@ testthat::test_that(
     testthat::expect_is(s2_order_1, "character")
     testthat::expect_is(attr(s2_order_1, "available"), "character")
     testthat::expect_is(attr(s2_order_1, "notordered"), "character")
+    # testthat::expect_equal(names(attributes(s2_order_1)), c("names","available","notordered"))
     # testthat::expect_length(s2_order_1, 0)
     # testthat::expect_length(attr(s2_order_1, "available"), length(s2_list_1))
     # testthat::expect_length(attr(s2_order_1, "notordered"), 0)
@@ -81,7 +82,7 @@ testthat::test_that(
     
     # test s2_order()
     testthat::expect_message(
-      s2_list_2 <- s2_order(s2_list_2),
+      s2_order_2 <- s2_order(s2_list_2, export_prodlist = tempdir()),
       "Check if products are already available for download"
     )
     # testthat::expect_message(
@@ -96,10 +97,17 @@ testthat::test_that(
       c(s2_order_2, attr(s2_order_2, "available"), attr(s2_order_2, "notordered")),
       length(s2_list_2)
     )
-    testthat::expect_equal(names(attributes(s2_order_2)), c("names","available","notordered"))
+    testthat::expect_true(all(names(attributes(s2_order_2)) %in% c("names","available","notordered","path")))
     testthat::expect_is(s2_order_2, "character")
     testthat::expect_is(attr(s2_order_2, "available"), "character")
     testthat::expect_is(attr(s2_order_2, "notordered"), "character")
+    if (!is.null(attr(s2_order_2, "path"))) {
+      file_content <- jsonlite::fromJSON(attr(s2_order_2, "path"))
+      testthat::expect_is(file_content, "list")
+      testthat::expect_length(file_content, 2)
+      testthat::expect_equivalent(unlist(file_content), s2_order_2)
+    }
+    # testthat::expect_equal(names(attributes(s2_order_2)), c("names","available","notordered", "path"))
     # testthat::expect_length(s2_order_2, length(s2_list_2))
     # testthat::expect_length(attr(s2_order_2, "available"), 0)
     # testthat::expect_length(attr(s2_order_2, "notordered"), 0)

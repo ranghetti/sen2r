@@ -3,8 +3,9 @@
 #'  Input filenames must be elements obtained with
 #'  [s2_list] function
 #'  (each element must be a URL, and the name the product name).
-#' @param s2_prodlist List of the products to be downloaded
+#' @param s2_prodlist Named character: list of the products to be downloaded
 #'  (this must be the output of [s2_list] function).
+#'  Alternatively, it can be the path of a JSON file exported by [s2_order].
 #' @param downloader Executable to use to download products
 #'  (default: "builtin"). Alternatives are "builtin" or "aria2"
 #'  (this requires aria2c to be installed).
@@ -95,6 +96,11 @@ s2_download <- function(
     if (suppressWarnings(all(is.na(get(a))))) {
       assign(a,NULL)
     }
+  }
+  
+  # import s2_prodlist if it is a path
+  if (all(length(s2_prodlist) == 1, file.exists(s2_prodlist))) {
+    s2_prodlist <- unlist(fromJSON(s2_prodlist))
   }
   
   # read credentials

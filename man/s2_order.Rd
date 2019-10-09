@@ -4,29 +4,42 @@
 \alias{s2_order}
 \title{Order S2 products.}
 \usage{
-s2_order(s2_prodlist = NULL, apihub = NA, delay = 5)
+s2_order(s2_prodlist = NULL, export_prodlist = TRUE, delay = 5,
+  apihub = NA)
 }
 \arguments{
-\item{s2_prodlist}{List of the products to be ordered
-(this must be the output of \link{s2_list} function).}
+\item{s2_prodlist}{Named character: list of the products to be ordered
+(this must be the output of \link{s2_list} function).
+Alternatively, it can be the path of a JSON file exported by a previous
+execution of \link{s2_order}, in case the user wants, for any reason, to
+resubmit the order.}
 
-\item{apihub}{Path of the "apihub.txt" file containing credentials
-of SciHub account.
-If NA (default), the default location inside the package will be used.}
+\item{export_prodlist}{Logical or character: if TRUE (default),
+the list of ordered products is saved in a JSON text file, so to be easily
+retrievable at a later stage with \link{safe_is_online} or \link{s2_download};
+if FALSE, no output files are generated.
+It is also possible to pass the path of an existing folder in which the
+JSON file will be saved (otherwise, a default path is used).}
 
 \item{delay}{Numeric: time frame (in seconds) to leave between two
 consecutive orders. Default is 5 seconds: use a higher value if you
 encountered errors (i.e. not all the products were correctly ordered).}
+
+\item{apihub}{Path of the "apihub.txt" file containing credentials
+of SciHub account.
+If NA (default), the default location inside the package will be used.}
 }
 \value{
 A named vector, containing the selection of \code{s2_prodlist} elements
 which were ordered.
-Moreover, the vector includes two attributes:
+Moreover, the vector includes the following attributes:
 \itemize{
 \item "available" with the elements of \code{s2_prodlist} which were already
 available for download,
 \item "notordered" with the elements of \code{s2_prodlist} which were not ordered
-for any reasons.
+for any reasons,
+\item "path" (only if argument \code{export_prodlist} is not FALSE) with the path of
+the text file in which the list of the ordered products was saved.
 }
 }
 \description{
@@ -50,7 +63,8 @@ print(list_safe)
 ordered_prods <- s2_order(list_safe)
 
 # Check in a second time if the product was made available
-safe_is_online(ordered_prods)
+(order_path <- attr(ordered_prods, "path"))
+safe_is_online(order_path)
 }
 }
 \author{

@@ -2,18 +2,21 @@
 #' @description The function checks if the required SAFE archives are 
 #'  available for download, or if they have to be ordered from the Long Term
 #'  Archive.
-#' @param s2_prodlist List of the products to be checked
+#' @param s2_prodlist Named character: list of the products to be checked
 #'  (this must be the output of [s2_list] function).
+#'  Alternatively, it can be the path of a JSON file exported by [s2_order].
 #' @param apihub Path of the "apihub.txt" file containing credentials
 #'  of SciHub account.
 #'  If NA (default), the default location inside the package will be used.
-#' @return A logical vector of the same length and names of `s2_prodlist`,
+#' @return A logical vector of the same length and names of the SAFE products
+#'  passed with `s2_prodlist`,
 #'  in which each element is TRUE if the corresponding SAFE archive is 
 #'  available for download, FALSE if it is not or NA in case of errors with
 #'  the SAFE url.
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @importFrom httr GET authenticate content
+#' @importFrom jsonlite fromJSON
 #' @export
 #'
 #' @examples
@@ -36,6 +39,11 @@ safe_is_online <- function(s2_prodlist = NULL, apihub = NA) {
     if (suppressWarnings(all(is.na(get(a))))) {
       assign(a,NULL)
     }
+  }
+  
+  # import s2_prodlist if it is a path
+  if (all(length(s2_prodlist) == 1, file.exists(s2_prodlist))) {
+    s2_prodlist <- unlist(fromJSON(s2_prodlist))
   }
   
   # read credentials

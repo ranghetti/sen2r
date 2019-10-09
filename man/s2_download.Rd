@@ -8,8 +8,9 @@ s2_download(s2_prodlist = NULL, downloader = "builtin", apihub = NA,
   tile = NULL, outdir = ".", order_lta = TRUE, overwrite = FALSE)
 }
 \arguments{
-\item{s2_prodlist}{List of the products to be downloaded
-(this must be the output of \link{s2_list} function).}
+\item{s2_prodlist}{Named character: list of the products to be downloaded
+(this must be the output of \link{s2_list} function).
+Alternatively, it can be the path of a JSON file exported by \link{s2_order}.}
 
 \item{downloader}{Executable to use to download products
 (default: "builtin"). Alternatives are "builtin" or "aria2"
