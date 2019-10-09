@@ -138,7 +138,7 @@ s2_list <- function(spatial_extent = NULL,
   }
   
   # to avoid NOTE on check
-  . <- i <- NULL
+  . <- i <- online <- NULL
   
   # convert input NA arguments in NULL
   for (a in c("spatial_extent","tile","orbit","time_interval","apihub")) {

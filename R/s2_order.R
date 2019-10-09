@@ -78,11 +78,19 @@ s2_order <- function(
   .s2_availability = NULL
 ) {
   
+  # to avoid NOTE on check
+  i <- NULL
+  
   # convert input NA arguments in NULL
   for (a in c("s2_prodlist", "export_prodlist", "apihub")) {
     if (suppressWarnings(all(is.na(get(a))))) {
       assign(a,NULL)
     }
+  }
+  
+  # exit if empty
+  if (length(nn(s2_prodlist)) == 0) {
+    return(invisible(NULL))
   }
   
   # check export_prodlist

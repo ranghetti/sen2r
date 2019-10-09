@@ -98,6 +98,11 @@ s2_download <- function(
     }
   }
   
+  # exit if empty
+  if (length(nn(s2_prodlist)) == 0) {
+    return(invisible(NULL))
+  }
+  
   # import s2_prodlist if it is a path
   if (all(length(s2_prodlist) == 1, file.exists(s2_prodlist))) {
     s2_prodlist <- unlist(fromJSON(s2_prodlist))
