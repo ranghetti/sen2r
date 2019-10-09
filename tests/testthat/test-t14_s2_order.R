@@ -92,11 +92,11 @@ testthat::test_that(
     #     "products were made available using the command:"
     #   )
     # )
-    testthat::expect_equal(names(attributes(s2_order_2)), c("names","available","notordered"))
     testthat::expect_length(
       c(s2_order_2, attr(s2_order_2, "available"), attr(s2_order_2, "notordered")),
       length(s2_list_2)
     )
+    testthat::expect_equal(names(attributes(s2_order_2)), c("names","available","notordered"))
     testthat::expect_is(s2_order_2, "character")
     testthat::expect_is(attr(s2_order_2, "available"), "character")
     testthat::expect_is(attr(s2_order_2, "notordered"), "character")
