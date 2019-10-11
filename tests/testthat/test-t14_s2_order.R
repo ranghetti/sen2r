@@ -30,7 +30,7 @@ testthat::test_that(
     testthat::expect_length(s2_isonline_1, length(s2_list_1))
     testthat::expect_equal(names(s2_isonline_1), names(s2_list_1))
     testthat::expect_is(s2_isonline_1, "logical")
-    testthat::expect_true(unique(s2_isonline_1) %in% c(TRUE, FALSE))
+    testthat::expect_true(all(unique(s2_isonline_1) %in% c(TRUE, FALSE)))
     # testthat::expect_equal(as.vector(s2_isonline_1), rep(TRUE, length(s2_list_1)))
     
     # test s2_order()
@@ -77,7 +77,7 @@ testthat::test_that(
     testthat::expect_length(s2_isonline_2, length(s2_list_2))
     testthat::expect_equal(names(s2_isonline_2), names(s2_list_2))
     testthat::expect_is(s2_isonline_2, "logical")
-    testthat::expect_true(unique(s2_isonline_2) %in% c(TRUE, FALSE))
+    testthat::expect_true(all(unique(s2_isonline_2) %in% c(TRUE, FALSE)))
     # testthat::expect_equal(as.vector(s2_isonline_2), rep(FALSE, length(s2_list_2)))
     
     # test s2_order()
