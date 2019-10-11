@@ -1,3 +1,25 @@
+# Version 1.2.0
+
+Starting from this version sen2r supports ordering products from Long Term Archive (LTA)
+(see news at https://inthub.copernicus.eu/userguide/LongTermArchive).
+Now the user can automatically order SAFE products which are not available for direct download, and use them when made available.
+Some internal functions can be exploited to manually manage orders.
+
+Here above the related changes:
+
+## New functions
+* `safe_is_valid()` to check if an order was processed;
+* `s2_order()` to order products from LTA.
+
+## New arguments
+* `sen2r()` and `s2_download()` have a new argument `order_lta` (default: TRUE) to order SAFE archives not available for direct fownload;
+* `s2_gui()` has a new checkbox to set the previous argument.
+
+## Other changes (not related with LTA)
+* Function `build_example_param_file()` does no more compute TOA and RGB432T (this to avoid downloading 2 SAFE archives).
+* Code coverage was expanded.
+
+
 # Version 1.1.0
 
 ## Changes in default values 
