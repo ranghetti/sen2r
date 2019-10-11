@@ -41,7 +41,7 @@ testthat::test_that(
       exp_meta_r[,c("xmin", "xmax", "ymin", "ymax")], 
       data.table("xmin" = 578590, "xmax" = 597700, "ymin" = 5086740, "ymax" = 5101530) 
     )
-    testthat::expect_equal(sf::st_crs(exp_meta_r$proj), sf::st_crs(32632))
+    testthat::expect_equal(sf::st_crs(exp_meta_r$proj)$epsg, 32632)
     testthat::expect_equal(exp_meta_r$type, "UInt16")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff") # default value
     
@@ -82,7 +82,10 @@ testthat::test_that(
       exp_meta_r_t[,c("xmin", "xmax", "ymin", "ymax")], 
       data.table(exp_meta_r[,c("xmin", "xmax", "ymin", "ymax")])
     )
-    testthat::expect_equal(exp_meta_r_t$proj, exp_meta_r$proj)
+    testthat::expect_equal(
+      sf::st_crs(exp_meta_r_t$proj)$epsg, 
+      sf::st_crs(exp_meta_r$proj)$epsg
+    )
     testthat::expect_equal(exp_meta_r_t$type, "Byte")
     testthat::expect_equal(exp_meta_r_t$outformat, "JPEG")
     
@@ -138,7 +141,7 @@ testthat::test_that(
       data.frame("xmin" = 113909, "xmax" = 133284, "ymin" = 5097856, "ymax" = 5112431),
       tolerance = 1e-3
     )
-    testthat::expect_equal(sf::st_crs(exp_meta_r$proj), sf::st_crs(32633))
+    testthat::expect_equal(sf::st_crs(exp_meta_r$proj)$epsg, 32633)
     testthat::expect_equal(exp_meta_r$type, "UInt16")
     testthat::expect_equal(exp_meta_r$outformat, "ENVI")
     
@@ -177,7 +180,10 @@ testthat::test_that(
       exp_meta_r_t[,c("xmin", "xmax", "ymin", "ymax")], 
       data.frame(exp_meta_r[,c("xmin", "xmax", "ymin", "ymax")])
     )
-    testthat::expect_equal(exp_meta_r_t$proj, exp_meta_r$proj)
+    testthat::expect_equal(
+      sf::st_crs(exp_meta_r_t$proj)$epsg, 
+      sf::st_crs(exp_meta_r$proj)$epsg
+    )
     testthat::expect_equal(exp_meta_r_t$type, "Byte")
     testthat::expect_equal(exp_meta_r_t$outformat, "JPEG")
     
@@ -222,13 +228,11 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$res, c("x"=25, "y"=25))
     testthat::expect_equal(exp_meta_r$nbands, 1)
     testthat::expect_equal(
-      exp_meta_r$bbox, 
-      sf::st_bbox(
-        c("xmin" = 113909, "ymin" = 5097856, "xmax" = 133284, "ymax" = 5112431),
-        crs = sf::st_crs(32633)
-      ),
+      as.numeric(exp_meta_r$bbox), 
+      c(113909, 5097856, 133284, 5112431),
       tolerance = 1e-3
     )
+    testthat::expect_equal(exp_meta_r$proj$epsg, 32633)
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "VRT")
     
@@ -258,7 +262,10 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r_t$res, exp_meta_r$res)
     testthat::expect_equal(exp_meta_r_t$nbands, 3)
     testthat::expect_equal(exp_meta_r_t$bbox, exp_meta_r$bbox)
-    testthat::expect_equal(exp_meta_r_t$proj, exp_meta_r$proj)
+    testthat::expect_equal(
+      sf::st_crs(exp_meta_r_t$proj)$epsg, 
+      sf::st_crs(exp_meta_r$proj)$epsg
+    )
     testthat::expect_equal(exp_meta_r_t$type, "Byte")
     testthat::expect_equal(exp_meta_r_t$outformat, "PNG")
     
@@ -303,7 +310,7 @@ testthat::test_that(
       exp_meta_r[,c("xmin", "xmax", "ymin", "ymax")], 
       data.frame("xmin" = 580560, "xmax" = 580800, "ymin" = 5101700, "ymax" = 5102120)
     )
-    testthat::expect_equal(sf::st_crs(exp_meta_r$proj), sf::st_crs(32632))
+    testthat::expect_equal(sf::st_crs(exp_meta_r$proj)$epsg, 32632)
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
@@ -344,12 +351,10 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$res, c("x"=10, "y"=10))
     testthat::expect_equal(exp_meta_r$nbands, 3)
     testthat::expect_equal(
-      exp_meta_r$bbox, 
-      sf::st_bbox(
-        c("xmin" = 580620, "ymin" = 5101790, "xmax" = 580700, "ymax" = 5102050),
-        crs = sf::st_crs(32632)
-      )
+      as.numeric(exp_meta_r$bbox), 
+      c(580620, 5101790, 580700, 5102050)
     )
+    testthat::expect_equal(exp_meta_r$proj$epsg, 32632)
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
@@ -379,12 +384,10 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$res, c("x"=10, "y"=10))
     testthat::expect_equal(exp_meta_r$nbands, 3)
     testthat::expect_equal(
-      exp_meta_r$bbox, 
-      sf::st_bbox(
-        c("xmin" = 580620, "ymin" = 5101790, "xmax" = 580700, "ymax" = 5102050),
-        crs = sf::st_crs(32632)
-      )
+      as.numeric(exp_meta_r$bbox), 
+      c(580620, 5101790, 580700, 5102050)
     )
+    testthat::expect_equal(exp_meta_r$proj$epsg, 32632)
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
@@ -408,12 +411,10 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$res, c("x"=20, "y"=20))
     testthat::expect_equal(exp_meta_r$nbands, 3)
     testthat::expect_equal(
-      exp_meta_r$bbox, 
-      sf::st_bbox(
-        c("xmin" = 580560, "ymin" = 5101700, "xmax" = 580800, "ymax" = 5102120),
-        crs = sf::st_crs(32632)
-      )
+      as.numeric(exp_meta_r$bbox), 
+      c(580560, 5101700, 580800, 5102120)
     )
+    testthat::expect_equal(exp_meta_r$proj$epsg, 32632)
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
@@ -437,13 +438,11 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$res, c("x"=10.07, "y"=9.97), tolerance = 1e-3)
     testthat::expect_equal(exp_meta_r$nbands, 3)
     testthat::expect_equal(
-      exp_meta_r$bbox, 
-      sf::st_bbox(
-        c("xmin" = 1044533, "ymin" = 5125330, "xmax" = 1044805, "ymax" = 5125769),
-        crs = sf::st_crs(32631)
-      ),
+      as.numeric(exp_meta_r$bbox), 
+      c(1044533, 5125330, 1044805, 5125769),
       tolerance = 1e-3
     )
+    testthat::expect_equal(exp_meta_r$proj$epsg, 32631)
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
@@ -468,13 +467,11 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$res, c("x"=9.98, "y"=9.86), tolerance = 1e-3)
     testthat::expect_equal(exp_meta_r$nbands, 3)
     testthat::expect_equal(
-      exp_meta_r$bbox, 
-      sf::st_bbox(
-        c("xmin" = 1044599, "ymin" = 5125425, "xmax" = 1044698, "ymax" = 5125691),
-        crs = sf::st_crs(32631)
-      ),
+      as.numeric(exp_meta_r$bbox), 
+      c(1044599, 5125425, 1044698, 5125691),
       tolerance = 1e-3
     )
+    testthat::expect_equal(exp_meta_r$proj$epsg, 32631)
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
@@ -498,13 +495,11 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$res, c("x"=10.7, "y"=10.2), tolerance = 1e-2)
     testthat::expect_equal(exp_meta_r$nbands, 3)
     testthat::expect_equal(
-      exp_meta_r$bbox, 
-      sf::st_bbox(
-        c("xmin" = 1044599, "ymin" = 5125425, "xmax" = 1044698, "ymax" = 5125691),
-        crs = sf::st_crs(32631)
-      ),
+      as.numeric(exp_meta_r$bbox), 
+      c(1044599, 5125425, 1044698, 5125691),
       tolerance = 1e-3
     )
+    testthat::expect_equal(exp_meta_r$proj$epsg, 32631)
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
@@ -531,13 +526,11 @@ testthat::test_that(
     )
     testthat::expect_equal(exp_meta_r$nbands, 3)
     testthat::expect_equal(
-      exp_meta_r$bbox, 
-      sf::st_bbox(
-        c("xmin" = 1044599, "ymin" = 5125425, "xmax" = 1044698, "ymax" = 5125691),
-        crs = sf::st_crs(32631)
-      ),
+      as.numeric(exp_meta_r$bbox), 
+      c(1044599, 5125425, 1044698, 5125691),
       tolerance = 1e-3
     )
+    testthat::expect_equal(exp_meta_r$proj$epsg, 32631)
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
@@ -561,13 +554,11 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$res, c("x"=10.67998, "y"=10.21008 ), tolerance = 1e-3)
     testthat::expect_equal(exp_meta_r$nbands, 3)
     testthat::expect_equal(
-      exp_meta_r$bbox, 
-      sf::st_bbox(
-        c("xmin" = 1044599, "ymin" = 5125425, "xmax" = 1044698, "ymax" = 5125691),
-        crs = sf::st_crs(32631)
-      ),
+      as.numeric(exp_meta_r$bbox), 
+      c(1044599, 5125425, 1044698, 5125691),
       tolerance = 1e-3
     )
+    testthat::expect_equal(exp_meta_r$proj$epsg, 32631)
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
@@ -591,13 +582,11 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$res, c("x"=10.67998, "y"=10.21008 ), tolerance = 1e-3)
     testthat::expect_equal(exp_meta_r$nbands, 3)
     testthat::expect_equal(
-      exp_meta_r$bbox, 
-      sf::st_bbox(
-        c("xmin" = 1044599, "ymin" = 5125425, "xmax" = 1044698, "ymax" = 5125691),
-        crs = sf::st_crs(32631)
-      ),
+      as.numeric(exp_meta_r$bbox), 
+      c(1044599, 5125425, 1044698, 5125691),
       tolerance = 1e-3
     )
+    testthat::expect_equal(exp_meta_r$proj$epsg, 32631)
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
