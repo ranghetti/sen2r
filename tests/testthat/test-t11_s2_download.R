@@ -1,11 +1,11 @@
-context("Test s2_download() adn safe_getMetadata()")
+context("Test s2_download() and safe_getMetadata()")
 testthat::skip_on_cran()
 testthat::skip_on_travis()
 
 # NOTE: these tests require a high amount of time (depending on connection speed),
 # so the download is disabled by default if SAFE archives are already present.
 # To perform the test also on download, replace 'test_download = FALSE' with 'TRUE'.
-test_download = FALSE
+test_download = TRUE
 
 safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
 dir.create(safe_dir, showWarnings = FALSE)
@@ -43,12 +43,10 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_ex$size, c("x" = 10980, "y" = 10980))
     testthat::expect_equal(exp_meta_ex$res, c("x"  = 10,    "y" = 10))
     testthat::expect_equal(
-      exp_meta_ex$bbox, 
-      sf::st_bbox(
-        c("xmin" = 499980, "ymin" = 4990200, "xmax" = 609780, "ymax" = 5100000), 
-        crs = sf::st_crs(32632)
-      )
+      as.numeric(exp_meta_ex$bbox), 
+      c(499980, 4990200, 609780, 5100000)
     )
+    testthat::expect_equal(exp_meta_ex$proj$epsg, 32632)
     testthat::expect_equal(exp_meta_ex$outformat, "JP2OpenJPEG")
     
     # test SAFE metadata
@@ -121,12 +119,10 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_ex$size, c("x" = 1830, "y" = 1830))
     testthat::expect_equal(exp_meta_ex$res, c("x"  = 60,   "y" = 60))
     testthat::expect_equal(
-      exp_meta_ex$bbox, 
-      sf::st_bbox(
-        c("xmin" = 499980, "ymin" = 4990200, "xmax" = 609780, "ymax" = 5100000), 
-        crs = sf::st_crs(32632)
-      )
+      as.numeric(exp_meta_ex$bbox), 
+      c(499980, 4990200, 609780, 5100000)
     )
+    testthat::expect_equal(exp_meta_ex$proj$epsg, 32632)
     testthat::expect_equal(exp_meta_ex$outformat, "JP2OpenJPEG")
     
     # test SAFE metadata

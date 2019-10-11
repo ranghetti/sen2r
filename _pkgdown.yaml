@@ -13,7 +13,9 @@ reference:
     contents:
       - '`s2_list`'
       - '`s2_download`'
+      - '`s2_order`'
       - '`sen2cor`'
+      - '`safe_is_online`'
       - '`read_scihub_login`'
   - title: Read and convert SAFE format
     desc: ~
@@ -67,6 +69,8 @@ navbar:
       href: index.html
     - text: "Function reference"
       href: reference/index.html
+    - text: "News"
+      href: news/index.html
   right:
     - icon: fa-github fa-lg
       href: https://github.com/ranghetti/sen2r/

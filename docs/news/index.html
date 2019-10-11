@@ -89,6 +89,9 @@
 <li>
   <a href="../reference/index.html">Function reference</a>
 </li>
+<li>
+  <a href="../news/index.html">News</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -114,6 +117,40 @@
       <small>Source: <a href='https://github.com/ranghetti/sen2r/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="version-1-2-0" class="section level1">
+<h1 class="page-header">
+<a href="#version-1-2-0" class="anchor"></a>Version 1.2.0</h1>
+<p>Starting from this version sen2r supports ordering products from Long Term Archive (LTA) (see news at <a href="https://inthub.copernicus.eu/userguide/LongTermArchive" class="uri">https://inthub.copernicus.eu/userguide/LongTermArchive</a>). Now the user can automatically order SAFE products which are not available for direct download, and use them when made available. Some internal functions can be exploited to manually manage orders.</p>
+<p>Here above the related changes:</p>
+<div id="new-functions" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new-functions" class="anchor"></a>New functions</h2>
+<ul>
+<li>
+<code>safe_is_valid()</code> to check if an order was processed;</li>
+<li>
+<code><a href="../reference/s2_order.html">s2_order()</a></code> to order products from LTA.</li>
+</ul>
+</div>
+<div id="new-arguments" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new-arguments" class="anchor"></a>New arguments</h2>
+<ul>
+<li>
+<code><a href="../reference/sen2r.html">sen2r()</a></code> and <code><a href="../reference/s2_download.html">s2_download()</a></code> have a new argument <code>order_lta</code> (default: TRUE) to order SAFE archives not available for direct fownload;</li>
+<li>
+<code><a href="../reference/s2_gui.html">s2_gui()</a></code> has a new checkbox to set the previous argument.</li>
+</ul>
+</div>
+<div id="other-changes-not-related-with-lta" class="section level2">
+<h2 class="hasAnchor">
+<a href="#other-changes-not-related-with-lta" class="anchor"></a>Other changes (not related with LTA)</h2>
+<ul>
+<li>Function <code><a href="../reference/build_example_param_file.html">build_example_param_file()</a></code> does no more compute TOA and RGB432T (this to avoid downloading 2 SAFE archives).</li>
+<li>Code coverage was expanded.</li>
+</ul>
+</div>
+</div>
     <div id="version-1-1-0" class="section level1">
 <h1 class="page-header">
 <a href="#version-1-1-0" class="anchor"></a>Version 1.1.0</h1>
@@ -150,9 +187,9 @@
 <li>Add <strong><code>stars</code></strong> dependency.</li>
 </ul>
 </div>
-<div id="new-functions" class="section level2">
+<div id="new-functions-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-functions" class="anchor"></a>New functions</h2>
+<a href="#new-functions-1" class="anchor"></a>New functions</h2>
 <ul>
 <li>
 <code><a href="../reference/str_pad2.html">str_pad2()</a></code>, equivalent to str_pad() without the needing to load “stringr”.</li>
@@ -287,9 +324,9 @@
 <li>Other style improvements</li>
 </ul>
 </div>
-<div id="new-functions-1" class="section level3">
+<div id="new-functions-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#new-functions-1" class="anchor"></a>New functions</h3>
+<a href="#new-functions-2" class="anchor"></a>New functions</h3>
 <ul>
 <li>
 <code><a href="../reference/tiles_intersects.html">tiles_intersects()</a></code>: when an extent is loaded, now only required tiles are automatically used, instead than all the overlapping ones.</li>
@@ -421,9 +458,9 @@
 <h1 class="page-header">
 <a href="#version-0-3-2" class="anchor"></a>Version 0.3.2</h1>
 <p>This is an improvement of version 0.3.1, with several fixes and improvements.</p>
-<div id="new-functions-2" class="section level3">
+<div id="new-functions-3" class="section level3">
 <h3 class="hasAnchor">
-<a href="#new-functions-2" class="anchor"></a>New functions</h3>
+<a href="#new-functions-3" class="anchor"></a>New functions</h3>
 <ul>
 <li><p><code><a href="../reference/check_sen2r_deps.html">check_sen2r_deps()</a></code>: a new GUI to help checking dependencies.</p></li>
 <li><p>Add function <code><a href="../reference/s2_mask.html">s2_perc_masked()</a></code> to compute the percentage of cloud-masked surface.</p></li>
@@ -541,6 +578,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#version-1-2-0">1.2.0</a></li>
         <li><a href="#version-1-1-0">1.1.0</a></li>
         <li><a href="#version-1-0-2">1.0.2</a></li>
         <li><a href="#version-1-0-1">1.0.1</a></li>

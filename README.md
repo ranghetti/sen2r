@@ -1,4 +1,11 @@
 
+  - [sen2r: Find, Download and Process Sentinel-2
+    Data](#sen2r-find-download-and-process-sentinel-2-data)
+      - [Installation](#installation)
+      - [Usage](#usage)
+      - [Credits](#credits)
+      - [Contributing](#contributing)
+
 <!-- IMPORTANT: do NOT edit README.Rmd! Edit index.Rmd instead, -->
 
 <!-- and generate README.Rmd using utils/code/create_README.sh  -->
@@ -10,6 +17,8 @@ build](https://img.shields.io/docker/automated/ranghetti/sen2r.svg)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1240384.svg)](https://doi.org/10.5281/zenodo.1240384)
 [![CRAN
 Status](http://www.r-pkg.org/badges/version/sen2r)](https://cran.r-project.org/package=sen2r)
+[![Coverage
+Status](http://img.shields.io/codecov/c/github/ranghetti/sen2r/master.svg)](http://codecov.io/github/ranghetti/sen2r?branch=master)
 [![License: GPL
 v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Contributor
@@ -97,8 +106,7 @@ sen2r()
 ```
 
 this opens a GUI which allows to set the required processing parameters,
-and then launches the main
-function.
+and then launches the main function.
 
 <p style="text-align:center;">
 
@@ -138,8 +146,7 @@ Other specific functions can be used to run single steps separately:
     to convert Sentinel-2 products from SAFE format to a format managed
     by GDAL;
   - [`s2_merge()`](http://sen2r.ranghetti.info/reference/s2_merge.html)
-    to merge Sentinel-2 tiles which have the same date and
-    orbit;
+    to merge Sentinel-2 tiles which have the same date and orbit;
   - [`gdal_warp()`](http://sen2r.ranghetti.info/reference/gdal_warp.html)
     to clip, reproject and warp raster files (this is a wrapper to call
     [gdal\_translate](http://www.gdal.org/gdal_translate.html) or
@@ -149,12 +156,10 @@ Other specific functions can be used to run single steps separately:
     apply a cloud mask to Sentinel-2 products;
   - [`s2_rgb()`](http://sen2r.ranghetti.info/reference/s2_rgb.html) to
     generate RGB images from Sentinel-2 Surface Reflectance multiband
-    raster
-    files;
+    raster files;
   - [`s2_calcindices()`](http://sen2r.ranghetti.info/reference/s2_calcindices.html)
     to compute maps of spectral indices from Sentinel-2 Surface
-    Reflectance multiband raster
-    files;
+    Reflectance multiband raster files;
   - [`s2_thumbnails()`](http://sen2r.ranghetti.info/reference/s2_thumbnails.html)
     to generate RGB thumbnails (JPEG or PNG) of the products.
 
@@ -179,7 +184,7 @@ International license](https://creativecommons.org/licenses/by-sa/4.0)
 To cite this library, please use the following entry:
 
 Ranghetti, L. and Busetto, L. (2019). *sen2r: Find, Download and Process
-Sentinel-2 Data*. R package version 1.1.0. DOI:
+Sentinel-2 Data*. R package version 1.0.0. DOI:
 [10.5281/zenodo.1240384](https://dx.doi.org/10.5281/zenodo.1240384).
 URL: <http://sen2r.ranghetti.info>.
 
@@ -188,7 +193,7 @@ URL: <http://sen2r.ranghetti.info>.
   title  = {sen2r: Find, Download and Process Sentinel-2 Data},
   author = {Luigi Ranghetti and Lorenzo Busetto},
   year   = {2019},
-  note   = {R package version 1.1.0},
+  note   = {R package version 1.0.0},
   doi    = {10.5281/zenodo.1240384},
   url    = {http://sen2r.ranghetti.info},
 }

@@ -34,12 +34,10 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$res, c("x"=10, "y"=10))
     testthat::expect_equal(exp_meta_r$nbands, 11)
     testthat::expect_equal(
-      exp_meta_r$bbox, 
-      sf::st_bbox(
-        c("xmin" = 578590, "ymin" = 5086740, "xmax" = 597700, "ymax" = 5101530),
-        crs = sf::st_crs(32632)
-      )
+      as.numeric(exp_meta_r$bbox), 
+      c(578590, 5086740, 597700, 5101530)
     )
+    testthat::expect_equal(exp_meta_r$proj$epsg, 32632)
     testthat::expect_equal(exp_meta_r$type, "UInt16")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
@@ -85,19 +83,17 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$res, c("x"=10, "y"=10))
     testthat::expect_equal(exp_meta_r$nbands, 12)
     testthat::expect_equal(
-      exp_meta_r$bbox, 
-      sf::st_bbox(
-        c("xmin" = 580560, "ymin" = 5101700, "xmax" = 580800, "ymax" = 5102120),
-        crs = sf::st_crs(32632)
-      )
+      as.numeric(exp_meta_r$bbox), 
+      c(580560, 5101700, 580800, 5102120)
     )
+    testthat::expect_equal(exp_meta_r$proj$epsg, 32632)
     testthat::expect_equal(exp_meta_r$type, "UInt16")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # test on raster values
     r <- raster::raster(exp_outpath_6)
-    testthat::expect_equal(raster::cellStats(r, "mean"), 1435.579, tolerance = 1e-4)
-    testthat::expect_equal(raster::cellStats(r, "countNA"), 346)
+    testthat::expect_equal(raster::cellStats(r, "mean"), 1443.506, tolerance = 1e-4)
+    testthat::expect_equal(raster::cellStats(r, "countNA"), 282)
     
     
     exp_meta_msk <- raster_metadata(exp_outpath_msk, format = "list")[[1]]

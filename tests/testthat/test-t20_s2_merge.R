@@ -34,12 +34,10 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$size, c("x"=5490, "y"=10491))
     testthat::expect_equal(exp_meta_r$res, c("x"=20, "y"=20))
     testthat::expect_equal(
-      exp_meta_r$bbox, 
-      sf::st_bbox(
-        c("xmin" = 499980, "ymin" = 4990200, "xmax" = 609780, "ymax" = 5200020), 
-        crs = sf::st_crs(32632)
-      )
+      as.numeric(exp_meta_r$bbox), 
+      c(499980, 4990200, 609780, 5200020)
     )
+    testthat::expect_equal(exp_meta_r$proj$epsg, 32632)
     testthat::expect_equal(exp_meta_r$outformat, "GTiff") # default value
     
     # tests on sen2r metadata

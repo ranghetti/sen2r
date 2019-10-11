@@ -7,7 +7,7 @@
 s2_list(spatial_extent = NULL, tile = NULL, orbit = NULL,
   time_interval = c(Sys.Date() - 10, Sys.Date()), time_period = "full",
   level = "auto", apihub = NA, max_cloud = 100,
-  output_type = "vector")
+  availability = "ignore", output_type = "vector")
 }
 \arguments{
 \item{spatial_extent}{A valid spatial object object of class \code{sf},
@@ -44,14 +44,34 @@ If NA (default), the default location inside the package will be used.}
 \item{max_cloud}{Integer number (0-100) containing the maximum cloud
 level of the tiles to be listed (default: no filter).}
 
+\item{availability}{Character argument, determining which products have
+to be returned:
+\itemize{
+\item "online" : only archive names already available for download are returned;
+\item "lta": only archive names stored in the Long Term Archive
+(see https://scihub.copernicus.eu/userguide/LongTermArchive)
+are returned;
+\item "check": all archive names are returned, checking if they are
+available or not for download (see "Value" to know
+how to distinguish each other);
+\item "ignore" (default): all archive names are returned, without doing the check
+(running the function is faster).
+}}
+
 \item{output_type}{Character: if 'vector' (default), the function returns
 a vector or URLs, whose names are the SAFE names;
 if 'data.table', the output is a data.table with metadata.}
 }
 \value{
-Depending on the value of argument `output_type``,
-a vector of available products (being each element an URL
-and its name the product name), or a data.table with product metadata.
+Depending on the value of argument \code{output_type}:
+if \code{output_type = "vector"}, a vector of available products
+(being each element an URL and its name the product name),
+together with the attributes \code{online} (with the index of products available
+for download) and \code{lta} (with the index of products stored in the Long Term
+Archive) in the case \code{availability == "check"};
+if \code{output_type = "data.table"}, a data.table with product metadata
+(including the logical field \code{online} to allow distinguishing products
+available for download and stored in the Long Term Archive).
 }
 \description{
 The function retrieves the list of available Sentinel-2

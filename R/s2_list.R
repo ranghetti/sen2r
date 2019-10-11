@@ -25,13 +25,29 @@
 #'  If NA (default), the default location inside the package will be used.
 #' @param max_cloud Integer number (0-100) containing the maximum cloud
 #'  level of the tiles to be listed (default: no filter).
+#' @param availability Character argument, determining which products have
+#'  to be returned: 
+#'  - "online" : only archive names already available for download are returned;
+#'  - "lta": only archive names stored in the Long Term Archive
+#'      (see https://scihub.copernicus.eu/userguide/LongTermArchive)
+#'      are returned;
+#'  - "check": all archive names are returned, checking if they are
+#'      available or not for download (see "Value" to know 
+#'      how to distinguish each other);
+#'  - "ignore" (default): all archive names are returned, without doing the check
+#'      (running the function is faster).
 #' @param output_type Character: if 'vector' (default), the function returns
 #'  a vector or URLs, whose names are the SAFE names;
 #'  if 'data.table', the output is a data.table with metadata.
-#' @return Depending on the value of argument `output_type``,
-#'  a vector of available products (being each element an URL
-#'  and its name the product name), or a data.table with product metadata.
-#'
+#' @return Depending on the value of argument `output_type`:
+#'  if `output_type = "vector"`, a vector of available products 
+#'  (being each element an URL and its name the product name), 
+#'  together with the attributes `online` (with the index of products available 
+#'  for download) and `lta` (with the index of products stored in the Long Term
+#'  Archive) in the case `availability == "check"`;
+#'  if `output_type = "data.table"`, a data.table with product metadata
+#'  (including the logical field `online` to allow distinguishing products
+#'  available for download and stored in the Long Term Archive).
 #' @author Lorenzo Busetto, phD (2019) \email{lbusett@@gmail.com} - Inspired by 
 #'  function `getSentinel_query` of package `getSpatialData` by J. Schwalb-Willmann
 #'  (https://github.com/16EAGLE/getSpatialData)
@@ -88,6 +104,7 @@ s2_list <- function(spatial_extent = NULL,
                     level = "auto",
                     apihub = NA,
                     max_cloud = 100,
+                    availability = "ignore",
                     output_type = "vector") {
   
   if (!level %in% c("auto", "L2A", "L1C")) {
@@ -104,6 +121,14 @@ s2_list <- function(spatial_extent = NULL,
     )
   }
   
+  if (!availability %in% c("ignore", "check", "online", "lta")) {
+    print_message(
+      type = "error",
+      "`availability` must be one among \"online\", \"lta\", ",
+      "\"check\" and \"ignore\""
+    )
+  }
+  
   if (inherits(try(as.Date(time_interval)), "try-error")) {
     print_message(
       type = "error",
@@ -113,7 +138,7 @@ s2_list <- function(spatial_extent = NULL,
   }
   
   # to avoid NOTE on check
-  . <- i <- NULL
+  . <- i <- online <- NULL
   
   # convert input NA arguments in NULL
   for (a in c("spatial_extent","tile","orbit","time_interval","apihub")) {
@@ -282,7 +307,7 @@ s2_list <- function(spatial_extent = NULL,
         'start=', start,
         '&rows=', rows,
         '&q=', foot,
-        ' AND platformname:Sentinel-2 ',
+        ' AND platformname:Sentinel-2',
         ' AND beginposition:[', time_intervals[t_int,1], 'T00:00:00.000Z',
         ' TO ', time_intervals[t_int,2], 'T23:59:59.000Z]',
         ' AND cloudcoverpercentage:[0 TO ', max_cloud,']'
@@ -369,6 +394,13 @@ s2_list <- function(spatial_extent = NULL,
   
   if (nrow(out_dt) == 0) {return(character(0))}
   
+  # check online availability
+  out_dt$online <- if (availability == "ignore") {
+    NA
+  } else {
+    as.logical(safe_is_online(out_dt$url))
+  }
+  
   # remove "wrong" tiles and orbits if needed
   if (!is.null(tile)) {
     out_dt <- out_dt[tileid %in% tile,]
@@ -394,11 +426,23 @@ s2_list <- function(spatial_extent = NULL,
   if (nrow(out_dt) == 0) {return(character(0))}
   out_dt <- out_dt[order(date),]
   
+  # filter by availability
+  if (availability == "online") {
+    out_dt <- out_dt[online == TRUE,]
+  } else if (availability == "lta") {
+    out_dt <- out_dt[online == FALSE,]
+  }
+  
+  # return output
   if (output_type == "data.table") {
     return(out_dt)
   } else {
     out_vector <- out_dt$url
     names(out_vector) <- out_dt$name
+    if (availability == "check") {
+      attr(out_vector, "online") <- which(out_dt$online)
+      attr(out_vector, "lta") <- which(!out_dt$online)
+    }
     return(out_vector)
   }
 }

@@ -5,11 +5,12 @@
 \title{Download S2 products.}
 \usage{
 s2_download(s2_prodlist = NULL, downloader = "builtin", apihub = NA,
-  tile = NULL, outdir = ".", overwrite = FALSE)
+  tile = NULL, outdir = ".", order_lta = TRUE, overwrite = FALSE)
 }
 \arguments{
-\item{s2_prodlist}{List of the products to be downloaded
-(this must be the output of \link{s2_list} function).}
+\item{s2_prodlist}{Named character: list of the products to be downloaded
+(this must be the output of \link{s2_list} function).
+Alternatively, it can be the path of a JSON file exported by \link{s2_order}.}
 
 \item{downloader}{Executable to use to download products
 (default: "builtin"). Alternatives are "builtin" or "aria2"
@@ -19,10 +20,14 @@ s2_download(s2_prodlist = NULL, downloader = "builtin", apihub = NA,
 of SciHub account.
 If NA (default), the default location inside the package will be used.}
 
-\item{tile}{Single Sentinel-2 Tile string (5-length character)}
+\item{tile}{Deprecated argument}
 
 \item{outdir}{(optional) Full name of the existing output directory
 where the files should be created (default: current directory).}
+
+\item{order_lta}{Logical: if TRUE (default), products which are not available
+for direct download are ordered from the Long Term Archive;
+if FALSE, they are simply skipped.}
 
 \item{overwrite}{Logical value: should existing output archives be
 overwritten? (default: FALSE)}
@@ -31,10 +36,10 @@ overwritten? (default: FALSE)}
 NULL (the function is called for its side effects)
 }
 \description{
-The function downloads a single S2 product.
-Input filename must be an element obtained with
+The function downloads S2 products.
+Input filenames must be elements obtained with
 \link{s2_list} function
-(the content must be a URL, and the name the product name).
+(each element must be a URL, and the name the product name).
 }
 \note{
 License: GPL 3.0
@@ -55,17 +60,11 @@ s2_download(single_s2, outdir=tempdir())
 #' # Download the whole product - using aria2
 s2_download(single_s2, outdir=tempdir(), downloader = "aria2")
 
-# Download a specific tile
-s2_download(single_s2, tile="32TQQ", outdir=tempdir())
-# (for products with compact names, the two above commands produce equivalent
-# results: the first one downloads a SAFE archive, while the second one
-# downloads single product files)
-
-# Download a serie of products
-pos <- st_sfc(st_point(c(12.0, 44.8)), crs=st_crs(4326))
-time_window <- as.Date(c("2017-05-01","2017-07-30"))
-example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window)
-s2_download(example_s2_list, outdir=tempdir())
+# Download more products, ordering the ones stored in the Long Term Archive
+pos <- sf::st_sfc(sf::st_point(c(-57.8815,-51.6954)), crs = 4326)
+time_window <- as.Date(c("2018-02-21", "2018-03-20"))
+list_safe <- s2_list(spatial_extent = pos, time_interval = time_window)
+s2_download(list_safe, outdir=tempdir())
 }
 }
 \author{

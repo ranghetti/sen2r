@@ -2037,6 +2037,6 @@
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">GREEN<\/mi>\n      <mo>-<\/mo>\n      <mi mathcolor=\"#443399\">NIR<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">GREEN<\/mi>\n      <mo>+<\/mo>\n      <mi mathcolor=\"#443399\">NIR<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
     }
   ],
-  "pkg_version": ["1.1.0"],
-  "creation_date": ["2019-09-02 12:18:15"]
+  "pkg_version": ["1.2.0"],
+  "creation_date": ["2019-10-11 17:16:25"]
 }

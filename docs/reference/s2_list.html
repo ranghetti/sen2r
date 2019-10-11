@@ -92,6 +92,9 @@ products satisfying given search criteria." />
 <li>
   <a href="../reference/index.html">Function reference</a>
 </li>
+<li>
+  <a href="../news/index.html">News</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -126,7 +129,7 @@ products satisfying given search criteria.</p>
     <pre class="usage"><span class='fu'>s2_list</span>(<span class='kw'>spatial_extent</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>orbit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span>() - <span class='fl'>10</span>, <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span>()), <span class='kw'>time_period</span> <span class='kw'>=</span> <span class='st'>"full"</span>,
   <span class='kw'>level</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>max_cloud</span> <span class='kw'>=</span> <span class='fl'>100</span>,
-  <span class='kw'>output_type</span> <span class='kw'>=</span> <span class='st'>"vector"</span>)</pre>
+  <span class='kw'>availability</span> <span class='kw'>=</span> <span class='st'>"ignore"</span>, <span class='kw'>output_type</span> <span class='kw'>=</span> <span class='st'>"vector"</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -181,6 +184,21 @@ If NA (default), the default location inside the package will be used.</p></td>
 level of the tiles to be listed (default: no filter).</p></td>
     </tr>
     <tr>
+      <th>availability</th>
+      <td><p>Character argument, determining which products have
+to be returned:</p><ul>
+<li><p>"online" : only archive names already available for download are returned;</p></li>
+<li><p>"lta": only archive names stored in the Long Term Archive
+(see https://scihub.copernicus.eu/userguide/LongTermArchive)
+are returned;</p></li>
+<li><p>"check": all archive names are returned, checking if they are
+available or not for download (see "Value" to know
+how to distinguish each other);</p></li>
+<li><p>"ignore" (default): all archive names are returned, without doing the check
+(running the function is faster).</p></li>
+</ul></td>
+    </tr>
+    <tr>
       <th>output_type</th>
       <td><p>Character: if 'vector' (default), the function returns
 a vector or URLs, whose names are the SAFE names;
@@ -190,9 +208,15 @@ if 'data.table', the output is a data.table with metadata.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Depending on the value of argument `output_type``,
-a vector of available products (being each element an URL
-and its name the product name), or a data.table with product metadata.</p>
+    <p>Depending on the value of argument <code>output_type</code>:
+if <code>output_type = "vector"</code>, a vector of available products
+(being each element an URL and its name the product name),
+together with the attributes <code>online</code> (with the index of products available
+for download) and <code>lta</code> (with the index of products stored in the Long Term
+Archive) in the case <code>availability == "check"</code>;
+if <code>output_type = "data.table"</code>, a data.table with product metadata
+(including the logical field <code>online</code> to allow distinguishing products
+available for download and stored in the Long Term Archive).</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
