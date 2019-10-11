@@ -1,4 +1,5 @@
 # Code for manual package coverage
+Sys.setenv("NOT_CRAN"="true")
 covr::package_coverage(
   line_exclusions = c(
     "R/s2_gui.R",
