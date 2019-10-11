@@ -67,6 +67,8 @@ navbar:
       href: index.html
     - text: "Function reference"
       href: reference/index.html
+    - text: "News"
+      href: news/index.html
   right:
     - icon: fa-github fa-lg
       href: https://github.com/ranghetti/sen2r/
