@@ -9,6 +9,7 @@ if (dir.exists(settings_dir)) {
 } else {
   restore_settings <- FALSE
 }
+# if the test was manually runned, reload sen2r before proceeding
 
 test_that("Load empty binpaths", {
   binpaths_0 <- load_binpaths()
