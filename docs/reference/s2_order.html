@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -203,13 +203,10 @@ the text file in which the list of the ordered products was saved.</p></li>
 <span class='co'># archives already available online and 2 stored in the Long Term Archive)</span>
 
 <span class='co'># Order the products</span>
-<span class='no'>ordered_prods</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_order</span>(<span class='no'>list_safe</span>)</div><div class='output co'>#&gt; <span class='message'>[2019-10-11 16:48:20] Check if products are already available for download...</span></div><div class='output co'>#&gt; <span class='message'>[2019-10-11 16:48:22] 6 Sentinel-2 images are already available and will not be ordered.</span></div><div class='output co'>#&gt; <span class='message'>[2019-10-11 16:48:22] Ordering 1 Sentinel-2 images stored in the Long Term Archive...</span></div><div class='output co'>#&gt; <span class='message'>[2019-10-11 16:48:23] 1 of 1 Sentinel-2 images were correctly ordered. You can check at a later time if the ordered products were made available using the command:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>safe_is_online("/home/lranghetti/.sen2r/lta_orders/lta_20191011_164823.json")</span></div><div class='input'>
+<span class='no'>ordered_prods</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_order</span>(<span class='no'>list_safe</span>)</div><div class='output co'>#&gt; <span class='message'>[2019-10-11 17:36:30] Check if products are already available for download...</span></div><div class='output co'>#&gt; <span class='message'>[2019-10-11 17:36:32] 7 Sentinel-2 images are already available and will not be ordered.</span></div><div class='input'>
 <span class='co'># Check in a second time if the product was made available</span>
-(<span class='no'>order_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>ordered_prods</span>, <span class='st'>"path"</span>))</div><div class='output co'>#&gt; [1] "/home/lranghetti/.sen2r/lta_orders/lta_20191011_164823.json"</div><div class='input'><span class='fu'><a href='safe_is_online.html'>safe_is_online</a></span>(<span class='no'>order_path</span>)</div><div class='output co'>#&gt; S2B_MSIL1C_20180224T133629_N0206_R038_T21FVC_20180224T194845.SAFE 
-#&gt;                                                             FALSE </div><div class='input'># }
-</div></pre>
+(<span class='no'>order_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>ordered_prods</span>, <span class='st'>"path"</span>))</div><div class='output co'>#&gt; NULL</div><div class='input'><span class='fu'><a href='safe_is_online.html'>safe_is_online</a></span>(<span class='no'>order_path</span>)
+<span class='co'># }</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
