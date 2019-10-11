@@ -12,7 +12,7 @@ Here above the related changes:
 * `s2_order()` to order products from LTA.
 
 ## New arguments
-* `sen2r()` and `s2_download()` have a new argument `order_lta` (default: TRUE) to order SAFE archives not available for direct fownload;
+* `sen2r()` and `s2_download()` have a new argument `order_lta` (default: TRUE) to order SAFE archives not available for direct download;
 * `s2_gui()` has a new checkbox to set the previous argument.
 
 ## Other changes (not related with LTA)
