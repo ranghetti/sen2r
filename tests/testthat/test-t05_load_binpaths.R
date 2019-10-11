@@ -1,6 +1,6 @@
-context("Load empty binaries")
-# testthat::skip_on_cran()
-# testthat::skip_on_travis()
+context("Load binaries")
+testthat::skip_on_cran()
+testthat::skip_on_travis()
 
 settings_dir <- normalize_path("~/.sen2r", mustWork = FALSE)
 if (dir.exists(settings_dir)) {
@@ -24,11 +24,6 @@ test_that("Try loading Sen2Cor", {
   )
   expect_equal(binpaths_0, binpaths_1)
 })
-
-
-context("Load aria2 and GDAL")
-testthat::skip_on_cran()
-# testthat::skip_on_travis()
 
 test_that("Load GDAL", {
   binpaths_2 <- load_binpaths("gdal")
