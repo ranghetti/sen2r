@@ -23,7 +23,9 @@ test_that("Try loading Sen2Cor", {
     binpaths_1 <- load_binpaths("sen2cor"),
     "Sen2Cor was not found in your system; you can install it using the function"
   )
-  expect_equal(binpaths_0, binpaths_1)
+  expect_is(binpaths_1, "list")
+  expect_length(binpaths_1, 0)
+  expect_equal(basename(attr(binpaths_1, "path")), "paths.json")
 })
 
 test_that("Load GDAL", {
@@ -39,7 +41,7 @@ test_that("Load aria2", {
   expect_is(binpaths_3, "list")
   expect_length(binpaths_3, 10)
   expect_equal(binpaths_3$aria2, normalize_path(Sys.which("aria2c")))
-  expect_equal(basename(attr(binpaths_2, "path")), "paths.json")
+  expect_equal(basename(attr(binpaths_3, "path")), "paths.json")
 })
 
 if (restore_settings) {
