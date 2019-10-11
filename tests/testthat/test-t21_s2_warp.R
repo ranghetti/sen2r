@@ -430,7 +430,7 @@ testthat::test_that(
   "Reproject all the input file", {
     
     test4 <- tempfile(fileext = "_test4.tif")
-    gdal_warp(ex_sel, test4, t_srs = "+init=epsg:32631")
+    gdal_warp(ex_sel, test4, t_srs = sf::st_crs("+init=epsg:32631")$proj4string)
     
     # test on raster metadata
     exp_meta_r <- raster_metadata(test4, format = "list")[[1]]
@@ -459,7 +459,11 @@ testthat::test_that(
     
     
     test5 <- tempfile(fileext = "_test5.tif")
-    gdal_warp(ex_sel, test5, t_srs = "+init=epsg:32631", mask = stars::read_stars(test1))
+    gdal_warp(
+      ex_sel, test5, 
+      t_srs = sf::st_crs("+init=epsg:32631")$proj4string, 
+      mask = stars::read_stars(test1)
+    )
     
     # test on raster metadata
     exp_meta_r <- raster_metadata(test5, format = "list")[[1]]
@@ -487,7 +491,11 @@ test6 <- tempfile(fileext = "_test6.tif")
 testthat::test_that(
   "Reproject and clip on polygon (masking outside)", {
     
-    gdal_warp(ex_sel, test6, t_srs = "+init=epsg:32631", mask = crop_poly)
+    gdal_warp(
+      ex_sel, test6, 
+      t_srs = sf::st_crs("+init=epsg:32631")$proj4string, 
+      mask = crop_poly
+    )
     
     # test on raster metadata
     exp_meta_r <- raster_metadata(test6, format = "list")[[1]]

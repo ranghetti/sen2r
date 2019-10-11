@@ -1078,7 +1078,6 @@ sen2r <- function(param_list = NULL,
         apihub = pm$apihub
       )
       # save lta availability (TRUE if on LTA, FALSE if online)
-      browser()
       s2_lists_islta[["l2a"]] <- seq_along(s2_lists[["l2a"]]) %in% attr(s2_lists[["l2a"]], "lta")
       names(s2_lists_islta[["l2a"]]) <- names(s2_lists[["l2a"]])
     }
@@ -1272,7 +1271,6 @@ sen2r <- function(param_list = NULL,
   names(s2_list_l2a) <- s2_dt[lta==FALSE & level=="2A", name]
   
   # Order products from LTA if required
-  browser()
   if (pm$online == TRUE & pm$order_lta == TRUE) {
     s2_list_ordered <- .s2_order(
       s2_list_lta, 
@@ -1355,7 +1353,6 @@ sen2r <- function(param_list = NULL,
         rbindlist(fill=TRUE) %>%
         .[,list(mission, sensing_datetime, id_orbit, id_tile)] %>%
         apply(1, paste, collapse = "_")
-      browser()
       s2_l2a_orphan <- !s2_meta_l2a %in% s2_meta_l1c
       s2_l1c_orphan <- !s2_meta_l1c %in% s2_meta_l2a
       if (any(s2_l2a_orphan, s2_l1c_orphan)) {
