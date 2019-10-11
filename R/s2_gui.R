@@ -3402,6 +3402,7 @@ s2_gui <- function(param_list = NULL,
       rl$s2_levels <- c(if(safe_req$l1c==TRUE){"l1c"}, if(safe_req$l2a==TRUE){"l2a"}) # required S2 levels ("l1c","l2a")
       rl$sel_sensor <- input$sel_sensor # sensors to use ("s2a", "s2b")
       rl$online <- as.logical(input$online) # TRUE if online mode, FALSE if offline mode
+      rl$order_lta <- as.logical(input$make_lta_order) # TRUE to order from LTA, FALSE to skip
       rl$downloader <- input$downloader # downloader ("builtin" or "aria2")
       rl$overwrite_safe <- as.logical(input$overwrite_safe) # TRUE to overwrite existing SAFE, FALSE not to
       rl$rm_safe <- input$rm_safe # "yes" to delete all SAFE, "l1c" to delete only l1c, "no" not to remove
@@ -3558,6 +3559,7 @@ s2_gui <- function(param_list = NULL,
         updateCheckboxGroupInput(session, "list_levels", selected = pl$s2_levels)
         updateCheckboxGroupInput(session, "sel_sensor", selected = pl$sel_sensor)
         updateRadioButtons(session, "online", selected = pl$online)
+        updateRadioButtons(session, "make_lta_order", selected = pl$order_lta)
         updateRadioButtons(session, "downloader", selected = pl$downloader)
         updateRadioButtons(session, "overwrite_safe", selected = pl$overwrite_safe)
         updateRadioButtons(session, "rm_safe", selected = pl$rm_safe)

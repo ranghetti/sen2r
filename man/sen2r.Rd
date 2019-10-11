@@ -6,21 +6,22 @@
 \usage{
 sen2r(param_list = NULL, gui = NA, preprocess = TRUE,
   s2_levels = c("l1c", "l2a"), sel_sensor = c("s2a", "s2b"),
-  online = TRUE, apihub = NA, downloader = "builtin",
-  overwrite_safe = FALSE, rm_safe = "no", step_atmcorr = "auto",
-  max_cloud_safe = 100, timewindow = NA, timeperiod = "full",
-  extent = NA, extent_name = "sen2r", s2tiles_selected = NA,
-  s2orbits_selected = NA, list_prods = NA, list_rgb = NA,
-  list_indices = NA, index_source = "BOA", rgb_ranges = NA,
-  mask_type = NA, max_mask = 100, mask_smooth = 0, mask_buffer = 0,
-  clip_on_extent = TRUE, extent_as_mask = FALSE, reference_path = NA,
-  res = NA, res_s2 = "10m", unit = "Meter", proj = NA,
-  resampling = "near", resampling_scl = "near", outformat = "GTiff",
-  rgb_outformat = "GTiff", index_datatype = "Int16",
-  compression = "DEFLATE", rgb_compression = "90", overwrite = FALSE,
-  path_l1c = NA, path_l2a = NA, path_tiles = NA, path_merged = NA,
-  path_out = NA, path_rgb = NA, path_indices = NA,
-  path_subdirs = TRUE, thumbnails = TRUE, parallel = FALSE,
+  online = TRUE, order_lta = TRUE, apihub = NA,
+  downloader = "builtin", overwrite_safe = FALSE, rm_safe = "no",
+  step_atmcorr = "auto", max_cloud_safe = 100, timewindow = NA,
+  timeperiod = "full", extent = NA, extent_name = "sen2r",
+  s2tiles_selected = NA, s2orbits_selected = NA, list_prods = NA,
+  list_rgb = NA, list_indices = NA, index_source = "BOA",
+  rgb_ranges = NA, mask_type = NA, max_mask = 100, mask_smooth = 0,
+  mask_buffer = 0, clip_on_extent = TRUE, extent_as_mask = FALSE,
+  reference_path = NA, res = NA, res_s2 = "10m", unit = "Meter",
+  proj = NA, resampling = "near", resampling_scl = "near",
+  outformat = "GTiff", rgb_outformat = "GTiff",
+  index_datatype = "Int16", compression = "DEFLATE",
+  rgb_compression = "90", overwrite = FALSE, path_l1c = NA,
+  path_l2a = NA, path_tiles = NA, path_merged = NA, path_out = NA,
+  path_rgb = NA, path_indices = NA, path_subdirs = TRUE,
+  thumbnails = TRUE, parallel = FALSE,
   processing_order = "by_groups", use_python = TRUE, tmpdir = NA,
   rmtmp = TRUE, log = NA)
 }
@@ -61,6 +62,10 @@ Accepted values: "s2a" and "s2b"; default: c("s2a","s2b").}
 \item{online}{(optional) Logical: TRUE (default) to search for available
 products on SciHub (and download if needed); FALSE to work
 only with already downloaded SAFE products.}
+
+\item{order_lta}{(optional) Logical: TRUE (default) to order products from
+the Long Term Archive if unavailable for direct download; FALSE to simply
+skip them (this option has effect only in online mode).}
 
 \item{apihub}{Path of the text file containing credentials
 of SciHub account.

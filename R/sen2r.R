@@ -35,6 +35,9 @@
 #' @param online (optional) Logical: TRUE (default) to search for available
 #'  products on SciHub (and download if needed); FALSE to work
 #'  only with already downloaded SAFE products.
+#' @param order_lta (optional) Logical: TRUE (default) to order products from
+#'  the Long Term Archive if unavailable for direct download; FALSE to simply
+#'  skip them (this option has effect only in online mode).
 #' @param apihub Path of the text file containing credentials
 #'  of SciHub account.
 #'  If NA (default), the default location inside the package will be used.
@@ -396,6 +399,7 @@ sen2r <- function(param_list = NULL,
                   s2_levels = c("l1c","l2a"),
                   sel_sensor = c("s2a","s2b"),
                   online = TRUE,
+                  order_lta = TRUE,
                   apihub = NA,
                   downloader = "builtin",
                   overwrite_safe = FALSE,
@@ -480,6 +484,7 @@ sen2r <- function(param_list = NULL,
     s2_levels = s2_levels,
     sel_sensor = sel_sensor,
     online = online,
+    order_lta = order_lta,
     apihub = apihub,
     downloader = downloader,
     overwrite_safe = overwrite_safe,
@@ -573,6 +578,7 @@ sen2r <- function(param_list = NULL,
                    s2_levels,
                    sel_sensor,
                    online,
+                   order_lta,
                    apihub,
                    downloader,
                    overwrite_safe,
@@ -1016,7 +1022,7 @@ sen2r <- function(param_list = NULL,
   ### Find SAFE and compute the names of required files ###
   
   ## 2. List required products ##
-  s2_lists <- s2_lists_lta <- list()
+  s2_lists <- s2_lists_islta <- list()
   
   if (pm$online == TRUE) {
     
@@ -1044,9 +1050,9 @@ sen2r <- function(param_list = NULL,
         availability = "check",
         apihub = pm$apihub
       )
-      # split available online products from LTA ones
-      s2_lists_lta[["l1c"]] <- s2_lists[["l1c"]][attr(s2_lists[["l1c"]], "lta")]
-      s2_lists[["l1c"]] <- s2_lists[["l1c"]][attr(s2_lists[["l1c"]], "online")]
+      # save lta availability (TRUE if on LTA, FALSE if online)
+      s2_lists_islta[["l1c"]] <- seq_along(s2_lists[["l1c"]]) %in% attr(s2_lists[["l1c"]], "lta")
+      names(s2_lists_islta[["l1c"]]) <- names(s2_lists[["l1c"]])
     }
     if ("l2a" %in% pm$s2_levels) {
       # list of SAFE (L1C or/and L2A) needed for required L2A
@@ -1071,9 +1077,10 @@ sen2r <- function(param_list = NULL,
         availability = "check",
         apihub = pm$apihub
       )
-      # split available online products from LTA ones
-      s2_lists_lta[["l2a"]] <- s2_lists[["l2a"]][attr(s2_lists[["l2a"]], "lta")]
-      s2_lists[["l2a"]] <- s2_lists[["l2a"]][attr(s2_lists[["l2a"]], "online")]
+      # save lta availability (TRUE if on LTA, FALSE if online)
+      browser()
+      s2_lists_islta[["l2a"]] <- seq_along(s2_lists[["l2a"]]) %in% attr(s2_lists[["l2a"]], "lta")
+      names(s2_lists_islta[["l2a"]]) <- names(s2_lists[["l2a"]])
     }
     
   } else {
@@ -1114,14 +1121,8 @@ sen2r <- function(param_list = NULL,
     
   }
   s2_list <- unlist(s2_lists)[!duplicated(unlist(lapply(s2_lists, names)))]
-  s2_list_lta <- unlist(s2_lists_lta)[!duplicated(unlist(lapply(s2_lists_lta, names)))]
-  rm(s2_lists, s2_lists_lta)
-  
-  # If s2_list_lta is not empty, order products from LTA
-  s2_list_ordered <- .s2_order(
-    s2_list_lta, 
-    .s2_availability = rep(FALSE, length(s2_list_lta))
-  )
+  s2_list_islta <- unlist(s2_lists_islta)[!duplicated(unlist(lapply(s2_lists_islta, names)))]
+  rm(s2_lists, s2_lists_islta)
   
   # If s2_list is empty, exit
   if (length(s2_list)==0) {
@@ -1157,6 +1158,7 @@ sen2r <- function(param_list = NULL,
       info="nameinfo"
     ), stringsAsFactors = FALSE)[-1,]
   }
+  s2_dt[,"lta":=if (is.null(s2_list_islta)) {FALSE} else {s2_list_islta}]
   s2_dt[,c("name","url"):=list(nn(names(s2_list)),nn(s2_list))]
   s2_dt[,c("sensing_datetime","creation_datetime"):=
           list(as.POSIXct(sensing_datetime, format="%s"),
@@ -1204,16 +1206,17 @@ sen2r <- function(param_list = NULL,
         !is.na(match(s2_meta_pasted, s2_existing_meta_pasted)),
         name := s2_existing_list[na.omit(match(s2_meta_pasted, s2_existing_meta_pasted))]
         ]
-      s2_dt[!is.na(match(s2_meta_pasted, s2_existing_meta_pasted)), url:=""]
+      s2_dt[!is.na(match(s2_meta_pasted, s2_existing_meta_pasted)), c("url","lta"):=list("",FALSE)]
     }
   }
   
   # removing duplicated products
-  # (in case of products with different baseline / ingestion time, keep the most recent one)
+  # (in case of products with different baseline / ingestion time, keep the most 
+  # recent one / the existing or downloadable)
   s2_dt <- if (!is.null(s2_dt$id_baseline)) {
-    s2_dt[order(-sensing_datetime, -creation_datetime, -id_baseline),]
+    s2_dt[order(-sensing_datetime, lta, -creation_datetime, -id_baseline),]
   } else {
-    s2_dt[order(-sensing_datetime, -creation_datetime),]
+    s2_dt[order(-sensing_datetime, lta, -creation_datetime),]
   }
   s2_dt <- s2_dt[!duplicated(paste(
     prod_type, version, mission, level,
@@ -1260,10 +1263,22 @@ sen2r <- function(param_list = NULL,
     s2_dt <- s2_dt[id_orbit %in% pm$s2orbits_selected,]
   }
   # setorder(s2_dt, -sensing_datetime)
-  s2_list_l1c <- s2_dt[level=="1C",url] # list of required L1C
-  s2_list_l2a <- s2_dt[level=="2A",url] # list of required L2A
-  names(s2_list_l1c) <- s2_dt[level=="1C",name]
-  names(s2_list_l2a) <- s2_dt[level=="2A",name]
+  
+  s2_list_lta <- s2_dt[lta==TRUE, url] # list of SAFE to be ordered
+  s2_list_l1c <- s2_dt[lta==FALSE & level=="1C", url] # list of required L1C
+  s2_list_l2a <- s2_dt[lta==FALSE & level=="2A", url] # list of required L2A
+  names(s2_list_lta) <- s2_dt[lta==TRUE, name]
+  names(s2_list_l1c) <- s2_dt[lta==FALSE & level=="1C", name]
+  names(s2_list_l2a) <- s2_dt[lta==FALSE & level=="2A", name]
+  
+  # Order products from LTA if required
+  browser()
+  if (pm$online == TRUE & pm$order_lta == TRUE) {
+    s2_list_ordered <- .s2_order(
+      s2_list_lta, 
+      .s2_availability = rep(FALSE, length(s2_list_lta))
+    )
+  }
   
   # add expected L2A names (after sen2cor)
   if (pm$step_atmcorr %in% c("auto","scihub")) {
@@ -1340,6 +1355,7 @@ sen2r <- function(param_list = NULL,
         rbindlist(fill=TRUE) %>%
         .[,list(mission, sensing_datetime, id_orbit, id_tile)] %>%
         apply(1, paste, collapse = "_")
+      browser()
       s2_l2a_orphan <- !s2_meta_l2a %in% s2_meta_l1c
       s2_l1c_orphan <- !s2_meta_l1c %in% s2_meta_l2a
       if (any(s2_l2a_orphan, s2_l1c_orphan)) {
@@ -1351,6 +1367,8 @@ sen2r <- function(param_list = NULL,
           if (any(s2_l1c_orphan)) {paste0(
             "This issue can be avoided by setting argument \"step_atmcorr\" ",
             "to 'auto' or 'scihub', or \"online\" to TRUE, ",
+            "or re-launching the processing when products ordered from the ",
+            "Long Term Archive will be made available, ",
             "so that missing Level-2A can be produced or downloaded."
           )}
         )
@@ -1652,35 +1670,39 @@ sen2r <- function(param_list = NULL,
             overwrite = pm$overwrite_safe
           )
         } else { # otherwise, launch one per tile
-          lapply(pm$s2tiles_selected, function(tile) {
-            if (length(pm$s2tiles_selected) > 1) {
-              print_message(
-                type = "message",
-                date = TRUE,
-                "Cycle ",grep(tile, pm$s2tiles_selected),
-                " of ",length(pm$s2tiles_selected),
-                " (tile ",tile,
-                if (grep(tile, pm$s2tiles_selected)==1) {
-                  " and products with a compact name)"
-                } else {
-                  " within products with an old long name)"
-                }
-              )
-            }
-            s2_download(
-              sel_s2_list_l2a, # ask to download all the images,
-              # and not only the non existing ones,
-              # because of the cycle on tiles
-              # (with compactname products, all the zips are downloaded
-              # during the first execution, since argument "tile" is
-              # ignored).
-              outdir = path_l2a,
-              downloader = pm$downloader,
-              tile = tile,
-              apihub = sel_apihub_path,
-              overwrite = pm$overwrite_safe
-            )
-          })
+          print_message(
+            type = "error",
+            "Old name SAFE products are no longer supported."
+          )
+          # lapply(pm$s2tiles_selected, function(tile) {
+          #   if (length(pm$s2tiles_selected) > 1) {
+          #     print_message(
+          #       type = "message",
+          #       date = TRUE,
+          #       "Cycle ",grep(tile, pm$s2tiles_selected),
+          #       " of ",length(pm$s2tiles_selected),
+          #       " (tile ",tile,
+          #       if (grep(tile, pm$s2tiles_selected)==1) {
+          #         " and products with a compact name)"
+          #       } else {
+          #         " within products with an old long name)"
+          #       }
+          #     )
+          #   }
+          #   s2_download(
+          #     sel_s2_list_l2a, # ask to download all the images,
+          #     # and not only the non existing ones,
+          #     # because of the cycle on tiles
+          #     # (with compactname products, all the zips are downloaded
+          #     # during the first execution, since argument "tile" is
+          #     # ignored).
+          #     outdir = path_l2a,
+          #     downloader = pm$downloader,
+          #     tile = tile,
+          #     apihub = sel_apihub_path,
+          #     overwrite = pm$overwrite_safe
+          #   )
+          # })
         }
         
         print_message(
@@ -1728,34 +1750,38 @@ sen2r <- function(param_list = NULL,
             overwrite = pm$overwrite_safe
           )
         } else { # otherwise, launch one per tile
-          lapply(pm$s2tiles_selected, function(tile) {
-            if (length(pm$s2tiles_selected) > 1) {
-              print_message(
-                type = "message",
-                date = TRUE,
-                "Cycle ",grep(tile, pm$s2tiles_selected),
-                " of ",length(pm$s2tiles_selected),
-                " (tile ",tile,
-                if (grep(tile, pm$s2tiles_selected)==1) {
-                  " and products with a compact name)"
-                } else {
-                  " within products with an old long name)"
-                }
-              )
-            }
-            s2_download(
-              sel_s2_list_l1c, # ask to download all the images,
-              # and not only the non existing ones,
-              # because of the cycle on tiles
-              # (with compactname products, all the zips are downloaded
-              # during the first execution, since argument "tile" is
-              # ignored).
-              outdir = path_l1c,
-              downloader = pm$downloader,
-              tile = tile,
-              overwrite = pm$overwrite_safe
-            )
-          })
+          print_message(
+            type = "error",
+            "Old name SAFE products are no longer supported."
+          )
+          # lapply(pm$s2tiles_selected, function(tile) {
+          #   if (length(pm$s2tiles_selected) > 1) {
+          #     print_message(
+          #       type = "message",
+          #       date = TRUE,
+          #       "Cycle ",grep(tile, pm$s2tiles_selected),
+          #       " of ",length(pm$s2tiles_selected),
+          #       " (tile ",tile,
+          #       if (grep(tile, pm$s2tiles_selected)==1) {
+          #         " and products with a compact name)"
+          #       } else {
+          #         " within products with an old long name)"
+          #       }
+          #     )
+          #   }
+          #   s2_download(
+          #     sel_s2_list_l1c, # ask to download all the images,
+          #     # and not only the non existing ones,
+          #     # because of the cycle on tiles
+          #     # (with compactname products, all the zips are downloaded
+          #     # during the first execution, since argument "tile" is
+          #     # ignored).
+          #     outdir = path_l1c,
+          #     downloader = pm$downloader,
+          #     tile = tile,
+          #     overwrite = pm$overwrite_safe
+          #   )
+          # })
         }
         # FIXME this operation can be very long with oldname products but tiled:
         # Sentinel-download.py scans within single xml files and discharges
