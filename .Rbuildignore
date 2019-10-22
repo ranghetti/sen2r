@@ -5,7 +5,7 @@
 ^.*\.yaml$
 ^README\.R?md$
 ^WIP$
-^CONDUCT\.md$
+^\.github$
 ^Dockerfile$
 ^docs$
 ^index\.R?md$
