@@ -108,7 +108,12 @@ Would you like to use a personal library instead?  (y/n)
 If so, press `y` and continue.
 Moreover, if no personal libraries already exist, it is asked to create a new one: ask `y` and continue.
 
-After that, the package can be installed from GitHub with the R package **remotes**.
+After that, the package can be installed from CRAN:
+```{r, eval = FALSE}
+install.packages("sen2r")
+```
+
+Alternatively, the development version can be installed from GitHub with the R package **remotes**.
 To do it:
 
 1. install the package **remotes**, if missing:
@@ -144,7 +149,12 @@ In the case it was already installed, it is suggested to update the existing R p
 update.packages(ask = FALSE)
 ```
 
-<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be installed from GitHub with the R package **remotes**.
+<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be installed from CRAN:
+```{r, eval = FALSE}
+install.packages("sen2r")
+```
+
+Alternatively, the development version can be installed from GitHub with the R package **remotes**.
 To do it:
 
 1. install the package **remotes**, if missing:
@@ -248,7 +258,12 @@ install.packages(c("sp", "sf", "rgdal", "rgeos"), type = "source")
 ```
 __after__ having installed GDAL as described above.
 
-<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be installed from GitHub with the R package **remotes**.
+<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be installed from CRAN:
+```{r, eval = FALSE}
+install.packages("sen2r")
+```
+
+Alternatively, the development version can be installed from GitHub with the R package **remotes**.
 To do it:
 
 1. install the package **remotes**, if missing:

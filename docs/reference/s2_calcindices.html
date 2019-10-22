@@ -87,18 +87,47 @@ are physical rasters (no output VRT is allowed)." />
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li>
-  <a href="../index.html">Home</a>
-</li>
-<li>
-  <a href="../reference/index.html">Function reference</a>
-</li>
-<li>
-  <a href="../news/index.html">News</a>
-</li>
+        
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
+  <a href="../index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="../reference/index.html">
+    <span class="fa fa-file-code"></span>
+     
+     Reference
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-book"></span>
+     
+     Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/installation.html">Installation</a>
+    </li>
+    <li>
+      <a href="../articles/docker.html">Run in a Docker container</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="../news/index.html">
+    <span class="fa fa-newspaper"></span>
+     
+     Changelog
+  </a>
+</li>
+<li>
   <a href="https://github.com/ranghetti/sen2r/">
     <span class="fa fa-github fa-lg"></span>
      
@@ -274,7 +303,7 @@ overwritten? (default: FALSE)</p></td>
   <span class='kw'>indices</span> <span class='kw'>=</span> <span class='st'>"EVI"</span>,
   <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(),
   <span class='kw'>dataType</span> <span class='kw'>=</span> <span class='st'>"Float32"</span>
-)</div><div class='output co'>#&gt; <span class='message'>Carico il pacchetto richiesto: sp</span></div><div class='output co'>#&gt; <span class='message'>Computing index: EVI</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 1 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 2 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 3 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 4 of 4</span></div><div class='input'><span class='no'>ex_out</span></div><div class='output co'>#&gt; [1] "/tmp/RtmphvaZJd/S2A2A_20170703_022_Barbellino_EVI_10.tif"</div><div class='input'>
+)</div><div class='output co'>#&gt; <span class='message'>Carico il pacchetto richiesto: sp</span></div><div class='output co'>#&gt; <span class='message'>Computing index: EVI</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 1 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 2 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 3 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 4 of 4</span></div><div class='input'><span class='no'>ex_out</span></div><div class='output co'>#&gt; [1] "/tmp/RtmpXMrSkx/S2A2A_20170703_022_Barbellino_EVI_10.tif"</div><div class='input'>
 <span class='co'># Show output</span>
 <span class='no'>oldpar</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='kw'>mfrow</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>), <span class='kw'>mar</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>,<span class='fl'>4</span>))
 <span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>ex_in</span>), <span class='kw'>rgb</span> <span class='kw'>=</span> <span class='fl'>4</span>:<span class='fl'>2</span>, <span class='kw'>maxColorValue</span> <span class='kw'>=</span> <span class='fl'>3500</span>)
@@ -301,7 +330,7 @@ overwritten? (default: FALSE)</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
 
       </footer>

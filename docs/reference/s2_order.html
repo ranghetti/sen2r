@@ -86,18 +86,47 @@
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li>
-  <a href="../index.html">Home</a>
-</li>
-<li>
-  <a href="../reference/index.html">Function reference</a>
-</li>
-<li>
-  <a href="../news/index.html">News</a>
-</li>
+        
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
+  <a href="../index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="../reference/index.html">
+    <span class="fa fa-file-code"></span>
+     
+     Reference
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-book"></span>
+     
+     Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/installation.html">Installation</a>
+    </li>
+    <li>
+      <a href="../articles/docker.html">Run in a Docker container</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="../news/index.html">
+    <span class="fa fa-newspaper"></span>
+     
+     Changelog
+  </a>
+</li>
+<li>
   <a href="https://github.com/ranghetti/sen2r/">
     <span class="fa fa-github fa-lg"></span>
      
@@ -203,7 +232,7 @@ the text file in which the list of the ordered products was saved.</p></li>
 <span class='co'># archives already available online and 2 stored in the Long Term Archive)</span>
 
 <span class='co'># Order the products</span>
-<span class='no'>ordered_prods</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_order</span>(<span class='no'>list_safe</span>)</div><div class='output co'>#&gt; <span class='message'>[2019-10-11 17:36:30] Check if products are already available for download...</span></div><div class='output co'>#&gt; <span class='message'>[2019-10-11 17:36:32] 7 Sentinel-2 images are already available and will not be ordered.</span></div><div class='input'>
+<span class='no'>ordered_prods</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_order</span>(<span class='no'>list_safe</span>)</div><div class='output co'>#&gt; <span class='message'>[2019-10-22 09:41:11] Check if products are already available for download...</span></div><div class='output co'>#&gt; <span class='message'>[2019-10-22 09:41:13] 7 Sentinel-2 images are already available and will not be ordered.</span></div><div class='input'>
 <span class='co'># Check in a second time if the product was made available</span>
 (<span class='no'>order_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>ordered_prods</span>, <span class='st'>"path"</span>))</div><div class='output co'>#&gt; NULL</div><div class='input'><span class='fu'><a href='safe_is_online.html'>safe_is_online</a></span>(<span class='no'>order_path</span>)
 <span class='co'># }</span></div></pre>
@@ -229,7 +258,7 @@ the text file in which the list of the ordered products was saved.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
 
       </footer>
