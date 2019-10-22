@@ -80,24 +80,53 @@ computable with the package." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li>
-  <a href="../index.html">Home</a>
-</li>
-<li>
-  <a href="../reference/index.html">Function reference</a>
-</li>
-<li>
-  <a href="../news/index.html">News</a>
-</li>
+        
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
+  <a href="../index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="../reference/index.html">
+    <span class="fa fa-file-code"></span>
+     
+     Reference
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-book"></span>
+     
+     Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/installation.html">Installation</a>
+    </li>
+    <li>
+      <a href="../articles/docker.html">Run in a Docker container</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="../news/index.html">
+    <span class="fa fa-newspaper"></span>
+     
+     Changelog
+  </a>
+</li>
+<li>
   <a href="https://github.com/ranghetti/sen2r/">
     <span class="fa fa-github fa-lg"></span>
      
@@ -243,9 +272,9 @@ create the indices archive.</p></li>
 <span class='co'># Return the MSAVI2 formula</span>
 <span class='fu'>list_indices</span>(<span class='st'>"s2_formula"</span>, <span class='st'>"^MSAVI2$"</span>)</div><div class='output co'>#&gt; [1] "(2*band_8+1-sqrt(power((2*band_8+1),2)-8*(band_8-band_4)))/(2)"
 #&gt; attr(,"pkg_version")
-#&gt; [1] ‘1.1.0’
+#&gt; [1] ‘1.2.0’
 #&gt; attr(,"creation_date")
-#&gt; [1] "2019-09-02 12:18:15 CEST"</div><div class='input'>
+#&gt; [1] "2019-10-11 17:16:25 CEST"</div><div class='input'>
 <span class='co'># Return all index names (including unchecked)</span>
 <span class='fu'>list_indices</span>(<span class='st'>"name"</span>, <span class='kw'>all</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;   [1] "ATSAVI"        "AFRI1600"      "AFRI2100"      "ARI"          
 #&gt;   [5] "AVI"           "ARVI"          "ARVI2"         "BWDRVI"       
@@ -304,9 +333,9 @@ create the indices archive.</p></li>
 #&gt; [217] "BDred-2B"      "BDred-0"       "CRred2"        "CRred2-2A"    
 #&gt; [221] "CRred2-2B"     "CRred2-0"      "NDWI"          "NDWI2"        
 #&gt; attr(,"pkg_version")
-#&gt; [1] ‘1.1.0’
+#&gt; [1] ‘1.2.0’
 #&gt; attr(,"creation_date")
-#&gt; [1] "2019-09-02 12:18:15 CEST"</div></pre>
+#&gt; [1] "2019-10-11 17:16:25 CEST"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -329,7 +358,7 @@ create the indices archive.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
 
       </footer>

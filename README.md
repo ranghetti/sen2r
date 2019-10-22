@@ -74,7 +74,14 @@ existing products) can also be performed using intermediate functions
 
 ### Install locally
 
-The package can be installed from GitHub with the R package **remotes**:
+The package can be installed from CRAN:
+
+``` r
+install.packages("sen2r")
+```
+
+Alternatively, the development version can be installed from GitHub with
+the R package **remotes**:
 
 ``` r
 remotes::install_github("ranghetti/sen2r")
@@ -89,9 +96,8 @@ page.
 
 A dockerised version of
 <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
-is available [here](https://hub.docker.com/r/ranghetti/sen2r).
-
-For detailed instructions about using it, see the page [“Run in a Docker
+is available [here](https://hub.docker.com/r/ranghetti/sen2r). For
+detailed instructions about using it, see the page [“Run in a Docker
 container”](http://sen2r.ranghetti.info/articles/docker.html) page.
 
 ## Usage
@@ -184,7 +190,7 @@ International license](https://creativecommons.org/licenses/by-sa/4.0)
 To cite this library, please use the following entry:
 
 Ranghetti, L. and Busetto, L. (2019). *sen2r: Find, Download and Process
-Sentinel-2 Data*. R package version 1.0.0. DOI:
+Sentinel-2 Data*. R package version 1.2.0. DOI:
 [10.5281/zenodo.1240384](https://dx.doi.org/10.5281/zenodo.1240384).
 URL: <http://sen2r.ranghetti.info>.
 
@@ -193,7 +199,7 @@ URL: <http://sen2r.ranghetti.info>.
   title  = {sen2r: Find, Download and Process Sentinel-2 Data},
   author = {Luigi Ranghetti and Lorenzo Busetto},
   year   = {2019},
-  note   = {R package version 1.0.0},
+  note   = {R package version 1.2.0},
   doi    = {10.5281/zenodo.1240384},
   url    = {http://sen2r.ranghetti.info},
 }
