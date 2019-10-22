@@ -1,28 +1,21 @@
 
-  - [sen2r: Find, Download and Process Sentinel-2
-    Data](#sen2r-find-download-and-process-sentinel-2-data)
-      - [Installation](#installation)
-      - [Usage](#usage)
-      - [Credits](#credits)
-      - [Contributing](#contributing)
-
 <!-- IMPORTANT: do NOT edit README.Rmd! Edit index.Rmd instead, -->
 
 <!-- and generate README.Rmd using utils/code/create_README.sh  -->
 
+[![CRAN
+Status](https://www.r-pkg.org/badges/version-ago/sen2r)](https://cran.r-project.org/package=sen2r)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1240384.svg)](https://doi.org/10.5281/zenodo.1240384)
 [![Travis-CI Build
 Status](https://travis-ci.org/ranghetti/sen2r.svg?branch=master)](https://travis-ci.org/ranghetti/sen2r)
-![Docker Automated
-build](https://img.shields.io/docker/automated/ranghetti/sen2r.svg)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1240384.svg)](https://doi.org/10.5281/zenodo.1240384)
-[![CRAN
-Status](http://www.r-pkg.org/badges/version/sen2r)](https://cran.r-project.org/package=sen2r)
 [![Coverage
 Status](http://img.shields.io/codecov/c/github/ranghetti/sen2r/master.svg)](http://codecov.io/github/ranghetti/sen2r?branch=master)
+[![Docker Automated
+build](https://img.shields.io/docker/automated/ranghetti/sen2r.svg)](https://hub.docker.com/r/ranghetti/sen2r)
 [![License: GPL
 v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Contributor
-Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CONDUCT.md)
+Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](.github/CODE-OF-CONDUCT.md)
 
 <img src="man/figures/sen2r_logo_200px.png" width="200" height="113" align="right" />
 
@@ -110,7 +103,8 @@ sen2r()
 ```
 
 this opens a GUI which allows to set the required processing parameters,
-and then launches the main function.
+and then launches the main
+function.
 
 <p style="text-align:center;">
 
@@ -199,8 +193,8 @@ URL: <http://sen2r.ranghetti.info>.
 ## Contributing
 
 This project is released with a [Contributor Code of
-Conduct](CONDUCT.md). By participating in this project you agree to
-abide by its terms.
+Conduct](.github/CODE-OF-CONDUCT.md). By participating in this project
+you agree to abide by its terms.
 
 Users are encouraged to use GitHub issues in case of errors with the
 package. Before opening a new issue, please read
