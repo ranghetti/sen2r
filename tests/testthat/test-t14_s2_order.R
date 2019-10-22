@@ -104,7 +104,7 @@ testthat::test_that(
     if (!is.null(attr(s2_order_2, "path"))) {
       file_content <- jsonlite::fromJSON(attr(s2_order_2, "path"))
       testthat::expect_is(file_content, "list")
-      testthat::expect_length(file_content, 2)
+      testthat::expect_length(file_content, length(s2_order_2))
       testthat::expect_equivalent(unlist(file_content), s2_order_2)
     }
     # testthat::expect_equal(names(attributes(s2_order_2)), c("names","available","notordered", "path"))
