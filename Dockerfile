@@ -19,12 +19,14 @@ RUN R -e "remotes::install_github('r-spatial/lwgeom', dependencies = TRUE)"
 RUN R -e "remotes::install_github('ranghetti/sen2r', ref = 'master', dependencies = TRUE)"
 
 # Install internal dependencies and configure
-RUN R -e 'sen2r:::load_binpaths(c("python", "aria2", "gdal", "sen2cor"))'
+RUN R -e 'sen2r:::load_binpaths(c("python", "aria2", "gdal"))'
+RUN mkdir /root/sen2cor && \
+    mkdir /root/sen2cor/sen2cor_255 && \
+    R -e 'sen2r:::install_sen2cor("/root/sen2cor/sen2cor_255", version = "2.5.5")'
 
 # Download vector of S2 tiles
-RUN R -e 'sen2r::s2_tiles()'
+RUN R -e 'tmp <- sen2r::s2_tiles()'
 
-# Allow user rstudio to use sen2cor
+# Allow user rstudio to use Sen2Cor
 RUN mkdir /root/sen2cor/2.5/log && \
-    chmod -R 0777 /root && \
-    chmod -R 0777 /usr/local/lib/R/site-library/sen2r/sen2cor_2-5-5
+    chmod -R 0777 /root
