@@ -64,13 +64,22 @@ reference:
       - '`normalize_path`'
 navbar:
   type: inverse
-  left:
-    - text: "Home"
-      href: index.html
-    - text: "Function reference"
-      href: reference/index.html
-    - text: "News"
-      href: news/index.html
+  left: []
   right:
+    - icon: fa-home fa-lg
+      href: index.html
+    - text: "\u2000Reference"
+      icon: fa-file-code
+      href: reference/index.html
+    - text: "\u2000Articles"
+      icon: fa-book
+      menu:
+      -  text: "Installation"
+         href: articles/installation.html
+      -  text: "Run in a Docker container"
+         href: articles/docker.html
+    - text: "\u2000Changelog"
+      icon: fa-newspaper
+      href: news/index.html
     - icon: fa-github fa-lg
       href: https://github.com/ranghetti/sen2r/

@@ -12,12 +12,25 @@ Here above the related changes:
 * `s2_order()` to order products from LTA.
 
 ## New arguments
-* `sen2r()` and `s2_download()` have a new argument `order_lta` (default: TRUE) to order SAFE archives not available for direct fownload;
+* `sen2r()` and `s2_download()` have a new argument `order_lta` (default: TRUE) to order SAFE archives not available for direct download;
 * `s2_gui()` has a new checkbox to set the previous argument.
 
 ## Other changes (not related with LTA)
 * Function `build_example_param_file()` does no more compute TOA and RGB432T (this to avoid downloading 2 SAFE archives).
 * Code coverage was expanded.
+
+
+<br/>
+## **sen2r** CRAN release
+_________________________
+**`sen2r`** was accepted on CRAN (2017-10-21, version 1.1.0). From now, it is possible to install the CRAN version with the following command:
+```r
+install.packages("sen2r")
+```
+The development version -- which may contain updated features -- can still be installed with the following command:
+```r
+remotes::install_packages_github("ranghetti/sen2r")
+```
 
 
 # Version 1.1.0

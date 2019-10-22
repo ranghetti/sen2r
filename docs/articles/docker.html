@@ -37,23 +37,50 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">Home</a>
-</li>
-<li>
-  <a href="../reference/index.html">Function reference</a>
-</li>
-<li>
-  <a href="../news/index.html">News</a>
-</li>
-      </ul>
+      <ul class="nav navbar-nav"></ul>
 <ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="../index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="../reference/index.html">
+    <span class="fa fa-file-code"></span>
+     
+     Reference
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-book"></span>
+     
+     Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/installation.html">Installation</a>
+    </li>
+    <li>
+      <a href="../articles/docker.html">Run in a Docker container</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="../news/index.html">
+    <span class="fa fa-newspaper"></span>
+     
+     Changelog
+  </a>
+</li>
 <li>
   <a href="https://github.com/ranghetti/sen2r/">
     <span class="fa fa-github fa-lg"></span>
@@ -90,12 +117,12 @@
 <li><p>read the docker documentation in <a href="https://docs.docker.com/get-started">Part 1</a>;</p></li>
 <li>
 <p>obtain the image of <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="ex">docker</span> pull ranghetti/sen2r:latest</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="ex">docker</span> pull ranghetti/sen2r:latest</span></code></pre></div>
 <p>where <code>latest</code> corresponds to the software version in branch <a href="https://github.com/ranghetti/sen2r/tree/master">master</a> (see <a href="https://cloud.docker.com/repository/registry-1.docker.io/ranghetti/sen2r/tags">here</a> all the available docker tags);</p>
 </li>
 <li>
 <p>run the docker:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="ex">docker</span> run --rm -e PASSWORD=sen2r -e USERID=<span class="va">$(</span><span class="fu">id</span> -u<span class="va">)</span> -v <span class="va">$(</span><span class="bu">pwd</span><span class="va">)</span>:/home/rstudio/host -p 8777:8787 ranghetti/sen2r</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="ex">docker</span> run --rm -e PASSWORD=sen2r -e USERID=<span class="va">$(</span><span class="fu">id</span> -u<span class="va">)</span> -v <span class="va">$(</span><span class="bu">pwd</span><span class="va">)</span>:/home/rstudio/host -p 8777:8787 ranghetti/sen2r</span></code></pre></div>
 <p>where:</p>
 <ul>
 <li>
@@ -123,7 +150,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
 
       </footer>
