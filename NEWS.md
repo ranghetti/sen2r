@@ -20,6 +20,19 @@ Here above the related changes:
 * Code coverage was expanded.
 
 
+<br/>
+## **sen2r** CRAN release
+_________________________
+**`sen2r`** was accepted on CRAN (2017-10-21, version 1.1.0). From now, it is possible to install the CRAN version with the following command:
+```r
+install.packages("sen2r")
+```
+The development version -- which may contain updated features -- can still be installed with the following command:
+```r
+remotes::install_packages_github("ranghetti/sen2r")
+```
+
+
 # Version 1.1.0
 
 ## Changes in default values 
