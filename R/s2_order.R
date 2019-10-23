@@ -168,7 +168,6 @@ s2_order <- function(
     # check if the order was successful
     if (inherits(make_order, "response")) {
       # check that user quota did not exceed
-      browser()
       if (any(grepl("retrieval quota exceeded", make_order$headers$`cause-message`))) {
         quota_exceeded <- TRUE
       }
