@@ -116,8 +116,8 @@ s2_order <- function(
     s2_prodlist <- unlist(fromJSON(s2_prodlist))
   }
   
-  # replace apihub with dhus
-  s2_prodlist <- gsub("apihub", "dhus", s2_prodlist)
+  # # replace apihub with dhus
+  # s2_prodlist <- gsub("apihub", "dhus", s2_prodlist)
   
   # read credentials
   creds <- read_scihub_login(apihub)
