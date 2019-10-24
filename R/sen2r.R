@@ -1846,10 +1846,11 @@ sen2r <- function(param_list = NULL,
                 "^S2([AB])\\_((?:OPER\\_PRD\\_)?)MSIL1C\\_","S2\\1\\_\\2MSIL2A\\_",
                 names(sel_s2_list_l1c)
               )
-            ) %in% names(sel_s2_list_l2a)
+            ) %in% names(sel_s2_list_l2a) &
+              sel_s2_list_l1c %in% safe_names_l1c_tocorrect
             ]
         } else {
-          sel_s2_list_l1c
+          sel_s2_list_l1c[sel_s2_list_l1c %in% safe_names_l1c_tocorrect]
         }
         
         if (length(sel_s2_list_l1c_tocorrect)>0) {
