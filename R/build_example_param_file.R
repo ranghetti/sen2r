@@ -64,7 +64,6 @@ build_example_param_file <- function(
         "list_rgb" = c("RGB432B", "RGB843B"),
         "rgb_ranges" = list(
           c(0, 2500),
-          c(0, 2500),
           matrix(c(0, 0, 0, 7500, 2500, 2500), ncol = 2)
         ),
         "index_source" = "BOA",

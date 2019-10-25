@@ -411,7 +411,7 @@ if (interactive()) {
 
 # Launch a processing from a saved JSON file (here we use an internal function
 # to create a testing json file - this is not intended to be used by final users)
-json_path <- sen2r:::build_example_param_file()
+json_path <- build_example_param_file()
 
 out_paths_2 <- sen2r(json_path)
 # Notice that passing the path of a JSON file results in launching
@@ -455,8 +455,7 @@ thumb_4 <- file.path(dirname(out_paths_4), "thumbnails", gsub("tif$", "jpg", bas
 thumb_4[grep("SCL", thumb_4)] <-
   gsub("jpg$", "png", thumb_4[grep("SCL", thumb_4)])
   
-oldpar <- par(mfrow = c(1,3), mar = rep(0,4))
-image(stars::read_stars(thumb_2[grep("TOA", thumb_2)]), rgb = 1:3)
+oldpar <- par(mfrow = c(1,2), mar = rep(0,4))
 image(stars::read_stars(thumb_2[grep("BOA", thumb_2)]), rgb = 1:3)
 image(stars::read_stars(thumb_2[grep("SCL", thumb_2)]), rgb = 1:3)
 
@@ -464,13 +463,11 @@ par(mfrow = c(1,2), mar = rep(0,4))
 image(stars::read_stars(thumb_2[grep("MSAVI2", thumb_2)]), rgb = 1:3)
 image(stars::read_stars(thumb_2[grep("NDVI", thumb_2)]), rgb = 1:3)
 
-par(mfrow = c(1,3), mar = rep(0,4))
-image(stars::read_stars(thumb_2[grep("RGB432T", thumb_2)]), rgb = 1:3)
+par(mfrow = c(1,2), mar = rep(0,4))
 image(stars::read_stars(thumb_2[grep("RGB432B", thumb_2)]), rgb = 1:3)
 image(stars::read_stars(thumb_2[grep("RGB843B", thumb_2)]), rgb = 1:3)
 
-par(mfrow = c(1,3), mar = rep(0,4))
-image(stars::read_stars(thumb_4[grep("TOA", thumb_4)]), rgb = 1:3)
+par(mfrow = c(1,2), mar = rep(0,4))
 image(stars::read_stars(thumb_4[grep("BOA", thumb_4)]), rgb = 1:3)
 image(stars::read_stars(thumb_4[grep("SCL", thumb_4)]), rgb = 1:3)
 
@@ -478,8 +475,7 @@ par(mfrow = c(1,2), mar = rep(0,4))
 image(stars::read_stars(thumb_4[grep("MSAVI2", thumb_4)]), rgb = 1:3)
 image(stars::read_stars(thumb_4[grep("NDVI", thumb_4)]), rgb = 1:3)
 
-par(mfrow = c(1,3), mar = rep(0,4))
-image(stars::read_stars(thumb_4[grep("RGB432T", thumb_4)]), rgb = 1:3)
+par(mfrow = c(1,2), mar = rep(0,4))
 image(stars::read_stars(thumb_4[grep("RGB432B", thumb_4)]), rgb = 1:3)
 image(stars::read_stars(thumb_4[grep("RGB843B", thumb_4)]), rgb = 1:3)
 
