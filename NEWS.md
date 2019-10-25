@@ -23,7 +23,8 @@ Here above the related changes:
 <br/>
 ## **sen2r** CRAN release
 _________________________
-**`sen2r`** was accepted on CRAN (2017-10-21, version 1.1.0). From now, it is possible to install the CRAN version with the following command:
+**`sen2r`** was accepted on CRAN (2017-10-21, version 1.1.0).
+From now, it is possible to install [the CRAN version](https://cran.r-project.org/web/packages/sen2r/index.html) with the following command:
 ```r
 install.packages("sen2r")
 ```

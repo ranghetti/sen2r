@@ -22,6 +22,13 @@ testthat::test_that(
   "Test list indices to be updated ", {
     v2 <- list_indices("name", all = TRUE)
     testthat::expect_is(v2, "character")
-    testthat::expect_equal(attr(v2, "pkg_version"), packageVersion("sen2r"))
+    v2_version <- attr(v2, "pkg_version")
+    sen2r_version <- packageVersion("sen2r")
+    # Only first two elements are checked
+    # (updating the indices list is so required only before a minor update,
+    # not a patch update)
+    testthat::expect_equal(v2_version$major, sen2r_version$major)
+    testthat::expect_equal(v2_version$minor, sen2r_version$minor)
+    # testthat::expect_equal(v2_version$patchlevel, sen2r_version$patchlevel)
   }
 )
