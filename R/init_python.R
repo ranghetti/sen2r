@@ -54,23 +54,26 @@ init_python <- function() {
   
   # On Windows, set the environment variable
   if (Sys.info()["sysname"] == "Windows") {
-    pythonhome_new <- normalize_path(list.files(
+    pythonhome_new <- list.files(
       file.path(dirname(dirname(binpaths$gdalinfo)),"apps"), 
       pattern="^Python", 
       full.names=TRUE
-    ))[1]
-    pythonhome_exi <- normalize_path(Sys.getenv("PYTHONHOME"))
-    if (!pythonhome_exi %in% pythonhome_new) {
+    )[1]
+    pythonhome_exi <- Sys.getenv("PYTHONHOME")
+    if (!normalize_path(pythonhome_exi) %in% normalize_path(pythonhome_new)) {
       Sys.setenv(PYTHONHOME = pythonhome_new)
+      on.exit(Sys.setenv(PYTHONHOME = pythonhome_exi))
     }
-    pythonpath_new <- normalize_path(list.files(pythonhome_new,"^[Ll]ib",full.names=TRUE))[1]
-    pythonpath_exi <- normalize_path(Sys.getenv("PYTHONPATH"))
-    if (!pythonpath_exi %in% pythonpath_new) {
+    pythonpath_new <- list.files(pythonhome_new,"^[Ll]ib",full.names=TRUE)[1]
+    pythonpath_exi <- Sys.getenv("PYTHONPATH")
+    if (!normalize_path(pythonpath_exi) %in% normalize_path(pythonpath_new)) {
       Sys.setenv(PYTHONPATH = pythonpath_new)
+      on.exit(Sys.setenv(PYTHONPATH = pythonpath_exi))
     }
     path_exi <- Sys.getenv("PATH")
-    if (!grepl(pythonhome_new, path_exi, fixed=TRUE)) {
+    if (!grepl(normalize_path(pythonhome_new), normalize_path(path_exi), fixed=TRUE)) {
       Sys.setenv(PATH = paste0(pythonhome_new,";",Sys.getenv("PATH")))
+      on.exit(Sys.setenv(PATH = path_exi))
     }
   }
 
