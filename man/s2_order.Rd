@@ -39,7 +39,7 @@ available for download,
 \item "notordered" with the elements of \code{s2_prodlist} which were not ordered
 for any reasons,
 \item "path" (only if argument \code{export_prodlist} is not FALSE) with the path of
-the text file in which the list of the ordered products was saved.
+the json file in which the list of the ordered products was saved.
 }
 }
 \description{

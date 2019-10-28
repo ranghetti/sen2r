@@ -104,9 +104,7 @@ s2_download <- function(
   }
   
   # check input format
-  if (inherits(s2_prodlist, "s2dt")) {
-    s2_prodlist <- as.s2list(s2_prodlist)
-  }
+  s2_prodlist <- as.s2list(s2_prodlist)
   # TODO add input checks
   
   # read credentials

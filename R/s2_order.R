@@ -26,7 +26,7 @@
 #'  - "notordered" with the elements of `s2_prodlist` which were not ordered
 #'      for any reasons,
 #'  - "path" (only if argument `export_prodlist` is not FALSE) with the path of
-#'      the text file in which the list of the ordered products was saved.
+#'      the json file in which the list of the ordered products was saved.
 #'
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
@@ -75,7 +75,8 @@ s2_order <- function(
   export_prodlist = TRUE, 
   delay = 5,
   apihub = NA,
-  .s2_availability = NULL
+  .s2_availability = NULL,
+  .log_path = TRUE # TRUE to log all, FALSE to skip the path of the json
 ) {
   
   # to avoid NOTE on check
@@ -112,9 +113,7 @@ s2_order <- function(
   }
   
   # check input format
-  if (inherits(s2_prodlist, "s2dt")) {
-    s2_prodlist <- as.s2list(s2_prodlist)
-  }
+  s2_prodlist <- as.s2list(s2_prodlist)
   # TODO add input checks
   
   # # replace apihub with dhus
@@ -206,14 +205,16 @@ s2_order <- function(
       date = TRUE,
       sum(ordered_products)," of ",sum(!s2_availability)," Sentinel-2 images ",
       "were correctly ordered. ",
-      "You can check at a later time if the ordered products were made available ",
-      "using the command:\n\n",
-      if (is.null(attr(out_list, "path"))) {paste0(
-        'safe_is_online(c(\n  "',paste(out_list, collapse = '",\n  "'),'"\n))'
-      )} else {paste0(
-        'safe_is_online("',attr(out_list, "path"),'")'
-      )},
-      "\n"
+      if (.log_path == TRUE) {paste0(
+        "You can check at a later time if the ordered products were made available ",
+        "using the command:\n\n",
+        if (is.null(attr(out_list, "path"))) {paste0(
+          'safe_is_online(c(\n  "',paste(out_list, collapse = '",\n  "'),'"\n))'
+        )} else {paste0(
+          'safe_is_online("',attr(out_list, "path"),'")'
+        )},
+        "\n"
+      )}
     )
   }
   if (sum(!nn(ordered_products)) > 0) {

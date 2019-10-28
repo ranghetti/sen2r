@@ -47,9 +47,7 @@ safe_is_online <- function(s2_prodlist = NULL, apihub = NA) {
   }
   
   # check input format
-  if (inherits(s2_prodlist, "s2dt")) {
-    s2_prodlist <- as.s2list(s2_prodlist)
-  }
+  s2_prodlist <- as.s2list(s2_prodlist)
   # TODO add input checks
   
   # # replace apihub with dhus
