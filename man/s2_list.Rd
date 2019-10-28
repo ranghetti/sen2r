@@ -58,20 +58,18 @@ how to distinguish each other);
 (running the function is faster).
 }}
 
-\item{output_type}{Character: if 'vector' (default), the function returns
-a vector or URLs, whose names are the SAFE names;
-if 'data.table', the output is a data.table with metadata.}
+\item{output_type}{Character: if \code{"vector"} (default) or \code{"s2list"},
+the function returns an object of class \code{s2list} (see \link{s2-classes});
+if \code{"data.table"} or \code{"s2dt"}, the output is an object of class \code{s2dt}.}
 }
 \value{
-Depending on the value of argument \code{output_type}:
-if \code{output_type = "vector"}, a vector of available products
-(being each element an URL and its name the product name),
-together with the attributes \code{online} (with the index of products available
-for download) and \code{lta} (with the index of products stored in the Long Term
-Archive) in the case \code{availability == "check"};
-if \code{output_type = "data.table"}, a data.table with product metadata
-(including the logical field \code{online} to allow distinguishing products
-available for download and stored in the Long Term Archive).
+Depending on the value of argument \code{output_type}, an object of class
+\code{s2list} or \code{s2dt} (see \link{s2-classes}).
+The column \code{online} (in case of an object \code{s2dt}) or the attribute \code{online}
+(in case of an object \code{s2list}) contain logical values: in case
+\code{availability != "ignore"}, values are TRUE / FALSE for
+products available for download / stored in the Long Term Archive;
+otherwise, values are set to NA.
 }
 \description{
 The function retrieves the list of available Sentinel-2

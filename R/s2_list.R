@@ -36,18 +36,16 @@
 #'      how to distinguish each other);
 #'  - "ignore" (default): all archive names are returned, without doing the check
 #'      (running the function is faster).
-#' @param output_type Character: if 'vector' (default), the function returns
-#'  a vector or URLs, whose names are the SAFE names;
-#'  if 'data.table', the output is a data.table with metadata.
-#' @return Depending on the value of argument `output_type`:
-#'  if `output_type = "vector"`, a vector of available products 
-#'  (being each element an URL and its name the product name), 
-#'  together with the attributes `online` (with the index of products available 
-#'  for download) and `lta` (with the index of products stored in the Long Term
-#'  Archive) in the case `availability == "check"`;
-#'  if `output_type = "data.table"`, a data.table with product metadata
-#'  (including the logical field `online` to allow distinguishing products
-#'  available for download and stored in the Long Term Archive).
+#' @param output_type Character: if `"vector"` (default) or `"s2list"`, 
+#'  the function returns an object of class `s2list` (see [s2-classes]);
+#'  if `"data.table"` or `"s2dt"`, the output is an object of class `s2dt`.
+#' @return Depending on the value of argument `output_type`, an object of class 
+#'  `s2list` or `s2dt` (see [s2-classes]).
+#'  The column `online` (in case of an object `s2dt`) or the attribute `online`
+#'  (in case of an object `s2list`) contain logical values: in case 
+#'  `availability != "ignore"`, values are TRUE / FALSE for
+#'  products available for download / stored in the Long Term Archive; 
+#'  otherwise, values are set to NA.
 #' @author Lorenzo Busetto, phD (2019) \email{lbusett@@gmail.com} - Inspired by 
 #'  function `getSentinel_query` of package `getSpatialData` by J. Schwalb-Willmann
 #'  (https://github.com/16EAGLE/getSpatialData)
@@ -422,6 +420,7 @@ s2_list <- function(spatial_extent = NULL,
   } else if (level == "auto") {
     out_dt <- out_dt[order(-proclev,-proctime),]
     out_dt <- out_dt[,head(.SD, 1), by = .(date, tileid, orbitid)]
+    out_dt <- out_dt[,names(out_list[[1]]),with=FALSE]
   }
   if (nrow(out_dt) == 0) {return(character(0))}
   out_dt <- out_dt[order(date),]
@@ -434,15 +433,9 @@ s2_list <- function(spatial_extent = NULL,
   }
   
   # return output
-  if (output_type == "data.table") {
-    return(out_dt)
+  if (output_type %in% c("data.table","s2dt")) {
+    return(as.s2dt(out_dt))
   } else {
-    out_vector <- out_dt$url
-    names(out_vector) <- out_dt$name
-    if (availability == "check") {
-      attr(out_vector, "online") <- which(out_dt$online)
-      attr(out_vector, "lta") <- which(!out_dt$online)
-    }
-    return(out_vector)
+    return(as.s2list(out_dt))
   }
 }

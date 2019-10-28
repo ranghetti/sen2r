@@ -1047,7 +1047,7 @@ sen2r <- function(param_list = NULL,
         apihub = pm$apihub
       )
       # save lta availability (TRUE if on LTA, FALSE if online)
-      s2_lists_islta[["l1c"]] <- seq_along(s2_lists[["l1c"]]) %in% attr(s2_lists[["l1c"]], "lta")
+      s2_lists_islta[["l1c"]] <- !attr(s2_lists[["l1c"]], "online")
       names(s2_lists_islta[["l1c"]]) <- names(s2_lists[["l1c"]])
     }
     if ("l2a" %in% pm$s2_levels) {
@@ -1074,7 +1074,7 @@ sen2r <- function(param_list = NULL,
         apihub = pm$apihub
       )
       # save lta availability (TRUE if on LTA, FALSE if online)
-      s2_lists_islta[["l2a"]] <- seq_along(s2_lists[["l2a"]]) %in% attr(s2_lists[["l2a"]], "lta")
+      s2_lists_islta[["l2a"]] <- !attr(s2_lists[["l2a"]], "online")
       names(s2_lists_islta[["l2a"]]) <- names(s2_lists[["l2a"]])
     }
     

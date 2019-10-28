@@ -1,8 +1,8 @@
 #' @title Order S2 products.
 #' @description The function orders S2 products from Long Term Archive
 #'  (https://scihub.copernicus.eu/userguide/LongTermArchive).
-#' @param s2_prodlist Named character: list of the products to be ordered
-#'  (this must be the output of [s2_list] function).
+#' @param s2_prodlist Named character: list of the products to be ordered,
+#'  in the format `s2list` or `s2dt` (see [s2-classes]).
 #'  Alternatively, it can be the path of a JSON file exported by a previous
 #'  execution of [s2_order], in case the user wants, for any reason, to 
 #'  resubmit the order.
@@ -111,10 +111,11 @@ s2_order <- function(
     )
   }
   
-  # import s2_prodlist if it is a path
-  if (all(length(s2_prodlist) == 1, file.exists(s2_prodlist))) {
-    s2_prodlist <- unlist(fromJSON(s2_prodlist))
+  # check input format
+  if (inherits(s2_prodlist, "s2dt")) {
+    s2_prodlist <- as.s2list(s2_prodlist)
   }
+  # TODO add input checks
   
   # # replace apihub with dhus
   # s2_prodlist <- gsub("apihub", "dhus", s2_prodlist)

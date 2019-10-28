@@ -10,6 +10,7 @@ testthat::test_that(
       orbit = "065",
       output_type = "data.table"
     )
+    testthat::expect_is(s2_list_test, "s2dt")
     testthat::expect_equal(nrow(s2_list_test), 3)
     testthat::expect_true(min(s2_list_test$date) >= as.Date("2017-05-01"))
     testthat::expect_true(max(s2_list_test$date) <= as.Date("2017-08-01"))
@@ -43,16 +44,19 @@ testthat::test_that(
       output_type = "vector",
       availability = "check"
     )
+    testthat::expect_is(s2_list_test, "s2list")
     testthat::expect_equal(length(s2_list_test), 6)
     testthat::expect_is(
       safe_getMetadata(names(s2_list_test)[1], info = "nameinfo"), 
       "list"
     )
-    testthat::expect_equal(names(attributes(s2_list_test)), c("names","online","lta"))
-    testthat::expect_equal(
-      sort(c(attr(s2_list_test, "online"), attr(s2_list_test, "lta"))),
-      seq_len(length(s2_list_test))
-    )
+
+    testthat::expect_true(min(attr(s2_list_test, "date")) >= as.Date("2017-05-01"))
+    testthat::expect_true(min(attr(s2_list_test, "date")) <= as.Date("2017-05-31"))
+    testthat::expect_equal(unique(attr(s2_list_test, "tileid")), "32TNR")
+    testthat::expect_true(all(attr(s2_list_test, "orbit") %in% c("022","065")))
+    testthat::expect_equal(mean(attr(s2_list_test, "ccov")), 58.36295, tolerance = 1e-6)
+    testthat::expect_true(all(attr(s2_list_test, "online") %in% c(TRUE, FALSE)))
   }
 )
 

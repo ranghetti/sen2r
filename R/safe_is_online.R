@@ -2,8 +2,8 @@
 #' @description The function checks if the required SAFE archives are 
 #'  available for download, or if they have to be ordered from the Long Term
 #'  Archive.
-#' @param s2_prodlist Named character: list of the products to be checked
-#'  (this must be the output of [s2_list] function).
+#' @param s2_prodlist Named character: list of the products to be checked, 
+#'  in the format `s2list` or `s2dt` (see [s2-classes]).
 #'  Alternatively, it can be the path of a JSON file exported by [s2_order].
 #' @param apihub Path of the "apihub.txt" file containing credentials
 #'  of SciHub account.
@@ -46,10 +46,11 @@ safe_is_online <- function(s2_prodlist = NULL, apihub = NA) {
     return(invisible(NULL))
   }
   
-  # import s2_prodlist if it is a path
-  if (all(length(s2_prodlist) == 1, file.exists(s2_prodlist))) {
-    s2_prodlist <- unlist(fromJSON(s2_prodlist))
+  # check input format
+  if (inherits(s2_prodlist, "s2dt")) {
+    s2_prodlist <- as.s2list(s2_prodlist)
   }
+  # TODO add input checks
   
   # # replace apihub with dhus
   # s2_prodlist <- gsub("apihub", "dhus", s2_prodlist)
