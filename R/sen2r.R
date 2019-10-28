@@ -1843,10 +1843,10 @@ sen2r <- function(param_list = NULL,
                 names(sel_s2_list_l1c)
               )
             ) %in% names(sel_s2_list_l2a) &
-              sel_s2_list_l1c %in% safe_names_l1c_tocorrect
+              names(sel_s2_list_l1c) %in% safe_names_l1c_tocorrect
             ]
         } else {
-          sel_s2_list_l1c[sel_s2_list_l1c %in% safe_names_l1c_tocorrect]
+          sel_s2_list_l1c[names(sel_s2_list_l1c) %in% safe_names_l1c_tocorrect]
         }
         
         if (length(sel_s2_list_l1c_tocorrect)>0) {
