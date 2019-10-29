@@ -816,7 +816,6 @@ sen2r <- function(param_list = NULL,
     }
   }
   
-browser()
   # Automatically save the JSON of the parameters used for the current chain
   outpm_dir <- file.path(dirname(attr(load_binpaths(), "path")), "proc_par")
   dir.create(outpm_dir, showWarnings = FALSE)

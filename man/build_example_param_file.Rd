@@ -26,7 +26,7 @@ directories to match the user folder tree.
 License: GPL 3.0
 }
 \examples{
-sen2r:::build_example_param_file()
+build_example_param_file()
 }
 \author{
 Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}

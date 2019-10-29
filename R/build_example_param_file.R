@@ -13,7 +13,7 @@
 #' @importFrom jsonlite toJSON
 #' @export
 #' @examples
-#' sen2r:::build_example_param_file()
+#' build_example_param_file()
 
 build_example_param_file <- function(
   json_path = tempfile(fileext = "_sen2r_params.json"),
