@@ -2,7 +2,7 @@
 #' @description The function orders S2 products from Long Term Archive
 #'  (https://scihub.copernicus.eu/userguide/LongTermArchive).
 #' @param s2_prodlist Named character: list of the products to be ordered,
-#'  in the format `s2list` or `s2dt` (see [s2-classes]).
+#'  in the format `safelist` (see [safelist-class]).
 #'  Alternatively, it can be the path of a JSON file exported by a previous
 #'  execution of [s2_order], in case the user wants, for any reason, to 
 #'  resubmit the order.
@@ -113,7 +113,7 @@ s2_order <- function(
   }
   
   # check input format
-  s2_prodlist <- as.s2list(s2_prodlist)
+  s2_prodlist <- as(s2_prodlist, "safelist")
   # TODO add input checks
   
   # # replace apihub with dhus

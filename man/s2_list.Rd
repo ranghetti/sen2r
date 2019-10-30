@@ -58,15 +58,11 @@ how to distinguish each other);
 (running the function is faster).
 }}
 
-\item{output_type}{Character: if \code{"vector"} (default) or \code{"s2list"},
-the function returns an object of class \code{s2list} (see \link{s2-classes});
-if \code{"data.table"} or \code{"s2dt"}, the output is an object of class \code{s2dt}.}
+\item{output_type}{Deprecated (use \code{as.data.table} to obtain a data.table).}
 }
 \value{
-Depending on the value of argument \code{output_type}, an object of class
-\code{s2list} or \code{s2dt} (see \link{s2-classes}).
-The column \code{online} (in case of an object \code{s2dt}) or the attribute \code{online}
-(in case of an object \code{s2list}) contain logical values: in case
+An object of class \code{safelist} (see \linkS4class{safelist}).
+The attribute \code{online} contains logical values: in case
 \code{availability != "ignore"}, values are TRUE / FALSE for
 products available for download / stored in the Long Term Archive;
 otherwise, values are set to NA.

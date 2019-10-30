@@ -9,7 +9,7 @@ s2_order(s2_prodlist = NULL, export_prodlist = TRUE, delay = 5,
 }
 \arguments{
 \item{s2_prodlist}{Named character: list of the products to be ordered,
-in the format \code{s2list} or \code{s2dt} (see \link{s2-classes}).
+in the format \code{safelist} (see \linkS4class{safelist}).
 Alternatively, it can be the path of a JSON file exported by a previous
 execution of \link{s2_order}, in case the user wants, for any reason, to
 resubmit the order.}

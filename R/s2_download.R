@@ -4,7 +4,7 @@
 #'  [s2_list] function
 #'  (each element must be a URL, and the name the product name).
 #' @param s2_prodlist Named character: list of the products to be downloaded,
-#'  in the format `s2list` or `s2dt` (see [s2-classes]).
+#'  in the format `safelist` (see [safelist-class]).
 #'  Alternatively, it can be the path of a JSON file exported by [s2_order].
 #' @param downloader Executable to use to download products
 #'  (default: "builtin"). Alternatives are "builtin" or "aria2"
@@ -104,7 +104,7 @@ s2_download <- function(
   }
   
   # check input format
-  s2_prodlist <- as.s2list(s2_prodlist)
+  s2_prodlist <- as(s2_prodlist, "safelist")
   # TODO add input checks
   
   # read credentials

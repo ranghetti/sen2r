@@ -36,13 +36,9 @@
 #'      how to distinguish each other);
 #'  - "ignore" (default): all archive names are returned, without doing the check
 #'      (running the function is faster).
-#' @param output_type Character: if `"vector"` (default) or `"s2list"`, 
-#'  the function returns an object of class `s2list` (see [s2-classes]);
-#'  if `"data.table"` or `"s2dt"`, the output is an object of class `s2dt`.
-#' @return Depending on the value of argument `output_type`, an object of class 
-#'  `s2list` or `s2dt` (see [s2-classes]).
-#'  The column `online` (in case of an object `s2dt`) or the attribute `online`
-#'  (in case of an object `s2list`) contain logical values: in case 
+#' @param output_type Deprecated (use `as.data.table` to obtain a data.table).
+#' @return An object of class `safelist` (see [safelist-class]).
+#'  The attribute `online` contains logical values: in case 
 #'  `availability != "ignore"`, values are TRUE / FALSE for
 #'  products available for download / stored in the Long Term Archive; 
 #'  otherwise, values are set to NA.
@@ -328,52 +324,59 @@ s2_list <- function(spatial_extent = NULL,
         if (length(which(grepl("<link href=", in_entry[[1]]))) != 0) {
           
           in_entry <- in_entry[[1]]
-          
+
           title <- in_entry[which(grepl("<title>", in_entry))] %>%
             gsub("^.*<title>([^<]+)</title>.*$", "\\1", .)
           
           url <- in_entry[which(grepl("<link href=", in_entry))] %>%
             gsub("^.*<link href=\"([^\"]+)\"/>.*$", "\\1", .)
           
-          orbitid <- in_entry[which(grepl("relativeorbitnumber", in_entry))] %>%
+          id_orbit <- in_entry[which(grepl("relativeorbitnumber", in_entry))] %>%
             gsub("^.*<int name=\"relativeorbitnumber\">([^<]+)</int>.*$", "\\1", .) %>%
             as.numeric() %>% sprintf("%03i", .)
           
-          ccov <- in_entry[which(grepl("cloudcoverpercentage", in_entry))] %>%
+          clouds <- in_entry[which(grepl("cloudcoverpercentage", in_entry))] %>%
             gsub("^.*<double name=\"cloudcoverpercentage\">([^<]+)</double>.*$", "\\1", .) %>%
             as.numeric()
           
-          proclev <- in_entry[which(grepl("processinglevel", in_entry))] %>%
-            gsub("^.*<str name=\"processinglevel\">([^<]+)</str>.*$", "\\1", .)
+          proc_level <- in_entry[which(grepl("processinglevel", in_entry))] %>%
+            gsub("^.*<str name=\"processinglevel\">Level\\-([^<]+)</str>.*$", "\\1", .)
           
-          sensor <- in_entry[which(grepl("platformserialidentifier", in_entry))] %>%
-            gsub("^.*<str name=\"platformserialidentifier\">([^<]+)</str>.*$", "\\1", .)
+          mission <- in_entry[which(grepl("platformserialidentifier", in_entry))] %>%
+            gsub("^.*<str name=\"platformserialidentifier\">Sentinel\\-([^<]+)</str>.*$", "\\1", .)
           
-          tileid <- in_entry[which(grepl("name=\"tileid\"", in_entry))] %>%
-            gsub("^.*<str name=\"tileid\">([^<]+)</str>.*$", "\\1", .)
+          # id_tile <- in_entry[which(grepl("name=\"tileid\"", in_entry))] %>%
+          #   gsub("^.*<str name=\"tileid\">([^<]+)</str>.*$", "\\1", .)
+          id_tile <- gsub("^.+_T([0-9]{2}[A-Z]{3})_.+$", "\\1", title)
           
-          sensdate <- in_entry[which(grepl("name=\"endposition\"", in_entry))] %>%
-            gsub("^.*<date name=\"endposition\">([0-9\\-]+)T[0-9\\:\\.]+Z</date>.*$", "\\1", .) %>%
-            as.Date()
+          # sensing_datetime <- in_entry[which(grepl("name=\"endposition\"", in_entry))] %>%
+          #   gsub("^.*<date name=\"endposition\">([0-9\\-]+)T[0-9\\:\\.]+Z</date>.*$", "\\1", .) %>%
+          #   as.POSIXct()
+          sensing_datetime <- gsub(
+            "^S2[AB]\\_MSIL[12][AC]\\_([0-9]{8}T[0-9]{6})\\_N[0-9]{4}\\_R[0-9]{3}\\_T[A-Z0-9]{5}\\_[0-9]{8}T[0-9]{6}$",
+            "\\1", title
+          ) %>% as.POSIXct(format = "%Y%m%dT%H%M%S", tz = "UTC")
           
-          proctime <- in_entry[which(grepl("name=\"ingestiondate\"", in_entry))] %>%
+          creation_datetime <- gsub(
+            "^S2[AB]\\_MSIL[12][AC]\\_[0-9]{8}T[0-9]{6}\\_N[0-9]{4}\\_R[0-9]{3}\\_T[A-Z0-9]{5}\\_([0-9]{8}T[0-9]{6})$",
+            "\\1", title
+          ) %>% as.POSIXct(format = "%Y%m%dT%H%M%S", tz = "UTC")
+          
+          ingestion_datetime <- in_entry[which(grepl("name=\"ingestiondate\"", in_entry))] %>%
             gsub("^.*<date name=\"ingestiondate\">([0-9\\-]+)T([0-9\\:\\.]+)Z</date>.*$", "\\1 \\2", .) %>%
-            as.POSIXct()
+            as.POSIXct(tz = "UTC")
           
-          if (length(tileid) == 0 ) {
-            tileid <- gsub("^.+_T([0-9]{2}[A-Z]{3})_.+$", "\\1", title)
-          }
           # print(paste0(title, ".SAFE"))
           out_list[[n_entries]] <- data.frame(
             name = paste0(title, ".SAFE"),
             url = url,
-            orbitid = orbitid,
-            date = sensdate,
-            proctime = proctime,
-            ccov = ccov,
-            proclev = proclev,
-            sensor = sensor,
-            tileid = tileid,
+            mission = mission,
+            level = proc_level,
+            id_tile = id_tile,
+            id_orbit = id_orbit,
+            sensing_datetime = sensing_datetime,
+            ingestion_datetime = ingestion_datetime,
+            clouds = clouds,
             stringsAsFactors = FALSE
           )
           n_entries <- n_entries + 1
@@ -401,29 +404,29 @@ s2_list <- function(spatial_extent = NULL,
   
   # remove "wrong" tiles and orbits if needed
   if (!is.null(tile)) {
-    out_dt <- out_dt[tileid %in% tile,]
+    out_dt <- out_dt[id_tile %in% tile,]
   } else {
     sel_s2tiles <- suppressMessages(suppressWarnings(
       sf::st_intersection(s2tiles, spatial_extent_or)))
-    out_dt <- out_dt[tileid %in% unique(sel_s2tiles$tile_id),]
+    out_dt <- out_dt[id_tile %in% unique(sel_s2tiles$tile_id),]
   }
   
   if (!is.null(orbit)) {
-    out_dt <- out_dt[orbitid %in% sprintf("%03i", as.numeric(orbit)),]
+    out_dt <- out_dt[id_orbit %in% sprintf("%03i", as.numeric(orbit)),]
   }
   
   if (nrow(out_dt) == 0) {return(character(0))}
   if (level == "L1C") {
-    out_dt <- out_dt[proclev == "Level-1C",]
+    out_dt <- out_dt[level == "1C",]
   } else if (level == "L2A") {
-    out_dt <- out_dt[grepl("^Level-2Ap?$", proclev),]
+    out_dt <- out_dt[grepl("^2Ap?$", level),]
   } else if (level == "auto") {
-    out_dt <- out_dt[order(-proclev,-proctime),]
-    out_dt <- out_dt[,head(.SD, 1), by = .(date, tileid, orbitid)]
+    out_dt <- out_dt[order(-level,-ingestion_datetime),]
+    out_dt <- out_dt[,head(.SD, 1), by = .(sensing_datetime, id_tile, id_orbit)]
     out_dt <- out_dt[,names(out_list[[1]]),with=FALSE]
   }
   if (nrow(out_dt) == 0) {return(character(0))}
-  out_dt <- out_dt[order(date),]
+  out_dt <- out_dt[order(sensing_datetime),]
   
   # filter by availability
   if (availability == "online") {
@@ -433,9 +436,10 @@ s2_list <- function(spatial_extent = NULL,
   }
   
   # return output
-  if (output_type %in% c("data.table","s2dt")) {
-    return(as.s2dt(out_dt))
+  out_dt <- as(out_dt, "safelist")
+  if (output_type %in% c("data.table","data.frame")) {
+    as(out_dt, output_type)
   } else {
-    return(as.s2list(out_dt))
+    out_dt
   }
 }

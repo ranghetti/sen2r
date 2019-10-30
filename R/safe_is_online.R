@@ -3,7 +3,7 @@
 #'  available for download, or if they have to be ordered from the Long Term
 #'  Archive.
 #' @param s2_prodlist Named character: list of the products to be checked, 
-#'  in the format `s2list` or `s2dt` (see [s2-classes]).
+#'  in the format `safelist` (see [safelist-class]).
 #'  Alternatively, it can be the path of a JSON file exported by [s2_order].
 #' @param apihub Path of the "apihub.txt" file containing credentials
 #'  of SciHub account.
@@ -47,7 +47,7 @@ safe_is_online <- function(s2_prodlist = NULL, apihub = NA) {
   }
   
   # check input format
-  s2_prodlist <- as.s2list(s2_prodlist)
+  s2_prodlist <- as(s2_prodlist, "safelist")
   # TODO add input checks
   
   # # replace apihub with dhus
