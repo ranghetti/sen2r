@@ -824,10 +824,14 @@ sen2r <- function(param_list = NULL,
     strftime(Sys.time(), format = "s2proc_%Y%m%d_%H%M%S.json")
   )
   pm_exported <- pm[!names(pm) %in% c(".only_list_names", "globenv")]
-  pm_exported$extent <- pm_exported$extent %>%
-    st_transform(4326) %>%
-    geojson_json(pretty=TRUE)
-  writeLines(toJSON(pm_exported, pretty = TRUE), outpm_path)
+  if (inherits(pm$extent, "sf") | inherits(pm$extent, "sfc")) {
+    pm_exported$extent <- st_transform(pm$extent, 4326) %>%
+      geojson_json(pretty=TRUE)
+  }
+  if (inherits(pm$pkg_version, "numeric_version")) {
+    pm_exported$pkg_version <- as.character(pm$pkg_version)
+  }
+writeLines(toJSON(pm_exported, pretty = TRUE), outpm_path)
   attr(pm, "outpath") <- outpm_path
   
   # Add output attribute related to parameter json
@@ -2676,17 +2680,17 @@ sen2r <- function(param_list = NULL,
   }
   
   # Log how to recover S2 ordered products / the current processing
-  if (!is.null(s2_list_ordered)) {
+  if (length(nn(s2_list_ordered)) > 0) {
     print_message(
       type = "message",
       "Some Sentinel-2 images, not available for direct download, ",
       "were correctly ordered from the Long Term Archive. ",
       "You can check at a later time if the ordered products were made available ",
       "using the command:\n",
-      ' safe_is_online("',attr(s2_list_ordered, "path"),'")\n',
+      '  safe_is_online("',attr(s2_list_ordered, "path"),'")\n',
       "In case of available products, the processing chain can be completed ",
       "re-launching it with the command:\n",
-      ' sen2r("',attr(pm, "outpath"),'")'
+      '  sen2r("',attr(pm, "outpath"),'")'
     )
   }
   
@@ -2695,9 +2699,9 @@ sen2r <- function(param_list = NULL,
     type = "message",
     date = TRUE,
     "Execution of sen2r session terminated.",
-    if (is.null(s2_list_ordered)) {paste0(
+    if (length(nn(s2_list_ordered)) == 0) {paste0(
       "\nThe processing chain can be eventually re-launched with the command:\n",
-      ' sen2r("',attr(pm, "outpath"),'")'
+      '  sen2r("',attr(pm, "outpath"),'")'
     )}
   )
   
