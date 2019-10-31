@@ -72,9 +72,7 @@
 #' )
 #' print(example_s2_list)
 #' # Print the dates of the retrieved products
-#' as.vector(sort(sapply(names(example_s2_list), function(x) {
-#'   strftime(safe_getMetadata(x,"nameinfo")$sensing_datetime)
-#' })))
+#' safe_getMetadata(example_s2_list, "sensing_datetime")
 #'
 #' # Seasonal-period list
 #' example_s2_list <- s2_list(
@@ -85,9 +83,7 @@
 #' )
 #' print(example_s2_list)
 #' # Print the dates of the retrieved products
-#' as.vector(sort(sapply(names(example_s2_list), function(x) {
-#'   strftime(safe_getMetadata(x,"nameinfo")$sensing_datetime)
-#' })))
+#' safe_getMetadata(example_s2_list, "sensing_datetime")
 #' }
 
 s2_list <- function(spatial_extent = NULL,
@@ -123,7 +119,7 @@ s2_list <- function(spatial_extent = NULL,
     )
   }
   
-  if (inherits(try(as.Date(time_interval)), "try-error")) {
+  if (inherits(try(as.Date(time_interval), silent = TRUE), "try-error")) {
     print_message(
       type = "error",
       "`time_interval` must be of class `Date`, `POSIXct` or `character` ",
@@ -399,7 +395,7 @@ s2_list <- function(spatial_extent = NULL,
   out_dt$online <- if (availability == "ignore") {
     NA
   } else {
-    as.logical(safe_is_online(out_dt$url))
+    as.logical(safe_is_online(out_dt))
   }
   
   # remove "wrong" tiles and orbits if needed
@@ -423,7 +419,7 @@ s2_list <- function(spatial_extent = NULL,
   } else if (level == "auto") {
     out_dt <- out_dt[order(-level,-ingestion_datetime),]
     out_dt <- out_dt[,head(.SD, 1), by = .(sensing_datetime, id_tile, id_orbit)]
-    out_dt <- out_dt[,names(out_list[[1]]),with=FALSE]
+    out_dt <- out_dt[,c(names(out_list[[1]]),"online"),with=FALSE]
   }
   if (nrow(out_dt) == 0) {return(character(0))}
   out_dt <- out_dt[order(sensing_datetime),]
@@ -436,10 +432,11 @@ s2_list <- function(spatial_extent = NULL,
   }
   
   # return output
-  out_dt <- as(out_dt, "safelist")
-  if (output_type %in% c("data.table","data.frame")) {
-    as(out_dt, output_type)
-  } else {
+  if (output_type =="data.table") { # deprecated
     out_dt
+  } else if (output_type =="data.frame") { # deprecated
+    as.data.frame(out_dt)
+  } else {
+    as(out_dt, "safelist")
   }
 }

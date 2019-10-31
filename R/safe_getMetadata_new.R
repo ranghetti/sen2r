@@ -43,16 +43,31 @@
 #'          `"proc_baseline"`, `"level"`, `"sensing_datetime"`,
 #'          `"nodata_value"`, `"saturated_value"`:
 #'          information retrieved from the metadata stored in the XML file;
-#'      - `"jp2list"` (data.frame with the list of the JP" band files - 
-#'          this info can not be asked together with other ones).
+#'      - `"jp2list"` (data.frame with the list of the JP2 band files - 
+#'          asking for this info will cause `format` to be coherced to `"list"`).
 #'          
 #'      Notice that the required info are returned only if available;
 #'      i.e., if some info requiring existing files are asked by the user, but
 #'      input SAFE do not exist, only info retrievable by the SAFE name are 
 #'      returned.
-#' @param format One between `data.table` (default), `data.frame` and `list`.
+#' @param format Output format, being one of the followings:
+#'  * `"data.table"` (default) and `"data.frame"`: a table with one row per `s2` 
+#'      input and one column per required `info`;
+#'  * `"list"`: a list (one element per `s2` input) in which each element is
+#'      a list of the required `info`;
+#'  * `"vector"`: a list (one element per `info`) in which each element is 
+#'      a named vector (with `s2` length and names) with the required `info`.
+#'  * `"default"` (default): `"vector"` if `info` is of length 1;
+#'      `"data.table"` otherwise.
+#' @param simplify Logical parameter, which applies in case `s2` is of length 1:
+#'  in this case, if TRUE (default) and `format` is `"list"` or `"vector"`,
+#'  a single `info` list or vector is returned;
+#'  if FALSE, a list of length 1 (containing the list or vector of the required
+#'  `s2` product) is returned.
 #' @param abort Logical parameter: if TRUE (default), the function aborts
-#'  in case some inputs are not recognised; if FALSE, a warning is shown.
+#'  in case some inputs are not recognised, or if some files do not exists
+#'  (in case some `info` elements require the files to be present);
+#'  if FALSE, a warning is shown.
 #' @param allow_oldnames Logical parameter: if TRUE, old (long) name products
 #'  are managed (metadata are returned, and they are considered valid; 
 #'  if FALSE (default), they are considered as non-supported files.
@@ -69,23 +84,34 @@
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @export
+#' @import data.table
 #' @importFrom reticulate py_to_r
-#' @importFrom methods is
+#' @importFrom methods is as
 #'
 #' @examples
 #' # Define product name
-#' s2_examplename <- "S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE"
+#' s2_examplenames <- c(
+#'   "S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE",
+#'   "S2A_MSIL2A_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE"
+#' )
 #'
 #' # Return only the information retrievable from the file names (files are not scanned)
-#' safe_getMetadata(s2_examplename, info="nameinfo")
+#' safe_getMetadata(s2_examplenames, info="nameinfo")
 #'
 #' # Return some specific information without scanning files
-#' safe_getMetadata(s2_examplename, info="nameinfo")[c("level", "id_tile")]
+#' safe_getMetadata(s2_examplenames, info=c("level", "id_tile"))
 #'
 #' # Return a single information without scanning files
-#' # (in this case, the output is a vector instead than a list)
-#' safe_getMetadata(s2_examplename, info="nameinfo")[["level"]]
+#' # (in this case, the default output is a vector instead than a data.table)
+#' safe_getMetadata(s2_examplenames, info="level")
 #'
+#' # Check if the products are valid
+#' safe_isvalid(s2_examplenames)
+#' 
+#' # Check if the product names are valid SAFE names
+#' safe_isvalid(s2_examplenames, check_file = FALSE)
+#' safe_isvalid("invalid_safe_name.SAFE"), check_file = FALSE)
+#' 
 #' \dontrun{
 #' # Download a sample SAFE archive (this can take a while)
 #' s2_exampleurl <- paste0("https://scihub.copernicus.eu/apihub/odata/v1/",
@@ -103,6 +129,9 @@
 #' # Return a single information
 #' safe_getMetadata(s2_examplepath, info="orbit_n")
 #' 
+#' # Check if the downloaded SAFE is valid
+#' safe_isvalid(s2_examplepath)
+#' 
 #' # Delete it if it is not recognised
 #' rm_invalid_safe(s2_examplepath)
 #' 
@@ -114,16 +143,39 @@
 # - add check for format integrity
 
 
-safe_getMetadata <- function(s2, info="nameinfo", format="data.table", abort=TRUE, allow_oldnames=FALSE) {
-  .safe_getMetadata(s2, info=info, format=format, abort=abort, allow_oldnames=allow_oldnames, action = "getmetadata")
+safe_getMetadata <- function(
+  s2, 
+  info = "all", 
+  format = "default",
+  simplify = TRUE, 
+  abort = TRUE, 
+  allow_oldnames = FALSE
+) {
+  .safe_getMetadata(
+    s2, 
+    info = info, 
+    format = format, 
+    simplify = simplify,
+    abort = abort, 
+    allow_oldnames = allow_oldnames, 
+    action = "getmetadata"
+  )
 }
 
 
 #' @name rm_invalid_safe
 #' @rdname safe_getMetadata
 #' @export
-rm_invalid_safe <- function(s2, allow_oldnames=FALSE) {
-  .safe_getMetadata(s2, info="fileinfo", format="vector", abort=FALSE, allow_oldnames=allow_oldnames, action = "rm_invalid")
+rm_invalid_safe <- function(s2, allow_oldnames = FALSE) {
+  .safe_getMetadata(
+    s2, 
+    info = "fileinfo", 
+    format = "not used", 
+    simplify = NA,
+    abort = FALSE, 
+    allow_oldnames = allow_oldnames, 
+    action = "rm_invalid"
+  )
 }
 
 
@@ -132,15 +184,23 @@ rm_invalid_safe <- function(s2, allow_oldnames=FALSE) {
 #' @param check_file Logical: if TRUE (default), the content of the provided
 #'  paths is checked; if FALSE, only the validity of SAFE names is tested.
 #' @export
-safe_isvalid <- function(s2, allow_oldnames=FALSE, check_file = TRUE) {
-  info <- if (check_file == TRUE) {"fileinfo"} else {"nameinfo"}
-  .safe_getMetadata(s2, info=info, format="vector", abort=FALSE, allow_oldnames=allow_oldnames, action = "isvalid")
+safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
+  info <- if (check_file == TRUE) {c("exists", "validname")} else {"validname"}
+  .safe_getMetadata(
+    s2, 
+    info = info, 
+    format = "not used", 
+    simplify = NA,
+    abort = FALSE, 
+    allow_oldnames = allow_oldnames, 
+    action = "isvalid"
+  )
 }
 
 
 # internal function: action="getmetadata" causes the execution of safe_getMetadata(),
 # action="rm_invalid" causes the execution of rm_invalid_safe().
-.safe_getMetadata <- function(s2, info, format, abort, allow_oldnames, action) {
+.safe_getMetadata <- function(s2, info, format, simplify, abort, allow_oldnames, action) {
   
   # define regular expressions to identify products
   s2_regex <- list(
@@ -190,12 +250,22 @@ safe_isvalid <- function(s2, allow_oldnames=FALSE, check_file = TRUE) {
     }
     # } else {
     #   scan_file <- TRUE
-  } else if ("jp2list" %in% info) {
-    info <- info[info != "jp2list"]
   }
   
+  # check format attribute
+  if (format == "default") {
+    format <- if (length(info) == 1) {"vector"} else {"data.table"}
+  } else if (!format %in% c("vector", "list", "data.frame", "data.table", "not used")) {
+    print_message(
+      type = "error", 
+      '"format" not recognised (it must be one among "default", "vector", ',
+      '"list", "data.frame" and "data.table")'
+    )
+  }
+  if ("jp2list" %in% info) {format <- "list"} # coherce to list in case of jp2list
+  
   # scan files only if necessary
-  scan_file <- if (action %in% c("isvalid", "rm_invalid")) {
+  scan_file <- if (!action %in% c("isvalid", "rm_invalid")) {
     !all(info %in% c(info_base, info_name))
   } else {TRUE}
   
@@ -206,17 +276,17 @@ safe_isvalid <- function(s2, allow_oldnames=FALSE, check_file = TRUE) {
   
   ## Check the input format
   # if s2 is a safelist, use the product names and skip scanning content
-  try_safelist <- try(as(s2, "safelist"), silent = TRUE)
+  try_safelist <- suppressWarnings(try(as(s2, "safelist"), silent = TRUE))
   if (!inherits(try_safelist, "try-error")) {
     s2 <- names(s2)
   }
   
   # If s2 is a string, check it and retrieve file metadata
-  if (!is(s2, "character")) {
+  if (!is(nn(s2), "character")) {
     stop("'s2' is not in the right format")
   }
   
-  s2_names <- basename(s2)
+  s2_names <- basename(nn(s2))
   
   for (i in seq_along(s2)) {
     
@@ -509,7 +579,7 @@ safe_isvalid <- function(s2, allow_oldnames=FALSE, check_file = TRUE) {
     
     ## Populate metadata list
     if (TRUE) { # always return it (necessary for rbindlist - eventually removed later)
-      metadata[[i]][["name"]] <- s2_name
+      metadata[[i]][["name"]] <- basename(nameinfo_target)[1]
     }
     if ("validname" %in% info) { # return if the product has a valid SAFE name
       metadata[[i]][["validname"]] <- s2_validname
@@ -540,7 +610,7 @@ safe_isvalid <- function(s2, allow_oldnames=FALSE, check_file = TRUE) {
       for (j in seq_along(nameinfo_target)) {
         for (sel_el in nameinfo_elements[[j]]) {
           metadata_nameinfo[[sel_el]] <- gsub(
-            nameinfo_regex,
+            nameinfo_regex[j],
             paste0("\\",which(nameinfo_elements[[j]]==sel_el)),
             nameinfo_target[j])
           # format if it is a date or a time
@@ -692,17 +762,35 @@ safe_isvalid <- function(s2, allow_oldnames=FALSE, check_file = TRUE) {
       
     } # end of s2_exists IF cycle
     
+    # check if some info were skipped
+    if (all(scan_file, !s2_exists, action == "getmetadata")) {
+      print_message(
+        type=message_type,
+        "This product (",s2_name,") was not found on the system.",
+        if (abort == FALSE) {paste0(
+          ' Some elements required by the argument "info" (',
+          paste(info[!info %in% names(metadata[[i]])], collapse = ", "), 
+          ") are not returned for this product."
+        )}
+      )
+      
+      
+    }
+    
+    
   } # end of s2_name FOR cycle
-
+  
   names(metadata) <- s2_names
   
   # return
-  if (action == "rm_invalid") {
-    return(!sapply(metadata, function(m) {m[["validname"]]}))
+  out_metadata <- if (action == "rm_invalid") {
+    sapply(metadata, function(m) {all(!m[["exists"]], m[["validname"]])})
   } else if (action == "isvalid") {
-    return(sapply(metadata, function(m) {m[["validname"]]}))
-  } else if ("jp2list" %in% info) {
-    return(sapply(metadata, function(m) {m[["jp2list"]]}))
+    if ("exists" %in% info) {
+      sapply(metadata, function(m) {all(m[["exists"]], m[["validname"]])})
+    } else {
+      sapply(metadata, function(m) {m[["validname"]]})
+    }
   } else if (format == "list" ) {
     for (i in seq_along(metadata)) {
       if (!is.null(metadata[[i]][["tiles"]])) {
@@ -712,8 +800,12 @@ safe_isvalid <- function(s2, allow_oldnames=FALSE, check_file = TRUE) {
         metadata[[i]][["xml_granules"]] <- unlist(strsplit(metadata[[i]][["xml_granules"]], ","))
       }
     }
-    return(metadata)
-  } else if (format %in% c("data.table","data.frame")) {
+    if (simplify == TRUE & length(metadata) == 1) {
+      metadata[[1]]
+    } else {
+      metadata
+    }
+  } else if (format %in% c("data.table", "data.frame", "vector")) {
     metadata_dt <- lapply(metadata, function(m) {
       unlist(m) %>% t() %>% as.data.frame(stringsAsFactors=FALSE)
     }) %>%
@@ -738,10 +830,20 @@ safe_isvalid <- function(s2, allow_oldnames=FALSE, check_file = TRUE) {
       metadata_dt[,"utm" := as.integer(utm)]
     }
     if (format == "data.frame") {
-      return(data.frame(metadata_dt))
-    } else {
-      return(metadata_dt)
+      data.frame(metadata_dt)
+    } else if (format == "data.table") {
+      metadata_dt
+    } else if (format == "vector") {
+      metadata_v <- lapply(as.list(metadata_dt), function(x) {
+        names(x) <- metadata_dt$name; x
+      })
+      if (simplify == TRUE & length(info) == 1) {
+        metadata_v[[info]]
+      } else {
+        metadata_v
+      }
     }
   }
+  out_metadata
   
 }

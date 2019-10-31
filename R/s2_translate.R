@@ -131,7 +131,11 @@ s2_translate <- function(infile,
   # Check GDAL installation
   check_gdal(abort=TRUE)
   # Retrieve xml required metadata
-  infile_meta <- safe_getMetadata(infile, c("xml_main","xml_granules","utm","level","tiles", "jp2list"))
+  infile_meta <- safe_getMetadata(
+    infile, 
+    info = c("xml_main","xml_granules","utm","level","tiles", "jp2list"),
+    format = "list", simplify = TRUE
+  )
   infile_dir = dirname(infile_meta$xml_main)
   
   # define output directory
@@ -227,7 +231,10 @@ s2_translate <- function(infile,
     # cycle on granules (with compact names, this runs only once; with old name, one or more)
     for (sel_granule in infile_meta$xml_granules) {try({
       
-      sel_tile <- safe_getMetadata(dirname(sel_granule), "nameinfo")$id_tile
+      sel_tile <- safe_getMetadata(
+        dirname(sel_granule), info = "id_tile", 
+        format = "vector", simplify = TRUE
+      )
       
       # continue only if sel_tile is within desired tiles
       if (anyNA(tiles) | sel_tile %in% tiles) {

@@ -341,8 +341,16 @@ compute_s2_paths <- function(pm,
           if (prod %in% l2a_prods) {file.path(pm$path_l2a,names(s2_list_l2a))},
         function(safe){
           sel_av_tiles <- tryCatch(
-            safe_getMetadata(safe,"tiles"),
-            error = function(e){safe_getMetadata(safe,"nameinfo")$id_tile}
+            safe_getMetadata(
+              safe, info = "tiles", 
+              format = "vector", abort = TRUE, simplify = TRUE
+            ),
+            error = function(e){
+              safe_getMetadata(
+                safe, info = "id_tile", 
+                format = "vector", simplify = TRUE
+              )
+            }
           )
           file.path(
             paths["tiles"],
@@ -769,15 +777,13 @@ compute_s2_paths <- function(pm,
     req_paths[["tiles"]] <- if (sum(sapply(new_paths[["tiles"]], length)) == 0) {
       list("L1C" = character(0), "L2A" = character(0))
     } else {
-      safe_dt_av <- lapply(c(names(s2_list_l1c),names(s2_list_l2a)), function(x) {
-        unlist(safe_getMetadata(x, info=c("nameinfo"))) %>%
-          t() %>%
-          as.data.frame(stringsAsFactors=FALSE)
-      }) %>%
-        rbindlist(fill=TRUE)
+      safe_dt_av <- safe_getMetadata(
+        c(names(s2_list_l1c),names(s2_list_l2a)), 
+        info = c("nameinfo"), format = "data.table", simplify = FALSE
+      )
       tiles_basenames_av <- safe_dt_av[,paste0(
         "S",mission,level,"_",
-        strftime(as.POSIXct(sensing_datetime, format="%s"),"%Y%m%d"),"_",
+        strftime(sensing_datetime,"%Y%m%d"),"_",
         id_orbit,"_",
         ifelse(id_tile!="",id_tile,"[A-Z0-9]{5}"),"_",
         "[A-Z0-9]{3}_",

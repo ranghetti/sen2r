@@ -72,7 +72,7 @@ if (test_sen2cor) {
       testthat::expect_equal(exp_meta_ex$outformat, "JP2OpenJPEG")
       
       # test SAFE metadata
-      safe_metadata <- safe_getMetadata(sen2cor_out)
+      safe_metadata <- safe_getMetadata(sen2cor_out, format = "list")
       testthat::expect_is(safe_metadata, "list")
       testthat::expect_equal(safe_metadata$prod_type, "product")
       testthat::expect_equal(safe_metadata$version, "compact")

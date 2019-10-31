@@ -13,7 +13,7 @@ testthat::test_that(
     dir.create(dirname(outdir_1), showWarnings = FALSE)
     exp_outpath_1 <- file.path(outdir_1, "SCL", "S2A2A_20170703_022__SCL_10.tif")
     unlink(exp_outpath_1)
-    sen2r(
+    out1 <- sen2r(
       gui = FALSE,
       online = FALSE,
       step_atmcorr = "l2a", # to avoid checks on Sen2Cor
@@ -28,6 +28,11 @@ testthat::test_that(
       thumbnails = FALSE
     )
     expect_true(file.exists(exp_outpath_1))
+    
+    # check sen2r output format
+    testthat::expect_is(out1, "character")
+    testthat::expect_equivalent(out1, exp_outpath_1)
+    testthat::expect_equal(names(attributes(out1)), c("procpath", "cloudcovered", "missing"))
     
     # test on raster metadata
     exp_meta_r <- raster_metadata(exp_outpath_1, format = "list")[[1]]

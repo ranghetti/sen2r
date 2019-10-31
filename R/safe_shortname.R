@@ -102,27 +102,23 @@
 
 
 safe_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m", 
-                         tiles=NA, force_tiles=FALSE, full.name=TRUE, 
-                         set.seed=NA, multiple_names=FALSE, abort=FALSE) {
+                           tiles=NA, force_tiles=FALSE, full.name=TRUE, 
+                           set.seed=NA, multiple_names=FALSE, abort=FALSE) {
   
   # elements used by the function
   needed_metadata <- c("tiles","utm","mission","level","sensing_datetime","id_orbit","id_tile")
   # elements mandatory to convert filename
   mandatory_metadata <- c("mission","level","sensing_datetime","id_orbit")
   
-  s2_metadata <- tryCatch({
-    safe_getMetadata(prod_name, info=needed_metadata)
-  }, error = function(e) {
-    safe_getMetadata(prod_name, info="nameinfo")[needed_metadata]
-  })
+  s2_metadata <- safe_getMetadata(
+    prod_name, info = needed_metadata, 
+    format = "list", simplify = TRUE
+  )
   
   if (is.na(set.seed)) {
-    set.seed <- tryCatch({
-      safe_getMetadata(prod_name, info=needed_metadata)
-      TRUE
-    }, error = function(e) {FALSE})
+    set.seed <- safe_isvalid(prod_name, check_file = TRUE)
   }
-
+  
   # check that necessary elements do not miss
   if (any(sapply(s2_metadata[mandatory_metadata],is.null))) {
     print_message(
@@ -169,10 +165,10 @@ safe_shortname <- function(prod_name, prod_type=NULL, ext=NULL, res="10m",
     if (length(s2_metadata$utm)==1) {
       # otherwise, use convention 1 if UTM zone is unique, 2 if not
       sel_tiles <- paste0(s2_metadata$utm,
-                                    str_pad2(sample(1000,1)-1,3,"left","0"))
+                          str_pad2(sample(1000,1)-1,3,"left","0"))
     } else {
       sel_tiles <- paste0(paste(LETTERS[sample(26,2,replace=TRUE)],collapse=""),
-                                    str_pad2(sample(1000,1)-1,3,"left","0"))
+                          str_pad2(sample(1000,1)-1,3,"left","0"))
     }
     
   }

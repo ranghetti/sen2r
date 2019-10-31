@@ -114,14 +114,12 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
   }
   
   # accept only input names which are L1C
-  l1c_prodlist_level <- sapply(l1c_prodlist, function(x) {
-    tryCatch(
-      safe_getMetadata(x, info = "level"),
-      error = function(y){"wrong"}
-    )
-  })
-  l1c_prodlist <- l1c_prodlist[l1c_prodlist_level=="1C"]
-  
+  l1c_prodlist_level <- safe_getMetadata(
+    l1c_prodlist, "level", 
+    format = "vector", abort = FALSE, simplify = TRUE
+  )
+  l1c_prodlist <- l1c_prodlist[which(l1c_prodlist_level == "1C")]
+
   # if no products were found, exit
   if (length(l1c_prodlist) == 0) {
     print_message(
@@ -196,15 +194,15 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
 
     ## Set the tiles vectors (existing, required, ...)
     # existing L1C tiles within input product
-    sel_l1c_tiles_existing <- sapply(
-      list.files(file.path(sel_l1c,"GRANULE")),
-      function(x){safe_getMetadata(x,"nameinfo")$id_tile}
+    sel_l1c_tiles_existing <- safe_getMetadata(
+      list.files(file.path(sel_l1c,"GRANULE")), 
+      "id_tile", format = "vector", simplify = TRUE
     )
     # L2A tiles already existing
     sel_l2a_tiles_existing <- if (file.exists(sel_l2a)) {
-      sapply(
-        list.files(file.path(sel_l2a,"GRANULE")),
-        function(x){safe_getMetadata(x,"nameinfo")$id_tile}
+      safe_getMetadata(
+        list.files(file.path(sel_l2a,"GRANULE")), 
+        "id_tile", format = "vector"
       )
     } else {
       character(0)

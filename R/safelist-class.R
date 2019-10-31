@@ -29,7 +29,7 @@ setAs("character", "safelist", function(from) {
   }
   # check if input can be converted
   if (any(c(
-    length(nn(names(from))) == 0,
+    is.null(names(from)),
     !grepl("^http.+Products\\(.+\\)/\\$value$", as.vector(from)),
     !grepl("^S2[AB]\\_MSIL[12][AC]\\_[0-9]{8}T[0-9]{6}\\_N[0-9]{4}\\_R[0-9]{3}\\_T[A-Z0-9]{5}\\_[0-9]{8}T[0-9]{6}\\.SAFE$", names(from))
   ))) {
@@ -142,15 +142,4 @@ print.safelist = function(x) {
     cat(".\n")
   }
   invisible(x)
-}
-
-
-## Extract metadata
-
-#' @export
-safe_date <- function(x) {
-  x <- as(x, "safelist")
-  sapply(names(x), function(y) {
-    as.POSIXct(safe_getMetadata(y, info = "nameinfo")$sensing_datetime)
-  })
 }

@@ -6,8 +6,8 @@
 \alias{safe_isvalid}
 \title{Get information from S2 file name or metadata}
 \usage{
-safe_getMetadata(s2, info = "nameinfo", format = "data.table",
-  abort = TRUE, allow_oldnames = FALSE)
+safe_getMetadata(s2, info = "all", format = "default",
+  simplify = TRUE, abort = TRUE, allow_oldnames = FALSE)
 
 rm_invalid_safe(s2, allow_oldnames = FALSE)
 
@@ -55,8 +55,8 @@ obtainable for the specified input);
 \code{"proc_baseline"}, \code{"level"}, \code{"sensing_datetime"},
 \code{"nodata_value"}, \code{"saturated_value"}:
 information retrieved from the metadata stored in the XML file;
-\item \code{"jp2list"} (data.frame with the list of the JP" band files -
-this info can not be asked together with other ones).
+\item \code{"jp2list"} (data.frame with the list of the JP2 band files -
+asking for this info will cause \code{format} to be coherced to \code{"list"}).
 }
 
 Notice that the required info are returned only if available;
@@ -65,10 +65,28 @@ input SAFE do not exist, only info retrievable by the SAFE name are
 returned.
 }}
 
-\item{format}{One between \code{data.table} (default), \code{data.frame} and \code{list}.}
+\item{format}{Output format, being one of the followings:
+\itemize{
+\item \code{"data.table"} (default) and \code{"data.frame"}: a table with one row per \code{s2}
+input and one column per required \code{info};
+\item \code{"list"}: a list (one element per \code{s2} input) in which each element is
+a list of the required \code{info};
+\item \code{"vector"}: a list (one element per \code{info}) in which each element is
+a named vector (with \code{s2} length and names) with the required \code{info}.
+\item \code{"default"} (default): \code{"vector"} if \code{info} is of length 1;
+\code{"data.table"} otherwise.
+}}
+
+\item{simplify}{Logical parameter, which applies in case \code{s2} is of length 1:
+in this case, if TRUE (default) and \code{format} is \code{"list"} or \code{"vector"},
+a single \code{info} list or vector is returned;
+if FALSE, a list of length 1 (containing the list or vector of the required
+\code{s2} product) is returned.}
 
 \item{abort}{Logical parameter: if TRUE (default), the function aborts
-in case some inputs are not recognised; if FALSE, a warning is shown.}
+in case some inputs are not recognised, or if some files do not exists
+(in case some \code{info} elements require the files to be present);
+if FALSE, a warning is shown.}
 
 \item{allow_oldnames}{Logical parameter: if TRUE, old (long) name products
 are managed (metadata are returned, and they are considered valid;
@@ -104,17 +122,27 @@ License: GPL 3.0
 }
 \examples{
 # Define product name
-s2_examplename <- "S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE"
+s2_examplenames <- c(
+  "S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE",
+  "S2A_MSIL2A_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE"
+)
 
 # Return only the information retrievable from the file names (files are not scanned)
-safe_getMetadata(s2_examplename, info="nameinfo")
+safe_getMetadata(s2_examplenames, info="nameinfo")
 
 # Return some specific information without scanning files
-safe_getMetadata(s2_examplename, info="nameinfo")[c("level", "id_tile")]
+safe_getMetadata(s2_examplenames, info=c("level", "id_tile"))
 
 # Return a single information without scanning files
-# (in this case, the output is a vector instead than a list)
-safe_getMetadata(s2_examplename, info="nameinfo")[["level"]]
+# (in this case, the default output is a vector instead than a data.table)
+safe_getMetadata(s2_examplenames, info="level")
+
+# Check if the products are valid
+safe_isvalid(s2_examplenames)
+
+# Check if the product names are valid SAFE names
+safe_isvalid(s2_examplenames, check_file = FALSE)
+safe_isvalid("invalid_safe_name.SAFE"), check_file = FALSE)
 
 \dontrun{
 # Download a sample SAFE archive (this can take a while)
@@ -132,6 +160,9 @@ safe_getMetadata(s2_examplepath, info=c("tiles", "level", "id_tile"))
 
 # Return a single information
 safe_getMetadata(s2_examplepath, info="orbit_n")
+
+# Check if the downloaded SAFE is valid
+safe_isvalid(s2_examplepath)
 
 # Delete it if it is not recognised
 rm_invalid_safe(s2_examplepath)

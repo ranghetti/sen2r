@@ -4,7 +4,10 @@ testthat::skip_on_travis()
 
 settings_dir <- normalize_path("~/.sen2r", mustWork = FALSE)
 if (dir.exists(settings_dir)) {
-  file.rename(settings_dir, gsub("sen2r$", "sen2r~", settings_dir))
+  settings_dir <- strftime(
+    Sys.time(), 
+    normalize_path("~/.sen2r_test_%Y%m%d%H%M%S", mustWork = FALSE)
+  )
   restore_settings <- TRUE
 } else {
   restore_settings <- FALSE
@@ -12,6 +15,11 @@ if (dir.exists(settings_dir)) {
 # if the test was manually runned, reload sen2r before proceeding
 
 test_that("Load empty binpaths", {
+  binpaths_file <- file.path(
+    if (dir.exists("~/.sen2r")) {"~/.sen2r"} else {tempdir()},
+    "paths.json"
+  )
+  if (file.exists(binpaths_file)) {file.remove(binpaths_file)}
   binpaths_0 <- load_binpaths()
   expect_is(binpaths_0, "list")
   expect_length(binpaths_0, 0)
@@ -45,5 +53,5 @@ test_that("Load aria2", {
 })
 
 if (restore_settings) {
-  file.rename(gsub("sen2r$", "sen2r~", settings_dir), settings_dir)
+  unlink(settings_dir, recursive = TRUE)
 }
