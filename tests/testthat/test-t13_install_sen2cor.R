@@ -26,7 +26,7 @@ testthat::test_that(
     sen2cor_def_version <- package_version("2.8.0")
     sen2cor_inst_dir <- file.path(dirname(attr(load_binpaths(), "path")), "sen2cor")
 
-    if (test_download | !dir.exists(sen2cor_inst_dir)) {
+    if (test_download | is.null(load_binpaths()$sen2cor)) {
       unlink(sen2cor_inst_dir, recursive = TRUE)
       install_sen2cor(sen2cor_inst_dir)
     }

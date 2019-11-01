@@ -110,7 +110,7 @@
 #' 
 #' # Check if the product names are valid SAFE names
 #' safe_isvalid(s2_examplenames, check_file = FALSE)
-#' safe_isvalid("invalid_safe_name.SAFE"), check_file = FALSE)
+#' safe_isvalid("invalid_safe_name.SAFE", check_file = FALSE)
 #' 
 #' \dontrun{
 #' # Download a sample SAFE archive (this can take a while)
