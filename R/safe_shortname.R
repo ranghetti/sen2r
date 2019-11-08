@@ -112,7 +112,6 @@ safe_shortname <- function(
   if (any(sapply(seq_len(nrow(s2_metadata)), function(i) {
     !s2_metadata[i,prodtype] %in% prod_type_accepted_values[[s2_metadata[i,level]]]
   }))) {
-browser()
     print_message(
       type=message_type,
       "\"prod_type\" value is not recognised; ",
