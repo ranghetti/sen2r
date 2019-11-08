@@ -5,14 +5,12 @@
 \title{Rename products using a shorten convention}
 \usage{
 safe_shortname(prod_name, prod_type = NULL, ext = NULL, res = "10m",
-  tiles = NA, force_tiles = FALSE, full.name = TRUE, set.seed = NA,
-  multiple_names = FALSE, abort = FALSE)
+  tiles = NULL, force_tiles = NULL, full.name = TRUE,
+  set.seed = NULL, multiple_names = NULL, abort = FALSE)
 }
 \arguments{
-\item{prod_name}{Input Sentinel-2 product name: it can be both
-a complete path or a simple file name. If the file exists, the product
-is scanned to retrieve the tiles list and UTM zones; otherwise the
-basename is simply translated in he short naming convention.}
+\item{prod_name}{Input Sentinel-2 product name (it is not required
+that the file exists).}
 
 \item{prod_type}{(optional) Output product (default: \code{TOA} for L1C, \code{BOA}
 for L2A); see the details for the list of accepted products.}
@@ -24,29 +22,16 @@ default is '10m'. Notice that, choosing '10m' or '20m', bands with lower
 resolution will be rescaled to \code{res}. Band 08 is used with \code{res = '10m'},
 band 08A with \code{res = '20m'} and \code{res = '60m'}.}
 
-\item{tiles}{(optional) Character vector with the desired output tile IDs
-(if specified IDs are not present in the input SAFE product, they are not
-produced). Default (NA) is to consider all the found tiles.}
+\item{tiles}{Deprecated.}
 
-\item{force_tiles}{(optional) Logical: if FALSE (default), only already
-existing tiles (specified using the argument \code{tiles}) are used;
-if TRUE, all specified tiles are considered.
-It takes effect only if \code{tiles} is not NA.}
+\item{force_tiles}{Deprecated.}
 
 \item{full.name}{Logical value: if TRUE (default), all the input path
 is maintained (if existing); if FALSE, only basename is returned.}
 
-\item{set.seed}{(internal parameter) Logical value: if TRUE, the
-generation of random tile elements is univocal (this is useful not to
-assign different names to the same element); if FALSE, the generation
-is completely random (this is useful not to assign the same name to
-products with the same names (e.g. product with old name downloaded in
-different moments which contains different subsets of tiles).
-Default value is TRUE if the file exists locally, FALSE if not.}
+\item{set.seed}{Deprecated.}
 
-\item{multiple_names}{Logical: if TRUE, multiple names are returned in case
-the SAFE product contains more than one tile; if FALSE (default), a random
-tile element is used.}
+\item{multiple_names}{Deprecated.}
 
 \item{abort}{Logical parameter: if TRUE, the function aborts in case
 \code{prod_type} is not recognised; if FALSE (default), a warning is shown.}
@@ -58,15 +43,14 @@ Output product name
 This function renames a Sentinel-2 product in order to
 obtain shorten names. See the details for the structure of the
 adopted schema (named "sen2r naming convention").
-The function applies only to product names (not to single granule
+The function applies only to compact product names (not to single granule
 names), since it is thought to be applied to entire products.
+Old long names are no more supported.
 }
 \details{
 \href{https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/naming-convention}{ESA Sentinel-2 naming convention}
-is particularly long-winded; moreover, the convention changed after
-December 6th 2016, causing products to follow two different schemes.
-
-The convention here adopted, named "sen2r naming convention",
+is particularly long-winded.
+So, the convention here adopted, named "sen2r naming convention",
 follows this schema:
 
 \code{S2mll_yyyymmdd_rrr_ttttt_ppp_rr.fff}
@@ -103,27 +87,7 @@ day on the same tile);
 License: GPL 3.0
 }
 \examples{
-# Define product names
-s2_compactname_example <- file.path(
-  "/non/existing/path",
-  "S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE")
-s2_oldname_example <-
-  "S2A_OPER_PRD_MSIL1C_PDMC_20160809T051732_R022_V20150704T101337_20150704T101337.SAFE"
-s2_existing_example <- "/replace/with/the/main/path/of/existing/product/with/oldname/convention"
-
-# With compact names, it works also without scanning the file
-safe_shortname(s2_compactname_example, ext="tif")
-
-# With old names, without scanning the file the id_tile is not retrieved,
-# so the tile filed is replaced with a random sequence
-unlist(lapply(rep(s2_oldname_example,5), safe_shortname, full.name=FALSE))
-
-\dontrun{
-# If the file exists locally, the tile is retrieved from the content
-# (if unique; if not, a random sequence is equally used, but it is
-# always the same for the same product)
-safe_shortname(s2_existing_example, full.name=FALSE)
-}
+safe_shortname("S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE", ext="tif")
 }
 \author{
 Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
