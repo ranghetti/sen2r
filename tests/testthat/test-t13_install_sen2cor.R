@@ -7,10 +7,12 @@ testthat::skip_on_travis()
 # To perform the download of Sen2Cor, replace 'test_download = FALSE' with 'TRUE'.
 test_download = FALSE
 
+sen2cor_inst_dir <- file.path(dirname(attr(load_binpaths(), "path")), "sen2cor")
+
 testthat::test_that(
   "Test that a mismatching Sen2Cor version causes error", {
     testthat::expect_error(
-      install_sen2cor(version = "2.3.3"),
+      install_sen2cor(sen2cor_inst_dir, version = "2.3.3"),
       regexp = "[Oo]nly Sen2Cor versions .+ are currently supported"
     )
   }
@@ -20,11 +22,10 @@ testthat::test_that(
   "Test Sen2Cor installation", {
 
     testthat::expect_error(
-      install_sen2cor(version = "2.3.3"),
+      install_sen2cor(sen2cor_inst_dir, version = "2.3.3"),
       regexp = "[Oo]nly Sen2Cor versions .+ are currently supported"
     )
     sen2cor_def_version <- package_version("2.8.0")
-    sen2cor_inst_dir <- file.path(dirname(attr(load_binpaths(), "path")), "sen2cor")
 
     if (test_download | is.null(load_binpaths()$sen2cor)) {
       unlink(sen2cor_inst_dir, recursive = TRUE)
@@ -58,7 +59,7 @@ testthat::test_that(
 testthat::test_that(
   "Test that a Sen2Cor reinstallation do not occur if it is already installed", {
     testthat::expect_message(
-      install_sen2cor(),
+      install_sen2cor(sen2cor_inst_dir),
       regexp = "Sen2Cor is already installed"
     )
   }
