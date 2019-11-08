@@ -155,6 +155,7 @@ s2_order <- function(
     )
   }
   quota_exceeded <- FALSE # initialise variable
+  status_codes <- c()
   ordered_products <- foreach(i = which(!s2_availability), .combine = c) %do% {
     # delay after previous order
     if (i != which(!s2_availability)[1]) {
@@ -167,6 +168,8 @@ s2_order <- function(
     )
     # check if the order was successful
     if (inherits(make_order, "response")) {
+      # save status code
+      status_codes <- c(status_codes, make_order$status_code)
       # check that user quota did not exceed
       if (any(grepl("retrieval quota exceeded", make_order$headers$`cause-message`))) {
         quota_exceeded <- TRUE
@@ -222,13 +225,14 @@ s2_order <- function(
       type = "warning",
       date = TRUE,
       sum(!ordered_products)," of ",sum(!s2_availability)," Sentinel-2 images ",
-      "were not correctly ordered",
+      "were not correctly ordered ",
+      "(HTML status code: ",unique(paste(status_codes[status_codes!=202]), collapse = ", "),")",
       if (quota_exceeded) {paste0(
         " because user '",creds[1],"' offline products retrieval quota exceeded. ",
         "Please retry later, otherwise use different SciHub credentials ",
         "(see ?write_scihub_login or set a specific value for argument \"apihub\")."
       )} else {
-        ". Try using a higher value for the argument \"delay\"."
+        "."#," Try using a higher value for the argument \"delay\"."
       }
     )
   }
