@@ -6,7 +6,7 @@
 \alias{safe_isvalid}
 \title{Get information from S2 file name or metadata}
 \usage{
-safe_getMetadata(s2, info = "all", format = "default",
+safe_getMetadata(s2, info = "all", format = "data.table",
   simplify = TRUE, abort = TRUE, allow_oldnames = FALSE)
 
 rm_invalid_safe(s2, allow_oldnames = FALSE)
@@ -67,12 +67,12 @@ returned.
 
 \item{format}{Output format, being one of the followings:
 \itemize{
-\item \code{"data.table"} (default) and \code{"data.frame"}: a table with one row per \code{s2}
+\item \code{"data.table"} and \code{"data.frame"}: a table with one row per \code{s2}
 input and one column per required \code{info};
 \item \code{"list"}: a list (one element per \code{s2} input) in which each element is
 a list of the required \code{info};
 \item \code{"vector"}: a list (one element per \code{info}) in which each element is
-a named vector (with \code{s2} length and names) with the required \code{info}.
+a named vector (with \code{s2} length and names) with the required \code{info};
 \item \code{"default"} (default): \code{"vector"} if \code{info} is of length 1;
 \code{"data.table"} otherwise.
 }}

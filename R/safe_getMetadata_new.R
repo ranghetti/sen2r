@@ -51,12 +51,12 @@
 #'      input SAFE do not exist, only info retrievable by the SAFE name are 
 #'      returned.
 #' @param format Output format, being one of the followings:
-#'  * `"data.table"` (default) and `"data.frame"`: a table with one row per `s2` 
+#'  * `"data.table"` and `"data.frame"`: a table with one row per `s2` 
 #'      input and one column per required `info`;
 #'  * `"list"`: a list (one element per `s2` input) in which each element is
 #'      a list of the required `info`;
 #'  * `"vector"`: a list (one element per `info`) in which each element is 
-#'      a named vector (with `s2` length and names) with the required `info`.
+#'      a named vector (with `s2` length and names) with the required `info`;
 #'  * `"default"` (default): `"vector"` if `info` is of length 1;
 #'      `"data.table"` otherwise.
 #' @param simplify Logical parameter, which applies in case `s2` is of length 1:
@@ -146,7 +146,7 @@
 safe_getMetadata <- function(
   s2, 
   info = "all", 
-  format = "default",
+  format = "data.table",
   simplify = TRUE, 
   abort = TRUE, 
   allow_oldnames = FALSE
@@ -227,34 +227,22 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
     "compactname_L2A_jp2" = list("regex" = "^(?:L2A\\_)?T([A-Z0-9]{5})\\_([0-9]{8}T[0-9]{6})\\_([0-9A-Z]{3})\\_([126]0m)\\.jp2$",
                                  "elements" = c("id_tile","sensing_datetime","bandname","res"))) # here bandname can be also additional_product
   
+  message_type <- ifelse(abort==TRUE, "error", "warning")
+  
+  metadata <- list() # output object, with requested metadata
+  
   # define all possible elements to scan
   info_base <- c("validname", "prod_type", "version") # information always retrieved
   info_general <- c("exists", "tiles", "utm", "xml_main", "xml_granules") # information retrieved if the product is scanned
   info_name <- c("level","creation_datetime", "id_tile", "mission", "centre", "file_class",
-                 "id_orbit", "orbit_number", "sensing_datetime", "id_baseline") # information retrieved from name
+                 "id_orbit", "orbit_number", "sensing_datetime", "id_baseline") # information GENERALLY retrieved from name
   info_gdal <- c("clouds","direction","orbit_n","preview_url", # information retrieved by reading the file metadata
                  "proc_baseline","gdal_level","gdal_sensing_datetime",
                  "nodata_value","saturated_value")
-  if (length(info)==1) {
-    if (info=="all") {
-      info <- c(info_base, info_general, info_name, info_gdal)
-      # scan_file <- TRUE
-    } else if (info=="fileinfo") {
-      info <- c(info_base, info_general, info_name)
-      # scan_file <- TRUE
-    } else if (info=="nameinfo") {
-      info <- c(info_base, info_name)
-      # scan_file <- FALSE
-      # } else {
-      #   scan_file <- TRUE
-    }
-    # } else {
-    #   scan_file <- TRUE
-  }
   
   # check format attribute
   if (format == "default") {
-    format <- if (length(info) == 1) {"vector"} else {"data.table"}
+    format <- if (length(info) == 1 & all(!info %in% c("nameinfo", "fileinfo", "all"))) {"vector"} else {"data.table"}
   } else if (!format %in% c("vector", "list", "data.frame", "data.table", "not used")) {
     print_message(
       type = "error", 
@@ -263,15 +251,6 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
     )
   }
   if ("jp2list" %in% info) {format <- "list"} # coherce to list in case of jp2list
-  
-  # scan files only if necessary
-  scan_file <- if (!action %in% c("isvalid", "rm_invalid")) {
-    !all(info %in% c(info_base, info_name))
-  } else {TRUE}
-  
-  message_type <- ifelse(abort==TRUE, "error", "warning")
-  
-  metadata <- list() # output object, with requested metadata
   
   
   ## Check the input format
@@ -301,9 +280,7 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
     s2_name <- basename(s2[i])
     metadata[[i]] <- list()
     
-    # if scan_file is FALSE, check the input as a product name without searching for files
-    if (any(!scan_file, !s2_exists)) {
-      
+    # check the input as a product name without searching for files
       nameinfo_target <- s2_name
       
       # retrieve type and version
@@ -400,11 +377,29 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
         }
       }
       
-      # if scan_file is TRUE, scan for file content
+    sel_info <- if (length(info)==1) {
+      if (info=="all") {
+        unique(c(info_base, info_general, info_name, info_gdal))
+      } else if (info=="fileinfo") {
+        unique(c(info_base, info_general, info_name))
+      } else if (info=="nameinfo") {
+        unique(c(info_base, unlist(nameinfo_elements)))
+      } else {
+        unique(c(info_base, info))
+      }
     } else {
-      
-      # retrieve the name of xml main file
-      # if it is a directory, scan the content
+      unique(c(info_base, info))
+    }
+    
+    # scan files only if necessary
+    scan_file <- if (!action %in% c("isvalid", "rm_invalid")) {
+      !all(sel_info %in% c(info_base, unlist(nameinfo_elements)))
+    } else {TRUE}
+
+    # if scan_file is TRUE, scan for file content
+    # retrieve the name of xml main file
+    # if it is a directory, scan the content
+    if (all(scan_file, s2_exists)) {
       if (file.info(s2_path)$isdir) {
         compactname_main_xmlfile <- list.files(s2_path,s2_regex$compactname_main_xml$regex, full.names=TRUE)
         oldname_main_xmlfile <- list.files(s2_path,s2_regex$oldname_main_xml$regex, full.names=TRUE)
@@ -581,26 +576,26 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
     if (TRUE) { # always return it (necessary for rbindlist - eventually removed later)
       metadata[[i]][["name"]] <- basename(nameinfo_target)[1]
     }
-    if ("validname" %in% info) { # return if the product has a valid SAFE name
+    if ("validname" %in% sel_info) { # return if the product has a valid SAFE name
       metadata[[i]][["validname"]] <- s2_validname
     }
     
     # if file is valid, continue reading subsequent metadata
     if (s2_validname) {
       
-      if ("exists" %in% info) { # return if the file exists
+      if ("exists" %in% sel_info) { # return if the file exists
         metadata[[i]][["exists"]] <- s2_exists
       }
-      if ("prod_type" %in% info) { # return the type if required
+      if ("prod_type" %in% sel_info) { # return the type if required
         metadata[[i]][["prod_type"]] <- s2_type
       }
-      if ("version" %in% info) { # return the version if required
+      if ("version" %in% sel_info) { # return the version if required
         metadata[[i]][["version"]] <- s2_version
       }
-      if ("xml_main" %in% info) { # return the path of the main xml file, if required
+      if ("xml_main" %in% sel_info) { # return the path of the main xml file, if required
         metadata[[i]][["xml_main"]] <- s2_main_xml
       }
-      if ("xml_granules" %in% info) { # return the version if required
+      if ("xml_granules" %in% sel_info) { # return the version if required
         metadata[[i]][["xml_granules"]] <- s2_granules_xml
       }
       
@@ -620,7 +615,7 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
             )
           }
           # return if nameinfo is required
-          if (sel_el %in% info) {
+          if (sel_el %in% sel_info) {
             metadata[[i]][[sel_el]] <- metadata_nameinfo[[sel_el]]
           }
         }
@@ -628,21 +623,21 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
       s2_level <- metadata_nameinfo[["level"]] # used as base info
       
       # info on tile[s]
-      if (any(c("tiles","utm") %in% info) & s2_exists) {
+      if (any(c("tiles","utm") %in% sel_info) & s2_exists) {
         av_tiles <- gsub(
           s2_regex[[paste0(s2_version,"name_granule_path")]]$regex,
           paste0("\\",which(s2_regex[[paste0(s2_version,"name_granule_path")]]$elements=="id_tile")),
           basename(dirname(s2_granules_xml)))
-        if ("tiles" %in% info) {
+        if ("tiles" %in% sel_info) {
           metadata[[i]][["tiles"]] <- paste(av_tiles, collapse = ",")
         }
-        if ("utm" %in% info) {
+        if ("utm" %in% sel_info) {
           metadata[[i]][["utm"]] <- as.integer(unique(substr(av_tiles,1,2)))
         }
       }
       
       # if requested, give band names
-      if ("jp2list" %in% info & s2_exists) {
+      if ("jp2list" %in% sel_info & s2_exists) {
         
         # compute elements
         jp2_listall <- list.files(s2_path, s2_regex[[paste0(s2_version,"name_L",s2_level,"_jp2")]]$regex, recursive=TRUE, full.names=FALSE)
@@ -681,7 +676,7 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
       }
       
       # if necessary, read the file for further metadata[[i]]
-      if (any(info_gdal %in% info) & s2_exists) {
+      if (any(info_gdal %in% sel_info) & s2_exists) {
         
         # import python modules
         py <- init_python()
@@ -722,25 +717,25 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
       if (exists("s2_gdal") & s2_exists) {
         
         # Read metadata[[i]]
-        if ("clouds" %in% info) {
+        if ("clouds" %in% sel_info) {
           metadata[[i]][["clouds"]] <- py_to_r(s2_gdal$GetMetadata()[["CLOUD_COVERAGE_ASSESSMENT"]])
         }
-        if ("direction" %in% info) {
+        if ("direction" %in% sel_info) {
           metadata[[i]][["direction"]] <- py_to_r(s2_gdal$GetMetadata()[["DATATAKE_1_SENSING_ORBIT_DIRECTION"]])
         }
-        if ("orbit_n" %in% info) {
+        if ("orbit_n" %in% sel_info) {
           metadata[[i]][["orbit_n"]] <- py_to_r(s2_gdal$GetMetadata()[["DATATAKE_1_SENSING_ORBIT_NUMBER"]])
         }
-        if ("preview_url" %in% info) {
+        if ("preview_url" %in% sel_info) {
           metadata[[i]][["preview_url"]] <- py_to_r(s2_gdal$GetMetadata()[["PREVIEW_IMAGE_URL"]])
         }
-        if ("proc_baseline" %in% info) {
+        if ("proc_baseline" %in% sel_info) {
           metadata[[i]][["proc_baseline"]] <- py_to_r(s2_gdal$GetMetadata()[["PROCESSING_BASELINE"]])
         }
-        # if ("level" %in% info) {
+        # if ("level" %in% sel_info) {
         #   metadata[[i]][["level"]] <- py_to_r(s2_gdal$GetMetadata()[["PROCESSING_LEVEL"]])
         # }
-        if ("sensing_datetime" %in% info) {
+        if ("sensing_datetime" %in% sel_info) {
           start_time <- as.POSIXct(
             py_to_r(s2_gdal$GetMetadata()[["PRODUCT_START_TIME"]]), format="%Y-%m-%dT%H:%M:%S", tz="UTC")
           stop_time <- as.POSIXct(
@@ -751,10 +746,10 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
             c(start_time, stop_time)
           }
         }
-        if ("nodata_value" %in% info) {
+        if ("nodata_value" %in% sel_info) {
           metadata[[i]][["nodata_value"]] <- py_to_r(s2_gdal$GetMetadata()[["SPECIAL_VALUE_NODATA"]])
         }
-        if ("saturated_value" %in% info) {
+        if ("saturated_value" %in% sel_info) {
           metadata[[i]][["saturated_value"]] <- py_to_r(s2_gdal$GetMetadata()[["SPECIAL_VALUE_SATURATED"]])
         }
         
@@ -769,7 +764,7 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
         "This product (",s2_name,") was not found on the system.",
         if (abort == FALSE) {paste0(
           ' Some elements required by the argument "info" (',
-          paste(info[!info %in% names(metadata[[i]])], collapse = ", "), 
+          paste(sel_info[!sel_info %in% names(metadata[[i]])], collapse = ", "), 
           ") are not returned for this product."
         )}
       )
@@ -782,6 +777,13 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
   
   names(metadata) <- s2_names
   
+  # delete unrequired infos
+  if(all(!info %in% c("nameinfo", "fileinfo", "all"))) {
+    metadata <- sapply(metadata, function(m) {
+      m[unique(c("name",info))]
+    }, simplify  = FALSE, USE.NAMES = TRUE)
+  }
+               
   # return
   out_metadata <- if (action == "rm_invalid") {
     sapply(metadata, function(m) {all(!m[["exists"]], m[["validname"]])})
@@ -837,7 +839,7 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
       metadata_v <- lapply(as.list(metadata_dt), function(x) {
         names(x) <- metadata_dt$name; x
       })
-      if (simplify == TRUE & length(info) == 1) {
+      if (simplify == TRUE & length(info) == 1 & all(!info %in% c("nameinfo", "fileinfo", "all"))) {
         metadata_v[[info]]
       } else {
         metadata_v

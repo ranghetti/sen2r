@@ -389,7 +389,7 @@ s2_list <- function(spatial_extent = NULL,
   }
   out_dt <- rbindlist(out_list)
   
-  if (nrow(out_dt) == 0) {return(character(0))}
+  if (nrow(out_dt) == 0) {return(as(setNames(character(0), character(0)), "safelist"))}
   
   # check online availability
   out_dt$online <- if (availability == "ignore") {
@@ -411,7 +411,7 @@ s2_list <- function(spatial_extent = NULL,
     out_dt <- out_dt[id_orbit %in% sprintf("%03i", as.numeric(orbit)),]
   }
   
-  if (nrow(out_dt) == 0) {return(character(0))}
+  if (nrow(out_dt) == 0) {return(as(setNames(character(0), character(0)), "safelist"))}
   if (level == "L1C") {
     out_dt <- out_dt[level == "1C",]
   } else if (level == "L2A") {
@@ -421,7 +421,7 @@ s2_list <- function(spatial_extent = NULL,
     out_dt <- out_dt[,head(.SD, 1), by = .(sensing_datetime, id_tile, id_orbit)]
     out_dt <- out_dt[,c(names(out_list[[1]]),"online"),with=FALSE]
   }
-  if (nrow(out_dt) == 0) {return(character(0))}
+  if (nrow(out_dt) == 0) {return(as(setNames(character(0), character(0)), "safelist"))}
   out_dt <- out_dt[order(sensing_datetime),]
   
   # filter by availability
