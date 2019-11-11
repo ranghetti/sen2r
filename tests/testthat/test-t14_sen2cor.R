@@ -28,7 +28,7 @@ testthat::test_that(
       sen2cor_out <- sen2cor(
         basename(s2_l1c_prods[1]), 
         l1c_dir = safe_dir,
-        outdir = safe_dir,
+        outdir = safe_dir
       )
     )
     testthat::expect_equal(sen2cor_out, s2_l2a_prods[1])
