@@ -33,9 +33,9 @@ before_install:
   - sudo apt-get install -y gdal-bin python-gdal
 
 script: 
+  - Rscript -e "sen2r::write_scihub_login('user', 'user')"
   - R CMD build .
   - travis_wait 120 R CMD check *tar.gz
-  - Rscript -e "sen2r::write_scihub_login('user', 'user')"
 
 env:
   global:

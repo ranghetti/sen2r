@@ -67,14 +67,14 @@ setAs("data.frame", "safelist", function(from) {
 ## Methods FROM safelist
 
 #' @export
-as.data.frame.safelist <- function(from, row.names = NULL, optional = FALSE, ...) {
-  to <- data.frame(name = names(from), url = as.vector(from))
+as.data.frame.safelist <- function(x, row.names = NULL, optional = FALSE, ...) {
+  to <- data.frame(name = names(x), url = as.vector(x))
   autoRN <- (is.null(row.names) || length(row.names) != nrow(to))
   attr(to, "row.names") <- if (autoRN) {seq_len(nrow(to))} else {row.names}
   
-  attrs <- names(attributes(from))[!names(attributes(from)) %in% c("names", "class")]
+  attrs <- names(attributes(x))[!names(attributes(x)) %in% c("names", "class")]
   for (a in attrs) {
-    to[,a] <- attr(from, a)
+    to[,a] <- attr(x, a)
   }
   to
 }
@@ -83,19 +83,19 @@ setAs("safelist", "data.frame", function(from) {
 })
 
 #' @export
-as.data.table.safelist <- function(from, keep.rownames = FALSE, ...) {
+as.data.table.safelist <- function(x, keep.rownames = FALSE, ...) {
   rownames <- if (keep.rownames) {
-    names(from)
+    names(x)
   }
-  data.table(as.data.frame(from, row.names = rownames), keep.rownames = keep.rownames)
+  data.table(as.data.frame(x, row.names = rownames), keep.rownames = keep.rownames)
 }
 setAs("safelist", "data.table", function(from) {
   as.data.table(from)
 })
 
 #' @export
-as.character.safelist <- function(from, ...) {
-  from[seq_len(length(from))]
+as.character.safelist <- function(x, ...) {
+  x[seq_len(length(from))]
 }
 setAs("safelist", "character", function(from) {
   as.character(from)
