@@ -95,7 +95,7 @@ setAs("safelist", "data.table", function(from) {
 
 #' @export
 as.character.safelist <- function(x, ...) {
-  x[seq_len(length(from))]
+  x[seq_len(length(x))]
 }
 setAs("safelist", "character", function(from) {
   as.character(from)
