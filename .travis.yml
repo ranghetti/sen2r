@@ -32,11 +32,12 @@ before_install:
   - sudo apt-get install -y libgdal-dev libproj-dev libv8-dev libprotobuf-dev libudunits2-dev netcdf-bin libv8-dev libjq-dev
   - sudo apt-get install -y gdal-bin python-gdal
 
+before_script:
+  - mkdir $HOME/.sen2r
+  - echo "user user" > $HOME/.sen2r/apihub.txt
+  
 script: 
   - R CMD build .
-  - mkdir $HOME/.sen2r
-  - Rscript -e 'sen2r::load_binpaths(c("python", "aria2", "gdal"))'
-  - Rscript -e 'sen2r::write_scihub_login("user", "user")'
   - travis_wait 120 R CMD check *tar.gz
 
 env:
