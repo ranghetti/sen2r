@@ -196,6 +196,28 @@ link_sen2cor <- function(sen2cor_dir) {
       if (Sys.info()["sysname"] == "Windows") {"L2A_Process.bat"} else {"L2A_Process"}
     ))
     writeLines(toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
+    # get Sen2Cor version
+    sen2cor_version_raw0 <- system(paste(binpaths$sen2cor, "-h"), intern = TRUE)
+    sen2cor_version_raw1 <- sen2cor_version_raw0[grep(
+      "^Sentinel\\-2 Level 2A Processor \\(Sen2Cor\\)\\. Version:",
+      sen2cor_version_raw0
+    )]
+    sen2cor_version <- gsub(
+      "^Sentinel\\-2 Level 2A Processor \\(Sen2Cor\\)\\. Version: ([2-9]+\\.[0-9]+)\\.[0-9]+,.*$",
+      "\\1",
+      sen2cor_version_raw1
+    )
+    # copy the Sen2Cor configuration file in the default directory
+    # (this assumes SEN2COR_HOME to be ~/sen2cor)
+    sen2cor_cfg_path <- file.path("~/sen2cor", sen2cor_version, "cfg/L2A_GIPP.xml")
+    if (!dir.exists(dirname(sen2cor_cfg_path))) {
+      dir.create(dirname(sen2cor_cfg_path), recursive = TRUE)
+    }
+    file.copy(
+      file.path(sen2cor_dir, "lib/python2.7/site-packages/sen2cor/cfg/L2A_GIPP.xml"),
+      sen2cor_cfg_path,
+      overwrite = TRUE
+    )
   } else {
     print_message(type = "error", "Sen2Cor was not found here")
   }
