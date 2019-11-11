@@ -2729,10 +2729,7 @@ s2_gui <- function(param_list = NULL,
         title = "SciHub username and password",
         p(HTML(
           "For security reasons, the SciHub username and password",
-          "are not saved with the other parameters."
-        )),
-        p(HTML(
-          "By default, they are stored in a txt file inside the package,",
+          "are not saved with the other parameters, but in a dedicated txt file,",
           "so to be the same for all the sen2r executions",
           "(the user have to set them only once)."
         )),
@@ -2746,6 +2743,26 @@ s2_gui <- function(param_list = NULL,
           "(the path of the text file - and not the content - is added inside",
           "the parameter file)."
         )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+    
+    observeEvent(input$help_register_scihub, {
+      showModal(modalDialog(
+        title = "New/edit SciHub credentials",
+        size = "s",
+        p(HTML(
+          "Notice that SciHub credentials are recognised by API Hub",
+          "(used by sen2r) with a delay of one week (see",
+          "<a href='https://scihub.copernicus.eu/twiki/do/view/SciHubWebPortal/APIHubDescription'",
+          "target='_blank'>this alert</a>);",
+          "for this reason, newly created credentials and password edits",
+          "are generally not immediately recognised."
+        )),
+        a("Register new account", href="https://scihub.copernicus.eu/dhus/#/self-registration", target="_blank"),
+        "\u2000\u2014\u2000",
+        a("Forgot password?", href="https://scihub.copernicus.eu/dhus/#/forgot-password", target="_blank"),
         easyClose = TRUE,
         footer = NULL
       ))
