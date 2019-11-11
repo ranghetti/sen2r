@@ -6,7 +6,7 @@
 \alias{safe_isvalid}
 \title{Get information from S2 file name or metadata}
 \usage{
-safe_getMetadata(s2, info = "all", format = "data.table",
+safe_getMetadata(s2, info = "all", format = "default",
   simplify = TRUE, abort = TRUE, allow_oldnames = FALSE)
 
 rm_invalid_safe(s2, allow_oldnames = FALSE)
@@ -127,7 +127,7 @@ s2_examplenames <- c(
   "S2A_MSIL2A_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE"
 )
 
-# Return only the information retrievable from the file names (files are not scanned)
+# Return the information retrievable from the file names (files are not scanned)
 safe_getMetadata(s2_examplenames, info="nameinfo")
 
 # Return some specific information without scanning files
@@ -137,7 +137,7 @@ safe_getMetadata(s2_examplenames, info=c("level", "id_tile"))
 # (in this case, the default output is a vector instead than a data.table)
 safe_getMetadata(s2_examplenames, info="level")
 
-# Check if the products are valid
+# Check if the products are valid existing SAFE archives
 safe_isvalid(s2_examplenames)
 
 # Check if the product names are valid SAFE names
@@ -156,10 +156,10 @@ s2_examplepath <- file.path(tempdir(), names(s2_exampleurl))
 safe_getMetadata(s2_examplepath)
 
 # Return some specific information
-safe_getMetadata(s2_examplepath, info=c("tiles", "level", "id_tile"))
+safe_getMetadata(s2_examplepath, info=c("clouds", "direction"))
 
 # Return a single information
-safe_getMetadata(s2_examplepath, info="orbit_n")
+safe_getMetadata(s2_examplepath, info="nodata_value")
 
 # Check if the downloaded SAFE is valid
 safe_isvalid(s2_examplepath)

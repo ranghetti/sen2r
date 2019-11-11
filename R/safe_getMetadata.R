@@ -95,7 +95,7 @@
 #'   "S2A_MSIL2A_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE"
 #' )
 #'
-#' # Return only the information retrievable from the file names (files are not scanned)
+#' # Return the information retrievable from the file names (files are not scanned)
 #' safe_getMetadata(s2_examplenames, info="nameinfo")
 #'
 #' # Return some specific information without scanning files
@@ -105,7 +105,7 @@
 #' # (in this case, the default output is a vector instead than a data.table)
 #' safe_getMetadata(s2_examplenames, info="level")
 #'
-#' # Check if the products are valid
+#' # Check if the products are valid existing SAFE archives
 #' safe_isvalid(s2_examplenames)
 #' 
 #' # Check if the product names are valid SAFE names
@@ -124,10 +124,10 @@
 #' safe_getMetadata(s2_examplepath)
 #'
 #' # Return some specific information
-#' safe_getMetadata(s2_examplepath, info=c("tiles", "level", "id_tile"))
+#' safe_getMetadata(s2_examplepath, info=c("clouds", "direction"))
 #'
 #' # Return a single information
-#' safe_getMetadata(s2_examplepath, info="orbit_n")
+#' safe_getMetadata(s2_examplepath, info="nodata_value")
 #' 
 #' # Check if the downloaded SAFE is valid
 #' safe_isvalid(s2_examplepath)
@@ -146,7 +146,7 @@
 safe_getMetadata <- function(
   s2, 
   info = "all", 
-  format = "data.table",
+  format = "default",
   simplify = TRUE, 
   abort = TRUE, 
   allow_oldnames = FALSE
@@ -815,23 +815,23 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
     }) %>%
       rbindlist(fill=TRUE)
     if (!is.null(metadata_dt$validname)) {
-      metadata_dt[,"validname" := as.logical(validname)]
+      metadata_dt$validname <- as.logical(metadata_dt$validname)
     }
     if (!is.null(metadata_dt$exists)) {
-      metadata_dt[,"exists" := as.logical(exists)]
+      metadata_dt$exists <- as.logical(metadata_dt$exists)
     }
     if (!is.null(metadata_dt$sensing_datetime)) {
-      metadata_dt[,"sensing_datetime" := format(
-        as.POSIXct(sensing_datetime, format = "%s"), tz = "UTC", usetz = TRUE
-      )]
+      metadata_dt$sensing_datetime <- format(
+        as.POSIXct(metadata_dt$sensing_datetime, format = "%s"), tz = "UTC", usetz = TRUE
+      )
     }
     if (!is.null(metadata_dt$creation_datetime)) {
-      metadata_dt[,"creation_datetime" := format(
-        as.POSIXct(creation_datetime, format = "%s"), tz = "UTC", usetz = TRUE
-      )]
+      metadata_dt$creation_datetime <- format(
+        as.POSIXct(metadata_dt$creation_datetime, format = "%s"), tz = "UTC", usetz = TRUE
+      )
     }
     if (!is.null(metadata_dt$utm)) {
-      metadata_dt[,"utm" := as.integer(utm)]
+      metadata_dt$utm <- as.integer(metadata_dt$utm)
     }
     if (format == "data.frame") {
       data.frame(metadata_dt)
