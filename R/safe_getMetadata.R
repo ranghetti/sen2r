@@ -44,7 +44,7 @@
 #'          `"nodata_value"`, `"saturated_value"`:
 #'          information retrieved from the metadata stored in the XML file;
 #'      - `"jp2list"` (data.frame with the list of the JP2 band files - 
-#'          asking for this info will cause `format` to be coherced to `"list"`).
+#'          asking for this info will cause `format` to be coerced to `"list"`).
 #'          
 #'      Notice that the required info are returned only if available;
 #'      i.e., if some info requiring existing files are asked by the user, but
@@ -72,7 +72,7 @@
 #'  are managed (metadata are returned, and they are considered valid; 
 #'  if FALSE (default), they are considered as non-supported files.
 #'  Note that, from sen2r version 1.1.0, oldname products are no more supported
-#'  withing processing chains.
+#'  within processing chains.
 #' @return `safe_getMetadata()` returns a data.table, a data.frame or a list
 #'  (depending on argument  `format`) with the output metadata;
 #' 

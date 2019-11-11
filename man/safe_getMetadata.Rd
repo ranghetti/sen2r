@@ -56,7 +56,7 @@ obtainable for the specified input);
 \code{"nodata_value"}, \code{"saturated_value"}:
 information retrieved from the metadata stored in the XML file;
 \item \code{"jp2list"} (data.frame with the list of the JP2 band files -
-asking for this info will cause \code{format} to be coherced to \code{"list"}).
+asking for this info will cause \code{format} to be coerced to \code{"list"}).
 }
 
 Notice that the required info are returned only if available;
@@ -92,7 +92,7 @@ if FALSE, a warning is shown.}
 are managed (metadata are returned, and they are considered valid;
 if FALSE (default), they are considered as non-supported files.
 Note that, from sen2r version 1.1.0, oldname products are no more supported
-withing processing chains.}
+within processing chains.}
 
 \item{check_file}{Logical: if TRUE (default), the content of the provided
 paths is checked; if FALSE, only the validity of SAFE names is tested.}

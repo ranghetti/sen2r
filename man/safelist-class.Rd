@@ -22,7 +22,7 @@ list_safe
 class(list_safe)
 as.character(list_safe) # convert to a simple named character
 as.data.frame(list_safe) # convert to a data.frame (or to a data.table using as.data.table)
-attr(list_safe, "date") # extract an hidden attribute from a safelist
+attr(list_safe, "sensing_datetime") # extract an hidden attribute from a safelist
 }
 \author{
 Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}

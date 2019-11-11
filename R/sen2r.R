@@ -298,7 +298,7 @@
 #'  - `cloudcovered` with the list of images not created due to the higher
 #'      percentage of cloud covered pixels;
 #'  - `missing` with the list of images not created due to other reasons;
-#'  - `procpath` with the path of a json parameter file, reated after each
+#'  - `procpath` with the path of a json parameter file, created after each
 #'      `sen2r()` run, containing the parameters used in the execution of the
 #'      function;
 #'  - `ltapath` with the path of a json file containing the list of the 
