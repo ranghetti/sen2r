@@ -15,7 +15,7 @@
 #' class(list_safe)
 #' as.character(list_safe) # convert to a simple named character
 #' as.data.frame(list_safe) # convert to a data.frame (or to a data.table using as.data.table)
-#' attr(list_safe, "date") # extract an hidden attribute from a safelist
+#' attr(list_safe, "sensing_datetime") # extract an hidden attribute from a safelist
 
 setClass("safelist", contains = "character")
 
@@ -67,8 +67,11 @@ setAs("data.frame", "safelist", function(from) {
 ## Methods FROM safelist
 
 #' @export
-as.data.frame.safelist <- function(from) {
+as.data.frame.safelist <- function(from, row.names = NULL, optional = FALSE, ...) {
   to <- data.frame(name = names(from), url = as.vector(from))
+  autoRN <- (is.null(row.names) || length(row.names) != nrow(to))
+  attr(to, "row.names") <- if (autoRN) {seq_len(nrow(to))} else {row.names}
+  
   attrs <- names(attributes(from))[!names(attributes(from)) %in% c("names", "class")]
   for (a in attrs) {
     to[,a] <- attr(from, a)
@@ -80,15 +83,18 @@ setAs("safelist", "data.frame", function(from) {
 })
 
 #' @export
-as.data.table.safelist <- function(from) {
-  data.table(as.data.frame(from))
+as.data.table.safelist <- function(from, keep.rownames = FALSE, ...) {
+  rownames <- if (keep.rownames) {
+    names(from)
+  }
+  data.table(as.data.frame(from, row.names = rownames), keep.rownames = keep.rownames)
 }
 setAs("safelist", "data.table", function(from) {
   as.data.table(from)
 })
 
 #' @export
-as.character.safelist <- function(from) {
+as.character.safelist <- function(from, ...) {
   from[seq_len(length(from))]
 }
 setAs("safelist", "character", function(from) {
@@ -127,7 +133,7 @@ setAs("safelist", "character", function(from) {
 # }
 
 #' @export
-print.safelist = function(x) {
+print.safelist = function(x, ...) {
   x_print <- as.character(x)[seq_len(min(length(x),5))]
   names(x_print) <- names(x)[seq_len(min(length(x),5))]
   # x_url <- paste0(substr(x,1,60),"...")

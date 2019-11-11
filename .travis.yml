@@ -35,6 +35,7 @@ before_install:
 script: 
   - R CMD build .
   - travis_wait 120 R CMD check *tar.gz
+  - Rscript -e "sen2r::write_scihub_login('user', 'user')"
 
 env:
   global:
