@@ -25,7 +25,7 @@ setClass("safelist", contains = "character")
 setAs("character", "safelist", function(from) {
   # import x if it is the path of a JSON filelist
   if (all(length(from) == 1, file.exists(from))) {
-    from <- unlist(fromJSON(from))
+    from <- unlist(jsonlite::fromJSON(from))
   }
   # check if input can be converted
   if (any(c(

@@ -1,7 +1,7 @@
-#' @title Download and install Sen2Cor.
-#' @description This function download and install standalone version of
+#' @title Download and install (or link) Sen2Cor
+#' @description [install_sen2cor()] downloads and installs standalone version of
 #'  [Sen2Cor](http://step.esa.int/main/third-party-plugins-2/sen2cor).
-#' @param sen2cor_dir Path where sen2cor will be installed.
+#' @param sen2cor_dir Path where sen2cor is being installed or searched.
 #' @param version (optional) Character: Sen2Cor version (one among
 #'  '2.5.5' - default - and '2.8.0').
 #' @param force (optional) Logical: if TRUE, install even if it is already
@@ -171,6 +171,34 @@ install_sen2cor <- function(sen2cor_dir, version="2.5.5", force = FALSE) {
   # Save a text file with the L2A_Process path,
   # including also paths of GDAL apps
   binpaths$sen2cor <- normalize_path(sen2cor_bin)
-  writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
+  writeLines(toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
   
+}
+
+#' @name link_sen2cor
+#' @rdname install_sen2cor
+#' @description `link_sen2cor()` links an existing standalone version of
+#'  [Sen2Cor](http://step.esa.int/main/third-party-plugins-2/sen2cor) to sen2r.
+#' @export
+link_sen2cor <- function(sen2cor_dir) {
+  
+  # Check if Sen2Cor exists in the provided directory
+  sen2cor_exists <- file.exists(file.path(
+    sen2cor_dir, "bin",
+    if (Sys.info()["sysname"] == "Windows") {"L2A_Process.bat"} else {"L2A_Process"}
+  ))
+  
+  # If so, write the directory in paths.json
+  if (sen2cor_exists) {
+    binpaths <- load_binpaths()
+    binpaths$sen2cor <- normalize_path(file.path(
+      sen2cor_dir, "bin",
+      if (Sys.info()["sysname"] == "Windows") {"L2A_Process.bat"} else {"L2A_Process"}
+    ))
+    writeLines(toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
+  } else {
+    print_message(type = "error", "Sen2Cor was not found here")
+  }
+  return(invisible(NULL))
+
 }
