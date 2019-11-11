@@ -202,6 +202,8 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
 # action="rm_invalid" causes the execution of rm_invalid_safe().
 .safe_getMetadata <- function(s2, info, format, simplify, abort, allow_oldnames, action) {
   
+  validname <- sensing_datetime <- creation_datetime <- utm <- NULL # to avoid NOTE on check
+
   # define regular expressions to identify products
   s2_regex <- list(
     "oldname_main_xml" = list("regex" = "^S(2[AB])\\_([A-Z]{4})\\_MTD\\_SAFL([12][AC])\\_(.{4})\\_([0-9]{8}T[0-9]{6})\\_R([0-9]{3})\\_V[0-9]{8}T[0-9]{6}\\_([0-9]{8}T[0-9]{6})\\.xml$",

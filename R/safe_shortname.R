@@ -77,6 +77,9 @@ safe_shortname <- function(
   abort = FALSE
 ) {
   
+  prodtype <- level <- mission <- level <- id_orbit <- id_tile <- prodtype <- 
+    validname <- NULL # to avoid NOTE on check
+  
   # elements used by the function
   needed_metadata <- c("validname","mission","level","sensing_datetime","id_orbit","id_tile")
   
