@@ -22,5 +22,6 @@ RUN R -e "remotes::install_github('ranghetti/sen2r', ref = 'devel', dependencies
 RUN sudo -u rstudio mkdir /home/rstudio/.sen2r && \
     sudo -u rstudio R -e 'sen2r::load_binpaths(c("python", "aria2", "gdal"))' && \
     sudo -u rstudio mkdir /home/rstudio/sen2cor && \
-    sudo -u rstudio R -e 'sen2r::install_sen2cor("/home/rstudio/sen2cor", version = "2.5.5")' && \
+    sudo -u rstudio mkdir /home/rstudio/sen2cor/sen2cor_255 && \
+    sudo -u rstudio R -e 'sen2r::install_sen2cor("/home/rstudio/sen2cor/sen2cor_255", version = "2.5.5")' && \
     sudo -u rstudio R -e 'tmp <- sen2r::s2_tiles()'
