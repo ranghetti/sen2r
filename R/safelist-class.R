@@ -36,7 +36,7 @@
 #' ## Convert to other classes
 #' (s2_char <- as.character(list_safe)) # convert to a simple named character
 #' (s2_df <- as.data.frame(list_safe)) # convert to a data.frame
-#' (s2_dt <- as.data.table(list_safe)) # convert to a data.table
+#' library(data.table); (s2_dt <- as.data.table(list_safe)) # convert to a data.table
 #' 
 #' ## Convert from other classes
 #' as(s2_char, "safelist") # this causes the loss of hidden attributes
