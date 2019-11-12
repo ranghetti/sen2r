@@ -3424,7 +3424,7 @@ s2_gui <- function(param_list = NULL,
       rl$overwrite_safe <- as.logical(input$overwrite_safe) # TRUE to overwrite existing SAFE, FALSE not to
       rl$rm_safe <- input$rm_safe # "yes" to delete all SAFE, "l1c" to delete only l1c, "no" not to remove
       rl$max_cloud_safe <- input$max_cloud_safe_perc # maximum SAFE cloud coverage (0-100)
-      rl$step_atmcorr <- if (safe_req$l2a==TRUE) {input$step_atmcorr} else {"no"} # download_method in sen2cor: "auto", "l2a", "scihub" or "no"
+      rl$step_atmcorr <- if (safe_req$l2a==TRUE) {input$step_atmcorr} else {"l2a"} # download_method in sen2cor: "auto", "l2a" or "scihub"
       # rl$steps_reqout <- input$steps_reqout # vector of required outputs: "safe", "tiles", "clipped" (one or more)
       
       # spatio-temporal selection #

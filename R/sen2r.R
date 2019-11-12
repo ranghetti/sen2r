@@ -1279,12 +1279,21 @@ sen2r <- function(param_list = NULL,
   }
   # setorder(s2_dt, -sensing_datetime)
   
+  # check which dates whould be ignored for now
+  # (i.e. when other SAFE of the same date must be ordered)
+  s2_lta_dates <- s2_dt[
+    ,list(lta = any(lta)),
+    by = list(sensing_date = as.Date(sensing_datetime))
+    ] %>% 
+    .[lta==TRUE, sensing_date]
   s2_list_lta <- s2_dt[lta==TRUE, url] # list of SAFE to be ordered
-  s2_list_l1c <- s2_dt[lta==FALSE & level=="1C", url] # list of required L1C
-  s2_list_l2a <- s2_dt[lta==FALSE & level=="2A", url] # list of required L2A
+  s2_list_ign <- s2_dt[lta==FALSE & as.Date(sensing_datetime) %in% s2_lta_dates, url] # list of SAFE to be ignored
+  s2_list_l1c <- s2_dt[lta==FALSE & !as.Date(sensing_datetime) %in% s2_lta_dates & level=="1C", url] # list of required L1C
+  s2_list_l2a <- s2_dt[lta==FALSE & !as.Date(sensing_datetime) %in% s2_lta_dates & level=="2A", url] # list of required L2A
   names(s2_list_lta) <- s2_dt[lta==TRUE, name]
-  names(s2_list_l1c) <- s2_dt[lta==FALSE & level=="1C", name]
-  names(s2_list_l2a) <- s2_dt[lta==FALSE & level=="2A", name]
+  names(s2_list_ign) <- s2_dt[lta==FALSE & as.Date(sensing_datetime) %in% s2_lta_dates, name]
+  names(s2_list_l1c) <- s2_dt[lta==FALSE & !as.Date(sensing_datetime) %in% s2_lta_dates & level=="1C", name]
+  names(s2_list_l2a) <- s2_dt[lta==FALSE & !as.Date(sensing_datetime) %in% s2_lta_dates & level=="2A", name]
   
   # Order products from LTA if required
   s2_list_ordered <- if (pm$online == TRUE & pm$order_lta == TRUE) {
