@@ -2729,10 +2729,7 @@ s2_gui <- function(param_list = NULL,
         title = "SciHub username and password",
         p(HTML(
           "For security reasons, the SciHub username and password",
-          "are not saved with the other parameters."
-        )),
-        p(HTML(
-          "By default, they are stored in a txt file inside the package,",
+          "are not saved with the other parameters, but in a dedicated txt file,",
           "so to be the same for all the sen2r executions",
           "(the user have to set them only once)."
         )),
@@ -2746,6 +2743,26 @@ s2_gui <- function(param_list = NULL,
           "(the path of the text file - and not the content - is added inside",
           "the parameter file)."
         )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+    
+    observeEvent(input$help_register_scihub, {
+      showModal(modalDialog(
+        title = "New/edit SciHub credentials",
+        size = "s",
+        p(HTML(
+          "Notice that SciHub credentials are recognised by API Hub",
+          "(used by sen2r) with a delay of one week (see",
+          "<a href='https://scihub.copernicus.eu/twiki/do/view/SciHubWebPortal/APIHubDescription'",
+          "target='_blank'>this alert</a>);",
+          "for this reason, newly created credentials and password edits",
+          "are generally not immediately recognised."
+        )),
+        a("Register new account", href="https://scihub.copernicus.eu/dhus/#/self-registration", target="_blank"),
+        "\u2000\u2014\u2000",
+        a("Forgot password?", href="https://scihub.copernicus.eu/dhus/#/forgot-password", target="_blank"),
         easyClose = TRUE,
         footer = NULL
       ))
@@ -3407,7 +3424,7 @@ s2_gui <- function(param_list = NULL,
       rl$overwrite_safe <- as.logical(input$overwrite_safe) # TRUE to overwrite existing SAFE, FALSE not to
       rl$rm_safe <- input$rm_safe # "yes" to delete all SAFE, "l1c" to delete only l1c, "no" not to remove
       rl$max_cloud_safe <- input$max_cloud_safe_perc # maximum SAFE cloud coverage (0-100)
-      rl$step_atmcorr <- if (safe_req$l2a==TRUE) {input$step_atmcorr} else {"no"} # download_method in sen2cor: "auto", "l2a", "scihub" or "no"
+      rl$step_atmcorr <- if (safe_req$l2a==TRUE) {input$step_atmcorr} else {"l2a"} # download_method in sen2cor: "auto", "l2a" or "scihub"
       # rl$steps_reqout <- input$steps_reqout # vector of required outputs: "safe", "tiles", "clipped" (one or more)
       
       # spatio-temporal selection #

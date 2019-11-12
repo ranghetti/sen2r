@@ -15,10 +15,6 @@
     sep = "\n"
   ))
   
-  if (interactive()) {
-    permission <- ask_permission()
-  } else {
-    permission <- FALSE
-  }
-  
+  invisible(give_write_permission())
+
 }

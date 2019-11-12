@@ -10,12 +10,13 @@ testthat::test_that(
       orbit = "065",
       output_type = "data.table"
     )
+    testthat::expect_is(s2_list_test, "data.table")
     testthat::expect_equal(nrow(s2_list_test), 3)
-    testthat::expect_true(min(s2_list_test$date) >= as.Date("2017-05-01"))
-    testthat::expect_true(max(s2_list_test$date) <= as.Date("2017-08-01"))
-    testthat::expect_equal(unique(s2_list_test$tileid), "32TNR")
-    testthat::expect_equal(unique(s2_list_test$orbit), "065")
-    testthat::expect_equal(mean(s2_list_test$ccov), 38.3432, tolerance = 1e-6)
+    testthat::expect_true(min(as.Date(s2_list_test$sensing_datetime)) >= as.Date("2017-05-01"))
+    testthat::expect_true(max(as.Date(s2_list_test$sensing_datetime)) <= as.Date("2017-08-01"))
+    testthat::expect_equal(unique(s2_list_test$id_tile), "32TNR")
+    testthat::expect_equal(unique(s2_list_test$id_orbit), "065")
+    testthat::expect_equal(mean(s2_list_test$clouds), 38.3432, tolerance = 1e-6)
     testthat::expect_equal(unique(s2_list_test$online), NA)
     testthat::expect_equal(
       grepl("^https://scihub\\.copernicus\\.eu",s2_list_test$url),
@@ -23,15 +24,15 @@ testthat::test_that(
     )
     
     # test safe_getMetadata
-    safe_metadata <- safe_getMetadata(s2_list_test[order(date),]$name[1], info = "nameinfo")
-    testthat::expect_is(safe_metadata, "list")
-    testthat::expect_equal(safe_metadata$prod_type, "product")
-    testthat::expect_equal(safe_metadata$version, "compact")
-    testthat::expect_equal(safe_metadata$mission, "2A")
-    testthat::expect_equal(safe_metadata$level, "2A")
-    testthat::expect_equal(as.Date(safe_metadata$sensing_datetime), as.Date("2017-05-07"))
-    testthat::expect_equal(safe_metadata$id_orbit, "065")
-    testthat::expect_equal(safe_metadata$id_tile, "32TNR")
+    safe_metadata <- safe_getMetadata(s2_list_test[order(sensing_datetime),]$name, info = "nameinfo") # data.table
+    testthat::expect_is(safe_metadata, "data.table")
+    testthat::expect_equal(unique(safe_metadata$prod_type), "product")
+    testthat::expect_equal(unique(safe_metadata$version), "compact")
+    testthat::expect_equal(unique(safe_metadata$mission), "2A")
+    testthat::expect_equal(unique(safe_metadata$level), "2A")
+    testthat::expect_equal(as.Date(safe_metadata$sensing_datetime), as.Date(paste0("2017-05-",c("07","17","27"))))
+    testthat::expect_equal(unique(safe_metadata$id_orbit), "065")
+    testthat::expect_equal(unique(safe_metadata$id_tile), "32TNR")
   }
 )
 
@@ -43,33 +44,35 @@ testthat::test_that(
       output_type = "vector",
       availability = "check"
     )
+    testthat::expect_is(s2_list_test, "safelist")
     testthat::expect_equal(length(s2_list_test), 6)
     testthat::expect_is(
-      safe_getMetadata(names(s2_list_test)[1], info = "nameinfo"), 
+      safe_getMetadata(names(s2_list_test), info = "nameinfo", format = "list"), 
       "list"
     )
-    testthat::expect_equal(names(attributes(s2_list_test)), c("names","online","lta"))
-    testthat::expect_equal(
-      sort(c(attr(s2_list_test, "online"), attr(s2_list_test, "lta"))),
-      seq_len(length(s2_list_test))
-    )
+
+    testthat::expect_true(min(as.Date(attr(s2_list_test, "sensing_datetime"))) >= as.Date("2017-05-01"))
+    testthat::expect_true(min(as.Date(attr(s2_list_test, "sensing_datetime"))) <= as.Date("2017-05-31"))
+    testthat::expect_equal(unique(attr(s2_list_test, "id_tile")), "32TNR")
+    testthat::expect_true(all(attr(s2_list_test, "id_orbit") %in% c("022","065")))
+    testthat::expect_equal(mean(attr(s2_list_test, "clouds")), 58.36295, tolerance = 1e-6)
+    testthat::expect_true(all(attr(s2_list_test, "online") %in% c(TRUE, FALSE)))
   }
 )
 
 testthat::test_that(
   "Tests on s2_list - Multiple tiles, multiple orbits, pos, check availability", {
-    s2_list_test <- s2_list(
+    s2_list_test <- as.data.table(s2_list(
       tile = c("32TNR", "32TMR"),
       time_interval = as.Date(c("2017-05-01", "2017-05-31")),
-      output_type = "data.table",
       availability = "check"
-    )
+    ))
     testthat::expect_equal(nrow(s2_list_test), 11)
-    testthat::expect_equal(unique(s2_list_test$tileid), c("32TNR", "32TMR"))
-    testthat::expect_true(min(s2_list_test$date) >= as.Date("2017-05-01"))
-    testthat::expect_true(max(s2_list_test$date) <= as.Date("2017-08-01"))
-    testthat::expect_equal(unique(s2_list_test$orbit), c("022", "065", "108"))
-    testthat::expect_equal(mean(s2_list_test$ccov), 51.683, tolerance = 1e-6)
+    testthat::expect_equal(unique(s2_list_test$id_tile), c("32TNR", "32TMR"))
+    testthat::expect_true(min(as.Date(s2_list_test$sensing_datetime)) >= as.Date("2017-05-01"))
+    testthat::expect_true(max(as.Date(s2_list_test$sensing_datetime)) <= as.Date("2017-08-01"))
+    testthat::expect_equal(unique(s2_list_test$id_orbit), c("022", "065", "108"))
+    testthat::expect_equal(mean(s2_list_test$clouds), 51.683, tolerance = 1e-6)
     testthat::expect_true(all(unique(s2_list_test$online) %in% c(TRUE, FALSE)))
     testthat::expect_equal(
       grepl("^https://scihub\\.copernicus\\.eu",s2_list_test$url),
@@ -77,15 +80,18 @@ testthat::test_that(
     )
     
     # test safe_getMetadata
-    safe_metadata <- sapply(s2_list_test[order(date),]$name, safe_getMetadata, info = "nameinfo")
-    testthat::expect_is(safe_metadata, "matrix")
-    testthat::expect_equal(dim(safe_metadata), c(9,11))
-    testthat::expect_equal(unique(unlist(safe_metadata["prod_type",])), "product")
-    testthat::expect_equal(unique(unlist(safe_metadata["version",])), "compact")
-    testthat::expect_equal(unique(unlist(safe_metadata["mission",])), "2A")
-    testthat::expect_equal(unique(unlist(safe_metadata["level",])), c("1C","2A"))
-    testthat::expect_equal(unique(unlist(safe_metadata["id_orbit",])), c("022", "065", "108"))
-    testthat::expect_equal(unique(unlist(safe_metadata["id_tile",])), c("32TNR", "32TMR"))
+    safe_metadata <- safe_getMetadata(
+      as.character(s2_list_test[order(sensing_datetime),]$name), 
+      info = "nameinfo", format = "vector"
+    )
+    testthat::expect_is(safe_metadata, "list")
+    testthat::expect_equal(length(safe_metadata), 11)
+    testthat::expect_equal(unique(safe_metadata$prod_type), "product")
+    testthat::expect_equal(unique(safe_metadata$version), "compact")
+    testthat::expect_equal(unique(safe_metadata$mission), "2A")
+    testthat::expect_equal(unique(safe_metadata$level), c("1C","2A"))
+    testthat::expect_equal(unique(safe_metadata$id_orbit), c("022", "065", "108"))
+    testthat::expect_equal(unique(safe_metadata$id_tile), c("32TNR", "32TMR"))
   }
 )
 
@@ -154,7 +160,7 @@ testthat::test_that(
       time_interval = time_window,
       output_type = "data.table"
     )
-    testthat::expect_equal(length(s2_list_test$orbitid), 12)
+    testthat::expect_equal(length(s2_list_test$id_orbit), 12)
     
     # reproject
     pos <- sf::st_transform(pos, 32632)
@@ -163,7 +169,7 @@ testthat::test_that(
       time_interval = time_window,
       output_type = "data.table"
     )
-    testthat::expect_equal(length(s2_list_test$orbitid), 12)
+    testthat::expect_equal(length(s2_list_test$id_orbit), 12)
   }
 )
 
@@ -203,8 +209,14 @@ testthat::test_that(
       time_interval = as.Date(c("2016-05-01", "2016-05-01"))
     )
     testthat::expect_equal(length(s2_list_test), 0)
-    testthat::expect_null(
-      safe_getMetadata(names(s2_list_test)[1], info = "nameinfo") 
+    testthat::expect_equal(
+      nrow(safe_getMetadata(names(s2_list_test), info = "nameinfo")), 0
+    )
+    testthat::expect_length(
+      safe_getMetadata(names(s2_list_test), info = "vector"), 0
+    )
+    testthat::expect_length(
+      safe_getMetadata(names(s2_list_test), info = "list"), 0
     )
   }
 )
@@ -263,13 +275,13 @@ testthat::test_that(
       time_period = "seasonal",
       orbit = "065", output_type = "data.table"
     )
-    testthat::expect_equal(length(s2_list_test$proclev), 11)
-    testthat::expect_equal(unique(s2_list_test$proclev), c("Level-1C" , "Level-2Ap"))
+    testthat::expect_equal(length(s2_list_test$level), 11)
+    testthat::expect_equal(unique(s2_list_test$level), c("1C" , "2Ap"))
     # test safe_getMetadata
-    safe_metadata <- sapply(s2_list_test[order(date),]$name, safe_getMetadata, info = "nameinfo")
-    testthat::expect_is(safe_metadata, "matrix")
-    testthat::expect_equal(dim(safe_metadata), c(9,11))
-    testthat::expect_equal(unique(unlist(safe_metadata["level",])), c("1C","2A"))
+    safe_metadata <- safe_getMetadata(s2_list_test[order(sensing_datetime),]$name, info = "nameinfo")
+    testthat::expect_is(safe_metadata, "data.table")
+    testthat::expect_equal(dim(safe_metadata), c(11,11))
+    testthat::expect_equal(unique(safe_metadata$level), c("1C","2A"))
     
     s2_list_test <- s2_list(
       spatial_extent = pos,
@@ -279,13 +291,13 @@ testthat::test_that(
       time_period = "seasonal",
       orbit = "065", output_type = "data.table"
     )
-    testthat::expect_equal(length(s2_list_test$proclev), 11)
-    testthat::expect_equal(unique(s2_list_test$proclev), c("Level-1C"))
+    testthat::expect_equal(length(s2_list_test$level), 11)
+    testthat::expect_equal(unique(s2_list_test$level), c("1C"))
     # test safe_getMetadata
-    safe_metadata <- sapply(s2_list_test[order(date),]$name, safe_getMetadata, info = "nameinfo")
-    testthat::expect_is(safe_metadata, "matrix")
-    testthat::expect_equal(dim(safe_metadata), c(9,11))
-    testthat::expect_equal(unique(unlist(safe_metadata["level",])), "1C")
+    safe_metadata <- safe_getMetadata(s2_list_test[order(sensing_datetime),]$name, info = "nameinfo")
+    testthat::expect_is(safe_metadata, "data.table")
+    testthat::expect_equal(dim(safe_metadata), c(11,11))
+    testthat::expect_equal(unique(safe_metadata$level), "1C")
   }
 )
 

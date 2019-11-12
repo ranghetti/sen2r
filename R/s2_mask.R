@@ -623,7 +623,6 @@ s2_mask <- function(infiles,
 }
 
 
-#' @title Compute the percentage of cloud-masked surface
 #' @description [s2_perc_masked] computes the percentage of cloud-masked surface.
 #'  The function is similar to [s2_mask], but it returns percentages instead
 #'  of masked rasters.

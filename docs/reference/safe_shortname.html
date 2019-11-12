@@ -39,8 +39,9 @@
 <meta property="og:description" content="This function renames a Sentinel-2 product in order to
 obtain shorten names. See the details for the structure of the
 adopted schema (named &quot;sen2r naming convention&quot;).
-The function applies only to product names (not to single granule
-names), since it is thought to be applied to entire products." />
+The function applies only to compact product names (not to single granule
+names), since it is thought to be applied to entire products.
+Old long names are no more supported." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -83,7 +84,7 @@ names), since it is thought to be applied to entire products." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
       </span>
     </div>
 
@@ -157,23 +158,22 @@ names), since it is thought to be applied to entire products." />
     <p>This function renames a Sentinel-2 product in order to
 obtain shorten names. See the details for the structure of the
 adopted schema (named "sen2r naming convention").
-The function applies only to product names (not to single granule
-names), since it is thought to be applied to entire products.</p>
+The function applies only to compact product names (not to single granule
+names), since it is thought to be applied to entire products.
+Old long names are no more supported.</p>
     </div>
 
     <pre class="usage"><span class='fu'>safe_shortname</span>(<span class='no'>prod_name</span>, <span class='kw'>prod_type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ext</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='st'>"10m"</span>,
-  <span class='kw'>tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>force_tiles</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>full.name</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>set.seed</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>multiple_names</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='kw'>tiles</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>force_tiles</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>full.name</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>set.seed</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>multiple_names</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>prod_name</th>
-      <td><p>Input Sentinel-2 product name: it can be both
-a complete path or a simple file name. If the file exists, the product
-is scanned to retrieve the tiles list and UTM zones; otherwise the
-basename is simply translated in he short naming convention.</p></td>
+      <td><p>Input Sentinel-2 product name (it is not required
+that the file exists).</p></td>
     </tr>
     <tr>
       <th>prod_type</th>
@@ -193,16 +193,11 @@ band 08A with <code>res = '20m'</code> and <code>res = '60m'</code>.</p></td>
     </tr>
     <tr>
       <th>tiles</th>
-      <td><p>(optional) Character vector with the desired output tile IDs
-(if specified IDs are not present in the input SAFE product, they are not
-produced). Default (NA) is to consider all the found tiles.</p></td>
+      <td><p>Deprecated (no more used).</p></td>
     </tr>
     <tr>
       <th>force_tiles</th>
-      <td><p>(optional) Logical: if FALSE (default), only already
-existing tiles (specified using the argument <code>tiles</code>) are used;
-if TRUE, all specified tiles are considered.
-It takes effect only if <code>tiles</code> is not NA.</p></td>
+      <td><p>Deprecated (no more used).</p></td>
     </tr>
     <tr>
       <th>full.name</th>
@@ -211,19 +206,11 @@ is maintained (if existing); if FALSE, only basename is returned.</p></td>
     </tr>
     <tr>
       <th>set.seed</th>
-      <td><p>(internal parameter) Logical value: if TRUE, the
-generation of random tile elements is univocal (this is useful not to
-assign different names to the same element); if FALSE, the generation
-is completely random (this is useful not to assign the same name to
-products with the same names (e.g. product with old name downloaded in
-different moments which contains different subsets of tiles).
-Default value is TRUE if the file exists locally, FALSE if not.</p></td>
+      <td><p>Deprecated (no more used).</p></td>
     </tr>
     <tr>
       <th>multiple_names</th>
-      <td><p>Logical: if TRUE, multiple names are returned in case
-the SAFE product contains more than one tile; if FALSE (default), a random
-tile element is used.</p></td>
+      <td><p>Deprecated (no more used).</p></td>
     </tr>
     <tr>
       <th>abort</th>
@@ -238,9 +225,8 @@ tile element is used.</p></td>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p><a href='https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/naming-convention'>ESA Sentinel-2 naming convention</a>
-is particularly long-winded; moreover, the convention changed after
-December 6th 2016, causing products to follow two different schemes.</p>
-<p>The convention here adopted, named "sen2r naming convention",
+is particularly long-winded.
+So, the convention here adopted, named "sen2r naming convention",
 follows this schema:</p>
 <p><code>S2mll_yyyymmdd_rrr_ttttt_ppp_rr.fff</code></p>
 <p>where:</p><ul>
@@ -274,27 +260,7 @@ day on the same tile);</p></li>
     <p>License: GPL 3.0</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Define product names</span>
-<span class='no'>s2_compactname_example</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(
-  <span class='st'>"/non/existing/path"</span>,
-  <span class='st'>"S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"</span>)
-<span class='no'>s2_oldname_example</span> <span class='kw'>&lt;-</span>
-  <span class='st'>"S2A_OPER_PRD_MSIL1C_PDMC_20160809T051732_R022_V20150704T101337_20150704T101337.SAFE"</span>
-<span class='no'>s2_existing_example</span> <span class='kw'>&lt;-</span> <span class='st'>"/replace/with/the/main/path/of/existing/product/with/oldname/convention"</span>
-
-<span class='co'># With compact names, it works also without scanning the file</span>
-<span class='fu'>safe_shortname</span>(<span class='no'>s2_compactname_example</span>, <span class='kw'>ext</span><span class='kw'>=</span><span class='st'>"tif"</span>)</div><div class='output co'>#&gt; [1] "/non/existing/path/S2A1C_20170603_022_32TQQ_TOA_10.tif"</div><div class='input'>
-<span class='co'># With old names, without scanning the file the id_tile is not retrieved,</span>
-<span class='co'># so the tile filed is replaced with a random sequence</span>
-<span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='no'>s2_oldname_example</span>,<span class='fl'>5</span>), <span class='no'>safe_shortname</span>, <span class='kw'>full.name</span><span class='kw'>=</span><span class='fl'>FALSE</span>))</div><div class='output co'>#&gt; [1] "S2A1C_20150704_022_XO076_TOA_10" "S2A1C_20150704_022_BW426_TOA_10"
-#&gt; [3] "S2A1C_20150704_022_KE468_TOA_10" "S2A1C_20150704_022_LB069_TOA_10"
-#&gt; [5] "S2A1C_20150704_022_DP673_TOA_10"</div><div class='input'>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='co'># If the file exists locally, the tile is retrieved from the content</span>
-<span class='co'># (if unique; if not, a random sequence is equally used, but it is</span>
-<span class='co'># always the same for the same product)</span>
-<span class='fu'>safe_shortname</span>(<span class='no'>s2_existing_example</span>, <span class='kw'>full.name</span><span class='kw'>=</span><span class='fl'>FALSE</span>)
-}</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>safe_shortname</span>(<span class='st'>"S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"</span>, <span class='kw'>ext</span><span class='kw'>=</span><span class='st'>"tif"</span>)</div><div class='output co'>#&gt; [1] "S2A1C_20170603_022_32TQQ_TOA_10.tif"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

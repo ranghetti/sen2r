@@ -786,12 +786,7 @@ check_sen2r_deps <- function() {
     
     # link an existing sen2cor
     observeEvent(input$link_sen2cor_button, {
-      binpaths_content <- load_binpaths()
-      binpaths_content$sen2cor <- normalize_path(file.path(
-        input$path_exisen2cor_textin, "bin",
-        if (Sys.info()["sysname"] == "Windows") {"L2A_Process.bat"} else {"L2A_Process"}
-      ))
-      writeLines(jsonlite::toJSON(binpaths_content, pretty=TRUE), attr(binpaths(), "path"))
+      link_sen2cor(input$path_exisen2cor_textin)
       rv$check_sen2cor_isvalid <- TRUE
       removeModal()
     })

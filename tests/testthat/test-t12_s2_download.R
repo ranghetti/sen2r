@@ -51,34 +51,34 @@ testthat::test_that(
     
     # test SAFE metadata
     if (Sys.info()["sysname"] != "Windows") {
-      safe_metadata1 <- safe_getMetadata(exp_outsafe_1[1])
-      testthat::expect_is(safe_metadata1, "list")
-      testthat::expect_equal(safe_metadata1$prod_type, "product")
-      testthat::expect_equal(safe_metadata1$version, "compact")
+      safe_metadata1 <- safe_getMetadata(exp_outsafe_1)
+      testthat::expect_is(safe_metadata1, "data.table")
+      testthat::expect_equal(safe_metadata1$prod_type, rep("product",2))
+      testthat::expect_equal(safe_metadata1$version, rep("compact",2))
       testthat::expect_equal(
         safe_metadata1$xml_main, 
-        file.path(exp_outsafe_1[1],"MTD_MSIL2A.xml")
+        file.path(exp_outsafe_1,"MTD_MSIL2A.xml")
       )
       testthat::expect_equal(
         dirname(safe_metadata1$xml_granules), 
-        file.path(exp_outsafe_1[1],"GRANULE/L2A_T32TNS_A010601_20170703T101041")
+        file.path(exp_outsafe_1,paste0("GRANULE/L2A_T",c("32TNS","32TNR"),"_A010601_20170703T101041"))
       )
-      testthat::expect_equal(safe_metadata1$mission, "2A")
-      testthat::expect_equal(safe_metadata1$level, "2A")
-      testthat::expect_equal(as.Date(safe_metadata1$sensing_datetime), as.Date("2017-07-03"))
-      testthat::expect_equal(safe_metadata1$id_orbit, "022")
-      testthat::expect_equal(safe_metadata1$id_tile, "32TNS")
-      testthat::expect_equal(safe_metadata1$tiles, "32TNS")
-      testthat::expect_equal(safe_metadata1$utm, 32)
-      testthat::expect_equal(safe_metadata1$direction, "DESCENDING")
-      testthat::expect_equal(safe_metadata1$orbit_n, "22")
-      testthat::expect_equal(safe_metadata1$nodata_value, "0")
-      testthat::expect_equal(safe_metadata1$saturated_value, "65535")
+      testthat::expect_equal(safe_metadata1$mission, rep("2A",2))
+      testthat::expect_equal(safe_metadata1$level, rep("2A",2))
+      testthat::expect_equal(as.Date(safe_metadata1$sensing_datetime), rep(as.Date("2017-07-03"),2))
+      testthat::expect_equal(safe_metadata1$id_orbit, rep("022",2))
+      testthat::expect_equal(safe_metadata1$id_tile, c("32TNS","32TNR"))
+      testthat::expect_equal(safe_metadata1$utm, rep(32,2))
+      testthat::expect_equal(safe_metadata1$direction, rep("DESCENDING",2))
+      testthat::expect_equal(safe_metadata1$orbit_n, rep("22",2))
+      testthat::expect_equal(safe_metadata1$nodata_value, rep("0",2))
+      testthat::expect_equal(safe_metadata1$saturated_value, rep("65535",2))
     }
     
-    safe_metadata2 <- safe_getMetadata(exp_outsafe_1[2], info=c("tiles", "level", "id_tile"))
+    safe_metadata2 <- safe_getMetadata(exp_outsafe_1[2], info=c("tiles", "level", "id_tile"), format = "list")
     testthat::expect_is(safe_metadata2, "list")
-    testthat::expect_equal(length(safe_metadata2), 3)
+    testthat::expect_equal(length(safe_metadata2), 4)
+    testthat::expect_equal(safe_metadata2$name, basename(exp_outsafe_1[2]))
     testthat::expect_equal(safe_metadata2$tiles, "32TNR")
     testthat::expect_equal(safe_metadata2$level, "2A")
     testthat::expect_equal(safe_metadata2$id_tile, safe_metadata2$tiles)
@@ -128,28 +128,28 @@ testthat::test_that(
     # test SAFE metadata
     if (Sys.info()["sysname"] != "Windows") {
       testthat::expect_error(safe_getMetadata(basename(exp_outsafe_2[1])))
-      safe_metadata <- sapply(exp_outsafe_2, safe_getMetadata)
-      testthat::expect_is(safe_metadata, "matrix")
-      testthat::expect_equal(dim(safe_metadata)[2], 2)
-      testthat::expect_equal(unique(unlist(safe_metadata["prod_type",])), "product")
-      testthat::expect_equal(unique(unlist(safe_metadata["version",])), "compact")
+      safe_metadata <- safe_getMetadata(exp_outsafe_2, format = "vector")
+      testthat::expect_is(safe_metadata, "list")
+      testthat::expect_equal(unique(sapply(safe_metadata, length)), 2)
+      testthat::expect_equal(unique(safe_metadata$prod_type), "product")
+      testthat::expect_equal(unique(safe_metadata$version), "compact")
       testthat::expect_equal(
-        as.vector(unlist(safe_metadata["xml_main",])),
+        as.vector(safe_metadata$xml_main),
         file.path(exp_outsafe_2,"MTD_MSIL1C.xml")
       )
       testthat::expect_equal(
-        dirname(as.vector(unlist(safe_metadata["xml_granules",]))), 
+        dirname(as.vector(unlist(safe_metadata$xml_granules))), 
         file.path(exp_outsafe_2,paste0("GRANULE/L1C_T",c("32TNR","32TNS"),"_A010601_20170703T101041"))
       )
-      testthat::expect_equal(unique(unlist(safe_metadata["mission",])), "2A")
-      testthat::expect_equal(unique(unlist(safe_metadata["level",])), "1C")
-      testthat::expect_equal(unique(unlist(safe_metadata["id_orbit",])), "022")
-      testthat::expect_equal(unique(unlist(safe_metadata["id_tile",])), c("32TNR", "32TNS"))
-      testthat::expect_equal(unique(unlist(safe_metadata["utm",])), 32)
-      testthat::expect_equal(unique(unlist(safe_metadata["direction",])), "DESCENDING")
-      testthat::expect_equal(unique(unlist(safe_metadata["orbit_n",])), "22")
-      testthat::expect_equal(unique(unlist(safe_metadata["nodata_value",])), "0")
-      testthat::expect_equal(unique(unlist(safe_metadata["saturated_value",])), "65535")
+      testthat::expect_equal(unique(safe_metadata$mission), "2A")
+      testthat::expect_equal(unique(safe_metadata$level), "1C")
+      testthat::expect_equal(unique(safe_metadata$id_orbit), "022")
+      testthat::expect_equal(unique(safe_metadata$id_tile), c("32TNR", "32TNS"))
+      testthat::expect_equal(unique(safe_metadata$utm), 32)
+      testthat::expect_equal(unique(safe_metadata$direction), "DESCENDING")
+      testthat::expect_equal(unique(safe_metadata$orbit_n), "22")
+      testthat::expect_equal(unique(safe_metadata$nodata_value), "0")
+      testthat::expect_equal(unique(safe_metadata$saturated_value), "65535")
     }
     
     # test rm_invalid_safe() should not have effect

@@ -6,21 +6,22 @@
 \alias{safe_isvalid}
 \title{Get information from S2 file name or metadata}
 \usage{
-safe_getMetadata(s2, info = "all", abort = TRUE)
+safe_getMetadata(s2, info = "all", format = "default",
+  simplify = TRUE, abort = TRUE, allow_oldnames = FALSE)
 
-rm_invalid_safe(s2)
+rm_invalid_safe(s2, allow_oldnames = FALSE)
 
-safe_isvalid(s2, info = "fileinfo")
+safe_isvalid(s2, allow_oldnames = FALSE, check_file = TRUE)
 }
 \arguments{
-\item{s2}{A Sentinel-2 product, being both a \code{character} (path of an
-existing product, or simply product name) or python object of class
-\code{osgeo.gdal.Dataset}. This input parameter
-can be the main path of a S2 file, the path of the xml with metadata,
-the path of a single granule, the xml path of a single granule, or a
-'osgeo.gdal.Dataset' object (obtained reading the product with python).
+\item{s2}{Sentinel-2 products, which can be:
+\itemize{
+\item a list of products in the format \code{safelist} (see \linkS4class{safelist});
+\item a vector of SAFE paths;
+\item a vector of paths of xml product files with metadata.
 If the product does not exist locally, the function can run only with
-option \code{info = "nameinfo"} (see below).}
+option \code{info = "nameinfo"} (see below).
+}}
 
 \item{info}{(optional) A character vector with the list of the metadata
 which should be provided.
@@ -35,6 +36,9 @@ yet the file).
 \item a vector of single specific information (one or more from the
 followings):
 \itemize{
+\item \code{"name"} (SAFE name - this is always returned);
+\item \code{"validname"} (TRUE or FALSE);
+\item \code{"exists"} (TRUE or FALSE);
 \item \code{"prod_type"} ('singlegranule' or 'product');
 \item \code{"version"} ('old' or 'compact');
 \item \code{"tiles"} (vector with the tiles ID available in the product);
@@ -50,30 +54,63 @@ obtainable for the specified input);
 \item \code{"clouds"}, \code{"direction"}, \code{"orbit_n"}, \code{"preview_url"},
 \code{"proc_baseline"}, \code{"level"}, \code{"sensing_datetime"},
 \code{"nodata_value"}, \code{"saturated_value"}:
-information retrieved from the metadata stored in the XML file.
+information retrieved from the metadata stored in the XML file;
+\item \code{"jp2list"} (data.frame with the list of the JP2 band files -
+asking for this info will cause \code{format} to be coerced to \code{"list"}).
 }
 
-In this version, querying for specific elements requires the product
-to be present in the filesystem; in future this will be changed
-(see the second example for a workaround to scan for specific
-elements without needing the file to have been downloaded).
+Notice that the required info are returned only if available;
+i.e., if some info requiring existing files are asked by the user, but
+input SAFE do not exist, only info retrievable by the SAFE name are
+returned.
 }}
 
+\item{format}{Output format, being one of the followings:
+\itemize{
+\item \code{"data.table"} and \code{"data.frame"}: a table with one row per \code{s2}
+input and one column per required \code{info};
+\item \code{"list"}: a list (one element per \code{s2} input) in which each element is
+a list of the required \code{info};
+\item \code{"vector"}: a list (one element per \code{info}) in which each element is
+a named vector (with \code{s2} length and names) with the required \code{info};
+\item \code{"default"} (default): \code{"vector"} if \code{info} is of length 1;
+\code{"data.table"} otherwise.
+}}
+
+\item{simplify}{Logical parameter, which applies in case \code{s2} is of length 1:
+in this case, if TRUE (default) and \code{format} is \code{"list"} or \code{"vector"},
+a single \code{info} list or vector is returned;
+if FALSE, a list of length 1 (containing the list or vector of the required
+\code{s2} product) is returned.}
+
 \item{abort}{Logical parameter: if TRUE (default), the function aborts
-in case \code{prod_type} is not recognised; if FALSE, a warning is shown.}
+in case some inputs are not recognised, or if some files do not exists
+(in case some \code{info} elements require the files to be present);
+if FALSE, a warning is shown.}
+
+\item{allow_oldnames}{Logical parameter: if TRUE, old (long) name products
+are managed (metadata are returned, and they are considered valid;
+if FALSE (default), they are considered as non-supported files.
+Note that, from sen2r version 1.1.0, oldname products are no more supported
+within processing chains, so this function is deprecated and no more
+supported; moreover, it will be removed in next releases.}
+
+\item{check_file}{Logical: if TRUE (default), the content of the provided
+paths is checked; if FALSE, only the validity of SAFE names is tested.}
 }
 \value{
-\code{safe_getMetadata()} returns a list of the output metadata;
+\code{safe_getMetadata()} returns a data.table, a data.frame or a list
+(depending on argument  \code{format}) with the output metadata;
 
-\code{rm_invalid_safe()} returns TRUE if the \code{s2} product was removed,
-FALSE elsewhere.
+\code{rm_invalid_safe()} returns a named vector (with the length of \code{s2}) with
+TRUE if the \code{s2} product was removed, FALSE elsewhere.
 
-\code{safe_isvalid()} returns TRUE if the product is a valid SAFE, FALSE if not.
+\code{safe_isvalid()} returns a named vector (with the length of \code{s2}) with
+TRUE if the product is a valid SAFE, FALSE if not.
 }
 \description{
 The function \code{safe_getMetadata()} scans a Sentinel2 product
-(main path, granule path, main / granule xml file or GDAL object)
-to retrieve information about the product.
+(main path or granule xml file) to retrieve information about the product.
 
 The accessory function \code{rm_invalid_safe()} remove a SAFE archive in the case
 it is not recognised by \code{safe_getMetadata()}.
@@ -86,17 +123,27 @@ License: GPL 3.0
 }
 \examples{
 # Define product name
-s2_examplename <- "S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE"
+s2_examplenames <- c(
+  "S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE",
+  "S2A_MSIL2A_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE"
+)
 
-# Return only the information retrievable from the file names (files are not scanned)
-safe_getMetadata(s2_examplename, info="nameinfo")
+# Return the information retrievable from the file names (files are not scanned)
+safe_getMetadata(s2_examplenames, info="nameinfo")
 
 # Return some specific information without scanning files
-safe_getMetadata(s2_examplename, info="nameinfo")[c("level", "id_tile")]
+safe_getMetadata(s2_examplenames, info=c("level", "id_tile"))
 
 # Return a single information without scanning files
-# (in this case, the output is a vector instead than a list)
-safe_getMetadata(s2_examplename, info="nameinfo")[["level"]]
+# (in this case, the default output is a vector instead than a data.table)
+safe_getMetadata(s2_examplenames, info="level")
+
+# Check if the products are valid existing SAFE archives
+safe_isvalid(s2_examplenames)
+
+# Check if the product names are valid SAFE names
+safe_isvalid(s2_examplenames, check_file = FALSE)
+safe_isvalid("invalid_safe_name.SAFE", check_file = FALSE)
 
 \dontrun{
 # Download a sample SAFE archive (this can take a while)
@@ -110,10 +157,13 @@ s2_examplepath <- file.path(tempdir(), names(s2_exampleurl))
 safe_getMetadata(s2_examplepath)
 
 # Return some specific information
-safe_getMetadata(s2_examplepath, info=c("tiles", "level", "id_tile"))
+safe_getMetadata(s2_examplepath, info=c("clouds", "direction"))
 
 # Return a single information
-safe_getMetadata(s2_examplepath, info="orbit_n")
+safe_getMetadata(s2_examplepath, info="nodata_value")
+
+# Check if the downloaded SAFE is valid
+safe_isvalid(s2_examplepath)
 
 # Delete it if it is not recognised
 rm_invalid_safe(s2_examplepath)

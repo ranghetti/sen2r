@@ -28,7 +28,7 @@ testthat::test_that(
       sen2cor_out <- sen2cor(
         basename(s2_l1c_prods[1]), 
         l1c_dir = safe_dir,
-        outdir = safe_dir,
+        outdir = safe_dir
       )
     )
     testthat::expect_equal(sen2cor_out, s2_l2a_prods[1])
@@ -72,7 +72,7 @@ if (test_sen2cor) {
       testthat::expect_equal(exp_meta_ex$outformat, "JP2OpenJPEG")
       
       # test SAFE metadata
-      safe_metadata <- safe_getMetadata(sen2cor_out)
+      safe_metadata <- safe_getMetadata(sen2cor_out, format = "list")
       testthat::expect_is(safe_metadata, "list")
       testthat::expect_equal(safe_metadata$prod_type, "product")
       testthat::expect_equal(safe_metadata$version, "compact")

@@ -81,7 +81,7 @@ are physical rasters (no output VRT is allowed)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
       </span>
     </div>
 
@@ -303,7 +303,7 @@ overwritten? (default: FALSE)</p></td>
   <span class='kw'>indices</span> <span class='kw'>=</span> <span class='st'>"EVI"</span>,
   <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(),
   <span class='kw'>dataType</span> <span class='kw'>=</span> <span class='st'>"Float32"</span>
-)</div><div class='output co'>#&gt; <span class='message'>Carico il pacchetto richiesto: sp</span></div><div class='output co'>#&gt; <span class='message'>Computing index: EVI</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 1 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 2 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 3 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 4 of 4</span></div><div class='input'><span class='no'>ex_out</span></div><div class='output co'>#&gt; [1] "/tmp/Rtmp0mL4qK/S2A2A_20170703_022_Barbellino_EVI_10.tif"</div><div class='input'>
+)</div><div class='output co'>#&gt; <span class='message'>Carico il pacchetto richiesto: sp</span></div><div class='output co'>#&gt; <span class='message'>Computing index: EVI</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 1 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 2 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 3 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 4 of 4</span></div><div class='input'><span class='no'>ex_out</span></div><div class='output co'>#&gt; [1] "/tmp/Rtmp06y9K3/S2A2A_20170703_022_Barbellino_EVI_10.tif"</div><div class='input'>
 <span class='co'># Show output</span>
 <span class='no'>oldpar</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='kw'>mfrow</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>), <span class='kw'>mar</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>,<span class='fl'>4</span>))
 <span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>ex_in</span>), <span class='kw'>rgb</span> <span class='kw'>=</span> <span class='fl'>4</span>:<span class='fl'>2</span>, <span class='kw'>maxColorValue</span> <span class='kw'>=</span> <span class='fl'>3500</span>)

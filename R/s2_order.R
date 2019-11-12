@@ -1,8 +1,8 @@
 #' @title Order S2 products.
 #' @description The function orders S2 products from Long Term Archive
 #'  (https://scihub.copernicus.eu/userguide/LongTermArchive).
-#' @param s2_prodlist Named character: list of the products to be ordered
-#'  (this must be the output of [s2_list] function).
+#' @param s2_prodlist Named character: list of the products to be ordered,
+#'  in the format `safelist` (see [safelist-class]).
 #'  Alternatively, it can be the path of a JSON file exported by a previous
 #'  execution of [s2_order], in case the user wants, for any reason, to 
 #'  resubmit the order.
@@ -26,7 +26,7 @@
 #'  - "notordered" with the elements of `s2_prodlist` which were not ordered
 #'      for any reasons,
 #'  - "path" (only if argument `export_prodlist` is not FALSE) with the path of
-#'      the text file in which the list of the ordered products was saved.
+#'      the json file in which the list of the ordered products was saved.
 #'
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
@@ -75,7 +75,8 @@ s2_order <- function(
   export_prodlist = TRUE, 
   delay = 5,
   apihub = NA,
-  .s2_availability = NULL
+  .s2_availability = NULL,
+  .log_path = TRUE # TRUE to log all, FALSE to skip the path of the json
 ) {
   
   # to avoid NOTE on check
@@ -111,10 +112,9 @@ s2_order <- function(
     )
   }
   
-  # import s2_prodlist if it is a path
-  if (all(length(s2_prodlist) == 1, file.exists(s2_prodlist))) {
-    s2_prodlist <- unlist(fromJSON(s2_prodlist))
-  }
+  # check input format
+  s2_prodlist <- as(s2_prodlist, "safelist")
+  # TODO add input checks
   
   # # replace apihub with dhus
   # s2_prodlist <- gsub("apihub", "dhus", s2_prodlist)
@@ -155,6 +155,7 @@ s2_order <- function(
     )
   }
   quota_exceeded <- FALSE # initialise variable
+  status_codes <- c()
   ordered_products <- foreach(i = which(!s2_availability), .combine = c) %do% {
     # delay after previous order
     if (i != which(!s2_availability)[1]) {
@@ -167,6 +168,8 @@ s2_order <- function(
     )
     # check if the order was successful
     if (inherits(make_order, "response")) {
+      # save status code
+      status_codes <- c(status_codes, make_order$status_code)
       # check that user quota did not exceed
       if (any(grepl("retrieval quota exceeded", make_order$headers$`cause-message`))) {
         quota_exceeded <- TRUE
@@ -205,14 +208,16 @@ s2_order <- function(
       date = TRUE,
       sum(ordered_products)," of ",sum(!s2_availability)," Sentinel-2 images ",
       "were correctly ordered. ",
-      "You can check at a later time if the ordered products were made available ",
-      "using the command:\n\n",
-      if (is.null(attr(out_list, "path"))) {paste0(
-        'safe_is_online(c(\n  "',paste(out_list, collapse = '",\n  "'),'"\n))'
-      )} else {paste0(
-        'safe_is_online("',attr(out_list, "path"),'")'
-      )},
-      "\n"
+      if (.log_path == TRUE) {paste0(
+        "You can check at a later time if the ordered products were made available ",
+        "using the command:\n\n",
+        if (is.null(attr(out_list, "path"))) {paste0(
+          'safe_is_online(c(\n  "',paste(out_list, collapse = '",\n  "'),'"\n))'
+        )} else {paste0(
+          'safe_is_online("',attr(out_list, "path"),'")'
+        )},
+        "\n"
+      )}
     )
   }
   if (sum(!nn(ordered_products)) > 0) {
@@ -220,13 +225,14 @@ s2_order <- function(
       type = "warning",
       date = TRUE,
       sum(!ordered_products)," of ",sum(!s2_availability)," Sentinel-2 images ",
-      "were not correctly ordered",
+      "were not correctly ordered ",
+      "(HTML status code: ",unique(paste(status_codes[status_codes!=202]), collapse = ", "),")",
       if (quota_exceeded) {paste0(
         " because user '",creds[1],"' offline products retrieval quota exceeded. ",
         "Please retry later, otherwise use different SciHub credentials ",
         "(see ?write_scihub_login or set a specific value for argument \"apihub\")."
       )} else {
-        ". Try using a higher value for the argument \"delay\"."
+        "."#," Try using a higher value for the argument \"delay\"."
       }
     )
   }

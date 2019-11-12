@@ -37,8 +37,7 @@
 
 <meta property="og:title" content="Get information from S2 file name or metadata — safe_getMetadata" />
 <meta property="og:description" content="The function safe_getMetadata() scans a Sentinel2 product
-(main path, granule path, main / granule xml file or GDAL object)
-to retrieve information about the product.
+(main path or granule xml file) to retrieve information about the product.
 The accessory function rm_invalid_safe() remove a SAFE archive in the case
 it is not recognised by safe_getMetadata().
 The accessory function safe_isvalid() scan the SAFE name to understand
@@ -85,7 +84,7 @@ if it is a valid SAFE." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
       </span>
     </div>
 
@@ -157,33 +156,32 @@ if it is a valid SAFE." />
 
     <div class="ref-description">
     <p>The function <code>safe_getMetadata()</code> scans a Sentinel2 product
-(main path, granule path, main / granule xml file or GDAL object)
-to retrieve information about the product.</p>
+(main path or granule xml file) to retrieve information about the product.</p>
 <p>The accessory function <code>rm_invalid_safe()</code> remove a SAFE archive in the case
 it is not recognised by <code>safe_getMetadata()</code>.</p>
 <p>The accessory function <code>safe_isvalid()</code> scan the SAFE name to understand
 if it is a valid SAFE.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>safe_getMetadata</span>(<span class='no'>s2</span>, <span class='kw'>info</span> <span class='kw'>=</span> <span class='st'>"all"</span>, <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+    <pre class="usage"><span class='fu'>safe_getMetadata</span>(<span class='no'>s2</span>, <span class='kw'>info</span> <span class='kw'>=</span> <span class='st'>"all"</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"default"</span>,
+  <span class='kw'>simplify</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>allow_oldnames</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
-<span class='fu'>rm_invalid_safe</span>(<span class='no'>s2</span>)
+<span class='fu'>rm_invalid_safe</span>(<span class='no'>s2</span>, <span class='kw'>allow_oldnames</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
-<span class='fu'>safe_isvalid</span>(<span class='no'>s2</span>, <span class='kw'>info</span> <span class='kw'>=</span> <span class='st'>"fileinfo"</span>)</pre>
+<span class='fu'>safe_isvalid</span>(<span class='no'>s2</span>, <span class='kw'>allow_oldnames</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>check_file</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>s2</th>
-      <td><p>A Sentinel-2 product, being both a <code>character</code> (path of an
-existing product, or simply product name) or python object of class
-<code>osgeo.gdal.Dataset</code>. This input parameter
-can be the main path of a S2 file, the path of the xml with metadata,
-the path of a single granule, the xml path of a single granule, or a
-'osgeo.gdal.Dataset' object (obtained reading the product with python).
+      <td><p>Sentinel-2 products, which can be:</p><ul>
+<li><p>a list of products in the format <code>safelist</code> (see <a href='safelist-class.html'>safelist</a>);</p></li>
+<li><p>a vector of SAFE paths;</p></li>
+<li><p>a vector of paths of xml product files with metadata.
 If the product does not exist locally, the function can run only with
-option <code>info = "nameinfo"</code> (see below).</p></td>
+option <code>info = "nameinfo"</code> (see below).</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>info</th>
@@ -198,6 +196,9 @@ are provided (it is faster and there is no need to have downloaded
 yet the file).</p></li>
 <li><p>a vector of single specific information (one or more from the
 followings):</p><ul>
+<li><p><code>"name"</code> (SAFE name - this is always returned);</p></li>
+<li><p><code>"validname"</code> (TRUE or FALSE);</p></li>
+<li><p><code>"exists"</code> (TRUE or FALSE);</p></li>
 <li><p><code>"prod_type"</code> ('singlegranule' or 'product');</p></li>
 <li><p><code>"version"</code> ('old' or 'compact');</p></li>
 <li><p><code>"tiles"</code> (vector with the tiles ID available in the product);</p></li>
@@ -213,74 +214,114 @@ obtainable for the specified input);</p></li>
 <li><p><code>"clouds"</code>, <code>"direction"</code>, <code>"orbit_n"</code>, <code>"preview_url"</code>,
 <code>"proc_baseline"</code>, <code>"level"</code>, <code>"sensing_datetime"</code>,
 <code>"nodata_value"</code>, <code>"saturated_value"</code>:
-information retrieved from the metadata stored in the XML file.</p></li>
+information retrieved from the metadata stored in the XML file;</p></li>
+<li><p><code>"jp2list"</code> (data.frame with the list of the JP2 band files -
+asking for this info will cause <code>format</code> to be coerced to <code>"list"</code>).</p></li>
 </ul>
 
-<p>In this version, querying for specific elements requires the product
-to be present in the filesystem; in future this will be changed
-(see the second example for a workaround to scan for specific
-elements without needing the file to have been downloaded).</p></li>
+<p>Notice that the required info are returned only if available;
+i.e., if some info requiring existing files are asked by the user, but
+input SAFE do not exist, only info retrievable by the SAFE name are
+returned.</p></li>
 </ul></td>
+    </tr>
+    <tr>
+      <th>format</th>
+      <td><p>Output format, being one of the followings:</p><ul>
+<li><p><code>"data.table"</code> and <code>"data.frame"</code>: a table with one row per <code>s2</code>
+input and one column per required <code>info</code>;</p></li>
+<li><p><code>"list"</code>: a list (one element per <code>s2</code> input) in which each element is
+a list of the required <code>info</code>;</p></li>
+<li><p><code>"vector"</code>: a list (one element per <code>info</code>) in which each element is
+a named vector (with <code>s2</code> length and names) with the required <code>info</code>;</p></li>
+<li><p><code>"default"</code> (default): <code>"vector"</code> if <code>info</code> is of length 1;
+<code>"data.table"</code> otherwise.</p></li>
+</ul></td>
+    </tr>
+    <tr>
+      <th>simplify</th>
+      <td><p>Logical parameter, which applies in case <code>s2</code> is of length 1:
+in this case, if TRUE (default) and <code>format</code> is <code>"list"</code> or <code>"vector"</code>,
+a single <code>info</code> list or vector is returned;
+if FALSE, a list of length 1 (containing the list or vector of the required
+<code>s2</code> product) is returned.</p></td>
     </tr>
     <tr>
       <th>abort</th>
       <td><p>Logical parameter: if TRUE (default), the function aborts
-in case <code>prod_type</code> is not recognised; if FALSE, a warning is shown.</p></td>
+in case some inputs are not recognised, or if some files do not exists
+(in case some <code>info</code> elements require the files to be present);
+if FALSE, a warning is shown.</p></td>
+    </tr>
+    <tr>
+      <th>allow_oldnames</th>
+      <td><p>Logical parameter: if TRUE, old (long) name products
+are managed (metadata are returned, and they are considered valid;
+if FALSE (default), they are considered as non-supported files.
+Note that, from sen2r version 1.1.0, oldname products are no more supported
+within processing chains, so this function is deprecated and no more
+supported; moreover, it will be removed in next releases.</p></td>
+    </tr>
+    <tr>
+      <th>check_file</th>
+      <td><p>Logical: if TRUE (default), the content of the provided
+paths is checked; if FALSE, only the validity of SAFE names is tested.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>safe_getMetadata()</code> returns a list of the output metadata;</p>
-<p><code>rm_invalid_safe()</code> returns TRUE if the <code>s2</code> product was removed,
-FALSE elsewhere.</p>
-<p><code>safe_isvalid()</code> returns TRUE if the product is a valid SAFE, FALSE if not.</p>
+    <p><code>safe_getMetadata()</code> returns a data.table, a data.frame or a list
+(depending on argument  <code>format</code>) with the output metadata;</p>
+<p><code>rm_invalid_safe()</code> returns a named vector (with the length of <code>s2</code>) with
+TRUE if the <code>s2</code> product was removed, FALSE elsewhere.</p>
+<p><code>safe_isvalid()</code> returns a named vector (with the length of <code>s2</code>) with
+TRUE if the product is a valid SAFE, FALSE if not.</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Define product name</span>
-<span class='no'>s2_examplename</span> <span class='kw'>&lt;-</span> <span class='st'>"S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE"</span>
+<span class='no'>s2_examplenames</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(
+  <span class='st'>"S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE"</span>,
+  <span class='st'>"S2A_MSIL2A_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE"</span>
+)
 
-<span class='co'># Return only the information retrievable from the file names (files are not scanned)</span>
-<span class='fu'>safe_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"nameinfo"</span>)</div><div class='output co'>#&gt; $prod_type
-#&gt; [1] "product"
-#&gt; 
-#&gt; $version
-#&gt; [1] "compact"
-#&gt; 
-#&gt; $mission
-#&gt; [1] "2A"
-#&gt; 
-#&gt; $level
-#&gt; [1] "1C"
-#&gt; 
-#&gt; $sensing_datetime
-#&gt; [1] "2017-07-03 10:10:21 UTC"
-#&gt; 
-#&gt; $id_baseline
-#&gt; [1] "0205"
-#&gt; 
-#&gt; $id_orbit
-#&gt; [1] "022"
-#&gt; 
-#&gt; $id_tile
-#&gt; [1] "32TNS"
-#&gt; 
-#&gt; $creation_datetime
-#&gt; [1] "2017-07-03 10:10:41 UTC"
-#&gt; </div><div class='input'>
+<span class='co'># Return the information retrievable from the file names (files are not scanned)</span>
+<span class='fu'>safe_getMetadata</span>(<span class='no'>s2_examplenames</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"nameinfo"</span>)</div><div class='output co'>#&gt;                                                                 name validname
+#&gt; 1: S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE      TRUE
+#&gt; 2: S2A_MSIL2A_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE      TRUE
+#&gt;    prod_type version mission level        sensing_datetime id_baseline id_orbit
+#&gt; 1:   product compact      2A    1C 2017-07-03 10:10:21 UTC        0205      022
+#&gt; 2:   product compact      2A    2A 2017-07-03 10:10:21 UTC        0205      022
+#&gt;    id_tile       creation_datetime
+#&gt; 1:   32TNS 2017-07-03 10:10:41 UTC
+#&gt; 2:   32TNR 2017-07-03 10:10:41 UTC</div><div class='input'>
 <span class='co'># Return some specific information without scanning files</span>
-<span class='fu'>safe_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"nameinfo"</span>)[<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"level"</span>, <span class='st'>"id_tile"</span>)]</div><div class='output co'>#&gt; $level
-#&gt; [1] "1C"
-#&gt; 
-#&gt; $id_tile
-#&gt; [1] "32TNS"
-#&gt; </div><div class='input'>
+<span class='fu'>safe_getMetadata</span>(<span class='no'>s2_examplenames</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"level"</span>, <span class='st'>"id_tile"</span>))</div><div class='output co'>#&gt;                                                                 name level
+#&gt; 1: S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE    1C
+#&gt; 2: S2A_MSIL2A_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE    2A
+#&gt;    id_tile
+#&gt; 1:   32TNS
+#&gt; 2:   32TNR</div><div class='input'>
 <span class='co'># Return a single information without scanning files</span>
-<span class='co'># (in this case, the output is a vector instead than a list)</span>
-<span class='fu'>safe_getMetadata</span>(<span class='no'>s2_examplename</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"nameinfo"</span>)<span class='kw'>[[</span><span class='st'>"level"</span>]]</div><div class='output co'>#&gt; [1] "1C"</div><div class='input'>
+<span class='co'># (in this case, the default output is a vector instead than a data.table)</span>
+<span class='fu'>safe_getMetadata</span>(<span class='no'>s2_examplenames</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"level"</span>)</div><div class='output co'>#&gt; S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE 
+#&gt;                                                              "1C" 
+#&gt; S2A_MSIL2A_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE 
+#&gt;                                                              "2A" </div><div class='input'>
+<span class='co'># Check if the products are valid existing SAFE archives</span>
+<span class='fu'>safe_isvalid</span>(<span class='no'>s2_examplenames</span>)</div><div class='output co'>#&gt; S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE 
+#&gt;                                                             FALSE 
+#&gt; S2A_MSIL2A_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE 
+#&gt;                                                             FALSE </div><div class='input'>
+<span class='co'># Check if the product names are valid SAFE names</span>
+<span class='fu'>safe_isvalid</span>(<span class='no'>s2_examplenames</span>, <span class='kw'>check_file</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE 
+#&gt;                                                              TRUE 
+#&gt; S2A_MSIL2A_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE 
+#&gt;                                                              TRUE </div><div class='input'><span class='fu'>safe_isvalid</span>(<span class='st'>"invalid_safe_name.SAFE"</span>, <span class='kw'>check_file</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; invalid_safe_name.SAFE 
+#&gt;                  FALSE </div><div class='input'>
 <span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='co'># Download a sample SAFE archive (this can take a while)</span>
 <span class='no'>s2_exampleurl</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"https://scihub.copernicus.eu/apihub/odata/v1/"</span>,
@@ -293,10 +334,13 @@ FALSE elsewhere.</p>
 <span class='fu'>safe_getMetadata</span>(<span class='no'>s2_examplepath</span>)
 
 <span class='co'># Return some specific information</span>
-<span class='fu'>safe_getMetadata</span>(<span class='no'>s2_examplepath</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"tiles"</span>, <span class='st'>"level"</span>, <span class='st'>"id_tile"</span>))
+<span class='fu'>safe_getMetadata</span>(<span class='no'>s2_examplepath</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"clouds"</span>, <span class='st'>"direction"</span>))
 
 <span class='co'># Return a single information</span>
-<span class='fu'>safe_getMetadata</span>(<span class='no'>s2_examplepath</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"orbit_n"</span>)
+<span class='fu'>safe_getMetadata</span>(<span class='no'>s2_examplepath</span>, <span class='kw'>info</span><span class='kw'>=</span><span class='st'>"nodata_value"</span>)
+
+<span class='co'># Check if the downloaded SAFE is valid</span>
+<span class='fu'>safe_isvalid</span>(<span class='no'>s2_examplepath</span>)
 
 <span class='co'># Delete it if it is not recognised</span>
 <span class='fu'>rm_invalid_safe</span>(<span class='no'>s2_examplepath</span>)

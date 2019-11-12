@@ -8,7 +8,7 @@ covr::package_coverage(
     "R/editModPoly.R",
     "R/install_aria2.R",
     "R/install_sen2cor.R", 
-    "R/ask_permission.R",
+    "R/give_write_permission.R",
     "R/check_sen2r_deps.R",
     "R/create_indices_db.R", 
     "R/helpers_extent.R",

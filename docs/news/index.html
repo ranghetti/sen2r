@@ -77,7 +77,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0.9004</span>
       </span>
     </div>
 
@@ -146,6 +146,57 @@
       <small>Source: <a href='https://github.com/ranghetti/sen2r/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="version-1-2-1" class="section level1">
+<h1 class="page-header">
+<a href="#version-1-2-1" class="anchor"></a>Version 1.2.1<small> Unreleased </small>
+</h1>
+<div id="major-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#major-changes" class="anchor"></a>Major changes</h2>
+<ul>
+<li>New <code>safelist</code> class for lists of SAFE Sentinel-2 archives (see <a href="https://sen2r.ranghetti.info/reference/safelist-class.html">safelist-class</a>);</li>
+<li>
+<code><a href="../reference/sen2r.html">sen2r()</a></code> execution now causes saving the used parameters in a json file located in <code>~/.sen2r/proc_par</code> (this can be used to take trace of the executed processing chains);</li>
+<li>
+<code><a href="../reference/safe_getMetadata.html">safe_getMetadata()</a></code> function was rewritten: now files are scanned only if the user requires metadata which must be retrieved from file content, otherwise only file names are analysed. Inputs can be also <code>safelist</code> objects. The support for oldname SAFE products is deprecated.</li>
+</ul>
+</div>
+<div id="new-functions-methods" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new-functions-methods" class="anchor"></a>New functions / methods</h2>
+<ul>
+<li>
+<code><a href="../reference/install_sen2cor.html">link_sen2cor()</a></code> can be used to link an existing Sen2Cor installation to sen2r;</li>
+<li>
+<code>as()</code> methods can be used to convert <code>safelist</code> from/to <code>character</code>, <code>data.frame</code> and <code>data.table</code> (as well as <code>as.character()',</code>as.data.frame()<code>and</code>as.data.table()` functions).</li>
+</ul>
+</div>
+<div id="changes-in-default-values" class="section level2">
+<h2 class="hasAnchor">
+<a href="#changes-in-default-values" class="anchor"></a>Changes in default values</h2>
+<ul>
+<li>
+<code><a href="../reference/safe_getMetadata.html">safe_getMetadata()</a></code>: new arguments <code>format</code>, <code>simplify</code> and <code>allow_oldnames</code> (see the function reference for details);</li>
+<li>
+<code><a href="../reference/s2_list.html">s2_list()</a></code>: argument <code>output_type</code> was deprecated (use <code>as.data.table</code> to obtain a data.table instead than the new default <code>safelist</code> object);</li>
+<li>
+<code><a href="../reference/safe_shortname.html">safe_shortname()</a></code>: arguments <code>tiles</code>, <code>force_tiles</code>, <code>set.seed</code> and <code>multiple_names</code> were deprecated, since they are not used with SAFE compact names (old names are no more supported);</li>
+</ul>
+</div>
+<div id="minor-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#minor-changes" class="anchor"></a>Minor changes</h2>
+<ul>
+<li>
+<code><a href="https://rdrr.io/r/base/Sys.setenv.html">Sys.setenv()</a></code> effects now do not affect the R environment after exiting from sen2r() execution;</li>
+<li>
+<code><a href="../reference/safe_shortname.html">safe_shortname()</a></code> does no more support oldname SAFE products;</li>
+<li>the Docker version of the package was modified to support last package changes;</li>
+<li>the delay between SciHub registration of new credentials and the possibility to use them on API hub is now documented in the GUI;</li>
+<li>return a warning in case some LTA orders cannot be processed because user quota exceeded.</li>
+</ul>
+</div>
+</div>
     <div id="version-1-2-0" class="section level1">
 <h1 class="page-header">
 <a href="#version-1-2-0" class="anchor"></a>Version 1.2.0<small> Unreleased </small>
@@ -185,7 +236,7 @@
 <h2 class="hasAnchor">
 <a href="#sen2r-cran-release" class="anchor"></a><strong>sen2r</strong> CRAN release</h2>
 <hr>
-<p><strong><code>sen2r</code></strong> was accepted on CRAN (2017-10-21, version 1.1.0). From now, it is possible to install <a href="https://cran.r-project.org/web/packages/sen2r/index.html">the CRAN version</a> with the following command:</p>
+<p><strong><code>sen2r</code></strong> was accepted on CRAN (2017-10-21, version 1.1.0). From now, it is possible to install <a href="https://CRAN.R-project.org/package=sen2r">the CRAN version</a> with the following command:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sen2r"</span>)</a></code></pre></div>
 <p>The development version – which may contain updated features – can still be installed with the following command:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">remotes<span class="op">::</span><span class="kw">install_packages_github</span>(<span class="st">"ranghetti/sen2r"</span>)</a></code></pre></div>
@@ -195,9 +246,9 @@
 <h1 class="page-header">
 <a href="#version-1-1-0" class="anchor"></a>Version 1.1.0<small> 2019-10-21 </small>
 </h1>
-<div id="changes-in-default-values" class="section level2">
+<div id="changes-in-default-values-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#changes-in-default-values" class="anchor"></a>Changes in default values</h2>
+<a href="#changes-in-default-values-1" class="anchor"></a>Changes in default values</h2>
 <ul>
 <li>The default value for <code>"list_prods"</code> argument in <code><a href="../reference/sen2r.html">sen2r()</a></code> is NULL instead of <code>'BOA'</code>.</li>
 <li>Remove <code>'no'</code> value for argument <code>"step_atmcorr"</code> in <code><a href="../reference/sen2r.html">sen2r()</a></code> (use <code>'l2a'</code> without selecting any L2A products instead).</li>
@@ -207,9 +258,9 @@
 <li>In the case the users manually defines the path to be used as temporary directory and this directory already exists, a casual subdirectory of the user-defined folder is used (this to prevent to accidentally delete existing files).</li>
 </ul>
 </div>
-<div id="major-changes" class="section level2">
+<div id="major-changes-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#major-changes" class="anchor"></a>Major changes</h2>
+<a href="#major-changes-1" class="anchor"></a>Major changes</h2>
 <ul>
 <li>
 <strong><code>sen2r</code></strong> package directory is no more used to store files, but a subfolder <code>.sen2r</code> of the user Home directory is created and used. In this way, reinstalling sen2r will not require anymore to reinstall runtime dependencies / to reconfigure the package. The permission to write on this folder is asked to the user when the package is loaded for the first time.</li>
@@ -321,9 +372,9 @@
 <div id="changes-from-version-1-0-0" class="section level2">
 <h2 class="hasAnchor">
 <a href="#changes-from-version-1-0-0" class="anchor"></a>Changes from version 1.0.0</h2>
-<div id="major-changes-1" class="section level3">
+<div id="major-changes-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#major-changes-1" class="anchor"></a>Major changes</h3>
+<a href="#major-changes-2" class="anchor"></a>Major changes</h3>
 <ul>
 <li>A new algorithm was implemented in <code><a href="../reference/s2_calcindices.html">s2_calcindices()</a></code>: now internal raster routines are used by default instead than <code>gdal_calc.py</code>, allowing reducing RAM usage and computation time.</li>
 <li>Better RAM usage and reduction of execution time: <code><a href="../reference/sen2r_getElements.html">sen2r_getElements()</a></code> was rewritten in order to: 1) avoid a RAM leak present in the function, which was causing a high RAM use in the first part of the execution of <code><a href="../reference/sen2r.html">sen2r()</a></code>; 2) considerably speed up the execution (now the metadata of 100 files is retrieved in 4 milliseconds instead than 80).</li>
@@ -466,9 +517,9 @@
 <a href="#version-0-3-3" class="anchor"></a>Version 0.3.3<small> Unreleased </small>
 </h1>
 <p>This is an improvement of version 0.3.2, with several fixes and improvements.</p>
-<div id="major-changes-2" class="section level3">
+<div id="major-changes-3" class="section level3">
 <h3 class="hasAnchor">
-<a href="#major-changes-2" class="anchor"></a>Major changes</h3>
+<a href="#major-changes-3" class="anchor"></a>Major changes</h3>
 <ul>
 <li>Add internal logging (argument <code>log</code> of function <code><a href="../reference/sen2r.html">sen2r()</a></code>)</li>
 <li>New function <code><a href="../reference/s2_dop.html">s2_dop()</a></code> to know the Dates Of Passage over orbits</li>
@@ -628,6 +679,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#version-1-2-1">1.2.1</a></li>
         <li><a href="#version-1-2-0">1.2.0</a></li>
         <li><a href="#version-1-1-0">1.1.0</a></li>
         <li><a href="#version-1-0-2">1.0.2</a></li>

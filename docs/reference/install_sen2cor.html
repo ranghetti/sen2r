@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Download and install Sen2Cor. — install_sen2cor • sen2r: Find, Download and Process Sentinel-2 Data</title>
+<title>Download and install (or link) Sen2Cor — install_sen2cor • sen2r: Find, Download and Process Sentinel-2 Data</title>
 
 
 <!-- jquery -->
@@ -35,9 +35,11 @@
 
 
 
-<meta property="og:title" content="Download and install Sen2Cor. — install_sen2cor" />
-<meta property="og:description" content="This function download and install standalone version of
-Sen2Cor." />
+<meta property="og:title" content="Download and install (or link) Sen2Cor — install_sen2cor" />
+<meta property="og:description" content="install_sen2cor() downloads and installs standalone version of
+Sen2Cor.
+link_sen2cor() links an existing standalone version of
+Sen2Cor to sen2r." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -80,7 +82,7 @@ Sen2Cor." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
       </span>
     </div>
 
@@ -145,24 +147,28 @@ Sen2Cor." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Download and install Sen2Cor.</h1>
+    <h1>Download and install (or link) Sen2Cor</h1>
     <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/install_sen2cor.R'><code>R/install_sen2cor.R</code></a></small>
     <div class="hidden name"><code>install_sen2cor.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function download and install standalone version of
+    <p><code>install_sen2cor()</code> downloads and installs standalone version of
 <a href='http://step.esa.int/main/third-party-plugins-2/sen2cor'>Sen2Cor</a>.</p>
+<p><code>link_sen2cor()</code> links an existing standalone version of
+<a href='http://step.esa.int/main/third-party-plugins-2/sen2cor'>Sen2Cor</a> to sen2r.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>install_sen2cor</span>(<span class='no'>sen2cor_dir</span>, <span class='kw'>version</span> <span class='kw'>=</span> <span class='st'>"2.5.5"</span>, <span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>install_sen2cor</span>(<span class='no'>sen2cor_dir</span>, <span class='kw'>version</span> <span class='kw'>=</span> <span class='st'>"2.5.5"</span>, <span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+<span class='fu'>link_sen2cor</span>(<span class='no'>sen2cor_dir</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>sen2cor_dir</th>
-      <td><p>Path where sen2cor will be installed.</p></td>
+      <td><p>Path where sen2cor is being installed or searched.</p></td>
     </tr>
     <tr>
       <th>version</th>

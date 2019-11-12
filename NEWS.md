@@ -1,3 +1,29 @@
+# Version 1.2.1
+
+## Major changes
+- New `safelist` class for lists of SAFE Sentinel-2 archives (see [safelist-class](https://sen2r.ranghetti.info/reference/safelist-class.html));
+- `sen2r()` execution now causes saving the used parameters in a json file located in `~/.sen2r/proc_par` (this can be used to take trace of the executed processing chains);
+- `safe_getMetadata()` function was rewritten: now files are scanned only if the user requires metadata which must be retrieved from file content, otherwise only file names are analysed.
+    Inputs can be also `safelist` objects. 
+    The support for oldname SAFE products is deprecated.
+    
+## New functions / methods
+- `link_sen2cor()` can be used to link an existing Sen2Cor installation to sen2r;
+- `as()` methods can be used to convert `safelist` from/to `character`, `data.frame` and `data.table` (as well as `as.character()', `as.data.frame()` and `as.data.table()` functions).
+
+## Changes in default values
+- `safe_getMetadata()`: new arguments `format`, `simplify` and `allow_oldnames` (see the function reference for details);
+- `s2_list()`: argument `output_type` was deprecated (use `as.data.table` to obtain a data.table instead than the new default `safelist` object);
+- `safe_shortname()`: arguments `tiles`, `force_tiles`, `set.seed` and `multiple_names` were deprecated, since they are not used with SAFE compact names (old names are no more supported);
+
+## Minor changes
+- `Sys.setenv()` effects now do not affect the R environment after exiting from sen2r() execution;
+- `safe_shortname()` does no more support oldname SAFE products;
+- the Docker version of the package was modified to support last package changes;
+- the delay between SciHub registration of new credentials and the possibility to use them on API hub is now documented in the GUI;
+- return a warning in case some LTA orders cannot be processed because user quota exceeded.
+
+
 # Version 1.2.0
 
 Starting from this version sen2r supports ordering products from Long Term Archive (LTA)
@@ -24,7 +50,7 @@ Here above the related changes:
 ## **sen2r** CRAN release
 _________________________
 **`sen2r`** was accepted on CRAN (2017-10-21, version 1.1.0).
-From now, it is possible to install [the CRAN version](https://cran.r-project.org/web/packages/sen2r/index.html) with the following command:
+From now, it is possible to install [the CRAN version](https://CRAN.R-project.org/package=sen2r) with the following command:
 ```r
 install.packages("sen2r")
 ```

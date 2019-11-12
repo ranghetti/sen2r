@@ -7,8 +7,8 @@
 safe_is_online(s2_prodlist = NULL, apihub = NA)
 }
 \arguments{
-\item{s2_prodlist}{Named character: list of the products to be checked
-(this must be the output of \link{s2_list} function).
+\item{s2_prodlist}{Named character: list of the products to be checked,
+in the format \code{safelist} (see \linkS4class{safelist}).
 Alternatively, it can be the path of a JSON file exported by \link{s2_order}.}
 
 \item{apihub}{Path of the "apihub.txt" file containing credentials

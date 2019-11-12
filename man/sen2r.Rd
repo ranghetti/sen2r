@@ -388,11 +388,16 @@ is the path for messages, the second one for the output.}
 \value{
 A vector with the paths of the files which were created (excluded
 the temporary files); NULL otherwise.
-The vector includes two attributes:
+The vector includes some attributes:
 \itemize{
 \item \code{cloudcovered} with the list of images not created due to the higher
 percentage of cloud covered pixels;
-\item \code{missing} with the list of images not created due to other reasons.
+\item \code{missing} with the list of images not created due to other reasons;
+\item \code{procpath} with the path of a json parameter file, created after each
+\code{sen2r()} run, containing the parameters used in the execution of the
+function;
+\item \code{ltapath} with the path of a json file containing the list of the
+SAFE Sentinel-2 archives eventually ordered in Long Term Archive.
 }
 }
 \description{

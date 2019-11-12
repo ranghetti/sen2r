@@ -92,8 +92,8 @@ testthat::test_that(
     
     # test on raster values
     r <- raster::raster(exp_outpath_6)
-    testthat::expect_equal(raster::cellStats(r, "mean"), 1443.506, tolerance = 1e-4)
-    testthat::expect_equal(raster::cellStats(r, "countNA"), 282)
+    testthat::expect_equal(raster::cellStats(r, "mean"), 1436, tolerance = 1e-3)
+    testthat::expect_equal(raster::cellStats(r, "countNA"), 346)
     
     
     exp_meta_msk <- raster_metadata(exp_outpath_msk, format = "list")[[1]]
