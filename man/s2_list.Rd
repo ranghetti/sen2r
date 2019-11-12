@@ -7,7 +7,7 @@
 s2_list(spatial_extent = NULL, tile = NULL, orbit = NULL,
   time_interval = c(Sys.Date() - 10, Sys.Date()), time_period = "full",
   level = "auto", apihub = NA, max_cloud = 100,
-  availability = "ignore", output_type = "vector")
+  availability = "ignore", output_type = "deprecated")
 }
 \arguments{
 \item{spatial_extent}{A valid spatial object object of class \code{sf},
@@ -61,7 +61,7 @@ how to distinguish each other);
 \item{output_type}{Deprecated (use \code{as.data.table} to obtain a data.table).}
 }
 \value{
-An object of class \code{safelist} (see \linkS4class{safelist}).
+An object of class \link{safelist}.
 The attribute \code{online} contains logical values: in case
 \code{availability != "ignore"}, values are TRUE / FALSE for
 products available for download / stored in the Long Term Archive;

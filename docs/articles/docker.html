@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
       </span>
     </div>
 
@@ -133,7 +133,12 @@
 <code>-p 8777:8787</code> means that the dockerised RStudio will be accessible from port 8777 (change it to use a different port).</li>
 </ul>
 </li>
-<li><p>access to the RStudio environment from <code>http://localhost:8777</code>, logging in with user <code>rstudio</code> and the password set as above.</p></li>
+<li><p>access to the RStudio environment from <code>http://localhost:8777</code>, logging in with user <code>rstudio</code> and the password set as above;</p></li>
+<li>
+<p>for online use, add the user’s SciHub credentials using the GUI or with the function:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(sen2r)</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw"><a href="../reference/scihub_login.html">write_scihub_login</a></span>(<span class="st">"&lt;scihub_username&gt;"</span>, <span class="st">"&lt;scihub_password&gt;"</span>)</a></code></pre></div>
+</li>
 </ol>
 </div>
 

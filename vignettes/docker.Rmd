@@ -35,4 +35,10 @@ To use it:
     - `-v $(pwd):/home/rstudio/host` means that the current directory will be mounted in the docker, and its content will be available in the subdirectory `host` of the docker folder tree (to mount a different directory, replace `$(pwd)` with the desired directory);
     - `-p 8777:8787` means that the dockerised RStudio will be accessible from port 8777 (change it to use a different port).
     
-5. access to the RStudio environment from `http://localhost:8777`, logging in with user `rstudio` and the password set as above.
+5. access to the RStudio environment from `http://localhost:8777`, logging in with user `rstudio` and the password set as above;
+
+6. for online use, add the user's SciHub credentials using the GUI or with the function:
+    ```{r, eval = FALSE}
+    library(sen2r)
+    write_scihub_login("<scihub_username>", "<scihub_password>")
+    ```

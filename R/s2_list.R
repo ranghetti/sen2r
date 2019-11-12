@@ -37,7 +37,7 @@
 #'  - "ignore" (default): all archive names are returned, without doing the check
 #'      (running the function is faster).
 #' @param output_type Deprecated (use `as.data.table` to obtain a data.table).
-#' @return An object of class `safelist` (see [safelist-class]).
+#' @return An object of class [safelist].
 #'  The attribute `online` contains logical values: in case 
 #'  `availability != "ignore"`, values are TRUE / FALSE for
 #'  products available for download / stored in the Long Term Archive; 
@@ -95,7 +95,7 @@ s2_list <- function(spatial_extent = NULL,
                     apihub = NA,
                     max_cloud = 100,
                     availability = "ignore",
-                    output_type = "vector") {
+                    output_type = "deprecated") {
   
   if (!level %in% c("auto", "L2A", "L1C")) {
     print_message(
@@ -436,6 +436,8 @@ s2_list <- function(spatial_extent = NULL,
     out_dt
   } else if (output_type =="data.frame") { # deprecated
     as.data.frame(out_dt)
+  } else if (output_type =="vector") { # deprecated
+    as.character(as(out_dt, "safelist"))
   } else {
     as(out_dt, "safelist")
   }

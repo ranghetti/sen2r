@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
 RUN R -e "remotes::install_github('r-spatial/lwgeom', dependencies = TRUE)"
 
 # Install the package
-RUN R -e "remotes::install_github('ranghetti/sen2r', ref = 'devel', dependencies = TRUE)"
+RUN R -e "remotes::install_github('ranghetti/sen2r', ref = 'master', dependencies = TRUE)"
 
 # Create the user's files and settings, set runtime dependencies
 RUN sudo -u rstudio mkdir /home/rstudio/.sen2r && \

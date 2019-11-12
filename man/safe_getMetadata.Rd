@@ -92,7 +92,8 @@ if FALSE, a warning is shown.}
 are managed (metadata are returned, and they are considered valid;
 if FALSE (default), they are considered as non-supported files.
 Note that, from sen2r version 1.1.0, oldname products are no more supported
-within processing chains.}
+within processing chains, so this function is deprecated and no more
+supported; moreover, it will be removed in next releases.}
 
 \item{check_file}{Logical: if TRUE (default), the content of the provided
 paths is checked; if FALSE, only the validity of SAFE names is tested.}

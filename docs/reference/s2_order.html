@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
       </span>
     </div>
 
@@ -163,8 +163,8 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>s2_prodlist</th>
-      <td><p>Named character: list of the products to be ordered
-(this must be the output of <a href='s2_list.html'>s2_list</a> function).
+      <td><p>Named character: list of the products to be ordered,
+in the format <code>safelist</code> (see <a href='safelist-class.html'>safelist</a>).
 Alternatively, it can be the path of a JSON file exported by a previous
 execution of s2_order, in case the user wants, for any reason, to
 resubmit the order.</p></td>
@@ -202,7 +202,7 @@ available for download,</p></li>
 <li><p>"notordered" with the elements of <code>s2_prodlist</code> which were not ordered
 for any reasons,</p></li>
 <li><p>"path" (only if argument <code>export_prodlist</code> is not FALSE) with the path of
-the text file in which the list of the ordered products was saved.</p></li>
+the json file in which the list of the ordered products was saved.</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
@@ -215,7 +215,8 @@ the text file in which the list of the ordered products was saved.</p></li>
 <span class='no'>pos</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/sfc.html'>st_sfc</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st.html'>st_point</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>57.8815</span>,-<span class='fl'>51.6954</span>)), <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>)
 <span class='no'>time_window</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"2018-02-21"</span>, <span class='st'>"2018-03-20"</span>))
 <span class='no'>list_safe</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='s2_list.html'>s2_list</a></span>(<span class='kw'>spatial_extent</span> <span class='kw'>=</span> <span class='no'>pos</span>, <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='no'>time_window</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>list_safe</span>)</div><div class='output co'>#&gt;                                      S2B_MSIL1C_20180224T133629_N0206_R038_T21FVC_20180224T194845.SAFE 
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>list_safe</span>)</div><div class='output co'>#&gt; A named vector with 7 SAFE archives.
+#&gt;                                      S2B_MSIL1C_20180224T133629_N0206_R038_T21FVC_20180224T194845.SAFE 
 #&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('c88086ac-8087-4adb-866e-baeffec5eb68')/$value" 
 #&gt;                                      S2B_MSIL1C_20180227T134629_N0206_R081_T21FVC_20180227T200327.SAFE 
 #&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('fa8cba66-7b8b-45aa-9038-9521d7658bad')/$value" 
@@ -225,17 +226,18 @@ the text file in which the list of the ordered products was saved.</p></li>
 #&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('5ae358f2-8589-493b-bb6d-09df04ec0ff9')/$value" 
 #&gt;                                      S2A_MSIL1C_20180311T133641_N0206_R038_T21FVC_20180311T163528.SAFE 
 #&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('266e369c-9ab5-486e-83b3-7180b6956616')/$value" 
-#&gt;                                      S2A_MSIL1C_20180314T134631_N0206_R081_T21FVC_20180314T150724.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('c2cfc404-a877-45cf-8a80-026a7851cff7')/$value" 
-#&gt;                                      S2B_MSIL1C_20180316T133639_N0206_R038_T21FVC_20180316T145348.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('30729a65-ba41-47e6-ab40-476db732a36e')/$value" </div><div class='input'><span class='co'># (at the time the documentation was written, this list was containing 5</span>
+#&gt; ...with 2 more elements.
+#&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, online.</div><div class='input'><span class='co'># (at the time the documentation was written, this list was containing 5</span>
 <span class='co'># archives already available online and 2 stored in the Long Term Archive)</span>
 
 <span class='co'># Order the products</span>
-<span class='no'>ordered_prods</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_order</span>(<span class='no'>list_safe</span>)</div><div class='output co'>#&gt; <span class='message'>[2019-10-25 09:01:20] Check if products are already available for download...</span></div><div class='output co'>#&gt; <span class='message'>[2019-10-25 09:01:23] 7 Sentinel-2 images are already available and will not be ordered.</span></div><div class='input'>
+<span class='no'>ordered_prods</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_order</span>(<span class='no'>list_safe</span>)</div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:02] Check if products are already available for download...</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:03] 6 Sentinel-2 images are already available and will not be ordered.</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:03] Ordering 1 Sentinel-2 images stored in the Long Term Archive...</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:04] 1 of 1 Sentinel-2 images were correctly ordered. You can check at a later time if the ordered products were made available using the command:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>safe_is_online("/home/lranghetti/.sen2r/lta_orders/lta_20191112_142104.json")</span></div><div class='input'>
 <span class='co'># Check in a second time if the product was made available</span>
-(<span class='no'>order_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>ordered_prods</span>, <span class='st'>"path"</span>))</div><div class='output co'>#&gt; NULL</div><div class='input'><span class='fu'><a href='safe_is_online.html'>safe_is_online</a></span>(<span class='no'>order_path</span>)
-<span class='co'># }</span></div></pre>
+(<span class='no'>order_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>ordered_prods</span>, <span class='st'>"path"</span>))</div><div class='output co'>#&gt; [1] "/home/lranghetti/.sen2r/lta_orders/lta_20191112_142104.json"</div><div class='input'><span class='fu'><a href='safe_is_online.html'>safe_is_online</a></span>(<span class='no'>order_path</span>)</div><div class='output co'>#&gt; S2B_MSIL1C_20180227T134629_N0206_R081_T21FVC_20180227T200327.SAFE 
+#&gt;                                                             FALSE </div><div class='input'># }
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

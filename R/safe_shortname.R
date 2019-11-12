@@ -46,12 +46,12 @@
 #'  default is '10m'. Notice that, choosing '10m' or '20m', bands with lower
 #'  resolution will be rescaled to `res`. Band 08 is used with `res = '10m'`,
 #'  band 08A with `res = '20m'` and `res = '60m'`.
-#' @param tiles Deprecated.
-#' @param force_tiles Deprecated.
+#' @param tiles Deprecated (no more used).
+#' @param force_tiles Deprecated (no more used).
 #' @param full.name Logical value: if TRUE (default), all the input path
 #'  is maintained (if existing); if FALSE, only basename is returned.
-#' @param set.seed Deprecated.
-#' @param multiple_names Deprecated.
+#' @param set.seed Deprecated (no more used).
+#' @param multiple_names Deprecated (no more used).
 #' @param abort Logical parameter: if TRUE, the function aborts in case
 #'  `prod_type` is not recognised; if FALSE (default), a warning is shown.
 #' @return Output product name

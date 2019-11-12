@@ -72,7 +72,8 @@
 #'  are managed (metadata are returned, and they are considered valid; 
 #'  if FALSE (default), they are considered as non-supported files.
 #'  Note that, from sen2r version 1.1.0, oldname products are no more supported
-#'  within processing chains.
+#'  within processing chains, so this function is deprecated and no more 
+#'  supported; moreover, it will be removed in next releases.
 #' @return `safe_getMetadata()` returns a data.table, a data.frame or a list
 #'  (depending on argument  `format`) with the output metadata;
 #' 

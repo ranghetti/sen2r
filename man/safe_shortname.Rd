@@ -22,16 +22,16 @@ default is '10m'. Notice that, choosing '10m' or '20m', bands with lower
 resolution will be rescaled to \code{res}. Band 08 is used with \code{res = '10m'},
 band 08A with \code{res = '20m'} and \code{res = '60m'}.}
 
-\item{tiles}{Deprecated.}
+\item{tiles}{Deprecated (no more used).}
 
-\item{force_tiles}{Deprecated.}
+\item{force_tiles}{Deprecated (no more used).}
 
 \item{full.name}{Logical value: if TRUE (default), all the input path
 is maintained (if existing); if FALSE, only basename is returned.}
 
-\item{set.seed}{Deprecated.}
+\item{set.seed}{Deprecated (no more used).}
 
-\item{multiple_names}{Deprecated.}
+\item{multiple_names}{Deprecated (no more used).}
 
 \item{abort}{Logical parameter: if TRUE, the function aborts in case
 \code{prod_type} is not recognised; if FALSE (default), a warning is shown.}
