@@ -327,27 +327,29 @@ s2_list <- function(spatial_extent = NULL,
           url <- in_entry[which(grepl("<link href=", in_entry))] %>%
             gsub("^.*<link href=\"([^\"]+)\"/>.*$", "\\1", .)
           
-          id_orbit <- in_entry[which(grepl("relativeorbitnumber", in_entry))] %>%
+          id_orbit <- in_entry[which(grepl("\\\"relativeorbitnumber\\\"", in_entry))] %>%
             gsub("^.*<int name=\"relativeorbitnumber\">([^<]+)</int>.*$", "\\1", .) %>%
             as.numeric() %>% sprintf("%03i", .)
           
-          clouds <- in_entry[which(grepl("cloudcoverpercentage", in_entry))] %>%
+          footprint <- tryCatch(
+            in_entry[which(grepl("\\\"footprint\\\"", in_entry))] %>%
+              gsub("^.*<str name=\"footprint\">([^<]+)</str>.*$", "\\1", .) %>%
+              st_as_sfc(crs = 4326),
+            error = function(e) {st_polygon()}
+          )
+          
+          clouds <- in_entry[which(grepl("\\\"cloudcoverpercentage\\\"", in_entry))] %>%
             gsub("^.*<double name=\"cloudcoverpercentage\">([^<]+)</double>.*$", "\\1", .) %>%
             as.numeric()
           
-          proc_level <- in_entry[which(grepl("processinglevel", in_entry))] %>%
+          proc_level <- in_entry[which(grepl("\\\"processinglevel\\\"", in_entry))] %>%
             gsub("^.*<str name=\"processinglevel\">Level\\-([^<]+)</str>.*$", "\\1", .)
           
-          mission <- in_entry[which(grepl("platformserialidentifier", in_entry))] %>%
+          mission <- in_entry[which(grepl("\\\"platformserialidentifier\\\"", in_entry))] %>%
             gsub("^.*<str name=\"platformserialidentifier\">Sentinel\\-([^<]+)</str>.*$", "\\1", .)
           
-          # id_tile <- in_entry[which(grepl("name=\"tileid\"", in_entry))] %>%
-          #   gsub("^.*<str name=\"tileid\">([^<]+)</str>.*$", "\\1", .)
           id_tile <- gsub("^.+_T([0-9]{2}[A-Z]{3})_.+$", "\\1", title)
           
-          # sensing_datetime <- in_entry[which(grepl("name=\"endposition\"", in_entry))] %>%
-          #   gsub("^.*<date name=\"endposition\">([0-9\\-]+)T[0-9\\:\\.]+Z</date>.*$", "\\1", .) %>%
-          #   as.POSIXct()
           sensing_datetime <- gsub(
             "^S2[AB]\\_MSIL[12][AC]\\_([0-9]{8}T[0-9]{6})\\_N[0-9]{4}\\_R[0-9]{3}\\_T[A-Z0-9]{5}\\_[0-9]{8}T[0-9]{6}$",
             "\\1", title
@@ -362,6 +364,9 @@ s2_list <- function(spatial_extent = NULL,
             gsub("^.*<date name=\"ingestiondate\">([0-9\\-]+)T([0-9\\:\\.]+)Z</date>.*$", "\\1 \\2", .) %>%
             as.POSIXct(tz = "UTC")
           
+          uuid <- in_entry[which(grepl("\\\"uuid\\\"", in_entry))] %>%
+            gsub("^.*<str name=\"uuid\">([^<]+)</str>.*$", "\\1", .)
+          
           # print(paste0(title, ".SAFE"))
           out_list[[n_entries]] <- data.frame(
             name = paste0(title, ".SAFE"),
@@ -373,6 +378,8 @@ s2_list <- function(spatial_extent = NULL,
             sensing_datetime = sensing_datetime,
             ingestion_datetime = ingestion_datetime,
             clouds = clouds,
+            footprint = st_as_text(footprint),
+            uuid = uuid,
             stringsAsFactors = FALSE
           )
           n_entries <- n_entries + 1

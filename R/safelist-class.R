@@ -36,11 +36,16 @@
 #' ## Convert to other classes
 #' (s2_char <- as.character(list_safe)) # convert to a simple named character
 #' (s2_df <- as.data.frame(list_safe)) # convert to a data.frame
-#' library(data.table); (s2_dt <- as.data.table(list_safe)) # convert to a data.table
+#' library(data.table)
+#' (s2_dt <- as.data.table(list_safe)) # convert to a data.table
+#' library(sf)
+#' (s2_sf <- st_as_sf(list_safe)) # convert to sf
 #' 
 #' ## Convert from other classes
 #' as(s2_char, "safelist") # this causes the loss of hidden attributes
-#' as(s2_df, "safelist") # this maintains attributes as columns
+#' as(s2_df, "safelist") # this (and followings) maintain attributes as columns
+#' as(s2_dt, "safelist")
+#' as(s2_sf, "safelist")
 #' }
 
 setClass("safelist", contains = "character")
@@ -89,6 +94,9 @@ setAs("data.frame", "safelist", function(from) {
   as(to, "safelist")
 })
 
+setAs("sf", "safelist", function(from) {
+  as(as.data.frame(s2_sf), "safelist")
+})
 
 ## Methods FROM safelist
 
@@ -127,37 +135,20 @@ setAs("safelist", "character", function(from) {
   as.character(from)
 })
 
+#' @export
+st_as_sf.safelist <- function(x, ...) {
+  if (!is.null(attr(x, "footprint"))) {
+    sf::st_as_sf(as.data.frame(x), wkt = "footprint", crs = 4326)
+  } else {
+    stop("cannot convert to safelist (missing footprint)")
+  }
+}
+setAs("safelist", "sf", function(from) {
+  st_as_sf(from)
+})
 
-## Print methods
 
-# #' @export
-# print.s2dt = function(x) {
-#   if (!all(c("name","url") %in% names(x))) {
-#     print(data.table(x))
-#   } else {
-#     printed_cols <- c("name", "url")
-#     x_print <- as.data.frame(x)[seq_len(min(nrow(x),5)), printed_cols]
-#     x_print$url <- paste0(substr(x_print$url,1,20),"...")
-#     cat("A data.table with", nrow(x), "SAFE archives.\n")
-#     print.data.frame(x_print)
-#     if (nrow(x) > 5 | ncol(x) > ncol(x_print)) {
-#       cat("...with")
-#       if (nrow(x) > 5) {
-#         cat("", nrow(x)-5, "more rows")
-#       }
-#       if (nrow(x) > 5 & ncol(x) > ncol(x_print)) {
-#         cat(" and")
-#       }
-#       if (ncol(x) > ncol(x_print)) {
-#         cat("", ncol(x)-ncol(x_print), "more columns: ")
-#         cat(paste(names(x)[!names(x) %in% printed_cols], collapse = ", "))
-#       }
-#       cat(".\n")
-#     }
-#   }
-#   invisible(x)
-# }
-
+## Print method
 #' @export
 print.safelist = function(x, ...) {
   x_print <- as.character(x)[seq_len(min(length(x),5))]
