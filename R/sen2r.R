@@ -307,10 +307,12 @@
 #' @import data.table
 #' @importFrom utils packageVersion
 #' @importFrom geojsonio geojson_json
-#' @importFrom jsonlite fromJSON
-#' @importFrom sf st_cast st_read st_combine st_as_sf st_is_valid
-#' @importFrom methods formalArgs
-#' @importFrom stats na.omit
+#' @importFrom jsonlite fromJSON toJSON
+#' @importFrom foreach foreach "%do%" "%dopar%"
+#' @importFrom sf st_as_sfc st_cast st_combine st_crs st_intersects st_is_valid
+#'  st_read st_transform st_union
+#' @importFrom methods formalArgs is
+#' @importFrom stats na.omit setNames
 #' @export
 #' @examples
 #' \donttest{
@@ -1046,7 +1048,7 @@ sen2r <- function(param_list = NULL,
   ### Find SAFE and compute the names of required files ###
   
   ## 2. List required products ##
-  s2_lists <- s2_lists_islta <- list()
+  s2_lists <- s2_lists_islta <- s2_lists_footprints <- list()
   
   if (pm$online == TRUE) {
     
@@ -1074,6 +1076,7 @@ sen2r <- function(param_list = NULL,
         availability = "check",
         apihub = pm$apihub
       )
+      s2_lists_footprints[["l1c"]] <- attr(s2_lists[["l1c"]], "footprint")
       # save lta availability (TRUE if on LTA, FALSE if online)
       s2_lists_islta[["l1c"]] <- !attr(s2_lists[["l1c"]], "online")
       names(s2_lists_islta[["l1c"]]) <- names(s2_lists[["l1c"]])
@@ -1101,6 +1104,7 @@ sen2r <- function(param_list = NULL,
         availability = "check",
         apihub = pm$apihub
       )
+      s2_lists_footprints[["l2a"]] <- attr(s2_lists[["l2a"]], "footprint")
       # save lta availability (TRUE if on LTA, FALSE if online)
       s2_lists_islta[["l2a"]] <- !attr(s2_lists[["l2a"]], "online")
       names(s2_lists_islta[["l2a"]]) <- names(s2_lists[["l2a"]])
@@ -1111,6 +1115,10 @@ sen2r <- function(param_list = NULL,
     # if offline mode, read the SAFE product list from folders and filter
     if ("l1c" %in% pm$s2_levels) {
       s2_lists[["l1c"]] <- list.files(pm$path_l1c, "\\.SAFE$")
+      s2_lists_footprints[["l1c"]] <- safe_getMetadata(
+        file.path(pm$path_l1c, s2_lists[["l1c"]]), 
+        "footprint", abort = FALSE, format = "vector", simplify = TRUE
+      )
     }
     if ("l2a" %in% pm$s2_levels) {
       s2_lists[["l2a"]] <- if (pm$step_atmcorr=="l2a") {
@@ -1133,6 +1141,10 @@ sen2r <- function(param_list = NULL,
             ]
         )
       }
+      s2_lists_footprints[["l2a"]] <- safe_getMetadata(
+        file.path(pm$path_l2a, s2_lists[["l2a"]]), 
+        "footprint", abort = FALSE, format = "vector", simplify = TRUE
+      )
     }
     s2_lists <- lapply(s2_lists, function(l) {
       safe_getMetadata(l, "level", abort = FALSE, format = "vector", simplify = TRUE)
@@ -1141,8 +1153,9 @@ sen2r <- function(param_list = NULL,
     
   }
   s2_list <- unlist(s2_lists)[!duplicated(unlist(lapply(s2_lists, names)))]
+  s2_list_footprints <- unlist(s2_lists_footprints)[!duplicated(unlist(lapply(s2_lists, names)))]
   s2_list_islta <- unlist(s2_lists_islta)[!duplicated(unlist(lapply(s2_lists_islta, names)))]
-  rm(s2_lists, s2_lists_islta)
+  rm(s2_lists, s2_lists_islta, s2_lists_footprints)
   
   # If s2_list is empty, exit
   if (length(s2_list)==0) {
@@ -1169,6 +1182,7 @@ sen2r <- function(param_list = NULL,
     names(s2_list), 
     info = c("nameinfo"), format = "data.table"
   )
+  s2_dt$footprint <- s2_list_footprints
   # s2_dt <- lapply(names(s2_list), function(x) {
   #   unlist(safe_getMetadata(x, info="nameinfo")) %>%
   #     t() %>%
@@ -1181,6 +1195,7 @@ sen2r <- function(param_list = NULL,
       "S2A_MSIL2A_20000101T000000_N0200_R001_T01TAA_20000101T000000.SAFE",
       info = "nameinfo", format = "data.table"
     )[-1,]
+    s2_dt$footprint <- character(0)
   }
   s2_dt[,"lta":=if (is.null(s2_list_islta)) {FALSE} else {s2_list_islta}]
   s2_dt[,c("name","url"):=list(nn(names(s2_list)),nn(s2_list))]
@@ -1276,6 +1291,13 @@ sen2r <- function(param_list = NULL,
   }
   if (all(!is.na(pm$s2orbits_selected))) {
     s2_dt <- s2_dt[id_orbit %in% pm$s2orbits_selected,]
+  }
+  # if extent is defined, filter SAFEs on footprints
+  if (!all(is(pm$extent, "logical"), anyNA(pm$extent))) {
+    s2_dt <- s2_dt[suppressMessages(st_intersects(
+      st_union(pm$extent), 
+      st_transform(st_as_sfc(s2_dt$footprint, crs = 4326), st_crs(pm$extent))
+    ))[[1]],]
   }
   # setorder(s2_dt, -sensing_datetime)
   
