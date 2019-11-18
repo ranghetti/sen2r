@@ -102,7 +102,7 @@ setAs("sf", "safelist", function(from) {
 
 #' @export
 as.data.frame.safelist <- function(x, row.names = NULL, optional = FALSE, ...) {
-  to <- data.frame(name = names(x), url = as.vector(x))
+  to <- data.frame(name = names(x), url = as.vector(x), stringsAsFactors = FALSE)
   autoRN <- (is.null(row.names) || length(row.names) != nrow(to))
   attr(to, "row.names") <- if (autoRN) {seq_len(nrow(to))} else {row.names}
   
