@@ -42,11 +42,16 @@ attr(list_safe, "sensing_datetime") # extract an hidden attribute from a safelis
 ## Convert to other classes
 (s2_char <- as.character(list_safe)) # convert to a simple named character
 (s2_df <- as.data.frame(list_safe)) # convert to a data.frame
-library(data.table); (s2_dt <- as.data.table(list_safe)) # convert to a data.table
+library(data.table)
+(s2_dt <- as.data.table(list_safe)) # convert to a data.table
+library(sf)
+(s2_sf <- st_as_sf(list_safe)) # convert to sf
 
 ## Convert from other classes
 as(s2_char, "safelist") # this causes the loss of hidden attributes
-as(s2_df, "safelist") # this maintains attributes as columns
+as(s2_df, "safelist") # this (and followings) maintain attributes as columns
+as(s2_dt, "safelist")
+as(s2_sf, "safelist")
 }
 }
 \author{

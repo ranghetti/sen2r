@@ -457,6 +457,26 @@ create_indices_db <- function(xslt_path = NA,
       s2_formula_mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">GREEN</mi>\n      <mo>-</mo>\n      <mi mathcolor=\"#443399\">NIR</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">GREEN</mi>\n      <mo>+</mo>\n      <mi mathcolor=\"#443399\">NIR</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n  </mfrac>\n </mrow>\n</math>",
       checked = TRUE,
       a = NA, b = NA, x = NA
+    ),
+    "NDVIre" = data.frame(
+      n_index = 321,
+      longname = "Red-edge-based Normalized Difference Vegetation Index",
+      name = "NDVIre",
+      link = "https://doi.org/10.1016/S0034-4257(03)00131-7",
+      s2_formula = "(band_5-band_4)/(band_5+band_4)",
+      s2_formula_mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">Rededge1</mi>\n      <mo>-</mo>\n      <mi mathcolor=\"#443399\">RED</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">Rededge1</mi>\n      <mo>+</mo>\n      <mi mathcolor=\"#443399\">RED</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n  </mfrac>\n </mrow>\n</math>",
+      checked = TRUE,
+      a = NA, b = NA, x = NA
+    ),
+    "NDBI" = data.frame(
+      n_index = 322,
+      longname = "Normalized Difference Built-up Index",
+      name = "NDBI",
+      link = "https://doi.org/10.1080/01431160304987",
+      s2_formula = "(band_11-band_8)/(band_11+band_8)",
+      s2_formula_mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">SWIR1</mi>\n      <mo>-</mo>\n      <mi mathcolor=\"#443399\">NIR</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">SWIR1</mi>\n      <mo>+</mo>\n      <mi mathcolor=\"#443399\">NIR</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n  </mfrac>\n </mrow>\n</math>",
+      checked = TRUE,
+      a = NA, b = NA, x = NA
     )
   ), fill=TRUE)
   

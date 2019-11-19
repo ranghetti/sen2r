@@ -138,13 +138,16 @@ s2_calcindices <- function(infiles,
     clip <- function(x,min,max) {(x+min+2*max+abs(x-min)-abs(x+min-2*max+abs(x-min)))/4}
     
     out <- raster(x)
-    out <- writeStart(
-      out, out_file,
-      NAflag = NAflag,
-      datatype = datatype,
-      format = ifelse(sel_format=="VRT", "GTiff", sel_format),
-      if(sel_format %in% c("GTiff","VRT")){options = paste0("COMPRESS=",compress)},
-      overwrite = overwrite
+    suppress_warnings(
+      out <- writeStart(
+        out, out_file,
+        NAflag = NAflag,
+        datatype = datatype,
+        format = ifelse(sel_format=="VRT", "GTiff", sel_format),
+        if(sel_format %in% c("GTiff","VRT")){options = paste0("COMPRESS=",compress)},
+        overwrite = overwrite
+      ),
+      "NOT UPDATED FOR PROJ >\\= 6"
     )
     
     # x <- brick(infiles)

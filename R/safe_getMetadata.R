@@ -241,7 +241,7 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
                  "id_orbit", "orbit_number", "sensing_datetime", "id_baseline") # information GENERALLY retrieved from name
   info_gdal <- c("clouds","direction","orbit_n","preview_url", # information retrieved by reading the file metadata
                  "proc_baseline","gdal_level","gdal_sensing_datetime",
-                 "nodata_value","saturated_value")
+                 "nodata_value","saturated_value","footprint")
   
   # check format attribute
   if (format == "default") {
@@ -717,32 +717,36 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
       # }
       
       # retrieve metadata[[i]] from file content
-      if (exists("s2_gdal") & s2_exists) {
-        
+      if (
+        exists("s2_gdal") & 
+        s2_exists &
+        any(info_gdal %in% sel_info)
+      ) {
         # Read metadata[[i]]
+        s2_gdal_metadata <- py_to_r(s2_gdal$GetMetadata())
         if ("clouds" %in% sel_info) {
-          metadata[[i]][["clouds"]] <- py_to_r(s2_gdal$GetMetadata()[["CLOUD_COVERAGE_ASSESSMENT"]])
+          metadata[[i]][["clouds"]] <- s2_gdal_metadata[["CLOUD_COVERAGE_ASSESSMENT"]]
         }
         if ("direction" %in% sel_info) {
-          metadata[[i]][["direction"]] <- py_to_r(s2_gdal$GetMetadata()[["DATATAKE_1_SENSING_ORBIT_DIRECTION"]])
+          metadata[[i]][["direction"]] <- s2_gdal_metadata[["DATATAKE_1_SENSING_ORBIT_DIRECTION"]]
         }
         if ("orbit_n" %in% sel_info) {
-          metadata[[i]][["orbit_n"]] <- py_to_r(s2_gdal$GetMetadata()[["DATATAKE_1_SENSING_ORBIT_NUMBER"]])
+          metadata[[i]][["orbit_n"]] <- s2_gdal_metadata[["DATATAKE_1_SENSING_ORBIT_NUMBER"]]
         }
         if ("preview_url" %in% sel_info) {
-          metadata[[i]][["preview_url"]] <- py_to_r(s2_gdal$GetMetadata()[["PREVIEW_IMAGE_URL"]])
+          metadata[[i]][["preview_url"]] <- s2_gdal_metadata[["PREVIEW_IMAGE_URL"]]
         }
         if ("proc_baseline" %in% sel_info) {
-          metadata[[i]][["proc_baseline"]] <- py_to_r(s2_gdal$GetMetadata()[["PROCESSING_BASELINE"]])
+          metadata[[i]][["proc_baseline"]] <- s2_gdal_metadata[["PROCESSING_BASELINE"]]
         }
         # if ("level" %in% sel_info) {
-        #   metadata[[i]][["level"]] <- py_to_r(s2_gdal$GetMetadata()[["PROCESSING_LEVEL"]])
+        #   metadata[[i]][["level"]] <- s2_gdal_metadata[["PROCESSING_LEVEL"]]
         # }
         if ("sensing_datetime" %in% sel_info) {
           start_time <- as.POSIXct(
-            py_to_r(s2_gdal$GetMetadata()[["PRODUCT_START_TIME"]]), format="%Y-%m-%dT%H:%M:%S", tz="UTC")
+            s2_gdal_metadata[["PRODUCT_START_TIME"]], format="%Y-%m-%dT%H:%M:%S", tz="UTC")
           stop_time <- as.POSIXct(
-            py_to_r(s2_gdal$GetMetadata()[["PRODUCT_STOP_TIME"]]), format="%Y-%m-%dT%H:%M:%S", tz="UTC")
+            s2_gdal_metadata[["PRODUCT_STOP_TIME"]], format="%Y-%m-%dT%H:%M:%S", tz="UTC")
           metadata[[i]][["sensing_datetime"]] <- if (start_time == stop_time) {
             start_time
           } else {
@@ -750,12 +754,14 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
           }
         }
         if ("nodata_value" %in% sel_info) {
-          metadata[[i]][["nodata_value"]] <- py_to_r(s2_gdal$GetMetadata()[["SPECIAL_VALUE_NODATA"]])
+          metadata[[i]][["nodata_value"]] <- s2_gdal_metadata[["SPECIAL_VALUE_NODATA"]]
         }
         if ("saturated_value" %in% sel_info) {
-          metadata[[i]][["saturated_value"]] <- py_to_r(s2_gdal$GetMetadata()[["SPECIAL_VALUE_SATURATED"]])
+          metadata[[i]][["saturated_value"]] <- s2_gdal_metadata[["SPECIAL_VALUE_SATURATED"]]
         }
-        
+        if ("footprint" %in% sel_info) {
+          metadata[[i]][["footprint"]] <- s2_gdal_metadata[["FOOTPRINT"]]
+        }
       }
       
     } # end of s2_exists IF cycle

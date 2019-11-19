@@ -27,9 +27,9 @@
 #     testthat::expect_is(newjson, "list")
 #     testthat::expect_is(newjson$indices, "data.frame")
 #     testthat::expect_equal(dim(newjson$indices), dim(defjson$indices))
-#     testthat::expect_equal(nrow(newjson$indices), 224)
+#     testthat::expect_equal(nrow(newjson$indices), 226)
 #     testthat::expect_equal(names(newjson$indices), c(
-#       "n_index", "longname", "name", "link", "s2_formula", 
+#       "n_index", "longname", "name", "link", "s2_formula",
 #       "checked", "s2_formula_mathml", "a", "b", "c", "d"
 #     ))
 #     

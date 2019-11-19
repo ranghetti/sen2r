@@ -15,7 +15,8 @@ testthat::test_that(
     testthat::expect_equal(length(s2_safelist_0), 3)
     testthat::expect_equal(
       sort(names(attributes(s2_safelist_0))), 
-      c("class","clouds","id_orbit","id_tile","ingestion_datetime","level","mission","names","online","sensing_datetime")
+      c("class","clouds","footprint","id_orbit","id_tile","ingestion_datetime",
+        "level","mission","names","online","sensing_datetime","uuid")
     )
   }
 )
@@ -40,6 +41,17 @@ testthat::test_that(
     testthat::expect_equal(nrow(s2_df_1), length(s2_safelist_0))
     testthat::expect_equal(as.data.table(s2_df_1), s2_dt_1)
     testthat::expect_equal(as.vector(s2_safelist_0), as.character(s2_df_1$url))
+    
+  }
+)
+
+testthat::test_that(
+  "Check conversion to sf", {
+    s2_sf_1 <- as(s2_safelist_0, "sf")
+    
+    testthat::expect_is(s2_sf_1, "sf")
+    testthat::expect_equal(as.character(s2_sf_1$name), names(s2_safelist_0))
+    testthat::expect_equal(nrow(s2_sf_1), length(s2_safelist_0))
 
   }
 )
