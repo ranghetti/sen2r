@@ -400,21 +400,31 @@ s2_mask <- function(infiles,
             mask_tmpfiles,
             file.path(sel_tmpdir, basename(tempfile(pattern = "mask_", fileext = ".tif")))
           )
-          raster::calc(inmask[[j]],
-                       function(x){as.integer(!is.na(nn(x)) & !x %in% req_masks[[j]])},
-                       filename = mask_tmpfiles[j],
-                       options = "COMPRESS=LZW",
-                       datatype = "INT1U",
-                       overwrite = TRUE)
+          suppress_warnings(
+            raster::calc(
+              inmask[[j]],
+              function(x){as.integer(!is.na(nn(x)) & !x %in% req_masks[[j]])},
+              filename = mask_tmpfiles[j],
+              options = "COMPRESS=LZW",
+              datatype = "INT1U",
+              overwrite = TRUE
+            ),
+            "NOT UPDATED FOR PROJ >\\= 6"
+          )
           naval_tmpfiles <- c(
             naval_tmpfiles,
             file.path(sel_tmpdir, basename(tempfile(pattern = "naval_", fileext = ".tif")))
           )
-          raster::calc(inmask[[j]],
-                       function(x){as.integer(!is.na(nn(x)))},
-                       filename = naval_tmpfiles[j],
-                       options = "COMPRESS=LZW",
-                       datatype = "INT1U")
+          suppress_warnings(
+            raster::calc(
+              inmask[[j]],
+              function(x){as.integer(!is.na(nn(x)))},
+              filename = naval_tmpfiles[j],
+              options = "COMPRESS=LZW",
+              datatype = "INT1U"
+            ),
+            "NOT UPDATED FOR PROJ >\\= 6"
+          )
         }
         if(length(mask_tmpfiles)==1) {
           outmask <- mask_tmpfiles
@@ -519,18 +529,21 @@ s2_mask <- function(infiles,
               }
               if (any(!file.exists(binmask), overwrite == TRUE)) {
                 # mask NA values
-                raster::mask(
-                  raster(outmask_smooth),
-                  raster(outnaval_res),
-                  filename = binmask,
-                  maskvalue = 0,
-                  updatevalue = sel_naflag,
-                  updateNA = TRUE,
-                  NAflag = 255,
-                  datatype = "INT1U",
-                  format = sel_format,
-                  options = if(sel_format == "GTiff") {paste0("COMPRESS=",compress)},
-                  overwrite = overwrite
+                suppress_warnings(
+                  raster::mask(
+                    raster(outmask_smooth),
+                    raster(outnaval_res),
+                    filename = binmask,
+                    maskvalue = 0,
+                    updatevalue = sel_naflag,
+                    updateNA = TRUE,
+                    NAflag = 255,
+                    datatype = "INT1U",
+                    format = sel_format,
+                    options = if(sel_format == "GTiff") {paste0("COMPRESS=",compress)},
+                    overwrite = overwrite
+                  ),
+                  "NOT UPDATED FOR PROJ >\\= 6"
                 )
               }
             }
@@ -552,14 +565,17 @@ s2_mask <- function(infiles,
               if (grepl("\\.vrt$", out_file)) {
                 out_file <- gsub("\\.vrt$", ".tif", out_file)
               }
-              out <- writeStart(
-                out,
-                out_file,
-                NAflag=na,
-                datatype = datatype,
-                format = ifelse(sel_format=="VRT","GTiff",sel_format),
-                if(sel_format %in% c("GTiff","VRT")){options = c("COMPRESS=LZW")},
-                overwrite = overwrite
+              suppress_warnings(
+                out <- writeStart(
+                  out,
+                  out_file,
+                  NAflag=na,
+                  datatype = datatype,
+                  format = ifelse(sel_format=="VRT","GTiff",sel_format),
+                  if(sel_format %in% c("GTiff","VRT")){options = c("COMPRESS=LZW")},
+                  overwrite = overwrite
+                ),
+                "NOT UPDATED FOR PROJ >\\= 6"
               )
               #4 bytes per cell, nb + 1 bands (brick + mask), * 2 to account for a copy
               bs <- blockSize(out, minblocks = 8)
