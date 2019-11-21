@@ -1,14 +1,14 @@
-#' @title Return a parameter used in a WRT projection
+#' @title Return a parameter used in a WKT projection
 #' @description Return the value of a parameter (or the name) present in
-#'  the WKT of the given proj4string.
-#' @param proj4string The proj4string to be named.
+#'  the WKT of the given CRS
+#' @param x The CRS to be named (any [st_crs2] input is accepted).
 #' @param par Character corresponding to the parameter name.
 #' @param abort logical: if TRUE, the function aborts in case an invalid
-#'  proj4string is passed; if FALSE (default), the function returns NA,
+#'  CRS is passed; if FALSE (default), the function returns NA,
 #'  and a warning is shown.
 #' @return A character with the content of the parameter (NULL if the
 #'  parameter is not recognised) or the name of the projection, and an
-#'   attribute `proj4string` with the input projection checked using
+#'   attribute `crs` with the input projection checked using
 #'  [sf::st_crs()].
 #'
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
@@ -20,16 +20,16 @@
 #'
 #' @examples
 #' \donttest{
-#' projpar("+init=epsg:4326", "Unit")
+#' projpar(4326, "Unit")
 #' }
 
-projpar <- function(proj4string, par, abort = FALSE) {
+projpar <- function(x, par, abort = FALSE) {
   
   # import python modules
   py <- init_python()
   
   crs_check <- tryCatch(
-    st_crs2(proj4string), 
+    st_crs2(x), 
     error = function(e) {st_crs(NA)}
   )
   
@@ -44,9 +44,8 @@ projpar <- function(proj4string, par, abort = FALSE) {
   if (!is(proj4_par, "character")) {
     proj4_par <- py_to_r(proj4_par)
   }
-    
   
-  attr(proj4_par, "proj4string") <- crs_check$proj4string
+  attr(proj4_par, "crs") <- crs_check
   
   return(proj4_par)
   
@@ -59,14 +58,14 @@ projpar <- function(proj4string, par, abort = FALSE) {
 #' @importFrom sf st_is_longlat st_crs
 #' @examples
 #' \donttest{
-#' projname("+init=epsg:4326")
+#' projname(4326)
 #' }
 
-projname <- function(proj4string, abort = FALSE) { # nocov start
+projname <- function(x, abort = FALSE) { # nocov start
   
-  proj4_name <- projpar(proj4string, "geogcs")
-  if (!st_is_longlat(st_crs(attr(proj4_name, "proj4string")))) {
-    proj4_name <- projpar(proj4string, "projcs")
+  proj4_name <- projpar(x, "geogcs")
+  if (!st_is_longlat(st_crs(attr(proj4_name, "crs")))) {
+    proj4_name <- projpar(x, "projcs")
   }
   proj4_name <- gsub("\\_"," ",proj4_name)
   

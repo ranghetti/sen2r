@@ -3,40 +3,40 @@
 \name{projpar}
 \alias{projpar}
 \alias{projname}
-\title{Return a parameter used in a WRT projection}
+\title{Return a parameter used in a WKT projection}
 \usage{
-projpar(proj4string, par, abort = FALSE)
+projpar(x, par, abort = FALSE)
 
-projname(proj4string, abort = FALSE)
+projname(x, abort = FALSE)
 }
 \arguments{
-\item{proj4string}{The proj4string to be named.}
+\item{x}{The CRS to be named (any \link{st_crs2} input is accepted).}
 
 \item{par}{Character corresponding to the parameter name.}
 
 \item{abort}{logical: if TRUE, the function aborts in case an invalid
-proj4string is passed; if FALSE (default), the function returns NA,
+CRS is passed; if FALSE (default), the function returns NA,
 and a warning is shown.}
 }
 \value{
 A character with the content of the parameter (NULL if the
 parameter is not recognised) or the name of the projection, and an
-attribute \code{proj4string} with the input projection checked using
+attribute \code{crs} with the input projection checked using
 \code{\link[sf:st_crs]{sf::st_crs()}}.
 }
 \description{
 Return the value of a parameter (or the name) present in
-the WKT of the given proj4string.
+the WKT of the given CRS
 }
 \note{
 Python is needed.
 }
 \examples{
 \donttest{
-projpar("+init=epsg:4326", "Unit")
+projpar(4326, "Unit")
 }
 \donttest{
-projname("+init=epsg:4326")
+projname(4326)
 }
 }
 \author{

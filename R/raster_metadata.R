@@ -131,7 +131,7 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
         out_list[[i]][["proj"]] <- ref_proj
       }
       if ("unit" %in% meta) {
-        out_list[[i]][["unit"]] <- as.character(projpar(ref_proj$proj4string, "unit"))
+        out_list[[i]][["unit"]] <- as.character(projpar(ref_proj, "unit"))
       }
       
       if ("outformat" %in% meta) {

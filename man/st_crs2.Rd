@@ -14,16 +14,20 @@ st_crs2(x, ...)
 \value{
 If \code{x} is 0 < numeric <= 60, return \code{crs} object for UTM timezone \code{x} N;
 if \code{x} is numeric > 60, return \code{crs} object for SRID \code{x};
+if \code{x} is of class \code{sf} or \code{sfc}, return its \code{crs} object;
 if \code{x} is character in the form \code{nn}, \code{nnN} or \code{nnS}, being \code{nn} a number 0 < nn <= 60,
 return \code{crs} object for UTM timezone \code{x} N or \code{x} S (N if not specified);
-if \code{x} is a different character, return \code{crs} object for proj4string \code{x};
 if \code{wkt} is given, return \code{crs} object for well-known-text representation \code{wkt};
-if \code{x} is of class \code{sf} or \code{sfc}, return its \code{crs} object.
+if \code{x} is a path of a spatial file or of a text file containing a WKT
+(like .prj), return the corresponding \code{crs} object;
+if \code{x} is a different character, return \code{crs} object for proj4string \code{x},
+with a warning in case PROJ >= 3 is being used.
 }
 \description{
-This function is a wrapper for \link[sf:st_crs]{sf::st_crs}, unless accepting
-also UTM timezones (see details) and threating numeric \code{character} strings
-as integers.
+This function is a wrapper for \link[sf:st_crs]{sf::st_crs}, unless
+threating numeric \code{character} strings as integers, and
+accepting also UTM timezones, paths of spatial files and paths of
+text files containing WKT like .prj (see details) .
 }
 \details{
 See \link[sf:st_crs]{sf::st_crs} for details.
