@@ -55,20 +55,21 @@ load_extent_bbox <- function() {
         ),
         strong("Specify the projection of the coordinates:"),
         div(
-          div(
-            style="display:inline-block;position:relative;margin-top:5px;",
-            textInput("bboxproj", NULL,
-                      value="4326", width="190px")
-          ),
-          div(
-            style="display:inline-block;position:relative;bottom:0;margin-left:10px;",
-            htmlOutput("bboxproj_message")
-          )
+          style="display:inline-block;position:relative;margin-top:5px;",
+          textInput("bboxproj", NULL,
+                    value="4326", width="190px")
+        ),
+        p(style = "font-size:small;color:grey;",
+          "(type an EPSG code, a WKT text or the path of a spatial file /",
+          "of a text file containing a WKT)"),
+        div(
+          style="display:inline-block;position:relative;bottom:0;margin-left:10px;",
+          htmlOutput("bboxproj_message")
         )
       ),
       column(
         width=8,
-        leafletOutput("view_map_bbox", height=400, width="100%")
+        leafletOutput("view_map_bbox", height=500, width="100%")
       )
     ),
     easyClose = FALSE,
@@ -100,7 +101,7 @@ load_extent_vectfile <- function() {
         p("Chose the vector file to be used as extent.")
       ))
     ),
-    leafletOutput("view_map_vectfile", height=400, width="100%"),
+    leafletOutput("view_map_vectfile", height=500, width="100%"),
     easyClose = FALSE,
     footer = tagList(
       actionButton("save_extent_vectfile", strong("\u2000Ok"), icon=icon("check")),

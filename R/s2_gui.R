@@ -1086,10 +1086,18 @@ s2_gui <- function(param_list = NULL,
                     div(style="margin-bottom:-0.25em;", strong("Output projection")),
                     conditionalPanel(
                       condition = "input.use_reference == 'FALSE' || input.reference_usefor.indexOf('proj') < 0",
-                      radioButtons("reproj", label = NULL,
-                                   choices = list("Input projection (do not reproject)" = FALSE,
-                                                  "Custom projection" = TRUE),
-                                   selected = FALSE),
+                      radioButtons(
+                        "reproj", label = NULL,
+                        choiceNames = list(
+                          "Input projection (do not reproject)",
+                          span(
+                            "Custom projection\u2000",
+                            actionLink("help_outprojinput", icon("question-circle"))
+                          )
+                        ),
+                        choiceValues = c(FALSE, TRUE),
+                        selected = FALSE
+                      ),
                       conditionalPanel(
                         condition = "input.reproj == 'TRUE'",
                         textInput("outproj", NULL,
@@ -1813,27 +1821,34 @@ s2_gui <- function(param_list = NULL,
     
     #- Bbox mode -#
     
-    # message for bboxproj
+    # message for bboxcrs
     output$bboxproj_message <- renderUI({
-      bboxproj_validated <- tryCatch(
+      bboxcrs_validated <- tryCatch(
         st_crs2(input$bboxproj),
         error = function(e) {st_crs(NA)}
-      )$proj4string
+      )
       if (input$bboxproj=="") {
-        rv$bboxproj <- NA
+        rv$bboxcrs <- st_crs(NA)
         ""
-      } else if (is.na(bboxproj_validated)) {
-        rv$bboxproj <- NA
+      } else if (is.na(bboxcrs_validated)) {
+        rv$bboxcrs <- st_crs(NA)
         # span(style="color:red", "\u2718") # ballot
         span(style="color:red",
              "Insert a valid projection (UTM timezone, EPSG code or PROJ4 string).")
       } else {
-        rv$bboxproj <- bboxproj_validated
+        rv$bboxcrs <- bboxcrs_validated
         # span(style="color:darkgreen", "\u2714") # check
-        div(strong("Selected projection:"),
-            br(),
-            projname(bboxproj_validated),
-            style="color:darkgreen")
+        if (projname(bboxcrs_validated) != "unknown") {
+          div(style="color:darkgreen",
+              strong("Selected projection:"), br(),
+              projname(bboxcrs_validated))
+        } else if (!is.na(bboxcrs_validated$epsg)) {
+          div(style="color:darkgreen", 
+              strong("Selected projection:"), br(),
+              paste("EPSG:", bboxcrs_validated$epsg))
+        } else {
+          div(style="color:darkgreen", strong("Valid projection"))
+        }
       }
     })
     
@@ -1850,13 +1865,13 @@ s2_gui <- function(param_list = NULL,
     observeEvent(c(
       input$bbox_xmin, input$bbox_xmax,
       input$bbox_ymin, input$bbox_ymax,
-      rv$bboxproj
+      rv$bboxcrs
     ), {
       
       # Check that the bounding box is valid
       if (!anyNA(c(input$bbox_xmin, input$bbox_xmax,
                    input$bbox_ymin, input$bbox_ymax)) &
-          !(is.null(rv$bboxproj) || is.na(rv$bboxproj))) {
+          !(is.null(rv$bboxcrs) || is.na(rv$bboxcrs))) {
         if (input$bbox_xmin != input$bbox_xmax &
             input$bbox_ymin != input$bbox_ymax) {
           # create the polygon
@@ -1866,7 +1881,7 @@ s2_gui <- function(param_list = NULL,
                 "ymin" = input$bbox_ymin,
                 "xmax" = input$bbox_xmax,
                 "ymax" = input$bbox_ymax),
-              crs = rv$bboxproj
+              crs = rv$bboxcrs
             )
           ) %>% st_transform(4326)
           attr(rv$bbox_polygon, "valid") <- TRUE
@@ -2263,11 +2278,10 @@ s2_gui <- function(param_list = NULL,
     ## Reference file
     shinyFileChoose(input, "reference_file_button", roots = volumes)
     
-    reference <- reactive({
-      if (!is.null(input$reference_file_button)) {
-        test_reference <- raster_metadata(input$reference_file_textin, format = "list")[[1]]
-        if (test_reference$isvalid) {test_reference}
-      }
+    observe({
+      req(input$reference_file_textin)
+      test_reference <- raster_metadata(input$reference_file_textin, format = "list")[[1]]
+      rv$reference <- if (test_reference$valid) {test_reference} else {NULL}
     })
     
     observe({
@@ -2275,7 +2289,7 @@ s2_gui <- function(param_list = NULL,
         as.character()
       updateTextInput(session, "reference_file_textin", value = path_reference_file)
       output$reference_file_message <- renderUI({
-        if (!is.null(reference())) {
+        if (!is.null(rv$reference)) {
           span(style="color:darkgreen", "\u2001\u2714") # check
         } else if (!is.null(input$reference_file_button)) {
           span(style="color:red", "\u2001\u2718") # ballot
@@ -2305,12 +2319,12 @@ s2_gui <- function(param_list = NULL,
       if (input$use_reference==TRUE & "res" %in% input$reference_usefor) {
         div(
           style = "padding-top:0.25em;",
-          if (!is.null(reference())) {
+          if (!is.null(rv$reference)) {
             span(style="color:darkgreen",
                  paste0(
-                   paste(reference()$res,
+                   paste(rv$reference$res,
                          collapse="\u2006\u00d7\u2006"), # shortspace times shortspace
-                   switch(reference()$unit,
+                   switch(rv$reference$unit,
                           Degree="\u00b0", # shortspace degree
                           Meter="\u2006m", # shortspace m
                           "")))
@@ -2332,9 +2346,14 @@ s2_gui <- function(param_list = NULL,
         
         div(
           style = "padding-top:0.5em;",
-          if (!is.null(reference())) {
-            span(style="color:darkgreen",
-                 projname(reference()$proj$proj4string))
+          if (!is.null(rv$reference)) {
+            if (projname(rv$reference$proj) != "unknown") {
+              div(style="color:darkgreen", projname(rv$reference$proj))
+            } else if (!is.na(rv$reference$proj$epsg)) {
+              div(style="color:darkgreen", paste("EPSG:", rv$reference$proj$epsg))
+            } else {
+              div(style="color:darkgreen", "Valid")
+            }
           } else {
             span(style="color:grey",
                  "Specify a valid raster file.")
@@ -2344,20 +2363,46 @@ s2_gui <- function(param_list = NULL,
         # else, take the specified one
       } else {
         
-        outproj_validated <- tryCatch(
+        outcrs_validated <- tryCatch(
           st_crs2(input$outproj),
+          warning = function(w) {
+            x <- suppress_warnings(st_crs2(input$outproj), "PROJ >\\= 6")
+            attr(x, "warning") <- w$message
+            x
+          },
           error = function(e) {st_crs(NA)}
-        )$proj4string
+        )
+        # show a warning (once) in case PROJ.4 is used
+        if (all(
+          !is.null(attr(outcrs_validated, "warning")),
+          grepl("PROJ >\\= 6", attr(outcrs_validated, "warning")),
+          is.null(rv$proj_alert_was_already_shown)
+        )) {
+          sendSweetAlert(
+            session, NULL,
+            attr(outcrs_validated, "warning"),
+            type = "warning"
+          )
+          rv$proj_alert_was_already_shown <- TRUE
+        }
+        # Print proj name
         if (input$reproj==FALSE | input$outproj=="") {
           ""
-        } else if (is.na(outproj_validated)) {
+        } else if (is.na(outcrs_validated)) {
           span(style="color:red",
-               "Insert a valid projection (UTM timezone, EPSG code or PROJ4 string).")
-        } else {
-          div(strong("Selected projection:"),
-              br(),
-              projname(outproj_validated),
-              style="color:darkgreen")
+               "Insert a valid projection (UTM timezone, EPSG code or WKT .prj file path).")
+          } else {
+            if (projname(outcrs_validated) != "unknown") {
+              div(style="color:darkgreen",
+                  strong("Selected projection:"), br(),
+                  projname(outcrs_validated))
+            } else if (!is.na(outcrs_validated$epsg)) {
+              div(style="color:darkgreen", 
+                  strong("Selected projection:"), br(),
+                  paste("EPSG:", outcrs_validated$epsg))
+            } else {
+              div(style="color:darkgreen", strong("Valid projection"))
+            }
         }
         
       }
@@ -2368,9 +2413,9 @@ s2_gui <- function(param_list = NULL,
     # (disabled: not yet possible to do it)
     # output$outformat_message <- renderUI({
     #   if(input$use_reference==TRUE & "outformat" %in% input$reference_usefor) {
-    #     if (!is.null(reference())) {
+    #     if (!is.null(rv$reference)) {
     #       span(style="color:darkgreen",
-    #            reference()$outformat)
+    #            rv$reference$outformat)
     #     } else {
     #       span(style="color:grey",
     #            "Specify a valid raster file.")
@@ -3164,6 +3209,25 @@ s2_gui <- function(param_list = NULL,
       ))
     })
     
+    observeEvent(input$help_outprojinput, {
+      showModal(modalDialog(
+        title = "Enter a valid projection",
+        size = "s",
+        p(HTML(
+          "To identify the desired output projection,",
+          "please type one of the followings:<ul>",
+          "<li>the EPSG code (e.g. 32632);</li>",
+          "<li>the WKT text representation;</li>",
+          "<li>the path of a spatial file or of a text file containing a WKT",
+          "(e.g. a .proj file of a shapefile);</li>",
+          "<li>the PROJ.4 string (<strong>warning:</strong> this is a",
+          "deprecated representation with PROJ >= 3, so avoid using it!)</li></ul>"
+        )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+    
     observeEvent(input$info_parallelisation, {
       showModal(modalDialog(
         title = "Processing order and parallelisation",
@@ -3491,7 +3555,7 @@ s2_gui <- function(param_list = NULL,
       # spatial resolution for output products (2-length numeric vector)
       rl$res <- if (input$use_reference==TRUE &
                     "res" %in% input$reference_usefor) {
-        reference()$res
+        rv$reference$res
       } else {
         if (input$rescale == FALSE) {
           NA
@@ -3508,12 +3572,12 @@ s2_gui <- function(param_list = NULL,
       # unit of measure ("Meter" or "Degree")
       rl$unit <- ifelse(input$use_reference==TRUE &
                           "res" %in% input$reference_usefor,
-                        reference()$unit,
+                        rv$reference$unit,
                         "Meter") # TODO allow degrees if outproj is longlat
       # output proj4string
       rl$proj <- if (input$use_reference==TRUE &
                      "proj" %in% input$reference_usefor) {
-        reference()$proj$proj4string
+        rv$reference$proj$proj4string
       } else if (input$reproj==FALSE) {
         NA
       } else {
@@ -3528,7 +3592,7 @@ s2_gui <- function(param_list = NULL,
       # output format (GDAL format name)
       rl$outformat <- ifelse(input$use_reference==TRUE &
                                "outformat" %in% input$reference_usefor,
-                             reference()$outformat,
+                             rv$reference$outformat,
                              input$outformat)
       rl$rgb_outformat <- rl$outformat # TODO add a widget to set it
       rl$index_datatype <- input$index_datatype
