@@ -6,7 +6,7 @@
 \usage{
 s2_merge(infiles, outdir = ".", subdirs = NA, tmpdir = NA,
   rmtmp = TRUE, format = NA, compress = "DEFLATE",
-  vrt_rel_paths = NA, out_crs = "", parallel = FALSE,
+  vrt_rel_paths = NA, out_crs = NA, parallel = FALSE,
   overwrite = FALSE, .log_message = NA, .log_output = NA)
 }
 \arguments{
@@ -48,7 +48,7 @@ the paths present in the VRT output file are relative to the VRT position;
 if FALSE (default on Windows), they are absolute.
 This takes effect only with \code{format = "VRT"}.}
 
-\item{out_crs}{(optional) proj4string (character) of the output CRS
+\item{out_crs}{(optional) output CRS, in any format accepted by \link{st_crs2}
 (default: the CRS of the first input file). The tiles with CRS different
 from \code{out_crs} will be reprojected (and a warning returned).}
 

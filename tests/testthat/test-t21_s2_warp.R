@@ -41,7 +41,7 @@ testthat::test_that(
       exp_meta_r[,c("xmin", "xmax", "ymin", "ymax")], 
       data.table("xmin" = 578590, "xmax" = 597700, "ymin" = 5086740, "ymax" = 5101530) 
     )
-    testthat::expect_equal(sf::st_crs(exp_meta_r$proj)$epsg, 32632)
+    testthat::expect_equal(st_crs2(exp_meta_r$proj)$epsg, 32632)
     testthat::expect_equal(exp_meta_r$type, "UInt16")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff") # default value
     
@@ -83,8 +83,8 @@ testthat::test_that(
       data.table(exp_meta_r[,c("xmin", "xmax", "ymin", "ymax")])
     )
     testthat::expect_equal(
-      sf::st_crs(exp_meta_r_t$proj)$epsg, 
-      sf::st_crs(exp_meta_r$proj)$epsg
+      st_crs2(exp_meta_r_t$proj)$epsg, 
+      st_crs2(exp_meta_r$proj)$epsg
     )
     testthat::expect_equal(exp_meta_r_t$type, "Byte")
     testthat::expect_equal(exp_meta_r_t$outformat, "JPEG")
@@ -141,7 +141,7 @@ testthat::test_that(
       data.frame("xmin" = 113909, "xmax" = 133284, "ymin" = 5097856, "ymax" = 5112431),
       tolerance = 1e-3
     )
-    testthat::expect_equal(sf::st_crs(exp_meta_r$proj)$epsg, 32633)
+    testthat::expect_equal(st_crs2(exp_meta_r$proj)$epsg, 32633)
     testthat::expect_equal(exp_meta_r$type, "UInt16")
     testthat::expect_equal(exp_meta_r$outformat, "ENVI")
     
@@ -181,8 +181,8 @@ testthat::test_that(
       data.frame(exp_meta_r[,c("xmin", "xmax", "ymin", "ymax")])
     )
     testthat::expect_equal(
-      sf::st_crs(exp_meta_r_t$proj)$epsg, 
-      sf::st_crs(exp_meta_r$proj)$epsg
+      st_crs2(exp_meta_r_t$proj)$epsg, 
+      st_crs2(exp_meta_r$proj)$epsg
     )
     testthat::expect_equal(exp_meta_r_t$type, "Byte")
     testthat::expect_equal(exp_meta_r_t$outformat, "JPEG")
@@ -263,8 +263,8 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r_t$nbands, 3)
     testthat::expect_equal(exp_meta_r_t$bbox, exp_meta_r$bbox)
     testthat::expect_equal(
-      sf::st_crs(exp_meta_r_t$proj)$epsg, 
-      sf::st_crs(exp_meta_r$proj)$epsg
+      st_crs2(exp_meta_r_t$proj)$epsg, 
+      st_crs2(exp_meta_r$proj)$epsg
     )
     testthat::expect_equal(exp_meta_r_t$type, "Byte")
     testthat::expect_equal(exp_meta_r_t$outformat, "PNG")
@@ -310,7 +310,7 @@ testthat::test_that(
       exp_meta_r[,c("xmin", "xmax", "ymin", "ymax")], 
       data.frame("xmin" = 580560, "xmax" = 580800, "ymin" = 5101700, "ymax" = 5102120)
     )
-    testthat::expect_equal(sf::st_crs(exp_meta_r$proj)$epsg, 32632)
+    testthat::expect_equal(st_crs2(exp_meta_r$proj)$epsg, 32632)
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
@@ -430,7 +430,7 @@ testthat::test_that(
   "Reproject all the input file", {
     
     test4 <- tempfile(fileext = "_test4.tif")
-    gdal_warp(ex_sel, test4, t_srs = sf::st_crs("+init=epsg:32631")$proj4string)
+    gdal_warp(ex_sel, test4, t_srs = 32631)
     
     # test on raster metadata
     exp_meta_r <- raster_metadata(test4, format = "list")[[1]]
@@ -461,7 +461,7 @@ testthat::test_that(
     test5 <- tempfile(fileext = "_test5.tif")
     gdal_warp(
       ex_sel, test5, 
-      t_srs = sf::st_crs("+init=epsg:32631")$proj4string, 
+      t_srs = "EPSG:32631", 
       mask = stars::read_stars(test1)
     )
     
@@ -493,7 +493,7 @@ testthat::test_that(
     
     gdal_warp(
       ex_sel, test6, 
-      t_srs = sf::st_crs("+init=epsg:32631")$proj4string, 
+      t_srs = 32631, 
       mask = crop_poly
     )
     

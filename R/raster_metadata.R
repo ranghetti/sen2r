@@ -13,7 +13,7 @@
 #' @export
 #' @import data.table
 #' @importFrom stars read_stars st_dimensions
-#' @importFrom sf st_bbox st_crs
+#' @importFrom sf st_bbox st_crs st_as_text
 #' @importFrom methods is
 #' @examples
 #' # Define product names
@@ -202,7 +202,13 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
           sel_dt$xmax <- l$bbox["xmax"]
           sel_dt$ymax <- l$bbox["ymax"]
         }
-        if ("proj" %in% meta) {sel_dt$proj <- l$proj$proj4string}
+        if ("proj" %in% meta) {
+          sel_dt$proj <- if (!is.na(l$proj$epsg)) {
+            paste0("EPSG:",l$proj$epsg)
+          } else {
+            st_as_text(l$proj)
+          }
+        }
         if ("unit" %in% meta) {sel_dt$unit <- l$unit}
         if ("outformat" %in% meta) {sel_dt$outformat <- l$outformat}
         if ("type" %in% meta) {sel_dt$type <- l$type}

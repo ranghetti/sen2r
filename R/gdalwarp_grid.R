@@ -95,7 +95,7 @@ gdalwarp_grid <- function(srcfiles,
     
     # get reprojected extent
     out_bbox <- matrix(
-      st_bbox(st_transform(st_as_sfc(sel_bbox), ref_proj)), 
+      st_bbox(st_transform(st_as_sfc(sel_bbox), st_crs2(ref_proj))), 
       nrow=2, ncol=2, 
       dimnames=list(c("x","y"),c("min","max"))
     )

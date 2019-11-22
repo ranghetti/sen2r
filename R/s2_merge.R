@@ -33,7 +33,7 @@
 #'  the paths present in the VRT output file are relative to the VRT position;
 #'  if FALSE (default on Windows), they are absolute.
 #'  This takes effect only with `format = "VRT"`.
-#' @param out_crs (optional) proj4string (character) of the output CRS
+#' @param out_crs (optional) output CRS, in any format accepted by [st_crs2]
 #'  (default: the CRS of the first input file). The tiles with CRS different
 #'  from `out_crs` will be reprojected (and a warning returned).
 #' @param parallel (optional) Logical: if TRUE, the function is run using parallel
@@ -54,6 +54,7 @@
 #' @importFrom foreach foreach "%do%" "%dopar%"
 #' @importFrom doParallel registerDoParallel
 #' @importFrom parallel makeCluster stopCluster detectCores
+#' @importFrom sf st_as_text
 #' @import data.table
 #' @export
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
@@ -68,7 +69,7 @@ s2_merge <- function(infiles,
                      format=NA,
                      compress="DEFLATE",
                      vrt_rel_paths=NA,
-                     out_crs="",
+                     out_crs=NA,
                      parallel = FALSE,
                      overwrite=FALSE,
                      .log_message=NA,
@@ -105,7 +106,7 @@ s2_merge <- function(infiles,
   # get metadata
   infiles_meta_gdal <- raster_metadata(infiles, c("outformat", "proj"), format = "data.table")
   infiles_meta$format <- infiles_meta_gdal$outformat
-  infiles_meta$proj4string <- infiles_meta_gdal$proj
+  infiles_meta$proj <- infiles_meta_gdal$proj
   # infiles_meta$NAflag <- sapply(infiles_meta_gdal[3,], function(x) {
   #   if (x[1,"hasNoDataValue"]==TRUE) {
   #     x[1,"NoDataValue"]
@@ -125,22 +126,22 @@ s2_merge <- function(infiles,
   # }
   
   # if utm zones differ from the selected utm zone, show a warning
-  if (out_crs=="") {
+  if (missing(out_crs)) {
     print_message(
       type="message",
-      "Using projection \"",infiles_meta$proj4string[1],"\".")
-    out_crs <- infiles_meta$proj4string[1]
+      "Using projection \"",infiles_meta$proj[1],"\".")
+    out_crs <- infiles_meta$proj[1]
   }
   
   # vector which identifies, for each infiles, if its projection is
   # different or not from out_crs
-  diffcrs <- sapply(infiles_meta$proj4string, function(x) {
+  diffcrs <- sapply(infiles_meta$proj, function(x) {
     st_crs2(x) != st_crs2(out_crs)
     # !compareCRS(CRS(x), CRS(out_crs))
   })
   
   # Check out_crs
-  out_crs <- st_crs2(out_crs)$proj4string
+  out_crs <- st_crs2(out_crs)
   # check the projections of input files
   if (any(diffcrs)) {
     print_message(
@@ -183,15 +184,21 @@ s2_merge <- function(infiles,
   # otherwise, use the first non-reprojected file.
   if (all(diffcrs)) {
     ref_file <- file.path(tmpdir,".ref_grid.vrt")
+    out_crs_string <- if (!is.na(out_crs$epsg)) {
+      paste0("EPSG:",out_crs$epsg)
+    } else {
+      st_as_text(out_crs)
+    }
     system(
       paste0(
         binpaths$gdalwarp," ",
         "-overwrite ",
-        "-s_srs \"",infiles_meta[1,"proj4string"],"\" ",
-        "-t_srs \"",out_crs,"\" ",
+        "-s_srs \"",infiles_meta[1,"proj"],"\" ",
+        "-t_srs \"",out_crs_string,"\" ",
         "-of VRT ",
         "\"",infiles[1],"\" ",
-        "\"",ref_file,"\""),
+        "\"",ref_file,"\""
+      ),
       intern = Sys.info()["sysname"] == "Windows"
     )
   } else {

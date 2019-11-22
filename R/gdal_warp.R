@@ -26,10 +26,7 @@
 #'  (in target georeferenced units). If bot `ref` and `tr` are provided,
 #'  `tr` is rounded in order to match the exact extent.
 #' @param t_srs Target spatial reference set (character). The coordinate
-#'  systems that can be passed are anything supported by the
-#'  OGRSpatialReference.SetFromUserInput() call, which includes EPSG
-#'  PCS and GCSes (i.e. EPSG:4296), PROJ.4 declarations (as above),
-#'  or the name of a .prf file containing well known text.
+#'  systems that can be passed are anything supported by [st_crs2].
 #' @param r Resampling_method ("near"|"bilinear"|"cubic"|"cubicspline"|
 #' "lanczos"|"average"|"mode"|"max"|"min"|"med"|"q1"|"q3").
 #' @param dstnodata Set nodata values for output bands (different values
@@ -55,6 +52,7 @@
 #' @export
 #' @importFrom sf st_transform st_geometry st_geometry_type st_write st_cast st_zm
 #'  st_area st_bbox st_sfc st_sf st_polygon st_as_sf st_as_sfc st_as_sf st_crs
+#'  st_as_text
 #' @importFrom methods as
 #' @importFrom stars read_stars
 #' @importFrom magrittr "%>%"
@@ -106,15 +104,15 @@
 #'
 #' # Reproject all the input file
 #' test4 <- tempfile(fileext = "_test4.tif")
-#' gdal_warp(ex_sel, test4, t_srs = "+init=epsg:32631")
+#' gdal_warp(ex_sel, test4, t_srs = 32631)
 #'
 #' # Reproject and clip on a bounding box
 #' test5 <- tempfile(fileext = "_test5.tif")
-#' gdal_warp(ex_sel, test5, t_srs = "+init=epsg:32631", mask = stars::read_stars(test1))
+#' gdal_warp(ex_sel, test5, t_srs = "EPSG:32631", mask = stars::read_stars(test1))
 #'
 #' # Reproject and clip on polygon (masking outside)
 #' test6 <- tempfile(fileext = "_test6.tif")
-#' gdal_warp(ex_sel, test6, t_srs = "+init=epsg:32631", mask = crop_poly)
+#' gdal_warp(ex_sel, test6, t_srs = "31N", mask = crop_poly)
 #'
 #' # Show output
 #' crop_line_31N <- sf::st_transform(crop_line, 32631)
@@ -200,19 +198,18 @@ gdal_warp <- function(srcfiles,
   }
   
   # check t_srs
-  if (!is.null(t_srs)) {
-    if (is(t_srs, "crs")) {
-      t_srs <- t_srs$proj4string
-    } else if (!is.na(st_crs(t_srs)$proj4string)) {
-      t_srs <- st_crs(t_srs)$proj4string
-    } else {
-      print_message(
-        type = "error",
-        "The input CRS (",t_srs,") was not recognised."
-      )
-    }
+  if (all(!is.null(t_srs), !is(t_srs, "crs"))) {
+    tryCatch(
+      t_srs <- st_crs2(t_srs),
+      error = function (e) {
+        print_message(
+          type = "error",
+          "The input CRS (",t_srs,") was not recognised."
+        )
+      }
+    )
   }
-  
+
   # check output format
   if (!is.null(of)) {
     gdal_formats <- fromJSON(
@@ -237,7 +234,7 @@ gdal_warp <- function(srcfiles,
     ref_metadata <- raster_metadata(ref, format = "list")[[1]]
     ref_res <- ref_metadata$res
     ref_size <- ref_metadata$size
-    t_srs <- ref_metadata$proj$proj4string
+    t_srs <- ref_metadata$proj
     ref_bbox <- ref_metadata$bbox
     ref_ll <- ref_bbox[c("xmin","ymin")]
     sel_of <- ifelse(is.null(of), ref_metadata$outformat, of)
@@ -324,7 +321,7 @@ gdal_warp <- function(srcfiles,
       sel_metadata <- raster_metadata(srcfile, format = "list")[[1]]
       sel_res <- sel_metadata$res
       sel_size <- sel_metadata$size
-      sel_s_srs <- sel_metadata$proj$proj4string
+      sel_s_srs <- sel_metadata$proj
       sel_bbox <- sel_metadata$bbox
       sel_ll <- sel_bbox[c("xmin","ymin")]
       sel_of <- ifelse(is.null(of), sel_metadata$outformat, of)
@@ -417,11 +414,21 @@ gdal_warp <- function(srcfiles,
       # finally, apply gdal_warp or gdal_translate
       # temporary leave only gdal_warp to avoid some problems
       # (e.g., translating a 1001x1001 20m to 10m results in 2002x2002 instead of 200[12]x200[12])
+      sel_s_srs_string <- if (!is.na(sel_s_srs$epsg)) {
+        paste0("EPSG:",sel_s_srs$epsg)
+      } else {
+        st_as_text(sel_s_srs)
+      }
+      sel_t_srs_string <- if (!is.na(sel_t_srs$epsg)) {
+        paste0("EPSG:",sel_t_srs$epsg)
+      } else {
+        st_as_text(sel_t_srs)
+      }
       system(
         paste0(
           binpaths$gdalwarp," ",
-          "-s_srs \"",sel_s_srs,"\" ",
-          "-t_srs \"",sel_t_srs,"\" ",
+          "-s_srs '",sel_s_srs_string,"' ",
+          "-t_srs '",sel_t_srs_string,"' ",
           "-te ",paste(sel_te, collapse = " ")," ",
           if (exists("mask_file")) {paste0("-cutline \"",mask_file,"\" ")},
           if (!is.null(tr)) {paste0("-tr ",paste(sel_tr, collapse = " ")," ")},

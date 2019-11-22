@@ -64,7 +64,7 @@ projpar <- function(x, par, abort = FALSE) {
 projname <- function(x, abort = FALSE) { # nocov start
   
   proj4_name <- projpar(x, "geogcs")
-  if (!st_is_longlat(st_crs(attr(proj4_name, "crs")))) {
+  if (!st_is_longlat(attr(proj4_name, "crs"))) {
     proj4_name <- projpar(x, "projcs")
   }
   proj4_name <- gsub("\\_"," ",proj4_name)
