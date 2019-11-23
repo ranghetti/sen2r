@@ -2,36 +2,9 @@
 % Please edit documentation in R/st_crs2.R
 \name{st_crs2}
 \alias{st_crs2}
-\alias{st_crs2.character}
-\alias{st_crs2.integer}
-\alias{st_crs2.numeric}
-\alias{st_crs2.sfc}
-\alias{st_crs2.sf}
-\alias{st_crs2.bbox}
-\alias{st_crs2.CRS}
-\alias{st_crs2.crs}
-\alias{st_crs2.default}
 \title{Retrieve coordinate reference system from sf or sfc object}
 \usage{
 st_crs2(x, ...)
-
-\method{st_crs2}{character}(x, ...)
-
-\method{st_crs2}{integer}(x, ...)
-
-\method{st_crs2}{numeric}(x, ...)
-
-\method{st_crs2}{sfc}(x, ...)
-
-\method{st_crs2}{sf}(x, ...)
-
-\method{st_crs2}{bbox}(x, ...)
-
-\method{st_crs2}{CRS}(x, ...)
-
-\method{st_crs2}{crs}(x, ...)
-
-\method{st_crs2}{default}(x, ...)
 }
 \arguments{
 \item{x}{numeric, character, or object of class \link{sf} or \link{sfc}, being:

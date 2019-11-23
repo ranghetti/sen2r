@@ -32,7 +32,6 @@ testthat::test_that(
     testthat::expect_equal(st_crs2("EPSG:32609")[["epsg"]], 32609)
     testthat::expect_equal(st_crs2("9N")[["epsg"]], 32609)
     testthat::expect_equal(st_crs2("9S")[["epsg"]], 32709)
-    testthat::expect_error(st_crs2("wrong"))
   }
 )
 
@@ -60,5 +59,18 @@ testthat::test_that(
     testthat::expect_equal(st_crs2(stars::read_stars(raster_path))[["epsg"]], 32632)
     testthat::expect_equal(st_crs2(raster::raster(raster_path))[["epsg"]], 32632)
     testthat::expect_equal(st_crs2(sf::read_sf(vector_path))[["epsg"]], 32632)
+    testthat::expect_equal(st_crs2(as(sf::read_sf(vector_path), "Spatial"))[["epsg"]], 32632)
+  }
+)
+
+testthat::test_that(
+  "st_crs2, generics and errors", {
+    testthat::expect_error(
+      st_crs2("wrong"), 
+      "invalid crs\\: wrong, reason\\: generic error of unknown origin"
+    )
+    testthat::expect_equal(st_crs2(NULL), sf::st_crs(NA))
+    testthat::expect_equal(st_crs2(NA), sf::st_crs(NA))
+    testthat::expect_equal(st_crs2(), sf::st_crs(NA))
   }
 )

@@ -72,9 +72,8 @@
 
 st_crs2 <- function(x, ...) UseMethod("st_crs2")
 
-#' @name st_crs2
-#' @export
 ## character: several cases (see)
+#' @export
 st_crs2.character <- function(x, ...) {
   
   ## case 1: EPSG code / UTM zone
@@ -157,41 +156,24 @@ st_crs2.character <- function(x, ...) {
   }
   
   ## case 4: WKT and other characters
-  x3 <- tryCatch(
-    # x: path of a text file with WKT -> crs
-    .Call('_sf_CPL_crs_from_wkt', PACKAGE = 'sf', x),
-    # x: path of a non supported file -> x (st_crs will return the proper error)
-    error = function(e) {x}
-  )
-  sf::st_crs(x3, ...)
+  if (grepl("^((PROJCS)|(GEOGCS))\\[.+\\]$", x)) {
+    # x: WKT string -> crs
+    return(sf::st_crs(.Call('_sf_CPL_crs_from_wkt', PACKAGE = 'sf', x), ...))
+  }
+
+  ## any other case: pass to st_crs as is
+  sf::st_crs(x, ...)
   
 }
 
 ## integer or numeric (EPGS / UTM zone): threat as character
-#' @name st_crs2
 #' @export
 st_crs2.integer <- function(x, ...) {st_crs2.character(as.character(x), ...)}
-#' @name st_crs2
 #' @export
 st_crs2.numeric <- function(x, ...) {st_crs2.character(as.character(x), ...)}
 
 ## classes already managed by st_crs()
-#' @name st_crs2
 #' @export
-## integer (EPGS / UTM zone): threat as character
-st_crs2.sfc <- function(x, ...) {sf::st_crs(x, ...)}
-#' @name st_crs2
-#' @export
-st_crs2.sf <- function(x, ...) {sf::st_crs(x, ...)}
-#' @name st_crs2
-#' @export
-st_crs2.bbox <- function(x, ...) {sf::st_crs(x, ...)}
-#' @name st_crs2
-#' @export
-st_crs2.CRS <- function(x, ...) {sf::st_crs(x, ...)}
-#' @name st_crs2
-#' @export
-st_crs2.crs <- function(x, ...) {sf::st_crs(x, ...)}
-#' @name st_crs2
-#' @export
-st_crs2.default <- function(x, ...) {sf::st_crs(x, ...)}
+st_crs2.default <- function(x, ...) {
+  if (missing(x)) {NA_crs_} else {sf::st_crs(x, ...)}
+}
