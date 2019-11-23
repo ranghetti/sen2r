@@ -65,10 +65,7 @@ testthat::test_that(
 
 testthat::test_that(
   "st_crs2, generics and errors", {
-    testthat::expect_error(
-      st_crs2("wrong"), 
-      "invalid crs\\: wrong, reason\\: generic error of unknown origin"
-    )
+    testthat::expect_error(st_crs2("wrong"), "invalid crs\\: wrong")
     testthat::expect_equal(st_crs2(NULL), sf::st_crs(NA))
     testthat::expect_equal(st_crs2(NA), sf::st_crs(NA))
     testthat::expect_equal(st_crs2(), sf::st_crs(NA))
