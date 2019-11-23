@@ -205,8 +205,10 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
         if ("proj" %in% meta) {
           sel_dt$proj <- if (!is.na(l$proj$epsg)) {
             paste0("EPSG:",l$proj$epsg)
-          } else {
+          } else if (!is.na(l$proj)) {
             st_as_text(l$proj)
+          } else {
+            NA
           }
         }
         if ("unit" %in% meta) {sel_dt$unit <- l$unit}

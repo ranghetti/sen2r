@@ -1068,7 +1068,7 @@ s2_gui <- function(param_list = NULL,
                       ),
                       conditionalPanel(
                         condition = "input.rescale == 'TRUE'",
-                        numericInput("resolution_custom", "Specify resolution (in metres)",
+                        numericInput("resolution_custom", "Specify resolution (m)",
                                      # width="100px",
                                      value = 10,
                                      min = 0)

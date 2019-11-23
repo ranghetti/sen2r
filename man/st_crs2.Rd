@@ -2,28 +2,57 @@
 % Please edit documentation in R/st_crs2.R
 \name{st_crs2}
 \alias{st_crs2}
+\alias{st_crs2.character}
+\alias{st_crs2.integer}
+\alias{st_crs2.numeric}
+\alias{st_crs2.sfc}
+\alias{st_crs2.sf}
+\alias{st_crs2.bbox}
+\alias{st_crs2.CRS}
+\alias{st_crs2.crs}
+\alias{st_crs2.default}
 \title{Retrieve coordinate reference system from sf or sfc object}
 \usage{
 st_crs2(x, ...)
+
+\method{st_crs2}{character}(x, ...)
+
+\method{st_crs2}{integer}(x, ...)
+
+\method{st_crs2}{numeric}(x, ...)
+
+\method{st_crs2}{sfc}(x, ...)
+
+\method{st_crs2}{sf}(x, ...)
+
+\method{st_crs2}{bbox}(x, ...)
+
+\method{st_crs2}{CRS}(x, ...)
+
+\method{st_crs2}{crs}(x, ...)
+
+\method{st_crs2}{default}(x, ...)
 }
 \arguments{
 \item{x}{numeric, character, or object of class \link{sf} or \link{sfc}, being:
-- EPSG code: numeric (e.g. \code{32632}) or character (in the form
+\itemize{
+\item EPSG code: numeric (e.g. \code{32632}) or character (in the form
 \code{"32632"} or \code{"EPSG:32632"});
-- UTM zone: numeric (e.g. \code{32}, interpreted as 32 North) or character
+\item UTM zone: numeric (e.g. \code{32}, interpreted as 32 North) or character
 (e.g. \code{"32"} or \code{"32N"} for zone 32 North, \code{"32S"} for 32 South);
-- WKT test: passed as character string or as path of a text file
+\item WKT test: passed as character string or as path of a text file
 containing it (e.g. the path of a .prj file);
-- PROJ.4 string, passed as character (e.g.
+\item PROJ.4 string, passed as character (e.g.
 \code{"+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs"}
 (\strong{NOTE}: this representation is deprecated with PROJ >= 6
 -- see http://rgdal.r-forge.r-project.org/articles/PROJ6_GDAL3.html --
 so a warning is returned using it, unless the string contains only
 the epsg code -- e.g. \code{"+init=epsg:32632"}, in which case the EPSG
 code is taken);
-- path of a spatial file (managed by \link[sf:st_read]{sf::st_read} or \link[stars:read_stars]{stars::read_stars}),
+\item path of a spatial file (managed by \link[sf:st_read]{sf::st_read} or \link[stars:read_stars]{stars::read_stars}),
 passed as character string of length 1;
-- spatial file of class \link{sf} or \link{sfc}.}
+\item spatial file of class \link{sf} or \link{sfc}.
+}}
 
 \item{...}{other parameters passed to \link[sf:st_crs]{sf::st_crs}.}
 }

@@ -5,22 +5,22 @@
 #'  accepting also UTM timezones, paths of spatial files and paths of 
 #'  text files containing WKT like .prj (see details) .
 #' @param x numeric, character, or object of class \link{sf} or \link{sfc}, being:
-#'     - EPSG code: numeric (e.g. `32632`) or character (in the form
-#'         `"32632"` or `"EPSG:32632"`);
-#'     - UTM zone: numeric (e.g. `32`, interpreted as 32 North) or character
-#'         (e.g. `"32"` or `"32N"` for zone 32 North, `"32S"` for 32 South);
-#'     - WKT test: passed as character string or as path of a text file 
-#'         containing it (e.g. the path of a .prj file);
-#'     - PROJ.4 string, passed as character (e.g. 
-#'         `"+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs"` 
-#'         (**NOTE**: this representation is deprecated with PROJ >= 6
-#'         -- see http://rgdal.r-forge.r-project.org/articles/PROJ6_GDAL3.html --
-#'         so a warning is returned using it, unless the string contains only
-#'         the epsg code -- e.g. `"+init=epsg:32632"`, in which case the EPSG
-#'         code is taken);
-#'     - path of a spatial file (managed by [sf::st_read] or [stars::read_stars]),
-#'         passed as character string of length 1;
-#'     - spatial file of class \link{sf} or \link{sfc}.
+#'  - EPSG code: numeric (e.g. `32632`) or character (in the form
+#'      `"32632"` or `"EPSG:32632"`);
+#'  - UTM zone: numeric (e.g. `32`, interpreted as 32 North) or character
+#'      (e.g. `"32"` or `"32N"` for zone 32 North, `"32S"` for 32 South);
+#'  - WKT test: passed as character string or as path of a text file 
+#'      containing it (e.g. the path of a .prj file);
+#'  - PROJ.4 string, passed as character (e.g. 
+#'      `"+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs"` 
+#'      (**NOTE**: this representation is deprecated with PROJ >= 6
+#'      -- see http://rgdal.r-forge.r-project.org/articles/PROJ6_GDAL3.html --
+#'      so a warning is returned using it, unless the string contains only
+#'      the epsg code -- e.g. `"+init=epsg:32632"`, in which case the EPSG
+#'      code is taken);
+#'  - path of a spatial file (managed by [sf::st_read] or [stars::read_stars]),
+#'      passed as character string of length 1;
+#'  - spatial file of class \link{sf} or \link{sfc}.
 #' @param ... other parameters passed to [sf::st_crs].
 #' @return An object of class \link{crs} of length 2.
 #' @details See [sf::st_crs] for details.
@@ -70,77 +70,128 @@
 #' }
 
 
-st_crs2 <- function(x, ...) {
+st_crs2 <- function(x, ...) UseMethod("st_crs2")
+
+#' @name st_crs2
+#' @export
+## character: several cases (see)
+st_crs2.character <- function(x, ...) {
   
-  x2 <- if (inherits(x, c("character", "integer", "numeric"))) {
-    if (grepl("^(([0-5]?[0-9])|60)[Nn]?$", x)) {
-      # x: UTM zone North -> x2: integer EPSG
-      as.integer(paste0(
-        "326", 
-        str_pad2(
-          gsub("^(([0-5]?[0-9])|60)[Nn]?$", "\\1", x),
-          2, "left", "0"
-        )
-      ))
-    } else if (grepl("^(([0-5]?[0-9])|60)[Ss]$", x)) {
-      # x: UTM zone South -> x2: integer EPSG
-      as.integer(paste0(
-        "327", 
-        str_pad2(
-          gsub("^(([0-5]?[0-9])|60)[Ss]$", "\\1", x),
-          2, "left", "0"
-        )
-      ))
-    } else if (grepl("^[0-9]+$", x)) {
-      # x: EPSG (integer, numeric or character) -> x2: integer EPSG
-      as.integer(x)
-    } else if (grepl("^[Ee][Pp][Ss][Gg]\\:[0-9]+$", x)) {
-      # x: EPSG (in the form "EPSG:xxx") -> x2: integer EPSG
-      as.integer(gsub("^[Ee][Pp][Ss][Gg]\\:([0-9]+)$", "\\1", x))
-    } else if (grepl("^\\+init\\=epsg:[0-9]+$", tolower(x))) {
-      # x: PROJ.4 with only EPSG -> x2: integer EPSG
-      as.integer(gsub("^\\+init\\=epsg:([0-9]+)$", "\\1", tolower(x)))
-    } else if (grepl("^\\+[a-z]+\\=", x)) {
-      # x: PROJ.4 -> x2: character PROJ.4 with warning
-      proj_version <- package_version(
-        .Call('_sf_CPL_proj_version', PACKAGE = 'sf', FALSE)
+  ## case 1: EPSG code / UTM zone
+  x_epsg <- if (grepl("^(([0-5]?[0-9])|60)[Nn]?$", x)) {
+    # x: UTM zone North -> integer EPSG
+    as.integer(paste0(
+      "326", 
+      str_pad2(
+        gsub("^(([0-5]?[0-9])|60)[Nn]?$", "\\1", x),
+        2, "left", "0"
       )
-      if (proj_version >= 6) {
-        print_message(
-          type = "warning",
-          "Using PROJ.4 strings is deprecated with PROJ >= 6 ",
-          "(see http://rgdal.r-forge.r-project.org/articles/PROJ6_GDAL3.html)."
-        )
-      }
-      x
-    } else if (file.exists(as.character(x))) {
-      # x: file path -> x2_spatial file or WKT
-      tryCatch(
-        x2 <- st_read(x, quiet = TRUE),
-        warning = function(w) {
-          if (grepl("no simple feature geometries present\\: returning a data\\.frame", w)) {
-            x
-          } else {
-            st_read(x, quiet = TRUE)
-          }
-        },
-        error = function(e) {tryCatch(
-          x2 <- read_stars(x, quiet = TRUE, proxy = TRUE),
-          error = function(e) {tryCatch(
-            x2 <- st_crs(readLines(x, warn = FALSE)),
-            error = function(e) {x}
-          )}
-        )}
+    ))
+  } else if (grepl("^(([0-5]?[0-9])|60)[Ss]$", x)) {
+    # x: UTM zone South -> integer EPSG
+    as.integer(paste0(
+      "327", 
+      str_pad2(
+        gsub("^(([0-5]?[0-9])|60)[Ss]$", "\\1", x),
+        2, "left", "0"
       )
-    } else {
-      # x: any other string -> x2: x (leave st_crs() managing it)
-      x
-    } 
+    ))
+  } else if (grepl("^[0-9]+$", x)) {
+    # x: EPSG (integer, numeric or character) -> integer EPSG
+    as.integer(x)
+  } else if (grepl("^[Ee][Pp][Ss][Gg]\\:[0-9]+$", x)) {
+    # x: EPSG (in the form "EPSG:xxx") -> integer EPSG
+    as.integer(gsub("^[Ee][Pp][Ss][Gg]\\:([0-9]+)$", "\\1", x))
+  } else if (grepl("^\\+init\\=epsg:[0-9]+$", tolower(x))) {
+    # x: PROJ.4 with only EPSG -> integer EPSG
+    as.integer(gsub("^\\+init\\=epsg:([0-9]+)$", "\\1", tolower(x)))
   } else {
-    # x: spatial classes, or any other object -> x2: x (leave st_crs() managing it)
-    x
+    NULL
+  }
+  if (!is.null(x_epsg)) {
+    return(sf::st_crs(.Call('_sf_CPL_crs_from_epsg', PACKAGE = 'sf', x_epsg), ...))
   }
   
-  st_crs(x = x2, ...)
+  ## case 2: PROJ.4
+  if (grepl("^\\+[a-z]+\\=", x)) {
+    # x: PROJ.4 -> character PROJ.4 with warning
+    proj_version <- package_version(
+      .Call('_sf_CPL_proj_version', PACKAGE = 'sf', FALSE)
+    )
+    if (proj_version >= 6) {
+      print_message(
+        type = "warning",
+        "Using PROJ.4 strings is deprecated with PROJ >= 6 ",
+        "(see http://rgdal.r-forge.r-project.org/articles/PROJ6_GDAL3.html)."
+      )
+    }
+    return(sf::st_crs(.Call('_sf_CPL_crs_from_proj4string', PACKAGE = 'sf', x), ...))
+  }
+  
+  ## case 3: file path
+  if (file.exists(as.character(x))) {
+    # x: file path -> spatial file or WKT
+    x2 <- tryCatch(
+      # x: path of a vector file -> sf
+      st_read(x, quiet = TRUE),
+      warning = function(w) {
+        if (grepl("no simple feature geometries present\\: returning a data\\.frame", w)) {
+          # x: path of a tabular file -> x (st_crs will return the proper error)
+          x
+        } else {st_read(x, quiet = TRUE)}
+      },
+      error = function(e) {tryCatch(
+        # x: path of a raster file -> stars proxy
+        read_stars(x, quiet = TRUE, proxy = TRUE),
+        error = function(e) {tryCatch(
+          # x: path of a text file with WKT -> crs
+          .Call('_sf_CPL_crs_from_wkt', PACKAGE = 'sf', readLines(x, warn = FALSE)),
+          error = function(e) {
+            # x: path of a non supported file -> x (st_crs will return the proper error)
+            x
+          }
+        )}
+      )}
+    )
+    return(sf::st_crs(x2, ...))
+  }
+  
+  ## case 4: WKT and other characters
+  x3 <- tryCatch(
+    # x: path of a text file with WKT -> crs
+    .Call('_sf_CPL_crs_from_wkt', PACKAGE = 'sf', x),
+    # x: path of a non supported file -> x (st_crs will return the proper error)
+    error = function(e) {x}
+  )
+  sf::st_crs(x3, ...)
   
 }
+
+## integer or numeric (EPGS / UTM zone): threat as character
+#' @name st_crs2
+#' @export
+st_crs2.integer <- function(x, ...) {st_crs2.character(as.character(x), ...)}
+#' @name st_crs2
+#' @export
+st_crs2.numeric <- function(x, ...) {st_crs2.character(as.character(x), ...)}
+
+## classes already managed by st_crs()
+#' @name st_crs2
+#' @export
+## integer (EPGS / UTM zone): threat as character
+st_crs2.sfc <- function(x, ...) {sf::st_crs(x, ...)}
+#' @name st_crs2
+#' @export
+st_crs2.sf <- function(x, ...) {sf::st_crs(x, ...)}
+#' @name st_crs2
+#' @export
+st_crs2.bbox <- function(x, ...) {sf::st_crs(x, ...)}
+#' @name st_crs2
+#' @export
+st_crs2.CRS <- function(x, ...) {sf::st_crs(x, ...)}
+#' @name st_crs2
+#' @export
+st_crs2.crs <- function(x, ...) {sf::st_crs(x, ...)}
+#' @name st_crs2
+#' @export
+st_crs2.default <- function(x, ...) {sf::st_crs(x, ...)}
