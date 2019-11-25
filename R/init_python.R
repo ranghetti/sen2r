@@ -71,7 +71,11 @@ init_python <- function() {
       on.exit(Sys.setenv(PYTHONPATH = pythonpath_exi))
     }
     path_exi <- Sys.getenv("PATH")
-    if (!grepl(normalize_path(pythonhome_new), normalize_path(path_exi), fixed=TRUE)) {
+    if (!any(grepl(
+      normalize_path(pythonhome_new), 
+      normalize_path(unlist(strsplit(path_exi, ";")), mustWork = FALSE), 
+      fixed=TRUE
+    ))) {
       Sys.setenv(PATH = paste0(pythonhome_new,";",Sys.getenv("PATH")))
       on.exit(Sys.setenv(PATH = path_exi))
     }
