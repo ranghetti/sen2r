@@ -721,7 +721,7 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
           metadata[[i]][["sensing_datetime"]] <- 
             s2_gdal[grepl(meta_reg, s2_gdal)] %>%
             gsub(paste0("^ *<",meta_reg,">([^<]+)</",meta_reg,"> *$"), "\\1", .) %>%
-            unique() %>% as.POSIXct()
+            unique() %>% as.POSIXct(tz = "UTC", format = "%Y-%m-%dT%H:%M:%S")
         }
         if ("nodata_value" %in% sel_info) {
           metadata[[i]][["nodata_value"]] <- 
