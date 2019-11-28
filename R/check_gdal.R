@@ -306,12 +306,8 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
     proj_dir_osgeo <- file.path(dirname(gdal_dir),"share/proj")
     if (length(list.files(proj_dir_osgeo, "^proj\\.db$")) > 0) {
       proj_lib_rgdal <- Sys.getenv("PROJ_LIB")
-      # Sys.setenv(PROJ_LIB = proj_dir_osgeo)
+      Sys.setenv(PROJ_LIB = proj_dir_osgeo)
       # on.exit(Sys.setenv(PROJ_LIB = proj_lib_rgdal))
-      file.copy(
-        file.path(proj_dir_osgeo,"proj.db"), 
-        file.path(proj_lib_rgdal,"proj.db")
-      )
     }
   }
   
