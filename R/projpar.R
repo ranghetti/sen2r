@@ -32,7 +32,6 @@ projpar <- function(x, par, abort = FALSE) {
     st_crs2(x), 
     error = function(e) {st_crs(NA)}
   )
-  
   if (is.na(crs_check$proj4string)) {
     return(NA)
   }
@@ -44,7 +43,6 @@ projpar <- function(x, par, abort = FALSE) {
   if (!is(proj4_par, "character")) {
     proj4_par <- py_to_r(proj4_par)
   }
-  
   attr(proj4_par, "crs") <- crs_check
   
   return(proj4_par)
@@ -61,14 +59,21 @@ projpar <- function(x, par, abort = FALSE) {
 #' projname(4326)
 #' }
 
-projname <- function(x, abort = FALSE) { # nocov start
+projname <- function(x, abort = FALSE) {
   
-  proj4_name <- projpar(x, "geogcs")
-  if (!st_is_longlat(attr(proj4_name, "crs"))) {
-    proj4_name <- projpar(x, "projcs")
+  crs_check <- tryCatch(
+    st_crs2(x), 
+    error = function(e) {st_crs(NA)}
+  )
+  if (is.na(crs_check$proj4string)) {
+    return(NA)
   }
-  proj4_name <- gsub("\\_"," ",proj4_name)
+  
+  proj4_wkt <- st_as_text(crs_check, pretty = TRUE)
+  proj4_name <- strsplit(proj4_wkt, "\n")[[1]][1] %>%
+    gsub("^((PROJCS)|(GEOGCS))\\[\\\"(.*)\\\",$", "\\4", .)
+  attr(proj4_name, "crs") <- crs_check
   
   return(proj4_name)
   
-} # nocov end
+}
