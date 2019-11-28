@@ -42,9 +42,10 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # test on raster values
-    r <- raster::raster(exp_outpath_5)
-    testthat::expect_equal(raster::cellStats(r, "mean"), 884.4695, tolerance = 1e-3)
-    testthat::expect_equal(raster::cellStats(r, "countNA"), 1986322)
+    exp_stars <- stars::read_stars(exp_outpath_5)
+    testthat::expect_equal(mean(exp_stars[[1]][,,1], na.rm=TRUE), 884.4695, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,1])), 1986322)
+    rm(exp_stars)
     
   }
 )
@@ -91,18 +92,20 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # test on raster values
-    r <- raster::raster(exp_outpath_6)
-    testthat::expect_true(round(raster::cellStats(r, "mean")) %in% c(1436,1444))
-    testthat::expect_true(raster::cellStats(r, "countNA") %in% c(346,282))
+    exp_stars <- stars::read_stars(exp_outpath_6)
+    testthat::expect_true(round(mean(exp_stars[[1]][,,1], na.rm=TRUE)) %in% c(1436,1444))
+    testthat::expect_true(sum(is.na(exp_stars[[1]][,,1])) %in% c(346,282))
+    rm(exp_stars)
     
     
     exp_meta_msk <- raster_metadata(exp_outpath_msk, format = "list")[[1]]
     testthat::expect_equal(exp_meta_msk$size, c("x" = 24, "y" = 42))
     testthat::expect_equal(exp_meta_msk$type, "Byte")
     
-    r <- raster::raster(exp_outpath_msk)
-    testthat::expect_equal(raster::cellStats(r, "max"), 1, tolerance = 1e-3)
-    testthat::expect_equal(raster::cellStats(r, "min"), 0, tolerance = 1e-3)
+    exp_stars <- stars::read_stars(exp_outpath_msk)
+    testthat::expect_equal(max(exp_stars[[1]], na.rm=TRUE),1)
+    testthat::expect_equal(min(exp_stars[[1]], na.rm=TRUE),0)
+    rm(exp_stars)
     
   }
 )

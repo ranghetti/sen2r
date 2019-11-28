@@ -53,10 +53,11 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_s$extent_name, "Scalve")
     
     # test on raster values
-    r <- raster::brick(exp_outpath_2)
-    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 3800.772, tolerance = 1e-3)
-    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 1417518, tolerance = 1e-03)
-    
+    exp_stars <- stars::read_stars(exp_outpath_2)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 3800.772, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 1417518, tolerance = 1e-03)
+    rm(exp_stars)
+
     # test thumbnails
     exp_outpath_t_2 <- file.path(
       dirname(exp_outpath_2), "thumbnails", 
@@ -153,9 +154,10 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_s$extent_name, "Scalve")
     
     # test on raster values
-    r <- raster::brick(exp_outpath_3)
-    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 2316, tolerance = 1e-03)
-    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 0)
+    exp_stars <- stars::read_stars(exp_outpath_3)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 2316, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 0)
+    rm(exp_stars)
     
     # test thumbnails
     exp_outpath_t_3 <- file.path(
@@ -244,9 +246,10 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_s$extent_name, "Scalve")
     
     # test on raster values
-    r <- raster::raster(exp_outpath_4)
-    testthat::expect_equal(raster::cellStats(r, "max"), 11)
-    testthat::expect_equal(raster::cellStats(r, "countNA"), 0)
+    exp_stars <- stars::read_stars(exp_outpath_4)
+    testthat::expect_equal(max(exp_stars[[1]], na.rm=TRUE), 11, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]])), 0, tolerance = 1e-03)
+    rm(exp_stars)
     
     # test thumbnails
     exp_outpath_t_4 <- file.path(
@@ -321,9 +324,10 @@ testthat::test_that(
     )
     
     # test on raster values
-    r <- stars::read_stars(exp_outpath_4b)
-    testthat::expect_equal(mean(r[[1]][,,3], na.rm=TRUE), 105.0556, tolerance = 1e-03)
-    testthat::expect_equal(sum(is.na(r[[1]][,,3])), 0, tolerance = 1e-03)
+    exp_stars <- stars::read_stars(exp_outpath_4b)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 105.0556, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 0, tolerance = 1e-03)
+    rm(exp_stars)
     
   }
 )
@@ -359,9 +363,10 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # test on raster values
-    r <- raster::brick(test1)
-    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 100.6298, tolerance = 1e-03)
-    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 0)
+    exp_stars <- stars::read_stars(test1)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 100.6298, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 0)
+    rm(exp_stars)
     
     # tests on sen2r metadata
     exp_meta_s <- testthat::expect_error(
@@ -392,9 +397,10 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # test on raster values
-    r <- raster::brick(test2)
-    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 122.4337, tolerance = 1e-03)
-    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 125, tolerance = 1e-03)
+    exp_stars <- stars::read_stars(test2)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 122.4337, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 125, tolerance = 1e-03)
+    rm(exp_stars)
     
   }
 )
@@ -419,9 +425,10 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # test on raster values
-    r <- raster::brick(test3)
-    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 103.4643, tolerance = 1e-03)
-    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 0)
+    exp_stars <- stars::read_stars(test3)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 103.4643, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 0)
+    rm(exp_stars)
     
   }
 )
@@ -447,9 +454,10 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # test on raster values
-    r <- raster::brick(test4)
-    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 104.3775, tolerance = 1e-03)
-    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 176, tolerance = 1e-3)
+    exp_stars <- stars::read_stars(test4)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 104.3775, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 176, tolerance = 1e-3)
+    rm(exp_stars)
     
   }
 )
@@ -480,9 +488,10 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # test on raster values
-    r <- raster::brick(test5)
-    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 100.7103, tolerance = 1e-03)
-    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 56, tolerance = 1e-3)
+    exp_stars <- stars::read_stars(test5)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 100.7103, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 56, tolerance = 1e-03)
+    rm(exp_stars)
     
   }
 )
@@ -512,9 +521,10 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # test on raster values
-    r <- raster::brick(test6)
-    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 123.5974, tolerance = 1e-03)
-    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 73, tolerance = 1e-3)
+    exp_stars <- stars::read_stars(test6)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 123.5974, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 73, tolerance = 1e-03)
+    rm(exp_stars)
     
   }
 )
@@ -543,9 +553,10 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # test on raster values
-    r <- raster::brick(test7)
-    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 99.14, tolerance = 1e-03)
-    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 0)
+    exp_stars <- stars::read_stars(test7)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 99.14, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 0)
+    rm(exp_stars)
     
   }
 )
@@ -571,9 +582,10 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # test on raster values
-    r <- raster::brick(test8)
-    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 97.9814, tolerance = 1e-03)
-    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 19, tolerance = 1e-3)
+    exp_stars <- stars::read_stars(test8)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 97.9814, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 19, tolerance = 1e-03)
+    rm(exp_stars)
     
   }
 )
@@ -599,9 +611,10 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # test on raster values
-    r <- raster::brick(test9)
-    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 114.433, tolerance = 1e-03)
-    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 53, tolerance = 1e-3)
+    exp_stars <- stars::read_stars(test9)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 114.433, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 53, tolerance = 1e-03)
+    rm(exp_stars)
     
   }
 )

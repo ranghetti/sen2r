@@ -152,8 +152,6 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_s$extent_name, "Barbellino")
     
     # test on raster values
-    r <- raster::raster(exp_outpath_12)
-    # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_12)
     testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 0.3529976, tolerance = 1e-3)
     testthat::expect_equal(sum(is.na(exp_stars[[1]])), 0)
