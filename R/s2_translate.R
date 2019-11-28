@@ -273,6 +273,7 @@ s2_translate <- function(infile,
               paste0(
                 binpaths$gdalbuildvrt," -separate ",
                 "-resolution highest ",
+                "-a_srs EPSG:",st_crs2(sel_utmzone)$epsg," ",
                 "\"",final_vrt_name,"\" ",
                 paste(paste0("\"",jp2_selbands,"\""), collapse=" ")
               ),
@@ -301,7 +302,7 @@ s2_translate <- function(infile,
             }
           }
           
-          # fix for envi extension (writeRaster use .envi)
+          # fix for envi extension (writeRaster uses .envi)
           if (format=="ENVI") {fix_envi_format(out_name)}
           
         } # end of "overwite" IF cycle
