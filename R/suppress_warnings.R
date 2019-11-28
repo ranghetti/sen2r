@@ -2,7 +2,7 @@
 #' @description Suppress warnings matching particular regular expressions.
 #' @details See https://stackoverflow.com/questions/16517795/selective-suppresswarnings-that-filters-by-regular-expression
 #' @param .expr Code to evaluate
-#' @param .f A regular expression (which will be passed to grepl).
+#' @param .f A regular expression (which will be passed to `grepl()`).
 #' @return The warning message as character string, invisibly.
 suppress_warnings <- function(.expr, .f, ...) {
   eval.parent(substitute(
