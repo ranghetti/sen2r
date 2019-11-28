@@ -273,7 +273,7 @@ s2_translate <- function(infile,
               paste0(
                 binpaths$gdalbuildvrt," -separate ",
                 "-resolution highest ",
-                "-a_srs EPSG:",st_crs2(sel_utmzone)$epsg," ",
+                "-a_srs \"EPSG:",st_crs2(sel_utmzone)$epsg,"\" ",
                 "\"",final_vrt_name,"\" ",
                 paste(paste0("\"",jp2_selbands,"\""), collapse=" ")
               ),
