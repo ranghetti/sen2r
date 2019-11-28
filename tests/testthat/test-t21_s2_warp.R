@@ -321,9 +321,9 @@ testthat::test_that(
     )
     
     # test on raster values
-    r <- raster::brick(exp_outpath_4b)
-    testthat::expect_equal(raster::cellStats(r[[3]], "mean"), 105.0556, tolerance = 1e-03)
-    testthat::expect_equal(raster::cellStats(r[[3]], "countNA"), 0, tolerance = 1e-03)
+    r <- stars::read_stars(exp_outpath_4b)
+    testthat::expect_equal(mean(r[[1]][,,3], na.rm=TRUE), 105.0556, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(r[[1]][,,3])), 0, tolerance = 1e-03)
     
   }
 )
