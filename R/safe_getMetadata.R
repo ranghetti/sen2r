@@ -87,6 +87,7 @@
 #' @export
 #' @import data.table
 #' @importFrom methods is as
+#' @importFrom magrittr "%>%"
 #'
 #' @examples
 #' # Define product name
@@ -202,7 +203,7 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
 # action="rm_invalid" causes the execution of rm_invalid_safe().
 .safe_getMetadata <- function(s2, info, format, simplify, abort, allow_oldnames, action) {
   
-  validname <- sensing_datetime <- creation_datetime <- utm <- NULL # to avoid NOTE on check
+  . <- validname <- sensing_datetime <- creation_datetime <- utm <- NULL # to avoid NOTE on check
 
   # define regular expressions to identify products
   s2_regex <- list(

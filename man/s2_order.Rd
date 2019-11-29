@@ -4,8 +4,7 @@
 \alias{s2_order}
 \title{Order S2 products.}
 \usage{
-s2_order(s2_prodlist = NULL, export_prodlist = TRUE, delay = 5,
-  apihub = NA)
+s2_order(s2_prodlist = NULL, export_prodlist = TRUE, delay = 5, apihub = NA)
 }
 \arguments{
 \item{s2_prodlist}{Named character: list of the products to be ordered,

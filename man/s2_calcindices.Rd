@@ -4,11 +4,24 @@
 \alias{s2_calcindices}
 \title{Compute maps of spectral indices}
 \usage{
-s2_calcindices(infiles, indices, outdir = ".", parameters = NULL,
-  source = c("TOA", "BOA"), format = NA, subdirs = NA, tmpdir = NA,
-  compress = "DEFLATE", dataType = "Int16", scaleFactor = NA,
-  proc_mode = "raster", parallel = FALSE, overwrite = FALSE,
-  .log_message = NA, .log_output = NA)
+s2_calcindices(
+  infiles,
+  indices,
+  outdir = ".",
+  parameters = NULL,
+  source = c("TOA", "BOA"),
+  format = NA,
+  subdirs = NA,
+  tmpdir = NA,
+  compress = "DEFLATE",
+  dataType = "Int16",
+  scaleFactor = NA,
+  proc_mode = "raster",
+  parallel = FALSE,
+  overwrite = FALSE,
+  .log_message = NA,
+  .log_output = NA
+)
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths

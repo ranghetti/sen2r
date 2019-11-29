@@ -4,8 +4,14 @@
 \alias{raster2rgb}
 \title{Produce an RGB image from a singleband raster file.}
 \usage{
-raster2rgb(in_rast, out_file = NULL, palette = "generic_ndsi_2",
-  minval = -1, maxval = 1, tmpdir = NA)
+raster2rgb(
+  in_rast,
+  out_file = NULL,
+  palette = "generic_ndsi_2",
+  minval = -1,
+  maxval = 1,
+  tmpdir = NA
+)
 }
 \arguments{
 \item{in_rast}{Path of the input multiband raster.}

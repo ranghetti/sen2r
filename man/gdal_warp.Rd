@@ -4,9 +4,21 @@
 \alias{gdal_warp}
 \title{Clip, reproject and warp raster files}
 \usage{
-gdal_warp(srcfiles, dstfiles, of = NULL, co = NULL, ref = NULL,
-  mask = NULL, tr = NULL, t_srs = NULL, r = NULL,
-  dstnodata = NULL, overwrite = FALSE, tmpdir = NA, rmtmp = TRUE)
+gdal_warp(
+  srcfiles,
+  dstfiles,
+  of = NULL,
+  co = NULL,
+  ref = NULL,
+  mask = NULL,
+  tr = NULL,
+  t_srs = NULL,
+  r = NULL,
+  dstnodata = NULL,
+  overwrite = FALSE,
+  tmpdir = NA,
+  rmtmp = TRUE
+)
 }
 \arguments{
 \item{srcfiles}{A vector of input file paths (managed by GDAL).}

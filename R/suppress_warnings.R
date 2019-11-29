@@ -4,7 +4,7 @@
 #' @param .expr Code to evaluate
 #' @param .f A regular expression (which will be passed to `grepl()`).
 #' @return The warning message as character string, invisibly.
-suppress_warnings <- function(.expr, .f, ...) {
+suppress_warnings <- function(.expr, .f) {
   eval.parent(substitute(
     withCallingHandlers( .expr, warning = function(w) {
       cm <- conditionMessage(w)

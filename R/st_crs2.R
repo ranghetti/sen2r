@@ -40,7 +40,7 @@
 #' st_crs2("09S")
 #' 
 #' ## CRS from WKT (string or path)
-#' (wkt_32n <- st_as_text(st_crs(32609)))
+#' (wkt_32n <- sf::st_as_text(sf::st_crs(32609)))
 #' st_crs2(wkt_32n)
 #' writeLines(wkt_32n, wkt_32n_path <- tempfile())
 #' st_crs2(wkt_32n_path)
@@ -63,7 +63,7 @@
 #' st_crs2(sf::read_sf(vector_path))
 #' 
 #' \donttest{
-#' CRS from PROJ.4 string
+#' ## CRS from PROJ.4 string
 #' # (avoid using this with PROJ >= 6!)
 #' st_crs2("+init=epsg:32609") # this makes use of the EPSG code
 #' st_crs2("+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs")
@@ -108,14 +108,15 @@ st_crs2.character <- function(x, ...) {
     NULL
   }
   if (!is.null(x_epsg)) {
-    return(sf::st_crs(.Call('_sf_CPL_crs_from_epsg', PACKAGE = 'sf', x_epsg), ...))
+    return(sf::st_crs(x_epsg, ...))
   }
   
   ## case 2: PROJ.4
   if (grepl("^\\+[a-z]+\\=", x)) {
     # x: PROJ.4 -> character PROJ.4 with warning
+    rgdal_extSoftVersion <- rgdal_extSoftVersion()
     proj_version <- package_version(
-      .Call('_sf_CPL_proj_version', PACKAGE = 'sf', FALSE)
+      rgdal_extSoftVersion[grepl("PROJ",names(rgdal_extSoftVersion))]
     )
     if (proj_version >= 6) {
       print_message(
@@ -124,7 +125,7 @@ st_crs2.character <- function(x, ...) {
         "(see http://rgdal.r-forge.r-project.org/articles/PROJ6_GDAL3.html)."
       )
     }
-    return(sf::st_crs(.Call('_sf_CPL_crs_from_proj4string', PACKAGE = 'sf', x), ...))
+    return(sf::st_crs(x, ...))
   }
   
   ## case 3: file path
@@ -144,7 +145,7 @@ st_crs2.character <- function(x, ...) {
         read_stars(x, quiet = TRUE, proxy = TRUE),
         error = function(e) {tryCatch(
           # x: path of a text file with WKT -> crs
-          .Call('_sf_CPL_crs_from_wkt', PACKAGE = 'sf', readLines(x, warn = FALSE)),
+          sf::st_crs(wkt = readLines(x)),
           error = function(e) {
             # x: path of a non supported file -> x (st_crs will return the proper error)
             x
@@ -158,7 +159,7 @@ st_crs2.character <- function(x, ...) {
   ## case 4: WKT and other characters
   if (grepl("^((PROJCS)|(GEOGCS))\\[.+\\]$", x)) {
     # x: WKT string -> crs
-    return(sf::st_crs(.Call('_sf_CPL_crs_from_wkt', PACKAGE = 'sf', x), ...))
+    return(sf::st_crs(wkt = x, ...))
   }
 
   ## any other case: pass to st_crs as is
@@ -175,5 +176,5 @@ st_crs2.numeric <- function(x, ...) {st_crs2.character(as.character(x), ...)}
 ## classes already managed by st_crs()
 #' @export
 st_crs2.default <- function(x, ...) {
-  if (missing(x)) {NA_crs_} else {sf::st_crs(x, ...)}
+  if (missing(x)) {sf::st_crs(NA)} else {sf::st_crs(x, ...)}
 }

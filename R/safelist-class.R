@@ -95,7 +95,7 @@ setAs("data.frame", "safelist", function(from) {
 })
 
 setAs("sf", "safelist", function(from) {
-  as(as.data.frame(s2_sf), "safelist")
+  as(as.data.frame(from), "safelist")
 })
 
 ## Methods FROM safelist

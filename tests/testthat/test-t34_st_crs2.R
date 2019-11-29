@@ -5,8 +5,9 @@ context("Test st_crs2")
 testthat::test_that(
   "st_crs2, input PROJ.4", {
     testthat::expect_equal(st_crs2("+init=epsg:32609")[["epsg"]], 32609)
+    rgdal_extSoftVersion <- rgdal_extSoftVersion()
     proj_version <- package_version(
-      .Call('_sf_CPL_proj_version', PACKAGE = 'sf', FALSE)
+      rgdal_extSoftVersion[grepl("PROJ",names(rgdal_extSoftVersion))]
     )
     if (proj_version >= 6) {
       testthat::expect_warning(

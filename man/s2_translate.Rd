@@ -4,10 +4,21 @@
 \alias{s2_translate}
 \title{Convert from SAFE format}
 \usage{
-s2_translate(infile, outdir = ".", subdirs = NA, tmpdir = NA,
-  rmtmp = TRUE, prod_type = NULL, tiles = NA, res = "10m",
-  format = "VRT", compress = "DEFLATE", vrt_rel_paths = NA,
-  utmzone = "", overwrite = FALSE)
+s2_translate(
+  infile,
+  outdir = ".",
+  subdirs = NA,
+  tmpdir = NA,
+  rmtmp = TRUE,
+  prod_type = NULL,
+  tiles = NA,
+  res = "10m",
+  format = "VRT",
+  compress = "DEFLATE",
+  vrt_rel_paths = NA,
+  utmzone = "",
+  overwrite = FALSE
+)
 }
 \arguments{
 \item{infile}{Full path of the input SAFE folder (alternatively,

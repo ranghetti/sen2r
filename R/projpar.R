@@ -70,8 +70,10 @@ projname <- function(x, abort = FALSE) {
   }
   
   proj4_wkt <- st_as_text(crs_check, pretty = TRUE)
-  proj4_name <- strsplit(proj4_wkt, "\n")[[1]][1] %>%
-    gsub("^((PROJCS)|(GEOGCS))\\[\\\"(.*)\\\",$", "\\4", .)
+  proj4_name <- gsub(
+    "^((PROJCS)|(GEOGCS))\\[\\\"(.*)\\\",$", "\\4", 
+    strsplit(proj4_wkt, "\n")[[1]][1]
+  )
   attr(proj4_name, "crs") <- crs_check
   
   return(proj4_name)

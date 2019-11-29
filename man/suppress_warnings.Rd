@@ -4,7 +4,7 @@
 \alias{suppress_warnings}
 \title{Selective suppress warnings}
 \usage{
-suppress_warnings(.expr, .f, ...)
+suppress_warnings(.expr, .f)
 }
 \arguments{
 \item{.expr}{Code to evaluate}

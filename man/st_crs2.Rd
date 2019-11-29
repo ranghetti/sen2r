@@ -56,7 +56,7 @@ st_crs2("9N")
 st_crs2("09S")
 
 ## CRS from WKT (string or path)
-(wkt_32n <- st_as_text(st_crs(32609)))
+(wkt_32n <- sf::st_as_text(sf::st_crs(32609)))
 st_crs2(wkt_32n)
 writeLines(wkt_32n, wkt_32n_path <- tempfile())
 st_crs2(wkt_32n_path)
@@ -79,7 +79,7 @@ st_crs2(raster::raster(raster_path))
 st_crs2(sf::read_sf(vector_path))
 
 \donttest{
-CRS from PROJ.4 string
+## CRS from PROJ.4 string
 # (avoid using this with PROJ >= 6!)
 st_crs2("+init=epsg:32609") # this makes use of the EPSG code
 st_crs2("+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs")

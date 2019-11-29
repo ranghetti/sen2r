@@ -4,26 +4,66 @@
 \alias{sen2r}
 \title{Find, download and preprocess Sentinel-2 images}
 \usage{
-sen2r(param_list = NULL, gui = NA, preprocess = TRUE,
-  s2_levels = c("l1c", "l2a"), sel_sensor = c("s2a", "s2b"),
-  online = TRUE, order_lta = TRUE, apihub = NA,
-  downloader = "builtin", overwrite_safe = FALSE, rm_safe = "no",
-  step_atmcorr = "auto", max_cloud_safe = 100, timewindow = NA,
-  timeperiod = "full", extent = NA, extent_name = "sen2r",
-  s2tiles_selected = NA, s2orbits_selected = NA, list_prods = NA,
-  list_rgb = NA, list_indices = NA, index_source = "BOA",
-  rgb_ranges = NA, mask_type = NA, max_mask = 100, mask_smooth = 0,
-  mask_buffer = 0, clip_on_extent = TRUE, extent_as_mask = FALSE,
-  reference_path = NA, res = NA, res_s2 = "10m", unit = "Meter",
-  proj = NA, resampling = "near", resampling_scl = "near",
-  outformat = "GTiff", rgb_outformat = "GTiff",
-  index_datatype = "Int16", compression = "DEFLATE",
-  rgb_compression = "90", overwrite = FALSE, path_l1c = NA,
-  path_l2a = NA, path_tiles = NA, path_merged = NA, path_out = NA,
-  path_rgb = NA, path_indices = NA, path_subdirs = TRUE,
-  thumbnails = TRUE, parallel = FALSE,
-  processing_order = "by_groups", use_python = TRUE, tmpdir = NA,
-  rmtmp = TRUE, log = NA)
+sen2r(
+  param_list = NULL,
+  gui = NA,
+  preprocess = TRUE,
+  s2_levels = c("l1c", "l2a"),
+  sel_sensor = c("s2a", "s2b"),
+  online = TRUE,
+  order_lta = TRUE,
+  apihub = NA,
+  downloader = "builtin",
+  overwrite_safe = FALSE,
+  rm_safe = "no",
+  step_atmcorr = "auto",
+  max_cloud_safe = 100,
+  timewindow = NA,
+  timeperiod = "full",
+  extent = NA,
+  extent_name = "sen2r",
+  s2tiles_selected = NA,
+  s2orbits_selected = NA,
+  list_prods = NA,
+  list_rgb = NA,
+  list_indices = NA,
+  index_source = "BOA",
+  rgb_ranges = NA,
+  mask_type = NA,
+  max_mask = 100,
+  mask_smooth = 0,
+  mask_buffer = 0,
+  clip_on_extent = TRUE,
+  extent_as_mask = FALSE,
+  reference_path = NA,
+  res = NA,
+  res_s2 = "10m",
+  unit = "Meter",
+  proj = NA,
+  resampling = "near",
+  resampling_scl = "near",
+  outformat = "GTiff",
+  rgb_outformat = "GTiff",
+  index_datatype = "Int16",
+  compression = "DEFLATE",
+  rgb_compression = "90",
+  overwrite = FALSE,
+  path_l1c = NA,
+  path_l2a = NA,
+  path_tiles = NA,
+  path_merged = NA,
+  path_out = NA,
+  path_rgb = NA,
+  path_indices = NA,
+  path_subdirs = TRUE,
+  thumbnails = TRUE,
+  parallel = FALSE,
+  processing_order = "by_groups",
+  use_python = TRUE,
+  tmpdir = NA,
+  rmtmp = TRUE,
+  log = NA
+)
 }
 \arguments{
 \item{param_list}{(optional) List of input parameters:
@@ -187,7 +227,7 @@ for the accepted values). Default (NA) is not to mask.}
 \item{max_mask}{(optional) Numeric value (range 0 to 100), which represents
 the maximum percentage of allowed masked surface (by clouds or any other
 type of mask chosen with argument \code{mask_type}) for producing outputs.
-Images with a percentage of masked surface greater than \code{max_mask}%
+Images with a percentage of masked surface greater than \code{max_mask}\%
 are not processed (the list of expected output files which have not been
 generated is returned as an attribute, named "skipped").
 Default value is 80.

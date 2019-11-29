@@ -4,8 +4,10 @@
 \alias{build_example_param_file}
 \title{Build an example JSON parameter file}
 \usage{
-build_example_param_file(json_path = tempfile(fileext =
-  "_sen2r_params.json"), overwrite = TRUE)
+build_example_param_file(
+  json_path = tempfile(fileext = "_sen2r_params.json"),
+  overwrite = TRUE
+)
 }
 \arguments{
 \item{json_path}{Path of the output file. Default is to save it on a

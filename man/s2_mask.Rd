@@ -5,14 +5,34 @@
 \alias{s2_perc_masked}
 \title{Apply cloud masks}
 \usage{
-s2_mask(infiles, maskfiles, mask_type = "cloud_medium_proba",
-  smooth = 0, buffer = 0, max_mask = 80, outdir = "./masked",
-  tmpdir = NA, rmtmp = TRUE, save_binary_mask = FALSE, format = NA,
-  subdirs = NA, compress = "DEFLATE", parallel = FALSE,
-  overwrite = FALSE, .log_message = NA, .log_output = NA)
+s2_mask(
+  infiles,
+  maskfiles,
+  mask_type = "cloud_medium_proba",
+  smooth = 0,
+  buffer = 0,
+  max_mask = 80,
+  outdir = "./masked",
+  tmpdir = NA,
+  rmtmp = TRUE,
+  save_binary_mask = FALSE,
+  format = NA,
+  subdirs = NA,
+  compress = "DEFLATE",
+  parallel = FALSE,
+  overwrite = FALSE,
+  .log_message = NA,
+  .log_output = NA
+)
 
-s2_perc_masked(infiles, maskfiles, mask_type = "cloud_medium_proba",
-  tmpdir = NA, rmtmp = TRUE, parallel = FALSE)
+s2_perc_masked(
+  infiles,
+  maskfiles,
+  mask_type = "cloud_medium_proba",
+  tmpdir = NA,
+  rmtmp = TRUE,
+  parallel = FALSE
+)
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths
@@ -72,7 +92,7 @@ Default is 0 (no buffer).}
 \item{max_mask}{(optional) Numeric value (range 0 to 100), which represents
 the maximum percentage of allowed masked surface (by clouds or any other
 type of mask chosen with argument \code{mask_type}) for producing outputs.
-Images with a percentage of masked surface greater than \code{max_mask}%
+Images with a percentage of masked surface greater than \code{max_mask}\%
 are not processed (the list of expected output files which have not been
 generated is returned as an attribute, named "skipped").
 Default value is 80.
