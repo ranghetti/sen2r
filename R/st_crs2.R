@@ -114,10 +114,13 @@ st_crs2.character <- function(x, ...) {
   ## case 2: PROJ.4
   if (grepl("^\\+[a-z]+\\=", x)) {
     # x: PROJ.4 -> character PROJ.4 with warning
-    rgdal_extSoftVersion <- rgdal_extSoftVersion()
-    proj_version <- package_version(
-      rgdal_extSoftVersion[grepl("PROJ",names(rgdal_extSoftVersion))]
-    )
+    proj_version <- package_version(gsub(
+      "^Rel\\. ([0-9\\.]+),.*$", "\\1", 
+      system(
+        load_binpaths("gdal")$proj, 
+        intern = Sys.info()["sysname"] == "Windows"
+      )[1]
+    ))
     if (proj_version >= 6) {
       print_message(
         type = "warning",

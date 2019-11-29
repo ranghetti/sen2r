@@ -5,10 +5,13 @@ context("Test st_crs2")
 testthat::test_that(
   "st_crs2, input PROJ.4", {
     testthat::expect_equal(st_crs2("+init=epsg:32609")[["epsg"]], 32609)
-    rgdal_extSoftVersion <- rgdal_extSoftVersion()
-    proj_version <- package_version(
-      rgdal_extSoftVersion[grepl("PROJ",names(rgdal_extSoftVersion))]
-    )
+    proj_version <- package_version(gsub(
+      "^Rel\\. ([0-9\\.]+),.*$", "\\1", 
+      system(
+        load_binpaths("gdal")$proj, 
+        intern = Sys.info()["sysname"] == "Windows"
+      )[1]
+    ))
     if (proj_version >= 6) {
       testthat::expect_warning(
         st_crs2("+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"),
