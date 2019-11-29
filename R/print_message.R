@@ -22,7 +22,7 @@
 #'  (useful for logs or time consuming operations); default is FALSE.
 #' @param date_format Format of the date (see \code{\link[base]{strftime}})
 #'  for the definition of the format). The default format is
-#'  "\%Y-\%m-\%d \%H:\%M:\%S".
+#'  `'\%Y-\%m-\%d \%H:\%M:\%S'`.
 #' @return Message (in the defined format).
 #'
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}

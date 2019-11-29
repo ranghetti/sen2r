@@ -65,6 +65,7 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
   # If GDAL is not found, search for it
   if (any(
     is.null(binpaths$gdalinfo), !file.exists(nn(binpaths$gdalinfo)),
+    is.null(binpaths$proj), # this because was added in version 1.2.1.9003
     force == TRUE,
     !grepl(gdal_path, normalize_path(nn(binpaths$gdalinfo)))
   )) {
