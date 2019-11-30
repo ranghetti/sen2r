@@ -6,8 +6,6 @@ covr::package_coverage(
     "R/add_rgb_image.R",
     "R/geograbber_process.R", 
     "R/editModPoly.R",
-    "R/install_aria2.R",
-    "R/install_sen2cor.R", 
     "R/give_write_permission.R",
     "R/check_sen2r_deps.R",
     "R/create_indices_db.R", 

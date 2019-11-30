@@ -4,8 +4,14 @@
 \alias{smooth_mask}
 \title{Buffer cloud masks}
 \usage{
-smooth_mask(inmask, binpaths, tmpdir = tempdir(), radius = 250,
-  buffer = 250, namask = NULL)
+smooth_mask(
+  inmask,
+  binpaths,
+  tmpdir = tempdir(),
+  radius = 250,
+  buffer = 250,
+  namask = NULL
+)
 }
 \arguments{
 \item{inmask}{The path of the input 0-1 mask (where 0 represents the area

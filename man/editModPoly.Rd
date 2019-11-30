@@ -4,8 +4,16 @@
 \alias{editModPoly}
 \title{Shiny Module Server for Geo Create, Edit, Delete}
 \usage{
-editModPoly(input, output, session, leafmap, targetLayerId = NULL,
-  sf = TRUE, record = FALSE, crs = 4326)
+editModPoly(
+  input,
+  output,
+  session,
+  leafmap,
+  targetLayerId = NULL,
+  sf = TRUE,
+  record = FALSE,
+  crs = 4326
+)
 }
 \arguments{
 \item{input}{Shiny server function input}

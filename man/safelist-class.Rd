@@ -11,7 +11,7 @@ Sentinel.2 archives.
 It is a named character in which names are SAFE codes
 (e.g. \code{S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE}),
 and values are URLs used to retrieve them from ESA API Hub (e.g.
-\code{https://scihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value}).
+\verb{https://scihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value}).
 Some attributes may be included, basically information retrieved by
 function \link{s2_list} containing product metadata.
 Moreover, the attribute \code{online} (retrieved by function \link{safe_is_online}

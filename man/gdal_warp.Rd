@@ -4,9 +4,21 @@
 \alias{gdal_warp}
 \title{Clip, reproject and warp raster files}
 \usage{
-gdal_warp(srcfiles, dstfiles, of = NULL, co = NULL, ref = NULL,
-  mask = NULL, tr = NULL, t_srs = NULL, r = NULL,
-  dstnodata = NULL, overwrite = FALSE, tmpdir = NA, rmtmp = TRUE)
+gdal_warp(
+  srcfiles,
+  dstfiles,
+  of = NULL,
+  co = NULL,
+  ref = NULL,
+  mask = NULL,
+  tr = NULL,
+  t_srs = NULL,
+  r = NULL,
+  dstnodata = NULL,
+  overwrite = FALSE,
+  tmpdir = NA,
+  rmtmp = TRUE
+)
 }
 \arguments{
 \item{srcfiles}{A vector of input file paths (managed by GDAL).}
@@ -39,10 +51,7 @@ projection is never taken from \code{mask}.}
 \code{tr} is rounded in order to match the exact extent.}
 
 \item{t_srs}{Target spatial reference set (character). The coordinate
-systems that can be passed are anything supported by the
-OGRSpatialReference.SetFromUserInput() call, which includes EPSG
-PCS and GCSes (i.e. EPSG:4296), PROJ.4 declarations (as above),
-or the name of a .prf file containing well known text.}
+systems that can be passed are anything supported by \link{st_crs2}.}
 
 \item{r}{Resampling_method ("near"|"bilinear"|"cubic"|"cubicspline"|
 "lanczos"|"average"|"mode"|"max"|"min"|"med"|"q1"|"q3").}
@@ -127,15 +136,15 @@ par(mar = rep(0,4)); image(stars::read_stars(test3), rgb = 1:3)
 
 # Reproject all the input file
 test4 <- tempfile(fileext = "_test4.tif")
-gdal_warp(ex_sel, test4, t_srs = "+init=epsg:32631")
+gdal_warp(ex_sel, test4, t_srs = 32631)
 
 # Reproject and clip on a bounding box
 test5 <- tempfile(fileext = "_test5.tif")
-gdal_warp(ex_sel, test5, t_srs = "+init=epsg:32631", mask = stars::read_stars(test1))
+gdal_warp(ex_sel, test5, t_srs = "EPSG:32631", mask = stars::read_stars(test1))
 
 # Reproject and clip on polygon (masking outside)
 test6 <- tempfile(fileext = "_test6.tif")
-gdal_warp(ex_sel, test6, t_srs = "+init=epsg:32631", mask = crop_poly)
+gdal_warp(ex_sel, test6, t_srs = "31N", mask = crop_poly)
 
 # Show output
 crop_line_31N <- sf::st_transform(crop_line, 32631)

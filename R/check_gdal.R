@@ -276,6 +276,41 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
   }
   writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
   
+  # set PATH
+  if (Sys.info()["sysname"] == "Windows") {
+    path_exi <- Sys.getenv("PATH")
+    if (!any(grepl(
+      normalize_path(gdal_dir), 
+      normalize_path(unlist(strsplit(path_exi, ";")), mustWork = FALSE), 
+      fixed=TRUE
+    ))) {
+      Sys.setenv(PATH = paste0(gdal_dir,";",Sys.getenv("PATH")))
+    }
+    if (!any(grepl(
+      normalize_path(gdal_py_dir), 
+      normalize_path(unlist(strsplit(path_exi, ";")), mustWork = FALSE), 
+      fixed=TRUE
+    ))) {
+      Sys.setenv(PATH = paste0(gdal_py_dir,";",Sys.getenv("PATH")))
+    }
+    # on.exit(Sys.setenv(PATH = path_exi))
+  }
+  
+  
+  # path for rgdal version 1.5.2 (missing proj.db)
+  # ("ERROR 1: PROJ: proj_create_from_database: Cannot find proj.db")
+  if (all(
+    Sys.info()["sysname"] == "Windows",
+    length(list.files(Sys.getenv("PROJ_LIB"), "^proj\\.db$")) == 0
+  )) {
+    proj_dir_osgeo <- file.path(dirname(gdal_dir),"share/proj")
+    if (length(list.files(proj_dir_osgeo, "^proj\\.db$")) > 0) {
+      proj_lib_rgdal <- Sys.getenv("PROJ_LIB")
+      Sys.setenv(PROJ_LIB = proj_dir_osgeo)
+      # on.exit(Sys.setenv(PROJ_LIB = proj_lib_rgdal))
+    }
+  }
+  
   print_message(
     type="message",
     "GDAL version in use: ", as.character(gdal_version))

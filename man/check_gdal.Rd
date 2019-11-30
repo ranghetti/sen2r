@@ -4,8 +4,7 @@
 \alias{check_gdal}
 \title{Check GDAL installation}
 \usage{
-check_gdal(abort = TRUE, gdal_path = NULL, force = FALSE,
-  full_scan = FALSE)
+check_gdal(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan = FALSE)
 }
 \arguments{
 \item{abort}{Logical parameter: if TRUE (default), the function aborts
@@ -23,9 +22,9 @@ is not in \code{gdal_path}.}
 \item{full_scan}{(optional) Logical: in Linux and MacOS, if \code{gdal_path} was
 not manually defined, GDAL is searched within the system path in case this
 argument is left to default value FALSE; instead, if TRUE, a full search is
-performed. In Windows, if the default OSGeo directory \code{C:\\OSGeo4W64} exists,
-GDAL is searched there, instead in the main directory \code{C:\\}; setting
-\code{full_scan} to TRUE, is is always searched in the whole \code{C:\\}.
+performed. In Windows, if the default OSGeo directory \verb{C:\\\\OSGeo4W64} exists,
+GDAL is searched there, instead in the main directory \verb{C:\\\\}; setting
+\code{full_scan} to TRUE, is is always searched in the whole \verb{C:\\\\}.
 This argument takes no effect if \code{gdal_path} was defined, since, in that case,
 a full search is always performed in \code{gdal_path}.}
 }

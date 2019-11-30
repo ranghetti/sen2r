@@ -53,8 +53,9 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_s$extent_name, "")
     
     # test on raster values
-    r <- raster::raster(exp_outpath_1)
-    testthat::expect_equal(raster::cellStats(r, "mean"), 4.729521, tolerance = 1e-3)
+    exp_stars <- stars::read_stars(exp_outpath_1)
+    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 4.729521, tolerance = 1e-03)
+    rm(exp_stars)
     
   }
 )

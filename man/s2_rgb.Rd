@@ -4,10 +4,22 @@
 \alias{s2_rgb}
 \title{Create RGB images from S2 reflectance products.}
 \usage{
-s2_rgb(infiles, prod_type = NA, rgb_bands = 4:2, scaleRange = NA,
-  outdir = NA, subdirs = NA, format = NA, compress = "DEFLATE",
-  tmpdir = NA, rmtmp = TRUE, parallel = TRUE, overwrite = FALSE,
-  .log_message = NA, .log_output = NA)
+s2_rgb(
+  infiles,
+  prod_type = NA,
+  rgb_bands = 4:2,
+  scaleRange = NA,
+  outdir = NA,
+  subdirs = NA,
+  format = NA,
+  compress = "DEFLATE",
+  tmpdir = NA,
+  rmtmp = TRUE,
+  parallel = TRUE,
+  overwrite = FALSE,
+  .log_message = NA,
+  .log_output = NA
+)
 }
 \arguments{
 \item{infiles}{A vector of input filenames. Input files are paths

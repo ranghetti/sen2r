@@ -4,8 +4,7 @@
 \alias{tiles_intersects}
 \title{Select the tiles intersecting the extent}
 \usage{
-tiles_intersects(extent, all = FALSE, out_format = "id",
-  .s2tiles = NULL)
+tiles_intersects(extent, all = FALSE, out_format = "id", .s2tiles = NULL)
 }
 \arguments{
 \item{extent}{\code{sf} object with the spatial extent.}

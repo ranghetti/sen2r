@@ -13,8 +13,13 @@ check_scihub_login(username, password)
 
 check_scihub_connection()
 
-write_scihub_login(username, password, apihub_path = NA, check = TRUE,
-  append = FALSE)
+write_scihub_login(
+  username,
+  password,
+  apihub_path = NA,
+  check = TRUE,
+  append = FALSE
+)
 }
 \arguments{
 \item{apihub_path}{Path of the file in which login information is saved.

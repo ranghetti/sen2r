@@ -4,8 +4,16 @@
 \alias{stack2rgb}
 \title{Produce an RGB image from a multiband raster file.}
 \usage{
-stack2rgb(in_rast, out_file = NULL, bands = 1:3, minval = 0,
-  maxval = 10000, format = "JPEG", compress = "90", tmpdir = NA)
+stack2rgb(
+  in_rast,
+  out_file = NULL,
+  bands = 1:3,
+  minval = 0,
+  maxval = 10000,
+  format = "JPEG",
+  compress = "90",
+  tmpdir = NA
+)
 }
 \arguments{
 \item{in_rast}{Path of the input multiband raster.}

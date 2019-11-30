@@ -4,18 +4,26 @@
 \alias{s2_list}
 \title{Retrieve list of available S2 products.}
 \usage{
-s2_list(spatial_extent = NULL, tile = NULL, orbit = NULL,
-  time_interval = c(Sys.Date() - 10, Sys.Date()), time_period = "full",
-  level = "auto", apihub = NA, max_cloud = 100,
-  availability = "ignore", output_type = "deprecated")
+s2_list(
+  spatial_extent = NULL,
+  tile = NULL,
+  orbit = NULL,
+  time_interval = c(Sys.Date() - 10, Sys.Date()),
+  time_period = "full",
+  level = "auto",
+  apihub = NA,
+  max_cloud = 100,
+  availability = "ignore",
+  output_type = "deprecated"
+)
 }
 \arguments{
 \item{spatial_extent}{A valid spatial object object of class \code{sf},
 \code{sfc} or \code{sfg}}
 
-\item{tile}{\code{string array} Sentinel-2 Tiles to be considered string (5-length character)}
+\item{tile}{\verb{string array} Sentinel-2 Tiles to be considered string (5-length character)}
 
-\item{orbit}{\code{string array} Sentinel-2 orbit numbers to be considered}
+\item{orbit}{\verb{string array} Sentinel-2 orbit numbers to be considered}
 
 \item{time_interval}{Dates to be considered, as a temporal vector (class \link{POSIXct} or
 \link{Date}, or string in \code{YYYY-mm-dd} format) of length 1 (specific day) or 2 (time interval).}

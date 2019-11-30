@@ -4,10 +4,19 @@
 \alias{sen2cor}
 \title{Correct L1C products using Sen2Cor}
 \usage{
-sen2cor(l1c_prodlist = NULL, l1c_dir = NULL, outdir = NULL,
-  proc_dir = NA, tmpdir = NA, rmtmp = TRUE, tiles = NULL,
-  parallel = FALSE, overwrite = FALSE, .log_message = NA,
-  .log_output = NA)
+sen2cor(
+  l1c_prodlist = NULL,
+  l1c_dir = NULL,
+  outdir = NULL,
+  proc_dir = NA,
+  tmpdir = NA,
+  rmtmp = TRUE,
+  tiles = NULL,
+  parallel = FALSE,
+  overwrite = FALSE,
+  .log_message = NA,
+  .log_output = NA
+)
 }
 \arguments{
 \item{l1c_prodlist}{List of L1C product names to be corrected. They can be both

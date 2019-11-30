@@ -4,8 +4,7 @@
 \alias{check_param_list}
 \title{Check a parameter list}
 \usage{
-check_param_list(pm, type = "string", check_paths = FALSE,
-  correct = TRUE)
+check_param_list(pm, type = "string", check_paths = FALSE, correct = TRUE)
 }
 \arguments{
 \item{pm}{List of parameters or path of a JSON parameter file.}

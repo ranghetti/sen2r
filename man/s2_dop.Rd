@@ -4,8 +4,7 @@
 \alias{s2_dop}
 \title{Return the Dates Of Passage over some orbits}
 \usage{
-s2_dop(s2_orbits = 1:143, timewindow = "10 days", mission = c("2A",
-  "2B"))
+s2_dop(s2_orbits = 1:143, timewindow = "10 days", mission = c("2A", "2B"))
 }
 \arguments{
 \item{s2_orbits}{A vector of Sentinel-2 orbits (as integer numbers

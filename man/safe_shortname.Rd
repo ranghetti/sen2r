@@ -4,9 +4,18 @@
 \alias{safe_shortname}
 \title{Rename products using a shorten convention}
 \usage{
-safe_shortname(prod_name, prod_type = NULL, ext = NULL, res = "10m",
-  tiles = NULL, force_tiles = NULL, full.name = TRUE,
-  set.seed = NULL, multiple_names = NULL, abort = FALSE)
+safe_shortname(
+  prod_name,
+  prod_type = NULL,
+  ext = NULL,
+  res = "10m",
+  tiles = NULL,
+  force_tiles = NULL,
+  full.name = TRUE,
+  set.seed = NULL,
+  multiple_names = NULL,
+  abort = FALSE
+)
 }
 \arguments{
 \item{prod_name}{Input Sentinel-2 product name (it is not required
@@ -58,12 +67,12 @@ follows this schema:
 where:
 \itemize{
 \item \code{S2mll} (length: 5) shows the mission ID (\code{S2A} or \code{S2B}) and the product level
-(\code{1C} or \code{2A});
+(\verb{1C} or \verb{2A});
 \item \code{yyyymmdd} (length: 8) is the sensing date (e.g. \code{20170603} for 2017-06-03) ; the
 hour is skipped, since a single sensor can not pass two times in a
 day on the same tile);
 \item \code{rrr} (length: 3) is the relative orbit number (e.g. \code{022});
-\item \code{ttttt} (length: 5) is the tile number (e.g. \code{32TQQ});
+\item \code{ttttt} (length: 5) is the tile number (e.g. \verb{32TQQ});
 \item \code{ppp} (length: 3) is the output product, being one of these:
 \emph{for level 1C:}
 \itemize{

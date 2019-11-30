@@ -4,12 +4,12 @@
 \alias{suppress_warnings}
 \title{Selective suppress warnings}
 \usage{
-suppress_warnings(.expr, .f, ...)
+suppress_warnings(.expr, .f)
 }
 \arguments{
 \item{.expr}{Code to evaluate}
 
-\item{.f}{A regular expression (which will be passed to grepl).}
+\item{.f}{A regular expression (which will be passed to \code{grepl()}).}
 }
 \value{
 The warning message as character string, invisibly.

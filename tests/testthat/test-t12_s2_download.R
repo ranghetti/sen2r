@@ -88,6 +88,23 @@ testthat::test_that(
 
 
 testthat::test_that(
+  "Tests on s2_download - check aria2 installation", {
+    if (Sys.info()["sysname"] == "Windows") {
+      aria2_path <- install_aria2(dirname(attr(load_binpaths(), "path")), force = TRUE)
+      testthat::expect_equal(aria2_path, normalize_path("~/.sen2r/aria2c.exe"))
+      testthat::expect_equal(aria2_path, load_binpaths()$aria2)
+    } else {
+      testthat::expect_warning(
+        install_aria2(dirname(attr(load_binpaths(), "path")), force = TRUE), 
+        "[Tt]his function is only for Windows"
+      )
+      testthat::expect_equivalent(load_binpaths()$aria2, Sys.which("aria2c"))
+    }
+  }
+)
+
+
+testthat::test_that(
   "Tests on s2_download - aria2 downloader", {
     
     # s2_l1c_list <- s2_list(

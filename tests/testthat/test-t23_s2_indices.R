@@ -46,7 +46,7 @@ testthat::test_that(
       exp_meta_r[1,c("xmin", "xmax", "ymin", "ymax")], 
       data.table("xmin" = 578590, "xmax" = 597700, "ymin" = 5086740, "ymax" = 5101530) 
     )
-    testthat::expect_equal(sf::st_crs(exp_meta_r$proj[2])$epsg, 32632)
+    testthat::expect_equal(st_crs2(exp_meta_r$proj[2])$epsg, 32632)
     testthat::expect_equal(exp_meta_r$type, rep("Int16",2))
     testthat::expect_equal(exp_meta_r$outformat, rep("GTiff",2)) # default value
     
@@ -91,8 +91,8 @@ testthat::test_that(
       exp_meta_r[,c("xmin", "xmax", "ymin", "ymax")]
     )
     testthat::expect_equal(
-      lapply(exp_meta_r_t$proj, function(x){sf::st_crs(x)$epsg}),
-      lapply(exp_meta_r$proj, function(x){sf::st_crs(x)$epsg})
+      lapply(exp_meta_r_t$proj, function(x){st_crs2(x)$epsg}),
+      lapply(exp_meta_r$proj, function(x){st_crs2(x)$epsg})
     )
     testthat::expect_equal(exp_meta_r_t$type, rep("Byte",2))
     testthat::expect_equal(exp_meta_r_t$outformat, rep("JPEG",2))
@@ -139,7 +139,7 @@ testthat::test_that(
       exp_meta_r[1,c("xmin", "xmax", "ymin", "ymax")], 
       data.table("xmin" = 580560, "xmax" = 580800, "ymin" = 5101700, "ymax" = 5102120) 
     )
-    testthat::expect_equal(sf::st_crs(exp_meta_r$proj)$epsg, 32632)
+    testthat::expect_equal(st_crs2(exp_meta_r$proj)$epsg, 32632)
     testthat::expect_equal(exp_meta_r$type, "Float32")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff") # default value
     
@@ -151,8 +151,6 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_s$level, "1C")
     testthat::expect_equal(exp_meta_s$extent_name, "Barbellino")
     
-    # test on raster values
-    r <- raster::raster(exp_outpath_12)
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_12)
     testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 0.3529976, tolerance = 1e-3)
@@ -203,7 +201,7 @@ testthat::test_that(
       exp_meta_r[,c("xmin", "xmax", "ymin", "ymax")], 
       data.table("xmin" = 580560, "xmax" = 580800, "ymin" = 5101700, "ymax" = 5102120) 
     )
-    testthat::expect_equal(sf::st_crs(exp_meta_r$proj)$epsg, 32632)
+    testthat::expect_equal(st_crs2(exp_meta_r$proj)$epsg, 32632)
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff") # default value
     

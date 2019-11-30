@@ -11,7 +11,7 @@ comsub(data, sep = "")
 
 \item{sep}{A character which is used to separate elements; default ("")
 is used to compare single characters; other useful alternatives are
-"/" (or "\\\\" in Windows) to find the longest common directory, or
+"/" (or "\\\\\\\\" in Windows) to find the longest common directory, or
 " " to compare words instead of characters.}
 }
 \value{

@@ -1296,7 +1296,7 @@ sen2r <- function(param_list = NULL,
   if (!all(is(pm$extent, "logical"), anyNA(pm$extent))) {
     s2_dt <- s2_dt[suppressMessages(st_intersects(
       st_union(pm$extent), 
-      st_transform(st_as_sfc(s2_dt$footprint, crs = 4326), st_crs(pm$extent))
+      st_transform(st_as_sfc(s2_dt$footprint, crs = 4326), st_crs2(pm$extent))
     ))[[1]],]
   }
   # setorder(s2_dt, -sensing_datetime)
