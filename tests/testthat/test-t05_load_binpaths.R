@@ -40,14 +40,14 @@ if (Sys.info()["sysname"] != "Windows") {
   test_that("Load GDAL", {
     binpaths_2 <- load_binpaths(c("gdal","python"))
     expect_is(binpaths_2, "list")
-    expect_length(binpaths_2, 11)
+    expect_length(binpaths_2, 10)
     expect_equal(binpaths_2$gdalinfo, normalize_path(Sys.which("gdalinfo")))
     expect_equal(basename(attr(binpaths_2, "path")), "paths.json")
   })
   test_that("Load aria2", {
     binpaths_3 <- load_binpaths("aria2")
     expect_is(binpaths_3, "list")
-    expect_length(binpaths_3, 12)
+    expect_length(binpaths_3, 11)
     expect_equal(binpaths_3$aria2, normalize_path(Sys.which("aria2c")))
     expect_equal(basename(attr(binpaths_3, "path")), "paths.json")
   })

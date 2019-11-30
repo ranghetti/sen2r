@@ -1,34 +1,4 @@
 context("Test st_crs2")
-# testthat::skip_on_cran()
-# testthat::skip_on_travis()
-
-testthat::test_that(
-  "st_crs2, input PROJ.4", {
-    testthat::expect_equal(st_crs2("+init=epsg:32609")[["epsg"]], 32609)
-    proj_version <- package_version(gsub(
-      "^Rel\\. ([0-9\\.]+),.*$", "\\1", 
-      system(
-        load_binpaths("gdal")$proj, 
-        intern = Sys.info()["sysname"] == "Windows"
-      )[1]
-    ))
-    if (proj_version >= 6) {
-      testthat::expect_warning(
-        st_crs2("+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"),
-        "Using PROJ\\.4 strings is deprecated with PROJ >\\= 6"
-      )
-    } else {
-      testthat::expect_equal(
-        st_crs2("+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs")[["epsg"]],
-        32609
-      )
-    }
-    testthat::expect_equal(
-      st_crs2(32609)[["proj4string"]], 
-      "+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"
-    )
-  }
-)
 
 testthat::test_that(
   "st_crs2, input EPSG", {
@@ -73,5 +43,33 @@ testthat::test_that(
     testthat::expect_equal(st_crs2(NULL), sf::st_crs(NA))
     testthat::expect_equal(st_crs2(NA), sf::st_crs(NA))
     testthat::expect_equal(st_crs2(), sf::st_crs(NA))
+  }
+)
+
+
+testthat::skip_on_cran()
+testthat::skip_on_travis()
+testthat::test_that(
+  "st_crs2, input PROJ.4", {
+    testthat::expect_equal(st_crs2("+init=epsg:32609")[["epsg"]], 32609)
+    gdal_version <- package_version(gsub(
+      "^.*GDAL ([0-9\\.]+)[^0-9].*$", "\\1",
+      system(paste0(load_binpaths("gdal")$gdalinfo," --version"), intern = TRUE)
+    )) # checking GDAL >=3 instead than PROJ >= 6 for simplicity
+    if (gdal_version >= 3) {
+      testthat::expect_warning(
+        st_crs2("+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"),
+        "Using PROJ\\.4 strings is deprecated with PROJ >\\= 6"
+      )
+    } else {
+      testthat::expect_equal(
+        st_crs2("+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs")[["epsg"]],
+        32609
+      )
+    }
+    testthat::expect_equal(
+      st_crs2(32609)[["proj4string"]], 
+      "+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"
+    )
   }
 )

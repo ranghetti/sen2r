@@ -65,7 +65,6 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
   # If GDAL is not found, search for it
   if (any(
     is.null(binpaths$gdalinfo), !file.exists(nn(binpaths$gdalinfo)),
-    is.null(binpaths$proj), # this because was added in version 1.2.1.9003
     force == TRUE,
     !grepl(gdal_path, normalize_path(nn(binpaths$gdalinfo)))
   )) {
@@ -253,7 +252,6 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
   bin_ext <- ifelse(Sys.info()["sysname"] == "Windows", ".exe", "")
   binpaths$gdalinfo <- normalize_path(file.path(gdal_dir,paste0("gdalinfo",bin_ext)))
   binpaths$ogrinfo <- normalize_path(file.path(gdal_dir,paste0("ogrinfo",bin_ext)))
-  binpaths$proj <- normalize_path(file.path(gdal_dir,paste0("proj",bin_ext)))
   binpaths$gdal_translate <- normalize_path(file.path(gdal_dir,paste0("gdal_translate",bin_ext)))
   binpaths$gdalwarp <- normalize_path(file.path(gdal_dir,paste0("gdalwarp",bin_ext)))
   binpaths$gdalbuildvrt <- normalize_path(file.path(gdal_dir,paste0("gdalbuildvrt",bin_ext)))

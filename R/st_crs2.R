@@ -114,14 +114,14 @@ st_crs2.character <- function(x, ...) {
   ## case 2: PROJ.4
   if (grepl("^\\+[a-z]+\\=", x)) {
     # x: PROJ.4 -> character PROJ.4 with warning
-    proj_version <- package_version(gsub(
-      "^Rel\\. ([0-9\\.]+),.*$", "\\1", 
-      system(
-        load_binpaths("gdal")$proj, 
-        intern = Sys.info()["sysname"] == "Windows"
-      )[1]
-    ))
-    if (proj_version >= 6) {
+    gdal_version <- tryCatch(
+      package_version(gsub(
+        "^.*GDAL ([0-9\\.]+)[^0-9].*$", "\\1",
+        system(paste0(load_binpaths("gdal")$gdalinfo," --version"), intern = TRUE)
+      )), # checking GDAL >=3 instead than PROJ >= 6 for simplicity
+      error = function(e) {3} # in case of errors, return the warning
+    )
+    if (gdal_version >= 3) {
       print_message(
         type = "warning",
         "Using PROJ.4 strings is deprecated with PROJ >= 6 ",
