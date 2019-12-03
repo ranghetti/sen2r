@@ -25,6 +25,7 @@ Imports:
   reticulate,
   methods,
   magrittr,
+  rgdal,
   sf,
   stars,
   data.table,

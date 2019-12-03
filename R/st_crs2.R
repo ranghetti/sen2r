@@ -160,7 +160,7 @@ st_crs2.character <- function(x, ...) {
   }
   
   ## case 4: WKT and other characters
-  if (grepl("^((PROJCS)|(GEOGCS))\\[.+\\]$", x)) {
+  if (grepl("^((PROJCR?S)|(GEOGCR?S))\\[.+\\]$", x)) {
     # x: WKT string -> crs
     return(sf::st_crs(wkt = x, ...))
   }

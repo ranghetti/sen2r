@@ -33,6 +33,6 @@ st_as_text_2 <- function(x, pretty = FALSE) {
       multiline = if (pretty == TRUE) {"YES"} else {"NO"}
     )
   } else {
-    st_as_text(x, ...)
+    st_as_text(x, pretty = pretty)
   }
 }
