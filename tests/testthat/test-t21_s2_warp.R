@@ -463,6 +463,40 @@ testthat::test_that(
 )
 
 testthat::test_that(
+  "Reproject in a projection without EPSG", {
+    # this test is intended to test gdal_warp() passing a WKT to gdalwarp
+    # instead then the EPSG code
+    
+    test4b <- tempfile(fileext = "_test4b.tif")
+    gdal_warp(
+      ex_sel, test4b, 
+      t_srs = "+proj=sinu +lon_0=0 +x_0=0 +y_0=0 +a=6371007.181 +b=6371007.181 +units=m +no_defs"
+    )
+    
+    # test on raster metadata
+    exp_meta_r <- raster_metadata(test4b, format = "list")[[1]]
+    testthat::expect_equal(exp_meta_r$size, c("x"=27, "y"=40))
+    testthat::expect_equal(exp_meta_r$res, c("x"=10.64168, "y"=10.58520), tolerance = 1e-3)
+    testthat::expect_equal(exp_meta_r$nbands, 3)
+    testthat::expect_equal(
+      as.numeric(exp_meta_r$bbox), 
+      c(774691.9, 5122100.0,  774979.2, 5122523.4),
+      tolerance = 1e-3
+    )
+    testthat::expect_equal(exp_meta_r$proj$epsg, as.integer(NA))
+    testthat::expect_equal(exp_meta_r$type, "Byte")
+    testthat::expect_equal(exp_meta_r$outformat, "GTiff")
+    
+    # test on raster values
+    exp_stars <- stars::read_stars(test4b)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 104.9611, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 180, tolerance = 1e-3)
+    rm(exp_stars)
+    
+  }
+)
+
+testthat::test_that(
   "Reproject and clip on a bounding box", {
     
     
