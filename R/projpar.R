@@ -36,7 +36,7 @@ projpar <- function(x, par, abort = FALSE) {
     return(NA)
   }
   
-  proj4_wkt <- st_as_text(crs_check) %>%
+  proj4_wkt <- st_as_text_2(crs_check) %>%
     r_to_py() %>%
     py$osr$SpatialReference()
   proj4_par <- proj4_wkt$GetAttrValue(par)
@@ -69,7 +69,7 @@ projname <- function(x, abort = FALSE) {
     return(NA)
   }
   
-  proj4_wkt <- st_as_text(crs_check, pretty = TRUE)
+  proj4_wkt <- st_as_text_2(crs_check, pretty = TRUE)
   proj4_name <- gsub(
     "^((PROJCS)|(GEOGCS))\\[\\\"(.*)\\\",$", "\\4", 
     strsplit(proj4_wkt, "\n")[[1]][1]

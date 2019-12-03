@@ -57,7 +57,7 @@ testthat::test_that(
     testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 3800.772, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 1417518, tolerance = 1e-03)
     rm(exp_stars)
-
+    
     # test thumbnails
     exp_outpath_t_2 <- file.path(
       dirname(exp_outpath_2), "thumbnails", 
@@ -467,11 +467,25 @@ testthat::test_that(
     # this test is intended to test gdal_warp() passing a WKT to gdalwarp
     # instead then the EPSG code
     
-    test4b <- tempfile(fileext = "_test4b.tif")
-    gdal_warp(
-      ex_sel, test4b, 
-      t_srs = "+proj=sinu +lon_0=0 +x_0=0 +y_0=0 +a=6371007.181 +b=6371007.181 +units=m +no_defs"
+    modis_wkt <- paste0(
+      'PROJCS["Sinusoidal",GEOGCS["GCS_Undefined",DATUM["Undefined",SPHEROID[',
+      '"User_Defined_Spheroid",6371007.181,0.0]],PRIMEM["Greenwich",0.0],UNIT',
+      '["Degree",0.0174532925199433]],PROJECTION["Sinusoidal"],PARAMETER["Fal',
+      'se_Easting",0.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Me',
+      'ridian",0.0],UNIT["Meter",1.0]]'
     )
+    test4b <- tempfile(fileext = "_test4b.tif")
+    test4_out <- tryCatch(
+      gdal_warp(ex_sel, test4b, t_srs = modis_wkt),
+      warning = function(w) {
+        suppressWarnings(gdal_warp(ex_sel, test4b, t_srs = modis_wkt))
+        w$message
+      }
+    )
+    testthat::expect_true(any(
+      test4_out == 1,
+      grepl("Discarded datum unknown in CRS definition", test4_out)
+    ))
     
     # test on raster metadata
     exp_meta_r <- raster_metadata(test4b, format = "list")[[1]]

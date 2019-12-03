@@ -417,12 +417,12 @@ gdal_warp <- function(srcfiles,
       sel_s_srs_string <- if (!is.na(sel_s_srs$epsg)) {
         paste0("EPSG:",sel_s_srs$epsg)
       } else {
-        gsub("\\\"","\\\\\"",st_as_text(sel_s_srs))
+        gsub("\\\"","\\\\\"",st_as_text_2(sel_s_srs))
       }
       sel_t_srs_string <- if (!is.na(sel_t_srs$epsg)) {
         paste0("EPSG:",sel_t_srs$epsg)
       } else {
-        gsub("\\\"","\\\\\"",st_as_text(sel_t_srs))
+        gsub("\\\"","\\\\\"",st_as_text_2(sel_t_srs))
       }
       system(
         paste0(
