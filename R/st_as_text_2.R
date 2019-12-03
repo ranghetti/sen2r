@@ -9,18 +9,22 @@
 #' @param x object of class sfg, sfc or crs
 #' @return Well-known Text representation of simple feature geometry or 
 #'  coordinate reference system
+#' @importFrom sf sf_extSoftVersion
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #'
 #' @examples
 #' sen2r:::st_as_text_2(st_crs(32632))
 
 st_as_text_2 <- function(x) {
-  if (packageVersion("rgdal") >= 1.5) {
+  if (all(
+    package_version(sf_extSoftVersion()["proj.4"]) >= 6,
+    packageVersion("rgdal") >= 1.5
+  )) {
     x_crs <- st_crs(x)
     if (is.na(x_crs$epsg)) {
-      comment(CRS(x_crs$proj4string))
+      rgdal::checkCRSArgs_ng(uprojargs = x_crs$proj4string)
     } else {
-      comment(CRS(paste0("+init=epsg:",x_crs$epsg)))
+      rgdal::checkCRSArgs_ng(SRS_string = paste0("EPSG:",x_crs$epsg))
     }
   } else {
     st_as_text(x)
