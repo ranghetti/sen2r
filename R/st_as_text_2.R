@@ -7,26 +7,32 @@
 #'  (see https://rsbivand.github.io/ECS530_h19/ECS530_III.html).
 #'  This function will be deleted whenever `sf` will manage WKT2.
 #' @param x object of class sfg, sfc or crs
+#' @param pretty logical; if TRUE, print human-readable well-known-text
+#'  representation of a coordinate reference system
 #' @return Well-known Text representation of simple feature geometry or 
 #'  coordinate reference system
-#' @importFrom sf sf_extSoftVersion
+#' @importFrom sf sf_extSoftVersion st_crs st_as_text
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #'
 #' @examples
 #' sen2r:::st_as_text_2(st_crs(32632))
 
-st_as_text_2 <- function(x) {
+st_as_text_2 <- function(x, pretty = FALSE) {
   if (all(
     package_version(sf_extSoftVersion()["proj.4"]) >= 6,
     packageVersion("rgdal") >= 1.5
   )) {
     x_crs <- st_crs(x)
-    if (is.na(x_crs$epsg)) {
-      rgdal::checkCRSArgs_ng(uprojargs = x_crs$proj4string)
-    } else {
-      rgdal::checkCRSArgs_ng(SRS_string = paste0("EPSG:",x_crs$epsg))
-    }
+    rgdal::showSRID(
+      if (is.na(x_crs$epsg)) {
+        x_crs$proj4string
+      } else {
+        paste0("EPSG:",x_crs$epsg)
+      },
+      format = "WKT2", 
+      multiline = if (pretty == TRUE) {"YES"} else {"NO"}
+    )
   } else {
-    st_as_text(x)
+    st_as_text(x, ...)
   }
 }

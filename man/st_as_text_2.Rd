@@ -4,10 +4,13 @@
 \alias{st_as_text_2}
 \title{Return WKT or WKT2 basing on the installed rgdal version}
 \usage{
-st_as_text_2(x)
+st_as_text_2(x, pretty = FALSE)
 }
 \arguments{
 \item{x}{object of class sfg, sfc or crs}
+
+\item{pretty}{logical; if TRUE, print human-readable well-known-text
+representation of a coordinate reference system}
 }
 \value{
 Well-known Text representation of simple feature geometry or
