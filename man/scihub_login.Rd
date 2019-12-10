@@ -58,6 +58,13 @@ Login information is stored in a file \code{apihub.txt} inside the
 ".sen2r" subfolder of the home directory. This functions allow to read
 or write this file, and to edit them from inside the GUI.
 }
+\details{
+Notice that new/recently updated SciHub credentials are recognised by API Hub
+with a delay of about one week (see \url{https://scihub.copernicus.eu/twiki/do/view/SciHubWebPortal/APIHubDescription} for details).
+
+For this reason, newly created credentials can not immediately be ued by \code{sen2r},
+and password edits on old credentials are not immediately recognised.
+}
 \note{
 License: GPL 3.0
 }
