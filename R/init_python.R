@@ -22,7 +22,13 @@ init_python <- function() {
   binpaths <- load_binpaths()
   
   # Search or install Python
-  if (is.null(binpaths$python)) {
+  if (any(
+    is.null(binpaths$python),
+    all(
+      Sys.info()["sysname"] != "Windows", 
+      inherits(try(import("gdal"), silent = TRUE), "try-error")
+    )
+  )) {
     
     # Try to search Python
     binpaths$python <- tryCatch(
