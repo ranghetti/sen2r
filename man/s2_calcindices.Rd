@@ -50,8 +50,8 @@ Values can be both numeric values or band names (e.g. "band_1").
 If not specified, parameters are set to default values.}
 
 \item{source}{(optional) Vector with the products from which computing
-the indices. It can be "BOA", "TOA" or both (default). If both values
-are provided, indices are computed from the available products ("TOA"
+the indices. It can be \code{"BOA"}, \code{"TOA"} or both (default). If both values
+are provided, indices are computed from the available products (\code{"TOA"}
 if TOA is available, BOA if BOA is available); in the case both are
 available, two files are produced (they can be distinguished from the
 level component - S2x1C or S2x2A - in the filename).}
@@ -66,29 +66,29 @@ placed in separated \code{outfile} subdirectories; if FALSE, they are placed in
 more than a single spectral index is required.}
 
 \item{tmpdir}{(optional) Path where intermediate files (GTiff) will be
-created in case \code{format} is "VRT".}
+created in case \code{format} is \code{"VRT"}.}
 
 \item{compress}{(optional) In the case a GTiff format is
 present, the compression indicated with this parameter is used.}
 
 \item{dataType}{(optional) Numeric datatype of the output rasters.
 if "Float32" or "Float64" is chosen, numeric values are not rescaled;
-if "Int16" (default) or "UInt16", values are multiplicated by \code{scaleFactor} argument;
-if "Byte", values are shifted by 100, multiplicated by 100 and truncated
+if \code{"Int16"} (default) or \code{"UInt16"}, values are multiplicated by \code{scaleFactor} argument;
+if \code{"Byte"}, values are shifted by 100, multiplicated by 100 and truncated
 at 200 (so that range -1 to 1 is coerced to 0-200), and nodata value
 is assigned to 255.}
 
 \item{scaleFactor}{(optional) Scale factor for output values when an integer
-datatype is chosen (default values are 10000 for "Int16" and "UInt16",
-1E9 for "Int32" and "UInt32"). Notice that, using "UInt16" and "UInt32" types,
-negative values will be truncated to 0.}
+datatype is chosen (default values are 10000 for \code{"Int16"} and \code{"UInt16"},
+1E9 for \code{"Int32"} and \code{"UInt32"}). Notice that, using \code{"UInt16"} and
+\code{"UInt32"} types, negative values will be truncated to 0.}
 
 \item{proc_mode}{(optional) Character: if \code{"gdal_calc"},
-gdal_calc routines are used to compute indices;
+\code{gdal_calc} routines are used to compute indices;
 if \code{"raster"} (default), R functions are instead used.
 \strong{Note}: there is a difference in which the two modes manage values out
 of ranges (e.g. -32768 to 32767 in Int16 and 0 to 255 in Byte):
-"raster" mode set these values to NA, "gdal_calc"mode clip them to the
+\code{"raster"} mode set these values to NA, \code{"gdal_calc"} mode clip them to the
 minimum/maximum values.}
 
 \item{parallel}{(optional) Logical: if TRUE, the function is run using parallel

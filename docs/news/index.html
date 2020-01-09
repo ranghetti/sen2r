@@ -77,7 +77,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1.9006</span>
       </span>
     </div>
 
@@ -284,7 +284,7 @@
 <a href="#new-functions-1" class="anchor"></a>New functions</h2>
 <ul>
 <li>
-<code><a href="../reference/str_pad2.html">str_pad2()</a></code>, equivalent to str_pad() without the needing to load “stringr”.</li>
+<code><a href="../reference/str_pad2.html">str_pad2()</a></code>, equivalent to str_pad() without the needing to load <code>stringr</code>.</li>
 <li>
 <code><a href="../reference/raster_metadata.html">raster_metadata()</a></code>, to get raster metadata, without rgdal dependency.</li>
 <li>
@@ -535,9 +535,10 @@
 <li>Parallelise functions and manage errors</li>
 <li>Create load_binpaths() (<a href='https://github.com/ranghetti/sen2r/issues/87'>#87</a>: Create a function to load paths of external executables and adapt other functions to use it.</li>
 <li>Implement search for ingestion date</li>
-<li>Split names_missing into names_cloudcovered and names_missing</li>
+<li>Split <code>names_missing</code> into <code>names_cloudcovered</code> and <code>names_missing</code>
+</li>
 <li>Add some burn indices and update spectral indices from IDB</li>
-<li>Change some function names (s2_getMetadata -&gt; safe_getMetadata; s2_shortname -&gt; safe_shortname; fs2nc_getElements -&gt; sen2r_getElements)</li>
+<li>Change some function names (<code>s2_getMetadata</code> -&gt; <code>safe_getMetadata</code>; <code>s2_shortname</code> -&gt; <code>safe_shortname</code>; <code>fs2nc_getElements</code> -&gt; <code>sen2r_getElements</code>)</li>
 </ul>
 </div>
 <div id="fixes-1" class="section level3">
@@ -593,12 +594,12 @@
 <h3 class="hasAnchor">
 <a href="#addition-to-existing-functions" class="anchor"></a>Addition to existing functions</h3>
 <ul>
-<li><p>Improvement in integer / byte data types for generation of indices: Int16 is now the default data type; choosing an integer data type the output values are clipped on the valid format range, and the scaling factor can be chosen by the user; chosing Byte, interval -1 to 1 is coerced to 0-200 (with nodata=255).</p></li>
+<li><p>Improvement in integer / byte data types for generation of indices: Int16 is now the default data type; choosing an integer data type the output values are clipped on the valid format range, and the scaling factor can be chosen by the user; choosing Byte, interval -1 to 1 is coerced to 0-200 (with nodata=255).</p></li>
 <li><p>Use standard nodata values to compute indices.</p></li>
 <li><p>Return the list of created files after processing.</p></li>
 <li><p>Accept custom mask combinations: now it is possible to define masks with a custom combination of SCL classes to be masked.</p></li>
 <li><p>Allow argument “timewindow” in <code><a href="../reference/sen2r.html">sen2r()</a></code> to be a single integer value, which is interpreted as the period between today and <em>n</em> days ago.</p></li>
-<li><p>Uniform temporary directories (<a href='https://github.com/ranghetti/sen2r/issues/73'>#73</a>). Now the principal functions have the parameters tmpdir and rmtmp to set the temporary directory and the choice to delete /not to delete temporary files. Only two exceptions: create_indices_db() uses a fixed temporary directory (since it is a function intended not to be run by end users); sen2cor() launched from sen2r() uses a default temporary directory if tempdir is in a SAMBA mountpoint over Windows.</p></li>
+<li><p>Uniform temporary directories (<a href='https://github.com/ranghetti/sen2r/issues/73'>#73</a>). Now the principal functions have the parameters tmpdir and rmtmp to set the temporary directory and the choice to delete /not to delete temporary files. Only two exceptions: create_indices_db() uses a fixed temporary directory (since it is a function intended not to be run by end users); sen2cor() launched from sen2r() uses a default temporary directory if <code>tmpdir</code> is in a SAMBA mountpoint over Windows.</p></li>
 </ul>
 </div>
 <div id="other-changes-1" class="section level3">

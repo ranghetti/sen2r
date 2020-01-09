@@ -75,7 +75,7 @@ expand_path <- function(path, parent=getwd(), silent=TRUE, normalize=TRUE) {
 #' @description Accessory function wrapper for `normalizePath()` in Linux
 #'  and `shortPathName(normalizePath())` in Windows.
 #' @param path character vector of file paths
-#' @param ... additional parameters passed to [normalizePath] (i.e. mustWork).
+#' @param ... additional parameters passed to [normalizePath] (i.e. `mustWork`).
 #' @return The paths normalized.
 #' @export
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}

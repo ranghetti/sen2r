@@ -53,28 +53,28 @@ their names must be in the sen2r naming convention
 \item{mask_type}{(optional) Character vector which determines the type of
 mask to be applied. Accepted values are:
 \itemize{
-\item "nomask": do not mask any pixel;
-\item "nodata": mask pixels checked as "No data" or "Saturated or defective"
+\item \code{"nomask"}: do not mask any pixel;
+\item \code{"nodata"}: mask pixels checked as "No data" or "Saturated or defective"
 in the SCL product (all pixels with values are maintained);
-\item "cloud_high_proba": mask pixels checked as "No data", "Saturated or
+\item \code{"cloud_high_proba"}: mask pixels checked as "No data", "Saturated or
 defective" or "Cloud (high probability)" in the SCL product;
-\item "cloud_medium_proba": mask pixels checked as "No data", "Saturated or
+\item `"cloud_medium_proba": mask pixels checked as "No data", "Saturated or
 defective" or "Cloud (high or medium probability)" in the SCL product;
-\item "cloud_and_shadow": mask pixels checked as "No data", "Saturated or
+\item \code{"cloud_and_shadow"}: mask pixels checked as "No data", "Saturated or
 defective", "Cloud (high or medium probability)" or "Cloud shadow"
 in the SCL product;
-\item "clear_sky": mask pixels checked as "No data", "Saturated or
+\item \code{"clear_sky"}: mask pixels checked as "No data", "Saturated or
 defective", "Cloud (high or medium probability)", "Cloud shadow",
 "Unclassified" or "Thin cirrus" in the SCL product
 (only pixels classified as clear-sky surface - so "Dark area",
 "Vegetation", "Bare soil", "Water" or "Snow" - are maintained);
-\item "land": mask pixels checked as "No data", "Saturated or
+\item \code{"land"}: mask pixels checked as "No data", "Saturated or
 defective", "Cloud (high or medium probability)", "Cloud shadow", "Dark area",
 "Unclassified", "Thin cirrus", "Water" or "Snow" in the SCL product
 (only pixels classified as land surface - so "Vegetation" or
 "Bare soil" - are maintained);
-\item a string in the following form: "scl_n_m_n", where n, m and n are one or
-more SCL class numbers. E.g. string "scl_0_8_9_11" can
+\item a string in the following form: \code{"scl_n_m_n"}, where \code{n}, \code{m} and \code{n}
+are one or more SCL class numbers. E.g. string \code{"scl_0_8_9_11"} can
 be used to mask classes 0 ("No data"), 8-9 ("Cloud (high or medium
 probability)") and 11 ("Snow").
 }}
@@ -94,14 +94,14 @@ the maximum percentage of allowed masked surface (by clouds or any other
 type of mask chosen with argument \code{mask_type}) for producing outputs.
 Images with a percentage of masked surface greater than \code{max_mask}\%
 are not processed (the list of expected output files which have not been
-generated is returned as an attribute, named "skipped").
+generated is returned as an attribute, named \code{skipped}).
 Default value is 80.
 Notice that the percentage is computed on non-NA values (if input images
 had previously been clipped and masked using a polygon, the percentage is
 computed on the surface included in the masking polygons).}
 
 \item{outdir}{(optional) Full name of the output directory where
-the files should be created (default: "current directory"masked"
+the files should be created (default: \code{"masked"}
 subdir of current directory).
 \code{outdir} can bot be an existing or non-existing directory (in the
 second case, its parent directory must exists).
@@ -123,22 +123,22 @@ Binary mask are intermediate rasters used to apply the cloud mask:
 pixel values can be 1 (no cloud mask), 0 (cloud mask) or NA (original NA
 value, i.e. because input rasters had been clipped on the extent polygons).
 If FALSE (default) they are not exported; if TRUE, they are exported
-as MSK prod type (so saved within \code{outdir}, in a subdirectory called "MSK"
+as \code{MSK} prod type (so saved within \code{outdir}, in a subdirectory called \code{"MSK"}
 if \code{subdirs = TRUE}).
-Notice that the presence of "MSK" products is not checked before running
+Notice that the presence of \code{"MSK"} products is not checked before running
 \code{sen2r()}, as done for the other products; this means that missing products
 which are not required to apply cloud masks will not be produced.}
 
 \item{format}{(optional) Format of the output file (in a
 format recognised by GDAL). Default is the same format of input images
-(or "GTiff" in case of VRT input images).}
+(or \code{"GTiff"} in case of VRT input images).}
 
 \item{subdirs}{(optional) Logical: if TRUE, different indices are
 placed in separated \code{outfile} subdirectories; if FALSE, they are placed in
 \code{outfile} directory; if NA (default), subdirectories are created only if
 more than a single product is required.}
 
-\item{compress}{(optional) In the case a GTiff format is
+\item{compress}{(optional) In the case a \code{GTiff} format is
 present, the compression indicated with this parameter is used.}
 
 \item{parallel}{(optional) Logical: if TRUE, masking is conducted using parallel
@@ -161,7 +161,7 @@ overwritten? (default: FALSE)}
 }
 \value{
 \link{s2_mask} returns a vector with the names of the created products.
-An attribute "toomasked" contains the paths of the outputs which were not
+An attribute \code{"toomasked"} contains the paths of the outputs which were not
 created cause to the high percentage of cloud coverage.
 
 \link{s2_perc_masked} returns a names vector with the percentages

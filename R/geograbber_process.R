@@ -8,10 +8,10 @@
 #' @param path_out Path of the directory in which Sentinel-2
 #'  output products are generated.
 #' @param bbox (optional) Four-length numeric vector with the bounding box 
-#'  of the output products (xmin, ymin, xmax, ymax), in geographic coordinates.
+#'  of the output products (`xmin`, `ymin`, `xmax`, `ymax`), in geographic coordinates.
 #' @param list_prods (optional) Character vector with the values of the
-#'  products to be processed (accepted values: "TOA", "BOA", "SCL",
-#'  "TCI"). Default is "BOA".
+#'  products to be processed (accepted values: `"TOA"`, `"BOA"`, `"SCL"`,
+#'  `"TCI"`). Default is `"BOA"`.
 #' @param res (optional) Numeric vector of length 2 with the x-y resolution
 #'  for output products. NA (default) means that the resolution
 #'  is kept as native.

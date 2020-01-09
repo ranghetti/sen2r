@@ -14,7 +14,7 @@
 #' @details Notice that new/recently updated SciHub credentials are recognised by API Hub
 #'  with a delay of about one week (see \url{https://scihub.copernicus.eu/twiki/do/view/SciHubWebPortal/APIHubDescription} for details).
 #'
-#' For this reason, newly created credentials can not immediately be ued by `sen2r`, 
+#' For this reason, newly created credentials can not immediately be used by `sen2r`, 
 #' and password edits on old credentials are not immediately recognised.
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0

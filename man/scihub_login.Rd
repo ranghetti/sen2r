@@ -62,7 +62,7 @@ or write this file, and to edit them from inside the GUI.
 Notice that new/recently updated SciHub credentials are recognised by API Hub
 with a delay of about one week (see \url{https://scihub.copernicus.eu/twiki/do/view/SciHubWebPortal/APIHubDescription} for details).
 
-For this reason, newly created credentials can not immediately be ued by \code{sen2r},
+For this reason, newly created credentials can not immediately be used by \code{sen2r},
 and password edits on old credentials are not immediately recognised.
 }
 \note{

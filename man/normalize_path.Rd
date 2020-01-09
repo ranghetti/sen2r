@@ -9,7 +9,7 @@ normalize_path(path, ...)
 \arguments{
 \item{path}{character vector of file paths}
 
-\item{...}{additional parameters passed to \link{normalizePath} (i.e. mustWork).}
+\item{...}{additional parameters passed to \link{normalizePath} (i.e. \code{mustWork}).}
 }
 \value{
 The paths normalized.

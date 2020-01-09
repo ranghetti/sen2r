@@ -27,14 +27,14 @@
 #'  level of the tiles to be listed (default: no filter).
 #' @param availability Character argument, determining which products have
 #'  to be returned: 
-#'  - "online" : only archive names already available for download are returned;
-#'  - "lta": only archive names stored in the Long Term Archive
-#'      (see https://scihub.copernicus.eu/userguide/LongTermArchive)
+#'  - `"online"` : only archive names already available for download are returned;
+#'  - `"lta"`: only archive names stored in the
+#'      [Long Term Archive](https://scihub.copernicus.eu/userguide/LongTermArchive)
 #'      are returned;
-#'  - "check": all archive names are returned, checking if they are
+#'  - `"check"`: all archive names are returned, checking if they are
 #'      available or not for download (see "Value" to know 
 #'      how to distinguish each other);
-#'  - "ignore" (default): all archive names are returned, without doing the check
+#'  - `"ignore"` (default): all archive names are returned, without doing the check
 #'      (running the function is faster).
 #' @param output_type Deprecated (use `as.data.table` to obtain a data.table).
 #' @return An object of class [safelist].
@@ -43,8 +43,9 @@
 #'  products available for download / stored in the Long Term Archive; 
 #'  otherwise, values are set to NA.
 #' @author Lorenzo Busetto, phD (2019) \email{lbusett@@gmail.com} - Inspired by 
-#'  function `getSentinel_query` of package `getSpatialData` by J. Schwalb-Willmann
-#'  (https://github.com/16EAGLE/getSpatialData)
+#'  function `getSentinel_query` of package 
+#'  [`getSpatialData`](https://github.com/16EAGLE/getSpatialData) by J. Schwalb-Willmann
+#'  
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @import data.table
