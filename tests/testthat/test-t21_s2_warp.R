@@ -57,7 +57,7 @@ testthat::test_that(
     testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 3800.772, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 1417518, tolerance = 1e-03)
     rm(exp_stars)
-
+    
     # test thumbnails
     exp_outpath_t_2 <- file.path(
       dirname(exp_outpath_2), "thumbnails", 
@@ -457,6 +457,54 @@ testthat::test_that(
     exp_stars <- stars::read_stars(test4)
     testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 104.3775, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 176, tolerance = 1e-3)
+    rm(exp_stars)
+    
+  }
+)
+
+testthat::test_that(
+  "Reproject in a projection without EPSG", {
+    # this test is intended to test gdal_warp() passing a WKT to gdalwarp
+    # instead then the EPSG code
+    
+    modis_wkt <- paste0(
+      'PROJCS["Sinusoidal",GEOGCS["GCS_Undefined",DATUM["Undefined",SPHEROID[',
+      '"User_Defined_Spheroid",6371007.181,0.0]],PRIMEM["Greenwich",0.0],UNIT',
+      '["Degree",0.0174532925199433]],PROJECTION["Sinusoidal"],PARAMETER["Fal',
+      'se_Easting",0.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Me',
+      'ridian",0.0],UNIT["Meter",1.0]]'
+    )
+    test4b <- tempfile(fileext = "_test4b.tif")
+    test4_out <- tryCatch(
+      gdal_warp(ex_sel, test4b, t_srs = modis_wkt),
+      warning = function(w) {
+        suppressWarnings(gdal_warp(ex_sel, test4b, t_srs = modis_wkt))
+        w$message
+      }
+    )
+    testthat::expect_true(any(
+      test4_out == 1,
+      grepl("Discarded datum unknown in CRS definition", test4_out)
+    ))
+    
+    # test on raster metadata
+    exp_meta_r <- raster_metadata(test4b, format = "list")[[1]]
+    testthat::expect_equal(exp_meta_r$size, c("x"=27, "y"=40))
+    testthat::expect_equal(exp_meta_r$res, c("x"=10.64168, "y"=10.58520), tolerance = 1e-3)
+    testthat::expect_equal(exp_meta_r$nbands, 3)
+    testthat::expect_equal(
+      as.numeric(exp_meta_r$bbox), 
+      c(774691.9, 5122100.0,  774979.2, 5122523.4),
+      tolerance = 1e-3
+    )
+    testthat::expect_equal(exp_meta_r$proj$epsg, as.integer(NA))
+    testthat::expect_equal(exp_meta_r$type, "Byte")
+    testthat::expect_equal(exp_meta_r$outformat, "GTiff")
+    
+    # test on raster values
+    exp_stars <- stars::read_stars(test4b)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 104.9611, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 180, tolerance = 1e-3)
     rm(exp_stars)
     
   }

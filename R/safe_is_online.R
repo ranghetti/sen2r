@@ -57,17 +57,22 @@ safe_is_online <- function(s2_prodlist = NULL, apihub = NA) {
   creds <- read_scihub_login(apihub)
   
   # check for availability
-  s2_availability <- as.logical(sapply(s2_prodlist, function(p) {
+  s2_availability <- sapply(s2_prodlist, function(p) {
     tryCatch(
-      httr::content(httr::GET(
+      as.logical(httr::content(httr::GET(
         url = gsub("\\$value$", "Online/$value", p),
         config = httr::authenticate(creds[1], creds[2])
-      ), as = "parsed", encoding = "UTF-8"), 
-      error = function(e) {NA}
+      ), as = "parsed", encoding = "UTF-8")), 
+      error = function(e) {
+        print_message(
+          type = "warning",
+          "Some error occurred (the Copernicus API Hub may be down)."
+        )
+        NA
+      }
     )
-  }))
+  })
   names(s2_availability) <- names(s2_prodlist)
   s2_availability
-
-}
   
+}

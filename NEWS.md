@@ -83,7 +83,7 @@ remotes::install_packages_github("ranghetti/sen2r")
 * Add **`stars`** dependency.
 
 ## New functions
-* `str_pad2()`, equivalent to str_pad() without the needing to load "stringr".
+* `str_pad2()`, equivalent to str_pad() without the needing to load `stringr`.
 * `raster_metadata()`, to get raster metadata, without rgdal dependency.
 * `check_scihub_login()` to check if SciHub credentials are right.
 * `check_scihub_connection()` to check for internet connectivity.
@@ -230,9 +230,9 @@ This is an improvement of version 0.3.2, with several fixes and improvements.
 * Parallelise functions and manage errors
 * Create load_binpaths() (#87: Create a function to load paths of external executables and adapt other functions to use it.
 * Implement search for ingestion date
-* Split names_missing into names_cloudcovered and names_missing
+* Split `names_missing` into `names_cloudcovered` and `names_missing`
 * Add some burn indices and update spectral indices from IDB
-* Change some function names (s2_getMetadata -> safe_getMetadata; s2_shortname -> safe_shortname; fs2nc_getElements -> sen2r_getElements)
+* Change some function names (`s2_getMetadata` -> `safe_getMetadata`; `s2_shortname` -> `safe_shortname`; `fs2nc_getElements` -> `sen2r_getElements`)
 
 ### Fixes
 * Ignore baseline in computing required SAFE names
@@ -277,7 +277,7 @@ In general, now the whole processing chain can be optionally launched in single 
 ### Addition to existing functions
 
 * Improvement in integer / byte data types for generation of indices: 
-Int16 is now the default data type; choosing an integer data type the output values are clipped on the valid format range, and the scaling factor can be chosen by the user; chosing Byte, interval -1 to 1 is coerced to 0-200 (with nodata=255).
+Int16 is now the default data type; choosing an integer data type the output values are clipped on the valid format range, and the scaling factor can be chosen by the user; choosing Byte, interval -1 to 1 is coerced to 0-200 (with nodata=255).
 
 * Use standard nodata values to compute indices.
 
@@ -289,7 +289,7 @@ now it is possible to define masks with a custom combination of SCL classes to b
 * Allow argument "timewindow" in `sen2r()` to be a single integer value, which is interpreted as the period between today and *n* days ago.
 
 * Uniform temporary directories (#73).
-Now the principal functions have the parameters tmpdir and rmtmp to set the temporary directory and the choice to delete /not to delete temporary files. Only two exceptions: create_indices_db() uses a fixed temporary directory (since it is a function intended not to be run by end users); sen2cor() launched from sen2r() uses a default temporary directory if tempdir is in a SAMBA mountpoint over Windows.
+Now the principal functions have the parameters tmpdir and rmtmp to set the temporary directory and the choice to delete /not to delete temporary files. Only two exceptions: create_indices_db() uses a fixed temporary directory (since it is a function intended not to be run by end users); sen2cor() launched from sen2r() uses a default temporary directory if `tmpdir` is in a SAMBA mountpoint over Windows.
 
 ### Other changes
 

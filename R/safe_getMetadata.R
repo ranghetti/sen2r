@@ -28,12 +28,12 @@
 #'      - `"validname"` (TRUE or FALSE);
 #'      - `"exists"` (TRUE or FALSE);
 #'      - `"prod_type"` ('singlegranule' or 'product');
-#'      - `"version"` ('old' or 'compact');
+#'      - `"version"` (`'old'` or `'compact'`);
 #'      - `"tiles"` (vector with the tiles ID available in the product);
 #'      - `"utm"` (vector with the UTM zones used in the product);
 #'      - `"xml_main"` (name of the main XML file with metadata);
 #'      - `"xml_granules"` (names of the XML with granule metadata);
-#'      - `"level"` ('1C' or '2A');
+#'      - `"level"` (`'1C'` or `'2A'`);
 #'      - `"creation_datetime"`, `"id_tile"`, `"mission"`, `"centre"`,
 #'          `"file_class"`, `"id_orbit"`, `"orbit_number"`,
 #'          `"sensing_datetime"`, `"id_baseline"`: metadata specific of

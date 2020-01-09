@@ -27,8 +27,8 @@
 #'  `tr` is rounded in order to match the exact extent.
 #' @param t_srs Target spatial reference set (character). The coordinate
 #'  systems that can be passed are anything supported by [st_crs2].
-#' @param r Resampling_method ("near"|"bilinear"|"cubic"|"cubicspline"|
-#' "lanczos"|"average"|"mode"|"max"|"min"|"med"|"q1"|"q3").
+#' @param r Resampling_method (`"near"`|`"bilinear"`|`"cubic"`|`"cubicspline"`|
+#' `"lanczos"`|`"average"`|`"mode"`|`"max"`|`"min"`|`"med"`|`"q1"`|`"q3"``).
 #' @param dstnodata Set nodata values for output bands (different values
 #'  can be supplied for each band). If more than one value is supplied
 #'  all values should be quoted to keep them together as a single
@@ -417,12 +417,12 @@ gdal_warp <- function(srcfiles,
       sel_s_srs_string <- if (!is.na(sel_s_srs$epsg)) {
         paste0("EPSG:",sel_s_srs$epsg)
       } else {
-        gsub("\\\"","\\\\\"",st_as_text(sel_s_srs))
+        gsub("\\\"","\\\\\"",st_as_text_2(sel_s_srs))
       }
       sel_t_srs_string <- if (!is.na(sel_t_srs$epsg)) {
         paste0("EPSG:",sel_t_srs$epsg)
       } else {
-        gsub("\\\"","\\\\\"",st_as_text(sel_t_srs))
+        gsub("\\\"","\\\\\"",st_as_text_2(sel_t_srs))
       }
       system(
         paste0(

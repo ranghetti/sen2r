@@ -2,7 +2,7 @@
 #' @description Internal function which changes some elements of output ENVI
 #'  files:
 #'  - file extension is set to .dat if .envi (in case of files created
-#'      by 'writeRaster`) is found, and the header is edited properly,
+#'      by `writeRaster`) is found, and the header is edited properly,
 #'  - and band names are set in the header file (in particular, SR band names
 #'      include wavelengths and names like NIR, SWIR; other products shows the
 #'      product name as band name);

@@ -187,7 +187,7 @@ s2_merge <- function(infiles,
     out_crs_string <- if (!is.na(out_crs$epsg)) {
       paste0("EPSG:",out_crs$epsg)
     } else {
-      st_as_text(out_crs)
+      st_as_text_2(out_crs)
     }
     system(
       paste0(

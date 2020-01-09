@@ -2,7 +2,7 @@
 #' @description The internal function checks if indices.json (the
 #'  database of spectral indices) already exists; if not, it
 #'  downloads source files and creates it.
-#'  Since this function depends on xsltproc executable (available
+#'  Since this function depends on `xsltproc` executable (available
 #'  only for Linux), this function can be used only from from
 #'  Linux. It is not necessary, since a indices.json file is
 #'  present in the package.

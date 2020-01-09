@@ -54,13 +54,13 @@
 #'  not to delete; "l1c" to delete only Level-1C products.
 #' @param step_atmcorr (optional) Character vector to determine how to obtain
 #'  Level-2A SAFE products:
-#'  * "auto" (default) means that L2A is first
+#'  * `"auto"` (default) means that L2A is first
 #'  searched on SciHub: if found, it is downloaded, if not, the
 #'  corresponding Level-1C is downloaded and sen2cor is used to
 #'  produce L2A;
-#'  * "scihub" means that Sen2Cor is always used from L1C products
+#'  * `"scihub"` means that Sen2Cor is always used from L1C products
 #'  downloaded from SciHub;
-#'  * "l2a" means that they are downloaded if available on SciHub,
+#'  * `"l2a"` means that they are downloaded if available on SciHub,
 #'  otherwise they are skipped (sen2cor is never used).
 #' @param max_cloud_safe (optional) Integer number (0-100) containing
 #'  the maximum cloud level of each SAFE to be considered (default: no filter).
@@ -173,22 +173,22 @@
 #' @param proj (optional) Character string with the pro4string of the output
 #'  resolution. default value (NA) means not to reproject.
 #' @param resampling (optional) Resampling method (one of the values supported
-#'  by `gdal_translate`: "near" (default), "bilinear", "cubic",
-#'  "cubicspline", "lanczos", "average" or "mode").
+#'  by `gdal_translate`: `"near"` (default), `"bilinear"`, `"cubic"`,
+#'  `"cubicspline"`, `"lanczos"`, `"average"` or `"mode"`).
 #' @param resampling_scl (optional) Resampling method for categorical products
-#'  (for now, only SCL): one among "near" (default) and "mode".
+#'  (for now, only SCL): one among `"near"` (default) and `"mode"`.
 #' @param outformat (optional) Format of the output file (in a
-#'  format recognised by GDAL). Default is "GTiff".
+#'  format recognised by GDAL). Default is `"GTiff"`.
 #' @param rgb_outformat (optional) Format of the output RGB products (in a
-#'  format recognised by GDAL). Default is "GTiff".
+#'  format recognised by GDAL). Default is `"GTiff"`.
 #' @param index_datatype (optional) Numeric datatype of the output
 #'  spectral indices (see [s2_calcindices].
 #' @param compression (optional) In the case GTiff is chosen as
 #'  output format, the compression indicated with this parameter is
 #'  used (default is "DEFLATE").
-#' @param rgb_compression (optional) In the case GTiff is chosen as
+#' @param rgb_compression (optional) In the case `GTiff` is chosen as
 #'  output format for RGB products, the compression indicated
-#'  with this parameter is used (default is "DEFLATE").
+#'  with this parameter is used (default is `"DEFLATE"`).
 #'  In the cases GTiff or JPEG are chosen as output format for RGB products,
 #'  this parameter can also be a 1-100 integer value, which is interpreted
 #'  as the compression level for a JPEG compression.
@@ -228,7 +228,7 @@
 #'  added for each product created. Thumbnails are JPEG or PNG georeferenced
 #'  small images (width or height of 1024 pixels) with default colour palettes
 #'  (for more details, see the help window in the GUI). They are placed in
-#'  a subdirectory of the products names "thumbnails".
+#'  a subdirectory of the products names `"thumbnails"`.
 #'  If FALSE, they are not created.
 #' @param parallel (optional) Logical or integer: setting to TRUE, the processing
 #'  is executed using multiple cores in order to speed up the execution.
@@ -241,7 +241,7 @@
 #'  order used to execute the processing chain (this affects the speed
 #'  of computation and the usage of system resources).
 #'  Values can be one of the followings:
-#'  - "4" or "by_groups" (default):
+#'  - `"4"` or `"by_groups"` (default):
 #'      it provides a good compromise between processing speed and disk usage.
 #'      Processing is done as follows:
 #'      1. the list of required SAFE and output product names is computed;
@@ -252,7 +252,7 @@
 #'          - Sen2Cor is applied in parallel using one core per L1C SAFE archive;
 #'          - the remaining processing operations are executed using parallel
 #'              R sessions (one core for each date).
-#'  - "2" or "by_date":
+#'  - `"2"` or `"by_date"`:
 #'      this allows minimising the requirements of disk usage
 #'      (in particular if SAFE archives are deleted after processing).
 #'      It is similar to the default execution, but each group is composed
@@ -260,7 +260,7 @@
 #'      and temporary files is lower,
 #'      but it is generally slower than the default one because
 #'      parallel computation over dates for products' generation is not possible.
-#'  - "3" or "mixed":
+#'  - `"3"` or `"mixed"`:
 #'      this allows maximising CPU usage and processing speed.
 #'      The cycle on groups is ignored, and all the required SAFE are
 #'      first of all downloaded and/or produced, and then dates are
@@ -268,7 +268,7 @@
 #'      This mode is faster than the default mode, but it requires
 #'      all SAFE archives to be downloaded and processed before performing
 #'      subsequent steps, thus increasing disk space requirements.
-#'  - "1" or "by_step":
+#'  - `"1"` or `"by_step"`:
 #'      this is the legacy mode, in which the cycle on groups is ignored
 #'      as well as the parallel computation over dates.
 #'      All SAFE archives are first downloaded/processed,

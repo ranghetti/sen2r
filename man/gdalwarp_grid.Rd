@@ -16,8 +16,8 @@ gdalwarp_grid(srcfiles, dstfiles, ref, of = NULL, r = NULL)
 \item{of}{The output format (use the short format name). Default is
 the format of every input filename.}
 
-\item{r}{Resampling_method ("near"|"bilinear"|"cubic"|"cubicspline"|
-"lanczos"|"average"|"mode"|"max"|"min"|"med"|"q1"|"q3").}
+\item{r}{Resampling_method (\code{"near"}|\code{"bilinear"}|\code{"cubic"}|\code{"cubicspline"}|
+\code{"lanczos"}|\code{"average"}|\code{"mode"}|\code{"max"}|\code{"min"}|\code{"med"}|\code{"q1"}|`"q3"``).}
 }
 \value{
 NULL (the function is called for its side effects)

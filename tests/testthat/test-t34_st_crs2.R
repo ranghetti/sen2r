@@ -11,7 +11,7 @@ testthat::test_that(
 
 testthat::test_that(
   "st_crs2, input WKT", {
-    wkt_32n <- st_as_text(st_crs(32609))
+    wkt_32n <- st_as_text_2(st_crs(32609))
     writeLines(wkt_32n, wkt_32n_path <- tempfile())
     testthat::expect_equal(st_crs2(wkt_32n)[["epsg"]], 32609)
     testthat::expect_equal(st_crs2(wkt_32n_path)[["epsg"]], 32609)
