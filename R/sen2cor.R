@@ -73,6 +73,12 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
     warning = stop
   )
   
+  # Link to user L2A_GIPP.xml
+  copy_l2agipp() # copy L2A_GIPP.xml within .sen2r if missing
+  gipp_sen2r_path <- normalize_path(
+    file.path(dirname(attr(binpaths, "path")), "sen2r_L2A_GIPP.xml")
+  )
+  
   # get version
   sen2cor_version_raw0 <- system(paste(binpaths$sen2cor, "-h"), intern = TRUE)
   sen2cor_version_raw1 <- sen2cor_version_raw0[grep(
@@ -320,6 +326,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
         # paste(binpaths$sen2cor, "--refresh", sel_l1c),
         paste(
           binpaths$sen2cor,
+          "--GIP_L2A", gipp_sen2r_path,
           if (sen2cor_version>=package_version("2.8.0")) {paste("--output_dir", sen2cor_out_l2a)},
           if (sen2cor_version<package_version("2.8.0")) {"--refresh"},
           sel_l1c

@@ -55,6 +55,7 @@ install_sen2cor <- function(sen2cor_dir, version="2.5.5", force = FALSE) {
         type = "message",
         "Sen2Cor is already installed; to overwrite, set force = TRUE."
       )
+      copy_l2agipp() # copy L2A_GIPP.xml within .sen2r if missing
       return(invisible(NULL))
     }
   }
@@ -173,6 +174,9 @@ install_sen2cor <- function(sen2cor_dir, version="2.5.5", force = FALSE) {
   binpaths$sen2cor <- normalize_path(sen2cor_bin)
   writeLines(toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
   
+  # Copy default Sen2Cor L2A_GIPP.xml if missing within .sen2r
+  copy_l2agipp()
+  
 }
 
 #' @name link_sen2cor
@@ -190,6 +194,7 @@ link_sen2cor <- function(sen2cor_dir) {
   
   # If so, write the directory in paths.json
   if (sen2cor_exists) {
+    
     binpaths <- load_binpaths()
     binpaths$sen2cor <- normalize_path(file.path(
       sen2cor_dir, "bin",
@@ -207,17 +212,10 @@ link_sen2cor <- function(sen2cor_dir) {
       "\\1",
       sen2cor_version_raw1
     )
-    # copy the Sen2Cor configuration file in the default directory
-    # (this assumes SEN2COR_HOME to be ~/sen2cor)
-    sen2cor_cfg_path <- file.path("~/sen2cor", sen2cor_version, "cfg/L2A_GIPP.xml")
-    if (!dir.exists(dirname(sen2cor_cfg_path))) {
-      dir.create(dirname(sen2cor_cfg_path), recursive = TRUE)
-    }
-    file.copy(
-      file.path(sen2cor_dir, "lib/python2.7/site-packages/sen2cor/cfg/L2A_GIPP.xml"),
-      sen2cor_cfg_path,
-      overwrite = TRUE
-    )
+    
+    # Copy default Sen2Cor L2A_GIPP.xml if missing within .sen2r
+    copy_l2agipp()
+    
   } else {
     print_message(type = "error", "Sen2Cor was not found here")
   }
