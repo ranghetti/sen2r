@@ -55,7 +55,7 @@ install_sen2cor <- function(sen2cor_dir, version="2.5.5", force = FALSE) {
         type = "message",
         "Sen2Cor is already installed; to overwrite, set force = TRUE."
       )
-      copy_l2agipp() # copy L2A_GIPP.xml within .sen2r if missing
+      gipp_init() # copy L2A_GIPP.xml within .sen2r if missing
       return(invisible(NULL))
     }
   }
@@ -175,7 +175,7 @@ install_sen2cor <- function(sen2cor_dir, version="2.5.5", force = FALSE) {
   writeLines(toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
   
   # Copy default Sen2Cor L2A_GIPP.xml if missing within .sen2r
-  copy_l2agipp()
+  gipp_init()
   
 }
 
@@ -214,7 +214,7 @@ link_sen2cor <- function(sen2cor_dir) {
     )
     
     # Copy default Sen2Cor L2A_GIPP.xml if missing within .sen2r
-    copy_l2agipp()
+    gipp_init()
     
   } else {
     print_message(type = "error", "Sen2Cor was not found here")
