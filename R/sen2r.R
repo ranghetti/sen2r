@@ -1292,8 +1292,8 @@ sen2r <- function(param_list = NULL,
   if (all(!is.na(pm$s2orbits_selected))) {
     s2_dt <- s2_dt[id_orbit %in% pm$s2orbits_selected,]
   }
-  # if extent is defined, filter SAFEs on footprints
-  if (!all(is(pm$extent, "logical"), anyNA(pm$extent))) {
+  # if extent and footprint are defined, filter SAFEs on footprints
+  if (all(!is(pm$extent, "logical"), !anyNA(pm$extent), !is.na(s2_dt$footprint))) {
     s2_dt <- s2_dt[suppressMessages(st_intersects(
       st_union(pm$extent), 
       st_transform(st_as_sfc(s2_dt$footprint, crs = 4326), st_crs2(pm$extent))
