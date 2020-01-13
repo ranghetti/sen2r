@@ -1003,9 +1003,9 @@ sen2r <- function(param_list = NULL,
   
   # check output format
   # sel_driver <- py$gdal$GetDriverByName(pm$outformat)
-  gdal_formats <- fromJSON(
+  suppressWarnings(gdal_formats <- fromJSON( # suppress warning about geojsonlint
     system.file("extdata/settings/gdal_formats.json",package="sen2r")
-  )$drivers
+  )$drivers)
   sel_driver <- gdal_formats[gdal_formats$name==pm$outformat,]
   sel_rgb_driver <- gdal_formats[gdal_formats$name==pm$rgb_outformat,]
   
