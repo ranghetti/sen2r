@@ -11,6 +11,7 @@ sen2cor(
   proc_dir = NA,
   tmpdir = NA,
   rmtmp = TRUE,
+  gipp = NULL,
   tiles = NULL,
   parallel = FALSE,
   overwrite = FALSE,
@@ -48,6 +49,20 @@ If \code{tmpdir} is a non-empty folder, a random subdirectory will be used.}
 \item{rmtmp}{(optional) Logical: should temporary files be removed?
 (Default: TRUE)}
 
+\item{gipp}{(optional) Ground Image Processing Parameters (GIPP)
+to be passed to Sen2Cor.
+It is possible to specify both the path of an existing XML file
+or a list of parameters in the form \code{parameter_name = "value"}, where
+\code{parameter_name} is the name of the parameter as specified in the
+\code{L2A_GIPP.xml} file of the used Sen2Cor version (case insensitive), and
+\code{"value"} is the character value which the user wants to set
+(notice that, in the case the user wants to specify the value \code{NONE},
+both \code{"NONE"} and \code{NA} can be used, but not \code{NULL}, which has the effect
+to maintain the value specified in the XML file).
+\emph{Note}: this argument takes effect only in the current execution of
+\code{sen2cor()} function; to permanently change GIPP values, use function
+\href{[set_gipp]}{\code{set_gipp()}}.}
+
 \item{tiles}{Vector of Sentinel-2 Tile strings (5-length character) to be
 processed (default: process all the tiles found in the input L1C products).}
 
@@ -81,11 +96,21 @@ License: GPL 3.0
 }
 \examples{
 \dontrun{
-pos <- st_sfc(st_point(c(12.0, 44.8)), crs=st_crs(4326))
-time_window <- as.Date(c("2017-05-01","2017-07-30"))
-example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window)
-s2_download(example_s2_list, outdir=tempdir())
-sen2cor(names(example_s2_list)[1], l1c_dir=tempdir(), outdir=tempdir())
+# Download an L1C SAFE product
+example_s2_list <- s2_list(
+  spatial_extent = st_sfc(st_point(c(12.0, 44.8)), crs=st_crs(4326)), 
+  tile = "32TQQ", 
+  time_interval = as.Date(c("2017-05-01","2017-07-30"))
+)
+s2_download(example_s2_list, outdir = tempdir())
+
+# Correct it applying a topographic correction
+sen2cor(
+  names(example_s2_list)[1], 
+  l1c_dir = tempdir(), 
+  outdir = tempdir(),
+  gipp = list(dem_directory = tempdir())
+)
 }
 }
 \author{

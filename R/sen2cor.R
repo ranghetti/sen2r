@@ -26,6 +26,19 @@
 #'  If `tmpdir` is a non-empty folder, a random subdirectory will be used.
 #' @param rmtmp (optional) Logical: should temporary files be removed?
 #'  (Default: TRUE)
+#' @param gipp (optional) Ground Image Processing Parameters (GIPP)
+#'  to be passed to Sen2Cor.
+#'  It is possible to specify both the path of an existing XML file 
+#'  or a list of parameters in the form `parameter_name = "value"`, where 
+#'  `parameter_name` is the name of the parameter as specified in the 
+#'  `L2A_GIPP.xml` file of the used Sen2Cor version (case insensitive), and
+#'  `"value"` is the character value which the user wants to set 
+#'  (notice that, in the case the user wants to specify the value `NONE`,
+#'  both `"NONE"` and `NA` can be used, but not `NULL`, which has the effect
+#'  to maintain the value specified in the XML file).
+#'  _Note_: this argument takes effect only in the current execution of 
+#'  `sen2cor()` function; to permanently change GIPP values, use function
+#'  [`set_gipp()`]([set_gipp]).
 #' @param tiles Vector of Sentinel-2 Tile strings (5-length character) to be
 #'  processed (default: process all the tiles found in the input L1C products).
 #' @param parallel (optional) Logical: if TRUE, Sen2Cor instances are launched
@@ -52,17 +65,37 @@
 #'
 #' @examples
 #' \dontrun{
-#' pos <- st_sfc(st_point(c(12.0, 44.8)), crs=st_crs(4326))
-#' time_window <- as.Date(c("2017-05-01","2017-07-30"))
-#' example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window)
-#' s2_download(example_s2_list, outdir=tempdir())
-#' sen2cor(names(example_s2_list)[1], l1c_dir=tempdir(), outdir=tempdir())
+#' # Download an L1C SAFE product
+#' example_s2_list <- s2_list(
+#'   spatial_extent = st_sfc(st_point(c(12.0, 44.8)), crs=st_crs(4326)), 
+#'   tile = "32TQQ", 
+#'   time_interval = as.Date(c("2017-05-01","2017-07-30"))
+#' )
+#' s2_download(example_s2_list, outdir = tempdir())
+#' 
+#' # Correct it applying a topographic correction
+#' sen2cor(
+#'   names(example_s2_list)[1], 
+#'   l1c_dir = tempdir(), 
+#'   outdir = tempdir(),
+#'   gipp = list(dem_directory = tempdir())
+#' )
 #' }
 
-sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
-                    tmpdir = NA, rmtmp = TRUE,
-                    tiles=NULL, parallel=FALSE, overwrite=FALSE,
-                    .log_message=NA, .log_output=NA) {
+sen2cor <- function(
+  l1c_prodlist = NULL, 
+  l1c_dir = NULL, 
+  outdir = NULL, 
+  proc_dir = NA,
+  tmpdir = NA, 
+  rmtmp = TRUE,
+  gipp = NULL,
+  tiles = NULL, 
+  parallel = FALSE, 
+  overwrite = FALSE,
+  .log_message = NA, 
+  .log_output = NA
+) {
   
   # to avoid NOTE on check
   i <- NULL
@@ -73,11 +106,23 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
     warning = stop
   )
   
-  # Link to user L2A_GIPP.xml
-  copy_l2agipp() # copy L2A_GIPP.xml within .sen2r if missing
-  gipp_sen2r_path <- normalize_path(
-    file.path(dirname(attr(binpaths, "path")), "sen2r_L2A_GIPP.xml")
-  )
+  # Read the gipp argument
+  if (length(nn(gipp)) == 0) {
+    # 1. if it is NULL or list(), use the default user sen2r_L2A_GIPP.xml
+    gipp_init() # copy L2A_GIPP.xml within .sen2r if missing
+    gipp_sen2r_path <- normalize_path(
+      file.path(dirname(attr(binpaths, "path")), "sen2r_L2A_GIPP.xml")
+    )
+  } else if (is.character(gipp)) {
+    # 2. if it is a character, interpret as path and use the specified XML
+    gipp_sen2r_path <- normalize_path(gipp, mustWork = TRUE)
+  } else if (is.list(gipp)) {
+    # 3. if some parameters were manually specified, use a temporary copy of
+    # the default user sen2r_L2A_GIPP.xml and edit them by consequence
+    gipp_init() # copy L2A_GIPP.xml within .sen2r if missing
+    gipp_sen2r_path <- tempfile(pattern = "L2A_GIPP_", fileext = ".xml")
+    set_gipp(gipp = gipp, gipp_path_out = gipp_sen2r_path)
+  }
   
   # get version
   sen2cor_version_raw0 <- system(paste(binpaths$sen2cor, "-h"), intern = TRUE)
@@ -125,7 +170,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
     format = "vector", abort = FALSE, simplify = TRUE
   )
   l1c_prodlist <- l1c_prodlist[which(l1c_prodlist_level == "1C")]
-
+  
   # if no products were found, exit
   if (length(l1c_prodlist) == 0) {
     print_message(
@@ -197,7 +242,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
       sel_l2a <- sel_l2a_exi[1]
     }
     # TODO order by baseline, ingestion date
-
+    
     ## Set the tiles vectors (existing, required, ...)
     # existing L1C tiles within input product
     sel_l1c_tiles_existing <- safe_getMetadata(
