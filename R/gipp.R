@@ -16,7 +16,7 @@
 gipp_init <- function(gipp_sen2r_path = NA, force = FALSE) {
   
   binpaths <- load_binpaths()
-  if (missing(gipp_sen2r_path)) {
+  if (is.na(gipp_sen2r_path)) {
     gipp_sen2r_path <- file.path(dirname(attr(binpaths, "path")), "sen2r_L2A_GIPP.xml")
   }
   
@@ -72,8 +72,10 @@ gipp_init <- function(gipp_sen2r_path = NA, force = FALSE) {
 #' @export
 read_gipp <- function(gipp_names, gipp_path_in = NA) {
   
+  binpaths <- load_binpaths()
+  
   # Copy L2A_GIPP.xml within .sen2r if missing; otherwise, check that it exists
-  if (missing(gipp_path_in)) {
+  if (is.na(gipp_path_in)) {
     gipp_init()
     gipp_path_in <- file.path(dirname(attr(binpaths, "path")), "sen2r_L2A_GIPP.xml")
   } else {
@@ -133,8 +135,10 @@ read_gipp <- function(gipp_names, gipp_path_in = NA) {
 #' }
 set_gipp <- function(gipp, gipp_path_in = NA, gipp_path_out = gipp_path_in) {
   
+  binpaths <- load_binpaths()
+  
   # Copy L2A_GIPP.xml within .sen2r if missing; otherwise, check that it exists
-  if (missing(gipp_path_in)) {
+  if (is.na(gipp_path_in)) {
     gipp_init() # copy L2A_GIPP.xml within .sen2r if missing
     gipp_path_in <- file.path(dirname(attr(binpaths, "path")), "sen2r_L2A_GIPP.xml")
   } else {

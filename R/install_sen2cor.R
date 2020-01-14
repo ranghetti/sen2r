@@ -214,6 +214,7 @@ install_sen2cor <- function(
     dem_dir <- if (use_dem == TRUE) {
       file.path(dirname(attr(binpaths, "path")), "srtm90")
     } else {NA}
+    dir.create(dem_dir, showWarnings = FALSE)
     set_gipp(gipp = list(DEM_Directory = dem_dir))
   }
   # edit other parameters if required
@@ -264,6 +265,7 @@ link_sen2cor <- function(sen2cor_dir, use_dem = NA, gipp = NULL) {
       dem_dir <- if (use_dem == TRUE) {
         file.path(dirname(attr(binpaths, "path")), "srtm90")
       } else {NA}
+      dir.create(dem_dir, showWarnings = FALSE)
       set_gipp(gipp = list(DEM_Directory = dem_dir))
     }
     # edit other parameters if required
