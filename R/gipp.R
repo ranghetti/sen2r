@@ -2,6 +2,10 @@
 #' @description Internal function to copy L2A_GIPP.xml from default Sen2Cor 
 #'  directory to sen2r. After that, user will allow editing Sen2Cor options
 #'  in sen2r without affecting standalone Sen2Cor behaviour.
+#' @param gipp_sen2r_path Character path of the output GIPP XML file.
+#'  By default it is equal to NA (meaning the default sen2r GIPP path).
+#' @param force Logical: if TRUE, the file is copied in any case (this is used
+#'  by `reset_gipp()`); if FALSE (default), only if it does not yet exist.
 #' @return TRUE if the file was copied, FALSE elsewhere (invisible output)
 #' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
@@ -9,13 +13,15 @@
 #' \dontrun{
 #' gipp_init()
 #' }
-gipp_init <- function() {
+gipp_init <- function(gipp_sen2r_path = NA, force = FALSE) {
   
   binpaths <- load_binpaths()
-  gipp_sen2r_path <- file.path(dirname(attr(binpaths, "path")), "sen2r_L2A_GIPP.xml")
+  if (missing(gipp_sen2r_path)) {
+    gipp_sen2r_path <- file.path(dirname(attr(binpaths, "path")), "sen2r_L2A_GIPP.xml")
+  }
   
   # If Sen2Cor configuration file is missing, copy it from its default directory
-  if (!file.exists(gipp_sen2r_path)) {
+  if (any(force == TRUE, !file.exists(gipp_sen2r_path))) {
     
     # get Sen2Cor version
     sen2cor_version_raw0 <- system(paste(binpaths$sen2cor, "-h"), intern = TRUE)
@@ -40,7 +46,7 @@ gipp_init <- function() {
     }
     
     # copy file (this assumes SEN2COR_HOME to be ~/sen2cor)
-    file.copy(gipp_sen2cor_path, gipp_sen2r_path)
+    file.copy(gipp_sen2cor_path, gipp_sen2r_path, overwrite = force)
     invisible(TRUE)
     
   } else {
@@ -58,7 +64,7 @@ gipp_init <- function() {
 #' @param gipp_names Character vector with the names of the parameters 
 #'  to be read.
 #' @param gipp_path_in Character path of the GIPP XML file to be read.
-#'  If NA (default), the default sen2r GIPP file is used.
+#'  If NA (default), the default sen2r GIPP path is used.
 #' @return `read_gipp()` returns a named list of GIPP with the required parameters
 #'  (values not found in the XML are skipped).
 #' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
@@ -93,8 +99,7 @@ read_gipp <- function(gipp_names, gipp_path_in = NA) {
 
 #' @name set_gipp
 #' @rdname gipp
-#' @description `set_gipp()` modify values of a list of Ground Image Processing 
-#'  Parameters (GIPP) in an XML file.
+#' @description `set_gipp()` modifies values of a list of GIPP in an XML file.
 #' @param gipp List of Ground Image Processing Parameters (GIPP),
 #'  in the form `parameter_name = "value"`, where 
 #'  `parameter_name` is the name of the parameter as specified in the 
@@ -105,8 +110,11 @@ read_gipp <- function(gipp_names, gipp_path_in = NA) {
 #'  to maintain the value specified in the XML file).
 #'  Elements whose name is missing in the XML file are skipped.
 #' @param gipp_path_out Character path of the output GIPP XML file.
-#'  By default it is equal to `gipp_path_in` (edited values are overwritten).
-#' @return `set_gipp()` returns NULL (the function is called for its side effects).
+#'  By default it is equal to `gipp_path_in` in function `set_gipp()`
+#'  (edited values are overwritten) and to NA (meaning the default sen2r GIPP
+#'  path) in `reset_gipp()`.
+#' @return `set_gipp()` and `reset_gipp()` return NULL
+#'  (functions are called for their side effects).
 #' @export
 #' @examples
 #' \donttest{
@@ -118,6 +126,10 @@ read_gipp <- function(gipp_names, gipp_path_in = NA) {
 #' read_gipp(c("DEM_Directory", "DEM_Reference"), gipp_path_in = gipp_temp)
 #' # Read the original (not edited) XML file
 #' read_gipp(c("DEM_Directory", "DEM_Reference"))
+#' # Reset to default Sen2Cor GIPP values
+#' reset_gipp(gipp_path_out = gipp_temp)
+#' # Read again values
+#' read_gipp(c("DEM_Directory", "DEM_Reference"), gipp_path_in = gipp_temp)
 #' }
 set_gipp <- function(gipp, gipp_path_in = NA, gipp_path_out = gipp_path_in) {
   
@@ -149,4 +161,14 @@ set_gipp <- function(gipp, gipp_path_in = NA, gipp_path_out = gipp_path_in) {
   writeLines(gipp_xml, gipp_path_out)
   invisible(NULL)
   
+}
+
+
+#' @name reset_gipp
+#' @rdname gipp
+#' @description `reset_gipp()` restores default GIPP values (using values
+#'  set in the `L2A_GIPP.xml` default Sen2Cor file).
+#' @export
+reset_gipp <- function(gipp_path_out = NA) {
+  gipp_init(gipp_sen2r_path = gipp_path_out, force = TRUE)
 }

@@ -3,18 +3,21 @@
 \name{read_gipp}
 \alias{read_gipp}
 \alias{set_gipp}
+\alias{reset_gipp}
 \title{Manage GIPP parameters for Sen2Cor}
 \usage{
 read_gipp(gipp_names, gipp_path_in = NA)
 
 set_gipp(gipp, gipp_path_in = NA, gipp_path_out = gipp_path_in)
+
+reset_gipp(gipp_path_out = NA)
 }
 \arguments{
 \item{gipp_names}{Character vector with the names of the parameters
 to be read.}
 
 \item{gipp_path_in}{Character path of the GIPP XML file to be read.
-If NA (default), the default sen2r GIPP file is used.}
+If NA (default), the default sen2r GIPP path is used.}
 
 \item{gipp}{List of Ground Image Processing Parameters (GIPP),
 in the form \code{parameter_name = "value"}, where
@@ -27,20 +30,25 @@ to maintain the value specified in the XML file).
 Elements whose name is missing in the XML file are skipped.}
 
 \item{gipp_path_out}{Character path of the output GIPP XML file.
-By default it is equal to \code{gipp_path_in} (edited values are overwritten).}
+By default it is equal to \code{gipp_path_in} in function \code{set_gipp()}
+(edited values are overwritten) and to NA (meaning the default sen2r GIPP
+path) in \code{reset_gipp()}.}
 }
 \value{
 \code{read_gipp()} returns a named list of GIPP with the required parameters
 (values not found in the XML are skipped).
 
-\code{set_gipp()} returns NULL (the function is called for its side effects).
+\code{set_gipp()} and \code{reset_gipp()} return NULL
+(functions are called for their side effects).
 }
 \description{
 \code{read_gipp()} reads Ground Image Processing Parameters (GIPP)
 from an XML file.
 
-\code{set_gipp()} modify values of a list of Ground Image Processing
-Parameters (GIPP) in an XML file.
+\code{set_gipp()} modifies values of a list of GIPP in an XML file.
+
+\code{reset_gipp()} restores default GIPP values (using values
+set in the \code{L2A_GIPP.xml} default Sen2Cor file).
 }
 \note{
 License: GPL 3.0
@@ -55,6 +63,10 @@ set_gipp(list(DEM_Directory = NA), gipp_path_out = gipp_temp <- tempfile())
 read_gipp(c("DEM_Directory", "DEM_Reference"), gipp_path_in = gipp_temp)
 # Read the original (not edited) XML file
 read_gipp(c("DEM_Directory", "DEM_Reference"))
+# Reset to default Sen2Cor GIPP values
+reset_gipp(gipp_path_out = gipp_temp)
+# Read again values
+read_gipp(c("DEM_Directory", "DEM_Reference"), gipp_path_in = gipp_temp)
 }
 }
 \author{
