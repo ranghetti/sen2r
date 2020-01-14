@@ -4,6 +4,29 @@
 #' @param sen2cor_dir Path where sen2cor is being installed or searched.
 #' @param version (optional) Character: Sen2Cor version (one among
 #'  '2.5.5' - default - and '2.8.0').
+#' @param use_dem (optional) Logical: 
+#'  if TRUE, Sen2Cor is set to use a Digital Elevation Model for topographic 
+#'  correction (reflecting what is done for Level-2A SAFE images provided by ESA Hub);
+#'  if FALSE, it is set not to perform topographic correction (reflecting the 
+#'  current default Sen2Cor behaviour);
+#'  if NA (default), the option set in the user's `L2A_GIPP.xml` Sen2Cor
+#'  configuration file is respected (in case the user never edited it,
+#'  the current default setting is not to perform topographic correction).
+#'  
+#'  _Notes_: 
+#'  1. this argument simply set the `DEM_Directory` parameter of the default 
+#'      sen2r GIPP XML file to `~/.sen2r/srtm90` or `NONE` in case
+#'      `use_dem` is respectively TRUE or FALSE.
+#'      For further customisation, set argument `gipp` properly.
+#'  2. Currently the default value is NA in order to grant backward 
+#'      compatibility. In a future release of sen2r, the default value will be
+#'      set to TRUE, so to grant homogeneity between Level-2A products downloaded
+#'      from ESA Hub and generated using Sen2Cor.
+#' @param gipp (optional) List of Ground Image Processing Parameters (GIPP)
+#'  to be modified after installing Sen2Cor with respect to default values
+#'  (see [set_gipp()]([set_gipp]) for detail about using this argument).
+#'  Default behaviour is to maintain default values (with the exception of
+#'  parameter `DEM_Directory`, whih is managed by argument `use_dem`).
 #' @param force (optional) Logical: if TRUE, install even if it is already
 #'  installed (default is FALSE).
 #' @return NULL (the function is called for its side effects)
@@ -17,14 +40,22 @@
 #' @export
 #' @examples
 #' \dontrun{
-#' install_sen2cor(sen2cor_dir = tempdir())
+#' install_sen2cor(sen2cor_dir = tempdir(), use_dem = TRUE)
 #' # ( use a non-temporary folder path instead of tempdir() )
 #' }
 
-install_sen2cor <- function(sen2cor_dir, version="2.5.5", force = FALSE) {
+install_sen2cor <- function(
+  sen2cor_dir, 
+  version = "2.5.5", 
+  use_dem = NA, 
+  gipp = NULL,
+  force = FALSE
+) {
   .install_sen2cor(
     sen2cor_dir = sen2cor_dir,
     version = version,
+    use_dem = use_dem, 
+    gipp = gipp,
     force = force,
     interactive = TRUE
   )
@@ -33,6 +64,8 @@ install_sen2cor <- function(sen2cor_dir, version="2.5.5", force = FALSE) {
 .install_sen2cor <- function(
   sen2cor_dir,
   version="2.5.5",
+  use_dem = NA, 
+  gipp = NULL,
   force = FALSE,
   interactive = TRUE
 ) {
@@ -176,6 +209,17 @@ install_sen2cor <- function(sen2cor_dir, version="2.5.5", force = FALSE) {
   
   # Copy default Sen2Cor L2A_GIPP.xml if missing within .sen2r
   gipp_init()
+  # edit DEM_Directory basing on use_dem
+  if (!is.na(use_dem)) {
+    dem_dir <- if (use_dem == TRUE) {
+      file.path(dirname(attr(binpaths, "path")), "srtm90")
+    } else {NA}
+    set_gipp(gipp = list(DEM_Directory = dem_dir))
+  }
+  # edit other parameters if required
+  if (!missing(gipp)) {
+    set_gipp(gipp = gipp)
+  }
   
 }
 
@@ -184,7 +228,7 @@ install_sen2cor <- function(sen2cor_dir, version="2.5.5", force = FALSE) {
 #' @description `link_sen2cor()` links an existing standalone version of
 #'  [Sen2Cor](http://step.esa.int/main/third-party-plugins-2/sen2cor) to sen2r.
 #' @export
-link_sen2cor <- function(sen2cor_dir) {
+link_sen2cor <- function(sen2cor_dir, use_dem = NA, gipp = NULL) {
   
   # Check if Sen2Cor exists in the provided directory
   sen2cor_exists <- file.exists(file.path(
@@ -215,6 +259,17 @@ link_sen2cor <- function(sen2cor_dir) {
     
     # Copy default Sen2Cor L2A_GIPP.xml if missing within .sen2r
     gipp_init()
+    # edit DEM_Directory basing on use_dem
+    if (!is.na(use_dem)) {
+      dem_dir <- if (use_dem == TRUE) {
+        file.path(dirname(attr(binpaths, "path")), "srtm90")
+      } else {NA}
+      set_gipp(gipp = list(DEM_Directory = dem_dir))
+    }
+    # edit other parameters if required
+    if (!missing(gipp)) {
+      set_gipp(gipp = gipp)
+    }
     
   } else {
     print_message(type = "error", "Sen2Cor was not found here")
