@@ -82,7 +82,7 @@ Sen2Cor to sen2r." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1.9007</span>
       </span>
     </div>
 
@@ -159,9 +159,15 @@ Sen2Cor to sen2r." />
 <a href='http://step.esa.int/main/third-party-plugins-2/sen2cor'>Sen2Cor</a> to sen2r.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>install_sen2cor</span>(<span class='no'>sen2cor_dir</span>, <span class='kw'>version</span> <span class='kw'>=</span> <span class='st'>"2.5.5"</span>, <span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+    <pre class="usage"><span class='fu'>install_sen2cor</span>(
+  <span class='no'>sen2cor_dir</span>,
+  <span class='kw'>version</span> <span class='kw'>=</span> <span class='st'>"2.5.5"</span>,
+  <span class='kw'>use_dem</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>gipp</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)
 
-<span class='fu'>link_sen2cor</span>(<span class='no'>sen2cor_dir</span>)</pre>
+<span class='fu'>link_sen2cor</span>(<span class='no'>sen2cor_dir</span>, <span class='kw'>use_dem</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>gipp</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -174,6 +180,35 @@ Sen2Cor to sen2r." />
       <th>version</th>
       <td><p>(optional) Character: Sen2Cor version (one among
 '2.5.5' - default - and '2.8.0').</p></td>
+    </tr>
+    <tr>
+      <th>use_dem</th>
+      <td><p>(optional) Logical:
+if TRUE, Sen2Cor is set to use a Digital Elevation Model for topographic
+correction (reflecting what is done for Level-2A SAFE images provided by ESA Hub);
+if FALSE, it is set not to perform topographic correction (reflecting the
+current default Sen2Cor behaviour);
+if NA (default), the option set in the user's <code>L2A_GIPP.xml</code> Sen2Cor
+configuration file is respected (in case the user never edited it,
+the current default setting is not to perform topographic correction).</p>
+<p><em>Notes</em>:</p><ol>
+<li><p>this argument simply set the <code>DEM_Directory</code> parameter of the default
+sen2r GIPP XML file to <code>~/.sen2r/srtm90</code> or <code>NONE</code> in case
+<code>use_dem</code> is respectively TRUE or FALSE.
+For further customisation, set argument <code>gipp</code> properly.</p></li>
+<li><p>Currently the default value is NA in order to grant backward
+compatibility. In a future release of sen2r, the default value will be
+set to TRUE, so to grant homogeneity between Level-2A products downloaded
+from ESA Hub and generated using Sen2Cor.</p></li>
+</ol></td>
+    </tr>
+    <tr>
+      <th>gipp</th>
+      <td><p>(optional) List of Ground Image Processing Parameters (GIPP)
+to be modified after installing Sen2Cor with respect to default values
+(see <a href='[set_gipp]'>set_gipp()</a> for detail about using this argument).
+Default behaviour is to maintain default values (with the exception of
+parameter <code>DEM_Directory</code>, whih is managed by argument <code>use_dem</code>).</p></td>
     </tr>
     <tr>
       <th>force</th>
@@ -191,7 +226,7 @@ installed (default is FALSE).</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'>install_sen2cor</span>(<span class='kw'>sen2cor_dir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())
+<span class='fu'>install_sen2cor</span>(<span class='kw'>sen2cor_dir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(), <span class='kw'>use_dem</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 <span class='co'># ( use a non-temporary folder path instead of tempdir() )</span>
 }</div></pre>
   </div>

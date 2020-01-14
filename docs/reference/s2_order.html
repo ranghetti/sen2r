@@ -36,8 +36,8 @@
 
 
 <meta property="og:title" content="Order S2 products. — s2_order" />
-<meta property="og:description" content="The function orders S2 products from Long Term Archive
-(https://scihub.copernicus.eu/userguide/LongTermArchive)." />
+<meta property="og:description" content="The function orders S2 products from
+Long Term Archive." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -151,12 +151,11 @@
     </div>
 
     <div class="ref-description">
-    <p>The function orders S2 products from Long Term Archive
-(https://scihub.copernicus.eu/userguide/LongTermArchive).</p>
+    <p>The function orders S2 products from
+<a href='https://scihub.copernicus.eu/userguide/LongTermArchive'>Long Term Archive</a>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>s2_order</span>(<span class='kw'>s2_prodlist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>export_prodlist</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>delay</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+    <pre class="usage"><span class='fu'>s2_order</span>(<span class='kw'>s2_prodlist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>export_prodlist</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>delay</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -227,15 +226,15 @@ the json file in which the list of the ordered products was saved.</p></li>
 #&gt;                                      S2A_MSIL1C_20180311T133641_N0206_R038_T21FVC_20180311T163528.SAFE 
 #&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('266e369c-9ab5-486e-83b3-7180b6956616')/$value" 
 #&gt; ...with 2 more elements.
-#&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, online.</div><div class='input'><span class='co'># (at the time the documentation was written, this list was containing 5</span>
+#&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, footprint, uuid, online.</div><div class='input'><span class='co'># (at the time the documentation was written, this list was containing 5</span>
 <span class='co'># archives already available online and 2 stored in the Long Term Archive)</span>
 
 <span class='co'># Order the products</span>
-<span class='no'>ordered_prods</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_order</span>(<span class='no'>list_safe</span>)</div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:02] Check if products are already available for download...</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:03] 6 Sentinel-2 images are already available and will not be ordered.</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:03] Ordering 1 Sentinel-2 images stored in the Long Term Archive...</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:04] 1 of 1 Sentinel-2 images were correctly ordered. You can check at a later time if the ordered products were made available using the command:</span>
+<span class='no'>ordered_prods</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_order</span>(<span class='no'>list_safe</span>)</div><div class='output co'>#&gt; <span class='message'>[2020-01-14 14:45:47] Check if products are already available for download...</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-14 14:45:49] 1 Sentinel-2 images are already available and will not be ordered.</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-14 14:45:49] Ordering 6 Sentinel-2 images stored in the Long Term Archive...</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-14 14:46:18] 1 of 6 Sentinel-2 images were correctly ordered. You can check at a later time if the ordered products were made available using the command:</span>
 #&gt; <span class='message'></span>
-#&gt; <span class='message'>safe_is_online("/home/lranghetti/.sen2r/lta_orders/lta_20191112_142104.json")</span></div><div class='input'>
+#&gt; <span class='message'>safe_is_online("/home/lranghetti/.sen2r/lta_orders/lta_20200114_144618.json")</span></div><div class='output co'>#&gt; <span class='warning'>Warning: [2020-01-14 14:46:18] 5 of 6 Sentinel-2 images were not correctly ordered (HTML status code: 500).</span></div><div class='input'>
 <span class='co'># Check in a second time if the product was made available</span>
-(<span class='no'>order_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>ordered_prods</span>, <span class='st'>"path"</span>))</div><div class='output co'>#&gt; [1] "/home/lranghetti/.sen2r/lta_orders/lta_20191112_142104.json"</div><div class='input'><span class='fu'><a href='safe_is_online.html'>safe_is_online</a></span>(<span class='no'>order_path</span>)</div><div class='output co'>#&gt; S2B_MSIL1C_20180227T134629_N0206_R081_T21FVC_20180227T200327.SAFE 
+(<span class='no'>order_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>ordered_prods</span>, <span class='st'>"path"</span>))</div><div class='output co'>#&gt; [1] "/home/lranghetti/.sen2r/lta_orders/lta_20200114_144618.json"</div><div class='input'><span class='fu'><a href='safe_is_online.html'>safe_is_online</a></span>(<span class='no'>order_path</span>)</div><div class='output co'>#&gt; S2B_MSIL1C_20180224T133629_N0206_R038_T21FVC_20180224T194845.SAFE 
 #&gt;                                                             FALSE </div><div class='input'># }
 </div></pre>
   </div>

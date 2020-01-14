@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check GDAL installation — check_gdal • sen2r: Find, Download and Process Sentinel-2 Data</title>
+<title>Manage GIPP parameters for Sen2Cor — read_gipp • sen2r: Find, Download and Process Sentinel-2 Data</title>
 
 
 <!-- jquery -->
@@ -35,9 +35,12 @@
 
 
 
-<meta property="og:title" content="Check GDAL installation — check_gdal" />
-<meta property="og:description" content="The function check that GDAL is installed and updated to
-the minimum required version (2.1.2)." />
+<meta property="og:title" content="Manage GIPP parameters for Sen2Cor — read_gipp" />
+<meta property="og:description" content="read_gipp() reads Ground Image Processing Parameters (GIPP)
+from an XML file.
+set_gipp() modifies values of a list of GIPP in an XML file.
+reset_gipp() restores default GIPP values (using values
+set in the L2A_GIPP.xml default Sen2Cor file)." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -80,7 +83,7 @@ the minimum required version (2.1.2)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1.9007</span>
       </span>
     </div>
 
@@ -145,67 +148,100 @@ the minimum required version (2.1.2)." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check GDAL installation</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/check_gdal.R'><code>R/check_gdal.R</code></a></small>
-    <div class="hidden name"><code>check_gdal.Rd</code></div>
+    <h1>Manage GIPP parameters for Sen2Cor</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/gipp.R'><code>R/gipp.R</code></a></small>
+    <div class="hidden name"><code>gipp.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The function check that GDAL is installed and updated to
-the minimum required version (2.1.2).</p>
+    <p><code>read_gipp()</code> reads Ground Image Processing Parameters (GIPP)
+from an XML file.</p>
+<p><code>set_gipp()</code> modifies values of a list of GIPP in an XML file.</p>
+<p><code>reset_gipp()</code> restores default GIPP values (using values
+set in the <code>L2A_GIPP.xml</code> default Sen2Cor file).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>check_gdal</span>(<span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>gdal_path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>full_scan</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>read_gipp</span>(<span class='no'>gipp_names</span>, <span class='kw'>gipp_path_in</span> <span class='kw'>=</span> <span class='fl'>NA</span>)
+
+<span class='fu'>set_gipp</span>(<span class='no'>gipp</span>, <span class='kw'>gipp_path_in</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>gipp_path_out</span> <span class='kw'>=</span> <span class='no'>gipp_path_in</span>)
+
+<span class='fu'>reset_gipp</span>(<span class='kw'>gipp_path_out</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>abort</th>
-      <td><p>Logical parameter: if TRUE (default), the function aborts
-in case no GDAL installation is found; if FALSE, a warning is shown
-and FALSE is returned.</p></td>
+      <th>gipp_names</th>
+      <td><p>Character vector with the names of the parameters
+to be read.</p></td>
     </tr>
     <tr>
-      <th>gdal_path</th>
-      <td><p>(optional) Character: the path in which GDAL must be
-searched in. If NULL (default), search is performed in the whole file system.</p></td>
+      <th>gipp_path_in</th>
+      <td><p>Character path of the GIPP XML file to be read.
+If NA (default), the default sen2r GIPP path is used.</p></td>
     </tr>
     <tr>
-      <th>force</th>
-      <td><p>(optional) Logical: if TRUE, install even if it is already
-installed (default is FALSE). Notice that, defining <code>gdal_path</code>, GDAL is
-searched again even if <code>"force" = FALSE</code> in case the existing installation
-is not in <code>gdal_path</code>.</p></td>
+      <th>gipp</th>
+      <td><p>List of Ground Image Processing Parameters (GIPP),
+in the form <code>parameter_name = "value"</code>, where
+<code>parameter_name</code> is the name of the parameter as specified in the
+<code>L2A_GIPP.xml</code> file of the used Sen2Cor version (case insensitive), and
+<code>"value"</code> is the character value which the user wants to set
+(notice that, in the case the user wants to specify the value <code>NONE</code>,
+both <code>"NONE"</code> and <code>NA</code> can be used, but not <code>NULL</code>, which has the effect
+to maintain the value specified in the XML file).
+Elements whose name is missing in the XML file are skipped.</p></td>
     </tr>
     <tr>
-      <th>full_scan</th>
-      <td><p>(optional) Logical: in Linux and MacOS, if <code>gdal_path</code> was
-not manually defined, GDAL is searched within the system path in case this
-argument is left to default value FALSE; instead, if TRUE, a full search is
-performed. In Windows, if the default OSGeo directory <code>C:\\OSGeo4W64</code> exists,
-GDAL is searched there, instead in the main directory <code>C:\\</code>; setting
-<code>full_scan</code> to TRUE, is is always searched in the whole <code>C:\\</code>.
-This argument takes no effect if <code>gdal_path</code> was defined, since, in that case,
-a full search is always performed in <code>gdal_path</code>.</p></td>
+      <th>gipp_path_out</th>
+      <td><p>Character path of the output GIPP XML file.
+By default it is equal to <code>gipp_path_in</code> in function <code>set_gipp()</code>
+(edited values are overwritten) and to NA (meaning the default sen2r GIPP
+path) in <code>reset_gipp()</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Logical (invisible): TRUE in case the installation is ok, FALSE
-if GDAL is missing and abort=FALSE (otherwise, the function stops).</p>
+    <p><code>read_gipp()</code> returns a named list of GIPP with the required parameters
+(values not found in the XML are skipped).</p>
+<p><code>set_gipp()</code> and <code>reset_gipp()</code> return NULL
+(functions are called for their side effects).</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
-
-<span class='co'># Use function</span>
-<span class='fu'>check_gdal</span>()</div><div class='output co'>#&gt; <span class='message'>GDAL version in use: 2.2.3</span></div><div class='input'>
-<span class='co'># Check GDAL was imported</span>
-<span class='fu'><a href='load_binpaths.html'>load_binpaths</a></span>()$<span class='no'>gdalinfo</span></div><div class='output co'>#&gt; [1] "/usr/bin/gdalinfo"</div><div class='input'># }
+<span class='co'># Read default values</span>
+<span class='fu'>read_gipp</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"dem_directory"</span>, <span class='st'>"dem_reference"</span>))</div><div class='output co'>#&gt; $dem_directory
+#&gt; [1] "/home/lranghetti/.sen2r/srtm90"
+#&gt; 
+#&gt; $dem_reference
+#&gt; [1] "http://data_public:GDdci@data.cgiar-csi.org/srtm/tiles/GeoTIFF/"
+#&gt; </div><div class='input'><span class='co'># Edit one value and save the output as temporary file</span>
+<span class='fu'>set_gipp</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>DEM_Directory</span> <span class='kw'>=</span> <span class='fl'>NA</span>), <span class='kw'>gipp_path_out</span> <span class='kw'>=</span> <span class='no'>gipp_temp</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>())
+<span class='co'># Read the parameters in the created temporary files</span>
+<span class='fu'>read_gipp</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"DEM_Directory"</span>, <span class='st'>"DEM_Reference"</span>), <span class='kw'>gipp_path_in</span> <span class='kw'>=</span> <span class='no'>gipp_temp</span>)</div><div class='output co'>#&gt; $DEM_Directory
+#&gt; [1] "NONE"
+#&gt; 
+#&gt; $DEM_Reference
+#&gt; [1] "http://data_public:GDdci@data.cgiar-csi.org/srtm/tiles/GeoTIFF/"
+#&gt; </div><div class='input'><span class='co'># Read the original (not edited) XML file</span>
+<span class='fu'>read_gipp</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"DEM_Directory"</span>, <span class='st'>"DEM_Reference"</span>))</div><div class='output co'>#&gt; $DEM_Directory
+#&gt; [1] "/home/lranghetti/.sen2r/srtm90"
+#&gt; 
+#&gt; $DEM_Reference
+#&gt; [1] "http://data_public:GDdci@data.cgiar-csi.org/srtm/tiles/GeoTIFF/"
+#&gt; </div><div class='input'><span class='co'># Reset to default Sen2Cor GIPP values</span>
+<span class='fu'>reset_gipp</span>(<span class='kw'>gipp_path_out</span> <span class='kw'>=</span> <span class='no'>gipp_temp</span>)
+<span class='co'># Read again values</span>
+<span class='fu'>read_gipp</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"DEM_Directory"</span>, <span class='st'>"DEM_Reference"</span>), <span class='kw'>gipp_path_in</span> <span class='kw'>=</span> <span class='no'>gipp_temp</span>)</div><div class='output co'>#&gt; $DEM_Directory
+#&gt; [1] "NONE"
+#&gt; 
+#&gt; $DEM_Reference
+#&gt; [1] "http://data_public:GDdci@data.cgiar-csi.org/srtm/tiles/GeoTIFF/"
+#&gt; </div><div class='input'># }
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -218,7 +254,7 @@ if GDAL is missing and abort=FALSE (otherwise, the function stops).</p>
     </ul>
 
     <h2>Author</h2>
-    <p>Luigi Ranghetti, phD (2019) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
+    <p>Luigi Ranghetti, phD (2020) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
   </div>
 </div>
 

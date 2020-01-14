@@ -205,7 +205,7 @@ useful for reading hidden attributes.</p>
 #&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" 
 #&gt;                                      S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE 
 #&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" 
-#&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, online.</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span>(<span class='no'>list_safe</span>)</div><div class='output co'>#&gt; [1] "safelist"  "character"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>list_safe</span>, <span class='st'>"sensing_datetime"</span>) <span class='co'># extract an hidden attribute from a safelist</span></div><div class='output co'>#&gt; [1] "2017-05-07 10:20:31 UTC" "2017-05-17 10:20:31 UTC"
+#&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, footprint, uuid, online.</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span>(<span class='no'>list_safe</span>)</div><div class='output co'>#&gt; [1] "safelist"  "character"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>list_safe</span>, <span class='st'>"sensing_datetime"</span>) <span class='co'># extract an hidden attribute from a safelist</span></div><div class='output co'>#&gt; [1] "2017-05-07 10:20:31 UTC" "2017-05-17 10:20:31 UTC"
 #&gt; [3] "2017-05-27 10:20:31 UTC"</div><div class='input'>
 <span class='co'>## Convert to other classes</span>
 (<span class='no'>s2_char</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>as.character</a></span>(<span class='no'>list_safe</span>)) <span class='co'># convert to a simple named character</span></div><div class='output co'>#&gt;                                      S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE 
@@ -225,13 +225,21 @@ useful for reading hidden attributes.</p>
 #&gt; 1      2A   2Ap   32TNR      065 2017-05-07 10:20:31 2017-05-09 06:30:41
 #&gt; 2      2A   2Ap   32TNR      065 2017-05-17 10:20:31 2017-06-08 12:21:23
 #&gt; 3      2A   2Ap   32TNR      065 2017-05-27 10:20:31 2017-05-29 08:30:44
-#&gt;      clouds online
-#&gt; 1 99.999908     NA
-#&gt; 2  8.670091     NA
-#&gt; 3  6.359588     NA</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>data.table</span>); (<span class='no'>s2_dt</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/as.data.table.html'>as.data.table</a></span>(<span class='no'>list_safe</span>)) <span class='co'># convert to a data.table</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt;      clouds
+#&gt; 1 99.999908
+#&gt; 2  8.670091
+#&gt; 3  6.359588
+#&gt;                                                                                                                     footprint
+#&gt; 1 POLYGON ((8.999741 46.05357, 10.4189 46.04477, 10.39425 45.05675, 8.999746 45.06526, 8.999741 46.05357, 8.999741 46.05357))
+#&gt; 2 POLYGON ((8.999741 46.05357, 10.4189 46.04477, 10.39425 45.05675, 8.999746 45.06526, 8.999741 46.05357, 8.999741 46.05357))
+#&gt; 3                    POLYGON ((8.999741 46.05357, 10.4189 46.04477, 10.39425 45.05675, 8.999746 45.06526, 8.999741 46.05357))
+#&gt;                                   uuid online
+#&gt; 1 a4a026c0-db7b-4ba8-9b09-53027ab0d7ab     NA
+#&gt; 2 6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f     NA
+#&gt; 3 868b5b3c-92ac-412a-8a04-167008a1f08f     NA</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>data.table</span>)</div><div class='output co'>#&gt; <span class='message'></span>
 #&gt; <span class='message'>Attaching package: ‘data.table’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:raster’:</span>
 #&gt; <span class='message'></span>
-#&gt; <span class='message'>    shift</span></div><div class='output co'>#&gt;                                                                 name
+#&gt; <span class='message'>    shift</span></div><div class='input'>(<span class='no'>s2_dt</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/as.data.table.html'>as.data.table</a></span>(<span class='no'>list_safe</span>)) <span class='co'># convert to a data.table</span></div><div class='output co'>#&gt;                                                                 name
 #&gt; 1: S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE
 #&gt; 2: S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE
 #&gt; 3: S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE
@@ -243,25 +251,72 @@ useful for reading hidden attributes.</p>
 #&gt; 1:      2A   2Ap   32TNR      065 2017-05-07 10:20:31 2017-05-09 06:30:41
 #&gt; 2:      2A   2Ap   32TNR      065 2017-05-17 10:20:31 2017-06-08 12:21:23
 #&gt; 3:      2A   2Ap   32TNR      065 2017-05-27 10:20:31 2017-05-29 08:30:44
-#&gt;       clouds online
-#&gt; 1: 99.999908     NA
-#&gt; 2:  8.670091     NA
-#&gt; 3:  6.359588     NA</div><div class='input'>
+#&gt;       clouds
+#&gt; 1: 99.999908
+#&gt; 2:  8.670091
+#&gt; 3:  6.359588
+#&gt;                                                                                                                      footprint
+#&gt; 1: POLYGON ((8.999741 46.05357, 10.4189 46.04477, 10.39425 45.05675, 8.999746 45.06526, 8.999741 46.05357, 8.999741 46.05357))
+#&gt; 2: POLYGON ((8.999741 46.05357, 10.4189 46.04477, 10.39425 45.05675, 8.999746 45.06526, 8.999741 46.05357, 8.999741 46.05357))
+#&gt; 3:                    POLYGON ((8.999741 46.05357, 10.4189 46.04477, 10.39425 45.05675, 8.999746 45.06526, 8.999741 46.05357))
+#&gt;                                    uuid online
+#&gt; 1: a4a026c0-db7b-4ba8-9b09-53027ab0d7ab     NA
+#&gt; 2: 6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f     NA
+#&gt; 3: 868b5b3c-92ac-412a-8a04-167008a1f08f     NA</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>sf</span>)</div><div class='output co'>#&gt; <span class='message'>Linking to GEOS 3.7.1, GDAL 2.2.3, PROJ 4.9.3</span></div><div class='output co'>#&gt; <span class='message'>WARNING: different compile-time and runtime versions for GEOS found:</span></div><div class='output co'>#&gt; <span class='message'>Linked against: 3.7.1-CAPI-1.11.1 27a5e771 compiled against: 3.6.2-CAPI-1.10.2</span></div><div class='output co'>#&gt; <span class='message'>It is probably a good idea to reinstall sf, and maybe rgeos and rgdal too</span></div><div class='input'>(<span class='no'>s2_sf</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_as_sf.html'>st_as_sf</a></span>(<span class='no'>list_safe</span>)) <span class='co'># convert to sf</span></div><div class='output co'>#&gt; Simple feature collection with 3 features and 11 fields
+#&gt; geometry type:  POLYGON
+#&gt; dimension:      XY
+#&gt; bbox:           xmin: 8.999741 ymin: 45.05675 xmax: 10.4189 ymax: 46.05357
+#&gt; epsg (SRID):    4326
+#&gt; proj4string:    +proj=longlat +datum=WGS84 +no_defs
+#&gt;                                                                name
+#&gt; 1 S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE
+#&gt; 2 S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE
+#&gt; 3 S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE
+#&gt;                                                                                                    url
+#&gt; 1 https://scihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value
+#&gt; 2 https://scihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value
+#&gt; 3 https://scihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value
+#&gt;   mission level id_tile id_orbit    sensing_datetime  ingestion_datetime
+#&gt; 1      2A   2Ap   32TNR      065 2017-05-07 10:20:31 2017-05-09 06:30:41
+#&gt; 2      2A   2Ap   32TNR      065 2017-05-17 10:20:31 2017-06-08 12:21:23
+#&gt; 3      2A   2Ap   32TNR      065 2017-05-27 10:20:31 2017-05-29 08:30:44
+#&gt;      clouds                                 uuid online
+#&gt; 1 99.999908 a4a026c0-db7b-4ba8-9b09-53027ab0d7ab     NA
+#&gt; 2  8.670091 6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f     NA
+#&gt; 3  6.359588 868b5b3c-92ac-412a-8a04-167008a1f08f     NA
+#&gt;                        footprint
+#&gt; 1 POLYGON ((8.999741 46.05357...
+#&gt; 2 POLYGON ((8.999741 46.05357...
+#&gt; 3 POLYGON ((8.999741 46.05357...</div><div class='input'>
 <span class='co'>## Convert from other classes</span>
-<span class='fu'>as</span>(<span class='no'>s2_char</span>, <span class='st'>"safelist"</span>) <span class='co'># this causes the loss of hidden attributes</span></div><div class='output co'>#&gt; A named vector with 3 SAFE archives.
+<span class='fu'><a href='https://rdrr.io/pkg/sf/man/coerce-methods.html'>as</a></span>(<span class='no'>s2_char</span>, <span class='st'>"safelist"</span>) <span class='co'># this causes the loss of hidden attributes</span></div><div class='output co'>#&gt; A named vector with 3 SAFE archives.
 #&gt;                                      S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE 
 #&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value" 
 #&gt;                                      S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE 
 #&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" 
 #&gt;                                      S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" </div><div class='input'><span class='fu'>as</span>(<span class='no'>s2_df</span>, <span class='st'>"safelist"</span>) <span class='co'># this maintains attributes as columns</span></div><div class='output co'>#&gt; A named vector with 3 SAFE archives.
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" </div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/sf/man/coerce-methods.html'>as</a></span>(<span class='no'>s2_df</span>, <span class='st'>"safelist"</span>) <span class='co'># this (and followings) maintain attributes as columns</span></div><div class='output co'>#&gt; A named vector with 3 SAFE archives.
 #&gt;                                      S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE 
 #&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value" 
 #&gt;                                      S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE 
 #&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" 
 #&gt;                                      S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE 
 #&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" 
-#&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, online.</div><div class='input'># }
+#&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, footprint, uuid, online.</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/sf/man/coerce-methods.html'>as</a></span>(<span class='no'>s2_dt</span>, <span class='st'>"safelist"</span>)</div><div class='output co'>#&gt; A named vector with 3 SAFE archives.
+#&gt;                                      S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value" 
+#&gt;                                      S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" 
+#&gt;                                      S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" 
+#&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, footprint, uuid, online.</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/sf/man/coerce-methods.html'>as</a></span>(<span class='no'>s2_sf</span>, <span class='st'>"safelist"</span>)</div><div class='output co'>#&gt; A named vector with 3 SAFE archives.
+#&gt;                                      S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value" 
+#&gt;                                      S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" 
+#&gt;                                      S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" 
+#&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, uuid, online, footprint.</div><div class='input'># }
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

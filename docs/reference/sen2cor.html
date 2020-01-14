@@ -82,7 +82,7 @@ sen2cor
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1.9007</span>
       </span>
     </div>
 
@@ -159,10 +159,20 @@ Standalone version of
 (version 2.8.0 or 2.5.5) is used.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>sen2cor</span>(<span class='kw'>l1c_prodlist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>l1c_dir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>proc_dir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>tiles</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>.log_message</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>.log_output</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+    <pre class="usage"><span class='fu'>sen2cor</span>(
+  <span class='kw'>l1c_prodlist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>l1c_dir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>proc_dir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>gipp</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>tiles</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>.log_message</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>.log_output</span> <span class='kw'>=</span> <span class='fl'>NA</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -209,6 +219,22 @@ If <code>tmpdir</code> is a non-empty folder, a random subdirectory will be used
 (Default: TRUE)</p></td>
     </tr>
     <tr>
+      <th>gipp</th>
+      <td><p>(optional) Ground Image Processing Parameters (GIPP)
+to be passed to Sen2Cor.
+It is possible to specify both the path of an existing XML file
+or a list of parameters in the form <code>parameter_name = "value"</code>, where
+<code>parameter_name</code> is the name of the parameter as specified in the
+<code>L2A_GIPP.xml</code> file of the used Sen2Cor version (case insensitive), and
+<code>"value"</code> is the character value which the user wants to set
+(notice that, in the case the user wants to specify the value <code>NONE</code>,
+both <code>"NONE"</code> and <code>NA</code> can be used, but not <code>NULL</code>, which has the effect
+to maintain the value specified in the XML file).
+<em>Note</em>: this argument takes effect only in the current execution of
+<code>sen2cor()</code> function; to permanently change GIPP values, use function
+<a href='[set_gipp]'><code><a href='gipp.html'>set_gipp()</a></code></a>.</p></td>
+    </tr>
+    <tr>
       <th>tiles</th>
       <td><p>Vector of Sentinel-2 Tile strings (5-length character) to be
 processed (default: process all the tiles found in the input L1C products).</p></td>
@@ -248,11 +274,21 @@ existing)</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>pos</span> <span class='kw'>&lt;-</span> <span class='fu'>st_sfc</span>(<span class='fu'>st_point</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>12.0</span>, <span class='fl'>44.8</span>)), <span class='kw'>crs</span><span class='kw'>=</span><span class='fu'>st_crs</span>(<span class='fl'>4326</span>))
-<span class='no'>time_window</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"2017-05-01"</span>,<span class='st'>"2017-07-30"</span>))
-<span class='no'>example_s2_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='s2_list.html'>s2_list</a></span>(<span class='kw'>spatial_extent</span><span class='kw'>=</span><span class='no'>pos</span>, <span class='kw'>tile</span><span class='kw'>=</span><span class='st'>"32TQQ"</span>, <span class='kw'>time_interval</span><span class='kw'>=</span><span class='no'>time_window</span>)
-<span class='fu'><a href='s2_download.html'>s2_download</a></span>(<span class='no'>example_s2_list</span>, <span class='kw'>outdir</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())
-<span class='fu'>sen2cor</span>(<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>example_s2_list</span>)[<span class='fl'>1</span>], <span class='kw'>l1c_dir</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(), <span class='kw'>outdir</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())
+<span class='co'># Download an L1C SAFE product</span>
+<span class='no'>example_s2_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='s2_list.html'>s2_list</a></span>(
+  <span class='kw'>spatial_extent</span> <span class='kw'>=</span> <span class='fu'>st_sfc</span>(<span class='fu'>st_point</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>12.0</span>, <span class='fl'>44.8</span>)), <span class='kw'>crs</span><span class='kw'>=</span><span class='fu'>st_crs</span>(<span class='fl'>4326</span>)),
+  <span class='kw'>tile</span> <span class='kw'>=</span> <span class='st'>"32TQQ"</span>,
+  <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"2017-05-01"</span>,<span class='st'>"2017-07-30"</span>))
+)
+<span class='fu'><a href='s2_download.html'>s2_download</a></span>(<span class='no'>example_s2_list</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())
+
+<span class='co'># Correct it applying a topographic correction</span>
+<span class='fu'>sen2cor</span>(
+  <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>example_s2_list</span>)[<span class='fl'>1</span>],
+  <span class='kw'>l1c_dir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(),
+  <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(),
+  <span class='kw'>gipp</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>dem_directory</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())
+)
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

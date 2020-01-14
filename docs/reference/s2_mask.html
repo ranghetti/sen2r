@@ -163,14 +163,34 @@ The function is similar to s2_mask, but it returns percentages instead
 of masked rasters.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>s2_mask</span>(<span class='no'>infiles</span>, <span class='no'>maskfiles</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='st'>"cloud_medium_proba"</span>,
-  <span class='kw'>smooth</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>buffer</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>80</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"./masked"</span>,
-  <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>save_binary_mask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>.log_message</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>.log_output</span> <span class='kw'>=</span> <span class='fl'>NA</span>)
+    <pre class="usage"><span class='fu'>s2_mask</span>(
+  <span class='no'>infiles</span>,
+  <span class='no'>maskfiles</span>,
+  <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='st'>"cloud_medium_proba"</span>,
+  <span class='kw'>smooth</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>buffer</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>80</span>,
+  <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"./masked"</span>,
+  <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>save_binary_mask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>,
+  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>.log_message</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>.log_output</span> <span class='kw'>=</span> <span class='fl'>NA</span>
+)
 
-<span class='fu'>s2_perc_masked</span>(<span class='no'>infiles</span>, <span class='no'>maskfiles</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='st'>"cloud_medium_proba"</span>,
-  <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+<span class='fu'>s2_perc_masked</span>(
+  <span class='no'>infiles</span>,
+  <span class='no'>maskfiles</span>,
+  <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='st'>"cloud_medium_proba"</span>,
+  <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -198,28 +218,28 @@ their names must be in the sen2r naming convention
       <th>mask_type</th>
       <td><p>(optional) Character vector which determines the type of
 mask to be applied. Accepted values are:</p><ul>
-<li><p>"nomask": do not mask any pixel;</p></li>
-<li><p>"nodata": mask pixels checked as "No data" or "Saturated or defective"
+<li><p><code>"nomask"</code>: do not mask any pixel;</p></li>
+<li><p><code>"nodata"</code>: mask pixels checked as "No data" or "Saturated or defective"
 in the SCL product (all pixels with values are maintained);</p></li>
-<li><p>"cloud_high_proba": mask pixels checked as "No data", "Saturated or
+<li><p><code>"cloud_high_proba"</code>: mask pixels checked as "No data", "Saturated or
 defective" or "Cloud (high probability)" in the SCL product;</p></li>
-<li><p>"cloud_medium_proba": mask pixels checked as "No data", "Saturated or
+<li><p>`"cloud_medium_proba": mask pixels checked as "No data", "Saturated or
 defective" or "Cloud (high or medium probability)" in the SCL product;</p></li>
-<li><p>"cloud_and_shadow": mask pixels checked as "No data", "Saturated or
+<li><p><code>"cloud_and_shadow"</code>: mask pixels checked as "No data", "Saturated or
 defective", "Cloud (high or medium probability)" or "Cloud shadow"
 in the SCL product;</p></li>
-<li><p>"clear_sky": mask pixels checked as "No data", "Saturated or
+<li><p><code>"clear_sky"</code>: mask pixels checked as "No data", "Saturated or
 defective", "Cloud (high or medium probability)", "Cloud shadow",
 "Unclassified" or "Thin cirrus" in the SCL product
 (only pixels classified as clear-sky surface - so "Dark area",
 "Vegetation", "Bare soil", "Water" or "Snow" - are maintained);</p></li>
-<li><p>"land": mask pixels checked as "No data", "Saturated or
+<li><p><code>"land"</code>: mask pixels checked as "No data", "Saturated or
 defective", "Cloud (high or medium probability)", "Cloud shadow", "Dark area",
 "Unclassified", "Thin cirrus", "Water" or "Snow" in the SCL product
 (only pixels classified as land surface - so "Vegetation" or
 "Bare soil" - are maintained);</p></li>
-<li><p>a string in the following form: "scl_n_m_n", where n, m and n are one or
-more SCL class numbers. E.g. string "scl_0_8_9_11" can
+<li><p>a string in the following form: <code>"scl_n_m_n"</code>, where <code>n</code>, <code>m</code> and <code>n</code>
+are one or more SCL class numbers. E.g. string <code>"scl_0_8_9_11"</code> can
 be used to mask classes 0 ("No data"), 8-9 ("Cloud (high or medium
 probability)") and 11 ("Snow").</p></li>
 </ul></td>
@@ -243,9 +263,9 @@ Default is 0 (no buffer).</p></td>
       <td><p>(optional) Numeric value (range 0 to 100), which represents
 the maximum percentage of allowed masked surface (by clouds or any other
 type of mask chosen with argument <code>mask_type</code>) for producing outputs.
-Images with a percentage of masked surface greater than <code>max_mask</code><!-- % -->
+Images with a percentage of masked surface greater than <code>max_mask</code>%
 are not processed (the list of expected output files which have not been
-generated is returned as an attribute, named "skipped").
+generated is returned as an attribute, named <code>skipped</code>).
 Default value is 80.
 Notice that the percentage is computed on non-NA values (if input images
 had previously been clipped and masked using a polygon, the percentage is
@@ -254,7 +274,7 @@ computed on the surface included in the masking polygons).</p></td>
     <tr>
       <th>outdir</th>
       <td><p>(optional) Full name of the output directory where
-the files should be created (default: "current directory"masked"
+the files should be created (default: <code>"masked"</code>
 subdir of current directory).
 <code>outdir</code> can bot be an existing or non-existing directory (in the
 second case, its parent directory must exists).
@@ -282,9 +302,9 @@ Binary mask are intermediate rasters used to apply the cloud mask:
 pixel values can be 1 (no cloud mask), 0 (cloud mask) or NA (original NA
 value, i.e. because input rasters had been clipped on the extent polygons).
 If FALSE (default) they are not exported; if TRUE, they are exported
-as MSK prod type (so saved within <code>outdir</code>, in a subdirectory called "MSK"
+as <code>MSK</code> prod type (so saved within <code>outdir</code>, in a subdirectory called <code>"MSK"</code>
 if <code>subdirs = TRUE</code>).
-Notice that the presence of "MSK" products is not checked before running
+Notice that the presence of <code>"MSK"</code> products is not checked before running
 <code><a href='sen2r.html'>sen2r()</a></code>, as done for the other products; this means that missing products
 which are not required to apply cloud masks will not be produced.</p></td>
     </tr>
@@ -292,7 +312,7 @@ which are not required to apply cloud masks will not be produced.</p></td>
       <th>format</th>
       <td><p>(optional) Format of the output file (in a
 format recognised by GDAL). Default is the same format of input images
-(or "GTiff" in case of VRT input images).</p></td>
+(or <code>"GTiff"</code> in case of VRT input images).</p></td>
     </tr>
     <tr>
       <th>subdirs</th>
@@ -303,7 +323,7 @@ more than a single product is required.</p></td>
     </tr>
     <tr>
       <th>compress</th>
-      <td><p>(optional) In the case a GTiff format is
+      <td><p>(optional) In the case a <code>GTiff</code> format is
 present, the compression indicated with this parameter is used.</p></td>
     </tr>
     <tr>
@@ -337,7 +357,7 @@ overwritten? (default: FALSE)</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>s2_mask returns a vector with the names of the created products.
-An attribute "toomasked" contains the paths of the outputs which were not
+An attribute <code>"toomasked"</code> contains the paths of the outputs which were not
 created cause to the high percentage of cloud coverage.</p>
 <p>s2_perc_masked returns a names vector with the percentages
 of masked surfaces.</p>
@@ -363,7 +383,7 @@ of masked surfaces.</p>
   <span class='kw'>maskfiles</span> <span class='kw'>=</span> <span class='no'>ex_mask</span>,
   <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='st'>"clear_sky"</span>,
   <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>()
-)</div><div class='output co'>#&gt; <span class='message'>Processing chunk 1 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 2 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 3 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 4 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 5 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 6 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 7 of 7</span></div><div class='input'><span class='no'>ex_out</span></div><div class='output co'>#&gt; [1] "/tmp/Rtmp06y9K3/S2A2A_20170703_022_Barbellino_RGB432B_10.tif"
+)</div><div class='output co'>#&gt; <span class='message'>Processing chunk 1 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 2 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 3 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 4 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 5 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 6 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 7 of 7</span></div><div class='input'><span class='no'>ex_out</span></div><div class='output co'>#&gt; [1] "/tmp/RtmpVXWWdA/S2A2A_20170703_022_Barbellino_RGB432B_10.tif"
 #&gt; attr(,"toomasked")
 #&gt; character(0)</div><div class='input'>
 <span class='co'># Show output</span>
