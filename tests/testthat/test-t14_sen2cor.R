@@ -107,6 +107,7 @@ if (test_sen2cor) {
         sen2cor_out <- sen2cor(
           s2_l1c_prods, 
           outdir = safe_dir,
+          gipp = list(DEM_Directory = NA),
           parallel = TRUE,
           overwrite = TRUE
         )
