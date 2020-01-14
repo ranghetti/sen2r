@@ -22,6 +22,8 @@
 #'      compatibility. In a future release of sen2r, the default value will be
 #'      set to TRUE, so to grant homogeneity between Level-2A products downloaded
 #'      from ESA Hub and generated using Sen2Cor.
+#'  3. If both `use_dem` is defined and `DEM_Directory` in argument `gipp` is
+#'      specified, the second choice overrides the first one.
 #' @param gipp (optional) List of Ground Image Processing Parameters (GIPP)
 #'  to be modified after installing Sen2Cor with respect to default values
 #'  (see [set_gipp()]([set_gipp]) for detail about using this argument).
@@ -88,7 +90,15 @@ install_sen2cor <- function(
         type = "message",
         "Sen2Cor is already installed; to overwrite, set force = TRUE."
       )
-      gipp_init() # copy L2A_GIPP.xml within .sen2r if missing
+      # Copy default Sen2Cor L2A_GIPP.xml if missing within .sen2r
+      gipp_init(dem_warning = all(
+        is.na(use_dem), 
+        length(grep("DEM_Directory", names(gipp), ignore.case = TRUE)) == 0
+      )) # remove dem_warning in future!
+      # edit DEM_Directory basing on use_dem
+      if (!is.na(use_dem)) {set_gipp(use_dem = use_dem)}
+      # edit other parameters if required
+      if (!missing(gipp)) {set_gipp(gipp = gipp)}
       return(invisible(NULL))
     }
   }
@@ -208,19 +218,14 @@ install_sen2cor <- function(
   writeLines(toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
   
   # Copy default Sen2Cor L2A_GIPP.xml if missing within .sen2r
-  gipp_init()
+  gipp_init(dem_warning = all(
+    is.na(use_dem), 
+    length(grep("DEM_Directory", names(gipp), ignore.case = TRUE)) == 0
+  )) # remove dem_warning in future!
   # edit DEM_Directory basing on use_dem
-  if (!is.na(use_dem)) {
-    dem_dir <- if (use_dem == TRUE) {
-      file.path(dirname(attr(binpaths, "path")), "srtm90")
-    } else {NA}
-    dir.create(dem_dir, showWarnings = FALSE)
-    set_gipp(gipp = list(DEM_Directory = dem_dir))
-  }
+  if (!is.na(use_dem)) {set_gipp(use_dem = use_dem)}
   # edit other parameters if required
-  if (!missing(gipp)) {
-    set_gipp(gipp = gipp)
-  }
+  if (!missing(gipp)) {set_gipp(gipp = gipp)}
   
 }
 
@@ -259,19 +264,14 @@ link_sen2cor <- function(sen2cor_dir, use_dem = NA, gipp = NULL) {
     )
     
     # Copy default Sen2Cor L2A_GIPP.xml if missing within .sen2r
-    gipp_init()
+    gipp_init(dem_warning = all(
+      is.na(use_dem), 
+      length(grep("DEM_Directory", names(gipp), ignore.case = TRUE)) == 0
+    )) # remove dem_warning in future!
     # edit DEM_Directory basing on use_dem
-    if (!is.na(use_dem)) {
-      dem_dir <- if (use_dem == TRUE) {
-        file.path(dirname(attr(binpaths, "path")), "srtm90")
-      } else {NA}
-      dir.create(dem_dir, showWarnings = FALSE)
-      set_gipp(gipp = list(DEM_Directory = dem_dir))
-    }
+    if (!is.na(use_dem)) {set_gipp(use_dem = use_dem)}
     # edit other parameters if required
-    if (!missing(gipp)) {
-      set_gipp(gipp = gipp)
-    }
+    if (!missing(gipp)) {set_gipp(gipp = gipp)}
     
   } else {
     print_message(type = "error", "Sen2Cor was not found here")

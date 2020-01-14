@@ -4,7 +4,7 @@
 \alias{gipp_init}
 \title{Copy L2A_GIPP.xml in sen2r}
 \usage{
-gipp_init(gipp_sen2r_path = NA, force = FALSE)
+gipp_init(gipp_sen2r_path = NA, force = FALSE, dem_warning = FALSE)
 }
 \arguments{
 \item{gipp_sen2r_path}{Character path of the output GIPP XML file.
@@ -12,6 +12,11 @@ By default it is equal to NA (meaning the default sen2r GIPP path).}
 
 \item{force}{Logical: if TRUE, the file is copied in any case (this is used
 by \code{reset_gipp()}); if FALSE (default), only if it does not yet exist.}
+
+\item{dem_warning}{TEMPORARY ARGUMENT Logical: if TRUE, a warning about
+the fact that DEM_Directory XML parameter was not overwritten is shown
+(default is FALSE).
+This argument will be removed when use_dem = TRUE will become the default.}
 }
 \value{
 TRUE if the file was copied, FALSE elsewhere (invisible output)

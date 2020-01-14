@@ -40,6 +40,8 @@ For further customisation, set argument \code{gipp} properly.
 compatibility. In a future release of sen2r, the default value will be
 set to TRUE, so to grant homogeneity between Level-2A products downloaded
 from ESA Hub and generated using Sen2Cor.
+\item If both \code{use_dem} is defined and \code{DEM_Directory} in argument \code{gipp} is
+specified, the second choice overrides the first one.
 }}
 
 \item{gipp}{(optional) List of Ground Image Processing Parameters (GIPP)

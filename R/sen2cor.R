@@ -109,7 +109,8 @@ sen2cor <- function(
   # Read the gipp argument
   if (length(nn(gipp)) == 0) {
     # 1. if it is NULL or list(), use the default user sen2r_L2A_GIPP.xml
-    gipp_init() # copy L2A_GIPP.xml within .sen2r if missing
+    # copy L2A_GIPP.xml within .sen2r if missing
+    gipp_init(dem_warning = TRUE) # remove dem_warning in future!
     gipp_sen2r_path <- normalize_path(
       file.path(dirname(attr(binpaths, "path")), "sen2r_L2A_GIPP.xml")
     )
@@ -119,7 +120,10 @@ sen2cor <- function(
   } else if (is.list(gipp)) {
     # 3. if some parameters were manually specified, use a temporary copy of
     # the default user sen2r_L2A_GIPP.xml and edit them by consequence
-    gipp_init() # copy L2A_GIPP.xml within .sen2r if missing
+    # copy L2A_GIPP.xml within .sen2r if missing
+    gipp_init(
+      dem_warning = length(grep("DEM_Directory", names(gipp), ignore.case = TRUE)) == 0
+    ) # remove dem_warning in future!
     gipp_sen2r_path <- tempfile(pattern = "L2A_GIPP_", fileext = ".xml")
     set_gipp(gipp = gipp, gipp_path_out = gipp_sen2r_path)
   }

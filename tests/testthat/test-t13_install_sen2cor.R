@@ -20,18 +20,18 @@ testthat::test_that(
 
 testthat::test_that(
   "Test Sen2Cor installation", {
-
+    
     sen2cor_def_version <- package_version("2.8.0")
-
-    if (test_download | is.null(load_binpaths()$sen2cor)) {
+    
+    if (test_download) {
       unlink(sen2cor_inst_dir, recursive = TRUE)
-      install_sen2cor(sen2cor_inst_dir, use_dem = TRUE)
     }
-
+    install_sen2cor(sen2cor_inst_dir, use_dem = TRUE)
+    
     testthat::expect_true(dir.exists(dirname(load_binpaths()$sen2cor)))
     testver <- system2(load_binpaths()$sen2cor, "-h", stdout = TRUE)
     testthat::expect_true(grepl("2\\.[85]\\.[05]", testver[grep("Version", testver)]))
-
+    
     if (Sys.info()["sysname"] == "Windows") {
       testthat::expect_true(any(grepl("^Sen2Cor\\-", list.files(sen2cor_inst_dir))))
       sen2cor_inst_dir <- file.path(
@@ -51,7 +51,7 @@ testthat::test_that(
       "/cfg/L2A_GIPP.xml"
     )
     testthat::expect_true(file.exists(xml_sen2cor_path))
-
+    
   }
 )
 
@@ -104,7 +104,7 @@ testthat::test_that(
     testthat::expect_is(gipp_3, "list")
     testthat::expect_length(gipp_3, 2)
     testthat::expect_true(grepl("NONE", gipp_3$DEM_Directory))
-
+    
     testthat::expect_true(file.remove(gipp_temp))
     
   }

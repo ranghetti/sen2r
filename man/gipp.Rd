@@ -8,7 +8,12 @@
 \usage{
 read_gipp(gipp_names, gipp_path_in = NA)
 
-set_gipp(gipp, gipp_path_in = NA, gipp_path_out = gipp_path_in)
+set_gipp(
+  gipp = list(),
+  gipp_path_in = NA,
+  gipp_path_out = gipp_path_in,
+  use_dem = NA
+)
 
 reset_gipp(gipp_path_out = NA)
 }
@@ -33,6 +38,14 @@ Elements whose name is missing in the XML file are skipped.}
 By default it is equal to \code{gipp_path_in} in function \code{set_gipp()}
 (edited values are overwritten) and to NA (meaning the default sen2r GIPP
 path) in \code{reset_gipp()}.}
+
+\item{use_dem}{Logical, being a shortcut for
+\code{gipp = list(DEM_Directory = "~/.sen2r/srtm90")} in case \code{use_dem = TRUE},
+and for \code{gipp = list(DEM_Directory = NA)} in case \code{use_dem = FALSE}.
+If \code{NA} (default), this parameter is not changed.
+If both \code{use_dem} is defined and \code{DEM_Directory} in argument \code{gipp} is
+specified, the second choice overrides the first one.
+For further details, see \href{[install_sen2cor]}{\code{install_sen2cor()}}.}
 }
 \value{
 \code{read_gipp()} returns a named list of GIPP with the required parameters

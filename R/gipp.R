@@ -6,6 +6,10 @@
 #'  By default it is equal to NA (meaning the default sen2r GIPP path).
 #' @param force Logical: if TRUE, the file is copied in any case (this is used
 #'  by `reset_gipp()`); if FALSE (default), only if it does not yet exist.
+#' @param dem_warning TEMPORARY ARGUMENT Logical: if TRUE, a warning about
+#'  the fact that DEM_Directory XML parameter was not overwritten is shown
+#'  (default is FALSE).
+#'  This argument will be removed when use_dem = TRUE will become the default.
 #' @return TRUE if the file was copied, FALSE elsewhere (invisible output)
 #' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
@@ -13,11 +17,22 @@
 #' \dontrun{
 #' gipp_init()
 #' }
-gipp_init <- function(gipp_sen2r_path = NA, force = FALSE) {
+gipp_init <- function(gipp_sen2r_path = NA, force = FALSE, dem_warning = FALSE) {
   
   binpaths <- load_binpaths()
-  if (is.na(gipp_sen2r_path)) {
+  is_default_sen2r_gipp <- if (is.na(gipp_sen2r_path)) {
     gipp_sen2r_path <- file.path(dirname(attr(binpaths, "path")), "sen2r_L2A_GIPP.xml")
+    TRUE
+  } else {FALSE}
+  
+  # Check Sen2Cor to be installed
+  if (is.null(binpaths$sen2cor)) {
+    print_message(
+      type = "error", 
+      "Sen2Cor was not yet installed; ",
+      "install it using function install_sen2cor() (command line) ",
+      "or check_sen2r_deps() (GUI)."
+    )
   }
   
   # If Sen2Cor configuration file is missing, copy it from its default directory
@@ -42,6 +57,29 @@ gipp_init <- function(gipp_sen2r_path = NA, force = FALSE) {
       print_message(
         type = "error", 
         "Sen2Cor configuration file was not found in its default directory"
+      )
+    }
+    
+    # temporary WARNING about default use_dem value
+    # (this will be removed / replaced when use_dem = TRUE will become the default value)
+    if (dem_warning == TRUE) {
+      print_message(
+        type = "message",
+        "Default Sen2Cor parameters were written in file ",
+        normalize_path(
+          file.path(dirname(attr(binpaths, "path")), "sen2r_L2A_GIPP.xml"), 
+          mustWork = FALSE
+        ), 
+        ", and will be used with sen2cor() and sen2r() ",
+        "unless different parameters will be specified.\n",
+        "IMPORTANT NOTE: for backward compatibility, the parameter ",
+        "\"DEM_Directory\" was maitained to its default value. ",
+        "This does not grant homogeneity between Level-2A SAFE products ",
+        "generated locally with Sen2Cor and downloaded from ESA Hub ",
+        "(which make use of DEM for topographic correction).",
+        "To grant it, activate topographic correction using:\n",
+        " > set_gipp(use_dem = TRUE)\n",
+        "In a future sen2r release, this will be the default Sen2Cor behaviour."
       )
     }
     
@@ -76,7 +114,7 @@ read_gipp <- function(gipp_names, gipp_path_in = NA) {
   
   # Copy L2A_GIPP.xml within .sen2r if missing; otherwise, check that it exists
   if (is.na(gipp_path_in)) {
-    gipp_init()
+    gipp_init(dem_warning = TRUE) # remove dem_warning in future!
     gipp_path_in <- file.path(dirname(attr(binpaths, "path")), "sen2r_L2A_GIPP.xml")
   } else {
     gipp_path_in <- normalize_path(gipp_path_in, mustWork = TRUE)
@@ -115,6 +153,13 @@ read_gipp <- function(gipp_names, gipp_path_in = NA) {
 #'  By default it is equal to `gipp_path_in` in function `set_gipp()`
 #'  (edited values are overwritten) and to NA (meaning the default sen2r GIPP
 #'  path) in `reset_gipp()`.
+#' @param use_dem Logical, being a shortcut for 
+#'  `gipp = list(DEM_Directory = "~/.sen2r/srtm90")` in case `use_dem = TRUE`,
+#'  and for `gipp = list(DEM_Directory = NA)` in case `use_dem = FALSE`.
+#'  If `NA` (default), this parameter is not changed.
+#'  If both `use_dem` is defined and `DEM_Directory` in argument `gipp` is 
+#'  specified, the second choice overrides the first one.
+#'  For further details, see [`install_sen2cor()`]([install_sen2cor]).
 #' @return `set_gipp()` and `reset_gipp()` return NULL
 #'  (functions are called for their side effects).
 #' @export
@@ -133,13 +178,19 @@ read_gipp <- function(gipp_names, gipp_path_in = NA) {
 #' # Read again values
 #' read_gipp(c("DEM_Directory", "DEM_Reference"), gipp_path_in = gipp_temp)
 #' }
-set_gipp <- function(gipp, gipp_path_in = NA, gipp_path_out = gipp_path_in) {
+set_gipp <- function(
+  gipp = list(), gipp_path_in = NA, gipp_path_out = gipp_path_in, use_dem = NA
+) {
   
   binpaths <- load_binpaths()
   
   # Copy L2A_GIPP.xml within .sen2r if missing; otherwise, check that it exists
   if (is.na(gipp_path_in)) {
-    gipp_init() # copy L2A_GIPP.xml within .sen2r if missing
+    # copy L2A_GIPP.xml within .sen2r if missing
+    gipp_init(dem_warning = all(
+      is.na(use_dem), 
+      length(grep("DEM_Directory", names(gipp), ignore.case = TRUE)) == 0
+    )) # remove dem_warning in future!
     gipp_path_in <- file.path(dirname(attr(binpaths, "path")), "sen2r_L2A_GIPP.xml")
   } else {
     gipp_path_in <- normalize_path(gipp_path_in, mustWork = TRUE)
@@ -151,6 +202,21 @@ set_gipp <- function(gipp, gipp_path_in = NA, gipp_path_out = gipp_path_in) {
   gipp_xml <- readLines(gipp_path_in)
   gipp <- gipp[!sapply(gipp, is.null)] # NULL: leave as default (so, skip)
   for (i in which(is.na(gipp))) {gipp[[i]] <- "NONE"} # NA -> "NONE"
+  
+  # edit DEM_Directory basing on use_dem
+  if (!is.na(use_dem)) {
+    dem_dir <- if (use_dem == TRUE) {
+      file.path(dirname(attr(binpaths, "path")), "srtm90")
+    } else {"NONE"}
+    dir.create(dem_dir, showWarnings = FALSE)
+    sel_line <- grep("<DEM_Directory>.+</DEM_Directory>", gipp_xml, ignore.case = TRUE)[1]
+    gipp_xml[sel_line] <- gsub(
+      paste0("(^.*<DEM_Directory>).+(</DEM_Directory>.*$)"),
+      paste0("\\1",dem_dir,"\\2"), 
+      gipp_xml[sel_line],
+      ignore.case = TRUE
+    )
+  }
   
   # Edit parameter values
   for (sel_par in names(gipp)) {
@@ -174,5 +240,9 @@ set_gipp <- function(gipp, gipp_path_in = NA, gipp_path_out = gipp_path_in) {
 #'  set in the `L2A_GIPP.xml` default Sen2Cor file).
 #' @export
 reset_gipp <- function(gipp_path_out = NA) {
-  gipp_init(gipp_sen2r_path = gipp_path_out, force = TRUE)
+  gipp_init(
+    gipp_sen2r_path = gipp_path_out, 
+    force = TRUE, 
+    dem_warning = TRUE # remove dem_warning in future!
+  )
 }
