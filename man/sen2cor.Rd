@@ -124,7 +124,7 @@ sen2cor(
   names(example_s2_list)[1], 
   l1c_dir = tempdir(), 
   outdir = tempdir(),
-  gipp = list(dem_directory = tempdir())
+  use_dem = TRUE
 )
 }
 }
