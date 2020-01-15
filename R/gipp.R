@@ -154,13 +154,15 @@ read_gipp <- function(gipp_names, gipp_path = NA) {
 #' @param gipp_path Character path of the output GIPP XML file.
 #'  If NA (default), the default sen2r GIPP path is used.
 #' @param use_dem Logical: if TRUE, a DEM is set for being used for topographic
-#'  corection in the XML specified with argument `gipp_path`;
+#'  correction in the XML specified with argument `gipp_path`;
 #'  if FALSE, no DEM is set for being used;
 #'  if NA (default), the existing option is maintained.
-#'  Notice that, in case `use_dem = TRUE` and a DEM directory is already set
-#'  in the XML file, no changes are performed;
-#'  conversely; if no directories were specified, a subdirectory `"srtm90"` 
-#'  of the default sen2r directory is set.
+#'  Notice that, in case 1. `use_dem = TRUE` and 2. DEM directory and reference 
+#'  are already set in the XML file, no changes are performed;
+#'  conversely, if no directory was specified, a subdirectory `"srtm90"` 
+#'  of the default sen2r directory is set (and eventually the
+#'  [CGIAR SRTM 90m](http://srtm.csi.cgiar.org/) is set as online source if no
+#'  reference was set).
 #'  To set another directory, use argument `gipp` in the form
 #'  `gipp = list(DEM_Directory = tempdir(), ...)` (replacing `tempdir()` with
 #'  the desired path).
@@ -233,6 +235,21 @@ set_gipp <- function(
       )
       if (dem_dir_in == "NONE") {
         dem_dir_in <- file.path(dirname(attr(binpaths, "path")), "srtm90")
+        # moreover, check DEM reference
+        sel_line_ref <- grep("<DEM_Reference>.+</DEM_Reference>", gipp_xml, ignore.case = TRUE)[1]
+        dem_ref_in <- gsub(
+          paste0("^.*<DEM_Reference>(.+)</DEM_Reference>.*$"), "\\1", 
+          gipp_xml[sel_line_ref],
+          ignore.case = TRUE
+        )
+        if (dem_ref_in == "NONE") {
+          gipp_xml[sel_line_ref] <- gsub(
+            paste0("(^.*<DEM_Reference>).+(</DEM_Reference>.*$)"),
+            "\\1http://data_public:GDdci@data.cgiar-csi.org/srtm/tiles/GeoTIFF/\\2", 
+            gipp_xml[sel_line_ref],
+            ignore.case = TRUE
+          )
+        }
       }
       dem_dir_out <- dem_dir_in
       dir.create(dem_dir_out, showWarnings = FALSE)
