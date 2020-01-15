@@ -5,15 +5,31 @@
 \alias{link_sen2cor}
 \title{Download and install (or link) Sen2Cor}
 \usage{
-install_sen2cor(sen2cor_dir, version = "2.5.5", force = FALSE)
+install_sen2cor(
+  sen2cor_dir = NA,
+  version = "2.5.5",
+  gipp = NULL,
+  use_dem = NA,
+  force = FALSE
+)
 
-link_sen2cor(sen2cor_dir)
+link_sen2cor(sen2cor_dir, gipp = NULL, use_dem = NA)
 }
 \arguments{
-\item{sen2cor_dir}{Path where sen2cor is being installed or searched.}
+\item{sen2cor_dir}{Path where sen2cor is being installed or searched
+(by default it is a subdirectory \code{"sen2cor"} of the default sen2r directory).}
 
 \item{version}{(optional) Character: Sen2Cor version (one among
 '2.5.5' - default - and '2.8.0').}
+
+\item{gipp}{(optional) Ground Image Processing Parameters (GIPP)
+to be passed to Sen2Cor (see \href{[set_gipp]}{set_gipp()} for further details).
+Default behaviour is to maintain default values (with the exception of
+parameter \code{DEM_Directory}, whih is managed by argument \code{use_dem}).}
+
+\item{use_dem}{(optional) Logical, determining if Sen2Cor has to be set
+to use a Digital Elevation Model for topographic correction (see
+\href{[sen2cor]}{sen2cor()} for further details).}
 
 \item{force}{(optional) Logical: if TRUE, install even if it is already
 installed (default is FALSE).}
@@ -33,7 +49,7 @@ License: GPL 3.0
 }
 \examples{
 \dontrun{
-install_sen2cor(sen2cor_dir = tempdir())
+install_sen2cor(sen2cor_dir = tempdir(), use_dem = TRUE)
 # ( use a non-temporary folder path instead of tempdir() )
 }
 }

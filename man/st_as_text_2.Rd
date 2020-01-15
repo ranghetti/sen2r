@@ -7,7 +7,7 @@
 st_as_text_2(x, pretty = FALSE)
 }
 \arguments{
-\item{x}{object of class sfg, sfc or crs}
+\item{x}{object of class \code{sfg}, \code{sfc} or \code{crs}}
 
 \item{pretty}{logical; if TRUE, print human-readable well-known-text
 representation of a coordinate reference system}
@@ -22,11 +22,11 @@ representation of a CRS, using \link[sf:st_as_text]{sf::st_as_text} in case PROJ
 \link[rgdal:CRS]{rgdal::CRS} otherwise.
 This has the advantage to perform precise transformations with PROJ >=3,
 and to avoid conversion errors
-(see https://rsbivand.github.io/ECS530_h19/ECS530_III.html).
+(see \href{https://rsbivand.github.io/ECS530_h19/ECS530_III.html}{here}).
 This function will be deleted whenever \code{sf} will manage WKT2.
 }
 \examples{
-sen2r:::st_as_text_2(st_crs(32632))
+sen2r:::st_as_text_2(sf::st_crs(32632))
 }
 \author{
 Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}

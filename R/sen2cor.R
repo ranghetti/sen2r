@@ -26,6 +26,30 @@
 #'  If `tmpdir` is a non-empty folder, a random subdirectory will be used.
 #' @param rmtmp (optional) Logical: should temporary files be removed?
 #'  (Default: TRUE)
+#' @param gipp (optional) Ground Image Processing Parameters (GIPP)
+#'  to be passed to Sen2Cor (see [set_gipp()]([set_gipp]) for further details).
+#'  _Note_: this argument takes effect only in the current execution of 
+#'  `sen2cor()` function; to permanently change GIPP values, use function
+#'  [`set_gipp()`]([set_gipp]).
+#' @param use_dem (optional) Logical: 
+#'  if TRUE, Sen2Cor is set to use a Digital Elevation Model for topographic 
+#'  correction (reflecting what is done for Level-2A SAFE images provided by ESA Hub);
+#'  if FALSE, it is set not to perform topographic correction (reflecting the 
+#'  current default Sen2Cor behaviour);
+#'  if NA (default), the option set in the user's `L2A_GIPP.xml` Sen2Cor
+#'  configuration file is respected (in case the user never edited it,
+#'  the current default setting is not to perform topographic correction).
+#'  
+#'  _Notes_: 
+#'  1. if TRUE, the path used to read or store DEM files is the `DEM_Directory` 
+#'      parameter set in the default sen2r GIPP XML file (the user can read it
+#'      with the function `read_gipp("DEM_Directory")`), unless this was set to
+#'      `"NONE"`, in which case a subdirectory `"srtm90"` of the default 
+#'      sen2r directory is used.
+#'  2. Currently the default value is NA in order to grant backward 
+#'      compatibility. In a future release of sen2r, the default value will be
+#'      set to TRUE, so to grant homogeneity between Level-2A products downloaded
+#'      from ESA Hub and generated using Sen2Cor.
 #' @param tiles Vector of Sentinel-2 Tile strings (5-length character) to be
 #'  processed (default: process all the tiles found in the input L1C products).
 #' @param parallel (optional) Logical: if TRUE, Sen2Cor instances are launched
@@ -52,17 +76,38 @@
 #'
 #' @examples
 #' \dontrun{
-#' pos <- st_sfc(st_point(c(12.0, 44.8)), crs=st_crs(4326))
-#' time_window <- as.Date(c("2017-05-01","2017-07-30"))
-#' example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window)
-#' s2_download(example_s2_list, outdir=tempdir())
-#' sen2cor(names(example_s2_list)[1], l1c_dir=tempdir(), outdir=tempdir())
+#' # Download an L1C SAFE product
+#' example_s2_list <- s2_list(
+#'   spatial_extent = st_sfc(st_point(c(12.0, 44.8)), crs=st_crs(4326)), 
+#'   tile = "32TQQ", 
+#'   time_interval = as.Date(c("2017-05-01","2017-07-30"))
+#' )
+#' s2_download(example_s2_list, outdir = tempdir())
+#' 
+#' # Correct it applying a topographic correction
+#' sen2cor(
+#'   names(example_s2_list)[1], 
+#'   l1c_dir = tempdir(), 
+#'   outdir = tempdir(),
+#'   use_dem = TRUE
+#' )
 #' }
 
-sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
-                    tmpdir = NA, rmtmp = TRUE,
-                    tiles=NULL, parallel=FALSE, overwrite=FALSE,
-                    .log_message=NA, .log_output=NA) {
+sen2cor <- function(
+  l1c_prodlist = NULL, 
+  l1c_dir = NULL, 
+  outdir = NULL, 
+  proc_dir = NA,
+  tmpdir = NA, 
+  rmtmp = TRUE,
+  gipp = NULL,
+  use_dem = NA,
+  tiles = NULL, 
+  parallel = FALSE, 
+  overwrite = FALSE,
+  .log_message = NA, 
+  .log_output = NA
+) {
   
   # to avoid NOTE on check
   i <- NULL
@@ -72,6 +117,10 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
     load_binpaths("sen2cor"),
     warning = stop
   )
+  
+  # Use a copy of the default GIPP XML, setting parameters properly
+  gipp_curr_path <- tempfile(pattern = "L2A_GIPP_", fileext = ".xml")
+  set_gipp(gipp = gipp, gipp_path = gipp_curr_path, use_dem = use_dem)
   
   # get version
   sen2cor_version_raw0 <- system(paste(binpaths$sen2cor, "-h"), intern = TRUE)
@@ -119,7 +168,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
     format = "vector", abort = FALSE, simplify = TRUE
   )
   l1c_prodlist <- l1c_prodlist[which(l1c_prodlist_level == "1C")]
-
+  
   # if no products were found, exit
   if (length(l1c_prodlist) == 0) {
     print_message(
@@ -191,7 +240,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
       sel_l2a <- sel_l2a_exi[1]
     }
     # TODO order by baseline, ingestion date
-
+    
     ## Set the tiles vectors (existing, required, ...)
     # existing L1C tiles within input product
     sel_l1c_tiles_existing <- safe_getMetadata(
@@ -320,6 +369,7 @@ sen2cor <- function(l1c_prodlist=NULL, l1c_dir=NULL, outdir=NULL, proc_dir=NA,
         # paste(binpaths$sen2cor, "--refresh", sel_l1c),
         paste(
           binpaths$sen2cor,
+          "--GIP_L2A", gipp_curr_path,
           if (sen2cor_version>=package_version("2.8.0")) {paste("--output_dir", sen2cor_out_l2a)},
           if (sen2cor_version<package_version("2.8.0")) {"--refresh"},
           sel_l1c

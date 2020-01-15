@@ -84,7 +84,13 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
     
     if (Sys.info()["sysname"] %in% c("Linux", "Darwin")) {
       paths_gdalinfo <- if (all(full_scan == FALSE, gdal_path == "")) {
-        Sys.which("gdalinfo")
+        list.files(
+          file.path(
+            system(paste0(Sys.which("gdal-config")," --prefix"), intern = TRUE),
+            "bin"
+          ),
+          "^gdalinfo$", recursive = TRUE, full.names = TRUE
+        )
       } else {
         list.files(
           if (gdal_path == "") {"/"} else {gdal_path},

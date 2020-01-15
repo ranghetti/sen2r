@@ -159,10 +159,21 @@ Outputs are a set of products in the same format of corresponding
 input files.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>s2_merge</span>(<span class='no'>infiles</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>,
-  <span class='kw'>vrt_rel_paths</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>out_crs</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>.log_message</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>.log_output</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+    <pre class="usage"><span class='fu'>s2_merge</span>(
+  <span class='no'>infiles</span>,
+  <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"."</span>,
+  <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>,
+  <span class='kw'>vrt_rel_paths</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>out_crs</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>.log_message</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>.log_output</span> <span class='kw'>=</span> <span class='fl'>NA</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -223,7 +234,7 @@ This takes effect only with <code>format = "VRT"</code>.</p></td>
     </tr>
     <tr>
       <th>out_crs</th>
-      <td><p>(optional) proj4string (character) of the output CRS
+      <td><p>(optional) output CRS, in any format accepted by <a href='st_crs2.html'>st_crs2</a>
 (default: the CRS of the first input file). The tiles with CRS different
 from <code>out_crs</code> will be reprojected (and a warning returned).</p></td>
     </tr>

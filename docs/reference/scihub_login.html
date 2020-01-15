@@ -169,8 +169,13 @@ or write this file, and to edit them from inside the GUI.</p>
 
 <span class='fu'>check_scihub_connection</span>()
 
-<span class='fu'>write_scihub_login</span>(<span class='no'>username</span>, <span class='no'>password</span>, <span class='kw'>apihub_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>check</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>append</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+<span class='fu'>write_scihub_login</span>(
+  <span class='no'>username</span>,
+  <span class='no'>password</span>,
+  <span class='kw'>apihub_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>check</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>append</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -212,6 +217,12 @@ FALSE elsewhere.</p>
 <p><code>check_scihub_connection</code> returns TRUE if internet connection
 is available and SciHub is accessible, FALSE otherwise.</p>
 <p><code>write_scihub_login</code> returns NULL.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Notice that new/recently updated SciHub credentials are recognised by API Hub
+with a delay of about one week (see <a href='https://scihub.copernicus.eu/twiki/do/view/SciHubWebPortal/APIHubDescription'>https://scihub.copernicus.eu/twiki/do/view/SciHubWebPortal/APIHubDescription</a> for details).</p>
+<p>For this reason, newly created credentials can not immediately be used by <code>sen2r</code>,
+and password edits on old credentials are not immediately recognised.</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
@@ -226,6 +237,7 @@ is available and SciHub is accessible, FALSE otherwise.</p>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
+      <li><a href="#details">Details</a></li>
       <li><a href="#note">Note</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>

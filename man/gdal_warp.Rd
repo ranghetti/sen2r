@@ -53,8 +53,8 @@ projection is never taken from \code{mask}.}
 \item{t_srs}{Target spatial reference set (character). The coordinate
 systems that can be passed are anything supported by \link{st_crs2}.}
 
-\item{r}{Resampling_method ("near"|"bilinear"|"cubic"|"cubicspline"|
-"lanczos"|"average"|"mode"|"max"|"min"|"med"|"q1"|"q3").}
+\item{r}{Resampling_method (\code{"near"}|\code{"bilinear"}|\code{"cubic"}|\code{"cubicspline"}|
+\code{"lanczos"}|\code{"average"}|\code{"mode"}|\code{"max"}|\code{"min"}|\code{"med"}|\code{"q1"}|`"q3"``).}
 
 \item{dstnodata}{Set nodata values for output bands (different values
 can be supplied for each band). If more than one value is supplied

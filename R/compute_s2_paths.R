@@ -163,6 +163,7 @@ compute_s2_paths <- function(pm,
     "masked" = if (output_req["masked"]) {pm$path_out} else {file.path(tmpdir,"masked")},
     "indices" = if (output_req["indices"]) {pm$path_indices} else {file.path(tmpdir,"indices")}
   )
+  paths <- sapply(paths, normalize_path, mustWork = FALSE)
   
   
   # Paths (additions for compatibility)
@@ -221,8 +222,9 @@ compute_s2_paths <- function(pm,
         full.names=TRUE
       )
     }, simplify = FALSE, USE.NAMES = TRUE),
-    "merged" = sapply(list_prods[list_prods != "SCL"], function(prod) {
-      list.files(
+    # "merged" = sapply(list_prods[list_prods != "SCL"], function(prod) {
+    "merged" = sapply(list_prods, function(prod) {
+        list.files(
         file.path(paths["merged"], if (pm$path_subdirs) {prod}),
         paste0("^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_\\_(",prod,")\\_([126]0)\\.?(",out_ext["merged"],")$"),
         full.names=TRUE

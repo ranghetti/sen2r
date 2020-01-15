@@ -600,7 +600,10 @@ check_sen2r_deps <- function() {
           align = "left",
           p(style="color:red;text-align:center;font-size:500%;",
             icon("times-circle")),
-          p("Sen2Cor needs to be linked to sen2r, or downloaded if missing."),
+          div(
+            style = "margin-bottom: 1em;",
+            p("Sen2Cor needs to be linked to sen2r, or downloaded if missing.")
+          ),
           radioButtons(
             "sen2cor_link_or_install", NULL,
             c("Install a new Sen2Cor environment" = "install",
@@ -614,8 +617,10 @@ check_sen2r_deps <- function() {
                 "in which installing it:"),
               div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                       shinyDirButton("path_newsen2cor_sel", "Select", "Specify directory in which installing Sen2Cor")),
-                  div(style="display:inline-block;vertical-align:top;width:180px;",
-                      textInput("path_newsen2cor_textin", NULL, ""))),
+                  div(style="display:inline-block;vertical-align:top;width:480px;",
+                      textInput("path_newsen2cor_textin", NULL, normalize_path(
+                        file.path(dirname(attr(binpaths(), "path")), "sen2cor"), mustWork = FALSE
+                      )))),
               div(style="height:20px;vertical-aling:top;",
                   htmlOutput("path_newsen2cor_errormess")),
               radioButtons(
@@ -629,11 +634,7 @@ check_sen2r_deps <- function() {
                 "it only works for SAFE products version >= 14.2 and",
                 "some problems were encountered running it on Windows;",
                 "it is recommended to use Sen2Cor 2.5.5."
-              ))),
-              hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-              div(style="text-align:right;",
-                  disabled(actionButton("install_sen2cor_button", strong("\u2000Download"), icon=icon("download"))),
-                  modalButton("\u2000Cancel", icon = icon("ban")))
+              )))
             )
           ),
           conditionalPanel(
@@ -643,15 +644,33 @@ check_sen2r_deps <- function() {
                 "in which Sen2Cor is currently installed:"),
               div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                       shinyDirButton("path_exisen2cor_sel", "Select", "Specify directory in which Sen2Cor is installed")),
-                  div(style="display:inline-block;vertical-align:top;width:180px;",
-                      textInput("path_exisen2cor_textin", NULL, ""))),
+                  div(style="display:inline-block;vertical-align:top;width:480px;",
+                      textInput("path_exisen2cor_textin", NULL, normalize_path(
+                        file.path(dirname(attr(binpaths(), "path")), "sen2cor"), mustWork = FALSE
+                      )))),
               div(style="height:20px;vertical-aling:top;",
-                  htmlOutput("path_exisen2cor_errormess")),
-              hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-              div(style="text-align:right;",
-                  disabled(actionButton("link_sen2cor_button", strong("\u2000Ok"), icon=icon("check"))),
-                  modalButton("\u2000Cancel", icon = icon("ban")))
+                  htmlOutput("path_exisen2cor_errormess"))
             )
+          ),
+          radioButtons(
+            "sen2cor_use_dem", "Use DEM for topographic correction?",
+            c("Yes (as done in ESA Hub Level-2 products)" = TRUE,
+              "No (default Sen2Cor setting)" = FALSE,
+              "Use existing choice (Sen2Cor reinstallation / link)" = NA),
+            selected = TRUE, width = "100%"
+          ),
+          hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+          conditionalPanel(
+            condition = "input.sen2cor_link_or_install == 'install'",
+            div(style="text-align:right;",
+                disabled(actionButton("install_sen2cor_button", strong("\u2000Download"), icon=icon("download"))),
+                modalButton("\u2000Cancel", icon = icon("ban")))
+          ),
+          conditionalPanel(
+            condition = "input.sen2cor_link_or_install == 'link'",
+            div(style="text-align:right;",
+                disabled(actionButton("link_sen2cor_button", strong("\u2000Ok"), icon=icon("check"))),
+                modalButton("\u2000Cancel", icon = icon("ban")))
           )
         )
       }
@@ -712,7 +731,7 @@ check_sen2r_deps <- function() {
     # build the modalDialog
     check_sen2cor_modal <- modalDialog(
       title = "Sen2Cor check",
-      size = "s",
+      size = "m",
       uiOutput("check_sen2cor_message"),
       easyClose = FALSE,
       footer = NULL
@@ -745,6 +764,7 @@ check_sen2r_deps <- function() {
           .install_sen2cor(
             input$path_newsen2cor_textin, 
             version = input$sen2cor_version, 
+            use_dem = as.logical(input$sen2cor_use_dem),
             interactive = FALSE
           ),
           error = function(e) {print(e)}

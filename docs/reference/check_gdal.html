@@ -155,8 +155,7 @@ the minimum required version (2.1.2)." />
 the minimum required version (2.1.2).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>check_gdal</span>(<span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>gdal_path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>full_scan</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>check_gdal</span>(<span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>gdal_path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>full_scan</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -184,9 +183,9 @@ is not in <code>gdal_path</code>.</p></td>
       <td><p>(optional) Logical: in Linux and MacOS, if <code>gdal_path</code> was
 not manually defined, GDAL is searched within the system path in case this
 argument is left to default value FALSE; instead, if TRUE, a full search is
-performed. In Windows, if the default OSGeo directory <code>C:\OSGeo4W64</code> exists,
-GDAL is searched there, instead in the main directory <code>C:\</code>; setting
-<code>full_scan</code> to TRUE, is is always searched in the whole <code>C:\</code>.
+performed. In Windows, if the default OSGeo directory <code>C:\\OSGeo4W64</code> exists,
+GDAL is searched there, instead in the main directory <code>C:\\</code>; setting
+<code>full_scan</code> to TRUE, is is always searched in the whole <code>C:\\</code>.
 This argument takes no effect if <code>gdal_path</code> was defined, since, in that case,
 a full search is always performed in <code>gdal_path</code>.</p></td>
     </tr>

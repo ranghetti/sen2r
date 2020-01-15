@@ -11,6 +11,8 @@ sen2cor(
   proc_dir = NA,
   tmpdir = NA,
   rmtmp = TRUE,
+  gipp = NULL,
+  use_dem = NA,
   tiles = NULL,
   parallel = FALSE,
   overwrite = FALSE,
@@ -48,6 +50,34 @@ If \code{tmpdir} is a non-empty folder, a random subdirectory will be used.}
 \item{rmtmp}{(optional) Logical: should temporary files be removed?
 (Default: TRUE)}
 
+\item{gipp}{(optional) Ground Image Processing Parameters (GIPP)
+to be passed to Sen2Cor (see \href{[set_gipp]}{set_gipp()} for further details).
+\emph{Note}: this argument takes effect only in the current execution of
+\code{sen2cor()} function; to permanently change GIPP values, use function
+\href{[set_gipp]}{\code{set_gipp()}}.}
+
+\item{use_dem}{(optional) Logical:
+if TRUE, Sen2Cor is set to use a Digital Elevation Model for topographic
+correction (reflecting what is done for Level-2A SAFE images provided by ESA Hub);
+if FALSE, it is set not to perform topographic correction (reflecting the
+current default Sen2Cor behaviour);
+if NA (default), the option set in the user's \code{L2A_GIPP.xml} Sen2Cor
+configuration file is respected (in case the user never edited it,
+the current default setting is not to perform topographic correction).
+
+\emph{Notes}:
+\enumerate{
+\item if TRUE, the path used to read or store DEM files is the \code{DEM_Directory}
+parameter set in the default sen2r GIPP XML file (the user can read it
+with the function \code{read_gipp("DEM_Directory")}), unless this was set to
+\code{"NONE"}, in which case a subdirectory \code{"srtm90"} of the default
+sen2r directory is used.
+\item Currently the default value is NA in order to grant backward
+compatibility. In a future release of sen2r, the default value will be
+set to TRUE, so to grant homogeneity between Level-2A products downloaded
+from ESA Hub and generated using Sen2Cor.
+}}
+
 \item{tiles}{Vector of Sentinel-2 Tile strings (5-length character) to be
 processed (default: process all the tiles found in the input L1C products).}
 
@@ -81,11 +111,21 @@ License: GPL 3.0
 }
 \examples{
 \dontrun{
-pos <- st_sfc(st_point(c(12.0, 44.8)), crs=st_crs(4326))
-time_window <- as.Date(c("2017-05-01","2017-07-30"))
-example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window)
-s2_download(example_s2_list, outdir=tempdir())
-sen2cor(names(example_s2_list)[1], l1c_dir=tempdir(), outdir=tempdir())
+# Download an L1C SAFE product
+example_s2_list <- s2_list(
+  spatial_extent = st_sfc(st_point(c(12.0, 44.8)), crs=st_crs(4326)), 
+  tile = "32TQQ", 
+  time_interval = as.Date(c("2017-05-01","2017-07-30"))
+)
+s2_download(example_s2_list, outdir = tempdir())
+
+# Correct it applying a topographic correction
+sen2cor(
+  names(example_s2_list)[1], 
+  l1c_dir = tempdir(), 
+  outdir = tempdir(),
+  use_dem = TRUE
+)
 }
 }
 \author{

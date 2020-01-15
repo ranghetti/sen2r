@@ -42,8 +42,8 @@ the json file in which the list of the ordered products was saved.
 }
 }
 \description{
-The function orders S2 products from Long Term Archive
-(https://scihub.copernicus.eu/userguide/LongTermArchive).
+The function orders S2 products from
+\href{https://scihub.copernicus.eu/userguide/LongTermArchive}{Long Term Archive}.
 }
 \note{
 License: GPL 3.0

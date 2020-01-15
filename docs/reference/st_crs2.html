@@ -36,9 +36,10 @@
 
 
 <meta property="og:title" content="Retrieve coordinate reference system from sf or sfc object — st_crs2" />
-<meta property="og:description" content="This function is a wrapper for sf::st_crs, unless accepting
-also UTM timezones (see details) and threating numeric character strings
-as integers." />
+<meta property="og:description" content="This function is a wrapper for sf::st_crs, unless
+threating numeric character strings as integers, and
+accepting also UTM timezones, paths of spatial files and paths of
+text files containing WKT like .prj (see details) ." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -152,9 +153,10 @@ as integers." />
     </div>
 
     <div class="ref-description">
-    <p>This function is a wrapper for <a href='https://rdrr.io/pkg/sf/man/st_crs.html'>sf::st_crs</a>, unless accepting
-also UTM timezones (see details) and threating numeric <code>character</code> strings
-as integers.</p>
+    <p>This function is a wrapper for <a href='https://rdrr.io/pkg/sf/man/st_crs.html'>sf::st_crs</a>, unless
+threating numeric <code>character</code> strings as integers, and
+accepting also UTM timezones, paths of spatial files and paths of
+text files containing WKT like .prj (see details) .</p>
     </div>
 
     <pre class="usage"><span class='fu'>st_crs2</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
@@ -164,7 +166,24 @@ as integers.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>numeric, character, or object of class sf or sfc</p></td>
+      <td><p>numeric, character, or object of class sf or sfc, being:</p><ul>
+<li><p>EPSG code: numeric (e.g. <code>32632</code>) or character (in the form
+<code>"32632"</code> or <code>"EPSG:32632"</code>);</p></li>
+<li><p>UTM zone: numeric (e.g. <code>32</code>, interpreted as 32 North) or character
+(e.g. <code>"32"</code> or <code>"32N"</code> for zone 32 North, <code>"32S"</code> for 32 South);</p></li>
+<li><p>WKT test: passed as character string or as path of a text file
+containing it (e.g. the path of a .prj file);</p></li>
+<li><p>PROJ.4 string, passed as character (e.g.
+<code>"+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs"</code>
+(<strong>NOTE</strong>: this representation is deprecated with PROJ &gt;= 6
+-- see http://rgdal.r-forge.r-project.org/articles/PROJ6_GDAL3.html --
+so a warning is returned using it, unless the string contains only
+the epsg code -- e.g. <code>"+init=epsg:32632"</code>, in which case the EPSG
+code is taken);</p></li>
+<li><p>path of a spatial file (managed by <a href='https://rdrr.io/pkg/sf/man/st_read.html'>sf::st_read</a> or <a href='https://rdrr.io/pkg/stars/man/read_stars.html'>stars::read_stars</a>),
+passed as character string of length 1;</p></li>
+<li><p>spatial file of class sf or sfc.</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>...</th>
@@ -174,13 +193,7 @@ as integers.</p>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>If <code>x</code> is 0 &lt; numeric &lt;= 60, return <code>crs</code> object for UTM timezone <code>x</code> N;
-if <code>x</code> is numeric &gt; 60, return <code>crs</code> object for SRID <code>x</code>;
-if <code>x</code> is character in the form <code>nn</code>, <code>nnN</code> or <code>nnS</code>, being <code>nn</code> a number 0 &lt; nn &lt;= 60,
-return <code>crs</code> object for UTM timezone <code>x</code> N or <code>x</code> S (N if not specified);
-if <code>x</code> is a different character, return <code>crs</code> object for proj4string <code>x</code>;
-if <code>wkt</code> is given, return <code>crs</code> object for well-known-text representation <code>wkt</code>;
-if <code>x</code> is of class <code>sf</code> or <code>sfc</code>, return its <code>crs</code> object.</p>
+    <p>An object of class crs of length 2.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>See <a href='https://rdrr.io/pkg/sf/man/st_crs.html'>sf::st_crs</a> for details.</p>
@@ -189,11 +202,14 @@ if <code>x</code> is of class <code>sf</code> or <code>sfc</code>, return its <c
     <p>License: GPL 3.0</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>st_crs2</span>(<span class='st'>"+init=epsg:32609"</span>)</div><div class='output co'>#&gt; Coordinate Reference System:
+    <pre class="examples"><div class='input'><span class='co'>## CRS from EPSG</span>
+<span class='fu'>st_crs2</span>(<span class='fl'>32609</span>)</div><div class='output co'>#&gt; Coordinate Reference System:
 #&gt;   EPSG: 32609 
-#&gt;   proj4string: "+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"</div><div class='input'><span class='fu'>st_crs2</span>(<span class='fl'>32609</span>)</div><div class='output co'>#&gt; Coordinate Reference System:
+#&gt;   proj4string: "+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"</div><div class='input'><span class='fu'>st_crs2</span>(<span class='st'>"EPSG:32609"</span>)</div><div class='output co'>#&gt; Coordinate Reference System:
 #&gt;   EPSG: 32609 
-#&gt;   proj4string: "+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"</div><div class='input'><span class='fu'>st_crs2</span>(<span class='fl'>9</span>)</div><div class='output co'>#&gt; Coordinate Reference System:
+#&gt;   proj4string: "+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"</div><div class='input'>
+<span class='co'>## CRS from UTM zone</span>
+<span class='fu'>st_crs2</span>(<span class='fl'>9</span>)</div><div class='output co'>#&gt; Coordinate Reference System:
 #&gt;   EPSG: 32609 
 #&gt;   proj4string: "+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"</div><div class='input'><span class='fu'>st_crs2</span>(<span class='st'>"09"</span>)</div><div class='output co'>#&gt; Coordinate Reference System:
 #&gt;   EPSG: 32609 
@@ -201,7 +217,45 @@ if <code>x</code> is of class <code>sf</code> or <code>sfc</code>, return its <c
 #&gt;   EPSG: 32609 
 #&gt;   proj4string: "+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"</div><div class='input'><span class='fu'>st_crs2</span>(<span class='st'>"09S"</span>)</div><div class='output co'>#&gt; Coordinate Reference System:
 #&gt;   EPSG: 32709 
-#&gt;   proj4string: "+proj=utm +zone=9 +south +datum=WGS84 +units=m +no_defs"</div></pre>
+#&gt;   proj4string: "+proj=utm +zone=9 +south +datum=WGS84 +units=m +no_defs"</div><div class='input'>
+<span class='co'>## CRS from WKT (string or path)</span>
+(<span class='no'>wkt_32n</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_as_text.html'>st_as_text</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_crs.html'>st_crs</a></span>(<span class='fl'>32609</span>)))</div><div class='output co'>#&gt; [1] "PROJCS[\"UTM Zone 9, Northern Hemisphere\",GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",-129],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",0],UNIT[\"Meter\",1]]"</div><div class='input'><span class='fu'>st_crs2</span>(<span class='no'>wkt_32n</span>)</div><div class='output co'>#&gt; Coordinate Reference System:
+#&gt;   EPSG: 32609 
+#&gt;   proj4string: "+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/writeLines.html'>writeLines</a></span>(<span class='no'>wkt_32n</span>, <span class='no'>wkt_32n_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>())
+<span class='fu'>st_crs2</span>(<span class='no'>wkt_32n_path</span>)</div><div class='output co'>#&gt; trying to read file: /tmp/RtmpVXWWdA/filec2fe515b0958</div><div class='output co'>#&gt; Coordinate Reference System:
+#&gt;   EPSG: 32609 
+#&gt;   proj4string: "+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"</div><div class='input'>
+<span class='co'>## CRS from spatial file path</span>
+<span class='no'>raster_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(
+  <span class='st'>"extdata/out/S2A2A_20170703_022_Barbellino_BOA_10.tif"</span>,
+  <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"sen2r"</span>
+)
+<span class='no'>vector_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(
+  <span class='st'>"extdata/vector/barbellino.geojson"</span>,
+  <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"sen2r"</span>
+)
+<span class='fu'>st_crs2</span>(<span class='no'>raster_path</span>)</div><div class='output co'>#&gt; Coordinate Reference System:
+#&gt;   EPSG: 32632 
+#&gt;   proj4string: "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs"</div><div class='input'><span class='fu'>st_crs2</span>(<span class='no'>vector_path</span>)</div><div class='output co'>#&gt; Coordinate Reference System:
+#&gt;   EPSG: 32632 
+#&gt;   proj4string: "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs"</div><div class='input'>
+<span class='co'>## CRS from spatial files</span>
+<span class='fu'>st_crs2</span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>raster_path</span>))</div><div class='output co'>#&gt; Coordinate Reference System:
+#&gt;   EPSG: 32632 
+#&gt;   proj4string: "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs"</div><div class='input'><span class='fu'>st_crs2</span>(<span class='kw pkg'>raster</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/raster/man/raster.html'>raster</a></span>(<span class='no'>raster_path</span>))</div><div class='output co'>#&gt; Coordinate Reference System:
+#&gt;   EPSG: 32632 
+#&gt;   proj4string: "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs"</div><div class='input'><span class='fu'>st_crs2</span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_read.html'>read_sf</a></span>(<span class='no'>vector_path</span>))</div><div class='output co'>#&gt; Coordinate Reference System:
+#&gt;   EPSG: 32632 
+#&gt;   proj4string: "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs"</div><div class='input'>
+<span class='co'># \donttest{</span>
+<span class='co'>## CRS from PROJ.4 string</span>
+<span class='co'># (avoid using this with PROJ &gt;= 6!)</span>
+<span class='fu'>st_crs2</span>(<span class='st'>"+init=epsg:32609"</span>) <span class='co'># this makes use of the EPSG code</span></div><div class='output co'>#&gt; Coordinate Reference System:
+#&gt;   EPSG: 32609 
+#&gt;   proj4string: "+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"</div><div class='input'><span class='fu'>st_crs2</span>(<span class='st'>"+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"</span>)</div><div class='output co'>#&gt; Coordinate Reference System:
+#&gt;   EPSG: 32609 
+#&gt;   proj4string: "+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"</div><div class='input'># }
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

@@ -1,6 +1,6 @@
 #' @title Order S2 products.
-#' @description The function orders S2 products from Long Term Archive
-#'  (https://scihub.copernicus.eu/userguide/LongTermArchive).
+#' @description The function orders S2 products from
+#'  [Long Term Archive](https://scihub.copernicus.eu/userguide/LongTermArchive).
 #' @param s2_prodlist Named character: list of the products to be ordered,
 #'  in the format `safelist` (see [safelist-class]).
 #'  Alternatively, it can be the path of a JSON file exported by a previous

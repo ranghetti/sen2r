@@ -128,13 +128,13 @@ not to delete; "l1c" to delete only Level-1C products.}
 \item{step_atmcorr}{(optional) Character vector to determine how to obtain
 Level-2A SAFE products:
 \itemize{
-\item "auto" (default) means that L2A is first
+\item \code{"auto"} (default) means that L2A is first
 searched on SciHub: if found, it is downloaded, if not, the
 corresponding Level-1C is downloaded and sen2cor is used to
 produce L2A;
-\item "scihub" means that Sen2Cor is always used from L1C products
+\item \code{"scihub"} means that Sen2Cor is always used from L1C products
 downloaded from SciHub;
-\item "l2a" means that they are downloaded if available on SciHub,
+\item \code{"l2a"} means that they are downloaded if available on SciHub,
 otherwise they are skipped (sen2cor is never used).
 }}
 
@@ -277,17 +277,17 @@ the default value - is supported).}
 resolution. default value (NA) means not to reproject.}
 
 \item{resampling}{(optional) Resampling method (one of the values supported
-by \code{gdal_translate}: "near" (default), "bilinear", "cubic",
-"cubicspline", "lanczos", "average" or "mode").}
+by \code{gdal_translate}: \code{"near"} (default), \code{"bilinear"}, \code{"cubic"},
+\code{"cubicspline"}, \code{"lanczos"}, \code{"average"} or \code{"mode"}).}
 
 \item{resampling_scl}{(optional) Resampling method for categorical products
-(for now, only SCL): one among "near" (default) and "mode".}
+(for now, only SCL): one among \code{"near"} (default) and \code{"mode"}.}
 
 \item{outformat}{(optional) Format of the output file (in a
-format recognised by GDAL). Default is "GTiff".}
+format recognised by GDAL). Default is \code{"GTiff"}.}
 
 \item{rgb_outformat}{(optional) Format of the output RGB products (in a
-format recognised by GDAL). Default is "GTiff".}
+format recognised by GDAL). Default is \code{"GTiff"}.}
 
 \item{index_datatype}{(optional) Numeric datatype of the output
 spectral indices (see \link{s2_calcindices}.}
@@ -296,9 +296,9 @@ spectral indices (see \link{s2_calcindices}.}
 output format, the compression indicated with this parameter is
 used (default is "DEFLATE").}
 
-\item{rgb_compression}{(optional) In the case GTiff is chosen as
+\item{rgb_compression}{(optional) In the case \code{GTiff} is chosen as
 output format for RGB products, the compression indicated
-with this parameter is used (default is "DEFLATE").
+with this parameter is used (default is \code{"DEFLATE"}).
 In the cases GTiff or JPEG are chosen as output format for RGB products,
 this parameter can also be a 1-100 integer value, which is interpreted
 as the compression level for a JPEG compression.}
@@ -348,7 +348,7 @@ products are put directly within them.}
 added for each product created. Thumbnails are JPEG or PNG georeferenced
 small images (width or height of 1024 pixels) with default colour palettes
 (for more details, see the help window in the GUI). They are placed in
-a subdirectory of the products names "thumbnails".
+a subdirectory of the products names \code{"thumbnails"}.
 If FALSE, they are not created.}
 
 \item{parallel}{(optional) Logical or integer: setting to TRUE, the processing
@@ -364,7 +364,7 @@ order used to execute the processing chain (this affects the speed
 of computation and the usage of system resources).
 Values can be one of the followings:
 \itemize{
-\item "4" or "by_groups" (default):
+\item \code{"4"} or \code{"by_groups"} (default):
 it provides a good compromise between processing speed and disk usage.
 Processing is done as follows:
 \enumerate{
@@ -379,7 +379,7 @@ $g$ is the number of dates divided by the number of CPU;
 R sessions (one core for each date).
 }
 }
-\item "2" or "by_date":
+\item \code{"2"} or \code{"by_date"}:
 this allows minimising the requirements of disk usage
 (in particular if SAFE archives are deleted after processing).
 It is similar to the default execution, but each group is composed
@@ -387,7 +387,7 @@ by a single date: so the disk space occupied by SAFE archives
 and temporary files is lower,
 but it is generally slower than the default one because
 parallel computation over dates for products' generation is not possible.
-\item "3" or "mixed":
+\item \code{"3"} or \code{"mixed"}:
 this allows maximising CPU usage and processing speed.
 The cycle on groups is ignored, and all the required SAFE are
 first of all downloaded and/or produced, and then dates are
@@ -395,7 +395,7 @@ processed in parallel.
 This mode is faster than the default mode, but it requires
 all SAFE archives to be downloaded and processed before performing
 subsequent steps, thus increasing disk space requirements.
-\item "1" or "by_step":
+\item \code{"1"} or \code{"by_step"}:
 this is the legacy mode, in which the cycle on groups is ignored
 as well as the parallel computation over dates.
 All SAFE archives are first downloaded/processed,

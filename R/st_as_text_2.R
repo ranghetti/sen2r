@@ -4,9 +4,9 @@
 #'  [rgdal::CRS] otherwise.
 #'  This has the advantage to perform precise transformations with PROJ >=3,
 #'  and to avoid conversion errors
-#'  (see https://rsbivand.github.io/ECS530_h19/ECS530_III.html).
+#'  (see [here](https://rsbivand.github.io/ECS530_h19/ECS530_III.html)).
 #'  This function will be deleted whenever `sf` will manage WKT2.
-#' @param x object of class sfg, sfc or crs
+#' @param x object of class `sfg`, `sfc` or `crs`
 #' @param pretty logical; if TRUE, print human-readable well-known-text
 #'  representation of a coordinate reference system
 #' @return Well-known Text representation of simple feature geometry or 
@@ -15,7 +15,7 @@
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #'
 #' @examples
-#' sen2r:::st_as_text_2(st_crs(32632))
+#' sen2r:::st_as_text_2(sf::st_crs(32632))
 
 st_as_text_2 <- function(x, pretty = FALSE) {
   if (all(

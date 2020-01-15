@@ -163,8 +163,14 @@ it is not recognised by <code>safe_getMetadata()</code>.</p>
 if it is a valid SAFE.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>safe_getMetadata</span>(<span class='no'>s2</span>, <span class='kw'>info</span> <span class='kw'>=</span> <span class='st'>"all"</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"default"</span>,
-  <span class='kw'>simplify</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>allow_oldnames</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+    <pre class="usage"><span class='fu'>safe_getMetadata</span>(
+  <span class='no'>s2</span>,
+  <span class='kw'>info</span> <span class='kw'>=</span> <span class='st'>"all"</span>,
+  <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"default"</span>,
+  <span class='kw'>simplify</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>allow_oldnames</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)
 
 <span class='fu'>rm_invalid_safe</span>(<span class='no'>s2</span>, <span class='kw'>allow_oldnames</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
@@ -200,12 +206,12 @@ followings):</p><ul>
 <li><p><code>"validname"</code> (TRUE or FALSE);</p></li>
 <li><p><code>"exists"</code> (TRUE or FALSE);</p></li>
 <li><p><code>"prod_type"</code> ('singlegranule' or 'product');</p></li>
-<li><p><code>"version"</code> ('old' or 'compact');</p></li>
+<li><p><code>"version"</code> (<code>'old'</code> or <code>'compact'</code>);</p></li>
 <li><p><code>"tiles"</code> (vector with the tiles ID available in the product);</p></li>
 <li><p><code>"utm"</code> (vector with the UTM zones used in the product);</p></li>
 <li><p><code>"xml_main"</code> (name of the main XML file with metadata);</p></li>
 <li><p><code>"xml_granules"</code> (names of the XML with granule metadata);</p></li>
-<li><p><code>"level"</code> ('1C' or '2A');</p></li>
+<li><p><code>"level"</code> (<code>'1C'</code> or <code>'2A'</code>);</p></li>
 <li><p><code>"creation_datetime"</code>, <code>"id_tile"</code>, <code>"mission"</code>, <code>"centre"</code>,
 <code>"file_class"</code>, <code>"id_orbit"</code>, <code>"orbit_number"</code>,
 <code>"sensing_datetime"</code>, <code>"id_baseline"</code>: metadata specific of

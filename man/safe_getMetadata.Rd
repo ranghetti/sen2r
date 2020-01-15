@@ -46,12 +46,12 @@ followings):
 \item \code{"validname"} (TRUE or FALSE);
 \item \code{"exists"} (TRUE or FALSE);
 \item \code{"prod_type"} ('singlegranule' or 'product');
-\item \code{"version"} ('old' or 'compact');
+\item \code{"version"} (\code{'old'} or \code{'compact'});
 \item \code{"tiles"} (vector with the tiles ID available in the product);
 \item \code{"utm"} (vector with the UTM zones used in the product);
 \item \code{"xml_main"} (name of the main XML file with metadata);
 \item \code{"xml_granules"} (names of the XML with granule metadata);
-\item \code{"level"} ('1C' or '2A');
+\item \code{"level"} (\code{'1C'} or \code{'2A'});
 \item \code{"creation_datetime"}, \code{"id_tile"}, \code{"mission"}, \code{"centre"},
 \code{"file_class"}, \code{"id_orbit"}, \code{"orbit_number"},
 \code{"sensing_datetime"}, \code{"id_baseline"}: metadata specific of

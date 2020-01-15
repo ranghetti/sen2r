@@ -48,6 +48,7 @@ if (test_sen2cor) {
       run_time <- system.time(
         sen2cor_out <- sen2cor(
           s2_l1c_prods[2], 
+          gipp = list(DEM_Directory = demdir <- tempfile(pattern="srtm90_")),
           outdir = safe_dir
         )
       )
@@ -107,6 +108,7 @@ if (test_sen2cor) {
         sen2cor_out <- sen2cor(
           s2_l1c_prods, 
           outdir = safe_dir,
+          use_dem = FALSE,
           parallel = TRUE,
           overwrite = TRUE
         )

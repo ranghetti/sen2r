@@ -44,6 +44,7 @@ reference:
       - '`install_sen2cor`'
       - '`install_aria2`'
       - '`check_gdal`'
+      - '`set_gipp`'
   - title: Accessory functions
     desc: ~
     contents:
