@@ -41,11 +41,18 @@
 #'  the current default setting is not to perform topographic correction).
 #'  
 #'  _Notes_: 
-#'  1. if TRUE, the path used to read or store DEM files is the `DEM_Directory` 
-#'      parameter set in the default sen2r GIPP XML file (the user can read it
-#'      with the function `read_gipp("DEM_Directory")`), unless this was set to
-#'      `"NONE"`, in which case a subdirectory `"srtm90"` of the default 
-#'      sen2r directory is used.
+#'  1. if TRUE, the path used to read or store DEM files 
+#'      and the online source used to download missing DEM tiles
+#'      are respectively the `DEM_Directory` and `DEM_Reference` parameters
+#'      set in the default sen2r GIPP XML file (the user can read them
+#'      with the function `read_gipp(c("DEM_Directory", "DEM_Reference"))`).
+#'      In case one or both these parameters were set to `"NONE"`, 
+#'      a subdirectory `"srtm90"` of the default sen2r directory is used as
+#'      DEM directory, and/or the [CGIAR SRTM 90m](http://srtm.csi.cgiar.org/) 
+#'      is set as online source.
+#'      To set another directory or reference, use argument `gipp` in the form
+#'      `gipp = list(DEM_Directory = tempdir(), DEM_Reference ="another_reference", ...)`
+#'      (replacing `tempdir()` with the desired path and specifying the online resource).
 #'  2. Currently the default value is NA in order to grant backward 
 #'      compatibility. In a future release of sen2r, the default value will be
 #'      set to TRUE, so to grant homogeneity between Level-2A products downloaded

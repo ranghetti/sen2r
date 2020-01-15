@@ -19,28 +19,13 @@ to be read.}
 \item{gipp_path}{Character path of the output GIPP XML file.
 If NA (default), the default sen2r GIPP path is used.}
 
-\item{gipp}{Ground Image Processing Parameters (GIPP).
-It is possible to specify both the path of an existing XML file
-or a list of parameters in the form \code{parameter_name = "value"}, where
-\code{parameter_name} is the name of the parameter as specified in the
-\code{L2A_GIPP.xml} file of the used Sen2Cor version (case insensitive), and
-\code{"value"} is the character value which the user wants to set
-(notice that, in the case the user wants to specify the value \code{NONE},
-both \code{"NONE"} and \code{NA} can be used, but not \code{NULL}, which has the effect
-to maintain the value specified in the XML file).
+\item{gipp}{(optional) Ground Image Processing Parameters (GIPP)
+(see \href{[set_gipp]}{set_gipp()} for further details).
 Elements whose name is missing in the XML file are skipped.}
 
-\item{use_dem}{Logical: if TRUE, a DEM is set for being used for topographic
-corection in the XML specified with argument \code{gipp_path};
-if FALSE, no DEM is set for being used;
-if NA (default), the existing option is maintained.
-Notice that, in case \code{use_dem = TRUE} and a DEM directory is already set
-in the XML file, no changes are performed;
-conversely; if no directories were specified, a subdirectory \code{"srtm90"}
-of the default sen2r directory is set.
-To set another directory, use argument \code{gipp} in the form
-\code{gipp = list(DEM_Directory = tempdir(), ...)} (replacing \code{tempdir()} with
-the desired path).}
+\item{use_dem}{Logical, determinig if a DEM should be set for being used
+for topographic correction in the XML specified with argument \code{gipp_path}
+(see \href{[sen2cor]}{sen2cor()} for further details).}
 }
 \value{
 \code{read_gipp()} returns a named list of GIPP with the required parameters

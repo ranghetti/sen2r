@@ -67,11 +67,18 @@ the current default setting is not to perform topographic correction).
 
 \emph{Notes}:
 \enumerate{
-\item if TRUE, the path used to read or store DEM files is the \code{DEM_Directory}
-parameter set in the default sen2r GIPP XML file (the user can read it
-with the function \code{read_gipp("DEM_Directory")}), unless this was set to
-\code{"NONE"}, in which case a subdirectory \code{"srtm90"} of the default
-sen2r directory is used.
+\item if TRUE, the path used to read or store DEM files
+and the online source used to download missing DEM tiles
+are respectively the \code{DEM_Directory} and \code{DEM_Reference} parameters
+set in the default sen2r GIPP XML file (the user can read them
+with the function \code{read_gipp(c("DEM_Directory", "DEM_Reference"))}).
+In case one or both these parameters were set to \code{"NONE"},
+a subdirectory \code{"srtm90"} of the default sen2r directory is used as
+DEM directory, and/or the \href{http://srtm.csi.cgiar.org/}{CGIAR SRTM 90m}
+is set as online source.
+To set another directory or reference, use argument \code{gipp} in the form
+\code{gipp = list(DEM_Directory = tempdir(), DEM_Reference ="another_reference", ...)}
+(replacing \code{tempdir()} with the desired path and specifying the online resource).
 \item Currently the default value is NA in order to grant backward
 compatibility. In a future release of sen2r, the default value will be
 set to TRUE, so to grant homogeneity between Level-2A products downloaded

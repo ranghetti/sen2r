@@ -238,11 +238,18 @@ if NA (default), the option set in the user's <code>L2A_GIPP.xml</code> Sen2Cor
 configuration file is respected (in case the user never edited it,
 the current default setting is not to perform topographic correction).</p>
 <p><em>Notes</em>:</p><ol>
-<li><p>if TRUE, the path used to read or store DEM files is the <code>DEM_Directory</code>
-parameter set in the default sen2r GIPP XML file (the user can read it
-with the function <code><a href='gipp.html'>read_gipp("DEM_Directory")</a></code>), unless this was set to
-<code>"NONE"</code>, in which case a subdirectory <code>"srtm90"</code> of the default
-sen2r directory is used.</p></li>
+<li><p>if TRUE, the path used to read or store DEM files
+and the online source used to download missing DEM tiles
+are respectively the <code>DEM_Directory</code> and <code>DEM_Reference</code> parameters
+set in the default sen2r GIPP XML file (the user can read them
+with the function <code><a href='gipp.html'>read_gipp(c("DEM_Directory", "DEM_Reference"))</a></code>).
+In case one or both these parameters were set to <code>"NONE"</code>,
+a subdirectory <code>"srtm90"</code> of the default sen2r directory is used as
+DEM directory, and/or the <a href='http://srtm.csi.cgiar.org/'>CGIAR SRTM 90m</a>
+is set as online source.
+To set another directory or reference, use argument <code>gipp</code> in the form
+<code>gipp = list(DEM_Directory = tempdir(), DEM_Reference ="another_reference", ...)</code>
+(replacing <code><a href='https://rdrr.io/r/base/tempfile.html'>tempdir()</a></code> with the desired path and specifying the online resource).</p></li>
 <li><p>Currently the default value is NA in order to grant backward
 compatibility. In a future release of sen2r, the default value will be
 set to TRUE, so to grant homogeneity between Level-2A products downloaded

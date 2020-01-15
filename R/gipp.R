@@ -141,31 +141,14 @@ read_gipp <- function(gipp_names, gipp_path = NA) {
 #' @name set_gipp
 #' @rdname gipp
 #' @description `set_gipp()` modifies values of a list of GIPP in an XML file.
-#' @param gipp Ground Image Processing Parameters (GIPP).
-#'  It is possible to specify both the path of an existing XML file 
-#'  or a list of parameters in the form `parameter_name = "value"`, where 
-#'  `parameter_name` is the name of the parameter as specified in the 
-#'  `L2A_GIPP.xml` file of the used Sen2Cor version (case insensitive), and
-#'  `"value"` is the character value which the user wants to set 
-#'  (notice that, in the case the user wants to specify the value `NONE`,
-#'  both `"NONE"` and `NA` can be used, but not `NULL`, which has the effect
-#'  to maintain the value specified in the XML file).
+#' @param gipp (optional) Ground Image Processing Parameters (GIPP)
+#'  (see [set_gipp()]([set_gipp]) for further details).
 #'  Elements whose name is missing in the XML file are skipped.
 #' @param gipp_path Character path of the output GIPP XML file.
 #'  If NA (default), the default sen2r GIPP path is used.
-#' @param use_dem Logical: if TRUE, a DEM is set for being used for topographic
-#'  correction in the XML specified with argument `gipp_path`;
-#'  if FALSE, no DEM is set for being used;
-#'  if NA (default), the existing option is maintained.
-#'  Notice that, in case 1. `use_dem = TRUE` and 2. DEM directory and reference 
-#'  are already set in the XML file, no changes are performed;
-#'  conversely, if no directory was specified, a subdirectory `"srtm90"` 
-#'  of the default sen2r directory is set (and eventually the
-#'  [CGIAR SRTM 90m](http://srtm.csi.cgiar.org/) is set as online source if no
-#'  reference was set).
-#'  To set another directory, use argument `gipp` in the form
-#'  `gipp = list(DEM_Directory = tempdir(), ...)` (replacing `tempdir()` with
-#'  the desired path).
+#' @param use_dem Logical, determinig if a DEM should be set for being used 
+#'  for topographic correction in the XML specified with argument `gipp_path`
+#'  (see [sen2cor()]([sen2cor]) for further details).
 #' @return `set_gipp()` and `reset_gipp()` return NULL
 #'  (functions are called for their side effects).
 #' @export
@@ -226,30 +209,17 @@ set_gipp <- function(
   
   # Edit DEM_Directory basing on use_dem
   if (!is.na(use_dem)) {
-    sel_line <- grep("<DEM_Directory>.+</DEM_Directory>", gipp_xml, ignore.case = TRUE)[1]
+    
+    # Set DEM_Directory  
+    sel_line_dir <- grep("<DEM_Directory>.+</DEM_Directory>", gipp_xml, ignore.case = TRUE)[1]
     if (use_dem == TRUE) {
       dem_dir_in <- gsub(
         paste0("^.*<DEM_Directory>(.+)</DEM_Directory>.*$"), "\\1", 
-        gipp_xml[sel_line],
+        gipp_xml[sel_line_dir],
         ignore.case = TRUE
       )
       if (dem_dir_in == "NONE") {
         dem_dir_in <- file.path(dirname(attr(binpaths, "path")), "srtm90")
-        # moreover, check DEM reference
-        sel_line_ref <- grep("<DEM_Reference>.+</DEM_Reference>", gipp_xml, ignore.case = TRUE)[1]
-        dem_ref_in <- gsub(
-          paste0("^.*<DEM_Reference>(.+)</DEM_Reference>.*$"), "\\1", 
-          gipp_xml[sel_line_ref],
-          ignore.case = TRUE
-        )
-        if (dem_ref_in == "NONE") {
-          gipp_xml[sel_line_ref] <- gsub(
-            paste0("(^.*<DEM_Reference>).+(</DEM_Reference>.*$)"),
-            "\\1http://data_public:GDdci@data.cgiar-csi.org/srtm/tiles/GeoTIFF/\\2", 
-            gipp_xml[sel_line_ref],
-            ignore.case = TRUE
-          )
-        }
       }
       dem_dir_out <- dem_dir_in
       dir.create(dem_dir_out, showWarnings = FALSE)
@@ -258,12 +228,34 @@ set_gipp <- function(
     } else {
       print_message(type = "error", "\"use_dem\" must be a logical value.")
     }
-    gipp_xml[sel_line] <- gsub(
+    gipp_xml[sel_line_dir] <- gsub(
       paste0("(^.*<DEM_Directory>).+(</DEM_Directory>.*$)"),
       paste0("\\1",dem_dir_out,"\\2"), 
-      gipp_xml[sel_line],
+      gipp_xml[sel_line_dir],
       ignore.case = TRUE
     )
+    
+    # Set DEM_Reference
+    sel_line_ref <- grep("<DEM_Reference>.+</DEM_Reference>", gipp_xml, ignore.case = TRUE)[1]
+    if (use_dem == TRUE) {
+      dem_ref_in <- gsub(
+        paste0("^.*<DEM_Reference>(.+)</DEM_Reference>.*$"), "\\1", 
+        gipp_xml[sel_line_ref],
+        ignore.case = TRUE
+      )
+      if (dem_ref_in == "NONE") {
+        dem_ref_in <- "http://data_public:GDdci@data.cgiar-csi.org/srtm/tiles/GeoTIFF/"
+      }
+      dem_ref_out <- dem_ref_in
+      dir.create(dem_ref_out, showWarnings = FALSE)
+      gipp_xml[sel_line_ref] <- gsub(
+        paste0("(^.*<DEM_Reference>).+(</DEM_Reference>.*$)"),
+        paste0("\\1",dem_ref_out,"\\2"), 
+        gipp_xml[sel_line_ref],
+        ignore.case = TRUE
+      )
+    }  
+    
   }
   
   writeLines(gipp_xml, gipp_path)
