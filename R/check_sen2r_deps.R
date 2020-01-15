@@ -67,7 +67,7 @@ check_sen2r_deps <- function() {
         )}
       )),
       span(style="display:inline-block;vertical-align:center;padding-top:5px;",
-           actionButton("check_gdal", "Check GDAL", width=200),
+           actionButton("where_check_gdal", "Check GDAL", width=200),
            "\u2000"),
       span(style="display:inline-block;vertical-align:center;",
            htmlOutput("check_gdal_icon")),
@@ -175,7 +175,8 @@ check_sen2r_deps <- function() {
             p(style="text-align:center;font-size:500%;color:red;",
               icon("times-circle")),
             p(HTML(
-              "GDAL needs to be installed. To do it:<ol>",
+              "GDAL needs to be installed or searched in a different directory.",
+              "To install it:<ol>",
               "<li>download the OSGeo4W installer using the button below;</li>",
               "<li>when the file will be automatically opened,",
               "give the administrator rules when required;</li>",
@@ -193,8 +194,8 @@ check_sen2r_deps <- function() {
           div(
             p(style="text-align:center;font-size:500%;color:red;",
               icon("times-circle")),
-            p("GDAL needs to be installed.",
-              "To do it, install the package \"python-gdal\",",
+            p("GDAL needs to be installed or searched in a different directory.",
+              "To install it, install the package \"python-gdal\",",
               "then repeat this check."),
             hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
             div(style="text-align:right;",
@@ -225,8 +226,70 @@ check_sen2r_deps <- function() {
     })
     
     
+    # ask where searching GDAL before checking
+    observeEvent(input$where_check_gdal, {
+      showModal(modalDialog(
+        title = "Check GDAL",
+        size = "s",
+        radioButtons(
+          "path_gdal_isauto", NULL,
+          choices = c("Search GDAL in a default path" = TRUE,
+                      "Specify where GDAL should be searched" = FALSE),
+          selected = TRUE, width = "100%"
+        ),
+        conditionalPanel(
+          condition = "input.path_gdal_isauto == 'FALSE'",
+          div(
+            p("Specify the path:"),
+            div(div(style="display:inline-block;vertical-align:top;width:50pt;",
+                    shinyDirButton("path_gdalman_sel", "Select", "Specify directory in which GDAL should be searched")),
+                div(style="display:inline-block;vertical-align:top;width:180px;",
+                    textInput("path_gdalman_textin", NULL, ""))),
+            div(style="height:20px;vertical-aling:top;",
+                htmlOutput("path_gdalman_errormess"))
+          )
+        ),
+        easyClose = FALSE,
+        footer = div(
+          disabled(actionButton("check_gdal_button", strong("\u2000Check"), icon=icon("check"))),
+          modalButton("\u2000Cancel", icon = icon("ban"))
+        )
+      ))
+    })
+    
+    # check the gdal path
+    # observeEvent(input$path_gdalman_textin, {
+    #   path_gdalman_errormess <- path_check(
+    #     input$path_gdalman_textin,
+    #     mustbe_empty = FALSE, 
+    #     mustbe_writable = FALSE
+    #   )
+    #   output$path_gdalman_errormess <- path_gdalman_errormess
+    # })
+    observeEvent(c(input$path_gdalman_textin, input$path_gdal_isauto), {
+      path_gdalman_errormess <- path_check(
+        input$path_gdalman_textin,
+        mustbe_empty = FALSE, 
+        mustbe_writable = FALSE
+      )
+      output$path_gdalman_errormess <- path_gdalman_errormess
+      if (any(
+        input$path_gdal_isauto == TRUE, 
+        TRUE %in% attr(path_gdalman_errormess, "isvalid")
+      )) {
+        enable("check_gdal_button")
+      } else {
+        disable("check_gdal_button")
+      }
+    })
+    shinyDirChoose(input, "path_gdalman_sel", roots = volumes)
+    observeEvent(input$path_gdalman_sel, {
+      path_gdalman_string <- parseDirPath(volumes, input$path_gdalman_sel)
+      updateTextInput(session, "path_gdalman_textin", value = path_gdalman_string)
+    })
+
     # do the check when button is pressed
-    observeEvent(input$check_gdal, {
+    observeEvent(input$check_gdal_button, {
       
       # reset check value
       rv$check_gdal_isvalid <- NA # FIXME not working
@@ -246,7 +309,14 @@ check_sen2r_deps <- function() {
       # do the check
       withCallingHandlers({
         shinyjs::html("check_gdal_outmessages", "")
-        rv$check_gdal_isvalid <- check_gdal(abort = FALSE, force = TRUE)
+        rv$check_gdal_isvalid <- check_gdal(
+          gdal_path = if (input$path_gdalman_textin == "") {
+            NULL
+          } else {
+            input$path_gdalman_textin
+          },
+          abort = FALSE, force = TRUE
+        )
       },
       message = function(m) {
         shinyjs::html(id = "check_gdal_outmessages", html = m$message, add = TRUE)
