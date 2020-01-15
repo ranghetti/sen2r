@@ -23,13 +23,13 @@ link_sen2cor(sen2cor_dir, gipp = NULL, use_dem = NA)
 '2.5.5' - default - and '2.8.0').}
 
 \item{gipp}{(optional) Ground Image Processing Parameters (GIPP)
-to be passed to Sen2Cor (see \href{[set_gipp]}{set_gipp()} for further details).
+to be passed to Sen2Cor (see \code{\link[=set_gipp]{set_gipp()}} for further details).
 Default behaviour is to maintain default values (with the exception of
-parameter \code{DEM_Directory}, whih is managed by argument \code{use_dem}).}
+parameter \code{DEM_Directory}, which is managed by argument \code{use_dem}).}
 
 \item{use_dem}{(optional) Logical, determining if Sen2Cor has to be set
 to use a Digital Elevation Model for topographic correction (see
-\href{[sen2cor]}{sen2cor()} for further details).}
+\code{\link[=sen2cor]{sen2cor()}} for further details).}
 
 \item{force}{(optional) Logical: if TRUE, install even if it is already
 installed (default is FALSE).}

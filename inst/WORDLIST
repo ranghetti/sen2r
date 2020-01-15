@@ -9,6 +9,7 @@ builtin
 cairo
 calc
 calcindices
+CGIAR
 CNR
 com
 cpt
@@ -18,6 +19,8 @@ CRS
 dat
 datatype
 db
+dem
+DEM
 dialog
 dialogs
 difftime
@@ -130,6 +133,7 @@ singleband
 singlecore
 singlegranule
 sp
+SRTM
 st
 stackoverflow
 standalone

@@ -5,7 +5,7 @@
 #' @param gipp_sen2r_path Character path of the output GIPP XML file.
 #'  By default it is equal to NA (meaning the default sen2r GIPP path).
 #' @param force Logical: if TRUE, the file is copied in any case (this is used
-#'  by `reset_gipp()`); if FALSE (default), only if it does not yet exist.
+#'  by [reset_gipp()]); if FALSE (default), only if it does not yet exist.
 #' @param dem_warning TEMPORARY ARGUMENT Logical: if TRUE, a warning about
 #'  the fact that DEM_Directory XML parameter was not overwritten is shown
 #'  (default is FALSE).
@@ -97,14 +97,14 @@ gipp_init <- function(gipp_sen2r_path = NA, force = FALSE, dem_warning = FALSE) 
 #' @title Manage GIPP parameters for Sen2Cor
 #' @name read_gipp
 #' @rdname gipp
-#' @description `read_gipp()` reads Ground Image Processing Parameters (GIPP) 
+#' @description [read_gipp()] reads Ground Image Processing Parameters (GIPP) 
 #'  from an XML file.
 #' @param gipp_names Character vector with the names of the parameters 
 #'  to be read.
 #' @param gipp_path Character path of the GIPP XML file to be read 
-#'  (`read_gipp()`) or written (`set_gipp()` and `reset_gipp()`).
+#'  ([read_gipp()]) or written ([set_gipp()] and [reset_gipp()]).
 #'  If NA (default), the default sen2r GIPP path is used.
-#' @return `read_gipp()` returns a named list of GIPP with the required parameters
+#' @return [read_gipp()] returns a named list of GIPP with the required parameters
 #'  (values not found in the XML are skipped).
 #' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
@@ -140,16 +140,16 @@ read_gipp <- function(gipp_names, gipp_path = NA) {
 
 #' @name set_gipp
 #' @rdname gipp
-#' @description `set_gipp()` modifies values of a list of GIPP in an XML file.
+#' @description [set_gipp()] modifies values of a list of GIPP in an XML file.
 #' @param gipp (optional) Ground Image Processing Parameters (GIPP)
-#'  (see [set_gipp()]([set_gipp]) for further details).
+#'  (see [set_gipp()] for further details).
 #'  Elements whose name is missing in the XML file are skipped.
 #' @param gipp_path Character path of the output GIPP XML file.
 #'  If NA (default), the default sen2r GIPP path is used.
-#' @param use_dem Logical, determinig if a DEM should be set for being used 
+#' @param use_dem Logical, determining if a DEM should be set for being used 
 #'  for topographic correction in the XML specified with argument `gipp_path`
-#'  (see [sen2cor()]([sen2cor]) for further details).
-#' @return `set_gipp()` and `reset_gipp()` return NULL
+#'  (see [sen2cor()] for further details).
+#' @return [set_gipp()] and [reset_gipp()] return NULL
 #'  (functions are called for their side effects).
 #' @export
 #' @examples
@@ -266,7 +266,7 @@ set_gipp <- function(
 
 #' @name reset_gipp
 #' @rdname gipp
-#' @description `reset_gipp()` restores default GIPP values (using values
+#' @description [reset_gipp()] restores default GIPP values (using values
 #'  set in the `L2A_GIPP.xml` default Sen2Cor file).
 #' @export
 reset_gipp <- function(gipp_path = NA) {

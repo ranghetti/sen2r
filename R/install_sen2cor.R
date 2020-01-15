@@ -6,12 +6,12 @@
 #' @param version (optional) Character: Sen2Cor version (one among
 #'  '2.5.5' - default - and '2.8.0').
 #' @param gipp (optional) Ground Image Processing Parameters (GIPP)
-#'  to be passed to Sen2Cor (see [set_gipp()]([set_gipp]) for further details).
+#'  to be passed to Sen2Cor (see [set_gipp()] for further details).
 #'  Default behaviour is to maintain default values (with the exception of
-#'  parameter `DEM_Directory`, whih is managed by argument `use_dem`).
+#'  parameter `DEM_Directory`, which is managed by argument `use_dem`).
 #' @param use_dem (optional) Logical, determining if Sen2Cor has to be set 
 #'  to use a Digital Elevation Model for topographic correction (see
-#'  [sen2cor()]([sen2cor]) for further details).
+#'  [sen2cor()] for further details).
 #' @param force (optional) Logical: if TRUE, install even if it is already
 #'  installed (default is FALSE).
 #' @return NULL (the function is called for its side effects)

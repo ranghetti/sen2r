@@ -51,10 +51,10 @@ If \code{tmpdir} is a non-empty folder, a random subdirectory will be used.}
 (Default: TRUE)}
 
 \item{gipp}{(optional) Ground Image Processing Parameters (GIPP)
-to be passed to Sen2Cor (see \href{[set_gipp]}{set_gipp()} for further details).
+to be passed to Sen2Cor (see \code{\link[=set_gipp]{set_gipp()}} for further details).
 \emph{Note}: this argument takes effect only in the current execution of
-\code{sen2cor()} function; to permanently change GIPP values, use function
-\href{[set_gipp]}{\code{set_gipp()}}.}
+\code{\link[=sen2cor]{sen2cor()}} function; to permanently change GIPP values, use function
+\code{\link[=set_gipp]{set_gipp()}}.}
 
 \item{use_dem}{(optional) Logical:
 if TRUE, Sen2Cor is set to use a Digital Elevation Model for topographic

@@ -27,10 +27,10 @@
 #' @param rmtmp (optional) Logical: should temporary files be removed?
 #'  (Default: TRUE)
 #' @param gipp (optional) Ground Image Processing Parameters (GIPP)
-#'  to be passed to Sen2Cor (see [set_gipp()]([set_gipp]) for further details).
+#'  to be passed to Sen2Cor (see [set_gipp()] for further details).
 #'  _Note_: this argument takes effect only in the current execution of 
-#'  `sen2cor()` function; to permanently change GIPP values, use function
-#'  [`set_gipp()`]([set_gipp]).
+#'  [sen2cor()] function; to permanently change GIPP values, use function
+#'  [set_gipp()].
 #' @param use_dem (optional) Logical: 
 #'  if TRUE, Sen2Cor is set to use a Digital Elevation Model for topographic 
 #'  correction (reflecting what is done for Level-2A SAFE images provided by ESA Hub);

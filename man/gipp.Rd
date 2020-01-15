@@ -20,27 +20,27 @@ to be read.}
 If NA (default), the default sen2r GIPP path is used.}
 
 \item{gipp}{(optional) Ground Image Processing Parameters (GIPP)
-(see \href{[set_gipp]}{set_gipp()} for further details).
+(see \code{\link[=set_gipp]{set_gipp()}} for further details).
 Elements whose name is missing in the XML file are skipped.}
 
-\item{use_dem}{Logical, determinig if a DEM should be set for being used
+\item{use_dem}{Logical, determining if a DEM should be set for being used
 for topographic correction in the XML specified with argument \code{gipp_path}
-(see \href{[sen2cor]}{sen2cor()} for further details).}
+(see \code{\link[=sen2cor]{sen2cor()}} for further details).}
 }
 \value{
-\code{read_gipp()} returns a named list of GIPP with the required parameters
+\code{\link[=read_gipp]{read_gipp()}} returns a named list of GIPP with the required parameters
 (values not found in the XML are skipped).
 
-\code{set_gipp()} and \code{reset_gipp()} return NULL
+\code{\link[=set_gipp]{set_gipp()}} and \code{\link[=reset_gipp]{reset_gipp()}} return NULL
 (functions are called for their side effects).
 }
 \description{
-\code{read_gipp()} reads Ground Image Processing Parameters (GIPP)
+\code{\link[=read_gipp]{read_gipp()}} reads Ground Image Processing Parameters (GIPP)
 from an XML file.
 
-\code{set_gipp()} modifies values of a list of GIPP in an XML file.
+\code{\link[=set_gipp]{set_gipp()}} modifies values of a list of GIPP in an XML file.
 
-\code{reset_gipp()} restores default GIPP values (using values
+\code{\link[=reset_gipp]{reset_gipp()}} restores default GIPP values (using values
 set in the \code{L2A_GIPP.xml} default Sen2Cor file).
 }
 \note{
