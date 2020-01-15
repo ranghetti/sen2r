@@ -12,6 +12,7 @@ sen2cor(
   tmpdir = NA,
   rmtmp = TRUE,
   gipp = NULL,
+  use_dem = NA,
   tiles = NULL,
   parallel = FALSE,
   overwrite = FALSE,
@@ -50,18 +51,32 @@ If \code{tmpdir} is a non-empty folder, a random subdirectory will be used.}
 (Default: TRUE)}
 
 \item{gipp}{(optional) Ground Image Processing Parameters (GIPP)
-to be passed to Sen2Cor.
-It is possible to specify both the path of an existing XML file
-or a list of parameters in the form \code{parameter_name = "value"}, where
-\code{parameter_name} is the name of the parameter as specified in the
-\code{L2A_GIPP.xml} file of the used Sen2Cor version (case insensitive), and
-\code{"value"} is the character value which the user wants to set
-(notice that, in the case the user wants to specify the value \code{NONE},
-both \code{"NONE"} and \code{NA} can be used, but not \code{NULL}, which has the effect
-to maintain the value specified in the XML file).
+to be passed to Sen2Cor (see \href{[set_gipp]}{set_gipp()} for further details).
 \emph{Note}: this argument takes effect only in the current execution of
 \code{sen2cor()} function; to permanently change GIPP values, use function
 \href{[set_gipp]}{\code{set_gipp()}}.}
+
+\item{use_dem}{(optional) Logical:
+if TRUE, Sen2Cor is set to use a Digital Elevation Model for topographic
+correction (reflecting what is done for Level-2A SAFE images provided by ESA Hub);
+if FALSE, it is set not to perform topographic correction (reflecting the
+current default Sen2Cor behaviour);
+if NA (default), the option set in the user's \code{L2A_GIPP.xml} Sen2Cor
+configuration file is respected (in case the user never edited it,
+the current default setting is not to perform topographic correction).
+
+\emph{Notes}:
+\enumerate{
+\item if TRUE, the path used to read or store DEM files is the \code{DEM_Directory}
+parameter set in the default sen2r GIPP XML file (the user can read it
+with the function \code{read_gipp("DEM_Directory")}), unless this was set to
+\code{"NONE"}, in which case a subdirectory \code{"srtm90"} of the default
+sen2r directory is used.
+\item Currently the default value is NA in order to grant backward
+compatibility. In a future release of sen2r, the default value will be
+set to TRUE, so to grant homogeneity between Level-2A products downloaded
+from ESA Hub and generated using Sen2Cor.
+}}
 
 \item{tiles}{Vector of Sentinel-2 Tile strings (5-length character) to be
 processed (default: process all the tiles found in the input L1C products).}

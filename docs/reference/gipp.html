@@ -161,11 +161,11 @@ from an XML file.</p>
 set in the <code>L2A_GIPP.xml</code> default Sen2Cor file).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>read_gipp</span>(<span class='no'>gipp_names</span>, <span class='kw'>gipp_path_in</span> <span class='kw'>=</span> <span class='fl'>NA</span>)
+    <pre class="usage"><span class='fu'>read_gipp</span>(<span class='no'>gipp_names</span>, <span class='kw'>gipp_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>)
 
-<span class='fu'>set_gipp</span>(<span class='no'>gipp</span>, <span class='kw'>gipp_path_in</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>gipp_path_out</span> <span class='kw'>=</span> <span class='no'>gipp_path_in</span>)
+<span class='fu'>set_gipp</span>(<span class='kw'>gipp</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>gipp_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>use_dem</span> <span class='kw'>=</span> <span class='fl'>NA</span>)
 
-<span class='fu'>reset_gipp</span>(<span class='kw'>gipp_path_out</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+<span class='fu'>reset_gipp</span>(<span class='kw'>gipp_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -176,14 +176,15 @@ set in the <code>L2A_GIPP.xml</code> default Sen2Cor file).</p>
 to be read.</p></td>
     </tr>
     <tr>
-      <th>gipp_path_in</th>
-      <td><p>Character path of the GIPP XML file to be read.
+      <th>gipp_path</th>
+      <td><p>Character path of the output GIPP XML file.
 If NA (default), the default sen2r GIPP path is used.</p></td>
     </tr>
     <tr>
       <th>gipp</th>
-      <td><p>List of Ground Image Processing Parameters (GIPP),
-in the form <code>parameter_name = "value"</code>, where
+      <td><p>Ground Image Processing Parameters (GIPP).
+It is possible to specify both the path of an existing XML file
+or a list of parameters in the form <code>parameter_name = "value"</code>, where
 <code>parameter_name</code> is the name of the parameter as specified in the
 <code>L2A_GIPP.xml</code> file of the used Sen2Cor version (case insensitive), and
 <code>"value"</code> is the character value which the user wants to set
@@ -193,11 +194,18 @@ to maintain the value specified in the XML file).
 Elements whose name is missing in the XML file are skipped.</p></td>
     </tr>
     <tr>
-      <th>gipp_path_out</th>
-      <td><p>Character path of the output GIPP XML file.
-By default it is equal to <code>gipp_path_in</code> in function <code>set_gipp()</code>
-(edited values are overwritten) and to NA (meaning the default sen2r GIPP
-path) in <code>reset_gipp()</code>.</p></td>
+      <th>use_dem</th>
+      <td><p>Logical: if TRUE, a DEM is set for being used for topographic
+corection in the XML specified with argument <code>gipp_path</code>;
+if FALSE, no DEM is set for being used;
+if NA (default), the existing option is maintained.
+Notice that, in case <code>use_dem = TRUE</code> and a DEM directory is already set
+in the XML file, no changes are performed;
+conversely; if no directories were specified, a subdirectory <code>"srtm90"</code>
+of the default sen2r directory is set.
+To set another directory, use argument <code>gipp</code> in the form
+<code>gipp = list(DEM_Directory = tempdir(), ...)</code> (replacing <code><a href='https://rdrr.io/r/base/tempfile.html'>tempdir()</a></code> with
+the desired path).</p></td>
     </tr>
     </table>
 
@@ -218,25 +226,27 @@ path) in <code>reset_gipp()</code>.</p></td>
 #&gt; [1] "/home/lranghetti/.sen2r/srtm90"
 #&gt; 
 #&gt; $dem_reference
-#&gt; [1] "http://data_public:GDdci@data.cgiar-csi.org/srtm/tiles/GeoTIFF/"
+#&gt; [1] "NONE"
 #&gt; </div><div class='input'><span class='co'># Edit one value and save the output as temporary file</span>
-<span class='fu'>set_gipp</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>DEM_Directory</span> <span class='kw'>=</span> <span class='fl'>NA</span>), <span class='kw'>gipp_path_out</span> <span class='kw'>=</span> <span class='no'>gipp_temp</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>())
+<span class='fu'>set_gipp</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>DEM_Directory</span> <span class='kw'>=</span> <span class='fl'>NA</span>), <span class='kw'>gipp_path</span> <span class='kw'>=</span> <span class='no'>gipp_temp</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>())
 <span class='co'># Read the parameters in the created temporary files</span>
-<span class='fu'>read_gipp</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"DEM_Directory"</span>, <span class='st'>"DEM_Reference"</span>), <span class='kw'>gipp_path_in</span> <span class='kw'>=</span> <span class='no'>gipp_temp</span>)</div><div class='output co'>#&gt; $DEM_Directory
+<span class='fu'>read_gipp</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"DEM_Directory"</span>, <span class='st'>"DEM_Reference"</span>), <span class='kw'>gipp_path</span> <span class='kw'>=</span> <span class='no'>gipp_temp</span>)</div><div class='output co'>#&gt; $DEM_Directory
 #&gt; [1] "NONE"
 #&gt; 
 #&gt; $DEM_Reference
-#&gt; [1] "http://data_public:GDdci@data.cgiar-csi.org/srtm/tiles/GeoTIFF/"
+#&gt; [1] "NONE"
 #&gt; </div><div class='input'><span class='co'># Read the original (not edited) XML file</span>
 <span class='fu'>read_gipp</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"DEM_Directory"</span>, <span class='st'>"DEM_Reference"</span>))</div><div class='output co'>#&gt; $DEM_Directory
 #&gt; [1] "/home/lranghetti/.sen2r/srtm90"
 #&gt; 
 #&gt; $DEM_Reference
-#&gt; [1] "http://data_public:GDdci@data.cgiar-csi.org/srtm/tiles/GeoTIFF/"
+#&gt; [1] "NONE"
 #&gt; </div><div class='input'><span class='co'># Reset to default Sen2Cor GIPP values</span>
-<span class='fu'>reset_gipp</span>(<span class='kw'>gipp_path_out</span> <span class='kw'>=</span> <span class='no'>gipp_temp</span>)
-<span class='co'># Read again values</span>
-<span class='fu'>read_gipp</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"DEM_Directory"</span>, <span class='st'>"DEM_Reference"</span>), <span class='kw'>gipp_path_in</span> <span class='kw'>=</span> <span class='no'>gipp_temp</span>)</div><div class='output co'>#&gt; $DEM_Directory
+<span class='fu'>reset_gipp</span>(<span class='kw'>gipp_path</span> <span class='kw'>=</span> <span class='no'>gipp_temp</span>)</div><div class='output co'>#&gt; <span class='message'>Default Sen2Cor parameters were written in file /home/lranghetti/.sen2r/sen2r_L2A_GIPP.xml, and will be used with sen2cor() and sen2r() unless different parameters will be specified.</span>
+#&gt; <span class='message'>IMPORTANT NOTE: for backward compatibility, the parameter "DEM_Directory" was maitained to its default value. This does not grant homogeneity between Level-2A SAFE products generated locally with Sen2Cor and downloaded from ESA Hub (which make use of DEM for topographic correction).To grant it, activate topographic correction using:</span>
+#&gt; <span class='message'> &gt; set_gipp(use_dem = TRUE)</span>
+#&gt; <span class='message'>In a future sen2r release, this will be the default Sen2Cor behaviour.</span></div><div class='input'><span class='co'># Read again values</span>
+<span class='fu'>read_gipp</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"DEM_Directory"</span>, <span class='st'>"DEM_Reference"</span>), <span class='kw'>gipp_path</span> <span class='kw'>=</span> <span class='no'>gipp_temp</span>)</div><div class='output co'>#&gt; $DEM_Directory
 #&gt; [1] "NONE"
 #&gt; 
 #&gt; $DEM_Reference

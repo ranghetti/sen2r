@@ -27,18 +27,29 @@
 #' @param rmtmp (optional) Logical: should temporary files be removed?
 #'  (Default: TRUE)
 #' @param gipp (optional) Ground Image Processing Parameters (GIPP)
-#'  to be passed to Sen2Cor.
-#'  It is possible to specify both the path of an existing XML file 
-#'  or a list of parameters in the form `parameter_name = "value"`, where 
-#'  `parameter_name` is the name of the parameter as specified in the 
-#'  `L2A_GIPP.xml` file of the used Sen2Cor version (case insensitive), and
-#'  `"value"` is the character value which the user wants to set 
-#'  (notice that, in the case the user wants to specify the value `NONE`,
-#'  both `"NONE"` and `NA` can be used, but not `NULL`, which has the effect
-#'  to maintain the value specified in the XML file).
+#'  to be passed to Sen2Cor (see [set_gipp()]([set_gipp]) for further details).
 #'  _Note_: this argument takes effect only in the current execution of 
 #'  `sen2cor()` function; to permanently change GIPP values, use function
 #'  [`set_gipp()`]([set_gipp]).
+#' @param use_dem (optional) Logical: 
+#'  if TRUE, Sen2Cor is set to use a Digital Elevation Model for topographic 
+#'  correction (reflecting what is done for Level-2A SAFE images provided by ESA Hub);
+#'  if FALSE, it is set not to perform topographic correction (reflecting the 
+#'  current default Sen2Cor behaviour);
+#'  if NA (default), the option set in the user's `L2A_GIPP.xml` Sen2Cor
+#'  configuration file is respected (in case the user never edited it,
+#'  the current default setting is not to perform topographic correction).
+#'  
+#'  _Notes_: 
+#'  1. if TRUE, the path used to read or store DEM files is the `DEM_Directory` 
+#'      parameter set in the default sen2r GIPP XML file (the user can read it
+#'      with the function `read_gipp("DEM_Directory")`), unless this was set to
+#'      `"NONE"`, in which case a subdirectory `"srtm90"` of the default 
+#'      sen2r directory is used.
+#'  2. Currently the default value is NA in order to grant backward 
+#'      compatibility. In a future release of sen2r, the default value will be
+#'      set to TRUE, so to grant homogeneity between Level-2A products downloaded
+#'      from ESA Hub and generated using Sen2Cor.
 #' @param tiles Vector of Sentinel-2 Tile strings (5-length character) to be
 #'  processed (default: process all the tiles found in the input L1C products).
 #' @param parallel (optional) Logical: if TRUE, Sen2Cor instances are launched
@@ -90,6 +101,7 @@ sen2cor <- function(
   tmpdir = NA, 
   rmtmp = TRUE,
   gipp = NULL,
+  use_dem = NA,
   tiles = NULL, 
   parallel = FALSE, 
   overwrite = FALSE,
@@ -106,27 +118,9 @@ sen2cor <- function(
     warning = stop
   )
   
-  # Read the gipp argument
-  if (length(nn(gipp)) == 0) {
-    # 1. if it is NULL or list(), use the default user sen2r_L2A_GIPP.xml
-    # copy L2A_GIPP.xml within .sen2r if missing
-    gipp_init(dem_warning = TRUE) # remove dem_warning in future!
-    gipp_sen2r_path <- normalize_path(
-      file.path(dirname(attr(binpaths, "path")), "sen2r_L2A_GIPP.xml")
-    )
-  } else if (is.character(gipp)) {
-    # 2. if it is a character, interpret as path and use the specified XML
-    gipp_sen2r_path <- normalize_path(gipp, mustWork = TRUE)
-  } else if (is.list(gipp)) {
-    # 3. if some parameters were manually specified, use a temporary copy of
-    # the default user sen2r_L2A_GIPP.xml and edit them by consequence
-    # copy L2A_GIPP.xml within .sen2r if missing
-    gipp_init(
-      dem_warning = length(grep("DEM_Directory", names(gipp), ignore.case = TRUE)) == 0
-    ) # remove dem_warning in future!
-    gipp_sen2r_path <- tempfile(pattern = "L2A_GIPP_", fileext = ".xml")
-    set_gipp(gipp = gipp, gipp_path_out = gipp_sen2r_path)
-  }
+  # Use a copy of the default GIPP XML, setting parameters properly
+  gipp_curr_path <- tempfile(pattern = "L2A_GIPP_", fileext = ".xml")
+  set_gipp(gipp = gipp, gipp_path = gipp_curr_path, use_dem = use_dem)
   
   # get version
   sen2cor_version_raw0 <- system(paste(binpaths$sen2cor, "-h"), intern = TRUE)

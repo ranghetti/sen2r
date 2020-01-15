@@ -167,6 +167,7 @@ Standalone version of
   <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>gipp</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>use_dem</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>tiles</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
@@ -221,18 +222,32 @@ If <code>tmpdir</code> is a non-empty folder, a random subdirectory will be used
     <tr>
       <th>gipp</th>
       <td><p>(optional) Ground Image Processing Parameters (GIPP)
-to be passed to Sen2Cor.
-It is possible to specify both the path of an existing XML file
-or a list of parameters in the form <code>parameter_name = "value"</code>, where
-<code>parameter_name</code> is the name of the parameter as specified in the
-<code>L2A_GIPP.xml</code> file of the used Sen2Cor version (case insensitive), and
-<code>"value"</code> is the character value which the user wants to set
-(notice that, in the case the user wants to specify the value <code>NONE</code>,
-both <code>"NONE"</code> and <code>NA</code> can be used, but not <code>NULL</code>, which has the effect
-to maintain the value specified in the XML file).
+to be passed to Sen2Cor (see <a href='[set_gipp]'>set_gipp()</a> for further details).
 <em>Note</em>: this argument takes effect only in the current execution of
 <code>sen2cor()</code> function; to permanently change GIPP values, use function
 <a href='[set_gipp]'><code><a href='gipp.html'>set_gipp()</a></code></a>.</p></td>
+    </tr>
+    <tr>
+      <th>use_dem</th>
+      <td><p>(optional) Logical:
+if TRUE, Sen2Cor is set to use a Digital Elevation Model for topographic
+correction (reflecting what is done for Level-2A SAFE images provided by ESA Hub);
+if FALSE, it is set not to perform topographic correction (reflecting the
+current default Sen2Cor behaviour);
+if NA (default), the option set in the user's <code>L2A_GIPP.xml</code> Sen2Cor
+configuration file is respected (in case the user never edited it,
+the current default setting is not to perform topographic correction).</p>
+<p><em>Notes</em>:</p><ol>
+<li><p>if TRUE, the path used to read or store DEM files is the <code>DEM_Directory</code>
+parameter set in the default sen2r GIPP XML file (the user can read it
+with the function <code><a href='gipp.html'>read_gipp("DEM_Directory")</a></code>), unless this was set to
+<code>"NONE"</code>, in which case a subdirectory <code>"srtm90"</code> of the default
+sen2r directory is used.</p></li>
+<li><p>Currently the default value is NA in order to grant backward
+compatibility. In a future release of sen2r, the default value will be
+set to TRUE, so to grant homogeneity between Level-2A products downloaded
+from ESA Hub and generated using Sen2Cor.</p></li>
+</ol></td>
     </tr>
     <tr>
       <th>tiles</th>

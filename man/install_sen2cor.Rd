@@ -8,12 +8,12 @@
 install_sen2cor(
   sen2cor_dir,
   version = "2.5.5",
-  use_dem = NA,
   gipp = NULL,
+  use_dem = NA,
   force = FALSE
 )
 
-link_sen2cor(sen2cor_dir, use_dem = NA, gipp = NULL)
+link_sen2cor(sen2cor_dir, gipp = NULL, use_dem = NA)
 }
 \arguments{
 \item{sen2cor_dir}{Path where sen2cor is being installed or searched.}
@@ -21,34 +21,14 @@ link_sen2cor(sen2cor_dir, use_dem = NA, gipp = NULL)
 \item{version}{(optional) Character: Sen2Cor version (one among
 '2.5.5' - default - and '2.8.0').}
 
-\item{use_dem}{(optional) Logical:
-if TRUE, Sen2Cor is set to use a Digital Elevation Model for topographic
-correction (reflecting what is done for Level-2A SAFE images provided by ESA Hub);
-if FALSE, it is set not to perform topographic correction (reflecting the
-current default Sen2Cor behaviour);
-if NA (default), the option set in the user's \code{L2A_GIPP.xml} Sen2Cor
-configuration file is respected (in case the user never edited it,
-the current default setting is not to perform topographic correction).
-
-\emph{Notes}:
-\enumerate{
-\item this argument simply set the \code{DEM_Directory} parameter of the default
-sen2r GIPP XML file to \verb{~/.sen2r/srtm90} or \code{NONE} in case
-\code{use_dem} is respectively TRUE or FALSE.
-For further customisation, set argument \code{gipp} properly.
-\item Currently the default value is NA in order to grant backward
-compatibility. In a future release of sen2r, the default value will be
-set to TRUE, so to grant homogeneity between Level-2A products downloaded
-from ESA Hub and generated using Sen2Cor.
-\item If both \code{use_dem} is defined and \code{DEM_Directory} in argument \code{gipp} is
-specified, the second choice overrides the first one.
-}}
-
-\item{gipp}{(optional) List of Ground Image Processing Parameters (GIPP)
-to be modified after installing Sen2Cor with respect to default values
-(see \href{[set_gipp]}{set_gipp()} for detail about using this argument).
+\item{gipp}{(optional) Ground Image Processing Parameters (GIPP)
+to be passed to Sen2Cor (see \href{[set_gipp]}{set_gipp()} for further details).
 Default behaviour is to maintain default values (with the exception of
 parameter \code{DEM_Directory}, whih is managed by argument \code{use_dem}).}
+
+\item{use_dem}{(optional) Logical, determining if Sen2Cor has to be set
+to use a Digital Elevation Model for topographic correction (see
+\href{[sen2cor]}{sen2cor()} for further details).}
 
 \item{force}{(optional) Logical: if TRUE, install even if it is already
 installed (default is FALSE).}

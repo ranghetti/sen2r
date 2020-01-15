@@ -160,21 +160,22 @@ Sen2Cor to sen2r." />
     </div>
 
     <pre class="usage"><span class='fu'>install_sen2cor</span>(
-  <span class='no'>sen2cor_dir</span>,
+  <span class='kw'>sen2cor_dir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>version</span> <span class='kw'>=</span> <span class='st'>"2.5.5"</span>,
-  <span class='kw'>use_dem</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>gipp</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>use_dem</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )
 
-<span class='fu'>link_sen2cor</span>(<span class='no'>sen2cor_dir</span>, <span class='kw'>use_dem</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>gipp</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+<span class='fu'>link_sen2cor</span>(<span class='no'>sen2cor_dir</span>, <span class='kw'>gipp</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>use_dem</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>sen2cor_dir</th>
-      <td><p>Path where sen2cor is being installed or searched.</p></td>
+      <td><p>Path where sen2cor is being installed or searched
+(by default it is a subdirectory <code>"sen2cor"</code> of the default sen2r directory).</p></td>
     </tr>
     <tr>
       <th>version</th>
@@ -182,33 +183,17 @@ Sen2Cor to sen2r." />
 '2.5.5' - default - and '2.8.0').</p></td>
     </tr>
     <tr>
-      <th>use_dem</th>
-      <td><p>(optional) Logical:
-if TRUE, Sen2Cor is set to use a Digital Elevation Model for topographic
-correction (reflecting what is done for Level-2A SAFE images provided by ESA Hub);
-if FALSE, it is set not to perform topographic correction (reflecting the
-current default Sen2Cor behaviour);
-if NA (default), the option set in the user's <code>L2A_GIPP.xml</code> Sen2Cor
-configuration file is respected (in case the user never edited it,
-the current default setting is not to perform topographic correction).</p>
-<p><em>Notes</em>:</p><ol>
-<li><p>this argument simply set the <code>DEM_Directory</code> parameter of the default
-sen2r GIPP XML file to <code>~/.sen2r/srtm90</code> or <code>NONE</code> in case
-<code>use_dem</code> is respectively TRUE or FALSE.
-For further customisation, set argument <code>gipp</code> properly.</p></li>
-<li><p>Currently the default value is NA in order to grant backward
-compatibility. In a future release of sen2r, the default value will be
-set to TRUE, so to grant homogeneity between Level-2A products downloaded
-from ESA Hub and generated using Sen2Cor.</p></li>
-</ol></td>
-    </tr>
-    <tr>
       <th>gipp</th>
-      <td><p>(optional) List of Ground Image Processing Parameters (GIPP)
-to be modified after installing Sen2Cor with respect to default values
-(see <a href='[set_gipp]'>set_gipp()</a> for detail about using this argument).
+      <td><p>(optional) Ground Image Processing Parameters (GIPP)
+to be passed to Sen2Cor (see <a href='[set_gipp]'>set_gipp()</a> for further details).
 Default behaviour is to maintain default values (with the exception of
 parameter <code>DEM_Directory</code>, whih is managed by argument <code>use_dem</code>).</p></td>
+    </tr>
+    <tr>
+      <th>use_dem</th>
+      <td><p>(optional) Logical, determining if Sen2Cor has to be set
+to use a Digital Elevation Model for topographic correction (see
+<a href='[sen2cor]'>sen2cor()</a> for further details).</p></td>
     </tr>
     <tr>
       <th>force</th>

@@ -83,7 +83,7 @@ testthat::test_that(
     testthat::expect_true(grepl("srtm90", gipp_1$dem_directory))
     
     # Edit one value and save the output as temporary file
-    set_gipp(list(DEM_Directory = "/invalid/directory"), gipp_path_out = gipp_temp <- tempfile())
+    set_gipp(list(DEM_Directory = "/invalid/directory"), gipp_path = gipp_temp <- tempfile())
     testthat::expect_true(file.exists(gipp_temp))
     xml_temp_raw <- readLines(gipp_temp)
     testthat::expect_true(grepl(
@@ -92,15 +92,34 @@ testthat::test_that(
     ))
     
     # Read the parameters in the created temporary files
-    gipp_2 <- read_gipp(c("DEM_Directory", "DEM_Reference"), gipp_path_in = gipp_temp)
+    gipp_2 <- read_gipp(c("DEM_Directory", "DEM_Reference"), gipp_path = gipp_temp)
     testthat::expect_is(gipp_2, "list")
     testthat::expect_length(gipp_2, 2)
     testthat::expect_true(grepl("/invalid/directory", gipp_2$DEM_Directory))
     
+    # Edit one value using use_dem = FALSE
+    set_gipp(use_dem = FALSE, gipp_path = gipp_temp <- tempfile())
+    xml_temp_raw <- readLines(gipp_temp)
+    testthat::expect_true(grepl(
+      "<DEM_Directory>NONE</DEM_Directory>",
+      xml_temp_raw[grepl("<DEM_Directory>", xml_temp_raw)]
+    ))
+    
+    # Edit one value using use_dem = TRUE
+    set_gipp(use_dem = TRUE, gipp_path = gipp_temp <- tempfile())
+    xml_temp_raw <- readLines(gipp_temp)
+    testthat::expect_true(grepl(
+      "<DEM_Directory>.*srtm90</DEM_Directory>",
+      xml_temp_raw[grepl("<DEM_Directory>", xml_temp_raw)]
+    ))
+    
     # Reset to default Sen2Cor GIPP values
-    reset_gipp(gipp_path_out = gipp_temp)
+    testthat::expect_message(
+      reset_gipp(gipp_path = gipp_temp),
+      "IMPORTANT NOTE: for backward compatibility"
+    )
     # Read again values
-    gipp_3 <- read_gipp(c("DEM_Directory", "DEM_Reference"), gipp_path_in = gipp_temp)
+    gipp_3 <- read_gipp(c("DEM_Directory", "DEM_Reference"), gipp_path = gipp_temp)
     testthat::expect_is(gipp_3, "list")
     testthat::expect_length(gipp_3, 2)
     testthat::expect_true(grepl("NONE", gipp_3$DEM_Directory))

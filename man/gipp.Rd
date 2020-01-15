@@ -6,26 +6,22 @@
 \alias{reset_gipp}
 \title{Manage GIPP parameters for Sen2Cor}
 \usage{
-read_gipp(gipp_names, gipp_path_in = NA)
+read_gipp(gipp_names, gipp_path = NA)
 
-set_gipp(
-  gipp = list(),
-  gipp_path_in = NA,
-  gipp_path_out = gipp_path_in,
-  use_dem = NA
-)
+set_gipp(gipp = list(), gipp_path = NA, use_dem = NA)
 
-reset_gipp(gipp_path_out = NA)
+reset_gipp(gipp_path = NA)
 }
 \arguments{
 \item{gipp_names}{Character vector with the names of the parameters
 to be read.}
 
-\item{gipp_path_in}{Character path of the GIPP XML file to be read.
+\item{gipp_path}{Character path of the output GIPP XML file.
 If NA (default), the default sen2r GIPP path is used.}
 
-\item{gipp}{List of Ground Image Processing Parameters (GIPP),
-in the form \code{parameter_name = "value"}, where
+\item{gipp}{Ground Image Processing Parameters (GIPP).
+It is possible to specify both the path of an existing XML file
+or a list of parameters in the form \code{parameter_name = "value"}, where
 \code{parameter_name} is the name of the parameter as specified in the
 \code{L2A_GIPP.xml} file of the used Sen2Cor version (case insensitive), and
 \code{"value"} is the character value which the user wants to set
@@ -34,18 +30,17 @@ both \code{"NONE"} and \code{NA} can be used, but not \code{NULL}, which has the
 to maintain the value specified in the XML file).
 Elements whose name is missing in the XML file are skipped.}
 
-\item{gipp_path_out}{Character path of the output GIPP XML file.
-By default it is equal to \code{gipp_path_in} in function \code{set_gipp()}
-(edited values are overwritten) and to NA (meaning the default sen2r GIPP
-path) in \code{reset_gipp()}.}
-
-\item{use_dem}{Logical, being a shortcut for
-\code{gipp = list(DEM_Directory = "~/.sen2r/srtm90")} in case \code{use_dem = TRUE},
-and for \code{gipp = list(DEM_Directory = NA)} in case \code{use_dem = FALSE}.
-If \code{NA} (default), this parameter is not changed.
-If both \code{use_dem} is defined and \code{DEM_Directory} in argument \code{gipp} is
-specified, the second choice overrides the first one.
-For further details, see \href{[install_sen2cor]}{\code{install_sen2cor()}}.}
+\item{use_dem}{Logical: if TRUE, a DEM is set for being used for topographic
+corection in the XML specified with argument \code{gipp_path};
+if FALSE, no DEM is set for being used;
+if NA (default), the existing option is maintained.
+Notice that, in case \code{use_dem = TRUE} and a DEM directory is already set
+in the XML file, no changes are performed;
+conversely; if no directories were specified, a subdirectory \code{"srtm90"}
+of the default sen2r directory is set.
+To set another directory, use argument \code{gipp} in the form
+\code{gipp = list(DEM_Directory = tempdir(), ...)} (replacing \code{tempdir()} with
+the desired path).}
 }
 \value{
 \code{read_gipp()} returns a named list of GIPP with the required parameters
@@ -71,15 +66,15 @@ License: GPL 3.0
 # Read default values
 read_gipp(c("dem_directory", "dem_reference"))
 # Edit one value and save the output as temporary file
-set_gipp(list(DEM_Directory = NA), gipp_path_out = gipp_temp <- tempfile())
+set_gipp(list(DEM_Directory = NA), gipp_path = gipp_temp <- tempfile())
 # Read the parameters in the created temporary files
-read_gipp(c("DEM_Directory", "DEM_Reference"), gipp_path_in = gipp_temp)
+read_gipp(c("DEM_Directory", "DEM_Reference"), gipp_path = gipp_temp)
 # Read the original (not edited) XML file
 read_gipp(c("DEM_Directory", "DEM_Reference"))
 # Reset to default Sen2Cor GIPP values
-reset_gipp(gipp_path_out = gipp_temp)
+reset_gipp(gipp_path = gipp_temp)
 # Read again values
-read_gipp(c("DEM_Directory", "DEM_Reference"), gipp_path_in = gipp_temp)
+read_gipp(c("DEM_Directory", "DEM_Reference"), gipp_path = gipp_temp)
 }
 }
 \author{

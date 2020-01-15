@@ -157,7 +157,7 @@ directory to sen2r. After that, user will allow editing Sen2Cor options
 in sen2r without affecting standalone Sen2Cor behaviour.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>gipp_init</span>(<span class='kw'>gipp_sen2r_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>gipp_init</span>(<span class='kw'>gipp_sen2r_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>dem_warning</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -171,6 +171,13 @@ By default it is equal to NA (meaning the default sen2r GIPP path).</p></td>
       <th>force</th>
       <td><p>Logical: if TRUE, the file is copied in any case (this is used
 by <code><a href='gipp.html'>reset_gipp()</a></code>); if FALSE (default), only if it does not yet exist.</p></td>
+    </tr>
+    <tr>
+      <th>dem_warning</th>
+      <td><p>TEMPORARY ARGUMENT Logical: if TRUE, a warning about
+the fact that DEM_Directory XML parameter was not overwritten is shown
+(default is FALSE).
+This argument will be removed when use_dem = TRUE will become the default.</p></td>
     </tr>
     </table>
 
