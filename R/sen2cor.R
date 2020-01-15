@@ -369,7 +369,7 @@ sen2cor <- function(
         # paste(binpaths$sen2cor, "--refresh", sel_l1c),
         paste(
           binpaths$sen2cor,
-          "--GIP_L2A", gipp_sen2r_path,
+          "--GIP_L2A", gipp_curr_path,
           if (sen2cor_version>=package_version("2.8.0")) {paste("--output_dir", sen2cor_out_l2a)},
           if (sen2cor_version<package_version("2.8.0")) {"--refresh"},
           sel_l1c

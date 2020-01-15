@@ -196,6 +196,10 @@ install_sen2cor <- function(
   binpaths$sen2cor <- normalize_path(sen2cor_bin)
   writeLines(toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
   
+  # reset sen2r GIPP XML to the default Sen2Cor values
+  # (this is necessary to avoid errors in case of reinstallation 
+  # of a different Sen2cor version)
+  reset_gipp()
   # edit DEM_Directory basing on gipp and use_dem
   set_gipp(gipp = gipp, use_dem = use_dem)
   
@@ -235,6 +239,10 @@ link_sen2cor <- function(sen2cor_dir, gipp = NULL, use_dem = NA) {
       sen2cor_version_raw1
     )
     
+    # reset sen2r GIPP XML to the default Sen2Cor values
+    # (this is necessary to avoid errors in case of reinstallation 
+    # of a different Sen2cor version)
+    reset_gipp()
     # edit DEM_Directory basing on gipp and use_dem
     set_gipp(gipp = gipp, use_dem = use_dem)
     

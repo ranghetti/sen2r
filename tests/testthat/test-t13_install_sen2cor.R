@@ -26,7 +26,14 @@ testthat::test_that(
     if (test_download) {
       unlink(sen2cor_inst_dir, recursive = TRUE)
     }
-    install_sen2cor(sen2cor_inst_dir, use_dem = TRUE)
+    testthat::expect_message(
+      install_sen2cor(
+        sen2cor_inst_dir, 
+        version = sen2cor_def_version, 
+        use_dem = TRUE
+      ),
+      regexp = "IMPORTANT NOTE: for backward compatibility"
+    )
     
     testthat::expect_true(dir.exists(dirname(load_binpaths()$sen2cor)))
     testver <- system2(load_binpaths()$sen2cor, "-h", stdout = TRUE)
