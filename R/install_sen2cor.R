@@ -1,7 +1,8 @@
 #' @title Download and install (or link) Sen2Cor
 #' @description [install_sen2cor()] downloads and installs standalone version of
 #'  [Sen2Cor](http://step.esa.int/main/third-party-plugins-2/sen2cor).
-#' @param sen2cor_dir Path where sen2cor is being installed or searched.
+#' @param sen2cor_dir Path where sen2cor is being installed or searched
+#'  (by default it is a subdirectory `"sen2cor"` of the default sen2r directory).
 #' @param version (optional) Character: Sen2Cor version (one among
 #'  '2.5.5' - default - and '2.8.0').
 #' @param gipp (optional) Ground Image Processing Parameters (GIPP)
@@ -29,7 +30,7 @@
 #' }
 
 install_sen2cor <- function(
-  sen2cor_dir, 
+  sen2cor_dir = NA, 
   version = "2.5.5", 
   gipp = NULL,
   use_dem = NA, 
@@ -79,8 +80,11 @@ install_sen2cor <- function(
   }
   
   # define sen2cor_dir (where to install or update)
+  if (is.na(sen2cor_dir)) {
+    sen2cor_dir <- file.path(dirname(attr(binpaths, "path")), "sen2cor")
+  }
   if (!file.exists(sen2cor_dir)) {
-    dir.create(sen2cor_dir, recursive=FALSE, showWarnings = FALSE)
+    dir.create(sen2cor_dir, recursive = FALSE, showWarnings = FALSE)
   } else if (!file.info(sen2cor_dir)$isdir) {
     print_message(
       type="error",

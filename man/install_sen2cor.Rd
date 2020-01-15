@@ -6,7 +6,7 @@
 \title{Download and install (or link) Sen2Cor}
 \usage{
 install_sen2cor(
-  sen2cor_dir,
+  sen2cor_dir = NA,
   version = "2.5.5",
   gipp = NULL,
   use_dem = NA,
@@ -16,7 +16,8 @@ install_sen2cor(
 link_sen2cor(sen2cor_dir, gipp = NULL, use_dem = NA)
 }
 \arguments{
-\item{sen2cor_dir}{Path where sen2cor is being installed or searched.}
+\item{sen2cor_dir}{Path where sen2cor is being installed or searched
+(by default it is a subdirectory \code{"sen2cor"} of the default sen2r directory).}
 
 \item{version}{(optional) Character: Sen2Cor version (one among
 '2.5.5' - default - and '2.8.0').}

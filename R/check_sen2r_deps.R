@@ -618,7 +618,9 @@ check_sen2r_deps <- function() {
               div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                       shinyDirButton("path_newsen2cor_sel", "Select", "Specify directory in which installing Sen2Cor")),
                   div(style="display:inline-block;vertical-align:top;width:480px;",
-                      textInput("path_newsen2cor_textin", NULL, ""))),
+                      textInput("path_newsen2cor_textin", NULL, normalize_path(
+                        file.path(dirname(attr(binpaths(), "path")), "sen2cor"), mustWork = FALSE
+                      )))),
               div(style="height:20px;vertical-aling:top;",
                   htmlOutput("path_newsen2cor_errormess")),
               radioButtons(
@@ -643,7 +645,9 @@ check_sen2r_deps <- function() {
               div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                       shinyDirButton("path_exisen2cor_sel", "Select", "Specify directory in which Sen2Cor is installed")),
                   div(style="display:inline-block;vertical-align:top;width:480px;",
-                      textInput("path_exisen2cor_textin", NULL, ""))),
+                      textInput("path_exisen2cor_textin", NULL, normalize_path(
+                        file.path(dirname(attr(binpaths(), "path")), "sen2cor"), mustWork = FALSE
+                      )))),
               div(style="height:20px;vertical-aling:top;",
                   htmlOutput("path_exisen2cor_errormess"))
             )
