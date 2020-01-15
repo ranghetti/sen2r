@@ -1076,9 +1076,9 @@ sen2r <- function(param_list = NULL,
         availability = "check",
         apihub = pm$apihub
       )
-      s2_lists_footprints[["l1c"]] <- attr(s2_lists[["l1c"]], "footprint")
+      s2_lists_footprints[["l1c"]] <- nn(attr(s2_lists[["l1c"]], "footprint"))
       # save lta availability (TRUE if on LTA, FALSE if online)
-      s2_lists_islta[["l1c"]] <- !attr(s2_lists[["l1c"]], "online")
+      s2_lists_islta[["l1c"]] <- !nn(attr(s2_lists[["l1c"]], "online"))
       names(s2_lists_islta[["l1c"]]) <- names(s2_lists[["l1c"]])
     }
     if ("l2a" %in% pm$s2_levels) {
@@ -1104,9 +1104,9 @@ sen2r <- function(param_list = NULL,
         availability = "check",
         apihub = pm$apihub
       )
-      s2_lists_footprints[["l2a"]] <- attr(s2_lists[["l2a"]], "footprint")
+      s2_lists_footprints[["l2a"]] <- nn(attr(s2_lists[["l2a"]], "footprint"))
       # save lta availability (TRUE if on LTA, FALSE if online)
-      s2_lists_islta[["l2a"]] <- !attr(s2_lists[["l2a"]], "online")
+      s2_lists_islta[["l2a"]] <- !nn(attr(s2_lists[["l2a"]], "online"))
       names(s2_lists_islta[["l2a"]]) <- names(s2_lists[["l2a"]])
     }
     
