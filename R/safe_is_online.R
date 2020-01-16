@@ -91,7 +91,6 @@ safe_is_online <- function(s2_prodlist = NULL, apihub = NA, verbose = TRUE) {
         paste0(length(which(s2_availability)), " out of ",  
                length(s2_availability), " products are online")
       )
-      # message(length(which(s2_availability)), " out of ",  length(s2_availability), " products are online")
     }
   }
   s2_availability

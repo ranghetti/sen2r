@@ -83,7 +83,7 @@ s2_order <- function(
   apihub = NA,
   reorder = reorder,
   .s2_availability = NULL,
-  .log_path = TRUE # TRUE to log all, FALSE toThe following attributes are included: skip the path of the json
+  .log_path = TRUE # TRUE to log all, FALSE to skip the path of the json
 ) {
   
   # to avoid NOTE on check
