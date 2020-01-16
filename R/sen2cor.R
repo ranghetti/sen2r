@@ -397,7 +397,7 @@ sen2cor <- function(
           file.path(sen2cor_out_l2a,sen2cor_out_l2a_basename),
           file.path(dirname(sen2cor_out_l2a),sen2cor_out_l2a_basename)
         )
-        file.remove(sen2cor_out_l2a)
+        unlink(sen2cor_out_l2a, recursive = TRUE)
         sen2cor_out_l2a <- file.path(dirname(sen2cor_out_l2a),sen2cor_out_l2a_basename)
         sel_l2a <- file.path(dirname(sel_l2a), sen2cor_out_l2a_basename)
       }
