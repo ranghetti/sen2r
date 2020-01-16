@@ -49,12 +49,35 @@ if (test_sen2cor) {
         sen2cor_out <- sen2cor(
           s2_l1c_prods[2], 
           use_dem = TRUE,
-          gipp = list(DEM_Directory = demdir <- tempfile(pattern="srtm90_")),
+          gipp = list(
+            DEM_Directory = demdir <- tempfile(pattern="srtm90_"),
+            Generate_DEM_Output = TRUE
+          ),
           outdir = safe_dir
         )
       )
       testthat::expect_true(dir.exists(sen2cor_out))
       testthat::expect_gt(run_time["elapsed"], 60)
+      
+      # test that DEM was downloaded
+      testthat::expect_length(list.files(demdir, "^srtm_3[89]_03\\.tif$"), 2)
+      
+      # test that dem was generated
+      aux_meta_ex <- raster_metadata(file.path(
+        sen2cor_out,
+        "GRANULE/L2A_T32TNS_A010601_20170703T101041",
+        "AUX_DATA/T32TNS_20170703T101021_DEM_10m.jp2"
+      ), format = "list")[[1]]
+      testthat::expect_equal(aux_meta_ex$size, c("x"=10980, "y"=10980))
+      testthat::expect_equal(aux_meta_ex$res, c("x"=10, "y"=10))
+      testthat::expect_equal(
+        aux_meta_ex$bbox,
+        sf::st_bbox(
+          c("xmin" = 499980, "ymin" = 5090220, "xmax" = 609780, "ymax" = 5200020),
+          crs = sf::st_crs(32632)
+        )
+      )
+      testthat::expect_equal(aux_meta_ex$outformat, "JP2OpenJPEG")
       
       # test raster metadata
       exp_meta_ex <- raster_metadata(file.path(
@@ -117,7 +140,53 @@ if (test_sen2cor) {
       testthat::expect_true(all(dir.exists(sen2cor_out)))
       testthat::expect_gt(run_time["elapsed"], 60)
       
-      # TODO copy checks from test above
+      # test that dem was not generated
+      testthat::expect_true(all(!file.exists(file.path(
+        sen2cor_out,
+        "GRANULE/L2A_T32TNS_A010601_20170703T101041",
+        "AUX_DATA/T32TNS_20170703T101021_DEM_10m.jp2"
+      ))))
+      
+      # test raster metadata
+      exp_meta_ex <- raster_metadata(file.path(
+        sen2cor_out[2], 
+        "GRANULE/L2A_T32TNS_A010601_20170703T101041",
+        "IMG_DATA/R10m/T32TNS_20170703T101021_B02_10m.jp2"
+      ), format = "list")[[1]]
+      testthat::expect_equal(exp_meta_ex$size, c("x"=10980, "y"=10980))
+      testthat::expect_equal(exp_meta_ex$res, c("x"=10, "y"=10))
+      testthat::expect_equal(
+        exp_meta_ex$bbox, 
+        sf::st_bbox(
+          c("xmin" = 499980, "ymin" = 5090220, "xmax" = 609780, "ymax" = 5200020), 
+          crs = sf::st_crs(32632)
+        )
+      )
+      testthat::expect_equal(exp_meta_ex$outformat, "JP2OpenJPEG")
+      
+      # test SAFE metadata
+      sen2cor_out <- sort(sen2cor_out)
+      safe_metadata <- safe_getMetadata(sen2cor_out)
+      testthat::expect_is(safe_metadata, "data.table")
+      testthat::expect_equal(safe_metadata$prod_type, rep("product",2))
+      testthat::expect_equal(safe_metadata$version, rep("compact",2))
+      testthat::expect_equal(
+        safe_metadata$xml_main, 
+        file.path(sen2cor_out,"MTD_MSIL2A.xml")
+      )
+      testthat::expect_equal(
+        dirname(safe_metadata$xml_granules), 
+        file.path(sen2cor_out,paste0("GRANULE/L2A_T32TN",c("R","S"),"_A010601_20170703T101041"))
+      )
+      testthat::expect_equal(safe_metadata$mission, rep("2A",2))
+      testthat::expect_equal(safe_metadata$level, rep("2A",2))
+      testthat::expect_equal(as.Date(safe_metadata$sensing_datetime), rep(as.Date("2017-07-03"),2))
+      testthat::expect_equal(safe_metadata$id_orbit, rep("022",2))
+      testthat::expect_equal(safe_metadata$id_tile, c("32TNR","32TNS"))
+      testthat::expect_equal(safe_metadata$tiles, c("32TNR","32TNS"))
+      testthat::expect_equal(safe_metadata$utm, rep(32,2))
+      testthat::expect_equal(safe_metadata$direction, rep("DESCENDING",2))
+      testthat::expect_equal(safe_metadata$orbit_n, rep("22",2))
       
     }
   )
