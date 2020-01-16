@@ -4,7 +4,7 @@
 \alias{safe_is_online}
 \title{Check if SAFE is available for download}
 \usage{
-safe_is_online(s2_prodlist = NULL, apihub = NA)
+safe_is_online(s2_prodlist = NULL, apihub = NA, verbose = TRUE)
 }
 \arguments{
 \item{s2_prodlist}{Named character: list of the products to be checked,
@@ -14,6 +14,9 @@ Alternatively, it can be the path of a JSON file exported by \link{s2_order}.}
 \item{apihub}{Path of the "apihub.txt" file containing credentials
 of SciHub account.
 If NA (default), the default location inside the package will be used.}
+
+\item{verbose}{Logical If TRUE, provide processing message shich summarizes
+how manu of the S2 images in \code{s2_prodlist} are available onlne.}
 }
 \value{
 A logical vector of the same length and names of the SAFE products

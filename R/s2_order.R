@@ -13,12 +13,15 @@
 #'  It is also possible to pass the path of an existing folder in which the 
 #'  JSON file will be saved (otherwise, a default path is used).
 #' @param delay Numeric: time frame (in seconds) to leave between two 
-#'  consecutive orders. Default is 5 seconds: use a higher value if you 
+#'  consecutive orders. Default is 1 seconds: use a higher value if you 
 #'  encountered errors (i.e. not all the products were correctly ordered).
 #' @param apihub Path of the "apihub.txt" file containing credentials
 #'  of SciHub account.
 #'  If NA (default), the default location inside the package will be used.
-#' @return A named vector, containing the selection of `s2_prodlist` elements 
+#' @param reorder logical If TRUE, and a json file exported by s2_order is passed
+#'  as argument to the function, try to order again also the "available" and "ordered"
+#'  S2 datasets. Otherwise, only order the "notordered" ones
+#' @return A named vector, containing the subset of `s2_prodlist` elements 
 #'  which were ordered.
 #'  Moreover, the vector includes the following attributes:
 #'  - "available" with the elements of `s2_prodlist` which were already
@@ -26,7 +29,8 @@
 #'  - "notordered" with the elements of `s2_prodlist` which were not ordered
 #'      for any reasons,
 #'  - "path" (only if argument `export_prodlist` is not FALSE) with the path of
-#'      the json file in which the list of the ordered products was saved.
+#'      the json file in which the list of the ordered/available/notordered products 
+#'      was saved (if export_prodlist = TRUE).
 #'
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
@@ -56,14 +60,16 @@
 s2_order <- function(
   s2_prodlist = NULL, 
   export_prodlist = TRUE, 
-  delay = 5, 
-  apihub = NA
+  delay = 1, 
+  apihub = NA, 
+  reorder = TRUE
 ) {
   .s2_order(
     s2_prodlist = s2_prodlist,
     export_prodlist = export_prodlist, 
     delay = delay,
     apihub = apihub,
+    reorder = reorder,
     .s2_availability = NULL
   )
 }
@@ -73,10 +79,11 @@ s2_order <- function(
 .s2_order <- function(
   s2_prodlist = NULL,
   export_prodlist = TRUE, 
-  delay = 5,
+  delay = 1,
   apihub = NA,
+  reorder = reorder,
   .s2_availability = NULL,
-  .log_path = TRUE # TRUE to log all, FALSE to skip the path of the json
+  .log_path = TRUE # TRUE to log all, FALSE toThe following attributes are included: skip the path of the json
 ) {
   
   # to avoid NOTE on check
@@ -115,21 +122,21 @@ s2_order <- function(
   # check input format
   s2_prodlist <- as(s2_prodlist, "safelist")
   # TODO add input checks
-  
-  # # replace apihub with dhus
-  # s2_prodlist <- gsub("apihub", "dhus", s2_prodlist)
-  
+
   # read credentials
   creds <- read_scihub_login(apihub)
-  
+
   # Split products to be downloaded from products to be ordered
+  # 
+  # First, check availability: order is NEVER attempted for already online
+  # products 
   s2_availability <- if (is.null(.s2_availability)) {
     print_message(
       type = "message",
       date = TRUE,
       "Check if products are already available for download..."
     )
-    safe_is_online(s2_prodlist)
+    safe_is_online(s2_prodlist, verbose = FALSE)
   } else {
     .s2_availability
   }
@@ -144,7 +151,6 @@ s2_order <- function(
     )
   }
   
-  
   ## Order products stored in Long Term Archive
   if (sum(!s2_availability) > 0) {
     print_message(
@@ -156,16 +162,36 @@ s2_order <- function(
   }
   quota_exceeded <- FALSE # initialise variable
   status_codes <- c()
-  ordered_products <- foreach(i = which(!s2_availability), .combine = c) %do% {
+   
+  if (!is.null(attr(s2_prodlist, "order_status")) & !reorder) {  
+    # if the list includes the "order_status" attribute (meaning it was 
+    # derived from a json file saved by s2_order), and reorder is FALSE,  
+    # create a "old_order" variable contatining indexes of already succesfull orders
+    # that in the meantime did not change to "available", 
+    # and an "to_order" variable containing indexes of datasets yet to be ordered
+    # (notordered and not available - could happen that another user requested the
+    # dataset in the meantime)
+    old_order  <- which(!s2_availability & attr(s2_prodlist, "order_status") == "ordered")
+    to_order   <- which(!s2_availability & attr(s2_prodlist, "order_status") != "ordered")
+    
+  } else {
+    to_order  <- which(!s2_availability)
+    old_order <- NULL
+  }
+  
+  # cycle along "to_order" to create a TRUE/FALSE array of succesfull orders
+  ordered_products <- foreach(i = to_order, .combine = c) %do% {
     # delay after previous order
-    if (i != which(!s2_availability)[1]) {
+    if (i != to_order[1]) {
       Sys.sleep(delay)
     }
+    # browser()
     # order products
     make_order <- httr::GET(
       url = as.character(s2_prodlist[i]),
       config = httr::authenticate(creds[1], creds[2])
     )
+    
     # check if the order was successful
     if (inherits(make_order, "response")) {
       # save status code
@@ -178,13 +204,35 @@ s2_order <- function(
     } else FALSE
   }
   
-  out_list <- s2_prodlist[!s2_availability][ordered_products]
-  attr(out_list, "available") <- s2_prodlist[s2_availability]
-  attr(out_list, "notordered") <- s2_prodlist[!s2_availability][!nn(ordered_products)]
-  order_time <- Sys.time()
+  # create a temporary array as long as s2_prodlist and "fill" it with logical 
+  # depending on status: TRUE, if successfull order, FALSE for not 
+  # succesfull order OR online dataset. 
+  # In case we are working on resubmitting an order, and reorder is FALSE, recreate
+  # the "ordered_products" array, appending results of current run with "old_order"
   
-  # export prodlist, unless export_prodlist == FALSE
-  if (any(export_prodlist != FALSE) & length(out_list) > 0) {
+  tempordered <- rep(FALSE, length(s2_prodlist))
+  if (!is.null(old_order)) {
+    tempordered[sort(unique(c(to_order[ordered_products], old_order)))] <- TRUE
+  } else {
+    tempordered[to_order[ordered_products]] <- TRUE
+  }
+  ordered_products    <- tempordered
+  notordered_products <- !ordered_products & !s2_availability
+  
+  out_list <- s2_prodlist[ordered_products]
+  attr(out_list, "available")  <- s2_prodlist[s2_availability]
+  attr(out_list, "notordered") <- s2_prodlist[notordered_products]
+  
+  # remove order_status if present
+  attr(out_list, "order_status") <- NULL
+  
+  # export list_towrite, unless export_prodlist == FALSE
+  list_towrite <- list(ordered    = as.list(out_list), 
+  available  = as.list(attr(out_list, "available")), 
+  notordered = as.list(attr(out_list, "notordered")))
+  if (any(export_prodlist != FALSE) & length(list_towrite) > 0) {
+    order_time <- Sys.time()
+    
     prodlist_dir <- if (is.logical(export_prodlist)) {
       file.path(dirname(attr(load_binpaths(), "path")), "lta_orders")
     } else {
@@ -196,12 +244,13 @@ s2_order <- function(
       strftime(order_time, format = "lta_%Y%m%d_%H%M%S.json")
     )
     writeLines(
-      toJSON(as.list(out_list), pretty = TRUE),
+      toJSON(as.list(list_towrite), pretty = TRUE),
       prodlist_path
     )
     attr(out_list, "path") <- prodlist_path
   }
   
+  # Issue processing messages / warnings
   if (sum(ordered_products) > 0) {
     print_message(
       type = "message",
@@ -209,7 +258,7 @@ s2_order <- function(
       sum(ordered_products)," of ",sum(!s2_availability)," Sentinel-2 images ",
       "were correctly ordered. ",
       if (.log_path == TRUE) {paste0(
-        "You can check at a later time if the ordered products were made available ",
+        "You can check at a later time if the ordered products are available online ",
         "using the command:\n\n",
         if (is.null(attr(out_list, "path"))) {paste0(
           'safe_is_online(c(\n  "',paste(out_list, collapse = '",\n  "'),'"\n))'
@@ -220,11 +269,13 @@ s2_order <- function(
       )}
     )
   }
-  if (sum(!nn(ordered_products)) > 0) {
+  
+  if (sum(notordered_products) > 0) {
+    
     print_message(
       type = "warning",
       date = TRUE,
-      sum(!ordered_products)," of ",sum(!s2_availability)," Sentinel-2 images ",
+      sum(notordered_products)," of ",sum(!s2_availability)," Sentinel-2 images ",
       "were not correctly ordered ",
       "(HTML status code: ",unique(paste(status_codes[status_codes!=202]), collapse = ", "),")",
       if (quota_exceeded) {paste0(
@@ -233,7 +284,17 @@ s2_order <- function(
         "(see ?write_scihub_login or set a specific value for argument \"apihub\")."
       )} else {
         "."#," Try using a higher value for the argument \"delay\"."
-      }
+      },
+      if (.log_path == TRUE) {paste0(
+        "You can try ordering them at a later time ",
+        "using the command:\n\n",
+        if (is.null(attr(out_list, "path"))) {paste0(
+          's2_order(c(\n  "',paste(out_list, collapse = '",\n  "'),'"\n))'
+        )} else {paste0(
+          's2_order("',attr(out_list, "path"),'")'
+        )},
+        "\n"
+      )}
     )
   }
   
