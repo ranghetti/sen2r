@@ -82,6 +82,9 @@ setAs("character", "safelist", function(from) {
     }
   } else {
     # check if input can be converted - case of list saved by s2_list, or "bare"
+    if (is(from, "list")) {
+      from <- setNames(as.character(from), names(from))
+    }
     # list
     if (any(c(
       is.null(names(from)),

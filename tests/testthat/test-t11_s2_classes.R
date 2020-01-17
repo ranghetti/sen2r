@@ -57,14 +57,32 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "Check reading from a JSON order file", {
+  "Check reading from a new JSON order file (v. > 1.2.1.9007)", {
     writeLines(
-      toJSON(as.list(s2_safelist_0), pretty = TRUE),
-      prodlist_path <- tempfile(fileext = ".json")
+      toJSON(
+        list(
+          "ordered" = NULL,
+          "available" = as.list(s2_safelist_0),
+          "notordered" = NULL
+        ), pretty = TRUE),
+      prodlist_path_2 <- tempfile(fileext = ".json")
     )
-    s2_safelist_2 <- as(prodlist_path, "safelist")
+    s2_safelist_2 <- as(prodlist_path_2, "safelist")
 
     testthat::expect_equal(as.character(s2_safelist_2), as.character(s2_safelist_0))
 
+  }
+)
+
+testthat::test_that(
+  "Check reading from an old JSON order file (v. < 1.2.1.9007)", {
+    writeLines(
+      toJSON(as.list(s2_safelist_0), pretty = TRUE),
+      prodlist_path_3 <- tempfile(fileext = ".json")
+    )
+    s2_safelist_3 <- as(prodlist_path_3, "safelist")
+    
+    testthat::expect_equal(as.character(s2_safelist_3), as.character(s2_safelist_0))
+    
   }
 )
