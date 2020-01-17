@@ -13,26 +13,28 @@
 #'  It is also possible to pass the path of an existing folder in which the 
 #'  JSON file will be saved (otherwise, a default path is used).
 #' @param delay Numeric: time frame (in seconds) to leave between two 
-#'  consecutive orders. Default is 1 seconds: use a higher value if you 
+#'  consecutive orders. Default is 0.5 seconds: use a higher value if you 
 #'  encountered errors (i.e. not all the products were correctly ordered).
 #' @param apihub Path of the "apihub.txt" file containing credentials
 #'  of SciHub account.
 #'  If NA (default), the default location inside the package will be used.
-#' @param reorder logical If TRUE, and a json file exported by s2_order is passed
-#'  as argument to the function, try to order again also the "available" and "ordered"
-#'  S2 datasets. Otherwise, only order the "notordered" ones
+#' @param reorder Logical: If TRUE, and a json file exported by s2_order 
+#'  is passed as argument to the function, try to order again also 
+#'  the `"available"` and `"ordered"` S2 datasets. 
+#'  Otherwise, only order the `"notordered"` ones.
 #' @return A named vector, containing the subset of `s2_prodlist` elements 
 #'  which were ordered.
 #'  Moreover, the vector includes the following attributes:
-#'  - "available" with the elements of `s2_prodlist` which were already
+#'  - `"available"` with the elements of `s2_prodlist` which were already
 #'      available for download,
-#'  - "notordered" with the elements of `s2_prodlist` which were not ordered
+#'  - `"notordered"` with the elements of `s2_prodlist` which were not ordered
 #'      for any reasons,
-#'  - "path" (only if argument `export_prodlist` is not FALSE) with the path of
-#'      the json file in which the list of the ordered/available/notordered products 
-#'      was saved (if export_prodlist = TRUE).
+#'  - `"path"` (only if argument `export_prodlist` is not FALSE) with the path 
+#'      of the json file in which the list of the products (ordered, available
+#'      and not ordered) was saved (if `export_prodlist = TRUE`).
 #'
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @author Lorenzo Busetto, phD (2020) \email{lbusett@@gmail.com}
 #' @note License: GPL 3.0
 #' @importFrom httr GET authenticate 
 #' @importFrom foreach foreach "%do%"
@@ -60,7 +62,7 @@
 s2_order <- function(
   s2_prodlist = NULL, 
   export_prodlist = TRUE, 
-  delay = 1, 
+  delay = 0.5, 
   apihub = NA, 
   reorder = TRUE
 ) {
@@ -79,9 +81,9 @@ s2_order <- function(
 .s2_order <- function(
   s2_prodlist = NULL,
   export_prodlist = TRUE, 
-  delay = 1,
+  delay = 0.5,
   apihub = NA,
-  reorder = reorder,
+  reorder = TRUE,
   .s2_availability = NULL,
   .log_path = TRUE # TRUE to log all, FALSE to skip the path of the json
 ) {
@@ -122,10 +124,10 @@ s2_order <- function(
   # check input format
   s2_prodlist <- as(s2_prodlist, "safelist")
   # TODO add input checks
-
+  
   # read credentials
   creds <- read_scihub_login(apihub)
-
+  
   # Split products to be downloaded from products to be ordered
   # 
   # First, check availability: order is NEVER attempted for already online
@@ -162,13 +164,13 @@ s2_order <- function(
   }
   quota_exceeded <- FALSE # initialise variable
   status_codes <- c()
-   
-  if (!is.null(attr(s2_prodlist, "order_status")) & !reorder) {  
+  
+  if (!is.null(attr(s2_prodlist, "order_status")) & reorder == FALSE) {  
     # if the list includes the "order_status" attribute (meaning it was 
     # derived from a json file saved by s2_order), and reorder is FALSE,  
-    # create a "old_order" variable contatining indexes of already succesfull orders
+    # create a "old_order" variable contatining indices of already succesfull orders
     # that in the meantime did not change to "available", 
-    # and an "to_order" variable containing indexes of datasets yet to be ordered
+    # and an "to_order" variable containing indices of datasets yet to be ordered
     # (notordered and not available - could happen that another user requested the
     # dataset in the meantime)
     old_order  <- which(!s2_availability & attr(s2_prodlist, "order_status") == "ordered")
@@ -185,7 +187,6 @@ s2_order <- function(
     if (i != to_order[1]) {
       Sys.sleep(delay)
     }
-    # browser()
     # order products
     make_order <- httr::GET(
       url = as.character(s2_prodlist[i]),
@@ -227,9 +228,11 @@ s2_order <- function(
   attr(out_list, "order_status") <- NULL
   
   # export list_towrite, unless export_prodlist == FALSE
-  list_towrite <- list(ordered    = as.list(out_list), 
-  available  = as.list(attr(out_list, "available")), 
-  notordered = as.list(attr(out_list, "notordered")))
+  list_towrite <- list(
+    ordered = as.list(out_list), 
+    available = as.list(attr(out_list, "available")), 
+    notordered = as.list(attr(out_list, "notordered"))
+  )
   if (any(export_prodlist != FALSE) & length(list_towrite) > 0) {
     order_time <- Sys.time()
     

@@ -87,22 +87,25 @@ testthat::test_that(
     )
     
     # Using the "reorder" argument on s2_order works - we test by running 
-    # "the same" command repeatedly, hoping that the statuses do not change
+    # "the same" command repeatetly, hoping that the statuses do not change
     # in a couple of seconds
     s2_order_3 <- s2_order(attr(s2_order_2, "path"), reorder = FALSE)
     s2_order_4 <- s2_order(attr(s2_order_2, "path"), reorder = TRUE)
-    testthat::expect_equal(attr(s2_order_2, "available"), 
-                           attr(s2_order_3, "available"),
-                           attr(s2_order_4, "available"))
-    
-    testthat::expect_equal(attr(s2_order_2, "ordered"), 
-                           attr(s2_order_3, "ordered"),
-                           attr(s2_order_4, "ordered"))
-    
-    testthat::expect_equal(attr(s2_order_2, "notordered"), 
-                           attr(s2_order_3, "notordered"),
-                           attr(s2_order_4, "notordered"))
-    
+    testthat::expect_equal(
+      attr(s2_order_2, "available"), 
+      attr(s2_order_3, "available"),
+      attr(s2_order_4, "available")
+    )
+    testthat::expect_equal(
+      attr(s2_order_2, "ordered"), 
+      attr(s2_order_3, "ordered"),
+      attr(s2_order_4, "ordered")
+    )
+    testthat::expect_equal(
+      attr(s2_order_2, "notordered"), 
+      attr(s2_order_3, "notordered"),
+      attr(s2_order_4, "notordered")
+    )
     # testthat::expect_message(
     #   s2_order_2 <- s2_order(s2_list_2),
     #   paste0(
@@ -122,17 +125,22 @@ testthat::test_that(
     if (!is.null(attr(s2_order_2, "path"))) {
       file_content <- jsonlite::fromJSON(attr(s2_order_2, "path"))
       testthat::expect_is(file_content, "list")
-      # now length is equal to 3 because a named list is saved
+      # starting from v. 1.2.2, length is equal to 3 because a named list is saved
       testthat::expect_length(file_content, 3) 
       testthat::expect_equal(sum(lengths(file_content)), length(s2_list_2))
-      
       # Compare all 3 "components" of the results (ordered, notordered and available)
-      testthat::expect_equivalent(unlist(as.character(file_content$available)), 
-                                  attr(s2_order_2, "available"))
-      testthat::expect_equivalent(unlist(as.character(file_content$ordered)), 
-                                  s2_order_2)
-      testthat::expect_equivalent(unlist(as.character(file_content$notordered)),
-                                  attr(s2_order_2, "notordered"))
+      testthat::expect_equivalent(
+        unlist(as.character(file_content$available)), 
+        attr(s2_order_2, "available")
+      )
+      testthat::expect_equivalent(
+        unlist(as.character(file_content$ordered)), 
+        s2_order_2
+      )
+      testthat::expect_equivalent(
+        unlist(as.character(file_content$notordered)),
+        attr(s2_order_2, "notordered")
+      )
     }
     # testthat::expect_equal(names(attributes(s2_order_2)), c("names","available","notordered", "path"))
     # testthat::expect_length(s2_order_2, length(s2_list_2))

@@ -130,7 +130,7 @@ s2_download <- function(
       date = TRUE,
       "Check if products are available for download..."
     )
-    safe_is_online(s2_prodlist)
+    safe_is_online(s2_prodlist, verbose = FALSE)
   } else {
     .s2_availability
   }

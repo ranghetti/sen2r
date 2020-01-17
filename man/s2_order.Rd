@@ -7,7 +7,7 @@
 s2_order(
   s2_prodlist = NULL,
   export_prodlist = TRUE,
-  delay = 1,
+  delay = 0.5,
   apihub = NA,
   reorder = TRUE
 )
@@ -27,29 +27,30 @@ It is also possible to pass the path of an existing folder in which the
 JSON file will be saved (otherwise, a default path is used).}
 
 \item{delay}{Numeric: time frame (in seconds) to leave between two
-consecutive orders. Default is 1 seconds: use a higher value if you
+consecutive orders. Default is 0.5 seconds: use a higher value if you
 encountered errors (i.e. not all the products were correctly ordered).}
 
 \item{apihub}{Path of the "apihub.txt" file containing credentials
 of SciHub account.
 If NA (default), the default location inside the package will be used.}
 
-\item{reorder}{logical If TRUE, and a json file exported by s2_order is passed
-as argument to the function, try to order again also the "available" and "ordered"
-S2 datasets. Otherwise, only order the "notordered" ones}
+\item{reorder}{Logical: If TRUE, and a json file exported by s2_order
+is passed as argument to the function, try to order again also
+the \code{"available"} and \code{"ordered"} S2 datasets.
+Otherwise, only order the \code{"notordered"} ones.}
 }
 \value{
 A named vector, containing the subset of \code{s2_prodlist} elements
 which were ordered.
 Moreover, the vector includes the following attributes:
 \itemize{
-\item "available" with the elements of \code{s2_prodlist} which were already
+\item \code{"available"} with the elements of \code{s2_prodlist} which were already
 available for download,
-\item "notordered" with the elements of \code{s2_prodlist} which were not ordered
+\item \code{"notordered"} with the elements of \code{s2_prodlist} which were not ordered
 for any reasons,
-\item "path" (only if argument \code{export_prodlist} is not FALSE) with the path of
-the json file in which the list of the ordered/available/notordered products
-was saved (if export_prodlist = TRUE).
+\item \code{"path"} (only if argument \code{export_prodlist} is not FALSE) with the path
+of the json file in which the list of the products (ordered, available
+and not ordered) was saved (if \code{export_prodlist = TRUE}).
 }
 }
 \description{
@@ -79,4 +80,6 @@ safe_is_online(order_path)
 }
 \author{
 Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
+
+Lorenzo Busetto, phD (2020) \email{lbusett@gmail.com}
 }

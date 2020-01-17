@@ -81,7 +81,7 @@ Archive." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1.9007</span>
       </span>
     </div>
 
@@ -157,7 +157,7 @@ available for download, or if they have to be ordered from the Long Term
 Archive.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>safe_is_online</span>(<span class='kw'>s2_prodlist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+    <pre class="usage"><span class='fu'>safe_is_online</span>(<span class='kw'>s2_prodlist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -173,6 +173,11 @@ Alternatively, it can be the path of a JSON file exported by <a href='s2_order.h
       <td><p>Path of the "apihub.txt" file containing credentials
 of SciHub account.
 If NA (default), the default location inside the package will be used.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>Logical: if TRUE, provide processing messages summarising
+how many of the SAFE archives in <code>s2_prodlist</code> are available online.</p></td>
     </tr>
     </table>
 
@@ -197,8 +202,8 @@ the SAFE url.</p>
 <span class='co'># archives already available online and 2 stored in the Long Term Archive)</span>
 
 <span class='co'># Check for availability</span>
-<span class='fu'>safe_is_online</span>(<span class='no'>list_safe</span>)</div><div class='output co'>#&gt; S2B_MSIL1C_20180224T133629_N0206_R038_T21FVC_20180224T194845.SAFE 
-#&gt;                                                             FALSE 
+<span class='fu'>safe_is_online</span>(<span class='no'>list_safe</span>)</div><div class='output co'>#&gt; <span class='message'>[2020-01-17 08:34:38] 2 out of 7 products are online.</span></div><div class='output co'>#&gt; S2B_MSIL1C_20180224T133629_N0206_R038_T21FVC_20180224T194845.SAFE 
+#&gt;                                                              TRUE 
 #&gt; S2B_MSIL1C_20180227T134629_N0206_R081_T21FVC_20180227T200327.SAFE 
 #&gt;                                                              TRUE 
 #&gt; S2A_MSIL1C_20180301T133641_N0206_R038_T21FVC_20180301T145524.SAFE 
@@ -224,6 +229,7 @@ the SAFE url.</p>
 
     <h2>Author</h2>
     <p>Luigi Ranghetti, phD (2019) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
+<p>Lorenzo Busetto, phD (2020) <a href='mailto:lbusett@gmail.com'>lbusett@gmail.com</a></p>
   </div>
 </div>
 

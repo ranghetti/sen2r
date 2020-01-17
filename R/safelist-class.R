@@ -58,16 +58,18 @@ setAs("character", "safelist", function(from) {
   if (all(length(from) == 1, file.exists(from))) {
     from <- jsonlite::fromJSON(from)
   }
-  
-  if (length(names(from)) == 3 && all(names(from) == c("ordered", "available", "notordered"))) {
+  if (
+    length(names(from)) == 3 && 
+    all(names(from) == c("ordered", "available", "notordered"))
+  ) {
     # check if input can be converted - case of list saved by s2_order
-    order_status <- c(rep("available", length(from$available)),
-                      rep("ordered", length(from$ordered)),
-                      rep("notordered", length(from$notordered)))
-    
+    order_status <- c(
+      rep("available", length(from$available)),
+      rep("ordered", length(from$ordered)),
+      rep("notordered", length(from$notordered))
+    )
     from <- c(from$available, from$ordered, from$notordered)
-    from = setNames(as.character(from), names(from))
-    
+    from <- setNames(as.character(from), names(from))
     # add an "order_status" attribute, used in s2_order to eventually re-check
     # order status, or just order datasets with attribute "notordered"
     attr(from, "order_status") <- order_status
@@ -88,8 +90,6 @@ setAs("character", "safelist", function(from) {
     ))) {
       stop("cannot convert to safelist (input format not recognised)")
     }
-    
-    
   }
   class(from) <- unique(c("safelist", class(from)))
   from

@@ -15,8 +15,8 @@ Alternatively, it can be the path of a JSON file exported by \link{s2_order}.}
 of SciHub account.
 If NA (default), the default location inside the package will be used.}
 
-\item{verbose}{Logical If TRUE, provide processing message shich summarizes
-how manu of the S2 images in \code{s2_prodlist} are available onlne.}
+\item{verbose}{Logical: if TRUE, provide processing messages summarising
+how many of the SAFE archives in \code{s2_prodlist} are available online.}
 }
 \value{
 A logical vector of the same length and names of the SAFE products
@@ -48,4 +48,6 @@ safe_is_online(list_safe)
 }
 \author{
 Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
+
+Lorenzo Busetto, phD (2020) \email{lbusett@gmail.com}
 }

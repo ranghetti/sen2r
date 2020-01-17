@@ -80,7 +80,7 @@ Long Term Archive." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1.9007</span>
       </span>
     </div>
 
@@ -155,7 +155,13 @@ Long Term Archive." />
 <a href='https://scihub.copernicus.eu/userguide/LongTermArchive'>Long Term Archive</a>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>s2_order</span>(<span class='kw'>s2_prodlist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>export_prodlist</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>delay</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+    <pre class="usage"><span class='fu'>s2_order</span>(
+  <span class='kw'>s2_prodlist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>export_prodlist</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>delay</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
+  <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>reorder</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -180,7 +186,7 @@ JSON file will be saved (otherwise, a default path is used).</p></td>
     <tr>
       <th>delay</th>
       <td><p>Numeric: time frame (in seconds) to leave between two
-consecutive orders. Default is 5 seconds: use a higher value if you
+consecutive orders. Default is 0.5 seconds: use a higher value if you
 encountered errors (i.e. not all the products were correctly ordered).</p></td>
     </tr>
     <tr>
@@ -189,19 +195,27 @@ encountered errors (i.e. not all the products were correctly ordered).</p></td>
 of SciHub account.
 If NA (default), the default location inside the package will be used.</p></td>
     </tr>
+    <tr>
+      <th>reorder</th>
+      <td><p>Logical: If TRUE, and a json file exported by s2_order
+is passed as argument to the function, try to order again also
+the <code>"available"</code> and <code>"ordered"</code> S2 datasets.
+Otherwise, only order the <code>"notordered"</code> ones.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A named vector, containing the selection of <code>s2_prodlist</code> elements
+    <p>A named vector, containing the subset of <code>s2_prodlist</code> elements
 which were ordered.
 Moreover, the vector includes the following attributes:</p><ul>
-<li><p>"available" with the elements of <code>s2_prodlist</code> which were already
+<li><p><code>"available"</code> with the elements of <code>s2_prodlist</code> which were already
 available for download,</p></li>
-<li><p>"notordered" with the elements of <code>s2_prodlist</code> which were not ordered
+<li><p><code>"notordered"</code> with the elements of <code>s2_prodlist</code> which were not ordered
 for any reasons,</p></li>
-<li><p>"path" (only if argument <code>export_prodlist</code> is not FALSE) with the path of
-the json file in which the list of the ordered products was saved.</p></li>
+<li><p><code>"path"</code> (only if argument <code>export_prodlist</code> is not FALSE) with the path
+of the json file in which the list of the products (ordered, available
+and not ordered) was saved (if <code>export_prodlist = TRUE</code>).</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
@@ -230,11 +244,23 @@ the json file in which the list of the ordered products was saved.</p></li>
 <span class='co'># archives already available online and 2 stored in the Long Term Archive)</span>
 
 <span class='co'># Order the products</span>
-<span class='no'>ordered_prods</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_order</span>(<span class='no'>list_safe</span>)</div><div class='output co'>#&gt; <span class='message'>[2020-01-14 14:45:47] Check if products are already available for download...</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-14 14:45:49] 1 Sentinel-2 images are already available and will not be ordered.</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-14 14:45:49] Ordering 6 Sentinel-2 images stored in the Long Term Archive...</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-14 14:46:18] 1 of 6 Sentinel-2 images were correctly ordered. You can check at a later time if the ordered products were made available using the command:</span>
+<span class='no'>ordered_prods</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_order</span>(<span class='no'>list_safe</span>)</div><div class='output co'>#&gt; <span class='message'>[2020-01-17 08:34:24] Check if products are already available for download...</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-17 08:34:26] 2 Sentinel-2 images are already available and will not be ordered.</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-17 08:34:26] Ordering 5 Sentinel-2 images stored in the Long Term Archive...</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-17 08:34:32] 5 of 5 Sentinel-2 images were correctly ordered. You can check at a later time if the ordered products are available online using the command:</span>
 #&gt; <span class='message'></span>
-#&gt; <span class='message'>safe_is_online("/home/lranghetti/.sen2r/lta_orders/lta_20200114_144618.json")</span></div><div class='output co'>#&gt; <span class='warning'>Warning: [2020-01-14 14:46:18] 5 of 6 Sentinel-2 images were not correctly ordered (HTML status code: 500).</span></div><div class='input'>
+#&gt; <span class='message'>safe_is_online("/home/lranghetti/.sen2r/lta_orders/lta_20200117_083432.json")</span></div><div class='input'>
 <span class='co'># Check in a second time if the product was made available</span>
-(<span class='no'>order_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>ordered_prods</span>, <span class='st'>"path"</span>))</div><div class='output co'>#&gt; [1] "/home/lranghetti/.sen2r/lta_orders/lta_20200114_144618.json"</div><div class='input'><span class='fu'><a href='safe_is_online.html'>safe_is_online</a></span>(<span class='no'>order_path</span>)</div><div class='output co'>#&gt; S2B_MSIL1C_20180224T133629_N0206_R038_T21FVC_20180224T194845.SAFE 
+(<span class='no'>order_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>ordered_prods</span>, <span class='st'>"path"</span>))</div><div class='output co'>#&gt; [1] "/home/lranghetti/.sen2r/lta_orders/lta_20200117_083432.json"</div><div class='input'><span class='fu'><a href='safe_is_online.html'>safe_is_online</a></span>(<span class='no'>order_path</span>)</div><div class='output co'>#&gt; <span class='message'>[2020-01-17 08:34:34] 2 out of 7 products are online.</span></div><div class='output co'>#&gt; S2B_MSIL1C_20180224T133629_N0206_R038_T21FVC_20180224T194845.SAFE 
+#&gt;                                                              TRUE 
+#&gt; S2B_MSIL1C_20180227T134629_N0206_R081_T21FVC_20180227T200327.SAFE 
+#&gt;                                                              TRUE 
+#&gt; S2A_MSIL1C_20180301T133641_N0206_R038_T21FVC_20180301T145524.SAFE 
+#&gt;                                                             FALSE 
+#&gt; S2B_MSIL1C_20180306T133629_N0206_R038_T21FVC_20180306T183210.SAFE 
+#&gt;                                                             FALSE 
+#&gt; S2A_MSIL1C_20180311T133641_N0206_R038_T21FVC_20180311T163528.SAFE 
+#&gt;                                                             FALSE 
+#&gt; S2A_MSIL1C_20180314T134631_N0206_R081_T21FVC_20180314T150724.SAFE 
+#&gt;                                                             FALSE 
+#&gt; S2B_MSIL1C_20180316T133639_N0206_R038_T21FVC_20180316T145348.SAFE 
 #&gt;                                                             FALSE </div><div class='input'># }
 </div></pre>
   </div>
@@ -249,6 +275,7 @@ the json file in which the list of the ordered products was saved.</p></li>
 
     <h2>Author</h2>
     <p>Luigi Ranghetti, phD (2019) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
+<p>Lorenzo Busetto, phD (2020) <a href='mailto:lbusett@gmail.com'>lbusett@gmail.com</a></p>
   </div>
 </div>
 
