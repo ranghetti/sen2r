@@ -41,7 +41,9 @@
 #'  if FALSE (default on Windows), they are absolute.
 #'  This takes effect only with `format = "VRT"`.
 #' @param utmzone (optional) UTM zone of output products (default:
-#'  the first one retrieved from input granules). Note that this function
+#'  the first one retrieved from input granules),
+#'  being a 3-length character (e.g. `"32N"`).
+#'  Note that this function
 #'  does not perform reprojections: if no granules refer to the specified
 #'  UTM zone, no output is created.
 #' @param overwrite Logical value: should existing output files be
@@ -168,7 +170,7 @@ s2_translate <- function(infile,
       type="message",
       "Using UTM zone ",sel_utmzone <- infile_meta$utm[1],".")
   } else {
-    sel_utmzone <- which(infile_meta$utm== as.integer(utmzone))
+    sel_utmzone <- which(infile_meta$utm == utmzone)
     if (length(sel_utmzone)==0) {
       print_message(
         type="warning",

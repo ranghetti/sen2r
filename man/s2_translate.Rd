@@ -70,7 +70,9 @@ if FALSE (default on Windows), they are absolute.
 This takes effect only with \code{format = "VRT"}.}
 
 \item{utmzone}{(optional) UTM zone of output products (default:
-the first one retrieved from input granules). Note that this function
+the first one retrieved from input granules),
+being a 3-length character (e.g. \code{"32N"}).
+Note that this function
 does not perform reprojections: if no granules refer to the specified
 UTM zone, no output is created.}
 
