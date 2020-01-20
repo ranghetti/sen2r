@@ -58,7 +58,7 @@ setAs("character", "safelist", function(from) {
   if (all(length(from) == 1, file.exists(from))) {
     from <- jsonlite::fromJSON(from)
   }
-  if (
+  if (length(nn(from)) == 0) {} else if (
     length(names(from)) == 3 && 
     all(names(from) == c("ordered", "available", "notordered"))
   ) {
