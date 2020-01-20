@@ -635,7 +635,10 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
           metadata[[i]][["tiles"]] <- paste(av_tiles, collapse = ",")
         }
         if ("utm" %in% sel_info) {
-          metadata[[i]][["utm"]] <- as.integer(unique(substr(av_tiles,1,2)))
+          metadata[[i]][["utm"]] <- unique(paste0(
+            substr(av_tiles,1,2),
+            ifelse(substr(av_tiles,3,3) %in% LETTERS[1:13], "S", "N")
+          ))
         }
       }
       
