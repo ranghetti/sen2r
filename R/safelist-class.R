@@ -59,7 +59,7 @@ setAs("character", "safelist", function(from) {
     from <- unlist(jsonlite::fromJSON(from))
   }
   # check if input can be converted
-  if (any(c(
+  if (length(nn(from)) == 0) {} else if (any(c(
     is.null(names(from)),
     !grepl("^http.+Products\\(.+\\)/\\$value$", as.vector(from)),
     !grepl("^S2[AB]\\_MSIL[12][AC]\\_[0-9]{8}T[0-9]{6}\\_N[0-9]{4}\\_R[0-9]{3}\\_T[A-Z0-9]{5}\\_[0-9]{8}T[0-9]{6}\\.SAFE$", names(from))
@@ -72,7 +72,7 @@ setAs("character", "safelist", function(from) {
 
 setAs("data.frame", "safelist", function(from) {
   # check if input can be converted
-  if (any(c(
+  if (nrow(from) == 0) {} else if (any(c(
     is.null(from$name), is.null(from$url), 
     !grepl("^http.+Products\\(.+\\)/\\$value$", from$url),
     !grepl("^S2[AB]\\_MSIL[12][AC]\\_[0-9]{8}T[0-9]{6}\\_N[0-9]{4}\\_R[0-9]{3}\\_T[A-Z0-9]{5}\\_[0-9]{8}T[0-9]{6}\\.SAFE$", from$name)
