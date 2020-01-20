@@ -289,7 +289,7 @@ s2_order <- function(
         "."#," Try using a higher value for the argument \"delay\"."
       },
       if (.log_path == TRUE) {paste0(
-        "You can try ordering them at a later time ",
+        " You can try ordering them at a later time ",
         "using the command:\n\n",
         if (is.null(attr(out_list, "path"))) {paste0(
           's2_order(c(\n  "',paste(out_list, collapse = '",\n  "'),'"\n))'
