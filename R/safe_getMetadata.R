@@ -823,9 +823,6 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
         as.POSIXct(metadata_dt$creation_datetime, format = "%s"), tz = "UTC", usetz = TRUE
       )
     }
-    if (!is.null(metadata_dt$utm)) {
-      metadata_dt$utm <- as.integer(metadata_dt$utm)
-    }
     if (format == "data.frame") {
       data.frame(metadata_dt)
     } else if (format == "data.table") {

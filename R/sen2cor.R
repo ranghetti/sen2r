@@ -70,8 +70,8 @@
 #'  (it is used when the function is called by `sen2r()`).
 #' @param .log_output (optional) Internal parameter
 #'  (it is used when the function is called by `sen2r()`).
-#' @return Vector character with the list ot the output products (being corrected or already
-#'  existing)
+#' @return Vector character with the list ot the output products
+#'  (being corrected or already existing).
 #'
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0

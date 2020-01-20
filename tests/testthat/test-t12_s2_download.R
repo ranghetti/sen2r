@@ -25,14 +25,15 @@ testthat::test_that(
       "S2A_MSIL2A_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE" = 
         "https://scihub.copernicus.eu/apihub/odata/v1/Products('b4b6b897-a03a-4f3c-b78d-974066574aed')/$value"
     )
-    suppressWarnings(s2_download(
+    suppressWarnings(s2_l2a_downloaded <- s2_download(
       s2_l2a_list,
       downloader = "builtin",
       outdir = safe_dir,
       overwrite = test_download
     )) # suppressWarnings used to manage possible warnings for skept Md5sum checks
-    exp_outsafe_1 <- file.path(safe_dir, names(s2_l2a_list))
+    exp_outsafe_1 <- file.path(safe_dir, names(s2_l2a_downloaded))
     testthat::expect_true(all(file.exists(exp_outsafe_1)))
+    testthat::expect_equal(length(s2_l2a_downloaded), length(s2_l2a_list))
     
     # test raster metadata
     exp_meta_ex <- raster_metadata(file.path(
@@ -68,7 +69,7 @@ testthat::test_that(
       testthat::expect_equal(as.Date(safe_metadata1$sensing_datetime), rep(as.Date("2017-07-03"),2))
       testthat::expect_equal(safe_metadata1$id_orbit, rep("022",2))
       testthat::expect_equal(safe_metadata1$id_tile, c("32TNS","32TNR"))
-      testthat::expect_equal(safe_metadata1$utm, rep(32,2))
+      testthat::expect_equal(safe_metadata1$utm, rep("32N",2))
       testthat::expect_equal(safe_metadata1$direction, rep("DESCENDING",2))
       testthat::expect_equal(safe_metadata1$orbit_n, rep("22",2))
       testthat::expect_equal(safe_metadata1$nodata_value, rep("0",2))
@@ -118,14 +119,15 @@ testthat::test_that(
       "S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE" = 
         "https://scihub.copernicus.eu/apihub/odata/v1/Products('5f590bcb-ee55-4a20-8e75-bde99f5b93d4')/$value"
     )
-    suppressWarnings(s2_download(
+    suppressWarnings(s2_l2a_downloaded <- s2_download(
       s2_l1c_list,
       downloader = "aria2",
       outdir = safe_dir,
       overwrite = test_download
     )) # suppressWarnings used to manage possible warnings for skept Md5sum checks
-    exp_outsafe_2 <- file.path(safe_dir, names(s2_l1c_list))
+    exp_outsafe_2 <- file.path(safe_dir, names(s2_l2a_downloaded))
     testthat::expect_true(all(file.exists(exp_outsafe_2)))
+    testthat::expect_equal(length(s2_l2a_downloaded), length(s2_l1c_list))
     
     # test raster metadata
     exp_meta_ex <- raster_metadata(file.path(
@@ -162,7 +164,7 @@ testthat::test_that(
       testthat::expect_equal(unique(safe_metadata$level), "1C")
       testthat::expect_equal(unique(safe_metadata$id_orbit), "022")
       testthat::expect_equal(unique(safe_metadata$id_tile), c("32TNR", "32TNS"))
-      testthat::expect_equal(unique(safe_metadata$utm), 32)
+      testthat::expect_equal(unique(safe_metadata$utm), "32N")
       testthat::expect_equal(unique(safe_metadata$direction), "DESCENDING")
       testthat::expect_equal(unique(safe_metadata$orbit_n), "22")
       testthat::expect_equal(unique(safe_metadata$nodata_value), "0")

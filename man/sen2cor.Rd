@@ -104,8 +104,8 @@ possible (e.g. \code{parallel = 4}).}
 (it is used when the function is called by \code{sen2r()}).}
 }
 \value{
-Vector character with the list ot the output products (being corrected or already
-existing)
+Vector character with the list ot the output products
+(being corrected or already existing).
 }
 \description{
 The function uses Sen2Cor to manually correct L1C products.

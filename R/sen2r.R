@@ -1719,7 +1719,7 @@ sen2r <- function(param_list = NULL,
             }
           }
           
-          s2_download(
+          s2_downloaded_l2a <- s2_download(
             s2_to_download,
             outdir = path_l2a,
             downloader = pm$downloader,
@@ -1804,8 +1804,8 @@ sen2r <- function(param_list = NULL,
             
           }
           
-          s2_download(
-            sel_s2_list_l1c[!names(sel_s2_list_l1c) %in% list.files(path_l1c, "\\.SAFE$")],
+          s2_downloaded_l1c <- s2_download(
+            s2_to_download,
             outdir = path_l1c,
             downloader = pm$downloader,
             overwrite = pm$overwrite_safe
@@ -1892,6 +1892,25 @@ sen2r <- function(param_list = NULL,
           )]
         ),
         ]
+      
+      if (pm$online == TRUE) {
+        # replace SAFE names changed after download (i.e. updated creation date)
+        sel_s2_dt_id <- sel_s2_dt[
+          ,paste(mission, level, sensing_datetime, id_orbit, id_tile)
+          ]
+        s2_downloaded_id <- c(
+          safe_getMetadata(s2_downloaded_l1c, info = "nameinfo")[
+            ,paste(mission, level, sensing_datetime, id_orbit, id_tile)
+            ],
+          safe_getMetadata(s2_downloaded_l2a, info = "nameinfo")[
+            ,paste(mission, level, sensing_datetime, id_orbit, id_tile)
+            ]
+        )
+        sel_s2_dt[
+          match(s2_downloaded_id, sel_s2_dt_id), 
+          name:=names(c(s2_downloaded_l1c,s2_downloaded_l2a))
+          ]
+      }
       
       # redefine sel_s2_list_l1c/l2a
       sel_s2_list_l1c <- sel_s2_dt[level=="1C",url] # list of required L1C

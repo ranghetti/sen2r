@@ -115,7 +115,7 @@ if (test_sen2cor) {
       testthat::expect_equal(safe_metadata$id_orbit, "022")
       testthat::expect_equal(safe_metadata$id_tile, "32TNS")
       testthat::expect_equal(safe_metadata$tiles, "32TNS")
-      testthat::expect_equal(safe_metadata$utm, 32)
+      testthat::expect_equal(safe_metadata$utm, "32N")
       testthat::expect_equal(safe_metadata$direction, "DESCENDING")
       testthat::expect_equal(safe_metadata$orbit_n, "22")
       
@@ -184,7 +184,7 @@ if (test_sen2cor) {
       testthat::expect_equal(safe_metadata$id_orbit, rep("022",2))
       testthat::expect_equal(safe_metadata$id_tile, c("32TNR","32TNS"))
       testthat::expect_equal(safe_metadata$tiles, c("32TNR","32TNS"))
-      testthat::expect_equal(safe_metadata$utm, rep(32,2))
+      testthat::expect_equal(safe_metadata$utm, rep("32N",2))
       testthat::expect_equal(safe_metadata$direction, rep("DESCENDING",2))
       testthat::expect_equal(safe_metadata$orbit_n, rep("22",2))
       
