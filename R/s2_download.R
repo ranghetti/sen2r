@@ -180,13 +180,15 @@ s2_download <- function(
         
         binpaths <- load_binpaths("aria2")
         if (Sys.info()["sysname"] != "Windows") {
-          link <- gsub("/\\$value", "/\\\\$value", link)
+          link_aria <- gsub("/\\$value", "/\\\\$value", link)
+        } else {
+          link_aria <- link
         }
         aria_string <- paste0(
           binpaths$aria2c, " -x 2 --check-certificate=false -d ",
           dirname(zip_path),
           " -o ", basename(zip_path),
-          " ", "\"", as.character(link), "\"",
+          " ", "\"", as.character(link_aria), "\"",
           " --allow-overwrite --file-allocation=none --retry-wait=2",
           " --http-user=", "\"", creds[1], "\"",
           " --http-passwd=", "\"", creds[2], "\"",
