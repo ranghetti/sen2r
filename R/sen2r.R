@@ -2035,6 +2035,7 @@ sen2r <- function(param_list = NULL,
       
       # export needed variables
       paths <- attr(sel_s2names, "paths")
+      paths_istemp <- attr(sel_s2names, "paths_istemp")
       
       ### GDAL processing: convert SAFE, merge tiles, warp, mask and compute indices ###
       
@@ -2565,9 +2566,10 @@ sen2r <- function(param_list = NULL,
         }
         
         # check file which have been created
-        names_out <- unique(unlist(sel_s2names$new))
-        # exclude temporary files
-        names_out <- names_out[!grepl(tmpdir_groupA, names_out, fixed=TRUE)]
+        names_out <- unique(unlist(
+          # exclude temporary files
+          sel_s2names$new[!paths_istemp[names(sel_s2names$new)]]
+        ))
         names_out_created <- names_out[file.exists(nn(names_out))]
         
         

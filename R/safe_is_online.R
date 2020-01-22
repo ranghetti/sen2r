@@ -36,7 +36,7 @@
 #' }
 
 safe_is_online <- function(s2_prodlist = NULL, apihub = NA, verbose = TRUE) {
-
+  
   # convert input NA arguments in NULL
   for (a in c("s2_prodlist", "apihub")) {
     if (suppressWarnings(all(is.na(get(a))))) {

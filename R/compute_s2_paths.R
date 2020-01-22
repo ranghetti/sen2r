@@ -151,17 +151,36 @@ compute_s2_paths <- function(pm,
     "indices" = if (steps_todo["masked"]) {"masked"} else if (steps_todo["warped"]) {"warped"} else {"merged"}
   )
   
+  # Which paths are temporary
+  paths_istemp <- c(
+    "L1C" = is.na(pm$path_l1c),
+    "L2A" = is.na(pm$path_l2a),
+    "tiles" = !output_req[["tiles"]],
+    "merged" = is.na(pm$path_merged) & (is.na(pm$path_out) | steps_todo[["warped"]] | steps_todo[["masked"]]),
+    "warped" = !output_req[["warped"]],
+    "warped_scl" = !output_req[["warped_scl"]],
+    "rgb" = !output_req[["rgb"]],
+    "masked" = !output_req[["masked"]],
+    "indices" = !output_req[["indices"]]
+  )
+
   # Paths
   paths <- c(
-    "L1C" = if (!is.na(pm$path_l1c)) {pm$path_l1c} else {file.path(tmpdir,"SAFE")},
-    "L2A" = if (!is.na(pm$path_l2a)) {pm$path_l2a} else {file.path(tmpdir,"SAFE")},
-    "tiles" = if (output_req["tiles"]) {pm$path_tiles} else {file.path(tmpdir,"tiles")},
-    "merged" = if (!is.na(pm$path_merged)) {pm$path_merged} else if (!is.na(pm$path_out) & !steps_todo[["warped"]] & !steps_todo[["masked"]]) {pm$path_out} else {file.path(tmpdir,"merged")},
-    "warped" = if (output_req["warped"]) {pm$path_out} else {file.path(tmpdir,"warped")},
-    "warped_scl" = if (output_req["warped_scl"]) {pm$path_out} else {file.path(tmpdir,"warped")},
-    "rgb" = if (output_req["rgb"]) {pm$path_rgb} else {file.path(tmpdir,"rgb")},
-    "masked" = if (output_req["masked"]) {pm$path_out} else {file.path(tmpdir,"masked")},
-    "indices" = if (output_req["indices"]) {pm$path_indices} else {file.path(tmpdir,"indices")}
+    "L1C" = if (!paths_istemp[["L1C"]]) {pm$path_l1c} else {file.path(tmpdir,"SAFE")},
+    "L2A" = if (!paths_istemp[["L2A"]]) {pm$path_l2a} else {file.path(tmpdir,"SAFE")},
+    "tiles" = if (!paths_istemp[["tiles"]]) {pm$path_tiles} else {file.path(tmpdir,"tiles")},
+    "merged" = if (!is.na(pm$path_merged)) {
+      pm$path_merged
+    } else if (!is.na(pm$path_out) & !steps_todo[["warped"]] & !steps_todo[["masked"]]) {
+      pm$path_out
+    } else {
+      file.path(tmpdir,"merged")
+    },
+    "warped" = if (!paths_istemp[["warped"]]) {pm$path_out} else {file.path(tmpdir,"warped")},
+    "warped_scl" = if (!paths_istemp[["warped_scl"]]) {pm$path_out} else {file.path(tmpdir,"warped")},
+    "rgb" = if (!paths_istemp[["rgb"]]) {pm$path_rgb} else {file.path(tmpdir,"rgb")},
+    "masked" = if (!paths_istemp[["masked"]]) {pm$path_out} else {file.path(tmpdir,"masked")},
+    "indices" = if (!paths_istemp[["indices"]]) {pm$path_indices} else {file.path(tmpdir,"indices")}
   )
   paths <- sapply(paths, normalize_path, mustWork = FALSE)
   
@@ -816,6 +835,7 @@ compute_s2_paths <- function(pm,
   attr(outnames, "out_format") <- out_format
   attr(outnames, "which_dep") <- output_dep
   attr(outnames, "paths") <- paths
+  attr(outnames, "paths_istemp") <- paths_istemp
   outnames
   
 }
