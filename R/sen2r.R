@@ -974,7 +974,7 @@ sen2r <- function(param_list = NULL,
   list_prods <- list_prods[!is.na(list_prods)]
   
   # Exit gracefully if preprocess = TRUE and list_prods is empty
-  if (preprocess && length(list_prods) == 0) {
+  if (pm$preprocess && length(list_prods) == 0) {
     print_message(
       type ="message",
       date = TRUE, 
