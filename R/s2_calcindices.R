@@ -126,10 +126,6 @@ s2_calcindices <- function(
   # to avoid NOTE on check
   prod_type <- . <- i <- NULL
   
-  # Internal functions 2
-  power <- function(x,y) {x^y}
-  clip <- function(x,min,max) {(x+min+2*max+abs(x-min)-abs(x+min-2*max+abs(x-min)))/4}
-  
   # Internal function 1
   calcindex_raster <- function(
     x,
@@ -557,3 +553,7 @@ s2_calcindices <- function(
   return(outfiles)
   
 }
+
+# Accessory functions to interpret NumPy functions power() and clip()
+power <- function(x,y) {x^y}
+clip <- function(x,min,max) {(x+min+2*max+abs(x-min)-abs(x+min-2*max+abs(x-min)))/4}
