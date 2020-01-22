@@ -1515,7 +1515,6 @@ sen2r <- function(param_list = NULL,
   
   ## Generate the list of required SAFE
   if (pm$preprocess==TRUE) {
-    
     # if preprocess is required, only the SAFE necessary to generate new files are considered
     s2_list_l2a_req <- s2_list_l2a[
       names(s2_list_l2a) %in% basename(nn(s2names$req$tiles$L2A))
@@ -1538,6 +1537,9 @@ sen2r <- function(param_list = NULL,
     s2_dt <- s2_dt[name %in% c(names(s2_list_l1c_req),names(s2_list_l2a_req)),]
     s2_list_l1c <- s2_list_l1c_req
     s2_list_l2a <- s2_list_l2a_req
+  } else {
+    # if preprocess is required, only the SAFE necessary to generate new files are considered
+    safe_names_l1c_tocorrect <- names(s2_list_l1c_tocorrect)
   }
   
   # Compute the maximum number of cores to be used
