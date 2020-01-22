@@ -973,6 +973,17 @@ sen2r <- function(param_list = NULL,
   }
   list_prods <- list_prods[!is.na(list_prods)]
   
+  # Exit gracefully if preprocess = TRUE and list_prods is empty
+  if (preprocess && length(list_prods) == 0) {
+    print_message(
+      type ="message",
+      date = TRUE, 
+      "No output products selected. Use `preprocess = FALSE` if you only want to download S2 images.\n", 
+      "sen2r execution terminated"
+    )
+    return(invisible(character(0)))
+  }
+  
   # update s2_levels if processing is TRUE (retrieve from products)
   if (pm$preprocess==TRUE) {
     pm$s2_levels <- c(
@@ -2008,7 +2019,7 @@ sen2r <- function(param_list = NULL,
           date = TRUE,
           "Execution of sen2r session terminated."
         )
-        browser()
+        
         sen2r_output <- c(file.path(path_l1c,names(sel_s2_list_l1c)),
                           file.path(path_l2a,names(sel_s2_list_l2a)))
         attributes(sen2r_output) <- c(attributes(sen2r_output), out_attributes)
@@ -2754,8 +2765,6 @@ sen2r <- function(param_list = NULL,
   }
   
   # Issue processing report
-  # browser()
-  
   status <- s2_process_report(
     s2_list_ordered, 
     s2names, 
