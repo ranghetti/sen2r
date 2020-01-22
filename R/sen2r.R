@@ -1705,22 +1705,22 @@ sen2r <- function(param_list = NULL,
           # }) == "compact")) {
           # If OVERWRITE == TRUE, use the full list. Otherwise, download only the missing ones
           if (pm$overwrite_safe) {
-            s2_to_download <- sel_s2_list_l2a
+            s2_to_download_l2a <- sel_s2_list_l2a
           } else {
-            s2_to_download <- sel_s2_list_l2a[!names(sel_s2_list_l2a) %in% list.files(path_l2a, "\\.SAFE$")]
-            s2_to_skip <- names(sel_s2_list_l2a[names(sel_s2_list_l2a) %in% list.files(path_l2a, "\\.SAFE$")])
-            if (length(s2_to_skip) != 0) {
-              message("Images ", paste(s2_to_skip, collapse = ", "),
+            s2_to_download_l2a <- sel_s2_list_l2a[!names(sel_s2_list_l2a) %in% list.files(path_l2a, "\\.SAFE$")]
+            s2_to_skip_l2a <- names(sel_s2_list_l2a[names(sel_s2_list_l2a) %in% list.files(path_l2a, "\\.SAFE$")])
+            if (length(s2_to_skip_l2a) != 0) {
+              message("Images ", paste(s2_to_skip_l2a, collapse = ", "),
                       " are already on your system and will be skipped.",
                       " Set `overwrite_safe` to TRUE to re-download them")
             }
-            if (length(s2_to_download) != 0) {
+            if (length(s2_to_download_l2a) == 0) {
               message("No L2A images needed")
             }
           }
           
           s2_downloaded_l2a <- s2_download(
-            s2_to_download,
+            s2_to_download_l2a,
             outdir = path_l2a,
             downloader = pm$downloader,
             apihub = sel_apihub_path,
@@ -1785,27 +1785,27 @@ sen2r <- function(param_list = NULL,
           
           # If OVERWRITE == TRUE, use the full list. Otherwise, download only the missing ones
           if (pm$overwrite_safe) {
-            s2_to_download <- sel_s2_list_l1c
+            s2_to_download_l1c <- sel_s2_list_l1c
           } else {
-            s2_to_download <- sel_s2_list_l1c[!names(sel_s2_list_l1c) %in% list.files(path_l1c, "\\.SAFE$")]
-            s2_to_skip <- sel_s2_list_l1c[names(sel_s2_list_l1c) %in% list.files(path_l1c, "\\.SAFE$")]
-            if (length(s2_to_skip) != 0) {
+            s2_to_download_l1c <- sel_s2_list_l1c[!names(sel_s2_list_l1c) %in% list.files(path_l1c, "\\.SAFE$")]
+            s2_to_skip_l1c <- sel_s2_list_l1c[names(sel_s2_list_l1c) %in% list.files(path_l1c, "\\.SAFE$")]
+            if (length(s2_to_skip_l1c) != 0) {
               print_message(
                 type = "message",
-                "Images ", paste(names(s2_to_skip), collapse = ", "),
+                "Images ", paste(names(s2_to_skip_l1c), collapse = ", "),
                 " are already on your system and will be skipped.",
                 " Set `overwrite_safe` to TRUE to re-download them."
               )
             }
             
-            if (length(s2_to_download) == 0) {
+            if (length(s2_to_download_l1c) == 0) {
               message("No L1C images needed")
             }
             
           }
           
           s2_downloaded_l1c <- s2_download(
-            s2_to_download,
+            s2_to_download_l1c,
             outdir = path_l1c,
             downloader = pm$downloader,
             overwrite = pm$overwrite_safe
