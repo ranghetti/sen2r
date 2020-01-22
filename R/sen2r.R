@@ -810,7 +810,7 @@ sen2r <- function(param_list = NULL,
   ## Check consistency of parameters
   # TODO work in progress
   pm <- check_param_list(pm, type = "error", check_paths = TRUE, correct = TRUE)
-  
+
   # if ONLINE check internet connection and scihub credentials
   if (pm$online) {
     if (!check_scihub_connection()) {
@@ -974,7 +974,7 @@ sen2r <- function(param_list = NULL,
   list_prods <- list_prods[!is.na(list_prods)]
   
   # Exit gracefully if preprocess = TRUE and list_prods is empty
-  if (pm$preprocess && length(list_prods) == 0) {
+  if (pm$preprocess == TRUE && length(list_prods) == 0) {
     print_message(
       type ="message",
       date = TRUE, 

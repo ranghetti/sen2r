@@ -696,10 +696,21 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
       list_prods <- unique(c(list_prods, pm$index_source))
     }
     list_prods <- list_prods[!is.na(list_prods)]
-    pm$s2_levels <- c(
-      if (any(list_prods %in% l1c_prods)) {"l1c"},
-      if (any(list_prods %in% l2a_prods)) {"l2a"}
+    pm$s2_levels <- if (length(list_prods) > 0) {
+      c(
+        if (any(list_prods %in% l1c_prods)) {"l1c"},
+        if (any(list_prods %in% l2a_prods)) {"l2a"}
+      )
+    } else {
+      pm_def$s2_levels
+    }
+  }
+  if (all(!pm$s2_levels %in% c("l1c", "l2a"))) {
+    print_message(
+      type = type,
+      "Parameter \"s2_levels\" must be 'l1c', 'l2a' or both (setting to the default)."
     )
+    pm$s2_levels <- pm_def$s2_levels
   }
   
   
