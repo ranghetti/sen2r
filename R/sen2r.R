@@ -303,6 +303,8 @@
 #'      function;
 #'  - `ltapath` with the path of a json file containing the list of the 
 #'      SAFE Sentinel-2 archives eventually ordered in Long Term Archive.
+#'  - `status` with a data.frame summarizing the status of the processing (see
+#'     [s2_process_report])
 #'
 #' @import data.table
 #' @importFrom utils packageVersion
@@ -791,7 +793,9 @@ sen2r <- function(param_list = NULL,
         date = TRUE,
         "Program interrupted by the user (GUI closed)."
       )
-      return()
+      sen2r_output <- character(0)
+      attr(sen2r_output, "status") <- data.frame(completed = FALSE)
+      return(invisible(sen2r_output))
     }
     
     print_message(
@@ -1309,7 +1313,7 @@ sen2r <- function(param_list = NULL,
     ] %>% 
     .[lta==TRUE, sensing_date]
   s2_list_lta <- s2_dt[lta==TRUE, url] # list of SAFE to be ordered
-  s2_list_ign <- s2_dt[lta==FALSE & as.Date(sensing_datetime) %in% s2_lta_dates, url] # list of SAFE to be ignored
+  s2_list_ign <- s2_dt[lta==FALSE & as.Date(sensing_datetime) %in% s2_lta_dates, url] # list of SAFE to be ignored (to avoid working on a date when only some images of the "needed" ones are available)
   s2_list_l1c <- s2_dt[lta==FALSE & !as.Date(sensing_datetime) %in% s2_lta_dates & level=="1C", url] # list of required L1C
   s2_list_l2a <- s2_dt[lta==FALSE & !as.Date(sensing_datetime) %in% s2_lta_dates & level=="2A", url] # list of required L2A
   names(s2_list_lta) <- s2_dt[lta==TRUE, name]
@@ -1365,6 +1369,14 @@ sen2r <- function(param_list = NULL,
     s2_list_l1c_tocorrect <- character()
     s2_list_l2a_exp <- s2_list_l2a
   }
+  
+  # IF all images have to be ordered, then exit gracefully
+  if (length(s2_list_lta) == dim(s2_dt)[1]) {
+    status <- s2_process_report(s2_list_ordered, pm = pm)
+    sen2r_output <- character(0)
+    attr(sen2r_output, "status")    <- status
+    return(invisible(sen2r_output))
+  } 
   
   # if preprocess is required, define output names
   if (pm$preprocess == TRUE) {
@@ -1444,7 +1456,7 @@ sen2r <- function(param_list = NULL,
         print_message(
           type = "message",
           date = TRUE,
-          "No output products matching the settings were found; \nplease ",
+          "No output products matching the query settings were found; \nplease ",
           if (pm$online == FALSE) {"try in online mode, or "},
           "specify less restrictive settings."
         )
@@ -1452,14 +1464,24 @@ sen2r <- function(param_list = NULL,
         print_message(
           type = "message",
           date = TRUE,
-          "All the required output files already exist; nothing to do.\n",
+          "All the required output files for dates not on lta already exist; nothing to do.\n",
           "To reprocess, run sen2r() with the argument overwrite = TRUE,\nor ",
           if (pm$online == FALSE) {"try running sen2r() in online mode, or "},
           "specify a different output directory."
         )
       }
+      
       sen2r_output <- character(0)
       attributes(sen2r_output) <- c(attributes(sen2r_output), out_attributes)
+      
+      status <- s2_process_report(
+        s2_list_ordered, 
+        s2names, 
+        pm, 
+        s2_list_cloud_ignored  = if (exists("cloudlist0")) cloudlist0  else NA,
+        s2_list_failed_ignored = if (exists("ignorelist0")) ignorelist0 else NA)
+      
+      attr(sen2r_output, "status") <- status
       return(invisible(sen2r_output))
     }
     
@@ -1700,10 +1722,11 @@ sen2r <- function(param_list = NULL,
           names(sel_s2_list_l2a), info = "version", 
           format = "vector", simplify = TRUE
         ) == "compact")) {
+          
           # if (all(sapply(names(sel_s2_list_l2a), function(x) {
           #   safe_getMetadata(x, "nameinfo")$version
           # }) == "compact")) {
-          # If OVERWRITE == TRUE, use the full list. Otherwise, download only the missing ones
+          # If OVERWRITE == TRUE, use the full list. Otherwise,  download only the missing ones
           if (pm$overwrite_safe) {
             s2_to_download_l2a <- sel_s2_list_l2a
           } else {
@@ -1810,6 +1833,7 @@ sen2r <- function(param_list = NULL,
             downloader = pm$downloader,
             overwrite = pm$overwrite_safe
           )
+          
         } else { # otherwise, launch one per tile
           print_message(
             type = "error",
@@ -1984,13 +2008,17 @@ sen2r <- function(param_list = NULL,
           date = TRUE,
           "Execution of sen2r session terminated."
         )
-        
+        browser()
         sen2r_output <- c(file.path(path_l1c,names(sel_s2_list_l1c)),
                           file.path(path_l2a,names(sel_s2_list_l2a)))
         attributes(sen2r_output) <- c(attributes(sen2r_output), out_attributes)
+        
+        # HERE WE SHOULD ISSUE MESSAGES RELATED TO DOWNLOADED/ORDERED/NOTORDERED
+        
         return(invisible(sen2r_output))
         
-      }
+      } 
+      # else {
       
       
       # update names for output files (after #filter2)
@@ -2148,36 +2176,34 @@ sen2r <- function(param_list = NULL,
               
             }
           }
-          if("l2a" %in% pm$s2_levels) {
-            list_l2a_prods <- list_prods[list_prods %in% l2a_prods]
-            for (sel_prod in sel_s2names$req$tiles$L2A) {
-              tiles_l2a_names_out <- c(
-                tiles_l2a_names_out,
-                trace_function(
-                  s2_translate,
-                  infile = sel_prod,
-                  tmpdir = file.path(tmpdir_groupA, "s2_translate_l2a"),
-                  rmtmp = FALSE,
-                  outdir = paths["tiles"],
-                  prod_type = list_l2a_prods,
-                  format = out_format["tiles"],
-                  tiles = pm$s2tiles_selected,
-                  res = pm$res_s2,
-                  subdirs = pm$path_subdirs,
-                  overwrite = pm$overwrite,
-                  trace_files = unlist(sel_s2names$new$tiles)
-                )
+          list_l2a_prods <- list_prods[list_prods %in% l2a_prods]
+          for (sel_prod in sel_s2names$req$tiles$L2A) {
+            tiles_l2a_names_out <- c(
+              tiles_l2a_names_out,
+              trace_function(
+                s2_translate,
+                infile = sel_prod,
+                tmpdir = file.path(tmpdir_groupA, "s2_translate_l2a"),
+                rmtmp = FALSE,
+                outdir = paths["tiles"],
+                prod_type = list_l2a_prods,
+                format = out_format["tiles"],
+                tiles = pm$s2tiles_selected,
+                res = pm$res_s2,
+                subdirs = pm$path_subdirs,
+                overwrite = pm$overwrite,
+                trace_files = unlist(sel_s2names$new$tiles)
               )
-              # tiles_l2a_names_out <- c(
-              #   tiles_l2a_names_out,
-              #   s2_translate(infile = sel_prod,
-              #                outdir = paths["tiles"],
-              #                prod_type = list_l2a_prods,
-              #                format = tiles_outformat,
-              #                res = pm$res_s2,
-              #                subdirs = pm$path_subdirs,
-              #                overwrite = pm$overwrite))
-            }
+            )
+            # tiles_l2a_names_out <- c(
+            #   tiles_l2a_names_out,
+            #   s2_translate(infile = sel_prod,
+            #                outdir = paths["tiles"],
+            #                prod_type = list_l2a_prods,
+            #                format = tiles_outformat,
+            #                res = pm$res_s2,
+            #                subdirs = pm$path_subdirs,
+            #                overwrite = pm$overwrite))
           }
           
           tiles_names_out <- c(if("l1c" %in% pm$s2_levels) {tiles_l1c_names_out},
@@ -2706,6 +2732,7 @@ sen2r <- function(param_list = NULL,
       )}
     )
   }
+  
   if (length(names_cloudcovered)>0) {
     cloudlist_path <- gsub("\\.json$","_cloudlist.txt",param_list)
     if (is(param_list, "character")) {
@@ -2724,31 +2751,42 @@ sen2r <- function(param_list = NULL,
     )
   }
   
-  # Log how to recover S2 ordered products / the current processing
-  if (length(nn(s2_list_ordered)) > 0) {
-    print_message(
-      type = "message",
-      "Some Sentinel-2 images, not available for direct download, ",
-      "were correctly ordered from the Long Term Archive. ",
-      "You can check at a later time if the ordered products were made available ",
-      "using the command:\n",
-      '  safe_is_online("',attr(s2_list_ordered, "path"),'")\n',
-      "In case of available products, the processing chain can be completed ",
-      "re-launching it with the command:\n",
-      '  sen2r("',attr(pm, "outpath"),'")'
-    )
-  }
+  # Issue processing report
+  # browser()
+  
+  status <- s2_process_report(
+    s2_list_ordered, 
+    s2names, 
+    names_out, 
+    pm, 
+    s2_list_cloudcovered   = if (length(names_cloudcovered) != 0) names_cloudcovered else NA, 
+    s2_list_failed         = if (length(names_missing)      != 0) names_missing else NA,
+    s2_list_cloud_ignored  = if (exists("cloudlist0"))  cloudlist0 else NA,
+    s2_list_failed_ignored = if (exists("ignorelist0")) ignorelist0 else NA)
+  
+  # status <- s2_process_report(
+  #   s2_list_ordered, 
+  #   s2names, 
+  #   pm, 
+  #   s2_list_cloudcovered = ifelse(exists("cloudlist0"), 
+  #                                 c(names_cloudcovered, cloudlist0),
+  #                                 names_cloudcovered),
+  #   s2_list_failed = ifelse(exists("ignorelist0"), 
+  #                           c(names_missing, ignorelist0),
+  #                           names_missing))
+  attr(sen2r_output, "status") <- status
+  
   
   # Exit
-  print_message(
-    type = "message",
-    date = TRUE,
-    "Execution of sen2r session terminated.",
-    if (length(nn(s2_list_ordered)) == 0) {paste0(
-      "\nThe processing chain can be eventually re-launched with the command:\n",
-      '  sen2r("',attr(pm, "outpath"),'")'
-    )}
-  )
+  # print_message(
+  #   type = "message",
+  #   date = TRUE,
+  #   "Execution of sen2r session terminated.",
+  #   if (length(nn(s2_list_ordered)) == 0) {paste0(
+  #     "\nThe processing chain can be eventually re-launched with the command:\n",
+  #     '  sen2r("',attr(pm, "outpath"),'")'
+  #   )}
+  # )
   
   gc()
   

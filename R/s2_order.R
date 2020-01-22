@@ -138,6 +138,7 @@ s2_order <- function(
       date = TRUE,
       "Check if products are already available for download..."
     )
+    
     safe_is_online(s2_prodlist, verbose = FALSE)
   } else {
     .s2_availability
@@ -276,7 +277,7 @@ s2_order <- function(
   if (sum(notordered_products) > 0) {
     
     print_message(
-      type = "warning",
+      type = "message",
       date = TRUE,
       sum(notordered_products)," of ",sum(!s2_availability)," Sentinel-2 images ",
       "were not correctly ordered ",
