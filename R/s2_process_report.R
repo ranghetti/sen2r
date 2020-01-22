@@ -47,7 +47,7 @@ s2_process_report <- function(s2_list_ordered,
         type = "message",
         date = TRUE, 
         "###### sen2r Processing Report ###### ")
-    browser()
+
     if (!download_only) {
         
         # First, compute number of non-processed and notonline DATES ----
@@ -86,9 +86,10 @@ s2_process_report <- function(s2_list_ordered,
         } else {
             lgt_failed_ignored <- 0
         }
-        browser()
+        
         if (lgt_cld_ignored != 0 | lgt_failed_ignored != 0) {
-            lgt_existing     <- max(table(as.Date(substr(basename(unlist(s2names$exp)), 7, 14),
+            exp_new_files    <- s2names$exp[!attr(s2names, "paths_istemp")[names(s2names$exp)]]
+            lgt_existing     <- max(table(as.Date(substr(basename(unlist(exp_new_files)), 7, 14),
                                              format = "%Y%m%d")))
             n_cld_ignored    <- length(which(lgt_cld_ignored    == lgt_existing))
             n_failed_ignored <- length(which(lgt_failed_ignored == lgt_existing))
@@ -187,7 +188,7 @@ s2_process_report <- function(s2_list_ordered,
                 date = TRUE, 
                 paste0("Outputs for: ", n_failed_dates, 
                        " out of: ", n_req_tot_dates, " expected dates ", 
-                       " not created because of unexpected reasons! \n")
+                       " not created because of unexpected reasons!")
             )
         }
         
@@ -199,7 +200,7 @@ s2_process_report <- function(s2_list_ordered,
                 "Outputs for: ", n_cloudy_dates, 
                 " out of: ", n_req_tot_dates, " expected dates ", 
                 " not created because cloudiness over the spatial extent is above ",
-                pm$max_mask, "%.\n"
+                pm$max_mask, "%."
             )
         }
         
@@ -245,7 +246,7 @@ s2_process_report <- function(s2_list_ordered,
                     date = TRUE, 
                     "Order for: ", n_notordered_imgs, " out of: ",
                     n_notonline_imgs, 
-                    " offline images failed due to exceeded user quota or other reasons.\n"
+                    " offline images failed due to exceeded user quota or other reasons."
                 )
                 print_message(
                     type = "message",
@@ -255,8 +256,7 @@ s2_process_report <- function(s2_list_ordered,
                 print_message(
                     type = "message",
                     date = TRUE, 
-                    "You can check later if the ordered images are online ",
-                    "with the command:\n",
+                    "You can check later if the ordered images are with the command:\n",
                     '  safe_is_online("',attr(s2_list_ordered, "path"),'")'
                 )
             }
@@ -276,8 +276,6 @@ s2_process_report <- function(s2_list_ordered,
             )
             
         }
-        
-        print_message(type = "message", "\n")
         
         print_message(
             type = "message",

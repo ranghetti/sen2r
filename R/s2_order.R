@@ -149,8 +149,7 @@ s2_order <- function(
     print_message(
       type = "message",
       date = TRUE,
-      sum(s2_availability)," Sentinel-2 images are already available ",
-      "and will not be ordered."
+      sum(s2_availability)," Sentinel-2 images are already online."
     )
   }
   
