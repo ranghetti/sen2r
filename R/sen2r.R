@@ -677,7 +677,7 @@ sen2r <- function(param_list = NULL,
   print_message(
     type = "message",
     date = TRUE,
-    "Starting sen2r execution."
+    "###### Starting sen2r execution ######"
   )
   
   # import python modules
@@ -978,9 +978,14 @@ sen2r <- function(param_list = NULL,
     print_message(
       type ="message",
       date = TRUE, 
-      "No output products selected. Use `preprocess = FALSE` if you only want to download S2 images.\n", 
-      "sen2r execution terminated"
+      "No output products selected. Use `preprocess = FALSE` if you only want to download S2 images.\n" 
     )
+    print_message(
+      type ="message",
+      date = TRUE, 
+      "###### Execution of sen2r session terminated ######" 
+    )
+    
     return(invisible(character(0)))
   }
   
