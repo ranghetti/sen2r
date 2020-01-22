@@ -399,7 +399,7 @@
 sen2r <- function(param_list = NULL,
                   gui = NA,
                   preprocess = TRUE,
-                  s2_levels = c("l1c","l2a"),
+                  s2_levels = "l2a",
                   sel_sensor = c("s2a","s2b"),
                   online = TRUE,
                   order_lta = TRUE,
