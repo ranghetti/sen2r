@@ -801,79 +801,79 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   
   # -- path_rgb --
   if (pm$preprocess == TRUE) {
-  if (sum(!is.na(pm$list_rgb))==0) {
-    pm$path_rgb <- NA
-  } else if (is.na(pm$path_rgb) | pm$path_rgb=="") {
-    pm$path_rgb <- pm$path_out
-  }
-  if (all(!is.na(pm$path_rgb), pm$path_rgb != "")) {
-    if(!dir.exists(pm$path_rgb)) {
-      if(!dir.exists(dirname(pm$path_rgb))) {
-        print_message(
-          type = type,
-          "Directory \"",dirname(pm$path_rgb),"\" does not exist ",
-          "(it must be created before continuing)."
-        )
-      }
+    if (sum(!is.na(pm$list_rgb))==0) {
+      pm$path_rgb <- NA
+    } else if (is.na(pm$path_rgb) | pm$path_rgb=="") {
+      pm$path_rgb <- pm$path_out
     }
-  } else if (all(length(nn(pm$list_rgb[!is.na(pm$list_rgb)])) > 0, check_paths)) {
-    print_message(
-      type = type,
-      "Neither parameter \"path_rgb\" nor \"path_out\" were specified; ",
-      "please provide the path of an existing directory for at least one of the two."
-    )
-  }
+    if (all(!is.na(pm$path_rgb), pm$path_rgb != "")) {
+      if(!dir.exists(pm$path_rgb)) {
+        if(!dir.exists(dirname(pm$path_rgb))) {
+          print_message(
+            type = type,
+            "Directory \"",dirname(pm$path_rgb),"\" does not exist ",
+            "(it must be created before continuing)."
+          )
+        }
+      }
+    } else if (all(length(nn(pm$list_rgb[!is.na(pm$list_rgb)])) > 0, check_paths)) {
+      print_message(
+        type = type,
+        "Neither parameter \"path_rgb\" nor \"path_out\" were specified; ",
+        "please provide the path of an existing directory for at least one of the two."
+      )
+    }
   }
   
   
   # -- path_indices --
   if (pm$preprocess == TRUE) {
-  if (sum(!is.na(pm$list_indices))==0) {
-    pm$path_indices <- NA
-  } else if (is.na(pm$path_indices) | pm$path_indices=="") {
-    pm$path_indices <- pm$path_out
-  }
-  if (all(!is.na(pm$path_indices), pm$path_indices != "")) {
-    if(!dir.exists(pm$path_indices)) {
-      if(!dir.exists(dirname(pm$path_indices))) {
-        print_message(
-          type = type,
-          "Directory \"",dirname(pm$path_indices),"\" does not exist ",
-          "(it must be created before continuing)."
-        )
-      }
+    if (sum(!is.na(pm$list_indices))==0) {
+      pm$path_indices <- NA
+    } else if (is.na(pm$path_indices) | pm$path_indices=="") {
+      pm$path_indices <- pm$path_out
     }
-  } else if (all(length(nn(pm$list_indices[!is.na(pm$list_indices)])) > 0, check_paths)) {
-    print_message(
-      type = type,
-      "Neither parameter \"path_indices\" nor \"path_out\" were specified; ",
-      "please provide the path of an existing directory for at least one of the two."
-    )
-  }
+    if (all(!is.na(pm$path_indices), pm$path_indices != "")) {
+      if(!dir.exists(pm$path_indices)) {
+        if(!dir.exists(dirname(pm$path_indices))) {
+          print_message(
+            type = type,
+            "Directory \"",dirname(pm$path_indices),"\" does not exist ",
+            "(it must be created before continuing)."
+          )
+        }
+      }
+    } else if (all(length(nn(pm$list_indices[!is.na(pm$list_indices)])) > 0, check_paths)) {
+      print_message(
+        type = type,
+        "Neither parameter \"path_indices\" nor \"path_out\" were specified; ",
+        "please provide the path of an existing directory for at least one of the two."
+      )
+    }
   }
   
   # -- path_out --
   if (pm$preprocess == TRUE) {
-  if (sum(!is.na(nn(pm$list_prods)))==0) {
-    pm$path_out <- NA
-  }
-  if (all(!is.na(pm$path_out), pm$path_out != "")) {
-    if(!dir.exists(pm$path_out)) {
-      if(!dir.exists(dirname(pm$path_out))) {
-        print_message(
-          type = type,
-          "Directory \"",dirname(pm$path_out),"\" does not exist ",
-          "(it must be created before continuing)."
-        )
-      }
+    if (sum(!is.na(nn(pm$list_prods)))==0) {
+      pm$path_out <- NA
     }
-  } else if (all(length(nn(pm$list_prods[!is.na(pm$list_prods)])) > 0, check_paths)) {
-    print_message(
-      type = type,
-      "Parameter \"path_out\" was not specified; ",
-      "please provide the path of an existing directory."
-    )
-  }
+    if (all(!is.na(pm$path_out), pm$path_out != "")) {
+      if(!dir.exists(pm$path_out)) {
+        if(!dir.exists(dirname(pm$path_out))) {
+          print_message(
+            type = type,
+            "Directory \"",dirname(pm$path_out),"\" does not exist ",
+            "(it must be created before continuing)."
+          )
+        }
+      }
+    } else if (all(length(nn(pm$list_prods[!is.na(pm$list_prods)])) > 0, check_paths)) {
+      print_message(
+        type = type,
+        "Parameter \"path_out\" was not specified; ",
+        "please provide the path of an existing directory."
+      )
+    }
   }
   
   
