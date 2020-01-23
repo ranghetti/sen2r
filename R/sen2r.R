@@ -1961,7 +1961,10 @@ sen2r <- function(param_list = NULL,
       names(sel_s2_list_l2a) <- sel_s2_dt[level=="2A",name]
       
       ## Apply sen2cor
-      if (pm$step_atmcorr %in% c("auto","scihub")) {
+      if (all(
+        pm$step_atmcorr %in% c("auto","scihub"),
+        "l2a" %in% pm$s2_levels
+      )) {
         
         sel_s2_list_l1c_tocorrect <- if (pm$overwrite_safe==FALSE) {
           sel_s2_list_l1c[

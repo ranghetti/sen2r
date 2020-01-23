@@ -773,7 +773,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   
   
   # -- path_tiles --
-  if (all(!is.na(pm$path_tiles), pm$path_tiles != "")) {
+  if (all(!is.na(pm$path_tiles), pm$path_tiles != "", pm$preprocess == TRUE)) {
     if(!dir.exists(pm$path_tiles)) {
       if(!dir.exists(dirname(pm$path_tiles))) {
         print_message(
@@ -787,7 +787,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   
   
   # -- path_merged --
-  if (all(!is.na(pm$path_merged), pm$path_merged != "")) {
+  if (all(!is.na(pm$path_merged), pm$path_merged != "", pm$preprocess == TRUE)) {
     if(!dir.exists(pm$path_merged)) {
       if(!dir.exists(dirname(pm$path_merged))) {
         print_message(
@@ -800,6 +800,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   }
   
   # -- path_rgb --
+  if (pm$preprocess == TRUE) {
   if (sum(!is.na(pm$list_rgb))==0) {
     pm$path_rgb <- NA
   } else if (is.na(pm$path_rgb) | pm$path_rgb=="") {
@@ -822,9 +823,11 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
       "please provide the path of an existing directory for at least one of the two."
     )
   }
+  }
   
   
   # -- path_indices --
+  if (pm$preprocess == TRUE) {
   if (sum(!is.na(pm$list_indices))==0) {
     pm$path_indices <- NA
   } else if (is.na(pm$path_indices) | pm$path_indices=="") {
@@ -847,8 +850,10 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
       "please provide the path of an existing directory for at least one of the two."
     )
   }
+  }
   
   # -- path_out --
+  if (pm$preprocess == TRUE) {
   if (sum(!is.na(nn(pm$list_prods)))==0) {
     pm$path_out <- NA
   }
@@ -868,6 +873,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
       "Parameter \"path_out\" was not specified; ",
       "please provide the path of an existing directory."
     )
+  }
   }
   
   
