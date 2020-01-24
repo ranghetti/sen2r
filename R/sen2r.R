@@ -1351,7 +1351,6 @@ sen2r <- function(param_list = NULL,
   # Add output attribute related to LTA json
   out_attributes[["ltapath"]] <- attr(s2_list_ordered, "path")
   
-  
   # add expected L2A names (after sen2cor)
   if (pm$step_atmcorr %in% c("auto","scihub")) {
     s2_list_l1c_tocorrect <- if (pm$overwrite_safe==FALSE) {
@@ -1388,9 +1387,12 @@ sen2r <- function(param_list = NULL,
   
   # IF all images have to be ordered, then exit gracefully
   if (length(s2_list_lta) == dim(s2_dt)[1]) {
-    status <- s2_process_report(s2_list_ordered, pm = pm)
+    status <- s2_process_report(s2_list_ordered, 
+                                pm = pm,
+                                download_only = !pm$preprocess)
     sen2r_output <- character(0)
-    attr(sen2r_output, "status")    <- status
+    attr(sen2r_output, "status")  <- status
+    attr(sen2r_output, "ltapath") <- attr(s2_list_ordered, "path")
     return(invisible(sen2r_output))
   } 
   
@@ -2023,21 +2025,28 @@ sen2r <- function(param_list = NULL,
       
       # if no processing is required, stop here # TODO see #TODO3 (end of file)
       if (pm$preprocess == FALSE) {
-        
-        print_message(
-          type = "message",
-          date = TRUE,
-          "Execution of sen2r session terminated."
-        )
-        
+        # print_message(
+        #   type ="message",
+        #   date = TRUE, 
+        #   "All images available online were downloaded.\n" 
+        # )
+        # print_message(
+        #   type ="message",
+        #   date = TRUE, 
+        #   "###### Execution of sen2r session terminated ######" 
+        # )
         sen2r_output <- c(file.path(path_l1c,names(sel_s2_list_l1c)),
                           file.path(path_l2a,names(sel_s2_list_l2a)))
+        status <- s2_process_report(s2_list_ordered, 
+                          download_only     = TRUE, 
+                          s2_downloaded = c(s2_downloaded_l1c, s2_downloaded_l2a), 
+                          s2_skipped    = c(s2_to_skip_l1c, s2_to_skip_l2a), 
+                          s2_corrected  = ifelse(pm$s2_levels == "l1c", 
+                                                NA,
+                                                s2_list_l1c_tocorrect))
+        out_attributes[["status"]] <- status
         attributes(sen2r_output) <- c(attributes(sen2r_output), out_attributes)
-        
-        # HERE WE SHOULD ISSUE MESSAGES RELATED TO DOWNLOADED/ORDERED/NOTORDERED
-        
         return(invisible(sen2r_output))
-        
       } 
       # else {
       
@@ -2245,6 +2254,7 @@ sen2r <- function(param_list = NULL,
           )
           
           dir.create(paths["merged"], recursive=FALSE, showWarnings=FALSE)
+
           merged_names_out <- trace_function(
             s2_merge,
             infiles = unlist(sel_s2names$req$merged)[file.exists(unlist(sel_s2names$req$merged))], # TODO add warning when sum(!file.exists(sel_s2names$merged_names_new))>0
@@ -2305,7 +2315,7 @@ sen2r <- function(param_list = NULL,
           if(pm$path_subdirs==TRUE){
             sapply(unique(dirname(unlist(c(warped_nonscl_reqout,warped_scl_reqout)))),dir.create,showWarnings=FALSE)
           }
-          
+
           if (any(!file.exists(nn(unlist(warped_nonscl_reqout)))) | pm$overwrite==TRUE) {
             # here trace_function() is not used, since argument "tr" matches multiple formal arguments.
             # manual cycle is performed.
@@ -2783,32 +2793,13 @@ sen2r <- function(param_list = NULL,
     s2_list_cloudcovered   = if (length(names_cloudcovered) != 0) names_cloudcovered else NA, 
     s2_list_failed         = if (length(names_missing)      != 0) names_missing else NA,
     s2_list_cloud_ignored  = if (exists("cloudlist0"))  cloudlist0 else NA,
-    s2_list_failed_ignored = if (exists("ignorelist0")) ignorelist0 else NA)
-  
-  # status <- s2_process_report(
-  #   s2_list_ordered, 
-  #   s2names, 
-  #   pm, 
-  #   s2_list_cloudcovered = ifelse(exists("cloudlist0"), 
-  #                                 c(names_cloudcovered, cloudlist0),
-  #                                 names_cloudcovered),
-  #   s2_list_failed = ifelse(exists("ignorelist0"), 
-  #                           c(names_missing, ignorelist0),
-  #                           names_missing))
+    s2_list_failed_ignored = if (exists("ignorelist0")) ignorelist0 else NA, 
+    s2_downloaded = c(s2_downloaded_l1c, s2_downloaded_l2a), 
+    s2_skipped    = c(s2_to_skip_l1c, s2_to_skip_l2a), 
+    s2_corrected  = ifelse(pm$s2_levels == "l1c", 
+                           NA,
+                           s2_list_l1c_tocorrect))
   attr(sen2r_output, "status") <- status
-  
-  
-  # Exit
-  # print_message(
-  #   type = "message",
-  #   date = TRUE,
-  #   "Execution of sen2r session terminated.",
-  #   if (length(nn(s2_list_ordered)) == 0) {paste0(
-  #     "\nThe processing chain can be eventually re-launched with the command:\n",
-  #     '  sen2r("',attr(pm, "outpath"),'")'
-  #   )}
-  # )
-  
   gc()
   
   # Return output file paths

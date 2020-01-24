@@ -28,6 +28,11 @@
 #'    because not all require images are online;
 #'   n_ordered_imgs     = Number of images correctly ordered from lta; 
 #'   n_notordered_imgs  = Number of images for whic lta order failed; 
+#'   n_downloaded       = Number of images downloaded during current run; 
+#'   n_skipped          = Number of required images not downloaded because already on disk;
+#'     (note: this does not include images that would be needed to process a date for 
+#'     which all products are already on disk) 
+#'   n_corrected          = Number of images atmospherically corrected using sen2cor; 
 #'   completed          = Logical, indicating if processing can be considered "complete". 
 #'    It is set to TRUE in case n_notonline_dates = 0. 
 #' @rdname s2_process_report
@@ -40,32 +45,35 @@ s2_process_report <- function(s2_list_ordered,
                               s2_list_failed         = NA, 
                               s2_list_cloud_ignored  = NA, 
                               s2_list_failed_ignored = NA, 
-                              download_only = FALSE) {
-    
+                              download_only = FALSE, 
+                              s2_downloaded = NA, 
+                              s2_skipped    = NA, 
+                              s2_corrected  = NA) {
+
     print_message(type = "message","\n ")
     print_message(
         type = "message",
         date = TRUE, 
         "###### sen2r Processing Report ###### ")
-
+    
+    # First, compute number of non-processed and notonline DATES ----
+    
+    # n_notonline_dates: dates for which lta orders had to be placed, because 
+    # some/all S2 images needed to compute them are offline (on LTA) AND 
+    # not all required products are already on disk
+    
+    ordered_dates    <- as.Date(substr(names(s2_list_ordered), 12, 19), format = "%Y%m%d")
+    notordered_dates <- as.Date(substr(names(attr(s2_list_ordered, "notordered"))
+                                       , 12, 19), format = "%Y%m%d")
+    notonline_dates   <- unique(c(ordered_dates, notordered_dates))
+    n_notonline_dates <- length(notonline_dates)
+    
+    # Number of ordered/notordered IMAGES (NOT dates)
+    n_ordered_imgs    <- length(ordered_dates)
+    n_notordered_imgs <- length(notordered_dates)
+    n_notonline_imgs  <- n_ordered_imgs + n_notordered_imgs
+    
     if (!download_only) {
-        
-        # First, compute number of non-processed and notonline DATES ----
-        
-        # n_notonline_dates: dates for which lta orders had to be placed, because 
-        # some/all S2 images needed to compute them are offline (on LTA) AND 
-        # not all required products are already on disk
-        
-        ordered_dates    <- as.Date(substr(names(s2_list_ordered), 12, 19), format = "%Y%m%d")
-        notordered_dates <- as.Date(substr(names(attr(s2_list_ordered, "notordered"))
-                                           , 12, 19), format = "%Y%m%d")
-        notonline_dates   <- unique(c(ordered_dates, notordered_dates))
-        n_notonline_dates <- length(notonline_dates)
-        
-        # Number of ordered/notordered IMAGES (NOT dates)
-        n_ordered_imgs    <- length(ordered_dates)
-        n_notordered_imgs <- length(notordered_dates)
-        n_notonline_imgs  <- n_ordered_imgs + n_notordered_imgs
         
         # Then, verify which dates were not considered because of ignorelist/cloudlist
         # Here, we compute, for each date, the number of "failed" or cloudlisted
@@ -90,7 +98,7 @@ s2_process_report <- function(s2_list_ordered,
         if (lgt_cld_ignored != 0 | lgt_failed_ignored != 0) {
             exp_new_files    <- s2names$exp[!attr(s2names, "paths_istemp")[names(s2names$exp)]]
             lgt_existing     <- max(table(as.Date(substr(basename(unlist(exp_new_files)), 7, 14),
-                                             format = "%Y%m%d")))
+                                                  format = "%Y%m%d")))
             n_cld_ignored    <- length(which(lgt_cld_ignored    == lgt_existing))
             n_failed_ignored <- length(which(lgt_failed_ignored == lgt_existing))
         } else {
@@ -276,37 +284,72 @@ s2_process_report <- function(s2_list_ordered,
             )
             
         }
-        
-        print_message(
-            type = "message",
-            date = TRUE,
-            "###### Execution of sen2r session terminated ######",
-            if (length(nn(s2_list_ordered)) == 0) {paste0(
-                "\nThe processing chain can be re-launched with the command:\n",
-                '  sen2r("',attr(pm, "outpath"),'")'
-            )}
-        )
-        
-        # create "status" data.frame    
-        
-        
-        # a RUN is "complete" if we did not need to order images because all was online
-        # This allows to easily plan "reprocessing" using a while cycle
-        is_complete <- ifelse((n_ordered_imgs + n_notordered_imgs )== 0, 
-                              TRUE, 
-                              FALSE)
-        
-        status <- data.frame(
-            time              = Sys.time(), 
-            n_req_tot_dates   = n_req_tot_dates, 
-            n_ondisk_dates    = n_ondisk_dates, 
-            n_proc_dates      = n_proc_dates, 
-            n_complete_out    = n_proc_dates +  n_ondisk_dates - n_failed_dates - n_cloudy_dates,
-            n_failed_dates    = n_failed_dates, 
-            n_cloudy_dates    = n_cloudy_dates, 
-            n_notonline_dates = n_notonline_dates, 
-            n_ordered_imgs    = n_ordered_imgs, 
-            n_notordered_imgs = n_notordered_imgs, 
-            completed         = is_complete)   
+        # number of dates for which all expected processing is finished    
+        n_complete_out <- n_proc_dates +  n_ondisk_dates - n_failed_dates - n_cloudy_dates
+    } else {
+        # if only download, only report the number of downloades/skipped/ordered/notordered
+        # images (could change in the future!)
+        n_req_tot_dates <- NA
+        n_proc_dates    <- NA
+        n_complete_out  <- NA
+        n_failed_dates  <- NA
+        n_cloudy_dates  <- NA
+        n_ondisk_dates  <- NA
+        # number of dates for which all expected processing is finished    
+        n_complete_out <- n_proc_dates +  n_ondisk_dates
     }
+    
+    # get number of downloaded images
+    if (!all(is.na(s2_downloaded))) {
+        n_downloaded <- length(which(!is.na(s2_downloaded)))
+    } else {
+        n_downloaded <- 0
+    }
+    
+    if (!all(is.na(s2_skipped))) {
+        n_skipped <- length(which(!is.na(s2_skipped)))
+    } else {
+        n_skipped <- 0
+    }
+    
+    if (!all(is.na(s2_corrected))) {
+        n_corrected <- length(which(!is.na(s2_corrected)))
+    } else {
+        n_corrected <- 0
+    }
+    
+    
+    # a RUN is "complete" if we did not need to order images because all was online
+    # This allows to easily plan "reprocessing" using a while cycle
+    is_complete <- ifelse((n_ordered_imgs + n_notordered_imgs ) == 0, 
+                          TRUE, 
+                          FALSE)
+    
+    # create "status" data.frame    
+    status <- data.frame(
+        time              = Sys.time(), 
+        n_req_tot_dates   = n_req_tot_dates, 
+        n_ondisk_dates    = n_ondisk_dates, 
+        n_proc_dates      = n_proc_dates, 
+        n_complete_out    = n_complete_out,
+        n_failed_dates    = n_failed_dates, 
+        n_cloudy_dates    = n_cloudy_dates, 
+        n_notonline_dates = n_notonline_dates, 
+        n_ordered_imgs    = n_ordered_imgs, 
+        n_notordered_imgs = n_notordered_imgs, 
+        n_downloaded      = n_downloaded,
+        n_skipped         = n_skipped,
+        n_corrected       = n_corrected,
+        completed         = is_complete)   
+    
+    print_message(
+        type = "message",
+        date = TRUE,
+        "###### Execution of sen2r session terminated ######",
+        if (length(nn(s2_list_ordered)) == 0) {paste0(
+            "\nThe processing chain can be re-launched with the command:\n",
+            '  sen2r("',attr(pm, "outpath"),'")'
+        )}
+    )
+    return(status)
 }
