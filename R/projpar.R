@@ -28,13 +28,8 @@ projpar <- function(x, par, abort = FALSE) {
   # import python modules
   py <- init_python()
   
-  crs_check <- tryCatch(
-    st_crs2(x), 
-    error = function(e) {st_crs(NA)}
-  )
-  if (is.na(crs_check$proj4string)) {
-    return(NA)
-  }
+  crs_check <- try(st_crs2(x), silent = TRUE)
+  if (inherits(crs_check, "try-error")) {return(NA)}
   
   proj4_wkt <- st_as_text_2(crs_check) %>%
     r_to_py() %>%
@@ -61,13 +56,8 @@ projpar <- function(x, par, abort = FALSE) {
 
 projname <- function(x, abort = FALSE) {
   
-  crs_check <- tryCatch(
-    st_crs2(x), 
-    error = function(e) {st_crs(NA)}
-  )
-  if (is.na(crs_check$proj4string)) {
-    return(NA)
-  }
+  crs_check <- try(st_crs2(x), silent = TRUE)
+  if (inherits(crs_check, "try-error")) {return(NA)}
   
   proj4_wkt <- st_as_text_2(crs_check, pretty = TRUE)
   proj4_name <- gsub(

@@ -582,7 +582,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   
   
   # -- proj --
-  if (length(tryCatch(st_crs2(pm$proj)$proj4string, error = function(e){NULL}))==0) {
+  if (inherits(try(st_crs2(pm$proj), silent = TRUE), "try-error")) {
     print_message(
       type = type,
       "Output projection (parameter \"proj\" ) is not recognised; ",

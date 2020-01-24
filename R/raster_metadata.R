@@ -133,7 +133,10 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
       if ("unit" %in% meta) {
         out_list[[i]][["unit"]] <- if (sf::st_is_longlat(ref_proj)) {
           "degree"
-        } else if (grepl("\\+units\\=m", ref_proj$proj4string)) {
+        } else if (
+          # grepl("\\+units\\=m", ref_proj$proj4string)
+          gsub('^.+UNIT\\[\\"([a-zA-Z]+)\\".*$',"\\1",st_as_text_2(ref_proj)) == "Meter"
+        ) { # FIXME #260
           "Meter"
         } else {
           as.character(projpar(ref_proj, "unit"))

@@ -3574,17 +3574,17 @@ s2_gui <- function(param_list = NULL,
                           "res" %in% input$reference_usefor,
                         rv$reference$unit,
                         "Meter") # TODO allow degrees if outproj is longlat
-      # output proj4string
+      # output WKT/WKT2
       rl$proj <- if (input$use_reference==TRUE &
                      "proj" %in% input$reference_usefor) {
-        rv$reference$proj$proj4string
+        st_as_text_2(rv$reference$proj)
       } else if (input$reproj==FALSE) {
         NA
       } else {
         tryCatch(
-          st_crs2(input$outproj),
-          error = function(e) {st_crs(NA)}
-        )$proj4string
+          st_as_text_2(input$outproj),
+          error = function(e) {NA}
+        )
       }
       # resampling methods ("nearest","bilinear","cubic","cubicspline","lanczos","average","mode")
       rl$resampling <- input$resampling
