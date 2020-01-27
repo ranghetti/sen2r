@@ -2043,9 +2043,20 @@ sen2r <- function(param_list = NULL,
         status <- sen2r_process_report(
           s2_list_ordered, 
           download_only = TRUE, 
-          s2_downloaded = c(s2_downloaded_l1c, s2_downloaded_l2a), 
-          s2_skipped = c(s2_to_skip_l1c, s2_to_skip_l2a), 
-          s2_corrected = ifelse(pm$s2_levels == "l1c", NA, s2_list_l1c_tocorrect)
+          
+          s2_downloaded = c(
+            if (exists("s2_downloaded_l1c")) s2_downloaded_l1c else NA,
+            if (exists("s2_downloaded_l2a")) s2_downloaded_l2a else NA
+          ), 
+          s2_skipped = c(
+            if (exists("s2_to_skip_l1c")) s2_to_skip_l1c else NA,
+            if (exists("s2_to_skip_l2a")) s2_to_skip_l2a else NA
+          ), 
+          s2_corrected = if (all("l1c" %in% pm$s2_levels, length(pm$s2_levels) == 1)) {
+            NA
+          } else {
+            s2_list_l1c_tocorrect
+          }
         )
         out_attributes[["status"]] <- status
         attributes(sen2r_output) <- c(attributes(sen2r_output), out_attributes)
@@ -2797,9 +2808,19 @@ sen2r <- function(param_list = NULL,
     s2_list_failed = if (length(names_missing) != 0) names_missing else NA,
     s2_list_cloud_ignored = if (exists("cloudlist0")) cloudlist0 else NA,
     s2_list_failed_ignored = if (exists("ignorelist0")) ignorelist0 else NA, 
-    s2_downloaded = c(s2_downloaded_l1c, s2_downloaded_l2a), 
-    s2_skipped = c(s2_to_skip_l1c, s2_to_skip_l2a), 
-    s2_corrected = ifelse(pm$s2_levels == "l1c", NA, s2_list_l1c_tocorrect)
+    s2_downloaded = c(
+      if (exists("s2_downloaded_l1c")) s2_downloaded_l1c else NA,
+      if (exists("s2_downloaded_l2a")) s2_downloaded_l2a else NA
+    ), 
+    s2_skipped = c(
+      if (exists("s2_to_skip_l1c")) s2_to_skip_l1c else NA,
+      if (exists("s2_to_skip_l2a")) s2_to_skip_l2a else NA
+    ), 
+    s2_corrected = if (all("l1c" %in% pm$s2_levels, length(pm$s2_levels) == 1)) {
+      NA
+    } else {
+      s2_list_l1c_tocorrect
+    }
   )
   attr(sen2r_output, "status") <- status
   gc()
