@@ -27,6 +27,7 @@
 #' @note License: GPL 3.0
 #' @importFrom httr GET RETRY authenticate progress write_disk
 #' @importFrom foreach foreach "%do%"
+#' @importFrom tools md5sum
 #' @export
 #'
 #' @examples
@@ -215,11 +216,11 @@ s2_download <- function(
             config = httr::authenticate(creds[1], creds[2]),
             httr::write_disk(md5file <- tempfile(), overwrite = TRUE)
           )
-          md5 <- toupper(readLines(md5file, warn = FALSE)) == toupper(tools::md5sum(zip_path))
+          md5 <- toupper(readLines(md5file, warn = FALSE)) == toupper(md5sum(zip_path))
           file.remove(md5file)
           md5
         }, error = function(e) {logical(0)})
-        if (length(check_md5) == 0) {
+        if (any(!check_md5 %in% c(TRUE, FALSE), length(check_md5) == 0)) {
           print_message(
             type = "warning",
             "File ", names(link), " cannot be checked. ",
