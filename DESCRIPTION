@@ -45,6 +45,7 @@ Imports:
   parallel,
   doParallel,
   units,
+  tools,
   httr
 Suggests:
     spelling,
