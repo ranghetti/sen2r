@@ -10,12 +10,12 @@ test_sen2cor = FALSE
 safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
 dir.create(safe_dir, showWarnings = FALSE)
 s2_l1c_prods <- file.path(safe_dir, c(
-  "S2A_MSIL1C_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE",
-  "S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE"
+  "S2A_MSIL1C_20190703T101031_N0207_R022_T32TNR_20190703T122502.SAFE",
+  "S2A_MSIL1C_20190703T101031_N0207_R022_T32TNS_20190703T122502.SAFE"
 ))
 s2_l2a_prods <- file.path(safe_dir, c(
-  "S2A_MSIL2A_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE",
-  "S2A_MSIL2A_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE"
+  "S2A_MSIL2A_20190703T101031_N0207_R022_T32TNR_20190703T122502.SAFE",
+  "S2A_MSIL2A_20190703T101031_N0207_R022_T32TNS_20190703T122502.SAFE"
 ))
 
 
@@ -23,7 +23,13 @@ testthat::test_that(
   "Tests that Sen2Cor does not run if an existing corresponding L2A product exists", {
     
     testthat::expect_true(dir.exists(s2_l1c_prods[1])) # test-s2_download.R
-    testthat::expect_true(dir.exists(s2_l2a_prods[1])) # test-s2_download.R
+    remove_dummy_dir <- if (!dir.exists(s2_l2a_prods[1])) {
+      dir.create(s2_l2a_prods[1])
+      TRUE
+    } else {
+      FALSE
+    }
+    testthat::expect_true(dir.exists(s2_l2a_prods[1]))
     run_time <- system.time(
       sen2cor_out <- sen2cor(
         basename(s2_l1c_prods[1]), 
@@ -33,7 +39,7 @@ testthat::test_that(
     )
     testthat::expect_equal(sen2cor_out, s2_l2a_prods[1])
     testthat::expect_lt(run_time["elapsed"], 60)
-    
+    if (remove_dummy_dir) {file.remove(s2_l2a_prods[1])}
   }
 )
 

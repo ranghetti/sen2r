@@ -36,11 +36,15 @@ testthat::test_that(
     testthat::expect_equal(length(s2_l2a_downloaded), length(s2_l2a_list))
     
     # test raster metadata
-    exp_meta_ex <- raster_metadata(file.path(
-      exp_outsafe_1[grepl("32TNR", exp_outsafe_1)], 
-      "GRANULE/L2A_T32TNR_A010601_20170703T101041",
-      "IMG_DATA/R10m/L2A_T32TNR_20170703T101021_B02_10m.jp2"
-    ), format = "list")[[1]]
+    exp_meta_ex <- raster_metadata(
+      list.files(
+        file.path(
+          exp_outsafe_1[grepl("32TNR", exp_outsafe_1)],
+          "GRANULE/L2A_T32TNR_A010601_20170703T101041/IMG_DATA/R10m"
+        ),
+        "T32TNR_20170703T101021_B02", full.names = TRUE
+      ), format = "list"
+    )[[1]]
     testthat::expect_equal(exp_meta_ex$size, c("x" = 10980, "y" = 10980))
     testthat::expect_equal(exp_meta_ex$res, c("x"  = 10,    "y" = 10))
     testthat::expect_equal(
@@ -110,31 +114,36 @@ testthat::test_that(
     
     # s2_l1c_list <- s2_list(
     #   tile = c("32TNR", "32TNS"),
-    #   time_interval = "2017-07-03",
+    #   time_interval = "2019-07-03",
     #   level = "L1C"
     # )
     s2_l1c_list <- c(
-      "S2A_MSIL1C_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE" = 
-        "https://scihub.copernicus.eu/apihub/odata/v1/Products('432572ed-450b-408f-99b5-23877bd229da')/$value",
-      "S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE" = 
-        "https://scihub.copernicus.eu/apihub/odata/v1/Products('5f590bcb-ee55-4a20-8e75-bde99f5b93d4')/$value"
+      "S2A_MSIL1C_20190703T101031_N0207_R022_T32TNR_20190703T122502.SAFE" = 
+        "https://scihub.copernicus.eu/apihub/odata/v1/Products('83ccd36c-226a-4730-9602-b9bb0fc6bcce')/$value",
+      "S2A_MSIL1C_20190703T101031_N0207_R022_T32TNS_20190703T122502.SAFE" = 
+        "https://scihub.copernicus.eu/apihub/odata/v1/Products('304840b4-10ab-42c6-9809-b3664d6e4f50')/$value"
     )
-    suppressWarnings(s2_l2a_downloaded <- s2_download(
+    suppressWarnings(s2_l1c_downloaded <- s2_download(
       s2_l1c_list,
       downloader = "aria2",
       outdir = safe_dir,
       overwrite = test_download
     )) # suppressWarnings used to manage possible warnings for skept Md5sum checks
-    exp_outsafe_2 <- file.path(safe_dir, names(s2_l2a_downloaded))
+    exp_outsafe_2 <- file.path(safe_dir, names(s2_l1c_downloaded))
     testthat::expect_true(all(file.exists(exp_outsafe_2)))
     testthat::expect_equal(length(s2_l2a_downloaded), length(s2_l1c_list))
     
     # test raster metadata
-    exp_meta_ex <- raster_metadata(file.path(
-      exp_outsafe_2[grepl("32TNR", exp_outsafe_2)], 
-      "GRANULE/L1C_T32TNR_A010601_20170703T101041", 
-      "IMG_DATA/T32TNR_20170703T101021_B01.jp2"
-    ), format = "list")[[1]]
+    exp_meta_ex <- raster_metadata(
+      list.files(
+        file.path(
+          exp_outsafe_2[grepl("32TNR", exp_outsafe_2)],
+          "GRANULE/L1C_T32TNR_A021040_20190703T101051/IMG_DATA"
+        ),
+        "T32TNR_20190703T101031_B01", full.names = TRUE
+      ), format = "list"
+    )[[1]]
+    
     testthat::expect_equal(exp_meta_ex$size, c("x" = 1830, "y" = 1830))
     testthat::expect_equal(exp_meta_ex$res, c("x"  = 60,   "y" = 60))
     testthat::expect_equal(
@@ -158,7 +167,7 @@ testthat::test_that(
       )
       testthat::expect_equal(
         dirname(as.vector(unlist(safe_metadata$xml_granules))), 
-        file.path(exp_outsafe_2,paste0("GRANULE/L1C_T",c("32TNR","32TNS"),"_A010601_20170703T101041"))
+        file.path(exp_outsafe_2,paste0("GRANULE/L1C_T",c("32TNR","32TNS"),"_A021040_20190703T101051"))
       )
       testthat::expect_equal(unique(safe_metadata$mission), "2A")
       testthat::expect_equal(unique(safe_metadata$level), "1C")
