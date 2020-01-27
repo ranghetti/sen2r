@@ -53,7 +53,7 @@
 #' @importFrom sf st_transform st_geometry st_geometry_type st_write st_cast st_zm
 #'  st_area st_bbox st_sfc st_sf st_polygon st_as_sf st_as_sfc st_as_sf st_crs
 #'  st_as_text
-#' @importFrom methods as
+#' @importFrom methods is
 #' @importFrom stars read_stars
 #' @importFrom magrittr "%>%"
 #' @importFrom units ud_units
@@ -247,6 +247,13 @@ gdal_warp <- function(srcfiles,
     }
   }
   
+  # define tmpdir 
+  if (is.na(tmpdir)) {
+    tmpdir <- tempfile(pattern="gdalwarp_")
+  } else if (dir.exists(tmpdir)) {
+    tmpdir <- file.path(tmpdir, basename(tempfile(pattern="gdalwarp_")))
+  }
+  
   # if "mask" is specified, take "mask" and "te" from it
   if (!is.null(mask)) {
     mask <- if (is(mask, "sf") | is(mask, "sfc")) {
@@ -279,11 +286,6 @@ gdal_warp <- function(srcfiles,
     }
     # cast to multipolygon
     if (length(grep("POLYGON",st_geometry_type(mask)))>=1) {
-      if (is.na(tmpdir)) {
-        tmpdir <- tempfile(pattern="gdalwarp_")
-      } else if (dir.exists(tmpdir)) {
-        tmpdir <- file.path(tmpdir, basename(tempfile(pattern="gdalwarp_")))
-      }
       dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
       st_write(
         st_cast(mask, "MULTIPOLYGON"),
@@ -417,12 +419,22 @@ gdal_warp <- function(srcfiles,
       sel_s_srs_string <- if (!is.na(sel_s_srs$epsg)) {
         paste0("EPSG:",sel_s_srs$epsg)
       } else {
-        gsub("\\\"","\\\\\"",st_as_text_2(sel_s_srs))
+        dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
+        writeLines(
+          st_as_text_2(sel_s_srs),
+          sel_s_srs_path <- tempfile(pattern = "s_srs_", tmpdir = tmpdir, fileext = ".prj")
+        )
+        sel_s_srs_path
       }
       sel_t_srs_string <- if (!is.na(sel_t_srs$epsg)) {
         paste0("EPSG:",sel_t_srs$epsg)
       } else {
-        gsub("\\\"","\\\\\"",st_as_text_2(sel_t_srs))
+        dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
+        writeLines(
+          st_as_text_2(sel_t_srs),
+          sel_t_srs_path <- tempfile(pattern = "t_srs_", tmpdir = tmpdir, fileext = ".prj")
+        )
+        sel_t_srs_path
       }
       system(
         paste0(

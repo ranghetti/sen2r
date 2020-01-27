@@ -483,7 +483,7 @@ testthat::test_that(
       }
     )
     testthat::expect_true(any(
-      test4_out == 1,
+      test4_out == 0,
       grepl("Discarded datum unknown in CRS definition", test4_out)
     ))
     

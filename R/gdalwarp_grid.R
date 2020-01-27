@@ -11,9 +11,8 @@
 #' @param r Resampling_method (`"near"`|`"bilinear"`|`"cubic"`|`"cubicspline"`|
 #' `"lanczos"`|`"average"`|`"mode"`|`"max"`|`"min"`|`"med"`|`"q1"`|`"q3"``).
 #' @return NULL (the function is called for its side effects)
-#' @importFrom methods as
 #' @importFrom reticulate py_to_r
-#' @importFrom sf st_as_sfc
+#' @importFrom sf st_as_sfc st_bbox st_transform
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @examples
@@ -103,13 +102,32 @@ gdalwarp_grid <- function(srcfiles,
     # allineate out_extent to ref grid
     out_bbox_mod <- ceiling((out_bbox - ref_min) / ref_res) * ref_res + ref_min
     
+    # extract out CRS string
+    sel_proj_string <- if (!is.na(sel_proj$epsg)) {
+      paste0("EPSG:",sel_proj$epsg)
+    } else {
+      writeLines(
+        st_as_text_2(sel_proj),
+        sel_proj_path <- tempfile(pattern = "sel_proj_", tmpdir = tmpdir, fileext = ".prj")
+      )
+      sel_proj_path
+    }
+    ref_proj_string <- if (!is.na(ref_proj$epsg)) {
+      paste0("EPSG:",ref_proj$epsg)
+    } else {
+      writeLines(
+        st_as_text_2(ref_proj),
+        ref_proj_path <- tempfile(pattern = "ref_proj_", tmpdir = tmpdir, fileext = ".prj")
+      )
+      ref_proj_path
+    }
     
     # warp
     system(
       paste0(
         load_binpaths()$gdalwarp," ",
-        "-s_srs \"",sel_proj$proj4string,"\" ",
-        "-t_srs \"",ref_proj$proj4string,"\" ",
+        "-s_srs \"",sel_proj_string,"\" ",
+        "-t_srs \"",ref_proj_string,"\" ",
         "-te ",paste(out_bbox_mod, collapse = " ")," ",
         "-tr ",paste(ref_res, collapse = " ")," ",
         if (!is.null(r)) {paste0("-r ",r," ")},
@@ -118,7 +136,7 @@ gdalwarp_grid <- function(srcfiles,
         "\"",dstfile,"\""),
       intern = Sys.info()["sysname"] == "Windows"
     )
-
+    
   }
   
 }

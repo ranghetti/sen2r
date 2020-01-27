@@ -86,7 +86,16 @@ datatype is chosen (default values are 10000 for \code{"Int16"} and \code{"UInt1
 \item{proc_mode}{(optional) Character: if \code{"gdal_calc"},
 \code{gdal_calc} routines are used to compute indices;
 if \code{"raster"} (default) or \code{"stars"}, R functions are instead used
-(using respectively \code{raster} or 'stars\verb{routines). **Note**: there is a difference in which the two modes manage values out of ranges (e.g. -32768 to 32767 in Int16 and 0 to 255 in Byte):}"raster"\code{and}"stars"\verb{modes set these values to NA, }"gdal_calc"` mode clip them to the minimum/maximum values.}
+(using respectively \code{raster} or \code{stars} routines).
+\strong{Notes}:
+\enumerate{
+\item there is a difference in which the two modes manage values out
+of ranges (e.g. -32768 to 32767 in Int16 and 0 to 255 in Byte):
+\code{"raster"} and \code{"stars"} modes set these values to NA,
+\code{"gdal_calc"} mode clip them to the minimum/maximum values;
+\item \code{proc_mode = "stars"} is experimental (the performance of this mode
+must be optimised).
+}}
 
 \item{parallel}{(optional) Logical: if TRUE, the function is run using parallel
 processing, to speed-up the computation for large rasters.

@@ -187,7 +187,11 @@ s2_merge <- function(infiles,
     out_crs_string <- if (!is.na(out_crs$epsg)) {
       paste0("EPSG:",out_crs$epsg)
     } else {
-      st_as_text_2(out_crs)
+      writeLines(
+        st_as_text_2(out_crs),
+        out_crs_path <- tempfile(pattern = "out_crs_", tmpdir = tmpdir, fileext = ".prj")
+      )
+      out_crs_path
     }
     system(
       paste0(
