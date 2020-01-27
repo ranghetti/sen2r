@@ -303,8 +303,8 @@
 #'      function;
 #'  - `ltapath` with the path of a json file containing the list of the 
 #'      SAFE Sentinel-2 archives eventually ordered in Long Term Archive.
-#'  - `status` with a data.frame summarizing the status of the processing (see
-#'     [s2_process_report])
+#'  - `status` with a data.frame summarising the status of the processing (see
+#'     [sen2r_process_report()]).
 #'
 #' @import data.table
 #' @importFrom utils packageVersion
@@ -810,7 +810,7 @@ sen2r <- function(param_list = NULL,
   ## Check consistency of parameters
   # TODO work in progress
   pm <- check_param_list(pm, type = "error", check_paths = TRUE, correct = TRUE)
-
+  
   # if ONLINE check internet connection and scihub credentials
   if (pm$online) {
     if (!check_scihub_connection()) {
@@ -1387,9 +1387,11 @@ sen2r <- function(param_list = NULL,
   
   # IF all images have to be ordered, then exit gracefully
   if (length(s2_list_lta) == dim(s2_dt)[1]) {
-    status <- s2_process_report(s2_list_ordered, 
-                                pm = pm,
-                                download_only = !pm$preprocess)
+    status <- sen2r_process_report(
+      s2_list_ordered, 
+      pm = pm,
+      download_only = !pm$preprocess
+    )
     sen2r_output <- character(0)
     attr(sen2r_output, "status")  <- status
     attr(sen2r_output, "ltapath") <- attr(s2_list_ordered, "path")
@@ -1492,12 +1494,13 @@ sen2r <- function(param_list = NULL,
       sen2r_output <- character(0)
       attributes(sen2r_output) <- c(attributes(sen2r_output), out_attributes)
       
-      status <- s2_process_report(
+      status <- sen2r_process_report(
         s2_list_ordered, 
         s2names, 
         pm, 
         s2_list_cloud_ignored  = if (exists("cloudlist0")) cloudlist0  else NA,
-        s2_list_failed_ignored = if (exists("ignorelist0")) ignorelist0 else NA)
+        s2_list_failed_ignored = if (exists("ignorelist0")) ignorelist0 else NA
+      )
       
       attr(sen2r_output, "status") <- status
       return(invisible(sen2r_output))
@@ -2037,13 +2040,13 @@ sen2r <- function(param_list = NULL,
         # )
         sen2r_output <- c(file.path(path_l1c,names(sel_s2_list_l1c)),
                           file.path(path_l2a,names(sel_s2_list_l2a)))
-        status <- s2_process_report(s2_list_ordered, 
-                          download_only     = TRUE, 
-                          s2_downloaded = c(s2_downloaded_l1c, s2_downloaded_l2a), 
-                          s2_skipped    = c(s2_to_skip_l1c, s2_to_skip_l2a), 
-                          s2_corrected  = ifelse(pm$s2_levels == "l1c", 
-                                                NA,
-                                                s2_list_l1c_tocorrect))
+        status <- sen2r_process_report(
+          s2_list_ordered, 
+          download_only = TRUE, 
+          s2_downloaded = c(s2_downloaded_l1c, s2_downloaded_l2a), 
+          s2_skipped = c(s2_to_skip_l1c, s2_to_skip_l2a), 
+          s2_corrected = ifelse(pm$s2_levels == "l1c", NA, s2_list_l1c_tocorrect)
+        )
         out_attributes[["status"]] <- status
         attributes(sen2r_output) <- c(attributes(sen2r_output), out_attributes)
         return(invisible(sen2r_output))
@@ -2254,7 +2257,7 @@ sen2r <- function(param_list = NULL,
           )
           
           dir.create(paths["merged"], recursive=FALSE, showWarnings=FALSE)
-
+          
           merged_names_out <- trace_function(
             s2_merge,
             infiles = unlist(sel_s2names$req$merged)[file.exists(unlist(sel_s2names$req$merged))], # TODO add warning when sum(!file.exists(sel_s2names$merged_names_new))>0
@@ -2315,7 +2318,7 @@ sen2r <- function(param_list = NULL,
           if(pm$path_subdirs==TRUE){
             sapply(unique(dirname(unlist(c(warped_nonscl_reqout,warped_scl_reqout)))),dir.create,showWarnings=FALSE)
           }
-
+          
           if (any(!file.exists(nn(unlist(warped_nonscl_reqout)))) | pm$overwrite==TRUE) {
             # here trace_function() is not used, since argument "tr" matches multiple formal arguments.
             # manual cycle is performed.
@@ -2785,20 +2788,19 @@ sen2r <- function(param_list = NULL,
   }
   
   # Issue processing report
-  status <- s2_process_report(
+  status <- sen2r_process_report(
     s2_list_ordered, 
     s2names, 
     names_out, 
     pm, 
-    s2_list_cloudcovered   = if (length(names_cloudcovered) != 0) names_cloudcovered else NA, 
-    s2_list_failed         = if (length(names_missing)      != 0) names_missing else NA,
-    s2_list_cloud_ignored  = if (exists("cloudlist0"))  cloudlist0 else NA,
+    s2_list_cloudcovered = if (length(names_cloudcovered) != 0) names_cloudcovered else NA, 
+    s2_list_failed = if (length(names_missing) != 0) names_missing else NA,
+    s2_list_cloud_ignored = if (exists("cloudlist0")) cloudlist0 else NA,
     s2_list_failed_ignored = if (exists("ignorelist0")) ignorelist0 else NA, 
     s2_downloaded = c(s2_downloaded_l1c, s2_downloaded_l2a), 
-    s2_skipped    = c(s2_to_skip_l1c, s2_to_skip_l2a), 
-    s2_corrected  = ifelse(pm$s2_levels == "l1c", 
-                           NA,
-                           s2_list_l1c_tocorrect))
+    s2_skipped = c(s2_to_skip_l1c, s2_to_skip_l2a), 
+    s2_corrected = ifelse(pm$s2_levels == "l1c", NA, s2_list_l1c_tocorrect)
+  )
   attr(sen2r_output, "status") <- status
   gc()
   

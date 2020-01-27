@@ -438,8 +438,8 @@ percentage of cloud covered pixels;
 function;
 \item \code{ltapath} with the path of a json file containing the list of the
 SAFE Sentinel-2 archives eventually ordered in Long Term Archive.
-\item \code{status} with a data.frame summarizing the status of the processing (see
-\link{s2_process_report})
+\item \code{status} with a data.frame summarising the status of the processing (see
+\code{\link[=sen2r_process_report]{sen2r_process_report()}}).
 }
 }
 \description{
