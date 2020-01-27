@@ -122,10 +122,10 @@ write_scihub_login <- function(username, password,
       print_message(
         type = "error",
         "The provided credentials are not valid, ",
-        "so they will not be saved.\n",
+        "so they will not be saved. ",
         "Please notice that new/recently updated SciHub credentials are recognised by API Hub ",
-        "with a delay of about one week.\n",
-        "For this reason, newly created SciHub credentials can not immediately be used by `sen2r`", 
+        "with a delay of about one week. ",
+        "For this reason, newly created SciHub credentials can not immediately be used by sen2r", 
         "and password edits on old credentials are not immediately recognised."
       )
     }

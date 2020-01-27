@@ -677,7 +677,7 @@ sen2r <- function(param_list = NULL,
   print_message(
     type = "message",
     date = TRUE,
-    "###### Starting sen2r execution ######"
+    "####\u00A0 Starting sen2r execution. \u00A0####\n"
   )
   
   # import python modules
@@ -753,10 +753,10 @@ sen2r <- function(param_list = NULL,
       while(is.na(open_gui)) {
         open_gui_prompt <- print_message(
           type="waiting",
-          "\nThe parameter file was created with an old version of the package:\n",
+          "\nThe parameter file was created with an old version of the package: ",
           "would you like to open a GUI and check that the input parameters are correct? (y/n)\n",
           # "Note that continuing without checking them could lead to errors.\n",
-          "Alternatively, press ESC to interrupt and check the parameter file manually.\n"
+          "Alternatively, press ESC to interrupt and check the parameter file manually."
         )
         open_gui <- if (grepl("^[Yy]",open_gui_prompt)) {
           gui <- TRUE
@@ -887,7 +887,7 @@ sen2r <- function(param_list = NULL,
   if (pm$preprocess == FALSE & !pm$processing_order %in% c(1,"by_step")) {
     print_message(
       type = "warning",
-      "only processing_order = \"by_step\" is accepted if preprocess = FALSE."
+      "Only processing_order = \"by_step\" is accepted if preprocess = FALSE."
     )
     pm$processing_order <- "by_step"
   }
@@ -977,13 +977,12 @@ sen2r <- function(param_list = NULL,
   if (pm$preprocess == TRUE && length(list_prods) == 0) {
     print_message(
       type ="message",
-      date = TRUE, 
-      "No output products selected. Use `preprocess = FALSE` if you only want to download S2 images.\n" 
+      "No output products selected. Use \"preprocess = FALSE\" if you only want to download S2 images.\n" 
     )
     print_message(
-      type ="message",
-      date = TRUE, 
-      "###### Execution of sen2r session terminated ######" 
+      type = "message",
+      date = TRUE,
+      "####\u00A0 Execution of sen2r session terminated. \u00A0####"
     )
     
     return(invisible(character(0)))
@@ -1476,7 +1475,7 @@ sen2r <- function(param_list = NULL,
         print_message(
           type = "message",
           date = TRUE,
-          "No output products matching the query settings were found; \nplease ",
+          "No output products matching the query settings were found; please ",
           if (pm$online == FALSE) {"try in online mode, or "},
           "specify less restrictive settings."
         )
@@ -1484,8 +1483,8 @@ sen2r <- function(param_list = NULL,
         print_message(
           type = "message",
           date = TRUE,
-          "All the required output files for dates not on lta already exist; nothing to do.\n",
-          "To reprocess, run sen2r() with the argument overwrite = TRUE,\nor ",
+          "All the required output files for dates not on lta already exist; nothing to do. ",
+          "To reprocess, run sen2r() with the argument overwrite = TRUE, or ",
           if (pm$online == FALSE) {"try running sen2r() in online mode, or "},
           "specify a different output directory."
         )
@@ -1840,7 +1839,7 @@ sen2r <- function(param_list = NULL,
                 type = "message",
                 "Images ", paste(names(s2_to_skip_l1c), collapse = ", "),
                 " are already on your system and will be skipped.",
-                " Set `overwrite_safe` to TRUE to re-download them."
+                " Set \"overwrite_safe\" to TRUE to re-download them."
               )
             }
             
@@ -1992,7 +1991,7 @@ sen2r <- function(param_list = NULL,
             print_message(
               type = "message",
               date = TRUE,
-              "Starting to correct level-1C SAFE products with sen2cor. ",
+              "Starting to correct level-1C SAFE products with Sen2Cor. ",
               "This operation could take very long time."
             )
           }
@@ -2145,7 +2144,7 @@ sen2r <- function(param_list = NULL,
           print_message(
             type="message",
             "Note: logging messages are not shown during this phase, ",
-            "since it is not possible to send it to standard output.\n",
+            "since it is not possible to send it to standard output. ",
             "To see them, send messages to an external log file ",
             "or use a different processing order (by_date or by_steps)."
           )
@@ -2773,7 +2772,7 @@ sen2r <- function(param_list = NULL,
       paste(names_missing,collapse="\"\n\""),"\"",
       if (is(param_list, "character")) {paste0(
         "\"\nThese files will be skipped during next executions ",
-        "from the current parameter file (\"",param_list,"\").\n",
+        "from the current parameter file (\"",param_list,"\"). ",
         "To try again to build them, remove the file \"",
         ignorelist_path,"\"."
       )}

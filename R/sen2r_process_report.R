@@ -56,11 +56,12 @@ sen2r_process_report <- function(
   s2_corrected = NA
 ) {
   
-  print_message(type = "message","\n ")
+  # print_message(type = "message","\n ")
   print_message(
     type = "message",
-    date = TRUE, 
-    "###### sen2r Processing Report ###### "
+    "\u2554",rep("\u2550", min(60, 0.9 * getOption("width") - 2)),"\n",
+    "\u2551 sen2r Processing Report\n",
+    "\u255f",rep("\u2500", min(60, 0.9 * getOption("width") - 2))
   )
   
   # First, compute number of non-processed and notonline DATES ----
@@ -182,7 +183,7 @@ sen2r_process_report <- function(
     # Issue message about number of "required" dates
     print_message(
       type = "message",
-      date = TRUE, 
+      prefix = "\u2551 ", 
       "Dates to be processed based on processing parameters: ",
       n_req_tot_dates
     )
@@ -192,21 +193,21 @@ sen2r_process_report <- function(
       # Issue message about number of dates already ondisk
       print_message(
         type = "message",
-        date = TRUE, 
-        "All products already found on disk for: ", n_ondisk_dates, " dates. ", 
-        "(Set `overwrite` to TRUE to reprocess)."
+        prefix = "\u2551 ", 
+        "All products already found on disk for: ", n_ondisk_dates,
+        " dates (set \"overwrite\" to TRUE to reprocess)."
       )
     } 
     
     print_message(
       type = "message",
-      date = TRUE, 
+      prefix = "\u2551 ", 
       "Processing completed for: ",
       ifelse(
         n_notonline_dates == 0, 
         "all expected dates.", 
         paste0(
-          n_proc_dates + n_ondisk_dates, " out of: ", 
+          n_proc_dates + n_ondisk_dates, " out of ", 
           n_req_tot_dates, " expected dates."
         )
       )
@@ -215,11 +216,11 @@ sen2r_process_report <- function(
     # Report about MISSING dates
     if (n_failed_dates != 0) {
       print_message(
-        type = "warning",
-        date = TRUE, 
-        "Outputs for: ", n_failed_dates, 
-        " out of: ", n_req_tot_dates, " expected dates ", 
-        " not created because of unexpected reasons!"
+        type = "message",
+        prefix = "\u2551 ", 
+        "NOTE: Outputs for: ", n_failed_dates, 
+        " out of ", n_req_tot_dates, " expected dates ", 
+        " not created because of unexpected reasons."
       )
     }
     
@@ -227,9 +228,9 @@ sen2r_process_report <- function(
     if (n_cloudy_dates != 0) {
       print_message(
         type = "message",
-        date = TRUE, 
+        prefix = "\u2551 ", 
         "Outputs for: ", n_cloudy_dates, 
-        " out of: ", n_req_tot_dates, " expected dates ", 
+        " out of ", n_req_tot_dates, " expected dates ", 
         " not created because cloudiness over the spatial extent is above ",
         pm$max_mask, "%."
       )
@@ -239,9 +240,9 @@ sen2r_process_report <- function(
     if (n_notonline_dates != 0) {
       print_message(
         type = "message",
-        date = TRUE, 
+        prefix = "\u2551 ", 
         "Outputs for: ", n_notonline_dates, 
-        " out of: ", n_req_tot_dates, " expected dates ", 
+        " out of ", n_req_tot_dates, " expected dates ", 
         "not created because all/some required images are currently offline."
       )
       
@@ -249,16 +250,16 @@ sen2r_process_report <- function(
       if (n_ordered_imgs != 0 && n_notordered_imgs == 0) {
         print_message(
           type = "message",
-          date = TRUE, 
-          "Order for: ", n_ordered_imgs, " out of:  ",
+          prefix = "\u2551 ", 
+          "Order for: ", n_ordered_imgs, " out of ",
           n_notonline_imgs, " offline images successfull."
         )
         print_message(
           type = "message",
-          date = TRUE, 
+          prefix = "\u2551 ", 
           "You can check later if the ordered images are online ",
           "with the command:\n",
-          ' safe_is_online("', attr(s2_list_ordered, "path"),'")\n'
+          '\u00A0\u00A0safe_is_online("', attr(s2_list_ordered, "path"),'")'
         )
       }
       
@@ -266,45 +267,44 @@ sen2r_process_report <- function(
         if (n_ordered_imgs != 0) {
           print_message(
             type = "message",
-            date = TRUE, 
-            "Order for: ", n_ordered_imgs, " out of: ",
-            n_notonline_imgs,
+            prefix = "\u2551 ", 
+            "Order for: ", n_ordered_imgs, " out of ",
+            n_notonline_imgs, 
             " offline images successfull."
           )
         }
         print_message(
           type = "message",
-          date = TRUE, 
-          "Order for: ", n_notordered_imgs, " out of: ",
+          prefix = "\u2551 ", 
+          "Order for: ", n_notordered_imgs, " out of ",
           n_notonline_imgs, 
           " offline images failed due to exceeded user quota or other reasons."
         )
         print_message(
           type = "message",
-          date = TRUE,     
+          prefix = "\u2551 ", 
           "You can try placing the order again later with the command:\n",
-          '  s2_order("',attr(s2_list_ordered, "path"),'")\n'
+          '\u00A0\u00A0s2_order("',attr(s2_list_ordered, "path"),'")'
         )
         print_message(
           type = "message",
-          date = TRUE, 
+          prefix = "\u2551 ", 
           "You can check later if the ordered images are with the command:\n",
-          '  safe_is_online("',attr(s2_list_ordered, "path"),'")'
+          '\u00A0\u00A0safe_is_online("',attr(s2_list_ordered, "path"),'")'
         )
       }
       print_message(
         type = "message",
-        date = TRUE, 
+        prefix = "\u2551 ", 
         "When additional images are online, you can relaunch the processing chain ",
         "using the command:\n",
-        '  sen2r("',attr(pm, "outpath"),'")'
+        '\u00A0\u00A0sen2r("',attr(pm, "outpath"),'")'
       )
       
       print_message(
         type = "warning",
-        date = TRUE, 
-        "Processing was not completed because some required images are offline! ",
-        "See the processing log!"
+        "Processing was not completed because some required images are offline ",
+        "(see the processing log)."
       )
       
     }
@@ -367,12 +367,21 @@ sen2r_process_report <- function(
   
   print_message(
     type = "message",
-    date = TRUE,
-    "###### Execution of sen2r session terminated ######",
-    if (length(nn(s2_list_ordered)) == 0) {paste0(
-      "\nThe processing chain can be re-launched with the command:\n",
-      '  sen2r("',attr(pm, "outpath"),'")'
-    )}
+    "\u255a",rep("\u2550", min(60, 0.9 * getOption("width") - 2)),"\n"
   )
+  print_message(
+    type = "message",
+    date = TRUE,
+    "####\u00A0 Execution of sen2r session terminated. \u00A0####"
+  )
+  
+  if (length(nn(s2_list_ordered)) == 0) {
+    print_message(
+      type = "message",
+      date = FALSE,
+      "The processing chain can be re-launched with the command:\n",
+      '\u00A0\u00A0sen2r("',attr(pm, "outpath"),'")'
+    )
+  }
   return(status)
 }

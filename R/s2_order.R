@@ -262,11 +262,11 @@ s2_order <- function(
       "were correctly ordered. ",
       if (.log_path == TRUE) {paste0(
         "You can check at a later time if the ordered products are available online ",
-        "using the command:\n\n",
+        "using the command:\n",
         if (is.null(attr(out_list, "path"))) {paste0(
-          'safe_is_online(c(\n  "',paste(out_list, collapse = '",\n  "'),'"\n))'
+          '\u00A0\u00A0safe_is_online(c(\n  "',paste(out_list, collapse = '",\n  "'),'"\n))'
         )} else {paste0(
-          'safe_is_online("',attr(out_list, "path"),'")'
+          '\u00A0\u00A0safe_is_online("',attr(out_list, "path"),'")'
         )},
         "\n"
       )}
@@ -290,11 +290,11 @@ s2_order <- function(
       },
       if (.log_path == TRUE) {paste0(
         " You can try ordering them at a later time ",
-        "using the command:\n\n",
+        "using the command:\n",
         if (is.null(attr(out_list, "path"))) {paste0(
-          's2_order(c(\n  "',paste(out_list, collapse = '",\n  "'),'"\n))'
+          '\u00A0\u00A0s2_order(c(\n  "',paste(out_list, collapse = '",\n  "'),'"\n))'
         )} else {paste0(
-          's2_order("',attr(out_list, "path"),'")'
+          '\u00A0\u00A0s2_order("',attr(out_list, "path"),'")'
         )},
         "\n"
       )}

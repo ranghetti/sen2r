@@ -125,9 +125,9 @@ s2_translate <- function(infile,
       "Format \"",format,"\" is not recognised; ",
       "please use one of the formats supported by your GDAL installation.\n\n",
       "To list them, use the following command:\n",
-      "gdalUtils::gdalinfo(formats=TRUE)\n\n",
+      "\u00A0\u00A0gdalUtils::gdalinfo(formats=TRUE)\n\n",
       "To search for a specific format, use:\n",
-      "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
+      "\u00A0\u00A0gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
   }
   
   # Check GDAL installation

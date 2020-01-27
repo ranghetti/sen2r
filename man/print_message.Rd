@@ -4,7 +4,18 @@
 \alias{print_message}
 \title{Print a message}
 \usage{
-print_message(..., type, sep = "", date = FALSE, date_format = "")
+print_message(
+  ...,
+  type,
+  sep = "",
+  date = FALSE,
+  date_format = "",
+  width = 0.9 * getOption("width"),
+  indent = TRUE,
+  exdent = TRUE,
+  prefix = "",
+  initial = prefix
+)
 }
 \arguments{
 \item{...}{\code{R} objects which are concatenated.}
@@ -22,12 +33,28 @@ Intentionally, no default value is defined.}
 \item{sep}{(optional) character used to separate input values
 (default is nothing).}
 
-\item{date}{Logical value: set TRUE to place the date before the message
-(useful for logs or time consuming operations); default is FALSE.}
+\item{date}{Logical value: set \code{TRUE} to place the date before the message
+and after the prefix (this is useful for logs or time consuming operations);
+default is FALSE.}
 
 \item{date_format}{Format of the date (see \code{\link[base]{strftime}})
 for the definition of the format). The default format is
 \code{'\\\%Y-\\\%m-\\\%d \\\%H:\\\%M:\\\%S'}.}
+
+\item{width}{Positive integer: target column for wrapping lines in the output
+(set to \code{Inf} for no wrapping).}
+
+\item{indent}{Non-negative integer: indentation of the first line in a paragraph
+It can be also a logical: in this case, if TRUE (default) the value
+is optimised in order to align first line with the followings.}
+
+\item{exdent}{Non-negative integer: indentation of subsequent lines in paragraphs.
+It can be also a logical: in this case, if TRUE (default) the value
+is optimised in order to align lines with the first line.}
+
+\item{prefix}{Character: prefix for each line except the first.}
+
+\item{initial}{Character: prefix for the first line.}
 }
 \value{
 Message (in the defined format).
@@ -49,5 +76,5 @@ placed before the message.
 License: GPL 3.0
 }
 \author{
-Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
+Luigi Ranghetti, phD (2020) \email{luigi@ranghetti.info}
 }

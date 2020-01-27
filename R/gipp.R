@@ -65,12 +65,12 @@ gipp_init <- function(gipp_sen2r_path = NA, force = FALSE, dem_warning = FALSE) 
     if (dem_warning == TRUE) {
       print_message(
         type = "message",
-        "Default Sen2Cor parameters were written in file ",
+        "Default Sen2Cor parameters were written in file \"",
         normalize_path(
           file.path(dirname(attr(binpaths, "path")), "sen2r_L2A_GIPP.xml"), 
           mustWork = FALSE
         ), 
-        ", and will be used with sen2cor() and sen2r() ",
+        "\", and will be used with sen2cor() and sen2r() ",
         "unless different parameters will be specified.\n",
         "IMPORTANT NOTE: for backward compatibility, the parameter ",
         "\"DEM_Directory\" was maitained to its default value. ",
@@ -78,7 +78,7 @@ gipp_init <- function(gipp_sen2r_path = NA, force = FALSE, dem_warning = FALSE) 
         "generated locally with Sen2Cor and downloaded from ESA Hub ",
         "(which make use of DEM for topographic correction).",
         "To grant it, activate topographic correction using:\n",
-        " > set_gipp(use_dem = TRUE)\n",
+        "\u00A0\u00A0set_gipp(use_dem = TRUE)\n",
         "In a future sen2r release, this will be the default Sen2Cor behaviour."
       )
     }
