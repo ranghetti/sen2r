@@ -131,7 +131,7 @@ testthat::test_that(
     )) # suppressWarnings used to manage possible warnings for skept Md5sum checks
     exp_outsafe_2 <- file.path(safe_dir, names(s2_l1c_downloaded))
     testthat::expect_true(all(file.exists(exp_outsafe_2)))
-    testthat::expect_equal(length(s2_l2a_downloaded), length(s2_l1c_list))
+    testthat::expect_equal(length(s2_l1c_downloaded), length(s2_l1c_list))
     
     # test raster metadata
     exp_meta_ex <- raster_metadata(

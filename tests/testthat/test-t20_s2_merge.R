@@ -32,7 +32,10 @@ testthat::test_that(
     # check sen2r output format
     testthat::expect_is(out1, "character")
     testthat::expect_equivalent(out1, exp_outpath_1)
-    testthat::expect_equal(names(attributes(out1)), c("procpath", "cloudcovered", "missing"))
+    testthat::expect_equal(
+      names(attributes(out1)), 
+      c("procpath", "cloudcovered", "missing", "status")
+    )
     
     # test on raster metadata
     exp_meta_r <- raster_metadata(exp_outpath_1, format = "list")[[1]]

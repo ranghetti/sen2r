@@ -23,7 +23,7 @@ testthat::test_that(
     
     sen2cor_def_version <- package_version("2.8.0")
     
-    if (test_download) {
+    if (any(test_download, length(nn(load_binpaths()$sen2cor)) == 0)) {
       unlink(sen2cor_inst_dir, recursive = TRUE)
     }
     testthat::expect_message(
