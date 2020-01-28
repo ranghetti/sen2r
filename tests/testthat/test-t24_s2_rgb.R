@@ -121,7 +121,7 @@ testthat::test_that(
       rgb_bands = list(c(11,8,4),c(9,5,4)),
       scaleRange = list(c(0,7500), matrix(c(rep(0,3),8500,6000,4000),ncol=2)),
       outdir = outdir_17,
-      compress = 50,
+      compress = 90,
       parallel = FALSE
     )
     testthat::expect_true(all(file.exists(exp_outpath_17)))

@@ -238,6 +238,17 @@ s2_calcindices <- function(
     proc_mode <- "raster"
   }
   
+  # create outdir if not existing (and dirname(outdir) exists)
+  suppressWarnings(outdir <- expand_path(outdir, parent=comsub(infiles,"/"), silent=TRUE))
+  if (!dir.exists(dirname(outdir))) {
+    print_message(
+      type = "error",
+      "The parent folder of 'outdir' (",outdir,") does not exist; ",
+      "please create it."
+    )
+  }
+  dir.create(outdir, recursive=FALSE, showWarnings=FALSE)
+  
   # Compute n_cores
   n_cores <- if (is.numeric(parallel)) {
     min(as.integer(parallel), length(infiles))

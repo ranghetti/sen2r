@@ -273,14 +273,17 @@ s2_mask <- function(infiles,
   infiles_meta_raster <- raster_metadata(infiles, c("res", "outformat", "unit"), format="data.table")
   maskfiles_meta_sen2r <- sen2r_getElements(maskfiles, format="data.table")
   
-  # create outdir if not existing
+  # create outdir if not existing (and dirname(outdir) exists)
+  suppressWarnings(outdir <- expand_path(outdir, parent=comsub(infiles,"/"), silent=TRUE))
   if (!dir.exists(dirname(outdir))) {
     print_message(
       type = "error",
-      "Directory '",dirname(outdir),"' does not exists."
+      "The parent folder of 'outdir' (",outdir,") does not exist; ",
+      "please create it."
     )
   }
   dir.create(outdir, recursive=FALSE, showWarnings=FALSE)
+  
   # create subdirs (if requested)
   prod_types <- unique(infiles_meta_sen2r$prod_type)
   if (is.na(subdirs)) {

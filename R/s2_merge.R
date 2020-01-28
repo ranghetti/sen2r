@@ -179,8 +179,15 @@ s2_merge <- function(infiles,
   }
   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
   
-  # create outdir if not existing
+  # create outdir if not existing (and dirname(outdir) exists)
   suppressWarnings(outdir <- expand_path(outdir, parent=comsub(infiles,"/"), silent=TRUE))
+  if (!dir.exists(dirname(outdir))) {
+    print_message(
+      type = "error",
+      "The parent folder of 'outdir' (",outdir,") does not exist; ",
+      "please create it."
+    )
+  }
   dir.create(outdir, recursive=FALSE, showWarnings=FALSE)
   
   # if out_crs is different from the projection of all input files,

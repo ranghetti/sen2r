@@ -144,9 +144,17 @@ s2_translate <- function(infile,
   )
   infile_dir = dirname(infile_meta$xml_main)
   
-  # define output directory
+  # create outdir if not existing (and dirname(outdir) exists)
   suppressWarnings(outdir <- expand_path(outdir, parent=dirname(infile_dir), silent=TRUE))
+  if (!dir.exists(dirname(outdir))) {
+    print_message(
+      type = "error",
+      "The parent folder of 'outdir' (",outdir,") does not exist; ",
+      "please create it."
+    )
+  }
   dir.create(outdir, recursive=FALSE, showWarnings=FALSE)
+  
   # create subdirs
   if (is.na(subdirs)) {
     subdirs <- ifelse(length(prod_type)>1, TRUE, FALSE)
