@@ -83,7 +83,7 @@ testthat::test_that(
         overwrite = TRUE,
         thumbnails = FALSE
       ),
-      regexp = "[Aa]t least one parameter among 'extent' and 's2tiles_selected' must be provided"
+      regexp = "[Aa]t[ \n]least[ \n]one[ \n]parameter[ \n]among[ \n]'extent'[ \n]and[ \n]'s2tiles_selected'[ \n]must[ \n]be[ \n]provided"
     )
     
   }

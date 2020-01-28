@@ -77,7 +77,10 @@ if (Sys.info()["sysname"] != "Windows") {
     "Test a path external to ref_path (in Linux)", {
       testthat::expect_warning(
         test_path <- abs2rel("~", ref_path),
-        regexp = "do not have a common parent directory"
+        regexp = gsub(
+          " ", "[ \n]",
+          "do not have a common parent directory"
+        )
       )
       testthat::expect_gt(nchar(test_path), 0)
       testthat::expect_true(grepl("^/", test_path))
@@ -98,7 +101,7 @@ testthat::test_that(
   "Test identical paths", {
     testthat::expect_warning(
       test_path <- abs2rel(ref_path, ref_path),
-      regexp = "point to the same path"
+      regexp = "point[ \n]to[ \n]the[ \n]same[ \n]path"
     )
   }
 )

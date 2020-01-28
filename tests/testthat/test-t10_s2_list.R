@@ -312,7 +312,10 @@ testthat::test_that(
         spatial_extent = "pos",
         time_interval = as.Date(c("2017-05-01", "2017-06-30"))
       ),
-      regexp = "`spatial_extent` is not a `sf` or `sfc` object"
+      regexp = gsub(
+        " ", "[ \n]",
+        "`spatial_extent` is not a `sf` or `sfc` object"
+      )
     )
     
     # wrong dates
@@ -321,7 +324,10 @@ testthat::test_that(
         spatial_extent = pos,
         time_interval = c("2017-05-XX", "2017-06-30")
       ),
-      regexp = "`time_interval` must be of class .+ cohercible to Date"
+      regexp = gsub(
+        " ", "[ \n]",
+        "`time_interval` must be of class .+ cohercible to Date"
+      )
     )
     
     # wrong availability
@@ -331,7 +337,10 @@ testthat::test_that(
         time_interval = c("2017-05-01", "2017-06-30"),
         availability = "offline"
       ),
-      regexp = '`availability` must be one among "online", "lta", "check" and "ignore"'
+      regexp = gsub(
+        " ", "[ \n]",
+        '`availability` must be one among "online", "lta", "check" and "ignore"'
+      )
     )
   }
 )

@@ -13,7 +13,10 @@ testthat::test_that(
   "Test that a mismatching Sen2Cor version causes error", {
     testthat::expect_error(
       install_sen2cor(sen2cor_inst_dir, version = "2.3.3"),
-      regexp = "[Oo]nly Sen2Cor versions .+ are currently supported"
+      regexp = gsub(
+        " ", "[ \n]",
+        "[Oo]nly Sen2Cor versions.+ are currently supported"
+      )
     )
   }
 )
@@ -32,7 +35,10 @@ testthat::test_that(
         version = sen2cor_def_version, 
         use_dem = TRUE
       ),
-      regexp = "IMPORTANT NOTE: for backward compatibility"
+      regexp = gsub(
+        " ", "[ \n]",
+        "IMPORTANT NOTE: for backward compatibility"
+      )
     )
     
     testthat::expect_true(dir.exists(dirname(load_binpaths()$sen2cor)))
@@ -66,7 +72,7 @@ testthat::test_that(
   "Test that a Sen2Cor reinstallation do not occur if it is already installed", {
     testthat::expect_message(
       install_sen2cor(sen2cor_inst_dir),
-      regexp = "Sen2Cor is already installed"
+      regexp = "Sen2Cor[ \n]is[ \n]already[ \n]installed"
     )
   }
 )

@@ -784,9 +784,9 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
     sapply(metadata, function(m) {all(!m[["exists"]], m[["validname"]])})
   } else if (action == "isvalid") {
     if ("exists" %in% info) {
-      sapply(metadata, function(m) {all(m[["exists"]], m[["validname"]])})
+      nn(unlist(sapply(metadata, function(m) {all(m[["exists"]], m[["validname"]])})))
     } else {
-      sapply(metadata, function(m) {m[["validname"]]})
+      nn(unlist(sapply(metadata, function(m) {m[["validname"]]})))
     }
   } else if (format == "list" ) {
     for (i in seq_along(metadata)) {

@@ -13,23 +13,26 @@ s2_l1c_prods <- file.path(safe_dir, c(
   "S2A_MSIL1C_20190703T101031_N0207_R022_T32TNR_20190703T122502.SAFE",
   "S2A_MSIL1C_20190703T101031_N0207_R022_T32TNS_20190703T122502.SAFE"
 ))
-s2_l2a_prods <- file.path(safe_dir, c(
-  "S2A_MSIL2A_20190703T101031_N0207_R022_T32TNR_20190703T122502.SAFE",
-  "S2A_MSIL2A_20190703T101031_N0207_R022_T32TNS_20190703T122502.SAFE"
-))
 
 
 testthat::test_that(
   "Tests that Sen2Cor does not run if an existing corresponding L2A product exists", {
     
     testthat::expect_true(dir.exists(s2_l1c_prods[1])) # test-s2_download.R
-    remove_dummy_dir <- if (!dir.exists(s2_l2a_prods[1])) {
-      dir.create(s2_l2a_prods[1])
-      TRUE
-    } else {
-      FALSE
+    s2_l2a_prod1 <- list.files(
+      safe_dir, 
+      "^S2A_MSIL2A_20190703T101031_N...._R022_T32TNR_[0-9T]{15}\\.SAFE$"
+    )
+    if (length(s2_l2a_prod1) == 0) {
+      s2_l2a_prod1 <- names(s2_download(
+        setNames(
+          "https://scihub.copernicus.eu/dhus/odata/v1/Products('28d69908-e0a8-4967-bae7-3c5e80495132')/$value",
+          "S2A_MSIL2A_20190703T101031_N0212_R022_T32TNR_20190703T134349.SAFE"
+        ),
+        outdir = safe_dir
+      ))
     }
-    testthat::expect_true(dir.exists(s2_l2a_prods[1]))
+    testthat::expect_true(dir.exists(file.path(safe_dir,s2_l2a_prod1[1])))
     run_time <- system.time(
       sen2cor_out <- sen2cor(
         basename(s2_l1c_prods[1]), 
@@ -37,9 +40,11 @@ testthat::test_that(
         outdir = safe_dir
       )
     )
-    testthat::expect_equal(sen2cor_out, s2_l2a_prods[1])
+    testthat::expect_true(grepl(
+      "^S2A_MSIL2A_20190703T101031_N...._R022_T32TNR_[0-9T]{15}\\.SAFE$",
+      basename(sen2cor_out)
+    ))
     testthat::expect_lt(run_time["elapsed"], 60)
-    if (remove_dummy_dir) {file.remove(s2_l2a_prods[1])}
   }
 )
 
@@ -50,7 +55,13 @@ if (test_sen2cor) {
     "Tests a single Sen2Cor run", {
       
       testthat::expect_true(dir.exists(s2_l1c_prods[2])) # test-s2_download.R
-      unlink(s2_l2a_prods[2], recursive = TRUE)
+      s2_l2a_prod2 <- list.files(
+        safe_dir, 
+        "^S2A_MSIL2A_20190703T101031_N...._R022_T32TNS_[0-9T]{15}\\.SAFE$"
+      )
+      if (length(s2_l2a_prod2) > 0) {
+        unlink(s2_l2a_prod2, recursive = TRUE)
+      }
       run_time <- system.time(
         sen2cor_out <- sen2cor(
           s2_l1c_prods[2], 
@@ -133,7 +144,6 @@ if (test_sen2cor) {
     "Tests a multicore Sen2Cor run", {
       
       testthat::expect_true(all(dir.exists(s2_l1c_prods)))
-      # unlink(s2_l2a_prods, recursive = TRUE)
       run_time <- system.time(
         sen2cor_out <- sen2cor(
           s2_l1c_prods, 

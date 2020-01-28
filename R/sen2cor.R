@@ -243,10 +243,22 @@ sen2cor <- function(
       basename(sel_l2a)
     )
     sel_l2a_exi <- list.files(dirname(sel_l2a), sel_l2a_regex, full.names = TRUE)
-    if (length(sel_l2a_exi) > 0) {
-      sel_l2a <- sel_l2a_exi[1]
+    # exclude invalid SAFEs
+    sel_l2a_exi <- sel_l2a_exi[safe_isvalid(sel_l2a_exi)]
+    sel_l2a_meta <- safe_getMetadata(
+      sel_l2a_exi, 
+      info = c("creation_datetime", "id_baseline", "tiles")
+    )
+    if (nrow(sel_l2a_meta) > 0) {
+      # order by ingestion date (recent first) and baseline (locally corrected and newer first)
+      sel_l2a_meta <- sel_l2a_meta[
+        order(-creation_datetime, -id_baseline), 
+        path := file.path(dirname(sel_l2a), name)
+        ]
+      # replace the defined sel_l2a with the actual safe to be used
+      sel_l2a <- sel_l2a_meta[1,path] 
     }
-    # TODO order by baseline, ingestion date
+    
     
     ## Set the tiles vectors (existing, required, ...)
     # existing L1C tiles within input product
@@ -255,14 +267,10 @@ sen2cor <- function(
       "id_tile", format = "vector", simplify = TRUE
     )
     # L2A tiles already existing
-    sel_l2a_tiles_existing <- if (file.exists(sel_l2a)) {
-      safe_getMetadata(
-        list.files(file.path(sel_l2a,"GRANULE")), 
-        "id_tile", format = "vector"
-      )
-    } else {
-      character(0)
-    }
+    sel_l2a_tiles_existing <- safe_getMetadata(
+      list.files(file.path(sel_l2a,"GRANULE")),
+      "id_tile", format = "vector", simplify = TRUE
+    )
     # L2A tiles required as output (already existing or not)
     sel_l2a_tiles_required <- if (length(tiles)==0) {
       sel_l1c_tiles_existing
