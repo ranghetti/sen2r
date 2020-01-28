@@ -40,6 +40,9 @@
 #'  created in case `format` is `"VRT"`.
 #' @param compress (optional) In the case a GTiff format is
 #'  present, the compression indicated with this parameter is used.
+#' @param bigtiff (optional) Logical: if TRUE, the creation of a BigTIFF is
+#'  forced (default is FALSE).
+#'  This option is used only in the case a GTiff format was chosen. 
 #' @param dataType (optional) Numeric datatype of the output rasters.
 #'  if "Float32" or "Float64" is chosen, numeric values are not rescaled;
 #'  if `"Int16"` (default) or `"UInt16"`, values are multiplicated by `scaleFactor` argument;
@@ -117,6 +120,7 @@ s2_calcindices <- function(
   subdirs = NA,
   tmpdir = NA,
   compress = "DEFLATE",
+  bigtiff=FALSE,
   dataType = "Int16",
   scaleFactor = NA,
   proc_mode = "raster",
@@ -149,7 +153,12 @@ s2_calcindices <- function(
         NAflag = NAflag,
         datatype = datatype,
         format = ifelse(sel_format=="VRT", "GTiff", sel_format),
-        if(sel_format %in% c("GTiff","VRT")){options = paste0("COMPRESS=",compress)},
+        if (sel_format %in% c("GTiff","VRT")) {
+          options = c(
+            paste0("COMPRESS=",compress),
+            if (bigtiff==TRUE) {"BIGTIFF=YES"}
+          )
+        },
         overwrite = overwrite
       ),
       "NOT UPDATED FOR PROJ >\\= 6"
@@ -201,7 +210,10 @@ s2_calcindices <- function(
         NA_value = NAflag,
         type = dataType,
         format = ifelse(sel_format=="VRT", "GTiff", sel_format),
-        options = paste0("COMPRESS=",compress),
+        options = c(
+          paste0("COMPRESS=",compress),
+          if (bigtiff==TRUE) {"BIGTIFF=YES"}
+        ),
         overwrite = overwrite,
         # chunk_size was set like using raster (half of the stars default)
         chunk_size = c(dim(x_out)[1], floor(2.5e+07/2/dim(x_out)[1]))
@@ -480,6 +492,7 @@ s2_calcindices <- function(
               "--format=\"",sel_format0,"\" ",
               if (overwrite==TRUE) {"--overwrite "},
               if (sel_format0=="GTiff") {paste0("--co=\"COMPRESS=",toupper(compress),"\" ")},
+              if (sel_format0=="GTiff" & bigtiff==TRUE) {paste0("--co=\"BIGTIFF=YES\" ")},
               "--calc=\"",sel_formula,"\""
             ),
             intern = Sys.info()["sysname"] == "Windows"

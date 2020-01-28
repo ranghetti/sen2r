@@ -29,6 +29,9 @@
 #'  format recognised by GDAL). Default is to maintain each input format.
 #' @param compress (optional) In the case a GTiff format is
 #'  present, the compression indicated with this parameter is used.
+#' @param bigtiff (optional) Logical: if TRUE, the creation of a BigTIFF is
+#'  forced (default is FALSE).
+#'  This option is used only in the case a GTiff format was chosen. 
 #' @param vrt_rel_paths (optional) Logical: if TRUE (default on Linux),
 #'  the paths present in the VRT output file are relative to the VRT position;
 #'  if FALSE (default on Windows), they are absolute.
@@ -68,6 +71,7 @@ s2_merge <- function(infiles,
                      rmtmp=TRUE,
                      format=NA,
                      compress="DEFLATE",
+                     bigtiff=FALSE,
                      vrt_rel_paths=NA,
                      out_crs=NA,
                      parallel = FALSE,
@@ -347,6 +351,7 @@ s2_merge <- function(infiles,
           binpaths$gdal_translate," ",
           "-of ",sel_outformat," ",
           if (sel_outformat=="GTiff") {paste0("-co COMPRESS=",toupper(compress)," ")},
+          if (sel_outformat=="GTiff" & bigtiff==TRUE) {paste0("-co BIGTIFF=YES ")},
           "\"",merged_vrt,"\" ",
           "\"",file.path(out_subdir,sel_outfile),"\" "),
         intern = Sys.info()["sysname"] == "Windows"

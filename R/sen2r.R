@@ -179,6 +179,7 @@
 #'  (for now, only SCL): one among `"near"` (default) and `"mode"`.
 #' @param outformat (optional) Format of the output file (in a
 #'  format recognised by GDAL). Default is `"GTiff"`.
+#'  Value `"BigTIFF"` can be used to generate a GeoTIFF with the option BigTIFF
 #' @param rgb_outformat (optional) Format of the output RGB products (in a
 #'  format recognised by GDAL). Default is `"GTiff"`.
 #' @param index_datatype (optional) Numeric datatype of the output
@@ -1022,6 +1023,12 @@ sen2r <- function(param_list = NULL,
   
   # check output format
   # sel_driver <- py$gdal$GetDriverByName(pm$outformat)
+  if (pm$outformat == "BigTIFF") {
+    pm$outformat <- "GTiff"
+    bigtiff <- TRUE
+  } else {
+    bigtiff <- FALSE
+  }
   suppressWarnings(gdal_formats <- fromJSON( # suppress warning about geojsonlint
     system.file("extdata/settings/gdal_formats.json",package="sen2r")
   )$drivers)
@@ -2203,6 +2210,8 @@ sen2r <- function(param_list = NULL,
                   rmtmp = FALSE,
                   prod_type = list_l1c_prods,
                   format = out_format["tiles"],
+                  compress = pm$compression,
+                  bigtiff = bigtiff,
                   tiles = pm$s2tiles_selected,
                   res = pm$res_s2,
                   subdirs = pm$path_subdirs,
@@ -2232,6 +2241,8 @@ sen2r <- function(param_list = NULL,
                 outdir = paths["tiles"],
                 prod_type = list_l2a_prods,
                 format = out_format["tiles"],
+                compress = pm$compression,
+                bigtiff = bigtiff,
                 tiles = pm$s2tiles_selected,
                 res = pm$res_s2,
                 subdirs = pm$path_subdirs,
@@ -2276,6 +2287,8 @@ sen2r <- function(param_list = NULL,
             tmpdir = file.path(tmpdir_groupA, "s2_merge"),
             rmtmp = FALSE,
             format = out_format["merged"],
+            compress = pm$compression,
+            bigtiff = bigtiff,
             parallel = if (out_format["merged"]=="VRT") {FALSE} else {parallel_steps},
             overwrite = pm$overwrite,
             .log_message = .log_message, .log_output = .log_output,
@@ -2345,7 +2358,10 @@ sen2r <- function(param_list = NULL,
                   t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
                   r = pm$resampling,
                   dstnodata = s2_defNA(sel_prod),
-                  co = if (out_format["warped"]=="GTiff") {paste0("COMPRESS=",pm$compression)},
+                  co = c(
+                    if (out_format["warped"]=="GTiff") {paste0("COMPRESS=",pm$compression)},
+                    if (bigtiff) {"BIGTIFF=YES"}
+                  ),
                   overwrite = pm$overwrite,
                   tmpdir = file.path(tmpdir_groupA, "gdal_warp"),
                   rmtmp = FALSE
@@ -2377,7 +2393,10 @@ sen2r <- function(param_list = NULL,
                   t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
                   r = pm$resampling_scl,
                   dstnodata = s2_defNA("SCL"),
-                  co = if (out_format["warped_scl"]=="GTiff") {paste0("COMPRESS=",pm$compression)},
+                  co = if (out_format["warped_scl"]=="GTiff") {c(
+                    paste0("COMPRESS=",pm$compression),
+                    if (bigtiff) {"BIGTIFF=YES"}
+                  )},
                   overwrite = pm$overwrite,
                   tmpdir = file.path(tmpdir_groupA, "gdal_warp"),
                   rmtmp = FALSE
@@ -2446,6 +2465,7 @@ sen2r <- function(param_list = NULL,
                 rmtmp = FALSE,
                 format = out_format["masked"],
                 compress = pm$compression,
+                bigtiff = bigtiff,
                 subdirs = pm$path_subdirs,
                 overwrite = pm$overwrite,
                 parallel = parallel_steps,
@@ -2485,6 +2505,7 @@ sen2r <- function(param_list = NULL,
               subdirs = pm$path_subdirs,
               format = out_format["rgb"],
               compress = pm$rgb_compression,
+              bigtiff = bigtiff,
               tmpdir = file.path(tmpdir_groupA, "s2_rgb"),
               rmtmp = FALSE,
               parallel = parallel_steps,
@@ -2506,6 +2527,7 @@ sen2r <- function(param_list = NULL,
               subdirs = pm$path_subdirs,
               format = out_format["rgb"],
               compress = pm$rgb_compression,
+              bigtiff = bigtiff,
               tmpdir = file.path(tmpdir_groupA, "s2_rgb"),
               rmtmp = FALSE,
               parallel = parallel_steps,
@@ -2539,6 +2561,7 @@ sen2r <- function(param_list = NULL,
             format = out_format["indices"],
             dataType = pm$index_datatype,
             compress = pm$compression,
+            bigtiff = bigtiff,
             overwrite = pm$overwrite,
             parallel = parallel_steps,
             .log_message = .log_message, .log_output = .log_output,

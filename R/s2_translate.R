@@ -36,6 +36,9 @@
 #'  format recognised by GDAL). Default value is "VRT" (Virtual Raster).
 #' @param compress (optional) In the case a GTiff format is
 #'  chosen, the compression indicated with this parameter is used.
+#' @param bigtiff (optional) Logical: if TRUE, the creation of a BigTIFF is
+#'  forced (default is FALSE).
+#'  This option is used only in the case a GTiff format was chosen. 
 #' @param vrt_rel_paths (optional) Logical: if TRUE (default on Linux),
 #'  the paths present in the VRT output file are relative to the VRT position;
 #'  if FALSE (default on Windows), they are absolute.
@@ -85,6 +88,7 @@ s2_translate <- function(infile,
                          res="10m",
                          format="VRT",
                          compress="DEFLATE",
+                         bigtiff=FALSE,
                          vrt_rel_paths=NA,
                          utmzone="",
                          overwrite = FALSE) {
@@ -294,6 +298,7 @@ s2_translate <- function(infile,
               paste0(
                 binpaths$gdal_translate," -of ",format," ",
                 if (format=="GTiff") {paste0("-co COMPRESS=",toupper(compress)," ")},
+                if (format=="GTiff" & bigtiff==TRUE) {paste0("-co BIGTIFF=YES ")},
                 if (!is.na(sel_na)) {paste0("-a_nodata ",sel_na," ")},
                 "\"",final_vrt_name,"\" ",
                 "\"",out_name,"\""

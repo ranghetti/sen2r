@@ -617,7 +617,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   gdal_formats <- fromJSON(
     system.file("extdata/settings/gdal_formats.json",package="sen2r")
   )$drivers
-  if (!pm$outformat %in% gdal_formats$name) {
+  if (!pm$outformat %in% c(gdal_formats$name, "BigTIFF")) {
     print_message(
       type = type,
       "Parameter \"outformat\" is not accepted (setting to the default)."

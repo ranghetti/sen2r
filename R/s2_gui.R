@@ -752,13 +752,14 @@ s2_gui <- function(param_list = NULL,
                 width=4,
                 selectInput("outformat", label = "Output file format",
                             choices = list("GeoTiff" = "GTiff",
+                                           "BigTiff" = "BigTIFF",
                                            "ENVI" = "ENVI"),
                             # TODO add others common formats
                             selected = "GTiff")
               ),
               
               conditionalPanel(
-                condition = "input.outformat == 'GTiff'",
+                condition = "input.outformat == 'GTiff' | input.outformat == 'BigTIFF' ",
                 column(
                   width=3,
                   selectInput("compression", label = "Output compression",
@@ -3597,7 +3598,7 @@ s2_gui <- function(param_list = NULL,
       rl$rgb_outformat <- rl$outformat # TODO add a widget to set it
       rl$index_datatype <- input$index_datatype
       # output compression ("LZW", "DEFLATE" etc.)
-      rl$compression <- ifelse(rl$outformat=="GTiff",
+      rl$compression <- ifelse(rl$outformat %in% c("GTiff","BigTIFF"),
                                input$compression,
                                NA)
       rl$rgb_compression <- rl$compression # TODO add a widget to set it
@@ -3743,17 +3744,23 @@ s2_gui <- function(param_list = NULL,
               TRUE
             }
           })
-          updateTextInput(session, "outproj", value = ifelse(!is.na(pl$proj),
-                                                             pl$proj,
-                                                             character(0)))
+          updateTextInput(
+            session, "outproj", 
+            value = ifelse(!is.na(pl$proj), pl$proj, character(0))
+          )
           updateRadioButtons(session, "outformat", selected = pl$outformat)
         }
         updateRadioButtons(session, "index_datatype", selected = pl$index_datatype)
         updateRadioButtons(session, "resampling", selected = pl$resampling)
         updateRadioButtons(session, "resampling_scl", selected = pl$resampling_scl)
-        updateRadioButtons(session, "compression", selected = ifelse(pl$outformat=="GTiff",
-                                                                     pl$compression,
-                                                                     character(0)))
+        updateRadioButtons(
+          session, "compression", 
+          selected = ifelse(
+            pl$outformat %in% c("GTiff","BigTIFF"), 
+            pl$compression, 
+            character(0)
+          )
+        )
         updateRadioButtons(session, "overwrite", selected = pl$overwrite)
         setProgress(0.8)
         
