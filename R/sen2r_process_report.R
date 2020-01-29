@@ -5,6 +5,8 @@
 #'  S2 images.
 #' @param s2names Output of [compute_s2_paths()].
 #' @param pm List containing sen2r processing parameters.
+#' @param cloudlist_path Internal parameter.
+#' @param ignorelist_path Internal parameter.
 #' @param s2_list_cloudcovered Internal parameter.
 #' @param s2_list_failed Internal parameter.
 #' @param s2_list_cloud_ignored Internal parameter.
@@ -44,8 +46,9 @@
 sen2r_process_report <- function(
   s2_list_ordered,
   s2names = NULL,
-  names_out = NULL, 
   pm = NULL,
+  cloudlist_path = character(0), 
+  ignorelist_path = character(0), 
   s2_list_cloudcovered = NA, 
   s2_list_failed = NA, 
   s2_list_cloud_ignored = NA, 
@@ -59,9 +62,9 @@ sen2r_process_report <- function(
   # print_message(type = "message","\n ")
   print_message(
     type = "message",
-    "\u2554",rep("\u2550", min(60, 0.9 * getOption("width") - 2)),"\n",
+    "\u2554",rep("\u2550", max(60, 0.9 * getOption("width") - 2)),"\n",
     "\u2551 sen2r Processing Report\n",
-    "\u255f",rep("\u2500", min(60, 0.9 * getOption("width") - 2))
+    "\u255f",rep("\u2500", max(60, 0.9 * getOption("width") - 2))
   )
   
   # First, compute number of non-processed and notonline DATES ----
@@ -94,9 +97,9 @@ sen2r_process_report <- function(
         substr(basename(s2_list_cloud_ignored), 7, 14),
         format = "%Y%m%d"
       )
-      lgt_cld_ignored <- table(cloud_ignored_dates)
+      tbl_cld_ignored <- table(cloud_ignored_dates)
     } else {
-      lgt_cld_ignored <- 0
+      tbl_cld_ignored <- 0
     }
     
     if (!all(is.na(s2_list_failed_ignored))) {
@@ -104,19 +107,31 @@ sen2r_process_report <- function(
         substr(basename(s2_list_failed_ignored), 7, 14),
         format = "%Y%m%d"
       )
-      lgt_failed_ignored <- table(failed_ignored_dates)
+      tbl_failed_ignored <- table(failed_ignored_dates)
     } else {
-      lgt_failed_ignored <- 0
+      failed_ignored_dates <- character(0)
+      tbl_failed_ignored <- 0
     }
     
-    if (lgt_cld_ignored != 0 | lgt_failed_ignored != 0) {
+    if (length(tbl_cld_ignored) != 0 | length(tbl_failed_ignored) != 0) {
       exp_new_files <- s2names$exp[!attr(s2names, "paths_istemp")[names(s2names$exp)]]
-      lgt_existing <- max(table(as.Date(
-        substr(basename(unlist(exp_new_files)), 7, 14), 
-        format = "%Y%m%d"
-      )))
-      n_cld_ignored <- length(which(lgt_cld_ignored == lgt_existing))
-      n_failed_ignored <- length(which(lgt_failed_ignored == lgt_existing))
+      
+      dates_expected <- as.Date(substr(basename(
+        unlist(exp_new_files)), 7, 14), format = "%Y%m%d")
+      if (length(dates_expected) != 0) {
+        lgt_expected <- max(table(dates_expected))
+      } else {
+        lgt_expected <- 0
+      }
+      # check to get correct report if all images are skipped because
+      # of ignorelist
+      if (lgt_expected != 0) {
+        n_cld_ignored <- length(which(tbl_cld_ignored == lgt_expected))
+        n_failed_ignored <- length(which(tbl_failed_ignored == lgt_expected))
+      } else {
+        n_cld_ignored    <- length(cloud_ignored_dates)
+        n_failed_ignored <- length(failed_ignored_dates)
+      }
     } else {
       n_cld_ignored <- n_failed_ignored <- 0
     }
@@ -132,7 +147,8 @@ sen2r_process_report <- function(
       # n_ondisk_dates: computed as n_expected_dates minus the maximum number 
       # of new files to be created for a product. 
       n_ondisk_dates <- n_expected_dates - 
-        max(unlist(sapply(s2names$new, sapply, length)))    
+        max(unlist(sapply(s2names$new, sapply, length))) -    
+        n_cld_ignored - n_failed_ignored
       
       # n_proc_dates = dates for which SOME processing had to be made in 
       # current "run". Computed as the difference. Should be equivalent
@@ -218,12 +234,18 @@ sen2r_process_report <- function(
       print_message(
         type = "message",
         prefix = "\u2551 ", 
-        "NOTE: Outputs for: ", n_failed_dates, 
+        "WARNING: Outputs for: ", n_failed_dates, 
         " out of ", n_req_tot_dates, " expected dates ", 
-        " not created because of unexpected reasons."
+        " not created because of unexpected reasons.",
+        if (length(ignorelist_path) != 0) {
+          paste0( 
+            "\"\nThese files will be skipped during next executions ",
+            "from the current JSON parameter file. ",
+            "To try again to build them, remove the file \"",
+            ignorelist_path,"\".")
+        }
       )
     }
-    
     # Report about CLOUDY dates
     if (n_cloudy_dates != 0) {
       print_message(
@@ -232,7 +254,15 @@ sen2r_process_report <- function(
         "Outputs for: ", n_cloudy_dates, 
         " out of ", n_req_tot_dates, " expected dates ", 
         " not created because cloudiness over the spatial extent is above ",
-        pm$max_mask, "%."
+        pm$max_mask, "%.",
+        if (length(cloudlist_path) != 0) {
+          paste0(
+            "\n\t The list of these files was written in a hidden file, ",
+            "so to be skipped during next executions from the current ",
+            "JSON parameter file. \n",
+            "To process them again (e.g., because you changed the \"max_mask\" setting) ",
+            "delete the file \n\"",cloudlist_path,"\". ")
+        }
       )
     }
     
@@ -367,7 +397,7 @@ sen2r_process_report <- function(
   
   print_message(
     type = "message",
-    "\u255a",rep("\u2550", min(60, 0.9 * getOption("width") - 2)),"\n"
+    "\u255a",rep("\u2550", max(60, 0.9 * getOption("width") - 2)),"\n"
   )
   print_message(
     type = "message",
