@@ -1,7 +1,7 @@
 #' @title Download and install (or link) Sen2Cor
-#' @description [install_sen2cor()] downloads and installs standalone version of
+#' @description [install_sen2cor()] downloads and installs a standalone version of
 #'  [Sen2Cor](http://step.esa.int/main/third-party-plugins-2/sen2cor).
-#' @param sen2cor_dir Path where sen2cor is being installed or searched
+#' @param sen2cor_dir Path where sen2cor will be installed or searched
 #'  (by default it is a subdirectory `"sen2cor"` of the default sen2r directory).
 #' @param version (optional) Character: Sen2Cor version (one among
 #'  '2.5.5' - default - and '2.8.0').
@@ -12,8 +12,8 @@
 #' @param use_dem (optional) Logical, determining if Sen2Cor has to be set 
 #'  to use a Digital Elevation Model for topographic correction (see
 #'  [sen2cor()] for further details).
-#' @param force (optional) Logical: if TRUE, install even if it is already
-#'  installed (default is FALSE).
+#' @param force (optional) Logical: if TRUE, installs sen2cor even if it is already
+#'  found in sen2cor_dir (default is FALSE).
 #' @return NULL (the function is called for its side effects)
 #'
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
