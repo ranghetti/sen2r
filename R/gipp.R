@@ -148,7 +148,8 @@ read_gipp <- function(gipp_names, gipp_path = NA) {
 #'  If NA (default), the default sen2r GIPP path is used.
 #' @param use_dem Logical, determining if a DEM should be set for being used 
 #'  for topographic correction in the XML specified with argument `gipp_path`
-#'  (see [sen2cor()] for further details).
+#'  (see [sen2cor()] for further details), currently defaults to FALSE for 
+#'  backward compatibility - may be changed in the future.
 #' @return [set_gipp()] and [reset_gipp()] return NULL
 #'  (functions are called for their side effects).
 #' @export
@@ -168,20 +169,21 @@ read_gipp <- function(gipp_names, gipp_path = NA) {
 #' read_gipp(c("DEM_Directory", "DEM_Reference"), gipp_path = gipp_temp)
 #' }
 set_gipp <- function(
-  gipp = list(), gipp_path = NA, use_dem = NA
+  gipp = list(), gipp_path = NA, use_dem = FALSE
 ) {
   
   binpaths <- load_binpaths()
   
   # If gipp is a character, interpret as path and use the specified XML
   gipp_sen2r_path <- file.path(dirname(attr(binpaths, "path")), "sen2r_L2A_GIPP.xml")
+  
   if (is.character(gipp)) {
     gipp_curr_path <- normalize_path(gipp, mustWork = TRUE)
     gipp <- list()
   } else {
     # copy L2A_GIPP.xml within .sen2r if missing
     gipp_init(dem_warning = all(
-      is.na(use_dem), 
+      use_dem, 
       length(grep("DEM_Directory", names(gipp), ignore.case = TRUE)) == 0
     )) # remove dem_warning in future!
     gipp_curr_path <- gipp_sen2r_path
