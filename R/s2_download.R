@@ -123,6 +123,20 @@ s2_download <- function(
     downloader <- "builtin"
   }
   
+  # check if aria2 is available, switch to builtin
+  
+  if (downloader %in% c("aria2", "aria2c") && is.null(load_binpaths()$aria2c)) {
+    print_message(
+      type = "warning",
+      "Downloader \"",downloader,"\" was not found in your system.",
+      "Builtin downloader will be used. (see the documentation at ",
+      "https://sen2r.ranghetti.info/articles/installation ",
+      "to see how to install it)"
+    )
+    downloader <- "builtin"
+  }
+  
+  
   # Split products to be downloaded from products to be ordered
   s2_availability <- if (is.null(.s2_availability)) {
     print_message(
