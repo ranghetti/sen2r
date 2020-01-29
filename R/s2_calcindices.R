@@ -166,7 +166,7 @@ s2_calcindices <- function(
     
     # x <- brick(infiles)
     if (is.null(minrows)) {
-      bs <- blockSize(out)
+      bs <- blockSize(out, n = 1)
     } else {
       bs <- blockSize(out, minrows = minrows)
     }
@@ -174,7 +174,9 @@ s2_calcindices <- function(
       message("Processing chunk ", i, " of ", bs$n)
       v <- getValues(x, row = bs$row[i], nrows = bs$nrows[i])
       if (grepl("^Float", dataType)) {
-        v <- apply(v, 2, as.numeric)
+        if (!is.numeric(v)) {
+          v <- apply(v, 2, as.numeric)
+        }
         v_out <- eval(parse(text = sel_formula))
       } else {
         v_out <- round(eval(parse(text = sel_formula)))
@@ -581,6 +583,6 @@ s2_calcindices <- function(
   
 }
 
-# Accessory functions to interpret NumPy functions power() and clip()
+# Accessory functions to interpr  et NumPy functions power() and clip()
 power <- function(x,y) {x^y}
 clip <- function(x,min,max) {(x+min+2*max+abs(x-min)-abs(x+min-2*max+abs(x-min)))/4}
