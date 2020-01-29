@@ -653,8 +653,9 @@ sen2r <- function(param_list = NULL,
     while(is.na(open_check_gui)) {
       open_check_gui_prompt <- print_message(
         type="waiting",
-        # "It seems you are running this package for the first time. ",
-        "Do you want to install the required dependencies using a GUI? (y/n) "
+        "It seems you are running this package for the first time. ",
+        "Do you want to verify/install the required dependencies using a GUI (otherwise, an
+        automatic check will be performed)? (y/n) ", 
       )
       open_check_gui <- if (grepl("^[Yy]",open_check_gui_prompt)) {
         TRUE
@@ -1479,13 +1480,26 @@ sen2r <- function(param_list = NULL,
     # Check if processing is needed
     if (all(unlist(sapply(s2names$new, sapply, length)) == 0)) {
       if (all(unlist(sapply(s2names$exp, sapply, length)) == 0)) {
-        print_message(
-          type = "message",
-          date = TRUE,
-          "No output products matching the query settings were found; please ",
-          if (pm$online == FALSE) {"try in online mode, or "},
-          "specify less restrictive settings."
-        )
+        if (length(ignorelist) == 0) {
+          print_message(
+            type = "message",
+            date = TRUE,
+            "No S2 products matching the query settings were found; please ",
+            if (pm$online == FALSE) {"try in online mode, or "},
+            "specify less restrictive settings."
+          )
+        } else {
+          print_message(
+            type = "message",
+            date = TRUE,
+            "All S2 products matching the query settings were ignored because ", 
+            "they are included in the list of files with cloudiness above the ",
+            "\"max_mask\" threshold (", cloudlist_path, "), ",
+            "or in the list of files for which previous processing failed ", 
+            ignorelist_path, 
+            ". (see the \"Details\" section of sen2r() documentation)"  
+            )
+        }
       } else {
         print_message(
           type = "message",
@@ -1499,11 +1513,12 @@ sen2r <- function(param_list = NULL,
       
       sen2r_output <- character(0)
       attributes(sen2r_output) <- c(attributes(sen2r_output), out_attributes)
-      
       status <- sen2r_process_report(
         s2_list_ordered, 
-        s2names, 
+        s2names = s2names,
         pm, 
+        cloudlist_path  = if (is.character(param_list)) cloudlist_path else character(0), 
+        ignorelist_path = if (is.character(param_list)) ignorelist_path else character(0), 
         s2_list_cloud_ignored  = if (exists("cloudlist0")) cloudlist0  else NA,
         s2_list_failed_ignored = if (exists("ignorelist0")) ignorelist0 else NA
       )
@@ -2780,10 +2795,11 @@ sen2r <- function(param_list = NULL,
   # value (argument "max_mask"), but also some other unexpected reasons could
   # happen, i.e. because of old name SAFE products which do not include all the tiles.
   # To prevent to try to create these files every time the function is called
-  # with the same parameter file, if param_list is a path, this list is noted
+  # with the same parameter file, if param_list is a path, these lists are saved
   # in two hidden files ( one per file not created because of cloud coverage,
   # one other for all the other reasons) so to ignore them during next executions.
   # To try it again, delete the files or set overwrite = TRUE).
+  
   if (length(names_missing)>0) {
     ignorelist_path <- gsub("\\.json$","_ignorelist.txt",param_list)
     if (is(param_list, "character")) {
@@ -2807,25 +2823,15 @@ sen2r <- function(param_list = NULL,
     if (is(param_list, "character")) {
       write(names_cloudcovered, cloudlist_path, append=TRUE)
     }
-    print_message(
-      type="message",
-      "Some files were not created ",
-      "because the cloud coverage was higher than \"max_mask\":\n\"",
-      paste(names_cloudcovered,collapse="\"\n\""),"\"",
-      if (is(param_list, "character")) {paste0(
-        "\"\nThe list of these files was written in a hidden file ",
-        "(\"",cloudlist_path,"\"), ",
-        "so to be skipped during next executions."
-      )}
-    )
   }
-  
+
   # Issue processing report
   status <- sen2r_process_report(
     s2_list_ordered, 
     s2names, 
-    names_out, 
-    pm, 
+    pm,
+    cloudlist_path  = if (length(names_cloudcovered) > 0) cloudlist_path else character(0), 
+    ignorelist_path = if (length(names_missing) > 0) ignorelist_path else character(0), 
     s2_list_cloudcovered = if (length(names_cloudcovered) != 0) names_cloudcovered else NA, 
     s2_list_failed = if (length(names_missing) != 0) names_missing else NA,
     s2_list_cloud_ignored = if (exists("cloudlist0")) cloudlist0 else NA,
