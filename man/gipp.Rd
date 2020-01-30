@@ -50,12 +50,20 @@ License: GPL 3.0
 \donttest{
 # Read default values
 read_gipp(c("dem_directory", "dem_reference"))
-# Edit one value and save the output as temporary file
-set_gipp(list(DEM_Directory = NA), gipp_path = gipp_temp <- tempfile())
+# Set the use of a topographic correction
+set_gipp(use_dem = TRUE, gipp_path = gipp_temp <- tempfile())
+# (use: "set_gipp(use_dem = TRUE)" to edit your default sen2r GIPP file).
 # Read the parameters in the created temporary files
 read_gipp(c("DEM_Directory", "DEM_Reference"), gipp_path = gipp_temp)
-# Read the original (not edited) XML file
-read_gipp(c("DEM_Directory", "DEM_Reference"))
+# Set not to use a topographic correction
+set_gipp(use_dem = FALSE, gipp_path = gipp_temp <- tempfile())
+# This is equivalent to:
+# set_gipp(
+#   list(DEM_Directory = NA, DEM_Reference = NA), 
+#   gipp_path = gipp_temp <- tempfile()
+# )
+# Read again the parameters in the created temporary files
+read_gipp(c("DEM_Directory", "DEM_Reference"), gipp_path = gipp_temp)
 # Reset to default Sen2Cor GIPP values
 reset_gipp(gipp_path = gipp_temp)
 # Read again values
