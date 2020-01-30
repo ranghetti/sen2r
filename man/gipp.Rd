@@ -3,21 +3,20 @@
 \name{read_gipp}
 \alias{read_gipp}
 \alias{set_gipp}
-\alias{reset_gipp}
 \title{Manage GIPP parameters for Sen2Cor}
 \usage{
 read_gipp(gipp_names, gipp_path = NA)
 
 set_gipp(gipp = list(), gipp_path = NA, use_dem = NA)
-
-reset_gipp(gipp_path = NA)
 }
 \arguments{
 \item{gipp_names}{Character vector with the names of the parameters
 to be read.}
 
-\item{gipp_path}{Character path of the output GIPP XML file.
-If NA (default), the default sen2r GIPP path is used.}
+\item{gipp_path}{Character path of the GIPP XML file to be read
+(\code{\link[=read_gipp]{read_gipp()}}) or written (\code{\link[=set_gipp]{set_gipp()}}).
+In \code{\link[=read_gipp]{read_gipp()}}, if NA (default), the default sen2r GIPP path is read;
+in \code{\link[=set_gipp]{set_gipp()}}, setting this argument is mandatory (see details).}
 
 \item{gipp}{(optional) Ground Image Processing Parameters (GIPP)
 (see \code{\link[=set_gipp]{set_gipp()}} for further details).
@@ -31,17 +30,23 @@ for topographic correction in the XML specified with argument \code{gipp_path}
 \code{\link[=read_gipp]{read_gipp()}} returns a named list of GIPP with the required parameters
 (values not found in the XML are skipped).
 
-\code{\link[=set_gipp]{set_gipp()}} and \code{\link[=reset_gipp]{reset_gipp()}} return NULL
-(functions are called for their side effects).
+\code{\link[=set_gipp]{set_gipp()}} returns NULL (the function is called for its side effects).
 }
 \description{
 \code{\link[=read_gipp]{read_gipp()}} reads Ground Image Processing Parameters (GIPP)
-from an XML file.
+from the default sen2r GIPP path or from an XML file.
 
-\code{\link[=set_gipp]{set_gipp()}} modifies values of a list of GIPP in an XML file.
-
-\code{\link[=reset_gipp]{reset_gipp()}} restores default GIPP values (using values
-set in the \code{L2A_GIPP.xml} default Sen2Cor file).
+\code{\link[=set_gipp]{set_gipp()}} modifies values of a list of GIPP in an XML file
+(or creates a nex XML file with the desired GIPP).
+}
+\details{
+In \code{\link[=set_gipp]{set_gipp()}}, editing /resetting
+the default sen2r GIPP XML file was disabled to grant code reproducibility
+among different machines (an error is returned if \code{gipp_path} is not set).
+Users who want to do that (being aware of the risk doing that)
+must explicitly define the argument \code{gipp_path}
+as the path of the default GIPP file, which is
+\code{file.path(dirname(attr(load_binpaths(), "path")), "sen2r_L2A_GIPP.xml")}.
 }
 \note{
 License: GPL 3.0
@@ -52,7 +57,6 @@ License: GPL 3.0
 read_gipp(c("dem_directory", "dem_reference"))
 # Set the use of a topographic correction
 set_gipp(use_dem = TRUE, gipp_path = gipp_temp <- tempfile())
-# (use: "set_gipp(use_dem = TRUE)" to edit your default sen2r GIPP file).
 # Read the parameters in the created temporary files
 read_gipp(c("DEM_Directory", "DEM_Reference"), gipp_path = gipp_temp)
 # Set not to use a topographic correction
@@ -63,10 +67,6 @@ set_gipp(use_dem = FALSE, gipp_path = gipp_temp <- tempfile())
 #   gipp_path = gipp_temp <- tempfile()
 # )
 # Read again the parameters in the created temporary files
-read_gipp(c("DEM_Directory", "DEM_Reference"), gipp_path = gipp_temp)
-# Reset to default Sen2Cor GIPP values
-reset_gipp(gipp_path = gipp_temp)
-# Read again values
 read_gipp(c("DEM_Directory", "DEM_Reference"), gipp_path = gipp_temp)
 }
 }

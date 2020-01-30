@@ -5,15 +5,8 @@
 #'  (by default it is a subdirectory `"sen2cor"` of the default sen2r directory).
 #' @param version (optional) Character: Sen2Cor version (one among
 #'  '2.5.5' - default - and '2.8.0').
-#' @param gipp (optional) Ground Image Processing Parameters (GIPP)
-#'  to be passed to Sen2Cor (see [set_gipp()] for further details).
-#'  Default behaviour is to maintain default values (with the exception of
-#'  parameter `DEM_Directory`, which is managed by argument `use_dem`).
-#' @param use_dem (optional) Logical, determining if Sen2Cor has to be set 
-#'  to use a Digital Elevation Model for topographic correction (see
-#'  [sen2cor()] for further details).
-#' @param force (optional) Logical: if TRUE, installs Sen2Cor even if it is 
-#'  already found in `sen2cor_dir` (default is FALSE).
+#' @param force (optional) Logical: if TRUE, installs sen2cor even if it is already
+#'  found in sen2cor_dir (default is FALSE).
 #' @return NULL (the function is called for its side effects)
 #'
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
@@ -25,22 +18,18 @@
 #' @export
 #' @examples
 #' \dontrun{
-#' install_sen2cor(sen2cor_dir = tempdir(), use_dem = TRUE)
+#' install_sen2cor(sen2cor_dir = tempdir())
 #' # ( use a non-temporary folder path instead of tempdir() )
 #' }
 
 install_sen2cor <- function(
   sen2cor_dir = NA, 
   version = "2.5.5", 
-  gipp = NULL,
-  use_dem = NA, 
   force = FALSE
 ) {
   .install_sen2cor(
     sen2cor_dir = sen2cor_dir,
     version = version,
-    gipp = gipp,
-    use_dem = use_dem, 
     force = force,
     interactive = TRUE
   )
@@ -49,8 +38,6 @@ install_sen2cor <- function(
 .install_sen2cor <- function(
   sen2cor_dir,
   version="2.5.5",
-  gipp = NULL,
-  use_dem = NA, 
   force = FALSE,
   interactive = TRUE
 ) {
@@ -73,8 +60,6 @@ install_sen2cor <- function(
         type = "message",
         "Sen2Cor is already installed; to overwrite, set force = TRUE."
       )
-      # edit DEM_Directory basing on gipp and use_dem
-      set_gipp(gipp = gipp, use_dem = use_dem)
       return(invisible(NULL))
     }
   }
@@ -199,10 +184,8 @@ install_sen2cor <- function(
   # reset sen2r GIPP XML to the default Sen2Cor values
   # (this is necessary to avoid errors in case of reinstallation 
   # of a different Sen2cor version)
-  reset_gipp()
-  # edit DEM_Directory basing on gipp and use_dem
-  set_gipp(gipp = gipp, use_dem = use_dem)
-  
+  gipp_init(force = TRUE, dem_warning = TRUE)
+
 }
 
 #' @name link_sen2cor
@@ -210,7 +193,7 @@ install_sen2cor <- function(
 #' @description `link_sen2cor()` links an existing standalone version of
 #'  [Sen2Cor](http://step.esa.int/main/third-party-plugins-2/sen2cor) to sen2r.
 #' @export
-link_sen2cor <- function(sen2cor_dir, gipp = NULL, use_dem = NA) {
+link_sen2cor <- function(sen2cor_dir) {
   
   # Check if Sen2Cor exists in the provided directory
   sen2cor_exists <- file.exists(file.path(
@@ -242,10 +225,8 @@ link_sen2cor <- function(sen2cor_dir, gipp = NULL, use_dem = NA) {
     # reset sen2r GIPP XML to the default Sen2Cor values
     # (this is necessary to avoid errors in case of reinstallation 
     # of a different Sen2cor version)
-    reset_gipp()
-    # edit DEM_Directory basing on gipp and use_dem
-    set_gipp(gipp = gipp, use_dem = use_dem)
-    
+    gipp_init(force = TRUE, dem_warning = TRUE)
+
   } else {
     print_message(type = "error", "Sen2Cor was not found here")
   }

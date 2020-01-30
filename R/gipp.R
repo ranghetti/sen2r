@@ -4,8 +4,8 @@
 #'  in sen2r without affecting standalone Sen2Cor behaviour.
 #' @param gipp_sen2r_path Character path of the output GIPP XML file.
 #'  By default it is equal to NA (meaning the default sen2r GIPP path).
-#' @param force Logical: if TRUE, the file is copied in any case (this is used
-#'  by [reset_gipp()]); if FALSE (default), only if it does not yet exist.
+#' @param force Logical: if TRUE, the file is copied in any case;
+#'  if FALSE (default), only if it does not yet exist.
 #' @param dem_warning TEMPORARY ARGUMENT Logical: if TRUE, a warning about
 #'  the fact that DEM_Directory XML parameter was not overwritten is shown
 #'  (default is FALSE).
@@ -66,19 +66,15 @@ gipp_init <- function(gipp_sen2r_path = NA, force = FALSE, dem_warning = FALSE) 
       print_message(
         type = "message",
         "Default Sen2Cor parameters were written in file \"",
-        normalize_path(
-          file.path(dirname(attr(binpaths, "path")), "sen2r_L2A_GIPP.xml"), 
-          mustWork = FALSE
-        ), 
-        "\", and will be used with sen2cor() and sen2r() ",
-        "unless different parameters will be specified.\n",
+        normalize_path(gipp_sen2r_path, mustWork = FALSE),"\".\n",
         "IMPORTANT NOTE: for backward compatibility, the parameter ",
         "\"DEM_Directory\" was maitained to its default value. ",
         "This does not grant homogeneity between Level-2A SAFE products ",
         "generated locally with Sen2Cor and downloaded from ESA Hub ",
-        "(which make use of DEM for topographic correction).",
+        "(which make use of DEM for topographic correction). ",
         "To grant it, activate topographic correction using:\n",
-        "\u00A0\u00A0set_gipp(use_dem = TRUE)\n",
+        "\u00A0\u00A0set_gipp(use_dem = TRUE, gipp_path = \"",
+        normalize_path(gipp_sen2r_path, mustWork = FALSE),"\")\n",
         "In a future sen2r release, this will be the default Sen2Cor behaviour."
       )
     }
@@ -98,14 +94,22 @@ gipp_init <- function(gipp_sen2r_path = NA, force = FALSE, dem_warning = FALSE) 
 #' @name read_gipp
 #' @rdname gipp
 #' @description [read_gipp()] reads Ground Image Processing Parameters (GIPP) 
-#'  from an XML file.
+#'  from the default sen2r GIPP path or from an XML file.
 #' @param gipp_names Character vector with the names of the parameters 
 #'  to be read.
 #' @param gipp_path Character path of the GIPP XML file to be read 
-#'  ([read_gipp()]) or written ([set_gipp()] and [reset_gipp()]).
-#'  If NA (default), the default sen2r GIPP path is used.
+#'  ([read_gipp()]) or written ([set_gipp()]).
+#'  In [read_gipp()], if NA (default), the default sen2r GIPP path is read; 
+#'  in [set_gipp()], setting this argument is mandatory (see details).
 #' @return [read_gipp()] returns a named list of GIPP with the required parameters
 #'  (values not found in the XML are skipped).
+#' @details In [set_gipp()], editing /resetting 
+#'  the default sen2r GIPP XML file was disabled to grant code reproducibility 
+#'  among different machines (an error is returned if `gipp_path` is not set).
+#'  Users who want to do that (being aware of the risk doing that) 
+#'  must explicitly define the argument `gipp_path`
+#'  as the path of the default GIPP file, which is
+#'  `file.path(dirname(attr(load_binpaths(), "path")), "sen2r_L2A_GIPP.xml")`.
 #' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @export
@@ -140,17 +144,15 @@ read_gipp <- function(gipp_names, gipp_path = NA) {
 
 #' @name set_gipp
 #' @rdname gipp
-#' @description [set_gipp()] modifies values of a list of GIPP in an XML file.
+#' @description [set_gipp()] modifies values of a list of GIPP in an XML file
+#'  (or creates a nex XML file with the desired GIPP).
 #' @param gipp (optional) Ground Image Processing Parameters (GIPP)
 #'  (see [set_gipp()] for further details).
 #'  Elements whose name is missing in the XML file are skipped.
-#' @param gipp_path Character path of the output GIPP XML file.
-#'  If NA (default), the default sen2r GIPP path is used.
 #' @param use_dem Logical, determining if a DEM should be set for being used 
 #'  for topographic correction in the XML specified with argument `gipp_path`
 #'  (see [sen2cor()] for further details).
-#' @return [set_gipp()] and [reset_gipp()] return NULL
-#'  (functions are called for their side effects).
+#' @return [set_gipp()] returns NULL (the function is called for its side effects).
 #' @export
 #' @examples
 #' \donttest{
@@ -158,7 +160,6 @@ read_gipp <- function(gipp_names, gipp_path = NA) {
 #' read_gipp(c("dem_directory", "dem_reference"))
 #' # Set the use of a topographic correction
 #' set_gipp(use_dem = TRUE, gipp_path = gipp_temp <- tempfile())
-#' # (use: "set_gipp(use_dem = TRUE)" to edit your default sen2r GIPP file).
 #' # Read the parameters in the created temporary files
 #' read_gipp(c("DEM_Directory", "DEM_Reference"), gipp_path = gipp_temp)
 #' # Set not to use a topographic correction
@@ -170,14 +171,19 @@ read_gipp <- function(gipp_names, gipp_path = NA) {
 #' # )
 #' # Read again the parameters in the created temporary files
 #' read_gipp(c("DEM_Directory", "DEM_Reference"), gipp_path = gipp_temp)
-#' # Reset to default Sen2Cor GIPP values
-#' reset_gipp(gipp_path = gipp_temp)
-#' # Read again values
-#' read_gipp(c("DEM_Directory", "DEM_Reference"), gipp_path = gipp_temp)
 #' }
 set_gipp <- function(
   gipp = list(), gipp_path = NA, use_dem = NA
 ) {
+  
+  # Stop if gipp_path is not defined
+  if (is.na(gipp_path)) {
+    print_message(
+      type = "error",
+      "Editing the default sen2r GIPP file was disabled ",
+      "(see the function documentation for details)."
+    )
+  }
   
   binpaths <- load_binpaths()
   
@@ -193,11 +199,6 @@ set_gipp <- function(
       length(grep("DEM_Directory", names(gipp), ignore.case = TRUE)) == 0
     )) # remove dem_warning in future!
     gipp_curr_path <- gipp_sen2r_path
-  }
-  
-  # Define gipp_path if missing
-  if (is.na(gipp_path)) {
-    gipp_path <- gipp_sen2r_path
   }
   
   gipp_xml <- readLines(gipp_curr_path)
@@ -269,18 +270,4 @@ set_gipp <- function(
   writeLines(gipp_xml, gipp_path)
   invisible(NULL)
   
-}
-
-
-#' @name reset_gipp
-#' @rdname gipp
-#' @description [reset_gipp()] restores default GIPP values (using values
-#'  set in the `L2A_GIPP.xml` default Sen2Cor file).
-#' @export
-reset_gipp <- function(gipp_path = NA) {
-  gipp_init(
-    gipp_sen2r_path = gipp_path, 
-    force = TRUE, 
-    dem_warning = TRUE # remove dem_warning in future!
-  )
 }

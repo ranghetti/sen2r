@@ -10,8 +10,8 @@ gipp_init(gipp_sen2r_path = NA, force = FALSE, dem_warning = FALSE)
 \item{gipp_sen2r_path}{Character path of the output GIPP XML file.
 By default it is equal to NA (meaning the default sen2r GIPP path).}
 
-\item{force}{Logical: if TRUE, the file is copied in any case (this is used
-by \code{\link[=reset_gipp]{reset_gipp()}}); if FALSE (default), only if it does not yet exist.}
+\item{force}{Logical: if TRUE, the file is copied in any case;
+if FALSE (default), only if it does not yet exist.}
 
 \item{dem_warning}{TEMPORARY ARGUMENT Logical: if TRUE, a warning about
 the fact that DEM_Directory XML parameter was not overwritten is shown

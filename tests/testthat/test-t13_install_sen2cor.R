@@ -128,7 +128,7 @@ testthat::test_that(
     
     # Reset to default Sen2Cor GIPP values
     testthat::expect_message(
-      reset_gipp(gipp_path = gipp_temp),
+      gipp_init(gipp_path = gipp_temp, force = TRUE, dem_warning = TRUE),
       "IMPORTANT NOTE: for backward compatibility"
     )
     # Read again values
