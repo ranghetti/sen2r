@@ -2928,6 +2928,16 @@ s2_gui <- function(param_list = NULL,
           "so to grant homogeneity between Level-2A products downloaded from",
           "ESA Hub and generated using Sen2Cor."
         )),
+        p(HTML(
+          "To make custom edits to Sen2Cor parameters (e.g. changing the default",
+          "DEM directory, or customising atmospheric correction parameters),",
+          "set the argument <span style='family:monospace;'>\"sen2cor_gipp\"</span> ",
+          "of function <span style='family:monospace;'>sen2r()</span> using the command line",
+          "(refer to the <a href='https://sen2r.ranghetti.info/reference/sen2cor'",
+          "target='_blank'>documentation of function",
+          "<span style='family:monospace;'>sen2cor()</span></a>",
+          "- argument \"gipp\" - for details)."
+        )),
         easyClose = TRUE,
         footer = NULL
       ))

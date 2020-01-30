@@ -147,7 +147,7 @@ read_gipp <- function(gipp_names, gipp_path = NA) {
 #' @description [set_gipp()] modifies values of a list of GIPP in an XML file
 #'  (or creates a nex XML file with the desired GIPP).
 #' @param gipp (optional) Ground Image Processing Parameters (GIPP)
-#'  (see [set_gipp()] for further details).
+#'  (see [sen2cor()] for further details).
 #'  Elements whose name is missing in the XML file are skipped.
 #' @param use_dem Logical, determining if a DEM should be set for being used 
 #'  for topographic correction in the XML specified with argument `gipp_path`

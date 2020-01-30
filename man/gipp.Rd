@@ -19,7 +19,7 @@ In \code{\link[=read_gipp]{read_gipp()}}, if NA (default), the default sen2r GIP
 in \code{\link[=set_gipp]{set_gipp()}}, setting this argument is mandatory (see details).}
 
 \item{gipp}{(optional) Ground Image Processing Parameters (GIPP)
-(see \code{\link[=set_gipp]{set_gipp()}} for further details).
+(see \code{\link[=sen2cor]{sen2cor()}} for further details).
 Elements whose name is missing in the XML file are skipped.}
 
 \item{use_dem}{Logical, determining if a DEM should be set for being used

@@ -27,10 +27,22 @@
 #' @param rmtmp (optional) Logical: should temporary files be removed?
 #'  (Default: TRUE)
 #' @param gipp (optional) Ground Image Processing Parameters (GIPP)
-#'  to be passed to Sen2Cor (see [set_gipp()] for further details).
+#'  to be passed to Sen2Cor.
+#'  It is possible to specify both the path of an existing XML file 
+#'  or a list of parameters in the form `parameter_name = "value"`, where 
+#'  `parameter_name` is the name of the parameter as specified in the 
+#'  XML file (case insensitive), and `"value"` is the character value 
+#'  which the user wants to set 
+#'  (notice that, in the case the user wants to specify the value `NONE`,
+#'  both `"NONE"` and `NA` can be used, but not `NULL`, which has the effect
+#'  to maintain the value specified in the XML file).
+#'  
+#'  For details about the GIPP parameters, refer to the Sen2Cor documentation
+#'  (v. [2.5.5](http://step.esa.int/main/third-party-plugins-2/sen2cor/sen2cor_v2-5-5/) 
+#'  or [2.8.0](http://step.esa.int/main/third-party-plugins-2/sen2cor/sen2cor_v2-8/):
+#'  see the "Schemas of the GIPP file" at the end of each page).
 #'  _Note_: this argument takes effect only in the current execution of 
-#'  [sen2cor()] function; to permanently change GIPP values, use function
-#'  [set_gipp()].
+#'  `sen2cor()` function.
 #' @param use_dem (optional) Logical: 
 #'  if TRUE, Sen2Cor is set to use a Digital Elevation Model for topographic 
 #'  correction (reflecting what is done for Level-2A SAFE images provided by ESA Hub);

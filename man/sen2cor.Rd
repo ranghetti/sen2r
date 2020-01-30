@@ -51,10 +51,22 @@ If \code{tmpdir} is a non-empty folder, a random subdirectory will be used.}
 (Default: TRUE)}
 
 \item{gipp}{(optional) Ground Image Processing Parameters (GIPP)
-to be passed to Sen2Cor (see \code{\link[=set_gipp]{set_gipp()}} for further details).
+to be passed to Sen2Cor.
+It is possible to specify both the path of an existing XML file
+or a list of parameters in the form \code{parameter_name = "value"}, where
+\code{parameter_name} is the name of the parameter as specified in the
+XML file (case insensitive), and \code{"value"} is the character value
+which the user wants to set
+(notice that, in the case the user wants to specify the value \code{NONE},
+both \code{"NONE"} and \code{NA} can be used, but not \code{NULL}, which has the effect
+to maintain the value specified in the XML file).
+
+For details about the GIPP parameters, refer to the Sen2Cor documentation
+(v. \href{http://step.esa.int/main/third-party-plugins-2/sen2cor/sen2cor_v2-5-5/}{2.5.5}
+or \href{http://step.esa.int/main/third-party-plugins-2/sen2cor/sen2cor_v2-8/}{2.8.0}:
+see the "Schemas of the GIPP file" at the end of each page).
 \emph{Note}: this argument takes effect only in the current execution of
-\code{\link[=sen2cor]{sen2cor()}} function; to permanently change GIPP values, use function
-\code{\link[=set_gipp]{set_gipp()}}.}
+\code{sen2cor()} function.}
 
 \item{use_dem}{(optional) Logical:
 if TRUE, Sen2Cor is set to use a Digital Elevation Model for topographic
