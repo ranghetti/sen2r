@@ -439,21 +439,40 @@ s2_gui <- function(param_list = NULL,
               title="Atmospheric correction",
               width=12,
               collapsible = TRUE,
-              # step_atmcorr (perform or not sen2cor and how)
-              # uiOutput("step_atmcorr")
-              radioButtons(
-                "step_atmcorr",
-                label = span(
-                  "Method to obtain level-2A corrected images\u2000",
-                  actionLink("help_step_atmcorr", icon("question-circle"))
+              column(
+                width = 7,
+                radioButtons(
+                  "step_atmcorr",
+                  label = span(
+                    "Method to obtain level-2A corrected images\u2000",
+                    actionLink("help_step_atmcorr", icon("question-circle"))
+                  ),
+                  choiceNames = list(
+                    "Use only level-2A images available locally or online",
+                    "Use Sen2Cor only for level-2A products not available locally or online",
+                    "Always correct level-1C images with Sen2Cor locally"
+                  ),
+                  choiceValues = list("l2a","auto", "scihub"),
+                  selected = "auto"
                 ),
-                choiceNames = list(
-                  "Use only level-2A images available locally or online",
-                  "Use Sen2Cor only for level-2A products not available locally or online",
-                  "Always correct level-1C images with Sen2Cor locally"
-                ),
-                choiceValues = list("l2a","auto", "scihub"),
-                selected = "auto")
+              ),
+              column(
+                width = 5,
+                radioButtons(
+                  "use_dem",
+                  label = span(
+                    "Apply a topographic correction?\u2000",
+                    actionLink("help_use_dem", icon("question-circle"))
+                  ),
+                  choices = list(
+                    "Yes" = "TRUE",
+                    "No" = "FALSE",
+                    "Keep default" = "NA"
+                  ),
+                  selected = "NA"
+                )
+              ),
+              
             )) # end of fluidRow/box "sen2cor options"
           )
           
@@ -2879,6 +2898,41 @@ s2_gui <- function(param_list = NULL,
       ))
     })
     
+    observeEvent(input$help_use_dem, {
+      showModal(modalDialog(
+        title = "Topographic correction in Sen2Cor",
+        p(HTML(
+          "Sen2Cor can correct the effect of different topographic exposures",
+          "using a Digital Elevation Model (DEM) during atmoshperic correction",
+          "(which is what is done for producing the level 2A SAFE products",
+          "downloadable from ESA Hub).",
+          "By default, Sen2Cor does not perform this operation, causing an",
+          "inhomogeneity between SAFE downloaded from ESA Hub and locally",
+          "produced with Sen2Cor."
+        )),
+        p(HTML(
+          "In this option:<ul>",
+          "<li>set <strong>Yes</strong> to perform the topographic correction:",
+          "DEM is searched in a default directory and downloaded from",
+          "<a href='http://srtm.csi.cgiar.org/' target='_blank'>CGIAR-CSI",
+          "SRTM</a> if not found locally;</li>",
+          "<li>set <strong>No</strong> to avoid applying a topographic",
+          "correction;</li>",
+          "<li>set <strong>Keep default</strong> to mantain the default",
+          "behaviour (which is \"No\", unless the user edited it).</li></ul>"
+        )),
+        p(HTML(
+          "<strong>Note:</strong> Currently the default value is \"Keep",
+          "default\" in order to grant backward compatibility.",
+          "In a future release of sen2r, the default value will be set to TRUE,",
+          "so to grant homogeneity between Level-2A products downloaded from",
+          "ESA Hub and generated using Sen2Cor."
+        )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+    
     observeEvent(input$help_time_period, {
       showModal(modalDialog(
         title = "Time period type",
@@ -3490,6 +3544,8 @@ s2_gui <- function(param_list = NULL,
       rl$rm_safe <- input$rm_safe # "yes" to delete all SAFE, "l1c" to delete only l1c, "no" not to remove
       rl$max_cloud_safe <- input$max_cloud_safe_perc # maximum SAFE cloud coverage (0-100)
       rl$step_atmcorr <- if (safe_req$l2a==TRUE) {input$step_atmcorr} else {"l2a"} # download_method in sen2cor: "auto", "l2a" or "scihub"
+      rl$sen2cor_use_dem <- as.logical(input$use_dem) # apply topographic correction
+      rl$sen2cor_gipp <- param_list$sen2cor_gipp # do not modify (GUI not yet implemented)
       # rl$steps_reqout <- input$steps_reqout # vector of required outputs: "safe", "tiles", "clipped" (one or more)
       
       # spatio-temporal selection #
@@ -3641,7 +3697,7 @@ s2_gui <- function(param_list = NULL,
         updateCheckboxGroupInput(session, "list_levels", selected = pl$s2_levels)
         updateCheckboxGroupInput(session, "sel_sensor", selected = pl$sel_sensor)
         updateRadioButtons(session, "online", selected = pl$online)
-        updateRadioButtons(session, "make_lta_order", selected = pl$order_lta)
+        updateCheckboxInput(session, "make_lta_order", value = pl$order_lta)
         updateRadioButtons(session, "downloader", selected = pl$downloader)
         updateRadioButtons(session, "overwrite_safe", selected = pl$overwrite_safe)
         updateRadioButtons(session, "rm_safe", selected = pl$rm_safe)
@@ -3650,6 +3706,11 @@ s2_gui <- function(param_list = NULL,
           value = if (!all(is.na(nn(pl$max_cloud_safe)))) {pl$max_cloud_safe} else {100}
         )
         updateRadioButtons(session, "step_atmcorr", selected = pl$step_atmcorr)
+        updateRadioButtons(
+          session, "use_dem", selected = if (
+            is.na(pl$sen2cor_use_dem)
+          ) {"NA"} else {as.character(pl$sen2cor_use_dem)}
+        )
         setProgress(0.2)
         
         # spatio-temporal selection
@@ -3970,7 +4031,7 @@ s2_gui <- function(param_list = NULL,
           as.character() %>%
           readLines() %>%
           fromJSON() %>%
-          check_param_list(type = "error", correct = TRUE)
+          check_param_list(type = "warning", correct = TRUE)
         
       } else {
         NULL
