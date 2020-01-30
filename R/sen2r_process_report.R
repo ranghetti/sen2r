@@ -62,9 +62,9 @@ sen2r_process_report <- function(
   # print_message(type = "message","\n ")
   print_message(
     type = "message",
-    "\u2554",rep("\u2550", min(60, 0.9 * getOption("width") - 2)),"\n",
+    "\u2554",rep("\u2550", 0.9 * getOption("width") - 2),"\n",
     "\u2551 sen2r Processing Report\n",
-    "\u255f",rep("\u2500", min(60, 0.9 * getOption("width") - 2))
+    "\u255f",rep("\u2500", 0.9 * getOption("width") - 2)
   )
   
   # First, compute number of non-processed and notonline DATES ----
@@ -398,7 +398,7 @@ sen2r_process_report <- function(
   
   print_message(
     type = "message",
-    "\u255a",rep("\u2550", min(60, 0.9 * getOption("width") - 2)),"\n"
+    "\u255a",rep("\u2550", 0.9 * getOption("width") - 2),"\n"
   )
   print_message(
     type = "message",
