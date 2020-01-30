@@ -583,6 +583,6 @@ s2_calcindices <- function(
   
 }
 
-# Accessory functions to interpr  et NumPy functions power() and clip()
+# Accessory functions to interpret NumPy functions power() and clip()
 power <- function(x,y) {x^y}
 clip <- function(x,min,max) {(x+min+2*max+abs(x-min)-abs(x+min-2*max+abs(x-min)))/4}

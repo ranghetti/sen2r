@@ -652,10 +652,10 @@ sen2r <- function(param_list = NULL,
     open_check_gui <- NA
     while(is.na(open_check_gui)) {
       open_check_gui_prompt <- print_message(
-        type="waiting",
+        type = "waiting",
         "It seems you are running this package for the first time. ",
-        "Do you want to verify/install the required dependencies using a GUI (otherwise, an
-        automatic check will be performed)? (y/n) ", 
+        "Do you want to verify/install the required dependencies using a GUI ",
+        "(otherwise, an automatic check will be performed)? (y/n) ", 
       )
       open_check_gui <- if (grepl("^[Yy]",open_check_gui_prompt)) {
         TRUE
@@ -1498,7 +1498,7 @@ sen2r <- function(param_list = NULL,
             "or in the list of files for which previous processing failed ", 
             ignorelist_path, 
             ". (see the \"Details\" section of sen2r() documentation)"  
-            )
+          )
         }
       } else {
         print_message(
@@ -2824,7 +2824,7 @@ sen2r <- function(param_list = NULL,
       write(names_cloudcovered, cloudlist_path, append=TRUE)
     }
   }
-
+  
   # Issue processing report
   status <- sen2r_process_report(
     s2_list_ordered, 

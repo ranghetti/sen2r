@@ -12,8 +12,8 @@
 #' @param use_dem (optional) Logical, determining if Sen2Cor has to be set 
 #'  to use a Digital Elevation Model for topographic correction (see
 #'  [sen2cor()] for further details).
-#' @param force (optional) Logical: if TRUE, installs sen2cor even if it is already
-#'  found in sen2cor_dir (default is FALSE).
+#' @param force (optional) Logical: if TRUE, installs Sen2Cor even if it is 
+#'  already found in `sen2cor_dir` (default is FALSE).
 #' @return NULL (the function is called for its side effects)
 #'
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
