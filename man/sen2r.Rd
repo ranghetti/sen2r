@@ -17,6 +17,8 @@ sen2r(
   overwrite_safe = FALSE,
   rm_safe = "no",
   step_atmcorr = "auto",
+  sen2cor_use_dem = NA,
+  sen2cor_gipp = NA,
   max_cloud_safe = 100,
   timewindow = NA,
   timeperiod = "full",
@@ -137,6 +139,20 @@ downloaded from SciHub;
 \item \code{"l2a"} means that they are downloaded if available on SciHub,
 otherwise they are skipped (sen2cor is never used).
 }}
+
+\item{sen2cor_use_dem}{(optional) Logical, determining if a DEM should be
+used for topographic correction by Sen2Cor (see the documentation of
+\code{\link[=sen2cor]{sen2cor()}} - argument \code{use_dem} for further details).
+Currently the default value is NA (default setting is used),
+in order to grant backward compatibility.
+\emph{Note}: in a future release of sen2r, the default value will be
+set to TRUE, so to grant homogeneity between Level-2A products downloaded
+from ESA Hub and generated using Sen2Cor.}
+
+\item{sen2cor_gipp}{(optional) Ground Image Processing Parameters (GIPP)
+to be passed to Sen2Cor (see the documentation of \code{\link[=sen2cor]{sen2cor()}} - argument
+\code{gipp} - for details about the usage of this argument).
+Default value (NA) corresponds to an empty list of parameters.}
 
 \item{max_cloud_safe}{(optional) Integer number (0-100) containing
 the maximum cloud level of each SAFE to be considered (default: no filter).

@@ -76,8 +76,9 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   
   # -- Parameters of length 1: check length
   pm_length1 <- c(
-    "preprocess", "online", "order_lta", "downloader", "overwrite_safe", "rm_safe",
-    "step_atmcorr", "max_cloud_safe", "timeperiod", "extent_name", "index_source",
+    "preprocess", "online", "order_lta", "downloader", 
+    "overwrite_safe", "rm_safe", "step_atmcorr", "sen2cor_use_dem", 
+    "max_cloud_safe", "timeperiod", "extent_name", "index_source",
     "mask_type", "max_mask", "mask_smooth", "mask_buffer", "clip_on_extent",
     "extent_as_mask", "reference_path", "res_s2", "unit", "proj", "resampling",
     "resampling_scl", "outformat", "rgb_outformat", "index_datatype",
@@ -730,6 +731,20 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
     )
     pm$step_atmcorr <- pm_def$step_atmcorr
   }
+  
+  
+  # -- sen2cor_use_dem --
+  if (!is(pm$sen2cor_use_dem, "logical")) {
+    print_message(
+      type = type,
+      paste0("Parameter sen2cor_use_dem must be TRUE or FALSE; ",
+             "setting it to the default (NA).")
+    )
+    pm$sen2cor_use_dem <- NA
+  }
+  
+  
+  # -- sen2cor_gipp
   
   
   # -- path_l1c --

@@ -62,6 +62,18 @@
 #'  downloaded from SciHub;
 #'  * `"l2a"` means that they are downloaded if available on SciHub,
 #'  otherwise they are skipped (sen2cor is never used).
+#' @param sen2cor_use_dem (optional) Logical, determining if a DEM should be
+#'  used for topographic correction by Sen2Cor (see the documentation of 
+#'  [sen2cor()] - argument `use_dem` for further details).
+#'  Currently the default value is NA (default setting is used), 
+#'  in order to grant backward compatibility. 
+#'  _Note_: in a future release of sen2r, the default value will be
+#'  set to TRUE, so to grant homogeneity between Level-2A products downloaded
+#'  from ESA Hub and generated using Sen2Cor.
+#' @param sen2cor_gipp (optional) Ground Image Processing Parameters (GIPP)
+#'  to be passed to Sen2Cor (see the documentation of [sen2cor()] - argument
+#'  `gipp` - for details about the usage of this argument).
+#'  Default value (NA) corresponds to an empty list of parameters.
 #' @param max_cloud_safe (optional) Integer number (0-100) containing
 #'  the maximum cloud level of each SAFE to be considered (default: no filter).
 #'  It it used to limit the research of SAFE products to "good" images,
@@ -414,6 +426,8 @@ sen2r <- function(param_list = NULL,
                   overwrite_safe = FALSE,
                   rm_safe = "no",
                   step_atmcorr = "auto",
+                  sen2cor_use_dem = NA,
+                  sen2cor_gipp = NA,
                   max_cloud_safe = 100,
                   timewindow = NA,
                   timeperiod = "full",
@@ -499,6 +513,8 @@ sen2r <- function(param_list = NULL,
     overwrite_safe = overwrite_safe,
     rm_safe = rm_safe,
     step_atmcorr = step_atmcorr,
+    sen2cor_use_dem = sen2cor_use_dem,
+    sen2cor_gipp = sen2cor_gipp,
     max_cloud_safe = max_cloud_safe,
     timewindow = timewindow,
     timeperiod = timeperiod,
@@ -593,6 +609,8 @@ sen2r <- function(param_list = NULL,
                    overwrite_safe,
                    rm_safe,
                    step_atmcorr,
+                   sen2cor_use_dem,
+                   sen2cor_gipp,
                    max_cloud_safe,
                    timewindow,
                    timeperiod,
@@ -1501,7 +1519,7 @@ sen2r <- function(param_list = NULL,
             "or in the list of files for which previous processing failed ", 
             ignorelist_path, 
             ". (see the \"Details\" section of sen2r() documentation)"  
-            )
+          )
         }
       } else {
         print_message(
@@ -2027,6 +2045,8 @@ sen2r <- function(param_list = NULL,
             outdir = path_l2a,
             tiles = pm$s2tiles_selected,
             parallel = pm$parallel,
+            use_dem = pm$sen2cor_use_dem,
+            gipp = if (all(is.na(pm$sen2cor_gipp))) {list()} else {pm$sen2cor_gipp},
             tmpdir = if (Sys.info()["sysname"] == "Windows") {
               file.path(tmpdir_groupA, "sen2cor")
             } else if (any(attr(mountpoint(tmpdir_groupA), "protocol") %in% c("cifs", "nsfs"))) {
@@ -2827,7 +2847,7 @@ sen2r <- function(param_list = NULL,
       write(names_cloudcovered, cloudlist_path, append=TRUE)
     }
   }
-
+  
   # Issue processing report
   status <- sen2r_process_report(
     s2_list_ordered, 

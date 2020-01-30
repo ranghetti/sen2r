@@ -54,6 +54,8 @@ build_example_param_file <- function(
         "rm_safe" = "no",
         "max_cloud_safe" =100,
         "step_atmcorr" = "l2a",
+        "sen2cor_use_dem" = NA,
+        "sen2cor_gipp" = NA,
         "timewindow" = c("2017-07-03", "2017-07-03"),
         "timeperiod" = "full",
         "extent" = system.file("extdata/vector/barbellino.geojson", package = "sen2r"),
