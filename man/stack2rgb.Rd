@@ -12,6 +12,7 @@ stack2rgb(
   maxval = 10000,
   format = "JPEG",
   compress = "90",
+  bigtiff = FALSE,
   tmpdir = NA
 )
 }
@@ -41,6 +42,10 @@ In the case a JPEG format is present, the compression indicates the quality
 (integer, 0-100).
 In the case a GTiff format is present and an integer 0-100 number is provided,
 this is interpreted as the quality level of a JPEG compression.}
+
+\item{bigtiff}{(optional) Logical: if TRUE, the creation of a BigTIFF is
+forced (default is FALSE).
+This option is used only in the case a GTiff format was chosen.}
 
 \item{tmpdir}{(optional) Path where intermediate files will be created.
 Default is a temporary directory.

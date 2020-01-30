@@ -16,7 +16,7 @@ install_sen2cor(
 link_sen2cor(sen2cor_dir, gipp = NULL, use_dem = NA)
 }
 \arguments{
-\item{sen2cor_dir}{Path where sen2cor is being installed or searched
+\item{sen2cor_dir}{Path where sen2cor will be installed or searched
 (by default it is a subdirectory \code{"sen2cor"} of the default sen2r directory).}
 
 \item{version}{(optional) Character: Sen2Cor version (one among
@@ -31,14 +31,14 @@ parameter \code{DEM_Directory}, which is managed by argument \code{use_dem}).}
 to use a Digital Elevation Model for topographic correction (see
 \code{\link[=sen2cor]{sen2cor()}} for further details).}
 
-\item{force}{(optional) Logical: if TRUE, install even if it is already
-installed (default is FALSE).}
+\item{force}{(optional) Logical: if TRUE, installs Sen2Cor even if it is
+already found in \code{sen2cor_dir} (default is FALSE).}
 }
 \value{
 NULL (the function is called for its side effects)
 }
 \description{
-\code{\link[=install_sen2cor]{install_sen2cor()}} downloads and installs standalone version of
+\code{\link[=install_sen2cor]{install_sen2cor()}} downloads and installs a standalone version of
 \href{http://step.esa.int/main/third-party-plugins-2/sen2cor}{Sen2Cor}.
 
 \code{link_sen2cor()} links an existing standalone version of

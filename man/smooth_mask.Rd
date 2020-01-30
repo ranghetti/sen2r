@@ -10,7 +10,8 @@ smooth_mask(
   tmpdir = tempdir(),
   radius = 250,
   buffer = 250,
-  namask = NULL
+  namask = NULL,
+  bigtiff = FALSE
 )
 }
 \arguments{
@@ -34,6 +35,9 @@ masked area after smoothing it (positive to enlarge, negative to reduce).}
 the area of the original file with NA values (which should not be
 smoothed / buffered).
 Default (NULL) means that no NA values are present.}
+
+\item{bigtiff}{(optional) Logical: if TRUE, the creation of a BigTIFF is
+forced (default is FALSE).}
 }
 \value{
 The path of the smoothed mask.

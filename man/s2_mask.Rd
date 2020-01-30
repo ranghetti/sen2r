@@ -19,6 +19,7 @@ s2_mask(
   format = NA,
   subdirs = NA,
   compress = "DEFLATE",
+  bigtiff = FALSE,
   parallel = FALSE,
   overwrite = FALSE,
   .log_message = NA,
@@ -140,6 +141,10 @@ more than a single product is required.}
 
 \item{compress}{(optional) In the case a \code{GTiff} format is
 present, the compression indicated with this parameter is used.}
+
+\item{bigtiff}{(optional) Logical: if TRUE, the creation of a BigTIFF is
+forced (default is FALSE).
+This option is used only in the case a GTiff format was chosen.}
 
 \item{parallel}{(optional) Logical: if TRUE, masking is conducted using parallel
 processing, to speed-up the computation for large rasters.

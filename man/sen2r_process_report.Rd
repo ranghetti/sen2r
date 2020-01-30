@@ -7,8 +7,9 @@
 sen2r_process_report(
   s2_list_ordered,
   s2names = NULL,
-  names_out = NULL,
   pm = NULL,
+  cloudlist_path = character(0),
+  ignorelist_path = character(0),
   s2_list_cloudcovered = NA,
   s2_list_failed = NA,
   s2_list_cloud_ignored = NA,
@@ -26,6 +27,10 @@ S2 images.}
 \item{s2names}{Output of \code{\link[=compute_s2_paths]{compute_s2_paths()}}.}
 
 \item{pm}{List containing sen2r processing parameters.}
+
+\item{cloudlist_path}{Internal parameter.}
+
+\item{ignorelist_path}{Internal parameter.}
 
 \item{s2_list_cloudcovered}{Internal parameter.}
 

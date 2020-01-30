@@ -13,6 +13,7 @@ s2_rgb(
   subdirs = NA,
   format = NA,
   compress = "DEFLATE",
+  bigtiff = FALSE,
   tmpdir = NA,
   rmtmp = TRUE,
   parallel = TRUE,
@@ -61,6 +62,10 @@ format recognised by GDAL). Default is the same format of input images
 
 \item{compress}{(optional) In the case a GTiff format is
 present, the compression indicated with this parameter is used.}
+
+\item{bigtiff}{(optional) Logical: if TRUE, the creation of a BigTIFF is
+forced (default is FALSE).
+This option is used only in the case a GTiff format was chosen.}
 
 \item{tmpdir}{(optional) Path where intermediate files (VRT) will be created.
 Default is a temporary directory.

@@ -15,6 +15,7 @@ s2_translate(
   res = "10m",
   format = "VRT",
   compress = "DEFLATE",
+  bigtiff = FALSE,
   vrt_rel_paths = NA,
   utmzone = "",
   overwrite = FALSE
@@ -63,6 +64,10 @@ format recognised by GDAL). Default value is "VRT" (Virtual Raster).}
 
 \item{compress}{(optional) In the case a GTiff format is
 chosen, the compression indicated with this parameter is used.}
+
+\item{bigtiff}{(optional) Logical: if TRUE, the creation of a BigTIFF is
+forced (default is FALSE).
+This option is used only in the case a GTiff format was chosen.}
 
 \item{vrt_rel_paths}{(optional) Logical: if TRUE (default on Linux),
 the paths present in the VRT output file are relative to the VRT position;

@@ -14,6 +14,7 @@ s2_calcindices(
   subdirs = NA,
   tmpdir = NA,
   compress = "DEFLATE",
+  bigtiff = FALSE,
   dataType = "Int16",
   scaleFactor = NA,
   proc_mode = "raster",
@@ -70,6 +71,10 @@ created in case \code{format} is \code{"VRT"}.}
 
 \item{compress}{(optional) In the case a GTiff format is
 present, the compression indicated with this parameter is used.}
+
+\item{bigtiff}{(optional) Logical: if TRUE, the creation of a BigTIFF is
+forced (default is FALSE).
+This option is used only in the case a GTiff format was chosen.}
 
 \item{dataType}{(optional) Numeric datatype of the output rasters.
 if "Float32" or "Float64" is chosen, numeric values are not rescaled;

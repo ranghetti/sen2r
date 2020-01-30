@@ -284,7 +284,8 @@ by \code{gdal_translate}: \code{"near"} (default), \code{"bilinear"}, \code{"cub
 (for now, only SCL): one among \code{"near"} (default) and \code{"mode"}.}
 
 \item{outformat}{(optional) Format of the output file (in a
-format recognised by GDAL). Default is \code{"GTiff"}.}
+format recognised by GDAL). Default is \code{"GTiff"}.
+Value \code{"BigTIFF"} can be used to generate a GeoTIFF with the option BigTIFF}
 
 \item{rgb_outformat}{(optional) Format of the output RGB products (in a
 format recognised by GDAL). Default is \code{"GTiff"}.}
@@ -449,6 +450,9 @@ data. Input is a set of parameters that can be passed with a
 list or file (parameter \code{param_list}) or singularly (see the
 descriptions of all the other parameters).
 }
+\note{
+License: GPL 3.0
+}
 \examples{
 \donttest{
 # Open an interactive section
@@ -528,4 +532,9 @@ image(stars::read_stars(thumb_4[grep("RGB843B", thumb_4)]), rgb = 1:3)
 
 par(oldpar)
 }
+}
+\author{
+Luigi Ranghetti, phD (2020) \email{luigi@ranghetti.info}
+
+Lorenzo Busetto, phD (2020) \email{lbusett@gmail.com}
 }
