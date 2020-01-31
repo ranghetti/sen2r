@@ -18,7 +18,6 @@
 #' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
 #' @export
 #' @importFrom sf st_as_text st_crs
-#' @importFrom magrittr "%>%"
 #'
 #' @examples
 #' \donttest{

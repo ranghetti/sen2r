@@ -849,8 +849,10 @@ sen2r <- function(param_list = NULL,
   )
   pm_exported <- pm[!names(pm) %in% c(".only_list_names", "globenv")]
   if (inherits(pm$extent, "sf") | inherits(pm$extent, "sfc")) {
-    pm_exported$extent <- st_transform(pm$extent, 4326) %>%
-      geojson_json(pretty=TRUE)
+    pm_exported$extent <- geojson_json(
+      st_transform(pm$extent, 4326),
+      pretty = TRUE
+    )
   }
   if (inherits(pm$pkg_version, "numeric_version")) {
     pm_exported$pkg_version <- as.character(pm$pkg_version)
@@ -1018,7 +1020,8 @@ sen2r <- function(param_list = NULL,
   parent_paths <- sapply(
     pm[c("path_l1c","path_l2a","path_tiles","path_merged","path_out","path_rgb","path_indices")],
     function(x){if(is.na(nn(x))){NA}else{dirname(x)}}
-  ) %>% unique() %>% na.omit() %>% as.character()
+  )
+  parent_paths <- as.character(na.omit(unique(parent_paths)))
   paths_exist <- sapply(parent_paths, file.exists)
   if (any(!paths_exist)) {
     print_message(
@@ -1226,12 +1229,6 @@ sen2r <- function(param_list = NULL,
     info = c("nameinfo"), format = "data.table"
   )
   s2_dt$footprint <- s2_list_footprints
-  # s2_dt <- lapply(names(s2_list), function(x) {
-  #   unlist(safe_getMetadata(x, info="nameinfo")) %>%
-  #     t() %>%
-  #     as.data.frame(stringsAsFactors=FALSE)
-  # }) %>%
-  #   rbindlist(fill=TRUE)
   if (nrow(s2_dt)==0) {
     # generate column names for empty dt (to avoid errors)
     s2_dt <- safe_getMetadata(
@@ -1349,8 +1346,7 @@ sen2r <- function(param_list = NULL,
   s2_lta_dates <- s2_dt[
     ,list(lta = any(lta)),
     by = list(sensing_date = as.Date(sensing_datetime))
-    ] %>% 
-    .[lta==TRUE, sensing_date]
+    ][lta==TRUE, sensing_date]
   s2_list_lta <- s2_dt[lta==TRUE, url] # list of SAFE to be ordered
   s2_list_ign <- s2_dt[lta==FALSE & as.Date(sensing_datetime) %in% s2_lta_dates, url] # list of SAFE to be ignored (to avoid working on a date when only some images of the "needed" ones are available)
   s2_list_l1c <- s2_dt[lta==FALSE & !as.Date(sensing_datetime) %in% s2_lta_dates & level=="1C", url] # list of required L1C
@@ -1446,17 +1442,20 @@ sen2r <- function(param_list = NULL,
     
     # Couple L1C and L2A SAFE if both are required for the same products
     if (all(c("l1c", "l2a") %in% pm$s2_levels)) {
-      s2_meta_l2a <- safe_getMetadata(
-        names(s2_list_l2a_exp), 
-        info = c("nameinfo"), format = "data.table"
-      ) %>%
-        .[,list(mission, sensing_datetime, id_orbit, id_tile)] %>%
-        apply(1, paste, collapse = "_")
-      s2_meta_l1c <- safe_getMetadata(
-        names(s2_list_l1c), 
-        info = c("nameinfo"), format = "data.table"
-      ) %>% .[,list(mission, sensing_datetime, id_orbit, id_tile)] %>%
-        apply(1, paste, collapse = "_")
+      s2_meta_l2a <- apply(
+        safe_getMetadata(
+          names(s2_list_l2a_exp), 
+          info = c("nameinfo"), format = "data.table"
+        )[,list(mission, sensing_datetime, id_orbit, id_tile)],
+        1, paste, collapse = "_"
+      )
+      s2_meta_l1c <- apply(
+        safe_getMetadata(
+          names(s2_list_l1c), 
+          info = c("nameinfo"), format = "data.table"
+        )[,list(mission, sensing_datetime, id_orbit, id_tile)],
+        1, paste, collapse = "_"
+      )
       s2_l2a_orphan <- !s2_meta_l2a %in% s2_meta_l1c
       s2_l1c_orphan <- !s2_meta_l1c %in% s2_meta_l2a
       if (any(s2_l2a_orphan, s2_l1c_orphan)) {
@@ -2025,7 +2024,7 @@ sen2r <- function(param_list = NULL,
         
         if (length(sel_s2_list_l1c_tocorrect)>0) {
           
-          if (sum(file.path(path_l1c,names(sel_s2_list_l1c_tocorrect)) %>% file.exists()) > 0) {
+          if (sum(file.exists(file.path(path_l1c,names(sel_s2_list_l1c_tocorrect)))) > 0) {
             print_message(
               type = "message",
               date = TRUE,
@@ -2365,10 +2364,11 @@ sen2r <- function(param_list = NULL,
           } else if (anyNA(pm$extent$geometry)) { # FIXME check on telemod tiffs
             NULL
           } else if (pm$extent_as_mask==TRUE) {
-            pm$extent %>% st_combine() # TODO remove this when multiple extents will be allowed
+            st_combine(pm$extent) # TODO remove this when multiple extents will be allowed
           } else {
-            suppressWarnings(st_cast(st_cast(pm$extent,"POLYGON"), "LINESTRING")) %>%
-              st_combine() # TODO remove this when multiple extents will be allowed
+            st_combine(
+              suppressWarnings(st_cast(st_cast(pm$extent,"POLYGON"), "LINESTRING"))
+            ) # TODO remove this when multiple extents will be allowed
           } # TODO add support for multiple extents
           
           if(pm$path_subdirs==TRUE){
@@ -2614,7 +2614,7 @@ sen2r <- function(param_list = NULL,
         # build the names of the indices / RGB images not created for the same reason
         if (exists("masked_names_notcreated")) {
           if (length(masked_names_notcreated)>0 & length(unlist(sel_s2names$req$indices))>0) {
-            indices_names_notcreated <- sen2r_getElements(
+            indices_names_notcreated_raw <- sen2r_getElements(
               masked_names_notcreated, format="data.table"
             )[prod_type == pm$index_source,
               paste0("S2",
@@ -2625,16 +2625,23 @@ sen2r <- function(param_list = NULL,
                      if (pm$clip_on_extent) {pm$extent_name},"_",
                      "<index>_",
                      substr(res,1,2),".",
-                     out_ext["masked"])] %>%
-              expand.grid(pm$list_indices) %>%
-              apply(1,function(x){
-                file.path(
-                  if(pm$path_subdirs==TRUE){x[2]}else{""},
-                  gsub("<index>",x[2],x[1])
-                )
-              }) %>%
-              file.path(paths["indices"],.) %>%
-              gsub(paste0(out_ext["merged"],"$"),out_ext["masked"],.)
+                     out_ext["masked"])]
+            indices_names_notcreated <- file.path(
+              paths["indices"], 
+              apply(
+                expand.grid(indices_names_notcreated_raw, pm$list_indices),
+                1, function(x) {
+                  file.path(
+                    if(pm$path_subdirs==TRUE){x[2]}else{""},
+                    gsub("<index>",x[2],x[1])
+                  )
+                }
+              )
+            )
+            indices_names_notcreated <- gsub(
+              paste0(out_ext["merged"],"$"), out_ext["masked"],
+              indices_names_notcreated
+            )
             # rgb_names_notcreated <- sen2r_getElements(
             #   masked_names_notcreated, format="data.table"
             # )[prod_type %in% c("BOA","TOA"),

@@ -156,7 +156,7 @@ testthat::test_that(
   "Tests on s2_list - multipoint", {
     pp <- data.frame(x = c(6, 9.95),
                      y = c(45.81, 45.95))
-    pos <- sf::st_as_sf(pp, coords = c("x","y")) %>% sf::st_set_crs(4326)
+    pos <- sf::st_set_crs(sf::st_as_sf(pp, coords = c("x","y")), 4326)
     time_window <- as.Date(c("2016-05-01", "2016-05-31"))
     s2_list_test <- as(
       s2_list(spatial_extent = pos, time_interval = time_window), 

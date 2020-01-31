@@ -50,7 +50,6 @@
 #' @note License: GPL 3.0
 #' @import data.table
 #' @importFrom methods is
-#' @importFrom magrittr "%>%"
 #' @importFrom sf st_as_sfc st_sfc st_point st_as_text st_bbox st_coordinates
 #'  st_geometry st_intersection st_geometry st_convex_hull st_transform st_cast
 #'  st_union st_simplify
@@ -161,8 +160,10 @@ s2_list <- function(spatial_extent = NULL,
         "`spatial_extent` is not a `sf` or `sfc` object."
       )
     } else {
-      spatial_extent <- sf::st_geometry(spatial_extent) %>%
-        sf::st_transform(4326)
+      spatial_extent <- st_transform(
+        st_geometry(spatial_extent),
+        4326
+      )
     }
   }
   
@@ -309,64 +310,95 @@ s2_list <- function(spatial_extent = NULL,
       
       out_query <- httr::GET(query_string, authenticate(creds[1,1], creds[1,2]))
       out_xml <- httr::content(out_query, as = "parsed", encoding = "UTF-8")
-      out_xml_list <- XML::htmlTreeParse(out_xml, useInternalNodes = TRUE) %>% XML::xmlRoot()
+      out_xml_list <- xmlRoot(htmlTreeParse(out_xml, useInternalNodes = TRUE))
       out_xml_list <- out_xml_list[["body"]][["feed"]]
       
       
       for (ll in which(names(out_xml_list)=="entry")) {
         
-        in_entry <- XML::saveXML(out_xml_list[[ll]]) %>%
-          strsplit(., "\n")
+        in_entry <- strsplit(saveXML(out_xml_list[[ll]]), "\n")
         
         if (length(which(grepl("<link href=", in_entry[[1]]))) != 0) {
           
           in_entry <- in_entry[[1]]
-
-          title <- in_entry[which(grepl("<title>", in_entry))] %>%
-            gsub("^.*<title>([^<]+)</title>.*$", "\\1", .)
           
-          url <- in_entry[which(grepl("<link href=", in_entry))] %>%
-            gsub("^.*<link href=\"([^\"]+)\"/>.*$", "\\1", .)
+          title <- gsub(
+            "^.*<title>([^<]+)</title>.*$", "\\1", 
+            in_entry[which(grepl("<title>", in_entry))]
+          )
           
-          id_orbit <- in_entry[which(grepl("\\\"relativeorbitnumber\\\"", in_entry))] %>%
-            gsub("^.*<int name=\"relativeorbitnumber\">([^<]+)</int>.*$", "\\1", .) %>%
-            as.numeric() %>% sprintf("%03i", .)
+          url <- gsub(
+            "^.*<link href=\"([^\"]+)\"/>.*$", "\\1", 
+            in_entry[which(grepl("<link href=", in_entry))]
+          )
+          
+          id_orbit <- sprintf("%03i", as.numeric(
+            gsub(
+              "^.*<int name=\"relativeorbitnumber\">([^<]+)</int>.*$", "\\1", 
+              in_entry[which(grepl("\\\"relativeorbitnumber\\\"", in_entry))]
+            )
+          ))
           
           footprint <- tryCatch(
-            in_entry[which(grepl("\\\"footprint\\\"", in_entry))] %>%
-              gsub("^.*<str name=\"footprint\">([^<]+)</str>.*$", "\\1", .) %>%
-              st_as_sfc(crs = 4326),
+            st_as_sfc(
+              gsub(
+                "^.*<str name=\"footprint\">([^<]+)</str>.*$", "\\1", 
+                in_entry[which(grepl("\\\"footprint\\\"", in_entry))]
+              ),
+              crs = 4326
+            ),
             error = function(e) {st_polygon()}
           )
           
-          clouds <- in_entry[which(grepl("\\\"cloudcoverpercentage\\\"", in_entry))] %>%
-            gsub("^.*<double name=\"cloudcoverpercentage\">([^<]+)</double>.*$", "\\1", .) %>%
-            as.numeric()
+          clouds <- as.numeric(gsub(
+            "^.*<double name=\"cloudcoverpercentage\">([^<]+)</double>.*$", "\\1",
+            in_entry[which(grepl("\\\"cloudcoverpercentage\\\"", in_entry))]
+          ))
           
-          proc_level <- in_entry[which(grepl("\\\"processinglevel\\\"", in_entry))] %>%
-            gsub("^.*<str name=\"processinglevel\">Level\\-([^<]+)</str>.*$", "\\1", .)
+          proc_level <- gsub(
+            "^.*<str name=\"processinglevel\">Level\\-([^<]+)</str>.*$", "\\1", 
+            in_entry[which(grepl("\\\"processinglevel\\\"", in_entry))]
+          )
           
-          mission <- in_entry[which(grepl("\\\"platformserialidentifier\\\"", in_entry))] %>%
-            gsub("^.*<str name=\"platformserialidentifier\">Sentinel\\-([^<]+)</str>.*$", "\\1", .)
+          mission <- gsub(
+            "^.*<str name=\"platformserialidentifier\">Sentinel\\-([^<]+)</str>.*$", "\\1", 
+            in_entry[which(grepl("\\\"platformserialidentifier\\\"", in_entry))]
+          )
           
           id_tile <- gsub("^.+_T([0-9]{2}[A-Z]{3})_.+$", "\\1", title)
           
-          sensing_datetime <- gsub(
-            "^S2[AB]\\_MSIL[12][AC]\\_([0-9]{8}T[0-9]{6})\\_N[0-9]{4}\\_R[0-9]{3}\\_T[A-Z0-9]{5}\\_[0-9]{8}T[0-9]{6}$",
-            "\\1", title
-          ) %>% as.POSIXct(format = "%Y%m%dT%H%M%S", tz = "UTC")
+          sensing_datetime <- as.POSIXct(
+            gsub(
+              "^S2[AB]\\_MSIL[12][AC]\\_([0-9]{8}T[0-9]{6})\\_N[0-9]{4}\\_R[0-9]{3}\\_T[A-Z0-9]{5}\\_[0-9]{8}T[0-9]{6}$",
+              "\\1", 
+              title
+            ),
+            format = "%Y%m%dT%H%M%S", tz = "UTC"
+          )
           
-          creation_datetime <- gsub(
-            "^S2[AB]\\_MSIL[12][AC]\\_[0-9]{8}T[0-9]{6}\\_N[0-9]{4}\\_R[0-9]{3}\\_T[A-Z0-9]{5}\\_([0-9]{8}T[0-9]{6})$",
-            "\\1", title
-          ) %>% as.POSIXct(format = "%Y%m%dT%H%M%S", tz = "UTC")
+          creation_datetime <- as.POSIXct(
+            gsub(
+              "^S2[AB]\\_MSIL[12][AC]\\_[0-9]{8}T[0-9]{6}\\_N[0-9]{4}\\_R[0-9]{3}\\_T[A-Z0-9]{5}\\_([0-9]{8}T[0-9]{6})$",
+              "\\1",
+              title
+            ),
+            format = "%Y%m%dT%H%M%S", tz = "UTC"
+          )
           
-          ingestion_datetime <- in_entry[which(grepl("name=\"ingestiondate\"", in_entry))] %>%
-            gsub("^.*<date name=\"ingestiondate\">([0-9\\-]+)T([0-9\\:\\.]+)Z</date>.*$", "\\1 \\2", .) %>%
-            as.POSIXct(tz = "UTC")
+          ingestion_datetime <- as.POSIXct(
+            gsub(
+              "^.*<date name=\"ingestiondate\">([0-9\\-]+)T([0-9\\:\\.]+)Z</date>.*$", 
+              "\\1 \\2", 
+              in_entry[which(grepl("name=\"ingestiondate\"", in_entry))]
+            ),
+            tz = "UTC"
+          )
           
-          uuid <- in_entry[which(grepl("\\\"uuid\\\"", in_entry))] %>%
-            gsub("^.*<str name=\"uuid\">([^<]+)</str>.*$", "\\1", .)
+          uuid <- gsub(
+            "^.*<str name=\"uuid\">([^<]+)</str>.*$", "\\1", 
+            in_entry[which(grepl("\\\"uuid\\\"", in_entry))]
+          )
+          
           
           # print(paste0(title, ".SAFE"))
           out_list[[n_entries]] <- data.frame(

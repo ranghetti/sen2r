@@ -13,7 +13,6 @@
 #' @note License: GPL 3.0
 #' @importFrom jsonlite toJSON fromJSON
 #' @importFrom utils download.file unzip
-#' @importFrom magrittr "%>%"
 #' @importFrom httr GET write_disk
 #' @export
 #' @examples

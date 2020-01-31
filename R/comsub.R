@@ -13,7 +13,6 @@
 #'  [stackoverflow](https://stackoverflow.com/questions/28273716/r-implementation-for-finding-the-longest-common-starting-substrings-in-a-set-of).
 #' @export
 #' @importFrom methods is
-#' @importFrom magrittr "%>%"
 #'
 #' @examples
 #' strings <- c("/home/user/git/sen2r",
@@ -28,10 +27,10 @@ comsub <- function(data, sep="") {
   data_spl <- strsplit(data,sep)
   data_spl_maxlength <- max(sapply(strsplit(data,sep), length))
   which_max <- if (length(unique(data)) > 1) {
-    lapply(data_spl, `length<-`, data_spl_maxlength) %>%
-      do.call(rbind,.) %>%
-      apply(2, function(i){!length(unique(i))==1}) %>%
-      which.max() -1
+    which.max(apply(
+      do.call(rbind, lapply(data_spl, `length<-`, data_spl_maxlength)),
+      2, function(i){!length(unique(i))==1}
+    )) -1
   } else {
     length(data_spl[[1]]) - 1 # FIXME ok for dir with "/", but not with ""
   }

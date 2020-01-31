@@ -52,7 +52,6 @@
 #'  (it is used when the function is called by `sen2r()`).
 #' @return A vector with the names of the merged products (just created or
 #'  already existing).
-#' @importFrom magrittr "%>%"
 #' @importFrom jsonlite fromJSON
 #' @importFrom foreach foreach "%do%" "%dopar%"
 #' @importFrom doParallel registerDoParallel

@@ -13,7 +13,6 @@
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @export
-#' @importFrom magrittr "%>%"
 #' @name gdal_abs2rel
 #' @rdname gdal_abs2rel_rel2abs
 #' @examples
@@ -57,9 +56,11 @@ gdal_abs2rel <- function(in_vrt, out_vrt=NA) {
     abs_path <- gsub(path_regex, "\\1", vrt_text[sel_line])
     rel_path <- suppressWarnings(abs2rel(abs_path, dirname(in_vrt)))
     if (abs_path != rel_path) {
-      vrt_text[sel_line] <- vrt_text[sel_line] %>%
-        gsub(abs_path, rel_path, ., fixed=TRUE) %>%
-        gsub("relativeToVRT=\"0\"", "relativeToVRT=\"1\"", ., fixed=TRUE)
+      vrt_text[sel_line] <- gsub(
+        "relativeToVRT=\"0\"", "relativeToVRT=\"1\"", 
+        gsub(abs_path, rel_path, vrt_text[sel_line], fixed=TRUE),
+        fixed=TRUE
+      )
     }
   }
   writeLines(vrt_text, out_vrt)
@@ -72,7 +73,6 @@ gdal_abs2rel <- function(in_vrt, out_vrt=NA) {
 #'  links are followed). This is useful to grant that VRT can be moved
 #'  (if the files they link to are not moved).
 #' @export
-#' @importFrom magrittr "%>%"
 #' @name gdal_rel2abs
 #' @rdname gdal_abs2rel_rel2abs
 gdal_rel2abs <- function(in_vrt, out_vrt=NA) {
@@ -96,9 +96,11 @@ gdal_rel2abs <- function(in_vrt, out_vrt=NA) {
   for (sel_line in grep(path_regex, vrt_text)) {
     rel_path <- gsub(path_regex, "\\1", vrt_text[sel_line])
     abs_path <- expand_path(rel_path, dirname(in_vrt), normalize=TRUE)
-    vrt_text[sel_line] <- vrt_text[sel_line] %>%
-      gsub(rel_path, abs_path, ., fixed=TRUE) %>%
-      gsub("relativeToVRT=\"1\"", "relativeToVRT=\"0\"", ., fixed=TRUE)
+    vrt_text[sel_line] <- gsub(
+      "relativeToVRT=\"1\"", "relativeToVRT=\"0\"", 
+      gsub(rel_path, abs_path, vrt_text[sel_line], fixed=TRUE),
+      fixed=TRUE
+    )
   }
   
   writeLines(vrt_text, out_vrt)

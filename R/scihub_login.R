@@ -44,8 +44,7 @@ read_scihub_login <- function(apihub_path=NA) {
   
   # return user and password
   if (file.exists(apihub_path)) {
-    readLines(apihub_path) %>%
-      strsplit(" ") %>% sapply(c) %>% t()
+    t(sapply(strsplit(readLines(apihub_path), " "), c))
   } else {
     # if apihub does not exists, return an error
     print_message(

@@ -85,7 +85,6 @@
 #' @import data.table
 #' @importFrom raster blockSize brick getValues raster writeStart writeStop writeValues
 #' @importFrom stars read_stars write_stars
-#' @importFrom magrittr "%>%"
 #' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @examples

@@ -1370,7 +1370,7 @@ s2_gui <- function(param_list = NULL,
     . <- checked <- NULL
     
     # open a waiting modal dialog
-    modalDialog(
+    showModal(modalDialog(
       div(
         p(
           style = paste0("text-align:center;font-size:500%;color:grey;"),
@@ -1384,8 +1384,7 @@ s2_gui <- function(param_list = NULL,
       size = "s",
       easyClose = FALSE,
       footer = NULL
-    ) %>%
-      shiny::showModal()
+    ))
     
     # link to www directory and objects
     addResourcePath("www", system.file("www", package="sen2r"))
@@ -1683,9 +1682,10 @@ s2_gui <- function(param_list = NULL,
         } else {
           x <- if (is.character(custom_source)) {
             st_read(custom_source, quiet=TRUE)
-          } else {custom_source} %>%
-            st_zm() %>%
-            st_transform(4326)
+          } else {
+            custom_source
+          }
+          x <- st_transform(st_zm(x), 4326)
           names(sf::st_geometry(x)) <- NULL
           attr(x, "valid") <- TRUE
           attr(x, "new") <- TRUE
@@ -1738,28 +1738,29 @@ s2_gui <- function(param_list = NULL,
         # reset and update the map
         react_map(base_map())
         rv$draw_tiles_overlapping_ll <- st_transform(rv$draw_tiles_overlapping, 4326)
-        leafletProxy("view_map") %>%
-          clearShapes() %>%
-          fitBounds(
-            lng1 = min(st_coordinates(rv$draw_tiles_overlapping_ll)[,"X"]),
-            lat1 = min(st_coordinates(rv$draw_tiles_overlapping_ll)[,"Y"]),
-            lng2 = max(st_coordinates(rv$draw_tiles_overlapping_ll)[,"X"]),
-            lat2 = max(st_coordinates(rv$draw_tiles_overlapping_ll)[,"Y"])
-          ) %>%
-          # add extent
-          addPolygons(
-            data = rv$extent,
-            group = "Extent",
-            options = pathOptions(pane = "extent"),
-            # label = ~tile_id,
-            # labelOptions = labelOptions(noHide = TRUE, direction = "auto"),
-            fill = TRUE,
-            fillColor = "green",
-            fillOpacity = .3,
-            stroke = TRUE,
-            weight = 3,
-            color = "darkgreen"
-          )
+        clearShapes(leafletProxy("view_map"))
+        fitBounds(
+          leafletProxy("view_map"),
+          lng1 = min(st_coordinates(rv$draw_tiles_overlapping_ll)[,"X"]),
+          lat1 = min(st_coordinates(rv$draw_tiles_overlapping_ll)[,"Y"]),
+          lng2 = max(st_coordinates(rv$draw_tiles_overlapping_ll)[,"X"]),
+          lat2 = max(st_coordinates(rv$draw_tiles_overlapping_ll)[,"Y"])
+        )
+        # add extent
+        addPolygons(
+          leafletProxy("view_map"),
+          data = rv$extent,
+          group = "Extent",
+          options = pathOptions(pane = "extent"),
+          # label = ~tile_id,
+          # labelOptions = labelOptions(noHide = TRUE, direction = "auto"),
+          fill = TRUE,
+          fillColor = "green",
+          fillOpacity = .3,
+          stroke = TRUE,
+          weight = 3,
+          color = "darkgreen"
+        )
         
         # update the [un]selected tiles on the map
         rv$update_tiles_on_map <- sample(1E6, 1)
@@ -1770,8 +1771,7 @@ s2_gui <- function(param_list = NULL,
         updatePickerInput(session, "tiles_checkbox", choices = character(0))
         # reset the map
         react_map(base_map())
-        # leafletProxy("view_map") %>%
-        #   clearShapes()
+        # clearShapes(leafletProxy("view_map"))
       }
       
       return(TRUE)
@@ -1781,51 +1781,64 @@ s2_gui <- function(param_list = NULL,
     
     #-- Create the map (once) --#
     base_map <- function() {
-      leaflet() %>%
-        
-        # add tiles
-        addTiles(group = "OpenStreetMap") %>%
-        # addTiles(paste0("https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png",
-        #                 if (!is.na(thunderforest_api)) {paste0("?apikey=",thunderforest_api)}),
-        #          group = "OpenStreetMap Outdoors") %>%
-        # addProviderTiles(providers$OpenTopoMap, group = "OpenTopoMap") %>%
-        addTiles("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
-                 group = "OpenTopoMap") %>%
-        # addProviderTiles(providers$CartoDB.Positron, group = "CartoDB") %>%
-        addTiles("https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
-                 group = "CartoDB") %>%
-        # addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") %>%
-        addTiles("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-                 group = "Satellite") %>%
-        # addProviderTiles(providers$CartoDB.PositronOnlyLabels, group = "Dark names") %>%
-        addTiles("https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_only_labels/{z}/{x}/{y}.png",
-                 group = "Satellite") %>%
-        # addProviderTiles(providers$CartoDB.DarkMatterOnlyLabels, group = "Dark names") %>%
-        # addTiles("https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_only_labels/{z}/{x}/{y}.png",
-        #          group = "Dark names") %>%
-        # addTiles(paste0("https://{s}.tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png",
-        #                 if (!is.na(thunderforest_api)) {paste0("?apikey=",thunderforest_api)}),
-        #          group = "Metal or death") %>%
-        
-        # Order group
-        addMapPane("extent", zIndex = 430) %>%
-        addMapPane("tiles_selected", zIndex = 420) %>%
-        addMapPane("tiles_notselected", zIndex = 410) %>%
-        
-        # view and controls
-        addLayersControl(
-          baseGroups = c("OpenStreetMap", "OpenTopoMap", "CartoDB", "Satellite"),
-          options = layersControlOptions(collapsed = TRUE)
-        )
+      m <- leaflet()
+      
+      # add tiles
+      m <- addTiles(m, group = "OpenStreetMap")
+      # m <- addTiles(
+      #   m, paste0(
+      #     "https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png",
+      #     if (!is.na(thunderforest_api)) {paste0("?apikey=",thunderforest_api)}
+      #   ), group = "OpenStreetMap Outdoors"
+      # )
+      # m <- addProviderTiles(m, providers$OpenTopoMap, group = "OpenTopoMap")
+      m <- addTiles(
+        m, "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+        group = "OpenTopoMap"
+      )
+      # m <- addProviderTiles(m, providers$CartoDB.Positron, group = "CartoDB")
+      m <- addTiles(
+        m, "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
+        group = "CartoDB"
+      )
+      # m <- addProviderTiles(m, providers$Esri.WorldImagery, group = "Satellite")
+      m <- addTiles(
+        m, "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        group = "Satellite"
+      )
+      # m <- addProviderTiles(m, providers$CartoDB.PositronOnlyLabels, group = "Dark names")
+      m <- addTiles(
+        m, "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_only_labels/{z}/{x}/{y}.png",
+        group = "Satellite"
+      )
+      # m <- addProviderTiles(m, providers$CartoDB.DarkMatterOnlyLabels, group = "Dark names")
+      # m <- addTiles(
+      #   m, "https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_only_labels/{z}/{x}/{y}.png",
+      #   group = "Dark names"
+      # )
+      
+      # Order group
+      m <- addMapPane(m, "extent", zIndex = 430)
+      m <- addMapPane(m, "tiles_selected", zIndex = 420)
+      m <- addMapPane(m, "tiles_notselected", zIndex = 410)
+      
+      # view and controls
+      m <- addLayersControl(
+        m,
+        baseGroups = c("OpenStreetMap", "OpenTopoMap", "CartoDB", "Satellite"),
+        options = layersControlOptions(collapsed = TRUE)
+      )
+      m
     }
     react_map <- reactiveVal({
-      base_map() %>%
-        removeLayersControl() %>%
-        addLayersControl(
-          baseGroups = c("OpenStreetMap", "OpenTopoMap", "CartoDB", "Satellite"),
-          overlayGroups = c("S2 tiles","Extent"),
-          options = layersControlOptions(collapsed = TRUE)
-        )
+      basemap <- base_map()
+      removeLayersControl(basemap)
+      addLayersControl(
+        basemap,
+        baseGroups = c("OpenStreetMap", "OpenTopoMap", "CartoDB", "Satellite"),
+        overlayGroups = c("S2 tiles","Extent"),
+        options = layersControlOptions(collapsed = TRUE)
+      )
     })
     output$view_map <- renderLeaflet({react_map()})
     # # renderUI of the leaflet so to update dinamically the width
@@ -1895,15 +1908,18 @@ s2_gui <- function(param_list = NULL,
         if (input$bbox_xmin != input$bbox_xmax &
             input$bbox_ymin != input$bbox_ymax) {
           # create the polygon
-          rv$bbox_polygon <- st_as_sfc(
-            st_bbox(
-              c("xmin" = input$bbox_xmin,
-                "ymin" = input$bbox_ymin,
-                "xmax" = input$bbox_xmax,
-                "ymax" = input$bbox_ymax),
-              crs = rv$bboxcrs
-            )
-          ) %>% st_transform(4326)
+          rv$bbox_polygon <- st_transform(
+            st_as_sfc(
+              st_bbox(
+                c("xmin" = input$bbox_xmin,
+                  "ymin" = input$bbox_ymin,
+                  "xmax" = input$bbox_xmax,
+                  "ymax" = input$bbox_ymax),
+                crs = rv$bboxcrs
+              )
+            ),
+            4326
+          )
           attr(rv$bbox_polygon, "valid") <- TRUE
         } else {
           rv$bbox_polygon <- st_polygon()
@@ -1917,24 +1933,27 @@ s2_gui <- function(param_list = NULL,
       # if bbox is valid, update the map
       if (attr(rv$bbox_polygon, "valid")) {
         rv$bbox_ll <- st_bbox(st_transform(rv$bbox_polygon, 4326))
-        leafletProxy("view_map_bbox") %>%
-          clearShapes() %>%
-          fitBounds(
-            lng1 = as.numeric(rv$bbox_ll$xmin-(rv$bbox_ll$xmax-rv$bbox_ll$xmin)/3),
-            lat1 = as.numeric(rv$bbox_ll$ymin-(rv$bbox_ll$ymax-rv$bbox_ll$ymin)/3),
-            lng2 = as.numeric(rv$bbox_ll$xmax+(rv$bbox_ll$xmax-rv$bbox_ll$xmin)/3),
-            lat2 = as.numeric(rv$bbox_ll$ymax+(rv$bbox_ll$ymax-rv$bbox_ll$ymin)/3)
-          ) %>%
-          addPolygons(data = rv$bbox_polygon,
-                      group = "Extent",
-                      # label = ~tile_id,
-                      # labelOptions = labelOptions(noHide = TRUE, direction = "auto"),
-                      fill = TRUE,
-                      fillColor = "green",
-                      fillOpacity = .3,
-                      stroke = TRUE,
-                      weight = 3,
-                      color = "darkgreen") #%>%
+        clearShapes(leafletProxy("view_map_bbox"))
+        fitBounds(
+          leafletProxy("view_map_bbox"),
+          lng1 = as.numeric(rv$bbox_ll$xmin-(rv$bbox_ll$xmax-rv$bbox_ll$xmin)/3),
+          lat1 = as.numeric(rv$bbox_ll$ymin-(rv$bbox_ll$ymax-rv$bbox_ll$ymin)/3),
+          lng2 = as.numeric(rv$bbox_ll$xmax+(rv$bbox_ll$xmax-rv$bbox_ll$xmin)/3),
+          lat2 = as.numeric(rv$bbox_ll$ymax+(rv$bbox_ll$ymax-rv$bbox_ll$ymin)/3)
+        )
+        addPolygons(
+          leafletProxy("view_map_bbox"),
+          data = rv$bbox_polygon,
+          group = "Extent",
+          # label = ~tile_id,
+          # labelOptions = labelOptions(noHide = TRUE, direction = "auto"),
+          fill = TRUE,
+          fillColor = "green",
+          fillOpacity = .3,
+          stroke = TRUE,
+          weight = 3,
+          color = "darkgreen"
+        )
       } else {
         # if bbox is not valid, reset the map
         react_map_bbox(base_map())
@@ -2040,9 +2059,8 @@ s2_gui <- function(param_list = NULL,
       # Check that the vector is valid
       rv$vectfile_polygon <- tryCatch(
         {
-          x <- st_read(rv$vectfile_path, quiet=TRUE) %>%
-            st_zm() %>%
-            st_transform(4326)
+          x <- st_read(rv$vectfile_path, quiet=TRUE)
+          x <-st_transform(st_zm(x), 4326)
           names(sf::st_geometry(x)) <- NULL
           attr(x, "valid") <- TRUE
           attr(x, "new") <- TRUE
@@ -2054,24 +2072,27 @@ s2_gui <- function(param_list = NULL,
       if(attr(rv$vectfile_polygon, "valid")) {
         # if the vector is valid, update the map
         rv$vectfile_polygon_ll <- st_transform(rv$vectfile_polygon, 4326)
-        leafletProxy("view_map_vectfile") %>%
-          clearShapes() %>%
-          fitBounds(
-            lng1 = min(st_coordinates(rv$vectfile_polygon_ll)[,"X"]),
-            lat1 = min(st_coordinates(rv$vectfile_polygon_ll)[,"Y"]),
-            lng2 = max(st_coordinates(rv$vectfile_polygon_ll)[,"X"]),
-            lat2 = max(st_coordinates(rv$vectfile_polygon_ll)[,"Y"])
-          ) %>%
-          addPolygons(data = rv$vectfile_polygon,
-                      group = "Extent",
-                      # label = ~tile_id,
-                      # labelOptions = labelOptions(noHide = TRUE, direction = "auto"),
-                      fill = TRUE,
-                      fillColor = "green",
-                      fillOpacity = .3,
-                      stroke = TRUE,
-                      weight = 3,
-                      color = "darkgreen")
+        clearShapes(leafletProxy("view_map_vectfile"))
+        fitBounds(
+          leafletProxy("view_map_vectfile"),
+          lng1 = min(st_coordinates(rv$vectfile_polygon_ll)[,"X"]),
+          lat1 = min(st_coordinates(rv$vectfile_polygon_ll)[,"Y"]),
+          lng2 = max(st_coordinates(rv$vectfile_polygon_ll)[,"X"]),
+          lat2 = max(st_coordinates(rv$vectfile_polygon_ll)[,"Y"])
+        )
+        addPolygons(
+          leafletProxy("view_map_vectfile"),
+          data = rv$vectfile_polygon,
+          group = "Extent",
+          # label = ~tile_id,
+          # labelOptions = labelOptions(noHide = TRUE, direction = "auto"),
+          fill = TRUE,
+          fillColor = "green",
+          fillOpacity = .3,
+          stroke = TRUE,
+          weight = 3,
+          color = "darkgreen"
+        )
       } else {
         # if the vector is not valid, reset the map
         react_map_vectfile(base_map())
@@ -2152,38 +2173,38 @@ s2_gui <- function(param_list = NULL,
       rv$draw_tiles_overlapping$selected <- rv$draw_tiles_overlapping$tile_id %in% input$tiles_checkbox
       # rv$draw_tiles_overlapping$colour <- ifelse(rv$draw_tiles_overlapping$selected | !any(rv$draw_tiles_overlapping$selected), "red", "grey")
       # rv$draw_tiles_overlapping$fillcolour <- ifelse(rv$draw_tiles_overlapping$selected | !any(rv$draw_tiles_overlapping$selected), "orange", "lightgrey")
-      leafletProxy("view_map") %>%
-        removeShape(rv$draw_tiles_overlapping$tile_id) %>%
+      removeShape(leafletProxy("view_map"), rv$draw_tiles_overlapping$tile_id)
+      addPolygons(
+        leafletProxy("view_map"),
+        data = rv$draw_tiles_overlapping[rv$draw_tiles_overlapping$selected | !any(rv$draw_tiles_overlapping$selected),],
+        group = "S2 tiles",
+        options = pathOptions(pane = "tiles_selected"),
+        layerId = ~tile_id,
+        label = ~tile_id,
+        labelOptions = labelOptions(noHide = TRUE, direction = "auto"),
+        fill = TRUE,
+        fillColor = "orange",
+        fillOpacity = .3,
+        stroke = TRUE,
+        weight = 3,
+        color = "red"
+      )
+      if (!all(rv$draw_tiles_overlapping$selected) & any(rv$draw_tiles_overlapping$selected)) {
         addPolygons(
-          data = rv$draw_tiles_overlapping[rv$draw_tiles_overlapping$selected | !any(rv$draw_tiles_overlapping$selected),],
+          leafletProxy("view_map"),
+          data = rv$draw_tiles_overlapping[!rv$draw_tiles_overlapping$selected,],
           group = "S2 tiles",
-          options = pathOptions(pane = "tiles_selected"),
+          options = pathOptions(pane = "tiles_notselected"),
           layerId = ~tile_id,
           label = ~tile_id,
           labelOptions = labelOptions(noHide = TRUE, direction = "auto"),
           fill = TRUE,
-          fillColor = "orange",
+          fillColor = "lightgrey",
           fillOpacity = .3,
           stroke = TRUE,
           weight = 3,
-          color = "red"
+          color = "grey"
         )
-      if (!all(rv$draw_tiles_overlapping$selected) & any(rv$draw_tiles_overlapping$selected)) {
-        leafletProxy("view_map") %>%
-          addPolygons(
-            data = rv$draw_tiles_overlapping[!rv$draw_tiles_overlapping$selected,],
-            group = "S2 tiles",
-            options = pathOptions(pane = "tiles_notselected"),
-            layerId = ~tile_id,
-            label = ~tile_id,
-            labelOptions = labelOptions(noHide = TRUE, direction = "auto"),
-            fill = TRUE,
-            fillColor = "lightgrey",
-            fillOpacity = .3,
-            stroke = TRUE,
-            weight = 3,
-            color = "grey"
-          )
       }
     })
     
@@ -2218,10 +2239,8 @@ s2_gui <- function(param_list = NULL,
       c("n_index","name","longname","s2_formula_mathml","link","checked"),
       all = TRUE
     ))
-    check_mark <- icon("check") %>%
-      span(style="color:darkgreen;", .) %>%
-      as.character() %>%
-      gsub("\n *","",.)
+    check_mark <- span(style="color:darkgreen;", icon("check"))
+    check_mark <- gsub("\n *","", as.character(check_mark))
     indices_db[,extendedname := paste0(
       name,
       " (",longname,")  ",
@@ -2305,8 +2324,9 @@ s2_gui <- function(param_list = NULL,
     })
     
     observe({
-      path_reference_file <- parseFilePaths(volumes,input$reference_file_button)$datapath %>%
-        as.character()
+      path_reference_file <- as.character(
+        parseFilePaths(volumes,input$reference_file_button)$datapath
+      )
       updateTextInput(session, "reference_file_textin", value = path_reference_file)
       output$reference_file_message <- renderUI({
         if (!is.null(rv$reference)) {
@@ -2411,18 +2431,18 @@ s2_gui <- function(param_list = NULL,
         } else if (is.na(outcrs_validated)) {
           span(style="color:red",
                "Insert a valid projection (UTM timezone, EPSG code or WKT .prj file path).")
+        } else {
+          if (projname(outcrs_validated) != "unknown") {
+            div(style="color:darkgreen",
+                strong("Selected projection:"), br(),
+                projname(outcrs_validated))
+          } else if (!is.na(outcrs_validated$epsg)) {
+            div(style="color:darkgreen", 
+                strong("Selected projection:"), br(),
+                paste("EPSG:", outcrs_validated$epsg))
           } else {
-            if (projname(outcrs_validated) != "unknown") {
-              div(style="color:darkgreen",
-                  strong("Selected projection:"), br(),
-                  projname(outcrs_validated))
-            } else if (!is.na(outcrs_validated$epsg)) {
-              div(style="color:darkgreen", 
-                  strong("Selected projection:"), br(),
-                  paste("EPSG:", outcrs_validated$epsg))
-            } else {
-              div(style="color:darkgreen", strong("Valid projection"))
-            }
+            div(style="color:darkgreen", strong("Valid projection"))
+          }
         }
         
       }
@@ -3572,9 +3592,10 @@ s2_gui <- function(param_list = NULL,
       
       # polygons
       rl$extent <- if (input$query_space == TRUE & !is.null(rv$extent)) {
-        rv$extent %>%
-          st_transform(4326) %>%
-          geojson_json(pretty=TRUE)
+        geojson_json(
+          st_transform(rv$extent, 4326),
+          pretty = TRUE
+        )
       } else {
         NA
       }
@@ -3691,7 +3712,7 @@ s2_gui <- function(param_list = NULL,
       if (!is.null(NULL) & !anyNA(NULL)) {rl$apihub_path <- rv$apihub_path}
       
       # information about package version
-      rl$pkg_version <- packageVersion("sen2r") %>% as.character()
+      rl$pkg_version <- as.character(packageVersion("sen2r"))
       
       return(rl)
     }
@@ -4037,12 +4058,10 @@ s2_gui <- function(param_list = NULL,
       # server-side button
       import_param_path <- parseFilePaths(volumes,input$import_param)
       rv$imported_param <- if (nrow(import_param_path)>0) {
-        import_param_path$datapath %>%
-          as.character() %>%
-          readLines() %>%
-          fromJSON() %>%
-          check_param_list(type = "warning", correct = TRUE)
-        
+        check_param_list(
+          fromJSON(readLines(as.character(import_param_path$datapath))),
+          type = "warning", correct = TRUE
+        )
       } else {
         NULL
       }
@@ -4059,33 +4078,33 @@ s2_gui <- function(param_list = NULL,
         rv$imported_param <- NULL
       }
     })
-    
-    # disable log button if logging was already doing
-    if (all(!is.na(param_list$log))) {
-      disable("save_log")
-    }
-    
-    # if Create log is pressed, set the paramtere to sink the log
-    observeEvent(input$save_log, {
-      shinyFileSave(input, "save_log", roots=volumes, session=session)
-      rv$log_path <- parseSavePath(volumes, input$save_log)$datapath
-    })
-    
-    observeEvent(param_list, {
-      req(param_list)
-      import_param_list(param_list)
-    })
-    
-    ## end of path module ##
-    
-    # Closing the connection when window is closed
-    session$onSessionEnded(function() {
-      stopApp()
-    })
-    
-    # Remove waiting modal dialog
-    removeModal()
-    
+        
+        # disable log button if logging was already doing
+        if (all(!is.na(param_list$log))) {
+          disable("save_log")
+        }
+        
+        # if Create log is pressed, set the paramtere to sink the log
+        observeEvent(input$save_log, {
+          shinyFileSave(input, "save_log", roots=volumes, session=session)
+          rv$log_path <- parseSavePath(volumes, input$save_log)$datapath
+        })
+        
+        observeEvent(param_list, {
+          req(param_list)
+          import_param_list(param_list)
+        })
+        
+        ## end of path module ##
+        
+        # Closing the connection when window is closed
+        session$onSessionEnded(function() {
+          stopApp()
+        })
+        
+        # Remove waiting modal dialog
+        removeModal()
+        
   } # end of s2_gui.server function
   
   
