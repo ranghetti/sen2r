@@ -84,7 +84,7 @@ of masked rasters." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1.9012</span>
       </span>
     </div>
 
@@ -177,6 +177,7 @@ of masked rasters.</p>
   <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>,
+  <span class='kw'>bigtiff</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>.log_message</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
@@ -327,6 +328,12 @@ more than a single product is required.</p></td>
 present, the compression indicated with this parameter is used.</p></td>
     </tr>
     <tr>
+      <th>bigtiff</th>
+      <td><p>(optional) Logical: if TRUE, the creation of a BigTIFF is
+forced (default is FALSE).
+This option is used only in the case a GTiff format was chosen.</p></td>
+    </tr>
+    <tr>
       <th>parallel</th>
       <td><p>(optional) Logical: if TRUE, masking is conducted using parallel
 processing, to speed-up the computation for large rasters.
@@ -383,7 +390,7 @@ of masked surfaces.</p>
   <span class='kw'>maskfiles</span> <span class='kw'>=</span> <span class='no'>ex_mask</span>,
   <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='st'>"clear_sky"</span>,
   <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>()
-)</div><div class='output co'>#&gt; <span class='message'>Processing chunk 1 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 2 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 3 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 4 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 5 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 6 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 7 of 7</span></div><div class='input'><span class='no'>ex_out</span></div><div class='output co'>#&gt; [1] "/tmp/RtmpVXWWdA/S2A2A_20170703_022_Barbellino_RGB432B_10.tif"
+)</div><div class='output co'>#&gt; <span class='message'>Processing chunk 1 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 2 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 3 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 4 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 5 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 6 of 7</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 7 of 7</span></div><div class='input'><span class='no'>ex_out</span></div><div class='output co'>#&gt; [1] "/tmp/RtmpZsnQAB/S2A2A_20170703_022_Barbellino_RGB432B_10.tif"
 #&gt; attr(,"toomasked")
 #&gt; character(0)</div><div class='input'>
 <span class='co'># Show output</span>

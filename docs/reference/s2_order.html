@@ -80,7 +80,7 @@ Long Term Archive." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1.9007</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1.9012</span>
       </span>
     </div>
 
@@ -244,14 +244,17 @@ and not ordered) was saved (if <code>export_prodlist = TRUE</code>).</p></li>
 <span class='co'># archives already available online and 2 stored in the Long Term Archive)</span>
 
 <span class='co'># Order the products</span>
-<span class='no'>ordered_prods</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_order</span>(<span class='no'>list_safe</span>)</div><div class='output co'>#&gt; <span class='message'>[2020-01-17 08:34:24] Check if products are already available for download...</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-17 08:34:26] 2 Sentinel-2 images are already available and will not be ordered.</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-17 08:34:26] Ordering 5 Sentinel-2 images stored in the Long Term Archive...</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-17 08:34:32] 5 of 5 Sentinel-2 images were correctly ordered. You can check at a later time if the ordered products are available online using the command:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>safe_is_online("/home/lranghetti/.sen2r/lta_orders/lta_20200117_083432.json")</span></div><div class='input'>
+<span class='no'>ordered_prods</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_order</span>(<span class='no'>list_safe</span>)</div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:08:24] Check if products are already available for</span>
+#&gt; <span class='message'>                      download...</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:08:26] Ordering 7 Sentinel-2 images stored in the Long</span>
+#&gt; <span class='message'>                      Term Archive...</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:08:32] 7 of 7 Sentinel-2 images were correctly ordered.</span>
+#&gt; <span class='message'>                      You can check at a later time if the ordered</span>
+#&gt; <span class='message'>                      products are available online using the command:</span>
+#&gt; <span class='message'>  safe_is_online("/home/lranghetti/.sen2r/lta_orders/lta_20200131_140832.json")</span></div><div class='input'>
 <span class='co'># Check in a second time if the product was made available</span>
-(<span class='no'>order_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>ordered_prods</span>, <span class='st'>"path"</span>))</div><div class='output co'>#&gt; [1] "/home/lranghetti/.sen2r/lta_orders/lta_20200117_083432.json"</div><div class='input'><span class='fu'><a href='safe_is_online.html'>safe_is_online</a></span>(<span class='no'>order_path</span>)</div><div class='output co'>#&gt; <span class='message'>[2020-01-17 08:34:34] 2 out of 7 products are online.</span></div><div class='output co'>#&gt; S2B_MSIL1C_20180224T133629_N0206_R038_T21FVC_20180224T194845.SAFE 
-#&gt;                                                              TRUE 
+(<span class='no'>order_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>ordered_prods</span>, <span class='st'>"path"</span>))</div><div class='output co'>#&gt; [1] "/home/lranghetti/.sen2r/lta_orders/lta_20200131_140832.json"</div><div class='input'><span class='fu'><a href='safe_is_online.html'>safe_is_online</a></span>(<span class='no'>order_path</span>)</div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:08:33] 0 out of 7 products are online.</span></div><div class='output co'>#&gt; S2B_MSIL1C_20180224T133629_N0206_R038_T21FVC_20180224T194845.SAFE 
+#&gt;                                                             FALSE 
 #&gt; S2B_MSIL1C_20180227T134629_N0206_R081_T21FVC_20180227T200327.SAFE 
-#&gt;                                                              TRUE 
+#&gt;                                                             FALSE 
 #&gt; S2A_MSIL1C_20180301T133641_N0206_R038_T21FVC_20180301T145524.SAFE 
 #&gt;                                                             FALSE 
 #&gt; S2B_MSIL1C_20180306T133629_N0206_R038_T21FVC_20180306T183210.SAFE 

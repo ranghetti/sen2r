@@ -194,7 +194,7 @@ Alternatively meta = 'all' (default) allows to return all metadata.</p></td>
 
 <span class='co'># \donttest{</span>
 <span class='co'># Return metadata as data.table</span>
-<span class='fu'>raster_metadata</span>(<span class='no'>examplenames</span>)</div><div class='output co'>#&gt; <span class='error'>Error in if (sf::st_is_longlat(ref_proj)) {    "degree"} else if (grepl("\\+units\\=m", ref_proj$proj4string)) {    "Meter"} else {    as.character(projpar(ref_proj, "unit"))}: valore mancante dove è richiesto TRUE/FALSE</span></div><div class='input'><span class='co'># }</span>
+<span class='fu'>raster_metadata</span>(<span class='no'>examplenames</span>)</div><div class='output co'>#&gt; <span class='error'>Error in crs_parameters(x): !is.na(x) is not TRUE</span></div><div class='input'><span class='co'># }</span>
 
 <span class='co'># Return some metadata as data.table</span>
 <span class='fu'>raster_metadata</span>(<span class='no'>examplenames</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"res"</span>, <span class='st'>"size"</span>, <span class='st'>"bbox"</span>, <span class='st'>"outformat"</span>))</div><div class='output co'>#&gt;                                                                                                           path

@@ -1,7 +1,7 @@
 Package: sen2r
 Type: Package
 Title: Find, Download and Process Sentinel-2 Data
-Version: 1.2.1.9011
+Version: 1.2.1.9012
 Authors@R: c(person("Luigi", "Ranghetti",
                     email = "luigi@ranghetti.info",
                     role = c("aut", "cre"),
@@ -23,7 +23,6 @@ BugReports: https://github.com/ranghetti/sen2r/issues
 Depends: R (>= 3.5.0)
 Imports:
   methods,
-  magrittr,
   rgdal,
   sf,
   stars,

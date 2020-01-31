@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Produce an RGB image from a singleband raster file. — raster2rgb • sen2r: Find, Download and Process Sentinel-2 Data</title>
+<title>Summarise processing report — sen2r_process_report • sen2r: Find, Download and Process Sentinel-2 Data</title>
 
 
 <!-- jquery -->
@@ -35,10 +35,9 @@
 
 
 
-<meta property="og:title" content="Produce an RGB image from a singleband raster file. — raster2rgb" />
-<meta property="og:description" content="Internal function to create JPEG or PNG images from a
-singleband raster file. This function is used by s2_thumbnails,
-and it will be exported when it would be more generalised." />
+<meta property="og:title" content="Summarise processing report — sen2r_process_report" />
+<meta property="og:description" content="Internal function used to summarise results of sen2r execution
+at the end of a processing.." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -81,7 +80,7 @@ and it will be exported when it would be more generalised." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1.9012</span>
       </span>
     </div>
 
@@ -146,75 +145,109 @@ and it will be exported when it would be more generalised." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Produce an RGB image from a singleband raster file.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/s2_thumbnails.R'><code>R/s2_thumbnails.R</code></a></small>
-    <div class="hidden name"><code>raster2rgb.Rd</code></div>
+    <h1>Summarise processing report</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/sen2r_process_report.R'><code>R/sen2r_process_report.R</code></a></small>
+    <div class="hidden name"><code>sen2r_process_report.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Internal function to create JPEG or PNG images from a
-singleband raster file. This function is used by <a href='s2_thumbnails.html'>s2_thumbnails</a>,
-and it will be exported when it would be more generalised.</p>
+    <p>Internal function used to summarise results of sen2r execution
+at the end of a processing..</p>
     </div>
 
-    <pre class="usage"><span class='fu'>raster2rgb</span>(
-  <span class='no'>in_rast</span>,
-  <span class='kw'>out_file</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"generic_ndsi_2"</span>,
-  <span class='kw'>minval</span> <span class='kw'>=</span> -<span class='fl'>1</span>,
-  <span class='kw'>maxval</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>bigtiff</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>
+    <pre class="usage"><span class='fu'>sen2r_process_report</span>(
+  <span class='no'>s2_list_ordered</span>,
+  <span class='kw'>s2names</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>pm</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>cloudlist_path</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span>(<span class='fl'>0</span>),
+  <span class='kw'>ignorelist_path</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span>(<span class='fl'>0</span>),
+  <span class='kw'>s2_list_cloudcovered</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>s2_list_failed</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>s2_list_cloud_ignored</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>s2_list_failed_ignored</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>download_only</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>s2_downloaded</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>s2_skipped</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>s2_corrected</span> <span class='kw'>=</span> <span class='fl'>NA</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>in_rast</th>
-      <td><p>Path of the input multiband raster.</p></td>
+      <th>s2_list_ordered</th>
+      <td><p>List containing the lists of ordered/notordered LTA
+S2 images.</p></td>
     </tr>
     <tr>
-      <th>out_file</th>
-      <td><p>(optional) Path of the output RGB JPEG image; if NULL
-(default), a RasterLayer will be returned.</p></td>
+      <th>s2names</th>
+      <td><p>Output of <code><a href='compute_s2_paths.html'>compute_s2_paths()</a></code>.</p></td>
     </tr>
     <tr>
-      <th>palette</th>
-      <td><p>Path of the palette file to be used (cpt or txt),
-or character value of a builtin palette ("SCL", "NDVI", the default
-"generic_ndsi" or "generic_ndsi_2").</p></td>
+      <th>pm</th>
+      <td><p>List containing sen2r processing parameters.</p></td>
     </tr>
     <tr>
-      <th>minval</th>
-      <td><p>(to be implemented) the value corresponding to the minimum
-value of the palette (for now, only -1 is used). A quantile will be also
-accepted.</p></td>
+      <th>cloudlist_path</th>
+      <td><p>Internal parameter.</p></td>
     </tr>
     <tr>
-      <th>maxval</th>
-      <td><p>(to be implemented) the value corresponding to the maximum
-value of the palette (for now, only 1 is used). A quantile will be also
-accepted.</p></td>
+      <th>ignorelist_path</th>
+      <td><p>Internal parameter.</p></td>
     </tr>
     <tr>
-      <th>bigtiff</th>
-      <td><p>(optional) Logical: if TRUE, the creation of a BigTIFF is
-forced (default is FALSE).
-This option is used only in the case a GTiff format was chosen.</p></td>
+      <th>s2_list_cloudcovered</th>
+      <td><p>Internal parameter.</p></td>
     </tr>
     <tr>
-      <th>tmpdir</th>
-      <td><p>(optional) Path where intermediate files (VRT) will be created.
-Default is a temporary directory.
-If <code>tmpdir</code> is a non-empty folder, a random subdirectory will be used.</p></td>
+      <th>s2_list_failed</th>
+      <td><p>Internal parameter.</p></td>
+    </tr>
+    <tr>
+      <th>s2_list_cloud_ignored</th>
+      <td><p>Internal parameter.</p></td>
+    </tr>
+    <tr>
+      <th>s2_list_failed_ignored</th>
+      <td><p>Internal parameter.</p></td>
+    </tr>
+    <tr>
+      <th>download_only</th>
+      <td><p>Logical: if TRUE, it indicates that the processing to be
+summarised only involved download (<code>pm$preprocess = FALSE</code>).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The path of the output image; alternatively, the output image
-as RasterLayer (if <code>out_rast = NULL</code>).</p>
+    <p>A data.frame summarising the report, and containing the following columns:</p><ul>
+<li><p><code>time</code>: date/time of report creation;</p></li>
+<li><p><code>n_req_tot_dates</code>: number of dates to be processed based on the query;</p></li>
+<li><p><code>n_ondisk_dates</code>: number of dates for which all expected products are
+already on disk;</p></li>
+<li><p><code>n_proc_dates</code>: number of date for which some products were computed in
+the current run;</p></li>
+<li><p><code>n_complete_out</code>: number of dates for which processing is "complete",
+and all products were created;</p></li>
+<li><p><code>n_failed_dates</code>: number of dates for which processing is "complete",
+but some products were not created for unexpected reasons;</p></li>
+<li><p><code>n_cloudy_dates</code>: number of dates for which processing is "complete",
+but some products were not created because cloudiness in the spatial
+extent was above <code>max_mask</code>;</p></li>
+<li><p><code>n_notonline_dates</code>: number of date for which processing is "incomplete",
+because not all require images are online;</p></li>
+<li><p><code>n_ordered_imgs</code>: number of images correctly ordered from LTA;</p></li>
+<li><p><code>n_notordered_imgs</code>: number of images for which LTA order failed;</p></li>
+<li><p><code>n_downloaded</code>: number of images downloaded during current run;</p></li>
+<li><p><code>n_skipped</code>: number of required images not downloaded because already
+on disk
+(note: this does not include images that would be needed to process
+a date for which all products are already on disk);</p></li>
+<li><p><code>n_corrected</code>: number of images atmospherically corrected using sen2cor;</p></li>
+<li><p><code>completed</code>: logical, indicating if processing can be considered
+"complete" (it is set to TRUE in case <code>n_notonline_dates = 0</code>).</p></li>
+</ul>
+
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
@@ -229,7 +262,7 @@ as RasterLayer (if <code>out_rast = NULL</code>).</p>
     </ul>
 
     <h2>Author</h2>
-    <p>Luigi Ranghetti, phD (2019) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
+    <p>Lorenzo Busetto, phD (2020) <a href='mailto:lbusett@gmail.com'>lbusett@gmail.com</a></p>
   </div>
 </div>
 

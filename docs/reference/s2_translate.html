@@ -82,7 +82,7 @@ Output vrt is at 10m resolution." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1.9012</span>
       </span>
     </div>
 
@@ -170,6 +170,7 @@ Output vrt is at 10m resolution.</p>
   <span class='kw'>res</span> <span class='kw'>=</span> <span class='st'>"10m"</span>,
   <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"VRT"</span>,
   <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>,
+  <span class='kw'>bigtiff</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>vrt_rel_paths</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>utmzone</span> <span class='kw'>=</span> <span class='st'>""</span>,
   <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
@@ -242,6 +243,12 @@ format recognised by GDAL). Default value is "VRT" (Virtual Raster).</p></td>
 chosen, the compression indicated with this parameter is used.</p></td>
     </tr>
     <tr>
+      <th>bigtiff</th>
+      <td><p>(optional) Logical: if TRUE, the creation of a BigTIFF is
+forced (default is FALSE).
+This option is used only in the case a GTiff format was chosen.</p></td>
+    </tr>
+    <tr>
       <th>vrt_rel_paths</th>
       <td><p>(optional) Logical: if TRUE (default on Linux),
 the paths present in the VRT output file are relative to the VRT position;
@@ -251,7 +258,9 @@ This takes effect only with <code>format = "VRT"</code>.</p></td>
     <tr>
       <th>utmzone</th>
       <td><p>(optional) UTM zone of output products (default:
-the first one retrieved from input granules). Note that this function
+the first one retrieved from input granules),
+being a 3-length character (e.g. <code>"32N"</code>).
+Note that this function
 does not perform reprojections: if no granules refer to the specified
 UTM zone, no output is created.</p></td>
     </tr>

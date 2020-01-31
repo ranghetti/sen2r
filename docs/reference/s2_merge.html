@@ -82,7 +82,7 @@ input files." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1.9012</span>
       </span>
     </div>
 
@@ -167,6 +167,7 @@ input files.</p>
   <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>,
+  <span class='kw'>bigtiff</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>vrt_rel_paths</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>out_crs</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
@@ -224,6 +225,12 @@ format recognised by GDAL). Default is to maintain each input format.</p></td>
       <th>compress</th>
       <td><p>(optional) In the case a GTiff format is
 present, the compression indicated with this parameter is used.</p></td>
+    </tr>
+    <tr>
+      <th>bigtiff</th>
+      <td><p>(optional) Logical: if TRUE, the creation of a BigTIFF is
+forced (default is FALSE).
+This option is used only in the case a GTiff format was chosen.</p></td>
     </tr>
     <tr>
       <th>vrt_rel_paths</th>

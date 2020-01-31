@@ -37,10 +37,9 @@
 
 <meta property="og:title" content="Manage GIPP parameters for Sen2Cor — read_gipp" />
 <meta property="og:description" content="read_gipp() reads Ground Image Processing Parameters (GIPP)
-from an XML file.
-set_gipp() modifies values of a list of GIPP in an XML file.
-reset_gipp() restores default GIPP values (using values
-set in the L2A_GIPP.xml default Sen2Cor file)." />
+from the default sen2r GIPP path or from an XML file.
+set_gipp() modifies values of a list of GIPP in an XML file
+(or creates a nex XML file with the desired GIPP)." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -83,7 +82,7 @@ set in the L2A_GIPP.xml default Sen2Cor file)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1.9007</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1.9012</span>
       </span>
     </div>
 
@@ -155,17 +154,14 @@ set in the L2A_GIPP.xml default Sen2Cor file)." />
 
     <div class="ref-description">
     <p><code>read_gipp()</code> reads Ground Image Processing Parameters (GIPP)
-from an XML file.</p>
-<p><code>set_gipp()</code> modifies values of a list of GIPP in an XML file.</p>
-<p><code>reset_gipp()</code> restores default GIPP values (using values
-set in the <code>L2A_GIPP.xml</code> default Sen2Cor file).</p>
+from the default sen2r GIPP path or from an XML file.</p>
+<p><code>set_gipp()</code> modifies values of a list of GIPP in an XML file
+(or creates a nex XML file with the desired GIPP).</p>
     </div>
 
     <pre class="usage"><span class='fu'>read_gipp</span>(<span class='no'>gipp_names</span>, <span class='kw'>gipp_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>)
 
-<span class='fu'>set_gipp</span>(<span class='kw'>gipp</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>gipp_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>use_dem</span> <span class='kw'>=</span> <span class='fl'>NA</span>)
-
-<span class='fu'>reset_gipp</span>(<span class='kw'>gipp_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+<span class='fu'>set_gipp</span>(<span class='kw'>gipp</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>gipp_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>use_dem</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -177,13 +173,15 @@ to be read.</p></td>
     </tr>
     <tr>
       <th>gipp_path</th>
-      <td><p>Character path of the output GIPP XML file.
-If NA (default), the default sen2r GIPP path is used.</p></td>
+      <td><p>Character path of the GIPP XML file to be read
+(<code>read_gipp()</code>) or written (<code>set_gipp()</code>).
+In <code>read_gipp()</code>, if NA (default), the default sen2r GIPP path is read;
+in <code>set_gipp()</code>, setting this argument is mandatory (see details).</p></td>
     </tr>
     <tr>
       <th>gipp</th>
       <td><p>(optional) Ground Image Processing Parameters (GIPP)
-(see <code>set_gipp()</code> for further details).
+(see <code><a href='sen2cor.html'>sen2cor()</a></code> for further details).
 Elements whose name is missing in the XML file are skipped.</p></td>
     </tr>
     <tr>
@@ -198,8 +196,16 @@ for topographic correction in the XML specified with argument <code>gipp_path</c
 
     <p><code>read_gipp()</code> returns a named list of GIPP with the required parameters
 (values not found in the XML are skipped).</p>
-<p><code>set_gipp()</code> and <code>reset_gipp()</code> return NULL
-(functions are called for their side effects).</p>
+<p><code>set_gipp()</code> returns NULL (the function is called for its side effects).</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>In <code>set_gipp()</code>, editing /resetting
+the default sen2r GIPP XML file was disabled to grant code reproducibility
+among different machines (an error is returned if <code>gipp_path</code> is not set).
+Users who want to do that (being aware of the risk doing that)
+must explicitly define the argument <code>gipp_path</code>
+as the path of the default GIPP file, which is
+<code><a href='https://rdrr.io/r/base/file.path.html'>file.path(dirname(attr(load_binpaths(), "path")), "sen2r_L2A_GIPP.xml")</a></code>.</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
@@ -211,31 +217,28 @@ for topographic correction in the XML specified with argument <code>gipp_path</c
 #&gt; [1] "NONE"
 #&gt; 
 #&gt; $dem_reference
-#&gt; [1] "NONE"
-#&gt; </div><div class='input'><span class='co'># Edit one value and save the output as temporary file</span>
-<span class='fu'>set_gipp</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>DEM_Directory</span> <span class='kw'>=</span> <span class='fl'>NA</span>), <span class='kw'>gipp_path</span> <span class='kw'>=</span> <span class='no'>gipp_temp</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>())
+#&gt; [1] "http://data_public:GDdci@data.cgiar-csi.org/srtm/tiles/GeoTIFF/"
+#&gt; </div><div class='input'><span class='co'># Set the use of a topographic correction</span>
+<span class='fu'>set_gipp</span>(<span class='kw'>use_dem</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>gipp_path</span> <span class='kw'>=</span> <span class='no'>gipp_temp</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>())
 <span class='co'># Read the parameters in the created temporary files</span>
 <span class='fu'>read_gipp</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"DEM_Directory"</span>, <span class='st'>"DEM_Reference"</span>), <span class='kw'>gipp_path</span> <span class='kw'>=</span> <span class='no'>gipp_temp</span>)</div><div class='output co'>#&gt; $DEM_Directory
-#&gt; [1] "NONE"
+#&gt; [1] "/home/lranghetti/.sen2r/srtm90"
 #&gt; 
 #&gt; $DEM_Reference
-#&gt; [1] "NONE"
-#&gt; </div><div class='input'><span class='co'># Read the original (not edited) XML file</span>
-<span class='fu'>read_gipp</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"DEM_Directory"</span>, <span class='st'>"DEM_Reference"</span>))</div><div class='output co'>#&gt; $DEM_Directory
-#&gt; [1] "NONE"
-#&gt; 
-#&gt; $DEM_Reference
-#&gt; [1] "NONE"
-#&gt; </div><div class='input'><span class='co'># Reset to default Sen2Cor GIPP values</span>
-<span class='fu'>reset_gipp</span>(<span class='kw'>gipp_path</span> <span class='kw'>=</span> <span class='no'>gipp_temp</span>)</div><div class='output co'>#&gt; <span class='message'>Default Sen2Cor parameters were written in file /home/lranghetti/.sen2r/sen2r_L2A_GIPP.xml, and will be used with sen2cor() and sen2r() unless different parameters will be specified.</span>
-#&gt; <span class='message'>IMPORTANT NOTE: for backward compatibility, the parameter "DEM_Directory" was maitained to its default value. This does not grant homogeneity between Level-2A SAFE products generated locally with Sen2Cor and downloaded from ESA Hub (which make use of DEM for topographic correction).To grant it, activate topographic correction using:</span>
-#&gt; <span class='message'> &gt; set_gipp(use_dem = TRUE)</span>
-#&gt; <span class='message'>In a future sen2r release, this will be the default Sen2Cor behaviour.</span></div><div class='input'><span class='co'># Read again values</span>
+#&gt; [1] "http://data_public:GDdci@data.cgiar-csi.org/srtm/tiles/GeoTIFF/"
+#&gt; </div><div class='input'><span class='co'># Set not to use a topographic correction</span>
+<span class='fu'>set_gipp</span>(<span class='kw'>use_dem</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>gipp_path</span> <span class='kw'>=</span> <span class='no'>gipp_temp</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>())
+<span class='co'># This is equivalent to:</span>
+<span class='co'># set_gipp(</span>
+<span class='co'>#   list(DEM_Directory = NA, DEM_Reference = NA), </span>
+<span class='co'>#   gipp_path = gipp_temp &lt;- tempfile()</span>
+<span class='co'># )</span>
+<span class='co'># Read again the parameters in the created temporary files</span>
 <span class='fu'>read_gipp</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"DEM_Directory"</span>, <span class='st'>"DEM_Reference"</span>), <span class='kw'>gipp_path</span> <span class='kw'>=</span> <span class='no'>gipp_temp</span>)</div><div class='output co'>#&gt; $DEM_Directory
 #&gt; [1] "NONE"
 #&gt; 
 #&gt; $DEM_Reference
-#&gt; [1] "NONE"
+#&gt; [1] "http://data_public:GDdci@data.cgiar-csi.org/srtm/tiles/GeoTIFF/"
 #&gt; </div><div class='input'># }
 </div></pre>
   </div>
@@ -244,6 +247,7 @@ for topographic correction in the XML specified with argument <code>gipp_path</c
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
+      <li><a href="#details">Details</a></li>
       <li><a href="#note">Note</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>
