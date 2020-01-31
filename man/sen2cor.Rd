@@ -73,9 +73,10 @@ if TRUE, Sen2Cor is set to use a Digital Elevation Model for topographic
 correction (reflecting what is done for Level-2A SAFE images provided by ESA Hub);
 if FALSE, it is set not to perform topographic correction (reflecting the
 current default Sen2Cor behaviour);
-if NA (default), the option set in the user's \code{L2A_GIPP.xml} Sen2Cor
-configuration file is respected (in case the user never edited it,
-the current default setting is not to perform topographic correction).
+if NA (default), the option set in the XML GIPP configuration file
+used by sen2r (stored in the default sen2r settings directory) is respected;
+in case the user never edited it,
+the current default setting is not to perform topographic correction.
 
 \emph{Notes}:
 \enumerate{

@@ -772,11 +772,7 @@ check_sen2r_deps <- function() {
         mustbe_empty = FALSE
       )
       if (TRUE %in% attr(path_exisen2cor_errormess, "isvalid")) {
-        exisen2cor_exists <- file.exists(file.path(
-          input$path_exisen2cor_textin, "bin",
-          if (Sys.info()["sysname"] == "Windows") {"L2A_Process.bat"} else {"L2A_Process"}
-        ))
-        if (exisen2cor_exists) {
+        if (.sen2cor_exists(input$path_exisen2cor_textin)) {
           output$path_exisen2cor_errormess <- path_exisen2cor_errormess
           enable("link_sen2cor_button")
         } else {

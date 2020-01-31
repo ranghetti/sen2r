@@ -143,8 +143,10 @@ otherwise they are skipped (sen2cor is never used).
 \item{sen2cor_use_dem}{(optional) Logical, determining if a DEM should be
 used for topographic correction by Sen2Cor (see the documentation of
 \code{\link[=sen2cor]{sen2cor()}} - argument \code{use_dem} for further details).
-Currently the default value is NA (default setting is used),
-in order to grant backward compatibility.
+Currently the default value is NA in order to grant backward compatibility:
+in this case, the option set in the XML GIPP configuration file
+used by sen2r (stored in the default sen2r settings directory) is respected.
+
 \emph{Note}: in a future release of sen2r, the default value will be
 set to TRUE, so to grant homogeneity between Level-2A products downloaded
 from ESA Hub and generated using Sen2Cor.}

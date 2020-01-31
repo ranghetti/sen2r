@@ -187,6 +187,16 @@ install_sen2cor <- function(
 
 }
 
+
+.sen2cor_exists <- function(sen2cor_dir) {
+  # Check if Sen2Cor exists in the provided directory
+  file.exists(file.path(
+    sen2cor_dir, "bin",
+    if (Sys.info()["sysname"] == "Windows") {"L2A_Process.bat"} else {"L2A_Process"}
+  ))
+}
+
+
 #' @name link_sen2cor
 #' @rdname install_sen2cor
 #' @description `link_sen2cor()` links an existing standalone version of
@@ -194,41 +204,34 @@ install_sen2cor <- function(
 #' @export
 link_sen2cor <- function(sen2cor_dir) {
   
-  # Check if Sen2Cor exists in the provided directory
-  sen2cor_exists <- file.exists(file.path(
+  # Exit if Sen2Cor does not exist in the provided directory
+  if (!.sen2cor_exists(sen2cor_dir)) {
+    print_message(type = "error", "Sen2Cor was not found here.")
+  }
+  
+  binpaths <- load_binpaths()
+  binpaths$sen2cor <- normalize_path(file.path(
     sen2cor_dir, "bin",
     if (Sys.info()["sysname"] == "Windows") {"L2A_Process.bat"} else {"L2A_Process"}
   ))
+  writeLines(toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
+  # get Sen2Cor version
+  sen2cor_version_raw0 <- system(paste(binpaths$sen2cor, "-h"), intern = TRUE)
+  sen2cor_version_raw1 <- sen2cor_version_raw0[grep(
+    "^Sentinel\\-2 Level 2A Processor \\(Sen2Cor\\)\\. Version:",
+    sen2cor_version_raw0
+  )]
+  sen2cor_version <- gsub(
+    "^Sentinel\\-2 Level 2A Processor \\(Sen2Cor\\)\\. Version: ([2-9]+\\.[0-9]+)\\.[0-9]+,.*$",
+    "\\1",
+    sen2cor_version_raw1
+  )
   
-  # If so, write the directory in paths.json
-  if (sen2cor_exists) {
-    
-    binpaths <- load_binpaths()
-    binpaths$sen2cor <- normalize_path(file.path(
-      sen2cor_dir, "bin",
-      if (Sys.info()["sysname"] == "Windows") {"L2A_Process.bat"} else {"L2A_Process"}
-    ))
-    writeLines(toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
-    # get Sen2Cor version
-    sen2cor_version_raw0 <- system(paste(binpaths$sen2cor, "-h"), intern = TRUE)
-    sen2cor_version_raw1 <- sen2cor_version_raw0[grep(
-      "^Sentinel\\-2 Level 2A Processor \\(Sen2Cor\\)\\. Version:",
-      sen2cor_version_raw0
-    )]
-    sen2cor_version <- gsub(
-      "^Sentinel\\-2 Level 2A Processor \\(Sen2Cor\\)\\. Version: ([2-9]+\\.[0-9]+)\\.[0-9]+,.*$",
-      "\\1",
-      sen2cor_version_raw1
-    )
-    
-    # reset sen2r GIPP XML to the default Sen2Cor values
-    # (this is necessary to avoid errors in case of reinstallation 
-    # of a different Sen2cor version)
-    gipp_init(force = TRUE, dem_warning = TRUE)
-
-  } else {
-    print_message(type = "error", "Sen2Cor was not found here")
-  }
+  # reset sen2r GIPP XML to the default Sen2Cor values
+  # (this is necessary to avoid errors in case of reinstallation 
+  # of a different Sen2cor version)
+  gipp_init(force = TRUE, dem_warning = TRUE)
+  
   return(invisible(NULL))
   
 }

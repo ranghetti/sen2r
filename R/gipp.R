@@ -71,11 +71,18 @@ gipp_init <- function(gipp_sen2r_path = NA, force = FALSE, dem_warning = FALSE) 
         "\"DEM_Directory\" was maitained to its default value. ",
         "This does not grant homogeneity between Level-2A SAFE products ",
         "generated locally with Sen2Cor and downloaded from ESA Hub ",
-        "(which make use of DEM for topographic correction). ",
-        "To grant it, activate topographic correction using:\n",
-        "\u00A0\u00A0set_gipp(use_dem = TRUE, gipp_path = \"",
-        normalize_path(gipp_sen2r_path, mustWork = FALSE),"\")\n",
-        "In a future sen2r release, this will be the default Sen2Cor behaviour."
+        "(which make use of DEM for topographic correction and ESA-CCI ",
+        "data-package.).\n",
+        "In order to allor Sen2Cor performing topographic correction, ",
+        "use functions sen2cor() and sen2r() with the following arguments:\n",
+        "\u00A0\u00A0sen2cor(..., use_dem = TRUE)\n",
+        "\u00A0\u00A0sen2r(..., sen2cor_use_dem = TRUE)\n",
+        "or properly set the sen2r GUI. ",
+        "In a future sen2r release, this will be the default behaviour.\n",
+        "To use ESA-CCI data-package, download it at ",
+        "http://maps.elie.ucl.ac.be/CCI/viewer/download.php and install it ",
+        "(further information can be found at ",
+        "http://step.esa.int/main/third-party-plugins-2/sen2cor/)."
       )
     }
     
