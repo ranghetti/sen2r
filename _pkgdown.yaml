@@ -56,7 +56,6 @@ reference:
     desc: ~
       - '`expand_path`'
       - '`comsub`'
-      - '`projname`'
       - '`abs2rel`'
       - '`gdal_abs2rel`'
       - '`mountpoint`'

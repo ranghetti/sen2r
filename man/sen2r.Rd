@@ -61,7 +61,7 @@ sen2r(
   thumbnails = TRUE,
   parallel = FALSE,
   processing_order = "by_groups",
-  use_python = TRUE,
+  use_python = NA,
   tmpdir = NA,
   rmtmp = TRUE,
   log = NA
@@ -421,12 +421,7 @@ This mode is similar to the previous one in terms of disk usage
 but it is slightly slower; its advantage are the lower RAM requirements.
 }}
 
-\item{use_python}{(optional) Logical: if TRUE (default), the presence of
-python in the system is checked before running the function;
-if FALSE, this is skipped. Setting this to FALSE can be useful on
-systems with problems with python, when \code{\link[=sen2r]{sen2r()}} is intended
-to be used only for processing existing SAFE files (python is required
-in any case to download SAFE).}
+\item{use_python}{Deprecated argument}
 
 \item{tmpdir}{(optional) Path where intermediate files will be created.
 Default is a temporary directory (unless \code{outformat = "VRT"}: in this case,

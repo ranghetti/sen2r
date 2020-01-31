@@ -138,11 +138,11 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
           gsub('^.+UNIT\\[\\"([a-zA-Z]+)\\".*$',"\\1",st_as_text_2(ref_proj)) == "Meter"
         ) { # FIXME #260
           "Meter"
-        } else {
-          as.character(projpar(ref_proj, "unit"))
-          # this option always works, but returning a Python error on Windows;
-          # the workaround to avoid using projpar() has the effect to bypass 
-          # the printed error.
+        # } else {
+        #   as.character(projpar(ref_proj, "unit"))
+        #   # this option always works, but returning a Python error on Windows;
+        #   # the workaround to avoid using projpar() has the effect to bypass 
+        #   # the printed error.
         }
       }
       

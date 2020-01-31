@@ -288,12 +288,7 @@
 #'      then the processing steps are performed sequentially.
 #'      This mode is similar to the previous one in terms of disk usage
 #'      but it is slightly slower; its advantage are the lower RAM requirements.
-#' @param use_python (optional) Logical: if TRUE (default), the presence of
-#'  python in the system is checked before running the function;
-#'  if FALSE, this is skipped. Setting this to FALSE can be useful on
-#'  systems with problems with python, when [sen2r()] is intended
-#'  to be used only for processing existing SAFE files (python is required
-#'  in any case to download SAFE).
+#' @param use_python Deprecated argument
 #' @param tmpdir (optional) Path where intermediate files will be created.
 #'  Default is a temporary directory (unless `outformat = "VRT"`: in this case,
 #'  default is a subdirectory named ".vrt" within `path_out`).
@@ -470,7 +465,7 @@ sen2r <- function(param_list = NULL,
                   thumbnails = TRUE,
                   parallel = FALSE,
                   processing_order = "by_groups",
-                  use_python = TRUE,
+                  use_python = NA,
                   tmpdir = NA,
                   rmtmp = TRUE,
                   log = NA) {
@@ -653,7 +648,7 @@ sen2r <- function(param_list = NULL,
                    thumbnails,
                    parallel,
                    processing_order,
-                   use_python,
+                   use_python = NA,
                    tmpdir,
                    rmtmp,
                    log,
@@ -703,11 +698,11 @@ sen2r <- function(param_list = NULL,
     "####\u00A0 Starting sen2r execution. \u00A0####\n"
   )
   
-  # import python modules
-  # check that python and the required modules are installed
-  if (use_python == TRUE) {
-    py <- init_python()
-  }
+  # # import python modules
+  # # check that python and the required modules are installed
+  # if (use_python == TRUE) {
+  #   py <- init_python()
+  # }
   
   
   ## 1. Read / import parameters ##

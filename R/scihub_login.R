@@ -18,7 +18,6 @@
 #' and password edits on old credentials are not immediately recognised.
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
-#' @importFrom reticulate py_to_r
 #' @importFrom shiny a actionButton icon modalButton modalDialog passwordInput tagList textInput
 #' @importFrom shinyFiles shinyFileSave
 #' 

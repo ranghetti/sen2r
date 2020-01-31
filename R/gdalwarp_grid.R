@@ -11,7 +11,6 @@
 #' @param r Resampling_method (`"near"`|`"bilinear"`|`"cubic"`|`"cubicspline"`|
 #' `"lanczos"`|`"average"`|`"mode"`|`"max"`|`"min"`|`"med"`|`"q1"`|`"q3"``).
 #' @return NULL (the function is called for its side effects)
-#' @importFrom reticulate py_to_r
 #' @importFrom sf st_as_sfc st_bbox st_transform
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
@@ -45,9 +44,6 @@ gdalwarp_grid <- function(srcfiles,
                           of = NULL,
                           r = NULL) {
   
-  # import python modules
-  py <- init_python()
-  
   # read ref parameters
   ref_metadata <- raster_metadata(ref, c("res", "bbox", "proj"), format = "list")[[1]]
   ref_res <- ref_metadata$res
@@ -68,8 +64,11 @@ gdalwarp_grid <- function(srcfiles,
   
   # check output format
   if (!is.null(of)) {
-    sel_driver <- py$gdal$GetDriverByName(of)
-    if (is.null(py_to_r(sel_driver))) {
+    local_ofs <- gsub(
+      "^ *([^ ]+) .+$", "\\1", 
+      system(paste0(load_binpaths()$gdalinfo," --formats"), intern = TRUE)
+    )
+    if (!of %in% local_ofs) {
       print_message(
         type="error",
         "Format \"",of,"\" is not recognised; ",
