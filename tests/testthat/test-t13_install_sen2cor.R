@@ -32,12 +32,11 @@ testthat::test_that(
     testthat::expect_message(
       install_sen2cor(
         sen2cor_inst_dir, 
-        version = sen2cor_def_version, 
-        use_dem = TRUE
+        version = sen2cor_def_version
       ),
       regexp = gsub(
         " ", "[ \n]",
-        "IMPORTANT NOTE: for backward compatibility"
+        "(IMPORTANT NOTE: for backward compatibility)|(Sen2Cor is already installed)"
       )
     )
     
@@ -85,7 +84,7 @@ testthat::test_that(
     testthat::expect_true(file.exists(xml_sen2r_path))
     xml_sen2r_raw <- readLines(xml_sen2r_path)
     testthat::expect_true(grepl(
-      "<DEM_Directory>.*srtm90</DEM_Directory>",
+      "<DEM_Directory>NONE</DEM_Directory>",
       xml_sen2r_raw[grepl("<DEM_Directory>", xml_sen2r_raw)]
     ))
     
@@ -93,7 +92,7 @@ testthat::test_that(
     gipp_1 <- read_gipp(c("dem_directory", "dem_reference"))
     testthat::expect_is(gipp_1, "list")
     testthat::expect_length(gipp_1, 2)
-    testthat::expect_true(grepl("srtm90", gipp_1$dem_directory))
+    testthat::expect_true(grepl("NONE", gipp_1$dem_directory))
     
     # Edit one value and save the output as temporary file
     set_gipp(list(DEM_Directory = "/invalid/directory"), gipp_path = gipp_temp <- tempfile())
@@ -128,7 +127,7 @@ testthat::test_that(
     
     # Reset to default Sen2Cor GIPP values
     testthat::expect_message(
-      gipp_init(gipp_path = gipp_temp, force = TRUE, dem_warning = TRUE),
+      gipp_init(gipp_sen2r_path = gipp_temp, force = TRUE, dem_warning = TRUE),
       "IMPORTANT NOTE: for backward compatibility"
     )
     # Read again values
