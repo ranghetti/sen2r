@@ -152,7 +152,7 @@ read_gipp <- function(gipp_names, gipp_path = NA) {
 #' @name set_gipp
 #' @rdname gipp
 #' @description [set_gipp()] modifies values of a list of GIPP in an XML file
-#'  (or creates a nex XML file with the desired GIPP).
+#'  (or creates a new XML file with the desired GIPP).
 #' @param gipp (optional) Ground Image Processing Parameters (GIPP)
 #'  (see [sen2cor()] for further details).
 #'  Elements whose name is missing in the XML file are skipped.

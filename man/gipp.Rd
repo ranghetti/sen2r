@@ -37,7 +37,7 @@ for topographic correction in the XML specified with argument \code{gipp_path}
 from the default sen2r GIPP path or from an XML file.
 
 \code{\link[=set_gipp]{set_gipp()}} modifies values of a list of GIPP in an XML file
-(or creates a nex XML file with the desired GIPP).
+(or creates a new XML file with the desired GIPP).
 }
 \details{
 In \code{\link[=set_gipp]{set_gipp()}}, editing /resetting
