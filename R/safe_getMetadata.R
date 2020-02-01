@@ -576,6 +576,22 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
         }
       }
       
+      # check jp2 files exist
+      jp2_listall <- list.files(s2_path, "\\.jp2$", recursive=TRUE, full.names=FALSE)
+      if (length(jp2_listall) == 0) {
+        s2_validname <- FALSE # missing data
+        if (action == "getmetadata") {
+          print_message(
+            type=message_type,
+            "This product (",s2_name,") does not contain raster data, ",
+            "and should be deleted from directory \"",dirname(s2_path),"\"; ",
+            "otherwise, errors can occur during data processing."
+          )
+        } else if (action == "rm_invalid" & s2_exists) {
+          unlink(s2_path, recursive=TRUE)
+        }
+      }
+      
     }
     
     ## Populate metadata list
