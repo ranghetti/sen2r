@@ -221,10 +221,10 @@ sen2r_process_report <- function(
       prefix = "\u2551 ", 
       "Processing completed for: ",
       ifelse(
-        n_notonline_dates == 0, 
+        all(n_notonline_dates == 0, n_failed_dates == 0),
         "all expected dates.", 
         paste0(
-          n_proc_dates + n_ondisk_dates, " out of ", 
+          n_proc_dates + n_ondisk_dates - n_failed_dates, " out of ", 
           n_req_tot_dates, " expected dates."
         )
       )
