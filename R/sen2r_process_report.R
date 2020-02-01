@@ -99,6 +99,7 @@ sen2r_process_report <- function(
       )
       tbl_cld_ignored <- table(cloud_ignored_dates)
     } else {
+      cloud_ignored_dates <- as.Date(character(0))
       tbl_cld_ignored <- 0
     }
     
