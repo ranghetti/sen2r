@@ -93,6 +93,9 @@ s2_download <- function(
   .s2_availability = NULL
 ) {
   
+  # to avoid NOTE on check
+  i <- mission <- level <- sensing_datetime <- id_orbit <- id_tile <- NULL
+  
   # convert input NA arguments in NULL
   for (a in c("s2_prodlist", "apihub")) {
     if (suppressWarnings(all(is.na(get(a))))) {

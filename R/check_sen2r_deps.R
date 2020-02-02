@@ -722,13 +722,13 @@ check_sen2r_deps <- function() {
                   htmlOutput("path_exisen2cor_errormess"))
             )
           ),
-          radioButtons(
-            "sen2cor_use_dem", "Use DEM for topographic correction?",
-            c("Yes (as done in ESA Hub Level-2 products)" = TRUE,
-              "No (default Sen2Cor setting)" = FALSE,
-              "Use existing choice (Sen2Cor reinstallation / link)" = NA),
-            selected = TRUE, width = "100%"
-          ),
+          # radioButtons(
+          #   "sen2cor_use_dem", "Use DEM for topographic correction?",
+          #   c("Yes (as done in ESA Hub Level-2 products)" = TRUE,
+          #     "No (default Sen2Cor setting)" = FALSE,
+          #     "Use existing choice (Sen2Cor reinstallation / link)" = NA),
+          #   selected = TRUE, width = "100%"
+          # ),
           hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
           conditionalPanel(
             condition = "input.sen2cor_link_or_install == 'install'",
@@ -830,7 +830,6 @@ check_sen2r_deps <- function() {
           .install_sen2cor(
             input$path_newsen2cor_textin, 
             version = input$sen2cor_version, 
-            use_dem = as.logical(input$sen2cor_use_dem),
             interactive = FALSE
           ),
           error = function(e) {print(e)}

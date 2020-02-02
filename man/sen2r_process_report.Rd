@@ -42,6 +42,12 @@ S2 images.}
 
 \item{download_only}{Logical: if TRUE, it indicates that the processing to be
 summarised only involved download (\code{pm$preprocess = FALSE}).}
+
+\item{s2_downloaded}{Internal parameter.}
+
+\item{s2_skipped}{Internal parameter.}
+
+\item{s2_corrected}{Internal parameter.}
 }
 \value{
 A data.frame summarising the report, and containing the following columns:

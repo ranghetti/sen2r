@@ -46,14 +46,14 @@ Imports:
   tools,
   httr
 Suggests:
-    spelling,
-    geojsonlint,
-    httptest,
-    knitr,
-    rmarkdown,
-    testthat (>= 2.1.0)
+  spelling,
+  geojsonlint,
+  httptest,
+  knitr,
+  rmarkdown,
+  testthat (>= 2.1.0)
 SystemRequirements: GDAL (>= 2.1.2), PROJ (>= 4.9.1), GEOS (>= 3.4.2),
-    Cairo, Curl, NetCDF, jq, Protocol Buffers, V8, OpenSSL, Libxml2.
+  Cairo, Curl, NetCDF, jq, Protocol Buffers, V8, OpenSSL, Libxml2.
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.0.2

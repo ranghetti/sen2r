@@ -10,6 +10,8 @@
 #'  the format of every input filename.
 #' @param r Resampling_method (`"near"`|`"bilinear"`|`"cubic"`|`"cubicspline"`|
 #' `"lanczos"`|`"average"`|`"mode"`|`"max"`|`"min"`|`"med"`|`"q1"`|`"q3"``).
+#' @param tmpdir (optional) Path where intermediate files (.prj) will be created.
+#'  Default is a temporary directory.
 #' @return NULL (the function is called for its side effects)
 #' @importFrom sf st_as_sfc st_bbox st_transform
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
@@ -38,17 +40,23 @@
 #' par(oldpar)
 #' }
 
-gdalwarp_grid <- function(srcfiles,
-                          dstfiles,
-                          ref,
-                          of = NULL,
-                          r = NULL) {
+gdalwarp_grid <- function(
+  srcfiles,
+  dstfiles,
+  ref,
+  of = NULL,
+  r = NULL,
+  tmpdir = tempdir()
+) {
   
   # read ref parameters
   ref_metadata <- raster_metadata(ref, c("res", "bbox", "proj"), format = "list")[[1]]
   ref_res <- ref_metadata$res
   ref_min <- ref_metadata$bbox[c("xmin","ymin")]
   ref_proj <- ref_metadata$proj
+  
+  # check tmpdir
+  dir.create(tmpdir, showWarnings = FALSE, recursive = FALSE)
   
   # check consistency between inputs and outputs
   if (length(srcfiles) != length(dstfiles)) {

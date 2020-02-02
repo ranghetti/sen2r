@@ -13,6 +13,9 @@
 #' @param s2_list_failed_ignored Internal parameter.
 #' @param download_only Logical: if TRUE, it indicates that the processing to be 
 #'  summarised only involved download (`pm$preprocess = FALSE`).
+#' @param s2_downloaded Internal parameter.
+#' @param s2_skipped Internal parameter.
+#' @param s2_corrected Internal parameter.
 #' @return A data.frame summarising the report, and containing the following columns: 
 #'   - `time`: date/time of report creation;
 #'   - `n_req_tot_dates`: number of dates to be processed based on the query; 

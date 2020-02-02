@@ -325,11 +325,14 @@ s2_merge <- function(infiles,
                "_reproj.vrt",
                basename(sel_infiles[sel_diffcrs][i]))
         )
-        gdalwarp_grid(srcfiles = sel_infiles[sel_diffcrs][i],
-                      dstfiles = reproj_vrt,
-                      ref = ref_file,
-                      of = "VRT",
-                      r = "near")
+        gdalwarp_grid(
+          srcfiles = sel_infiles[sel_diffcrs][i],
+          dstfiles = reproj_vrt,
+          ref = ref_file,
+          of = "VRT",
+          tmpdir = sel_tmpdir,
+          r = "near"
+        )
         if (vrt_rel_paths) {gdal_abs2rel(reproj_vrt)}
         
         # replace input file path with intermediate

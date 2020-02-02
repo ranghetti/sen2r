@@ -26,9 +26,9 @@
 #'  HTML htmlOutput icon img incProgress isolate NS numericInput observe p
 #'  radioButtons reactive reactiveVal reactiveValues removeModal renderText
 #'  renderUI req runApp selectInput setProgress shinyApp showModal sliderInput
-#'  span stopApp strong tagList textInput uiOutput updateCheckboxGroupInput
-#'  updateDateRangeInput updateNumericInput updateSliderInput updateSelectInput
-#'  updateRadioButtons updateTextInput withMathJax withProgress
+#'  span stopApp strong tagList textInput uiOutput updateCheckboxGroupInput 
+#'  updateCheckboxInput updateDateRangeInput updateNumericInput updateSliderInput
+#'  updateSelectInput updateRadioButtons updateTextInput withMathJax withProgress
 #' @importFrom shinydashboard box dashboardBody dashboardHeader dashboardPage
 #'  dashboardSidebar menuItem sidebarMenu tabItem tabItems
 #' @importFrom shinyFiles getVolumes parseDirPath parseFilePaths parseSavePath

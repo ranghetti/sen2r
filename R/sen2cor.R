@@ -130,7 +130,7 @@ sen2cor <- function(
 ) {
   
   # to avoid NOTE on check
-  i <- NULL
+  i <- creation_datetime <- id_baseline <- path <- name <- NULL
   
   # load Sen2Cor executable path
   binpaths <- tryCatch(
