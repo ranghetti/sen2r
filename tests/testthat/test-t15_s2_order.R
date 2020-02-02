@@ -1,6 +1,6 @@
 context("Test s2_order() adn safe_is_online()")
 testthat::skip_on_cran()
-# testthat::skip_on_travis()
+testthat::skip_on_travis()
 
 # NOTE: these tests are thought to test two situations, one for available products,
 # another for products on LTA. However, situations could change (e.g. a product
