@@ -1,3 +1,50 @@
+# Version 1.3.0
+
+## Major changes
+- Support for GDAL 3 / PROJ 6 was added: 
+    - Edit internal function to deal with CRS instead than PROJ.4 strings
+    - Allow `st_crs2()` accepting also WKT strings / EPSG codes in the form `"EPSG:xxxx"`
+    - Edit GUI to accept WKT / to warn if a PROJ.4 is passed
+- After running `sen2r()` a short report is returned to output summarising the status of the required processing (see new internal function `sen2r_process_report()`). This should facilitate applying sen2r in a cycle until all "expected dates" are processed. 
+- Management of Sen2Cor GIPP parameters: now the user can process L1C SAFE images applying a topographic correction (as done to produce L2A images on ESA Hub) or specifying other parameters managed by L2A_GIPP.xml file. To allow doing that, new arguments were added to `sen2cor()` and `sen2r()` (see below) and a new option was added in the GUI.
+
+## New functions
+- `read_gipp()` and `set_gipp()` to read / create GIPP XML files with the parameters passed to Sen2Cor.
+- Internal function `st_as_text_2()` which returns WKT or WKT2 depending on PROJ version
+- Internal function `sen2r_process_report()` to manage processing reports returned by `sen2r()`.
+
+## Deprecated functions
+- Internal function `init_python()` was deprecated (Python is no longer managed by **reticulate**).
+
+## Changes in default argument values
+- New argument `bigtiff` for BigTIFF management in functions `s2_translate()`, `s2_merge()`, `s2_mask()`, `s2_rgb()` and `s2_calcindices()`.
+- New arguments `use_dem` / `gipp` (function `sen2cor()`) and `sen2cor_use_dem` / `sen2cor_gipp` (`sen2r()`) to manage GIPP parameters in Sen2Cor.
+- `use_python` argument in `sen2r()` was deprecated (no longer needed).
+
+## Minor changes
+- All components of the order (available, ordered and notordered) are now saved in JSON files. This allows using them to re-do an order, specifying if re-ordering already ordered datasets or only order the ones identified as "notordered" (based on new argument "reorder").
+- Output messages are formatted so not to exceed output line length.
+- Add support for BigTIFF format.
+- Dependencies **`reticulate`** and **`magrittr`** were removed.
+- Checks on the validity of SAFE products were improved.
+- Add NDBI / NDVIre indices (#241).
+- Add footprint among metadata retrieved using `safe_getMetadata()` (from existing offline SAFE archives) and `s2_list()` (from SciHub online metadata).
+- Filter offline SAFE archives by footprint instead than by S2 tile ID, so skipping using images which do not contain any data for a specific Area Of Interest.
+- Add method to convert class `safelist` to `sf` (using footprint).
+- Rewrite `st_crs2()` using class methods (see the function help for newly accepted inputs).
+- `safe_getMetadata()` now directly read XML SAFE files instead than calling GDAL through **`reticulate`** (this avoids errors in particular OS conditions).
+- Do not use PROJ4 string with PROJ > 3 (https://rsbivand.github.io/ECS530_h19/ECS530_III.html).
+- Retrieve the GDAL installation path using `gdal-config` instead than `whereis gdalinfo`.
+- Add a test for reprojection without EPSG.
+- Return a warning if SciHub is down.
+- Improve documentation about the problem occurring using newly created credentials.
+
+## Fixes
+- Fix errors "DLL load failed" with Python GDAL scripts on Windows (see #231 and #234) due to a missing `proj.db` file in **`rgdal`**.
+- Hide warning using PROJ >= 6 (https://github.com/rspatial/raster/issues/78).
+- Other various bug fixes (see issues).
+
+
 # Version 1.2.1
 
 ## Major changes

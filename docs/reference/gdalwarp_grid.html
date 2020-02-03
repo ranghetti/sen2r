@@ -82,7 +82,7 @@ corresponding source file." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -159,7 +159,7 @@ If not specified, the output format of each file is the same of the
 corresponding source file.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>gdalwarp_grid</span>(<span class='no'>srcfiles</span>, <span class='no'>dstfiles</span>, <span class='no'>ref</span>, <span class='kw'>of</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>r</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>gdalwarp_grid</span>(<span class='no'>srcfiles</span>, <span class='no'>dstfiles</span>, <span class='no'>ref</span>, <span class='kw'>of</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>r</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -185,6 +185,11 @@ the format of every input filename.</p></td>
       <th>r</th>
       <td><p>Resampling_method (<code>"near"</code>|<code>"bilinear"</code>|<code>"cubic"</code>|<code>"cubicspline"</code>|
 <code>"lanczos"</code>|<code>"average"</code>|<code>"mode"</code>|<code>"max"</code>|<code>"min"</code>|<code>"med"</code>|<code>"q1"</code>|`"q3"``).</p></td>
+    </tr>
+    <tr>
+      <th>tmpdir</th>
+      <td><p>(optional) Path where intermediate files (.prj) will be created.
+Default is a temporary directory.</p></td>
     </tr>
     </table>
 
