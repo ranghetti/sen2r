@@ -5,7 +5,6 @@
 #'  Useful for functions which accept more than one path as arguments,
 #'  in which one of them contains the absolute position, and the others
 #'  do not.
-#' @param ... `R` objects which are concatenated.
 #' @param path The path name (`character`) to check ad eventually expand.
 #' @param parent The parent directory (`character`) to use if `path` is
 #'  relative (default value: the working directory).
