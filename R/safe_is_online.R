@@ -82,13 +82,13 @@ safe_is_online <- function(s2_prodlist = NULL, apihub = NA, verbose = TRUE) {
     if (all(s2_availability)) {
       print_message(
         type = "message",
-        date = TRUE,
+        date = FALSE,
         "All ", length(s2_availability), " products are online."
       )
     } else {
       print_message(
         type = "message",
-        date = TRUE,
+        date = FALSE,
         length(which(s2_availability)), " out of ",  
         length(s2_availability), " products are online."
       )

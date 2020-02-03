@@ -1879,7 +1879,7 @@
       "longname": "Mid-Infrared Burn Index",
       "name": "MIRBI",
       "link": "https://doi.org/10.1080/01431160110053185",
-      "s2_formula": "(10*band_12)-(9.8*band_11)+2",
+      "s2_formula": "(1E-3*band_12)-(9.8E-4*band_11)+2E-4",
       "checked": true,
       "s2_formula_mathml": ""
     },
@@ -2055,6 +2055,6 @@
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">SWIR1<\/mi>\n      <mo>-<\/mo>\n      <mi mathcolor=\"#443399\">NIR<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">SWIR1<\/mi>\n      <mo>+<\/mo>\n      <mi mathcolor=\"#443399\">NIR<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
     }
   ],
-  "pkg_version": ["1.2.1.9000"],
-  "creation_date": ["2019-11-15 09:44:27"]
+  "pkg_version": ["1.3.0"],
+  "creation_date": ["2020-02-03 17:39:39"]
 }

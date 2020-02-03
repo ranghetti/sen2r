@@ -1794,12 +1794,15 @@ sen2r <- function(param_list = NULL,
             s2_to_download_l2a <- sel_s2_list_l2a[!names(sel_s2_list_l2a) %in% list.files(path_l2a, "\\.SAFE$")]
             s2_to_skip_l2a <- names(sel_s2_list_l2a[names(sel_s2_list_l2a) %in% list.files(path_l2a, "\\.SAFE$")])
             if (length(s2_to_skip_l2a) != 0) {
-              message("Images ", paste(s2_to_skip_l2a, collapse = ", "),
-                      " are already on your system and will be skipped.",
-                      " Set `overwrite_safe` to TRUE to re-download them")
+              print_message(
+                type = "message",
+                "Images ", paste(s2_to_skip_l2a, collapse = ", "),
+                " are already on your system and will be skipped. ",
+                "Set \"overwrite_safe\" to TRUE to re-download them."
+              )
             }
             if (length(s2_to_download_l2a) == 0) {
-              message("No L2A images needed")
+              print_message(type = "message", "No L2A images are needed.")
             }
           }
           
@@ -1877,13 +1880,13 @@ sen2r <- function(param_list = NULL,
               print_message(
                 type = "message",
                 "Images ", paste(names(s2_to_skip_l1c), collapse = ", "),
-                " are already on your system and will be skipped.",
-                " Set \"overwrite_safe\" to TRUE to re-download them."
+                " are already on your system and will be skipped. ",
+                "Set \"overwrite_safe\" to TRUE to re-download them."
               )
             }
             
             if (length(s2_to_download_l1c) == 0) {
-              message("No L1C images needed")
+              print_message(type = "message", "No L1C images are needed.")
             }
             
           }

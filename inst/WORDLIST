@@ -77,8 +77,10 @@ mountpoint
 multiband
 multiplicated
 ncdf
+NDBI
 ndsi
 NDVI
+NDVIre
 NDWI
 NetCDF
 NIR
@@ -111,6 +113,7 @@ reflectances
 reproject
 reprojected
 reprojecting
+reprojection
 reprojections
 res
 rgb
