@@ -11,6 +11,8 @@ sen2cor(
   proc_dir = NA,
   tmpdir = NA,
   rmtmp = TRUE,
+  gipp = NULL,
+  use_dem = NA,
   tiles = NULL,
   parallel = FALSE,
   overwrite = FALSE,
@@ -48,6 +50,54 @@ If \code{tmpdir} is a non-empty folder, a random subdirectory will be used.}
 \item{rmtmp}{(optional) Logical: should temporary files be removed?
 (Default: TRUE)}
 
+\item{gipp}{(optional) Ground Image Processing Parameters (GIPP)
+to be passed to Sen2Cor.
+It is possible to specify both the path of an existing XML file
+or a list of parameters in the form \code{parameter_name = "value"}, where
+\code{parameter_name} is the name of the parameter as specified in the
+XML file (case insensitive), and \code{"value"} is the character value
+which the user wants to set
+(notice that, in the case the user wants to specify the value \code{NONE},
+both \code{"NONE"} and \code{NA} can be used, but not \code{NULL}, which has the effect
+to maintain the value specified in the XML file).
+
+For details about the GIPP parameters, refer to the Sen2Cor documentation
+(v. \href{http://step.esa.int/main/third-party-plugins-2/sen2cor/sen2cor_v2-5-5/}{2.5.5}
+or \href{http://step.esa.int/main/third-party-plugins-2/sen2cor/sen2cor_v2-8/}{2.8.0}:
+see the "Schemas of the GIPP file" at the end of each page).
+\emph{Note}: this argument takes effect only in the current execution of
+\code{sen2cor()} function.}
+
+\item{use_dem}{(optional) Logical:
+if TRUE, Sen2Cor is set to use a Digital Elevation Model for topographic
+correction (reflecting what is done for Level-2A SAFE images provided by ESA Hub);
+if FALSE, it is set not to perform topographic correction (reflecting the
+current default Sen2Cor behaviour);
+if NA (default), the option set in the XML GIPP configuration file
+used by sen2r (stored in the default sen2r settings directory) is respected;
+in case the user never edited it,
+the current default setting is not to perform topographic correction.
+
+\emph{Notes}:
+\enumerate{
+\item if TRUE, the path used to read or store DEM files
+and the online source used to download missing DEM tiles
+are respectively the \code{DEM_Directory} and \code{DEM_Reference} parameters
+set in the default sen2r GIPP XML file (the user can read them
+with the function \code{read_gipp(c("DEM_Directory", "DEM_Reference"))}).
+In case one or both these parameters were set to \code{"NONE"},
+a subdirectory \code{"srtm90"} of the default sen2r directory is used as
+DEM directory, and/or the \href{http://srtm.csi.cgiar.org/}{CGIAR SRTM 90m}
+is set as online source.
+To set another directory or reference, use argument \code{gipp} in the form
+\code{gipp = list(DEM_Directory = tempdir(), DEM_Reference ="another_reference", ...)}
+(replacing \code{tempdir()} with the desired path and specifying the online resource).
+\item Currently the default value is NA in order to grant backward
+compatibility. In a future release of sen2r, the default value will be
+set to TRUE, so to grant homogeneity between Level-2A products downloaded
+from ESA Hub and generated using Sen2Cor.
+}}
+
 \item{tiles}{Vector of Sentinel-2 Tile strings (5-length character) to be
 processed (default: process all the tiles found in the input L1C products).}
 
@@ -67,8 +117,8 @@ possible (e.g. \code{parallel = 4}).}
 (it is used when the function is called by \code{sen2r()}).}
 }
 \value{
-Vector character with the list ot the output products (being corrected or already
-existing)
+Vector character with the list ot the output products
+(being corrected or already existing).
 }
 \description{
 The function uses Sen2Cor to manually correct L1C products.
@@ -81,11 +131,21 @@ License: GPL 3.0
 }
 \examples{
 \dontrun{
-pos <- st_sfc(st_point(c(12.0, 44.8)), crs=st_crs(4326))
-time_window <- as.Date(c("2017-05-01","2017-07-30"))
-example_s2_list <- s2_list(spatial_extent=pos, tile="32TQQ", time_interval=time_window)
-s2_download(example_s2_list, outdir=tempdir())
-sen2cor(names(example_s2_list)[1], l1c_dir=tempdir(), outdir=tempdir())
+# Download an L1C SAFE product
+example_s2_list <- s2_list(
+  spatial_extent = st_sfc(st_point(c(12.0, 44.8)), crs=st_crs(4326)), 
+  tile = "32TQQ", 
+  time_interval = as.Date(c("2017-05-01","2017-07-30"))
+)
+s2_download(example_s2_list, outdir = tempdir())
+
+# Correct it applying a topographic correction
+sen2cor(
+  names(example_s2_list)[1], 
+  l1c_dir = tempdir(), 
+  outdir = tempdir(),
+  use_dem = TRUE
+)
 }
 }
 \author{

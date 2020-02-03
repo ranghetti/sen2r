@@ -40,7 +40,8 @@ if FALSE, they are simply skipped.}
 overwritten? (default: FALSE)}
 }
 \value{
-NULL (the function is called for its side effects)
+Vector character with the list ot the output products
+(being downloaded or already existing).
 }
 \description{
 The function downloads S2 products.
@@ -75,7 +76,7 @@ s2_download(list_safe, outdir=tempdir())
 }
 }
 \author{
-Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
+Luigi Ranghetti, phD (2020) \email{luigi@ranghetti.info}
 
 Lorenzo Busetto, phD (2019) \email{lbusett@gmail.com}
 }

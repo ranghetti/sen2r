@@ -1,18 +1,18 @@
 #' @title Download and install (or link) Sen2Cor
-#' @description [install_sen2cor()] downloads and installs standalone version of
+#' @description [install_sen2cor()] downloads and installs a standalone version of
 #'  [Sen2Cor](http://step.esa.int/main/third-party-plugins-2/sen2cor).
-#' @param sen2cor_dir Path where sen2cor is being installed or searched.
+#' @param sen2cor_dir Path where sen2cor will be installed or searched
+#'  (by default it is a subdirectory `"sen2cor"` of the default sen2r directory).
 #' @param version (optional) Character: Sen2Cor version (one among
 #'  '2.5.5' - default - and '2.8.0').
-#' @param force (optional) Logical: if TRUE, install even if it is already
-#'  installed (default is FALSE).
+#' @param force (optional) Logical: if TRUE, installs sen2cor even if it is already
+#'  found in sen2cor_dir (default is FALSE).
 #' @return NULL (the function is called for its side effects)
 #'
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @importFrom jsonlite toJSON fromJSON
 #' @importFrom utils download.file unzip
-#' @importFrom magrittr "%>%"
 #' @importFrom httr GET write_disk
 #' @export
 #' @examples
@@ -21,7 +21,11 @@
 #' # ( use a non-temporary folder path instead of tempdir() )
 #' }
 
-install_sen2cor <- function(sen2cor_dir, version="2.5.5", force = FALSE) {
+install_sen2cor <- function(
+  sen2cor_dir = NA, 
+  version = "2.5.5", 
+  force = FALSE
+) {
   .install_sen2cor(
     sen2cor_dir = sen2cor_dir,
     version = version,
@@ -60,8 +64,11 @@ install_sen2cor <- function(sen2cor_dir, version="2.5.5", force = FALSE) {
   }
   
   # define sen2cor_dir (where to install or update)
+  if (is.na(sen2cor_dir)) {
+    sen2cor_dir <- file.path(dirname(attr(binpaths, "path")), "sen2cor")
+  }
   if (!file.exists(sen2cor_dir)) {
-    dir.create(sen2cor_dir, recursive=FALSE, showWarnings = FALSE)
+    dir.create(sen2cor_dir, recursive = FALSE, showWarnings = FALSE)
   } else if (!file.info(sen2cor_dir)$isdir) {
     print_message(
       type="error",
@@ -173,7 +180,22 @@ install_sen2cor <- function(sen2cor_dir, version="2.5.5", force = FALSE) {
   binpaths$sen2cor <- normalize_path(sen2cor_bin)
   writeLines(toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
   
+  # reset sen2r GIPP XML to the default Sen2Cor values
+  # (this is necessary to avoid errors in case of reinstallation 
+  # of a different Sen2cor version)
+  gipp_init(force = TRUE, dem_warning = TRUE)
+
 }
+
+
+.sen2cor_exists <- function(sen2cor_dir) {
+  # Check if Sen2Cor exists in the provided directory
+  file.exists(file.path(
+    sen2cor_dir, "bin",
+    if (Sys.info()["sysname"] == "Windows") {"L2A_Process.bat"} else {"L2A_Process"}
+  ))
+}
+
 
 #' @name link_sen2cor
 #' @rdname install_sen2cor
@@ -182,45 +204,34 @@ install_sen2cor <- function(sen2cor_dir, version="2.5.5", force = FALSE) {
 #' @export
 link_sen2cor <- function(sen2cor_dir) {
   
-  # Check if Sen2Cor exists in the provided directory
-  sen2cor_exists <- file.exists(file.path(
+  # Exit if Sen2Cor does not exist in the provided directory
+  if (!.sen2cor_exists(sen2cor_dir)) {
+    print_message(type = "error", "Sen2Cor was not found here.")
+  }
+  
+  binpaths <- load_binpaths()
+  binpaths$sen2cor <- normalize_path(file.path(
     sen2cor_dir, "bin",
     if (Sys.info()["sysname"] == "Windows") {"L2A_Process.bat"} else {"L2A_Process"}
   ))
+  writeLines(toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
+  # get Sen2Cor version
+  sen2cor_version_raw0 <- system(paste(binpaths$sen2cor, "-h"), intern = TRUE)
+  sen2cor_version_raw1 <- sen2cor_version_raw0[grep(
+    "^Sentinel\\-2 Level 2A Processor \\(Sen2Cor\\)\\. Version:",
+    sen2cor_version_raw0
+  )]
+  sen2cor_version <- gsub(
+    "^Sentinel\\-2 Level 2A Processor \\(Sen2Cor\\)\\. Version: ([2-9]+\\.[0-9]+)\\.[0-9]+,.*$",
+    "\\1",
+    sen2cor_version_raw1
+  )
   
-  # If so, write the directory in paths.json
-  if (sen2cor_exists) {
-    binpaths <- load_binpaths()
-    binpaths$sen2cor <- normalize_path(file.path(
-      sen2cor_dir, "bin",
-      if (Sys.info()["sysname"] == "Windows") {"L2A_Process.bat"} else {"L2A_Process"}
-    ))
-    writeLines(toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
-    # get Sen2Cor version
-    sen2cor_version_raw0 <- system(paste(binpaths$sen2cor, "-h"), intern = TRUE)
-    sen2cor_version_raw1 <- sen2cor_version_raw0[grep(
-      "^Sentinel\\-2 Level 2A Processor \\(Sen2Cor\\)\\. Version:",
-      sen2cor_version_raw0
-    )]
-    sen2cor_version <- gsub(
-      "^Sentinel\\-2 Level 2A Processor \\(Sen2Cor\\)\\. Version: ([2-9]+\\.[0-9]+)\\.[0-9]+,.*$",
-      "\\1",
-      sen2cor_version_raw1
-    )
-    # copy the Sen2Cor configuration file in the default directory
-    # (this assumes SEN2COR_HOME to be ~/sen2cor)
-    sen2cor_cfg_path <- file.path("~/sen2cor", sen2cor_version, "cfg/L2A_GIPP.xml")
-    if (!dir.exists(dirname(sen2cor_cfg_path))) {
-      dir.create(dirname(sen2cor_cfg_path), recursive = TRUE)
-    }
-    file.copy(
-      file.path(sen2cor_dir, "lib/python2.7/site-packages/sen2cor/cfg/L2A_GIPP.xml"),
-      sen2cor_cfg_path,
-      overwrite = TRUE
-    )
-  } else {
-    print_message(type = "error", "Sen2Cor was not found here")
-  }
+  # reset sen2r GIPP XML to the default Sen2Cor values
+  # (this is necessary to avoid errors in case of reinstallation 
+  # of a different Sen2cor version)
+  gipp_init(force = TRUE, dem_warning = TRUE)
+  
   return(invisible(NULL))
-
+  
 }

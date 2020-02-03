@@ -156,7 +156,7 @@ testthat::test_that(
   "Tests on s2_list - multipoint", {
     pp <- data.frame(x = c(6, 9.95),
                      y = c(45.81, 45.95))
-    pos <- sf::st_as_sf(pp, coords = c("x","y")) %>% sf::st_set_crs(4326)
+    pos <- sf::st_set_crs(sf::st_as_sf(pp, coords = c("x","y")), 4326)
     time_window <- as.Date(c("2016-05-01", "2016-05-31"))
     s2_list_test <- as(
       s2_list(spatial_extent = pos, time_interval = time_window), 
@@ -312,7 +312,10 @@ testthat::test_that(
         spatial_extent = "pos",
         time_interval = as.Date(c("2017-05-01", "2017-06-30"))
       ),
-      regexp = "`spatial_extent` is not a `sf` or `sfc` object"
+      regexp = gsub(
+        " ", "[ \n]",
+        "`spatial_extent` is not a `sf` or `sfc` object"
+      )
     )
     
     # wrong dates
@@ -321,7 +324,10 @@ testthat::test_that(
         spatial_extent = pos,
         time_interval = c("2017-05-XX", "2017-06-30")
       ),
-      regexp = "`time_interval` must be of class .+ cohercible to Date"
+      regexp = gsub(
+        " ", "[ \n]",
+        "`time_interval` must be of class .+ cohercible to Date"
+      )
     )
     
     # wrong availability
@@ -331,7 +337,10 @@ testthat::test_that(
         time_interval = c("2017-05-01", "2017-06-30"),
         availability = "offline"
       ),
-      regexp = '`availability` must be one among "online", "lta", "check" and "ignore"'
+      regexp = gsub(
+        " ", "[ \n]",
+        '`availability` must be one among "online", "lta", "check" and "ignore"'
+      )
     )
   }
 )

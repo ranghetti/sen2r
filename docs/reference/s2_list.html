@@ -155,10 +155,18 @@ products satisfying given search criteria." />
 products satisfying given search criteria.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>s2_list</span>(<span class='kw'>spatial_extent</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>orbit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span>() - <span class='fl'>10</span>, <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span>()), <span class='kw'>time_period</span> <span class='kw'>=</span> <span class='st'>"full"</span>,
-  <span class='kw'>level</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>max_cloud</span> <span class='kw'>=</span> <span class='fl'>100</span>,
-  <span class='kw'>availability</span> <span class='kw'>=</span> <span class='st'>"ignore"</span>, <span class='kw'>output_type</span> <span class='kw'>=</span> <span class='st'>"deprecated"</span>)</pre>
+    <pre class="usage"><span class='fu'>s2_list</span>(
+  <span class='kw'>spatial_extent</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>tile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>orbit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span>() - <span class='fl'>10</span>, <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span>()),
+  <span class='kw'>time_period</span> <span class='kw'>=</span> <span class='st'>"full"</span>,
+  <span class='kw'>level</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
+  <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>max_cloud</span> <span class='kw'>=</span> <span class='fl'>100</span>,
+  <span class='kw'>availability</span> <span class='kw'>=</span> <span class='st'>"ignore"</span>,
+  <span class='kw'>output_type</span> <span class='kw'>=</span> <span class='st'>"deprecated"</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -216,14 +224,14 @@ level of the tiles to be listed (default: no filter).</p></td>
       <th>availability</th>
       <td><p>Character argument, determining which products have
 to be returned:</p><ul>
-<li><p>"online" : only archive names already available for download are returned;</p></li>
-<li><p>"lta": only archive names stored in the Long Term Archive
-(see https://scihub.copernicus.eu/userguide/LongTermArchive)
+<li><p><code>"online"</code> : only archive names already available for download are returned;</p></li>
+<li><p><code>"lta"</code>: only archive names stored in the
+<a href='https://scihub.copernicus.eu/userguide/LongTermArchive'>Long Term Archive</a>
 are returned;</p></li>
-<li><p>"check": all archive names are returned, checking if they are
+<li><p><code>"check"</code>: all archive names are returned, checking if they are
 available or not for download (see "Value" to know
 how to distinguish each other);</p></li>
-<li><p>"ignore" (default): all archive names are returned, without doing the check
+<li><p><code>"ignore"</code> (default): all archive names are returned, without doing the check
 (running the function is faster).</p></li>
 </ul></td>
     </tr>
@@ -268,7 +276,7 @@ otherwise, values are set to NA.</p>
 #&gt;                                      S2A_MSIL1C_20160621T102022_N0204_R065_T32TNR_20160621T102024.SAFE 
 #&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('9bb6d780-c226-4f59-bad0-1daedfdce9d5')/$value" 
 #&gt; ...with 42 more elements.
-#&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, online.</div><div class='input'><span class='co'># Print the dates of the retrieved products</span>
+#&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, footprint, uuid, online.</div><div class='input'><span class='co'># Print the dates of the retrieved products</span>
 <span class='fu'><a href='safe_getMetadata.html'>safe_getMetadata</a></span>(<span class='no'>example_s2_list</span>, <span class='st'>"sensing_datetime"</span>)</div><div class='output co'>#&gt; S2A_MSIL1C_20160502T102032_N0201_R065_T32TNR_20160502T102027.SAFE 
 #&gt;                                         "2016-05-02 10:20:32 UTC" 
 #&gt; S2A_MSIL1C_20160512T102032_N0202_R065_T32TNR_20160512T102029.SAFE 
@@ -382,7 +390,7 @@ otherwise, values are set to NA.</p>
 #&gt;                                      S2A_MSIL1C_20160522T102032_N0202_R065_T32TNR_20160522T102029.SAFE 
 #&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('4abf7965-0b26-431b-8708-74de427c0112')/$value" 
 #&gt; ...with 23 more elements.
-#&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, online.</div><div class='input'><span class='co'># Print the dates of the retrieved products</span>
+#&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, footprint, uuid, online.</div><div class='input'><span class='co'># Print the dates of the retrieved products</span>
 <span class='fu'><a href='safe_getMetadata.html'>safe_getMetadata</a></span>(<span class='no'>example_s2_list</span>, <span class='st'>"sensing_datetime"</span>)</div><div class='output co'>#&gt; S2A_MSIL1C_20160502T102032_N0201_R065_T32TNR_20160502T102027.SAFE 
 #&gt;                                         "2016-05-02 10:20:32 UTC" 
 #&gt; S2A_MSIL1C_20160509T101032_N0202_R022_T32TNR_20160509T101645.SAFE 
@@ -452,8 +460,8 @@ otherwise, values are set to NA.</p>
 
     <h2>Author</h2>
     <p>Lorenzo Busetto, phD (2019) <a href='mailto:lbusett@gmail.com'>lbusett@gmail.com</a> - Inspired by
-function <code>getSentinel_query</code> of package <code>getSpatialData</code> by J. Schwalb-Willmann
-(https://github.com/16EAGLE/getSpatialData)</p>
+function <code>getSentinel_query</code> of package
+<a href='https://github.com/16EAGLE/getSpatialData'><code>getSpatialData</code></a> by J. Schwalb-Willmann</p>
 <p>Luigi Ranghetti, phD (2019) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
   </div>
 </div>

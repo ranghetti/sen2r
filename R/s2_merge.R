@@ -29,6 +29,9 @@
 #'  format recognised by GDAL). Default is to maintain each input format.
 #' @param compress (optional) In the case a GTiff format is
 #'  present, the compression indicated with this parameter is used.
+#' @param bigtiff (optional) Logical: if TRUE, the creation of a BigTIFF is
+#'  forced (default is FALSE).
+#'  This option is used only in the case a GTiff format was chosen. 
 #' @param vrt_rel_paths (optional) Logical: if TRUE (default on Linux),
 #'  the paths present in the VRT output file are relative to the VRT position;
 #'  if FALSE (default on Windows), they are absolute.
@@ -49,7 +52,6 @@
 #'  (it is used when the function is called by `sen2r()`).
 #' @return A vector with the names of the merged products (just created or
 #'  already existing).
-#' @importFrom magrittr "%>%"
 #' @importFrom jsonlite fromJSON
 #' @importFrom foreach foreach "%do%" "%dopar%"
 #' @importFrom doParallel registerDoParallel
@@ -68,6 +70,7 @@ s2_merge <- function(infiles,
                      rmtmp=TRUE,
                      format=NA,
                      compress="DEFLATE",
+                     bigtiff=FALSE,
                      vrt_rel_paths=NA,
                      out_crs=NA,
                      parallel = FALSE,
@@ -175,8 +178,15 @@ s2_merge <- function(infiles,
   }
   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
   
-  # create outdir if not existing
+  # create outdir if not existing (and dirname(outdir) exists)
   suppressWarnings(outdir <- expand_path(outdir, parent=comsub(infiles,"/"), silent=TRUE))
+  if (!dir.exists(dirname(outdir))) {
+    print_message(
+      type = "error",
+      "The parent folder of 'outdir' (",outdir,") does not exist; ",
+      "please create it."
+    )
+  }
   dir.create(outdir, recursive=FALSE, showWarnings=FALSE)
   
   # if out_crs is different from the projection of all input files,
@@ -187,7 +197,11 @@ s2_merge <- function(infiles,
     out_crs_string <- if (!is.na(out_crs$epsg)) {
       paste0("EPSG:",out_crs$epsg)
     } else {
-      st_as_text_2(out_crs)
+      writeLines(
+        st_as_text_2(out_crs),
+        out_crs_path <- tempfile(pattern = "out_crs_", tmpdir = tmpdir, fileext = ".prj")
+      )
+      out_crs_path
     }
     system(
       paste0(
@@ -311,11 +325,14 @@ s2_merge <- function(infiles,
                "_reproj.vrt",
                basename(sel_infiles[sel_diffcrs][i]))
         )
-        gdalwarp_grid(srcfiles = sel_infiles[sel_diffcrs][i],
-                      dstfiles = reproj_vrt,
-                      ref = ref_file,
-                      of = "VRT",
-                      r = "near")
+        gdalwarp_grid(
+          srcfiles = sel_infiles[sel_diffcrs][i],
+          dstfiles = reproj_vrt,
+          ref = ref_file,
+          of = "VRT",
+          tmpdir = sel_tmpdir,
+          r = "near"
+        )
         if (vrt_rel_paths) {gdal_abs2rel(reproj_vrt)}
         
         # replace input file path with intermediate
@@ -343,6 +360,7 @@ s2_merge <- function(infiles,
           binpaths$gdal_translate," ",
           "-of ",sel_outformat," ",
           if (sel_outformat=="GTiff") {paste0("-co COMPRESS=",toupper(compress)," ")},
+          if (sel_outformat=="GTiff" & bigtiff==TRUE) {paste0("-co BIGTIFF=YES ")},
           "\"",merged_vrt,"\" ",
           "\"",file.path(out_subdir,sel_outfile),"\" "),
         intern = Sys.info()["sysname"] == "Windows"

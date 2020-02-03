@@ -8,7 +8,7 @@ sen2r(
   param_list = NULL,
   gui = NA,
   preprocess = TRUE,
-  s2_levels = c("l1c", "l2a"),
+  s2_levels = "l2a",
   sel_sensor = c("s2a", "s2b"),
   online = TRUE,
   order_lta = TRUE,
@@ -17,6 +17,8 @@ sen2r(
   overwrite_safe = FALSE,
   rm_safe = "no",
   step_atmcorr = "auto",
+  sen2cor_use_dem = NA,
+  sen2cor_gipp = NA,
   max_cloud_safe = 100,
   timewindow = NA,
   timeperiod = "full",
@@ -59,7 +61,7 @@ sen2r(
   thumbnails = TRUE,
   parallel = FALSE,
   processing_order = "by_groups",
-  use_python = TRUE,
+  use_python = NA,
   tmpdir = NA,
   rmtmp = TRUE,
   log = NA
@@ -137,6 +139,22 @@ downloaded from SciHub;
 \item \code{"l2a"} means that they are downloaded if available on SciHub,
 otherwise they are skipped (sen2cor is never used).
 }}
+
+\item{sen2cor_use_dem}{(optional) Logical, determining if a DEM should be
+used for topographic correction by Sen2Cor (see the documentation of
+\code{\link[=sen2cor]{sen2cor()}} - argument \code{use_dem} for further details).
+Currently the default value is NA in order to grant backward compatibility:
+in this case, the option set in the XML GIPP configuration file
+used by sen2r (stored in the default sen2r settings directory) is respected.
+
+\emph{Note}: in a future release of sen2r, the default value will be
+set to TRUE, so to grant homogeneity between Level-2A products downloaded
+from ESA Hub and generated using Sen2Cor.}
+
+\item{sen2cor_gipp}{(optional) Ground Image Processing Parameters (GIPP)
+to be passed to Sen2Cor (see the documentation of \code{\link[=sen2cor]{sen2cor()}} - argument
+\code{gipp} - for details about the usage of this argument).
+Default value (NA) corresponds to an empty list of parameters.}
 
 \item{max_cloud_safe}{(optional) Integer number (0-100) containing
 the maximum cloud level of each SAFE to be considered (default: no filter).
@@ -284,7 +302,8 @@ by \code{gdal_translate}: \code{"near"} (default), \code{"bilinear"}, \code{"cub
 (for now, only SCL): one among \code{"near"} (default) and \code{"mode"}.}
 
 \item{outformat}{(optional) Format of the output file (in a
-format recognised by GDAL). Default is \code{"GTiff"}.}
+format recognised by GDAL). Default is \code{"GTiff"}.
+Value \code{"BigTIFF"} can be used to generate a GeoTIFF with the option BigTIFF}
 
 \item{rgb_outformat}{(optional) Format of the output RGB products (in a
 format recognised by GDAL). Default is \code{"GTiff"}.}
@@ -404,12 +423,7 @@ This mode is similar to the previous one in terms of disk usage
 but it is slightly slower; its advantage are the lower RAM requirements.
 }}
 
-\item{use_python}{(optional) Logical: if TRUE (default), the presence of
-python in the system is checked before running the function;
-if FALSE, this is skipped. Setting this to FALSE can be useful on
-systems with problems with python, when \code{\link[=sen2r]{sen2r()}} is intended
-to be used only for processing existing SAFE files (python is required
-in any case to download SAFE).}
+\item{use_python}{Deprecated argument}
 
 \item{tmpdir}{(optional) Path where intermediate files will be created.
 Default is a temporary directory (unless \code{outformat = "VRT"}: in this case,
@@ -438,6 +452,8 @@ percentage of cloud covered pixels;
 function;
 \item \code{ltapath} with the path of a json file containing the list of the
 SAFE Sentinel-2 archives eventually ordered in Long Term Archive.
+\item \code{status} with a data.frame summarising the status of the processing (see
+\code{\link[=sen2r_process_report]{sen2r_process_report()}}).
 }
 }
 \description{
@@ -446,6 +462,9 @@ processing chain to find, download and pre-process Sentinel-2
 data. Input is a set of parameters that can be passed with a
 list or file (parameter \code{param_list}) or singularly (see the
 descriptions of all the other parameters).
+}
+\note{
+License: GPL 3.0
 }
 \examples{
 \donttest{
@@ -526,4 +545,9 @@ image(stars::read_stars(thumb_4[grep("RGB843B", thumb_4)]), rgb = 1:3)
 
 par(oldpar)
 }
+}
+\author{
+Luigi Ranghetti, phD (2020) \email{luigi@ranghetti.info}
+
+Lorenzo Busetto, phD (2020) \email{lbusett@gmail.com}
 }

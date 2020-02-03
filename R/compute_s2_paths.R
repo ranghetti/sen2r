@@ -151,17 +151,36 @@ compute_s2_paths <- function(pm,
     "indices" = if (steps_todo["masked"]) {"masked"} else if (steps_todo["warped"]) {"warped"} else {"merged"}
   )
   
+  # Which paths are temporary
+  paths_istemp <- c(
+    "L1C" = is.na(pm$path_l1c),
+    "L2A" = is.na(pm$path_l2a),
+    "tiles" = !output_req[["tiles"]],
+    "merged" = is.na(pm$path_merged) & (is.na(pm$path_out) | steps_todo[["warped"]] | steps_todo[["masked"]]),
+    "warped" = !output_req[["warped"]],
+    "warped_scl" = !output_req[["warped_scl"]],
+    "rgb" = !output_req[["rgb"]],
+    "masked" = !output_req[["masked"]],
+    "indices" = !output_req[["indices"]]
+  )
+  
   # Paths
   paths <- c(
-    "L1C" = if (!is.na(pm$path_l1c)) {pm$path_l1c} else {file.path(tmpdir,"SAFE")},
-    "L2A" = if (!is.na(pm$path_l2a)) {pm$path_l2a} else {file.path(tmpdir,"SAFE")},
-    "tiles" = if (output_req["tiles"]) {pm$path_tiles} else {file.path(tmpdir,"tiles")},
-    "merged" = if (!is.na(pm$path_merged)) {pm$path_merged} else if (!is.na(pm$path_out) & !steps_todo[["warped"]] & !steps_todo[["masked"]]) {pm$path_out} else {file.path(tmpdir,"merged")},
-    "warped" = if (output_req["warped"]) {pm$path_out} else {file.path(tmpdir,"warped")},
-    "warped_scl" = if (output_req["warped_scl"]) {pm$path_out} else {file.path(tmpdir,"warped")},
-    "rgb" = if (output_req["rgb"]) {pm$path_rgb} else {file.path(tmpdir,"rgb")},
-    "masked" = if (output_req["masked"]) {pm$path_out} else {file.path(tmpdir,"masked")},
-    "indices" = if (output_req["indices"]) {pm$path_indices} else {file.path(tmpdir,"indices")}
+    "L1C" = if (!paths_istemp[["L1C"]]) {pm$path_l1c} else {file.path(tmpdir,"SAFE")},
+    "L2A" = if (!paths_istemp[["L2A"]]) {pm$path_l2a} else {file.path(tmpdir,"SAFE")},
+    "tiles" = if (!paths_istemp[["tiles"]]) {pm$path_tiles} else {file.path(tmpdir,"tiles")},
+    "merged" = if (!is.na(pm$path_merged)) {
+      pm$path_merged
+    } else if (!is.na(pm$path_out) & !steps_todo[["warped"]] & !steps_todo[["masked"]]) {
+      pm$path_out
+    } else {
+      file.path(tmpdir,"merged")
+    },
+    "warped" = if (!paths_istemp[["warped"]]) {pm$path_out} else {file.path(tmpdir,"warped")},
+    "warped_scl" = if (!paths_istemp[["warped_scl"]]) {pm$path_out} else {file.path(tmpdir,"warped")},
+    "rgb" = if (!paths_istemp[["rgb"]]) {pm$path_rgb} else {file.path(tmpdir,"rgb")},
+    "masked" = if (!paths_istemp[["masked"]]) {pm$path_out} else {file.path(tmpdir,"masked")},
+    "indices" = if (!paths_istemp[["indices"]]) {pm$path_indices} else {file.path(tmpdir,"indices")}
   )
   paths <- sapply(paths, normalize_path, mustWork = FALSE)
   
@@ -188,15 +207,15 @@ compute_s2_paths <- function(pm,
   # to req_paths (files required as intermediate steps)
   merge_exp_req <- function(exp_paths, req_paths, step) {
     sapply(names(exp_paths[[step]]), function(prod) {
-      c(
-        if (output_req[step]) {exp_paths[[step]][[prod]]},
-        unlist(sapply(
-          req_paths[gsub("\\..*$","",names(which(output_dep==step)))],
-          function(sellist) {sellist[[prod]]}
+      remove_duplicates(nn(unlist(
+        as.vector(c(
+          if (output_req[step]) {exp_paths[[step]][[prod]]},
+          unlist(sapply(
+            req_paths[gsub("\\..*$","",names(which(output_dep==step)))],
+            function(sellist) {sellist[[prod]]}
+          ))
         ))
-      ) %>%
-        as.vector() %>%
-        unlist() %>% nn() %>% remove_duplicates()
+      )))
     }, simplify = FALSE, USE.NAMES = TRUE)
   }
   
@@ -224,7 +243,7 @@ compute_s2_paths <- function(pm,
     }, simplify = FALSE, USE.NAMES = TRUE),
     # "merged" = sapply(list_prods[list_prods != "SCL"], function(prod) {
     "merged" = sapply(list_prods, function(prod) {
-        list.files(
+      list.files(
         file.path(paths["merged"], if (pm$path_subdirs) {prod}),
         paste0("^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_\\_(",prod,")\\_([126]0)\\.?(",out_ext["merged"],")$"),
         full.names=TRUE
@@ -338,36 +357,39 @@ compute_s2_paths <- function(pm,
   # tiles
   if (steps_todo["tiles"]) {
     exp_paths[["tiles"]] <- sapply(list_prods, function(prod){
-      sapply(
-        if (prod %in% l1c_prods) {file.path(pm$path_l1c,names(s2_list_l1c))} else
-          if (prod %in% l2a_prods) {file.path(pm$path_l2a,names(s2_list_l2a))},
-        function(safe){
-          sel_av_tiles <- tryCatch(
-            safe_getMetadata(
-              safe, info = "tiles", 
-              format = "vector", abort = TRUE, simplify = TRUE
-            ),
-            error = function(e){
-              safe_getMetadata(
-                safe, info = "id_tile", 
-                format = "vector", simplify = TRUE
+      remove_duplicates(nn(
+        unlist(c(
+          sapply(
+            if (prod %in% l1c_prods) {file.path(pm$path_l1c,names(s2_list_l1c))} else
+              if (prod %in% l2a_prods) {file.path(pm$path_l2a,names(s2_list_l2a))},
+            function(safe){
+              sel_av_tiles <- tryCatch(
+                safe_getMetadata(
+                  safe, info = "tiles", 
+                  format = "vector", abort = TRUE, simplify = TRUE
+                ),
+                error = function(e){
+                  safe_getMetadata(
+                    safe, info = "id_tile", 
+                    format = "vector", simplify = TRUE
+                  )
+                }
               )
-            }
-          )
-          file.path(
-            paths["tiles"],
-            if (pm$path_subdirs) {prod} else {""},
-            basename(safe_shortname(
-              safe, prod_type=prod, ext=out_ext["tiles"],
-              res=pm$res_s2, tiles=pm$s2tiles_selected,
-              force_tiles=force_tiles, multiple_names=TRUE
-            ))
-          )
-        },
-        simplify = FALSE, USE.NAMES = FALSE
-      ) %>%
-        c(exi_paths$tiles[[prod]]) %>%
-        unlist() %>% nn() %>% remove_duplicates()
+              file.path(
+                paths["tiles"],
+                if (pm$path_subdirs) {prod} else {""},
+                basename(safe_shortname(
+                  safe, prod_type=prod, ext=out_ext["tiles"],
+                  res=pm$res_s2, tiles=pm$s2tiles_selected,
+                  force_tiles=force_tiles, multiple_names=TRUE
+                ))
+              )
+            },
+            simplify = FALSE, USE.NAMES = FALSE
+          ),
+          exi_paths$tiles[[prod]]
+        ))
+      ))
     }, simplify = FALSE, USE.NAMES = TRUE)
   }
   
@@ -377,24 +399,24 @@ compute_s2_paths <- function(pm,
       expaths <- if (length(exp_paths[[output_dep["merged"]]][[prod]]) == 0) {
         character(0)
       } else {
-        sen2r_getElements(exp_paths[[output_dep["merged"]]][[prod]])[,paste0(
-          "S2",
-          mission,
-          level,"_",
-          strftime(sensing_date,"%Y%m%d"),"_",
-          id_orbit,"__",
-          prod_type,"_",
-          substr(res,1,2),".",
-          out_ext["merged"]
-        )] %>%
-          file.path(
-            paths["merged"],
-            if (pm$path_subdirs) {prod} else {""},
-            .
-          )
+        file.path(
+          paths["merged"],
+          if (pm$path_subdirs) {prod} else {""},
+          sen2r_getElements(exp_paths[[output_dep["merged"]]][[prod]])[,paste0(
+            "S2",
+            mission,
+            level,"_",
+            strftime(sensing_date,"%Y%m%d"),"_",
+            id_orbit,"__",
+            prod_type,"_",
+            substr(res,1,2),".",
+            out_ext["merged"]
+          )]
+        )
       }
-      c(expaths, exi_paths[["merged"]][[prod]]) %>%
-        unlist() %>% nn() %>% remove_duplicates()
+      remove_duplicates(nn(
+        unlist(c(expaths, exi_paths[["merged"]][[prod]]))
+      ))
     }, simplify = FALSE, USE.NAMES = TRUE)
   }
   
@@ -404,25 +426,25 @@ compute_s2_paths <- function(pm,
       expaths <- if (length(exp_paths[[output_dep["warped"]]][[prod]]) == 0) {
         character(0)
       } else {
-        sen2r_getElements(exp_paths[[output_dep["warped"]]][[prod]])[,paste0(
-          "S2",
-          mission,
-          level,"_",
-          strftime(sensing_date,"%Y%m%d"),"_",
-          id_orbit,"_",
-          ExtentName,"_",
-          prod_type,"_",
-          substr(res,1,2),".",
-          out_ext["warped"]
-        )] %>%
-          file.path(
-            paths["warped"],
-            if (pm$path_subdirs) {prod} else {""},
-            .
-          )
+        file.path(
+          paths["warped"],
+          if (pm$path_subdirs) {prod} else {""},
+          sen2r_getElements(exp_paths[[output_dep["warped"]]][[prod]])[,paste0(
+            "S2",
+            mission,
+            level,"_",
+            strftime(sensing_date,"%Y%m%d"),"_",
+            id_orbit,"_",
+            ExtentName,"_",
+            prod_type,"_",
+            substr(res,1,2),".",
+            out_ext["warped"]
+          )]
+        )
       }
-      c(expaths, exi_paths[["warped"]][[prod]]) %>%
-        unlist() %>% nn() %>% remove_duplicates()
+      remove_duplicates(nn(
+        unlist(c(expaths, exi_paths[["warped"]][[prod]]))
+      ))
     }, simplify = FALSE, USE.NAMES = TRUE)
   }
   
@@ -432,25 +454,25 @@ compute_s2_paths <- function(pm,
       expaths <- if (length(exp_paths[[output_dep["warped_scl"]]][[prod]]) == 0) {
         character(0)
       } else {
-        sen2r_getElements(exp_paths[[output_dep["warped_scl"]]][[prod]])[,paste0(
-          "S2",
-          mission,
-          level,"_",
-          strftime(sensing_date,"%Y%m%d"),"_",
-          id_orbit,"_",
-          ExtentName,"_",
-          prod_type,"_",
-          substr(res,1,2),".",
-          out_ext["warped_scl"]
-        )] %>%
-          file.path(
-            paths["warped_scl"],
-            if (pm$path_subdirs) {prod} else {""},
-            .
-          )
+        file.path(
+          paths["warped_scl"],
+          if (pm$path_subdirs) {prod} else {""},
+          sen2r_getElements(exp_paths[[output_dep["warped_scl"]]][[prod]])[,paste0(
+            "S2",
+            mission,
+            level,"_",
+            strftime(sensing_date,"%Y%m%d"),"_",
+            id_orbit,"_",
+            ExtentName,"_",
+            prod_type,"_",
+            substr(res,1,2),".",
+            out_ext["warped_scl"]
+          )] 
+        )
       }
-      c(expaths, exi_paths[["warped_scl"]][[prod]]) %>%
-        unlist() %>% nn() %>% remove_duplicates()
+      remove_duplicates(nn(
+        unlist(c(expaths, exi_paths[["warped_scl"]][[prod]]))
+      ))
     }, simplify = FALSE, USE.NAMES = TRUE)
   }
   
@@ -460,29 +482,32 @@ compute_s2_paths <- function(pm,
       expaths <- if (length(unlist(exp_paths[[output_dep["rgb"]]])) == 0) {
         character(0)
       } else {
-        sen2r_getElements(unlist(exp_paths[[output_dep["rgb"]]]))[
-          level == switch(substr(prod,7,7), T = "1C", B = "2A"),
-          paste0(
-            "S2",
-            mission,
-            level,"_",
-            strftime(sensing_date,"%Y%m%d"),"_",
-            id_orbit,"_",
-            ExtentName,"_",
-            "<rgbname>_",
-            substr(res,1,2),".",
-            out_ext["rgb"]
-          )] %>%
-          unique() %>%
+        gsub(
+          "<rgbname>", prod, 
           file.path(
             paths["rgb"],
-            if(pm$path_subdirs) {prod} else {""},
-            .
-          ) %>%
-          gsub("<rgbname>", prod , .)
+            if (pm$path_subdirs) {prod} else {""},
+            unique(
+              sen2r_getElements(unlist(exp_paths[[output_dep["rgb"]]]))[
+                level == switch(substr(prod,7,7), T = "1C", B = "2A"),
+                paste0(
+                  "S2",
+                  mission,
+                  level,"_",
+                  strftime(sensing_date,"%Y%m%d"),"_",
+                  id_orbit,"_",
+                  ExtentName,"_",
+                  "<rgbname>_",
+                  substr(res,1,2),".",
+                  out_ext["rgb"]
+                )]
+            )
+          )
+        )
       }
-      c(expaths, exi_paths[["rgb"]][[prod]]) %>%
-        unlist() %>% nn() %>% remove_duplicates()
+      remove_duplicates(nn(
+        unlist(c(expaths, exi_paths[["rgb"]][[prod]]))
+      ))
     }, simplify = FALSE, USE.NAMES = TRUE)
   }
   
@@ -499,25 +524,25 @@ compute_s2_paths <- function(pm,
           sen2r_getElements(
             exp_paths[[output_dep["masked.scl"]]][["SCL"]]
           )[,paste(sensing_date,id_orbit,ExtentName)]
-        sen2r_getElements(exp_paths[[output_dep["masked.nonscl"]]][[prod]])[canbemasked, paste0(
-          "S2",
-          mission,
-          level,"_",
-          strftime(sensing_date,"%Y%m%d"),"_",
-          id_orbit,"_",
-          ExtentName,"_",
-          prod_type,"_",
-          substr(res,1,2),".",
-          out_ext["masked"]
-        )] %>%
-          file.path(
-            paths["masked"],
-            if (pm$path_subdirs) {prod} else {""},
-            .
-          )
+        file.path(
+          paths["masked"],
+          if (pm$path_subdirs) {prod} else {""},
+          sen2r_getElements(exp_paths[[output_dep["masked.nonscl"]]][[prod]])[canbemasked, paste0(
+            "S2",
+            mission,
+            level,"_",
+            strftime(sensing_date,"%Y%m%d"),"_",
+            id_orbit,"_",
+            ExtentName,"_",
+            prod_type,"_",
+            substr(res,1,2),".",
+            out_ext["masked"]
+          )]
+        )
       }
-      c(expaths, exi_paths$masked[[prod]]) %>%
-        unlist() %>% nn() %>% remove_duplicates()
+      remove_duplicates(nn(
+        unlist(c(expaths, exi_paths$masked[[prod]]))
+      ))
     }, simplify = FALSE, USE.NAMES = TRUE)
   }
   
@@ -527,28 +552,30 @@ compute_s2_paths <- function(pm,
       expaths <- if (length(unlist(exp_paths[[output_dep["indices"]]])) == 0) {
         character(0)
       } else {
-        sen2r_getElements(unlist(exp_paths[[output_dep["indices"]]]))[
-          level %in% level_for_indices,
-          paste0(
-            "S2",
-            mission,
-            level,"_",
-            strftime(sensing_date,"%Y%m%d"),"_",
-            id_orbit,"_",
-            ExtentName,"_",
-            "<index>_",
-            substr(res,1,2),".",
-            out_ext["indices"]
-          )] %>%
+        gsub(
+          "<index>", prod , 
           file.path(
             paths["indices"],
             if (pm$path_subdirs) {prod} else {""},
-            .
-          ) %>%
-          gsub("<index>", prod , .)
+            sen2r_getElements(unlist(exp_paths[[output_dep["indices"]]]))[
+              level %in% level_for_indices,
+              paste0(
+                "S2",
+                mission,
+                level,"_",
+                strftime(sensing_date,"%Y%m%d"),"_",
+                id_orbit,"_",
+                ExtentName,"_",
+                "<index>_",
+                substr(res,1,2),".",
+                out_ext["indices"]
+              )]
+          )
+        )
       }
-      c(expaths, exi_paths$indices[[prod]]) %>%
-        unlist() %>% nn() %>% remove_duplicates()
+      remove_duplicates(nn(
+        unlist(c(expaths, exi_paths$indices[[prod]]))
+      ))
     }, simplify = FALSE, USE.NAMES = TRUE)
   }
   
@@ -570,26 +597,26 @@ compute_s2_paths <- function(pm,
     req_paths[["indices"]][[pm$index_source]] <- if (length(unlist(new_paths[["indices"]])) == 0) {
       character(0)
     } else {
-      sen2r_getElements(
-        unlist(new_paths[["indices"]])
-      )[level %in% level_for_indices,
-        paste0(
-          "S2",
-          mission,
-          level,"_",
-          strftime(sensing_date,"%Y%m%d"),"_",
-          id_orbit,"_",
-          ExtentName,"_",
-          pm$index_source,"_",
-          substr(res,1,2),".",
-          out_ext[output_dep["indices"]]
-        )] %>%
-        remove_duplicates() %>%
-        file.path(
-          paths[output_dep["indices"]],
-          if (pm$path_subdirs) {pm$index_source} else {""},
-          .
+      file.path(
+        paths[output_dep["indices"]],
+        if (pm$path_subdirs) {pm$index_source} else {""},
+        remove_duplicates(
+          sen2r_getElements(
+            unlist(new_paths[["indices"]])
+          )[level %in% level_for_indices,
+            paste0(
+              "S2",
+              mission,
+              level,"_",
+              strftime(sensing_date,"%Y%m%d"),"_",
+              id_orbit,"_",
+              ExtentName,"_",
+              pm$index_source,"_",
+              substr(res,1,2),".",
+              out_ext[output_dep["indices"]]
+            )]
         )
+      )
     }
   }
   
@@ -601,48 +628,48 @@ compute_s2_paths <- function(pm,
       if (length(new_paths[["masked"]][[prod]]) == 0) {
         character(0)
       } else {
-        sen2r_getElements(new_paths[["masked"]][[prod]])[
-          ,paste0(
-            "S2",
-            mission,
-            level,"_",
-            strftime(sensing_date,"%Y%m%d"),"_",
-            id_orbit,"_",
-            ExtentName,"_",
-            prod,"_",
-            substr(res,1,2),".",
-            out_ext[output_dep["masked.nonscl"]]
-          )] %>%
-          remove_duplicates() %>%
-          file.path(
-            paths[output_dep["masked.nonscl"]],
-            if (pm$path_subdirs) {prod} else {""},
-            .
+        file.path(
+          paths[output_dep["masked.nonscl"]],
+          if (pm$path_subdirs) {prod} else {""},
+          remove_duplicates(
+            sen2r_getElements(new_paths[["masked"]][[prod]])[
+              ,paste0(
+                "S2",
+                mission,
+                level,"_",
+                strftime(sensing_date,"%Y%m%d"),"_",
+                id_orbit,"_",
+                ExtentName,"_",
+                prod,"_",
+                substr(res,1,2),".",
+                out_ext[output_dep["masked.nonscl"]]
+              )]
           )
+        )
       }
     }, simplify = FALSE, USE.NAMES = TRUE)
     req_paths[["masked"]][["SCL"]] <- if (length(unlist(new_paths[["masked"]])) == 0) {
       character(0)
     } else {
-      sen2r_getElements(
-        unlist(new_paths[["masked"]])
-      )[,paste0(
-        "S2",
-        mission,
-        "2A","_",
-        strftime(sensing_date,"%Y%m%d"),"_",
-        id_orbit,"_",
-        ExtentName,"_",
-        "SCL","_",
-        substr(res,1,2),".",
-        out_ext[output_dep["masked.scl"]]
-      )] %>%
-        remove_duplicates() %>%
-        file.path(
-          paths[output_dep["masked.scl"]],
-          if (pm$path_subdirs) {"SCL"} else {""},
-          .
+      file.path(
+        paths[output_dep["masked.scl"]],
+        if (pm$path_subdirs) {"SCL"} else {""},
+        remove_duplicates(
+          sen2r_getElements(
+            unlist(new_paths[["masked"]])
+          )[,paste0(
+            "S2",
+            mission,
+            "2A","_",
+            strftime(sensing_date,"%Y%m%d"),"_",
+            id_orbit,"_",
+            ExtentName,"_",
+            "SCL","_",
+            substr(res,1,2),".",
+            out_ext[output_dep["masked.scl"]]
+          )]
         )
+      )
     }
   }
   
@@ -653,27 +680,27 @@ compute_s2_paths <- function(pm,
       if (length(unlist(new_paths[["rgb"]][substr(names(new_paths[["rgb"]]),7,7) == substr(prod,1,1)])) == 0) {
         character(0)
       } else {
-        sen2r_getElements(unlist(
-          new_paths[["rgb"]][substr(names(new_paths[["rgb"]]),7,7) == substr(prod,1,1)]
-        ))[
-          level == switch(prod, TOA = "1C", BOA = "2A"),
-          paste0(
-            "S2",
-            mission,
-            level,"_",
-            strftime(sensing_date,"%Y%m%d"),"_",
-            id_orbit,"_",
-            ExtentName,"_",
-            prod,"_",
-            substr(res,1,2),".",
-            out_ext[output_dep["rgb"]]
-          )] %>%
-          remove_duplicates() %>%
-          file.path(
-            paths[output_dep["rgb"]],
-            if (pm$path_subdirs) {prod} else {""},
-            .
+        file.path(
+          paths[output_dep["rgb"]],
+          if (pm$path_subdirs) {prod} else {""},
+          remove_duplicates(
+            sen2r_getElements(unlist(
+              new_paths[["rgb"]][substr(names(new_paths[["rgb"]]),7,7) == substr(prod,1,1)]
+            ))[
+              level == switch(prod, TOA = "1C", BOA = "2A"),
+              paste0(
+                "S2",
+                mission,
+                level,"_",
+                strftime(sensing_date,"%Y%m%d"),"_",
+                id_orbit,"_",
+                ExtentName,"_",
+                prod,"_",
+                substr(res,1,2),".",
+                out_ext[output_dep["rgb"]]
+              )]
           )
+        )
       }
     }, simplify = FALSE, USE.NAMES = TRUE)
   }
@@ -686,24 +713,24 @@ compute_s2_paths <- function(pm,
       "SCL" = if (length(new_paths[["warped_scl"]][["SCL"]]) == 0) {
         character(0)
       } else {
-        sen2r_getElements(new_paths[["warped_scl"]][["SCL"]])[
-          ,paste0(
-            "S2",
-            mission,
-            level,"_",
-            strftime(sensing_date,"%Y%m%d"),"_",
-            id_orbit,"_",
-            "_",
-            "SCL","_",
-            substr(res,1,2),".",
-            out_ext[output_dep["warped_scl"]]
-          )] %>%
-          remove_duplicates() %>%
-          file.path(
-            paths[output_dep["warped_scl"]],
-            if (pm$path_subdirs) {"SCL"} else {""},
-            .
+        file.path(
+          paths[output_dep["warped_scl"]],
+          if (pm$path_subdirs) {"SCL"} else {""},
+          remove_duplicates(
+            sen2r_getElements(new_paths[["warped_scl"]][["SCL"]])[
+              ,paste0(
+                "S2",
+                mission,
+                level,"_",
+                strftime(sensing_date,"%Y%m%d"),"_",
+                id_orbit,"_",
+                "_",
+                "SCL","_",
+                substr(res,1,2),".",
+                out_ext[output_dep["warped_scl"]]
+              )]
           )
+        )
       }
     )
   }
@@ -716,24 +743,24 @@ compute_s2_paths <- function(pm,
       if (length(new_paths[["warped"]][[prod]]) == 0) {
         character(0)
       } else {
-        sen2r_getElements(new_paths[["warped"]][[prod]])[
-          ,paste0(
-            "S2",
-            mission,
-            level,"_",
-            strftime(sensing_date,"%Y%m%d"),"_",
-            id_orbit,"_",
-            "_",
-            prod,"_",
-            substr(res,1,2),".",
-            out_ext[output_dep["warped"]]
-          )] %>%
-          remove_duplicates() %>%
-          file.path(
-            paths[output_dep["warped"]],
-            if (pm$path_subdirs) {prod} else {""},
-            .
+        file.path(
+          paths[output_dep["warped"]],
+          if (pm$path_subdirs) {prod} else {""},
+          remove_duplicates(
+            sen2r_getElements(new_paths[["warped"]][[prod]])[
+              ,paste0(
+                "S2",
+                mission,
+                level,"_",
+                strftime(sensing_date,"%Y%m%d"),"_",
+                id_orbit,"_",
+                "_",
+                prod,"_",
+                substr(res,1,2),".",
+                out_ext[output_dep["warped"]]
+              )]
           )
+        )
       }
     }, simplify = FALSE, USE.NAMES = TRUE)
   }
@@ -746,7 +773,7 @@ compute_s2_paths <- function(pm,
       if (length(new_paths[["merged"]][[prod]]) == 0) {
         character(0)
       } else {
-        sen2r_getElements(new_paths[["merged"]][[prod]])[
+        reqpaths <- sen2r_getElements(new_paths[["merged"]][[prod]])[
           ,paste0(
             "S2",
             mission,
@@ -757,17 +784,18 @@ compute_s2_paths <- function(pm,
             prod,"_",
             substr(res,1,2),".",
             out_ext[output_dep["merged"]]
-          )] %>%
-          # a bit different respect to other steps:
-          # since it is not possible to easily know which tiles are required by a merged product,
-          # the list of exp_paths[["tiles"]] matching each merged file is computed.
-          # So, only existing tiles are used.
-          # Since file names are used as regexp, possibly problems could appear
-          # in case some special characters are present in the file name.
-          lapply(function(x){
+          )]
+        # a bit different respect to other steps:
+        # since it is not possible to easily know which tiles are required by a merged product,
+        # the list of exp_paths[["tiles"]] matching each merged file is computed.
+        # So, only existing tiles are used.
+        # Since file names are used as regexp, possibly problems could appear
+        # in case some special characters are present in the file name.
+        remove_duplicates(nn(unlist(
+          lapply(reqpaths, function(x){
             exp_paths[[output_dep["merged"]]][[prod]][grep(x, exp_paths[[output_dep["merged"]]][[prod]])]
-          }) %>%
-          unlist() %>% nn() %>% remove_duplicates()
+          })
+        )))
       }
     }, simplify = FALSE, USE.NAMES = TRUE)
   }
@@ -793,18 +821,24 @@ compute_s2_paths <- function(pm,
         out_ext["tiles"]
       )]
       list(
-        "L1C" = names(s2_list_l1c)[
-          lapply(tiles_basenames_av[safe_dt_av$level=="1C"],
-                 function(x){grep(x,unlist(new_paths[["tiles"]]))} %>% length() > 0) %>%
-            unlist()
-          ] %>%
-          file.path(pm$path_l1c,.),
-        "L2A" = names(s2_list_l2a)[
-          lapply(tiles_basenames_av[safe_dt_av$level=="2A"],
-                 function(x){grep(x,unlist(new_paths[["tiles"]]))} %>% length() > 0) %>%
-            unlist()
-          ] %>%
-          file.path(pm$path_l2a,.)
+        "L1C" = file.path(
+          pm$path_l1c,
+          names(s2_list_l1c)[unlist(
+            lapply(
+              tiles_basenames_av[safe_dt_av$level=="1C"],
+              function(x){length(grep(x,unlist(new_paths[["tiles"]]))) > 0}
+            )
+          )]
+        ),
+        "L2A" = file.path(
+          pm$path_l2a,
+          names(s2_list_l2a)[unlist(
+            lapply(
+              tiles_basenames_av[safe_dt_av$level=="2A"],
+              function(x){length(grep(x,unlist(new_paths[["tiles"]]))) > 0}
+            )
+          )]
+        )
       )
     }
   }
@@ -816,6 +850,7 @@ compute_s2_paths <- function(pm,
   attr(outnames, "out_format") <- out_format
   attr(outnames, "which_dep") <- output_dep
   attr(outnames, "paths") <- paths
+  attr(outnames, "paths_istemp") <- paths_istemp
   outnames
   
 }

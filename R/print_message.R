@@ -18,28 +18,61 @@
 #'  Intentionally, no default value is defined.
 #' @param sep (optional) character used to separate input values
 #'  (default is nothing).
-#' @param date Logical value: set TRUE to place the date before the message
-#'  (useful for logs or time consuming operations); default is FALSE.
+#' @param date Logical value: set `TRUE` to place the date before the message
+#'  and after the prefix (this is useful for logs or time consuming operations); 
+#'  default is FALSE.
 #' @param date_format Format of the date (see \code{\link[base]{strftime}})
 #'  for the definition of the format). The default format is
 #'  `'\%Y-\%m-\%d \%H:\%M:\%S'`.
+#' @param width Positive integer: target column for wrapping lines in the output
+#'  (set to `Inf` for no wrapping).
+#' @param indent Non-negative integer: indentation of the first line in a paragraph
+#'  It can be also a logical: in this case, if TRUE (default) the value
+#'  is optimised in order to align first line with the followings.
+#' @param exdent Non-negative integer: indentation of subsequent lines in paragraphs.
+#'  It can be also a logical: in this case, if TRUE (default) the value
+#'  is optimised in order to align lines with the first line.
+#' @param prefix Character: prefix for each line except the first.
+#' @param initial Character: prefix for the first line.
 #' @return Message (in the defined format).
 #'
-#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 
-print_message <- function(..., type, sep="", date=FALSE, date_format="") {
-  message_string <- paste0(if (date) {
-    paste0("[",strftime(Sys.time(), format=date_format),"] ")
-  }, paste(c(...), collapse=sep))
+print_message <- function(
+  ..., 
+  type, 
+  sep = "", 
+  date = FALSE, 
+  date_format = "",
+  width = 0.9 * getOption("width"),
+  indent = TRUE, exdent = TRUE,
+  prefix = "", initial = prefix
+) {
+
+  if (date == TRUE) {
+    initial <- paste0(initial, "[",strftime(Sys.time(), format=date_format),"] ")
+  }
+  if (all(is.logical(exdent), exdent)) {
+    exdent <- max(0, nchar(initial) - nchar(prefix))
+  }
+  if (all(is.logical(indent), indent)) {
+    indent <- max(0, nchar(prefix) - nchar(initial))
+  }
+  message_string <- strwrap(
+    unlist(strsplit(paste(c(...), collapse=sep),"\n")),
+    width = width, 
+    indent = indent, exdent = exdent, 
+    prefix = prefix, initial = initial
+  )
   switch(
     type,
-    message = message(message_string),
+    message = message(paste(message_string, collapse = "\n")),
     string = message_string,
-    cat = cat(message_string,"\n",sep=""),
-    error = stop(message_string, call.=FALSE),
-    warning = warning(message_string, call.=FALSE),
-    waiting = invisible(readline(message_string)),
+    cat = cat(message_string, sep="\n"),
+    error = stop(paste0("\n",paste0(message_string, collapse = "\n")), call.=FALSE),
+    warning = warning(paste(message_string, collapse = "\n"), call.=FALSE),
+    waiting = {cat(message_string, sep="\n"); readline(prompt = "... ")},
     stop(paste0("Type '",type,"' not yet supported."))
   )
 }

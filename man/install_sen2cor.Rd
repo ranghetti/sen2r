@@ -5,24 +5,25 @@
 \alias{link_sen2cor}
 \title{Download and install (or link) Sen2Cor}
 \usage{
-install_sen2cor(sen2cor_dir, version = "2.5.5", force = FALSE)
+install_sen2cor(sen2cor_dir = NA, version = "2.5.5", force = FALSE)
 
 link_sen2cor(sen2cor_dir)
 }
 \arguments{
-\item{sen2cor_dir}{Path where sen2cor is being installed or searched.}
+\item{sen2cor_dir}{Path where sen2cor will be installed or searched
+(by default it is a subdirectory \code{"sen2cor"} of the default sen2r directory).}
 
 \item{version}{(optional) Character: Sen2Cor version (one among
 '2.5.5' - default - and '2.8.0').}
 
-\item{force}{(optional) Logical: if TRUE, install even if it is already
-installed (default is FALSE).}
+\item{force}{(optional) Logical: if TRUE, installs sen2cor even if it is already
+found in sen2cor_dir (default is FALSE).}
 }
 \value{
 NULL (the function is called for its side effects)
 }
 \description{
-\code{\link[=install_sen2cor]{install_sen2cor()}} downloads and installs standalone version of
+\code{\link[=install_sen2cor]{install_sen2cor()}} downloads and installs a standalone version of
 \href{http://step.esa.int/main/third-party-plugins-2/sen2cor}{Sen2Cor}.
 
 \code{link_sen2cor()} links an existing standalone version of

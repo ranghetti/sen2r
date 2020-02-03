@@ -14,6 +14,7 @@ s2_calcindices(
   subdirs = NA,
   tmpdir = NA,
   compress = "DEFLATE",
+  bigtiff = FALSE,
   dataType = "Int16",
   scaleFactor = NA,
   proc_mode = "raster",
@@ -71,6 +72,10 @@ created in case \code{format} is \code{"VRT"}.}
 \item{compress}{(optional) In the case a GTiff format is
 present, the compression indicated with this parameter is used.}
 
+\item{bigtiff}{(optional) Logical: if TRUE, the creation of a BigTIFF is
+forced (default is FALSE).
+This option is used only in the case a GTiff format was chosen.}
+
 \item{dataType}{(optional) Numeric datatype of the output rasters.
 if "Float32" or "Float64" is chosen, numeric values are not rescaled;
 if \code{"Int16"} (default) or \code{"UInt16"}, values are multiplicated by \code{scaleFactor} argument;
@@ -85,11 +90,17 @@ datatype is chosen (default values are 10000 for \code{"Int16"} and \code{"UInt1
 
 \item{proc_mode}{(optional) Character: if \code{"gdal_calc"},
 \code{gdal_calc} routines are used to compute indices;
-if \code{"raster"} (default), R functions are instead used.
-\strong{Note}: there is a difference in which the two modes manage values out
+if \code{"raster"} (default) or \code{"stars"}, R functions are instead used
+(using respectively \code{raster} or \code{stars} routines).
+\strong{Notes}:
+\enumerate{
+\item there is a difference in which the two modes manage values out
 of ranges (e.g. -32768 to 32767 in Int16 and 0 to 255 in Byte):
-\code{"raster"} mode set these values to NA, \code{"gdal_calc"} mode clip them to the
-minimum/maximum values.}
+\code{"raster"} and \code{"stars"} modes set these values to NA,
+\code{"gdal_calc"} mode clip them to the minimum/maximum values;
+\item \code{proc_mode = "stars"} is experimental (the performance of this mode
+must be optimised).
+}}
 
 \item{parallel}{(optional) Logical: if TRUE, the function is run using parallel
 processing, to speed-up the computation for large rasters.
@@ -141,5 +152,5 @@ par(mar = rep(2/3,4)); image(stars::read_stars(ex_out))
 par(oldpar)
 }
 \author{
-Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
+Luigi Ranghetti, phD (2020) \email{luigi@ranghetti.info}
 }

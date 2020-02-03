@@ -120,7 +120,10 @@ testthat::test_that(
         path_subdirs = FALSE,
         overwrite = TRUE
       ),
-      regexp = "[Bb]oth native and custom resolution were provided" # FIXME 
+      regexp = gsub(
+        " ", "[ \n]",
+        "[Bb]oth native and custom resolution were provided"
+      )
     )
     expect_true(all(file.exists(c(
       exp_outpath_3,
@@ -320,7 +323,7 @@ testthat::test_that(
     # expect error on sen2r metadata with unstandard name
     exp_meta_s <- testthat::expect_error(
       sen2r_getElements(exp_outpath_4b),
-      regexp = "not recognised"
+      regexp = "not[ \n]recognised"
     )
     
     # test on raster values
@@ -371,7 +374,7 @@ testthat::test_that(
     # tests on sen2r metadata
     exp_meta_s <- testthat::expect_error(
       sen2r_getElements(test1),
-      regexp = "not recognised"
+      regexp = "not[ \n]recognised"
     )
     
   }
@@ -483,7 +486,7 @@ testthat::test_that(
       }
     )
     testthat::expect_true(any(
-      test4_out == 1,
+      test4_out == 0,
       grepl("Discarded datum unknown in CRS definition", test4_out)
     ))
     

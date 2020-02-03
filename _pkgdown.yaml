@@ -44,6 +44,7 @@ reference:
       - '`install_sen2cor`'
       - '`install_aria2`'
       - '`check_gdal`'
+      - '`set_gipp`'
   - title: Accessory functions
     desc: ~
     contents:
@@ -55,7 +56,6 @@ reference:
     desc: ~
       - '`expand_path`'
       - '`comsub`'
-      - '`projname`'
       - '`abs2rel`'
       - '`gdal_abs2rel`'
       - '`mountpoint`'

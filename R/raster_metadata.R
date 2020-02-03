@@ -13,7 +13,7 @@
 #' @export
 #' @import data.table
 #' @importFrom stars read_stars st_dimensions
-#' @importFrom sf st_bbox st_crs st_as_text
+#' @importFrom sf st_bbox st_crs st_as_text gdal_utils
 #' @importFrom methods is
 #' @examples
 #' # Define product names
@@ -80,8 +80,9 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
     }
     if (meta_gdalinfo) {
       metadata_raw <- suppressWarnings(suppressMessages(try(
-        sf::gdal_utils("info", raster_path, quiet = TRUE) %>%
-          strsplit("\n") %>% unlist() %>% trimws(),
+        trimws(unlist(
+          strsplit(gdal_utils("info", raster_path, quiet = TRUE), "\n")
+        )),
         silent = TRUE
       )))
     }
@@ -131,26 +132,21 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
         out_list[[i]][["proj"]] <- ref_proj
       }
       if ("unit" %in% meta) {
-        out_list[[i]][["unit"]] <- if (sf::st_is_longlat(ref_proj)) {
-          "degree"
-        } else if (grepl("\\+units\\=m", ref_proj$proj4string)) {
-          "Meter"
-        } else {
-          as.character(projpar(ref_proj, "unit"))
-          # this option always works, but returning a Python error on Windows;
-          # the workaround to avoid using projpar() has the effect to bypass 
-          # the printed error.
-        }
+        out_list[[i]][["unit"]] <- as.character(projpar(ref_proj, "unit"))
       }
       
       if ("outformat" %in% meta) {
-        out_list[[i]][["outformat"]] <- metadata_raw[grepl("Driver:", metadata_raw)] %>%
-          gsub("Driver: ?([A-Za-z0-9_]+)/.*$", "\\1", .)
+        out_list[[i]][["outformat"]] <- gsub(
+          "Driver: ?([A-Za-z0-9_]+)/.*$", "\\1",
+          metadata_raw[grepl("Driver:", metadata_raw)]
+        )
       }
       
       if ("type" %in% meta) {
-        out_list[[i]][["type"]] <- metadata_raw[grepl("Band [0-9]+.+Type ?=", metadata_raw)][1] %>%
-          gsub("Band [0-9]+.+Type ?= ?([A-Za-z0-9]+),.*$", "\\1", .)
+        out_list[[i]][["type"]] <- gsub(
+          "Band [0-9]+.+Type ?= ?([A-Za-z0-9]+),.*$", "\\1",
+          metadata_raw[grepl("Band [0-9]+.+Type ?=", metadata_raw)][1]
+        )
       }
       
       # if (format %in% c("data.frame", "data.table")) {

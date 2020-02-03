@@ -7,15 +7,8 @@
 init_python()
 }
 \value{
-A list with the required modules.
+NULL (the function is called for its side effects)
 }
 \description{
-Internal function to check that the python dependencies
-required in the package are present; if so, load the base modules.
-}
-\note{
-License: GPL 3.0
-}
-\author{
-Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
+Deprecated function.
 }

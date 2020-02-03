@@ -10,10 +10,10 @@
 #'  the format of every input filename.
 #' @param r Resampling_method (`"near"`|`"bilinear"`|`"cubic"`|`"cubicspline"`|
 #' `"lanczos"`|`"average"`|`"mode"`|`"max"`|`"min"`|`"med"`|`"q1"`|`"q3"``).
+#' @param tmpdir (optional) Path where intermediate files (.prj) will be created.
+#'  Default is a temporary directory.
 #' @return NULL (the function is called for its side effects)
-#' @importFrom methods as
-#' @importFrom reticulate py_to_r
-#' @importFrom sf st_as_sfc
+#' @importFrom sf st_as_sfc st_bbox st_transform
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @examples
@@ -40,20 +40,23 @@
 #' par(oldpar)
 #' }
 
-gdalwarp_grid <- function(srcfiles,
-                          dstfiles,
-                          ref,
-                          of = NULL,
-                          r = NULL) {
-  
-  # import python modules
-  py <- init_python()
+gdalwarp_grid <- function(
+  srcfiles,
+  dstfiles,
+  ref,
+  of = NULL,
+  r = NULL,
+  tmpdir = tempdir()
+) {
   
   # read ref parameters
   ref_metadata <- raster_metadata(ref, c("res", "bbox", "proj"), format = "list")[[1]]
   ref_res <- ref_metadata$res
   ref_min <- ref_metadata$bbox[c("xmin","ymin")]
   ref_proj <- ref_metadata$proj
+  
+  # check tmpdir
+  dir.create(tmpdir, showWarnings = FALSE, recursive = FALSE)
   
   # check consistency between inputs and outputs
   if (length(srcfiles) != length(dstfiles)) {
@@ -69,16 +72,19 @@ gdalwarp_grid <- function(srcfiles,
   
   # check output format
   if (!is.null(of)) {
-    sel_driver <- py$gdal$GetDriverByName(of)
-    if (is.null(py_to_r(sel_driver))) {
+    local_ofs <- gsub(
+      "^ *([^ ]+) .+$", "\\1", 
+      system(paste0(load_binpaths()$gdalinfo," --formats"), intern = TRUE)
+    )
+    if (!of %in% local_ofs) {
       print_message(
         type="error",
         "Format \"",of,"\" is not recognised; ",
         "please use one of the formats supported by your GDAL installation.\n\n",
         "To list them, use the following command:\n",
-        "gdalUtils::gdalinfo(formats=TRUE)\n\n",
+        "\u00A0\u00A0gdalUtils::gdalinfo(formats=TRUE)\n\n",
         "To search for a specific format, use:\n",
-        "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
+        "\u00A0\u00A0gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
     }
   }
   
@@ -103,13 +109,32 @@ gdalwarp_grid <- function(srcfiles,
     # allineate out_extent to ref grid
     out_bbox_mod <- ceiling((out_bbox - ref_min) / ref_res) * ref_res + ref_min
     
+    # extract out CRS string
+    sel_proj_string <- if (!is.na(sel_proj$epsg)) {
+      paste0("EPSG:",sel_proj$epsg)
+    } else {
+      writeLines(
+        st_as_text_2(sel_proj),
+        sel_proj_path <- tempfile(pattern = "sel_proj_", tmpdir = tmpdir, fileext = ".prj")
+      )
+      sel_proj_path
+    }
+    ref_proj_string <- if (!is.na(ref_proj$epsg)) {
+      paste0("EPSG:",ref_proj$epsg)
+    } else {
+      writeLines(
+        st_as_text_2(ref_proj),
+        ref_proj_path <- tempfile(pattern = "ref_proj_", tmpdir = tmpdir, fileext = ".prj")
+      )
+      ref_proj_path
+    }
     
     # warp
     system(
       paste0(
         load_binpaths()$gdalwarp," ",
-        "-s_srs \"",sel_proj$proj4string,"\" ",
-        "-t_srs \"",ref_proj$proj4string,"\" ",
+        "-s_srs \"",sel_proj_string,"\" ",
+        "-t_srs \"",ref_proj_string,"\" ",
         "-te ",paste(out_bbox_mod, collapse = " ")," ",
         "-tr ",paste(ref_res, collapse = " ")," ",
         if (!is.null(r)) {paste0("-r ",r," ")},
@@ -118,7 +143,7 @@ gdalwarp_grid <- function(srcfiles,
         "\"",dstfile,"\""),
       intern = Sys.info()["sysname"] == "Windows"
     )
-
+    
   }
   
 }

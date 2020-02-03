@@ -73,15 +73,24 @@ testthat::test_that(
   "Expect error with wrong orbit", {
     testthat::expect_error(
       dop_out <- s2_dop(140:150),
-      regexp = "[Pp]arameter 's2_orbits' contains invalid Sentinel-2 orbits"
+      regexp = gsub(
+        " ", "[ \n]",
+        "[Pp]arameter 's2_orbits' contains invalid Sentinel-2 orbits"
+      )
     )
     testthat::expect_error(
       dop_out <- s2_dop("32TNR"),
-      regexp = "[Pp]arameter 's2_orbits' contains invalid Sentinel-2 orbits"
+      regexp = gsub(
+        " ", "[ \n]",
+        "[Pp]arameter 's2_orbits' contains invalid Sentinel-2 orbits"
+      )
     )
     testthat::expect_error(
       dop_out <- s2_dop(Sys.Date()),
-      regexp = "[Pp]arameter 's2_orbits' contains invalid Sentinel-2 orbits"
+      regexp = gsub(
+        " ", "[ \n]",
+        "[Pp]arameter 's2_orbits' contains invalid Sentinel-2 orbits"
+      )
     )
   }
 )
@@ -90,7 +99,10 @@ testthat::test_that(
   "Expect error with wrong time window", {
     testthat::expect_error(
       dop_out <- s2_dop(timewindow = "yesterday"),
-      regexp = "[Pp]arameter 'timewindow' is not a recognised string"
+      regexp = gsub(
+        " ", "[ \n]",
+        "[Pp]arameter 'timewindow' is not a recognised string"
+      )
     )
   }
 )
@@ -99,7 +111,10 @@ testthat::test_that(
   "Expect error with wrong sensor", {
     testthat::expect_error(
       dop_out <- s2_dop(mission = c("2A", "2B", "2C")),
-      regexp = "[Pp]arameter 'mission' cannot contain values different from"
+      regexp = gsub(
+        " ", "[ \n]",
+        "[Pp]arameter 'mission' cannot contain values different from"
+      )
     )
   }
 )

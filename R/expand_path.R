@@ -5,7 +5,6 @@
 #'  Useful for functions which accept more than one path as arguments,
 #'  in which one of them contains the absolute position, and the others
 #'  do not.
-#' @param ... `R` objects which are concatenated.
 #' @param path The path name (`character`) to check ad eventually expand.
 #' @param parent The parent directory (`character`) to use if `path` is
 #'  relative (default value: the working directory).
@@ -18,7 +17,6 @@
 #'  appended.
 #' @return The path eventually expanded.
 #' @export
-#' @importFrom magrittr "%>%"
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 
@@ -46,8 +44,7 @@ expand_path <- function(path, parent=getwd(), silent=TRUE, normalize=TRUE) {
     if (!is.na(silent) & silent==FALSE) {
       print_message(type="message", "Path '",path,"' is already absolute.")
     }
-    do.call(expand_fun, list(path)) %>%
-      return()
+    return(do.call(expand_fun, list(path)))
     
   } else {
     
@@ -58,11 +55,9 @@ expand_path <- function(path, parent=getwd(), silent=TRUE, normalize=TRUE) {
         gsub("/$","",parent),"' is used as prefix.")
     }
     
-    gsub("/$","",parent) %>%
-      file.path(path) %>%
-      list() %>%
-      do.call(expand_fun, .) %>%
-      return()
+    return(
+      do.call(expand_fun, list(file.path(gsub("/$","",parent), path)))
+    )
     
   }
   
@@ -86,7 +81,7 @@ normalize_path <- function(path, ...) {
   
   if (Sys.info()["sysname"] == "Windows") {
     utils::shortPathName(normalizePath(gsub("\\\\$", "", path), ...))
-      
+    
   } else {
     normalizePath(path, ...)
   }

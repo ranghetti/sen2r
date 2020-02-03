@@ -18,7 +18,6 @@
 #' and password edits on old credentials are not immediately recognised.
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
-#' @importFrom reticulate py_to_r
 #' @importFrom shiny a actionButton icon modalButton modalDialog passwordInput tagList textInput
 #' @importFrom shinyFiles shinyFileSave
 #' 
@@ -45,8 +44,7 @@ read_scihub_login <- function(apihub_path=NA) {
   
   # return user and password
   if (file.exists(apihub_path)) {
-    readLines(apihub_path) %>%
-      strsplit(" ") %>% sapply(c) %>% t()
+    t(sapply(strsplit(readLines(apihub_path), " "), c))
   } else {
     # if apihub does not exists, return an error
     print_message(
@@ -122,10 +120,10 @@ write_scihub_login <- function(username, password,
       print_message(
         type = "error",
         "The provided credentials are not valid, ",
-        "so they will not be saved.\n",
+        "so they will not be saved. ",
         "Please notice that new/recently updated SciHub credentials are recognised by API Hub ",
-        "with a delay of about one week.\n",
-        "For this reason, newly created SciHub credentials can not immediately be used by `sen2r`", 
+        "with a delay of about one week. ",
+        "For this reason, newly created SciHub credentials can not immediately be used by sen2r", 
         "and password edits on old credentials are not immediately recognised."
       )
     }

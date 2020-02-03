@@ -67,7 +67,7 @@ check_sen2r_deps <- function() {
         )}
       )),
       span(style="display:inline-block;vertical-align:center;padding-top:5px;",
-           actionButton("check_gdal", "Check GDAL", width=200),
+           actionButton("where_check_gdal", "Check GDAL", width=200),
            "\u2000"),
       span(style="display:inline-block;vertical-align:center;",
            htmlOutput("check_gdal_icon")),
@@ -175,7 +175,8 @@ check_sen2r_deps <- function() {
             p(style="text-align:center;font-size:500%;color:red;",
               icon("times-circle")),
             p(HTML(
-              "GDAL needs to be installed. To do it:<ol>",
+              "GDAL needs to be installed or searched in a different directory.",
+              "To install it:<ol>",
               "<li>download the OSGeo4W installer using the button below;</li>",
               "<li>when the file will be automatically opened,",
               "give the administrator rules when required;</li>",
@@ -193,8 +194,8 @@ check_sen2r_deps <- function() {
           div(
             p(style="text-align:center;font-size:500%;color:red;",
               icon("times-circle")),
-            p("GDAL needs to be installed.",
-              "To do it, install the package \"python-gdal\",",
+            p("GDAL needs to be installed or searched in a different directory.",
+              "To install it, install the package \"python-gdal\",",
               "then repeat this check."),
             hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
             div(style="text-align:right;",
@@ -225,8 +226,70 @@ check_sen2r_deps <- function() {
     })
     
     
+    # ask where searching GDAL before checking
+    observeEvent(input$where_check_gdal, {
+      showModal(modalDialog(
+        title = "Check GDAL",
+        size = "s",
+        radioButtons(
+          "path_gdal_isauto", NULL,
+          choices = c("Search GDAL in a default path" = TRUE,
+                      "Specify where GDAL should be searched" = FALSE),
+          selected = TRUE, width = "100%"
+        ),
+        conditionalPanel(
+          condition = "input.path_gdal_isauto == 'FALSE'",
+          div(
+            p("Specify the path:"),
+            div(div(style="display:inline-block;vertical-align:top;width:50pt;",
+                    shinyDirButton("path_gdalman_sel", "Select", "Specify directory in which GDAL should be searched")),
+                div(style="display:inline-block;vertical-align:top;width:180px;",
+                    textInput("path_gdalman_textin", NULL, ""))),
+            div(style="height:20px;vertical-aling:top;",
+                htmlOutput("path_gdalman_errormess"))
+          )
+        ),
+        easyClose = FALSE,
+        footer = div(
+          disabled(actionButton("check_gdal_button", strong("\u2000Check"), icon=icon("check"))),
+          modalButton("\u2000Cancel", icon = icon("ban"))
+        )
+      ))
+    })
+    
+    # check the gdal path
+    # observeEvent(input$path_gdalman_textin, {
+    #   path_gdalman_errormess <- path_check(
+    #     input$path_gdalman_textin,
+    #     mustbe_empty = FALSE, 
+    #     mustbe_writable = FALSE
+    #   )
+    #   output$path_gdalman_errormess <- path_gdalman_errormess
+    # })
+    observeEvent(c(input$path_gdalman_textin, input$path_gdal_isauto), {
+      path_gdalman_errormess <- path_check(
+        input$path_gdalman_textin,
+        mustbe_empty = FALSE, 
+        mustbe_writable = FALSE
+      )
+      output$path_gdalman_errormess <- path_gdalman_errormess
+      if (any(
+        input$path_gdal_isauto == TRUE, 
+        TRUE %in% attr(path_gdalman_errormess, "isvalid")
+      )) {
+        enable("check_gdal_button")
+      } else {
+        disable("check_gdal_button")
+      }
+    })
+    shinyDirChoose(input, "path_gdalman_sel", roots = volumes)
+    observeEvent(input$path_gdalman_sel, {
+      path_gdalman_string <- parseDirPath(volumes, input$path_gdalman_sel)
+      updateTextInput(session, "path_gdalman_textin", value = path_gdalman_string)
+    })
+
     # do the check when button is pressed
-    observeEvent(input$check_gdal, {
+    observeEvent(input$check_gdal_button, {
       
       # reset check value
       rv$check_gdal_isvalid <- NA # FIXME not working
@@ -246,7 +309,14 @@ check_sen2r_deps <- function() {
       # do the check
       withCallingHandlers({
         shinyjs::html("check_gdal_outmessages", "")
-        rv$check_gdal_isvalid <- check_gdal(abort = FALSE, force = TRUE)
+        rv$check_gdal_isvalid <- check_gdal(
+          gdal_path = if (input$path_gdalman_textin == "") {
+            NULL
+          } else {
+            input$path_gdalman_textin
+          },
+          abort = FALSE, force = TRUE
+        )
       },
       message = function(m) {
         shinyjs::html(id = "check_gdal_outmessages", html = m$message, add = TRUE)
@@ -600,7 +670,10 @@ check_sen2r_deps <- function() {
           align = "left",
           p(style="color:red;text-align:center;font-size:500%;",
             icon("times-circle")),
-          p("Sen2Cor needs to be linked to sen2r, or downloaded if missing."),
+          div(
+            style = "margin-bottom: 1em;",
+            p("Sen2Cor needs to be linked to sen2r, or downloaded if missing.")
+          ),
           radioButtons(
             "sen2cor_link_or_install", NULL,
             c("Install a new Sen2Cor environment" = "install",
@@ -614,8 +687,10 @@ check_sen2r_deps <- function() {
                 "in which installing it:"),
               div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                       shinyDirButton("path_newsen2cor_sel", "Select", "Specify directory in which installing Sen2Cor")),
-                  div(style="display:inline-block;vertical-align:top;width:180px;",
-                      textInput("path_newsen2cor_textin", NULL, ""))),
+                  div(style="display:inline-block;vertical-align:top;width:480px;",
+                      textInput("path_newsen2cor_textin", NULL, normalize_path(
+                        file.path(dirname(attr(binpaths(), "path")), "sen2cor"), mustWork = FALSE
+                      )))),
               div(style="height:20px;vertical-aling:top;",
                   htmlOutput("path_newsen2cor_errormess")),
               radioButtons(
@@ -629,11 +704,7 @@ check_sen2r_deps <- function() {
                 "it only works for SAFE products version >= 14.2 and",
                 "some problems were encountered running it on Windows;",
                 "it is recommended to use Sen2Cor 2.5.5."
-              ))),
-              hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-              div(style="text-align:right;",
-                  disabled(actionButton("install_sen2cor_button", strong("\u2000Download"), icon=icon("download"))),
-                  modalButton("\u2000Cancel", icon = icon("ban")))
+              )))
             )
           ),
           conditionalPanel(
@@ -643,15 +714,33 @@ check_sen2r_deps <- function() {
                 "in which Sen2Cor is currently installed:"),
               div(div(style="display:inline-block;vertical-align:top;width:50pt;",
                       shinyDirButton("path_exisen2cor_sel", "Select", "Specify directory in which Sen2Cor is installed")),
-                  div(style="display:inline-block;vertical-align:top;width:180px;",
-                      textInput("path_exisen2cor_textin", NULL, ""))),
+                  div(style="display:inline-block;vertical-align:top;width:480px;",
+                      textInput("path_exisen2cor_textin", NULL, normalize_path(
+                        file.path(dirname(attr(binpaths(), "path")), "sen2cor"), mustWork = FALSE
+                      )))),
               div(style="height:20px;vertical-aling:top;",
-                  htmlOutput("path_exisen2cor_errormess")),
-              hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
-              div(style="text-align:right;",
-                  disabled(actionButton("link_sen2cor_button", strong("\u2000Ok"), icon=icon("check"))),
-                  modalButton("\u2000Cancel", icon = icon("ban")))
+                  htmlOutput("path_exisen2cor_errormess"))
             )
+          ),
+          # radioButtons(
+          #   "sen2cor_use_dem", "Use DEM for topographic correction?",
+          #   c("Yes (as done in ESA Hub Level-2 products)" = TRUE,
+          #     "No (default Sen2Cor setting)" = FALSE,
+          #     "Use existing choice (Sen2Cor reinstallation / link)" = NA),
+          #   selected = TRUE, width = "100%"
+          # ),
+          hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+          conditionalPanel(
+            condition = "input.sen2cor_link_or_install == 'install'",
+            div(style="text-align:right;",
+                disabled(actionButton("install_sen2cor_button", strong("\u2000Download"), icon=icon("download"))),
+                modalButton("\u2000Cancel", icon = icon("ban")))
+          ),
+          conditionalPanel(
+            condition = "input.sen2cor_link_or_install == 'link'",
+            div(style="text-align:right;",
+                disabled(actionButton("link_sen2cor_button", strong("\u2000Ok"), icon=icon("check"))),
+                modalButton("\u2000Cancel", icon = icon("ban")))
           )
         )
       }
@@ -683,11 +772,7 @@ check_sen2r_deps <- function() {
         mustbe_empty = FALSE
       )
       if (TRUE %in% attr(path_exisen2cor_errormess, "isvalid")) {
-        exisen2cor_exists <- file.exists(file.path(
-          input$path_exisen2cor_textin, "bin",
-          if (Sys.info()["sysname"] == "Windows") {"L2A_Process.bat"} else {"L2A_Process"}
-        ))
-        if (exisen2cor_exists) {
+        if (.sen2cor_exists(input$path_exisen2cor_textin)) {
           output$path_exisen2cor_errormess <- path_exisen2cor_errormess
           enable("link_sen2cor_button")
         } else {
@@ -712,7 +797,7 @@ check_sen2r_deps <- function() {
     # build the modalDialog
     check_sen2cor_modal <- modalDialog(
       title = "Sen2Cor check",
-      size = "s",
+      size = "m",
       uiOutput("check_sen2cor_message"),
       easyClose = FALSE,
       footer = NULL

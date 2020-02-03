@@ -33,6 +33,9 @@
 #'  (or "GTiff" in case of VRT input images).
 #' @param compress (optional) In the case a GTiff format is
 #'  present, the compression indicated with this parameter is used.
+#' @param bigtiff (optional) Logical: if TRUE, the creation of a BigTIFF is
+#'  forced (default is FALSE).
+#'  This option is used only in the case a GTiff format was chosen. 
 #' @param tmpdir (optional) Path where intermediate files (VRT) will be created.
 #'  Default is a temporary directory.
 #'  If `tmpdir` is a non-empty folder, a random subdirectory will be used.
@@ -93,6 +96,7 @@ s2_rgb <- function(infiles,
                    subdirs=NA,
                    format=NA,
                    compress="DEFLATE",
+                   bigtiff=FALSE,
                    tmpdir=NA,
                    rmtmp=TRUE,
                    parallel=TRUE,
@@ -275,6 +279,7 @@ s2_rgb <- function(infiles,
           system(
             paste0(
               binpaths$gdal_translate," -of GTiff -co COMPRESS=LZW ",
+              if (bigtiff==TRUE) {"-co BIGTIFF=YES "},
               "-b ",paste(sel_nbands, collapse=" -b ")," ",
               "\"",sel_infile_path,"\" ",
               "\"",filterbands_path,"\""
@@ -303,8 +308,9 @@ s2_rgb <- function(infiles,
             out_file = out_path,
             minval = sel_scaleRange[,1], 
             maxval = sel_scaleRange[,2],
-            format=sel_format,
-            compress="90",
+            format = sel_format,
+            compress = compress,
+            bigtiff = bigtiff,
             tmpdir = tmpdir
           )
           

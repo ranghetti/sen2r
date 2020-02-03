@@ -40,6 +40,9 @@
 #'  created in case `format` is `"VRT"`.
 #' @param compress (optional) In the case a GTiff format is
 #'  present, the compression indicated with this parameter is used.
+#' @param bigtiff (optional) Logical: if TRUE, the creation of a BigTIFF is
+#'  forced (default is FALSE).
+#'  This option is used only in the case a GTiff format was chosen. 
 #' @param dataType (optional) Numeric datatype of the output rasters.
 #'  if "Float32" or "Float64" is chosen, numeric values are not rescaled;
 #'  if `"Int16"` (default) or `"UInt16"`, values are multiplicated by `scaleFactor` argument;
@@ -52,11 +55,15 @@
 #'  `"UInt32"` types, negative values will be truncated to 0.
 #' @param proc_mode (optional) Character: if `"gdal_calc"`,
 #'  `gdal_calc` routines are used to compute indices;
-#'  if `"raster"` (default), R functions are instead used.
-#'  **Note**: there is a difference in which the two modes manage values out
-#'  of ranges (e.g. -32768 to 32767 in Int16 and 0 to 255 in Byte):
-#'  `"raster"` mode set these values to NA, `"gdal_calc"` mode clip them to the
-#'  minimum/maximum values.
+#'  if `"raster"` (default) or `"stars"`, R functions are instead used
+#'  (using respectively `raster` or `stars` routines).
+#'  **Notes**: 
+#'  1. there is a difference in which the two modes manage values out
+#'      of ranges (e.g. -32768 to 32767 in Int16 and 0 to 255 in Byte):
+#'      `"raster"` and `"stars"` modes set these values to NA, 
+#'      `"gdal_calc"` mode clip them to the minimum/maximum values;
+#'  2. `proc_mode = "stars"` is experimental (the performance of this mode
+#'      must be optimised). 
 #' @param parallel (optional) Logical: if TRUE, the function is run using parallel
 #'  processing, to speed-up the computation for large rasters.
 #'  The number of cores is automatically determined; specifying it is also
@@ -77,8 +84,8 @@
 #' @importFrom jsonlite fromJSON
 #' @import data.table
 #' @importFrom raster blockSize brick getValues raster writeStart writeStop writeValues
-#' @importFrom magrittr "%>%"
-#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @importFrom stars read_stars write_stars
+#' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @examples
 #' # Define file names
@@ -102,40 +109,41 @@
 #' par(mar = rep(2/3,4)); image(stars::read_stars(ex_out))
 #' par(oldpar)
 
-s2_calcindices <- function(infiles,
-                           indices,
-                           outdir = ".",
-                           parameters = NULL,
-                           source = c("TOA","BOA"),
-                           format = NA,
-                           subdirs = NA,
-                           tmpdir = NA,
-                           compress = "DEFLATE",
-                           dataType = "Int16",
-                           scaleFactor = NA,
-                           proc_mode = "raster",
-                           parallel = FALSE,
-                           overwrite = FALSE,
-                           .log_message = NA,
-                           .log_output = NA) {
+s2_calcindices <- function(
+  infiles,
+  indices,
+  outdir = ".",
+  parameters = NULL,
+  source = c("TOA","BOA"),
+  format = NA,
+  subdirs = NA,
+  tmpdir = NA,
+  compress = "DEFLATE",
+  bigtiff=FALSE,
+  dataType = "Int16",
+  scaleFactor = NA,
+  proc_mode = "raster",
+  parallel = FALSE,
+  overwrite = FALSE,
+  .log_message = NA,
+  .log_output = NA
+) {
   
   # to avoid NOTE on check
   prod_type <- . <- i <- NULL
   
   # Internal function 1
-  calcindex <- function(x,
-                        sel_formula,
-                        out_file,
-                        NAflag = -32768,
-                        sel_format = "GTiff",
-                        compress = "LZW",
-                        datatype = "INT2S",
-                        overwrite = FALSE,
-                        minrows = NULL) {
-    
-    # Internal function 2
-    power <- function(x,y) {x^y}
-    clip <- function(x,min,max) {(x+min+2*max+abs(x-min)-abs(x+min-2*max+abs(x-min)))/4}
+  calcindex_raster <- function(
+    x,
+    sel_formula,
+    out_file,
+    NAflag = -32768,
+    sel_format = "GTiff",
+    compress = "LZW",
+    datatype = "INT2S",
+    overwrite = FALSE,
+    minrows = NULL
+  ) {
     
     out <- raster(x)
     suppress_warnings(
@@ -144,7 +152,12 @@ s2_calcindices <- function(infiles,
         NAflag = NAflag,
         datatype = datatype,
         format = ifelse(sel_format=="VRT", "GTiff", sel_format),
-        if(sel_format %in% c("GTiff","VRT")){options = paste0("COMPRESS=",compress)},
+        if (sel_format %in% c("GTiff","VRT")) {
+          options = c(
+            paste0("COMPRESS=",compress),
+            if (bigtiff==TRUE) {"BIGTIFF=YES"}
+          )
+        },
         overwrite = overwrite
       ),
       "NOT UPDATED FOR PROJ >\\= 6"
@@ -152,7 +165,7 @@ s2_calcindices <- function(infiles,
     
     # x <- brick(infiles)
     if (is.null(minrows)) {
-      bs <- blockSize(out)
+      bs <- blockSize(out, n = 1)
     } else {
       bs <- blockSize(out, minrows = minrows)
     }
@@ -160,7 +173,9 @@ s2_calcindices <- function(infiles,
       message("Processing chunk ", i, " of ", bs$n)
       v <- getValues(x, row = bs$row[i], nrows = bs$nrows[i])
       if (grepl("^Float", dataType)) {
-        v <- apply(v, 2, as.numeric)
+        if (!is.numeric(v)) {
+          v <- apply(v, 2, as.numeric)
+        }
         v_out <- eval(parse(text = sel_formula))
       } else {
         v_out <- round(eval(parse(text = sel_formula)))
@@ -174,13 +189,48 @@ s2_calcindices <- function(infiles,
     NULL
   }
   
+  # Internal function 1
+  calcindex_stars <- function(
+    x,
+    sel_formula,
+    out_file,
+    NAflag = -32768,
+    sel_format = "GTiff",
+    compress = "LZW",
+    datatype = "Int16",
+    overwrite = FALSE
+  ) {
+    x_in <- read_stars(x, proxy = TRUE)
+    # x_out <- st_apply(x_in, c("x", "y"), function(v) {
+    #   eval(parse(text = sel_formula))
+    # })
+    x_out <- eval(parse(text = paste0("st_apply(x_in, c('x', 'y'), function(v) {",sel_formula,"})") ))
+    suppress_warnings(
+      write_stars(
+        x_out, out_file,
+        NA_value = NAflag,
+        type = dataType,
+        format = ifelse(sel_format=="VRT", "GTiff", sel_format),
+        options = c(
+          paste0("COMPRESS=",compress),
+          if (bigtiff==TRUE) {"BIGTIFF=YES"}
+        ),
+        overwrite = overwrite,
+        # chunk_size was set like using raster (half of the stars default)
+        chunk_size = c(dim(x_out)[1], floor(2.5e+07/2/dim(x_out)[1]))
+      ),
+      "NOT UPDATED FOR PROJ >\\= 6"
+    )
+    NULL
+  }
+  
   # Load GDAL paths
   binpaths <- if (proc_mode == "gdal_calc" | all(!is.na(format), format == "VRT")) {
     load_binpaths("gdal")
   } else {NULL}
   
   # Check proc_mode
-  if (!proc_mode %in% c("gdal_calc", "raster")) {
+  if (!proc_mode %in% c("gdal_calc", "raster", "stars")) {
     print_message(
       type = "warning",
       "proc_mode = \"",proc_mode,"\" is not recognised; ",
@@ -188,6 +238,17 @@ s2_calcindices <- function(infiles,
     )
     proc_mode <- "raster"
   }
+  
+  # create outdir if not existing (and dirname(outdir) exists)
+  suppressWarnings(outdir <- expand_path(outdir, parent=comsub(infiles,"/"), silent=TRUE))
+  if (!dir.exists(dirname(outdir))) {
+    print_message(
+      type = "error",
+      "The parent folder of 'outdir' (",outdir,") does not exist; ",
+      "please create it."
+    )
+  }
+  dir.create(outdir, recursive=FALSE, showWarnings=FALSE)
   
   # Compute n_cores
   n_cores <- if (is.numeric(parallel)) {
@@ -290,7 +351,7 @@ s2_calcindices <- function(infiles,
   
   outfiles <- foreach(
     i = seq_along(infiles),
-    .packages = c("raster","sen2r"),
+    .packages = c("raster","stars","sen2r"),
     .combine=c,
     .errorhandling="remove"
   ) %DO% {
@@ -371,15 +432,27 @@ s2_calcindices <- function(infiles,
         # Edit formula depending on proc_mode
         if (proc_mode == "gdal_calc") {
           for (sel_band in rev(seq_len(nrow(gdal_bands)))) {
-            sel_formula <- gsub(gdal_bands[sel_band,"band"],
-                                paste0("(",gdal_bands[sel_band,"letter"],".astype(float)/10000)"),
-                                sel_formula)
+            sel_formula <- gsub(
+              gdal_bands[sel_band,"band"],
+              paste0("(",gdal_bands[sel_band,"letter"],".astype(float)/10000)"),
+              sel_formula
+            )
           }
         } else if (proc_mode == "raster") {
           for (sel_band in rev(seq_len(nrow(gdal_bands)))) {
-            sel_formula <- gsub(gdal_bands[sel_band,"band"],
-                                paste0("(v[,",gdal_bands[sel_band,"number"],"]/10000)"),
-                                sel_formula)
+            sel_formula <- gsub(
+              gdal_bands[sel_band,"band"],
+              paste0("(v[,",gdal_bands[sel_band,"number"],"]/10000)"),
+              sel_formula
+            )
+          }
+        } else if (proc_mode == "stars") {
+          for (sel_band in rev(seq_len(nrow(gdal_bands)))) {
+            sel_formula <- gsub(
+              gdal_bands[sel_band,"band"],
+              paste0("(v[",gdal_bands[sel_band,"number"],"]/10000)"),
+              sel_formula
+            )
           }
         }
         
@@ -431,12 +504,13 @@ s2_calcindices <- function(infiles,
               "--format=\"",sel_format0,"\" ",
               if (overwrite==TRUE) {"--overwrite "},
               if (sel_format0=="GTiff") {paste0("--co=\"COMPRESS=",toupper(compress),"\" ")},
+              if (sel_format0=="GTiff" & bigtiff==TRUE) {paste0("--co=\"BIGTIFF=YES\" ")},
               "--calc=\"",sel_formula,"\""
             ),
             intern = Sys.info()["sysname"] == "Windows"
           )
         } else if (proc_mode == "raster") {
-          calcindex(
+          calcindex_raster(
             raster::brick(sel_infile),
             sel_formula,
             out_file = file.path(out_subdir0,sel_outfile0),
@@ -444,6 +518,17 @@ s2_calcindices <- function(infiles,
             sel_format = sel_format0,
             compress = compress,
             datatype = convert_datatype(dataType),
+            overwrite = overwrite
+          )
+        } else if (proc_mode == "stars") {
+          calcindex_stars(
+            sel_infile,
+            sel_formula,
+            out_file = file.path(out_subdir0,sel_outfile0),
+            NAflag = sel_nodata,
+            sel_format = sel_format0,
+            compress = compress,
+            datatype = dataType,
             overwrite = overwrite
           )
         }
@@ -496,3 +581,7 @@ s2_calcindices <- function(infiles,
   return(outfiles)
   
 }
+
+# Accessory functions to interpret NumPy functions power() and clip()
+power <- function(x,y) {x^y}
+clip <- function(x,min,max) {(x+min+2*max+abs(x-min)-abs(x+min-2*max+abs(x-min)))/4}

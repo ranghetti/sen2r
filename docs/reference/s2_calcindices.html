@@ -81,7 +81,7 @@ are physical rasters (no output VRT is allowed)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1.9012</span>
       </span>
     </div>
 
@@ -157,11 +157,25 @@ are physical rasters (no output VRT is allowed)." />
 are physical rasters (no output VRT is allowed).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>s2_calcindices</span>(<span class='no'>infiles</span>, <span class='no'>indices</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='kw'>parameters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>source</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"TOA"</span>, <span class='st'>"BOA"</span>), <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>, <span class='kw'>dataType</span> <span class='kw'>=</span> <span class='st'>"Int16"</span>, <span class='kw'>scaleFactor</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>proc_mode</span> <span class='kw'>=</span> <span class='st'>"raster"</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>.log_message</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>.log_output</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+    <pre class="usage"><span class='fu'>s2_calcindices</span>(
+  <span class='no'>infiles</span>,
+  <span class='no'>indices</span>,
+  <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"."</span>,
+  <span class='kw'>parameters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>source</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"TOA"</span>, <span class='st'>"BOA"</span>),
+  <span class='kw'>format</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>,
+  <span class='kw'>bigtiff</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>dataType</span> <span class='kw'>=</span> <span class='st'>"Int16"</span>,
+  <span class='kw'>scaleFactor</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>proc_mode</span> <span class='kw'>=</span> <span class='st'>"raster"</span>,
+  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>.log_message</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>.log_output</span> <span class='kw'>=</span> <span class='fl'>NA</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -202,8 +216,8 @@ If not specified, parameters are set to default values.</p></td>
     <tr>
       <th>source</th>
       <td><p>(optional) Vector with the products from which computing
-the indices. It can be "BOA", "TOA" or both (default). If both values
-are provided, indices are computed from the available products ("TOA"
+the indices. It can be <code>"BOA"</code>, <code>"TOA"</code> or both (default). If both values
+are provided, indices are computed from the available products (<code>"TOA"</code>
 if TOA is available, BOA if BOA is available); in the case both are
 available, two files are produced (they can be distinguished from the
 level component - S2x1C or S2x2A - in the filename).</p></td>
@@ -224,7 +238,7 @@ more than a single spectral index is required.</p></td>
     <tr>
       <th>tmpdir</th>
       <td><p>(optional) Path where intermediate files (GTiff) will be
-created in case <code>format</code> is "VRT".</p></td>
+created in case <code>format</code> is <code>"VRT"</code>.</p></td>
     </tr>
     <tr>
       <th>compress</th>
@@ -232,30 +246,41 @@ created in case <code>format</code> is "VRT".</p></td>
 present, the compression indicated with this parameter is used.</p></td>
     </tr>
     <tr>
+      <th>bigtiff</th>
+      <td><p>(optional) Logical: if TRUE, the creation of a BigTIFF is
+forced (default is FALSE).
+This option is used only in the case a GTiff format was chosen.</p></td>
+    </tr>
+    <tr>
       <th>dataType</th>
       <td><p>(optional) Numeric datatype of the output rasters.
 if "Float32" or "Float64" is chosen, numeric values are not rescaled;
-if "Int16" (default) or "UInt16", values are multiplicated by <code>scaleFactor</code> argument;
-if "Byte", values are shifted by 100, multiplicated by 100 and truncated
+if <code>"Int16"</code> (default) or <code>"UInt16"</code>, values are multiplicated by <code>scaleFactor</code> argument;
+if <code>"Byte"</code>, values are shifted by 100, multiplicated by 100 and truncated
 at 200 (so that range -1 to 1 is coerced to 0-200), and nodata value
 is assigned to 255.</p></td>
     </tr>
     <tr>
       <th>scaleFactor</th>
       <td><p>(optional) Scale factor for output values when an integer
-datatype is chosen (default values are 10000 for "Int16" and "UInt16",
-1E9 for "Int32" and "UInt32"). Notice that, using "UInt16" and "UInt32" types,
-negative values will be truncated to 0.</p></td>
+datatype is chosen (default values are 10000 for <code>"Int16"</code> and <code>"UInt16"</code>,
+1E9 for <code>"Int32"</code> and <code>"UInt32"</code>). Notice that, using <code>"UInt16"</code> and
+<code>"UInt32"</code> types, negative values will be truncated to 0.</p></td>
     </tr>
     <tr>
       <th>proc_mode</th>
       <td><p>(optional) Character: if <code>"gdal_calc"</code>,
-gdal_calc routines are used to compute indices;
-if <code>"raster"</code> (default), R functions are instead used.
-<strong>Note</strong>: there is a difference in which the two modes manage values out
+<code>gdal_calc</code> routines are used to compute indices;
+if <code>"raster"</code> (default) or <code>"stars"</code>, R functions are instead used
+(using respectively <code>raster</code> or <code>stars</code> routines).
+<strong>Notes</strong>:</p><ol>
+<li><p>there is a difference in which the two modes manage values out
 of ranges (e.g. -32768 to 32767 in Int16 and 0 to 255 in Byte):
-"raster" mode set these values to NA, "gdal_calc"mode clip them to the
-minimum/maximum values.</p></td>
+<code>"raster"</code> and <code>"stars"</code> modes set these values to NA,
+<code>"gdal_calc"</code> mode clip them to the minimum/maximum values;</p></li>
+<li><p><code>proc_mode = "stars"</code> is experimental (the performance of this mode
+must be optimised).</p></li>
+</ol></td>
     </tr>
     <tr>
       <th>parallel</th>
@@ -303,7 +328,7 @@ overwritten? (default: FALSE)</p></td>
   <span class='kw'>indices</span> <span class='kw'>=</span> <span class='st'>"EVI"</span>,
   <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(),
   <span class='kw'>dataType</span> <span class='kw'>=</span> <span class='st'>"Float32"</span>
-)</div><div class='output co'>#&gt; <span class='message'>Carico il pacchetto richiesto: sp</span></div><div class='output co'>#&gt; <span class='message'>Computing index: EVI</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 1 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 2 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 3 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 4 of 4</span></div><div class='input'><span class='no'>ex_out</span></div><div class='output co'>#&gt; [1] "/tmp/Rtmp06y9K3/S2A2A_20170703_022_Barbellino_EVI_10.tif"</div><div class='input'>
+)</div><div class='output co'>#&gt; <span class='message'>Carico il pacchetto richiesto: sp</span></div><div class='output co'>#&gt; <span class='message'>Carico il pacchetto richiesto: abind</span></div><div class='output co'>#&gt; <span class='message'>Carico il pacchetto richiesto: sf</span></div><div class='output co'>#&gt; <span class='message'>Linking to GEOS 3.7.1, GDAL 2.2.3, PROJ 4.9.3</span></div><div class='output co'>#&gt; <span class='message'>Computing index: EVI</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 1 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 2 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 3 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 4 of 4</span></div><div class='input'><span class='no'>ex_out</span></div><div class='output co'>#&gt; [1] "/tmp/RtmpZsnQAB/S2A2A_20170703_022_Barbellino_EVI_10.tif"</div><div class='input'>
 <span class='co'># Show output</span>
 <span class='no'>oldpar</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='kw'>mfrow</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>), <span class='kw'>mar</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>,<span class='fl'>4</span>))
 <span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>ex_in</span>), <span class='kw'>rgb</span> <span class='kw'>=</span> <span class='fl'>4</span>:<span class='fl'>2</span>, <span class='kw'>maxColorValue</span> <span class='kw'>=</span> <span class='fl'>3500</span>)
@@ -319,7 +344,7 @@ overwritten? (default: FALSE)</p></td>
     </ul>
 
     <h2>Author</h2>
-    <p>Luigi Ranghetti, phD (2019) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
+    <p>Luigi Ranghetti, phD (2020) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
   </div>
 </div>
 

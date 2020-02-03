@@ -21,7 +21,6 @@
 #' @note License: GPL 3.0
 #' @import data.table
 #' @importFrom XML htmlTreeParse xmlRoot readHTMLTable xmlAttrs saveXML
-#' @importFrom magrittr "%>%"
 #' @importFrom jsonlite toJSON fromJSON
 #' @importFrom stats runif
 #' @importFrom utils capture.output download.file unzip packageVersion
@@ -72,8 +71,8 @@ create_indices_db <- function(xslt_path = NA,
   idb_url <- "http://www.indexdatabase.de"
   idb_s2indices_url <- file.path(idb_url,"db/is.php?sensor_id=96")
   download.file(idb_s2indices_url, s2_path <- tempfile(), method = "wget", quiet = TRUE)
-  s2_html <- htmlTreeParse(s2_path, useInternalNodes = FALSE) %>% xmlRoot()
-  s2_htmlinternal <- htmlTreeParse(s2_path, useInternalNodes = TRUE) %>% xmlRoot()
+  s2_html <- xmlRoot(htmlTreeParse(s2_path, useInternalNodes = FALSE))
+  s2_htmlinternal <- xmlRoot(htmlTreeParse(s2_path, useInternalNodes = TRUE))
   s2_html_table <- s2_html[["body"]][["div"]][["table"]]
   s2_htmlinternal_table <- s2_htmlinternal[["body"]][["div"]][["table"]]
   unlink(s2_path)
@@ -159,20 +158,20 @@ create_indices_db <- function(xslt_path = NA,
     )
     
     # convert manually from latex to formula
-    tmp_latex <- suppressWarnings(readLines(tmp_outfile)) %>%
-      gsub("^\\$ *(.*) *\\$$","\\1",.) %>% # remove math symbols
-      gsub("\\\\textcolor\\[rgb\\]\\{[0-9\\.\\,]+\\}", "\\\\var", .) %>% # RGB indications are variable names
-      gsub(paste0("\\\\mathrm",parent_regex), "\\1", ., perl=TRUE) %>% # remove mathrm
-      gsub("\\\\left\\|([^|]+)\\\\right\\|", "abs(\\1)", .) %>% # abs
-      gsub("\u00B7", "*", .) %>% # replace muddle point
-      gsub("\\\\times", "*", .) %>% # replace times
-      gsub("\\\\&InvisibleTimes;", "*", .) %>% # remove invisibles multiplications
-      gsub("\u0096", "-band_", .) %>% # unicode START OF GUARDED AREA as "-"
-      gsub("\\\\var\\{([0-9][0-9a]?)\\}", "band\\_\\1", .) %>% # recognise band names
-      gsub("\\\\var\\{([^}]+)\\}", "par\\_\\1", .) %>% # recognise other elements as parameters
-      gsub("par\\_([^0-9A-Za-z])", "\\1", .) %>% # error in two indices
-      gsub("\\\\left\\(", "(", .) %>% # parenthesis
-      gsub("\\\\right\\)", ")", .) # parenthesis
+    tmp_latex <- suppressWarnings(readLines(tmp_outfile))
+    tmp_latex <- gsub("^\\$ *(.*) *\\$$","\\1",tmp_latex) # remove math symbols
+    tmp_latex <- gsub("\\\\textcolor\\[rgb\\]\\{[0-9\\.\\,]+\\}", "\\\\var", tmp_latex) # RGB indications are variable names
+    tmp_latex <- gsub(paste0("\\\\mathrm",parent_regex), "\\1", tmp_latex, perl=TRUE) # remove mathrm
+    tmp_latex <- gsub("\\\\left\\|([^|]+)\\\\right\\|", "abs(\\1)", tmp_latex) # abs
+    tmp_latex <- gsub("\u00B7", "*", tmp_latex) # replace muddle point
+    tmp_latex <- gsub("\\\\times", "*", tmp_latex) # replace times
+    tmp_latex <- gsub("\\\\&InvisibleTimes;", "*", tmp_latex) # remove invisibles multiplications
+    tmp_latex <- gsub("\u0096", "-band_", tmp_latex) # unicode START OF GUARDED AREA as "-"
+    tmp_latex <- gsub("\\\\var\\{([0-9][0-9a]?)\\}", "band\\_\\1", tmp_latex) # recognise band names
+    tmp_latex <- gsub("\\\\var\\{([^}]+)\\}", "par\\_\\1", tmp_latex) # recognise other elements as parameters
+    tmp_latex <- gsub("par\\_([^0-9A-Za-z])", "\\1", tmp_latex) # error in two indices
+    tmp_latex <- gsub("\\\\left\\(", "(", tmp_latex) # parenthesis
+    tmp_latex <- gsub("\\\\right\\)", ")", tmp_latex) # parenthesis
     
     # remove temporary files
     unlink(tmp_infile)

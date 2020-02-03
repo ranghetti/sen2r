@@ -18,7 +18,6 @@
 #' @author Luigi Ranghetti, phD (2017) \email{luigi.ranghetti@@gmail.com}
 #' @note License: GPL 3.0
 #' @export
-#' @importFrom magrittr "%>%"
 #'
 #' @examples
 #' # the reference path
@@ -63,8 +62,10 @@ abs2rel <- function(path, ref_path, mustWork=NA) {
   }
   
   # search common parent directory
-  com_path <- comsub(c(path,ref_path), sep="/") %>%
-    gsub("/$","",.) # remove the ending "/" if present
+  com_path <- gsub(
+    "/$", "", # remove the ending "/" if present
+    comsub(c(path,ref_path), sep="/")
+  )
   
   # if com_path is not null, return path with a warning
   if (com_path=="") {
@@ -77,14 +78,11 @@ abs2rel <- function(path, ref_path, mustWork=NA) {
   }
   
   # different part of directories
-  diff_ref <- gsub(paste0("^",com_path),"",ref_path) %>%
-    gsub("^/","",.)
-  diff_in <- gsub(paste0("^",com_path),"",path) %>%
-    gsub("^/","",.)
+  diff_ref <- gsub("^/", "", gsub(paste0("^",com_path),"",ref_path))
+  diff_in <- gsub("^/", "", gsub(paste0("^",com_path),"",path))
   
   # number of directory to "scale"
-  n_ref <- strsplit(diff_ref,"/")[[1]] %>%
-    length()
+  n_ref <- length(strsplit(diff_ref,"/")[[1]])
   
   # relative path
   out_prefix <- if (n_ref==0) {

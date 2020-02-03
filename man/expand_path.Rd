@@ -20,8 +20,6 @@ is already an absolute path.}
 \item{normalize}{Logical value: if TRUE (default), the path is normalised
 (\code{\link[base]{normalizePath}} is applied); if FALSE it is simply
 appended.}
-
-\item{...}{\code{R} objects which are concatenated.}
 }
 \value{
 The path eventually expanded.

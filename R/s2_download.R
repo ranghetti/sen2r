@@ -20,9 +20,10 @@
 #'  if FALSE, they are simply skipped.
 #' @param overwrite Logical value: should existing output archives be
 #'  overwritten? (default: FALSE)
-#' @return NULL (the function is called for its side effects)
+#' @return Vector character with the list ot the output products
+#'  (being downloaded or already existing).
 #'
-#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
 #' @author Lorenzo Busetto, phD (2019) \email{lbusett@@gmail.com}
 #' @note License: GPL 3.0
 #' @importFrom httr GET RETRY authenticate progress write_disk
@@ -92,6 +93,9 @@ s2_download <- function(
   .s2_availability = NULL
 ) {
   
+  # to avoid NOTE on check
+  i <- mission <- level <- sensing_datetime <- id_orbit <- id_tile <- NULL
+  
   # convert input NA arguments in NULL
   for (a in c("s2_prodlist", "apihub")) {
     if (suppressWarnings(all(is.na(get(a))))) {
@@ -107,6 +111,7 @@ s2_download <- function(
   # check input format
   s2_prodlist <- as(s2_prodlist, "safelist")
   # TODO add input checks
+  s2_meta <- safe_getMetadata(s2_prodlist, info = "nameinfo")
   
   # read credentials
   creds <- read_scihub_login(apihub)
@@ -121,6 +126,18 @@ s2_download <- function(
     downloader <- "builtin"
   }
   
+  # check if aria2 is available, switch to builtin
+  if (downloader %in% c("aria2", "aria2c") && is.null(load_binpaths()$aria2c)) {
+    print_message(
+      type = "warning",
+      "Downloader \"",downloader,"\" was not found in your system. ",
+      "Builtin downloader will be used (see the documentation at ",
+      "https://sen2r.ranghetti.info/articles/installation ",
+      "to see how to install it)."
+    )
+    downloader <- "builtin"
+  }
+  
   # Split products to be downloaded from products to be ordered
   s2_availability <- if (is.null(.s2_availability)) {
     print_message(
@@ -128,27 +145,34 @@ s2_download <- function(
       date = TRUE,
       "Check if products are available for download..."
     )
-    safe_is_online(s2_prodlist)
+    safe_is_online(s2_prodlist, verbose = FALSE)
   } else {
     .s2_availability
   }
-
+  
   
   # Order products stored from the Long Term Archive
   if (order_lta == TRUE) {
     ordered_products <- .s2_order(s2_prodlist, .s2_availability = s2_availability)
   }
-
+  
   
   ## Download products available for download
   
-  for (i in which(s2_availability)) {
+  safe_prodlist <- foreach(i = which(s2_availability), .combine = c) %do% {
     
     link <- s2_prodlist[i]
     zip_path <- file.path(outdir, paste0(names(s2_prodlist[i]),".zip"))
     safe_path <- gsub("\\.zip$", "", zip_path)
     
-    if (any(overwrite == TRUE, !file.exists(safe_path))) {
+    # regular expression to detect if equivalent products already exist
+    safe_regex <- s2_meta[i,paste0(
+      "^S",mission,"\\_MSIL",level,"\\_",strftime(sensing_datetime,"%Y%m%dT%H%M%S"),
+      "\\_N[0-9]{4}\\_R",id_orbit,"\\_T",id_tile,"\\_[0-9]{8}T[0-9]{6}\\.SAFE$"
+    )]
+    safe_existing <- list.files(dirname(zip_path), safe_regex, full.names = TRUE)
+    
+    if (any(overwrite == TRUE, length(safe_existing) == 0)) {
       
       print_message(
         type = "message",
@@ -172,13 +196,15 @@ s2_download <- function(
         
         binpaths <- load_binpaths("aria2")
         if (Sys.info()["sysname"] != "Windows") {
-          link <- gsub("/\\$value", "/\\\\$value", link)
+          link_aria <- gsub("/\\$value", "/\\\\$value", link)
+        } else {
+          link_aria <- link
         }
         aria_string <- paste0(
           binpaths$aria2c, " -x 2 --check-certificate=false -d ",
           dirname(zip_path),
           " -o ", basename(zip_path),
-          " ", "\"", as.character(link), "\"",
+          " ", "\"", as.character(link_aria), "\"",
           " --allow-overwrite --file-allocation=none --retry-wait=2",
           " --http-user=", "\"", creds[1], "\"",
           " --http-passwd=", "\"", creds[2], "\"",
@@ -189,7 +215,7 @@ s2_download <- function(
         })
         
       }
-
+      
       # check if the user asked to download a LTA product
       download_is_lta <- if (inherits(download, "response")) {
         download$status_code == 202
@@ -238,6 +264,9 @@ s2_download <- function(
         if (dir.exists(safe_path)) {
           unlink(safe_path, recursive = TRUE)
         }
+        # update SAFE name (possible different processing date)
+        zip_content <- unzip(zip_path, list = TRUE)
+        safe_newname <- unique(gsub("(^[^\\/]+)\\/.*$", "\\1", zip_content$Name))
         # unzip
         unzip(zip_path, exdir = dirname(zip_path))
         file.remove(zip_path)
@@ -253,10 +282,18 @@ s2_download <- function(
         "since the corresponding folder already exists."
       )
       
+      safe_existing_meta <- safe_getMetadata(safe_existing, info = "nameinfo")
+      safe_newname <- safe_existing_meta$name[
+        order(nn(safe_existing_meta$creation_datetime), decreasing = TRUE)[1]
+        ]
+      
     }
+    
+    # return to foreach
+    as(setNames(link, safe_newname), "safelist")
     
   }
   
-  return(invisible(NULL))
+  return(safe_prodlist)
   
 }

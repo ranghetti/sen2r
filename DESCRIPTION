@@ -1,7 +1,7 @@
 Package: sen2r
 Type: Package
 Title: Find, Download and Process Sentinel-2 Data
-Version: 1.2.1.9006
+Version: 1.2.1.9012
 Authors@R: c(person("Luigi", "Ranghetti",
                     email = "luigi@ranghetti.info",
                     role = c("aut", "cre"),
@@ -22,9 +22,7 @@ URL: http://sen2r.ranghetti.info, https://github.com/ranghetti/sen2r
 BugReports: https://github.com/ranghetti/sen2r/issues
 Depends: R (>= 3.5.0)
 Imports:
-  reticulate,
   methods,
-  magrittr,
   rgdal,
   sf,
   stars,
@@ -48,14 +46,14 @@ Imports:
   tools,
   httr
 Suggests:
-    spelling,
-    geojsonlint,
-    httptest,
-    knitr,
-    rmarkdown,
-    testthat (>= 2.1.0)
+  spelling,
+  geojsonlint,
+  httptest,
+  knitr,
+  rmarkdown,
+  testthat (>= 2.1.0)
 SystemRequirements: GDAL (>= 2.1.2), PROJ (>= 4.9.1), GEOS (>= 3.4.2),
-    Cairo, Curl, NetCDF, jq, Protocol Buffers, V8, OpenSSL, Libxml2.
+  Cairo, Curl, NetCDF, jq, Protocol Buffers, V8, OpenSSL, Libxml2.
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.0.2

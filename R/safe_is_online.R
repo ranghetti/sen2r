@@ -8,12 +8,15 @@
 #' @param apihub Path of the "apihub.txt" file containing credentials
 #'  of SciHub account.
 #'  If NA (default), the default location inside the package will be used.
+#' @param verbose Logical: if TRUE, provide processing messages summarising
+#'  how many of the SAFE archives in `s2_prodlist` are available online.
 #' @return A logical vector of the same length and names of the SAFE products
 #'  passed with `s2_prodlist`,
 #'  in which each element is TRUE if the corresponding SAFE archive is 
 #'  available for download, FALSE if it is not or NA in case of errors with
 #'  the SAFE url.
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @author Lorenzo Busetto, phD (2020) \email{lbusett@@gmail.com}
 #' @note License: GPL 3.0
 #' @importFrom httr GET authenticate content
 #' @importFrom jsonlite fromJSON
@@ -32,7 +35,7 @@
 #' safe_is_online(list_safe)
 #' }
 
-safe_is_online <- function(s2_prodlist = NULL, apihub = NA) {
+safe_is_online <- function(s2_prodlist = NULL, apihub = NA, verbose = TRUE) {
   
   # convert input NA arguments in NULL
   for (a in c("s2_prodlist", "apihub")) {
@@ -72,7 +75,25 @@ safe_is_online <- function(s2_prodlist = NULL, apihub = NA) {
       }
     )
   })
+  
   names(s2_availability) <- names(s2_prodlist)
+  
+  if (verbose == TRUE) {
+    if (all(s2_availability)) {
+      print_message(
+        type = "message",
+        date = TRUE,
+        "All ", length(s2_availability), " products are online."
+      )
+    } else {
+      print_message(
+        type = "message",
+        date = TRUE,
+        length(which(s2_availability)), " out of ",  
+        length(s2_availability), " products are online."
+      )
+    }
+  }
   s2_availability
   
 }

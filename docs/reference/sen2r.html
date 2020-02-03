@@ -161,26 +161,68 @@ list or file (parameter <code>param_list</code>) or singularly (see the
 descriptions of all the other parameters).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>sen2r</span>(<span class='kw'>param_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>gui</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>preprocess</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>s2_levels</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"l1c"</span>, <span class='st'>"l2a"</span>), <span class='kw'>sel_sensor</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"s2a"</span>, <span class='st'>"s2b"</span>),
-  <span class='kw'>online</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>order_lta</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>downloader</span> <span class='kw'>=</span> <span class='st'>"builtin"</span>, <span class='kw'>overwrite_safe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>rm_safe</span> <span class='kw'>=</span> <span class='st'>"no"</span>,
-  <span class='kw'>step_atmcorr</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>max_cloud_safe</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>timeperiod</span> <span class='kw'>=</span> <span class='st'>"full"</span>, <span class='kw'>extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>extent_name</span> <span class='kw'>=</span> <span class='st'>"sen2r"</span>,
-  <span class='kw'>s2tiles_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>s2orbits_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>list_rgb</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>list_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>index_source</span> <span class='kw'>=</span> <span class='st'>"BOA"</span>,
-  <span class='kw'>rgb_ranges</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>mask_smooth</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>mask_buffer</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>clip_on_extent</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>extent_as_mask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>reference_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>res_s2</span> <span class='kw'>=</span> <span class='st'>"10m"</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"Meter"</span>,
-  <span class='kw'>proj</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>resampling</span> <span class='kw'>=</span> <span class='st'>"near"</span>, <span class='kw'>resampling_scl</span> <span class='kw'>=</span> <span class='st'>"near"</span>,
-  <span class='kw'>outformat</span> <span class='kw'>=</span> <span class='st'>"GTiff"</span>, <span class='kw'>rgb_outformat</span> <span class='kw'>=</span> <span class='st'>"GTiff"</span>,
-  <span class='kw'>index_datatype</span> <span class='kw'>=</span> <span class='st'>"Int16"</span>, <span class='kw'>compression</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>,
-  <span class='kw'>rgb_compression</span> <span class='kw'>=</span> <span class='st'>"90"</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>path_l1c</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>path_l2a</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_merged</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_out</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>path_rgb</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>path_subdirs</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>thumbnails</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>processing_order</span> <span class='kw'>=</span> <span class='st'>"by_groups"</span>, <span class='kw'>use_python</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>log</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+    <pre class="usage"><span class='fu'>sen2r</span>(
+  <span class='kw'>param_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>gui</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>preprocess</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>s2_levels</span> <span class='kw'>=</span> <span class='st'>"l2a"</span>,
+  <span class='kw'>sel_sensor</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"s2a"</span>, <span class='st'>"s2b"</span>),
+  <span class='kw'>online</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>order_lta</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>downloader</span> <span class='kw'>=</span> <span class='st'>"builtin"</span>,
+  <span class='kw'>overwrite_safe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>rm_safe</span> <span class='kw'>=</span> <span class='st'>"no"</span>,
+  <span class='kw'>step_atmcorr</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
+  <span class='kw'>sen2cor_use_dem</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>sen2cor_gipp</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>max_cloud_safe</span> <span class='kw'>=</span> <span class='fl'>100</span>,
+  <span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>timeperiod</span> <span class='kw'>=</span> <span class='st'>"full"</span>,
+  <span class='kw'>extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>extent_name</span> <span class='kw'>=</span> <span class='st'>"sen2r"</span>,
+  <span class='kw'>s2tiles_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>s2orbits_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>list_rgb</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>list_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>index_source</span> <span class='kw'>=</span> <span class='st'>"BOA"</span>,
+  <span class='kw'>rgb_ranges</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>100</span>,
+  <span class='kw'>mask_smooth</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>mask_buffer</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>clip_on_extent</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>extent_as_mask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>reference_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>res_s2</span> <span class='kw'>=</span> <span class='st'>"10m"</span>,
+  <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"Meter"</span>,
+  <span class='kw'>proj</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>resampling</span> <span class='kw'>=</span> <span class='st'>"near"</span>,
+  <span class='kw'>resampling_scl</span> <span class='kw'>=</span> <span class='st'>"near"</span>,
+  <span class='kw'>outformat</span> <span class='kw'>=</span> <span class='st'>"GTiff"</span>,
+  <span class='kw'>rgb_outformat</span> <span class='kw'>=</span> <span class='st'>"GTiff"</span>,
+  <span class='kw'>index_datatype</span> <span class='kw'>=</span> <span class='st'>"Int16"</span>,
+  <span class='kw'>compression</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>,
+  <span class='kw'>rgb_compression</span> <span class='kw'>=</span> <span class='st'>"90"</span>,
+  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>path_l1c</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>path_l2a</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>path_tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>path_merged</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>path_out</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>path_rgb</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>path_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>path_subdirs</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>thumbnails</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>processing_order</span> <span class='kw'>=</span> <span class='st'>"by_groups"</span>,
+  <span class='kw'>use_python</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>log</span> <span class='kw'>=</span> <span class='fl'>NA</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -270,15 +312,34 @@ not to delete; "l1c" to delete only Level-1C products.</p></td>
       <th>step_atmcorr</th>
       <td><p>(optional) Character vector to determine how to obtain
 Level-2A SAFE products:</p><ul>
-<li><p>"auto" (default) means that L2A is first
+<li><p><code>"auto"</code> (default) means that L2A is first
 searched on SciHub: if found, it is downloaded, if not, the
 corresponding Level-1C is downloaded and sen2cor is used to
 produce L2A;</p></li>
-<li><p>"scihub" means that Sen2Cor is always used from L1C products
+<li><p><code>"scihub"</code> means that Sen2Cor is always used from L1C products
 downloaded from SciHub;</p></li>
-<li><p>"l2a" means that they are downloaded if available on SciHub,
+<li><p><code>"l2a"</code> means that they are downloaded if available on SciHub,
 otherwise they are skipped (sen2cor is never used).</p></li>
 </ul></td>
+    </tr>
+    <tr>
+      <th>sen2cor_use_dem</th>
+      <td><p>(optional) Logical, determining if a DEM should be
+used for topographic correction by Sen2Cor (see the documentation of
+<code><a href='sen2cor.html'>sen2cor()</a></code> - argument <code>use_dem</code> for further details).
+Currently the default value is NA in order to grant backward compatibility:
+in this case, the option set in the XML GIPP configuration file
+used by sen2r (stored in the default sen2r settings directory) is respected.</p>
+<p><em>Note</em>: in a future release of sen2r, the default value will be
+set to TRUE, so to grant homogeneity between Level-2A products downloaded
+from ESA Hub and generated using Sen2Cor.</p></td>
+    </tr>
+    <tr>
+      <th>sen2cor_gipp</th>
+      <td><p>(optional) Ground Image Processing Parameters (GIPP)
+to be passed to Sen2Cor (see the documentation of <code><a href='sen2cor.html'>sen2cor()</a></code> - argument
+<code>gipp</code> - for details about the usage of this argument).
+Default value (NA) corresponds to an empty list of parameters.</p></td>
     </tr>
     <tr>
       <th>max_cloud_safe</th>
@@ -395,7 +456,7 @@ for the accepted values). Default (NA) is not to mask.</p></td>
       <td><p>(optional) Numeric value (range 0 to 100), which represents
 the maximum percentage of allowed masked surface (by clouds or any other
 type of mask chosen with argument <code>mask_type</code>) for producing outputs.
-Images with a percentage of masked surface greater than <code>max_mask</code><!-- % -->
+Images with a percentage of masked surface greater than <code>max_mask</code>%
 are not processed (the list of expected output files which have not been
 generated is returned as an attribute, named "skipped").
 Default value is 80.
@@ -464,23 +525,24 @@ resolution. default value (NA) means not to reproject.</p></td>
     <tr>
       <th>resampling</th>
       <td><p>(optional) Resampling method (one of the values supported
-by <code>gdal_translate</code>: "near" (default), "bilinear", "cubic",
-"cubicspline", "lanczos", "average" or "mode").</p></td>
+by <code>gdal_translate</code>: <code>"near"</code> (default), <code>"bilinear"</code>, <code>"cubic"</code>,
+<code>"cubicspline"</code>, <code>"lanczos"</code>, <code>"average"</code> or <code>"mode"</code>).</p></td>
     </tr>
     <tr>
       <th>resampling_scl</th>
       <td><p>(optional) Resampling method for categorical products
-(for now, only SCL): one among "near" (default) and "mode".</p></td>
+(for now, only SCL): one among <code>"near"</code> (default) and <code>"mode"</code>.</p></td>
     </tr>
     <tr>
       <th>outformat</th>
       <td><p>(optional) Format of the output file (in a
-format recognised by GDAL). Default is "GTiff".</p></td>
+format recognised by GDAL). Default is <code>"GTiff"</code>.
+Value <code>"BigTIFF"</code> can be used to generate a GeoTIFF with the option BigTIFF</p></td>
     </tr>
     <tr>
       <th>rgb_outformat</th>
       <td><p>(optional) Format of the output RGB products (in a
-format recognised by GDAL). Default is "GTiff".</p></td>
+format recognised by GDAL). Default is <code>"GTiff"</code>.</p></td>
     </tr>
     <tr>
       <th>index_datatype</th>
@@ -495,9 +557,9 @@ used (default is "DEFLATE").</p></td>
     </tr>
     <tr>
       <th>rgb_compression</th>
-      <td><p>(optional) In the case GTiff is chosen as
+      <td><p>(optional) In the case <code>GTiff</code> is chosen as
 output format for RGB products, the compression indicated
-with this parameter is used (default is "DEFLATE").
+with this parameter is used (default is <code>"DEFLATE"</code>).
 In the cases GTiff or JPEG are chosen as output format for RGB products,
 this parameter can also be a 1-100 integer value, which is interpreted
 as the compression level for a JPEG compression.</p></td>
@@ -567,7 +629,7 @@ products are put directly within them.</p></td>
 added for each product created. Thumbnails are JPEG or PNG georeferenced
 small images (width or height of 1024 pixels) with default colour palettes
 (for more details, see the help window in the GUI). They are placed in
-a subdirectory of the products names "thumbnails".
+a subdirectory of the products names <code>"thumbnails"</code>.
 If FALSE, they are not created.</p></td>
     </tr>
     <tr>
@@ -586,7 +648,7 @@ If FALSE (default), the processing chain is forced to run with a single core
 order used to execute the processing chain (this affects the speed
 of computation and the usage of system resources).
 Values can be one of the followings:</p><ul>
-<li><p>"4" or "by_groups" (default):
+<li><p><code>"4"</code> or <code>"by_groups"</code> (default):
 it provides a good compromise between processing speed and disk usage.
 Processing is done as follows:</p><ol>
 <li><p>the list of required SAFE and output product names is computed;</p></li>
@@ -599,7 +661,7 @@ $g$ is the number of dates divided by the number of CPU;</p></li>
 R sessions (one core for each date).</p></li>
 </ul></li>
 </ol></li>
-<li><p>"2" or "by_date":
+<li><p><code>"2"</code> or <code>"by_date"</code>:
 this allows minimising the requirements of disk usage
 (in particular if SAFE archives are deleted after processing).
 It is similar to the default execution, but each group is composed
@@ -607,7 +669,7 @@ by a single date: so the disk space occupied by SAFE archives
 and temporary files is lower,
 but it is generally slower than the default one because
 parallel computation over dates for products' generation is not possible.</p></li>
-<li><p>"3" or "mixed":
+<li><p><code>"3"</code> or <code>"mixed"</code>:
 this allows maximising CPU usage and processing speed.
 The cycle on groups is ignored, and all the required SAFE are
 first of all downloaded and/or produced, and then dates are
@@ -615,7 +677,7 @@ processed in parallel.
 This mode is faster than the default mode, but it requires
 all SAFE archives to be downloaded and processed before performing
 subsequent steps, thus increasing disk space requirements.</p></li>
-<li><p>"1" or "by_step":
+<li><p><code>"1"</code> or <code>"by_step"</code>:
 this is the legacy mode, in which the cycle on groups is ignored
 as well as the parallel computation over dates.
 All SAFE archives are first downloaded/processed,
@@ -626,12 +688,7 @@ but it is slightly slower; its advantage are the lower RAM requirements.</p></li
     </tr>
     <tr>
       <th>use_python</th>
-      <td><p>(optional) Logical: if TRUE (default), the presence of
-python in the system is checked before running the function;
-if FALSE, this is skipped. Setting this to FALSE can be useful on
-systems with problems with python, when <code>sen2r()</code> is intended
-to be used only for processing existing SAFE files (python is required
-in any case to download SAFE).</p></td>
+      <td><p>Deprecated argument</p></td>
     </tr>
     <tr>
       <th>tmpdir</th>
@@ -668,8 +725,13 @@ percentage of cloud covered pixels;</p></li>
 function;</p></li>
 <li><p><code>ltapath</code> with the path of a json file containing the list of the
 SAFE Sentinel-2 archives eventually ordered in Long Term Archive.</p></li>
+<li><p><code>status</code> with a data.frame summarising the status of the processing (see
+<code><a href='sen2r_process_report.html'>sen2r_process_report()</a></code>).</p></li>
 </ul>
 
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>License: GPL 3.0</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
@@ -682,11 +744,16 @@ SAFE Sentinel-2 archives eventually ordered in Long Term Archive.</p></li>
 <span class='co'># to create a testing json file - this is not intended to be used by final users)</span>
 <span class='no'>json_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='build_example_param_file.html'>build_example_param_file</a></span>()
 
-<span class='no'>out_paths_2</span> <span class='kw'>&lt;-</span> <span class='fu'>sen2r</span>(<span class='no'>json_path</span>)</div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:18] Starting sen2r execution.</span></div><div class='output co'>#&gt; <span class='message'>Loading required namespace: stringi</span></div><div class='output co'>#&gt; <span class='message'>Registered S3 method overwritten by 'crul':</span>
-#&gt; <span class='message'>  method                 from</span>
-#&gt; <span class='message'>  as.character.form_file httr</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:19] Searching for available SAFE products on SciHub...</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:23] Computing output names...</span></div><div class='output co'>#&gt; <span class='message'>Linking to GEOS 3.7.1, GDAL 2.2.3, PROJ 4.9.3</span></div><div class='output co'>#&gt; <span class='message'>WARNING: different compile-time and runtime versions for GEOS found:</span></div><div class='output co'>#&gt; <span class='message'>Linked against: 3.7.1-CAPI-1.11.1 27a5e771 compiled against: 3.6.2-CAPI-1.10.2</span></div><div class='output co'>#&gt; <span class='message'>It is probably a good idea to reinstall sf, and maybe rgeos and rgdal too</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:25] Starting to download the required level-2A SAFE products.</span></div><div class='output co'>#&gt; <span class='message'>Images S2A_MSIL2A_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE are already on your system and will be skipped. Set `overwrite_safe` to TRUE to re-download them</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:25] Download of level-2A SAFE products terminated.</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:25] Starting to download the required level-1C SAFE products.</span></div><div class='output co'>#&gt; <span class='message'>No L1C images needed</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:25] Download of level-1C SAFE products terminated.</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:25] Updating output names...</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:26] Starting to translate SAFE products in custom format.</span></div><div class='output co'>#&gt; <span class='message'>GDAL version in use: 2.2.3</span></div><div class='output co'>#&gt; <span class='message'>Using UTM zone 32.</span></div><div class='output co'>#&gt; <span class='message'>2 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:27] Starting to merge tiles by orbit.</span></div><div class='output co'>#&gt; <span class='message'>Using projection "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs".</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:28] Starting to edit geometry (clip, reproject, rescale).</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:30] Producing required RGB images.</span></div><div class='output co'>#&gt; <span class='message'>2 output RGB files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:32] Computing required spectral indices.</span></div><div class='output co'>#&gt; <span class='message'>Computing index: MSAVI2</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 1 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 2 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 3 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 4 of 4</span></div><div class='output co'>#&gt; <span class='message'>Computing index: NDVI</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 1 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 2 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 3 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 4 of 4</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:37] Generating thumbnails.</span></div><div class='output co'>#&gt; <span class='message'>6 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:40] Execution of sen2r session terminated.</span>
-#&gt; <span class='message'>The processing chain can be eventually re-launched with the command:</span>
-#&gt; <span class='message'>  sen2r("/home/lranghetti/.sen2r/proc_par/s2proc_20191112_142119.json")</span></div><div class='input'><span class='co'># Notice that passing the path of a JSON file results in launching</span>
+<span class='no'>out_paths_2</span> <span class='kw'>&lt;-</span> <span class='fu'>sen2r</span>(<span class='no'>json_path</span>)</div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:08:48] ####  Starting sen2r execution.  ####</span></div><div class='output co'>#&gt; <span class='message'>Loading required namespace: stringi</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:08:49] Searching for available SAFE products on</span>
+#&gt; <span class='message'>                      SciHub...</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:08:54] Computing output names...</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:08:56] Starting to download the required level-2A SAFE</span>
+#&gt; <span class='message'>                      products.</span></div><div class='output co'>#&gt; <span class='message'>Images S2A_MSIL2A_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE are already on your system and will be skipped. Set `overwrite_safe` to TRUE to re-download them</span></div><div class='output co'>#&gt; <span class='message'>No L2A images needed</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:08:56] Download of level-2A SAFE products terminated.</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:08:56] Starting to download the required level-1C SAFE</span>
+#&gt; <span class='message'>                      products.</span></div><div class='output co'>#&gt; <span class='message'>No L1C images needed</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:08:56] Download of level-1C SAFE products terminated.</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:08:56] Updating output names...</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:08:58] Starting to translate SAFE products in custom</span>
+#&gt; <span class='message'>                      format.</span></div><div class='output co'>#&gt; <span class='message'>GDAL version in use: 2.2.3</span></div><div class='output co'>#&gt; <span class='message'>Using UTM zone 32N.</span></div><div class='output co'>#&gt; <span class='message'>2 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:08:58] Starting to merge tiles by orbit.</span></div><div class='output co'>#&gt; <span class='message'>Using projection "EPSG:32632".</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:08:59] Starting to edit geometry (clip, reproject,</span>
+#&gt; <span class='message'>                      rescale).</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:01] Producing required RGB images.</span></div><div class='output co'>#&gt; <span class='message'>2 output RGB files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:03] Computing required spectral indices.</span></div><div class='output co'>#&gt; <span class='message'>Computing index: MSAVI2</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 1 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 2 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 3 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 4 of 4</span></div><div class='output co'>#&gt; <span class='message'>Computing index: NDVI</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 1 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 2 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 3 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 4 of 4</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:07] Generating thumbnails.</span></div><div class='output co'>#&gt; <span class='message'>6 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>╔══════════════════════════════════════════════════════════════════════</span>
+#&gt; <span class='message'>║ sen2r Processing Report</span>
+#&gt; <span class='message'>╟──────────────────────────────────────────────────────────────────────</span></div><div class='output co'>#&gt; <span class='message'>║ Dates to be processed based on processing parameters: 1</span></div><div class='output co'>#&gt; <span class='message'>║ Processing completed for: all expected dates.</span></div><div class='output co'>#&gt; <span class='message'>╚══════════════════════════════════════════════════════════════════════</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:11] ####  Execution of sen2r session terminated.</span>
+#&gt; <span class='message'>                       ####</span></div><div class='output co'>#&gt; <span class='message'>The processing chain can be re-launched with the command:</span>
+#&gt; <span class='message'>  sen2r("/home/lranghetti/.sen2r/proc_par/s2proc_20200131_140849.json")</span></div><div class='input'><span class='co'># Notice that passing the path of a JSON file results in launching</span>
 <span class='co'># a session without opening the gui, unless gui = TRUE is passed.</span>
 
 <span class='co'># Launch a processing using function arguments</span>
@@ -704,9 +771,19 @@ SAFE Sentinel-2 archives eventually ordered in Long Term Archive.</p></li>
   <span class='kw'>path_l1c</span> <span class='kw'>=</span> <span class='no'>safe_dir</span>,
   <span class='kw'>path_l2a</span> <span class='kw'>=</span> <span class='no'>safe_dir</span>,
   <span class='kw'>path_out</span> <span class='kw'>=</span> <span class='no'>out_dir_3</span>
-)</div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:41] Starting sen2r execution.</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:41] Searching for available SAFE products on SciHub...</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:48] Computing output names...</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:50] Starting to download the required level-2A SAFE products.</span></div><div class='output co'>#&gt; <span class='message'>Images S2A_MSIL2A_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE are already on your system and will be skipped. Set `overwrite_safe` to TRUE to re-download them</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:50] Download of level-2A SAFE products terminated.</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:50] Starting to download the required level-1C SAFE products.</span></div><div class='output co'>#&gt; <span class='message'>Images S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE are already on your system and will be skipped. Set `overwrite_safe` to TRUE to re-download them.</span></div><div class='output co'>#&gt; <span class='message'>No L1C images needed</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:50] Download of level-1C SAFE products terminated.</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:50] Updating output names...</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:50] Starting to translate SAFE products in custom format.</span></div><div class='output co'>#&gt; <span class='message'>GDAL version in use: 2.2.3</span></div><div class='output co'>#&gt; <span class='message'>Using UTM zone 32.</span></div><div class='output co'>#&gt; <span class='message'>1 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>GDAL version in use: 2.2.3</span></div><div class='output co'>#&gt; <span class='message'>Using UTM zone 32.</span></div><div class='output co'>#&gt; <span class='message'>2 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:52] Starting to merge tiles by orbit.</span></div><div class='output co'>#&gt; <span class='message'>Using projection "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs".</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:54] Starting to edit geometry (clip, reproject, rescale).</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:21:57] Producing required RGB images.</span></div><div class='output co'>#&gt; <span class='message'>1 output RGB files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>2 output RGB files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:22:01] Computing required spectral indices.</span></div><div class='output co'>#&gt; <span class='message'>Computing index: NDVI</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 1 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 2 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 3 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 4 of 4</span></div><div class='output co'>#&gt; <span class='message'>Computing index: MSAVI2</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 1 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 2 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 3 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 4 of 4</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:22:05] Generating thumbnails.</span></div><div class='output co'>#&gt; <span class='message'>8 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:22:09] Execution of sen2r session terminated.</span>
-#&gt; <span class='message'>The processing chain can be eventually re-launched with the command:</span>
-#&gt; <span class='message'>  sen2r("/home/lranghetti/.sen2r/proc_par/s2proc_20191112_142141.json")</span></div><div class='input'>
+)</div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:12] ####  Starting sen2r execution.  ####</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:12] Searching for available SAFE products on</span>
+#&gt; <span class='message'>                      SciHub...</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:17] Computing output names...</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:19] Starting to download the required level-2A SAFE</span>
+#&gt; <span class='message'>                      products.</span></div><div class='output co'>#&gt; <span class='message'>Images S2A_MSIL2A_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE are already on your system and will be skipped. Set `overwrite_safe` to TRUE to re-download them</span></div><div class='output co'>#&gt; <span class='message'>No L2A images needed</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:19] Download of level-2A SAFE products terminated.</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:19] Starting to download the required level-1C SAFE</span>
+#&gt; <span class='message'>                      products.</span></div><div class='output co'>#&gt; <span class='message'>Images</span>
+#&gt; <span class='message'>S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE are</span>
+#&gt; <span class='message'>already on your system and will be skipped. Set "overwrite_safe" to</span>
+#&gt; <span class='message'>TRUE to re-download them.</span></div><div class='output co'>#&gt; <span class='message'>No L1C images needed</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:19] Download of level-1C SAFE products terminated.</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:19] Updating output names...</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:20] Starting to translate SAFE products in custom</span>
+#&gt; <span class='message'>                      format.</span></div><div class='output co'>#&gt; <span class='message'>GDAL version in use: 2.2.3</span></div><div class='output co'>#&gt; <span class='message'>Using UTM zone 32N.</span></div><div class='output co'>#&gt; <span class='message'>1 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>GDAL version in use: 2.2.3</span></div><div class='output co'>#&gt; <span class='message'>Using UTM zone 32N.</span></div><div class='output co'>#&gt; <span class='message'>2 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:21] Starting to merge tiles by orbit.</span></div><div class='output co'>#&gt; <span class='message'>Using projection "EPSG:32632".</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:22] Starting to edit geometry (clip, reproject,</span>
+#&gt; <span class='message'>                      rescale).</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:26] Producing required RGB images.</span></div><div class='output co'>#&gt; <span class='message'>1 output RGB files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>2 output RGB files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:30] Computing required spectral indices.</span></div><div class='output co'>#&gt; <span class='message'>Computing index: NDVI</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 1 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 2 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 3 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 4 of 4</span></div><div class='output co'>#&gt; <span class='message'>Computing index: MSAVI2</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 1 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 2 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 3 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 4 of 4</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:33] Generating thumbnails.</span></div><div class='output co'>#&gt; <span class='message'>8 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>╔══════════════════════════════════════════════════════════════════════</span>
+#&gt; <span class='message'>║ sen2r Processing Report</span>
+#&gt; <span class='message'>╟──────────────────────────────────────────────────────────────────────</span></div><div class='output co'>#&gt; <span class='message'>║ Dates to be processed based on processing parameters: 1</span></div><div class='output co'>#&gt; <span class='message'>║ Processing completed for: all expected dates.</span></div><div class='output co'>#&gt; <span class='message'>╚══════════════════════════════════════════════════════════════════════</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:37] ####  Execution of sen2r session terminated.</span>
+#&gt; <span class='message'>                       ####</span></div><div class='output co'>#&gt; <span class='message'>The processing chain can be re-launched with the command:</span>
+#&gt; <span class='message'>  sen2r("/home/lranghetti/.sen2r/proc_par/s2proc_20200131_140912.json")</span></div><div class='input'>
 <span class='co'># Launch a processing based on a JSON file, but changing some parameters</span>
 <span class='co'># (e.g., the same processing on a different extent)</span>
 <span class='no'>out_dir_4</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(<span class='kw'>pattern</span> <span class='kw'>=</span> <span class='st'>"Scalve_"</span>)
@@ -715,9 +792,16 @@ SAFE Sentinel-2 archives eventually ordered in Long Term Archive.</p></li>
   <span class='kw'>extent</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/vector/scalve.kml"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"sen2r"</span>),
   <span class='kw'>extent_name</span> <span class='kw'>=</span> <span class='st'>"Scalve"</span>,
   <span class='kw'>path_out</span> <span class='kw'>=</span> <span class='no'>out_dir_4</span>
-)</div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:22:09] Starting sen2r execution.</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:22:10] Searching for available SAFE products on SciHub...</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:22:14] Computing output names...</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:22:16] Starting to download the required level-2A SAFE products.</span></div><div class='output co'>#&gt; <span class='message'>Images S2A_MSIL2A_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE, S2A_MSIL2A_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE are already on your system and will be skipped. Set `overwrite_safe` to TRUE to re-download them</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:22:16] Download of level-2A SAFE products terminated.</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:22:16] Starting to download the required level-1C SAFE products.</span></div><div class='output co'>#&gt; <span class='message'>No L1C images needed</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:22:16] Download of level-1C SAFE products terminated.</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:22:16] Updating output names...</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:22:17] Starting to translate SAFE products in custom format.</span></div><div class='output co'>#&gt; <span class='message'>GDAL version in use: 2.2.3</span></div><div class='output co'>#&gt; <span class='message'>Using UTM zone 32.</span></div><div class='output co'>#&gt; <span class='message'>2 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>GDAL version in use: 2.2.3</span></div><div class='output co'>#&gt; <span class='message'>Using UTM zone 32.</span></div><div class='output co'>#&gt; <span class='message'>2 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:22:18] Starting to merge tiles by orbit.</span></div><div class='output co'>#&gt; <span class='message'>Using projection "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs".</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:22:18] Starting to edit geometry (clip, reproject, rescale).</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:22:34] Producing required RGB images.</span></div><div class='output co'>#&gt; <span class='message'>2 output RGB files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:22:42] Computing required spectral indices.</span></div><div class='output co'>#&gt; <span class='message'>Computing index: MSAVI2</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 1 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 2 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 3 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 4 of 4</span></div><div class='output co'>#&gt; <span class='message'>Computing index: NDVI</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 1 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 2 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 3 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 4 of 4</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:22:53] Generating thumbnails.</span></div><div class='output co'>#&gt; <span class='message'>6 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>[2019-11-12 14:23:01] Execution of sen2r session terminated.</span>
-#&gt; <span class='message'>The processing chain can be eventually re-launched with the command:</span>
-#&gt; <span class='message'>  sen2r("/home/lranghetti/.sen2r/proc_par/s2proc_20191112_142209.json")</span></div><div class='input'>
+)</div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:38] ####  Starting sen2r execution.  ####</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:38] Searching for available SAFE products on</span>
+#&gt; <span class='message'>                      SciHub...</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:43] Computing output names...</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:44] Starting to download the required level-2A SAFE</span>
+#&gt; <span class='message'>                      products.</span></div><div class='output co'>#&gt; <span class='message'>Images S2A_MSIL2A_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE, S2A_MSIL2A_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE are already on your system and will be skipped. Set `overwrite_safe` to TRUE to re-download them</span></div><div class='output co'>#&gt; <span class='message'>No L2A images needed</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:44] Download of level-2A SAFE products terminated.</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:44] Starting to download the required level-1C SAFE</span>
+#&gt; <span class='message'>                      products.</span></div><div class='output co'>#&gt; <span class='message'>No L1C images needed</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:44] Download of level-1C SAFE products terminated.</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:44] Updating output names...</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:45] Starting to translate SAFE products in custom</span>
+#&gt; <span class='message'>                      format.</span></div><div class='output co'>#&gt; <span class='message'>GDAL version in use: 2.2.3</span></div><div class='output co'>#&gt; <span class='message'>Using UTM zone 32N.</span></div><div class='output co'>#&gt; <span class='message'>2 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>GDAL version in use: 2.2.3</span></div><div class='output co'>#&gt; <span class='message'>Using UTM zone 32N.</span></div><div class='output co'>#&gt; <span class='message'>2 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:46] Starting to merge tiles by orbit.</span></div><div class='output co'>#&gt; <span class='message'>Using projection "EPSG:32632".</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:09:46] Starting to edit geometry (clip, reproject,</span>
+#&gt; <span class='message'>                      rescale).</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:10:02] Producing required RGB images.</span></div><div class='output co'>#&gt; <span class='message'>2 output RGB files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:10:11] Computing required spectral indices.</span></div><div class='output co'>#&gt; <span class='message'>Computing index: MSAVI2</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 1 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 2 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 3 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 4 of 4</span></div><div class='output co'>#&gt; <span class='message'>Computing index: NDVI</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 1 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 2 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 3 of 4</span></div><div class='output co'>#&gt; <span class='message'>Processing chunk 4 of 4</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:10:22] Generating thumbnails.</span></div><div class='output co'>#&gt; <span class='message'>6 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>╔══════════════════════════════════════════════════════════════════════</span>
+#&gt; <span class='message'>║ sen2r Processing Report</span>
+#&gt; <span class='message'>╟──────────────────────────────────────────────────────────────────────</span></div><div class='output co'>#&gt; <span class='message'>║ Dates to be processed based on processing parameters: 2</span></div><div class='output co'>#&gt; <span class='message'>║ Processing completed for: all expected dates.</span></div><div class='output co'>#&gt; <span class='message'>╚══════════════════════════════════════════════════════════════════════</span></div><div class='output co'>#&gt; <span class='message'>[2020-01-31 14:10:30] ####  Execution of sen2r session terminated.</span>
+#&gt; <span class='message'>                       ####</span></div><div class='output co'>#&gt; <span class='message'>The processing chain can be re-launched with the command:</span>
+#&gt; <span class='message'>  sen2r("/home/lranghetti/.sen2r/proc_par/s2proc_20200131_140938.json")</span></div><div class='input'>
 
 <span class='co'># Show outputs (loading thumbnails)</span>
 
@@ -755,9 +839,13 @@ SAFE Sentinel-2 archives eventually ordered in Long Term Archive.</p></li>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
+      <li><a href="#note">Note</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>
 
+    <h2>Author</h2>
+    <p>Luigi Ranghetti, phD (2020) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
+<p>Lorenzo Busetto, phD (2020) <a href='mailto:lbusett@gmail.com'>lbusett@gmail.com</a></p>
   </div>
 </div>
 

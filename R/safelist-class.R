@@ -56,15 +56,43 @@ setClass("safelist", contains = "character")
 setAs("character", "safelist", function(from) {
   # import x if it is the path of a JSON filelist
   if (all(length(from) == 1, file.exists(from))) {
-    from <- unlist(jsonlite::fromJSON(from))
+    from <- jsonlite::fromJSON(from)
   }
-  # check if input can be converted
-  if (any(c(
-    is.null(names(from)),
-    !grepl("^http.+Products\\(.+\\)/\\$value$", as.vector(from)),
-    !grepl("^S2[AB]\\_MSIL[12][AC]\\_[0-9]{8}T[0-9]{6}\\_N[0-9]{4}\\_R[0-9]{3}\\_T[A-Z0-9]{5}\\_[0-9]{8}T[0-9]{6}\\.SAFE$", names(from))
-  ))) {
-    stop("cannot convert to safelist (input format not recognised)")
+  if (length(nn(from)) == 0) {} else if (
+    length(names(from)) == 3 && 
+    all(names(from) == c("ordered", "available", "notordered"))
+  ) {
+    # check if input can be converted - case of list saved by s2_order
+    order_status <- c(
+      rep("available", length(from$available)),
+      rep("ordered", length(from$ordered)),
+      rep("notordered", length(from$notordered))
+    )
+    from <- c(from$available, from$ordered, from$notordered)
+    from <- setNames(as.character(from), names(from))
+    # add an "order_status" attribute, used in s2_order to eventually re-check
+    # order status, or just order datasets with attribute "notordered"
+    attr(from, "order_status") <- order_status
+    if (any(c(
+      is.null(names(from)),
+      !grepl("^http.+Products\\(.+\\)/\\$value$", as.vector(from)),
+      !grepl("^S2[AB]\\_MSIL[12][AC]\\_[0-9]{8}T[0-9]{6}\\_N[0-9]{4}\\_R[0-9]{3}\\_T[A-Z0-9]{5}\\_[0-9]{8}T[0-9]{6}\\.SAFE$", names(from))
+    ))) {
+      stop("cannot convert to safelist (input format not recognised)")
+    }
+  } else {
+    # check if input can be converted - case of list saved by s2_list, or "bare"
+    if (is(from, "list")) {
+      from <- setNames(as.character(from), names(from))
+    }
+    # list
+    if (any(c(
+      is.null(names(from)),
+      !grepl("^http.+Products\\(.+\\)/\\$value$", as.vector(from)),
+      !grepl("^S2[AB]\\_MSIL[12][AC]\\_[0-9]{8}T[0-9]{6}\\_N[0-9]{4}\\_R[0-9]{3}\\_T[A-Z0-9]{5}\\_[0-9]{8}T[0-9]{6}\\.SAFE$", names(from))
+    ))) {
+      stop("cannot convert to safelist (input format not recognised)")
+    }
   }
   class(from) <- unique(c("safelist", class(from)))
   from
@@ -72,7 +100,7 @@ setAs("character", "safelist", function(from) {
 
 setAs("data.frame", "safelist", function(from) {
   # check if input can be converted
-  if (any(c(
+  if (nrow(from) == 0) {} else if (any(c(
     is.null(from$name), is.null(from$url), 
     !grepl("^http.+Products\\(.+\\)/\\$value$", from$url),
     !grepl("^S2[AB]\\_MSIL[12][AC]\\_[0-9]{8}T[0-9]{6}\\_N[0-9]{4}\\_R[0-9]{3}\\_T[A-Z0-9]{5}\\_[0-9]{8}T[0-9]{6}\\.SAFE$", from$name)

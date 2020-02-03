@@ -10,6 +10,7 @@ raster2rgb(
   palette = "generic_ndsi_2",
   minval = -1,
   maxval = 1,
+  bigtiff = FALSE,
   tmpdir = NA
 )
 }
@@ -30,6 +31,10 @@ accepted.}
 \item{maxval}{(to be implemented) the value corresponding to the maximum
 value of the palette (for now, only 1 is used). A quantile will be also
 accepted.}
+
+\item{bigtiff}{(optional) Logical: if TRUE, the creation of a BigTIFF is
+forced (default is FALSE).
+This option is used only in the case a GTiff format was chosen.}
 
 \item{tmpdir}{(optional) Path where intermediate files (VRT) will be created.
 Default is a temporary directory.

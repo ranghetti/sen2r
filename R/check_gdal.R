@@ -66,7 +66,7 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
   if (any(
     is.null(binpaths$gdalinfo), !file.exists(nn(binpaths$gdalinfo)),
     force == TRUE,
-    !grepl(gdal_path, normalize_path(nn(binpaths$gdalinfo)))
+    !grepl(gdal_path, normalize_path(nn(binpaths$gdalinfo)), fixed = TRUE)
   )) {
     # nocov start
     print_message(
@@ -115,9 +115,19 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
       print_message(
         type=message_type,
         "GDAL was not found",
+        if (Sys.info()["sysname"] == "Windows") {
+          paste0("within path \"",gdal_path,"\" ")
+        },
         if (gdal_path != "") {" within the defined GDAL path"},
         ", please install it",
-        if (gdal_path != "") {" or define another value for argument \"gdal_path\""},
+        if (gdal_path != "") {
+          " or define another value for argument \"gdal_path\""
+        } else {paste0(
+          " (see the documentation at ",
+          "https://sen2r.ranghetti.info/articles/installation ",
+          "to see how to install it) ",
+          " or define its location using argument \"gdal_path\""
+        )},
         "."
       )
       return(invisible(FALSE))
@@ -138,7 +148,13 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
     print_message(
       type=message_type,
       "GDAL version must be at least ", as.character(gdal_minversion),
-      ". Please update it."
+      ". Please update it, ",
+      if (gdal_path != "") {
+        " or define another value for argument \"gdal_path\"."
+      } else {paste0(
+        " or define a different GDAL environment which satisfies ",
+        "this requirement by setting the argument \"gdal_path\"."
+      )},
     )
     return(invisible(FALSE))
   }
@@ -231,16 +247,21 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
   if (!any(gdal_check_py)) {
     print_message(
       type=message_type,
-      "You do not have installed phe Python GDAL executables.",
+      "You do not have installed the Python GDAL executables",
       if (Sys.info()["sysname"] == "Windows") {paste0(
-        "\nUsing the OSGeo4W installer ",
+        ".\nUsing the OSGeo4W installer ",
         "(http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86",
         if (Sys.info()["machine"]=="x86-64") {"_64"},".exe), ",
         "choose the \"Advanced install\" and ",
         "check the package \"gdal-python\"."
       )} else if (Sys.info()["sysname"] == "Darwin") {paste0(
-        "To do it, open a terminal and type ",
-        "\"brew install osgeo-gdal-python\"."
+        " (to do it, open a terminal and type ",
+        "\"brew install osgeo-gdal-python\")."
+      )} else if (Sys.info()["sysname"] == "Linux") {paste0(
+        " (see the documentation at ",
+        "https://sen2r.ranghetti.info/articles/installation#on-linux-systems ",
+        "to see how to install the required dependency ",
+        "based on your Linux distribution.",
       )}
     )
     return(invisible(FALSE))

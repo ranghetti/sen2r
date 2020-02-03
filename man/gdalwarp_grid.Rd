@@ -4,7 +4,7 @@
 \alias{gdalwarp_grid}
 \title{Warp a raster file aligning it on the grid of another file}
 \usage{
-gdalwarp_grid(srcfiles, dstfiles, ref, of = NULL, r = NULL)
+gdalwarp_grid(srcfiles, dstfiles, ref, of = NULL, r = NULL, tmpdir = tempdir())
 }
 \arguments{
 \item{srcfiles}{A vector of input file paths (managed by GDAL).}
@@ -18,6 +18,9 @@ the format of every input filename.}
 
 \item{r}{Resampling_method (\code{"near"}|\code{"bilinear"}|\code{"cubic"}|\code{"cubicspline"}|
 \code{"lanczos"}|\code{"average"}|\code{"mode"}|\code{"max"}|\code{"min"}|\code{"med"}|\code{"q1"}|`"q3"``).}
+
+\item{tmpdir}{(optional) Path where intermediate files (.prj) will be created.
+Default is a temporary directory.}
 }
 \value{
 NULL (the function is called for its side effects)

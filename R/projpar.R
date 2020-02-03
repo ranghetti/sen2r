@@ -1,48 +1,62 @@
 #' @title Return a parameter used in a WKT projection
-#' @description Return the value of a parameter (or the name) present in
-#'  the WKT of the given CRS
+#' @description Return the value of a parameter (the name or the unit)
+#'  present in the WKT of the given CRS.
 #' @param x The CRS to be named (any [st_crs2] input is accepted).
-#' @param par Character corresponding to the parameter name.
+#' @param par Character corresponding to the parameter name
+#'  (it can be one among "name" and "unit" - case insensitive).
 #' @param abort logical: if TRUE, the function aborts in case an invalid
 #'  CRS is passed; if FALSE (default), the function returns NA,
 #'  and a warning is shown.
-#' @return A character with the content of the parameter (NULL if the
-#'  parameter is not recognised) or the name of the projection, and an
+#' @return A character with the content of the parameter, and an
 #'   attribute `crs` with the input projection checked using
 #'  [sf::st_crs()].
-#'
-#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
-#' @note Python is needed.
+#' @note
+#'  The old function, which was searching for a generic parameter
+#'  parsing the WKT, was deprecated: now [projpar()] only accepts `par = "name"`
+#'  and `par = "unit"`, and `projname()` is an alias for `projpar(..., par = "name")`.
+#' @note License: GPL 3.0
+#' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
 #' @export
-#' @importFrom reticulate r_to_py py_to_r
 #' @importFrom sf st_as_text st_crs
-#' @importFrom magrittr "%>%"
 #'
 #' @examples
 #' \donttest{
-#' projpar(4326, "Unit")
+#' projpar(4326, "name")
+#' projpar(4326, "unit")
 #' }
 
 projpar <- function(x, par, abort = FALSE) {
   
-  # import python modules
-  py <- init_python()
+  crs_check <- try(st_crs2(x), silent = TRUE)
+  if (inherits(crs_check, "try-error")) {return(NA)}
   
-  crs_check <- tryCatch(
-    st_crs2(x), 
-    error = function(e) {st_crs(NA)}
-  )
-  if (is.na(crs_check$proj4string)) {
-    return(NA)
+  proj4_wkt <- st_as_text_2(crs_check, pretty = TRUE)
+  
+  proj4_par <- if (tolower(par) %in% c("name", "geogcs", "projgcs")) {
+    if (tolower(par) != "name") {
+      print_message(
+        type = "warning",
+        "par = \"",par,"\" is now an alias of par = \"name\", ",
+        "and will be deprecated in future."
+      )
+    }
+    gsub(
+      "^((PROJCR?S)|(GEOGCR?S))\\[\\\"(.*)\\\",$", "\\4", 
+      strsplit(proj4_wkt, "\n")[[1]][1]
+    )
+  } else if (tolower(par) == "unit") {
+    gsub(
+      "^.+UNIT *\\[\\\"([^\"]*)\\\".+$", "\\1", 
+      proj4_wkt
+    )
+  } else {
+    print_message(
+      type = "error",
+      "par = \"",par,"\" is no longer accepted ",
+      "(only \"name\" and \"unit\" can be used)."
+    )
   }
   
-  proj4_wkt <- st_as_text_2(crs_check) %>%
-    r_to_py() %>%
-    py$osr$SpatialReference()
-  proj4_par <- proj4_wkt$GetAttrValue(par)
-  if (!is(proj4_par, "character")) {
-    proj4_par <- py_to_r(proj4_par)
-  }
   attr(proj4_par, "crs") <- crs_check
   
   return(proj4_par)
@@ -60,22 +74,5 @@ projpar <- function(x, par, abort = FALSE) {
 #' }
 
 projname <- function(x, abort = FALSE) {
-  
-  crs_check <- tryCatch(
-    st_crs2(x), 
-    error = function(e) {st_crs(NA)}
-  )
-  if (is.na(crs_check$proj4string)) {
-    return(NA)
-  }
-  
-  proj4_wkt <- st_as_text_2(crs_check, pretty = TRUE)
-  proj4_name <- gsub(
-    "^((PROJCR?S)|(GEOGCR?S))\\[\\\"(.*)\\\",$", "\\4", 
-    strsplit(proj4_wkt, "\n")[[1]][1]
-  )
-  attr(proj4_name, "crs") <- crs_check
-  
-  return(proj4_name)
-  
+  projpar(x, "name", abort = abort)
 }

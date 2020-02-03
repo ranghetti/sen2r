@@ -12,6 +12,7 @@ s2_merge(
   rmtmp = TRUE,
   format = NA,
   compress = "DEFLATE",
+  bigtiff = FALSE,
   vrt_rel_paths = NA,
   out_crs = NA,
   parallel = FALSE,
@@ -53,6 +54,10 @@ format recognised by GDAL). Default is to maintain each input format.}
 
 \item{compress}{(optional) In the case a GTiff format is
 present, the compression indicated with this parameter is used.}
+
+\item{bigtiff}{(optional) Logical: if TRUE, the creation of a BigTIFF is
+forced (default is FALSE).
+This option is used only in the case a GTiff format was chosen.}
 
 \item{vrt_rel_paths}{(optional) Logical: if TRUE (default on Linux),
 the paths present in the VRT output file are relative to the VRT position;

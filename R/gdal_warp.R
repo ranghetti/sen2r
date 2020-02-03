@@ -53,9 +53,8 @@
 #' @importFrom sf st_transform st_geometry st_geometry_type st_write st_cast st_zm
 #'  st_area st_bbox st_sfc st_sf st_polygon st_as_sf st_as_sfc st_as_sf st_crs
 #'  st_as_text
-#' @importFrom methods as
+#' @importFrom methods is
 #' @importFrom stars read_stars
-#' @importFrom magrittr "%>%"
 #' @importFrom units ud_units
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
@@ -209,7 +208,7 @@ gdal_warp <- function(srcfiles,
       }
     )
   }
-
+  
   # check output format
   if (!is.null(of)) {
     gdal_formats <- fromJSON(
@@ -247,27 +246,36 @@ gdal_warp <- function(srcfiles,
     }
   }
   
+  # define tmpdir 
+  if (is.na(tmpdir)) {
+    tmpdir <- tempfile(pattern="gdalwarp_")
+  } else if (dir.exists(tmpdir)) {
+    tmpdir <- file.path(tmpdir, basename(tempfile(pattern="gdalwarp_")))
+  }
+  
   # if "mask" is specified, take "mask" and "te" from it
   if (!is.null(mask)) {
-    mask <- if (is(mask, "sf") | is(mask, "sfc")) {
-      st_sf(mask)
-    } else if (is(mask, "Spatial")) {
-      st_as_sf(mask)
-    } else if (is(mask, "Raster") | is(mask, "stars")) {
-      st_as_sfc(st_bbox(mask))
-    } else if (is(mask, "character")) {
-      mask0 <- try(st_read(mask, quiet=TRUE), silent = TRUE)
-      if (is(mask0, "sf")) {
-        mask0
-      } else {
-        mask1 <- try(read_stars(mask, proxy=TRUE), silent = TRUE)
-        if (is(mask0, "stars")) {
-          st_as_sfc(st_bbox(mask1))
+    mask <- st_zm(
+      if (is(mask, "sf") | is(mask, "sfc")) {
+        st_sf(mask)
+      } else if (is(mask, "Spatial")) {
+        st_as_sf(mask)
+      } else if (is(mask, "Raster") | is(mask, "stars")) {
+        st_as_sfc(st_bbox(mask))
+      } else if (is(mask, "character")) {
+        mask0 <- try(st_read(mask, quiet=TRUE), silent = TRUE)
+        if (is(mask0, "sf")) {
+          mask0
         } else {
-          stop("'mask' is not a recognised spatial file.")
+          mask1 <- try(read_stars(mask, proxy=TRUE), silent = TRUE)
+          if (is(mask0, "stars")) {
+            st_as_sfc(st_bbox(mask1))
+          } else {
+            stop("'mask' is not a recognised spatial file.")
+          }
         }
-      }
-    } %>% st_zm()
+      } 
+    )
     
     # Check that the polygon is not empty
     if (length(grep("POLYGON",st_geometry_type(mask)))>=1 &
@@ -279,11 +287,6 @@ gdal_warp <- function(srcfiles,
     }
     # cast to multipolygon
     if (length(grep("POLYGON",st_geometry_type(mask)))>=1) {
-      if (is.na(tmpdir)) {
-        tmpdir <- tempfile(pattern="gdalwarp_")
-      } else if (dir.exists(tmpdir)) {
-        tmpdir <- file.path(tmpdir, basename(tempfile(pattern="gdalwarp_")))
-      }
       dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
       st_write(
         st_cast(mask, "MULTIPOLYGON"),
@@ -297,11 +300,10 @@ gdal_warp <- function(srcfiles,
     # create mask_bbox if t_srs is specified;
     # otherwise, create each time within srcfile cycle
     if (!is.null(t_srs)) {
-      mask_bbox <- st_transform(mask, t_srs) %>%
-        st_bbox() %>%
+      mask_bbox <- st_bbox(
+        st_transform(mask, t_srs),
         matrix(nrow=2, ncol=2, dimnames=list(c("x","y"),c("min","max")))
-      # extent() %>% bbox()
-      # get_extent() %>% as("matrix")
+      )
     }
   }
   
@@ -362,15 +364,16 @@ gdal_warp <- function(srcfiles,
           sel_mask_bbox <- if (exists("mask_bbox")) {
             mask_bbox
           } else {
-            st_transform(mask, sel_t_srs) %>%
-              st_bbox() %>%
-              matrix(nrow=2, ncol=2, dimnames=list(c("x","y"),c("min","max")))
-            # get_extent() %>% as("matrix")
+            matrix(
+              st_bbox(st_transform(mask, sel_t_srs)),
+              nrow=2, ncol=2, 
+              dimnames = list(c("x","y"), c("min","max"))
+            )
           }
           if (sel_t_srs == sel_s_srs) {
             sel_te <- (sel_mask_bbox - sel_ll) / sel_tr
             sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
-            dimnames(sel_te) <- list(c("x","y"),c("min","max"))
+            dimnames(sel_te) <- list(c("x","y"), c("min","max"))
             sel_te <- sel_te * sel_tr + sel_ll
           } else {
             sel_te <- sel_mask_bbox
@@ -395,10 +398,11 @@ gdal_warp <- function(srcfiles,
           sel_mask_bbox <- if (exists("mask_bbox")) {
             mask_bbox
           } else {
-            st_transform(mask, sel_t_srs) %>%
-              st_bbox() %>%
-              matrix(nrow=2, ncol=2, dimnames=list(c("x","y"),c("min","max")))
-            # get_extent() %>% as("matrix")
+            matrix(
+              st_bbox(st_transform(mask, sel_t_srs)),
+              nrow=2, ncol=2, 
+              dimnames = list(c("x","y"), c("min","max"))
+            )
           }
           if (sel_t_srs == sel_s_srs) {
             sel_te <- (sel_mask_bbox - ref_ll) / sel_tr
@@ -417,12 +421,22 @@ gdal_warp <- function(srcfiles,
       sel_s_srs_string <- if (!is.na(sel_s_srs$epsg)) {
         paste0("EPSG:",sel_s_srs$epsg)
       } else {
-        gsub("\\\"","\\\\\"",st_as_text_2(sel_s_srs))
+        dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
+        writeLines(
+          st_as_text_2(sel_s_srs),
+          sel_s_srs_path <- tempfile(pattern = "s_srs_", tmpdir = tmpdir, fileext = ".prj")
+        )
+        sel_s_srs_path
       }
       sel_t_srs_string <- if (!is.na(sel_t_srs$epsg)) {
         paste0("EPSG:",sel_t_srs$epsg)
       } else {
-        gsub("\\\"","\\\\\"",st_as_text_2(sel_t_srs))
+        dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
+        writeLines(
+          st_as_text_2(sel_t_srs),
+          sel_t_srs_path <- tempfile(pattern = "t_srs_", tmpdir = tmpdir, fileext = ".prj")
+        )
+        sel_t_srs_path
       }
       system(
         paste0(

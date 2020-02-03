@@ -43,8 +43,11 @@ mountpoint <- function(path, protocol=NA) {
   
   # scan the path
   path <- expand_path(path)
-  parents <- sapply(mountpoints_paths, grep, path) %>%
-    sapply(length) > 0 
+  parents <- sapply(
+    sapply(mountpoints_paths, grep, path),
+    length
+  ) > 0
+  
   parents <- names(parents)[parents]
   
   if (length(parents) == 0) {
@@ -52,7 +55,7 @@ mountpoint <- function(path, protocol=NA) {
     return(invisible(NULL))
   } else if (length(parents) > 1) {
     # if more than one parent directories, return the "nearer" to path
-    parents <- names(sapply(parents,nchar) %>% sort(decreasing=TRUE))[1]
+    parents <- names(sort(sapply(parents,nchar), decreasing=TRUE))[1]
   }
   
   attr(parents, "protocol") <- mountpoints_protocols[mountpoints_paths==parents]

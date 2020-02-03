@@ -93,6 +93,9 @@
 #'  more than a single product is required.
 #' @param compress (optional) In the case a `GTiff` format is
 #'  present, the compression indicated with this parameter is used.
+#' @param bigtiff (optional) Logical: if TRUE, the creation of a BigTIFF is
+#'  forced (default is FALSE).
+#'  This option is used only in the case a GTiff format was chosen. 
 #' @param parallel (optional) Logical: if TRUE, masking is conducted using parallel
 #'  processing, to speed-up the computation for large rasters.
 #'  The number of cores is automatically determined; specifying it is also
@@ -158,6 +161,7 @@ s2_mask <- function(infiles,
                     format = NA,
                     subdirs = NA,
                     compress = "DEFLATE",
+                    bigtiff = FALSE,
                     parallel = FALSE,
                     overwrite = FALSE,
                     .log_message = NA,
@@ -175,6 +179,7 @@ s2_mask <- function(infiles,
            format = format,
            subdirs = subdirs,
            compress = compress,
+           bigtiff = bigtiff,
            parallel = parallel,
            overwrite = overwrite,
            output_type = "s2_mask",
@@ -195,6 +200,7 @@ s2_mask <- function(infiles,
                      format = NA,
                      subdirs = NA,
                      compress = "DEFLATE",
+                     bigtiff = FALSE,
                      parallel = FALSE,
                      overwrite = FALSE,
                      output_type = "s2_mask", # determines if using s2_mask() or s2_perc_masked()
@@ -228,9 +234,9 @@ s2_mask <- function(infiles,
         "Format \"",format,"\" is not recognised; ",
         "please use one of the formats supported by your GDAL installation.\n\n",
         "To list them, use the following command:\n",
-        "gdalUtils::gdalinfo(formats=TRUE)\n\n",
+        "\u00A0\u00A0gdalUtils::gdalinfo(formats=TRUE)\n\n",
         "To search for a specific format, use:\n",
-        "gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
+        "\u00A0\u00A0gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
     }
   }
   
@@ -267,14 +273,17 @@ s2_mask <- function(infiles,
   infiles_meta_raster <- raster_metadata(infiles, c("res", "outformat", "unit"), format="data.table")
   maskfiles_meta_sen2r <- sen2r_getElements(maskfiles, format="data.table")
   
-  # create outdir if not existing
+  # create outdir if not existing (and dirname(outdir) exists)
+  suppressWarnings(outdir <- expand_path(outdir, parent=comsub(infiles,"/"), silent=TRUE))
   if (!dir.exists(dirname(outdir))) {
     print_message(
       type = "error",
-      "Directory '",dirname(outdir),"' does not exists."
+      "The parent folder of 'outdir' (",outdir,") does not exist; ",
+      "please create it."
     )
   }
   dir.create(outdir, recursive=FALSE, showWarnings=FALSE)
+  
   # create subdirs (if requested)
   prod_types <- unique(infiles_meta_sen2r$prod_type)
   if (is.na(subdirs)) {
@@ -361,6 +370,7 @@ s2_mask <- function(infiles,
           paste0(
             binpaths$gdal_translate," -of ",sel_format," ",
             if (sel_format=="GTiff") {paste0("-co COMPRESS=",toupper(compress)," ")},
+            if (sel_format=="GTiff" & bigtiff==TRUE) {paste0("-co BIGTIFF=YES ")},
             "\"",sel_infile,"\" ",
             "\"",sel_outfile,"\""
           ), intern = Sys.info()["sysname"] == "Windows"
@@ -377,6 +387,7 @@ s2_mask <- function(infiles,
             paste0(
               binpaths$gdal_translate," -of GTiff ",
               paste0("-co COMPRESS=",toupper(compress)," "),
+              if (bigtiff==TRUE) {"-co BIGTIFF=YES "},
               "\"",sel_infile,"\" ",
               "\"",gsub("\\.vrt$",".tif",sel_infile),"\""
             ), intern = TRUE
@@ -405,7 +416,10 @@ s2_mask <- function(infiles,
               inmask[[j]],
               function(x){as.integer(!is.na(nn(x)) & !x %in% req_masks[[j]])},
               filename = mask_tmpfiles[j],
-              options = "COMPRESS=LZW",
+              options = c(
+                "COMPRESS=LZW",
+                if (bigtiff==TRUE) {"BIGTIFF=YES"}
+              ),
               datatype = "INT1U",
               overwrite = TRUE
             ),
@@ -506,7 +520,8 @@ s2_mask <- function(infiles,
                 outmask_res,
                 radius = smooth, buffer = buffer,
                 namask = if (min_values_naval==0) {outnaval_res} else {NULL}, # TODO NULL if no Nodata values are present
-                binpaths = binpaths, tmpdir = sel_tmpdir
+                binpaths = binpaths, tmpdir = sel_tmpdir,
+                bigtiff = bigtiff
               )
             } else {
               outmask_res
@@ -572,7 +587,12 @@ s2_mask <- function(infiles,
                   NAflag=na,
                   datatype = datatype,
                   format = ifelse(sel_format=="VRT","GTiff",sel_format),
-                  if(sel_format %in% c("GTiff","VRT")){options = c("COMPRESS=LZW")},
+                  if (sel_format %in% c("GTiff","VRT")) {
+                    options = c(
+                      "COMPRESS=LZW",
+                      if (bigtiff==TRUE) {"BIGTIFF=YES"}
+                    )
+                  },
                   overwrite = overwrite
                 ),
                 "NOT UPDATED FOR PROJ >\\= 6"

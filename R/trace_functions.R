@@ -35,7 +35,6 @@
 #' @return NULL (the function is called for its side effects)
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
-#' @importFrom magrittr "%>%"
 #' @importFrom methods is
 
 #' @name start_trace
@@ -78,8 +77,10 @@ clean_trace <- function(tracename) {
   if (!file.exists(tracename)) {return(invisible(NULL))}
   
   # retrieve when the trace started
-  tracetime <- gsub("^([0-9]+)\\_.*\\.txt$","\\1",basename(tracename)) %>%
-    as.POSIXct(format="%y%m%d%H%M%S")
+  tracetime <- as.POSIXct(
+    gsub("^([0-9]+)\\_.*\\.txt$","\\1",basename(tracename)),
+    format="%y%m%d%H%M%S"
+  )
   # read expected output filenames
   outfilenames <- readLines(tracename)
   
@@ -138,8 +139,10 @@ clean_traces <- function(trace_funname=NA) {
     "name" = list.files(trace_path, "^([0-9]+)\\_(.*)\\.txt$", full.names = TRUE),
     stringsAsFactors = FALSE
   )
-  tracenames_df$time <- gsub("^([0-9]+)\\_(.*)\\.txt$","\\1",basename(tracenames_df$name)) %>%
-    as.POSIXct(format="%y%m%d%H%M%S")
+  tracenames_df$time <- as.POSIXct(
+    gsub("^([0-9]+)\\_(.*)\\.txt$","\\1",basename(tracenames_df$name)),
+    format="%y%m%d%H%M%S"
+  )
   tracenames_df$fun <- gsub("^([0-9]+)\\_(.*)\\.txt$","\\2",basename(tracenames_df$name))
   # if required, filter on trace_funname
   if (!is.na(trace_funname)) {

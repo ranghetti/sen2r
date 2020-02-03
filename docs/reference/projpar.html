@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Return a parameter used in a WRT projection — projpar • sen2r: Find, Download and Process Sentinel-2 Data</title>
+<title>Return a parameter used in a WKT projection — projpar • sen2r: Find, Download and Process Sentinel-2 Data</title>
 
 
 <!-- jquery -->
@@ -35,9 +35,9 @@
 
 
 
-<meta property="og:title" content="Return a parameter used in a WRT projection — projpar" />
-<meta property="og:description" content="Return the value of a parameter (or the name) present in
-the WKT of the given proj4string." />
+<meta property="og:title" content="Return a parameter used in a WKT projection — projpar" />
+<meta property="og:description" content="Return the value of a parameter (the name or the unit)
+present in the WKT of the given CRS." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -80,7 +80,7 @@ the WKT of the given proj4string." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1.9012</span>
       </span>
     </div>
 
@@ -145,58 +145,69 @@ the WKT of the given proj4string." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Return a parameter used in a WRT projection</h1>
+    <h1>Return a parameter used in a WKT projection</h1>
     <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/projpar.R'><code>R/projpar.R</code></a></small>
     <div class="hidden name"><code>projpar.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Return the value of a parameter (or the name) present in
-the WKT of the given proj4string.</p>
+    <p>Return the value of a parameter (the name or the unit)
+present in the WKT of the given CRS.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>projpar</span>(<span class='no'>proj4string</span>, <span class='no'>par</span>, <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+    <pre class="usage"><span class='fu'>projpar</span>(<span class='no'>x</span>, <span class='no'>par</span>, <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
-<span class='fu'>projname</span>(<span class='no'>proj4string</span>, <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+<span class='fu'>projname</span>(<span class='no'>x</span>, <span class='kw'>abort</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>proj4string</th>
-      <td><p>The proj4string to be named.</p></td>
+      <th>x</th>
+      <td><p>The CRS to be named (any <a href='st_crs2.html'>st_crs2</a> input is accepted).</p></td>
     </tr>
     <tr>
       <th>par</th>
-      <td><p>Character corresponding to the parameter name.</p></td>
+      <td><p>Character corresponding to the parameter name
+(it can be one among "name" and "unit" - case insensitive).</p></td>
     </tr>
     <tr>
       <th>abort</th>
       <td><p>logical: if TRUE, the function aborts in case an invalid
-proj4string is passed; if FALSE (default), the function returns NA,
+CRS is passed; if FALSE (default), the function returns NA,
 and a warning is shown.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A character with the content of the parameter (NULL if the
-parameter is not recognised) or the name of the projection, and an
-attribute <code>proj4string</code> with the input projection checked using
+    <p>A character with the content of the parameter, and an
+attribute <code>crs</code> with the input projection checked using
 <code><a href='https://rdrr.io/pkg/sf/man/st_crs.html'>sf::st_crs()</a></code>.</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>Python is needed.</p>
+    <p>The old function, which was searching for a generic parameter
+parsing the WKT, was deprecated: now <code>projpar()</code> only accepts <code>par = "name"</code>
+and <code>par = "unit"</code>, and <code>projname()</code> is an alias for <code>projpar(..., par = "name")</code>.</p>
+<p>License: GPL 3.0</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
-<span class='fu'>projpar</span>(<span class='st'>"+init=epsg:4326"</span>, <span class='st'>"Unit"</span>)</div><div class='output co'>#&gt; [1] "degree"
-#&gt; attr(,"proj4string")
-#&gt; [1] "+proj=longlat +datum=WGS84 +no_defs"</div><div class='input'><span class='co'># }</span>
+<span class='fu'>projpar</span>(<span class='fl'>4326</span>, <span class='st'>"name"</span>)</div><div class='output co'>#&gt; [1] "WGS 84"
+#&gt; attr(,"crs")
+#&gt; Coordinate Reference System:
+#&gt;   EPSG: 4326 
+#&gt;   proj4string: "+proj=longlat +datum=WGS84 +no_defs"</div><div class='input'><span class='fu'>projpar</span>(<span class='fl'>4326</span>, <span class='st'>"unit"</span>)</div><div class='output co'>#&gt; [1] "degree"
+#&gt; attr(,"crs")
+#&gt; Coordinate Reference System:
+#&gt;   EPSG: 4326 
+#&gt;   proj4string: "+proj=longlat +datum=WGS84 +no_defs"</div><div class='input'><span class='co'># }</span>
 <span class='co'># \donttest{</span>
-<span class='fu'>projname</span>(<span class='st'>"+init=epsg:4326"</span>)</div><div class='output co'>#&gt; [1] "WGS 84"
-#&gt; attr(,"proj4string")
-#&gt; [1] "+proj=longlat +datum=WGS84 +no_defs"</div><div class='input'># }
+<span class='fu'>projname</span>(<span class='fl'>4326</span>)</div><div class='output co'>#&gt; [1] "WGS 84"
+#&gt; attr(,"crs")
+#&gt; Coordinate Reference System:
+#&gt;   EPSG: 4326 
+#&gt;   proj4string: "+proj=longlat +datum=WGS84 +no_defs"</div><div class='input'># }
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -209,7 +220,7 @@ attribute <code>proj4string</code> with the input projection checked using
     </ul>
 
     <h2>Author</h2>
-    <p>Luigi Ranghetti, phD (2019) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
+    <p>Luigi Ranghetti, phD (2020) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
   </div>
 </div>
 

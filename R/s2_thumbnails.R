@@ -21,6 +21,9 @@
 #'  (integer, 0-100).
 #'  In the case a GTiff format is present and an integer 0-100 number is provided,
 #'  this is interpreted as the quality level of a JPEG compression.
+#' @param bigtiff (optional) Logical: if TRUE, the creation of a BigTIFF is
+#'  forced (default is FALSE).
+#'  This option is used only in the case a GTiff format was chosen. 
 #' @param tmpdir (optional) Path where intermediate files will be created.
 #'  Default is a temporary directory.
 #'  If `tmpdir` is a non-empty folder, a random subdirectory will be used.
@@ -38,8 +41,9 @@ stack2rgb <- function(in_rast,
                       bands = 1:3,
                       minval = 0,
                       maxval = 1E4,
-                      format="JPEG",
-                      compress="90",
+                      format = "JPEG",
+                      compress = "90",
+                      bigtiff = FALSE,
                       tmpdir = NA) {
   
   # Load GDAL paths
@@ -80,6 +84,7 @@ stack2rgb <- function(in_rast,
   } else {
     paste0("-co \"COMPRESS=",compress,"\" ")
   }
+  if (bigtiff == TRUE) {co <- paste0(co, "-co \"BIGIFF=TRUE\" ")}
   
   # Define formula (one if minval-maxval are unique, three elsewhere)
   gdal_formula <- paste0(
@@ -206,6 +211,9 @@ stack2rgb <- function(in_rast,
 #' @param maxval (to be implemented) the value corresponding to the maximum
 #'  value of the palette (for now, only 1 is used). A quantile will be also
 #'  accepted.
+#' @param bigtiff (optional) Logical: if TRUE, the creation of a BigTIFF is
+#'  forced (default is FALSE).
+#'  This option is used only in the case a GTiff format was chosen. 
 #' @param tmpdir (optional) Path where intermediate files (VRT) will be created.
 #'  Default is a temporary directory.
 #'  If `tmpdir` is a non-empty folder, a random subdirectory will be used.
@@ -223,6 +231,7 @@ raster2rgb <- function(in_rast,
                        palette = "generic_ndsi_2",
                        minval = -1,
                        maxval = 1,
+                       bigtiff = FALSE,
                        tmpdir = NA) {
   # TODO minval, maxval: now they do not work,
   # add a code to read cpt file, rescale values and save as temp file
@@ -292,6 +301,7 @@ raster2rgb <- function(in_rast,
     paste0(
       binpaths$gdaldem," color-relief ",
       "-of GTiff -co COMPRESS=LZW ", # discrete values
+      if (bigtiff == TRUE) {"-co BIGTIFF=YES "},
       "-compute_edges ",
       "\"",in_rast,"\" ",
       "\"",palette,"\" ",

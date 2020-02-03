@@ -153,7 +153,18 @@
     <p>A common interface for printing messages of several types.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>print_message</span>(<span class='no'>...</span>, <span class='no'>type</span>, <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>date</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>date_format</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
+    <pre class="usage"><span class='fu'>print_message</span>(
+  <span class='no'>...</span>,
+  <span class='no'>type</span>,
+  <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>""</span>,
+  <span class='kw'>date</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>date_format</span> <span class='kw'>=</span> <span class='st'>""</span>,
+  <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>0.9</span> * <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"width"</span>),
+  <span class='kw'>indent</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>exdent</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>prefix</span> <span class='kw'>=</span> <span class='st'>""</span>,
+  <span class='kw'>initial</span> <span class='kw'>=</span> <span class='no'>prefix</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -180,14 +191,40 @@
     </tr>
     <tr>
       <th>date</th>
-      <td><p>Logical value: set TRUE to place the date before the message
-(useful for logs or time consuming operations); default is FALSE.</p></td>
+      <td><p>Logical value: set <code>TRUE</code> to place the date before the message
+and after the prefix (this is useful for logs or time consuming operations);
+default is FALSE.</p></td>
     </tr>
     <tr>
       <th>date_format</th>
       <td><p>Format of the date (see <code><a href='https://rdrr.io/r/base/strptime.html'>strftime</a></code>)
 for the definition of the format). The default format is
-"%Y-%m-%d %H:%M:%S".</p></td>
+<code>'\%Y-\%m-\%d \%H:\%M:\%S'</code>.</p></td>
+    </tr>
+    <tr>
+      <th>width</th>
+      <td><p>Positive integer: target column for wrapping lines in the output
+(set to <code>Inf</code> for no wrapping).</p></td>
+    </tr>
+    <tr>
+      <th>indent</th>
+      <td><p>Non-negative integer: indentation of the first line in a paragraph
+It can be also a logical: in this case, if TRUE (default) the value
+is optimised in order to align first line with the followings.</p></td>
+    </tr>
+    <tr>
+      <th>exdent</th>
+      <td><p>Non-negative integer: indentation of subsequent lines in paragraphs.
+It can be also a logical: in this case, if TRUE (default) the value
+is optimised in order to align lines with the first line.</p></td>
+    </tr>
+    <tr>
+      <th>prefix</th>
+      <td><p>Character: prefix for each line except the first.</p></td>
+    </tr>
+    <tr>
+      <th>initial</th>
+      <td><p>Character: prefix for the first line.</p></td>
     </tr>
     </table>
 
@@ -219,7 +256,7 @@ placed before the message.</p>
     </ul>
 
     <h2>Author</h2>
-    <p>Luigi Ranghetti, phD (2019) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
+    <p>Luigi Ranghetti, phD (2020) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
   </div>
 </div>
 

@@ -38,8 +38,7 @@ gdal_formats_db <- function(gdalDrivers,
     json_path <- file.path(system.file("extdata/settings",package="sen2r"),"gdal_formats.json")
   }
   if (system.file("extdata/settings/gdal_formats.json", package="sen2r") == json_path) {
-    json_version <- jsonlite::fromJSON(json_path)$pkg_version %>%
-      package_version()
+    json_version <- package_version(jsonlite::fromJSON(json_path)$pkg_version)
     if (all(force == FALSE, length(json_version)>0, json_version >= packageVersion("sen2r"))) {
       return(invisible(NULL))
     }

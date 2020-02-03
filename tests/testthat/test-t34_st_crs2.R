@@ -67,9 +67,5 @@ testthat::test_that(
         32609
       )
     }
-    testthat::expect_equal(
-      st_crs2(32609)[["proj4string"]], 
-      "+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"
-    )
   }
 )

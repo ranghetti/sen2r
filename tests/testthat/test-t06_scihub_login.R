@@ -19,7 +19,10 @@ test_that("check reading / writing credentials", {
   write_scihub_login("user", "user")
   testthat::expect_error(
     write_scihub_login("user2", "user2"),
-    regexp = "[Tt]he provided credentials are not valid"
+    regexp = gsub(
+      " ", "[ \n]",
+      "[Tt]he provided credentials are not valid"
+    )
   )
   write_scihub_login("user", "user", apihub_path = apitmp <- tempfile())
   creds <- read_scihub_login(apihub_path = apitmp)
@@ -69,6 +72,9 @@ test_that("check internet connection and fail if missing", {
       overwrite = TRUE,
       thumbnails = FALSE
     )), 
-    regexp = "[Ii]nternet connection or SciHub may be down"
+    regexp = gsub(
+      " ", "[ \n]",
+      "[Ii]nternet connection or SciHub may be down"
+    )
   )
 })

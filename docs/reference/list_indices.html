@@ -235,6 +235,8 @@ create the indices archive.</p></li>
 #&gt; 215       BDred
 #&gt; 223        NDWI
 #&gt; 224       NDWI2
+#&gt; 225      NDVIre
+#&gt; 226        NDBI
 #&gt;                                                                                         longname
 #&gt; 4                                                                  Anthocyanin reflectance index
 #&gt; 6                                                     Atmospherically Resistant Vegetation Index
@@ -268,13 +270,15 @@ create the indices archive.</p></li>
 #&gt; 211                                                                 Continuum Removal in the red
 #&gt; 215                                                                        Band Depth in the red
 #&gt; 223                                                            Normalized Difference Water Index
-#&gt; 224                                                          Normalized Difference Water Index 2</div><div class='input'>
+#&gt; 224                                                          Normalized Difference Water Index 2
+#&gt; 225                                        Red-edge-based Normalized Difference Vegetation Index
+#&gt; 226                                                         Normalized Difference Built-up Index</div><div class='input'>
 <span class='co'># Return the MSAVI2 formula</span>
 <span class='fu'>list_indices</span>(<span class='st'>"s2_formula"</span>, <span class='st'>"^MSAVI2$"</span>)</div><div class='output co'>#&gt; [1] "(2*band_8+1-sqrt(power((2*band_8+1),2)-8*(band_8-band_4)))/(2)"
 #&gt; attr(,"pkg_version")
-#&gt; [1] ‘1.2.0’
+#&gt; [1] ‘1.2.1.9000’
 #&gt; attr(,"creation_date")
-#&gt; [1] "2019-10-11 17:16:25 CEST"</div><div class='input'>
+#&gt; [1] "2019-11-15 09:44:27 CET"</div><div class='input'>
 <span class='co'># Return all index names (including unchecked)</span>
 <span class='fu'>list_indices</span>(<span class='st'>"name"</span>, <span class='kw'>all</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;   [1] "ATSAVI"        "AFRI1600"      "AFRI2100"      "ARI"          
 #&gt;   [5] "AVI"           "ARVI"          "ARVI2"         "BWDRVI"       
@@ -332,10 +336,11 @@ create the indices archive.</p></li>
 #&gt; [213] "CRred-2B"      "CRred-0"       "BDred"         "BDred-2A"     
 #&gt; [217] "BDred-2B"      "BDred-0"       "CRred2"        "CRred2-2A"    
 #&gt; [221] "CRred2-2B"     "CRred2-0"      "NDWI"          "NDWI2"        
+#&gt; [225] "NDVIre"        "NDBI"         
 #&gt; attr(,"pkg_version")
-#&gt; [1] ‘1.2.0’
+#&gt; [1] ‘1.2.1.9000’
 #&gt; attr(,"creation_date")
-#&gt; [1] "2019-10-11 17:16:25 CEST"</div></pre>
+#&gt; [1] "2019-11-15 09:44:27 CET"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
