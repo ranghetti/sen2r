@@ -23,7 +23,6 @@ BugReports: https://github.com/ranghetti/sen2r/issues
 Depends: R (>= 3.5.0)
 Imports:
   methods,
-  rgdal,
   sf,
   stars,
   data.table,
