@@ -156,15 +156,18 @@
 <p>To install both package dependencies and runtime binaries (excepting <strong>sen2cor</strong>, which is installed by <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>):</p>
 <ul>
 <li>
-<p>On Debian and Ubuntu:</p>
+<p>On Ubuntu:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">sudo</span> apt-get install -y r-base gdal-bin python-gdal aria2 libpython-dev libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libv8-dev libssl-dev libcairo2-dev</span></code></pre></div>
-<p>On Debian, <code>proj-epsg</code> is also required:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">sudo</span> apt-get install -y proj-epsg</span></code></pre></div>
 <p>On Ubuntu 16.04 LTS Xenial and 14.04 LTS Trusty, the repositories <a href="https://launchpad.net/~ubuntugis">ubuntugis</a> and <a href="https://launchpad.net/~opencpu">opencpu</a> must be added before installing the packages:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">sudo</span> add-apt-repository -y ppa:opencpu/jq</span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="fu">sudo</span> add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable</span>
-<span id="cb3-3"><a href="#cb3-3"></a><span class="fu">sudo</span> apt-get update -q</span></code></pre></div>
-<p>Installation was tested over Debian 9 Stretch and Ubuntu 18.04 LTS Bionic; newer versions (Ubuntu &gt; 18.04, Debian &gt; 9) should work, like Ubuntu 16.04 LTS Xenial and 14.04 LTS Trusty should also do. Other releases (Debian ≤ 8; Ubuntu non-LTS &lt; 18.04; Ubuntu LTS ≤ 12.04) are not supported.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">sudo</span> add-apt-repository -y ppa:opencpu/jq</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="fu">sudo</span> add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable</span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="fu">sudo</span> apt-get update -q</span></code></pre></div>
+<p>Installation was tested over Ubuntu 18.04 LTS Bionic; newer versions should work, like Ubuntu 16.04 LTS Xenial and 14.04 LTS Trusty should also do. Other releases (Ubuntu non-LTS &lt; 18.04; Ubuntu LTS ≤ 12.04) are not supported.</p>
+</li>
+<li>
+<p>On Debian:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">sudo</span> apt-get install -y r-base gdal-bin python-gdal aria2 libpython-dev libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libnode-dev libssl-dev libcairo2-dev proj-epsg</span></code></pre></div>
+<p>Installation was tested over Debian 9 Stretch; older releases are not supported.</p>
 </li>
 <li>
 <p>On Fedora:</p>

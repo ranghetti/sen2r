@@ -1,4 +1,4 @@
-FROM rocker/geospatial:3.5.1
+FROM rocker/geospatial:latest
 
 LABEL maintainer="Luigi Ranghetti <luigi@ranghetti.info>"
 
@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
         python-gdal \
         aria2 \
         libpython-dev \
-        libv8-3.14-dev && \
+        libnode-dev && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
