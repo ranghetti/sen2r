@@ -23,15 +23,15 @@ st_as_text_2 <- function(x, pretty = FALSE) {
     packageVersion("rgdal") >= 1.5
   )) {
     x_crs <- st_crs(x)
-    rgdal::showSRID(
-      if (is.na(x_crs$epsg)) {
-        x_crs$proj4string
-      } else {
-        paste0("EPSG:",x_crs$epsg)
-      },
-      format = "WKT2", 
-      multiline = if (pretty == TRUE) {"YES"} else {"NO"}
-    )
+    x_proj <- if (is.na(x_crs$epsg)) {
+      x_crs$proj4string
+    } else {
+      paste0("EPSG:",x_crs$epsg)
+    }
+    srid_multiline <- if (pretty == TRUE) {"YES"} else {"NO"}
+    eval(parse(
+      text = "rgdal::showSRID(x_proj, format = 'WKT2', multiline = srid_multiline)"
+    ))
   } else {
     st_as_text(x, pretty = pretty)
   }
