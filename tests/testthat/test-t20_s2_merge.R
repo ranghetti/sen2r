@@ -31,7 +31,9 @@ testthat::test_that(
     
     # check sen2r output format
     testthat::expect_is(out1, "character")
-    testthat::expect_equivalent(out1, exp_outpath_1)
+    testthat::expect_equivalent(
+      normalize_path(out1), normalize_path(exp_outpath_1)
+    )
     testthat::expect_equal(
       names(attributes(out1)), 
       c("procpath", "cloudcovered", "missing", "status")
