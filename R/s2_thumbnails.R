@@ -48,6 +48,7 @@ stack2rgb <- function(in_rast,
   
   # Load GDAL paths
   binpaths <- load_binpaths("gdal")
+  init_python()
   
   # define and create tmpdir
   if (is.na(tmpdir)) {
@@ -101,7 +102,6 @@ stack2rgb <- function(in_rast,
     
     interm_path <- file.path(tmpdir, gsub("\\..+$","_temp.tif", basename(out_file)))
     
-    init_python()
     system(
       paste0(
         binpaths$gdal_calc," ",
@@ -124,7 +124,6 @@ stack2rgb <- function(in_rast,
     interm_path <- gsub("\\_temp1.tif$", "_temp.vrt", interm_paths[1])
     
     for (i in seq_along(minval)) {
-      init_python()
       system(
         paste0(
           binpaths$gdal_calc," ",

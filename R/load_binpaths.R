@@ -76,11 +76,8 @@ load_binpaths <- function(bins = NULL) {
     }
   }
   
-  # # Check python
-  # if ("python" %in% bins & is.null(binpaths$python)) {
-  #   init_python()
-  #   binpaths <- jsonlite::fromJSON(binpaths_file)
-  # }
+  # Set Python env variables
+  init_python()
   
   # Return the list
   attr(binpaths, "path") <- binpaths_file
