@@ -778,9 +778,9 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
             matrix(sel_footprint_raw0, ncol = 2, byrow = TRUE)[,2:1],
             1, paste, collapse = " "
           )
-          metadata[[i]][["footprint"]] <- paste(
-            paste0("POLYGON((",sel_footprint_raw1,"))"),  
-            collapse = ", "
+          metadata[[i]][["footprint"]] <-  paste0(
+            "POLYGON((",
+            paste(sel_footprint_raw1,  collapse = ", "),"))"
           )
         }
       }
