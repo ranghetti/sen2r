@@ -76,9 +76,6 @@ load_binpaths <- function(bins = NULL) {
     }
   }
   
-  # Set Python env variables
-  init_python()
-  
   # Return the list
   attr(binpaths, "path") <- binpaths_file
   binpaths

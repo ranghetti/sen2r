@@ -12,7 +12,7 @@ init_python <- function() {
     return(invisible(NULL))
   }
   
-  binpaths <- load_binpaths()
+  binpaths <- load_binpaths("gdal")
   pythonhome_new <- list.files(
     file.path(dirname(dirname(binpaths$gdalinfo)),"apps"), 
     pattern="^Python", 
