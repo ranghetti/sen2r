@@ -59,6 +59,7 @@ smooth_mask <- function(
   # 1. set inmask=1 (clear sky) and namask=0 (nodata) to NA
   inmask_path1 <- file.path(tmpdir,basename(tempfile(pattern = "mask_", fileext = ".tif")))
   if (!is.null(namask)) {
+    init_python()
     system(
       paste0(
         binpaths$gdal_calc," ",
@@ -85,6 +86,7 @@ smooth_mask <- function(
     
     # 2. first positive buffer (1/2 radius)
     inmask_path2 <- gsub("\\.tif$","_2.tif",inmask_path1)
+    init_python()
     system(
       paste0(binpaths$gdal_fillnodata," -md ",radius_npx*3/4," -si 0 -of GTiff -co COMPRESS=LZW ",inmask_path1," ",inmask_path2),
       intern = Sys.info()["sysname"] == "Windows"
@@ -103,6 +105,7 @@ smooth_mask <- function(
         ),
         intern = Sys.info()["sysname"] == "Windows"
       )
+      init_python()
       system(
         paste0(
           binpaths$gdal_calc," ",
@@ -127,6 +130,7 @@ smooth_mask <- function(
     
     # 2. second negative buffer (3/4 radius + 5/4 radius)
     inmask_path4 <- gsub("\\.tif$","_4.tif",inmask_path1)
+    init_python()
     system(
       paste0(binpaths$gdal_fillnodata," -md ",radius_npx*2," -si 0 -of GTiff -co COMPRESS=LZW ",inmask_path3," ",inmask_path4),
       intern = Sys.info()["sysname"] == "Windows"
@@ -145,6 +149,7 @@ smooth_mask <- function(
         ),
         intern = Sys.info()["sysname"] == "Windows"
       )
+      init_python()
       system(
         paste0(
           binpaths$gdal_calc," ",
@@ -173,6 +178,7 @@ smooth_mask <- function(
   
   # 6. third positive buffer (5/4 radius to complete smooth, buffer to buffer if < 0, to 3/2 buffer if >0)
   inmask_path6 <- gsub("\\.tif$","_6.tif",inmask_path1)
+  init_python()
   system(
     paste0(binpaths$gdal_fillnodata," -md ",radius_npx*5/4+ifelse(buffer_npx>0,buffer_npx*3/2,buffer_npx)," -si 0 -of GTiff -co COMPRESS=LZW ",inmask_path5," ",inmask_path6),
     intern = Sys.info()["sysname"] == "Windows"
@@ -194,6 +200,7 @@ smooth_mask <- function(
         ),
         intern = Sys.info()["sysname"] == "Windows"
       )
+      init_python()
       system(
         paste0(
           binpaths$gdal_calc," ",
@@ -218,6 +225,7 @@ smooth_mask <- function(
     
     # 8. fourth negative buffer (1/2)
     inmask_path8 <- gsub("\\.tif$","_8.tif",inmask_path1)
+    init_python()
     system(
       paste0(binpaths$gdal_fillnodata," -md ",buffer_npx/2," -si 0 -of GTiff -co COMPRESS=LZW ",inmask_path7," ",inmask_path8),
       intern = Sys.info()["sysname"] == "Windows"
@@ -239,6 +247,7 @@ smooth_mask <- function(
   )
   if (!is.null(namask)) {
     inmask_path9b <- gsub("\\.tif$","_9b.tif",inmask_path1)
+    init_python()
     system(
       paste0(
         binpaths$gdal_calc," ",

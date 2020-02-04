@@ -492,6 +492,7 @@ s2_calcindices <- function(
         
         # Launch the processing
         if (proc_mode == "gdal_calc") {
+          init_python()
           system(
             paste0(
               binpaths$gdal_calc," ",

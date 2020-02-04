@@ -157,7 +157,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   } else if (!pm$rm_safe %in% c("yes", "no", "l1c")) {
     print_message(
       type = type,
-      "Parameter \"online\" must be one among 'yes', 'no' and 'l1c' (setting to the default)."
+      "Parameter \"rm_safe\" must be one among 'yes', 'no' and 'l1c' (setting to the default)."
     )
     pm$rm_safe <- pm_def$rm_safe
   }

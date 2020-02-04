@@ -163,7 +163,7 @@
 </ul>
 </li>
 <li>After running <code><a href="../reference/sen2r.html">sen2r()</a></code> a short report is returned to output summarising the status of the required processing (see new internal function <code><a href="../reference/sen2r_process_report.html">sen2r_process_report()</a></code>). This should facilitate applying sen2r in a cycle until all “expected dates” are processed.</li>
-<li>Management of Sen2Cor GIPP parameters: now the user can process L1C SAFE images applying a topographic correction (as done to produce L2A images on ESA Hub) or specifying other parameters managed by L2A_GIPP.xml file. To allow doing that, new arguments were added to <code><a href="../reference/sen2cor.html">sen2cor()</a></code> and <code><a href="../reference/sen2r.html">sen2r()</a></code> (se below) and a new option was added in the GUI.</li>
+<li>Management of Sen2Cor GIPP parameters: now the user can process L1C SAFE images applying a topographic correction (as done to produce L2A images on ESA Hub) or specifying other parameters managed by L2A_GIPP.xml file. To allow doing that, new arguments were added to <code><a href="../reference/sen2cor.html">sen2cor()</a></code> and <code><a href="../reference/sen2r.html">sen2r()</a></code> (see below) and a new option was added in the GUI.</li>
 </ul>
 </div>
 <div id="new-functions" class="section level2">
@@ -200,7 +200,7 @@
 <li>All components of the order (available, ordered and notordered) are now saved in JSON files. This allows using them to re-do an order, specifying if re-ordering already ordered datasets or only order the ones identified as “notordered” (based on new argument “reorder”).</li>
 <li>Output messages are formatted so not to exceed output line length.</li>
 <li>Add support for BigTIFF format.</li>
-<li>Dependencies <strong>reticulate</strong> and <strong>magrittr</strong> were removed.</li>
+<li>Dependencies <strong><code>reticulate</code></strong> and <strong><code>magrittr</code></strong> were removed.</li>
 <li>Checks on the validity of SAFE products were improved.</li>
 <li>Add NDBI / NDVIre indices (<a href='https://github.com/ranghetti/sen2r/issues/241'>#241</a>).</li>
 <li>Add footprint among metadata retrieved using <code><a href="../reference/safe_getMetadata.html">safe_getMetadata()</a></code> (from existing offline SAFE archives) and <code><a href="../reference/s2_list.html">s2_list()</a></code> (from SciHub online metadata).</li>
@@ -208,7 +208,7 @@
 <li>Add method to convert class <code>safelist</code> to <code>sf</code> (using footprint).</li>
 <li>Rewrite <code><a href="../reference/st_crs2.html">st_crs2()</a></code> using class methods (see the function help for newly accepted inputs).</li>
 <li>
-<code><a href="../reference/safe_getMetadata.html">safe_getMetadata()</a></code> now directly read XML SAFE files instead than calling GDAL through <strong>reticulate</strong> (this avoids errors in particular OS conditions).</li>
+<code><a href="../reference/safe_getMetadata.html">safe_getMetadata()</a></code> now directly read XML SAFE files instead than calling GDAL through <strong><code>reticulate</code></strong> (this avoids errors in particular OS conditions).</li>
 <li>Do not use PROJ4 string with PROJ &gt; 3 (<a href="https://rsbivand.github.io/ECS530_h19/ECS530_III.html" class="uri">https://rsbivand.github.io/ECS530_h19/ECS530_III.html</a>).</li>
 <li>Retrieve the GDAL installation path using <code>gdal-config</code> instead than <code>whereis gdalinfo</code>.</li>
 <li>Add a test for reprojection without EPSG.</li>
@@ -220,7 +220,7 @@
 <h2 class="hasAnchor">
 <a href="#fixes" class="anchor"></a>Fixes</h2>
 <ul>
-<li>Fix errors “DLL load failed” with Python GDAL scripts on Windows (see <a href='https://github.com/ranghetti/sen2r/issues/231'>#231</a> and <a href='https://github.com/ranghetti/sen2r/issues/234'>#234</a>) due to a missing <code>proj.db</code> file in <strong>rgdal</strong>.</li>
+<li>Fix errors “DLL load failed” with Python GDAL scripts on Windows (see <a href='https://github.com/ranghetti/sen2r/issues/231'>#231</a> and <a href='https://github.com/ranghetti/sen2r/issues/234'>#234</a>) due to a missing <code>proj.db</code> file in <strong><code>rgdal</code></strong>.</li>
 <li>Hide warning using PROJ &gt;= 6 (<a href="https://github.com/rspatial/raster/issues/78" class="uri">https://github.com/rspatial/raster/issues/78</a>).</li>
 <li>Other various bug fixes (see issues).</li>
 </ul>
