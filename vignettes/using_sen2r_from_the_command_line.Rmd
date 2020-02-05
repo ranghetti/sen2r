@@ -2,7 +2,7 @@
 title: "Using sen2r() from the command line"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Installation}
+  %\VignetteIndexEntry{Using sen2r() from the command line}
   %\VignetteEngine{knitr::knitr}
   %\usepackage[UTF-8]{inputenc}
 ---
@@ -150,6 +150,13 @@ json_path
 [1] "/tmp/RtmpDLx7qh/file30ac6089ea3_sen2r_params.json"
 
 out_paths <- sen2r(param_list = json_path)
+
+[2020-02-05 11:58:09] ####  Starting sen2r execution.  ####
+[2020-02-05 11:58:09] Searching for available SAFE products on SciHub...
+[2020-02-05 11:58:12] Computing output names...
+[2020-02-05 11:58:13] Starting to download the required level-2A SAFE products.
+Images S2A_MSIL2A_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE are already on your system and will be
+skipped. Set "overwrite_safe" to TRUE to re-download them.
 
 # SKIPPING MOST PROCESSING MESSAGES HERE#
 

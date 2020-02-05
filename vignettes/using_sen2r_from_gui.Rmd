@@ -2,7 +2,7 @@
 title: "Using sen2r() from the GUI"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Installation}
+  %\VignetteIndexEntry{Using sen2r() from the GUI}
   %\VignetteEngine{knitr::knitr}
   %\usepackage[UTF-8]{inputenc}
 ---
