@@ -421,7 +421,7 @@ s2_gui <- function(param_list = NULL,
                 
                 # delete_safe
                 radioButtons("rm_safe", "Delete raw SAFE files after processing?",
-                             choices = list("Yes" = "all",
+                             choices = list("Yes" = "yes",
                                             "Only level-1C" = "l1c",
                                             "No" = "no"),
                              selected = "no",

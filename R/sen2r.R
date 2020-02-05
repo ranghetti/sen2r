@@ -50,7 +50,7 @@
 #'  FALSE (default) to skip download and atmospheric correction for
 #'  products already existing.
 #' @param rm_safe (optional) Character: should SAFE products be deleted after
-#'  preprocessing? "yes" means to delete all SAFE; "no" (default)
+#'  preprocessing? "yes" (or "all") means to delete all SAFE; "no" (default)
 #'  not to delete; "l1c" to delete only Level-1C products.
 #' @param step_atmcorr (optional) Character vector to determine how to obtain
 #'  Level-2A SAFE products:
@@ -2766,7 +2766,7 @@ sen2r <- function(param_list = NULL,
         unlink(tmpdir_groupA, recursive=TRUE)
       }
       # delete SAFE, if required
-      if (pm$rm_safe == "all") {
+      if (pm$rm_safe %in% c("all", "yes")) {
         unlink(file.path(path_l1c,names(sel_s2_list_l1c)), recursive=TRUE)
         unlink(file.path(path_l2a,names(sel_s2_list_l2a)), recursive=TRUE)
       } else if (pm$rm_safe == "l1c") {

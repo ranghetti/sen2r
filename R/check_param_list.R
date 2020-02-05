@@ -154,10 +154,11 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
     pm$rm_safe <- "yes"
   } else if (pm$rm_safe == FALSE) {
     pm$rm_safe <- "no"
-  } else if (!pm$rm_safe %in% c("yes", "no", "l1c")) {
+  } else if (!pm$rm_safe %in% c("yes", "all", "no", "l1c")) {
     print_message(
       type = type,
-      "Parameter \"rm_safe\" must be one among 'yes', 'no' and 'l1c' (setting to the default)."
+      "Parameter \"rm_safe\" must be one among 'yes' (or 'all'), ",
+      "'no' and 'l1c' (setting to the default)."
     )
     pm$rm_safe <- pm_def$rm_safe
   }

@@ -124,7 +124,7 @@ FALSE (default) to skip download and atmospheric correction for
 products already existing.}
 
 \item{rm_safe}{(optional) Character: should SAFE products be deleted after
-preprocessing? "yes" means to delete all SAFE; "no" (default)
+preprocessing? "yes" (or "all") means to delete all SAFE; "no" (default)
 not to delete; "l1c" to delete only Level-1C products.}
 
 \item{step_atmcorr}{(optional) Character vector to determine how to obtain
