@@ -66,7 +66,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   for (sel_par in names(pm_def)) {
     if (length(nn(pm[[sel_par]])) == 0) {
       print_message(
-        type = "warning",
+        type = if (type == "error") {"warning"} else {type},
         paste0("Parameter \"",sel_par,"\" was not specified; ",
                "setting it to the default ('",pm_def[[sel_par]],"').")
       )
@@ -178,14 +178,14 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   }
   if (pm$max_cloud_safe < 0) {
     print_message(
-      type = "warning",
+      type = if (type == "error") {"warning"} else {type},
       "Minimum allowed cloud cover value is 0; ",
       "setting parameter \"max_cloud_safe\" to 0."
     )
     pm$max_cloud_safe <- 0
   } else if (pm$max_cloud_safe > 100) {
     print_message(
-      type = "warning",
+      type = if (type == "error") {"warning"} else {type},
       "Maximum allowed cloud cover value is 100; ",
       "setting parameter \"max_cloud_safe\" to 100."
     )
@@ -433,14 +433,14 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   }
   if (pm$max_mask < 0) {
     print_message(
-      type = "warning",
+      type = if (type == "error") {"warning"} else {type},
       "Minimum allowed cloud cover value is 0; ",
       "setting parameter \"max_mask\" to 0."
     )
     pm$max_mask <- 0
   } else if (pm$max_mask > 100) {
     print_message(
-      type = "warning",
+      type = if (type == "error") {"warning"} else {type},
       "Maximum allowed cloud cover value is 100; ",
       "setting parameter \"max_mask\" to 100."
     )
@@ -559,7 +559,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   # -- res_s2 --
   if ((!anyNA(pm$res) & !is.null(pm$res)) & (!anyNA(pm$res_s2) & !is.null(pm$res_s2))) {
     print_message(
-      type = "warning",
+      type = if (type == "error") {"warning"} else {type},
       "Both native and custom resolution were provided; ",
       "only custom one (\"res\") will be used."
     )
@@ -583,7 +583,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   # -- unit --
   if (pm$unit != "Meter") {
     print_message(
-      type = "warning",
+      type = if (type == "error") {"warning"} else {type},
       "Only \"unit\" == 'meter' is accepted."
     )
     pm$unit <- "Meter"
@@ -726,7 +726,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   # -- step_atmcorr --
   if (pm$step_atmcorr == "no") {
     print_message(
-      type = "warning",
+      type = if (type == "error") {"warning"} else {type},
       "Value \"no\" for parameter \"step_atmcorr\" is deprecated ",
       "(\"l2a\" will be used)."
     )
