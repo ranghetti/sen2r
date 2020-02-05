@@ -156,17 +156,18 @@ if (test_sen2cor) {
       testthat::expect_gt(run_time["elapsed"], 60)
       
       # test that dem was not generated
-      testthat::expect_true(all(!file.exists(file.path(
+      testthat::expect_true(all(!file.exists(paste0(
         sen2cor_out,
-        "GRANULE/L2A_T32TNS_A021040_20190703T101051",
-        "AUX_DATA/T32TNS_20190703T101031_DEM_10m.jp2"
+        "/GRANULE/L2A_T32TN",c("R","S"),"_A021326_20190723T101347/",
+        "AUX_DATA/T32TN",c("R","S"),"_20190723T101031_DEM_10m.jp2"
       ))))
       
       # test raster metadata
+      sen2cor_out <- sort(sen2cor_out)
       exp_meta_ex <- raster_metadata(file.path(
         sen2cor_out[2], 
-        "GRANULE/L2A_T32TNS_A021040_20190703T101051",
-        "IMG_DATA/R10m/T32TNS_20190703T101031_B02_10m.jp2"
+        "GRANULE/L2A_T32TNS_A021326_20190723T101347",
+        "IMG_DATA/R10m/T32TNS_20190723T101031_B02_10m.jp2"
       ), format = "list")[[1]]
       testthat::expect_equal(exp_meta_ex$size, c("x"=10980, "y"=10980))
       testthat::expect_equal(exp_meta_ex$res, c("x"=10, "y"=10))
@@ -180,7 +181,6 @@ if (test_sen2cor) {
       testthat::expect_equal(exp_meta_ex$outformat, "JP2OpenJPEG")
       
       # test SAFE metadata
-      sen2cor_out <- sort(sen2cor_out)
       safe_metadata <- safe_getMetadata(sen2cor_out)
       testthat::expect_is(safe_metadata, "data.table")
       testthat::expect_equal(safe_metadata$prod_type, rep("product",2))
@@ -191,11 +191,11 @@ if (test_sen2cor) {
       )
       testthat::expect_equal(
         dirname(safe_metadata$xml_granules), 
-        file.path(sen2cor_out,paste0("GRANULE/L2A_T32TN",c("R","S"),"_A021040_20190703T101051"))
+        file.path(sen2cor_out,paste0("GRANULE/L2A_T32TN",c("R","S"),"_A021326_20190723T101347"))
       )
       testthat::expect_equal(safe_metadata$mission, rep("2A",2))
       testthat::expect_equal(safe_metadata$level, rep("2A",2))
-      testthat::expect_equal(as.Date(safe_metadata$sensing_datetime), rep(as.Date("2019-07-03"),2))
+      testthat::expect_equal(as.Date(safe_metadata$sensing_datetime), rep(as.Date("2019-07-23"),2))
       testthat::expect_equal(safe_metadata$id_orbit, rep("022",2))
       testthat::expect_equal(safe_metadata$id_tile, c("32TNR","32TNS"))
       testthat::expect_equal(safe_metadata$tiles, c("32TNR","32TNS"))
