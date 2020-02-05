@@ -753,11 +753,13 @@ sen2r <- function(param_list = NULL,
   }
   
   # Check parameters
-  pm <- check_param_list(
-    pm,
-    type = if (gui) {"message"} else {"error"},
-    check_paths = FALSE, correct = TRUE
-  )
+  suppressWarnings({
+    pm <- check_param_list(
+      pm,
+      type = if (gui) {"message"} else {"error"},
+      check_paths = FALSE, correct = TRUE
+    )
+  })
   
   # Check param_list version
   if (is.null(pm_list$pkg_version)) {
@@ -1163,10 +1165,12 @@ sen2r <- function(param_list = NULL,
     # if offline mode, read the SAFE product list from folders and filter
     if ("l1c" %in% pm$s2_levels) {
       s2_lists[["l1c"]] <- list.files(pm$path_l1c, "\\.SAFE$")
-      s2_lists_footprints[["l1c"]] <- safe_getMetadata(
-        file.path(pm$path_l1c, s2_lists[["l1c"]]), 
-        "footprint", abort = FALSE, format = "vector", simplify = TRUE
-      )
+      suppressWarnings({
+        s2_lists_footprints[["l1c"]] <- safe_getMetadata(
+          file.path(pm$path_l1c, s2_lists[["l1c"]]), 
+          "footprint", abort = FALSE, format = "vector", simplify = TRUE
+        )
+      })
     }
     if ("l2a" %in% pm$s2_levels) {
       s2_lists[["l2a"]] <- if (pm$step_atmcorr=="l2a") {
@@ -1189,10 +1193,12 @@ sen2r <- function(param_list = NULL,
             ]
         )
       }
-      s2_lists_footprints[["l2a"]] <- safe_getMetadata(
-        file.path(pm$path_l2a, s2_lists[["l2a"]]), 
-        "footprint", abort = FALSE, format = "vector", simplify = TRUE
-      )
+      suppressWarnings({
+        s2_lists_footprints[["l2a"]] <- safe_getMetadata(
+          file.path(pm$path_l2a, s2_lists[["l2a"]]), 
+          "footprint", abort = FALSE, format = "vector", simplify = TRUE
+        )
+      })
     }
     s2_lists <- lapply(s2_lists, function(l) {
       safe_getMetadata(l, "level", abort = FALSE, format = "vector", simplify = TRUE)
