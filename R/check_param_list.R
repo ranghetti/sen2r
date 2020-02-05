@@ -446,6 +446,13 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
     )
     pm$max_mask <- 0
   }
+  if (all(pm$max_mask < 100, is.na(pm$mask_type))) {
+    print_message(
+      type = if (type == "error") {"warning"} else {type},
+      "\"max_mask\" was set to ",pm$max_mask,", but no masks were defined: ",
+      "set argument \"mask_type\" properly in order to use a cloud mask."
+    )
+  }
   
   
   # -- mask_smooth --
