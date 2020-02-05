@@ -407,7 +407,7 @@ sen2r_process_report <- function(
   print_message(
     type = "message",
     date = TRUE,
-    "####\u00A0 Execution of sen2r session terminated. \u00A0####"
+    "#### sen2r session terminated. ####"
   )
   
   if (length(nn(s2_list_ordered)) == 0) {

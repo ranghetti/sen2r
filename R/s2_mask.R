@@ -116,6 +116,7 @@
 #' @export
 #' @importFrom raster brick calc dataType mask overlay stack values
 #' @importFrom jsonlite fromJSON
+#' @importFrom progress progress_bar
 #' @import data.table
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
@@ -364,6 +365,12 @@ s2_mask <- function(infiles,
     # if output already exists and overwrite==FALSE, do not proceed
     if (!file.exists(sel_outfile) | overwrite==TRUE) {
       
+      print_message(
+        type = "message",
+        date = TRUE,
+        paste0("Masking file ", basename(sel_outfile),"...")
+      )
+      
       # if no masking is required, "copy" input files
       if (length(sel_maskfiles)==0) {
         system(
@@ -599,15 +606,21 @@ s2_mask <- function(infiles,
               )
               #4 bytes per cell, nb + 1 bands (brick + mask), * 2 to account for a copy
               bs <- blockSize(out, minblocks = 8)
+              pb <- progress::progress_bar$new(
+                format = "Processing chunk :current of :total (:percent)... [:bar]", 
+                total = bs$n
+              )
+              pb$tick(0)
               for (j in seq_len(bs$n)) {
-                message("Processing chunk ", j, " of ", bs$n)
-                
+                # message("Processing chunk ", j, " of ", bs$n)
+
                 m <- raster::getValuesBlock(y, row = bs$row[j], nrows = bs$nrows[j])
                 v <- raster::getValuesBlock(x, row = bs$row[j], nrows = bs$nrows[j])
                 v[m == 0] <- NA
                 
                 out <- writeValues(out, v, bs$row[j])
                 gc()
+                pb$tick()
               }
               out <- writeStop(out)
             }

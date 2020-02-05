@@ -43,6 +43,7 @@ Imports:
   doParallel,
   units,
   tools,
+  progress,
   httr
 Suggests:
   spelling,

@@ -267,6 +267,12 @@ s2_rgb <- function(infiles,
         # if output already exists and overwrite==FALSE, do not proceed
         if (!file.exists(out_path) | overwrite==TRUE) {
           
+          print_message(
+            type = "message",
+            date = TRUE,
+            paste0("Generating image ", basename(out_path),"...")
+          )
+          
           # From Sentinel-2 band number to actual band numbert in the BOA
           sel_nbands <- if (sel_prod_type=="BOA") {
             ifelse(sel_rgb_bands>10, sel_rgb_bands-1, sel_rgb_bands)
