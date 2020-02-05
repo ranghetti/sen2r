@@ -12,7 +12,7 @@ testthat::test_that(
     dir.create(dirname(outdir_11), showWarnings = FALSE)
     exp_outpath_11 <- file.path(
       outdir_11, c("NDVI","MSAVI2"), 
-      c("S2A2A_20170703_022_Scalve_NDVI_10.tif","S2A2A_20170703_022_Scalve_MSAVI2_10.tif")
+      c("S2A2A_20190723_022_Scalve_NDVI_10.tif","S2A2A_20190723_022_Scalve_MSAVI2_10.tif")
     )
     unlink(exp_outpath_11)
     sen2r(
@@ -22,7 +22,7 @@ testthat::test_that(
       extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
       extent_name = "Scalve",
       extent_as_mask = TRUE,
-      timewindow = as.Date("2017-07-03"),
+      timewindow = as.Date("2019-07-23"),
       list_indices = c("NDVI","MSAVI2"),
       mask_type = NA,
       path_out = outdir_11,
@@ -53,14 +53,14 @@ testthat::test_that(
     # tests on sen2r metadata
     exp_meta_s <- sen2r_getElements(exp_outpath_11)
     testthat::expect_equal(exp_meta_s$type, rep("clipped",2))
-    testthat::expect_equal(exp_meta_s$sensing_date, rep(as.Date("2017-07-03"),2))
+    testthat::expect_equal(exp_meta_s$sensing_date, rep(as.Date("2019-07-23"),2))
     testthat::expect_equal(exp_meta_s$prod_type, c("NDVI", "MSAVI2"))
     testthat::expect_equal(exp_meta_s$extent_name, rep("Scalve",2))
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_11)
-    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 4093.080, tolerance = 1e-3)
-    testthat::expect_equal(mean(exp_stars[[2]], na.rm=TRUE), 2757.542, tolerance = 1e-3)
+    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 4836.26, tolerance = 1e-3)
+    testthat::expect_equal(mean(exp_stars[[2]], na.rm=TRUE), 3216.844, tolerance = 1e-3)
     testthat::expect_equal(sum(is.na(exp_stars[[1]])), 1417518)
     testthat::expect_equal(sum(is.na(exp_stars[[2]])), 1417518)
     rm(exp_stars)
@@ -111,10 +111,10 @@ testthat::test_that(
   "Tests on indices computation, on required TOA, type Float, with clip and mask ", {
     
     dir.create(outdir_12, showWarnings = FALSE)
-    exp_outpath_12 <- file.path(outdir_12, "S2A1C_20170703_022_Barbellino_EVI_10.tif")
+    exp_outpath_12 <- file.path(outdir_12, "S2A1C_20190723_022_Barbellino_EVI_10.tif")
     unlink(exp_outpath_12)
     s2_calcindices(
-      infiles = file.path(ref_dir, "S2A1C_20170703_022_Barbellino_TOA_10.tif"),
+      infiles = file.path(ref_dir, "S2A1C_20190723_022_Barbellino_TOA_10.tif"),
       indices = "EVI",
       source = "TOA",
       outdir = outdir_12,
@@ -146,14 +146,14 @@ testthat::test_that(
     # tests on sen2r metadata
     exp_meta_s <- sen2r_getElements(exp_outpath_12)
     testthat::expect_equal(exp_meta_s$type, "clipped")
-    testthat::expect_equal(exp_meta_s$sensing_date, as.Date("2017-07-03"))
+    testthat::expect_equal(exp_meta_s$sensing_date, as.Date("2019-07-23"))
     testthat::expect_equal(exp_meta_s$prod_type, "EVI")
     testthat::expect_equal(exp_meta_s$level, "1C")
     testthat::expect_equal(exp_meta_s$extent_name, "Barbellino")
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_12)
-    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 0.3529976, tolerance = 1e-3)
+    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 0.3392678, tolerance = 1e-3)
     testthat::expect_equal(sum(is.na(exp_stars[[1]])), 0)
     rm(exp_stars)
     
@@ -167,11 +167,11 @@ testthat::test_that(
     testthat::expect_true(dir.exists(outdir_12))
     exp_outpath_13 <- file.path(
       outdir_12,
-      c("S2A1C_20170703_022_Barbellino_EVI_10.tif", "S2A1C_20170703_022_Barbellino_NDRE_10.tif")
+      c("S2A1C_20190723_022_Barbellino_EVI_10.tif", "S2A1C_20190723_022_Barbellino_NDRE_10.tif")
     )
     unlink(exp_outpath_13[2])
     s2_calcindices(
-      infiles = file.path(ref_dir, "S2A1C_20170703_022_Barbellino_TOA_10.tif"),
+      infiles = file.path(ref_dir, "S2A1C_20190723_022_Barbellino_TOA_10.tif"),
       indices = c("EVI", "NDRE"),
       source = "TOA",
       outdir = outdir_12,
@@ -207,7 +207,7 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_13[2])
-    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 125.0298, tolerance = 1e-3)
+    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 126.8006, tolerance = 1e-3)
     testthat::expect_equal(sum(is.na(exp_stars[[1]])), 0)
     rm(exp_stars)
     
@@ -223,10 +223,10 @@ testthat::test_that(
     
     outdir_15 <- file.path(tempdir(), "out_test15")
     dir.create(outdir_15, showWarnings = FALSE)
-    exp_outpath_15 <- file.path(outdir_15, "OSAVI", "S2A1C_20170703_022_Barbellino_OSAVI_10.tif")
+    exp_outpath_15 <- file.path(outdir_15, "OSAVI", "S2A1C_20190723_022_Barbellino_OSAVI_10.tif")
     unlink(exp_outpath_15)
     s2_calcindices(
-      infiles = file.path(ref_dir, "S2A1C_20170703_022_Barbellino_TOA_10.tif"),
+      infiles = file.path(ref_dir, "S2A1C_20190723_022_Barbellino_TOA_10.tif"),
       indices = "OSAVI", 
       outdir = dirname(dirname(exp_outpath_15)),
       subdirs = TRUE,
@@ -255,7 +255,7 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_15)
-    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 273120.8, tolerance = 1e-3)
+    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 282040.7, tolerance = 1e-3)
     testthat::expect_equal(sum(is.na(exp_stars[[1]])), 0)
     rm(exp_stars)
     

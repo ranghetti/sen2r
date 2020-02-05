@@ -5,13 +5,13 @@ testthat::skip_on_travis()
 # NOTE: these tests require a high amount of time,
 # so running Sen2Cor is disabled by default if SAFE archives are already present.
 # To perform the test also on Sen2Cor, replace 'test_sen2cor = FALSE' with 'TRUE'.
-test_sen2cor = FALSE
+test_sen2cor = TRUE
 
 safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
 dir.create(safe_dir, showWarnings = FALSE)
 s2_l1c_prods <- file.path(safe_dir, c(
-  "S2A_MSIL1C_20190703T101031_N0207_R022_T32TNR_20190703T122502.SAFE",
-  "S2A_MSIL1C_20190703T101031_N0207_R022_T32TNS_20190703T122502.SAFE"
+  "S2A_MSIL1C_20190723T101031_N0208_R022_T32TNR_20190723T121220.SAFE", 
+  "S2A_MSIL1C_20190723T101031_N0208_R022_T32TNS_20190723T121220.SAFE"
 ))
 
 
@@ -21,15 +21,13 @@ testthat::test_that(
     testthat::expect_true(dir.exists(s2_l1c_prods[1])) # test-s2_download.R
     s2_l2a_prod1 <- list.files(
       safe_dir, 
-      "^S2A_MSIL2A_20190703T101031_N...._R022_T32TNR_[0-9T]{15}\\.SAFE$"
+      "^S2A_MSIL2A_20190723T101031_N...._R022_T32TNR_[0-9T]{15}\\.SAFE$"
     )
     if (length(s2_l2a_prod1) == 0) {
-      s2_l2a_prod1 <- names(s2_download(
-        setNames(
-          "https://scihub.copernicus.eu/dhus/odata/v1/Products('28d69908-e0a8-4967-bae7-3c5e80495132')/$value",
-          "S2A_MSIL2A_20190703T101031_N0212_R022_T32TNR_20190703T134349.SAFE"
-        ),
-        outdir = safe_dir
+      s2_l2a_prod1 <- names(s2_download(c(
+        "S2A_MSIL2A_20190723T101031_N0213_R022_T32TNR_20190723T125722.SAFE" = 
+          "https://scihub.copernicus.eu/apihub/odata/v1/Products('52b43ef1-9a43-4726-a833-9fabeb1a3329')/$value"
+      ), outdir = safe_dir
       ))
     }
     testthat::expect_true(dir.exists(file.path(safe_dir,s2_l2a_prod1[1])))
@@ -41,7 +39,7 @@ testthat::test_that(
       )
     )
     testthat::expect_true(grepl(
-      "^S2A_MSIL2A_20190703T101031_N...._R022_T32TNR_[0-9T]{15}\\.SAFE$",
+      "^S2A_MSIL2A_20190723T101031_N...._R022_T32TNR_[0-9T]{15}\\.SAFE$",
       basename(sen2cor_out)
     ))
     testthat::expect_lt(run_time["elapsed"], 60)
@@ -57,7 +55,7 @@ if (test_sen2cor) {
       testthat::expect_true(dir.exists(s2_l1c_prods[2])) # test-s2_download.R
       s2_l2a_prod2 <- list.files(
         safe_dir, 
-        "^S2A_MSIL2A_20190703T101031_N...._R022_T32TNS_[0-9T]{15}\\.SAFE$",
+        "^S2A_MSIL2A_20190723T101031_N...._R022_T32TNS_[0-9T]{15}\\.SAFE$",
         full.names = TRUE
       )
       if (length(s2_l2a_prod2) > 0) {
@@ -83,8 +81,8 @@ if (test_sen2cor) {
       # test that dem was generated
       aux_meta_ex <- raster_metadata(file.path(
         sen2cor_out,
-        "GRANULE/L2A_T32TNS_A021040_20190703T101051",
-        "AUX_DATA/T32TNS_20190703T101031_DEM_10m.jp2"
+        "GRANULE/L2A_T32TNS_A021326_20190723T101347",
+        "AUX_DATA/T32TNS_20190723T101031_DEM_10m.jp2"
       ), format = "list")[[1]]
       testthat::expect_equal(aux_meta_ex$size, c("x"=10980, "y"=10980))
       testthat::expect_equal(aux_meta_ex$res, c("x"=10, "y"=10))
@@ -100,8 +98,8 @@ if (test_sen2cor) {
       # test raster metadata
       exp_meta_ex <- raster_metadata(file.path(
         sen2cor_out, 
-        "GRANULE/L2A_T32TNS_A021040_20190703T101051",
-        "IMG_DATA/R10m/T32TNS_20190703T101031_B02_10m.jp2"
+        "GRANULE/L2A_T32TNS_A021326_20190723T101347",
+        "IMG_DATA/R10m/T32TNS_20190723T101031_B02_10m.jp2"
       ), format = "list")[[1]]
       testthat::expect_equal(exp_meta_ex$size, c("x"=10980, "y"=10980))
       testthat::expect_equal(exp_meta_ex$res, c("x"=10, "y"=10))
@@ -125,11 +123,11 @@ if (test_sen2cor) {
       )
       testthat::expect_equal(
         dirname(safe_metadata$xml_granules), 
-        file.path(sen2cor_out,"GRANULE/L2A_T32TNS_A021040_20190703T101051")
+        file.path(sen2cor_out,"GRANULE/L2A_T32TNS_A021326_20190723T101347")
       )
       testthat::expect_equal(safe_metadata$mission, "2A")
       testthat::expect_equal(safe_metadata$level, "2A")
-      testthat::expect_equal(as.Date(safe_metadata$sensing_datetime), as.Date("2019-07-03"))
+      testthat::expect_equal(as.Date(safe_metadata$sensing_datetime), as.Date("2019-07-23"))
       testthat::expect_equal(safe_metadata$id_orbit, "022")
       testthat::expect_equal(safe_metadata$id_tile, "32TNS")
       testthat::expect_equal(safe_metadata$tiles, "32TNS")
@@ -149,7 +147,7 @@ if (test_sen2cor) {
         sen2cor_out <- sen2cor(
           s2_l1c_prods, 
           outdir = safe_dir,
-          use_dem = FALSE,
+          use_dem = TRUE,
           parallel = TRUE,
           overwrite = TRUE
         )

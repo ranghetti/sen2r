@@ -20,7 +20,7 @@
     <ResampleAlg>NearestNeighbour</ResampleAlg>
     <WorkingDataType>Byte</WorkingDataType>
     <Option name="INIT_DEST">NO_DATA</Option>
-    <SourceDataset relativeToVRT="1">S2A2A_20170703_022_Barbellino_RGB432B_10.tif</SourceDataset>
+    <SourceDataset relativeToVRT="1">S2A2A_20190723_022_Barbellino_RGB432B_10.tif</SourceDataset>
     <Transformer>
       <ApproxTransformer>
         <MaxError>0.125</MaxError>

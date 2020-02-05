@@ -56,7 +56,7 @@ build_example_param_file <- function(
         "step_atmcorr" = "l2a",
         "sen2cor_use_dem" = NA,
         "sen2cor_gipp" = NA,
-        "timewindow" = c("2017-07-03", "2017-07-03"),
+        "timewindow" = c("2019-07-23", "2019-07-23"),
         "timeperiod" = "full",
         "extent" = system.file("extdata/vector/barbellino.geojson", package = "sen2r"),
         "s2tiles_selected" = NA,

@@ -13,7 +13,7 @@ testthat::test_that(
     dir.create(dirname(outdir_16), showWarnings = FALSE)
     exp_outpath_16 <- file.path(
       outdir_16, c("BOA","RGB432T","RGBb84B","RGB843B"), 
-      paste0("S2A",c("2A","1C","2A","2A"),"_20170703_022_Scalve_",c("BOA","RGB432T","RGBb84B","RGB843B"),"_10.tif")
+      paste0("S2A",c("2A","1C","2A","2A"),"_20190723_022_Scalve_",c("BOA","RGB432T","RGBb84B","RGB843B"),"_10.tif")
     )
     unlink(exp_outpath_16)
     sen2r(
@@ -23,7 +23,7 @@ testthat::test_that(
       extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
       extent_name = "Scalve",
       extent_as_mask = TRUE,
-      timewindow = as.Date("2017-07-03"),
+      timewindow = as.Date("2019-07-23"),
       list_prods = "BOA",
       list_rgb = c("RGB432T","RGBb84B","RGB843B"),
       mask_type = NA,
@@ -56,14 +56,14 @@ testthat::test_that(
     # tests on sen2r metadata
     exp_meta_s <- sen2r_getElements(exp_outpath_16)
     testthat::expect_equal(exp_meta_s$type, rep("clipped",4))
-    testthat::expect_equal(exp_meta_s$sensing_date, rep(as.Date("2017-07-03"),4))
+    testthat::expect_equal(exp_meta_s$sensing_date, rep(as.Date("2019-07-23"),4))
     testthat::expect_equal(exp_meta_s$prod_type, c("BOA","RGB432T","RGBb84B","RGB843B"))
     testthat::expect_equal(exp_meta_s$extent_name, rep("Scalve",4))
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_16[2])
-    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 162.4022, tolerance = 1e-3)
-    testthat::expect_equal(sum(is.na(exp_stars[[1]])), 4218143, tolerance = 1e-3)
+    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 142.9452, tolerance = 1e-3)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]])), 4218021, tolerance = 1e-3)
     rm(exp_stars)
     
     # test thumbnails
@@ -113,11 +113,11 @@ testthat::test_that(
     dir.create(outdir_17, showWarnings = FALSE)
     exp_outpath_17 <- file.path(
       outdir_17, c("RGBb84B","RGB954B"), 
-      paste0("S2A2A_20170703_022_Barbellino_",c("RGBb84B","RGB954B"),"_10.tif")
+      paste0("S2A2A_20190723_022_Barbellino_",c("RGBb84B","RGB954B"),"_10.tif")
     )
     unlink(exp_outpath_17)
     s2_rgb(
-      infiles = file.path(ref_dir, "S2A2A_20170703_022_Barbellino_BOA_10.tif"),
+      infiles = file.path(ref_dir, "S2A2A_20190723_022_Barbellino_BOA_10.tif"),
       rgb_bands = list(c(11,8,4),c(9,5,4)),
       scaleRange = list(c(0,7500), matrix(c(rep(0,3),8500,6000,4000),ncol=2)),
       outdir = outdir_17,
@@ -147,9 +147,9 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_17)
-    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 66.7342, tolerance = 1e-3)
-    testthat::expect_equal(mean(exp_stars[[2]], na.rm=TRUE), 71.76323, tolerance = 1e-3)
-    testthat::expect_equal(sum(is.na(exp_stars[[1]])), 18, tolerance = 1e-3) #zeros
+    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 56.30718, tolerance = 1e-3)
+    testthat::expect_equal(mean(exp_stars[[2]], na.rm=TRUE), 56.71991, tolerance = 1e-3)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]])), 169, tolerance = 1e-3) #zeros
     rm(exp_stars)
     
   }

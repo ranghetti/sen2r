@@ -11,14 +11,15 @@ testthat::test_that(
     
     outdir_1 <- file.path(tempdir(), "out_test1")
     dir.create(dirname(outdir_1), showWarnings = FALSE)
-    exp_outpath_1 <- file.path(outdir_1, "SCL", "S2A2A_20170703_022__SCL_10.tif")
+    exp_outpath_1 <- file.path(outdir_1, "SCL", "S2A2A_20190723_022__SCL_10.tif")
     unlink(exp_outpath_1)
     out1 <- sen2r(
       gui = FALSE,
       online = FALSE,
       step_atmcorr = "l2a", # to avoid checks on Sen2Cor
       extent = NA,
-      timewindow = as.Date("2017-07-03"),
+      timewindow = as.Date("2019-07-23"),
+      s2tiles_selected = c("32TNS","32TNR"),
       list_prods = "SCL",
       mask_type = NA,
       clip_on_extent = FALSE,
@@ -53,13 +54,13 @@ testthat::test_that(
     # tests on sen2r metadata
     exp_meta_s <- sen2r_getElements(exp_outpath_1)
     testthat::expect_equal(exp_meta_s$type, "merged")
-    testthat::expect_equal(exp_meta_s$sensing_date, as.Date("2017-07-03"))
+    testthat::expect_equal(exp_meta_s$sensing_date, as.Date("2019-07-23"))
     testthat::expect_equal(exp_meta_s$prod_type, "SCL")
     testthat::expect_equal(exp_meta_s$extent_name, "")
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_1)
-    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 4.729521, tolerance = 1e-03)
+    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 4.774656, tolerance = 1e-03)
     rm(exp_stars)
     
   }
@@ -77,7 +78,7 @@ testthat::test_that(
         online = TRUE,
         step_atmcorr = "l2a", # to avoid checks on Sen2Cor
         extent = NA,
-        timewindow = as.Date("2017-07-03"),
+        timewindow = as.Date("2019-07-23"),
         list_prods = "BOA",
         clip_on_extent = FALSE,
         path_l2a = safe_dir,
