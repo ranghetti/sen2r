@@ -70,7 +70,7 @@ build_example_param_file <- function(
         ),
         "index_source" = "BOA",
         "mask_type" = NA,
-        "max_mask" = 80,
+        "max_mask" = 100,
         "mask_smooth" = 0,
         "mask_buffer" = 0,
         "clip_on_extent" = TRUE,
