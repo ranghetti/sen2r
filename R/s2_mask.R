@@ -116,7 +116,6 @@
 #' @export
 #' @importFrom raster brick calc dataType mask overlay stack values
 #' @importFrom jsonlite fromJSON
-#' @importFrom progress progress_bar
 #' @import data.table
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
@@ -574,8 +573,10 @@ s2_mask <- function(infiles,
             inraster <- raster::brick(sel_infile)
             
             # Maskapply
-            maskapply_serial <- function(x, y, na, out_file = '', datatype, minrows = NULL,
-                                         overwrite = overwrite) {
+            maskapply_serial <- function(
+              x, y, na, out_file = '', datatype, minrows = NULL,
+              overwrite = overwrite
+            ) {
               if (inherits(x, "RasterStackBrick")) {
                 out <- brick(x, values = FALSE)
               }
@@ -606,11 +607,9 @@ s2_mask <- function(infiles,
               )
               #4 bytes per cell, nb + 1 bands (brick + mask), * 2 to account for a copy
               bs <- blockSize(out, minblocks = 8)
-              pb <- progress::progress_bar$new(
-                format = "Processing chunk :current of :total (:percent)... [:bar]", 
-                total = bs$n
-              )
-              pb$tick(0)
+              if (inherits(stdout(), "terminal")) {
+                pb <- txtProgressBar(0, bs$n, style = 3)
+              }
               for (j in seq_len(bs$n)) {
                 # message("Processing chunk ", j, " of ", bs$n)
 
@@ -620,16 +619,23 @@ s2_mask <- function(infiles,
                 
                 out <- writeValues(out, v, bs$row[j])
                 gc()
-                pb$tick()
+                if (inherits(stdout(), "terminal")) {
+                  setTxtProgressBar(pb, i)
+                }
+              }
+              if (inherits(stdout(), "terminal")) {
+                message("")
               }
               out <- writeStop(out)
             }
-            out <- maskapply_serial(x = inraster,
-                                    y = raster(outmask_smooth),
-                                    out_file = sel_outfile,
-                                    na = sel_naflag,
-                                    datatype = dataType(inraster),
-                                    overwrite = TRUE)
+            out <- maskapply_serial(
+              x = inraster,
+              y = raster(outmask_smooth),
+              out_file = sel_outfile,
+              na = sel_naflag,
+              datatype = dataType(inraster),
+              overwrite = TRUE
+            )
             if (grepl("\\.vrt$", sel_outfile)) {
               file.rename(gsub("\\.vrt$", ".tif", sel_outfile), sel_outfile)
             }

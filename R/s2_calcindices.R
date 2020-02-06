@@ -85,7 +85,6 @@
 #' @import data.table
 #' @importFrom raster blockSize brick getValues raster writeStart writeStop writeValues
 #' @importFrom stars read_stars write_stars
-#' @importFrom progress progress_bar
 #' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @examples
@@ -170,11 +169,9 @@ s2_calcindices <- function(
     } else {
       bs <- blockSize(out, minrows = minrows)
     }
-    pb <- progress::progress_bar$new(
-      format = "Processing chunk :current of :total (:percent)... [:bar]", 
-      total = bs$n
-    )
-    pb$tick(0)
+    if (inherits(stdout(), "terminal")) {
+      pb <- txtProgressBar(0, bs$n, style = 3)
+    }
     for (i in seq_len(bs$n)) {
       # message("Processing chunk ", i, " of ", bs$n)
       v <- getValues(x, row = bs$row[i], nrows = bs$nrows[i])
@@ -188,7 +185,12 @@ s2_calcindices <- function(
       }
       # m <- getValues(y, row = bs$row[i], nrows = bs$nrows[i])
       out <- writeValues(out, v_out, bs$row[i])
-      pb$tick()
+      if (inherits(stdout(), "terminal")) {
+        setTxtProgressBar(pb, i)
+      }
+    }
+    if (inherits(stdout(), "terminal")) {
+      message("")
     }
     out <- writeStop(out)
     NULL

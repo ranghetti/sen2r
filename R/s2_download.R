@@ -183,15 +183,23 @@ s2_download <- function(
       
       if (downloader %in% c("builtin", "wget")) { # wget left for compatibility
         
+        out_bar <- if (inherits(stdout(), "terminal")) {
+          NULL
+        } else {
+          file(out_bar_path <- tempfile(), open = "a")
+        }
         download <- httr::RETRY(
           verb = "GET",
           url = as.character(link),
           config = httr::authenticate(creds[1], creds[2]),
           times = 10,
-          httr::progress(),
+          httr::progress(con = if (length(out_bar) > 0) {out_bar} else {stdout()}),
           httr::write_disk(zip_path, overwrite = TRUE)
         )
-        
+        if (length(out_bar) > 0) {
+          close(out_bar)
+          invisible(file.remove(out_bar_path))
+        }
       } else if (grepl("^aria2c?$", downloader)) {
         
         binpaths <- load_binpaths("aria2")
