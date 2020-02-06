@@ -80,7 +80,7 @@ Long Term Archive." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.1</span>
       </span>
     </div>
 
@@ -116,6 +116,15 @@ Long Term Archive." />
     </li>
     <li>
       <a href="../articles/docker.html">Run in a Docker container</a>
+    </li>
+    <li>
+      <a href="../articles/sen2r_gui.html">Using sen2r() from the GUI</a>
+    </li>
+    <li>
+      <a href="../articles/sen2r_cmd.html">Using sen2r() from the command line</a>
+    </li>
+    <li>
+      <a href="../articles/outstructure.html">Output file structure</a>
     </li>
   </ul>
 </li>
@@ -244,23 +253,27 @@ and not ordered) was saved (if <code>export_prodlist = TRUE</code>).</p></li>
 <span class='co'># archives already available online and 2 stored in the Long Term Archive)</span>
 
 <span class='co'># Order the products</span>
-<span class='no'>ordered_prods</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_order</span>(<span class='no'>list_safe</span>)</div><div class='output co'>#&gt; <span class='message'>[2020-02-03 17:47:36] Check if products are already available for</span>
-#&gt; <span class='message'>                      download...</span></div><div class='output co'>#&gt; <span class='message'>[2020-02-03 17:47:42] 7 Sentinel-2 images are already online.</span></div><div class='input'>
+<span class='no'>ordered_prods</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_order</span>(<span class='no'>list_safe</span>)</div><div class='output co'>#&gt; <span class='message'>[2020-02-06 11:36:57] Check if products are already available for</span>
+#&gt; <span class='message'>       download...</span></div><div class='output co'>#&gt; <span class='message'>[2020-02-06 11:36:58] Ordering 7 Sentinel-2 images stored in the Long</span>
+#&gt; <span class='message'>       Term Archive...</span></div><div class='output co'>#&gt; <span class='message'>[2020-02-06 11:37:05] 7 of 7 Sentinel-2 images were correctly ordered.</span>
+#&gt; <span class='message'>       You can check at a later time if the ordered products are</span>
+#&gt; <span class='message'>       available online using the command:</span>
+#&gt; <span class='message'>  safe_is_online("/home/lranghetti/.sen2r/lta_orders/lta_20200206_113705.json")</span></div><div class='input'>
 <span class='co'># Check in a second time if the product was made available</span>
-(<span class='no'>order_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>ordered_prods</span>, <span class='st'>"path"</span>))</div><div class='output co'>#&gt; [1] "/home/lranghetti/.sen2r/lta_orders/lta_20200203_174742.json"</div><div class='input'><span class='fu'><a href='safe_is_online.html'>safe_is_online</a></span>(<span class='no'>order_path</span>)</div><div class='output co'>#&gt; <span class='message'>All 7 products are online.</span></div><div class='output co'>#&gt; S2B_MSIL1C_20180224T133629_N0206_R038_T21FVC_20180224T194845.SAFE 
-#&gt;                                                              TRUE 
+(<span class='no'>order_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>ordered_prods</span>, <span class='st'>"path"</span>))</div><div class='output co'>#&gt; [1] "/home/lranghetti/.sen2r/lta_orders/lta_20200206_113705.json"</div><div class='input'><span class='fu'><a href='safe_is_online.html'>safe_is_online</a></span>(<span class='no'>order_path</span>)</div><div class='output co'>#&gt; <span class='message'>0 out of 7 products are online.</span></div><div class='output co'>#&gt; S2B_MSIL1C_20180224T133629_N0206_R038_T21FVC_20180224T194845.SAFE 
+#&gt;                                                             FALSE 
 #&gt; S2B_MSIL1C_20180227T134629_N0206_R081_T21FVC_20180227T200327.SAFE 
-#&gt;                                                              TRUE 
+#&gt;                                                             FALSE 
 #&gt; S2A_MSIL1C_20180301T133641_N0206_R038_T21FVC_20180301T145524.SAFE 
-#&gt;                                                              TRUE 
+#&gt;                                                             FALSE 
 #&gt; S2B_MSIL1C_20180306T133629_N0206_R038_T21FVC_20180306T183210.SAFE 
-#&gt;                                                              TRUE 
+#&gt;                                                             FALSE 
 #&gt; S2A_MSIL1C_20180311T133641_N0206_R038_T21FVC_20180311T163528.SAFE 
-#&gt;                                                              TRUE 
+#&gt;                                                             FALSE 
 #&gt; S2A_MSIL1C_20180314T134631_N0206_R081_T21FVC_20180314T150724.SAFE 
-#&gt;                                                              TRUE 
+#&gt;                                                             FALSE 
 #&gt; S2B_MSIL1C_20180316T133639_N0206_R038_T21FVC_20180316T145348.SAFE 
-#&gt;                                                              TRUE </div><div class='input'># }
+#&gt;                                                             FALSE </div><div class='input'># }
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

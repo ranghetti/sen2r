@@ -82,7 +82,7 @@ Output vrt is at 10m resolution." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.1</span>
       </span>
     </div>
 
@@ -118,6 +118,15 @@ Output vrt is at 10m resolution." />
     </li>
     <li>
       <a href="../articles/docker.html">Run in a Docker container</a>
+    </li>
+    <li>
+      <a href="../articles/sen2r_gui.html">Using sen2r() from the GUI</a>
+    </li>
+    <li>
+      <a href="../articles/sen2r_cmd.html">Using sen2r() from the command line</a>
+    </li>
+    <li>
+      <a href="../articles/outstructure.html">Output file structure</a>
     </li>
   </ul>
 </li>
@@ -292,12 +301,20 @@ overwritten? (default: FALSE)</p></td>
 <span class='fu'>s2_translate</span>(<span class='no'>s2_l1c_example</span>, <span class='kw'>format</span><span class='kw'>=</span><span class='st'>"GTiff"</span>)
 
 <span class='co'># Create a single BOA VRT with a custom name</span>
-<span class='fu'>s2_translate</span>(<span class='no'>s2_l2a_example</span>, <span class='st'>"/new/path/example_sentinel2_sr.vrt"</span>,
-  <span class='kw'>vrt_rel_paths</span><span class='kw'>=</span><span class='fl'>TRUE</span>)
+<span class='fu'>s2_translate</span>(
+  <span class='no'>s2_l2a_example</span>,
+  <span class='st'>"/new/path/example_sentinel2_sr.vrt"</span>,
+  <span class='kw'>vrt_rel_paths</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)
 
 <span class='co'># Create three products (ENVI) in the same directory at 60m resolution</span>
-<span class='fu'>s2_translate</span>(<span class='no'>s2_example</span>, <span class='kw'>format</span><span class='kw'>=</span><span class='st'>"ENVI"</span>, <span class='kw'>prod_type</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"BOA"</span>,<span class='st'>"TCI"</span>,<span class='st'>"SCL"</span>),
-  <span class='kw'>res</span><span class='kw'>=</span><span class='st'>"60m"</span>, <span class='kw'>subdirs</span><span class='kw'>=</span><span class='fl'>TRUE</span>)
+<span class='fu'>s2_translate</span>(
+  <span class='no'>s2_example</span>,
+  <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"ENVI"</span>,
+  <span class='kw'>prod_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"BOA"</span>,<span class='st'>"TCI"</span>,<span class='st'>"SCL"</span>),
+  <span class='kw'>res</span> <span class='kw'>=</span> <span class='st'>"60m"</span>,
+  <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

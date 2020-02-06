@@ -4,6 +4,7 @@ pkgdown_sha: ~
 articles:
   docker: docker.html
   installation: installation.html
+  outstructure: outstructure.html
   sen2r_cmd: sen2r_cmd.html
   sen2r_gui: sen2r_gui.html
 

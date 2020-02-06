@@ -80,7 +80,7 @@ from the JSON where they are saved when installed." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.1</span>
       </span>
     </div>
 
@@ -116,6 +116,15 @@ from the JSON where they are saved when installed." />
     </li>
     <li>
       <a href="../articles/docker.html">Run in a Docker container</a>
+    </li>
+    <li>
+      <a href="../articles/sen2r_gui.html">Using sen2r() from the GUI</a>
+    </li>
+    <li>
+      <a href="../articles/sen2r_cmd.html">Using sen2r() from the command line</a>
+    </li>
+    <li>
+      <a href="../articles/outstructure.html">Output file structure</a>
     </li>
   </ul>
 </li>
@@ -186,9 +195,6 @@ in the JSON, it is checked (when possible).</p></td>
 #&gt; $ogrinfo
 #&gt; [1] "/usr/bin/ogrinfo"
 #&gt; 
-#&gt; $proj
-#&gt; [1] "/usr/bin/proj"
-#&gt; 
 #&gt; $gdal_translate
 #&gt; [1] "/usr/bin/gdal_translate"
 #&gt; 
@@ -210,14 +216,14 @@ in the JSON, it is checked (when possible).</p></td>
 #&gt; $gdal_fillnodata
 #&gt; [1] "/usr/bin/gdal_fillnodata.py"
 #&gt; 
-#&gt; $python
-#&gt; [1] "/usr/bin/python3.8"
-#&gt; 
 #&gt; $aria2c
 #&gt; [1] "/usr/bin/aria2c"
 #&gt; 
 #&gt; $sen2cor
 #&gt; [1] "/home/lranghetti/.sen2r/sen2cor/bin/L2A_Process"
+#&gt; 
+#&gt; $python
+#&gt; [1] "/usr/bin/python2.7"
 #&gt; 
 #&gt; attr(,"path")
 #&gt; [1] "~/.sen2r/paths.json"</div><div class='input'><span class='co'># }</span>

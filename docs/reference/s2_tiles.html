@@ -81,7 +81,7 @@ from the sen2r GitHub repository and it saves it on disk." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.1</span>
       </span>
     </div>
 
@@ -117,6 +117,15 @@ from the sen2r GitHub repository and it saves it on disk." />
     </li>
     <li>
       <a href="../articles/docker.html">Run in a Docker container</a>
+    </li>
+    <li>
+      <a href="../articles/sen2r_gui.html">Using sen2r() from the GUI</a>
+    </li>
+    <li>
+      <a href="../articles/sen2r_cmd.html">Using sen2r() from the command line</a>
+    </li>
+    <li>
+      <a href="../articles/outstructure.html">Output file structure</a>
     </li>
   </ul>
 </li>
@@ -176,11 +185,11 @@ from the sen2r GitHub repository and it saves it on disk.</p>
   <span class='st'>"https://raw.githubusercontent.com/ranghetti/sen2r/devel/utils/vector/ch_bound.rds"</span>,
   <span class='kw pkg'>httr</span><span class='kw ns'>::</span><span class='fu'><a href='https://httr.r-lib.org/reference/write_disk.html'>write_disk</a></span>(<span class='no'>ch_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>())
 )</div><div class='output co'>#&gt; Response [https://raw.githubusercontent.com/ranghetti/sen2r/devel/utils/vector/ch_bound.rds]
-#&gt;   Date: 2020-02-03 16:47
+#&gt;   Date: 2020-02-06 10:39
 #&gt;   Status: 200
 #&gt;   Content-Type: application/octet-stream
 #&gt;   Size: 43.8 kB
-#&gt; &lt;ON DISK&gt;  /tmp/RtmpYjmiJT/file97804fa28e03</div><div class='input'><span class='no'>ch</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span>(<span class='no'>ch_path</span>)
+#&gt; &lt;ON DISK&gt;  /tmp/RtmpzkepNn/file30f730e32ccf</div><div class='input'><span class='no'>ch</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span>(<span class='no'>ch_path</span>)
 <span class='no'>s2tiles_ch</span> <span class='kw'>&lt;-</span> <span class='no'>s2tiles</span>[<span class='fu'><a href='https://rdrr.io/r/base/message.html'>suppressMessages</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/geos_binary_pred.html'>st_intersects</a></span>(<span class='no'>ch</span>, <span class='no'>s2tiles</span>))<span class='kw'>[[</span><span class='fl'>1</span>]],]
 <span class='no'>s2_coords</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_coordinates.html'>st_coordinates</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/warning.html'>suppressWarnings</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/geos_unary.html'>st_centroid</a></span>(<span class='no'>s2tiles_ch</span>)))
 
