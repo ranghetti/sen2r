@@ -2,7 +2,7 @@
 title: "Output file structure"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Using sen2r() from the command line}
+  %\VignetteIndexEntry{Output file structure}
   %\VignetteEngine{knitr::knitr}
   %\usepackage[UTF-8]{inputenc}
 ---
