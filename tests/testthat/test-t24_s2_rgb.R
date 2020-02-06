@@ -9,7 +9,7 @@ ref_dir <- system.file("extdata/out", package = "sen2r")
 testthat::test_that(
   "Tests on indices computation, on unrequired BOA, with clip ", {
     
-    outdir_16 <- file.path(tempdir(), "out_test16")
+    outdir_16 <- tempfile(pattern = "out_test16_")
     dir.create(dirname(outdir_16), showWarnings = FALSE)
     exp_outpath_16 <- file.path(
       outdir_16, c("BOA","RGB432T","RGBb84B","RGB843B"), 
@@ -109,7 +109,7 @@ testthat::skip_on_cran() # because using runtime GDAL
 testthat::test_that(
   "Tests on function s2_rgb()", {
     
-    outdir_17 <- file.path(tempdir(), "out_test17")
+    outdir_17 <- tempfile(pattern = "out_test17_")
     dir.create(outdir_17, showWarnings = FALSE)
     exp_outpath_17 <- file.path(
       outdir_17, c("RGBb84B","RGB954B"), 

@@ -6,7 +6,7 @@ safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
 dir.create(safe_dir, showWarnings = FALSE)
 
 
-outdir_2 <- file.path(tempdir(), "out_test2")
+outdir_2 <- tempfile(pattern = "out_test2_")
 exp_outpath_2 <- file.path(outdir_2, "BOA", "S2A2A_20190723_022_Scalve_BOA_10.tif")
 testthat::test_that(
   "Tests on clip and mask BOA on extent", {
@@ -94,7 +94,7 @@ testthat::test_that(
 )
 
 
-outdir_3 <- file.path(tempdir(), "out_test3")
+outdir_3 <- tempfile(pattern = "out_test3_")
 exp_outpath_3 <- file.path(outdir_3, "S2A1C_20190723_022_Scalve_TOA_20.dat")
 testthat::test_that(
   "Tests on clip TOA on extent, reproject and resize and save as ENVI", {
@@ -196,7 +196,7 @@ testthat::test_that(
 )
 
 
-outdir_4 <- file.path(tempdir(), "out_test4")
+outdir_4 <- tempfile(pattern = "out_test4_")
 exp_outpath_4 <- file.path(outdir_4, "SCL/S2A2A_20190723_022_Scalve_SCL_10.vrt")
 testthat::test_that(
   "Tests on clip SCL on extent, reproject with a reference raster and save as VRT", {

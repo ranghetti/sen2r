@@ -9,7 +9,7 @@ dir.create(safe_dir, showWarnings = FALSE)
 testthat::test_that(
   "Tests on merge all found tiles in offline mode", {
     
-    outdir_1 <- file.path(tempdir(), "out_test1")
+    outdir_1 <- tempfile(pattern = "out_test1_")
     dir.create(dirname(outdir_1), showWarnings = FALSE)
     exp_outpath_1 <- file.path(outdir_1, "SCL", "S2A2A_20190723_022__SCL_10.tif")
     unlink(exp_outpath_1)
@@ -63,6 +63,8 @@ testthat::test_that(
     testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 4.774656, tolerance = 1e-03)
     rm(exp_stars)
     
+    unlink(outdir_1, recursive = TRUE)
+    
   }
 )
 
@@ -70,7 +72,7 @@ testthat::test_that(
 testthat::test_that(
   "Expect error with no extent and tiles specified in online mode", {
     
-    outdir_1c <- file.path(tempdir(), "out_test1c")
+    outdir_1c <- tempfile(pattern = "out_test1c_")
     dir.create(dirname(outdir_1c), showWarnings = FALSE)
     testthat::expect_error(
       sen2r(

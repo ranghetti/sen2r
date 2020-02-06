@@ -8,20 +8,20 @@ dir.create(safe_dir, showWarnings = FALSE)
 testthat::test_that(
   "Tests on base mask on BOA", {
     
-    outdir_5 <- file.path(tempdir(), "out_test5")
+    outdir_5 <- tempfile(pattern = "out_test5_")
     dir.create(dirname(outdir_5), showWarnings = FALSE)
     exp_outpath_5 <- file.path(outdir_5, "BOA", "S2A2A_20190723_022_Scalve_BOA_10.tif")
     unlink(exp_outpath_5)
     sen2r(
       gui = FALSE,
-      online = FALSE,
+      online = TRUE,
       step_atmcorr = "l2a", # to avoid checks on Sen2Cor
-      extent = system.file("extdata/vector/barbellino.geojson", package = "sen2r"),
+      extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
       extent_name = "Scalve",
       extent_as_mask = TRUE,
-      timewindow = as.Date("2019-07-13"),
+      timewindow = as.Date("2019-07-23"),
       list_prods = c("BOA", "TOA"),
-      mask_type = NA, max_mask = 80,
+      mask_type = "cloud_high_proba",
       path_l1c = safe_dir,
       path_l2a = safe_dir,
       path_out = outdir_5,
@@ -44,8 +44,8 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_5)
-    testthat::expect_true(round(mean(exp_stars[[1]][,,1], na.rm=TRUE)) %in% c(704))
-    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,1])), 1999419)
+    testthat::expect_equal(mean(exp_stars[[1]][,,1], na.rm=TRUE), 939.3515, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,1])), 1816353)
     rm(exp_stars)
     
   }
@@ -60,7 +60,7 @@ ref_dir <- system.file("extdata/out", package = "sen2r")
 testthat::test_that(
   "Tests on custom mask on TOA with smoothing and buffering, with save binary mask", {
     
-    outdir_6 <- file.path(tempdir(), "out_test6")
+    outdir_6 <- tempfile(pattern = "out_test6_")
     dir.create(dirname(outdir_6), showWarnings = FALSE)
     exp_outpath_6 <- file.path(outdir_6, "TOA", "S2A1C_20190723_022_Barbellino_TOA_10.tif")
     exp_outpath_msk <- file.path(outdir_6, "MSK", "S2A1C_20190723_022_Barbellino_MSK_10.tif")
@@ -94,8 +94,8 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_6)
-    testthat::expect_true(round(mean(exp_stars[[1]][,,1], na.rm=TRUE)) %in% c(1398))
-    testthat::expect_true(sum(is.na(exp_stars[[1]][,,1])) %in% c(126))
+    testthat::expect_equal(mean(exp_stars[[1]][,,1], na.rm=TRUE), 1397.609, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,1])), 126)
     rm(exp_stars)
     
     
@@ -115,7 +115,7 @@ testthat::test_that(
 testthat::test_that(
   "Tests on clip BOA on extent - do not create if cloudiness > threshold", {
     
-    outdir_7 <- file.path(tempdir(), "out_test7")
+    outdir_7 <- tempfile(pattern = "out_test7_")
     dir.create(dirname(outdir_7), showWarnings = FALSE)
     exp_outpath_7 <- file.path(outdir_7, "BOA", "S2A2A_20190723_022_Barbellino_BOA_10.tif")
     unlink(exp_outpath_7)

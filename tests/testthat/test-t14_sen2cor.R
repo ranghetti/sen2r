@@ -5,9 +5,10 @@ testthat::skip_on_travis()
 # NOTE: these tests require a high amount of time,
 # so running Sen2Cor is disabled by default if SAFE archives are already present.
 # To perform the test also on Sen2Cor, replace 'test_sen2cor = FALSE' with 'TRUE'.
-test_sen2cor = TRUE
+test_sen2cor = FALSE
 
 safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
+safe_out_dir <- tempfile(pattern = "safe_")
 dir.create(safe_dir, showWarnings = FALSE)
 s2_l1c_prods <- file.path(safe_dir, c(
   "S2A_MSIL1C_20190723T101031_N0208_R022_T32TNR_20190723T121220.SAFE", 
@@ -69,7 +70,7 @@ if (test_sen2cor) {
             DEM_Directory = demdir <- tempfile(pattern="srtm90_"),
             Generate_DEM_Output = TRUE
           ),
-          outdir = safe_dir
+          outdir = safe_out_dir
         )
       )
       testthat::expect_true(dir.exists(sen2cor_out))
@@ -146,7 +147,7 @@ if (test_sen2cor) {
       run_time <- system.time(
         sen2cor_out <- sen2cor(
           s2_l1c_prods, 
-          outdir = safe_dir,
+          outdir = safe_out_dir,
           use_dem = TRUE,
           parallel = TRUE,
           overwrite = TRUE
@@ -205,4 +206,7 @@ if (test_sen2cor) {
       
     }
   )
+  
+  unlink(safe_out_dir, recursive = TRUE)
+  
 }

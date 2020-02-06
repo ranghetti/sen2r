@@ -8,7 +8,7 @@ dir.create(safe_dir, showWarnings = FALSE)
 testthat::test_that(
   "Tests on indices computation, on unrequired BOA, with clip ", {
     
-    outdir_11 <- file.path(tempdir(), "out_test11")
+    outdir_11 <- tempfile(pattern = "out_test11_")
     dir.create(dirname(outdir_11), showWarnings = FALSE)
     exp_outpath_11 <- file.path(
       outdir_11, c("NDVI","MSAVI2"), 
@@ -106,7 +106,7 @@ context("Test compute spectral indices - s2_calcindices()")
 # testthat::skip_on_travis()
 ref_dir <- system.file("extdata/out", package = "sen2r")
 
-outdir_12 <- file.path(tempdir(), "out_test12")
+outdir_12 <- tempfile(pattern = "out_test12_")
 testthat::test_that(
   "Tests on indices computation, on required TOA, type Float, with clip and mask ", {
     
@@ -221,7 +221,7 @@ testthat::skip_on_cran() # because using runtime GDAL
 testthat::test_that(
   "Tests on indices computation with function s2_calcidices(), gdal method", {
     
-    outdir_15 <- file.path(tempdir(), "out_test15")
+    outdir_15 <- tempfile(pattern = "out_test15_")
     dir.create(outdir_15, showWarnings = FALSE)
     exp_outpath_15 <- file.path(outdir_15, "OSAVI", "S2A1C_20190723_022_Barbellino_OSAVI_10.tif")
     unlink(exp_outpath_15)

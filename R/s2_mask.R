@@ -621,7 +621,7 @@ s2_mask <- function(infiles,
                 out <- writeValues(out, v, bs$row[j])
                 gc()
                 if (inherits(stdout(), "terminal")) {
-                  setTxtProgressBar(pb, i)
+                  setTxtProgressBar(pb, j)
                 }
               }
               if (inherits(stdout(), "terminal")) {
