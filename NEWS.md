@@ -14,7 +14,7 @@
 
 ## Minor changes
 - Add check on `max_mask` - `mask_type` coherence (if `max_mask < 100` and `mask_type` is not specified, a warning is returned).
-- Suppress some unuseful warnings.
+- Suppress some useless warnings.
 - Switch examples on 2019 dates (previously examples were based on 2017 images, which were partially moved on LTA).
 - Do not print progress bars in logs.
 
