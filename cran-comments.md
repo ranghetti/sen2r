@@ -10,4 +10,15 @@
 * [R-hub] macOS 10.11 El Capitan, R-release (experimental)
 
 ## R CMD check results
-There were no ERRORs, WARNINGs or NOTEs.
+There were no ERRORs or WARNINGs.
+
+There was 1 NOTE:
+Days since last update: 2
+
+In the previous version 1.3.0 a bug was discovered:
+in case the environmental variables PYTHONHOME and PYTHONPATH were not
+previously set, Python-based utilities called by the package crash.
+The bug interests portions of code which are commonly called by users, 
+and it can affect a large part of Windows users:
+this is the reason why releasing this new version 1.3.1, 
+which corrects this bug, is so urgent.
