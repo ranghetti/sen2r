@@ -1,0 +1,336 @@
+---
+title: "Output file structure"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using sen2r() from the command line}
+  %\VignetteEngine{knitr::knitr}
+  %\usepackage[UTF-8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Products generated using 
+<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+functions follows a precise [naming convention](#naming-convention),
+and are organised within a customisable [folder structure](#folder-structure).
+
+
+## Naming convention
+
+ESA Sentinel-2 naming convention is particularly long-winded; so, a different
+convention was adopted, follows this schema:
+
+<span style='font-family:monospace;font-weight:bold;'><span style='color:#FF3300;'>S2mll</span>\_<span style='color:#FF3300;'>yyyymmdd</span>\_<span style='color:#FF3300;'>rrr</span>\_<span style='color:#FF3300;'>EXTNAME</span>\_<span style='color:#FF3300;'>PROD</span>\_<span style='color:#FF3300;'>rr</span>\.<span style='color:#FF3300;'>fff</span></span>
+
+(e.g. <span style='font-family:monospace;'><span style='color:#FF6611;'>S2A2A</span>\_<span style='color:#FF6611;'>20190723</span>\_<span style='color:#FF6611;'>022</span>\_<span style='color:#FF6611;'>Barbellino</span>\_<span style='color:#FF6611;'>BOA</span>\_<span style='color:#FF6611;'>10</span>\.<span style='color:#FF6611;'>tif</span></span>)
+
+ * <span style='color:#FF3300;font-family:monospace;font-weight:bold;'>S2mll</span>
+     (length: 5) shows the mission ID 
+     (<span style='font-family:monospace;color:#FF6611;'>S2A</span> or 
+     <span style='font-family:monospace;color:#FF6611;'>S2B</span>) 
+     and the product level 
+     (<span style='font-family:monospace;color:#FF6611;'>1C</span> or 
+     <span style='font-family:monospace;color:#FF6611;'>2A</span>);
+ * <span style='color:#FF3300;font-family:monospace;font-weight:bold;'>yyyymmdd</span>
+     (length: 8) is the sensing date (e.g. 
+     <span style='font-family:monospace;color:#FF6611;'>20190723</span> for 2019-07-23); 
+     the hour is skipped, since a single sensor can not pass 
+     two times in a day on the same tile);
+ * <span style='color:#FF3300;font-family:monospace;font-weight:bold;'>rrr</span>
+     (length: 3) is the relative orbit number (e.g. 
+     <span style='font-family:monospace;color:#FF6611;'>022</span>);
+ * <span style='color:#FF3300;font-family:monospace;font-weight:bold;'>EXTNAME</span>
+     (length: variable, see [details](#extent-name))
+     is the output extent name (e.g. 
+     <span style='font-family:monospace;color:#FF6611;'>Barbellino</span>);
+     it could also be the the tile number (length: 5 -- e.g. 
+     <span style='font-family:monospace;color:#FF6611;'>32TQQ</span>)
+     for outputs of function `s2_translate()`,
+     and is kept empty for outputs of function `s2_merge()`;
+ * <span style='color:#FF3300;font-family:monospace;font-weight:bold;'>PROD</span>
+     (length: variable) is the output product name, being one of these:
+     - an output product: 
+         <span style='font-family:monospace;color:#FF6611;'>TOA</span>
+         (13-bands Top-Of-Atmosphere Reflectance),
+         <span style='font-family:monospace;color:#FF6611;'>BOA</span>
+         (13-bands Bottom-Of-Atmosphere Reflectance) or 
+         <span style='font-family:monospace;color:#FF6611;'>SCL</span>
+         (Scene Classification Map);
+     - a spectral index name (the list of supported index names can be obtained
+         with the function `list_indices("name")`);
+     - the name of a RGB image (length: 7, see [details](#rgb-names)).
+ * <span style='color:#FF3300;font-family:monospace;font-weight:bold;'>rr</span>
+     (length: 2) is the original minimum spatial resolution in metres
+     (<span style='font-family:monospace;color:#FF6611;'>10</span>, 
+     <span style='font-family:monospace;color:#FF6611;'>20</span> or 
+     <span style='font-family:monospace;color:#FF6611;'>60</span>);
+ * <span style='color:#FF3300;font-family:monospace;font-weight:bold;'>fff</span>
+     (length: variable, generally 3) is the file extension
+     (e.g. <span style='font-family:monospace;color:#FF6611;'>tif</span>).
+
+
+### Extent name
+The extent name is defined with the argument `extent_name` of function `sen2r()`.
+
+The user can choose any non-empty alphanumeric string as extent name, as long 
+as it does not contain spaces, points nor underscores, and as long as it is not 
+a five-length string with the same structure of a tile ID
+(two numeric and three uppercase character values), 
+because this structure is reserved for intermediate layers.
+
+
+### RGB names
+The names of RGB images are 7-length strings following the structure
+<span style='font-family:monospace;font-weight:bold;color:#FF3300;'>RGBrgbX</span>
+(e.g. <span style='font-family:monospace;color:#FF6611;'>RGBb84B</span>),
+where:
+
+- <span style='color:#FF3300;font-family:monospace;font-weight:bold;'>r</span>, 
+    <span style='color:#FF3300;font-family:monospace;font-weight:bold;'>g</span> and
+    <span style='color:#FF3300;font-family:monospace;font-weight:bold;'>b</span>
+    are the number of the bands to be used respectively for red, green and blue, 
+    in hexadecimal format (in the example above, 
+    <span style='font-family:monospace;color:#FF6611;'>b</span>, 
+    <span style='font-family:monospace;color:#FF6611;'>8</span> and 
+    <span style='font-family:monospace;color:#FF6611;'>4</span>
+    correspond to bands 11, 8 and 4);
+- <span style='color:#FF3300;font-family:monospace;font-weight:bold;'>X</span>
+    is <span style='font-family:monospace;color:#FF6611;'>B</span> if index source is BOA, 
+    or <span style='font-family:monospace;color:#FF6611;'>T</span> if source is TOA.
+
+
+## Folder structure
+
+Processing functions allows setting an output directory using the arguments 
+`path_out`, `path_rgb` and `path_indices` (`sen2r()`) or `outdir` 
+(`s2_translate()`, `s2_merge()`, `s2_mask()`, `s2_rgb()` and `s2_calcindices()`).
+These folders are automatically created if their parent directories exist.
+
+By default, functions create a subfolder for each product / index / RGB type,
+in which files are stored.
+Each product subfolder includes a sub-subfolder named `thumbnails`,
+which contains small JPEG or PNG images which can be used to rapidly monitor
+what was done (see `s2_thumbnails()` for further details).
+
+For example, the following command would produce the outputs listed below.
+```{r, eval=FALSE}
+json_path <- build_example_param_file()
+out_dir_1 <- tempfile(pattern = "sen2r_out_1_")
+
+library(sen2r)
+sen2r(
+  json_path, 
+  timewindow = c("2019-07-13","2019-07-23"),
+  path_out = out_dir_1
+)
+```
+```
+[2020-02-06 09:42:40] #### Starting sen2r execution. ####
+[2020-02-06 09:42:40] Searching for available SAFE products on SciHub...
+[2020-02-06 09:42:46] Computing output names...
+[2020-02-06 09:42:48] Processing group 1 of 5...
+```
+_Most of output message were skipped;_
+_see [this vignette](sen2r_cmd.html) for further details._
+```
+╔══════════════════════════════════════════════════════════════════════════════
+║ sen2r Processing Report
+╟──────────────────────────────────────────────────────────────────────────────
+║ Dates to be processed based on processing parameters: 5
+║ Processing completed for: all expected dates.
+╚══════════════════════════════════════════════════════════════════════════════
+[2020-02-06 09:44:45] #### sen2r session terminated. ####
+The processing chain can be re-launched with the command:
+  sen2r("/home/lranghetti/.sen2r/proc_par/s2proc_20200206_094240.json")
+```
+```{r, eval=FALSE}
+system(paste("tree", out_dir_1)) # working on Linux with binary "tree" installed
+```
+```
+/tmp/RtmpUlAdHw/sen2r_out_1_a55119f4ed09
+├── BOA
+│   ├── S2A2A_20190713_022_sen2r_BOA_10.tif
+│   ├── S2A2A_20190716_065_sen2r_BOA_10.tif
+│   ├── S2A2A_20190723_022_sen2r_BOA_10.tif
+│   ├── S2B2A_20190718_022_sen2r_BOA_10.tif
+│   ├── S2B2A_20190721_065_sen2r_BOA_10.tif
+│   └── thumbnails
+│       ├── S2A2A_20190713_022_sen2r_BOA_10.jpg
+│       ├── S2A2A_20190713_022_sen2r_BOA_10.jpg.aux.xml
+│       ├── S2A2A_20190716_065_sen2r_BOA_10.jpg
+│       ├── S2A2A_20190716_065_sen2r_BOA_10.jpg.aux.xml
+│       ├── S2A2A_20190723_022_sen2r_BOA_10.jpg
+│       ├── S2A2A_20190723_022_sen2r_BOA_10.jpg.aux.xml
+│       ├── S2B2A_20190718_022_sen2r_BOA_10.jpg
+│       ├── S2B2A_20190718_022_sen2r_BOA_10.jpg.aux.xml
+│       ├── S2B2A_20190721_065_sen2r_BOA_10.jpg
+│       └── S2B2A_20190721_065_sen2r_BOA_10.jpg.aux.xml
+├── MSAVI2
+│   ├── S2A2A_20190713_022_sen2r_MSAVI2_10.tif
+│   ├── S2A2A_20190716_065_sen2r_MSAVI2_10.tif
+│   ├── S2A2A_20190723_022_sen2r_MSAVI2_10.tif
+│   ├── S2B2A_20190718_022_sen2r_MSAVI2_10.tif
+│   ├── S2B2A_20190721_065_sen2r_MSAVI2_10.tif
+│   └── thumbnails
+│       ├── S2A2A_20190713_022_sen2r_MSAVI2_10.jpg
+│       ├── S2A2A_20190713_022_sen2r_MSAVI2_10.jpg.aux.xml
+│       ├── S2A2A_20190716_065_sen2r_MSAVI2_10.jpg
+│       ├── S2A2A_20190716_065_sen2r_MSAVI2_10.jpg.aux.xml
+│       ├── S2A2A_20190723_022_sen2r_MSAVI2_10.jpg
+│       ├── S2A2A_20190723_022_sen2r_MSAVI2_10.jpg.aux.xml
+│       ├── S2B2A_20190718_022_sen2r_MSAVI2_10.jpg
+│       ├── S2B2A_20190718_022_sen2r_MSAVI2_10.jpg.aux.xml
+│       ├── S2B2A_20190721_065_sen2r_MSAVI2_10.jpg
+│       └── S2B2A_20190721_065_sen2r_MSAVI2_10.jpg.aux.xml
+├── NDVI
+│   ├── S2A2A_20190713_022_sen2r_NDVI_10.tif
+│   ├── S2A2A_20190716_065_sen2r_NDVI_10.tif
+│   ├── S2A2A_20190723_022_sen2r_NDVI_10.tif
+│   ├── S2B2A_20190718_022_sen2r_NDVI_10.tif
+│   ├── S2B2A_20190721_065_sen2r_NDVI_10.tif
+│   └── thumbnails
+│       ├── S2A2A_20190713_022_sen2r_NDVI_10.jpg
+│       ├── S2A2A_20190713_022_sen2r_NDVI_10.jpg.aux.xml
+│       ├── S2A2A_20190716_065_sen2r_NDVI_10.jpg
+│       ├── S2A2A_20190716_065_sen2r_NDVI_10.jpg.aux.xml
+│       ├── S2A2A_20190723_022_sen2r_NDVI_10.jpg
+│       ├── S2A2A_20190723_022_sen2r_NDVI_10.jpg.aux.xml
+│       ├── S2B2A_20190718_022_sen2r_NDVI_10.jpg
+│       ├── S2B2A_20190718_022_sen2r_NDVI_10.jpg.aux.xml
+│       ├── S2B2A_20190721_065_sen2r_NDVI_10.jpg
+│       └── S2B2A_20190721_065_sen2r_NDVI_10.jpg.aux.xml
+├── RGB432B
+│   ├── S2A2A_20190713_022_sen2r_RGB432B_10.tif
+│   ├── S2A2A_20190716_065_sen2r_RGB432B_10.tif
+│   ├── S2A2A_20190723_022_sen2r_RGB432B_10.tif
+│   ├── S2B2A_20190718_022_sen2r_RGB432B_10.tif
+│   ├── S2B2A_20190721_065_sen2r_RGB432B_10.tif
+│   └── thumbnails
+│       ├── S2A2A_20190713_022_sen2r_RGB432B_10.jpg
+│       ├── S2A2A_20190713_022_sen2r_RGB432B_10.jpg.aux.xml
+│       ├── S2A2A_20190716_065_sen2r_RGB432B_10.jpg
+│       ├── S2A2A_20190716_065_sen2r_RGB432B_10.jpg.aux.xml
+│       ├── S2A2A_20190723_022_sen2r_RGB432B_10.jpg
+│       ├── S2A2A_20190723_022_sen2r_RGB432B_10.jpg.aux.xml
+│       ├── S2B2A_20190718_022_sen2r_RGB432B_10.jpg
+│       ├── S2B2A_20190718_022_sen2r_RGB432B_10.jpg.aux.xml
+│       ├── S2B2A_20190721_065_sen2r_RGB432B_10.jpg
+│       └── S2B2A_20190721_065_sen2r_RGB432B_10.jpg.aux.xml
+├── RGB843B
+│   ├── S2A2A_20190713_022_sen2r_RGB843B_10.tif
+│   ├── S2A2A_20190716_065_sen2r_RGB843B_10.tif
+│   ├── S2A2A_20190723_022_sen2r_RGB843B_10.tif
+│   ├── S2B2A_20190718_022_sen2r_RGB843B_10.tif
+│   ├── S2B2A_20190721_065_sen2r_RGB843B_10.tif
+│   └── thumbnails
+│       ├── S2A2A_20190713_022_sen2r_RGB843B_10.jpg
+│       ├── S2A2A_20190713_022_sen2r_RGB843B_10.jpg.aux.xml
+│       ├── S2A2A_20190716_065_sen2r_RGB843B_10.jpg
+│       ├── S2A2A_20190716_065_sen2r_RGB843B_10.jpg.aux.xml
+│       ├── S2A2A_20190723_022_sen2r_RGB843B_10.jpg
+│       ├── S2A2A_20190723_022_sen2r_RGB843B_10.jpg.aux.xml
+│       ├── S2B2A_20190718_022_sen2r_RGB843B_10.jpg
+│       ├── S2B2A_20190718_022_sen2r_RGB843B_10.jpg.aux.xml
+│       ├── S2B2A_20190721_065_sen2r_RGB843B_10.jpg
+│       └── S2B2A_20190721_065_sen2r_RGB843B_10.jpg.aux.xml
+└── SCL
+    ├── S2A2A_20190713_022_sen2r_SCL_10.tif
+    ├── S2A2A_20190716_065_sen2r_SCL_10.tif
+    ├── S2A2A_20190723_022_sen2r_SCL_10.tif
+    ├── S2B2A_20190718_022_sen2r_SCL_10.tif
+    ├── S2B2A_20190721_065_sen2r_SCL_10.tif
+    └── thumbnails
+        ├── S2A2A_20190713_022_sen2r_SCL_10.png
+        ├── S2A2A_20190713_022_sen2r_SCL_10.png.aux.xml
+        ├── S2A2A_20190716_065_sen2r_SCL_10.png
+        ├── S2A2A_20190716_065_sen2r_SCL_10.png.aux.xml
+        ├── S2A2A_20190723_022_sen2r_SCL_10.png
+        ├── S2A2A_20190723_022_sen2r_SCL_10.png.aux.xml
+        ├── S2B2A_20190718_022_sen2r_SCL_10.png
+        ├── S2B2A_20190718_022_sen2r_SCL_10.png.aux.xml
+        ├── S2B2A_20190721_065_sen2r_SCL_10.png
+        └── S2B2A_20190721_065_sen2r_SCL_10.png.aux.xml
+
+12 directories, 90 files
+```
+In each of the 6 subfolders `BOA`, `MSAVI2`, `NDVI`, `RGB432B`, `RGB843B` and `SCL`
+5 products (one for each date) were created.
+Sub-subfolders `thumbnails` contains thumbnail images.
+
+Users can skip the creation of products' subfolders setting the argument
+`sen2r(..., path_subdirs = FALSE)` (default: `TRUE`), or doing the same with
+the argument `subdir` of other processing functions.
+The creation of thumbnails can be skipped using `sen2r(..., thumbnails = FALSE)`
+(default: `TRUE`).
+Both the options can be also set [using the `sen2r()` GUI](sen2r_gui.html).
+
+For example, the following command would produce the outputs listed below.
+```{r, eval=FALSE}
+out_dir_2 <- tempfile(pattern = "sen2r_out_2_")
+
+sen2r(
+  json_path, 
+  timewindow = c("2019-07-13","2019-07-23"),
+  path_out = out_dir_2,
+  path_subdirs = FALSE,
+  thumbnails = FALSE
+)
+```
+```
+[2020-02-06 09:52:30] #### Starting sen2r execution. ####
+[2020-02-06 09:52:30] Searching for available SAFE products on SciHub...
+[2020-02-06 09:52:35] Computing output names...
+[2020-02-06 09:52:36] Processing group 1 of 5...
+
+# most of output message were skipped
+
+╔══════════════════════════════════════════════════════════════════════════════
+║ sen2r Processing Report
+╟──────────────────────────────────────────────────────────────────────────────
+║ Dates to be processed based on processing parameters: 5
+║ Processing completed for: all expected dates.
+╚══════════════════════════════════════════════════════════════════════════════
+[2020-02-06 09:54:16] #### sen2r session terminated. ####
+The processing chain can be re-launched with the command:
+  sen2r("/home/lranghetti/.sen2r/proc_par/s2proc_20200206_095230.json")
+```
+```{r, eval=FALSE}
+system(paste("tree", out_dir_2))
+```
+```
+/tmp/RtmpUlAdHw/sen2r_out_2_a5513ad348b0
+├── S2A2A_20190713_022_sen2r_BOA_10.tif
+├── S2A2A_20190713_022_sen2r_MSAVI2_10.tif
+├── S2A2A_20190713_022_sen2r_NDVI_10.tif
+├── S2A2A_20190713_022_sen2r_RGB432B_10.tif
+├── S2A2A_20190713_022_sen2r_RGB843B_10.tif
+├── S2A2A_20190713_022_sen2r_SCL_10.tif
+├── S2A2A_20190716_065_sen2r_BOA_10.tif
+├── S2A2A_20190716_065_sen2r_MSAVI2_10.tif
+├── S2A2A_20190716_065_sen2r_NDVI_10.tif
+├── S2A2A_20190716_065_sen2r_RGB432B_10.tif
+├── S2A2A_20190716_065_sen2r_RGB843B_10.tif
+├── S2A2A_20190716_065_sen2r_SCL_10.tif
+├── S2A2A_20190723_022_sen2r_BOA_10.tif
+├── S2A2A_20190723_022_sen2r_MSAVI2_10.tif
+├── S2A2A_20190723_022_sen2r_NDVI_10.tif
+├── S2A2A_20190723_022_sen2r_RGB432B_10.tif
+├── S2A2A_20190723_022_sen2r_RGB843B_10.tif
+├── S2A2A_20190723_022_sen2r_SCL_10.tif
+├── S2B2A_20190718_022_sen2r_BOA_10.tif
+├── S2B2A_20190718_022_sen2r_MSAVI2_10.tif
+├── S2B2A_20190718_022_sen2r_NDVI_10.tif
+├── S2B2A_20190718_022_sen2r_RGB432B_10.tif
+├── S2B2A_20190718_022_sen2r_RGB843B_10.tif
+├── S2B2A_20190718_022_sen2r_SCL_10.tif
+├── S2B2A_20190721_065_sen2r_BOA_10.tif
+├── S2B2A_20190721_065_sen2r_MSAVI2_10.tif
+├── S2B2A_20190721_065_sen2r_NDVI_10.tif
+├── S2B2A_20190721_065_sen2r_RGB432B_10.tif
+├── S2B2A_20190721_065_sen2r_RGB843B_10.tif
+└── S2B2A_20190721_065_sen2r_SCL_10.tif
+
+0 directories, 30 files
+```

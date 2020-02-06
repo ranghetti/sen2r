@@ -2,6 +2,7 @@ anymore
 AOT
 apihub
 ArchLinux
+Barbellino
 bbox
 BDred
 BigTIFF
@@ -36,7 +37,9 @@ epsg
 EPSG
 etc
 EVI
+EXTNAME
 fasterize
+fff
 fidolasen
 gdal
 GDAL
@@ -72,8 +75,10 @@ LTA
 lwgeom
 maskfile
 MathML
+mll
 modaldialog
 mountpoint
+MSAVI
 multiband
 multiplicated
 ncdf
@@ -117,10 +122,14 @@ reprojection
 reprojections
 res
 rgb
+RGBb
 RGBrgbx
+RGBrgbX
 rgdal
 rgeos
 rmtmp
+rr
+rrr
 RStudio
 safelist
 SALTO
@@ -155,6 +164,7 @@ timewindow
 timezones
 tmpdir
 TOA
+TQQ
 troublings
 ubuntugis
 vrt
@@ -163,5 +173,6 @@ Wget
 Willmann
 WKT
 Xenial
+yyyymmdd
 zenodo
 Zscore

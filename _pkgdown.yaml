@@ -78,6 +78,12 @@ navbar:
          href: articles/installation.html
       -  text: "Run in a Docker container"
          href: articles/docker.html
+      -  text: "Using sen2r() from the GUI"
+         href: articles/sen2r_gui.html
+      -  text: "Using sen2r() from the command line"
+         href: articles/sen2r_cmd.html
+      -  text: "Output file structure"
+         href: articles/outstructure.html
     - text: "\u2000Changelog"
       icon: fa-newspaper
       href: news/index.html

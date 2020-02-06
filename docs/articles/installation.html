@@ -72,6 +72,12 @@
     <li>
       <a href="../articles/docker.html">Run in a Docker container</a>
     </li>
+    <li>
+      <a href="../articles/sen2r_gui.html">Using sen2r() from the GUI</a>
+    </li>
+    <li>
+      <a href="../articles/sen2r_cmd.html">Using sen2r() from the command line</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -157,32 +163,29 @@
 <ul>
 <li>
 <p>On Ubuntu:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">sudo</span> apt-get install -y r-base gdal-bin python-gdal aria2 libpython-dev libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libv8-dev libssl-dev libcairo2-dev</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="fu">sudo</span> apt-get install -y r-base gdal-bin python-gdal aria2 libpython-dev libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libv8-dev libssl-dev libcairo2-dev</a></code></pre></div>
 <p>On Ubuntu 16.04 LTS Xenial and 14.04 LTS Trusty, the repositories <a href="https://launchpad.net/~ubuntugis">ubuntugis</a> and <a href="https://launchpad.net/~opencpu">opencpu</a> must be added before installing the packages:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">sudo</span> add-apt-repository -y ppa:opencpu/jq</span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="fu">sudo</span> add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable</span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="fu">sudo</span> apt-get update -q</span></code></pre></div>
-<p>Installation was tested over Ubuntu 18.04 LTS Bionic; newer versions should work, like Ubuntu 16.04 LTS Xenial and 14.04 LTS Trusty should also do. Other releases (Ubuntu non-LTS &lt; 18.04; Ubuntu LTS ≤ 12.04) are not supported.</p>
-</li>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="fu">sudo</span> add-apt-repository -y ppa:opencpu/jq</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="fu">sudo</span> add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="fu">sudo</span> apt-get update -q</a></code></pre></div>
+Installation was tested over Ubuntu 18.04 LTS Bionic; newer versions should work, like Ubuntu 16.04 LTS Xenial and 14.04 LTS Trusty should also do. Other releases (Ubuntu non-LTS &lt; 18.04; Ubuntu LTS ≤ 12.04) are not supported.</li>
 <li>
 <p>On Debian:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">sudo</span> apt-get install -y r-base gdal-bin python-gdal aria2 libpython-dev libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libnode-dev libssl-dev libcairo2-dev proj-epsg</span></code></pre></div>
-<p>Installation was tested over Debian 9 Stretch; older releases are not supported.</p>
-</li>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="fu">sudo</span> apt-get install -y r-base gdal-bin python-gdal aria2 libpython-dev libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libnode-dev libssl-dev libcairo2-dev proj-epsg</a></code></pre></div>
+Installation was tested over Debian 9 Stretch; older releases are not supported.</li>
 <li>
 <p>On Fedora:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">sudo</span> yum install R gdal gdal-python aria2 python-devels gdal-devel proj-devel geos-devel udunits2-devel jq-devel protobuf-devel v8-devel openssl-devel cairo-devel libcurl-devel netcdf-devel libxml2-devel</span></code></pre></div>
-<p>Installation was tested over Fedora 29.</p>
-</li>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="fu">sudo</span> yum install R gdal gdal-python aria2 python-devels gdal-devel proj-devel geos-devel udunits2-devel jq-devel protobuf-devel v8-devel openssl-devel cairo-devel libcurl-devel netcdf-devel libxml2-devel</a></code></pre></div>
+Installation was tested over Fedora 29.</li>
 <li>
 <p>On ArchLinux:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">sudo</span> pacman -S --noconfirm r base-devel gcc-fortran python-gdal wget aria2 jq protobuf git</span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/gyp-git.git</span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="bu">cd</span> gyp-git<span class="kw">;</span> <span class="ex">makepkg</span> -si --noconfirm</span>
-<span id="cb5-4"><a href="#cb5-4"></a><span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/v8-3.14.git</span>
-<span id="cb5-5"><a href="#cb5-5"></a><span class="bu">cd</span> v8-3.14<span class="kw">;</span> <span class="ex">makepkg</span> -si --noconfirm</span>
-<span id="cb5-6"><a href="#cb5-6"></a><span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/udunits.git</span>
-<span id="cb5-7"><a href="#cb5-7"></a><span class="bu">cd</span> udunits<span class="kw">;</span> <span class="ex">makepkg</span> -si --noconfirm</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="fu">sudo</span> pacman -S --noconfirm r base-devel gcc-fortran python-gdal wget aria2 jq protobuf git</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/gyp-git.git</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="bu">cd</span> gyp-git<span class="kw">;</span> <span class="ex">makepkg</span> -si --noconfirm</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/v8-3.14.git</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="bu">cd</span> v8-3.14<span class="kw">;</span> <span class="ex">makepkg</span> -si --noconfirm</a>
+<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/udunits.git</a>
+<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="bu">cd</span> udunits<span class="kw">;</span> <span class="ex">makepkg</span> -si --noconfirm</a></code></pre></div>
 <p>Installation was tested on date 2018-11-21.</p>
 </li>
 </ul>
@@ -192,30 +195,30 @@
 <a href="#installing-sen2r" class="anchor"></a>Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
 </h3>
 <p>Before proceeding, it is suggested to update the existing R packages:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/update.packages.html">update.packages</a></span>(<span class="dt">ask =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/update.packages.html">update.packages</a></span>(<span class="dt">ask =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 <p>Doing that, the following warning could appear:</p>
 <pre><code>Warning in install.packages(update[instlib == l, "Package"], l, contriburl = contriburl,  :
   'lib = "/usr/lib/R/library"' is not writable
 Would you like to use a personal library instead?  (y/n)</code></pre>
 <p>If so, press <code>y</code> and continue. Moreover, if no personal libraries already exist, it is asked to create a new one: ask <code>y</code> and continue.</p>
 <p>After that, the package can be installed from CRAN:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sen2r"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sen2r"</span>)</a></code></pre></div>
 <p>Alternatively, the development version can be installed from GitHub with the R package <strong>remotes</strong>. To do it:</p>
 <ol style="list-style-type: decimal">
 <li>
 <p>install the package <strong>remotes</strong>, if missing:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"remotes"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"remotes"</span>)</a></code></pre></div>
 </li>
 <li>
 <p>load it and install <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(remotes)</span>
-<span id="cb10-2"><a href="#cb10-2"></a><span class="kw"><a href="https://rdrr.io/pkg/remotes/man/install_github.html">install_github</a></span>(<span class="st">"ranghetti/sen2r"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(remotes)</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/pkg/remotes/man/install_github.html">install_github</a></span>(<span class="st">"ranghetti/sen2r"</span>)</a></code></pre></div>
 </li>
 </ol>
 <p>This will install the R package along with its package dependencies, containing all the functions necessary to preprocess data.</p>
 <p>Finally, <strong>sen2cor</strong> can be installed from R:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(sen2r)</span>
-<span id="cb11-2"><a href="#cb11-2"></a><span class="kw"><a href="../reference/install_sen2cor.html">install_sen2cor</a></span>()</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(sen2r)</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="kw"><a href="../reference/install_sen2cor.html">install_sen2cor</a></span>()</a></code></pre></div>
 </div>
 </div>
 <div id="on-windows" class="section level2">
@@ -227,19 +230,19 @@ Would you like to use a personal library instead?  (y/n)</code></pre>
 </h3>
 <p><a href="https://cran.r-project.org/bin/windows/base">R</a> must be installed before proceeding.</p>
 <p>In the case it was already installed, it is suggested to update the existing R packages:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/update.packages.html">update.packages</a></span>(<span class="dt">ask =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/update.packages.html">update.packages</a></span>(<span class="dt">ask =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 <p><span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be installed from CRAN:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sen2r"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sen2r"</span>)</a></code></pre></div>
 <p>Alternatively, the development version can be installed from GitHub with the R package <strong>remotes</strong>. To do it:</p>
 <ol style="list-style-type: decimal">
 <li>
 <p>install the package <strong>remotes</strong>, if missing:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"remotes"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"remotes"</span>)</a></code></pre></div>
 </li>
 <li>
 <p>load it and install <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(remotes)</span>
-<span id="cb15-2"><a href="#cb15-2"></a><span class="kw"><a href="https://rdrr.io/pkg/remotes/man/install_github.html">install_github</a></span>(<span class="st">"ranghetti/sen2r"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(remotes)</a>
+<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/pkg/remotes/man/install_github.html">install_github</a></span>(<span class="st">"ranghetti/sen2r"</span>)</a></code></pre></div>
 </li>
 </ol>
 <p>This will install the R package along with its package dependencies, containing all the functions necessary to preprocess data.</p>
@@ -261,8 +264,8 @@ Would you like to use a personal library instead?  (y/n)</code></pre>
 <a href="https://aria2.github.io"><strong>aria2</strong></a> is an alternative downloader which can be used to faster the download of SAFE archives; it can be optionally installed and used.</li>
 </ul>
 <p>These dependences can be graphically checked launching the function</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(sen2r)</span>
-<span id="cb16-2"><a href="#cb16-2"></a><span class="kw"><a href="../reference/check_sen2r_deps.html">check_sen2r_deps</a></span>()</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(sen2r)</a>
+<a class="sourceLine" id="cb16-2" data-line-number="2"><span class="kw"><a href="../reference/check_sen2r_deps.html">check_sen2r_deps</a></span>()</a></code></pre></div>
 <p>This function opens a GUI which help to check that they are satisfied; if some of them are missing, the GUI allows to install them directly.</p>
 <!-- Atmospheric correction is performed using [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor):
 the package will automatically download and install it at first use,
@@ -285,13 +288,12 @@ in advanced mode, and checking the installation of `openjpeg` library. -->
 <ol style="list-style-type: decimal">
 <li>
 <p>if Homebrew is missing on your system, install it opening a terminal and typing:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1"></a><span class="ex">/usr/bin/ruby</span> -e <span class="st">"</span><span class="va">$(</span><span class="ex">curl</span> -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span class="va">)</span><span class="st">"</span></span></code></pre></div>
-<p>(see <a href="https://brew.sh/">the Homebrew webpage</a> for details);</p>
-</li>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="ex">/usr/bin/ruby</span> -e <span class="st">"</span><span class="va">$(</span><span class="ex">curl</span> -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span class="va">)</span><span class="st">"</span></a></code></pre></div>
+(see <a href="https://brew.sh/">the Homebrew webpage</a> for details);</li>
 <li>
 <p>install GDAL by typing:</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1"></a><span class="ex">brew</span> tap osgeo/osgeo4mac</span>
-<span id="cb18-2"><a href="#cb18-2"></a><span class="ex">brew</span> install osgeo-gdal-python</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="ex">brew</span> tap osgeo/osgeo4mac</a>
+<a class="sourceLine" id="cb18-2" data-line-number="2"><span class="ex">brew</span> install osgeo-gdal-python</a></code></pre></div>
 <p>(see <a href="https://github.com/OSGeo/homebrew-osgeo4mac">the OSGeo Homebrew webpage</a> for details). At this step, an error could be returned in case another GDAL installation was already present; in this case, follow the instruction returned in the terminal to solve it (probably some packages must be unlinked with the instructions <code>brew unlink &lt;package&gt;</code>).</p>
 </li>
 </ol>
@@ -302,22 +304,22 @@ in advanced mode, and checking the installation of `openjpeg` library. -->
 </h3>
 <p><a href="https://cran.r-project.org/bin/windows/base">R</a> must be installed before proceeding.</p>
 <p>In the case it was already installed, it is suggested to update the existing R packages:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/update.packages.html">update.packages</a></span>(<span class="dt">ask =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/update.packages.html">update.packages</a></span>(<span class="dt">ask =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 <p>Packages can be installed using the compiled binaries, except from <strong>sp</strong>, <strong>sf</strong>, <strong>rgdal</strong> and <strong>rgeos</strong>, which are recommended to be compiled. To do it, use the command</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"sp"</span>, <span class="st">"sf"</span>, <span class="st">"rgdal"</span>, <span class="st">"rgeos"</span>), <span class="dt">type =</span> <span class="st">"source"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"sp"</span>, <span class="st">"sf"</span>, <span class="st">"rgdal"</span>, <span class="st">"rgeos"</span>), <span class="dt">type =</span> <span class="st">"source"</span>)</a></code></pre></div>
 <p><strong>after</strong> having installed GDAL as described above.</p>
 <p><span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be installed from CRAN:</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sen2r"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sen2r"</span>)</a></code></pre></div>
 <p>Alternatively, the development version can be installed from GitHub with the R package <strong>remotes</strong>. To do it:</p>
 <ol style="list-style-type: decimal">
 <li>
 <p>install the package <strong>remotes</strong>, if missing:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"remotes"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"remotes"</span>)</a></code></pre></div>
 </li>
 <li>
 <p>load it and install <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(remotes)</span>
-<span id="cb23-2"><a href="#cb23-2"></a><span class="kw"><a href="https://rdrr.io/pkg/remotes/man/install_github.html">install_github</a></span>(<span class="st">"ranghetti/sen2r"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(remotes)</a>
+<a class="sourceLine" id="cb23-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/pkg/remotes/man/install_github.html">install_github</a></span>(<span class="st">"ranghetti/sen2r"</span>)</a></code></pre></div>
 </li>
 </ol>
 <p>This will install the R package along with its package dependencies, containing all the functions necessary to preprocess data.</p>
@@ -335,8 +337,8 @@ in advanced mode, and checking the installation of `openjpeg` library. -->
 <a href="https://aria2.github.io"><strong>aria2</strong></a> is an alternative downloader which can be used to faster the download of SAFE archives; it can be optionally installed and used.</li>
 </ul>
 <p>These dependences can be graphically checked launching the function</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(sen2r)</span>
-<span id="cb24-2"><a href="#cb24-2"></a><span class="kw"><a href="../reference/check_sen2r_deps.html">check_sen2r_deps</a></span>()</span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(sen2r)</a>
+<a class="sourceLine" id="cb24-2" data-line-number="2"><span class="kw"><a href="../reference/check_sen2r_deps.html">check_sen2r_deps</a></span>()</a></code></pre></div>
 <p>This function opens a GUI which help to check that they are satisfied; if some of them are missing, the GUI allows to install them directly.</p>
 </div>
 </div>

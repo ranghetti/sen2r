@@ -77,6 +77,12 @@
     <li>
       <a href="articles/docker.html">Run in a Docker container</a>
     </li>
+    <li>
+      <a href="articles/sen2r_gui.html">Using sen2r() from the GUI</a>
+    </li>
+    <li>
+      <a href="articles/sen2r_cmd.html">Using sen2r() from the command line</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -128,9 +134,9 @@
 <h3 class="hasAnchor">
 <a href="#install-locally" class="anchor"></a>Install locally</h3>
 <p>The package can be installed from CRAN:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sen2r"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sen2r"</span>)</a></code></pre></div>
 <p>Alternatively, the development version can be installed from GitHub with the R package <strong>remotes</strong>:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>remotes<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/remotes/man/install_github.html">install_github</a></span>(<span class="st">"ranghetti/sen2r"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">remotes<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/remotes/man/install_github.html">install_github</a></span>(<span class="st">"ranghetti/sen2r"</span>)</a></code></pre></div>
 <p>For detailed instructions about installing the package (including dependencies), see the <a href="articles/installation.html">Installation</a> page.</p>
 </div>
 <div id="run-as-docker-image" class="section level3">
@@ -143,8 +149,8 @@
 <h2 class="hasAnchor">
 <a href="#usage" class="anchor"></a>Usage</h2>
 <p>The simplest way to use <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> is to execute it in interactive mode:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(sen2r)</span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="kw"><a href="reference/sen2r.html">sen2r</a></span>()</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(sen2r)</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw"><a href="reference/sen2r.html">sen2r</a></span>()</a></code></pre></div>
 <p>this opens a GUI which allows to set the required processing parameters, and then launches the main function.</p>
 <p style="text-align:center;">
 
@@ -191,14 +197,14 @@
 <p>The <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_logo_200px.png"><span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> logo</a>, partially derived from the <a href="https://www.r-project.org/logo">R logo</a>, is released under the <a href="https://creativecommons.org/licenses/by-sa/4.0">Creative Commons Attribution-ShareAlike 4.0 International license</a> (CC-BY-SA 4.0).</p>
 <p>To cite this library, please use the following entry:</p>
 <p>Ranghetti, L. and Busetto, L. (2019). <em>sen2r: Find, Download and Process Sentinel-2 Data</em>. R package version 1.2.0. DOI: <a href="https://dx.doi.org/10.5281/zenodo.1240384">10.5281/zenodo.1240384</a>. URL: <a href="http://sen2r.ranghetti.info" class="uri">http://sen2r.ranghetti.info</a>.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb4-1"><a href="#cb4-1"></a><span class="va">@Manual</span>{<span class="ot">sen2r</span>,</span>
-<span id="cb4-2"><a href="#cb4-2"></a>  <span class="dt">title</span>  = {sen2r: Find, Download and Process Sentinel-2 Data},</span>
-<span id="cb4-3"><a href="#cb4-3"></a>  <span class="dt">author</span> = {Luigi Ranghetti and Lorenzo Busetto},</span>
-<span id="cb4-4"><a href="#cb4-4"></a>  <span class="dt">year</span>   = {2019},</span>
-<span id="cb4-5"><a href="#cb4-5"></a>  <span class="dt">note</span>   = {R package version 1.2.0},</span>
-<span id="cb4-6"><a href="#cb4-6"></a>  <span class="dt">doi</span>    = {10.5281/zenodo.1240384},</span>
-<span id="cb4-7"><a href="#cb4-7"></a>  <span class="dt">url</span>    = {http://sen2r.ranghetti.info},</span>
-<span id="cb4-8"><a href="#cb4-8"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="va">@Manual</span>{<span class="ot">sen2r</span>,</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">  <span class="dt">title</span>  = {sen2r: Find, Download and Process Sentinel-2 Data},</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">  <span class="dt">author</span> = {Luigi Ranghetti and Lorenzo Busetto},</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">  <span class="dt">year</span>   = {2019},</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">  <span class="dt">note</span>   = {R package version 1.2.0},</a>
+<a class="sourceLine" id="cb4-6" data-line-number="6">  <span class="dt">doi</span>    = {10.5281/zenodo.1240384},</a>
+<a class="sourceLine" id="cb4-7" data-line-number="7">  <span class="dt">url</span>    = {http://sen2r.ranghetti.info},</a>
+<a class="sourceLine" id="cb4-8" data-line-number="8">}</a></code></pre></div>
 </div>
 <div id="contributing" class="section level2">
 <h2 class="hasAnchor">

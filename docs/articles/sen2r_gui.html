@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Run in a Docker container • sen2r: Find, Download and Process Sentinel-2 Data</title>
+<title>Using sen2r() from the GUI • sen2r: Find, Download and Process Sentinel-2 Data</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Run in a Docker container">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Using sen2r() from the GUI">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0.9001</span>
       </span>
     </div>
 
@@ -106,46 +106,31 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Run in a Docker container</h1>
+      <h1>Using sen2r() from the GUI</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/ranghetti/sen2r/blob/master/vignettes/docker.Rmd"><code>vignettes/docker.Rmd</code></a></small>
-      <div class="hidden name"><code>docker.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/ranghetti/sen2r/blob/master/vignettes/sen2r_gui.Rmd"><code>vignettes/sen2r_gui.Rmd</code></a></small>
+      <div class="hidden name"><code>sen2r_gui.Rmd</code></div>
 
     </div>
 
     
     
-<p>A dockerised version of <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> is available <a href="https://hub.docker.com/r/ranghetti/sen2r">here</a>: it contains a working RStudio environment with the package <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> and all its dependencies (both R packages and runtime dependencies). It can be used in order to avoid troublings about compiling all the required R packages, or in case of problems with runtime dependencies (typically GDAL over Windows).</p>
-<p>To use it:</p>
-<ol style="list-style-type: decimal">
-<li><p><a href="https://docs.docker.com/install">install Docker CE</a> version 1.13 or higher;</p></li>
-<li><p>read the docker documentation in <a href="https://docs.docker.com/get-started">Part 1</a>;</p></li>
-<li>
-<p>obtain the image of <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="ex">docker</span> pull ranghetti/sen2r:latest</a></code></pre></div>
-<p>where <code>latest</code> corresponds to the software version in branch <a href="https://github.com/ranghetti/sen2r/tree/master">master</a> (see <a href="https://cloud.docker.com/repository/registry-1.docker.io/ranghetti/sen2r/tags">here</a> all the available docker tags);</p>
-</li>
-<li>
-<p>run the docker:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="ex">docker</span> run --rm -e PASSWORD=sen2r -e USERID=<span class="va">$(</span><span class="fu">id</span> -u<span class="va">)</span> -v <span class="va">$(</span><span class="bu">pwd</span><span class="va">)</span>:/home/rstudio/host -p 8777:8787 ranghetti/sen2r</a></code></pre></div>
-<p>where:</p>
+<p>The simplest way to use <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> is to execute it in interactive mode. These commands will open the GUI provided with by function <code><a href="../reference/sen2r.html">sen2r()</a></code>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(sen2r)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="../reference/sen2r.html">sen2r</a></span>()</a></code></pre></div>
+<p>The GUI is organised in several panels (click on the images below for larger versions), allowing users to set all the required processing parameters. Help pop-up windows (marked with the symbol <span style="color:darkcyan;"><i class="fa fa-question-circle"></i></span>) are provided to aid users regarding the more complex parameters.</p>
+<p style="text-align:center;">
+<a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet1.png" target="_blank"> <img src="../man/figures/sen2r_gui_sheet1_small.png"></a> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet2.png" target="_blank"> <img src="../man/figures/sen2r_gui_sheet2_small.png"></a> <br><a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet3.png" target="_blank"> <img src="../man/figures/sen2r_gui_sheet3_small.png"></a> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet4.png" target="_blank"> <img src="../man/figures/sen2r_gui_sheet4_small.png"></a> <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet5.png" target="_blank"> <img src="../man/figures/sen2r_gui_sheet5_small.png"></a>
+</p>
+<p>The left-side bar of the dashboard allows instead to:</p>
 <ul>
-<li>
-<code>-e PASSWORD=sen2r</code> is the password to be used to login;</li>
-<li>
-<code>-v $(pwd):/home/rstudio/host</code> means that the current directory will be mounted in the docker, and its content will be available in the subdirectory <code>host</code> of the docker folder tree (to mount a different directory, replace <code>$(pwd)</code> with the desired directory);</li>
-<li>
-<code>-p 8777:8787</code> means that the dockerised RStudio will be accessible from port 8777 (change it to use a different port).</li>
+<li>save the current parameters to a JSON file for later use (this allows for example to easily set-up parameters for a processing chain that can be later launched <a href="sen2r_cmd.html">from the command line</a>);</li>
+<li>restore previously saved parameters;</li>
+<li>specify the path of a log file where processing messages will be saved;</li>
+<li>launch the processing: in this case, the GUI will close and <code><a href="../reference/sen2r.html">sen2r()</a></code> execution will start (the user will be able to monitor <code><a href="../reference/sen2r.html">sen2r()</a></code> progress from the processing messages sent to R console <em>or</em> to a log file, if this option was chosen with the previous button);</li>
+<li>exit the GUI without launching the processing.</li>
 </ul>
-</li>
-<li><p>access to the RStudio environment from <code>http://localhost:8777</code>, logging in with user <code>rstudio</code> and the password set as above;</p></li>
-<li>
-<p>for online use, add the user’s SciHub credentials using the GUI or with the function:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(sen2r)</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw"><a href="../reference/scihub_login.html">write_scihub_login</a></span>(<span class="st">"&lt;scihub_username&gt;"</span>, <span class="st">"&lt;scihub_password&gt;"</span>)</a></code></pre></div>
-</li>
-</ol>
 </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

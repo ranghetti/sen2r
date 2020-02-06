@@ -1,0 +1,237 @@
+---
+title: "Using sen2r() from the command line"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using sen2r() from the command line}
+  %\VignetteEngine{knitr::knitr}
+  %\usepackage[UTF-8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Although the easiest way to set-up and launch a processing chain is probably by 
+setting parameters with the GUI and launching it right away, 
+it is often very useful to be able to launch a processing from the command line
+without opening the GUI.
+
+This allows using 
+<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+functionalities (provided both by the main function `sen2r()` or other package
+functions) as part of more complex scripts, or scheduling a processing so to 
+automatically update a time series of S2 products.
+
+Three main processing modes are available: 
+
+1. [specify all processing parameters in the call to `sen2r()`](#specify-all-processing-parameters-in-the-call-to-sen2r);
+2. [load processing parameters from a previously saved JSON file](#load-processing-parameters-from-a-previously-saved-json-file);
+3. [load processing parameters from a previously saved JSON file, but change some of them in the call to `sen2r()`](#load-parameters-from-a-json-file-changing-some-of-them-in-the-call-to-sen2r).
+ 
+ 
+## Specify all processing parameters in the call to `sen2r()`
+
+In this case, the user is expected to specify all arguments required for 
+processing within the call to `sen2r()` 
+(see `sen2r()` documentation for a detailed description of each option -- 
+note that unspecified arguments will be set to default values, when possible).
+
+For example, the following code chunk would perform the following operations:
+
+- download all S2 images acquired over the area specified in the 
+    `barbellino.geojson` spatial file between 1 and 15 July 2019;
+- process only dates for which the cloud mask derived from the SCL dataset
+    (type `"cloud_and_shadow"`, in this case)
+    shows that less than 10% of the area of interest was covered by clouds;
+- create the following output products:
+    1. BOA reflectances;
+    2. Scene Classification Map (SCL);
+    3. spectral indices NDVI and MSAVI2;
+    4. true colour RGB obtained from BOA reflectances.
+
+```{r eval=FALSE}
+# Set paths
+out_dir_1  <- tempfile(pattern = "sen2r_out_1_") # output folder
+safe_dir_1 <- tempfile(pattern = "sen2r_safe_")  # folder to store downloaded SAFE
+
+myextent_1 <- system.file("extdata/vector/barbellino.geojson", package = "sen2r") 
+
+library(sen2r)
+out_paths_1 <- sen2r(
+  gui = FALSE,
+  step_atmcorr = "l2a",
+  extent = myextent_1,
+  extent_name = "Barbellino",
+  timewindow = c(as.Date("2019-07-13"), as.Date("2019-07-25")),
+  list_prods = c("BOA","SCL"),
+  list_indices = c("NDVI","MSAVI2"),
+  list_rgb = c("RGB432B"),
+  mask_type = "cloud_and_shadow",
+  max_mask = 10, 
+  path_l2a = safe_dir,
+  path_out = out_dir_1
+)
+```
+```
+[2020-02-05 10:53:53] #### Starting sen2r execution. ####
+[2020-02-05 10:53:57] Searching for available SAFE products on SciHub...
+[2020-02-05 10:54:02] Computing output names...
+[2020-02-05 10:54:03] Processing group 1 of 5...
+[2020-02-05 10:54:03] Starting to download the required level-2A SAFE products.
+[2020-02-05 10:54:03] Check if products are available for download...
+[2020-02-05 10:54:03] 1 Sentinel-2 images are already online.
+[2020-02-05 10:54:03] Downloading Sentinel-2 image 1 of 1
+                      (S2A_MSIL2A_20190703T101031_N0212_R022_T32TNS_20190703T134349.SAFE)...
+[2020-02-05 10:54:41] Download of level-2A SAFE products terminated.
+
+# (skipping most processing messages here)
+```
+After subsequent messages describing the processing operations which are being done,
+a report summarising the conducted processing is issued at the end: 
+```
+╔══════════════════════════════════════════════════════════════════════════════
+║ sen2r Processing Report
+╟──────────────────────────────────────────────────────────────────────────────
+║ Dates to be processed based on processing parameters: 5
+║ Processing completed for: all expected dates.
+║ Outputs for: 2 out of 5 expected dates not created because cloudiness over
+║ the spatial extent is above 10%.
+╚══════════════════════════════════════════════════════════════════════════════
+[2020-02-05 11:02:53] #### Execution of sen2r session terminated. ####
+The processing chain can be re-launched with the command:
+  sen2r("/home/lb/.sen2r/proc_par/s2proc_20200205_105355.json")
+
+```
+
+In this case, it shows that all the 5 S2 images satisfying the spatial-temporal 
+query were downloaded and properly processed. 
+However, outputs for two of those dates were not created because cloudiness 
+over the spatial extent was above the specified threshold. 
+
+S2 original SAFE images are stored in the folder specified by `safe_dir`, 
+and are not deleted after processing (unless the user sets also the argument 
+`rm_safe` to `TRUE`).
+
+```{r eval=FALSE}
+list.files(safe_dir)
+```
+```
+[1] "S2A_MSIL2A_20190703T101031_N0212_R022_T32TNS_20190703T134349.SAFE"
+[2] "S2A_MSIL2A_20190706T102031_N0212_R065_T32TNS_20190706T134618.SAFE"
+[3] "S2A_MSIL2A_20190713T101031_N0213_R022_T32TNS_20190713T135651.SAFE"
+[4] "S2B_MSIL2A_20190708T101039_N0213_R022_T32TNS_20190708T133715.SAFE"
+[5] "S2B_MSIL2A_20190711T102029_N0213_R065_T32TNS_20190711T135545.SAFE"
+```
+
+Outputs are automatically subsetted and masked over the study area, 
+and stored in appropriate subfolders of `out_dir`. 
+
+```{r eval=FALSE}
+list.files(out_dir_1)
+```
+```
+[1] "BOA"     "MSAVI2"  "NDVI"    "RGB432B" "SCL"    
+```
+```{r eval=FALSE}
+list.files(file.path(out_dir_1, "NDVI"))
+```
+```
+[1] "S2A2A_20190703_022_Barbellino_NDVI_10.tif" 
+[2] "S2A2A_20190706_065_Barbellino_NDVI_10.tif"
+[3] "S2B2A_20190708_022_Barbellino_NDVI_10.tif" "thumbnails"  
+```
+
+_See [this vignette](outstructure.html) for more info about folder structure_
+_and naming conventions of `sen2r()` outputs._
+
+
+## Load processing parameters from a previously saved JSON file
+
+Users can set the desired parameters with the GUI, export them to a JSON file
+and run the command `sen2r()` specifying the JSON path in the argument 
+`param_list` to specify processing options. 
+For example, the command would launch `sen2r()` using settings specified in file 
+`"myparams.json"` (or `"file30ac6089ea3_sen2r_params.json"` in the reproducible case):
+
+```{r eval=FALSE}
+# set the path to an existing JSON file 
+# (commented here, and substituted with an instruction that creates 
+# a test JSON file)
+# json_path <- "/path/to/myparams.json"
+json_path_2 <- build_example_param_file()
+json_path_2
+```
+```
+[1] "/tmp/RtmpDLx7qh/file30ac6089ea3_sen2r_params.json"
+```
+```{r eval=FALSE}
+out_paths_2 <- sen2r(param_list = json_path_2)
+```
+```
+[2020-02-05 11:58:09] #### Starting sen2r execution. ####
+[2020-02-05 11:58:09] Searching for available SAFE products on SciHub...
+[2020-02-05 11:58:12] Computing output names...
+[2020-02-05 11:58:13] Starting to download the required level-2A SAFE products.
+Images S2A_MSIL2A_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE are 
+already on your system and will be skipped. Set "overwrite_safe" to TRUE to 
+re-download them.
+
+# (skipping most processing messages here)
+╔══════════════════════════════════════════════════════════════════════════════
+║ sen2r Processing Report
+╟──────────────────────────────────────────────────────────────────────────────
+║ Dates to be processed based on processing parameters: 1
+║ Processing completed for: all expected dates.
+╚══════════════════════════════════════════════════════════════════════════════
+[2020-02-05 11:58:20] #### Execution of sen2r session terminated. ####
+The processing chain can be re-launched with the command:
+  sen2r("/home/lb/.sen2r/proc_par/s2proc_20200205_115809.json")
+```
+
+This is for example particularly useful if a `sen2r()` processing requires 
+ordering images from the LTA archive 
+(see https://scihub.copernicus.eu/userguide/LongTermArchive).
+
+The user can in fact, in that case: 
+
+1. set the processing parameters in the GUI and save them to JSON; 
+2. launch the processing a first time as shown above: `sen2r()` will process 
+    all already online dates, and automatically order the missing ones;
+3. wait some time for the ordered images to be put back on line; 
+4. launch the processing again to complete the processing. 
+
+_See https://luigi.ranghetti.info/post/order-s2-lta/ for a more detailed_
+_discussion about how LTA orders are dealt with in `sen2r()`._
+
+
+## Load parameters from a JSON file changing some of them in the call to `sen2r()`
+
+This allows users to use a previously saved JSON file as a "template" for a 
+processing, but changing "manually" any desired parameter. 
+
+For example, the following instructions would execute the same processing as in 
+the previous example, but changing both the extent and time window of the analysis.
+
+```{r eval=FALSE}
+# use the previously saved JSON path
+json_path_2
+```
+```
+[1] "/tmp/RtmpDLx7qh/file30ac6089ea3_sen2r_params.json"
+```
+```{r eval=FALSE}
+out_dir_3 <- tempfile(pattern = "sen2r_out_3_")  # new output folder
+
+myextent_3 <- system.file("extdata/vector/scalve.kml", package = "sen2r")
+
+out_paths_3 <- sen2r(
+  param_list = json_path_2, 
+  extent = myextent_3, 
+  extent_name = "newxtent",
+  timewindow = c(as.Date("2019-01-01"), as.Date("2019-01-30")),
+  path_out = out_dir_3
+)
+```
+
+This allows for example to easily run the same processing 
+over different spatial/temporal extents. 
