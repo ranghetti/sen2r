@@ -356,7 +356,7 @@ gdal_warp <- function(srcfiles,
         if (is.null(mask)) {
           # ref NULL & mask NULL: use bbox of srcfile, reprojected
           sel_te <- sel_src_bbox
-        } else if (class(mask)=="logical" && is.na(mask)) { # check if mask==NA
+        } else if (inherits(mask, "logical") && is.na(mask)) { # check if mask==NA
           # ref NULL & mask NA: the same (use bbox of srcfile, reprojected)
           sel_te <- sel_src_bbox
         } else {
@@ -383,7 +383,7 @@ gdal_warp <- function(srcfiles,
         if (is.null(mask)) {
           # ref provided & mask NULL: use bbox of ref
           sel_te <- ref_bbox
-        } else if (class(mask)=="logical" && is.na(mask)) {
+        } else if (inherits(mask, "logical") && is.na(mask)) {
           # ref provided & mask NA: use bbox of srcfile (reprojected and aligned to ref grid)
           if (sel_t_srs == sel_s_srs) {
             sel_te <- (sel_src_bbox - ref_ll) / sel_tr
