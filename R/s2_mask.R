@@ -116,6 +116,7 @@
 #' @export
 #' @importFrom raster brick calc dataType mask overlay stack values
 #' @importFrom jsonlite fromJSON
+#' @importFrom utils txtProgressBar setTxtProgressBar
 #' @import data.table
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
