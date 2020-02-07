@@ -63,7 +63,7 @@ st_crs2(wkt_32n_path)
 
 ## CRS from spatial file path
 raster_path <- system.file(
-  "extdata/out/S2A2A_20170703_022_Barbellino_BOA_10.tif", 
+  "extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif", 
   package="sen2r"
 )
 vector_path <- system.file(

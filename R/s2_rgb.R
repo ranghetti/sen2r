@@ -66,7 +66,7 @@
 #' \donttest{
 #' # Define file names
 #' ex_in <- system.file(
-#'   "extdata/out/S2A2A_20170703_022_Barbellino_BOA_10.tif",
+#'   "extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif",
 #'   package = "sen2r"
 #' )
 #'
@@ -266,6 +266,12 @@ s2_rgb <- function(infiles,
         
         # if output already exists and overwrite==FALSE, do not proceed
         if (!file.exists(out_path) | overwrite==TRUE) {
+          
+          print_message(
+            type = "message",
+            date = TRUE,
+            paste0("Generating image ", basename(out_path),"...")
+          )
           
           # From Sentinel-2 band number to actual band numbert in the BOA
           sel_nbands <- if (sel_prod_type=="BOA") {

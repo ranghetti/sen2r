@@ -130,8 +130,8 @@ License: GPL 3.0
 \examples{
 # Define product name
 s2_examplenames <- c(
-  "S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE",
-  "S2A_MSIL2A_20170703T101021_N0205_R022_T32TNR_20170703T101041.SAFE"
+  "S2A_MSIL1C_20190723T101031_N0208_R022_T32TNS_20190723T121220.SAFE",
+  "S2A_MSIL1C_20190723T101031_N0208_R022_T32TNR_20190723T121220.SAFE"
 )
 
 # Return the information retrievable from the file names (files are not scanned)
@@ -153,9 +153,11 @@ safe_isvalid("invalid_safe_name.SAFE", check_file = FALSE)
 
 \dontrun{
 # Download a sample SAFE archive (this can take a while)
-s2_exampleurl <- paste0("https://scihub.copernicus.eu/apihub/odata/v1/",
-  "Products(\'5f590bcb-ee55-4a20-8e75-bde99f5b93d4\')/$value")
-names(s2_exampleurl) <- "S2A_MSIL1C_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE"
+s2_exampleurl <- c(
+  "S2A_MSIL1C_20190723T101031_N0208_R022_T32TNS_20190723T121220.SAFE" =
+    paste0("https://scihub.copernicus.eu/apihub/odata/v1/",
+           "Products('19bbde60-992b-423d-8dea-a5e0ac7715fc')/$value")
+)
 s2_download(s2_exampleurl, outdir=tempdir())
 s2_examplepath <- file.path(tempdir(), names(s2_exampleurl))
 

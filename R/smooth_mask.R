@@ -35,6 +35,8 @@ smooth_mask <- function(
   bigtiff = FALSE
 ) {
   
+  init_python()
+  
   # if inmask is a raster use the path (it should not happen)
   inmask_path0 <- if (is(inmask, "character")) {
     inmask

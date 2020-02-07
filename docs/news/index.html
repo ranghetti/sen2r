@@ -77,7 +77,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.1</span>
       </span>
     </div>
 
@@ -114,6 +114,15 @@
     <li>
       <a href="../articles/docker.html">Run in a Docker container</a>
     </li>
+    <li>
+      <a href="../articles/sen2r_gui.html">Using sen2r() from the GUI</a>
+    </li>
+    <li>
+      <a href="../articles/sen2r_cmd.html">Using sen2r() from the command line</a>
+    </li>
+    <li>
+      <a href="../articles/outstructure.html">Output file structure</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -146,13 +155,52 @@
       <small>Source: <a href='https://github.com/ranghetti/sen2r/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="version-130" class="section level1">
+    <div id="version-1-3-1" class="section level1">
 <h1 class="page-header">
-<a href="#version-130" class="anchor"></a>Version 1.3.0<small> Unreleased </small>
+<a href="#version-1-3-1" class="anchor"></a>Version 1.3.1<small> Unreleased </small>
 </h1>
 <div id="major-changes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#major-changes" class="anchor"></a>Major changes</h2>
+<ul>
+<li>Documentation was improved with three new vignettes about GUI usage, command line usage and output structure.</li>
+</ul>
+</div>
+<div id="bug-fixes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes" class="anchor"></a>Bug fixes</h2>
+<ul>
+<li>Restore checking environmental variable in <code><a href="../reference/init_python.html">init_python()</a></code> (this urgent bug fixing was the reason of the urgent release of the current version).</li>
+<li>Fix building offline footprint.</li>
+<li>Fix the Dockerfile.</li>
+</ul>
+</div>
+<div id="changes-in-default-argument-values" class="section level2">
+<h2 class="hasAnchor">
+<a href="#changes-in-default-argument-values" class="anchor"></a>Changes in default argument values</h2>
+<ul>
+<li>Accept both <code>sen2r(..., rm_safe = "yes"</code>) and <code>"all"</code>.</li>
+<li>In the GUI, the maximum allowed cloud cover was set to 100% accordingly to the <code><a href="../reference/sen2r.html">sen2r()</a></code> defaults.</li>
+</ul>
+</div>
+<div id="minor-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#minor-changes" class="anchor"></a>Minor changes</h2>
+<ul>
+<li>Add check on <code>max_mask</code> - <code>mask_type</code> coherence (if <code>max_mask &lt; 100</code> and <code>mask_type</code> is not specified, a warning is returned).</li>
+<li>Suppress some unuseful warnings.</li>
+<li>Switch examples on 2019 dates (previously examples were based on 2017 images, which were partially moved on LTA).</li>
+<li>Do not print progress bars in logs.</li>
+</ul>
+</div>
+</div>
+    <div id="version-1-3-0" class="section level1">
+<h1 class="page-header">
+<a href="#version-1-3-0" class="anchor"></a>Version 1.3.0<small> 2020-02-04 </small>
+</h1>
+<div id="major-changes-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#major-changes-1" class="anchor"></a>Major changes</h2>
 <ul>
 <li>Support for GDAL 3 / PROJ 6 was added:
 <ul>
@@ -163,7 +211,7 @@
 </ul>
 </li>
 <li>After running <code><a href="../reference/sen2r.html">sen2r()</a></code> a short report is returned to output summarising the status of the required processing (see new internal function <code><a href="../reference/sen2r_process_report.html">sen2r_process_report()</a></code>). This should facilitate applying sen2r in a cycle until all “expected dates” are processed.</li>
-<li>Management of Sen2Cor GIPP parameters: now the user can process L1C SAFE images applying a topographic correction (as done to produce L2A images on ESA Hub) or specifying other parameters managed by L2A_GIPP.xml file. To allow doing that, new arguments were added to <code><a href="../reference/sen2cor.html">sen2cor()</a></code> and <code><a href="../reference/sen2r.html">sen2r()</a></code> (se below) and a new option was added in the GUI.</li>
+<li>Management of Sen2Cor GIPP parameters: now the user can process L1C SAFE images applying a topographic correction (as done to produce L2A images on ESA Hub) or specifying other parameters managed by L2A_GIPP.xml file. To allow doing that, new arguments were added to <code><a href="../reference/sen2cor.html">sen2cor()</a></code> and <code><a href="../reference/sen2r.html">sen2r()</a></code> (see below) and a new option was added in the GUI.</li>
 </ul>
 </div>
 <div id="new-functions" class="section level2">
@@ -183,9 +231,9 @@
 <li>Internal function <code><a href="../reference/init_python.html">init_python()</a></code> was deprecated (Python is no longer managed by <strong>reticulate</strong>).</li>
 </ul>
 </div>
-<div id="changes-in-default-argument-values" class="section level2">
+<div id="changes-in-default-argument-values-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#changes-in-default-argument-values" class="anchor"></a>Changes in default argument values</h2>
+<a href="#changes-in-default-argument-values-1" class="anchor"></a>Changes in default argument values</h2>
 <ul>
 <li>New argument <code>bigtiff</code> for BigTIFF management in functions <code><a href="../reference/s2_translate.html">s2_translate()</a></code>, <code><a href="../reference/s2_merge.html">s2_merge()</a></code>, <code><a href="../reference/s2_mask.html">s2_mask()</a></code>, <code><a href="../reference/s2_rgb.html">s2_rgb()</a></code> and <code><a href="../reference/s2_calcindices.html">s2_calcindices()</a></code>.</li>
 <li>New arguments <code>use_dem</code> / <code>gipp</code> (function <code><a href="../reference/sen2cor.html">sen2cor()</a></code>) and <code>sen2cor_use_dem</code> / <code>sen2cor_gipp</code> (<code><a href="../reference/sen2r.html">sen2r()</a></code>) to manage GIPP parameters in Sen2Cor.</li>
@@ -193,14 +241,14 @@
 <code>use_python</code> argument in <code><a href="../reference/sen2r.html">sen2r()</a></code> was deprecated (no longer needed).</li>
 </ul>
 </div>
-<div id="minor-changes" class="section level2">
+<div id="minor-changes-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes" class="anchor"></a>Minor changes</h2>
+<a href="#minor-changes-1" class="anchor"></a>Minor changes</h2>
 <ul>
 <li>All components of the order (available, ordered and notordered) are now saved in JSON files. This allows using them to re-do an order, specifying if re-ordering already ordered datasets or only order the ones identified as “notordered” (based on new argument “reorder”).</li>
 <li>Output messages are formatted so not to exceed output line length.</li>
 <li>Add support for BigTIFF format.</li>
-<li>Dependencies <strong>reticulate</strong> and <strong>magrittr</strong> were removed.</li>
+<li>Dependencies <strong><code>reticulate</code></strong> and <strong><code>magrittr</code></strong> were removed.</li>
 <li>Checks on the validity of SAFE products were improved.</li>
 <li>Add NDBI / NDVIre indices (<a href='https://github.com/ranghetti/sen2r/issues/241'>#241</a>).</li>
 <li>Add footprint among metadata retrieved using <code><a href="../reference/safe_getMetadata.html">safe_getMetadata()</a></code> (from existing offline SAFE archives) and <code><a href="../reference/s2_list.html">s2_list()</a></code> (from SciHub online metadata).</li>
@@ -208,7 +256,7 @@
 <li>Add method to convert class <code>safelist</code> to <code>sf</code> (using footprint).</li>
 <li>Rewrite <code><a href="../reference/st_crs2.html">st_crs2()</a></code> using class methods (see the function help for newly accepted inputs).</li>
 <li>
-<code><a href="../reference/safe_getMetadata.html">safe_getMetadata()</a></code> now directly read XML SAFE files instead than calling GDAL through <strong>reticulate</strong> (this avoids errors in particular OS conditions).</li>
+<code><a href="../reference/safe_getMetadata.html">safe_getMetadata()</a></code> now directly read XML SAFE files instead than calling GDAL through <strong><code>reticulate</code></strong> (this avoids errors in particular OS conditions).</li>
 <li>Do not use PROJ4 string with PROJ &gt; 3 (<a href="https://rsbivand.github.io/ECS530_h19/ECS530_III.html" class="uri">https://rsbivand.github.io/ECS530_h19/ECS530_III.html</a>).</li>
 <li>Retrieve the GDAL installation path using <code>gdal-config</code> instead than <code>whereis gdalinfo</code>.</li>
 <li>Add a test for reprojection without EPSG.</li>
@@ -220,19 +268,19 @@
 <h2 class="hasAnchor">
 <a href="#fixes" class="anchor"></a>Fixes</h2>
 <ul>
-<li>Fix errors “DLL load failed” with Python GDAL scripts on Windows (see <a href='https://github.com/ranghetti/sen2r/issues/231'>#231</a> and <a href='https://github.com/ranghetti/sen2r/issues/234'>#234</a>) due to a missing <code>proj.db</code> file in <strong>rgdal</strong>.</li>
+<li>Fix errors “DLL load failed” with Python GDAL scripts on Windows (see <a href='https://github.com/ranghetti/sen2r/issues/231'>#231</a> and <a href='https://github.com/ranghetti/sen2r/issues/234'>#234</a>) due to a missing <code>proj.db</code> file in <strong><code>rgdal</code></strong>.</li>
 <li>Hide warning using PROJ &gt;= 6 (<a href="https://github.com/rspatial/raster/issues/78" class="uri">https://github.com/rspatial/raster/issues/78</a>).</li>
 <li>Other various bug fixes (see issues).</li>
 </ul>
 </div>
 </div>
-    <div id="version-121" class="section level1">
+    <div id="version-1-2-1" class="section level1">
 <h1 class="page-header">
-<a href="#version-121" class="anchor"></a>Version 1.2.1<small> 2019-11-12 </small>
+<a href="#version-1-2-1" class="anchor"></a>Version 1.2.1<small> 2019-11-12 </small>
 </h1>
-<div id="major-changes-1" class="section level2">
+<div id="major-changes-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#major-changes-1" class="anchor"></a>Major changes</h2>
+<a href="#major-changes-2" class="anchor"></a>Major changes</h2>
 <ul>
 <li>New <code>safelist</code> class for lists of SAFE Sentinel-2 archives (see <a href="https://sen2r.ranghetti.info/reference/safelist-class.html">safelist-class</a>);</li>
 <li>
@@ -241,9 +289,9 @@
 <code><a href="../reference/safe_getMetadata.html">safe_getMetadata()</a></code> function was rewritten: now files are scanned only if the user requires metadata which must be retrieved from file content, otherwise only file names are analysed. Inputs can be also <code>safelist</code> objects. The support for oldname SAFE products is deprecated.</li>
 </ul>
 </div>
-<div id="new-functions--methods" class="section level2">
+<div id="new-functions-methods" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-functions--methods" class="anchor"></a>New functions / methods</h2>
+<a href="#new-functions-methods" class="anchor"></a>New functions / methods</h2>
 <ul>
 <li>
 <code><a href="../reference/install_sen2cor.html">link_sen2cor()</a></code> can be used to link an existing Sen2Cor installation to sen2r;</li>
@@ -263,9 +311,9 @@
 <code><a href="../reference/safe_shortname.html">safe_shortname()</a></code>: arguments <code>tiles</code>, <code>force_tiles</code>, <code>set.seed</code> and <code>multiple_names</code> were deprecated, since they are not used with SAFE compact names (old names are no more supported);</li>
 </ul>
 </div>
-<div id="minor-changes-1" class="section level2">
+<div id="minor-changes-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes-1" class="anchor"></a>Minor changes</h2>
+<a href="#minor-changes-2" class="anchor"></a>Minor changes</h2>
 <ul>
 <li>
 <code><a href="https://rdrr.io/r/base/Sys.setenv.html">Sys.setenv()</a></code> effects now do not affect the R environment after exiting from sen2r() execution;</li>
@@ -277,9 +325,9 @@
 </ul>
 </div>
 </div>
-    <div id="version-120" class="section level1">
+    <div id="version-1-2-0" class="section level1">
 <h1 class="page-header">
-<a href="#version-120" class="anchor"></a>Version 1.2.0<small> Unreleased </small>
+<a href="#version-1-2-0" class="anchor"></a>Version 1.2.0<small> Unreleased </small>
 </h1>
 <p>Starting from this version sen2r supports ordering products from Long Term Archive (LTA) (see news at <a href="https://inthub.copernicus.eu/userguide/LongTermArchive" class="uri">https://inthub.copernicus.eu/userguide/LongTermArchive</a>). Now the user can automatically order SAFE products which are not available for direct download, and use them when made available. Some internal functions can be exploited to manually manage orders.</p>
 <p>Here above the related changes:</p>
@@ -317,14 +365,14 @@
 <a href="#sen2r-cran-release" class="anchor"></a><strong>sen2r</strong> CRAN release</h2>
 <hr>
 <p><strong><code>sen2r</code></strong> was accepted on CRAN (2017-10-21, version 1.1.0). From now, it is possible to install <a href="https://CRAN.R-project.org/package=sen2r">the CRAN version</a> with the following command:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sen2r"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sen2r"</span>)</a></code></pre></div>
 <p>The development version – which may contain updated features – can still be installed with the following command:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>remotes<span class="op">::</span><span class="kw">install_packages_github</span>(<span class="st">"ranghetti/sen2r"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">remotes<span class="op">::</span><span class="kw">install_packages_github</span>(<span class="st">"ranghetti/sen2r"</span>)</a></code></pre></div>
 </div>
 </div>
-    <div id="version-110" class="section level1">
+    <div id="version-1-1-0" class="section level1">
 <h1 class="page-header">
-<a href="#version-110" class="anchor"></a>Version 1.1.0<small> 2019-10-21 </small>
+<a href="#version-1-1-0" class="anchor"></a>Version 1.1.0<small> 2019-10-21 </small>
 </h1>
 <div id="changes-in-default-values-1" class="section level2">
 <h2 class="hasAnchor">
@@ -338,9 +386,9 @@
 <li>In the case the users manually defines the path to be used as temporary directory and this directory already exists, a casual subdirectory of the user-defined folder is used (this to prevent to accidentally delete existing files).</li>
 </ul>
 </div>
-<div id="major-changes-2" class="section level2">
+<div id="major-changes-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#major-changes-2" class="anchor"></a>Major changes</h2>
+<a href="#major-changes-3" class="anchor"></a>Major changes</h2>
 <ul>
 <li>
 <strong><code>sen2r</code></strong> package directory is no more used to store files, but a subfolder <code>.sen2r</code> of the user Home directory is created and used. In this way, reinstalling sen2r will not require anymore to reinstall runtime dependencies / to reconfigure the package. The permission to write on this folder is asked to the user when the package is loaded for the first time.</li>
@@ -401,13 +449,13 @@
 </ul>
 </div>
 </div>
-    <div id="version-102" class="section level1">
+    <div id="version-1-0-2" class="section level1">
 <h1 class="page-header">
-<a href="#version-102" class="anchor"></a>Version 1.0.2<small> Unreleased </small>
+<a href="#version-1-0-2" class="anchor"></a>Version 1.0.2<small> Unreleased </small>
 </h1>
-<div id="changes-in-default-argument-values-1" class="section level2">
+<div id="changes-in-default-argument-values-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#changes-in-default-argument-values-1" class="anchor"></a>Changes in default argument values</h2>
+<a href="#changes-in-default-argument-values-2" class="anchor"></a>Changes in default argument values</h2>
 <ul>
 <li>the default running order is now <code>"by groups"</code> instead than <code>"step by step"</code>: this ensures best computing speed and improves the management of disk usage, although it is not possible to see all the output messages in standard output (to see them, it is necessary to redirect them in a log file).</li>
 <li>cloud masks: <code>"cloud_low_proba"</code> is not yet available in the GUI (if is still a valid argument value for compatibility), and <code>"cloud_and_shadow"</code> now includes class “unclassified”. This in order to include “unclassified” only in “conservative” mask values, and to exclude it in non-conservative ones.</li>
@@ -445,16 +493,16 @@
 <p>(see issues)</p>
 </div>
 </div>
-    <div id="version-101" class="section level1">
+    <div id="version-1-0-1" class="section level1">
 <h1 class="page-header">
-<a href="#version-101" class="anchor"></a>Version 1.0.1<small> Unreleased </small>
+<a href="#version-1-0-1" class="anchor"></a>Version 1.0.1<small> Unreleased </small>
 </h1>
-<div id="changes-from-version-100" class="section level2">
+<div id="changes-from-version-1-0-0" class="section level2">
 <h2 class="hasAnchor">
-<a href="#changes-from-version-100" class="anchor"></a>Changes from version 1.0.0</h2>
-<div id="major-changes-3" class="section level3">
+<a href="#changes-from-version-1-0-0" class="anchor"></a>Changes from version 1.0.0</h2>
+<div id="major-changes-4" class="section level3">
 <h3 class="hasAnchor">
-<a href="#major-changes-3" class="anchor"></a>Major changes</h3>
+<a href="#major-changes-4" class="anchor"></a>Major changes</h3>
 <ul>
 <li>A new algorithm was implemented in <code><a href="../reference/s2_calcindices.html">s2_calcindices()</a></code>: now internal raster routines are used by default instead than <code>gdal_calc.py</code>, allowing reducing RAM usage and computation time.</li>
 <li>Better RAM usage and reduction of execution time: <code><a href="../reference/sen2r_getElements.html">sen2r_getElements()</a></code> was rewritten in order to: 1) avoid a RAM leak present in the function, which was causing a high RAM use in the first part of the execution of <code><a href="../reference/sen2r.html">sen2r()</a></code>; 2) considerably speed up the execution (now the metadata of 100 files is retrieved in 4 milliseconds instead than 80).</li>
@@ -471,20 +519,20 @@
 <li>the default output format of <code><a href="../reference/sen2r_getElements.html">sen2r_getElements()</a></code> is now a data.table instead than a list (use <code>format = "list"</code> to reproduce the old default).</li>
 </ul>
 </div>
-<div id="various-fixes-1" class="section level3">
+<div id="various-fixes-" class="section level3">
 <h3 class="hasAnchor">
-<a href="#various-fixes-1" class="anchor"></a>Various fixes.</h3>
+<a href="#various-fixes-" class="anchor"></a>Various fixes.</h3>
 </div>
 </div>
 </div>
-    <div id="version-100" class="section level1">
+    <div id="version-1-0-0" class="section level1">
 <h1 class="page-header">
-<a href="#version-100" class="anchor"></a>Version 1.0.0<small> Unreleased </small>
+<a href="#version-1-0-0" class="anchor"></a>Version 1.0.0<small> Unreleased </small>
 </h1>
 <p>First stable release of package <strong>sen2r</strong>! See the announcement <a href="https://luigi.ranghetti.info/post/sen2r-released">here</a>.</p>
-<div id="changes-from-version-034" class="section level2">
+<div id="changes-from-version-0-3-4" class="section level2">
 <h2 class="hasAnchor">
-<a href="#changes-from-version-034" class="anchor"></a>Changes from version 0.3.4</h2>
+<a href="#changes-from-version-0-3-4" class="anchor"></a>Changes from version 0.3.4</h2>
 <div id="gui-changes" class="section level3">
 <h3 class="hasAnchor">
 <a href="#gui-changes" class="anchor"></a>GUI changes:</h3>
@@ -527,9 +575,9 @@
 </div>
 </div>
 </div>
-    <div id="version-034" class="section level1">
+    <div id="version-0-3-4" class="section level1">
 <h1 class="page-header">
-<a href="#version-034" class="anchor"></a>Version 0.3.4<small> Unreleased </small>
+<a href="#version-0-3-4" class="anchor"></a>Version 0.3.4<small> Unreleased </small>
 </h1>
 <div id="major-improvements" class="section level3">
 <h3 class="hasAnchor">
@@ -592,14 +640,14 @@
 </ul>
 </div>
 </div>
-    <div id="version-033" class="section level1">
+    <div id="version-0-3-3" class="section level1">
 <h1 class="page-header">
-<a href="#version-033" class="anchor"></a>Version 0.3.3<small> Unreleased </small>
+<a href="#version-0-3-3" class="anchor"></a>Version 0.3.3<small> Unreleased </small>
 </h1>
 <p>This is an improvement of version 0.3.2, with several fixes and improvements.</p>
-<div id="major-changes-4" class="section level3">
+<div id="major-changes-5" class="section level3">
 <h3 class="hasAnchor">
-<a href="#major-changes-4" class="anchor"></a>Major changes</h3>
+<a href="#major-changes-5" class="anchor"></a>Major changes</h3>
 <ul>
 <li>Add internal logging (argument <code>log</code> of function <code><a href="../reference/sen2r.html">sen2r()</a></code>)</li>
 <li>New function <code><a href="../reference/s2_dop.html">s2_dop()</a></code> to know the Dates Of Passage over orbits</li>
@@ -632,9 +680,9 @@
 </ul>
 </div>
 </div>
-    <div id="version-032" class="section level1">
+    <div id="version-0-3-2" class="section level1">
 <h1 class="page-header">
-<a href="#version-032" class="anchor"></a>Version 0.3.2<small> Unreleased </small>
+<a href="#version-0-3-2" class="anchor"></a>Version 0.3.2<small> Unreleased </small>
 </h1>
 <p>This is an improvement of version 0.3.1, with several fixes and improvements.</p>
 <div id="new-functions-4" class="section level3">
@@ -661,8 +709,7 @@
 <a href="#processing-chain" class="anchor"></a>Processing chain</h3>
 <ul>
 <li><p>Major commit: retrieve also existing filenames. Before this commit, if some products were partially retrieved (e.g. output BOA) and some depending on them are missing (e.g. an index) but SAFE were not required, the corresponding expected vectors were not retrieved (missing SAFE tile names nothing was generated). Now, existing names matching the parameters are attached to each "_exp" vector.</p></li>
-<li>
-<p>Manage parallelisation:</p>
+<li>Manage parallelisation:
 <ul>
 <li>add partial parallelisation in s2_calcindices() (on infiles, not on indices);</li>
 <li>add “parallel” argument in sen2r() to allow singlecore mode;</li>
@@ -705,9 +752,9 @@
 </ul>
 </div>
 </div>
-    <div id="version-031" class="section level1">
+    <div id="version-0-3-1" class="section level1">
 <h1 class="page-header">
-<a href="#version-031" class="anchor"></a>Version 0.3.1<small> Unreleased </small>
+<a href="#version-0-3-1" class="anchor"></a>Version 0.3.1<small> Unreleased </small>
 </h1>
 <p>This is an improvement of version 0.3.1, with several fixes and secondary improvements:</p>
 <p>Changes:</p>
@@ -741,16 +788,16 @@
 <li>Various fixes (see solved issues)</li>
 </ul>
 </div>
-    <div id="version-030" class="section level1">
+    <div id="version-0-3-0" class="section level1">
 <h1 class="page-header">
-<a href="#version-030" class="anchor"></a>Version 0.3.0<small> Unreleased </small>
+<a href="#version-0-3-0" class="anchor"></a>Version 0.3.0<small> Unreleased </small>
 </h1>
 <p>This version allows to perform all basic operations with Sentinel-2 data: finding and downloading the required tiles (on Linux), correcting them with sen2cor, processing them (merging adjacent tiles, clipping, reprojecting, rescaling, applying atmospheric mask) to create output multiband files (in a format managed by GDAL) and spectral indices.</p>
 <p>The version follows the issued scheduled for <a href="https://github.com/ranghetti/sen2r/milestone/1">milestone 0.3.0</a>; future improvements with Sentinel-2 data are scheduled for <a href="https://github.com/ranghetti/sen2r/milestone/3">release 0.4.0</a>.</p>
 </div>
-    <div id="version-020" class="section level1">
+    <div id="version-0-2-0" class="section level1">
 <h1 class="page-header">
-<a href="#version-020" class="anchor"></a>Version 0.2.0<small> Unreleased </small>
+<a href="#version-0-2-0" class="anchor"></a>Version 0.2.0<small> Unreleased </small>
 </h1>
 <p>This is an intermediate version, which does not allow yet to perform a complete workflow, but it allows to manually find (<code><a href="../reference/s2_list.html">s2_list()</a></code>), download (<code><a href="../reference/s2_download.html">s2_download()</a></code>), correct (<code>s2_sen2cor()</code>), translate in a format managed by GDAL (<code><a href="../reference/s2_translate.html">s2_translate()</a></code>) and merge by orbit number (<code><a href="../reference/s2_merge.html">s2_merge()</a></code>) Sentinel-2 data.</p>
 <p>An example of possible manual workflow is shown in the temporary script <code>WIP/tutorial.R</code>. For a complete automatic workflow on Sentinel-2 data, wait <a href="https://github.com/ranghetti/sen2r/milestone/1">version 0.3.0</a>.</p>
@@ -761,19 +808,20 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#version-130">1.3.0</a></li>
-        <li><a href="#version-121">1.2.1</a></li>
-        <li><a href="#version-120">1.2.0</a></li>
-        <li><a href="#version-110">1.1.0</a></li>
-        <li><a href="#version-102">1.0.2</a></li>
-        <li><a href="#version-101">1.0.1</a></li>
-        <li><a href="#version-100">1.0.0</a></li>
-        <li><a href="#version-034">0.3.4</a></li>
-        <li><a href="#version-033">0.3.3</a></li>
-        <li><a href="#version-032">0.3.2</a></li>
-        <li><a href="#version-031">0.3.1</a></li>
-        <li><a href="#version-030">0.3.0</a></li>
-        <li><a href="#version-020">0.2.0</a></li>
+        <li><a href="#version-1-3-1">1.3.1</a></li>
+        <li><a href="#version-1-3-0">1.3.0</a></li>
+        <li><a href="#version-1-2-1">1.2.1</a></li>
+        <li><a href="#version-1-2-0">1.2.0</a></li>
+        <li><a href="#version-1-1-0">1.1.0</a></li>
+        <li><a href="#version-1-0-2">1.0.2</a></li>
+        <li><a href="#version-1-0-1">1.0.1</a></li>
+        <li><a href="#version-1-0-0">1.0.0</a></li>
+        <li><a href="#version-0-3-4">0.3.4</a></li>
+        <li><a href="#version-0-3-3">0.3.3</a></li>
+        <li><a href="#version-0-3-2">0.3.2</a></li>
+        <li><a href="#version-0-3-1">0.3.1</a></li>
+        <li><a href="#version-0-3-0">0.3.0</a></li>
+        <li><a href="#version-0-2-0">0.2.0</a></li>
       </ul>
     </div>
   </div>

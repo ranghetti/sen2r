@@ -188,11 +188,11 @@ License: GPL 3.0
 \donttest{
 # Define file names
 ex_in <- system.file(
-  "extdata/out/S2A2A_20170703_022_Barbellino_RGB432B_10.tif",
+  "extdata/out/S2A2A_20190723_022_Barbellino_RGB432B_10.tif",
   package = "sen2r"
 )
 ex_mask <- system.file(
-  "extdata/out/S2A2A_20170703_022_Barbellino_SCL_10.tif",
+  "extdata/out/S2A2A_20190723_022_Barbellino_SCL_10.tif",
   package = "sen2r"
 )
 
@@ -200,7 +200,7 @@ ex_mask <- system.file(
 ex_out <- s2_mask(
   infiles = ex_in,
   maskfiles = ex_mask,
-  mask_type = "clear_sky",
+  mask_type = "land",
   outdir = tempdir()
 )
 ex_out

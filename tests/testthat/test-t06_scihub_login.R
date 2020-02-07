@@ -66,9 +66,9 @@ test_that("check internet connection and fail if missing", {
       timewindow = as.Date("2017-07-03"),
       list_prods = "SCL",
       mask_type = NA,
-      path_l1c = file.path(tempdir(), "L1C"),
-      path_l2a = file.path(tempdir(), "L2A"),
-      path_out = tempdir(), 
+      path_l1c = tempfile(pattern = "L1C"),
+      path_l2a = tempfile(pattern = "L2A"),
+      path_out = tempfile(pattern = "out"), 
       overwrite = TRUE,
       thumbnails = FALSE
     )), 

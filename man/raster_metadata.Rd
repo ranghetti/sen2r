@@ -30,7 +30,7 @@ License: GPL 3.0
 examplenames <- c(
   system.file("tif/L7_ETMs.tif", package="stars"),
   system.file("nc/bcsd_obs_1999.nc", package = "stars"),
-  system.file("extdata/out/S2A2A_20170703_022_Barbellino_BOA_10.tif",
+  system.file("extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif",
     package = "sen2r")
 )
 

@@ -1,3 +1,24 @@
+# Version 1.3.1
+
+## Major changes
+- Documentation was improved with three new vignettes about GUI usage, command line usage and output structure.
+
+## Bug fixes
+- Restore checking environmental variable in `init_python()` (this urgent bug fixing was the reason of the urgent release of the current version).
+- Fix building offline footprint.
+- Fix the Dockerfile.
+
+## Changes in default argument values
+- Accept both `sen2r(..., rm_safe = "yes"`) and `"all"`.
+- In the GUI, the maximum allowed cloud cover was set to 100% accordingly to the `sen2r()` defaults.
+
+## Minor changes
+- Add check on `max_mask` - `mask_type` coherence (if `max_mask < 100` and `mask_type` is not specified, a warning is returned).
+- Suppress some useless warnings.
+- Switch examples on 2019 dates (previously examples were based on 2017 images, which were partially moved on LTA).
+- Do not print progress bars in logs.
+
+
 # Version 1.3.0
 
 ## Major changes

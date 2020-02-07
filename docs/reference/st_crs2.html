@@ -82,7 +82,7 @@ text files containing WKT like .prj (see details) ." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.1</span>
       </span>
     </div>
 
@@ -118,6 +118,15 @@ text files containing WKT like .prj (see details) ." />
     </li>
     <li>
       <a href="../articles/docker.html">Run in a Docker container</a>
+    </li>
+    <li>
+      <a href="../articles/sen2r_gui.html">Using sen2r() from the GUI</a>
+    </li>
+    <li>
+      <a href="../articles/sen2r_cmd.html">Using sen2r() from the command line</a>
+    </li>
+    <li>
+      <a href="../articles/outstructure.html">Output file structure</a>
     </li>
   </ul>
 </li>
@@ -219,15 +228,15 @@ passed as character string of length 1;</p></li>
 #&gt;   EPSG: 32709 
 #&gt;   proj4string: "+proj=utm +zone=9 +south +datum=WGS84 +units=m +no_defs"</div><div class='input'>
 <span class='co'>## CRS from WKT (string or path)</span>
-(<span class='no'>wkt_32n</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_as_text.html'>st_as_text</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_crs.html'>st_crs</a></span>(<span class='fl'>32609</span>)))</div><div class='output co'>#&gt; [1] "PROJCS[\"unknown\",GEOGCS[\"unknown\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",-129],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]"</div><div class='input'><span class='fu'>st_crs2</span>(<span class='no'>wkt_32n</span>)</div><div class='output co'>#&gt; Coordinate Reference System:
+(<span class='no'>wkt_32n</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_as_text.html'>st_as_text</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_crs.html'>st_crs</a></span>(<span class='fl'>32609</span>)))</div><div class='output co'>#&gt; [1] "PROJCS[\"UTM Zone 9, Northern Hemisphere\",GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",-129],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",0],UNIT[\"Meter\",1]]"</div><div class='input'><span class='fu'>st_crs2</span>(<span class='no'>wkt_32n</span>)</div><div class='output co'>#&gt; Coordinate Reference System:
 #&gt;   EPSG: 32609 
 #&gt;   proj4string: "+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/writeLines.html'>writeLines</a></span>(<span class='no'>wkt_32n</span>, <span class='no'>wkt_32n_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>())
-<span class='fu'>st_crs2</span>(<span class='no'>wkt_32n_path</span>)</div><div class='output co'>#&gt; trying to read file: /tmp/RtmpYjmiJT/file97807a762e79</div><div class='output co'>#&gt; Coordinate Reference System:
+<span class='fu'>st_crs2</span>(<span class='no'>wkt_32n_path</span>)</div><div class='output co'>#&gt; trying to read file: /tmp/RtmpzkepNn/file30f73b254c15</div><div class='output co'>#&gt; Coordinate Reference System:
 #&gt;   EPSG: 32609 
 #&gt;   proj4string: "+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"</div><div class='input'>
 <span class='co'>## CRS from spatial file path</span>
 <span class='no'>raster_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(
-  <span class='st'>"extdata/out/S2A2A_20170703_022_Barbellino_BOA_10.tif"</span>,
+  <span class='st'>"extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif"</span>,
   <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"sen2r"</span>
 )
 <span class='no'>vector_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(
@@ -252,8 +261,7 @@ passed as character string of length 1;</p></li>
 <span class='co'># (avoid using this with PROJ &gt;= 6!)</span>
 <span class='fu'>st_crs2</span>(<span class='st'>"+init=epsg:32609"</span>) <span class='co'># this makes use of the EPSG code</span></div><div class='output co'>#&gt; Coordinate Reference System:
 #&gt;   EPSG: 32609 
-#&gt;   proj4string: "+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"</div><div class='input'><span class='fu'>st_crs2</span>(<span class='st'>"+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Using PROJ.4 strings is deprecated with PROJ &gt;= 6 (see</span>
-#&gt; <span class='warning'>http://rgdal.r-forge.r-project.org/articles/PROJ6_GDAL3.html).</span></div><div class='output co'>#&gt; Coordinate Reference System:
+#&gt;   proj4string: "+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"</div><div class='input'><span class='fu'>st_crs2</span>(<span class='st'>"+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"</span>)</div><div class='output co'>#&gt; Coordinate Reference System:
 #&gt;   EPSG: 32609 
 #&gt;   proj4string: "+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"</div><div class='input'># }
 </div></pre>

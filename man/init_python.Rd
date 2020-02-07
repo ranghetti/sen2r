@@ -10,5 +10,12 @@ init_python()
 NULL (the function is called for its side effects)
 }
 \description{
-Deprecated function.
+Internal function to set the environmental variables
+required to run Python-based GDAL utilities on Windows.
+}
+\note{
+License: GPL 3.0
+}
+\author{
+Luigi Ranghetti, phD (2020) \email{luigi@ranghetti.info}
 }

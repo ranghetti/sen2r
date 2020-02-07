@@ -110,12 +110,20 @@ s2_l1c_example <- file.path(
 s2_translate(s2_l1c_example, format="GTiff")
 
 # Create a single BOA VRT with a custom name
-s2_translate(s2_l2a_example, "/new/path/example_sentinel2_sr.vrt",
-  vrt_rel_paths=TRUE)
+s2_translate(
+  s2_l2a_example,
+  "/new/path/example_sentinel2_sr.vrt",
+  vrt_rel_paths = TRUE
+)
 
 # Create three products (ENVI) in the same directory at 60m resolution
-s2_translate(s2_example, format="ENVI", prod_type=c("BOA","TCI","SCL"),
-  res="60m", subdirs=TRUE)
+s2_translate(
+  s2_example, 
+  format = "ENVI", 
+  prod_type = c("BOA","TCI","SCL"),
+  res = "60m", 
+  subdirs = TRUE
+)
 }
 }
 \author{

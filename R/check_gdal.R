@@ -340,7 +340,8 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
   
   print_message(
     type="message",
-    "GDAL version in use: ", as.character(gdal_version))
+    "GDAL version in use: ", as.character(gdal_version)
+  )
   return(invisible(TRUE))
   
 }

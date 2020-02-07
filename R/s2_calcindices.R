@@ -85,12 +85,13 @@
 #' @import data.table
 #' @importFrom raster blockSize brick getValues raster writeStart writeStop writeValues
 #' @importFrom stars read_stars write_stars
+#' @importFrom utils txtProgressBar setTxtProgressBar
 #' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @examples
 #' # Define file names
 #' ex_in <- system.file(
-#'   "extdata/out/S2A2A_20170703_022_Barbellino_BOA_10.tif",
+#'   "extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif",
 #'   package = "sen2r"
 #' )
 #'
@@ -169,8 +170,11 @@ s2_calcindices <- function(
     } else {
       bs <- blockSize(out, minrows = minrows)
     }
+    if (inherits(stdout(), "terminal")) {
+      pb <- txtProgressBar(0, bs$n, style = 3)
+    }
     for (i in seq_len(bs$n)) {
-      message("Processing chunk ", i, " of ", bs$n)
+      # message("Processing chunk ", i, " of ", bs$n)
       v <- getValues(x, row = bs$row[i], nrows = bs$nrows[i])
       if (grepl("^Float", dataType)) {
         if (!is.numeric(v)) {
@@ -180,10 +184,14 @@ s2_calcindices <- function(
       } else {
         v_out <- round(eval(parse(text = sel_formula)))
       }
-      
-      
       # m <- getValues(y, row = bs$row[i], nrows = bs$nrows[i])
       out <- writeValues(out, v_out, bs$row[i])
+      if (inherits(stdout(), "terminal")) {
+        setTxtProgressBar(pb, i)
+      }
+    }
+    if (inherits(stdout(), "terminal")) {
+      message("")
     }
     out <- writeStop(out)
     NULL
@@ -387,7 +395,14 @@ s2_calcindices <- function(
     # (this cycle is not parallelised)
     sel_outfiles <- character(0)
     for (j in seq_along(indices)) {
-      print_message(paste0("Computing index: ", indices[j]), type = "message")
+      print_message(
+        type = "message",
+        date = TRUE,
+        paste0(
+          "Computing index ", indices[j],
+          " on date ",sel_infile_meta$sensing_date,"..."
+        )
+      )
       # extract parameters
       sel_parameters <- parameters[[indices[j]]]
       
@@ -492,6 +507,7 @@ s2_calcindices <- function(
         
         # Launch the processing
         if (proc_mode == "gdal_calc") {
+          init_python()
           system(
             paste0(
               binpaths$gdal_calc," ",

@@ -6,8 +6,8 @@ safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
 dir.create(safe_dir, showWarnings = FALSE)
 
 
-outdir_2 <- file.path(tempdir(), "out_test2")
-exp_outpath_2 <- file.path(outdir_2, "BOA", "S2A2A_20170703_022_Scalve_BOA_10.tif")
+outdir_2 <- tempfile(pattern = "out_test2_")
+exp_outpath_2 <- file.path(outdir_2, "BOA", "S2A2A_20190723_022_Scalve_BOA_10.tif")
 testthat::test_that(
   "Tests on clip and mask BOA on extent", {
     
@@ -20,7 +20,7 @@ testthat::test_that(
       extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
       extent_name = "Scalve",
       extent_as_mask = TRUE,
-      timewindow = as.Date("2017-07-03"),
+      timewindow = as.Date("2019-07-23"),
       list_prods = "BOA",
       mask_type = NA,
       path_l2a = safe_dir,
@@ -48,13 +48,13 @@ testthat::test_that(
     # tests on sen2r metadata
     exp_meta_s <- sen2r_getElements(exp_outpath_2)
     testthat::expect_equal(exp_meta_s$type, "clipped")
-    testthat::expect_equal(exp_meta_s$sensing_date, as.Date("2017-07-03"))
+    testthat::expect_equal(exp_meta_s$sensing_date, as.Date("2019-07-23"))
     testthat::expect_equal(exp_meta_s$prod_type, "BOA")
     testthat::expect_equal(exp_meta_s$extent_name, "Scalve")
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_2)
-    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 3800.772, tolerance = 1e-03)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 2651.254, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 1417518, tolerance = 1e-03)
     rm(exp_stars)
     
@@ -94,8 +94,8 @@ testthat::test_that(
 )
 
 
-outdir_3 <- file.path(tempdir(), "out_test3")
-exp_outpath_3 <- file.path(outdir_3, "S2A1C_20170703_022_Scalve_TOA_20.dat")
+outdir_3 <- tempfile(pattern = "out_test3_")
+exp_outpath_3 <- file.path(outdir_3, "S2A1C_20190723_022_Scalve_TOA_20.dat")
 testthat::test_that(
   "Tests on clip TOA on extent, reproject and resize and save as ENVI", {
     
@@ -108,7 +108,7 @@ testthat::test_that(
         extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
         extent_name = "Scalve",
         extent_as_mask = FALSE,
-        timewindow = as.Date("2017-07-03"),
+        timewindow = as.Date("2019-07-23"),
         list_prods = "TOA",
         mask_type = NA,
         proj = 32633,
@@ -152,13 +152,13 @@ testthat::test_that(
     # tests on sen2r metadata
     exp_meta_s <- sen2r_getElements(exp_outpath_3)
     testthat::expect_equal(exp_meta_s$type, "clipped")
-    testthat::expect_equal(exp_meta_s$sensing_date, as.Date("2017-07-03"))
+    testthat::expect_equal(exp_meta_s$sensing_date, as.Date("2019-07-23"))
     testthat::expect_equal(exp_meta_s$prod_type, "TOA")
     testthat::expect_equal(exp_meta_s$extent_name, "Scalve")
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_3)
-    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 2316, tolerance = 1e-03)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 2127.312, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 0)
     rm(exp_stars)
     
@@ -196,8 +196,8 @@ testthat::test_that(
 )
 
 
-outdir_4 <- file.path(tempdir(), "out_test4")
-exp_outpath_4 <- file.path(outdir_4, "SCL/S2A2A_20170703_022_Scalve_SCL_10.vrt")
+outdir_4 <- tempfile(pattern = "out_test4_")
+exp_outpath_4 <- file.path(outdir_4, "SCL/S2A2A_20190723_022_Scalve_SCL_10.vrt")
 testthat::test_that(
   "Tests on clip SCL on extent, reproject with a reference raster and save as VRT", {
     
@@ -211,7 +211,7 @@ testthat::test_that(
       extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
       extent_name = "Scalve",
       extent_as_mask = FALSE,
-      timewindow = as.Date("2017-07-03"),
+      timewindow = as.Date("2019-07-23"),
       list_prods = "SCL",
       mask_type = NA,
       reference_path = exp_outpath_3,
@@ -244,7 +244,7 @@ testthat::test_that(
     # tests on sen2r metadata
     exp_meta_s <- sen2r_getElements(exp_outpath_4)
     testthat::expect_equal(exp_meta_s$type, "clipped")
-    testthat::expect_equal(exp_meta_s$sensing_date, as.Date("2017-07-03"))
+    testthat::expect_equal(exp_meta_s$sensing_date, as.Date("2019-07-23"))
     testthat::expect_equal(exp_meta_s$prod_type, "SCL")
     testthat::expect_equal(exp_meta_s$extent_name, "Scalve")
     
@@ -287,11 +287,11 @@ testthat::skip_on_cran() # because using runtime GDAL
 # testthat::skip_on_travis()
 
 ex_sel <- system.file(
-  "extdata/out/S2A2A_20170703_022_Barbellino_RGB432B_10.tif",
+  "extdata/out/S2A2A_20190723_022_Barbellino_RGB432B_10.tif",
   package = "sen2r"
 )
 ex_ref <- system.file(
-  "extdata/out/S2A2A_20170703_022_Barbellino_SCL_10.tif",
+  "extdata/out/S2A2A_20190723_022_Barbellino_SCL_10.tif",
   package = "sen2r"
 )
 testthat::test_that(
@@ -328,7 +328,7 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_4b)
-    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 105.0556, tolerance = 1e-03)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 77.17063, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 0, tolerance = 1e-03)
     rm(exp_stars)
     
@@ -367,7 +367,7 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(test1)
-    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 100.6298, tolerance = 1e-03)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 97.15385, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 0)
     rm(exp_stars)
     
@@ -401,7 +401,7 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(test2)
-    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 122.4337, tolerance = 1e-03)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 109.8916, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 125, tolerance = 1e-03)
     rm(exp_stars)
     
@@ -429,7 +429,7 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(test3)
-    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 103.4643, tolerance = 1e-03)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 77.44048, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 0)
     rm(exp_stars)
     
@@ -458,7 +458,7 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(test4)
-    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 104.3775, tolerance = 1e-03)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 76.87846, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 176, tolerance = 1e-3)
     rm(exp_stars)
     
@@ -506,7 +506,7 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(test4b)
-    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 104.9611, tolerance = 1e-03)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 76.77778, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 180, tolerance = 1e-3)
     rm(exp_stars)
     
@@ -540,7 +540,7 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(test5)
-    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 100.7103, tolerance = 1e-03)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 97.21495, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 56, tolerance = 1e-03)
     rm(exp_stars)
     
@@ -573,7 +573,7 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(test6)
-    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 123.5974, tolerance = 1e-03)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 110.5455, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 73, tolerance = 1e-03)
     rm(exp_stars)
     
@@ -605,7 +605,7 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(test7)
-    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 99.14, tolerance = 1e-03)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 91.76, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 0)
     rm(exp_stars)
     
@@ -634,7 +634,7 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(test8)
-    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 97.9814, tolerance = 1e-03)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 94.52093, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 19, tolerance = 1e-03)
     rm(exp_stars)
     
@@ -663,7 +663,7 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(test9)
-    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 114.433, tolerance = 1e-03)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 100.1134, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 53, tolerance = 1e-03)
     rm(exp_stars)
     
@@ -675,7 +675,7 @@ testthat::test_that(
 # testthat::skip_on_travis()
 # 
 # abs_file <- exp_outpath_4
-# rel_file <- file.path(tempdir(), "S2A2A_20170703_022_Scalve_SCL_10_rel.vrt")
+# rel_file <- file.path(tempdir(), "S2A2A_20190723_022_Scalve_SCL_10_rel.vrt")
 # testthat::test_that(
 #   "Tests on gdal_abs2rel()", {
 #     

@@ -116,6 +116,7 @@
 #' @export
 #' @importFrom raster brick calc dataType mask overlay stack values
 #' @importFrom jsonlite fromJSON
+#' @importFrom utils txtProgressBar setTxtProgressBar
 #' @import data.table
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
@@ -123,11 +124,11 @@
 #' \donttest{
 #' # Define file names
 #' ex_in <- system.file(
-#'   "extdata/out/S2A2A_20170703_022_Barbellino_RGB432B_10.tif",
+#'   "extdata/out/S2A2A_20190723_022_Barbellino_RGB432B_10.tif",
 #'   package = "sen2r"
 #' )
 #' ex_mask <- system.file(
-#'   "extdata/out/S2A2A_20170703_022_Barbellino_SCL_10.tif",
+#'   "extdata/out/S2A2A_20190723_022_Barbellino_SCL_10.tif",
 #'   package = "sen2r"
 #' )
 #'
@@ -135,7 +136,7 @@
 #' ex_out <- s2_mask(
 #'   infiles = ex_in,
 #'   maskfiles = ex_mask,
-#'   mask_type = "clear_sky",
+#'   mask_type = "land",
 #'   outdir = tempdir()
 #' )
 #' ex_out
@@ -364,6 +365,12 @@ s2_mask <- function(infiles,
     # if output already exists and overwrite==FALSE, do not proceed
     if (!file.exists(sel_outfile) | overwrite==TRUE) {
       
+      print_message(
+        type = "message",
+        date = TRUE,
+        paste0("Masking file ", basename(sel_outfile),"...")
+      )
+      
       # if no masking is required, "copy" input files
       if (length(sel_maskfiles)==0) {
         system(
@@ -567,8 +574,10 @@ s2_mask <- function(infiles,
             inraster <- raster::brick(sel_infile)
             
             # Maskapply
-            maskapply_serial <- function(x, y, na, out_file = '', datatype, minrows = NULL,
-                                         overwrite = overwrite) {
+            maskapply_serial <- function(
+              x, y, na, out_file = '', datatype, minrows = NULL,
+              overwrite = overwrite
+            ) {
               if (inherits(x, "RasterStackBrick")) {
                 out <- brick(x, values = FALSE)
               }
@@ -599,24 +608,35 @@ s2_mask <- function(infiles,
               )
               #4 bytes per cell, nb + 1 bands (brick + mask), * 2 to account for a copy
               bs <- blockSize(out, minblocks = 8)
+              if (inherits(stdout(), "terminal")) {
+                pb <- txtProgressBar(0, bs$n, style = 3)
+              }
               for (j in seq_len(bs$n)) {
-                message("Processing chunk ", j, " of ", bs$n)
-                
+                # message("Processing chunk ", j, " of ", bs$n)
+
                 m <- raster::getValuesBlock(y, row = bs$row[j], nrows = bs$nrows[j])
                 v <- raster::getValuesBlock(x, row = bs$row[j], nrows = bs$nrows[j])
                 v[m == 0] <- NA
                 
                 out <- writeValues(out, v, bs$row[j])
                 gc()
+                if (inherits(stdout(), "terminal")) {
+                  setTxtProgressBar(pb, j)
+                }
+              }
+              if (inherits(stdout(), "terminal")) {
+                message("")
               }
               out <- writeStop(out)
             }
-            out <- maskapply_serial(x = inraster,
-                                    y = raster(outmask_smooth),
-                                    out_file = sel_outfile,
-                                    na = sel_naflag,
-                                    datatype = dataType(inraster),
-                                    overwrite = TRUE)
+            out <- maskapply_serial(
+              x = inraster,
+              y = raster(outmask_smooth),
+              out_file = sel_outfile,
+              na = sel_naflag,
+              datatype = dataType(inraster),
+              overwrite = TRUE
+            )
             if (grepl("\\.vrt$", sel_outfile)) {
               file.rename(gsub("\\.vrt$", ".tif", sel_outfile), sel_outfile)
             }

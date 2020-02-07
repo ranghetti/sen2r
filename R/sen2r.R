@@ -50,7 +50,7 @@
 #'  FALSE (default) to skip download and atmospheric correction for
 #'  products already existing.
 #' @param rm_safe (optional) Character: should SAFE products be deleted after
-#'  preprocessing? "yes" means to delete all SAFE; "no" (default)
+#'  preprocessing? "yes" (or "all") means to delete all SAFE; "no" (default)
 #'  not to delete; "l1c" to delete only Level-1C products.
 #' @param step_atmcorr (optional) Character vector to determine how to obtain
 #'  Level-2A SAFE products:
@@ -356,6 +356,8 @@
 #'   list_prods = c("TOA","BOA","SCL"),
 #'   list_indices = c("NDVI","MSAVI2"),
 #'   list_rgb = c("RGB432T", "RGB432B", "RGB843B"),
+#'   mask_type = "cloud_medium_proba",
+#'   max_mask = 80,
 #'   path_l1c = safe_dir,
 #'   path_l2a = safe_dir,
 #'   path_out = out_dir_3
@@ -375,24 +377,24 @@
 #' # Show outputs (loading thumbnails)
 #' 
 #' # Generate thumbnails names
-#' thumb_2 <- file.path(dirname(out_paths_2), "thumbnails", gsub("tif$", "jpg", basename(out_paths_2)))
-#' thumb_2[grep("SCL", thumb_2)] <-
-#'   gsub("jpg$", "png", thumb_2[grep("SCL", thumb_2)])
+#' thumb_3 <- file.path(dirname(out_paths_3), "thumbnails", gsub("tif$", "jpg", basename(out_paths_3)))
+#' thumb_3[grep("SCL", thumb_3)] <-
+#'   gsub("jpg$", "png", thumb_3[grep("SCL", thumb_3)])
 #' thumb_4 <- file.path(dirname(out_paths_4), "thumbnails", gsub("tif$", "jpg", basename(out_paths_4)))
 #' thumb_4[grep("SCL", thumb_4)] <-
 #'   gsub("jpg$", "png", thumb_4[grep("SCL", thumb_4)])
 #'   
 #' oldpar <- par(mfrow = c(1,2), mar = rep(0,4))
-#' image(stars::read_stars(thumb_2[grep("BOA", thumb_2)]), rgb = 1:3)
-#' image(stars::read_stars(thumb_2[grep("SCL", thumb_2)]), rgb = 1:3)
+#' image(stars::read_stars(thumb_3[grep("BOA", thumb_3)]), rgb = 1:3)
+#' image(stars::read_stars(thumb_3[grep("SCL", thumb_3)]), rgb = 1:3)
 #' 
 #' par(mfrow = c(1,2), mar = rep(0,4))
-#' image(stars::read_stars(thumb_2[grep("MSAVI2", thumb_2)]), rgb = 1:3)
-#' image(stars::read_stars(thumb_2[grep("NDVI", thumb_2)]), rgb = 1:3)
+#' image(stars::read_stars(thumb_3[grep("MSAVI2", thumb_3)]), rgb = 1:3)
+#' image(stars::read_stars(thumb_3[grep("NDVI", thumb_3)]), rgb = 1:3)
 #' 
 #' par(mfrow = c(1,2), mar = rep(0,4))
-#' image(stars::read_stars(thumb_2[grep("RGB432B", thumb_2)]), rgb = 1:3)
-#' image(stars::read_stars(thumb_2[grep("RGB843B", thumb_2)]), rgb = 1:3)
+#' image(stars::read_stars(thumb_3[grep("RGB432B", thumb_3)]), rgb = 1:3)
+#' image(stars::read_stars(thumb_3[grep("RGB843B", thumb_3)]), rgb = 1:3)
 #' 
 #' par(mfrow = c(1,2), mar = rep(0,4))
 #' image(stars::read_stars(thumb_4[grep("BOA", thumb_4)]), rgb = 1:3)
@@ -697,7 +699,7 @@ sen2r <- function(param_list = NULL,
   print_message(
     type = "message",
     date = TRUE,
-    "####\u00A0 Starting sen2r execution. \u00A0####\n"
+    "#### Starting sen2r execution. ####\n"
   )
   
   # # import python modules
@@ -753,11 +755,13 @@ sen2r <- function(param_list = NULL,
   }
   
   # Check parameters
-  pm <- check_param_list(
-    pm,
-    type = if (gui) {"message"} else {"error"},
-    check_paths = FALSE, correct = TRUE
-  )
+  suppressWarnings({
+    pm <- check_param_list(
+      pm,
+      type = if (gui) {"message"} else {"error"},
+      check_paths = FALSE, correct = TRUE
+    )
+  })
   
   # Check param_list version
   if (is.null(pm_list$pkg_version)) {
@@ -1004,7 +1008,7 @@ sen2r <- function(param_list = NULL,
     print_message(
       type = "message",
       date = TRUE,
-      "####\u00A0 Execution of sen2r session terminated. \u00A0####"
+      "#### sen2r session terminated. ####"
     )
     
     return(invisible(character(0)))
@@ -1163,10 +1167,12 @@ sen2r <- function(param_list = NULL,
     # if offline mode, read the SAFE product list from folders and filter
     if ("l1c" %in% pm$s2_levels) {
       s2_lists[["l1c"]] <- list.files(pm$path_l1c, "\\.SAFE$")
-      s2_lists_footprints[["l1c"]] <- safe_getMetadata(
-        file.path(pm$path_l1c, s2_lists[["l1c"]]), 
-        "footprint", abort = FALSE, format = "vector", simplify = TRUE
-      )
+      suppressWarnings({
+        s2_lists_footprints[["l1c"]] <- safe_getMetadata(
+          file.path(pm$path_l1c, s2_lists[["l1c"]]), 
+          "footprint", abort = FALSE, format = "vector", simplify = TRUE
+        )
+      })
     }
     if ("l2a" %in% pm$s2_levels) {
       s2_lists[["l2a"]] <- if (pm$step_atmcorr=="l2a") {
@@ -1189,10 +1195,12 @@ sen2r <- function(param_list = NULL,
             ]
         )
       }
-      s2_lists_footprints[["l2a"]] <- safe_getMetadata(
-        file.path(pm$path_l2a, s2_lists[["l2a"]]), 
-        "footprint", abort = FALSE, format = "vector", simplify = TRUE
-      )
+      suppressWarnings({
+        s2_lists_footprints[["l2a"]] <- safe_getMetadata(
+          file.path(pm$path_l2a, s2_lists[["l2a"]]), 
+          "footprint", abort = FALSE, format = "vector", simplify = TRUE
+        )
+      })
     }
     s2_lists <- lapply(s2_lists, function(l) {
       safe_getMetadata(l, "level", abort = FALSE, format = "vector", simplify = TRUE)
@@ -2766,7 +2774,7 @@ sen2r <- function(param_list = NULL,
         unlink(tmpdir_groupA, recursive=TRUE)
       }
       # delete SAFE, if required
-      if (pm$rm_safe == "all") {
+      if (pm$rm_safe %in% c("all", "yes")) {
         unlink(file.path(path_l1c,names(sel_s2_list_l1c)), recursive=TRUE)
         unlink(file.path(path_l2a,names(sel_s2_list_l2a)), recursive=TRUE)
       } else if (pm$rm_safe == "l1c") {

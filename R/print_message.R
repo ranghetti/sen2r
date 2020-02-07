@@ -54,10 +54,16 @@ print_message <- function(
     initial <- paste0(initial, "[",strftime(Sys.time(), format=date_format),"] ")
   }
   if (all(is.logical(exdent), exdent)) {
-    exdent <- max(0, nchar(initial) - nchar(prefix))
+    exdent <- max(0, min(
+      nchar(initial) - nchar(prefix),
+      .1 * width
+    ))
   }
   if (all(is.logical(indent), indent)) {
-    indent <- max(0, nchar(prefix) - nchar(initial))
+    indent <- max(0, min(
+      nchar(prefix) - nchar(initial),
+      .1 * width
+    ))
   }
   message_string <- strwrap(
     unlist(strsplit(paste(c(...), collapse=sep),"\n")),

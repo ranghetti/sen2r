@@ -421,7 +421,7 @@ s2_gui <- function(param_list = NULL,
                 
                 # delete_safe
                 radioButtons("rm_safe", "Delete raw SAFE files after processing?",
-                             choices = list("Yes" = "all",
+                             choices = list("Yes" = "yes",
                                             "Only level-1C" = "l1c",
                                             "No" = "no"),
                              selected = "no",
@@ -439,7 +439,8 @@ s2_gui <- function(param_list = NULL,
               title="Atmospheric correction",
               width=12,
               collapsible = TRUE,
-              column(
+              fluidRow(
+                column(
                 width = 7,
                 radioButtons(
                   "step_atmcorr",
@@ -471,6 +472,7 @@ s2_gui <- function(param_list = NULL,
                   ),
                   selected = "NA"
                 )
+              )
               ),
               
             )) # end of fluidRow/box "sen2cor options"
@@ -960,7 +962,7 @@ s2_gui <- function(param_list = NULL,
                   "Maximum allowed cloud cover",
                   actionLink("help_masked_perc", icon("question-circle"))
                 ),
-                min = 0, max = 100, value = 80,
+                min = 0, max = 100, value = 100,
                 step = 1, post = "%",
                 ticks = FALSE
               ),
@@ -2939,7 +2941,8 @@ s2_gui <- function(param_list = NULL,
           "<li>set <strong>No</strong> to avoid applying a topographic",
           "correction;</li>",
           "<li>set <strong>Keep default</strong> to mantain the default",
-          "behaviour (which is \"No\", unless the user edited it).</li></ul>"
+          "behaviour (which is \"No\", unless the user manually edited",
+          "the GIPP XML file containing the Sen2Cor settings).</li></ul>"
         )),
         p(HTML(
           "<strong>Note:</strong> Currently the default value is \"Keep",
@@ -3781,7 +3784,7 @@ s2_gui <- function(param_list = NULL,
         updateRadioButtons(session, "atm_mask",
                            selected = ifelse(is.na(pl$mask_type),FALSE,TRUE))
         updateSliderInput(session, "max_masked_perc",
-                          value = ifelse(is.na(pl$mask_type),80,pl$max_mask))
+                          value = ifelse(is.na(pl$mask_type),100,pl$max_mask))
         updateNumericInput(session, "mask_apply_smooth",
                            value = if (all(c(pl$mask_smooth, pl$mask_buffer)==0)) {FALSE} else {TRUE})
         updateNumericInput(session, "mask_smooth", value = pl$mask_smooth)

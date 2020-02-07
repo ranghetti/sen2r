@@ -8,9 +8,9 @@ dir.create(safe_dir, showWarnings = FALSE)
 testthat::test_that(
   "Tests on base mask on BOA", {
     
-    outdir_5 <- file.path(tempdir(), "out_test5")
+    outdir_5 <- tempfile(pattern = "out_test5_")
     dir.create(dirname(outdir_5), showWarnings = FALSE)
-    exp_outpath_5 <- file.path(outdir_5, "BOA", "S2A2A_20170703_022_Scalve_BOA_10.tif")
+    exp_outpath_5 <- file.path(outdir_5, "BOA", "S2A2A_20190723_022_Scalve_BOA_10.tif")
     unlink(exp_outpath_5)
     sen2r(
       gui = FALSE,
@@ -19,9 +19,10 @@ testthat::test_that(
       extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
       extent_name = "Scalve",
       extent_as_mask = TRUE,
-      timewindow = as.Date("2017-07-03"),
-      list_prods = "BOA",
+      timewindow = as.Date("2019-07-23"),
+      list_prods = c("BOA", "TOA"),
       mask_type = "cloud_high_proba",
+      path_l1c = safe_dir,
       path_l2a = safe_dir,
       path_out = outdir_5,
       thumbnails = FALSE
@@ -43,8 +44,8 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_5)
-    testthat::expect_true(round(mean(exp_stars[[1]][,,1], na.rm=TRUE)) %in% c(884, 937))
-    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,1])), 1986322)
+    testthat::expect_true(round(mean(exp_stars[[1]][,,1], na.rm=TRUE)) %in% c(939, 994))
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,1])), 1816353)
     rm(exp_stars)
     
   }
@@ -59,15 +60,15 @@ ref_dir <- system.file("extdata/out", package = "sen2r")
 testthat::test_that(
   "Tests on custom mask on TOA with smoothing and buffering, with save binary mask", {
     
-    outdir_6 <- file.path(tempdir(), "out_test6")
+    outdir_6 <- tempfile(pattern = "out_test6_")
     dir.create(dirname(outdir_6), showWarnings = FALSE)
-    exp_outpath_6 <- file.path(outdir_6, "TOA", "S2A1C_20170703_022_Barbellino_TOA_10.tif")
-    exp_outpath_msk <- file.path(outdir_6, "MSK", "S2A1C_20170703_022_Barbellino_MSK_10.tif")
+    exp_outpath_6 <- file.path(outdir_6, "TOA", "S2A1C_20190723_022_Barbellino_TOA_10.tif")
+    exp_outpath_msk <- file.path(outdir_6, "MSK", "S2A1C_20190723_022_Barbellino_MSK_10.tif")
     unlink(exp_outpath_6)
     unlink(exp_outpath_msk)
     s2_mask(
-      infiles = file.path(ref_dir, "S2A1C_20170703_022_Barbellino_TOA_10.tif"),
-      maskfiles = file.path(ref_dir, "S2A2A_20170703_022_Barbellino_SCL_10.tif"),
+      infiles = file.path(ref_dir, "S2A1C_20190723_022_Barbellino_TOA_10.tif"),
+      maskfiles = file.path(ref_dir, "S2A2A_20190723_022_Barbellino_SCL_10.tif"),
       mask_type = "clear_sky",
       outdir = outdir_6,
       subdirs = TRUE, 
@@ -93,8 +94,8 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_6)
-    testthat::expect_true(round(mean(exp_stars[[1]][,,1], na.rm=TRUE)) %in% c(1436,1444))
-    testthat::expect_true(sum(is.na(exp_stars[[1]][,,1])) %in% c(346,282))
+    testthat::expect_true(round(mean(exp_stars[[1]][,,1], na.rm=TRUE)) %in% c(1398, 1400))
+    testthat::expect_true(sum(is.na(exp_stars[[1]][,,1])) %in% c(126, 69))
     rm(exp_stars)
     
     
@@ -114,14 +115,14 @@ testthat::test_that(
 testthat::test_that(
   "Tests on clip BOA on extent - do not create if cloudiness > threshold", {
     
-    outdir_7 <- file.path(tempdir(), "out_test7")
+    outdir_7 <- tempfile(pattern = "out_test7_")
     dir.create(dirname(outdir_7), showWarnings = FALSE)
-    exp_outpath_7 <- file.path(outdir_7, "BOA", "S2A2A_20170703_022_Barbellino_BOA_10.tif")
+    exp_outpath_7 <- file.path(outdir_7, "BOA", "S2A2A_20190723_022_Barbellino_BOA_10.tif")
     unlink(exp_outpath_7)
     s2_mask(
-      infiles = file.path(ref_dir, "S2A2A_20170703_022_Barbellino_BOA_10.tif"),
-      maskfiles = file.path(ref_dir, "S2A2A_20170703_022_Barbellino_SCL_10.tif"),
-      mask_type = "clear_sky",
+      infiles = file.path(ref_dir, "S2A2A_20190723_022_Barbellino_BOA_10.tif"),
+      maskfiles = file.path(ref_dir, "S2A2A_20190723_022_Barbellino_SCL_10.tif"),
+      mask_type = "land",
       max_mask = 20,
       outdir = outdir_7,
       subdirs = TRUE

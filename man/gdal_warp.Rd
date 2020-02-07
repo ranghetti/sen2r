@@ -95,11 +95,11 @@ License: GPL 3.0
 \donttest{
 #' # Define file names
 ex_sel <- system.file(
-  "extdata/out/S2A2A_20170703_022_Barbellino_RGB432B_10.tif",
+  "extdata/out/S2A2A_20190723_022_Barbellino_RGB432B_10.tif",
   package = "sen2r"
 )
 ex_ref <- system.file(
-  "extdata/out/S2A2A_20170703_022_Barbellino_SCL_10.tif",
+  "extdata/out/S2A2A_20190723_022_Barbellino_SCL_10.tif",
   package = "sen2r"
 )
 crop_poly <- system.file("extdata/vector/dam.geojson", package = "sen2r")
