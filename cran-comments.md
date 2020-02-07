@@ -13,7 +13,7 @@
 There were no ERRORs or WARNINGs.
 
 There was 1 NOTE:
-Days since last update: 2
+Days since last update: 3
 
 In the previous version 1.3.0 a bug was discovered:
 in case the environmental variables PYTHONHOME and PYTHONPATH were not
