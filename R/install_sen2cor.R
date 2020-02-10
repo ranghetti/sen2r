@@ -191,8 +191,8 @@ install_sen2cor <- function(
 .sen2cor_exists <- function(sen2cor_dir) {
   # Check if Sen2Cor exists in the provided directory
   file.exists(file.path(
-    sen2cor_dir, "bin",
-    if (Sys.info()["sysname"] == "Windows") {"L2A_Process.bat"} else {"L2A_Process"}
+    sen2cor_dir,
+    if (Sys.info()["sysname"] == "Windows") {"L2A_Process.bat"} else {"bin/L2A_Process"}
   ))
 }
 
@@ -211,8 +211,8 @@ link_sen2cor <- function(sen2cor_dir) {
   
   binpaths <- load_binpaths()
   binpaths$sen2cor <- normalize_path(file.path(
-    sen2cor_dir, "bin",
-    if (Sys.info()["sysname"] == "Windows") {"L2A_Process.bat"} else {"L2A_Process"}
+    sen2cor_dir,
+    if (Sys.info()["sysname"] == "Windows") {"L2A_Process.bat"} else {"bin/L2A_Process"}
   ))
   writeLines(toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
   # get Sen2Cor version
