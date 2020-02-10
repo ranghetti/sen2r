@@ -159,11 +159,6 @@ s2_list <- function(spatial_extent = NULL,
         type = "error",
         "`spatial_extent` is not a `sf` or `sfc` object."
       )
-    } else {
-      spatial_extent <- st_transform(
-        st_geometry(spatial_extent),
-        4326
-      )
     }
   }
   
@@ -221,6 +216,7 @@ s2_list <- function(spatial_extent = NULL,
     spatial_extent <- sf::st_convex_hull(spatial_extent)
   }
   # }
+  spatial_extent <- st_transform(st_geometry(spatial_extent), 4326)
   
   # checks on dates
   # TODO add checks on format
@@ -443,7 +439,8 @@ s2_list <- function(spatial_extent = NULL,
     out_dt <- out_dt[id_tile %in% tile,]
   } else {
     sel_s2tiles <- suppressMessages(suppressWarnings(
-      sf::st_intersection(s2tiles, spatial_extent_or)))
+      sf::st_intersection(s2tiles, st_transform(spatial_extent_or, 4326))
+    ))
     out_dt <- out_dt[id_tile %in% unique(sel_s2tiles$tile_id),]
   }
   
