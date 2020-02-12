@@ -161,7 +161,12 @@ write_scihub_login <- function(username, password,
 .scihub_modal <- function() { #nocov start
   # read scihub user/password
   apihub_path <- file.path(dirname(attr(load_binpaths(), "path")), "apihub.txt")
-  apihub <- read_scihub_login(apihub_path)
+  apihub <- if (file.exists(apihub_path)) {
+    read_scihub_login(apihub_path)
+  } else {
+    matrix(c("", ""), nrow = 1)
+  }
+  
   # launch modal
   modalDialog(
     title = "Set SciHub username and password",
