@@ -276,12 +276,14 @@ sen2cor <- function(
     ## Set the tiles vectors (existing, required, ...)
     # existing L1C tiles within input product
     sel_l1c_tiles_existing <- safe_getMetadata(
-      list.files(file.path(sel_l1c,"GRANULE")), 
+      list.files(file.path(sel_l1c,"GRANULE")),
+      allow_oldnames = TRUE,
       "id_tile", format = "vector", simplify = TRUE
     )
     # L2A tiles already existing
     sel_l2a_tiles_existing <- safe_getMetadata(
       list.files(file.path(sel_l2a,"GRANULE")),
+      allow_oldnames = TRUE,
       "id_tile", format = "vector", simplify = TRUE
     )
     # L2A tiles required as output (already existing or not)
