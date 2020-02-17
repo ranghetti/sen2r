@@ -45,6 +45,7 @@ Imports:
   tools,
   httr
 Suggests:
+  rgdal,
   spelling,
   geojsonlint,
   httptest,
