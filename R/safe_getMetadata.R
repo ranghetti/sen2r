@@ -443,6 +443,7 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
                 )
               } else if (action == "rm_invalid" & s2_exists) {
                 unlink(s2_path, recursive=TRUE)
+                s2_exists <- file.exists(s2_path)
               }
             } else {
               s2_validname <- FALSE # not univocally recognised (so not removed)
@@ -503,6 +504,7 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
                 )
               } else if (action == "rm_invalid" & s2_exists) {
                 unlink(s2_path, recursive=TRUE)
+                s2_exists <- file.exists(s2_path)
               }
             }
           } else if (length(compactname_granule_xmlfile) == 1) {
@@ -530,6 +532,7 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
             )
           } else if (action == "rm_invalid" & s2_exists) {
             unlink(s2_path, recursive=TRUE)
+            s2_exists <- file.exists(s2_path)
           }
         } else {
           s2_validname <- FALSE # not univocally recognised
@@ -549,6 +552,7 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
           )
         } else if (action == "rm_invalid" & s2_exists) {
           unlink(s2_path, recursive=TRUE)
+          s2_exists <- file.exists(s2_path)
         }
       }
       
@@ -592,6 +596,7 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
             )
           } else if (action == "rm_invalid" & s2_exists) {
             unlink(s2_path, recursive=TRUE)
+            s2_exists <- file.exists(s2_path)
           }
         }
       }
@@ -821,11 +826,9 @@ safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
   # return
   out_metadata <- if (action == "rm_invalid") {
     sapply(metadata, function(m) {all(m[["exists"]]==FALSE, m[["validname"]])})
-    # using m[["exists"]]==FALSE instead than !m[["exists"]] because
-    # m[["exists"]] could be NULL    
   } else if (action == "isvalid") {
     if ("exists" %in% info) {
-      nn(unlist(sapply(metadata, function(m) {all(m[["exists"]]==TRUE, m[["validname"]])})))
+      nn(unlist(sapply(metadata, function(m) {all(m[["exists"]], m[["validname"]])})))
     } else {
       nn(unlist(sapply(metadata, function(m) {m[["validname"]]})))
     }
