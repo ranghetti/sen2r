@@ -26,7 +26,7 @@
 #' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
 #' @author Lorenzo Busetto, phD (2019) \email{lbusett@@gmail.com}
 #' @note License: GPL 3.0
-#' @importFrom httr GET RETRY authenticate progress write_disk
+#' @importFrom httr RETRY authenticate progress write_disk
 #' @importFrom foreach foreach "%do%"
 #' @importFrom tools md5sum
 #' @export
@@ -188,13 +188,13 @@ s2_download <- function(
         } else {
           file(out_bar_path <- tempfile(), open = "a")
         }
-        download <- httr::RETRY(
+        download <- RETRY(
           verb = "GET",
           url = as.character(link),
-          config = httr::authenticate(creds[1], creds[2]),
+          config = authenticate(creds[1], creds[2]),
           times = 10,
-          httr::progress(con = if (length(out_bar) > 0) {out_bar} else {stdout()}),
-          httr::write_disk(zip_path, overwrite = TRUE)
+          progress(con = if (length(out_bar) > 0) {out_bar} else {stdout()}),
+          write_disk(zip_path, overwrite = TRUE)
         )
         if (length(out_bar) > 0) {
           close(out_bar)
@@ -245,10 +245,12 @@ s2_download <- function(
       } else {
         # check md5
         check_md5 <- tryCatch({
-          sel_md5 <- httr::GET(
+          sel_md5 <- RETRY(
+            verb = "GET",
             url = gsub("\\$value$", "Checksum/Value/$value", as.character(link)),
-            config = httr::authenticate(creds[1], creds[2]),
-            httr::write_disk(md5file <- tempfile(), overwrite = TRUE)
+            config = authenticate(creds[1], creds[2]),
+            times = 10,
+            write_disk(md5file <- tempfile(), overwrite = TRUE)
           )
           md5 <- toupper(readLines(md5file, warn = FALSE)) == toupper(md5sum(zip_path))
           file.remove(md5file)

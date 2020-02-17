@@ -8,7 +8,7 @@
 #'
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
-#' @importFrom httr GET write_disk
+#' @importFrom httr RETRY write_disk progress
 #' @export
 #' @examples
 #' \dontrun{
@@ -53,7 +53,23 @@ install_aria2 <- function(aria2_dir, force = FALSE) {
   aria2_zip <- normalize_path(file.path(aria2_dir,"aria2.zip"), mustWork=FALSE)
   aria2_path <- normalize_path(file.path(aria2_dir,"aria2c.exe"), mustWork=FALSE)
   
-  GET(aria2_url, write_disk(aria2_zip, overwrite=TRUE))
+  out_bar <- if (inherits(stdout(), "terminal")) {
+    NULL
+  } else {
+    file(out_bar_path <- tempfile(), open = "a")
+  }
+  RETRY(
+    verb = "GET",
+    url = aria2_url,
+    times = 10,
+    progress(con = if (length(out_bar) > 0) {out_bar} else {stdout()}),
+    write_disk(aria2_zip, overwrite = TRUE)
+  )
+  if (length(out_bar) > 0) {
+    close(out_bar)
+    invisible(file.remove(out_bar_path))
+  }
+  
   if (file.exists(aria2_zip)) {
     aria2_filelist <- unzip(
       zipfile = aria2_zip,

@@ -53,7 +53,7 @@
 #' @importFrom sf st_as_sfc st_sfc st_point st_as_text st_bbox st_coordinates
 #'  st_geometry st_intersection st_geometry st_convex_hull st_transform st_cast
 #'  st_union st_simplify
-#' @importFrom httr GET authenticate content
+#' @importFrom httr RETRY authenticate content
 #' @importFrom XML htmlTreeParse saveXML xmlRoot
 #' @importFrom utils head read.table
 #' @export
@@ -308,8 +308,13 @@ s2_list <- function(spatial_extent = NULL,
       query_string <- gsub("\\[", "%5b",query_string)
       query_string <- gsub("\\]", "%5d",query_string)
       
-      out_query <- httr::GET(query_string, authenticate(creds[1,1], creds[1,2]))
-      out_xml <- httr::content(out_query, as = "parsed", encoding = "UTF-8")
+      out_query <- RETRY(
+        verb = "GET",
+        url = query_string,
+        times = 10,
+        config = authenticate(creds[1,1], creds[1,2])
+      )
+      out_xml <- content(out_query, as = "parsed", encoding = "UTF-8")
       out_xml_list <- xmlRoot(htmlTreeParse(out_xml, useInternalNodes = TRUE))
       out_xml_list <- out_xml_list[["body"]][["feed"]]
       

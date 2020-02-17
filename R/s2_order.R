@@ -40,7 +40,7 @@
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @author Lorenzo Busetto, phD (2020) \email{lbusett@@gmail.com}
 #' @note License: GPL 3.0
-#' @importFrom httr GET authenticate 
+#' @importFrom httr RETRY authenticate 
 #' @importFrom foreach foreach "%do%"
 #' @importFrom jsonlite fromJSON toJSON
 #' @export
@@ -204,9 +204,11 @@ s2_order <- function(
       Sys.sleep(delay)
     }
     # order products
-    make_order <- httr::GET(
+    make_order <- RETRY(
+      verb = "GET",
       url = as.character(s2_prodlist[i]),
-      config = httr::authenticate(creds[1], creds[2])
+      config = authenticate(creds[1], creds[2]),
+      times = 10
     )
     
     # check if the order was successful

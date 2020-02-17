@@ -5,7 +5,7 @@
 #' @return An sf spatial object containing the extent of the tiles.
 #' @export
 #' @importFrom sf st_read st_zm st_collection_extract st_write st_cast
-#' @importFrom httr GET write_disk
+#' @importFrom httr RETRY progress write_disk
 #' @importFrom stats aggregate
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
@@ -59,11 +59,22 @@ s2_tiles <- function() {
     #   file.path(dirname(attr(load_binpaths(), "path")), "s2_tiles.rds")
     # )
     
-    GET(
-      "https://raw.githubusercontent.com/ranghetti/sen2r/devel/utils/vector/s2_tiles.rds", # FIXME use master
-      write_disk(file.path(dirname(attr(load_binpaths(), "path")), "s2_tiles.rds")),
-      overwrite=TRUE
+    out_bar <- if (inherits(stdout(), "terminal")) {
+      NULL
+    } else {
+      file(out_bar_path <- tempfile(), open = "a")
+    }
+    RETRY(
+      verb = "GET",
+      url = "https://raw.githubusercontent.com/ranghetti/sen2r/master/utils/vector/s2_tiles.rds",
+      times = 10,
+      progress(con = if (length(out_bar) > 0) {out_bar} else {stdout()}),
+      write_disk(file.path(dirname(attr(load_binpaths(), "path")), "s2_tiles.rds"), overwrite = TRUE)
     )
+    if (length(out_bar) > 0) {
+      close(out_bar)
+      invisible(file.remove(out_bar_path))
+    }
     # nocov end
   }
   readRDS(s2tiles_rds)
