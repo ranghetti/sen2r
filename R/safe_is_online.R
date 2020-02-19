@@ -65,7 +65,6 @@ safe_is_online <- function(s2_prodlist = NULL, apihub = NA, verbose = TRUE) {
       as.logical(content(RETRY(
         verb = "GET",
         url = gsub("\\$value$", "Online/$value", p),
-        times = 5,
         config = httr::authenticate(creds[1], creds[2])
       ), as = "parsed", encoding = "UTF-8")), 
       error = function(e) {

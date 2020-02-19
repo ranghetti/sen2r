@@ -371,7 +371,7 @@ check_sen2r_deps <- function() {
       RETRY(
         verb = "GET",
         url = osgeo4w_url,
-        times = 10,
+        times = 5, pause_cap = 8,
         progress(con = if (length(out_bar) > 0) {out_bar} else {stdout()}),
         write_disk(osgeo4w_path, overwrite = TRUE)
       )

@@ -67,7 +67,7 @@ s2_tiles <- function() {
     RETRY(
       verb = "GET",
       url = "https://raw.githubusercontent.com/ranghetti/sen2r/master/utils/vector/s2_tiles.rds",
-      times = 10,
+      times = 5, pause_cap = 8,
       progress(con = if (length(out_bar) > 0) {out_bar} else {stdout()}),
       write_disk(file.path(dirname(attr(load_binpaths(), "path")), "s2_tiles.rds"), overwrite = TRUE)
     )

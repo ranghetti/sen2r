@@ -130,7 +130,7 @@ install_sen2cor <- function(
   RETRY(
     verb = "GET",
     url = sen2cor_url,
-    times = 10,
+    times = 5, pause_cap = 8,
     progress(con = if (length(out_bar) > 0) {out_bar} else {stdout()}),
     write_disk(sen2cor_installer, overwrite = TRUE)
   )

@@ -61,7 +61,7 @@ install_aria2 <- function(aria2_dir, force = FALSE) {
   RETRY(
     verb = "GET",
     url = aria2_url,
-    times = 10,
+    times = 5, pause_cap = 8,
     progress(con = if (length(out_bar) > 0) {out_bar} else {stdout()}),
     write_disk(aria2_zip, overwrite = TRUE)
   )

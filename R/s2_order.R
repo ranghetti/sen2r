@@ -207,8 +207,7 @@ s2_order <- function(
     make_order <- RETRY(
       verb = "GET",
       url = as.character(s2_prodlist[i]),
-      config = authenticate(creds[1], creds[2]),
-      times = 10
+      config = authenticate(creds[1], creds[2])
     )
     
     # check if the order was successful
