@@ -249,7 +249,7 @@ s2_download <- function(
             verb = "GET",
             url = gsub("\\$value$", "Checksum/Value/$value", as.character(link)),
             config = authenticate(creds[1], creds[2]),
-            times = 10,
+            times = 5,
             write_disk(md5file <- tempfile(), overwrite = TRUE)
           )
           md5 <- toupper(readLines(md5file, warn = FALSE)) == toupper(md5sum(zip_path))

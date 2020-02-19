@@ -71,7 +71,7 @@ check_scihub_login <- function(username, password) {
   check_creds <- RETRY(
     verb = "GET",
     url = "https://scihub.copernicus.eu/apihub/odata/v1",
-    times = 10,
+    times = 3,
     handle = handle(""),
     config = authenticate(username, password)
   )
@@ -90,10 +90,11 @@ check_scihub_login <- function(username, password) {
 #' @export
 check_scihub_connection <- function() {
   check_online <- try(
-    httr::RETRY(
+    RETRY(
       "GET",
       url = "https://scihub.copernicus.eu/apihub/",
-      handle = httr::handle("")
+      times = 5,
+      handle = handle("")
     )
   )
   !inherits(check_online, "try-error")

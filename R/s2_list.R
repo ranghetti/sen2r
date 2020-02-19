@@ -311,7 +311,7 @@ s2_list <- function(spatial_extent = NULL,
       out_query <- RETRY(
         verb = "GET",
         url = query_string,
-        times = 10,
+        times = 5,
         config = authenticate(creds[1,1], creds[1,2])
       )
       out_xml <- content(out_query, as = "parsed", encoding = "UTF-8")
