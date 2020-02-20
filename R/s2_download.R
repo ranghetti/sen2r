@@ -28,7 +28,6 @@
 #' @note License: GPL 3.0
 #' @importFrom httr RETRY authenticate progress write_disk
 #' @importFrom foreach foreach "%do%"
-#' @importFrom tools md5sum
 #' @export
 #'
 #' @examples
@@ -245,21 +244,26 @@ s2_download <- function(
       } else {
         # check md5
         check_md5 <- tryCatch({
+          requireNamespace("tools")
           sel_md5 <- RETRY(
             verb = "GET",
             url = gsub("\\$value$", "Checksum/Value/$value", as.character(link)),
             config = authenticate(creds[1], creds[2]),
             write_disk(md5file <- tempfile(), overwrite = TRUE)
           )
-          md5 <- toupper(readLines(md5file, warn = FALSE)) == toupper(md5sum(zip_path))
+          md5 <- toupper(readLines(md5file, warn = FALSE)) == 
+            toupper(tools::md5sum(zip_path))
           file.remove(md5file)
           md5
         }, error = function(e) {logical(0)})
         if (any(!check_md5 %in% c(TRUE, FALSE), length(check_md5) == 0)) {
           print_message(
             type = "warning",
-            "File ", names(link), " cannot be checked. ",
-            "Please verify if the download was successful."
+            "File ", names(link), " cannot be checked",
+            if (!requireNamespace("tools", quietly = TRUE)) {
+              "(package \"tools\" needs to be installed)"
+            },
+            ". Please verify if the download was successful."
           )
         } else if (!check_md5) {
           file.remove(zip_path)

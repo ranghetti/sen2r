@@ -82,7 +82,8 @@
 #' @param kill_errored Logical: experimental feature allowing killing dead Sen2Cor
 #'  processes, so leaving `sen2cor()` continuing processing on the remaining 
 #'  products. Set to TRUE to activate it (default is FALSE).
-#'  This experimental feature is available only on Unix systems.
+#'  This experimental feature is available only on Unix systems,
+#'  and requires package "tools" to be installed.
 #' @param .log_message (optional) Internal parameter
 #'  (it is used when the function is called by `sen2r()`).
 #' @param .log_output (optional) Internal parameter
@@ -96,7 +97,6 @@
 #' @importFrom doParallel registerDoParallel
 #' @importFrom foreach foreach "%do%" "%dopar%"
 #' @importFrom parallel detectCores makeCluster stopCluster
-#' @importFrom tools pskill
 #' @export
 #'
 #' @examples
@@ -209,6 +209,14 @@ sen2cor <- function(
     print_message(
       type = "warning",
       "'kill_errored' is available only for Unix systems; skipping it."
+    )
+    kill_errored <- FALSE
+  }
+  if (all(kill_errored == TRUE, !requireNamespace("tools", quietly = TRUE))) {
+    print_message(
+      type = "warning",
+      "'kill_errored' can be used only if package \"tools\" is installed; ",
+      "skipping it."
     )
     kill_errored <- FALSE
   }
@@ -466,6 +474,7 @@ sen2cor <- function(
         }
         # check every 10 seconds
         while (tools::pskill(sel_sen2cor_pid_2, 0)) {Sys.sleep(10)}
+        tools::pskill(sel_sen2cor_pids)
       } else if (requireNamespace("sys", quietly = TRUE)) {
         sys::exec_status(sel_sen2cor_pid_1, wait = TRUE)
       }
