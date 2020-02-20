@@ -16,6 +16,8 @@ sen2cor(
   tiles = NULL,
   parallel = FALSE,
   overwrite = FALSE,
+  timeout = 0,
+  kill_errored = FALSE,
   .log_message = NA,
   .log_output = NA
 )
@@ -109,6 +111,15 @@ possible (e.g. \code{parallel = 4}).}
 
 \item{overwrite}{Logical value: should existing output L2A products be overwritten?
 (default: FALSE)}
+
+\item{timeout}{Integer value: number of minutes after which killing Sen2Cor
+if it is still running (default, 0, means that this is never done).
+This can be useful in case Sen2Cor produced an error without exiting
+from Python (leaving a standing process running).
+This experimental feature is available only for Linux.}
+
+\item{kill_errored}{TODO DESCRIPTION
+This experimental feature is available only for Linux.}
 
 \item{.log_message}{(optional) Internal parameter
 (it is used when the function is called by \code{sen2r()}).}

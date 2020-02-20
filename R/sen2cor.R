@@ -79,6 +79,13 @@
 #'  possible (e.g. `parallel = 4`).
 #' @param overwrite Logical value: should existing output L2A products be overwritten?
 #'  (default: FALSE)
+#' @param timeout Integer value: number of minutes after which killing Sen2Cor
+#'  if it is still running (default, 0, means that this is never done).
+#'  This can be useful in case Sen2Cor produced an error without exiting
+#'  from Python (leaving a standing process running).
+#'  This experimental feature is available only for Linux.
+#'@param kill_errored TODO DESCRIPTION 
+#'  This experimental feature is available only for Linux.
 #' @param .log_message (optional) Internal parameter
 #'  (it is used when the function is called by `sen2r()`).
 #' @param .log_output (optional) Internal parameter
@@ -92,6 +99,8 @@
 #' @importFrom doParallel registerDoParallel
 #' @importFrom foreach foreach "%do%" "%dopar%"
 #' @importFrom parallel detectCores makeCluster stopCluster
+#' @importFrom sys exec_background exec_status
+#' @importFrom tools pskill
 #' @export
 #'
 #' @examples
@@ -125,6 +134,8 @@ sen2cor <- function(
   tiles = NULL, 
   parallel = FALSE, 
   overwrite = FALSE,
+  timeout = 0,
+  kill_errored = FALSE,
   .log_message = NA, 
   .log_output = NA
 ) {
@@ -197,6 +208,47 @@ sen2cor <- function(
     )
     return(invisible(NULL))
   }
+  
+  # Check kill_errored
+  if (all(kill_errored == TRUE, Sys.info()["sysname"] != "Linux")) {
+    print_message(
+      type = "warning",
+      "'kill_errored' is available only for Linux; skipping it."
+    )
+    kill_errored <- FALSE
+  }
+  if (all(kill_errored == TRUE, !requireNamespace("sys", quietly = TRUE))) {
+    print_message(
+      type = "warning",
+      "'kill_errored' requires package \"sys\" to be installed; skipping it."
+    )
+    kill_errored <- FALSE
+  }
+  
+  # Check timeout
+  if (all(timeout != 0, kill_errored = TRUE)) {
+    print_message(
+      type = "warning",
+      "'timeout' will be ignored, since 'kill_errored' was set to TRUE."
+    )
+    timeout <- 0
+  }
+  
+  # # Check kill_zombies
+  # if (all(kill_zombies == TRUE, Sys.info()["sysname"] != "Linux")) {
+  #   print_message(
+  #     type = "warning",
+  #     "'kill_zombies' is available only for Linux; skipping it."
+  #   )
+  #   kill_zombies <- FALSE
+  # }
+  # if (all(kill_zombies == TRUE, !requireNamespace("sys", quietly = TRUE))) {
+  #   print_message(
+  #     type = "warning",
+  #     "'kill_zombies' requires package \"sys\" to be installed; skipping it."
+  #   )
+  #   kill_zombies <- FALSE
+  # }
   
   ## Cycle on each file
   # if parallel==TRUE, use doParallel
@@ -386,6 +438,14 @@ sen2cor <- function(
         )
       )
       
+      # command arguments
+      sen2cor_args <- c(
+        "--GIP_L2A", gipp_curr_path,
+        if (sen2cor_version>=package_version("2.8.0")) {c("--output_dir", sen2cor_out_l2a)},
+        if (sen2cor_version<package_version("2.8.0")) {"--refresh"},
+        sel_l1c
+      )
+      
       # apply sen2cor
       trace_paths <- if (use_tmpdir) {
         c(sel_l1c, sen2cor_out_l2a)
@@ -395,17 +455,80 @@ sen2cor <- function(
         file.path(sen2cor_out_l2a,"GRANULE",names(sel_l2a_tiles_tocorrect))
       }
       sel_trace <- start_trace(trace_paths, "sen2cor")
-      system(
-        # paste(binpaths$sen2cor, "--refresh", sel_l1c),
-        paste(
-          binpaths$sen2cor,
-          "--GIP_L2A", gipp_curr_path,
-          if (sen2cor_version>=package_version("2.8.0")) {paste("--output_dir", sen2cor_out_l2a)},
-          if (sen2cor_version<package_version("2.8.0")) {"--refresh"},
-          sel_l1c
-        ),
-        intern = Sys.info()["sysname"] == "Windows"
+      
+      sel_sen2cor_timestart <- Sys.time()
+      print_message(
+        type = "message", date = TRUE,
+        "Launching Sen2Cor on ",basename(sel_l1c)," ",
+        "(",i,"/",length(l1c_prodlist),")..."
       )
+      
+      # Launch with exec_background() or system(), 
+      # depending on the presence of package "sys"
+      if (all(requireNamespace("sys", quietly = TRUE), timeout <= 0)) {
+        
+        sel_sen2cor_log_output <- if (!is.na(.log_output)) {
+          sel_log_output <- file.path(
+            tmpdir,
+            basename(tempfile(pattern = "sen2cor_log_output_", fileext = ".txt"))
+          )
+        } else {NA}
+        sel_sen2cor_log_message <- if (!is.na(.log_message)) {
+          sel_log_message <- file.path(
+            tmpdir, 
+            basename(tempfile(pattern = "sen2cor_log_message_", fileext = ".txt"))
+          )
+        } else {NA}
+        sel_sen2cor_pid_1 <- exec_background(
+          binpaths$sen2cor,
+          args = sen2cor_args,
+          std_out = sel_sen2cor_log_output,
+          std_err = sel_sen2cor_log_message
+        )
+        
+        if (kill_errored == TRUE) {
+          Sys.sleep(10) # wait until all processes started
+          # Retrieve the correct PID
+          # (sel_sen2cor_pid_1 is the PID of L2A_Process bash script,
+          # while we need the PID of the secodn launched python utility)
+          psaux_raw0 <- system(paste0("ps aux"), intern = TRUE)
+          psaux_raw1 <- psaux_raw0[grepl(sel_l1c, psaux_raw0)]
+          psaux_raw2 <- strsplit(psaux_raw1, " +")
+          sel_sen2cor_pids <- sapply(psaux_raw2, function(x){x[[2]]})
+          sel_sen2cor_pid_2 <- if (length(sel_sen2cor_pids) > 0) {
+            psaux_raw2[[which(sel_sen2cor_pids==max(sel_sen2cor_pids))]][2]
+          } else {
+            1E9 # dummy nonexistent PID 
+          }
+          # check every 10 seconds
+          while (tools::pskill(sel_sen2cor_pid_2, 0)) {Sys.sleep(10)}
+        } else {
+          exec_status(sel_sen2cor_pid, wait = TRUE)
+        }
+        
+      } else {
+        
+        system(
+          paste(binpaths$sen2cor, paste(sen2cor_args, collapse = " ")),
+          intern = Sys.info()["sysname"] == "Windows",
+          timeout = timeout * 60
+        )
+        
+      }
+      
+      print_message(
+        type = "message", date = TRUE,
+        "Running Sen2Cor on ", basename(sel_l1c)," finished after ",
+        format(Sys.time() - sel_sen2cor_timestart, digits = 3),"."
+      )
+      
+      if (all(exists("sel_sen2cor_log_output"), !is.na(.log_output))) {
+        write(readLines(sel_sen2cor_log_output), .log_output, append = TRUE)
+      }
+      if (all(exists("sel_sen2cor_log_message"), !is.na(.log_message))) {
+        write(readLines(sel_sen2cor_log_message), .log_message, append = TRUE)
+      }
+      
       if (TRUE) { # TODO define a way to check if sen2cor ran correctly
         end_trace(sel_trace)
       } else {
