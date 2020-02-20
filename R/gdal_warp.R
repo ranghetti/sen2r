@@ -278,13 +278,28 @@ gdal_warp <- function(srcfiles,
     )
     
     # Check that the polygon is not empty
-    if (length(grep("POLYGON",st_geometry_type(mask)))>=1 &
-        sum(st_area(st_geometry(mask))) <= 0*units::ud_units$m^2) {
+    if (requireNamespace("units", quietly = TRUE)) {
+      if (length(grep("POLYGON",st_geometry_type(mask)))>=1 &
+          sum(st_area(st_geometry(mask))) <= 0*units::ud_units$m^2) {
+        print_message(
+          type = "error",
+          "The polygon provided as mask cannot be empty."
+        )
+      }
+    } else {
       print_message(
-        type = "error",
-        "The polygon provided as mask cannot be empty."
+        type = "warning",
+        "Pakcage \"units\" is required to properly check polygon masks not ",
+        "to be empty; install it in order to perform also this check."
       )
+      if (length(grep("POLYGON",st_geometry_type(mask)))>=1) {
+        print_message(
+          type = "error",
+          "The polygon provided as mask cannot be empty."
+        )
+      }
     }
+    
     # cast to multipolygon
     if (length(grep("POLYGON",st_geometry_type(mask)))>=1) {
       dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
