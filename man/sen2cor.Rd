@@ -114,7 +114,8 @@ possible (e.g. \code{parallel = 4}).}
 \item{kill_errored}{Logical: experimental feature allowing killing dead Sen2Cor
 processes, so leaving \code{sen2cor()} continuing processing on the remaining
 products. Set to TRUE to activate it (default is FALSE).
-This experimental feature is available only on Unix systems.}
+This experimental feature is available only on Unix systems,
+and requires package "tools" to be installed.}
 
 \item{.log_message}{(optional) Internal parameter
 (it is used when the function is called by \code{sen2r()}).}
