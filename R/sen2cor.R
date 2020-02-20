@@ -96,7 +96,6 @@
 #' @importFrom doParallel registerDoParallel
 #' @importFrom foreach foreach "%do%" "%dopar%"
 #' @importFrom parallel detectCores makeCluster stopCluster
-#' @importFrom sys exec_background exec_status
 #' @importFrom tools pskill
 #' @export
 #'
@@ -436,7 +435,7 @@ sen2cor <- function(
         sel_sen2cor_log_message <- if (!is.na(.log_message)) {
           tempfile(pattern = "sen2cor_log_message_", fileext = ".txt")
         } else {NA}
-        sel_sen2cor_pid_1 <- exec_background(
+        sel_sen2cor_pid_1 <- sys::exec_background(
           binpaths$sen2cor,
           args = sen2cor_args,
           std_out = sel_sen2cor_log_output,
@@ -468,7 +467,7 @@ sen2cor <- function(
         # check every 10 seconds
         while (tools::pskill(sel_sen2cor_pid_2, 0)) {Sys.sleep(10)}
       } else if (requireNamespace("sys", quietly = TRUE)) {
-        exec_status(sel_sen2cor_pid_1, wait = TRUE)
+        sys::exec_status(sel_sen2cor_pid_1, wait = TRUE)
       }
       
       print_message(

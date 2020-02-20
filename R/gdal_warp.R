@@ -55,7 +55,6 @@
 #'  st_as_text
 #' @importFrom methods is
 #' @importFrom stars read_stars
-#' @importFrom units ud_units
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @examples
