@@ -60,7 +60,8 @@ s2_gui <- function(param_list = NULL,
   
   # Check shiny & co. to be installed
   missing_pkgs <- !sapply(
-    c("shiny", "shinydashboard", "shinyFiles", "shinyjs", "shinyWidgets"), 
+    c("shiny", "shinydashboard", "shinyFiles", "shinyjs", "shinyWidgets", 
+      "leaflet", "leaflet.extras", "mapedit"), 
     requireNamespace, quietly = TRUE
   )
   if (any(missing_pkgs)) {
