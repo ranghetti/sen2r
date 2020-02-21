@@ -462,7 +462,7 @@ sen2cor <- function(
         Sys.sleep(10) # wait until all processes started
         # Retrieve the correct PID
         # (sel_sen2cor_pid_1 is the PID of L2A_Process bash script,
-        # while we need the PID of the secodn launched python utility)
+        # while we need the PID of the second launched python utility)
         psaux_raw0 <- system(paste0("ps aux"), intern = TRUE)
         psaux_raw1 <- psaux_raw0[grepl(sel_l1c, psaux_raw0)]
         psaux_raw2 <- strsplit(psaux_raw1, " +")
@@ -473,7 +473,36 @@ sen2cor <- function(
           1E9 # dummy nonexistent PID 
         }
         # check every 10 seconds
-        while (tools::pskill(sel_sen2cor_pid_2, 0)) {Sys.sleep(10)}
+        while (tools::pskill(sel_sen2cor_pid_2, 0)) {
+          # check sel_sen2cor_pid_2 to be running (CPU > 0)
+          sel_sen2cor_cpu <- 0
+          n_check_cpu <- 0
+          while (sel_sen2cor_cpu == 0) {
+            if (n_check_cpu <= 5) { # maximum 5 consecutive checks
+              Sys.sleep(10)
+              n_check_cpu <- n_check_cpu + 1
+              psaux_raw3 <- system(paste0("ps aux"), intern = TRUE)
+              psaux_raw4 <- psaux_raw3[grepl(sel_l1c, psaux_raw3)]
+              psaux_raw5 <- strsplit(psaux_raw4, " +")
+              sel_sen2cor_cpu <- if (length(psaux_raw5) > 0) {
+                as.integer(psaux_raw5[[
+                  which(sapply(psaux_raw5, function(x){x[2]==sel_sen2cor_pid_2}))
+                  ]][3])
+              } else {
+                0
+              }
+            } else {
+              sen2r:::print_message(
+                type = "message", date = TRUE,
+                "Sen2Cor on ", basename(sel_l1c)," was killed after ",
+                format(Sys.time() - sel_sen2cor_timestart, digits = 3)," ",
+                "because inactive."
+              )
+              tools::pskill(sel_sen2cor_pids)
+              sel_sen2cor_cpu <- 1E6 # to exit from WHILE cycle
+            }
+          }
+        }
         tools::pskill(sel_sen2cor_pids)
       } else if (requireNamespace("sys", quietly = TRUE)) {
         sys::exec_status(sel_sen2cor_pid_1, wait = TRUE)
@@ -486,18 +515,18 @@ sen2cor <- function(
       )
       
       if (all(exists("sel_sen2cor_log_output"), !is.na(.log_output))) {
-        sen2r:::print_message(
+        print(sen2r:::print_message(
           type = "string", date = TRUE,
           "Sen2Cor log on ", basename(sel_l1c),":"
-        )
-        readLines(sel_sen2cor_log_output)
+        ))
+        for (x in readLines(sel_sen2cor_log_output)) {print(x)}
       }
       if (all(exists("sel_sen2cor_log_message"), !is.na(.log_message))) {
         sen2r:::print_message(
-          type = "string", date = TRUE,
-          "Some errors occurred running Sen2Cor on ", basename(sel_l1c),":\n",
-          paste(readLines(sel_sen2cor_log_message), collapse = "\n")
+          type = "message", date = TRUE,
+          "Some errors occurred running Sen2Cor on ", basename(sel_l1c),":"
         )
+        for (x in readLines(sel_sen2cor_log_message)) {message(x)}
       }
       
       if (TRUE) { # TODO define a way to check if sen2cor ran correctly

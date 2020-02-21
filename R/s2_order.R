@@ -42,7 +42,7 @@
 #' @note License: GPL 3.0
 #' @importFrom httr RETRY authenticate 
 #' @importFrom foreach foreach "%do%"
-#' @importFrom jsonlite fromJSON toJSON
+#' @importFrom jsonlite toJSON
 #' @export
 #'
 #' @examples
