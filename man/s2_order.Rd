@@ -9,6 +9,7 @@ s2_order(
   export_prodlist = TRUE,
   delay = 0.5,
   apihub = NA,
+  service = NA,
   reorder = TRUE
 )
 }
@@ -33,6 +34,11 @@ encountered errors (i.e. not all the products were correctly ordered).}
 \item{apihub}{Path of the "apihub.txt" file containing credentials
 of SciHub account.
 If NA (default), the default location inside the package will be used.}
+
+\item{service}{Character: it can be \code{"dhus"} or \code{"apihub"}, in which cases
+the required service is forced instead that the one present in the URLs
+passed through argument \code{s2_prodlist}.
+If NA (default), the service present in the URLs is maintained.}
 
 \item{reorder}{Logical: If TRUE, and a json file exported by s2_order
 is passed as argument to the function, try to order again also

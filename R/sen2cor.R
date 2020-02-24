@@ -77,6 +77,10 @@
 #'  series on a single core.
 #'  The number of cores is automatically determined; specifying it is also
 #'  possible (e.g. `parallel = 4`).
+#' @param timeout Integer value: number of minutes after which killing Sen2Cor
+#'  if it is still running (default, 0, means that this is never done).
+#'  This can be useful in case Sen2Cor produced an error without exiting
+#'  from Python (leaving a standing process running).
 #' @param overwrite Logical value: should existing output L2A products be overwritten?
 #'  (default: FALSE)
 #' @param .log_message (optional) Internal parameter
@@ -124,6 +128,7 @@ sen2cor <- function(
   use_dem = NA,
   tiles = NULL, 
   parallel = FALSE, 
+  timeout = 0,
   overwrite = FALSE,
   .log_message = NA, 
   .log_output = NA
@@ -276,12 +281,14 @@ sen2cor <- function(
     ## Set the tiles vectors (existing, required, ...)
     # existing L1C tiles within input product
     sel_l1c_tiles_existing <- safe_getMetadata(
-      list.files(file.path(sel_l1c,"GRANULE")), 
+      list.files(file.path(sel_l1c,"GRANULE")),
+      allow_oldnames = TRUE,
       "id_tile", format = "vector", simplify = TRUE
     )
     # L2A tiles already existing
     sel_l2a_tiles_existing <- safe_getMetadata(
       list.files(file.path(sel_l2a,"GRANULE")),
+      allow_oldnames = TRUE,
       "id_tile", format = "vector", simplify = TRUE
     )
     # L2A tiles required as output (already existing or not)
@@ -384,6 +391,14 @@ sen2cor <- function(
         )
       )
       
+      # command arguments
+      sen2cor_args <- c(
+        "--GIP_L2A", gipp_curr_path,
+        if (sen2cor_version>=package_version("2.8.0")) {c("--output_dir", sen2cor_out_l2a)},
+        if (sen2cor_version<package_version("2.8.0")) {"--refresh"},
+        sel_l1c
+      )
+      
       # apply sen2cor
       trace_paths <- if (use_tmpdir) {
         c(sel_l1c, sen2cor_out_l2a)
@@ -393,17 +408,59 @@ sen2cor <- function(
         file.path(sen2cor_out_l2a,"GRANULE",names(sel_l2a_tiles_tocorrect))
       }
       sel_trace <- start_trace(trace_paths, "sen2cor")
-      system(
-        # paste(binpaths$sen2cor, "--refresh", sel_l1c),
-        paste(
-          binpaths$sen2cor,
-          "--GIP_L2A", gipp_curr_path,
-          if (sen2cor_version>=package_version("2.8.0")) {paste("--output_dir", sen2cor_out_l2a)},
-          if (sen2cor_version<package_version("2.8.0")) {"--refresh"},
-          sel_l1c
-        ),
-        intern = Sys.info()["sysname"] == "Windows"
+      
+      sel_sen2cor_timestart <- Sys.time()
+      print_message(
+        type = "message", date = TRUE,
+        "Launching Sen2Cor on ",basename(sel_l1c)," ",
+        "(",i,"/",length(l1c_prodlist),")..."
       )
+      
+      # Launch with exec_background() or system(), 
+      # depending on the presence of package "sys"
+      if (requireNamespace("sys", quietly = TRUE)) {
+        sel_sen2cor_log_output <- if (!is.na(.log_output)) {
+          tempfile(pattern = "sen2cor_log_output_", fileext = ".txt")
+        } else {NA}
+        sel_sen2cor_log_message <- if (!is.na(.log_message)) {
+          tempfile(pattern = "sen2cor_log_message_", fileext = ".txt")
+        } else {NA}
+        sys::exec_wait(
+          binpaths$sen2cor,
+          args = sen2cor_args,
+          std_out = sel_sen2cor_log_output,
+          std_err = sel_sen2cor_log_message,
+          timeout = timeout
+        )
+      } else {
+        system(
+          paste(binpaths$sen2cor, paste(sen2cor_args, collapse = " ")),
+          intern = Sys.info()["sysname"] == "Windows",
+          timeout = timeout
+        )
+      }
+      
+      print_message(
+        type = "message", date = TRUE,
+        "Running Sen2Cor on ", basename(sel_l1c)," finished after ",
+        format(Sys.time() - sel_sen2cor_timestart, digits = 3),"."
+      )
+      
+      if (all(exists("sel_sen2cor_log_output"), !is.na(.log_output))) {
+        print(print_message(
+          type = "string", date = TRUE,
+          "Sen2Cor log on ", basename(sel_l1c),":"
+        ))
+        for (x in readLines(sel_sen2cor_log_output)) {print(x)}
+      }
+      if (all(exists("sel_sen2cor_log_message"), !is.na(.log_message))) {
+        print_message(
+          type = "message", date = TRUE,
+          "Some errors occurred running Sen2Cor on ", basename(sel_l1c),":"
+        )
+        for (x in readLines(sel_sen2cor_log_message)) {message(x)}
+      }
+      
       if (TRUE) { # TODO define a way to check if sen2cor ran correctly
         end_trace(sel_trace)
       } else {
