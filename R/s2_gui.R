@@ -58,6 +58,21 @@ s2_gui <- function(param_list = NULL,
                     par_fun = "parent",
                     thunderforest_api = NA) {
   
+  # Check shiny & co. to be installed
+  missing_pkgs <- !sapply(
+    c("shiny", "shinydashboard", "shinyFiles", "shinyjs", "shinyWidgets", 
+      "leaflet", "leaflet.extras", "mapedit"), 
+    requireNamespace, quietly = TRUE
+  )
+  if (any(missing_pkgs)) {
+    print_message(
+      type = "error",
+      "packages '",
+      paste(names(missing_pkgs)[missing_pkgs], collapse = "', '"),"' ",
+      "are required to run the sen2r Shiny GUI."
+    )
+  }
+
   # TODO: populate parameter values with param_list content, if provided
   
   jscode <- "shinyjs.closeWindow = function() { window.close(); }"

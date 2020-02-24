@@ -15,6 +15,7 @@ sen2cor(
   use_dem = NA,
   tiles = NULL,
   parallel = FALSE,
+  timeout = 0,
   overwrite = FALSE,
   .log_message = NA,
   .log_output = NA
@@ -106,6 +107,11 @@ in parallel using multiple cores; if FALSE (default), they are launched in
 series on a single core.
 The number of cores is automatically determined; specifying it is also
 possible (e.g. \code{parallel = 4}).}
+
+\item{timeout}{Integer value: number of minutes after which killing Sen2Cor
+if it is still running (default, 0, means that this is never done).
+This can be useful in case Sen2Cor produced an error without exiting
+from Python (leaving a standing process running).}
 
 \item{overwrite}{Logical value: should existing output L2A products be overwritten?
 (default: FALSE)}

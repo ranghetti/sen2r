@@ -21,9 +21,15 @@ testthat::test_that(
 testthat::test_that(
   "Test UTM32", {
     crs_totest <- st_crs2("32N")
-    testthat::expect_true(projname(crs_totest) %in% c("UTM Zone 32, Northern Hemisphere", "unknown"))
+    testthat::expect_true(
+      projname(crs_totest) %in% 
+        c("UTM Zone 32, Northern Hemisphere", "WGS 84 / UTM zone 32N", "unknown")
+    )
     testthat::expect_warning(
-      testthat::expect_true(projpar(crs_totest, "geogcs") %in% c("UTM Zone 32, Northern Hemisphere", "unknown")),
+      testthat::expect_true(
+        projpar(crs_totest, "geogcs") %in%
+          c("UTM Zone 32, Northern Hemisphere", "WGS 84 / UTM zone 32N", "unknown")
+      ),
       gsub(" ", "[ \n]", "is now an alias of par = \"name\"")
     )
     testthat::expect_true(projpar(crs_totest, "unit") %in% c("Meter", "metre"))
