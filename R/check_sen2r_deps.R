@@ -22,7 +22,7 @@
 #' @importFrom shinyFiles getVolumes parseDirPath parseFilePaths
 #'  shinyDirButton shinyDirChoose shinyFileChoose shinyFilesButton
 #' @importFrom utils capture.output
-#' @importFrom httr RETRY write_disk progress
+#' @importFrom httr GET
 #' @importFrom jsonlite fromJSON toJSON
 #' @export
 #' @examples
@@ -31,20 +31,6 @@
 #' }
 
 check_sen2r_deps <- function() {
-  
-  # Check shiny & co. to be installed
-  missing_pkgs <- !sapply(
-    c("shiny", "shinyFiles", "shinyjs", "shinyWidgets"), 
-    requireNamespace, quietly = TRUE
-  )
-  if (any(missing_pkgs)) {
-    print_message(
-      type = "error",
-      "packages '",
-      paste(names(missing_pkgs)[missing_pkgs], collapse = "', '"),"' ",
-      "are required to run the sen2r Shiny GUI."
-    )
-  }
   
   jscode <- "shinyjs.closeWindow = function() { window.close(); }"
   
@@ -301,7 +287,7 @@ check_sen2r_deps <- function() {
       path_gdalman_string <- parseDirPath(volumes, input$path_gdalman_sel)
       updateTextInput(session, "path_gdalman_textin", value = path_gdalman_string)
     })
-    
+
     # do the check when button is pressed
     observeEvent(input$check_gdal_button, {
       
@@ -363,22 +349,7 @@ check_sen2r_deps <- function() {
         if (Sys.info()["machine"]=="x86-64") {"_64"},".exe"
       )
       osgeo4w_path <- tempfile(pattern="dir",fileext = ".exe")
-      out_bar <- if (inherits(stdout(), "terminal")) {
-        NULL
-      } else {
-        file(out_bar_path <- tempfile(), open = "a")
-      }
-      RETRY(
-        verb = "GET",
-        url = osgeo4w_url,
-        times = 5, pause_cap = 8,
-        progress(con = if (length(out_bar) > 0) {out_bar} else {stdout()}),
-        write_disk(osgeo4w_path, overwrite = TRUE)
-      )
-      if (length(out_bar) > 0) {
-        close(out_bar)
-        invisible(file.remove(out_bar_path))
-      }
+      GET(osgeo4w_url, write_disk(osgeo4w_path, overwrite=TRUE))
       if (file.exists(osgeo4w_path)) {
         
         shinyjs::html(

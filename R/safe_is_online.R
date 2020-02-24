@@ -18,7 +18,7 @@
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @author Lorenzo Busetto, phD (2020) \email{lbusett@@gmail.com}
 #' @note License: GPL 3.0
-#' @importFrom httr RETRY authenticate content
+#' @importFrom httr GET authenticate content
 #' @importFrom jsonlite fromJSON
 #' @export
 #'
@@ -62,8 +62,7 @@ safe_is_online <- function(s2_prodlist = NULL, apihub = NA, verbose = TRUE) {
   # check for availability
   s2_availability <- sapply(s2_prodlist, function(p) {
     tryCatch(
-      as.logical(content(RETRY(
-        verb = "GET",
+      as.logical(httr::content(httr::GET(
         url = gsub("\\$value$", "Online/$value", p),
         config = httr::authenticate(creds[1], creds[2])
       ), as = "parsed", encoding = "UTF-8")), 

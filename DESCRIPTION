@@ -1,7 +1,7 @@
 Package: sen2r
 Type: Package
 Title: Find, Download and Process Sentinel-2 Data
-Version: 1.3.1.9004
+Version: 1.3.1.9002
 Authors@R: c(person("Luigi", "Ranghetti",
                     email = "luigi@ranghetti.info",
                     role = c("aut", "cre"),
@@ -41,17 +41,15 @@ Imports:
   foreach,
   parallel,
   doParallel,
+  units,
+  tools,
   httr
 Suggests:
-  rgdal,
   spelling,
   geojsonlint,
   httptest,
   knitr,
   rmarkdown,
-  sys,
-  tools,
-  units,
   testthat (>= 2.1.0)
 SystemRequirements: GDAL (>= 2.1.2), PROJ (>= 4.9.1), GEOS (>= 3.4.2),
   Cairo, Curl, NetCDF, jq, Protocol Buffers, V8, OpenSSL, Libxml2.

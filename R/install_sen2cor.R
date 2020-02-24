@@ -13,7 +13,7 @@
 #' @note License: GPL 3.0
 #' @importFrom jsonlite toJSON fromJSON
 #' @importFrom utils download.file unzip
-#' @importFrom httr RETRY write_disk progress
+#' @importFrom httr GET write_disk
 #' @export
 #' @examples
 #' \dontrun{
@@ -122,22 +122,7 @@ install_sen2cor <- function(
   sen2cor_installer <- file.path(sen2cor_dir, basename(sen2cor_url))
   
   # download, extract and delete archive
-  out_bar <- if (inherits(stdout(), "terminal")) {
-    NULL
-  } else {
-    file(out_bar_path <- tempfile(), open = "a")
-  }
-  RETRY(
-    verb = "GET",
-    url = sen2cor_url,
-    times = 5, pause_cap = 8,
-    progress(con = if (length(out_bar) > 0) {out_bar} else {stdout()}),
-    write_disk(sen2cor_installer, overwrite = TRUE)
-  )
-  if (length(out_bar) > 0) {
-    close(out_bar)
-    invisible(file.remove(out_bar_path))
-  }
+  GET(sen2cor_url, write_disk(sen2cor_installer, overwrite=TRUE))
   # download.file(sen2cor_url, destfile = sen2cor_installer)
   if (Sys.info()["sysname"] %in% c("Linux","Darwin")) {
     curr_dir <- getwd()

@@ -18,11 +18,10 @@
 #' sen2r:::st_as_text_2(sf::st_crs(32632))
 
 st_as_text_2 <- function(x, pretty = FALSE) {
-  if (
-    package_version(sf_extSoftVersion()["proj.4"]) >= 6 &&
-    requireNamespace("rgdal", quietly = TRUE) &&
+  if (all(
+    package_version(sf_extSoftVersion()["proj.4"]) >= 6,
     packageVersion("rgdal") >= 1.5
-  ) {
+  )) {
     x_crs <- st_crs(x)
     x_proj <- if (is.na(x_crs$epsg)) {
       x_crs$proj4string

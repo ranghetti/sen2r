@@ -43,7 +43,6 @@
 #'          `"proc_baseline"`, `"level"`, `"sensing_datetime"`,
 #'          `"nodata_value"`, `"saturated_value"`:
 #'          information retrieved from the metadata stored in the XML file;
-#'      - `"res"`: resolutions with all the output products available;
 #'      - `"jp2list"` (data.frame with the list of the JP2 band files - 
 #'          asking for this info will cause `format` to be coerced to `"list"`).
 #'          
@@ -160,7 +159,6 @@ safe_getMetadata <- function(
     format = format, 
     simplify = simplify,
     abort = abort, 
-    req_res = c("10m", "20m", "60m"),
     allow_oldnames = allow_oldnames, 
     action = "getmetadata"
   )
@@ -169,32 +167,14 @@ safe_getMetadata <- function(
 
 #' @name rm_invalid_safe
 #' @rdname safe_getMetadata
-#' @param req_res Character: vector of variable length (0 to 3)
-#'  containing the names of the spatial resolution to be checked
-#'  (one or more among `"10m"`, `"20m"` and `"60m"`).
-#'  In case of level 2A-products, the existence of the JP2 files with the 
-#'  required resolutions necessary for sen2r processing chains (spectral bands 
-#'  and `SCL`) is checked, determining the result of the check.
-#'  Default is `c("10m","20m","60m")`, since Sen2Cor by default produces
-#'  all of these resolutions.
-#'  `NULL` can be used not to scan for JP2 content.
-#'  In case of level-1C products, in which each layer band is available in a 
-#'  specific resolution, any of the previous values causes all JP2 layers to be
-#'  checked, while `NULL` causes no scan to be performed (as in the case of L2A).
-#'  In `safe_isvalid()`, this argument is ignored if `check_file = FALSE`.
 #' @export
-rm_invalid_safe <- function(
-  s2, 
-  req_res = c("10m","20m","60m"),
-  allow_oldnames = FALSE
-) {
+rm_invalid_safe <- function(s2, allow_oldnames = FALSE) {
   .safe_getMetadata(
     s2, 
-    info = c("exists", "validname", "checkbands"), 
+    info = "fileinfo", 
     format = "not used", 
     simplify = NA,
     abort = FALSE, 
-    req_res = req_res,
     allow_oldnames = allow_oldnames, 
     action = "rm_invalid"
   )
@@ -206,20 +186,14 @@ rm_invalid_safe <- function(
 #' @param check_file Logical: if TRUE (default), the content of the provided
 #'  paths is checked; if FALSE, only the validity of SAFE names is tested.
 #' @export
-safe_isvalid <- function(
-  s2, 
-  allow_oldnames = FALSE, 
-  check_file = TRUE,
-  req_res = c("10m","20m","60m")
-) {
-  info <- if (check_file == TRUE) {c("exists", "validname", "checkbands")} else {"validname"}
+safe_isvalid <- function(s2, allow_oldnames = FALSE, check_file = TRUE) {
+  info <- if (check_file == TRUE) {c("exists", "validname")} else {"validname"}
   .safe_getMetadata(
     s2, 
     info = info, 
     format = "not used", 
     simplify = NA,
     abort = FALSE, 
-    req_res = req_res,
     allow_oldnames = allow_oldnames, 
     action = "isvalid"
   )
@@ -228,7 +202,7 @@ safe_isvalid <- function(
 
 # internal function: action="getmetadata" causes the execution of safe_getMetadata(),
 # action="rm_invalid" causes the execution of rm_invalid_safe().
-.safe_getMetadata <- function(s2, info, format, simplify, abort, req_res, allow_oldnames, action) {
+.safe_getMetadata <- function(s2, info, format, simplify, abort, allow_oldnames, action) {
   
   . <- validname <- sensing_datetime <- creation_datetime <- utm <- NULL # to avoid NOTE on check
   
@@ -268,17 +242,7 @@ safe_isvalid <- function(
                  "id_orbit", "orbit_number", "sensing_datetime", "id_baseline") # information GENERALLY retrieved from name
   info_gdal <- c("clouds","direction","orbit_n","preview_url", # information retrieved by reading the file metadata
                  "proc_baseline","gdal_level","gdal_sensing_datetime",
-                 "nodata_value","saturated_value","footprint","res")
-  
-  # define the product names to be present in a SAFE archive
-  req_prods <- list(
-    "1C" = c(paste0("B",str_pad2(c(1:12),2,"left","0"))),
-    "2A" = list(
-      "10m" = c(paste0("B",str_pad2(c(2:4,8),2,"left","0"))),
-      "20m" = c(paste0("B",str_pad2(c(2:8,11:12),2,"left","0")), "SCL"),
-      "60m" = c(paste0("B",str_pad2(c(1:9,11:12),2,"left","0")), "SCL")
-    )
-  )
+                 "nodata_value","saturated_value","footprint")
   
   # check format attribute
   if (format == "default") {
@@ -292,13 +256,6 @@ safe_isvalid <- function(
   }
   if ("jp2list" %in% info) {format <- "list"} # coherce to list in case of jp2list
   
-  # Check req_res
-  if (!all(req_res %in% c("10m", "20m", "60m"))) {
-    print_message(
-      type = "error",
-      "Argument \"req_res\" must contain only values among '10m', '20m' and '60m'."
-    )
-  }
   
   ## Check the input format
   # if s2 is a safelist, use the product names and skip scanning content
@@ -486,7 +443,6 @@ safe_isvalid <- function(
                 )
               } else if (action == "rm_invalid" & s2_exists) {
                 unlink(s2_path, recursive=TRUE)
-                s2_exists <- file.exists(s2_path)
               }
             } else {
               s2_validname <- FALSE # not univocally recognised (so not removed)
@@ -547,7 +503,6 @@ safe_isvalid <- function(
                 )
               } else if (action == "rm_invalid" & s2_exists) {
                 unlink(s2_path, recursive=TRUE)
-                s2_exists <- file.exists(s2_path)
               }
             }
           } else if (length(compactname_granule_xmlfile) == 1) {
@@ -575,7 +530,6 @@ safe_isvalid <- function(
             )
           } else if (action == "rm_invalid" & s2_exists) {
             unlink(s2_path, recursive=TRUE)
-            s2_exists <- file.exists(s2_path)
           }
         } else {
           s2_validname <- FALSE # not univocally recognised
@@ -595,7 +549,6 @@ safe_isvalid <- function(
           )
         } else if (action == "rm_invalid" & s2_exists) {
           unlink(s2_path, recursive=TRUE)
-          s2_exists <- file.exists(s2_path)
         }
       }
       
@@ -622,6 +575,24 @@ safe_isvalid <- function(
           nameinfo_target <- c(basename(s2_path), basename(dirname(s2_main_xml)))
           nameinfo_regex <- c(s2_regex$compactname_granule_path$regex, s2_regex$compactname_main_path$regex)
           nameinfo_elements <- list(s2_regex$compactname_granule_path$elements, s2_regex$compactname_main_path$elements)
+        }
+      }
+      
+      # check jp2 files exist
+      if (s2_validname == TRUE) {
+        jp2_listall <- list.files(s2_path, "\\.jp2$", recursive=TRUE, full.names=FALSE)
+        if (length(jp2_listall) == 0) {
+          s2_validname <- FALSE # missing data
+          if (action == "getmetadata") {
+            print_message(
+              type=message_type,
+              "This product (",s2_name,") does not contain raster data, ",
+              "and should be deleted from directory \"",dirname(s2_path),"\"; ",
+              "otherwise, errors can occur during data processing."
+            )
+          } else if (action == "rm_invalid" & s2_exists) {
+            unlink(s2_path, recursive=TRUE)
+          }
         }
       }
       
@@ -694,10 +665,8 @@ safe_isvalid <- function(
         }
       }
       
-      if (any(
-        "jp2list" %in% sel_info & s2_exists,
-        any(c("res", "checkbands") %in% sel_info) & s2_validname
-      )) {
+      # if requested, give band names
+      if ("jp2list" %in% sel_info & s2_exists) {
         
         # compute elements
         jp2_listall <- list.files(s2_path, s2_regex[[paste0(s2_version,"name_L",s2_level,"_jp2")]]$regex, recursive=TRUE, full.names=FALSE)
@@ -724,62 +693,15 @@ safe_isvalid <- function(
         jp2_bandname[jp2_bandname=="B8A"] <- "B08"
         
         # output data.frame
-        jp2_list <- data.frame(
-          "layer" = basename(jp2_listall),
-          "tile" = jp2_tile,
-          "type" = jp2_layertype,
-          "band" = jp2_bandname,
-          "prod" = ifelse(jp2_layertype=="MSI", jp2_bandname, jp2_layertype),
-          "res" = jp2_res,
-          "relpath" = jp2_listall,
-          stringsAsFactors=FALSE
-        )
-        
-      }
-      
-      # if requested, give available resolutions
-      if (any(c("res", "checkbands") %in% sel_info) & s2_validname) {
-        av_res <- if (s2_level=="1C") {
-          c(
-            "all" = all(req_prods[[s2_level]] %in% jp2_list[,"prod"])
-          )
-        } else if (s2_level=="2A") {
-          c(
-            "10m" = all(req_prods[[s2_level]][["10m"]] %in% jp2_list[jp2_list$res=="10m","prod"]),
-            "20m" = all(req_prods[[s2_level]][["20m"]] %in% jp2_list[jp2_list$res=="20m","prod"]),
-            "60m" = all(req_prods[[s2_level]][["60m"]] %in% jp2_list[jp2_list$res=="60m","prod"])
-          )
-        }
-        metadata[[i]][["res"]] <- paste(names(av_res)[av_res], collapse = ",")
-        # check jp2 files exist
-        if (!all(av_res[if (s2_level=="2A") {req_res} else {"all"}])) {
-          s2_checkbands <- FALSE # missing data
-          if (action == "getmetadata") {
-            print_message(
-              type=message_type,
-              "This product (",s2_name,") does not contain all the required ",
-              "JP2 raster layers, ",
-              "and should be deleted from directory \"",dirname(s2_path),"\"; ",
-              "otherwise, errors can occur during data processing."
-            )
-          } else if (action == "rm_invalid" & s2_exists) {
-            unlink(s2_path, recursive=TRUE)
-            s2_exists <- file.exists(s2_path)
-            if ("exists" %in% sel_info) { # return if the file exists
-              metadata[[i]][["exists"]] <- s2_exists
-            }
-          }
-        } else {
-          s2_checkbands <- TRUE # all required data are available
-        }
-      }
-      if ("checkbands" %in% sel_info) { # return if the product has a valid SAFE name
-        metadata[[i]][["checkbands"]] <- s2_checkbands
-      }
-      
-      # if requested, give band names
-      if ("jp2list" %in% sel_info & s2_exists) {
+        jp2_list <- data.frame("layer" = basename(jp2_listall),
+                               "tile" = jp2_tile,
+                               "type" = jp2_layertype,
+                               "band" = jp2_bandname,
+                               "res" = jp2_res,
+                               "relpath" = jp2_listall,
+                               stringsAsFactors=FALSE)
         metadata[[i]][["jp2list"]] <-jp2_list[with(jp2_list, order(band,type,res,tile)),]
+        
       }
       
       # if necessary, read the file for further metadata[[i]]
@@ -898,10 +820,10 @@ safe_isvalid <- function(
   
   # return
   out_metadata <- if (action == "rm_invalid") {
-    sapply(metadata, function(m) {all(m[["exists"]]==FALSE, m[["validname"]])})
+    sapply(metadata, function(m) {all(!m[["exists"]], m[["validname"]])})
   } else if (action == "isvalid") {
     if ("exists" %in% info) {
-      nn(unlist(sapply(metadata, function(m) {all(m[["exists"]], m[["validname"]], m[["checkbands"]])})))
+      nn(unlist(sapply(metadata, function(m) {all(m[["exists"]], m[["validname"]])})))
     } else {
       nn(unlist(sapply(metadata, function(m) {m[["validname"]]})))
     }

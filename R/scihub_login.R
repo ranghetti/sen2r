@@ -62,18 +62,16 @@ read_scihub_login <- function(apihub_path=NA) {
 #' @name check_scihub_login
 #' @return `check_scihub_login` returns TRUE if credentials are valid,
 #'  FALSE elsewhere.
-#' @importFrom httr RETRY authenticate handle
+#' @importFrom httr GET authenticate handle
 #' @author Lorenzo Busetto, phD (2019) \email{lbusett@@gmail.com}
 #' @rdname scihub_login
 #' @export
 
 check_scihub_login <- function(username, password) {
-  check_creds <- RETRY(
-    verb = "GET",
+  check_creds <- httr::GET(
     url = "https://scihub.copernicus.eu/apihub/odata/v1",
-    handle = handle(""),
-    config = authenticate(username, password)
-  )
+    handle = httr::handle(""),
+    httr::authenticate(username, password))
   if (check_creds$status == "401") {
     FALSE
   } else {
@@ -89,10 +87,10 @@ check_scihub_login <- function(username, password) {
 #' @export
 check_scihub_connection <- function() {
   check_online <- try(
-    RETRY(
+    httr::RETRY(
       "GET",
       url = "https://scihub.copernicus.eu/apihub/",
-      handle = handle("")
+      handle = httr::handle("")
     )
   )
   !inherits(check_online, "try-error")

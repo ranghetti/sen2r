@@ -15,14 +15,9 @@ safe_getMetadata(
   allow_oldnames = FALSE
 )
 
-rm_invalid_safe(s2, req_res = c("10m", "20m", "60m"), allow_oldnames = FALSE)
+rm_invalid_safe(s2, allow_oldnames = FALSE)
 
-safe_isvalid(
-  s2,
-  allow_oldnames = FALSE,
-  check_file = TRUE,
-  req_res = c("10m", "20m", "60m")
-)
+safe_isvalid(s2, allow_oldnames = FALSE, check_file = TRUE)
 }
 \arguments{
 \item{s2}{Sentinel-2 products, which can be:
@@ -66,7 +61,6 @@ obtainable for the specified input);
 \code{"proc_baseline"}, \code{"level"}, \code{"sensing_datetime"},
 \code{"nodata_value"}, \code{"saturated_value"}:
 information retrieved from the metadata stored in the XML file;
-\item \code{"res"}: resolutions with all the output products available;
 \item \code{"jp2list"} (data.frame with the list of the JP2 band files -
 asking for this info will cause \code{format} to be coerced to \code{"list"}).
 }
@@ -106,20 +100,6 @@ if FALSE (default), they are considered as non-supported files.
 Note that, from sen2r version 1.1.0, oldname products are no more supported
 within processing chains, so this function is deprecated and no more
 supported; moreover, it will be removed in next releases.}
-
-\item{req_res}{Character: vector of variable length (0 to 3)
-containing the names of the spatial resolution to be checked
-(one or more among \code{"10m"}, \code{"20m"} and \code{"60m"}).
-In case of level 2A-products, the existence of the JP2 files with the
-required resolutions necessary for sen2r processing chains (spectral bands
-and \code{SCL}) is checked, determining the result of the check.
-Default is \code{c("10m","20m","60m")}, since Sen2Cor by default produces
-all of these resolutions.
-\code{NULL} can be used not to scan for JP2 content.
-In case of level-1C products, in which each layer band is available in a
-specific resolution, any of the previous values causes all JP2 layers to be
-checked, while \code{NULL} causes no scan to be performed (as in the case of L2A).
-In \code{safe_isvalid()}, this argument is ignored if \code{check_file = FALSE}.}
 
 \item{check_file}{Logical: if TRUE (default), the content of the provided
 paths is checked; if FALSE, only the validity of SAFE names is tested.}

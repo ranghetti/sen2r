@@ -18,10 +18,6 @@
 #' @param apihub Path of the "apihub.txt" file containing credentials
 #'  of SciHub account.
 #'  If NA (default), the default location inside the package will be used.
-#' @param service Character: it can be `"dhus"` or `"apihub"`, in which cases
-#'  the required service is forced instead that the one present in the URLs
-#'  passed through argument `s2_prodlist`.
-#'  If NA (default), the service present in the URLs is maintained.
 #' @param reorder Logical: If TRUE, and a json file exported by s2_order 
 #'  is passed as argument to the function, try to order again also 
 #'  the `"available"` and `"ordered"` S2 datasets. 
@@ -40,9 +36,9 @@
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @author Lorenzo Busetto, phD (2020) \email{lbusett@@gmail.com}
 #' @note License: GPL 3.0
-#' @importFrom httr RETRY authenticate 
+#' @importFrom httr GET authenticate 
 #' @importFrom foreach foreach "%do%"
-#' @importFrom jsonlite toJSON
+#' @importFrom jsonlite fromJSON toJSON
 #' @export
 #'
 #' @examples
@@ -68,7 +64,6 @@ s2_order <- function(
   export_prodlist = TRUE, 
   delay = 0.5, 
   apihub = NA, 
-  service = NA,
   reorder = TRUE
 ) {
   .s2_order(
@@ -76,7 +71,6 @@ s2_order <- function(
     export_prodlist = export_prodlist, 
     delay = delay,
     apihub = apihub,
-    service = service,
     reorder = reorder,
     .s2_availability = NULL
   )
@@ -89,7 +83,6 @@ s2_order <- function(
   export_prodlist = TRUE, 
   delay = 0.5,
   apihub = NA,
-  service = NA,
   reorder = TRUE,
   .s2_availability = NULL,
   .log_path = TRUE # TRUE to log all, FALSE to skip the path of the json
@@ -131,15 +124,6 @@ s2_order <- function(
   # check input format
   s2_prodlist <- as(s2_prodlist, "safelist")
   # TODO add input checks
-  
-  # check the used service
-  if (!is.na(service)) {
-    s2_prodlist <- gsub(
-      "^https://scihub.copernicus.eu/((apihub)|(dhus))/odata",
-      paste0("https://scihub.copernicus.eu/",service,"/odata"),
-      s2_prodlist
-    )
-  }
   
   # read credentials
   creds <- read_scihub_login(apihub)
@@ -204,10 +188,9 @@ s2_order <- function(
       Sys.sleep(delay)
     }
     # order products
-    make_order <- RETRY(
-      verb = "GET",
+    make_order <- httr::GET(
       url = as.character(s2_prodlist[i]),
-      config = authenticate(creds[1], creds[2])
+      config = httr::authenticate(creds[1], creds[2])
     )
     
     # check if the order was successful
