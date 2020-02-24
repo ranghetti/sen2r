@@ -447,14 +447,14 @@ sen2cor <- function(
       )
       
       if (all(exists("sel_sen2cor_log_output"), !is.na(.log_output))) {
-        print(sen2r:::print_message(
+        print(print_message(
           type = "string", date = TRUE,
           "Sen2Cor log on ", basename(sel_l1c),":"
         ))
         for (x in readLines(sel_sen2cor_log_output)) {print(x)}
       }
       if (all(exists("sel_sen2cor_log_message"), !is.na(.log_message))) {
-        sen2r:::print_message(
+        print_message(
           type = "message", date = TRUE,
           "Some errors occurred running Sen2Cor on ", basename(sel_l1c),":"
         )
