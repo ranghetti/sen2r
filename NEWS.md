@@ -1,3 +1,25 @@
+# Version 1.3.2
+
+## New features
+* Add argument `req_res` to `safe_isvalid()` and `rm_invalid_safe()`: now the presence of the JP2 images required by the processing chain is checked by default. L2A products without all the three resolutions will not be used.
+* Add output field `"res"` to the default `safe_getMetadata()` output, with the list of the available resolutions ("`all`" is returned in case of L1C products).
+
+## New function arguments
+* Add argument `timeout` to `sen2cor()` to limit the maximum Sen2cor execution time (after that time, Sen2Cor is stopped). This is useful to avoid blocking processing chains due to internal Sen2Cor errors.
+
+## Dependencies
+* Add new suggested dependency **`sys`** (it is used to call Sen2Cor using `sys::exec_wait()` instead than `system()`, allowing exporting Sen2Cor output to log files).
+* Add new suggested dependency **`rgdal`** (since it is implicitly called by internal functions), as requested by CRAN policy.
+* Move **`units`** and **`tools`** to suggested dependencies.
+* Prepare to move **`shiny*`** and **`leaflet*`** dependencies to suggested (this will be done in a future release).
+
+## Minor changes
+* Allow choosing if ordering SAFE products from `dhus` or `apihub` (experimental).
+* Replace all `GET()` calls with `RETRY()`, so to avoid errors in case of temporary unavailability of services.
+* Allow Sen2Cor running with oldname SAFE (although the usage of these products is generally deprecated).
+* Bug fixes (#272, #276).
+
+
 # Version 1.3.1
 
 ## Major changes
@@ -35,7 +57,7 @@
 - Internal function `sen2r_process_report()` to manage processing reports returned by `sen2r()`.
 
 ## Deprecated functions
-- Internal function `init_python()` was deprecated (Python is no longer managed by **reticulate**).
+- Internal function `init_python()` was deprecated (Python is no longer managed by **`reticulate`**).
 
 ## Changes in default argument values
 - New argument `bigtiff` for BigTIFF management in functions `s2_translate()`, `s2_merge()`, `s2_mask()`, `s2_rgb()` and `s2_calcindices()`.

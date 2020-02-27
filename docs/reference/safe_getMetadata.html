@@ -84,7 +84,7 @@ if it is a valid SAFE." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.2</span>
       </span>
     </div>
 
@@ -181,9 +181,14 @@ if it is a valid SAFE.</p>
   <span class='kw'>allow_oldnames</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )
 
-<span class='fu'>rm_invalid_safe</span>(<span class='no'>s2</span>, <span class='kw'>allow_oldnames</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'>rm_invalid_safe</span>(<span class='no'>s2</span>, <span class='kw'>req_res</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"10m"</span>, <span class='st'>"20m"</span>, <span class='st'>"60m"</span>), <span class='kw'>allow_oldnames</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
-<span class='fu'>safe_isvalid</span>(<span class='no'>s2</span>, <span class='kw'>allow_oldnames</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>check_file</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+<span class='fu'>safe_isvalid</span>(
+  <span class='no'>s2</span>,
+  <span class='kw'>allow_oldnames</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>check_file</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>req_res</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"10m"</span>, <span class='st'>"20m"</span>, <span class='st'>"60m"</span>)
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -230,6 +235,7 @@ obtainable for the specified input);</p></li>
 <code>"proc_baseline"</code>, <code>"level"</code>, <code>"sensing_datetime"</code>,
 <code>"nodata_value"</code>, <code>"saturated_value"</code>:
 information retrieved from the metadata stored in the XML file;</p></li>
+<li><p><code>"res"</code>: resolutions with all the output products available;</p></li>
 <li><p><code>"jp2list"</code> (data.frame with the list of the JP2 band files -
 asking for this info will cause <code>format</code> to be coerced to <code>"list"</code>).</p></li>
 </ul>
@@ -276,6 +282,22 @@ if FALSE (default), they are considered as non-supported files.
 Note that, from sen2r version 1.1.0, oldname products are no more supported
 within processing chains, so this function is deprecated and no more
 supported; moreover, it will be removed in next releases.</p></td>
+    </tr>
+    <tr>
+      <th>req_res</th>
+      <td><p>Character: vector of variable length (0 to 3)
+containing the names of the spatial resolution to be checked
+(one or more among <code>"10m"</code>, <code>"20m"</code> and <code>"60m"</code>).
+In case of level 2A-products, the existence of the JP2 files with the
+required resolutions necessary for sen2r processing chains (spectral bands
+and <code>SCL</code>) is checked, determining the result of the check.
+Default is <code><a href='https://rdrr.io/r/base/c.html'>c("10m","20m","60m")</a></code>, since Sen2Cor by default produces
+all of these resolutions.
+<code>NULL</code> can be used not to scan for JP2 content.
+In case of level-1C products, in which each layer band is available in a
+specific resolution, any of the previous values causes all JP2 layers to be
+checked, while <code>NULL</code> causes no scan to be performed (as in the case of L2A).
+In <code>safe_isvalid()</code>, this argument is ignored if <code>check_file = FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>check_file</th>

@@ -77,7 +77,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.2</span>
       </span>
     </div>
 
@@ -155,6 +155,46 @@
       <small>Source: <a href='https://github.com/ranghetti/sen2r/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="version-1-3-2" class="section level1">
+<h1 class="page-header">
+<a href="#version-1-3-2" class="anchor"></a>Version 1.3.2<small> Unreleased </small>
+</h1>
+<div id="new-features" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new-features" class="anchor"></a>New features</h2>
+<ul>
+<li>Add argument <code>req_res</code> to <code><a href="../reference/safe_getMetadata.html">safe_isvalid()</a></code> and <code><a href="../reference/safe_getMetadata.html">rm_invalid_safe()</a></code>: now the presence of the JP2 images required by the processing chain is checked by default. L2A products without all the three resolutions will not be used.</li>
+<li>Add output field <code>"res"</code> to the default <code><a href="../reference/safe_getMetadata.html">safe_getMetadata()</a></code> output, with the list of the available resolutions (“<code>all</code>” is returned in case of L1C products).</li>
+</ul>
+</div>
+<div id="new-function-arguments" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new-function-arguments" class="anchor"></a>New function arguments</h2>
+<ul>
+<li>Add argument <code>timeout</code> to <code><a href="../reference/sen2cor.html">sen2cor()</a></code> to limit the maximum Sen2cor execution time (after that time, Sen2Cor is stopped). This is useful to avoid blocking processing chains due to internal Sen2Cor errors.</li>
+</ul>
+</div>
+<div id="dependencies" class="section level2">
+<h2 class="hasAnchor">
+<a href="#dependencies" class="anchor"></a>Dependencies</h2>
+<ul>
+<li>Add new suggested dependency <strong><code>sys</code></strong> (it is used to call Sen2Cor using <code><a href="https://rdrr.io/pkg/sys/man/exec.html">sys::exec_wait()</a></code> instead than <code><a href="https://rdrr.io/r/base/system.html">system()</a></code>, allowing exporting Sen2Cor output to log files).</li>
+<li>Add new suggested dependency <strong><code>rgdal</code></strong> (since it is implicitly called by internal functions), as requested by CRAN policy.</li>
+<li>Move <strong><code>units</code></strong> and <strong><code>tools</code></strong> to suggested dependencies.</li>
+<li>Prepare to move <strong><code>shiny*</code></strong> and <strong><code>leaflet*</code></strong> dependencies to suggested (this will be done in a future release).</li>
+</ul>
+</div>
+<div id="minor-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#minor-changes" class="anchor"></a>Minor changes</h2>
+<ul>
+<li>Allow choosing if ordering SAFE products from <code>dhus</code> or <code>apihub</code> (experimental).</li>
+<li>Replace all <code>GET()</code> calls with <code>RETRY()</code>, so to avoid errors in case of temporary unavailability of services.</li>
+<li>Allow Sen2Cor running with oldname SAFE (although the usage of these products is generally deprecated).</li>
+<li>Bug fixes (<a href='https://github.com/ranghetti/sen2r/issues/272'>#272</a>, <a href='https://github.com/ranghetti/sen2r/issues/276'>#276</a>).</li>
+</ul>
+</div>
+</div>
     <div id="version-1-3-1" class="section level1">
 <h1 class="page-header">
 <a href="#version-1-3-1" class="anchor"></a>Version 1.3.1<small> 2020-02-07 </small>
@@ -183,9 +223,9 @@
 <li>In the GUI, the maximum allowed cloud cover was set to 100% accordingly to the <code><a href="../reference/sen2r.html">sen2r()</a></code> defaults.</li>
 </ul>
 </div>
-<div id="minor-changes" class="section level2">
+<div id="minor-changes-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes" class="anchor"></a>Minor changes</h2>
+<a href="#minor-changes-1" class="anchor"></a>Minor changes</h2>
 <ul>
 <li>Add check on <code>max_mask</code> - <code>mask_type</code> coherence (if <code>max_mask &lt; 100</code> and <code>mask_type</code> is not specified, a warning is returned).</li>
 <li>Suppress some useless warnings.</li>
@@ -228,7 +268,7 @@
 <h2 class="hasAnchor">
 <a href="#deprecated-functions" class="anchor"></a>Deprecated functions</h2>
 <ul>
-<li>Internal function <code><a href="../reference/init_python.html">init_python()</a></code> was deprecated (Python is no longer managed by <strong>reticulate</strong>).</li>
+<li>Internal function <code><a href="../reference/init_python.html">init_python()</a></code> was deprecated (Python is no longer managed by <strong><code>reticulate</code></strong>).</li>
 </ul>
 </div>
 <div id="changes-in-default-argument-values-1" class="section level2">
@@ -241,9 +281,9 @@
 <code>use_python</code> argument in <code><a href="../reference/sen2r.html">sen2r()</a></code> was deprecated (no longer needed).</li>
 </ul>
 </div>
-<div id="minor-changes-1" class="section level2">
+<div id="minor-changes-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes-1" class="anchor"></a>Minor changes</h2>
+<a href="#minor-changes-2" class="anchor"></a>Minor changes</h2>
 <ul>
 <li>All components of the order (available, ordered and notordered) are now saved in JSON files. This allows using them to re-do an order, specifying if re-ordering already ordered datasets or only order the ones identified as “notordered” (based on new argument “reorder”).</li>
 <li>Output messages are formatted so not to exceed output line length.</li>
@@ -311,9 +351,9 @@
 <code><a href="../reference/safe_shortname.html">safe_shortname()</a></code>: arguments <code>tiles</code>, <code>force_tiles</code>, <code>set.seed</code> and <code>multiple_names</code> were deprecated, since they are not used with SAFE compact names (old names are no more supported);</li>
 </ul>
 </div>
-<div id="minor-changes-2" class="section level2">
+<div id="minor-changes-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes-2" class="anchor"></a>Minor changes</h2>
+<a href="#minor-changes-3" class="anchor"></a>Minor changes</h2>
 <ul>
 <li>
 <code><a href="https://rdrr.io/r/base/Sys.setenv.html">Sys.setenv()</a></code> effects now do not affect the R environment after exiting from sen2r() execution;</li>
@@ -808,6 +848,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#version-1-3-2">1.3.2</a></li>
         <li><a href="#version-1-3-1">1.3.1</a></li>
         <li><a href="#version-1-3-0">1.3.0</a></li>
         <li><a href="#version-1-2-1">1.2.1</a></li>

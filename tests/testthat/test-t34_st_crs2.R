@@ -10,15 +10,6 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "st_crs2, input WKT", {
-    wkt_32n <- st_as_text_2(st_crs(32609))
-    writeLines(wkt_32n, wkt_32n_path <- tempfile())
-    testthat::expect_equal(st_crs2(wkt_32n)[["epsg"]], 32609)
-    testthat::expect_equal(st_crs2(wkt_32n_path)[["epsg"]], 32609)
-  }
-)
-
-testthat::test_that(
   "st_crs2, input spatial file path", {
     raster_path <- system.file(
       "extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif", 
@@ -49,6 +40,16 @@ testthat::test_that(
 
 testthat::skip_on_cran()
 testthat::skip_on_travis()
+
+testthat::test_that(
+  "st_crs2, input WKT", {
+    wkt_32n <- st_as_text_2(st_crs(32609))
+    writeLines(wkt_32n, wkt_32n_path <- tempfile())
+    testthat::expect_equal(st_crs2(wkt_32n)[["epsg"]], 32609)
+    testthat::expect_equal(st_crs2(wkt_32n_path)[["epsg"]], 32609)
+  }
+)
+
 testthat::test_that(
   "st_crs2, input PROJ.4", {
     testthat::expect_equal(st_crs2("+init=epsg:32609")[["epsg"]], 32609)

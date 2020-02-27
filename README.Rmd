@@ -92,13 +92,11 @@ For detailed instructions about using it, see the page ["Run in a Docker contain
 
 The simplest way to use
 <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
-is to execute it in interactive mode:
+is to execute it in interactive mode (see [this vignette](http://sen2r.ranghetti.info/articles/sen2r_gui.html)):
 ```{r, eval = FALSE}
 library(sen2r)
 sen2r()
 ```
-this opens a GUI which allows to set the required processing parameters,
-and then launches the main function.
 
 <p style="text-align:center;">
   <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet1.png" target="_blank">
@@ -124,32 +122,28 @@ Alternatively,
 can be launched with a list of parameters (created with
 [`s2_gui()`](http://sen2r.ranghetti.info/reference/s2_gui.html))
 or passing manually the parameters as arguments of the function
-(see [the documentation of the function](http://sen2r.ranghetti.info/reference/sen2r.html) for further details).
+(see [this vignette](http://sen2r.ranghetti.info/articles/sen2r_cmd.html) for further details).
 
-Other specific functions can be used to run single steps separately:
+Other specific functions can be used to run single steps separately.
+This is a list of the principal processing functions 
+(the complete list can be found in the Reference page):
 
 * [`s2_list()`](http://sen2r.ranghetti.info/reference/s2_list.html)
     to retrieve the list of available Sentinel-2 products based on input parameters;
 * [`s2_download()`](http://sen2r.ranghetti.info/reference/s2_download.html)
     to download Sentinel-2 products;
+* [`s2_order()`](http://sen2r.ranghetti.info/reference/s2_order.html)
+    to order products from the Long Term Archive;
 * [`sen2cor()`](reference/sen2cor.html)
     to correct level-1C products using [Sen2Cor](http://step.esa.int/main/third-party-plugins-2/sen2cor);
-* [`s2_translate()`](http://sen2r.ranghetti.info/reference/s2_translate.html)
-    to convert Sentinel-2 products from SAFE format to a format managed by GDAL;
-* [`s2_merge()`](http://sen2r.ranghetti.info/reference/s2_merge.html)
-    to merge Sentinel-2 tiles which have the same date and orbit;
-* [`gdal_warp()`](http://sen2r.ranghetti.info/reference/gdal_warp.html)
-    to clip, reproject and warp raster files (this is a wrapper to call
-    [gdal_translate](http://www.gdal.org/gdal_translate.html) or
-    [gdalwarp](http://www.gdal.org/gdalwarp.html) based on input parameters);
 * [`s2_mask()`](http://sen2r.ranghetti.info/reference/s2_mask.html)
     to apply a cloud mask to Sentinel-2 products;
 * [`s2_rgb()`](http://sen2r.ranghetti.info/reference/s2_rgb.html)
     to generate RGB images from Sentinel-2 Surface Reflectance multiband raster files;
 * [`s2_calcindices()`](http://sen2r.ranghetti.info/reference/s2_calcindices.html)
-    to compute maps of spectral indices from Sentinel-2 Surface Reflectance multiband raster files;
-* [`s2_thumbnails()`](http://sen2r.ranghetti.info/reference/s2_thumbnails.html)
-    to generate RGB thumbnails (JPEG or PNG) of the products.
+    to compute maps of spectral indices from Sentinel-2 Surface Reflectance multiband raster files.
+
+Output products follow a specific naming convention (see [here](http://sen2r.ranghetti.info/articles/outstructure.html) for details).
 
 ## Credits
 
@@ -186,4 +180,3 @@ By participating in this project you agree to abide by its terms.
 Users are encouraged to use GitHub issues in case of errors with the package.
 Before opening a new issue, please read
  <a href="https://github.com/ranghetti/sen2r/issues/186" target="_blank">these notes</a>.
-
