@@ -8,10 +8,10 @@
 s2_mask(
   infiles,
   maskfiles,
-  mask_type = "cloud_medium_proba",
+  mask_type,
   smooth = 0,
   buffer = 0,
-  max_mask = 80,
+  max_mask = 100,
   outdir = "./masked",
   tmpdir = NA,
   rmtmp = TRUE,
@@ -51,7 +51,7 @@ format managed by GDAL (use \link{s2_translate} to do it);
 their names must be in the sen2r naming convention
 (\link{safe_shortname}).}
 
-\item{mask_type}{(optional) Character vector which determines the type of
+\item{mask_type}{Character vector which determines the type of
 mask to be applied. Accepted values are:
 \itemize{
 \item \code{"nomask"}: do not mask any pixel;
@@ -96,7 +96,7 @@ type of mask chosen with argument \code{mask_type}) for producing outputs.
 Images with a percentage of masked surface greater than \code{max_mask}\%
 are not processed (the list of expected output files which have not been
 generated is returned as an attribute, named \code{skipped}).
-Default value is 80.
+Default value is 100 (images are always produced).
 Notice that the percentage is computed on non-NA values (if input images
 had previously been clipped and masked using a polygon, the percentage is
 computed on the surface included in the masking polygons).}
