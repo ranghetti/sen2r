@@ -10,4 +10,12 @@
 * [R-hub] macOS 10.11 El Capitan, R-release (experimental)
 
 ## R CMD check results
-There were no ERRORs, WARNINGs or NOTEs.
+There were no ERRORs, WARNINGs or NOTEs on all the tested platforms,
+with the exception of win-builder oldrelease,
+which returned the following warning:
+
+Found the following significant warnings:
+  Warning: namespace 'rgdal' is not available and has been replaced
+
+This warning is quite strange, being rgdal a well-known R package working also
+on R 3.5.2, for which binaries for r-oldrel are available and updated.
