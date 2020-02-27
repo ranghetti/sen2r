@@ -1416,7 +1416,7 @@ s2_gui <- function(param_list = NULL,
     rv <- reactiveValues()
     
     # get server volumes
-    volumes <- c("Home"=path.expand("~"), getVolumes()())
+    volumes <- c("Home"=normalize_path("~"), getVolumes()())
     
     # extract and import tiles kml
     s2tiles <- s2_tiles()

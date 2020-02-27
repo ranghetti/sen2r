@@ -50,7 +50,7 @@ check_sen2r_deps <- function() {
   
   # get server volumes
   volumes <- c(
-    "Home" = path.expand("~"),
+    "Home" = normalize_path("~"),
     "sen2r" = system.file(package = "sen2r"),
     getVolumes()()
   )
