@@ -97,16 +97,13 @@ container”](http://sen2r.ranghetti.info/articles/docker.html) page.
 
 The simplest way to use
 <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
-is to execute it in interactive mode:
+is to execute it in interactive mode (see [this
+vignette](http://sen2r.ranghetti.info/articles/sen2r_gui.html)):
 
 ``` r
 library(sen2r)
 sen2r()
 ```
-
-this opens a GUI which allows to set the required processing parameters,
-and then launches the main
-function.
 
 <p style="text-align:center;">
 
@@ -127,32 +124,24 @@ Alternatively,
 [`sen2r()`](http://sen2r.ranghetti.info/reference/sen2r.html) can be
 launched with a list of parameters (created with
 [`s2_gui()`](http://sen2r.ranghetti.info/reference/s2_gui.html)) or
-passing manually the parameters as arguments of the function (see [the
-documentation of the
-function](http://sen2r.ranghetti.info/reference/sen2r.html) for further
-details).
+passing manually the parameters as arguments of the function (see [this
+vignette](http://sen2r.ranghetti.info/articles/sen2r_cmd.html) for
+further details).
 
-Other specific functions can be used to run single steps separately:
+Other specific functions can be used to run single steps separately.
+This is a list of the principal processing functions (the complete list
+can be found in the Reference page):
 
   - [`s2_list()`](http://sen2r.ranghetti.info/reference/s2_list.html) to
     retrieve the list of available Sentinel-2 products based on input
     parameters;
   - [`s2_download()`](http://sen2r.ranghetti.info/reference/s2_download.html)
     to download Sentinel-2 products;
+  - [`s2_order()`](http://sen2r.ranghetti.info/reference/s2_order.html)
+    to order products from the Long Term Archive;
   - [`sen2cor()`](reference/sen2cor.html) to correct level-1C products
     using
     [Sen2Cor](http://step.esa.int/main/third-party-plugins-2/sen2cor);
-  - [`s2_translate()`](http://sen2r.ranghetti.info/reference/s2_translate.html)
-    to convert Sentinel-2 products from SAFE format to a format managed
-    by GDAL;
-  - [`s2_merge()`](http://sen2r.ranghetti.info/reference/s2_merge.html)
-    to merge Sentinel-2 tiles which have the same date and
-    orbit;
-  - [`gdal_warp()`](http://sen2r.ranghetti.info/reference/gdal_warp.html)
-    to clip, reproject and warp raster files (this is a wrapper to call
-    [gdal\_translate](http://www.gdal.org/gdal_translate.html) or
-    [gdalwarp](http://www.gdal.org/gdalwarp.html) based on input
-    parameters);
   - [`s2_mask()`](http://sen2r.ranghetti.info/reference/s2_mask.html) to
     apply a cloud mask to Sentinel-2 products;
   - [`s2_rgb()`](http://sen2r.ranghetti.info/reference/s2_rgb.html) to
@@ -161,10 +150,11 @@ Other specific functions can be used to run single steps separately:
     files;
   - [`s2_calcindices()`](http://sen2r.ranghetti.info/reference/s2_calcindices.html)
     to compute maps of spectral indices from Sentinel-2 Surface
-    Reflectance multiband raster
-    files;
-  - [`s2_thumbnails()`](http://sen2r.ranghetti.info/reference/s2_thumbnails.html)
-    to generate RGB thumbnails (JPEG or PNG) of the products.
+    Reflectance multiband raster files.
+
+Output products follow a specific naming convention (see
+[here](http://sen2r.ranghetti.info/articles/outstructure.html) for
+details).
 
 ## Credits
 
@@ -186,8 +176,8 @@ International license](https://creativecommons.org/licenses/by-sa/4.0)
 
 To cite this library, please use the following entry:
 
-Ranghetti, L. and Busetto, L. (2019). *sen2r: Find, Download and Process
-Sentinel-2 Data*. R package version 1.2.0. DOI:
+Ranghetti, L. and Busetto, L. (2020). *sen2r: Find, Download and Process
+Sentinel-2 Data*. R package version 1.3.2. DOI:
 [10.5281/zenodo.1240384](https://dx.doi.org/10.5281/zenodo.1240384).
 URL: <http://sen2r.ranghetti.info>.
 
@@ -195,8 +185,8 @@ URL: <http://sen2r.ranghetti.info>.
 @Manual{sen2r,
   title  = {sen2r: Find, Download and Process Sentinel-2 Data},
   author = {Luigi Ranghetti and Lorenzo Busetto},
-  year   = {2019},
-  note   = {R package version 1.2.0},
+  year   = {2020},
+  note   = {R package version 1.3.2},
   doi    = {10.5281/zenodo.1240384},
   url    = {http://sen2r.ranghetti.info},
 }
