@@ -416,6 +416,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
     all(is.na(nn(pm$list_prods[pm$list_prods!="SCL"])))
   ) {
     pm$mask_type <- NA
+    pm$max_mask <- 100
   }
   
   
