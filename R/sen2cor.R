@@ -243,14 +243,14 @@ sen2cor <- function(
     } # nocov end
     
     # set paths
-    sel_l1c <- l1c_prodlist[i]
-    sel_l2a <- file.path(
+    sel_l1c <- normalize_path(l1c_prodlist[i])
+    sel_l2a <- normalize_path(file.path(
       if (is.null(outdir)) {dirname(sel_l1c)} else {outdir},
       gsub(
         "_MSIL1C\\_", "_MSIL2A_",
         gsub("_OPER_", "_USER_", basename(sel_l1c))
       )
-    ) # path of the L2A product where it should be placed definitively
+    ), mustWork = FALSE) # path of the L2A product where it should be placed definitively
     
     # Check if a "comparable" file already excists
     # (in case using Sen2cor 2.8.0, this is necessary in order not to 
