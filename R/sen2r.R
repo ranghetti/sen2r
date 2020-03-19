@@ -152,7 +152,7 @@
 #'  Images with a percentage of masked surface greater than `max_mask`%
 #'  are not processed (the list of expected output files which have not been
 #'  generated is returned as an attribute, named "skipped").
-#'  Default value is 80.
+#'  Default value is 100 (all products are produced).
 #'  This parameter is different from `max_cloud_safe`, because:
 #'  1. it is computed over the selected extent;
 #'  2. it is computed starting from the cloud mask defined as above.
