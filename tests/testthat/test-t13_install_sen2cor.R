@@ -57,11 +57,11 @@ testthat::test_that(
     }
     
     # Check L2A_GIPP.xml
-    xml_sen2cor_path <- paste0(
+    xml_sen2cor_path <- normalize_path(paste0(
       "~/sen2cor/",
       sen2cor_def_version$major,".",sen2cor_def_version$minor,
       "/cfg/L2A_GIPP.xml"
-    )
+    ))
     testthat::expect_true(file.exists(xml_sen2cor_path))
     
   }
@@ -80,7 +80,7 @@ testthat::test_that(
   "Test GIPP options", {
     
     # Check option previously set with test_sen2cor(use_dem = TRUE)
-    xml_sen2r_path <- "~/.sen2r/sen2r_L2A_GIPP.xml"
+    xml_sen2r_path <- normalize_path("~/.sen2r/sen2r_L2A_GIPP.xml")
     testthat::expect_true(file.exists(xml_sen2r_path))
     xml_sen2r_raw <- readLines(xml_sen2r_path)
     testthat::expect_true(grepl(

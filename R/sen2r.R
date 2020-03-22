@@ -152,7 +152,7 @@
 #'  Images with a percentage of masked surface greater than `max_mask`%
 #'  are not processed (the list of expected output files which have not been
 #'  generated is returned as an attribute, named "skipped").
-#'  Default value is 80.
+#'  Default value is 100 (all products are produced).
 #'  This parameter is different from `max_cloud_safe`, because:
 #'  1. it is computed over the selected extent;
 #'  2. it is computed starting from the cloud mask defined as above.
@@ -674,8 +674,8 @@ sen2r <- function(param_list = NULL,
       open_check_gui_prompt <- print_message(
         type="waiting",
         "It seems you are running this package for the first time. ",
-        "Do you want to verify/install the required dependencies using a GUI (otherwise, an
-        automatic check will be performed)? (y/n) ", 
+        "Do you want to verify/install the required dependencies using a GUI ",
+        "(otherwise, an automatic check will be performed)? (y/n) "
       )
       open_check_gui <- if (grepl("^[Yy]",open_check_gui_prompt)) {
         TRUE

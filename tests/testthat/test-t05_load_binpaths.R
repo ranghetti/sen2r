@@ -15,10 +15,10 @@ if (dir.exists(settings_dir)) {
 # if the test was manually runned, reload sen2r before proceeding
 
 test_that("Load empty binpaths", {
-  binpaths_file <- file.path(
+  binpaths_file <- normalize_path(file.path(
     if (dir.exists("~/.sen2r")) {"~/.sen2r"} else {tempdir()},
     "paths.json"
-  )
+  ))
   if (file.exists(binpaths_file)) {file.remove(binpaths_file)}
   binpaths_0 <- load_binpaths()
   expect_is(binpaths_0, "list")

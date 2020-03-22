@@ -50,7 +50,9 @@ gipp_init <- function(gipp_sen2r_path = NA, force = FALSE, dem_warning = FALSE) 
       sen2cor_version_raw1
     )
     # define L2A_GIPP.xml path
-    gipp_sen2cor_path <- file.path("~/sen2cor", sen2cor_version, "cfg/L2A_GIPP.xml")
+    gipp_sen2cor_path <- normalize_path(
+      file.path("~/sen2cor", sen2cor_version, "cfg/L2A_GIPP.xml")
+    )
     # (this assumes Sen2Cor to be installed and configured to be used with sen2r)
     
     if (!file.exists(gipp_sen2cor_path)) {

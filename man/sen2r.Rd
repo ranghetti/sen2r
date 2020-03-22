@@ -248,7 +248,7 @@ type of mask chosen with argument \code{mask_type}) for producing outputs.
 Images with a percentage of masked surface greater than \code{max_mask}\%
 are not processed (the list of expected output files which have not been
 generated is returned as an attribute, named "skipped").
-Default value is 80.
+Default value is 100 (all products are produced).
 This parameter is different from \code{max_cloud_safe}, because:
 \enumerate{
 \item it is computed over the selected extent;
