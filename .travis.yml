@@ -10,9 +10,6 @@ r_packages:
   - RPostgreSQL
   - covr
 
-r_github_packages:
-  - r-spatial/lwgeom
-
 apt_packages:
   - libgdal-dev
   - libproj-dev
