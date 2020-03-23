@@ -10,7 +10,19 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "st_crs2, input spatial file path", {
+  "st_crs2, input raster file [path]", {
+    raster_path <- system.file(
+      "extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif", 
+      package="sen2r"
+    )
+    testthat::expect_equal(st_crs2(raster_path)$epsg, 32632)
+    testthat::expect_equal(st_crs2(stars::read_stars(raster_path))$epsg, 32632)
+    # testthat::expect_equal(st_crs2(raster::raster(raster_path))$epsg, 32632)
+  }
+)
+
+testthat::test_that(
+  "st_crs2, input vector file [path]", {
     raster_path <- system.file(
       "extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif", 
       package="sen2r"
@@ -19,10 +31,13 @@ testthat::test_that(
       "extdata/vector/barbellino.geojson", 
       package="sen2r"
     )
-    testthat::expect_equal(st_crs2(raster_path)$epsg, 32632)
-    testthat::expect_equal(st_crs2(vector_path)$epsg, 32632)
-    testthat::expect_equal(st_crs2(stars::read_stars(raster_path))$epsg, 32632)
+    # 
+    if (packageVersion("sf") < 0.9) {
+      testthat::expect_equal(st_crs2(raster_path)$epsg, 32632)
+      testthat::expect_equal(st_crs2(stars::read_stars(raster_path))$epsg, 32632)
+    }
     # testthat::expect_equal(st_crs2(raster::raster(raster_path))$epsg, 32632)
+    testthat::expect_equal(st_crs2(vector_path)$epsg, 32632)
     testthat::expect_equal(st_crs2(sf::read_sf(vector_path))$epsg, 32632)
     testthat::expect_equal(st_crs2(as(sf::read_sf(vector_path), "Spatial"))$epsg, 32632)
   }

@@ -154,7 +154,11 @@ st_crs2.character <- function(x, ...) {
         read_stars(x, quiet = TRUE, proxy = TRUE),
         error = function(e) {tryCatch(
           # x: path of a text file with WKT -> crs
-          sf::st_crs(readLines(x)),
+          if (packageVersion("sf") >= 0.9) {
+            sf::st_crs(readLines(x))
+          } else {
+            sf::st_crs(wkt = readLines(x))
+          },
           error = function(e) {
             # x: path of a non supported file -> x (st_crs will return the proper error)
             x
@@ -165,11 +169,15 @@ st_crs2.character <- function(x, ...) {
     return(sf::st_crs(x2, ...))
   }
   
-  # ## case 4: WKT and other characters
-  # if (grepl("^((PROJCR?S)|(GEOGCR?S))\\[.+\\]$", x)) {
-  #   # x: WKT string -> crs
-  #   return(sf::st_crs(wkt = x, ...))
-  # }
+  ## case 4: WKT and other characters
+  if (grepl("^((PROJCR?S)|(GEOGCR?S))\\[.+\\]$", x)) {
+    # x: WKT string -> crs
+    if (packageVersion("sf") >= 0.9) {
+      return(sf::st_crs(x, ...))
+    } else {
+      return(sf::st_crs(wkt = x, ...))
+    }
+  }
 
   ## any other case: pass to st_crs as is
   sf::st_crs(x, ...)
