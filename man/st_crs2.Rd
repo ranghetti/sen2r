@@ -75,7 +75,6 @@ st_crs2(vector_path)
 
 ## CRS from spatial files
 st_crs2(stars::read_stars(raster_path))
-st_crs2(raster::raster(raster_path))
 st_crs2(sf::read_sf(vector_path))
 
 \donttest{
@@ -83,6 +82,7 @@ st_crs2(sf::read_sf(vector_path))
 # (avoid using this with PROJ >= 6!)
 st_crs2("+init=epsg:32609") # this makes use of the EPSG code
 st_crs2("+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs")
+st_crs2(raster::raster(raster_path)) # st_crs(raster) uses the PROJ.4 as input
 }
 }
 \author{

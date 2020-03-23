@@ -59,7 +59,6 @@
 #' 
 #' ## CRS from spatial files
 #' st_crs2(stars::read_stars(raster_path))
-#' st_crs2(raster::raster(raster_path))
 #' st_crs2(sf::read_sf(vector_path))
 #' 
 #' \donttest{
@@ -67,6 +66,7 @@
 #' # (avoid using this with PROJ >= 6!)
 #' st_crs2("+init=epsg:32609") # this makes use of the EPSG code
 #' st_crs2("+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs")
+#' st_crs2(raster::raster(raster_path)) # st_crs(raster) uses the PROJ.4 as input
 #' }
 
 
@@ -127,6 +127,12 @@ st_crs2.character <- function(x, ...) {
         "Using PROJ.4 strings is deprecated with PROJ >= 6 ",
         "(see http://rgdal.r-forge.r-project.org/articles/PROJ6_GDAL3.html)."
       )
+    } else if (packageVersion("sf") >= 0.9) {
+      print_message(
+        type = "warning",
+        "Using PROJ.4 strings is deprecated with sf >= 0.9.0 ",
+        "(see https://www.r-spatial.org/r/2020/03/17/wkt.html)."
+      )
     }
     return(sf::st_crs(x, ...))
   }
@@ -148,7 +154,7 @@ st_crs2.character <- function(x, ...) {
         read_stars(x, quiet = TRUE, proxy = TRUE),
         error = function(e) {tryCatch(
           # x: path of a text file with WKT -> crs
-          sf::st_crs(wkt = readLines(x)),
+          sf::st_crs(readLines(x)),
           error = function(e) {
             # x: path of a non supported file -> x (st_crs will return the proper error)
             x
@@ -159,11 +165,11 @@ st_crs2.character <- function(x, ...) {
     return(sf::st_crs(x2, ...))
   }
   
-  ## case 4: WKT and other characters
-  if (grepl("^((PROJCR?S)|(GEOGCR?S))\\[.+\\]$", x)) {
-    # x: WKT string -> crs
-    return(sf::st_crs(wkt = x, ...))
-  }
+  # ## case 4: WKT and other characters
+  # if (grepl("^((PROJCR?S)|(GEOGCR?S))\\[.+\\]$", x)) {
+  #   # x: WKT string -> crs
+  #   return(sf::st_crs(wkt = x, ...))
+  # }
 
   ## any other case: pass to st_crs as is
   sf::st_crs(x, ...)
