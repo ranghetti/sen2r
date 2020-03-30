@@ -11,7 +11,7 @@
 #'  arguments are considered.
 #'  If some parameters are missing in `param_list` and are not
 #'  provided as arguments, default values will be used.
-#'  Use the function `s2_gui()`` to create a complete list of
+#'  Use the function `s2_gui()` to create a complete list of
 #'  parameters.
 #'  If `param_list` is NULL (default), values given with the
 #'  parameters below (or default values for parameters not
@@ -352,7 +352,7 @@
 #'   step_atmcorr = "l2a",
 #'   extent = system.file("extdata/vector/barbellino.geojson", package = "sen2r"),
 #'   extent_name = "Barbellino",
-#'   timewindow = as.Date("2017-07-03"),
+#'   timewindow = as.Date("2019-07-23"),
 #'   list_prods = c("TOA","BOA","SCL"),
 #'   list_indices = c("NDVI","MSAVI2"),
 #'   list_rgb = c("RGB432T", "RGB432B", "RGB843B"),

@@ -17,7 +17,7 @@ gdalwarp_grid(srcfiles, dstfiles, ref, of = NULL, r = NULL, tmpdir = tempdir())
 the format of every input filename.}
 
 \item{r}{Resampling_method (\code{"near"}|\code{"bilinear"}|\code{"cubic"}|\code{"cubicspline"}|
-\code{"lanczos"}|\code{"average"}|\code{"mode"}|\code{"max"}|\code{"min"}|\code{"med"}|\code{"q1"}|`"q3"``).}
+\code{"lanczos"}|\code{"average"}|\code{"mode"}|\code{"max"}|\code{"min"}|\code{"med"}|\code{"q1"}|\code{"q3"}).}
 
 \item{tmpdir}{(optional) Path where intermediate files (.prj) will be created.
 Default is a temporary directory.}
