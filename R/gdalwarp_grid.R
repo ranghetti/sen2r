@@ -9,7 +9,7 @@
 #' @param of The output format (use the short format name). Default is
 #'  the format of every input filename.
 #' @param r Resampling_method (`"near"`|`"bilinear"`|`"cubic"`|`"cubicspline"`|
-#' `"lanczos"`|`"average"`|`"mode"`|`"max"`|`"min"`|`"med"`|`"q1"`|`"q3"``).
+#' `"lanczos"`|`"average"`|`"mode"`|`"max"`|`"min"`|`"med"`|`"q1"`|`"q3"`).
 #' @param tmpdir (optional) Path where intermediate files (.prj) will be created.
 #'  Default is a temporary directory.
 #' @return NULL (the function is called for its side effects)
