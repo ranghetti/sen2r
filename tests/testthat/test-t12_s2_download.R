@@ -5,7 +5,7 @@ testthat::skip_on_travis()
 # NOTE: these tests require a high amount of time (depending on connection speed),
 # so the download is disabled by default if SAFE archives are already present.
 # To perform the test also on download, replace 'test_download = FALSE' with 'TRUE'.
-test_download = TRUE
+test_download = FALSE
 
 safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
 dir.create(safe_dir, showWarnings = FALSE)
@@ -103,7 +103,9 @@ testthat::test_that(
         install_aria2(dirname(attr(load_binpaths(), "path")), force = TRUE), 
         "[Tt]his function is only for Windows"
       )
-      testthat::expect_equivalent(load_binpaths()$aria2, Sys.which("aria2c"))
+      if (Sys.which("aria2c") != "") {
+        testthat::expect_equivalent(load_binpaths("aria2")$aria2, Sys.which("aria2c"))
+      }
     }
   }
 )

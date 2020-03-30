@@ -37,7 +37,7 @@ testthat::test_that(
     )
     testthat::expect_equal(
       names(attributes(out1)), 
-      c("procpath", "cloudcovered", "missing", "status")
+      c("procpath", "clouddates", "missing", "status")
     )
     
     # test on raster metadata

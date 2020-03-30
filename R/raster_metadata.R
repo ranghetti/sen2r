@@ -13,13 +13,12 @@
 #' @export
 #' @import data.table
 #' @importFrom stars read_stars st_dimensions
-#' @importFrom sf st_bbox st_crs st_as_text gdal_utils
+#' @importFrom sf gdal_crs st_bbox st_crs st_as_text gdal_utils
 #' @importFrom methods is
 #' @examples
 #' # Define product names
 #' examplenames <- c(
 #'   system.file("tif/L7_ETMs.tif", package="stars"),
-#'   system.file("nc/bcsd_obs_1999.nc", package = "stars"),
 #'   system.file("extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif",
 #'     package = "sen2r")
 #' )
@@ -74,8 +73,8 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
     raster_path <- raster_paths[i]
     if (meta_stars) {
       sel_raster <- suppressWarnings(suppressMessages(try(
-        read_stars(raster_path, proxy = TRUE, quiet = TRUE)
-        , silent = TRUE
+        read_stars(raster_path, proxy = TRUE, quiet = TRUE),
+        silent = TRUE
       )))
     }
     if (meta_gdalinfo) {
@@ -124,6 +123,12 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
       if (any(c("bbox", "proj", "unit") %in% meta)) {
         ref_bbox <- st_bbox(sel_raster)
         ref_proj <- attr(ref_bbox, "crs")
+        # Temporary patch: remove this when stars will be fixed to be 
+        ## compatible with sf >= 0.9.0 (#295)
+        if (is.na(ref_proj)) {
+          ref_proj <- gdal_crs(raster_path)
+          ref_bbox <- st_bbox(setNames(as.numeric(ref_bbox), names(ref_bbox)), crs = ref_proj)
+        }
       }
       if ("bbox" %in% meta) {
         out_list[[i]][["bbox"]] <- ref_bbox

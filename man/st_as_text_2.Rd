@@ -18,8 +18,8 @@ coordinate reference system
 }
 \description{
 This is a convenience temporary function which returns the WKT
-representation of a CRS, using \link[sf:st_as_text]{sf::st_as_text} in case PROJ < 3,
-\link[rgdal:CRS]{rgdal::CRS} otherwise.
+representation of a CRS, using \code{sf::st_as_text()} in case PROJ < 3,
+\code{rgdal::CRS()} otherwise.
 This has the advantage to perform precise transformations with PROJ >=3,
 and to avoid conversion errors
 (see \href{https://rsbivand.github.io/ECS530_h19/ECS530_III.html}{here}).

@@ -24,7 +24,7 @@
 #' @param ... other parameters passed to [sf::st_crs].
 #' @return An object of class \link{crs} of length 2.
 #' @details See [sf::st_crs] for details.
-#' @importFrom sf st_crs
+#' @importFrom sf gdal_crs st_crs
 #' @export
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
@@ -150,14 +150,18 @@ st_crs2.character <- function(x, ...) {
         } else {st_read(x, quiet = TRUE)}
       },
       error = function(e) {tryCatch(
-        # x: path of a raster file -> stars proxy
-        read_stars(x, quiet = TRUE, proxy = TRUE),
+        # x: path of a text file with WKT -> crs
+        if (packageVersion("sf") >= 0.9) {
+          suppressWarnings(sf::st_crs(readLines(x)))
+        } else {
+          suppressWarnings(sf::st_crs(wkt = readLines(x)))
+        },
         error = function(e) {tryCatch(
-          # x: path of a text file with WKT -> crs
+          # x: path of a raster file -> stars proxy
           if (packageVersion("sf") >= 0.9) {
-            sf::st_crs(readLines(x))
+            gdal_crs(x)
           } else {
-            sf::st_crs(wkt = readLines(x))
+            gdal_crs(x)$crs
           },
           error = function(e) {
             # x: path of a non supported file -> x (st_crs will return the proper error)
@@ -178,7 +182,7 @@ st_crs2.character <- function(x, ...) {
       return(sf::st_crs(wkt = x, ...))
     }
   }
-
+  
   ## any other case: pass to st_crs as is
   sf::st_crs(x, ...)
   

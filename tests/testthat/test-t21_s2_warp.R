@@ -2,6 +2,19 @@ context("Test warping (clip, reproject, resize)")
 testthat::skip_on_cran() # because using runtime GDAL
 testthat::skip_on_travis() # because required SAFE do not exists
 
+# convenience function to compare non-null CRSs
+# without using EPSG (so usable with rgdal >= 1.5)
+expect_equal_crs <- function(crs1, crs2) {
+  ref_vec <- st_geometry(st_read(
+    system.file("extdata/vector/barbellino.geojson", package = "sen2r"), 
+    quiet = TRUE
+  ))
+  testthat::expect_equal(
+    as.integer(sf::st_coordinates(sf::st_transform(ref_vec, crs1))[,c("X","Y")]),
+    as.integer(sf::st_coordinates(sf::st_transform(ref_vec, crs2))[,c("X","Y")])
+  )
+}
+
 safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
 dir.create(safe_dir, showWarnings = FALSE)
 
@@ -41,7 +54,7 @@ testthat::test_that(
       exp_meta_r[,c("xmin", "xmax", "ymin", "ymax")], 
       data.table("xmin" = 578590, "xmax" = 597700, "ymin" = 5086740, "ymax" = 5101530) 
     )
-    testthat::expect_equal(st_crs2(exp_meta_r$proj)$epsg, 32632)
+    expect_equal_crs(st_crs2(exp_meta_r$proj), 32632)
     testthat::expect_equal(exp_meta_r$type, "UInt16")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff") # default value
     
@@ -83,10 +96,7 @@ testthat::test_that(
       exp_meta_r_t[,c("xmin", "xmax", "ymin", "ymax")], 
       data.table(exp_meta_r[,c("xmin", "xmax", "ymin", "ymax")])
     )
-    testthat::expect_equal(
-      st_crs2(exp_meta_r_t$proj)$epsg, 
-      st_crs2(exp_meta_r$proj)$epsg
-    )
+    expect_equal_crs(st_crs2(exp_meta_r_t$proj), st_crs2(exp_meta_r$proj))
     testthat::expect_equal(exp_meta_r_t$type, "Byte")
     testthat::expect_equal(exp_meta_r_t$outformat, "JPEG")
     
@@ -145,7 +155,7 @@ testthat::test_that(
       data.frame("xmin" = 113909, "xmax" = 133284, "ymin" = 5097856, "ymax" = 5112431),
       tolerance = 1e-3
     )
-    testthat::expect_equal(st_crs2(exp_meta_r$proj)$epsg, 32633)
+    expect_equal_crs(st_crs2(exp_meta_r$proj), 32633)
     testthat::expect_equal(exp_meta_r$type, "UInt16")
     testthat::expect_equal(exp_meta_r$outformat, "ENVI")
     
@@ -185,10 +195,7 @@ testthat::test_that(
       exp_meta_r_t[,c("xmin", "xmax", "ymin", "ymax")], 
       data.frame(exp_meta_r[,c("xmin", "xmax", "ymin", "ymax")])
     )
-    testthat::expect_equal(
-      st_crs2(exp_meta_r_t$proj)$epsg, 
-      st_crs2(exp_meta_r$proj)$epsg
-    )
+    expect_equal_crs(st_crs2(exp_meta_r_t$proj), st_crs2(exp_meta_r$proj))
     testthat::expect_equal(exp_meta_r_t$type, "Byte")
     testthat::expect_equal(exp_meta_r_t$outformat, "JPEG")
     
@@ -237,7 +244,7 @@ testthat::test_that(
       c(113909, 5097856, 133284, 5112431),
       tolerance = 1e-3
     )
-    testthat::expect_equal(exp_meta_r$proj$epsg, 32633)
+    expect_equal_crs(exp_meta_r$proj, 32633)
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "VRT")
     
@@ -267,11 +274,8 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r_t$size, exp_meta_r$size)
     testthat::expect_equal(exp_meta_r_t$res, exp_meta_r$res)
     testthat::expect_equal(exp_meta_r_t$nbands, 3)
-    testthat::expect_equal(exp_meta_r_t$bbox, exp_meta_r$bbox)
-    testthat::expect_equal(
-      st_crs2(exp_meta_r_t$proj)$epsg, 
-      st_crs2(exp_meta_r$proj)$epsg
-    )
+    testthat::expect_equal(as.numeric(exp_meta_r_t$bbox), as.numeric(exp_meta_r$bbox))
+    expect_equal_crs(st_crs2(exp_meta_r_t$proj), st_crs2(exp_meta_r$proj))
     testthat::expect_equal(exp_meta_r_t$type, "Byte")
     testthat::expect_equal(exp_meta_r_t$outformat, "PNG")
     
@@ -316,7 +320,7 @@ testthat::test_that(
       exp_meta_r[,c("xmin", "xmax", "ymin", "ymax")], 
       data.frame("xmin" = 580560, "xmax" = 580800, "ymin" = 5101700, "ymax" = 5102120)
     )
-    testthat::expect_equal(st_crs2(exp_meta_r$proj)$epsg, 32632)
+    expect_equal_crs(st_crs2(exp_meta_r$proj), 32632)
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
@@ -361,7 +365,7 @@ testthat::test_that(
       as.numeric(exp_meta_r$bbox), 
       c(580620, 5101790, 580700, 5102050)
     )
-    testthat::expect_equal(exp_meta_r$proj$epsg, 32632)
+    expect_equal_crs(exp_meta_r$proj, 32632)
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
@@ -395,7 +399,7 @@ testthat::test_that(
       as.numeric(exp_meta_r$bbox), 
       c(580620, 5101790, 580700, 5102050)
     )
-    testthat::expect_equal(exp_meta_r$proj$epsg, 32632)
+    expect_equal_crs(exp_meta_r$proj, 32632)
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
@@ -423,7 +427,7 @@ testthat::test_that(
       as.numeric(exp_meta_r$bbox), 
       c(580560, 5101700, 580800, 5102120)
     )
-    testthat::expect_equal(exp_meta_r$proj$epsg, 32632)
+    expect_equal_crs(exp_meta_r$proj, 32632)
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
@@ -452,7 +456,7 @@ testthat::test_that(
       c(1044533, 5125330, 1044805, 5125769),
       tolerance = 1e-3
     )
-    testthat::expect_equal(exp_meta_r$proj$epsg, 32631)
+    expect_equal_crs(exp_meta_r$proj, 32631)
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
@@ -513,9 +517,11 @@ testthat::test_that(
   }
 )
 
+# This test was skipped while stars is being incompatible with sf >= 0.9,
+# and will be restored after stars will have been fixed (#295).
+if (packageVersion("sf") < 0.9) {
 testthat::test_that(
   "Reproject and clip on a bounding box", {
-    
     
     test5 <- tempfile(fileext = "_test5.tif")
     gdal_warp(
@@ -534,7 +540,7 @@ testthat::test_that(
       c(1044599, 5125425, 1044698, 5125691),
       tolerance = 1e-3
     )
-    testthat::expect_equal(exp_meta_r$proj$epsg, 32631)
+    expect_equal_crs(exp_meta_r$proj, 32631)
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
@@ -546,6 +552,7 @@ testthat::test_that(
     
   }
 )
+}  
 
 test6 <- tempfile(fileext = "_test6.tif")
 testthat::test_that(
@@ -567,7 +574,7 @@ testthat::test_that(
       c(1044599, 5125425, 1044698, 5125691),
       tolerance = 1e-3
     )
-    testthat::expect_equal(exp_meta_r$proj$epsg, 32631)
+    expect_equal_crs(exp_meta_r$proj, 32631)
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
@@ -599,7 +606,7 @@ testthat::test_that(
       c(1044599, 5125425, 1044698, 5125691),
       tolerance = 1e-3
     )
-    testthat::expect_equal(exp_meta_r$proj$epsg, 32631)
+    expect_equal_crs(exp_meta_r$proj, 32631)
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
@@ -612,6 +619,9 @@ testthat::test_that(
   }
 )
 
+# This test was skipped while stars is being incompatible with sf >= 0.9,
+# and will be restored after stars will have been fixed (#295).
+if (packageVersion("sf") < 0.9) {
 testthat::test_that(
   "...and specify a different bounding box", {
     
@@ -628,7 +638,7 @@ testthat::test_that(
       c(1044599, 5125425, 1044698, 5125691),
       tolerance = 1e-3
     )
-    testthat::expect_equal(exp_meta_r$proj$epsg, 32631)
+    expect_equal_crs(exp_meta_r$proj, 32631)
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
@@ -640,6 +650,7 @@ testthat::test_that(
     
   }
 )
+}
 
 testthat::test_that(
   "Use a reference raster with a different projection and a mask", {
@@ -657,7 +668,7 @@ testthat::test_that(
       c(1044599, 5125425, 1044698, 5125691),
       tolerance = 1e-3
     )
-    testthat::expect_equal(exp_meta_r$proj$epsg, 32631)
+    expect_equal_crs(exp_meta_r$proj, 32631)
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     

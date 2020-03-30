@@ -4,7 +4,6 @@ covr::package_coverage(
   line_exclusions = c(
     "R/s2_gui.R",
     "R/add_rgb_image.R",
-    "R/geograbber_process.R", 
     "R/editModPoly.R",
     "R/give_write_permission.R",
     "R/check_sen2r_deps.R",

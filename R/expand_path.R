@@ -13,7 +13,7 @@
 #'  if NA, a warning is returned if `path` is expanded, nothing if it
 #'  is already an absolute path.
 #' @param normalize Logical value: if TRUE (default), the path is normalised
-#'  (\code{\link[base]{normalizePath}} is applied); if FALSE it is simply
+#'  (`normalizePath()` is applied); if FALSE it is simply
 #'  appended.
 #' @return The path eventually expanded.
 #' @export

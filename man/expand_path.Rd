@@ -18,7 +18,7 @@ if NA, a warning is returned if \code{path} is expanded, nothing if it
 is already an absolute path.}
 
 \item{normalize}{Logical value: if TRUE (default), the path is normalised
-(\code{\link[base]{normalizePath}} is applied); if FALSE it is simply
+(\code{normalizePath()} is applied); if FALSE it is simply
 appended.}
 }
 \value{
