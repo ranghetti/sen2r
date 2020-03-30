@@ -7,7 +7,9 @@ bbox
 BDred
 BigTIFF
 binpaths
+Boschetti
 builtin
+cageo
 cairo
 calc
 calcindices
@@ -65,6 +67,7 @@ infiles
 init
 Int
 IREA
+ISI
 JP
 jq
 jqr
@@ -93,6 +96,7 @@ NIR
 nodata
 nomask
 notordered
+Nutini
 oldname
 opencpu
 OpenJPEG
@@ -111,7 +115,6 @@ protobuf
 protolite
 px
 radiobutton
-ranghetti
 RasterBrick
 RasterLayer
 rds
@@ -176,5 +179,4 @@ Willmann
 WKT
 Xenial
 yyyymmdd
-zenodo
 Zscore

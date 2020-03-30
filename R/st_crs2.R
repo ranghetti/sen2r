@@ -151,7 +151,20 @@ st_crs2.character <- function(x, ...) {
       },
       error = function(e) {tryCatch(
         # x: path of a raster file -> stars proxy
-        read_stars(x, quiet = TRUE, proxy = TRUE),
+        
+        ## Temporary patch: remove this when stars will be fixed to be 
+        ## compatible with sf >= 0.9.0 (#295)
+        if (packageVersion("sf") >= 0.9) {
+          gdalinfo_raw <- suppressWarnings(system(paste(load_binpaths()$gdalinfo, x), intern = TRUE))
+          if (length(gdalinfo_raw) == 0) {stop()}
+          gdalinfo_raw_l1 <- grep("Coordinate System is:", gdalinfo_raw) + 1
+          gdalinfo_raw_l2 <- grep("Origin = ", gdalinfo_raw) - 1
+          st_crs(paste(gdalinfo_raw[gdalinfo_raw_l1:gdalinfo_raw_l2], collapse = " "))
+        } else {
+          read_stars(x, quiet = TRUE, proxy = TRUE)
+        },
+        
+        # read_stars(x, quiet = TRUE, proxy = TRUE),
         error = function(e) {tryCatch(
           # x: path of a text file with WKT -> crs
           if (packageVersion("sf") >= 0.9) {
