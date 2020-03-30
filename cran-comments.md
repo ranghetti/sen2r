@@ -7,7 +7,6 @@
 * [travis-ci] Ubuntu 16.04.6 LTS, 64 bit, R 3.6.2 (devel and release)
 * [win-builder] R 4.0.0 alpha, 3.6.3 and 3.5.3 (devel, release and oldrelease)
 * [R-hub] Windows Server 2008 R2 SP1, R-release, 32/64 bit
-* [R-hub] macOS 10.11 El Capitan, R-release (experimental)
 
 ## R CMD check results
 There were no ERRORs, WARNINGs or NOTEs.
