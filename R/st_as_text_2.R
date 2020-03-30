@@ -1,7 +1,7 @@
 #' @title Return WKT or WKT2 basing on the installed rgdal version
 #' @description This is a convenience temporary function which returns the WKT
-#'  representation of a CRS, using [sf::st_as_text] in case PROJ < 3,
-#'  [rgdal::CRS] otherwise.
+#'  representation of a CRS, using `sf::st_as_text()` in case PROJ < 3,
+#'  `rgdal::CRS()` otherwise.
 #'  This has the advantage to perform precise transformations with PROJ >=3,
 #'  and to avoid conversion errors
 #'  (see [here](https://rsbivand.github.io/ECS530_h19/ECS530_III.html)).

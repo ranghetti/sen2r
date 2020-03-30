@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Preprocess (clip, reproject, reshape, mask) SAFE products — geograbber_process • sen2r: Find, Download and Process Sentinel-2 Data</title>
+<title>Read / write the ignore list — write_ignorelist • sen2r: Find, Download and Process Sentinel-2 Data</title>
 
 
 <!-- jquery -->
@@ -35,11 +35,10 @@
 
 
 
-<meta property="og:title" content="Preprocess (clip, reproject, reshape, mask) SAFE products — geograbber_process" />
-<meta property="og:description" content="The function is a simplified wrapper of sen2r()
-to preprocess existing SAFE products. No online research is performed,
-neither sen2cor is applied to existing L1C products.
-Output products are GeoTIFF files clipped to a desired" />
+<meta property="og:title" content="Read / write the ignore list — write_ignorelist" />
+<meta property="og:description" content="Internal functions to read or write the file containing
+information about images not to process (because cloud covered or because,
+for any reason, they were not produced during previous processing runs)." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -82,7 +81,7 @@ Output products are GeoTIFF files clipped to a desired" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.3</span>
       </span>
     </div>
 
@@ -156,78 +155,98 @@ Output products are GeoTIFF files clipped to a desired" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Preprocess (clip, reproject, reshape, mask) SAFE products</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/geograbber_process.R'><code>R/geograbber_process.R</code></a></small>
-    <div class="hidden name"><code>geograbber_process.Rd</code></div>
+    <h1>Read / write the ignore list</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/ignorelist.R'><code>R/ignorelist.R</code></a></small>
+    <div class="hidden name"><code>ignorelist.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The function is a simplified wrapper of <code><a href='sen2r.html'>sen2r()</a></code>
-to preprocess existing SAFE products. No online research is performed,
-neither sen2cor is applied to existing L1C products.
-Output products are GeoTIFF files clipped to a desired</p>
+    <p>Internal functions to read or write the file containing
+information about images not to process (because cloud covered or because,
+for any reason, they were not produced during previous processing runs).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>geograbber_process</span>(
-  <span class='no'>path_safe</span>,
-  <span class='no'>path_out</span>,
-  <span class='kw'>bbox</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"BOA"</span>),
-  <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='no'>...</span>
-)</pre>
+    <pre class="usage"><span class='fu'>write_ignorelist</span>(
+  <span class='no'>pm</span>,
+  <span class='kw'>names_cloudcovered</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>dates_cloudcovered</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>names_missing</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>param_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)
+
+<span class='fu'>read_ignorelist</span>(<span class='no'>pm</span>, <span class='kw'>param_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+
+<span class='fu'>path_ignorelist</span>(<span class='no'>pm</span>)
+
+<span class='fu'>clean_ignorelist</span>(<span class='no'>pm</span>, <span class='kw'>param_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>path_safe</th>
-      <td><p>Path of the directory in which SAFE
-products are searched.</p></td>
+      <th>pm</th>
+      <td><p>parameter list (passed by <code><a href='sen2r.html'>sen2r()</a></code>).</p></td>
     </tr>
     <tr>
-      <th>path_out</th>
-      <td><p>Path of the directory in which Sentinel-2
-output products are generated.</p></td>
+      <th>names_cloudcovered</th>
+      <td><p>paths of cloud covered images (passed by <code><a href='sen2r.html'>sen2r()</a></code>).</p></td>
     </tr>
     <tr>
-      <th>bbox</th>
-      <td><p>(optional) Four-length numeric vector with the bounding box
-of the output products (<code>xmin</code>, <code>ymin</code>, <code>xmax</code>, <code>ymax</code>), in geographic coordinates.</p></td>
+      <th>dates_cloudcovered</th>
+      <td><p>dates of cloud covered images (passed by <code><a href='sen2r.html'>sen2r()</a></code>)
+(this is used only if <code>names_cloudcovered</code> is not specified).</p></td>
     </tr>
     <tr>
-      <th>list_prods</th>
-      <td><p>(optional) Character vector with the values of the
-products to be processed (accepted values: <code>"TOA"</code>, <code>"BOA"</code>, <code>"SCL"</code>,
-<code>"TCI"</code>). Default is <code>"BOA"</code>.</p></td>
+      <th>names_missing</th>
+      <td><p>paths of non produced images (passed by <code><a href='sen2r.html'>sen2r()</a></code>).</p></td>
     </tr>
     <tr>
-      <th>res</th>
-      <td><p>(optional) Numeric vector of length 2 with the x-y resolution
-for output products. NA (default) means that the resolution
-is kept as native.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Other additional <a href='sen2r.html'>sen2r</a> arguments:
-<code>extent_name</code>, <code>list_indices</code>, <code>index_source</code>, <code>mask_type</code>, <code>max_mask</code>,
-<code>mask_smooth</code>, <code>mask_buffer</code>, <code>clip_on_extent</code>, <code>extent_as_mask</code>,
-<code>reference_path</code>, <code>res_s2</code>, <code>unit</code>, <code>proj</code>, <code>resampling</code>, <code>resampling_scl</code>,
-<code>outformat</code>, <code>index_datatype</code>, <code>compression</code>, <code>overwrite</code>, <code>path_tiles</code>,
-<code>path_merged</code>, <code>path_indices</code>, <code>path_subdirs</code>, <code>thumbnails</code>,
-<code>parallel</code>, <code>tmpdir</code>, <code>rmtmp</code>.
-See <a href='sen2r.html'>sen2r</a> documentation for details.</p></td>
+      <th>param_list</th>
+      <td><p>path of the parameter file (passed by <code><a href='sen2r.html'>sen2r()</a></code>).</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p><code>write_ignorelist()</code> returns the path of the written TOML file
+(invisibly).</p>
+<p><code>read_ignorelist()</code> returns a list with two vectors:</p><ul>
+<li><p><code>dates_cloudcovered</code> (dates of cloud covered files);</p></li>
+<li><p><code>names_missing</code> (base names of files to be ignored).</p></li>
+</ul>
+
+<p><code>path_ignorelist()</code> returns the path in which the TOML file
+should be written (basing on processing parameters).</p>
+<p><code>clean_ignorelist()</code> returns NULL (it is called for its side effects).</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Sometimes not all the output files are correctly created:
+the main reason is the cloud coverage higher than the maximum allowed
+value (argument <code>max_mask</code>), but also some other unexpected reasons could
+happen, i.e. because of old name SAFE products which do not include all the tiles.
+To prevent to try to create these files every time the function is called
+with the same parameter file, the TOML file <code>".ignorelist.txt"</code> is created
+in the directory where output files (or indices, or RGB images) are saved.
+With sen2r &lt;= 1.3.3, a different strategy was used: if <code>param_list</code> is a path,
+these lists were saved in two hidden files ( one per file not created
+because of cloud coverage, one other for all the other reasons).
+To try it again, delete the files/files or set <code>overwrite = TRUE</code> in <code><a href='sen2r.html'>sen2r()</a></code>).</p>
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>License: GPL 3.0</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
+      <li><a href="#details">Details</a></li>
+      <li><a href="#note">Note</a></li>
     </ul>
 
+    <h2>Author</h2>
+    <p>Luigi Ranghetti, phD (2020) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
   </div>
 </div>
 

@@ -133,7 +133,7 @@ To do it:
 This will install the R package along with its package dependencies,
 containing all the functions necessary to preprocess data.
 
-Finally, **sen2cor** can be installed from R:
+Finally, **Sen2Cor** can be installed from R:
 ```{r, eval = FALSE}
 library(sen2r)
 install_sen2cor()
@@ -205,6 +205,14 @@ check_sen2r_deps()
 ```
 This function opens a GUI which help to check that they are satisfied;
 if some of them are missing, the GUI allows to install them directly.
+
+Alternatively, they can be installed individually from the command line with the
+three following functions (see their respective references for further details):
+```{r, eval = FALSE}
+check_gdal()
+install_sen2cor()
+install_aria2()
+```
 
 <!-- Atmospheric correction is performed using [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor):
 the package will automatically download and install it at first use,
@@ -306,3 +314,11 @@ check_sen2r_deps()
 ```
 This function opens a GUI which help to check that they are satisfied;
 if some of them are missing, the GUI allows to install them directly.
+
+Alternatively, they can be installed individually from the command line with the
+three following functions (see their respective references for further details):
+```{r, eval = FALSE}
+check_gdal()
+install_sen2cor()
+install_aria2()
+```

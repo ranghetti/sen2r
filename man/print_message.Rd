@@ -24,7 +24,7 @@ print_message(
 \itemize{
 \item 'message' for a diagnostic message;
 \item 'string' for a character output;
-\item 'cat' for the output of \code{\link[base]{cat}} function;
+\item 'cat' for the output of \code{cat()} function;
 \item 'error' and 'warning' for an error or warning message.
 }
 
@@ -37,7 +37,7 @@ Intentionally, no default value is defined.}
 and after the prefix (this is useful for logs or time consuming operations);
 default is FALSE.}
 
-\item{date_format}{Format of the date (see \code{\link[base]{strftime}})
+\item{date_format}{Format of the date (see \code{strftime()})
 for the definition of the format). The default format is
 \code{'\\\%Y-\\\%m-\\\%d \\\%H:\\\%M:\\\%S'}.}
 

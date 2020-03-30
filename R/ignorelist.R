@@ -18,12 +18,12 @@
 
 #' @name write_ignorelist
 #' @rdname ignorelist
-#' @param pm parameter list (passed by [sen2r]).
-#' @param names_cloudcovered paths of cloud covered images (passed by [sen2r]).
-#' @param dates_cloudcovered dates of cloud covered images (passed by [sen2r])
+#' @param pm parameter list (passed by `sen2r()`).
+#' @param names_cloudcovered paths of cloud covered images (passed by `sen2r()`).
+#' @param dates_cloudcovered dates of cloud covered images (passed by `sen2r()`)
 #'  (this is used only if `names_cloudcovered` is not specified).
-#' @param names_missing paths of non produced images (passed by [sen2r]).
-#' @param param_list path of the parameter file (passed by [sen2r]).
+#' @param names_missing paths of non produced images (passed by `sen2r()`).
+#' @param param_list path of the parameter file (passed by `sen2r()`).
 #' @return `write_ignorelist()` returns the path of the written TOML file
 #'  (invisibly).
 

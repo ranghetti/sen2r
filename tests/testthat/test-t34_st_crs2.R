@@ -8,8 +8,8 @@ expect_equal_crs <- function(crs1, crs2) {
     quiet = TRUE
   ))
   testthat::expect_equal(
-    sf::st_coordinates(sf::st_transform(ref_vec, crs1)), 
-    sf::st_coordinates(sf::st_transform(ref_vec, crs2))
+    as.integer(sf::st_coordinates(sf::st_transform(ref_vec, crs1))[,c("X","Y")]),
+    as.integer(sf::st_coordinates(sf::st_transform(ref_vec, crs2))[,c("X","Y")])
   )
 }
 

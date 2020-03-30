@@ -22,16 +22,16 @@ path_ignorelist(pm)
 clean_ignorelist(pm, param_list = NULL)
 }
 \arguments{
-\item{pm}{parameter list (passed by \link{sen2r}).}
+\item{pm}{parameter list (passed by \code{sen2r()}).}
 
-\item{names_cloudcovered}{paths of cloud covered images (passed by \link{sen2r}).}
+\item{names_cloudcovered}{paths of cloud covered images (passed by \code{sen2r()}).}
 
-\item{dates_cloudcovered}{dates of cloud covered images (passed by \link{sen2r})
+\item{dates_cloudcovered}{dates of cloud covered images (passed by \code{sen2r()})
 (this is used only if \code{names_cloudcovered} is not specified).}
 
-\item{names_missing}{paths of non produced images (passed by \link{sen2r}).}
+\item{names_missing}{paths of non produced images (passed by \code{sen2r()}).}
 
-\item{param_list}{path of the parameter file (passed by \link{sen2r}).}
+\item{param_list}{path of the parameter file (passed by \code{sen2r()}).}
 }
 \value{
 \code{write_ignorelist()} returns the path of the written TOML file

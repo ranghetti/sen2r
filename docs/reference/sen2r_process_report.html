@@ -80,7 +80,7 @@ at the end of a processing.." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.3</span>
       </span>
     </div>
 
@@ -168,12 +168,9 @@ at the end of a processing..</p>
   <span class='no'>s2_list_ordered</span>,
   <span class='kw'>s2names</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>pm</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>cloudlist_path</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span>(<span class='fl'>0</span>),
-  <span class='kw'>ignorelist_path</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span>(<span class='fl'>0</span>),
+  <span class='kw'>ignorelist</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span>(<span class='fl'>0</span>),
   <span class='kw'>s2_list_cloudcovered</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>s2_list_failed</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>s2_list_cloud_ignored</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>s2_list_failed_ignored</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>download_only</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>s2_downloaded</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>s2_skipped</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
@@ -197,11 +194,7 @@ S2 images.</p></td>
       <td><p>List containing sen2r processing parameters.</p></td>
     </tr>
     <tr>
-      <th>cloudlist_path</th>
-      <td><p>Internal parameter.</p></td>
-    </tr>
-    <tr>
-      <th>ignorelist_path</th>
+      <th>ignorelist</th>
       <td><p>Internal parameter.</p></td>
     </tr>
     <tr>
@@ -210,14 +203,6 @@ S2 images.</p></td>
     </tr>
     <tr>
       <th>s2_list_failed</th>
-      <td><p>Internal parameter.</p></td>
-    </tr>
-    <tr>
-      <th>s2_list_cloud_ignored</th>
-      <td><p>Internal parameter.</p></td>
-    </tr>
-    <tr>
-      <th>s2_list_failed_ignored</th>
       <td><p>Internal parameter.</p></td>
     </tr>
     <tr>

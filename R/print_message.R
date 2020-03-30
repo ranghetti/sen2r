@@ -12,7 +12,7 @@
 #' @param type Type of the output .Accepted values: 
 #'  - 'message' for a diagnostic message;
 #'  - 'string' for a character output;
-#'  - 'cat' for the output of \code{\link[base]{cat}} function;
+#'  - 'cat' for the output of `cat()` function;
 #'  - 'error' and 'warning' for an error or warning message. 
 #'  
 #'  Intentionally, no default value is defined.
@@ -21,7 +21,7 @@
 #' @param date Logical value: set `TRUE` to place the date before the message
 #'  and after the prefix (this is useful for logs or time consuming operations); 
 #'  default is FALSE.
-#' @param date_format Format of the date (see \code{\link[base]{strftime}})
+#' @param date_format Format of the date (see `strftime()`)
 #'  for the definition of the format). The default format is
 #'  `'\%Y-\%m-\%d \%H:\%M:\%S'`.
 #' @param width Positive integer: target column for wrapping lines in the output

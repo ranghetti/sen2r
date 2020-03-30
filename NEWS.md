@@ -1,3 +1,23 @@
+# Version 1.3.3
+
+## Major changes
+- Move the list of ignored / cloud-covered images in the output path (#271): before this release, two files (`*_ignorelist.txt` and `*_cloudlist.txt`) were created in the directory of the parameter file (if existing) and used, during subsequent `sen2r()` executions, in order not to try reprocessing images cloud covered or failed for some reason. Now these files were replaced with an hidden TOML file `.ignorelist.txt` containing the list of base names of non-produced files and the dates of cloud covered images. This file is placed in the output folder, so to be linked with the produced archive. The usefulness of this edit is twofold:
+    1. this information is strictly linked with the produced output files, and can be generated even in the case a parameter JSON file is not used;
+    2. using cloud-covered dates instead of file names, additional products (e.g. spectral indices added at a later time) related to a date which is known to be cloud-covered are automatically skipped.
+
+## New dependency
+- **`RcppTOML`** (used to manage TOML ignore list TOML file).
+
+## Documentation
+- Improve the installation page.
+
+## Bug fixes
+- Support for `sf` >= 0.9 (#260)
+- Patch for **`stars`** issue, made to resolve the temporary incompatibility with **`sf`** >= 0.9 (see issue #295)
+- Fix #292 
+- Small improvements
+
+
 # Version 1.3.2
 
 ## New features
