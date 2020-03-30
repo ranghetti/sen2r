@@ -8,12 +8,9 @@ sen2r_process_report(
   s2_list_ordered,
   s2names = NULL,
   pm = NULL,
-  cloudlist_path = character(0),
-  ignorelist_path = character(0),
+  ignorelist = character(0),
   s2_list_cloudcovered = NA,
   s2_list_failed = NA,
-  s2_list_cloud_ignored = NA,
-  s2_list_failed_ignored = NA,
   download_only = FALSE,
   s2_downloaded = NA,
   s2_skipped = NA,
@@ -28,17 +25,11 @@ S2 images.}
 
 \item{pm}{List containing sen2r processing parameters.}
 
-\item{cloudlist_path}{Internal parameter.}
-
-\item{ignorelist_path}{Internal parameter.}
+\item{ignorelist}{Internal parameter.}
 
 \item{s2_list_cloudcovered}{Internal parameter.}
 
 \item{s2_list_failed}{Internal parameter.}
-
-\item{s2_list_cloud_ignored}{Internal parameter.}
-
-\item{s2_list_failed_ignored}{Internal parameter.}
 
 \item{download_only}{Logical: if TRUE, it indicates that the processing to be
 summarised only involved download (\code{pm$preprocess = FALSE}).}

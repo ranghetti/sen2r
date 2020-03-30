@@ -103,7 +103,9 @@ testthat::test_that(
         install_aria2(dirname(attr(load_binpaths(), "path")), force = TRUE), 
         "[Tt]his function is only for Windows"
       )
-      testthat::expect_equivalent(load_binpaths()$aria2, Sys.which("aria2c"))
+      if (Sys.which("aria2c") != "") {
+        testthat::expect_equivalent(load_binpaths("aria2")$aria2, Sys.which("aria2c"))
+      }
     }
   }
 )

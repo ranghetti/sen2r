@@ -674,8 +674,8 @@ sen2r <- function(param_list = NULL,
       open_check_gui_prompt <- print_message(
         type="waiting",
         "It seems you are running this package for the first time. ",
-        "Do you want to verify/install the required dependencies using a GUI ",
-        "(otherwise, an automatic check will be performed)? (y/n) "
+        "Do you want to verify/install the required dependencies using a GUI (otherwise, an
+        automatic check will be performed)? (y/n) ", 
       )
       open_check_gui <- if (grepl("^[Yy]",open_check_gui_prompt)) {
         TRUE
@@ -1072,30 +1072,6 @@ sen2r <- function(param_list = NULL,
   
   
   #### SAFE Part (find, download, correct)
-  # if preprocess is required, define output formats
-  if (pm$preprocess == TRUE) {
-    
-    # Import path of files to ignore, if exists
-    # (see comment at #ignorePath)
-    ignorelist <- if (is(param_list, "character")) {
-      ignorelist_path <- gsub("\\.json$","_ignorelist.txt",param_list)
-      cloudlist_path <- gsub("\\.json$","_cloudlist.txt",param_list)
-      ignorelist0 <- if (file.exists(ignorelist_path)) {
-        readLines(ignorelist_path)
-      } else {
-        character()
-      }
-      cloudlist0 <- if (file.exists(cloudlist_path)) {
-        readLines(cloudlist_path)
-      } else {
-        character()
-      }
-      c(ignorelist0, cloudlist0)
-    } else {
-      character()
-    }
-    
-  }
   
   ### Find SAFE and compute the names of required files ###
   
@@ -1417,7 +1393,7 @@ sen2r <- function(param_list = NULL,
   # IF all images have to be ordered, then exit gracefully
   if (length(s2_list_lta) == dim(s2_dt)[1]) {
     status <- sen2r_process_report(
-      s2_list_ordered, 
+      s2_list_ordered = s2_list_ordered, 
       pm = pm,
       download_only = !pm$preprocess
     )
@@ -1430,25 +1406,8 @@ sen2r <- function(param_list = NULL,
   # if preprocess is required, define output names
   if (pm$preprocess == TRUE) {
     
-    # Import path of files to ignore, if exists
-    # (see comment at #ignorePath)
-    ignorelist <- if (is(param_list, "character")) {
-      ignorelist_path <- gsub("\\.json$","_ignorelist.txt",param_list)
-      cloudlist_path <- gsub("\\.json$","_cloudlist.txt",param_list)
-      ignorelist0 <- if (file.exists(ignorelist_path)) {
-        readLines(ignorelist_path)
-      } else {
-        character()
-      }
-      cloudlist0 <- if (file.exists(cloudlist_path)) {
-        readLines(cloudlist_path)
-      } else {
-        character()
-      }
-      c(ignorelist0, cloudlist0)
-    } else {
-      character()
-    }
+    # Import path of files to ignore, if exists (#ignorePath)
+    ignorelist <- read_ignorelist(pm = pm, param_list = param_list)
     
     # Couple L1C and L2A SAFE if both are required for the same products
     if (all(c("l1c", "l2a") %in% pm$s2_levels)) {
@@ -1495,7 +1454,7 @@ sen2r <- function(param_list = NULL,
       tmpdir=tmpdir,
       list_prods=list_prods,
       force_tiles = TRUE,
-      ignorelist = if (exists("ignorelist")) {ignorelist} else {NULL}
+      ignorelist = ignorelist
     )
     
     # export needed variables
@@ -1505,7 +1464,7 @@ sen2r <- function(param_list = NULL,
     # Check if processing is needed
     if (all(unlist(sapply(s2names$new, sapply, length)) == 0)) {
       if (all(unlist(sapply(s2names$exp, sapply, length)) == 0)) {
-        if (length(ignorelist) == 0) {
+        if (length(ignorelist$dates_cloudcovered) + length(ignorelist$names_missing) == 0) {
           print_message(
             type = "message",
             date = TRUE,
@@ -1519,10 +1478,9 @@ sen2r <- function(param_list = NULL,
             date = TRUE,
             "All S2 products matching the query settings were ignored because ", 
             "they are included in the list of files with cloudiness above the ",
-            "\"max_mask\" threshold (", cloudlist_path, "), ",
-            "or in the list of files for which previous processing failed ", 
-            ignorelist_path, 
-            ". (see the \"Details\" section of sen2r() documentation)"  
+            "\"max_mask\" threshold ",
+            "or in the list of files for which previous processing failed", 
+            " (see the \"Details\" section of sen2r() documentation)."  
           )
         }
       } else {
@@ -1536,16 +1494,24 @@ sen2r <- function(param_list = NULL,
         )
       }
       
+      # Write the list of non created files (#ignorePath)
+      # (this was placed also here in order to convert existing ignorelist old formats)
+      ignorelist_path <- write_ignorelist(
+        pm = pm, 
+        dates_cloudcovered = ignorelist$dates_cloudcovered, 
+        names_missing = ignorelist$names_missing,
+        param_list = param_list
+      )
+      # Clean eventual old ignorelist files 
+      clean_ignorelist(pm = pm, param_list = param_list)
+      
       sen2r_output <- character(0)
       attributes(sen2r_output) <- c(attributes(sen2r_output), out_attributes)
       status <- sen2r_process_report(
-        s2_list_ordered, 
+        s2_list_ordered = s2_list_ordered, 
         s2names = s2names,
-        pm, 
-        cloudlist_path  = if (is.character(param_list)) cloudlist_path else character(0), 
-        ignorelist_path = if (is.character(param_list)) ignorelist_path else character(0), 
-        s2_list_cloud_ignored  = if (exists("cloudlist0")) cloudlist0  else NA,
-        s2_list_failed_ignored = if (exists("ignorelist0")) ignorelist0 else NA
+        pm =pm, 
+        ignorelist = ignorelist
       )
       
       attr(sen2r_output, "status") <- status
@@ -2092,9 +2058,8 @@ sen2r <- function(param_list = NULL,
         sen2r_output <- c(file.path(path_l1c,names(sel_s2_list_l1c)),
                           file.path(path_l2a,names(sel_s2_list_l2a)))
         status <- sen2r_process_report(
-          s2_list_ordered, 
+          s2_list_ordered = s2_list_ordered, 
           download_only = TRUE, 
-          
           s2_downloaded = c(
             if (exists("s2_downloaded_l1c")) s2_downloaded_l1c else NA,
             if (exists("s2_downloaded_l2a")) s2_downloaded_l2a else NA
@@ -2125,7 +2090,7 @@ sen2r <- function(param_list = NULL,
         tmpdir=tmpdir_groupA,
         list_prods=list_prods,
         force_tiles = FALSE,
-        ignorelist = if (exists("ignorelist")) {ignorelist} else {NULL}
+        ignorelist = ignorelist
       )
       
       # export needed variables
@@ -2819,61 +2784,37 @@ sen2r <- function(param_list = NULL,
   names_cloudcovered <- as.vector(unlist(lapply(outnames_list_A1, function(x){x$cloudcovered})))
   names_missing <- names_out[!file.exists(nn(names_out))]
   names_missing <- names_missing[!names_missing %in% names_cloudcovered]
-  names_cloudcovered <- names_cloudcovered[!grepl(tmpdir, names_cloudcovered, fixed=TRUE)]
   
-  # Add attributes related to files not created
-  sen2r_output <- names_out_created
-  attributes(sen2r_output) <- c(attributes(sen2r_output), out_attributes)
-  attr(sen2r_output, "cloudcovered") <- names_cloudcovered
-  attr(sen2r_output, "missing") <- names_missing
-  
-  # Note down the list of non created files (#ignorePath)
-  # Sometimes not all the output files are correctly created:
-  # the main reason is the cloud coverage higher than the maximum allowed
-  # value (argument "max_mask"), but also some other unexpected reasons could
-  # happen, i.e. because of old name SAFE products which do not include all the tiles.
-  # To prevent to try to create these files every time the function is called
-  # with the same parameter file, if param_list is a path, these lists are saved
-  # in two hidden files ( one per file not created because of cloud coverage,
-  # one other for all the other reasons) so to ignore them during next executions.
-  # To try it again, delete the files or set overwrite = TRUE).
+  # Write the list of non created files (#ignorePath)
+  ignorelist_path <- write_ignorelist(
+    pm = pm, 
+    names_cloudcovered = names_cloudcovered, 
+    names_missing = names_missing,
+    param_list = param_list
+  )
+  # Clean eventual old ignorelist files 
+  clean_ignorelist(pm = pm, param_list = param_list)
   
   if (length(names_missing)>0) {
-    ignorelist_path <- gsub("\\.json$","_ignorelist.txt",param_list)
-    if (is(param_list, "character")) {
-      write(names_missing, ignorelist_path, append=TRUE)
-    }
     print_message(
       type="warning",
       "Some files were not created:\n\"",
       paste(names_missing,collapse="\"\n\""),"\"",
-      if (is(param_list, "character")) {paste0(
-        "\"\nThese files will be skipped during next executions ",
-        "from the current parameter file (\"",param_list,"\"). ",
-        "To try again to build them, remove the file \"",
-        ignorelist_path,"\"."
-      )}
+      "\"\nThese files will be skipped during next executions ",
+      "from the current parameter file (\"",param_list,"\"). ",
+      "To try again to build them, remove their file name in the text file \"",
+      ignorelist_path,"\"."
     )
-  }
-  
-  if (length(names_cloudcovered)>0) {
-    cloudlist_path <- gsub("\\.json$","_cloudlist.txt",param_list)
-    if (is(param_list, "character")) {
-      write(names_cloudcovered, cloudlist_path, append=TRUE)
-    }
   }
   
   # Issue processing report
   status <- sen2r_process_report(
-    s2_list_ordered, 
-    s2names, 
-    pm,
-    cloudlist_path  = if (length(names_cloudcovered) > 0) cloudlist_path else character(0), 
-    ignorelist_path = if (length(names_missing) > 0) ignorelist_path else character(0), 
-    s2_list_cloudcovered = if (length(names_cloudcovered) != 0) names_cloudcovered else NA, 
+    s2_list_ordered = s2_list_ordered, 
+    s2names = s2names, 
+    pm = pm,
+    ignorelist = ignorelist,
+    s2_list_cloudcovered = if (length(names_cloudcovered) != 0) names_cloudcovered else NA,
     s2_list_failed = if (length(names_missing) != 0) names_missing else NA,
-    s2_list_cloud_ignored = if (exists("cloudlist0")) cloudlist0 else NA,
-    s2_list_failed_ignored = if (exists("ignorelist0")) ignorelist0 else NA, 
     s2_downloaded = c(
       if (exists("s2_downloaded_l1c")) s2_downloaded_l1c else NA,
       if (exists("s2_downloaded_l2a")) s2_downloaded_l2a else NA
@@ -2888,6 +2829,13 @@ sen2r <- function(param_list = NULL,
       s2_list_l1c_tocorrect
     }
   )
+  
+  # Add attributes related to files not created
+  sen2r_output <- names_out_created
+  attributes(sen2r_output) <- c(attributes(sen2r_output), out_attributes)
+  new_ignorelist <- read_ignorelist(pm)
+  attr(sen2r_output, "clouddates") <- new_ignorelist$dates_cloudcovered
+  attr(sen2r_output, "missing") <- new_ignorelist$names_missing
   attr(sen2r_output, "status") <- status
   gc()
   

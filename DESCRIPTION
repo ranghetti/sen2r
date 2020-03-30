@@ -41,7 +41,8 @@ Imports:
   foreach,
   parallel,
   doParallel,
-  httr
+  httr,
+  RcppTOML
 Suggests:
   rgdal,
   spelling,
