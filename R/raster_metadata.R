@@ -13,7 +13,7 @@
 #' @export
 #' @import data.table
 #' @importFrom stars read_stars st_dimensions
-#' @importFrom sf st_bbox st_crs st_as_text gdal_utils
+#' @importFrom sf gdal_crs st_bbox st_crs st_as_text gdal_utils
 #' @importFrom methods is
 #' @examples
 #' # Define product names
@@ -124,17 +124,12 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
       if (any(c("bbox", "proj", "unit") %in% meta)) {
         ref_bbox <- st_bbox(sel_raster)
         ref_proj <- attr(ref_bbox, "crs")
-        
-        ## Temporary patch: remove this when stars will be fixed to be 
+        # Temporary patch: remove this when stars will be fixed to be 
         ## compatible with sf >= 0.9.0 (#295)
         if (is.na(ref_proj)) {
-          gdalinfo_raw <- suppressWarnings(system(paste(load_binpaths()$gdalinfo, raster_path), intern = TRUE))
-          gdalinfo_raw_l1 <- grep("Coordinate System is:", gdalinfo_raw) + 1
-          gdalinfo_raw_l2 <- grep("Origin = ", gdalinfo_raw) - 1
-          ref_proj <- st_crs2(paste(gdalinfo_raw[gdalinfo_raw_l1:gdalinfo_raw_l2], collapse = " "))
+          ref_proj <- gdal_crs(raster_path)
           ref_bbox <- st_bbox(setNames(as.numeric(ref_bbox), names(ref_bbox)), crs = ref_proj)
         }
-
       }
       if ("bbox" %in% meta) {
         out_list[[i]][["bbox"]] <- ref_bbox

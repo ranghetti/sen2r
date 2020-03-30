@@ -24,7 +24,7 @@
 #' @param ... other parameters passed to [sf::st_crs].
 #' @return An object of class \link{crs} of length 2.
 #' @details See [sf::st_crs] for details.
-#' @importFrom sf st_crs
+#' @importFrom sf gdal_crs st_crs
 #' @export
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
@@ -150,28 +150,15 @@ st_crs2.character <- function(x, ...) {
         } else {st_read(x, quiet = TRUE)}
       },
       error = function(e) {tryCatch(
-        # x: path of a raster file -> stars proxy
-        
-        ## Temporary patch: remove this when stars will be fixed to be 
-        ## compatible with sf >= 0.9.0 (#295)
+        # x: path of a text file with WKT -> crs
         if (packageVersion("sf") >= 0.9) {
-          gdalinfo_raw <- suppressWarnings(system(paste(load_binpaths()$gdalinfo, x), intern = TRUE))
-          if (length(gdalinfo_raw) == 0) {stop()}
-          gdalinfo_raw_l1 <- grep("Coordinate System is:", gdalinfo_raw) + 1
-          gdalinfo_raw_l2 <- grep("Origin = ", gdalinfo_raw) - 1
-          st_crs(paste(gdalinfo_raw[gdalinfo_raw_l1:gdalinfo_raw_l2], collapse = " "))
+          suppressWarnings(sf::st_crs(readLines(x)))
         } else {
-          read_stars(x, quiet = TRUE, proxy = TRUE)
+          sf::st_crs(wkt = readLines(x))
         },
-        
-        # read_stars(x, quiet = TRUE, proxy = TRUE),
         error = function(e) {tryCatch(
-          # x: path of a text file with WKT -> crs
-          if (packageVersion("sf") >= 0.9) {
-            sf::st_crs(readLines(x))
-          } else {
-            sf::st_crs(wkt = readLines(x))
-          },
+          # x: path of a raster file -> stars proxy
+          gdal_crs(x),
           error = function(e) {
             # x: path of a non supported file -> x (st_crs will return the proper error)
             x
@@ -191,7 +178,7 @@ st_crs2.character <- function(x, ...) {
       return(sf::st_crs(wkt = x, ...))
     }
   }
-
+  
   ## any other case: pass to st_crs as is
   sf::st_crs(x, ...)
   
