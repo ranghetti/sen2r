@@ -674,7 +674,7 @@ sen2r <- function(param_list = NULL,
       open_check_gui_prompt <- print_message(
         type="waiting",
         "It seems you are running this package for the first time. ",
-        "Do you want to verify/install the required dependencies using a GUI",
+        "Do you want to verify/install the required dependencies using a GUI ",
         "(otherwise, an automatic check will be performed)? \n(y/n) "
       )
       open_check_gui <- if (grepl("^[Yy]",open_check_gui_prompt)) {
