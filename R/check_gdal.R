@@ -278,11 +278,6 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
   gdal_version <- gdal_versions[1]
   bin_ext <- ifelse(Sys.info()["sysname"] == "Windows", ".exe", "")
   binpaths$gdalinfo <- normalize_path(file.path(gdal_dir,paste0("gdalinfo",bin_ext)))
-  binpaths$ogrinfo <- normalize_path(file.path(gdal_dir,paste0("ogrinfo",bin_ext)))
-  binpaths$gdal_translate <- normalize_path(file.path(gdal_dir,paste0("gdal_translate",bin_ext)))
-  binpaths$gdalwarp <- normalize_path(file.path(gdal_dir,paste0("gdalwarp",bin_ext)))
-  binpaths$gdalbuildvrt <- normalize_path(file.path(gdal_dir,paste0("gdalbuildvrt",bin_ext)))
-  binpaths$gdaldem <- normalize_path(file.path(gdal_dir,paste0("gdaldem",bin_ext)))
   if (Sys.info()["sysname"] == "Windows") {
     binpaths$python <- normalize_path(file.path(gdal_dir,paste0("python",bin_ext)))
   }
@@ -290,11 +285,6 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
     paste0(binpaths$python," ",normalize_path(file.path(gdal_py_dir,"gdal_calc.py")))
   } else {
     normalize_path(file.path(gdal_py_dir,"gdal_calc.py"))
-  }
-  binpaths$gdal_polygonize <- if (Sys.info()["sysname"] == "Windows") {
-    paste0(binpaths$python," ",normalize_path(file.path(gdal_py_dir,"gdal_polygonize.py")))
-  } else {
-    normalize_path(file.path(gdal_py_dir,"gdal_polygonize.py"))
   }
   binpaths$gdal_fillnodata <- if (Sys.info()["sysname"] == "Windows") {
     paste0(binpaths$python," ",normalize_path(file.path(gdal_py_dir,"gdal_fillnodata.py")))

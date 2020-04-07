@@ -13,7 +13,7 @@
 #' @param tmpdir (optional) Path where intermediate files (.prj) will be created.
 #'  Default is a temporary directory.
 #' @return NULL (the function is called for its side effects)
-#' @importFrom sf st_as_sfc st_bbox st_transform
+#' @importFrom sf st_as_sfc st_bbox st_transform gdal_utils
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @examples
@@ -130,18 +130,19 @@ gdalwarp_grid <- function(
     }
     
     # warp
-    system(
-      paste0(
-        load_binpaths()$gdalwarp," ",
-        "-s_srs \"",sel_proj_string,"\" ",
-        "-t_srs \"",ref_proj_string,"\" ",
-        "-te ",paste(out_bbox_mod, collapse = " ")," ",
-        "-tr ",paste(ref_res, collapse = " ")," ",
-        if (!is.null(r)) {paste0("-r ",r," ")},
-        if (!is.null(of)) {paste0("-of ",of," ")},
-        "\"",srcfile,"\" ",
-        "\"",dstfile,"\""),
-      intern = Sys.info()["sysname"] == "Windows"
+    gdal_utils(
+      "warp",
+      source = srcfile,
+      destination = dstfile,
+      options = c(
+        "-s_srs", sel_proj_string,
+        "-t_srs", ref_proj_string,
+        "-te", c(out_bbox_mod),
+        "-tr", as.vector(ref_res),
+        if (!is.null(r)) {c("-r", r)},
+        if (!is.null(of)) {c("-of", of)}
+      ),
+      quiet = TRUE
     )
     
   }
