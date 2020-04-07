@@ -56,7 +56,7 @@
 #' @importFrom foreach foreach "%do%" "%dopar%"
 #' @importFrom doParallel registerDoParallel
 #' @importFrom parallel makeCluster stopCluster detectCores
-#' @importFrom sf st_as_text
+#' @importFrom sf st_as_text gdal_utils
 #' @import data.table
 #' @export
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
@@ -100,9 +100,6 @@ s2_merge <- function(infiles,
       paste(infiles[!sapply(infiles, file.exists)], collapse="\", \""),
       "\") do not exists locally; please check file names and paths.")
   }
-  
-  # Load GDAL paths
-  binpaths <- load_binpaths("gdal")
   
   # Get files metadata
   infiles_meta <- sen2r_getElements(infiles, format="data.frame")
@@ -203,17 +200,17 @@ s2_merge <- function(infiles,
       )
       out_crs_path
     }
-    system(
-      paste0(
-        binpaths$gdalwarp," ",
-        "-overwrite ",
-        "-s_srs \"",infiles_meta[1,"proj"],"\" ",
-        "-t_srs \"",out_crs_string,"\" ",
-        "-of VRT ",
-        "\"",infiles[1],"\" ",
-        "\"",ref_file,"\""
+    gdal_utils(
+      "warp",
+      source = infiles[1],
+      destination = ref_file,
+      options = c(
+        "-overwrite",
+        "-s_srs", infiles_meta[1,"proj"],
+        "-t_srs", out_crs_string,
+        "-of", "VRT"
       ),
-      intern = Sys.info()["sysname"] == "Windows"
+      quiet = TRUE
     )
   } else {
     ref_file <- infiles[which(!diffcrs)[1]]
@@ -345,25 +342,24 @@ s2_merge <- function(infiles,
         gsub(paste0("\\.",sel_infiles_meta[1,"file_ext"],"$"),
              ".vrt",
              sel_outfile))
-      system(
-        paste0(
-          binpaths$gdalbuildvrt," ",
-          "\"",merged_vrt,"\" ",
-          paste(paste0("\"",sel_infiles,"\""), collapse=" ")
-        ),
-        intern = Sys.info()["sysname"] == "Windows"
+      gdal_utils(
+        "buildvrt",
+        source = paste(paste0("\"",sel_infiles,"\""), collapse=" "),
+        destination = merged_vrt,
+        quiet = TRUE
       )
       
       # create output merged file
-      system(
-        paste0(
-          binpaths$gdal_translate," ",
-          "-of ",sel_outformat," ",
-          if (sel_outformat=="GTiff") {paste0("-co COMPRESS=",toupper(compress)," ")},
-          if (sel_outformat=="GTiff" & bigtiff==TRUE) {paste0("-co BIGTIFF=YES ")},
-          "\"",merged_vrt,"\" ",
-          "\"",file.path(out_subdir,sel_outfile),"\" "),
-        intern = Sys.info()["sysname"] == "Windows"
+      gdal_utils(
+        "translate",
+        source = infiles[1],
+        destination = file.path(out_subdir,sel_outfile),
+        options = c(
+          "-of", sel_outformat,
+          if (sel_outformat == "GTiff") {c("-co", paste0("COMPRESS=",toupper(compress)))},
+          if (sel_outformat == "GTiff" & bigtiff == TRUE) {paste0("-co", "BIGTIFF=YES")}
+        ),
+        quiet = TRUE
       )
       if (sel_outformat=="VRT" & vrt_rel_paths) {
         gdal_abs2rel(file.path(out_subdir,sel_outfile))

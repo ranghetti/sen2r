@@ -52,7 +52,7 @@
 #' @export
 #' @importFrom sf st_transform st_geometry st_geometry_type st_write st_cast st_zm
 #'  st_area st_bbox st_sfc st_sf st_polygon st_as_sf st_as_sfc st_as_sf st_crs
-#'  st_as_text
+#'  st_as_text gdal_utils
 #' @importFrom methods is
 #' @importFrom stars read_stars
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
@@ -321,9 +321,6 @@ gdal_warp <- function(srcfiles,
     }
   }
   
-  # load binpaths
-  binpaths <- load_binpaths()
-  
   # cycle on each srcfile
   for (i in seq_along(srcfiles)) {
     srcfile <- srcfiles[i]
@@ -452,29 +449,30 @@ gdal_warp <- function(srcfiles,
         )
         sel_t_srs_path
       }
-      system(
-        paste0(
-          binpaths$gdalwarp," ",
-          "-s_srs \"",sel_s_srs_string,"\" ",
-          "-t_srs \"",sel_t_srs_string,"\" ",
-          "-te ",paste(sel_te, collapse = " ")," ",
-          if (exists("mask_file")) {paste0("-cutline \"",mask_file,"\" ")},
-          if (!is.null(tr)) {paste0("-tr ",paste(sel_tr, collapse = " ")," ")},
-          if (!is.null(of)) {paste0("-of ",sel_of," ")},
-          if (!is.null(co)) {paste0("-co \"",co, "\" ")},
-          "-r ",sel_r," ",
+      
+      gdal_utils(
+        "warp",
+        source = srcfile,
+        destination = dstfile,
+        options = c(
+          "-s_srs", sel_s_srs_string,
+          "-t_srs", sel_t_srs_string,
+          "-te", c(sel_te),
+          if (exists("mask_file")) {c("-cutline", mask_file)},
+          if (!is.null(tr)) {c("-tr", as.vector(sel_tr))},
+          if (!is.null(of)) {c("-of",as.vector(sel_of))},
+          if (!is.null(co)) {unlist(lapply(co, function(x){c("-co", x)}))},
+          "-r", sel_r,
           if (!is.null(sel_nodata)) {
             if (is.na(sel_nodata)) {
-              "-dstnodata None "
+              c("-dstnodata", "None")
             } else {
-              paste0("-dstnodata ",sel_nodata," ")
+              c("-dstnodata", sel_nodata)
             }
           },
-          if (overwrite) {"-overwrite "},
-          "\"",srcfile,"\" ",
-          "\"",dstfile,"\""
+          if (overwrite) {"-overwrite"}
         ),
-        intern = Sys.info()["sysname"] == "Windows"
+        quiet = TRUE
       )
       
     } # end of overwrite IF cycle

@@ -86,6 +86,7 @@
 #' @importFrom raster blockSize brick getValues raster writeStart writeStop writeValues
 #' @importFrom stars read_stars write_stars
 #' @importFrom utils txtProgressBar setTxtProgressBar
+#' @importFrom sf gdal_utils
 #' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @examples
@@ -556,13 +557,11 @@ s2_calcindices <- function(
         }
         
         if (sel_format == "VRT") {
-          system(
-            paste0(
-              binpaths$gdalbuildvrt," ",
-              "\"",file.path(out_subdir,sel_outfile),"\" ",
-              file.path(out_subdir0,sel_outfile0)
-            ),
-            intern = Sys.info()["sysname"] == "Windows"
+          gdal_utils(
+            "buildvrt",
+            source = file.path(out_subdir0,sel_outfile0),
+            destination = file.path(out_subdir,sel_outfile),
+            quiet = TRUE
           )
         }
         
