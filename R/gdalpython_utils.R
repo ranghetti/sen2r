@@ -46,8 +46,9 @@ gdalpython_utils <-function(
   }
   
   # Define arguments
-  gdalpython_args <- list(
-    "calc" = list(
+  gdalpython_args <- switch(
+    util,
+    calc = list(
       "sys" = c(
         unlist(lapply(seq_along(source), function(i) {c(paste0("-",LETTERS[i]), source[i])})),
         "--outfile", destination,
@@ -61,11 +62,11 @@ gdalpython_utils <-function(
         paste(options, collapse = " ")
       )
     ),
-    "fillnodata" = list(
+    fillnodata = list(
       "sys" = c(options, source, destination),
       "base" = paste0(
         paste(options, collapse = " ")," ",
-        inmask_path1," ",inmask_path2
+        source," ",destination
       )
     )
   )
@@ -80,13 +81,13 @@ gdalpython_utils <-function(
     } else {NA}
     sys::exec_wait(
       binpaths[[paste0("gdal_",util)]],
-      args = gdalpython_args[[util]][["sys"]],
+      args = gdalpython_args$sys,
       std_out = sel_log_output,
       std_err = sel_log_error
     )
   } else {
     system(
-      paste(binpaths$gdal_calc, gdalpython_args[[util]][["base"]]),
+      paste(binpaths[[paste0("gdal_",util)]], gdalpython_args$base),
       intern = Sys.info()["sysname"] == "Windows"
     )
   }

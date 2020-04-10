@@ -509,22 +509,23 @@ s2_calcindices <- function(
         # Launch the processing
         if (proc_mode == "gdal_calc") {
           init_python()
-          system(
-            paste0(
-              binpaths$gdal_calc," ",
+          gdalpython_utils(
+            "calc",
+            source = rep(sel_infile, nrow(gdal_bands)), 
+            destination = file.path(out_subdir0,sel_outfile0),
+            formula = sel_formula,
+            options = c(
               paste(apply(gdal_bands,1,function(l){
-                paste0("-",l["letter"]," \"",sel_infile,"\" --",l["letter"],"_band=",which(gdal_bands$letter==l["letter"]))
-              }), collapse=" ")," ",
-              "--outfile=\"",file.path(out_subdir0,sel_outfile0),"\" ",
-              "--type=\"",dataType,"\" ",
-              "--NoDataValue=",sel_nodata," ",
-              "--format=\"",sel_format0,"\" ",
-              if (overwrite==TRUE) {"--overwrite "},
-              if (sel_format0=="GTiff") {paste0("--co=\"COMPRESS=",toupper(compress),"\" ")},
-              if (sel_format0=="GTiff" & bigtiff==TRUE) {paste0("--co=\"BIGTIFF=YES\" ")},
-              "--calc=\"",sel_formula,"\""
+                paste0("--",l["letter"],"_band=",which(gdal_bands$letter==l["letter"]))
+              }), collapse=" "),
+              "--type", dataType,
+              "--NoDataValue ",sel_nodata,
+              "--format", sel_format0,
+              if (overwrite==TRUE) {"--overwrite"},
+              if (sel_format0=="GTiff") {c("--co", paste0("COMPRESS=",toupper(compress)))},
+              if (sel_format0=="GTiff" & bigtiff==TRUE) {c("--co", "BIGTIFF=YES")}
             ),
-            intern = Sys.info()["sysname"] == "Windows"
+            quiet = TRUE
           )
         } else if (proc_mode == "raster") {
           calcindex_raster(

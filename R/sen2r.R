@@ -2207,7 +2207,7 @@ sen2r <- function(param_list = NULL,
           dir.create(paths["tiles"], recursive=FALSE, showWarnings=FALSE)
           tiles_l1c_names_out <- tiles_l2a_names_out <- character(0)
           
-          if("l1c" %in% pm$s2_levels) {
+          if ("l1c" %in% pm$s2_levels) {
             list_l1c_prods <- list_prods[list_prods %in% l1c_prods]
             for (sel_prod in sel_s2names$req$tiles$L1C) {
               tiles_l1c_names_out <- c(
