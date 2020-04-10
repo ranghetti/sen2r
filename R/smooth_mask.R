@@ -64,7 +64,7 @@ smooth_mask <- function(
   if (!is.null(namask)) {
     gdalpython_utils(
       "calc",
-      sources = c(inmask_path0, namask_path), 
+      source = c(inmask_path0, namask_path), 
       destination = inmask_path1,
       formula = "A+1-B",
       options = c(
@@ -89,7 +89,6 @@ smooth_mask <- function(
   if (radius_npx != 0) {
     
     # 2. first positive buffer (1/2 radius)
-    browser()
     inmask_path2 <- gsub("\\.tif$","_2.tif",inmask_path1)
     gdalpython_utils(
       "fillnodata",
@@ -118,7 +117,7 @@ smooth_mask <- function(
       )
       gdalpython_utils(
         "calc",
-        sources = c(inmask_path2b, namask_path), 
+        source = c(inmask_path2b, namask_path), 
         destination = inmask_path3,
         formula = "A*B",
         options = c(
@@ -169,7 +168,7 @@ smooth_mask <- function(
       )
       gdalpython_utils(
         "calc",
-        sources = c(inmask_path4b, namask_path), 
+        source = c(inmask_path4b, namask_path), 
         destination = inmask_path5,
         formula = "A*B+1-B",
         options = c(
@@ -227,7 +226,7 @@ smooth_mask <- function(
       )
       gdalpython_utils(
         "calc",
-        sources = c(inmask_path6b, namask_path), 
+        source = c(inmask_path6b, namask_path), 
         destination = inmask_path7,
         formula = "A*B",
         options = c(
@@ -280,7 +279,7 @@ smooth_mask <- function(
     inmask_path9b <- gsub("\\.tif$","_9b.tif",inmask_path1)
     gdalpython_utils(
       "calc",
-      sources = c(inmask_path9, namask_path), 
+      source = c(inmask_path9, namask_path), 
       destination = inmask_path9b,
       formula = "A*B",
       options = c(

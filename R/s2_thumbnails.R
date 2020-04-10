@@ -81,7 +81,7 @@ stack2rgb <- function(in_rast,
     if (format == "JPEG") {
       c("-co",  paste0("QUALITY=",compress))
     } else {
-      c("-co", "COMPRESS=JPEG", "-co", papste0("JPEG_QUALITY=",compress))
+      c("-co", "COMPRESS=JPEG", "-co", paste0("JPEG_QUALITY=",compress))
     }
   } else {
     c("-co", paste0("COMPRESS=",compress))
@@ -103,17 +103,18 @@ stack2rgb <- function(in_rast,
     
     interm_path <- file.path(tmpdir, gsub("\\..+$","_temp.tif", basename(out_file)))
     
-    system(
-      paste0(
-        binpaths$gdal_calc," ",
-        "-A \"",in_rast,"\" --allBands=A ",
-        "--calc=\"",gdal_formula,"\" ",
-        "--outfile=\"",interm_path,"\" ",
-        "--type=\"Byte\" ",
-        "--NoDataValue=0 ",
-        "--format=\"GTiff\" "
+    gdalpython_utils(
+      "calc",
+      source = in_rast, 
+      destination = interm_path,
+      formula = gdal_formula,
+      options = c(
+        "--allBands", "A",
+        "--type", "Byte",
+        "--NoDataValue", "0",
+        "--format", "GTiff"
       ),
-      intern = Sys.info()["sysname"] == "Windows"
+      quiet = TRUE
     )
     
   } else {
@@ -125,17 +126,18 @@ stack2rgb <- function(in_rast,
     interm_path <- gsub("\\_temp1.tif$", "_temp.vrt", interm_paths[1])
     
     for (i in seq_along(minval)) {
-      system(
-        paste0(
-          binpaths$gdal_calc," ",
-          "-A \"",in_rast,"\" --A_band=",i," ",
-          "--calc=\"",gdal_formula[i],"\" ",
-          "--outfile=\"",interm_paths[i],"\" ",
-          "--type=\"Byte\" ",
-          "--NoDataValue=0 ",
-          "--format=\"GTiff\" "
+      gdalpython_utils(
+        "calc",
+        source = in_rast, 
+        destination = interm_paths[i],
+        formula = gdal_formula[i],
+        options = c(
+          "--A_band", i,
+          "--type", "Byte",
+          "--NoDataValue", "0",
+          "--format", "GTiff"
         ),
-        intern = Sys.info()["sysname"] == "Windows"
+        quiet = TRUE
       )
     }
     gdal_utils(
@@ -145,7 +147,7 @@ stack2rgb <- function(in_rast,
       options = c("-separate"),
       quiet = TRUE
     )
-
+    
   }
   
   gdal_utils(

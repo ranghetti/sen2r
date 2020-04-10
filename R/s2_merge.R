@@ -344,7 +344,7 @@ s2_merge <- function(infiles,
              sel_outfile))
       gdal_utils(
         "buildvrt",
-        source = paste(paste0("\"",sel_infiles,"\""), collapse=" "),
+        source = sel_infiles,
         destination = merged_vrt,
         quiet = TRUE
       )
@@ -352,7 +352,7 @@ s2_merge <- function(infiles,
       # create output merged file
       gdal_utils(
         "translate",
-        source = infiles[1],
+        source = merged_vrt,
         destination = file.path(out_subdir,sel_outfile),
         options = c(
           "-of", sel_outformat,
