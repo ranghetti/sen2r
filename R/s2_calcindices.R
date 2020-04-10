@@ -515,11 +515,11 @@ s2_calcindices <- function(
             destination = file.path(out_subdir0,sel_outfile0),
             formula = sel_formula,
             options = c(
-              paste(apply(gdal_bands,1,function(l){
-                paste0("--",l["letter"],"_band=",which(gdal_bands$letter==l["letter"]))
-              }), collapse=" "),
+              c(apply(gdal_bands,1,function(l){
+                c(paste0("--",l["letter"],"_band"), which(gdal_bands$letter==l["letter"]))
+              })),
               "--type", dataType,
-              "--NoDataValue ",sel_nodata,
+              "--NoDataValue", sel_nodata,
               "--format", sel_format0,
               if (overwrite==TRUE) {"--overwrite"},
               if (sel_format0=="GTiff") {c("--co", paste0("COMPRESS=",toupper(compress)))},
