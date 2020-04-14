@@ -22,7 +22,6 @@
 #'  forced (default is FALSE).
 #' @return The path of the smoothed mask.
 #' @importFrom methods is
-#' @importFrom sf gdal_utils
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 
@@ -62,7 +61,7 @@ smooth_mask <- function(
   # 1. set inmask=1 (clear sky) and namask=0 (nodata) to NA
   inmask_path1 <- file.path(tmpdir,basename(tempfile(pattern = "mask_", fileext = ".tif")))
   if (!is.null(namask)) {
-    gdalpython_utils(
+    gdalUtil(
       "calc",
       source = c(inmask_path0, namask_path), 
       destination = inmask_path1,
@@ -74,7 +73,7 @@ smooth_mask <- function(
       quiet = TRUE
     )
   } else {
-    gdal_utils(
+    gdalUtil(
       "translate",
       source = inmask_path0,
       destination = inmask_path1,
@@ -90,7 +89,7 @@ smooth_mask <- function(
     
     # 2. first positive buffer (1/2 radius)
     inmask_path2 <- gsub("\\.tif$","_2.tif",inmask_path1)
-    gdalpython_utils(
+    gdalUtil(
       "fillnodata",
       source = inmask_path1, 
       destination = inmask_path2,
@@ -105,7 +104,7 @@ smooth_mask <- function(
     inmask_path3 <- gsub("\\.tif$","_3.tif",inmask_path1)
     if (!is.null(namask)) {
       inmask_path2b <- gsub("\\.tif$","_2b.tif",inmask_path1)
-      gdal_utils(
+      gdalUtil(
         "translate",
         source = inmask_path2,
         destination = inmask_path2b,
@@ -115,7 +114,7 @@ smooth_mask <- function(
         ),
         quiet = TRUE
       )
-      gdalpython_utils(
+      gdalUtil(
         "calc",
         source = c(inmask_path2b, namask_path), 
         destination = inmask_path3,
@@ -127,7 +126,7 @@ smooth_mask <- function(
         quiet = TRUE
       )
     } else {
-      gdal_utils(
+      gdalUtil(
         "translate",
         source = inmask_path2,
         destination = inmask_path3,
@@ -141,7 +140,7 @@ smooth_mask <- function(
     
     # 2. second negative buffer (3/4 radius + 5/4 radius)
     inmask_path4 <- gsub("\\.tif$","_4.tif",inmask_path1)
-    gdalpython_utils(
+    gdalUtil(
       "fillnodata",
       source = inmask_path3, 
       destination = inmask_path4,
@@ -156,7 +155,7 @@ smooth_mask <- function(
     inmask_path5 <- gsub("\\.tif$","_5.tif",inmask_path1)
     if (!is.null(namask)) {
       inmask_path4b <- gsub("\\.tif$","_4b.tif",inmask_path1)
-      gdal_utils(
+      gdalUtil(
         "translate",
         source = inmask_path4,
         destination = inmask_path4b,
@@ -166,7 +165,7 @@ smooth_mask <- function(
         ),
         quiet = TRUE
       )
-      gdalpython_utils(
+      gdalUtil(
         "calc",
         source = c(inmask_path4b, namask_path), 
         destination = inmask_path5,
@@ -178,7 +177,7 @@ smooth_mask <- function(
         quiet = TRUE
       )
     } else {
-      gdal_utils(
+      gdalUtil(
         "translate",
         source = inmask_path4,
         destination = inmask_path5,
@@ -196,7 +195,7 @@ smooth_mask <- function(
   
   # 6. third positive buffer (5/4 radius to complete smooth, buffer to buffer if < 0, to 3/2 buffer if >0)
   inmask_path6 <- gsub("\\.tif$","_6.tif",inmask_path1)
-  gdalpython_utils(
+  gdalUtil(
     "fillnodata",
     source = inmask_path5, 
     destination = inmask_path6,
@@ -214,7 +213,7 @@ smooth_mask <- function(
     inmask_path7 <- gsub("\\.tif$","_7.tif",inmask_path1)
     if (!is.null(namask)) {
       inmask_path6b <- gsub("\\.tif$","_6b.tif",inmask_path1)
-      gdal_utils(
+      gdalUtil(
         "translate",
         source = inmask_path6,
         destination = inmask_path6b,
@@ -224,7 +223,7 @@ smooth_mask <- function(
         ),
         quiet = TRUE
       )
-      gdalpython_utils(
+      gdalUtil(
         "calc",
         source = c(inmask_path6b, namask_path), 
         destination = inmask_path7,
@@ -236,7 +235,7 @@ smooth_mask <- function(
         quiet = TRUE
       )
     } else {
-      gdal_utils(
+      gdalUtil(
         "translate",
         source = inmask_path6,
         destination = inmask_path7,
@@ -250,7 +249,7 @@ smooth_mask <- function(
     
     # 8. fourth negative buffer (1/2)
     inmask_path8 <- gsub("\\.tif$","_8.tif",inmask_path1)
-    gdalpython_utils(
+    gdalUtil(
       "fillnodata",
       source = inmask_path7, 
       destination = inmask_path8,
@@ -265,7 +264,7 @@ smooth_mask <- function(
   
   # 9. remove nodata labels
   inmask_path9 <- gsub("\\.tif$","_9.tif",inmask_path1)
-  gdal_utils(
+  gdalUtil(
     "translate",
     source = ifelse(buffer_npx>0, inmask_path8, inmask_path6),
     destination = inmask_path9,
@@ -277,7 +276,7 @@ smooth_mask <- function(
   )
   if (!is.null(namask)) {
     inmask_path9b <- gsub("\\.tif$","_9b.tif",inmask_path1)
-    gdalpython_utils(
+    gdalUtil(
       "calc",
       source = c(inmask_path9, namask_path), 
       destination = inmask_path9b,

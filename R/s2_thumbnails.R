@@ -34,7 +34,6 @@
 #' @note License: GPL 3.0
 #' @importFrom raster raster
 #' @importFrom jsonlite fromJSON
-#' @importFrom sf gdal_utils
 #' @export
 
 stack2rgb <- function(in_rast,
@@ -103,7 +102,7 @@ stack2rgb <- function(in_rast,
     
     interm_path <- file.path(tmpdir, gsub("\\..+$","_temp.tif", basename(out_file)))
     
-    gdalpython_utils(
+    gdalUtil(
       "calc",
       source = in_rast, 
       destination = interm_path,
@@ -126,7 +125,7 @@ stack2rgb <- function(in_rast,
     interm_path <- gsub("\\_temp1.tif$", "_temp.vrt", interm_paths[1])
     
     for (i in seq_along(minval)) {
-      gdalpython_utils(
+      gdalUtil(
         "calc",
         source = in_rast, 
         destination = interm_paths[i],
@@ -140,7 +139,7 @@ stack2rgb <- function(in_rast,
         quiet = TRUE
       )
     }
-    gdal_utils(
+    gdalUtil(
       "buildvrt",
       source = interm_paths,
       destination = interm_path,
@@ -150,7 +149,7 @@ stack2rgb <- function(in_rast,
     
   }
   
-  gdal_utils(
+  gdalUtil(
     "translate",
     source = interm_path,
     destination = out_file,
@@ -225,7 +224,6 @@ stack2rgb <- function(in_rast,
 #' @note License: GPL 3.0
 #' @importFrom raster raster
 #' @importFrom jsonlite fromJSON
-#' @importFrom sf gdal_utils
 #' @export
 
 raster2rgb <- function(in_rast,
@@ -296,7 +294,7 @@ raster2rgb <- function(in_rast,
   # (an intermediate step creating a GeoTiff is required,
   # since gdal_calc is not able to write in JPEG format)
   tif_path <- file.path(tmpdir, gsub("\\..+$","_temp.tif",basename(out_file)))
-  gdal_utils(
+  gdalUtil(
     "demprocessing",
     source = in_rast,
     destination = tif_path,
@@ -309,7 +307,7 @@ raster2rgb <- function(in_rast,
     ),
     quiet = TRUE
   )
-  gdal_utils(
+  gdalUtil(
     "translate",
     source = tif_path,
     destination = out_file,
@@ -385,7 +383,6 @@ raster2rgb <- function(in_rast,
 #' @note License: GPL 3.0
 #' @import data.table
 #' @importFrom jsonlite fromJSON
-#' @importFrom sf gdal_utils
 #' @export
 
 s2_thumbnails <- function(infiles,
@@ -453,7 +450,7 @@ s2_thumbnails <- function(infiles,
           "RGB" = c(4,3,2)
         )
         filterbands_path <- file.path(tmpdir, gsub("\\..+$","_filterbands.vrt",basename(sel_infile_path)))
-        gdal_utils(
+        gdalUtil(
           "translate",
           source = sel_infile_path,
           destination = filterbands_path,
@@ -476,7 +473,7 @@ s2_thumbnails <- function(infiles,
       )) # GTiff is used for multiband images to avoid problems using gdal_calc (#82)
       if (dim < max(sel_infile_size)) {
         out_size <- round(sel_infile_size * min(dim,max(sel_infile_size)) / max(sel_infile_size))
-        gdal_utils(
+        gdalUtil(
           "warp",
           source = filterbands_path,
           destination = resized_path,
@@ -489,7 +486,7 @@ s2_thumbnails <- function(infiles,
         )
       } else {
         if (sel_prod_type %in% c("BOA","TOA")) {
-          gdal_utils(
+          gdalUtil(
             "translate",
             source = filterbands_path,
             destination = resized_path,
@@ -543,7 +540,7 @@ s2_thumbnails <- function(infiles,
         
       } else if (grepl("^((TCI)|(RGB[0-9a-f]{3}[BT]))$" ,sel_prod_type)) {
         
-        gdal_utils(
+        gdalUtil(
           "translate",
           source = resized_path,
           destination = out_path,

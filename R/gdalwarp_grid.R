@@ -13,7 +13,7 @@
 #' @param tmpdir (optional) Path where intermediate files (.prj) will be created.
 #'  Default is a temporary directory.
 #' @return NULL (the function is called for its side effects)
-#' @importFrom sf st_as_sfc st_bbox st_transform gdal_utils
+#' @importFrom sf st_as_sfc st_bbox st_transform
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @examples
@@ -130,7 +130,7 @@ gdalwarp_grid <- function(
     }
     
     # warp
-    gdal_utils(
+    gdalUtil(
       "warp",
       source = srcfile,
       destination = dstfile,

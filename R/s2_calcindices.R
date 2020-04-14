@@ -86,7 +86,6 @@
 #' @importFrom raster blockSize brick getValues raster writeStart writeStop writeValues
 #' @importFrom stars read_stars write_stars
 #' @importFrom utils txtProgressBar setTxtProgressBar
-#' @importFrom sf gdal_utils
 #' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @examples
@@ -509,7 +508,7 @@ s2_calcindices <- function(
         # Launch the processing
         if (proc_mode == "gdal_calc") {
           init_python()
-          gdalpython_utils(
+          gdalUtil(
             "calc",
             source = rep(sel_infile, nrow(gdal_bands)), 
             destination = file.path(out_subdir0,sel_outfile0),
@@ -558,7 +557,7 @@ s2_calcindices <- function(
         }
         
         if (sel_format == "VRT") {
-          gdal_utils(
+          gdalUtil(
             "buildvrt",
             source = file.path(out_subdir0,sel_outfile0),
             destination = file.path(out_subdir,sel_outfile),

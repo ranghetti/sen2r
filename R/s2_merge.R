@@ -56,7 +56,7 @@
 #' @importFrom foreach foreach "%do%" "%dopar%"
 #' @importFrom doParallel registerDoParallel
 #' @importFrom parallel makeCluster stopCluster detectCores
-#' @importFrom sf st_as_text gdal_utils
+#' @importFrom sf st_as_text
 #' @import data.table
 #' @export
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
@@ -200,7 +200,7 @@ s2_merge <- function(infiles,
       )
       out_crs_path
     }
-    gdal_utils(
+    gdalUtil(
       "warp",
       source = infiles[1],
       destination = ref_file,
@@ -342,7 +342,7 @@ s2_merge <- function(infiles,
         gsub(paste0("\\.",sel_infiles_meta[1,"file_ext"],"$"),
              ".vrt",
              sel_outfile))
-      gdal_utils(
+      gdalUtil(
         "buildvrt",
         source = sel_infiles,
         destination = merged_vrt,
@@ -350,7 +350,7 @@ s2_merge <- function(infiles,
       )
       
       # create output merged file
-      gdal_utils(
+      gdalUtil(
         "translate",
         source = merged_vrt,
         destination = file.path(out_subdir,sel_outfile),

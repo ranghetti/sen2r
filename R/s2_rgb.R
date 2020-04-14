@@ -61,7 +61,6 @@
 #' @importFrom doParallel registerDoParallel
 #' @importFrom parallel makeCluster stopCluster detectCores
 #' @importFrom jsonlite fromJSON
-#' @importFrom sf gdal_utils
 #' @export
 #' @examples
 #' \donttest{
@@ -280,7 +279,7 @@ s2_rgb <- function(infiles,
           
           # Consider only the required bands
           filterbands_path <- file.path(tmpdir, gsub("\\..+$","_filterbands.tif",basename(sel_infile_path)))
-          gdal_utils(
+          gdalUtil(
             "translate",
             source = sel_infile_path,
             destination = filterbands_path,

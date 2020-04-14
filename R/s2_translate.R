@@ -56,7 +56,6 @@
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 #' @importFrom jsonlite fromJSON
-#' @importFrom sf gdal_utils
 #' @export
 #' @examples
 #' \dontrun{
@@ -289,7 +288,7 @@ s2_translate <- function(infile,
           # create final vrt with all the bands (of select final raster with a single band)
           if (length(jp2_selbands)>1) {
             final_vrt_name <- ifelse(format=="VRT", out_name, paste0(tmpdir,"/",out_prefix,".vrt"))
-            gdal_utils(
+            gdalUtil(
               "buildvrt",
               source = jp2_selbands,
               destination = final_vrt_name,
@@ -309,7 +308,7 @@ s2_translate <- function(infile,
           
           # create output file (or copy vrt file)
           if (format != "VRT" | length(jp2_selbands)==1) {
-            gdal_utils(
+            gdalUtil(
               "translate",
               source = final_vrt_name,
               destination = out_name,
