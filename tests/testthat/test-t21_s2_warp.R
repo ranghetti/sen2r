@@ -517,9 +517,6 @@ testthat::test_that(
   }
 )
 
-# This test was skipped while stars is being incompatible with sf >= 0.9,
-# and will be restored after stars will have been fixed (#295).
-if (packageVersion("sf") < 0.9) {
 testthat::test_that(
   "Reproject and clip on a bounding box", {
     
@@ -552,7 +549,6 @@ testthat::test_that(
     
   }
 )
-}  
 
 test6 <- tempfile(fileext = "_test6.tif")
 testthat::test_that(
@@ -619,9 +615,6 @@ testthat::test_that(
   }
 )
 
-# This test was skipped while stars is being incompatible with sf >= 0.9,
-# and will be restored after stars will have been fixed (#295).
-if (packageVersion("sf") < 0.9) {
 testthat::test_that(
   "...and specify a different bounding box", {
     
@@ -650,7 +643,6 @@ testthat::test_that(
     
   }
 )
-}
 
 testthat::test_that(
   "Use a reference raster with a different projection and a mask", {

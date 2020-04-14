@@ -30,11 +30,7 @@ testthat::test_that(
       package="sen2r"
     )
     expect_equal_crs(st_crs2(raster_path), 32632)
-    # This test was skipped while stars is being incompatible with sf >= 0.9,
-    # and will be restored after stars will have been fixed (#295).
-    if (packageVersion("sf") < 0.9) {
-      expect_equal_crs(st_crs2(stars::read_stars(raster_path)), 32632)
-    }
+    expect_equal_crs(st_crs2(stars::read_stars(raster_path)), 32632)
     # This test was skipped while raster is reading PROJ.4 instead than WKT,
     # and so the EPSG is being lost (#295).
     # testthat::expect_equal(st_crs2(raster::raster(raster_path))$epsg, 32632)
@@ -52,10 +48,8 @@ testthat::test_that(
       package="sen2r"
     )
     # 
-    if (packageVersion("sf") < 0.9) {
-      expect_equal_crs(st_crs2(raster_path), 32632)
-      expect_equal_crs(st_crs2(stars::read_stars(raster_path)), 32632)
-    }
+    expect_equal_crs(st_crs2(raster_path), 32632)
+    expect_equal_crs(st_crs2(stars::read_stars(raster_path)), 32632)
     # testthat::expect_equal(st_crs2(raster::raster(raster_path))$epsg, 32632)
     expect_equal_crs(st_crs2(vector_path), 32632)
     expect_equal_crs(st_crs2(sf::read_sf(vector_path)), 32632)
