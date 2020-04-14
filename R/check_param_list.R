@@ -19,8 +19,6 @@
 #'  
 #' @importFrom jsonlite fromJSON
 #' @importFrom methods is
-#' @importFrom sf st_as_sf st_read
-#' @importFrom foreach foreach "%do%"
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
 
