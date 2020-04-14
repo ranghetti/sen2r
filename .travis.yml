@@ -10,6 +10,9 @@ r_packages:
   - RPostgreSQL
   - covr
 
+r_github_packages:
+  - r-spatial/sf
+
 apt_packages:
   - libgdal-dev
   - libproj-dev
