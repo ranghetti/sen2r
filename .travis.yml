@@ -11,6 +11,7 @@ r_packages:
   - covr
 
 r_github_packages:
+  - r-spatial/lwgeom
   - r-spatial/sf
 
 apt_packages:
