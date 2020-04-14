@@ -283,7 +283,7 @@ First stable release of package **sen2r**! See the announcement [here](https://l
 ### Bug fixing:
 * Fix bug in SciHub login
 * Fix maps (tiles were hidden)
-* Fix:missing dependency lwgeom
+* Fix:missing dependency **`lwgeom`**
 * Various fixes (#140, #141, #142, etc.)
 
 
