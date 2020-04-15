@@ -14,10 +14,10 @@
 #' @param options Character vector with GDAL options.
 #' @param quiet Logical: if TRUE, suppress printing of output for info
 #'  (this argument is ignored in case package `sys` is not installed).
-#' @param formula (for `util = "calc"`) Calculation in gdalnumeric syntax using
+#' @param formula (for `util = "calc"`) Calculation in `gdalnumeric` syntax using
 #'  `+`, `-`, `/`, `*`, or any `numpy` array functions (i.e. `log10()`).
 #' @param processing Character: processing options for `util = "demprocessing"`.
-#' @param colorfilename Character: name of color file for `util = "demprocessing"`
+#' @param colorfilename Character: name of colour file for `util = "demprocessing"`
 #'  (mandatory if `processing="color-relief"`).
 #' @return A logical (invisible) indicating success (i.e., TRUE); 
 #'  in case of failure, an error is raised.
@@ -28,8 +28,9 @@
 
 
 gdalUtil <-function(
-  util,
-  source, destination,
+  util = "info",
+  source,
+  destination = character(0),
   options = character(0),
   quiet = FALSE,
   formula = character(0),
@@ -58,6 +59,12 @@ gdalUtil <-function(
   }
   
   # Check additional arguments
+  if (util != "info" && missing(destination)) {
+    print_message(
+      type = "error",
+      "Argument \"destination\" is missing, with no default."
+    )
+  }
   if (util == "calc" && missing(formula)) {
     print_message(
       type = "error",
@@ -149,5 +156,5 @@ gdalUtil <-function(
     )
     
   }
-
+  
 }

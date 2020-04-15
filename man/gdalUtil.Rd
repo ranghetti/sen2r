@@ -5,9 +5,9 @@
 \title{Interface to GDAL Python-based utilities}
 \usage{
 gdalUtil(
-  util,
+  util = "info",
   source,
-  destination,
+  destination = character(0),
   options = character(0),
   quiet = FALSE,
   formula = character(0),
@@ -30,12 +30,12 @@ Other utilities were not implemented, since they are not used by sen2r.}
 \item{quiet}{Logical: if TRUE, suppress printing of output for info
 (this argument is ignored in case package \code{sys} is not installed).}
 
-\item{formula}{(for \code{util = "calc"}) Calculation in gdalnumeric syntax using
+\item{formula}{(for \code{util = "calc"}) Calculation in \code{gdalnumeric} syntax using
 \code{+}, \code{-}, \code{/}, \code{*}, or any \code{numpy} array functions (i.e. \code{log10()}).}
 
 \item{processing}{Character: processing options for \code{util = "demprocessing"}.}
 
-\item{colorfilename}{Character: name of color file for \code{util = "demprocessing"}
+\item{colorfilename}{Character: name of colour file for \code{util = "demprocessing"}
 (mandatory if \code{processing="color-relief"}).}
 }
 \value{
