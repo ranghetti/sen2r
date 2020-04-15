@@ -24,7 +24,7 @@ Depends: R (>= 3.5.0)
 Imports:
   methods,
   sf (>= 0.9.2),
-  stars,
+  stars (>= 0.4.1),
   data.table,
   raster,
   XML,
