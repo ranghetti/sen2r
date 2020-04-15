@@ -374,7 +374,7 @@ s2_mask <- function(infiles,
       
       # if no masking is required, "copy" input files
       if (length(sel_maskfiles)==0) {
-        gdal_utils(
+        gdalUtil(
           "translate",
           source = sel_infile,
           destination = sel_outfile,
@@ -393,7 +393,7 @@ s2_mask <- function(infiles,
         # path for bug #47
         if (Sys.info()["sysname"] == "Windows" & gsub(".*\\.([^\\.]+)$","\\1",sel_infile)=="vrt") {
           # on Windows, use input physical files
-          gdal_utils(
+          gdalUtil(
             "translate",
             source = sel_infile,
             destination = gsub("\\.vrt$",".tif",sel_infile),

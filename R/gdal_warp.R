@@ -450,7 +450,7 @@ gdal_warp <- function(srcfiles,
         sel_t_srs_path
       }
       
-      gdal_utils(
+      gdalUtil(
         "warp",
         source = srcfile,
         destination = dstfile,

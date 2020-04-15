@@ -4,9 +4,7 @@
 #'  environment, see `check_gdal()`).
 #'  Python-based utilities are always called from an existing runtime GDAL
 #'  environment (see `check_gdal()`);
-#'  C-based ones are called using `sf::gdal_utils()`
-#'  (with the exception of `gdalUtil("buildvrt", ...)`, which is called from
-#'  runtime GDAL if `sf` version < 0.9-2).
+#'  C-based ones are called using `sf::gdal_utils()`.
 #' @param util Character: one among `"info"`, `"translate"`, `"warp"`, 
 #'  `"demprocessing"` ,`"buildvrt"` (C-based),
 #'  `"calc"` and `"fillnodata"` (Python-based).
@@ -43,8 +41,16 @@ gdalUtil <-function(
   binpaths <- load_binpaths("gdal")
   
   # Check "util"
-  if (!util %in% c("info", "translate", "warp", "demprocessing" , "buildvrt",
-                   "calc", "fillnodata")) {
+  utils <- c(
+    "info" = "gdalinfo",
+    "translate" = "gdal_translate",
+    "warp" = "gdalwarp", 
+    "demprocessing" = "gdaldem" , 
+    "buildvrt" = "gdalbuildvrt",
+    "calc" = "gdal_calc", 
+    "fillnodata" = "gdal_fillnodata"
+  )
+  if (!util %in% names(utils)) {
     print_message(
       type = "error", 
       "Currently, method '",util,"' is not implemented."
@@ -76,25 +82,21 @@ gdalUtil <-function(
   destination <- normalize_path(destination, mustWork = FALSE)
   
   # Choose the modality to proceed (sf::gdal_utils or system call)
-  if (any(
-    util %in% c("calc", "fillnodata"),
-    util == "buildvrt" & packageVersion("sf") < package_version("0.9.2")
-  )) {
+  if (util %in% c("calc", "fillnodata")) {
     
     ## System call mode
     
     # Define arguments
-    gdal_args <- switch(
-      util,
-      buildvrt = list(
+    gdal_args <- if (util %in% c("fillnodata")) {
+      list(
         "sys" = c(options, source, destination),
         "base" = paste0(
           paste(options, collapse = " ")," ",
-          destination, " ",
-          paste(source, collapse = " ")
+          source," ",destination
         )
-      ),
-      calc = list(
+      )
+    } else if (util %in% c("calc")) {
+      list(
         "sys" = c(
           unlist(lapply(seq_along(source), function(i) {c(paste0("-",LETTERS[i]), source[i])})),
           "--outfile", destination,
@@ -107,15 +109,8 @@ gdalUtil <-function(
           "--calc=\"",formula,"\" ",
           paste(options, collapse = " ")
         )
-      ),
-      fillnodata = list(
-        "sys" = c(options, source, destination),
-        "base" = paste0(
-          paste(options, collapse = " ")," ",
-          source," ",destination
-        )
       )
-    )
+    }
     
     # use exec_wait if sys is installed, system otherwise
     if (requireNamespace("sys", quietly = TRUE)) {
@@ -126,14 +121,14 @@ gdalUtil <-function(
         tempfile(pattern = "stderr_", fileext = ".txt")
       } else {NA}
       sys::exec_wait(
-        binpaths[[paste0("gdal_",util)]],
+        binpaths[[utils[util]]],
         args = gdal_args$sys,
         std_out = sel_log_output,
         std_err = sel_log_error
       )
     } else {
       system(
-        paste(binpaths[[paste0("gdal_",util)]], gdal_args$base),
+        paste(binpaths[[utils[util]]], gdal_args$base),
         intern = Sys.info()["sysname"] == "Windows"
       )
     }

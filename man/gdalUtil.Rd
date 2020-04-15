@@ -48,9 +48,7 @@ utilities (sen2r must be interfaced with a runtime GDAL
 environment, see \code{check_gdal()}).
 Python-based utilities are always called from an existing runtime GDAL
 environment (see \code{check_gdal()});
-C-based ones are called using \code{sf::gdal_utils()}
-(with the exception of \code{gdalUtil("buildvrt", ...)}, which is called from
-runtime GDAL if \code{sf} version < 0.9-2).
+C-based ones are called using \code{sf::gdal_utils()}.
 }
 \note{
 License: GPL 3.0
