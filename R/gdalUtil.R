@@ -2,8 +2,7 @@
 #' @description This accessory function interfaces with GDAL 
 #'  utilities (sen2r must be interfaced with a runtime GDAL
 #'  environment, see `check_gdal()`).
-#'  Python-based utilities are always called from an existing runtime GDAL
-#'  environment (see `check_gdal()`);
+#'  Python-based utilities are always called from a runtime GDAL;
 #'  C-based ones are called using `sf::gdal_utils()`.
 #' @param util Character: one among `"info"`, `"translate"`, `"warp"`, 
 #'  `"demprocessing"` ,`"buildvrt"` (C-based),
@@ -20,11 +19,64 @@
 #' @param colorfilename Character: name of colour file for `util = "demprocessing"`
 #'  (mandatory if `processing="color-relief"`).
 #' @return A logical (invisible) indicating success (i.e., TRUE); 
-#'  in case of failure, an error is raised.
+#'  in case of failure, an error is raised and FALSE is returned (in case of 
+#'  Python-based utilities).
 #' @importFrom sf gdal_utils
 #' @export
 #' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
+#' @examples 
+#' # Define product names
+#' examplename <- system.file(
+#'   "extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif",
+#'   package = "sen2r"
+#' )
+#' 
+#' \donttest{
+#' ## gdalinfo
+#' out0 <- gdalUtil("info", examplename, quiet = TRUE)
+#' message(out0)
+#' 
+#' ## gdal_translate
+#' outname1 <- tempfile(fileext = ".tif")
+#' gdalUtil(
+#'   "translate", 
+#'   examplename, outname1,
+#'   options = c("-tr", "2", "2", "-r", "cubicspline", "-co", "COMPRESS=DEFLATE")
+#' )
+#' oldpar <- par(mfrow = c(1,2), mar = rep(0,4))
+#' image(stars::read_stars(examplename), rgb = c(11,8,4))
+#' image(stars::read_stars(outname1), rgb = c(11,8,4))
+
+#' 
+#' ## gdalwarp
+#' outname2 <- tempfile(fileext = ".tif")
+#' gdalUtil(
+#'   "warp", 
+#'   examplename, outname2,
+#'   options = c("-t_srs", "EPSG:32633", "-co", "COMPRESS=DEFLATE")
+#' )
+#' oldpar <- par(mfrow = c(1,2), mar = rep(0,4))
+#' image(stars::read_stars(examplename), rgb = c(11,8,4))
+#' image(stars::read_stars(outname2), rgb = c(11,8,4))
+#' 
+#' ## gdal_calc
+#' outname3 <- tempfile(fileext = ".tif")
+#' ndvirefname <- system.file(
+#'   "extdata/out/S2A2A_20190723_022_Barbellino_NDVI_10.tif",
+#'   package = "sen2r"
+#' )
+#' gdalUtil(
+#'   "calc", 
+#'   rep(examplename,2), outname3,
+#'   formula = "10000*(A.astype(float)-B)/(A+B)",
+#'   options = c("--A_band", "8", "--B_band", "4", "--type", "Int16")
+#' )
+#' oldpar <- par(mfrow = c(1,2), mar = rep(0,4))
+#' image(stars::read_stars(ndvirefname))
+#' image(stars::read_stars(outname3))
+#' }
+
 
 
 gdalUtil <-function(
@@ -120,18 +172,14 @@ gdalUtil <-function(
     }
     
     # use exec_wait if sys is installed, system otherwise
-    if (requireNamespace("sys", quietly = TRUE)) {
+    gdal_out <- if (requireNamespace("sys", quietly = TRUE)) {
       sel_log_output <- if (quiet) {
         tempfile(pattern = "stdout_", fileext = ".txt")
-      } else {NA}
-      sel_log_error <- if (quiet) {
-        tempfile(pattern = "stderr_", fileext = ".txt")
       } else {NA}
       sys::exec_wait(
         binpaths[[utils[util]]],
         args = gdal_args$sys,
-        std_out = sel_log_output,
-        std_err = sel_log_error
+        std_out = sel_log_output
       )
     } else {
       system(
@@ -139,6 +187,7 @@ gdalUtil <-function(
         intern = Sys.info()["sysname"] == "Windows"
       )
     }
+    invisible(gdal_out == 0)
     
     # end of system call modality
     

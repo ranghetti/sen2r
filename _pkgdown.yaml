@@ -54,6 +54,7 @@ reference:
       - '`tiles_intersects`'
   - title: Generic accessory functions
     desc: ~
+    contents:
       - '`gdalUtil`'
       - '`expand_path`'
       - '`comsub`'
