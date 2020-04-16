@@ -86,16 +86,9 @@ testthat::test_that(
       "^.*GDAL ([0-9\\.]+)[^0-9].*$", "\\1",
       system(paste0(load_binpaths("gdal")$gdalinfo," --version"), intern = TRUE)
     )) # checking GDAL >=3 instead than PROJ >= 6 for simplicity
-    if (any(gdal_version >= 3, packageVersion("sf") >= 0.9)) {
-      testthat::expect_warning(
-        st_crs2("+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"),
-        "Using PROJ\\.4 strings is deprecated with"
-      )
-    } else {
-      expect_equal_crs(
-        st_crs2("+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"),
-        32609
-      )
-    }
+    testthat::expect_warning(
+      st_crs2("+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"),
+      "Using PROJ\\.4 strings is deprecated with"
+    )
   }
 )

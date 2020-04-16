@@ -121,19 +121,17 @@ st_crs2.character <- function(x, ...) {
       )), # checking GDAL >=3 instead than PROJ >= 6 for simplicity
       error = function(e) {3} # in case of errors, return the warning
     )
-    if (gdal_version >= 3) {
-      print_message(
-        type = "warning",
-        "Using PROJ.4 strings is deprecated with PROJ >= 6 ",
-        "(see http://rgdal.r-forge.r-project.org/articles/PROJ6_GDAL3.html)."
-      )
-    } else if (packageVersion("sf") >= 0.9) {
-      print_message(
-        type = "warning",
-        "Using PROJ.4 strings is deprecated with sf >= 0.9.0 ",
-        "(see https://www.r-spatial.org/r/2020/03/17/wkt.html)."
-      )
-    }
+    print_message(
+      type = "warning",
+      "Using PROJ.4 strings is deprecated with PROJ >= 6 ",
+      "(see https://www.r-spatial.org/r/2020/03/17/wkt.html)",
+      if (gdal_version >= 3) {
+        paste0(
+          "and with PROJ >= 6 ",
+          "(see http://rgdal.r-forge.r-project.org/articles/PROJ6_GDAL3.html)."
+        )
+      } else {"."}
+    )
     return(sf::st_crs(x, ...))
   }
   
@@ -151,18 +149,10 @@ st_crs2.character <- function(x, ...) {
       },
       error = function(e) {tryCatch(
         # x: path of a text file with WKT -> crs
-        if (packageVersion("sf") >= 0.9) {
-          suppressWarnings(sf::st_crs(readLines(x)))
-        } else {
-          suppressWarnings(sf::st_crs(wkt = readLines(x)))
-        },
+        suppressWarnings(sf::st_crs(readLines(x))),
         error = function(e) {tryCatch(
           # x: path of a raster file -> stars proxy
-          if (packageVersion("sf") >= 0.9) {
-            gdal_crs(x)
-          } else {
-            gdal_crs(x)$crs
-          },
+          gdal_crs(x),
           error = function(e) {
             # x: path of a non supported file -> x (st_crs will return the proper error)
             x
@@ -176,11 +166,7 @@ st_crs2.character <- function(x, ...) {
   ## case 4: WKT and other characters
   if (grepl("^((PROJCR?S)|(GEOGCR?S))\\[.+\\]$", x)) {
     # x: WKT string -> crs
-    if (packageVersion("sf") >= 0.9) {
-      return(sf::st_crs(x, ...))
-    } else {
-      return(sf::st_crs(wkt = x, ...))
-    }
+    return(sf::st_crs(x, ...))
   }
   
   ## any other case: pass to st_crs as is
