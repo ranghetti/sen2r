@@ -6,7 +6,6 @@
 \usage{
 smooth_mask(
   inmask,
-  binpaths,
   tmpdir = tempdir(),
   radius = 250,
   buffer = 250,
@@ -17,8 +16,6 @@ smooth_mask(
 \arguments{
 \item{inmask}{The path of the input 0-1 mask (where 0 represents the area
 to be masked, 1 the clean surface).}
-
-\item{binpaths}{list of paths of binaries.}
 
 \item{tmpdir}{(optional) Path where intermediate files (VRT) will be created.
 Default is a temporary directory.}
