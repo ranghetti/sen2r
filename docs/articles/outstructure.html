@@ -119,7 +119,105 @@
 
     
     
-<p>Products generated using <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> functions follows a precise <a href="#naming-convention">naming convention</a>, and are organised within a customisable <a href="#folder-structure">folder structure</a>.</p>
+<p><a href="#products">Products</a> generated using <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> functions follows a precise <a href="#naming-convention">naming convention</a>, and are organised within a customisable <a href="#folder-structure">folder structure</a>.</p>
+<div id="products" class="section level2">
+<h2 class="hasAnchor">
+<a href="#products" class="anchor"></a>Products</h2>
+<p>Currently, <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be used to generate the following products:</p>
+<ol style="list-style-type: decimal">
+<li>
+<a href="#surface-reflectances">surface reflectances</a> (<span style="font-family:monospace;color:#FF6611;">TOA</span> or <span style="font-family:monospace;color:#FF6611;">BOA</span>);</li>
+<li>
+<a href="#scene-classification-map">Scene Classification Map</a> (<span style="font-family:monospace;color:#FF6611;">SCL</span>);</li>
+<li>
+<a href="#spectral-indices">Spectral indices</a>;</li>
+<li>true or false colour <a href="#rgb-colour-images">RGB images</a>.</li>
+</ol>
+<div id="surface-reflectances" class="section level3">
+<h3 class="hasAnchor">
+<a href="#surface-reflectances" class="anchor"></a>Surface reflectances</h3>
+<p><span style="font-family:monospace;color:#FF6611;">TOA</span> (Top Of Atmosphere) and <span style="font-family:monospace;color:#FF6611;">BOA</span> (Bottom Of Atmosphere) surface reflectances are multiband rasters containing 12 (<span style="font-family:monospace;color:#FF6611;">TOA</span>) or 11 (<span style="font-family:monospace;color:#FF6611;">BOA</span>) bands, here listed:</p>
+<ol style="list-style-type: decimal">
+<li>Band 1 – Aerosol (443 nm)</li>
+<li>Band 2 – Blue (490 nm)</li>
+<li>Band 3 – Green (560 nm)</li>
+<li>Band 4 – Red (665 nm)</li>
+<li>Band 5 – Red-edge 1 (705 nm)</li>
+<li>Band 6 – Red-edge 2 (740 nm)</li>
+<li>Band 7 – Red-edge 3 (783 nm)</li>
+<li><ul>
+<li>on rasters with an output resolution &lt; 20m: Band 8 – NIR (842 nm)</li>
+<li>on rasters with an output resolution &gt;= 20m: Band 8A – narrow NIR (865 nm)</li>
+</ul></li>
+<li>Band 9 – Water vapour (940 nm)</li>
+</ol>
+<ul>
+<li>on <span style="font-family:monospace;color:#FF6611;">TOA</span> images:<br>
+ 10. Band 10 – Cirrus (1375 nm)<br>
+ 11. Band 11 – SWIR1 (1610 nm)<br>
+ 12. Band 12 – SWIR2 (2190 nm)</li>
+<li>on <span style="font-family:monospace;color:#FF6611;">BOA</span> images:<br>
+ 10. Band 11 – SWIR1 (1610 nm)<br>
+ 11. Band 12 – SWIR2 (2190 nm)</li>
+</ul>
+<p>Bands are named if an output ENVI ormat is chosen.</p>
+<p>For details about Sentinel-2 bands, refer to <a href="https://sentinel.esa.int/web/sentinel/user-guides/sentinel-2-msi/resolutions/radiometric" target="_blank">this page</a>.</p>
+<p>All bands are reshaped with the same resolution. In case the user choosed a native resolution (10, 20 or 60 m), bands with a finest resolution are downscaled using an averaged method, while pixels of bands with a coarse resolution are replicated without any interpolation method; conversely, in case the user choosed a custom resolution, the chosen resampling method is used.</p>
+<p>Bands 8 and 8A are alternatively included, basing on the required output resolution. That is due to the fact that they cover an overlapping spectral window; so, band 8A (finer radiometric resolution, coarse spatial one) is provided when the output spatial resolution is adequate to include it (&gt;= 20m), otherwise band 8 is used. The possibility to include both NIR bands could be included in a future release.</p>
+<p>Reflectances values are provided in integer output type (multiplicated by 10000), as well as original values included in SAFE archives.</p>
+</div>
+<div id="scene-classification-map" class="section level3">
+<h3 class="hasAnchor">
+<a href="#scene-classification-map" class="anchor"></a>Scene Classification Map</h3>
+<p><span style="font-family:monospace;color:#FF6611;">SCL</span> (Scene Classification Maps) are single band rasters provided within Level-2A SAFE archives. Each 20-metres pixel is classified in one of the following classes:</p>
+<ol start="0" style="list-style-type: decimal">
+<li>
+<font style="family:monospace;background-color:#000000;color:white;">  No data  </font> </li>
+<li>
+<font style="family:monospace;background-color:#FF0000;color:white;">  Saturated or defective  </font> </li>
+<li>
+<font style="family:monospace;background-color:#424142;color:white;">  Dark area pixels  </font> </li>
+<li>
+<font style="family:monospace;background-color:#633400;color:white;">  Cloud shadows  </font> </li>
+<li>
+<font style="family:monospace;background-color:#29f329;color:black;">  Vegetation  </font> </li>
+<li>
+<font style="family:monospace;background-color:#ffff00;color:black;">  Bare soils  </font> </li>
+<li>
+<font style="family:monospace;background-color:#0000ff;color:white;">  Water  </font> </li>
+<li>
+<font style="family:monospace;background-color:#7b7d7b;color:white;">  Unclassified  </font> </li>
+<li>
+<font style="family:monospace;background-color:#bdbebd;color:black;">  Cloud (medium probability)  </font> </li>
+<li>
+<font style="family:monospace;background-color:#ffffff;color:black;">  Cloud (high probability)  </font> </li>
+<li>
+<font style="family:monospace;background-color:#63cbff;color:black;">  Thin cirrus  </font> </li>
+<li>
+<font style="family:monospace;background-color:#ff9aff;color:black;">  Snow  </font> </li>
+</ol>
+<p>For futher details about this product, see <a href="https://earth.esa.int/web/sentinel/technical-guides/sentinel-2-msi/level-2a/algorithm" target="_blank">this page</a>.</p>
+<p><span style="font-family:monospace;color:#FF6611;">SCL</span> are used as intermediate layers for cloud masking, but they can be also required as output formats. If cloud masking is required by the user, <span style="font-family:monospace;color:#FF6611;">SCL</span> maps are never masked.</p>
+</div>
+<div id="spectral-indices" class="section level3">
+<h3 class="hasAnchor">
+<a href="#spectral-indices" class="anchor"></a>Spectral indices</h3>
+<p>Spectral indices are single band rasters computed from <span style="font-family:monospace;color:#FF6611;">BOA</span> (by default) or <span style="font-family:monospace;color:#FF6611;">TOA</span> images using function <code><a href="../reference/s2_calcindices.html">s2_calcindices()</a></code> (or the main function <code><a href="../reference/sen2r.html">sen2r()</a></code>).</p>
+<p>The list of the indices which can be computed can be seen in the GUI (fourth sheet). In the GUI, the index formula is <em>usually</em> graphically provided. In order to check the formula which is used for index computation, the function `list_indices()’ can be used. For example, the following command will return the formula of index NDVI:</p>
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="../reference/list_indices.html">list_indices</a></span>(<span class="st">"s2_formula"</span>, <span class="st">"^NDVI$"</span>)</pre></body></html></div>
+<pre><code>## [1] "(band_8-band_4)/(band_8+band_4)"</code></pre>
+<p>See the function documentation for other examples.</p>
+<p>The output type can be both floating (in this case, the actual index value is provided) or integer (default; in this case, values are multiplicated by a scaling factor, 10000 by default). So, if the user did not change the arguments <code>outType</code> and <code>scaleFactor</code> of function <code><a href="../reference/s2_calcindices.html">s2_calcindices()</a></code>, or <code>index_datatype</code> of function <code><a href="../reference/sen2r.html">sen2r()</a></code>, raster values will be multiplicated by 10000 respect to the “expected” index values.</p>
+</div>
+<div id="rgb-colour-images" class="section level3">
+<h3 class="hasAnchor">
+<a href="#rgb-colour-images" class="anchor"></a>RGB colour images</h3>
+<p>RGB are three-bands raster in 24-bit format, computed from <span style="font-family:monospace;color:#FF6611;">BOA</span> or <span style="font-family:monospace;color:#FF6611;">TOA</span> images using function <code><a href="../reference/s2_rgb.html">s2_rgb()</a></code> (or the main function <code><a href="../reference/sen2r.html">sen2r()</a></code>).</p>
+<p>Users can customise the bands used to produce images, as well as the reflectance ranges of each band and the source (<span style="font-family:monospace;color:#FF6611;">BOA</span> or <span style="font-family:monospace;color:#FF6611;">TOA</span>): the easiest way to do this is to use the GUI (fifth sheet), or to properly set the arguments of function <code><a href="../reference/s2_rgb.html">s2_rgb()</a></code>.</p>
+<p>If cloud masking is required by the user, RGB are never masked (this because they are thought for visualisation).</p>
+<p>The names of RGB products contains information about reflectance source and reproduced bands (see the next section).</p>
+</div>
+</div>
 <div id="naming-convention" class="section level2">
 <h2 class="hasAnchor">
 <a href="#naming-convention" class="anchor"></a>Naming convention</h2>

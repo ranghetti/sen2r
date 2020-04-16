@@ -11,10 +11,146 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Products generated using 
+[Products](#products) generated using 
 <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
 functions follows a precise [naming convention](#naming-convention),
 and are organised within a customisable [folder structure](#folder-structure).
+
+
+## Products
+
+Currently, <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+can be used to generate the following products:
+
+1. [surface reflectances](#surface-reflectances) (<span style='font-family:monospace;color:#FF6611;'>TOA</span>
+    or <span style='font-family:monospace;color:#FF6611;'>BOA</span>);
+2. [Scene Classification Map](#scene-classification-map)
+    (<span style='font-family:monospace;color:#FF6611;'>SCL</span>);
+3. [Spectral indices](#spectral-indices);
+4. true or false colour [RGB images](#rgb-colour-images).
+
+### Surface reflectances
+<span style='font-family:monospace;color:#FF6611;'>TOA</span>
+(Top Of Atmosphere) and 
+<span style='font-family:monospace;color:#FF6611;'>BOA</span>
+(Bottom Of Atmosphere) surface reflectances are multiband rasters
+containing 12 (<span style='font-family:monospace;color:#FF6611;'>TOA</span>)
+or 11 (<span style='font-family:monospace;color:#FF6611;'>BOA</span>) bands,
+here listed:
+
+1. Band 1 -- Aerosol (443 nm)
+2. Band 2 -- Blue (490 nm)
+3. Band 3 -- Green (560 nm)
+4. Band 4 -- Red (665 nm)
+5. Band 5 -- Red-edge 1 (705 nm)
+6. Band 6 -- Red-edge 2 (740 nm)
+7. Band 7 -- Red-edge 3 (783 nm)
+8. 
+    - on rasters with an output resolution < 20m:
+        Band 8 -- NIR (842 nm)
+    - on rasters with an output resolution >= 20m:
+        Band 8A -- narrow NIR (865 nm)
+9. Band 9 -- Water vapour (940 nm)
+- on <span style='font-family:monospace;color:#FF6611;'>TOA</span> images:\
+    &nbsp;10. Band 10 -- Cirrus (1375 nm)\
+    &nbsp;11. Band 11 -- SWIR1 (1610 nm)\
+    &nbsp;12. Band 12 -- SWIR2 (2190 nm)
+- on <span style='font-family:monospace;color:#FF6611;'>BOA</span> images:\
+    &nbsp;10. Band 11 -- SWIR1 (1610 nm)\
+    &nbsp;11. Band 12 -- SWIR2 (2190 nm)
+
+Bands are named if an output ENVI ormat is chosen. 
+
+For details about Sentinel-2 bands, refer to
+<a href="https://sentinel.esa.int/web/sentinel/user-guides/sentinel-2-msi/resolutions/radiometric" target="_blank">this page</a>.
+
+All bands are reshaped with the same resolution.
+In case the user choosed a native resolution (10, 20 or 60 m), 
+bands with a finest resolution are downscaled using an averaged method,
+while pixels of bands with a coarse resolution are replicated without any interpolation method;
+conversely, in case the user choosed a custom resolution, the chosen resampling method is used.
+
+Bands 8 and 8A are alternatively included, basing on the required output resolution.
+That is due to the fact that they cover an overlapping spectral window; 
+so, band 8A (finer radiometric resolution, coarse spatial one) is provided when the
+output spatial resolution is adequate to include it (>= 20m), otherwise band 8 is used.
+The possibility to include both NIR bands could be included in a future release.
+
+Reflectances values are provided in integer output type (multiplicated by 10000),
+as well as original values included in SAFE archives.
+
+### Scene Classification Map
+<span style='font-family:monospace;color:#FF6611;'>SCL</span>
+(Scene Classification Maps) are single band rasters provided within Level-2A
+SAFE archives. Each 20-metres pixel is classified in one of the following classes:
+
+0. <font style="family:monospace;background-color:#000000;color:white;">&nbsp; No data &nbsp;</font>&nbsp; 
+1. <font style="family:monospace;background-color:#FF0000;color:white;">&nbsp; Saturated or defective &nbsp;</font>&nbsp; 
+2. <font style="family:monospace;background-color:#424142;color:white;">&nbsp; Dark area pixels &nbsp;</font>&nbsp; 
+3. <font style="family:monospace;background-color:#633400;color:white;">&nbsp; Cloud shadows &nbsp;</font>&nbsp; 
+4. <font style="family:monospace;background-color:#29f329;color:black;">&nbsp; Vegetation &nbsp;</font>&nbsp; 
+5. <font style="family:monospace;background-color:#ffff00;color:black;">&nbsp; Bare soils &nbsp;</font>&nbsp; 
+6. <font style="family:monospace;background-color:#0000ff;color:white;">&nbsp; Water &nbsp;</font>&nbsp; 
+7. <font style="family:monospace;background-color:#7b7d7b;color:white;">&nbsp; Unclassified &nbsp;</font>&nbsp; 
+8. <font style="family:monospace;background-color:#bdbebd;color:black;">&nbsp; Cloud (medium probability) &nbsp;</font>&nbsp; 
+9. <font style="family:monospace;background-color:#ffffff;color:black;">&nbsp; Cloud (high probability) &nbsp;</font>&nbsp; 
+10. <font style="family:monospace;background-color:#63cbff;color:black;">&nbsp; Thin cirrus &nbsp;</font>&nbsp; 
+11. <font style="family:monospace;background-color:#ff9aff;color:black;">&nbsp; Snow &nbsp;</font>&nbsp; 
+
+For futher details about this product, see 
+<a href="https://earth.esa.int/web/sentinel/technical-guides/sentinel-2-msi/level-2a/algorithm" target="_blank">this page</a>.
+
+<span style='font-family:monospace;color:#FF6611;'>SCL</span> are used as 
+intermediate layers for cloud masking, but they can be also required as output formats.
+If cloud masking is required by the user, <span style='font-family:monospace;color:#FF6611;'>SCL</span>
+maps are never masked.
+
+### Spectral indices
+
+Spectral indices are single band rasters computed from 
+<span style='font-family:monospace;color:#FF6611;'>BOA</span> (by default)
+or <span style='font-family:monospace;color:#FF6611;'>TOA</span> images
+using function `s2_calcindices()` (or the main function `sen2r()`).
+
+The list of the indices which can be computed can be seen in the GUI (fourth sheet).
+In the GUI, the index formula is _usually_ graphically provided.
+In order to check the formula which is used for index computation, the function
+`list_indices()' can be used.
+For example, the following command will return the formula of index NDVI:
+```{r, eval = FALSE}
+list_indices("s2_formula", "^NDVI$")
+```
+```
+## [1] "(band_8-band_4)/(band_8+band_4)"
+```
+See the function documentation for other examples.
+
+The output type can be both floating (in this case, the actual index value is 
+provided) or integer (default; in this case, values are multiplicated by a 
+scaling factor, 10000 by default).
+So, if the user did not change the arguments `outType` and `scaleFactor` of
+function `s2_calcindices()`, or `index_datatype` of function `sen2r()`, 
+raster values will be multiplicated by 10000 respect to the "expected" index values.
+
+### RGB colour images
+
+RGB are three-bands raster in 24-bit format, computed from 
+<span style='font-family:monospace;color:#FF6611;'>BOA</span> 
+or <span style='font-family:monospace;color:#FF6611;'>TOA</span> images
+using function `s2_rgb()` (or the main function `sen2r()`).
+
+Users can customise the bands used to produce images, as well as the 
+reflectance ranges of each band and the source 
+(<span style='font-family:monospace;color:#FF6611;'>BOA</span> 
+or <span style='font-family:monospace;color:#FF6611;'>TOA</span>):
+the easiest way to do this is to use the GUI (fifth sheet),
+or to properly set the arguments of function `s2_rgb()`.
+
+If cloud masking is required by the user, RGB are never masked
+(this because they are thought for visualisation).
+
+The names of RGB products contains information about reflectance source
+and reproduced bands (see the next section).
 
 
 ## Naming convention
@@ -97,8 +233,10 @@ where:
     <span style='font-family:monospace;color:#FF6611;'>4</span>
     correspond to bands 11, 8 and 4);
 - <span style='color:#FF3300;font-family:monospace;font-weight:bold;'>X</span>
-    is <span style='font-family:monospace;color:#FF6611;'>B</span> if index source is BOA, 
-    or <span style='font-family:monospace;color:#FF6611;'>T</span> if source is TOA.
+    is <span style='font-family:monospace;color:#FF6611;'>B</span> if index 
+    source is <span style='font-family:monospace;color:#FF6611;'>BOA</span>, 
+    or <span style='font-family:monospace;color:#FF6611;'>T</span> if source is 
+    <span style='font-family:monospace;color:#FF6611;'>TOA</span>.
 
 
 ## Folder structure
