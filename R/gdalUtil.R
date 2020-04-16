@@ -90,9 +90,6 @@ gdalUtil <-function(
   colorfilename = character(0)
 ) {
   
-  # Load GDAL paths
-  binpaths <- load_binpaths("gdal")
-  
   # Check "util"
   utils <- c(
     "info" = "gdalinfo",
@@ -144,6 +141,10 @@ gdalUtil <-function(
   if (util %in% c("calc", "fillnodata")) {
     
     ## System call mode
+    
+    # Load GDAL paths
+    binpaths <- load_binpaths("gdal")
+    init_python()
     
     # Define arguments
     gdal_args <- if (util %in% c("fillnodata")) {

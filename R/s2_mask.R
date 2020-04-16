@@ -211,9 +211,6 @@ s2_mask <- function(infiles,
   
   . <- NULL
   
-  # Load GDAL paths
-  binpaths <- load_binpaths("gdal")
-  
   # Check that files exist
   if (!any(sapply(infiles, file.exists))) {
     print_message(
@@ -532,7 +529,7 @@ s2_mask <- function(infiles,
                 outmask_res,
                 radius = smooth, buffer = buffer,
                 namask = if (min_values_naval==0) {outnaval_res} else {NULL}, # TODO NULL if no Nodata values are present
-                binpaths = binpaths, tmpdir = sel_tmpdir,
+                tmpdir = sel_tmpdir,
                 bigtiff = bigtiff
               )
             } else {

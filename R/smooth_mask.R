@@ -5,7 +5,6 @@
 #'  See details.
 #' @param inmask The path of the input 0-1 mask (where 0 represents the area
 #'  to be masked, 1 the clean surface).
-#' @param binpaths list of paths of binaries.
 #' @param tmpdir (optional) Path where intermediate files (VRT) will be created.
 #'  Default is a temporary directory.
 #' @param radius (optional) Numerical (positive): the size (in the unit of
@@ -27,15 +26,12 @@
 
 smooth_mask <- function(
   inmask, 
-  binpaths, 
   tmpdir = tempdir(), 
   radius = 250, 
   buffer = 250, 
   namask = NULL, 
   bigtiff = FALSE
 ) {
-  
-  init_python()
   
   # if inmask is a raster use the path (it should not happen)
   inmask_path0 <- if (is(inmask, "character")) {

@@ -46,10 +46,6 @@ stack2rgb <- function(in_rast,
                       bigtiff = FALSE,
                       tmpdir = NA) {
   
-  # Load GDAL paths
-  binpaths <- load_binpaths("gdal")
-  init_python()
-  
   # define and create tmpdir
   if (is.na(tmpdir)) {
     tmpdir <- tempfile(pattern="stack2rgb_")

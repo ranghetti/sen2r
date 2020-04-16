@@ -507,7 +507,6 @@ s2_calcindices <- function(
         
         # Launch the processing
         if (proc_mode == "gdal_calc") {
-          init_python()
           gdalUtil(
             "calc",
             source = rep(sel_infile, nrow(gdal_bands)), 
@@ -552,9 +551,9 @@ s2_calcindices <- function(
         # fix for envi extension (writeRaster use .envi)
         if (sel_format0=="ENVI") {fix_envi_format(file.path(out_subdir0,sel_outfile0))}
         
-        if (is.null("binpaths")) {
-          binpaths <- load_binpaths("gdal")
-        }
+        # if (is.null("binpaths")) {
+        #   binpaths <- load_binpaths("gdal")
+        # }
         
         if (sel_format == "VRT") {
           gdalUtil(
