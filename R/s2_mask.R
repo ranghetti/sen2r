@@ -395,7 +395,7 @@ s2_mask <- function(infiles,
             source = sel_infile,
             destination = gsub("\\.vrt$",".tif",sel_infile),
             options = c(
-              "-of", sel_format,
+              "-of", "GTiff",
               "-co", paste0("COMPRESS=",toupper(compress)),
               if (bigtiff == TRUE) {c("-co", "BIGTIFF=YES")}
             ),

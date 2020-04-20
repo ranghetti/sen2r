@@ -2,19 +2,6 @@ context("Test warping (clip, reproject, resize)")
 testthat::skip_on_cran() # because using runtime GDAL
 testthat::skip_on_travis() # because required SAFE do not exists
 
-# convenience function to compare non-null CRSs
-# without using EPSG (so usable with rgdal >= 1.5)
-expect_equal_crs <- function(crs1, crs2) {
-  ref_vec <- st_geometry(st_read(
-    system.file("extdata/vector/barbellino.geojson", package = "sen2r"), 
-    quiet = TRUE
-  ))
-  testthat::expect_equal(
-    as.integer(sf::st_coordinates(sf::st_transform(ref_vec, crs1))[,c("X","Y")]),
-    as.integer(sf::st_coordinates(sf::st_transform(ref_vec, crs2))[,c("X","Y")])
-  )
-}
-
 safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
 dir.create(safe_dir, showWarnings = FALSE)
 

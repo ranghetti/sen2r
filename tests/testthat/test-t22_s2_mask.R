@@ -10,8 +10,9 @@ testthat::test_that(
     
     outdir_5 <- tempfile(pattern = "out_test5_")
     dir.create(dirname(outdir_5), showWarnings = FALSE)
-    exp_outpath_5 <- file.path(outdir_5, "BOA", "S2A2A_20190723_022_Scalve_BOA_10.tif")
+    exp_outpath_5 <- file.path(outdir_5, "BOA", "S2A2A_20190723_022_Scalve_BOA_10.dat")
     unlink(exp_outpath_5)
+    unlink(gsub("dat$", "hdr", exp_outpath_5))
     sen2r(
       gui = FALSE,
       online = TRUE,
@@ -22,6 +23,7 @@ testthat::test_that(
       timewindow = as.Date("2019-07-23"),
       list_prods = c("BOA", "TOA"),
       mask_type = "cloud_high_proba",
+      outformat = "ENVI",
       path_l1c = safe_dir,
       path_l2a = safe_dir,
       path_out = outdir_5,
@@ -38,9 +40,9 @@ testthat::test_that(
       as.numeric(exp_meta_r$bbox), 
       c(578590, 5086740, 597700, 5101530)
     )
-    testthat::expect_equal(exp_meta_r$proj$epsg, 32632)
+    expect_equal_crs(st_crs2(exp_meta_r$proj), 32632)
     testthat::expect_equal(exp_meta_r$type, "UInt16")
-    testthat::expect_equal(exp_meta_r$outformat, "GTiff")
+    testthat::expect_equal(exp_meta_r$outformat, "ENVI")
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_5)
@@ -88,7 +90,7 @@ testthat::test_that(
       as.numeric(exp_meta_r$bbox), 
       c(580560, 5101700, 580800, 5102120)
     )
-    testthat::expect_equal(exp_meta_r$proj$epsg, 32632)
+    expect_equal_crs(st_crs2(exp_meta_r$proj), 32632)
     testthat::expect_equal(exp_meta_r$type, "UInt16")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     

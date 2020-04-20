@@ -1,19 +1,5 @@
 context("Test st_crs2")
 
-# convenience function to compare non-null CRSs
-# without using EPSG (so usable with rgdal >= 1.5)
-expect_equal_crs <- function(crs1, crs2) {
-  ref_vec <- st_geometry(st_read(
-    system.file("extdata/vector/barbellino.geojson", package = "sen2r"), 
-    quiet = TRUE
-  ))
-  testthat::expect_equal(
-    as.integer(sf::st_coordinates(sf::st_transform(ref_vec, crs1))[,c("X","Y")]),
-    as.integer(sf::st_coordinates(sf::st_transform(ref_vec, crs2))[,c("X","Y")])
-  )
-}
-
-
 testthat::test_that(
   "st_crs2, input EPSG", {
     expect_equal_crs(st_crs2(9), 32609)
