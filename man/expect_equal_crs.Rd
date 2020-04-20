@@ -2,7 +2,7 @@
 % Please edit documentation in R/expect_equal_crs.R
 \name{expect_equal_crs}
 \alias{expect_equal_crs}
-\title{Compare non-null CRSs}
+\title{Compare two non-null CRS}
 \usage{
 expect_equal_crs(crs1, crs2)
 }
@@ -15,8 +15,8 @@ expect_equal_crs(crs1, crs2)
 \code{testthat::expect_equal()} output.
 }
 \description{
-Internal function: convenience function to compare non-null CRSs
-in tests without using EPSG (so usable with rgdal >= 1.5).
+Internal function: convenience function to compare two non-null
+CRS in tests without using EPSG (so usable with rgdal >= 1.5).
 }
 \note{
 License: GPL 3.0

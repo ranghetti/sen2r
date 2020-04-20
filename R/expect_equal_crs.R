@@ -1,6 +1,6 @@
-#' @title Compare non-null CRSs
-#' @description Internal function: convenience function to compare non-null CRSs
-#'  in tests without using EPSG (so usable with rgdal >= 1.5).
+#' @title Compare two non-null CRS
+#' @description Internal function: convenience function to compare two non-null
+#'  CRS in tests without using EPSG (so usable with rgdal >= 1.5).
 #' @param crs1 CRS 1 to compare
 #' @param crs2 CRS 2 to compare
 #' @return `testthat::expect_equal()` output.

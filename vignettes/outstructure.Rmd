@@ -59,16 +59,16 @@ here listed:
     &nbsp;10. Band 11 -- SWIR1 (1610 nm)\
     &nbsp;11. Band 12 -- SWIR2 (2190 nm)
 
-Bands are named if an output ENVI ormat is chosen. 
+Bands are named if an output ENVI format is chosen. 
 
 For details about Sentinel-2 bands, refer to
 <a href="https://sentinel.esa.int/web/sentinel/user-guides/sentinel-2-msi/resolutions/radiometric" target="_blank">this page</a>.
 
 All bands are reshaped with the same resolution.
-In case the user choosed a native resolution (10, 20 or 60 m), 
+In case the user chose a native resolution (10, 20 or 60 m), 
 bands with a finest resolution are downscaled using an averaged method,
 while pixels of bands with a coarse resolution are replicated without any interpolation method;
-conversely, in case the user choosed a custom resolution, the chosen resampling method is used.
+conversely, in case the user chose a custom resolution, the chosen resampling method is used.
 
 Bands 8 and 8A are alternatively included, basing on the required output resolution.
 That is due to the fact that they cover an overlapping spectral window; 
@@ -97,7 +97,7 @@ SAFE archives. Each 20-metres pixel is classified in one of the following classe
 10. <font style="family:monospace;background-color:#63cbff;color:black;">&nbsp; Thin cirrus &nbsp;</font>&nbsp; 
 11. <font style="family:monospace;background-color:#ff9aff;color:black;">&nbsp; Snow &nbsp;</font>&nbsp; 
 
-For futher details about this product, see 
+For further details about this product, see 
 <a href="https://earth.esa.int/web/sentinel/technical-guides/sentinel-2-msi/level-2a/algorithm" target="_blank">this page</a>.
 
 <span style='font-family:monospace;color:#FF6611;'>SCL</span> are used as 
