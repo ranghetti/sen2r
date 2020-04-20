@@ -133,10 +133,6 @@ gdalUtil <-function(
     )
   }
   
-  # Normalise paths
-  source <- normalize_path(source, mustWork = TRUE)
-  destination <- normalize_path(destination, mustWork = FALSE)
-  
   # Choose the modality to proceed (sf::gdal_utils or system call)
   if (util %in% c("calc", "fillnodata")) {
     
@@ -145,6 +141,10 @@ gdalUtil <-function(
     # Load GDAL paths
     binpaths <- load_binpaths("gdal")
     init_python()
+    
+    # Normalise paths
+    source <- normalize_path(source, mustWork = TRUE)
+    destination <- normalize_path(destination, mustWork = FALSE)
     
     # Define arguments
     gdal_args <- if (util %in% c("fillnodata")) {
@@ -195,6 +195,13 @@ gdalUtil <-function(
   } else {
     
     ## Use gdal_utils()
+    
+    # Normalise paths
+    # (use canonical instead than short form to avoid problems with 
+    # ENVI header files)
+    source <- normalizePath(source, mustWork = TRUE)
+    destination <- normalizePath(destination, mustWork = FALSE)
+    
     gdal_utils(
       util = util,
       source = source,
