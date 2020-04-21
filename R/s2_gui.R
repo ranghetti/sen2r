@@ -260,17 +260,26 @@ s2_gui <- function(param_list = NULL,
                 width=8,
                 conditionalPanel(
                   condition = "input.preprocess == 'TRUE'",
-                  checkboxGroupInput("list_prods",
-                                     "Select products:",
-                                     choiceNames = list("TOA (top-of-atmosphere) Reflectance",
-                                                        "BOA (bottom-of-atmosphere) Surface Reflectance",
-                                                        "SCL (surface classification map)",
-                                                        # "TCI (true-color) RGB 8-bit image",
-                                                        "Spectral indices",
-                                                        "RGB images"),
-                                     # choiceValues = list("TOA", "BOA", "SCL", "TCI", "indices", "rgbimages"),
-                                     choiceValues = list("TOA", "BOA", "SCL", "indices", "rgbimages"),
-                                     selected = c("BOA"))#,
+                  checkboxGroupInput(
+                    "list_prods",
+                    span(
+                      "Select products:\u2000",
+                      a(href = "https://sen2r.ranghetti.info/articles/outstructure#products",
+                        target = "_blank",
+                        icon("info-circle"))
+                    ),
+                    choiceNames = list(
+                      "TOA (top-of-atmosphere) Reflectance",
+                      "BOA (bottom-of-atmosphere) Surface Reflectance",
+                      "SCL (surface classification map)",
+                      # "TCI (true-color) RGB 8-bit image",
+                      "Spectral indices",
+                      "RGB images"
+                    ),
+                    # choiceValues = list("TOA", "BOA", "SCL", "TCI", "indices", "rgbimages"),
+                    choiceValues = list("TOA", "BOA", "SCL", "indices", "rgbimages"),
+                    selected = c("BOA")
+                  )
                 ),
                 conditionalPanel(
                   condition = "input.preprocess == 'FALSE'",
