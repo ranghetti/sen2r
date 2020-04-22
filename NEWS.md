@@ -1,3 +1,21 @@
+# Version 1.3.4
+
+## New functions
+- `gdalUtil()`: function used to perform GDAL operations, calling C-based GDAL utilities using `sf::gdal_utils()`, and Python-based ones through system calls (a standalone GDAL environment is request to do it, as it was in previous versions).
+
+## Documentation
+- Improve documentation of vignette "Output file structure", including the description of output products.
+
+## Minor changes
+- GDAL C-based utilities are called using internal GDAL routines in package **`sf`** (see `gdalUtil()`). This allows reducing the use of external runtime dependencies.
+- GDAL messages are suppressed if the suggested dependency **`sys`** is installed (#257).
+- The new section of the vignette "Output file documentation" regarding products is linked in the GUI.
+
+## Bug fixes
+- Re-fix #292.
+- Fix #308.
+
+
 # Version 1.3.3
 
 ## Major changes
@@ -12,7 +30,7 @@
 - Improve the installation page.
 
 ## Bug fixes
-- Support for `sf` >= 0.9 (#260)
+- Support for **`sf`** >= 0.9 (#260)
 - Patch for **`stars`** issue, made to resolve the temporary incompatibility with **`sf`** >= 0.9 (see issue #295)
 - Fix #292 
 - Small improvements
