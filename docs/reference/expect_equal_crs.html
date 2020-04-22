@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Convert a path to a relative path — abs2rel • sen2r: Find, Download and Process Sentinel-2 Data</title>
+<title>Compare two non-null CRS — expect_equal_crs • sen2r: Find, Download and Process Sentinel-2 Data</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,9 @@
 
 
 
-<meta property="og:title" content="Convert a path to a relative path — abs2rel" />
-<meta property="og:description" content="The function convert an absolute path to a relative path
-in respect to a reference. The longest common parent directory is
-taken as reference. Symbolic links are converted to original paths
-before performing the operation." />
+<meta property="og:title" content="Compare two non-null CRS — expect_equal_crs" />
+<meta property="og:description" content="Internal function: convenience function to compare two non-null
+CRS in tests without using EPSG (so usable with rgdal &amp;gt;= 1.5)." />
 
 
 
@@ -159,63 +157,38 @@ before performing the operation." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Convert a path to a relative path</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/abs2rel.R'><code>R/abs2rel.R</code></a></small>
-    <div class="hidden name"><code>abs2rel.Rd</code></div>
+    <h1>Compare two non-null CRS</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/expect_equal_crs.R'><code>R/expect_equal_crs.R</code></a></small>
+    <div class="hidden name"><code>expect_equal_crs.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The function convert an absolute path to a relative path
-in respect to a reference. The longest common parent directory is
-taken as reference. Symbolic links are converted to original paths
-before performing the operation.</p>
+    <p>Internal function: convenience function to compare two non-null
+CRS in tests without using EPSG (so usable with rgdal &gt;= 1.5).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>abs2rel</span>(<span class='no'>path</span>, <span class='no'>ref_path</span>, <span class='kw'>mustWork</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+    <pre class="usage"><span class='fu'>expect_equal_crs</span>(<span class='no'>crs1</span>, <span class='no'>crs2</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>path</th>
-      <td><p>The path to be converted (if it is not absolute,
-the current working directory is considered as its parent, and a
-warning is shown).</p></td>
+      <th>crs1</th>
+      <td><p>CRS 1 to compare</p></td>
     </tr>
     <tr>
-      <th>ref_path</th>
-      <td><p>The reference path to be compared to
-<code>path</code> to obtain the relative directory.
-<em>Important</em>: the path is considered as a directory
-also if it is the path of a file!</p></td>
-    </tr>
-    <tr>
-      <th>mustWork</th>
-      <td><p>(optional) logical: if TRUE an error is given
-if <code>path</code> or <code>ref_path</code> do not exists; if NA (default) then a
-warning; if FALSE nothing is shown.</p></td>
+      <th>crs2</th>
+      <td><p>CRS 2 to compare</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The relative path</p>
+    <p><code><a href='https://testthat.r-lib.org/reference/equality-expectations.html'>testthat::expect_equal()</a></code> output.</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># the reference path</span>
-(<span class='no'>ref_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='kw'>package</span><span class='kw'>=</span><span class='st'>"sen2r"</span>))</div><div class='output co'>#&gt; [1] "/home/lranghetti/share/git/github/ranghetti/sen2r/inst"</div><div class='input'><span class='co'># a path with a common parent with ref_path</span>
-(<span class='no'>in_path_1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='kw'>package</span><span class='kw'>=</span><span class='st'>"gdalUtils"</span>))</div><div class='output co'>#&gt; [1] "/home/lranghetti/R/x86_64-pc-linux-gnu-library/3.6/gdalUtils"</div><div class='input'><span class='co'># a path included in ref_path</span>
-(<span class='no'>in_path_2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"R/abs2rel.R"</span>, <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"sen2r"</span>))</div><div class='output co'>#&gt; [1] "/home/lranghetti/share/git/github/ranghetti/sen2r/R/abs2rel.R"</div><div class='input'><span class='co'># a path external to ref_path (in Linux)</span>
-(<span class='no'>in_path_3</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='kw'>package</span><span class='kw'>=</span><span class='st'>"base"</span>))</div><div class='output co'>#&gt; [1] "/usr/lib/R/library/base"</div><div class='input'><span class='co'># an unexisting path</span>
-(<span class='no'>in_path_4</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>gsub</a></span>(<span class='st'>"sen2r"</span>,<span class='st'>"r2sen"</span>,<span class='no'>ref_path</span>))</div><div class='output co'>#&gt; [1] "/home/lranghetti/share/git/github/ranghetti/r2sen/inst"</div><div class='input'>
-<span class='fu'>abs2rel</span>(<span class='no'>in_path_1</span>, <span class='no'>ref_path</span>)</div><div class='output co'>#&gt; [1] "../../../../../../R/x86_64-pc-linux-gnu-library/3.6/gdalUtils"</div><div class='input'>
-<span class='fu'>abs2rel</span>(<span class='no'>in_path_2</span>, <span class='no'>ref_path</span>)</div><div class='output co'>#&gt; [1] "../R/abs2rel.R"</div><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/warning.html'>suppressWarnings</a></span>(<span class='fu'>abs2rel</span>(<span class='no'>in_path_3</span>, <span class='no'>ref_path</span>))</div><div class='output co'>#&gt; [1] "/usr/lib/R/library/base"</div><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/warning.html'>suppressWarnings</a></span>(<span class='fu'>abs2rel</span>(<span class='no'>in_path_4</span>, <span class='no'>ref_path</span>, <span class='kw'>mustWork</span><span class='kw'>=</span><span class='fl'>FALSE</span>))</div><div class='output co'>#&gt; [1] "../../r2sen/inst"</div><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/warning.html'>suppressWarnings</a></span>(<span class='fu'>abs2rel</span>(<span class='no'>ref_path</span>, <span class='no'>ref_path</span>))</div><div class='output co'>#&gt; [1] "."</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
