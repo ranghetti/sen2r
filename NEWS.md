@@ -6,6 +6,9 @@
 ## Documentation
 - Improve documentation of vignette "Output file structure", including the description of output products.
 
+## New dependency
+- **`rgdal`** is now an explicit dependency (this because it is used by **`raster`** but it is not a mandatory dependency).
+
 ## Minor changes
 - GDAL C-based utilities are called using internal GDAL routines in package **`sf`** (see `gdalUtil()`). This allows reducing the use of external runtime dependencies.
 - GDAL messages are suppressed if the suggested dependency **`sys`** is installed (#257).
