@@ -8,7 +8,7 @@ sen2r_process_report(
   s2_list_ordered,
   s2names = NULL,
   pm = NULL,
-  ignorelist = character(0),
+  ignorelist = list(),
   s2_list_cloudcovered = NA,
   s2_list_failed = NA,
   download_only = FALSE,
