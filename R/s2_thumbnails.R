@@ -46,10 +46,6 @@ stack2rgb <- function(in_rast,
                       bigtiff = FALSE,
                       tmpdir = NA) {
   
-  # Load GDAL paths
-  binpaths <- load_binpaths("gdal")
-  init_python()
-  
   # define and create tmpdir
   if (is.na(tmpdir)) {
     tmpdir <- tempfile(pattern="stack2rgb_")
@@ -78,14 +74,14 @@ stack2rgb <- function(in_rast,
   # Define format, compression and quality
   co <- if (grepl("^[0-9]+$", compress)) {
     if (format == "JPEG") {
-      paste0("-co \"QUALITY=",compress,"\" ")
+      c("-co",  paste0("QUALITY=",compress))
     } else {
-      paste0("-co \"COMPRESS=JPEG\" -co \"JPEG_QUALITY=",compress,"\" ")
+      c("-co", "COMPRESS=JPEG", "-co", paste0("JPEG_QUALITY=",compress))
     }
   } else {
-    paste0("-co \"COMPRESS=",compress,"\" ")
+    c("-co", paste0("COMPRESS=",compress))
   }
-  if (bigtiff == TRUE) {co <- paste0(co, "-co \"BIGIFF=TRUE\" ")}
+  if (bigtiff == TRUE) {co <- c(co, "-co", "BIGIFF=TRUE")}
   
   # Define formula (one if minval-maxval are unique, three elsewhere)
   gdal_formula <- paste0(
@@ -102,17 +98,18 @@ stack2rgb <- function(in_rast,
     
     interm_path <- file.path(tmpdir, gsub("\\..+$","_temp.tif", basename(out_file)))
     
-    system(
-      paste0(
-        binpaths$gdal_calc," ",
-        "-A \"",in_rast,"\" --allBands=A ",
-        "--calc=\"",gdal_formula,"\" ",
-        "--outfile=\"",interm_path,"\" ",
-        "--type=\"Byte\" ",
-        "--NoDataValue=0 ",
-        "--format=\"GTiff\" "
+    gdalUtil(
+      "calc",
+      source = in_rast, 
+      destination = interm_path,
+      formula = gdal_formula,
+      options = c(
+        "--allBands", "A",
+        "--type", "Byte",
+        "--NoDataValue", "0",
+        "--format", "GTiff"
       ),
-      intern = Sys.info()["sysname"] == "Windows"
+      quiet = TRUE
     )
     
   } else {
@@ -124,38 +121,36 @@ stack2rgb <- function(in_rast,
     interm_path <- gsub("\\_temp1.tif$", "_temp.vrt", interm_paths[1])
     
     for (i in seq_along(minval)) {
-      system(
-        paste0(
-          binpaths$gdal_calc," ",
-          "-A \"",in_rast,"\" --A_band=",i," ",
-          "--calc=\"",gdal_formula[i],"\" ",
-          "--outfile=\"",interm_paths[i],"\" ",
-          "--type=\"Byte\" ",
-          "--NoDataValue=0 ",
-          "--format=\"GTiff\" "
+      gdalUtil(
+        "calc",
+        source = in_rast, 
+        destination = interm_paths[i],
+        formula = gdal_formula[i],
+        options = c(
+          "--A_band", i,
+          "--type", "Byte",
+          "--NoDataValue", "0",
+          "--format", "GTiff"
         ),
-        intern = Sys.info()["sysname"] == "Windows"
+        quiet = TRUE
       )
     }
-    system(
-      paste0(
-        binpaths$gdalbuildvrt," -separate ",
-        "\"",interm_path,"\" \"",paste(interm_paths,collapse="\" \""),"\""
-      ),
-      intern = Sys.info()["sysname"] == "Windows"
+    gdalUtil(
+      "buildvrt",
+      source = interm_paths,
+      destination = interm_path,
+      options = c("-separate"),
+      quiet = TRUE
     )
     
   }
   
-  system(
-    paste0(
-      binpaths$gdal_translate," ",
-      "-of \"",format,"\" ",
-      co,
-      "-ot \"Byte\" ",
-      "\"",interm_path,"\" \"",out_file,"\""
-    ),
-    intern = Sys.info()["sysname"] == "Windows"
+  gdalUtil(
+    "translate",
+    source = interm_path,
+    destination = out_file,
+    options = c("-of", format, co, "-ot", "Byte"),
+    quiet = TRUE
   )
   if (exists("interm_paths")) {sapply(interm_paths, unlink)}
   unlink(interm_path)
@@ -248,9 +243,6 @@ raster2rgb <- function(in_rast,
     "Zscore" = system.file("extdata/palettes/Zscore.cpt", package="sen2r")
   )
   
-  # Load GDAL paths
-  binpaths <- load_binpaths("gdal")
-  
   # Load palette
   if (!is.character(palette)) {
     print_message(
@@ -298,28 +290,31 @@ raster2rgb <- function(in_rast,
   # (an intermediate step creating a GeoTiff is required,
   # since gdal_calc is not able to write in JPEG format)
   tif_path <- file.path(tmpdir, gsub("\\..+$","_temp.tif",basename(out_file)))
-  system(
-    paste0(
-      binpaths$gdaldem," color-relief ",
-      "-of GTiff -co COMPRESS=LZW ", # discrete values
-      if (bigtiff == TRUE) {"-co BIGTIFF=YES "},
-      "-compute_edges ",
-      "\"",in_rast,"\" ",
-      "\"",palette,"\" ",
-      "\"",tif_path,"\""
-    ), intern = Sys.info()["sysname"] == "Windows"
-  )
-  system(
-    paste0(
-      binpaths$gdal_translate," ",
-      if (gsub("^.*\\.(.+)$","\\1",out_file) == "png") {
-        "-of PNG -co ZLEVEL=9 -co NBITS=8 " # discrete values
-      } else if (gsub("^.*\\.(.+)$","\\1",out_file) %in% c("jpg","jpeg")) {
-        "-of JPEG -co QUALITY=90 " # continuous values
-      },
-      "\"",tif_path,"\" \"",out_file,"\""
+  gdalUtil(
+    "demprocessing",
+    source = in_rast,
+    destination = tif_path,
+    processing = "color-relief",
+    colorfilename = palette,
+    options = c(
+      "-of", "GTiff", "-co", "COMPRESS=LZW", # discrete values
+      if (bigtiff == TRUE) {c("-co", "BIGTIFF=YES")},
+      "-compute_edges"
     ),
-    intern = Sys.info()["sysname"] == "Windows"
+    quiet = TRUE
+  )
+  gdalUtil(
+    "translate",
+    source = tif_path,
+    destination = out_file,
+    options = c(
+      if (gsub("^.*\\.(.+)$","\\1",out_file) == "png") {
+        c("-of", "PNG", "-co", "ZLEVEL=9", "-co", "NBITS=8") # discrete values
+      } else if (gsub("^.*\\.(.+)$","\\1",out_file) %in% c("jpg","jpeg")) {
+        c("-of", "JPEG", "-co", "QUALITY=90") # continuous values
+      }
+    ),
+    quiet = TRUE
   )
   unlink(tif_path)
   
@@ -407,9 +402,6 @@ s2_thumbnails <- function(infiles,
   }
   dir.create(tmpdir, recursive = FALSE, showWarnings = FALSE)
   
-  # Load GDAL paths
-  binpaths <- load_binpaths("gdal")
-  
   # Get files metadata
   if (is.na(prod_type)) {
     infiles_meta <- sen2r_getElements(infiles, format="data.table")
@@ -454,13 +446,15 @@ s2_thumbnails <- function(infiles,
           "RGB" = c(4,3,2)
         )
         filterbands_path <- file.path(tmpdir, gsub("\\..+$","_filterbands.vrt",basename(sel_infile_path)))
-        system(
-          paste0(
-            binpaths$gdal_translate," -of VRT ",
-            "-b ",paste(rgb_bands, collapse=" -b ")," ",
-            "\"",sel_infile_path,"\" ",
-            "\"",filterbands_path,"\""
-          ), intern = Sys.info()["sysname"] == "Windows"
+        gdalUtil(
+          "translate",
+          source = sel_infile_path,
+          destination = filterbands_path,
+          options = c(
+            "-of", "VRT",
+            unlist(lapply(rgb_bands, function(x){c("-b", x)}))
+          ),
+          quiet = TRUE
         )
       } else {
         filterbands_path <- sel_infile_path
@@ -475,25 +469,25 @@ s2_thumbnails <- function(infiles,
       )) # GTiff is used for multiband images to avoid problems using gdal_calc (#82)
       if (dim < max(sel_infile_size)) {
         out_size <- round(sel_infile_size * min(dim,max(sel_infile_size)) / max(sel_infile_size))
-        system(
-          paste0(
-            binpaths$gdalwarp,
-            if (sel_prod_type %in% c("BOA","TOA")) {" -of GTiff -co COMPRESS=LZW "} else {" -of VRT "},
-            "-ts ",out_size[1]," ",out_size[2]," ",
-            if (sel_prod_type %in% c("SCL")) {"-r mode "} else {"-r average "}, # resp. discrete or continuous values
-            "\"",filterbands_path,"\" ",
-            "\"",resized_path,"\""
-          ), intern = Sys.info()["sysname"] == "Windows"
+        gdalUtil(
+          "warp",
+          source = filterbands_path,
+          destination = resized_path,
+          options = c(
+            "-of", if (sel_prod_type %in% c("BOA","TOA")) {c("GTiff", "-co", "COMPRESS=LZW")} else {"VRT"},
+            "-ts", as.vector(out_size),
+            "-r", if (sel_prod_type %in% c("SCL")) {"mode"} else {"average"} # resp. discrete or continuous values
+          ),
+          quiet = TRUE
         )
       } else {
         if (sel_prod_type %in% c("BOA","TOA")) {
-          system(
-            paste0(
-              binpaths$gdal_translate," ",
-              "-of GTiff -co COMPRESS=LZW ",
-              "\"",filterbands_path,"\" ",
-              "\"",resized_path,"\""
-            ), intern = Sys.info()["sysname"] == "Windows"
+          gdalUtil(
+            "translate",
+            source = filterbands_path,
+            destination = resized_path,
+            options = c("-of", "GTiff", "-co", "COMPRESS=LZW"),
+            quiet = TRUE
           )
         } else {
           resized_path <- filterbands_path
@@ -542,14 +536,12 @@ s2_thumbnails <- function(infiles,
         
       } else if (grepl("^((TCI)|(RGB[0-9a-f]{3}[BT]))$" ,sel_prod_type)) {
         
-        system(
-          paste0(
-            binpaths$gdal_translate," ",
-            "-of JPEG -co QUALITY=90 ",
-            "-a_nodata 0 ",
-            "\"",resized_path,"\" ",
-            "\"",out_path,"\""
-          ), intern = Sys.info()["sysname"] == "Windows"
+        gdalUtil(
+          "translate",
+          source = resized_path,
+          destination = out_path,
+          options = c("-of", "JPEG", "-co", "QUALITY=90", "-a_nodata", "0"),
+          quiet = TRUE
         )
         
       } else {

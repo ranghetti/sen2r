@@ -118,9 +118,6 @@ s2_rgb <- function(infiles,
   }
   dir.create(tmpdir, recursive = FALSE, showWarnings = FALSE)
   
-  # Load GDAL paths
-  binpaths <- load_binpaths("gdal")
-  
   # Compute n_cores
   n_cores <- if (is.numeric(parallel)) {
     min(as.integer(parallel), length(infiles))
@@ -282,14 +279,16 @@ s2_rgb <- function(infiles,
           
           # Consider only the required bands
           filterbands_path <- file.path(tmpdir, gsub("\\..+$","_filterbands.tif",basename(sel_infile_path)))
-          system(
-            paste0(
-              binpaths$gdal_translate," -of GTiff -co COMPRESS=LZW ",
-              if (bigtiff==TRUE) {"-co BIGTIFF=YES "},
-              "-b ",paste(sel_nbands, collapse=" -b ")," ",
-              "\"",sel_infile_path,"\" ",
-              "\"",filterbands_path,"\""
-            ), intern = Sys.info()["sysname"] == "Windows"
+          gdalUtil(
+            "translate",
+            source = sel_infile_path,
+            destination = filterbands_path,
+            options = c(
+              "-of", "GTiff", "-co", "COMPRESS=LZW",
+              if (bigtiff==TRUE) {c("-co", "BIGTIFF=YES")},
+              unlist(lapply(sel_nbands, function(x){c("-b", x)}))
+            ),
+            quiet = TRUE
           )
           
           # define scaleRange

@@ -1,5 +1,5 @@
 pandoc: 2.3.1
-pkgdown: 1.4.1
+pkgdown: 1.5.1
 pkgdown_sha: ~
 articles:
   docker: docker.html
@@ -7,4 +7,5 @@ articles:
   outstructure: outstructure.html
   sen2r_cmd: sen2r_cmd.html
   sen2r_gui: sen2r_gui.html
+last_built: 2020-04-22T08:29Z
 

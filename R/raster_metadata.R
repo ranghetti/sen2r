@@ -80,7 +80,7 @@ raster_metadata <- function(raster_paths, meta = "all", format = "data.table") {
     if (meta_gdalinfo) {
       metadata_raw <- suppressWarnings(suppressMessages(try(
         trimws(unlist(
-          strsplit(gdal_utils("info", raster_path, quiet = TRUE), "\n")
+          strsplit(gdalUtil("info", raster_path, quiet = TRUE), "\n")
         )),
         silent = TRUE
       )))

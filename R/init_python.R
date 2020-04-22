@@ -19,19 +19,19 @@ init_python <- function() {
     full.names=TRUE
   )[1]
   pythonhome_exi <- Sys.getenv("PYTHONHOME")
-  if (!normalize_path(pythonhome_exi) %in% normalize_path(pythonhome_new)) {
+  if (!normalize_path(pythonhome_exi, mustWork = FALSE) %in% normalize_path(pythonhome_new, mustWork = FALSE)) {
     Sys.setenv(PYTHONHOME = pythonhome_new)
     on.exit(Sys.setenv(PYTHONHOME = pythonhome_exi))
   }
   pythonpath_new <- list.files(pythonhome_new,"^[Ll]ib",full.names=TRUE)[1]
   pythonpath_exi <- Sys.getenv("PYTHONPATH")
-  if (!normalize_path(pythonpath_exi) %in% normalize_path(pythonpath_new)) {
+  if (!normalize_path(pythonpath_exi, mustWork = FALSE) %in% normalize_path(pythonpath_new, mustWork = FALSE)) {
     Sys.setenv(PYTHONPATH = pythonpath_new)
     on.exit(Sys.setenv(PYTHONPATH = pythonpath_exi))
   }
   path_exi <- Sys.getenv("PATH")
   if (!any(grepl(
-    normalize_path(pythonhome_new), 
+    normalize_path(pythonhome_new, mustWork = FALSE), 
     normalize_path(unlist(strsplit(path_exi, ";")), mustWork = FALSE), 
     fixed=TRUE
   ))) {

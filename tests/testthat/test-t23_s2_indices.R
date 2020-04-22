@@ -46,7 +46,7 @@ testthat::test_that(
       exp_meta_r[1,c("xmin", "xmax", "ymin", "ymax")], 
       data.table("xmin" = 578590, "xmax" = 597700, "ymin" = 5086740, "ymax" = 5101530) 
     )
-    testthat::expect_equal(st_crs2(exp_meta_r$proj[2])$epsg, 32632)
+    expect_equal_crs(st_crs2(exp_meta_r$proj[2]), 32632)
     testthat::expect_equal(exp_meta_r$type, rep("Int16",2))
     testthat::expect_equal(exp_meta_r$outformat, rep("GTiff",2)) # default value
     
@@ -90,10 +90,9 @@ testthat::test_that(
       exp_meta_r_t[,c("xmin", "xmax", "ymin", "ymax")], 
       exp_meta_r[,c("xmin", "xmax", "ymin", "ymax")]
     )
-    testthat::expect_equal(
-      lapply(exp_meta_r_t$proj, function(x){st_crs2(x)$epsg}),
-      lapply(exp_meta_r$proj, function(x){st_crs2(x)$epsg})
-    )
+    lapply(seq_len(nrow(exp_meta_r_t)), function(i) {
+      expect_equal_crs(st_crs2(exp_meta_r_t$proj[i]), st_crs2(exp_meta_r$proj[i]))
+    })
     testthat::expect_equal(exp_meta_r_t$type, rep("Byte",2))
     testthat::expect_equal(exp_meta_r_t$outformat, rep("JPEG",2))
     
@@ -139,7 +138,7 @@ testthat::test_that(
       exp_meta_r[1,c("xmin", "xmax", "ymin", "ymax")], 
       data.table("xmin" = 580560, "xmax" = 580800, "ymin" = 5101700, "ymax" = 5102120) 
     )
-    testthat::expect_equal(st_crs2(exp_meta_r$proj)$epsg, 32632)
+    expect_equal_crs(st_crs2(exp_meta_r$proj), 32632)
     testthat::expect_equal(exp_meta_r$type, "Float32")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff") # default value
     
@@ -201,7 +200,7 @@ testthat::test_that(
       exp_meta_r[,c("xmin", "xmax", "ymin", "ymax")], 
       data.table("xmin" = 580560, "xmax" = 580800, "ymin" = 5101700, "ymax" = 5102120) 
     )
-    testthat::expect_equal(st_crs2(exp_meta_r$proj)$epsg, 32632)
+    expect_equal_crs(st_crs2(exp_meta_r$proj), 32632)
     testthat::expect_equal(exp_meta_r$type, "Byte")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff") # default value
     
@@ -249,7 +248,7 @@ testthat::test_that(
       as.numeric(exp_meta_r$bbox), 
       c(580560, 5101700, 580800, 5102120)
     )
-    testthat::expect_equal(exp_meta_r$proj$epsg, 32632)
+    expect_equal_crs(st_crs2(exp_meta_r$proj), 32632)
     testthat::expect_equal(exp_meta_r$type, "Int32")
     testthat::expect_equal(exp_meta_r$outformat, "GTiff") # default value
     

@@ -5,7 +5,6 @@
 #'  See details.
 #' @param inmask The path of the input 0-1 mask (where 0 represents the area
 #'  to be masked, 1 the clean surface).
-#' @param binpaths list of paths of binaries.
 #' @param tmpdir (optional) Path where intermediate files (VRT) will be created.
 #'  Default is a temporary directory.
 #' @param radius (optional) Numerical (positive): the size (in the unit of
@@ -27,15 +26,12 @@
 
 smooth_mask <- function(
   inmask, 
-  binpaths, 
   tmpdir = tempdir(), 
   radius = 250, 
   buffer = 250, 
   namask = NULL, 
   bigtiff = FALSE
 ) {
-  
-  init_python()
   
   # if inmask is a raster use the path (it should not happen)
   inmask_path0 <- if (is(inmask, "character")) {
@@ -61,25 +57,27 @@ smooth_mask <- function(
   # 1. set inmask=1 (clear sky) and namask=0 (nodata) to NA
   inmask_path1 <- file.path(tmpdir,basename(tempfile(pattern = "mask_", fileext = ".tif")))
   if (!is.null(namask)) {
-    system(
-      paste0(
-        binpaths$gdal_calc," ",
-        "-A \"",inmask_path0,"\" -B \"",namask_path,"\" ",
-        "--outfile=\"",inmask_path1,"\" --calc=\"A+1-B\" ",
-        "--type=\"Byte\" --NoDataValue=1 --format=\"GTiff\" --co=\"COMPRESS=LZW\"",
-        if (bigtiff==TRUE) {" -co=\"BIGTIFF=YES\""}
+    gdalUtil(
+      "calc",
+      source = c(inmask_path0, namask_path), 
+      destination = inmask_path1,
+      formula = "A+1-B",
+      options = c(
+        "--type", "Byte", "--NoDataValue", "1", "--format", "GTiff", 
+        "--co", "COMPRESS=LZW", if (bigtiff==TRUE) {c("-co", "BIGTIFF=YES")}
       ),
-      intern = Sys.info()["sysname"] == "Windows"
+      quiet = TRUE
     )
   } else {
-    system(
-      paste0(
-        binpaths$gdal_translate,
-        " -of GTiff -co COMPRESS=LZW -a_nodata 1 ",
-        if (bigtiff==TRUE) {"-co BIGTIFF=YES "},
-        inmask_path0," ",inmask_path1
+    gdalUtil(
+      "translate",
+      source = inmask_path0,
+      destination = inmask_path1,
+      options = c(
+        "-of", "GTiff", "-co", "COMPRESS=LZW", "-a_nodata", "1",
+        if (bigtiff==TRUE) {c("-co", "BIGTIFF=YES")}
       ),
-      intern = Sys.info()["sysname"] == "Windows"
+      quiet = TRUE
     )
   }
   
@@ -87,85 +85,103 @@ smooth_mask <- function(
     
     # 2. first positive buffer (1/2 radius)
     inmask_path2 <- gsub("\\.tif$","_2.tif",inmask_path1)
-    system(
-      paste0(binpaths$gdal_fillnodata," -md ",radius_npx*3/4," -si 0 -of GTiff -co COMPRESS=LZW ",inmask_path1," ",inmask_path2),
-      intern = Sys.info()["sysname"] == "Windows"
+    gdalUtil(
+      "fillnodata",
+      source = inmask_path1, 
+      destination = inmask_path2,
+      options = c(
+        "-md", radius_npx*3/4, 
+        "-si", "0", "-of", "GTiff", "-co", "COMPRESS=LZW"
+      ),
+      quiet = TRUE
     )
     
     # 3. invert the image: set inmask=0 (clouds) and namask=0 (nodata) to NA
     inmask_path3 <- gsub("\\.tif$","_3.tif",inmask_path1)
     if (!is.null(namask)) {
       inmask_path2b <- gsub("\\.tif$","_2b.tif",inmask_path1)
-      system(
-        paste0(
-          binpaths$gdal_translate,
-          " -of GTiff -co COMPRESS=LZW -a_nodata none ",
-          if (bigtiff==TRUE) {"-co BIGTIFF=YES "},
-          inmask_path2," ",inmask_path2b
+      gdalUtil(
+        "translate",
+        source = inmask_path2,
+        destination = inmask_path2b,
+        options = c(
+          "-of", "GTiff", "-co", "COMPRESS=LZW", "-a_nodata", "none",
+          if (bigtiff==TRUE) {c("-co", "BIGTIFF=YES")}
         ),
-        intern = Sys.info()["sysname"] == "Windows"
+        quiet = TRUE
       )
-      system(
-        paste0(
-          binpaths$gdal_calc," ",
-          "-A \"",inmask_path2b,"\" -B \"",namask_path,"\" ",
-          "--outfile=\"",inmask_path3,"\" --calc=\"A*B\" ",
-          "--type=\"Byte\" --NoDataValue=0 --format=\"GTiff\" --co=\"COMPRESS=LZW\"",
-          if (bigtiff==TRUE) {" -co=\"BIGTIFF=YES\""}
+      gdalUtil(
+        "calc",
+        source = c(inmask_path2b, namask_path), 
+        destination = inmask_path3,
+        formula = "A*B",
+        options = c(
+          "--type", "Byte", "--NoDataValue", "1", "--format", "GTiff", 
+          "--co", "COMPRESS=LZW", if (bigtiff==TRUE) {c("-co", "BIGTIFF=YES")}
         ),
-        intern = Sys.info()["sysname"] == "Windows"
+        quiet = TRUE
       )
     } else {
-      system(
-        paste0(
-          binpaths$gdal_translate,
-          " -of GTiff -co COMPRESS=LZW -a_nodata 0 ",
-          if (bigtiff==TRUE) {"-co BIGTIFF=YES "},
-          inmask_path2," ",inmask_path3
+      gdalUtil(
+        "translate",
+        source = inmask_path2,
+        destination = inmask_path3,
+        options = c(
+          "-of", "GTiff", "-co", "COMPRESS=LZW", "-a_nodata", "0",
+          if (bigtiff==TRUE) {c("-co", "BIGTIFF=YES")}
         ),
-        intern = Sys.info()["sysname"] == "Windows"
+        quiet = TRUE
       )
     }
     
     # 2. second negative buffer (3/4 radius + 5/4 radius)
     inmask_path4 <- gsub("\\.tif$","_4.tif",inmask_path1)
-    system(
-      paste0(binpaths$gdal_fillnodata," -md ",radius_npx*2," -si 0 -of GTiff -co COMPRESS=LZW ",inmask_path3," ",inmask_path4),
-      intern = Sys.info()["sysname"] == "Windows"
+    gdalUtil(
+      "fillnodata",
+      source = inmask_path3, 
+      destination = inmask_path4,
+      options = c(
+        "-md", radius_npx*2,
+        "-si", "0", "-of", "GTiff", "-co", "COMPRESS=LZW"
+      ),
+      quiet = TRUE
     )
     
     # 5. invert the image: set inmask=1 (clear sky) and namask=0 (nodata) to NA
     inmask_path5 <- gsub("\\.tif$","_5.tif",inmask_path1)
     if (!is.null(namask)) {
       inmask_path4b <- gsub("\\.tif$","_4b.tif",inmask_path1)
-      system(
-        paste0(
-          binpaths$gdal_translate,
-          " -of GTiff -co COMPRESS=LZW -a_nodata none ",
-          if (bigtiff==TRUE) {"-co BIGTIFF=YES "},
-          inmask_path4," ",inmask_path4b
+      gdalUtil(
+        "translate",
+        source = inmask_path4,
+        destination = inmask_path4b,
+        options = c(
+          "-of", "GTiff", "-co", "COMPRESS=LZW", "-a_nodata", "none",
+          if (bigtiff==TRUE) {c("-co", "BIGTIFF=YES")}
         ),
-        intern = Sys.info()["sysname"] == "Windows"
+        quiet = TRUE
       )
-      system(
-        paste0(
-          binpaths$gdal_calc," ",
-          "-A \"",inmask_path4b,"\" -B \"",namask_path,"\" ",
-          "--outfile=\"",inmask_path5,"\" --calc=\"A*B+1-B\" ",
-          "--type=\"Byte\" --NoDataValue=1 --format=\"GTiff\" --co=\"COMPRESS=LZW\"",
-          if (bigtiff==TRUE) {" -co=\"BIGTIFF=YES\""}
+      gdalUtil(
+        "calc",
+        source = c(inmask_path4b, namask_path), 
+        destination = inmask_path5,
+        formula = "A*B+1-B",
+        options = c(
+          "--type", "Byte", "--NoDataValue", "1", "--format", "GTiff", 
+          "--co", "COMPRESS=LZW", if (bigtiff==TRUE) {c("-co", "BIGTIFF=YES")}
         ),
-        intern = Sys.info()["sysname"] == "Windows"
+        quiet = TRUE
       )
     } else {
-      system(
-        paste0(
-          binpaths$gdal_translate,
-          " -of GTiff -co COMPRESS=LZW -a_nodata 1 ",
-          if (bigtiff==TRUE) {"-co BIGTIFF=YES "},
-          inmask_path4," ",inmask_path5
+      gdalUtil(
+        "translate",
+        source = inmask_path4,
+        destination = inmask_path5,
+        options = c(
+          "-of", "GTiff", "-co", "COMPRESS=LZW", "-a_nodata", "1",
+          if (bigtiff==TRUE) {c("-co", "BIGTIFF=YES")}
         ),
-        intern = Sys.info()["sysname"] == "Windows"
+        quiet = TRUE
       )
     }
     
@@ -175,9 +191,15 @@ smooth_mask <- function(
   
   # 6. third positive buffer (5/4 radius to complete smooth, buffer to buffer if < 0, to 3/2 buffer if >0)
   inmask_path6 <- gsub("\\.tif$","_6.tif",inmask_path1)
-  system(
-    paste0(binpaths$gdal_fillnodata," -md ",radius_npx*5/4+ifelse(buffer_npx>0,buffer_npx*3/2,buffer_npx)," -si 0 -of GTiff -co COMPRESS=LZW ",inmask_path5," ",inmask_path6),
-    intern = Sys.info()["sysname"] == "Windows"
+  gdalUtil(
+    "fillnodata",
+    source = inmask_path5, 
+    destination = inmask_path6,
+    options = c(
+      "-md", radius_npx*5/4+ifelse(buffer_npx>0,buffer_npx*3/2,buffer_npx),
+      "-si", "0", "-of", "GTiff", "-co", "COMPRESS=LZW"
+    ),
+    quiet = TRUE
   )
   
   # 7-8 if buffer_npx > 0
@@ -187,69 +209,79 @@ smooth_mask <- function(
     inmask_path7 <- gsub("\\.tif$","_7.tif",inmask_path1)
     if (!is.null(namask)) {
       inmask_path6b <- gsub("\\.tif$","_6b.tif",inmask_path1)
-      system(
-        paste0(
-          binpaths$gdal_translate,
-          " -of GTiff -co COMPRESS=LZW -a_nodata none ",
-          if (bigtiff==TRUE) {"-co BIGTIFF=YES "},
-          inmask_path6," ",inmask_path6b
+      gdalUtil(
+        "translate",
+        source = inmask_path6,
+        destination = inmask_path6b,
+        options = c(
+          "-of", "GTiff", "-co", "COMPRESS=LZW", "-a_nodata", "none",
+          if (bigtiff==TRUE) {c("-co", "BIGTIFF=YES")}
         ),
-        intern = Sys.info()["sysname"] == "Windows"
+        quiet = TRUE
       )
-      system(
-        paste0(
-          binpaths$gdal_calc," ",
-          "-A \"",inmask_path6b,"\" -B \"",namask_path,"\" ",
-          "--outfile=\"",inmask_path7,"\" --calc=\"A*B\" ",
-          "--type=\"Byte\" --NoDataValue=0 --format=\"GTiff\" --co=\"COMPRESS=LZW\"",
-          if (bigtiff==TRUE) {" -co=\"BIGTIFF=YES\""}
+      gdalUtil(
+        "calc",
+        source = c(inmask_path6b, namask_path), 
+        destination = inmask_path7,
+        formula = "A*B",
+        options = c(
+          "--type", "Byte", "--NoDataValue", "1", "--format", "GTiff", 
+          "--co", "COMPRESS=LZW", if (bigtiff==TRUE) {c("-co", "BIGTIFF=YES")}
         ),
-        intern = Sys.info()["sysname"] == "Windows"
+        quiet = TRUE
       )
     } else {
-      system(
-        paste0(
-          binpaths$gdal_translate,
-          " -of GTiff -co COMPRESS=LZW -a_nodata 0 ",
-          if (bigtiff==TRUE) {"-co BIGTIFF=YES "},
-          inmask_path6," ",inmask_path7
+      gdalUtil(
+        "translate",
+        source = inmask_path6,
+        destination = inmask_path7,
+        options = c(
+          "-of", "GTiff", "-co", "COMPRESS=LZW", "-a_nodata", "0",
+          if (bigtiff==TRUE) {c("-co", "BIGTIFF=YES")}
         ),
-        intern = Sys.info()["sysname"] == "Windows"
+        quiet = TRUE
       )
     }
     
     # 8. fourth negative buffer (1/2)
     inmask_path8 <- gsub("\\.tif$","_8.tif",inmask_path1)
-    system(
-      paste0(binpaths$gdal_fillnodata," -md ",buffer_npx/2," -si 0 -of GTiff -co COMPRESS=LZW ",inmask_path7," ",inmask_path8),
-      intern = Sys.info()["sysname"] == "Windows"
+    gdalUtil(
+      "fillnodata",
+      source = inmask_path7, 
+      destination = inmask_path8,
+      options = c(
+        "-md", buffer_npx/2, 
+        "-si", "0", "-of", "GTiff", "-co", "COMPRESS=LZW"
+      ),
+      quiet = TRUE
     )
     
   }
   
   # 9. remove nodata labels
   inmask_path9 <- gsub("\\.tif$","_9.tif",inmask_path1)
-  system(
-    paste0(
-      binpaths$gdal_translate,
-      " -of GTiff -co COMPRESS=LZW -a_nodata none ",
-      if (bigtiff==TRUE) {"-co BIGTIFF=YES "},
-      ifelse(buffer_npx>0,inmask_path8,inmask_path6)," ",
-      inmask_path9
+  gdalUtil(
+    "translate",
+    source = ifelse(buffer_npx>0, inmask_path8, inmask_path6),
+    destination = inmask_path9,
+    options = c(
+      "-of", "GTiff", "-co", "COMPRESS=LZW", "-a_nodata", "none",
+      if (bigtiff==TRUE) {c("-co", "BIGTIFF=YES")}
     ),
-    intern = Sys.info()["sysname"] == "Windows"
+    quiet = TRUE
   )
   if (!is.null(namask)) {
     inmask_path9b <- gsub("\\.tif$","_9b.tif",inmask_path1)
-    system(
-      paste0(
-        binpaths$gdal_calc," ",
-        "-A \"",inmask_path9,"\" -B \"",namask_path,"\" ",
-        "--outfile=\"",inmask_path9b,"\" --calc=\"A*B\" ",
-        "--type=\"Byte\" --NoDataValue=255 --format=\"GTiff\" --co=\"COMPRESS=LZW\"",
-        if (bigtiff==TRUE) {" -co=\"BIGTIFF=YES\""}
+    gdalUtil(
+      "calc",
+      source = c(inmask_path9, namask_path), 
+      destination = inmask_path9b,
+      formula = "A*B",
+      options = c(
+        "--type", "Byte", "--NoDataValue", "1", "--format", "GTiff", 
+        "--co", "COMPRESS=LZW", if (bigtiff==TRUE) {c("-co", "BIGTIFF=YES")}
       ),
-      intern = Sys.info()["sysname"] == "Windows"
+      quiet = TRUE
     )
     inmask_path9b
   } else {

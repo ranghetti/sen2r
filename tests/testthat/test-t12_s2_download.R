@@ -104,7 +104,7 @@ testthat::test_that(
         "[Tt]his function is only for Windows"
       )
       if (Sys.which("aria2c") != "") {
-        testthat::expect_equivalent(load_binpaths("aria2")$aria2, Sys.which("aria2c"))
+        testthat::expect_equivalent(load_binpaths("aria2")$aria2, normalize_path(Sys.which("aria2c")))
       }
     }
   }

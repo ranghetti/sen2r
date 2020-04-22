@@ -48,7 +48,7 @@ testthat::test_that(
       as.numeric(exp_meta_r$bbox), 
       c(499980, 4990200, 609780, 5200020)
     )
-    testthat::expect_equal(exp_meta_r$proj$epsg, 32632)
+    expect_equal_crs(st_crs2(exp_meta_r$proj), 32632)
     testthat::expect_equal(exp_meta_r$outformat, "GTiff") # default value
     
     # tests on sen2r metadata

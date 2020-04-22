@@ -2,19 +2,6 @@ context("Test warping (clip, reproject, resize)")
 testthat::skip_on_cran() # because using runtime GDAL
 testthat::skip_on_travis() # because required SAFE do not exists
 
-# convenience function to compare non-null CRSs
-# without using EPSG (so usable with rgdal >= 1.5)
-expect_equal_crs <- function(crs1, crs2) {
-  ref_vec <- st_geometry(st_read(
-    system.file("extdata/vector/barbellino.geojson", package = "sen2r"), 
-    quiet = TRUE
-  ))
-  testthat::expect_equal(
-    as.integer(sf::st_coordinates(sf::st_transform(ref_vec, crs1))[,c("X","Y")]),
-    as.integer(sf::st_coordinates(sf::st_transform(ref_vec, crs2))[,c("X","Y")])
-  )
-}
-
 safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
 dir.create(safe_dir, showWarnings = FALSE)
 
@@ -517,9 +504,6 @@ testthat::test_that(
   }
 )
 
-# This test was skipped while stars is being incompatible with sf >= 0.9,
-# and will be restored after stars will have been fixed (#295).
-if (packageVersion("sf") < 0.9) {
 testthat::test_that(
   "Reproject and clip on a bounding box", {
     
@@ -552,7 +536,6 @@ testthat::test_that(
     
   }
 )
-}  
 
 test6 <- tempfile(fileext = "_test6.tif")
 testthat::test_that(
@@ -619,9 +602,6 @@ testthat::test_that(
   }
 )
 
-# This test was skipped while stars is being incompatible with sf >= 0.9,
-# and will be restored after stars will have been fixed (#295).
-if (packageVersion("sf") < 0.9) {
 testthat::test_that(
   "...and specify a different bounding box", {
     
@@ -650,7 +630,6 @@ testthat::test_that(
     
   }
 )
-}
 
 testthat::test_that(
   "Use a reference raster with a different projection and a mask", {

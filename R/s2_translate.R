@@ -106,9 +106,6 @@ s2_translate <- function(infile,
     vrt_rel_paths <- Sys.info()["sysname"] != "Windows"
   }
   
-  # Load GDAL paths
-  binpaths <- load_binpaths("gdal")
-  
   # check res (and use the resolutions >= specified res)
   if (!res %in% c("10m","20m","60m")) {
     print_message(
@@ -291,15 +288,16 @@ s2_translate <- function(infile,
           # create final vrt with all the bands (of select final raster with a single band)
           if (length(jp2_selbands)>1) {
             final_vrt_name <- ifelse(format=="VRT", out_name, paste0(tmpdir,"/",out_prefix,".vrt"))
-            system(
-              paste0(
-                binpaths$gdalbuildvrt," -separate ",
-                "-resolution highest ",
-                "-a_srs \"EPSG:",st_crs2(sel_utmzone)$epsg,"\" ",
-                "\"",final_vrt_name,"\" ",
-                paste(paste0("\"",jp2_selbands,"\""), collapse=" ")
+            gdalUtil(
+              "buildvrt",
+              source = jp2_selbands,
+              destination = final_vrt_name,
+              options = c(
+                "-separate",
+                "-resolution", "highest",
+                "-a_srs", paste0("EPSG:",st_crs2(sel_utmzone)$epsg)
               ),
-              intern = Sys.info()["sysname"] == "Windows"
+              quiet = TRUE
             )
             if (vrt_rel_paths==TRUE) {
               gdal_abs2rel(final_vrt_name)
@@ -310,15 +308,17 @@ s2_translate <- function(infile,
           
           # create output file (or copy vrt file)
           if (format != "VRT" | length(jp2_selbands)==1) {
-            system(
-              paste0(
-                binpaths$gdal_translate," -of ",format," ",
-                if (format=="GTiff") {paste0("-co COMPRESS=",toupper(compress)," ")},
-                if (format=="GTiff" & bigtiff==TRUE) {paste0("-co BIGTIFF=YES ")},
-                if (!is.na(sel_na)) {paste0("-a_nodata ",sel_na," ")},
-                "\"",final_vrt_name,"\" ",
-                "\"",out_name,"\""
-              ), intern = Sys.info()["sysname"] == "Windows"
+            gdalUtil(
+              "translate",
+              source = final_vrt_name,
+              destination = out_name,
+              options = c(
+                "-of", format,
+                if (format=="GTiff") {c("-co", paste0("COMPRESS=",toupper(compress)))},
+                if (format=="GTiff" & bigtiff==TRUE) {c("-co", "BIGTIFF=YES")},
+                if (!is.na(sel_na)) {c("-a_nodata", sel_na)}
+              ),
+              quiet = TRUE
             )
             if (format == "VRT" & vrt_rel_paths==TRUE) {
               gdal_abs2rel(out_name)

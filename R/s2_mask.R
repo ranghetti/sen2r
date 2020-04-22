@@ -117,6 +117,7 @@
 #' @importFrom raster brick calc dataType mask overlay stack values
 #' @importFrom jsonlite fromJSON
 #' @importFrom utils txtProgressBar setTxtProgressBar
+#' @importFrom sf gdal_utils
 #' @import data.table
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @note License: GPL 3.0
@@ -209,9 +210,6 @@ s2_mask <- function(infiles,
                      .log_output = NA) {
   
   . <- NULL
-  
-  # Load GDAL paths
-  binpaths <- load_binpaths("gdal")
   
   # Check that files exist
   if (!any(sapply(infiles, file.exists))) {
@@ -373,14 +371,16 @@ s2_mask <- function(infiles,
       
       # if no masking is required, "copy" input files
       if (length(sel_maskfiles)==0) {
-        system(
-          paste0(
-            binpaths$gdal_translate," -of ",sel_format," ",
-            if (sel_format=="GTiff") {paste0("-co COMPRESS=",toupper(compress)," ")},
-            if (sel_format=="GTiff" & bigtiff==TRUE) {paste0("-co BIGTIFF=YES ")},
-            "\"",sel_infile,"\" ",
-            "\"",sel_outfile,"\""
-          ), intern = Sys.info()["sysname"] == "Windows"
+        gdalUtil(
+          "translate",
+          source = sel_infile,
+          destination = sel_outfile,
+          options = c(
+            "-of", sel_format,
+            if (sel_format=="GTiff") {c("-co", paste0("COMPRESS=",toupper(compress)))},
+            if (sel_format=="GTiff" & bigtiff==TRUE) {c("-co", "BIGTIFF=YES")}
+          ),
+          quiet = TRUE
         )
       } else {
         
@@ -390,14 +390,16 @@ s2_mask <- function(infiles,
         # path for bug #47
         if (Sys.info()["sysname"] == "Windows" & gsub(".*\\.([^\\.]+)$","\\1",sel_infile)=="vrt") {
           # on Windows, use input physical files
-          system(
-            paste0(
-              binpaths$gdal_translate," -of GTiff ",
-              paste0("-co COMPRESS=",toupper(compress)," "),
-              if (bigtiff==TRUE) {"-co BIGTIFF=YES "},
-              "\"",sel_infile,"\" ",
-              "\"",gsub("\\.vrt$",".tif",sel_infile),"\""
-            ), intern = TRUE
+          gdalUtil(
+            "translate",
+            source = sel_infile,
+            destination = gsub("\\.vrt$",".tif",sel_infile),
+            options = c(
+              "-of", "GTiff",
+              "-co", paste0("COMPRESS=",toupper(compress)),
+              if (bigtiff == TRUE) {c("-co", "BIGTIFF=YES")}
+            ),
+            quiet = TRUE
           )
           sel_infile <- gsub("\\.vrt$",".tif",sel_infile)
         }
@@ -527,7 +529,7 @@ s2_mask <- function(infiles,
                 outmask_res,
                 radius = smooth, buffer = buffer,
                 namask = if (min_values_naval==0) {outnaval_res} else {NULL}, # TODO NULL if no Nodata values are present
-                binpaths = binpaths, tmpdir = sel_tmpdir,
+                tmpdir = sel_tmpdir,
                 bigtiff = bigtiff
               )
             } else {

@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -63,7 +67,7 @@
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-news">
       <header>
       <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -77,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.4</span>
       </span>
     </div>
 
@@ -151,13 +155,58 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Changelog <small></small></h1>
+      <h1 data-toc-skip>Changelog <small></small></h1>
       <small>Source: <a href='https://github.com/ranghetti/sen2r/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="version-1-3-4" class="section level1">
+<h1 class="page-header" data-toc-text="1.3.4">
+<a href="#version-1-3-4" class="anchor"></a>Version 1.3.4<small> Unreleased </small>
+</h1>
+<div id="new-functions" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new-functions" class="anchor"></a>New functions</h2>
+<ul>
+<li>
+<code><a href="../reference/gdalUtil.html">gdalUtil()</a></code>: function used to perform GDAL operations, calling C-based GDAL utilities using <code><a href="https://rdrr.io/pkg/sf/man/gdal_utils.html">sf::gdal_utils()</a></code>, and Python-based ones through system calls (a standalone GDAL environment is request to do it, as it was in previous versions).</li>
+</ul>
+</div>
+<div id="documentation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#documentation" class="anchor"></a>Documentation</h2>
+<ul>
+<li>Improve documentation of vignette “Output file structure”, including the description of output products.</li>
+</ul>
+</div>
+<div id="new-dependency" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new-dependency" class="anchor"></a>New dependency</h2>
+<ul>
+<li>
+<strong><code>rgdal</code></strong> is now an explicit dependency (this because it is used by <strong><code>raster</code></strong> but it is not a mandatory dependency).</li>
+</ul>
+</div>
+<div id="minor-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#minor-changes" class="anchor"></a>Minor changes</h2>
+<ul>
+<li>GDAL C-based utilities are called using internal GDAL routines in package <strong><code>sf</code></strong> (see <code><a href="../reference/gdalUtil.html">gdalUtil()</a></code>). This allows reducing the use of external runtime dependencies.</li>
+<li>GDAL messages are suppressed if the suggested dependency <strong><code>sys</code></strong> is installed (<a href='https://github.com/ranghetti/sen2r/issues/257'>#257</a>).</li>
+<li>The new section of the vignette “Output file documentation” regarding products is linked in the GUI.</li>
+</ul>
+</div>
+<div id="bug-fixes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes" class="anchor"></a>Bug fixes</h2>
+<ul>
+<li>Re-fix <a href='https://github.com/ranghetti/sen2r/issues/292'>#292</a>.</li>
+<li>Fix <a href='https://github.com/ranghetti/sen2r/issues/308'>#308</a>.</li>
+</ul>
+</div>
+</div>
     <div id="version-1-3-3" class="section level1">
-<h1 class="page-header">
-<a href="#version-1-3-3" class="anchor"></a>Version 1.3.3<small> Unreleased </small>
+<h1 class="page-header" data-toc-text="1.3.3">
+<a href="#version-1-3-3" class="anchor"></a>Version 1.3.3<small> 2020-03-30 </small>
 </h1>
 <div id="major-changes" class="section level2">
 <h2 class="hasAnchor">
@@ -171,26 +220,26 @@
 </li>
 </ul>
 </div>
-<div id="new-dependency" class="section level2">
+<div id="new-dependency-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-dependency" class="anchor"></a>New dependency</h2>
+<a href="#new-dependency-1" class="anchor"></a>New dependency</h2>
 <ul>
 <li>
 <strong><code>RcppTOML</code></strong> (used to manage TOML ignore list TOML file).</li>
 </ul>
 </div>
-<div id="documentation" class="section level2">
+<div id="documentation-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#documentation" class="anchor"></a>Documentation</h2>
+<a href="#documentation-1" class="anchor"></a>Documentation</h2>
 <ul>
 <li>Improve the installation page.</li>
 </ul>
 </div>
-<div id="bug-fixes" class="section level2">
+<div id="bug-fixes-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-1" class="anchor"></a>Bug fixes</h2>
 <ul>
-<li>Support for <code>sf</code> &gt;= 0.9 (<a href='https://github.com/ranghetti/sen2r/issues/260'>#260</a>)</li>
+<li>Support for <strong><code>sf</code></strong> &gt;= 0.9 (<a href='https://github.com/ranghetti/sen2r/issues/260'>#260</a>)</li>
 <li>Patch for <strong><code>stars</code></strong> issue, made to resolve the temporary incompatibility with <strong><code>sf</code></strong> &gt;= 0.9 (see issue <a href='https://github.com/ranghetti/sen2r/issues/295'>#295</a>)</li>
 <li>Fix <a href='https://github.com/ranghetti/sen2r/issues/292'>#292</a></li>
 <li>Small improvements</li>
@@ -198,7 +247,7 @@
 </div>
 </div>
     <div id="version-1-3-2" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="1.3.2">
 <a href="#version-1-3-2" class="anchor"></a>Version 1.3.2<small> 2020-02-27 </small>
 </h1>
 <div id="new-features" class="section level2">
@@ -220,15 +269,15 @@
 <h2 class="hasAnchor">
 <a href="#dependencies" class="anchor"></a>Dependencies</h2>
 <ul>
-<li>Add new suggested dependency <strong><code>sys</code></strong> (it is used to call Sen2Cor using <code>sys::exec_wait()</code> instead than <code><a href="https://rdrr.io/r/base/system.html">system()</a></code>, allowing exporting Sen2Cor output to log files).</li>
+<li>Add new suggested dependency <strong><code>sys</code></strong> (it is used to call Sen2Cor using <code><a href="https://rdrr.io/pkg/sys/man/exec.html">sys::exec_wait()</a></code> instead than <code><a href="https://rdrr.io/r/base/system.html">system()</a></code>, allowing exporting Sen2Cor output to log files).</li>
 <li>Add new suggested dependency <strong><code>rgdal</code></strong> (since it is implicitly called by internal functions), as requested by CRAN policy.</li>
 <li>Move <strong><code>units</code></strong> and <strong><code>tools</code></strong> to suggested dependencies.</li>
 <li>Prepare to move <strong><code>shiny*</code></strong> and <strong><code>leaflet*</code></strong> dependencies to suggested (this will be done in a future release).</li>
 </ul>
 </div>
-<div id="minor-changes" class="section level2">
+<div id="minor-changes-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes" class="anchor"></a>Minor changes</h2>
+<a href="#minor-changes-1" class="anchor"></a>Minor changes</h2>
 <ul>
 <li>Allow choosing if ordering SAFE products from <code>dhus</code> or <code>apihub</code> (experimental).</li>
 <li>Replace all <code>GET()</code> calls with <code>RETRY()</code>, so to avoid errors in case of temporary unavailability of services.</li>
@@ -238,7 +287,7 @@
 </div>
 </div>
     <div id="version-1-3-1" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="1.3.1">
 <a href="#version-1-3-1" class="anchor"></a>Version 1.3.1<small> 2020-02-07 </small>
 </h1>
 <div id="major-changes-1" class="section level2">
@@ -248,9 +297,9 @@
 <li>Documentation was improved with three new vignettes about GUI usage, command line usage and output structure.</li>
 </ul>
 </div>
-<div id="bug-fixes-1" class="section level2">
+<div id="bug-fixes-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-1" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-2" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Restore checking environmental variable in <code><a href="../reference/init_python.html">init_python()</a></code> (this urgent bug fixing was the reason of the urgent release of the current version).</li>
 <li>Fix building offline footprint.</li>
@@ -265,9 +314,9 @@
 <li>In the GUI, the maximum allowed cloud cover was set to 100% accordingly to the <code><a href="../reference/sen2r.html">sen2r()</a></code> defaults.</li>
 </ul>
 </div>
-<div id="minor-changes-1" class="section level2">
+<div id="minor-changes-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes-1" class="anchor"></a>Minor changes</h2>
+<a href="#minor-changes-2" class="anchor"></a>Minor changes</h2>
 <ul>
 <li>Add check on <code>max_mask</code> - <code>mask_type</code> coherence (if <code>max_mask &lt; 100</code> and <code>mask_type</code> is not specified, a warning is returned).</li>
 <li>Suppress some useless warnings.</li>
@@ -277,7 +326,7 @@
 </div>
 </div>
     <div id="version-1-3-0" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="1.3.0">
 <a href="#version-1-3-0" class="anchor"></a>Version 1.3.0<small> 2020-02-04 </small>
 </h1>
 <div id="major-changes-2" class="section level2">
@@ -296,9 +345,9 @@
 <li>Management of Sen2Cor GIPP parameters: now the user can process L1C SAFE images applying a topographic correction (as done to produce L2A images on ESA Hub) or specifying other parameters managed by L2A_GIPP.xml file. To allow doing that, new arguments were added to <code><a href="../reference/sen2cor.html">sen2cor()</a></code> and <code><a href="../reference/sen2r.html">sen2r()</a></code> (see below) and a new option was added in the GUI.</li>
 </ul>
 </div>
-<div id="new-functions" class="section level2">
+<div id="new-functions-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-functions" class="anchor"></a>New functions</h2>
+<a href="#new-functions-1" class="anchor"></a>New functions</h2>
 <ul>
 <li>
 <code><a href="../reference/gipp.html">read_gipp()</a></code> and <code><a href="../reference/gipp.html">set_gipp()</a></code> to read / create GIPP XML files with the parameters passed to Sen2Cor.</li>
@@ -323,9 +372,9 @@
 <code>use_python</code> argument in <code><a href="../reference/sen2r.html">sen2r()</a></code> was deprecated (no longer needed).</li>
 </ul>
 </div>
-<div id="minor-changes-2" class="section level2">
+<div id="minor-changes-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes-2" class="anchor"></a>Minor changes</h2>
+<a href="#minor-changes-3" class="anchor"></a>Minor changes</h2>
 <ul>
 <li>All components of the order (available, ordered and notordered) are now saved in JSON files. This allows using them to re-do an order, specifying if re-ordering already ordered datasets or only order the ones identified as “notordered” (based on new argument “reorder”).</li>
 <li>Output messages are formatted so not to exceed output line length.</li>
@@ -357,7 +406,7 @@
 </div>
 </div>
     <div id="version-1-2-1" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="1.2.1">
 <a href="#version-1-2-1" class="anchor"></a>Version 1.2.1<small> 2019-11-12 </small>
 </h1>
 <div id="major-changes-3" class="section level2">
@@ -393,9 +442,9 @@
 <code><a href="../reference/safe_shortname.html">safe_shortname()</a></code>: arguments <code>tiles</code>, <code>force_tiles</code>, <code>set.seed</code> and <code>multiple_names</code> were deprecated, since they are not used with SAFE compact names (old names are no more supported);</li>
 </ul>
 </div>
-<div id="minor-changes-3" class="section level2">
+<div id="minor-changes-4" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes-3" class="anchor"></a>Minor changes</h2>
+<a href="#minor-changes-4" class="anchor"></a>Minor changes</h2>
 <ul>
 <li>
 <code><a href="https://rdrr.io/r/base/Sys.setenv.html">Sys.setenv()</a></code> effects now do not affect the R environment after exiting from sen2r() execution;</li>
@@ -408,14 +457,14 @@
 </div>
 </div>
     <div id="version-1-2-0" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="1.2.0">
 <a href="#version-1-2-0" class="anchor"></a>Version 1.2.0<small> Unreleased </small>
 </h1>
 <p>Starting from this version sen2r supports ordering products from Long Term Archive (LTA) (see news at <a href="https://inthub.copernicus.eu/userguide/LongTermArchive" class="uri">https://inthub.copernicus.eu/userguide/LongTermArchive</a>). Now the user can automatically order SAFE products which are not available for direct download, and use them when made available. Some internal functions can be exploited to manually manage orders.</p>
 <p>Here above the related changes:</p>
-<div id="new-functions-1" class="section level2">
+<div id="new-functions-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-functions-1" class="anchor"></a>New functions</h2>
+<a href="#new-functions-2" class="anchor"></a>New functions</h2>
 <ul>
 <li>
 <code>safe_is_valid()</code> to check if an order was processed;</li>
@@ -447,13 +496,13 @@
 <a href="#sen2r-cran-release" class="anchor"></a><strong>sen2r</strong> CRAN release</h2>
 <hr>
 <p><strong><code>sen2r</code></strong> was accepted on CRAN (2017-10-21, version 1.1.0). From now, it is possible to install <a href="https://CRAN.R-project.org/package=sen2r">the CRAN version</a> with the following command:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sen2r"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sen2r"</span>)</pre></div>
 <p>The development version – which may contain updated features – can still be installed with the following command:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">remotes<span class="op">::</span><span class="kw">install_packages_github</span>(<span class="st">"ranghetti/sen2r"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="r"><span class="kw pkg">remotes</span><span class="kw ns">::</span><span class="fu">install_packages_github</span>(<span class="st">"ranghetti/sen2r"</span>)</pre></div>
 </div>
 </div>
     <div id="version-1-1-0" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="1.1.0">
 <a href="#version-1-1-0" class="anchor"></a>Version 1.1.0<small> 2019-10-21 </small>
 </h1>
 <div id="changes-in-default-values-1" class="section level2">
@@ -489,9 +538,9 @@
 <li>Add <strong><code>stars</code></strong> dependency.</li>
 </ul>
 </div>
-<div id="new-functions-2" class="section level2">
+<div id="new-functions-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-functions-2" class="anchor"></a>New functions</h2>
+<a href="#new-functions-3" class="anchor"></a>New functions</h2>
 <ul>
 <li>
 <code><a href="../reference/str_pad2.html">str_pad2()</a></code>, equivalent to str_pad() without the needing to load <code>stringr</code>.</li>
@@ -532,7 +581,7 @@
 </div>
 </div>
     <div id="version-1-0-2" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="1.0.2">
 <a href="#version-1-0-2" class="anchor"></a>Version 1.0.2<small> Unreleased </small>
 </h1>
 <div id="changes-in-default-argument-values-2" class="section level2">
@@ -576,7 +625,7 @@
 </div>
 </div>
     <div id="version-1-0-1" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="1.0.1">
 <a href="#version-1-0-1" class="anchor"></a>Version 1.0.1<small> Unreleased </small>
 </h1>
 <div id="changes-from-version-1-0-0" class="section level2">
@@ -608,7 +657,7 @@
 </div>
 </div>
     <div id="version-1-0-0" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="1.0.0">
 <a href="#version-1-0-0" class="anchor"></a>Version 1.0.0<small> Unreleased </small>
 </h1>
 <p>First stable release of package <strong>sen2r</strong>! See the announcement <a href="https://luigi.ranghetti.info/post/sen2r-released">here</a>.</p>
@@ -629,9 +678,9 @@
 <li>Other style improvements</li>
 </ul>
 </div>
-<div id="new-functions-3" class="section level3">
+<div id="new-functions-4" class="section level3">
 <h3 class="hasAnchor">
-<a href="#new-functions-3" class="anchor"></a>New functions</h3>
+<a href="#new-functions-4" class="anchor"></a>New functions</h3>
 <ul>
 <li>
 <code><a href="../reference/tiles_intersects.html">tiles_intersects()</a></code>: when an extent is loaded, now only required tiles are automatically used, instead than all the overlapping ones.</li>
@@ -651,14 +700,15 @@
 <ul>
 <li>Fix bug in SciHub login</li>
 <li>Fix maps (tiles were hidden)</li>
-<li>Fix:missing dependency lwgeom</li>
+<li>Fix:missing dependency <strong><code>lwgeom</code></strong>
+</li>
 <li>Various fixes (<a href='https://github.com/ranghetti/sen2r/issues/140'>#140</a>, <a href='https://github.com/ranghetti/sen2r/issues/141'>#141</a>, <a href='https://github.com/ranghetti/sen2r/issues/142'>#142</a>, etc.)</li>
 </ul>
 </div>
 </div>
 </div>
     <div id="version-0-3-4" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.3.4">
 <a href="#version-0-3-4" class="anchor"></a>Version 0.3.4<small> Unreleased </small>
 </h1>
 <div id="major-improvements" class="section level3">
@@ -723,7 +773,7 @@
 </div>
 </div>
     <div id="version-0-3-3" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.3.3">
 <a href="#version-0-3-3" class="anchor"></a>Version 0.3.3<small> Unreleased </small>
 </h1>
 <p>This is an improvement of version 0.3.2, with several fixes and improvements.</p>
@@ -763,13 +813,13 @@
 </div>
 </div>
     <div id="version-0-3-2" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.3.2">
 <a href="#version-0-3-2" class="anchor"></a>Version 0.3.2<small> Unreleased </small>
 </h1>
 <p>This is an improvement of version 0.3.1, with several fixes and improvements.</p>
-<div id="new-functions-4" class="section level3">
+<div id="new-functions-5" class="section level3">
 <h3 class="hasAnchor">
-<a href="#new-functions-4" class="anchor"></a>New functions</h3>
+<a href="#new-functions-5" class="anchor"></a>New functions</h3>
 <ul>
 <li><p><code><a href="../reference/check_sen2r_deps.html">check_sen2r_deps()</a></code>: a new GUI to help checking dependencies.</p></li>
 <li><p>Add function <code><a href="../reference/s2_mask.html">s2_perc_masked()</a></code> to compute the percentage of cloud-masked surface.</p></li>
@@ -835,7 +885,7 @@
 </div>
 </div>
     <div id="version-0-3-1" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.3.1">
 <a href="#version-0-3-1" class="anchor"></a>Version 0.3.1<small> Unreleased </small>
 </h1>
 <p>This is an improvement of version 0.3.1, with several fixes and secondary improvements:</p>
@@ -871,14 +921,14 @@
 </ul>
 </div>
     <div id="version-0-3-0" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.3.0">
 <a href="#version-0-3-0" class="anchor"></a>Version 0.3.0<small> Unreleased </small>
 </h1>
 <p>This version allows to perform all basic operations with Sentinel-2 data: finding and downloading the required tiles (on Linux), correcting them with sen2cor, processing them (merging adjacent tiles, clipping, reprojecting, rescaling, applying atmospheric mask) to create output multiband files (in a format managed by GDAL) and spectral indices.</p>
 <p>The version follows the issued scheduled for <a href="https://github.com/ranghetti/sen2r/milestone/1">milestone 0.3.0</a>; future improvements with Sentinel-2 data are scheduled for <a href="https://github.com/ranghetti/sen2r/milestone/3">release 0.4.0</a>.</p>
 </div>
     <div id="version-0-2-0" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.2.0">
 <a href="#version-0-2-0" class="anchor"></a>Version 0.2.0<small> Unreleased </small>
 </h1>
 <p>This is an intermediate version, which does not allow yet to perform a complete workflow, but it allows to manually find (<code><a href="../reference/s2_list.html">s2_list()</a></code>), download (<code><a href="../reference/s2_download.html">s2_download()</a></code>), correct (<code>s2_sen2cor()</code>), translate in a format managed by GDAL (<code><a href="../reference/s2_translate.html">s2_translate()</a></code>) and merge by orbit number (<code><a href="../reference/s2_merge.html">s2_merge()</a></code>) Sentinel-2 data.</p>
@@ -886,28 +936,10 @@
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <div id="tocnav">
-      <h2>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-        <li><a href="#version-1-3-3">1.3.3</a></li>
-        <li><a href="#version-1-3-2">1.3.2</a></li>
-        <li><a href="#version-1-3-1">1.3.1</a></li>
-        <li><a href="#version-1-3-0">1.3.0</a></li>
-        <li><a href="#version-1-2-1">1.2.1</a></li>
-        <li><a href="#version-1-2-0">1.2.0</a></li>
-        <li><a href="#version-1-1-0">1.1.0</a></li>
-        <li><a href="#version-1-0-2">1.0.2</a></li>
-        <li><a href="#version-1-0-1">1.0.1</a></li>
-        <li><a href="#version-1-0-0">1.0.0</a></li>
-        <li><a href="#version-0-3-4">0.3.4</a></li>
-        <li><a href="#version-0-3-3">0.3.3</a></li>
-        <li><a href="#version-0-3-2">0.3.2</a></li>
-        <li><a href="#version-0-3-1">0.3.1</a></li>
-        <li><a href="#version-0-3-0">0.3.0</a></li>
-        <li><a href="#version-0-2-0">0.2.0</a></li>
-      </ul>
-    </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 
 </div>
@@ -919,7 +951,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>
