@@ -66,6 +66,13 @@ s2_dop(65, as.Date(c("2018-08-01", "2018-08-31")))
 # A research with no passages found
 s2_dop(22, "2018-08-16", mission = "2A")
 }
+\references{
+L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
+"sen2r": An R toolbox for automatically downloading and preprocessing
+Sentinel-2 satellite data. \emph{Computers & Geosciences}, 139, 104473. DOI:
+\href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473},
+URL: \url{http://sen2r.ranghetti.info/}.
+}
 \author{
 Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

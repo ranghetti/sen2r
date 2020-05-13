@@ -184,6 +184,13 @@ This is sometimes needed not to return error when applying some functions.</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
+"sen2r": An R toolbox for automatically downloading and preprocessing
+Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473. DOI:
+<a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.104473</a>,
+URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/conditions.html'>tryCatch</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/basename.html'>basename</a></span>(<span class='kw'>NULL</span>), <span class='kw'>error</span> <span class='kw'>=</span> <span class='no'>print</span>) <span class='co'># error</span></div><div class='output co'>#&gt; &lt;simpleError in basename(NULL): richiesti argomenti di tipo vector&gt;</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/basename.html'>basename</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span>()) <span class='co'># ok</span></div><div class='output co'>#&gt; character(0)</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/basename.html'>basename</a></span>(<span class='kw pkg'>sen2r</span><span class='kw ns'>:::</span><span class='fu'>nn</span>(<span class='kw'>NULL</span>)) <span class='co'># ok</span></div><div class='output co'>#&gt; character(0)</div></pre>

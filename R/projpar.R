@@ -14,8 +14,13 @@
 #'  The old function, which was searching for a generic parameter
 #'  parsing the WKT, was deprecated: now [projpar()] only accepts `par = "name"`
 #'  and `par = "unit"`, and `projname()` is an alias for `projpar(..., par = "name")`.
-#' @note License: GPL 3.0
 #' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
+#' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
+#'  "sen2r": An R toolbox for automatically downloading and preprocessing 
+#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. DOI: 
+#'  \href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473}, 
+#'  URL: \url{http://sen2r.ranghetti.info/}.
+#' @note License: GPL 3.0
 #' @export
 #' @importFrom sf st_as_text st_crs
 #'
