@@ -144,8 +144,6 @@ s2_translate <- function(infile,
       "\u00A0\u00A0gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
   }
   
-  # Check GDAL installation
-  check_gdal(abort=TRUE)
   # Retrieve xml required metadata
   infile_meta <- safe_getMetadata(
     infile, 

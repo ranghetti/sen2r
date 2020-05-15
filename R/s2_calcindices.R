@@ -237,11 +237,6 @@ s2_calcindices <- function(
     NULL
   }
   
-  # Load GDAL paths
-  binpaths <- if (proc_mode == "gdal_calc" | all(!is.na(format), format == "VRT")) {
-    load_binpaths("gdal")
-  } else {NULL}
-  
   # Check proc_mode
   if (!proc_mode %in% c("gdal_calc", "raster", "stars")) {
     print_message(
@@ -555,10 +550,6 @@ s2_calcindices <- function(
         }
         # fix for envi extension (writeRaster use .envi)
         if (sel_format0=="ENVI") {fix_envi_format(file.path(out_subdir0,sel_outfile0))}
-        
-        # if (is.null("binpaths")) {
-        #   binpaths <- load_binpaths("gdal")
-        # }
         
         if (sel_format == "VRT") {
           gdalUtil(
