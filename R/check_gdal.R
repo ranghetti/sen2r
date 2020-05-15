@@ -48,6 +48,9 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
   # load the saved GDAL path, if exists
   binpaths <- load_binpaths()
   
+  # remove old GDAL paths, if present
+  binpaths$ogrinfo <- binpaths$gdal_translate <- binpaths$gdalwarp <- 
+    binpaths$gdalbuildvrt <- binpaths$gdaldem <- binpaths$gdal_polygonize <- NULL
   # set message method
   message_type <- ifelse(abort==TRUE, "error", "warning")
   
