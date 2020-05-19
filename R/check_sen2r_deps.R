@@ -1,11 +1,12 @@
 #' @title Check package dependencies
 #' @description The function allows to graphically check that all the
-#'  dependencies are installed.
+#'  optional runtime dependencies are installed.
 #' @return NULL (the function is called for its side effects)
-#' @details This package needs some external dependencies to run:
-#' - Python
-#' - GDAL
-#' - Sen2Cor
+#' @details This package needs some external dependencies in order to run
+#'  specific actions:
+#' - Sen2Cor for atmospheric correction;
+#' - GDAL for cloud mask smoothing and buffering;
+#' - aria2 to download SAFE images with an alternative downloader.
 #' 
 #' This function opens a GUI which allows to check that these dependencies
 #' are installed. This check is highly suggested before using the library for
@@ -23,7 +24,6 @@
 #'  reactiveFileReader reactivePoll reactiveValues renderText renderUI runApp
 #'  shinyApp showModal span strong textOutput uiOutput verbatimTextOutput
 #' @importFrom shinyjs hide html useShinyjs extendShinyjs disabled disable enable
-#' @importFrom shinyWidgets confirmSweetAlert
 #' @importFrom shinyFiles getVolumes parseDirPath parseFilePaths
 #'  shinyDirButton shinyDirChoose shinyFileChoose shinyFilesButton
 #' @importFrom utils capture.output
@@ -70,11 +70,26 @@ check_sen2r_deps <- function() {
       title="Dependencies",
       width=12,
       
+      h3("Sen2Cor"),
+      helpText(em(
+        "Sen2Cor is used to perform atmospheric correction of Sentinel-2",
+        "Level-1C products: it is required by the package,",
+        "unless you choose not to correct products locally",
+        "(using only Level-1C \u2013 TOA products",
+        "or downloading directly Level-2A products)."
+      )),
+      span(style="display:inline-block;vertical-align:center;padding-top:5px;",
+           actionButton("check_sen2cor", "Check Sen2Cor", width=200),
+           "\u2000"),
+      span(style="display:inline-block;vertical-align:center;",
+           htmlOutput("check_sen2cor_icon")),
+      
       h3("GDAL"),
       helpText(em(
-        "GDAL is a mandatory dependency of the package:",
-        "it is needed for all the processing operations",
-        "and to retrieve metadata from SAFE products.",
+        "An external GDAL runtime environment is required in order to smooth and",
+        "buffer a cloud mask, and is optionally used to compute spectral indices",
+        "RGB images and thumbnails.",
+        "Starting from version 1.3.5, GDAL is no longer a mandatory dependency",
         if (Sys.info()["sysname"] == "Windows") {span(
           "Starting from version 1.1.0, on Windows",
           strong("it is strictly required to install GDAL using OSGeo4W"),
@@ -93,29 +108,14 @@ check_sen2r_deps <- function() {
       
       h3("aria2"),
       helpText(em(
-        "aria2 is an alternative (faster) downloader downloader which can be",
-        "used to download SAFE archives;",
-        "its installation is optional."
+        "aria2 is an alternative optional downloader downloader which can be",
+        "used to download SAFE archives."
       )),
       span(style="display:inline-block;vertical-align:center;padding-top:5px;",
            actionButton("check_aria2", "Check aria2", width=200),
            "\u2000"),
       span(style="display:inline-block;vertical-align:center;",
            htmlOutput("check_aria2_icon")),
-      
-      h3("Sen2Cor"),
-      helpText(em(
-        "Sen2Cor is used to perform atmospheric correction of Sentinel-2",
-        "Level-1C products: it is required by the package,",
-        "unless you choose not to correct products locally",
-        "(using only Level-1C \u2013 TOA products",
-        "or downloading directly Level-2A products)."
-      )),
-      span(style="display:inline-block;vertical-align:center;padding-top:5px;",
-           actionButton("check_sen2cor", "Check Sen2Cor", width=200),
-           "\u2000"),
-      span(style="display:inline-block;vertical-align:center;",
-           htmlOutput("check_sen2cor_icon")),
       
       hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
       uiOutput("footer_buttons")
@@ -910,27 +910,28 @@ check_sen2r_deps <- function() {
       removeModal()
     })
     
-    ##-- Footer buttons --##
-    observe({
-      rv$check_all_isvalid <- all(c(
-        rv$check_gdal_isvalid, rv$check_aria2_isvalid,
-        rv$check_sen2cor_isvalid
-      ))
-    })
+    # ##-- Footer buttons --##
+    # observe({
+    #   rv$check_all_isvalid <- all(c(
+    #     rv$check_gdal_isvalid, rv$check_aria2_isvalid,
+    #     rv$check_sen2cor_isvalid
+    #   ))
+    # })
     
     output$footer_buttons <- renderUI({
       div(
         style = "vertical-align:center;text-align:right;",
-        if (rv$check_all_isvalid) {
-          span(
-            style = "display:inline-block;",
-            "All the dependencies are satisfied, you can safely use the library.\u2000"
-          )
-          # actionButton("close_gui", "\u2000Close", icon = icon("check"), class = "darkbutton")
-        },
+        # if (rv$check_all_isvalid) {
+        #   span(
+        #     style = "display:inline-block;",
+        #     "All the dependencies are satisfied, you can safely use the library.\u2000"
+        #   )
+        #   # actionButton("close_gui", "\u2000Close", icon = icon("check"), class = "darkbutton")
+        # },
         actionButton(
           "close_gui", "\u2000Close",
-          icon = icon(ifelse(rv$check_all_isvalid, "check", "exclamation-triangle")),
+          # icon = icon(ifelse(rv$check_all_isvalid, "check", "exclamation-triangle")),
+          icon = icon("check"),
           class = "darkbutton"
         )
         
@@ -940,21 +941,21 @@ check_sen2r_deps <- function() {
     
     # Close the connection when button is pressed
     observeEvent(input$close_gui, {
-      if (!rv$check_all_isvalid) {
-        confirmSweetAlert(
-          session = session, inputId = "confirm_close", type = "warning",
-          title = "Closing the GUI?",
-          text = paste0(
-            "Are you sure do you want to quit? ",
-            "Running the package with unsatisfied ",
-            "dependencies can lead to errors."
-          ),
-          danger_mode = TRUE, btn_labels = c("Cancel", "Close window")
-        )
-      } else {
+      # if (!rv$check_all_isvalid) {
+      #   confirmSweetAlert(
+      #     session = session, inputId = "confirm_close", type = "warning",
+      #     title = "Closing the GUI?",
+      #     text = paste0(
+      #       "Are you sure do you want to quit? ",
+      #       "Running the package with unsatisfied ",
+      #       "dependencies can lead to errors."
+      #     ),
+      #     danger_mode = TRUE, btn_labels = c("Cancel", "Close window")
+      #   )
+      # } else {
         shinyjs::js$closeWindow()
         stopApp()
-      }
+      # }
     })
     observeEvent(input$confirm_close, {
       if (input$confirm_close) {

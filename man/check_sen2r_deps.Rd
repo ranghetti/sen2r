@@ -11,14 +11,15 @@ NULL (the function is called for its side effects)
 }
 \description{
 The function allows to graphically check that all the
-dependencies are installed.
+optional runtime dependencies are installed.
 }
 \details{
-This package needs some external dependencies to run:
+This package needs some external dependencies in order to run
+specific actions:
 \itemize{
-\item Python
-\item GDAL
-\item Sen2Cor
+\item Sen2Cor for atmospheric correction;
+\item GDAL for cloud mask smoothing and buffering;
+\item aria2 to download SAFE images with an alternative downloader.
 }
 
 This function opens a GUI which allows to check that these dependencies
