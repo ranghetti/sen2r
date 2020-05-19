@@ -83,8 +83,7 @@
 #' @importFrom parallel makeCluster stopCluster detectCores
 #' @importFrom jsonlite fromJSON
 #' @import data.table
-#' @importFrom raster blockSize brick getValues raster writeStart writeStop writeValues
-#' @importFrom stars read_stars write_stars
+#' @importFrom raster brick
 #' @importFrom utils txtProgressBar setTxtProgressBar
 #' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
@@ -138,106 +137,7 @@ s2_calcindices <- function(
   # to avoid NOTE on check
   prod_type <- . <- i <- NULL
   
-  # Internal function 1
-  calcindex_raster <- function(
-    x,
-    sel_formula,
-    out_file,
-    NAflag = -32768,
-    sel_format = "GTiff",
-    compress = "LZW",
-    datatype = "INT2S",
-    overwrite = FALSE,
-    minrows = NULL
-  ) {
-    
-    out <- raster(x)
-    suppress_warnings(
-      out <- writeStart(
-        out, out_file,
-        NAflag = NAflag,
-        datatype = datatype,
-        format = ifelse(sel_format=="VRT", "GTiff", sel_format),
-        if (sel_format %in% c("GTiff","VRT")) {
-          options = c(
-            paste0("COMPRESS=",compress),
-            if (bigtiff==TRUE) {"BIGTIFF=YES"}
-          )
-        },
-        overwrite = overwrite
-      ),
-      "NOT UPDATED FOR PROJ >\\= 6"
-    )
-    
-    # x <- brick(infiles)
-    if (is.null(minrows)) {
-      bs <- blockSize(out, n = 1)
-    } else {
-      bs <- blockSize(out, minrows = minrows)
-    }
-    if (inherits(stdout(), "terminal")) {
-      pb <- txtProgressBar(0, bs$n, style = 3)
-    }
-    for (i in seq_len(bs$n)) {
-      # message("Processing chunk ", i, " of ", bs$n)
-      v <- getValues(x, row = bs$row[i], nrows = bs$nrows[i])
-      if (grepl("^Float", dataType)) {
-        if (!is.numeric(v)) {
-          v <- apply(v, 2, as.numeric)
-        }
-        v_out <- eval(parse(text = sel_formula))
-      } else {
-        v_out <- round(eval(parse(text = sel_formula)))
-      }
-      # m <- getValues(y, row = bs$row[i], nrows = bs$nrows[i])
-      out <- writeValues(out, v_out, bs$row[i])
-      if (inherits(stdout(), "terminal")) {
-        setTxtProgressBar(pb, i)
-      }
-    }
-    if (inherits(stdout(), "terminal")) {
-      message("")
-    }
-    out <- writeStop(out)
-    NULL
-  }
-  
-  # Internal function 1
-  calcindex_stars <- function(
-    x,
-    sel_formula,
-    out_file,
-    NAflag = -32768,
-    sel_format = "GTiff",
-    compress = "LZW",
-    datatype = "Int16",
-    overwrite = FALSE
-  ) {
-    x_in <- read_stars(x, proxy = TRUE)
-    # x_out <- st_apply(x_in, c("x", "y"), function(v) {
-    #   eval(parse(text = sel_formula))
-    # })
-    x_out <- eval(parse(text = paste0("st_apply(x_in, c('x', 'y'), function(v) {",sel_formula,"})") ))
-    suppress_warnings(
-      write_stars(
-        x_out, out_file,
-        NA_value = NAflag,
-        type = dataType,
-        format = ifelse(sel_format=="VRT", "GTiff", sel_format),
-        options = c(
-          paste0("COMPRESS=",compress),
-          if (bigtiff==TRUE) {"BIGTIFF=YES"}
-        ),
-        overwrite = overwrite,
-        # chunk_size was set like using raster (half of the stars default)
-        chunk_size = c(dim(x_out)[1], floor(2.5e+07/2/dim(x_out)[1]))
-      ),
-      "NOT UPDATED FOR PROJ >\\= 6"
-    )
-    NULL
-  }
-  
-  # Check proc_mode
+  # Check proc_mode and GDAL external dependency
   if (!proc_mode %in% c("gdal_calc", "raster", "stars")) {
     print_message(
       type = "warning",
@@ -246,6 +146,22 @@ s2_calcindices <- function(
     )
     proc_mode <- "raster"
   }
+  if (proc_mode == "gdal_calc" && is.null(load_binpaths()$gdal_calc)) {
+    tryCatch(
+      check_gdal(abort = TRUE),
+      error = function(e) {
+        print_message(
+          type = "warning",
+          "External GDAL binaries are required with 'proc_mode = \"gdal_calc\"'; ",
+          "please configure them using function check_gdal() ",
+          "or through a GUI with check_sen2r_deps(). ",
+          "Now switching to proc_mode = \"raster\"."
+        )
+        proc_mode <- "raster"
+      }
+    )
+  }
+    
   
   # create outdir if not existing (and dirname(outdir) exists)
   suppressWarnings(outdir <- expand_path(outdir, parent=comsub(infiles,"/"), silent=TRUE))
@@ -533,7 +449,7 @@ s2_calcindices <- function(
             NAflag = sel_nodata,
             sel_format = sel_format0,
             compress = compress,
-            datatype = convert_datatype(dataType),
+            datatype = dataType,
             overwrite = overwrite
           )
         } else if (proc_mode == "stars") {

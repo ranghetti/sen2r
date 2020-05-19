@@ -2,7 +2,7 @@
 #' @description Internal function to create JPEG images from a multiband raster
 #'  file. This function is used by [s2_thumbnails], and it will be exported
 #'  when it would be more generalised.
-#' @param in_rast Path of the input multiband raster.
+#' @param in_rast Input raster (as `Raster*` or `stars` object).
 #' @param out_file (optional) Path of the output RGB JPEG image; if NULL
 #'  (default), a RasterBrick will be returned.
 #' @param bands (optional) 3-length integer argument, with the position of
@@ -24,6 +24,11 @@
 #' @param bigtiff (optional) Logical: if TRUE, the creation of a BigTIFF is
 #'  forced (default is FALSE).
 #'  This option is used only in the case a GTiff format was chosen. 
+#' @param proc_mode (optional) Character: if `"gdal_calc"`,
+#'  `gdal_calc` routines are used to compute indices;
+#'  if `"raster"` (default) or `"stars"`, R functions are instead used
+#'  (using respectively `raster` or `stars` routines).
+#'  See `s2_calcindices()` for further details.
 #' @param tmpdir (optional) Path where intermediate files will be created.
 #'  Default is a temporary directory.
 #'  If `tmpdir` is a non-empty folder, a random subdirectory will be used.
@@ -49,7 +54,11 @@ stack2rgb <- function(in_rast,
                       format = "JPEG",
                       compress = "90",
                       bigtiff = FALSE,
+                      proc_mode = "raster",
                       tmpdir = NA) {
+  
+  # Accessory functions to interpret NumPy functions power() and clip()
+  clip <- function(x,min,max) {(x+min+2*max+abs(x-min)-abs(x+min-2*max+abs(x-min)))/4}
   
   # define and create tmpdir
   if (is.na(tmpdir)) {
@@ -89,33 +98,59 @@ stack2rgb <- function(in_rast,
   if (bigtiff == TRUE) {co <- c(co, "-co", "BIGIFF=TRUE")}
   
   # Define formula (one if minval-maxval are unique, three elsewhere)
-  gdal_formula <- paste0(
-    "clip(A.astype(float),",minval,",",maxval,")*255/(",maxval,"-",minval,")+",minval
+  sel_formula <- paste0(
+    "clip(", if (proc_mode == "gdal_calc") {"A.astype(float),"} else {"v,"},
+    minval,",",maxval,")*255/(",maxval,"-",minval,")+",minval
   )
-  
-  # Compute RGB with gdal_calc (same formula for all the 3 bands)
+
+  ## Compute RGB with the selected mode
   # (an intermediate step creating a GeoTiff is required,
   # since gdal_calc is not able to write in JPEG format)
   
   # if minmax is the same for all 3 bands, use a single step with gdal_calc;
   # else, create 3 tiffs and merge them with gdalbuildvrt
-  if (length(minval) == 1) {
+  if (any(
+    length(sel_formula) == 1,
+    all(proc_mode %in% c("raster", "stars"), length(unique(sel_formula)) == 1)
+  )) {
     
     interm_path <- file.path(tmpdir, gsub("\\..+$","_temp.tif", basename(out_file)))
-    
-    gdalUtil(
-      "calc",
-      source = in_rast, 
-      destination = interm_path,
-      formula = gdal_formula,
-      options = c(
-        "--allBands", "A",
-        "--type", "Byte",
-        "--NoDataValue", "0",
-        "--format", "GTiff"
-      ),
-      quiet = TRUE
-    )
+
+    if (proc_mode == "raster") {
+      calcindex_raster(
+        in_rast,
+        sel_formula[1],
+        out_file = interm_path,
+        NAflag = 0,
+        sel_format = "GTiff",
+        compress = "LZW",
+        datatype = "Byte"
+      )
+    } else if (proc_mode == "stars") {
+      calcindex_stars(
+        in_rast,
+        sel_formula[1],
+        out_file = interm_path,
+        NAflag = 0,
+        sel_format = "GTiff",
+        compress = "LZW",
+        datatype = "Byte"
+      )
+    } else if (proc_mode == "gdal_calc") {
+      gdalUtil(
+        "calc",
+        source = in_rast,
+        destination = interm_path,
+        formula = gdal_formula,
+        options = c(
+          "--allBands", "A",
+          "--type", "Byte",
+          "--NoDataValue", "0",
+          "--format", "GTiff"
+        ),
+        quiet = TRUE
+      )
+    }
     
   } else {
     
@@ -124,22 +159,46 @@ stack2rgb <- function(in_rast,
       gsub("\\..+$",paste0("_temp",i,".tif"),basename(out_file))
     )})
     interm_path <- gsub("\\_temp1.tif$", "_temp.vrt", interm_paths[1])
-    
+
     for (i in seq_along(minval)) {
-      gdalUtil(
-        "calc",
-        source = in_rast, 
-        destination = interm_paths[i],
-        formula = gdal_formula[i],
-        options = c(
-          "--A_band", i,
-          "--type", "Byte",
-          "--NoDataValue", "0",
-          "--format", "GTiff"
-        ),
-        quiet = TRUE
-      )
+      if (proc_mode == "raster") {
+        calcindex_raster(
+          brick(in_rast)[[i]],
+          sel_formula[i],
+          out_file = interm_paths[i],
+          NAflag = 0,
+          sel_format = "GTiff",
+          compress = "LZW",
+          datatype = "Byte"
+        )
+      } else if (proc_mode == "stars") {
+        
+        calcindex_stars(
+          eval(parse(text=paste0("read_stars(in_rast, proxy = TRUE)[,,,",eval(parse(text="i")),"]"))),
+          sel_formula[i],
+          out_file = interm_paths[i],
+          NAflag = 0,
+          sel_format = "GTiff",
+          compress = "LZW",
+          datatype = "Byte"
+        )
+      } else if (proc_mode == "gdal_calc") {
+        gdalUtil(
+          "calc",
+          source = in_rast,
+          destination = interm_paths[i],
+          formula = gdal_formula[i],
+          options = c(
+            "--A_band", i,
+            "--type", "Byte",
+            "--NoDataValue", "0",
+            "--format", "GTiff"
+          ),
+          quiet = TRUE
+        )
+      }
     }
+ 
     gdalUtil(
       "buildvrt",
       source = interm_paths,
@@ -381,6 +440,12 @@ raster2rgb <- function(in_rast,
 #'  If `tmpdir` is a non-empty folder, a random subdirectory will be used.
 #' @param rmtmp (optional) Logical: should temporary files be removed?
 #'  (Default: TRUE)
+#' @param proc_mode (optional) Character: if `"gdal_calc"`,
+#'  `gdal_calc` routines are used to compute indices;
+#'  if `"raster"` or `"stars"`, R functions are instead used
+#'  (using respectively `raster` or `stars` routines).
+#'  Default (NA) is `"gdal_calc"` if a runtime GDAL is found; `"raster"` elsewhere.
+#'  See `s2_calcindices()` for further details.
 #' @param overwrite (optional) Logical value: should existing thumbnails be
 #'  overwritten? (default: TRUE)
 #' @return A vector with the names of the created images.
@@ -404,10 +469,39 @@ s2_thumbnails <- function(infiles,
                           outdir=NA,
                           tmpdir=NA,
                           rmtmp=TRUE,
+                          proc_mode=NA,
                           overwrite=FALSE) {
   
-  # Check that GDAL suports JPEG JFIF format
+  # Check that GDAL supports JPEG JFIF format
   # TODO
+  
+  # Check proc_mode and GDAL external dependency
+  if (is.na(proc_mode)) {
+    proc_mode <- if (is.null(load_binpaths()$gdal_calc)) {"gdal_calc"} else {"raster"}
+  }
+  if (!proc_mode %in% c("gdal_calc", "raster", "stars")) {
+    print_message(
+      type = "warning",
+      "proc_mode = \"",proc_mode,"\" is not recognised; ",
+      "switching to \"raster\"."
+    )
+    proc_mode <- "raster"
+  }
+  if (proc_mode == "gdal_calc" && is.null(load_binpaths()$gdal_calc)) {
+    tryCatch(
+      check_gdal(abort = TRUE),
+      error = function(e) {
+        print_message(
+          type = "warning",
+          "External GDAL binaries are required with 'proc_mode = \"gdal_calc\"'; ",
+          "please configure them using function check_gdal() ",
+          "or through a GUI with check_sen2r_deps(). ",
+          "Now switching to proc_mode = \"raster\"."
+        )
+        proc_mode <- "raster"
+      }
+    )
+  }
   
   # Set tmpdir
   if (is.na(tmpdir)) {
@@ -546,6 +640,7 @@ s2_thumbnails <- function(infiles,
           out_file = out_path,
           minval = sel_scaleRange[1],
           maxval = sel_scaleRange[2],
+          proc_mode = proc_mode,
           tmpdir = tmpdir
         )
         

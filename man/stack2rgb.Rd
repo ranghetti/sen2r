@@ -13,11 +13,12 @@ stack2rgb(
   format = "JPEG",
   compress = "90",
   bigtiff = FALSE,
+  proc_mode = "raster",
   tmpdir = NA
 )
 }
 \arguments{
-\item{in_rast}{Path of the input multiband raster.}
+\item{in_rast}{Input raster (as \verb{Raster*} or \code{stars} object).}
 
 \item{out_file}{(optional) Path of the output RGB JPEG image; if NULL
 (default), a RasterBrick will be returned.}
@@ -46,6 +47,12 @@ this is interpreted as the quality level of a JPEG compression.}
 \item{bigtiff}{(optional) Logical: if TRUE, the creation of a BigTIFF is
 forced (default is FALSE).
 This option is used only in the case a GTiff format was chosen.}
+
+\item{proc_mode}{(optional) Character: if \code{"gdal_calc"},
+\code{gdal_calc} routines are used to compute indices;
+if \code{"raster"} (default) or \code{"stars"}, R functions are instead used
+(using respectively \code{raster} or \code{stars} routines).
+See \code{s2_calcindices()} for further details.}
 
 \item{tmpdir}{(optional) Path where intermediate files will be created.
 Default is a temporary directory.

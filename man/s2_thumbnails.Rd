@@ -13,6 +13,7 @@ s2_thumbnails(
   outdir = NA,
   tmpdir = NA,
   rmtmp = TRUE,
+  proc_mode = NA,
   overwrite = FALSE
 )
 }
@@ -61,6 +62,13 @@ If \code{tmpdir} is a non-empty folder, a random subdirectory will be used.}
 
 \item{rmtmp}{(optional) Logical: should temporary files be removed?
 (Default: TRUE)}
+
+\item{proc_mode}{(optional) Character: if \code{"gdal_calc"},
+\code{gdal_calc} routines are used to compute indices;
+if \code{"raster"} or \code{"stars"}, R functions are instead used
+(using respectively \code{raster} or \code{stars} routines).
+Default (NA) is \code{"gdal_calc"} if a runtime GDAL is found; \code{"raster"} elsewhere.
+See \code{s2_calcindices()} for further details.}
 
 \item{overwrite}{(optional) Logical value: should existing thumbnails be
 overwritten? (default: TRUE)}

@@ -58,6 +58,20 @@ smooth_mask <- function(
   radius_npx <- abs(radius / inmask_res)
   buffer_npx <- buffer / inmask_res
   
+  # check GDAL external dependency
+  if (is.null(load_binpaths()$gdal_calc)) {
+    tryCatch(
+      check_gdal(abort = TRUE),
+      error = function(e) {
+        print_message(
+          type = "error",
+          "External GDAL binaries are required to smooth masks; ",
+          "please configure them using function check_gdal() ",
+          "or through a GUI with check_sen2r_deps()."
+        )
+      }
+    )
+  }
   
   # 1. set inmask=1 (clear sky) and namask=0 (nodata) to NA
   inmask_path1 <- file.path(tmpdir,basename(tempfile(pattern = "mask_", fileext = ".tif")))
