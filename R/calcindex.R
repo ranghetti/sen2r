@@ -6,7 +6,7 @@
 #' @param x Input file path, or `RasterLayer` (in `calcindex_raster()`) or
 #'  `stars` (in `calcindex_stars()`).
 #' @param sel_formula Formula used to compute output raster
-#'  (specific formats are used - documetnation will be improved).
+#'  (specific formats are used - documentation will be improved).
 #' @param out_file Output file path.
 #' @param NAflag (optional)
 #' @param sel_format (optional) Format of the output file (in a

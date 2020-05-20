@@ -1029,7 +1029,7 @@ s2_gui <- function(param_list = NULL,
                   )
                   
                 ) # end of smooth/buffer fluidRow
-              ) # endo if conditionalPanel mask_apply_smooth
+              ) # end if conditionalPanel mask_apply_smooth
               
             ) # end of conditionalPanel atm_mask
             
@@ -1516,8 +1516,7 @@ s2_gui <- function(param_list = NULL,
     observe({
       if (input$online == FALSE) {
         disable("rm_safe")
-        updateRadioButtons(session, "rm_safe",
-                           selected = "no")
+        updateRadioButtons(session, "rm_safe", selected = "no")
       } else {
         enable("rm_safe")
       }
@@ -1531,8 +1530,7 @@ s2_gui <- function(param_list = NULL,
         enable("overwrite_safe")
       } else {
         disable("overwrite_safe")
-        updateRadioButtons(session, "overwrite_safe",
-                           selected = FALSE)
+        updateRadioButtons(session, "overwrite_safe", selected = FALSE)
       }
     })
     
@@ -1629,6 +1627,17 @@ s2_gui <- function(param_list = NULL,
     ## Parallelisation / processing order
     observeEvent(input$n_cores_auto, ignoreInit = TRUE, {
       toggle("n_cores")
+    })
+    
+    
+    ## Disable atmospheric correction options if Sen2Cor is not configured
+    observeEvent(input$step_atmcorr, {
+      if (is.null(binpaths$sen2cor)) {
+        updateRadioButtons(session, "step_atmcorr", selected = "l2a")
+        updateRadioButtons(session, "use_dem", selected = "FALSE")
+        disable("step_atmcorr")
+        disable("use_dem")
+      }
     })
     
     ## end of steps module ##
@@ -2385,6 +2394,14 @@ s2_gui <- function(param_list = NULL,
     })
     
     
+    ## Disable mask smooth/buffer if gdal_fillnodata is not configured
+    observeEvent(input$mask_apply_smooth, {
+      if (is.null(binpaths$gdal_fillnodata)) {
+        disable("mask_apply_smooth")
+      }
+    })
+    
+    
     ## Update resolution from reference file
     output$outres_message <- renderUI({
       if (input$use_reference==TRUE & "res" %in% input$reference_usefor) {
@@ -2807,7 +2824,7 @@ s2_gui <- function(param_list = NULL,
           "(graphically) or <code>install_aria2()</code> (from commandline)."
         )),
         p(HTML(
-          "This selector is active only in aria2 was already installed and",
+          "This selector is active only if aria2 was already installed and",
           "recognised (to recognise it, launch <code>check_sen2r_deps()</code>)."
         )),
         easyClose = TRUE,
@@ -2918,6 +2935,12 @@ s2_gui <- function(param_list = NULL,
     observeEvent(input$help_step_atmcorr, {
       showModal(modalDialog(
         title = "Method to obtain level-2A corrected images",
+        p(HTML(
+          "<em><strong>Note:</strong> this selector is active only if",
+          "<a href=\"https://step.esa.int/main/third-party-plugins-2/sen2cor/\"",
+          "target=\"_blank\">Sen2Cor</a> was installed and configured;",
+          "to do it, run <code>check_sen2r_deps()</code>.</em>"
+        )),
         p(HTML(
           "<strong>Use only level-2A images available locally or online</strong>:",
           "Sen2Cor is never used locally: level-2A products are used only",
@@ -3288,6 +3311,11 @@ s2_gui <- function(param_list = NULL,
       showModal(modalDialog(
         title = "Smooth / bufferize the cloud-covered surface?",
         size = "l",
+        p(HTML(
+          "<em><strong>Note:</strong> this feature is available only if",
+          "an external runtime GDAL environment was configured;",
+          "to do it, run <code>check_sen2r_deps()</code>.</em>"
+        )),
         p(HTML(
           "By default, the cloud mask is applied at pixel level",
           "(pixels classified as cloudy are masked singularly).",

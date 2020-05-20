@@ -35,7 +35,7 @@ calcindex_stars(
 \code{stars} (in \code{calcindex_stars()}).}
 
 \item{sel_formula}{Formula used to compute output raster
-(specific formats are used - documetnation will be improved).}
+(specific formats are used - documentation will be improved).}
 
 \item{out_file}{Output file path.}
 
