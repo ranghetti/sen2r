@@ -46,20 +46,22 @@ Before installing <span style="color:#5793dd;vertical-align:top;font-size:90%;fo
 - [libxml2](http://xmlsoft.org)
     (required by [XML](https://CRAN.R-project.org/package=XML)).
     
-Other binaries are required (or suggested), since they are used in runtime by the package:
+Some external dependencies are required to run specific
+<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+features:
 
-* [**GDAL**](http://www.gdal.org) (with support for JP2OpenJPEG format):
-    this is a mandatory dependency, needed for all the processing operations
-    and to retrieve metadata from SAFE products;
 * [**Sen2Cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor)
     is used to perform atmospheric correction of Sentinel-2 Level-1C products:
     it is required by the package, unless you choose not to correct products locally
-    (using only Level-1C – TOA products or downloading directly Level-2A products).
+    (using only Level-1C – TOA products or downloading directly Level-2A products);
+* [**GDAL**](http://www.gdal.org)
+    is required to smooth/bufferise a cloud mask, and can be optionally used
+    to compute spectral indices, RGB images and thumbnails;
 * [**aria2**](https://aria2.github.io) is an alternative downloader which
     can be used to faster the download of SAFE archives; it can be optionally
     installed and used.
 
-To install both package dependencies and runtime binaries (excepting **sen2cor**, which is installed by <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>):
+To install both package dependencies and runtime binaries (excepting **Sen2Cor**, which is installed by <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>):
 
 - On Ubuntu:
     ```{bash, eval = FALSE}
@@ -174,26 +176,24 @@ To do it:
 This will install the R package along with its package dependencies,
 containing all the functions necessary to preprocess data.
 
-### Installing runtime dependencies
+### Installing runtime dependencies (optional)
 
-To run the functions correctly, some external dependences are required:
+Some external dependencies are required to run specific
+<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+features:
 
-* [**GDAL**](http://www.gdal.org) (with support for JP2OpenJPEG format):
-    this is a mandatory dependency, needed for all the processing operations
-    and to retrieve metadata from SAFE products.
-    To avoid incompatibilities, starting from
-    <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span
-    style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span
-    style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
-    v. 1.1.0 it is _strictly mandatory_ to use
-    a GDAL installation provided with the
-    [OSGeo4W installer](https://qgis.org/it/site/forusers/download.html):
-    if this requirement is not satisfied, it is possible to install GDAL
-    with OSGeo4W directly from R (see below);
 * [**Sen2Cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor)
     is used to perform atmospheric correction of Sentinel-2 Level-1C products:
     it is required by the package, unless you choose not to correct products locally
-    (using only Level-1C – TOA products or downloading directly Level-2A products).
+    (using only Level-1C – TOA products or downloading directly Level-2A products);
+* [**GDAL**](http://www.gdal.org)
+    is required to smooth/bufferise a cloud mask, and can be optionally used
+    to compute spectral indices, RGB images and thumbnails.
+    To avoid incompatibilities, it is _strictly mandatory_ to use
+    a GDAL installation provided with the 
+    [OSGeo4W installer](https://qgis.org/it/site/forusers/download.html):
+    if this requirement is not satisfied, it is possible to install GDAL
+    with OSGeo4W directly from R (see below);
 * [**aria2**](https://aria2.github.io) is an alternative downloader which
     can be used to faster the download of SAFE archives; it can be optionally
     installed and used.
@@ -225,31 +225,6 @@ using the [OSGeo4W installer](http://download.osgeo.org/osgeo4w/osgeo4w-setup-x8
 in advanced mode, and checking the installation of `openjpeg` library. -->
 
 ## <i class="fa fa-apple" aria-hidden="true"></i> On MacOS
-
-### Installing GDAL
-In order to avoid incompatibilities with GDAL, starting from
-<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span
-style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span
-style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
-v. 1.1.0 it is _strictly mandatory_ to use
-a GDAL installation provided with the
-[OSGeo Homebrew repository](https://github.com/OSGeo/homebrew-osgeo4mac).
-To do it:
-
-1. if Homebrew is missing on your system, install it opening a terminal and typing:
-    ```{bash, eval = FALSE}
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-    ```
-    (see [the Homebrew webpage](https://brew.sh/) for details);
-2. install GDAL by typing:
-    ```{bash, eval = FALSE}
-    brew tap osgeo/osgeo4mac
-    brew install osgeo-gdal-python
-    ```
-    (see [the OSGeo Homebrew webpage](https://github.com/OSGeo/homebrew-osgeo4mac) for details).
-    At this step, an error could be returned in case another GDAL installation was already present;
-    in this case, follow the instruction returned in the terminal to solve it
-    (probably some packages must be unlinked with the instructions `brew unlink <package>`).
 
 ### Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
 
@@ -291,18 +266,19 @@ To do it:
 This will install the R package along with its package dependencies,
 containing all the functions necessary to preprocess data.
 
-### Installing runtime dependencies
+### Installing runtime dependencies (optional)
 
-To run the functions correctly, some external dependences are required:
+Some external dependencies are required to run specific
+<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+features:
 
-* [**GDAL**](http://www.gdal.org) (with support for JP2OpenJPEG format):
-    this is a mandatory dependency, needed for all the processing operations
-    and to retrieve metadata from SAFE products.
-    If the previous instructions were followed, it was already installed;
 * [**Sen2Cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor)
     is used to perform atmospheric correction of Sentinel-2 Level-1C products:
     it is required by the package, unless you choose not to correct products locally
-    (using only Level-1C – TOA products or downloading directly Level-2A products).
+    (using only Level-1C – TOA products or downloading directly Level-2A products);
+* [**GDAL**](http://www.gdal.org)
+    is required to smooth/bufferise a cloud mask, and can be optionally used
+    to compute spectral indices, RGB images and thumbnails;
 * [**aria2**](https://aria2.github.io) is an alternative downloader which
     can be used to faster the download of SAFE archives; it can be optionally
     installed and used.
@@ -312,13 +288,25 @@ These dependences can be graphically checked launching the function
 library(sen2r)
 check_sen2r_deps()
 ```
-This function opens a GUI which help to check that they are satisfied;
-if some of them are missing, the GUI allows to install them directly.
+This function opens a GUI which help to check that they are satisfied.
 
-Alternatively, they can be installed individually from the command line with the
-three following functions (see their respective references for further details):
-```{r, eval = FALSE}
-check_gdal()
-install_sen2cor()
-install_aria2()
-```
+#### Note on GDAL installation
+In order to avoid incompatibilities with GDAL, it is _strictly mandatory_ to use
+a GDAL installation provided with the
+[OSGeo Homebrew repository](https://github.com/OSGeo/homebrew-osgeo4mac).
+To do it:
+
+1. if Homebrew is missing on your system, install it opening a terminal and typing:
+    ```{bash, eval = FALSE}
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    ```
+    (see [the Homebrew webpage](https://brew.sh/) for details);
+2. install GDAL by typing:
+    ```{bash, eval = FALSE}
+    brew tap osgeo/osgeo4mac
+    brew install osgeo-gdal-python
+    ```
+    (see [the OSGeo Homebrew webpage](https://github.com/OSGeo/homebrew-osgeo4mac) for details).
+    At this step, an error could be returned in case another GDAL installation was already present;
+    in this case, follow the instruction returned in the terminal to solve it
+    (probably some packages must be unlinked with the instructions `brew unlink <package>`).

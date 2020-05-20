@@ -173,28 +173,28 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
   gdal_versions <- sort(gdal_versions, decreasing = TRUE)
   
   
-  ## Check requisite 2: OpenJPEG support
-  gdal_check_jp2 <- sapply(paths_gdalinfo, function(path) {
-    gdal_formats <- system(paste0(path," --formats"), intern = TRUE)
-    any(grepl("JP2OpenJPEG", gdal_formats))
-  })
-  if (!any(gdal_check_jp2)) {
-    print_message(
-      type=message_type,
-      "Your local GDAL installation does not support JPEG2000 (JP2OpenJPEG) format. ",
-      "Please install JP2OpenJPEG support and recompile GDAL.",
-      if (Sys.info()["sysname"] == "Windows") {paste0(
-        "\nUsing the OSGeo4W installer ",
-        "(http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86",
-        if (Sys.info()["machine"]=="x86-64") {"_64"},".exe), ",
-        "choose the \"Advanced install\" and ",
-        "check the packages \"gdal-python\" and \"openjpeg\"."
-      )}
-    )
-    return(invisible(FALSE))
-  }
-  paths_gdalinfo <- paths_gdalinfo[gdal_check_jp2]
-  gdal_versions <- gdal_versions[gdal_check_jp2]
+  # ## Check requisite 2: OpenJPEG support
+  # gdal_check_jp2 <- sapply(paths_gdalinfo, function(path) {
+  #   gdal_formats <- system(paste0(path," --formats"), intern = TRUE)
+  #   any(grepl("JP2OpenJPEG", gdal_formats))
+  # })
+  # if (!any(gdal_check_jp2)) {
+  #   print_message(
+  #     type=message_type,
+  #     "Your local GDAL installation does not support JPEG2000 (JP2OpenJPEG) format. ",
+  #     "Please install JP2OpenJPEG support and recompile GDAL.",
+  #     if (Sys.info()["sysname"] == "Windows") {paste0(
+  #       "\nUsing the OSGeo4W installer ",
+  #       "(http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86",
+  #       if (Sys.info()["machine"]=="x86-64") {"_64"},".exe), ",
+  #       "choose the \"Advanced install\" and ",
+  #       "check the packages \"gdal-python\" and \"openjpeg\"."
+  #     )}
+  #   )
+  #   return(invisible(FALSE))
+  # }
+  # paths_gdalinfo <- paths_gdalinfo[gdal_check_jp2]
+  # gdal_versions <- gdal_versions[gdal_check_jp2]
   
   
   ## Check requisite 3: in Windows and Mac, use only OSGeo version
@@ -217,16 +217,14 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
       print_message(
         type=message_type,
         if (Sys.info()["sysname"] == "Windows") {paste0(
-          "You do not have a local GDAL environment installed with OSGeo4W, ",
-          "which is a mandatory requirement since sen2r v. 1.1.0. ",
+          "You do not have a local GDAL environment installed with OSGeo4W. ",
           "\nPlease install GDAL using the OSGeo4W installer ",
           "(http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86",
           if (Sys.info()["machine"]=="x86-64") {"_64"},".exe), ",
           "choosing the \"Advanced install\" and ",
-          "checking the packages \"gdal-python\" and \"openjpeg\"."
+          "checking the package \"gdal-python\"."
         )} else if (Sys.info()["sysname"] == "Darwin") {paste0(
-          "You do not have a local GDAL environment installed with OSGeo Homebrew, ",
-          "which is a mandatory requirement since sen2r v. 1.1.0. ",
+          "You do not have a local GDAL environment installed with OSGeo Homebrew. ",
           "\nPlease install GDAL from the OSGeo repository: ",
           "\n1. install Homebrew (https://brew.sh/);",
           "\n2. open a terminal and type ",

@@ -87,11 +87,11 @@ check_sen2r_deps <- function() {
       h3("GDAL"),
       helpText(em(
         "An external GDAL runtime environment is required in order to smooth and",
-        "buffer a cloud mask, and is optionally used to compute spectral indices",
+        "buffer a cloud mask, and is optionally used to compute spectral indices,",
         "RGB images and thumbnails.",
-        "Starting from version 1.3.5, GDAL is no longer a mandatory dependency",
+        "Starting from version 1.3.5, GDAL is no longer a mandatory dependency.",
         if (Sys.info()["sysname"] == "Windows") {span(
-          "Starting from version 1.1.0, on Windows",
+          "On Windows",
           strong("it is strictly required to install GDAL using OSGeo4W"),
           "in order to avoid errors.",
           "To satisfy this requirement, click on \"Check GDAL\" and,",
