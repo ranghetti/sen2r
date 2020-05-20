@@ -84,31 +84,20 @@ work are strongly encouraged to cite this publication within their work
 
 ## Installation
 
-### Install locally
-
 The package can be installed from CRAN:
 
 ``` r
 install.packages("sen2r")
 ```
 
-Alternatively, the development version can be installed from GitHub with
-the R package **remotes**:
-
-``` r
-remotes::install_github("ranghetti/sen2r")
-```
-
 For detailed instructions about installing the package (including
 dependencies), see the [Installation](articles/installation.md) page.
-
-### Run as Docker image
 
 A dockerised version of
 <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
 is available [here](https://hub.docker.com/r/ranghetti/sen2r). For
 detailed instructions about using it, see the page [“Run in a Docker
-container”](articles/docker.md) page.
+container”](articles/docker.md).
 
 ## Usage
 
