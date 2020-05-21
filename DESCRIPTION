@@ -32,7 +32,7 @@ Imports:
   jsonlite,
   geojsonio,
   leaflet,
-  leaflet.extras,
+  leafpm,
   mapedit,
   shiny,
   shinyFiles,

@@ -11,6 +11,7 @@
 #' @importFrom shiny actionButton div fileInput htmlOutput icon modalButton modalDialog
 #'  numericInput span tagList textInput
 #' @importFrom shinyFiles shinyFilesButton
+#' @importFrom mapedit editModUI
 
 #' @name load_extent_bbox
 #' @rdname load_extent

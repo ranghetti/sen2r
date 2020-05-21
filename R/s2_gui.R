@@ -19,9 +19,8 @@
 #' @importFrom leaflet addLayersControl addMapPane addPolygons addProviderTiles
 #'  addTiles clearShapes fitBounds hideGroup labelOptions layersControlOptions
 #'  leaflet leafletOutput leafletProxy pathOptions removeLayersControl removeShape
-#' @importFrom leaflet.extras addDrawToolbar editToolbarOptions
-#'  removeDrawToolbar
-#' @importFrom mapedit editModUI
+#' @importFrom mapedit editMod
+#' @importFrom leafpm pmToolbarOptions
 #' @importFrom utils packageVersion
 #' @importFrom sf st_coordinates st_crs st_geometry st_intersects st_polygon
 #'  st_zm st_read st_bbox st_as_sfc st_transform
@@ -66,7 +65,7 @@ s2_gui <- function(param_list = NULL,
   # Check shiny & co. to be installed
   missing_pkgs <- !sapply(
     c("shiny", "shinydashboard", "shinyFiles", "shinyjs", "shinyWidgets", 
-      "leaflet", "leaflet.extras", "mapedit"), 
+      "leaflet", "leafpm", "mapedit"), 
     requireNamespace, quietly = TRUE
   )
   if (any(missing_pkgs)) {
@@ -2170,7 +2169,19 @@ s2_gui <- function(param_list = NULL,
       # in order not to make mess between modules
       extent_ns_name <- paste0("editor_",sample(1E9,1))
       extent_ns <- NS(extent_ns_name)
-      rv$extent_edits <- callModule(editModPoly, extent_ns_name, base_map())
+      rv$extent_edits <- callModule(
+        mapedit::editMod, 
+        extent_ns_name, 
+        base_map(),
+        editor = "leafpm",
+        editorOptions = list(
+          toolbarOptions = leafpm::pmToolbarOptions(
+            drawMarker = FALSE, 
+            drawPolyline = FALSE,
+            drawCircle = FALSE
+          )
+        )
+      )
       
       # show the modal dialog
       showModal(load_extent_draw(extent_ns_name))
