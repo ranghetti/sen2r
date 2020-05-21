@@ -18,14 +18,6 @@
 #'  \href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473}, 
 #'  URL: \url{http://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
-#' @importFrom shiny actionButton addResourcePath br code conditionalPanel div em
-#'  fluidPage fluidRow h3 helpText htmlOutput icon modalButton
-#'  modalDialog observe observeEvent outputOptions p reactive radioButtons
-#'  reactiveFileReader reactivePoll reactiveValues renderText renderUI runApp
-#'  shinyApp showModal span strong textOutput uiOutput verbatimTextOutput
-#' @importFrom shinyjs hide html useShinyjs extendShinyjs disabled disable enable
-#' @importFrom shinyFiles getVolumes parseDirPath parseFilePaths
-#'  shinyDirButton shinyDirChoose shinyFileChoose shinyFilesButton
 #' @importFrom utils capture.output
 #' @importFrom httr RETRY write_disk progress
 #' @importFrom jsonlite fromJSON toJSON
@@ -37,21 +29,61 @@
 
 check_sen2r_deps <- function() {
   
-  # Check shiny & co. to be installed
-  missing_pkgs <- !sapply(
-    c("shiny", "shinyFiles", "shinyjs", "shinyWidgets"), 
-    requireNamespace, quietly = TRUE
-  )
-  if (any(missing_pkgs)) {
-    print_message(
-      type = "error",
-      "packages '",
-      paste(names(missing_pkgs)[missing_pkgs], collapse = "', '"),"' ",
-      "are required to run the sen2r Shiny GUI."
-    )
-  }
-  
   jscode <- "shinyjs.closeWindow = function() { window.close(); }"
+  
+  # Check shiny* / leaflet* suggested dependencies to be installed
+  check_gui_deps()
+  
+  # Define internal functions as aliases of shiny* - leaflet* ones,
+  # so to avoid using "shiny::" every time
+  actionButton <- shiny::actionButton
+  addResourcePath <- shiny::addResourcePath
+  br <- shiny::br
+  code <- shiny::code
+  conditionalPanel <- shiny::conditionalPanel
+  div <- shiny::div
+  em <- shiny::em
+  fluidPage <- shiny::fluidPage
+  fluidRow <- shiny::fluidRow
+  h3 <- shiny::h3
+  helpText <- shiny::helpText
+  htmlOutput <- shiny::htmlOutput
+  icon <- shiny::icon
+  modalButton <- shiny::modalButton
+  modalDialog <- shiny::modalDialog
+  observe <- shiny::observe
+  observeEvent <- shiny::observeEvent
+  outputOptions <- shiny::outputOptions
+  p <- shiny::p
+  reactive <- shiny::reactive
+  radioButtons <- shiny::radioButtons
+  reactiveFileReader <- shiny::reactiveFileReader
+  reactivePoll <- shiny::reactivePoll
+  reactiveValues <- shiny::reactiveValues
+  renderText <- shiny::renderText
+  renderUI <- shiny::renderUI
+  runApp <- shiny::runApp
+  shinyApp <- shiny::shinyApp
+  showModal <- shiny::showModal
+  span <- shiny::span
+  strong <- shiny::strong
+  textOutput <- shiny::textOutput
+  uiOutput <- shiny::uiOutput
+  verbatimTextOutput <- shiny::verbatimTextOutput
+  hide <- shinyjs::hide
+  html <- shinyjs::html
+  useShinyjs <- shinyjs::useShinyjs
+  extendShinyjs <- shinyjs::extendShinyjs
+  disabled <- shinyjs::disabled
+  disable <- shinyjs::disable
+  enable <- shinyjs::enable
+  getVolumes <- shinyFiles::getVolumes
+  parseDirPath <- shinyFiles::parseDirPath
+  parseFilePaths <- shinyFiles::parseFilePaths
+  shinyDirButton <- shinyFiles::shinyDirButton
+  shinyDirChoose <- shinyFiles::shinyDirChoose
+  shinyFileChoose <- shinyFiles::shinyFileChoose
+  shinyFilesButton <- shinyFiles::shinyFilesButton
   
   # get server volumes
   volumes <- c(

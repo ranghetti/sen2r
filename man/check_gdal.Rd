@@ -33,7 +33,7 @@ Logical (invisible): TRUE in case the installation is ok, FALSE
 if GDAL is missing and abort=FALSE (otherwise, the function stops).
 }
 \description{
-The function check that GDAL is installed and updated to
+The function checks that GDAL is installed and updated to
 the minimum required version (2.1.2).
 }
 \note{

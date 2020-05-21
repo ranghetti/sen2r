@@ -31,6 +31,12 @@ Imports:
   XML,
   jsonlite,
   geojsonio,
+  foreach,
+  parallel,
+  doParallel,
+  httr,
+  RcppTOML
+Suggests:
   leaflet,
   leafpm,
   mapedit,
@@ -39,12 +45,6 @@ Imports:
   shinydashboard,
   shinyjs,
   shinyWidgets,
-  foreach,
-  parallel,
-  doParallel,
-  httr,
-  RcppTOML
-Suggests:
   spelling,
   geojsonlint,
   httptest,

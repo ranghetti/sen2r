@@ -23,8 +23,6 @@
 #'  \href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473}, 
 #'  URL: \url{http://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
-#' @importFrom shiny a actionButton icon modalButton modalDialog passwordInput tagList textInput
-#' @importFrom shinyFiles shinyFileSave
 #' 
 #' @examples
 #'   check_scihub_login("user", "user")
@@ -166,6 +164,19 @@ write_scihub_login <- function(username, password,
 
 # write dialog content
 .scihub_modal <- function() { #nocov start
+  
+  # Define internal functions as aliases of shiny* - leaflet* ones,
+  # so to avoid using "shiny::" every time
+  a <- shiny::a
+  actionButton <- shiny::actionButton
+  icon <- shiny::icon
+  modalButton <- shiny::modalButton
+  modalDialog <- shiny::modalDialog
+  passwordInput <- shiny::passwordInput
+  tagList <- shiny::tagList
+  textInput <- shiny::textInput
+  shinySaveButton <- shinyFiles::shinySaveButton
+  
   # read scihub user/password
   apihub_path <- file.path(dirname(attr(load_binpaths(), "path")), "apihub.txt")
   apihub <- if (file.exists(apihub_path)) {

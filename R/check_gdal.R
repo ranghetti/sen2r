@@ -1,5 +1,5 @@
 #' @title Check GDAL installation
-#' @description The function check that GDAL is installed and updated to
+#' @description The function checks that GDAL is installed and updated to
 #'  the minimum required version (2.1.2).
 #' @param abort Logical parameter: if TRUE (default), the function aborts
 #'  in case no GDAL installation is found; if FALSE, a warning is shown
