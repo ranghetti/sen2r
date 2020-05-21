@@ -1,6 +1,6 @@
 language: R
 sudo: required
-dist: xenial
+dist: bionic
 cache: packages
 r:
   - release
