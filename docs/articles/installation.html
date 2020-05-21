@@ -205,7 +205,8 @@ Installation was tested over Fedora 29.</li>
 Would you like to use a personal library instead?  (y/n)</code></pre>
 <p>If so, press <code>y</code> and continue. Moreover, if no personal libraries already exist, it is asked to create a new one: ask <code>y</code> and continue.</p>
 <p>After that, the package can be installed from CRAN:</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sen2r"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sen2r"</span>, <span class="kw">dependencies</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
+<p>Packages required to run the GUI are suggested dependencies; for this reason, the argument <code>dependencies = TRUE</code> is needed to be able to run all the package’s features. It can be skipped if the user is not interested to use the GUI.</p>
 <p>Alternatively, the development version can be installed from GitHub with the R package <strong>remotes</strong>. To do it:</p>
 <ol style="list-style-type: decimal">
 <li>
@@ -215,7 +216,7 @@ Would you like to use a personal library instead?  (y/n)</code></pre>
 <li>
 <p>load it and install <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:</p>
 <div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">remotes</span>)
-<span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"ranghetti/sen2r"</span>)</pre></body></html></div>
+<span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"ranghetti/sen2r"</span>, <span class="kw">dependencies</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
 </li>
 </ol>
 <p>This will install the R package along with its package dependencies, containing all the functions necessary to preprocess data.</p>
@@ -235,7 +236,8 @@ Would you like to use a personal library instead?  (y/n)</code></pre>
 <p>In the case it was already installed, it is suggested to update the existing R packages:</p>
 <div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/update.packages.html">update.packages</a></span>(<span class="kw">ask</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
 <p><span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be installed from CRAN:</p>
-<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sen2r"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sen2r"</span>, <span class="kw">dependencies</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
+<p>Packages required to run the GUI are suggested dependencies; for this reason, the argument <code>dependencies = TRUE</code> is needed to be able to run all the package’s features. It can be skipped if the user is not interested to use the GUI.</p>
 <p>Alternatively, the development version can be installed from GitHub with the R package <strong>remotes</strong>. To do it:</p>
 <ol style="list-style-type: decimal">
 <li>
@@ -245,7 +247,7 @@ Would you like to use a personal library instead?  (y/n)</code></pre>
 <li>
 <p>load it and install <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:</p>
 <div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">remotes</span>)
-<span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"ranghetti/sen2r"</span>)</pre></body></html></div>
+<span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"ranghetti/sen2r"</span>, <span class="kw">dependencies</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
 </li>
 </ol>
 <p>This will install the R package along with its package dependencies, containing all the functions necessary to preprocess data.</p>
@@ -295,7 +297,8 @@ in advanced mode, and checking the installation of `openjpeg` library. -->
 <div class="sourceCode" id="cb19"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"sp"</span>, <span class="st">"sf"</span>, <span class="st">"rgdal"</span>, <span class="st">"rgeos"</span>), <span class="kw">type</span> <span class="kw">=</span> <span class="st">"source"</span>)</pre></body></html></div>
 <p><strong>after</strong> having installed GDAL as described above.</p>
 <p><span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be installed from CRAN:</p>
-<div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sen2r"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sen2r"</span>, <span class="kw">dependencies</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
+<p>Packages required to run the GUI are suggested dependencies; for this reason, the argument <code>dependencies = TRUE</code> is needed to be able to run all the package’s features. It can be skipped if the user is not interested to use the GUI.</p>
 <p>Alternatively, the development version can be installed from GitHub with the R package <strong>remotes</strong>. To do it:</p>
 <ol style="list-style-type: decimal">
 <li>
@@ -305,7 +308,7 @@ in advanced mode, and checking the installation of `openjpeg` library. -->
 <li>
 <p>load it and install <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:</p>
 <div class="sourceCode" id="cb22"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">remotes</span>)
-<span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"ranghetti/sen2r"</span>)</pre></body></html></div>
+<span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"ranghetti/sen2r"</span>, <span class="kw">dependencies</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
 </li>
 </ol>
 <p>This will install the R package along with its package dependencies, containing all the functions necessary to preprocess data.</p>
