@@ -85,9 +85,8 @@ are strongly encouraged to cite this publication within their work (see [Credits
 
 The package can be installed from CRAN:
 ```{r, eval = FALSE}
-install.packages("sen2r", dependencies = TRUE)
+install.packages("sen2r")
 ```
-Note that argument `dependencies = TRUE` is needed to be able to run all the package's features.
 
 For detailed instructions about installing the package (including dependencies),
 see the [Installation](articles/installation.md) page.

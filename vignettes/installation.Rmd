@@ -113,9 +113,8 @@ Moreover, if no personal libraries already exist, it is asked to create a new on
 
 After that, the package can be installed from CRAN:
 ```{r, eval = FALSE}
-install.packages("sen2r", dependencies = TRUE)
+install.packages("sen2r")
 ```
-Packages required to run the GUI are suggested dependencies; for this reason, the argument `dependencies = TRUE` is needed to be able to run all the package's features. It can be skipped if the user is not interested to use the GUI.
 
 Alternatively, the development version can be installed from GitHub with the R package **remotes**.
 To do it:
@@ -130,7 +129,7 @@ To do it:
     style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:
     ```{r, eval = FALSE}
     library(remotes)
-    install_github("ranghetti/sen2r", dependencies = TRUE)
+    install_github("ranghetti/sen2r")
     ```
 
 This will install the R package along with its package dependencies,
@@ -155,9 +154,8 @@ update.packages(ask = FALSE)
 
 <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be installed from CRAN:
 ```{r, eval = FALSE}
-install.packages("sen2r", dependencies = TRUE)
+install.packages("sen2r")
 ```
-Packages required to run the GUI are suggested dependencies; for this reason, the argument `dependencies = TRUE` is needed to be able to run all the package's features. It can be skipped if the user is not interested to use the GUI.
 
 Alternatively, the development version can be installed from GitHub with the R package **remotes**.
 To do it:
@@ -172,7 +170,7 @@ To do it:
     style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:
     ```{r, eval = FALSE}
     library(remotes)
-    install_github("ranghetti/sen2r", dependencies = TRUE)
+    install_github("ranghetti/sen2r")
     ```
 
 This will install the R package along with its package dependencies,
@@ -246,9 +244,8 @@ __after__ having installed GDAL as described above.
 
 <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be installed from CRAN:
 ```{r, eval = FALSE}
-install.packages("sen2r", dependencies = TRUE)
+install.packages("sen2r")
 ```
-Packages required to run the GUI are suggested dependencies; for this reason, the argument `dependencies = TRUE` is needed to be able to run all the package's features. It can be skipped if the user is not interested to use the GUI.
 
 Alternatively, the development version can be installed from GitHub with the R package **remotes**.
 To do it:
@@ -263,7 +260,7 @@ To do it:
     style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:
     ```{r, eval = FALSE}
     library(remotes)
-    install_github("ranghetti/sen2r", dependencies = TRUE)
+    install_github("ranghetti/sen2r")
     ```
 
 This will install the R package along with its package dependencies,
