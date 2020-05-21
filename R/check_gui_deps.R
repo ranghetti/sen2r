@@ -45,7 +45,7 @@ check_gui_deps <- function(abort = TRUE) {
       "Some missing packages are needed to run the GUI; ",
       "please install them with the command \n",
       " > install.packages(\"",
-      paste(names(gui_deps_missing)[gui_deps_missing], collapse = "\", \""),"\")",
+      paste(names(gui_deps_missing)[gui_deps_missing], collapse = "\", \""),"\")"
     )
     invisible(TRUE)
   } else {
