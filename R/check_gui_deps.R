@@ -23,7 +23,7 @@
 #' check_gui_deps()
 #' }
 
-check_gui_deps <- function(abort = FALSE) {
+check_gui_deps <- function(abort = TRUE) {
   
   # Packages required to run the GUI
   gui_deps <- c(
@@ -45,9 +45,7 @@ check_gui_deps <- function(abort = FALSE) {
       "Some missing packages are needed to run the GUI; ",
       "please install them with the command \n",
       " > install.packages(\"",
-      paste(names(gui_deps_missing)[gui_deps_missing], collapse = "\", \""),"\")\n",
-      "or reinstall sen2r with the command \n",
-      " > install.packages(\"sen2r\", dependencies = TRUE)"
+      paste(names(gui_deps_missing)[gui_deps_missing], collapse = "\", \""),"\")",
     )
     invisible(TRUE)
   } else {
