@@ -760,13 +760,13 @@ sen2r <- function(param_list = NULL,
   }
   
   # Check parameters
-  suppressWarnings({
+  suppressWarnings(suppressMessages({
     pm <- check_param_list(
       pm,
       type = if (gui) {"message"} else {"error"},
       check_paths = FALSE, correct = TRUE
     )
-  })
+  }))
   
   # Check param_list version
   if (is.null(pm_list$pkg_version)) {
@@ -837,7 +837,6 @@ sen2r <- function(param_list = NULL,
   
   
   ## Check consistency of parameters
-  # TODO work in progress
   pm <- check_param_list(pm, type = "error", check_paths = TRUE, correct = TRUE)
   
   # if ONLINE check internet connection and scihub credentials

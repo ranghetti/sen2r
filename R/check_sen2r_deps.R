@@ -151,8 +151,8 @@ check_sen2r_deps <- function() {
     # build the icon of the check
     observe({
       input$check_gdal
-      rv$check_gdal_isvalid <- if (!is.null(binpaths()$gdalinfo)) {
-        file.exists(binpaths()$gdalinfo)
+      rv$check_gdal_isvalid <- if (!is.null(binpaths()$gdal_calc)) {
+        file.exists(binpaths()$gdal_calc)
       } else {FALSE}
     })
     output$check_gdal_isvalid <- renderText(rv$check_gdal_isvalid)

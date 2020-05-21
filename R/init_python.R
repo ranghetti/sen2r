@@ -19,7 +19,7 @@ init_python <- function() {
   
   binpaths <- load_binpaths("gdal")
   pythonhome_new <- list.files(
-    file.path(dirname(dirname(binpaths$gdalinfo)),"apps"), 
+    file.path(dirname(dirname(binpaths$gdal_calc)),"apps"), 
     pattern="^Python", 
     full.names=TRUE
   )[1]

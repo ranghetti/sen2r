@@ -41,12 +41,7 @@ License: GPL 3.0
 }
 \examples{
 \donttest{
-
-# Use function
 check_gdal()
-
-# Check GDAL was imported
-load_binpaths()$gdalinfo
 }
 }
 \references{

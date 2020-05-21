@@ -32,12 +32,7 @@
 #' @export
 #' @examples
 #' \donttest{
-#'
-#' # Use function
 #' check_gdal()
-#'
-#' # Check GDAL was imported
-#' load_binpaths()$gdalinfo
 #' }
 
 check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan = FALSE) {

@@ -8,6 +8,7 @@
     "Welcome to sen2r. To use the package from a GUI, launch",
     " > sen2r()",
     "Documentation: http://sen2r.ranghetti.info",
+    "Help and bug report: https://github.com/ranghetti/sen2r/issues",
     # if (all(
     #   Sys.info()["sysname"] %in% c("Windows", "Darwin"),
     #   length(load_binpaths()) == 0

@@ -68,10 +68,6 @@ testthat::test_that(
 testthat::test_that(
   "st_crs2, input PROJ.4", {
     expect_equal_crs(st_crs2("+init=epsg:32609"), 32609)
-    gdal_version <- package_version(gsub(
-      "^.*GDAL ([0-9\\.]+)[^0-9].*$", "\\1",
-      system(paste0(load_binpaths("gdal")$gdalinfo," --version"), intern = TRUE)
-    )) # checking GDAL >=3 instead than PROJ >= 6 for simplicity
     testthat::expect_warning(
       st_crs2("+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"),
       "Using PROJ\\.4 strings is deprecated with"

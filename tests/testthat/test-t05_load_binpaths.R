@@ -41,7 +41,7 @@ if (Sys.info()["sysname"] != "Windows") {
     binpaths_2 <- load_binpaths(c("gdal"))
     expect_is(binpaths_2, "list")
     expect_length(binpaths_2, 3)
-    expect_equal(binpaths_2$gdalinfo, normalize_path(Sys.which("gdalinfo")))
+    expect_equal(binpaths_2$gdal_calc, normalize_path(Sys.which("gdal_calc")))
     expect_equal(basename(attr(binpaths_2, "path")), "paths.json")
   })
   test_that("Load aria2", {

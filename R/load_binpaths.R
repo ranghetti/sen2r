@@ -52,7 +52,7 @@ load_binpaths <- function(bins = NULL) {
   ## Check that the required binaries are present
   
   # Check GDAL
-  if ("gdal" %in% bins & is.null(binpaths$gdalinfo)) {
+  if ("gdal" %in% bins & is.null(binpaths$gdal_calc)) {
     check_gdal()
     binpaths <- jsonlite::fromJSON(binpaths_file)
   }
