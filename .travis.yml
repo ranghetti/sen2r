@@ -3,6 +3,9 @@ sudo: required
 dist: bionic
 cache: packages
 
+import:
+  source: libgeos/geos:.travis.yml@master
+  
 addons:
   apt:
     update: true
