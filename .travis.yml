@@ -1,6 +1,6 @@
 language: R
 sudo: required
-dist: xenial
+dist: bionic
 cache: packages
 
 addons:
@@ -29,6 +29,7 @@ addons:
 r:
   - release
   - devel
+  - oldrel
 
 r_packages:
   - RPostgreSQL
