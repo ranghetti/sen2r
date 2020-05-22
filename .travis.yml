@@ -32,7 +32,7 @@ install:
   - cd ../../
   - wget https://github.com/OSGeo/gdal/archive/v2.2.3.tar.gz
   - tar -xzvf v2.2.3.tar.gz
-  - pushd gdal-2.2.3/gdal && ./configure && 
+  - pushd gdal-2.2.3/gdal && ./configure
   - make && sudo make install
   - cd ../../
 
