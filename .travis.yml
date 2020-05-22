@@ -29,18 +29,14 @@ before_install:
   
 install:
   - travis_wait 60 mvn install
-  - wget https://github.com/libgeos/geos/archive/3.8.0.tar.gz
-  - tar -xzvf 3.8.0.tar.gz
-  - pushd geos-3.8.0 && ./autogen.sh && mkdir obj && cd obj && ../configure --prefix=/usr
+  - wget https://github.com/libgeos/geos/archive/3.6.2.tar.gz
+  - tar -xzvf 3.6.2.tar.gz
+  - pushd geos-3.6.2 && ./autogen.sh && mkdir obj && cd obj && ../configure --prefix=/usr
   - make && sudo make install
   - cd ../../
-    - wget https://github.com/OSGeo/PROJ/archive/6.3.2.tar.gz
-  - tar -xzvf 6.3.2.tar.gz
-  - pushd PROJ-6.3.2 && ./autogen.sh && mkdir obj && cd obj && ../configure --prefix=/usr
-  - make && sudo make install
-  - wget https://github.com/OSGeo/gdal/archive/v3.0.4.tar.gz
-  - tar -xzvf v3.0.4.tar.gz
-  - pushd gdal-3.0.4/gdal && ./configure --prefix=/usr
+    - wget https://github.com/OSGeo/gdal/archive/v2.2.3.tar.gz
+  - tar -xzvf v2.2.3.tar.gz
+  - pushd gdal-2.2.3/gdal && ./configure --prefix=/usr
   - make && sudo make install
   - cd ../../
 
