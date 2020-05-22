@@ -9,6 +9,7 @@ addons:
     sources:
       - sourceline: 'ppa:opencpu/jq'
       - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+      - sourceline: 'ppa:marutter/c2d4u'
     packages:
       - libgdal-dev
       - libproj-dev
