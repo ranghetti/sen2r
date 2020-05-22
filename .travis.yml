@@ -1,33 +1,184 @@
 language: R
 sudo: required
-dist: bionic
+dist: xenial
 cache: packages
+
+addons:
+  apt:
+    update: true
+    sources:
+      - sourceline: 'ppa:opencpu/jq'
+      - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+    packages:
+      - libgdal-dev
+      - libproj-dev
+      - libudunits2-dev
+      - libv8-dev
+      - libprotobuf-dev
+      - libprotoc-dev
+      - protobuf-compiler
+      - valgrind
+      - libjq-dev
+      - python-numpy
+      - python-gdal
+      - aria2
+      - netcdf-bin
+      - gdal-bin
+      - python-gdal
+
 r:
   - release
   - devel
 
-r_packages:
+r_binary_packages:
+  - sys
+  - askpass
+  - lazyeval
+  - curl
+  - mime
+  - openssl
+  - R6
+  - DBI
+  - digest
+  - jsonlite
+  - rex
+  - httr
+  - crayon
+  - withr
+  - yaml
   - RPostgreSQL
   - covr
-
-apt_packages:
-  - libgdal-dev
-  - libproj-dev
-  - libudunits2-dev
-  - libv8-dev
-  - libprotobuf-dev
-  - libprotoc-dev
-  - protobuf-compiler
-  - valgrind
-  - libjq-dev
-  - python-numpy
-  - python-gdal
-  - aria2
-
-before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y libgdal-dev libproj-dev libv8-dev libprotobuf-dev libudunits2-dev netcdf-bin libv8-dev libjq-dev
-  - sudo apt-get install -y gdal-bin python-gdal
+  - sf
+  - stars
+  - data.table
+  - raster
+  - rgdal
+  - XML
+  - geojsonio
+  - foreach
+  - doParallel
+  - RcppTOML
+  - leaflet
+  - leafpm
+  - mapedit
+  - shiny
+  - shinyFiles
+  - shinydashboard
+  - shinyjs
+  - shinyWidgets
+  - spelling
+  - geojsonlint
+  - httptest
+  - knitr
+  - rmarkdown
+  - units
+  - testthat
+  - e1071
+  - Rcpp
+  - classInt
+  - magrittr
+  - sp
+  - urltools
+  - httpcode
+  - triebeard
+  - tibble
+  - hms
+  - clipr
+  - BH
+  - pkgconfig
+  - rlang
+  - vctrs
+  - cli
+  - ellipsis
+  - fansi
+  - lifecycle
+  - pillar
+  - assertthat
+  - glue
+  - utf8
+  - protolite
+  - jqr
+  - iterators
+  - htmltools
+  - xfun
+  - farver
+  - labeling
+  - munsell
+  - RColorBrewer
+  - viridisLite
+  - colorspace
+  - ggplot2
+  - gridExtra
+  - gtable
+  - isoband
+  - scales
+  - evaluate
+  - pkgload
+  - praise
+  - desc
+  - pkgbuild
+  - rprojroot
+  - rstudioapi
+  - callr
+  - prettyunits
+  - backports
+  - processx
+  - ps
+  - tidyselect
+  - plogr
+  - purrr
+  - base64enc
+  - crosstalk
+  - htmlwidgets
+  - markdown
+  - png
+  - viridis
+  - leaflet.providers
+  - mapdeck
+  - colourvalues
+  - googlePolylines
+  - geojsonsf
+  - jsonify
+  - sfheaders
+  - rapidjsonr
+  - spatialwidget
+  - httpuv
+  - xtable
+  - sourcetools
+  - later
+  - promises
+  - fastmap
+  - stringr
+  - stringi
+  - dplyr
+  - leafem
+  - leafpop
+  - satellite
+  - webshot
+  - brew
+  - svglite
+  - uuid
+  - plyr
+  - gdtools
+  - systemfonts
+  - highr
+  - V8
+  - abind
+  - lwgeom
+  - rgeos
+  - crul
+  - maptools
+  - readr
+  - geojson
+  - leaflet.extras
+  - mapview
+  - miniUI
+  - fs
+  - commonmark
+  - xml2
+  - hunspell
+  - jsonvalidate
+  - tinytex
 
 before_script:
   - mkdir $HOME/.sen2r
