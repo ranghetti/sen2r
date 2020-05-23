@@ -24,25 +24,22 @@ addons:
       - gdal-bin
       - python-gdal
 
-before_install:
-  export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"
-  
 install:
   - wget https://github.com/libgeos/geos/archive/3.6.2.tar.gz
   - tar -xzvf 3.6.2.tar.gz &> /tmp/build.log
   - pushd geos-3.6.2 && ./autogen.sh
   - mkdir obj && cd obj
-  - ../configure &> /tmp/build.log
+  - ../configure --prefix=/usr &> /tmp/build.log
   - make &> /tmp/build.log
   - sudo make install &> /tmp/build.log
   - cd ../../
   - wget https://github.com/OSGeo/gdal/archive/v2.2.3.tar.gz
   - tar -xzvf v2.2.3.tar.gz &> /tmp/build.log
   - pushd gdal-2.2.3/gdal
-  - ./configure &> /tmp/build.log
+  - ./configure --prefix=/usr &> /tmp/build.log
   - travis_wait 50 sh -c 'make &> /tmp/build.log'
-  - travis_wait 50 sudo sh -c 'make install &> /tmp/build.log'
-  - cd ../../ 
+  - sudo make install &> /tmp/build.log
+  - cd ../../
 
 r:
   - release
