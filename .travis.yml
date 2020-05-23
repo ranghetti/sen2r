@@ -10,6 +10,7 @@ addons:
       - sourceline: 'ppa:opencpu/jq'
       - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
     packages:
+      - libgdal-dev
       - libproj-dev
       - libudunits2-dev
       - libv8-dev
@@ -31,13 +32,6 @@ install:
   - mkdir obj && cd obj
   - ../configure --prefix=/usr &> /tmp/build.log
   - make &> /tmp/build.log
-  - sudo make install &> /tmp/build.log
-  - cd ../../
-  - wget https://github.com/OSGeo/gdal/archive/v2.2.3.tar.gz
-  - tar -xzvf v2.2.3.tar.gz &> /tmp/build.log
-  - pushd gdal-2.2.3/gdal
-  - ./configure --prefix=/usr &> /tmp/build.log
-  - travis_wait 50 sh -c 'make &> /tmp/build.log'
   - sudo make install &> /tmp/build.log
   - cd ../../
 
