@@ -33,8 +33,8 @@ install:
   - pushd geos-3.6.2 && ./autogen.sh
   - mkdir obj && cd obj
   - ../configure &> /tmp/build.log || (tail -n 100 /tmp/build.log && exit 1)
-  - travis_wait 50 sh -c 'make &> /tmp/build.log || (tail -n 100 /tmp/build.log && exit 1)'
-  - sudo make install
+  - make &> /tmp/build.log || (tail -n 100 /tmp/build.log && exit 1)
+  - sudo make install &> /tmp/build.log || (tail -n 100 /tmp/build.log && exit 1)
   - cd ../../
   - wget https://github.com/OSGeo/gdal/archive/v2.2.3.tar.gz
   - tar -xzvf v2.2.3.tar.gz &> /tmp/build.log
