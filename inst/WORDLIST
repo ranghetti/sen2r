@@ -8,6 +8,7 @@ BDred
 BigTIFF
 binpaths
 Boschetti
+bufferise
 builtin
 cageo
 cairo
@@ -98,7 +99,6 @@ notordered
 Nutini
 oldname
 opencpu
-OpenJPEG
 openssl
 org
 osgeo
@@ -118,6 +118,7 @@ RasterBrick
 RasterLayer
 rds
 reflectances
+Reflectances
 reproject
 reprojected
 reprojecting

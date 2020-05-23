@@ -11,14 +11,15 @@ NULL (the function is called for its side effects)
 }
 \description{
 The function allows to graphically check that all the
-dependencies are installed.
+optional runtime dependencies are installed.
 }
 \details{
-This package needs some external dependencies to run:
+This package needs some external dependencies in order to run
+specific actions:
 \itemize{
-\item Python
-\item GDAL
-\item Sen2Cor
+\item Sen2Cor for atmospheric correction;
+\item GDAL for cloud mask smoothing and buffering;
+\item aria2 to download SAFE images with an alternative downloader.
 }
 
 This function opens a GUI which allows to check that these dependencies
@@ -32,6 +33,13 @@ License: GPL 3.0
 if (interactive()) {
   check_sen2r_deps()
 }
+}
+\references{
+L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
+"sen2r": An R toolbox for automatically downloading and preprocessing
+Sentinel-2 satellite data. \emph{Computers & Geosciences}, 139, 104473. DOI:
+\href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473},
+URL: \url{http://sen2r.ranghetti.info/}.
 }
 \author{
 Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}

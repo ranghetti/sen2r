@@ -1,37 +1,39 @@
 language: R
 sudo: required
-dist: xenial
+dist: bionic
 cache: packages
+
+addons:
+  apt:
+    update: true
+    sources:
+      - sourceline: 'ppa:opencpu/jq'
+      - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+    packages:
+      - libgdal-dev
+      - libproj-dev
+      - libudunits2-dev
+      - libv8-dev
+      - libprotobuf-dev
+      - libprotoc-dev
+      - protobuf-compiler
+      - valgrind
+      - libjq-dev
+      - python-numpy
+      - python-gdal
+      - aria2
+      - netcdf-bin
+      - gdal-bin
+      - python-gdal
+
 r:
   - release
   - devel
+  - oldrel
 
 r_packages:
   - RPostgreSQL
   - covr
-
-r_github_packages:
-  - r-spatial/lwgeom
-  - r-spatial/sf
-
-apt_packages:
-  - libgdal-dev
-  - libproj-dev
-  - libudunits2-dev
-  - libv8-dev
-  - libprotobuf-dev
-  - libprotoc-dev
-  - protobuf-compiler
-  - valgrind
-  - libjq-dev
-  - python-numpy
-  - python-gdal
-  - aria2
-
-before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y libgdal-dev libproj-dev libv8-dev libprotobuf-dev libudunits2-dev netcdf-bin libv8-dev libjq-dev
-  - sudo apt-get install -y gdal-bin python-gdal
 
 before_script:
   - mkdir $HOME/.sen2r

@@ -2,14 +2,31 @@
 #' @description Internal functions and modal dialogs to specify an extent
 #'  in the GUI.
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
+#'  "sen2r": An R toolbox for automatically downloading and preprocessing 
+#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. DOI: 
+#'  \href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473}, 
+#'  URL: \url{http://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
-#' @importFrom shiny actionButton div fileInput htmlOutput icon modalButton modalDialog
-#'  numericInput span tagList textInput
-#' @importFrom shinyFiles shinyFilesButton
 
 #' @name load_extent_bbox
 #' @rdname load_extent
 load_extent_bbox <- function() {
+  
+  # Define internal functions as aliases of shiny* - leaflet* ones,
+  # so to avoid using "shiny::" every time
+  actionButton <- shiny::actionButton
+  div <- shiny::div
+  htmlOutput <- shiny::htmlOutput
+  icon <- shiny::icon
+  modalButton <- shiny::modalButton
+  modalDialog <- shiny::modalDialog
+  numericInput <- shiny::numericInput
+  span <- shiny::span
+  tagList <- shiny::tagList
+  textInput <- shiny::textInput
+  leafletOutput <- leaflet::leafletOutput
+  
   modalDialog(
     title = "Specify a bounding box",
     size = "l",
@@ -84,6 +101,18 @@ load_extent_bbox <- function() {
 #' @name load_extent_vectfile
 #' @rdname load_extent
 load_extent_vectfile <- function() {
+  
+  # Define internal functions as aliases of shiny* - leaflet* ones,
+  # so to avoid using "shiny::" every time
+  actionButton <- shiny::actionButton
+  div <- shiny::div
+  icon <- shiny::icon
+  modalButton <- shiny::modalButton
+  modalDialog <- shiny::modalDialog
+  tagList <- shiny::tagList
+  shinyFilesButton <- shinyFiles::shinyFilesButton
+  leafletOutput <- leaflet::leafletOutput
+
   modalDialog(
     title = "Select vector file",
     size = "m",
@@ -115,6 +144,16 @@ load_extent_vectfile <- function() {
 #' @rdname load_extent
 #' @param extent_ns_name Name of the namespace to be used
 load_extent_draw <- function(extent_ns_name) {
+  
+  # Define internal functions as aliases of shiny* - leaflet* ones,
+  # so to avoid using "shiny::" every time
+  actionButton <- shiny::actionButton
+  icon <- shiny::icon
+  modalButton <- shiny::modalButton
+  modalDialog <- shiny::modalDialog
+  tagList <- shiny::tagList
+  editModUI <- mapedit::editModUI
+  
   modalDialog(
     title = "Draw the extent",
     size = "l",

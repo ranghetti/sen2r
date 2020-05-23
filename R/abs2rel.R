@@ -16,6 +16,11 @@
 #' @return The relative path
 #'
 #' @author Luigi Ranghetti, phD (2017) \email{luigi.ranghetti@@gmail.com}
+#' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
+#'  "sen2r": An R toolbox for automatically downloading and preprocessing 
+#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. DOI: 
+#'  \href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473}, 
+#'  URL: \url{http://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @export
 #'

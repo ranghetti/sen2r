@@ -69,6 +69,13 @@ To try it again, delete the files/files or set \code{overwrite = TRUE} in \code{
 \note{
 License: GPL 3.0
 }
+\references{
+L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
+"sen2r": An R toolbox for automatically downloading and preprocessing
+Sentinel-2 satellite data. \emph{Computers & Geosciences}, 139, 104473. DOI:
+\href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473},
+URL: \url{http://sen2r.ranghetti.info/}.
+}
 \author{
 Luigi Ranghetti, phD (2020) \email{luigi@ranghetti.info}
 }

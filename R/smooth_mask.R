@@ -22,6 +22,11 @@
 #' @return The path of the smoothed mask.
 #' @importFrom methods is
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
+#'  "sen2r": An R toolbox for automatically downloading and preprocessing 
+#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. DOI: 
+#'  \href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473}, 
+#'  URL: \url{http://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 
 smooth_mask <- function(
@@ -53,6 +58,20 @@ smooth_mask <- function(
   radius_npx <- abs(radius / inmask_res)
   buffer_npx <- buffer / inmask_res
   
+  # check GDAL external dependency
+  if (is.null(load_binpaths()$gdal_calc)) {
+    tryCatch(
+      check_gdal(abort = TRUE),
+      error = function(e) {
+        print_message(
+          type = "error",
+          "External GDAL binaries are required to smooth masks; ",
+          "please configure them using function check_gdal() ",
+          "or through a GUI with check_sen2r_deps()."
+        )
+      }
+    )
+  }
   
   # 1. set inmask=1 (clear sky) and namask=0 (nodata) to NA
   inmask_path1 <- file.path(tmpdir,basename(tempfile(pattern = "mask_", fileext = ".tif")))

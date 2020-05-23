@@ -18,6 +18,11 @@
 #'  if missing or not updated; if TRUE, it is created in any case.
 #' @return NULL (the function is called for its side effects)
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
+#'  "sen2r": An R toolbox for automatically downloading and preprocessing 
+#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. DOI: 
+#'  \href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473}, 
+#'  URL: \url{http://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @import data.table
 #' @importFrom XML htmlTreeParse xmlRoot readHTMLTable xmlAttrs saveXML

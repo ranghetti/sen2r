@@ -7,35 +7,18 @@
 #'  layers (now not used).
 #' @return A list of parameters.
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
+#'  "sen2r": An R toolbox for automatically downloading and preprocessing 
+#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. DOI: 
+#'  \href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473}, 
+#'  URL: \url{http://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @importFrom jsonlite fromJSON toJSON
 #' @import data.table
 #' @importFrom geojsonio geojson_json
-#' @importFrom leaflet addLayersControl addMapPane addPolygons addProviderTiles
-#'  addTiles clearShapes fitBounds hideGroup labelOptions layersControlOptions
-#'  leaflet leafletOutput leafletProxy pathOptions removeLayersControl removeShape
-#' @importFrom leaflet.extras addDrawToolbar editToolbarOptions
-#'  removeDrawToolbar
-#' @importFrom mapedit editModUI
 #' @importFrom utils packageVersion
 #' @importFrom sf st_coordinates st_crs st_geometry st_intersects st_polygon
 #'  st_zm st_read st_bbox st_as_sfc st_transform
-#' @importFrom shiny a actionButton actionLink addResourcePath br callModule
-#'  checkboxGroupInput checkboxInput column conditionalPanel dateRangeInput
-#'  div downloadButton downloadHandler em fileInput fluidRow h2 h3 helpText hr
-#'  HTML htmlOutput icon img incProgress isolate NS numericInput observe p
-#'  radioButtons reactive reactiveVal reactiveValues removeModal renderText
-#'  renderUI req runApp selectInput setProgress shinyApp showModal sliderInput
-#'  span stopApp strong tagList textInput uiOutput updateCheckboxGroupInput 
-#'  updateCheckboxInput updateDateRangeInput updateNumericInput updateSliderInput
-#'  updateSelectInput updateRadioButtons updateTextInput withMathJax withProgress
-#' @importFrom shinydashboard box dashboardBody dashboardHeader dashboardPage
-#'  dashboardSidebar menuItem sidebarMenu tabItem tabItems
-#' @importFrom shinyFiles getVolumes parseDirPath parseFilePaths parseSavePath
-#'  shinyDirButton shinyDirChoose shinyFileChoose shinyFileSave
-#'  shinyFilesButton shinySaveButton
-#' @importFrom shinyjs click delay disable enable hidden toggle useShinyjs extendShinyjs
-#' @importFrom shinyWidgets sendSweetAlert switchInput pickerInput updatePickerInput updateSwitchInput
 #' @importFrom stats setNames
 #'
 #' @export
@@ -58,20 +41,124 @@ s2_gui <- function(param_list = NULL,
                     par_fun = "parent",
                     thunderforest_api = NA) {
   
-  # Check shiny & co. to be installed
-  missing_pkgs <- !sapply(
-    c("shiny", "shinydashboard", "shinyFiles", "shinyjs", "shinyWidgets", 
-      "leaflet", "leaflet.extras", "mapedit"), 
-    requireNamespace, quietly = TRUE
-  )
-  if (any(missing_pkgs)) {
-    print_message(
-      type = "error",
-      "packages '",
-      paste(names(missing_pkgs)[missing_pkgs], collapse = "', '"),"' ",
-      "are required to run the sen2r Shiny GUI."
-    )
-  }
+  # Check shiny* / leaflet* suggested dependencies to be installed
+  check_gui_deps()
+  
+  # Define internal functions as aliases of shiny* - leaflet* ones,
+  # so to avoid using "shiny::" every time
+  a <- shiny::a
+  actionButton <- shiny::actionButton
+  actionLink <- shiny::actionLink
+  addResourcePath <- shiny::addResourcePath
+  br <- shiny::br
+  callModule <- shiny::callModule
+  checkboxGroupInput <- shiny::checkboxGroupInput
+  checkboxInput <- shiny::checkboxInput
+  column <- shiny::column
+  conditionalPanel <- shiny::conditionalPanel
+  dateRangeInput <- shiny::dateRangeInput
+  div <- shiny::div
+  downloadButton <- shiny::downloadButton
+  downloadHandler <- shiny::downloadHandler
+  em <- shiny::em
+  fileInput <- shiny::fileInput
+  fluidRow <- shiny::fluidRow
+  h2 <- shiny::h2
+  h3 <- shiny::h3
+  helpText <- shiny::helpText
+  hr <- shiny::hr
+  HTML <- shiny::HTML
+  htmlOutput <- shiny::htmlOutput
+  icon <- shiny::icon
+  img <- shiny::img
+  incProgress <- shiny::incProgress
+  isolate <- shiny::isolate
+  NS <- shiny::NS
+  numericInput <- shiny::numericInput
+  observe <- shiny::observe
+  p <- shiny::p
+  radioButtons <- shiny::radioButtons
+  reactive <- shiny::reactive
+  reactiveVal <- shiny::reactiveVal
+  reactiveValues <- shiny::reactiveValues
+  removeModal <- shiny::removeModal
+  renderText <- shiny::renderText
+  renderUI <- shiny::renderUI
+  req <- shiny::req
+  runApp <- shiny::runApp
+  selectInput <- shiny::selectInput
+  setProgress <- shiny::setProgress
+  shinyApp <- shiny::shinyApp
+  showModal <- shiny::showModal
+  sliderInput <- shiny::sliderInput
+  span <- shiny::span
+  stopApp <- shiny::stopApp
+  strong <- shiny::strong
+  tagList <- shiny::tagList
+  textInput <- shiny::textInput
+  uiOutput <- shiny::uiOutput
+  updateCheckboxGroupInput <- shiny::updateCheckboxGroupInput
+  updateCheckboxInput <- shiny::updateCheckboxInput
+  updateDateRangeInput <- shiny::updateDateRangeInput
+  updateNumericInput <- shiny::updateNumericInput
+  updateSliderInput <- shiny::updateSliderInput
+  updateSelectInput <- shiny::updateSelectInput
+  updateRadioButtons <- shiny::updateRadioButtons
+  updateTextInput <- shiny::updateTextInput
+  withMathJax <- shiny::withMathJax
+  withProgress <- shiny::withProgress
+  box <- shinydashboard::box
+  dashboardBody <- shinydashboard::dashboardBody
+  dashboardHeader <- shinydashboard::dashboardHeader
+  dashboardPage <- shinydashboard::dashboardPage
+  dashboardSidebar <- shinydashboard::dashboardSidebar
+  menuItem <- shinydashboard::menuItem
+  sidebarMenu <- shinydashboard::sidebarMenu
+  tabItem <- shinydashboard::tabItem
+  tabItems <- shinydashboard::tabItems
+  getVolumes <- shinyFiles::getVolumes
+  parseDirPath <- shinyFiles::parseDirPath
+  parseFilePaths <- shinyFiles::parseFilePaths
+  parseSavePath <- shinyFiles::parseSavePath
+  shinyDirButton <- shinyFiles::shinyDirButton
+  shinyDirChoose <- shinyFiles::shinyDirChoose
+  shinyFileChoose <- shinyFiles::shinyFileChoose
+  shinyFileSave <- shinyFiles::shinyFileSave
+  shinyFilesButton <- shinyFiles::shinyFilesButton
+  shinySaveButton <- shinyFiles::shinySaveButton
+  click <- shinyjs::click
+  delay <- shinyjs::delay
+  disable <- shinyjs::disable
+  enable <- shinyjs::enable
+  hidden <- shinyjs::hidden
+  toggle <- shinyjs::toggle
+  useShinyjs <- shinyjs::useShinyjs
+  extendShinyjs <- shinyjs::extendShinyjs
+  sendSweetAlert <- shinyWidgets::sendSweetAlert
+  switchInput <- shinyWidgets::switchInput
+  pickerInput <- shinyWidgets::pickerInput
+  updatePickerInput <- shinyWidgets::updatePickerInput
+  updateSwitchInput <- shinyWidgets::updateSwitchInput
+  addLayersControl <- leaflet::addLayersControl
+  addMapPane <- leaflet::addMapPane
+  addPolygons <- leaflet::addPolygons
+  addProviderTiles <- leaflet::addProviderTiles
+  addTiles <- leaflet::addTiles
+  clearShapes <- leaflet::clearShapes
+  fitBounds <- leaflet::fitBounds
+  hideGroup <- leaflet::hideGroup
+  labelOptions <- leaflet::labelOptions
+  layersControlOptions <- leaflet::layersControlOptions
+  leaflet <- leaflet::leaflet
+  leafletOutput <- leaflet::leafletOutput
+  leafletProxy <- leaflet::leafletProxy
+  pathOptions <- leaflet::pathOptions
+  removeLayersControl <- leaflet::removeLayersControl
+  removeShape <- leaflet::removeShape
+  renderLeaflet <- leaflet::renderLeaflet
+  editMod <- mapedit::editMod
+  pmToolbarOptions <- leafpm::pmToolbarOptions
+  
 
   # TODO: populate parameter values with param_list content, if provided
   
@@ -1024,7 +1111,7 @@ s2_gui <- function(param_list = NULL,
                   )
                   
                 ) # end of smooth/buffer fluidRow
-              ) # endo if conditionalPanel mask_apply_smooth
+              ) # end if conditionalPanel mask_apply_smooth
               
             ) # end of conditionalPanel atm_mask
             
@@ -1511,8 +1598,7 @@ s2_gui <- function(param_list = NULL,
     observe({
       if (input$online == FALSE) {
         disable("rm_safe")
-        updateRadioButtons(session, "rm_safe",
-                           selected = "no")
+        updateRadioButtons(session, "rm_safe", selected = "no")
       } else {
         enable("rm_safe")
       }
@@ -1526,8 +1612,7 @@ s2_gui <- function(param_list = NULL,
         enable("overwrite_safe")
       } else {
         disable("overwrite_safe")
-        updateRadioButtons(session, "overwrite_safe",
-                           selected = FALSE)
+        updateRadioButtons(session, "overwrite_safe", selected = FALSE)
       }
     })
     
@@ -1624,6 +1709,17 @@ s2_gui <- function(param_list = NULL,
     ## Parallelisation / processing order
     observeEvent(input$n_cores_auto, ignoreInit = TRUE, {
       toggle("n_cores")
+    })
+    
+    
+    ## Disable atmospheric correction options if Sen2Cor is not configured
+    observeEvent(input$step_atmcorr, {
+      if (is.null(binpaths$sen2cor)) {
+        updateRadioButtons(session, "step_atmcorr", selected = "l2a")
+        updateRadioButtons(session, "use_dem", selected = "FALSE")
+        disable("step_atmcorr")
+        disable("use_dem")
+      }
     })
     
     ## end of steps module ##
@@ -2156,7 +2252,19 @@ s2_gui <- function(param_list = NULL,
       # in order not to make mess between modules
       extent_ns_name <- paste0("editor_",sample(1E9,1))
       extent_ns <- NS(extent_ns_name)
-      rv$extent_edits <- callModule(editModPoly, extent_ns_name, base_map())
+      rv$extent_edits <- callModule(
+        mapedit::editMod, 
+        extent_ns_name, 
+        base_map(),
+        editor = "leafpm",
+        editorOptions = list(
+          toolbarOptions = leafpm::pmToolbarOptions(
+            drawMarker = FALSE, 
+            drawPolyline = FALSE,
+            drawCircle = FALSE
+          )
+        )
+      )
       
       # show the modal dialog
       showModal(load_extent_draw(extent_ns_name))
@@ -2376,6 +2484,14 @@ s2_gui <- function(param_list = NULL,
         updateRadioButtons(session, "extent_as_mask", selected = FALSE)
         disable("clip_on_extent")
         disable("extent_as_mask")
+      }
+    })
+    
+    
+    ## Disable mask smooth/buffer if gdal_fillnodata is not configured
+    observeEvent(input$mask_apply_smooth, {
+      if (is.null(binpaths$gdal_fillnodata)) {
+        disable("mask_apply_smooth")
       }
     })
     
@@ -2802,7 +2918,7 @@ s2_gui <- function(param_list = NULL,
           "(graphically) or <code>install_aria2()</code> (from commandline)."
         )),
         p(HTML(
-          "This selector is active only in aria2 was already installed and",
+          "This selector is active only if aria2 was already installed and",
           "recognised (to recognise it, launch <code>check_sen2r_deps()</code>)."
         )),
         easyClose = TRUE,
@@ -2913,6 +3029,12 @@ s2_gui <- function(param_list = NULL,
     observeEvent(input$help_step_atmcorr, {
       showModal(modalDialog(
         title = "Method to obtain level-2A corrected images",
+        p(HTML(
+          "<em><strong>Note:</strong> this selector is active only if",
+          "<a href=\"https://step.esa.int/main/third-party-plugins-2/sen2cor/\"",
+          "target=\"_blank\">Sen2Cor</a> was installed and configured;",
+          "to do it, run <code>check_sen2r_deps()</code>.</em>"
+        )),
         p(HTML(
           "<strong>Use only level-2A images available locally or online</strong>:",
           "Sen2Cor is never used locally: level-2A products are used only",
@@ -3283,6 +3405,11 @@ s2_gui <- function(param_list = NULL,
       showModal(modalDialog(
         title = "Smooth / bufferize the cloud-covered surface?",
         size = "l",
+        p(HTML(
+          "<em><strong>Note:</strong> this feature is available only if",
+          "an external runtime GDAL environment was configured;",
+          "to do it, run <code>check_sen2r_deps()</code>.</em>"
+        )),
         p(HTML(
           "By default, the cloud mask is applied at pixel level",
           "(pixels classified as cloudy are masked singularly).",

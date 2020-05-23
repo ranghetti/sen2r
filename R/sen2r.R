@@ -328,6 +328,11 @@
 #' @export
 #' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
 #' @author Lorenzo Busetto, phD (2020) \email{lbusett@@gmail.com}
+#' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
+#'  "sen2r": An R toolbox for automatically downloading and preprocessing 
+#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. DOI: 
+#'  \href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473}, 
+#'  URL: \url{http://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @examples
 #' \donttest{
@@ -666,34 +671,34 @@ sen2r <- function(param_list = NULL,
   
   ### Preliminary settings ###
   
-  # If it is the first time that the package is used,
-  # ask for opening the GUI to install dependencies
-  if (interactive() & !file.exists(attr(load_binpaths(), "path"))) {
-    open_check_gui <- NA
-    while(is.na(open_check_gui)) {
-      open_check_gui_prompt <- print_message(
-        type="waiting",
-        "It seems you are running this package for the first time. ",
-        "Do you want to verify/install the required dependencies using a GUI ",
-        "(otherwise, an automatic check will be performed)? \n(y/n) "
-      )
-      open_check_gui <- if (grepl("^[Yy]",open_check_gui_prompt)) {
-        TRUE
-      } else if (grepl("^[Nn]",open_check_gui_prompt)) {
-        FALSE
-      } else {
-        NA
-      }
-    }
-    if (open_check_gui) {
-      check_sen2r_deps()
-      print_message(
-        type="message",
-        "Dependencies checked; please restart sen2r() now."
-      )
-      return(invisible(NULL))
-    }
-  }
+  # # If it is the first time that the package is used,
+  # # ask for opening the GUI to install dependencies
+  # if (interactive() & !file.exists(attr(load_binpaths(), "path"))) {
+  #   open_check_gui <- NA
+  #   while(is.na(open_check_gui)) {
+  #     open_check_gui_prompt <- print_message(
+  #       type="waiting",
+  #       "It seems you are running this package for the first time. ",
+  #       "Do you want to verify/install the required dependencies using a GUI ",
+  #       "(otherwise, an automatic check will be performed)? \n(y/n) "
+  #     )
+  #     open_check_gui <- if (grepl("^[Yy]",open_check_gui_prompt)) {
+  #       TRUE
+  #     } else if (grepl("^[Nn]",open_check_gui_prompt)) {
+  #       FALSE
+  #     } else {
+  #       NA
+  #     }
+  #   }
+  #   if (open_check_gui) {
+  #     check_sen2r_deps()
+  #     print_message(
+  #       type="message",
+  #       "Dependencies checked; please restart sen2r() now."
+  #     )
+  #     return(invisible(NULL))
+  #   }
+  # }
   
   # Starting execution
   print_message(
@@ -755,13 +760,13 @@ sen2r <- function(param_list = NULL,
   }
   
   # Check parameters
-  suppressWarnings({
+  suppressWarnings(suppressMessages({
     pm <- check_param_list(
       pm,
       type = if (gui) {"message"} else {"error"},
       check_paths = FALSE, correct = TRUE
     )
-  })
+  }))
   
   # Check param_list version
   if (is.null(pm_list$pkg_version)) {
@@ -832,7 +837,6 @@ sen2r <- function(param_list = NULL,
   
   
   ## Check consistency of parameters
-  # TODO work in progress
   pm <- check_param_list(pm, type = "error", check_paths = TRUE, correct = TRUE)
   
   # if ONLINE check internet connection and scihub credentials

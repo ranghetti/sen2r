@@ -3,12 +3,29 @@
 #' @param s2_bands 2-length list (one for TOA, one for BOA),
 #'  each element being a list of S2 bands, as defined in [s2_gui].
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
+#'  "sen2r": An R toolbox for automatically downloading and preprocessing 
+#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. DOI: 
+#'  \href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473}, 
+#'  URL: \url{http://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
-#' @importFrom shiny actionButton column fluidRow HTML icon modalButton
-#'  modalDialog radioButtons sliderInput strong tagList
-#' @importFrom shinyWidgets pickerInput
 
 add_rgb_image <- function(s2_bands) {
+  
+  # Define internal functions as aliases of shiny* - leaflet* ones,
+  # so to avoid using "shiny::" every time
+  actionButton <- shiny::actionButton
+  column <- shiny::column
+  fluidRow <- shiny::fluidRow
+  HTML <- shiny::HTML
+  icon <- shiny::icon
+  modalButton <- shiny::modalButton
+  modalDialog <- shiny::modalDialog
+  radioButtons <- shiny::radioButtons
+  sliderInput <- shiny::sliderInput
+  strong <- shiny::strong
+  tagList <- shiny::tagList
+  pickerInput <- shinyWidgets::pickerInput
   
   modalDialog(
     title = "Set a new RGB image",

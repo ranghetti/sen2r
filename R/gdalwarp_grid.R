@@ -15,6 +15,11 @@
 #' @return NULL (the function is called for its side effects)
 #' @importFrom sf st_as_sfc st_bbox st_transform
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
+#'  "sen2r": An R toolbox for automatically downloading and preprocessing 
+#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. DOI: 
+#'  \href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473}, 
+#'  URL: \url{http://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @examples
 #' \donttest{
@@ -72,19 +77,14 @@ gdalwarp_grid <- function(
   
   # check output format
   if (!is.null(of)) {
-    local_ofs <- gsub(
-      "^ *([^ ]+) .+$", "\\1", 
-      system(paste0(load_binpaths()$gdalinfo," --formats"), intern = TRUE)
-    )
+    local_ofs <- as.character(st_drivers("raster")$name)
     if (!of %in% local_ofs) {
       print_message(
         type="error",
         "Format \"",of,"\" is not recognised; ",
-        "please use one of the formats supported by your GDAL installation.\n\n",
+        "please use one of the formats supported by package \"sf\".\n\n",
         "To list them, use the following command:\n",
-        "\u00A0\u00A0gdalUtils::gdalinfo(formats=TRUE)\n\n",
-        "To search for a specific format, use:\n",
-        "\u00A0\u00A0gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
+        "\u00A0\u00A0sf::st_drivers(\"raster\")")
     }
   }
   

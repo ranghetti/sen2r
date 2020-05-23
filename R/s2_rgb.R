@@ -41,6 +41,12 @@
 #'  If `tmpdir` is a non-empty folder, a random subdirectory will be used.
 #' @param rmtmp (optional) Logical: should temporary files be removed?
 #'  (Default: TRUE)
+#' @param proc_mode (optional) Character: if `"gdal_calc"`,
+#'  `gdal_calc` routines are used to compute indices;
+#'  if `"raster"` or `"stars"`, R functions are instead used
+#'  (using respectively `raster` or `stars` routines).
+#'  Default (NA) is `"gdal_calc"` if a runtime GDAL is found; `"raster"` elsewhere.
+#'  See `s2_calcindices()` for further details.
 #' @param parallel (optional) Logical: if TRUE, the function is run using parallel
 #'  processing, to speed-up the computation for large rasters.
 #'  The number of cores is automatically determined; specifying it is also 
@@ -53,8 +59,12 @@
 #' @param .log_output (optional) Internal parameter
 #'  (it is used when the function is called by `sen2r()`).
 #' @return A vector with the names of the created images.
-#'
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
+#'  "sen2r": An R toolbox for automatically downloading and preprocessing 
+#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. DOI: 
+#'  \href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473}, 
+#'  URL: \url{http://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @import data.table
 #' @importFrom foreach foreach "%do%" "%dopar%"
@@ -99,6 +109,7 @@ s2_rgb <- function(infiles,
                    bigtiff=FALSE,
                    tmpdir=NA,
                    rmtmp=TRUE,
+                   proc_mode=NA,
                    parallel=TRUE,
                    overwrite=FALSE,
                    .log_message=NA,
@@ -109,6 +120,34 @@ s2_rgb <- function(infiles,
   
   # Check that GDAL suports JPEG JFIF format
   # TODO
+  
+  # Check proc_mode and GDAL external dependency
+  if (is.na(proc_mode)) {
+    proc_mode <- if (is.null(load_binpaths()$gdal_calc)) {"gdal_calc"} else {"raster"}
+  }
+  if (!proc_mode %in% c("gdal_calc", "raster", "stars")) {
+    print_message(
+      type = "warning",
+      "proc_mode = \"",proc_mode,"\" is not recognised; ",
+      "switching to \"raster\"."
+    )
+    proc_mode <- "raster"
+  }
+  if (proc_mode == "gdal_calc" && is.null(load_binpaths()$gdal_calc)) {
+    tryCatch(
+      check_gdal(abort = TRUE),
+      error = function(e) {
+        print_message(
+          type = "warning",
+          "External GDAL binaries are required with 'proc_mode = \"gdal_calc\"'; ",
+          "please configure them using function check_gdal() ",
+          "or through a GUI with check_sen2r_deps(). ",
+          "Now switching to proc_mode = \"raster\"."
+        )
+        proc_mode <- "raster"
+      }
+    )
+  }
   
   # Set tmpdir
   if (is.na(tmpdir)) {
@@ -316,6 +355,7 @@ s2_rgb <- function(infiles,
             format = sel_format,
             compress = compress,
             bigtiff = bigtiff,
+            proc_mode = proc_mode,
             tmpdir = tmpdir
           )
           

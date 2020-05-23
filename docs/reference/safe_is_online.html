@@ -203,6 +203,13 @@ the SAFE url.</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
+"sen2r": An R toolbox for automatically downloading and preprocessing
+Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473. DOI:
+<a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.104473</a>,
+URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
@@ -214,10 +221,10 @@ the SAFE url.</p>
 <span class='co'># archives already available online and 2 stored in the Long Term Archive)</span>
 
 <span class='co'># Check for availability</span>
-<span class='fu'>safe_is_online</span>(<span class='no'>list_safe</span>)</div><div class='output co'>#&gt; <span class='message'>1 out of 7 products are online.</span></div><div class='output co'>#&gt; S2B_MSIL1C_20180224T133629_N0206_R038_T21FVC_20180224T194845.SAFE 
+<span class='fu'>safe_is_online</span>(<span class='no'>list_safe</span>)</div><div class='output co'>#&gt; <span class='message'>0 out of 7 products are online.</span></div><div class='output co'>#&gt; S2B_MSIL1C_20180224T133629_N0206_R038_T21FVC_20180224T194845.SAFE 
 #&gt;                                                             FALSE 
 #&gt; S2B_MSIL1C_20180227T134629_N0206_R081_T21FVC_20180227T200327.SAFE 
-#&gt;                                                              TRUE 
+#&gt;                                                             FALSE 
 #&gt; S2A_MSIL1C_20180301T133641_N0206_R038_T21FVC_20180301T145524.SAFE 
 #&gt;                                                             FALSE 
 #&gt; S2B_MSIL1C_20180306T133629_N0206_R038_T21FVC_20180306T183210.SAFE 
