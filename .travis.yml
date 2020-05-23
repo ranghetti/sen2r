@@ -38,7 +38,7 @@ install:
   - wget https://github.com/OSGeo/gdal/archive/v2.2.3.tar.gz
   - tar -xzvf v2.2.3.tar.gz
   - pushd gdal-2.2.3/gdal && ./configure > makelog
-  - travis_wait 60 make > makelog 
+  - travis_wait 45 make > makelog 
   - sudo make install > makelog
   - cd ../../
 
