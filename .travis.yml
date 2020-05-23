@@ -29,17 +29,19 @@ before_install:
   
 install:
   - wget https://github.com/libgeos/geos/archive/3.6.2.tar.gz
-  - tar -xzvf 3.6.2.tar.gz
+  - tar -xzvf 3.6.2.tar.gz &> /tmp/build.log
   - pushd geos-3.6.2 && ./autogen.sh
-  - mkdir obj && cd obj && ../configure > makelog
-  - travis_wait 30 make > makelog
-  - sudo make install > makelog
+  - mkdir obj && cd obj
+  - ../configure &> /tmp/build.log || (tail -n 100 /tmp/build.log && exit 1)
+  - make &> /tmp/build.log || (tail -n 100 /tmp/build.log && exit 1)
+  - sudo make install &> /tmp/build.log || (tail -n 100 /tmp/build.log && exit 1)
   - cd ../../
   - wget https://github.com/OSGeo/gdal/archive/v2.2.3.tar.gz
-  - tar -xzvf v2.2.3.tar.gz
-  - pushd gdal-2.2.3/gdal && ./configure > makelog
-  - travis_wait 45 make > makelog 
-  - sudo make install > makelog
+  - tar -xzvf v2.2.3.tar.gz &> /tmp/build.log
+  - pushd gdal-2.2.3/gdal
+  - ./configure &> /tmp/build.log || (tail -n 100 /tmp/build.log && exit 1)
+  - travis_wait 50 sh -c 'travis_wait 45 make &> /tmp/build.log || (tail -n 100 /tmp/build.log && exit 1)'
+  - sudo make install &> /tmp/build.log || (tail -n 100 /tmp/build.log && exit 1)
   - cd ../../
 
 r:
