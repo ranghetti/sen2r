@@ -25,12 +25,15 @@ addons:
       - gdal-bin
       - python-gdal
 
+before_install:
+  export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"
+  
 install:
   - wget https://github.com/libgeos/geos/archive/3.6.2.tar.gz
   - tar -xzvf 3.6.2.tar.gz &> /tmp/build.log
   - pushd geos-3.6.2 && ./autogen.sh
   - mkdir obj && cd obj
-  - ../configure --prefix=/usr &> /tmp/build.log
+  - ../configure &> /tmp/build.log
   - make &> /tmp/build.log
   - sudo make install &> /tmp/build.log
   - cd ../../
