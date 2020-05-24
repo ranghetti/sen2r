@@ -25,6 +25,7 @@ addons:
 
 before_install:
   - export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"
+  - export PATH="$PATH:/usr/local/bin"
   - wget https://github.com/libgeos/geos/archive/3.6.2.tar.gz
   - tar -xzvf 3.6.2.tar.gz &> /tmp/build.log
   - pushd geos-3.6.2 && ./autogen.sh
