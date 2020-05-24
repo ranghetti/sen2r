@@ -10,7 +10,6 @@ addons:
       - sourceline: 'ppa:opencpu/jq'
       - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
     packages:
-      - libproj-dev
       - libudunits2-dev
       - libv8-dev
       - libprotobuf-dev
@@ -33,6 +32,14 @@ before_install:
   - ../configure &> /tmp/build.log
   - make &> /tmp/build.log
   - sudo make install &> /tmp/build.log
+  - cd ../../
+  - wget https://github.com/OSGeo/PROJ/archive/4.9.3.tar.gz
+  - tar -xzvf 4.9.3.tar.gz &> /tmp/build.log
+  - pushd PROJ-4.9.3 && ./autogen.sh 
+  - mkdir obj && cd obj 
+  - ../configure &> /tmp/build.log
+  - travis_wait 50 sh -c 'make &> /tmp/build.log'
+  - travis_wait 50 sudo sh -c 'make install &> /tmp/build.log'
   - cd ../../
   - wget https://github.com/OSGeo/gdal/archive/v2.2.3.tar.gz
   - tar -xzvf v2.2.3.tar.gz &> /tmp/build.log
