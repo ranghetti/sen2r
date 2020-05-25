@@ -22,7 +22,7 @@ addons:
       - netcdf-bin
       - gdal-bin
       - python-gdal
-      - default-libmysqlclient-dev
+      - libmysqlclient-dev
       - libarmadillo-dev
       - libc6-dev
       - libcurl4-gnutls-dev
