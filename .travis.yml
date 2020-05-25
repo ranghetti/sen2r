@@ -71,7 +71,7 @@ before_install:
   - wget https://github.com/OSGeo/gdal/archive/v2.2.3.tar.gz
   - tar -xzvf v2.2.3.tar.gz > /tmp/build9.log
   - pushd gdal-2.2.3/gdal
-  - ./configure --with-netcdf --with-libtiff --with-sqlite3 --with-geotiff --with-mysql --with-curl --with-perl --with-geos --with-png --with-poppler --with-spatialite --with-openjpeg
+  - ./configure
   - travis_wait 50 sh -c 'make > /tmp/build11.log'
   - make install
   - cd ../../
