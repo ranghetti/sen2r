@@ -49,7 +49,7 @@ before_install:
   - travis_wait 50 sh -c 'make &> /tmp/build.log'
   - travis_wait 50 sudo sh -c 'make install &> /tmp/build.log'
   - cd ../../
-  - Rscript -e 'install.packages("rgdal"configure.args = c("--with-gdal-config=/usr/local/bin/gdal-config"))'
+  - Rscript -e 'install.packages(c("sf", "rgdal"), configure.args = c("--with-gdal-config=/usr/local/bin/gdal-config", "--with-proj-lib=/usr/local/lib/"))'
 
 r:
   - release
