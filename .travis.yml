@@ -22,6 +22,7 @@ addons:
       - netcdf-bin
       - gdal-bin
       - python-gdal
+      - libproj-dev
       - libmysqlclient-dev
       - libarmadillo-dev
       - libc6-dev
@@ -66,14 +67,6 @@ before_install:
   - ../configure
   - make &> /tmp/build3.log
   - sudo make install
-  - cd ../../
-  - wget https://github.com/OSGeo/PROJ/archive/4.9.3.tar.gz
-  - tar -xzvf 4.9.3.tar.gz > /tmp/build5.log
-  - pushd PROJ-4.9.3 && ./autogen.sh 
-  - mkdir obj && cd obj 
-  - ../configure
-  - make > /tmp/build7.log
-  - make install
   - cd ../../
   - wget https://github.com/OSGeo/gdal/archive/v2.2.3.tar.gz
   - tar -xzvf v2.2.3.tar.gz > /tmp/build9.log
