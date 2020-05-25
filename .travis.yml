@@ -49,7 +49,7 @@ before_install:
   - travis_wait 50 sh -c 'make > /tmp/build11.log'
   - travis_wait 50 sudo sh -c 'make install > /tmp/build12.log'
   - cd ../../
-  - Rscript -e 'install.packages(c("sf", "rgdal"), configure.args = c("--with-gdal-config=/usr/local/bin/gdal-config", "--with-proj-lib=/usr/local/lib/"))'
+  - Rscript -e 'install.packages(c("sf", "rgdal"), configure.args = "--with-gdal-config=/usr/local/bin/gdal-config --with-geos-config=/usr/local/bin/geos-config --with-proj-include=/usr/local/include/ --with-proj-lib=/usr/local/lib/")'
 
 r:
   - release
@@ -66,7 +66,7 @@ before_script:
   
 script: 
   - R CMD build .
-  - travis_wait 120 R CMD check *tar.gz
+  - travis_wait 50 R CMD check *tar.gz
 
 env:
   global:
