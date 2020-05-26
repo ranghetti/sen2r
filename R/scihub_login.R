@@ -169,13 +169,19 @@ write_scihub_login <- function(username, password,
   # so to avoid using "shiny::" every time
   a <- shiny::a
   actionButton <- shiny::actionButton
+  actionLink <- shiny::actionLink
+  checkboxInput <- shiny::checkboxInput
+  conditionalPanel <- shiny::conditionalPanel
+  div <- shiny::div
+  HTML <- shiny::HTML
   icon <- shiny::icon
   modalButton <- shiny::modalButton
   modalDialog <- shiny::modalDialog
   passwordInput <- shiny::passwordInput
+  shinySaveButton <- shinyFiles::shinySaveButton
+  span <- shiny::span
   tagList <- shiny::tagList
   textInput <- shiny::textInput
-  shinySaveButton <- shinyFiles::shinySaveButton
   
   # read scihub user/password
   apihub_path <- file.path(dirname(attr(load_binpaths(), "path")), "apihub.txt")

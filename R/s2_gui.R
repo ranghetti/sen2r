@@ -46,26 +46,47 @@ s2_gui <- function(param_list = NULL,
   
   # Define internal functions as aliases of shiny* - leaflet* ones,
   # so to avoid using "shiny::" every time
-  a <- shiny::a
+  a <- shiny::a <- shiny::a
   actionButton <- shiny::actionButton
   actionLink <- shiny::actionLink
+  addLayersControl <- leaflet::addLayersControl
+  addMapPane <- leaflet::addMapPane
+  addPolygons <- leaflet::addPolygons
+  addProviderTiles <- leaflet::addProviderTiles
   addResourcePath <- shiny::addResourcePath
+  addTiles <- leaflet::addTiles
+  box <- shinydashboard::box
   br <- shiny::br
   callModule <- shiny::callModule
   checkboxGroupInput <- shiny::checkboxGroupInput
   checkboxInput <- shiny::checkboxInput
+  clearShapes <- leaflet::clearShapes
+  click <- shinyjs::click
   column <- shiny::column
   conditionalPanel <- shiny::conditionalPanel
+  dashboardBody <- shinydashboard::dashboardBody
+  dashboardHeader <- shinydashboard::dashboardHeader
+  dashboardPage <- shinydashboard::dashboardPage
+  dashboardSidebar <- shinydashboard::dashboardSidebar
   dateRangeInput <- shiny::dateRangeInput
+  delay <- shinyjs::delay
+  disable <- shinyjs::disable
   div <- shiny::div
   downloadButton <- shiny::downloadButton
   downloadHandler <- shiny::downloadHandler
+  editMod <- mapedit::editMod
   em <- shiny::em
+  enable <- shinyjs::enable
+  extendShinyjs <- shinyjs::extendShinyjs
   fileInput <- shiny::fileInput
+  fitBounds <- leaflet::fitBounds
   fluidRow <- shiny::fluidRow
+  getVolumes <- shinyFiles::getVolumes
   h2 <- shiny::h2
   h3 <- shiny::h3
   helpText <- shiny::helpText
+  hidden <- shinyjs::hidden
+  hideGroup <- leaflet::hideGroup
   hr <- shiny::hr
   HTML <- shiny::HTML
   htmlOutput <- shiny::htmlOutput
@@ -73,91 +94,73 @@ s2_gui <- function(param_list = NULL,
   img <- shiny::img
   incProgress <- shiny::incProgress
   isolate <- shiny::isolate
+  labelOptions <- leaflet::labelOptions
+  layersControlOptions <- leaflet::layersControlOptions
+  leaflet <- leaflet::leaflet
+  leafletOutput <- leaflet::leafletOutput
+  leafletProxy <- leaflet::leafletProxy
+  menuItem <- shinydashboard::menuItem
+  modalDialog <- shiny::modalDialog
   NS <- shiny::NS
   numericInput <- shiny::numericInput
   observe <- shiny::observe
+  observeEvent <- shiny::observeEvent
+  outputOptions <- shiny::outputOptions
   p <- shiny::p
+  parseDirPath <- shinyFiles::parseDirPath
+  parseFilePaths <- shinyFiles::parseFilePaths
+  parseSavePath <- shinyFiles::parseSavePath
+  pathOptions <- leaflet::pathOptions
+  pickerInput <- shinyWidgets::pickerInput
+  pmToolbarOptions <- leafpm::pmToolbarOptions
   radioButtons <- shiny::radioButtons
   reactive <- shiny::reactive
   reactiveVal <- shiny::reactiveVal
   reactiveValues <- shiny::reactiveValues
+  removeLayersControl <- leaflet::removeLayersControl
   removeModal <- shiny::removeModal
+  removeShape <- leaflet::removeShape
+  renderLeaflet <- leaflet::renderLeaflet
   renderText <- shiny::renderText
   renderUI <- shiny::renderUI
   req <- shiny::req
   runApp <- shiny::runApp
   selectInput <- shiny::selectInput
+  sendSweetAlert <- shinyWidgets::sendSweetAlert
   setProgress <- shiny::setProgress
   shinyApp <- shiny::shinyApp
-  showModal <- shiny::showModal
-  sliderInput <- shiny::sliderInput
-  span <- shiny::span
-  stopApp <- shiny::stopApp
-  strong <- shiny::strong
-  tagList <- shiny::tagList
-  textInput <- shiny::textInput
-  uiOutput <- shiny::uiOutput
-  updateCheckboxGroupInput <- shiny::updateCheckboxGroupInput
-  updateCheckboxInput <- shiny::updateCheckboxInput
-  updateDateRangeInput <- shiny::updateDateRangeInput
-  updateNumericInput <- shiny::updateNumericInput
-  updateSliderInput <- shiny::updateSliderInput
-  updateSelectInput <- shiny::updateSelectInput
-  updateRadioButtons <- shiny::updateRadioButtons
-  updateTextInput <- shiny::updateTextInput
-  withMathJax <- shiny::withMathJax
-  withProgress <- shiny::withProgress
-  box <- shinydashboard::box
-  dashboardBody <- shinydashboard::dashboardBody
-  dashboardHeader <- shinydashboard::dashboardHeader
-  dashboardPage <- shinydashboard::dashboardPage
-  dashboardSidebar <- shinydashboard::dashboardSidebar
-  menuItem <- shinydashboard::menuItem
-  sidebarMenu <- shinydashboard::sidebarMenu
-  tabItem <- shinydashboard::tabItem
-  tabItems <- shinydashboard::tabItems
-  getVolumes <- shinyFiles::getVolumes
-  parseDirPath <- shinyFiles::parseDirPath
-  parseFilePaths <- shinyFiles::parseFilePaths
-  parseSavePath <- shinyFiles::parseSavePath
   shinyDirButton <- shinyFiles::shinyDirButton
   shinyDirChoose <- shinyFiles::shinyDirChoose
   shinyFileChoose <- shinyFiles::shinyFileChoose
   shinyFileSave <- shinyFiles::shinyFileSave
   shinyFilesButton <- shinyFiles::shinyFilesButton
   shinySaveButton <- shinyFiles::shinySaveButton
-  click <- shinyjs::click
-  delay <- shinyjs::delay
-  disable <- shinyjs::disable
-  enable <- shinyjs::enable
-  hidden <- shinyjs::hidden
-  toggle <- shinyjs::toggle
-  useShinyjs <- shinyjs::useShinyjs
-  extendShinyjs <- shinyjs::extendShinyjs
-  sendSweetAlert <- shinyWidgets::sendSweetAlert
+  showModal <- shiny::showModal
+  sidebarMenu <- shinydashboard::sidebarMenu
+  sliderInput <- shiny::sliderInput
+  span <- shiny::span
+  stopApp <- shiny::stopApp
+  strong <- shiny::strong
   switchInput <- shinyWidgets::switchInput
-  pickerInput <- shinyWidgets::pickerInput
+  tabItem <- shinydashboard::tabItem
+  tabItems <- shinydashboard::tabItems
+  tagList <- shiny::tagList
+  textInput <- shiny::textInput
+  toggle <- shinyjs::toggle
+  uiOutput <- shiny::uiOutput
+  updateCheckboxGroupInput <- shiny::updateCheckboxGroupInput
+  updateCheckboxInput <- shiny::updateCheckboxInput
+  updateDateRangeInput <- shiny::updateDateRangeInput
+  updateNumericInput <- shiny::updateNumericInput
   updatePickerInput <- shinyWidgets::updatePickerInput
+  updateRadioButtons <- shiny::updateRadioButtons
+  updateSelectInput <- shiny::updateSelectInput
+  updateSliderInput <- shiny::updateSliderInput
   updateSwitchInput <- shinyWidgets::updateSwitchInput
-  addLayersControl <- leaflet::addLayersControl
-  addMapPane <- leaflet::addMapPane
-  addPolygons <- leaflet::addPolygons
-  addProviderTiles <- leaflet::addProviderTiles
-  addTiles <- leaflet::addTiles
-  clearShapes <- leaflet::clearShapes
-  fitBounds <- leaflet::fitBounds
-  hideGroup <- leaflet::hideGroup
-  labelOptions <- leaflet::labelOptions
-  layersControlOptions <- leaflet::layersControlOptions
-  leaflet <- leaflet::leaflet
-  leafletOutput <- leaflet::leafletOutput
-  leafletProxy <- leaflet::leafletProxy
-  pathOptions <- leaflet::pathOptions
-  removeLayersControl <- leaflet::removeLayersControl
-  removeShape <- leaflet::removeShape
-  renderLeaflet <- leaflet::renderLeaflet
-  editMod <- mapedit::editMod
-  pmToolbarOptions <- leafpm::pmToolbarOptions
+  updateTextInput <- shiny::updateTextInput
+  useShinyjs <- shinyjs::useShinyjs
+  withMathJax <- shiny::withMathJax
+  withProgress <- shiny::withProgress
   
 
   # TODO: populate parameter values with param_list content, if provided

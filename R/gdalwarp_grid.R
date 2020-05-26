@@ -13,7 +13,7 @@
 #' @param tmpdir (optional) Path where intermediate files (.prj) will be created.
 #'  Default is a temporary directory.
 #' @return NULL (the function is called for its side effects)
-#' @importFrom sf st_as_sfc st_bbox st_transform
+#' @importFrom sf st_as_sfc st_bbox st_transform st_drivers
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 

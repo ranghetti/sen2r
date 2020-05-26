@@ -262,7 +262,7 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
         " (see the documentation at ",
         "https://sen2r.ranghetti.info/articles/installation#on-linux-systems ",
         "to see how to install the required dependency ",
-        "based on your Linux distribution.",
+        "based on your Linux distribution."
       )}
     )
     return(invisible(FALSE))

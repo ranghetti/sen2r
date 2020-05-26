@@ -16,16 +16,21 @@ load_extent_bbox <- function() {
   # Define internal functions as aliases of shiny* - leaflet* ones,
   # so to avoid using "shiny::" every time
   actionButton <- shiny::actionButton
+  column <- shiny::column
   div <- shiny::div
+  fluidRow <- shiny::fluidRow
   htmlOutput <- shiny::htmlOutput
   icon <- shiny::icon
+  leafletOutput <- leaflet::leafletOutput
   modalButton <- shiny::modalButton
   modalDialog <- shiny::modalDialog
   numericInput <- shiny::numericInput
+  p <- shiny::p
   span <- shiny::span
+  strong <- shiny::strong
   tagList <- shiny::tagList
   textInput <- shiny::textInput
-  leafletOutput <- leaflet::leafletOutput
+  
   
   modalDialog(
     title = "Specify a bounding box",
@@ -106,13 +111,17 @@ load_extent_vectfile <- function() {
   # so to avoid using "shiny::" every time
   actionButton <- shiny::actionButton
   div <- shiny::div
+  em <- shiny::em
+  helpText <- shiny::helpText
   icon <- shiny::icon
+  leafletOutput <- leaflet::leafletOutput
   modalButton <- shiny::modalButton
   modalDialog <- shiny::modalDialog
-  tagList <- shiny::tagList
+  p <- shiny::p
   shinyFilesButton <- shinyFiles::shinyFilesButton
-  leafletOutput <- leaflet::leafletOutput
-
+  strong <- shiny::strong
+  tagList <- shiny::tagList
+  
   modalDialog(
     title = "Select vector file",
     size = "m",
@@ -148,11 +157,14 @@ load_extent_draw <- function(extent_ns_name) {
   # Define internal functions as aliases of shiny* - leaflet* ones,
   # so to avoid using "shiny::" every time
   actionButton <- shiny::actionButton
+  editModUI <- mapedit::editModUI
+  em <- shiny::em
+  helpText <- shiny::helpText
   icon <- shiny::icon
   modalButton <- shiny::modalButton
   modalDialog <- shiny::modalDialog
+  strong <- shiny::strong
   tagList <- shiny::tagList
-  editModUI <- mapedit::editModUI
   
   modalDialog(
     title = "Draw the extent",
