@@ -51,7 +51,6 @@ check_sen2r_deps <- function() {
   fluidPage <- shiny::fluidPage
   fluidRow <- shiny::fluidRow
   getVolumes <- shinyFiles::getVolumes
-  h <- shiny::h
   h3 <- shiny::h3
   helpText <- shiny::helpText
   hide <- shinyjs::hide
