@@ -46,7 +46,7 @@ s2_gui <- function(param_list = NULL,
   
   # Define internal functions as aliases of shiny* - leaflet* ones,
   # so to avoid using "shiny::" every time
-  a <- shiny::a <- shiny::a
+  a <- shiny::a
   actionButton <- shiny::actionButton
   actionLink <- shiny::actionLink
   addLayersControl <- leaflet::addLayersControl
