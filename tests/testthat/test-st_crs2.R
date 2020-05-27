@@ -53,8 +53,8 @@ testthat::test_that(
 )
 
 
-testthat::skip_on_cran()
-testthat::skip_on_travis()
+# testthat::skip_on_cran()
+# testthat::skip_on_travis()
 
 testthat::test_that(
   "st_crs2, input WKT", {

@@ -2,24 +2,20 @@ context("Load binaries")
 testthat::skip_on_cran()
 testthat::skip_on_travis()
 
-settings_dir <- normalize_path("~/.sen2r", mustWork = FALSE)
-if (dir.exists(settings_dir)) {
-  settings_dir <- strftime(
-    Sys.time(), 
-    normalize_path("~/.sen2r_test_%Y%m%d%H%M%S", mustWork = FALSE)
-  )
+binpaths_file <- normalize_path(file.path(
+  if (dir.exists("~/.sen2r")) {"~/.sen2r"} else {tempdir()},
+  "paths.json"
+), mustWork = FALSE)
+binpaths_file_backup <- tempfile()
+if (file.exists(binpaths_file)) {
+  file.copy(binpaths_file, binpaths_file_backup)
+  file.remove(binpaths_file)
   restore_settings <- TRUE
 } else {
   restore_settings <- FALSE
 }
-# if the test was manually runned, reload sen2r before proceeding
 
 test_that("Load empty binpaths", {
-  binpaths_file <- normalize_path(file.path(
-    if (dir.exists("~/.sen2r")) {"~/.sen2r"} else {tempdir()},
-    "paths.json"
-  ), mustWork = FALSE)
-  if (file.exists(binpaths_file)) {file.remove(binpaths_file)}
   binpaths_0 <- load_binpaths()
   expect_is(binpaths_0, "list")
   expect_length(binpaths_0, 0)
@@ -41,7 +37,7 @@ if (Sys.info()["sysname"] != "Windows") {
     binpaths_2 <- load_binpaths(c("gdal"))
     expect_is(binpaths_2, "list")
     expect_length(binpaths_2, 3)
-    expect_equal(binpaths_2$gdal_calc, normalize_path(Sys.which("gdal_calc")))
+    expect_equal(binpaths_2$gdal_calc, normalize_path(Sys.which("gdal_calc.py")))
     expect_equal(basename(attr(binpaths_2, "path")), "paths.json")
   })
   test_that("Load aria2", {
@@ -54,5 +50,5 @@ if (Sys.info()["sysname"] != "Windows") {
 }
 
 if (restore_settings) {
-  unlink(settings_dir, recursive = TRUE)
+  file.copy(binpaths_file_backup, binpaths_file)
 }

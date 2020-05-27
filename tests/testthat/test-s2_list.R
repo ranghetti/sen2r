@@ -1,13 +1,16 @@
 context("Test s2_list() and safe_getMetadata(info = 'nameinfo')")
-testthat::skip_on_cran()
-testthat::skip_on_travis()
+# testthat::skip_on_cran()
+# testthat::skip_on_travis()
+
+write_scihub_login("user", "user", apihub_path <- tempfile())
 
 testthat::test_that(
   "Tests on s2_list - Single tile, single orbit, no pos", {
     s2_list_test <- s2_list(
       tile = "32TNR",
       time_interval = as.Date(c("2017-05-01", "2017-05-31")),
-      orbit = "065"
+      orbit = "065",
+      apihub = apihub_path
     )
     testthat::expect_is(s2_list_test, "safelist")
     s2_dt_test <- as(s2_list_test, "data.table")
@@ -42,7 +45,8 @@ testthat::test_that(
     s2_list_test <- s2_list(
       tile = "32TNR",
       time_interval = as.Date(c("2017-05-01", "2017-05-31")),
-      availability = "check"
+      availability = "check",
+      apihub = apihub_path
     )
     testthat::expect_is(s2_list_test, "safelist")
     s2_sf_test <- as(s2_list_test, "sf")
@@ -68,7 +72,8 @@ testthat::test_that(
     s2_list_test <- as.data.table(s2_list(
       tile = c("32TNR", "32TMR"),
       time_interval = as.Date(c("2017-05-01", "2017-05-31")),
-      availability = "check"
+      availability = "check",
+      apihub = apihub_path
     ))
     testthat::expect_equal(nrow(s2_list_test), 11)
     testthat::expect_equal(unique(s2_list_test$id_tile), c("32TNR", "32TMR"))
@@ -105,7 +110,8 @@ testthat::test_that(
       spatial_extent = pos,
       time_interval = as.Date(c("2017-05-01", "2017-05-31")),
       orbit = "065",
-      availability ="online"
+      availability ="online",
+      apihub = apihub_path
     )
     testthat::expect_lte(length(s2_list_test), 3)
   }
@@ -119,7 +125,8 @@ testthat::test_that(
       tile = "32TNR",
       time_interval = as.Date(c("2017-05-01", "2017-05-31")),
       orbit = "065",
-      availability = "lta"
+      availability = "lta",
+      apihub = apihub_path
     )
     testthat::expect_lte(length(s2_list_test), 3)
   }
@@ -133,7 +140,8 @@ testthat::test_that(
       tile = "32TNR",
       time_interval = as.Date(c("2016-05-01", "2016-05-31")),
       orbit = "065",
-      max_cloud = 50
+      max_cloud = 50,
+      apihub = apihub_path
     )
     testthat::expect_equal(length(s2_list_test), 1)
   }
@@ -146,7 +154,8 @@ testthat::test_that(
     s2_list_test <- s2_list(
       spatial_extent = pos,
       tile = "32TNR",
-      time_interval = time_window
+      time_interval = time_window,
+      apihub = apihub_path
     )
     testthat::expect_equal(length(s2_list_test), 6)
   }
@@ -159,7 +168,11 @@ testthat::test_that(
     pos <- sf::st_set_crs(sf::st_as_sf(pp, coords = c("x","y")), 4326)
     time_window <- as.Date(c("2016-05-01", "2016-05-31"))
     s2_list_test <- as(
-      s2_list(spatial_extent = pos, time_interval = time_window), 
+      s2_list(
+        spatial_extent = pos, 
+        time_interval = time_window, 
+        apihub = apihub_path
+      ), 
       "data.frame"
     )
     testthat::expect_equal(length(s2_list_test$id_orbit), 12)
@@ -167,7 +180,11 @@ testthat::test_that(
     # reproject
     pos <- sf::st_transform(pos, 32632)
     s2_list_test <- as(
-      s2_list(spatial_extent = pos, time_interval = time_window),
+      s2_list(
+        spatial_extent = pos, 
+        time_interval = time_window,
+        apihub = apihub_path
+      ),
       "data.frame"
     )
     testthat::expect_equal(length(s2_list_test$id_orbit), 12)
@@ -183,7 +200,8 @@ testthat::test_that(
     time_window <- as.Date(c("2016-05-01", "2016-05-10"))
     s2_list_test <- s2_list(
       spatial_extent = pos,
-      time_interval = time_window
+      time_interval = time_window,
+      apihub = apihub_path
     )
     testthat::expect_equal(length(s2_list_test), 69)
   }
@@ -195,7 +213,8 @@ testthat::test_that(
     time_window <- as.Date(c("2016-05-01", "2019-05-10"))
     s2_list_test <- s2_list(
       spatial_extent = pos,
-      time_interval = time_window
+      time_interval = time_window,
+      apihub = apihub_path
     )
     testthat::expect_equal(length(s2_list_test), 182)
   }
@@ -207,7 +226,8 @@ testthat::test_that(
     s2_list_test <- s2_list(
       spatial_extent = pos,
       tile = "32TNR",
-      time_interval = as.Date(c("2016-05-01", "2016-05-01"))
+      time_interval = as.Date(c("2016-05-01", "2016-05-01")),
+      apihub = apihub_path
     )
     testthat::expect_equal(length(s2_list_test), 0)
     testthat::expect_equal(
@@ -230,7 +250,8 @@ testthat::test_that(
       tile = "32TNR",
       time_interval = as.Date(c("2016-05-01", "2017-08-01")),
       time_period = "seasonal",
-      orbit = "065"
+      orbit = "065",
+      apihub = apihub_path
     )
     testthat::expect_equal(length(s2_list_test), 22)
   }
@@ -244,7 +265,8 @@ testthat::test_that(
       tile = "32TNR",
       time_interval = as.Date(c("2017-05-01", "2017-06-30")),
       time_period = "seasonal",
-      orbit = "065"
+      orbit = "065",
+      apihub = apihub_path
     )
     testthat::expect_equal(length(s2_list_test), 6)
   }
@@ -259,7 +281,8 @@ testthat::test_that(
       level = "L1C",
       time_interval = as.Date(c("2017-05-01", "2017-06-30")),
       time_period = "seasonal",
-      orbit = "065"
+      orbit = "065",
+      apihub = apihub_path
     )
     testthat::expect_equal(length(s2_list_test), 6)
   }
@@ -274,7 +297,8 @@ testthat::test_that(
       level = "auto",
       time_interval = as.Date(c("2016-05-01", "2017-06-30")),
       time_period = "seasonal",
-      orbit = "065"
+      orbit = "065",
+      apihub = apihub_path
     ))
     testthat::expect_equal(length(s2_list_test$level), 11)
     testthat::expect_equal(unique(s2_list_test$level), c("1C" , "2Ap"))
@@ -290,7 +314,8 @@ testthat::test_that(
       level = "L1C",
       time_interval = as.Date(c("2016-05-01", "2017-06-30")),
       time_period = "seasonal",
-      orbit = "065"
+      orbit = "065",
+      apihub = apihub_path
     ))
     testthat::expect_equal(length(s2_list_test$level), 11)
     testthat::expect_equal(unique(s2_list_test$level), c("1C"))
@@ -310,7 +335,8 @@ testthat::test_that(
     testthat::expect_error(
       s2_list(
         spatial_extent = "pos",
-        time_interval = as.Date(c("2017-05-01", "2017-06-30"))
+        time_interval = as.Date(c("2017-05-01", "2017-06-30")),
+        apihub = apihub_path
       ),
       regexp = gsub(
         " ", "[ \n]",
@@ -322,7 +348,8 @@ testthat::test_that(
     testthat::expect_error(
       s2_list(
         spatial_extent = pos,
-        time_interval = c("2017-05-XX", "2017-06-30")
+        time_interval = c("2017-05-XX", "2017-06-30"),
+        apihub = apihub_path
       ),
       regexp = gsub(
         " ", "[ \n]",
@@ -335,7 +362,8 @@ testthat::test_that(
       s2_list(
         spatial_extent = pos,
         time_interval = c("2017-05-01", "2017-06-30"),
-        availability = "offline"
+        availability = "offline",
+        apihub = apihub_path
       ),
       regexp = gsub(
         " ", "[ \n]",

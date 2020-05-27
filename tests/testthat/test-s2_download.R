@@ -1,6 +1,6 @@
 context("Test s2_download() and safe_getMetadata()")
-testthat::skip_on_cran()
-testthat::skip_on_travis()
+# testthat::skip_on_cran()
+# testthat::skip_on_travis()
 
 # NOTE: these tests require a high amount of time (depending on connection speed),
 # so the download is disabled by default if SAFE archives are already present.
@@ -10,6 +10,7 @@ test_download = FALSE
 safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
 dir.create(safe_dir, showWarnings = FALSE)
 
+write_scihub_login("user", "user", apihub_path <- tempfile())
 
 testthat::test_that(
   "Tests on s2_download - Built-in downloader", {
@@ -29,6 +30,7 @@ testthat::test_that(
       s2_l2a_list,
       downloader = "builtin",
       outdir = safe_dir,
+      apihub = apihub_path,
       overwrite = test_download
     )) # suppressWarnings used to manage possible warnings for skept Md5sum checks
     exp_outsafe_1 <- file.path(safe_dir, names(s2_l2a_downloaded))
@@ -92,6 +94,9 @@ testthat::test_that(
 )
 
 
+testthat::skip_on_cran()
+testthat::skip_on_travis()
+
 testthat::test_that(
   "Tests on s2_download - check aria2 installation", {
     if (Sys.info()["sysname"] == "Windows") {
@@ -111,6 +116,9 @@ testthat::test_that(
 )
 
 
+testthat::skip_on_cran()
+testthat::skip_on_travis()
+
 testthat::test_that(
   "Tests on s2_download - aria2 downloader", {
     
@@ -129,6 +137,7 @@ testthat::test_that(
       s2_l1c_list,
       downloader = "aria2",
       outdir = safe_dir,
+      apihub = apihub_path,
       overwrite = test_download
     )) # suppressWarnings used to manage possible warnings for skept Md5sum checks
     exp_outsafe_2 <- file.path(safe_dir, names(s2_l1c_downloaded))
