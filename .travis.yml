@@ -23,40 +23,7 @@ addons:
       - gdal-bin
       - python-gdal
       - libproj-dev
-      - libmysqlclient-dev
-      - libarmadillo-dev
-      - libc6-dev
-      - libcurl4-gnutls-dev
-      - libdap-dev
-      - libepsilon-dev
-      - libexpat1-dev
-      - libfreexl-dev
-      - libfyba-dev
-      - libgeotiff-dev
-      - libgif-dev
-      - libhdf4-alt-dev
-      - libhdf5-dev
-      - libjpeg-dev
-      - libjson-c-dev
-      - libkml-dev
-      - libltdl-dev
-      - liblzma-dev
-      - libnetcdf-dev
-      - libogdi3.2-dev
-      - libopenjp2-7-dev
-      - libpcre3-dev
-      - libpng-dev
-      - libpoppler-private-dev
-      - libpq-dev
-      - libqhull-dev
-      - libspatialite-dev
-      - libsqlite3-dev
-      - libtiff-dev
-      - liburiparser-dev
-      - libwebp-dev
-      - libxerces-c-dev
-      - libxml2-dev
-      - unixodbc-dev
+      - libgdal-dev
 before_install:
   - export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"
   - export PATH="$PATH:/usr/local/bin"
@@ -68,14 +35,6 @@ before_install:
   - make &> /tmp/build3.log
   - sudo make install
   - cd ../../
-  - wget https://github.com/OSGeo/gdal/archive/v2.2.3.tar.gz
-  - tar -xzvf v2.2.3.tar.gz > /tmp/build9.log
-  - pushd gdal-2.2.3/gdal
-  - ./configure
-  - travis_wait 50 sh -c 'make > /tmp/build11.log'
-  - make install
-  - cd ../../
-  - Rscript -e 'install.packages(c("sf", "rgdal"), configure.args = "--with-gdal-config=/usr/local/bin/gdal-config --with-geos-config=/usr/local/bin/geos-config --with-proj-include=/usr/local/include/ --with-proj-lib=/usr/local/lib/")'
 
 r:
   - release
