@@ -25,7 +25,7 @@ test_that("Load empty binpaths", {
 test_that("Try loading Sen2Cor", {
   testthat::expect_warning(
     binpaths_1 <- load_binpaths("sen2cor"),
-    "Sen2Cor was not found in your system; you can install it using the function"
+    "Sen2Cor was not found in your system;"
   )
   expect_is(binpaths_1, "list")
   expect_length(binpaths_1, 0)

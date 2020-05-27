@@ -38,7 +38,7 @@ testthat::test_that(
     # test s2_order()
     testthat::expect_message(
       s2_order_1 <- s2_order(s2_list_1, apihub = apihub_path),
-      "Check if products are already available for download"
+      "Check if products are already available"
     )
     # testthat::expect_message(
     #   s2_order_1 <- s2_order(s2_list_1, apihub = apihub_path),
@@ -85,7 +85,7 @@ testthat::test_that(
     # test s2_order()
     testthat::expect_message(
       s2_order_2 <- s2_order(s2_list_2, export_prodlist = tempdir(), apihub = apihub_path),
-      "Check if products are already available for download"
+      "Check if products are already available"
     )
     
     # Using the "reorder" argument on s2_order works - we test by running 

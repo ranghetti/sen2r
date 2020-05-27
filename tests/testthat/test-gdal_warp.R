@@ -7,6 +7,10 @@ ex_sel <- system.file(
   "extdata/out/S2A2A_20190723_022_Barbellino_RGB432B_10.tif", 
   package = "sen2r"
 )
+ex_ref <- system.file(
+  "extdata/out/S2A2A_20190723_022_Barbellino_SCL_10.tif", 
+  package = "sen2r"
+)
 
 testthat::test_that(
   "Simple clip", {

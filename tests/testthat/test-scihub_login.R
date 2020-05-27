@@ -12,7 +12,6 @@ test_that("check internet connection on internal function", {
 context("read / write SciHub login")
 
 test_that("check reading / writing credentials", {
-  write_scihub_login("user", "user")
   testthat::expect_error(
     write_scihub_login("user2", "user2"),
     regexp = gsub(
@@ -31,33 +30,4 @@ context("check SciHub login")
 test_that("check_scihub_login works as expected", {
   expect_false(check_scihub_login("BastianoCoimbraDeLaCoronilla", "yAcevedo!"))
   expect_true(check_scihub_login("user", "user"))
-})
-
-
-context("check connection - main functions")
-testthat::skip_on_cran() # because calling runtime GDAL
-
-test_that("check internet connection and fail if missing", {
-  testthat::expect_error(
-    httptest::without_internet(sen2r(
-      gui = FALSE,
-      online = TRUE,
-      s2_levels = "l2a",
-      step_atmcorr = "auto",
-      extent = NA,
-      s2tiles_selected = "32TNR",
-      timewindow = as.Date("2017-07-03"),
-      list_prods = "SCL",
-      mask_type = NA,
-      path_l1c = tempfile(pattern = "L1C"),
-      path_l2a = tempfile(pattern = "L2A"),
-      path_out = tempfile(pattern = "out"), 
-      overwrite = TRUE,
-      thumbnails = FALSE
-    )), 
-    regexp = gsub(
-      " ", "[ \n]",
-      "[Ii]nternet connection or SciHub may be down"
-    )
-  )
 })
