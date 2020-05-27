@@ -1,6 +1,4 @@
 context("Test gdalwarp_grid()")
-testthat::skip_on_cran() # because using runtime GDAL
-# testthat::skip_on_travis()
 
 ex_sel <- system.file(
   "extdata/out/S2A2A_20190723_022_Barbellino_RGB432B_10.tif",

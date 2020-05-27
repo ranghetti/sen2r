@@ -12,20 +12,24 @@ dir.create(safe_dir, showWarnings = FALSE)
 
 write_scihub_login("user", "user", apihub_path <- tempfile())
 
+# s2_l1c_list <- s2_list(tile = c("32TNR", "32TNS"), time_interval = "2019-07-03", level = "L1C")
+s2_l1c_list <- c(
+  "S2A_MSIL1C_20190723T101031_N0208_R022_T32TNR_20190723T121220.SAFE" = 
+    "https://scihub.copernicus.eu/apihub/odata/v1/Products('13fef7f9-3a85-49cd-9f39-4b5649e597ba')/$value",
+  "S2A_MSIL1C_20190723T101031_N0208_R022_T32TNS_20190723T121220.SAFE" = 
+    "https://scihub.copernicus.eu/apihub/odata/v1/Products('19bbde60-992b-423d-8dea-a5e0ac7715fc')/$value"
+)
+# s2_l2a_list <- s2_list(tile = c("32TNR", "32TNS"), time_interval = "2017-07-03", level = "auto")
+s2_l2a_list <- c(
+  "S2A_MSIL2A_20190723T101031_N0213_R022_T32TNS_20190723T125722.SAFE" = 
+    "https://scihub.copernicus.eu/apihub/odata/v1/Products('49d80ae3-12e3-4069-a813-ae4b0257592b')/$value",
+  "S2A_MSIL2A_20190723T101031_N0213_R022_T32TNR_20190723T125722.SAFE" = 
+    "https://scihub.copernicus.eu/apihub/odata/v1/Products('52b43ef1-9a43-4726-a833-9fabeb1a3329')/$value"
+)
+
 testthat::test_that(
   "Tests on s2_download - Built-in downloader", {
     
-    # s2_l2a_list <- s2_list(
-    #   tile = c("32TNR", "32TNS"),
-    #   time_interval = "2017-07-03",
-    #   level = "auto"
-    # )
-    s2_l2a_list <- c(
-      "S2A_MSIL2A_20190723T101031_N0213_R022_T32TNS_20190723T125722.SAFE" = 
-        "https://scihub.copernicus.eu/apihub/odata/v1/Products('49d80ae3-12e3-4069-a813-ae4b0257592b')/$value",
-      "S2A_MSIL2A_20190723T101031_N0213_R022_T32TNR_20190723T125722.SAFE" = 
-        "https://scihub.copernicus.eu/apihub/odata/v1/Products('52b43ef1-9a43-4726-a833-9fabeb1a3329')/$value"
-    )
     suppressWarnings(s2_l2a_downloaded <- s2_download(
       s2_l2a_list,
       downloader = "builtin",
@@ -94,6 +98,22 @@ testthat::test_that(
 )
 
 
+# On Travis and on CRAN the next tests are not run (using aria2);
+# in this case, download L1C required by subsequent tests with builtin
+if (any(
+  identical(Sys.getenv("TRAVIS"), "true"),
+  !identical(Sys.getenv("NOT_CRAN"), "true")
+)) {
+  suppressWarnings(s2_l1c_downloaded <- s2_download(
+    s2_l1c_list,
+    downloader = "builtin",
+    outdir = safe_dir,
+    apihub = apihub_path,
+    overwrite = test_download
+  )) # suppressWarnings used to manage possible warnings for skept Md5sum checks
+}
+
+
 testthat::skip_on_cran()
 testthat::skip_on_travis()
 
@@ -122,17 +142,6 @@ testthat::skip_on_travis()
 testthat::test_that(
   "Tests on s2_download - aria2 downloader", {
     
-    # s2_l1c_list <- s2_list(
-    #   tile = c("32TNR", "32TNS"),
-    #   time_interval = "2019-07-03",
-    #   level = "L1C"
-    # )
-    s2_l1c_list <- c(
-      "S2A_MSIL1C_20190723T101031_N0208_R022_T32TNR_20190723T121220.SAFE" = 
-        "https://scihub.copernicus.eu/apihub/odata/v1/Products('13fef7f9-3a85-49cd-9f39-4b5649e597ba')/$value",
-      "S2A_MSIL1C_20190723T101031_N0208_R022_T32TNS_20190723T121220.SAFE" = 
-        "https://scihub.copernicus.eu/apihub/odata/v1/Products('19bbde60-992b-423d-8dea-a5e0ac7715fc')/$value"
-    )
     suppressWarnings(s2_l1c_downloaded <- s2_download(
       s2_l1c_list,
       downloader = "aria2",
