@@ -10,8 +10,6 @@ addons:
       - sourceline: 'ppa:opencpu/jq'
       - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
     packages:
-      - libgdal-dev
-      - libproj-dev
       - libudunits2-dev
       - libv8-dev
       - libprotobuf-dev
@@ -20,11 +18,16 @@ addons:
       - valgrind
       - libjq-dev
       - python-numpy
-      - python-gdal
       - aria2
       - netcdf-bin
       - gdal-bin
       - python-gdal
+      - libproj-dev
+      - libgdal-dev
+      
+before_install:
+  - Rscript -e 'install.packages("remotes")'
+  - Rscript -e 'remotes::install_github("r-spatial/lwgeom", ref = "467dc314a0bda011e806a8b56c8dcc153f63527c")'
 
 r:
   - release
@@ -41,7 +44,7 @@ before_script:
   
 script: 
   - R CMD build .
-  - travis_wait 120 R CMD check *tar.gz
+  - travis_wait 50 R CMD check *tar.gz
 
 env:
   global:
@@ -54,4 +57,3 @@ notifications:
   email:
     on_success: change
     on_failure: change
-
