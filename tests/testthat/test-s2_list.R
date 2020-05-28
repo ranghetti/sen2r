@@ -1,5 +1,5 @@
 context("Test s2_list() and safe_getMetadata(info = 'nameinfo')")
-# testthat::skip_on_cran()
+testthat::skip_on_cran()
 # testthat::skip_on_travis()
 
 write_scihub_login("user", "user", apihub_path <- tempfile())

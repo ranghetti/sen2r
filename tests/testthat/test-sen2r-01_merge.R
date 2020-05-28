@@ -1,5 +1,5 @@
 context("Test s2_merge and translate when stitching 2 tiles with no clipping")
-# testthat::skip_on_cran() # because required SAFE do not exists
+testthat::skip_on_cran()
 # testthat::skip_on_travis() # because required SAFE do not exists
 
 safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")

@@ -1,5 +1,5 @@
 context("Test s2 formats")
-# testthat::skip_on_cran()
+testthat::skip_on_cran()
 # testthat::skip_on_travis()
 
 write_scihub_login("user", "user", apihub_path <- tempfile())

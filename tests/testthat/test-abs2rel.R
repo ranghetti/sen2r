@@ -1,6 +1,6 @@
 context("Test abs2rel()")
 testthat::skip_on_cran()
-testthat::skip_on_travis()
+# testthat::skip_on_travis()
 
 # if (Sys.info()["sysname"] != "Windows") {
 #   ref_path <- "/usr/lib/R/library/base"

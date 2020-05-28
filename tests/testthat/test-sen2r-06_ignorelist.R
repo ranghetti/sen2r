@@ -1,5 +1,5 @@
 context("Test ignorelist")
-# testthat::skip_on_cran()
+testthat::skip_on_cran()
 # testthat::skip_on_travis() # because required SAFE do not exists
 
 safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")

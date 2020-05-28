@@ -1,5 +1,5 @@
 context("Test s2_download() and safe_getMetadata()")
-# testthat::skip_on_cran()
+testthat::skip_on_cran()
 # testthat::skip_on_travis()
 
 # NOTE: these tests require a high amount of time (depending on connection speed),

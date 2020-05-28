@@ -1,5 +1,5 @@
 context("Test mountpoint()")
-# testthat::skip_on_cran()
+testthat::skip_on_cran()
 # testthat::skip_on_travis()
 
 if (Sys.info()["sysname"] != "Windows") {

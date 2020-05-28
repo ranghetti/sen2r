@@ -1,5 +1,5 @@
 context("Test warping (clip, reproject, resize)")
-# testthat::skip_on_cran() # because required SAFE do not exists
+testthat::skip_on_cran()
 # testthat::skip_on_travis() # because required SAFE do not exists
 
 safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")

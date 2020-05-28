@@ -1,6 +1,6 @@
 context("Load binaries")
 testthat::skip_on_cran()
-testthat::skip_on_travis()
+# testthat::skip_on_travis()
 
 binpaths_file <- normalize_path(file.path(
   if (dir.exists("~/.sen2r")) {"~/.sen2r"} else {tempdir()},
