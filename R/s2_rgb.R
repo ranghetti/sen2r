@@ -123,7 +123,7 @@ s2_rgb <- function(infiles,
   
   # Check proc_mode and GDAL external dependency
   if (is.na(proc_mode)) {
-    proc_mode <- if (is.null(load_binpaths()$gdal_calc)) {"gdal_calc"} else {"raster"}
+    proc_mode <- if (!is.null(load_binpaths()$gdal_calc)) {"gdal_calc"} else {"raster"}
   }
   if (!proc_mode %in% c("gdal_calc", "raster", "stars")) {
     print_message(
