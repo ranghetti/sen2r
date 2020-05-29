@@ -1,3 +1,22 @@
+# Version 1.3.5
+
+## Major changes
+- GDAL is no longer a mandatory external dependency, being used only to smooth/bufferise cloud masks (and optionally to compute spectral indices, RGB images and thumbnails).
+- "Graphical" packages needed to run the GUI (**`leaflet`**, **`leafpm`**, **`mapedit`**, **`shiny`**, **`shinyFiles`**, **`shinydashboard`**, **`shinyjs`**, **`shinyWidgets`**) are now suggested dependencies. In the case they are missing and the user tries to run the GUI, an error is returned with the command for installing them.
+
+## Minor changes
+- Edit the GUI in order to disable selectors when dependencies required to run them are not available.
+- Automatic tests were reorganised and improved after GDAL changes.
+
+## Documentation
+- Document **`sen2r`** installation over Ubuntu Focal.
+- Update documentation according to GDAL changes.
+
+## Bug fixes
+- Fix Travis-**`lwgeom`** incompatibilities (#319)
+- Fix #310 and #311
+
+
 # Version 1.3.4
 
 ## New functions
@@ -180,7 +199,7 @@ Here above the related changes:
 <br/>
 ## **sen2r** CRAN release
 _________________________
-**`sen2r`** was accepted on CRAN (2017-10-21, version 1.1.0).
+**`sen2r`** was accepted on CRAN (2019-10-21, version 1.1.0).
 From now, it is possible to install [the CRAN version](https://CRAN.R-project.org/package=sen2r) with the following command:
 ```r
 install.packages("sen2r")
