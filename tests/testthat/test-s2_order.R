@@ -1,6 +1,8 @@
 context("Test s2_order() adn safe_is_online()")
 testthat::skip_on_cran()
-testthat::skip_on_travis()
+# testthat::skip_on_travis()
+
+write_scihub_login("user", "user", apihub_path <- tempfile())
 
 # NOTE: these tests are thought to test two situations, one for available products,
 # another for products on LTA. However, situations could change (e.g. a product
@@ -35,11 +37,11 @@ testthat::test_that(
     
     # test s2_order()
     testthat::expect_message(
-      s2_order_1 <- s2_order(s2_list_1),
-      "Check if products are already available for download"
+      s2_order_1 <- s2_order(s2_list_1, apihub = apihub_path),
+      "Check if products are already available"
     )
     # testthat::expect_message(
-    #   s2_order_1 <- s2_order(s2_list_1),
+    #   s2_order_1 <- s2_order(s2_list_1, apihub = apihub_path),
     #   paste0(length(s2_list_1)," Sentinel\\-2 images are already available and will not be ordered.")
     # )
     testthat::expect_true(all(names(attributes(s2_order_1)) %in% c("names","available","notordered","path")))
@@ -82,15 +84,15 @@ testthat::test_that(
     
     # test s2_order()
     testthat::expect_message(
-      s2_order_2 <- s2_order(s2_list_2, export_prodlist = tempdir()),
-      "Check if products are already available for download"
+      s2_order_2 <- s2_order(s2_list_2, export_prodlist = tempdir(), apihub = apihub_path),
+      "Check if products are already available"
     )
     
     # Using the "reorder" argument on s2_order works - we test by running 
     # "the same" command repeatetly, hoping that the statuses do not change
     # in a couple of seconds
-    s2_order_3 <- s2_order(attr(s2_order_2, "path"), reorder = FALSE)
-    s2_order_4 <- s2_order(attr(s2_order_2, "path"), reorder = TRUE)
+    s2_order_3 <- s2_order(attr(s2_order_2, "path"), apihub = apihub_path, reorder = FALSE)
+    s2_order_4 <- s2_order(attr(s2_order_2, "path"), apihub = apihub_path, reorder = TRUE)
     testthat::expect_equal(
       attr(s2_order_2, "available"), 
       attr(s2_order_3, "available"),
@@ -107,7 +109,7 @@ testthat::test_that(
       attr(s2_order_4, "notordered")
     )
     # testthat::expect_message(
-    #   s2_order_2 <- s2_order(s2_list_2),
+    #   s2_order_2 <- s2_order(s2_list_2, apihub = apihub_path),
     #   paste0(
     #     length(s2_list_2)," of ",length(s2_list_2)," Sentinel\\-2 images were ",
     #     "correctly ordered\\. You can check at a later time if the ordered ",
