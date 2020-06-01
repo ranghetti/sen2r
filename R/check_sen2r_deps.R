@@ -40,13 +40,23 @@ check_sen2r_deps <- function() {
   addResourcePath <- shiny::addResourcePath
   br <- shiny::br
   code <- shiny::code
+  column <- shiny::column
   conditionalPanel <- shiny::conditionalPanel
+  disable <- shinyjs::disable
+  disabled <- shinyjs::disabled
   div <- shiny::div
   em <- shiny::em
+  enable <- shinyjs::enable
+  extendShinyjs <- shinyjs::extendShinyjs
   fluidPage <- shiny::fluidPage
   fluidRow <- shiny::fluidRow
+  getVolumes <- shinyFiles::getVolumes
   h3 <- shiny::h3
   helpText <- shiny::helpText
+  hide <- shinyjs::hide
+  hr <- shiny::hr
+  HTML <- shiny::HTML
+  html <- shinyjs::html
   htmlOutput <- shiny::htmlOutput
   icon <- shiny::icon
   modalButton <- shiny::modalButton
@@ -55,35 +65,32 @@ check_sen2r_deps <- function() {
   observeEvent <- shiny::observeEvent
   outputOptions <- shiny::outputOptions
   p <- shiny::p
-  reactive <- shiny::reactive
+  parseDirPath <- shinyFiles::parseDirPath
+  parseFilePaths <- shinyFiles::parseFilePaths
   radioButtons <- shiny::radioButtons
+  reactive <- shiny::reactive
   reactiveFileReader <- shiny::reactiveFileReader
   reactivePoll <- shiny::reactivePoll
   reactiveValues <- shiny::reactiveValues
+  removeModal <- shiny::removeModal
   renderText <- shiny::renderText
   renderUI <- shiny::renderUI
   runApp <- shiny::runApp
   shinyApp <- shiny::shinyApp
-  showModal <- shiny::showModal
-  span <- shiny::span
-  strong <- shiny::strong
-  textOutput <- shiny::textOutput
-  uiOutput <- shiny::uiOutput
-  verbatimTextOutput <- shiny::verbatimTextOutput
-  hide <- shinyjs::hide
-  html <- shinyjs::html
-  useShinyjs <- shinyjs::useShinyjs
-  extendShinyjs <- shinyjs::extendShinyjs
-  disabled <- shinyjs::disabled
-  disable <- shinyjs::disable
-  enable <- shinyjs::enable
-  getVolumes <- shinyFiles::getVolumes
-  parseDirPath <- shinyFiles::parseDirPath
-  parseFilePaths <- shinyFiles::parseFilePaths
   shinyDirButton <- shinyFiles::shinyDirButton
   shinyDirChoose <- shinyFiles::shinyDirChoose
   shinyFileChoose <- shinyFiles::shinyFileChoose
   shinyFilesButton <- shinyFiles::shinyFilesButton
+  showModal <- shiny::showModal
+  span <- shiny::span
+  stopApp <- shiny::stopApp
+  strong <- shiny::strong
+  textInput <- shiny::textInput
+  textOutput <- shiny::textOutput
+  uiOutput <- shiny::uiOutput
+  updateTextInput <- shiny::updateTextInput
+  useShinyjs <- shinyjs::useShinyjs
+  verbatimTextOutput <- shiny::verbatimTextOutput
   
   # get server volumes
   volumes <- c(

@@ -1,6 +1,4 @@
 context("Test build_example_param_file()")
-# testthat::skip_on_cran()
-# testthat::skip_on_travis()
 
 testthat::test_that(
   "Build an example parameter file", {

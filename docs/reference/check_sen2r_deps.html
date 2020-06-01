@@ -41,7 +41,7 @@
 
 <meta property="og:title" content="Check package dependencies — check_sen2r_deps" />
 <meta property="og:description" content="The function allows to graphically check that all the
-dependencies are installed." />
+optional runtime dependencies are installed." />
 
 
 
@@ -83,7 +83,7 @@ dependencies are installed." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.5</span>
       </span>
     </div>
 
@@ -164,7 +164,7 @@ dependencies are installed." />
 
     <div class="ref-description">
     <p>The function allows to graphically check that all the
-dependencies are installed.</p>
+optional runtime dependencies are installed.</p>
     </div>
 
     <pre class="usage"><span class='fu'>check_sen2r_deps</span>()</pre>
@@ -175,10 +175,11 @@ dependencies are installed.</p>
     <p>NULL (the function is called for its side effects)</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This package needs some external dependencies to run:</p><ul>
-<li><p>Python</p></li>
-<li><p>GDAL</p></li>
-<li><p>Sen2Cor</p></li>
+    <p>This package needs some external dependencies in order to run
+specific actions:</p><ul>
+<li><p>Sen2Cor for atmospheric correction;</p></li>
+<li><p>GDAL for cloud mask smoothing and buffering;</p></li>
+<li><p>aria2 to download SAFE images with an alternative downloader.</p></li>
 </ul>
 
 <p>This function opens a GUI which allows to check that these dependencies

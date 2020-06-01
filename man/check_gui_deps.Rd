@@ -4,7 +4,7 @@
 \alias{check_gui_deps}
 \title{Check GUI dependencies}
 \usage{
-check_gui_deps(abort = FALSE)
+check_gui_deps(abort = TRUE)
 }
 \arguments{
 \item{abort}{Logical parameter: if TRUE (default), the function aborts in case

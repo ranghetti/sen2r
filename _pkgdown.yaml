@@ -7,64 +7,64 @@ reference:
   - title: Automatic processing chain
     desc: ~
     contents:
-      - '`sen2r`'
+      - sen2r
   - title: Find and download Sentinel-2 products
     desc: ~
     contents:
-      - '`s2_list`'
-      - '`s2_download`'
-      - '`s2_order`'
-      - '`sen2cor`'
-      - '`safe_is_online`'
-      - '`read_scihub_login`'
+      - s2_list
+      - s2_download
+      - s2_order
+      - sen2cor
+      - safe_is_online
+      - read_scihub_login
   - title: Read and convert SAFE format
     desc: ~
     contents:
-      - '`s2_translate`'
-      - '`s2_merge`'
-      - '`gdal_warp`'
-      - '`s2_mask`'
-      - '`s2_rgb`'
-      - '`s2_calcindices`'
-      - '`s2_thumbnails`'
+      - s2_translate
+      - s2_merge
+      - gdal_warp
+      - s2_mask
+      - s2_rgb
+      - s2_calcindices
+      - s2_thumbnails
   - title: Manage file names and metadata
     desc: ~
     contents:
-      - '`safe_getMetadata`'
-      - '`safe_shortname`'
-      - '`raster_metadata`'
-      - '`sen2r_getElements`'
-      - '`s2_dop`'
-      - '`s2_tiles`'
+      - safe_getMetadata
+      - safe_shortname
+      - raster_metadata
+      - sen2r_getElements
+      - s2_dop
+      - s2_tiles
   - title: Install and configure dependencies
     desc: ~
     contents:
-      - '`check_sen2r_deps`'
-      - '`install_gui_deps`'
-      - '`load_binpaths`'
-      - '`install_sen2cor`'
-      - '`install_aria2`'
-      - '`check_gdal`'
-      - '`set_gipp`'
+      - check_sen2r_deps
+      - install_gui_deps
+      - load_binpaths
+      - install_sen2cor
+      - install_aria2
+      - check_gdal
+      - set_gipp
   - title: Accessory functions
     desc: ~
     contents:
-      - '`build_example_param_file`'
-      - '`s2_gui`'
-      - '`list_indices`'
-      - '`tiles_intersects`'
+      - build_example_param_file
+      - s2_gui
+      - list_indices
+      - tiles_intersects
   - title: Generic accessory functions
     desc: ~
     contents:
-      - '`gdalUtil`'
-      - '`expand_path`'
-      - '`comsub`'
-      - '`abs2rel`'
-      - '`gdal_abs2rel`'
-      - '`mountpoint`'
-      - '`st_crs2`'
-      - '`str_pad2`'
-      - '`normalize_path`'
+      - gdalUtil
+      - expand_path
+      - comsub
+      - abs2rel
+      - gdal_abs2rel
+      - mountpoint
+      - st_crs2
+      - str_pad2
+      - normalize_path
 navbar:
   type: inverse
   left: []

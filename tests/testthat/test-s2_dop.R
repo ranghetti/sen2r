@@ -1,6 +1,4 @@
 context("Test s2_dop()")
-# testthat::skip_on_cran()
-# testthat::skip_on_travis()
 
 testthat::test_that(
   "All the passages in a cycle of 10 days over all the orbits", {
