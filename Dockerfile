@@ -6,7 +6,7 @@ LABEL maintainer="Luigi Ranghetti <luigi@ranghetti.info>"
 RUN apt update && apt install -y \
         gdal-bin \
         aria2 \
-        libpython-dev && \
+        libpython2-dev && \
     apt autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
