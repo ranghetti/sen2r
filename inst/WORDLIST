@@ -32,6 +32,7 @@ difftime
 dir
 Dockerfile
 dockerised
+doi
 doy
 DOY
 dstnodata
@@ -50,7 +51,6 @@ GDAL
 gdalUtils
 gdalwarp
 gdtools
-Geo
 geoJSON
 geojsonio
 georeferenced

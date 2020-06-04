@@ -1,7 +1,7 @@
 Package: sen2r
 Type: Package
 Title: Find, Download and Process Sentinel-2 Data
-Version: 1.3.5
+Version: 1.3.6
 Authors@R: c(person("Luigi", "Ranghetti",
                     email = "luigi@ranghetti.info",
                     role = c("aut", "cre"),
@@ -16,6 +16,8 @@ Description: Functions to download Sentinel-2 optical images
  (and eventually automate) the steps necessary to build a complete
  Sentinel-2 processing chain.
  A Graphical User Interface to facilitate data processing is also provided.
+ For additional documentation refer to the following article: 
+ Ranghetti et al. (2020) <doi:10.1016/j.cageo.2020.104473>.
 License: GPL-3
 Encoding: UTF-8
 URL: http://sen2r.ranghetti.info, https://github.com/ranghetti/sen2r

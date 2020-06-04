@@ -1,3 +1,9 @@
+# Version 1.3.6
+
+## Bug fixes 
+- Fix GDAL usage over Windows (a new version was specifically released for this bug because it caused **`sen2r`** stopping for many Windows users).
+
+
 # Version 1.3.5
 
 ## Major changes
