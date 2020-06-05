@@ -21,6 +21,10 @@ s2_defNA <- function(prod_types) {
     TOA = 2^16-1, # default value for UInt16
     SCL = 0, # specific for SCL
     TCI = 0, # no specific NA value because it is a Byte format
+    WVP = 2^16-1, # default value for UInt16
+    AOT = 2^16-1, # default value for UInt16
+    CLD = 255, # default value for Byte
+    SNW = 255, # default value for Byte
     0 # default value is not yet NA because this causes errors in s2_mask
   )
   

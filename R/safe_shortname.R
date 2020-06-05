@@ -106,7 +106,7 @@ safe_shortname <- function(
   # check prod_type
   prod_type_accepted_values <- list(
     "1C" = c("TOA","xxx"),
-    "2A" = c("BOA","TCI","AOT","WVP","SCL","CLD","SNW","VIS","xxx"))
+    "2A" = c("BOA","TCI","AOT","WVP","SCL","CLD","SNW","xxx"))
   message_type <- ifelse(abort==TRUE, "error", "warning")
   
   if (length(prod_type) > 1) {

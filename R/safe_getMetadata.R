@@ -257,10 +257,11 @@ safe_isvalid <- function(
                              "elements" = c("mission","file_class","additional_product","centre","creation_datetime","orbit_number","id_tile","bandname")),
     "oldname_L2A_jp2" = list("regex" = "^S(2[AB])\\_([A-Z]{4})\\_([A-Z]{3})\\_L2A\\_TL\\_(.{4})\\_([0-9]{8}T[0-9]{6})\\_A([0-9]{6})\\_T([A-Z0-9]{5})\\_?(B[0-9A]{2})?\\_([126]0m)\\.jp2$",
                              "elements" = c("mission","file_class","additional_product","centre","creation_datetime","orbit_number","id_tile","bandname","res")),
-    "compactname_L1C_jp2" = list("regex" = "^T([A-Z0-9]{5})\\_([0-9]{8}T[0-9]{6})\\_(B[0-9A]{2})\\.jp2$",
+    "compactname_L1C_jp2" = list("regex" = "^T([A-Z0-9]{5})\\_([0-9]{8}T[0-9]{6})\\_([0-9A-Z]+)\\.jp2$",
                                  "elements" = c("id_tile","sensing_datetime","bandname")),
-    "compactname_L2A_jp2" = list("regex" = "^(?:L2A\\_)?T([A-Z0-9]{5})\\_([0-9]{8}T[0-9]{6})\\_([0-9A-Z]{3})\\_([126]0m)\\.jp2$",
-                                 "elements" = c("id_tile","sensing_datetime","bandname","res"))) # here bandname can be also additional_product
+    # "compactname_L2A_jp2" = list("regex" = "^(?:L2A\\_)?T([A-Z0-9]{5})\\_([0-9]{8}T[0-9]{6})\\_([0-9A-Z]+)\\_([126]0m)\\.jp2$",
+    "compactname_L2A_jp2" = list("regex" = "^(((?:L2A\\_)?T([A-Z0-9]{5})\\_([0-9]{8}T[0-9]{6}))|MSK)\\_([0-9A-Z]+)(\\_([126]0m))?\\.jp2$",
+                                 "elements" = c("","","id_tile","sensing_datetime","bandname","","res"))) # here bandname can be also additional_product
   
   message_type <- ifelse(abort==TRUE, "error", "warning")
   
@@ -723,10 +724,15 @@ safe_isvalid <- function(
           jp2_layertype[grep("^B[0-9A]{2}$",jp2_bandname)] <- "MSI"
           jp2_layertype[jp2_layertype!="MSI"] <- jp2_bandname[jp2_layertype!="MSI"]
           jp2_bandname[jp2_layertype!="MSI"] <- ""
+          jp2_tile[jp2_tile==""] <- jp2_tile[jp2_tile!=""][1]
         }
         
         # correction B8A -> B08 (only one between them is used)
         jp2_bandname[jp2_bandname=="B8A"] <- "B08"
+        
+        # correction CLDPRB-SNWPRB (to be of length 3)
+        jp2_layertype[jp2_layertype=="CLDPRB"] <- "CLD"
+        jp2_layertype[jp2_layertype=="SNWPRB"] <- "SNW"
         
         # output data.frame
         jp2_list <- data.frame(

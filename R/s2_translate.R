@@ -227,6 +227,10 @@ s2_translate <- function(infile,
                      TOA = "65535",
                      SCL = "0",
                      TCI = NA,
+                     WVP = NA,
+                     AOT = NA,
+                     CLD = NA,
+                     SNW = NA,
                      NA)
     # define output subdir
     out_subdir <- ifelse(subdirs, file.path(outdir,sel_prod), outdir)

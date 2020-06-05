@@ -308,7 +308,10 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   
   
   # -- list_prods --
-  invalid_prods <- pm$list_prods[!is.na(pm$list_prods) & !pm$list_prods %in% c("BOA","TOA","SCL","TCI")]
+  invalid_prods <- pm$list_prods[
+    !is.na(pm$list_prods) &
+      !pm$list_prods %in% c("BOA","TOA","SCL","TCI","WVP","AOT","CLD","SNW")
+    ]
   if (length(nn(invalid_prods)) > 0) {
     print_message(
       type = type,

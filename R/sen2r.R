@@ -982,7 +982,10 @@ sen2r <- function(param_list = NULL,
   
   # accepted products (update together with the same variables in s2_gui(), check_s2_list() and in compute_s2_names())
   l1c_prods <- c("TOA")
-  l2a_prods <- c("BOA","SCL","TCI")
+  l2a_prods <- c("BOA","SCL","TCI","AOT","WVP","CLD","SNW")
+  
+  # Layer not to be masked (all the others are assumed to be masked)
+  nomsk <- c("SCL", "CLD", "SNW", "AOT")
   
   # if masking is required, produce also SCL
   list_prods <- if (!is.na(pm$mask_type)) {
@@ -2319,7 +2322,7 @@ sen2r <- function(param_list = NULL,
         
         
         ## 6. Clip, rescale, reproject ##
-        if (sum(file.exists(nn(unlist(c(sel_s2names$req$warped,sel_s2names$req$warped_scl)))))>0) {
+        if (sum(file.exists(nn(unlist(c(sel_s2names$req$warped,sel_s2names$req$warped_nomsk)))))>0) {
           
           print_message(
             type = "message",
@@ -2328,16 +2331,16 @@ sen2r <- function(param_list = NULL,
           )
           
           # compute required names
-          warped_nonscl_reqout <- sapply(names(sel_s2names$req$warped), function(prod) {
+          warped_tomsk_reqout <- sapply(names(sel_s2names$req$warped), function(prod) {
             sel_s2names$exp$warped[[prod]][
               sel_s2names$exp$merged[[prod]] %in% sel_s2names$req$warped[[prod]]
               ]
           }, simplify = FALSE, USE.NAMES = TRUE)
-          warped_scl_reqout <- list(
-            "SCL" = sel_s2names$exp$warped_scl[["SCL"]][
-              sel_s2names$exp$merged[["SCL"]] %in% sel_s2names$req$warped_scl[["SCL"]]
+          warped_nomsk_reqout <- sapply(names(sel_s2names$req$warped_nomsk), function(prod) {
+            sel_s2names$exp$warped_nomsk[[prod]][
+              sel_s2names$exp$merged[[prod]] %in% sel_s2names$req$warped_nomsk[[prod]]
               ]
-          )
+          }, simplify = FALSE, USE.NAMES = TRUE)
           
           dir.create(paths["warped"], recursive=FALSE, showWarnings=FALSE)
           # create mask
@@ -2354,18 +2357,18 @@ sen2r <- function(param_list = NULL,
           } # TODO add support for multiple extents
           
           if(pm$path_subdirs==TRUE){
-            sapply(unique(dirname(unlist(c(warped_nonscl_reqout,warped_scl_reqout)))),dir.create,showWarnings=FALSE)
+            sapply(unique(dirname(unlist(c(warped_tomsk_reqout,warped_nomsk_reqout)))),dir.create,showWarnings=FALSE)
           }
           
-          if (any(!file.exists(nn(unlist(warped_nonscl_reqout)))) | pm$overwrite==TRUE) {
+          if (any(!file.exists(nn(unlist(warped_tomsk_reqout)))) | pm$overwrite==TRUE) {
             # here trace_function() is not used, since argument "tr" matches multiple formal arguments.
             # manual cycle is performed.
             for (sel_prod in names(sel_s2names$req$warped)) {
-              tracename_gdalwarp <- start_trace(warped_nonscl_reqout[[sel_prod]], "gdal_warp")
+              tracename_gdalwarp <- start_trace(warped_tomsk_reqout[[sel_prod]], "gdal_warp")
               trace_gdalwarp <- tryCatch({
                 gdal_warp(
                   sel_s2names$req$warped[[sel_prod]],
-                  warped_nonscl_reqout[[sel_prod]],
+                  warped_tomsk_reqout[[sel_prod]],
                   of = out_format["warped"],
                   ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
                   mask = s2_mask_extent,
@@ -2383,7 +2386,7 @@ sen2r <- function(param_list = NULL,
                 )
                 # fix for envi extension (writeRaster use .envi)
                 if (out_format["warped"]=="ENVI") {fix_envi_format(
-                  unlist(warped_nonscl_reqout)[file.exists(unlist(warped_nonscl_reqout))]
+                  unlist(warped_tomsk_reqout)[file.exists(unlist(warped_tomsk_reqout))]
                 )}
               }, error = print)
               if (is(trace_gdalwarp, "error")) {
@@ -2394,21 +2397,24 @@ sen2r <- function(param_list = NULL,
               }
             }
           }
-          if (length(nn(warped_scl_reqout[["SCL"]])) > 0) {
-            if (any(!file.exists(nn(warped_scl_reqout[["SCL"]]))) | pm$overwrite==TRUE) {
-              tracename_gdalwarp <- start_trace(warped_scl_reqout[["SCL"]], "gdal_warp")
+          
+          if (any(!file.exists(nn(unlist(warped_nomsk_reqout)))) | pm$overwrite==TRUE) {
+            # here trace_function() is not used, since argument "tr" matches multiple formal arguments.
+            # manual cycle is performed.
+            for (sel_prod in names(sel_s2names$req$warped_nomsk)) {
+              tracename_gdalwarp <- start_trace(warped_nomsk_reqout[[sel_prod]], "gdal_warp")
               trace_gdalwarp <- tryCatch({
                 gdal_warp(
-                  sel_s2names$req$warped_scl[["SCL"]],
-                  warped_scl_reqout[["SCL"]],
-                  of = out_format["warped_scl"], # use physical files to speed up next steps
+                  sel_s2names$req$warped_nomsk[[sel_prod]],
+                  warped_nomsk_reqout[[sel_prod]],
+                  of = out_format["warped_nomsk"], # use physical files to speed up next steps
                   ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
                   mask = s2_mask_extent,
                   tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
                   t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
-                  r = pm$resampling_scl,
-                  dstnodata = s2_defNA("SCL"),
-                  co = if (out_format["warped_scl"]=="GTiff") {c(
+                  r = if (sel_prod == "SCL") {pm$resampling_scl} else {pm$resampling},
+                  dstnodata = s2_defNA(sel_prod),
+                  co = if (out_format["warped_nomsk"]=="GTiff") {c(
                     paste0("COMPRESS=",pm$compression),
                     if (bigtiff) {"BIGTIFF=YES"}
                   )},
@@ -2417,8 +2423,8 @@ sen2r <- function(param_list = NULL,
                   rmtmp = FALSE
                 )
                 # fix for envi extension (writeRaster use .envi)
-                if (out_format["warped"]=="ENVI") {fix_envi_format(
-                  unlist(warped_scl_reqout)[file.exists(unlist(warped_scl_reqout))]
+                if (out_format["warped_nomsk"]=="ENVI") {fix_envi_format(
+                  unlist(warped_nomsk_reqout)[file.exists(unlist(warped_nomsk_reqout))]
                 )}
               }, error = print)
               if (is(trace_gdalwarp, "error")) {
@@ -2427,24 +2433,6 @@ sen2r <- function(param_list = NULL,
               } else {
                 end_trace(tracename_gdalwarp)
               }
-              # gdal_warp(sel_s2names$merged_names_req[!names_merged_req_scl_idx],
-              #           sel_s2names$warped_names_reqout[!names_merged_req_scl_idx],
-              #           of = warped_outformat,
-              #           ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
-              #           mask = s2_mask_extent,
-              #           tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
-              #           t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
-              #           r = pm$resampling,
-              #           overwrite = pm$overwrite) # TODO dstnodata value?
-              # gdal_warp(sel_s2names$merged_names_req[names_merged_req_scl_idx],
-              #           sel_s2names$warped_names_reqout[names_merged_req_scl_idx],
-              #           of = pm$outformat, # use physical files to speed up next steps
-              #           ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
-              #           mask = s2_mask_extent,
-              #           tr = if (!any(is.na(pm$res))) {pm$res} else {NULL},
-              #           t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
-              #           r = pm$resampling_scl,
-              #           overwrite = pm$overwrite)
             }
           }
           
