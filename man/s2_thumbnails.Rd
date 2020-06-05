@@ -13,7 +13,7 @@ s2_thumbnails(
   outdir = NA,
   tmpdir = NA,
   rmtmp = TRUE,
-  proc_mode = NA,
+  proc_mode = "raster",
   overwrite = FALSE
 )
 }
@@ -67,7 +67,10 @@ If \code{tmpdir} is a non-empty folder, a random subdirectory will be used.}
 \code{gdal_calc} routines are used to compute indices;
 if \code{"raster"} or \code{"stars"}, R functions are instead used
 (using respectively \code{raster} or \code{stars} routines).
-Default (NA) is \code{"gdal_calc"} if a runtime GDAL is found; \code{"raster"} elsewhere.
+\strong{Note}: default value (\code{"raster"}) is the only fully supported mode.
+\code{"gdal_calc"} can be used only if a runtime GDAL environment can be properly
+configured (no assistance is provided in case of GDAL-related problems).
+\code{"raster"} mode is experimental.
 See \code{s2_calcindices()} for further details.}
 
 \item{overwrite}{(optional) Logical value: should existing thumbnails be

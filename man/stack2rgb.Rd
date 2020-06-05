@@ -52,6 +52,10 @@ This option is used only in the case a GTiff format was chosen.}
 \code{gdal_calc} routines are used to compute indices;
 if \code{"raster"} (default) or \code{"stars"}, R functions are instead used
 (using respectively \code{raster} or \code{stars} routines).
+\strong{Note}: default value (\code{"raster"}) is the only fully supported mode.
+\code{"gdal_calc"} can be used only if a runtime GDAL environment can be properly
+configured (no assistance is provided in case of GDAL-related problems).
+\code{"raster"} mode is experimental.
 See \code{s2_calcindices()} for further details.}
 
 \item{tmpdir}{(optional) Path where intermediate files will be created.

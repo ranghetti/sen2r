@@ -94,12 +94,14 @@ if \code{"raster"} (default) or \code{"stars"}, R functions are instead used
 (using respectively \code{raster} or \code{stars} routines).
 \strong{Notes}:
 \enumerate{
-\item there is a difference in which the two modes manage values out
+\item default value (\code{"raster"}) is the only fully supported mode.
+\code{"gdal_calc"} can be used only if a runtime GDAL environment can be properly
+configured (no assistance is provided in case of GDAL-related problems).
+\code{"raster"} mode is experimental.
+\item There is a difference in which the two modes manage values out
 of ranges (e.g. -32768 to 32767 in Int16 and 0 to 255 in Byte):
 \code{"raster"} and \code{"stars"} modes set these values to NA,
 \code{"gdal_calc"} mode clip them to the minimum/maximum values;
-\item \code{proc_mode = "stars"} is experimental (the performance of this mode
-must be optimised).
 }}
 
 \item{parallel}{(optional) Logical: if TRUE, the function is run using parallel

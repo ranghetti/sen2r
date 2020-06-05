@@ -2915,10 +2915,14 @@ s2_gui <- function(param_list = NULL,
         )),
         p(HTML(
           "<strong><a href=\"https://aria2.github.io\" target=\"_blank\">aria2</a></strong>",
-          "is a faster downloader which can be installed in Linux systems",
+          "is an alternative downloader which can be installed in Linux systems",
           "from the default install manager (in Ubuntu, install the package \"aria2\"),",
           "or in Windows using the function <code>check_sen2r_deps()</code>",
-          "(graphically) or <code>install_aria2()</code> (from commandline)."
+          "(graphically) or <code>install_aria2()</code> (from commandline).",
+          "Since the number of concurrent downloads from ESA SciHub is limited to 2,",
+          "the use of aria2 is generally not faster than the default downloader;",
+          "for this reason, its use is recommended only in case of problems with",
+          "the default downloader."
         )),
         p(HTML(
           "This selector is active only if aria2 was already installed and",

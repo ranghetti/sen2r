@@ -28,6 +28,10 @@
 #'  `gdal_calc` routines are used to compute indices;
 #'  if `"raster"` (default) or `"stars"`, R functions are instead used
 #'  (using respectively `raster` or `stars` routines).
+#'  **Note**: default value (`"raster"`) is the only fully supported mode.
+#'  `"gdal_calc"` can be used only if a runtime GDAL environment can be properly
+#'  configured (no assistance is provided in case of GDAL-related problems).
+#'  `"raster"` mode is experimental.
 #'  See `s2_calcindices()` for further details.
 #' @param tmpdir (optional) Path where intermediate files will be created.
 #'  Default is a temporary directory.
@@ -444,7 +448,10 @@ raster2rgb <- function(in_rast,
 #'  `gdal_calc` routines are used to compute indices;
 #'  if `"raster"` or `"stars"`, R functions are instead used
 #'  (using respectively `raster` or `stars` routines).
-#'  Default (NA) is `"gdal_calc"` if a runtime GDAL is found; `"raster"` elsewhere.
+#'  **Note**: default value (`"raster"`) is the only fully supported mode.
+#'  `"gdal_calc"` can be used only if a runtime GDAL environment can be properly
+#'  configured (no assistance is provided in case of GDAL-related problems).
+#'  `"raster"` mode is experimental.
 #'  See `s2_calcindices()` for further details.
 #' @param overwrite (optional) Logical value: should existing thumbnails be
 #'  overwritten? (default: TRUE)
@@ -469,16 +476,13 @@ s2_thumbnails <- function(infiles,
                           outdir=NA,
                           tmpdir=NA,
                           rmtmp=TRUE,
-                          proc_mode=NA,
+                          proc_mode="raster",
                           overwrite=FALSE) {
   
   # Check that GDAL supports JPEG JFIF format
   # TODO
   
   # Check proc_mode and GDAL external dependency
-  if (is.na(proc_mode)) {
-    proc_mode <- if (is.null(load_binpaths()$gdal_calc)) {"gdal_calc"} else {"raster"}
-  }
   if (!proc_mode %in% c("gdal_calc", "raster", "stars")) {
     print_message(
       type = "warning",
