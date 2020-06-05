@@ -21,7 +21,7 @@ testthat::test_that(
       extent_name = "Scalve",
       extent_as_mask = TRUE,
       timewindow = as.Date("2019-07-23"),
-      list_prods = c("BOA", "TOA"),
+      list_prods = c("BOA", "WVP", "AOT", "CLD", "SNW"),
       mask_type = "cloud_high_proba",
       outformat = "ENVI",
       path_l1c = safe_dir,

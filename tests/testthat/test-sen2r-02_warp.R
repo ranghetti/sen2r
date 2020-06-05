@@ -7,7 +7,10 @@ dir.create(safe_dir, showWarnings = FALSE)
 
 
 outdir_2 <- tempfile(pattern = "out_test2_")
-exp_outpath_2 <- file.path(outdir_2, "BOA", "S2A2A_20190723_022_Scalve_BOA_10.tif")
+exp_outpath_2 <- file.path(
+  outdir_2, c("BOA", "WVP"),
+  c("S2A2A_20190723_022_Scalve_BOA_10.tif", "S2A2A_20190723_022_Scalve_WVP_10.tif")
+)
 testthat::test_that(
   "Tests on clip and mask BOA on extent", {
     
@@ -21,12 +24,12 @@ testthat::test_that(
       extent_name = "Scalve",
       extent_as_mask = TRUE,
       timewindow = as.Date("2019-07-23"),
-      list_prods = "BOA",
+      list_prods = c("BOA","WVP"),
       mask_type = NA,
       path_l2a = safe_dir,
       path_out = outdir_2
     )
-    expect_true(file.exists(exp_outpath_2))
+    expect_true(all(file.exists(exp_outpath_2)))
     
     # test on raster metadata
     exp_meta_r <- raster_metadata(exp_outpath_2, format = "data.table")
@@ -34,26 +37,26 @@ testthat::test_that(
       "path", "valid", "res.x", "res.y", "size.x", "size.y", "nbands", 
       "xmin", "ymin", "xmax", "ymax", "proj", "unit", "outformat", "type"
     ))
-    testthat::expect_equal(exp_meta_r[,c("size.x", "size.y")], data.table("size.x"=1911, "size.y"=1479))
-    testthat::expect_equal(exp_meta_r[,c("res.x", "res.y")], data.table("res.x"=10, "res.y"=10))
-    testthat::expect_equal(exp_meta_r$nbands, 11)
+    testthat::expect_equal(exp_meta_r[,c("size.x", "size.y")], data.table("size.x"=rep(1911,2), "size.y"=rep(1479,2)))
+    testthat::expect_equal(exp_meta_r[,c("res.x", "res.y")], data.table("res.x"=rep(10,2), "res.y"=rep(10,2)))
+    testthat::expect_equal(exp_meta_r$nbands, c(11,1))
     testthat::expect_equal(
       exp_meta_r[,c("xmin", "xmax", "ymin", "ymax")], 
-      data.table("xmin" = 578590, "xmax" = 597700, "ymin" = 5086740, "ymax" = 5101530) 
+      data.table("xmin" = rep(578590,2), "xmax" = rep(597700,2), "ymin" = rep(5086740,2), "ymax" = rep(5101530,2)) 
     )
-    expect_equal_crs(st_crs2(exp_meta_r$proj), 32632)
-    testthat::expect_equal(exp_meta_r$type, "UInt16")
-    testthat::expect_equal(exp_meta_r$outformat, "GTiff") # default value
+    expect_equal_crs(st_crs2(exp_meta_r$proj[1]), 32632)
+    testthat::expect_equal(exp_meta_r$type, c("UInt16","UInt16"))
+    testthat::expect_equal(exp_meta_r$outformat, c("GTiff","GTiff")) # default value
     
     # tests on sen2r metadata
     exp_meta_s <- sen2r_getElements(exp_outpath_2)
-    testthat::expect_equal(exp_meta_s$type, "clipped")
-    testthat::expect_equal(exp_meta_s$sensing_date, as.Date("2019-07-23"))
-    testthat::expect_equal(exp_meta_s$prod_type, "BOA")
-    testthat::expect_equal(exp_meta_s$extent_name, "Scalve")
+    testthat::expect_equal(exp_meta_s$type, rep("clipped",2))
+    testthat::expect_equal(exp_meta_s$sensing_date, rep(as.Date("2019-07-23"),2))
+    testthat::expect_equal(exp_meta_s$prod_type, c("BOA","WVP"))
+    testthat::expect_equal(exp_meta_s$extent_name, rep("Scalve",2))
     
     # test on raster values
-    exp_stars <- stars::read_stars(exp_outpath_2)
+    exp_stars <- stars::read_stars(exp_outpath_2[1])
     testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 2651.254, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 1417518, tolerance = 1e-03)
     rm(exp_stars)
@@ -191,7 +194,12 @@ testthat::test_that(
 
 
 outdir_4 <- tempfile(pattern = "out_test4_")
-exp_outpath_4 <- file.path(outdir_4, "SCL/S2A2A_20190723_022_Scalve_SCL_10.vrt")
+exp_outpath_4 <- file.path(
+  outdir_4, c("SCL", "CLD", "SNW"),
+  c("S2A2A_20190723_022_Scalve_SCL_10.vrt", 
+    "S2A2A_20190723_022_Scalve_CLD_10.vrt", 
+    "S2A2A_20190723_022_Scalve_SNW_10.vrt")
+)
 testthat::test_that(
   "Tests on clip SCL on extent, reproject with a reference raster and save as VRT", {
     
@@ -206,7 +214,7 @@ testthat::test_that(
       extent_name = "Scalve",
       extent_as_mask = FALSE,
       timewindow = as.Date("2019-07-23"),
-      list_prods = "SCL",
+      list_prods = c("SCL","CLD","SNW"),
       mask_type = NA,
       reference_path = exp_outpath_3,
       resampling_scl = "mode",
@@ -216,7 +224,7 @@ testthat::test_that(
       tmpdir = outdir_4, rmtmp = FALSE,
       overwrite = TRUE
     )
-    expect_true(file.exists(exp_outpath_4))
+    expect_true(all(file.exists(exp_outpath_4)))
     
     # test on raster metadata
     exp_meta_r <- raster_metadata(exp_outpath_4, format = "list")[[1]]
@@ -237,21 +245,28 @@ testthat::test_that(
     
     # tests on sen2r metadata
     exp_meta_s <- sen2r_getElements(exp_outpath_4)
-    testthat::expect_equal(exp_meta_s$type, "clipped")
-    testthat::expect_equal(exp_meta_s$sensing_date, as.Date("2019-07-23"))
-    testthat::expect_equal(exp_meta_s$prod_type, "SCL")
-    testthat::expect_equal(exp_meta_s$extent_name, "Scalve")
+    testthat::expect_equal(exp_meta_s$type, rep("clipped",3))
+    testthat::expect_equal(exp_meta_s$sensing_date, rep(as.Date("2019-07-23"),3))
+    testthat::expect_equal(exp_meta_s$prod_type, c("SCL","CLD","SNW"))
+    testthat::expect_equal(exp_meta_s$extent_name, rep("Scalve",3))
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_4)
     testthat::expect_equal(max(exp_stars[[1]], na.rm=TRUE), 11, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]])), 0, tolerance = 1e-03)
+    testthat::expect_lte(max(exp_stars[[2]], na.rm=TRUE), 100)
+    testthat::expect_gte(max(exp_stars[[2]], na.rm=TRUE), 0)
+    testthat::expect_equal(sum(is.na(exp_stars[[2]])), 0, tolerance = 1e-03)
+    testthat::expect_lte(max(exp_stars[[3]], na.rm=TRUE), 100)
+    testthat::expect_gte(max(exp_stars[[3]], na.rm=TRUE), 0)
+    testthat::expect_equal(sum(is.na(exp_stars[[2]])), 0, tolerance = 1e-03)
     rm(exp_stars)
     
     # test thumbnails
     exp_outpath_t_4 <- file.path(
       dirname(exp_outpath_4), "thumbnails", 
-      gsub("vrt$", "png", basename(exp_outpath_4))
+      c(gsub("vrt$", "png", basename(exp_outpath_4[1])),
+        gsub("vrt$", "jpg", basename(exp_outpath_4[2:3])))
     )
     expect_true(all(file.exists(
       exp_outpath_t_4,
