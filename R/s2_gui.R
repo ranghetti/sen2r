@@ -157,6 +157,7 @@ s2_gui <- function(param_list = NULL,
   updateSelectInput <- shiny::updateSelectInput
   updateSliderInput <- shiny::updateSliderInput
   updateSwitchInput <- shinyWidgets::updateSwitchInput
+  updateTabItems <- shinydashboard::updateTabItems
   updateTextInput <- shiny::updateTextInput
   useShinyjs <- shinyjs::useShinyjs
   withMathJax <- shiny::withMathJax
@@ -196,17 +197,13 @@ s2_gui <- function(param_list = NULL,
           sidebarMenu(
             menuItem("Processing options", tabName = "tab_prepro", icon = icon("th"))
           ),
-          conditionalPanel(
-            condition = "input.list_prods.indexOf('indices') != -1",
-            sidebarMenu(
-              menuItem("Spectral indices selection", tabName = "tab_index", icon = icon("calculator"))
-            )
+          sidebarMenu(
+            id = "tabindex_sb",
+            menuItem("Spectral indices selection", tabName = "tab_index", icon = icon("calculator"))
           ),
-          conditionalPanel(
-            condition = "input.list_prods.indexOf('rgbimages') != -1",
-            sidebarMenu(
-              menuItem("RGB images selection", tabName = "tab_rgb", icon = icon("palette"))
-            )
+          sidebarMenu(
+            id = "tabrgb_sb",
+            menuItem("RGB images selection", tabName = "tab_rgb", icon = icon("palette"))
           )
         )
       ),
@@ -341,7 +338,15 @@ s2_gui <- function(param_list = NULL,
           )),
           
           fluidRow(box(
-            title="Products and sensors",
+            title = span(
+              "Products and sensors",
+              span(
+                style = "font-size:smaller;", "\u2000",
+                a(href = "https://sen2r.ranghetti.info/articles/outstructure#products",
+                  target = "_blank",
+                  icon("info-circle"))
+              )
+            ),
             width=12,
             collapsible = TRUE,
             
@@ -350,35 +355,60 @@ s2_gui <- function(param_list = NULL,
                 width=8,
                 conditionalPanel(
                   condition = "input.preprocess == 'TRUE'",
-                  checkboxGroupInput(
-                    "list_prods",
-                    span(
-                      "Select products:\u2000",
-                      a(href = "https://sen2r.ranghetti.info/articles/outstructure#products",
-                        target = "_blank",
-                        icon("info-circle"))
-                    ),
-                    choiceNames = list(
-                      "TOA (top-of-atmosphere) Reflectance",
-                      "BOA (bottom-of-atmosphere) Surface Reflectance",
+                  
+                  pickerInput(
+                    "list_sr",
+                    "Surface reflectances:",
+                    choices = c("TOA", "BOA"),
+                    choicesOpt = list(content = c(
+                      "TOA (top-of-atmosphere)",
+                      "BOA (bottom-of-atmosphere)"
+                    )),
+                    selected = NULL,
+                    options = list(
+                      `selected-text-format` = "count > 1",
+                      `count-selected-text` = "Both BOA and TOA"
+                    ), 
+                    multiple = TRUE
+                  ),
+                  pickerInput(
+                    "list_qa",
+                    "Additional layers:",
+                    choices = c("SCL", "CLD", "SNW", "WVP", "AOT"),
+                    choicesOpt = list(content = c(
                       "SCL (surface classification map)",
-                      # "TCI (true-color) RGB 8-bit image",
-                      "Spectral indices",
-                      "RGB images"
-                    ),
-                    # choiceValues = list("TOA", "BOA", "SCL", "TCI", "indices", "rgbimages"),
-                    choiceValues = list("TOA", "BOA", "SCL", "indices", "rgbimages"),
-                    selected = c("BOA")
-                  )
+                      "CLD (cloud probability)",
+                      "SNW (snow probability)",
+                      "WVP (water-vapour columns)",
+                      "AOT (aerosol optical thickness)"
+                    )),
+                    selected = NULL,
+                    options = list(
+                      `selected-text-format` = "count > 1",
+                      `count-selected-text` = "{0} layers selected"
+                    ), 
+                    multiple = TRUE
+                  ),
+                  p(
+                    style = "font-style:italic;",
+                    "Select",
+                    actionLink("goto_tab_index", "spectral indices"),
+                    "and",
+                    actionLink("goto_tab_rgb", "RGB images"),
+                    "using the sheets on the left."
+                  ),
                 ),
                 conditionalPanel(
                   condition = "input.preprocess == 'FALSE'",
-                  checkboxGroupInput("list_levels",
-                                     "Select products:",
-                                     choiceNames = list(span("Raw", a("level-1C", href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-1c", target="_blank"), "SAFE files"),
-                                                        span("Raw", a("level-2A", href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-2a", target="_blank"), "SAFE files")),
-                                     choiceValues = list("l1c", "l2a"),
-                                     selected = c("l2a"))
+                  checkboxGroupInput(
+                    "list_levels",
+                    "Select products:",
+                    choiceNames = list(
+                      span("Raw", a("level-1C", href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-1c", target="_blank"), "SAFE files"),
+                      span("Raw", a("level-2A", href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-2a", target="_blank"), "SAFE files")),
+                    choiceValues = list("l1c", "l2a"),
+                    selected = c("l2a")
+                  )
                 )
               ),
               
@@ -829,7 +859,7 @@ s2_gui <- function(param_list = NULL,
               column(
                 width=12,
                 conditionalPanel(
-                  condition = "input.list_prods.length > 1 || (input.list_prods.length > 0 && input.list_prods.indexOf('indices') == -1)",
+                  condition = "output.list_prods.length > 1 || (output.list_prods.length > 0 && output.list_prods.indexOf('indices') == -1)",
                   div(div(style="display:inline-block;vertical-align:top;padding-bottom:5px;",
                           strong("Directory for output processed products: \u00a0")),
                       div(style="display:inline-block;vertical-align:top;",
@@ -1257,7 +1287,7 @@ s2_gui <- function(param_list = NULL,
                                                "Mode" = "mode"),
                                 selected = "near"),
                     conditionalPanel(
-                      condition = "input.list_prods.indexOf('SCL') != -1", # add here any additional discrete product
+                      condition = "output.list_prods.indexOf('SCL') != -1", # add here any additional discrete product
                       selectInput("resampling_scl", label = "Resampling method for SCL",
                                   choices = list("Nearest neighbour" = "near",
                                                  "Mode" = "mode"),
@@ -1542,17 +1572,32 @@ s2_gui <- function(param_list = NULL,
     #   }
     # })
     
+    # Compose product list merging SR and QA layers
+    observeEvent(c(input$list_sr, input$list_qa), ignoreNULL = FALSE, {
+      rv$list_prods <- c(input$list_sr, input$list_qa)
+    })
+    output$list_prods <- renderText({rv$list_prods})
+    outputOptions(output, "list_prods", suspendWhenHidden = FALSE)
+    
+    # Go to indices / RGB tabs
+    observeEvent(input$goto_tab_index, {
+      updateTabItems(session, "tabindex_sb", "tab_index")
+    })
+    observeEvent(input$goto_tab_rgb, {
+      updateTabItems(session, "tabrgb_sb", "tab_rgb")
+    })
+    
     # Reactive list of required SAFE levels
     safe_req <- reactiveValues()
     observe({
       if (input$preprocess==TRUE) {
-        safe_req$l1c <- if (any(l1c_prods %in% input$list_prods) |
+        safe_req$l1c <- if (any(l1c_prods %in% rv$list_prods) |
                             !is.null(input$list_indices) & input$index_source=="TOA" |
                             input$step_atmcorr %in% c("auto","scihub")) {TRUE} else {FALSE}
-        safe_req$l2a <- if (any(l2a_prods %in% input$list_prods) |
+        safe_req$l2a <- if (any(l2a_prods %in% rv$list_prods) |
                             input$atm_mask == TRUE |
                             !is.null(input$list_indices) & input$index_source=="BOA") {TRUE} else {FALSE}
-        safe_req$l2a_onlytomask <- if (!any(l2a_prods %in% input$list_prods) &
+        safe_req$l2a_onlytomask <- if (!any(l2a_prods %in% rv$list_prods) &
                                        input$atm_mask == TRUE &
                                        (is.null(input$list_indices) |
                                         !is.null(input$list_indices) & input$index_source=="BOA")) {TRUE} else {FALSE}
@@ -3772,12 +3817,12 @@ s2_gui <- function(param_list = NULL,
       } # selected orbit IDs
       
       # product selection #
-      rl$list_prods <- input$list_prods[!input$list_prods %in% c("indices","rgbimages")] # TOA, BOA, SCL, TCI (for now)
-      rl$list_indices <- if (indices_req()==TRUE & "indices" %in% input$list_prods) {input$list_indices} else {NA} # index names
-      rl$list_rgb <- if (all(rgb_req()==TRUE, "rgbimages" %in% input$list_prods, length(input$list_rgbimages)>0)) {
+      rl$list_prods <- rv$list_prods # TOA, BOA, SCL, etc.
+      rl$list_indices <- if (indices_req()==TRUE) {input$list_indices} else {NA} # index names
+      rl$list_rgb <- if (all(rgb_req()==TRUE, length(input$list_rgbimages)>0)) {
         input$list_rgbimages
       } else {NA} # RGB images names
-      rl$rgb_ranges <- if (all(rgb_req()==TRUE, "rgbimages" %in% input$list_prods, length(input$list_rgbimages)>0)) {
+      rl$rgb_ranges <- if (all(rgb_req()==TRUE, length(input$list_rgbimages)>0)) {
         setNames(rv$list_rgb_ranges[input$list_rgbimages], NULL)
       } else {NA} # RGB images names
       rl$index_source <- input$index_source # reflectance band for computing indices ("BOA" or "TOA")
@@ -3858,7 +3903,7 @@ s2_gui <- function(param_list = NULL,
       rl$path_l2a <- if (safe_req$l2a==TRUE) {input$path_l2a_textin} else {NA} # path of L2A SAFE products
       rl$path_tiles <- if (rl$preprocess==TRUE & input$keep_tiles==TRUE) {input$path_tiles_textin} else {NA} # path of entire tiled products
       rl$path_merged <- if (rl$preprocess==TRUE & input$keep_merged==TRUE) {input$path_merged_textin} else {NA} # path of entire tiled products
-      rl$path_out <- if (rl$preprocess==TRUE & (length(input$list_prods)>1 | length(input$list_prods)>0 & !"indices" %in% input$list_prods)) {input$path_out_textin} else {NA} # path of output pre-processed products
+      rl$path_out <- if (rl$preprocess==TRUE & length(rv$list_prods)>0) {input$path_out_textin} else {NA} # path of output pre-processed products
       rl$path_rgb <- if (rl$preprocess==TRUE & rgb_req()==TRUE) {input$path_rgb_textin} else {NA} # path of RGB images
       rl$path_indices <- if (rl$preprocess==TRUE & indices_req()==TRUE) {input$path_indices_textin} else {NA} # path of spectral indices
       rl$path_subdirs <- if (rl$preprocess==TRUE) {as.logical(input$path_subdirs)} else {NA} # logical (use subdirs)
@@ -3924,12 +3969,16 @@ s2_gui <- function(param_list = NULL,
         
         # product selection
         if (all(is.na(pl$list_prods))) {pl$list_prods <- character(0)}
-        updateCheckboxGroupInput(
-          session, "list_prods",
+        updatePickerInput(
+          session, "list_sr",
           selected = c(
-            pl$list_prods,
-            if (any(!is.na(nn(pl$list_indices)))) {"indices"},
-            if (any(!is.na(nn(pl$list_rgb)))) {"rgbimages"}
+            pl$list_prods[pl$list_prods %in% c("BOA", "TOA")]
+          )
+        )
+        updatePickerInput(
+          session, "list_qa",
+          selected = c(
+            pl$list_prods[!pl$list_prods %in% c("BOA", "TOA")]
           )
         )
         if (all(is.na(nn(pl$list_indices)))) {pl$list_indices <- character(0)}
@@ -4065,7 +4114,7 @@ s2_gui <- function(param_list = NULL,
         )
         
       } else if (length(c(
-        input$list_prods[!input$list_prods %in% c("indices","rgbimages")],
+        rv$list_prods,
         input$list_indices,
         input$list_rgb
       )) == 0) {
@@ -4107,10 +4156,7 @@ s2_gui <- function(param_list = NULL,
           type = "error"
         )
         
-      } else if (
-        length(input$list_prods[!input$list_prods %in% c("indices","rgbimages")]) > 0 &
-        input$path_out_textin == ""
-      ) {
+      } else if (length(rv$list_prods) > 0 & input$path_out_textin == "") {
         
         # directory missing
         sendSweetAlert(
