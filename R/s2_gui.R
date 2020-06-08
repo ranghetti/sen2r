@@ -373,7 +373,7 @@ s2_gui <- function(param_list = NULL,
                   ),
                   pickerInput(
                     "list_qa",
-                    "Additional layers:",
+                    "Accessory layers:",
                     choices = c("SCL", "CLD", "SNW", "WVP", "AOT"),
                     choicesOpt = list(content = c(
                       "SCL (surface classification map)",

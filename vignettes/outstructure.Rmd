@@ -24,8 +24,12 @@ can be used to generate the following products:
 
 1. [surface reflectances](#surface-reflectances) (<span style='font-family:monospace;color:#FF6611;'>TOA</span>
     or <span style='font-family:monospace;color:#FF6611;'>BOA</span>);
-2. [Scene Classification Map](#scene-classification-map)
-    (<span style='font-family:monospace;color:#FF6611;'>SCL</span>);
+2. [Accessory layers](#accessory-layers)
+    (<span style='font-family:monospace;color:#FF6611;'>SCL</span>,
+    <span style='font-family:monospace;color:#FF6611;'>CLD</span>,
+    <span style='font-family:monospace;color:#FF6611;'>SNW</span>,
+    <span style='font-family:monospace;color:#FF6611;'>WVP</span>,
+    <span style='font-family:monospace;color:#FF6611;'>AOT</span>);
 3. [Spectral indices](#spectral-indices);
 4. true or false colour [RGB images](#rgb-colour-images).
 
@@ -79,7 +83,10 @@ The possibility to include both NIR bands could be included in a future release.
 Reflectances values are provided in integer output type (multiplicated by 10000),
 as well as original values included in SAFE archives.
 
-### Scene Classification Map
+
+### Accessory layers
+
+#### Scene Classification Map
 <span style='font-family:monospace;color:#FF6611;'>SCL</span>
 (Scene Classification Maps) are single band rasters provided within Level-2A
 SAFE archives. Each 20-metres pixel is classified in one of the following classes:
@@ -104,6 +111,49 @@ For further details about this product, see
 intermediate layers for cloud masking, but they can be also required as output formats.
 If cloud masking is required by the user, <span style='font-family:monospace;color:#FF6611;'>SCL</span>
 maps are never masked.
+
+#### Cloud and snow probability
+<span style='font-family:monospace;color:#FF6611;'>CLD</span> (cloud probability) and
+<span style='font-family:monospace;color:#FF6611;'>SNW</span> (snow probability)
+are single band rasters provided within Level-2A
+SAFE archives, representing the percentage probability (0-100 Byte values) of each
+20 metres pixel to be cloud- or snow-covered.
+If cloud masking is required by the user, <span style='font-family:monospace;color:#FF6611;'>CLD</span>
+and <span style='font-family:monospace;color:#FF6611;'>SNW</span> maps are never masked.
+Currently these layers cannot be used for cloud masking (only 
+<span style='font-family:monospace;color:#FF6611;'>SCL</span> can).
+
+#### Water vapour column
+<span style='font-family:monospace;color:#FF6611;'>WVP</span> is a single
+band raster provided within Level-2A SAFE archives, representing the water
+vapour column depth. 
+Data type is Int16 (values must be multiplicated
+by 1000 to obtain floating values in centimetres).
+Typical ranges of water vapour columns are (sea-level-to space):
+tropical conditions: <span style='font-family:monospace;color:#FF6611;'>WVP</span> = 3-5 cm;
+mid-altitude summer: <span style='font-family:monospace;color:#FF6611;'>WVP</span> = 2-3 cm;
+dry summer, spring, fall: <span style='font-family:monospace;color:#FF6611;'>WVP</span> = 1-1.5 cm;
+dry desert or winter: <span style='font-family:monospace;color:#FF6611;'>WVP</span> = 0.3-0.8 cm.
+
+For further details about this product, see the
+<a href="http://step.esa.int/thirdparties/sen2cor/2.5.5/docs/S2-PDGS-MPC-L2A-PDD-V2.5.5.pdf" target="_blank">
+Sentinel-2 Level 2A Product Definition</a> document.
+
+### Aerosol Optical Thickness
+<span style='font-family:monospace;color:#FF6611;'>AOT</span> is a single
+band raster provided within Level-2A SAFE archives, representing the aerosol
+optical thickness. 
+It is defined as the integrated extinction coefficient over a vertical column 
+of atmosphere of unit cross section. 
+Extinction coefficient is the fractional depletion of radiance per unit path
+length (also called attenuation for radar frequencies). 
+Data type is Int16 (values must be multiplicated by 1000 to obtain original values).
+If cloud masking is required by the user,
+<span style='font-family:monospace;color:#FF6611;'>AOT</span> is never masked.
+
+For further details about this product, see the
+<a href="http://step.esa.int/thirdparties/sen2cor/2.5.5/docs/S2-PDGS-MPC-L2A-PDD-V2.5.5.pdf" target="_blank">
+Sentinel-2 Level 2A Product Definition</a> document.
 
 ### Spectral indices
 
