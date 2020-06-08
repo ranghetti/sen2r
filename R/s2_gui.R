@@ -163,7 +163,7 @@ s2_gui <- function(param_list = NULL,
   withMathJax <- shiny::withMathJax
   withProgress <- shiny::withProgress
   
-
+  
   # TODO: populate parameter values with param_list content, if provided
   
   jscode <- "shinyjs.closeWindow = function() { window.close(); }"
@@ -585,38 +585,38 @@ s2_gui <- function(param_list = NULL,
               collapsible = TRUE,
               fluidRow(
                 column(
-                width = 7,
-                radioButtons(
-                  "step_atmcorr",
-                  label = span(
-                    "Method to obtain level-2A corrected images\u2000",
-                    actionLink("help_step_atmcorr", icon("question-circle"))
+                  width = 7,
+                  radioButtons(
+                    "step_atmcorr",
+                    label = span(
+                      "Method to obtain level-2A corrected images\u2000",
+                      actionLink("help_step_atmcorr", icon("question-circle"))
+                    ),
+                    choiceNames = list(
+                      "Use only level-2A images available locally or online",
+                      "Use Sen2Cor only for level-2A products not available locally or online",
+                      "Always correct level-1C images with Sen2Cor locally"
+                    ),
+                    choiceValues = list("l2a","auto", "scihub"),
+                    selected = "auto"
                   ),
-                  choiceNames = list(
-                    "Use only level-2A images available locally or online",
-                    "Use Sen2Cor only for level-2A products not available locally or online",
-                    "Always correct level-1C images with Sen2Cor locally"
-                  ),
-                  choiceValues = list("l2a","auto", "scihub"),
-                  selected = "auto"
                 ),
-              ),
-              column(
-                width = 5,
-                radioButtons(
-                  "use_dem",
-                  label = span(
-                    "Apply a topographic correction?\u2000",
-                    actionLink("help_use_dem", icon("question-circle"))
-                  ),
-                  choices = list(
-                    "Yes" = "TRUE",
-                    "No" = "FALSE",
-                    "Keep default" = "NA"
-                  ),
-                  selected = "NA"
+                column(
+                  width = 5,
+                  radioButtons(
+                    "use_dem",
+                    label = span(
+                      "Apply a topographic correction?\u2000",
+                      actionLink("help_use_dem", icon("question-circle"))
+                    ),
+                    choices = list(
+                      "Yes" = "TRUE",
+                      "No" = "FALSE",
+                      "Keep default" = "NA"
+                    ),
+                    selected = "NA"
+                  )
                 )
-              )
               ),
               
             )) # end of fluidRow/box "sen2cor options"
@@ -4285,33 +4285,33 @@ s2_gui <- function(param_list = NULL,
         rv$imported_param <- NULL
       }
     })
-        
-        # disable log button if logging was already doing
-        if (all(!is.na(param_list$log))) {
-          disable("save_log")
-        }
-        
-        # if Create log is pressed, set the paramtere to sink the log
-        observeEvent(input$save_log, {
-          shinyFileSave(input, "save_log", roots=volumes, session=session)
-          rv$log_path <- parseSavePath(volumes, input$save_log)$datapath
-        })
-        
-        observeEvent(param_list, {
-          req(param_list)
-          import_param_list(param_list)
-        })
-        
-        ## end of path module ##
-        
-        # Closing the connection when window is closed
-        session$onSessionEnded(function() {
-          stopApp()
-        })
-        
-        # Remove waiting modal dialog
-        removeModal()
-        
+    
+    # disable log button if logging was already doing
+    if (all(!is.na(param_list$log))) {
+      disable("save_log")
+    }
+    
+    # if Create log is pressed, set the paramtere to sink the log
+    observeEvent(input$save_log, {
+      shinyFileSave(input, "save_log", roots=volumes, session=session)
+      rv$log_path <- parseSavePath(volumes, input$save_log)$datapath
+    })
+    
+    observeEvent(param_list, {
+      req(param_list)
+      import_param_list(param_list)
+    })
+    
+    ## end of path module ##
+    
+    # Closing the connection when window is closed
+    session$onSessionEnded(function() {
+      stopApp()
+    })
+    
+    # Remove waiting modal dialog
+    removeModal()
+    
   } # end of s2_gui.server function
   
   
