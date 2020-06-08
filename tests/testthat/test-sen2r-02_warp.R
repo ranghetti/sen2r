@@ -81,14 +81,14 @@ testthat::test_that(
       exp_meta_r[,c("res.x", "res.y")] / 1024 * exp_meta_r$size.x, # dim. > 1024: resize to 1024
       tolerance = 1e-3
     )
-    testthat::expect_equal(exp_meta_r_t$nbands, 3)
+    testthat::expect_equal(exp_meta_r_t$nbands, c(3,3))
     testthat::expect_equal(
       exp_meta_r_t[,c("xmin", "xmax", "ymin", "ymax")], 
       data.table(exp_meta_r[,c("xmin", "xmax", "ymin", "ymax")])
     )
-    expect_equal_crs(st_crs2(exp_meta_r_t$proj), st_crs2(exp_meta_r$proj))
-    testthat::expect_equal(exp_meta_r_t$type, "Byte")
-    testthat::expect_equal(exp_meta_r_t$outformat, "JPEG")
+    expect_equal_crs(st_crs2(exp_meta_r_t$proj[1]), st_crs2(exp_meta_r$proj[1]))
+    testthat::expect_equal(exp_meta_r_t$type, c("Byte","Byte"))
+    testthat::expect_equal(exp_meta_r_t$outformat, c("JPEG","JPEG"))
     
   }
 )
