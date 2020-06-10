@@ -382,7 +382,10 @@ s2_mask <- function(infiles,
           destination = sel_outfile,
           options = c(
             "-of", sel_format,
-            if (sel_format=="GTiff") {c("-co", paste0("COMPRESS=",toupper(compress)))},
+            if (sel_format == "GTiff") {c(
+              "-co", paste0("COMPRESS=",toupper(compress)),
+              "-co", "TILED=YES"
+            )},
             if (sel_format=="GTiff" & bigtiff==TRUE) {c("-co", "BIGTIFF=YES")}
           ),
           quiet = TRUE
@@ -402,6 +405,7 @@ s2_mask <- function(infiles,
             options = c(
               "-of", "GTiff",
               "-co", paste0("COMPRESS=",toupper(compress)),
+              "-co", "TILED=YES",
               if (bigtiff == TRUE) {c("-co", "BIGTIFF=YES")}
             ),
             quiet = TRUE

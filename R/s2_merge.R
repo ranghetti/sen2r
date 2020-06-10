@@ -361,7 +361,10 @@ s2_merge <- function(infiles,
         destination = file.path(out_subdir,sel_outfile),
         options = c(
           "-of", sel_outformat,
-          if (sel_outformat == "GTiff") {c("-co", paste0("COMPRESS=",toupper(compress)))},
+          if (sel_outformat == "GTiff") {c(
+            "-co", paste0("COMPRESS=",toupper(compress)),
+            "-co", "TILED=YES"
+          )},
           if (sel_outformat == "GTiff" & bigtiff == TRUE) {paste0("-co", "BIGTIFF=YES")}
         ),
         quiet = TRUE

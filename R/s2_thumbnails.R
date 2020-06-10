@@ -96,8 +96,8 @@ stack2rgb <- function(in_rast,
     } else {
       c("-co", "COMPRESS=JPEG", "-co", paste0("JPEG_QUALITY=",compress))
     }
-  } else {
-    c("-co", paste0("COMPRESS=",compress))
+  } else if (format == "GTiff") {
+    c("-co", paste0("COMPRESS=",compress), "-co", "TILED=YES")
   }
   if (bigtiff == TRUE) {co <- c(co, "-co", "BIGIFF=TRUE")}
   

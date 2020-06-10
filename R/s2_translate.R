@@ -321,7 +321,10 @@ s2_translate <- function(infile,
               destination = out_name,
               options = c(
                 "-of", format,
-                if (format=="GTiff") {c("-co", paste0("COMPRESS=",toupper(compress)))},
+                if (format == "GTiff") {c(
+                  "-co", paste0("COMPRESS=",toupper(compress)),
+                  "-co", "TILED=YES"
+                )},
                 if (format=="GTiff" & bigtiff==TRUE) {c("-co", "BIGTIFF=YES")},
                 if (!is.na(sel_na)) {c("-a_nodata", sel_na)}
               ),

@@ -2376,10 +2376,11 @@ sen2r <- function(param_list = NULL,
                   t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
                   r = pm$resampling,
                   dstnodata = s2_defNA(sel_prod),
-                  co = c(
-                    if (out_format["warped"]=="GTiff") {paste0("COMPRESS=",pm$compression)},
+                  co = if (out_format["warped"]=="GTiff") {c(
+                    paste0("COMPRESS=",pm$compression),
+                    "TILED=YES",
                     if (bigtiff) {"BIGTIFF=YES"}
-                  ),
+                  )},
                   overwrite = pm$overwrite,
                   tmpdir = file.path(tmpdir_groupA, "gdal_warp"),
                   rmtmp = FALSE
@@ -2416,6 +2417,7 @@ sen2r <- function(param_list = NULL,
                   dstnodata = s2_defNA(sel_prod),
                   co = if (out_format["warped_nomsk"]=="GTiff") {c(
                     paste0("COMPRESS=",pm$compression),
+                    "TILED=YES",
                     if (bigtiff) {"BIGTIFF=YES"}
                   )},
                   overwrite = pm$overwrite,

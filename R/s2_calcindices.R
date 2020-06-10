@@ -438,7 +438,10 @@ s2_calcindices <- function(
               "--NoDataValue", sel_nodata,
               "--format", sel_format0,
               if (overwrite==TRUE) {"--overwrite"},
-              if (sel_format0=="GTiff") {c("--co", paste0("COMPRESS=",toupper(compress)))},
+              if (sel_format0 == "GTiff") {c(
+                "--co", paste0("COMPRESS=",toupper(compress)),
+                "--co", "TILED=YES"
+              )},
               if (sel_format0=="GTiff" & bigtiff==TRUE) {c("--co", "BIGTIFF=YES")}
             ),
             quiet = TRUE

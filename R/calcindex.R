@@ -64,6 +64,7 @@ calcindex_raster <- function(
       if (sel_format %in% c("GTiff","VRT")) {
         options = c(
           paste0("COMPRESS=",compress),
+          "TILED=YES",
           if (bigtiff==TRUE) {"BIGTIFF=YES"}
         )
       },
@@ -134,6 +135,7 @@ calcindex_stars <- function(
       format = ifelse(sel_format=="VRT", "GTiff", sel_format),
       options = c(
         paste0("COMPRESS=",compress),
+        "TILED=YES",
         if (bigtiff==TRUE) {"BIGTIFF=YES"}
       ),
       overwrite = overwrite,
