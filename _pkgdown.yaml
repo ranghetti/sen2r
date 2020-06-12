@@ -1,8 +1,7 @@
-title: "sen2r: Find, Download and Process Sentinel-2 Data"
+title: "sen2r"
 template:
   params:
     bootswatch: yeti
-    ganalytics: UA-11080708-8
 reference:
   - title: Automatic processing chain
     desc: ~
@@ -90,5 +89,7 @@ navbar:
     - text: "\u2000Changelog"
       icon: fa-newspaper
       href: news/index.html
+    - icon: fa-user
+      href: http://luigi.ranghetti.info
     - icon: fa-github fa-lg
       href: https://github.com/ranghetti/sen2r/

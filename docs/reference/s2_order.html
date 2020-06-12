@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Order S2 products. — s2_order • sen2r: Find, Download and Process Sentinel-2 Data</title>
+<title>Order S2 products. — s2_order • sen2r</title>
 
 
 <!-- jquery -->
@@ -56,16 +56,6 @@ Long Term Archive." />
 <![endif]-->
 
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-11080708-8"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-11080708-8');
-</script>
-
 
   </head>
 
@@ -82,7 +72,7 @@ Long Term Archive." />
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
+        <a class="navbar-link" href="../index.html">sen2r</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.6</span>
       </span>
     </div>
@@ -136,6 +126,12 @@ Long Term Archive." />
     <span class="fa fa-newspaper"></span>
      
      Changelog
+  </a>
+</li>
+<li>
+  <a href="http://luigi.ranghetti.info">
+    <span class="fa fa-user"></span>
+     
   </a>
 </li>
 <li>
@@ -271,14 +267,14 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
 <span class='co'># archives already available online and 2 stored in the Long Term Archive)</span>
 
 <span class='co'># Order the products</span>
-<span class='no'>ordered_prods</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_order</span>(<span class='no'>list_safe</span>)</div><div class='output co'>#&gt; <span class='message'>[2020-06-04 10:39:58] Check if products are already available for</span>
-#&gt; <span class='message'>       download...</span></div><div class='output co'>#&gt; <span class='message'>[2020-06-04 10:39:59] 3 Sentinel-2 images are already online.</span></div><div class='output co'>#&gt; <span class='message'>[2020-06-04 10:39:59] Ordering 4 Sentinel-2 images stored in the Long</span>
-#&gt; <span class='message'>       Term Archive...</span></div><div class='output co'>#&gt; <span class='message'>Request failed [500]. Retrying in 1 seconds...</span></div><div class='output co'>#&gt; <span class='message'>Request failed [500]. Retrying in 1 seconds...</span></div><div class='output co'>#&gt; <span class='message'>Request failed [500]. Retrying in 1 seconds...</span></div><div class='output co'>#&gt; <span class='message'>Request failed [500]. Retrying in 1 seconds...</span></div><div class='output co'>#&gt; <span class='message'>Request failed [500]. Retrying in 1 seconds...</span></div><div class='output co'>#&gt; <span class='message'>Request failed [500]. Retrying in 3.9 seconds...</span></div><div class='output co'>#&gt; <span class='message'>Request failed [500]. Retrying in 1 seconds...</span></div><div class='output co'>#&gt; <span class='message'>Request failed [500]. Retrying in 2.7 seconds...</span></div><div class='output co'>#&gt; <span class='message'>[2020-06-04 10:40:16] 4 of 4 Sentinel-2 images were not correctly</span>
+<span class='no'>ordered_prods</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_order</span>(<span class='no'>list_safe</span>)</div><div class='output co'>#&gt; <span class='message'>[2020-06-12 17:32:55] Check if products are already available for</span>
+#&gt; <span class='message'>       download...</span></div><div class='output co'>#&gt; <span class='message'>[2020-06-12 17:32:56] 3 Sentinel-2 images are already online.</span></div><div class='output co'>#&gt; <span class='message'>[2020-06-12 17:32:56] Ordering 4 Sentinel-2 images stored in the Long</span>
+#&gt; <span class='message'>       Term Archive...</span></div><div class='output co'>#&gt; <span class='message'>Request failed [500]. Retrying in 1 seconds...</span></div><div class='output co'>#&gt; <span class='message'>Request failed [500]. Retrying in 1 seconds...</span></div><div class='output co'>#&gt; <span class='message'>Request failed [500]. Retrying in 1 seconds...</span></div><div class='output co'>#&gt; <span class='message'>Request failed [500]. Retrying in 1 seconds...</span></div><div class='output co'>#&gt; <span class='message'>Request failed [500]. Retrying in 1 seconds...</span></div><div class='output co'>#&gt; <span class='message'>Request failed [500]. Retrying in 3.9 seconds...</span></div><div class='output co'>#&gt; <span class='message'>Request failed [500]. Retrying in 1 seconds...</span></div><div class='output co'>#&gt; <span class='message'>Request failed [500]. Retrying in 2.7 seconds...</span></div><div class='output co'>#&gt; <span class='message'>[2020-06-12 17:33:13] 4 of 4 Sentinel-2 images were not correctly</span>
 #&gt; <span class='message'>       ordered (HTML status code: 500). You can try ordering them at a</span>
 #&gt; <span class='message'>       later time using the command:</span>
-#&gt; <span class='message'>  s2_order("/home/lranghetti/.sen2r/lta_orders/lta_20200604_104016.json")</span></div><div class='input'>
+#&gt; <span class='message'>  s2_order("/home/lranghetti/.sen2r/lta_orders/lta_20200612_173313.json")</span></div><div class='input'>
 <span class='co'># Check in a second time if the product was made available</span>
-(<span class='no'>order_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>ordered_prods</span>, <span class='st'>"path"</span>))</div><div class='output co'>#&gt; [1] "/home/lranghetti/.sen2r/lta_orders/lta_20200604_104016.json"</div><div class='input'><span class='fu'><a href='safe_is_online.html'>safe_is_online</a></span>(<span class='no'>order_path</span>)</div><div class='output co'>#&gt; <span class='message'>3 out of 7 products are online.</span></div><div class='output co'>#&gt; S2B_MSIL1C_20180224T133629_N0206_R038_T21FVC_20180224T194845.SAFE 
+(<span class='no'>order_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>ordered_prods</span>, <span class='st'>"path"</span>))</div><div class='output co'>#&gt; [1] "/home/lranghetti/.sen2r/lta_orders/lta_20200612_173313.json"</div><div class='input'><span class='fu'><a href='safe_is_online.html'>safe_is_online</a></span>(<span class='no'>order_path</span>)</div><div class='output co'>#&gt; <span class='message'>3 out of 7 products are online.</span></div><div class='output co'>#&gt; S2B_MSIL1C_20180224T133629_N0206_R038_T21FVC_20180224T194845.SAFE 
 #&gt;                                                              TRUE 
 #&gt; S2B_MSIL1C_20180227T134629_N0206_R081_T21FVC_20180227T200327.SAFE 
 #&gt;                                                              TRUE 
