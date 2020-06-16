@@ -125,10 +125,11 @@ check_sen2r_deps <- function() {
       
       h3("GDAL"),
       helpText(em(
-        "An external GDAL runtime environment is required in order to smooth and",
-        "buffer a cloud mask, and is optionally used to compute spectral indices,",
-        "RGB images and thumbnails.",
-        "Starting from version 1.3.5, GDAL is no longer a mandatory dependency.",
+        "An external GDAL runtime environment is", strong("no more needed"), 
+        "to run sen2r",
+        "(it is only required in order to smooth / buffer a cloud mask,",
+        "and", strong("optionally"), "used to compute spectral indices,",
+        "RGB images and thumbnails).",
         if (Sys.info()["sysname"] == "Windows") {span(
           "On Windows",
           strong("it is strictly required to install GDAL using OSGeo4W"),
@@ -139,6 +140,13 @@ check_sen2r_deps <- function() {
           "(or, in any case, maintain the directory name \"OSGeo4W64\")."
         )}
       )),
+      helpText(em(
+        span(style = "color:red;font-weight:bold;", "Note:"),
+        "Configuring a runtime GDAL environment could fail for different reasons",
+        "(e.g. problems related to GDAL environment like missing libraries,",
+        "or custom environment variables which could conflict).",
+        "sen2r maintainers are not responsible in case of GDAL-related issues."
+      )),
       span(style="display:inline-block;vertical-align:center;padding-top:5px;",
            actionButton("where_check_gdal", "Check GDAL", width=200),
            "\u2000"),
@@ -147,8 +155,12 @@ check_sen2r_deps <- function() {
       
       h3("aria2"),
       helpText(em(
-        "aria2 is an alternative optional downloader downloader which can be",
-        "used to download SAFE archives."
+        "aria2 is an alternative unrequired", strong("(optional)"), 
+        "downloader which can be used to download SAFE archives.",
+        "Since the number of concurrent downloads from ESA SciHub is limited to 2,",
+        "the use of aria2 is generally not faster than the default downloader;",
+        "for this reason, its use is recommended only in case of problems with",
+        "the default downloader."
       )),
       span(style="display:inline-block;vertical-align:center;padding-top:5px;",
            actionButton("check_aria2", "Check aria2", width=200),
@@ -201,7 +213,7 @@ check_sen2r_deps <- function() {
       } else if (rv$check_gdal_isvalid) {
         span(style="color:darkgreen;", "\u2714")
       } else {
-        span(style="color:red;", "\u2718")
+        span(style="color:red;", "") #"\u2718")
       }
     })
     outputOptions(output, "check_gdal_isvalid", suspendWhenHidden = FALSE)
@@ -486,7 +498,7 @@ check_sen2r_deps <- function() {
       } else if (rv$check_aria2_isvalid) {
         span(style="color:darkgreen;", "\u2714")
       } else {
-        span(style="color:red;", "\u2718")
+        span(style="color:red;", "") #"\u2718")
       }
     })
     outputOptions(output, "check_aria2_isvalid", suspendWhenHidden = FALSE)

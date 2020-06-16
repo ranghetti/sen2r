@@ -58,12 +58,14 @@
 #'  if `"raster"` (default) or `"stars"`, R functions are instead used
 #'  (using respectively `raster` or `stars` routines).
 #'  **Notes**: 
-#'  1. there is a difference in which the two modes manage values out
+#'  1. default value (`"raster"`) is the only fully supported mode.
+#'  `"gdal_calc"` can be used only if a runtime GDAL environment can be properly
+#'  configured (no assistance is provided in case of GDAL-related problems).
+#'  `"raster"` mode is experimental.
+#'  2. There is a difference in which the two modes manage values out
 #'      of ranges (e.g. -32768 to 32767 in Int16 and 0 to 255 in Byte):
 #'      `"raster"` and `"stars"` modes set these values to NA, 
 #'      `"gdal_calc"` mode clip them to the minimum/maximum values;
-#'  2. `proc_mode = "stars"` is experimental (the performance of this mode
-#'      must be optimised). 
 #' @param parallel (optional) Logical: if TRUE, the function is run using parallel
 #'  processing, to speed-up the computation for large rasters.
 #'  The number of cores is automatically determined; specifying it is also
@@ -436,7 +438,10 @@ s2_calcindices <- function(
               "--NoDataValue", sel_nodata,
               "--format", sel_format0,
               if (overwrite==TRUE) {"--overwrite"},
-              if (sel_format0=="GTiff") {c("--co", paste0("COMPRESS=",toupper(compress)))},
+              if (sel_format0 == "GTiff") {c(
+                "--co", paste0("COMPRESS=",toupper(compress)),
+                "--co", "TILED=YES"
+              )},
               if (sel_format0=="GTiff" & bigtiff==TRUE) {c("--co", "BIGTIFF=YES")}
             ),
             quiet = TRUE

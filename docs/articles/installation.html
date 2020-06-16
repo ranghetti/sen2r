@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Installation • sen2r: Find, Download and Process Sentinel-2 Data</title>
+<title>Installation • sen2r</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
@@ -16,13 +16,7 @@
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]--><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=UA-11080708-8"></script><script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-11080708-8');
-</script>
+<![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
     <div class="container template-article">
@@ -36,7 +30,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
+        <a class="navbar-link" href="../index.html">sen2r</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.6</span>
       </span>
     </div>
@@ -91,6 +85,12 @@
   </a>
 </li>
 <li>
+  <a href="http://luigi.ranghetti.info">
+    <span class="fa fa-user"></span>
+     
+  </a>
+</li>
+<li>
   <a href="https://github.com/ranghetti/sen2r/">
     <span class="fa fa-github fa-lg"></span>
      
@@ -119,6 +119,10 @@
 
     
     
+<div id="installing-sen2r" class="section level2">
+<h2 class="hasAnchor">
+<a href="#installing-sen2r" class="anchor"></a>Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+</h2>
 <p>Instruction are provided separately for each OS:</p>
 <ul>
 <li><a href="#on-linux-systems">Install on Linux systems</a></li>
@@ -126,12 +130,12 @@
 <li><a href="#on-macos">Install on MacOS</a></li>
 </ul>
 <p>Alternatively, <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be used <a href="docker.html">in a Docker container</a>.</p>
-<div id="on-linux-systems" class="section level2">
-<h2 class="hasAnchor">
-<a href="#on-linux-systems" class="anchor"></a><i class="fa fa-linux" aria-hidden="true"></i> On Linux systems</h2>
-<div id="installing-dependencies" class="section level3">
+<div id="on-linux-systems" class="section level3">
 <h3 class="hasAnchor">
-<a href="#installing-dependencies" class="anchor"></a>Installing dependencies</h3>
+<a href="#on-linux-systems" class="anchor"></a><i class="fa fa-linux" aria-hidden="true"></i> On Linux systems</h3>
+<div id="installing-dependencies" class="section level4">
+<h4 class="hasAnchor">
+<a href="#installing-dependencies" class="anchor"></a>Installing dependencies</h4>
 <p>Before installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>, it is recommended to check <a href="https://cran.r-project.org/bin/linux">R</a> (v. 3.4.4 or higher) and the following libraries to be present:</p>
 <ul>
 <li>
@@ -201,10 +205,10 @@ Installation was tested over Fedora 29.</li>
 </li>
 </ul>
 </div>
-<div id="installing-sen2r" class="section level3">
-<h3 class="hasAnchor">
-<a href="#installing-sen2r" class="anchor"></a>Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
-</h3>
+<div id="installing-sen2r-1" class="section level4">
+<h4 class="hasAnchor">
+<a href="#installing-sen2r-1" class="anchor"></a>Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+</h4>
 <p>Before proceeding, it is suggested to update the existing R packages:</p>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/update.packages.html">update.packages</a></span>(<span class="kw">ask</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
 <p>Doing that, the following warning could appear:</p>
@@ -232,13 +236,9 @@ Would you like to use a personal library instead?  (y/n)</code></pre>
 <span class="fu"><a href="../reference/install_sen2cor.html">install_sen2cor</a></span>()</pre></body></html></div>
 </div>
 </div>
-<div id="on-windows" class="section level2">
-<h2 class="hasAnchor">
-<a href="#on-windows" class="anchor"></a><i class="fa fa-windows" aria-hidden="true"></i> On Windows</h2>
-<div id="installing-sen2r-1" class="section level3">
+<div id="on-windows" class="section level3">
 <h3 class="hasAnchor">
-<a href="#installing-sen2r-1" class="anchor"></a>Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
-</h3>
+<a href="#on-windows" class="anchor"></a><i class="fa fa-windows" aria-hidden="true"></i> On Windows</h3>
 <p><a href="https://cran.r-project.org/bin/windows/base">R</a> must be installed before proceeding.</p>
 <p>In the case it was already installed, it is suggested to update the existing R packages:</p>
 <div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/update.packages.html">update.packages</a></span>(<span class="kw">ask</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
@@ -258,95 +258,71 @@ Would you like to use a personal library instead?  (y/n)</code></pre>
 </ol>
 <p>This will install the R package along with its package dependencies, containing all the functions necessary to preprocess data.</p>
 </div>
-<div id="installing-runtime-dependencies-optional" class="section level3">
+<div id="on-macos" class="section level3">
 <h3 class="hasAnchor">
-<a href="#installing-runtime-dependencies-optional" class="anchor"></a>Installing runtime dependencies (optional)</h3>
-<p>Some external dependencies are required to run specific <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> features:</p>
-<ul>
-<li>
-<a href="http://step.esa.int/main/third-party-plugins-2/sen2cor"><strong>Sen2Cor</strong></a> is used to perform atmospheric correction of Sentinel-2 Level-1C products: it is required by the package, unless you choose not to correct products locally (using only Level-1C – TOA products or downloading directly Level-2A products);</li>
-<li>
-<a href="http://www.gdal.org"><strong>GDAL</strong></a> is required to smooth/bufferise a cloud mask, and can be optionally used to compute spectral indices, RGB images and thumbnails. To avoid incompatibilities, it is <em>strictly mandatory</em> to use a GDAL installation provided with the <a href="https://qgis.org/it/site/forusers/download.html">OSGeo4W installer</a>: if this requirement is not satisfied, it is possible to install GDAL with OSGeo4W directly from R (see below);</li>
-<li>
-<a href="https://aria2.github.io"><strong>aria2</strong></a> is an alternative downloader which can be used to faster the download of SAFE archives; it can be optionally installed and used.</li>
-</ul>
-<p>These dependences can be graphically checked launching the function</p>
-<div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">sen2r</span>)
-<span class="fu"><a href="../reference/check_sen2r_deps.html">check_sen2r_deps</a></span>()</pre></body></html></div>
-<p>This function opens a GUI which help to check that they are satisfied; if some of them are missing, the GUI allows to install them directly.</p>
-<p>Alternatively, they can be installed individually from the command line with the three following functions (see their respective references for further details):</p>
-<div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="fu"><a href="../reference/check_gdal.html">check_gdal</a></span>()
-<span class="fu"><a href="../reference/install_sen2cor.html">install_sen2cor</a></span>()
-<span class="fu"><a href="../reference/install_aria2.html">install_aria2</a></span>()</pre></body></html></div>
-<!-- Atmospheric correction is performed using [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor):
-the package will automatically download and install it at first use,
-or by running function [`install_sen2cor()`](reference/install_sen2cor.md).
-Please notice that the use of sen2cor algorythm was not yet possible under MAC.
-
-Preprocessing functions make use of [GDAL](http://www.gdal.org), which must
-support JPEG2000 format. On Windows, it is strongly recommended to install it
-using the [OSGeo4W installer](http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe)
-in advanced mode, and checking the installation of `openjpeg` library. -->
-</div>
-</div>
-<div id="on-macos" class="section level2">
-<h2 class="hasAnchor">
-<a href="#on-macos" class="anchor"></a><i class="fa fa-apple" aria-hidden="true"></i> On MacOS</h2>
-<div id="installing-sen2r-2" class="section level3">
-<h3 class="hasAnchor">
-<a href="#installing-sen2r-2" class="anchor"></a>Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
-</h3>
+<a href="#on-macos" class="anchor"></a><i class="fa fa-apple" aria-hidden="true"></i> On MacOS</h3>
 <p><a href="https://cran.r-project.org/bin/windows/base">R</a> must be installed before proceeding.</p>
 <p>In the case it was already installed, it is suggested to update the existing R packages:</p>
-<div class="sourceCode" id="cb19"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/update.packages.html">update.packages</a></span>(<span class="kw">ask</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/update.packages.html">update.packages</a></span>(<span class="kw">ask</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
 <p>Packages can be installed using the compiled binaries, except from <strong>sp</strong>, <strong>sf</strong>, <strong>rgdal</strong> and <strong>rgeos</strong>, which are recommended to be compiled. To do it, use the command</p>
-<div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"sp"</span>, <span class="st">"sf"</span>, <span class="st">"rgdal"</span>, <span class="st">"rgeos"</span>), <span class="kw">type</span> <span class="kw">=</span> <span class="st">"source"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"sp"</span>, <span class="st">"sf"</span>, <span class="st">"rgdal"</span>, <span class="st">"rgeos"</span>), <span class="kw">type</span> <span class="kw">=</span> <span class="st">"source"</span>)</pre></body></html></div>
 <p><strong>after</strong> having installed GDAL as described above.</p>
 <p><span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be installed from CRAN:</p>
-<div class="sourceCode" id="cb21"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sen2r"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb19"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sen2r"</span>)</pre></body></html></div>
 <p>Alternatively, the development version can be installed from GitHub with the R package <strong>remotes</strong>. To do it:</p>
 <ol style="list-style-type: decimal">
 <li>
 <p>install the package <strong>remotes</strong>, if missing:</p>
-<div class="sourceCode" id="cb22"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"remotes"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"remotes"</span>)</pre></body></html></div>
 </li>
 <li>
 <p>load it and install <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:</p>
-<div class="sourceCode" id="cb23"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">remotes</span>)
+<div class="sourceCode" id="cb21"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">remotes</span>)
 <span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"ranghetti/sen2r"</span>)</pre></body></html></div>
 </li>
 </ol>
 <p>This will install the R package along with its package dependencies, containing all the functions necessary to preprocess data.</p>
 </div>
-<div id="installing-runtime-dependencies-optional-1" class="section level3">
+<div id="installing-sen2cor" class="section level3">
 <h3 class="hasAnchor">
-<a href="#installing-runtime-dependencies-optional-1" class="anchor"></a>Installing runtime dependencies (optional)</h3>
-<p>Some external dependencies are required to run specific <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> features:</p>
+<a href="#installing-sen2cor" class="anchor"></a>Installing Sen2Cor</h3>
+<p><a href="http://step.esa.int/main/third-party-plugins-2/sen2cor"><strong>Sen2Cor</strong></a> is used to perform atmospheric correction of Sentinel-2 Level-1C products, so its installation can be skipped in case this function is not required by the user (using only Level-1C – TOA products or downloading directly Level-2A products).</p>
+<p>It can be graphically checked / installed launching the function</p>
+<div class="sourceCode" id="cb22"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">sen2r</span>)
+<span class="fu"><a href="../reference/check_sen2r_deps.html">check_sen2r_deps</a></span>()</pre></body></html></div>
+<p>This function opens a GUI which help to check if this and other dependencies are satisfied; from this GUI a new Sen2Cor installation can be performed, or an existing environment can be linked to Sen2Cor.</p>
+<p>Alternatively, it can be installed from the command line with the following function:</p>
+<div class="sourceCode" id="cb23"><html><body><pre class="r"><span class="fu"><a href="../reference/install_sen2cor.html">install_sen2cor</a></span>()</pre></body></html></div>
+</div>
+<div id="installing-other-dependencies-generally-unrequired-and-discouraged" class="section level3">
+<h3 class="hasAnchor">
+<a href="#installing-other-dependencies-generally-unrequired-and-discouraged" class="anchor"></a>Installing other dependencies (generally unrequired and discouraged)</h3>
+<p>Other dependencies can be configure to run specific <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> features; their installation is generally unrequired (they do not add relevant improvements to the package) and discouraged (errors could occur).</p>
 <ul>
 <li>
-<a href="http://step.esa.int/main/third-party-plugins-2/sen2cor"><strong>Sen2Cor</strong></a> is used to perform atmospheric correction of Sentinel-2 Level-1C products: it is required by the package, unless you choose not to correct products locally (using only Level-1C – TOA products or downloading directly Level-2A products);</li>
+<a href="http://www.gdal.org"><strong>GDAL</strong></a> is no more required, being used only to smooth/bufferise a cloud mask (and <em>optionally</em> to compute spectral indices, RGB images and thumbnails). On Windows, to avoid incompatibilities, it is <em>strictly mandatory</em> to use a GDAL installation provided with the <a href="https://qgis.org/it/site/forusers/download.html">OSGeo4W installer</a>: if this requirement is not satisfied, it is possible to install GDAL with OSGeo4W directly from R (see below). <strong>Note</strong>: configuring a runtime <strong>GDAL</strong> environment could fail for different reasons (e.g. problems related to GDAL environment like missing libraries, or custom environment variables which could conflict). <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> maintainers are not responsible in case of GDAL-related issues (no assistance is provided in this case).</li>
 <li>
-<a href="http://www.gdal.org"><strong>GDAL</strong></a> is required to smooth/bufferise a cloud mask, and can be optionally used to compute spectral indices, RGB images and thumbnails;</li>
-<li>
-<a href="https://aria2.github.io"><strong>aria2</strong></a> is an alternative downloader which can be used to faster the download of SAFE archives; it can be optionally installed and used.</li>
+<a href="https://aria2.github.io"><strong>aria2</strong></a> is an alternative downloader which can be used to faster the download of SAFE archives; it can be optionally installed and used. Since the number of concurrent downloads from ESA SciHub is limited to 2, the use of <strong>aria2</strong> is generally not faster than the default downloader; for this reason, its use is recommended only in case of problems with the default downloader.</li>
 </ul>
 <p>These dependences can be graphically checked launching the function</p>
 <div class="sourceCode" id="cb24"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">sen2r</span>)
 <span class="fu"><a href="../reference/check_sen2r_deps.html">check_sen2r_deps</a></span>()</pre></body></html></div>
-<p>This function opens a GUI which help to check that they are satisfied.</p>
-<div id="note-on-gdal-installation" class="section level4">
+<p>Alternatively, they can be installed individually from the command line with the following functions (see their respective references for further details):</p>
+<div class="sourceCode" id="cb25"><html><body><pre class="r"><span class="fu"><a href="../reference/check_gdal.html">check_gdal</a></span>()
+<span class="fu"><a href="../reference/install_aria2.html">install_aria2</a></span>()</pre></body></html></div>
+<div id="note-on-gdal-installation-on-macos" class="section level4">
 <h4 class="hasAnchor">
-<a href="#note-on-gdal-installation" class="anchor"></a>Note on GDAL installation</h4>
+<a href="#note-on-gdal-installation-on-macos" class="anchor"></a>Note on GDAL installation on MacOS</h4>
 <p>In order to avoid incompatibilities with GDAL, it is <em>strictly mandatory</em> to use a GDAL installation provided with the <a href="https://github.com/OSGeo/homebrew-osgeo4mac">OSGeo Homebrew repository</a>. To do it:</p>
 <ol style="list-style-type: decimal">
 <li>
 <p>if Homebrew is missing on your system, install it opening a terminal and typing:</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="ex">/usr/bin/ruby</span> -e <span class="st">"</span><span class="va">$(</span><span class="ex">curl</span> -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span class="va">)</span><span class="st">"</span></a></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="ex">/usr/bin/ruby</span> -e <span class="st">"</span><span class="va">$(</span><span class="ex">curl</span> -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span class="va">)</span><span class="st">"</span></a></code></pre></div>
 (see <a href="https://brew.sh/">the Homebrew webpage</a> for details);</li>
 <li>
 <p>install GDAL by typing:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="ex">brew</span> tap osgeo/osgeo4mac</a>
-<a class="sourceLine" id="cb26-2" data-line-number="2"><span class="ex">brew</span> install osgeo-gdal-python</a></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="ex">brew</span> tap osgeo/osgeo4mac</a>
+<a class="sourceLine" id="cb27-2" data-line-number="2"><span class="ex">brew</span> install osgeo-gdal-python</a></code></pre></div>
 <p>(see <a href="https://github.com/OSGeo/homebrew-osgeo4mac">the OSGeo Homebrew webpage</a> for details). At this step, an error could be returned in case another GDAL installation was already present; in this case, follow the instruction returned in the terminal to solve it (probably some packages must be unlinked with the instructions <code>brew unlink &lt;package&gt;</code>).</p>
 </li>
 </ol>

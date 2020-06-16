@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Return the Dates Of Passage over some orbits — s2_dop • sen2r: Find, Download and Process Sentinel-2 Data</title>
+<title>Return the Dates Of Passage over some orbits — s2_dop • sen2r</title>
 
 
 <!-- jquery -->
@@ -64,16 +64,6 @@ midnight (which corresponds to the date in local time)." />
 <![endif]-->
 
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-11080708-8"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-11080708-8');
-</script>
-
 
   </head>
 
@@ -90,7 +80,7 @@ midnight (which corresponds to the date in local time)." />
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
+        <a class="navbar-link" href="../index.html">sen2r</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.6</span>
       </span>
     </div>
@@ -144,6 +134,12 @@ midnight (which corresponds to the date in local time)." />
     <span class="fa fa-newspaper"></span>
      
      Changelog
+  </a>
+</li>
+<li>
+  <a href="http://luigi.ranghetti.info">
+    <span class="fa fa-user"></span>
+     
   </a>
 </li>
 <li>
@@ -232,17 +228,17 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># All the passages in a cycle of 10 days over all the orbits</span>
 <span class='fu'>s2_dop</span>()</div><div class='output co'>#&gt;            date mission orbit
-#&gt;   1: 2020-06-04      2A   116
-#&gt;   2: 2020-06-04      2A   117
-#&gt;   3: 2020-06-04      2A   118
-#&gt;   4: 2020-06-04      2A   119
-#&gt;   5: 2020-06-04      2A   120
+#&gt;   1: 2020-06-12      2A   088
+#&gt;   2: 2020-06-12      2A   089
+#&gt;   3: 2020-06-12      2A   090
+#&gt;   4: 2020-06-12      2A   091
+#&gt;   5: 2020-06-12      2A   092
 #&gt;  ---                         
-#&gt; 282: 2020-06-13      2B   040
-#&gt; 283: 2020-06-13      2B   041
-#&gt; 284: 2020-06-13      2B   042
-#&gt; 285: 2020-06-13      2B   043
-#&gt; 286: 2020-06-13      2B   044</div><div class='input'>
+#&gt; 282: 2020-06-21      2B   011
+#&gt; 283: 2020-06-21      2B   012
+#&gt; 284: 2020-06-21      2B   013
+#&gt; 285: 2020-06-21      2B   014
+#&gt; 286: 2020-06-21      2B   015</div><div class='input'>
 <span class='co'># The passages in the current month over two orbits</span>
 <span class='fu'>s2_dop</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"022"</span>, <span class='st'>"065"</span>), <span class='st'>"this month"</span>)</div><div class='output co'>#&gt;           date mission orbit
 #&gt;  1: 2020-06-02      2B   022
@@ -258,12 +254,12 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
 #&gt; 11: 2020-06-27      2A   022
 #&gt; 12: 2020-06-30      2A   065</div><div class='input'>
 <span class='co'># The dates in which Sentinel-2A will pass in next six weeks over one orbit</span>
-<span class='fu'>s2_dop</span>(<span class='st'>"022"</span>, <span class='st'>"6 weeks"</span>, <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2A"</span>)$<span class='no'>date</span></div><div class='output co'>#&gt; [1] "2020-06-07" "2020-06-17" "2020-06-27" "2020-07-07"</div><div class='input'>
+<span class='fu'>s2_dop</span>(<span class='st'>"022"</span>, <span class='st'>"6 weeks"</span>, <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2A"</span>)$<span class='no'>date</span></div><div class='output co'>#&gt; [1] "2020-06-17" "2020-06-27" "2020-07-07" "2020-07-17"</div><div class='input'>
 <span class='co'># The date in which Sentinel-2A would be passed in the last 10 days over one orbit</span>
-<span class='fu'>s2_dop</span>(<span class='st'>"022"</span>, <span class='st'>"-10 days"</span>, <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2A"</span>)$<span class='no'>date</span></div><div class='output co'>#&gt; [1] "2020-05-28"</div><div class='input'>
+<span class='fu'>s2_dop</span>(<span class='st'>"022"</span>, <span class='st'>"-10 days"</span>, <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2A"</span>)$<span class='no'>date</span></div><div class='output co'>#&gt; [1] "2020-06-07"</div><div class='input'>
 <span class='co'># All the orbits covered today</span>
-<span class='fu'>s2_dop</span>(<span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span>(), <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2B"</span>)$<span class='no'>orbit</span></div><div class='output co'>#&gt;  [1] "045" "046" "047" "048" "049" "050" "051" "052" "053" "054" "055" "056"
-#&gt; [13] "057" "058"</div><div class='input'>
+<span class='fu'>s2_dop</span>(<span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span>(), <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2B"</span>)$<span class='no'>orbit</span></div><div class='output co'>#&gt;  [1] "016" "017" "018" "019" "020" "021" "022" "023" "024" "025" "026" "027"
+#&gt; [13] "028" "029"</div><div class='input'>
 <span class='co'># The passages in a fixed time window for one orbit</span>
 <span class='fu'>s2_dop</span>(<span class='fl'>65</span>, <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"2018-08-01"</span>, <span class='st'>"2018-08-31"</span>)))</div><div class='output co'>#&gt;          date mission orbit
 #&gt; 1: 2018-08-05      2B   065

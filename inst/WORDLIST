@@ -15,6 +15,7 @@ cairo
 calc
 calcindices
 CGIAR
+CLD
 CNR
 com
 cpt
@@ -149,6 +150,7 @@ shortname
 singleband
 singlecore
 singlegranule
+SNW
 sp
 SRTM
 st
@@ -172,11 +174,13 @@ TOML
 TQQ
 troublings
 ubuntugis
+unrequired
 vrt
 VRT
 Wget
 Willmann
 WKT
+WVP
 Xenial
 yyyymmdd
 Zscore

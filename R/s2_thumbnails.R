@@ -28,6 +28,10 @@
 #'  `gdal_calc` routines are used to compute indices;
 #'  if `"raster"` (default) or `"stars"`, R functions are instead used
 #'  (using respectively `raster` or `stars` routines).
+#'  **Note**: default value (`"raster"`) is the only fully supported mode.
+#'  `"gdal_calc"` can be used only if a runtime GDAL environment can be properly
+#'  configured (no assistance is provided in case of GDAL-related problems).
+#'  `"raster"` mode is experimental.
 #'  See `s2_calcindices()` for further details.
 #' @param tmpdir (optional) Path where intermediate files will be created.
 #'  Default is a temporary directory.
@@ -92,8 +96,8 @@ stack2rgb <- function(in_rast,
     } else {
       c("-co", "COMPRESS=JPEG", "-co", paste0("JPEG_QUALITY=",compress))
     }
-  } else {
-    c("-co", paste0("COMPRESS=",compress))
+  } else if (format == "GTiff") {
+    c("-co", paste0("COMPRESS=",compress), "-co", "TILED=YES")
   }
   if (bigtiff == TRUE) {co <- c(co, "-co", "BIGIFF=TRUE")}
   
@@ -102,7 +106,7 @@ stack2rgb <- function(in_rast,
     "clip(", if (proc_mode == "gdal_calc") {"A.astype(float),"} else {"v,"},
     minval,",",maxval,")*255/(",maxval,"-",minval,")+",minval
   )
-
+  
   ## Compute RGB with the selected mode
   # (an intermediate step creating a GeoTiff is required,
   # since gdal_calc is not able to write in JPEG format)
@@ -115,7 +119,7 @@ stack2rgb <- function(in_rast,
   )) {
     
     interm_path <- file.path(tmpdir, gsub("\\..+$","_temp.tif", basename(out_file)))
-
+    
     if (proc_mode == "raster") {
       calcindex_raster(
         in_rast,
@@ -159,7 +163,7 @@ stack2rgb <- function(in_rast,
       gsub("\\..+$",paste0("_temp",i,".tif"),basename(out_file))
     )})
     interm_path <- gsub("\\_temp1.tif$", "_temp.vrt", interm_paths[1])
-
+    
     for (i in seq_along(minval)) {
       if (proc_mode == "raster") {
         calcindex_raster(
@@ -198,7 +202,7 @@ stack2rgb <- function(in_rast,
         )
       }
     }
- 
+    
     gdalUtil(
       "buildvrt",
       source = interm_paths,
@@ -307,6 +311,8 @@ raster2rgb <- function(in_rast,
   # Define builtin palette paths
   palette_builtin <- c(
     "SCL" = system.file("extdata/palettes/SCL.txt", package="sen2r"),
+    "bw" = system.file("extdata/palettes/bw.cpt", package="sen2r"),
+    "WVP" = system.file("extdata/palettes/WVP.cpt", package="sen2r"),
     "NDVI" = system.file("extdata/palettes/NDVI.cpt", package="sen2r"),
     "generic_ndsi" = system.file("extdata/palettes/NDSI.cpt", package="sen2r"),
     "Zscore" = system.file("extdata/palettes/Zscore.cpt", package="sen2r")
@@ -444,7 +450,10 @@ raster2rgb <- function(in_rast,
 #'  `gdal_calc` routines are used to compute indices;
 #'  if `"raster"` or `"stars"`, R functions are instead used
 #'  (using respectively `raster` or `stars` routines).
-#'  Default (NA) is `"gdal_calc"` if a runtime GDAL is found; `"raster"` elsewhere.
+#'  **Note**: default value (`"raster"`) is the only fully supported mode.
+#'  `"gdal_calc"` can be used only if a runtime GDAL environment can be properly
+#'  configured (no assistance is provided in case of GDAL-related problems).
+#'  `"raster"` mode is experimental.
 #'  See `s2_calcindices()` for further details.
 #' @param overwrite (optional) Logical value: should existing thumbnails be
 #'  overwritten? (default: TRUE)
@@ -469,16 +478,13 @@ s2_thumbnails <- function(infiles,
                           outdir=NA,
                           tmpdir=NA,
                           rmtmp=TRUE,
-                          proc_mode=NA,
+                          proc_mode="raster",
                           overwrite=FALSE) {
   
   # Check that GDAL supports JPEG JFIF format
   # TODO
   
   # Check proc_mode and GDAL external dependency
-  if (is.na(proc_mode)) {
-    proc_mode <- if (is.null(load_binpaths()$gdal_calc)) {"gdal_calc"} else {"raster"}
-  }
   if (!proc_mode %in% c("gdal_calc", "raster", "stars")) {
     print_message(
       type = "warning",
@@ -618,6 +624,12 @@ s2_thumbnails <- function(infiles,
           }
         } else if (sel_prod_type %in% c("SCL")){
           rep(NA,2) # it is ignored
+        } else if (sel_prod_type %in% c("WVP")){
+          c(0,10000)
+        } else if (sel_prod_type %in% c("AOT")){
+          c(0,1000)
+        } else if (sel_prod_type %in% c("CLD","SNW")){
+          c(0,100)
         } else { # spectral indices
           sel_infile_datatype <- raster_metadata(sel_infile_path)$type
           if (grepl("^Float",sel_infile_datatype)) {
@@ -659,8 +671,10 @@ s2_thumbnails <- function(infiles,
         raster2rgb(
           resized_path,
           out_file = out_path,
-          palette = if (sel_prod_type %in% c("SCL")) {
+          palette = if (sel_prod_type %in% c("SCL","WVP")) {
             sel_prod_type
+          } else if (sel_prod_type %in% c("CLD","SNW","AOT")) {
+            "bw"
           } else if (grepl("\\-Z$",sel_prod_type) | sel_prod_type=="Zscore") {
             "Zscore"
           } else {

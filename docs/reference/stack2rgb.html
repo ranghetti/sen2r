@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Produce an RGB image from a multiband raster file. — stack2rgb • sen2r: Find, Download and Process Sentinel-2 Data</title>
+<title>Produce an RGB image from a multiband raster file. — stack2rgb • sen2r</title>
 
 
 <!-- jquery -->
@@ -57,16 +57,6 @@ when it would be more generalised." />
 <![endif]-->
 
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-11080708-8"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-11080708-8');
-</script>
-
 
   </head>
 
@@ -83,7 +73,7 @@ when it would be more generalised." />
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
+        <a class="navbar-link" href="../index.html">sen2r</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.6</span>
       </span>
     </div>
@@ -137,6 +127,12 @@ when it would be more generalised." />
     <span class="fa fa-newspaper"></span>
      
      Changelog
+  </a>
+</li>
+<li>
+  <a href="http://luigi.ranghetti.info">
+    <span class="fa fa-user"></span>
+     
   </a>
 </li>
 <li>
@@ -237,6 +233,10 @@ This option is used only in the case a GTiff format was chosen.</p></td>
 <code>gdal_calc</code> routines are used to compute indices;
 if <code>"raster"</code> (default) or <code>"stars"</code>, R functions are instead used
 (using respectively <code>raster</code> or <code>stars</code> routines).
+<strong>Note</strong>: default value (<code>"raster"</code>) is the only fully supported mode.
+<code>"gdal_calc"</code> can be used only if a runtime GDAL environment can be properly
+configured (no assistance is provided in case of GDAL-related problems).
+<code>"raster"</code> mode is experimental.
 See <code><a href='s2_calcindices.html'>s2_calcindices()</a></code> for further details.</p></td>
     </tr>
     <tr>

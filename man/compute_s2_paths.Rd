@@ -86,7 +86,8 @@ list_sen2r_paths(
 \item{tmpdir}{Path of the temporary directory.}
 
 \item{list_prods}{Character vector with the values of the
-products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").}
+products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI",
+"AOT", "WVP", "CLD", "SNW").}
 
 \item{force_tiles}{(optional) Logical: passed to \code{safe_shortname()} (default: FALSE).}
 
@@ -211,7 +212,7 @@ A nested list:
 \itemize{
 \item first elements are \code{exi}, \code{exp}, \code{req} and \code{new};
 \item second elements deal with the processing step: \code{tiles}, \code{merged},
-\code{warped}, \code{warped_scl}, \code{rgb}, \code{masked} and \code{indices};
+\code{warped}, \code{warped_nomsk}, \code{rgb}, \code{masked} and \code{indices};
 \item third elements are related to output products.
 }
 }

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compute maps of spectral indices — s2_calcindices • sen2r: Find, Download and Process Sentinel-2 Data</title>
+<title>Compute maps of spectral indices — s2_calcindices • sen2r</title>
 
 
 <!-- jquery -->
@@ -57,16 +57,6 @@ are physical rasters (no output VRT is allowed)." />
 <![endif]-->
 
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-11080708-8"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-11080708-8');
-</script>
-
 
   </head>
 
@@ -83,7 +73,7 @@ are physical rasters (no output VRT is allowed)." />
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">sen2r: Find, Download and Process Sentinel-2 Data</a>
+        <a class="navbar-link" href="../index.html">sen2r</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.6</span>
       </span>
     </div>
@@ -137,6 +127,12 @@ are physical rasters (no output VRT is allowed)." />
     <span class="fa fa-newspaper"></span>
      
      Changelog
+  </a>
+</li>
+<li>
+  <a href="http://luigi.ranghetti.info">
+    <span class="fa fa-user"></span>
+     
   </a>
 </li>
 <li>
@@ -286,12 +282,14 @@ datatype is chosen (default values are 10000 for <code>"Int16"</code> and <code>
 if <code>"raster"</code> (default) or <code>"stars"</code>, R functions are instead used
 (using respectively <code>raster</code> or <code>stars</code> routines).
 <strong>Notes</strong>:</p><ol>
-<li><p>there is a difference in which the two modes manage values out
+<li><p>default value (<code>"raster"</code>) is the only fully supported mode.
+<code>"gdal_calc"</code> can be used only if a runtime GDAL environment can be properly
+configured (no assistance is provided in case of GDAL-related problems).
+<code>"raster"</code> mode is experimental.</p></li>
+<li><p>There is a difference in which the two modes manage values out
 of ranges (e.g. -32768 to 32767 in Int16 and 0 to 255 in Byte):
 <code>"raster"</code> and <code>"stars"</code> modes set these values to NA,
 <code>"gdal_calc"</code> mode clip them to the minimum/maximum values;</p></li>
-<li><p><code>proc_mode = "stars"</code> is experimental (the performance of this mode
-must be optimised).</p></li>
 </ol></td>
     </tr>
     <tr>
@@ -347,7 +345,7 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
   <span class='kw'>indices</span> <span class='kw'>=</span> <span class='st'>"EVI"</span>,
   <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(),
   <span class='kw'>dataType</span> <span class='kw'>=</span> <span class='st'>"Float32"</span>
-)</div><div class='output co'>#&gt; <span class='message'>Carico il pacchetto richiesto: sp</span></div><div class='output co'>#&gt; <span class='message'>Carico il pacchetto richiesto: abind</span></div><div class='output co'>#&gt; <span class='message'>Carico il pacchetto richiesto: sf</span></div><div class='output co'>#&gt; <span class='message'>Linking to GEOS 3.7.1, GDAL 2.2.3, PROJ 4.9.3</span></div><div class='output co'>#&gt; <span class='message'>[2020-06-04 10:39:25] Computing index EVI on date 2019-07-23...</span></div><div class='input'><span class='no'>ex_out</span></div><div class='output co'>#&gt; [1] "/tmp/RtmpoAlDPB/S2A2A_20190723_022_Barbellino_EVI_10.tif"</div><div class='input'>
+)</div><div class='output co'>#&gt; <span class='message'>Carico il pacchetto richiesto: sp</span></div><div class='output co'>#&gt; <span class='message'>Carico il pacchetto richiesto: abind</span></div><div class='output co'>#&gt; <span class='message'>Carico il pacchetto richiesto: sf</span></div><div class='output co'>#&gt; <span class='message'>Linking to GEOS 3.7.1, GDAL 2.2.3, PROJ 4.9.3</span></div><div class='output co'>#&gt; <span class='message'>[2020-06-12 17:32:24] Computing index EVI on date 2019-07-23...</span></div><div class='input'><span class='no'>ex_out</span></div><div class='output co'>#&gt; [1] "/tmp/RtmpMw5dY5/S2A2A_20190723_022_Barbellino_EVI_10.tif"</div><div class='input'>
 <span class='co'># Show output</span>
 <span class='no'>oldpar</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='kw'>mfrow</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>), <span class='kw'>mar</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>,<span class='fl'>4</span>))
 <span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span>(<span class='kw pkg'>stars</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/stars/man/read_stars.html'>read_stars</a></span>(<span class='no'>ex_in</span>), <span class='kw'>rgb</span> <span class='kw'>=</span> <span class='fl'>4</span>:<span class='fl'>2</span>, <span class='kw'>maxColorValue</span> <span class='kw'>=</span> <span class='fl'>3500</span>)

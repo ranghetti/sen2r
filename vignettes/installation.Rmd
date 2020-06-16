@@ -11,6 +11,8 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+
 Instruction are provided separately for each OS:
 
 - [Install on Linux systems](#on-linux-systems)
@@ -20,9 +22,9 @@ Instruction are provided separately for each OS:
 Alternatively, <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be used [in a Docker container](docker.html).
 
 
-## <i class="fa fa-linux" aria-hidden="true"></i> On Linux systems
+### <i class="fa fa-linux" aria-hidden="true"></i> On Linux systems
 
-### Installing dependencies
+#### Installing dependencies
 
 Before installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>, it is recommended to check [R](https://cran.r-project.org/bin/linux) (v. 3.4.4 or higher) and the following libraries to be present:
 
@@ -102,7 +104,7 @@ To install both package dependencies and runtime binaries (excepting **Sen2Cor**
     ```
     Installation was tested on date 2018-11-21.
 
-### Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+#### Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
 
 Before proceeding, it is suggested to update the existing R packages:
 ```{r, eval = FALSE}
@@ -147,9 +149,7 @@ library(sen2r)
 install_sen2cor()
 ```
 
-## <i class="fa fa-windows" aria-hidden="true"></i> On Windows
-
-### Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+### <i class="fa fa-windows" aria-hidden="true"></i> On Windows
 
 [R](https://cran.r-project.org/bin/windows/base) must be installed before proceeding.
 
@@ -182,57 +182,8 @@ To do it:
 This will install the R package along with its package dependencies,
 containing all the functions necessary to preprocess data.
 
-### Installing runtime dependencies (optional)
 
-Some external dependencies are required to run specific
-<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
-features:
-
-* [**Sen2Cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor)
-    is used to perform atmospheric correction of Sentinel-2 Level-1C products:
-    it is required by the package, unless you choose not to correct products locally
-    (using only Level-1C – TOA products or downloading directly Level-2A products);
-* [**GDAL**](http://www.gdal.org)
-    is required to smooth/bufferise a cloud mask, and can be optionally used
-    to compute spectral indices, RGB images and thumbnails.
-    To avoid incompatibilities, it is _strictly mandatory_ to use
-    a GDAL installation provided with the 
-    [OSGeo4W installer](https://qgis.org/it/site/forusers/download.html):
-    if this requirement is not satisfied, it is possible to install GDAL
-    with OSGeo4W directly from R (see below);
-* [**aria2**](https://aria2.github.io) is an alternative downloader which
-    can be used to faster the download of SAFE archives; it can be optionally
-    installed and used.
-
-These dependences can be graphically checked launching the function
-```{r, eval = FALSE}
-library(sen2r)
-check_sen2r_deps()
-```
-This function opens a GUI which help to check that they are satisfied;
-if some of them are missing, the GUI allows to install them directly.
-
-Alternatively, they can be installed individually from the command line with the
-three following functions (see their respective references for further details):
-```{r, eval = FALSE}
-check_gdal()
-install_sen2cor()
-install_aria2()
-```
-
-<!-- Atmospheric correction is performed using [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor):
-the package will automatically download and install it at first use,
-or by running function [`install_sen2cor()`](reference/install_sen2cor.md).
-Please notice that the use of sen2cor algorythm was not yet possible under MAC.
-
-Preprocessing functions make use of [GDAL](http://www.gdal.org), which must
-support JPEG2000 format. On Windows, it is strongly recommended to install it
-using the [OSGeo4W installer](http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe)
-in advanced mode, and checking the installation of `openjpeg` library. -->
-
-## <i class="fa fa-apple" aria-hidden="true"></i> On MacOS
-
-### Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+### <i class="fa fa-apple" aria-hidden="true"></i> On MacOS
 
 [R](https://cran.r-project.org/bin/windows/base) must be installed before proceeding.
 
@@ -272,31 +223,77 @@ To do it:
 This will install the R package along with its package dependencies,
 containing all the functions necessary to preprocess data.
 
-### Installing runtime dependencies (optional)
 
-Some external dependencies are required to run specific
+
+### Installing Sen2Cor
+
+[**Sen2Cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor)
+is used to perform atmospheric correction of Sentinel-2 Level-1C products,
+so its installation can be skipped in case this function is not required
+by the user (using only Level-1C – TOA products 
+or downloading directly Level-2A products).
+
+It can be graphically checked / installed launching the function
+```{r, eval = FALSE}
+library(sen2r)
+check_sen2r_deps()
+```
+This function opens a GUI which help to check if this and other dependencies
+are satisfied;
+from this GUI a new Sen2Cor installation can be performed,
+or an existing environment can be linked to Sen2Cor.
+
+Alternatively, it can be installed from the command line with the
+following function:
+```{r, eval = FALSE}
+install_sen2cor()
+```
+
+
+### Installing other dependencies (generally unrequired and discouraged)
+
+Other dependencies can be configure to run specific
 <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
-features:
+features; their installation is generally unrequired (they do not add relevant
+improvements to the package) and discouraged (errors could occur).
 
-* [**Sen2Cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor)
-    is used to perform atmospheric correction of Sentinel-2 Level-1C products:
-    it is required by the package, unless you choose not to correct products locally
-    (using only Level-1C – TOA products or downloading directly Level-2A products);
 * [**GDAL**](http://www.gdal.org)
-    is required to smooth/bufferise a cloud mask, and can be optionally used
-    to compute spectral indices, RGB images and thumbnails;
+    is no more required, being used only to smooth/bufferise a cloud mask
+    (and _optionally_ to compute spectral indices, RGB images and thumbnails).
+    On Windows, to avoid incompatibilities, it is _strictly mandatory_ 
+    to use a GDAL installation provided with the 
+    [OSGeo4W installer](https://qgis.org/it/site/forusers/download.html):
+    if this requirement is not satisfied, it is possible to install GDAL
+    with OSGeo4W directly from R (see below).
+    **Note**: configuring a runtime **GDAL** environment could fail for different reasons
+    (e.g. problems related to GDAL environment like missing libraries,
+    or custom environment variables which could conflict).
+    <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+    maintainers are not responsible in case of GDAL-related issues
+    (no assistance is provided in this case).
 * [**aria2**](https://aria2.github.io) is an alternative downloader which
     can be used to faster the download of SAFE archives; it can be optionally
     installed and used.
+    Since the number of concurrent downloads from ESA SciHub is limited to 2,
+    the use of **aria2** is generally not faster than the default downloader;
+    for this reason, its use is recommended only in case of problems with
+    the default downloader.
 
 These dependences can be graphically checked launching the function
 ```{r, eval = FALSE}
 library(sen2r)
 check_sen2r_deps()
 ```
-This function opens a GUI which help to check that they are satisfied.
 
-#### Note on GDAL installation
+Alternatively, they can be installed individually from the command line with the
+following functions (see their respective references for further details):
+```{r, eval = FALSE}
+check_gdal()
+install_aria2()
+```
+
+
+#### Note on GDAL installation on MacOS
 In order to avoid incompatibilities with GDAL, it is _strictly mandatory_ to use
 a GDAL installation provided with the
 [OSGeo Homebrew repository](https://github.com/OSGeo/homebrew-osgeo4mac).
