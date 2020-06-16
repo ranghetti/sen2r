@@ -272,7 +272,8 @@ if <code><a href='sen2r.html'>sen2r()</a></code>.</p>
     <tr>
       <th>list_prods</th>
       <td><p>Character vector with the values of the
-products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI").</p></td>
+products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI",
+"AOT", "WVP", "CLD", "SNW").</p></td>
     </tr>
     <tr>
       <th>force_tiles</th>
@@ -515,7 +516,7 @@ if FALSE, only non temporary files are searched.</p></td>
     <p>A nested list:</p><ul>
 <li><p>first elements are <code>exi</code>, <code>exp</code>, <code>req</code> and <code>new</code>;</p></li>
 <li><p>second elements deal with the processing step: <code>tiles</code>, <code>merged</code>,
-<code>warped</code>, <code>warped_scl</code>, <code>rgb</code>, <code>masked</code> and <code>indices</code>;</p></li>
+<code>warped</code>, <code>warped_nomsk</code>, <code>rgb</code>, <code>masked</code> and <code>indices</code>;</p></li>
 <li><p>third elements are related to output products.</p></li>
 </ul>
 
