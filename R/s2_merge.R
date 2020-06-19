@@ -132,10 +132,11 @@ s2_merge <- function(infiles,
   
   # if utm zones differ from the selected utm zone, show a warning
   if (missing(out_crs)) {
+    out_crs <- names(sort(table(infiles_meta$proj), decreasing = TRUE))[1]
     print_message(
       type="message",
-      "Using projection \"",infiles_meta$proj[1],"\".")
-    out_crs <- infiles_meta$proj[1]
+      "Using projection \"",out_crs,"\"."
+    )
   }
   
   # vector which identifies, for each infiles, if its projection is
@@ -332,6 +333,7 @@ s2_merge <- function(infiles,
           dstfiles = reproj_vrt,
           ref = ref_file,
           of = "VRT",
+          dstnodata = s2_defNA(sel_infiles_meta[sel_diffcrs,][i,"prod_type"]),
           tmpdir = sel_tmpdir,
           r = "near"
         )

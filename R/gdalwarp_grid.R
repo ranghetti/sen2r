@@ -10,6 +10,8 @@
 #'  the format of every input filename.
 #' @param r Resampling_method (`"near"`|`"bilinear"`|`"cubic"`|`"cubicspline"`|
 #' `"lanczos"`|`"average"`|`"mode"`|`"max"`|`"min"`|`"med"`|`"q1"`|`"q3"`).
+#' @param dstnodata (optional) Set nodata values for output bands
+#'  (parameter passed to `gdalUtil()`).
 #' @param tmpdir (optional) Path where intermediate files (.prj) will be created.
 #'  Default is a temporary directory.
 #' @return NULL (the function is called for its side effects)
@@ -51,6 +53,7 @@ gdalwarp_grid <- function(
   ref,
   of = NULL,
   r = NULL,
+  dstnodata = NA,
   tmpdir = tempdir()
 ) {
   
@@ -139,6 +142,7 @@ gdalwarp_grid <- function(
         "-t_srs", ref_proj_string,
         "-te", c(out_bbox_mod),
         "-tr", as.vector(ref_res),
+        if (!missing(dstnodata)) {c("-dstnodata", dstnodata)},
         if (!is.null(r)) {c("-r", r)},
         if (!is.null(of)) {c("-of", of)}
       ),
