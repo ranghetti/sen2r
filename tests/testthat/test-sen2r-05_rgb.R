@@ -2,9 +2,6 @@ context("Test compute RGB images - main function")
 testthat::skip_on_cran()
 # testthat::skip_on_travis() # because required SAFE do not exists
 
-safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
-dir.create(safe_dir, showWarnings = FALSE)
-
 testthat::test_that(
   "Tests on indices computation, on unrequired BOA, with clip ", {
     
@@ -29,7 +26,8 @@ testthat::test_that(
       path_out = outdir_16,
       path_l1c = safe_dir,
       path_l2a = safe_dir,
-      parallel = FALSE
+      parallel = FALSE,
+      apihub = tests_apihub_path
     )
     testthat::expect_true(all(file.exists(exp_outpath_16)))
     

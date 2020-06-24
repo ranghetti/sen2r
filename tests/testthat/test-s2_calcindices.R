@@ -1,5 +1,4 @@
 context("Test compute spectral indices - s2_calcindices()")
-ref_dir <- system.file("extdata/out", package = "sen2r")
 
 outdir_12 <- tempfile(pattern = "out_test12_")
 testthat::test_that(

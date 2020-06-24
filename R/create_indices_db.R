@@ -481,6 +481,46 @@ create_indices_db <- function(xslt_path = NA,
       s2_formula_mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">SWIR1</mi>\n      <mo>-</mo>\n      <mi mathcolor=\"#443399\">NIR</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">SWIR1</mi>\n      <mo>+</mo>\n      <mi mathcolor=\"#443399\">NIR</mi>\n     </mrow>\n    </mrow>\n   </mrow>\n  </mfrac>\n </mrow>\n</math>",
       checked = TRUE,
       a = NA, b = NA, x = NA
+    ),
+    "Rcc" = data.frame(
+      n_index = 323,
+      longname = "Red Chromatic Coordinate",
+      name = "Rcc",
+      link = "https://doi.org/10.1016/j.agrformet.2011.09.009",
+      s2_formula = "band_4 / (band_2 + band_3 + band_4)",
+      s2_formula_mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mi mathcolor=\"#443399\">RED</mi>\n   </mrow>\n   <mrow>\n    <mi mathcolor=\"#443399\">RED</mi>\n    <mo>+</mo>\n    <mi mathcolor=\"#443399\">GREEN</mi>\n    <mo>+</mo>\n    <mi mathcolor=\"#443399\">BLUE</mi>\n   </mrow>\n  </mfrac>\n </mrow>\n</math>",
+      checked = TRUE,
+      a = NA, b = NA, x = NA
+    ),
+    "Gcc" = data.frame(
+      n_index = 324,
+      longname = "Green Chromatic Coordinate",
+      name = "Gcc",
+      link = "https://doi.org/10.1016/j.agrformet.2011.09.009",
+      s2_formula = "band_3 / (band_2 + band_3 + band_4)",
+      s2_formula_mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mi mathcolor=\"#443399\">GREEN</mi>\n   </mrow>\n   <mrow>\n    <mi mathcolor=\"#443399\">RED</mi>\n    <mo>+</mo>\n    <mi mathcolor=\"#443399\">GREEN</mi>\n    <mo>+</mo>\n    <mi mathcolor=\"#443399\">BLUE</mi>\n   </mrow>\n  </mfrac>\n </mrow>\n</math>",
+      checked = TRUE,
+      a = NA, b = NA, x = NA
+    ),
+    "Bcc" = data.frame(
+      n_index = 325,
+      longname = "Blue Chromatic Coordinate",
+      name = "Bcc",
+      link = "https://doi.org/10.1016/j.agrformet.2011.09.009",
+      s2_formula = "band_2 / (band_2 + band_3 + band_4)",
+      s2_formula_mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mi mathcolor=\"#443399\">BLUE</mi>\n   </mrow>\n   <mrow>\n    <mi mathcolor=\"#443399\">RED</mi>\n    <mo>+</mo>\n    <mi mathcolor=\"#443399\">GREEN</mi>\n    <mo>+</mo>\n    <mi mathcolor=\"#443399\">BLUE</mi>\n   </mrow>\n  </mfrac>\n </mrow>\n</math>",
+      checked = TRUE,
+      a = NA, b = NA, x = NA
+    ),
+    "ExG" = data.frame(
+      n_index = 326,
+      longname = "Excess Green",
+      name = "ExG",
+      link = "https://doi.org/10.1016/j.agrformet.2011.09.009",
+      s2_formula = "2 * band_3 - (band_2 + band_4)",
+      s2_formula_mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mn>2</mn>\n  <mo>&amp;InvisibleTimes;</mo>\n  <mi mathcolor=\"#443399\">GREEN</mi>\n  <mo>-</mo>\n  <mo>(</mo>\n  <mi mathcolor=\"#443399\">RED</mi>\n  <mo>+</mo>\n  <mi mathcolor=\"#443399\">BLUE</mi>\n  <mo>)</mo>\n </mrow>\n</math>",
+      checked = TRUE,
+      a = NA, b = NA, x = NA
     )
   ), fill=TRUE)
   

@@ -189,9 +189,7 @@ testthat::skip_on_travis()
 # To perform the test also on Sen2Cor, replace 'test_sen2cor = FALSE' with 'TRUE'.
 test_sen2cor = FALSE
 
-safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
 safe_out_dir <- tempfile(pattern = "safe_")
-dir.create(safe_dir, showWarnings = FALSE)
 s2_l1c_prods <- file.path(safe_dir, c(
   "S2A_MSIL1C_20190723T101031_N0208_R022_T32TNR_20190723T121220.SAFE",
   "S2A_MSIL1C_20190723T101031_N0208_R022_T32TNS_20190723T121220.SAFE"

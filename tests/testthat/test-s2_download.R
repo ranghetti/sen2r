@@ -7,11 +7,6 @@ testthat::skip_on_cran()
 # To perform the test also on download, replace 'test_download = FALSE' with 'TRUE'.
 test_download = FALSE
 
-safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
-dir.create(safe_dir, showWarnings = FALSE)
-
-write_scihub_login("user", "user", apihub_path <- tempfile())
-
 # s2_l1c_list <- s2_list(tile = c("32TNR", "32TNS"), time_interval = "2019-07-03", level = "L1C")
 s2_l1c_list <- c(
   "S2A_MSIL1C_20190723T101031_N0208_R022_T32TNR_20190723T121220.SAFE" = 
@@ -34,7 +29,7 @@ testthat::test_that(
       s2_l2a_list,
       downloader = "builtin",
       outdir = safe_dir,
-      apihub = apihub_path,
+      apihub = tests_apihub_path,
       overwrite = test_download
     )) # suppressWarnings used to manage possible warnings for skept Md5sum checks
     exp_outsafe_1 <- file.path(safe_dir, names(s2_l2a_downloaded))
@@ -108,7 +103,7 @@ if (any(
     s2_l1c_list,
     downloader = "builtin",
     outdir = safe_dir,
-    apihub = apihub_path,
+    apihub = tests_apihub_path,
     overwrite = test_download
   )) # suppressWarnings used to manage possible warnings for skept Md5sum checks
 }
@@ -146,7 +141,7 @@ testthat::test_that(
       s2_l1c_list,
       downloader = "aria2",
       outdir = safe_dir,
-      apihub = apihub_path,
+      apihub = tests_apihub_path,
       overwrite = test_download
     )) # suppressWarnings used to manage possible warnings for skept Md5sum checks
     exp_outsafe_2 <- file.path(safe_dir, names(s2_l1c_downloaded))

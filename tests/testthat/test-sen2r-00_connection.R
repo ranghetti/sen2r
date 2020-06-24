@@ -17,7 +17,8 @@ test_that("check internet connection and fail if missing", {
       path_l2a = tempfile(pattern = "L2A"),
       path_out = tempfile(pattern = "out"), 
       overwrite = TRUE,
-      thumbnails = FALSE
+      thumbnails = FALSE,
+      apihub = tests_apihub_path
     )), 
     regexp = gsub(
       " ", "[ \n]",

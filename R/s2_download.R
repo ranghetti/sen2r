@@ -149,7 +149,7 @@ s2_download <- function(
       date = TRUE,
       "Check if products are available for download..."
     )
-    safe_is_online(s2_prodlist, verbose = FALSE)
+    safe_is_online(s2_prodlist, verbose = FALSE, apihub = apihub)
   } else {
     .s2_availability
   }
@@ -157,7 +157,11 @@ s2_download <- function(
   
   # Order products stored from the Long Term Archive
   if (order_lta == TRUE) {
-    ordered_products <- .s2_order(s2_prodlist, .s2_availability = s2_availability)
+    ordered_products <- .s2_order(
+      s2_prodlist, 
+      .s2_availability = s2_availability, 
+      apihub = apihub
+    )
   }
   
   

@@ -23,9 +23,8 @@ test_that("check reading / writing credentials", {
       "[Tt]he provided credentials are not valid"
     )
   )
-  write_scihub_login("user", "user", apihub_path = apitmp <- tempfile())
-  creds <- read_scihub_login(apihub_path = apitmp)
-  testthat::expect_equal(creds[1,], c("user", "user"))
+  creds <- read_scihub_login(apihub_path = tests_apihub_path)
+  testthat::expect_equal(creds[1,], c(tests_apihub[1], tests_apihub[2]))
 })
 
 
@@ -35,5 +34,5 @@ testthat::skip_on_travis()
 
 test_that("check_scihub_login works as expected", {
   expect_false(check_scihub_login("BastianoCoimbraDeLaCoronilla", "yAcevedo!"))
-  expect_true(check_scihub_login("user", "user"))
+  expect_true(check_scihub_login(tests_apihub[1], tests_apihub[2]))
 })

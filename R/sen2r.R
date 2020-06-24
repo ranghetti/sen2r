@@ -1354,6 +1354,7 @@ sen2r <- function(param_list = NULL,
     .s2_order(
       s2_list_lta, 
       .s2_availability = rep(FALSE, length(s2_list_lta)),
+      apihub = pm$apihub,
       .log_path = FALSE # because it is done at the end
     )
   } else {

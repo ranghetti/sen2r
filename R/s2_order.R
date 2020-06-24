@@ -160,7 +160,7 @@ s2_order <- function(
       "Check if products are already available for download..."
     )
     
-    safe_is_online(s2_prodlist, verbose = FALSE)
+    safe_is_online(s2_prodlist, verbose = FALSE, apihub = apihub)
   } else {
     .s2_availability
   }

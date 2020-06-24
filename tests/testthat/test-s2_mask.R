@@ -1,5 +1,4 @@
 context("Test mask - s2_mask()")
-ref_dir <- system.file("extdata/out", package = "sen2r")
 
 testthat::test_that(
   "Tests on custom mask on TOA, with save binary mask", {
