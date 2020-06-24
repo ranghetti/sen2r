@@ -443,7 +443,7 @@ s2_list <- function(spatial_extent = NULL,
   out_dt$online <- if (availability == "ignore") {
     NA
   } else {
-    as.logical(safe_is_online(out_dt, verbose = FALSE))
+    as.logical(safe_is_online(out_dt, verbose = FALSE, apihub = apihub))
   }
   
   # remove "wrong" tiles and orbits if needed

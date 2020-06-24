@@ -1,7 +1,5 @@
 context("Test compute RGB images - main s2_rgb()")
 
-ref_dir <- system.file("extdata/out", package = "sen2r")
-
 testthat::test_that(
   "Tests on function s2_rgb()", {
     

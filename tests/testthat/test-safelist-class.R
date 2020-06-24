@@ -2,12 +2,11 @@ context("Test s2 formats")
 testthat::skip_on_cran()
 # testthat::skip_on_travis()
 
-write_scihub_login("user", "user", apihub_path <- tempfile())
 s2_safelist_0 <- s2_list(
   tile = "32TNR",
   time_interval = as.Date(c("2017-05-01", "2017-05-31")),
   orbit = "065",
-  apihub = apihub_path
+  apihub = tests_apihub_path
 )
 
 testthat::test_that(

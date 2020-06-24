@@ -2,9 +2,6 @@ context("Test ignorelist")
 testthat::skip_on_cran()
 # testthat::skip_on_travis() # because required SAFE do not exists
 
-safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
-dir.create(safe_dir, showWarnings = FALSE)
-
 testthat::test_that(
   "Tests on safelist read/write", {
     
@@ -25,7 +22,8 @@ testthat::test_that(
       max_mask = 10,
       path_l2a = safe_dir,
       path_out = outdir_17,
-      thumbnails = FALSE
+      thumbnails = FALSE,
+      apihub = tests_apihub_path
     )
     
     ignorelist_path <- file.path(outdir_17, ".ignorelist.txt")

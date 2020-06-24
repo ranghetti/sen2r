@@ -2,10 +2,6 @@ context("Test s2_merge and translate when stitching 2 tiles with no clipping")
 testthat::skip_on_cran()
 # testthat::skip_on_travis() # because required SAFE do not exists
 
-safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
-dir.create(safe_dir, showWarnings = FALSE)
-
-
 testthat::test_that(
   "Tests on merge all found tiles in offline mode", {
     
@@ -26,7 +22,8 @@ testthat::test_that(
       path_l2a = safe_dir,
       path_out = outdir_1, 
       overwrite = TRUE,
-      thumbnails = FALSE
+      thumbnails = FALSE,
+      apihub = tests_apihub_path
     )
     expect_true(file.exists(exp_outpath_1))
     
@@ -86,7 +83,8 @@ testthat::test_that(
         path_l2a = safe_dir,
         path_out = outdir_1c, 
         overwrite = TRUE,
-        thumbnails = FALSE
+        thumbnails = FALSE,
+        apihub = tests_apihub_path
       ),
       regexp = gsub(
         " ", "[ \n]",

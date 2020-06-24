@@ -2,10 +2,6 @@ context("Test warping (clip, reproject, resize)")
 testthat::skip_on_cran()
 # testthat::skip_on_travis() # because required SAFE do not exists
 
-safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
-dir.create(safe_dir, showWarnings = FALSE)
-
-
 outdir_2 <- tempfile(pattern = "out_test2_")
 exp_outpath_2 <- file.path(
   outdir_2, c("BOA", "WVP"),
@@ -27,7 +23,8 @@ testthat::test_that(
       list_prods = c("BOA","WVP"),
       mask_type = NA,
       path_l2a = safe_dir,
-      path_out = outdir_2
+      path_out = outdir_2,
+      apihub = tests_apihub_path
     )
     expect_true(all(file.exists(exp_outpath_2)))
     
@@ -118,7 +115,8 @@ testthat::test_that(
         path_l1c = safe_dir,
         path_out = outdir_3,
         path_subdirs = FALSE,
-        overwrite = TRUE
+        overwrite = TRUE,
+        apihub = tests_apihub_path
       ),
       regexp = gsub(
         " ", "[ \n]",
@@ -222,7 +220,8 @@ testthat::test_that(
       path_l2a = safe_dir,
       path_out = outdir_4,
       tmpdir = outdir_4, rmtmp = FALSE,
-      overwrite = TRUE
+      overwrite = TRUE,
+      apihub = tests_apihub_path
     )
     expect_true(all(file.exists(exp_outpath_4)))
     
