@@ -1,3 +1,22 @@
+# Version 1.3.7
+
+## Major changes
+- Some additional products are now supported: `CLD`, `SNW`, `AOT`, `WVP` (see documentation for description). The GUI and internal functions were modified to support their selection and generation.
+
+## Minor changes
+- Add indices Red / Green / Blue Chromatic Coordinate (`Rcc`, `Gcc`, `Bcc`) and Excess Green (`ExG`) (#330).
+- All methods based on runtime GDAL are now discouraged and never called by default (before this version, they were used in case GDAL was found on `paths.json`).
+- Output GeoTIFF files are now tiled.
+
+## Documentation
+- New products were documented in function references and in the article ["Output file structure"](https://sen2r.ranghetti.info/articles/outstructure).
+- Function references explicit discourage the use of GDAL-based methods.
+- The documentation site links to the personal page https://luigi.ranghetti.info/.
+
+## Bug fixes
+- Fix #318, #323 and #329.
+
+
 # Version 1.3.6
 
 ## Bug fixes 
