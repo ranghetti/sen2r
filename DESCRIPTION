@@ -51,6 +51,7 @@ Suggests:
   geojsonlint,
   httptest,
   knitr,
+  markdown,
   rmarkdown,
   sys,
   tools,
