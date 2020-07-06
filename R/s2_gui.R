@@ -145,6 +145,7 @@ s2_gui <- function(param_list = NULL,
   tabItem <- shinydashboard::tabItem
   tabItems <- shinydashboard::tabItems
   tagList <- shiny::tagList
+  tags <- shiny::tags
   textInput <- shiny::textInput
   toggle <- shinyjs::toggle
   uiOutput <- shiny::uiOutput
@@ -171,7 +172,35 @@ s2_gui <- function(param_list = NULL,
   # shiny
   s2_gui.ui <- dashboardPage(
     title = "sen2r: Find, Download and Process Sentinel-2 Data",
-    header = dashboardHeader(),
+    header = dashboardHeader(
+      
+      tags$li(class ="dropdown", tags$a(
+        href="http://sen2r.ranghetti.info",
+        shiny::icon("book"),
+        style="margin:0;padding-top:11px;padding-bottom:11px;padding-left:10px;padding-right:10px;font-size:30px;",
+        target="_blank"
+      )),
+      tags$li(class ="dropdown", tags$a(
+        href="https://github.com/ranghetti/sen2r",
+        shiny::icon("github"),
+        style="margin:0;padding-top:11px;padding-bottom:11px;padding-left:10px;padding-right:10px;font-size:30px;",
+        target="_blank"
+      )),
+      tags$li(class ="dropdown", tags$a(
+        href="https://luigi.ranghetti.info",
+        shiny::icon("user"),
+        style="margin:0;padding-top:11px;padding-bottom:11px;padding-left:10px;padding-right:10px;font-size:30px;",
+        target="_blank"
+      )),
+      tags$li(class ="dropdown", tags$a(
+        href="http://www.irea.cnr.it",
+        tags$img(src="www/images/irea_logo.png"),
+        style="margin:0;padding-top:2px;padding-bottom:2px;padding-left:10px;padding-right:10px;",
+        target="_blank"
+      ))
+      
+      
+    ),
     sidebar = dashboardSidebar(
       
       # logo

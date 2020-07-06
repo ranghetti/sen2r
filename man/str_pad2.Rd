@@ -20,7 +20,8 @@ A character vector.
 }
 \description{
 Vectorised over \code{string}, \code{width} and \code{pad}.
-This is an internal function doing the same thing of \link[stringr:str_pad]{stringr::str_pad}
+This is an internal function doing the same thing of \code{str_pad()}
+function in package \code{stringr}
 (except for parameters \code{'width'} and \code{'length'} which must be of length 1),
 but without depending on package \code{stringi}.
 }

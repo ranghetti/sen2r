@@ -73,7 +73,7 @@ computable with the package." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.6.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.7</span>
       </span>
     </div>
 
@@ -252,6 +252,10 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
 #&gt; 224       NDWI2
 #&gt; 225      NDVIre
 #&gt; 226        NDBI
+#&gt; 227         Rcc
+#&gt; 228         Gcc
+#&gt; 229         Bcc
+#&gt; 230         ExG
 #&gt;                                                                                         longname
 #&gt; 4                                                                  Anthocyanin reflectance index
 #&gt; 6                                                     Atmospherically Resistant Vegetation Index
@@ -287,13 +291,17 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
 #&gt; 223                                                            Normalized Difference Water Index
 #&gt; 224                                                          Normalized Difference Water Index 2
 #&gt; 225                                        Red-edge-based Normalized Difference Vegetation Index
-#&gt; 226                                                         Normalized Difference Built-up Index</div><div class='input'>
+#&gt; 226                                                         Normalized Difference Built-up Index
+#&gt; 227                                                                     Red Chromatic Coordinate
+#&gt; 228                                                                   Green Chromatic Coordinate
+#&gt; 229                                                                    Blue Chromatic Coordinate
+#&gt; 230                                                                                 Excess Green</div><div class='input'>
 <span class='co'># Return the MSAVI2 formula</span>
 <span class='fu'>list_indices</span>(<span class='st'>"s2_formula"</span>, <span class='st'>"^MSAVI2$"</span>)</div><div class='output co'>#&gt; [1] "(2*band_8+1-sqrt(power((2*band_8+1),2)-8*(band_8-band_4)))/(2)"
 #&gt; attr(,"pkg_version")
-#&gt; [1] ‘1.3.0’
+#&gt; [1] ‘1.3.6.9002’
 #&gt; attr(,"creation_date")
-#&gt; [1] "2020-02-03 17:39:39 CET"</div><div class='input'>
+#&gt; [1] "2020-06-24 15:14:33 CEST"</div><div class='input'>
 <span class='co'># Return all index names (including unchecked)</span>
 <span class='fu'>list_indices</span>(<span class='st'>"name"</span>, <span class='kw'>all</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;   [1] "ATSAVI"        "AFRI1600"      "AFRI2100"      "ARI"          
 #&gt;   [5] "AVI"           "ARVI"          "ARVI2"         "BWDRVI"       
@@ -351,11 +359,12 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
 #&gt; [213] "CRred-2B"      "CRred-0"       "BDred"         "BDred-2A"     
 #&gt; [217] "BDred-2B"      "BDred-0"       "CRred2"        "CRred2-2A"    
 #&gt; [221] "CRred2-2B"     "CRred2-0"      "NDWI"          "NDWI2"        
-#&gt; [225] "NDVIre"        "NDBI"         
+#&gt; [225] "NDVIre"        "NDBI"          "Rcc"           "Gcc"          
+#&gt; [229] "Bcc"           "ExG"          
 #&gt; attr(,"pkg_version")
-#&gt; [1] ‘1.3.0’
+#&gt; [1] ‘1.3.6.9002’
 #&gt; attr(,"creation_date")
-#&gt; [1] "2020-02-03 17:39:39 CET"</div></pre>
+#&gt; [1] "2020-06-24 15:14:33 CEST"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

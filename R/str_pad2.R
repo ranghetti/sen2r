@@ -1,6 +1,7 @@
 #' @title Pad a string.
 #' @description Vectorised over `string`, `width` and `pad`.
-#'  This is an internal function doing the same thing of [stringr::str_pad]
+#'  This is an internal function doing the same thing of `str_pad()`
+#'  function in package `stringr`
 #'  (except for parameters `'width'` and `'length'` which must be of length 1),
 #'  but without depending on package `stringi`.
 #' @param string A character vector.

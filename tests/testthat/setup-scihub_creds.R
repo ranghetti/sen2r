@@ -1,5 +1,5 @@
 # Retrieve Travis credentials
-tests_apihub <- if (FALSE) {c( #Sys.getenv("TRAVIS") == "true") {c( #FIXME when creds will be active
+tests_apihub <- if (Sys.getenv("TRAVIS") == "true") {c(
   paste0("sen2r_travis_",Sys.getenv("TRAVIS_R_VERSION_STRING")),
   Sys.getenv("TRAVIS_PASSWORD")
 )} else {
