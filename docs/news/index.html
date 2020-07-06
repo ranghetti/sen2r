@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.6.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.7</span>
       </span>
     </div>
 
@@ -155,13 +155,50 @@
       <small>Source: <a href='https://github.com/ranghetti/sen2r/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="version-1-3-7" class="section level1">
+<h1 class="page-header" data-toc-text="1.3.7">
+<a href="#version-1-3-7" class="anchor"></a>Version 1.3.7<small> Unreleased </small>
+</h1>
+<div id="major-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#major-changes" class="anchor"></a>Major changes</h2>
+<ul>
+<li>Some additional products are now supported: <code>CLD</code>, <code>SNW</code>, <code>AOT</code>, <code>WVP</code> (see documentation for description). The GUI and internal functions were modified to support their selection and generation.</li>
+</ul>
+</div>
+<div id="minor-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#minor-changes" class="anchor"></a>Minor changes</h2>
+<ul>
+<li>Add indices Red / Green / Blue Chromatic Coordinate (<code>Rcc</code>, <code>Gcc</code>, <code>Bcc</code>) and Excess Green (<code>ExG</code>) (<a href='https://github.com/ranghetti/sen2r/issues/330'>#330</a>).</li>
+<li>All methods based on runtime GDAL are now discouraged and never called by default (before this version, they were used in case GDAL was found on <code>paths.json</code>).</li>
+<li>Output GeoTIFF files are now tiled.</li>
+</ul>
+</div>
+<div id="documentation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#documentation" class="anchor"></a>Documentation</h2>
+<ul>
+<li>New products were documented in function references and in the article <a href="https://sen2r.ranghetti.info/articles/outstructure">“Output file structure”</a>.</li>
+<li>Function references explicit discourage the use of GDAL-based methods.</li>
+<li>The documentation site links to the personal page <a href="https://luigi.ranghetti.info/" class="uri">https://luigi.ranghetti.info/</a>.</li>
+</ul>
+</div>
+<div id="bug-fixes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes" class="anchor"></a>Bug fixes</h2>
+<ul>
+<li>Fix <a href='https://github.com/ranghetti/sen2r/issues/318'>#318</a>, <a href='https://github.com/ranghetti/sen2r/issues/323'>#323</a> and <a href='https://github.com/ranghetti/sen2r/issues/329'>#329</a>.</li>
+</ul>
+</div>
+</div>
     <div id="version-1-3-6" class="section level1">
 <h1 class="page-header" data-toc-text="1.3.6">
 <a href="#version-1-3-6" class="anchor"></a>Version 1.3.6<small> 2020-06-04 </small>
 </h1>
-<div id="bug-fixes" class="section level2">
+<div id="bug-fixes-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-1" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Fix GDAL usage over Windows (a new version was specifically released for this bug because it caused <strong><code>sen2r</code></strong> stopping for many Windows users).</li>
 </ul>
@@ -171,33 +208,33 @@
 <h1 class="page-header" data-toc-text="1.3.5">
 <a href="#version-1-3-5" class="anchor"></a>Version 1.3.5<small> 2020-06-01 </small>
 </h1>
-<div id="major-changes" class="section level2">
+<div id="major-changes-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#major-changes" class="anchor"></a>Major changes</h2>
+<a href="#major-changes-1" class="anchor"></a>Major changes</h2>
 <ul>
 <li>GDAL is no longer a mandatory external dependency, being used only to smooth/bufferise cloud masks (and optionally to compute spectral indices, RGB images and thumbnails).</li>
 <li>“Graphical” packages needed to run the GUI (<strong><code>leaflet</code></strong>, <strong><code>leafpm</code></strong>, <strong><code>mapedit</code></strong>, <strong><code>shiny</code></strong>, <strong><code>shinyFiles</code></strong>, <strong><code>shinydashboard</code></strong>, <strong><code>shinyjs</code></strong>, <strong><code>shinyWidgets</code></strong>) are now suggested dependencies. In the case they are missing and the user tries to run the GUI, an error is returned with the command for installing them.</li>
 </ul>
 </div>
-<div id="minor-changes" class="section level2">
+<div id="minor-changes-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes" class="anchor"></a>Minor changes</h2>
+<a href="#minor-changes-1" class="anchor"></a>Minor changes</h2>
 <ul>
 <li>Edit the GUI in order to disable selectors when dependencies required to run them are not available.</li>
 <li>Automatic tests were reorganised and improved after GDAL changes.</li>
 </ul>
 </div>
-<div id="documentation" class="section level2">
+<div id="documentation-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#documentation" class="anchor"></a>Documentation</h2>
+<a href="#documentation-1" class="anchor"></a>Documentation</h2>
 <ul>
 <li>Document <strong><code>sen2r</code></strong> installation over Ubuntu Focal.</li>
 <li>Update documentation according to GDAL changes.</li>
 </ul>
 </div>
-<div id="bug-fixes-1" class="section level2">
+<div id="bug-fixes-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-1" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-2" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Fix Travis-<strong><code>lwgeom</code></strong> incompatibilities (<a href='https://github.com/ranghetti/sen2r/issues/319'>#319</a>)</li>
 <li>Fix <a href='https://github.com/ranghetti/sen2r/issues/310'>#310</a> and <a href='https://github.com/ranghetti/sen2r/issues/311'>#311</a></li>
@@ -216,9 +253,9 @@
 <code><a href="../reference/gdalUtil.html">gdalUtil()</a></code>: function used to perform GDAL operations, calling C-based GDAL utilities using <code><a href="https://rdrr.io/pkg/sf/man/gdal_utils.html">sf::gdal_utils()</a></code>, and Python-based ones through system calls (a standalone GDAL environment is request to do it, as it was in previous versions).</li>
 </ul>
 </div>
-<div id="documentation-1" class="section level2">
+<div id="documentation-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#documentation-1" class="anchor"></a>Documentation</h2>
+<a href="#documentation-2" class="anchor"></a>Documentation</h2>
 <ul>
 <li>Improve documentation of vignette “Output file structure”, including the description of output products.</li>
 </ul>
@@ -231,18 +268,18 @@
 <strong><code>rgdal</code></strong> is now an explicit dependency (this because it is used by <strong><code>raster</code></strong> but it is not a mandatory dependency).</li>
 </ul>
 </div>
-<div id="minor-changes-1" class="section level2">
+<div id="minor-changes-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes-1" class="anchor"></a>Minor changes</h2>
+<a href="#minor-changes-2" class="anchor"></a>Minor changes</h2>
 <ul>
 <li>GDAL C-based utilities are called using internal GDAL routines in package <strong><code>sf</code></strong> (see <code><a href="../reference/gdalUtil.html">gdalUtil()</a></code>). This allows reducing the use of external runtime dependencies.</li>
 <li>GDAL messages are suppressed if the suggested dependency <strong><code>sys</code></strong> is installed (<a href='https://github.com/ranghetti/sen2r/issues/257'>#257</a>).</li>
 <li>The new section of the vignette “Output file documentation” regarding products is linked in the GUI.</li>
 </ul>
 </div>
-<div id="bug-fixes-2" class="section level2">
+<div id="bug-fixes-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-2" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-3" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Re-fix <a href='https://github.com/ranghetti/sen2r/issues/292'>#292</a>.</li>
 <li>Fix <a href='https://github.com/ranghetti/sen2r/issues/308'>#308</a>.</li>
@@ -253,9 +290,9 @@
 <h1 class="page-header" data-toc-text="1.3.3">
 <a href="#version-1-3-3" class="anchor"></a>Version 1.3.3<small> 2020-03-30 </small>
 </h1>
-<div id="major-changes-1" class="section level2">
+<div id="major-changes-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#major-changes-1" class="anchor"></a>Major changes</h2>
+<a href="#major-changes-2" class="anchor"></a>Major changes</h2>
 <ul>
 <li>Move the list of ignored / cloud-covered images in the output path (<a href='https://github.com/ranghetti/sen2r/issues/271'>#271</a>): before this release, two files (<code>*_ignorelist.txt</code> and <code>*_cloudlist.txt</code>) were created in the directory of the parameter file (if existing) and used, during subsequent <code><a href="../reference/sen2r.html">sen2r()</a></code> executions, in order not to try reprocessing images cloud covered or failed for some reason. Now these files were replaced with an hidden TOML file <code>.ignorelist.txt</code> containing the list of base names of non-produced files and the dates of cloud covered images. This file is placed in the output folder, so to be linked with the produced archive. The usefulness of this edit is twofold:
 <ol>
@@ -273,16 +310,16 @@
 <strong><code>RcppTOML</code></strong> (used to manage TOML ignore list TOML file).</li>
 </ul>
 </div>
-<div id="documentation-2" class="section level2">
+<div id="documentation-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#documentation-2" class="anchor"></a>Documentation</h2>
+<a href="#documentation-3" class="anchor"></a>Documentation</h2>
 <ul>
 <li>Improve the installation page.</li>
 </ul>
 </div>
-<div id="bug-fixes-3" class="section level2">
+<div id="bug-fixes-4" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-3" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-4" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Support for <strong><code>sf</code></strong> &gt;= 0.9 (<a href='https://github.com/ranghetti/sen2r/issues/260'>#260</a>)</li>
 <li>Patch for <strong><code>stars</code></strong> issue, made to resolve the temporary incompatibility with <strong><code>sf</code></strong> &gt;= 0.9 (see issue <a href='https://github.com/ranghetti/sen2r/issues/295'>#295</a>)</li>
@@ -320,9 +357,9 @@
 <li>Prepare to move <strong><code>shiny*</code></strong> and <strong><code>leaflet*</code></strong> dependencies to suggested (this will be done in a future release).</li>
 </ul>
 </div>
-<div id="minor-changes-2" class="section level2">
+<div id="minor-changes-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes-2" class="anchor"></a>Minor changes</h2>
+<a href="#minor-changes-3" class="anchor"></a>Minor changes</h2>
 <ul>
 <li>Allow choosing if ordering SAFE products from <code>dhus</code> or <code>apihub</code> (experimental).</li>
 <li>Replace all <code>GET()</code> calls with <code>RETRY()</code>, so to avoid errors in case of temporary unavailability of services.</li>
@@ -335,16 +372,16 @@
 <h1 class="page-header" data-toc-text="1.3.1">
 <a href="#version-1-3-1" class="anchor"></a>Version 1.3.1<small> 2020-02-07 </small>
 </h1>
-<div id="major-changes-2" class="section level2">
+<div id="major-changes-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#major-changes-2" class="anchor"></a>Major changes</h2>
+<a href="#major-changes-3" class="anchor"></a>Major changes</h2>
 <ul>
 <li>Documentation was improved with three new vignettes about GUI usage, command line usage and output structure.</li>
 </ul>
 </div>
-<div id="bug-fixes-4" class="section level2">
+<div id="bug-fixes-5" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-4" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-5" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Restore checking environmental variable in <code><a href="../reference/init_python.html">init_python()</a></code> (this urgent bug fixing was the reason of the urgent release of the current version).</li>
 <li>Fix building offline footprint.</li>
@@ -359,9 +396,9 @@
 <li>In the GUI, the maximum allowed cloud cover was set to 100% accordingly to the <code><a href="../reference/sen2r.html">sen2r()</a></code> defaults.</li>
 </ul>
 </div>
-<div id="minor-changes-3" class="section level2">
+<div id="minor-changes-4" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes-3" class="anchor"></a>Minor changes</h2>
+<a href="#minor-changes-4" class="anchor"></a>Minor changes</h2>
 <ul>
 <li>Add check on <code>max_mask</code> - <code>mask_type</code> coherence (if <code>max_mask &lt; 100</code> and <code>mask_type</code> is not specified, a warning is returned).</li>
 <li>Suppress some useless warnings.</li>
@@ -374,9 +411,9 @@
 <h1 class="page-header" data-toc-text="1.3.0">
 <a href="#version-1-3-0" class="anchor"></a>Version 1.3.0<small> 2020-02-04 </small>
 </h1>
-<div id="major-changes-3" class="section level2">
+<div id="major-changes-4" class="section level2">
 <h2 class="hasAnchor">
-<a href="#major-changes-3" class="anchor"></a>Major changes</h2>
+<a href="#major-changes-4" class="anchor"></a>Major changes</h2>
 <ul>
 <li>Support for GDAL 3 / PROJ 6 was added:
 <ul>
@@ -417,9 +454,9 @@
 <code>use_python</code> argument in <code><a href="../reference/sen2r.html">sen2r()</a></code> was deprecated (no longer needed).</li>
 </ul>
 </div>
-<div id="minor-changes-4" class="section level2">
+<div id="minor-changes-5" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes-4" class="anchor"></a>Minor changes</h2>
+<a href="#minor-changes-5" class="anchor"></a>Minor changes</h2>
 <ul>
 <li>All components of the order (available, ordered and notordered) are now saved in JSON files. This allows using them to re-do an order, specifying if re-ordering already ordered datasets or only order the ones identified as “notordered” (based on new argument “reorder”).</li>
 <li>Output messages are formatted so not to exceed output line length.</li>
@@ -454,9 +491,9 @@
 <h1 class="page-header" data-toc-text="1.2.1">
 <a href="#version-1-2-1" class="anchor"></a>Version 1.2.1<small> 2019-11-12 </small>
 </h1>
-<div id="major-changes-4" class="section level2">
+<div id="major-changes-5" class="section level2">
 <h2 class="hasAnchor">
-<a href="#major-changes-4" class="anchor"></a>Major changes</h2>
+<a href="#major-changes-5" class="anchor"></a>Major changes</h2>
 <ul>
 <li>New <code>safelist</code> class for lists of SAFE Sentinel-2 archives (see <a href="https://sen2r.ranghetti.info/reference/safelist-class.html">safelist-class</a>);</li>
 <li>
@@ -487,9 +524,9 @@
 <code><a href="../reference/safe_shortname.html">safe_shortname()</a></code>: arguments <code>tiles</code>, <code>force_tiles</code>, <code>set.seed</code> and <code>multiple_names</code> were deprecated, since they are not used with SAFE compact names (old names are no more supported);</li>
 </ul>
 </div>
-<div id="minor-changes-5" class="section level2">
+<div id="minor-changes-6" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes-5" class="anchor"></a>Minor changes</h2>
+<a href="#minor-changes-6" class="anchor"></a>Minor changes</h2>
 <ul>
 <li>
 <code><a href="https://rdrr.io/r/base/Sys.setenv.html">Sys.setenv()</a></code> effects now do not affect the R environment after exiting from sen2r() execution;</li>
@@ -562,9 +599,9 @@
 <li>In the case the users manually defines the path to be used as temporary directory and this directory already exists, a casual subdirectory of the user-defined folder is used (this to prevent to accidentally delete existing files).</li>
 </ul>
 </div>
-<div id="major-changes-5" class="section level2">
+<div id="major-changes-6" class="section level2">
 <h2 class="hasAnchor">
-<a href="#major-changes-5" class="anchor"></a>Major changes</h2>
+<a href="#major-changes-6" class="anchor"></a>Major changes</h2>
 <ul>
 <li>
 <strong><code>sen2r</code></strong> package directory is no more used to store files, but a subfolder <code>.sen2r</code> of the user Home directory is created and used. In this way, reinstalling sen2r will not require anymore to reinstall runtime dependencies / to reconfigure the package. The permission to write on this folder is asked to the user when the package is loaded for the first time.</li>
@@ -676,9 +713,9 @@
 <div id="changes-from-version-1-0-0" class="section level2">
 <h2 class="hasAnchor">
 <a href="#changes-from-version-1-0-0" class="anchor"></a>Changes from version 1.0.0</h2>
-<div id="major-changes-6" class="section level3">
+<div id="major-changes-7" class="section level3">
 <h3 class="hasAnchor">
-<a href="#major-changes-6" class="anchor"></a>Major changes</h3>
+<a href="#major-changes-7" class="anchor"></a>Major changes</h3>
 <ul>
 <li>A new algorithm was implemented in <code><a href="../reference/s2_calcindices.html">s2_calcindices()</a></code>: now internal raster routines are used by default instead than <code>gdal_calc.py</code>, allowing reducing RAM usage and computation time.</li>
 <li>Better RAM usage and reduction of execution time: <code><a href="../reference/sen2r_getElements.html">sen2r_getElements()</a></code> was rewritten in order to: 1) avoid a RAM leak present in the function, which was causing a high RAM use in the first part of the execution of <code><a href="../reference/sen2r.html">sen2r()</a></code>; 2) considerably speed up the execution (now the metadata of 100 files is retrieved in 4 milliseconds instead than 80).</li>
@@ -822,9 +859,9 @@
 <a href="#version-0-3-3" class="anchor"></a>Version 0.3.3<small> Unreleased </small>
 </h1>
 <p>This is an improvement of version 0.3.2, with several fixes and improvements.</p>
-<div id="major-changes-7" class="section level3">
+<div id="major-changes-8" class="section level3">
 <h3 class="hasAnchor">
-<a href="#major-changes-7" class="anchor"></a>Major changes</h3>
+<a href="#major-changes-8" class="anchor"></a>Major changes</h3>
 <ul>
 <li>Add internal logging (argument <code>log</code> of function <code><a href="../reference/sen2r.html">sen2r()</a></code>)</li>
 <li>New function <code><a href="../reference/s2_dop.html">s2_dop()</a></code> to know the Dates Of Passage over orbits</li>
