@@ -319,9 +319,10 @@ gdal_warp <- function(srcfiles,
     # create mask_bbox if t_srs is specified;
     # otherwise, create each time within srcfile cycle
     if (!is.null(t_srs)) {
-      mask_bbox <- st_bbox(
-        st_transform(mask, t_srs),
-        matrix(nrow=2, ncol=2, dimnames=list(c("x","y"),c("min","max")))
+      mask_bbox <- matrix(
+        st_bbox(st_transform(mask, t_srs)),
+        nrow=2, ncol=2, 
+        dimnames=list(c("x","y"),c("min","max"))
       )
     }
   }
