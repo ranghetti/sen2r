@@ -23,7 +23,7 @@ sen2r()
 Note that the following error message could be returned:
 ```
 Some missing packages are needed to run the GUI; please install them with the command
-> install.packages("leaflet", "leafpm", "mapedit", "shiny", "shinyFiles", "shinydashboard", "shinyjs", "shinyWidgets")
+> install.packages(c("leaflet", "leafpm", "mapedit", "shiny", "shinyFiles", "shinydashboard", "shinyjs", "shinyWidgets"))
 ```
 This because "graphical" packages required to run the GUI are now suggested dependencies (the package could be used without them, if the user do not require the GUI).
 In this case, simply install the missing packages as stated by the error message (which could differ from the previous one).
