@@ -301,7 +301,7 @@ To do it:
 
 1. if Homebrew is missing on your system, install it opening a terminal and typing:
     ```{bash, eval = FALSE}
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    /usr/bin/ruby -e "$(curl -fsSL https://github.com/Homebrew/install/raw/master/install)"
     ```
     (see [the Homebrew webpage](https://brew.sh/) for details);
 2. install GDAL by typing:

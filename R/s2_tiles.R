@@ -20,7 +20,7 @@
 #' 
 #' # Extract a subset of all the tiles
 #' httr::GET(
-#'   "https://raw.githubusercontent.com/ranghetti/sen2r/devel/utils/vector/ch_bound.rds", 
+#'   "https://github.com/ranghetti/sen2r/raw/master/utils/vector/ch_bound.rds", 
 #'   httr::write_disk(ch_path <- tempfile())
 #' )
 #' ch <- readRDS(ch_path)
@@ -71,11 +71,14 @@ s2_tiles <- function() {
     }
     RETRY(
       verb = "GET",
-      url = "https://raw.githubusercontent.com/ranghetti/sen2r/master/utils/vector/s2_tiles.rds",
+      url = "https://github.com/ranghetti/sen2r/raw/master/utils/vector/s2_tiles.rds",
       times = 5, pause_cap = 8,
       progress(con = if (length(out_bar) > 0) {out_bar} else {stdout()}),
-      write_disk(file.path(dirname(attr(load_binpaths(), "path")), "s2_tiles.rds"), overwrite = TRUE)
+      write_disk(s2tiles_rds, overwrite = TRUE)
     )
+    if (any(file.info(s2tiles_rds)$size == 0, na.rm=TRUE)) {
+      file.remove(s2tiles_rds)
+    }
     if (length(out_bar) > 0) {
       close(out_bar)
       invisible(file.remove(out_bar_path))

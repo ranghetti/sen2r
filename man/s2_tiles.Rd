@@ -23,7 +23,7 @@ s2tiles <- s2_tiles()
 
 # Extract a subset of all the tiles
 httr::GET(
-  "https://raw.githubusercontent.com/ranghetti/sen2r/devel/utils/vector/ch_bound.rds", 
+  "https://github.com/ranghetti/sen2r/raw/master/utils/vector/ch_bound.rds", 
   httr::write_disk(ch_path <- tempfile())
 )
 ch <- readRDS(ch_path)
