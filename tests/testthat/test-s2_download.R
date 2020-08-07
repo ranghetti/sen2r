@@ -23,18 +23,20 @@ s2_l2a_list <- c(
 )
 
 testthat::test_that(
-  "Tests on s2_download - Built-in downloader", {
+  "Tests on s2_download - Built-in downloader, dhus service", {
     
     suppressWarnings(s2_l2a_downloaded <- s2_download(
       s2_l2a_list,
       downloader = "builtin",
       outdir = safe_dir,
       apihub = tests_apihub_path,
+      service = "dhus",
       overwrite = test_download
     )) # suppressWarnings used to manage possible warnings for skept Md5sum checks
     exp_outsafe_1 <- file.path(safe_dir, names(s2_l2a_downloaded))
     testthat::expect_true(all(file.exists(exp_outsafe_1)))
     testthat::expect_equal(length(s2_l2a_downloaded), length(s2_l2a_list))
+    testthat::expect_true(grepl("https://scihub.copernicus.eu/dhus/", s2_l2a_downloaded[1]))
     
     # test raster metadata
     exp_meta_ex <- raster_metadata(

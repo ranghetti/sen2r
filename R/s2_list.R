@@ -27,6 +27,9 @@
 #' @param apihub Path of the `apihub.txt` file containing credentials
 #'  of SciHub account.
 #'  If NA (default), the default location inside the package will be used.
+#' @param service Character: it can be `"dhus"` or `"apihub"` (default),
+#'  in which cases the required service is forced instead that the one present
+#'  in the URLs passed through argument `s2_prodlist`.
 #' @param max_cloud Integer number (0-100) containing the maximum cloud
 #'  level of the tiles to be listed (default: no filter).
 #' @param availability Character argument, determining which products have
@@ -102,6 +105,7 @@ s2_list <- function(spatial_extent = NULL,
                     level = "auto",
                     server = "scihub",
                     apihub = NA,
+                    service = "apihub",
                     max_cloud = 100,
                     availability = "ignore",
                     output_type = "deprecated") {
@@ -128,6 +132,16 @@ s2_list <- function(spatial_extent = NULL,
     )
   }
   
+  # check the used service
+  if (!service %in% c("apihub", "dhus")) {
+    print_message(
+      type = "error",
+      "Argument 'service' can be only \"apihub\" or \"dhus\"; ",
+      "switching to \"apihub\"."
+    )
+    service <- "apihub"
+  }
+  
   if (inherits(try(as.Date(time_interval), silent = TRUE), "try-error")) {
     print_message(
       type = "error",
@@ -145,15 +159,9 @@ s2_list <- function(spatial_extent = NULL,
     )
   }
   
-  if (anyNA(match(server, c("scihub", "gcloud")))) {
-    print_message(
-      type = "error",
-      "`server` must be \"scihub\" (and/or \"gcloud\" in a future release)"
-    )
-  }
-  
   # to avoid NOTE on check
-  . <- i <- online <- NULL
+  . <- online <- id_tile <- id_orbit <- 
+    sensing_datetime <- ingestion_datetime <- NULL
   
   # convert input NA arguments in NULL
   for (a in c("spatial_extent","tile","orbit","time_interval","apihub")) {
@@ -277,18 +285,18 @@ s2_list <- function(spatial_extent = NULL,
     )
   }
   
-  
   ## Google Cloud specific methods
-  if (all(
-    "gcloud" %in% server, 
-    requireNamespace("sen2r.extras", quietly = TRUE)
-  )) {
-    out_dt_list[["gcloud"]] <- sen2r.extras::.s2_list_gcloud(
-      time_intervals =time_intervals, 
-      tile = tile, 
-      orbit = orbit, 
-      max_cloud = max_cloud
-    )
+  if ("gcloud" %in% server) {
+    if (eval(parse(text = 'requireNamespace("sen2r.extras", quietly = TRUE)'))) {
+      out_dt_list[["gcloud"]] <- eval(parse(text = paste0(
+        "sen2r.extras::.s2_list_gcloud(",
+        "  time_intervals = time_intervals,",
+        "  tile = tile,",
+        "  orbit = orbit,",
+        "  max_cloud = max_cloud",
+        ")"
+      )))
+    }
   }
   
   ## Merge dt (in case of multiple servers)
@@ -391,7 +399,7 @@ s2_list <- function(spatial_extent = NULL,
     while (!end_query) {
       
       query_string <- paste0(
-        'https://scihub.copernicus.eu/apihub/search?',
+        'https://scihub.copernicus.eu/',service,'/search?',
         'start=', start,
         '&rows=', rows,
         '&q=', foot,
@@ -528,7 +536,7 @@ s2_list <- function(spatial_extent = NULL,
     
   }
   out_dt <- rbindlist(out_list)
-
+  
   if (nrow(out_dt) == 0) {return(data.table())}
   
   # remove "wrong" tiles and orbits if needed

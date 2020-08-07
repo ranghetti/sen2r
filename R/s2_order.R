@@ -138,7 +138,13 @@ s2_order <- function(
   # TODO add input checks
   
   # check the used service
-  if (!is.na(service)) {
+  if (!service %in% c("apihub", "dhus", NA)) {
+    print_message(
+      type = "error",
+      "Argument 'service' can be only \"apihub\" or \"dhus\"; ",
+      "leaving the input URLs as are."
+    )
+  } else if (!is.na(service)) {
     s2_prodlist <- gsub(
       "^https://scihub.copernicus.eu/((apihub)|(dhus))/odata",
       paste0("https://scihub.copernicus.eu/",service,"/odata"),
