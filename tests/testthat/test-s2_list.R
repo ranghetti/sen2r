@@ -201,7 +201,7 @@ testthat::test_that(
       time_interval = time_window,
       apihub = tests_apihub_path
     )
-    testthat::expect_equal(length(s2_list_test), 69)
+    testthat::expect_equal(length(s2_list_test), 61)
   }
 )
 

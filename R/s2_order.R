@@ -15,7 +15,7 @@
 #' @param delay Numeric: time frame (in seconds) to leave between two 
 #'  consecutive orders. Default is 0.5 seconds: use a higher value if you 
 #'  encountered errors (i.e. not all the products were correctly ordered).
-#' @param apihub Path of the "apihub.txt" file containing credentials
+#' @param apihub Path of the `apihub.txt` file containing credentials
 #'  of SciHub account.
 #'  If NA (default), the default location inside the package will be used.
 #' @param service Character: it can be `"dhus"` or `"apihub"`, in which cases
@@ -150,36 +150,46 @@ s2_order <- function(
   creds <- read_scihub_login(apihub)
   
   # Split products to be downloaded from products to be ordered
-  # 
-  # First, check availability: order is NEVER attempted for already online
-  # products 
+  
+  # Exclude products not from SciHub
+  s2_scihub <- s2_prodlist[grepl("^http.+Products\\(.+\\)/\\$value$", s2_prodlist)]
+  if (length(s2_scihub) < length(s2_prodlist)) {
+    print_message(
+      type = "message",
+      date = TRUE,
+      length(s2_prodlist) - length(s2_scihub),
+      " products are not from SciHub and will not considered."
+    )
+    s2_prodlist <- s2_scihub
+  }
+
+  # Check availability (order is never attempted for already online products)
   s2_availability <- if (is.null(.s2_availability)) {
     print_message(
       type = "message",
       date = TRUE,
       "Check if products are already available for download..."
     )
-    
     safe_is_online(s2_prodlist, verbose = FALSE, apihub = apihub)
   } else {
     .s2_availability
   }
   
   # If some products are already available, print a message
-  if (sum(s2_availability) > 0) {
+  if (sum(s2_availability, na.rm = TRUE) > 0) {
     print_message(
       type = "message",
       date = TRUE,
-      sum(s2_availability)," Sentinel-2 images are already online."
+      sum(s2_availability, na.rm = TRUE)," Sentinel-2 images are already online."
     )
   }
   
   ## Order products stored in Long Term Archive
-  if (sum(!s2_availability) > 0) {
+  if (sum(!nn(s2_availability), na.rm = TRUE) > 0) {
     print_message(
       type = "message",
       date = TRUE,
-      "Ordering ",sum(!s2_availability)," Sentinel-2 images ",
+      "Ordering ",sum(!nn(s2_availability), na.rm = TRUE)," Sentinel-2 images ",
       "stored in the Long Term Archive..."
     )
   }
@@ -198,7 +208,7 @@ s2_order <- function(
     to_order   <- which(!s2_availability & attr(s2_prodlist, "order_status") != "ordered")
     
   } else {
-    to_order  <- which(!s2_availability)
+    to_order  <- which(!nn(s2_availability))
     old_order <- NULL
   }
   
@@ -240,7 +250,7 @@ s2_order <- function(
     tempordered[to_order[ordered_products]] <- TRUE
   }
   ordered_products    <- tempordered
-  notordered_products <- !ordered_products & !s2_availability
+  notordered_products <- !ordered_products & !nn(s2_availability)
   
   out_list <- s2_prodlist[ordered_products]
   attr(out_list, "available")  <- s2_prodlist[s2_availability]
@@ -280,7 +290,7 @@ s2_order <- function(
     print_message(
       type = "message",
       date = TRUE,
-      sum(ordered_products)," of ",sum(!s2_availability)," Sentinel-2 images ",
+      sum(ordered_products)," of ",sum(!nn(s2_availability), na.rm = TRUE)," Sentinel-2 images ",
       "were correctly ordered. ",
       if (.log_path == TRUE) {paste0(
         "You can check at a later time if the ordered products are available online ",
@@ -300,7 +310,7 @@ s2_order <- function(
     print_message(
       type = "message",
       date = TRUE,
-      sum(notordered_products)," of ",sum(!s2_availability)," Sentinel-2 images ",
+      sum(notordered_products)," of ",sum(!nn(s2_availability), na.rm = TRUE)," Sentinel-2 images ",
       "were not correctly ordered ",
       "(HTML status code: ",unique(paste(status_codes[status_codes!=202]), collapse = ", "),")",
       if (quota_exceeded) {paste0(

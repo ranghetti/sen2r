@@ -23,7 +23,7 @@ Alternatively, it can be the path of a JSON file exported by \link{s2_order}.}
 (default: "builtin"). Alternatives are "builtin" or "aria2"
 (this requires aria2c to be installed).}
 
-\item{apihub}{Path of the "apihub.txt" file containing credentials
+\item{apihub}{Path of the \code{apihub.txt} file containing credentials
 of SciHub account.
 If NA (default), the default location inside the package will be used.}
 

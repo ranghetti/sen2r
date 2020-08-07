@@ -20,7 +20,11 @@
 #'         product
 #'     - "L1C": list available level-1C products
 #'     - "L2A": list available level-2A products
-#' @param apihub Path of the "apihub.txt" file containing credentials
+#' @param server The servers where archives are searched. Currently, 
+#'  only `"scihub"` is supported (Google Cloud will be implemented in future).
+#'  In case of multiple values, they are used in order of priority.
+#'  If `availability = "check"`, products on LTA are always left as last choice.
+#' @param apihub Path of the `apihub.txt` file containing credentials
 #'  of SciHub account.
 #'  If NA (default), the default location inside the package will be used.
 #' @param max_cloud Integer number (0-100) containing the maximum cloud
@@ -96,6 +100,7 @@ s2_list <- function(spatial_extent = NULL,
                     time_interval = c(Sys.Date() - 10, Sys.Date()), 
                     time_period = "full", # temporal parameters
                     level = "auto",
+                    server = "scihub",
                     apihub = NA,
                     max_cloud = 100,
                     availability = "ignore",
@@ -128,6 +133,22 @@ s2_list <- function(spatial_extent = NULL,
       type = "error",
       "`time_interval` must be of class `Date`, `POSIXct` or `character` ",
       "cohercible to Date (YYYY-mm-dd)."
+    )
+  } else if (inherits(time_interval, "character")) {
+    time_interval <- as.Date(time_interval)
+  }
+  
+  if (anyNA(match(server, c("scihub", "gcloud")))) {
+    print_message(
+      type = "error",
+      "`server` must be \"scihub\" (and/or \"gcloud\" in a future release)"
+    )
+  }
+  
+  if (anyNA(match(server, c("scihub", "gcloud")))) {
+    print_message(
+      type = "error",
+      "`server` must be \"scihub\" (and/or \"gcloud\" in a future release)"
     )
   }
   
@@ -179,9 +200,14 @@ s2_list <- function(spatial_extent = NULL,
     )
   }
   # load tiles borders if needed.
-  if (any(!spatial_extent_exists, is.null(tile))) {
+  if (any(!spatial_extent_exists, is.null(tile), "gcloud" %in% server)) {
     # extract and import tiles kml
     s2tiles <- s2_tiles()
+  }
+  
+  # determine required tiles if needed
+  if (any(is.null(tile), "gcloud" %in% server)) {
+    tile <- tiles_intersects(spatial_extent, .s2tiles = s2tiles)
   }
   
   # take the the selected tiles as extent if needed
@@ -196,35 +222,6 @@ s2_list <- function(spatial_extent = NULL,
   }
   
   spatial_extent <- suppressWarnings(sf::st_union(spatial_extent))
-  spatial_extent_or <- spatial_extent
-  
-  # # If spatial_extent is not point, simplify polygon if needed / convert to bbox
-  # NOTE: simplifiying polygons was disabled because this could result in a smaller polygon
-  # (loosing products).
-  # Minimum convex hull will be used, which could instead cause the selection of more
-  # products than needed.
-  # if (inherits(spatial_extent, "sfc_POLYGON")) {
-  #   
-  #   # if spatial_extent has too many vertices, simplify it
-  #   dtolerance <- with(as.list(sf::st_bbox(spatial_extent)), sqrt((xmax - xmin)^2 + (ymax - ymin)^2))/500
-  #   # initial dtolerance value: 0.5% maximum distance
-  #   n_while = 0
-  #   while (length(suppressWarnings(sf::st_cast(spatial_extent, "POINT"))) > 30) {
-  #     if (n_while < 10) {
-  #       spatial_extent <- suppressWarnings(sf::st_simplify(spatial_extent_or, dTolerance = dtolerance))
-  #       dtolerance <- dtolerance * 2
-  #       n_while <- n_while + 1
-  #     } else {
-  #       spatial_extent <- sf::st_as_sfc(sf::st_bbox(spatial_extent_or))
-  #     }
-  #   }
-  #   
-  # } else 
-  if (!inherits(spatial_extent, "sfc_POINT")) {
-    # spatial_extent <- st_as_sfc(sf::st_bbox(spatial_extent_or))
-    spatial_extent <- sf::st_convex_hull(spatial_extent)
-  }
-  # }
   
   # checks on dates
   # TODO add checks on format
@@ -240,8 +237,8 @@ s2_list <- function(spatial_extent = NULL,
     )
   } else if (time_period == "seasonal") {
     data.frame(
-      "start" = strftime(seq(time_interval[1], time_interval[2], by = "year"), "%Y-%m-%d"),
-      "end" = strftime(rev(seq(time_interval[2], time_interval[1], by = "-1 year")), "%Y-%m-%d"),
+      "start" = seq(time_interval[1], time_interval[2], by = "year"),
+      "end" = rev(seq(time_interval[2], time_interval[1], by = "-1 year")),
       stringsAsFactors = FALSE
     )
   }
@@ -262,6 +259,93 @@ s2_list <- function(spatial_extent = NULL,
     )
   }
   
+  # List of output dt (one per server method)
+  out_dt_list <- list()
+  
+  ## ESA SciHub specific methods
+  if ("scihub" %in% server) {
+    out_dt_list[["scihub"]] <- .s2_list_scihub(
+      spatial_extent = spatial_extent, 
+      time_intervals = time_intervals, 
+      tile = tile, 
+      orbit = orbit, 
+      max_cloud = max_cloud, 
+      apihub = apihub, 
+      service = service,
+      availability = availability,
+      .s2tiles = s2tiles
+    )
+  }
+  
+  
+  ## Google Cloud specific methods
+  if (all(
+    "gcloud" %in% server, 
+    requireNamespace("sen2r.extras", quietly = TRUE)
+  )) {
+    out_dt_list[["gcloud"]] <- sen2r.extras::.s2_list_gcloud(
+      time_intervals =time_intervals, 
+      tile = tile, 
+      orbit = orbit, 
+      max_cloud = max_cloud
+    )
+  }
+  
+  ## Merge dt (in case of multiple servers)
+  # order by the order of input "server" argument (this is used in duplicated:
+  # first "server" value is taken in case of douplicated availability)
+  out_dt <- rbindlist(out_dt_list[server])
+  if (nrow(out_dt) == 0) {return(as(setNames(character(0), character(0)), "safelist"))}
+  # compute date (to ignore duplicated dates)
+  out_dt[,date := as.Date(substr(as.character(out_dt$sensing_datetime), 1, 10))]
+  # order by availability (LTA SciHub products are always used as last choice)
+  out_dt <- rbind(
+    out_dt[is.na(online) | online == TRUE,],
+    out_dt[online == FALSE,]
+  )
+  # merge (removing duplicates)
+  out_dt <- out_dt[!duplicated(paste(level,id_tile,id_orbit,date)),]
+  out_dt[,date := NULL]
+  
+  if (nrow(out_dt) == 0) {return(as(setNames(character(0), character(0)), "safelist"))}
+  if (level == "L1C") {
+    out_dt <- out_dt[level == "1C",]
+  } else if (level == "L2A") {
+    out_dt <- out_dt[grepl("^2Ap?$", level),]
+  } else if (level == "auto") {
+    out_names <- names(out_dt)
+    out_dt <- out_dt[order(-level,-ingestion_datetime),]
+    out_dt <- out_dt[,head(.SD, 1), by = .(sensing_datetime, id_tile, id_orbit)]
+    out_dt <- out_dt[,out_names,with=FALSE]
+  }
+  if (nrow(out_dt) == 0) {return(as(setNames(character(0), character(0)), "safelist"))}
+  out_dt <- out_dt[order(sensing_datetime),]
+  
+  # filter by availability
+  if (availability == "online") {
+    out_dt <- out_dt[online == TRUE,]
+  } else if (availability == "lta") {
+    out_dt <- out_dt[online == FALSE,]
+  }
+  
+  # return output
+  if (output_type =="data.table") { # deprecated
+    out_dt
+  } else if (output_type =="data.frame") { # deprecated
+    as.data.frame(out_dt)
+  } else if (output_type =="vector") { # deprecated
+    as.character(as(out_dt, "safelist"))
+  } else {
+    as(out_dt, "safelist")
+  }
+}
+
+
+.s2_list_scihub <- function(spatial_extent, time_intervals, tile, orbit, max_cloud, apihub, service, availability, .s2tiles) {
+  
+  n_entries <- 1
+  out_list <- list()
+  
   # Check connection
   if (!check_scihub_connection()) {
     print_message(
@@ -281,14 +365,22 @@ s2_list <- function(spatial_extent = NULL,
     )
   }
   
+  # S2 tiles
+  if (missing(.s2tiles)) {.s2tiles <- s2_tiles()}
+  
+  # # If spatial_extent is not point, simplify polygon if needed / convert to bbox
+  spatial_extent_or <- spatial_extent
+  if (!inherits(spatial_extent, "sfc_POINT")) {
+    # spatial_extent <- st_as_sfc(sf::st_bbox(spatial_extent_or))
+    spatial_extent <- sf::st_convex_hull(spatial_extent)
+  }
+  
+  # Prepare footprint
   foot <- ifelse(
     inherits(spatial_extent, "sfc_POINT"),
     paste0('footprint:%22Intersects(', paste(as.numeric(sf::st_coordinates(spatial_extent)[c(2,1)]), collapse = ",%20"),')%22'),
     paste0('footprint:%22Intersects(', sf::st_as_text(sf::st_geometry(spatial_extent)),')%22')
   )
-  
-  n_entries <- 1
-  out_list <- list()
   
   for (t_int in seq_len(nrow(time_intervals))) {
     
@@ -436,8 +528,21 @@ s2_list <- function(spatial_extent = NULL,
     
   }
   out_dt <- rbindlist(out_list)
+
+  if (nrow(out_dt) == 0) {return(data.table())}
   
-  if (nrow(out_dt) == 0) {return(as(setNames(character(0), character(0)), "safelist"))}
+  # remove "wrong" tiles and orbits if needed
+  if (!is.null(tile)) {
+    out_dt <- out_dt[id_tile %in% tile,]
+  } else {
+    sel_s2tiles <- suppressMessages(suppressWarnings(
+      sf::st_intersection(.s2tiles, spatial_extent_or)))
+    out_dt <- out_dt[id_tile %in% unique(sel_s2tiles$tile_id),]
+  }
+  
+  if (!is.null(orbit)) {
+    out_dt <- out_dt[id_orbit %in% sprintf("%03i", as.numeric(orbit)),]
+  }
   
   # check online availability
   out_dt$online <- if (availability == "ignore") {
@@ -446,47 +551,6 @@ s2_list <- function(spatial_extent = NULL,
     as.logical(safe_is_online(out_dt, verbose = FALSE, apihub = apihub))
   }
   
-  # remove "wrong" tiles and orbits if needed
-  if (!is.null(tile)) {
-    out_dt <- out_dt[id_tile %in% tile,]
-  } else {
-    sel_s2tiles <- suppressMessages(suppressWarnings(
-      sf::st_intersection(s2tiles, spatial_extent_or)))
-    out_dt <- out_dt[id_tile %in% unique(sel_s2tiles$tile_id),]
-  }
+  out_dt
   
-  if (!is.null(orbit)) {
-    out_dt <- out_dt[id_orbit %in% sprintf("%03i", as.numeric(orbit)),]
-  }
-  
-  if (nrow(out_dt) == 0) {return(as(setNames(character(0), character(0)), "safelist"))}
-  if (level == "L1C") {
-    out_dt <- out_dt[level == "1C",]
-  } else if (level == "L2A") {
-    out_dt <- out_dt[grepl("^2Ap?$", level),]
-  } else if (level == "auto") {
-    out_dt <- out_dt[order(-level,-ingestion_datetime),]
-    out_dt <- out_dt[,head(.SD, 1), by = .(sensing_datetime, id_tile, id_orbit)]
-    out_dt <- out_dt[,c(names(out_list[[1]]),"online"),with=FALSE]
-  }
-  if (nrow(out_dt) == 0) {return(as(setNames(character(0), character(0)), "safelist"))}
-  out_dt <- out_dt[order(sensing_datetime),]
-  
-  # filter by availability
-  if (availability == "online") {
-    out_dt <- out_dt[online == TRUE,]
-  } else if (availability == "lta") {
-    out_dt <- out_dt[online == FALSE,]
-  }
-  
-  # return output
-  if (output_type =="data.table") { # deprecated
-    out_dt
-  } else if (output_type =="data.frame") { # deprecated
-    as.data.frame(out_dt)
-  } else if (output_type =="vector") { # deprecated
-    as.character(as(out_dt, "safelist"))
-  } else {
-    as(out_dt, "safelist")
-  }
 }

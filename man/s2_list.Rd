@@ -11,6 +11,7 @@ s2_list(
   time_interval = c(Sys.Date() - 10, Sys.Date()),
   time_period = "full",
   level = "auto",
+  server = "scihub",
   apihub = NA,
   max_cloud = 100,
   availability = "ignore",
@@ -44,6 +45,11 @@ if so, list it; if not, list the corresponding level-1C
 product
 - "L1C": list available level-1C products
 - "L2A": list available level-2A products}
+
+\item{server}{One (or more) among \code{"scihub"} (default) and \code{"google"}.
+In case of multiple values, the first is used for SAFEs available on both
+the servers.
+If \code{availability = "check"}, products on LTA are always left as last choice.}
 
 \item{apihub}{Path of the "apihub.txt" file containing credentials
 of SciHub account.
