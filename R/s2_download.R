@@ -223,6 +223,9 @@ s2_download <- function(
   s2_prodlist, s2_meta, outdir, apihub, service, downloader, overwrite
 ) {
   
+  # to avoid NOTE on check
+  i <- mission <- level <- sensing_datetime <- id_orbit <- id_tile <- NULL
+  
   # read credentials
   if (length(s2_prodlist) > 0) {
     creds <- read_scihub_login(apihub)
@@ -247,9 +250,6 @@ s2_download <- function(
     i = seq_along(s2_prodlist), 
     .combine = c
   ) %do% {
-    
-    # to avoid NOTE on check
-    mission <- level <- sensing_datetime <- id_orbit <- id_tile <- NULL
     
     link <- s2_prodlist[i]
     zip_path <- file.path(outdir, paste0(names(s2_prodlist[i]),".zip"))
