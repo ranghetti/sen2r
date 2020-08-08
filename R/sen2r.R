@@ -1188,8 +1188,14 @@ sen2r <- function(param_list = NULL,
     s2_lists <- lapply(s2_lists, function(l) {
       safe_getMetadata(l, "level", abort = FALSE, format = "vector", simplify = TRUE)
     })
-    s2_lists <- lapply(s2_lists, function(l) {l[!is.na(l)]})
-    
+    s2_lists_whichna <- lapply(s2_lists, function(l) {is.na(l)})
+    s2_lists <- lapply(seq_along(s2_lists), function(i) {
+      s2_lists[[i]][!s2_lists_whichna[[i]]]
+    })
+    s2_lists_footprints <- lapply(seq_along(s2_lists_footprints), function(i) {
+      s2_lists_footprints[[i]][!s2_lists_whichna[[i]]]
+    })
+
   }
   s2_list <- unlist(s2_lists)[!duplicated(unlist(lapply(s2_lists, names)))]
   s2_list_footprints <- unlist(s2_lists_footprints)[!duplicated(unlist(lapply(s2_lists, names)))]
