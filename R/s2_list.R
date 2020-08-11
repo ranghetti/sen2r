@@ -214,7 +214,7 @@ s2_list <- function(spatial_extent = NULL,
   }
   
   # determine required tiles if needed
-  if (any(is.null(tile), "gcloud" %in% server)) {
+  if (is.null(tile)) {
     tile <- tiles_intersects(spatial_extent, .s2tiles = s2tiles)
   }
   
