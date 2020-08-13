@@ -138,7 +138,7 @@ Vector character with the list ot the output products
 \description{
 The function uses Sen2Cor to manually correct L1C products.
 Standalone version of
-\href{http://step.esa.int/main/third-party-plugins-2/sen2cor}{sen2cor}
+\href{http://step.esa.int/main/third-party-plugins-2/sen2cor/}{sen2cor}
 (version 2.8.0 or 2.5.5) is used.
 }
 \note{

@@ -3702,7 +3702,7 @@ s2_gui <- function(param_list = NULL,
           "<tr>",
           "<td style=\"padding-right: 10px;\">",
           as.character(
-            a(href="http://www.indexdatabase.de/db/is.php?sensor_id=96",
+            a(href="https://www.indexdatabase.de/db/is.php?sensor_id=96",
               target="_blank",
               img(
                 src="http://www.indexdatabase.de/daten/grafik/logo.png",

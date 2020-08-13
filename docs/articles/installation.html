@@ -136,35 +136,35 @@
 <div id="installing-dependencies" class="section level4">
 <h4 class="hasAnchor">
 <a href="#installing-dependencies" class="anchor"></a>Installing dependencies</h4>
-<p>Before installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>, it is recommended to check <a href="https://cran.r-project.org/bin/linux">R</a> (v. 3.4.4 or higher) and the following libraries to be present:</p>
+<p>Before installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>, it is recommended to check <a href="https://cran.r-project.org/bin/linux/">R</a> (v. 3.4.4 or higher) and the following libraries to be present:</p>
 <ul>
 <li>
-<a href="https://www.gdal.org">GDAL</a>, <a href="https://proj4.org">PROJ</a> and <a href="https://trac.osgeo.org/geos">GEOS</a> (required by <a href="https://r-forge.r-project.org/projects/rgdal">rgdal</a> and <a href="https://r-forge.r-project.org/projects/rgeos">rgeos</a>);</li>
+<a href="https://gdal.org/">GDAL</a>, <a href="https://proj4.org/">PROJ</a> and <a href="https://trac.osgeo.org/geos/">GEOS</a> (required by <a href="https://r-forge.r-project.org/projects/rgdal/">rgdal</a> and <a href="https://r-forge.r-project.org/projects/rgeos/">rgeos</a>);</li>
 <li>
-<a href="https://stedolan.github.io/jq">jq</a> (required by <a href="https://github.com/ropensci/jqr">jqr</a>);</li>
+<a href="https://stedolan.github.io/jq/">jq</a> (required by <a href="https://github.com/ropensci/jqr/">jqr</a>);</li>
 <li>
-<a href="https://github.com/protocolbuffers/protobuf">protobuf</a> (required by <a href="https://github.com/jeroen/protolite">protolite</a>);</li>
+<a href="https://github.com/protocolbuffers/protobuf/">protobuf</a> (required by <a href="https://github.com/jeroen/protolite/">protolite</a>);</li>
 <li>
-<a href="https://v8.dev">V8</a> (required by <a href="https://github.com/ropensci/geojsonio">geojsonio</a>);</li>
+<a href="https://v8.dev/">V8</a> (required by <a href="https://github.com/ropensci/geojsonio/">geojsonio</a>);</li>
 <li>
-<a href="https://www.openssl.org">openssl</a> (required by <a href="https://github.com/jeroen/openssl">openssl</a>);</li>
+<a href="https://www.openssl.org/">openssl</a> (required by <a href="https://github.com/jeroen/openssl/">openssl</a>);</li>
 <li>
-<a href="https://www.cairographics.org">cairo</a> (required by <a href="https://github.com/davidgohel/gdtools">gdtools</a>);</li>
+<a href="https://www.cairographics.org/">cairo</a> (required by <a href="https://github.com/davidgohel/gdtools/">gdtools</a>);</li>
 <li>
-<a href="https://curl.haxx.se/libcurl">libcurl</a> (required by <a href="https://github.com/jeroen/curl">curl</a>);</li>
+<a href="https://curl.haxx.se/libcurl/">libcurl</a> (required by <a href="https://github.com/jeroen/curl/">curl</a>);</li>
 <li>
-<a href="https://www.unidata.ucar.edu/software/netcdf">NetCDF</a> (required by <a href="https://github.com/mdsumner/ncdf4">ncdf4</a>);</li>
+<a href="https://www.unidata.ucar.edu/software/netcdf/">NetCDF</a> (required by <a href="https://github.com/mdsumner/ncdf4/">ncdf4</a>);</li>
 <li>
-<a href="http://xmlsoft.org">libxml2</a> (required by <a href="https://CRAN.R-project.org/package=XML">XML</a>).</li>
+<a href="http://xmlsoft.org/">libxml2</a> (required by <a href="https://CRAN.R-project.org/package=XML/">XML</a>).</li>
 </ul>
 <p>Some external dependencies are required to run specific <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> features:</p>
 <ul>
 <li>
-<a href="http://step.esa.int/main/third-party-plugins-2/sen2cor"><strong>Sen2Cor</strong></a> is used to perform atmospheric correction of Sentinel-2 Level-1C products: it is required by the package, unless you choose not to correct products locally (using only Level-1C – TOA products or downloading directly Level-2A products);</li>
+<a href="http://step.esa.int/main/third-party-plugins-2/sen2cor/"><strong>Sen2Cor</strong></a> is used to perform atmospheric correction of Sentinel-2 Level-1C products: it is required by the package, unless you choose not to correct products locally (using only Level-1C – TOA products or downloading directly Level-2A products);</li>
 <li>
-<a href="http://www.gdal.org"><strong>GDAL</strong></a> is required to smooth/bufferise a cloud mask, and can be optionally used to compute spectral indices, RGB images and thumbnails;</li>
+<a href="https://gdal.org/"><strong>GDAL</strong></a> is required to smooth/bufferise a cloud mask, and can be optionally used to compute spectral indices, RGB images and thumbnails;</li>
 <li>
-<a href="https://aria2.github.io"><strong>aria2</strong></a> is an alternative downloader which can be used to faster the download of SAFE archives; it can be optionally installed and used.</li>
+<a href="https://aria2.github.io/"><strong>aria2</strong></a> is an alternative downloader which can be used to faster the download of SAFE archives; it can be optionally installed and used.</li>
 </ul>
 <p>To install both package dependencies and runtime binaries (excepting <strong>Sen2Cor</strong>, which is installed by <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>):</p>
 <ul>
@@ -239,7 +239,7 @@ Would you like to use a personal library instead?  (y/n)</code></pre>
 <div id="on-windows" class="section level3">
 <h3 class="hasAnchor">
 <a href="#on-windows" class="anchor"></a><i class="fa fa-windows" aria-hidden="true"></i> On Windows</h3>
-<p><a href="https://cran.r-project.org/bin/windows/base">R</a> must be installed before proceeding.</p>
+<p><a href="https://cran.r-project.org/bin/windows/base/">R</a> must be installed before proceeding.</p>
 <p>In the case it was already installed, it is suggested to update the existing R packages:</p>
 <div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/update.packages.html">update.packages</a></span>(<span class="kw">ask</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
 <p><span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be installed from CRAN:</p>
@@ -261,7 +261,7 @@ Would you like to use a personal library instead?  (y/n)</code></pre>
 <div id="on-macos" class="section level3">
 <h3 class="hasAnchor">
 <a href="#on-macos" class="anchor"></a><i class="fa fa-apple" aria-hidden="true"></i> On MacOS</h3>
-<p><a href="https://cran.r-project.org/bin/windows/base">R</a> must be installed before proceeding.</p>
+<p><a href="https://cran.r-project.org/bin/windows/base/">R</a> must be installed before proceeding.</p>
 <p>In the case it was already installed, it is suggested to update the existing R packages:</p>
 <div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/update.packages.html">update.packages</a></span>(<span class="kw">ask</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
 <p>Packages can be installed using the compiled binaries, except from <strong>sp</strong>, <strong>sf</strong>, <strong>rgdal</strong> and <strong>rgeos</strong>, which are recommended to be compiled. To do it, use the command</p>
@@ -286,7 +286,7 @@ Would you like to use a personal library instead?  (y/n)</code></pre>
 <div id="installing-sen2cor" class="section level3">
 <h3 class="hasAnchor">
 <a href="#installing-sen2cor" class="anchor"></a>Installing Sen2Cor</h3>
-<p><a href="http://step.esa.int/main/third-party-plugins-2/sen2cor"><strong>Sen2Cor</strong></a> is used to perform atmospheric correction of Sentinel-2 Level-1C products, so its installation can be skipped in case this function is not required by the user (using only Level-1C – TOA products or downloading directly Level-2A products).</p>
+<p><a href="http://step.esa.int/main/third-party-plugins-2/sen2cor/"><strong>Sen2Cor</strong></a> is used to perform atmospheric correction of Sentinel-2 Level-1C products, so its installation can be skipped in case this function is not required by the user (using only Level-1C – TOA products or downloading directly Level-2A products).</p>
 <p>It can be graphically checked / installed launching the function</p>
 <div class="sourceCode" id="cb22"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">sen2r</span>)
 <span class="fu"><a href="../reference/check_sen2r_deps.html">check_sen2r_deps</a></span>()</pre></body></html></div>
@@ -300,9 +300,9 @@ Would you like to use a personal library instead?  (y/n)</code></pre>
 <p>Other dependencies can be configure to run specific <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> features; their installation is generally unrequired (they do not add relevant improvements to the package) and discouraged (errors could occur).</p>
 <ul>
 <li>
-<a href="http://www.gdal.org"><strong>GDAL</strong></a> is no more required, being used only to smooth/bufferise a cloud mask (and <em>optionally</em> to compute spectral indices, RGB images and thumbnails). On Windows, to avoid incompatibilities, it is <em>strictly mandatory</em> to use a GDAL installation provided with the <a href="https://qgis.org/it/site/forusers/download.html">OSGeo4W installer</a>: if this requirement is not satisfied, it is possible to install GDAL with OSGeo4W directly from R (see below). <strong>Note</strong>: configuring a runtime <strong>GDAL</strong> environment could fail for different reasons (e.g. problems related to GDAL environment like missing libraries, or custom environment variables which could conflict). <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> maintainers are not responsible in case of GDAL-related issues (no assistance is provided in this case).</li>
+<a href="https://gdal.org/"><strong>GDAL</strong></a> is no more required, being used only to smooth/bufferise a cloud mask (and <em>optionally</em> to compute spectral indices, RGB images and thumbnails). On Windows, to avoid incompatibilities, it is <em>strictly mandatory</em> to use a GDAL installation provided with the <a href="https://qgis.org/it/site/forusers/download.html">OSGeo4W installer</a>: if this requirement is not satisfied, it is possible to install GDAL with OSGeo4W directly from R (see below). <strong>Note</strong>: configuring a runtime <strong>GDAL</strong> environment could fail for different reasons (e.g. problems related to GDAL environment like missing libraries, or custom environment variables which could conflict). <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> maintainers are not responsible in case of GDAL-related issues (no assistance is provided in this case).</li>
 <li>
-<a href="https://aria2.github.io"><strong>aria2</strong></a> is an alternative downloader which can be used to faster the download of SAFE archives; it can be optionally installed and used. Since the number of concurrent downloads from ESA SciHub is limited to 2, the use of <strong>aria2</strong> is generally not faster than the default downloader; for this reason, its use is recommended only in case of problems with the default downloader.</li>
+<a href="https://aria2.github.io/"><strong>aria2</strong></a> is an alternative downloader which can be used to faster the download of SAFE archives; it can be optionally installed and used. Since the number of concurrent downloads from ESA SciHub is limited to 2, the use of <strong>aria2</strong> is generally not faster than the default downloader; for this reason, its use is recommended only in case of problems with the default downloader.</li>
 </ul>
 <p>These dependences can be graphically checked launching the function</p>
 <div class="sourceCode" id="cb24"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">sen2r</span>)

@@ -13,7 +13,7 @@
 #'  - `a`, `b`, `x`: parameter values (NA for non required parameters).
 #' @param pattern A regular expression on index names.
 #' @param all Logical: if TRUE, all the indices retrieved from 
-#'  [IDB](http://www.indexdatabase.de/db/is.php?sensor_id=96) are returned;
+#'  [IDB](https://www.indexdatabase.de/db/is.php?sensor_id=96) are returned;
 #'  if FALSE (default), only indices checked by the authors are returned.
 #' @return A data.frame with the required information. The table contains
 #'  also the following attributes:

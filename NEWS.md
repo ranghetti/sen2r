@@ -271,7 +271,7 @@ remotes::install_packages_github("ranghetti/sen2r")
 * Some new indices were added:
     - NDWI-NDWI2 (#184);
     - CRred-BDred-CRred2 (#168);
-    - Indices from [Sentinel-hub indices](https://www.sentinel-hub.com/develop/documentation/eo_products/Sentinel2EOproducts) were checked.
+    - Indices from [Sentinel-hub indices](https://www.sentinel-hub.com/develop/documentation/eo_products/Sentinel2EOproducts/) were checked.
 * The minimum convex hull of the extent is used instead of the bbox to search SAFE images.
 * Several "soft" error/warning messages were introduced.
 * ENVI headers now includes some information about band names (TOA/BOA) and SCL classes.
@@ -343,7 +343,7 @@ First stable release of package **sen2r**! See the announcement [here](https://l
 * `tiles_intersects()`: when an extent is loaded, now only required tiles are automatically used, instead than all the overlapping ones.
 
 ### Update dependencies
-* after [V8 major update](https://www.r-bloggers.com/a-major-upgrade-of-the-v8-package/), [Installation page](https://ranghetti.github.io/sen2r/articles/installation.html) was edited to refer to `v8` instead than to `v8-3.14`
+* after [V8 major update](https://www.r-bloggers.com/a-major-upgrade-of-the-v8-package/), [Installation page](http://sen2r.ranghetti.info/articles/installation.html) was edited to refer to `v8` instead than to `v8-3.14`
 
 ### Bug fixing:
 * Fix bug in SciHub login

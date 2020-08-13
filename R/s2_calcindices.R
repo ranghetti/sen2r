@@ -10,7 +10,7 @@
 #' @param indices Character vector with the names of the required
 #'  indices. Values should be included in names corresponding to the
 #'  Abbreviations of the following indices:
-#'  [IDB](http://www.indexdatabase.de/db/is.php?sensor_id=96).
+#'  [IDB](https://www.indexdatabase.de/db/is.php?sensor_id=96).
 #' @param outdir (optional) Full name of the output directory where
 #'  the files should be created (default: current directory).
 #'  `outdir` can bot be an existing or non-existing directory (in the
