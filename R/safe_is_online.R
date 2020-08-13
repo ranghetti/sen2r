@@ -81,7 +81,7 @@ safe_is_online <- function(s2_prodlist = NULL, apihub = NA, verbose = TRUE) {
         NA
       }
     )
-    } else {NA}
+    } else if (grepl("^gs://gcp-public-data-sentinel-2", p)) {TRUE} else {NA}
   })
   
   names(s2_availability) <- names(s2_prodlist)

@@ -306,28 +306,27 @@ s2_list <- function(spatial_extent = NULL,
   if (nrow(out_dt) == 0) {return(as(setNames(character(0), character(0)), "safelist"))}
   # compute date (to ignore duplicated dates)
   out_dt[,date := as.Date(substr(as.character(out_dt$sensing_datetime), 1, 10))]
-  # order by availability (LTA SciHub products are always used as last choice)
+
+  if (nrow(out_dt) == 0) {return(as(setNames(character(0), character(0)), "safelist"))}
+  out_names <- names(out_dt)
+  # first, order by level (L2A, then L1C) and ingestion time (newers first)
+  out_dt <- out_dt[order(-level,-ingestion_datetime),]
+  # second, order by availability (LTA SciHub products are always used as last choice)
   out_dt <- rbind(
     out_dt[is.na(online) | online == TRUE,],
     out_dt[online == FALSE,]
   )
-  # merge (removing duplicates)
-  out_dt <- out_dt[!duplicated(paste(level,id_tile,id_orbit,date)),]
-  out_dt[,date := NULL]
-  
-  if (nrow(out_dt) == 0) {return(as(setNames(character(0), character(0)), "safelist"))}
   if (level == "L1C") {
     out_dt <- out_dt[level == "1C",]
   } else if (level == "L2A") {
     out_dt <- out_dt[grepl("^2Ap?$", level),]
-  } else if (level == "auto") {
-    out_names <- names(out_dt)
-    out_dt <- out_dt[order(-level,-ingestion_datetime),]
-    out_dt <- out_dt[,head(.SD, 1), by = .(sensing_datetime, id_tile, id_orbit)]
-    out_dt <- out_dt[,out_names,with=FALSE]
-  }
+  } # for level = "auto", do nothing because unuseful products are filtered below
+  # filter (univocity)
+  out_dt <- out_dt[,head(.SD, 1), by = .(date, id_tile, id_orbit)]
+  out_dt <- out_dt[,out_names,with=FALSE]
   if (nrow(out_dt) == 0) {return(as(setNames(character(0), character(0)), "safelist"))}
   out_dt <- out_dt[order(sensing_datetime),]
+  out_dt[,date := NULL]
   
   # filter by availability
   if (availability == "online") {

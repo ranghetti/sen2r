@@ -174,18 +174,19 @@ s2_download <- function(
     .s2_availability
   }
   
+  # Split products basing on download method
+  s2_toorder <- which(!s2_availability)
+  s2_todownload_scihub <- which(s2_availability & s2_server == "scihub")
+  s2_todownload_gcloud <- which(s2_server == "gcloud")
+  
   # Order products stored from the Long Term Archive
   if (order_lta == TRUE) {
     ordered_products <- .s2_order(
-      s2_prodlist, 
-      .s2_availability = s2_availability, 
+      s2_prodlist[s2_toorder], 
+      .s2_availability = s2_availability[s2_toorder], 
       apihub = apihub
     )
   }
-  
-  # Split products basing on download method
-  s2_todownload_scihub <- which(s2_availability & s2_server == "scihub")
-  s2_todownload_gcloud <- which(s2_server == "gcloud")
   
   ## Download products available for download on SciHub
   safe_prodlist <- .s2_download_scihub(
@@ -209,7 +210,12 @@ s2_download <- function(
         "  overwrite = overwrite",
         ")"
       )))
-      safe_prodlist <- as(c(safe_prodlist, safe_prodlist_gcloud), "safelist")
+      safe_prodlist <- as(
+        c(safe_prodlist, safe_prodlist_gcloud)[
+          order(c(s2_todownload_scihub, s2_todownload_gcloud))
+          ],
+        "safelist"
+      )
     }
   }
   
