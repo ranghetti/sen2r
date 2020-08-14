@@ -1,6 +1,6 @@
 language: R
 sudo: required
-dist: bionic
+dist: trusty
 cache: packages
 
 addons:
