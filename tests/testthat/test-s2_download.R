@@ -7,19 +7,19 @@ testthat::skip_on_cran()
 # To perform the test also on download, replace 'test_download = FALSE' with 'TRUE'.
 test_download = FALSE
 
-# s2_l1c_list <- s2_list(tile = c("32TNR", "32TNS"), time_interval = "2019-07-03", level = "L1C")
+# s2_l1c_list <- s2_list(tile = c("32TNR", "32TNS"), time_interval = "2020-08-01", level = "L1C")
 s2_l1c_list <- c(
-  "S2A_MSIL1C_20190723T101031_N0208_R022_T32TNR_20190723T121220.SAFE" = 
-    "https://scihub.copernicus.eu/apihub/odata/v1/Products('13fef7f9-3a85-49cd-9f39-4b5649e597ba')/$value",
-  "S2A_MSIL1C_20190723T101031_N0208_R022_T32TNS_20190723T121220.SAFE" = 
-    "https://scihub.copernicus.eu/apihub/odata/v1/Products('19bbde60-992b-423d-8dea-a5e0ac7715fc')/$value"
+  "S2B_MSIL1C_20200801T100559_N0209_R022_T32TNR_20200801T130136.SAFE" = 
+    "https://scihub.copernicus.eu/apihub/odata/v1/Products('5946618d-4467-4a68-bf87-7d30bc9b4e50')/$value",
+  "S2B_MSIL1C_20200801T100559_N0209_R022_T32TNS_20200801T130136.SAFE" = 
+    "https://scihub.copernicus.eu/apihub/odata/v1/Products('cd0b8935-5f5f-485a-bde6-259f5f6e6821')/$value"
 )
-# s2_l2a_list <- s2_list(tile = c("32TNR", "32TNS"), time_interval = "2017-07-03", level = "auto")
+# s2_l2a_list <- s2_list(tile = c("32TNR", "32TNS"), time_interval = "2020-08-01", level = "auto")
 s2_l2a_list <- c(
-  "S2A_MSIL2A_20190723T101031_N0213_R022_T32TNS_20190723T125722.SAFE" = 
-    "https://scihub.copernicus.eu/apihub/odata/v1/Products('49d80ae3-12e3-4069-a813-ae4b0257592b')/$value",
-  "S2A_MSIL2A_20190723T101031_N0213_R022_T32TNR_20190723T125722.SAFE" = 
-    "https://scihub.copernicus.eu/apihub/odata/v1/Products('52b43ef1-9a43-4726-a833-9fabeb1a3329')/$value"
+  "S2B_MSIL2A_20200801T100559_N0214_R022_T32TNR_20200801T135302.SAFE" = 
+    "https://scihub.copernicus.eu/apihub/odata/v1/Products('e502d496-631f-4557-b14f-d98195fdc8c1')/$value",
+  "S2B_MSIL2A_20200801T100559_N0214_R022_T32TNS_20200801T135302.SAFE" = 
+    "https://scihub.copernicus.eu/apihub/odata/v1/Products('4aac5270-bbdf-4743-9f9f-532fdbfea2fd')/$value"
 )
 
 testthat::test_that(
@@ -43,9 +43,9 @@ testthat::test_that(
       list.files(
         file.path(
           exp_outsafe_1[grepl("32TNR", exp_outsafe_1)],
-          "GRANULE/L2A_T32TNR_A021326_20190723T101347/IMG_DATA/R10m"
+          "GRANULE/L2A_T32TNR_A017780_20200801T101400/IMG_DATA/R10m"
         ),
-        "T32TNR_20190723T101031_B02_10m", full.names = TRUE
+        "T32TNR_20200801T100559_B02_10m", full.names = TRUE
       ), format = "list"
     )[[1]]
     testthat::expect_equal(exp_meta_ex$size, c("x" = 10980, "y" = 10980))
@@ -69,13 +69,13 @@ testthat::test_that(
       )
       testthat::expect_equal(
         dirname(safe_metadata1$xml_granules), 
-        file.path(exp_outsafe_1,paste0("GRANULE/L2A_T",c("32TNS","32TNR"),"_A021326_20190723T101347"))
+        file.path(exp_outsafe_1,paste0("GRANULE/L2A_T",c("32TNR","32TNS"),"_A017780_20200801T101400"))
       )
-      testthat::expect_equal(safe_metadata1$mission, rep("2A",2))
+      testthat::expect_equal(safe_metadata1$mission, rep("2B",2))
       testthat::expect_equal(safe_metadata1$level, rep("2A",2))
-      testthat::expect_equal(as.Date(safe_metadata1$sensing_datetime), rep(as.Date("2019-07-23"),2))
+      testthat::expect_equal(as.Date(safe_metadata1$sensing_datetime), rep(as.Date("2020-08-01"),2))
       testthat::expect_equal(safe_metadata1$id_orbit, rep("022",2))
-      testthat::expect_equal(safe_metadata1$id_tile, c("32TNS","32TNR"))
+      testthat::expect_equal(safe_metadata1$id_tile, c("32TNR","32TNS"))
       testthat::expect_equal(safe_metadata1$utm, rep("32N",2))
       testthat::expect_equal(safe_metadata1$direction, rep("DESCENDING",2))
       testthat::expect_equal(safe_metadata1$orbit_n, rep("22",2))
@@ -87,7 +87,7 @@ testthat::test_that(
     testthat::expect_is(safe_metadata2, "list")
     testthat::expect_equal(length(safe_metadata2), 4)
     testthat::expect_equal(safe_metadata2$name, basename(exp_outsafe_1[2]))
-    testthat::expect_equal(safe_metadata2$tiles, "32TNR")
+    testthat::expect_equal(safe_metadata2$tiles, "32TNS")
     testthat::expect_equal(safe_metadata2$level, "2A")
     testthat::expect_equal(safe_metadata2$id_tile, safe_metadata2$tiles)
     
@@ -155,9 +155,9 @@ testthat::test_that(
       list.files(
         file.path(
           exp_outsafe_2[grepl("32TNR", exp_outsafe_2)],
-          "GRANULE/L1C_T32TNR_A021326_20190723T101347/IMG_DATA"
+          "GRANULE/L1C_T32TNR_A017780_20200801T101400/IMG_DATA"
         ),
-        "T32TNR_20190723T101031_B01", full.names = TRUE
+        "T32TNR_20200801T100559_B01", full.names = TRUE
       ), format = "list"
     )[[1]]
     
@@ -184,9 +184,9 @@ testthat::test_that(
       )
       testthat::expect_equal(
         dirname(as.vector(unlist(safe_metadata$xml_granules))), 
-        file.path(exp_outsafe_2,paste0("GRANULE/L1C_T",c("32TNR","32TNS"),"_A021326_20190723T101347"))
+        file.path(exp_outsafe_2,paste0("GRANULE/L1C_T",c("32TNR","32TNS"),"_A017780_20200801T101400"))
       )
-      testthat::expect_equal(unique(safe_metadata$mission), "2A")
+      testthat::expect_equal(unique(safe_metadata$mission), "2B")
       testthat::expect_equal(unique(safe_metadata$level), "1C")
       testthat::expect_equal(unique(safe_metadata$id_orbit), "022")
       testthat::expect_equal(unique(safe_metadata$id_tile), c("32TNR", "32TNS"))

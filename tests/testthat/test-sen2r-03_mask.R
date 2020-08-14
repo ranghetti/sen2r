@@ -9,12 +9,12 @@ testthat::test_that(
     dir.create(dirname(outdir_5), showWarnings = FALSE)
     exp_outpath_5 <- file.path(
       outdir_5, c("BOA", "WVP", "AOT", "SCL", "CLD", "SNW"),
-      c("S2A2A_20190723_022_Scalve_BOA_10.dat",
-        "S2A2A_20190723_022_Scalve_WVP_10.dat",
-        "S2A2A_20190723_022_Scalve_AOT_10.dat",
-        "S2A2A_20190723_022_Scalve_SCL_10.dat",
-        "S2A2A_20190723_022_Scalve_CLD_10.dat",
-        "S2A2A_20190723_022_Scalve_SNW_10.dat")
+      c("S2B2A_20200801_022_Scalve_BOA_10.dat",
+        "S2B2A_20200801_022_Scalve_WVP_10.dat",
+        "S2B2A_20200801_022_Scalve_AOT_10.dat",
+        "S2B2A_20200801_022_Scalve_SCL_10.dat",
+        "S2B2A_20200801_022_Scalve_CLD_10.dat",
+        "S2B2A_20200801_022_Scalve_SNW_10.dat")
     )
     unlink(exp_outpath_5)
     unlink(gsub("dat$", "hdr", exp_outpath_5))
@@ -25,7 +25,7 @@ testthat::test_that(
       extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
       extent_name = "Scalve",
       extent_as_mask = TRUE,
-      timewindow = as.Date("2019-07-23"),
+      timewindow = as.Date("2020-08-01"),
       list_prods = c("BOA", "SCL", "WVP", "AOT", "CLD", "SNW"),
       mask_type = "cloud_high_proba",
       outformat = "ENVI",
@@ -66,20 +66,20 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_5[1])
-    testthat::expect_true(round(mean(exp_stars[[1]][,,1], na.rm=TRUE)) %in% c(939, 994))
-    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,1])), 1816353)
+    testthat::expect_true(round(mean(exp_stars[[1]][,,1], na.rm=TRUE)) %in% c(318))
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,1])), 1503871)
     rm(exp_stars)
     exp_stars <- stars::read_stars(exp_outpath_5[2:3])
-    testthat::expect_true(round(mean(exp_stars[[1]], na.rm=TRUE)) %in% c(2169))
-    testthat::expect_true(round(mean(exp_stars[[2]], na.rm=TRUE)) %in% c(185))
-    testthat::expect_equal(sum(is.na(exp_stars[[1]])), 1816353)
-    testthat::expect_equal(sum(is.na(exp_stars[[2]])), 1417518)
+    testthat::expect_true(round(mean(exp_stars[[1]], na.rm=TRUE)) %in% c(1453))
+    testthat::expect_true(round(mean(exp_stars[[2]], na.rm=TRUE)) %in% c(148))
+    testthat::expect_equal(sum(is.na(exp_stars[[1]])), 1503871)
+    testthat::expect_equal(sum(is.na(exp_stars[[2]])), 1493524)
     rm(exp_stars)
     exp_stars <- stars::read_stars(exp_outpath_5[5:6])
-    testthat::expect_true(round(mean(exp_stars[[1]], na.rm=TRUE)) %in% c(30))
+    testthat::expect_true(round(mean(exp_stars[[1]], na.rm=TRUE)) %in% c(1))
     testthat::expect_true(round(mean(exp_stars[[2]], na.rm=TRUE)) %in% c(0))
-    testthat::expect_equal(sum(is.na(exp_stars[[1]])), 355218)
-    testthat::expect_equal(sum(is.na(exp_stars[[2]])), 355218)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]])), 374223)
+    testthat::expect_equal(sum(is.na(exp_stars[[2]])), 374223)
     rm(exp_stars)
     
   }

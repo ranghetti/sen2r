@@ -357,7 +357,7 @@
 #'   step_atmcorr = "l2a",
 #'   extent = system.file("extdata/vector/barbellino.geojson", package = "sen2r"),
 #'   extent_name = "Barbellino",
-#'   timewindow = as.Date("2019-07-23"),
+#'   timewindow = as.Date("2020-08-01"),
 #'   list_prods = c("TOA","BOA","SCL"),
 #'   list_indices = c("NDVI","MSAVI2"),
 #'   list_rgb = c("RGB432T", "RGB432B", "RGB843B"),
