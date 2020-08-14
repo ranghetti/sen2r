@@ -27,7 +27,7 @@ addons:
       
 before_install:
   - Rscript -e 'install.packages("remotes")'
-  - Rscript -e 'remotes::install_github("cran/XML") # required for R 3.6.3'
+  - Rscript -e 'remotes::install_github("cran/XML")' # required for R 3.6.3
 
 r:
   - release
