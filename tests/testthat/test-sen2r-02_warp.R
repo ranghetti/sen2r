@@ -54,8 +54,8 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_2[1])
-    testthat::expect_true(round(mean(exp_stars[[1]][,,3], na.rm=TRUE)) %in% c(706, 736))
-    testthat::expect_true(sum(is.na(exp_stars[[1]][,,3])) %in% c(1493524, 1417518))
+    testthat::expect_true(round(mean(exp_stars[[1]][,,3], na.rm=TRUE)) %in% c(736))
+    testthat::expect_true(sum(is.na(exp_stars[[1]][,,3])) %in% c(1417518))
     rm(exp_stars)
     
     # test thumbnails
@@ -156,7 +156,7 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_3)
-    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 884.8637, tolerance = 1e-03)
+    testthat::expect_equal(round(mean(exp_stars[[1]][,,3], na.rm=TRUE)), 885)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 0)
     rm(exp_stars)
     
