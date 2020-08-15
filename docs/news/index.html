@@ -169,6 +169,14 @@
 <li>Replace internal URLs <a href="https://raw.githubusercontet.com/x/y" class="uri">https://raw.githubusercontet.com/x/y</a> with <a href="https://github.com/x/y/raw" class="uri">https://github.com/x/y/raw</a>.</li>
 </ul>
 </div>
+<div id="changes-in-default-values" class="section level2">
+<h2 class="hasAnchor">
+<a href="#changes-in-default-values" class="anchor"></a>Changes in default values</h2>
+<ul>
+<li>
+<code><a href="../reference/build_example_param_file.html">build_example_param_file()</a></code> now generates more recent images, 2020-08-01 instead than 2019-07-23 (this because the previous ones required two SAFE which are now on LTA); the same was done for some tests.</li>
+</ul>
+</div>
 <div id="bug-fixes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bug-fixes" class="anchor"></a>Bug fixes</h2>
@@ -534,9 +542,9 @@
 <code>as()</code> methods can be used to convert <code>safelist</code> from/to <code>character</code>, <code>data.frame</code> and <code>data.table</code> (as well as <code>as.character()',</code>as.data.frame()<code>and</code>as.data.table()` functions).</li>
 </ul>
 </div>
-<div id="changes-in-default-values" class="section level2">
+<div id="changes-in-default-values-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#changes-in-default-values" class="anchor"></a>Changes in default values</h2>
+<a href="#changes-in-default-values-1" class="anchor"></a>Changes in default values</h2>
 <ul>
 <li>
 <code><a href="../reference/safe_getMetadata.html">safe_getMetadata()</a></code>: new arguments <code>format</code>, <code>simplify</code> and <code>allow_oldnames</code> (see the function reference for details);</li>
@@ -609,9 +617,9 @@
 <h1 class="page-header" data-toc-text="1.1.0">
 <a href="#version-1-1-0" class="anchor"></a>Version 1.1.0<small> 2019-10-21 </small>
 </h1>
-<div id="changes-in-default-values-1" class="section level2">
+<div id="changes-in-default-values-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#changes-in-default-values-1" class="anchor"></a>Changes in default values</h2>
+<a href="#changes-in-default-values-2" class="anchor"></a>Changes in default values</h2>
 <ul>
 <li>The default value for <code>"list_prods"</code> argument in <code><a href="../reference/sen2r.html">sen2r()</a></code> is NULL instead of <code>'BOA'</code>.</li>
 <li>Remove <code>'no'</code> value for argument <code>"step_atmcorr"</code> in <code><a href="../reference/sen2r.html">sen2r()</a></code> (use <code>'l2a'</code> without selecting any L2A products instead).</li>

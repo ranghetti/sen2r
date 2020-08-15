@@ -228,17 +228,17 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># All the passages in a cycle of 10 days over all the orbits</span>
 <span class='fu'>s2_dop</span>()</div><div class='output co'>#&gt;            date mission orbit
-#&gt;   1: 2020-08-13      2A   116
-#&gt;   2: 2020-08-13      2A   117
-#&gt;   3: 2020-08-13      2A   118
-#&gt;   4: 2020-08-13      2A   119
-#&gt;   5: 2020-08-13      2A   120
+#&gt;   1: 2020-08-15      2A   002
+#&gt;   2: 2020-08-15      2A   003
+#&gt;   3: 2020-08-15      2A   004
+#&gt;   4: 2020-08-15      2A   005
+#&gt;   5: 2020-08-15      2A   006
 #&gt;  ---                         
-#&gt; 282: 2020-08-22      2B   040
-#&gt; 283: 2020-08-22      2B   041
-#&gt; 284: 2020-08-22      2B   042
-#&gt; 285: 2020-08-22      2B   043
-#&gt; 286: 2020-08-22      2B   044</div><div class='input'>
+#&gt; 282: 2020-08-24      2B   068
+#&gt; 283: 2020-08-24      2B   069
+#&gt; 284: 2020-08-24      2B   070
+#&gt; 285: 2020-08-24      2B   071
+#&gt; 286: 2020-08-24      2B   072</div><div class='input'>
 <span class='co'># The passages in the current month over two orbits</span>
 <span class='fu'>s2_dop</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"022"</span>, <span class='st'>"065"</span>), <span class='st'>"this month"</span>)</div><div class='output co'>#&gt;           date mission orbit
 #&gt;  1: 2020-08-01      2B   022
@@ -259,8 +259,8 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
 <span class='co'># The date in which Sentinel-2A would be passed in the last 10 days over one orbit</span>
 <span class='fu'>s2_dop</span>(<span class='st'>"022"</span>, <span class='st'>"-10 days"</span>, <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2A"</span>)$<span class='no'>date</span></div><div class='output co'>#&gt; [1] "2020-08-06"</div><div class='input'>
 <span class='co'># All the orbits covered today</span>
-<span class='fu'>s2_dop</span>(<span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span>(), <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2B"</span>)$<span class='no'>orbit</span></div><div class='output co'>#&gt;  [1] "045" "046" "047" "048" "049" "050" "051" "052" "053" "054" "055" "056"
-#&gt; [13] "057" "058"</div><div class='input'>
+<span class='fu'>s2_dop</span>(<span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span>(), <span class='kw'>mission</span> <span class='kw'>=</span> <span class='st'>"2B"</span>)$<span class='no'>orbit</span></div><div class='output co'>#&gt;  [1] "073" "074" "075" "076" "077" "078" "079" "080" "081" "082" "083" "084"
+#&gt; [13] "085" "086" "087"</div><div class='input'>
 <span class='co'># The passages in a fixed time window for one orbit</span>
 <span class='fu'>s2_dop</span>(<span class='fl'>65</span>, <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"2018-08-01"</span>, <span class='st'>"2018-08-31"</span>)))</div><div class='output co'>#&gt;          date mission orbit
 #&gt; 1: 2018-08-05      2B   065

@@ -1,3 +1,18 @@
+# Version 1.3.8
+
+## Minor changes
+- Add argument `service` to `s2_list()` and `s2_download()` for using `"dhus"` API service instead of default `"apihub"` (this could be useful in case of `apihub` downtimes).
+- Add experimental argument `kill_errored` to `sen2cor()` (see documentation).
+- Add argument `server` to `s2_list()` to be used for future implementations.
+- Replace internal URLs https://raw.githubusercontet.com/x/y with https://github.com/x/y/raw.
+
+## Changes in default values
+- `build_example_param_file()` now generates more recent images, 2020-08-01 instead than 2019-07-23 (this because the previous ones required two SAFE which are now on LTA); the same was done for some tests.
+
+## Bug fixes
+- Fix #338
+
+
 # Version 1.3.7
 
 ## Major changes
