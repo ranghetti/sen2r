@@ -337,6 +337,36 @@ testthat::test_that(
   }
 )
 
+testthat::test_that(
+  "Clip, mask and reproject", {
+    
+    test10 <- tempfile(fileext = "_test10.tif")
+    gdal_warp(ex_sel, test10, mask = crop_poly, t_srs = 32631)
+    
+    # test on raster metadata
+    exp_meta_r <- raster_metadata(test10, format = "list")[[1]]
+    testthat::expect_equal(exp_meta_r$size, c("x"=6, "y"=25))
+    testthat::expect_equal(exp_meta_r$res, c("x"=10.68, "y"=10.21), tolerance = 1e-3)
+    testthat::expect_equal(exp_meta_r$nbands, 3)
+    testthat::expect_equal(
+      as.numeric(exp_meta_r$bbox), 
+      c(1044614, 5125427, 1044678, 5125683),
+      tolerance = 1e-3
+    )
+    expect_equal_crs(exp_meta_r$proj, 32631)
+    testthat::expect_equal(exp_meta_r$type, "Byte")
+    testthat::expect_equal(exp_meta_r$outformat, "GTiff")
+    
+    # test on raster values
+    exp_stars <- stars::read_stars(test10)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 110.5455, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 73, tolerance = 1e-03)
+    rm(exp_stars)
+    
+  }
+)
+
+
 # context("Test conversion from/to VRT with relative paths to/from VRT with absolute paths")
 # testthat::skip_on_cran()
 # testthat::skip_on_travis()

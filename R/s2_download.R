@@ -9,9 +9,13 @@
 #' @param downloader Executable to use to download products
 #'  (default: "builtin"). Alternatives are "builtin" or "aria2"
 #'  (this requires aria2c to be installed).
-#' @param apihub Path of the "apihub.txt" file containing credentials
+#' @param apihub Path of the `apihub.txt` file containing credentials
 #'  of SciHub account.
 #'  If NA (default), the default location inside the package will be used.
+#' @param service Character: it can be `"dhus"` or `"apihub"`, in which cases
+#'  the required service is forced instead that the one present in the URLs
+#'  passed through argument `s2_prodlist`.
+#'  If NA (default), the service present in the URLs is maintained.
 #' @param tile Deprecated argument
 #' @param outdir (optional) Full name of the existing output directory
 #'  where the files should be created (default: current directory).
@@ -62,6 +66,7 @@ s2_download <- function(
   s2_prodlist = NULL,
   downloader = "builtin",
   apihub = NA,
+  service = NA,
   tile = NULL,
   outdir = ".",
   order_lta = TRUE,
@@ -77,6 +82,7 @@ s2_download <- function(
     s2_prodlist = s2_prodlist,
     downloader = downloader,
     apihub = apihub,
+    service = service,
     outdir = outdir,
     order_lta = order_lta,
     overwrite = overwrite,
@@ -91,14 +97,12 @@ s2_download <- function(
   s2_prodlist = NULL,
   downloader = "builtin",
   apihub = NA,
+  service = NA,
   outdir = ".",
   order_lta = TRUE,
   overwrite = FALSE,
   .s2_availability = NULL
 ) {
-  
-  # to avoid NOTE on check
-  i <- mission <- level <- sensing_datetime <- id_orbit <- id_tile <- NULL
   
   # convert input NA arguments in NULL
   for (a in c("s2_prodlist", "apihub")) {
@@ -117,8 +121,16 @@ s2_download <- function(
   # TODO add input checks
   s2_meta <- safe_getMetadata(s2_prodlist, info = "nameinfo")
   
-  # read credentials
-  creds <- read_scihub_login(apihub)
+  # check input server
+  s2_server <- ifelse(
+    grepl("^http.+Products\\(.+\\)/\\$value$", s2_prodlist),
+    "scihub",
+    ifelse(
+      grepl("^gs://gcp-public-data-sentinel-2", s2_prodlist),
+      "gcloud",
+      "unrecognised"
+    )
+  )
   
   # check downloader
   if (!downloader %in% c("builtin", "aria2", "aria2c")) {
@@ -142,6 +154,14 @@ s2_download <- function(
     downloader <- "builtin"
   }
   
+  # check outdir
+  if (!dir.exists(outdir)) {
+    print_message(
+      type = "error",
+      "Output directory does not exist."
+    )
+  }
+  
   # Split products to be downloaded from products to be ordered
   s2_availability <- if (is.null(.s2_availability)) {
     print_message(
@@ -154,20 +174,88 @@ s2_download <- function(
     .s2_availability
   }
   
+  # Split products basing on download method
+  s2_toorder <- which(!s2_availability)
+  s2_todownload_scihub <- which(s2_availability & s2_server == "scihub")
+  s2_todownload_gcloud <- which(s2_server == "gcloud")
   
   # Order products stored from the Long Term Archive
   if (order_lta == TRUE) {
     ordered_products <- .s2_order(
-      s2_prodlist, 
-      .s2_availability = s2_availability, 
+      s2_prodlist[s2_toorder], 
+      .s2_availability = s2_availability[s2_toorder], 
       apihub = apihub
     )
   }
   
+  ## Download products available for download on SciHub
+  safe_prodlist <- .s2_download_scihub(
+    s2_prodlist = s2_prodlist[s2_todownload_scihub], 
+    s2_meta = s2_meta[s2_todownload_scihub,],
+    outdir = outdir, 
+    apihub = apihub, 
+    service = service,
+    downloader = downloader, 
+    overwrite = overwrite
+  )
   
-  ## Download products available for download
+  ## Download products available for download on GCloud
+  if (length(s2_todownload_gcloud) > 0) {
+    if (eval(parse(text = 'requireNamespace("sen2r.extras", quietly = TRUE)'))) {
+      safe_prodlist_gcloud <- eval(parse(text = paste0(
+        "sen2r.extras::.s2_download_gcloud(",
+        "  s2_prodlist = s2_prodlist[s2_todownload_gcloud],",
+        "  s2_meta = s2_meta[s2_todownload_gcloud,],",
+        "  outdir = outdir,",
+        "  overwrite = overwrite",
+        ")"
+      )))
+      safe_prodlist <- as(
+        c(safe_prodlist, safe_prodlist_gcloud)[
+          order(c(s2_todownload_scihub, s2_todownload_gcloud))
+          ],
+        "safelist"
+      )
+    }
+  }
   
-  safe_prodlist <- foreach(i = which(s2_availability), .combine = c) %do% {
+  
+  return(safe_prodlist)
+  
+}
+
+# internal function with the "core" download method from SciHub
+.s2_download_scihub <- function(
+  s2_prodlist, s2_meta, outdir, apihub, service, downloader, overwrite
+) {
+  
+  # to avoid NOTE on check
+  i <- mission <- level <- sensing_datetime <- id_orbit <- id_tile <- NULL
+  
+  # read credentials
+  if (length(s2_prodlist) > 0) {
+    creds <- read_scihub_login(apihub)
+  }
+  
+  # check the used service
+  if (!service %in% c("apihub", "dhus", NA)) {
+    print_message(
+      type = "error",
+      "Argument 'service' can be only \"apihub\" or \"dhus\"; ",
+      "leaving the input URLs as are."
+    )
+  } else if (!is.na(service)) {
+    s2_prodlist <- gsub(
+      "^https://scihub.copernicus.eu/((apihub)|(dhus))/odata",
+      paste0("https://scihub.copernicus.eu/",service,"/odata"),
+      s2_prodlist
+    )
+  }
+  
+  foreach(
+    i = seq_along(s2_prodlist), 
+    .combine = c
+  ) %do% {
     
     link <- s2_prodlist[i]
     zip_path <- file.path(outdir, paste0(names(s2_prodlist[i]),".zip"))
@@ -185,8 +273,8 @@ s2_download <- function(
       print_message(
         type = "message",
         date = TRUE,
-        "Downloading Sentinel-2 image ", which(i == which(s2_availability)),
-        " of ",sum(s2_availability)," (",basename(safe_path),")..."
+        "Downloading Sentinel-2 image ", i,
+        " of ",length(s2_prodlist)," (",basename(safe_path),")..."
       )
       
       if (downloader %in% c("builtin", "wget")) { # wget left for compatibility
@@ -299,8 +387,8 @@ s2_download <- function(
       print_message(
         type = "message",
         date = TRUE,
-        "Skipping Sentinel-2 image ", i," of ",which(i == which(s2_availability)),
-        " of ",sum(s2_availability),") ",
+        "Skipping Sentinel-2 image ", i,
+        " of ",length(s2_prodlist)," ",
         "since the corresponding folder already exists."
       )
       
@@ -315,7 +403,4 @@ s2_download <- function(
     as(setNames(link, safe_newname), "safelist")
     
   }
-  
-  return(safe_prodlist)
-  
 }

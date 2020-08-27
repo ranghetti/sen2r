@@ -9,7 +9,7 @@ testthat::test_that(
     dir.create(dirname(outdir_11), showWarnings = FALSE)
     exp_outpath_11 <- file.path(
       outdir_11, c("NDVI","MSAVI2"), 
-      c("S2A2A_20190723_022_Scalve_NDVI_10.tif","S2A2A_20190723_022_Scalve_MSAVI2_10.tif")
+      c("S2B2A_20200801_022_Scalve_NDVI_10.tif","S2B2A_20200801_022_Scalve_MSAVI2_10.tif")
     )
     unlink(exp_outpath_11)
     sen2r(
@@ -19,7 +19,7 @@ testthat::test_that(
       extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
       extent_name = "Scalve",
       extent_as_mask = TRUE,
-      timewindow = as.Date("2019-07-23"),
+      timewindow = as.Date("2020-08-01"),
       list_indices = c("NDVI","MSAVI2"),
       mask_type = NA,
       path_out = outdir_11,
@@ -51,14 +51,14 @@ testthat::test_that(
     # tests on sen2r metadata
     exp_meta_s <- sen2r_getElements(exp_outpath_11)
     testthat::expect_equal(exp_meta_s$type, rep("clipped",2))
-    testthat::expect_equal(exp_meta_s$sensing_date, rep(as.Date("2019-07-23"),2))
+    testthat::expect_equal(exp_meta_s$sensing_date, rep(as.Date("2020-08-01"),2))
     testthat::expect_equal(exp_meta_s$prod_type, c("NDVI", "MSAVI2"))
     testthat::expect_equal(exp_meta_s$extent_name, rep("Scalve",2))
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_11)
-    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 4836.26, tolerance = 1e-3)
-    testthat::expect_equal(mean(exp_stars[[2]], na.rm=TRUE), 3216.844, tolerance = 1e-3)
+    testthat::expect_equal(round(mean(exp_stars[[1]], na.rm=TRUE)), 7364)
+    testthat::expect_equal(round(mean(exp_stars[[2]], na.rm=TRUE)), 4877)
     testthat::expect_equal(sum(is.na(exp_stars[[1]])), 1417518)
     testthat::expect_equal(sum(is.na(exp_stars[[2]])), 1417518)
     rm(exp_stars)

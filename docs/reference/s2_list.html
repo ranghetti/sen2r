@@ -73,7 +73,7 @@ products satisfying given search criteria." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.8</span>
       </span>
     </div>
 
@@ -170,7 +170,9 @@ products satisfying given search criteria.</p>
   <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span>() - <span class='fl'>10</span>, <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span>()),
   <span class='kw'>time_period</span> <span class='kw'>=</span> <span class='st'>"full"</span>,
   <span class='kw'>level</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
+  <span class='kw'>server</span> <span class='kw'>=</span> <span class='st'>"scihub"</span>,
   <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>service</span> <span class='kw'>=</span> <span class='st'>"apihub"</span>,
   <span class='kw'>max_cloud</span> <span class='kw'>=</span> <span class='fl'>100</span>,
   <span class='kw'>availability</span> <span class='kw'>=</span> <span class='st'>"ignore"</span>,
   <span class='kw'>output_type</span> <span class='kw'>=</span> <span class='st'>"deprecated"</span>
@@ -218,10 +220,23 @@ product
 - "L2A": list available level-2A products</p></td>
     </tr>
     <tr>
+      <th>server</th>
+      <td><p>The servers where archives are searched. Currently,
+only <code>"scihub"</code> is supported (Google Cloud will be implemented in future).
+In case of multiple values, they are used in order of priority.
+If <code>availability = "check"</code>, products on LTA are always left as last choice.</p></td>
+    </tr>
+    <tr>
       <th>apihub</th>
-      <td><p>Path of the "apihub.txt" file containing credentials
+      <td><p>Path of the <code>apihub.txt</code> file containing credentials
 of SciHub account.
 If NA (default), the default location inside the package will be used.</p></td>
+    </tr>
+    <tr>
+      <th>service</th>
+      <td><p>Character: it can be <code>"dhus"</code> or <code>"apihub"</code> (default),
+in which cases the required service is forced instead that the one present
+in the URLs passed through argument <code>s2_prodlist</code>.</p></td>
     </tr>
     <tr>
       <th>max_cloud</th>

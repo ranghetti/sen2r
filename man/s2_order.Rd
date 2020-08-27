@@ -31,7 +31,7 @@ JSON file will be saved (otherwise, a default path is used).}
 consecutive orders. Default is 0.5 seconds: use a higher value if you
 encountered errors (i.e. not all the products were correctly ordered).}
 
-\item{apihub}{Path of the "apihub.txt" file containing credentials
+\item{apihub}{Path of the \code{apihub.txt} file containing credentials
 of SciHub account.
 If NA (default), the default location inside the package will be used.}
 

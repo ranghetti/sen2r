@@ -23,7 +23,7 @@ one or more within the followings:
 \item{pattern}{A regular expression on index names.}
 
 \item{all}{Logical: if TRUE, all the indices retrieved from
-\href{http://www.indexdatabase.de/db/is.php?sensor_id=96}{IDB} are returned;
+\href{https://www.indexdatabase.de/db/is.php?sensor_id=96}{IDB} are returned;
 if FALSE (default), only indices checked by the authors are returned.}
 }
 \value{

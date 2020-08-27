@@ -9,7 +9,7 @@ testthat::test_that(
     dir.create(dirname(outdir_16), showWarnings = FALSE)
     exp_outpath_16 <- file.path(
       outdir_16, c("BOA","RGB432T","RGBb84B","RGB843B"), 
-      paste0("S2A",c("2A","1C","2A","2A"),"_20190723_022_Scalve_",c("BOA","RGB432T","RGBb84B","RGB843B"),"_10.tif")
+      paste0("S2B",c("2A","1C","2A","2A"),"_20200801_022_Scalve_",c("BOA","RGB432T","RGBb84B","RGB843B"),"_10.tif")
     )
     unlink(exp_outpath_16)
     sen2r(
@@ -19,7 +19,7 @@ testthat::test_that(
       extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
       extent_name = "Scalve",
       extent_as_mask = TRUE,
-      timewindow = as.Date("2019-07-23"),
+      timewindow = as.Date("2020-08-01"),
       list_prods = "BOA",
       list_rgb = c("RGB432T","RGBb84B","RGB843B"),
       mask_type = NA,
@@ -53,14 +53,14 @@ testthat::test_that(
     # tests on sen2r metadata
     exp_meta_s <- sen2r_getElements(exp_outpath_16)
     testthat::expect_equal(exp_meta_s$type, rep("clipped",4))
-    testthat::expect_equal(exp_meta_s$sensing_date, rep(as.Date("2019-07-23"),4))
+    testthat::expect_equal(exp_meta_s$sensing_date, rep(as.Date("2020-08-01"),4))
     testthat::expect_equal(exp_meta_s$prod_type, c("BOA","RGB432T","RGBb84B","RGB843B"))
     testthat::expect_equal(exp_meta_s$extent_name, rep("Scalve",4))
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_16[2])
-    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 142.9452, tolerance = 1e-3)
-    testthat::expect_equal(sum(is.na(exp_stars[[1]])), 4218021, tolerance = 1e-3)
+    testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 80.17252, tolerance = 1e-3)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]])), 4218002, tolerance = 1e-3)
     rm(exp_stars)
     
     # test thumbnails

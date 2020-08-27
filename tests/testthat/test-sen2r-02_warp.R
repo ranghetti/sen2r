@@ -5,7 +5,7 @@ testthat::skip_on_cran()
 outdir_2 <- tempfile(pattern = "out_test2_")
 exp_outpath_2 <- file.path(
   outdir_2, c("BOA", "WVP"),
-  c("S2A2A_20190723_022_Scalve_BOA_10.tif", "S2A2A_20190723_022_Scalve_WVP_10.tif")
+  c("S2B2A_20200801_022_Scalve_BOA_10.tif", "S2B2A_20200801_022_Scalve_WVP_10.tif")
 )
 testthat::test_that(
   "Tests on clip and mask BOA on extent", {
@@ -19,7 +19,7 @@ testthat::test_that(
       extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
       extent_name = "Scalve",
       extent_as_mask = TRUE,
-      timewindow = as.Date("2019-07-23"),
+      timewindow = as.Date("2020-08-01"),
       list_prods = c("BOA","WVP"),
       mask_type = NA,
       path_l2a = safe_dir,
@@ -48,14 +48,14 @@ testthat::test_that(
     # tests on sen2r metadata
     exp_meta_s <- sen2r_getElements(exp_outpath_2)
     testthat::expect_equal(exp_meta_s$type, rep("clipped",2))
-    testthat::expect_equal(exp_meta_s$sensing_date, rep(as.Date("2019-07-23"),2))
+    testthat::expect_equal(exp_meta_s$sensing_date, rep(as.Date("2020-08-01"),2))
     testthat::expect_equal(exp_meta_s$prod_type, c("BOA","WVP"))
     testthat::expect_equal(exp_meta_s$extent_name, rep("Scalve",2))
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_2[1])
-    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 2651.254, tolerance = 1e-03)
-    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 1417518, tolerance = 1e-03)
+    testthat::expect_true(round(mean(exp_stars[[1]][,,3], na.rm=TRUE)) %in% c(736))
+    testthat::expect_true(sum(is.na(exp_stars[[1]][,,3])) %in% c(1417518))
     rm(exp_stars)
     
     # test thumbnails
@@ -92,7 +92,7 @@ testthat::test_that(
 
 
 outdir_3 <- tempfile(pattern = "out_test3_")
-exp_outpath_3 <- file.path(outdir_3, "S2A1C_20190723_022_Scalve_TOA_20.dat")
+exp_outpath_3 <- file.path(outdir_3, "S2B1C_20200801_022_Scalve_TOA_20.dat")
 testthat::test_that(
   "Tests on clip TOA on extent, reproject and resize and save as ENVI", {
     
@@ -105,7 +105,7 @@ testthat::test_that(
         extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
         extent_name = "Scalve",
         extent_as_mask = FALSE,
-        timewindow = as.Date("2019-07-23"),
+        timewindow = as.Date("2020-08-01"),
         list_prods = "TOA",
         mask_type = NA,
         proj = 32633,
@@ -150,13 +150,13 @@ testthat::test_that(
     # tests on sen2r metadata
     exp_meta_s <- sen2r_getElements(exp_outpath_3)
     testthat::expect_equal(exp_meta_s$type, "clipped")
-    testthat::expect_equal(exp_meta_s$sensing_date, as.Date("2019-07-23"))
+    testthat::expect_equal(exp_meta_s$sensing_date, as.Date("2020-08-01"))
     testthat::expect_equal(exp_meta_s$prod_type, "TOA")
     testthat::expect_equal(exp_meta_s$extent_name, "Scalve")
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_3)
-    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 2127.312, tolerance = 1e-03)
+    testthat::expect_equal(round(mean(exp_stars[[1]][,,3], na.rm=TRUE)), 885)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 0)
     rm(exp_stars)
     
@@ -194,9 +194,9 @@ testthat::test_that(
 outdir_4 <- tempfile(pattern = "out_test4_")
 exp_outpath_4 <- file.path(
   outdir_4, c("SCL", "CLD", "SNW"),
-  c("S2A2A_20190723_022_Scalve_SCL_10.vrt", 
-    "S2A2A_20190723_022_Scalve_CLD_10.vrt", 
-    "S2A2A_20190723_022_Scalve_SNW_10.vrt")
+  c("S2B2A_20200801_022_Scalve_SCL_10.vrt", 
+    "S2B2A_20200801_022_Scalve_CLD_10.vrt", 
+    "S2B2A_20200801_022_Scalve_SNW_10.vrt")
 )
 testthat::test_that(
   "Tests on clip SCL on extent, reproject with a reference raster and save as VRT", {
@@ -211,7 +211,7 @@ testthat::test_that(
       extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
       extent_name = "Scalve",
       extent_as_mask = FALSE,
-      timewindow = as.Date("2019-07-23"),
+      timewindow = as.Date("2020-08-01"),
       list_prods = c("SCL","CLD","SNW"),
       mask_type = NA,
       reference_path = exp_outpath_3,
@@ -245,7 +245,7 @@ testthat::test_that(
     # tests on sen2r metadata
     exp_meta_s <- sen2r_getElements(exp_outpath_4)
     testthat::expect_equal(exp_meta_s$type, rep("clipped",3))
-    testthat::expect_equal(exp_meta_s$sensing_date, rep(as.Date("2019-07-23"),3))
+    testthat::expect_equal(exp_meta_s$sensing_date, rep(as.Date("2020-08-01"),3))
     testthat::expect_equal(exp_meta_s$prod_type, c("SCL","CLD","SNW"))
     testthat::expect_equal(exp_meta_s$extent_name, rep("Scalve",3))
     

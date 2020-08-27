@@ -16,6 +16,7 @@ sen2cor(
   tiles = NULL,
   parallel = FALSE,
   timeout = 0,
+  kill_errored = FALSE,
   overwrite = FALSE,
   .log_message = NA,
   .log_output = NA
@@ -113,6 +114,14 @@ if it is still running (default, 0, means that this is never done).
 This can be useful in case Sen2Cor produced an error without exiting
 from Python (leaving a standing process running).}
 
+\item{kill_errored}{Logical: experimental feature allowing killing dead Sen2Cor
+processes, so leaving \code{sen2cor()} continuing processing on the remaining
+products. Set to TRUE to activate it (default is FALSE).
+This experimental feature is available only on Unix systems,
+and requires package "tools" to be installed.
+This option is not compatible with \code{timeout} (in case both are set,
+\code{kill_errored} will be ignored).}
+
 \item{overwrite}{Logical value: should existing output L2A products be overwritten?
 (default: FALSE)}
 
@@ -129,7 +138,7 @@ Vector character with the list ot the output products
 \description{
 The function uses Sen2Cor to manually correct L1C products.
 Standalone version of
-\href{http://step.esa.int/main/third-party-plugins-2/sen2cor}{sen2cor}
+\href{http://step.esa.int/main/third-party-plugins-2/sen2cor/}{sen2cor}
 (version 2.8.0 or 2.5.5) is used.
 }
 \note{

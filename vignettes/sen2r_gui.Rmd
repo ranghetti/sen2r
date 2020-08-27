@@ -23,7 +23,7 @@ sen2r()
 Note that the following error message could be returned:
 ```
 Some missing packages are needed to run the GUI; please install them with the command
-> install.packages("leaflet", "leafpm", "mapedit", "shiny", "shinyFiles", "shinydashboard", "shinyjs", "shinyWidgets")
+> install.packages(c("leaflet", "leafpm", "mapedit", "shiny", "shinyFiles", "shinydashboard", "shinyjs", "shinyWidgets"))
 ```
 This because "graphical" packages required to run the GUI are now suggested dependencies (the package could be used without them, if the user do not require the GUI).
 In this case, simply install the missing packages as stated by the error message (which could differ from the previous one).
@@ -36,20 +36,20 @@ Help pop-up windows (marked with the symbol
 are provided to aid users regarding the more complex parameters.
 
 <p style="text-align:center;">
-  <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet1.png" target="_blank">
+  <a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_gui_sheet1.png" target="_blank">
     <img src="../man/figures/sen2r_gui_sheet1_small.png">
   </a>
-  <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet2.png" target="_blank">
+  <a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_gui_sheet2.png" target="_blank">
     <img src="../man/figures/sen2r_gui_sheet2_small.png">
   </a>
   <br/>
-  <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet3.png" target="_blank">
+  <a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_gui_sheet3.png" target="_blank">
     <img src="../man/figures/sen2r_gui_sheet3_small.png">
   </a>
-  <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet4.png" target="_blank">
+  <a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_gui_sheet4.png" target="_blank">
     <img src="../man/figures/sen2r_gui_sheet4_small.png">
   </a>
-  <a href="https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_gui_sheet5.png" target="_blank">
+  <a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_gui_sheet5.png" target="_blank">
     <img src="../man/figures/sen2r_gui_sheet5_small.png">
   </a>
 </p>

@@ -39,12 +39,13 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "Tests on s2_list - Single tile, no orbits, nopos, check availability", {
+  "Tests on s2_list - Single tile, no orbits, nopos, check availability, apihub service", {
     s2_list_test <- s2_list(
       tile = "32TNR",
       time_interval = as.Date(c("2017-05-01", "2017-05-31")),
       availability = "check",
-      apihub = tests_apihub_path
+      apihub = tests_apihub_path,
+      service = "apihub"
     )
     testthat::expect_is(s2_list_test, "safelist")
     s2_sf_test <- as(s2_list_test, "sf")
@@ -56,6 +57,7 @@ testthat::test_that(
       "list"
     )
 
+    testthat::expect_true(grepl("https://scihub.copernicus.eu/apihub/", s2_list_test[1]))
     testthat::expect_true(min(as.Date(s2_sf_test$sensing_datetime)) >= as.Date("2017-05-01"))
     testthat::expect_true(min(as.Date(s2_sf_test$sensing_datetime)) <= as.Date("2017-05-31"))
     testthat::expect_equal(unique(s2_sf_test$id_tile), "32TNR")
@@ -66,13 +68,15 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "Tests on s2_list - Multiple tiles, multiple orbits, pos, check availability", {
+  "Tests on s2_list - Multiple tiles, multiple orbits, pos, check availability, dhus service", {
     s2_list_test <- as.data.table(s2_list(
       tile = c("32TNR", "32TMR"),
       time_interval = as.Date(c("2017-05-01", "2017-05-31")),
       availability = "check",
-      apihub = tests_apihub_path
+      apihub = tests_apihub_path,
+      service = "dhus"
     ))
+    testthat::expect_true(grepl("https://scihub.copernicus.eu/dhus/", s2_list_test$url[1]))
     testthat::expect_equal(nrow(s2_list_test), 11)
     testthat::expect_equal(unique(s2_list_test$id_tile), c("32TNR", "32TMR"))
     testthat::expect_true(min(as.Date(s2_list_test$sensing_datetime)) >= as.Date("2017-05-01"))
@@ -201,7 +205,7 @@ testthat::test_that(
       time_interval = time_window,
       apihub = tests_apihub_path
     )
-    testthat::expect_equal(length(s2_list_test), 69)
+    testthat::expect_equal(length(s2_list_test), 61)
   }
 )
 

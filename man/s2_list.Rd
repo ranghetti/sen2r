@@ -11,7 +11,9 @@ s2_list(
   time_interval = c(Sys.Date() - 10, Sys.Date()),
   time_period = "full",
   level = "auto",
+  server = "scihub",
   apihub = NA,
+  service = "apihub",
   max_cloud = 100,
   availability = "ignore",
   output_type = "deprecated"
@@ -45,9 +47,18 @@ product
 - "L1C": list available level-1C products
 - "L2A": list available level-2A products}
 
-\item{apihub}{Path of the "apihub.txt" file containing credentials
+\item{server}{The servers where archives are searched. Currently,
+only \code{"scihub"} is supported (Google Cloud will be implemented in future).
+In case of multiple values, they are used in order of priority.
+If \code{availability = "check"}, products on LTA are always left as last choice.}
+
+\item{apihub}{Path of the \code{apihub.txt} file containing credentials
 of SciHub account.
 If NA (default), the default location inside the package will be used.}
+
+\item{service}{Character: it can be \code{"dhus"} or \code{"apihub"} (default),
+in which cases the required service is forced instead that the one present
+in the URLs passed through argument \code{s2_prodlist}.}
 
 \item{max_cloud}{Integer number (0-100) containing the maximum cloud
 level of the tiles to be listed (default: no filter).}

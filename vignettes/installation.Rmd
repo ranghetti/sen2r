@@ -26,40 +26,40 @@ Alternatively, <span style="color:#5793dd;vertical-align:top;font-size:90%;font-
 
 #### Installing dependencies
 
-Before installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>, it is recommended to check [R](https://cran.r-project.org/bin/linux) (v. 3.4.4 or higher) and the following libraries to be present:
+Before installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>, it is recommended to check [R](https://cran.r-project.org/bin/linux/) (v. 3.4.4 or higher) and the following libraries to be present:
 
-- [GDAL](https://www.gdal.org), [PROJ](https://proj4.org) and [GEOS](https://trac.osgeo.org/geos)
-    (required by [rgdal](https://r-forge.r-project.org/projects/rgdal)
-    and [rgeos](https://r-forge.r-project.org/projects/rgeos));
-- [jq](https://stedolan.github.io/jq)
-    (required by [jqr](https://github.com/ropensci/jqr));
-- [protobuf](https://github.com/protocolbuffers/protobuf)
-    (required by [protolite](https://github.com/jeroen/protolite));
-- [V8](https://v8.dev)
-    (required by [geojsonio](https://github.com/ropensci/geojsonio));
-- [openssl](https://www.openssl.org)
-    (required by [openssl](https://github.com/jeroen/openssl));
-- [cairo](https://www.cairographics.org)
-    (required by [gdtools](https://github.com/davidgohel/gdtools));
-- [libcurl](https://curl.haxx.se/libcurl)
-    (required by [curl](https://github.com/jeroen/curl));
-- [NetCDF](https://www.unidata.ucar.edu/software/netcdf)
-    (required by [ncdf4](https://github.com/mdsumner/ncdf4));
-- [libxml2](http://xmlsoft.org)
-    (required by [XML](https://CRAN.R-project.org/package=XML)).
+- [GDAL](https://gdal.org/), [PROJ](https://proj4.org/) and [GEOS](https://trac.osgeo.org/geos/)
+    (required by [rgdal](https://r-forge.r-project.org/projects/rgdal/)
+    and [rgeos](https://r-forge.r-project.org/projects/rgeos/));
+- [jq](https://stedolan.github.io/jq/)
+    (required by [jqr](https://github.com/ropensci/jqr/));
+- [protobuf](https://github.com/protocolbuffers/protobuf/)
+    (required by [protolite](https://github.com/jeroen/protolite/));
+- [V8](https://v8.dev/)
+    (required by [geojsonio](https://github.com/ropensci/geojsonio/));
+- [openssl](https://www.openssl.org/)
+    (required by [openssl](https://github.com/jeroen/openssl/));
+- [cairo](https://www.cairographics.org/)
+    (required by [gdtools](https://github.com/davidgohel/gdtools/));
+- [libcurl](https://curl.haxx.se/libcurl/)
+    (required by [curl](https://github.com/jeroen/curl/));
+- [NetCDF](https://www.unidata.ucar.edu/software/netcdf/)
+    (required by [ncdf4](https://github.com/mdsumner/ncdf4/));
+- [libxml2](http://xmlsoft.org/)
+    (required by [XML](https://CRAN.R-project.org/package=XML/)).
     
 Some external dependencies are required to run specific
 <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
 features:
 
-* [**Sen2Cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor)
+* [**Sen2Cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor/)
     is used to perform atmospheric correction of Sentinel-2 Level-1C products:
     it is required by the package, unless you choose not to correct products locally
     (using only Level-1C – TOA products or downloading directly Level-2A products);
-* [**GDAL**](http://www.gdal.org)
+* [**GDAL**](https://gdal.org/)
     is required to smooth/bufferise a cloud mask, and can be optionally used
     to compute spectral indices, RGB images and thumbnails;
-* [**aria2**](https://aria2.github.io) is an alternative downloader which
+* [**aria2**](https://aria2.github.io/) is an alternative downloader which
     can be used to faster the download of SAFE archives; it can be optionally
     installed and used.
 
@@ -151,7 +151,7 @@ install_sen2cor()
 
 ### <i class="fa fa-windows" aria-hidden="true"></i> On Windows
 
-[R](https://cran.r-project.org/bin/windows/base) must be installed before proceeding.
+[R](https://cran.r-project.org/bin/windows/base/) must be installed before proceeding.
 
 In the case it was already installed, it is suggested to update the existing R packages:
 ```{r, eval = FALSE}
@@ -185,7 +185,7 @@ containing all the functions necessary to preprocess data.
 
 ### <i class="fa fa-apple" aria-hidden="true"></i> On MacOS
 
-[R](https://cran.r-project.org/bin/windows/base) must be installed before proceeding.
+[R](https://cran.r-project.org/bin/windows/base/) must be installed before proceeding.
 
 In the case it was already installed, it is suggested to update the existing R packages:
 ```{r, eval = FALSE}
@@ -227,7 +227,7 @@ containing all the functions necessary to preprocess data.
 
 ### Installing Sen2Cor
 
-[**Sen2Cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor)
+[**Sen2Cor**](http://step.esa.int/main/third-party-plugins-2/sen2cor/)
 is used to perform atmospheric correction of Sentinel-2 Level-1C products,
 so its installation can be skipped in case this function is not required
 by the user (using only Level-1C – TOA products 
@@ -257,7 +257,7 @@ Other dependencies can be configure to run specific
 features; their installation is generally unrequired (they do not add relevant
 improvements to the package) and discouraged (errors could occur).
 
-* [**GDAL**](http://www.gdal.org)
+* [**GDAL**](https://gdal.org/)
     is no more required, being used only to smooth/bufferise a cloud mask
     (and _optionally_ to compute spectral indices, RGB images and thumbnails).
     On Windows, to avoid incompatibilities, it is _strictly mandatory_ 
@@ -271,7 +271,7 @@ improvements to the package) and discouraged (errors could occur).
     <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
     maintainers are not responsible in case of GDAL-related issues
     (no assistance is provided in this case).
-* [**aria2**](https://aria2.github.io) is an alternative downloader which
+* [**aria2**](https://aria2.github.io/) is an alternative downloader which
     can be used to faster the download of SAFE archives; it can be optionally
     installed and used.
     Since the number of concurrent downloads from ESA SciHub is limited to 2,
@@ -301,7 +301,7 @@ To do it:
 
 1. if Homebrew is missing on your system, install it opening a terminal and typing:
     ```{bash, eval = FALSE}
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    /usr/bin/ruby -e "$(curl -fsSL https://github.com/Homebrew/install/raw/master/install)"
     ```
     (see [the Homebrew webpage](https://brew.sh/) for details);
 2. install GDAL by typing:

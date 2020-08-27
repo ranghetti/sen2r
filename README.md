@@ -117,15 +117,15 @@ sen2r()
 
 <p style="text-align:center;">
 
-<a href="https://raw.githubusercontent.com/ranghetti/sen2r/master/man/figures/sen2r_gui_sheet1.png" target="_blank">
+<a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_gui_sheet1.png" target="_blank">
 <img src="man/figures/sen2r_gui_sheet1_small.png"> </a>
-<a href="https://raw.githubusercontent.com/ranghetti/sen2r/master/man/figures/sen2r_gui_sheet2.png" target="_blank">
+<a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_gui_sheet2.png" target="_blank">
 <img src="man/figures/sen2r_gui_sheet2_small.png"> </a> <br/>
-<a href="https://raw.githubusercontent.com/ranghetti/sen2r/master/man/figures/sen2r_gui_sheet3.png" target="_blank">
+<a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_gui_sheet3.png" target="_blank">
 <img src="man/figures/sen2r_gui_sheet3_small.png"> </a>
-<a href="https://raw.githubusercontent.com/ranghetti/sen2r/master/man/figures/sen2r_gui_sheet4.png" target="_blank">
+<a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_gui_sheet4.png" target="_blank">
 <img src="man/figures/sen2r_gui_sheet4_small.png"> </a>
-<a href="https://raw.githubusercontent.com/ranghetti/sen2r/master/man/figures/sen2r_gui_sheet5.png" target="_blank">
+<a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_gui_sheet5.png" target="_blank">
 <img src="man/figures/sen2r_gui_sheet5_small.png"> </a>
 
 </p>
@@ -151,7 +151,7 @@ can be found in the Reference page):
     to order products from the Long Term Archive;
   - [`sen2cor()`](reference/sen2cor.html) to correct level-1C products
     using
-    [Sen2Cor](http://step.esa.int/main/third-party-plugins-2/sen2cor);
+    [Sen2Cor](http://step.esa.int/main/third-party-plugins-2/sen2cor/);
   - [`s2_mask()`](http://sen2r.ranghetti.info/reference/s2_mask.html) to
     apply a cloud mask to Sentinel-2 products;
   - [`s2_rgb()`](http://sen2r.ranghetti.info/reference/s2_rgb.html) to
@@ -178,7 +178,7 @@ version 3](https://www.gnu.org/licenses/gpl-3.0.html) (GPL‑3).
 
 The
 [<span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
-logo](https://raw.githubusercontent.com/ranghetti/sen2r/devel/man/figures/sen2r_logo_200px.png),
+logo](https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_logo_200px.png),
 partially derived from the [R logo](https://www.r-project.org/logo), is
 released under the [Creative Commons Attribution-ShareAlike 4.0
 International license](https://creativecommons.org/licenses/by-sa/4.0)

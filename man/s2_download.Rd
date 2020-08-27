@@ -8,6 +8,7 @@ s2_download(
   s2_prodlist = NULL,
   downloader = "builtin",
   apihub = NA,
+  service = NA,
   tile = NULL,
   outdir = ".",
   order_lta = TRUE,
@@ -23,9 +24,14 @@ Alternatively, it can be the path of a JSON file exported by \link{s2_order}.}
 (default: "builtin"). Alternatives are "builtin" or "aria2"
 (this requires aria2c to be installed).}
 
-\item{apihub}{Path of the "apihub.txt" file containing credentials
+\item{apihub}{Path of the \code{apihub.txt} file containing credentials
 of SciHub account.
 If NA (default), the default location inside the package will be used.}
+
+\item{service}{Character: it can be \code{"dhus"} or \code{"apihub"}, in which cases
+the required service is forced instead that the one present in the URLs
+passed through argument \code{s2_prodlist}.
+If NA (default), the service present in the URLs is maintained.}
 
 \item{tile}{Deprecated argument}
 
