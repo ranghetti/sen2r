@@ -4,10 +4,15 @@ context("Test projpar() / projname()")
 
 testthat::test_that(
   "Test longlat", {
+    wgs84_projnames <- c(
+      "WGS 84", 
+      "WGS 84 (with axis order normalized for visualization)", 
+      "unknown"
+    )
     crs_totest <- st_crs(4326)
-    testthat::expect_true(projname(crs_totest) %in% c("WGS 84", "unknown"))
+    testthat::expect_true(projname(crs_totest) %in% wgs84_projnames)
     testthat::expect_warning(
-      testthat::expect_true(projpar(crs_totest, "geogcs") %in% c("WGS 84", "unknown")),
+      testthat::expect_true(projpar(crs_totest, "geogcs") %in% wgs84_projnames),
       gsub(" ", "[ \n]", "is now an alias of par = \"name\"")
     )
     testthat::expect_equivalent(projpar(crs_totest, "unit"), "degree")
