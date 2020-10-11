@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compute index using <code>raster</code> or <code>stars</code> features — calcindex_raster • sen2r</title>
+<title>Compute index using raster or stars features — calcindex_raster • sen2r</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Compute index using <code>raster</code> or <code>stars</code> features — calcindex_raster" />
+<meta property="og:title" content="Compute index using raster or stars features — calcindex_raster" />
 <meta property="og:description" content="Internal functions used to compute spectral indices and
 thumbnails through raster or stars features." />
 
@@ -73,7 +73,7 @@ thumbnails through raster or stars features." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.9</span>
       </span>
     </div>
 
@@ -163,30 +163,30 @@ thumbnails through raster or stars features." />
 thumbnails through <code>raster</code> or <code>stars</code> features.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>calcindex_raster</span>(
-  <span class='no'>x</span>,
-  <span class='no'>sel_formula</span>,
-  <span class='no'>out_file</span>,
-  <span class='kw'>NAflag</span> <span class='kw'>=</span> -<span class='fl'>32768</span>,
-  <span class='kw'>sel_format</span> <span class='kw'>=</span> <span class='st'>"GTiff"</span>,
-  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"LZW"</span>,
-  <span class='kw'>datatype</span> <span class='kw'>=</span> <span class='st'>"Int32"</span>,
-  <span class='kw'>bigtiff</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>minrows</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
-)
+    <pre class="usage"><span class='fu'>calcindex_raster</span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  <span class='va'>sel_formula</span>,
+  <span class='va'>out_file</span>,
+  NAflag <span class='op'>=</span> <span class='op'>-</span><span class='fl'>32768</span>,
+  sel_format <span class='op'>=</span> <span class='st'>"GTiff"</span>,
+  compress <span class='op'>=</span> <span class='st'>"LZW"</span>,
+  datatype <span class='op'>=</span> <span class='st'>"Int32"</span>,
+  bigtiff <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  overwrite <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  minrows <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span>
 
-<span class='fu'>calcindex_stars</span>(
-  <span class='no'>x</span>,
-  <span class='no'>sel_formula</span>,
-  <span class='no'>out_file</span>,
-  <span class='kw'>NAflag</span> <span class='kw'>=</span> -<span class='fl'>32768</span>,
-  <span class='kw'>sel_format</span> <span class='kw'>=</span> <span class='st'>"GTiff"</span>,
-  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"LZW"</span>,
-  <span class='kw'>datatype</span> <span class='kw'>=</span> <span class='st'>"Int16"</span>,
-  <span class='kw'>bigtiff</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
-)</pre>
+<span class='fu'>calcindex_stars</span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  <span class='va'>sel_formula</span>,
+  <span class='va'>out_file</span>,
+  NAflag <span class='op'>=</span> <span class='op'>-</span><span class='fl'>32768</span>,
+  sel_format <span class='op'>=</span> <span class='st'>"GTiff"</span>,
+  compress <span class='op'>=</span> <span class='st'>"LZW"</span>,
+  datatype <span class='op'>=</span> <span class='st'>"Int16"</span>,
+  bigtiff <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  overwrite <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -254,6 +254,9 @@ overwritten? (default: FALSE)</p></td>
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473. DOI:
 <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.104473</a>,
 URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Luigi Ranghetti, phD (2020) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -270,7 +273,7 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

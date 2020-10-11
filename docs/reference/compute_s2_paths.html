@@ -81,7 +81,7 @@ if sen2r()." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.9</span>
       </span>
     </div>
 
@@ -179,76 +179,76 @@ It is a simple way to call <code>compute_s2_paths()</code> with the same argumen
 if <code><a href='sen2r.html'>sen2r()</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>compute_s2_paths</span>(
-  <span class='no'>pm</span>,
-  <span class='no'>s2_list_l1c</span>,
-  <span class='no'>s2_list_l2a</span>,
-  <span class='no'>tmpdir</span>,
-  <span class='no'>list_prods</span>,
-  <span class='kw'>force_tiles</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>check_tmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>ignorelist</span>
-)
+    <pre class="usage"><span class='fu'>compute_s2_paths</span><span class='op'>(</span>
+  <span class='va'>pm</span>,
+  <span class='va'>s2_list_l1c</span>,
+  <span class='va'>s2_list_l2a</span>,
+  <span class='va'>tmpdir</span>,
+  <span class='va'>list_prods</span>,
+  force_tiles <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  check_tmp <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  <span class='va'>ignorelist</span>
+<span class='op'>)</span>
 
-<span class='fu'>list_sen2r_paths</span>(
-  <span class='kw'>param_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>gui</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>preprocess</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>s2_levels</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"l1c"</span>, <span class='st'>"l2a"</span>),
-  <span class='kw'>sel_sensor</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"s2a"</span>, <span class='st'>"s2b"</span>),
-  <span class='kw'>online</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>downloader</span> <span class='kw'>=</span> <span class='st'>"builtin"</span>,
-  <span class='kw'>overwrite_safe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>rm_safe</span> <span class='kw'>=</span> <span class='st'>"no"</span>,
-  <span class='kw'>step_atmcorr</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
-  <span class='kw'>max_cloud_safe</span> <span class='kw'>=</span> <span class='fl'>100</span>,
-  <span class='kw'>timewindow</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>timeperiod</span> <span class='kw'>=</span> <span class='st'>"full"</span>,
-  <span class='kw'>extent</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>extent_name</span> <span class='kw'>=</span> <span class='st'>"sen2r"</span>,
-  <span class='kw'>s2tiles_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>s2orbits_selected</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>list_prods</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"BOA"</span>),
-  <span class='kw'>list_rgb</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>list_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>index_source</span> <span class='kw'>=</span> <span class='st'>"BOA"</span>,
-  <span class='kw'>rgb_ranges</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>mask_type</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>max_mask</span> <span class='kw'>=</span> <span class='fl'>100</span>,
-  <span class='kw'>mask_smooth</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>mask_buffer</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>clip_on_extent</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>extent_as_mask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>reference_path</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>res</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>res_s2</span> <span class='kw'>=</span> <span class='st'>"10m"</span>,
-  <span class='kw'>unit</span> <span class='kw'>=</span> <span class='st'>"Meter"</span>,
-  <span class='kw'>proj</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>resampling</span> <span class='kw'>=</span> <span class='st'>"near"</span>,
-  <span class='kw'>resampling_scl</span> <span class='kw'>=</span> <span class='st'>"near"</span>,
-  <span class='kw'>outformat</span> <span class='kw'>=</span> <span class='st'>"GTiff"</span>,
-  <span class='kw'>rgb_outformat</span> <span class='kw'>=</span> <span class='st'>"GTiff"</span>,
-  <span class='kw'>index_datatype</span> <span class='kw'>=</span> <span class='st'>"Int16"</span>,
-  <span class='kw'>compression</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>,
-  <span class='kw'>rgb_compression</span> <span class='kw'>=</span> <span class='st'>"90"</span>,
-  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>path_l1c</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>path_l2a</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>path_tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>path_merged</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>path_out</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>path_rgb</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>path_indices</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>path_subdirs</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>thumbnails</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>processing_order</span> <span class='kw'>=</span> <span class='st'>"by_step"</span>,
-  <span class='kw'>use_python</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>log</span> <span class='kw'>=</span> <span class='fl'>NA</span>
-)</pre>
+<span class='fu'>list_sen2r_paths</span><span class='op'>(</span>
+  param_list <span class='op'>=</span> <span class='cn'>NULL</span>,
+  gui <span class='op'>=</span> <span class='cn'>NA</span>,
+  preprocess <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  s2_levels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"l1c"</span>, <span class='st'>"l2a"</span><span class='op'>)</span>,
+  sel_sensor <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"s2a"</span>, <span class='st'>"s2b"</span><span class='op'>)</span>,
+  online <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  apihub <span class='op'>=</span> <span class='cn'>NA</span>,
+  downloader <span class='op'>=</span> <span class='st'>"builtin"</span>,
+  overwrite_safe <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  rm_safe <span class='op'>=</span> <span class='st'>"no"</span>,
+  step_atmcorr <span class='op'>=</span> <span class='st'>"auto"</span>,
+  max_cloud_safe <span class='op'>=</span> <span class='fl'>100</span>,
+  timewindow <span class='op'>=</span> <span class='cn'>NA</span>,
+  timeperiod <span class='op'>=</span> <span class='st'>"full"</span>,
+  extent <span class='op'>=</span> <span class='cn'>NA</span>,
+  extent_name <span class='op'>=</span> <span class='st'>"sen2r"</span>,
+  s2tiles_selected <span class='op'>=</span> <span class='cn'>NA</span>,
+  s2orbits_selected <span class='op'>=</span> <span class='cn'>NA</span>,
+  list_prods <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"BOA"</span><span class='op'>)</span>,
+  list_rgb <span class='op'>=</span> <span class='cn'>NA</span>,
+  list_indices <span class='op'>=</span> <span class='cn'>NA</span>,
+  index_source <span class='op'>=</span> <span class='st'>"BOA"</span>,
+  rgb_ranges <span class='op'>=</span> <span class='cn'>NA</span>,
+  mask_type <span class='op'>=</span> <span class='cn'>NA</span>,
+  max_mask <span class='op'>=</span> <span class='fl'>100</span>,
+  mask_smooth <span class='op'>=</span> <span class='fl'>0</span>,
+  mask_buffer <span class='op'>=</span> <span class='fl'>0</span>,
+  clip_on_extent <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  extent_as_mask <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  reference_path <span class='op'>=</span> <span class='cn'>NA</span>,
+  res <span class='op'>=</span> <span class='cn'>NA</span>,
+  res_s2 <span class='op'>=</span> <span class='st'>"10m"</span>,
+  unit <span class='op'>=</span> <span class='st'>"Meter"</span>,
+  proj <span class='op'>=</span> <span class='cn'>NA</span>,
+  resampling <span class='op'>=</span> <span class='st'>"near"</span>,
+  resampling_scl <span class='op'>=</span> <span class='st'>"near"</span>,
+  outformat <span class='op'>=</span> <span class='st'>"GTiff"</span>,
+  rgb_outformat <span class='op'>=</span> <span class='st'>"GTiff"</span>,
+  index_datatype <span class='op'>=</span> <span class='st'>"Int16"</span>,
+  compression <span class='op'>=</span> <span class='st'>"DEFLATE"</span>,
+  rgb_compression <span class='op'>=</span> <span class='st'>"90"</span>,
+  overwrite <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  path_l1c <span class='op'>=</span> <span class='cn'>NA</span>,
+  path_l2a <span class='op'>=</span> <span class='cn'>NA</span>,
+  path_tiles <span class='op'>=</span> <span class='cn'>NA</span>,
+  path_merged <span class='op'>=</span> <span class='cn'>NA</span>,
+  path_out <span class='op'>=</span> <span class='cn'>NA</span>,
+  path_rgb <span class='op'>=</span> <span class='cn'>NA</span>,
+  path_indices <span class='op'>=</span> <span class='cn'>NA</span>,
+  path_subdirs <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  thumbnails <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  parallel <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  processing_order <span class='op'>=</span> <span class='st'>"by_step"</span>,
+  use_python <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  tmpdir <span class='op'>=</span> <span class='cn'>NA</span>,
+  rmtmp <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  log <span class='op'>=</span> <span class='cn'>NA</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -287,7 +287,7 @@ if FALSE, only non temporary files are searched.</p></td>
     </tr>
     <tr>
       <th>ignorelist</th>
-      <td><p>List of output files to be ignored (generated by <code><a href='ignorelist.html'>read_ignorelist()</a></code>).</p></td>
+      <td><p>List of output files to be ignored (generated by <code><a href='write_ignorelist.html'>read_ignorelist()</a></code>).</p></td>
     </tr>
     <tr>
       <th>param_list</th>
@@ -552,6 +552,9 @@ because all is overwritten.</p>
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473. DOI:
 <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.104473</a>,
 URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Luigi Ranghetti, phD (2019) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -568,7 +571,7 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

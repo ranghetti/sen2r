@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.9</span>
       </span>
     </div>
 
@@ -106,7 +106,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="sen2r_cmd_files/header-attrs-2.4/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Using sen2r() from the command line</h1>
@@ -124,11 +124,11 @@
 <p>Three main processing modes are available:</p>
 <ol style="list-style-type: decimal">
 <li>
-<a href="#specify-all-processing-parameters-in-the-call-to-sen2r">specify all processing parameters in the call to <code><a href="../reference/sen2r.html">sen2r()</a></code></a>;</li>
+<a href="#specify-all-processing-parameters-in-the-call-to-sen2r">specify all processing parameters in the call to <code>sen2r()</code></a>;</li>
 <li>
 <a href="#load-processing-parameters-from-a-previously-saved-json-file">load processing parameters from a previously saved JSON file</a>;</li>
 <li>
-<a href="#load-parameters-from-a-json-file-changing-some-of-them-in-the-call-to-sen2r">load processing parameters from a previously saved JSON file, but change some of them in the call to <code><a href="../reference/sen2r.html">sen2r()</a></code></a>.</li>
+<a href="#load-parameters-from-a-json-file-changing-some-of-them-in-the-call-to-sen2r">load processing parameters from a previously saved JSON file, but change some of them in the call to <code>sen2r()</code></a>.</li>
 </ol>
 <div id="specify-all-processing-parameters-in-the-call-to-sen2r" class="section level2">
 <h2 class="hasAnchor">
@@ -148,27 +148,28 @@
 </ol>
 </li>
 </ul>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="co"># Set paths</span>
-<span class="no">out_dir_1</span>  <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span>(<span class="kw">pattern</span> <span class="kw">=</span> <span class="st">"sen2r_out_1_"</span>) <span class="co"># output folder</span>
-<span class="no">safe_dir_1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span>(<span class="kw">pattern</span> <span class="kw">=</span> <span class="st">"sen2r_safe_"</span>)  <span class="co"># folder to store downloaded SAFE</span>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="co"># Set paths</span>
+<span class="va">out_dir_1</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"sen2r_out_1_"</span><span class="op">)</span> <span class="co"># output folder</span>
+<span class="va">safe_dir_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"sen2r_safe_"</span><span class="op">)</span>  <span class="co"># folder to store downloaded SAFE</span>
 
-<span class="no">myextent_1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/vector/barbellino.geojson"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"sen2r"</span>)
+<span class="va">myextent_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata/vector/barbellino.geojson"</span>, package <span class="op">=</span> <span class="st">"sen2r"</span><span class="op">)</span> 
 
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">sen2r</span>)
-<span class="no">out_paths_1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/sen2r.html">sen2r</a></span>(
-  <span class="kw">gui</span> <span class="kw">=</span> <span class="fl">FALSE</span>,
-  <span class="kw">step_atmcorr</span> <span class="kw">=</span> <span class="st">"l2a"</span>,
-  <span class="kw">extent</span> <span class="kw">=</span> <span class="no">myextent_1</span>,
-  <span class="kw">extent_name</span> <span class="kw">=</span> <span class="st">"Barbellino"</span>,
-  <span class="kw">timewindow</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span>(<span class="st">"2019-07-13"</span>), <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span>(<span class="st">"2019-07-25"</span>)),
-  <span class="kw">list_prods</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"BOA"</span>,<span class="st">"SCL"</span>),
-  <span class="kw">list_indices</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"NDVI"</span>,<span class="st">"MSAVI2"</span>),
-  <span class="kw">list_rgb</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"RGB432B"</span>),
-  <span class="kw">mask_type</span> <span class="kw">=</span> <span class="st">"cloud_and_shadow"</span>,
-  <span class="kw">max_mask</span> <span class="kw">=</span> <span class="fl">10</span>,
-  <span class="kw">path_l2a</span> <span class="kw">=</span> <span class="no">safe_dir</span>,
-  <span class="kw">path_out</span> <span class="kw">=</span> <span class="no">out_dir_1</span>
-)</pre></body></html></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://sen2r.ranghetti.info">sen2r</a></span><span class="op">)</span>
+<span class="va">out_paths_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sen2r.html">sen2r</a></span><span class="op">(</span>
+  gui <span class="op">=</span> <span class="cn">FALSE</span>,
+  step_atmcorr <span class="op">=</span> <span class="st">"l2a"</span>,
+  extent <span class="op">=</span> <span class="va">myextent_1</span>,
+  extent_name <span class="op">=</span> <span class="st">"Barbellino"</span>,
+  timewindow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="st">"2019-07-13"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="st">"2019-07-25"</span><span class="op">)</span><span class="op">)</span>,
+  list_prods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"BOA"</span>,<span class="st">"SCL"</span><span class="op">)</span>,
+  list_indices <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"NDVI"</span>,<span class="st">"MSAVI2"</span><span class="op">)</span>,
+  list_rgb <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"RGB432B"</span><span class="op">)</span>,
+  mask_type <span class="op">=</span> <span class="st">"cloud_and_shadow"</span>,
+  max_mask <span class="op">=</span> <span class="fl">10</span>, 
+  path_l2a <span class="op">=</span> <span class="va">safe_dir</span>,
+  path_out <span class="op">=</span> <span class="va">out_dir_1</span>
+<span class="op">)</span></pre></div>
 <pre><code>[2020-02-05 10:53:53] #### Starting sen2r execution. ####
 [2020-02-05 10:53:57] Searching for available SAFE products on SciHub...
 [2020-02-05 10:54:02] Computing output names...
@@ -196,16 +197,19 @@ The processing chain can be re-launched with the command:
 </code></pre>
 <p>In this case, it shows that all the 5 S2 images satisfying the spatial-temporal query were downloaded and properly processed. However, outputs for two of those dates were not created because cloudiness over the spatial extent was above the specified threshold.</p>
 <p>S2 original SAFE images are stored in the folder specified by <code>safe_dir</code>, and are not deleted after processing (unless the user sets also the argument <code>rm_safe</code> to <code>TRUE</code>).</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span>(<span class="no">safe_dir</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="va">safe_dir</span><span class="op">)</span></pre></div>
 <pre><code>[1] "S2A_MSIL2A_20190703T101031_N0212_R022_T32TNS_20190703T134349.SAFE"
 [2] "S2A_MSIL2A_20190706T102031_N0212_R065_T32TNS_20190706T134618.SAFE"
 [3] "S2A_MSIL2A_20190713T101031_N0213_R022_T32TNS_20190713T135651.SAFE"
 [4] "S2B_MSIL2A_20190708T101039_N0213_R022_T32TNS_20190708T133715.SAFE"
 [5] "S2B_MSIL2A_20190711T102029_N0213_R065_T32TNS_20190711T135545.SAFE"</code></pre>
 <p>Outputs are automatically subsetted and masked over the study area, and stored in appropriate subfolders of <code>out_dir</code>.</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span>(<span class="no">out_dir_1</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="va">out_dir_1</span><span class="op">)</span></pre></div>
 <pre><code>[1] "BOA"     "MSAVI2"  "NDVI"    "RGB432B" "SCL"    </code></pre>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="no">out_dir_1</span>, <span class="st">"NDVI"</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb8"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">out_dir_1</span>, <span class="st">"NDVI"</span><span class="op">)</span><span class="op">)</span></pre></div>
 <pre><code>[1] "S2A2A_20190703_022_Barbellino_NDVI_10.tif" 
 [2] "S2A2A_20190706_065_Barbellino_NDVI_10.tif"
 [3] "S2B2A_20190708_022_Barbellino_NDVI_10.tif" "thumbnails"  </code></pre>
@@ -215,14 +219,16 @@ The processing chain can be re-launched with the command:
 <h2 class="hasAnchor">
 <a href="#load-processing-parameters-from-a-previously-saved-json-file" class="anchor"></a>Load processing parameters from a previously saved JSON file</h2>
 <p>Users can set the desired parameters with the GUI, export them to a JSON file and run the command <code><a href="../reference/sen2r.html">sen2r()</a></code> specifying the JSON path in the argument <code>param_list</code> to specify processing options. For example, the command would launch <code><a href="../reference/sen2r.html">sen2r()</a></code> using settings specified in file <code>"myparams.json"</code> (or <code>"file30ac6089ea3_sen2r_params.json"</code> in the reproducible case):</p>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="co"># set the path to an existing JSON file </span>
+<div class="sourceCode" id="cb10"><pre class="downlit">
+<span class="co"># set the path to an existing JSON file </span>
 <span class="co"># (commented here, and substituted with an instruction that creates </span>
 <span class="co"># a test JSON file)</span>
 <span class="co"># json_path &lt;- "/path/to/myparams.json"</span>
-<span class="no">json_path_2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/build_example_param_file.html">build_example_param_file</a></span>()
-<span class="no">json_path_2</span></pre></body></html></div>
+<span class="va">json_path_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_example_param_file.html">build_example_param_file</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">json_path_2</span></pre></div>
 <pre><code>[1] "/tmp/RtmpDLx7qh/file30ac6089ea3_sen2r_params.json"</code></pre>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="no">out_paths_2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/sen2r.html">sen2r</a></span>(<span class="kw">param_list</span> <span class="kw">=</span> <span class="no">json_path_2</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb12"><pre class="downlit">
+<span class="va">out_paths_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sen2r.html">sen2r</a></span><span class="op">(</span>param_list <span class="op">=</span> <span class="va">json_path_2</span><span class="op">)</span></pre></div>
 <pre><code>[2020-02-05 11:58:09] #### Starting sen2r execution. ####
 [2020-02-05 11:58:09] Searching for available SAFE products on SciHub...
 [2020-02-05 11:58:12] Computing output names...
@@ -257,20 +263,22 @@ The processing chain can be re-launched with the command:
 </h2>
 <p>This allows users to use a previously saved JSON file as a “template” for a processing, but changing “manually” any desired parameter.</p>
 <p>For example, the following instructions would execute the same processing as in the previous example, but changing both the extent and time window of the analysis.</p>
-<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="co"># use the previously saved JSON path</span>
-<span class="no">json_path_2</span></pre></body></html></div>
+<div class="sourceCode" id="cb14"><pre class="downlit">
+<span class="co"># use the previously saved JSON path</span>
+<span class="va">json_path_2</span></pre></div>
 <pre><code>[1] "/tmp/RtmpDLx7qh/file30ac6089ea3_sen2r_params.json"</code></pre>
-<div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="no">out_dir_3</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span>(<span class="kw">pattern</span> <span class="kw">=</span> <span class="st">"sen2r_out_3_"</span>)  <span class="co"># new output folder</span>
+<div class="sourceCode" id="cb16"><pre class="downlit">
+<span class="va">out_dir_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"sen2r_out_3_"</span><span class="op">)</span>  <span class="co"># new output folder</span>
 
-<span class="no">myextent_3</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/vector/scalve.kml"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"sen2r"</span>)
+<span class="va">myextent_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata/vector/scalve.kml"</span>, package <span class="op">=</span> <span class="st">"sen2r"</span><span class="op">)</span>
 
-<span class="no">out_paths_3</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/sen2r.html">sen2r</a></span>(
-  <span class="kw">param_list</span> <span class="kw">=</span> <span class="no">json_path_2</span>,
-  <span class="kw">extent</span> <span class="kw">=</span> <span class="no">myextent_3</span>,
-  <span class="kw">extent_name</span> <span class="kw">=</span> <span class="st">"newxtent"</span>,
-  <span class="kw">timewindow</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span>(<span class="st">"2019-01-01"</span>), <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span>(<span class="st">"2019-01-30"</span>)),
-  <span class="kw">path_out</span> <span class="kw">=</span> <span class="no">out_dir_3</span>
-)</pre></body></html></div>
+<span class="va">out_paths_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sen2r.html">sen2r</a></span><span class="op">(</span>
+  param_list <span class="op">=</span> <span class="va">json_path_2</span>, 
+  extent <span class="op">=</span> <span class="va">myextent_3</span>, 
+  extent_name <span class="op">=</span> <span class="st">"newxtent"</span>,
+  timewindow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="st">"2019-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="st">"2019-01-30"</span><span class="op">)</span><span class="op">)</span>,
+  path_out <span class="op">=</span> <span class="va">out_dir_3</span>
+<span class="op">)</span></pre></div>
 <p>This allows for example to easily run the same processing over different spatial/temporal extents.</p>
 </div>
   </div>
@@ -290,7 +298,7 @@ The processing chain can be re-launched with the command:
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

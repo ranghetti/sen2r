@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.9</span>
       </span>
     </div>
 
@@ -140,7 +140,8 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>The package can be installed from CRAN:</p>
-<div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sen2r"</span>)</pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"sen2r"</span><span class="op">)</span></pre></div>
 <p>For detailed instructions about installing the package (including dependencies), see the <a href="articles/installation.html">Installation</a> page.</p>
 <p>A dockerised version of <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> is available <a href="https://hub.docker.com/r/ranghetti/sen2r">here</a>. For detailed instructions about using it, see the page <a href="articles/docker.html">“Run in a Docker container”</a>.</p>
 </div>
@@ -148,29 +149,30 @@
 <h2 class="hasAnchor">
 <a href="#usage" class="anchor"></a>Usage</h2>
 <p>The simplest way to use <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> is to execute it in interactive mode (see <a href="articles/sen2r_gui.html">this vignette</a>):</p>
-<div class="sourceCode" id="cb2"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">sen2r</span>)
-<span class="fu"><a href="reference/sen2r.html">sen2r</a></span>()</pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://sen2r.ranghetti.info">sen2r</a></span><span class="op">)</span>
+<span class="fu"><a href="reference/sen2r.html">sen2r</a></span><span class="op">(</span><span class="op">)</span></pre></div>
 <p style="text-align:center;">
 </p>
 <p><a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_gui_sheet1.png" target="_blank"> <img src="reference/figures/sen2r_gui_sheet1_small.png"></a> <a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_gui_sheet2.png" target="_blank"> <img src="reference/figures/sen2r_gui_sheet2_small.png"></a> <br><a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_gui_sheet3.png" target="_blank"> <img src="reference/figures/sen2r_gui_sheet3_small.png"></a> <a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_gui_sheet4.png" target="_blank"> <img src="reference/figures/sen2r_gui_sheet4_small.png"></a> <a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_gui_sheet5.png" target="_blank"> <img src="reference/figures/sen2r_gui_sheet5_small.png"></a></p>
 
-<p>Alternatively, <a href="reference/sen2r.html"><code><a href="reference/sen2r.html">sen2r()</a></code></a> can be launched with a list of parameters (created with <a href="reference/s2_gui.html"><code><a href="reference/s2_gui.html">s2_gui()</a></code></a>) or passing manually the parameters as arguments of the function (see <a href="articles/sen2r_cmd.html">this vignette</a> for further details).</p>
+<p>Alternatively, <a href="reference/sen2r.html"><code>sen2r()</code></a> can be launched with a list of parameters (created with <a href="reference/s2_gui.html"><code>s2_gui()</code></a>) or passing manually the parameters as arguments of the function (see <a href="articles/sen2r_cmd.html">this vignette</a> for further details).</p>
 <p>Other specific functions can be used to run single steps separately. This is a list of the principal processing functions (the complete list can be found in the Reference page):</p>
 <ul>
 <li>
-<a href="reference/s2_list.html"><code><a href="reference/s2_list.html">s2_list()</a></code></a> to retrieve the list of available Sentinel-2 products based on input parameters;</li>
+<a href="reference/s2_list.html"><code>s2_list()</code></a> to retrieve the list of available Sentinel-2 products based on input parameters;</li>
 <li>
-<a href="reference/s2_download.html"><code><a href="reference/s2_download.html">s2_download()</a></code></a> to download Sentinel-2 products;</li>
+<a href="reference/s2_download.html"><code>s2_download()</code></a> to download Sentinel-2 products;</li>
 <li>
-<a href="reference/s2_order.html"><code><a href="reference/s2_order.html">s2_order()</a></code></a> to order products from the Long Term Archive;</li>
+<a href="reference/s2_order.html"><code>s2_order()</code></a> to order products from the Long Term Archive;</li>
 <li>
-<a href="reference/sen2cor.html"><code><a href="reference/sen2cor.html">sen2cor()</a></code></a> to correct level-1C products using <a href="http://step.esa.int/main/third-party-plugins-2/sen2cor/">Sen2Cor</a>;</li>
+<a href="reference/sen2cor.html"><code>sen2cor()</code></a> to correct level-1C products using <a href="http://step.esa.int/main/third-party-plugins-2/sen2cor/">Sen2Cor</a>;</li>
 <li>
-<a href="reference/s2_mask.html"><code><a href="reference/s2_mask.html">s2_mask()</a></code></a> to apply a cloud mask to Sentinel-2 products;</li>
+<a href="reference/s2_mask.html"><code>s2_mask()</code></a> to apply a cloud mask to Sentinel-2 products;</li>
 <li>
-<a href="reference/s2_rgb.html"><code><a href="reference/s2_rgb.html">s2_rgb()</a></code></a> to generate RGB images from Sentinel-2 Surface Reflectance multiband raster files;</li>
+<a href="reference/s2_rgb.html"><code>s2_rgb()</code></a> to generate RGB images from Sentinel-2 Surface Reflectance multiband raster files;</li>
 <li>
-<a href="reference/s2_calcindices.html"><code><a href="reference/s2_calcindices.html">s2_calcindices()</a></code></a> to compute maps of spectral indices from Sentinel-2 Surface Reflectance multiband raster files.</li>
+<a href="reference/s2_calcindices.html"><code>s2_calcindices()</code></a> to compute maps of spectral indices from Sentinel-2 Surface Reflectance multiband raster files.</li>
 </ul>
 <p>Output products follow a specific naming convention (see <a href="articles/outstructure.html">here</a> for details).</p>
 </div>
@@ -181,16 +183,16 @@
 <p>The <a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_logo_200px.png"><span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> logo</a>, partially derived from the <a href="https://www.r-project.org/logo">R logo</a>, is released under the <a href="https://creativecommons.org/licenses/by-sa/4.0">Creative Commons Attribution-ShareAlike 4.0 International license</a> (CC-BY-SA 4.0).</p>
 <p>To cite this library, please use the following entry:</p>
 <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020). <strong>“sen2r: An R toolbox for automatically downloading and preprocessing Sentinel-2 satellite data”</strong>. <em>Computers &amp; Geosciences</em>, 139, 104473. DOI: <a href="https://dx.doi.org/10.1016/j.cageo.2020.104473" target="_blank">10.1016/j.cageo.2020.104473</a>, URL: <a href="http://sen2r.ranghetti.info" target="_blank">http://sen2r.ranghetti.info</a>.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="va">@Article</span>{<span class="ot">sen2r_cageo</span>,</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">  <span class="dt">title</span>   = {sen2r: An R toolbox for automatically downloading and preprocessing Sentinel-2 satellite data},</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3">  <span class="dt">author</span>  = {Luigi Ranghetti and Mirco Boschetti and Francesco Nutini and Lorenzo Busetto},</a>
-<a class="sourceLine" id="cb3-4" data-line-number="4">  <span class="dt">journal</span> = {Computers &amp; Geosciences},</a>
-<a class="sourceLine" id="cb3-5" data-line-number="5">  <span class="dt">year</span>    = {2020},</a>
-<a class="sourceLine" id="cb3-6" data-line-number="6">  <span class="dt">volume</span>  = {139},</a>
-<a class="sourceLine" id="cb3-7" data-line-number="7">  <span class="dt">pages</span>   = {104473},</a>
-<a class="sourceLine" id="cb3-8" data-line-number="8">  <span class="dt">doi</span>     = {10.1016/j.cageo.2020.104473},</a>
-<a class="sourceLine" id="cb3-9" data-line-number="9">  <span class="dt">url</span>     = {http://sen2r.ranghetti.info/},</a>
-<a class="sourceLine" id="cb3-10" data-line-number="10">}</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="va">@Article</span>{<span class="ot">sen2r_cageo</span>,</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a>  <span class="dt">title</span>   = {sen2r: An R toolbox for automatically downloading and preprocessing Sentinel-2 satellite data},</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a>  <span class="dt">author</span>  = {Luigi Ranghetti and Mirco Boschetti and Francesco Nutini and Lorenzo Busetto},</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a>  <span class="dt">journal</span> = {Computers &amp; Geosciences},</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a>  <span class="dt">year</span>    = {2020},</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a>  <span class="dt">volume</span>  = {139},</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a>  <span class="dt">pages</span>   = {104473},</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a>  <span class="dt">doi</span>     = {10.1016/j.cageo.2020.104473},</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a>  <span class="dt">url</span>     = {http://sen2r.ranghetti.info/},</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true"></a>}</span></code></pre></div>
 </div>
 <div id="contributing" class="section level2">
 <h2 class="hasAnchor">
@@ -257,7 +259,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

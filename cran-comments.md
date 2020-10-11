@@ -1,4 +1,4 @@
-# sen2r v. 1.3.8
+# sen2r v. 1.3.9
 
 ## Test environments
 * [local installation] Ubuntu 18.04, 64 bit, R 3.6.3

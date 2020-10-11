@@ -1,3 +1,9 @@
+# Version 1.3.9
+
+## Bug fixes 
+- Fix check errors due to `{rgdal}`  changes in version 1.6-17.
+
+
 # Version 1.3.8
 
 ## Minor changes

@@ -75,7 +75,7 @@ sen2cor
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.9</span>
       </span>
     </div>
 
@@ -167,23 +167,23 @@ Standalone version of
 (version 2.8.0 or 2.5.5) is used.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>sen2cor</span>(
-  <span class='kw'>l1c_prodlist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>l1c_dir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>proc_dir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>gipp</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>use_dem</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>tiles</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>timeout</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>kill_errored</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>.log_message</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>.log_output</span> <span class='kw'>=</span> <span class='fl'>NA</span>
-)</pre>
+    <pre class="usage"><span class='fu'>sen2cor</span><span class='op'>(</span>
+  l1c_prodlist <span class='op'>=</span> <span class='cn'>NULL</span>,
+  l1c_dir <span class='op'>=</span> <span class='cn'>NULL</span>,
+  outdir <span class='op'>=</span> <span class='cn'>NULL</span>,
+  proc_dir <span class='op'>=</span> <span class='cn'>NA</span>,
+  tmpdir <span class='op'>=</span> <span class='cn'>NA</span>,
+  rmtmp <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  gipp <span class='op'>=</span> <span class='cn'>NULL</span>,
+  use_dem <span class='op'>=</span> <span class='cn'>NA</span>,
+  tiles <span class='op'>=</span> <span class='cn'>NULL</span>,
+  parallel <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  timeout <span class='op'>=</span> <span class='fl'>0</span>,
+  kill_errored <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  overwrite <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  .log_message <span class='op'>=</span> <span class='cn'>NA</span>,
+  .log_output <span class='op'>=</span> <span class='cn'>NA</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -264,7 +264,7 @@ the current default setting is not to perform topographic correction.</p>
 and the online source used to download missing DEM tiles
 are respectively the <code>DEM_Directory</code> and <code>DEM_Reference</code> parameters
 set in the default sen2r GIPP XML file (the user can read them
-with the function <code><a href='gipp.html'>read_gipp(c("DEM_Directory", "DEM_Reference"))</a></code>).
+with the function <code><a href='read_gipp.html'>read_gipp(c("DEM_Directory", "DEM_Reference"))</a></code>).
 In case one or both these parameters were set to <code>"NONE"</code>,
 a subdirectory <code>"srtm90"</code> of the default sen2r directory is used as
 DEM directory, and/or the <a href='http://srtm.csi.cgiar.org/'>CGIAR SRTM 90m</a>
@@ -339,25 +339,29 @@ This option is not compatible with <code>timeout</code> (in case both are set,
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473. DOI:
 <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.104473</a>,
 URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Luigi Ranghetti, phD (2019) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='co'># Download an L1C SAFE product</span>
-<span class='no'>example_s2_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='s2_list.html'>s2_list</a></span>(
-  <span class='kw'>spatial_extent</span> <span class='kw'>=</span> <span class='fu'>st_sfc</span>(<span class='fu'>st_point</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>12.0</span>, <span class='fl'>44.8</span>)), <span class='kw'>crs</span><span class='kw'>=</span><span class='fu'>st_crs</span>(<span class='fl'>4326</span>)),
-  <span class='kw'>tile</span> <span class='kw'>=</span> <span class='st'>"32TQQ"</span>,
-  <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"2017-05-01"</span>,<span class='st'>"2017-07-30"</span>))
-)
-<span class='fu'><a href='s2_download.html'>s2_download</a></span>(<span class='no'>example_s2_list</span>, <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())
+<span class='va'>example_s2_list</span> <span class='op'>&lt;-</span> <span class='fu'><a href='s2_list.html'>s2_list</a></span><span class='op'>(</span>
+  spatial_extent <span class='op'>=</span> <span class='fu'><a href='https://r-spatial.github.io/sf/reference/sfc.html'>st_sfc</a></span><span class='op'>(</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st.html'>st_point</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>12.0</span>, <span class='fl'>44.8</span><span class='op'>)</span><span class='op'>)</span>, crs<span class='op'>=</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_crs.html'>st_crs</a></span><span class='op'>(</span><span class='fl'>4326</span><span class='op'>)</span><span class='op'>)</span>, 
+  tile <span class='op'>=</span> <span class='st'>"32TQQ"</span>, 
+  time_interval <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"2017-05-01"</span>,<span class='st'>"2017-07-30"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='op'>)</span>
+<span class='fu'><a href='s2_download.html'>s2_download</a></span><span class='op'>(</span><span class='va'>example_s2_list</span>, outdir <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># Correct it applying a topographic correction</span>
-<span class='fu'>sen2cor</span>(
-  <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>example_s2_list</span>)[<span class='fl'>1</span>],
-  <span class='kw'>l1c_dir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(),
-  <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(),
-  <span class='kw'>use_dem</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)
-}</div></pre>
+<span class='fu'>sen2cor</span><span class='op'>(</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>example_s2_list</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span>, 
+  l1c_dir <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span>, 
+  outdir <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span>,
+  use_dem <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -373,7 +377,7 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
