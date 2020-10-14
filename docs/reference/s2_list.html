@@ -73,7 +73,7 @@ products satisfying given search criteria." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.9</span>
       </span>
     </div>
 
@@ -163,20 +163,20 @@ products satisfying given search criteria." />
 products satisfying given search criteria.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>s2_list</span>(
-  <span class='kw'>spatial_extent</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>tile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>orbit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span>() - <span class='fl'>10</span>, <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span>()),
-  <span class='kw'>time_period</span> <span class='kw'>=</span> <span class='st'>"full"</span>,
-  <span class='kw'>level</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
-  <span class='kw'>server</span> <span class='kw'>=</span> <span class='st'>"scihub"</span>,
-  <span class='kw'>apihub</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>service</span> <span class='kw'>=</span> <span class='st'>"apihub"</span>,
-  <span class='kw'>max_cloud</span> <span class='kw'>=</span> <span class='fl'>100</span>,
-  <span class='kw'>availability</span> <span class='kw'>=</span> <span class='st'>"ignore"</span>,
-  <span class='kw'>output_type</span> <span class='kw'>=</span> <span class='st'>"deprecated"</span>
-)</pre>
+    <pre class="usage"><span class='fu'>s2_list</span><span class='op'>(</span>
+  spatial_extent <span class='op'>=</span> <span class='cn'>NULL</span>,
+  tile <span class='op'>=</span> <span class='cn'>NULL</span>,
+  orbit <span class='op'>=</span> <span class='cn'>NULL</span>,
+  time_interval <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>10</span>, <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>,
+  time_period <span class='op'>=</span> <span class='st'>"full"</span>,
+  level <span class='op'>=</span> <span class='st'>"auto"</span>,
+  server <span class='op'>=</span> <span class='st'>"scihub"</span>,
+  apihub <span class='op'>=</span> <span class='cn'>NA</span>,
+  service <span class='op'>=</span> <span class='st'>"apihub"</span>,
+  max_cloud <span class='op'>=</span> <span class='fl'>100</span>,
+  availability <span class='op'>=</span> <span class='st'>"ignore"</span>,
+  output_type <span class='op'>=</span> <span class='st'>"deprecated"</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -281,20 +281,27 @@ otherwise, values are set to NA.</p>
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473. DOI:
 <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.104473</a>,
 URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Lorenzo Busetto, phD (2019) <a href='mailto:lbusett@gmail.com'>lbusett@gmail.com</a> - Inspired by
+function <code>getSentinel_query</code> of package
+<a href='https://github.com/16EAGLE/getSpatialData'><code>getSpatialData</code></a> by J. Schwalb-Willmann</p>
+<p>Luigi Ranghetti, phD (2019) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
-<span class='no'>pos</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/sfc.html'>st_sfc</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st.html'>st_point</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>9.85</span>,<span class='fl'>45.81</span>)), <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>)
-<span class='no'>time_window</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"2016-05-01"</span>, <span class='st'>"2017-07-30"</span>))
+<span class='va'>pos</span> <span class='op'>&lt;-</span> <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/sfc.html'>st_sfc</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st.html'>st_point</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>9.85</span>,<span class='fl'>45.81</span><span class='op'>)</span><span class='op'>)</span>, crs <span class='op'>=</span> <span class='fl'>4326</span><span class='op'>)</span>
+<span class='va'>time_window</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"2016-05-01"</span>, <span class='st'>"2017-07-30"</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># Full-period list</span>
-<span class='no'>example_s2_list</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_list</span>(
-  <span class='kw'>spatial_extent</span> <span class='kw'>=</span> <span class='no'>pos</span>,
-  <span class='kw'>tile</span> <span class='kw'>=</span> <span class='st'>"32TNR"</span>,
-  <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='no'>time_window</span>,
-  <span class='kw'>orbit</span> <span class='kw'>=</span> <span class='st'>"065"</span>
-)
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>example_s2_list</span>)</div><div class='output co'>#&gt; A named vector with 47 SAFE archives.
+<span class='va'>example_s2_list</span> <span class='op'>&lt;-</span> <span class='fu'>s2_list</span><span class='op'>(</span>
+  spatial_extent <span class='op'>=</span> <span class='va'>pos</span>,
+  tile <span class='op'>=</span> <span class='st'>"32TNR"</span>,
+  time_interval <span class='op'>=</span> <span class='va'>time_window</span>,
+  orbit <span class='op'>=</span> <span class='st'>"065"</span>
+<span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>example_s2_list</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; A named vector with 47 SAFE archives.
 #&gt;                                      S2A_MSIL1C_20160502T102032_N0201_R065_T32TNR_20160502T102027.SAFE 
 #&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('fde01d3f-8a0d-46cb-b65d-3e32eff93f1d')/$value" 
 #&gt;                                      S2A_MSIL1C_20160512T102032_N0202_R065_T32TNR_20160512T102029.SAFE 
@@ -307,7 +314,8 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
 #&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('9bb6d780-c226-4f59-bad0-1daedfdce9d5')/$value" 
 #&gt; ...with 42 more elements.
 #&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, footprint, uuid, online.</div><div class='input'><span class='co'># Print the dates of the retrieved products</span>
-<span class='fu'><a href='safe_getMetadata.html'>safe_getMetadata</a></span>(<span class='no'>example_s2_list</span>, <span class='st'>"sensing_datetime"</span>)</div><div class='output co'>#&gt; S2A_MSIL1C_20160502T102032_N0201_R065_T32TNR_20160502T102027.SAFE 
+<span class='fu'><a href='safe_getMetadata.html'>safe_getMetadata</a></span><span class='op'>(</span><span class='va'>example_s2_list</span>, <span class='st'>"sensing_datetime"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; S2A_MSIL1C_20160502T102032_N0201_R065_T32TNR_20160502T102027.SAFE 
 #&gt;                                         "2016-05-02 10:20:32 UTC" 
 #&gt; S2A_MSIL1C_20160512T102032_N0202_R065_T32TNR_20160512T102029.SAFE 
 #&gt;                                         "2016-05-12 10:20:32 UTC" 
@@ -402,13 +410,14 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
 #&gt; S2A_MSIL2A_20170726T102021_N0205_R065_T32TNR_20170726T102259.SAFE 
 #&gt;                                         "2017-07-26 10:20:21 UTC" </div><div class='input'>
 <span class='co'># Seasonal-period list</span>
-<span class='no'>example_s2_list</span> <span class='kw'>&lt;-</span> <span class='fu'>s2_list</span>(
-  <span class='kw'>spatial_extent</span> <span class='kw'>=</span> <span class='no'>pos</span>,
-  <span class='kw'>tile</span> <span class='kw'>=</span> <span class='st'>"32TNR"</span>,
-  <span class='kw'>time_interval</span> <span class='kw'>=</span> <span class='no'>time_window</span>,
-  <span class='kw'>time_period</span> <span class='kw'>=</span> <span class='st'>"seasonal"</span>
-)
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>example_s2_list</span>)</div><div class='output co'>#&gt; A named vector with 28 SAFE archives.
+<span class='va'>example_s2_list</span> <span class='op'>&lt;-</span> <span class='fu'>s2_list</span><span class='op'>(</span>
+  spatial_extent <span class='op'>=</span> <span class='va'>pos</span>,
+  tile <span class='op'>=</span> <span class='st'>"32TNR"</span>,
+  time_interval <span class='op'>=</span> <span class='va'>time_window</span>,
+  time_period <span class='op'>=</span> <span class='st'>"seasonal"</span>
+<span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>example_s2_list</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; A named vector with 28 SAFE archives.
 #&gt;                                      S2A_MSIL1C_20160502T102032_N0201_R065_T32TNR_20160502T102027.SAFE 
 #&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('fde01d3f-8a0d-46cb-b65d-3e32eff93f1d')/$value" 
 #&gt;                                      S2A_MSIL1C_20160509T101032_N0202_R022_T32TNR_20160509T101645.SAFE 
@@ -421,7 +430,8 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
 #&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('4abf7965-0b26-431b-8708-74de427c0112')/$value" 
 #&gt; ...with 23 more elements.
 #&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, footprint, uuid, online.</div><div class='input'><span class='co'># Print the dates of the retrieved products</span>
-<span class='fu'><a href='safe_getMetadata.html'>safe_getMetadata</a></span>(<span class='no'>example_s2_list</span>, <span class='st'>"sensing_datetime"</span>)</div><div class='output co'>#&gt; S2A_MSIL1C_20160502T102032_N0201_R065_T32TNR_20160502T102027.SAFE 
+<span class='fu'><a href='safe_getMetadata.html'>safe_getMetadata</a></span><span class='op'>(</span><span class='va'>example_s2_list</span>, <span class='st'>"sensing_datetime"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; S2A_MSIL1C_20160502T102032_N0201_R065_T32TNR_20160502T102027.SAFE 
 #&gt;                                         "2016-05-02 10:20:32 UTC" 
 #&gt; S2A_MSIL1C_20160509T101032_N0202_R022_T32TNR_20160509T101645.SAFE 
 #&gt;                                         "2016-05-09 10:10:32 UTC" 
@@ -476,7 +486,7 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
 #&gt; S2B_MSIL1C_20170721T102029_N0205_R065_T32TNR_20170721T102331.SAFE 
 #&gt;                                         "2017-07-21 10:20:29 UTC" 
 #&gt; S2A_MSIL2A_20170726T102021_N0205_R065_T32TNR_20170726T102259.SAFE 
-#&gt;                                         "2017-07-26 10:20:21 UTC" </div><div class='input'># }
+#&gt;                                         "2017-07-26 10:20:21 UTC" </div><div class='input'><span class='co'># }</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -493,7 +503,7 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

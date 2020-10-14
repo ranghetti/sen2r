@@ -141,7 +141,7 @@ st_crs2.character <- function(x, ...) {
       },
       error = function(e) {tryCatch(
         # x: path of a text file with WKT -> crs
-        suppressWarnings(sf::st_crs(readLines(x))),
+        suppressWarnings(sf::st_crs(paste(readLines(x), collapse=""))),
         error = function(e) {tryCatch(
           # x: path of a raster file -> stars proxy
           gdal_crs(x),

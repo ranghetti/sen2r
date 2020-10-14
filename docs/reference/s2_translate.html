@@ -75,7 +75,7 @@ Output vrt is at 10m resolution." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.9</span>
       </span>
     </div>
 
@@ -167,22 +167,22 @@ For now, only L1C and L2a with long name (&lt; 2016/12/06) are recognised.
 Output vrt is at 10m resolution.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>s2_translate</span>(
-  <span class='no'>infile</span>,
-  <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"."</span>,
-  <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>rmtmp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>prod_type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>tiles</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>res</span> <span class='kw'>=</span> <span class='st'>"10m"</span>,
-  <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"VRT"</span>,
-  <span class='kw'>compress</span> <span class='kw'>=</span> <span class='st'>"DEFLATE"</span>,
-  <span class='kw'>bigtiff</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>vrt_rel_paths</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>utmzone</span> <span class='kw'>=</span> <span class='st'>""</span>,
-  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
-)</pre>
+    <pre class="usage"><span class='fu'>s2_translate</span><span class='op'>(</span>
+  <span class='va'>infile</span>,
+  outdir <span class='op'>=</span> <span class='st'>"."</span>,
+  subdirs <span class='op'>=</span> <span class='cn'>NA</span>,
+  tmpdir <span class='op'>=</span> <span class='cn'>NA</span>,
+  rmtmp <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  prod_type <span class='op'>=</span> <span class='cn'>NULL</span>,
+  tiles <span class='op'>=</span> <span class='cn'>NA</span>,
+  res <span class='op'>=</span> <span class='st'>"10m"</span>,
+  format <span class='op'>=</span> <span class='st'>"VRT"</span>,
+  compress <span class='op'>=</span> <span class='st'>"DEFLATE"</span>,
+  bigtiff <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  vrt_rel_paths <span class='op'>=</span> <span class='cn'>NA</span>,
+  utmzone <span class='op'>=</span> <span class='st'>""</span>,
+  overwrite <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -293,35 +293,39 @@ overwritten? (default: FALSE)</p></td>
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473. DOI:
 <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.104473</a>,
 URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Luigi Ranghetti, phD (2019) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>s2_l1c_example</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='va'>s2_l1c_example</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span>
   <span class='st'>"/existing/path"</span>,
-  <span class='st'>"S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"</span>)
-<span class='no'>s2_l1c_example</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(
+  <span class='st'>"S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"</span><span class='op'>)</span>
+<span class='va'>s2_l1c_example</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span>
   <span class='st'>"/existing/path"</span>,
-  <span class='st'>"S2A_MSIL2A_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"</span>)
+  <span class='st'>"S2A_MSIL2A_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"</span><span class='op'>)</span>
 
 <span class='co'># Create a single TOA GeoTIFF in the same directory</span>
-<span class='fu'>s2_translate</span>(<span class='no'>s2_l1c_example</span>, <span class='kw'>format</span><span class='kw'>=</span><span class='st'>"GTiff"</span>)
+<span class='fu'>s2_translate</span><span class='op'>(</span><span class='va'>s2_l1c_example</span>, format<span class='op'>=</span><span class='st'>"GTiff"</span><span class='op'>)</span>
 
 <span class='co'># Create a single BOA VRT with a custom name</span>
-<span class='fu'>s2_translate</span>(
-  <span class='no'>s2_l2a_example</span>,
+<span class='fu'>s2_translate</span><span class='op'>(</span>
+  <span class='va'>s2_l2a_example</span>,
   <span class='st'>"/new/path/example_sentinel2_sr.vrt"</span>,
-  <span class='kw'>vrt_rel_paths</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)
+  vrt_rel_paths <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span>
 
 <span class='co'># Create three products (ENVI) in the same directory at 60m resolution</span>
-<span class='fu'>s2_translate</span>(
-  <span class='no'>s2_example</span>,
-  <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"ENVI"</span>,
-  <span class='kw'>prod_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"BOA"</span>,<span class='st'>"TCI"</span>,<span class='st'>"SCL"</span>),
-  <span class='kw'>res</span> <span class='kw'>=</span> <span class='st'>"60m"</span>,
-  <span class='kw'>subdirs</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)
-}</div></pre>
+<span class='fu'>s2_translate</span><span class='op'>(</span>
+  <span class='va'>s2_example</span>, 
+  format <span class='op'>=</span> <span class='st'>"ENVI"</span>, 
+  prod_type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"BOA"</span>,<span class='st'>"TCI"</span>,<span class='st'>"SCL"</span><span class='op'>)</span>,
+  res <span class='op'>=</span> <span class='st'>"60m"</span>, 
+  subdirs <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -337,7 +341,7 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

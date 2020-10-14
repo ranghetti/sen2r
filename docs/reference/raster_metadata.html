@@ -73,7 +73,7 @@ a vector of raster paths." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.9</span>
       </span>
     </div>
 
@@ -163,7 +163,7 @@ a vector of raster paths." />
 a vector of raster paths.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>raster_metadata</span>(<span class='no'>raster_paths</span>, <span class='kw'>meta</span> <span class='kw'>=</span> <span class='st'>"all"</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"data.table"</span>)</pre>
+    <pre class="usage"><span class='fu'>raster_metadata</span><span class='op'>(</span><span class='va'>raster_paths</span>, meta <span class='op'>=</span> <span class='st'>"all"</span>, format <span class='op'>=</span> <span class='st'>"data.table"</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -197,41 +197,47 @@ Alternatively meta = 'all' (default) allows to return all metadata.</p></td>
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473. DOI:
 <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.104473</a>,
 URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Luigi Ranghetti, phD (2019) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Define product names</span>
-<span class='no'>examplenames</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(
-  <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"tif/L7_ETMs.tif"</span>, <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"stars"</span>),
-  <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif"</span>,
-    <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"sen2r"</span>)
-)
+<span class='va'>examplenames</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"tif/L7_ETMs.tif"</span>, package<span class='op'>=</span><span class='st'>"stars"</span><span class='op'>)</span>,
+  <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif"</span>,
+    package <span class='op'>=</span> <span class='st'>"sen2r"</span><span class='op'>)</span>
+<span class='op'>)</span>
 
 <span class='co'># \donttest{</span>
 <span class='co'># Return metadata as data.table</span>
-<span class='fu'>raster_metadata</span>(<span class='no'>examplenames</span>)</div><div class='output co'>#&gt;                                                                                                           path
-#&gt; 1:                                    /home/lranghetti/R/x86_64-pc-linux-gnu-library/3.6/stars/tif/L7_ETMs.tif
+<span class='fu'>raster_metadata</span><span class='op'>(</span><span class='va'>examplenames</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;                                                                                                           path
+#&gt; 1:                                    /home/lranghetti/R/x86_64-pc-linux-gnu-library/4.0/stars/tif/L7_ETMs.tif
 #&gt; 2: /home/lranghetti/share/git/github/ranghetti/sen2r/inst/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif
 #&gt;    valid res.x res.y size.x size.y nbands     xmin    ymin     xmax    ymax
 #&gt; 1:  TRUE  28.5  28.5    349    352      6 288776.3 9110729 298722.8 9120761
 #&gt; 2:  TRUE  10.0  10.0     24     42     11 580560.0 5101700 580800.0 5102120
-#&gt;                                                                                                                                                                                                                                                                                                                                                                                                                                                                        proj
-#&gt; 1: PROJCS["UTM Zone 25, Southern Hemisphere",GEOGCS["GRS 1980(IUGG, 1980)",DATUM["unknown",SPHEROID["GRS80",6378137,298.257222101],TOWGS84[0,0,0,0,0,0,0]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",-33],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",10000000],UNIT["metre",1,AUTHORITY["EPSG","9001"]]]
-#&gt; 2:                                                                                                                                                                                                                                                                                                                                                                                                                                                               EPSG:32632
+#&gt;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 proj
+#&gt; 1: PROJCRS["unknown",\n    BASEGEOGCRS["unknown",\n        DATUM["Unknown based on GRS80 ellipsoid",\n            ELLIPSOID["GRS 1980",6378137,298.257222101,\n                LENGTHUNIT["metre",1],\n                ID["EPSG",7019]]],\n        PRIMEM["Greenwich",0,\n            ANGLEUNIT["degree",0.0174532925199433],\n            ID["EPSG",8901]]],\n    CONVERSION["UTM zone 25S",\n        METHOD["Transverse Mercator",\n            ID["EPSG",9807]],\n        PARAMETER["Latitude of natural origin",0,\n            ANGLEUNIT["degree",0.0174532925199433],\n            ID["EPSG",8801]],\n        PARAMETER["Longitude of natural origin",-33,\n            ANGLEUNIT["degree",0.0174532925199433],\n            ID["EPSG",8802]],\n        PARAMETER["Scale factor at natural origin",0.9996,\n            SCALEUNIT["unity",1],\n            ID["EPSG",8805]],\n        PARAMETER["False easting",500000,\n            LENGTHUNIT["metre",1],\n            ID["EPSG",8806]],\n        PARAMETER["False northing",10000000,\n            LENGTHUNIT["metre",1],\n            ID["EPSG",8807]],\n        ID["EPSG",17025]],\n    CS[Cartesian,2],\n        AXIS["(E)",east,\n            ORDER[1],\n            LENGTHUNIT["metre",1,\n                ID["EPSG",9001]]],\n        AXIS["(N)",north,\n            ORDER[2],\n            LENGTHUNIT["metre",1,\n                ID["EPSG",9001]]]]
+#&gt; 2:                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        EPSG:32632
 #&gt;     unit outformat   type
 #&gt; 1: metre     GTiff   Byte
 #&gt; 2: metre     GTiff UInt16</div><div class='input'><span class='co'># }</span>
 
 <span class='co'># Return some metadata as data.table</span>
-<span class='fu'>raster_metadata</span>(<span class='no'>examplenames</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"res"</span>, <span class='st'>"size"</span>, <span class='st'>"bbox"</span>, <span class='st'>"outformat"</span>))</div><div class='output co'>#&gt;                                                                                                           path
-#&gt; 1:                                    /home/lranghetti/R/x86_64-pc-linux-gnu-library/3.6/stars/tif/L7_ETMs.tif
+<span class='fu'>raster_metadata</span><span class='op'>(</span><span class='va'>examplenames</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"res"</span>, <span class='st'>"size"</span>, <span class='st'>"bbox"</span>, <span class='st'>"outformat"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;                                                                                                           path
+#&gt; 1:                                    /home/lranghetti/R/x86_64-pc-linux-gnu-library/4.0/stars/tif/L7_ETMs.tif
 #&gt; 2: /home/lranghetti/share/git/github/ranghetti/sen2r/inst/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif
 #&gt;    valid res.x res.y size.x size.y     xmin    ymin     xmax    ymax outformat
 #&gt; 1:  TRUE  28.5  28.5    349    352 288776.3 9110729 298722.8 9120761     GTiff
 #&gt; 2:  TRUE  10.0  10.0     24     42 580560.0 5101700 580800.0 5102120     GTiff</div><div class='input'>
 <span class='co'># Return some metadata as list</span>
-<span class='fu'>raster_metadata</span>(<span class='no'>examplenames</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"res"</span>, <span class='st'>"size"</span>, <span class='st'>"bbox"</span>, <span class='st'>"proj"</span>), <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"list"</span>)</div><div class='output co'>#&gt; [[1]]
+<span class='fu'>raster_metadata</span><span class='op'>(</span><span class='va'>examplenames</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"res"</span>, <span class='st'>"size"</span>, <span class='st'>"bbox"</span>, <span class='st'>"proj"</span><span class='op'>)</span>, format <span class='op'>=</span> <span class='st'>"list"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [[1]]
 #&gt; [[1]]$path
-#&gt; [1] "/home/lranghetti/R/x86_64-pc-linux-gnu-library/3.6/stars/tif/L7_ETMs.tif"
+#&gt; [1] "/home/lranghetti/R/x86_64-pc-linux-gnu-library/4.0/stars/tif/L7_ETMs.tif"
 #&gt; 
 #&gt; [[1]]$valid
 #&gt; [1] TRUE
@@ -250,23 +256,82 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
 #&gt; 
 #&gt; [[1]]$proj
 #&gt; Coordinate Reference System:
-#&gt;   User input: PROJCS["UTM Zone 25, Southern Hemisphere",GEOGCS["GRS 1980(IUGG, 1980)",DATUM["unknown",SPHEROID["GRS80",6378137,298.257222101],TOWGS84[0,0,0,0,0,0,0]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",-33],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",10000000],UNIT["metre",1,AUTHORITY["EPSG","9001"]]] 
+#&gt;   User input: UTM Zone 25, Southern Hemisphere 
 #&gt;   wkt:
-#&gt; PROJCS["UTM Zone 25, Southern Hemisphere",
-#&gt;     GEOGCS["GRS 1980(IUGG, 1980)",
-#&gt;         DATUM["unknown",
-#&gt;             SPHEROID["GRS80",6378137,298.257222101],
-#&gt;             TOWGS84[0,0,0,0,0,0,0]],
-#&gt;         PRIMEM["Greenwich",0],
-#&gt;         UNIT["degree",0.0174532925199433]],
-#&gt;     PROJECTION["Transverse_Mercator"],
-#&gt;     PARAMETER["latitude_of_origin",0],
-#&gt;     PARAMETER["central_meridian",-33],
-#&gt;     PARAMETER["scale_factor",0.9996],
-#&gt;     PARAMETER["false_easting",500000],
-#&gt;     PARAMETER["false_northing",10000000],
-#&gt;     UNIT["metre",1,
-#&gt;         AUTHORITY["EPSG","9001"]]]
+#&gt; BOUNDCRS[
+#&gt;     SOURCECRS[
+#&gt;         PROJCRS["UTM Zone 25, Southern Hemisphere",
+#&gt;             BASEGEOGCRS["GRS 1980(IUGG, 1980)",
+#&gt;                 DATUM["unknown",
+#&gt;                     ELLIPSOID["GRS80",6378137,298.257222101,
+#&gt;                         LENGTHUNIT["metre",1,
+#&gt;                             ID["EPSG",9001]]]],
+#&gt;                 PRIMEM["Greenwich",0,
+#&gt;                     ANGLEUNIT["degree",0.0174532925199433,
+#&gt;                         ID["EPSG",9122]]]],
+#&gt;             CONVERSION["Transverse Mercator",
+#&gt;                 METHOD["Transverse Mercator",
+#&gt;                     ID["EPSG",9807]],
+#&gt;                 PARAMETER["Latitude of natural origin",0,
+#&gt;                     ANGLEUNIT["degree",0.0174532925199433],
+#&gt;                     ID["EPSG",8801]],
+#&gt;                 PARAMETER["Longitude of natural origin",-33,
+#&gt;                     ANGLEUNIT["degree",0.0174532925199433],
+#&gt;                     ID["EPSG",8802]],
+#&gt;                 PARAMETER["Scale factor at natural origin",0.9996,
+#&gt;                     SCALEUNIT["unity",1],
+#&gt;                     ID["EPSG",8805]],
+#&gt;                 PARAMETER["False easting",500000,
+#&gt;                     LENGTHUNIT["metre",1],
+#&gt;                     ID["EPSG",8806]],
+#&gt;                 PARAMETER["False northing",10000000,
+#&gt;                     LENGTHUNIT["metre",1],
+#&gt;                     ID["EPSG",8807]]],
+#&gt;             CS[Cartesian,2],
+#&gt;                 AXIS["easting",east,
+#&gt;                     ORDER[1],
+#&gt;                     LENGTHUNIT["metre",1,
+#&gt;                         ID["EPSG",9001]]],
+#&gt;                 AXIS["northing",north,
+#&gt;                     ORDER[2],
+#&gt;                     LENGTHUNIT["metre",1,
+#&gt;                         ID["EPSG",9001]]]]],
+#&gt;     TARGETCRS[
+#&gt;         GEOGCRS["WGS 84",
+#&gt;             DATUM["World Geodetic System 1984",
+#&gt;                 ELLIPSOID["WGS 84",6378137,298.257223563,
+#&gt;                     LENGTHUNIT["metre",1]]],
+#&gt;             PRIMEM["Greenwich",0,
+#&gt;                 ANGLEUNIT["degree",0.0174532925199433]],
+#&gt;             CS[ellipsoidal,2],
+#&gt;                 AXIS["geodetic latitude (Lat)",north,
+#&gt;                     ORDER[1],
+#&gt;                     ANGLEUNIT["degree",0.0174532925199433]],
+#&gt;                 AXIS["geodetic longitude (Lon)",east,
+#&gt;                     ORDER[2],
+#&gt;                     ANGLEUNIT["degree",0.0174532925199433]],
+#&gt;             USAGE[
+#&gt;                 SCOPE["unknown"],
+#&gt;                 AREA["World"],
+#&gt;                 BBOX[-90,-180,90,180]],
+#&gt;             ID["EPSG",4326]]],
+#&gt;     ABRIDGEDTRANSFORMATION["Transformation to WGS84",
+#&gt;         METHOD["Position Vector transformation (geog2D domain)",
+#&gt;             ID["EPSG",9606]],
+#&gt;         PARAMETER["X-axis translation",0,
+#&gt;             ID["EPSG",8605]],
+#&gt;         PARAMETER["Y-axis translation",0,
+#&gt;             ID["EPSG",8606]],
+#&gt;         PARAMETER["Z-axis translation",0,
+#&gt;             ID["EPSG",8607]],
+#&gt;         PARAMETER["X-axis rotation",0,
+#&gt;             ID["EPSG",8608]],
+#&gt;         PARAMETER["Y-axis rotation",0,
+#&gt;             ID["EPSG",8609]],
+#&gt;         PARAMETER["Z-axis rotation",0,
+#&gt;             ID["EPSG",8610]],
+#&gt;         PARAMETER["Scale difference",1,
+#&gt;             ID["EPSG",8611]]]]
 #&gt; 
 #&gt; 
 #&gt; [[2]]
@@ -290,49 +355,66 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
 #&gt; 
 #&gt; [[2]]$proj
 #&gt; Coordinate Reference System:
-#&gt;   User input: PROJCS["WGS 84 / UTM zone 32N",GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",9],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH],AUTHORITY["EPSG","32632"]] 
+#&gt;   User input: WGS 84 / UTM zone 32N 
 #&gt;   wkt:
-#&gt; PROJCS["WGS 84 / UTM zone 32N",
-#&gt;     GEOGCS["WGS 84",
-#&gt;         DATUM["WGS_1984",
-#&gt;             SPHEROID["WGS 84",6378137,298.257223563,
-#&gt;                 AUTHORITY["EPSG","7030"]],
-#&gt;             AUTHORITY["EPSG","6326"]],
+#&gt; PROJCRS["WGS 84 / UTM zone 32N",
+#&gt;     BASEGEOGCRS["WGS 84",
+#&gt;         DATUM["World Geodetic System 1984",
+#&gt;             ELLIPSOID["WGS 84",6378137,298.257223563,
+#&gt;                 LENGTHUNIT["metre",1]]],
 #&gt;         PRIMEM["Greenwich",0,
-#&gt;             AUTHORITY["EPSG","8901"]],
-#&gt;         UNIT["degree",0.0174532925199433,
-#&gt;             AUTHORITY["EPSG","9122"]],
-#&gt;         AUTHORITY["EPSG","4326"]],
-#&gt;     PROJECTION["Transverse_Mercator"],
-#&gt;     PARAMETER["latitude_of_origin",0],
-#&gt;     PARAMETER["central_meridian",9],
-#&gt;     PARAMETER["scale_factor",0.9996],
-#&gt;     PARAMETER["false_easting",500000],
-#&gt;     PARAMETER["false_northing",0],
-#&gt;     UNIT["metre",1,
-#&gt;         AUTHORITY["EPSG","9001"]],
-#&gt;     AXIS["Easting",EAST],
-#&gt;     AXIS["Northing",NORTH],
-#&gt;     AUTHORITY["EPSG","32632"]]
+#&gt;             ANGLEUNIT["degree",0.0174532925199433]],
+#&gt;         ID["EPSG",4326]],
+#&gt;     CONVERSION["UTM zone 32N",
+#&gt;         METHOD["Transverse Mercator",
+#&gt;             ID["EPSG",9807]],
+#&gt;         PARAMETER["Latitude of natural origin",0,
+#&gt;             ANGLEUNIT["degree",0.0174532925199433],
+#&gt;             ID["EPSG",8801]],
+#&gt;         PARAMETER["Longitude of natural origin",9,
+#&gt;             ANGLEUNIT["degree",0.0174532925199433],
+#&gt;             ID["EPSG",8802]],
+#&gt;         PARAMETER["Scale factor at natural origin",0.9996,
+#&gt;             SCALEUNIT["unity",1],
+#&gt;             ID["EPSG",8805]],
+#&gt;         PARAMETER["False easting",500000,
+#&gt;             LENGTHUNIT["metre",1],
+#&gt;             ID["EPSG",8806]],
+#&gt;         PARAMETER["False northing",0,
+#&gt;             LENGTHUNIT["metre",1],
+#&gt;             ID["EPSG",8807]]],
+#&gt;     CS[Cartesian,2],
+#&gt;         AXIS["(E)",east,
+#&gt;             ORDER[1],
+#&gt;             LENGTHUNIT["metre",1]],
+#&gt;         AXIS["(N)",north,
+#&gt;             ORDER[2],
+#&gt;             LENGTHUNIT["metre",1]],
+#&gt;     USAGE[
+#&gt;         SCOPE["unknown"],
+#&gt;         AREA["World - N hemisphere - 6°E to 12°E - by country"],
+#&gt;         BBOX[0,6,84,12]],
+#&gt;     ID["EPSG",32632]]
 #&gt; 
 #&gt; </div><div class='input'>
 <span class='co'># Output with an invalid raster</span>
-<span class='no'>examplenames</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(
-  <span class='no'>examplenames</span>,
-  <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/settings/gdal_formats.json"</span>, <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"sen2r"</span>)
-)
-<span class='fu'>raster_metadata</span>(<span class='no'>examplenames</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"bbox"</span>, <span class='st'>"proj"</span>))</div><div class='output co'>#&gt; trying to read file: /home/lranghetti/share/git/github/ranghetti/sen2r/inst/extdata/settings/gdal_formats.json</div><div class='output co'>#&gt;                                                                                                           path
-#&gt; 1:                                    /home/lranghetti/R/x86_64-pc-linux-gnu-library/3.6/stars/tif/L7_ETMs.tif
+<span class='va'>examplenames</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>
+  <span class='va'>examplenames</span>, 
+  <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/settings/gdal_formats.json"</span>, package<span class='op'>=</span><span class='st'>"sen2r"</span><span class='op'>)</span>
+<span class='op'>)</span>
+<span class='fu'>raster_metadata</span><span class='op'>(</span><span class='va'>examplenames</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"bbox"</span>, <span class='st'>"proj"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; trying to read file: /home/lranghetti/share/git/github/ranghetti/sen2r/inst/extdata/settings/gdal_formats.json</div><div class='output co'>#&gt;                                                                                                           path
+#&gt; 1:                                    /home/lranghetti/R/x86_64-pc-linux-gnu-library/4.0/stars/tif/L7_ETMs.tif
 #&gt; 2: /home/lranghetti/share/git/github/ranghetti/sen2r/inst/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif
 #&gt; 3:                   /home/lranghetti/share/git/github/ranghetti/sen2r/inst/extdata/settings/gdal_formats.json
 #&gt;    valid     xmin    ymin     xmax    ymax
 #&gt; 1:  TRUE 288776.3 9110729 298722.8 9120761
 #&gt; 2:  TRUE 580560.0 5101700 580800.0 5102120
 #&gt; 3: FALSE       NA      NA       NA      NA
-#&gt;                                                                                                                                                                                                                                                                                                                                                                                                                                                                        proj
-#&gt; 1: PROJCS["UTM Zone 25, Southern Hemisphere",GEOGCS["GRS 1980(IUGG, 1980)",DATUM["unknown",SPHEROID["GRS80",6378137,298.257222101],TOWGS84[0,0,0,0,0,0,0]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",-33],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",10000000],UNIT["metre",1,AUTHORITY["EPSG","9001"]]]
-#&gt; 2:                                                                                                                                                                                                                                                                                                                                                                                                                                                               EPSG:32632
-#&gt; 3:                                                                                                                                                                                                                                                                                                                                                                                                                                                                     &lt;NA&gt;</div></pre>
+#&gt;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 proj
+#&gt; 1: PROJCRS["unknown",\n    BASEGEOGCRS["unknown",\n        DATUM["Unknown based on GRS80 ellipsoid",\n            ELLIPSOID["GRS 1980",6378137,298.257222101,\n                LENGTHUNIT["metre",1],\n                ID["EPSG",7019]]],\n        PRIMEM["Greenwich",0,\n            ANGLEUNIT["degree",0.0174532925199433],\n            ID["EPSG",8901]]],\n    CONVERSION["UTM zone 25S",\n        METHOD["Transverse Mercator",\n            ID["EPSG",9807]],\n        PARAMETER["Latitude of natural origin",0,\n            ANGLEUNIT["degree",0.0174532925199433],\n            ID["EPSG",8801]],\n        PARAMETER["Longitude of natural origin",-33,\n            ANGLEUNIT["degree",0.0174532925199433],\n            ID["EPSG",8802]],\n        PARAMETER["Scale factor at natural origin",0.9996,\n            SCALEUNIT["unity",1],\n            ID["EPSG",8805]],\n        PARAMETER["False easting",500000,\n            LENGTHUNIT["metre",1],\n            ID["EPSG",8806]],\n        PARAMETER["False northing",10000000,\n            LENGTHUNIT["metre",1],\n            ID["EPSG",8807]],\n        ID["EPSG",17025]],\n    CS[Cartesian,2],\n        AXIS["(E)",east,\n            ORDER[1],\n            LENGTHUNIT["metre",1,\n                ID["EPSG",9001]]],\n        AXIS["(N)",north,\n            ORDER[2],\n            LENGTHUNIT["metre",1,\n                ID["EPSG",9001]]]]
+#&gt; 2:                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        EPSG:32632
+#&gt; 3:                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              &lt;NA&gt;</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -348,7 +430,7 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

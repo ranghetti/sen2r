@@ -1,3 +1,9 @@
+# Version 1.3.9
+
+## Bug fixes 
+- Fix check errors due to `{rgdal}`  changes in version 1.6-17.
+
+
 # Version 1.3.8
 
 ## Minor changes
@@ -358,7 +364,7 @@ First stable release of package **sen2r**! See the announcement [here](https://l
 * `tiles_intersects()`: when an extent is loaded, now only required tiles are automatically used, instead than all the overlapping ones.
 
 ### Update dependencies
-* after [V8 major update](https://www.r-bloggers.com/a-major-upgrade-of-the-v8-package/), [Installation page](http://sen2r.ranghetti.info/articles/installation.html) was edited to refer to `v8` instead than to `v8-3.14`
+* after [V8 major update](https://www.r-bloggers.com/2019/02/a-major-upgrade-of-the-v8-package/), [Installation page](http://sen2r.ranghetti.info/articles/installation.html) was edited to refer to `v8` instead than to `v8-3.14`
 
 ### Bug fixing:
 * Fix bug in SciHub login
