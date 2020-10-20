@@ -22,6 +22,8 @@ testthat::test_that(
   }
 )
 
+testthat::skip_if_not(check_scihub_connection(), "SciHub server is not reachable")
+
 if (test_install_sen2cor) {
   
   testthat::test_that(
@@ -180,6 +182,7 @@ testthat::test_that(
 )
 
 
+
 context("Test Sen2Cor")
 testthat::skip_on_cran()
 testthat::skip_on_travis()
@@ -198,7 +201,7 @@ s2_l1c_prods <- file.path(safe_dir, c(
 
 testthat::test_that(
   "Tests that Sen2Cor does not run if an existing corresponding L2A product exists", {
-
+    
     testthat::expect_true(dir.exists(s2_l1c_prods[1])) # test-s2_download.R
     s2_l2a_prod1 <- list.files(
       safe_dir,
@@ -229,10 +232,10 @@ testthat::test_that(
 
 
 if (test_sen2cor) {
-
+  
   testthat::test_that(
     "Tests a single Sen2Cor run", {
-
+      
       testthat::expect_true(dir.exists(s2_l1c_prods[2])) # test-s2_download.R
       s2_l2a_prod2 <- list.files(
         safe_out_dir,
@@ -255,10 +258,10 @@ if (test_sen2cor) {
       )
       testthat::expect_true(dir.exists(sen2cor_out))
       testthat::expect_gt(run_time["elapsed"], 60)
-
+      
       # test that DEM was downloaded
       testthat::expect_length(list.files(demdir, "^srtm_3[89]_03\\.tif$"), 2)
-
+      
       # test that dem was generated
       aux_meta_ex <- raster_metadata(file.path(
         sen2cor_out,
@@ -275,7 +278,7 @@ if (test_sen2cor) {
         )
       )
       testthat::expect_equal(aux_meta_ex$outformat, "JP2OpenJPEG")
-
+      
       # test raster metadata
       exp_meta_ex <- raster_metadata(file.path(
         sen2cor_out,
@@ -289,7 +292,7 @@ if (test_sen2cor) {
         c(499980, 5090220, 609780, 5200020),
       )
       testthat::expect_equal(exp_meta_ex$outformat, "JP2OpenJPEG")
-
+      
       # test SAFE metadata
       safe_metadata <- safe_getMetadata(sen2cor_out, format = "list")
       testthat::expect_is(safe_metadata, "list")
@@ -312,14 +315,14 @@ if (test_sen2cor) {
       testthat::expect_equal(safe_metadata$utm, "32N")
       testthat::expect_equal(safe_metadata$direction, "DESCENDING")
       testthat::expect_equal(safe_metadata$orbit_n, "22")
-
+      
     }
   )
-
-
+  
+  
   testthat::test_that(
     "Tests a multicore Sen2Cor run", {
-
+      
       testthat::expect_true(all(dir.exists(s2_l1c_prods)))
       run_time <- system.time(
         sen2cor_out <- sen2cor(
@@ -332,14 +335,14 @@ if (test_sen2cor) {
       )
       testthat::expect_true(all(dir.exists(sen2cor_out)))
       testthat::expect_gt(run_time["elapsed"], 60)
-
+      
       # test that dem was not generated
       testthat::expect_true(all(!file.exists(paste0(
         sen2cor_out,
         "/GRANULE/L2A_T32TN",c("R","S"),"_A017780_20200801T101400/",
         "AUX_DATA/T32TN",c("R","S"),"_20200801T101400_DEM_10m.jp2"
       ))))
-
+      
       # test raster metadata
       sen2cor_out <- sort(sen2cor_out)
       exp_meta_ex <- raster_metadata(file.path(
@@ -354,7 +357,7 @@ if (test_sen2cor) {
         c(499980, 5090220, 609780, 5200020)
       )
       testthat::expect_equal(exp_meta_ex$outformat, "JP2OpenJPEG")
-
+      
       # test SAFE metadata
       safe_metadata <- safe_getMetadata(sen2cor_out)
       testthat::expect_is(safe_metadata, "data.table")
@@ -377,10 +380,10 @@ if (test_sen2cor) {
       testthat::expect_equal(safe_metadata$utm, rep("32N",2))
       testthat::expect_equal(safe_metadata$direction, rep("DESCENDING",2))
       testthat::expect_equal(safe_metadata$orbit_n, rep("22",2))
-
+      
     }
   )
-
+  
   unlink(safe_out_dir, recursive = TRUE)
-
+  
 }

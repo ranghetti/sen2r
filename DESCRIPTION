@@ -61,5 +61,5 @@ SystemRequirements: GDAL (>= 2.1.2), PROJ (>= 4.9.1), GEOS (>= 3.4.2),
   Cairo, Curl, NetCDF, jq, Protocol Buffers, V8, OpenSSL, Libxml2.
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Language: en-GB

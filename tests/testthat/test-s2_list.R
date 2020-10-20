@@ -3,6 +3,27 @@ testthat::skip_on_cran()
 # testthat::skip_on_travis()
 
 testthat::test_that(
+  "Tests on s2_list - Error if internet is down", {
+    testthat::expect_error(
+      httptest::without_internet({
+        s2_list(
+          tile = "32TNR",
+          time_interval = as.Date("2017-05-01"),
+          orbit = "065",
+          apihub = tests_apihub_path
+        )
+      }),
+      regexp = gsub(
+        " ", "[ \n]",
+        "[Ii]nternet connection or SciHub may be down"
+      )
+    )
+  }
+)
+
+testthat::skip_if_not(check_scihub_connection(), "SciHub server is not reachable")
+
+testthat::test_that(
   "Tests on s2_list - Single tile, single orbit, no pos", {
     s2_list_test <- s2_list(
       tile = "32TNR",
