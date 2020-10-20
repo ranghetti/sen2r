@@ -75,8 +75,9 @@ safe_is_online <- function(s2_prodlist = NULL, apihub = NA, verbose = TRUE) {
       ), as = "parsed", encoding = "UTF-8")), 
       error = function(e) {
         print_message(
-          type = "warning",
-          "Some error occurred (the Copernicus API Hub may be down)."
+          type = "error",
+          "Impossible to reach the SciHub server ",
+          "(internet connection or SciHub may be down)." 
         )
         NA
       }

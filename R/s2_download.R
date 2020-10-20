@@ -232,6 +232,15 @@ s2_download <- function(
   # to avoid NOTE on check
   i <- mission <- level <- sensing_datetime <- id_orbit <- id_tile <- NULL
   
+  # Check connection
+  if (!check_scihub_connection()) {
+    print_message(
+      type = "error", 
+      "Impossible to reach the SciHub server ",
+      "(internet connection or SciHub may be down)." 
+    )
+  }
+  
   # read credentials
   if (length(s2_prodlist) > 0) {
     creds <- read_scihub_login(apihub)
@@ -335,8 +344,8 @@ s2_download <- function(
         suppressWarnings(file.remove(paste0(zip_path,".aria2")))
         print_message(
           type = "error",
-          "Download of file", link, "failed more than 10 times. ",
-          "Internet connection or SciHub may be down."
+          "Download of file", link, "failed more than 10 times ",
+          "(internet connection or SciHub may be down)."
         )
       } else {
         # check md5
