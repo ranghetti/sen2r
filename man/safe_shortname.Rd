@@ -12,6 +12,7 @@ safe_shortname(
   tiles = NULL,
   force_tiles = NULL,
   full.name = TRUE,
+  allow_duplicated = FALSE,
   set.seed = NULL,
   multiple_names = NULL,
   abort = FALSE
@@ -37,6 +38,10 @@ band 08A with \code{res = '20m'} and \code{res = '60m'}.}
 
 \item{full.name}{Logical value: if TRUE (default), all the input path
 is maintained (if existing); if FALSE, only basename is returned.}
+
+\item{allow_duplicated}{Logical value: if TRUE, duplicated values are
+maintained; if FALSE (default), in case of duplicated value a suffix is
+added to the tile ID (see \code{add_tile_suffix()}).}
 
 \item{set.seed}{Deprecated (no more used).}
 

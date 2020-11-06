@@ -72,7 +72,7 @@ sen2r_getElements <- function(s2_names, format="data.table", abort=TRUE) {
     metadata$type <- ifelse(
       !grepl(fs2nc_regex$regex,s2_names), "unrecognised",
       ifelse(
-        grepl("[0-9]{2}[A-Z]{3}",metadata$extent_name), "tile",
+        grepl("[0-9]{2}[A-Z]{3}[a-z]?",metadata$extent_name), "tile",
         ifelse(
           metadata$extent_name=="", "merged", "clipped"
         )

@@ -120,6 +120,9 @@ s2_download <- function(
   s2_prodlist <- as(s2_prodlist, "safelist")
   # TODO add input checks
   s2_meta <- safe_getMetadata(s2_prodlist, info = "nameinfo")
+  # if (!is.null(attr(s2_prodlist, "footprint"))) {
+  #   s2_meta[,footprint:=attr(s2_prodlist, "footprint")]
+  # }
   
   # check input server
   s2_server <- ifelse(
@@ -270,15 +273,25 @@ s2_download <- function(
     zip_path <- file.path(outdir, paste0(names(s2_prodlist[i]),".zip"))
     safe_path <- gsub("\\.zip$", "", zip_path)
     
-    # regular expression to detect if equivalent products already exist
-    safe_regex <- s2_meta[i,paste0(
-      "^S",mission,"\\_MSIL",level,"\\_",strftime(sensing_datetime,"%Y%m%dT%H%M%S"),
-      "\\_N[0-9]{4}\\_R",id_orbit,"\\_T",id_tile,"\\_[0-9]{8}T[0-9]{6}\\.SAFE$"
-    )]
-    safe_existing <- list.files(dirname(zip_path), safe_regex, full.names = TRUE)
+    # # regular expression to detect if equivalent products already exist
+    # safe_regex <- s2_meta[i,paste0(
+    #   "^S",mission,"\\_MSIL",level,"\\_",strftime(sensing_datetime,"%Y%m%dT%H%M%S"),
+    #   "\\_N[0-9]{4}\\_R",id_orbit,"\\_T",id_tile,"\\_[0-9]{8}T[0-9]{6}\\.SAFE$"
+    # )]
+    # safe_existing <- list.files(dirname(zip_path), safe_regex, full.names = TRUE)
+    # safe_existing <- safe_existing[safe_isvalid(safe_existing)]
     
-    if (any(overwrite == TRUE, length(safe_existing) == 0)) {
-      
+    # if footprint exists, check if existing SAFEs are actually equivalent
+    if (!is.null(s2_meta$footprint)) {
+      safe_existing_footprint <- safe_getMetadata(safe_existing, "footprint")
+      safe_existing_centroid <- st_centroid(st_transform(st_as_sfc(safe_existing_footprint, crs = 4326), 3857))
+      safe_centroid <- st_centroid(st_transform(st_as_sfc(s2_meta[i,footprint], crs = 4326), 3857))
+      centroid_distance <- st_distance(safe_existing_centroid, safe_centroid)[1,1]
+      # TODO
+    }
+    
+    if (any(overwrite == TRUE, !dir.exists(safe_path))) {
+    
       print_message(
         type = "message",
         date = TRUE,
@@ -392,7 +405,7 @@ s2_download <- function(
       }
       
     } else {
-      
+
       print_message(
         type = "message",
         date = TRUE,
@@ -400,11 +413,13 @@ s2_download <- function(
         " of ",length(s2_prodlist)," ",
         "since the corresponding folder already exists."
       )
+
       
-      safe_existing_meta <- safe_getMetadata(safe_existing, info = "nameinfo")
-      safe_newname <- safe_existing_meta$name[
-        order(nn(safe_existing_meta$creation_datetime), decreasing = TRUE)[1]
-        ]
+      # safe_existing_meta <- safe_getMetadata(safe_existing, info = "nameinfo")
+      # safe_newname <- safe_existing_meta$name[
+      #   order(nn(safe_existing_meta$creation_datetime), decreasing = TRUE)[1]
+      #   ]
+      safe_newname <- basename(safe_path)
       
     }
     
