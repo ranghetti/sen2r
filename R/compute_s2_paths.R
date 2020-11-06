@@ -874,7 +874,7 @@ compute_s2_paths <- function(pm,
       list(
         "L1C" = file.path(
           pm$path_l1c,
-          names(s2_list_l1c)[unlist(
+          basename(names(s2_list_l1c))[unlist(
             lapply(
               tiles_basenames_av[safe_dt_av$level=="1C"],
               function(x){length(grep(x,unlist(new_paths[["tiles"]]))) > 0}
@@ -883,7 +883,7 @@ compute_s2_paths <- function(pm,
         ),
         "L2A" = file.path(
           pm$path_l2a,
-          names(s2_list_l2a)[unlist(
+          basename(names(s2_list_l2a))[unlist(
             lapply(
               tiles_basenames_av[safe_dt_av$level=="2A"],
               function(x){length(grep(x,unlist(new_paths[["tiles"]]))) > 0}
