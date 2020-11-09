@@ -63,7 +63,7 @@
 #' @importFrom methods is
 #' @importFrom sf st_as_sfc st_sfc st_point st_as_text st_bbox st_coordinates
 #'  st_geometry st_intersection st_geometry st_convex_hull st_transform st_cast
-#'  st_union st_simplify
+#'  st_union st_simplify st_centroid
 #' @importFrom httr RETRY authenticate content
 #' @importFrom XML htmlTreeParse saveXML xmlRoot
 #' @importFrom utils head read.table
@@ -306,7 +306,7 @@ s2_list <- function(spatial_extent = NULL,
   if (nrow(out_dt) == 0) {return(as(setNames(character(0), character(0)), "safelist"))}
   # compute date (to ignore duplicated dates)
   out_dt[,date := as.Date(substr(as.character(out_dt$sensing_datetime), 1, 10))]
-
+  
   if (nrow(out_dt) == 0) {return(as(setNames(character(0), character(0)), "safelist"))}
   out_names <- names(out_dt)
   # first, order by level (L2A, then L1C) and ingestion time (newers first)
@@ -322,7 +322,13 @@ s2_list <- function(spatial_extent = NULL,
     out_dt <- out_dt[grepl("^2Ap?$", level),]
   } # for level = "auto", do nothing because unuseful products are filtered below
   # filter (univocity)
-  out_dt <- out_dt[,head(.SD, 1), by = .(date, id_tile, id_orbit)]
+  suppressWarnings({
+    out_dt[,centroid:=st_centroid(st_as_sfc(footprint, crs = 4326))]
+  })
+  out_dt <- out_dt[,head(.SD, 1), by = .(
+    date, id_tile, id_orbit, 
+    apply(round(st_coordinates(centroid), 2), 1, paste, collapse = " ")
+  )]
   out_dt <- out_dt[,out_names,with=FALSE]
   if (nrow(out_dt) == 0) {return(as(setNames(character(0), character(0)), "safelist"))}
   out_dt <- out_dt[order(sensing_datetime),]

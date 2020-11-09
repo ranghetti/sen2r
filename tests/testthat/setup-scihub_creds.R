@@ -12,7 +12,11 @@ tests_apihub <- if (Sys.getenv("TRAVIS") == "true") {c(
 }
 
 # Use a temporary apihub file
-write_scihub_login(tests_apihub[1], tests_apihub[2], tests_apihub_path <- tempfile())
+write_scihub_login(
+  tests_apihub[1], tests_apihub[2],
+  tests_apihub_path <- tempfile(),
+  check = FALSE
+)
 
 # Return message
 message("Tests are run with SciHub user \"",tests_apihub[1],"\".")

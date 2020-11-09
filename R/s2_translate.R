@@ -147,7 +147,7 @@ s2_translate <- function(infile,
   # Retrieve xml required metadata
   infile_meta <- safe_getMetadata(
     infile, 
-    info = c("xml_main","xml_granules","utm","level","tiles", "jp2list"),
+    info = c("xml_main","xml_granules","utm","level","tiles", "jp2list", "footprint"),
     format = "list", simplify = TRUE
   )
   infile_dir = dirname(infile_meta$xml_main)
@@ -292,13 +292,41 @@ s2_translate <- function(infile,
           # extract vector of paths
           jp2_selbands <- file.path(infile_dir,jp2df_selbands[,"relpath"])
           
-          # create final vrt with all the bands (of select final raster with a single band)
-          if (length(jp2_selbands)>1) {
-            final_vrt_name <- ifelse(format=="VRT", out_name, paste0(tmpdir,"/",out_prefix,".vrt"))
+          
+          # define the steps to perform:
+          # 1. create a multiband stack
+          do_step1 <- length(jp2_selbands)>1
+          # 2. mask nodata values if the tile does not completely cover the orbit
+          infile_footprint <- st_transform(
+            st_as_sfc(infile_meta$footprint, crs = 4326), 
+            st_crs2(sel_utmzone)
+          )
+          infile_area <- sum(st_area(infile_footprint))
+          do_step2 <- infile_area < 109e3^2*units::ud_units$m^2
+          # 3. convert the final VRT to a physical format
+          do_step3 <- format != "VRT"
+          
+          vrt1_path <- if (!do_step1) { # skip step 1
+            jp2_selbands 
+          } else if (all(!do_step2, !do_step3)) { # step 1 is the last
+            out_name
+          } else { # perform step 1
+            paste0(tmpdir,"/",out_prefix,"_step1.vrt")
+          }
+          vrt2_path <- if (!do_step2) { # skip step 2
+            vrt1_path
+          } else if (!do_step3) { # step 1 is the last
+            out_name
+          } else { # perform step 2
+            paste0(tmpdir,"/",out_prefix,"_step2.vrt")
+          }
+          
+          # step 1
+          if (do_step1) {
             gdalUtil(
               "buildvrt",
               source = jp2_selbands,
-              destination = final_vrt_name,
+              destination = vrt1_path,
               options = c(
                 "-separate",
                 "-resolution", "highest",
@@ -307,17 +335,36 @@ s2_translate <- function(infile,
               quiet = TRUE
             )
             if (vrt_rel_paths==TRUE) {
-              gdal_abs2rel(final_vrt_name)
+              gdal_abs2rel(vrt1_path)
             }
-          } else {
-            final_vrt_name <- jp2_selbands
           }
           
-          # create output file (or copy vrt file)
-          if (format != "VRT" | length(jp2_selbands)==1) {
+          # step 2
+          if (do_step2) {
+            cutline_path <- paste0(tmpdir,"/",out_prefix,"_cutline.gpkg")
+            st_write(infile_footprint, cutline_path, quiet = TRUE)
+            gdalUtil(
+              "warp",
+              source = vrt1_path,
+              destination = vrt2_path,
+              options = c(
+                "-cutline", cutline_path,
+                "-of", "VRT",
+                if (!is.na(sel_na)) {c("-dstnodata", sel_na)}
+              ),
+              quiet = TRUE
+            )
+            if (vrt_rel_paths==TRUE) {
+              gdal_abs2rel(vrt2_path)
+            }
+          }
+          
+          
+          # step 3
+          if (do_step3 | all(!do_step1, !do_step2)) {
             gdalUtil(
               "translate",
-              source = final_vrt_name,
+              source = vrt2_path,
               destination = out_name,
               options = c(
                 "-of", format,
@@ -330,7 +377,7 @@ s2_translate <- function(infile,
               ),
               quiet = TRUE
             )
-            if (format == "VRT" & vrt_rel_paths==TRUE) {
+            if (!do_step3 & vrt_rel_paths==TRUE) {
               gdal_abs2rel(out_name)
             }
           }

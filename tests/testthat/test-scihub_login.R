@@ -1,6 +1,7 @@
 context("check connection - specific function")
 testthat::skip_on_cran()
 testthat::skip_on_travis()
+testthat::skip_if_not(check_scihub_connection(), "SciHub server is not reachable")
 
 test_that("check internet connection on internal function", {
   expect_equal(check_scihub_connection(), TRUE)

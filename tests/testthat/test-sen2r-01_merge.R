@@ -1,6 +1,7 @@
 context("Test s2_merge and translate when stitching 2 tiles with no clipping")
 testthat::skip_on_cran()
 # testthat::skip_on_travis() # because required SAFE do not exists
+testthat::skip_if_not(check_scihub_connection(), "SciHub server is not reachable")
 
 testthat::test_that(
   "Tests on merge all found tiles in offline mode", {

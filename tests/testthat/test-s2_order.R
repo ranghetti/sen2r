@@ -2,6 +2,36 @@ context("Test s2_order() adn safe_is_online()")
 testthat::skip_on_cran()
 # testthat::skip_on_travis()
 
+testthat::test_that(
+  "Test ordering without internet", {
+    s2_list_0 <- c(
+      "S2A_MSIL2A_20200501T102031_N0214_R065_T32TNR_20200501T134143.SAFE" = 
+        "https://scihub.copernicus.eu/apihub/odata/v1/Products('3191642d-4818-4e23-ba54-0c0b231e13cf')/$value"
+    )
+    testthat::expect_error(
+      httptest::without_internet({
+          safe_is_online(s2_list_0, apihub = tests_apihub_path)
+      }),
+      regexp = gsub(
+        " ", "[ \n]",
+        "[Ii]nternet connection or SciHub may be down"
+      )
+    )
+    testthat::expect_error(
+      httptest::without_internet({
+        s2_order(s2_list_0, apihub = tests_apihub_path)
+      }),
+      regexp = gsub(
+        " ", "[ \n]",
+        "[Ii]nternet connection or SciHub may be down"
+      )
+    )
+  }
+)
+
+testthat::skip_if_not(check_scihub_connection(), "SciHub server is not reachable")
+
+
 # NOTE: these tests are thought to test two situations, one for available products,
 # another for products on LTA. However, situations could change (e.g. a product
 # on LTA can be ordered and made available between two tests), so we only test
@@ -13,16 +43,16 @@ testthat::test_that(
   "Test ordering already existing products", {
     # s2_list_1 <- s2_list(
     #   tile = "32TNR",
-    #   time_interval = as.Date(c("2019-05-01", "2019-05-15")),
+    #   time_interval = as.Date(c("2020-05-01", "2020-05-15")),
     #   orbit = "065"
     # )
     s2_list_1 <- c(
-      "S2B_MSIL2A_20190502T102029_N0211_R065_T32TNR_20190502T134110.SAFE" = 
-        "https://scihub.copernicus.eu/apihub/odata/v1/Products('e1b01006-f88a-4bee-89c1-d7d5f3267050')/$value",
-      "S2A_MSIL2A_20190507T102031_N0212_R065_T32TNR_20190507T134405.SAFE" = 
-        "https://scihub.copernicus.eu/apihub/odata/v1/Products('46aba83c-9538-4e86-8ec6-34e10d1d7adb')/$value",
-      "S2B_MSIL2A_20190512T102029_N0212_R065_T32TNR_20190512T134103.SAFE" = 
-        "https://scihub.copernicus.eu/apihub/odata/v1/Products('9c4f0595-d89f-41f5-810d-395f868c8148')/$value"
+      "S2A_MSIL2A_20200501T102031_N0214_R065_T32TNR_20200501T134143.SAFE" = 
+        "https://scihub.copernicus.eu/apihub/odata/v1/Products('3191642d-4818-4e23-ba54-0c0b231e13cf')/$value",
+      "S2B_MSIL2A_20200506T101559_N0214_R065_T32TNR_20200506T145433.SAFE" = 
+        "https://scihub.copernicus.eu/apihub/odata/v1/Products('c5f023bb-259b-464a-bcf3-44340e0d8595')/$value",
+      "S2A_MSIL2A_20200511T102031_N0214_R065_T32TNR_20200511T130304.SAFE" = 
+        "https://scihub.copernicus.eu/apihub/odata/v1/Products('de28287d-4546-493b-8516-4cb27bb21a02')/$value"
     )
     
     # test safe_is_online()

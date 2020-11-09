@@ -23,6 +23,29 @@ s2_l2a_list <- c(
 )
 
 testthat::test_that(
+  "Tests on s2_download - Error if internet is down", {
+    testthat::expect_error(
+      httptest::without_internet(suppressWarnings({
+        s2_download(
+          s2_l2a_list,
+          downloader = "builtin",
+          outdir = safe_dir,
+          apihub = tests_apihub_path,
+          service = "dhus",
+          overwrite = test_download
+        )
+      })),
+      regexp = gsub(
+        " ", "[ \n]",
+        "[Ii]nternet connection or SciHub may be down"
+      )
+    )
+  }
+)
+
+testthat::skip_if_not(check_scihub_connection(), "SciHub server is not reachable")
+
+testthat::test_that(
   "Tests on s2_download - Built-in downloader, dhus service", {
     
     suppressWarnings(s2_l2a_downloaded <- s2_download(

@@ -321,8 +321,8 @@
 #' @importFrom geojsonio geojson_json
 #' @importFrom jsonlite fromJSON toJSON
 #' @importFrom foreach foreach "%do%" "%dopar%"
-#' @importFrom sf st_as_sfc st_cast st_combine st_crs st_intersects st_is_valid
-#'  st_read st_transform st_union
+#' @importFrom sf st_as_sfc st_cast st_centroid st_combine st_coordinates
+#'  st_crs st_intersects st_is_valid st_read st_transform st_union
 #' @importFrom methods formalArgs is
 #' @importFrom stats na.omit setNames
 #' @export
@@ -902,6 +902,13 @@ sen2r <- function(param_list = NULL,
       "\"extent_name\" cannot have the same structure of a tile ID ",
       "(two numeric and by three uppercase character values)."
     )
+  } else if (grepl("^[0-9A-Z]{5}[a-z]$",extent_name)) {
+    print_message(
+      type = "error",
+      "\"extent_name\" cannot have the same structure of a tile ID ",
+      "(two numeric and by three uppercase character values)",
+      "followed by a lowercase letter."
+    )
   } else if (grepl("[\\.\\_]",extent_name)) {
     print_message(
       type = "error",
@@ -1195,7 +1202,7 @@ sen2r <- function(param_list = NULL,
     s2_lists_footprints <- lapply(seq_along(s2_lists_footprints), function(i) {
       s2_lists_footprints[[i]][!s2_lists_whichna[[i]]]
     })
-
+    
   }
   s2_list <- unlist(s2_lists)[!duplicated(unlist(lapply(s2_lists, names)))]
   s2_list_footprints <- unlist(s2_lists_footprints)[!duplicated(unlist(lapply(s2_lists, names)))]
@@ -1238,31 +1245,40 @@ sen2r <- function(param_list = NULL,
   }
   s2_dt[,"lta":=if (is.null(s2_list_islta)) {FALSE} else {s2_list_islta}]
   s2_dt[,c("name","url"):=list(nn(names(s2_list)),nn(s2_list))]
+  s2_dt_centroid <- round(st_coordinates(
+    st_centroid(st_transform(st_as_sfc(s2_dt$footprint, crs = 4326), 3857))
+  ), -3) # rounded to 1 km
+  s2_dt[,c("centroid_x", "centroid_y") := list(s2_dt_centroid[,"X"], s2_dt_centroid[,"Y"])]
   
   # list existing products and get metadata
-  s2_existing_list <- list.files(unique(c(pm$path_l1c,pm$path_l2a)), "\\.SAFE$")
+  s2_existing_list <- list.files(unique(c(pm$path_l1c,pm$path_l2a)), "\\.SAFE$", full.names = TRUE)
   if (length(s2_existing_list) > 0 & pm$online == TRUE) {
     s2_isvalid <- safe_isvalid(s2_existing_list, check_file = FALSE)
     s2_existing_list <- s2_existing_list[s2_isvalid]
     s2_existing_dt <- safe_getMetadata(
       s2_existing_list, 
-      info = c("nameinfo"), format = "data.table"
+      info = c("name", "mission", "level", "sensing_datetime", "id_orbit", 
+               "id_tile", "creation_datetime", "footprint"), 
+      format = "data.table"
     )
-    
+    s2_existing_dt_centroid <- round(st_coordinates(
+      st_centroid(st_transform(st_as_sfc(s2_existing_dt$footprint, crs = 4326), 3857))
+    ), -3) # rounded to 1 km
+    s2_existing_dt[,c("centroid_x", "centroid_y") := list(s2_existing_dt_centroid[,"X"], s2_existing_dt_centroid[,"Y"])]
     # make a vector with only metadata to be used for the comparison
     s2_meta_pasted <- s2_dt[,list("V1" = paste(
       mission,
       level,
       strftime(sensing_datetime,"%y%m%d"),
       id_orbit,
-      ifelse(version=="compact", id_tile, "oldname")
+      centroid_x, centroid_y
     ))]$V1
     s2_existing_meta_pasted <- s2_existing_dt[,list("V1" = paste(
       mission,
       level,
       strftime(sensing_datetime,"%y%m%d"),
       id_orbit,
-      ifelse(version=="compact", id_tile, "oldname_existing")
+      centroid_x, centroid_y
     ))]$V1
     s2_existing_list_touse <- s2_existing_dt[s2_existing_meta_pasted %in% s2_meta_pasted,]$name
     # s2_existing_list_touse cannot contain oldname products, since they are
@@ -1273,7 +1289,7 @@ sen2r <- function(param_list = NULL,
     if (!pm$overwrite_safe) {
       s2_dt[
         !is.na(match(s2_meta_pasted, s2_existing_meta_pasted)),
-        name := s2_existing_list[na.omit(match(s2_meta_pasted, s2_existing_meta_pasted))]
+        name := basename(s2_existing_list)[na.omit(match(s2_meta_pasted, s2_existing_meta_pasted))]
         ]
       s2_dt[!is.na(match(s2_meta_pasted, s2_existing_meta_pasted)), c("url","lta"):=list("",FALSE)]
     }
@@ -1289,7 +1305,8 @@ sen2r <- function(param_list = NULL,
   }
   s2_dt <- s2_dt[!duplicated(paste(
     prod_type, version, mission, level,
-    sensing_datetime, id_orbit, ifelse(version=="compact", id_tile, "oldname")
+    sensing_datetime, id_orbit,
+    centroid_x, centroid_y
   )),]
   
   # continue editing metadata
@@ -1794,6 +1811,11 @@ sen2r <- function(param_list = NULL,
             }
           }
           
+          # assign footprints 
+          s2_to_download_l2a <- as(data.table(
+            as.data.table(as(s2_to_download_l2a, "safelist")),
+            footprint = s2_dt[match(names(s2_to_download_l2a), name), footprint]
+          ), "safelist")
           s2_downloaded_l2a <- s2_download(
             s2_to_download_l2a,
             outdir = path_l2a,
@@ -1879,6 +1901,11 @@ sen2r <- function(param_list = NULL,
             
           }
           
+          # assign footprints 
+          s2_to_download_l1c <- as(data.table(
+            as.data.table(as(s2_to_download_l1c, "safelist")),
+            footprint = s2_dt[match(names(s2_to_download_l1c), name), footprint]
+          ), "safelist")
           s2_downloaded_l1c <- s2_download(
             s2_to_download_l1c,
             outdir = path_l1c,
@@ -1963,7 +1990,7 @@ sen2r <- function(param_list = NULL,
             mission,
             level,
             id_orbit,
-            id_tile=ifelse(is.na(id_tile),sample(1E5),id_tile), # if id_tile is not specified do not remove duplicates, because different products can rely to different tiles
+            centroid_x, centroid_y,
             as.Date(sensing_datetime)
           )]
         ),
@@ -2208,9 +2235,9 @@ sen2r <- function(param_list = NULL,
           )
         }
         
+        
         ## 4. Convert in vrt ##
         if (length(unlist(sel_s2names$req$tiles))>0) {
-          
           
           print_message(
             type = "message",
@@ -2219,51 +2246,24 @@ sen2r <- function(param_list = NULL,
           )
           
           dir.create(paths["tiles"], recursive=FALSE, showWarnings=FALSE)
-          tiles_l1c_names_out <- tiles_l2a_names_out <- character(0)
           
           if ("l1c" %in% pm$s2_levels) {
             list_l1c_prods <- list_prods[list_prods %in% l1c_prods]
-            for (sel_prod in sel_s2names$req$tiles$L1C) {
-              tiles_l1c_names_out <- c(
-                tiles_l1c_names_out,
-                trace_function(
-                  s2_translate,
-                  infile = sel_prod,
-                  outdir = paths["tiles"],
-                  tmpdir = file.path(tmpdir_groupA, "s2_translate_l1c"),
-                  rmtmp = FALSE,
-                  prod_type = list_l1c_prods,
-                  format = out_format["tiles"],
-                  compress = pm$compression,
-                  bigtiff = bigtiff,
-                  tiles = pm$s2tiles_selected,
-                  res = pm$res_s2,
-                  subdirs = pm$path_subdirs,
-                  overwrite = pm$overwrite,
-                  trace_files = unlist(sel_s2names$new$tiles)
-                )
-              )
-              # s2_translate(infile = sel_prod,
-              #              outdir = paths["tiles"],
-              #              prod_type = list_l1c_prods,
-              #              format = tiles_outformat,
-              #              res = pm$res_s2,
-              #              subdirs = pm$path_subdirs,
-              #              overwrite = pm$overwrite))
-              
-            }
-          }
-          list_l2a_prods <- list_prods[list_prods %in% l2a_prods]
-          for (sel_prod in sel_s2names$req$tiles$L2A) {
-            tiles_l2a_names_out <- c(
-              tiles_l2a_names_out,
-              trace_function(
+            tiles_l1c_names_out <- foreach(
+              sel_prod = sel_s2names$req$tiles$L1C,
+              sel_out = lapply(
+                seq_along(sel_s2names$exp$tiles[[1]]), 
+                function(i) {sapply(sel_s2names$exp$tiles, function(p) {p[i]})}
+              ),
+              .combine = c
+            ) %do% {
+              sel_tiles_l1c_names_out0 <- trace_function(
                 s2_translate,
                 infile = sel_prod,
-                tmpdir = file.path(tmpdir_groupA, "s2_translate_l2a"),
-                rmtmp = FALSE,
                 outdir = paths["tiles"],
-                prod_type = list_l2a_prods,
+                tmpdir = file.path(tmpdir_groupA, "s2_translate_l1c"),
+                rmtmp = FALSE,
+                prod_type = list_l1c_prods,
                 format = out_format["tiles"],
                 compress = pm$compression,
                 bigtiff = bigtiff,
@@ -2271,18 +2271,47 @@ sen2r <- function(param_list = NULL,
                 res = pm$res_s2,
                 subdirs = pm$path_subdirs,
                 overwrite = pm$overwrite,
-                trace_files = unlist(sel_s2names$new$tiles)
+                trace_files = remove_tile_suffix(sel_out)
               )
+              sel_tiles_l1c_names_out <- add_tile_suffix(
+                sel_tiles_l1c_names_out0, 
+                extract_tile_suffix(sel_out)[1]
+              )
+              file.rename(sel_tiles_l1c_names_out0, sel_tiles_l1c_names_out)
+              sel_tiles_l1c_names_out
+            }
+          }
+          list_l2a_prods <- list_prods[list_prods %in% l2a_prods]
+          tiles_l2a_names_out <- foreach(
+            sel_prod = sel_s2names$req$tiles$L2A,
+            sel_out = lapply(
+              seq_along(sel_s2names$exp$tiles[[1]]), 
+              function(i) {sapply(sel_s2names$exp$tiles, function(p) {p[i]})}
+            ),
+            .combine = c
+          ) %do% {
+            sel_tiles_l2a_names_out0 <- trace_function(
+              s2_translate,
+              infile = sel_prod,
+              tmpdir = file.path(tmpdir_groupA, "s2_translate_l2a"),
+              rmtmp = FALSE,
+              outdir = paths["tiles"],
+              prod_type = list_l2a_prods,
+              format = out_format["tiles"],
+              compress = pm$compression,
+              bigtiff = bigtiff,
+              tiles = pm$s2tiles_selected,
+              res = pm$res_s2,
+              subdirs = pm$path_subdirs,
+              overwrite = pm$overwrite,
+              trace_files = remove_tile_suffix(sel_out)
             )
-            # tiles_l2a_names_out <- c(
-            #   tiles_l2a_names_out,
-            #   s2_translate(infile = sel_prod,
-            #                outdir = paths["tiles"],
-            #                prod_type = list_l2a_prods,
-            #                format = tiles_outformat,
-            #                res = pm$res_s2,
-            #                subdirs = pm$path_subdirs,
-            #                overwrite = pm$overwrite))
+            sel_tiles_l2a_names_out <- add_tile_suffix(
+              sel_tiles_l2a_names_out0, 
+              extract_tile_suffix(sel_out)[1]
+            )
+            file.rename(sel_tiles_l2a_names_out0, sel_tiles_l2a_names_out)
+            sel_tiles_l2a_names_out
           }
           
           tiles_names_out <- c(if("l1c" %in% pm$s2_levels) {tiles_l1c_names_out},

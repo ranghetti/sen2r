@@ -71,6 +71,13 @@ read_scihub_login <- function(apihub_path=NA) {
 #' @export
 
 check_scihub_login <- function(username, password) {
+  if (!check_scihub_connection()) {
+    print_message(
+      type = "error",
+      "Impossible to reach the SciHub server ",
+      "(internet connection or SciHub may be down)." 
+    )
+  }
   check_creds <- RETRY(
     verb = "GET",
     url = "https://scihub.copernicus.eu/apihub/odata/v1",

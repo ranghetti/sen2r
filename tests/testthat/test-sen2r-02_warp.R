@@ -1,6 +1,7 @@
 context("Test warping (clip, reproject, resize)")
 testthat::skip_on_cran()
 # testthat::skip_on_travis() # because required SAFE do not exists
+testthat::skip_if_not(check_scihub_connection(), "SciHub server is not reachable")
 
 outdir_2 <- tempfile(pattern = "out_test2_")
 exp_outpath_2 <- file.path(

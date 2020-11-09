@@ -382,7 +382,7 @@ compute_s2_paths <- function(pm,
   # tiles
   if (steps_todo["tiles"]) {
     exp_paths[["tiles"]] <- sapply(list_prods, function(prod){
-      remove_duplicates(nn(
+      nn(
         unlist(c(
           sapply(
             if (prod %in% l1c_prods) {file.path(pm$path_l1c,names(s2_list_l1c))} else
@@ -414,8 +414,14 @@ compute_s2_paths <- function(pm,
           ),
           exi_paths$tiles[[prod]]
         ))
-      ))
+      )
     }, simplify = FALSE, USE.NAMES = TRUE)
+    # Add suffixes in case of splitted tiles (#353)
+    if (any(duplicated(exp_paths[["tiles"]][[1]]))) {
+      exp_paths[["tiles"]] <- sapply(exp_paths[["tiles"]], function(p) {
+        add_tile_suffix(p)
+      }, simplify = FALSE, USE.NAMES = TRUE)
+    }
   }
   
   # merged
@@ -810,7 +816,7 @@ compute_s2_paths <- function(pm,
             level,"_",
             strftime(sensing_date,"%Y%m%d"),"_",
             id_orbit,"_",
-            "[0-9]{2}[A-Z]{3}_",
+            "[0-9]{2}[A-Z]{3}[a-z]?_",
             prod,"_",
             substr(res,1,2),".",
             out_ext[output_dep["merged"]]
@@ -850,10 +856,25 @@ compute_s2_paths <- function(pm,
         "[126]0\\.",
         out_ext["tiles"]
       )]
+      # add proper suffixes in case of multiple SAFE for the same date-tile (#353)
+      if (any(duplicated(tiles_basenames_av))) {
+        for (sel_basename_av in names(table(tiles_basenames_av))[table(tiles_basenames_av)>1]) {
+          tiles_basenames_av[tiles_basenames_av==sel_basename_av] <- sapply(
+            letters[seq_len(sum(tiles_basenames_av==sel_basename_av))], 
+            function(l) {
+              gsub(
+                "_([0-9]{2}[A-Z]{3})_", 
+                paste0("_\\1",l,"_"), 
+                sel_basename_av
+              )
+            }
+          )
+        }
+      }
       list(
         "L1C" = file.path(
           pm$path_l1c,
-          names(s2_list_l1c)[unlist(
+          basename(names(s2_list_l1c))[unlist(
             lapply(
               tiles_basenames_av[safe_dt_av$level=="1C"],
               function(x){length(grep(x,unlist(new_paths[["tiles"]]))) > 0}
@@ -862,7 +883,7 @@ compute_s2_paths <- function(pm,
         ),
         "L2A" = file.path(
           pm$path_l2a,
-          names(s2_list_l2a)[unlist(
+          basename(names(s2_list_l2a))[unlist(
             lapply(
               tiles_basenames_av[safe_dt_av$level=="2A"],
               function(x){length(grep(x,unlist(new_paths[["tiles"]]))) > 0}
