@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Rename products using a shorten convention — safe_shortname • sen2r</title>
+<title>Add/remove suffixes for split tiles — add_tile_suffix • sen2r</title>
 
 
 <!-- jquery -->
@@ -39,13 +39,12 @@
 
 
 
-<meta property="og:title" content="Rename products using a shorten convention — safe_shortname" />
-<meta property="og:description" content="This function renames a Sentinel-2 product in order to
-obtain shorten names. See the details for the structure of the
-adopted schema (named &quot;sen2r naming convention&quot;).
-The function applies only to compact product names (not to single granule
-names), since it is thought to be applied to entire products.
-Old long names are no more supported." />
+<meta property="og:title" content="Add/remove suffixes for split tiles — add_tile_suffix" />
+<meta property="og:description" content="add_tile_suffix() adds specific suffixes to tile IDs
+in order to distinguish tiled filenames referring to different original
+SAFE products.
+remove_tile_suffix() removes existing suffixes from tile IDs.
+extract_tile_suffix() extracts suffixes from input paths." />
 
 
 
@@ -157,128 +156,60 @@ Old long names are no more supported." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Rename products using a shorten convention</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/safe_shortname.R'><code>R/safe_shortname.R</code></a></small>
-    <div class="hidden name"><code>safe_shortname.Rd</code></div>
+    <h1>Add/remove suffixes for split tiles</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/add_tile_suffix.R'><code>R/add_tile_suffix.R</code></a></small>
+    <div class="hidden name"><code>add_tile_suffix.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function renames a Sentinel-2 product in order to
-obtain shorten names. See the details for the structure of the
-adopted schema (named "sen2r naming convention").
-The function applies only to compact product names (not to single granule
-names), since it is thought to be applied to entire products.
-Old long names are no more supported.</p>
+    <p><code>add_tile_suffix()</code> adds specific suffixes to tile IDs
+in order to distinguish tiled filenames referring to different original
+SAFE products.</p>
+<p><code>remove_tile_suffix()</code> removes existing suffixes from tile IDs.</p>
+<p><code>extract_tile_suffix()</code> extracts suffixes from input paths.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>safe_shortname</span>(
-  <span class='kw'>prod_name</span>,
-  prod_type = <span class='kw'>NULL</span>,
-  ext = <span class='kw'>NULL</span>,
-  res = <span class='st'>"10m"</span>,
-  tiles = <span class='kw'>NULL</span>,
-  force_tiles = <span class='kw'>NULL</span>,
-  full.name = <span class='fl'>TRUE</span>,
-  allow_duplicated = <span class='fl'>FALSE</span>,
-  set.seed = <span class='kw'>NULL</span>,
-  multiple_names = <span class='kw'>NULL</span>,
-  abort = <span class='fl'>FALSE</span>
-)</pre>
+    <pre class="usage"><span class='fu'>add_tile_suffix</span>(<span class='kw'>paths</span>, <span class='kw'>suffix</span>)
+
+<span class='fu'>remove_tile_suffix</span>(<span class='kw'>paths</span>)
+
+<span class='fu'>extract_tile_suffix</span>(<span class='kw'>paths</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>prod_name</th>
-      <td><p>Input Sentinel-2 product name (it is not required
-that the file exists).</p></td>
+      <th>paths</th>
+      <td><p>Paths of the input tiled products</p></td>
     </tr>
     <tr>
-      <th>prod_type</th>
-      <td><p>(optional) Output product (default: <code>TOA</code> for L1C, <code>BOA</code>
-for L2A); see the details for the list of accepted products.</p></td>
-    </tr>
-    <tr>
-      <th>ext</th>
-      <td><p>(optional) Extension of the output filename (default: none).</p></td>
-    </tr>
-    <tr>
-      <th>res</th>
-      <td><p>(optional) Spatial resolution (one between '10m', '20m' or '60m');
-default is '10m'. Notice that, choosing '10m' or '20m', bands with lower
-resolution will be rescaled to <code>res</code>. Band 08 is used with <code>res = '10m'</code>,
-band 08A with <code>res = '20m'</code> and <code>res = '60m'</code>.</p></td>
-    </tr>
-    <tr>
-      <th>tiles</th>
-      <td><p>Deprecated (no more used).</p></td>
-    </tr>
-    <tr>
-      <th>force_tiles</th>
-      <td><p>Deprecated (no more used).</p></td>
-    </tr>
-    <tr>
-      <th>full.name</th>
-      <td><p>Logical value: if TRUE (default), all the input path
-is maintained (if existing); if FALSE, only basename is returned.</p></td>
-    </tr>
-    <tr>
-      <th>allow_duplicated</th>
-      <td><p>Logical value: if TRUE, duplicated values are
-maintained; if FALSE (default), in case of duplicated value a suffix is
-added to the tile ID (see <code><a href='add_tile_suffix.html'>add_tile_suffix()</a></code>).</p></td>
-    </tr>
-    <tr>
-      <th>set.seed</th>
-      <td><p>Deprecated (no more used).</p></td>
-    </tr>
-    <tr>
-      <th>multiple_names</th>
-      <td><p>Deprecated (no more used).</p></td>
-    </tr>
-    <tr>
-      <th>abort</th>
-      <td><p>Logical parameter: if TRUE, the function aborts in case
-<code>prod_type</code> is not recognised; if FALSE (default), a warning is shown.</p></td>
+      <th>suffix</th>
+      <td><p>Character (1-length): if provided, the specified suffix is
+appended to the tile ID of each path;
+if not provided (default), a sequential suffix is appended only to the tile
+ID of the duplicated paths.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Output product name</p>
+    <p>The input paths with/without the tile suffix.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><a href='https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/naming-convention'>ESA Sentinel-2 naming convention</a>
-is particularly long-winded.
-So, the convention here adopted, named "sen2r naming convention",
-follows this schema:</p>
-<p><code>S2mll_yyyymmdd_rrr_ttttt_ppp_rr.fff</code></p>
-<p>where:</p><ul>
-<li><p><code>S2mll</code> (length: 5) shows the mission ID (<code>S2A</code> or <code>S2B</code>) and the product level
-(<code>1C</code> or <code>2A</code>);</p></li>
-<li><p><code>yyyymmdd</code> (length: 8) is the sensing date (e.g. <code>20170603</code> for 2017-06-03) ; the
-hour is skipped, since a single sensor can not pass two times in a
-day on the same tile);</p></li>
-<li><p><code>rrr</code> (length: 3) is the relative orbit number (e.g. <code>022</code>);</p></li>
-<li><p><code>ttttt</code> (length: 5) is the tile number (e.g. <code>32TQQ</code>);</p></li>
-<li><p><code>ppp</code> (length: 3) is the output product, being one of these:
-<em>for level 1C:</em></p><ul>
-<li><p><code>TOA</code>: 13-bands Top-Of-Atmosphere Reflectance;
-<em>for level 2A:</em></p></li>
-<li><p><code>BOA</code>: 13-bands Bottom-Of-Atmosphere Reflectance;</p></li>
-<li><p><code>TCI</code>: True Colour Image (3-band RGB 8-bit image);</p></li>
-<li><p><code>AOT</code>: Aerosol Optical Thickness;</p></li>
-<li><p><code>WVP</code>: Water Vapour;</p></li>
-<li><p><code>SCL</code>: Scene Classification Map;</p></li>
-<li><p><code>CLD</code>: Quality Indicators for cloud probabilities;</p></li>
-<li><p><code>SNW</code>: Quality Indicators for snow probabilities;</p></li>
-<li><p><code>VIS</code>: TODO Visibility (used for AOT);</p></li>
-</ul></li>
-<li><p><code>rr</code> (length: 2) is the original minimum spatial resolution in metres
-(10, 20 or 60);</p></li>
-<li><p><code>fff</code> (length: variable, generally 3) is the file extension.</p></li>
-</ul>
-
+    <p>In some sporadic cases, a tiled Sentinel-2 image is split in two
+SAFE products (see e.g. products
+<a href='https://storage.cloud.google.com/gcp-public-data-sentinel-2/tiles/32/T/NL/S2A_MSIL1C_20200408T101021_N0209_R022_T32TNL_20200408T153254.SAFE/GRANULE/L1C_T32TNL_A025044_20200408T101022/QI_DATA/T32TNL_20200408T101021_PVI.jp2'><code>S2A_MSIL1C_20200408T101021_N0209_R022_T32TNL_20200408T153254</code></a> and
+<a href='https://storage.cloud.google.com/gcp-public-data-sentinel-2/tiles/32/T/NL/S2A_MSIL1C_20200408T101021_N0209_R022_T32TNL_20200408T171107.SAFE/GRANULE/L1C_T32TNL_A025044_20200408T101923/QI_DATA/T32TNL_20200408T101021_PVI.jp2'><code>S2A_MSIL1C_20200408T101021_N0209_R022_T32TNL_20200408T171107</code></a>).
+This split, probably a consequence of the division of the whole orbit image,
+creates ambiguity in the association among SAFE images and <code>sen2r</code> products,
+since the sen2r naming convention is not sufficient to manage them as separate
+products.
+So, in the definition of the filenames of intermediate tiled products
+(output of <code><a href='s2_translate.html'>s2_translate()</a></code>) it is necessary to add a suffix to be able to
+manage them separately and then merge them in <code><a href='s2_merge.html'>s2_merge()</a></code>.
+A lowercase letter ("a" and "b", but potentially "a" to "z") is used.
+Functions <code>add_tile_suffix()</code> and <code>remove_tile_suffix()</code> are used in the
+<code><a href='sen2r.html'>sen2r()</a></code> main code as a workaround.</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
@@ -291,11 +222,20 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473. DO
 URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
-    <p>Luigi Ranghetti, phD (2019) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
+    <p>Luigi Ranghetti, phD (2020) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>safe_shortname</span>(<span class='st'>"S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"</span>, ext=<span class='st'>"tif"</span>)
-</div><div class='output co'>#&gt; [1] "S2A1C_20170603_022_32TQQ_TOA_10.tif"</div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>safe_names</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(
+  <span class='st'>"S2A_MSIL2A_20200408T101021_N0214_R022_T32TNK_20200408T175711.SAFE"</span>,
+  <span class='st'>"S2A_MSIL2A_20200408T101021_N0214_R022_T32TNL_20200408T175711.SAFE"</span>,
+  <span class='st'>"S2A_MSIL2A_20200408T101021_N0214_R022_T32TNL_20200408T161405.SAFE"</span>
+)
+<span class='kw'>prod_names</span> <span class='op'>&lt;-</span> <span class='fu'><a href='safe_shortname.html'>safe_shortname</a></span>(<span class='kw'>safe_names</span>, ext = <span class='st'>".tif"</span>, allow_duplicated = <span class='fl'>TRUE</span>)
+</div><div class='output co'>#&gt; <span class='warning'>Warning: Length of shortname is wrong (probably "prod_type" or "res" has wrong</span>
+#&gt; <span class='warning'>length).</span></div><div class='input'>( <span class='kw'>prod_names_univoc</span> <span class='op'>&lt;-</span> <span class='fu'>add_tile_suffix</span>(<span class='kw'>prod_names</span>) )
+</div><div class='output co'>#&gt; <span class='error'>Error in add_tile_suffix(prod_names): non trovo la funzione "add_tile_suffix"</span></div><div class='input'>( <span class='kw'>prod_names_custom</span> <span class='op'>&lt;-</span> <span class='fu'>add_tile_suffix</span>(<span class='kw'>prod_names</span>, <span class='st'>"a"</span>) )
+</div><div class='output co'>#&gt; <span class='error'>Error in add_tile_suffix(prod_names, "a"): non trovo la funzione "add_tile_suffix"</span></div><div class='input'><span class='fu'>remove_tile_suffix</span>(<span class='kw'>prod_names_univoc</span>)
+</div><div class='output co'>#&gt; <span class='error'>Error in remove_tile_suffix(prod_names_univoc): non trovo la funzione "remove_tile_suffix"</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
