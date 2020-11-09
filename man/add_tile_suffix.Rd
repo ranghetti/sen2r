@@ -58,9 +58,9 @@ safe_names <- c(
   "S2A_MSIL2A_20200408T101021_N0214_R022_T32TNL_20200408T161405.SAFE"
 )
 prod_names <- safe_shortname(safe_names, ext = ".tif", allow_duplicated = TRUE)
-( prod_names_univoc <- add_tile_suffix(prod_names) )
-( prod_names_custom <- add_tile_suffix(prod_names, "a") )
-remove_tile_suffix(prod_names_univoc)
+( prod_names_univoc <- sen2r:::add_tile_suffix(prod_names) )
+( prod_names_custom <- sen2r:::add_tile_suffix(prod_names, "a") )
+sen2r:::remove_tile_suffix(prod_names_univoc)
 }
 \references{
 L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).

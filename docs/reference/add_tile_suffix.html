@@ -231,11 +231,15 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
   <span class='st'>"S2A_MSIL2A_20200408T101021_N0214_R022_T32TNL_20200408T161405.SAFE"</span>
 )
 <span class='kw'>prod_names</span> <span class='op'>&lt;-</span> <span class='fu'><a href='safe_shortname.html'>safe_shortname</a></span>(<span class='kw'>safe_names</span>, ext = <span class='st'>".tif"</span>, allow_duplicated = <span class='fl'>TRUE</span>)
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Length of shortname is wrong (probably "prod_type" or "res" has wrong</span>
-#&gt; <span class='warning'>length).</span></div><div class='input'>( <span class='kw'>prod_names_univoc</span> <span class='op'>&lt;-</span> <span class='fu'>add_tile_suffix</span>(<span class='kw'>prod_names</span>) )
-</div><div class='output co'>#&gt; <span class='error'>Error in add_tile_suffix(prod_names): non trovo la funzione "add_tile_suffix"</span></div><div class='input'>( <span class='kw'>prod_names_custom</span> <span class='op'>&lt;-</span> <span class='fu'>add_tile_suffix</span>(<span class='kw'>prod_names</span>, <span class='st'>"a"</span>) )
-</div><div class='output co'>#&gt; <span class='error'>Error in add_tile_suffix(prod_names, "a"): non trovo la funzione "add_tile_suffix"</span></div><div class='input'><span class='fu'>remove_tile_suffix</span>(<span class='kw'>prod_names_univoc</span>)
-</div><div class='output co'>#&gt; <span class='error'>Error in remove_tile_suffix(prod_names_univoc): non trovo la funzione "remove_tile_suffix"</span></div></pre>
+( <span class='kw'>prod_names_univoc</span> <span class='op'>&lt;-</span> <span class='kw'>sen2r</span>:::<span class='fu'>add_tile_suffix</span>(<span class='kw'>prod_names</span>) )
+</div><div class='output co'>#&gt; [1] "S2A2A_20200408_022_32TNK_BOA_10.tif" 
+#&gt; [2] "S2A2A_20200408_022_32TNLa_BOA_10.tif"
+#&gt; [3] "S2A2A_20200408_022_32TNLb_BOA_10.tif"</div><div class='input'>( <span class='kw'>prod_names_custom</span> <span class='op'>&lt;-</span> <span class='kw'>sen2r</span>:::<span class='fu'>add_tile_suffix</span>(<span class='kw'>prod_names</span>, <span class='st'>"a"</span>) )
+</div><div class='output co'>#&gt; [1] "S2A2A_20200408_022_32TNKa_BOA_10.tif"
+#&gt; [2] "S2A2A_20200408_022_32TNLa_BOA_10.tif"
+#&gt; [3] "S2A2A_20200408_022_32TNLb_BOA_10.tif"</div><div class='input'><span class='kw'>sen2r</span>:::<span class='fu'>remove_tile_suffix</span>(<span class='kw'>prod_names_univoc</span>)
+</div><div class='output co'>#&gt; [1] "S2A2A_20200408_022_32TNK_BOA_10.tif" "S2A2A_20200408_022_32TNL_BOA_10.tif"
+#&gt; [3] "S2A2A_20200408_022_32TNL_BOA_10.tif"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

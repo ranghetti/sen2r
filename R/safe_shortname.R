@@ -151,13 +151,13 @@ safe_shortname <- function(
     short_name <- add_tile_suffix(short_name)
   }
   
-  # check name length
-  if (any(s2_metadata[,validname] & nchar(short_name)!=31)) {
-    print_message(
-      type="warning",
-      "Length of shortname is wrong (probably \"prod_type\" or \"res\" ",
-      "has wrong length).")
-  }
+  # # check name length
+  # if (any(s2_metadata[,validname] & nchar(short_name)!=31)) {
+  #   print_message(
+  #     type="warning",
+  #     "Length of shortname is wrong (probably \"prod_type\" or \"res\" ",
+  #     "has wrong length).")
+  # }
   
   # add dirname and extension
   out_name <- ifelse(
