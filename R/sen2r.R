@@ -2016,20 +2016,22 @@ sen2r <- function(param_list = NULL,
           ),
           fill = TRUE
         )
-        s2_downloaded_dt_centroid <- round(st_coordinates(
-          st_centroid(st_transform(st_as_sfc(s2_downloaded_dt$footprint, crs = 4326), 3857))
-        ), -3) # rounded to 1 km
-        s2_downloaded_dt[,c("centroid_x", "centroid_y") := list(
-          s2_downloaded_dt_centroid[,"X"], 
-          s2_downloaded_dt_centroid[,"Y"]
-        )]
-        s2_downloaded_id <- s2_downloaded_dt[
-          ,paste(mission, level, sensing_datetime, id_orbit, centroid_x, centroid_y)
-          ]
-        sel_s2_dt[
-          match(s2_downloaded_id, sel_s2_dt_id), 
-          name:=names(c(s2_downloaded_l1c,s2_downloaded_l2a))
-          ]
+        if (nrow(s2_downloaded_dt)>0) {
+          s2_downloaded_dt_centroid <- round(st_coordinates(
+            st_centroid(st_transform(st_as_sfc(s2_downloaded_dt$footprint, crs = 4326), 3857))
+          ), -3) # rounded to 1 km
+          s2_downloaded_dt[,c("centroid_x", "centroid_y") := list(
+            s2_downloaded_dt_centroid[,"X"], 
+            s2_downloaded_dt_centroid[,"Y"]
+          )]
+          s2_downloaded_id <- s2_downloaded_dt[
+            ,paste(mission, level, sensing_datetime, id_orbit, centroid_x, centroid_y)
+            ]
+          sel_s2_dt[
+            match(s2_downloaded_id, sel_s2_dt_id), 
+            name:=names(c(s2_downloaded_l1c,s2_downloaded_l2a))
+            ]
+        }
       }
       
       # redefine sel_s2_list_l1c/l2a
