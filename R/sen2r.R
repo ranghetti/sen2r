@@ -1999,20 +1999,39 @@ sen2r <- function(param_list = NULL,
       if (pm$online == TRUE) {
         # replace SAFE names changed after download (i.e. updated creation date)
         sel_s2_dt_id <- sel_s2_dt[
-          ,paste(mission, level, sensing_datetime, id_orbit, id_tile)
+          ,paste(mission, level, sensing_datetime, id_orbit, centroid_x, centroid_y)
           ]
-        s2_downloaded_id <- c(
-          safe_getMetadata(s2_downloaded_l1c, info = "nameinfo")[
-            ,paste(mission, level, sensing_datetime, id_orbit, id_tile)
-            ],
-          safe_getMetadata(s2_downloaded_l2a, info = "nameinfo")[
-            ,paste(mission, level, sensing_datetime, id_orbit, id_tile)
-            ]
+        s2_downloaded_dt <- rbind(
+          safe_getMetadata(
+            file.path(path_l1c, names(s2_downloaded_l1c)), 
+            info = c("name", "mission", "level", "sensing_datetime", "id_orbit", 
+                     "id_tile", "creation_datetime", "footprint"), 
+            format = "data.table"
+          ),
+          safe_getMetadata(
+            file.path(path_l2a, names(s2_downloaded_l2a)), 
+            info = c("name", "mission", "level", "sensing_datetime", "id_orbit", 
+                     "id_tile", "creation_datetime", "footprint"), 
+            format = "data.table"
+          ),
+          fill = TRUE
         )
-        sel_s2_dt[
-          match(s2_downloaded_id, sel_s2_dt_id), 
-          name:=names(c(s2_downloaded_l1c,s2_downloaded_l2a))
-          ]
+        if (nrow(s2_downloaded_dt)>0) {
+          s2_downloaded_dt_centroid <- round(st_coordinates(
+            st_centroid(st_transform(st_as_sfc(s2_downloaded_dt$footprint, crs = 4326), 3857))
+          ), -3) # rounded to 1 km
+          s2_downloaded_dt[,c("centroid_x", "centroid_y") := list(
+            s2_downloaded_dt_centroid[,"X"], 
+            s2_downloaded_dt_centroid[,"Y"]
+          )]
+          s2_downloaded_id <- s2_downloaded_dt[
+            ,paste(mission, level, sensing_datetime, id_orbit, centroid_x, centroid_y)
+            ]
+          sel_s2_dt[
+            match(s2_downloaded_id, sel_s2_dt_id), 
+            name:=names(c(s2_downloaded_l1c,s2_downloaded_l2a))
+            ]
+        }
       }
       
       # redefine sel_s2_list_l1c/l2a
