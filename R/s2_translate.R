@@ -322,6 +322,7 @@ s2_translate <- function(infile,
           }
           
           # step 1
+browser()
           if (do_step1) {
             gdalUtil(
               "buildvrt",

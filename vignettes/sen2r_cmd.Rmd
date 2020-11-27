@@ -52,7 +52,7 @@ For example, the following code chunk would perform the following operations:
 ```{r eval=FALSE}
 # Set paths
 out_dir_1  <- tempfile(pattern = "sen2r_out_1_") # output folder
-safe_dir_1 <- tempfile(pattern = "sen2r_safe_")  # folder to store downloaded SAFE
+safe_dir <- tempfile(pattern = "sen2r_safe_")  # folder to store downloaded SAFE
 
 myextent_1 <- system.file("extdata/vector/barbellino.geojson", package = "sen2r") 
 
@@ -62,7 +62,7 @@ out_paths_1 <- sen2r(
   step_atmcorr = "l2a",
   extent = myextent_1,
   extent_name = "Barbellino",
-  timewindow = c(as.Date("2019-07-13"), as.Date("2019-07-25")),
+  timewindow = c(as.Date("2020-11-13"), as.Date("2020-11-25")),
   list_prods = c("BOA","SCL"),
   list_indices = c("NDVI","MSAVI2"),
   list_rgb = c("RGB432B"),
@@ -73,16 +73,16 @@ out_paths_1 <- sen2r(
 )
 ```
 ```
-[2020-02-05 10:53:53] #### Starting sen2r execution. ####
-[2020-02-05 10:53:57] Searching for available SAFE products on SciHub...
-[2020-02-05 10:54:02] Computing output names...
-[2020-02-05 10:54:03] Processing group 1 of 5...
-[2020-02-05 10:54:03] Starting to download the required level-2A SAFE products.
-[2020-02-05 10:54:03] Check if products are available for download...
-[2020-02-05 10:54:03] 1 Sentinel-2 images are already online.
-[2020-02-05 10:54:03] Downloading Sentinel-2 image 1 of 1
-                      (S2A_MSIL2A_20190703T101031_N0212_R022_T32TNS_20190703T134349.SAFE)...
-[2020-02-05 10:54:41] Download of level-2A SAFE products terminated.
+[2020-11-27 16:59:58] #### Starting sen2r execution. ####
+[2020-11-27 16:59:59] Searching for available SAFE products on SciHub...
+[2020-11-27 17:00:10] Computing output names...
+Linking to GEOS 3.7.1, GDAL 2.2.3, PROJ 4.9.3
+[2020-11-27 17:00:11] Processing group 1 of 5...
+[2020-11-27 17:00:11] Starting to download the required level-2A SAFE products.
+[2020-11-27 17:00:11] Check if products are available for download...
+[2020-11-27 17:00:11] Downloading Sentinel-2 image 1 of 1
+           (S2A_MSIL2A_20201114T101301_N0214_R022_T32TNS_20201114T120346.SAFE)...
+[2020-11-27 17:00:59] Download of level-2A SAFE products terminated.
 
 # (skipping most processing messages here)
 ```
@@ -94,19 +94,17 @@ a report summarising the conducted processing is issued at the end:
 ╟──────────────────────────────────────────────────────────────────────────────
 ║ Dates to be processed based on processing parameters: 5
 ║ Processing completed for: all expected dates.
-║ Outputs for: 2 out of 5 expected dates not created because cloudiness over
-║ the spatial extent is above 10%.
 ╚══════════════════════════════════════════════════════════════════════════════
-[2020-02-05 11:02:53] #### Execution of sen2r session terminated. ####
+[2020-11-27 17:10:30] #### sen2r session terminated. ####
 The processing chain can be re-launched with the command:
-  sen2r("/home/lb/.sen2r/proc_par/s2proc_20200205_105355.json")
+  sen2r("/home/lranghetti/.sen2r/proc_par/s2proc_20201127_165959.json")
 
 ```
 
 In this case, it shows that all the 5 S2 images satisfying the spatial-temporal 
 query were downloaded and properly processed. 
-However, outputs for two of those dates were not created because cloudiness 
-over the spatial extent was above the specified threshold. 
+<!--However, outputs for two of those dates were not created because cloudiness %
+over the spatial extent was above the specified threshold.-->
 
 S2 original SAFE images are stored in the folder specified by `safe_dir`, 
 and are not deleted after processing (unless the user sets also the argument 
@@ -116,11 +114,11 @@ and are not deleted after processing (unless the user sets also the argument
 list.files(safe_dir)
 ```
 ```
-[1] "S2A_MSIL2A_20190703T101031_N0212_R022_T32TNS_20190703T134349.SAFE"
-[2] "S2A_MSIL2A_20190706T102031_N0212_R065_T32TNS_20190706T134618.SAFE"
-[3] "S2A_MSIL2A_20190713T101031_N0213_R022_T32TNS_20190713T135651.SAFE"
-[4] "S2B_MSIL2A_20190708T101039_N0213_R022_T32TNS_20190708T133715.SAFE"
-[5] "S2B_MSIL2A_20190711T102029_N0213_R065_T32TNS_20190711T135545.SAFE"
+[1] "S2A_MSIL2A_20201114T101301_N0214_R022_T32TNS_20201114T120346.SAFE"
+[2] "S2A_MSIL2A_20201117T102321_N0214_R065_T32TNS_20201117T130408.SAFE"
+[3] "S2A_MSIL2A_20201124T101341_N0214_R022_T32TNS_20201124T115339.SAFE"
+[4] "S2B_MSIL2A_20201119T101319_N0214_R022_T32TNS_20201119T120649.SAFE"
+[5] "S2B_MSIL2A_20201122T102339_N0214_R065_T32TNS_20201122T122607.SAFE"
 ```
 
 Outputs are automatically subsetted and masked over the study area, 
@@ -136,9 +134,12 @@ list.files(out_dir_1)
 list.files(file.path(out_dir_1, "NDVI"))
 ```
 ```
-[1] "S2A2A_20190703_022_Barbellino_NDVI_10.tif" 
-[2] "S2A2A_20190706_065_Barbellino_NDVI_10.tif"
-[3] "S2B2A_20190708_022_Barbellino_NDVI_10.tif" "thumbnails"  
+[1] "S2A2A_20201114_022_Barbellino_NDVI_10.tif"
+[2] "S2A2A_20201117_065_Barbellino_NDVI_10.tif"
+[3] "S2A2A_20201124_022_Barbellino_NDVI_10.tif"
+[4] "S2B2A_20201119_022_Barbellino_NDVI_10.tif"
+[5] "S2B2A_20201122_065_Barbellino_NDVI_10.tif"
+[6] "thumbnails"                               
 ```
 
 _See [this vignette](outstructure.html) for more info about folder structure_
@@ -162,30 +163,28 @@ json_path_2 <- build_example_param_file()
 json_path_2
 ```
 ```
-[1] "/tmp/RtmpDLx7qh/file30ac6089ea3_sen2r_params.json"
+[1] "/tmp/RtmpHUtF1k/file9a625065871c_sen2r_params.json"
 ```
 ```{r eval=FALSE}
 out_paths_2 <- sen2r(param_list = json_path_2)
 ```
 ```
-[2020-02-05 11:58:09] #### Starting sen2r execution. ####
-[2020-02-05 11:58:09] Searching for available SAFE products on SciHub...
-[2020-02-05 11:58:12] Computing output names...
-[2020-02-05 11:58:13] Starting to download the required level-2A SAFE products.
-Images S2A_MSIL2A_20170703T101021_N0205_R022_T32TNS_20170703T101041.SAFE are 
-already on your system and will be skipped. Set "overwrite_safe" to TRUE to 
-re-download them.
+[2020-11-27 17:25:23] #### Starting sen2r execution. ####
+[2020-11-27 17:25:23] Searching for available SAFE products on SciHub...
+[2020-11-27 17:25:26] Computing output names...
+[2020-11-27 17:25:28] Starting to download the required level-2A SAFE products.
 
 # (skipping most processing messages here)
+
 ╔══════════════════════════════════════════════════════════════════════════════
 ║ sen2r Processing Report
 ╟──────────────────────────────────────────────────────────────────────────────
 ║ Dates to be processed based on processing parameters: 1
 ║ Processing completed for: all expected dates.
 ╚══════════════════════════════════════════════════════════════════════════════
-[2020-02-05 11:58:20] #### Execution of sen2r session terminated. ####
+[2020-11-27 17:26:43] #### sen2r session terminated. ####
 The processing chain can be re-launched with the command:
-  sen2r("/home/lb/.sen2r/proc_par/s2proc_20200205_115809.json")
+  sen2r("/home/lranghetti/.sen2r/proc_par/s2proc_20201127_172523.json")
 ```
 
 This is for example particularly useful if a `sen2r()` processing requires 
@@ -228,7 +227,7 @@ out_paths_3 <- sen2r(
   param_list = json_path_2, 
   extent = myextent_3, 
   extent_name = "newxtent",
-  timewindow = c(as.Date("2019-01-01"), as.Date("2019-01-30")),
+  timewindow = c(as.Date("2020-10-01"), as.Date("2020-10-30")),
   path_out = out_dir_3
 )
 ```
