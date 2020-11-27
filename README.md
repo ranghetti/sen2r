@@ -149,8 +149,8 @@ can be found in the Reference page):
     to download Sentinel-2 products;
   - [`s2_order()`](http://sen2r.ranghetti.info/reference/s2_order.html)
     to order products from the Long Term Archive;
-  - [`sen2cor()`](reference/sen2cor.html) to correct level-1C products
-    using
+  - [`sen2cor()`](http://sen2r.ranghetti.info/reference/sen2cor.html) to
+    correct level-1C products using
     [Sen2Cor](http://step.esa.int/main/third-party-plugins-2/sen2cor/);
   - [`s2_mask()`](http://sen2r.ranghetti.info/reference/s2_mask.html) to
     apply a cloud mask to Sentinel-2 products;

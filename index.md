@@ -143,7 +143,7 @@ can be found in the Reference page):
     products;
   - [`s2_order()`](reference/s2_order.md) to order products from the
     Long Term Archive;
-  - [`sen2cor()`](reference/sen2cor.html) to correct level-1C products
+  - [`sen2cor()`](reference/sen2cor.md) to correct level-1C products
     using
     [Sen2Cor](http://step.esa.int/main/third-party-plugins-2/sen2cor/);
   - [`s2_mask()`](reference/s2_mask.md) to apply a cloud mask to
