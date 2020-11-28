@@ -80,7 +80,7 @@ check_scihub_login <- function(username, password) {
   }
   check_creds <- RETRY(
     verb = "GET",
-    url = "https://scihub.copernicus.eu/apihub/odata/v1",
+    url = "https://scihub.copernicus.eu/dhus",
     handle = handle(""),
     config = authenticate(username, password)
   )
