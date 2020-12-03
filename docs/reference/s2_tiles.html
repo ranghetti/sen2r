@@ -195,11 +195,11 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
   <span class='fu'>httr</span><span class='fu'>::</span><span class='fu'><a href='https://httr.r-lib.org/reference/write_disk.html'>write_disk</a></span><span class='op'>(</span><span class='va'>ch_path</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 <span class='op'>)</span>
 </div><div class='output co'>#&gt; Response [https://raw.githubusercontent.com/ranghetti/sen2r/master/utils/vector/ch_bound.rds]
-#&gt;   Date: 2020-10-11 06:36
+#&gt;   Date: 2020-12-03 15:53
 #&gt;   Status: 200
 #&gt;   Content-Type: application/octet-stream
 #&gt;   Size: 43.8 kB
-#&gt; &lt;ON DISK&gt;  /tmp/RtmpZIH1VX/file16203292cdd59</div><div class='input'><span class='va'>ch</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='va'>ch_path</span><span class='op'>)</span>
+#&gt; &lt;ON DISK&gt;  /tmp/Rtmpjpc462/file33102c91edb4</div><div class='input'><span class='va'>ch</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='va'>ch_path</span><span class='op'>)</span>
 <span class='va'>s2tiles_ch</span> <span class='op'>&lt;-</span> <span class='va'>s2tiles</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/message.html'>suppressMessages</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/geos_binary_pred.html'>st_intersects</a></span><span class='op'>(</span><span class='va'>ch</span>, <span class='va'>s2tiles</span><span class='op'>)</span><span class='op'>)</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span>,<span class='op'>]</span>
 <span class='va'>s2_coords</span> <span class='op'>&lt;-</span> <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_coordinates.html'>st_coordinates</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/warning.html'>suppressWarnings</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/geos_unary.html'>st_centroid</a></span><span class='op'>(</span><span class='va'>s2tiles_ch</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 

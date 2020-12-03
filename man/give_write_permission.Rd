@@ -34,7 +34,7 @@ Sentinel-2 satellite data. \emph{Computers & Geosciences}, 139, 104473. DOI:
 URL: \url{http://sen2r.ranghetti.info/}.
 }
 \author{
-Lorenzo Busetto, phD (2019) \email{lbusett@gmail.com}
+Lorenzo Busetto, phD (2019)
 
 Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
 }

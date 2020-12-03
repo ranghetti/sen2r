@@ -7,7 +7,6 @@ Authors@R: c(person("Luigi", "Ranghetti",
                     role = c("aut", "cre"),
                     comment = c(ORCID = "0000-0001-6207-5188")),
              person("Lorenzo", "Busetto",
-                    email = "lbusett@gmail.com",
                     role = c("aut"),
                     comment = c(ORCID = "0000-0001-9634-6038")))
 Description: Functions to download Sentinel-2 optical images

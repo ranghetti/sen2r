@@ -10,7 +10,7 @@
 #'  denied).
 #' @return Logical: if TRUE, R was authorised saving in the directory;
 #'  if FALSE, it was not and a temporary directory is being used.
-#' @author Lorenzo Busetto, phD (2019) \email{lbusett@@gmail.com}
+#' @author Lorenzo Busetto, phD (2019)
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 

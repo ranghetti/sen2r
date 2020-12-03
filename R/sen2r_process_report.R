@@ -39,7 +39,7 @@
 #'   - `n_corrected`: number of images atmospherically corrected using sen2cor; 
 #'   - `completed`: logical, indicating if processing can be considered
 #'       "complete" (it is set to TRUE in case `n_notonline_dates = 0`). 
-#' @author Lorenzo Busetto, phD (2020) \email{lbusett@@gmail.com}
+#' @author Lorenzo Busetto, phD (2020)
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
 #'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. DOI: 

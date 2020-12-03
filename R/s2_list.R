@@ -49,7 +49,7 @@
 #'  `availability != "ignore"`, values are TRUE / FALSE for
 #'  products available for download / stored in the Long Term Archive; 
 #'  otherwise, values are set to NA.
-#' @author Lorenzo Busetto, phD (2019) \email{lbusett@@gmail.com} - Inspired by 
+#' @author Lorenzo Busetto, phD (2019) - Inspired by 
 #'  function `getSentinel_query` of package 
 #'  [`getSpatialData`](https://github.com/16EAGLE/getSpatialData) by J. Schwalb-Willmann
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}

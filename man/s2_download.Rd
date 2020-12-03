@@ -91,5 +91,5 @@ URL: \url{http://sen2r.ranghetti.info/}.
 \author{
 Luigi Ranghetti, phD (2020) \email{luigi@ranghetti.info}
 
-Lorenzo Busetto, phD (2019) \email{lbusett@gmail.com}
+Lorenzo Busetto, phD (2019)
 }

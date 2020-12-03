@@ -66,7 +66,7 @@ read_scihub_login <- function(apihub_path=NA) {
 #' @return `check_scihub_login` returns TRUE if credentials are valid,
 #'  FALSE elsewhere.
 #' @importFrom httr RETRY authenticate handle
-#' @author Lorenzo Busetto, phD (2019) \email{lbusett@@gmail.com}
+#' @author Lorenzo Busetto, phD (2019)
 #' @rdname scihub_login
 #' @export
 
