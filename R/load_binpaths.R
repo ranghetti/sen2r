@@ -34,7 +34,7 @@ load_binpaths <- function(bins = NULL) {
   
   # Define where the JSON with the paths is
   binpaths_file <- file.path(
-    if (dir.exists(normalize_path("~/.sen2r"))) {
+    if (dir.exists(normalize_path("~/.sen2r", mustWork = FALSE))) {
       normalize_path("~/.sen2r")
     } else {
       tempdir()
