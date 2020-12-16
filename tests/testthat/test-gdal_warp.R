@@ -139,11 +139,14 @@ testthat::test_that(
     # instead then the EPSG code
     
     modis_wkt <- paste0(
-      'PROJCS["Sinusoidal",GEOGCS["GCS_Undefined",DATUM["Undefined",SPHEROID[',
-      '"User_Defined_Spheroid",6371007.181,0.0]],PRIMEM["Greenwich",0.0],UNIT',
-      '["Degree",0.0174532925199433]],PROJECTION["Sinusoidal"],PARAMETER["Fal',
-      'se_Easting",0.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Me',
-      'ridian",0.0],UNIT["Meter",1.0]]'
+      'PROJCS["MODIS Sinusoidal",GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["W',
+      'GS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG',
+      '","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree',
+      '",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326',
+      '"]],PROJECTION["Sinusoidal"],PARAMETER["false_easting",0.0],PARAMETER["',
+      'false_northing",0.0],PARAMETER["central_meridian",0.0],PARAMETER["semi_',
+      'major",6371007.181],PARAMETER["semi_minor",6371007.181],UNIT["m",1.0],A',
+      'UTHORITY["SR-ORG","6974"]]'
     )
     test4b <- tempfile(fileext = "_test4b.tif")
     test4_out <- tryCatch(
