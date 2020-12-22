@@ -137,6 +137,9 @@ testthat::test_that(
   "Reproject in a projection without EPSG", {
     # this test is intended to test gdal_warp() passing a WKT to gdalwarp
     # instead then the EPSG code
+    # Moreover, it allows verifying the modification performed since GDAL 3.2.0
+    # about computing the output resolution in gdalwarp if the extent is
+    # provided (see https://github.com/OSGeo/gdal/issues/3294).
     
     modis_wkt <- paste0(
       'PROJCS["MODIS Sinusoidal",GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["W',
@@ -145,8 +148,7 @@ testthat::test_that(
       '",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326',
       '"]],PROJECTION["Sinusoidal"],PARAMETER["false_easting",0.0],PARAMETER["',
       'false_northing",0.0],PARAMETER["central_meridian",0.0],PARAMETER["semi_',
-      'major",6371007.181],PARAMETER["semi_minor",6371007.181],UNIT["m",1.0],A',
-      'UTHORITY["SR-ORG","6974"]]'
+      'major",6371007.181],PARAMETER["semi_minor",6371007.181],UNIT["m",1.0]]'
     )
     test4b <- tempfile(fileext = "_test4b.tif")
     test4_out <- tryCatch(
@@ -163,12 +165,17 @@ testthat::test_that(
     
     # test on raster metadata
     exp_meta_r <- raster_metadata(test4b, format = "list")[[1]]
-    testthat::expect_equal(exp_meta_r$size, c("x"=27, "y"=40))
-    testthat::expect_equal(exp_meta_r$res, c("x"=10.64168, "y"=10.58520), tolerance = 1e-3)
+    if (package_version(sf::sf_extSoftVersion()["GDAL"]) >= package_version("3.2.0")) {
+      testthat::expect_equal(exp_meta_r$size, c("x"=29, "y"=42))
+      testthat::expect_equal(exp_meta_r$res, c("x"=9.930143, "y"=10.077290), tolerance = 1e-3)
+    } else {
+      testthat::expect_equal(exp_meta_r$size, c("x"=27, "y"=40))
+      testthat::expect_equal(exp_meta_r$res, c("x"=10.66571, "y"=10.58115), tolerance = 1e-3)
+    }
     testthat::expect_equal(exp_meta_r$nbands, 3)
     testthat::expect_equal(
       as.numeric(exp_meta_r$bbox), 
-      c(774691.9, 5122100.0,  774979.2, 5122523.4),
+      c(776908.7, 5103210.8,  777196.7, 5103634.0),
       tolerance = 1e-3
     )
     testthat::expect_equal(exp_meta_r$proj$epsg, as.integer(NA))
@@ -177,8 +184,13 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(test4b)
-    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 76.77778, tolerance = 1e-03)
-    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 180, tolerance = 1e-3)
+    if (package_version(sf::sf_extSoftVersion()["GDAL"]) >= package_version("3.2.0")) {
+      testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 76.9073, tolerance = 1e-03)
+      testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 204, tolerance = 1e-3)
+    } else {
+      testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 76.74667, tolerance = 1e-03)
+      testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 180, tolerance = 1e-3)
+    }
     rm(exp_stars)
     
   }
