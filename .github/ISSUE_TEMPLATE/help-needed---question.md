@@ -1,6 +1,6 @@
 ---
-name: Help needed
-about: Use this in case of problems using {sen2r}
+name: Help needed / question
+about: Use this in case of problems or doubts using {sen2r}
 title: ''
 labels: assistance
 assignees: ''
