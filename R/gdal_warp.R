@@ -232,24 +232,6 @@ gdal_warp <- function(srcfiles,
     }
   }
   
-  # if "ref" is specified, read ref parameters
-  if (length(ref)>0) {
-    ref_metadata <- raster_metadata(ref, format = "list")[[1]]
-    ref_res <- ref_metadata$res
-    ref_size <- ref_metadata$size
-    t_srs <- ref_metadata$proj
-    ref_bbox <- ref_metadata$bbox
-    ref_ll <- ref_bbox[c("xmin","ymin")]
-    sel_of <- ifelse(is.null(of), ref_metadata$outformat, of)
-    
-    # round "tr" to ref grid
-    if (is.null(tr)) {
-      tr <- ref_res
-    } else {
-      tr <- ref_size*ref_res/round((ref_size*ref_res)/tr)
-    }
-  }
-  
   # define tmpdir 
   if (is.na(tmpdir)) {
     tmpdir <- tempfile(pattern="gdalwarp_")
@@ -258,7 +240,10 @@ gdal_warp <- function(srcfiles,
   }
   
   # actions to perform if "mask" is specified
-  if (!is.null(mask)) {
+  if (
+    !is.null(mask) && 
+    (!inherits(mask, "logical") || inherits(mask, "logical") && !anyNA(mask))
+  ) {
     
     # cast "mask" to sf
     mask <- st_zm(
@@ -320,6 +305,39 @@ gdal_warp <- function(srcfiles,
     
   }
   
+  # if "ref" is specified, read ref parameters
+  if (length(ref) > 0) {
+    
+    ref_metadata <- raster_metadata(ref, format = "list")[[1]]
+    ref_res <- ref_metadata$res
+    ref_size <- ref_metadata$size
+    t_srs <- ref_metadata$proj
+    ref_bbox <- ref_metadata$bbox
+    ref_offset <- ref_bbox %% ref_res
+    sel_of <- ifelse(is.null(of), ref_metadata$outformat, of)
+    
+    # round "tr" to ref grid
+    if (is.null(tr)) {
+      tr <- ref_res
+    } else {
+      tr <- ref_size*ref_res/round((ref_size*ref_res)/tr)
+    }
+    
+    # compute "te"
+    te <- if (is.null(mask)) {
+      ref_bbox
+    } else if (
+      !inherits(mask, "logical") || inherits(mask, "logical") && !anyNA(mask)
+    ) {
+      te_1 <- st_bbox(st_transform(mask, t_srs))
+      te_1 + c(0,0,ref_res) - (te_1-ref_offset) %% ref_res
+    } else {
+      NULL # define "sel_te" in the srcfile cycle
+    }
+    
+  }
+  
+  
   # cycle on each srcfile
   for (i in seq_along(srcfiles)) {
     srcfile <- srcfiles[i]
@@ -349,6 +367,15 @@ gdal_warp <- function(srcfiles,
         r
       }
       
+      if (length(ref) > 0) {
+        sel_te <- if (!is.null(te)) {
+          te
+        } else {
+          sel_te_1 <- st_bbox(st_transform(st_as_sfc(sel_bbox), sel_t_srs))
+          sel_te_1 + c(0,0,ref_res) - (sel_te_1-ref_offset) %% ref_res
+        }
+      }
+      
       # define CRS strings
       sel_s_srs_string <- if (!is.na(sel_s_srs$epsg)) {
         paste0("EPSG:",sel_s_srs$epsg)
@@ -372,14 +399,15 @@ gdal_warp <- function(srcfiles,
       }
       
       # Is cropping needed?
-      # if the cropping extent is defined by "ref", crop in the first step
-      # (this is possible because "ref" is a rasfer aligned with the desired 
-      # output grid)
-      crop_in_step1 <- is.null(mask) && length(ref)>0
-      # if the cropping extent is defined by "mask", crop in a separate step
+      # if "ref" is defined, crop in the first step
+      # (this is possible because the output grid is known)
+      crop_in_step1 <- length(ref) > 0
+      # if "res" not defined and "mask" is provided, crop in a separate step
       # (this is required because the grid applied by gdalwarp is unknown)
-      crop_in_step2 <- !is.null(mask) && !anyNA(mask)
-      
+      crop_in_step2 <- !is.null(mask) &&
+        (!inherits(mask, "logical") || inherits(mask, "logical") && !anyNA(mask)) &&
+        length(ref) == 0
+
       # first gdal_warp application (all except cropping)
       if (crop_in_step2) {
         step1_dstfile <- file.path(
@@ -400,7 +428,7 @@ gdal_warp <- function(srcfiles,
         options = c(
           "-s_srs", sel_s_srs_string,
           "-t_srs", sel_t_srs_string,
-          if (crop_in_step1) {c("-te", c(ref_bbox))},
+          if (crop_in_step1) {c("-te", c(sel_te))},
           if (exists("mask_file")) {c("-cutline", mask_file)},
           if (!is.null(tr)) {c("-tr", as.vector(sel_tr))},
           if (!is.null(step1_of)) {c("-of",as.vector(step1_of))},

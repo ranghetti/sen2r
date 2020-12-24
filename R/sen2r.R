@@ -1565,10 +1565,12 @@ sen2r <- function(param_list = NULL,
     data.frame(path=unlist(s2names$exi[c("indices","rgb","masked","warped_nomsk","warped")]))
     # raster_metadata(unlist(s2names$exi[c("indices","rgb","masked","warped_nomsk","warped")]))
   )
+  # res_type: "res20" if the minimum native resolution is 20m, "res10" if it is 10m
+  exi_meta[,res_type:=ifelse(prod_type %in% c("SCL","CLD","SNW"), "res20", "res10")]
   reference_exi_paths <- if (nrow(exi_meta)>0) {
-    exi_meta[!duplicated(prod_type),list(prod_type,path)]
+    exi_meta[!duplicated(res_type),list(res_type,path)]
   } else {
-    data.table(prod_type = character(0), path = character(0))
+    data.table(res_type = character(0), path = character(0))
   }
 
   
@@ -2441,7 +2443,13 @@ sen2r <- function(param_list = NULL,
                   ref = if (!is.na(pm$reference_path)) {
                     pm$reference_path
                   } else {
-                    reference_exi_paths[prod_type == sel_prod, path]
+                    reference_exi_paths[
+                      res_type == ifelse(
+                        sel_prod %in% c("SCL","CLD","SNW"), 
+                        "res20", "res10"
+                      ), 
+                      path
+                    ]
                   },
                   mask = s2_mask_extent,
                   tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
@@ -2484,7 +2492,13 @@ sen2r <- function(param_list = NULL,
                   ref = if (!is.na(pm$reference_path)) {
                     pm$reference_path
                   } else {
-                    reference_exi_paths[prod_type == sel_prod, path]
+                    reference_exi_paths[
+                      res_type == ifelse(
+                        sel_prod %in% c("SCL","CLD","SNW"), 
+                        "res20", "res10"
+                      ), 
+                      path
+                    ]
                   },
                   mask = s2_mask_extent,
                   tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
