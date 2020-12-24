@@ -257,8 +257,10 @@ gdal_warp <- function(srcfiles,
     tmpdir <- file.path(tmpdir, basename(tempfile(pattern="gdalwarp_")))
   }
   
-  # if "mask" is specified, take "mask" and "te" from it
+  # actions to perform if "mask" is specified
   if (!is.null(mask)) {
+    
+    # cast "mask" to sf
     mask <- st_zm(
       if (is(mask, "sf") | is(mask, "sfc")) {
         st_sf(mask)
@@ -304,9 +306,9 @@ gdal_warp <- function(srcfiles,
       }
     }
     
-    # cast to multipolygon
+    # save as cropping cutline file (if cutline must be applied)
+    dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
     if (length(grep("POLYGON",st_geometry_type(mask)))>=1) {
-      dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
       st_write(
         st_cast(mask, "MULTIPOLYGON"),
         mask_file <- file.path(
@@ -314,17 +316,8 @@ gdal_warp <- function(srcfiles,
         ),
         quiet = TRUE
       )
-    } # if not, mask_polygon is not created
-    
-    # create mask_bbox if t_srs is specified;
-    # otherwise, create each time within srcfile cycle
-    if (!is.null(t_srs)) {
-      mask_bbox <- matrix(
-        st_bbox(st_transform(mask, t_srs)),
-        nrow=2, ncol=2, 
-        dimnames=list(c("x","y"),c("min","max"))
-      )
     }
+    
   }
   
   # cycle on each srcfile
@@ -356,85 +349,7 @@ gdal_warp <- function(srcfiles,
         r
       }
       
-      # get reprojected extent
-      # (if already set it was referring to mask; in this case, to srcfile)
-      sel_src_bbox <- suppressMessages(
-        matrix(
-          st_bbox(st_transform(st_as_sfc(sel_bbox), sel_t_srs)),
-          nrow=2, ncol=2,
-          dimnames=list(c("x","y"),c("min","max"))
-        )
-      )
-      
-      # dimnames(sel_src_bbox) <- list(c("x","y"), c("min","max"))
-      
-      # set the correct bounding box for srcfile
-      if (is.null(ref)) {
-        if (is.null(mask)) {
-          # ref NULL & mask NULL: use bbox of srcfile, reprojected
-          sel_te <- sel_src_bbox
-        } else if (inherits(mask, "logical") && is.na(mask)) { # check if mask==NA
-          # ref NULL & mask NA: the same (use bbox of srcfile, reprojected)
-          sel_te <- sel_src_bbox
-        } else {
-          # ref NULL & mask provided: use bbox of mask, reprojected and aligned to src grid
-          sel_mask_bbox <- if (exists("mask_bbox")) {
-            mask_bbox
-          } else {
-            matrix(
-              st_bbox(st_transform(mask, sel_t_srs)),
-              nrow=2, ncol=2, 
-              dimnames = list(c("x","y"), c("min","max"))
-            )
-          }
-          if (sel_t_srs == sel_s_srs) {
-            sel_te <- (sel_mask_bbox - sel_ll) / sel_tr
-            sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
-            dimnames(sel_te) <- list(c("x","y"), c("min","max"))
-            sel_te <- sel_te * sel_tr + sel_ll
-          } else {
-            sel_te <- sel_mask_bbox
-          }
-        }
-      } else {
-        if (is.null(mask)) {
-          # ref provided & mask NULL: use bbox of ref
-          sel_te <- ref_bbox
-        } else if (inherits(mask, "logical") && is.na(mask)) {
-          # ref provided & mask NA: use bbox of srcfile (reprojected and aligned to ref grid)
-          if (sel_t_srs == sel_s_srs) {
-            sel_te <- (sel_src_bbox - ref_ll) / sel_tr
-            sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
-            dimnames(sel_te) <- list(c("x","y"),c("min","max"))
-            sel_te <- sel_te * sel_tr + ref_ll
-          } else {
-            sel_te <- sel_mask_bbox
-          }
-        } else {
-          # ref provided & mask provided: use bbox of mask (reprojected and aligned to ref grid)
-          sel_mask_bbox <- if (exists("mask_bbox")) {
-            mask_bbox
-          } else {
-            matrix(
-              st_bbox(st_transform(mask, sel_t_srs)),
-              nrow=2, ncol=2, 
-              dimnames = list(c("x","y"), c("min","max"))
-            )
-          }
-          if (sel_t_srs == sel_s_srs) {
-            sel_te <- (sel_mask_bbox - ref_ll) / sel_tr
-            sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
-            dimnames(sel_te) <- list(c("x","y"),c("min","max"))
-            sel_te <- sel_te * sel_tr + ref_ll
-          } else {
-            sel_te <- sel_mask_bbox
-          }
-        }
-      }
-      
-      # finally, apply gdal_warp or gdal_translate
-      # temporary leave only gdal_warp to avoid some problems
-      # (e.g., translating a 1001x1001 20m to 10m results in 2002x2002 instead of 200[12]x200[12])
+      # define CRS strings
       sel_s_srs_string <- if (!is.na(sel_s_srs$epsg)) {
         paste0("EPSG:",sel_s_srs$epsg)
       } else {
@@ -456,18 +371,40 @@ gdal_warp <- function(srcfiles,
         sel_t_srs_path
       }
       
+      # Is cropping needed?
+      # if the cropping extent is defined by "ref", crop in the first step
+      # (this is possible because "ref" is a rasfer aligned with the desired 
+      # output grid)
+      crop_in_step1 <- is.null(mask) && !is.null(ref)
+      # if the cropping extent is defined by "mask", crop in a separate step
+      # (this is required because the grid applied by gdalwarp is unknown)
+      crop_in_step2 <- !is.null(mask) && !anyNA(mask)
+      
+      # first gdal_warp application (all except cropping)
+      if (crop_in_step2) {
+        step1_dstfile <- file.path(
+          tmpdir, 
+          basename(tempfile(pattern = "warp_", fileext = ".vrt"))
+        )
+        step1_of <- "VRT"
+        step1_co <- NULL
+      } else {
+        step1_dstfile <- dstfile
+        step1_of <- sel_of
+        step1_co <- co
+      }
       gdalUtil(
         "warp",
         source = srcfile,
-        destination = dstfile,
+        destination = step1_dstfile,
         options = c(
           "-s_srs", sel_s_srs_string,
           "-t_srs", sel_t_srs_string,
-          "-te", c(sel_te),
+          if (crop_in_step1) {c("-te", c(ref_bbox))},
           if (exists("mask_file")) {c("-cutline", mask_file)},
           if (!is.null(tr)) {c("-tr", as.vector(sel_tr))},
-          if (!is.null(of)) {c("-of",as.vector(sel_of))},
-          if (!is.null(co)) {unlist(lapply(co, function(x){c("-co", x)}))},
+          if (!is.null(step1_of)) {c("-of",as.vector(step1_of))},
+          if (!is.null(step1_co)) {unlist(lapply(step1_co, function(x){c("-co", x)}))},
           "-r", sel_r,
           if (!is.null(sel_nodata)) {
             if (is.na(sel_nodata)) {
@@ -480,6 +417,40 @@ gdal_warp <- function(srcfiles,
         ),
         quiet = TRUE
       )
+      
+      if (crop_in_step2) {
+        
+        # retrieve gdalwarp_path1 grid info 
+        step1_metadata <- raster_metadata(step1_dstfile, format = "list")[[1]]
+        step1_res <- step1_metadata$res
+        step1_offset <- step1_metadata$bbox %% step1_res
+        
+        # get reprojected extent
+        sel_te_1 <- st_bbox(st_transform(mask, sel_t_srs))
+        sel_te <- sel_te_1 + c(0,0,step1_res) - (sel_te_1-step1_offset) %% step1_res
+        
+        # final gdal_warp application (crop matching the out grid)
+        gdalUtil(
+          "warp",
+          source = step1_dstfile,
+          destination = dstfile,
+          options = c(
+            "-te", c(sel_te),
+            if (!is.null(of)) {c("-of",as.vector(sel_of))},
+            if (!is.null(co)) {unlist(lapply(co, function(x){c("-co", x)}))},
+            if (!is.null(sel_nodata)) {
+              if (is.na(sel_nodata)) {
+                c("-dstnodata", "None")
+              } else {
+                c("-dstnodata", sel_nodata)
+              }
+            },
+            if (overwrite) {"-overwrite"}
+          ),
+          quiet = TRUE
+        )
+        
+      }
       
     } # end of overwrite IF cycle
     
