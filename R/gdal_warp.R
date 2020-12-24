@@ -233,7 +233,7 @@ gdal_warp <- function(srcfiles,
   }
   
   # if "ref" is specified, read ref parameters
-  if (!is.null(ref)) {
+  if (length(ref)>0) {
     ref_metadata <- raster_metadata(ref, format = "list")[[1]]
     ref_res <- ref_metadata$res
     ref_size <- ref_metadata$size
@@ -375,7 +375,7 @@ gdal_warp <- function(srcfiles,
       # if the cropping extent is defined by "ref", crop in the first step
       # (this is possible because "ref" is a rasfer aligned with the desired 
       # output grid)
-      crop_in_step1 <- is.null(mask) && !is.null(ref)
+      crop_in_step1 <- is.null(mask) && length(ref)>0
       # if the cropping extent is defined by "mask", crop in a separate step
       # (this is required because the grid applied by gdalwarp is unknown)
       crop_in_step2 <- !is.null(mask) && !anyNA(mask)

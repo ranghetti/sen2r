@@ -1559,6 +1559,19 @@ sen2r <- function(param_list = NULL,
     return(sen2r_output)
   }
   
+  ## determine the output grid (this will be used later)
+  exi_meta <- cbind(
+    sen2r_getElements(unlist(s2names$exi[c("indices","rgb","masked","warped_nomsk","warped")])),
+    data.frame(path=unlist(s2names$exi[c("indices","rgb","masked","warped_nomsk","warped")]))
+    # raster_metadata(unlist(s2names$exi[c("indices","rgb","masked","warped_nomsk","warped")]))
+  )
+  reference_exi_paths <- if (nrow(exi_meta)>0) {
+    exi_meta[!duplicated(prod_type),list(prod_type,path)]
+  } else {
+    data.table(prod_type = character(0), path = character(0))
+  }
+
+  
   ### SAFE processing: download and atmospheric correction ###
   
   ## Generate the list of required SAFE
@@ -2425,7 +2438,11 @@ sen2r <- function(param_list = NULL,
                   sel_s2names$req$warped[[sel_prod]],
                   warped_tomsk_reqout[[sel_prod]],
                   of = out_format["warped"],
-                  ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
+                  ref = if (!is.na(pm$reference_path)) {
+                    pm$reference_path
+                  } else {
+                    reference_exi_paths[prod_type == sel_prod, path]
+                  },
                   mask = s2_mask_extent,
                   tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
                   t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
@@ -2464,7 +2481,11 @@ sen2r <- function(param_list = NULL,
                   sel_s2names$req$warped_nomsk[[sel_prod]],
                   warped_nomsk_reqout[[sel_prod]],
                   of = out_format["warped_nomsk"], # use physical files to speed up next steps
-                  ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
+                  ref = if (!is.na(pm$reference_path)) {
+                    pm$reference_path
+                  } else {
+                    reference_exi_paths[prod_type == sel_prod, path]
+                  },
                   mask = s2_mask_extent,
                   tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
                   t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
