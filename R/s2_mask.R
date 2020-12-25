@@ -149,9 +149,12 @@
 #'
 #' # Show output
 #' oldpar <- par(mfrow = c(1,3))
-#' par(mar = rep(0,4)); image(stars::read_stars(ex_in), rgb = 1:3)
-#' par(mar = rep(2/3,4)); image(stars::read_stars(ex_mask))
-#' par(mar = rep(0,4)); image(stars::read_stars(ex_out), rgb = 1:3)
+#' par(mar = rep(0,4))
+#' image(stars::read_stars(ex_in), rgb = 1:3, useRaster = TRUE)
+#' par(mar = rep(2/3,4))
+#' image(stars::read_stars(ex_mask), useRaster = TRUE)
+#' par(mar = rep(0,4))
+#' image(stars::read_stars(ex_out), rgb = 1:3, useRaster = TRUE)
 #' par(oldpar)
 #' }
 

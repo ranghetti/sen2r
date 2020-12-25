@@ -522,28 +522,28 @@ thumb_4[grep("SCL", thumb_4)] <-
   gsub("jpg$", "png", thumb_4[grep("SCL", thumb_4)])
   
 oldpar <- par(mfrow = c(1,2), mar = rep(0,4))
-image(stars::read_stars(thumb_3[grep("BOA", thumb_3)]), rgb = 1:3)
-image(stars::read_stars(thumb_3[grep("SCL", thumb_3)]), rgb = 1:3)
+image(stars::read_stars(thumb_3[grep("BOA", thumb_3)]), rgb = 1:3, useRaster = TRUE)
+image(stars::read_stars(thumb_3[grep("SCL", thumb_3)]), rgb = 1:3, useRaster = TRUE)
 
 par(mfrow = c(1,2), mar = rep(0,4))
-image(stars::read_stars(thumb_3[grep("MSAVI2", thumb_3)]), rgb = 1:3)
-image(stars::read_stars(thumb_3[grep("NDVI", thumb_3)]), rgb = 1:3)
+image(stars::read_stars(thumb_3[grep("MSAVI2", thumb_3)]), rgb = 1:3, useRaster = TRUE)
+image(stars::read_stars(thumb_3[grep("NDVI", thumb_3)]), rgb = 1:3, useRaster = TRUE)
 
 par(mfrow = c(1,2), mar = rep(0,4))
-image(stars::read_stars(thumb_3[grep("RGB432B", thumb_3)]), rgb = 1:3)
-image(stars::read_stars(thumb_3[grep("RGB843B", thumb_3)]), rgb = 1:3)
+image(stars::read_stars(thumb_3[grep("RGB432B", thumb_3)]), rgb = 1:3, useRaster = TRUE)
+image(stars::read_stars(thumb_3[grep("RGB843B", thumb_3)]), rgb = 1:3, useRaster = TRUE)
 
 par(mfrow = c(1,2), mar = rep(0,4))
-image(stars::read_stars(thumb_4[grep("BOA", thumb_4)]), rgb = 1:3)
-image(stars::read_stars(thumb_4[grep("SCL", thumb_4)]), rgb = 1:3)
+image(stars::read_stars(thumb_4[grep("BOA", thumb_4)]), rgb = 1:3, useRaster = TRUE)
+image(stars::read_stars(thumb_4[grep("SCL", thumb_4)]), rgb = 1:3, useRaster = TRUE)
 
 par(mfrow = c(1,2), mar = rep(0,4))
-image(stars::read_stars(thumb_4[grep("MSAVI2", thumb_4)]), rgb = 1:3)
-image(stars::read_stars(thumb_4[grep("NDVI", thumb_4)]), rgb = 1:3)
+image(stars::read_stars(thumb_4[grep("MSAVI2", thumb_4)]), rgb = 1:3, useRaster = TRUE)
+image(stars::read_stars(thumb_4[grep("NDVI", thumb_4)]), rgb = 1:3, useRaster = TRUE)
 
 par(mfrow = c(1,2), mar = rep(0,4))
-image(stars::read_stars(thumb_4[grep("RGB432B", thumb_4)]), rgb = 1:3)
-image(stars::read_stars(thumb_4[grep("RGB843B", thumb_4)]), rgb = 1:3)
+image(stars::read_stars(thumb_4[grep("RGB432B", thumb_4)]), rgb = 1:3, useRaster = TRUE)
+image(stars::read_stars(thumb_4[grep("RGB843B", thumb_4)]), rgb = 1:3, useRaster = TRUE)
 
 par(oldpar)
 }

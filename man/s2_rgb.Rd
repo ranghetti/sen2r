@@ -129,9 +129,9 @@ ex_out
 
 # Show output
 oldpar <- par(mfrow = c(1,3), mar = rep(0,4))
-image(stars::read_stars(ex_in), rgb = 4:2, maxColorValue = 3500)
-image(stars::read_stars(ex_out[1]), rgb = 1:3)
-image(stars::read_stars(ex_out[2]), rgb = 1:3)
+image(stars::read_stars(ex_in), rgb = 4:2, maxColorValue = 3500, useRaster = TRUE)
+image(stars::read_stars(ex_out[1]), rgb = 1:3, useRaster = TRUE)
+image(stars::read_stars(ex_out[2]), rgb = 1:3, useRaster = TRUE)
 par(oldpar)
 }
 }

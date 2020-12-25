@@ -41,9 +41,11 @@
 #' 
 #' # Show output
 #' oldpar <- par(mfrow = c(1,3), mar = rep(0,4))
-#' image(stars::read_stars(ex_sel), rgb = 4:2, maxColorValue = 3500)
-#' par(mar = rep(2/3,4)); image(stars::read_stars(ex_ref))
-#' par(mar = rep(0,4)); image(stars::read_stars(ex_out), rgb = 4:2, maxColorValue = 3500)
+#' image(stars::read_stars(ex_sel), rgb = 4:2, maxColorValue = 3500, useRaster = TRUE)
+#' par(mar = rep(2/3,4))
+#' image(stars::read_stars(ex_ref), useRaster = TRUE)
+#' par(mar = rep(0,4))
+#' image(stars::read_stars(ex_out), rgb = 4:2, maxColorValue = 3500, useRaster = TRUE)
 #' par(oldpar)
 #' }
 

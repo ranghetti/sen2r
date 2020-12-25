@@ -87,12 +87,12 @@
 #' # Show output
 #' crop_bbox <- sf::st_as_sfc(sf::st_bbox(crop_line))
 #' oldpar <- par(mfrow = c(1,3), mar = rep(0,4))
-#' image(stars::read_stars(ex_sel), rgb = 1:3)
+#' image(stars::read_stars(ex_sel), rgb = 1:3, useRaster = TRUE)
 #' plot(crop_line, add = TRUE, col = "blue", lwd = 2)
 #' plot(crop_bbox, add = TRUE, border = "red", lwd = 2)
-#' image(stars::read_stars(test1), rgb = 1:3)
+#' image(stars::read_stars(test1), rgb = 1:3, useRaster = TRUE)
 #' plot(crop_bbox, add = TRUE, border = "red", lwd = 2)
-#' image(stars::read_stars(test2), rgb = 1:3)
+#' image(stars::read_stars(test2), rgb = 1:3, useRaster = TRUE)
 #' plot(crop_line, add = TRUE, col = "blue", lwd = 2)
 #'
 #' # Warp on a reference raster
@@ -101,9 +101,9 @@
 #'
 #' # Show output
 #' par(mfrow = c(1,3))
-#' par(mar = rep(0,4)); image(stars::read_stars(ex_sel), rgb = 1:3)
-#' par(mar = rep(2/3,4)); image(stars::read_stars(ex_ref))
-#' par(mar = rep(0,4)); image(stars::read_stars(test3), rgb = 1:3)
+#' par(mar = rep(0,4)); image(stars::read_stars(ex_sel), rgb = 1:3, useRaster = TRUE)
+#' par(mar = rep(2/3,4)); image(stars::read_stars(ex_ref), useRaster = TRUE)
+#' par(mar = rep(0,4)); image(stars::read_stars(test3), rgb = 1:3, useRaster = TRUE)
 #'
 #' # Reproject all the input file
 #' test4 <- tempfile(fileext = "_test4.tif")
@@ -122,13 +122,13 @@
 #' test1_bbox <- sf::st_as_sfc(sf::st_bbox(stars::read_stars(test1)))
 #' test1_bbox_31N <- sf::st_transform(test1_bbox, 32631)
 #' par(mfrow = c(1,4), mar = rep(0,4))
-#' image(stars::read_stars(ex_sel), rgb = 1:3)
+#' image(stars::read_stars(ex_sel), rgb = 1:3, useRaster = TRUE)
 #' plot(crop_line, add = TRUE, col = "blue", lwd = 2)
 #' plot(test1_bbox, add = TRUE, border = "red", lwd = 2)
-#' image(stars::read_stars(test4), rgb = 1:3)
-#' image(stars::read_stars(test5), rgb = 1:3)
+#' image(stars::read_stars(test4), rgb = 1:3, useRaster = TRUE)
+#' image(stars::read_stars(test5), rgb = 1:3, useRaster = TRUE)
 #' plot(test1_bbox_31N, add = TRUE, border = "red", lwd = 2)
-#' image(stars::read_stars(test6), rgb = 1:3)
+#' image(stars::read_stars(test6), rgb = 1:3, useRaster = TRUE)
 #' plot(crop_line_31N, add = TRUE, col = "blue", lwd = 2)
 #'
 #' # Use a reference raster with a different projection
@@ -146,13 +146,13 @@
 #'
 #' # Show output
 #' par(mfrow = c(1,4), mar = rep(0,4))
-#' image(stars::read_stars(ex_sel), rgb = 1:3)
+#' image(stars::read_stars(ex_sel), rgb = 1:3, useRaster = TRUE)
 #' plot(crop_line, add = TRUE, col = "blue", lwd = 2)
-#' image(stars::read_stars(test7), rgb = 1:3)
+#' image(stars::read_stars(test7), rgb = 1:3, useRaster = TRUE)
 #' plot(crop_line_31N, add = TRUE, col = "blue", lwd = 2)
-#' image(stars::read_stars(test8), rgb = 1:3)
+#' image(stars::read_stars(test8), rgb = 1:3, useRaster = TRUE)
 #' plot(test1_bbox_31N, add = TRUE, border = "red", lwd = 2)
-#' image(stars::read_stars(test9), rgb = 1:3)
+#' image(stars::read_stars(test9), rgb = 1:3, useRaster = TRUE)
 #' plot(crop_line_31N, add = TRUE, col = "blue", lwd = 2)
 #' 
 #' par(oldpar)

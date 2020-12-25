@@ -73,8 +73,8 @@ gdalUtil(
   options = c("-tr", "2", "2", "-r", "cubicspline", "-co", "COMPRESS=DEFLATE")
 )
 oldpar <- par(mfrow = c(1,2), mar = rep(0,4))
-image(stars::read_stars(examplename), rgb = c(11,8,4))
-image(stars::read_stars(outname1), rgb = c(11,8,4))
+image(stars::read_stars(examplename), rgb = c(11,8,4), useRaster = TRUE)
+image(stars::read_stars(outname1), rgb = c(11,8,4), useRaster = TRUE)
 
 ## gdalwarp
 outname2 <- tempfile(fileext = ".tif")
@@ -84,8 +84,8 @@ gdalUtil(
   options = c("-t_srs", "EPSG:32633", "-co", "COMPRESS=DEFLATE")
 )
 oldpar <- par(mfrow = c(1,2), mar = rep(0,4))
-image(stars::read_stars(examplename), rgb = c(11,8,4))
-image(stars::read_stars(outname2), rgb = c(11,8,4))
+image(stars::read_stars(examplename), rgb = c(11,8,4), useRaster = TRUE)
+image(stars::read_stars(outname2), rgb = c(11,8,4), useRaster = TRUE)
 
 ## gdal_calc
 outname3 <- tempfile(fileext = ".tif")
@@ -100,8 +100,8 @@ gdalUtil(
   options = c("--A_band", "8", "--B_band", "4", "--type", "Int16")
 )
 oldpar <- par(mfrow = c(1,2), mar = rep(0,4))
-image(stars::read_stars(ndvirefname))
-image(stars::read_stars(outname3))
+image(stars::read_stars(ndvirefname), useRaster = TRUE)
+image(stars::read_stars(outname3), useRaster = TRUE)
 }
 }
 \references{
