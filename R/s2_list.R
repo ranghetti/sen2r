@@ -161,7 +161,7 @@ s2_list <- function(spatial_extent = NULL,
   
   # to avoid NOTE on check
   . <- online <- id_tile <- id_orbit <- 
-    sensing_datetime <- ingestion_datetime <- NULL
+    sensing_datetime <- ingestion_datetime <- centroid <- footprint <- NULL
   
   # convert input NA arguments in NULL
   for (a in c("spatial_extent","tile","orbit","time_interval","apihub")) {

@@ -280,15 +280,15 @@ s2_download <- function(
     # )]
     # safe_existing <- list.files(dirname(zip_path), safe_regex, full.names = TRUE)
     # safe_existing <- safe_existing[safe_isvalid(safe_existing)]
-    
-    # if footprint exists, check if existing SAFEs are actually equivalent
-    if (!is.null(s2_meta$footprint)) {
-      safe_existing_footprint <- safe_getMetadata(safe_existing, "footprint")
-      safe_existing_centroid <- st_centroid(st_transform(st_as_sfc(safe_existing_footprint, crs = 4326), 3857))
-      safe_centroid <- st_centroid(st_transform(st_as_sfc(s2_meta[i,footprint], crs = 4326), 3857))
-      centroid_distance <- st_distance(safe_existing_centroid, safe_centroid)[1,1]
-      # TODO
-    }
+    # 
+    # # if footprint exists, check if existing SAFEs are actually equivalent
+    # if (!is.null(s2_meta$footprint)) {
+    #   safe_existing_footprint <- safe_getMetadata(safe_existing, "footprint")
+    #   safe_existing_centroid <- st_centroid(st_transform(st_as_sfc(safe_existing_footprint, crs = 4326), 3857))
+    #   safe_centroid <- st_centroid(st_transform(st_as_sfc(s2_meta[i,footprint], crs = 4326), 3857))
+    #   centroid_distance <- st_distance(safe_existing_centroid, safe_centroid)[1,1]
+    #   # TODO
+    # }
     
     if (any(overwrite == TRUE, !dir.exists(safe_path))) {
     

@@ -667,7 +667,9 @@ sen2r <- function(param_list = NULL,
   # to avoid NOTE on check
   . <- sensing_datetime <- creation_datetime <- mission <- level <- id_orbit <-
     id_tile <- name <- id_baseline <- prod_type <- name <- sel_group_A <-
-    i_group_A <- sel_apihub_path <- i_group_B <- sensing_date <- lta <- NULL
+    i_group_A <- sel_apihub_path <- i_group_B <- sensing_date <- lta <-
+    centroid_x <- centroid_y <- res_type <-path <- footprint <- sel_out <-
+    NULL
   
   ### Preliminary settings ###
   
