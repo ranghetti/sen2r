@@ -1,6 +1,6 @@
 #' @title Download and install (or link) Sen2Cor
 #' @description [install_sen2cor()] downloads and installs a standalone version of
-#'  [Sen2Cor](http://step.esa.int/main/third-party-plugins-2/sen2cor/).
+#'  [Sen2Cor](http://step.esa.int/main/snap-supported-plugins/sen2cor/).
 #' @param sen2cor_dir Path where sen2cor will be installed or searched
 #'  (by default it is a subdirectory `"sen2cor"` of the default sen2r directory).
 #' @param version (optional) Character: Sen2Cor version (one among
@@ -220,7 +220,7 @@ install_sen2cor <- function(
 #' @name link_sen2cor
 #' @rdname install_sen2cor
 #' @description `link_sen2cor()` links an existing standalone version of
-#'  [Sen2Cor](http://step.esa.int/main/third-party-plugins-2/sen2cor/) to sen2r.
+#'  [Sen2Cor](http://step.esa.int/main/snap-supported-plugins/sen2cor/) to sen2r.
 #' @export
 link_sen2cor <- function(sen2cor_dir) {
   

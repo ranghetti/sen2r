@@ -64,8 +64,8 @@ both \code{"NONE"} and \code{NA} can be used, but not \code{NULL}, which has the
 to maintain the value specified in the XML file).
 
 For details about the GIPP parameters, refer to the Sen2Cor documentation
-(v. \href{http://step.esa.int/main/third-party-plugins-2/sen2cor/sen2cor_v2-5-5/}{2.5.5}
-or \href{http://step.esa.int/main/third-party-plugins-2/sen2cor/sen2cor_v2-8/}{2.8.0}:
+(v. \href{http://step.esa.int/main/snap-supported-plugins/sen2cor/sen2cor_v2-5-5/}{2.5.5}
+or \href{http://step.esa.int/main/snap-supported-plugins/sen2cor/sen2cor_v2-8/}{2.8.0}:
 see the "Schemas of the GIPP file" at the end of each page).
 \emph{Note}: this argument takes effect only in the current execution of
 \code{sen2cor()} function.}
@@ -138,7 +138,7 @@ Vector character with the list ot the output products
 \description{
 The function uses Sen2Cor to manually correct L1C products.
 Standalone version of
-\href{http://step.esa.int/main/third-party-plugins-2/sen2cor/}{sen2cor}
+\href{http://step.esa.int/main/snap-supported-plugins/sen2cor/}{sen2cor}
 (version 2.8.0 or 2.5.5) is used.
 }
 \note{

@@ -3112,7 +3112,7 @@ s2_gui <- function(param_list = NULL,
         title = "Method to obtain level-2A corrected images",
         p(HTML(
           "<em><strong>Note:</strong> this selector is active only if",
-          "<a href=\"https://step.esa.int/main/third-party-plugins-2/sen2cor/\"",
+          "<a href=\"http://step.esa.int/main/snap-supported-plugins/sen2cor/\"",
           "target=\"_blank\">Sen2Cor</a> was installed and configured;",
           "to do it, run <code>check_sen2r_deps()</code>.</em>"
         )),

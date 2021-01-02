@@ -24,10 +24,10 @@ NULL (the function is called for its side effects)
 }
 \description{
 \code{\link[=install_sen2cor]{install_sen2cor()}} downloads and installs a standalone version of
-\href{http://step.esa.int/main/third-party-plugins-2/sen2cor/}{Sen2Cor}.
+\href{http://step.esa.int/main/snap-supported-plugins/sen2cor/}{Sen2Cor}.
 
 \code{link_sen2cor()} links an existing standalone version of
-\href{http://step.esa.int/main/third-party-plugins-2/sen2cor/}{Sen2Cor} to sen2r.
+\href{http://step.esa.int/main/snap-supported-plugins/sen2cor/}{Sen2Cor} to sen2r.
 }
 \note{
 License: GPL 3.0

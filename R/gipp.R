@@ -94,7 +94,7 @@ gipp_init <- function(gipp_sen2r_path = NA, force = FALSE, dem_warning = FALSE) 
         "To use ESA-CCI data-package, download it at ",
         "http://maps.elie.ucl.ac.be/CCI/viewer/download.php and install it ",
         "(further information can be found at ",
-        "http://step.esa.int/main/third-party-plugins-2/sen2cor/)."
+        "http://step.esa.int/main/snap-supported-plugins/sen2cor/)."
       )
     }
     
