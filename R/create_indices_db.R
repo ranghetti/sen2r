@@ -195,11 +195,14 @@ create_indices_db <- function(xslt_path = NA,
     
   }
   
-  # last manual corrections on formulas
+  # last manual corrections on names
   s2_table[,s2_formula:=gsub("par\\_([0-9])", "band_\\1", s2_table$s2_formula)] # some bands were wrongly classified as parameters
   s2_table$name[s2_table$name=="TCI"] <- "TCIdx" # in order not to mess with TCI True Color Image product
   s2_table$name[s2_table$name=="NDSI"] <- "NDSaI" # in order not to mess with Normalized Difference Snow Index
   
+  # last manual corrections on formulas
+  s2_table[name=="ARVI", s2_formula := gsub("band_8a", "band_8", s2_formula)] # revert manual change on IDB
+
   # rename parameters (A, B, ...)
   s2_table[,s2_formula:=gsub("par\\_([aALyY]r?)", "par_a", s2_table$s2_formula)] # first parameters (a, A, ar, y, Y, L) -> "a"
   s2_table[,s2_formula:=gsub("par\\_([bB])", "par_b", s2_table$s2_formula)] # second parameters (b, B) -> "b"
