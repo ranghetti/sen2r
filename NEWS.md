@@ -1,3 +1,34 @@
+# Version 1.4.0
+
+## Major changes
+- `gdal_warp()` was partially rewritten: now reshaped rasters conserve square
+    pixels also after warping operations. _This change also affects `sen2r()`
+    products if reshaping features (reprojection or custom resolution)
+    are required._
+    This update was necessary due to changes performed in GDAL since version 
+    3.2.0 (see [OSGeo/gdal&#x266F;3294](https://github.com/OSGeo/gdal/issues/3294)),
+    which did not grant homogeneity between outputs produced with different
+    GDAL versions.
+    Note that, in case the user wants to update an existing sen2r archive
+    produced with `{sen2r}` < 1.4.0, the old existing grid is maintained
+    so that product grids are equal (in order to produce outputs with the new
+    grid, users must create a new archive).
+- Manage images split in two SAFE products, to avoid producing black areas
+    in these [uncommon] cases (see #353 for an explanation).
+    As effects:
+    1. now pixels outside footprints (including nodata outside orbits coverage)
+        are always set to nodata;
+    2. now `s2_download()` is no more able to use existing products equivalent
+        to found ones.
+    
+## Minor changes
+- Add templates for GitHub issues.
+- No more return errors in tests in case of SciHub server down.
+
+## Documentation
+- Update vignette data (granting using online data) (#360).
+
+
 # Version 1.3.9
 
 ## Bug fixes 
