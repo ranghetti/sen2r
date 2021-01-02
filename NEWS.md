@@ -23,7 +23,14 @@
     
 ## Minor changes
 - Add templates for GitHub issues.
-- No more return errors in tests in case of SciHub server down.
+- Do not return error in tests in case of SciHub server down (#354).
+
+## Changes in default values
+-  Pixels outside footprints (because of previous point, or - more frequently -
+    because outside orbits coverage) are always set to NA even
+    if no cloud masking is performed.
+- `s2_download()` no more uses existing SAFE products instead than downloading 
+    new equivalent ones (this in order to manage images split in two SAFE archives).
 
 ## Documentation
 - Update vignette data (granting using online data) (#360).
