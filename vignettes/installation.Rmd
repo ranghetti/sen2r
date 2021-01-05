@@ -41,7 +41,7 @@ Before installing <span style="color:#5793dd;vertical-align:top;font-size:90%;fo
     (required by [openssl](https://github.com/jeroen/openssl/));
 - [cairo](https://www.cairographics.org/)
     (required by [gdtools](https://github.com/davidgohel/gdtools/));
-- [libcurl](https://curl.haxx.se/libcurl/)
+- [libcurl](https://curl.se/libcurl/)
     (required by [curl](https://github.com/jeroen/curl/));
 - [NetCDF](https://www.unidata.ucar.edu/software/netcdf/)
     (required by [ncdf4](https://github.com/mdsumner/ncdf4/));
