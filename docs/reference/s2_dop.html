@@ -221,9 +221,9 @@ were found with the passed settings.</p>
 
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
-Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473. DOI:
-<a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.104473</a>,
-URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p>
+Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
+doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.104473</a>
+, URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Luigi Ranghetti, phD (2019) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
@@ -232,17 +232,17 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
     <pre class="examples"><div class='input'><span class='co'># All the passages in a cycle of 10 days over all the orbits</span>
 <span class='fu'>s2_dop</span><span class='op'>(</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;            date mission orbit
-#&gt;   1: 2021-01-02      2A   002
-#&gt;   2: 2021-01-02      2A   003
-#&gt;   3: 2021-01-02      2A   004
-#&gt;   4: 2021-01-02      2A   005
-#&gt;   5: 2021-01-02      2A   006
+#&gt;   1: 2021-01-05      2A   045
+#&gt;   2: 2021-01-05      2A   046
+#&gt;   3: 2021-01-05      2A   047
+#&gt;   4: 2021-01-05      2A   048
+#&gt;   5: 2021-01-05      2A   049
 #&gt;  ---                         
-#&gt; 282: 2021-01-11      2B   068
-#&gt; 283: 2021-01-11      2B   069
-#&gt; 284: 2021-01-11      2B   070
-#&gt; 285: 2021-01-11      2B   071
-#&gt; 286: 2021-01-11      2B   072</div><div class='input'>
+#&gt; 282: 2021-01-14      2B   111
+#&gt; 283: 2021-01-14      2B   112
+#&gt; 284: 2021-01-14      2B   113
+#&gt; 285: 2021-01-14      2B   114
+#&gt; 286: 2021-01-14      2B   115</div><div class='input'>
 <span class='co'># The passages in the current month over two orbits</span>
 <span class='fu'>s2_dop</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"022"</span>, <span class='st'>"065"</span><span class='op'>)</span>, <span class='st'>"this month"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;           date mission orbit
@@ -261,14 +261,14 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
 #&gt; 13: 2021-01-31      2B   065</div><div class='input'>
 <span class='co'># The dates in which Sentinel-2A will pass in next six weeks over one orbit</span>
 <span class='fu'>s2_dop</span><span class='op'>(</span><span class='st'>"022"</span>, <span class='st'>"6 weeks"</span>, mission <span class='op'>=</span> <span class='st'>"2A"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>date</span>
-</div><div class='output co'>#&gt; [1] "2021-01-03" "2021-01-13" "2021-01-23" "2021-02-02"</div><div class='input'>
+</div><div class='output co'>#&gt; [1] "2021-01-13" "2021-01-23" "2021-02-02" "2021-02-12"</div><div class='input'>
 <span class='co'># The date in which Sentinel-2A would be passed in the last 10 days over one orbit</span>
 <span class='fu'>s2_dop</span><span class='op'>(</span><span class='st'>"022"</span>, <span class='st'>"-10 days"</span>, mission <span class='op'>=</span> <span class='st'>"2A"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>date</span>
-</div><div class='output co'>#&gt; [1] "2020-12-24"</div><div class='input'>
+</div><div class='output co'>#&gt; [1] "2021-01-03"</div><div class='input'>
 <span class='co'># All the orbits covered today</span>
 <span class='fu'>s2_dop</span><span class='op'>(</span>timewindow <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span><span class='op'>(</span><span class='op'>)</span>, mission <span class='op'>=</span> <span class='st'>"2B"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>orbit</span>
-</div><div class='output co'>#&gt;  [1] "073" "074" "075" "076" "077" "078" "079" "080" "081" "082" "083" "084"
-#&gt; [13] "085" "086" "087"</div><div class='input'>
+</div><div class='output co'>#&gt;  [1] "116" "117" "118" "119" "120" "121" "122" "123" "124" "125" "126" "127"
+#&gt; [13] "128" "129" "130"</div><div class='input'>
 <span class='co'># The passages in a fixed time window for one orbit</span>
 <span class='fu'>s2_dop</span><span class='op'>(</span><span class='fl'>65</span>, <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"2018-08-01"</span>, <span class='st'>"2018-08-31"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;          date mission orbit

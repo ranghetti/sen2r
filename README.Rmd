@@ -74,7 +74,7 @@ was published on the ISI journal *Computers \& Geosciences*; the manuscript is a
 L.\ Ranghetti, M.\ Boschetti, F.\ Nutini, L.\ Busetto (2020).
 <strong>"sen2r: An R toolbox for automatically downloading and preprocessing Sentinel-2 satellite data"</strong>.
 <em>Computers \& Geosciences</em>, 139, 104473.
-DOI: 10.1016/j.cageo.2020.104473,
+doi: 10.1016/j.cageo.2020.104473,
 URL: http://sen2r.ranghetti.info
 </a>.
 
@@ -170,7 +170,7 @@ To cite this library, please use the following entry:
 L.\ Ranghetti, M.\ Boschetti, F.\ Nutini, L.\ Busetto (2020). 
 **"sen2r: An R toolbox for automatically downloading and preprocessing Sentinel-2 satellite data"**. 
 *Computers \& Geosciences*, 139, 104473. 
-DOI: <a href="https://dx.doi.org/10.1016/j.cageo.2020.104473" target="_blank">10.1016/j.cageo.2020.104473</a>,
+doi: <a href="https://dx.doi.org/10.1016/j.cageo.2020.104473" target="_blank">10.1016/j.cageo.2020.104473</a>,
 URL: <a href="http://sen2r.ranghetti.info" target="_blank">http://sen2r.ranghetti.info</a>.
 
 ```bibtex

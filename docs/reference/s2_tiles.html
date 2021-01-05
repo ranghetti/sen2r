@@ -178,9 +178,9 @@ from the sen2r GitHub repository and it saves it on disk.</p>
 
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
-Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473. DOI:
-<a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.104473</a>,
-URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p>
+Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
+doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.104473</a>
+, URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Luigi Ranghetti, phD (2019) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
@@ -195,11 +195,11 @@ URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p
   <span class='fu'>httr</span><span class='fu'>::</span><span class='fu'><a href='https://httr.r-lib.org/reference/write_disk.html'>write_disk</a></span><span class='op'>(</span><span class='va'>ch_path</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 <span class='op'>)</span>
 </div><div class='output co'>#&gt; Response [https://raw.githubusercontent.com/ranghetti/sen2r/master/utils/vector/ch_bound.rds]
-#&gt;   Date: 2021-01-02 10:12
+#&gt;   Date: 2021-01-05 16:11
 #&gt;   Status: 200
 #&gt;   Content-Type: application/octet-stream
 #&gt;   Size: 43.8 kB
-#&gt; &lt;ON DISK&gt;  /tmp/Rtmp4Wc0Qb/file321e5d43677f2f</div><div class='input'><span class='va'>ch</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='va'>ch_path</span><span class='op'>)</span>
+#&gt; &lt;ON DISK&gt;  /tmp/RtmpIwBWvo/file9d5a359eec5bb</div><div class='input'><span class='va'>ch</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='va'>ch_path</span><span class='op'>)</span>
 <span class='va'>s2tiles_ch</span> <span class='op'>&lt;-</span> <span class='va'>s2tiles</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/message.html'>suppressMessages</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/geos_binary_pred.html'>st_intersects</a></span><span class='op'>(</span><span class='va'>ch</span>, <span class='va'>s2tiles</span><span class='op'>)</span><span class='op'>)</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span>,<span class='op'>]</span>
 <span class='va'>s2_coords</span> <span class='op'>&lt;-</span> <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_coordinates.html'>st_coordinates</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/warning.html'>suppressWarnings</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/geos_unary.html'>st_centroid</a></span><span class='op'>(</span><span class='va'>s2tiles_ch</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 
