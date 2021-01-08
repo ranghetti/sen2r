@@ -18,22 +18,22 @@
 #' sen2r:::st_as_text_2(sf::st_crs(32632))
 
 st_as_text_2 <- function(x, pretty = FALSE) {
-  if (
-    package_version(sf_extSoftVersion()["proj.4"]) >= 6 &&
-    requireNamespace("rgdal", quietly = TRUE) &&
-    packageVersion("rgdal") >= 1.5
-  ) {
-    x_crs <- st_crs(x)
-    x_proj <- if (is.na(x_crs$epsg)) {
-      x_crs$proj4string
-    } else {
-      paste0("EPSG:",x_crs$epsg)
-    }
-    srid_multiline <- if (pretty == TRUE) {"YES"} else {"NO"}
-    eval(parse(
-      text = "rgdal::showSRID(x_proj, format = 'WKT2', multiline = srid_multiline)"
-    ))
-  } else {
+  # if (
+  #   package_version(sf_extSoftVersion()["proj.4"]) >= 6 &&
+  #   requireNamespace("rgdal", quietly = TRUE) &&
+  #   packageVersion("rgdal") >= 1.5
+  # ) {
+  #   x_crs <- st_crs(x)
+  #   x_proj <- if (is.na(x_crs$epsg)) {
+  #     x_crs$proj4string
+  #   } else {
+  #     paste0("EPSG:",x_crs$epsg)
+  #   }
+  #   srid_multiline <- if (pretty == TRUE) {"YES"} else {"NO"}
+  #   eval(parse(
+  #     text = "rgdal::showSRID(x_proj, format = 'WKT2', multiline = srid_multiline)"
+  #   ))
+  # } else {
     st_as_text(x, pretty = pretty)
-  }
+  # }
 }

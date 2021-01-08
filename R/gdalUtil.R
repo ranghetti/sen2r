@@ -26,9 +26,8 @@
 #' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
-#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. DOI: 
-#'  \href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473}, 
-#'  URL: \url{http://sen2r.ranghetti.info/}.
+#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 
+#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{http://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @examples 
 #' # Define product names
@@ -50,8 +49,8 @@
 #'   options = c("-tr", "2", "2", "-r", "cubicspline", "-co", "COMPRESS=DEFLATE")
 #' )
 #' oldpar <- par(mfrow = c(1,2), mar = rep(0,4))
-#' image(stars::read_stars(examplename), rgb = c(11,8,4))
-#' image(stars::read_stars(outname1), rgb = c(11,8,4))
+#' image(stars::read_stars(examplename), rgb = c(11,8,4), useRaster = TRUE)
+#' image(stars::read_stars(outname1), rgb = c(11,8,4), useRaster = TRUE)
 
 #' 
 #' ## gdalwarp
@@ -62,8 +61,8 @@
 #'   options = c("-t_srs", "EPSG:32633", "-co", "COMPRESS=DEFLATE")
 #' )
 #' oldpar <- par(mfrow = c(1,2), mar = rep(0,4))
-#' image(stars::read_stars(examplename), rgb = c(11,8,4))
-#' image(stars::read_stars(outname2), rgb = c(11,8,4))
+#' image(stars::read_stars(examplename), rgb = c(11,8,4), useRaster = TRUE)
+#' image(stars::read_stars(outname2), rgb = c(11,8,4), useRaster = TRUE)
 #' 
 #' ## gdal_calc
 #' outname3 <- tempfile(fileext = ".tif")
@@ -78,8 +77,8 @@
 #'   options = c("--A_band", "8", "--B_band", "4", "--type", "Int16")
 #' )
 #' oldpar <- par(mfrow = c(1,2), mar = rep(0,4))
-#' image(stars::read_stars(ndvirefname))
-#' image(stars::read_stars(outname3))
+#' image(stars::read_stars(ndvirefname), useRaster = TRUE)
+#' image(stars::read_stars(outname3), useRaster = TRUE)
 #' }
 
 

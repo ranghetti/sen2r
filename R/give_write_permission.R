@@ -10,13 +10,12 @@
 #'  denied).
 #' @return Logical: if TRUE, R was authorised saving in the directory;
 #'  if FALSE, it was not and a temporary directory is being used.
-#' @author Lorenzo Busetto, phD (2019) \email{lbusett@@gmail.com}
+#' @author Lorenzo Busetto, phD (2019)
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
-#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. DOI: 
-#'  \href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473}, 
-#'  URL: \url{http://sen2r.ranghetti.info/}.
+#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 
+#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{http://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 
 give_write_permission <- function(agree = NA) {

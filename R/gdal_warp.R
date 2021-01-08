@@ -58,9 +58,8 @@
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
-#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. DOI: 
-#'  \href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473}, 
-#'  URL: \url{http://sen2r.ranghetti.info/}.
+#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 
+#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{http://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @examples
 #' \donttest{
@@ -87,12 +86,12 @@
 #' # Show output
 #' crop_bbox <- sf::st_as_sfc(sf::st_bbox(crop_line))
 #' oldpar <- par(mfrow = c(1,3), mar = rep(0,4))
-#' image(stars::read_stars(ex_sel), rgb = 1:3)
+#' image(stars::read_stars(ex_sel), rgb = 1:3, useRaster = TRUE)
 #' plot(crop_line, add = TRUE, col = "blue", lwd = 2)
 #' plot(crop_bbox, add = TRUE, border = "red", lwd = 2)
-#' image(stars::read_stars(test1), rgb = 1:3)
+#' image(stars::read_stars(test1), rgb = 1:3, useRaster = TRUE)
 #' plot(crop_bbox, add = TRUE, border = "red", lwd = 2)
-#' image(stars::read_stars(test2), rgb = 1:3)
+#' image(stars::read_stars(test2), rgb = 1:3, useRaster = TRUE)
 #' plot(crop_line, add = TRUE, col = "blue", lwd = 2)
 #'
 #' # Warp on a reference raster
@@ -101,9 +100,9 @@
 #'
 #' # Show output
 #' par(mfrow = c(1,3))
-#' par(mar = rep(0,4)); image(stars::read_stars(ex_sel), rgb = 1:3)
-#' par(mar = rep(2/3,4)); image(stars::read_stars(ex_ref))
-#' par(mar = rep(0,4)); image(stars::read_stars(test3), rgb = 1:3)
+#' par(mar = rep(0,4)); image(stars::read_stars(ex_sel), rgb = 1:3, useRaster = TRUE)
+#' par(mar = rep(2/3,4)); image(stars::read_stars(ex_ref), useRaster = TRUE)
+#' par(mar = rep(0,4)); image(stars::read_stars(test3), rgb = 1:3, useRaster = TRUE)
 #'
 #' # Reproject all the input file
 #' test4 <- tempfile(fileext = "_test4.tif")
@@ -122,13 +121,13 @@
 #' test1_bbox <- sf::st_as_sfc(sf::st_bbox(stars::read_stars(test1)))
 #' test1_bbox_31N <- sf::st_transform(test1_bbox, 32631)
 #' par(mfrow = c(1,4), mar = rep(0,4))
-#' image(stars::read_stars(ex_sel), rgb = 1:3)
+#' image(stars::read_stars(ex_sel), rgb = 1:3, useRaster = TRUE)
 #' plot(crop_line, add = TRUE, col = "blue", lwd = 2)
 #' plot(test1_bbox, add = TRUE, border = "red", lwd = 2)
-#' image(stars::read_stars(test4), rgb = 1:3)
-#' image(stars::read_stars(test5), rgb = 1:3)
+#' image(stars::read_stars(test4), rgb = 1:3, useRaster = TRUE)
+#' image(stars::read_stars(test5), rgb = 1:3, useRaster = TRUE)
 #' plot(test1_bbox_31N, add = TRUE, border = "red", lwd = 2)
-#' image(stars::read_stars(test6), rgb = 1:3)
+#' image(stars::read_stars(test6), rgb = 1:3, useRaster = TRUE)
 #' plot(crop_line_31N, add = TRUE, col = "blue", lwd = 2)
 #'
 #' # Use a reference raster with a different projection
@@ -146,13 +145,13 @@
 #'
 #' # Show output
 #' par(mfrow = c(1,4), mar = rep(0,4))
-#' image(stars::read_stars(ex_sel), rgb = 1:3)
+#' image(stars::read_stars(ex_sel), rgb = 1:3, useRaster = TRUE)
 #' plot(crop_line, add = TRUE, col = "blue", lwd = 2)
-#' image(stars::read_stars(test7), rgb = 1:3)
+#' image(stars::read_stars(test7), rgb = 1:3, useRaster = TRUE)
 #' plot(crop_line_31N, add = TRUE, col = "blue", lwd = 2)
-#' image(stars::read_stars(test8), rgb = 1:3)
+#' image(stars::read_stars(test8), rgb = 1:3, useRaster = TRUE)
 #' plot(test1_bbox_31N, add = TRUE, border = "red", lwd = 2)
-#' image(stars::read_stars(test9), rgb = 1:3)
+#' image(stars::read_stars(test9), rgb = 1:3, useRaster = TRUE)
 #' plot(crop_line_31N, add = TRUE, col = "blue", lwd = 2)
 #' 
 #' par(oldpar)
@@ -232,24 +231,6 @@ gdal_warp <- function(srcfiles,
     }
   }
   
-  # if "ref" is specified, read ref parameters
-  if (!is.null(ref)) {
-    ref_metadata <- raster_metadata(ref, format = "list")[[1]]
-    ref_res <- ref_metadata$res
-    ref_size <- ref_metadata$size
-    t_srs <- ref_metadata$proj
-    ref_bbox <- ref_metadata$bbox
-    ref_ll <- ref_bbox[c("xmin","ymin")]
-    sel_of <- ifelse(is.null(of), ref_metadata$outformat, of)
-    
-    # round "tr" to ref grid
-    if (is.null(tr)) {
-      tr <- ref_res
-    } else {
-      tr <- ref_size*ref_res/round((ref_size*ref_res)/tr)
-    }
-  }
-  
   # define tmpdir 
   if (is.na(tmpdir)) {
     tmpdir <- tempfile(pattern="gdalwarp_")
@@ -257,8 +238,13 @@ gdal_warp <- function(srcfiles,
     tmpdir <- file.path(tmpdir, basename(tempfile(pattern="gdalwarp_")))
   }
   
-  # if "mask" is specified, take "mask" and "te" from it
-  if (!is.null(mask)) {
+  # actions to perform if "mask" is specified
+  if (
+    !is.null(mask) && 
+    (!inherits(mask, "logical") || inherits(mask, "logical") && !anyNA(mask))
+  ) {
+    
+    # cast "mask" to sf
     mask <- st_zm(
       if (is(mask, "sf") | is(mask, "sfc")) {
         st_sf(mask)
@@ -304,9 +290,9 @@ gdal_warp <- function(srcfiles,
       }
     }
     
-    # cast to multipolygon
+    # save as cropping cutline file (if cutline must be applied)
+    dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
     if (length(grep("POLYGON",st_geometry_type(mask)))>=1) {
-      dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
       st_write(
         st_cast(mask, "MULTIPOLYGON"),
         mask_file <- file.path(
@@ -314,18 +300,42 @@ gdal_warp <- function(srcfiles,
         ),
         quiet = TRUE
       )
-    } # if not, mask_polygon is not created
-    
-    # create mask_bbox if t_srs is specified;
-    # otherwise, create each time within srcfile cycle
-    if (!is.null(t_srs)) {
-      mask_bbox <- matrix(
-        st_bbox(st_transform(mask, t_srs)),
-        nrow=2, ncol=2, 
-        dimnames=list(c("x","y"),c("min","max"))
-      )
     }
+    
   }
+  
+  # if "ref" is specified, read ref parameters
+  if (length(ref) > 0) {
+    
+    ref_metadata <- raster_metadata(ref, format = "list")[[1]]
+    ref_res <- ref_metadata$res
+    ref_size <- ref_metadata$size
+    t_srs <- ref_metadata$proj
+    ref_bbox <- ref_metadata$bbox
+    ref_offset <- ref_bbox %% ref_res
+    sel_of <- ifelse(is.null(of), ref_metadata$outformat, of)
+    
+    # round "tr" to ref grid
+    if (is.null(tr)) {
+      tr <- ref_res
+    } else {
+      tr <- ref_size*ref_res/round((ref_size*ref_res)/tr)
+    }
+    
+    # compute "te"
+    te <- if (is.null(mask)) {
+      ref_bbox
+    } else if (
+      !inherits(mask, "logical") || inherits(mask, "logical") && !anyNA(mask)
+    ) {
+      te_1 <- st_bbox(st_transform(mask, t_srs))
+      te_1 + c(0,0,ref_res) - (te_1-ref_offset) %% ref_res
+    } else {
+      NULL # define "sel_te" in the srcfile cycle
+    }
+    
+  }
+  
   
   # cycle on each srcfile
   for (i in seq_along(srcfiles)) {
@@ -356,85 +366,16 @@ gdal_warp <- function(srcfiles,
         r
       }
       
-      # get reprojected extent
-      # (if already set it was referring to mask; in this case, to srcfile)
-      sel_src_bbox <- suppressMessages(
-        matrix(
-          st_bbox(st_transform(st_as_sfc(sel_bbox), sel_t_srs)),
-          nrow=2, ncol=2,
-          dimnames=list(c("x","y"),c("min","max"))
-        )
-      )
-      
-      # dimnames(sel_src_bbox) <- list(c("x","y"), c("min","max"))
-      
-      # set the correct bounding box for srcfile
-      if (is.null(ref)) {
-        if (is.null(mask)) {
-          # ref NULL & mask NULL: use bbox of srcfile, reprojected
-          sel_te <- sel_src_bbox
-        } else if (inherits(mask, "logical") && is.na(mask)) { # check if mask==NA
-          # ref NULL & mask NA: the same (use bbox of srcfile, reprojected)
-          sel_te <- sel_src_bbox
+      if (length(ref) > 0) {
+        sel_te <- if (!is.null(te)) {
+          te
         } else {
-          # ref NULL & mask provided: use bbox of mask, reprojected and aligned to src grid
-          sel_mask_bbox <- if (exists("mask_bbox")) {
-            mask_bbox
-          } else {
-            matrix(
-              st_bbox(st_transform(mask, sel_t_srs)),
-              nrow=2, ncol=2, 
-              dimnames = list(c("x","y"), c("min","max"))
-            )
-          }
-          if (sel_t_srs == sel_s_srs) {
-            sel_te <- (sel_mask_bbox - sel_ll) / sel_tr
-            sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
-            dimnames(sel_te) <- list(c("x","y"), c("min","max"))
-            sel_te <- sel_te * sel_tr + sel_ll
-          } else {
-            sel_te <- sel_mask_bbox
-          }
-        }
-      } else {
-        if (is.null(mask)) {
-          # ref provided & mask NULL: use bbox of ref
-          sel_te <- ref_bbox
-        } else if (inherits(mask, "logical") && is.na(mask)) {
-          # ref provided & mask NA: use bbox of srcfile (reprojected and aligned to ref grid)
-          if (sel_t_srs == sel_s_srs) {
-            sel_te <- (sel_src_bbox - ref_ll) / sel_tr
-            sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
-            dimnames(sel_te) <- list(c("x","y"),c("min","max"))
-            sel_te <- sel_te * sel_tr + ref_ll
-          } else {
-            sel_te <- sel_mask_bbox
-          }
-        } else {
-          # ref provided & mask provided: use bbox of mask (reprojected and aligned to ref grid)
-          sel_mask_bbox <- if (exists("mask_bbox")) {
-            mask_bbox
-          } else {
-            matrix(
-              st_bbox(st_transform(mask, sel_t_srs)),
-              nrow=2, ncol=2, 
-              dimnames = list(c("x","y"), c("min","max"))
-            )
-          }
-          if (sel_t_srs == sel_s_srs) {
-            sel_te <- (sel_mask_bbox - ref_ll) / sel_tr
-            sel_te <- cbind(floor(sel_te[,1]), ceiling(sel_te[,2]))
-            dimnames(sel_te) <- list(c("x","y"),c("min","max"))
-            sel_te <- sel_te * sel_tr + ref_ll
-          } else {
-            sel_te <- sel_mask_bbox
-          }
+          sel_te_1 <- st_bbox(st_transform(st_as_sfc(sel_bbox), sel_t_srs))
+          sel_te_1 + c(0,0,ref_res) - (sel_te_1-ref_offset) %% ref_res
         }
       }
       
-      # finally, apply gdal_warp or gdal_translate
-      # temporary leave only gdal_warp to avoid some problems
-      # (e.g., translating a 1001x1001 20m to 10m results in 2002x2002 instead of 200[12]x200[12])
+      # define CRS strings
       sel_s_srs_string <- if (!is.na(sel_s_srs$epsg)) {
         paste0("EPSG:",sel_s_srs$epsg)
       } else {
@@ -456,18 +397,41 @@ gdal_warp <- function(srcfiles,
         sel_t_srs_path
       }
       
+      # Is cropping needed?
+      # if "ref" is defined, crop in the first step
+      # (this is possible because the output grid is known)
+      crop_in_step1 <- length(ref) > 0
+      # if "res" not defined and "mask" is provided, crop in a separate step
+      # (this is required because the grid applied by gdalwarp is unknown)
+      crop_in_step2 <- !is.null(mask) &&
+        (!inherits(mask, "logical") || inherits(mask, "logical") && !anyNA(mask)) &&
+        length(ref) == 0
+
+      # first gdal_warp application (all except cropping)
+      if (crop_in_step2) {
+        step1_dstfile <- file.path(
+          tmpdir, 
+          basename(tempfile(pattern = "warp_", fileext = ".vrt"))
+        )
+        step1_of <- "VRT"
+        step1_co <- NULL
+      } else {
+        step1_dstfile <- dstfile
+        step1_of <- sel_of
+        step1_co <- co
+      }
       gdalUtil(
         "warp",
         source = srcfile,
-        destination = dstfile,
+        destination = step1_dstfile,
         options = c(
           "-s_srs", sel_s_srs_string,
           "-t_srs", sel_t_srs_string,
-          "-te", c(sel_te),
+          if (crop_in_step1) {c("-te", c(sel_te))},
           if (exists("mask_file")) {c("-cutline", mask_file)},
           if (!is.null(tr)) {c("-tr", as.vector(sel_tr))},
-          if (!is.null(of)) {c("-of",as.vector(sel_of))},
-          if (!is.null(co)) {unlist(lapply(co, function(x){c("-co", x)}))},
+          if (!is.null(step1_of)) {c("-of",as.vector(step1_of))},
+          if (!is.null(step1_co)) {unlist(lapply(step1_co, function(x){c("-co", x)}))},
           "-r", sel_r,
           if (!is.null(sel_nodata)) {
             if (is.na(sel_nodata)) {
@@ -480,6 +444,40 @@ gdal_warp <- function(srcfiles,
         ),
         quiet = TRUE
       )
+      
+      if (crop_in_step2) {
+        
+        # retrieve gdalwarp_path1 grid info 
+        step1_metadata <- raster_metadata(step1_dstfile, format = "list")[[1]]
+        step1_res <- step1_metadata$res
+        step1_offset <- step1_metadata$bbox %% step1_res
+        
+        # get reprojected extent
+        sel_te_1 <- st_bbox(st_transform(mask, sel_t_srs))
+        sel_te <- sel_te_1 + c(0,0,step1_res) - (sel_te_1-step1_offset) %% step1_res
+        
+        # final gdal_warp application (crop matching the out grid)
+        gdalUtil(
+          "warp",
+          source = step1_dstfile,
+          destination = dstfile,
+          options = c(
+            "-te", c(sel_te),
+            if (!is.null(of)) {c("-of",as.vector(sel_of))},
+            if (!is.null(co)) {unlist(lapply(co, function(x){c("-co", x)}))},
+            if (!is.null(sel_nodata)) {
+              if (is.na(sel_nodata)) {
+                c("-dstnodata", "None")
+              } else {
+                c("-dstnodata", sel_nodata)
+              }
+            },
+            if (overwrite) {"-overwrite"}
+          ),
+          quiet = TRUE
+        )
+        
+      }
       
     } # end of overwrite IF cycle
     

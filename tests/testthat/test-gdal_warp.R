@@ -113,7 +113,7 @@ testthat::test_that(
     # test on raster metadata
     exp_meta_r <- raster_metadata(test4, format = "list")[[1]]
     testthat::expect_equal(exp_meta_r$size, c("x"=27, "y"=44))
-    testthat::expect_equal(exp_meta_r$res, c("x"=10.07, "y"=9.97), tolerance = 1e-3)
+    testthat::expect_equal(exp_meta_r$res, c("x"=10.0357, "y"=10.0357), tolerance = 1e-3)
     testthat::expect_equal(exp_meta_r$nbands, 3)
     testthat::expect_equal(
       as.numeric(exp_meta_r$bbox), 
@@ -126,8 +126,8 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(test4)
-    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 76.87846, tolerance = 1e-03)
-    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 176, tolerance = 1e-3)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 77.11806, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 180, tolerance = 1e-3)
     rm(exp_stars)
     
   }
@@ -137,13 +137,18 @@ testthat::test_that(
   "Reproject in a projection without EPSG", {
     # this test is intended to test gdal_warp() passing a WKT to gdalwarp
     # instead then the EPSG code
+    # Moreover, it allows verifying the modification performed since GDAL 3.2.0
+    # about computing the output resolution in gdalwarp if the extent is
+    # provided (see https://github.com/OSGeo/gdal/issues/3294).
     
     modis_wkt <- paste0(
-      'PROJCS["Sinusoidal",GEOGCS["GCS_Undefined",DATUM["Undefined",SPHEROID[',
-      '"User_Defined_Spheroid",6371007.181,0.0]],PRIMEM["Greenwich",0.0],UNIT',
-      '["Degree",0.0174532925199433]],PROJECTION["Sinusoidal"],PARAMETER["Fal',
-      'se_Easting",0.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Me',
-      'ridian",0.0],UNIT["Meter",1.0]]'
+      'PROJCS["MODIS Sinusoidal",GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["W',
+      'GS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG',
+      '","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree',
+      '",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326',
+      '"]],PROJECTION["Sinusoidal"],PARAMETER["false_easting",0.0],PARAMETER["',
+      'false_northing",0.0],PARAMETER["central_meridian",0.0],PARAMETER["semi_',
+      'major",6371007.181],PARAMETER["semi_minor",6371007.181],UNIT["m",1.0]]'
     )
     test4b <- tempfile(fileext = "_test4b.tif")
     test4_out <- tryCatch(
@@ -161,11 +166,11 @@ testthat::test_that(
     # test on raster metadata
     exp_meta_r <- raster_metadata(test4b, format = "list")[[1]]
     testthat::expect_equal(exp_meta_r$size, c("x"=27, "y"=40))
-    testthat::expect_equal(exp_meta_r$res, c("x"=10.64168, "y"=10.58520), tolerance = 1e-3)
+    testthat::expect_equal(exp_meta_r$res, c("x"=10.58273, "y"=10.58273), tolerance = 1e-3)
     testthat::expect_equal(exp_meta_r$nbands, 3)
     testthat::expect_equal(
       as.numeric(exp_meta_r$bbox), 
-      c(774691.9, 5122100.0,  774979.2, 5122523.4),
+      c(776908.7, 5103210.8,  777196.7, 5103634.0),
       tolerance = 1e-3
     )
     testthat::expect_equal(exp_meta_r$proj$epsg, as.integer(NA))
@@ -174,8 +179,8 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(test4b)
-    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 76.77778, tolerance = 1e-03)
-    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 180, tolerance = 1e-3)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 76.65969, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 172, tolerance = 1e-3)
     rm(exp_stars)
     
   }
@@ -193,8 +198,8 @@ testthat::test_that(
     
     # test on raster metadata
     exp_meta_r <- raster_metadata(test5, format = "list")[[1]]
-    testthat::expect_equal(exp_meta_r$size, c("x"=10, "y"=27))
-    testthat::expect_equal(exp_meta_r$res, c("x"=9.98, "y"=9.86), tolerance = 1e-3)
+    testthat::expect_equal(exp_meta_r$size, c("x"=11, "y"=28))
+    testthat::expect_equal(exp_meta_r$res, c("x"=10.0357, "y"=10.0357), tolerance = 1e-3)
     testthat::expect_equal(exp_meta_r$nbands, 3)
     testthat::expect_equal(
       as.numeric(exp_meta_r$bbox), 
@@ -207,8 +212,8 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(test5)
-    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 97.21495, tolerance = 1e-03)
-    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 56, tolerance = 1e-03)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 97.15385, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 100, tolerance = 1e-03)
     rm(exp_stars)
     
   }
@@ -226,8 +231,8 @@ testthat::test_that(
     
     # test on raster metadata
     exp_meta_r <- raster_metadata(test6, format = "list")[[1]]
-    testthat::expect_equal(exp_meta_r$size, c("x"=6, "y"=25))
-    testthat::expect_equal(exp_meta_r$res, c("x"=10.7, "y"=10.2), tolerance = 1e-2)
+    testthat::expect_equal(exp_meta_r$size, c("x"=7, "y"=27))
+    testthat::expect_equal(exp_meta_r$res, c("x"=10.0357, "y"=10.0357), tolerance = 1e-2)
     testthat::expect_equal(exp_meta_r$nbands, 3)
     testthat::expect_equal(
       as.numeric(exp_meta_r$bbox), 
@@ -240,8 +245,8 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(test6)
-    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 110.5455, tolerance = 1e-03)
-    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 73, tolerance = 1e-03)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 109.8916, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 106, tolerance = 1e-03)
     rm(exp_stars)
     
   }
@@ -255,9 +260,9 @@ testthat::test_that(
     
     # test on raster metadata
     exp_meta_r <- raster_metadata(test7, format = "list")[[1]]
-    testthat::expect_equal(exp_meta_r$size, c("x" = 6, "y" = 25))
+    testthat::expect_equal(exp_meta_r$size, c("x" = 7, "y" = 27))
     testthat::expect_equal(
-      exp_meta_r$res, c("x" = 10.67998, "y" = 10.21008),
+      exp_meta_r$res, c("x" = 10.0357, "y" = 10.0357),
       tolerance = 1e-3
     )
     testthat::expect_equal(exp_meta_r$nbands, 3)
@@ -272,7 +277,7 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(test7)
-    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 91.76, tolerance = 1e-03)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 95.07407, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 0)
     rm(exp_stars)
     
@@ -287,8 +292,8 @@ testthat::test_that(
     
     # test on raster metadata
     exp_meta_r <- raster_metadata(test8, format = "list")[[1]]
-    testthat::expect_equal(exp_meta_r$size, c("x"=9, "y"=26))
-    testthat::expect_equal(exp_meta_r$res, c("x"=10.67998, "y"=10.21008 ), tolerance = 1e-3)
+    testthat::expect_equal(exp_meta_r$size, c("x"=11, "y"=28))
+    testthat::expect_equal(exp_meta_r$res, c("x"=10.0357, "y"=10.0357), tolerance = 1e-3)
     testthat::expect_equal(exp_meta_r$nbands, 3)
     testthat::expect_equal(
       as.numeric(exp_meta_r$bbox), 
@@ -301,8 +306,8 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(test8)
-    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 94.52093, tolerance = 1e-03)
-    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 19, tolerance = 1e-03)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 94.73444, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 67, tolerance = 1e-03)
     rm(exp_stars)
     
   }
@@ -316,8 +321,8 @@ testthat::test_that(
     
     # test on raster metadata
     exp_meta_r <- raster_metadata(test9, format = "list")[[1]]
-    testthat::expect_equal(exp_meta_r$size, c("x"=6, "y"=25))
-    testthat::expect_equal(exp_meta_r$res, c("x"=10.67998, "y"=10.21008 ), tolerance = 1e-3)
+    testthat::expect_equal(exp_meta_r$size, c("x"=7, "y"=27))
+    testthat::expect_equal(exp_meta_r$res, c("x"=10.0357, "y"=10.0357), tolerance = 1e-3)
     testthat::expect_equal(exp_meta_r$nbands, 3)
     testthat::expect_equal(
       as.numeric(exp_meta_r$bbox), 
@@ -330,8 +335,8 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(test9)
-    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 100.1134, tolerance = 1e-03)
-    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 53, tolerance = 1e-03)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 104.4956, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 76, tolerance = 1e-03)
     rm(exp_stars)
     
   }
@@ -345,8 +350,8 @@ testthat::test_that(
     
     # test on raster metadata
     exp_meta_r <- raster_metadata(test10, format = "list")[[1]]
-    testthat::expect_equal(exp_meta_r$size, c("x"=6, "y"=25))
-    testthat::expect_equal(exp_meta_r$res, c("x"=10.68, "y"=10.21), tolerance = 1e-3)
+    testthat::expect_equal(exp_meta_r$size, c("x"=7, "y"=27))
+    testthat::expect_equal(exp_meta_r$res, c("x"=10.0357, "y"=10.0357), tolerance = 1e-3)
     testthat::expect_equal(exp_meta_r$nbands, 3)
     testthat::expect_equal(
       as.numeric(exp_meta_r$bbox), 
@@ -359,8 +364,8 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(test10)
-    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 110.5455, tolerance = 1e-03)
-    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 73, tolerance = 1e-03)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 109.8916, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 106, tolerance = 1e-03)
     rm(exp_stars)
     
   }

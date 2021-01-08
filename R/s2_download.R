@@ -28,12 +28,11 @@
 #'  (being downloaded or already existing).
 #'
 #' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
-#' @author Lorenzo Busetto, phD (2019) \email{lbusett@@gmail.com}
+#' @author Lorenzo Busetto, phD (2019)
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
-#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. DOI: 
-#'  \href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473}, 
-#'  URL: \url{http://sen2r.ranghetti.info/}.
+#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 
+#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{http://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @importFrom httr RETRY authenticate progress write_disk
 #' @importFrom foreach foreach "%do%"
@@ -280,15 +279,15 @@ s2_download <- function(
     # )]
     # safe_existing <- list.files(dirname(zip_path), safe_regex, full.names = TRUE)
     # safe_existing <- safe_existing[safe_isvalid(safe_existing)]
-    
-    # if footprint exists, check if existing SAFEs are actually equivalent
-    if (!is.null(s2_meta$footprint)) {
-      safe_existing_footprint <- safe_getMetadata(safe_existing, "footprint")
-      safe_existing_centroid <- st_centroid(st_transform(st_as_sfc(safe_existing_footprint, crs = 4326), 3857))
-      safe_centroid <- st_centroid(st_transform(st_as_sfc(s2_meta[i,footprint], crs = 4326), 3857))
-      centroid_distance <- st_distance(safe_existing_centroid, safe_centroid)[1,1]
-      # TODO
-    }
+    # 
+    # # if footprint exists, check if existing SAFEs are actually equivalent
+    # if (!is.null(s2_meta$footprint)) {
+    #   safe_existing_footprint <- safe_getMetadata(safe_existing, "footprint")
+    #   safe_existing_centroid <- st_centroid(st_transform(st_as_sfc(safe_existing_footprint, crs = 4326), 3857))
+    #   safe_centroid <- st_centroid(st_transform(st_as_sfc(s2_meta[i,footprint], crs = 4326), 3857))
+    #   centroid_distance <- st_distance(safe_existing_centroid, safe_centroid)[1,1]
+    #   # TODO
+    # }
     
     if (any(overwrite == TRUE, !dir.exists(safe_path))) {
     

@@ -327,12 +327,11 @@
 #' @importFrom stats na.omit setNames
 #' @export
 #' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
-#' @author Lorenzo Busetto, phD (2020) \email{lbusett@@gmail.com}
+#' @author Lorenzo Busetto, phD (2020)
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
-#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. DOI: 
-#'  \href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473}, 
-#'  URL: \url{http://sen2r.ranghetti.info/}.
+#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 
+#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{http://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @examples
 #' \donttest{
@@ -390,28 +389,28 @@
 #'   gsub("jpg$", "png", thumb_4[grep("SCL", thumb_4)])
 #'   
 #' oldpar <- par(mfrow = c(1,2), mar = rep(0,4))
-#' image(stars::read_stars(thumb_3[grep("BOA", thumb_3)]), rgb = 1:3)
-#' image(stars::read_stars(thumb_3[grep("SCL", thumb_3)]), rgb = 1:3)
+#' image(stars::read_stars(thumb_3[grep("BOA", thumb_3)]), rgb = 1:3, useRaster = TRUE)
+#' image(stars::read_stars(thumb_3[grep("SCL", thumb_3)]), rgb = 1:3, useRaster = TRUE)
 #' 
 #' par(mfrow = c(1,2), mar = rep(0,4))
-#' image(stars::read_stars(thumb_3[grep("MSAVI2", thumb_3)]), rgb = 1:3)
-#' image(stars::read_stars(thumb_3[grep("NDVI", thumb_3)]), rgb = 1:3)
+#' image(stars::read_stars(thumb_3[grep("MSAVI2", thumb_3)]), rgb = 1:3, useRaster = TRUE)
+#' image(stars::read_stars(thumb_3[grep("NDVI", thumb_3)]), rgb = 1:3, useRaster = TRUE)
 #' 
 #' par(mfrow = c(1,2), mar = rep(0,4))
-#' image(stars::read_stars(thumb_3[grep("RGB432B", thumb_3)]), rgb = 1:3)
-#' image(stars::read_stars(thumb_3[grep("RGB843B", thumb_3)]), rgb = 1:3)
+#' image(stars::read_stars(thumb_3[grep("RGB432B", thumb_3)]), rgb = 1:3, useRaster = TRUE)
+#' image(stars::read_stars(thumb_3[grep("RGB843B", thumb_3)]), rgb = 1:3, useRaster = TRUE)
 #' 
 #' par(mfrow = c(1,2), mar = rep(0,4))
-#' image(stars::read_stars(thumb_4[grep("BOA", thumb_4)]), rgb = 1:3)
-#' image(stars::read_stars(thumb_4[grep("SCL", thumb_4)]), rgb = 1:3)
+#' image(stars::read_stars(thumb_4[grep("BOA", thumb_4)]), rgb = 1:3, useRaster = TRUE)
+#' image(stars::read_stars(thumb_4[grep("SCL", thumb_4)]), rgb = 1:3, useRaster = TRUE)
 #' 
 #' par(mfrow = c(1,2), mar = rep(0,4))
-#' image(stars::read_stars(thumb_4[grep("MSAVI2", thumb_4)]), rgb = 1:3)
-#' image(stars::read_stars(thumb_4[grep("NDVI", thumb_4)]), rgb = 1:3)
+#' image(stars::read_stars(thumb_4[grep("MSAVI2", thumb_4)]), rgb = 1:3, useRaster = TRUE)
+#' image(stars::read_stars(thumb_4[grep("NDVI", thumb_4)]), rgb = 1:3, useRaster = TRUE)
 #' 
 #' par(mfrow = c(1,2), mar = rep(0,4))
-#' image(stars::read_stars(thumb_4[grep("RGB432B", thumb_4)]), rgb = 1:3)
-#' image(stars::read_stars(thumb_4[grep("RGB843B", thumb_4)]), rgb = 1:3)
+#' image(stars::read_stars(thumb_4[grep("RGB432B", thumb_4)]), rgb = 1:3, useRaster = TRUE)
+#' image(stars::read_stars(thumb_4[grep("RGB843B", thumb_4)]), rgb = 1:3, useRaster = TRUE)
 #' 
 #' par(oldpar)
 #' }
@@ -667,7 +666,9 @@ sen2r <- function(param_list = NULL,
   # to avoid NOTE on check
   . <- sensing_datetime <- creation_datetime <- mission <- level <- id_orbit <-
     id_tile <- name <- id_baseline <- prod_type <- name <- sel_group_A <-
-    i_group_A <- sel_apihub_path <- i_group_B <- sensing_date <- lta <- NULL
+    i_group_A <- sel_apihub_path <- i_group_B <- sensing_date <- lta <-
+    centroid_x <- centroid_y <- res_type <-path <- footprint <- sel_out <-
+    NULL
   
   ### Preliminary settings ###
   
@@ -1559,6 +1560,21 @@ sen2r <- function(param_list = NULL,
     return(sen2r_output)
   }
   
+  ## determine the output grid (this will be used later)
+  exi_meta <- cbind(
+    sen2r_getElements(unlist(s2names$exi[c("indices","rgb","masked","warped_nomsk","warped")])),
+    data.frame(path=unlist(s2names$exi[c("indices","rgb","masked","warped_nomsk","warped")]))
+    # raster_metadata(unlist(s2names$exi[c("indices","rgb","masked","warped_nomsk","warped")]))
+  )
+  # res_type: "res20" if the minimum native resolution is 20m, "res10" if it is 10m
+  exi_meta[,res_type:=ifelse(prod_type %in% c("SCL","CLD","SNW"), "res20", "res10")]
+  reference_exi_paths <- if (nrow(exi_meta)>0) {
+    exi_meta[!duplicated(res_type),list(res_type,path)]
+  } else {
+    data.table(res_type = character(0), path = character(0))
+  }
+
+  
   ### SAFE processing: download and atmospheric correction ###
   
   ## Generate the list of required SAFE
@@ -2425,7 +2441,17 @@ sen2r <- function(param_list = NULL,
                   sel_s2names$req$warped[[sel_prod]],
                   warped_tomsk_reqout[[sel_prod]],
                   of = out_format["warped"],
-                  ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
+                  ref = if (!is.na(pm$reference_path)) {
+                    pm$reference_path
+                  } else {
+                    reference_exi_paths[
+                      res_type == ifelse(
+                        sel_prod %in% c("SCL","CLD","SNW"), 
+                        "res20", "res10"
+                      ), 
+                      path
+                    ]
+                  },
                   mask = s2_mask_extent,
                   tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
                   t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
@@ -2464,7 +2490,17 @@ sen2r <- function(param_list = NULL,
                   sel_s2names$req$warped_nomsk[[sel_prod]],
                   warped_nomsk_reqout[[sel_prod]],
                   of = out_format["warped_nomsk"], # use physical files to speed up next steps
-                  ref = if (!is.na(pm$reference_path)) {pm$reference_path} else {NULL},
+                  ref = if (!is.na(pm$reference_path)) {
+                    pm$reference_path
+                  } else {
+                    reference_exi_paths[
+                      res_type == ifelse(
+                        sel_prod %in% c("SCL","CLD","SNW"), 
+                        "res20", "res10"
+                      ), 
+                      path
+                    ]
+                  },
                   mask = s2_mask_extent,
                   tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
                   t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},

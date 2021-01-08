@@ -1,6 +1,6 @@
 #' @title Download and install (or link) Sen2Cor
 #' @description [install_sen2cor()] downloads and installs a standalone version of
-#'  [Sen2Cor](http://step.esa.int/main/third-party-plugins-2/sen2cor/).
+#'  [Sen2Cor](http://step.esa.int/main/snap-supported-plugins/sen2cor/).
 #' @param sen2cor_dir Path where sen2cor will be installed or searched
 #'  (by default it is a subdirectory `"sen2cor"` of the default sen2r directory).
 #' @param version (optional) Character: Sen2Cor version (one among
@@ -12,9 +12,8 @@
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
-#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. DOI: 
-#'  \href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473}, 
-#'  URL: \url{http://sen2r.ranghetti.info/}.
+#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 
+#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{http://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @importFrom jsonlite toJSON fromJSON
 #' @importFrom utils download.file unzip
@@ -220,7 +219,7 @@ install_sen2cor <- function(
 #' @name link_sen2cor
 #' @rdname install_sen2cor
 #' @description `link_sen2cor()` links an existing standalone version of
-#'  [Sen2Cor](http://step.esa.int/main/third-party-plugins-2/sen2cor/) to sen2r.
+#'  [Sen2Cor](http://step.esa.int/main/snap-supported-plugins/sen2cor/) to sen2r.
 #' @export
 link_sen2cor <- function(sen2cor_dir) {
   

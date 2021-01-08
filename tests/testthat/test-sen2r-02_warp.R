@@ -136,7 +136,7 @@ testthat::test_that(
       "path", "valid", "res.x", "res.y", "size.x", "size.y", "nbands", 
       "xmin", "ymin", "xmax", "ymax", "proj", "unit", "outformat", "type"
     ))
-    testthat::expect_equal(exp_meta_r[,c("size.x", "size.y")], data.frame("size.x"=775, "size.y"=583))
+    testthat::expect_equal(exp_meta_r[,c("size.x", "size.y")], data.frame("size.x"=776, "size.y"=584))
     testthat::expect_equal(exp_meta_r[,c("res.x", "res.y")], data.frame("res.x"=25, "res.y"=25))
     testthat::expect_equal(exp_meta_r$nbands, 12)
     testthat::expect_equal(
@@ -231,7 +231,7 @@ testthat::test_that(
     testthat::expect_equal(names(exp_meta_r), c(
       "path", "valid", "res", "size", "nbands", "bbox", "proj", "unit", "outformat", "type"
     ))
-    testthat::expect_equal(exp_meta_r$size, c("x"=775, "y"=583))
+    testthat::expect_equal(exp_meta_r$size, c("x"=776, "y"=584))
     testthat::expect_equal(exp_meta_r$res, c("x"=25, "y"=25))
     testthat::expect_equal(exp_meta_r$nbands, 1)
     testthat::expect_equal(

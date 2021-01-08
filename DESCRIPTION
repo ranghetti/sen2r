@@ -1,13 +1,12 @@
 Package: sen2r
 Type: Package
 Title: Find, Download and Process Sentinel-2 Data
-Version: 1.3.9.9002
+Version: 1.4.0
 Authors@R: c(person("Luigi", "Ranghetti",
                     email = "luigi@ranghetti.info",
                     role = c("aut", "cre"),
                     comment = c(ORCID = "0000-0001-6207-5188")),
              person("Lorenzo", "Busetto",
-                    email = "lbusett@gmail.com",
                     role = c("aut"),
                     comment = c(ORCID = "0000-0001-9634-6038")))
 Description: Functions to download Sentinel-2 optical images

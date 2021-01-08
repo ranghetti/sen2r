@@ -122,9 +122,8 @@
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
-#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. DOI: 
-#'  \href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473}, 
-#'  URL: \url{http://sen2r.ranghetti.info/}.
+#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 
+#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{http://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @examples
 #' \donttest{
@@ -149,9 +148,12 @@
 #'
 #' # Show output
 #' oldpar <- par(mfrow = c(1,3))
-#' par(mar = rep(0,4)); image(stars::read_stars(ex_in), rgb = 1:3)
-#' par(mar = rep(2/3,4)); image(stars::read_stars(ex_mask))
-#' par(mar = rep(0,4)); image(stars::read_stars(ex_out), rgb = 1:3)
+#' par(mar = rep(0,4))
+#' image(stars::read_stars(ex_in), rgb = 1:3, useRaster = TRUE)
+#' par(mar = rep(2/3,4))
+#' image(stars::read_stars(ex_mask), useRaster = TRUE)
+#' par(mar = rep(0,4))
+#' image(stars::read_stars(ex_out), rgb = 1:3, useRaster = TRUE)
 #' par(oldpar)
 #' }
 

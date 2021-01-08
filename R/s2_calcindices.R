@@ -90,9 +90,8 @@
 #' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
-#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. DOI: 
-#'  \href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473}, 
-#'  URL: \url{http://sen2r.ranghetti.info/}.
+#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 
+#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{http://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @examples
 #' # Define file names
@@ -112,8 +111,9 @@
 #'
 #' # Show output
 #' oldpar <- par(mfrow = c(1,2), mar = rep(0,4))
-#' image(stars::read_stars(ex_in), rgb = 4:2, maxColorValue = 3500)
-#' par(mar = rep(2/3,4)); image(stars::read_stars(ex_out))
+#' image(stars::read_stars(ex_in), rgb = 4:2, maxColorValue = 3500, useRaster = TRUE)
+#' par(mar = rep(2/3,4))
+#' image(stars::read_stars(ex_out), useRaster = TRUE)
 #' par(oldpar)
 
 s2_calcindices <- function(

@@ -24,10 +24,10 @@ NULL (the function is called for its side effects)
 }
 \description{
 \code{\link[=install_sen2cor]{install_sen2cor()}} downloads and installs a standalone version of
-\href{http://step.esa.int/main/third-party-plugins-2/sen2cor/}{Sen2Cor}.
+\href{http://step.esa.int/main/snap-supported-plugins/sen2cor/}{Sen2Cor}.
 
 \code{link_sen2cor()} links an existing standalone version of
-\href{http://step.esa.int/main/third-party-plugins-2/sen2cor/}{Sen2Cor} to sen2r.
+\href{http://step.esa.int/main/snap-supported-plugins/sen2cor/}{Sen2Cor} to sen2r.
 }
 \note{
 License: GPL 3.0
@@ -41,9 +41,8 @@ install_sen2cor(sen2cor_dir = tempdir())
 \references{
 L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
-Sentinel-2 satellite data. \emph{Computers & Geosciences}, 139, 104473. DOI:
-\href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473},
-URL: \url{http://sen2r.ranghetti.info/}.
+Sentinel-2 satellite data. \emph{Computers & Geosciences}, 139, 104473.
+\doi{10.1016/j.cageo.2020.104473}, URL: \url{http://sen2r.ranghetti.info/}.
 }
 \author{
 Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}

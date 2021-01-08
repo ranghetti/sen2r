@@ -1,7 +1,7 @@
 #' @title Correct L1C products using Sen2Cor
 #' @description The function uses Sen2Cor to manually correct L1C products.
 #'  Standalone version of
-#'  [sen2cor](http://step.esa.int/main/third-party-plugins-2/sen2cor/)
+#'  [sen2cor](http://step.esa.int/main/snap-supported-plugins/sen2cor/)
 #'  (version 2.8.0 or 2.5.5) is used.
 #' @param l1c_prodlist List of L1C product names to be corrected. They can be both
 #'  product names with full/relative path or only names of SAFE products (in this case, also
@@ -38,8 +38,8 @@
 #'  to maintain the value specified in the XML file).
 #'  
 #'  For details about the GIPP parameters, refer to the Sen2Cor documentation
-#'  (v. [2.5.5](http://step.esa.int/main/third-party-plugins-2/sen2cor/sen2cor_v2-5-5/) 
-#'  or [2.8.0](http://step.esa.int/main/third-party-plugins-2/sen2cor/sen2cor_v2-8/):
+#'  (v. [2.5.5](http://step.esa.int/main/snap-supported-plugins/sen2cor/sen2cor_v2-5-5/) 
+#'  or [2.8.0](http://step.esa.int/main/snap-supported-plugins/sen2cor/sen2cor_v2-8/):
 #'  see the "Schemas of the GIPP file" at the end of each page).
 #'  _Note_: this argument takes effect only in the current execution of 
 #'  `sen2cor()` function.
@@ -102,9 +102,8 @@
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
-#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. DOI: 
-#'  \href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473}, 
-#'  URL: \url{http://sen2r.ranghetti.info/}.
+#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 
+#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{http://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @importFrom jsonlite fromJSON
 #' @importFrom doParallel registerDoParallel

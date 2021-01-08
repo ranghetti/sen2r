@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
       </span>
     </div>
 
@@ -106,7 +106,8 @@
 
       
 
-      </header><script src="outstructure_files/header-attrs-2.4/header-attrs.js"></script><div class="row">
+      </header><script src="outstructure_files/header-attrs-2.5/header-attrs.js"></script><link href="outstructure_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+<script src="outstructure_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Output file structure</h1>
@@ -225,8 +226,8 @@
 <a href="#spectral-indices" class="anchor"></a>Spectral indices</h3>
 <p>Spectral indices are single band rasters computed from <span style="font-family:monospace;color:#FF6611;">BOA</span> (by default) or <span style="font-family:monospace;color:#FF6611;">TOA</span> images using function <code><a href="../reference/s2_calcindices.html">s2_calcindices()</a></code> (or the main function <code><a href="../reference/sen2r.html">sen2r()</a></code>).</p>
 <p>The list of the indices which can be computed can be seen in the GUI (fourth sheet). In the GUI, the index formula is <em>usually</em> graphically provided. In order to check the formula which is used for index computation, the function `list_indices()’ can be used. For example, the following command will return the formula of index NDVI:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="../reference/list_indices.html">list_indices</a></span><span class="op">(</span><span class="st">"s2_formula"</span>, <span class="st">"^NDVI$"</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/list_indices.html">list_indices</a></span><span class="op">(</span><span class="st">"s2_formula"</span>, <span class="st">"^NDVI$"</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] "(band_8-band_4)/(band_8+band_4)"</code></pre>
 <p>See the function documentation for other examples.</p>
 <p>The output type can be both floating (in this case, the actual index value is provided) or integer (default; in this case, values are multiplicated by a scaling factor, 10000 by default). So, if the user did not change the arguments <code>outType</code> and <code>scaleFactor</code> of function <code><a href="../reference/s2_calcindices.html">s2_calcindices()</a></code>, or <code>index_datatype</code> of function <code><a href="../reference/sen2r.html">sen2r()</a></code>, raster values will be multiplicated by 10000 respect to the “expected” index values.</p>
@@ -292,8 +293,8 @@
 <p>Processing functions allows setting an output directory using the arguments <code>path_out</code>, <code>path_rgb</code> and <code>path_indices</code> (<code><a href="../reference/sen2r.html">sen2r()</a></code>) or <code>outdir</code> (<code><a href="../reference/s2_translate.html">s2_translate()</a></code>, <code><a href="../reference/s2_merge.html">s2_merge()</a></code>, <code><a href="../reference/s2_mask.html">s2_mask()</a></code>, <code><a href="../reference/s2_rgb.html">s2_rgb()</a></code> and <code><a href="../reference/s2_calcindices.html">s2_calcindices()</a></code>). These folders are automatically created if their parent directories exist.</p>
 <p>By default, functions create a subfolder for each product / index / RGB type, in which files are stored. Each product subfolder includes a sub-subfolder named <code>thumbnails</code>, which contains small JPEG or PNG images which can be used to rapidly monitor what was done (see <code><a href="../reference/s2_thumbnails.html">s2_thumbnails()</a></code> for further details).</p>
 <p>For example, the following command would produce the outputs listed below.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="va">json_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_example_param_file.html">build_example_param_file</a></span><span class="op">(</span><span class="op">)</span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">json_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_example_param_file.html">build_example_param_file</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">out_dir_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"sen2r_out_1_"</span><span class="op">)</span>
 
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://sen2r.ranghetti.info">sen2r</a></span><span class="op">)</span>
@@ -301,7 +302,7 @@
   <span class="va">json_path</span>, 
   timewindow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"2019-07-13"</span>,<span class="st">"2019-07-23"</span><span class="op">)</span>,
   path_out <span class="op">=</span> <span class="va">out_dir_1</span>
-<span class="op">)</span></pre></div>
+<span class="op">)</span></code></pre></div>
 <pre><code>[2020-02-06 09:42:40] #### Starting sen2r execution. ####
 [2020-02-06 09:42:40] Searching for available SAFE products on SciHub...
 [2020-02-06 09:42:46] Computing output names...
@@ -316,8 +317,8 @@
 [2020-02-06 09:44:45] #### sen2r session terminated. ####
 The processing chain can be re-launched with the command:
   sen2r("/home/lranghetti/.sen2r/proc_par/s2proc_20200206_094240.json")</code></pre>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"tree"</span>, <span class="va">out_dir_1</span><span class="op">)</span><span class="op">)</span> <span class="co"># working on Linux with binary "tree" installed</span></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"tree"</span>, <span class="va">out_dir_1</span><span class="op">)</span><span class="op">)</span> <span class="co"># working on Linux with binary "tree" installed</span></code></pre></div>
 <pre><code>/tmp/RtmpUlAdHw/sen2r_out_1_a55119f4ed09
 ├── BOA
 │   ├── S2A2A_20190713_022_sen2r_BOA_10.tif
@@ -426,8 +427,8 @@ The processing chain can be re-launched with the command:
 <p>In each of the 6 subfolders <code>BOA</code>, <code>MSAVI2</code>, <code>NDVI</code>, <code>RGB432B</code>, <code>RGB843B</code> and <code>SCL</code> 5 products (one for each date) were created. Sub-subfolders <code>thumbnails</code> contains thumbnail images.</p>
 <p>Users can skip the creation of products’ subfolders setting the argument <code><a href="../reference/sen2r.html">sen2r(..., path_subdirs = FALSE)</a></code> (default: <code>TRUE</code>), or doing the same with the argument <code>subdir</code> of other processing functions. The creation of thumbnails can be skipped using <code><a href="../reference/sen2r.html">sen2r(..., thumbnails = FALSE)</a></code> (default: <code>TRUE</code>). Both the options can be also set <a href="sen2r_gui.html">using the <code>sen2r()</code> GUI</a>.</p>
 <p>For example, the following command would produce the outputs listed below.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="va">out_dir_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"sen2r_out_2_"</span><span class="op">)</span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">out_dir_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"sen2r_out_2_"</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/sen2r.html">sen2r</a></span><span class="op">(</span>
   <span class="va">json_path</span>, 
@@ -435,7 +436,7 @@ The processing chain can be re-launched with the command:
   path_out <span class="op">=</span> <span class="va">out_dir_2</span>,
   path_subdirs <span class="op">=</span> <span class="cn">FALSE</span>,
   thumbnails <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></pre></div>
+<span class="op">)</span></code></pre></div>
 <pre><code>[2020-02-06 09:52:30] #### Starting sen2r execution. ####
 [2020-02-06 09:52:30] Searching for available SAFE products on SciHub...
 [2020-02-06 09:52:35] Computing output names...
@@ -452,8 +453,8 @@ The processing chain can be re-launched with the command:
 [2020-02-06 09:54:16] #### sen2r session terminated. ####
 The processing chain can be re-launched with the command:
   sen2r("/home/lranghetti/.sen2r/proc_par/s2proc_20200206_095230.json")</code></pre>
-<div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"tree"</span>, <span class="va">out_dir_2</span><span class="op">)</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"tree"</span>, <span class="va">out_dir_2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>/tmp/RtmpUlAdHw/sen2r_out_2_a5513ad348b0
 ├── S2A2A_20190713_022_sen2r_BOA_10.tif
 ├── S2A2A_20190713_022_sen2r_MSAVI2_10.tif

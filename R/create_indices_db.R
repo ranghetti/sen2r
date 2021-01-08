@@ -20,9 +20,8 @@
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
-#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. DOI: 
-#'  \href{https://doi.org/10.1016/j.cageo.2020.104473}{10.1016/j.cageo.2020.104473}, 
-#'  URL: \url{http://sen2r.ranghetti.info/}.
+#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 
+#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{http://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @import data.table
 #' @importFrom XML htmlTreeParse xmlRoot readHTMLTable xmlAttrs saveXML
@@ -195,11 +194,14 @@ create_indices_db <- function(xslt_path = NA,
     
   }
   
-  # last manual corrections on formulas
+  # last manual corrections on names
   s2_table[,s2_formula:=gsub("par\\_([0-9])", "band_\\1", s2_table$s2_formula)] # some bands were wrongly classified as parameters
   s2_table$name[s2_table$name=="TCI"] <- "TCIdx" # in order not to mess with TCI True Color Image product
   s2_table$name[s2_table$name=="NDSI"] <- "NDSaI" # in order not to mess with Normalized Difference Snow Index
   
+  # last manual corrections on formulas
+  s2_table[name=="ARVI", s2_formula := gsub("band_8a", "band_8", s2_formula)] # revert manual change on IDB
+
   # rename parameters (A, B, ...)
   s2_table[,s2_formula:=gsub("par\\_([aALyY]r?)", "par_a", s2_table$s2_formula)] # first parameters (a, A, ar, y, Y, L) -> "a"
   s2_table[,s2_formula:=gsub("par\\_([bB])", "par_b", s2_table$s2_formula)] # second parameters (b, B) -> "b"
