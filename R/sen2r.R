@@ -1492,6 +1492,12 @@ sen2r <- function(param_list = NULL,
     # export needed variables
     out_ext <- attr(s2names, "out_ext")
     out_format <- attr(s2names, "out_format")
+    out_proj <- if (!is.na(pm$proj)) {pm$proj} else {
+      s2_dt_tiles <- tile_utmzone(s2_dt$id_tile)
+      # select the more represented UTM zone
+      s2_sel_tile <- names(sort(table(s2_dt_tiles), decreasing = TRUE)[1])
+      if (is.null(s2_sel_tile)) {NA} else {st_crs2(s2_sel_tile)}
+    }
     
     # Check if processing is needed
     if (all(unlist(sapply(s2names$new, sapply, length)) == 0)) {
@@ -2454,7 +2460,7 @@ sen2r <- function(param_list = NULL,
                   },
                   mask = s2_mask_extent,
                   tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
-                  t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
+                  t_srs = out_proj,
                   r = pm$resampling,
                   dstnodata = s2_defNA(sel_prod),
                   co = if (out_format["warped"]=="GTiff") {c(
@@ -2503,7 +2509,7 @@ sen2r <- function(param_list = NULL,
                   },
                   mask = s2_mask_extent,
                   tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
-                  t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
+                  t_srs = out_proj,
                   r = if (sel_prod == "SCL") {pm$resampling_scl} else {pm$resampling},
                   dstnodata = s2_defNA(sel_prod),
                   co = if (out_format["warped_nomsk"]=="GTiff") {c(
