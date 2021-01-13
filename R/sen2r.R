@@ -1498,6 +1498,18 @@ sen2r <- function(param_list = NULL,
       s2_sel_tile <- names(sort(table(s2_dt_tiles), decreasing = TRUE)[1])
       if (is.null(s2_sel_tile)) {NA} else {st_crs2(s2_sel_tile)}
     }
+    # create mask
+    s2_mask_extent <- if (is(pm$extent, "vector") && is.na(pm$extent)) {
+      NULL
+    } else if (anyNA(pm$extent$geometry)) {
+      NULL
+    } else if (pm$extent_as_mask==TRUE) {
+      st_combine(pm$extent)
+    } else {
+      st_combine(
+        suppressWarnings(st_cast(st_cast(pm$extent,"POLYGON"), "LINESTRING"))
+      )
+    }
     
     # Check if processing is needed
     if (all(unlist(sapply(s2names$new, sapply, length)) == 0)) {
@@ -2420,18 +2432,6 @@ sen2r <- function(param_list = NULL,
           }, simplify = FALSE, USE.NAMES = TRUE)
           
           dir.create(paths["warped"], recursive=FALSE, showWarnings=FALSE)
-          # create mask
-          s2_mask_extent <- if (is(pm$extent, "vector") && is.na(pm$extent)) {
-            NULL
-          } else if (anyNA(pm$extent$geometry)) { # FIXME check on telemod tiffs
-            NULL
-          } else if (pm$extent_as_mask==TRUE) {
-            st_combine(pm$extent) # TODO remove this when multiple extents will be allowed
-          } else {
-            st_combine(
-              suppressWarnings(st_cast(st_cast(pm$extent,"POLYGON"), "LINESTRING"))
-            ) # TODO remove this when multiple extents will be allowed
-          } # TODO add support for multiple extents
           
           if(pm$path_subdirs==TRUE){
             sapply(unique(dirname(unlist(c(warped_tomsk_reqout,warped_nomsk_reqout)))),dir.create,showWarnings=FALSE)
