@@ -1579,17 +1579,19 @@ sen2r <- function(param_list = NULL,
   }
   
   ## determine the output grid (this will be used later)
-  exi_meta <- cbind(
-    sen2r_getElements(unlist(s2names$exi[c("indices","rgb","masked","warped_nomsk","warped")])),
-    data.frame(path=unlist(s2names$exi[c("indices","rgb","masked","warped_nomsk","warped")]))
-    # raster_metadata(unlist(s2names$exi[c("indices","rgb","masked","warped_nomsk","warped")]))
-  )
-  # res_type: "res20" if the minimum native resolution is 20m, "res10" if it is 10m
-  exi_meta[,res_type:=ifelse(prod_type %in% c("SCL","CLD","SNW"), "res20", "res10")]
-  reference_exi_paths <- if (nrow(exi_meta)>0) {
-    exi_meta[!duplicated(res_type),list(res_type,path)]
-  } else {
-    data.table(res_type = character(0), path = character(0))
+  if (pm$preprocess==TRUE) {
+    exi_meta <- cbind(
+      sen2r_getElements(unlist(s2names$exi[c("indices","rgb","masked","warped_nomsk","warped")])),
+      data.frame(path=unlist(s2names$exi[c("indices","rgb","masked","warped_nomsk","warped")]))
+      # raster_metadata(unlist(s2names$exi[c("indices","rgb","masked","warped_nomsk","warped")]))
+    )
+    # res_type: "res20" if the minimum native resolution is 20m, "res10" if it is 10m
+    exi_meta[,res_type:=ifelse(prod_type %in% c("SCL","CLD","SNW"), "res20", "res10")]
+    reference_exi_paths <- if (nrow(exi_meta)>0) {
+      exi_meta[!duplicated(res_type),list(res_type,path)]
+    } else {
+      data.table(res_type = character(0), path = character(0))
+    }
   }
 
   
