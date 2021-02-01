@@ -1492,6 +1492,24 @@ sen2r <- function(param_list = NULL,
     # export needed variables
     out_ext <- attr(s2names, "out_ext")
     out_format <- attr(s2names, "out_format")
+    out_proj <- if (!is.na(pm$proj)) {pm$proj} else {
+      s2_dt_tiles <- tile_utmzone(s2_dt$id_tile)
+      # select the more represented UTM zone
+      s2_sel_tile <- names(sort(table(s2_dt_tiles), decreasing = TRUE)[1])
+      if (is.null(s2_sel_tile)) {NA} else {st_crs2(s2_sel_tile)}
+    }
+    # create mask
+    s2_mask_extent <- if (is(pm$extent, "vector") && is.na(pm$extent)) {
+      NULL
+    } else if (anyNA(pm$extent$geometry)) {
+      NULL
+    } else if (pm$extent_as_mask==TRUE) {
+      st_combine(pm$extent)
+    } else {
+      st_combine(
+        suppressWarnings(st_cast(st_cast(pm$extent,"POLYGON"), "LINESTRING"))
+      )
+    }
     
     # Check if processing is needed
     if (all(unlist(sapply(s2names$new, sapply, length)) == 0)) {
@@ -1561,17 +1579,19 @@ sen2r <- function(param_list = NULL,
   }
   
   ## determine the output grid (this will be used later)
-  exi_meta <- cbind(
-    sen2r_getElements(unlist(s2names$exi[c("indices","rgb","masked","warped_nomsk","warped")])),
-    data.frame(path=unlist(s2names$exi[c("indices","rgb","masked","warped_nomsk","warped")]))
-    # raster_metadata(unlist(s2names$exi[c("indices","rgb","masked","warped_nomsk","warped")]))
-  )
-  # res_type: "res20" if the minimum native resolution is 20m, "res10" if it is 10m
-  exi_meta[,res_type:=ifelse(prod_type %in% c("SCL","CLD","SNW"), "res20", "res10")]
-  reference_exi_paths <- if (nrow(exi_meta)>0) {
-    exi_meta[!duplicated(res_type),list(res_type,path)]
-  } else {
-    data.table(res_type = character(0), path = character(0))
+  if (pm$preprocess==TRUE) {
+    exi_meta <- cbind(
+      sen2r_getElements(unlist(s2names$exi[c("indices","rgb","masked","warped_nomsk","warped")])),
+      data.frame(path=unlist(s2names$exi[c("indices","rgb","masked","warped_nomsk","warped")]))
+      # raster_metadata(unlist(s2names$exi[c("indices","rgb","masked","warped_nomsk","warped")]))
+    )
+    # res_type: "res20" if the minimum native resolution is 20m, "res10" if it is 10m
+    exi_meta[,res_type:=ifelse(prod_type %in% c("SCL","CLD","SNW"), "res20", "res10")]
+    reference_exi_paths <- if (nrow(exi_meta)>0) {
+      exi_meta[!duplicated(res_type),list(res_type,path)]
+    } else {
+      data.table(res_type = character(0), path = character(0))
+    }
   }
 
   
@@ -2414,18 +2434,6 @@ sen2r <- function(param_list = NULL,
           }, simplify = FALSE, USE.NAMES = TRUE)
           
           dir.create(paths["warped"], recursive=FALSE, showWarnings=FALSE)
-          # create mask
-          s2_mask_extent <- if (is(pm$extent, "vector") && is.na(pm$extent)) {
-            NULL
-          } else if (anyNA(pm$extent$geometry)) { # FIXME check on telemod tiffs
-            NULL
-          } else if (pm$extent_as_mask==TRUE) {
-            st_combine(pm$extent) # TODO remove this when multiple extents will be allowed
-          } else {
-            st_combine(
-              suppressWarnings(st_cast(st_cast(pm$extent,"POLYGON"), "LINESTRING"))
-            ) # TODO remove this when multiple extents will be allowed
-          } # TODO add support for multiple extents
           
           if(pm$path_subdirs==TRUE){
             sapply(unique(dirname(unlist(c(warped_tomsk_reqout,warped_nomsk_reqout)))),dir.create,showWarnings=FALSE)
@@ -2454,7 +2462,7 @@ sen2r <- function(param_list = NULL,
                   },
                   mask = s2_mask_extent,
                   tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
-                  t_srs = if (!is.na(pm$proj)){pm$proj} else {NULL},
+                  t_srs = out_proj,
                   r = pm$resampling,
                   dstnodata = s2_defNA(sel_prod),
                   co = if (out_format["warped"]=="GTiff") {c(
@@ -2503,7 +2511,7 @@ sen2r <- function(param_list = NULL,
                   },
                   mask = s2_mask_extent,
                   tr = if (!anyNA(pm$res)) {pm$res} else {NULL},
-                  t_srs = if (!is.na(pm$proj)) {pm$proj} else {NULL},
+                  t_srs = out_proj,
                   r = if (sel_prod == "SCL") {pm$resampling_scl} else {pm$resampling},
                   dstnodata = s2_defNA(sel_prod),
                   co = if (out_format["warped_nomsk"]=="GTiff") {c(

@@ -692,10 +692,7 @@ safe_isvalid <- function(
           metadata[[i]][["tiles"]] <- paste(av_tiles, collapse = ",")
         }
         if ("utm" %in% sel_info) {
-          metadata[[i]][["utm"]] <- unique(paste0(
-            substr(av_tiles,1,2),
-            ifelse(substr(av_tiles,3,3) %in% LETTERS[1:13], "S", "N")
-          ))
+          metadata[[i]][["utm"]] <- unique(tile_utmzone(av_tiles))
         }
       }
       

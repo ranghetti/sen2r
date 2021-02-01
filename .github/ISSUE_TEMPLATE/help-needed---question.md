@@ -8,6 +8,8 @@ assignees: ''
 ---
 
 <!--
+IMPORTANT NOTE: the following template must not be deleted, but read and filled with the required information. Issues written without following the template will be marked as "malformed" and ignored.
+
 Use this template if you need assistance running {sen2r} on your code (e.g., in case of errors which are not a bug / you are not sure if they are a bug), or if in doubt about which template you should use. Please use this method instead than sending private email to the authors.
 
 Before opening a new issue please check if the problem was already been mentioned (if so but the found issue is closed, open a new issue citing the old task instead than reopening it).
