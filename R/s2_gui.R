@@ -4186,7 +4186,7 @@ s2_gui <- function(param_list = NULL,
           type = "error"
         )
         
-      } else if (length(rv$list_prods) > 0 & input$path_out_textin == "") {
+      } else if (input$preprocess == TRUE & length(rv$list_prods) > 0 & input$path_out_textin == "") {
         
         # directory missing
         sendSweetAlert(
