@@ -186,6 +186,7 @@ s2_download <- function(
     ordered_products <- .s2_order(
       s2_prodlist[s2_toorder], 
       .s2_availability = s2_availability[s2_toorder], 
+      service = service,
       apihub = apihub
     )
   }

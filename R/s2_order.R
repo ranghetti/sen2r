@@ -330,7 +330,7 @@ s2_order <- function(
       )} else if (false_invalid_safe) {paste0(
         " because some invalid SAFE products were stored on the ESA API Hub. ",
         "Please retry ordering them on DHUS ",
-        "(set argument 'service = \"dhub\"' in function s2_order())."
+        "(set argument 'service = \"dhus\"' in function s2_order())."
       )} else {
         "."#," Try using a higher value for the argument \"delay\"."
       },
