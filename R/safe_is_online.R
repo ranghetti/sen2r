@@ -57,8 +57,8 @@ safe_is_online <- function(s2_prodlist = NULL, apihub = NA, verbose = TRUE) {
   s2_prodlist <- as(s2_prodlist, "safelist")
   # TODO add input checks
   
-  # # replace apihub with dhus
-  # s2_prodlist <- gsub("apihub", "dhus", s2_prodlist)
+  # replace apihub with dhus
+  s2_prodlist <- gsub("apihub", "dhus", s2_prodlist)
   
   # read credentials
   creds <- read_scihub_login(apihub)

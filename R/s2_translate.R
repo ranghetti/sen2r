@@ -295,29 +295,45 @@ s2_translate <- function(infile,
           # define the steps to perform:
           # 1. create a multiband stack
           do_step1 <- length(jp2_selbands)>1
-          # 2. mask nodata values if the tile does not completely cover the orbit
+          # 2: rescale in case of wrong native resolution
+          # (i.e. SAFE not containing 10m bands with res = "10m")
+          res_out <- if (all(
+            prod_type %in% c("SCL","CLD","SNW"),
+            res[1] == "10m"
+          )) {res[2]} else {res[1]}
+          res_ratio <- min(as.integer(substr(jp2df_selbands$res,1,2))) / 
+            as.integer(substr(res_out,1,2))
+          do_step2 <- res_ratio > 1 # it could make sense define for != 1
+          # 3. mask nodata values if the tile does not completely cover the orbit
           infile_footprint <- st_transform(
             st_as_sfc(infile_meta$footprint, crs = 4326), 
             st_crs2(sel_utmzone)
           )
           infile_area <- sum(st_area(infile_footprint))
-          do_step2 <- infile_area < 109e3^2*units::ud_units$m^2
-          # 3. convert the final VRT to a physical format
-          do_step3 <- format != "VRT"
+          do_step3 <- infile_area < 109e3^2*units::ud_units$m^2
+          # 4. convert the final VRT to a physical format
+          do_step4 <- format != "VRT"
           
           vrt1_path <- if (!do_step1) { # skip step 1
             jp2_selbands 
-          } else if (all(!do_step2, !do_step3)) { # step 1 is the last
+          } else if (all(!do_step2, !do_step3, !do_step4)) { # step 1 is the last
             out_name
           } else { # perform step 1
             paste0(tmpdir,"/",out_prefix,"_step1.vrt")
           }
           vrt2_path <- if (!do_step2) { # skip step 2
-            vrt1_path
-          } else if (!do_step3) { # step 1 is the last
+            vrt1_path 
+          } else if (all(!do_step3, !do_step4)) { # step 2 is the last
             out_name
-          } else { # perform step 2
+          } else { # perform step 1
             paste0(tmpdir,"/",out_prefix,"_step2.vrt")
+          }
+          vrt3_path <- if (!do_step3) { # skip step 3
+            vrt2_path
+          } else if (!do_step4) { # step 1 is the last
+            out_name
+          } else { # perform step 3
+            paste0(tmpdir,"/",out_prefix,"_step3.vrt")
           }
           
           # step 1
@@ -340,16 +356,13 @@ s2_translate <- function(infile,
           
           # step 2
           if (do_step2) {
-            cutline_path <- paste0(tmpdir,"/",out_prefix,"_cutline.gpkg")
-            st_write(infile_footprint, cutline_path, quiet = TRUE)
             gdalUtil(
-              "warp",
+              "translate",
               source = vrt1_path,
               destination = vrt2_path,
               options = c(
-                "-cutline", cutline_path,
-                "-of", "VRT",
-                if (!is.na(sel_na)) {c("-dstnodata", sel_na)}
+                "-outsize", rep(paste0(res_ratio*100,"%"), 2),
+                "-of", "VRT"
               ),
               quiet = TRUE
             )
@@ -358,12 +371,32 @@ s2_translate <- function(infile,
             }
           }
           
-          
           # step 3
-          if (do_step3 | all(!do_step1, !do_step2)) {
+          if (do_step3) {
+            cutline_path <- paste0(tmpdir,"/",out_prefix,"_cutline.gpkg")
+            st_write(infile_footprint, cutline_path, quiet = TRUE)
+            gdalUtil(
+              "warp",
+              source = vrt1_path,
+              destination = vrt3_path,
+              options = c(
+                "-cutline", cutline_path,
+                "-of", "VRT",
+                if (!is.na(sel_na)) {c("-dstnodata", sel_na)}
+              ),
+              quiet = TRUE
+            )
+            if (vrt_rel_paths==TRUE) {
+              gdal_abs2rel(vrt3_path)
+            }
+          }
+          
+          
+          # step 4
+          if (do_step4 | all(!do_step1, !do_step2, !do_step3)) {
             gdalUtil(
               "translate",
-              source = vrt2_path,
+              source = vrt3_path,
               destination = out_name,
               options = c(
                 "-of", format,
@@ -376,7 +409,7 @@ s2_translate <- function(infile,
               ),
               quiet = TRUE
             )
-            if (!do_step3 & vrt_rel_paths==TRUE) {
+            if (!do_step4 & vrt_rel_paths==TRUE) {
               gdal_abs2rel(out_name)
             }
           }
