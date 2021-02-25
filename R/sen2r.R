@@ -1167,19 +1167,19 @@ sen2r <- function(param_list = NULL,
     }
     if ("l2a" %in% pm$s2_levels) {
       s2_lists[["l2a"]] <- if (pm$step_atmcorr=="l2a") {
-        list.files(pm$path_l2a, "\\.SAFE$")
+        list.files(pm$path_l2a, "\\.SAFE$", full.names = TRUE)
       } else if (pm$step_atmcorr %in% c("scihub")) {
-        list.files(pm$path_l1c, "\\.SAFE$")
+        list.files(pm$path_l1c, "\\.SAFE$", full.names = TRUE)
       } else if (pm$step_atmcorr=="auto") {
-        all_l1c <- list.files(pm$path_l1c, "\\.SAFE$")
-        all_l2a <- list.files(pm$path_l2a, "\\.SAFE$")
+        all_l1c <- list.files(pm$path_l1c, "\\.SAFE$", full.names = TRUE)
+        all_l2a <- list.files(pm$path_l2a, "\\.SAFE$", full.names = TRUE)
         c(
           all_l2a,
           all_l1c[
             !gsub(
               "\\_OPER\\_","_USER_",
               gsub(
-                "^S2([AB])\\_((?:OPER\\_PRD\\_)?)MSIL1C\\_","S2\\1\\_\\2MSIL2A\\_",
+                "S2([AB])\\_((?:OPER\\_PRD\\_)?)MSIL1C\\_","S2\\1\\_\\2MSIL2A\\_",
                 all_l1c
               )
             ) %in% all_l2a
@@ -1188,10 +1188,11 @@ sen2r <- function(param_list = NULL,
       }
       suppressWarnings({
         s2_lists_footprints[["l2a"]] <- safe_getMetadata(
-          file.path(pm$path_l2a, s2_lists[["l2a"]]), 
-          "footprint", abort = FALSE, format = "vector", simplify = TRUE
+          s2_lists[["l2a"]], "footprint", 
+          abort = FALSE, format = "vector", simplify = TRUE
         )
       })
+      s2_lists[["l2a"]] <- basename(s2_lists[["l2a"]])
     }
     s2_lists <- lapply(s2_lists, function(l) {
       safe_getMetadata(l, "level", abort = FALSE, format = "vector", simplify = TRUE)
@@ -1246,10 +1247,20 @@ sen2r <- function(param_list = NULL,
   }
   s2_dt[,"lta":=if (is.null(s2_list_islta)) {FALSE} else {s2_list_islta}]
   s2_dt[,c("name","url"):=list(nn(names(s2_list)),nn(s2_list))]
-  s2_dt_centroid <- round(st_coordinates(
-    st_centroid(st_transform(st_as_sfc(s2_dt$footprint, crs = 4326), 3857))
-  ), -3) # rounded to 1 km
-  s2_dt[,c("centroid_x", "centroid_y") := list(s2_dt_centroid[,"X"], s2_dt_centroid[,"Y"])]
+  if (nrow(s2_dt) > 0) {
+    s2_footprint_sf_l <- lapply(s2_dt$footprint, function(f) {
+      tryCatch(
+        st_as_sfc(f, crs = 4326), 
+        error = function(e) {st_sfc(st_polygon(), crs = 4326)}
+      )
+    })
+    s2_dt_centroid <- round(st_coordinates(
+      st_centroid(st_transform(do.call("c",s2_footprint_sf_l), 3857))
+    ), -3) # rounded to 1 km
+    s2_dt[,c("centroid_x", "centroid_y") := list(s2_dt_centroid[,"X"], s2_dt_centroid[,"Y"])]
+  } else {
+    s2_dt[,c("centroid_x", "centroid_y") := list(numeric(), numeric())]
+  }
   
   # list existing products and get metadata
   s2_existing_list <- list.files(unique(c(pm$path_l1c,pm$path_l2a)), "\\.SAFE$", full.names = TRUE)
