@@ -310,7 +310,7 @@ s2_translate <- function(infile,
             st_crs2(sel_utmzone)
           )
           infile_area <- sum(st_area(infile_footprint))
-          do_step3 <- infile_area < 109e3^2*units::ud_units$m^2
+          do_step3 <- infile_area < 109e3^2*units::as_units("m^2")
           # 4. convert the final VRT to a physical format
           do_step4 <- format != "VRT"
           
