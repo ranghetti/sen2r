@@ -416,11 +416,16 @@ s2_list <- function(spatial_extent = NULL,
       query_string <- gsub("\\[", "%5b",query_string)
       query_string <- gsub("\\]", "%5d",query_string)
       
-      out_query <- RETRY(
-        verb = "GET",
-        url = query_string,
-        config = authenticate(creds[1,1], creds[1,2])
-      )
+      times_429 <- 10 # if 429 "too many requests", retry up to 10 times
+      while (times_429 > 0) {
+        out_query <- RETRY(
+          verb = "GET",
+          url = query_string,
+          config = authenticate(creds[1,1], creds[1,2])
+        )
+        times_429 <-if (out_query$status_code != 429) {0} else {times_429 - 1}
+      }
+      
       out_xml <- content(out_query, as = "parsed", encoding = "UTF-8")
       out_xml_list <- xmlRoot(htmlTreeParse(out_xml, useInternalNodes = TRUE))
       out_xml_list <- out_xml_list[["body"]][["feed"]]

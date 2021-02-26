@@ -306,14 +306,20 @@ s2_download <- function(
         } else {
           file(out_bar_path <- tempfile(), open = "a")
         }
-        download <- RETRY(
-          verb = "GET",
-          url = as.character(link),
-          config = authenticate(creds[1], creds[2]),
-          times = 5, pause_cap = 8,
-          progress(con = if (length(out_bar) > 0) {out_bar} else {stdout()}),
-          write_disk(zip_path, overwrite = TRUE)
-        )
+        
+        times_429 <- 10 # if 429 "too many requests", retry up to 10 times
+        while (times_429 > 0) {
+          download <- RETRY(
+            verb = "GET",
+            url = as.character(link),
+            config = authenticate(creds[1], creds[2]),
+            times = 5, pause_cap = 8,
+            progress(con = if (length(out_bar) > 0) {out_bar} else {stdout()}),
+            write_disk(zip_path, overwrite = TRUE)
+          )
+          times_429 <-if (download$status_code != 429) {0} else {times_429 - 1}
+        }
+        
         if (length(out_bar) > 0) {
           close(out_bar)
           invisible(file.remove(out_bar_path))
