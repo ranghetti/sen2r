@@ -124,6 +124,10 @@ if (Sys.info()["sysname"] != "Linux") {
   testthat::skip_on_ci() # aria2 not installed on Windows and macOS CI
 }
 
+
+testthat::skip_on_cran()
+testthat::skip_on_ci()
+
 testthat::test_that(
   "Tests on s2_download - check aria2 installation", {
     if (Sys.info()["sysname"] == "Windows") {
@@ -142,6 +146,9 @@ testthat::test_that(
   }
 )
 
+
+testthat::skip_on_cran()
+testthat::skip_on_ci()
 
 testthat::test_that(
   "Tests on s2_download - aria2 downloader", {
