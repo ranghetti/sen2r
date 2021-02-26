@@ -135,7 +135,7 @@ if (any(
 
 
 testthat::skip_on_cran()
-testthat::skip_on_travis()
+testthat::skip_on_ci()
 
 testthat::test_that(
   "Tests on s2_download - check aria2 installation", {
@@ -157,7 +157,7 @@ testthat::test_that(
 
 
 testthat::skip_on_cran()
-testthat::skip_on_travis()
+testthat::skip_on_ci()
 
 testthat::test_that(
   "Tests on s2_download - aria2 downloader", {

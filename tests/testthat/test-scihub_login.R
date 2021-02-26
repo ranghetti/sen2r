@@ -1,6 +1,6 @@
 context("check connection - specific function")
 testthat::skip_on_cran()
-testthat::skip_on_travis()
+testthat::skip_on_ci()
 testthat::skip_if_not(check_scihub_connection(), "SciHub server is not reachable")
 
 test_that("check internet connection on internal function", {
@@ -14,7 +14,7 @@ test_that("check internet connection on internal function", {
 
 context("read / write SciHub login")
 testthat::skip_on_cran()
-testthat::skip_on_travis()
+testthat::skip_on_ci()
 
 test_that("check reading / writing credentials", {
   testthat::expect_error(
@@ -31,7 +31,7 @@ test_that("check reading / writing credentials", {
 
 context("check SciHub login")
 testthat::skip_on_cran()
-testthat::skip_on_travis()
+testthat::skip_on_ci()
 
 test_that("check_scihub_login works as expected", {
   expect_false(check_scihub_login("BastianoCoimbraDeLaCoronilla", "yAcevedo!"))

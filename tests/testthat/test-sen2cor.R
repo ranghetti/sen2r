@@ -1,6 +1,6 @@
 context("Test Sen2Cor installation")
 testthat::skip_on_cran()
-testthat::skip_on_travis()
+testthat::skip_on_ci()
 
 # NOTE: these tests require a high amount of time (depending on connection speed),
 # so the installation can be disabled if Sen2Cor is already installed.
@@ -185,7 +185,7 @@ testthat::test_that(
 
 context("Test Sen2Cor")
 testthat::skip_on_cran()
-testthat::skip_on_travis()
+testthat::skip_on_ci()
 
 # NOTE: these tests require a high amount of time,
 # so running Sen2Cor is disabled by default if SAFE archives are already present.
