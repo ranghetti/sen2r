@@ -418,7 +418,7 @@ check_sen2r_deps <- function() {
         if (Sys.info()["machine"]=="x86-64") {"_64"},".exe"
       )
       osgeo4w_path <- tempfile(pattern="dir",fileext = ".exe")
-      out_bar <- if (inherits(stdout(), "terminal")) {
+      out_bar <- if (all(inherits(stdout(), "terminal"), interactive())) {
         NULL
       } else {
         file(out_bar_path <- tempfile(), open = "a")

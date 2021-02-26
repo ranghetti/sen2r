@@ -301,7 +301,7 @@ s2_download <- function(
       
       if (downloader %in% c("builtin", "wget")) { # wget left for compatibility
         
-        out_bar <- if (inherits(stdout(), "terminal")) {
+        out_bar <- if (all(inherits(stdout(), "terminal"), interactive())) {
           NULL
         } else {
           file(out_bar_path <- tempfile(), open = "a")

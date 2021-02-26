@@ -621,7 +621,7 @@ s2_mask <- function(infiles,
               )
               #4 bytes per cell, nb + 1 bands (brick + mask), * 2 to account for a copy
               bs <- blockSize(out, minblocks = 8)
-              if (inherits(stdout(), "terminal")) {
+              if (all(inherits(stdout(), "terminal"), interactive())) {
                 pb <- txtProgressBar(0, bs$n, style = 3)
               }
               for (j in seq_len(bs$n)) {
@@ -633,11 +633,11 @@ s2_mask <- function(infiles,
                 
                 out <- writeValues(out, v, bs$row[j])
                 gc()
-                if (inherits(stdout(), "terminal")) {
+                if (all(inherits(stdout(), "terminal"), interactive())) {
                   setTxtProgressBar(pb, j)
                 }
               }
-              if (inherits(stdout(), "terminal")) {
+              if (all(inherits(stdout(), "terminal"), interactive())) {
                 message("")
               }
               out <- writeStop(out)

@@ -57,7 +57,7 @@ install_aria2 <- function(aria2_dir, force = FALSE) {
   aria2_zip <- normalize_path(file.path(aria2_dir,"aria2.zip"), mustWork=FALSE)
   aria2_path <- normalize_path(file.path(aria2_dir,"aria2c.exe"), mustWork=FALSE)
   
-  out_bar <- if (inherits(stdout(), "terminal")) {
+  out_bar <- if (all(inherits(stdout(), "terminal"), interactive())) {
     NULL
   } else {
     file(out_bar_path <- tempfile(), open = "a")

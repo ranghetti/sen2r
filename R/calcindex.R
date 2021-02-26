@@ -78,7 +78,7 @@ calcindex_raster <- function(
   } else {
     bs <- blockSize(out, minrows = minrows)
   }
-  if (inherits(stdout(), "terminal")) {
+  if (all(inherits(stdout(), "terminal"), interactive())) {
     pb <- txtProgressBar(0, bs$n, style = 3)
   }
   for (i in seq_len(bs$n)) {
@@ -94,11 +94,11 @@ calcindex_raster <- function(
     }
     # m <- getValues(y, row = bs$row[i], nrows = bs$nrows[i])
     out <- writeValues(out, v_out, bs$row[i])
-    if (inherits(stdout(), "terminal")) {
+    if (all(inherits(stdout(), "terminal"), interactive())) {
       setTxtProgressBar(pb, i)
     }
   }
-  if (inherits(stdout(), "terminal")) {
+  if (all(inherits(stdout(), "terminal"), interactive())) {
     message("")
   }
   out <- writeStop(out)
