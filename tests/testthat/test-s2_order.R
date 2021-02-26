@@ -1,4 +1,4 @@
-context("Test s2_order() adn safe_is_online()")
+message("\n---- Test s2_order() adn safe_is_online() ----")
 testthat::skip_on_cran()
 # testthat::skip_on_travis()
 
