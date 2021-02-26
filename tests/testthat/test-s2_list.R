@@ -1,4 +1,4 @@
-context("Test s2_list() and safe_getMetadata(info = 'nameinfo')")
+message("\n---- Test s2_list() and safe_getMetadata(info = 'nameinfo') ----")
 testthat::skip_on_cran()
 # testthat::skip_on_travis()
 

@@ -1,4 +1,4 @@
-context("Test warping (clip, reproject, resize)")
+message("\n---- Test warping (clip, reproject, resize) ----")
 testthat::skip_on_cran()
 # testthat::skip_on_travis() # because required SAFE do not exists
 testthat::skip_if_not(check_scihub_connection(), "SciHub server is not reachable")
