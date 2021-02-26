@@ -1,7 +1,7 @@
 # Retrieve Travis credentials
-tests_apihub <- if (Sys.getenv("TRAVIS") == "true") {c(
-  paste0("sen2r_travis_",Sys.getenv("TRAVIS_R_VERSION_STRING")),
-  Sys.getenv("TRAVIS_PASSWORD")
+tests_apihub <- if (Sys.getenv("GITHUB_ACTIONS") == "true") {c(
+  paste0("sen2r_travis_",Sys.getenv("R_VERSION_STRING")),
+  Sys.getenv("CI_PASSWORD")
 )} else {
   saved_creds <- try(sen2r::read_scihub_login(), silent = TRUE)
 }
