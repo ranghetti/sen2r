@@ -1,4 +1,4 @@
-context("Test s2_dop()")
+message("\n---- Test s2_dop() ----")
 
 testthat::test_that(
   "All the passages in a cycle of 10 days over all the orbits", {

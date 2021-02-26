@@ -177,7 +177,7 @@ read_gipp <- function(gipp_names, gipp_path = NA) {
 #' @return [set_gipp()] returns NULL (the function is called for its side effects).
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # Read default values
 #' read_gipp(c("dem_directory", "dem_reference"))
 #' # Set the use of a topographic correction
