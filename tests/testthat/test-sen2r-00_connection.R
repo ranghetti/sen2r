@@ -1,4 +1,4 @@
-context("check connection from main sen2r() function")
+message("\n---- check connection from main sen2r() function ----")
 testthat::skip_on_cran()
 
 test_that("check internet connection and fail if missing", {

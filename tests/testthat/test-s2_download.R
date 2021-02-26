@@ -1,4 +1,4 @@
-context("Test s2_download() and safe_getMetadata()")
+message("\n---- Test s2_download() and safe_getMetadata() ----")
 testthat::skip_on_cran()
 # testthat::skip_on_travis()
 

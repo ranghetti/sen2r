@@ -1,4 +1,4 @@
-context("Test Sen2Cor installation")
+message("\n---- Test Sen2Cor installation ----")
 testthat::skip_on_cran()
 testthat::skip_on_ci()
 
@@ -183,7 +183,7 @@ testthat::test_that(
 
 
 
-context("Test Sen2Cor")
+message("\n---- Test Sen2Cor ----")
 testthat::skip_on_cran()
 testthat::skip_on_ci()
 
