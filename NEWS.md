@@ -1,3 +1,18 @@
+# Version 1.4.1
+
+## Minor changes
+- Prevent Copernicus mismatches between API Hub and `dhus` (#381)..
+- Rescale resolutions lower than required in `s2_translate()` (#368).
+- Avoid using progress bars in non-interactive sessions.
+- Manage error 429 for `dhus` (resend APIs more times in case of too many requests).
+
+## Bug fixes
+- Partially fix #368 (determine the output projection before processing).
+- Fix #371.
+- Fix #383.
+- Fix after changes in units 0.7-0 (#390).
+
+
 # Version 1.4.0
 
 ## Major changes

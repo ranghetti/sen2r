@@ -74,7 +74,7 @@ Archive." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.1</span>
       </span>
     </div>
 
@@ -85,20 +85,20 @@ Archive." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="../reference/index.html">
-    <span class="fa fa-file-code"></span>
+    <span class="fas fa-file-code"></span>
      
      Reference
   </a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    <span class="fa fa-book"></span>
+    <span class="fas fa-book"></span>
      
      Articles
      
@@ -124,20 +124,20 @@ Archive." />
 </li>
 <li>
   <a href="../news/index.html">
-    <span class="fa fa-newspaper"></span>
+    <span class="fas fa-newspaper"></span>
      
      Changelog
   </a>
 </li>
 <li>
   <a href="http://luigi.ranghetti.info">
-    <span class="fa fa-user"></span>
+    <span class="fas fa-user"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/ranghetti/sen2r/">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fas fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -217,7 +217,7 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 <span class='va'>pos</span> <span class='op'>&lt;-</span> <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/sfc.html'>st_sfc</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st.html'>st_point</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>57.8815</span>,<span class='op'>-</span><span class='fl'>51.6954</span><span class='op'>)</span><span class='op'>)</span>, crs <span class='op'>=</span> <span class='fl'>4326</span><span class='op'>)</span>
 <span class='va'>time_window</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"2018-02-21"</span>, <span class='st'>"2018-03-20"</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>list_safe</span> <span class='op'>&lt;-</span> <span class='fu'><a href='s2_list.html'>s2_list</a></span><span class='op'>(</span>spatial_extent <span class='op'>=</span> <span class='va'>pos</span>, time_interval <span class='op'>=</span> <span class='va'>time_window</span><span class='op'>)</span>
-<span class='co'># (at the time the documentation was written, this list was containing 5</span>
+</div><div class='output co'>#&gt; <span class='message'>although coordinates are longitude/latitude, st_union assumes that they are planar</span></div><div class='input'><span class='co'># (at the time the documentation was written, this list was containing 5</span>
 <span class='co'># archives already available online and 2 stored in the Long Term Archive)</span>
 
 <span class='co'># Check for availability</span>

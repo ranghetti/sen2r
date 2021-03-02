@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Return WKT or WKT2 basing on the installed rgdal version — st_as_text_2 • sen2r</title>
+<title>Obtain the UTM zone associated to Sentinel-2 tiles — tile_utmzone • sen2r</title>
 
 
 <!-- jquery -->
@@ -39,14 +39,9 @@
 
 
 
-<meta property="og:title" content="Return WKT or WKT2 basing on the installed rgdal version — st_as_text_2" />
-<meta property="og:description" content="This is a convenience temporary function which returns the WKT
-representation of a CRS, using sf::st_as_text() in case PROJ &amp;lt; 3,
-rgdal::CRS() otherwise.
-This has the advantage to perform precise transformations with PROJ &amp;gt;=3,
-and to avoid conversion errors
-(see here).
-This function will be deleted whenever sf will manage WKT2." />
+<meta property="og:title" content="Obtain the UTM zone associated to Sentinel-2 tiles — tile_utmzone" />
+<meta property="og:description" content="Internal function: convenience function to obtain the UTM zone
+from tile IDs." />
 
 
 
@@ -158,48 +153,45 @@ This function will be deleted whenever sf will manage WKT2." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Return WKT or WKT2 basing on the installed rgdal version</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/st_as_text_2.R'><code>R/st_as_text_2.R</code></a></small>
-    <div class="hidden name"><code>st_as_text_2.Rd</code></div>
+    <h1>Obtain the UTM zone associated to Sentinel-2 tiles</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/tile_utmzone.R'><code>R/tile_utmzone.R</code></a></small>
+    <div class="hidden name"><code>tile_utmzone.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This is a convenience temporary function which returns the WKT
-representation of a CRS, using <code><a href='https://r-spatial.github.io/sf/reference/st_as_text.html'>sf::st_as_text()</a></code> in case PROJ &lt; 3,
-<code><a href='http://rgdal.r-forge.r-project.org/reference/CRS-class.html'>rgdal::CRS()</a></code> otherwise.
-This has the advantage to perform precise transformations with PROJ &gt;=3,
-and to avoid conversion errors
-(see <a href='https://rsbivand.github.io/ECS530_h19/ECS530_III.html'>here</a>).
-This function will be deleted whenever <code>sf</code> will manage WKT2.</p>
+    <p>Internal function: convenience function to obtain the UTM zone
+from tile IDs.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>st_as_text_2</span><span class='op'>(</span><span class='va'>x</span>, pretty <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>tile_utmzone</span><span class='op'>(</span><span class='va'>tile_id</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>object of class <code>sfg</code>, <code>sfc</code> or <code>crs</code></p></td>
-    </tr>
-    <tr>
-      <th>pretty</th>
-      <td><p>logical; if TRUE, print human-readable well-known-text
-representation of a coordinate reference system</p></td>
+      <th>tile_id</th>
+      <td><p>Character: tile ID (5 chars), e.g. <code>"32TNR"</code> (multiple values
+can be provided).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Well-known Text representation of simple feature geometry or
-coordinate reference system</p>
+    <p>A vector of the same length of <code>tile_id</code> with UTM zones (e.g. <code>"32N</code>").</p>
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>License: GPL 3.0</p>
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
+"sen2r": An R toolbox for automatically downloading and preprocessing
+Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
+doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.104473</a>
+, URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
-    <p>Luigi Ranghetti, phD (2019) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
+    <p>Luigi Ranghetti, phD (2020) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>sen2r</span><span class='fu'>:::</span><span class='fu'>st_as_text_2</span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_crs.html'>st_crs</a></span><span class='op'>(</span><span class='fl'>32632</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "PROJCS[\"WGS 84 / UTM zone 32N\",GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",9],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"32632\"]]"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

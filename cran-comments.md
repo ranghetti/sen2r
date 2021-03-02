@@ -1,20 +1,27 @@
-# sen2r v. 1.4.0
+# sen2r v. 1.4.1
 
 ## Test environments
-* [local installation] Ubuntu 18.04, 64 bit, R 4.0.3
-* [local installation] Archlinux, 64 bit, R 4.0.3
+* [local installation] Ubuntu 18.04, 64 bit, R 4.0.4
+* [local installation] Archlinux, 64 bit, R 4.0.4
 * [local installation] Windows 10, 64 bit, R 4.0.3
-* [win-builder] R unstable, 4.0.3 and 3.6.3 (devel, release and oldrelease)
+* [win-builder] R unstable, 4.0.4 and 3.6.3 (devel, release and oldrelease)
 
 ## R CMD check results
 There were no ERRORs, WARNINGs or NOTEs.
 
 
 ## CRAN review
-> The auto-check found additional issues for the *last* version released on CRAN:
-  M1mac <https://www.stats.ox.ac.uk/pub/bdr/M1mac/sen2r.out>
-CRAN incoming checks do not test for these additional issues and you will need
-an appropriately instrumented build of R to reproduce these.
-Hence please reply-all and explain: Have these been fixed?
+> Dear maintainer,
+Please see the problems shown on
+<https://cran.r-project.org/web/checks/check_results_sen2r.html>.
+Please correct before 2021-03-11 to safely retain your package on CRAN.
 
-All the errors found in M1mac were fixed (see the NEWS.md file for details).
+All the errors were fixed (they were due to #390)
+(see commit 82754724fd3259b12ea1aee57a5242cfcec8438d).
+
+> 'Writing R Extensions' asked you not to use progress bars in
+non-interactive sessions and doing so makes your erroneous output
+necessarily hard to read.
+
+All progress bars were put within `if (interactive())` checks 
+(see commit c4f36378859d584d9c617ccdd3938d4086a05816).

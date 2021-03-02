@@ -73,7 +73,7 @@ Long Term Archive." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.1</span>
       </span>
     </div>
 
@@ -84,20 +84,20 @@ Long Term Archive." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="../reference/index.html">
-    <span class="fa fa-file-code"></span>
+    <span class="fas fa-file-code"></span>
      
      Reference
   </a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    <span class="fa fa-book"></span>
+    <span class="fas fa-book"></span>
      
      Articles
      
@@ -123,20 +123,20 @@ Long Term Archive." />
 </li>
 <li>
   <a href="../news/index.html">
-    <span class="fa fa-newspaper"></span>
+    <span class="fas fa-newspaper"></span>
      
      Changelog
   </a>
 </li>
 <li>
   <a href="http://luigi.ranghetti.info">
-    <span class="fa fa-user"></span>
+    <span class="fas fa-user"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/ranghetti/sen2r/">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fas fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -255,7 +255,7 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 <span class='va'>pos</span> <span class='op'>&lt;-</span> <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/sfc.html'>st_sfc</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st.html'>st_point</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>57.8815</span>,<span class='op'>-</span><span class='fl'>51.6954</span><span class='op'>)</span><span class='op'>)</span>, crs <span class='op'>=</span> <span class='fl'>4326</span><span class='op'>)</span>
 <span class='va'>time_window</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"2018-02-21"</span>, <span class='st'>"2018-03-20"</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>list_safe</span> <span class='op'>&lt;-</span> <span class='fu'><a href='s2_list.html'>s2_list</a></span><span class='op'>(</span>spatial_extent <span class='op'>=</span> <span class='va'>pos</span>, time_interval <span class='op'>=</span> <span class='va'>time_window</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>list_safe</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>although coordinates are longitude/latitude, st_union assumes that they are planar</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>list_safe</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; A named vector with 7 SAFE archives.
 #&gt;                                      S2B_MSIL1C_20180224T133629_N0206_R038_T21FVC_20180224T194845.SAFE 
 #&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('c88086ac-8087-4adb-866e-baeffec5eb68')/$value" 
@@ -273,15 +273,15 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 
 <span class='co'># Order the products</span>
 <span class='va'>ordered_prods</span> <span class='op'>&lt;-</span> <span class='fu'>s2_order</span><span class='op'>(</span><span class='va'>list_safe</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>[2021-01-05 17:08:13] Check if products are already available for</span>
-#&gt; <span class='message'>       download...</span></div><div class='output co'>#&gt; <span class='message'>[2021-01-05 17:08:14] Ordering 7 Sentinel-2 images stored in the Long</span>
-#&gt; <span class='message'>       Term Archive...</span></div><div class='output co'>#&gt; <span class='message'>[2021-01-05 17:08:20] 7 of 7 Sentinel-2 images were correctly ordered.</span>
+</div><div class='output co'>#&gt; <span class='message'>[2021-03-02 08:33:39] Check if products are already available for</span>
+#&gt; <span class='message'>       download...</span></div><div class='output co'>#&gt; <span class='message'>[2021-03-02 08:33:40] Ordering 7 Sentinel-2 images stored in the Long</span>
+#&gt; <span class='message'>       Term Archive...</span></div><div class='output co'>#&gt; <span class='message'>[2021-03-02 08:33:46] 7 of 7 Sentinel-2 images were correctly ordered.</span>
 #&gt; <span class='message'>       You can check at a later time if the ordered products are</span>
 #&gt; <span class='message'>       available online using the command:</span>
-#&gt; <span class='message'>  safe_is_online("/home/lranghetti/.sen2r/lta_orders/lta_20210105_170820.json")</span></div><div class='input'>
+#&gt; <span class='message'>  safe_is_online("/home/lranghetti/.sen2r/lta_orders/lta_20210302_083346.json")</span></div><div class='input'>
 <span class='co'># Check in a second time if the product was made available</span>
 <span class='op'>(</span><span class='va'>order_path</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span><span class='op'>(</span><span class='va'>ordered_prods</span>, <span class='st'>"path"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "/home/lranghetti/.sen2r/lta_orders/lta_20210105_170820.json"</div><div class='input'><span class='fu'><a href='safe_is_online.html'>safe_is_online</a></span><span class='op'>(</span><span class='va'>order_path</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "/home/lranghetti/.sen2r/lta_orders/lta_20210302_083346.json"</div><div class='input'><span class='fu'><a href='safe_is_online.html'>safe_is_online</a></span><span class='op'>(</span><span class='va'>order_path</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>0 out of 7 products are online.</span></div><div class='output co'>#&gt; S2B_MSIL1C_20180224T133629_N0206_R038_T21FVC_20180224T194845.SAFE 
 #&gt;                                                             FALSE 
 #&gt; S2B_MSIL1C_20180227T134629_N0206_R081_T21FVC_20180227T200327.SAFE 
