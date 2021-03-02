@@ -75,7 +75,7 @@ before performing the operation." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.1</span>
       </span>
     </div>
 
@@ -86,20 +86,20 @@ before performing the operation." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="../reference/index.html">
-    <span class="fa fa-file-code"></span>
+    <span class="fas fa-file-code"></span>
      
      Reference
   </a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    <span class="fa fa-book"></span>
+    <span class="fas fa-book"></span>
      
      Articles
      
@@ -125,20 +125,20 @@ before performing the operation." />
 </li>
 <li>
   <a href="../news/index.html">
-    <span class="fa fa-newspaper"></span>
+    <span class="fas fa-newspaper"></span>
      
      Changelog
   </a>
 </li>
 <li>
   <a href="http://luigi.ranghetti.info">
-    <span class="fa fa-user"></span>
+    <span class="fas fa-user"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/ranghetti/sen2r/">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fas fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -215,7 +215,7 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 <span class='op'>(</span><span class='va'>ref_path</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span>package<span class='op'>=</span><span class='st'>"sen2r"</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] "/home/lranghetti/share/git/github/ranghetti/sen2r/inst"</div><div class='input'><span class='co'># a path with a common parent with ref_path</span>
 <span class='op'>(</span><span class='va'>in_path_1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span>package<span class='op'>=</span><span class='st'>"gdalUtils"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] ""</div><div class='input'><span class='co'># a path included in ref_path</span>
+</div><div class='output co'>#&gt; [1] "/home/lranghetti/R/x86_64-pc-linux-gnu-library/4.0/gdalUtils"</div><div class='input'><span class='co'># a path included in ref_path</span>
 <span class='op'>(</span><span class='va'>in_path_2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"R/abs2rel.R"</span>, package<span class='op'>=</span><span class='st'>"sen2r"</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] "/home/lranghetti/share/git/github/ranghetti/sen2r/R/abs2rel.R"</div><div class='input'><span class='co'># a path external to ref_path (in Linux)</span>
 <span class='op'>(</span><span class='va'>in_path_3</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span>package<span class='op'>=</span><span class='st'>"base"</span><span class='op'>)</span><span class='op'>)</span>
@@ -223,9 +223,7 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 <span class='op'>(</span><span class='va'>in_path_4</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>gsub</a></span><span class='op'>(</span><span class='st'>"sen2r"</span>,<span class='st'>"r2sen"</span>,<span class='va'>ref_path</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] "/home/lranghetti/share/git/github/ranghetti/r2sen/inst"</div><div class='input'>
 <span class='fu'>abs2rel</span><span class='op'>(</span><span class='va'>in_path_1</span>, <span class='va'>ref_path</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Path '' is not absolute;</span>
-#&gt; <span class='warning'>'/home/lranghetti/share/git/github/ranghetti/sen2r/docs/reference' is</span>
-#&gt; <span class='warning'>used as prefix.</span></div><div class='output co'>#&gt; [1] "../docs/reference"</div><div class='input'>
+</div><div class='output co'>#&gt; [1] "../../../../../../R/x86_64-pc-linux-gnu-library/4.0/gdalUtils"</div><div class='input'>
 <span class='fu'>abs2rel</span><span class='op'>(</span><span class='va'>in_path_2</span>, <span class='va'>ref_path</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] "../R/abs2rel.R"</div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/base/warning.html'>suppressWarnings</a></span><span class='op'>(</span><span class='fu'>abs2rel</span><span class='op'>(</span><span class='va'>in_path_3</span>, <span class='va'>ref_path</span><span class='op'>)</span><span class='op'>)</span>

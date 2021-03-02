@@ -295,7 +295,7 @@ s2_translate <- function(infile,
           # define the steps to perform:
           # 1. create a multiband stack
           do_step1 <- length(jp2_selbands)>1
-          # 2: rescale in case of wrong native resolution
+          # 2: rescale L2A in case of wrong native resolution
           # (i.e. SAFE not containing 10m bands with res = "10m")
           res_out <- if (all(
             prod_type %in% c("SCL","CLD","SNW"),
@@ -303,14 +303,14 @@ s2_translate <- function(infile,
           )) {res[2]} else {res[1]}
           res_ratio <- min(as.integer(substr(jp2df_selbands$res,1,2))) / 
             as.integer(substr(res_out,1,2))
-          do_step2 <- res_ratio > 1 # it could make sense define for != 1
+          do_step2 <- infile_meta$level == "2A" && res_ratio > 1
           # 3. mask nodata values if the tile does not completely cover the orbit
           infile_footprint <- st_transform(
             st_as_sfc(infile_meta$footprint, crs = 4326), 
             st_crs2(sel_utmzone)
           )
           infile_area <- sum(st_area(infile_footprint))
-          do_step3 <- infile_area < 109e3^2*units::ud_units$m^2
+          do_step3 <- infile_area < 109e3^2*units::as_units("m^2")
           # 4. convert the final VRT to a physical format
           do_step4 <- format != "VRT"
           

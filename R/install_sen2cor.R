@@ -126,7 +126,7 @@ install_sen2cor <- function(
   sen2cor_installer <- file.path(sen2cor_dir, basename(sen2cor_url))
   
   # download, extract and delete archive
-  out_bar <- if (inherits(stdout(), "terminal")) {
+  out_bar <- if (all(inherits(stdout(), "terminal"), interactive())) {
     NULL
   } else {
     file(out_bar_path <- tempfile(), open = "a")

@@ -86,7 +86,6 @@
 #' @importFrom jsonlite fromJSON
 #' @import data.table
 #' @importFrom raster brick
-#' @importFrom utils txtProgressBar setTxtProgressBar
 #' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 

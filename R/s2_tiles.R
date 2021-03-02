@@ -63,7 +63,7 @@ s2_tiles <- function() {
     #   file.path(dirname(attr(load_binpaths(), "path")), "s2_tiles.rds")
     # )
     
-    out_bar <- if (inherits(stdout(), "terminal")) {
+    out_bar <- if (all(inherits(stdout(), "terminal"), interactive())) {
       NULL
     } else {
       file(out_bar_path <- tempfile(), open = "a")

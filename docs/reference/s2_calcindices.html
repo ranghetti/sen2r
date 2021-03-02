@@ -74,7 +74,7 @@ are physical rasters (no output VRT is allowed)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.1</span>
       </span>
     </div>
 
@@ -85,20 +85,20 @@ are physical rasters (no output VRT is allowed)." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="../reference/index.html">
-    <span class="fa fa-file-code"></span>
+    <span class="fas fa-file-code"></span>
      
      Reference
   </a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    <span class="fa fa-book"></span>
+    <span class="fas fa-book"></span>
      
      Articles
      
@@ -124,20 +124,20 @@ are physical rasters (no output VRT is allowed)." />
 </li>
 <li>
   <a href="../news/index.html">
-    <span class="fa fa-newspaper"></span>
+    <span class="fas fa-newspaper"></span>
      
      Changelog
   </a>
 </li>
 <li>
   <a href="http://luigi.ranghetti.info">
-    <span class="fa fa-user"></span>
+    <span class="fas fa-user"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/ranghetti/sen2r/">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fas fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -349,8 +349,8 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
   outdir <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span>,
   dataType <span class='op'>=</span> <span class='st'>"Float32"</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Carico il pacchetto richiesto: sp</span></div><div class='output co'>#&gt; <span class='message'>Carico il pacchetto richiesto: abind</span></div><div class='output co'>#&gt; <span class='message'>Carico il pacchetto richiesto: sf</span></div><div class='output co'>#&gt; <span class='message'>Linking to GEOS 3.8.1, GDAL 3.0.4, PROJ 6.3.2</span></div><div class='output co'>#&gt; <span class='message'>[2021-01-05 17:07:34] Computing index EVI on date 2019-07-23...</span></div><div class='input'><span class='va'>ex_out</span>
-</div><div class='output co'>#&gt; [1] "/tmp/RtmpIwBWvo/S2A2A_20190723_022_Barbellino_EVI_10.tif"</div><div class='input'>
+</div><div class='output co'>#&gt; <span class='message'>Carico il pacchetto richiesto: sp</span></div><div class='output co'>#&gt; <span class='message'>Carico il pacchetto richiesto: abind</span></div><div class='output co'>#&gt; <span class='message'>Carico il pacchetto richiesto: sf</span></div><div class='output co'>#&gt; <span class='message'>Linking to GEOS 3.8.1, GDAL 3.0.4, PROJ 6.3.2</span></div><div class='output co'>#&gt; <span class='message'>[2021-03-02 08:33:00] Computing index EVI on date 2019-07-23...</span></div><div class='input'><span class='va'>ex_out</span>
+</div><div class='output co'>#&gt; [1] "/tmp/Rtmpb6Zc1m/S2A2A_20190723_022_Barbellino_EVI_10.tif"</div><div class='input'>
 <span class='co'># Show output</span>
 <span class='va'>oldpar</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span>mfrow <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>2</span><span class='op'>)</span>, mar <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span><span class='op'>(</span><span class='fu'>stars</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/stars/reference/read_stars.html'>read_stars</a></span><span class='op'>(</span><span class='va'>ex_in</span><span class='op'>)</span>, rgb <span class='op'>=</span> <span class='fl'>4</span><span class='op'>:</span><span class='fl'>2</span>, maxColorValue <span class='op'>=</span> <span class='fl'>3500</span>, useRaster <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>

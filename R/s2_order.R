@@ -223,12 +223,17 @@ s2_order <- function(
     if (i != to_order[1]) {
       Sys.sleep(delay)
     }
+    
     # order products
-    make_order <- RETRY(
-      verb = "GET",
-      url = as.character(s2_prodlist[i]),
-      config = authenticate(creds[1], creds[2])
-    )
+    times_429 <- 10 # if 429 "too many requests", retry up to 10 times
+    while (times_429 > 0) {
+      make_order <- RETRY(
+        verb = "GET",
+        url = as.character(s2_prodlist[i]),
+        config = authenticate(creds[1], creds[2])
+      )
+      times_429 <-if (make_order$status_code != 429) {0} else {times_429 - 1}
+    }
     
     # check if the order was successful
     if (inherits(make_order, "response")) {
