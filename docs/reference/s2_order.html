@@ -73,7 +73,7 @@ Long Term Archive." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.2</span>
       </span>
     </div>
 
@@ -253,48 +253,52 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
 <span class='co'># Generate the lists of products</span>
 <span class='va'>pos</span> <span class='op'>&lt;-</span> <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/sfc.html'>st_sfc</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st.html'>st_point</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>57.8815</span>,<span class='op'>-</span><span class='fl'>51.6954</span><span class='op'>)</span><span class='op'>)</span>, crs <span class='op'>=</span> <span class='fl'>4326</span><span class='op'>)</span>
-<span class='va'>time_window</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"2018-02-21"</span>, <span class='st'>"2018-03-20"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>time_window</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"2019-10-21"</span>, <span class='st'>"2019-11-20"</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>list_safe</span> <span class='op'>&lt;-</span> <span class='fu'><a href='s2_list.html'>s2_list</a></span><span class='op'>(</span>spatial_extent <span class='op'>=</span> <span class='va'>pos</span>, time_interval <span class='op'>=</span> <span class='va'>time_window</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>although coordinates are longitude/latitude, st_union assumes that they are planar</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>list_safe</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; A named vector with 7 SAFE archives.
-#&gt;                                      S2B_MSIL1C_20180224T133629_N0206_R038_T21FVC_20180224T194845.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('c88086ac-8087-4adb-866e-baeffec5eb68')/$value" 
-#&gt;                                      S2B_MSIL1C_20180227T134629_N0206_R081_T21FVC_20180227T200327.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('fa8cba66-7b8b-45aa-9038-9521d7658bad')/$value" 
-#&gt;                                      S2A_MSIL1C_20180301T133641_N0206_R038_T21FVC_20180301T145524.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('d9a50ba4-8213-421e-92da-e5a487766dc2')/$value" 
-#&gt;                                      S2B_MSIL1C_20180306T133629_N0206_R038_T21FVC_20180306T183210.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('5ae358f2-8589-493b-bb6d-09df04ec0ff9')/$value" 
-#&gt;                                      S2A_MSIL1C_20180311T133641_N0206_R038_T21FVC_20180311T163528.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('266e369c-9ab5-486e-83b3-7180b6956616')/$value" 
-#&gt; ...with 2 more elements.
-#&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, footprint, uuid, online.</div><div class='input'><span class='co'># (at the time the documentation was written, this list was containing 5</span>
-<span class='co'># archives already available online and 2 stored in the Long Term Archive)</span>
+</div><div class='output co'>#&gt; A named vector with 9 SAFE archives.
+#&gt;                                      S2A_MSIL2A_20191022T133641_N0213_R038_T21FVC_20191023T155120.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('d76c8a00-3b7f-45a2-b359-fc363c388a94')/$value" 
+#&gt;                                      S2B_MSIL2A_20191027T133639_N0213_R038_T21FVC_20191027T150854.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('03cb6cbc-e858-4e40-ae37-d1872c957762')/$value" 
+#&gt;                                      S2B_MSIL2A_20191030T134639_N0213_R081_T21FVC_20191030T152504.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('ed6aeeb1-f721-4aed-9a85-b37708f7149d')/$value" 
+#&gt;                                      S2A_MSIL2A_20191101T133641_N0213_R038_T21FVC_20191101T150755.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('a52c1f7b-aa21-4055-9541-95aa2ec28bdb')/$value" 
+#&gt;                                      S2B_MSIL2A_20191106T133639_N0213_R038_T21FVC_20191106T150814.SAFE 
+#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('091bc063-4978-4b28-8664-c5189d71e64b')/$value" 
+#&gt; ...with 4 more elements.
+#&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, footprint, uuid, online.</div><div class='input'><span class='co'># (at the time the documentation was updated, this list was containing 6</span>
+<span class='co'># archives already available online and 3 stored in the Long Term Archive)</span>
 
 <span class='co'># Order the products</span>
 <span class='va'>ordered_prods</span> <span class='op'>&lt;-</span> <span class='fu'>s2_order</span><span class='op'>(</span><span class='va'>list_safe</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>[2021-03-02 08:33:39] Check if products are already available for</span>
-#&gt; <span class='message'>       download...</span></div><div class='output co'>#&gt; <span class='message'>[2021-03-02 08:33:40] Ordering 7 Sentinel-2 images stored in the Long</span>
-#&gt; <span class='message'>       Term Archive...</span></div><div class='output co'>#&gt; <span class='message'>[2021-03-02 08:33:46] 7 of 7 Sentinel-2 images were correctly ordered.</span>
+</div><div class='output co'>#&gt; <span class='message'>[2021-03-04 09:32:47] Check if products are already available for</span>
+#&gt; <span class='message'>       download...</span></div><div class='output co'>#&gt; <span class='message'>[2021-03-04 09:32:48] 6 Sentinel-2 images are already online.</span></div><div class='output co'>#&gt; <span class='message'>[2021-03-04 09:32:48] Ordering 3 Sentinel-2 images stored in the Long</span>
+#&gt; <span class='message'>       Term Archive...</span></div><div class='output co'>#&gt; <span class='message'>[2021-03-04 09:32:52] 3 of 3 Sentinel-2 images were correctly ordered.</span>
 #&gt; <span class='message'>       You can check at a later time if the ordered products are</span>
 #&gt; <span class='message'>       available online using the command:</span>
-#&gt; <span class='message'>  safe_is_online("/home/lranghetti/.sen2r/lta_orders/lta_20210302_083346.json")</span></div><div class='input'>
+#&gt; <span class='message'>  safe_is_online("/home/lranghetti/.sen2r/lta_orders/lta_20210304_093252.json")</span></div><div class='input'>
 <span class='co'># Check in a second time if the product was made available</span>
 <span class='op'>(</span><span class='va'>order_path</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span><span class='op'>(</span><span class='va'>ordered_prods</span>, <span class='st'>"path"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "/home/lranghetti/.sen2r/lta_orders/lta_20210302_083346.json"</div><div class='input'><span class='fu'><a href='safe_is_online.html'>safe_is_online</a></span><span class='op'>(</span><span class='va'>order_path</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>0 out of 7 products are online.</span></div><div class='output co'>#&gt; S2B_MSIL1C_20180224T133629_N0206_R038_T21FVC_20180224T194845.SAFE 
+</div><div class='output co'>#&gt; [1] "/home/lranghetti/.sen2r/lta_orders/lta_20210304_093252.json"</div><div class='input'><span class='fu'><a href='safe_is_online.html'>safe_is_online</a></span><span class='op'>(</span><span class='va'>order_path</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>6 out of 9 products are online.</span></div><div class='output co'>#&gt; S2A_MSIL2A_20191101T133641_N0213_R038_T21FVC_20191101T150755.SAFE 
+#&gt;                                                              TRUE 
+#&gt; S2B_MSIL2A_20191106T133639_N0213_R038_T21FVC_20191106T150814.SAFE 
+#&gt;                                                              TRUE 
+#&gt; S2B_MSIL2A_20191109T134639_N0213_R081_T21FVC_20191109T152703.SAFE 
+#&gt;                                                              TRUE 
+#&gt; S2A_MSIL2A_20191111T133641_N0213_R038_T21FVC_20191111T150452.SAFE 
+#&gt;                                                              TRUE 
+#&gt; S2B_MSIL2A_20191116T133639_N0213_R038_T21FVC_20191116T145355.SAFE 
+#&gt;                                                              TRUE 
+#&gt; S2B_MSIL2A_20191119T134639_N0213_R081_T21FVC_20191119T152133.SAFE 
+#&gt;                                                              TRUE 
+#&gt; S2A_MSIL2A_20191022T133641_N0213_R038_T21FVC_20191023T155120.SAFE 
 #&gt;                                                             FALSE 
-#&gt; S2B_MSIL1C_20180227T134629_N0206_R081_T21FVC_20180227T200327.SAFE 
+#&gt; S2B_MSIL2A_20191027T133639_N0213_R038_T21FVC_20191027T150854.SAFE 
 #&gt;                                                             FALSE 
-#&gt; S2A_MSIL1C_20180301T133641_N0206_R038_T21FVC_20180301T145524.SAFE 
-#&gt;                                                             FALSE 
-#&gt; S2B_MSIL1C_20180306T133629_N0206_R038_T21FVC_20180306T183210.SAFE 
-#&gt;                                                             FALSE 
-#&gt; S2A_MSIL1C_20180311T133641_N0206_R038_T21FVC_20180311T163528.SAFE 
-#&gt;                                                             FALSE 
-#&gt; S2A_MSIL1C_20180314T134631_N0206_R081_T21FVC_20180314T150724.SAFE 
-#&gt;                                                             FALSE 
-#&gt; S2B_MSIL1C_20180316T133639_N0206_R038_T21FVC_20180316T145348.SAFE 
+#&gt; S2B_MSIL2A_20191030T134639_N0213_R081_T21FVC_20191030T152504.SAFE 
 #&gt;                                                             FALSE </div><div class='input'><span class='co'># }</span>
 </div></pre>
   </div>
