@@ -69,10 +69,14 @@ and password edits on old credentials are not immediately recognised.
 License: GPL 3.0
 }
 \examples{
-  check_scihub_login("user", "user")
-  write_scihub_login("user", "user")
-  read_scihub_login()
-  check_scihub_connection()
+\donttest{
+check_scihub_connection()
+}
+\dontrun{
+check_scihub_login("username", "password")
+write_scihub_login("username", "password")
+read_scihub_login()
+}
 }
 \references{
 L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
