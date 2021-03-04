@@ -7,8 +7,13 @@
 * [win-builder] R unstable, 4.0.4 and 3.6.3 (devel, release and oldrelease)
 
 ## R CMD check results
-There were no ERRORs, WARNINGs or NOTEs.
+There were no ERRORs nor WARNINGs.
 
+There was 1 NOTE:
+Days since last update: 2
+
+This submission is finalised to fix an error found by CRAN checks 
+on the last release submitted 2 days ago (see below).
 
 ## CRAN review
 > Dear maintainer,
@@ -18,10 +23,3 @@ Please correct before 2021-03-18 to safely retain your package on CRAN.
 
 The error were fixed
 (see commit 6010b3f327f3c71392e47c2adc12071f50c29ee7).
-
-> 'Writing R Extensions' asked you not to use progress bars in
-non-interactive sessions and doing so makes your erroneous output
-necessarily hard to read.
-
-All progress bars were put within `if (interactive())` checks 
-(see commit c4f36378859d584d9c617ccdd3938d4086a05816).

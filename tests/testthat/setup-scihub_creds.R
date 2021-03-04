@@ -19,5 +19,5 @@ if (!inherits(saved_creds, "try-error")) {
   message("Tests are run with SciHub user \"",tests_apihub[1],"\".")
   
 } else {
-  stop("Problems with SciHub credentials; check secrets.")
+  message("Problems with SciHub credentials; check secrets.")
 }
