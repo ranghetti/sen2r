@@ -40,14 +40,14 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v1
 
-      - name: Query dependencies
+      - name: "Query dependencies"
         run: |
           install.packages('remotes')
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
         shell: Rscript {0}
 
-      - name: Cache R packages
+      - name: "Cache R packages"
         if: runner.os != 'Windows'
         uses: actions/cache@v2
         with:
@@ -55,7 +55,7 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
           restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
 
-      - name: [Linux] Install system dependencies
+      - name: "[Linux] Install system dependencies"
         if: runner.os == 'Linux'
         run: |
           while read -r cmd
@@ -63,7 +63,7 @@ jobs:
             eval sudo $cmd
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
 
-      - name: [Linux] Install sen2r system dependencies
+      - name: "[Linux] Install sen2r system dependencies"
         if: runner.os == 'Linux'
         run: |
           sudo apt update
@@ -80,19 +80,19 @@ jobs:
             libssl-dev \
             libcairo2-dev
 
-      - name: [macOS] Install sen2r system dependencies
+      - name: "[macOS] Install sen2r system dependencies"
         if: runner.os == 'macOS'
         run: |
           brew tap osgeo/osgeo4mac
           brew install osgeo-gdal-python 
 
-      - name: Install dependencies
+      - name: "Install dependencies"
         run: |
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
 
-      - name: Check
+      - name: "Check"
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
         run: |
@@ -100,7 +100,7 @@ jobs:
           rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
         shell: Rscript {0}
 
-      - name: Upload check results
+      - name: "Upload check results"
         if: failure()
         uses: actions/upload-artifact@main
         with:
