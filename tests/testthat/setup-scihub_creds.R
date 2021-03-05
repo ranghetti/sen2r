@@ -4,19 +4,20 @@ tests_apihub <- if (Sys.getenv("TRAVIS") == "true") {c(
   Sys.getenv("TRAVIS_PASSWORD")
 )} else {
   saved_creds <- try(sen2r::read_scihub_login(), silent = TRUE)
-  if (inherits(saved_creds, "try-error")) {
-    c("user", "user")
-  } else {
-    saved_creds[1,]
-  }
 }
 
-# Use a temporary apihub file
-write_scihub_login(
-  tests_apihub[1], tests_apihub[2],
-  tests_apihub_path <- tempfile(),
-  check = FALSE
-)
-
-# Return message
-message("Tests are run with SciHub user \"",tests_apihub[1],"\".")
+if (!inherits(saved_creds, "try-error")) {
+  
+  # Use a temporary apihub file
+  write_scihub_login(
+    tests_apihub[1], tests_apihub[2],
+    tests_apihub_path <- tempfile(),
+    check = FALSE
+  )
+  
+  # Return message
+  message("Tests are run with SciHub user \"",tests_apihub[1],"\".")
+  
+} else {
+  message("Problems with SciHub credentials; check secrets.")
+}

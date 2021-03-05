@@ -53,11 +53,11 @@
 #' \donttest{
 #' # Generate the lists of products
 #' pos <- sf::st_sfc(sf::st_point(c(-57.8815,-51.6954)), crs = 4326)
-#' time_window <- as.Date(c("2018-02-21", "2018-03-20"))
+#' time_window <- as.Date(c("2019-10-21", "2019-11-20"))
 #' list_safe <- s2_list(spatial_extent = pos, time_interval = time_window)
 #' print(list_safe)
-#' # (at the time the documentation was written, this list was containing 5
-#' # archives already available online and 2 stored in the Long Term Archive)
+#' # (at the time the documentation was updated, this list was containing 6
+#' # archives already available online and 3 stored in the Long Term Archive)
 #'
 #' # Order the products
 #' ordered_prods <- s2_order(list_safe)

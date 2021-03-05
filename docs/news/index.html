@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.2</span>
       </span>
     </div>
 
@@ -155,9 +155,21 @@
       <small>Source: <a href='https://github.com/ranghetti/sen2r/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="version-142" class="section level1">
+<h1 class="page-header" data-toc-text="1.4.2">
+<a href="#version-142" class="anchor"></a>Version 1.4.2<small> Unreleased </small>
+</h1>
+<div id="bug-fixes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes" class="anchor"></a>Bug fixes</h2>
+<ul>
+<li>Fix CRAN error (invalid example).</li>
+</ul>
+</div>
+</div>
     <div id="version-141" class="section level1">
 <h1 class="page-header" data-toc-text="1.4.1">
-<a href="#version-141" class="anchor"></a>Version 1.4.1<small> Unreleased </small>
+<a href="#version-141" class="anchor"></a>Version 1.4.1<small> 2021-03-02 </small>
 </h1>
 <div id="minor-changes" class="section level2">
 <h2 class="hasAnchor">
@@ -169,9 +181,9 @@
 <li>Manage error 429 for <code>dhus</code> (resend APIs more times in case of too many requests).</li>
 </ul>
 </div>
-<div id="bug-fixes" class="section level2">
+<div id="bug-fixes-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-1" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Partially fix <a href='https://github.com/ranghetti/sen2r/issues/368'>#368</a> (determine the output projection before processing).</li>
 <li>Fix <a href='https://github.com/ranghetti/sen2r/issues/371'>#371</a>.</li>
@@ -227,9 +239,9 @@
 <h1 class="page-header" data-toc-text="1.3.9">
 <a href="#version-139" class="anchor"></a>Version 1.3.9<small> 2020-10-14 </small>
 </h1>
-<div id="bug-fixes-1" class="section level2">
+<div id="bug-fixes-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-1" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-2" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Fix check errors due to <a href="http://rgdal.r-forge.r-project.org">rgdal</a> changes in version 1.6-17.</li>
 </ul>
@@ -257,9 +269,9 @@
 <code><a href="../reference/build_example_param_file.html">build_example_param_file()</a></code> now generates more recent images, 2020-08-01 instead than 2019-07-23 (this because the previous ones required two SAFE which are now on LTA); the same was done for some tests.</li>
 </ul>
 </div>
-<div id="bug-fixes-2" class="section level2">
+<div id="bug-fixes-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-2" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-3" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Fix <a href='https://github.com/ranghetti/sen2r/issues/338'>#338</a></li>
 </ul>
@@ -294,9 +306,9 @@
 <li>The documentation site links to the personal page <a href="https://luigi.ranghetti.info/" class="uri">https://luigi.ranghetti.info/</a>.</li>
 </ul>
 </div>
-<div id="bug-fixes-3" class="section level2">
+<div id="bug-fixes-4" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-3" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-4" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Fix <a href='https://github.com/ranghetti/sen2r/issues/318'>#318</a>, <a href='https://github.com/ranghetti/sen2r/issues/323'>#323</a> and <a href='https://github.com/ranghetti/sen2r/issues/329'>#329</a>.</li>
 </ul>
@@ -306,9 +318,9 @@
 <h1 class="page-header" data-toc-text="1.3.6">
 <a href="#version-136" class="anchor"></a>Version 1.3.6<small> 2020-06-04 </small>
 </h1>
-<div id="bug-fixes-4" class="section level2">
+<div id="bug-fixes-5" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-4" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-5" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Fix GDAL usage over Windows (a new version was specifically released for this bug because it caused <strong><code>sen2r</code></strong> stopping for many Windows users).</li>
 </ul>
@@ -342,9 +354,9 @@
 <li>Update documentation according to GDAL changes.</li>
 </ul>
 </div>
-<div id="bug-fixes-5" class="section level2">
+<div id="bug-fixes-6" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-5" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-6" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Fix Travis-<strong><code>lwgeom</code></strong> incompatibilities (<a href='https://github.com/ranghetti/sen2r/issues/319'>#319</a>)</li>
 <li>Fix <a href='https://github.com/ranghetti/sen2r/issues/310'>#310</a> and <a href='https://github.com/ranghetti/sen2r/issues/311'>#311</a></li>
@@ -387,9 +399,9 @@
 <li>The new section of the vignette “Output file documentation” regarding products is linked in the GUI.</li>
 </ul>
 </div>
-<div id="bug-fixes-6" class="section level2">
+<div id="bug-fixes-7" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-6" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-7" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Re-fix <a href='https://github.com/ranghetti/sen2r/issues/292'>#292</a>.</li>
 <li>Fix <a href='https://github.com/ranghetti/sen2r/issues/308'>#308</a>.</li>
@@ -427,9 +439,9 @@
 <li>Improve the installation page.</li>
 </ul>
 </div>
-<div id="bug-fixes-7" class="section level2">
+<div id="bug-fixes-8" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-7" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-8" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Support for <strong><code>sf</code></strong> &gt;= 0.9 (<a href='https://github.com/ranghetti/sen2r/issues/260'>#260</a>)</li>
 <li>Patch for <strong><code>stars</code></strong> issue, made to resolve the temporary incompatibility with <strong><code>sf</code></strong> &gt;= 0.9 (see issue <a href='https://github.com/ranghetti/sen2r/issues/295'>#295</a>)</li>
@@ -489,9 +501,9 @@
 <li>Documentation was improved with three new vignettes about GUI usage, command line usage and output structure.</li>
 </ul>
 </div>
-<div id="bug-fixes-8" class="section level2">
+<div id="bug-fixes-9" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-8" class="anchor"></a>Bug fixes</h2>
+<a href="#bug-fixes-9" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>Restore checking environmental variable in <code><a href="../reference/init_python.html">init_python()</a></code> (this urgent bug fixing was the reason of the urgent release of the current version).</li>
 <li>Fix building offline footprint.</li>

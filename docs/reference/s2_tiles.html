@@ -74,7 +74,7 @@ from the sen2r GitHub repository and it saves it on disk." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.2</span>
       </span>
     </div>
 
@@ -195,11 +195,11 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
   <span class='fu'>httr</span><span class='fu'>::</span><span class='fu'><a href='https://httr.r-lib.org/reference/write_disk.html'>write_disk</a></span><span class='op'>(</span><span class='va'>ch_path</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 <span class='op'>)</span>
 </div><div class='output co'>#&gt; Response [https://raw.githubusercontent.com/ranghetti/sen2r/master/utils/vector/ch_bound.rds]
-#&gt;   Date: 2021-03-02 07:38
+#&gt;   Date: 2021-03-04 08:25
 #&gt;   Status: 200
 #&gt;   Content-Type: application/octet-stream
 #&gt;   Size: 43.8 kB
-#&gt; &lt;ON DISK&gt;  /tmp/Rtmpb6Zc1m/file32e15c4254a364</div><div class='input'><span class='va'>ch</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='va'>ch_path</span><span class='op'>)</span>
+#&gt; &lt;ON DISK&gt;  /tmp/RtmpV9ekAl/file5b0a6011fd9c</div><div class='input'><span class='va'>ch</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='va'>ch_path</span><span class='op'>)</span>
 <span class='va'>s2tiles_ch</span> <span class='op'>&lt;-</span> <span class='va'>s2tiles</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/message.html'>suppressMessages</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/geos_binary_pred.html'>st_intersects</a></span><span class='op'>(</span><span class='va'>ch</span>, <span class='va'>s2tiles</span><span class='op'>)</span><span class='op'>)</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span>,<span class='op'>]</span>
 <span class='va'>s2_coords</span> <span class='op'>&lt;-</span> <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_coordinates.html'>st_coordinates</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/warning.html'>suppressWarnings</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/geos_unary.html'>st_centroid</a></span><span class='op'>(</span><span class='va'>s2tiles_ch</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 

@@ -1,3 +1,9 @@
+# Version 1.4.2
+
+## Bug fixes
+- Fix CRAN error (invalid example).
+
+
 # Version 1.4.1
 
 ## Minor changes

@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.2</span>
       </span>
     </div>
 
@@ -326,11 +326,11 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
   outdir <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span>,
   compress <span class='op'>=</span> <span class='fl'>50</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>[2021-03-02 08:33:48] Generating image</span>
-#&gt; <span class='message'>       S2A2A_20190723_022_Barbellino_RGBb84B_10.tif...</span></div><div class='output co'>#&gt; <span class='message'>[2021-03-02 08:33:54] Generating image</span>
+</div><div class='output co'>#&gt; <span class='message'>[2021-03-04 09:20:09] Generating image</span>
+#&gt; <span class='message'>       S2A2A_20190723_022_Barbellino_RGBb84B_10.tif...</span></div><div class='output co'>#&gt; <span class='message'>[2021-03-04 09:20:14] Generating image</span>
 #&gt; <span class='message'>       S2A2A_20190723_022_Barbellino_RGB954B_10.tif...</span></div><div class='output co'>#&gt; <span class='message'>2 output RGB files were correctly created.</span></div><div class='input'><span class='va'>ex_out</span>
-</div><div class='output co'>#&gt; [1] "/tmp/Rtmpb6Zc1m/RGBb84B/S2A2A_20190723_022_Barbellino_RGBb84B_10.tif"
-#&gt; [2] "/tmp/Rtmpb6Zc1m/RGB954B/S2A2A_20190723_022_Barbellino_RGB954B_10.tif"</div><div class='input'>
+</div><div class='output co'>#&gt; [1] "/tmp/RtmpV9ekAl/RGBb84B/S2A2A_20190723_022_Barbellino_RGBb84B_10.tif"
+#&gt; [2] "/tmp/RtmpV9ekAl/RGB954B/S2A2A_20190723_022_Barbellino_RGB954B_10.tif"</div><div class='input'>
 <span class='co'># Show output</span>
 <span class='va'>oldpar</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span>mfrow <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>3</span><span class='op'>)</span>, mar <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span><span class='op'>(</span><span class='fu'>stars</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/stars/reference/read_stars.html'>read_stars</a></span><span class='op'>(</span><span class='va'>ex_in</span><span class='op'>)</span>, rgb <span class='op'>=</span> <span class='fl'>4</span><span class='op'>:</span><span class='fl'>2</span>, maxColorValue <span class='op'>=</span> <span class='fl'>3500</span>, useRaster <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
