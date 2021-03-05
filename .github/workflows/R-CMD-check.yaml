@@ -87,7 +87,7 @@ jobs:
 
       - name: Install internal dependencies
         run: |
-          dir.create(normalize_path("~/.sen2r"))
+          dir.create(normalizePath("~/.sen2r"))
           sen2r::install_sen2cor()
           if (Sys.info()["sysname"] == "Windows") {sen2r::install_aria2()}
           sen2r::check_gdal()
