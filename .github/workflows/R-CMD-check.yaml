@@ -55,7 +55,7 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
           restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
 
-      - name: Install system dependencies
+      - name: [Linux] Install system dependencies
         if: runner.os == 'Linux'
         run: |
           while read -r cmd
@@ -63,7 +63,7 @@ jobs:
             eval sudo $cmd
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
 
-      - name: Install sen2r system dependencies
+      - name: [Linux] Install sen2r system dependencies
         if: runner.os == 'Linux'
         run: |
           sudo apt update
@@ -79,6 +79,12 @@ jobs:
             libv8-dev \
             libssl-dev \
             libcairo2-dev
+
+      - name: [macOS] Install sen2r system dependencies
+        if: runner.os == 'macOS'
+        run: |
+          brew tap osgeo/osgeo4mac
+          brew install osgeo-gdal-python
 
       - name: Install dependencies
         run: |
