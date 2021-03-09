@@ -1503,12 +1503,18 @@ sen2r <- function(param_list = NULL,
     # export needed variables
     out_ext <- attr(s2names, "out_ext")
     out_format <- attr(s2names, "out_format")
-    out_proj <- if (!is.na(pm$proj)) {pm$proj} else {
-      s2_dt_tiles <- tile_utmzone(s2_dt$id_tile)
+    s2_tiles <- names(sort(table(tile_utmzone(s2_dt$id_tile)), decreasing = TRUE))
+    out_proj <- if (!is.na(pm$proj)) {st_crs2(pm$proj)} else {
       # select the more represented UTM zone
-      s2_sel_tile <- names(sort(table(s2_dt_tiles), decreasing = TRUE)[1])
-      if (is.null(s2_sel_tile)) {NA} else {st_crs2(s2_sel_tile)}
+      if (is.null(s2_tiles)) {NA} else {st_crs2(s2_tiles[1])}
     }
+    # align grid in case of different input CRSs, or of output UTM CRS
+    gdal_tap <- any(
+      length(s2_tiles) > 2,
+      !is.null(out_proj$epsg) && !is.na(out_proj$epsg) && 
+        out_proj$epsg > 32601 && out_proj$epsg < 32799
+    )
+    
     # create mask
     s2_mask_extent <- if (is(pm$extent, "vector") && is.na(pm$extent)) {
       NULL
@@ -2408,6 +2414,7 @@ sen2r <- function(param_list = NULL,
             format = out_format["merged"],
             compress = pm$compression,
             bigtiff = bigtiff,
+            out_crs = out_proj,
             parallel = if (out_format["merged"]=="VRT") {FALSE} else {parallel_steps},
             overwrite = pm$overwrite,
             .log_message = .log_message, .log_output = .log_output,
@@ -2481,6 +2488,7 @@ sen2r <- function(param_list = NULL,
                     "TILED=YES",
                     if (bigtiff) {"BIGTIFF=YES"}
                   )},
+                  tap = gdal_tap,
                   overwrite = pm$overwrite,
                   tmpdir = file.path(tmpdir_groupA, "gdal_warp"),
                   rmtmp = FALSE
@@ -2530,6 +2538,7 @@ sen2r <- function(param_list = NULL,
                     "TILED=YES",
                     if (bigtiff) {"BIGTIFF=YES"}
                   )},
+                  tap = gdal_tap,
                   overwrite = pm$overwrite,
                   tmpdir = file.path(tmpdir_groupA, "gdal_warp"),
                   rmtmp = FALSE
