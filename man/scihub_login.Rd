@@ -9,9 +9,9 @@
 \usage{
 read_scihub_login(apihub_path = NA)
 
-check_scihub_login(username, password)
+check_scihub_login(username, password, service = "apihub")
 
-check_scihub_connection()
+check_scihub_connection(service = "apihub")
 
 write_scihub_login(
   username,
@@ -28,6 +28,8 @@ If NA (default) it is automatically read from the package default location.}
 \item{username}{SciHub username.}
 
 \item{password}{SciHub password.}
+
+\item{service}{Character: it can be \code{"dhus"} or \code{"apihub"} (default).}
 
 \item{check}{Logical: if TRUE (default), new credentials are checked
 before writing them on \code{apihub_path} (if they are invalid, an error

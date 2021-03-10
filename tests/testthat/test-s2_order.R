@@ -1,6 +1,8 @@
 message("\n---- Test s2_order() adn safe_is_online() ----")
 testthat::skip_on_cran()
 # testthat::skip_on_travis()
+testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
 
 testthat::test_that(
   "Test ordering without internet", {
