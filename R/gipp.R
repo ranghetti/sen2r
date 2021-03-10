@@ -177,7 +177,8 @@ read_gipp <- function(gipp_names, gipp_path = NA) {
 #' @return [set_gipp()] returns NULL (the function is called for its side effects).
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' if (!is.null(load_binpaths()$sen2cor)) {
 #' # Read default values
 #' read_gipp(c("dem_directory", "dem_reference"))
 #' # Set the use of a topographic correction
@@ -193,6 +194,7 @@ read_gipp <- function(gipp_names, gipp_path = NA) {
 #' # )
 #' # Read again the parameters in the created temporary files
 #' read_gipp(c("DEM_Directory", "DEM_Reference"), gipp_path = gipp_temp)
+#' }
 #' }
 set_gipp <- function(
   gipp = list(), gipp_path = NA, use_dem = NA
