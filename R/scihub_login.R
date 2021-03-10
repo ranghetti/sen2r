@@ -9,6 +9,7 @@
 #'  If NA (default) it is automatically read from the package default location.
 #' @param username SciHub username.
 #' @param password SciHub password.
+#' @param service Character: it can be `"dhus"` or `"apihub"` (default).
 #' @return `read_scihub_login` returns a matrix of credentials,
 #'  in which `username` is in the first column, `password` in the second.
 #' @details Notice that new/recently updated SciHub credentials are recognised by API Hub
@@ -37,7 +38,7 @@
 #' @rdname scihub_login
 #' @export
 
-read_scihub_login <- function(apihub_path=NA) {
+read_scihub_login <- function(apihub_path = NA) {
   
   # if apihub_path is not specified,
   # retrieve from the current installation
@@ -73,8 +74,8 @@ read_scihub_login <- function(apihub_path=NA) {
 #' @rdname scihub_login
 #' @export
 
-check_scihub_login <- function(username, password) {
-  if (!check_scihub_connection()) {
+check_scihub_login <- function(username, password, service = "apihub") {
+  if (!check_scihub_connection(service = service)) {
     print_message(
       type = "error",
       "Impossible to reach the SciHub server ",
@@ -83,7 +84,7 @@ check_scihub_login <- function(username, password) {
   }
   check_creds <- RETRY(
     verb = "GET",
-    url = "https://scihub.copernicus.eu/apihub/odata/v1",
+    url = paste0("https://scihub.copernicus.eu/",service,"/odata/v1"),
     handle = handle(""),
     config = authenticate(username, password)
   )
@@ -100,11 +101,11 @@ check_scihub_login <- function(username, password) {
 #' @importFrom httr RETRY handle
 #' @rdname scihub_login
 #' @export
-check_scihub_connection <- function() {
+check_scihub_connection <- function(service = "apihub") {
   check_online <- try(
     RETRY(
       "GET",
-      url = "https://scihub.copernicus.eu/apihub/",
+      url = paste0("https://scihub.copernicus.eu/",service,"/"),
       handle = handle("")
     )
   )
@@ -131,16 +132,25 @@ write_scihub_login <- function(username, password,
   
   # check credentials (if required)
   if (check == TRUE) {
-    if (!check_scihub_login(username, password)) {
-      print_message(
-        type = "error",
-        "The provided credentials are not valid, ",
-        "so they will not be saved. ",
-        "Please notice that new/recently updated SciHub credentials are recognised by API Hub ",
-        "with a delay of about one week. ",
-        "For this reason, newly created SciHub credentials can not immediately be used by sen2r", 
-        "and password edits on old credentials are not immediately recognised."
-      )
+    if (!check_scihub_login(username, password, service = "apihub")) {
+      if (!check_scihub_login(username, password, service = "dhus")) {
+        print_message(
+          type = "error",
+          "The provided credentials are not valid, ",
+          "so they will not be saved. "
+        )
+      } else {
+        print_message(
+          type = "error",
+          "The provided credentials are not yet recognised by API Hub, ",
+          "although being valid on ESA SciHub; ",
+          "probably they were created recently. ",
+          "Please notice that new/recently updated SciHub credentials are recognised by API Hub ",
+          "with a delay of about one week. ",
+          "For this reason, newly created SciHub credentials can not immediately be used by sen2r", 
+          "and password edits on old credentials are not immediately recognised."
+        )
+      }
     }
   }
   

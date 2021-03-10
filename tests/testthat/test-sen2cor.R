@@ -1,6 +1,7 @@
 message("\n---- Test Sen2Cor installation ----")
 testthat::skip_on_cran()
 testthat::skip_on_ci()
+testthat::skip_if_offline("step.esa.int")
 
 # NOTE: these tests require a high amount of time (depending on connection speed),
 # so the installation can be disabled if Sen2Cor is already installed.
