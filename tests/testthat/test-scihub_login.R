@@ -1,7 +1,8 @@
 message("\n---- Check connection - specific function ----")
 testthat::skip_on_cran()
 testthat::skip_on_ci()
-testthat::skip_if_not(check_scihub_connection(), "SciHub server is not reachable")
+testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
 
 test_that("check internet connection on internal function", {
   expect_equal(check_scihub_connection(), TRUE)
