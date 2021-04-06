@@ -187,6 +187,34 @@ testthat::test_that(
 )
 
 testthat::test_that(
+  "Reproject using tap", {
+    
+    test4c <- tempfile(fileext = "_test4c.tif")
+    gdal_warp(ex_sel, test4c, t_srs = 32631, tap = TRUE)
+    
+    # test on raster metadata
+    exp_meta_r <- raster_metadata(test4c, format = "list")[[1]]
+    testthat::expect_equal(exp_meta_r$size, c("x"=28, "y"=45))
+    testthat::expect_equal(exp_meta_r$res, c("x"=10, "y"=10))
+    testthat::expect_equal(exp_meta_r$nbands, 3)
+    testthat::expect_equal(
+      as.numeric(exp_meta_r$bbox), 
+      c(1044530, 5125320, 1044810, 5125770)
+    )
+    expect_equal_crs(exp_meta_r$proj, 32631)
+    testthat::expect_equal(exp_meta_r$type, "Byte")
+    testthat::expect_equal(exp_meta_r$outformat, "GTiff")
+    
+    # test on raster values
+    exp_stars <- stars::read_stars(test4c)
+    testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 77.05616, tolerance = 1e-03)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 245, tolerance = 1e-3)
+    rm(exp_stars)
+    
+  }
+)
+
+testthat::test_that(
   "Reproject and clip on a bounding box", {
     
     test5 <- tempfile(fileext = "_test5.tif")

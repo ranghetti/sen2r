@@ -141,8 +141,7 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$nbands, 12)
     testthat::expect_equal(
       exp_meta_r[,c("xmin", "xmax", "ymin", "ymax")], 
-      data.frame("xmin" = 113909, "xmax" = 133284, "ymin" = 5097856, "ymax" = 5112431),
-      tolerance = 1e-3
+      data.frame("xmin" = 113900, "xmax" = 133300, "ymin" = 5097850, "ymax" = 5112450)
     )
     expect_equal_crs(st_crs2(exp_meta_r$proj), 32633)
     testthat::expect_equal(exp_meta_r$type, "UInt16")
