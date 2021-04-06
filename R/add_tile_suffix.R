@@ -56,6 +56,7 @@ add_tile_suffix <- function(paths, suffix) {
     paths
   } else {
     # Custom behaviour: add specific suffix to all the paths
+    if (is.na(suffix)) {suffix <- ""}
     gsub(
       "(S2[AB][12][AC]\\_[0-9]{8}\\_[0-9]{3})\\_([0-9]{2}[A-Z]{3})\\_([^\\_\\.]+\\_[126]0\\.?[^\\_]*$)",
       paste0("\\1_\\2",suffix,"_\\3"),

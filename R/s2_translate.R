@@ -298,7 +298,7 @@ s2_translate <- function(infile,
           # 2: rescale L2A in case of wrong native resolution
           # (i.e. SAFE not containing 10m bands with res = "10m")
           res_out <- if (all(
-            prod_type %in% c("SCL","CLD","SNW"),
+            sel_prod %in% c("SCL","CLD","SNW"),
             res[1] == "10m"
           )) {res[2]} else {res[1]}
           res_ratio <- min(as.integer(substr(jp2df_selbands$res,1,2))) / 

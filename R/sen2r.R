@@ -2318,7 +2318,7 @@ sen2r <- function(param_list = NULL,
             tiles_l1c_names_out <- foreach(
               sel_prod = sel_s2names$req$tiles$L1C,
               sel_out = lapply(
-                seq_along(sel_s2names$exp$tiles[[1]]), 
+                seq_len(max(sapply(sel_s2names$exp$tiles, length))),
                 function(i) {sapply(sel_s2names$exp$tiles, function(p) {p[i]})}
               ),
               .combine = c
@@ -2351,7 +2351,7 @@ sen2r <- function(param_list = NULL,
           tiles_l2a_names_out <- foreach(
             sel_prod = sel_s2names$req$tiles$L2A,
             sel_out = lapply(
-              seq_along(sel_s2names$exp$tiles[[1]]), 
+              seq_len(max(sapply(sel_s2names$exp$tiles, length))), 
               function(i) {sapply(sel_s2names$exp$tiles, function(p) {p[i]})}
             ),
             .combine = c
