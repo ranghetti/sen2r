@@ -10,7 +10,7 @@
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
 #'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 
-#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{http://sen2r.ranghetti.info/}.
+#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{https://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @importFrom jsonlite fromJSON toJSON
 #' @import data.table
@@ -174,7 +174,7 @@ s2_gui <- function(param_list = NULL,
     header = dashboardHeader(
       
       tags$li(class ="dropdown", tags$a(
-        href="http://sen2r.ranghetti.info",
+        href="https://sen2r.ranghetti.info",
         shiny::icon("book"),
         style="margin:0;padding-top:11px;padding-bottom:11px;padding-left:10px;padding-right:10px;font-size:30px;",
         target="_blank"
@@ -206,7 +206,7 @@ s2_gui <- function(param_list = NULL,
       div(
         style = "text-align:center;padding-top:17px;padding-bottom:30px;",
         a(
-          href='http://sen2r.ranghetti.info',
+          href='https://sen2r.ranghetti.info',
           target = "_blank",
           uiOutput("img_logo")
         )
@@ -327,8 +327,8 @@ s2_gui <- function(param_list = NULL,
             "open_github_doc",
             label = "\u2000Open documentation",
             icon = icon("info-circle"),
-            onclick ="window.open('http://sen2r.ranghetti.info', '_blank')",
-            # onclick ="window.open('http://sen2r.ranghetti.info/articles/sen2r_gui.html', '_blank')",
+            onclick ="window.open('https://sen2r.ranghetti.info', '_blank')",
+            # onclick ="window.open('https://sen2r.ranghetti.info/articles/sen2r_gui.html', '_blank')",
             class = "darkbutton"
           )
         )

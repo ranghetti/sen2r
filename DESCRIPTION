@@ -19,7 +19,7 @@ Description: Functions to download Sentinel-2 optical images
  Ranghetti et al. (2020) <doi:10.1016/j.cageo.2020.104473>.
 License: GPL-3
 Encoding: UTF-8
-URL: http://sen2r.ranghetti.info, https://github.com/ranghetti/sen2r
+URL: https://sen2r.ranghetti.info
 BugReports: https://github.com/ranghetti/sen2r/issues
 Depends: R (>= 3.5.0)
 Imports:

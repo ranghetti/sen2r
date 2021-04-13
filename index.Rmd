@@ -75,7 +75,7 @@ L.\ Ranghetti, M.\ Boschetti, F.\ Nutini, L.\ Busetto (2020).
 <strong>"sen2r: An R toolbox for automatically downloading and preprocessing Sentinel-2 satellite data"</strong>.
 <em>Computers \& Geosciences</em>, 139, 104473.
 doi: 10.1016/j.cageo.2020.104473,
-URL: http://sen2r.ranghetti.info
+URL: https://sen2r.ranghetti.info
 </a>.
 
 Users which processed Sentinel-2 data and used them for a scientific work
@@ -171,7 +171,7 @@ L.\ Ranghetti, M.\ Boschetti, F.\ Nutini, L.\ Busetto (2020).
 **"sen2r: An R toolbox for automatically downloading and preprocessing Sentinel-2 satellite data"**. 
 *Computers \& Geosciences*, 139, 104473. 
 doi: <a href="https://dx.doi.org/10.1016/j.cageo.2020.104473" target="_blank">10.1016/j.cageo.2020.104473</a>,
-URL: <a href="http://sen2r.ranghetti.info" target="_blank">http://sen2r.ranghetti.info</a>.
+URL: <a href="https://sen2r.ranghetti.info" target="_blank">https://sen2r.ranghetti.info</a>.
 
 ```bibtex
 @Article{sen2r_cageo,
@@ -182,7 +182,7 @@ URL: <a href="http://sen2r.ranghetti.info" target="_blank">http://sen2r.ranghett
   volume  = {139},
   pages   = {104473},
   doi     = {10.1016/j.cageo.2020.104473},
-  url     = {http://sen2r.ranghetti.info/},
+  url     = {https://sen2r.ranghetti.info/},
 }
 ```
 
