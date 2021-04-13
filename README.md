@@ -24,7 +24,7 @@ build](https://img.shields.io/docker/automated/ranghetti/sen2r.svg)](https://hub
 [![License: GPL
 v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Contributor
-Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](https://sen2r.ranghetti.info/.github/CODE-OF-CONDUCT.html)
+Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](blob/master/.github/CODE-OF-CONDUCT.md)
 
 <img src="man/figures/sen2r_logo_200px.png" width="200" height="113" align="right" />
 
@@ -213,8 +213,8 @@ URL:
 ## Contributing
 
 This project is released with a [Contributor Code of
-Conduct](https://sen2r.ranghetti.info/.github/CODE-OF-CONDUCT.html). By
-participating in this project you agree to abide by its terms.
+Conduct](blob/master/.github/CODE-OF-CONDUCT.md). By participating in
+this project you agree to abide by its terms.
 
 Users are encouraged to use GitHub issues in case of errors with the
 package. Before opening a new issue, please read
