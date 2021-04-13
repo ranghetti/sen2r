@@ -178,6 +178,7 @@ corresponding source file.</p>
   t_srs <span class='op'>=</span> <span class='cn'>NULL</span>,
   r <span class='op'>=</span> <span class='cn'>NULL</span>,
   dstnodata <span class='op'>=</span> <span class='cn'>NULL</span>,
+  tap <span class='op'>=</span> <span class='cn'>FALSE</span>,
   overwrite <span class='op'>=</span> <span class='cn'>FALSE</span>,
   tmpdir <span class='op'>=</span> <span class='cn'>NA</span>,
   rmtmp <span class='op'>=</span> <span class='cn'>TRUE</span>
@@ -254,6 +255,12 @@ the source datasets. At the moment it is not possible to set different
 values for different <code>srcfiles</code> (use multiple calls of the functions).</p></td>
     </tr>
     <tr>
+      <th>tap</th>
+      <td><p>Logical (target aligned pixels) align the coordinates of the
+extent of the output file to the values of the <code>tr</code>, such that the aligned
+extent includes the minimum extent. Default is FALSE.</p></td>
+    </tr>
+    <tr>
       <th>overwrite</th>
       <td><p>Logical value: should existing output files be
 overwritten? (default: FALSE)</p></td>
@@ -284,7 +291,7 @@ If <code>tmpdir</code> is a non-empty folder, a random subdirectory will be used
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.104473</a>
-, URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p>
+, URL: <a href='https://sen2r.ranghetti.info/'>https://sen2r.ranghetti.info/</a>.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Luigi Ranghetti, phD (2019) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
