@@ -13,7 +13,7 @@ testthat::test_that(
     unlink(exp_outpath_1)
     out1 <- sen2r(
       gui = FALSE,
-      online = FALSE,
+      online = TRUE,
       step_atmcorr = "l2a", # to avoid checks on Sen2Cor
       extent = NA,
       timewindow = as.Date("2020-08-01"),
