@@ -52,7 +52,7 @@ as the path of the default GIPP file, which is
 License: GPL 3.0
 }
 \examples{
-\donttest{
+\dontrun{
 if (!is.null(load_binpaths()$sen2cor)) {
 # Read default values
 read_gipp(c("dem_directory", "dem_reference"))

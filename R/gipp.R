@@ -177,7 +177,7 @@ read_gipp <- function(gipp_names, gipp_path = NA) {
 #' @return [set_gipp()] returns NULL (the function is called for its side effects).
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' if (!is.null(load_binpaths()$sen2cor)) {
 #' # Read default values
 #' read_gipp(c("dem_directory", "dem_reference"))
