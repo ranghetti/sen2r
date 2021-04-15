@@ -40,7 +40,7 @@ the minimum required version (2.1.2).
 License: GPL 3.0
 }
 \examples{
-\donttest{
+\dontrun{
 check_gdal()
 }
 }
