@@ -80,7 +80,9 @@ testthat::test_that(
 
 
 testthat::skip_on_cran() # because using runtime GDAL
-# testthat::skip_on_travis()
+if (Sys.info()["sysname"] == "Windows") {
+  testthat::skip_on_ci() # runtime GDAL not installed on Windows CI
+}
 
 testthat::test_that(
   "Tests on custom mask on TOA with smoothing and buffering", {
