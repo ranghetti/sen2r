@@ -80,8 +80,8 @@ testthat::test_that(
 
 
 testthat::skip_on_cran() # because using runtime GDAL
-if (Sys.info()["sysname"] != "Linux") {
-  testthat::skip_on_ci() # runtime GDAL not installed on Windows and macOS CI
+if (Sys.info()["sysname"] == "Windows") {
+  testthat::skip_on_ci() # runtime GDAL not installed on Windows CI
 }
 
 testthat::test_that(
