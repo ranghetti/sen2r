@@ -52,6 +52,13 @@ read_scihub_login <- function(apihub_path = NA) {
   # return user and password
   if (file.exists(apihub_path)) {
     t(sapply(strsplit(readLines(apihub_path), " "), c))
+  } else if (Sys.getenv("GITHUB_ACTIONS") == "true") {
+    # in GitHub actions, read from secrets
+    matrix(
+      c(paste0("sen2r_travis_",Sys.getenv("R_VERSION_STRING")),
+        Sys.getenv("CI_PASSWORD")),
+      ncol = 2
+    )
   } else {
     # if apihub does not exists, return an error
     print_message(
