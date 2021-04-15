@@ -61,7 +61,8 @@
 #'      with the function `read_gipp(c("DEM_Directory", "DEM_Reference"))`).
 #'      In case one or both these parameters were set to `"NONE"`, 
 #'      a subdirectory `"srtm90"` of the default sen2r directory is used as
-#'      DEM directory, and/or the [CGIAR SRTM 90m](https://srtm.csi.cgiar.org/) 
+#'      DEM directory, and/or the 
+#'      [CGIAR SRTM 90m](https://cgiarcsi.community/category/data/) 
 #'      is set as online source.
 #'      To set another directory or reference, use argument `gipp` in the form
 #'      `gipp = list(DEM_Directory = tempdir(), DEM_Reference ="another_reference", ...)`
