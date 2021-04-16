@@ -122,9 +122,9 @@ testthat::test_that(
 
 # On Travis and on CRAN the next tests are not run (using aria2);
 # in this case, download L1C required by subsequent tests with builtin
-if (any(
-  identical(Sys.getenv("GITHUB_ACTIONS"), "true") & Sys.info()["sysname"] != "Linux",
-  !identical(Sys.getenv("NOT_CRAN"), "true")
+if (all(
+  identical(Sys.getenv("GITHUB_ACTIONS"), "true"),
+  Sys.info()["sysname"] != "Linux"
 )) {
   suppressWarnings(s2_l1c_downloaded <- s2_download(
     s2_l1c_list,
@@ -136,7 +136,6 @@ if (any(
 }
 
 
-testthat::skip_on_cran()
 if (Sys.info()["sysname"] != "Linux") {
   testthat::skip_on_ci() # aria2 not installed on Windows and macOS CI
 }
