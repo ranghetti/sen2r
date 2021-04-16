@@ -1,0 +1,10 @@
+R/s2_gui.R
+R/check_sen2r_deps.R
+R/list_sen2r_paths.R
+R/helpers_extent.R
+R/add_rgb_image.R
+R/dontuse.R
+R/create_indices.db.R
+R/init_python.R
+R/install_aria2.R
+R/give_write_permissions.R

@@ -190,7 +190,7 @@ write_scihub_login <- function(username, password,
 # #' @rdname scihub_login
 
 # write dialog content
-.scihub_modal <- function() { #nocov start
+.scihub_modal <- function() { # nocov start
   
   # Define internal functions as aliases of shiny* - leaflet* ones,
   # so to avoid using "shiny::" every time
@@ -275,5 +275,4 @@ write_scihub_login <- function(username, password,
           modalButton("\u2000Cancel", icon = icon("ban")))
     )
   )
-  #nocov end
-}
+} # nocov end
