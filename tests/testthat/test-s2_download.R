@@ -123,7 +123,7 @@ testthat::test_that(
 # On Travis and on CRAN the next tests are not run (using aria2);
 # in this case, download L1C required by subsequent tests with builtin
 if (any(
-  identical(Sys.getenv("TRAVIS"), "true"),
+  identical(Sys.getenv("GITHUB_ACTIONS"), "true") & Sys.info()["sysname"] != "Linux",
   !identical(Sys.getenv("NOT_CRAN"), "true")
 )) {
   suppressWarnings(s2_l1c_downloaded <- s2_download(
@@ -132,12 +132,14 @@ if (any(
     outdir = safe_dir,
     apihub = tests_apihub_path,
     overwrite = test_download
-  )) # suppressWarnings used to manage possible warnings for skept Md5sum checks
+  )) # suppressWarnings used to manage possible warnings for skipped Md5sum checks
 }
 
 
 testthat::skip_on_cran()
-testthat::skip_on_ci()
+if (Sys.info()["sysname"] != "Linux") {
+  testthat::skip_on_ci() # aria2 not installed on Windows and macOS CI
+}
 
 testthat::test_that(
   "Tests on s2_download - check aria2 installation", {
@@ -157,9 +159,6 @@ testthat::test_that(
   }
 )
 
-
-testthat::skip_on_cran()
-testthat::skip_on_ci()
 
 testthat::test_that(
   "Tests on s2_download - aria2 downloader", {

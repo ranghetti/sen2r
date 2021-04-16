@@ -1,6 +1,6 @@
 message("\n---- Test s2_merge and translate when stitching 2 tiles with no clipping ----")
 testthat::skip_on_cran()
-testthat::skip_on_ci() # FIXME restore
+# testthat::skip_on_ci() # FIXME restore
 testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
 testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
 
@@ -13,7 +13,7 @@ testthat::test_that(
     unlink(exp_outpath_1)
     out1 <- sen2r(
       gui = FALSE,
-      online = TRUE,
+      online = FALSE,
       step_atmcorr = "l2a", # to avoid checks on Sen2Cor
       extent = NA,
       timewindow = as.Date("2020-08-01"),
