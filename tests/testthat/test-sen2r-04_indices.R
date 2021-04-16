@@ -1,6 +1,6 @@
 message("\n---- Test compute spectral indices - main function ----")
 testthat::skip_on_cran()
-# testthat::skip_on_travis() # because required SAFE do not exists
+testthat::skip_on_ci() # FIXME restore
 testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
 testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
 
