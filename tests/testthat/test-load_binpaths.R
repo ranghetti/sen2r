@@ -32,7 +32,7 @@ test_that("Try loading Sen2Cor", {
   expect_equal(basename(attr(binpaths_1, "path")), "paths.json")
 })
 
-if (Sys.info()["sysname"] != "Windows") {
+if (Sys.info()["sysname"] == "Linux") {
   test_that("Load GDAL", {
     binpaths_2 <- load_binpaths(c("gdal"))
     expect_is(binpaths_2, "list")
