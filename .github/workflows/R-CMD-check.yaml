@@ -80,12 +80,6 @@ jobs:
             libssl-dev \
             libcairo2-dev
 
-      - name: "[macOS] Install sen2r system dependencies"
-        if: runner.os == 'macOS'
-        run: |
-          brew tap osgeo/osgeo4mac
-          brew install osgeo-gdal-python 
-
       - name: "Install dependencies"
         run: |
           remotes::install_deps(dependencies = TRUE)
