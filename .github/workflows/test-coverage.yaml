@@ -1,7 +1,7 @@
 on:
   push:
-  pull_request:
     branches:
+      - feature/githubactions # FIXME temporary, remove
       - master
 
 name: test-coverage
@@ -67,7 +67,6 @@ jobs:
 
       - name: Test coverage
         run: |
-          Sys.setenv("NOT_CRAN"="true")
           covr::codecov(
             line_exclusions = c(
               "R/s2_gui.R",
