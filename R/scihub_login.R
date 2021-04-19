@@ -61,6 +61,7 @@ read_scihub_login <- function(apihub_path = NA) {
     } else if (Sys.getenv("OS_NAME_STRING") == "macOS-latest") {
       "sen2r_ci_mac"
     }
+    scihub_user <- paste0("sen2r_travis_", Sys.getenv("R_VERSION_STRING")) # FIXME temp remove
     matrix(c(scihub_user, Sys.getenv("CI_PASSWORD")), ncol = 2)
   } else {
     # if apihub does not exists, return an error
