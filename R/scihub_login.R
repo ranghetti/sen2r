@@ -56,11 +56,14 @@ read_scihub_login <- function(apihub_path = NA) {
     t(sapply(strsplit(readLines(apihub_path), " "), c))
   } else if (Sys.getenv("GITHUB_ACTIONS") == "true") {
     # in GitHub actions, read from secrets
-    matrix(
-      c(paste0("sen2r_travis_",Sys.getenv("R_VERSION_STRING")),
-        Sys.getenv("CI_PASSWORD")),
-      ncol = 2
-    )
+    scihub_user <- if (Sys.getenv("OS_NAME_STRING") == "ubuntu-20.04") {
+      paste0("sen2r_travis_", Sys.getenv("R_VERSION_STRING"))
+    } else if (Sys.getenv("OS_NAME_STRING") == "windows-latest") {
+      "sen2r_ci_windows"
+    } else if (Sys.getenv("OS_NAME_STRING") == "macOS-latest") {
+      "sen2r_ci_mac"
+    }
+    matrix(c(scihub_user, Sys.getenv("CI_PASSWORD")), ncol = 2)
   } else {
     # if apihub does not exists, return an error
     print_message(
