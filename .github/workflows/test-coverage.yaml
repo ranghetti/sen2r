@@ -10,8 +10,11 @@ jobs:
   test-coverage:
     runs-on: ubuntu-20.04
     env:
+      RSPM: ${{ matrix.config.rspm }}
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       CI_PASSWORD: ${{ secrets.CI_PASSWORD }}
+      OS_NAME_STRING: ${{ matrix.config.os }}
+      R_VERSION_STRING: ${{ matrix.config.r }}
     steps:
       - uses: actions/checkout@v2
 
