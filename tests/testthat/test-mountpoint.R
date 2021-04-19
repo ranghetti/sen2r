@@ -2,7 +2,7 @@ message("\n---- Test mountpoint() ----")
 testthat::skip_on_cran()
 # testthat::skip_on_travis()
 
-if (Sys.info()["sysname"] != "Windows") {
+if (Sys.info()["sysname"] == "Linux") { # FIXME test on macOS
   testthat::test_that(
     "Mountpoint home", {
       mp_1 <- mountpoint(".")
