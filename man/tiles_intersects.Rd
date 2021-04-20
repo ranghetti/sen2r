@@ -47,6 +47,7 @@ tiles_intersects(ex_extent)
 # Tile ID of all the overlapping S2 tiles
 tiles_intersects(ex_extent, all = TRUE)
 
+\donttest{
 # Spatial object with the required tile
 sel_tiles <- tiles_intersects(ex_extent, out_format = "sf")
 plot(sf::st_geometry(sel_tiles)); plot(sf::st_geometry(ex_extent), add=TRUE, col="yellow")
@@ -54,6 +55,7 @@ plot(sf::st_geometry(sel_tiles)); plot(sf::st_geometry(ex_extent), add=TRUE, col
 # Spatial object with the overlapping S2 tiles
 sel_tiles <- tiles_intersects(ex_extent, all = TRUE, out_format = "sf")
 plot(sf::st_geometry(sel_tiles)); plot(sf::st_geometry(ex_extent), add=TRUE, col="yellow")
+}
 }
 \references{
 L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).

@@ -1,8 +1,36 @@
 message("\n---- Test warping (clip, reproject, resize) ----")
 testthat::skip_on_cran()
-testthat::skip_on_ci() # FIXME restore
+# testthat::skip_on_ci()
 testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
 testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
+
+# # Ensure required SAFE to be downloaded
+# s2_l1c_list <- c(
+#   "S2B_MSIL1C_20200801T100559_N0209_R022_T32TNR_20200801T130136.SAFE" = 
+#     "https://scihub.copernicus.eu/apihub/odata/v1/Products('5946618d-4467-4a68-bf87-7d30bc9b4e50')/$value",
+#   "S2B_MSIL1C_20200801T100559_N0209_R022_T32TNS_20200801T130136.SAFE" = 
+#     "https://scihub.copernicus.eu/apihub/odata/v1/Products('cd0b8935-5f5f-485a-bde6-259f5f6e6821')/$value"
+# )
+# s2_l2a_list <- c(
+#   "S2B_MSIL2A_20200801T100559_N0214_R022_T32TNR_20200801T135302.SAFE" = 
+#     "https://scihub.copernicus.eu/apihub/odata/v1/Products('e502d496-631f-4557-b14f-d98195fdc8c1')/$value",
+#   "S2B_MSIL2A_20200801T100559_N0214_R022_T32TNS_20200801T135302.SAFE" = 
+#     "https://scihub.copernicus.eu/apihub/odata/v1/Products('4aac5270-bbdf-4743-9f9f-532fdbfea2fd')/$value"
+# )
+# suppressWarnings(s2_l1c_downloaded <- s2_download(
+#   s2_l1c_list,
+#   downloader = "builtin",
+#   outdir = safe_dir,
+#   apihub = tests_apihub_path,
+#   overwrite = FALSE
+# ))
+# suppressWarnings(s2_l2a_downloaded <- s2_download(
+#   s2_l2a_list,
+#   downloader = "builtin",
+#   outdir = safe_dir,
+#   apihub = tests_apihub_path,
+#   overwrite = FALSE
+# ))
 
 outdir_2 <- tempfile(pattern = "out_test2_")
 exp_outpath_2 <- file.path(
@@ -102,7 +130,7 @@ testthat::test_that(
     testthat::expect_warning(
       sen2r(
         gui = FALSE,
-        online = FALSE,
+        online = TRUE, # FIXME restore FALSE
         step_atmcorr = "l2a", # to avoid checks on Sen2Cor
         extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
         extent_name = "Scalve",
@@ -207,7 +235,7 @@ testthat::test_that(
     dir.create(dirname(outdir_4), showWarnings = FALSE)
     sen2r(
       gui = FALSE,
-      online = FALSE,
+      online = TRUE, # FIXME restore FALSE
       step_atmcorr = "l2a", # to avoid checks on Sen2Cor
       extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
       extent_name = "Scalve",

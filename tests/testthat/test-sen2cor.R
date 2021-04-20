@@ -121,7 +121,9 @@ testthat::test_that(
   "Test GIPP options", {
     
     # Check option previously set with test_sen2cor(use_dem = TRUE)
-    xml_sen2r_path <- normalize_path("~/.sen2r/sen2r_L2A_GIPP.xml")
+    xml_sen2r_path <- normalize_path(
+      file.path(dirname(attr(load_binpaths(), "path")), "sen2r_L2A_GIPP.xml")
+    )
     testthat::expect_true(file.exists(xml_sen2r_path))
     xml_sen2r_raw <- readLines(xml_sen2r_path)
     testthat::expect_true(grepl(

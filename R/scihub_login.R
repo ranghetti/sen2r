@@ -3,8 +3,10 @@
 #'  save new username and password (`write_scihub_login()`)
 #'  or check their validity (`check_scihub_login()`).
 #'  Login information is stored in a file `apihub.txt` inside the
-#'  ".sen2r" subfolder of the home directory. This functions allow to read
-#'  or write this file, and to edit them from inside the GUI.
+#'  ".sen2r" subfolder of the home directory. This function allows reading
+#'  or writing this file, and editing it from the GUI.
+#'  In case file `apihub.txt` is missing, `read_scihub_login()` searches inside
+#'  the environmental variables `SCIHUB_USER` and `SCIHUB_PASSWORD`.
 #' @param apihub_path Path of the file in which login information is saved.
 #'  If NA (default) it is automatically read from the package default location.
 #' @param username SciHub username.
@@ -61,8 +63,9 @@ read_scihub_login <- function(apihub_path = NA) {
     } else if (Sys.getenv("OS_NAME_STRING") == "macOS-latest") {
       "sen2r_ci_mac"
     }
-    scihub_user <- paste0("sen2r_travis_", Sys.getenv("R_VERSION_STRING")) # FIXME temp remove
     matrix(c(scihub_user, Sys.getenv("CI_PASSWORD")), ncol = 2)
+  } else if (all(Sys.getenv("SCIHUB_USER") != "", Sys.getenv("SCIHUB_PASSWORD") != "")) {
+    matrix(c(Sys.getenv("SCIHUB_USER"), Sys.getenv("SCIHUB_PASSWORD")), ncol = 2)
   } else {
     # if apihub does not exists, return an error
     print_message(
