@@ -1,6 +1,6 @@
 message("\n---- Test s2_merge and translate when stitching 2 tiles with no clipping ----")
 testthat::skip_on_cran()
-testthat::skip_on_ci() # FIXME restore
+# testthat::skip_on_ci()
 testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
 testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
 
@@ -22,17 +22,17 @@ testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus se
 testthat::test_that(
   "Tests on merge all found tiles in offline mode", {
 
-    # # Check sample inputs
-    # expect_true(file.exists(file.path(
-    #   safe_dir, names(s2_l2a_list[1]), 
-    #   "GRANULE/L2A_T32TNR_A017780_20200801T101400/IMG_DATA/R10m",
-    #   "T32TNR_20200801T100559_B08_10m.jp2"
-    # )))
-    # expect_true(file.exists(file.path(
-    #   safe_dir, names(s2_l2a_list[2]), 
-    #   "GRANULE/L2A_T32TNS_A017780_20200801T101400/IMG_DATA/R10m",
-    #   "T32TNS_20200801T100559_B08_10m.jp2"
-    # )))
+    # Check sample inputs
+    expect_true(file.exists(file.path(
+      safe_dir, names(s2_l2a_list[1]), 
+      "GRANULE/L2A_T32TNR_A017780_20200801T101400/IMG_DATA/R10m",
+      "T32TNR_20200801T100559_B08_10m.jp2"
+    )))
+    expect_true(file.exists(file.path(
+      safe_dir, names(s2_l2a_list[2]), 
+      "GRANULE/L2A_T32TNS_A017780_20200801T101400/IMG_DATA/R10m",
+      "T32TNS_20200801T100559_B08_10m.jp2"
+    )))
     
     outdir_1 <- tempfile(pattern = "out_test1_")
     dir.create(dirname(outdir_1), showWarnings = FALSE)
@@ -40,7 +40,7 @@ testthat::test_that(
     unlink(exp_outpath_1)
     out1 <- sen2r(
       gui = FALSE,
-      online = FALSE,
+      online = TRUE, # FIXME restore FALSE
       step_atmcorr = "l2a", # to avoid checks on Sen2Cor
       extent = NA,
       timewindow = as.Date("2020-08-01"),
