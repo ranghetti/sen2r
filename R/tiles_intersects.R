@@ -17,7 +17,7 @@
 #' @return the tiles intersecting the extent (see argument `out_format`).
 #' @export
 #' @importFrom sf st_area st_crs st_difference st_geometry 
-#'  st_intersects st_transform st_union
+#'  st_intersects st_is_valid st_make_valid st_transform st_union
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
@@ -87,6 +87,10 @@ tiles_intersects <- function(extent, all = FALSE, out_format = "id", .s2tiles=NU
       } else {
         st_geometry(tiles_intersecting_all)
       }
+      if (any(!st_is_valid(sel_tile_notoverlap))) {
+        sel_tile_notoverlap <- st_make_valid(sel_tile_notoverlap)
+      }
+      
       # Check if any portion ot the extent is exclusive of sel_tile
       tiles_intersects[i] <- any(suppressMessages(
         st_intersects(extent, sel_tile_notoverlap, sparse = FALSE)
