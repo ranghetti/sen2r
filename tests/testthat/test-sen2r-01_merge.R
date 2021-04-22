@@ -4,35 +4,35 @@ testthat::skip_on_cran()
 testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
 testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
 
-# # Ensure required SAFE to be downloaded
-# s2_l2a_list <- c(
-#   "S2B_MSIL2A_20200801T100559_N0214_R022_T32TNR_20200801T135302.SAFE" =
-#     "https://scihub.copernicus.eu/apihub/odata/v1/Products('e502d496-631f-4557-b14f-d98195fdc8c1')/$value",
-#   "S2B_MSIL2A_20200801T100559_N0214_R022_T32TNS_20200801T135302.SAFE" =
-#     "https://scihub.copernicus.eu/apihub/odata/v1/Products('4aac5270-bbdf-4743-9f9f-532fdbfea2fd')/$value"
-# )
-# suppressWarnings(s2_l2a_downloaded <- s2_download(
-#   s2_l2a_list,
-#   outdir = safe_dir,
-#   apihub = tests_apihub_path,
-#   overwrite = FALSE
-# ))
+# Ensure required SAFE to be downloaded
+s2_l2a_list <- c(
+  "S2B_MSIL2A_20200801T100559_N0214_R022_T32TNR_20200801T135302.SAFE" =
+    "https://scihub.copernicus.eu/apihub/odata/v1/Products('e502d496-631f-4557-b14f-d98195fdc8c1')/$value",
+  "S2B_MSIL2A_20200801T100559_N0214_R022_T32TNS_20200801T135302.SAFE" =
+    "https://scihub.copernicus.eu/apihub/odata/v1/Products('4aac5270-bbdf-4743-9f9f-532fdbfea2fd')/$value"
+)
+suppressWarnings(s2_l2a_downloaded <- s2_download(
+  s2_l2a_list,
+  outdir = safe_dir,
+  apihub = tests_apihub_path,
+  overwrite = FALSE
+))
 
 
 testthat::test_that(
   "Tests on merge all found tiles in offline mode", {
 
-    # # Check sample inputs
-    # expect_true(file.exists(file.path(
-    #   safe_dir, names(s2_l2a_list[1]), 
-    #   "GRANULE/L2A_T32TNR_A017780_20200801T101400/IMG_DATA/R10m",
-    #   "T32TNR_20200801T100559_B08_10m.jp2"
-    # )))
-    # expect_true(file.exists(file.path(
-    #   safe_dir, names(s2_l2a_list[2]), 
-    #   "GRANULE/L2A_T32TNS_A017780_20200801T101400/IMG_DATA/R10m",
-    #   "T32TNS_20200801T100559_B08_10m.jp2"
-    # )))
+    # Check sample inputs
+    testthat::skip_if_not(file.exists(file.path(
+      safe_dir, names(s2_l2a_list[1]),
+      "GRANULE/L2A_T32TNR_A017780_20200801T101400/IMG_DATA/R10m",
+      "T32TNR_20200801T100559_B08_10m.jp2"
+    )))
+    testthat::skip_if_not(file.exists(file.path(
+      safe_dir, names(s2_l2a_list[2]),
+      "GRANULE/L2A_T32TNS_A017780_20200801T101400/IMG_DATA/R10m",
+      "T32TNS_20200801T100559_B08_10m.jp2"
+    )))
     
     outdir_1 <- tempfile(pattern = "out_test1_")
     dir.create(dirname(outdir_1), showWarnings = FALSE)
@@ -40,7 +40,7 @@ testthat::test_that(
     unlink(exp_outpath_1)
     out1 <- sen2r(
       gui = FALSE,
-      online = TRUE, # FIXME restore FALSE
+      online = FALSE,
       step_atmcorr = "l2a", # to avoid checks on Sen2Cor
       extent = NA,
       timewindow = as.Date("2020-08-01"),
@@ -97,6 +97,9 @@ testthat::test_that(
 
 testthat::test_that(
   "Expect error with no extent and tiles specified in online mode", {
+    
+    testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+    testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
     
     outdir_1c <- tempfile(pattern = "out_test1c_")
     dir.create(dirname(outdir_1c), showWarnings = FALSE)

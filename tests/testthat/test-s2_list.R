@@ -59,6 +59,9 @@ testthat::test_that(
   }
 )
 
+testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
+
 testthat::test_that(
   "Tests on s2_list - Single tile, no orbits, nopos, check availability, apihub service", {
     s2_list_test <- s2_list(
@@ -87,6 +90,9 @@ testthat::test_that(
     testthat::expect_true(all(s2_sf_test$online %in% c(TRUE, FALSE)))
   }
 )
+
+testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
 
 testthat::test_that(
   "Tests on s2_list - Multiple tiles, multiple orbits, pos, check availability, dhus service", {
@@ -126,6 +132,9 @@ testthat::test_that(
   }
 )
 
+testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
+
 testthat::test_that(
   "Tests on s2_list - single orbit, point pos, no tile, only available online", {
     pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
@@ -139,6 +148,9 @@ testthat::test_that(
     testthat::expect_lte(length(s2_list_test), 3)
   }
 )
+
+testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
 
 testthat::test_that(
   "Tests on s2_list - Single tile, single orbit, pos, tile, only from LTA", {
@@ -155,6 +167,9 @@ testthat::test_that(
   }
 )
 
+testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
+
 testthat::test_that(
   "Tests on s2_list - Cloudiness", {
     pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
@@ -170,6 +185,9 @@ testthat::test_that(
   }
 )
 
+testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
+
 testthat::test_that(
   "Tests on s2_list - Single tile, multi orbit", {
     pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
@@ -183,6 +201,9 @@ testthat::test_that(
     testthat::expect_equal(length(s2_list_test), 6)
   }
 )
+
+testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
 
 testthat::test_that(
   "Tests on s2_list - multipoint", {
@@ -214,6 +235,9 @@ testthat::test_that(
   }
 )
 
+testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
+
 testthat::test_that(
   "Tests on s2_list - polygon, multiple tiles, multiple orbits", {
     pos <- sf::st_as_sfc(sf::st_bbox(
@@ -230,6 +254,9 @@ testthat::test_that(
   }
 )
 
+testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
+
 testthat::test_that(
   "Tests on s2_list - point, single tile, large time window", {
     pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
@@ -242,6 +269,9 @@ testthat::test_that(
     testthat::expect_equal(length(s2_list_test), 182)
   }
 )
+
+testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
 
 testthat::test_that(
   "Tests on s2_list - Single tile, multi orbit - no images", {
@@ -265,6 +295,9 @@ testthat::test_that(
   }
 )
 
+testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
+
 testthat::test_that(
   "Tests on s2_list - Single tile, multi orbit - seasonal", {
     pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
@@ -280,6 +313,9 @@ testthat::test_that(
   }
 )
 
+testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
+
 testthat::test_that(
   "Tests on s2_list - seasonal - single year", {
     pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
@@ -294,6 +330,9 @@ testthat::test_that(
     testthat::expect_equal(length(s2_list_test), 6)
   }
 )
+
+testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
 
 testthat::test_that(
   "Tests on s2_list - seasonal - single year", {
@@ -310,6 +349,9 @@ testthat::test_that(
     testthat::expect_equal(length(s2_list_test), 6)
   }
 )
+
+testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
 
 testthat::test_that(
   "Tests on s2_list - process level", {
@@ -349,6 +391,9 @@ testthat::test_that(
     testthat::expect_equal(unique(safe_metadata$level), "1C")
   }
 )
+
+testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
 
 testthat::test_that(
   "Parameter errors", {

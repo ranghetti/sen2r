@@ -1,11 +1,12 @@
 message("\n---- Test compute RGB images - main function ----")
 testthat::skip_on_cran()
-# testthat::skip_on_ci()
-testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
-testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
+# testthat::skip_on_ci() # FIXME restore
 
 testthat::test_that(
   "Tests on indices computation, on unrequired BOA, with clip ", {
+    
+    testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+    testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
     
     outdir_16 <- tempfile(pattern = "out_test16_")
     dir.create(dirname(outdir_16), showWarnings = FALSE)

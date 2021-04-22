@@ -322,7 +322,7 @@
 #' @importFrom jsonlite fromJSON toJSON
 #' @importFrom foreach foreach "%do%" "%dopar%"
 #' @importFrom sf st_as_sfc st_cast st_centroid st_combine st_coordinates
-#'  st_crs st_intersects st_is_valid st_read st_transform st_union
+#'  st_crs st_intersects st_is_valid st_read st_transform st_union st_make_valid
 #' @importFrom methods formalArgs is
 #' @importFrom stats na.omit setNames
 #' @export
@@ -1351,7 +1351,7 @@ sen2r <- function(param_list = NULL,
   # (products will be filtered later: #filter2)
   if (!any(length(nn(pm$s2tiles_selected))==0, all(is.na(pm$s2tiles_selected)))) {
     s2_dt <- s2_dt[id_tile %in% c(as.character(pm$s2tiles_selected),NA),]
-  } else if (all(is.na(pm$extent)) || all(st_is_valid(pm$extent))) {
+  } else if (all(is.na(pm$extent)) && all(st_is_valid(pm$extent))) {
     # if no tiles were specified, select only tiles which overlap the extent
     # (this to prevent to use unuseful SAFE in offline mode)
     s2tiles_sel_id <- tiles_intersects(pm$extent)
@@ -1362,8 +1362,12 @@ sen2r <- function(param_list = NULL,
   }
   # if extent and footprint are defined, filter SAFEs on footprints
   if (all(!is(pm$extent, "logical"), !anyNA(pm$extent), !is.na(s2_dt$footprint))) {
+    extent_dissolved <- st_union(pm$extent)
+    if (!st_is_valid(extent_dissolved)) {
+      extent_dissolved <- st_make_valid(extent_dissolved)
+    }
     s2_dt <- s2_dt[suppressMessages(st_intersects(
-      st_union(pm$extent), 
+      extent_dissolved, 
       st_transform(st_as_sfc(s2_dt$footprint, crs = 4326), st_crs2(pm$extent))
     ))[[1]],]
   }
@@ -1526,6 +1530,9 @@ sen2r <- function(param_list = NULL,
       st_combine(
         suppressWarnings(st_cast(st_cast(pm$extent,"POLYGON"), "LINESTRING"))
       )
+    }
+    if (!st_is_valid(s2_mask_extent)) {
+      s2_mask_extent <- st_make_valid(s2_mask_extent)
     }
     
     # Check if processing is needed
