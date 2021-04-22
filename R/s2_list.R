@@ -62,7 +62,7 @@
 #' @importFrom methods is
 #' @importFrom sf st_as_sfc st_sfc st_point st_as_text st_bbox st_coordinates
 #'  st_geometry st_intersection st_geometry st_convex_hull st_transform st_cast
-#'  st_union st_simplify st_centroid st_is_valid st_make_valid
+#'  st_union st_centroid st_is_valid st_make_valid
 #' @importFrom httr RETRY authenticate content
 #' @importFrom XML htmlTreeParse saveXML xmlRoot
 #' @importFrom utils head read.table
@@ -387,9 +387,17 @@ s2_list <- function(spatial_extent = NULL,
   
   # # If spatial_extent is not point, simplify polygon if needed / convert to bbox
   spatial_extent_or <- spatial_extent
-  if (!inherits(spatial_extent, "sfc_POINT")) {
-    # spatial_extent <- st_as_sfc(sf::st_bbox(spatial_extent_or))
-    spatial_extent <- sf::st_convex_hull(spatial_extent)
+  if (length(st_cast(spatial_extent, "POINT")) >= 50) {
+    spatial_extent <- st_convex_hull(spatial_extent_or)
+  }
+  if (length(st_cast(spatial_extent, "POINT")) >= 50) {
+    spatial_extent <- st_as_sfc(sf::st_bbox(spatial_extent_or))
+    print_message(
+      type = "warning",
+      "Input extent contains too many nodes, so its bounding box was used ",
+      "(a larger number of Sentinel-2 tiles could have been used); ",
+      "consider simplifying the extent manually."
+    )
   }
   
   # Prepare footprint
