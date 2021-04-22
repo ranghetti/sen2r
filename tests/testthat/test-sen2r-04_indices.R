@@ -1,6 +1,6 @@
 message("\n---- Test compute spectral indices - main function ----")
 testthat::skip_on_cran()
-# testthat::skip_on_ci() # FIXME restore
+testthat::skip_on_ci() # TODO try to remove
 
 testthat::test_that(
   "Tests on indices computation, on unrequired BOA, with clip ", {

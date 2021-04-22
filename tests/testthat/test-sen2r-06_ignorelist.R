@@ -1,6 +1,6 @@
 message("\n---- Test ignorelist ----")
 testthat::skip_on_cran()
-# testthat::skip_on_ci() # FIXME restore
+testthat::skip_on_ci() # TODO try to remove
 
 # Ensure required SAFE to be downloaded
 s2_l2a_list <- c(
