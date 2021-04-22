@@ -841,7 +841,7 @@ sen2r <- function(param_list = NULL,
   pm <- check_param_list(pm, type = "error", check_paths = TRUE, correct = TRUE)
   
   # if ONLINE check internet connection and scihub credentials
-  if (pm$online) {
+  if (pm$online == TRUE) {
     if (!check_scihub_connection()) {
       print_message(
         type = "error",
@@ -1216,7 +1216,7 @@ sen2r <- function(param_list = NULL,
     print_message(
       type = "message",
       date = TRUE,
-      if (pm$online==FALSE) {
+      if (pm$online == FALSE) {
         "No SAFE products which match the settings were found locally."
       } else {
         "No SAFE products matching the settings were found."
@@ -1334,12 +1334,16 @@ sen2r <- function(param_list = NULL,
   
   # add check so that in offline mode if extent or tiles are not specified
   # all tiles are used
-  if (!pm$online && identical(pm$extent, NA) && identical(pm$s2tiles_selected, NA)) {
+  if (
+    pm$online == FALSE && 
+    identical(pm$extent, NA) && 
+    identical(pm$s2tiles_selected, NA)
+  ) {
     pm$s2tiles_selected <- unique(s2_dt$id_tile)
   }
   
   # add check so that in offline mode if specified date is not available, we fail gracefully
-  if (!pm$online && nrow(s2_dt) == 0) {
+  if (pm$online == FALSE && nrow(s2_dt) == 0) {
     print_message(
       type = "error",
       "There are no images on your machine acquired ",
