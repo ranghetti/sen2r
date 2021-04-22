@@ -1363,7 +1363,7 @@ sen2r <- function(param_list = NULL,
   # if extent and footprint are defined, filter SAFEs on footprints
   if (all(!is(pm$extent, "logical"), !anyNA(pm$extent), !is.na(s2_dt$footprint))) {
     extent_dissolved <- st_union(pm$extent)
-    if (!st_is_valid(extent_dissolved)) {
+    if (any(!st_is_valid(extent_dissolved))) {
       extent_dissolved <- st_make_valid(extent_dissolved)
     }
     s2_dt <- s2_dt[suppressMessages(st_intersects(
@@ -1531,7 +1531,7 @@ sen2r <- function(param_list = NULL,
         suppressWarnings(st_cast(st_cast(pm$extent,"POLYGON"), "LINESTRING"))
       )
     }
-    if (!st_is_valid(s2_mask_extent)) {
+    if (inherits(s2_mask_extent, c("sf", "sfc")) && any(!st_is_valid(s2_mask_extent))) {
       s2_mask_extent <- st_make_valid(s2_mask_extent)
     }
     
