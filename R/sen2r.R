@@ -322,8 +322,8 @@
 #' @importFrom jsonlite fromJSON toJSON
 #' @importFrom foreach foreach "%do%" "%dopar%"
 #' @importFrom sf st_as_sfc st_cast st_centroid st_combine st_coordinates
-#'  st_crs st_intersects st_is_valid st_read st_transform st_union st_make_valid
-#' @importFrom methods formalArgs is
+#'  st_intersects st_is_valid st_make_valid st_polygon st_sfc st_transform st_union
+#' @importFrom methods formalArgs is as
 #' @importFrom stats na.omit setNames
 #' @export
 #' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
@@ -1334,7 +1334,7 @@ sen2r <- function(param_list = NULL,
   
   # add check so that in offline mode if extent or tiles are not specified
   # all tiles are used
-  if (!pm$online && is.na(pm$extent) && is.na(pm$s2tiles_selected)) {
+  if (!pm$online && identical(pm$extent, NA) && identical(pm$s2tiles_selected, NA)) {
     pm$s2tiles_selected <- unique(s2_dt$id_tile)
   }
   
