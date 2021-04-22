@@ -24,7 +24,7 @@ jobs:
           - {os: ubuntu-20.04,   r: 'oldrel',  sf: 'cran',    scihub_user: 'sen2r_travis_oldrel',  rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           - {os: ubuntu-20.04,   r: 'devel',   sf: 'cran',    scihub_user: 'sen2r_travis_devel',   rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           - {os: windows-latest, r: 'release', sf: 'cran',    scihub_user: 'sen2r_ci_windows'}
-          - {os: ubuntu-20.04,   r: 'release', sf: 'develop', scihub_user: 'sen2r_ci_mac',         rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: ubuntu-20.04,   r: 'release', sf: 'develop', scihub_user: 'sen2r_ci_macos',       rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           - {os: ubuntu-20.04,   r: 'devel',   sf: 'develop', scihub_user: 'sen2r_travis_release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
 
     env:
