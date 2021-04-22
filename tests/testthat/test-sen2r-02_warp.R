@@ -154,7 +154,7 @@ testthat::test_that(
     testthat::expect_warning(
       sen2r(
         gui = FALSE,
-        online = FALSE,
+        online = FALSE
         step_atmcorr = "l2a", # to avoid checks on Sen2Cor
         extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
         extent_name = "Scalve",
