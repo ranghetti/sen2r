@@ -3,7 +3,6 @@
 on:
   push:
     branches:
-      - feature/githubactions # FIXME temporary, remove
       - devel
   pull_request:
     branches:
