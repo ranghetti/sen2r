@@ -257,8 +257,8 @@ testthat::test_that(
     testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
     testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
     
-    testthat::expect_true(dir.exists(outdir_3))
-    testthat::expect_true(file.exists(exp_outpath_3))
+    testthat::skip_if_not(dir.exists(outdir_3))
+    testthat::skip_if_not(file.exists(exp_outpath_3))
     dir.create(dirname(outdir_4), showWarnings = FALSE)
     sen2r(
       gui = FALSE,
