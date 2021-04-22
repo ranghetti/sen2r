@@ -21,15 +21,18 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: ubuntu-20.04, r: 'oldrel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          - {os: ubuntu-20.04, r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          - {os: windows-latest, r: 'release'}
+          - {os: ubuntu-20.04,   r: 'oldrel',  sf: 'cran',    scihub_user: 'sen2r_travis_oldrel',  rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: ubuntu-20.04,   r: 'devel',   sf: 'cran',    scihub_user: 'sen2r_travis_devel',   rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: windows-latest, r: 'release', sf: 'cran',    scihub_user: 'sen2r_ci_windows'}
+          - {os: ubuntu-20.04,   r: 'release', sf: 'develop', scihub_user: 'sen2r_ci_mac',         rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: ubuntu-20.04,   r: 'devel',   sf: 'develop', scihub_user: 'sen2r_travis_release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       RSPM: ${{ matrix.config.rspm }}
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      CI_PASSWORD: ${{ secrets.CI_PASSWORD }}
+      SCIHUB_USER: ${{ matrix.config.scihub_user }}
+      SCIHUB_PASSWORD: ${{ secrets.CI_PASSWORD }}
       OS_NAME_STRING: ${{ matrix.config.os }}
       R_VERSION_STRING: ${{ matrix.config.r }}
 
@@ -81,6 +84,12 @@ jobs:
             libv8-dev \
             libssl-dev \
             libcairo2-dev
+
+      - name: "Install develop {sf}"
+        if: matrix.config.sf == 'develop'
+        run: |
+          remotes::install_github("r-spatial/sf", ref = "sf_1_0")
+        shell: Rscript {0}
 
       - name: "Install dependencies"
         run: |
