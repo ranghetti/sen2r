@@ -15,6 +15,7 @@ gdal_warp(
   t_srs = NULL,
   r = NULL,
   dstnodata = NULL,
+  tap = FALSE,
   overwrite = FALSE,
   tmpdir = NA,
   rmtmp = TRUE
@@ -67,6 +68,10 @@ specify different nodata values for each input file.
 If this argument is not used then nodata values will be copied from
 the source datasets. At the moment it is not possible to set different
 values for different \code{srcfiles} (use multiple calls of the functions).}
+
+\item{tap}{Logical (target aligned pixels) align the coordinates of the
+extent of the output file to the values of the \code{tr}, such that the aligned
+extent includes the minimum extent. Default is FALSE.}
 
 \item{overwrite}{Logical value: should existing output files be
 overwritten? (default: FALSE)}
@@ -191,7 +196,7 @@ par(oldpar)
 L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. \emph{Computers & Geosciences}, 139, 104473.
-\doi{10.1016/j.cageo.2020.104473}, URL: \url{http://sen2r.ranghetti.info/}.
+\doi{10.1016/j.cageo.2020.104473}, URL: \url{https://sen2r.ranghetti.info/}.
 }
 \author{
 Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}

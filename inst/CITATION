@@ -13,11 +13,11 @@ citEntry(
   volume       = "139",
   pages        = "104473",
   doi          = "10.1016/j.cageo.2020.104473",
-  url          = "http://sen2r.ranghetti.info",
+  url          = "https://sen2r.ranghetti.info",
   textVersion  = paste(
     "L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).",
     "sen2r: An R toolbox for automatically downloading and preprocessing Sentinel-2 satellite data.",
     "Computers & Geosciences, 139, 104473.",
-    "doi: 10.1016/j.cageo.2020.104473, URL: http://sen2r.ranghetti.info/."
+    "doi: 10.1016/j.cageo.2020.104473, URL: https://sen2r.ranghetti.info/."
   )
 )

@@ -157,7 +157,7 @@
 
     <div id="version-142" class="section level1">
 <h1 class="page-header" data-toc-text="1.4.2">
-<a href="#version-142" class="anchor"></a>Version 1.4.2<small> Unreleased </small>
+<a href="#version-142" class="anchor"></a>Version 1.4.2<small> 2021-03-04 </small>
 </h1>
 <div id="bug-fixes" class="section level2">
 <h2 class="hasAnchor">
@@ -201,7 +201,7 @@
 <a href="#major-changes" class="anchor"></a>Major changes</h2>
 <ul>
 <li>
-<code><a href="../reference/gdal_warp.html">gdal_warp()</a></code> was partially rewritten: now reshaped rasters conserve square pixels also after warping operations. <em>This change also affects <code><a href="../reference/sen2r.html">sen2r()</a></code> products if reshaping features (reprojection or custom resolution) are required.</em> This update was necessary due to changes performed in GDAL since version 3.2.0 (see <a href="https://github.com/OSGeo/gdal/issues/3294">OSGeo/gdal♯3294</a>), which did not grant homogeneity between outputs produced with different GDAL versions. Note that, in case the user wants to update an existing sen2r archive produced with <a href="http://sen2r.ranghetti.info">sen2r</a> &lt; 1.4.0, the old existing grid is maintained so that product grids are equal (in order to produce outputs with the new grid, users must create a new archive).</li>
+<code><a href="../reference/gdal_warp.html">gdal_warp()</a></code> was partially rewritten: now reshaped rasters conserve square pixels also after warping operations. <em>This change also affects <code><a href="../reference/sen2r.html">sen2r()</a></code> products if reshaping features (reprojection or custom resolution) are required.</em> This update was necessary due to changes performed in GDAL since version 3.2.0 (see <a href="https://github.com/OSGeo/gdal/issues/3294">OSGeo/gdal♯3294</a>), which did not grant homogeneity between outputs produced with different GDAL versions. Note that, in case the user wants to update an existing sen2r archive produced with <a href="https://sen2r.ranghetti.info">sen2r</a> &lt; 1.4.0, the old existing grid is maintained so that product grids are equal (in order to produce outputs with the new grid, users must create a new archive).</li>
 <li>Manage images split in two SAFE products, to avoid producing black areas in these [uncommon] cases (see <a href='https://github.com/ranghetti/sen2r/issues/353'>#353</a> for an explanation). As effects:
 <ol>
 <li>now pixels outside footprints (including nodata outside orbits coverage) are always set to nodata;</li>
@@ -631,7 +631,7 @@
 <li>
 <code><a href="../reference/install_sen2cor.html">link_sen2cor()</a></code> can be used to link an existing Sen2Cor installation to sen2r;</li>
 <li>
-<code>as()</code> methods can be used to convert <code>safelist</code> from/to <code>character</code>, <code>data.frame</code> and <code>data.table</code> (as well as <code>as.character()',</code>as.data.frame()<code>and</code>as.data.table()` functions).</li>
+<code><a href="https://r-spatial.github.io/sf/reference/coerce-methods.html">as()</a></code> methods can be used to convert <code>safelist</code> from/to <code>character</code>, <code>data.frame</code> and <code>data.table</code> (as well as <code>as.character()',</code>as.data.frame()<code>and</code>as.data.table()` functions).</li>
 </ul>
 </div>
 <div id="changes-in-default-values-2" class="section level2">
@@ -816,7 +816,7 @@
 <li>
 <code>httr</code>: a change in Wget available version for Windows (1.20.3 instead than 1.19.4) caused the old link to break; moreover, downloading Wget using the new link was not possible with <code><a href="https://rdrr.io/r/utils/download.file.html">download.file()</a></code> due to a redirect. So, httr dependency was introduced, and download of Wget, aria2 and sen2cor is now performed with GET function.</li>
 <li>
-<code>dplyr</code>: the internal function <code><a href="../reference/tiles_intersects.html">tiles_intersects()</a></code> now perform dissolve operations over polygons of S2 tiles using <code>dplyr</code> commands (<code>group_by()</code> and <code>summarise()</code>).</li>
+<code>dplyr</code>: the internal function <code><a href="../reference/tiles_intersects.html">tiles_intersects()</a></code> now perform dissolve operations over polygons of S2 tiles using <code>dplyr</code> commands (<code>group_by()</code> and <code><a href="https://r-spatial.github.io/sf/reference/tidyverse.html">summarise()</a></code>).</li>
 </ul>
 </div>
 <div id="minor-improvements" class="section level2">
@@ -898,7 +898,7 @@
 <h3 class="hasAnchor">
 <a href="#update-dependencies" class="anchor"></a>Update dependencies</h3>
 <ul>
-<li>after <a href="https://www.r-bloggers.com/2019/02/a-major-upgrade-of-the-v8-package/">V8 major update</a>, <a href="http://sen2r.ranghetti.info/articles/installation.html">Installation page</a> was edited to refer to <code>v8</code> instead than to <code>v8-3.14</code>
+<li>after <a href="https://www.r-bloggers.com/2019/02/a-major-upgrade-of-the-v8-package/">V8 major update</a>, <a href="https://sen2r.ranghetti.info/articles/installation.html">Installation page</a> was edited to refer to <code>v8</code> instead than to <code>v8-3.14</code>
 </li>
 </ul>
 </div>

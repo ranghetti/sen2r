@@ -61,7 +61,8 @@
 #'      with the function `read_gipp(c("DEM_Directory", "DEM_Reference"))`).
 #'      In case one or both these parameters were set to `"NONE"`, 
 #'      a subdirectory `"srtm90"` of the default sen2r directory is used as
-#'      DEM directory, and/or the [CGIAR SRTM 90m](https://srtm.csi.cgiar.org/) 
+#'      DEM directory, and/or the 
+#'      [CGIAR SRTM 90m](https://cgiarcsi.community/category/data/) 
 #'      is set as online source.
 #'      To set another directory or reference, use argument `gipp` in the form
 #'      `gipp = list(DEM_Directory = tempdir(), DEM_Reference ="another_reference", ...)`
@@ -103,7 +104,7 @@
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
 #'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 
-#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{http://sen2r.ranghetti.info/}.
+#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{https://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @importFrom jsonlite fromJSON
 #' @importFrom doParallel registerDoParallel

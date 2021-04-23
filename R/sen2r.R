@@ -322,8 +322,8 @@
 #' @importFrom jsonlite fromJSON toJSON
 #' @importFrom foreach foreach "%do%" "%dopar%"
 #' @importFrom sf st_as_sfc st_cast st_centroid st_combine st_coordinates
-#'  st_crs st_intersects st_is_valid st_read st_transform st_union
-#' @importFrom methods formalArgs is
+#'  st_intersects st_is_valid st_make_valid st_polygon st_sfc st_transform st_union
+#' @importFrom methods formalArgs is as
 #' @importFrom stats na.omit setNames
 #' @export
 #' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
@@ -331,7 +331,7 @@
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
 #'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 
-#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{http://sen2r.ranghetti.info/}.
+#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{https://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @examples
 #' \donttest{
@@ -841,7 +841,7 @@ sen2r <- function(param_list = NULL,
   pm <- check_param_list(pm, type = "error", check_paths = TRUE, correct = TRUE)
   
   # if ONLINE check internet connection and scihub credentials
-  if (pm$online) {
+  if (pm$online == TRUE) {
     if (!check_scihub_connection()) {
       print_message(
         type = "error",
@@ -1216,7 +1216,7 @@ sen2r <- function(param_list = NULL,
     print_message(
       type = "message",
       date = TRUE,
-      if (pm$online==FALSE) {
+      if (pm$online == FALSE) {
         "No SAFE products which match the settings were found locally."
       } else {
         "No SAFE products matching the settings were found."
@@ -1334,12 +1334,16 @@ sen2r <- function(param_list = NULL,
   
   # add check so that in offline mode if extent or tiles are not specified
   # all tiles are used
-  if (!pm$online && is.na(pm$extent) && is.na(pm$s2tiles_selected)) {
+  if (
+    pm$online == FALSE && 
+    identical(pm$extent, NA) && 
+    identical(pm$s2tiles_selected, NA)
+  ) {
     pm$s2tiles_selected <- unique(s2_dt$id_tile)
   }
   
   # add check so that in offline mode if specified date is not available, we fail gracefully
-  if (!pm$online && nrow(s2_dt) == 0) {
+  if (pm$online == FALSE && nrow(s2_dt) == 0) {
     print_message(
       type = "error",
       "There are no images on your machine acquired ",
@@ -1351,7 +1355,7 @@ sen2r <- function(param_list = NULL,
   # (products will be filtered later: #filter2)
   if (!any(length(nn(pm$s2tiles_selected))==0, all(is.na(pm$s2tiles_selected)))) {
     s2_dt <- s2_dt[id_tile %in% c(as.character(pm$s2tiles_selected),NA),]
-  } else if (all(is.na(pm$extent)) || all(st_is_valid(pm$extent))) {
+  } else if (all(is.na(pm$extent)) && all(st_is_valid(pm$extent))) {
     # if no tiles were specified, select only tiles which overlap the extent
     # (this to prevent to use unuseful SAFE in offline mode)
     s2tiles_sel_id <- tiles_intersects(pm$extent)
@@ -1362,8 +1366,12 @@ sen2r <- function(param_list = NULL,
   }
   # if extent and footprint are defined, filter SAFEs on footprints
   if (all(!is(pm$extent, "logical"), !anyNA(pm$extent), !is.na(s2_dt$footprint))) {
+    extent_dissolved <- st_union(pm$extent)
+    if (any(!st_is_valid(extent_dissolved))) {
+      extent_dissolved <- st_make_valid(extent_dissolved)
+    }
     s2_dt <- s2_dt[suppressMessages(st_intersects(
-      st_union(pm$extent), 
+      extent_dissolved, 
       st_transform(st_as_sfc(s2_dt$footprint, crs = 4326), st_crs2(pm$extent))
     ))[[1]],]
   }
@@ -1503,12 +1511,18 @@ sen2r <- function(param_list = NULL,
     # export needed variables
     out_ext <- attr(s2names, "out_ext")
     out_format <- attr(s2names, "out_format")
-    out_proj <- if (!is.na(pm$proj)) {pm$proj} else {
-      s2_dt_tiles <- tile_utmzone(s2_dt$id_tile)
+    s2_tiles <- names(sort(table(tile_utmzone(s2_dt$id_tile)), decreasing = TRUE))
+    out_proj <- if (!is.na(pm$proj)) {st_crs2(pm$proj)} else {
       # select the more represented UTM zone
-      s2_sel_tile <- names(sort(table(s2_dt_tiles), decreasing = TRUE)[1])
-      if (is.null(s2_sel_tile)) {NA} else {st_crs2(s2_sel_tile)}
+      if (is.null(s2_tiles)) {NA} else {st_crs2(s2_tiles[1])}
     }
+    # align grid in case of different input CRSs, or of output UTM CRS
+    gdal_tap <- any(
+      length(s2_tiles) > 2,
+      !is.null(out_proj$epsg) && !is.na(out_proj$epsg) && 
+        out_proj$epsg > 32601 && out_proj$epsg < 32799
+    )
+    
     # create mask
     s2_mask_extent <- if (is(pm$extent, "vector") && is.na(pm$extent)) {
       NULL
@@ -1520,6 +1534,9 @@ sen2r <- function(param_list = NULL,
       st_combine(
         suppressWarnings(st_cast(st_cast(pm$extent,"POLYGON"), "LINESTRING"))
       )
+    }
+    if (inherits(s2_mask_extent, c("sf", "sfc")) && any(!st_is_valid(s2_mask_extent))) {
+      s2_mask_extent <- st_make_valid(s2_mask_extent)
     }
     
     # Check if processing is needed
@@ -2318,7 +2335,7 @@ sen2r <- function(param_list = NULL,
             tiles_l1c_names_out <- foreach(
               sel_prod = sel_s2names$req$tiles$L1C,
               sel_out = lapply(
-                seq_along(sel_s2names$exp$tiles[[1]]), 
+                seq_len(max(sapply(sel_s2names$exp$tiles, length))),
                 function(i) {sapply(sel_s2names$exp$tiles, function(p) {p[i]})}
               ),
               .combine = c
@@ -2351,7 +2368,7 @@ sen2r <- function(param_list = NULL,
           tiles_l2a_names_out <- foreach(
             sel_prod = sel_s2names$req$tiles$L2A,
             sel_out = lapply(
-              seq_along(sel_s2names$exp$tiles[[1]]), 
+              seq_len(max(sapply(sel_s2names$exp$tiles, length))), 
               function(i) {sapply(sel_s2names$exp$tiles, function(p) {p[i]})}
             ),
             .combine = c
@@ -2408,6 +2425,7 @@ sen2r <- function(param_list = NULL,
             format = out_format["merged"],
             compress = pm$compression,
             bigtiff = bigtiff,
+            out_crs = out_proj,
             parallel = if (out_format["merged"]=="VRT") {FALSE} else {parallel_steps},
             overwrite = pm$overwrite,
             .log_message = .log_message, .log_output = .log_output,
@@ -2481,6 +2499,7 @@ sen2r <- function(param_list = NULL,
                     "TILED=YES",
                     if (bigtiff) {"BIGTIFF=YES"}
                   )},
+                  tap = gdal_tap,
                   overwrite = pm$overwrite,
                   tmpdir = file.path(tmpdir_groupA, "gdal_warp"),
                   rmtmp = FALSE
@@ -2530,6 +2549,7 @@ sen2r <- function(param_list = NULL,
                     "TILED=YES",
                     if (bigtiff) {"BIGTIFF=YES"}
                   )},
+                  tap = gdal_tap,
                   overwrite = pm$overwrite,
                   tmpdir = file.path(tmpdir_groupA, "gdal_warp"),
                   rmtmp = FALSE

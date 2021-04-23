@@ -20,11 +20,11 @@ knitr::opts_chunk$set(
 [![CRAN Status](https://www.r-pkg.org/badges/version-ago/sen2r)](https://cran.r-project.org/package=sen2r)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1240384.svg)](https://doi.org/10.5281/zenodo.1240384)
 [![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/last-month/sen2r?color=green)](https://cran.rstudio.com/web/packages/ggplot2/index.html)
-[![Travis-CI Build Status](https://travis-ci.org/ranghetti/sen2r.svg?branch=master)](https://travis-ci.org/ranghetti/sen2r)
+[![R-CMD-check](https://github.com/ranghetti/sen2r/workflows/R-CMD-check/badge.svg)](https://github.com/ranghetti/sen2r/actions)
 [![Coverage Status](http://img.shields.io/codecov/c/github/ranghetti/sen2r/master.svg)](http://codecov.io/github/ranghetti/sen2r?branch=master)
 [![Docker Automated build](https://img.shields.io/docker/automated/ranghetti/sen2r.svg)](https://hub.docker.com/r/ranghetti/sen2r)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](http://sen2r.ranghetti.info/.github/CODE-OF-CONDUCT.html)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](blob/master/.github/CODE-OF-CONDUCT.md)
 
 <img src="man/figures/sen2r_logo_200px.png" width="200" height="113" align="right" />
 
@@ -75,7 +75,7 @@ L.\ Ranghetti, M.\ Boschetti, F.\ Nutini, L.\ Busetto (2020).
 <strong>"sen2r: An R toolbox for automatically downloading and preprocessing Sentinel-2 satellite data"</strong>.
 <em>Computers \& Geosciences</em>, 139, 104473.
 doi: 10.1016/j.cageo.2020.104473,
-URL: http://sen2r.ranghetti.info
+URL: https://sen2r.ranghetti.info
 </a>.
 
 Users which processed Sentinel-2 data and used them for a scientific work
@@ -90,17 +90,17 @@ install.packages("sen2r")
 ```
 
 For detailed instructions about installing the package (including dependencies),
-see the [Installation](http://sen2r.ranghetti.info/articles/installation.html) page.
+see the [Installation](https://sen2r.ranghetti.info/articles/installation.html) page.
 
 A dockerised version of <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> is available [here](https://hub.docker.com/r/ranghetti/sen2r).
-For detailed instructions about using it, see the page ["Run in a Docker container"](http://sen2r.ranghetti.info/articles/docker.html).
+For detailed instructions about using it, see the page ["Run in a Docker container"](https://sen2r.ranghetti.info/articles/docker.html).
 
 
 ## Usage
 
 The simplest way to use
 <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
-is to execute it in interactive mode (see [this vignette](http://sen2r.ranghetti.info/articles/sen2r_gui.html)):
+is to execute it in interactive mode (see [this vignette](https://sen2r.ranghetti.info/articles/sen2r_gui.html)):
 ```{r, eval = FALSE}
 library(sen2r)
 sen2r()
@@ -126,32 +126,32 @@ sen2r()
 </p>
 
 Alternatively,
-[`sen2r()`](http://sen2r.ranghetti.info/reference/sen2r.html)
+[`sen2r()`](https://sen2r.ranghetti.info/reference/sen2r.html)
 can be launched with a list of parameters (created with
-[`s2_gui()`](http://sen2r.ranghetti.info/reference/s2_gui.html))
+[`s2_gui()`](https://sen2r.ranghetti.info/reference/s2_gui.html))
 or passing manually the parameters as arguments of the function
-(see [this vignette](http://sen2r.ranghetti.info/articles/sen2r_cmd.html) for further details).
+(see [this vignette](https://sen2r.ranghetti.info/articles/sen2r_cmd.html) for further details).
 
 Other specific functions can be used to run single steps separately.
 This is a list of the principal processing functions 
 (the complete list can be found in the Reference page):
 
-* [`s2_list()`](http://sen2r.ranghetti.info/reference/s2_list.html)
+* [`s2_list()`](https://sen2r.ranghetti.info/reference/s2_list.html)
     to retrieve the list of available Sentinel-2 products based on input parameters;
-* [`s2_download()`](http://sen2r.ranghetti.info/reference/s2_download.html)
+* [`s2_download()`](https://sen2r.ranghetti.info/reference/s2_download.html)
     to download Sentinel-2 products;
-* [`s2_order()`](http://sen2r.ranghetti.info/reference/s2_order.html)
+* [`s2_order()`](https://sen2r.ranghetti.info/reference/s2_order.html)
     to order products from the Long Term Archive;
-* [`sen2cor()`](http://sen2r.ranghetti.info/reference/sen2cor.html)
+* [`sen2cor()`](https://sen2r.ranghetti.info/reference/sen2cor.html)
     to correct level-1C products using [Sen2Cor](http://step.esa.int/main/snap-supported-plugins/sen2cor/);
-* [`s2_mask()`](http://sen2r.ranghetti.info/reference/s2_mask.html)
+* [`s2_mask()`](https://sen2r.ranghetti.info/reference/s2_mask.html)
     to apply a cloud mask to Sentinel-2 products;
-* [`s2_rgb()`](http://sen2r.ranghetti.info/reference/s2_rgb.html)
+* [`s2_rgb()`](https://sen2r.ranghetti.info/reference/s2_rgb.html)
     to generate RGB images from Sentinel-2 Surface Reflectance multiband raster files;
-* [`s2_calcindices()`](http://sen2r.ranghetti.info/reference/s2_calcindices.html)
+* [`s2_calcindices()`](https://sen2r.ranghetti.info/reference/s2_calcindices.html)
     to compute maps of spectral indices from Sentinel-2 Surface Reflectance multiband raster files.
 
-Output products follow a specific naming convention (see [here](http://sen2r.ranghetti.info/articles/outstructure.html) for details).
+Output products follow a specific naming convention (see [here](https://sen2r.ranghetti.info/articles/outstructure.html) for details).
 
 ## Credits
 
@@ -171,7 +171,7 @@ L.\ Ranghetti, M.\ Boschetti, F.\ Nutini, L.\ Busetto (2020).
 **"sen2r: An R toolbox for automatically downloading and preprocessing Sentinel-2 satellite data"**. 
 *Computers \& Geosciences*, 139, 104473. 
 doi: <a href="https://dx.doi.org/10.1016/j.cageo.2020.104473" target="_blank">10.1016/j.cageo.2020.104473</a>,
-URL: <a href="http://sen2r.ranghetti.info" target="_blank">http://sen2r.ranghetti.info</a>.
+URL: <a href="https://sen2r.ranghetti.info" target="_blank">https://sen2r.ranghetti.info</a>.
 
 ```bibtex
 @Article{sen2r_cageo,
@@ -182,13 +182,13 @@ URL: <a href="http://sen2r.ranghetti.info" target="_blank">http://sen2r.ranghett
   volume  = {139},
   pages   = {104473},
   doi     = {10.1016/j.cageo.2020.104473},
-  url     = {http://sen2r.ranghetti.info/},
+  url     = {https://sen2r.ranghetti.info/},
 }
 ```
 
 ## Contributing
 
-This project is released with a [Contributor Code of Conduct](http://sen2r.ranghetti.info/.github/CODE-OF-CONDUCT.html).
+This project is released with a [Contributor Code of Conduct](blob/master/.github/CODE-OF-CONDUCT.md).
 By participating in this project you agree to abide by its terms.
 
 Users are encouraged to use GitHub issues in case of errors with the package.

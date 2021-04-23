@@ -243,7 +243,7 @@ and not ordered) was saved (if <code>export_prodlist = TRUE</code>).</p></li>
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.104473</a>
-, URL: <a href='http://sen2r.ranghetti.info/'>http://sen2r.ranghetti.info/</a>.</p>
+, URL: <a href='https://sen2r.ranghetti.info/'>https://sen2r.ranghetti.info/</a>.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Luigi Ranghetti, phD (2019) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
@@ -273,32 +273,32 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 
 <span class='co'># Order the products</span>
 <span class='va'>ordered_prods</span> <span class='op'>&lt;-</span> <span class='fu'>s2_order</span><span class='op'>(</span><span class='va'>list_safe</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>[2021-03-04 09:32:47] Check if products are already available for</span>
-#&gt; <span class='message'>       download...</span></div><div class='output co'>#&gt; <span class='message'>[2021-03-04 09:32:48] 6 Sentinel-2 images are already online.</span></div><div class='output co'>#&gt; <span class='message'>[2021-03-04 09:32:48] Ordering 3 Sentinel-2 images stored in the Long</span>
-#&gt; <span class='message'>       Term Archive...</span></div><div class='output co'>#&gt; <span class='message'>[2021-03-04 09:32:52] 3 of 3 Sentinel-2 images were correctly ordered.</span>
+</div><div class='output co'>#&gt; <span class='message'>[2021-04-13 10:47:05] Check if products are already available for</span>
+#&gt; <span class='message'>       download...</span></div><div class='output co'>#&gt; <span class='message'>[2021-04-13 10:47:09] Ordering 9 Sentinel-2 images stored in the Long</span>
+#&gt; <span class='message'>       Term Archive...</span></div><div class='output co'>#&gt; <span class='message'>[2021-04-13 10:47:21] 9 of 9 Sentinel-2 images were correctly ordered.</span>
 #&gt; <span class='message'>       You can check at a later time if the ordered products are</span>
 #&gt; <span class='message'>       available online using the command:</span>
-#&gt; <span class='message'>  safe_is_online("/home/lranghetti/.sen2r/lta_orders/lta_20210304_093252.json")</span></div><div class='input'>
+#&gt; <span class='message'>  safe_is_online("/home/lranghetti/.sen2r/lta_orders/lta_20210413_104721.json")</span></div><div class='input'>
 <span class='co'># Check in a second time if the product was made available</span>
 <span class='op'>(</span><span class='va'>order_path</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span><span class='op'>(</span><span class='va'>ordered_prods</span>, <span class='st'>"path"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "/home/lranghetti/.sen2r/lta_orders/lta_20210304_093252.json"</div><div class='input'><span class='fu'><a href='safe_is_online.html'>safe_is_online</a></span><span class='op'>(</span><span class='va'>order_path</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>6 out of 9 products are online.</span></div><div class='output co'>#&gt; S2A_MSIL2A_20191101T133641_N0213_R038_T21FVC_20191101T150755.SAFE 
-#&gt;                                                              TRUE 
-#&gt; S2B_MSIL2A_20191106T133639_N0213_R038_T21FVC_20191106T150814.SAFE 
-#&gt;                                                              TRUE 
-#&gt; S2B_MSIL2A_20191109T134639_N0213_R081_T21FVC_20191109T152703.SAFE 
-#&gt;                                                              TRUE 
-#&gt; S2A_MSIL2A_20191111T133641_N0213_R038_T21FVC_20191111T150452.SAFE 
-#&gt;                                                              TRUE 
-#&gt; S2B_MSIL2A_20191116T133639_N0213_R038_T21FVC_20191116T145355.SAFE 
-#&gt;                                                              TRUE 
-#&gt; S2B_MSIL2A_20191119T134639_N0213_R081_T21FVC_20191119T152133.SAFE 
-#&gt;                                                              TRUE 
-#&gt; S2A_MSIL2A_20191022T133641_N0213_R038_T21FVC_20191023T155120.SAFE 
+</div><div class='output co'>#&gt; [1] "/home/lranghetti/.sen2r/lta_orders/lta_20210413_104721.json"</div><div class='input'><span class='fu'><a href='safe_is_online.html'>safe_is_online</a></span><span class='op'>(</span><span class='va'>order_path</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>0 out of 9 products are online.</span></div><div class='output co'>#&gt; S2A_MSIL2A_20191022T133641_N0213_R038_T21FVC_20191023T155120.SAFE 
 #&gt;                                                             FALSE 
 #&gt; S2B_MSIL2A_20191027T133639_N0213_R038_T21FVC_20191027T150854.SAFE 
 #&gt;                                                             FALSE 
 #&gt; S2B_MSIL2A_20191030T134639_N0213_R081_T21FVC_20191030T152504.SAFE 
+#&gt;                                                             FALSE 
+#&gt; S2A_MSIL2A_20191101T133641_N0213_R038_T21FVC_20191101T150755.SAFE 
+#&gt;                                                             FALSE 
+#&gt; S2B_MSIL2A_20191106T133639_N0213_R038_T21FVC_20191106T150814.SAFE 
+#&gt;                                                             FALSE 
+#&gt; S2B_MSIL2A_20191109T134639_N0213_R081_T21FVC_20191109T152703.SAFE 
+#&gt;                                                             FALSE 
+#&gt; S2A_MSIL2A_20191111T133641_N0213_R038_T21FVC_20191111T150452.SAFE 
+#&gt;                                                             FALSE 
+#&gt; S2B_MSIL2A_20191116T133639_N0213_R038_T21FVC_20191116T145355.SAFE 
+#&gt;                                                             FALSE 
+#&gt; S2B_MSIL2A_20191119T134639_N0213_R081_T21FVC_20191119T152133.SAFE 
 #&gt;                                                             FALSE </div><div class='input'><span class='co'># }</span>
 </div></pre>
   </div>

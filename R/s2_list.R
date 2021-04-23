@@ -56,13 +56,13 @@
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
 #'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 
-#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{http://sen2r.ranghetti.info/}.
+#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{https://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @import data.table
 #' @importFrom methods is
 #' @importFrom sf st_as_sfc st_sfc st_point st_as_text st_bbox st_coordinates
 #'  st_geometry st_intersection st_geometry st_convex_hull st_transform st_cast
-#'  st_union st_simplify st_centroid
+#'  st_union st_centroid st_is_valid st_make_valid
 #' @importFrom httr RETRY authenticate content
 #' @importFrom XML htmlTreeParse saveXML xmlRoot
 #' @importFrom utils head read.table
@@ -229,6 +229,9 @@ s2_list <- function(spatial_extent = NULL,
   }
   
   spatial_extent <- suppressWarnings(sf::st_union(spatial_extent))
+  if (any(!st_is_valid(spatial_extent))) {
+    spatial_extent <- st_make_valid(spatial_extent)
+  }
   
   # checks on dates
   # TODO add checks on format
@@ -305,9 +308,14 @@ s2_list <- function(spatial_extent = NULL,
   if (nrow(out_dt) == 0) {return(as(setNames(character(0), character(0)), "safelist"))}
   # compute date (to ignore duplicated dates)
   out_dt[,date := as.Date(substr(as.character(out_dt$sensing_datetime), 1, 10))]
+  out_names <- copy(names(out_dt))
+  # fix footprint topology errors
+  invalid_entries <- out_dt[,which(!st_is_valid(st_as_sfc(footprint, crs = 4326)))]
+  if (length(invalid_entries) > 0) {
+    out_dt[,footprint := st_as_text(st_make_valid(st_as_sfc(footprint, crs = 4326)))]
+  }
   
   if (nrow(out_dt) == 0) {return(as(setNames(character(0), character(0)), "safelist"))}
-  out_names <- names(out_dt)
   # first, order by level (L2A, then L1C) and ingestion time (newers first)
   out_dt <- out_dt[order(-level,-ingestion_datetime),]
   # second, order by availability (LTA SciHub products are always used as last choice)
@@ -322,7 +330,7 @@ s2_list <- function(spatial_extent = NULL,
   } # for level = "auto", do nothing because unuseful products are filtered below
   # filter (univocity)
   suppressWarnings({
-    out_dt[,centroid:=st_centroid(st_as_sfc(footprint, crs = 4326))]
+    out_dt[,centroid := st_centroid(st_as_sfc(footprint, crs = 4326))]
   })
   out_dt <- out_dt[,head(.SD, 1), by = .(
     date, id_tile, id_orbit, 
@@ -382,9 +390,17 @@ s2_list <- function(spatial_extent = NULL,
   
   # # If spatial_extent is not point, simplify polygon if needed / convert to bbox
   spatial_extent_or <- spatial_extent
-  if (!inherits(spatial_extent, "sfc_POINT")) {
-    # spatial_extent <- st_as_sfc(sf::st_bbox(spatial_extent_or))
-    spatial_extent <- sf::st_convex_hull(spatial_extent)
+  if (length(st_cast(spatial_extent, "POINT")) >= 50) {
+    spatial_extent <- st_convex_hull(spatial_extent_or)
+  }
+  if (length(st_cast(spatial_extent, "POINT")) >= 50) {
+    spatial_extent <- st_as_sfc(sf::st_bbox(spatial_extent_or))
+    print_message(
+      type = "warning",
+      "Input extent contains too many nodes, so its bounding box was used ",
+      "(a larger number of Sentinel-2 tiles could have been used); ",
+      "consider simplifying the extent manually."
+    )
   }
   
   # Prepare footprint

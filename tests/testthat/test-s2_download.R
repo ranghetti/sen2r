@@ -1,6 +1,8 @@
-context("Test s2_download() and safe_getMetadata()")
+message("\n---- Test s2_download() and safe_getMetadata() ----")
 testthat::skip_on_cran()
 # testthat::skip_on_travis()
+testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
 
 # NOTE: these tests require a high amount of time (depending on connection speed),
 # so the download is disabled by default if SAFE archives are already present.
@@ -118,30 +120,15 @@ testthat::test_that(
 )
 
 
-# On Travis and on CRAN the next tests are not run (using aria2);
-# in this case, download L1C required by subsequent tests with builtin
-if (any(
-  identical(Sys.getenv("TRAVIS"), "true"),
-  !identical(Sys.getenv("NOT_CRAN"), "true")
-)) {
-  suppressWarnings(s2_l1c_downloaded <- s2_download(
-    s2_l1c_list,
-    downloader = "builtin",
-    outdir = safe_dir,
-    apihub = tests_apihub_path,
-    overwrite = test_download
-  )) # suppressWarnings used to manage possible warnings for skept Md5sum checks
+if (Sys.info()["sysname"] != "Linux") {
+  testthat::skip_on_ci() # aria2 not installed on Windows and macOS CI
 }
-
-
-testthat::skip_on_cran()
-testthat::skip_on_travis()
 
 testthat::test_that(
   "Tests on s2_download - check aria2 installation", {
     if (Sys.info()["sysname"] == "Windows") {
       aria2_path <- install_aria2(dirname(attr(load_binpaths(), "path")), force = TRUE)
-      testthat::expect_equal(aria2_path, normalize_path("~/.sen2r/aria2c.exe"))
+      # testthat::expect_equal(aria2_path, normalize_path("~/.sen2r/aria2c.exe"))
       testthat::expect_equal(aria2_path, load_binpaths()$aria2)
     } else {
       testthat::expect_warning(
@@ -155,9 +142,6 @@ testthat::test_that(
   }
 )
 
-
-testthat::skip_on_cran()
-testthat::skip_on_travis()
 
 testthat::test_that(
   "Tests on s2_download - aria2 downloader", {

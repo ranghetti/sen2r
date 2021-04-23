@@ -15,7 +15,7 @@
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
 #'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 
-#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{http://sen2r.ranghetti.info/}.
+#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{https://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @examples
 #' \dontrun{
@@ -132,7 +132,7 @@ gipp_init <- function(gipp_sen2r_path = NA, force = FALSE, dem_warning = FALSE) 
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
 #'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 
-#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{http://sen2r.ranghetti.info/}.
+#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{https://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @export
 read_gipp <- function(gipp_names, gipp_path = NA) {
@@ -177,7 +177,8 @@ read_gipp <- function(gipp_names, gipp_path = NA) {
 #' @return [set_gipp()] returns NULL (the function is called for its side effects).
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
+#' if (!is.null(load_binpaths()$sen2cor)) {
 #' # Read default values
 #' read_gipp(c("dem_directory", "dem_reference"))
 #' # Set the use of a topographic correction
@@ -193,6 +194,7 @@ read_gipp <- function(gipp_names, gipp_path = NA) {
 #' # )
 #' # Read again the parameters in the created temporary files
 #' read_gipp(c("DEM_Directory", "DEM_Reference"), gipp_path = gipp_temp)
+#' }
 #' }
 set_gipp <- function(
   gipp = list(), gipp_path = NA, use_dem = NA

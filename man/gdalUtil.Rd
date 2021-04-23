@@ -86,7 +86,9 @@ gdalUtil(
 oldpar <- par(mfrow = c(1,2), mar = rep(0,4))
 image(stars::read_stars(examplename), rgb = c(11,8,4), useRaster = TRUE)
 image(stars::read_stars(outname2), rgb = c(11,8,4), useRaster = TRUE)
+}
 
+\dontrun{
 ## gdal_calc
 outname3 <- tempfile(fileext = ".tif")
 ndvirefname <- system.file(
@@ -108,7 +110,7 @@ image(stars::read_stars(outname3), useRaster = TRUE)
 L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. \emph{Computers & Geosciences}, 139, 104473.
-\doi{10.1016/j.cageo.2020.104473}, URL: \url{http://sen2r.ranghetti.info/}.
+\doi{10.1016/j.cageo.2020.104473}, URL: \url{https://sen2r.ranghetti.info/}.
 }
 \author{
 Luigi Ranghetti, phD (2020) \email{luigi@ranghetti.info}

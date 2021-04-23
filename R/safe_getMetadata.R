@@ -87,7 +87,7 @@
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
 #'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 
-#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{http://sen2r.ranghetti.info/}.
+#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{https://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @export
 #' @import data.table
@@ -867,10 +867,16 @@ safe_isvalid <- function(
             matrix(sel_footprint_raw0, ncol = 2, byrow = TRUE)[,2:1],
             1, paste, collapse = " "
           )
-          metadata[[i]][["footprint"]] <-  paste0(
+          metadata[[i]][["footprint"]] <- paste0(
             "POLYGON((",
             paste(sel_footprint_raw1,  collapse = ", "),"))"
           )
+          if (any(!st_is_valid(st_as_sfc(metadata[[i]][["footprint"]], crs = 4326)))) {
+            metadata[[i]][["footprint"]] <- st_as_text(
+              st_make_valid(st_as_sfc(metadata[[i]][["footprint"]], crs = 4326)), 
+              digits = 9
+            )
+          }
         }
       }
       

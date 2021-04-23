@@ -1,4 +1,4 @@
-context("Test st_crs2")
+message("\n---- Test st_crs2 ----")
 
 testthat::test_that(
   "st_crs2, input EPSG", {

@@ -40,6 +40,9 @@
 #'  If this argument is not used then nodata values will be copied from
 #'  the source datasets. At the moment it is not possible to set different
 #'  values for different `srcfiles` (use multiple calls of the functions).
+#' @param tap Logical (target aligned pixels) align the coordinates of the
+#'  extent of the output file to the values of the `tr`, such that the aligned
+#'  extent includes the minimum extent. Default is FALSE.
 #' @param overwrite Logical value: should existing output files be
 #'  overwritten? (default: FALSE)
 #' @param tmpdir (optional) Path where intermediate files (maskfile)
@@ -59,7 +62,7 @@
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
 #'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 
-#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{http://sen2r.ranghetti.info/}.
+#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{https://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @examples
 #' \donttest{
@@ -167,6 +170,7 @@ gdal_warp <- function(srcfiles,
                       t_srs = NULL,
                       r = NULL,
                       dstnodata = NULL,
+                      tap = FALSE,
                       overwrite = FALSE,
                       tmpdir = NA,
                       rmtmp = TRUE) {
@@ -429,7 +433,7 @@ gdal_warp <- function(srcfiles,
           "-t_srs", sel_t_srs_string,
           if (crop_in_step1) {c("-te", c(sel_te))},
           if (exists("mask_file")) {c("-cutline", mask_file)},
-          if (!is.null(tr)) {c("-tr", as.vector(sel_tr))},
+          if (any(!is.null(tr), tap == TRUE)) {c("-tr", as.vector(sel_tr))},
           if (!is.null(step1_of)) {c("-of",as.vector(step1_of))},
           if (!is.null(step1_co)) {unlist(lapply(step1_co, function(x){c("-co", x)}))},
           "-r", sel_r,
@@ -440,6 +444,7 @@ gdal_warp <- function(srcfiles,
               c("-dstnodata", sel_nodata)
             }
           },
+          if (tap == TRUE) {"-tap"},
           if (overwrite) {"-overwrite"}
         ),
         quiet = TRUE
@@ -463,6 +468,7 @@ gdal_warp <- function(srcfiles,
           destination = dstfile,
           options = c(
             "-te", c(sel_te),
+            if (tap == TRUE) {c("-tr", as.vector(sel_tr))},
             if (!is.null(of)) {c("-of",as.vector(sel_of))},
             if (!is.null(co)) {unlist(lapply(co, function(x){c("-co", x)}))},
             if (!is.null(sel_nodata)) {
@@ -472,6 +478,7 @@ gdal_warp <- function(srcfiles,
                 c("-dstnodata", sel_nodata)
               }
             },
+            if (tap == TRUE) {"-tap"},
             if (overwrite) {"-overwrite"}
           ),
           quiet = TRUE

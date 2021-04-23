@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 [![CRAN Status](https://www.r-pkg.org/badges/version-ago/sen2r)](https://cran.r-project.org/package=sen2r)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1240384.svg)](https://doi.org/10.5281/zenodo.1240384)
 [![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/last-month/sen2r?color=green)](https://cran.rstudio.com/web/packages/ggplot2/index.html)
-[![Travis-CI Build Status](https://travis-ci.org/ranghetti/sen2r.svg?branch=master)](https://travis-ci.org/ranghetti/sen2r)
+[![R-CMD-check](https://github.com/ranghetti/sen2r/workflows/R-CMD-check/badge.svg)](https://github.com/ranghetti/sen2r/actions)
 [![Coverage Status](http://img.shields.io/codecov/c/github/ranghetti/sen2r/master.svg)](http://codecov.io/github/ranghetti/sen2r?branch=master)
 [![Docker Automated build](https://img.shields.io/docker/automated/ranghetti/sen2r.svg)](https://hub.docker.com/r/ranghetti/sen2r)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
@@ -75,7 +75,7 @@ L.\ Ranghetti, M.\ Boschetti, F.\ Nutini, L.\ Busetto (2020).
 <strong>"sen2r: An R toolbox for automatically downloading and preprocessing Sentinel-2 satellite data"</strong>.
 <em>Computers \& Geosciences</em>, 139, 104473.
 doi: 10.1016/j.cageo.2020.104473,
-URL: http://sen2r.ranghetti.info
+URL: https://sen2r.ranghetti.info
 </a>.
 
 Users which processed Sentinel-2 data and used them for a scientific work
@@ -171,7 +171,7 @@ L.\ Ranghetti, M.\ Boschetti, F.\ Nutini, L.\ Busetto (2020).
 **"sen2r: An R toolbox for automatically downloading and preprocessing Sentinel-2 satellite data"**. 
 *Computers \& Geosciences*, 139, 104473. 
 doi: <a href="https://dx.doi.org/10.1016/j.cageo.2020.104473" target="_blank">10.1016/j.cageo.2020.104473</a>,
-URL: <a href="http://sen2r.ranghetti.info" target="_blank">http://sen2r.ranghetti.info</a>.
+URL: <a href="https://sen2r.ranghetti.info" target="_blank">https://sen2r.ranghetti.info</a>.
 
 ```bibtex
 @Article{sen2r_cageo,
@@ -182,7 +182,7 @@ URL: <a href="http://sen2r.ranghetti.info" target="_blank">http://sen2r.ranghett
   volume  = {139},
   pages   = {104473},
   doi     = {10.1016/j.cageo.2020.104473},
-  url     = {http://sen2r.ranghetti.info/},
+  url     = {https://sen2r.ranghetti.info/},
 }
 ```
 

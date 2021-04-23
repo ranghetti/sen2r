@@ -17,12 +17,12 @@
 #' @return the tiles intersecting the extent (see argument `out_format`).
 #' @export
 #' @importFrom sf st_area st_crs st_difference st_geometry 
-#'  st_intersects st_transform st_union
+#'  st_intersects st_is_valid st_make_valid st_transform st_union
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
 #'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 
-#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{http://sen2r.ranghetti.info/}.
+#'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{https://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @examples
 #' ex_extent <- sf::st_read(
@@ -37,6 +37,7 @@
 #' # Tile ID of all the overlapping S2 tiles
 #' tiles_intersects(ex_extent, all = TRUE)
 #' 
+#' \donttest{
 #' # Spatial object with the required tile
 #' sel_tiles <- tiles_intersects(ex_extent, out_format = "sf")
 #' plot(sf::st_geometry(sel_tiles)); plot(sf::st_geometry(ex_extent), add=TRUE, col="yellow")
@@ -44,6 +45,7 @@
 #' # Spatial object with the overlapping S2 tiles
 #' sel_tiles <- tiles_intersects(ex_extent, all = TRUE, out_format = "sf")
 #' plot(sf::st_geometry(sel_tiles)); plot(sf::st_geometry(ex_extent), add=TRUE, col="yellow")
+#' }
 
 tiles_intersects <- function(extent, all = FALSE, out_format = "id", .s2tiles=NULL) {
   
@@ -87,6 +89,10 @@ tiles_intersects <- function(extent, all = FALSE, out_format = "id", .s2tiles=NU
       } else {
         st_geometry(tiles_intersecting_all)
       }
+      if (any(!st_is_valid(sel_tile_notoverlap))) {
+        sel_tile_notoverlap <- st_make_valid(sel_tile_notoverlap)
+      }
+      
       # Check if any portion ot the extent is exclusive of sel_tile
       tiles_intersects[i] <- any(suppressMessages(
         st_intersects(extent, sel_tile_notoverlap, sparse = FALSE)
