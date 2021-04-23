@@ -867,10 +867,16 @@ safe_isvalid <- function(
             matrix(sel_footprint_raw0, ncol = 2, byrow = TRUE)[,2:1],
             1, paste, collapse = " "
           )
-          metadata[[i]][["footprint"]] <-  paste0(
+          metadata[[i]][["footprint"]] <- paste0(
             "POLYGON((",
             paste(sel_footprint_raw1,  collapse = ", "),"))"
           )
+          if (any(!st_is_valid(st_as_sfc(metadata[[i]][["footprint"]], crs = 4326)))) {
+            metadata[[i]][["footprint"]] <- st_as_text(
+              st_make_valid(st_as_sfc(metadata[[i]][["footprint"]], crs = 4326)), 
+              digits = 9
+            )
+          }
         }
       }
       

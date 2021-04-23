@@ -52,7 +52,8 @@ as the path of the default GIPP file, which is
 License: GPL 3.0
 }
 \examples{
-\donttest{
+\dontrun{
+if (!is.null(load_binpaths()$sen2cor)) {
 # Read default values
 read_gipp(c("dem_directory", "dem_reference"))
 # Set the use of a topographic correction
@@ -68,6 +69,7 @@ set_gipp(use_dem = FALSE, gipp_path = gipp_temp <- tempfile())
 # )
 # Read again the parameters in the created temporary files
 read_gipp(c("DEM_Directory", "DEM_Reference"), gipp_path = gipp_temp)
+}
 }
 }
 \references{

@@ -1,6 +1,7 @@
 # Code for manual package coverage
+# move ~/.sen2r to ~/.sen2r~ before!
 Sys.setenv("NOT_CRAN"="true")
-covr::package_coverage(
+sen2r_covr <- covr::package_coverage(
   line_exclusions = c(
     "R/s2_gui.R",
     "R/install_gui_deps.R",
@@ -18,3 +19,4 @@ covr::package_coverage(
     "R/dontuse.R"
   )
 )
+covr::codecov(sen2r_covr)

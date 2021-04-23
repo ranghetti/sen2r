@@ -86,7 +86,9 @@ gdalUtil(
 oldpar <- par(mfrow = c(1,2), mar = rep(0,4))
 image(stars::read_stars(examplename), rgb = c(11,8,4), useRaster = TRUE)
 image(stars::read_stars(outname2), rgb = c(11,8,4), useRaster = TRUE)
+}
 
+\dontrun{
 ## gdal_calc
 outname3 <- tempfile(fileext = ".tif")
 ndvirefname <- system.file(

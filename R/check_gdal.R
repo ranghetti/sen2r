@@ -30,7 +30,7 @@
 #' @importFrom jsonlite toJSON
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' check_gdal()
 #' }
 

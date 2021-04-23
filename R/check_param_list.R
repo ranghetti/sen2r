@@ -19,6 +19,7 @@
 #'  
 #' @importFrom jsonlite fromJSON
 #' @importFrom methods is
+#' @importFrom sf st_is_valid st_make_valid
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
@@ -240,7 +241,7 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   
   # -- extent --
   # convert to sf
-  if (is(pm$extent, "character") | is(pm$extent, "geojson")) {
+  if (inherits(pm$extent, "character") | inherits(pm$extent, "geojson")) {
     tryCatch(
       pm$extent <- st_read(pm$extent, quiet=TRUE),
       error = function(e) {
@@ -250,8 +251,14 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
         )
       }
     )
-  } else if (is(pm$extent, "Spatial")) {
+  } else if (inherits(pm$extent, "Spatial")) {
     pm$extent <- st_as_sf(pm$extent)
+  }
+  # check validity
+  if (inherits(pm$extent, c("sfc", "sf"))) {
+    if (any(!st_is_valid(pm$extent))) {
+      pm$extent <- st_make_valid(pm$extent)
+    }
   }
   
   

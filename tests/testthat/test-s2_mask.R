@@ -1,4 +1,4 @@
-context("Test mask - s2_mask()")
+message("\n---- Test mask - s2_mask() ----")
 
 testthat::test_that(
   "Tests on custom mask on TOA, with save binary mask", {
@@ -80,7 +80,9 @@ testthat::test_that(
 
 
 testthat::skip_on_cran() # because using runtime GDAL
-# testthat::skip_on_travis()
+if (Sys.info()["sysname"] != "Linux") {
+  testthat::skip_on_ci() # runtime GDAL not installed on Windows and macOS CI
+}
 
 testthat::test_that(
   "Tests on custom mask on TOA with smoothing and buffering", {

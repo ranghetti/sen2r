@@ -1,4 +1,4 @@
-context("Test compute RGB images - main s2_rgb()")
+message("\n---- Test compute RGB images - main s2_rgb() ----")
 
 testthat::test_that(
   "Tests on function s2_rgb()", {

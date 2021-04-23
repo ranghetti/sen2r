@@ -89,7 +89,8 @@ set in the default sen2r GIPP XML file (the user can read them
 with the function \code{read_gipp(c("DEM_Directory", "DEM_Reference"))}).
 In case one or both these parameters were set to \code{"NONE"},
 a subdirectory \code{"srtm90"} of the default sen2r directory is used as
-DEM directory, and/or the \href{https://srtm.csi.cgiar.org/}{CGIAR SRTM 90m}
+DEM directory, and/or the
+\href{https://cgiarcsi.community/category/data/}{CGIAR SRTM 90m}
 is set as online source.
 To set another directory or reference, use argument \code{gipp} in the form
 \code{gipp = list(DEM_Directory = tempdir(), DEM_Reference ="another_reference", ...)}

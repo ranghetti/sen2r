@@ -1,4 +1,4 @@
-context("Test compute spectral indices - s2_calcindices()")
+message("\n---- Test compute spectral indices - s2_calcindices() ----")
 
 outdir_12 <- tempfile(pattern = "out_test12_")
 testthat::test_that(
@@ -109,9 +109,11 @@ testthat::test_that(
 )
 
 
-context("Test compute spectral indices - s2_calcindices(), GDAL method")
+message("\n---- Test compute spectral indices - s2_calcindices(), GDAL method ----")
 testthat::skip_on_cran() # because using runtime GDAL
-# testthat::skip_on_travis()
+if (Sys.info()["sysname"] != "Linux") {
+  testthat::skip_on_ci() # runtime GDAL not installed on Windows and macOS CI
+}
 testthat::test_that(
   "Tests on indices computation with function s2_calcindices(), gdal method", {
     

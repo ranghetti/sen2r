@@ -9,9 +9,9 @@
 \usage{
 read_scihub_login(apihub_path = NA)
 
-check_scihub_login(username, password)
+check_scihub_login(username, password, service = "apihub")
 
-check_scihub_connection()
+check_scihub_connection(service = "apihub")
 
 write_scihub_login(
   username,
@@ -28,6 +28,8 @@ If NA (default) it is automatically read from the package default location.}
 \item{username}{SciHub username.}
 
 \item{password}{SciHub password.}
+
+\item{service}{Character: it can be \code{"dhus"} or \code{"apihub"} (default).}
 
 \item{check}{Logical: if TRUE (default), new credentials are checked
 before writing them on \code{apihub_path} (if they are invalid, an error
@@ -55,8 +57,10 @@ Read the SciHub login information (\code{read_scihub_login()}),
 save new username and password (\code{write_scihub_login()})
 or check their validity (\code{check_scihub_login()}).
 Login information is stored in a file \code{apihub.txt} inside the
-".sen2r" subfolder of the home directory. This functions allow to read
-or write this file, and to edit them from inside the GUI.
+".sen2r" subfolder of the home directory. This function allows reading
+or writing this file, and editing it from the GUI.
+In case file \code{apihub.txt} is missing, \code{read_scihub_login()} searches inside
+the environmental variables \code{SCIHUB_USER} and \code{SCIHUB_PASSWORD}.
 }
 \details{
 Notice that new/recently updated SciHub credentials are recognised by API Hub

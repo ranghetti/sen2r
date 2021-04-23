@@ -322,8 +322,8 @@
 #' @importFrom jsonlite fromJSON toJSON
 #' @importFrom foreach foreach "%do%" "%dopar%"
 #' @importFrom sf st_as_sfc st_cast st_centroid st_combine st_coordinates
-#'  st_crs st_intersects st_is_valid st_read st_transform st_union
-#' @importFrom methods formalArgs is
+#'  st_intersects st_is_valid st_make_valid st_polygon st_sfc st_transform st_union
+#' @importFrom methods formalArgs is as
 #' @importFrom stats na.omit setNames
 #' @export
 #' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
@@ -841,7 +841,7 @@ sen2r <- function(param_list = NULL,
   pm <- check_param_list(pm, type = "error", check_paths = TRUE, correct = TRUE)
   
   # if ONLINE check internet connection and scihub credentials
-  if (pm$online) {
+  if (pm$online == TRUE) {
     if (!check_scihub_connection()) {
       print_message(
         type = "error",
@@ -1216,7 +1216,7 @@ sen2r <- function(param_list = NULL,
     print_message(
       type = "message",
       date = TRUE,
-      if (pm$online==FALSE) {
+      if (pm$online == FALSE) {
         "No SAFE products which match the settings were found locally."
       } else {
         "No SAFE products matching the settings were found."
@@ -1334,12 +1334,16 @@ sen2r <- function(param_list = NULL,
   
   # add check so that in offline mode if extent or tiles are not specified
   # all tiles are used
-  if (!pm$online && is.na(pm$extent) && is.na(pm$s2tiles_selected)) {
+  if (
+    pm$online == FALSE && 
+    identical(pm$extent, NA) && 
+    identical(pm$s2tiles_selected, NA)
+  ) {
     pm$s2tiles_selected <- unique(s2_dt$id_tile)
   }
   
   # add check so that in offline mode if specified date is not available, we fail gracefully
-  if (!pm$online && nrow(s2_dt) == 0) {
+  if (pm$online == FALSE && nrow(s2_dt) == 0) {
     print_message(
       type = "error",
       "There are no images on your machine acquired ",
@@ -1351,7 +1355,7 @@ sen2r <- function(param_list = NULL,
   # (products will be filtered later: #filter2)
   if (!any(length(nn(pm$s2tiles_selected))==0, all(is.na(pm$s2tiles_selected)))) {
     s2_dt <- s2_dt[id_tile %in% c(as.character(pm$s2tiles_selected),NA),]
-  } else if (all(is.na(pm$extent)) || all(st_is_valid(pm$extent))) {
+  } else if (all(is.na(pm$extent)) && all(st_is_valid(pm$extent))) {
     # if no tiles were specified, select only tiles which overlap the extent
     # (this to prevent to use unuseful SAFE in offline mode)
     s2tiles_sel_id <- tiles_intersects(pm$extent)
@@ -1362,8 +1366,12 @@ sen2r <- function(param_list = NULL,
   }
   # if extent and footprint are defined, filter SAFEs on footprints
   if (all(!is(pm$extent, "logical"), !anyNA(pm$extent), !is.na(s2_dt$footprint))) {
+    extent_dissolved <- st_union(pm$extent)
+    if (any(!st_is_valid(extent_dissolved))) {
+      extent_dissolved <- st_make_valid(extent_dissolved)
+    }
     s2_dt <- s2_dt[suppressMessages(st_intersects(
-      st_union(pm$extent), 
+      extent_dissolved, 
       st_transform(st_as_sfc(s2_dt$footprint, crs = 4326), st_crs2(pm$extent))
     ))[[1]],]
   }
@@ -1526,6 +1534,9 @@ sen2r <- function(param_list = NULL,
       st_combine(
         suppressWarnings(st_cast(st_cast(pm$extent,"POLYGON"), "LINESTRING"))
       )
+    }
+    if (inherits(s2_mask_extent, c("sf", "sfc")) && any(!st_is_valid(s2_mask_extent))) {
+      s2_mask_extent <- st_make_valid(s2_mask_extent)
     }
     
     # Check if processing is needed

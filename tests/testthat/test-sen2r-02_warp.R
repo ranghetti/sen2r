@@ -1,7 +1,36 @@
-context("Test warping (clip, reproject, resize)")
+message("\n---- Test warping (clip, reproject, resize) ----")
 testthat::skip_on_cran()
-# testthat::skip_on_travis() # because required SAFE do not exists
-testthat::skip_if_not(check_scihub_connection(), "SciHub server is not reachable")
+testthat::skip_on_ci() # TODO try to remove
+testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
+
+# Ensure required SAFE to be downloaded
+s2_l1c_list <- c(
+  "S2B_MSIL1C_20200801T100559_N0209_R022_T32TNR_20200801T130136.SAFE" =
+    "https://scihub.copernicus.eu/apihub/odata/v1/Products('5946618d-4467-4a68-bf87-7d30bc9b4e50')/$value",
+  "S2B_MSIL1C_20200801T100559_N0209_R022_T32TNS_20200801T130136.SAFE" =
+    "https://scihub.copernicus.eu/apihub/odata/v1/Products('cd0b8935-5f5f-485a-bde6-259f5f6e6821')/$value"
+)
+s2_l2a_list <- c(
+  "S2B_MSIL2A_20200801T100559_N0214_R022_T32TNR_20200801T135302.SAFE" =
+    "https://scihub.copernicus.eu/apihub/odata/v1/Products('e502d496-631f-4557-b14f-d98195fdc8c1')/$value",
+  "S2B_MSIL2A_20200801T100559_N0214_R022_T32TNS_20200801T135302.SAFE" =
+    "https://scihub.copernicus.eu/apihub/odata/v1/Products('4aac5270-bbdf-4743-9f9f-532fdbfea2fd')/$value"
+)
+suppressWarnings(s2_l1c_downloaded <- s2_download(
+  s2_l1c_list,
+  downloader = "builtin",
+  outdir = safe_dir,
+  apihub = tests_apihub_path,
+  overwrite = FALSE
+))
+suppressWarnings(s2_l2a_downloaded <- s2_download(
+  s2_l2a_list,
+  downloader = "builtin",
+  outdir = safe_dir,
+  apihub = tests_apihub_path,
+  overwrite = FALSE
+))
 
 outdir_2 <- tempfile(pattern = "out_test2_")
 exp_outpath_2 <- file.path(
@@ -11,11 +40,23 @@ exp_outpath_2 <- file.path(
 testthat::test_that(
   "Tests on clip and mask BOA on extent", {
     
+    # Check sample inputs
+    testthat::skip_if_not(file.exists(file.path(
+      safe_dir, names(s2_l2a_list[1]),
+      "GRANULE/L2A_T32TNR_A017780_20200801T101400/IMG_DATA/R10m",
+      "T32TNR_20200801T100559_B08_10m.jp2"
+    )))
+    testthat::skip_if_not(file.exists(file.path(
+      safe_dir, names(s2_l2a_list[2]),
+      "GRANULE/L2A_T32TNS_A017780_20200801T101400/IMG_DATA/R10m",
+      "T32TNS_20200801T100559_B08_10m.jp2"
+    )))
+    
     dir.create(dirname(outdir_2), showWarnings = FALSE)
     unlink(exp_outpath_2)
     sen2r(
       gui = FALSE,
-      online = TRUE,
+      online = FALSE,
       step_atmcorr = "l2a", # to avoid checks on Sen2Cor
       extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
       extent_name = "Scalve",
@@ -96,6 +137,18 @@ outdir_3 <- tempfile(pattern = "out_test3_")
 exp_outpath_3 <- file.path(outdir_3, "S2B1C_20200801_022_Scalve_TOA_20.dat")
 testthat::test_that(
   "Tests on clip TOA on extent, reproject and resize and save as ENVI", {
+    
+    # Check sample inputs
+    testthat::skip_if_not(file.exists(file.path(
+      safe_dir, names(s2_l1c_list[1]),
+      "GRANULE/L1C_T32TNR_A017780_20200801T101400/IMG_DATA",
+      "T32TNR_20200801T100559_B08.jp2"
+    )))
+    testthat::skip_if_not(file.exists(file.path(
+      safe_dir, names(s2_l1c_list[2]),
+      "GRANULE/L1C_T32TNS_A017780_20200801T101400/IMG_DATA",
+      "T32TNS_20200801T100559_B08.jp2"
+    )))
     
     dir.create(dirname(outdir_3), showWarnings = FALSE)
     testthat::expect_warning(
@@ -201,12 +254,15 @@ exp_outpath_4 <- file.path(
 testthat::test_that(
   "Tests on clip SCL on extent, reproject with a reference raster and save as VRT", {
     
-    testthat::expect_true(dir.exists(outdir_3))
-    testthat::expect_true(file.exists(exp_outpath_3))
+    testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+    testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
+    
+    testthat::skip_if_not(dir.exists(outdir_3))
+    testthat::skip_if_not(file.exists(exp_outpath_3))
     dir.create(dirname(outdir_4), showWarnings = FALSE)
     sen2r(
       gui = FALSE,
-      online = FALSE,
+      online = TRUE,
       step_atmcorr = "l2a", # to avoid checks on Sen2Cor
       extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
       extent_name = "Scalve",

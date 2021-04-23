@@ -1,10 +1,12 @@
-context("Test compute spectral indices - main function")
+message("\n---- Test compute spectral indices - main function ----")
 testthat::skip_on_cran()
-# testthat::skip_on_travis() # because required SAFE do not exists
-testthat::skip_if_not(check_scihub_connection(), "SciHub server is not reachable")
+testthat::skip_on_ci() # TODO try to remove
 
 testthat::test_that(
   "Tests on indices computation, on unrequired BOA, with clip ", {
+    
+    testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+    testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
     
     outdir_11 <- tempfile(pattern = "out_test11_")
     dir.create(dirname(outdir_11), showWarnings = FALSE)
