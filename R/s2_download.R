@@ -261,6 +261,7 @@ s2_download <- function(
       "^https://((scihub)|(apihub)).copernicus.eu/((apihub)|(dhus))/odata",
       paste0("https://",ifelse(service=="dhus","scihub","apihub"),
              ".copernicus.eu/",service,"/odata"),
+      s2_prodlist
     )
   }
   
