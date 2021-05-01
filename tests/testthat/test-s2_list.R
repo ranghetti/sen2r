@@ -42,7 +42,7 @@ testthat::test_that(
     testthat::expect_equal(mean(s2_dt_test$clouds), 38.3432, tolerance = 1e-6)
     testthat::expect_equal(unique(s2_dt_test$online), NA)
     testthat::expect_equal(
-      grepl("^https://scihub\\.copernicus\\.eu",s2_dt_test$url),
+      grepl("^https://apihub\\.copernicus\\.eu",s2_dt_test$url),
       rep(TRUE, 3)
     )
     
