@@ -145,8 +145,9 @@ s2_order <- function(
     )
   } else if (!is.na(service)) {
     s2_prodlist <- gsub(
-      "^https://scihub.copernicus.eu/((apihub)|(dhus))/odata",
-      paste0("https://scihub.copernicus.eu/",service,"/odata"),
+      "^https://((scihub)|(apihub)).copernicus.eu/((apihub)|(dhus))/odata",
+      paste0("https://",ifelse(service=="dhus","scihub","apihub"),
+             ".copernicus.eu/",service,"/odata"),
       s2_prodlist
     )
   }

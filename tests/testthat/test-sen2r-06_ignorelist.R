@@ -5,9 +5,9 @@ testthat::skip_on_ci() # TODO try to remove
 # Ensure required SAFE to be downloaded
 s2_l2a_list <- c(
   "S2B_MSIL2A_20200801T100559_N0214_R022_T32TNR_20200801T135302.SAFE" =
-    "https://scihub.copernicus.eu/apihub/odata/v1/Products('e502d496-631f-4557-b14f-d98195fdc8c1')/$value",
+    "https://apihub.copernicus.eu/apihub/odata/v1/Products('e502d496-631f-4557-b14f-d98195fdc8c1')/$value",
   "S2B_MSIL2A_20200801T100559_N0214_R022_T32TNS_20200801T135302.SAFE" =
-    "https://scihub.copernicus.eu/apihub/odata/v1/Products('4aac5270-bbdf-4743-9f9f-532fdbfea2fd')/$value"
+    "https://apihub.copernicus.eu/apihub/odata/v1/Products('4aac5270-bbdf-4743-9f9f-532fdbfea2fd')/$value"
 )
 suppressWarnings(s2_l2a_downloaded <- s2_download(
   s2_l2a_list,

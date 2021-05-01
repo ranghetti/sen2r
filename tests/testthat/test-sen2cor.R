@@ -213,7 +213,7 @@ testthat::test_that(
     if (length(s2_l2a_prod1) == 0) {
       s2_l2a_prod1 <- names(s2_download(c(
         "S2B_MSIL2A_20200801T100559_N0214_R022_T32TNR_20200801T135302.SAFE" =
-          "https://scihub.copernicus.eu/apihub/odata/v1/Products('e502d496-631f-4557-b14f-d98195fdc8c1')/$value"
+          "https://apihub.copernicus.eu/apihub/odata/v1/Products('e502d496-631f-4557-b14f-d98195fdc8c1')/$value"
       ), outdir = safe_dir
       ))
     }

@@ -419,7 +419,8 @@ s2_list <- function(spatial_extent = NULL,
     while (!end_query) {
       
       query_string <- paste0(
-        'https://scihub.copernicus.eu/',service,'/search?',
+        'https://',ifelse(service=='dhus','scihub','apihub'),
+        '.copernicus.eu/',service,'/search?',
         'start=', start,
         '&rows=', rows,
         '&q=', foot,

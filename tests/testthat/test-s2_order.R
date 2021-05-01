@@ -8,7 +8,7 @@ testthat::test_that(
   "Test ordering without internet", {
     s2_list_0 <- c(
       "S2A_MSIL2A_20200501T102031_N0214_R065_T32TNR_20200501T134143.SAFE" = 
-        "https://scihub.copernicus.eu/apihub/odata/v1/Products('3191642d-4818-4e23-ba54-0c0b231e13cf')/$value"
+        "https://apihub.copernicus.eu/apihub/odata/v1/Products('3191642d-4818-4e23-ba54-0c0b231e13cf')/$value"
     )
     testthat::expect_error(
       httptest::without_internet({
@@ -50,11 +50,11 @@ testthat::test_that(
     # )
     s2_list_1 <- c(
       "S2A_MSIL2A_20200501T102031_N0214_R065_T32TNR_20200501T134143.SAFE" = 
-        "https://scihub.copernicus.eu/apihub/odata/v1/Products('3191642d-4818-4e23-ba54-0c0b231e13cf')/$value",
+        "https://apihub.copernicus.eu/apihub/odata/v1/Products('3191642d-4818-4e23-ba54-0c0b231e13cf')/$value",
       "S2B_MSIL2A_20200506T101559_N0214_R065_T32TNR_20200506T145433.SAFE" = 
-        "https://scihub.copernicus.eu/apihub/odata/v1/Products('c5f023bb-259b-464a-bcf3-44340e0d8595')/$value",
+        "https://apihub.copernicus.eu/apihub/odata/v1/Products('c5f023bb-259b-464a-bcf3-44340e0d8595')/$value",
       "S2A_MSIL2A_20200511T102031_N0214_R065_T32TNR_20200511T130304.SAFE" = 
-        "https://scihub.copernicus.eu/apihub/odata/v1/Products('de28287d-4546-493b-8516-4cb27bb21a02')/$value"
+        "https://apihub.copernicus.eu/apihub/odata/v1/Products('de28287d-4546-493b-8516-4cb27bb21a02')/$value"
     )
     
     # test safe_is_online()
@@ -99,9 +99,9 @@ testthat::test_that(
     # )
     s2_list_2 <- c(
       "S2A_MSIL1C_20180222T134641_N0206_R081_T21FVC_20180222T215312.SAFE" = 
-        "https://scihub.copernicus.eu/apihub/odata/v1/Products('4c5db929-b4cf-4709-9426-313a137c5b02')/$value",
+        "https://apihub.copernicus.eu/apihub/odata/v1/Products('4c5db929-b4cf-4709-9426-313a137c5b02')/$value",
       "S2B_MSIL1C_20180227T134629_N0206_R081_T21FVC_20180227T200327.SAFE" = 
-        "https://scihub.copernicus.eu/apihub/odata/v1/Products('fa8cba66-7b8b-45aa-9038-9521d7658bad')/$value"
+        "https://apihub.copernicus.eu/apihub/odata/v1/Products('fa8cba66-7b8b-45aa-9038-9521d7658bad')/$value"
     )
     
     # test safe_is_online()
