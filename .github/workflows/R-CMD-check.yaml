@@ -87,6 +87,8 @@ jobs:
       - name: "Install develop {sf}"
         if: matrix.config.sf == 'develop'
         run: |
+          remotes::install_github("paleolimbot/wk")
+          remotes::install_github("r-spatial/s2")
           remotes::install_github("r-spatial/sf", ref = "sf_1_0")
         shell: Rscript {0}
 
