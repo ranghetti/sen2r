@@ -312,7 +312,8 @@ s2_list <- function(spatial_extent = NULL,
   # fix footprint topology errors
   invalid_entries <- out_dt[,which(!st_is_valid(st_as_sfc(footprint, crs = 4326)))]
   if (length(invalid_entries) > 0) {
-    out_dt[,footprint := st_as_text(st_make_valid(st_as_sfc(footprint, crs = 4326)))]
+    out_footprint_fixed <- st_as_text(st_make_valid(st_as_sfc(out_dt[invalid_entries, footprint], crs = 4326)))
+    out_dt[invalid_entries, footprint := out_footprint_fixed]
   }
   
   if (nrow(out_dt) == 0) {return(as(setNames(character(0), character(0)), "safelist"))}

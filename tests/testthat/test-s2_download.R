@@ -120,7 +120,8 @@ testthat::test_that(
 )
 
 
-if (Sys.info()["sysname"] != "Linux") {
+# if (Sys.info()["sysname"] != "Linux") {
+if (TRUE) { # FIXME restore when product L1C_20200801_T32TNR (currupt on SciHub) will have been fixed
   testthat::skip_on_ci() # aria2 not installed on Windows and macOS CI
 }
 
