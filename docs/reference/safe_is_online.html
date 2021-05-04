@@ -74,7 +74,7 @@ Archive." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.3</span>
       </span>
     </div>
 
@@ -217,15 +217,15 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 <span class='va'>pos</span> <span class='op'>&lt;-</span> <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/sfc.html'>st_sfc</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st.html'>st_point</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>57.8815</span>,<span class='op'>-</span><span class='fl'>51.6954</span><span class='op'>)</span><span class='op'>)</span>, crs <span class='op'>=</span> <span class='fl'>4326</span><span class='op'>)</span>
 <span class='va'>time_window</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"2018-02-21"</span>, <span class='st'>"2018-03-20"</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>list_safe</span> <span class='op'>&lt;-</span> <span class='fu'><a href='s2_list.html'>s2_list</a></span><span class='op'>(</span>spatial_extent <span class='op'>=</span> <span class='va'>pos</span>, time_interval <span class='op'>=</span> <span class='va'>time_window</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>although coordinates are longitude/latitude, st_union assumes that they are planar</span></div><div class='input'><span class='co'># (at the time the documentation was written, this list was containing 5</span>
+<span class='co'># (at the time the documentation was written, this list was containing 5</span>
 <span class='co'># archives already available online and 2 stored in the Long Term Archive)</span>
 
 <span class='co'># Check for availability</span>
 <span class='fu'>safe_is_online</span><span class='op'>(</span><span class='va'>list_safe</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>0 out of 7 products are online.</span></div><div class='output co'>#&gt; S2B_MSIL1C_20180224T133629_N0206_R038_T21FVC_20180224T194845.SAFE 
+</div><div class='output co'>#&gt; <span class='message'>1 out of 7 products are online.</span></div><div class='output co'>#&gt; S2B_MSIL1C_20180224T133629_N0206_R038_T21FVC_20180224T194845.SAFE 
 #&gt;                                                             FALSE 
 #&gt; S2B_MSIL1C_20180227T134629_N0206_R081_T21FVC_20180227T200327.SAFE 
-#&gt;                                                             FALSE 
+#&gt;                                                              TRUE 
 #&gt; S2A_MSIL1C_20180301T133641_N0206_R038_T21FVC_20180301T145524.SAFE 
 #&gt;                                                             FALSE 
 #&gt; S2B_MSIL1C_20180306T133629_N0206_R038_T21FVC_20180306T183210.SAFE 

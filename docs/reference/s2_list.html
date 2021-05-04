@@ -73,7 +73,7 @@ products satisfying given search criteria." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.3</span>
       </span>
     </div>
 
@@ -300,18 +300,18 @@ function <code>getSentinel_query</code> of package
   time_interval <span class='op'>=</span> <span class='va'>time_window</span>,
   orbit <span class='op'>=</span> <span class='st'>"065"</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>although coordinates are longitude/latitude, st_union assumes that they are planar</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>example_s2_list</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>example_s2_list</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; A named vector with 47 SAFE archives.
 #&gt;                                      S2A_MSIL1C_20160502T102032_N0201_R065_T32TNR_20160502T102027.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('fde01d3f-8a0d-46cb-b65d-3e32eff93f1d')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('fde01d3f-8a0d-46cb-b65d-3e32eff93f1d')/$value" 
 #&gt;                                      S2A_MSIL1C_20160512T102032_N0202_R065_T32TNR_20160512T102029.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('4b785773-ba94-49b2-ae81-9b4b08749f70')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('4b785773-ba94-49b2-ae81-9b4b08749f70')/$value" 
 #&gt;                                      S2A_MSIL1C_20160522T102032_N0202_R065_T32TNR_20160522T102029.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('4abf7965-0b26-431b-8708-74de427c0112')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('4abf7965-0b26-431b-8708-74de427c0112')/$value" 
 #&gt;                                      S2A_MSIL1C_20160611T102032_N0202_R065_T32TNR_20160611T102026.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('68afcf6b-4ec6-48da-9b65-6cd41ff47a49')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('68afcf6b-4ec6-48da-9b65-6cd41ff47a49')/$value" 
 #&gt;                                      S2A_MSIL1C_20160621T102022_N0204_R065_T32TNR_20160621T102024.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('9bb6d780-c226-4f59-bad0-1daedfdce9d5')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('9bb6d780-c226-4f59-bad0-1daedfdce9d5')/$value" 
 #&gt; ...with 42 more elements.
 #&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, footprint, uuid, online.</div><div class='input'><span class='co'># Print the dates of the retrieved products</span>
 <span class='fu'><a href='safe_getMetadata.html'>safe_getMetadata</a></span><span class='op'>(</span><span class='va'>example_s2_list</span>, <span class='st'>"sensing_datetime"</span><span class='op'>)</span>
@@ -416,18 +416,18 @@ function <code>getSentinel_query</code> of package
   time_interval <span class='op'>=</span> <span class='va'>time_window</span>,
   time_period <span class='op'>=</span> <span class='st'>"seasonal"</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>although coordinates are longitude/latitude, st_union assumes that they are planar</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>example_s2_list</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>example_s2_list</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; A named vector with 28 SAFE archives.
 #&gt;                                      S2A_MSIL1C_20160502T102032_N0201_R065_T32TNR_20160502T102027.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('fde01d3f-8a0d-46cb-b65d-3e32eff93f1d')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('fde01d3f-8a0d-46cb-b65d-3e32eff93f1d')/$value" 
 #&gt;                                      S2A_MSIL1C_20160509T101032_N0202_R022_T32TNR_20160509T101645.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('abf24c65-2ff6-4c9a-9309-425425475d36')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('abf24c65-2ff6-4c9a-9309-425425475d36')/$value" 
 #&gt;                                      S2A_MSIL1C_20160512T102032_N0202_R065_T32TNR_20160512T102029.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('4b785773-ba94-49b2-ae81-9b4b08749f70')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('4b785773-ba94-49b2-ae81-9b4b08749f70')/$value" 
 #&gt;                                      S2A_MSIL1C_20160519T101032_N0202_R022_T32TNR_20160519T101312.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('e1f000b8-e9c3-421b-88c2-08a9046d1a82')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('e1f000b8-e9c3-421b-88c2-08a9046d1a82')/$value" 
 #&gt;                                      S2A_MSIL1C_20160522T102032_N0202_R065_T32TNR_20160522T102029.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('4abf7965-0b26-431b-8708-74de427c0112')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('4abf7965-0b26-431b-8708-74de427c0112')/$value" 
 #&gt; ...with 23 more elements.
 #&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, footprint, uuid, online.</div><div class='input'><span class='co'># Print the dates of the retrieved products</span>
 <span class='fu'><a href='safe_getMetadata.html'>safe_getMetadata</a></span><span class='op'>(</span><span class='va'>example_s2_list</span>, <span class='st'>"sensing_datetime"</span><span class='op'>)</span>

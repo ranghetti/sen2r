@@ -45,7 +45,7 @@ Sentinel.2 archives.
 It is a named character in which names are SAFE codes
 (e.g. S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE),
 and values are URLs used to retrieve them from ESA API Hub (e.g.
-https://scihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value).
+https://apihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value).
 Some attributes may be included, basically information retrieved by
 function s2_list containing product metadata.
 Moreover, the attribute online (retrieved by function safe_is_online
@@ -88,7 +88,7 @@ useful for reading hidden attributes." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.3</span>
       </span>
     </div>
 
@@ -179,7 +179,7 @@ Sentinel.2 archives.
 It is a named character in which names are SAFE codes
 (e.g. <code>S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE</code>),
 and values are URLs used to retrieve them from ESA API Hub (e.g.
-<code>https://scihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value</code>).
+<code>https://apihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value</code>).
 Some attributes may be included, basically information retrieved by
 function <a href='s2_list.html'>s2_list</a> containing product metadata.
 Moreover, the attribute <code>online</code> (retrieved by function <a href='safe_is_online.html'>safe_is_online</a>
@@ -216,14 +216,14 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 
 <span class='co'>## Create an object of class safelist</span>
 <span class='va'>list_safe</span> <span class='op'>&lt;-</span> <span class='fu'><a href='s2_list.html'>s2_list</a></span><span class='op'>(</span>spatial_extent <span class='op'>=</span> <span class='va'>pos</span>, time_interval <span class='op'>=</span> <span class='va'>time_window</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>although coordinates are longitude/latitude, st_union assumes that they are planar</span></div><div class='input'><span class='va'>list_safe</span>
+<span class='va'>list_safe</span>
 </div><div class='output co'>#&gt; A named vector with 3 SAFE archives.
 #&gt;                                      S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value" 
 #&gt;                                      S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" 
 #&gt;                                      S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" 
 #&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, footprint, uuid, online.</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>list_safe</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] "safelist"  "character"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span><span class='op'>(</span><span class='va'>list_safe</span>, <span class='st'>"sensing_datetime"</span><span class='op'>)</span> <span class='co'># extract an hidden attribute from a safelist</span>
 </div><div class='output co'>#&gt; [1] "2017-05-07 10:20:31 UTC" "2017-05-17 10:20:31 UTC"
@@ -231,19 +231,19 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 <span class='co'>## Convert to other classes</span>
 <span class='op'>(</span><span class='va'>s2_char</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>as.character</a></span><span class='op'>(</span><span class='va'>list_safe</span><span class='op'>)</span><span class='op'>)</span> <span class='co'># convert to a simple named character</span>
 </div><div class='output co'>#&gt;                                      S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value" 
 #&gt;                                      S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" 
 #&gt;                                      S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" </div><div class='input'><span class='op'>(</span><span class='va'>s2_df</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.data.frame.html'>as.data.frame</a></span><span class='op'>(</span><span class='va'>list_safe</span><span class='op'>)</span><span class='op'>)</span> <span class='co'># convert to a data.frame</span>
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" </div><div class='input'><span class='op'>(</span><span class='va'>s2_df</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.data.frame.html'>as.data.frame</a></span><span class='op'>(</span><span class='va'>list_safe</span><span class='op'>)</span><span class='op'>)</span> <span class='co'># convert to a data.frame</span>
 </div><div class='output co'>#&gt;                                                                name
 #&gt; 1 S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE
 #&gt; 2 S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE
 #&gt; 3 S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE
 #&gt;                                                                                                    url
-#&gt; 1 https://scihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value
-#&gt; 2 https://scihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value
-#&gt; 3 https://scihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value
+#&gt; 1 https://apihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value
+#&gt; 2 https://apihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value
+#&gt; 3 https://apihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value
 #&gt;   mission level id_tile id_orbit    sensing_datetime  ingestion_datetime
 #&gt; 1      2A   2Ap   32TNR      065 2017-05-07 10:20:31 2017-05-09 06:30:41
 #&gt; 2      2A   2Ap   32TNR      065 2017-05-17 10:20:31 2017-06-08 12:21:23
@@ -269,9 +269,9 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 #&gt; 2: S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE
 #&gt; 3: S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE
 #&gt;                                                                                                     url
-#&gt; 1: https://scihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value
-#&gt; 2: https://scihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value
-#&gt; 3: https://scihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value
+#&gt; 1: https://apihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value
+#&gt; 2: https://apihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value
+#&gt; 3: https://apihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value
 #&gt;    mission level id_tile id_orbit    sensing_datetime  ingestion_datetime
 #&gt; 1:      2A   2Ap   32TNR      065 2017-05-07 10:20:31 2017-05-09 06:30:41
 #&gt; 2:      2A   2Ap   32TNR      065 2017-05-17 10:20:31 2017-06-08 12:21:23
@@ -299,9 +299,9 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 #&gt; 2 S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE
 #&gt; 3 S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE
 #&gt;                                                                                                    url
-#&gt; 1 https://scihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value
-#&gt; 2 https://scihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value
-#&gt; 3 https://scihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value
+#&gt; 1 https://apihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value
+#&gt; 2 https://apihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value
+#&gt; 3 https://apihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value
 #&gt;   mission level id_tile id_orbit    sensing_datetime  ingestion_datetime
 #&gt; 1      2A   2Ap   32TNR      065 2017-05-07 10:20:31 2017-05-09 06:30:41
 #&gt; 2      2A   2Ap   32TNR      065 2017-05-17 10:20:31 2017-06-08 12:21:23
@@ -318,34 +318,34 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 <span class='fu'><a href='https://r-spatial.github.io/sf/reference/coerce-methods.html'>as</a></span><span class='op'>(</span><span class='va'>s2_char</span>, <span class='st'>"safelist"</span><span class='op'>)</span> <span class='co'># this causes the loss of hidden attributes</span>
 </div><div class='output co'>#&gt; A named vector with 3 SAFE archives.
 #&gt;                                      S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value" 
 #&gt;                                      S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" 
 #&gt;                                      S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" </div><div class='input'><span class='fu'><a href='https://r-spatial.github.io/sf/reference/coerce-methods.html'>as</a></span><span class='op'>(</span><span class='va'>s2_df</span>, <span class='st'>"safelist"</span><span class='op'>)</span> <span class='co'># this (and followings) maintain attributes as columns</span>
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" </div><div class='input'><span class='fu'><a href='https://r-spatial.github.io/sf/reference/coerce-methods.html'>as</a></span><span class='op'>(</span><span class='va'>s2_df</span>, <span class='st'>"safelist"</span><span class='op'>)</span> <span class='co'># this (and followings) maintain attributes as columns</span>
 </div><div class='output co'>#&gt; A named vector with 3 SAFE archives.
 #&gt;                                      S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value" 
 #&gt;                                      S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" 
 #&gt;                                      S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" 
 #&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, footprint, uuid, online.</div><div class='input'><span class='fu'><a href='https://r-spatial.github.io/sf/reference/coerce-methods.html'>as</a></span><span class='op'>(</span><span class='va'>s2_dt</span>, <span class='st'>"safelist"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; A named vector with 3 SAFE archives.
 #&gt;                                      S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value" 
 #&gt;                                      S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" 
 #&gt;                                      S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" 
 #&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, footprint, uuid, online.</div><div class='input'><span class='fu'><a href='https://r-spatial.github.io/sf/reference/coerce-methods.html'>as</a></span><span class='op'>(</span><span class='va'>s2_sf</span>, <span class='st'>"safelist"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; A named vector with 3 SAFE archives.
 #&gt;                                      S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value" 
 #&gt;                                      S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" 
 #&gt;                                      S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE 
-#&gt; "https://scihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" 
+#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" 
 #&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, uuid, online, footprint.</div><div class='input'><span class='co'># }</span>
 </div></pre>
   </div>

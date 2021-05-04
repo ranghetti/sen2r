@@ -3,6 +3,7 @@
 on:
   push:
     branches:
+      - master
       - devel
 
 name: R-CMD-check_sf_develop

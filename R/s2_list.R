@@ -237,7 +237,7 @@ s2_list <- function(spatial_extent = NULL,
     )
   }
   
-  spatial_extent <- suppressWarnings(sf::st_union(spatial_extent))
+  spatial_extent <- suppressMessages(sf::st_union(spatial_extent))
   if (any(!st_is_valid(spatial_extent))) {
     spatial_extent <- st_make_valid(spatial_extent)
   }

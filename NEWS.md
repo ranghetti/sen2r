@@ -1,3 +1,23 @@
+# Version 1.4.3
+
+## Minor changes
+- Use API URLs `https://apihub.copernicus.eu/apihub` instead of 
+    `https://scihub.copernicus.eu/apihub` as required after changes at 
+    SciHub side (https://scihub.copernicus.eu/news/News00868).
+- Manage multiple SciHub credentials when ordering SAFE archives from LTA
+    (experimental).
+
+## Documentation
+- Replace `http://` with `https://` in documentation _URLs. 
+
+## Checks
+- Replace Travis with GitHub Actions (and fix tests accordingly).
+
+## Bug fixes
+- Avoid topology errors on S2 footprints (to fix errors using `{sf}` 1.0).
+- Manage situations like in #397 (too many nodes for ESA API query).
+
+
 # Version 1.4.2
 
 ## Bug fixes
