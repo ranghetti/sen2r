@@ -34,15 +34,15 @@ License: GPL 3.0
 }
 \examples{
 # the reference path
-(ref_path <- system.file(package="sen2r"))
+(ref_path <- system.file(package="sf"))
 # a path with a common parent with ref_path
-(in_path_1 <- system.file(package="gdalUtils"))
+(in_path_1 <- system.file(package="rgdal"))
 # a path included in ref_path
-(in_path_2 <- system.file("R/abs2rel.R", package="sen2r"))
+(in_path_2 <- system.file("DESCRIPTION", package="sf"))
 # a path external to ref_path (in Linux)
 (in_path_3 <- system.file(package="base"))
 # an unexisting path
-(in_path_4 <- gsub("sen2r","r2sen",ref_path))
+(in_path_4 <- gsub("sf$","unexistingpackage",ref_path))
 
 abs2rel(in_path_1, ref_path)
 

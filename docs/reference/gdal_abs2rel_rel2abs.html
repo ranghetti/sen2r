@@ -81,7 +81,7 @@ links are followed). This is useful to grant that VRT can be moved
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.3</span>
       </span>
     </div>
 
@@ -231,7 +231,7 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 <span class='va'>rel_vrt_content</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readLines.html'>readLines</a></span><span class='op'>(</span><span class='va'>rel_vrt</span><span class='op'>)</span>
 <span class='va'>ex_vrt_content</span><span class='op'>[</span><span class='va'>ex_vrt_content</span> <span class='op'>!=</span> <span class='va'>abs_vrt_content</span><span class='op'>]</span> <span class='co'># Original line</span>
 </div><div class='output co'>#&gt; [1] "    &lt;SourceDataset relativeToVRT=\"1\"&gt;S2A2A_20190723_022_Barbellino_RGB432B_10.tif&lt;/SourceDataset&gt;"</div><div class='input'><span class='va'>abs_vrt_content</span><span class='op'>[</span><span class='va'>ex_vrt_content</span> <span class='op'>!=</span> <span class='va'>abs_vrt_content</span><span class='op'>]</span> <span class='co'># Modified line</span>
-</div><div class='output co'>#&gt; [1] "    &lt;SourceDataset relativeToVRT=\"0\"&gt;/home/lranghetti/share/git/github/ranghetti/sen2r/inst/extdata/out/S2A2A_20190723_022_Barbellino_RGB432B_10.tif&lt;/SourceDataset&gt;"</div><div class='input'><span class='va'>rel_vrt_content</span><span class='op'>[</span><span class='va'>ex_vrt_content</span> <span class='op'>!=</span> <span class='va'>rel_vrt_content</span><span class='op'>]</span> <span class='co'># No edits</span>
+</div><div class='output co'>#&gt; [1] "    &lt;SourceDataset relativeToVRT=\"0\"&gt;/tmp/RtmpFg5RiI/temp_libpathd6f07109c1a6/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_RGB432B_10.tif&lt;/SourceDataset&gt;"</div><div class='input'><span class='va'>rel_vrt_content</span><span class='op'>[</span><span class='va'>ex_vrt_content</span> <span class='op'>!=</span> <span class='va'>rel_vrt_content</span><span class='op'>]</span> <span class='co'># No edits</span>
 </div><div class='output co'>#&gt; character(0)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

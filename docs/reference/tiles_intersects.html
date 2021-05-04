@@ -73,7 +73,7 @@ which overlap a provided extent." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.3</span>
       </span>
     </div>
 
@@ -225,6 +225,7 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 <span class='co'># Tile ID of all the overlapping S2 tiles</span>
 <span class='fu'>tiles_intersects</span><span class='op'>(</span><span class='va'>ex_extent</span>, all <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] "32TNR" "32TNS"</div><div class='input'>
+<span class='co'># \donttest{</span>
 <span class='co'># Spatial object with the required tile</span>
 <span class='va'>sel_tiles</span> <span class='op'>&lt;-</span> <span class='fu'>tiles_intersects</span><span class='op'>(</span><span class='va'>ex_extent</span>, out_format <span class='op'>=</span> <span class='st'>"sf"</span><span class='op'>)</span>
 <span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_geometry.html'>st_geometry</a></span><span class='op'>(</span><span class='va'>sel_tiles</span><span class='op'>)</span><span class='op'>)</span>; <span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_geometry.html'>st_geometry</a></span><span class='op'>(</span><span class='va'>ex_extent</span><span class='op'>)</span>, add<span class='op'>=</span><span class='cn'>TRUE</span>, col<span class='op'>=</span><span class='st'>"yellow"</span><span class='op'>)</span>
@@ -232,7 +233,8 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 <span class='co'># Spatial object with the overlapping S2 tiles</span>
 <span class='va'>sel_tiles</span> <span class='op'>&lt;-</span> <span class='fu'>tiles_intersects</span><span class='op'>(</span><span class='va'>ex_extent</span>, all <span class='op'>=</span> <span class='cn'>TRUE</span>, out_format <span class='op'>=</span> <span class='st'>"sf"</span><span class='op'>)</span>
 <span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_geometry.html'>st_geometry</a></span><span class='op'>(</span><span class='va'>sel_tiles</span><span class='op'>)</span><span class='op'>)</span>; <span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_geometry.html'>st_geometry</a></span><span class='op'>(</span><span class='va'>ex_extent</span><span class='op'>)</span>, add<span class='op'>=</span><span class='cn'>TRUE</span>, col<span class='op'>=</span><span class='st'>"yellow"</span><span class='op'>)</span>
-</div><div class='img'><img src='tiles_intersects-2.png' alt='' width='700' height='433' /></div></pre>
+</div><div class='img'><img src='tiles_intersects-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='co'># }</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

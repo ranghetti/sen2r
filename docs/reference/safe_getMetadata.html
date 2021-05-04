@@ -77,7 +77,7 @@ if it is a valid SAFE." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.3</span>
       </span>
     </div>
 
@@ -378,7 +378,7 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 <span class='co'># Download a sample SAFE archive (this can take a while)</span>
 <span class='va'>s2_exampleurl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>
   <span class='st'>"S2A_MSIL1C_20190723T101031_N0208_R022_T32TNS_20190723T121220.SAFE"</span> <span class='op'>=</span>
-    <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"https://scihub.copernicus.eu/apihub/odata/v1/"</span>,
+    <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"https://apihub.copernicus.eu/apihub/odata/v1/"</span>,
            <span class='st'>"Products('19bbde60-992b-423d-8dea-a5e0ac7715fc')/$value"</span><span class='op'>)</span>
 <span class='op'>)</span>
 <span class='fu'><a href='s2_download.html'>s2_download</a></span><span class='op'>(</span><span class='va'>s2_exampleurl</span>, outdir<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>

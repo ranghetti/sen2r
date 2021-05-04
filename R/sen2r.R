@@ -1262,9 +1262,9 @@ sen2r <- function(param_list = NULL,
         error = function(e) {st_sfc(st_polygon(), crs = 4326)}
       )
     })
-    s2_dt_centroid <- round(st_coordinates(
+    s2_dt_centroid <- suppressMessages(round(st_coordinates(
       st_centroid(st_transform(do.call("c",s2_footprint_sf_l), 3857))
-    ), -3) # rounded to 1 km
+    ), -3)) # rounded to 1 km
     s2_dt[,c("centroid_x", "centroid_y") := list(s2_dt_centroid[,"X"], s2_dt_centroid[,"Y"])]
   } else {
     s2_dt[,c("centroid_x", "centroid_y") := list(numeric(), numeric())]
@@ -1281,9 +1281,9 @@ sen2r <- function(param_list = NULL,
                "id_tile", "creation_datetime", "footprint"), 
       format = "data.table"
     )
-    s2_existing_dt_centroid <- round(st_coordinates(
+    s2_existing_dt_centroid <- suppressMessages(round(st_coordinates(
       st_centroid(st_transform(st_as_sfc(s2_existing_dt$footprint, crs = 4326), 3857))
-    ), -3) # rounded to 1 km
+    ), -3)) # rounded to 1 km
     s2_existing_dt[,c("centroid_x", "centroid_y") := list(s2_existing_dt_centroid[,"X"], s2_existing_dt_centroid[,"Y"])]
     # make a vector with only metadata to be used for the comparison
     s2_meta_pasted <- s2_dt[,list("V1" = paste(
@@ -1374,7 +1374,7 @@ sen2r <- function(param_list = NULL,
   }
   # if extent and footprint are defined, filter SAFEs on footprints
   if (all(!is(pm$extent, "logical"), !anyNA(pm$extent), !is.na(s2_dt$footprint))) {
-    extent_dissolved <- st_union(pm$extent)
+    extent_dissolved <- suppressMessages(st_union(pm$extent))
     if (any(!st_is_valid(extent_dissolved))) {
       extent_dissolved <- st_make_valid(extent_dissolved)
     }
@@ -2089,9 +2089,9 @@ sen2r <- function(param_list = NULL,
           fill = TRUE
         )
         if (nrow(s2_downloaded_dt)>0) {
-          s2_downloaded_dt_centroid <- round(st_coordinates(
+          s2_downloaded_dt_centroid <- suppressMessages(round(st_coordinates(
             st_centroid(st_transform(st_as_sfc(s2_downloaded_dt$footprint, crs = 4326), 3857))
-          ), -3) # rounded to 1 km
+          ), -3)) # rounded to 1 km
           s2_downloaded_dt[,c("centroid_x", "centroid_y") := list(
             s2_downloaded_dt_centroid[,"X"], 
             s2_downloaded_dt_centroid[,"Y"]

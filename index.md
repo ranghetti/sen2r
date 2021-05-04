@@ -1,11 +1,4 @@
 
-  - [sen2r: Find, Download and Process Sentinel-2
-    Data](#sen2r-find-download-and-process-sentinel-2-data)
-      - [Installation](#installation)
-      - [Usage](#usage)
-      - [Credits](#credits)
-      - [Contributing](#contributing)
-
 <!-- IMPORTANT: do NOT edit README.Rmd! Edit index.Rmd instead, -->
 
 <!-- and generate README.Rmd using utils/code/create_README.sh  -->
@@ -15,7 +8,7 @@ Status](https://www.r-pkg.org/badges/version-ago/sen2r)](https://cran.r-project.
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1240384.svg)](https://doi.org/10.5281/zenodo.1240384)
 [![CRAN RStudio mirror
 downloads](https://cranlogs.r-pkg.org/badges/last-month/sen2r?color=green)](https://cran.rstudio.com/web/packages/ggplot2/index.html)
-[![R-CMD-check](https://github.com/ranghetti/sen2r/workflows/R-CMD-check/badge.svg)](https://github.com/ranghetti/sen2r/actions)
+[![R-CMD-check](https://github.com/ranghetti/sen2r/workflows/R-CMD-check/badge.svg)](https://github.com/ranghetti/sen2r/actions/workflows/R-CMD-check.yaml)
 [![Coverage
 Status](http://img.shields.io/codecov/c/github/ranghetti/sen2r/master.svg)](http://codecov.io/github/ranghetti/sen2r?branch=master)
 [![Docker Automated

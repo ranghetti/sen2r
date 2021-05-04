@@ -44,8 +44,10 @@
 save new username and password (write_scihub_login())
 or check their validity (check_scihub_login()).
 Login information is stored in a file apihub.txt inside the
-&quot;.sen2r&quot; subfolder of the home directory. This functions allow to read
-or write this file, and to edit them from inside the GUI." />
+&quot;.sen2r&quot; subfolder of the home directory. This function allows reading
+or writing this file, and editing it from the GUI.
+In case file apihub.txt is missing, read_scihub_login() searches inside
+the environmental variables SCIHUB_USER and SCIHUB_PASSWORD." />
 
 
 
@@ -77,7 +79,7 @@ or write this file, and to edit them from inside the GUI." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.3</span>
       </span>
     </div>
 
@@ -167,15 +169,17 @@ or write this file, and to edit them from inside the GUI." />
 save new username and password (<code>write_scihub_login()</code>)
 or check their validity (<code>check_scihub_login()</code>).
 Login information is stored in a file <code>apihub.txt</code> inside the
-".sen2r" subfolder of the home directory. This functions allow to read
-or write this file, and to edit them from inside the GUI.</p>
+".sen2r" subfolder of the home directory. This function allows reading
+or writing this file, and editing it from the GUI.
+In case file <code>apihub.txt</code> is missing, <code>read_scihub_login()</code> searches inside
+the environmental variables <code>SCIHUB_USER</code> and <code>SCIHUB_PASSWORD</code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>read_scihub_login</span><span class='op'>(</span>apihub_path <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span>
 
-<span class='fu'>check_scihub_login</span><span class='op'>(</span><span class='va'>username</span>, <span class='va'>password</span><span class='op'>)</span>
+<span class='fu'>check_scihub_login</span><span class='op'>(</span><span class='va'>username</span>, <span class='va'>password</span>, service <span class='op'>=</span> <span class='st'>"apihub"</span><span class='op'>)</span>
 
-<span class='fu'>check_scihub_connection</span><span class='op'>(</span><span class='op'>)</span>
+<span class='fu'>check_scihub_connection</span><span class='op'>(</span>service <span class='op'>=</span> <span class='st'>"apihub"</span><span class='op'>)</span>
 
 <span class='fu'>write_scihub_login</span><span class='op'>(</span>
   <span class='va'>username</span>,
@@ -200,6 +204,10 @@ If NA (default) it is automatically read from the package default location.</p><
     <tr>
       <th>password</th>
       <td><p>SciHub password.</p></td>
+    </tr>
+    <tr>
+      <th>service</th>
+      <td><p>Character: it can be <code>"dhus"</code> or <code>"apihub"</code> (default).</p></td>
     </tr>
     <tr>
       <th>check</th>

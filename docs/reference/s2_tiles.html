@@ -74,7 +74,7 @@ from the sen2r GitHub repository and it saves it on disk." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.3</span>
       </span>
     </div>
 
@@ -190,26 +190,13 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 <span class='va'>s2tiles</span> <span class='op'>&lt;-</span> <span class='fu'>s2_tiles</span><span class='op'>(</span><span class='op'>)</span>
 
 <span class='co'># Extract a subset of all the tiles</span>
-<span class='fu'>httr</span><span class='fu'>::</span><span class='fu'><a href='https://httr.r-lib.org/reference/GET.html'>GET</a></span><span class='op'>(</span>
-  <span class='st'>"https://github.com/ranghetti/sen2r/raw/master/utils/vector/ch_bound.rds"</span>, 
-  <span class='fu'>httr</span><span class='fu'>::</span><span class='fu'><a href='https://httr.r-lib.org/reference/write_disk.html'>write_disk</a></span><span class='op'>(</span><span class='va'>ch_path</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-<span class='op'>)</span>
-</div><div class='output co'>#&gt; Response [https://raw.githubusercontent.com/ranghetti/sen2r/master/utils/vector/ch_bound.rds]
-#&gt;   Date: 2021-04-13 08:49
-#&gt;   Status: 200
-#&gt;   Content-Type: application/octet-stream
-#&gt;   Size: 43.8 kB
-#&gt; &lt;ON DISK&gt;  /tmp/RtmpZkOKZZ/file6c156cc467b0</div><div class='input'><span class='va'>ch</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='va'>ch_path</span><span class='op'>)</span>
-<span class='va'>s2tiles_ch</span> <span class='op'>&lt;-</span> <span class='va'>s2tiles</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/message.html'>suppressMessages</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/geos_binary_pred.html'>st_intersects</a></span><span class='op'>(</span><span class='va'>ch</span>, <span class='va'>s2tiles</span><span class='op'>)</span><span class='op'>)</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span>,<span class='op'>]</span>
+<span class='va'>s2tiles_ch</span> <span class='op'>&lt;-</span> <span class='va'>s2tiles</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grepl</a></span><span class='op'>(</span><span class='st'>"32T[LMN][ST]"</span>, <span class='va'>s2tiles</span><span class='op'>$</span><span class='va'>tile_id</span><span class='op'>)</span>,<span class='op'>]</span>
 <span class='va'>s2_coords</span> <span class='op'>&lt;-</span> <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_coordinates.html'>st_coordinates</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/warning.html'>suppressWarnings</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/geos_unary.html'>st_centroid</a></span><span class='op'>(</span><span class='va'>s2tiles_ch</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># Show the tiles</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>s2tiles_ch</span><span class='op'>$</span><span class='va'>geometry</span>, border <span class='op'>=</span> <span class='st'>"blue"</span><span class='op'>)</span>
-</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>ch</span>, border <span class='op'>=</span> <span class='st'>"red"</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/text.html'>text</a></span><span class='op'>(</span><span class='va'>s2_coords</span><span class='op'>[</span>,<span class='fl'>1</span><span class='op'>]</span>, <span class='va'>s2_coords</span><span class='op'>[</span>,<span class='fl'>2</span><span class='op'>]</span>, <span class='va'>s2tiles_ch</span><span class='op'>$</span><span class='va'>tile_id</span>, col <span class='op'>=</span> <span class='st'>"blue"</span>, cex <span class='op'>=</span> <span class='fl'>.75</span><span class='op'>)</span>
-</div><div class='img'><img src='s2_tiles-1.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='co'># Use function tiles_intersects() to exclude unuseful tiles.</span>
-</div></pre>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>s2tiles_ch</span><span class='op'>$</span><span class='va'>geometry</span>, border <span class='op'>=</span> <span class='st'>"black"</span><span class='op'>)</span>
+</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/text.html'>text</a></span><span class='op'>(</span><span class='va'>s2_coords</span><span class='op'>[</span>,<span class='fl'>1</span><span class='op'>]</span>, <span class='va'>s2_coords</span><span class='op'>[</span>,<span class='fl'>2</span><span class='op'>]</span>, <span class='va'>s2tiles_ch</span><span class='op'>$</span><span class='va'>tile_id</span>, cex <span class='op'>=</span> <span class='fl'>.75</span><span class='op'>)</span>
+</div><div class='img'><img src='s2_tiles-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
