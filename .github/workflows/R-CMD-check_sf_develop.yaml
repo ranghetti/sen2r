@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - devel
-  pull_request:
-    branches:
-      - master
 
 name: R-CMD-check
 
@@ -20,9 +17,8 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: ubuntu-20.04,   r: 'oldrel',  scihub_user: 'sen2r_travis_oldrel',  rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          - {os: ubuntu-20.04,   r: 'devel',   scihub_user: 'sen2r_travis_devel',   rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          - {os: windows-latest, r: 'release', scihub_user: 'sen2r_ci_windows'}
+          - {os: ubuntu-20.04,   r: 'release', scihub_user: 'sen2r_ci_macos',       rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: ubuntu-20.04,   r: 'devel',   scihub_user: 'sen2r_travis_release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -82,9 +78,11 @@ jobs:
             libssl-dev \
             libcairo2-dev
 
-      - name: "Install CRAN {sf}"
+      - name: "Install develop {sf}"
         run: |
-          remotes::install_cran(c("wk","s2","sf"), force = TRUE)
+          remotes::install_github("paleolimbot/wk")
+          remotes::install_github("r-spatial/s2")
+          remotes::install_github("ranghetti/sf", ref = "sf_1_0")
         shell: Rscript {0}
 
       - name: "Install dependencies"
