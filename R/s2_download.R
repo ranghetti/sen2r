@@ -313,7 +313,7 @@ s2_download <- function(
           download <- RETRY(
             verb = "GET",
             url = as.character(link),
-            config = authenticate(creds[1], creds[2]),
+            config = authenticate(creds[1,1], creds[1,2]),
             times = 5, pause_cap = 8,
             progress(con = if (length(out_bar) > 0) {out_bar} else {stdout()}),
             write_disk(zip_path, overwrite = TRUE)
@@ -339,8 +339,8 @@ s2_download <- function(
           " -o ", basename(zip_path),
           " ", "\"", as.character(link_aria), "\"",
           " --allow-overwrite --file-allocation=none --retry-wait=2",
-          " --http-user=", "\"", creds[1], "\"",
-          " --http-passwd=", "\"", creds[2], "\"",
+          " --http-user=", "\"", creds[1,1], "\"",
+          " --http-passwd=", "\"", creds[1,2], "\"",
           " --max-tries=10"
         )
         download <- try({
@@ -374,7 +374,7 @@ s2_download <- function(
           sel_md5 <- RETRY(
             verb = "GET",
             url = gsub("\\$value$", "Checksum/Value/$value", as.character(link)),
-            config = authenticate(creds[1], creds[2]),
+            config = authenticate(creds[1,1], creds[1,2]),
             write_disk(md5file <- tempfile(), overwrite = TRUE)
           )
           md5 <- toupper(readLines(md5file, warn = FALSE)) == 

@@ -199,9 +199,6 @@ s2_order <- function(
       "stored in the Long Term Archive..."
     )
   }
-  quota_exceeded <- false_invalid_safe <- FALSE # initialise variables
-  status_codes <- c()
-  
   if (!is.null(attr(s2_prodlist, "order_status")) & reorder == FALSE) {  
     # if the list includes the "order_status" attribute (meaning it was 
     # derived from a json file saved by s2_order), and reorder is FALSE,  
@@ -218,6 +215,11 @@ s2_order <- function(
     old_order <- NULL
   }
   
+  false_invalid_safe <- FALSE # initialise variables
+  quota_exceeded <- rep(TRUE, length(to_order))
+  status_codes <- c()
+  i_cred <- 1 # creds record (in case of multiple SciHub credentials)
+  
   # cycle along "to_order" to create a TRUE/FALSE array of succesfull orders
   ordered_products <- foreach(i = to_order, .combine = c) %do% {
     # delay after previous order
@@ -226,24 +228,33 @@ s2_order <- function(
     }
     
     # order products
+    # in case of user quota exceeded, repeat the order with different credentials
+    while (all(quota_exceeded[i], i_cred <= nrow(creds))) {
+      
     times_429 <- 10 # if 429 "too many requests", retry up to 10 times
     while (times_429 > 0) {
       make_order <- RETRY(
         verb = "GET",
         url = as.character(s2_prodlist[i]),
-        config = authenticate(creds[1], creds[2])
+        config = authenticate(creds[i_cred,1], creds[i_cred,2])
       )
       times_429 <-if (make_order$status_code != 429) {0} else {times_429 - 1}
     }
     
     # check if the order was successful
-    if (inherits(make_order, "response")) {
+    sel_ordered <- if (inherits(make_order, "response")) {
       # save status code
-      status_codes <- c(status_codes, make_order$status_code)
+      status_codes[i] <- make_order$status_code
       # check that user quota did not exceed
-      if (any(grepl("retrieval quota exceeded", make_order$headers$`cause-message`))) {
-        quota_exceeded <- TRUE
+      quota_exceeded[i] <- any(grepl(
+        "retrieval quota exceeded", 
+        make_order$headers$`cause-message`
+      ))
+      if (quota_exceeded[i]) {
+        i_cred <- i_cred + 1
+        message("Switching to SciHub record ",i_cred," at product ",i,".")
       }
+    
       # check that an invalid SAFE was not downloaded (#381)
       if (make_order$status_code == 200) {
         false_invalid_safe <- TRUE
@@ -251,6 +262,11 @@ s2_order <- function(
       }
       make_order$status_code == 202
     } else FALSE
+    
+    } # end of user quota WHILE cycle
+    
+    sel_ordered
+  
   }
   
   # create a temporary array as long as s2_prodlist and "fill" it with logical 
@@ -329,8 +345,8 @@ s2_order <- function(
       sum(notordered_products)," of ",sum(!nn(s2_availability), na.rm = TRUE)," Sentinel-2 images ",
       "were not correctly ordered ",
       "(HTML status code: ",unique(paste(status_codes[status_codes!=202]), collapse = ", "),")",
-      if (quota_exceeded) {paste0(
-        " because user '",creds[1],"' offline products retrieval quota exceeded. ",
+      if (any(quota_exceeded)) {paste0(
+        " because user '",creds[1,1],"' offline products retrieval quota exceeded. ",
         "Please retry later, otherwise use different SciHub credentials ",
         "(see ?write_scihub_login or set a specific value for argument \"apihub\")."
       )} else if (false_invalid_safe) {paste0(
