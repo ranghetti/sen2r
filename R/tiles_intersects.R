@@ -49,6 +49,15 @@
 
 tiles_intersects <- function(extent, all = FALSE, out_format = "id", .s2tiles=NULL) {
   
+  # Do not use the {s2} spherical geometry package (to avoid errors)
+  # (when the interface between {sf} and {s2} will be stable, this should be removed)
+  if (requireNamespace("sf", quietly = TRUE)) {
+    try({
+      sf_use_s2_prev <- sf::sf_use_s2(FALSE)
+      on.exit(sf::sf_use_s2(sf_use_s2_prev))
+    }, silent = TRUE)
+  }
+  
   # Load S2 tiles
   s2tiles <- if (is.null(.s2tiles)) {
     s2_tiles()

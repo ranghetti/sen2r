@@ -12,16 +12,16 @@ test_download = FALSE
 # s2_l1c_list <- s2_list(tile = c("32TNR", "32TNS"), time_interval = "2020-08-01", level = "L1C")
 s2_l1c_list <- c(
   "S2B_MSIL1C_20200801T100559_N0209_R022_T32TNR_20200801T130136.SAFE" = 
-    "https://scihub.copernicus.eu/apihub/odata/v1/Products('5946618d-4467-4a68-bf87-7d30bc9b4e50')/$value",
+    "https://apihub.copernicus.eu/apihub/odata/v1/Products('5946618d-4467-4a68-bf87-7d30bc9b4e50')/$value",
   "S2B_MSIL1C_20200801T100559_N0209_R022_T32TNS_20200801T130136.SAFE" = 
-    "https://scihub.copernicus.eu/apihub/odata/v1/Products('cd0b8935-5f5f-485a-bde6-259f5f6e6821')/$value"
+    "https://apihub.copernicus.eu/apihub/odata/v1/Products('cd0b8935-5f5f-485a-bde6-259f5f6e6821')/$value"
 )
 # s2_l2a_list <- s2_list(tile = c("32TNR", "32TNS"), time_interval = "2020-08-01", level = "auto")
 s2_l2a_list <- c(
   "S2B_MSIL2A_20200801T100559_N0214_R022_T32TNR_20200801T135302.SAFE" = 
-    "https://scihub.copernicus.eu/apihub/odata/v1/Products('e502d496-631f-4557-b14f-d98195fdc8c1')/$value",
+    "https://apihub.copernicus.eu/apihub/odata/v1/Products('e502d496-631f-4557-b14f-d98195fdc8c1')/$value",
   "S2B_MSIL2A_20200801T100559_N0214_R022_T32TNS_20200801T135302.SAFE" = 
-    "https://scihub.copernicus.eu/apihub/odata/v1/Products('4aac5270-bbdf-4743-9f9f-532fdbfea2fd')/$value"
+    "https://apihub.copernicus.eu/apihub/odata/v1/Products('4aac5270-bbdf-4743-9f9f-532fdbfea2fd')/$value"
 )
 
 testthat::test_that(
@@ -120,7 +120,8 @@ testthat::test_that(
 )
 
 
-if (Sys.info()["sysname"] != "Linux") {
+# if (Sys.info()["sysname"] != "Linux") {
+if (TRUE) { # FIXME restore when product L1C_20200801_T32TNR (currupt on SciHub) will have been fixed
   testthat::skip_on_ci() # aria2 not installed on Windows and macOS CI
 }
 

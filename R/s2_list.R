@@ -162,6 +162,15 @@ s2_list <- function(spatial_extent = NULL,
   . <- online <- id_tile <- id_orbit <- 
     sensing_datetime <- ingestion_datetime <- centroid <- footprint <- NULL
   
+  # Do not use the {s2} spherical geometry package (to avoid errors)
+  # (when the interface between {sf} and {s2} will be stable, this should be removed)
+  if (requireNamespace("sf", quietly = TRUE)) {
+    try({
+      sf_use_s2_prev <- sf::sf_use_s2(FALSE)
+      on.exit(sf::sf_use_s2(sf_use_s2_prev))
+    }, silent = TRUE)
+  }
+  
   # convert input NA arguments in NULL
   for (a in c("spatial_extent","tile","orbit","time_interval","apihub")) {
     if (suppressWarnings(all(is.na(get(a))))) {
@@ -312,7 +321,8 @@ s2_list <- function(spatial_extent = NULL,
   # fix footprint topology errors
   invalid_entries <- out_dt[,which(!st_is_valid(st_as_sfc(footprint, crs = 4326)))]
   if (length(invalid_entries) > 0) {
-    out_dt[,footprint := st_as_text(st_make_valid(st_as_sfc(footprint, crs = 4326)))]
+    out_footprint_fixed <- st_as_text(st_make_valid(st_as_sfc(out_dt[invalid_entries, footprint], crs = 4326)))
+    out_dt[invalid_entries, footprint := out_footprint_fixed]
   }
   
   if (nrow(out_dt) == 0) {return(as(setNames(character(0), character(0)), "safelist"))}
@@ -419,7 +429,8 @@ s2_list <- function(spatial_extent = NULL,
     while (!end_query) {
       
       query_string <- paste0(
-        'https://scihub.copernicus.eu/',service,'/search?',
+        'https://',ifelse(service=='dhus','scihub','apihub'),
+        '.copernicus.eu/',service,'/search?',
         'start=', start,
         '&rows=', rows,
         '&q=', foot,

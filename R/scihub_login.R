@@ -88,7 +88,8 @@ check_scihub_login <- function(username, password, service = "apihub") {
   }
   check_creds <- RETRY(
     verb = "GET",
-    url = paste0("https://scihub.copernicus.eu/",service,"/odata/v1"),
+    url = paste0("https://",ifelse(service=="dhus","scihub","apihub"),
+                 ".copernicus.eu/",service,"/odata/v1"),
     handle = handle(""),
     config = authenticate(username, password)
   )
@@ -109,7 +110,8 @@ check_scihub_connection <- function(service = "apihub") {
   check_online <- try(
     RETRY(
       "GET",
-      url = paste0("https://scihub.copernicus.eu/",service,"/"),
+      url = paste0("https://",ifelse(service=="dhus","scihub","apihub"),
+                   ".copernicus.eu/",service,"/"),
       handle = handle("")
     )
   )

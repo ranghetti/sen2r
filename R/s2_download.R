@@ -40,7 +40,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' single_s2 <- paste0("https://scihub.copernicus.eu/apihub/odata/v1/",
+#' single_s2 <- paste0("https://apihub.copernicus.eu/apihub/odata/v1/",
 #'   "Products(\'c7142722-42bf-4f93-b8c5-59fd1792c430\')/$value")
 #' names(single_s2) <- "S2A_MSIL1C_20170613T101031_N0205_R022_T32TQQ_20170613T101608.SAFE"
 #' # (this is equivalent to:
@@ -258,8 +258,9 @@ s2_download <- function(
     )
   } else if (!is.na(service)) {
     s2_prodlist <- gsub(
-      "^https://scihub.copernicus.eu/((apihub)|(dhus))/odata",
-      paste0("https://scihub.copernicus.eu/",service,"/odata"),
+      "^https://((scihub)|(apihub)).copernicus.eu/((apihub)|(dhus))/odata",
+      paste0("https://",ifelse(service=="dhus","scihub","apihub"),
+             ".copernicus.eu/",service,"/odata"),
       s2_prodlist
     )
   }
@@ -312,7 +313,7 @@ s2_download <- function(
           download <- RETRY(
             verb = "GET",
             url = as.character(link),
-            config = authenticate(creds[1], creds[2]),
+            config = authenticate(creds[1,1], creds[1,2]),
             times = 5, pause_cap = 8,
             progress(con = if (length(out_bar) > 0) {out_bar} else {stdout()}),
             write_disk(zip_path, overwrite = TRUE)
@@ -338,8 +339,8 @@ s2_download <- function(
           " -o ", basename(zip_path),
           " ", "\"", as.character(link_aria), "\"",
           " --allow-overwrite --file-allocation=none --retry-wait=2",
-          " --http-user=", "\"", creds[1], "\"",
-          " --http-passwd=", "\"", creds[2], "\"",
+          " --http-user=", "\"", creds[1,1], "\"",
+          " --http-passwd=", "\"", creds[1,2], "\"",
           " --max-tries=10"
         )
         download <- try({
@@ -373,7 +374,7 @@ s2_download <- function(
           sel_md5 <- RETRY(
             verb = "GET",
             url = gsub("\\$value$", "Checksum/Value/$value", as.character(link)),
-            config = authenticate(creds[1], creds[2]),
+            config = authenticate(creds[1,1], creds[1,2]),
             write_disk(md5file <- tempfile(), overwrite = TRUE)
           )
           md5 <- toupper(readLines(md5file, warn = FALSE)) == 
