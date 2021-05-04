@@ -18,20 +18,12 @@
 #' s2tiles <- s2_tiles()
 #' 
 #' # Extract a subset of all the tiles
-#' httr::GET(
-#'   "https://github.com/ranghetti/sen2r/raw/master/utils/vector/ch_bound.rds", 
-#'   httr::write_disk(ch_path <- tempfile())
-#' )
-#' ch <- readRDS(ch_path)
-#' s2tiles_ch <- s2tiles[suppressMessages(sf::st_intersects(ch, s2tiles))[[1]],]
+#' s2tiles_ch <- s2tiles[grepl("32T[LMN][ST]", s2tiles$tile_id),]
 #' s2_coords <- sf::st_coordinates(suppressWarnings(sf::st_centroid(s2tiles_ch)))
 #' 
 #' # Show the tiles
-#' plot(s2tiles_ch$geometry, border = "blue")
-#' plot(ch, border = "red", add = TRUE)
-#' text(s2_coords[,1], s2_coords[,2], s2tiles_ch$tile_id, col = "blue", cex = .75)
-#' 
-#' # Use function tiles_intersects() to exclude unuseful tiles.
+#' plot(s2tiles_ch$geometry, border = "black")
+#' text(s2_coords[,1], s2_coords[,2], s2tiles_ch$tile_id, cex = .75)
 
 s2_tiles <- function() {
   

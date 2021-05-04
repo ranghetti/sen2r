@@ -5,7 +5,7 @@ on:
     branches:
       - devel
 
-name: R-CMD-check
+name: R-CMD-check_sf_develop
 
 jobs:
   R-CMD-check:

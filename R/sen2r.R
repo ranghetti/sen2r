@@ -714,6 +714,14 @@ sen2r <- function(param_list = NULL,
   #   py <- init_python()
   # }
   
+  # Do not use the {s2} spherical geometry package (to avoid errors)
+  # (when the interface between {sf} and {s2} will be stable, this should be removed)
+  if (requireNamespace("sf", quietly = TRUE)) {
+    try({
+      sf_use_s2_prev <- sf::sf_use_s2(FALSE)
+      on.exit(sf::sf_use_s2(sf_use_s2_prev))
+    }, silent = TRUE)
+  }
   
   ## 1. Read / import parameters ##
   

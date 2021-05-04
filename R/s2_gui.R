@@ -16,7 +16,7 @@
 #' @import data.table
 #' @importFrom geojsonio geojson_json
 #' @importFrom utils packageVersion
-#' @importFrom sf st_coordinates st_crs st_geometry st_intersects st_polygon
+#' @importFrom sf st_coordinates st_crs st_geometry st_polygon
 #'  st_zm st_read st_bbox st_as_sfc st_transform
 #' @importFrom stats setNames
 #'

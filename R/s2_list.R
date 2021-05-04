@@ -162,6 +162,15 @@ s2_list <- function(spatial_extent = NULL,
   . <- online <- id_tile <- id_orbit <- 
     sensing_datetime <- ingestion_datetime <- centroid <- footprint <- NULL
   
+  # Do not use the {s2} spherical geometry package (to avoid errors)
+  # (when the interface between {sf} and {s2} will be stable, this should be removed)
+  if (requireNamespace("sf", quietly = TRUE)) {
+    try({
+      sf_use_s2_prev <- sf::sf_use_s2(FALSE)
+      on.exit(sf::sf_use_s2(sf_use_s2_prev))
+    }, silent = TRUE)
+  }
+  
   # convert input NA arguments in NULL
   for (a in c("spatial_extent","tile","orbit","time_interval","apihub")) {
     if (suppressWarnings(all(is.na(get(a))))) {
