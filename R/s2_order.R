@@ -254,7 +254,13 @@ s2_order <- function(
       ))
       if (quota_exceeded[i]) {
         i_cred <- i_cred + 1
-        message("Switching to SciHub record ",i_cred," at product ",i,".")
+        if (i_cred <= nrow(creds)) {
+          print_message(
+            type = "message",
+            "Switching to SciHub record ",i_cred," at product ",i,".",
+            date = TRUE
+          )
+        }
       }
     
       # check that an invalid SAFE was not downloaded (#381)
