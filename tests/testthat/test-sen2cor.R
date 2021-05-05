@@ -200,17 +200,18 @@ s2_l1c_prods <- file.path(safe_dir, c(
   "S2B_MSIL1C_20200801T100559_N0209_R022_T32TNR_20200801T130136.SAFE",
   "S2B_MSIL1C_20200801T100559_N0209_R022_T32TNS_20200801T130136.SAFE"
 ))
+testthat::skip_if_not(all(dir.exists(s2_l1c_prods)))
 
 
 testthat::test_that(
   "Tests that Sen2Cor does not run if an existing corresponding L2A product exists", {
     
-    testthat::expect_true(dir.exists(s2_l1c_prods[1])) # test-s2_download.R
     s2_l2a_prod1 <- list.files(
       safe_dir,
       "^S2B_MSIL2A_20200801T100559_N...._R022_T32TNR_[0-9T]{15}\\.SAFE$"
     )
     if (length(s2_l2a_prod1) == 0) {
+      testthat::skip_if_not(is_scihub_configured(), "SciHub credentials are not set")
       s2_l2a_prod1 <- names(s2_download(c(
         "S2B_MSIL2A_20200801T100559_N0214_R022_T32TNR_20200801T135302.SAFE" =
           "https://apihub.copernicus.eu/apihub/odata/v1/Products('e502d496-631f-4557-b14f-d98195fdc8c1')/$value"
@@ -239,7 +240,6 @@ if (test_sen2cor) {
   testthat::test_that(
     "Tests a single Sen2Cor run", {
       
-      testthat::expect_true(dir.exists(s2_l1c_prods[2])) # test-s2_download.R
       s2_l2a_prod2 <- list.files(
         safe_out_dir,
         "^S2B_MSIL2A_20200801T100559_N...._R022_T32TNS_[0-9T]{15}\\.SAFE$",

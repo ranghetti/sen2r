@@ -1,6 +1,7 @@
 message("\n---- Test ignorelist ----")
 testthat::skip_on_cran()
 testthat::skip_on_ci() # TODO try to remove
+testthat::skip_if_not(is_scihub_configured(), "SciHub credentials are not set")
 
 # Ensure required SAFE to be downloaded
 s2_l2a_list <- c(

@@ -1,6 +1,7 @@
 message("\n---- Test s2 formats ----")
 testthat::skip_on_cran()
 # testthat::skip_on_travis()
+testthat::skip_if_not(is_scihub_configured(), "SciHub credentials are not set")
 
 s2_safelist_0 <- s2_list(
   tile = "32TNR",
