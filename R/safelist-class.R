@@ -32,7 +32,11 @@
 #' time_window <- as.Date(c("2017-05-01", "2017-05-31"))
 #' 
 #' ## Create an object of class safelist
-#' list_safe <- s2_list(spatial_extent = pos, time_interval = time_window)
+#' if (is_scihub_configured()) {
+#'   list_safe <- s2_list(spatial_extent = pos, time_interval = time_window)
+#' } else {
+#'   list_safe <- as(character(), "safelist")
+#' }
 #' list_safe
 #' class(list_safe)
 #' attr(list_safe, "sensing_datetime") # extract an hidden attribute from a safelist
@@ -43,13 +47,14 @@
 #' library(data.table)
 #' (s2_dt <- as.data.table(list_safe)) # convert to a data.table
 #' library(sf)
-#' (s2_sf <- st_as_sf(list_safe)) # convert to sf
+#' if (!is.null(attr(list_safe, "footprint"))) {
+#'   (s2_sf <- st_as_sf(list_safe)) # convert to sf
+#' }
 #' 
 #' ## Convert from other classes
 #' as(s2_char, "safelist") # this causes the loss of hidden attributes
 #' as(s2_df, "safelist") # this (and followings) maintain attributes as columns
 #' as(s2_dt, "safelist")
-#' as(s2_sf, "safelist")
 #' }
 
 setClass("safelist", contains = "character")

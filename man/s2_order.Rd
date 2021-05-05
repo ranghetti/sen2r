@@ -67,8 +67,7 @@ The function orders S2 products from
 License: GPL 3.0
 }
 \examples{
-\donttest{
-if (is_scihub_configured()) {
+\dontrun{
 
 # Generate the lists of products
 pos <- sf::st_sfc(sf::st_point(c(-57.8815,-51.6954)), crs = 4326)
@@ -85,7 +84,6 @@ ordered_prods <- s2_order(list_safe)
 (order_path <- attr(ordered_prods, "path"))
 safe_is_online(order_path)
 
-}
 }
 }
 \references{

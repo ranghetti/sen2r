@@ -50,8 +50,7 @@
 #' @export
 #'
 #' @examples
-#' \donttest{
-#' if (is_scihub_configured()) {
+#' \dontrun{
 #' 
 #' # Generate the lists of products
 #' pos <- sf::st_sfc(sf::st_point(c(-57.8815,-51.6954)), crs = 4326)
@@ -68,7 +67,6 @@
 #' (order_path <- attr(ordered_prods, "path"))
 #' safe_is_online(order_path)
 #' 
-#' }
 #' }
 
 s2_order <- function(
