@@ -79,7 +79,7 @@ read_scihub_login <- function(apihub_path = NA) {
 #' @export
 
 is_scihub_configured <- function() {
-  inherits(try(read_scihub_login, silent = TRUE), "try-error")
+  !inherits(try(read_scihub_login(), silent = TRUE), "try-error")
 }
 
 

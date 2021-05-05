@@ -12,6 +12,7 @@ s2_download(
   tile = NULL,
   outdir = ".",
   order_lta = TRUE,
+  abort = TRUE,
   overwrite = FALSE
 )
 }
@@ -41,6 +42,10 @@ where the files should be created (default: current directory).}
 \item{order_lta}{Logical: if TRUE (default), products which are not available
 for direct download are ordered from the Long Term Archive;
 if FALSE, they are simply skipped.}
+
+\item{abort}{Logical parameter: if TRUE (default), the function aborts
+in case of errors during downloads; if FALSE, a warning is shown and
+download of subsequent products continues.}
 
 \item{overwrite}{Logical value: should existing output archives be
 overwritten? (default: FALSE)}

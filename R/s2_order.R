@@ -225,9 +225,9 @@ s2_order <- function(
   i_cred <- 1 # creds record (in case of multiple SciHub credentials)
   
   # cycle along "to_order" to create a TRUE/FALSE array of succesfull orders
-  ordered_products <- foreach(i = to_order, .combine = c) %do% {
+  ordered_products <- foreach(i = seq_along(to_order), .combine = c) %do% {
     # delay after previous order
-    if (i != to_order[1]) {
+    if (i != 1) {
       Sys.sleep(delay)
     }
     
