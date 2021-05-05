@@ -18,6 +18,7 @@ from the sen2r GitHub repository and it saves it on disk.
 License: GPL 3.0
 }
 \examples{
+\donttest{
 # Retrieve all the tiles
 s2tiles <- s2_tiles()
 
@@ -28,6 +29,7 @@ s2_coords <- sf::st_coordinates(suppressWarnings(sf::st_centroid(s2tiles_ch)))
 # Show the tiles
 plot(s2tiles_ch$geometry, border = "black")
 text(s2_coords[,1], s2_coords[,2], s2tiles_ch$tile_id, cex = .75)
+}
 }
 \references{
 L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).

@@ -2,12 +2,15 @@
 % Please edit documentation in R/scihub_login.R
 \name{read_scihub_login}
 \alias{read_scihub_login}
+\alias{is_scihub_configured}
 \alias{check_scihub_login}
 \alias{check_scihub_connection}
 \alias{write_scihub_login}
 \title{Import / export / check SciHub username and password}
 \usage{
 read_scihub_login(apihub_path = NA)
+
+is_scihub_configured()
 
 check_scihub_login(username, password, service = "apihub")
 
@@ -44,6 +47,9 @@ if FALSE (default), \code{apihub_path} is replaced with the new ones.}
 \code{read_scihub_login} returns a matrix of credentials,
 in which \code{username} is in the first column, \code{password} in the second.
 
+\code{is_scihub_configured} returns TRUE if credentials can be
+accessed, FALSE if not.
+
 \code{check_scihub_login} returns TRUE if credentials are valid,
 FALSE elsewhere.
 
@@ -54,8 +60,9 @@ is available and SciHub is accessible, FALSE otherwise.
 }
 \description{
 Read the SciHub login information (\code{read_scihub_login()}),
-save new username and password (\code{write_scihub_login()})
-or check their validity (\code{check_scihub_login()}).
+save new username and password (\code{write_scihub_login()}),
+check their validity (\code{check_scihub_login()})
+or check if SciHub credentials are configured (\code{is_scihub_configured()}).
 Login information is stored in a file \code{apihub.txt} inside the
 ".sen2r" subfolder of the home directory. This function allows reading
 or writing this file, and editing it from the GUI.
@@ -75,6 +82,7 @@ License: GPL 3.0
 \examples{
 \donttest{
 check_scihub_connection()
+is_scihub_configured()
 }
 \dontrun{
 check_scihub_login("username", "password")

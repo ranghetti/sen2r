@@ -340,6 +340,8 @@
 #'   sen2r()
 #' }
 #' 
+#' if (is_scihub_configured()) {
+#' 
 #' # Launch a processing from a saved JSON file (here we use an internal function
 #' # to create a testing json file - this is not intended to be used by final users)
 #' json_path <- build_example_param_file()
@@ -367,26 +369,12 @@
 #'   path_out = out_dir_3
 #' )
 #' 
-#' # Launch a processing based on a JSON file, but changing some parameters
-#' # (e.g., the same processing on a different extent)
-#' out_dir_4 <- tempfile(pattern = "Scalve_")
-#' out_paths_4 <- sen2r(
-#'   param_list = json_path,
-#'   extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
-#'   extent_name = "Scalve",
-#'   path_out = out_dir_4
-#' )
-#' 
-#' 
 #' # Show outputs (loading thumbnails)
 #' 
 #' # Generate thumbnails names
 #' thumb_3 <- file.path(dirname(out_paths_3), "thumbnails", gsub("tif$", "jpg", basename(out_paths_3)))
 #' thumb_3[grep("SCL", thumb_3)] <-
 #'   gsub("jpg$", "png", thumb_3[grep("SCL", thumb_3)])
-#' thumb_4 <- file.path(dirname(out_paths_4), "thumbnails", gsub("tif$", "jpg", basename(out_paths_4)))
-#' thumb_4[grep("SCL", thumb_4)] <-
-#'   gsub("jpg$", "png", thumb_4[grep("SCL", thumb_4)])
 #'   
 #' oldpar <- par(mfrow = c(1,2), mar = rep(0,4))
 #' image(stars::read_stars(thumb_3[grep("BOA", thumb_3)]), rgb = 1:3, useRaster = TRUE)
@@ -400,19 +388,20 @@
 #' image(stars::read_stars(thumb_3[grep("RGB432B", thumb_3)]), rgb = 1:3, useRaster = TRUE)
 #' image(stars::read_stars(thumb_3[grep("RGB843B", thumb_3)]), rgb = 1:3, useRaster = TRUE)
 #' 
-#' par(mfrow = c(1,2), mar = rep(0,4))
-#' image(stars::read_stars(thumb_4[grep("BOA", thumb_4)]), rgb = 1:3, useRaster = TRUE)
-#' image(stars::read_stars(thumb_4[grep("SCL", thumb_4)]), rgb = 1:3, useRaster = TRUE)
-#' 
-#' par(mfrow = c(1,2), mar = rep(0,4))
-#' image(stars::read_stars(thumb_4[grep("MSAVI2", thumb_4)]), rgb = 1:3, useRaster = TRUE)
-#' image(stars::read_stars(thumb_4[grep("NDVI", thumb_4)]), rgb = 1:3, useRaster = TRUE)
-#' 
-#' par(mfrow = c(1,2), mar = rep(0,4))
-#' image(stars::read_stars(thumb_4[grep("RGB432B", thumb_4)]), rgb = 1:3, useRaster = TRUE)
-#' image(stars::read_stars(thumb_4[grep("RGB843B", thumb_4)]), rgb = 1:3, useRaster = TRUE)
-#' 
 #' par(oldpar)
+#' 
+#' }
+#' }
+#' \dontrun{
+#' # Launch a processing based on a JSON file, but changing some parameters
+#' # (e.g., the same processing on a different extent)
+#' out_dir_4 <- tempfile(pattern = "Scalve_")
+#' out_paths_4 <- sen2r(
+#'   param_list = json_path,
+#'   extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
+#'   extent_name = "Scalve",
+#'   path_out = out_dir_4
+#' )
 #' }
 
 

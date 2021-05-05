@@ -70,6 +70,8 @@
 #'
 #' @examples
 #' \donttest{
+#' if (is_scihub_configured()) {
+#' 
 #' pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
 #' time_window <- as.Date(c("2016-05-01", "2017-07-30"))
 #'
@@ -94,6 +96,8 @@
 #' print(example_s2_list)
 #' # Print the dates of the retrieved products
 #' safe_getMetadata(example_s2_list, "sensing_datetime")
+#' }
+#' 
 #' }
 
 s2_list <- function(spatial_extent = NULL,

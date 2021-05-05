@@ -25,6 +25,7 @@
 #'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{https://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @examples
+#' \donttest{
 #' ex_extent <- sf::st_read(
 #'   system.file("extdata/vector/scalve.kml", package = "sen2r"),
 #'   quiet = TRUE
@@ -37,7 +38,6 @@
 #' # Tile ID of all the overlapping S2 tiles
 #' tiles_intersects(ex_extent, all = TRUE)
 #' 
-#' \donttest{
 #' # Spatial object with the required tile
 #' sel_tiles <- tiles_intersects(ex_extent, out_format = "sf")
 #' plot(sf::st_geometry(sel_tiles)); plot(sf::st_geometry(ex_extent), add=TRUE, col="yellow")

@@ -68,6 +68,8 @@ License: GPL 3.0
 }
 \examples{
 \donttest{
+if (is_scihub_configured()) {
+
 # Generate the lists of products
 pos <- sf::st_sfc(sf::st_point(c(-57.8815,-51.6954)), crs = 4326)
 time_window <- as.Date(c("2019-10-21", "2019-11-20"))
@@ -82,6 +84,8 @@ ordered_prods <- s2_order(list_safe)
 # Check in a second time if the product was made available
 (order_path <- attr(ordered_prods, "path"))
 safe_is_online(order_path)
+
+}
 }
 }
 \references{

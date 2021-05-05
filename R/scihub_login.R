@@ -1,7 +1,8 @@
 #' @title Import / export / check SciHub username and password
 #' @description Read the SciHub login information (`read_scihub_login()`),
-#'  save new username and password (`write_scihub_login()`)
-#'  or check their validity (`check_scihub_login()`).
+#'  save new username and password (`write_scihub_login()`),
+#'  check their validity (`check_scihub_login()`)
+#'  or check if SciHub credentials are configured (`is_scihub_configured()`).
 #'  Login information is stored in a file `apihub.txt` inside the
 #'  ".sen2r" subfolder of the home directory. This function allows reading
 #'  or writing this file, and editing it from the GUI.
@@ -29,6 +30,7 @@
 #' @examples
 #' \donttest{
 #' check_scihub_connection()
+#' is_scihub_configured()
 #' }
 #' \dontrun{
 #' check_scihub_login("username", "password")
@@ -67,6 +69,17 @@ read_scihub_login <- function(apihub_path = NA) {
     )
   }
   
+}
+
+
+#' @name is_scihub_configured
+#' @rdname scihub_login
+#' @return `is_scihub_configured` returns TRUE if credentials can be 
+#'  accessed, FALSE if not.
+#' @export
+
+is_scihub_configured <- function() {
+  inherits(try(read_scihub_login, silent = TRUE), "try-error")
 }
 
 

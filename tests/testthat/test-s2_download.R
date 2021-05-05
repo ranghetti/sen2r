@@ -1,6 +1,7 @@
 message("\n---- Test s2_download() and safe_getMetadata() ----")
 testthat::skip_on_cran()
 # testthat::skip_on_travis()
+testthat::skip_if_not(is_scihub_configured(), "SciHub credentials are not set")
 testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
 testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
 

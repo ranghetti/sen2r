@@ -95,6 +95,8 @@ License: GPL 3.0
 }
 \examples{
 \donttest{
+if (is_scihub_configured()) {
+
 pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
 time_window <- as.Date(c("2016-05-01", "2017-07-30"))
 
@@ -119,6 +121,8 @@ example_s2_list <- s2_list(
 print(example_s2_list)
 # Print the dates of the retrieved products
 safe_getMetadata(example_s2_list, "sensing_datetime")
+}
+
 }
 }
 \references{
