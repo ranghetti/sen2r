@@ -88,7 +88,7 @@ useful for reading hidden attributes." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.4</span>
       </span>
     </div>
 
@@ -215,7 +215,11 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 <span class='va'>time_window</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"2017-05-01"</span>, <span class='st'>"2017-05-31"</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'>## Create an object of class safelist</span>
-<span class='va'>list_safe</span> <span class='op'>&lt;-</span> <span class='fu'><a href='s2_list.html'>s2_list</a></span><span class='op'>(</span>spatial_extent <span class='op'>=</span> <span class='va'>pos</span>, time_interval <span class='op'>=</span> <span class='va'>time_window</span><span class='op'>)</span>
+<span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='read_scihub_login.html'>is_scihub_configured</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
+  <span class='va'>list_safe</span> <span class='op'>&lt;-</span> <span class='fu'><a href='s2_list.html'>s2_list</a></span><span class='op'>(</span>spatial_extent <span class='op'>=</span> <span class='va'>pos</span>, time_interval <span class='op'>=</span> <span class='va'>time_window</span><span class='op'>)</span>
+<span class='op'>}</span> <span class='kw'>else</span> <span class='op'>{</span>
+  <span class='va'>list_safe</span> <span class='op'>&lt;-</span> <span class='fu'>as</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>"safelist"</span><span class='op'>)</span>
+<span class='op'>}</span>
 <span class='va'>list_safe</span>
 </div><div class='output co'>#&gt; A named vector with 3 SAFE archives.
 #&gt;                                      S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE 
@@ -288,7 +292,9 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 #&gt; 1: a4a026c0-db7b-4ba8-9b09-53027ab0d7ab     NA
 #&gt; 2: 6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f     NA
 #&gt; 3: 868b5b3c-92ac-412a-8a04-167008a1f08f     NA</div><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://r-spatial.github.io/sf/'>sf</a></span><span class='op'>)</span>
-<span class='op'>(</span><span class='va'>s2_sf</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_as_sf.html'>st_as_sf</a></span><span class='op'>(</span><span class='va'>list_safe</span><span class='op'>)</span><span class='op'>)</span> <span class='co'># convert to sf</span>
+<span class='kw'>if</span> <span class='op'>(</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NULL.html'>is.null</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span><span class='op'>(</span><span class='va'>list_safe</span>, <span class='st'>"footprint"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
+  <span class='op'>(</span><span class='va'>s2_sf</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_as_sf.html'>st_as_sf</a></span><span class='op'>(</span><span class='va'>list_safe</span><span class='op'>)</span><span class='op'>)</span> <span class='co'># convert to sf</span>
+<span class='op'>}</span>
 </div><div class='output co'>#&gt; Simple feature collection with 3 features and 11 fields
 #&gt; Geometry type: POLYGON
 #&gt; Dimension:     XY
@@ -338,15 +344,7 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 #&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" 
 #&gt;                                      S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE 
 #&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" 
-#&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, footprint, uuid, online.</div><div class='input'><span class='fu'><a href='https://r-spatial.github.io/sf/reference/coerce-methods.html'>as</a></span><span class='op'>(</span><span class='va'>s2_sf</span>, <span class='st'>"safelist"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; A named vector with 3 SAFE archives.
-#&gt;                                      S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE 
-#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value" 
-#&gt;                                      S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE 
-#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" 
-#&gt;                                      S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE 
-#&gt; "https://apihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" 
-#&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, uuid, online, footprint.</div><div class='input'><span class='co'># }</span>
+#&gt; The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, footprint, uuid, online.</div><div class='input'><span class='co'># }</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

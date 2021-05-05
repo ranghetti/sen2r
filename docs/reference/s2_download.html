@@ -75,7 +75,7 @@ s2_list function
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.4</span>
       </span>
     </div>
 
@@ -175,6 +175,7 @@ Input filenames must be elements obtained with
   tile <span class='op'>=</span> <span class='cn'>NULL</span>,
   outdir <span class='op'>=</span> <span class='st'>"."</span>,
   order_lta <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  abort <span class='op'>=</span> <span class='cn'>TRUE</span>,
   overwrite <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
 
@@ -220,6 +221,12 @@ where the files should be created (default: current directory).</p></td>
       <td><p>Logical: if TRUE (default), products which are not available
 for direct download are ordered from the Long Term Archive;
 if FALSE, they are simply skipped.</p></td>
+    </tr>
+    <tr>
+      <th>abort</th>
+      <td><p>Logical parameter: if TRUE (default), the function aborts
+in case of errors during downloads; if FALSE, a warning is shown and
+download of subsequent products continues.</p></td>
     </tr>
     <tr>
       <th>overwrite</th>

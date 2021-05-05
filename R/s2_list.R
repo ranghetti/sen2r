@@ -103,7 +103,6 @@
 #' print(example_s2_list)
 #' # Print the dates of the retrieved products
 #' safe_getMetadata(example_s2_list, "sensing_datetime")
-#' }
 #' 
 #' }
 
