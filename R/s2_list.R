@@ -70,30 +70,40 @@
 #'
 #' @examples
 #' \donttest{
+#' 
 #' pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
 #' time_window <- as.Date(c("2016-05-01", "2017-07-30"))
 #'
 #' # Full-period list
-#' example_s2_list <- s2_list(
-#'   spatial_extent = pos,
-#'   tile = "32TNR",
-#'   time_interval = time_window,
-#'   orbit = "065"
-#' )
+#' if (is_scihub_configured()) {
+#'   example_s2_list <- s2_list(
+#'     spatial_extent = pos,
+#'     tile = "32TNR",
+#'     time_interval = time_window,
+#'     orbit = "065"
+#'   )
+#' } else {
+#'   example_s2_list <- as(character(), "safelist")
+#' }
 #' print(example_s2_list)
 #' # Print the dates of the retrieved products
 #' safe_getMetadata(example_s2_list, "sensing_datetime")
 #'
 #' # Seasonal-period list
-#' example_s2_list <- s2_list(
-#'   spatial_extent = pos,
-#'   tile = "32TNR",
-#'   time_interval = time_window,
-#'   time_period = "seasonal"
-#' )
+#' if (is_scihub_configured()) {
+#'   example_s2_list <- s2_list(
+#'     spatial_extent = pos,
+#'     tile = "32TNR",
+#'     time_interval = time_window,
+#'     time_period = "seasonal"
+#'   )
+#' } else {
+#'   example_s2_list <- as(character(), "safelist")
+#' }
 #' print(example_s2_list)
 #' # Print the dates of the retrieved products
 #' safe_getMetadata(example_s2_list, "sensing_datetime")
+#' 
 #' }
 
 s2_list <- function(spatial_extent = NULL,

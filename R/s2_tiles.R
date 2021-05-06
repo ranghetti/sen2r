@@ -14,6 +14,7 @@
 #'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{https://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @examples
+#' \donttest{
 #' # Retrieve all the tiles
 #' s2tiles <- s2_tiles()
 #' 
@@ -24,6 +25,7 @@
 #' # Show the tiles
 #' plot(s2tiles_ch$geometry, border = "black")
 #' text(s2_coords[,1], s2_coords[,2], s2tiles_ch$tile_id, cex = .75)
+#' }
 
 s2_tiles <- function() {
   

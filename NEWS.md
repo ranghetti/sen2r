@@ -1,3 +1,20 @@
+# Version 1.4.4
+
+## New functions
+- `is_scihub_configured()`: accessory function which allows easily checking 
+    if SciHub credentials ca be read. 
+    It is used to selectively run tests and examples basing on that.
+
+## Minor changes
+- New argument `abort` in `s2_download()` (see documentation).
+
+## Bug fixes
+- Speed-up tests and avoid runtime GDAL being searched on CRAN
+    (CRAN error with donttest).
+- Avoid sending queries to SciHub if credentials were not configured
+    (CRAN errors with donttest).
+
+
 # Version 1.4.3
 
 ## Minor changes

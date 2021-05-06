@@ -22,6 +22,9 @@
 #' @param order_lta Logical: if TRUE (default), products which are not available
 #'  for direct download are ordered from the Long Term Archive;
 #'  if FALSE, they are simply skipped.
+#' @param abort Logical parameter: if TRUE (default), the function aborts
+#'  in case of errors during downloads; if FALSE, a warning is shown and
+#'  download of subsequent products continues.
 #' @param overwrite Logical value: should existing output archives be
 #'  overwritten? (default: FALSE)
 #' @return Vector character with the list ot the output products
@@ -69,6 +72,7 @@ s2_download <- function(
   tile = NULL,
   outdir = ".",
   order_lta = TRUE,
+  abort = TRUE,
   overwrite = FALSE
 ) {
   
@@ -84,6 +88,7 @@ s2_download <- function(
     service = service,
     outdir = outdir,
     order_lta = order_lta,
+    abort = abort,
     overwrite = overwrite,
     .s2_availability = NULL
   )
@@ -99,6 +104,7 @@ s2_download <- function(
   service = NA,
   outdir = ".",
   order_lta = TRUE,
+  abort = TRUE,
   overwrite = FALSE,
   .s2_availability = NULL
 ) {
@@ -199,6 +205,7 @@ s2_download <- function(
     apihub = apihub, 
     service = service,
     downloader = downloader, 
+    abort = abort,
     overwrite = overwrite
   )
   
@@ -229,7 +236,7 @@ s2_download <- function(
 
 # internal function with the "core" download method from SciHub
 .s2_download_scihub <- function(
-  s2_prodlist, s2_meta, outdir, apihub, service, downloader, overwrite
+  s2_prodlist, s2_meta, outdir, apihub, service, downloader, abort, overwrite
 ) {
   
   # to avoid NOTE on check
@@ -363,7 +370,7 @@ s2_download <- function(
         suppressWarnings(file.remove(zip_path))
         suppressWarnings(file.remove(paste0(zip_path,".aria2")))
         print_message(
-          type = "error",
+          type = ifelse(abort == TRUE, "error", "warning"),
           "Download of file", link, "failed more than 10 times ",
           "(internet connection or SciHub may be down)."
         )
@@ -394,7 +401,7 @@ s2_download <- function(
         } else if (!check_md5) {
           file.remove(zip_path)
           print_message(
-            type = "error",
+            type = ifelse(abort == TRUE, "error", "warning"),
             "Download of file ", names(link), " was incomplete (Md5sum check failed). ",
             "Please retry to launch the download."
           )
@@ -404,11 +411,20 @@ s2_download <- function(
           unlink(safe_path, recursive = TRUE)
         }
         # update SAFE name (possible different processing date)
-        zip_content <- unzip(zip_path, list = TRUE)
-        safe_newname <- unique(gsub("(^[^\\/]+)\\/.*$", "\\1", zip_content$Name))
-        # unzip
-        unzip(zip_path, exdir = dirname(zip_path))
-        file.remove(zip_path)
+        zip_content <- try(unzip(zip_path, list = TRUE), silent = TRUE)
+        if (inherits(zip_content, "try-error")) {
+          file.remove(zip_path)
+          print_message(
+            type = ifelse(abort == TRUE, "error", "warning"),
+            "File ", names(link), " cannot be unzipped. ",
+            "Please retry later to launch the download."
+          )
+        } else {
+          safe_newname <- unique(gsub("(^[^\\/]+)\\/.*$", "\\1", zip_content$Name))
+          # unzip
+          unzip(zip_path, exdir = dirname(zip_path))
+          file.remove(zip_path)
+        }
       }
       
     } else {

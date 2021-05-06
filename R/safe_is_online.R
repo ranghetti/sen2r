@@ -28,6 +28,8 @@
 #'
 #' @examples
 #' \donttest{
+#' if (is_scihub_configured()) {
+#' 
 #' # Generate the lists of products
 #' pos <- sf::st_sfc(sf::st_point(c(-57.8815,-51.6954)), crs = 4326)
 #' time_window <- as.Date(c("2018-02-21", "2018-03-20"))
@@ -37,6 +39,8 @@
 #'
 #' # Check for availability
 #' safe_is_online(list_safe)
+#' 
+#' }
 #' }
 
 safe_is_online <- function(s2_prodlist = NULL, apihub = NA, verbose = TRUE) {

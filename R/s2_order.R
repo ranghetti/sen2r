@@ -50,7 +50,8 @@
 #' @export
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
+#' 
 #' # Generate the lists of products
 #' pos <- sf::st_sfc(sf::st_point(c(-57.8815,-51.6954)), crs = 4326)
 #' time_window <- as.Date(c("2019-10-21", "2019-11-20"))
@@ -65,6 +66,7 @@
 #' # Check in a second time if the product was made available
 #' (order_path <- attr(ordered_prods, "path"))
 #' safe_is_online(order_path)
+#' 
 #' }
 
 s2_order <- function(
@@ -221,9 +223,9 @@ s2_order <- function(
   i_cred <- 1 # creds record (in case of multiple SciHub credentials)
   
   # cycle along "to_order" to create a TRUE/FALSE array of succesfull orders
-  ordered_products <- foreach(i = to_order, .combine = c) %do% {
+  ordered_products <- foreach(i = seq_along(to_order), .combine = c) %do% {
     # delay after previous order
-    if (i != to_order[1]) {
+    if (i != 1) {
       Sys.sleep(delay)
     }
     
@@ -252,7 +254,13 @@ s2_order <- function(
       ))
       if (quota_exceeded[i]) {
         i_cred <- i_cred + 1
-        message("Switching to SciHub record ",i_cred," at product ",i,".")
+        if (i_cred <= nrow(creds)) {
+          print_message(
+            type = "message",
+            "Switching to SciHub record ",i_cred," at product ",i,".",
+            date = TRUE
+          )
+        }
       }
     
       # check that an invalid SAFE was not downloaded (#381)

@@ -1,6 +1,7 @@
 message("\n---- check connection from main sen2r() function ----")
 testthat::skip_on_cran()
 testthat::skip_on_ci() # TODO try to remove
+testthat::skip_if_not(is_scihub_configured(), "SciHub credentials are not set")
 
 test_that("check internet connection and fail if missing", {
   testthat::expect_error(
