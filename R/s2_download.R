@@ -374,6 +374,7 @@ s2_download <- function(
           "Download of file", link, "failed more than 10 times ",
           "(internet connection or SciHub may be down)."
         )
+        safe_newname <- character(0)
       } else {
         # check md5
         check_md5 <- tryCatch({
@@ -405,6 +406,7 @@ s2_download <- function(
             "Download of file ", names(link), " was incomplete (Md5sum check failed). ",
             "Please retry to launch the download."
           )
+          safe_newname <- character(0)
         }
         # remove existing SAFE
         if (dir.exists(safe_path)) {
@@ -419,8 +421,12 @@ s2_download <- function(
             "File ", names(link), " cannot be unzipped. ",
             "Please retry later to launch the download."
           )
+          safe_newname <- character(0)
         } else {
-          safe_newname <- unique(gsub("(^[^\\/]+)\\/.*$", "\\1", zip_content$Name))
+          safe_newname <- setNames(
+            link, 
+            unique(gsub("(^[^\\/]+)\\/.*$", "\\1", zip_content$Name))
+          )
           # unzip
           unzip(zip_path, exdir = dirname(zip_path))
           file.remove(zip_path)
@@ -442,12 +448,12 @@ s2_download <- function(
       # safe_newname <- safe_existing_meta$name[
       #   order(nn(safe_existing_meta$creation_datetime), decreasing = TRUE)[1]
       #   ]
-      safe_newname <- basename(safe_path)
+      safe_newname <- setNames(link, basename(safe_path))
       
     }
     
     # return to foreach
-    as(setNames(link, safe_newname), "safelist")
+    as(safe_newname, "safelist")
     
   }
 }
