@@ -314,6 +314,7 @@ s2_list <- function(spatial_extent = NULL,
         "  time_intervals = time_intervals,",
         "  tile = tile,",
         "  orbit = orbit,",
+        "  level = level,", # "auto" is converted to c("L1C", "L2A") (as required) inside .s2_list_gcloud()
         "  max_cloud = max_cloud",
         ")"
       )))
