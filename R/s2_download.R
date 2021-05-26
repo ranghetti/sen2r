@@ -296,19 +296,22 @@ s2_download <- function(
       safe_existing <- safe_existing[safe_isvalid(safe_existing)]
       # check centroids
       safe_existing_footprints <- safe_getMetadata(safe_existing, "footprint")
-      safe_existing_centroids <- st_transform(
-        st_centroid(st_transform(st_as_sfc(safe_existing_footprints, crs = 4326), 3857)),
-        4326
-      )
-      safe_centroid <- st_transform(
-        st_centroid(st_transform(st_as_sfc(s2_meta[i,footprint], crs = 4326), 3857)),
-        4326
-      )
-      # remove SAFE with the same (approximatively) centroid
-      safe_existing <- safe_existing[
-        apply(round(st_coordinates(safe_existing_centroids), 2), 1, paste, collapse = " ") ==
-          apply(round(st_coordinates(safe_centroid), 2), 1, paste, collapse = " ")
-      ]
+      safe_existing <- try({
+        safe_existing_centroids <- st_transform(
+          st_centroid(st_transform(st_as_sfc(safe_existing_footprints, crs = 4326), 3857)),
+          4326
+        )
+        safe_centroid <- st_transform(
+          st_centroid(st_transform(st_as_sfc(s2_meta[i,footprint], crs = 4326), 3857)),
+          4326
+        )
+        # remove SAFE with the same (approximatively) centroid
+        safe_existing[
+          apply(round(st_coordinates(safe_existing_centroids), 2), 1, paste, collapse = " ") ==
+            apply(round(st_coordinates(safe_centroid), 2), 1, paste, collapse = " ")
+        ]
+      }, silent = TRUE)
+      if (inherits(safe_existing, "try-error")) {safe_existing <- character()}
     } else {
       # if footprints are not available, avoid checking 
       safe_existing <- character()
