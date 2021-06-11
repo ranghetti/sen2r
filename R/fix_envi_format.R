@@ -27,38 +27,46 @@ fix_envi_format <- function(infiles) {
   envi_ext <- gdal_formats[gdal_formats$name=="ENVI","ext"][1]
   
   # list with the names of Sentinel-2 bands
-  s2_bands <- list("TOA" = list(
-    "A" = list(
-      "B1 Aerosol (442.7 +- 27 nm)",
-      "B2 Blue (492.4 +- 98 nm)",
-      "B3 Green (559.8 +- 45 nm)",
-      "B4 Red (664.6 +- 38 nm)",
-      "B5 Red-edge 1 (704.1 +- 19 nm)",
-      "B6 Red-edge 2 (740.5 +- 18 nm)",
-      "B7 Red-edge 3 (782.8 +- 28 nm)",
-      c("B8 NIR (832.8 +- 145 nm)", "B8a narrow NIR (864.7 +- 33 nm)"),
-      "B9 Water vapour (945.1 +- 26 nm)",
-      "B10 Cirrus (1373.5 +- 75 nm)",
-      "B11 SWIR1 (1613.7 +- 143 nm)",
-      "B12 SWIR2 (2202.4 +- 242 nm)"
-    ),
-    "B" = list(
-      "B1 Aerosol (442.2 +- 45 nm)",
-      "B2 Blue (492.1 +- 98 nm)",
-      "B3 Green (559.0 +- 46 nm)",
-      "B4 Red (664.9 +- 39 nm)",
-      "B5 Red-edge 1 (703.8 +- 20 nm)",
-      "B6 Red-edge 2 (739.1 +- 18 nm)",
-      "B7 Red-edge 3 (779.7 +- 28 nm)",
-      c("B8 NIR (832.9 +- 133 nm)", "B8a narrow NIR (864.0 +- 32 nm)"),
-      "B9 Water vapour (943.2 +- 27 nm)",
-      "B10 Cirrus (1376.9 +- 76 nm)",
-      "B11 SWIR1 (1610.4 +- 141 nm)",
-      "B12 SWIR2 (2185.7 +- 238 nm)"
-    )
-  ))
-  s2_bands[["BOA"]][["A"]] <- s2_bands[["TOA"]][["A"]][c(1:9,11:12)]
-  s2_bands[["BOA"]][["B"]] <- s2_bands[["TOA"]][["B"]][c(1:9,11:12)]
+  s2_bands <- list(
+    "TOA" = list("A" = list(), "B" = list()),
+    "BOA" = list("A" = list(), "B" = list())
+  )
+  s2_bands[["TOA"]][["A"]][["bandname"]] <- s2_bands[["TOA"]][["B"]][["bandname"]] <- list(
+    "B1 Aerosol",
+    "B2 Blue",
+    "B3 Green",
+    "B4 Red",
+    "B5 Red-edge 1",
+    "B6 Red-edge 2",
+    "B7 Red-edge 3",
+    c("B8 NIR", "B8a narrow NIR"),
+    "B9 Water vapour",
+    "B10 Cirrus",
+    "B11 SWIR1",
+    "B12 SWIR2"
+  )
+  s2_bands[["BOA"]][["A"]][["bandname"]] <- s2_bands[["BOA"]][["B"]][["bandname"]] <-
+    s2_bands[["TOA"]][["B"]][["bandname"]][c(1:9,11:12)]
+  s2_bands[["TOA"]][["A"]][["wavelength"]] <- list(
+    0.4427, 0.4924, 0.5598, 0.6646, 0.7041, 0.7405, 0.7828, c(0.8328, 0.8647),
+    0.9451, 1.3735, 1.6137, 2.2024
+  )
+  s2_bands[["TOA"]][["B"]][["wavelength"]] <- list(
+    0.4422, 0.4921, 0.5590, 0.6649, 0.7038, 0.7391, 0.7797, c(0.8329, 0.8640),
+    0.9432, 1.3769, 1.6104, 2.1857
+  )
+  s2_bands[["BOA"]][["A"]][["wavelength"]] <- s2_bands[["TOA"]][["A"]][["wavelength"]][c(1:9,11:12)]
+  s2_bands[["BOA"]][["B"]][["wavelength"]] <- s2_bands[["TOA"]][["B"]][["wavelength"]][c(1:9,11:12)]
+  s2_bands[["TOA"]][["A"]][["fwhm"]] <- list(
+    0.021, 0.066, 0.036, 0.031, 0.015, 0.015, 0.020, c(0.106, 0.021),
+    0.020, 0.031, 0.091, 0.175
+  )
+  s2_bands[["TOA"]][["B"]][["fwhm"]] <- list(
+    0.021, 0.066, 0.036, 0.031, 0.016, 0.015, 0.020, c(0.106, 0.022),
+    0.021, 0.030, 0.094, 0.185
+  )
+  s2_bands[["BOA"]][["A"]][["fwhm"]] <- s2_bands[["TOA"]][["A"]][["fwhm"]][c(1:9,11:12)]
+  s2_bands[["BOA"]][["B"]][["fwhm"]] <- s2_bands[["TOA"]][["B"]][["fwhm"]][c(1:9,11:12)]
   s2_bands[["RGB"]] <- c("Red","Green","Blue")
   
   # cycle on infiles
@@ -97,16 +105,26 @@ fix_envi_format <- function(infiles) {
       if (infile_meta$prod_type %in% c("TOA","BOA")) {
         # BOA-TOA: set band names to reflectances
         sel_s2_bands <- s2_bands[[infile_meta$prod_type]][[infile_meta$mission]]
-        sel_s2_bands[[8]] <- if (infile_meta$res == "10m") {sel_s2_bands[[8]][1]} else {sel_s2_bands[[8]][2]}
-        sel_s2_bands <- unlist(sel_s2_bands)
+        if (infile_meta$res == "10m") {
+          sel_s2_bands[["bandname"]][[8]] <- sel_s2_bands[["bandname"]][[8]][1]
+          sel_s2_bands[["wavelength"]][[8]] <- sel_s2_bands[["wavelength"]][[8]][1]
+          sel_s2_bands[["fwhm"]][[8]] <- sel_s2_bands[["fwhm"]][[8]][1]
+        } else {
+          sel_s2_bands[["bandname"]][[8]] <- sel_s2_bands[["bandname"]][[8]][2]
+          sel_s2_bands[["wavelength"]][[8]] <- sel_s2_bands[["wavelength"]][[8]][2]
+          sel_s2_bands[["fwhm"]][[8]] <- sel_s2_bands[["fwhm"]][[8]][2]
+        }
+        sel_s2_bands[["bandname"]] <- unlist(sel_s2_bands[["bandname"]])
+        sel_s2_bands[["wavelength"]] <- unlist(sel_s2_bands[["wavelength"]])
+        sel_s2_bands[["fwhm"]] <- unlist(sel_s2_bands[["fwhm"]])
         rns_length <- switch(infile_meta$prod_type,TOA=12,BOA=11) # bands must be 11 or 12
       } else if (grepl("^RGB", infile_meta$prod_type)) {
         # RGB: set red-green-blue
-        sel_s2_bands <- s2_bands[["RGB"]]
+        sel_s2_bands <- list("bandname" = s2_bands[["RGB"]])
         rns_length <- 3
       } else {
         # other single-band products: set product name as band name
-        sel_s2_bands <- infile_meta$prod_type
+        sel_s2_bands <- list("bandname" = infile_meta$prod_type)
         rns_length <- 1
       }
       
@@ -118,11 +136,19 @@ fix_envi_format <- function(infiles) {
       if (check_rn) {
         hdr_content[rns] <- paste0(
           gsub("^( *)Band [0-9]+(\\ *[\\,\\}])$", "\\1", hdr_content[rns]),
-          sel_s2_bands,
+          sel_s2_bands[["bandname"]],
           gsub("^( *)Band [0-9]+(\\ *[\\,\\}])$", "\\2", hdr_content[rns])
         )
         hdr_content[filename_rn] <- gsub(infile.envi, infile.dat, hdr_content[filename_rn], fixed = TRUE)
-        if (infile_meta$prod_type == "SCL") {
+        if (infile_meta$prod_type %in% c("TOA","BOA")) {
+          hdr_content <- c(
+            hdr_content,
+            paste0("wavelength = {",paste(sel_s2_bands[["wavelength"]], collapse=", "),"}"),
+            paste0("fwhm = {",paste(sel_s2_bands[["fwhm"]], collapse=", "),"}"),
+            "wavelength units = {um}",
+            "default bands = {8, 4, 3}"
+          )
+        } else if (infile_meta$prod_type == "SCL") {
           # SCL: set class names and colours
           hdr_content <- c(
             hdr_content,
