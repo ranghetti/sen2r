@@ -51,6 +51,11 @@ testthat::skip_if_not(check_scihub_connection(), "SciHub server is not reachable
 testthat::test_that(
   "Tests on s2_download - Built-in downloader, dhus service", {
     
+    if (!all(safe_is_online(s2_l2a_list))) {
+      s2_order(s2_l2a_list)
+      skip("s2_l2a_list contains offline products")
+    }
+    
     suppressWarnings(s2_l2a_downloaded <- s2_download(
       s2_l2a_list,
       downloader = "builtin",
@@ -147,6 +152,11 @@ testthat::test_that(
 
 testthat::test_that(
   "Tests on s2_download - aria2 downloader", {
+    
+    if (!all(safe_is_online(s2_l1c_list))) {
+      s2_order(s2_l1c_list)
+      skip("s2_l1c_list contains offline products")
+    }
     
     suppressWarnings(s2_l1c_downloaded <- s2_download(
       s2_l1c_list,
