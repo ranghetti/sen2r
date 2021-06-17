@@ -47,10 +47,13 @@ product
 - "L1C": list available level-1C products
 - "L2A": list available level-2A products}
 
-\item{server}{The servers where archives are searched. Currently,
-only \code{"scihub"} is supported (Google Cloud will be implemented in future).
+\item{server}{The servers where archives are searched.
+Available options are \code{"scihub"} (ESA Sentinel Hub) and \code{"gcloud"}
+(Google Cloud).
+Default is \code{"scihub"}, meaning that only ESA Sentinel Hub is considered.
 In case of multiple values, they are used in order of priority.
-If \code{availability = "check"}, products on LTA are always left as last choice.}
+If \code{availability = "check"}, products on LTA are always left as last choice.
+See also the section "Details".}
 
 \item{apihub}{Path of the \code{apihub.txt} file containing credentials
 of SciHub account.
@@ -89,6 +92,32 @@ otherwise, values are set to NA.
 \description{
 The function retrieves the list of available Sentinel-2
 products satisfying given search criteria.
+}
+\details{
+By default, SAFE archives are searched on ESA Sentinel Hub
+(argument \code{server = "scihub"}), which is the faster and stable option.
+After the reduction of the retention time to 30 days,
+it is highly probable that products older then 30 days will not be found
+online (see \url{https://github.com/ranghetti/sen2r/issues/408}).
+Moreover, after ordering them from Long Term Archive (LTA), in several cases
+corrupted archives are obtained
+(see \url{https://github.com/ranghetti/sen2r/issues/406}, and refer to this
+reference for details about the ESA LTA policy).
+
+To avoid this problems, the research and download from Google Cloud was
+recently implemented.
+Users can set \code{server = "gcloud"} to use this data exclusively, or
+\verb{server = c("scihub", "gcloud"), availability = "check"}
+to search for products available on SciHub first, or on Google Cloud
+subsequently.
+\strong{Important}: to search and download from Google Cloud, Google Cloud SDK
+must be installed and configured following the indications in
+\url{https://cloud.google.com/sdk/docs/install}.
+Notice also that querying Google Cloud can be very slow (while downloading
+them is generally faster than from SciHub).
+
+Searching and downloading from Google Cloud is an experimental feature;
+in case of bugs, report them at \url{https://github.com/ranghetti/sen2r/issues}.
 }
 \note{
 License: GPL 3.0

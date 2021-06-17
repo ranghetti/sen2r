@@ -84,6 +84,22 @@ load_binpaths <- function(bins = NULL) {
     }
   }
   
+  # Check gcloud
+  if ("gsutil" %in% bins & is.null(binpaths$gsutil)) {
+    if (Sys.which("gsutil") != "") {
+      binpaths$gsutil <- normalize_path(Sys.which("gsutil"))
+      writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), binpaths_file)
+      binpaths <- jsonlite::fromJSON(binpaths_file)
+    } else {
+      print_message(
+        type="warning",
+        "Google Cloud SDK was not found in your system; press install it ",
+        "following the instructions at https://cloud.google.com/sdk/docs/install ",
+        "or set an existing installation using function check_gcloud() ."
+      )
+    }
+  }
+  
   # Return the list
   attr(binpaths, "path") <- binpaths_file
   binpaths
