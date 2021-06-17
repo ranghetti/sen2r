@@ -10,6 +10,9 @@ testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus se
 # To perform the test also on download, replace 'test_download = FALSE' with 'TRUE'.
 test_download = FALSE
 
+# NOTE 2: causing to the reduction of the retention time in SciHub, tests are
+# difficult to be pdated in order to grant SAFE availability.
+
 # s2_l1c_list <- s2_list(tile = c("32TNR", "32TNS"), time_interval = "2020-08-01", level = "L1C")
 s2_l1c_list <- c(
   "S2B_MSIL1C_20200801T100559_N0209_R022_T32TNR_20200801T130136.SAFE" = 
@@ -220,6 +223,76 @@ testthat::test_that(
     testthat::expect_true(file.exists(exp_outsafe_2[1]))
     rm_invalid_safe(exp_outsafe_2[1])
     testthat::expect_true(file.exists(exp_outsafe_2[1]))
+    
+  }
+)
+
+
+message("\n---- Test s2_download() from GCloud ----")
+
+# Run tests only if gcloud is installed and configured
+testthat::skip_if_not(suppressWarnings(check_gcloud(abort = FALSE)))
+
+s2_sel_list <- c(
+  "S2A_MSIL1C_20190723T101031_N0208_R022_T32TNR_20190723T121220.SAFE" =
+    "gs://gcp-public-data-sentinel-2/tiles/32/T/NR/S2A_MSIL1C_20190723T101031_N0208_R022_T32TNR_20190723T121220.SAFE/",
+  "S2A_MSIL2A_20190723T101031_N0213_R022_T32TNR_20190723T125722.SAFE" =
+    "gs://gcp-public-data-sentinel-2/L2/tiles/32/T/NR/S2A_MSIL2A_20190723T101031_N0213_R022_T32TNR_20190723T125722.SAFE/"
+)
+
+testthat::test_that(
+  "Tests on s2_download - Google Cloud", {
+    
+    suppressWarnings(s2_downloaded <- sen2r::s2_download(
+      s2_sel_list,
+      downloader = "builtin",
+      outdir = safe_dir,
+      apihub = tests_apihub_path,
+      overwrite = test_download
+    )) # suppressWarnings used to manage possible warnings for skept Md5sum checks
+    exp_outsafe_1 <- file.path(safe_dir, names(s2_downloaded))
+    testthat::expect_true(all(file.exists(exp_outsafe_1)))
+    testthat::expect_equal(length(s2_downloaded), length(s2_sel_list))
+    testthat::expect_true(grepl("gs://gcp-public-data-sentinel-2/tiles/32/T/NR/", s2_downloaded[1]))
+    testthat::expect_true(grepl("gs://gcp-public-data-sentinel-2/L2/tiles/32/T/NR/", s2_downloaded[2]))
+    
+    # test raster metadata on L1C
+    exp_meta_ex <- sen2r::raster_metadata(
+      list.files(
+        file.path(
+          exp_outsafe_1[grepl("L1C", exp_outsafe_1)],
+          "GRANULE/L1C_T32TNR_A021326_20190723T101347/IMG_DATA"
+        ),
+        "T32TNR_20190723T101031_B02", full.names = TRUE
+      ), format = "list"
+    )[[1]]
+    testthat::expect_equal(exp_meta_ex$size, c("x" = 10980, "y" = 10980))
+    testthat::expect_equal(exp_meta_ex$res, c("x"  = 10,    "y" = 10))
+    testthat::expect_equal(
+      as.numeric(exp_meta_ex$bbox),
+      c(499980, 4990200, 609780, 5100000)
+    )
+    testthat::expect_equal(exp_meta_ex$proj$epsg, 32632)
+    testthat::expect_equal(exp_meta_ex$outformat, "JP2OpenJPEG")
+    
+    # test raster metadata on L2A
+    exp_meta_ex <- sen2r::raster_metadata(
+      list.files(
+        file.path(
+          exp_outsafe_1[grepl("L2A", exp_outsafe_1)],
+          "GRANULE/L2A_T32TNR_A021326_20190723T101347/IMG_DATA/R20m"
+        ),
+        "T32TNR_20190723T101031_B8A", full.names = TRUE
+      ), format = "list"
+    )[[1]]
+    testthat::expect_equal(exp_meta_ex$size, c("x" = 5490, "y" = 5490))
+    testthat::expect_equal(exp_meta_ex$res, c("x"  = 20,    "y" = 20))
+    testthat::expect_equal(
+      as.numeric(exp_meta_ex$bbox),
+      c(499980, 4990200, 609780, 5100000)
+    )
+    testthat::expect_equal(exp_meta_ex$proj$epsg, 32632)
+    testthat::expect_equal(exp_meta_ex$outformat, "JP2OpenJPEG")
     
   }
 )
