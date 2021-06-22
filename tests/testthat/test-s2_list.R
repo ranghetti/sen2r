@@ -447,7 +447,9 @@ testthat::test_that(
 message("\n---- Test s2_list(..., server = 'gcloud') ----")
 
 # Run tests only if gcloud is installed and configured
-testthat::skip_if_not(suppressWarnings(check_gcloud(abort = FALSE)))
+is_gcloud_configured <- suppressWarnings(check_gcloud(abort = FALSE))
+testthat::expect_equal(is_gcloud_configured, TRUE) # FIXME remove
+testthat::skip_if_not(is_gcloud_configured)
 
 # Check the gcloud check
 testthat::test_that(
