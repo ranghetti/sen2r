@@ -4,7 +4,13 @@
 \alias{check_gcloud}
 \title{Check Google Cloud SDK installation}
 \usage{
-check_gcloud(gsutil_dir, force = FALSE, abort = TRUE, check_creds = TRUE)
+check_gcloud(
+  gsutil_dir,
+  force = FALSE,
+  full_scan = FALSE,
+  abort = TRUE,
+  check_creds = TRUE
+)
 }
 \arguments{
 \item{gsutil_dir}{(optional) Character: the path of the \code{gsutil} executable,
@@ -13,6 +19,17 @@ If not provided, \code{gsutil} is searched in the system path.}
 
 \item{force}{(optional) Logical: if TRUE, check even if it is already
 configured (default is FALSE).}
+
+\item{full_scan}{(optional) Logical: in Linux and MacOS, if \code{gsutil_dir} was
+not manually defined, \code{gsutil} is searched within the system path in case this
+argument is left to default value FALSE; instead, if TRUE, a full search is
+performed. In Windows, if the folder \verb{Google\\Cloud SDK} exist in
+\verb{C:\\Program Files (x86)}, \verb{C:\\Program Files} or
+\verb{C:\\Users\\<username>\\AppData\\Local}, then \code{gsutil} is searched there, otherwise in the main
+directory \verb{C:\\}; setting \code{full_scan = TRUE}, is is always searched
+in the whole \verb{C:\\}.
+This argument takes no effect if \code{gsutil_dir} was defined, since, in that case,
+a full search is always performed in \code{gsutil_dir}.}
 
 \item{abort}{(optional) Logical: if TRUE (default), the function aborts
 in case no Google Cloud SDK installation is found; if FALSE,
