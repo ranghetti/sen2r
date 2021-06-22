@@ -470,14 +470,14 @@ testthat::test_that(
       check_gcloud("/wrong/path", force = TRUE),
       regexp = gsub(
         " ", "[ \n]",
-        "Google Cloud SDK was not found at the provided path"
+        "Google Cloud SDK was not found"
       )
     )
     testthat::expect_warning(
       check_warning <- check_gcloud("/wrong/path", force = TRUE, abort = FALSE),
       regexp = gsub(
         " ", "[ \n]",
-        "Google Cloud SDK was not found at the provided path"
+        "Google Cloud SDK was not found"
       )
     )
     testthat::expect_equal(check_warning, FALSE)
