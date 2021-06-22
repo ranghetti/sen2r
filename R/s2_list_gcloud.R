@@ -5,12 +5,16 @@
 #' @import data.table
 .s2_list_gcloud <- function(time_intervals, tile, orbit, level, max_cloud) {
   
+  # to avoid NOTE on check
+  sensing_datetime <- j <- id_orbit <- creation_datetime <- id_tile <- clouds <- 
+    name <- mission <- ingestion_datetime <- footprint <- uuid <- online <- NULL
+  
   ## Check gcloud
   check_gcloud() # stop in case of problems
   binpaths <- load_binpaths()
   
   ## List SAFE
-  sen2r:::print_message(
+  print_message(
     type="message", date=TRUE,
     "Querying Google Cloud (this can take a very long time)..."
   )

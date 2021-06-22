@@ -4,6 +4,10 @@
 #' @import data.table
 .s2_download_gcloud <- function(s2_prodlist, s2_meta, outdir, overwrite) {
   
+  # to avoid NOTE on check
+  i <- mission <- level <- sensing_datetime <- id_orbit <- id_tile <- 
+    zip_path <- footprint <- NULL
+
   ## Check gcloud
   check_gcloud() # stop in case of problems
   binpaths <- load_binpaths()
