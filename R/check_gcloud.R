@@ -143,18 +143,14 @@ check_gcloud <- function(
 .check_gcloud_creds <- function(binpaths, message_type) {
   if (missing(binpaths)) {binpaths <- load_binpaths()}
   gcloud_path <- file.path(dirname(binpaths$gsutil), "gcloud") # TODO check on Windows
-  gcloudauth_raw <- system(paste0(gcloud_path, " auth list"), intern = TRUE)
-  # FIXME the previous instruction returns a Python message which has to be hidden
-  check_result <- if (!any(grepl("credentialed accounts", tolower(gcloudauth_raw)))) {
-    print_message(
-      type = message_type,
-      "It was not possible to check for an existing Google Cloud SDK login; ",
-      "do it following the indications ",
-      "in https://cloud.google.com/sdk/docs/install ",
-      "or set 'check_creds = FALSE'."
-    )
-    FALSE
-  } else if (any(grepl("no credentialed accounts", tolower(gcloudauth_raw)))) {
+  gcloudauth_user <- system(paste0(
+    gcloud_path, 
+    " info --format=\"value(config.account)\""
+  ), intern = TRUE)
+  check_result <- if (
+    length(gcloudauth_user)==0 | 
+    all(grepl("^ *$", gcloudauth_user))
+  ) {
     print_message(
       type = message_type,
       "Google Cloud SDK was not initialised; ",

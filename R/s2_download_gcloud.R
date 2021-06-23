@@ -6,7 +6,7 @@
   
   # to avoid NOTE on check
   i <- mission <- level <- sensing_datetime <- id_orbit <- id_tile <- 
-    zip_path <- footprint <- NULL
+    footprint <- NULL
 
   ## Check gcloud
   check_gcloud() # stop in case of problems
@@ -27,7 +27,7 @@
         "^S",mission,"\\_MSIL",level,"\\_",strftime(sensing_datetime,"%Y%m%dT%H%M%S"),
         "\\_N[0-9]{4}\\_R",id_orbit,"\\_T",id_tile,"\\_[0-9]{8}T[0-9]{6}\\.SAFE$"
       )]
-      safe_existing <- list.files(dirname(zip_path), safe_regex, full.names = TRUE)
+      safe_existing <- list.files(dirname(safe_path), safe_regex, full.names = TRUE)
       safe_existing <- safe_existing[safe_isvalid(safe_existing)]
       # check centroids
       safe_existing_footprints <- safe_getMetadata(safe_existing, "footprint")

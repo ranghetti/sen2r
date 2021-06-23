@@ -33,18 +33,29 @@
 #' Sentinel-2 sensors to be used.
 #'  Accepted values: "s2a" and "s2b"; default: c("s2a","s2b").
 #' @param online (optional) Logical: TRUE (default) to search for available
-#'  products on SciHub (and download if needed); FALSE to work
-#'  only with already downloaded SAFE products.
+#'  products on SciHub and/or Google Cloud (and download if needed); 
+#'  FALSE to work only with already downloaded SAFE products.
+#' @param server (optional) Character vector of length 1 or 2, with the names of
+#'  the servers on which SAFE archives are searched. 
+#'  Available options are `"scihub"` (ESA Sentinel Hub) and `"gcloud"`
+#'  (Google Cloud).
+#'  Default is `"scihub"`, meaning that only ESA Sentinel Hub is considered.
+#'  In case of multiple values, they are used in order of priority and 
+#'  products on LTA are always left as last choice.
+#'  See also the section "Details" of `s2_list()`.
 #' @param order_lta (optional) Logical: TRUE (default) to order products from
 #'  the Long Term Archive if unavailable for direct download; FALSE to simply
 #'  skip them (this option has effect only in online mode).
+#'  It takes effect only if argument `server` includes `"scihub"`.
 #' @param apihub Path of the text file containing credentials
 #'  of SciHub account.
 #'  If NA (default), the default location inside the package will be used.
+#'  It takes effect only if argument `server` includes `"scihub"`.
 #' @param downloader (optional) Character value corresponding to the executable
 #'  which should be used to download SAFE products. It could be one among
-#'  "builtin" (default) and "aria2".
-#'  If aria2 is not installed, built-in method will be used instead.
+#'  `"builtin"` (default) and `"aria2"`.
+#'  If `aria2` is not installed, built-in method will be used instead.
+#'  It takes effect only if argument `server` includes `"scihub"`.
 #' @param overwrite_safe (optional) Logical: TRUE to overwrite existing
 #'  products with products found online or manually corrected,
 #'  FALSE (default) to skip download and atmospheric correction for
@@ -423,6 +434,7 @@ sen2r <- function(param_list = NULL,
                   s2_levels = "l2a",
                   sel_sensor = c("s2a","s2b"),
                   online = TRUE,
+                  server = "scihub",
                   order_lta = TRUE,
                   apihub = NA,
                   downloader = "builtin",
@@ -510,6 +522,7 @@ sen2r <- function(param_list = NULL,
     s2_levels = s2_levels,
     sel_sensor = sel_sensor,
     online = online,
+    server = server,
     order_lta = order_lta,
     apihub = apihub,
     downloader = downloader,
@@ -606,6 +619,7 @@ sen2r <- function(param_list = NULL,
                    s2_levels,
                    sel_sensor,
                    online,
+                   server,
                    order_lta,
                    apihub,
                    downloader,
@@ -1106,7 +1120,7 @@ sen2r <- function(param_list = NULL,
     print_message(
       type = "message",
       date = TRUE,
-      "Searching for available SAFE products on SciHub..."
+      "Searching for available SAFE products..."
     )
     
     # if online mode, retrieve list with s2_list() basing on parameters
@@ -1123,6 +1137,7 @@ sen2r <- function(param_list = NULL,
         },
         orbit = pm$s2orbits_selected,
         level = "L1C",
+        server = pm$server,
         max_cloud = pm$max_cloud_safe,
         availability = "check",
         apihub = pm$apihub
@@ -1151,6 +1166,7 @@ sen2r <- function(param_list = NULL,
         } else if (pm$step_atmcorr %in% c("scihub")) {
           "L1C"
         },
+        server = pm$server,
         max_cloud = pm$max_cloud_safe,
         availability = "check",
         apihub = pm$apihub
@@ -1755,6 +1771,7 @@ sen2r <- function(param_list = NULL,
   }
   
   # Define n_apihubs, being the number of product groups within each group_A
+  if ("scihub" %in% pm$server) {
   apihubs <- read_scihub_login(if (length(nn(pm$apihub) > 0)) {pm$apihub} else {NA})
   n_apihubs <- min(nrow(apihubs), length(s2names_groups_A)) # this because
   # it takes no sense to use more apihubs than groups
@@ -1768,6 +1785,9 @@ sen2r <- function(param_list = NULL,
       parallel_groups_B <- FALSE
       parallel_steps <- FALSE
     }
+  }
+  } else {
+    n_apihubs <- length(s2names_groups_A)
   }
   # they will be used in case of parallel execution of groups_A
   
