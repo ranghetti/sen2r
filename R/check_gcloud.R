@@ -103,11 +103,11 @@ check_gcloud <- function(
           list.files("C:/", "^gsutil$", recursive = TRUE, full.names = TRUE)[1]
         }
       } else {
-        list.files("C:/", "^gsutil$", recursive = TRUE, full.names = TRUE)[1]
+        list.files(gsutil_dir, "^gsutil$", recursive = TRUE, full.names = TRUE)[1]
       }
     }
-    paths_gsutil <- normalize_path(paths_gsutil)
     paths_gsutil <- paths_gsutil[!is.na(paths_gsutil)]
+    paths_gsutil <- normalize_path(paths_gsutil)
 
     # Exit if Sen2Cor does not exist in the provided directory
     if (length(paths_gsutil) == 0 || sum(file.exists(paths_gsutil)) == 0) {
