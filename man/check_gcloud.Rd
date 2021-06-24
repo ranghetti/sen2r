@@ -2,6 +2,8 @@
 % Please edit documentation in R/check_gcloud.R
 \name{check_gcloud}
 \alias{check_gcloud}
+\alias{is_gcloud_configured}
+\alias{check_gcloud_connection}
 \title{Check Google Cloud SDK installation}
 \usage{
 check_gcloud(
@@ -11,6 +13,10 @@ check_gcloud(
   abort = TRUE,
   check_creds = TRUE
 )
+
+is_gcloud_configured()
+
+check_gcloud_connection()
 }
 \arguments{
 \item{gsutil_dir}{(optional) Character: the path of the \code{gsutil} executable,
@@ -39,15 +45,28 @@ a warning is shown and FALSE is returned.}
 (required to search and download products) was set.}
 }
 \value{
-Logical (invisible): TRUE in case Google Cloud SDK was correctly set,
-FALSE if it was not found, not configured (if \code{check_creds = TRUE}) and
-\code{abort = FALSE} (otherwise, the function stops).
+\code{check_gcloud()} returns TRUE (invisible) in case Google Cloud SDK
+was correctly set, FALSE if it was not found, not configured
+(if \code{check_creds = TRUE}) and \code{abort = FALSE} (otherwise, the function stops).
+
+\code{is_gcloud_configured()} returns TRUE if Google Cloud SDK is installed
+and an account is configured, FALSE if not.
+
+\code{check_gcloud_connection()} returns TRUE if connection
+is available, FALSE otherwise.
 }
 \description{
-The function checks that Google Cloud SDK is installed
-and if a user account is set.
 Google Cloud SDK is an optional dependency, required to search and download
 SAFE archives from Google Cloud.
+
+\code{check_gcloud()} checks if Google Cloud SDK is externally
+installed and if a user account is set.
+
+\code{is_gcloud_configured()} check if Google Cloud SDK were already
+configured in sen2r using \code{check_gcloud()}.
+
+\code{check_gcloud_connection()} check if internet connection
+is available and Sentinel-2 bucket is accessible on Google Cloud.
 }
 \note{
 License: GPL 3.0
@@ -55,6 +74,10 @@ License: GPL 3.0
 \examples{
 \dontrun{
 check_gcloud()
+}
+\donttest{
+check_gcloud_connection()
+is_gcloud_configured()
 }
 }
 \references{

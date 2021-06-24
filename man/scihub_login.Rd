@@ -44,27 +44,30 @@ to the ones existing within \code{apihub_path};
 if FALSE (default), \code{apihub_path} is replaced with the new ones.}
 }
 \value{
-\code{read_scihub_login} returns a matrix of credentials,
+\code{read_scihub_login()} returns a matrix of credentials,
 in which \code{username} is in the first column, \code{password} in the second.
 
-\code{is_scihub_configured} returns TRUE if credentials can be
+\code{is_scihub_configured()} returns TRUE if credentials can be
 accessed, FALSE if not.
 
-\code{check_scihub_login} returns TRUE if credentials are valid,
+\code{check_scihub_login()} returns TRUE if credentials are valid,
 FALSE elsewhere.
 
-\code{check_scihub_connection} returns TRUE if internet connection
+\code{check_scihub_connection()} returns TRUE if internet connection
 is available and SciHub is accessible, FALSE otherwise.
 
-\code{write_scihub_login} returns NULL.
+\code{write_scihub_login()} returns NULL.
 }
 \description{
-Read the SciHub login information (\code{read_scihub_login()}),
-save new username and password (\code{write_scihub_login()}),
-check their validity (\code{check_scihub_login()})
-or check if SciHub credentials are configured (\code{is_scihub_configured()}).
+\itemize{
+\item \code{read_scihub_login()} reads the SciHub login information;
+\item \code{write_scihub_login()} saves new username and password;
+\item \code{check_scihub_login()} checks their validity;
+\item \code{is_scihub_configured()} check if SciHub credentials are configured.
+}
+
 Login information is stored in a file \code{apihub.txt} inside the
-".sen2r" subfolder of the home directory. This function allows reading
+".sen2r" subfolder of the home directory. These functions allow reading
 or writing this file, and editing it from the GUI.
 In case file \code{apihub.txt} is missing, \code{read_scihub_login()} searches inside
 the environmental variables \code{SCIHUB_USER} and \code{SCIHUB_PASSWORD}.
@@ -81,10 +84,10 @@ License: GPL 3.0
 }
 \examples{
 \donttest{
-check_scihub_connection()
 is_scihub_configured()
 }
 \dontrun{
+check_scihub_connection()
 check_scihub_login("username", "password")
 write_scihub_login("username", "password")
 read_scihub_login()

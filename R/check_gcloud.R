@@ -1,8 +1,10 @@
 #' @title Check Google Cloud SDK installation
-#' @description The function checks that Google Cloud SDK is installed
-#'  and if a user account is set.
+#' @description 
 #'  Google Cloud SDK is an optional dependency, required to search and download
 #'  SAFE archives from Google Cloud.
+#'  
+#'  `check_gcloud()` checks if Google Cloud SDK is externally 
+#'  installed and if a user account is set.
 #' @param gsutil_dir (optional) Character: the path of the `gsutil` executable,
 #'  or the directory in which it is installed.
 #'  If not provided, `gsutil` is searched in the system path.
@@ -23,9 +25,9 @@
 #'  a warning is shown and FALSE is returned.
 #' @param check_creds (optional) Logical: if TRUE, check also if a user account
 #'  (required to search and download products) was set.
-#' @return Logical (invisible): TRUE in case Google Cloud SDK was correctly set,
-#'  FALSE if it was not found, not configured (if `check_creds = TRUE`) and
-#'  `abort = FALSE` (otherwise, the function stops).
+#' @return `check_gcloud()` returns TRUE (invisible) in case Google Cloud SDK 
+#'  was correctly set, FALSE if it was not found, not configured 
+#'  (if `check_creds = TRUE`) and `abort = FALSE` (otherwise, the function stops).
 #'
 #' @author Luigi Ranghetti, phD (2021) \email{luigi@@ranghetti.info}
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
@@ -38,6 +40,10 @@
 #' @examples
 #' \dontrun{
 #' check_gcloud()
+#' check_gcloud_connection()
+#' }
+#' \donttest{
+#' is_gcloud_configured()
 #' }
 
 
@@ -163,4 +169,37 @@ check_gcloud <- function(
     TRUE
   }
   return(invisible(check_result))
+}
+
+
+#' @name is_gcloud_configured
+#' @rdname check_gcloud
+#' @description `is_gcloud_configured()` check if Google Cloud SDK were already
+#'  configured in sen2r using `check_gcloud()`.
+#' @return `is_gcloud_configured()` returns TRUE if Google Cloud SDK is installed
+#'  and an account is configured, FALSE if not.
+#' @export
+
+is_gcloud_configured <- function() {
+  !inherits(try(check_gcloud(), silent = TRUE), "try-error")
+}
+
+
+#' @name check_gcloud_connection
+#' @rdname check_gcloud
+#' @description `check_gcloud_connection()` check if internet connection
+#'  is available and Sentinel-2 bucket is accessible on Google Cloud.
+#' @return `check_gcloud_connection()` returns TRUE if connection
+#'  is available, FALSE otherwise.
+#' @importFrom httr RETRY handle
+#' @export
+check_gcloud_connection <- function() {
+  check_online <- try(
+    RETRY(
+      "GET",
+      url = "https://console.cloud.google.com/storage/browser/gcp-public-data-sentinel-2",
+      handle = handle("")
+    )
+  )
+  !inherits(check_online, "try-error")
 }

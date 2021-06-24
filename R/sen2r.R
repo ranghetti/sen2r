@@ -355,7 +355,7 @@
 #' # to create a testing json file - this is not intended to be used by final users)
 #' json_path <- build_example_param_file()
 #' 
-#' if (is_scihub_configured()) {
+#' if (is_gcloud_configured() {
 #'   out_paths_2 <- sen2r(json_path)
 #' } else {
 #'   out_paths_2 <- character(0)
@@ -366,9 +366,10 @@
 #' # Launch a processing using function arguments
 #' safe_dir <- file.path(dirname(attr(load_binpaths(), "path")), "safe")
 #' out_dir_3 <- tempfile(pattern = "Barbellino_")
-#' if (is_scihub_configured()) {
+#' if (is_gcloud_configured()) {
 #'   out_paths_3 <- sen2r(
 #'     gui = FALSE,
+#'     server = "gcloud",
 #'     step_atmcorr = "l2a",
 #'     extent = system.file("extdata/vector/barbellino.geojson", package = "sen2r"),
 #'     extent_name = "Barbellino",
@@ -386,7 +387,7 @@
 #'   out_paths_3 <- character(0)
 #' }
 #' 
-#' if (is_scihub_configured()) {
+#' if (is_gcloud_configured()) {
 #' 
 #' # Show outputs (loading thumbnails)
 #' 
@@ -862,8 +863,17 @@ sen2r <- function(param_list = NULL,
   ## Check consistency of parameters
   pm <- check_param_list(pm, type = "error", check_paths = TRUE, correct = TRUE)
   
-  # if ONLINE check internet connection and scihub credentials
-  if (pm$online == TRUE) {
+  # if ONLINE check internet connection and scihub/gcloud credentials
+  if (pm$online == TRUE & "gcloud" %in% pm$server) {
+    if (!check_gcloud_connection()) {
+      print_message(
+        type = "error",
+        "Impossible to reach the Sentinel-2 bucket on Google Cloud ",
+        "(internet connection may be down)."
+      )
+    }
+  }
+  if (pm$online == TRUE & "scihub" %in% pm$server) {
     if (!check_scihub_connection()) {
       print_message(
         type = "error",
