@@ -355,7 +355,7 @@
 #' # to create a testing json file - this is not intended to be used by final users)
 #' json_path <- build_example_param_file()
 #' 
-#' if (is_gcloud_configured() {
+#' if (is_gcloud_configured()) {
 #'   out_paths_2 <- sen2r(json_path)
 #' } else {
 #'   out_paths_2 <- character(0)
