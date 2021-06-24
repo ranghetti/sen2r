@@ -7,7 +7,7 @@ testthat::test_that(
     list_param <- jsonlite::fromJSON(json_path)
     testthat::expect_equal(
       names(list_param),
-      c("preprocess", "s2_levels", "sel_sensor", "online", "order_lta", 
+      c("preprocess", "s2_levels", "sel_sensor", "online", "server", "order_lta", 
         "downloader", "overwrite_safe", "rm_safe", "max_cloud_safe",
         "step_atmcorr", "sen2cor_use_dem", "sen2cor_gipp", 
         "timewindow", "timeperiod", "extent", 
