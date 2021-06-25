@@ -74,9 +74,9 @@ License: GPL 3.0
 \examples{
 \dontrun{
 check_gcloud()
+check_gcloud_connection()
 }
 \donttest{
-check_gcloud_connection()
 is_gcloud_configured()
 }
 }
