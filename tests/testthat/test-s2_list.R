@@ -1,4 +1,4 @@
-cat("\n---- Test s2_list(..., server = 'gcloud') ----")
+message("\n---- Test s2_list(..., server = 'gcloud') ----")
 testthat::skip_on_cran()
 
 testthat::test_that(

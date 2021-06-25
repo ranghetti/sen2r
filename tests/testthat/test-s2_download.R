@@ -1,4 +1,4 @@
-cat("\n---- Test s2_download() from GCloud and safe_getMetadata() ----")
+message("\n---- Test s2_download() from GCloud and safe_getMetadata() ----")
 testthat::skip_on_cran()
 
 # NOTE: these tests require a high amount of time (depending on connection speed),

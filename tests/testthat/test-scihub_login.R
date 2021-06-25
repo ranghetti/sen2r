@@ -1,4 +1,4 @@
-cat("\n---- Check SciHub connection - specific function ----")
+message("\n---- Check SciHub connection - specific function ----")
 testthat::skip_on_cran()
 # testthat::skip_on_ci()
 
