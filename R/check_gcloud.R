@@ -131,7 +131,7 @@ check_gcloud <- function(
 
     ## Check configuration
     if (check_creds == TRUE) {
-      check_creds_result <- .check_gcloud_creds(binpaths)
+      check_creds_result <- .check_gcloud_creds(binpaths, message_type = message_type)
       if (!check_creds_result) {return(invisible(FALSE))}
     }
 
