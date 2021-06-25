@@ -733,8 +733,8 @@ sen2r <- function(param_list = NULL,
   # (when the interface between {sf} and {s2} will be stable, this should be removed)
   if (requireNamespace("sf", quietly = TRUE)) {
     try({
-      sf_use_s2_prev <- sf::sf_use_s2(FALSE)
-      on.exit(sf::sf_use_s2(sf_use_s2_prev))
+      suppressMessages(sf_use_s2_prev <- sf::sf_use_s2(FALSE))
+      on.exit(suppressMessages(sf::sf_use_s2(sf_use_s2_prev)))
     }, silent = TRUE)
   }
   
