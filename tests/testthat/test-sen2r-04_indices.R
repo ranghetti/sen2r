@@ -1,13 +1,27 @@
 message("\n---- Test compute spectral indices - main function ----")
 testthat::skip_on_cran()
-testthat::skip_on_ci() # TODO try to remove
-testthat::skip_if_not(is_scihub_configured(), "SciHub credentials are not set")
+# testthat::skip_on_ci() # TODO try to remove
+
+# Required SAFE
+s2_l2a_list <- c(
+  "S2B_MSIL2A_20200801T100559_N0214_R022_T32TNR_20200801T135302.SAFE",
+  "S2B_MSIL2A_20200801T100559_N0214_R022_T32TNS_20200801T135302.SAFE"
+)
 
 testthat::test_that(
   "Tests on indices computation, on unrequired BOA, with clip ", {
     
-    testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
-    testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
+    # Check sample inputs
+    testthat::skip_if_not(file.exists(file.path(
+      safe_dir, s2_l2a_list[1],
+      "GRANULE/L2A_T32TNR_A017780_20200801T101400/IMG_DATA/R10m",
+      "T32TNR_20200801T100559_B08_10m.jp2"
+    )))
+    testthat::skip_if_not(file.exists(file.path(
+      safe_dir, s2_l2a_list[2],
+      "GRANULE/L2A_T32TNS_A017780_20200801T101400/IMG_DATA/R10m",
+      "T32TNS_20200801T100559_B08_10m.jp2"
+    )))
     
     outdir_11 <- tempfile(pattern = "out_test11_")
     dir.create(dirname(outdir_11), showWarnings = FALSE)
@@ -18,7 +32,7 @@ testthat::test_that(
     unlink(exp_outpath_11)
     sen2r(
       gui = FALSE,
-      online = TRUE,
+      online = FALSE,
       step_atmcorr = "l2a", # to avoid checks on Sen2Cor
       extent = system.file("extdata/vector/scalve.kml", package = "sen2r"),
       extent_name = "Scalve",
@@ -28,8 +42,7 @@ testthat::test_that(
       mask_type = NA,
       path_out = outdir_11,
       path_l2a = safe_dir,
-      parallel = FALSE,
-      apihub = tests_apihub_path
+      parallel = FALSE
     )
     testthat::expect_true(all(file.exists(exp_outpath_11)))
     
@@ -61,10 +74,10 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_11)
-    testthat::expect_equal(round(mean(exp_stars[[1]], na.rm=TRUE)), 7364)
-    testthat::expect_equal(round(mean(exp_stars[[2]], na.rm=TRUE)), 4877)
-    testthat::expect_equal(sum(is.na(exp_stars[[1]])), 1417518)
-    testthat::expect_equal(sum(is.na(exp_stars[[2]])), 1417518)
+    testthat::expect_equal(round(mean(exp_stars[[1]], na.rm=TRUE)), 7348)
+    testthat::expect_equal(round(mean(exp_stars[[2]], na.rm=TRUE)), 4906)
+    testthat::expect_equal(sum(is.na(exp_stars[[1]])), 0)
+    testthat::expect_equal(sum(is.na(exp_stars[[2]])), 0)
     rm(exp_stars)
     
     # test thumbnails
