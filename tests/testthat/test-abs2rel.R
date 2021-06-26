@@ -1,4 +1,4 @@
-message("\n---- Test abs2rel() ----")
+cat("\n---- Test abs2rel() ----")
 testthat::skip_on_cran()
 testthat::skip_on_ci()
 

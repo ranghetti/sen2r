@@ -1,4 +1,4 @@
-message("\n---- Test projpar() / projname() ----")
+cat("\n---- Test projpar() / projname() ----")
 # testthat::skip_on_cran()
 # testthat::skip_on_travis()
 

@@ -1,4 +1,4 @@
-message("\n---- Test ignorelist ----")
+cat("\n---- Test ignorelist ----")
 testthat::skip_on_cran()
 testthat::skip_on_ci() # TODO try to remove
 testthat::skip_if_not(is_gcloud_configured(), "Google account is not set")

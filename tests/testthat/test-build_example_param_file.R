@@ -1,4 +1,4 @@
-message("\n---- Test build_example_param_file() ----")
+cat("\n---- Test build_example_param_file() ----")
 
 testthat::test_that(
   "Build an example parameter file", {
