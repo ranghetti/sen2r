@@ -1,4 +1,4 @@
-cat("\n---- Test sen2r_getElements ----")
+message("\n---- Test sen2r_getElements ----")
 # testthat::skip_on_cran()
 # testthat::skip_on_travis()
 

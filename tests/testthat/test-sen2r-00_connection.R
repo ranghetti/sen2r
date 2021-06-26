@@ -1,4 +1,4 @@
-cat("\n---- check connection from main sen2r() function ----")
+message("\n---- check connection from main sen2r() function ----")
 testthat::skip_on_cran()
 # testthat::skip_on_ci() # TODO try to remove
 

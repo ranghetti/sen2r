@@ -1,4 +1,4 @@
-cat("\n---- Check GCloud connection - specific functions ----")
+message("\n---- Check GCloud connection - specific functions ----")
 testthat::skip_on_cran()
 # testthat::skip_on_ci()
 

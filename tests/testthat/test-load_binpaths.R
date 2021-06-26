@@ -1,4 +1,4 @@
-cat("\n---- Load binaries ----")
+message("\n---- Load binaries ----")
 testthat::skip_on_cran()
 # testthat::skip_on_travis()
 

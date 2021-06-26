@@ -1,4 +1,4 @@
-cat("\n---- Test s2_merge and translate when stitching 2 tiles with no clipping ----")
+message("\n---- Test s2_merge and translate when stitching 2 tiles with no clipping ----")
 testthat::skip_on_cran()
 # testthat::skip_on_ci() # TODO try to remove
 testthat::skip_if_not(is_gcloud_configured(), "Google account is not set")

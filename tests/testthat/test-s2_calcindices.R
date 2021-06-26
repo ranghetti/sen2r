@@ -1,4 +1,4 @@
-cat("\n---- Test compute spectral indices - s2_calcindices() ----")
+message("\n---- Test compute spectral indices - s2_calcindices() ----")
 
 outdir_12 <- tempfile(pattern = "out_test12_")
 testthat::test_that(

@@ -1,4 +1,4 @@
-cat("\n---- Test s2_order() adn safe_is_online() ----")
+message("\n---- Test s2_order() adn safe_is_online() ----")
 testthat::skip_on_cran()
 # testthat::skip_on_travis()
 testthat::skip_if_not(is_scihub_configured(), "SciHub credentials are not set")

@@ -1,4 +1,4 @@
-cat("\n---- Test mask - main function ----")
+message("\n---- Test mask - main function ----")
 testthat::skip_on_cran()
 if (Sys.info()["sysname"] == "Windows") {
   testthat::skip_on_ci() # TODO try to remove

@@ -1,4 +1,4 @@
-cat("\n---- Test compute RGB images - main function ----")
+message("\n---- Test compute RGB images - main function ----")
 testthat::skip_on_cran()
 # testthat::skip_on_ci() # TODO try to remove
 

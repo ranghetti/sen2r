@@ -1,4 +1,4 @@
-cat("\n---- Test warping (clip, reproject, resize) ----")
+message("\n---- Test warping (clip, reproject, resize) ----")
 testthat::skip_on_cran()
 # testthat::skip_on_ci() # TODO try to remove
 

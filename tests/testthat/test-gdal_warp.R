@@ -1,4 +1,4 @@
-cat("\n---- Test gdal_warp() ----")
+message("\n---- Test gdal_warp() ----")
 
 crop_poly <- system.file("extdata/vector/dam.geojson", package = "sen2r")
 crop_line <- sf::st_cast(sf::read_sf(crop_poly), "LINESTRING")
