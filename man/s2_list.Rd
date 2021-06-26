@@ -15,7 +15,7 @@ s2_list(
   apihub = NA,
   service = "apihub",
   max_cloud = 100,
-  availability = "ignore",
+  availability,
   output_type = "deprecated"
 )
 }
@@ -78,6 +78,8 @@ available or not for download (see "Value" to know
 how to distinguish each other);
 \item \code{"ignore"} (default): all archive names are returned, without doing the check
 (running the function is faster).
+If not provided, \code{"ignore"} is the default value unless
+\code{server = c("scihub","gcloud")} (in which case \code{"check"} is used).
 }}
 
 \item{output_type}{Deprecated (use \code{as.data.table} to obtain a data.table).}

@@ -70,6 +70,8 @@
 #'      how to distinguish each other);
 #'  - `"ignore"` (default): all archive names are returned, without doing the check
 #'      (running the function is faster).
+#'  If not provided, `"ignore"` is the default value unless 
+#'  `server = c("scihub","gcloud")` (in which case `"check"` is used).
 #' @param output_type Deprecated (use `as.data.table` to obtain a data.table).
 #' @return An object of class [safelist].
 #'  The attribute `online` contains logical values: in case 
@@ -143,7 +145,7 @@ s2_list <- function(spatial_extent = NULL,
                     apihub = NA,
                     service = "apihub",
                     max_cloud = 100,
-                    availability = "ignore",
+                    availability,
                     output_type = "deprecated") {
   
   if (!level %in% c("auto", "L2A", "L1C")) {
@@ -160,6 +162,13 @@ s2_list <- function(spatial_extent = NULL,
     )
   }
   
+  if (missing(availability)) {
+    if (length(server) == 2 && server[1] == "scihub" && server[2] == "gcloud") {
+      availability <- "check"
+    } else {
+      availability <- "ignore"
+    }
+  }
   if (!availability %in% c("ignore", "check", "online", "lta")) {
     print_message(
       type = "error",
@@ -167,7 +176,7 @@ s2_list <- function(spatial_extent = NULL,
       "\"check\" and \"ignore\""
     )
   }
-  
+
   # check the used service
   if (!service %in% c("apihub", "dhus")) {
     print_message(
@@ -331,6 +340,7 @@ s2_list <- function(spatial_extent = NULL,
       availability = availability,
       .s2tiles = s2tiles
     )
+    out_dt_list[["scihub"]][,server:="scihub"]
   }
   
   ## Google Cloud specific methods
@@ -342,16 +352,18 @@ s2_list <- function(spatial_extent = NULL,
       level = level,
       max_cloud = max_cloud
     )
+    out_dt_list[["gcloud"]][,server:="gcloud"]
   }
   
   ## Merge dt (in case of multiple servers)
   # order by the order of input "server" argument (this is used in duplicated:
   # first "server" value is taken in case of douplicated availability)
-  out_dt <- rbindlist(out_dt_list[server])
+  out_dt <- rbindlist(out_dt_list)
+  out_dt$server <- factor(out_dt$server, levels=server) # order by argument server
   if (nrow(out_dt) == 0) {return(as(setNames(character(0), character(0)), "safelist"))}
   # compute date (to ignore duplicated dates)
   out_dt[,date := as.Date(substr(as.character(out_dt$sensing_datetime), 1, 10))]
-  out_names <- copy(names(out_dt))
+  out_names <- copy(names(out_dt)); out_names <- out_names[out_names != "server"]
   # fix footprint topology errors
   invalid_entries <- out_dt[,which(!st_is_valid(st_as_sfc(footprint, crs = 4326)))]
   if (length(invalid_entries) > 0) {
@@ -360,8 +372,8 @@ s2_list <- function(spatial_extent = NULL,
   }
   
   if (nrow(out_dt) == 0) {return(as(setNames(character(0), character(0)), "safelist"))}
-  # first, order by level (L2A, then L1C) and ingestion time (newers first)
-  out_dt <- out_dt[order(-level,-ingestion_datetime),]
+  # first, order by level (L2A, then L1C) and ingestion time (newer first)
+  out_dt <- out_dt[order(-level,server,-ingestion_datetime),]
   # second, order by availability (LTA SciHub products are always used as last choice)
   out_dt <- rbind(
     out_dt[is.na(online) | online == TRUE,],
