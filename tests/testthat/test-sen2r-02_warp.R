@@ -117,6 +117,10 @@ exp_outpath_3 <- file.path(outdir_3, "S2B1C_20200801_022_Scalve_TOA_20.dat")
 testthat::test_that(
   "Tests on clip TOA on extent, reproject and resize and save as ENVI", {
     
+    testthat::skip_if(Sys.info()["sysname"] == "Windows")
+    # FIXME because it causes Windows crashing launching gdal_utils("warp",...)
+    # within gdal_warp().
+    
     # Check sample inputs
     testthat::skip_if_not(file.exists(file.path(
       safe_dir, s2_l1c_list[1],
