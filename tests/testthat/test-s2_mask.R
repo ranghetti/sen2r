@@ -1,4 +1,4 @@
-message("\n---- Test mask - s2_mask() ----")
+cat("\n---- Test mask - s2_mask() ----")
 
 testthat::test_that(
   "Tests on custom mask on TOA, with save binary mask", {

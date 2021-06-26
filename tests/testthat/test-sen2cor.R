@@ -1,4 +1,4 @@
-message("\n---- Test Sen2Cor installation ----")
+cat("\n---- Test Sen2Cor installation ----")
 testthat::skip_on_cran()
 testthat::skip_on_ci()
 testthat::skip_if_offline("step.esa.int")
