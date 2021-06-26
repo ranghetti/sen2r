@@ -340,7 +340,7 @@ s2_list <- function(spatial_extent = NULL,
       availability = availability,
       .s2tiles = s2tiles
     )
-    out_dt_list[["scihub"]][,server:="scihub"]
+    out_dt_list[["scihub"]][,server:=rep("scihub", nrow(out_dt_list[["gcloud"]]))]
   }
   
   ## Google Cloud specific methods
@@ -352,7 +352,7 @@ s2_list <- function(spatial_extent = NULL,
       level = level,
       max_cloud = max_cloud
     )
-    out_dt_list[["gcloud"]][,server:="gcloud"]
+    out_dt_list[["gcloud"]][,server:=rep("gcloud", nrow(out_dt_list[["gcloud"]]))]
   }
   
   ## Merge dt (in case of multiple servers)
