@@ -12,7 +12,6 @@ testthat::test_that(
       time_interval = as.Date(c("2016-05-01", "2016-05-31")),
       orbit = "065",
       max_cloud = 50,
-      apihub = tests_apihub_path,
       server = "gcloud"
     )
     testthat::expect_equal(length(s2_list_test), 1)
@@ -28,7 +27,6 @@ testthat::test_that(
       spatial_extent = pos,
       tile = "32TNR",
       time_interval = as.Date(c("2016-05-01", "2016-05-01")),
-      apihub = tests_apihub_path,
       server = "gcloud"
     )
     testthat::expect_equal(length(s2_list_test), 0)
@@ -55,7 +53,6 @@ testthat::test_that(
       time_interval = as.Date(c("2016-05-01", "2017-08-01")),
       time_period = "seasonal",
       orbit = "065",
-      apihub = tests_apihub_path,
       server = "gcloud"
     )
     testthat::expect_equal(length(s2_list_test), 21)
