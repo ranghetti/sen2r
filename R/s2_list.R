@@ -340,7 +340,7 @@ s2_list <- function(spatial_extent = NULL,
       availability = availability,
       .s2tiles = s2tiles
     )
-    out_dt_list[["scihub"]][,server:=rep("scihub", nrow(out_dt_list[["gcloud"]]))]
+    out_dt_list[["scihub"]][,server:=rep("scihub", nrow(out_dt_list[["scihub"]]))]
   }
   
   ## Google Cloud specific methods
