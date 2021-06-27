@@ -503,7 +503,7 @@ s2_gui <- function(param_list = NULL,
             
             fluidRow(
               column(
-                width=3,
+                width=4,
                 
                 # online_mode (online/offline mode)
                 radioButtons(
@@ -526,42 +526,20 @@ s2_gui <- function(param_list = NULL,
                   inline = TRUE
                 ),
                 
-                # SciHub credentials
-                conditionalPanel(
-                  condition = "input.online == 'TRUE'",
-                  div(
-                    style = "padding-bottom:10px;",
-                    checkboxInput(
-                      "make_lta_order",
-                      label = span(
-                        "Order from LTA\u2000",
-                        actionLink("help_lta_order", icon("question-circle"))
-                      ),
-                      value = TRUE
-                    ),
-                    actionButton(
-                      "scihub_md",
-                      label = "\u2000Login to SciHub",
-                      icon = icon("user-circle")
-                    )
-                  )
-                )
-              ),
-              column(
-                width=4,
-                conditionalPanel(
-                  condition = "input.online == 'TRUE'",
-                  radioButtons(
-                    "downloader",
-                    label = span(
-                      "Downloader\u2000",
-                      actionLink("help_downloader", icon("question-circle"))
-                    ),
-                    choiceNames = list("Built-in", "aria2"),
-                    choiceValues = list("builtin", "aria2"),
-                    selected = "builtin",
-                    inline = TRUE
+                checkboxGroupInput(
+                  "server",
+                  label = span(
+                    "Input servers\u2000",
+                    actionLink("help_server", icon("question-circle")), "\u2004",
+                    span(style="color:#3c8dbc;", tags$strong("NEW"))
                   ),
+                  choiceNames = list("Google Cloud", "ESA Hub"),
+                  choiceValues = list("gcloud", "scihub"),
+                  selected = c("scihub")
+                ),
+                
+                conditionalPanel(
+                  condition = "input.online == 'TRUE'",
                   sliderInput(
                     "max_cloud_safe_perc",
                     label = span(
@@ -571,6 +549,37 @@ s2_gui <- function(param_list = NULL,
                     min = 0, max = 100, value = 100,
                     step = 1, post = "%",
                     ticks = FALSE
+                  )
+                )
+              ),
+              column(
+                width=3,
+                conditionalPanel(
+                  condition = "input.online == 'TRUE' && input.server.indexOf('scihub') != -1",
+                  div(
+                    style="padding-bottom:5px;",
+                    strong("ESA Hub options")
+                  ),
+                  checkboxInput(
+                    "make_lta_order",
+                    label = span(
+                      "Order from LTA\u2000",
+                      actionLink("help_lta_order", icon("question-circle"))
+                    ),
+                    value = TRUE
+                  ),
+                  checkboxInput(
+                    "downloader_aria2",
+                    label = span(
+                      "Use aria2\u2000",
+                      actionLink("help_downloader", icon("question-circle"))
+                    ),
+                    value = FALSE
+                  ),
+                  actionButton(
+                    "scihub_md",
+                    label = "\u2000Login to SciHub",
+                    icon = icon("user-circle")
                   )
                 )
                 
@@ -1670,6 +1679,14 @@ s2_gui <- function(param_list = NULL,
       )
     })
     
+    # Prevent sensors to be both deactivated
+    observeEvent(input$sel_sensor, {
+      if (length(input$sel_sensor) == 0) {
+        updateCheckboxGroupInput(session, "sel_sensor", selected = rv$sel_sensor_prev)
+      }
+      rv$sel_sensor_prev <- input$sel_sensor
+    }, ignoreNULL = FALSE)
+    
     # disable rm_safe if offline mode
     observe({
       if (input$online == FALSE) {
@@ -1705,14 +1722,34 @@ s2_gui <- function(param_list = NULL,
     
     # disable downloader aria2 if it is not installed
     binpaths <- load_binpaths()
-    observeEvent(input$downloader, {
+    observeEvent(input$downloader_aria2, {
       if (is.null(binpaths$aria2c)) {
-        updateRadioButtons(session, "downloader", selected = "builtin")
-        disable("downloader")
+        updateCheckboxInput(session, "downloader_aria2", value = FALSE)
+        disable("downloader_aria2")
       } else {
-        enable("downloader")
+        enable("downloader_aria2")
       }
     })
+    
+    # Google Cloud options
+    observeEvent(input$server, {
+      # Disable Google Cloud download if it is not configured
+      if (is.null(binpaths$gsutil)) {
+        updateCheckboxGroupInput(
+          session, "server", 
+          selected = "scihub"
+        )
+        disable("server")
+      } else {
+        enable("server")
+      }
+      # Leave at list one selected
+      if (length(input$server) == 0) {
+        updateCheckboxGroupInput(session, "server", selected = rv$server_prev)
+      }
+      rv$server_prev <- input$server
+    }, ignoreNULL = FALSE)
+    
     
     # Edit scihub credentials
     observeEvent(input$scihub_md, {
@@ -2944,6 +2981,51 @@ s2_gui <- function(param_list = NULL,
       ))
     })
     
+    observeEvent(input$help_server, {
+      showModal(modalDialog(
+        title = "Input SAFE servers",
+        p(HTML(
+          "Input Sentinel-2 SAFE archives can be searched and retrieved from",
+          "two sources:",
+          "<ul><li><strong><a href='https://scihub.copernicus.eu/'",
+          "target='_blank'>ESA Hub</a></strong>, the official data source, is",
+          "the default and legacy option; to use it, SciHub credentials",
+          "must be provided using the button \"Login to SciHub\";</li>",
+          "<li><strong><a",
+          "href='https://cloud.google.com/storage/docs/public-datasets/sentinel-2'",
+          "target='_blank'>Google Cloud</a></strong> is an optional third-party",
+          "data source; to use it, Google Cloud SDK must be installed",
+          "and configured following the <a",
+          "href='https://cloud.google.com/sdk/docs/install.'",
+          "target='_blank'>official instructions</a>.</li></ul>",
+          "The two data sources can be also used in combination (in this case,",
+          "archives are searched on Google Cloud first, and on ESA Hub subsequently)."
+        )),
+        p(HTML(
+          "By default, SAFE archives are searched on ESA Hub.",
+          "After the reduction of the retention time to 30 days,",
+          "it is highly probable that products older then 30 days will not be",
+          "found online (see <a href='https://github.com/ranghetti/sen2r/issues/408'",
+          "target='_blank'>this issue</a>).",
+          "Moreover, after ordering them from Long Term Archive (LTA),",
+          "in several cases corrupted archives are obtained (see <a",
+          "href='https://github.com/ranghetti/sen2r/issues/406'",
+          "target='_blank'>this issue</a>), and refer to this reference",
+          "for details about the ESA LTA policy).",
+          "To avoid this problems, the research and download from Google Cloud",
+          "was implemented."
+        )),
+        p(HTML(
+          "Notice that Google Cloud is an experimental data source;",
+          "in case of problems, please report them opening a",
+          "<a href='https://github.com/ranghetti/sen2r/issues'",
+          "target='_blank'>GitHub Issue</a>."
+        )),
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+    
     observeEvent(input$help_lta_order, {
       showModal(modalDialog(
         title = "Order from LTA",
@@ -2979,12 +3061,11 @@ s2_gui <- function(param_list = NULL,
       showModal(modalDialog(
         title = "Downloader",
         p(HTML(
-          "This selector allows to choose which downloader will be used",
-          "to download Sentinel-2 SAFE archives."
-        )),
-        p(HTML(
-          "<strong>Built-in</strong> is the downloader which is used by default",
-          "through the package 'httr'."
+          "This selector allows replacing the default downloder used to download ",
+          "Sentinel-2 archives from ESA Hub (through the package 'httr') with ",
+          "<strong><a href=\"https://aria2.github.io\" target=\"_blank\">aria2</a></strong>. ",
+          "This option has no effects on downloads from Google Cloud (which ",
+          "are always performed using 'gsutil')."
         )),
         p(HTML(
           "<strong><a href=\"https://aria2.github.io\" target=\"_blank\">aria2</a></strong>",
@@ -3804,8 +3885,9 @@ s2_gui <- function(param_list = NULL,
       rl$s2_levels <- c(if(safe_req$l1c==TRUE){"l1c"}, if(safe_req$l2a==TRUE){"l2a"}) # required S2 levels ("l1c","l2a")
       rl$sel_sensor <- input$sel_sensor # sensors to use ("s2a", "s2b")
       rl$online <- as.logical(input$online) # TRUE if online mode, FALSE if offline mode
+      rl$server <- input$server # SAFE servers ("scihub", "gcloud" or both)
       rl$order_lta <- as.logical(input$make_lta_order) # TRUE to order from LTA, FALSE to skip
-      rl$downloader <- input$downloader # downloader ("builtin" or "aria2")
+      rl$downloader <- if (input$downloader_aria2==TRUE) {"builtin"} else {"aria2"}  # downloader ("builtin" or "aria2")
       rl$overwrite_safe <- as.logical(input$overwrite_safe) # TRUE to overwrite existing SAFE, FALSE not to
       rl$rm_safe <- input$rm_safe # "yes" to delete all SAFE, "l1c" to delete only l1c, "no" not to remove
       rl$max_cloud_safe <- input$max_cloud_safe_perc # maximum SAFE cloud coverage (0-100)
@@ -3964,8 +4046,10 @@ s2_gui <- function(param_list = NULL,
         updateCheckboxGroupInput(session, "list_levels", selected = pl$s2_levels)
         updateCheckboxGroupInput(session, "sel_sensor", selected = pl$sel_sensor)
         updateRadioButtons(session, "online", selected = pl$online)
+        updateCheckboxGroupInput(session, "server", selected = pl$server)
         updateCheckboxInput(session, "make_lta_order", value = pl$order_lta)
-        updateRadioButtons(session, "downloader", selected = pl$downloader)
+        # updateRadioButtons(session, "downloader", selected = pl$downloader)
+        updateRadioButtons(session, "downloader_aria2", selected = pl$downloader=="aria2")
         updateRadioButtons(session, "overwrite_safe", selected = pl$overwrite_safe)
         updateRadioButtons(session, "rm_safe", selected = pl$rm_safe)
         updateSliderInput(
@@ -4124,13 +4208,15 @@ s2_gui <- function(param_list = NULL,
     
     # if Return is pressend:
     observeEvent(input$return_param, {
-      if (
+      if (all(
         if (any(length(nn(rv$apihub_path)) == 0, anyNA(rv$apihub_path))) {
           !file.exists(file.path(dirname(attr(load_binpaths(), "path")), "apihub.txt"))
         } else {
           !file.exists(rv$apihub_path)
-        }
-      ) {
+        },
+        input$online == TRUE,
+        "scihub" %in% input$server
+      )) {
         
         # alert if apihub does not exists
         sendSweetAlert(
@@ -4156,15 +4242,6 @@ s2_gui <- function(param_list = NULL,
             "Please select at least one product, spectral index or RGB image ",
             "before continuing."
           ),
-          type = "error"
-        )
-        
-      } else if (length(input$sel_sensor) == 0) {
-        
-        # alert if no sensors were specified
-        sendSweetAlert(
-          session, NULL,
-          "Please select at least one sensor before continuing.",
           type = "error"
         )
         

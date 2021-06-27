@@ -52,6 +52,7 @@ build_example_param_file <- function(
         "s2_levels" = c("l1c", "l2a"),
         "sel_sensor" = c("s2a", "s2b"),
         "online" = TRUE,
+        "server" = "gcloud",
         "order_lta" = TRUE,
         "downloader" = "builtin",
         "overwrite_safe" = FALSE,

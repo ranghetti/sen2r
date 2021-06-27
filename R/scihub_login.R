@@ -1,10 +1,12 @@
 #' @title Import / export / check SciHub username and password
-#' @description Read the SciHub login information (`read_scihub_login()`),
-#'  save new username and password (`write_scihub_login()`),
-#'  check their validity (`check_scihub_login()`)
-#'  or check if SciHub credentials are configured (`is_scihub_configured()`).
+#' @description 
+#'  - `read_scihub_login()` reads the SciHub login information;
+#'  - `write_scihub_login()` saves new username and password;
+#'  - `check_scihub_login()` checks their validity;
+#'  - `is_scihub_configured()` check if SciHub credentials are configured.
+#'  
 #'  Login information is stored in a file `apihub.txt` inside the
-#'  ".sen2r" subfolder of the home directory. This function allows reading
+#'  ".sen2r" subfolder of the home directory. These functions allow reading
 #'  or writing this file, and editing it from the GUI.
 #'  In case file `apihub.txt` is missing, `read_scihub_login()` searches inside
 #'  the environmental variables `SCIHUB_USER` and `SCIHUB_PASSWORD`.
@@ -13,7 +15,7 @@
 #' @param username SciHub username.
 #' @param password SciHub password.
 #' @param service Character: it can be `"dhus"` or `"apihub"` (default).
-#' @return `read_scihub_login` returns a matrix of credentials,
+#' @return `read_scihub_login()` returns a matrix of credentials,
 #'  in which `username` is in the first column, `password` in the second.
 #' @details Notice that new/recently updated SciHub credentials are recognised by API Hub
 #'  with a delay of about one week (see \url{https://scihub.copernicus.eu/twiki/do/view/SciHubWebPortal/APIHubDescription} for details).
@@ -29,10 +31,10 @@
 #' 
 #' @examples
 #' \donttest{
-#' check_scihub_connection()
 #' is_scihub_configured()
 #' }
 #' \dontrun{
+#' check_scihub_connection()
 #' check_scihub_login("username", "password")
 #' write_scihub_login("username", "password")
 #' read_scihub_login()
@@ -74,7 +76,7 @@ read_scihub_login <- function(apihub_path = NA) {
 
 #' @name is_scihub_configured
 #' @rdname scihub_login
-#' @return `is_scihub_configured` returns TRUE if credentials can be 
+#' @return `is_scihub_configured()` returns TRUE if credentials can be 
 #'  accessed, FALSE if not.
 #' @export
 
@@ -84,7 +86,7 @@ is_scihub_configured <- function() {
 
 
 #' @name check_scihub_login
-#' @return `check_scihub_login` returns TRUE if credentials are valid,
+#' @return `check_scihub_login()` returns TRUE if credentials are valid,
 #'  FALSE elsewhere.
 #' @importFrom httr RETRY authenticate handle
 #' @author Lorenzo Busetto, phD (2019)
@@ -114,7 +116,7 @@ check_scihub_login <- function(username, password, service = "apihub") {
 }
 
 #' @name check_scihub_connection
-#' @return `check_scihub_connection` returns TRUE if internet connection
+#' @return `check_scihub_connection()` returns TRUE if internet connection
 #'  is available and SciHub is accessible, FALSE otherwise.
 #' @importFrom httr RETRY handle
 #' @rdname scihub_login
@@ -140,7 +142,7 @@ check_scihub_connection <- function(service = "apihub") {
 #' @param append Logical: if TRUE, new credentials are added
 #'  to the ones existing within `apihub_path`;
 #'  if FALSE (default), `apihub_path` is replaced with the new ones.
-#' @return `write_scihub_login` returns NULL.
+#' @return `write_scihub_login()` returns NULL.
 #' @rdname scihub_login
 #' @export
 

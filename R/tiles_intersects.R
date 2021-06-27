@@ -53,8 +53,8 @@ tiles_intersects <- function(extent, all = FALSE, out_format = "id", .s2tiles=NU
   # (when the interface between {sf} and {s2} will be stable, this should be removed)
   if (requireNamespace("sf", quietly = TRUE)) {
     try({
-      sf_use_s2_prev <- sf::sf_use_s2(FALSE)
-      on.exit(sf::sf_use_s2(sf_use_s2_prev))
+      invisible(capture.output(sf_use_s2_prev <- sf::sf_use_s2(FALSE)))
+      on.exit(invisible(capture.output(sf::sf_use_s2(sf_use_s2_prev))))
     }, silent = TRUE)
   }
   

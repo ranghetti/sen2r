@@ -23,7 +23,7 @@ is not in \code{gdal_path}.}
 not manually defined, GDAL is searched within the system path in case this
 argument is left to default value FALSE; instead, if TRUE, a full search is
 performed. In Windows, if the default OSGeo directory \verb{C:\\\\OSGeo4W64} exists,
-GDAL is searched there, instead in the main directory \verb{C:\\\\}; setting
+GDAL is searched there, otherwise in the main directory \verb{C:\\\\}; setting
 \code{full_scan} to TRUE, is is always searched in the whole \verb{C:\\\\}.
 This argument takes no effect if \code{gdal_path} was defined, since, in that case,
 a full search is always performed in \code{gdal_path}.}
