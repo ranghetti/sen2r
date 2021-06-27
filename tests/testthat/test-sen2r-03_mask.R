@@ -1,6 +1,8 @@
 cat("\n---- Test mask - main function ----")
 testthat::skip_on_cran()
-# testthat::skip_on_ci() # TODO try to remove
+if (Sys.info()["sysname"] == "Windows") {
+  testthat::skip_on_ci() # TODO try to remove
+}
 
 # Required SAFE
 s2_l2a_list <- c(
