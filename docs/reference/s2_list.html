@@ -73,7 +73,7 @@ products satisfying given search criteria." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
       </span>
     </div>
 
@@ -84,20 +84,20 @@ products satisfying given search criteria." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="../reference/index.html">
-    <span class="fas fa-file-code"></span>
+    <span class="fa fa-file-code"></span>
      
      Reference
   </a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    <span class="fas fa-book"></span>
+    <span class="fa fa-book"></span>
      
      Articles
      
@@ -123,20 +123,20 @@ products satisfying given search criteria." />
 </li>
 <li>
   <a href="../news/index.html">
-    <span class="fas fa-newspaper"></span>
+    <span class="fa fa-newspaper"></span>
      
      Changelog
   </a>
 </li>
 <li>
   <a href="http://luigi.ranghetti.info">
-    <span class="fas fa-user"></span>
+    <span class="fa fa-user"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/ranghetti/sen2r/">
-    <span class="fas fa-github fa-lg"></span>
+    <span class="fa fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -174,7 +174,7 @@ products satisfying given search criteria.</p>
   apihub <span class='op'>=</span> <span class='cn'>NA</span>,
   service <span class='op'>=</span> <span class='st'>"apihub"</span>,
   max_cloud <span class='op'>=</span> <span class='fl'>100</span>,
-  availability <span class='op'>=</span> <span class='st'>"ignore"</span>,
+  <span class='va'>availability</span>,
   output_type <span class='op'>=</span> <span class='st'>"deprecated"</span>
 <span class='op'>)</span></pre>
 
@@ -221,10 +221,13 @@ product
     </tr>
     <tr>
       <th>server</th>
-      <td><p>The servers where archives are searched. Currently,
-only <code>"scihub"</code> is supported (Google Cloud will be implemented in future).
+      <td><p>The servers where archives are searched.
+Available options are <code>"scihub"</code> (ESA Sentinel Hub) and <code>"gcloud"</code>
+(Google Cloud).
+Default is <code>"scihub"</code>, meaning that only ESA Sentinel Hub is considered.
 In case of multiple values, they are used in order of priority.
-If <code>availability = "check"</code>, products on LTA are always left as last choice.</p></td>
+If <code>availability = "check"</code>, products on LTA are always left as last choice.
+See also the section "Details".</p></td>
     </tr>
     <tr>
       <th>apihub</th>
@@ -255,7 +258,9 @@ are returned;</p></li>
 available or not for download (see "Value" to know
 how to distinguish each other);</p></li>
 <li><p><code>"ignore"</code> (default): all archive names are returned, without doing the check
-(running the function is faster).</p></li>
+(running the function is faster).
+If not provided, <code>"ignore"</code> is the default value unless
+<code>server = c("scihub","gcloud")</code> (in which case <code>"check"</code> is used).</p></li>
 </ul></td>
     </tr>
     <tr>
@@ -271,6 +276,30 @@ The attribute <code>online</code> contains logical values: in case
 <code>availability != "ignore"</code>, values are TRUE / FALSE for
 products available for download / stored in the Long Term Archive;
 otherwise, values are set to NA.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>By default, SAFE archives are searched on ESA Sentinel Hub
+(argument <code>server = "scihub"</code>), which is the faster and stable option.
+After the reduction of the retention time to 30 days,
+it is highly probable that products older then 30 days will not be found
+online (see <a href='https://github.com/ranghetti/sen2r/issues/408'>https://github.com/ranghetti/sen2r/issues/408</a>).
+Moreover, after ordering them from Long Term Archive (LTA), in several cases
+corrupted archives are obtained
+(see <a href='https://github.com/ranghetti/sen2r/issues/406'>https://github.com/ranghetti/sen2r/issues/406</a>, and refer to this
+reference for details about the ESA LTA policy).</p>
+<p>To avoid this problems, the research and download from Google Cloud was
+recently implemented.
+Users can set <code>server = "gcloud"</code> to use this data exclusively, or
+<code>server = c("scihub", "gcloud"), availability = "check"</code>
+to search for products available on SciHub first, or on Google Cloud
+subsequently.
+<strong>Important</strong>: to search and download from Google Cloud, Google Cloud SDK
+must be installed and configured following the indications in
+<a href='https://cloud.google.com/sdk/docs/install'>https://cloud.google.com/sdk/docs/install</a>.
+Notice also that querying Google Cloud can be very slow (while downloading
+them is generally faster than from SciHub).</p>
+<p>Searching and downloading from Google Cloud is an experimental feature;
+in case of bugs, report them at <a href='https://github.com/ranghetti/sen2r/issues'>https://github.com/ranghetti/sen2r/issues</a>.</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>

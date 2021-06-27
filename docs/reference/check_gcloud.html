@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Return the mountpoint of the input directory (if it is mounted) — mountpoint • sen2r</title>
+<title>Check Google Cloud SDK installation — check_gcloud • sen2r</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,15 @@
 
 
 
-<meta property="og:title" content="Return the mountpoint of the input directory (if it is mounted) — mountpoint" />
-<meta property="og:description" content="The function checks if the input directory is a subdirectory
-of a mountpoint of a certain protocol. At the moment, it works only on unix
-operating systems." />
+<meta property="og:title" content="Check Google Cloud SDK installation — check_gcloud" />
+<meta property="og:description" content="Google Cloud SDK is an optional dependency, required to search and download
+SAFE archives from Google Cloud.
+check_gcloud() checks if Google Cloud SDK is externally
+installed and if a user account is set.
+is_gcloud_configured() check if Google Cloud SDK were already
+configured in sen2r using check_gcloud().
+check_gcloud_connection() check if internet connection
+is available and Sentinel-2 bucket is accessible on Google Cloud." />
 
 
 
@@ -154,40 +159,83 @@ operating systems." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Return the mountpoint of the input directory (if it is mounted)</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/mountpoint.R'><code>R/mountpoint.R</code></a></small>
-    <div class="hidden name"><code>mountpoint.Rd</code></div>
+    <h1>Check Google Cloud SDK installation</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ranghetti/sen2r/blob/master/R/check_gcloud.R'><code>R/check_gcloud.R</code></a></small>
+    <div class="hidden name"><code>check_gcloud.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The function checks if the input directory is a subdirectory
-of a mountpoint of a certain protocol. At the moment, it works only on unix
-operating systems.</p>
+    <p>Google Cloud SDK is an optional dependency, required to search and download
+SAFE archives from Google Cloud.</p>
+<p><code>check_gcloud()</code> checks if Google Cloud SDK is externally
+installed and if a user account is set.</p>
+<p><code>is_gcloud_configured()</code> check if Google Cloud SDK were already
+configured in sen2r using <code>check_gcloud()</code>.</p>
+<p><code>check_gcloud_connection()</code> check if internet connection
+is available and Sentinel-2 bucket is accessible on Google Cloud.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>mountpoint</span><span class='op'>(</span><span class='va'>path</span>, protocol <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>check_gcloud</span><span class='op'>(</span>
+  <span class='va'>gsutil_dir</span>,
+  force <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  full_scan <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  abort <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  check_creds <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span>
+
+<span class='fu'>is_gcloud_configured</span><span class='op'>(</span><span class='op'>)</span>
+
+<span class='fu'>check_gcloud_connection</span><span class='op'>(</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>path</th>
-      <td><p>The path to be checked</p></td>
+      <th>gsutil_dir</th>
+      <td><p>(optional) Character: the path of the <code>gsutil</code> executable,
+or the directory in which it is installed.
+If not provided, <code>gsutil</code> is searched in the system path.</p></td>
     </tr>
     <tr>
-      <th>protocol</th>
-      <td><p>(optional) Vector of protocol types. If NA (default),
-all the protocols are considered.</p></td>
+      <th>force</th>
+      <td><p>(optional) Logical: if TRUE, check even if it is already
+configured (default is FALSE).</p></td>
+    </tr>
+    <tr>
+      <th>full_scan</th>
+      <td><p>(optional) Logical: in Linux and MacOS, if <code>gsutil_dir</code> was
+not manually defined, <code>gsutil</code> is searched within the system path in case this
+argument is left to default value FALSE; instead, if TRUE, a full search is
+performed. In Windows, if the folder <code>Google\Cloud SDK</code> exist in
+<code>C:\Program Files (x86)</code>, <code>C:\Program Files</code> or
+<code>C:\Users\&lt;username&gt;\AppData\Local</code>, then <code>gsutil</code> is searched there, otherwise in the main
+directory <code>C:\</code>; setting <code>full_scan = TRUE</code>, is is always searched
+in the whole <code>C:\</code>.
+This argument takes no effect if <code>gsutil_dir</code> was defined, since, in that case,
+a full search is always performed in <code>gsutil_dir</code>.</p></td>
+    </tr>
+    <tr>
+      <th>abort</th>
+      <td><p>(optional) Logical: if TRUE (default), the function aborts
+in case no Google Cloud SDK installation is found; if FALSE,
+a warning is shown and FALSE is returned.</p></td>
+    </tr>
+    <tr>
+      <th>check_creds</th>
+      <td><p>(optional) Logical: if TRUE, check also if a user account
+(required to search and download products) was set.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The path of the parent mountpoint for mounted directories;
-if the input directory is not mounted, NULL is returned.
-NULL is returned also if the operating system is not unix
-(together with a warning message).
-An attribute "protocol" contains the protocol of the mountpoint.</p>
+    <p><code>check_gcloud()</code> returns TRUE (invisible) in case Google Cloud SDK
+was correctly set, FALSE if it was not found, not configured
+(if <code>check_creds = TRUE</code>) and <code>abort = FALSE</code> (otherwise, the function stops).</p>
+<p><code>is_gcloud_configured()</code> returns TRUE if Google Cloud SDK is installed
+and an account is configured, FALSE if not.</p>
+<p><code>check_gcloud_connection()</code> returns TRUE if connection
+is available, FALSE otherwise.</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>License: GPL 3.0</p>
@@ -200,8 +248,17 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 , URL: <a href='https://sen2r.ranghetti.info/'>https://sen2r.ranghetti.info/</a>.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
-    <p>Luigi Ranghetti, phD (2019) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
+    <p>Luigi Ranghetti, phD (2021) <a href='mailto:luigi@ranghetti.info'>luigi@ranghetti.info</a></p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='fu'>check_gcloud</span><span class='op'>(</span><span class='op'>)</span>
+<span class='fu'>check_gcloud_connection</span><span class='op'>(</span><span class='op'>)</span>
+<span class='op'>}</span>
+<span class='co'># \donttest{</span>
+<span class='fu'>is_gcloud_configured</span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='co'># }</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
