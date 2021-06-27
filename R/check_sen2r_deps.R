@@ -35,6 +35,7 @@ check_sen2r_deps <- function() {
   
   # Define internal functions as aliases of shiny* - leaflet* ones,
   # so to avoid using "shiny::" every time
+  a <- shiny::a
   actionButton <- shiny::actionButton
   addResourcePath <- shiny::addResourcePath
   br <- shiny::br
