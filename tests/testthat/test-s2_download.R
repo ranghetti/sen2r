@@ -249,6 +249,12 @@ testthat::test_that(
     testthat::skip_if_not(is_scihub_configured(), "SciHub credentials are not set")
     testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
     testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
+    if (Sys.info()["sysname"] == "Windows") {
+      testthat::skip_on_ci() # because sometimes the following error appears:
+      # Download of file
+      # S2B_MSIL1C_20210617T100559_N0300_R022_T32TNT_20210617T121634.SAFE was
+      # incomplete (Md5sum check failed). Please retry to launch the download."
+    }
     
     s2_l1c_list <- s2_list(
       tile = "32TNT", 
