@@ -1,7 +1,7 @@
 Package: sen2r
 Type: Package
 Title: Find, Download and Process Sentinel-2 Data
-Version: 1.4.4.9005
+Version: 1.5.0
 Authors@R: c(person("Luigi", "Ranghetti",
                     email = "luigi@ranghetti.info",
                     role = c("aut", "cre"),

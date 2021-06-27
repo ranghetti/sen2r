@@ -39,7 +39,6 @@ reference:
     desc: ~
     contents:
       - check_sen2r_deps
-      - install_gui_deps
       - load_binpaths
       - install_sen2cor
       - install_aria2

@@ -2091,6 +2091,6 @@
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mn>2<\/mn>\n  <mo>&amp;InvisibleTimes;<\/mo>\n  <mi mathcolor=\"#443399\">GREEN<\/mi>\n  <mo>-<\/mo>\n  <mo>(<\/mo>\n  <mi mathcolor=\"#443399\">RED<\/mi>\n  <mo>+<\/mo>\n  <mi mathcolor=\"#443399\">BLUE<\/mi>\n  <mo>)<\/mo>\n <\/mrow>\n<\/math>"
     }
   ],
-  "pkg_version": ["1.4.0"],
-  "creation_date": ["2021-01-02 10:55:13"]
+  "pkg_version": ["1.5.0"],
+  "creation_date": ["2021-06-27 17:56:25"]
 }
