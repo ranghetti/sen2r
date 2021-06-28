@@ -74,7 +74,7 @@ create_indices_db <- function(xslt_path = NA,
   # Read HTML indices database from indexdatabase.de
   idb_url <- "http://www.indexdatabase.de"
   idb_s2indices_url <- file.path(idb_url,"db/is.php?sensor_id=96")
-  download.file(idb_s2indices_url, s2_path <- tempfile(), method = "wget", quiet = TRUE)
+  download.file(idb_s2indices_url, s2_path <- tempfile(), quiet = TRUE)
   s2_html <- xmlRoot(htmlTreeParse(s2_path, useInternalNodes = FALSE))
   s2_htmlinternal <- xmlRoot(htmlTreeParse(s2_path, useInternalNodes = TRUE))
   s2_html_table <- s2_html[["body"]][["div"]][["table"]]

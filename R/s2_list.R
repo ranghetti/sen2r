@@ -1,6 +1,30 @@
 #' @title Retrieve list of available S2 products.
 #' @description The function retrieves the list of available Sentinel-2
 #'  products satisfying given search criteria. 
+#' @details By default, SAFE archives are searched on ESA Sentinel Hub
+#'  (argument `server = "scihub"`), which is the faster and stable option.
+#'  After the reduction of the retention time to 30 days, 
+#'  it is highly probable that products older then 30 days will not be found
+#'  online (see \url{https://github.com/ranghetti/sen2r/issues/408}).
+#'  Moreover, after ordering them from Long Term Archive (LTA), in several cases
+#'  corrupted archives are obtained 
+#'  (see \url{https://github.com/ranghetti/sen2r/issues/406}, and refer to this
+#'  reference for details about the ESA LTA policy).
+#'  
+#'  To avoid this problems, the research and download from Google Cloud was
+#'  recently implemented.
+#'  Users can set `server = "gcloud"` to use this data exclusively, or
+#'  `server = c("scihub", "gcloud"), availability = "check"` 
+#'  to search for products available on SciHub first, or on Google Cloud
+#'  subsequently.
+#'  **Important**: to search and download from Google Cloud, Google Cloud SDK
+#'  must be installed and configured following the indications in
+#'  \url{https://cloud.google.com/sdk/docs/install}.
+#'  Notice also that querying Google Cloud can be very slow (while downloading
+#'  them is generally faster than from SciHub).
+#'  
+#'  Searching and downloading from Google Cloud is an experimental feature;
+#'  in case of bugs, report them at \url{https://github.com/ranghetti/sen2r/issues}.
 #' @param spatial_extent A valid spatial object object of class `sf`,
 #'  `sfc` or `sfg`
 #' @param tile `string array` Sentinel-2 Tiles to be considered string (5-length character)
@@ -20,10 +44,13 @@
 #'         product
 #'     - "L1C": list available level-1C products
 #'     - "L2A": list available level-2A products
-#' @param server The servers where archives are searched. Currently, 
-#'  only `"scihub"` is supported (Google Cloud will be implemented in future).
+#' @param server The servers where archives are searched. 
+#'  Available options are `"scihub"` (ESA Sentinel Hub) and `"gcloud"`
+#'  (Google Cloud).
+#'  Default is `"scihub"`, meaning that only ESA Sentinel Hub is considered.
 #'  In case of multiple values, they are used in order of priority.
 #'  If `availability = "check"`, products on LTA are always left as last choice.
+#'  See also the section "Details".
 #' @param apihub Path of the `apihub.txt` file containing credentials
 #'  of SciHub account.
 #'  If NA (default), the default location inside the package will be used.
@@ -43,6 +70,8 @@
 #'      how to distinguish each other);
 #'  - `"ignore"` (default): all archive names are returned, without doing the check
 #'      (running the function is faster).
+#'  If not provided, `"ignore"` is the default value unless 
+#'  `server = c("scihub","gcloud")` (in which case `"check"` is used).
 #' @param output_type Deprecated (use `as.data.table` to obtain a data.table).
 #' @return An object of class [safelist].
 #'  The attribute `online` contains logical values: in case 
@@ -59,7 +88,7 @@
 #'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{https://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @import data.table
-#' @importFrom methods is
+#' @importFrom methods is as
 #' @importFrom sf st_as_sfc st_sfc st_point st_as_text st_bbox st_coordinates
 #'  st_geometry st_intersection st_geometry st_convex_hull st_transform st_cast
 #'  st_union st_centroid st_is_valid st_make_valid
@@ -116,7 +145,7 @@ s2_list <- function(spatial_extent = NULL,
                     apihub = NA,
                     service = "apihub",
                     max_cloud = 100,
-                    availability = "ignore",
+                    availability,
                     output_type = "deprecated") {
   
   if (!level %in% c("auto", "L2A", "L1C")) {
@@ -133,6 +162,13 @@ s2_list <- function(spatial_extent = NULL,
     )
   }
   
+  if (missing(availability)) {
+    if (length(server) == 2 && server[1] == "scihub" && server[2] == "gcloud") {
+      availability <- "check"
+    } else {
+      availability <- "ignore"
+    }
+  }
   if (!availability %in% c("ignore", "check", "online", "lta")) {
     print_message(
       type = "error",
@@ -140,7 +176,7 @@ s2_list <- function(spatial_extent = NULL,
       "\"check\" and \"ignore\""
     )
   }
-  
+
   # check the used service
   if (!service %in% c("apihub", "dhus")) {
     print_message(
@@ -176,8 +212,8 @@ s2_list <- function(spatial_extent = NULL,
   # (when the interface between {sf} and {s2} will be stable, this should be removed)
   if (requireNamespace("sf", quietly = TRUE)) {
     try({
-      sf_use_s2_prev <- sf::sf_use_s2(FALSE)
-      on.exit(sf::sf_use_s2(sf_use_s2_prev))
+      invisible(capture.output(sf_use_s2_prev <- sf::sf_use_s2(FALSE)))
+      on.exit(invisible(capture.output(sf::sf_use_s2(sf_use_s2_prev))))
     }, silent = TRUE)
   }
   
@@ -304,30 +340,30 @@ s2_list <- function(spatial_extent = NULL,
       availability = availability,
       .s2tiles = s2tiles
     )
+    out_dt_list[["scihub"]][,server:=rep("scihub", nrow(out_dt_list[["scihub"]]))]
   }
   
   ## Google Cloud specific methods
   if ("gcloud" %in% server) {
-    if (eval(parse(text = 'requireNamespace("sen2r.extras", quietly = TRUE)'))) {
-      out_dt_list[["gcloud"]] <- eval(parse(text = paste0(
-        "sen2r.extras::.s2_list_gcloud(",
-        "  time_intervals = time_intervals,",
-        "  tile = tile,",
-        "  orbit = orbit,",
-        "  max_cloud = max_cloud",
-        ")"
-      )))
-    }
+    out_dt_list[["gcloud"]] <- .s2_list_gcloud(
+      time_intervals = time_intervals,
+      tile = tile,
+      orbit = orbit,
+      level = level,
+      max_cloud = max_cloud
+    )
+    out_dt_list[["gcloud"]][,server:=rep("gcloud", nrow(out_dt_list[["gcloud"]]))]
   }
   
   ## Merge dt (in case of multiple servers)
   # order by the order of input "server" argument (this is used in duplicated:
   # first "server" value is taken in case of douplicated availability)
-  out_dt <- rbindlist(out_dt_list[server])
+  out_dt <- rbindlist(out_dt_list)
+  out_dt$server <- factor(out_dt$server, levels=server) # order by argument server
   if (nrow(out_dt) == 0) {return(as(setNames(character(0), character(0)), "safelist"))}
   # compute date (to ignore duplicated dates)
   out_dt[,date := as.Date(substr(as.character(out_dt$sensing_datetime), 1, 10))]
-  out_names <- copy(names(out_dt))
+  out_names <- copy(names(out_dt)); out_names <- out_names[out_names != "server"]
   # fix footprint topology errors
   invalid_entries <- out_dt[,which(!st_is_valid(st_as_sfc(footprint, crs = 4326)))]
   if (length(invalid_entries) > 0) {
@@ -336,8 +372,8 @@ s2_list <- function(spatial_extent = NULL,
   }
   
   if (nrow(out_dt) == 0) {return(as(setNames(character(0), character(0)), "safelist"))}
-  # first, order by level (L2A, then L1C) and ingestion time (newers first)
-  out_dt <- out_dt[order(-level,-ingestion_datetime),]
+  # first, order by level (L2A, then L1C) and ingestion time (newer first)
+  out_dt <- out_dt[order(-level,server,-ingestion_datetime),]
   # second, order by availability (LTA SciHub products are always used as last choice)
   out_dt <- rbind(
     out_dt[is.na(online) | online == TRUE,],
@@ -378,233 +414,4 @@ s2_list <- function(spatial_extent = NULL,
   } else {
     as(out_dt, "safelist")
   }
-}
-
-
-.s2_list_scihub <- function(spatial_extent, time_intervals, tile, orbit, max_cloud, apihub, service, availability, .s2tiles) {
-  
-  n_entries <- 1
-  out_list <- list()
-  
-  # Check connection
-  if (!check_scihub_connection()) {
-    print_message(
-      type = "error", 
-      "Impossible to reach the SciHub server ",
-      "(internet connection or SciHub may be down)." 
-    )
-  }
-  
-  # Get credentials
-  creds <- read_scihub_login(apihub)
-  if (!check_scihub_login(creds[1,1], creds[1,2])) {
-    print_message(
-      type = "error", 
-      "SciHub credentials are not correct, ",
-      "please check them." 
-    )
-  }
-  
-  # S2 tiles
-  if (missing(.s2tiles)) {.s2tiles <- s2_tiles()}
-  
-  # # If spatial_extent is not point, simplify polygon if needed / convert to bbox
-  spatial_extent_or <- spatial_extent
-  if (length(st_cast(spatial_extent, "POINT")) >= 50) {
-    spatial_extent <- st_convex_hull(spatial_extent_or)
-  }
-  if (length(st_cast(spatial_extent, "POINT")) >= 50) {
-    spatial_extent <- st_as_sfc(sf::st_bbox(spatial_extent_or))
-    print_message(
-      type = "warning",
-      "Input extent contains too many nodes, so its bounding box was used ",
-      "(a larger number of Sentinel-2 tiles could have been used); ",
-      "consider simplifying the extent manually."
-    )
-  }
-  
-  # Prepare footprint
-  foot <- ifelse(
-    inherits(spatial_extent, "sfc_POINT"),
-    paste0('footprint:%22Intersects(', paste(as.numeric(sf::st_coordinates(spatial_extent)[c(2,1)]), collapse = ",%20"),')%22'),
-    paste0('footprint:%22Intersects(', sf::st_as_text(sf::st_geometry(spatial_extent)),')%22')
-  )
-  
-  for (t_int in seq_len(nrow(time_intervals))) {
-    
-    rows <- 100
-    start <- 0
-    end_query <- FALSE
-    
-    while (!end_query) {
-      
-      query_string <- paste0(
-        'https://',ifelse(service=='dhus','scihub','apihub'),
-        '.copernicus.eu/',service,'/search?',
-        'start=', start,
-        '&rows=', rows,
-        '&q=', foot,
-        ' AND platformname:Sentinel-2',
-        ' AND beginposition:[', time_intervals[t_int,1], 'T00:00:00.000Z',
-        ' TO ', time_intervals[t_int,2], 'T23:59:59.000Z]',
-        ' AND cloudcoverpercentage:[0 TO ', max_cloud,']'
-      )
-      query_string <- gsub(" ", "%20",query_string)
-      query_string <- gsub("\\[", "%5b",query_string)
-      query_string <- gsub("\\]", "%5d",query_string)
-      
-      times_429 <- 10 # if 429 "too many requests", retry up to 10 times
-      while (times_429 > 0) {
-        out_query <- RETRY(
-          verb = "GET",
-          url = query_string,
-          config = authenticate(creds[1,1], creds[1,2])
-        )
-        times_429 <-if (out_query$status_code != 429) {0} else {times_429 - 1}
-      }
-      
-      out_xml <- content(out_query, as = "parsed", encoding = "UTF-8")
-      out_xml_list <- xmlRoot(htmlTreeParse(out_xml, useInternalNodes = TRUE))
-      out_xml_list <- out_xml_list[["body"]][["feed"]]
-      
-      
-      for (ll in which(names(out_xml_list)=="entry")) {
-        
-        in_entry <- strsplit(saveXML(out_xml_list[[ll]]), "\n")
-        
-        if (length(which(grepl("<link href=", in_entry[[1]]))) != 0) {
-          
-          in_entry <- in_entry[[1]]
-          
-          title <- gsub(
-            "^.*<title>([^<]+)</title>.*$", "\\1", 
-            in_entry[which(grepl("<title>", in_entry))]
-          )
-          
-          url <- gsub(
-            "^.*<link href=\"([^\"]+)\"/>.*$", "\\1", 
-            in_entry[which(grepl("<link href=", in_entry))]
-          )
-          
-          id_orbit <- sprintf("%03i", as.numeric(
-            gsub(
-              "^.*<int name=\"relativeorbitnumber\">([^<]+)</int>.*$", "\\1", 
-              in_entry[which(grepl("\\\"relativeorbitnumber\\\"", in_entry))]
-            )
-          ))
-          
-          footprint <- tryCatch(
-            st_as_sfc(
-              gsub(
-                "^.*<str name=\"footprint\">([^<]+)</str>.*$", "\\1", 
-                in_entry[which(grepl("\\\"footprint\\\"", in_entry))]
-              ),
-              crs = 4326
-            ),
-            error = function(e) {st_polygon()}
-          )
-          
-          clouds <- as.numeric(gsub(
-            "^.*<double name=\"cloudcoverpercentage\">([^<]+)</double>.*$", "\\1",
-            in_entry[which(grepl("\\\"cloudcoverpercentage\\\"", in_entry))]
-          ))
-          
-          proc_level <- gsub(
-            "^.*<str name=\"processinglevel\">Level\\-([^<]+)</str>.*$", "\\1", 
-            in_entry[which(grepl("\\\"processinglevel\\\"", in_entry))]
-          )
-          
-          mission <- gsub(
-            "^.*<str name=\"platformserialidentifier\">Sentinel\\-([^<]+)</str>.*$", "\\1", 
-            in_entry[which(grepl("\\\"platformserialidentifier\\\"", in_entry))]
-          )
-          
-          id_tile <- gsub("^.+_T([0-9]{2}[A-Z]{3})_.+$", "\\1", title)
-          
-          sensing_datetime <- as.POSIXct(
-            gsub(
-              "^S2[AB]\\_MSIL[12][AC]\\_([0-9]{8}T[0-9]{6})\\_N[0-9]{4}\\_R[0-9]{3}\\_T[A-Z0-9]{5}\\_[0-9]{8}T[0-9]{6}$",
-              "\\1", 
-              title
-            ),
-            format = "%Y%m%dT%H%M%S", tz = "UTC"
-          )
-          
-          creation_datetime <- as.POSIXct(
-            gsub(
-              "^S2[AB]\\_MSIL[12][AC]\\_[0-9]{8}T[0-9]{6}\\_N[0-9]{4}\\_R[0-9]{3}\\_T[A-Z0-9]{5}\\_([0-9]{8}T[0-9]{6})$",
-              "\\1",
-              title
-            ),
-            format = "%Y%m%dT%H%M%S", tz = "UTC"
-          )
-          
-          ingestion_datetime <- as.POSIXct(
-            gsub(
-              "^.*<date name=\"ingestiondate\">([0-9\\-]+)T([0-9\\:\\.]+)Z</date>.*$", 
-              "\\1 \\2", 
-              in_entry[which(grepl("name=\"ingestiondate\"", in_entry))]
-            ),
-            tz = "UTC"
-          )
-          
-          uuid <- gsub(
-            "^.*<str name=\"uuid\">([^<]+)</str>.*$", "\\1", 
-            in_entry[which(grepl("\\\"uuid\\\"", in_entry))]
-          )
-          
-          
-          # print(paste0(title, ".SAFE"))
-          out_list[[n_entries]] <- data.frame(
-            name = paste0(title, ".SAFE"),
-            url = url,
-            mission = mission,
-            level = proc_level,
-            id_tile = id_tile,
-            id_orbit = id_orbit,
-            sensing_datetime = sensing_datetime,
-            ingestion_datetime = ingestion_datetime,
-            clouds = clouds,
-            footprint = st_as_text(footprint),
-            uuid = uuid,
-            stringsAsFactors = FALSE
-          )
-          n_entries <- n_entries + 1
-        }
-      }
-      
-      if (sum(names(out_xml_list)=="entry") != rows) {
-        end_query <- TRUE
-      } else {
-        start <- start + rows
-      }
-    }
-    
-  }
-  out_dt <- rbindlist(out_list)
-  
-  if (nrow(out_dt) == 0) {return(data.table())}
-  
-  # remove "wrong" tiles and orbits if needed
-  if (!is.null(tile)) {
-    out_dt <- out_dt[id_tile %in% tile,]
-  } else {
-    sel_s2tiles <- suppressMessages(suppressWarnings(
-      sf::st_intersection(.s2tiles, spatial_extent_or)))
-    out_dt <- out_dt[id_tile %in% unique(sel_s2tiles$tile_id),]
-  }
-  
-  if (!is.null(orbit)) {
-    out_dt <- out_dt[id_orbit %in% sprintf("%03i", as.numeric(orbit)),]
-  }
-  
-  # check online availability
-  out_dt$online <- if (availability == "ignore") {
-    NA
-  } else {
-    as.logical(safe_is_online(out_dt, verbose = FALSE, apihub = apihub))
-  }
-  
-  out_dt
-  
 }

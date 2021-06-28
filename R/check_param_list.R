@@ -138,6 +138,16 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   # -- online --
   
   
+  # -- server --
+  if (all(!pm$server %in% c("scihub", "gcloud"))) {
+    print_message(
+      type = type,
+      "Parameter \"server\" must be 'scihub', 'gcloud' or both (setting to the default)."
+    )
+    pm$server <- pm_def$server
+  }
+  
+  
   # -- order_lta --
   
   

@@ -4,7 +4,6 @@ Sys.setenv("NOT_CRAN"="true")
 sen2r_covr <- covr::package_coverage(
   line_exclusions = c(
     "R/s2_gui.R",
-    "R/install_gui_deps.R",
     "R/add_rgb_image.R",
     "R/give_write_permission.R",
     "R/check_sen2r_deps.R",

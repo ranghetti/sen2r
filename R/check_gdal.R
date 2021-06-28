@@ -14,7 +14,7 @@
 #'  not manually defined, GDAL is searched within the system path in case this
 #'  argument is left to default value FALSE; instead, if TRUE, a full search is
 #'  performed. In Windows, if the default OSGeo directory `C:\\OSGeo4W64` exists,
-#'  GDAL is searched there, instead in the main directory `C:\\`; setting
+#'  GDAL is searched there, otherwise in the main directory `C:\\`; setting
 #'  `full_scan` to TRUE, is is always searched in the whole `C:\\`.
 #'  This argument takes no effect if `gdal_path` was defined, since, in that case,
 #'  a full search is always performed in `gdal_path`.
@@ -23,8 +23,8 @@
 #'
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
-#'  "sen2r": An R toolbox for automatically downloading and preprocessing 
-#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 
+#'  "sen2r": An R toolbox for automatically downloading and preprocessing
+#'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473.
 #'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{https://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @importFrom jsonlite toJSON
@@ -35,19 +35,19 @@
 #' }
 
 check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan = FALSE) {
-  
+
   # set minimum GDAL version
   gdal_minversion <- package_version("2.1.2")
-  
+
   # load the saved GDAL path, if exists
   binpaths <- load_binpaths()
-  
+
   # remove old GDAL paths, if present
-  binpaths$ogrinfo <- binpaths$gdal_translate <- binpaths$gdalwarp <- 
+  binpaths$ogrinfo <- binpaths$gdal_translate <- binpaths$gdalwarp <-
     binpaths$gdalbuildvrt <- binpaths$gdaldem <- binpaths$gdal_polygonize <- NULL
   # set message method
   message_type <- ifelse(abort==TRUE, "error", "warning")
-  
+
   # check gdal_path
   if (!is.null(gdal_path)) {
     tryCatch(
@@ -63,7 +63,7 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
   } else {
     gdal_path <- ""
   }
-  
+
   # If GDAL is not found, search for it
   if (any(
     is.null(binpaths$gdalinfo), !file.exists(nn(binpaths$gdalinfo)),
@@ -83,7 +83,7 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
       )},
       "..."
     )
-    
+
     if (Sys.info()["sysname"] %in% c("Linux", "Darwin")) {
       paths_gdalinfo <- if (all(full_scan == FALSE, gdal_path == "")) {
         list.files(
@@ -112,7 +112,7 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
       )
     }
     paths_gdalinfo <- normalize_path(paths_gdalinfo)
-    
+
     if (any(length(paths_gdalinfo) == 0, paths_gdalinfo == "")) {
       print_message(
         type=message_type,
@@ -134,13 +134,13 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
       )
       return(invisible(FALSE))
     }
-    
+
   } else {
     paths_gdalinfo <- binpaths$gdalinfo
   } # end of path retrieval
-  
+
   # nocov end
-  
+
   ## Check requisite 1: minimum version
   gdal_versions <- package_version(gsub(
     "^.*GDAL ([0-9\\.]+)[^0-9].*$", "\\1",
@@ -165,8 +165,8 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
   # order by version
   paths_gdalinfo <- paths_gdalinfo[order(gdal_versions, decreasing = TRUE)]
   gdal_versions <- sort(gdal_versions, decreasing = TRUE)
-  
-  
+
+
   # ## Check requisite 2: OpenJPEG support
   # gdal_check_jp2 <- sapply(paths_gdalinfo, function(path) {
   #   gdal_formats <- system(paste0(path," --formats"), intern = TRUE)
@@ -189,8 +189,8 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
   # }
   # paths_gdalinfo <- paths_gdalinfo[gdal_check_jp2]
   # gdal_versions <- gdal_versions[gdal_check_jp2]
-  
-  
+
+
   ## Check requisite 3: in Windows and Mac, use only OSGeo version
   if (Sys.info()["sysname"] != "Linux") {
     gdal_osgeo_order <- if (Sys.info()["sysname"] == "Windows") {
@@ -230,8 +230,8 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
     paths_gdalinfo <- paths_gdalinfo[gdal_osgeo_order]
     gdal_versions <- gdal_versions[gdal_osgeo_order]
   }
-  
-  
+
+
   ## Check requisite 3: Python executables exist
   paths_gdalcalc <- file.path(
     if (Sys.info()["sysname"] == "Darwin") {
@@ -242,8 +242,8 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
     "gdal_calc.py"
   )
   gdal_check_py <- file.exists(paths_gdalcalc)
-  
-  
+
+
   if (!any(gdal_check_py)) {
     print_message(
       type=message_type,
@@ -269,9 +269,9 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
   paths_gdalinfo <- paths_gdalinfo[gdal_check_py]
   paths_gdalcalc <- paths_gdalcalc[gdal_check_py]
   gdal_versions <- gdal_versions[gdal_check_py]
-  
-  
-  
+
+
+
   # save the path for use with external calls
   gdal_dir <- dirname(paths_gdalinfo)[1]
   gdal_py_dir <- dirname(paths_gdalcalc)[1]
@@ -292,28 +292,28 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
     normalize_path(file.path(gdal_py_dir,"gdal_fillnodata.py"))
   }
   writeLines(jsonlite::toJSON(binpaths, pretty=TRUE), attr(binpaths, "path"))
-  
+
   # set PATH
   if (Sys.info()["sysname"] == "Windows") {
     path_exi <- Sys.getenv("PATH")
     if (!any(grepl(
-      normalize_path(gdal_dir), 
-      normalize_path(unlist(strsplit(path_exi, ";")), mustWork = FALSE), 
+      normalize_path(gdal_dir),
+      normalize_path(unlist(strsplit(path_exi, ";")), mustWork = FALSE),
       fixed=TRUE
     ))) {
       Sys.setenv(PATH = paste0(gdal_dir,";",Sys.getenv("PATH")))
     }
     if (!any(grepl(
-      normalize_path(gdal_py_dir), 
-      normalize_path(unlist(strsplit(path_exi, ";")), mustWork = FALSE), 
+      normalize_path(gdal_py_dir),
+      normalize_path(unlist(strsplit(path_exi, ";")), mustWork = FALSE),
       fixed=TRUE
     ))) {
       Sys.setenv(PATH = paste0(gdal_py_dir,";",Sys.getenv("PATH")))
     }
     # on.exit(Sys.setenv(PATH = path_exi))
   }
-  
-  
+
+
   # path for rgdal version 1.5.2 (missing proj.db)
   # ("ERROR 1: PROJ: proj_create_from_database: Cannot find proj.db")
   if (all(
@@ -327,11 +327,11 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
       # on.exit(Sys.setenv(PROJ_LIB = proj_lib_rgdal))
     }
   }
-  
+
   print_message(
     type="message",
     "GDAL version in use: ", as.character(gdal_version)
   )
   return(invisible(TRUE))
-  
+
 }

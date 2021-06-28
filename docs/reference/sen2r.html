@@ -76,7 +76,7 @@ descriptions of all the other parameters)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
       </span>
     </div>
 
@@ -87,20 +87,20 @@ descriptions of all the other parameters)." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="../reference/index.html">
-    <span class="fas fa-file-code"></span>
+    <span class="fa fa-file-code"></span>
      
      Reference
   </a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    <span class="fas fa-book"></span>
+    <span class="fa fa-book"></span>
      
      Articles
      
@@ -126,20 +126,20 @@ descriptions of all the other parameters)." />
 </li>
 <li>
   <a href="../news/index.html">
-    <span class="fas fa-newspaper"></span>
+    <span class="fa fa-newspaper"></span>
      
      Changelog
   </a>
 </li>
 <li>
   <a href="http://luigi.ranghetti.info">
-    <span class="fas fa-user"></span>
+    <span class="fa fa-user"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/ranghetti/sen2r/">
-    <span class="fas fa-github fa-lg"></span>
+    <span class="fa fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -176,6 +176,7 @@ descriptions of all the other parameters).</p>
   s2_levels <span class='op'>=</span> <span class='st'>"l2a"</span>,
   sel_sensor <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"s2a"</span>, <span class='st'>"s2b"</span><span class='op'>)</span>,
   online <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  server <span class='op'>=</span> <span class='st'>"scihub"</span>,
   order_lta <span class='op'>=</span> <span class='cn'>TRUE</span>,
   apihub <span class='op'>=</span> <span class='cn'>NA</span>,
   downloader <span class='op'>=</span> <span class='st'>"builtin"</span>,
@@ -281,27 +282,41 @@ Accepted values: "s2a" and "s2b"; default: c("s2a","s2b").</p></td>
     <tr>
       <th>online</th>
       <td><p>(optional) Logical: TRUE (default) to search for available
-products on SciHub (and download if needed); FALSE to work
-only with already downloaded SAFE products.</p></td>
+products on SciHub and/or Google Cloud (and download if needed);
+FALSE to work only with already downloaded SAFE products.</p></td>
+    </tr>
+    <tr>
+      <th>server</th>
+      <td><p>(optional) Character vector of length 1 or 2, with the names of
+the servers on which SAFE archives are searched.
+Available options are <code>"scihub"</code> (ESA Sentinel Hub) and <code>"gcloud"</code>
+(Google Cloud).
+Default is <code>"scihub"</code>, meaning that only ESA Sentinel Hub is considered.
+In case of multiple values, they are used in order of priority and
+products on LTA are always left as last choice.
+See also the section "Details" of <code><a href='s2_list.html'>s2_list()</a></code>.</p></td>
     </tr>
     <tr>
       <th>order_lta</th>
       <td><p>(optional) Logical: TRUE (default) to order products from
 the Long Term Archive if unavailable for direct download; FALSE to simply
-skip them (this option has effect only in online mode).</p></td>
+skip them (this option has effect only in online mode).
+It takes effect only if argument <code>server</code> includes <code>"scihub"</code>.</p></td>
     </tr>
     <tr>
       <th>apihub</th>
       <td><p>Path of the text file containing credentials
 of SciHub account.
-If NA (default), the default location inside the package will be used.</p></td>
+If NA (default), the default location inside the package will be used.
+It takes effect only if argument <code>server</code> includes <code>"scihub"</code>.</p></td>
     </tr>
     <tr>
       <th>downloader</th>
       <td><p>(optional) Character value corresponding to the executable
 which should be used to download SAFE products. It could be one among
-"builtin" (default) and "aria2".
-If aria2 is not installed, built-in method will be used instead.</p></td>
+<code>"builtin"</code> (default) and <code>"aria2"</code>.
+If <code>aria2</code> is not installed, built-in method will be used instead.
+It takes effect only if argument <code>server</code> includes <code>"scihub"</code>.</p></td>
     </tr>
     <tr>
       <th>overwrite_safe</th>
@@ -763,35 +778,36 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 <span class='co'># to create a testing json file - this is not intended to be used by final users)</span>
 <span class='va'>json_path</span> <span class='op'>&lt;-</span> <span class='fu'><a href='build_example_param_file.html'>build_example_param_file</a></span><span class='op'>(</span><span class='op'>)</span>
 
-<span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='read_scihub_login.html'>is_scihub_configured</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='check_gcloud.html'>is_gcloud_configured</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
   <span class='va'>out_paths_2</span> <span class='op'>&lt;-</span> <span class='fu'>sen2r</span><span class='op'>(</span><span class='va'>json_path</span><span class='op'>)</span>
 <span class='op'>}</span> <span class='kw'>else</span> <span class='op'>{</span>
   <span class='va'>out_paths_2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span><span class='op'>(</span><span class='fl'>0</span><span class='op'>)</span>
 <span class='op'>}</span>
-</div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:44:42] #### Starting sen2r execution. ####</span></div><div class='output co'>#&gt; <span class='message'>Loading required namespace: stringi</span></div><div class='output co'>#&gt; <span class='message'>Registered S3 method overwritten by 'geojsonlint':</span>
+</div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:50:58] #### Starting sen2r execution. ####</span></div><div class='output co'>#&gt; <span class='message'>Caricamento dei namespace richiesti: stringi</span></div><div class='output co'>#&gt; <span class='message'>Registered S3 method overwritten by 'geojsonlint':</span>
 #&gt; <span class='message'>  method         from </span>
-#&gt; <span class='message'>  print.location dplyr</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:44:42] Searching for available SAFE products on</span>
-#&gt; <span class='message'>       SciHub...</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:44:46] Computing output names...</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:44:48] Starting to download the required level-2A SAFE</span>
+#&gt; <span class='message'>  print.location dplyr</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:51:00] Searching for available SAFE products...</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:51:00] Querying Google Cloud (this can take a very long</span>
+#&gt; <span class='message'>       time)...</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:51:11] Computing output names...</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:51:12] Starting to download the required level-2A SAFE</span>
 #&gt; <span class='message'>       products.</span></div><div class='output co'>#&gt; <span class='message'>Images</span>
 #&gt; <span class='message'>S2B_MSIL2A_20200801T100559_N0214_R022_T32TNS_20200801T135302.SAFE are</span>
 #&gt; <span class='message'>already on your system and will be skipped. Set "overwrite_safe" to</span>
-#&gt; <span class='message'>TRUE to re-download them.</span></div><div class='output co'>#&gt; <span class='message'>No L2A images are needed.</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:44:48] Download of level-2A SAFE products terminated.</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:44:48] Starting to download the required level-1C SAFE</span>
-#&gt; <span class='message'>       products.</span></div><div class='output co'>#&gt; <span class='message'>No L1C images are needed.</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:44:48] Download of level-1C SAFE products terminated.</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:44:48] Updating output names...</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:44:48] Starting to translate SAFE products in custom</span>
-#&gt; <span class='message'>       format.</span></div><div class='output co'>#&gt; <span class='message'>Using UTM zone 32N.</span></div><div class='output co'>#&gt; <span class='message'>2 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:44:49] Starting to merge tiles by orbit.</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:44:50] Starting to edit geometry (clip, reproject,</span>
-#&gt; <span class='message'>       rescale).</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:44:52] Producing required RGB images.</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:44:52] Generating image</span>
-#&gt; <span class='message'>       S2B2A_20200801_022_sen2r_RGB432B_10.tif...</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:45:03] Generating image</span>
-#&gt; <span class='message'>       S2B2A_20200801_022_sen2r_RGB843B_10.tif...</span></div><div class='output co'>#&gt; <span class='message'>2 output RGB files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:45:34] Computing required spectral indices.</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:45:34] Computing index MSAVI2 on date 2020-08-01...</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:45:44] Computing index NDVI on date 2020-08-01...</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:45:55] Generating thumbnails.</span></div><div class='output co'>#&gt; <span class='message'>6 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>╔══════════════════════════════════════════════════════════════════════</span>
-#&gt; <span class='message'>║ sen2r Processing Report</span>
-#&gt; <span class='message'>╟──────────────────────────────────────────────────────────────────────</span></div><div class='output co'>#&gt; <span class='message'>║ Dates to be processed based on processing parameters: 1</span></div><div class='output co'>#&gt; <span class='message'>║ Processing completed for: all expected dates.</span></div><div class='output co'>#&gt; <span class='message'>╚══════════════════════════════════════════════════════════════════════</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:46:06] #### sen2r session terminated. ####</span></div><div class='output co'>#&gt; <span class='message'>The processing chain can be re-launched with the command:</span>
-#&gt; <span class='message'>  sen2r("/home/lranghetti/.sen2r/proc_par/s2proc_20210505_204442.json")</span></div><div class='input'><span class='co'># Notice that passing the path of a JSON file results in launching</span>
+#&gt; <span class='message'>TRUE to re-download them.</span></div><div class='output co'>#&gt; <span class='message'>No L2A images are needed.</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:51:12] Download of level-2A SAFE products terminated.</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:51:12] Starting to download the required level-1C SAFE</span>
+#&gt; <span class='message'>       products.</span></div><div class='output co'>#&gt; <span class='message'>No L1C images are needed.</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:51:12] Download of level-1C SAFE products terminated.</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:51:12] Updating output names...</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:51:13] Starting to translate SAFE products in custom</span>
+#&gt; <span class='message'>       format.</span></div><div class='output co'>#&gt; <span class='message'>Using UTM zone 32N.</span></div><div class='output co'>#&gt; <span class='message'>2 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:51:14] Starting to merge tiles by orbit.</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:51:14] Starting to edit geometry (clip, reproject,</span>
+#&gt; <span class='message'>       rescale).</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:51:15] Producing required RGB images.</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:51:15] Generating image</span>
+#&gt; <span class='message'>       S2B2A_20200801_022_sen2r_RGB432B_10.tif...</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:51:23] Generating image</span>
+#&gt; <span class='message'>       S2B2A_20200801_022_sen2r_RGB843B_10.tif...</span></div><div class='output co'>#&gt; <span class='message'>2 output RGB files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:51:46] Computing required spectral indices.</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:51:46] Computing index MSAVI2 on date 2020-08-01...</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:51:54] Computing index NDVI on date 2020-08-01...</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:52:01] Generating thumbnails.</span></div><div class='output co'>#&gt; <span class='message'>6 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>+----------------------------------------------------------------------</span>
+#&gt; <span class='message'>¦ sen2r Processing Report</span>
+#&gt; <span class='message'>¦----------------------------------------------------------------------</span></div><div class='output co'>#&gt; <span class='message'>¦ Dates to be processed based on processing parameters: 1</span></div><div class='output co'>#&gt; <span class='message'>¦ Processing completed for: all expected dates.</span></div><div class='output co'>#&gt; <span class='message'>+----------------------------------------------------------------------</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:52:10] #### sen2r session terminated. ####</span></div><div class='output co'>#&gt; <span class='message'>The processing chain can be re-launched with the command:</span>
+#&gt; <span class='message'>  sen2r("C:/Users/LRANGH~1/DOCUME~1/SEN2R~1/proc_par/s2proc_20210627_205059.json")</span></div><div class='input'><span class='co'># Notice that passing the path of a JSON file results in launching</span>
 <span class='co'># a session without opening the gui, unless gui = TRUE is passed.</span>
 
 <span class='co'># Launch a processing using function arguments</span>
 <span class='va'>safe_dir</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/basename.html'>dirname</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span><span class='op'>(</span><span class='fu'><a href='load_binpaths.html'>load_binpaths</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>"path"</span><span class='op'>)</span><span class='op'>)</span>, <span class='st'>"safe"</span><span class='op'>)</span>
 <span class='va'>out_dir_3</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span>pattern <span class='op'>=</span> <span class='st'>"Barbellino_"</span><span class='op'>)</span>
-<span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='read_scihub_login.html'>is_scihub_configured</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='check_gcloud.html'>is_gcloud_configured</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
   <span class='va'>out_paths_3</span> <span class='op'>&lt;-</span> <span class='fu'>sen2r</span><span class='op'>(</span>
     gui <span class='op'>=</span> <span class='cn'>FALSE</span>,
+    server <span class='op'>=</span> <span class='st'>"gcloud"</span>,
     step_atmcorr <span class='op'>=</span> <span class='st'>"l2a"</span>,
     extent <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/vector/barbellino.geojson"</span>, package <span class='op'>=</span> <span class='st'>"sen2r"</span><span class='op'>)</span>,
     extent_name <span class='op'>=</span> <span class='st'>"Barbellino"</span>,
@@ -808,27 +824,28 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 <span class='op'>}</span> <span class='kw'>else</span> <span class='op'>{</span>
   <span class='va'>out_paths_3</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span><span class='op'>(</span><span class='fl'>0</span><span class='op'>)</span>
 <span class='op'>}</span>
-</div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:46:06] #### Starting sen2r execution. ####</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:46:07] Searching for available SAFE products on</span>
-#&gt; <span class='message'>       SciHub...</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:46:14] Computing output names...</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:46:15] Starting to download the required level-2A SAFE</span>
+</div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:52:10] #### Starting sen2r execution. ####</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:52:11] Searching for available SAFE products...</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:52:12] Querying Google Cloud (this can take a very long</span>
+#&gt; <span class='message'>       time)...</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:52:24] Querying Google Cloud (this can take a very long</span>
+#&gt; <span class='message'>       time)...</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:52:37] Computing output names...</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:52:38] Starting to download the required level-2A SAFE</span>
 #&gt; <span class='message'>       products.</span></div><div class='output co'>#&gt; <span class='message'>Images</span>
 #&gt; <span class='message'>S2B_MSIL2A_20200801T100559_N0214_R022_T32TNS_20200801T135302.SAFE are</span>
 #&gt; <span class='message'>already on your system and will be skipped. Set "overwrite_safe" to</span>
-#&gt; <span class='message'>TRUE to re-download them.</span></div><div class='output co'>#&gt; <span class='message'>No L2A images are needed.</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:46:15] Download of level-2A SAFE products terminated.</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:46:15] Starting to download the required level-1C SAFE</span>
+#&gt; <span class='message'>TRUE to re-download them.</span></div><div class='output co'>#&gt; <span class='message'>No L2A images are needed.</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:52:38] Download of level-2A SAFE products terminated.</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:52:38] Starting to download the required level-1C SAFE</span>
 #&gt; <span class='message'>       products.</span></div><div class='output co'>#&gt; <span class='message'>Images</span>
 #&gt; <span class='message'>S2B_MSIL1C_20200801T100559_N0209_R022_T32TNS_20200801T130136.SAFE are</span>
 #&gt; <span class='message'>already on your system and will be skipped. Set "overwrite_safe" to</span>
-#&gt; <span class='message'>TRUE to re-download them.</span></div><div class='output co'>#&gt; <span class='message'>No L1C images are needed.</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:46:15] Download of level-1C SAFE products terminated.</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:46:15] Updating output names...</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:46:16] Starting to translate SAFE products in custom</span>
-#&gt; <span class='message'>       format.</span></div><div class='output co'>#&gt; <span class='message'>Using UTM zone 32N.</span></div><div class='output co'>#&gt; <span class='message'>1 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>Using UTM zone 32N.</span></div><div class='output co'>#&gt; <span class='message'>2 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:46:18] Starting to merge tiles by orbit.</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:46:19] Starting to edit geometry (clip, reproject,</span>
-#&gt; <span class='message'>       rescale).</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:46:21] Starting to apply cloud masks.</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:46:22] Masking file</span>
-#&gt; <span class='message'>       S2B1C_20200801_022_Barbellino_TOA_10.tif...</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:46:40] Masking file</span>
-#&gt; <span class='message'>       S2B2A_20200801_022_Barbellino_BOA_10.tif...</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:46:57] Producing required RGB images.</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:46:57] Generating image</span>
-#&gt; <span class='message'>       S2B1C_20200801_022_Barbellino_RGB432T_10.tif...</span></div><div class='output co'>#&gt; <span class='message'>1 output RGB files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:47:09] Generating image</span>
-#&gt; <span class='message'>       S2B2A_20200801_022_Barbellino_RGB432B_10.tif...</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:47:20] Generating image</span>
-#&gt; <span class='message'>       S2B2A_20200801_022_Barbellino_RGB843B_10.tif...</span></div><div class='output co'>#&gt; <span class='message'>2 output RGB files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:47:52] Computing required spectral indices.</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:47:52] Computing index NDVI on date 2020-08-01...</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:47:53] Computing index MSAVI2 on date 2020-08-01...</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:47:54] Generating thumbnails.</span></div><div class='output co'>#&gt; <span class='message'>8 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>╔══════════════════════════════════════════════════════════════════════</span>
-#&gt; <span class='message'>║ sen2r Processing Report</span>
-#&gt; <span class='message'>╟──────────────────────────────────────────────────────────────────────</span></div><div class='output co'>#&gt; <span class='message'>║ Dates to be processed based on processing parameters: 1</span></div><div class='output co'>#&gt; <span class='message'>║ Processing completed for: all expected dates.</span></div><div class='output co'>#&gt; <span class='message'>╚══════════════════════════════════════════════════════════════════════</span></div><div class='output co'>#&gt; <span class='message'>[2021-05-05 20:48:16] #### sen2r session terminated. ####</span></div><div class='output co'>#&gt; <span class='message'>The processing chain can be re-launched with the command:</span>
-#&gt; <span class='message'>  sen2r("/home/lranghetti/.sen2r/proc_par/s2proc_20210505_204607.json")</span></div><div class='input'>
-<span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='read_scihub_login.html'>is_scihub_configured</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
+#&gt; <span class='message'>TRUE to re-download them.</span></div><div class='output co'>#&gt; <span class='message'>No L1C images are needed.</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:52:38] Download of level-1C SAFE products terminated.</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:52:38] Updating output names...</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:52:39] Starting to translate SAFE products in custom</span>
+#&gt; <span class='message'>       format.</span></div><div class='output co'>#&gt; <span class='message'>Using UTM zone 32N.</span></div><div class='output co'>#&gt; <span class='message'>1 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>Using UTM zone 32N.</span></div><div class='output co'>#&gt; <span class='message'>2 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:52:40] Starting to merge tiles by orbit.</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:52:41] Starting to edit geometry (clip, reproject,</span>
+#&gt; <span class='message'>       rescale).</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:52:42] Starting to apply cloud masks.</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:52:42] Masking file</span>
+#&gt; <span class='message'>       S2B1C_20200801_022_Barbellino_TOA_10.tif...</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:52:48] Masking file</span>
+#&gt; <span class='message'>       S2B2A_20200801_022_Barbellino_BOA_10.tif...</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:52:54] Producing required RGB images.</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:52:54] Generating image</span>
+#&gt; <span class='message'>       S2B1C_20200801_022_Barbellino_RGB432T_10.tif...</span></div><div class='output co'>#&gt; <span class='message'>1 output RGB files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:53:03] Generating image</span>
+#&gt; <span class='message'>       S2B2A_20200801_022_Barbellino_RGB432B_10.tif...</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:53:12] Generating image</span>
+#&gt; <span class='message'>       S2B2A_20200801_022_Barbellino_RGB843B_10.tif...</span></div><div class='output co'>#&gt; <span class='message'>2 output RGB files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:53:35] Computing required spectral indices.</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:53:36] Computing index NDVI on date 2020-08-01...</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:53:36] Computing index MSAVI2 on date 2020-08-01...</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:53:37] Generating thumbnails.</span></div><div class='output co'>#&gt; <span class='message'>8 output files were correctly created.</span></div><div class='output co'>#&gt; <span class='message'>+----------------------------------------------------------------------</span>
+#&gt; <span class='message'>¦ sen2r Processing Report</span>
+#&gt; <span class='message'>¦----------------------------------------------------------------------</span></div><div class='output co'>#&gt; <span class='message'>¦ Dates to be processed based on processing parameters: 1</span></div><div class='output co'>#&gt; <span class='message'>¦ Processing completed for: all expected dates.</span></div><div class='output co'>#&gt; <span class='message'>+----------------------------------------------------------------------</span></div><div class='output co'>#&gt; <span class='message'>[2021-06-27 20:53:54] #### sen2r session terminated. ####</span></div><div class='output co'>#&gt; <span class='message'>The processing chain can be re-launched with the command:</span>
+#&gt; <span class='message'>  sen2r("C:/Users/LRANGH~1/DOCUME~1/SEN2R~1/proc_par/s2proc_20210627_205210.json")</span></div><div class='input'>
+<span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='check_gcloud.html'>is_gcloud_configured</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
 
 <span class='co'># Show outputs (loading thumbnails)</span>
 

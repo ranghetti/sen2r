@@ -1,7 +1,69 @@
-message("\n---- Test s2_list() and safe_getMetadata(info = 'nameinfo') ----")
+message("\n---- Test s2_list(..., server = 'gcloud') ----")
 testthat::skip_on_cran()
-# testthat::skip_on_travis()
+
+testthat::test_that(
+  "Tests on s2_list - GCloud, cloudiness", {
+    testthat::skip_if_not(is_gcloud_configured(), "Google account is not set")
+    testthat::skip_if_not(check_gcloud_connection(), "Google Cloud server is not reachable")
+    pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
+    s2_list_test <- sen2r::s2_list(
+      spatial_extent = pos,
+      tile = "32TNR",
+      time_interval = as.Date(c("2016-05-01", "2016-05-31")),
+      orbit = "065",
+      max_cloud = 50,
+      server = "gcloud"
+    )
+    testthat::expect_equal(length(s2_list_test), 1)
+  }
+)
+
+testthat::test_that(
+  "Tests on s2_list - GCloud, single tile, multi orbit - no images", {
+    testthat::skip_if_not(is_gcloud_configured(), "Google account is not set")
+    testthat::skip_if_not(check_gcloud_connection(), "Google Cloud server is not reachable")
+    pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
+    s2_list_test <- sen2r::s2_list(
+      spatial_extent = pos,
+      tile = "32TNR",
+      time_interval = as.Date(c("2016-05-01", "2016-05-01")),
+      server = "gcloud"
+    )
+    testthat::expect_equal(length(s2_list_test), 0)
+    testthat::expect_equal(
+      nrow(safe_getMetadata(names(s2_list_test), info = "nameinfo")), 0
+    )
+    testthat::expect_length(
+      safe_getMetadata(names(s2_list_test), info = "vector"), 0
+    )
+    testthat::expect_length(
+      safe_getMetadata(names(s2_list_test), info = "list"), 0
+    )
+  }
+)
+
+testthat::test_that(
+  "Tests on s2_list - GCloud, single tile, multi orbit - seasonal", {
+    testthat::skip_if_not(is_gcloud_configured(), "Google account is not set")
+    testthat::skip_if_not(check_gcloud_connection(), "Google Cloud server is not reachable")
+    pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
+    s2_list_test <- sen2r::s2_list(
+      spatial_extent = pos,
+      tile = "32TNR",
+      time_interval = as.Date(c("2016-05-01", "2017-08-01")),
+      time_period = "seasonal",
+      orbit = "065",
+      server = "gcloud"
+    )
+    testthat::expect_equal(length(s2_list_test), 21)
+  }
+)
+
+
+message("\n---- Test s2_list(server = 'scihub', ...) and safe_getMetadata(info = 'nameinfo') ----")
 testthat::skip_if_not(is_scihub_configured(), "SciHub credentials are not set")
+testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
 
 testthat::test_that(
   "Tests on s2_list - Error if internet is down", {
@@ -440,5 +502,119 @@ testthat::test_that(
         '`availability` must be one among "online", "lta", "check" and "ignore"'
       )
     )
+  }
+)
+
+
+message("\n---- Test s2_list(..., server = c('gcloud', 'scihub')) ----")
+testthat::skip_if_not(is_gcloud_configured(), "Google account is not set")
+testthat::skip_if_not(check_gcloud_connection(), "Google Cloud server is not reachable")
+
+testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
+
+testthat::test_that(
+  "Tests on s2_list - 2 servers, single tile, single orbit, no pos, only L1C, separate servers", {
+    s2_list_test_scihub <- sen2r::s2_list(
+      tile = "32TNR",
+      time_interval = as.Date(c("2017-05-01", "2017-05-31")),
+      orbit = "065",
+      level = "L1C",
+      apihub = tests_apihub_path,
+      server = "scihub"
+    )
+    s2_list_test_gcloud <- sen2r::s2_list(
+      tile = "32TNR",
+      time_interval = as.Date(c("2017-05-01", "2017-05-31")),
+      orbit = "065",
+      level = "L1C",
+      apihub = tests_apihub_path,
+      server = "gcloud"
+    )
+    testthat::expect_is(s2_list_test_gcloud, "safelist")
+    s2_dt_test_scihub <- as(s2_list_test_gcloud, "data.table")
+    s2_dt_test_gcloud <- as(s2_list_test_gcloud, "data.table")
+    testthat::expect_equal(nrow(s2_dt_test_gcloud), 3)
+    testthat::expect_equal(nrow(s2_dt_test_gcloud), nrow(s2_dt_test_scihub))
+    testthat::expect_true(min(as.Date(s2_dt_test_gcloud$sensing_datetime)) >= as.Date("2017-05-01"))
+    testthat::expect_true(max(as.Date(s2_dt_test_gcloud$sensing_datetime)) <= as.Date("2017-08-01"))
+    testthat::expect_equal(unique(s2_dt_test_gcloud$id_tile), "32TNR")
+    testthat::expect_equal(unique(s2_dt_test_gcloud$id_orbit), "065")
+    testthat::expect_equal(s2_dt_test_gcloud$name, s2_dt_test_scihub$name)
+    testthat::expect_equal(
+      grepl("^gs://gcp-public-data-sentinel-2/(L2/)?tiles/32/T/NR/",s2_dt_test_gcloud$url),
+      rep(TRUE, 3)
+    )
+  }
+)
+
+testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
+
+testthat::test_that(
+  "Tests on s2_list - 2 servers, multiple tiles, multiple orbits, pos, all servers", {
+    # s2_dt_test_scihub <- as.data.table(sen2r::s2_list(
+    #   tile = c("32TNR", "32TMR"),
+    #   time_interval = as.Date(c("2017-05-01", "2017-05-31")),
+    #   availability = "check",
+    #   apihub = tests_apihub_path,
+    #   server = "scihub"
+    # ))
+    s2_dt_test_check <- as.data.table(sen2r::s2_list(
+      tile = c("32TNR", "32TMR"),
+      time_interval = as.Date(c("2017-05-01", "2017-05-31")),
+      availability = "check",
+      apihub = tests_apihub_path,
+      server = c("scihub", "gcloud")
+    ))
+    s2_dt_test_nocheck <- as.data.table(sen2r::s2_list(
+      tile = c("32TNR", "32TMR"),
+      time_interval = as.Date(c("2017-05-01", "2017-05-31")),
+      availability = "ignore",
+      apihub = tests_apihub_path,
+      server = c("scihub", "gcloud")
+    ))
+    testthat::expect_equal(nrow(s2_dt_test_check), 11)
+    testthat::expect_equal(nrow(s2_dt_test_check), nrow(s2_dt_test_nocheck))
+    testthat::expect_true(min(as.Date(s2_dt_test_check$sensing_datetime)) >= as.Date("2017-05-01"))
+    testthat::expect_true(max(as.Date(s2_dt_test_check$sensing_datetime)) <= as.Date("2017-08-01"))
+    testthat::expect_equal(sort(unique(s2_dt_test_check$id_tile)), c("32TMR", "32TNR"))
+    testthat::expect_equal(sort(unique(s2_dt_test_check$id_orbit)), c("022", "065", "108"))
+    testthat::expect_equal(
+      grepl(paste0(
+        "^((gs://gcp-public-data-sentinel-2/(L2/)?tiles/32/T/[MN]R/)|",
+        "(https://((sci)|(api))hub\\.copernicus\\.eu))"
+      ),s2_dt_test_check$url),
+      rep(TRUE, 11)
+    )
+    testthat::expect_equal(
+      grepl(paste0(
+        "^((gs://gcp-public-data-sentinel-2/(L2/)?tiles/32/T/[MN]R/)|",
+        "(https://((sci)|(api))hub\\.copernicus\\.eu))"
+      ),s2_dt_test_nocheck$url),
+      rep(TRUE, 11)
+    )
+    testthat::expect_gte(
+      sum(s2_dt_test_check$level=="1C"),
+      sum(s2_dt_test_nocheck$level=="1C")
+    )
+  }
+)
+
+testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
+testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
+
+testthat::test_that(
+  "Tests on s2_list - 2 servers, single orbit, point pos, no tile, only available online", {
+    pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
+    s2_list_test <- sen2r::s2_list(
+      spatial_extent = pos,
+      time_interval = as.Date(c("2017-05-01", "2017-05-31")),
+      orbit = "065",
+      availability ="online",
+      apihub = tests_apihub_path,
+      server = c("scihub", "gcloud")
+    )
+    testthat::expect_equal(length(s2_list_test), 3)
   }
 )

@@ -40,12 +40,16 @@
 
 
 <meta property="og:title" content="Import / export / check SciHub username and password — read_scihub_login" />
-<meta property="og:description" content="Read the SciHub login information (read_scihub_login()),
-save new username and password (write_scihub_login()),
-check their validity (check_scihub_login())
-or check if SciHub credentials are configured (is_scihub_configured()).
+<meta property="og:description" content="
+
+read_scihub_login() reads the SciHub login information;
+write_scihub_login() saves new username and password;
+check_scihub_login() checks their validity;
+is_scihub_configured() check if SciHub credentials are configured.
+
+
 Login information is stored in a file apihub.txt inside the
-&quot;.sen2r&quot; subfolder of the home directory. This function allows reading
+&quot;.sen2r&quot; subfolder of the home directory. These functions allow reading
 or writing this file, and editing it from the GUI.
 In case file apihub.txt is missing, read_scihub_login() searches inside
 the environmental variables SCIHUB_USER and SCIHUB_PASSWORD." />
@@ -80,7 +84,7 @@ the environmental variables SCIHUB_USER and SCIHUB_PASSWORD." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
       </span>
     </div>
 
@@ -91,20 +95,20 @@ the environmental variables SCIHUB_USER and SCIHUB_PASSWORD." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="../reference/index.html">
-    <span class="fas fa-file-code"></span>
+    <span class="fa fa-file-code"></span>
      
      Reference
   </a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    <span class="fas fa-book"></span>
+    <span class="fa fa-book"></span>
      
      Articles
      
@@ -130,20 +134,20 @@ the environmental variables SCIHUB_USER and SCIHUB_PASSWORD." />
 </li>
 <li>
   <a href="../news/index.html">
-    <span class="fas fa-newspaper"></span>
+    <span class="fa fa-newspaper"></span>
      
      Changelog
   </a>
 </li>
 <li>
   <a href="http://luigi.ranghetti.info">
-    <span class="fas fa-user"></span>
+    <span class="fa fa-user"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/ranghetti/sen2r/">
-    <span class="fas fa-github fa-lg"></span>
+    <span class="fa fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -166,12 +170,16 @@ the environmental variables SCIHUB_USER and SCIHUB_PASSWORD." />
     </div>
 
     <div class="ref-description">
-    <p>Read the SciHub login information (<code>read_scihub_login()</code>),
-save new username and password (<code>write_scihub_login()</code>),
-check their validity (<code>check_scihub_login()</code>)
-or check if SciHub credentials are configured (<code>is_scihub_configured()</code>).
-Login information is stored in a file <code>apihub.txt</code> inside the
-".sen2r" subfolder of the home directory. This function allows reading
+    
+<ul>
+<li><p><code>read_scihub_login()</code> reads the SciHub login information;</p></li>
+<li><p><code>write_scihub_login()</code> saves new username and password;</p></li>
+<li><p><code>check_scihub_login()</code> checks their validity;</p></li>
+<li><p><code>is_scihub_configured()</code> check if SciHub credentials are configured.</p></li>
+</ul>
+
+<p>Login information is stored in a file <code>apihub.txt</code> inside the
+".sen2r" subfolder of the home directory. These functions allow reading
 or writing this file, and editing it from the GUI.
 In case file <code>apihub.txt</code> is missing, <code>read_scihub_login()</code> searches inside
 the environmental variables <code>SCIHUB_USER</code> and <code>SCIHUB_PASSWORD</code>.</p>
@@ -230,15 +238,15 @@ if FALSE (default), <code>apihub_path</code> is replaced with the new ones.</p><
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>read_scihub_login</code> returns a matrix of credentials,
+    <p><code>read_scihub_login()</code> returns a matrix of credentials,
 in which <code>username</code> is in the first column, <code>password</code> in the second.</p>
-<p><code>is_scihub_configured</code> returns TRUE if credentials can be
+<p><code>is_scihub_configured()</code> returns TRUE if credentials can be
 accessed, FALSE if not.</p>
-<p><code>check_scihub_login</code> returns TRUE if credentials are valid,
+<p><code>check_scihub_login()</code> returns TRUE if credentials are valid,
 FALSE elsewhere.</p>
-<p><code>check_scihub_connection</code> returns TRUE if internet connection
+<p><code>check_scihub_connection()</code> returns TRUE if internet connection
 is available and SciHub is accessible, FALSE otherwise.</p>
-<p><code>write_scihub_login</code> returns NULL.</p>
+<p><code>write_scihub_login()</code> returns NULL.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Notice that new/recently updated SciHub credentials are recognised by API Hub
@@ -262,10 +270,10 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
-<span class='fu'>check_scihub_connection</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='fu'>is_scihub_configured</span><span class='op'>(</span><span class='op'>)</span>
+<span class='fu'>is_scihub_configured</span><span class='op'>(</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='co'># }</span>
 <span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='fu'>check_scihub_connection</span><span class='op'>(</span><span class='op'>)</span>
 <span class='fu'>check_scihub_login</span><span class='op'>(</span><span class='st'>"username"</span>, <span class='st'>"password"</span><span class='op'>)</span>
 <span class='fu'>write_scihub_login</span><span class='op'>(</span><span class='st'>"username"</span>, <span class='st'>"password"</span><span class='op'>)</span>
 <span class='fu'>read_scihub_login</span><span class='op'>(</span><span class='op'>)</span>

@@ -35,6 +35,7 @@ check_sen2r_deps <- function() {
   
   # Define internal functions as aliases of shiny* - leaflet* ones,
   # so to avoid using "shiny::" every time
+  a <- shiny::a
   actionButton <- shiny::actionButton
   addResourcePath <- shiny::addResourcePath
   br <- shiny::br
@@ -107,6 +108,22 @@ check_sen2r_deps <- function() {
     fluidRow(column(
       title="Dependencies",
       width=12,
+      
+      h3("Google Cloud SDK"),
+      helpText(em(
+        "Google Cloud SDK is used to search and download Sentinel-2 SAFE",
+        "archives from Google Cloud.",
+        "It must be installed and configured externally following the",
+        a("official instructions.",
+          href='https://cloud.google.com/sdk/docs/install',
+          target='_blank'),
+        "Done that, use this utility to associate it to sen2r."
+      )),
+      span(style="display:inline-block;vertical-align:center;padding-top:5px;",
+           actionButton("where_check_gcloud", "Check Google Cloud SDK", width=200),
+           "\u2000"),
+      span(style="display:inline-block;vertical-align:center;",
+           htmlOutput("check_gcloud_icon")),
       
       h3("Sen2Cor"),
       helpText(em(
@@ -196,11 +213,174 @@ check_sen2r_deps <- function() {
     
     ##-- Perform checks of dependencies --##
     
+    #-- Check Google Cloud SDK --#
+    
+    # build the icon of the check
+    observe({
+      rv$check_gcloud_isvalid <- if (!is.null(binpaths()$gsutil)) {
+        file.exists(binpaths()$gsutil)
+      } else {FALSE}
+    })
+    output$check_gcloud_isvalid <- renderText(rv$check_gcloud_isvalid)
+    output$check_gcloud_icon <- renderUI({
+      if (is.na(rv$check_gcloud_isvalid)) {
+        ""
+      } else if (rv$check_gcloud_isvalid) {
+        span(style="color:darkgreen;", "\u2714")
+      } else {
+        span(style="color:red;", "") #"\u2718")
+      }
+    })
+    outputOptions(output, "check_gcloud_isvalid", suspendWhenHidden = FALSE)
+    
+    # build the modal dialog
+    check_gcloud_modal <- reactive({
+      modalDialog(
+        title = "Google Cloud SDK check",
+        size = "s",
+        uiOutput("check_gcloud_message"),
+        verbatimTextOutput("check_gcloud_outmessages"),
+        easyClose = FALSE,
+        footer = NULL
+      )
+    })
+    
+    # use a reactive output for install GDAL message
+    # (this because otherwise it does not react to check_gcloud_valid chages)
+    output$check_gcloud_message <- renderUI({
+      if (is.na(rv$check_gcloud_isvalid)) {
+        div(
+          align="center",
+          p(style="text-align:center;font-size:500%;color:darkgrey;",
+            icon("cog", class = "fa-spin"))
+        )
+      } else if (!rv$check_gcloud_isvalid) {
+        div(
+          p(style="text-align:center;font-size:500%;color:red;",
+            icon("times-circle")),
+          p("Google Cloud SDK needs to be installed or searched in a",
+            "different directory. To install it, follow the",
+            a("official instructions.",
+              href='https://cloud.google.com/sdk/docs/install',
+              target='_blank')),
+          hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+          div(style="text-align:right;",
+              modalButton("\u2000Close", icon = icon("check")))
+        )
+      } else if (rv$check_gcloud_isvalid) {
+        div(
+          p(style="text-align:center;font-size:500%;color:darkgreen;",
+            icon("check-circle")),
+          p("Google Cloud SDK is correctly installed and configured."),
+          hr(style="margin-top: 0.75em; margin-bottom: 0.75em;"),
+          div(style="text-align:right;",
+              modalButton("\u2000Close", icon = icon("check")))
+        )
+      }
+    })
+    
+    
+    # ask where searching gcloud before checking
+    observeEvent(input$where_check_gcloud, {
+      showModal(modalDialog(
+        title = "Check Google Cloud SDK",
+        size = "s",
+        radioButtons(
+          "path_gsutil_isauto", NULL,
+          choices = c("Search Google Cloud SDK in a default path" = TRUE,
+                      "Specify where Google Cloud SDK should be searched" = FALSE),
+          selected = TRUE, width = "100%"
+        ),
+        conditionalPanel(
+          condition = "input.path_gsutil_isauto == 'FALSE'",
+          div(
+            p("Specify the path:"),
+            div(div(style="display:inline-block;vertical-align:top;width:50pt;",
+                    shinyDirButton(
+                      "path_gdalman_sel", "Select", 
+                      "Specify directory in which Google Cloud SDK should be searched"
+                    )),
+                div(style="display:inline-block;vertical-align:top;width:180px;",
+                    textInput("path_gsutilman_textin", NULL, ""))),
+            div(style="height:20px;vertical-aling:top;",
+                htmlOutput("path_gsutilman_errormess"))
+          )
+        ),
+        easyClose = FALSE,
+        footer = div(
+          disabled(actionButton("check_gcloud_button", strong("\u2000Check"), icon=icon("check"))),
+          modalButton("\u2000Cancel", icon = icon("ban"))
+        )
+      ))
+    })
+    
+    # check the gdal path
+    observeEvent(c(input$path_gsutilman_textin, input$path_gsutil_isauto), {
+      path_gsutilman_errormess <- path_check(
+        input$path_gsutilman_textin,
+        mustbe_empty = FALSE, 
+        mustbe_writable = FALSE
+      )
+      output$path_gsutilman_errormess <- path_gsutilman_errormess
+      if (any(
+        input$path_gsutil_isauto == TRUE, 
+        TRUE %in% attr(path_gsutilman_errormess, "isvalid")
+      )) {
+        enable("check_gcloud_button")
+      } else {
+        disable("check_gcloud_button")
+      }
+    })
+    shinyDirChoose(input, "path_gdalman_sel", roots = volumes)
+    observeEvent(input$path_gdalman_sel, {
+      path_gdalman_string <- parseDirPath(volumes, input$path_gdalman_sel)
+      updateTextInput(session, "path_gsutilman_textin", value = path_gdalman_string)
+    })
+    
+    # do the check when button is pressed
+    observeEvent(input$check_gcloud_button, {
+      
+      # reset check value
+      rv$check_gcloud_isvalid <- NA # FIXME not working
+      
+      # open modaldialog
+      showModal(check_gcloud_modal())
+      
+      shinyjs::html(
+        "check_gcloud_message",
+        as.character(div(
+          align="center",
+          p(style="text-align:center;font-size:500%;color:darkgrey;",
+            icon("spinner", class = "fa-pulse"))
+        ))
+      )
+      
+      # do the check
+      withCallingHandlers({
+        shinyjs::html("check_gcloud_outmessages", "")
+        rv$check_gcloud_isvalid <- if (input$path_gsutilman_textin == "") {
+          check_gcloud(abort = FALSE, force = TRUE)
+        } else {
+          check_gcloud(
+            gsutil_dir = input$path_gsutilman_textin,
+            abort = FALSE, force = TRUE
+          )
+        }
+      },
+      message = function(m) {
+        shinyjs::html(id = "check_gcloud_outmessages", html = m$message, add = TRUE)
+      })
+      
+      shinyjs::hide("check_gcloud_outmessages")
+      
+      
+    })
+    
+    
     #-- Check GDAL --#
     
     # build the icon of the check
     observe({
-      input$check_gdal
       rv$check_gdal_isvalid <- if (!is.null(binpaths()$gdalinfo)) {
         file.exists(binpaths()$gdalinfo)
       } else {FALSE}

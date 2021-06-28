@@ -155,7 +155,10 @@ s2_order <- function(
   }
   
   # read credentials
-  creds <- read_scihub_login(apihub)
+  s2_scihub <- s2_prodlist[grepl("^http.+Products\\(.+\\)/\\$value$", s2_prodlist)]
+  if (length(s2_scihub) > 0) {
+    creds <- read_scihub_login(apihub)
+  }
   
   # Split products to be downloaded from products to be ordered
   

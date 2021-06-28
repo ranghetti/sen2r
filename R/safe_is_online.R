@@ -69,7 +69,10 @@ safe_is_online <- function(s2_prodlist = NULL, apihub = NA, verbose = TRUE) {
   )
   
   # read credentials
-  creds <- read_scihub_login(apihub)
+  s2_scihub <- s2_prodlist[grepl("^http.+Products\\(.+\\)/\\$value$", s2_prodlist)]
+  if (length(s2_scihub) > 0) {
+    creds <- read_scihub_login(apihub)
+  }
   
   # check for availability
   s2_availability <- sapply(s2_prodlist, function(p) {

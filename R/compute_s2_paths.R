@@ -416,7 +416,7 @@ compute_s2_paths <- function(pm,
       )
     }, simplify = FALSE, USE.NAMES = TRUE)
     # Add suffixes in case of splitted tiles (#353)
-    if (any(duplicated(exp_paths[["tiles"]][[1]]))) {
+    if (any(unlist(lapply(exp_paths[["tiles"]], duplicated)))) {
       exp_paths[["tiles"]] <- sapply(exp_paths[["tiles"]], function(p) {
         add_tile_suffix(p)
       }, simplify = FALSE, USE.NAMES = TRUE)

@@ -39,11 +39,11 @@ reference:
     desc: ~
     contents:
       - check_sen2r_deps
-      - install_gui_deps
       - load_binpaths
       - install_sen2cor
       - install_aria2
       - check_gdal
+      - check_gcloud
       - set_gipp
   - title: Accessory functions
     desc: ~

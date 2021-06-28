@@ -1,3 +1,27 @@
+# Version 1.5.0
+
+## Major changes
+- **Google Cloud integration** to search and download SAFE Sentinel-2 archives (see https://luigi.ranghetti.info/post/safe-gcloud/):
+    - implementation of methods within `s2_list()` and `s2_download()`;
+    - new functions `check_gcloud()`, `is_gcloud_configured()`, `check_gcloud_connection()` to interface Google Cloud SDK;
+    - integration in `sen2r()`;
+    - documentation;
+    - new automatic tests.
+
+## Minor changes
+- Restore check for existing equivalent SAFE products.
+- Edit ENVI tags for BOA-TOA (band names, wavelengths).
+- Automatic tests on `sen2r()` main functions were restored on Actions thanks to the implementation of Google Cloud download.
+
+## Changes in default values
+- `s2_list()`: argument `availability` has default value `"ignore"` unless `server = c("scihub", "gcloud")`, in which case default is `"check"`.
+
+## Bug fixes
+- Fix #407.
+- Avoid messages "Spherical geometry (s2) switched on/off".
+- Minor fixes.
+
+
 # Version 1.4.4
 
 ## New functions

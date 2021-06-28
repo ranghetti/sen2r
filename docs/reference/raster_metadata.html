@@ -73,7 +73,7 @@ a vector of raster paths." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
       </span>
     </div>
 
@@ -84,20 +84,20 @@ a vector of raster paths." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="../reference/index.html">
-    <span class="fas fa-file-code"></span>
+    <span class="fa fa-file-code"></span>
      
      Reference
   </a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    <span class="fas fa-book"></span>
+    <span class="fa fa-book"></span>
      
      Articles
      
@@ -123,20 +123,20 @@ a vector of raster paths." />
 </li>
 <li>
   <a href="../news/index.html">
-    <span class="fas fa-newspaper"></span>
+    <span class="fa fa-newspaper"></span>
      
      Changelog
   </a>
 </li>
 <li>
   <a href="http://luigi.ranghetti.info">
-    <span class="fas fa-user"></span>
+    <span class="fa fa-user"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/ranghetti/sen2r/">
-    <span class="fas fa-github fa-lg"></span>
+    <span class="fa fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -212,9 +212,9 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 <span class='co'># \donttest{</span>
 <span class='co'># Return metadata as data.table</span>
 <span class='fu'>raster_metadata</span><span class='op'>(</span><span class='va'>examplenames</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;                                                                                                   path
-#&gt; 1:                            /home/lranghetti/R/x86_64-pc-linux-gnu-library/4.0/stars/tif/L7_ETMs.tif
-#&gt; 2: /tmp/RtmpgWPp2i/temp_libpath38e0702c4712/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif
+</div><div class='output co'>#&gt;                                                                                                          path
+#&gt; 1:                                      C:/Users/lranghetti/Documents/R/win-library/4.1/stars/tif/L7_ETMs.tif
+#&gt; 2: C:/Users/lranghetti/Documents/R/win-library/4.1/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif
 #&gt;    valid res.x res.y size.x size.y nbands     xmin    ymin     xmax    ymax
 #&gt; 1:  TRUE  28.5  28.5    349    352      6 288776.3 9110729 298722.8 9120761
 #&gt; 2:  TRUE  10.0  10.0     24     42     11 580560.0 5101700 580800.0 5102120
@@ -227,9 +227,9 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 
 <span class='co'># Return some metadata as data.table</span>
 <span class='fu'>raster_metadata</span><span class='op'>(</span><span class='va'>examplenames</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"res"</span>, <span class='st'>"size"</span>, <span class='st'>"bbox"</span>, <span class='st'>"outformat"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;                                                                                                   path
-#&gt; 1:                            /home/lranghetti/R/x86_64-pc-linux-gnu-library/4.0/stars/tif/L7_ETMs.tif
-#&gt; 2: /tmp/RtmpgWPp2i/temp_libpath38e0702c4712/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif
+</div><div class='output co'>#&gt;                                                                                                          path
+#&gt; 1:                                      C:/Users/lranghetti/Documents/R/win-library/4.1/stars/tif/L7_ETMs.tif
+#&gt; 2: C:/Users/lranghetti/Documents/R/win-library/4.1/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif
 #&gt;    valid res.x res.y size.x size.y     xmin    ymin     xmax    ymax outformat
 #&gt; 1:  TRUE  28.5  28.5    349    352 288776.3 9110729 298722.8 9120761     GTiff
 #&gt; 2:  TRUE  10.0  10.0     24     42 580560.0 5101700 580800.0 5102120     GTiff</div><div class='input'>
@@ -237,7 +237,7 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 <span class='fu'>raster_metadata</span><span class='op'>(</span><span class='va'>examplenames</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"res"</span>, <span class='st'>"size"</span>, <span class='st'>"bbox"</span>, <span class='st'>"proj"</span><span class='op'>)</span>, format <span class='op'>=</span> <span class='st'>"list"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [[1]]
 #&gt; [[1]]$path
-#&gt; [1] "/home/lranghetti/R/x86_64-pc-linux-gnu-library/4.0/stars/tif/L7_ETMs.tif"
+#&gt; [1] "C:/Users/lranghetti/Documents/R/win-library/4.1/stars/tif/L7_ETMs.tif"
 #&gt; 
 #&gt; [[1]]$valid
 #&gt; [1] TRUE
@@ -311,8 +311,8 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 #&gt;                     ORDER[2],
 #&gt;                     ANGLEUNIT["degree",0.0174532925199433]],
 #&gt;             USAGE[
-#&gt;                 SCOPE["unknown"],
-#&gt;                 AREA["World"],
+#&gt;                 SCOPE["Horizontal component of 3D system."],
+#&gt;                 AREA["World."],
 #&gt;                 BBOX[-90,-180,90,180]],
 #&gt;             ID["EPSG",4326]]],
 #&gt;     ABRIDGEDTRANSFORMATION["Transformation to WGS84",
@@ -336,7 +336,7 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 #&gt; 
 #&gt; [[2]]
 #&gt; [[2]]$path
-#&gt; [1] "/tmp/RtmpgWPp2i/temp_libpath38e0702c4712/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif"
+#&gt; [1] "C:/Users/lranghetti/Documents/R/win-library/4.1/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif"
 #&gt; 
 #&gt; [[2]]$valid
 #&gt; [1] TRUE
@@ -391,8 +391,8 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
 #&gt;             ORDER[2],
 #&gt;             LENGTHUNIT["metre",1]],
 #&gt;     USAGE[
-#&gt;         SCOPE["unknown"],
-#&gt;         AREA["World - N hemisphere - 6°E to 12°E - by country"],
+#&gt;         SCOPE["Engineering survey, topographic mapping."],
+#&gt;         AREA["Between 6Â°E and 12Â°E, northern hemisphere between equator and 84Â°N, onshore and offshore. Algeria. Austria. Cameroon. Denmark. Equatorial Guinea. France. Gabon. Germany. Italy. Libya. Liechtenstein. Monaco. Netherlands. Niger. Nigeria. Norway. Sao Tome and Principe. Svalbard. Sweden. Switzerland. Tunisia. Vatican City State."],
 #&gt;         BBOX[0,6,84,12]],
 #&gt;     ID["EPSG",32632]]
 #&gt; 
@@ -403,10 +403,10 @@ doi: <a href='https://doi.org/10.1016/j.cageo.2020.104473'>10.1016/j.cageo.2020.
   <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/settings/gdal_formats.json"</span>, package<span class='op'>=</span><span class='st'>"sen2r"</span><span class='op'>)</span>
 <span class='op'>)</span>
 <span class='fu'>raster_metadata</span><span class='op'>(</span><span class='va'>examplenames</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"bbox"</span>, <span class='st'>"proj"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; trying to read file: /tmp/RtmpgWPp2i/temp_libpath38e0702c4712/sen2r/extdata/settings/gdal_formats.json</div><div class='output co'>#&gt;                                                                                                   path
-#&gt; 1:                            /home/lranghetti/R/x86_64-pc-linux-gnu-library/4.0/stars/tif/L7_ETMs.tif
-#&gt; 2: /tmp/RtmpgWPp2i/temp_libpath38e0702c4712/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif
-#&gt; 3:                   /tmp/RtmpgWPp2i/temp_libpath38e0702c4712/sen2r/extdata/settings/gdal_formats.json
+</div><div class='output co'>#&gt; trying to read file: C:\Users\lranghetti\Documents\R\win-library\4.1\sen2r\extdata\settings\gdal_formats.json</div><div class='output co'>#&gt;                                                                                                          path
+#&gt; 1:                                      C:/Users/lranghetti/Documents/R/win-library/4.1/stars/tif/L7_ETMs.tif
+#&gt; 2: C:/Users/lranghetti/Documents/R/win-library/4.1/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif
+#&gt; 3:                   C:/Users/lranghetti/Documents/R/win-library/4.1/sen2r/extdata/settings/gdal_formats.json
 #&gt;    valid     xmin    ymin     xmax    ymax
 #&gt; 1:  TRUE 288776.3 9110729 298722.8 9120761
 #&gt; 2:  TRUE 580560.0 5101700 580800.0 5102120
