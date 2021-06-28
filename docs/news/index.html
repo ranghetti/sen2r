@@ -157,7 +157,7 @@
 
     <div id="version-150" class="section level1">
 <h1 class="page-header" data-toc-text="1.5.0">
-<a href="#version-150" class="anchor"></a>Version 1.5.0<small> Unreleased </small>
+<a href="#version-150" class="anchor"></a>Version 1.5.0<small> 2021-06-27 </small>
 </h1>
 <div id="major-changes" class="section level2">
 <h2 class="hasAnchor">
@@ -741,7 +741,7 @@
 <li>
 <code><a href="../reference/install_sen2cor.html">link_sen2cor()</a></code> can be used to link an existing Sen2Cor installation to sen2r;</li>
 <li>
-<code><a href="https://r-spatial.github.io/sf/reference/coerce-methods.html">as()</a></code> methods can be used to convert <code>safelist</code> from/to <code>character</code>, <code>data.frame</code> and <code>data.table</code> (as well as <code>as.character()',</code>as.data.frame()<code>and</code>as.data.table()` functions).</li>
+<code>as()</code> methods can be used to convert <code>safelist</code> from/to <code>character</code>, <code>data.frame</code> and <code>data.table</code> (as well as <code>as.character()',</code>as.data.frame()<code>and</code>as.data.table()` functions).</li>
 </ul>
 </div>
 <div id="changes-in-default-values-3" class="section level2">
@@ -926,7 +926,7 @@
 <li>
 <code>httr</code>: a change in Wget available version for Windows (1.20.3 instead than 1.19.4) caused the old link to break; moreover, downloading Wget using the new link was not possible with <code><a href="https://rdrr.io/r/utils/download.file.html">download.file()</a></code> due to a redirect. So, httr dependency was introduced, and download of Wget, aria2 and sen2cor is now performed with GET function.</li>
 <li>
-<code>dplyr</code>: the internal function <code><a href="../reference/tiles_intersects.html">tiles_intersects()</a></code> now perform dissolve operations over polygons of S2 tiles using <code>dplyr</code> commands (<code>group_by()</code> and <code><a href="https://r-spatial.github.io/sf/reference/tidyverse.html">summarise()</a></code>).</li>
+<code>dplyr</code>: the internal function <code><a href="../reference/tiles_intersects.html">tiles_intersects()</a></code> now perform dissolve operations over polygons of S2 tiles using <code>dplyr</code> commands (<code>group_by()</code> and <code>summarise()</code>).</li>
 </ul>
 </div>
 <div id="minor-improvements" class="section level2">
@@ -1158,7 +1158,7 @@
 <h3 class="hasAnchor">
 <a href="#processing-chain" class="anchor"></a>Processing chain</h3>
 <ul>
-<li><p>Major commit: retrieve also existing filenames. Before this commit, if some products were partially retrieved (e.g. output BOA) and some depending on them are missing (e.g. an index) but SAFE were not required, the corresponding expected vectors were not retrieved (missing SAFE tile names nothing was generated). Now, existing names matching the parameters are attached to each "_exp" vector.</p></li>
+<li><p>Major commit: retrieve also existing filenames. Before this commit, if some products were partially retrieved (e.g. output BOA) and some depending on them are missing (e.g. an index) but SAFE were not required, the corresponding expected vectors were not retrieved (missing SAFE tile names nothing was generated). Now, existing names matching the parameters are attached to each “_exp” vector.</p></li>
 <li>
 <p>Manage parallelisation:</p>
 <ul>
