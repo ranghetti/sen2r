@@ -52,6 +52,13 @@ allows to:
 * mask cloudy pixels (using the Surface Classification Map as masking layer);
 * computing spectral indices and RGB images.
 
+**New feature**: stating from version 1.5.0,
+Sentinel-2 SAFE archives can be downloaded both from official 
+[Copernicus Open Access Hub](https://scihub.copernicus.eu/) or from
+[Google Cloud Sentinel-2 bucket](https://cloud.google.com/storage/docs/public-datasets/sentinel-2)
+(this option can be useful to bypass limitations of ESA Long Term Archive
+retention time; refer to [this post](https://luigi.ranghetti.info/post/safe-gcloud/) for details).
+
 Setting the execution of this processing chain is particularly easy using the
 <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
 GUI, which allows to set the parameters, to directly launch the main function
