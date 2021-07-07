@@ -1844,7 +1844,7 @@ sen2r <- function(param_list = NULL,
       sel_s2_list_l2a = s2_list_l2a_groups_A[sel_group_A],
       sel_s2_dt = s2_dt_groups_A[sel_group_A],
       i_group_A = match(names(s2names_groups_A[sel_group_A]), names(s2names_groups_A)),
-      sel_apihub_path = pm$apihub,
+      sel_apihub_path = as.list(rep(pm$apihub, length(s2names_groups_A))),
       .packages = c("sf", "sen2r")
     ) %DO_A% {
       
