@@ -4,6 +4,12 @@
 #'  naming convention (see [safe_shortname]).
 #' @param s2_names A vector of Sentinel-2 product names in the
 #'  sen2r naming convention.
+#' @param naming_convention The naming convention used to extract information
+#'  from `s2_names` names. Default value (`"sen2r"`) is the 
+#'  [sen2r naming convention](https://sen2r.ranghetti.info/articles/outstructure.html#naming-convention);
+#'  an experimental accepted value is `"sen2r_new"` (it will be documented in future).
+#'  Alternatively, a list with the manual definition of the naming convention
+#'  can be provided (the required format will be documented in a future release).
 #' @param format One between `data.table` (default), `data.frame` and `list`.
 #' @param abort Logical parameter: if TRUE (default), the function aborts 
 #'  in case any of `s2_names` is not recognised; if FALSE, a warning is shown,
@@ -26,7 +32,12 @@
 #' # Return metadata
 #' sen2r_getElements(fs2nc_examplename)
 
-sen2r_getElements <- function(s2_names, format="data.table", abort=TRUE) {
+sen2r_getElements <- function(
+  s2_names, 
+  naming_convention = "sen2r", 
+  format = "data.table", 
+  abort = TRUE
+) {
   
   # check format
   if (!format %in% c("list", "data.frame", "data.table")) {
@@ -43,10 +54,36 @@ sen2r_getElements <- function(s2_names, format="data.table", abort=TRUE) {
   }
   
   # define regular expressions to identify products
-  fs2nc_regex <- list(
-    "regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([^\\_\\.]*)\\_([^\\_\\.]+)\\_([126]0)\\.?([^\\_]*)$",
-    "elements" = c("mission","level","sensing_date","id_orbit","extent_name","prod_type","res","file_ext")
-  )
+  if (inherits(naming_convention, "character")) {
+    if (naming_convention[1] == "sen2r") {
+      fs2nc_regex <- list(
+        "regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([^\\_\\.]*)\\_([^\\_\\.]+)\\_([126]0)\\.?([^\\_]*)$",
+        "elements" = c("mission","level","sensing_date","id_orbit","extent_name","prod_type","res","file_ext"),
+        "date_format" = "%Y%m%d"
+      )
+    } else if (naming_convention[1] == "sen2r_new") {
+      fs2nc_regex <- list(
+        "regex" = "^S2\\_([0-9]{8})\\_([0-9]{3})\\_([^\\_\\.]*)\\_([AB])\\_([^\\_\\.]+)\\.?([^\\_]*)$",
+        "elements" = c("sensing_date","id_orbit","extent_name","mission","prod_type","file_ext"),
+        "date_format" = "%Y%m%d"
+      )
+    } else {
+      print_message(
+        type = "error",
+        "The argument 'naming_convention' is not recognised."
+      )
+    }
+  } else if (
+    inherits(naming_convention, "list") &&
+    all(c("regex", "elements", "date_format") %in% names(naming_convention))
+  ) {
+    fs2nc_regex <- naming_convention
+  } else {
+    print_message(
+      type = "error",
+      "The argument 'naming_convention' is not recognised."
+    )
+  }
   
   metadata <- data.frame(
     "type" = rep(NA, length(s2_names))
@@ -64,9 +101,14 @@ sen2r_getElements <- function(s2_names, format="data.table", abort=TRUE) {
     )
   }
   # specific formattations
-  metadata[,"sensing_date"] <- as.Date(metadata[,"sensing_date"], format="%Y%m%d")
+  metadata[,"sensing_date"] <- as.Date(
+    metadata[,"sensing_date"], 
+    format = fs2nc_regex$date_format
+  )
   if (nrow(metadata)>0) {
-    metadata[,"res"] <- paste0(metadata[,"res"],"m")
+    if (!is.null(metadata$res) && all(grepl("[126]0", metadata[,"res"]))) {
+      metadata[,"res"] <- paste0(metadata[,"res"],"m")
+    }
     # retrieve type
     metadata$type <- ifelse(
       !grepl(fs2nc_regex$regex,s2_names), "unrecognised",
