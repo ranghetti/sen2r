@@ -4077,7 +4077,7 @@ s2_gui <- function(param_list = NULL,
         } else {
           updateRadioButtons(session, "query_space", selected = TRUE)
           # rl$s2tiles_selected <- input$tiles_checkbox # selected tile IDs
-          updateRadioButtons(session, "extent_as_mask", selected = rv$extent_as_mask)
+          updateRadioButtons(session, "extent_as_mask", selected = pl$extent_as_mask)
         }
         setProgress(0.4)
         
@@ -4131,8 +4131,8 @@ s2_gui <- function(param_list = NULL,
         updateTextInput(session, "path_out_textin", value = pl$path_out)
         updateTextInput(session, "path_indices_textin", value = pl$path_indices)
         updateTextInput(session, "path_rgb_textin", value = pl$path_rgb)
-        updateRadioButtons(session, "path_subdirs", selected = pl$path_subdirs)
-        updateRadioButtons(session, "check_thumbnails", selected = pl$thumbnails)
+        updateCheckboxInput(session, "path_subdirs", value = pl$path_subdirs)
+        updateCheckboxInput(session, "check_thumbnails", value = pl$thumbnails)
         
         # update logs and parallelisation
         if (!is.na(pl$log[1])) {rv$log_path <- pl$log[1]}
