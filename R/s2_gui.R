@@ -4229,7 +4229,7 @@ s2_gui <- function(param_list = NULL,
           type = "error"
         )
         
-      } else if (length(c(
+      } else if (input$preprocess == TRUE & length(c(
         rv$list_prods,
         input$list_indices,
         input$list_rgb
@@ -4273,6 +4273,7 @@ s2_gui <- function(param_list = NULL,
         )
         
       } else if (
+        input$preprocess == TRUE & 
         length(input$list_indices) > 0 &
         input$path_out_textin == "" &
         input$path_indices_textin == ""
@@ -4287,6 +4288,7 @@ s2_gui <- function(param_list = NULL,
         )
         
       } else if (
+        input$preprocess == TRUE & 
         length(input$list_rgb) > 0 &
         input$path_out_textin == "" &
         input$path_rgb_textin == ""
@@ -4301,6 +4303,7 @@ s2_gui <- function(param_list = NULL,
         )
         
       } else if (all(
+        input$preprocess == TRUE & 
         input$online == TRUE,
         length(nn(rv$extent)) == 0,
         length(nn(input$tiles_checkbox)) == 0
