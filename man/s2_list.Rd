@@ -16,6 +16,7 @@ s2_list(
   service = "apihub",
   max_cloud = 100,
   availability,
+  tmpdir = NA,
   output_type = "deprecated"
 )
 }
@@ -81,6 +82,11 @@ how to distinguish each other);
 If not provided, \code{"ignore"} is the default value unless
 \code{server = c("scihub","gcloud")} (in which case \code{"check"} is used).
 }}
+
+\item{tmpdir}{(optional) Path where intermediate files (xml) will be created
+(it is used only if argument \code{server} includes \code{"gcloud"}).
+Default is a temporary directory.
+If \code{tmpdir} is a non-empty folder, a random subdirectory will be used.}
 
 \item{output_type}{Deprecated (use \code{as.data.table} to obtain a data.table).}
 }
