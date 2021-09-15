@@ -19,6 +19,7 @@ jobs:
       matrix:
         config:
           - {os: ubuntu-20.04,   r: 'oldrel',  scihub_user: 'sen2r_travis_oldrel',  rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: ubuntu-20.04,   r: 'release', scihub_user: 'sen2r_travis_release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           - {os: ubuntu-20.04,   r: 'devel',   scihub_user: 'sen2r_travis_devel',   rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           - {os: windows-latest, r: 'release', scihub_user: 'sen2r_ci_windows'}
 
