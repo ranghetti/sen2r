@@ -1016,6 +1016,7 @@ sen2r <- function(param_list = NULL,
     rmtmp <- FALSE # force not to remove intermediate files
   }
   dir.create(tmpdir, showWarnings=FALSE)
+  tmpdir <- normalize_path(tmpdir)
   
   
   # # internal parameters
@@ -1150,6 +1151,7 @@ sen2r <- function(param_list = NULL,
         server = pm$server,
         max_cloud = pm$max_cloud_safe,
         availability = "check",
+        tmpdir = file.path(tmpdir, "s2_list_l1c"),
         apihub = pm$apihub
       )
       s2_lists_footprints[["l1c"]] <- nn(attr(s2_lists[["l1c"]], "footprint"))
@@ -1179,6 +1181,7 @@ sen2r <- function(param_list = NULL,
         server = pm$server,
         max_cloud = pm$max_cloud_safe,
         availability = "check",
+        tmpdir = file.path(tmpdir, "s2_list_l2a"),
         apihub = pm$apihub
       )
       s2_lists_footprints[["l2a"]] <- nn(attr(s2_lists[["l2a"]], "footprint"))

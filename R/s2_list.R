@@ -72,6 +72,10 @@
 #'      (running the function is faster).
 #'  If not provided, `"ignore"` is the default value unless 
 #'  `server = c("scihub","gcloud")` (in which case `"check"` is used).
+#' @param tmpdir (optional) Path where intermediate files (xml) will be created
+#'  (it is used only if argument `server` includes `"gcloud"`).
+#'  Default is a temporary directory.
+#'  If `tmpdir` is a non-empty folder, a random subdirectory will be used.
 #' @param output_type Deprecated (use `as.data.table` to obtain a data.table).
 #' @return An object of class [safelist].
 #'  The attribute `online` contains logical values: in case 
@@ -146,6 +150,7 @@ s2_list <- function(spatial_extent = NULL,
                     service = "apihub",
                     max_cloud = 100,
                     availability,
+                    tmpdir = NA,
                     output_type = "deprecated") {
   
   if (!level %in% c("auto", "L2A", "L1C")) {
@@ -350,7 +355,8 @@ s2_list <- function(spatial_extent = NULL,
       tile = tile,
       orbit = orbit,
       level = level,
-      max_cloud = max_cloud
+      max_cloud = max_cloud,
+      tmpdir = tmpdir
     )
     out_dt_list[["gcloud"]][,server:=rep("gcloud", nrow(out_dt_list[["gcloud"]]))]
   }
