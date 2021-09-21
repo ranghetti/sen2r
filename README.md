@@ -53,7 +53,7 @@ allows to:
     layer);
 -   computing spectral indices and RGB images.
 
-**New feature**: stating from version 1.5.0, Sentinel-2 SAFE archives
+**New feature**: starting from version 1.5.0, Sentinel-2 SAFE archives
 can be downloaded both from official [Copernicus Open Access
 Hub](https://scihub.copernicus.eu/) or from [Google Cloud Sentinel-2
 bucket](https://cloud.google.com/storage/docs/public-datasets/sentinel-2)
