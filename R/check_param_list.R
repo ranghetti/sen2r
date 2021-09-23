@@ -79,6 +79,20 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
     }
   }
   
+  # -- Preprocessing-specific parameters: set to defaults if preprocess == FALSE
+  pm_forpreproc <- c(
+    "list_prods", "list_rgb", "lsit_indices", "index_source", "rgb_ranges",
+    "mask_type", "max_mask", "mask_smooth", "mask_buffer", "clip_on_extent", 
+    "extent_as_mask", "reference_path", "res", "res_s2", "unit", "proj",
+    "resampling", "resampling_scl", "outformat", "rgb_outformat", "index_datatype",
+    "compression", "rgb_compression", "overwrite", "path_tiles", "path_merged",
+    "path_out", "path_rgb", "path_indices", "path_subdirs", "thumbnails"
+  )
+  if (is(pm$preprocess, "logical") && pm$preprocess[1] == FALSE) {
+    pm[pm_forpreproc] <- pm_def[pm_forpreproc]
+  }
+  
+  
   # -- Parameters of length 1: check length
   pm_length1 <- c(
     "preprocess", "online", "order_lta", "downloader", 

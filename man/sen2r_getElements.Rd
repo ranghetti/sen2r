@@ -4,11 +4,23 @@
 \alias{sen2r_getElements}
 \title{Get information from S2 short name}
 \usage{
-sen2r_getElements(s2_names, format = "data.table", abort = TRUE)
+sen2r_getElements(
+  s2_names,
+  naming_convention = "sen2r",
+  format = "data.table",
+  abort = TRUE
+)
 }
 \arguments{
 \item{s2_names}{A vector of Sentinel-2 product names in the
 sen2r naming convention.}
+
+\item{naming_convention}{The naming convention used to extract information
+from \code{s2_names} names. Default value (\code{"sen2r"}) is the
+\href{https://sen2r.ranghetti.info/articles/outstructure.html#naming-convention}{sen2r naming convention};
+an experimental accepted value is \code{"sen2r_new"} (it will be documented in future).
+Alternatively, a list with the manual definition of the naming convention
+can be provided (the required format will be documented in a future release).}
 
 \item{format}{One between \code{data.table} (default), \code{data.frame} and \code{list}.}
 

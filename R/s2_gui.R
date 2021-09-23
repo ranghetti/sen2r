@@ -4077,7 +4077,7 @@ s2_gui <- function(param_list = NULL,
         } else {
           updateRadioButtons(session, "query_space", selected = TRUE)
           # rl$s2tiles_selected <- input$tiles_checkbox # selected tile IDs
-          updateRadioButtons(session, "extent_as_mask", selected = rv$extent_as_mask)
+          updateRadioButtons(session, "extent_as_mask", selected = pl$extent_as_mask)
         }
         setProgress(0.4)
         
@@ -4131,8 +4131,8 @@ s2_gui <- function(param_list = NULL,
         updateTextInput(session, "path_out_textin", value = pl$path_out)
         updateTextInput(session, "path_indices_textin", value = pl$path_indices)
         updateTextInput(session, "path_rgb_textin", value = pl$path_rgb)
-        updateRadioButtons(session, "path_subdirs", selected = pl$path_subdirs)
-        updateRadioButtons(session, "check_thumbnails", selected = pl$thumbnails)
+        updateCheckboxInput(session, "path_subdirs", value = pl$path_subdirs)
+        updateCheckboxInput(session, "check_thumbnails", value = pl$thumbnails)
         
         # update logs and parallelisation
         if (!is.na(pl$log[1])) {rv$log_path <- pl$log[1]}
@@ -4229,7 +4229,7 @@ s2_gui <- function(param_list = NULL,
           type = "error"
         )
         
-      } else if (length(c(
+      } else if (input$preprocess == TRUE & length(c(
         rv$list_prods,
         input$list_indices,
         input$list_rgb
@@ -4273,6 +4273,7 @@ s2_gui <- function(param_list = NULL,
         )
         
       } else if (
+        input$preprocess == TRUE & 
         length(input$list_indices) > 0 &
         input$path_out_textin == "" &
         input$path_indices_textin == ""
@@ -4287,6 +4288,7 @@ s2_gui <- function(param_list = NULL,
         )
         
       } else if (
+        input$preprocess == TRUE & 
         length(input$list_rgb) > 0 &
         input$path_out_textin == "" &
         input$path_rgb_textin == ""
@@ -4301,6 +4303,7 @@ s2_gui <- function(param_list = NULL,
         )
         
       } else if (all(
+        input$preprocess == TRUE & 
         input$online == TRUE,
         length(nn(rv$extent)) == 0,
         length(nn(input$tiles_checkbox)) == 0

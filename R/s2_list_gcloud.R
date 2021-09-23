@@ -3,7 +3,7 @@
 #' @importFrom foreach foreach "%do%"
 #' @importFrom sf gdal_utils
 #' @import data.table
-.s2_list_gcloud <- function(time_intervals, tile, orbit, level, max_cloud) {
+.s2_list_gcloud <- function(time_intervals, tile, orbit, level, max_cloud, tmpdir) {
   
   # to avoid NOTE on check
   sensing_datetime <- j <- id_orbit <- creation_datetime <- id_tile <- clouds <- 
@@ -12,6 +12,15 @@
   ## Check gcloud
   check_gcloud() # stop in case of problems
   binpaths <- load_binpaths()
+  
+  # define and create tmpdir
+  if (is.na(tmpdir)) {
+    tmpdir <- tempfile(pattern="s2list_")
+  } else if (dir.exists(tmpdir)) {
+    tmpdir <- tempfile(tmpdir = tmpdir, pattern="s2list_")
+  }
+  dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
+  tmpdir <- normalize_path(tmpdir)
   
   ## List SAFE
   print_message(
@@ -75,7 +84,8 @@
   if (inherits(stdout(), "terminal")) {pb <- txtProgressBar(0, nrow(gc_meta), style = 3)}
   gc_xml_paths <- sapply(gc_meta$url, function(x) {
     x1 <- system(paste0(binpaths$gsutil," ls ",paste0(x, "MTD_MSI*.xml")), intern = TRUE)
-    system(paste0(binpaths$gsutil," -m -q cp -r ",x1[1]," ",x2 <- tempfile(fileext=".xml")))
+    x2 <- tempfile(tmpdir = tmpdir, fileext=".xml")
+    system(paste0(binpaths$gsutil," -m -q cp -r ",x1[1]," ",x2))
     if (inherits(stdout(), "terminal")) {setTxtProgressBar(pb, which(x==gc_meta$url))}
     x2
   })

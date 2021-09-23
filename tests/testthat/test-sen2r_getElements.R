@@ -27,3 +27,25 @@ testthat::test_that(
     testthat::expect_is(meta, "list")
   }
 )
+
+fs2nc_examplename_new <- "/path/of/the/product/S2_20170603_022_32TQQ_A_TOA.tif"
+
+testthat::test_that(
+  "Tests on sen2r_getElements, new naming convention", {
+    # Return metadata
+    meta <- sen2r_getElements(
+      fs2nc_examplename_new, 
+      naming_convention = "sen2r_new"
+    )
+    testthat::expect_is(meta, "data.table")
+    testthat::expect_equal(meta, data.table(
+      type = "tile",
+      sensing_date = structure(17320, class = "Date"),
+      id_orbit = "022",
+      extent_name = "32TQQ",
+      mission = "A",
+      prod_type = "TOA",
+      file_ext = "tif")
+    )
+  }
+)
