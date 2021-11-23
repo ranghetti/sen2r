@@ -19,8 +19,8 @@ sen2r naming convention.}
 from \code{s2_names} names. \code{"sen2r"} is the
 \href{https://sen2r.ranghetti.info/articles/outstructure.html#naming-convention}{sen2r naming convention};
 an experimental accepted value is \code{"sen2r_new"} (it will be documented in future).
-By default, \code{"sen2r"} is used unless any \code{s2_names} matches \code{"sen2r"}
-while some matches \code{"sen2r_new"}.
+By default (argument unspecified or NULL), \code{"sen2r"} is used unless
+any \code{s2_names} matches \code{"sen2r"} while some matches \code{"sen2r_new"}.
 Alternatively, a list with the manual definition of the naming convention
 can be provided (the required format will be documented in a future release).}
 

@@ -8,8 +8,8 @@
 #'  from `s2_names` names. `"sen2r"` is the 
 #'  [sen2r naming convention](https://sen2r.ranghetti.info/articles/outstructure.html#naming-convention);
 #'  an experimental accepted value is `"sen2r_new"` (it will be documented in future).
-#'  By default, `"sen2r"` is used unless any `s2_names` matches `"sen2r"`
-#'  while some matches `"sen2r_new"`.
+#'  By default (argument unspecified or NULL), `"sen2r"` is used unless 
+#'  any `s2_names` matches `"sen2r"` while some matches `"sen2r_new"`.
 #'  Alternatively, a list with the manual definition of the naming convention
 #'  can be provided (the required format will be documented in a future release).
 #' @param format One between `data.table` (default), `data.frame` and `list`.
@@ -68,9 +68,10 @@ sen2r_getElements <- function(
   if (is.null(s2_names)) {
     return(invisible(NULL))
   }
+  s2_names <- basename(s2_names)
   
   # define regular expressions to identify products
-  if (missing(naming_convention)) {
+  if (missing(naming_convention) || is.null(naming_convention)) {
     # try all the defined conventions
     regex_match <- sapply(list_regex, function(x){sum(grepl(x$regex,s2_names))})
     if (regex_match[["sen2r"]] == 0 & regex_match[["sen2r_new"]] > 0) {
@@ -103,8 +104,6 @@ sen2r_getElements <- function(
   metadata <- data.frame(
     "type" = rep(NA, length(s2_names))
   ) # output object, with requested metadata
-  
-  s2_names <- basename(s2_names)
   
   # retrieve info
   for (sel_el in fs2nc_regex$elements) {
