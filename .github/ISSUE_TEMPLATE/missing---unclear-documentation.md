@@ -8,6 +8,19 @@ assignees: ''
 ---
 
 <!--
+
+--- NEWS ---
+Unfortunately the owner can no longer provide assistance for this package.
+If you need to ask for help or make a question about {sen2r} functionalities,
+you can check if the topic was already addressed within closed issues.
+In case you did not find a solution, please address your question on StackOverflow, 
+where other users could answer you.
+Any opened issues will be automatically closed, as well as reopened old issues 
+will be ignored.
+The following template instructions are kept for backwards compatibility.
+---
+
+
 Use this template if you need information about {sen2r} funcionalities which are not [well] documented. You can use it also for GENERAL questions (e.g. "Is it possible to [...] with sen2r?"); instead, for questions related to use cases (or if in doubt about which template to use) please use the "Help needed" template.
 
 Before opening a new issue:

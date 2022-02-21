@@ -5,9 +5,11 @@
 #' @param s2_names A vector of Sentinel-2 product names in the
 #'  sen2r naming convention.
 #' @param naming_convention The naming convention used to extract information
-#'  from `s2_names` names. Default value (`"sen2r"`) is the 
+#'  from `s2_names` names. `"sen2r"` is the 
 #'  [sen2r naming convention](https://sen2r.ranghetti.info/articles/outstructure.html#naming-convention);
 #'  an experimental accepted value is `"sen2r_new"` (it will be documented in future).
+#'  By default (argument unspecified or NULL), `"sen2r"` is used unless 
+#'  any `s2_names` matches `"sen2r"` while some matches `"sen2r_new"`.
 #'  Alternatively, a list with the manual definition of the naming convention
 #'  can be provided (the required format will be documented in a future release).
 #' @param format One between `data.table` (default), `data.frame` and `list`.
@@ -34,10 +36,24 @@
 
 sen2r_getElements <- function(
   s2_names, 
-  naming_convention = "sen2r", 
+  naming_convention, 
   format = "data.table", 
   abort = TRUE
 ) {
+  
+  # static definitions: regex
+  list_regex <- list(
+    "sen2r" = list(
+      "regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([^\\_\\.]*)\\_([^\\_\\.]+)\\_([126]0)\\.?([^\\_]*)$",
+      "elements" = c("mission","level","sensing_date","id_orbit","extent_name","prod_type","res","file_ext"),
+      "date_format" = "%Y%m%d"
+    ),
+    "sen2r_new" = list(
+      "regex" = "^S2\\_([0-9]{8})\\_([0-9]{3})\\_([^\\_\\.]*)\\_([AB])\\_([^\\_\\.]+)\\.?([^\\_]*)$",
+      "elements" = c("sensing_date","id_orbit","extent_name","mission","prod_type","file_ext"),
+      "date_format" = "%Y%m%d"
+    )
+  )
   
   # check format
   if (!format %in% c("list", "data.frame", "data.table")) {
@@ -52,21 +68,21 @@ sen2r_getElements <- function(
   if (is.null(s2_names)) {
     return(invisible(NULL))
   }
+  s2_names <- basename(s2_names)
   
   # define regular expressions to identify products
+  if (missing(naming_convention) || is.null(naming_convention)) {
+    # try all the defined conventions
+    regex_match <- sapply(list_regex, function(x){sum(grepl(x$regex,s2_names))})
+    if (regex_match[["sen2r"]] == 0 & regex_match[["sen2r_new"]] > 0) {
+      naming_convention <- "sen2r_new"
+    } else {
+      naming_convention <- "sen2r"
+    }
+  }
   if (inherits(naming_convention, "character")) {
-    if (naming_convention[1] == "sen2r") {
-      fs2nc_regex <- list(
-        "regex" = "^S2([AB])([12][AC])\\_([0-9]{8})\\_([0-9]{3})\\_([^\\_\\.]*)\\_([^\\_\\.]+)\\_([126]0)\\.?([^\\_]*)$",
-        "elements" = c("mission","level","sensing_date","id_orbit","extent_name","prod_type","res","file_ext"),
-        "date_format" = "%Y%m%d"
-      )
-    } else if (naming_convention[1] == "sen2r_new") {
-      fs2nc_regex <- list(
-        "regex" = "^S2\\_([0-9]{8})\\_([0-9]{3})\\_([^\\_\\.]*)\\_([AB])\\_([^\\_\\.]+)\\.?([^\\_]*)$",
-        "elements" = c("sensing_date","id_orbit","extent_name","mission","prod_type","file_ext"),
-        "date_format" = "%Y%m%d"
-      )
+    if (naming_convention[1] %in% c("sen2r", "sen2r_new")) {
+      fs2nc_regex <- list_regex[[naming_convention[1]]]
     } else {
       print_message(
         type = "error",
@@ -88,8 +104,6 @@ sen2r_getElements <- function(
   metadata <- data.frame(
     "type" = rep(NA, length(s2_names))
   ) # output object, with requested metadata
-  
-  s2_names <- basename(s2_names)
   
   # retrieve info
   for (sel_el in fs2nc_regex$elements) {

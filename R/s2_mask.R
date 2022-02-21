@@ -349,12 +349,16 @@ s2_mask <- function(infiles,
     
     # check that infile has the correct maskfile
     sel_maskfiles <- sapply(names(req_masks), function(m) {
-      maskfiles[which(maskfiles_meta_sen2r$prod_type==m &
-                        maskfiles_meta_sen2r$type==sel_infile_meta_sen2r$type &
-                        maskfiles_meta_sen2r$mission==sel_infile_meta_sen2r$mission &
-                        maskfiles_meta_sen2r$sensing_date==sel_infile_meta_sen2r$sensing_date &
-                        maskfiles_meta_sen2r$id_orbit==sel_infile_meta_sen2r$id_orbit &
-                        maskfiles_meta_sen2r$res==sel_infile_meta_sen2r$res)][1]
+      sel1 <- maskfiles_meta_sen2r$prod_type==m &
+        maskfiles_meta_sen2r$type==sel_infile_meta_sen2r$type &
+        maskfiles_meta_sen2r$mission==sel_infile_meta_sen2r$mission &
+        maskfiles_meta_sen2r$sensing_date==sel_infile_meta_sen2r$sensing_date &
+        maskfiles_meta_sen2r$id_orbit==sel_infile_meta_sen2r$id_orbit
+      if (!is.null(maskfiles_meta_sen2r$res) & !is.null(sel_infile_meta_sen2r$res)) {
+        sel1 <- sel1 &
+          maskfiles_meta_sen2r$res==sel_infile_meta_sen2r$res
+      }
+      maskfiles[which(sel1)][1]
     })
     
     # define subdir
