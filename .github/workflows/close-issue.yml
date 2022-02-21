@@ -1,0 +1,21 @@
+name: Autocloser
+on: [issues]
+jobs:
+  autoclose:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Autoclose issues by default
+      uses: roots/issue-closer@v1.1
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        issue-close-message: "
+          @${issue.user.login} 
+          unfortunately the owner can no longer provide assistance for this package. 
+          If you need to ask for help or make a question about {sen2r} functionalities, 
+          refer to the package documentation first, 
+          and check if the topic was already addressed within closed issues. 
+          Then, address remaining doubts to public forums like StackOverflow, 
+          where other users could eventually provide useful ticks. 
+          If you are able to correct a bug, please address your changes in a pull request. 
+          "
+        issue-pattern: ".*do not autoclose this issue.*"
