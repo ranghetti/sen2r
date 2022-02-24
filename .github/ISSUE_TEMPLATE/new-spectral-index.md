@@ -7,8 +7,6 @@ assignees: ''
 
 ---
 
-<!--
-
 --- NEWS ---
 Unfortunately the owner can no longer provide assistance for this package.
 The list of indices will not be extended with new requests.
@@ -19,6 +17,8 @@ If you are able to edit the code in order to manually add the index,
 you can open a pull request with your changes.
 The following template instructions are kept for backwards compatibility.
 ---
+
+<!--
 
 Use this template if you need to compute a spectral index which is not included in {sen2r}, or if you encountered an error in the formula of an unvalidated index taken from http://www.indexdatabase.de/ .
 -->
