@@ -350,7 +350,7 @@ s2_merge <- function(infiles,
              sel_outfile))
       gdalUtil(
         "buildvrt",
-        source = sel_infiles,
+        source = rev(sel_infiles),
         destination = merged_vrt,
         quiet = TRUE
       )
