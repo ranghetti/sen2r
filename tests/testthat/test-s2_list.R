@@ -55,7 +55,7 @@ testthat::test_that(
       orbit = "065",
       server = "gcloud"
     )
-    testthat::expect_equal(length(s2_list_test), 21)
+    testthat::expect_equal(length(s2_list_test), 22)
   }
 )
 
