@@ -75,7 +75,7 @@ testthat::test_that(
     
     # test on raster values
     exp_stars <- stars::read_stars(exp_outpath_2[1])
-    testthat::expect_true(round(mean(exp_stars[[1]][,,3], na.rm=TRUE)) %in% c(734))
+    testthat::expect_true(round(mean(exp_stars[[1]][,,3], na.rm=TRUE)) %in% c(734,726))
     testthat::expect_true(sum(is.na(exp_stars[[1]][,,3])) %in% c(0))                                 # FIXMEEEEEEEEEEEE controlla la questione dei footprint sui prodotti online da gcloud
     rm(exp_stars)
     
