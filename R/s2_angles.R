@@ -52,23 +52,26 @@
 #' @export
 #' @examples
 #' \dontrun{
-#' s2_l1c_example <- file.path(
-#'   "/existing/path",
-#'   "S2B_MSIL1C_20200801T100559_N0209_R022_T32TNR_20200801T130136.SAFE")
+#' 
 #' s2_l2a_example <- file.path(
 #'   "/existing/path",
-#'   "S2B_MSIL2A_20200801T100559_N0214_R022_T32TNR_20200801T135302.SAFE")
+#'   "S2B_MSIL2A_20200801T100559_N0214_R022_T32TNR_20200801T135302.SAFE"
+#' )
 #'
 #' # Create all products
 #' s2_angles(s2_l2a_example, outdir = tempdir())
 #' 
-#' # Create only Viewing Incidence Angles at Azimuth, in ENVI format
+#' # Create only Viewing Incidence Angles at Azimuth, at 60 m resolution,
+#' # with cubic interpolation, in ENVI format
 #' s2_angles(
-#'   s2_l1c_example, 
+#'   s2_l2a_example, 
 #'   outdir = tempdir(), 
 #'   prod_type = "OAA", 
+#'   res = "60m",
+#'   method = "cubic",
 #'   format = "ENVI"
 #' )
+#' }
 
 s2_angles <- function(
     infiles, 
@@ -219,33 +222,35 @@ s2_angles <- function(
     }
     
     ## Interpolation
-    # raster at low resolution
-    m_coords <- list(
-      "x" = seq(from=sel_ul[1], by=sel_tr_src[1], length.out=dim(m_angles[[1]])[1]),
-      "y" = seq(from=sel_ul[2], by=sel_tr_src[2], length.out=dim(m_angles[[1]])[2])
-    )
-    r_angles <- st_as_stars(
-      data.frame(
-        expand.grid("y" = m_coords[["y"]], "x" = m_coords[["x"]]),
-        sapply(m_angles, as.vector)
-      ),
-      dims = c("x", "y"),
-      y_decreasing = sel_tr<0
-    )
-    sf::st_crs(r_angles) <- sel_crs
-    
+    # create raster at low resolution
+    if (length(m_angles) > 0) {
+      m_coords <- list(
+        "x" = seq(from=sel_ul[1], by=sel_tr_src[1], length.out=dim(m_angles[[1]])[1]),
+        "y" = seq(from=sel_ul[2], by=sel_tr_src[2], length.out=dim(m_angles[[1]])[2])
+      )
+      r_angles <- st_as_stars(
+        data.frame(
+          expand.grid("y" = m_coords[["y"]], "x" = m_coords[["x"]]),
+          sapply(m_angles, as.vector)
+        ),
+        dims = c("x", "y"),
+        y_decreasing = sel_tr<0
+      )
+      sf::st_crs(r_angles) <- sel_crs
+    }
     for (sel_prod in sel_prod_types) {
       print_message(
         type = "message",
         date = TRUE,
         paste0("Interpolating file ", basename(sel_out_names[sel_prod]),"...")
       )
-      # write
+      # write raster at low resolution
       r_selangle_tmpath <- file.path(
         tmpdir, 
         basename(tempfile(pattern = "raster5000_", fileext = ".tif"))
       )
       write_stars(r_angles[sel_prod], r_selangle_tmpath, options="COMPRESS=LZW")
+      # interpolate raster at higher resolution
       gdalUtil(
         "warp",
         source = r_selangle_tmpath,

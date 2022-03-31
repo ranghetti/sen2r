@@ -79,6 +79,29 @@ to the desired Sentinel-2 output resolution.
 \note{
 License: GPL 3.0
 }
+\examples{
+\dontrun{
+
+s2_l2a_example <- file.path(
+  "/existing/path",
+  "S2B_MSIL2A_20200801T100559_N0214_R022_T32TNR_20200801T135302.SAFE"
+)
+
+# Create all products
+s2_angles(s2_l2a_example, outdir = tempdir())
+
+# Create only Viewing Incidence Angles at Azimuth, at 60 m resolution,
+# with cubic interpolation, in ENVI format
+s2_angles(
+  s2_l2a_example, 
+  outdir = tempdir(), 
+  prod_type = "OAA", 
+  res = "60m",
+  method = "cubic",
+  format = "ENVI"
+)
+}
+}
 \references{
 L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
