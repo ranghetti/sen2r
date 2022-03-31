@@ -25,6 +25,10 @@ s2_defNA <- function(prod_types) {
     AOT = 2^16-1, # default value for UInt16
     CLD = 255, # default value for Byte
     SNW = 255, # default value for Byte
+    SZA = -9999, # used in substitution of the default value for Float32
+    OZA = -9999, # used in substitution of the default value for Float32
+    SAA = -9999, # used in substitution of the default value for Float32
+    OAA = -9999, # used in substitution of the default value for Float32
     0 # default value is not yet NA because this causes errors in s2_mask
   )
   

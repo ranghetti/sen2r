@@ -1,7 +1,6 @@
 #' @title Convert from SAFE format
 #' @description The function build a virtual raster from a Sentinel2 SAFE product,
 #'  eventually translating it in another spatial format.
-#'  For now, only L1C and L2a with long name (< 2016/12/06) are recognised.
 #'  Output vrt is at 10m resolution.
 #' @param infile Full path of the input SAFE folder (alternatively,
 #'  full path of the xml file of the product with metadata).
@@ -66,7 +65,7 @@
 #' s2_l1c_example <- file.path(
 #'   "/existing/path",
 #'   "S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE")
-#' s2_l1c_example <- file.path(
+#' s2_l2a_example <- file.path(
 #'   "/existing/path",
 #'   "S2A_MSIL2A_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE")
 #'
