@@ -272,7 +272,7 @@ testthat::test_that(
     }
     
     suppressWarnings(s2_l1c_downloaded <- s2_download(
-      s2_l1c_list[1],
+      rev(s2_l1c_list)[1],
       downloader = "aria2",
       outdir = safe_dir,
       apihub = tests_apihub_path,
