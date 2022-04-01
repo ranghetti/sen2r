@@ -270,7 +270,7 @@ s2_translate <- function(
     rmtmp = rmtmp,
     prod_type = prod_type[prod_type %in% c("SZA", "OZA", "SAA", "OAA")], 
     res = res[1],
-    method = "bilinear",
+    method = method,
     format = if (format != "VRT") {format} else {"GTiff"},
     compress = compress,
     bigtiff = bigtiff,
