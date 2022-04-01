@@ -2,6 +2,7 @@
 #' @description The function extracts sun angle rasters from 
 #'  a SAFE archive, reshaping the original information (5 km resolution)
 #'  to the desired Sentinel-2 output resolution.
+#'  It was not exported because it is intended to be called by [s2_translate].
 #' @param infiles Full paths of the input SAFE folders.
 #' @param outdir (optional) Full name of the output directory where
 #'  the files should be created (default: current directory).
@@ -49,7 +50,6 @@
 #' @importFrom XML xmlToList xmlTreeParse
 #' @importFrom sf st_crs
 #' @importFrom stars st_as_stars write_stars
-#' @export
 #' @examples
 #' \dontrun{
 #' 
@@ -88,7 +88,14 @@ s2_angles <- function(
     overwrite = FALSE
 ) {
   
-  # TODO checks on arguments
+  # to avoid NOTE on check
+  i <- infile_dir <- name <- xml_granules <- NULL
+  
+  # Checks on arguments were skipped since the function is not exported;
+  # arguments are checked in s2_translate, which calls s2_angles).
+  
+  # exit if nothing is required
+  if (length(prod_type) == 0) {return(invisible(character(0)))}
   
   # define internal function to extract angles from xml
   extract_sun_angles <- function(xml, grid, direction) {
@@ -172,7 +179,7 @@ s2_angles <- function(
           full.name=FALSE, ext=sel_driver[1,"ext"]
         )
       )
-    })
+    }, simplify = TRUE, USE.NAMES = FALSE)
     sel_out_names <- if (overwrite == TRUE) {
       sel_out_names_all
     } else {
@@ -259,9 +266,9 @@ s2_angles <- function(
           "-of", format,
           "-dstnodata", s2_defNA(sel_prod),
           "-r", method,
-          # "-tr", sel_tr, 
+          # "-tr", sel_tr,
           "-ts", sel_ts,
-          "-te", c(sel_ul, sel_lr),
+          "-te", c(sel_ul, sel_lr)[c(1,4,3,2)],
           if (format == "GTiff") {c(
             "-co", paste0("COMPRESS=",toupper(compress)),
             "-co", "TILED=YES"
@@ -275,7 +282,7 @@ s2_angles <- function(
       if (format=="ENVI") {fix_envi_format(sel_out_names[sel_prod])}
     }
 
-    sel_out_names
+    sel_out_names_all
   } # end of infiles FOR cycle
   
   # Remove temporary files
@@ -285,7 +292,7 @@ s2_angles <- function(
   
   print_message(
     type="message",
-    length(out_names)," output files were correctly created."
+    length(out_names)," output angle files were correctly created."
   )
   return(out_names)
   

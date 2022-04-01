@@ -33,6 +33,11 @@
 #'      - `CLD`: Quality Indicators for cloud probabilities;
 #'      - `SNW`: Quality Indicators for snow probabilities;
 #'      - `VIS`: TODO Visibility (used for AOT);
+#'      _for both levels:_
+#'      - `SZA`: Sun Zenith Angles;
+#'      - `SAA`: Sun Azimuth Angles;
+#'      - `OZA`: averaged Viewing Incidence Zenith Angles;
+#'      - `OAA`: averaged Viewing Incidence Azimuth Angles.
 #'  * `rr` (length: 2) is the original minimum spatial resolution in metres
 #'      (10, 20 or 60);
 #'  * `fff` (length: variable, generally 3) is the file extension.
