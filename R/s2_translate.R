@@ -73,10 +73,12 @@
 #' \dontrun{
 #' s2_l1c_example <- file.path(
 #'   "/existing/path",
-#'   "S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE")
+#'   "S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"
+#' )
 #' s2_l2a_example <- file.path(
 #'   "/existing/path",
-#'   "S2A_MSIL2A_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE")
+#'   "S2A_MSIL2A_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"
+#' )
 #'
 #' # Create a single TOA GeoTIFF in the same directory
 #' s2_translate(s2_l1c_example, format="GTiff")
@@ -262,36 +264,20 @@ s2_translate <- function(
   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
   
   # create angles if required
-  angle_out_names <- s2_angles(
+  out_names <- s2_angles(
     infiles = infile, 
-    outdir = if (format != "VRT") {outdir} else {tmpdir},
+    outdir = outdir,
     subdirs = subdirs,
     tmpdir = tmpdir,
     rmtmp = rmtmp,
     prod_type = prod_type[prod_type %in% c("SZA", "OZA", "SAA", "OAA")], 
     res = res[1],
     method = method,
-    format = if (format != "VRT") {format} else {"GTiff"},
+    format = format,
     compress = compress,
     bigtiff = bigtiff,
     overwrite = overwrite
   )
-  # create pseudo-vrt if this is the required output format
-  if (format == "VRT") {
-    out_names <- 
-      gsub("tif$", "vrt", gsub(tmpdir, outdir, angle_out_names, fixed = TRUE))
-    for (i in seq_along(out_names)) {
-      gdalUtil(
-        "buildvrt",
-        source = angle_out_names[i],
-        destination = out_names[i],
-        options = c("-separate"),
-        quiet = TRUE
-      )
-    }
-  } else {
-    out_names <- angle_out_names
-  }
   
   # create a file / set of files for each prod_type
   for (sel_prod in prod_type[!prod_type %in% c("SZA", "OZA", "SAA", "OAA")]) {try({

@@ -30,7 +30,7 @@
 #'  (accepted values are valid values accepted by `-r` option of gdalwarp).
 #'  Default is `"bilinear"` (linear interpolation).
 #' @param format (optional) Format of the output file (in a
-#'  format recognised by GDAL). Default value is `"GTiff"` (GeoTIFF).
+#'  format recognised by GDAL). Default value is `"VRT"` (Virtual Raster).
 #' @param compress (optional) In the case a GeoTIFF format is
 #'  chosen, the compression indicated with this parameter is used.
 #' @param bigtiff (optional) Logical: if TRUE, the creation of a BigTIFF is
@@ -82,7 +82,7 @@ s2_angles <- function(
     prod_type = c("SZA", "OZA", "SAA", "OAA"), 
     res = "10m",
     method = "bilinear",
-    format = "GTiff",
+    format = "VRT",
     compress = "DEFLATE",
     bigtiff = FALSE,
     overwrite = FALSE
@@ -179,14 +179,14 @@ s2_angles <- function(
           full.name=FALSE, ext=sel_driver[1,"ext"]
         )
       )
-    }, simplify = TRUE, USE.NAMES = FALSE)
+    })
     sel_out_names <- if (overwrite == TRUE) {
       sel_out_names_all
     } else {
       sel_out_names_all[!file.exists(sel_out_names_all)]
     }
     sel_prod_types <- names(sel_out_names)
-
+    
     ## Read XML
     xml_path <- inmeta[i,xml_granules]
     xml_list <- xmlToList(xmlTreeParse(xml_path, useInternalNodes = TRUE))
@@ -246,11 +246,13 @@ s2_angles <- function(
       sf::st_crs(r_angles) <- sel_crs
     }
     for (sel_prod in sel_prod_types) {
-      print_message(
-        type = "message",
-        date = TRUE,
-        paste0("Interpolating file ", basename(sel_out_names[sel_prod]),"...")
-      )
+      if (format != "VRT") {
+        print_message(
+          type = "message",
+          date = TRUE,
+          paste0("Interpolating file ", basename(sel_out_names[sel_prod]),"...")
+        )
+      }
       # write raster at low resolution
       r_selangle_tmpath <- file.path(
         tmpdir, 
@@ -281,8 +283,8 @@ s2_angles <- function(
       # fix for envi extension
       if (format=="ENVI") {fix_envi_format(sel_out_names[sel_prod])}
     }
-
-    sel_out_names_all
+    
+    as.vector(sel_out_names_all)
   } # end of infiles FOR cycle
   
   # Remove temporary files

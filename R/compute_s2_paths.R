@@ -36,7 +36,7 @@
 #' @param tmpdir Path of the temporary directory.
 #' @param list_prods Character vector with the values of the
 #'  products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI",
-#'  "AOT", "WVP", "CLD", "SNW").
+#'  "AOT", "WVP", "CLD", "SNW", "SZA", "OZA", "SAA", "OAA").
 #' @param force_tiles (optional) Logical: passed to `safe_shortname()` (default: FALSE).
 #' @param check_tmp (optional) Logical: if TRUE (default), temporary files
 #'  are also searched when `exi` names are computed;
@@ -79,7 +79,7 @@ compute_s2_paths <- function(pm,
   s2_list_l2a <- s2_list_l2a[!duplicated(names(s2_list_l2a))]
   
   # Layer not to be masked (all the others are assumed to be masked)
-  nomsk <- c("SCL", "CLD", "SNW", "AOT")
+  nomsk <- c("SCL", "CLD", "SNW", "AOT", "SZA", "OZA", "SAA", "OAA")
   
   # Steps to perform
   steps_todo <- c(
@@ -215,6 +215,7 @@ compute_s2_paths <- function(pm,
   # accepted products (update together with the same variables in s2_gui() and in sen2r())
   l1c_prods <- c("TOA")
   l2a_prods <- c("BOA","SCL","TCI","AOT","WVP","CLD","SNW")
+  angle_prods <- c("SZA","OZA","SAA","OAA") # can be produced from both
   
   ## internal functions
   
@@ -384,8 +385,15 @@ compute_s2_paths <- function(pm,
       nn(
         unlist(c(
           sapply(
-            if (prod %in% l1c_prods) {file.path(pm$path_l1c,names(s2_list_l1c))} else
-              if (prod %in% l2a_prods) {file.path(pm$path_l2a,names(s2_list_l2a))},
+            if (
+              prod %in% l1c_prods | !"l2a" %in% pm$s2_levels & prod %in% angle_prods
+            ) {
+              file.path(pm$path_l1c,names(s2_list_l1c))
+            } else if (
+              prod %in% c(l2a_prods, angle_prods)
+            ) {
+              file.path(pm$path_l2a,names(s2_list_l2a))
+            },
             function(safe){
               sel_av_tiles <- tryCatch(
                 safe_getMetadata(
