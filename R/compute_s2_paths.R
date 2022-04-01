@@ -35,8 +35,8 @@
 #' @param s2_list_l2a Names and paths of input SAFE level-2A products.
 #' @param tmpdir Path of the temporary directory.
 #' @param list_prods Character vector with the values of the
-#'  products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI",
-#'  "AOT", "WVP", "CLD", "SNW", "SZA", "OZA", "SAA", "OAA").
+#'  products to be processed (accepted values: `"TOA"`, `"BOA"`, `"SCL"`, `"TCI"`,
+#'  `"AOT"`, `"WVP"`, `"CLD"`, `"SNW"`, `"SZA"`, `"OZA"`, `"SAA"`, `"OAA"`).
 #' @param force_tiles (optional) Logical: passed to `safe_shortname()` (default: FALSE).
 #' @param check_tmp (optional) Logical: if TRUE (default), temporary files
 #'  are also searched when `exi` names are computed;

@@ -111,10 +111,12 @@ License: GPL 3.0
 \dontrun{
 s2_l1c_example <- file.path(
   "/existing/path",
-  "S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE")
+  "S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"
+)
 s2_l2a_example <- file.path(
   "/existing/path",
-  "S2A_MSIL2A_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE")
+  "S2A_MSIL2A_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"
+)
 
 # Create a single TOA GeoTIFF in the same directory
 s2_translate(s2_l1c_example, format="GTiff")

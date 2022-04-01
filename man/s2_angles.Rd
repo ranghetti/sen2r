@@ -13,7 +13,7 @@ s2_angles(
   prod_type = c("SZA", "OZA", "SAA", "OAA"),
   res = "10m",
   method = "bilinear",
-  format = "GTiff",
+  format = "VRT",
   compress = "DEFLATE",
   bigtiff = FALSE,
   overwrite = FALSE
@@ -55,7 +55,7 @@ Default is all the possible types
 Default is \code{"bilinear"} (linear interpolation).}
 
 \item{format}{(optional) Format of the output file (in a
-format recognised by GDAL). Default value is \code{"GTiff"} (GeoTIFF).}
+format recognised by GDAL). Default value is \code{"VRT"} (Virtual Raster).}
 
 \item{compress}{(optional) In the case a GeoTIFF format is
 chosen, the compression indicated with this parameter is used.}

@@ -86,8 +86,8 @@ list_sen2r_paths(
 \item{tmpdir}{Path of the temporary directory.}
 
 \item{list_prods}{Character vector with the values of the
-products to be processed (accepted values: "TOA", "BOA", "SCL", "TCI",
-"AOT", "WVP", "CLD", "SNW").}
+products to be processed (accepted values: \code{"TOA"}, \code{"BOA"}, \code{"SCL"}, \code{"TCI"},
+\code{"AOT"}, \code{"WVP"}, \code{"CLD"}, \code{"SNW"}, \code{"SZA"}, \code{"OZA"}, \code{"SAA"}, \code{"OAA"}).}
 
 \item{force_tiles}{(optional) Logical: passed to \code{safe_shortname()} (default: FALSE).}
 
