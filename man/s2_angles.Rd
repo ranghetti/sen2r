@@ -75,6 +75,7 @@ A vector with the names of the created output files
 The function extracts sun angle rasters from
 a SAFE archive, reshaping the original information (5 km resolution)
 to the desired Sentinel-2 output resolution.
+It was not exported because it is intended to be called by \link{s2_translate}.
 }
 \note{
 License: GPL 3.0
