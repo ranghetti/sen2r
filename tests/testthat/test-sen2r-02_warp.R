@@ -183,7 +183,7 @@ testthat::test_that(
       exp_meta_r[1,c("xmin", "xmax", "ymin", "ymax")], 
       data.frame("xmin" = 113900, "xmax" = 133300, "ymin" = 5097850, "ymax" = 5112450)
     )
-    expect_equal_crs(st_crs2(exp_meta_r$proj[1]), 32633))
+    expect_equal_crs(st_crs2(exp_meta_r$proj[1]), 32633)
     testthat::expect_equal(exp_meta_r$type, c("UInt16","Float32"))
     testthat::expect_equal(exp_meta_r$outformat, rep("ENVI",2))
     
