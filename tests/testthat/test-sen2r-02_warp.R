@@ -278,7 +278,7 @@ testthat::test_that(
     expect_true(all(file.exists(exp_outpath_4)))
     
     # test on raster metadata
-    exp_meta_r <- raster_metadata(exp_outpath_4, format = "list")[[1]]
+    exp_meta_r <- raster_metadata(exp_outpath_4[1:3], format = "list")[[1]]
     testthat::expect_equal(names(exp_meta_r), c(
       "path", "valid", "res", "size", "nbands", "bbox", "proj", "unit", "outformat", "type"
     ))
