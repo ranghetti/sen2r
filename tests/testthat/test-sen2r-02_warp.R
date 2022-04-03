@@ -195,7 +195,7 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_s$extent_name, rep("Scalve",2))
     
     # test on raster values
-    exp_stars <- stars::read_stars(exp_outpath_3)
+    exp_stars <- stars::read_stars(exp_outpath_3[1])
     testthat::expect_equal(round(mean(exp_stars[[1]][,,3], na.rm=TRUE)), 885)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 0)
     rm(exp_stars)
