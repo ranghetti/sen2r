@@ -13,6 +13,7 @@ s2_translate(
   prod_type = NULL,
   tiles = NA,
   res = "10m",
+  method = "bilinear",
   format = "VRT",
   compress = "DEFLATE",
   bigtiff = FALSE,
@@ -48,26 +49,36 @@ bands are included within them).}
 
 \item{prod_type}{(optional) Vector of types to be produced as outputs
 (see \link{safe_shortname} for the list of accepted values). Default is
-reflectance ("TOA" for level 1C, "BOA" for level 2A).}
+reflectance (\code{"TOA"} for level 1C, \code{"BOA"} for level 2A).}
 
 \item{tiles}{(optional) Character vector with the desired output tile IDs
 (id specified IDs are not present in the input SAFE product, they are not
 produced). Default (NA) is to process all the found tiles.}
 
-\item{res}{(optional) Spatial resolution (one between '10m', '20m' or '60m');
-default is '10m'. Notice that, choosing '10m' or '20m', bands with lower
+\item{res}{(optional) Spatial resolution (one between \code{'10m'}, \code{'20m'} or
+\code{'60m'}); default is \code{'10m'}.
+Notice that, choosing \code{'10m'} or \code{'20m'}, bands with lower
 resolution will be rescaled to \code{res}. Band 08 is used with \code{res = '10m'},
 band 08A with \code{res = '20m'} and \code{res = '60m'}.}
 
-\item{format}{(optional) Format of the output file (in a
-format recognised by GDAL). Default value is "VRT" (Virtual Raster).}
+\item{method}{(optional) A resampling method used to generate products
+\code{"SZA"} (Sun Zenith Angles), \code{"OZA"} (Sun Azimuth Angles),
+\code{"SAA"} (averaged Viewing Incidence Zenith Angles)
+and \code{"OAA"} (averaged Viewing Incidence Azimuth Angles) from their
+original 5 km resolution.
+Accepted values are valid values accepted by \code{-r} option of
+\href{https://gdal.org/programs/gdalwarp.html}{\code{gdalwarp}}.
+Default is \code{"bilinear"} (linear interpolation).}
 
-\item{compress}{(optional) In the case a GTiff format is
+\item{format}{(optional) Format of the output file (in a
+format recognised by GDAL). Default value is \code{"VRT"} (Virtual Raster).}
+
+\item{compress}{(optional) In the case a GeoTIFF format is
 chosen, the compression indicated with this parameter is used.}
 
 \item{bigtiff}{(optional) Logical: if TRUE, the creation of a BigTIFF is
 forced (default is FALSE).
-This option is used only in the case a GTiff format was chosen.}
+This option is used only in the case a GeoTIFF format was chosen.}
 
 \item{vrt_rel_paths}{(optional) Logical: if TRUE (default on Linux),
 the paths present in the VRT output file are relative to the VRT position;
@@ -91,7 +102,6 @@ A vector with the names of the created output files
 \description{
 The function build a virtual raster from a Sentinel2 SAFE product,
 eventually translating it in another spatial format.
-For now, only L1C and L2a with long name (< 2016/12/06) are recognised.
 Output vrt is at 10m resolution.
 }
 \note{
@@ -101,10 +111,12 @@ License: GPL 3.0
 \dontrun{
 s2_l1c_example <- file.path(
   "/existing/path",
-  "S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE")
-s2_l1c_example <- file.path(
+  "S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"
+)
+s2_l2a_example <- file.path(
   "/existing/path",
-  "S2A_MSIL2A_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE")
+  "S2A_MSIL2A_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"
+)
 
 # Create a single TOA GeoTIFF in the same directory
 s2_translate(s2_l1c_example, format="GTiff")
@@ -116,13 +128,24 @@ s2_translate(
   vrt_rel_paths = TRUE
 )
 
-# Create three products (ENVI) in the same directory at 60m resolution
+# Create four products (ENVI) in the same directory at 60m resolution,
+# using a cubic interpolation for "OAA"
 s2_translate(
-  s2_example, 
+  s2_l2a_example, 
   format = "ENVI", 
-  prod_type = c("BOA","TCI","SCL"),
+  prod_type = c("BOA","TCI","SCL","OAA"),
   res = "60m", 
+  method = "cubic",
   subdirs = TRUE
+)
+
+# Create all the four angle products from TOA in GeoTIFF format 
+# in a temporary directory
+s2_translate(
+  s2_l1c_example, 
+  format = "GTiff", 
+  prod_type = c("SZA", "OZA", "SAA", "OAA"), 
+  outdir = tempdir()
 )
 }
 }

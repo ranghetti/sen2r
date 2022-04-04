@@ -627,6 +627,14 @@ s2_thumbnails <- function(infiles,
           c(0,1000)
         } else if (sel_prod_type %in% c("CLD","SNW")){
           c(0,100)
+        } else if (sel_prod_type %in% c("OAA")){
+          c(90,120)
+        } else if (sel_prod_type %in% c("OZA")){
+          c(0,15)
+        } else if (sel_prod_type %in% c("SAA")){
+          c(0,360)
+        } else if (sel_prod_type %in% c("SZA")){
+          c(0,90)
         } else { # spectral indices
           sel_infile_datatype <- raster_metadata(sel_infile_path)$type
           if (grepl("^Float",sel_infile_datatype)) {
@@ -672,6 +680,8 @@ s2_thumbnails <- function(infiles,
             sel_prod_type
           } else if (sel_prod_type %in% c("CLD","SNW","AOT")) {
             "bw"
+          } else if (sel_prod_type %in% c("SZA", "OZA", "SAA", "OAA")) {
+            "Zscore" # temp
           } else if (grepl("\\-Z$",sel_prod_type) | sel_prod_type=="Zscore") {
             "Zscore"
           } else {

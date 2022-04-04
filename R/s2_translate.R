@@ -1,7 +1,6 @@
 #' @title Convert from SAFE format
 #' @description The function build a virtual raster from a Sentinel2 SAFE product,
 #'  eventually translating it in another spatial format.
-#'  For now, only L1C and L2a with long name (< 2016/12/06) are recognised.
 #'  Output vrt is at 10m resolution.
 #' @param infile Full path of the input SAFE folder (alternatively,
 #'  full path of the xml file of the product with metadata).
@@ -24,21 +23,30 @@
 #'  bands are included within them).
 #' @param prod_type (optional) Vector of types to be produced as outputs
 #'  (see [safe_shortname] for the list of accepted values). Default is
-#'  reflectance ("TOA" for level 1C, "BOA" for level 2A).
+#'  reflectance (`"TOA"` for level 1C, `"BOA"` for level 2A).
 #' @param tiles (optional) Character vector with the desired output tile IDs
 #'  (id specified IDs are not present in the input SAFE product, they are not
 #'  produced). Default (NA) is to process all the found tiles.
-#' @param res (optional) Spatial resolution (one between '10m', '20m' or '60m');
-#'  default is '10m'. Notice that, choosing '10m' or '20m', bands with lower
+#' @param res (optional) Spatial resolution (one between `'10m'`, `'20m'` or 
+#'  `'60m'`); default is `'10m'`.
+#'  Notice that, choosing `'10m'` or `'20m'`, bands with lower
 #'  resolution will be rescaled to `res`. Band 08 is used with `res = '10m'`,
 #'  band 08A with `res = '20m'` and `res = '60m'`.
+#' @param method (optional) A resampling method used to generate products 
+#'  `"SZA"` (Sun Zenith Angles), `"OZA"` (Sun Azimuth Angles),
+#'  `"SAA"` (averaged Viewing Incidence Zenith Angles) 
+#'  and `"OAA"` (averaged Viewing Incidence Azimuth Angles) from their
+#'  original 5 km resolution.
+#'  Accepted values are valid values accepted by `-r` option of 
+#'  [`gdalwarp`](https://gdal.org/programs/gdalwarp.html). 
+#'  Default is `"bilinear"` (linear interpolation).
 #' @param format (optional) Format of the output file (in a
-#'  format recognised by GDAL). Default value is "VRT" (Virtual Raster).
-#' @param compress (optional) In the case a GTiff format is
+#'  format recognised by GDAL). Default value is `"VRT"` (Virtual Raster).
+#' @param compress (optional) In the case a GeoTIFF format is
 #'  chosen, the compression indicated with this parameter is used.
 #' @param bigtiff (optional) Logical: if TRUE, the creation of a BigTIFF is
 #'  forced (default is FALSE).
-#'  This option is used only in the case a GTiff format was chosen. 
+#'  This option is used only in the case a GeoTIFF format was chosen. 
 #' @param vrt_rel_paths (optional) Logical: if TRUE (default on Linux),
 #'  the paths present in the VRT output file are relative to the VRT position;
 #'  if FALSE (default on Windows), they are absolute.
@@ -65,10 +73,12 @@
 #' \dontrun{
 #' s2_l1c_example <- file.path(
 #'   "/existing/path",
-#'   "S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE")
-#' s2_l1c_example <- file.path(
+#'   "S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"
+#' )
+#' s2_l2a_example <- file.path(
 #'   "/existing/path",
-#'   "S2A_MSIL2A_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE")
+#'   "S2A_MSIL2A_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"
+#' )
 #'
 #' # Create a single TOA GeoTIFF in the same directory
 #' s2_translate(s2_l1c_example, format="GTiff")
@@ -80,30 +90,44 @@
 #'   vrt_rel_paths = TRUE
 #' )
 #'
-#' # Create three products (ENVI) in the same directory at 60m resolution
+#' # Create four products (ENVI) in the same directory at 60m resolution,
+#' # using a cubic interpolation for "OAA"
 #' s2_translate(
-#'   s2_example, 
+#'   s2_l2a_example, 
 #'   format = "ENVI", 
-#'   prod_type = c("BOA","TCI","SCL"),
+#'   prod_type = c("BOA","TCI","SCL","OAA"),
 #'   res = "60m", 
+#'   method = "cubic",
 #'   subdirs = TRUE
+#' )
+#' 
+#' # Create all the four angle products from TOA in GeoTIFF format 
+#' # in a temporary directory
+#' s2_translate(
+#'   s2_l1c_example, 
+#'   format = "GTiff", 
+#'   prod_type = c("SZA", "OZA", "SAA", "OAA"), 
+#'   outdir = tempdir()
 #' )
 #'}
 
-s2_translate <- function(infile,
-                         outdir=".",
-                         subdirs=NA,
-                         tmpdir=NA,
-                         rmtmp=TRUE,
-                         prod_type=NULL,
-                         tiles=NA,
-                         res="10m",
-                         format="VRT",
-                         compress="DEFLATE",
-                         bigtiff=FALSE,
-                         vrt_rel_paths=NA,
-                         utmzone="",
-                         overwrite = FALSE) {
+s2_translate <- function(
+    infile,
+    outdir = ".",
+    subdirs = NA,
+    tmpdir = NA,
+    rmtmp = TRUE,
+    prod_type = NULL,
+    tiles = NA,
+    res = "10m",
+    method = "bilinear",
+    format = "VRT",
+    compress = "DEFLATE",
+    bigtiff = FALSE,
+    vrt_rel_paths = NA,
+    utmzone = "",
+    overwrite = FALSE
+) {
   
   # Define vrt_rel_paths
   if (is.na(vrt_rel_paths)) {
@@ -141,6 +165,18 @@ s2_translate <- function(infile,
       "\u00A0\u00A0gdalUtils::gdalinfo(formats=TRUE)\n\n",
       "To search for a specific format, use:\n",
       "\u00A0\u00A0gdalinfo(formats=TRUE)[grep(\"yourformat\", gdalinfo(formats=TRUE))]")
+  }
+  
+  # check method
+  if (!method %in% c(
+    "near", "bilinear", "cubic", "cubicspline", "lanczos", "average",
+    "rms", "mode", "max", "min", "med", "q1", "q3", "sum"
+  )) {
+    print_message(
+      type = "warning",
+      "Resampling method \"",method,"\" is not recognised; using \"bilinear\"."
+    )
+    method <- "bilinear"
   }
   
   # Retrieve xml required metadata
@@ -210,9 +246,41 @@ s2_translate <- function(infile,
   # define output extension
   out_ext <- sel_driver[1,"ext"]
   
+  # define and create tmpdir
+  if (is.na(tmpdir)) {
+    tmpdir <- if (all(!is.na(format), format == "VRT")) {
+      rmtmp <- FALSE # force not to remove intermediate files
+      if (!missing(outdir)) {
+        file.path(outdir, ".vrt")
+      } else {
+        tempfile(pattern="s2translate_")
+      }
+    } else {
+      tempfile(pattern="s2translate_")
+    }
+  } else if (dir.exists(tmpdir)) {
+    tmpdir <- file.path(tmpdir, basename(tempfile(pattern="s2translate_")))
+  }
+  dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
+  
+  # create angles if required
+  out_names <- s2_angles(
+    infiles = infile, 
+    outdir = outdir,
+    subdirs = subdirs,
+    tmpdir = tmpdir,
+    rmtmp = rmtmp,
+    prod_type = prod_type[prod_type %in% c("SZA", "OZA", "SAA", "OAA")], 
+    res = res[1],
+    method = method,
+    format = format,
+    compress = compress,
+    bigtiff = bigtiff,
+    overwrite = overwrite
+  )
+  
   # create a file / set of files for each prod_type
-  out_names <- character(0) # names of created files
-  for (sel_prod in prod_type) {try({
+  for (sel_prod in prod_type[!prod_type %in% c("SZA", "OZA", "SAA", "OAA")]) {try({
     
     if (sel_prod %in% c("BOA","TOA")) {
       sel_type <- "MSI"
@@ -221,37 +289,11 @@ s2_translate <- function(infile,
     }
     
     # define NA flag
-    sel_na <- switch(sel_prod,
-                     BOA = "65535",
-                     TOA = "65535",
-                     SCL = "0",
-                     TCI = NA,
-                     WVP = NA,
-                     AOT = NA,
-                     CLD = NA,
-                     SNW = NA,
-                     NA)
+    sel_na <- s2_defNA(sel_prod)
     # define output subdir
     out_subdir <- ifelse(subdirs, file.path(outdir,sel_prod), outdir)
     
     # TODO check that required bands are present
-    
-    # define and create tmpdir
-    if (is.na(tmpdir)) {
-      tmpdir <- if (all(!is.na(format), format == "VRT")) {
-        rmtmp <- FALSE # force not to remove intermediate files
-        if (!missing(outdir)) {
-          file.path(outdir, ".vrt")
-        } else {
-          tempfile(pattern="s2translate_")
-        }
-      } else {
-        tempfile(pattern="s2translate_")
-      }
-    } else if (dir.exists(tmpdir)) {
-      tmpdir <- file.path(tmpdir, basename(tempfile(pattern="s2translate_")))
-    }
-    dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
     
     # cycle on granules (with compact names, this runs only once; with old name, one or more)
     for (sel_granule in infile_meta$xml_granules) {try({
@@ -374,7 +416,7 @@ s2_translate <- function(infile,
           # step 3
           if (do_step3) {
             cutline_path <- paste0(tmpdir,"/",out_prefix,"_cutline.gpkg")
-            st_write(infile_footprint, cutline_path, quiet = TRUE)
+            st_write(infile_footprint, cutline_path, append = FALSE, quiet = TRUE)
             gdalUtil(
               "warp",
               source = vrt1_path,

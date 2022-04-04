@@ -109,7 +109,7 @@ smooth_mask <- function(
       destination = inmask_path2,
       options = c(
         "-md", radius_npx*3/4, 
-        "-si", "0", "-of", "GTiff", "-co", "COMPRESS=LZW"
+        "-co", "COMPRESS=LZW", "-si", "0", "-of", "GTiff"
       ),
       quiet = TRUE
     )
@@ -160,7 +160,7 @@ smooth_mask <- function(
       destination = inmask_path4,
       options = c(
         "-md", radius_npx*2,
-        "-si", "0", "-of", "GTiff", "-co", "COMPRESS=LZW"
+        "-co", "COMPRESS=LZW", "-si", "0", "-of", "GTiff"
       ),
       quiet = TRUE
     )
@@ -215,7 +215,7 @@ smooth_mask <- function(
     destination = inmask_path6,
     options = c(
       "-md", radius_npx*5/4+ifelse(buffer_npx>0,buffer_npx*3/2,buffer_npx),
-      "-si", "0", "-of", "GTiff", "-co", "COMPRESS=LZW"
+      "-co", "COMPRESS=LZW", "-si", "0", "-of", "GTiff"
     ),
     quiet = TRUE
   )
@@ -269,7 +269,7 @@ smooth_mask <- function(
       destination = inmask_path8,
       options = c(
         "-md", buffer_npx/2, 
-        "-si", "0", "-of", "GTiff", "-co", "COMPRESS=LZW"
+        "-co", "COMPRESS=LZW", "-si", "0", "-of", "GTiff"
       ),
       quiet = TRUE
     )

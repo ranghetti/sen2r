@@ -91,6 +91,11 @@ day on the same tile);
 \item \code{CLD}: Quality Indicators for cloud probabilities;
 \item \code{SNW}: Quality Indicators for snow probabilities;
 \item \code{VIS}: TODO Visibility (used for AOT);
+\emph{for both levels:}
+\item \code{SZA}: Sun Zenith Angles;
+\item \code{SAA}: Sun Azimuth Angles;
+\item \code{OZA}: averaged Viewing Incidence Zenith Angles;
+\item \code{OAA}: averaged Viewing Incidence Azimuth Angles.
 }
 \item \code{rr} (length: 2) is the original minimum spatial resolution in metres
 (10, 20 or 60);

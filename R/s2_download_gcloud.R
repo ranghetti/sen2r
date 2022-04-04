@@ -79,7 +79,7 @@
         suppressWarnings(file.remove(safe_tmpdir))
         print_message(
           type = "error",
-          "Download of file", link, "failed. ",
+          "Download of file ", link, " failed. ",
           "Internet connection may be down, ",
           "or \"gsutil\" may not be correctly installed."
         )
