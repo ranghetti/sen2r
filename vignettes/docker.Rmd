@@ -23,7 +23,7 @@ To use it:
     ```{bash, eval = FALSE}
     docker pull ranghetti/sen2r:latest
     ```
-    where `latest` corresponds to the software version in branch [master](https://github.com/ranghetti/sen2r/tree/master) (see [here](https://hub.docker.com/repository/registry-1.docker.io/ranghetti/sen2r/tags) all the available docker tags);
+    where `latest` corresponds to the software version in branch [main](https://github.com/ranghetti/sen2r/tree/main) (see [here](https://hub.docker.com/repository/registry-1.docker.io/ranghetti/sen2r/tags) all the available docker tags);
     
 4. run the docker:
     ```{bash, eval = FALSE}

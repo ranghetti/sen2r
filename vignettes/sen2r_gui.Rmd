@@ -36,20 +36,20 @@ Help pop-up windows (marked with the symbol
 are provided to aid users regarding the more complex parameters.
 
 <p style="text-align:center;">
-  <a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_gui_sheet1.png" target="_blank">
+  <a href="https://github.com/ranghetti/sen2r/raw/main/man/figures/sen2r_gui_sheet1.png" target="_blank">
     <img src="../man/figures/sen2r_gui_sheet1_small.png">
   </a>
-  <a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_gui_sheet2.png" target="_blank">
+  <a href="https://github.com/ranghetti/sen2r/raw/main/man/figures/sen2r_gui_sheet2.png" target="_blank">
     <img src="../man/figures/sen2r_gui_sheet2_small.png">
   </a>
   <br/>
-  <a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_gui_sheet3.png" target="_blank">
+  <a href="https://github.com/ranghetti/sen2r/raw/main/man/figures/sen2r_gui_sheet3.png" target="_blank">
     <img src="../man/figures/sen2r_gui_sheet3_small.png">
   </a>
-  <a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_gui_sheet4.png" target="_blank">
+  <a href="https://github.com/ranghetti/sen2r/raw/main/man/figures/sen2r_gui_sheet4.png" target="_blank">
     <img src="../man/figures/sen2r_gui_sheet4_small.png">
   </a>
-  <a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_gui_sheet5.png" target="_blank">
+  <a href="https://github.com/ranghetti/sen2r/raw/main/man/figures/sen2r_gui_sheet5.png" target="_blank">
     <img src="../man/figures/sen2r_gui_sheet5_small.png">
   </a>
 </p>

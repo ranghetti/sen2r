@@ -11,7 +11,7 @@ RUN apt update && apt install -y \
     rm -rf /var/lib/apt/lists/*
 
 # Install the package
-RUN R -e "remotes::install_github('ranghetti/sen2r', ref = 'master', dependencies = TRUE)"
+RUN R -e "remotes::install_github('ranghetti/sen2r', ref = 'main', dependencies = TRUE)"
 
 # Create the user's files and settings, set runtime dependencies
 RUN sudo -u rstudio mkdir /home/rstudio/.sen2r && \
