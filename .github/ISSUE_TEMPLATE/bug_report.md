@@ -7,8 +7,6 @@ assignees: ranghetti
 
 ---
 
-<!--
-
 --- NEWS ---
 Unfortunately the owner can no longer provide assistance for this package.
 If you want to report a bug you can open a new issue using this template,
@@ -16,6 +14,7 @@ but the issue will be automatically close and will probably remain unanswered.
 If you are able to correct the bug, please address your changes in a pull request.
 ---
 
+<!--
 
 Use this template to report a bug. Please use this method instead than sending private email to the authors. In case you are not sure if your error is due to a code bug, please open the "Help needed" template.
 
