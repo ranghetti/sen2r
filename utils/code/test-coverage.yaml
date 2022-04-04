@@ -1,8 +1,7 @@
 on:
   push:
     branches:
-      - feature/githubactions # FIXME temporary, remove
-      - master
+      - main
 
 name: test-coverage
 

@@ -20,7 +20,7 @@ Use this template to report a bug. Please use this method instead than sending p
 
 Before opening a new issue please check if the problem was already been mentioned (if so but the found issue is closed, open a new issue citing the old task instead than reopening it).
 
-Ensure that your {sen2r} version is update with the newest GitHub master branch:
+Ensure that your {sen2r} version is update with the newest GitHub main branch:
 install.packages("remotes")
 remotes::install_github("ranghetti/sen2r")
 

@@ -9,7 +9,7 @@ Status](https://www.r-pkg.org/badges/version-ago/sen2r)](https://cran.r-project.
 downloads](https://cranlogs.r-pkg.org/badges/last-month/sen2r?color=green)](https://cran.rstudio.com/web/packages/ggplot2/index.html)
 [![R-CMD-check](https://github.com/ranghetti/sen2r/workflows/R-CMD-check/badge.svg)](https://github.com/ranghetti/sen2r/actions/workflows/R-CMD-check.yaml)
 [![Coverage
-Status](http://img.shields.io/codecov/c/github/ranghetti/sen2r/master.svg)](http://codecov.io/github/ranghetti/sen2r?branch=master)
+Status](http://img.shields.io/codecov/c/github/ranghetti/sen2r/main.svg)](http://codecov.io/github/ranghetti/sen2r?branch=main)
 [![Docker Automated
 build](https://img.shields.io/docker/automated/ranghetti/sen2r.svg)](https://hub.docker.com/r/ranghetti/sen2r)
 [![License: GPL
@@ -132,15 +132,15 @@ sen2r()
 ```
 
 <p style="text-align:center;">
-<a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_gui_sheet1.png" target="_blank">
+<a href="https://github.com/ranghetti/sen2r/raw/main/man/figures/sen2r_gui_sheet1.png" target="_blank">
 <img src="man/figures/sen2r_gui_sheet1_small.png"> </a>
-<a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_gui_sheet2.png" target="_blank">
+<a href="https://github.com/ranghetti/sen2r/raw/main/man/figures/sen2r_gui_sheet2.png" target="_blank">
 <img src="man/figures/sen2r_gui_sheet2_small.png"> </a> <br/>
-<a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_gui_sheet3.png" target="_blank">
+<a href="https://github.com/ranghetti/sen2r/raw/main/man/figures/sen2r_gui_sheet3.png" target="_blank">
 <img src="man/figures/sen2r_gui_sheet3_small.png"> </a>
-<a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_gui_sheet4.png" target="_blank">
+<a href="https://github.com/ranghetti/sen2r/raw/main/man/figures/sen2r_gui_sheet4.png" target="_blank">
 <img src="man/figures/sen2r_gui_sheet4_small.png"> </a>
-<a href="https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_gui_sheet5.png" target="_blank">
+<a href="https://github.com/ranghetti/sen2r/raw/main/man/figures/sen2r_gui_sheet5.png" target="_blank">
 <img src="man/figures/sen2r_gui_sheet5_small.png"> </a>
 </p>
 
@@ -190,7 +190,7 @@ The [<span
 style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span
 style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span
 style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
-logo](https://github.com/ranghetti/sen2r/raw/master/man/figures/sen2r_logo_200px.png),
+logo](https://github.com/ranghetti/sen2r/raw/main/man/figures/sen2r_logo_200px.png),
 partially derived from the [R logo](https://www.r-project.org/logo), is
 released under the [Creative Commons Attribution-ShareAlike 4.0
 International license](https://creativecommons.org/licenses/by-sa/4.0)
