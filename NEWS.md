@@ -1,3 +1,34 @@
+# Version 1.5.1
+
+## Major changes
+- Implement the possibility to produce rasters of angles information stored in the SAFE xml:
+    - new internal (but documented) function `s2_angles()` to do it;
+    - integration in `s2_translate()`;
+    - integration in `sen2r()`;
+    - tests and examples.
+    (The GUI was not updated in order not to expose too much these products, since the package development is closed).
+- Closing the support on GitHub issues, due to career change of the maintainer.
+
+## Changes in default values
+- Change `naming_convention` default value in `sen2r_getElements()`.
+
+
+## Minor changes
+- Rename default branch `master` to `main` according to [Git and Branch Naming](https://sfconservancy.org/news/2020/jun/23/gitbranchname/) 
+- Add the naming convention "sen2r_new" to `sen2r_getElements()` (currently used only for internal usage).
+- New argument `tmpdir` in `s2_list()`.
+- Allow `s2_mask()` to manage inputs with sen2r_new naming convention.
+
+## Documentation
+- Add a note about Google Cloud download.
+
+## Bug fixes
+- Fix error with multiple SAFE and single apihub.
+- Fix #423, #424, #425.
+- Small bug fixes in `smooth_mask()`.
+- Test fixes (changes in system dependencies caused changes in tested values).
+
+
 # Version 1.5.0
 
 ## Major changes
