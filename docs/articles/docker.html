@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
       </span>
     </div>
 
@@ -52,7 +54,7 @@
   </a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     <span class="fa fa-book"></span>
      
      Articles
@@ -85,13 +87,13 @@
   </a>
 </li>
 <li>
-  <a href="http://luigi.ranghetti.info">
+  <a href="http://luigi.ranghetti.info" class="external-link">
     <span class="fa fa-user"></span>
      
   </a>
 </li>
 <li>
-  <a href="https://github.com/ranghetti/sen2r/">
+  <a href="https://github.com/ranghetti/sen2r/" class="external-link">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -106,28 +108,38 @@
 
       
 
-      </header><script src="docker_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Run in a Docker container</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/ranghetti/sen2r/blob/master/vignettes/docker.Rmd"><code>vignettes/docker.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ranghetti/sen2r/blob/HEAD/vignettes/docker.Rmd" class="external-link"><code>vignettes/docker.Rmd</code></a></small>
       <div class="hidden name"><code>docker.Rmd</code></div>
 
     </div>
 
     
     
-<p>A dockerised version of <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> is available <a href="https://hub.docker.com/r/ranghetti/sen2r">here</a>: it contains a working RStudio environment with the package <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> and all its dependencies (both R packages and runtime dependencies). It can be used in order to avoid troublings about compiling all the required R packages, or in case of problems with runtime dependencies (typically GDAL over Windows).</p>
+<p>A dockerised version of <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+is available <a href="https://hub.docker.com/r/ranghetti/sen2r" class="external-link">here</a>: it contains a
+working RStudio environment with the package <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+and all its dependencies (both R packages and runtime dependencies). It
+can be used in order to avoid troublings about compiling all the
+required R packages, or in case of problems with runtime dependencies
+(typically GDAL over Windows).</p>
 <p>To use it:</p>
 <ol style="list-style-type: decimal">
-<li><p><a href="https://docs.docker.com/install">install Docker CE</a> version 1.13 or higher;</p></li>
-<li><p>read the docker documentation in <a href="https://docs.docker.com/get-started">Part 1</a>;</p></li>
+<li><p><a href="https://docs.docker.com/install" class="external-link">install Docker CE</a>
+version 1.13 or higher;</p></li>
+<li><p>read the docker documentation in <a href="https://docs.docker.com/get-started" class="external-link">Part 1</a>;</p></li>
 <li>
 <p>obtain the image of <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> pull ranghetti/sen2r:latest</span></code></pre></div>
-<p>where <code>latest</code> corresponds to the software version in branch <a href="https://github.com/ranghetti/sen2r/tree/master">master</a> (see <a href="https://hub.docker.com/repository/registry-1.docker.io/ranghetti/sen2r/tags">here</a> all the available docker tags);</p>
+<p>where <code>latest</code> corresponds to the software version in
+branch <a href="https://github.com/ranghetti/sen2r/tree/main" class="external-link">main</a>
+(see <a href="https://hub.docker.com/repository/registry-1.docker.io/ranghetti/sen2r/tags" class="external-link">here</a>
+all the available docker tags);</p>
 </li>
 <li>
 <p>run the docker:</p>
@@ -135,19 +147,28 @@
 <p>where:</p>
 <ul>
 <li>
-<code>-e PASSWORD=sen2r</code> is the password to be used to login;</li>
+<code>-e PASSWORD=sen2r</code> is the password to be used to
+login;</li>
 <li>
-<code>-v $(pwd):/home/rstudio/host</code> means that the current directory will be mounted in the docker, and its content will be available in the subdirectory <code>host</code> of the docker folder tree (to mount a different directory, replace <code>$(pwd)</code> with the desired directory);</li>
+<code>-v $(pwd):/home/rstudio/host</code> means that the current
+directory will be mounted in the docker, and its content will be
+available in the subdirectory <code>host</code> of the docker folder
+tree (to mount a different directory, replace <code>$(pwd)</code> with
+the desired directory);</li>
 <li>
-<code>-p 8777:8787</code> means that the dockerised RStudio will be accessible from port 8777 (change it to use a different port).</li>
+<code>-p 8777:8787</code> means that the dockerised RStudio will be
+accessible from port 8777 (change it to use a different port).</li>
 </ul>
 </li>
-<li><p>access to the RStudio environment from <code>http://localhost:8777</code>, logging in with user <code>rstudio</code> and the password set as above;</p></li>
+<li><p>access to the RStudio environment from
+<code>http://localhost:8777</code>, logging in with user
+<code>rstudio</code> and the password set as above;</p></li>
 <li>
-<p>for online use, add the user’s SciHub credentials using the GUI or with the function:</p>
+<p>for online use, add the user’s SciHub credentials using the GUI
+or with the function:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://sen2r.ranghetti.info">sen2r</a></span><span class="op">)</span>
-<span class="fu"><a href="../reference/read_scihub_login.html">write_scihub_login</a></span><span class="op">(</span><span class="st">"&lt;scihub_username&gt;"</span>, <span class="st">"&lt;scihub_password&gt;"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sen2r.ranghetti.info" class="external-link">sen2r</a></span><span class="op">)</span>
+<span class="fu"><a href="../reference/scihub_login.html">write_scihub_login</a></span><span class="op">(</span><span class="st">"&lt;scihub_username&gt;"</span>, <span class="st">"&lt;scihub_password&gt;"</span><span class="op">)</span></code></pre></div>
 </li>
 </ol>
 </div>
@@ -161,11 +182,14 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Luigi Ranghetti, Lorenzo Busetto.</p>
+  <p></p>
+<p>Developed by Luigi Ranghetti, Lorenzo Busetto.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.</p>
 </div>
 
       </footer>
@@ -173,6 +197,8 @@
 
   
 
+
+  
 
   </body>
 </html>

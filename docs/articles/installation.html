@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
       </span>
     </div>
 
@@ -52,7 +54,7 @@
   </a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     <span class="fa fa-book"></span>
      
      Articles
@@ -85,13 +87,13 @@
   </a>
 </li>
 <li>
-  <a href="http://luigi.ranghetti.info">
+  <a href="http://luigi.ranghetti.info" class="external-link">
     <span class="fa fa-user"></span>
      
   </a>
 </li>
 <li>
-  <a href="https://github.com/ranghetti/sen2r/">
+  <a href="https://github.com/ranghetti/sen2r/" class="external-link">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -106,22 +108,21 @@
 
       
 
-      </header><script src="installation_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Installation</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/ranghetti/sen2r/blob/master/vignettes/installation.Rmd"><code>vignettes/installation.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ranghetti/sen2r/blob/HEAD/vignettes/installation.Rmd" class="external-link"><code>vignettes/installation.Rmd</code></a></small>
       <div class="hidden name"><code>installation.Rmd</code></div>
 
     </div>
 
     
     
-<div id="installing-sen2r" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installing-sen2r" class="anchor"></a>Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+<div class="section level2">
+<h2 id="installing-sen2r">Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span><a class="anchor" aria-label="anchor" href="#installing-sen2r"></a>
 </h2>
 <p>Instruction are provided separately for each OS:</p>
 <ul>
@@ -129,44 +130,60 @@
 <li><a href="#on-windows">Install on Windows</a></li>
 <li><a href="#on-macos">Install on MacOS</a></li>
 </ul>
-<p>Alternatively, <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be used <a href="docker.html">in a Docker container</a>.</p>
-<div id="on-linux-systems" class="section level3">
-<h3 class="hasAnchor">
-<a href="#on-linux-systems" class="anchor"></a><i class="fa fa-linux" aria-hidden="true"></i> On Linux systems</h3>
-<div id="installing-dependencies" class="section level4">
-<h4 class="hasAnchor">
-<a href="#installing-dependencies" class="anchor"></a>Installing dependencies</h4>
-<p>Before installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>, it is recommended to check <a href="https://cran.r-project.org/bin/linux/">R</a> (v. 3.4.4 or higher) and the following libraries to be present:</p>
+<p>Alternatively, <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+can be used <a href="docker.html">in a Docker container</a>.</p>
+<div class="section level3">
+<h3 id="on-linux-systems">
+<i class="fa fa-linux" aria-hidden="true"></i> On Linux systems<a class="anchor" aria-label="anchor" href="#on-linux-systems"></a>
+</h3>
+<div class="section level4">
+<h4 id="installing-dependencies">Installing dependencies<a class="anchor" aria-label="anchor" href="#installing-dependencies"></a>
+</h4>
+<p>Before installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>,
+it is recommended to check <a href="https://cran.r-project.org/bin/linux/" class="external-link">R</a> (v. 3.4.4 or higher)
+and the following libraries to be present:</p>
 <ul>
 <li>
-<a href="https://gdal.org/">GDAL</a>, <a href="https://proj4.org/">PROJ</a> and <a href="https://trac.osgeo.org/geos/">GEOS</a> (required by <a href="https://r-forge.r-project.org/projects/rgdal/">rgdal</a> and <a href="https://r-forge.r-project.org/projects/rgeos/">rgeos</a>);</li>
+<a href="https://gdal.org/" class="external-link">GDAL</a>, <a href="https://proj4.org/" class="external-link">PROJ</a> and <a href="https://trac.osgeo.org/geos/" class="external-link">GEOS</a> (required by <a href="https://r-forge.r-project.org/projects/rgdal/" class="external-link">rgdal</a> and <a href="https://r-forge.r-project.org/projects/rgeos/" class="external-link">rgeos</a>);</li>
 <li>
-<a href="https://stedolan.github.io/jq/">jq</a> (required by <a href="https://github.com/ropensci/jqr/">jqr</a>);</li>
+<a href="https://stedolan.github.io/jq/" class="external-link">jq</a> (required by <a href="https://github.com/ropensci/jqr/" class="external-link">jqr</a>);</li>
 <li>
-<a href="https://github.com/protocolbuffers/protobuf/">protobuf</a> (required by <a href="https://github.com/jeroen/protolite/">protolite</a>);</li>
+<a href="https://github.com/protocolbuffers/protobuf/" class="external-link">protobuf</a>
+(required by <a href="https://github.com/jeroen/protolite/" class="external-link">protolite</a>);</li>
 <li>
-<a href="https://v8.dev/">V8</a> (required by <a href="https://github.com/ropensci/geojsonio/">geojsonio</a>);</li>
+<a href="https://v8.dev/" class="external-link">V8</a> (required by <a href="https://github.com/ropensci/geojsonio/" class="external-link">geojsonio</a>);</li>
 <li>
-<a href="https://www.openssl.org/">openssl</a> (required by <a href="https://github.com/jeroen/openssl/">openssl</a>);</li>
+<a href="https://www.openssl.org/" class="external-link">openssl</a> (required by <a href="https://github.com/jeroen/openssl/" class="external-link">openssl</a>);</li>
 <li>
-<a href="https://www.cairographics.org/">cairo</a> (required by <a href="https://github.com/davidgohel/gdtools/">gdtools</a>);</li>
+<a href="https://www.cairographics.org/" class="external-link">cairo</a> (required by <a href="https://github.com/davidgohel/gdtools/" class="external-link">gdtools</a>);</li>
 <li>
-<a href="https://curl.se/libcurl/">libcurl</a> (required by <a href="https://github.com/jeroen/curl/">curl</a>);</li>
+<a href="https://curl.se/libcurl/" class="external-link">libcurl</a> (required by <a href="https://github.com/jeroen/curl/" class="external-link">curl</a>);</li>
 <li>
-<a href="https://www.unidata.ucar.edu/software/netcdf/">NetCDF</a> (required by <a href="https://github.com/mdsumner/ncdf4/">ncdf4</a>);</li>
+<a href="https://www.unidata.ucar.edu/software/netcdf/" class="external-link">NetCDF</a>
+(required by <a href="https://github.com/dis-organization/ncdf4/" class="external-link">ncdf4</a>);</li>
 <li>
-<a href="http://xmlsoft.org/">libxml2</a> (required by <a href="https://CRAN.R-project.org/package=XML/">XML</a>).</li>
+<a href="http://xmlsoft.org/" class="external-link">libxml2</a> (required by <a href="https://CRAN.R-project.org/package=XML/" class="external-link">XML</a>).</li>
 </ul>
-<p>Some external dependencies are required to run specific <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> features:</p>
+<p>Some external dependencies are required to run specific <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+features:</p>
 <ul>
 <li>
-<a href="http://step.esa.int/main/snap-supported-plugins/sen2cor/"><strong>Sen2Cor</strong></a> is used to perform atmospheric correction of Sentinel-2 Level-1C products: it is required by the package, unless you choose not to correct products locally (using only Level-1C – TOA products or downloading directly Level-2A products);</li>
+<a href="http://step.esa.int/main/snap-supported-plugins/sen2cor/" class="external-link"><strong>Sen2Cor</strong></a>
+is used to perform atmospheric correction of Sentinel-2 Level-1C
+products: it is required by the package, unless you choose not to
+correct products locally (using only Level-1C – TOA products or
+downloading directly Level-2A products);</li>
 <li>
-<a href="https://gdal.org/"><strong>GDAL</strong></a> is required to smooth/bufferise a cloud mask, and can be optionally used to compute spectral indices, RGB images and thumbnails;</li>
+<a href="https://gdal.org/" class="external-link"><strong>GDAL</strong></a> is required to
+smooth/bufferise a cloud mask, and can be optionally used to compute
+spectral indices, RGB images and thumbnails;</li>
 <li>
-<a href="https://aria2.github.io/"><strong>aria2</strong></a> is an alternative downloader which can be used to faster the download of SAFE archives; it can be optionally installed and used.</li>
+<a href="https://aria2.github.io/" class="external-link"><strong>aria2</strong></a> is an
+alternative downloader which can be used to faster the download of SAFE
+archives; it can be optionally installed and used.</li>
 </ul>
-<p>To install both package dependencies and runtime binaries (excepting <strong>Sen2Cor</strong>, which is installed by <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>):</p>
+<p>To install both package dependencies and runtime binaries (excepting
+<strong>Sen2Cor</strong>, which is installed by <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>):</p>
 <ul>
 <li>
 <p>On Ubuntu:</p>
@@ -178,18 +195,23 @@
 <li>
 <p>Older distros:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install <span class="at">-y</span> r-base gdal-bin python-gdal aria2 libpython-dev libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libv8-dev libssl-dev libcairo2-dev</span></code></pre></div>
-<p>On Ubuntu 16.04 LTS Xenial, the repositories <a href="https://launchpad.net/~ubuntugis">ubuntugis</a> and <a href="https://launchpad.net/~opencpu">opencpu</a> must be added before installing the packages:</p>
+<p>On Ubuntu 16.04 LTS Xenial, the repositories <a href="https://launchpad.net/~ubuntugis" class="external-link">ubuntugis</a> and <a href="https://launchpad.net/~opencpu" class="external-link">opencpu</a> must be added before
+installing the packages:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> add-apt-repository <span class="at">-y</span> ppa:opencpu/jq</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> add-apt-repository <span class="at">-y</span> ppa:ubuntugis/ubuntugis-unstable</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get update <span class="at">-q</span></span></code></pre></div>
 </li>
 </ul>
-<p>Installation was tested over Ubuntu 20.04 LTS focal and 18.04 LTS Bionic; non-LTS versions &gt; 18.04 and Ubuntu 16.04 LTS Xenial should work. Other releases (Ubuntu non-LTS &lt; 18.04; Ubuntu LTS ≤ 14.04) are not supported.</p>
+<p>Installation was tested over Ubuntu 20.04 LTS focal and 18.04 LTS
+Bionic; non-LTS versions &gt; 18.04 and Ubuntu 16.04 LTS Xenial should
+work. Other releases (Ubuntu non-LTS &lt; 18.04; Ubuntu LTS ≤ 14.04) are
+not supported.</p>
 </li>
 <li>
 <p>On Debian:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install <span class="at">-y</span> r-base gdal-bin python-gdal aria2 libpython-dev libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libnode-dev libssl-dev libcairo2-dev proj-epsg</span></code></pre></div>
-<p>Installation was tested over Debian 9 Stretch; older releases are not supported.</p>
+<p>Installation was tested over Debian 9 Stretch; older releases are not
+supported.</p>
 </li>
 <li>
 <p>On Fedora:</p>
@@ -209,144 +231,204 @@
 </li>
 </ul>
 </div>
-<div id="installing-sen2r-1" class="section level4">
-<h4 class="hasAnchor">
-<a href="#installing-sen2r-1" class="anchor"></a>Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+<div class="section level4">
+<h4 id="installing-sen2r-1">Installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span><a class="anchor" aria-label="anchor" href="#installing-sen2r-1"></a>
 </h4>
-<p>Before proceeding, it is suggested to update the existing R packages:</p>
+<p>Before proceeding, it is suggested to update the existing R
+packages:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/update.packages.html">update.packages</a></span><span class="op">(</span>ask <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/update.packages.html" class="external-link">update.packages</a></span><span class="op">(</span>ask <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <p>Doing that, the following warning could appear:</p>
 <pre><code>Warning in install.packages(update[instlib == l, "Package"], l, contriburl = contriburl,  :
   'lib = "/usr/lib/R/library"' is not writable
 Would you like to use a personal library instead?  (y/n)</code></pre>
-<p>If so, press <code>y</code> and continue. Moreover, if no personal libraries already exist, it is asked to create a new one: ask <code>y</code> and continue.</p>
+<p>If so, press <code>y</code> and continue. Moreover, if no personal
+libraries already exist, it is asked to create a new one: ask
+<code>y</code> and continue.</p>
 <p>After that, the package can be installed from CRAN:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"sen2r"</span><span class="op">)</span></code></pre></div>
-<p>Alternatively, the development version can be installed from GitHub with the R package <strong>remotes</strong>. To do it:</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"sen2r"</span><span class="op">)</span></code></pre></div>
+<p>Alternatively, the development version can be installed from GitHub
+with the R package <strong>remotes</strong>. To do it:</p>
 <ol style="list-style-type: decimal">
 <li>
 <p>install the package <strong>remotes</strong>, if missing:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></code></pre></div>
 </li>
 <li>
 <p>load it and install <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://remotes.r-lib.org">remotes</a></span><span class="op">)</span>
-<span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"ranghetti/sen2r"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://remotes.r-lib.org" class="external-link">remotes</a></span><span class="op">)</span>
+<span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"ranghetti/sen2r"</span><span class="op">)</span></code></pre></div>
 </li>
 </ol>
-<p>This will install the R package along with its package dependencies, containing all the functions necessary to preprocess data.</p>
+<p>This will install the R package along with its package dependencies,
+containing all the functions necessary to preprocess data.</p>
 <p>Finally, <strong>Sen2Cor</strong> can be installed from R:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://sen2r.ranghetti.info">sen2r</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sen2r.ranghetti.info" class="external-link">sen2r</a></span><span class="op">)</span>
 <span class="fu"><a href="../reference/install_sen2cor.html">install_sen2cor</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
-<div id="on-windows" class="section level3">
-<h3 class="hasAnchor">
-<a href="#on-windows" class="anchor"></a><i class="fa fa-windows" aria-hidden="true"></i> On Windows</h3>
-<p><a href="https://cran.r-project.org/bin/windows/base/">R</a> must be installed before proceeding.</p>
-<p>In the case it was already installed, it is suggested to update the existing R packages:</p>
+<div class="section level3">
+<h3 id="on-windows">
+<i class="fa fa-windows" aria-hidden="true"></i> On Windows<a class="anchor" aria-label="anchor" href="#on-windows"></a>
+</h3>
+<p><a href="https://cran.r-project.org/bin/windows/base/" class="external-link">R</a> must be
+installed before proceeding.</p>
+<p>In the case it was already installed, it is suggested to update the
+existing R packages:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/update.packages.html">update.packages</a></span><span class="op">(</span>ask <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
-<p><span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be installed from CRAN:</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/update.packages.html" class="external-link">update.packages</a></span><span class="op">(</span>ask <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<p><span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+can be installed from CRAN:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"sen2r"</span><span class="op">)</span></code></pre></div>
-<p>Alternatively, the development version can be installed from GitHub with the R package <strong>remotes</strong>. To do it:</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"sen2r"</span><span class="op">)</span></code></pre></div>
+<p>Alternatively, the development version can be installed from GitHub
+with the R package <strong>remotes</strong>. To do it:</p>
 <ol style="list-style-type: decimal">
 <li>
 <p>install the package <strong>remotes</strong>, if missing:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></code></pre></div>
 </li>
 <li>
 <p>load it and install <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://remotes.r-lib.org">remotes</a></span><span class="op">)</span>
-<span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"ranghetti/sen2r"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://remotes.r-lib.org" class="external-link">remotes</a></span><span class="op">)</span>
+<span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"ranghetti/sen2r"</span><span class="op">)</span></code></pre></div>
 </li>
 </ol>
-<p>This will install the R package along with its package dependencies, containing all the functions necessary to preprocess data.</p>
+<p>This will install the R package along with its package dependencies,
+containing all the functions necessary to preprocess data.</p>
 </div>
-<div id="on-macos" class="section level3">
-<h3 class="hasAnchor">
-<a href="#on-macos" class="anchor"></a><i class="fa fa-apple" aria-hidden="true"></i> On MacOS</h3>
-<p><a href="https://cran.r-project.org/bin/windows/base/">R</a> must be installed before proceeding.</p>
-<p>In the case it was already installed, it is suggested to update the existing R packages:</p>
+<div class="section level3">
+<h3 id="on-macos">
+<i class="fa fa-apple" aria-hidden="true"></i> On MacOS<a class="anchor" aria-label="anchor" href="#on-macos"></a>
+</h3>
+<p><a href="https://cran.r-project.org/bin/windows/base/" class="external-link">R</a> must be
+installed before proceeding.</p>
+<p>In the case it was already installed, it is suggested to update the
+existing R packages:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/update.packages.html">update.packages</a></span><span class="op">(</span>ask <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
-<p>Packages can be installed using the compiled binaries, except from <strong>sp</strong>, <strong>sf</strong>, <strong>rgdal</strong> and <strong>rgeos</strong>, which are recommended to be compiled. To do it, use the command</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/update.packages.html" class="external-link">update.packages</a></span><span class="op">(</span>ask <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<p>Packages can be installed using the compiled binaries, except from
+<strong>sp</strong>, <strong>sf</strong>, <strong>rgdal</strong> and
+<strong>rgeos</strong>, which are recommended to be compiled. To do it,
+use the command</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"sp"</span>, <span class="st">"sf"</span>, <span class="st">"rgdal"</span>, <span class="st">"rgeos"</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"source"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sp"</span>, <span class="st">"sf"</span>, <span class="st">"rgdal"</span>, <span class="st">"rgeos"</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"source"</span><span class="op">)</span></code></pre></div>
 <p><strong>after</strong> having installed GDAL as described above.</p>
-<p><span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> can be installed from CRAN:</p>
+<p><span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+can be installed from CRAN:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"sen2r"</span><span class="op">)</span></code></pre></div>
-<p>Alternatively, the development version can be installed from GitHub with the R package <strong>remotes</strong>. To do it:</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"sen2r"</span><span class="op">)</span></code></pre></div>
+<p>Alternatively, the development version can be installed from GitHub
+with the R package <strong>remotes</strong>. To do it:</p>
 <ol style="list-style-type: decimal">
 <li>
 <p>install the package <strong>remotes</strong>, if missing:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></code></pre></div>
 </li>
 <li>
 <p>load it and install <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://remotes.r-lib.org">remotes</a></span><span class="op">)</span>
-<span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"ranghetti/sen2r"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://remotes.r-lib.org" class="external-link">remotes</a></span><span class="op">)</span>
+<span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"ranghetti/sen2r"</span><span class="op">)</span></code></pre></div>
 </li>
 </ol>
-<p>This will install the R package along with its package dependencies, containing all the functions necessary to preprocess data.</p>
+<p>This will install the R package along with its package dependencies,
+containing all the functions necessary to preprocess data.</p>
 </div>
-<div id="installing-sen2cor" class="section level3">
-<h3 class="hasAnchor">
-<a href="#installing-sen2cor" class="anchor"></a>Installing Sen2Cor</h3>
-<p><a href="http://step.esa.int/main/snap-supported-plugins/sen2cor/"><strong>Sen2Cor</strong></a> is used to perform atmospheric correction of Sentinel-2 Level-1C products, so its installation can be skipped in case this function is not required by the user (using only Level-1C – TOA products or downloading directly Level-2A products).</p>
+<div class="section level3">
+<h3 id="installing-sen2cor">Installing Sen2Cor<a class="anchor" aria-label="anchor" href="#installing-sen2cor"></a>
+</h3>
+<p><a href="http://step.esa.int/main/snap-supported-plugins/sen2cor/" class="external-link"><strong>Sen2Cor</strong></a>
+is used to perform atmospheric correction of Sentinel-2 Level-1C
+products, so its installation can be skipped in case this function is
+not required by the user (using only Level-1C – TOA products or
+downloading directly Level-2A products).</p>
 <p>It can be graphically checked / installed launching the function</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://sen2r.ranghetti.info">sen2r</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sen2r.ranghetti.info" class="external-link">sen2r</a></span><span class="op">)</span>
 <span class="fu"><a href="../reference/check_sen2r_deps.html">check_sen2r_deps</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p>This function opens a GUI which help to check if this and other dependencies are satisfied; from this GUI a new Sen2Cor installation can be performed, or an existing environment can be linked to Sen2Cor.</p>
-<p>Alternatively, it can be installed from the command line with the following function:</p>
+<p>This function opens a GUI which help to check if this and other
+dependencies are satisfied; from this GUI a new Sen2Cor installation can
+be performed, or an existing environment can be linked to Sen2Cor.</p>
+<p>Alternatively, it can be installed from the command line with the
+following function:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/install_sen2cor.html">install_sen2cor</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="installing-other-dependencies-generally-unrequired-and-discouraged" class="section level3">
-<h3 class="hasAnchor">
-<a href="#installing-other-dependencies-generally-unrequired-and-discouraged" class="anchor"></a>Installing other dependencies (generally unrequired and discouraged)</h3>
-<p>Other dependencies can be configure to run specific <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> features; their installation is generally unrequired (they do not add relevant improvements to the package) and discouraged (errors could occur).</p>
+<div class="section level3">
+<h3 id="installing-other-dependencies-generally-unrequired-and-discouraged">Installing other dependencies (generally unrequired and
+discouraged)<a class="anchor" aria-label="anchor" href="#installing-other-dependencies-generally-unrequired-and-discouraged"></a>
+</h3>
+<p>Other dependencies can be configure to run specific <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+features; their installation is generally unrequired (they do not add
+relevant improvements to the package) and discouraged (errors could
+occur).</p>
 <ul>
 <li>
-<a href="https://gdal.org/"><strong>GDAL</strong></a> is no more required, being used only to smooth/bufferise a cloud mask (and <em>optionally</em> to compute spectral indices, RGB images and thumbnails). On Windows, to avoid incompatibilities, it is <em>strictly mandatory</em> to use a GDAL installation provided with the <a href="https://qgis.org/it/site/forusers/download.html">OSGeo4W installer</a>: if this requirement is not satisfied, it is possible to install GDAL with OSGeo4W directly from R (see below). <strong>Note</strong>: configuring a runtime <strong>GDAL</strong> environment could fail for different reasons (e.g. problems related to GDAL environment like missing libraries, or custom environment variables which could conflict). <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span> maintainers are not responsible in case of GDAL-related issues (no assistance is provided in this case).</li>
+<a href="https://gdal.org/" class="external-link"><strong>GDAL</strong></a> is no more
+required, being used only to smooth/bufferise a cloud mask (and
+<em>optionally</em> to compute spectral indices, RGB images and
+thumbnails). On Windows, to avoid incompatibilities, it is <em>strictly
+mandatory</em> to use a GDAL installation provided with the <a href="https://qgis.org/it/site/forusers/download.html" class="external-link">OSGeo4W
+installer</a>: if this requirement is not satisfied, it is possible to
+install GDAL with OSGeo4W directly from R (see below).
+<strong>Note</strong>: configuring a runtime <strong>GDAL</strong>
+environment could fail for different reasons (e.g. problems related to
+GDAL environment like missing libraries, or custom environment variables
+which could conflict). <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>
+maintainers are not responsible in case of GDAL-related issues (no
+assistance is provided in this case).</li>
 <li>
-<a href="https://aria2.github.io/"><strong>aria2</strong></a> is an alternative downloader which can be used to faster the download of SAFE archives; it can be optionally installed and used. Since the number of concurrent downloads from ESA SciHub is limited to 2, the use of <strong>aria2</strong> is generally not faster than the default downloader; for this reason, its use is recommended only in case of problems with the default downloader.</li>
+<a href="https://aria2.github.io/" class="external-link"><strong>aria2</strong></a> is an
+alternative downloader which can be used to faster the download of SAFE
+archives; it can be optionally installed and used. Since the number of
+concurrent downloads from ESA SciHub is limited to 2, the use of
+<strong>aria2</strong> is generally not faster than the default
+downloader; for this reason, its use is recommended only in case of
+problems with the default downloader.</li>
 </ul>
-<p>These dependences can be graphically checked launching the function</p>
+<p>These dependences can be graphically checked launching the
+function</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://sen2r.ranghetti.info">sen2r</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sen2r.ranghetti.info" class="external-link">sen2r</a></span><span class="op">)</span>
 <span class="fu"><a href="../reference/check_sen2r_deps.html">check_sen2r_deps</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p>Alternatively, they can be installed individually from the command line with the following functions (see their respective references for further details):</p>
+<p>Alternatively, they can be installed individually from the command
+line with the following functions (see their respective references for
+further details):</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/check_gdal.html">check_gdal</a></span><span class="op">(</span><span class="op">)</span>
 <span class="fu"><a href="../reference/install_aria2.html">install_aria2</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<div id="note-on-gdal-installation-on-macos" class="section level4">
-<h4 class="hasAnchor">
-<a href="#note-on-gdal-installation-on-macos" class="anchor"></a>Note on GDAL installation on MacOS</h4>
-<p>In order to avoid incompatibilities with GDAL, it is <em>strictly mandatory</em> to use a GDAL installation provided with the <a href="https://github.com/OSGeo/homebrew-osgeo4mac">OSGeo Homebrew repository</a>. To do it:</p>
+<div class="section level4">
+<h4 id="note-on-gdal-installation-on-macos">Note on GDAL installation on MacOS<a class="anchor" aria-label="anchor" href="#note-on-gdal-installation-on-macos"></a>
+</h4>
+<p>In order to avoid incompatibilities with GDAL, it is <em>strictly
+mandatory</em> to use a GDAL installation provided with the <a href="https://github.com/OSGeo/homebrew-osgeo4mac" class="external-link">OSGeo Homebrew
+repository</a>. To do it:</p>
 <ol style="list-style-type: decimal">
 <li>
-<p>if Homebrew is missing on your system, install it opening a terminal and typing:</p>
+<p>if Homebrew is missing on your system, install it opening a
+terminal and typing:</p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/usr/bin/ruby</span> <span class="at">-e</span> <span class="st">"</span><span class="va">$(</span><span class="ex">curl</span> <span class="at">-fsSL</span> https://github.com/Homebrew/install/raw/master/install<span class="va">)</span><span class="st">"</span></span></code></pre></div>
-<p>(see <a href="https://brew.sh/">the Homebrew webpage</a> for details);</p>
+<p>(see <a href="https://brew.sh/" class="external-link">the Homebrew webpage</a> for
+details);</p>
 </li>
 <li>
 <p>install GDAL by typing:</p>
 <div class="sourceCode" id="cb27"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> tap osgeo/osgeo4mac</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install osgeo-gdal-python</span></code></pre></div>
-<p>(see <a href="https://github.com/OSGeo/homebrew-osgeo4mac">the OSGeo Homebrew webpage</a> for details). At this step, an error could be returned in case another GDAL installation was already present; in this case, follow the instruction returned in the terminal to solve it (probably some packages must be unlinked with the instructions <code>brew unlink &lt;package&gt;</code>).</p>
+<p>(see <a href="https://github.com/OSGeo/homebrew-osgeo4mac" class="external-link">the OSGeo
+Homebrew webpage</a> for details). At this step, an error could be
+returned in case another GDAL installation was already present; in this
+case, follow the instruction returned in the terminal to solve it
+(probably some packages must be unlinked with the instructions
+<code>brew unlink &lt;package&gt;</code>).</p>
 </li>
 </ol>
 </div>
@@ -365,11 +447,14 @@ Would you like to use a personal library instead?  (y/n)</code></pre>
 
 
       <footer><div class="copyright">
-  <p>Developed by Luigi Ranghetti, Lorenzo Busetto.</p>
+  <p></p>
+<p>Developed by Luigi Ranghetti, Lorenzo Busetto.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.</p>
 </div>
 
       </footer>
@@ -377,6 +462,8 @@ Would you like to use a personal library instead?  (y/n)</code></pre>
 
   
 
+
+  
 
   </body>
 </html>
