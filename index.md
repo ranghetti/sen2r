@@ -2,25 +2,6 @@
 <!-- IMPORTANT: do NOT edit README.Rmd! Edit index.Rmd instead, -->
 <!-- and generate README.Rmd using utils/code/create_README.sh  -->
 
-<span style="font-size:200%;"><span
-style="color:#ff0000;font-weight:bold;">NOTE</span>: due to changes
-occurred in SAFE format from baseline 04.00 (see
-[details](https://sentinels.copernicus.eu/web/sentinel/technical-guides/sentinel-2-msi/processing-baseline)),
-<span style="text-decoration:underline;">sen2r outputs</span>
-(reflectances, indices and RGB images) <span
-style="text-decoration:underline;">computed on images newer than 25th
-January 2022 are wrong</span>.</span> <span style="font-size:150%;">In
-particular, reflectance values are shifted by a factor of 0.1 (e.g. a
-reflectance of 3.5 is returned instead of 2.5), and index values are
-subjected to non-constant differences (depending on each index formula).
-The development of the package is closed due to career change of the
-maintainer, so it is not possible to announce when the new SAFE baseline
-will be correctly managed. Refer to
-<a href="https://github.com/ranghetti/sen2r/issues/443" target="_blank">this
-GitHub issue</a> for updates. <span
-style="text-decoration:underline;">For now, do not use the package to
-produce outputs newer than 25th January 2022.</span></span><br/><br/>
-
 [![CRAN
 Status](https://www.r-pkg.org/badges/version-ago/sen2r)](https://cran.r-project.org/package=sen2r)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1240384.svg)](https://doi.org/10.5281/zenodo.1240384)
