@@ -46,6 +46,8 @@
 #'      - `"res"`: resolutions with all the output products available;
 #'      - `"jp2list"` (data.frame with the list of the JP2 band files - 
 #'          asking for this info will cause `format` to be coerced to `"list"`).
+#'      - `"offset"` (named vector with the offset values of each band - 
+#'          asking for this info will cause `format` to be coerced to `"list"`).
 #'          
 #'      Notice that the required info are returned only if available;
 #'      i.e., if some info requiring existing files are asked by the user, but
@@ -120,9 +122,9 @@
 #' \dontrun{
 #' # Download a sample SAFE archive (this can take a while)
 #' s2_exampleurl <- c(
-#'   "S2A_MSIL1C_20190723T101031_N0208_R022_T32TNS_20190723T121220.SAFE" =
-#'     paste0("https://apihub.copernicus.eu/apihub/odata/v1/",
-#'            "Products('19bbde60-992b-423d-8dea-a5e0ac7715fc')/$value")
+#'   "S2B_MSIL2A_20220612T100559_N0400_R022_T32TNR_20220612T132443.SAFE" =
+#'     paste0("gs://gcp-public-data-sentinel-2/L2/tiles/32/T/NR/",
+#'            "S2B_MSIL2A_20220612T100559_N0400_R022_T32TNR_20220612T132443.SAFE")
 #' )
 #' s2_download(s2_exampleurl, outdir=tempdir())
 #' s2_examplepath <- file.path(tempdir(), names(s2_exampleurl))
@@ -151,12 +153,12 @@
 
 
 safe_getMetadata <- function(
-  s2, 
-  info = "all", 
-  format = "default",
-  simplify = TRUE, 
-  abort = TRUE, 
-  allow_oldnames = FALSE
+    s2, 
+    info = "all", 
+    format = "default",
+    simplify = TRUE, 
+    abort = TRUE, 
+    allow_oldnames = FALSE
 ) {
   .safe_getMetadata(
     s2, 
@@ -188,9 +190,9 @@ safe_getMetadata <- function(
 #'  In `safe_isvalid()`, this argument is ignored if `check_file = FALSE`.
 #' @export
 rm_invalid_safe <- function(
-  s2, 
-  req_res = c("10m","20m","60m"),
-  allow_oldnames = FALSE
+    s2, 
+    req_res = c("10m","20m","60m"),
+    allow_oldnames = FALSE
 ) {
   .safe_getMetadata(
     s2, 
@@ -211,10 +213,10 @@ rm_invalid_safe <- function(
 #'  paths is checked; if FALSE, only the validity of SAFE names is tested.
 #' @export
 safe_isvalid <- function(
-  s2, 
-  allow_oldnames = FALSE, 
-  check_file = TRUE,
-  req_res = c("10m","20m","60m")
+    s2, 
+    allow_oldnames = FALSE, 
+    check_file = TRUE,
+    req_res = c("10m","20m","60m")
 ) {
   info <- if (check_file == TRUE) {c("exists", "validname", "checkbands")} else {"validname"}
   .safe_getMetadata(
@@ -274,6 +276,8 @@ safe_isvalid <- function(
   info_gdal <- c("clouds","direction","orbit_n","preview_url", # information retrieved by reading the file metadata
                  "proc_baseline","gdal_level","gdal_sensing_datetime",
                  "nodata_value","saturated_value","footprint","res")
+  info_bands <- c("offset") # band-specific information retrieved by reading the main xml file
+  
   
   # define the product names to be present in a SAFE archive
   req_prods <- list(
@@ -295,7 +299,8 @@ safe_isvalid <- function(
       '"list", "data.frame" and "data.table")'
     )
   }
-  if ("jp2list" %in% info) {format <- "list"} # coherce to list in case of jp2list
+  # coerce to list in case of jp2list
+  if (any(c("jp2list",info_bands) %in% info)) {format <- "list"}
   
   # Check req_res
   if (!all(req_res %in% c("10m", "20m", "60m"))) {
@@ -790,7 +795,7 @@ safe_isvalid <- function(
       }
       
       # if necessary, read the file for further metadata[[i]]
-      if (any(info_gdal %in% sel_info) & s2_exists) {
+      if (any(c(info_gdal, info_bands) %in% sel_info) & s2_exists) {
         s2_gdal <- readLines(s2_xml)
         # Read metadata[[i]]
         if ("clouds" %in% sel_info) {
@@ -876,6 +881,42 @@ safe_isvalid <- function(
               st_make_valid(st_as_sfc(metadata[[i]][["footprint"]], crs = 4326)), 
               digits = 9
             )
+          }
+        }
+        # info_bands
+        if (any(info_bands %in% sel_info)) {
+          meta_reg <- 'Spectral\\_Information bandId="([0-9][0-9]?)" physicalBand="(B[0-9][0-9A]?)"'
+          meta_bands <- setNames(
+            gsub(
+              paste0("^ *<",meta_reg,"> *$"), "\\2", 
+              s2_gdal[grepl(meta_reg, s2_gdal)]
+            ),
+            gsub(
+              paste0("^ *<",meta_reg,"> *$"), "\\1", 
+              s2_gdal[grepl(meta_reg, s2_gdal)]
+            )
+          )
+        }
+        if ("offset" %in% sel_info) {
+          meta_reg <- if (s2_level=="1C") {
+            "RADIO\\_ADD\\_OFFSET"
+          } else if (s2_level=="2A") {
+            "BOA\\_ADD\\_OFFSET"
+          }
+          meta_par <- "band\\_id=\"([0-9][0-9]?)\""
+          metadata[[i]][["offset"]] <- if (any(grepl(meta_reg, s2_gdal))) {
+            setNames(
+              as.integer(gsub(
+                paste0("^ *<",meta_reg," ",meta_par,">([^<]+)</",meta_reg,"> *$"), "\\2", 
+                s2_gdal[grepl(paste(meta_reg, meta_par), s2_gdal)]
+              )),
+              meta_bands[gsub(
+                paste0("^ *<",meta_reg," ",meta_par,">([^<]+)</",meta_reg,"> *$"), "\\1", 
+                s2_gdal[grepl(paste(meta_reg, meta_par), s2_gdal)]
+              )]
+            )
+          } else {
+            setNames(rep(as.integer(0), length(meta_bands)), meta_bands)
           }
         }
       }
