@@ -201,24 +201,28 @@ s2_download <- function(
   }
   
   ## Download products available for download on SciHub
-  safe_prodlist_scihub <- .s2_download_scihub(
-    s2_prodlist = s2_prodlist[s2_todownload_scihub], 
-    s2_meta = s2_meta[s2_todownload_scihub,],
-    outdir = outdir, 
-    apihub = apihub, 
-    service = service,
-    downloader = downloader, 
-    abort = abort,
-    overwrite = overwrite
-  )
+  safe_prodlist_scihub <- if (length(s2_todownload_scihub) > 0) {
+    .s2_download_scihub(
+      s2_prodlist = s2_prodlist[s2_todownload_scihub], 
+      s2_meta = s2_meta[s2_todownload_scihub,],
+      outdir = outdir, 
+      apihub = apihub, 
+      service = service,
+      downloader = downloader, 
+      abort = abort,
+      overwrite = overwrite
+    )
+  } else {character(0)}
   
   ## Download products available for download on GCloud
-  safe_prodlist_gcloud <- .s2_download_gcloud(
-    s2_prodlist = s2_prodlist[s2_todownload_gcloud],
-    s2_meta = s2_meta[s2_todownload_gcloud,],
-    outdir = outdir,
-    overwrite = overwrite
-  )
+  safe_prodlist_gcloud <- if (length(s2_todownload_gcloud) > 0) {
+    .s2_download_gcloud(
+      s2_prodlist = s2_prodlist[s2_todownload_gcloud],
+      s2_meta = s2_meta[s2_todownload_gcloud,],
+      outdir = outdir,
+      overwrite = overwrite
+    )
+  } else {character(0)}
   
   safe_prodlist <- as(
     c(safe_prodlist_scihub, safe_prodlist_gcloud)[

@@ -69,6 +69,8 @@ information retrieved from the metadata stored in the XML file;
 \item \code{"res"}: resolutions with all the output products available;
 \item \code{"jp2list"} (data.frame with the list of the JP2 band files -
 asking for this info will cause \code{format} to be coerced to \code{"list"}).
+\item \code{"offset"} (named vector with the offset values of each band -
+asking for this info will cause \code{format} to be coerced to \code{"list"}).
 }
 
 Notice that the required info are returned only if available;
@@ -174,9 +176,9 @@ safe_isvalid("invalid_safe_name.SAFE", check_file = FALSE)
 \dontrun{
 # Download a sample SAFE archive (this can take a while)
 s2_exampleurl <- c(
-  "S2A_MSIL1C_20190723T101031_N0208_R022_T32TNS_20190723T121220.SAFE" =
-    paste0("https://apihub.copernicus.eu/apihub/odata/v1/",
-           "Products('19bbde60-992b-423d-8dea-a5e0ac7715fc')/$value")
+  "S2B_MSIL2A_20220612T100559_N0400_R022_T32TNR_20220612T132443.SAFE" =
+    paste0("gs://gcp-public-data-sentinel-2/L2/tiles/32/T/NR/",
+           "S2B_MSIL2A_20220612T100559_N0400_R022_T32TNR_20220612T132443.SAFE")
 )
 s2_download(s2_exampleurl, outdir=tempdir())
 s2_examplepath <- file.path(tempdir(), names(s2_exampleurl))

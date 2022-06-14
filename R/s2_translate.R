@@ -182,7 +182,7 @@ s2_translate <- function(
   # Retrieve xml required metadata
   infile_meta <- safe_getMetadata(
     infile, 
-    info = c("xml_main","xml_granules","utm","level","tiles", "jp2list", "footprint"),
+    info = c("xml_main","xml_granules","utm","level","tiles", "jp2list", "footprint", "offset"),
     format = "list", simplify = TRUE
   )
   infile_dir = dirname(infile_meta$xml_main)
@@ -318,6 +318,9 @@ s2_translate <- function(
           jp2df_selbands <- infile_meta$jp2list[infile_meta$jp2list$type==sel_type &
                                                   infile_meta$jp2list$tile==sel_tile,]
           jp2df_selbands <- jp2df_selbands[with(jp2df_selbands,order(band,res)),]
+          # associate offsets
+          names(infile_meta$offset) <- gsub("^B([0-9])$", "B0\\1", names(infile_meta$offset))
+          jp2df_selbands$offset <- infile_meta$offset[jp2df_selbands$band]
           # remove lower resolutions and keep only the best resolution for each band
           if (!any(jp2df_selbands$res=="")) {
             jp2df_selbands <- jp2df_selbands[as.integer(substr(jp2df_selbands$res,1,2))>=as.integer(substr(res[1],1,2)),]
@@ -330,14 +333,16 @@ s2_translate <- function(
             }
           }
           jp2df_selbands <- jp2df_selbands[!duplicated(with(jp2df_selbands,paste(band,tile))),]
-          # extract vector of paths
-          jp2_selbands <- file.path(infile_dir,jp2df_selbands[,"relpath"])
+          # (check that only BOA/TOA prods have multiple bands)
+          if (nrow(jp2df_selbands)>1 & !sel_prod %in% c("TOA","BOA")) {
+            stop("Internal error (exception not managed).")
+          }
           
           
           # define the steps to perform:
-          # 1. create a multiband stack
-          do_step1 <- length(jp2_selbands)>1
-          # 2: rescale L2A in case of wrong native resolution
+          # 1. create a multiband stack and apply band offset
+          do_step1 <- nrow(jp2df_selbands)>1
+          # 2: reshape L2A in case of wrong native resolution
           # (i.e. SAFE not containing 10m bands with res = "10m")
           res_out <- if (all(
             sel_prod %in% c("SCL","CLD","SNW"),
@@ -357,7 +362,7 @@ s2_translate <- function(
           do_step4 <- format != "VRT"
           
           vrt1_path <- if (!do_step1) { # skip step 1
-            jp2_selbands 
+            file.path(infile_dir,jp2df_selbands[,"relpath"])
           } else if (all(!do_step2, !do_step3, !do_step4)) { # step 1 is the last
             out_name
           } else { # perform step 1
@@ -380,14 +385,30 @@ s2_translate <- function(
           
           # step 1
           if (do_step1) {
+            vrt1a_path <- paste0(tmpdir,"/",out_prefix,"_step1a.vrt")
             gdalUtil(
               "buildvrt",
-              source = jp2_selbands,
-              destination = vrt1_path,
+              source = file.path(infile_dir,jp2df_selbands[,"relpath"]),
+              destination = vrt1a_path,
               options = c(
                 "-separate",
                 "-resolution", "highest",
                 "-a_srs", paste0("EPSG:",st_crs2(sel_utmzone)$epsg)
+              ),
+              quiet = TRUE
+            )
+            if (vrt_rel_paths==TRUE) {
+              gdal_abs2rel(vrt1a_path)
+            }
+            gdalUtil(
+              "translate",
+              source = vrt1a_path,
+              destination = vrt1_path,
+              options = c(
+                unlist(lapply(seq_len(nrow(jp2df_selbands)), function(bn) {
+                  c(paste0("-scale_",bn), c(0,1e4), c(0,1e4)+jp2df_selbands[bn,"offset"])
+                })),
+                "-of", "VRT"
               ),
               quiet = TRUE
             )

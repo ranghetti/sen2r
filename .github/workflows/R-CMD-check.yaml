@@ -92,10 +92,10 @@ jobs:
       - name: "Use gcloud CLI"
         run: gcloud info
 
-      - name: "Install CRAN {sf}"
-        run: |
-          remotes::install_cran(c("wk","s2","sf"), force = TRUE)
-        shell: Rscript {0}
+      # - name: "Install CRAN {sf}"
+      #   run: |
+      #     remotes::install_cran(c("wk","s2","sf"), force = TRUE)
+      #   shell: Rscript {0}
 
       - name: "Install dependencies"
         run: |
