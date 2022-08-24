@@ -242,7 +242,7 @@ s2_angles <- function(
           sapply(m_angles, as.vector)
         ),
         dims = c("x", "y"),
-        y_decreasing = sel_tr<0
+        y_decreasing = sel_tr[2]<0
       )
       sf::st_crs(r_angles) <- sel_crs
     }
