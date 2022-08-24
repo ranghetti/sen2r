@@ -296,7 +296,7 @@ gdal_warp <- function(srcfiles,
     
     # save as cropping cutline file (if cutline must be applied)
     dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
-    if (length(grep("POLYGON",st_geometry_type(mask)))>=1) {
+    if (length(grep("LINESTRING",st_geometry_type(mask)))==0) {
       st_write(
         st_cast(mask, "MULTIPOLYGON"),
         mask_file <- file.path(
