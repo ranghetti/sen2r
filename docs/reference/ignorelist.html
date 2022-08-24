@@ -19,7 +19,7 @@ for any reason, they were not produced during previous processing runs)."><!-- m
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1.9001</span>
       </span>
     </div>
 
@@ -101,44 +101,59 @@ for any reason, they were not produced during previous processing runs).</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">write_ignorelist</span><span class="op">(</span>
-  <span class="va">pm</span>,
-  names_cloudcovered <span class="op">=</span> <span class="cn">NULL</span>,
-  dates_cloudcovered <span class="op">=</span> <span class="cn">NULL</span>,
-  names_missing <span class="op">=</span> <span class="cn">NULL</span>,
-  param_list <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span>
-
-<span class="fu">read_ignorelist</span><span class="op">(</span><span class="va">pm</span>, param_list <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
-
-<span class="fu">path_ignorelist</span><span class="op">(</span><span class="va">pm</span><span class="op">)</span>
-
-<span class="fu">clean_ignorelist</span><span class="op">(</span><span class="va">pm</span>, param_list <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">write_ignorelist</span><span class="op">(</span></span>
+<span>  <span class="va">pm</span>,</span>
+<span>  names_cloudcovered <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dates_cloudcovered <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  names_missing <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  param_list <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">read_ignorelist</span><span class="op">(</span><span class="va">pm</span>, param_list <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">path_ignorelist</span><span class="op">(</span><span class="va">pm</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">clean_ignorelist</span><span class="op">(</span><span class="va">pm</span>, param_list <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>pm</dt>
 <dd><p>parameter list (passed by <code><a href="sen2r.html">sen2r()</a></code>).</p></dd>
+
+
 <dt>names_cloudcovered</dt>
 <dd><p>paths of cloud covered images (passed by <code><a href="sen2r.html">sen2r()</a></code>).</p></dd>
+
+
 <dt>dates_cloudcovered</dt>
 <dd><p>dates of cloud covered images (passed by <code><a href="sen2r.html">sen2r()</a></code>)
 (this is used only if <code>names_cloudcovered</code> is not specified).</p></dd>
+
+
 <dt>names_missing</dt>
 <dd><p>paths of non produced images (passed by <code><a href="sen2r.html">sen2r()</a></code>).</p></dd>
+
+
 <dt>param_list</dt>
 <dd><p>path of the parameter file (passed by <code><a href="sen2r.html">sen2r()</a></code>).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>write_ignorelist()</code> returns the path of the written TOML file
-(invisibly).
-<code>read_ignorelist()</code> returns a list with two vectors:</p><ul><li><p><code>dates_cloudcovered</code> (dates of cloud covered files);</p></li>
+    
+
+<p><code>write_ignorelist()</code> returns the path of the written TOML file
+(invisibly).</p>
+
+
+<p><code>read_ignorelist()</code> returns a list with two vectors:</p><ul><li><p><code>dates_cloudcovered</code> (dates of cloud covered files);</p></li>
 <li><p><code>names_missing</code> (base names of files to be ignored).</p></li>
 </ul><p><code>path_ignorelist()</code> returns the path in which the TOML file
-should be written (basing on processing parameters).
-<code>clean_ignorelist()</code> returns NULL (it is called for its side effects).</p>
+should be written (basing on processing parameters).</p>
+
+
+<p><code>clean_ignorelist()</code> returns NULL (it is called for its side effects).</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -163,7 +178,7 @@ To try it again, delete the files/files or set <code>overwrite = TRUE</code> in 
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -183,8 +198,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

@@ -18,7 +18,7 @@ Long Term Archive."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/aj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1.9001</span>
       </span>
     </div>
 
@@ -99,14 +99,14 @@ Long Term Archive."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/aj
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">s2_order</span><span class="op">(</span>
-  s2_prodlist <span class="op">=</span> <span class="cn">NULL</span>,
-  export_prodlist <span class="op">=</span> <span class="cn">TRUE</span>,
-  delay <span class="op">=</span> <span class="fl">0.5</span>,
-  apihub <span class="op">=</span> <span class="cn">NA</span>,
-  service <span class="op">=</span> <span class="cn">NA</span>,
-  reorder <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">s2_order</span><span class="op">(</span></span>
+<span>  s2_prodlist <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  export_prodlist <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  delay <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  apihub <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  service <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  reorder <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -117,6 +117,8 @@ in the format <code>safelist</code> (see <a href="safelist-class.html">safelist<
 Alternatively, it can be the path of a JSON file exported by a previous
 execution of s2_order, in case the user wants, for any reason, to
 resubmit the order.</p></dd>
+
+
 <dt>export_prodlist</dt>
 <dd><p>Logical or character: if TRUE (default),
 the list of ordered products is saved in a JSON text file, so to be easily
@@ -124,28 +126,39 @@ retrievable at a later stage with <a href="safe_is_online.html">safe_is_online</
 if FALSE, no output files are generated.
 It is also possible to pass the path of an existing folder in which the
 JSON file will be saved (otherwise, a default path is used).</p></dd>
+
+
 <dt>delay</dt>
 <dd><p>Numeric: time frame (in seconds) to leave between two
 consecutive orders. Default is 0.5 seconds: use a higher value if you
 encountered errors (i.e. not all the products were correctly ordered).</p></dd>
+
+
 <dt>apihub</dt>
 <dd><p>Path of the <code>apihub.txt</code> file containing credentials
 of SciHub account.
 If NA (default), the default location inside the package will be used.</p></dd>
+
+
 <dt>service</dt>
 <dd><p>Character: it can be <code>"dhus"</code> or <code>"apihub"</code>, in which cases
 the required service is forced instead that the one present in the URLs
 passed through argument <code>s2_prodlist</code>.
 If NA (default), the service present in the URLs is maintained.</p></dd>
+
+
 <dt>reorder</dt>
 <dd><p>Logical: If TRUE, and a json file exported by s2_order
 is passed as argument to the function, try to order again also
 the <code>"available"</code> and <code>"ordered"</code> S2 datasets.
 Otherwise, only order the <code>"notordered"</code> ones.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A named vector, containing the subset of <code>s2_prodlist</code> elements
+    
+
+<p>A named vector, containing the subset of <code>s2_prodlist</code> elements
 which were ordered.
 Moreover, the vector includes the following attributes:</p><ul><li><p><code>"available"</code> with the elements of <code>s2_prodlist</code> which were already
 available for download,</p></li>
@@ -164,7 +177,7 @@ and not ordered) was saved (if <code>export_prodlist = TRUE</code>).</p></li>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -175,24 +188,24 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Generate the lists of products</span></span>
-<span class="r-in"><span class="va">pos</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">57.8815</span>,<span class="op">-</span><span class="fl">51.6954</span><span class="op">)</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">time_window</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2019-10-21"</span>, <span class="st">"2019-11-20"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">list_safe</span> <span class="op">&lt;-</span> <span class="fu"><a href="s2_list.html">s2_list</a></span><span class="op">(</span>spatial_extent <span class="op">=</span> <span class="va">pos</span>, time_interval <span class="op">=</span> <span class="va">time_window</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">list_safe</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># (at the time the documentation was updated, this list was containing 6</span></span>
-<span class="r-in"><span class="co"># archives already available online and 3 stored in the Long Term Archive)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Order the products</span></span>
-<span class="r-in"><span class="va">ordered_prods</span> <span class="op">&lt;-</span> <span class="fu">s2_order</span><span class="op">(</span><span class="va">list_safe</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Check in a second time if the product was made available</span></span>
-<span class="r-in"><span class="op">(</span><span class="va">order_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">ordered_prods</span>, <span class="st">"path"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="safe_is_online.html">safe_is_online</a></span><span class="op">(</span><span class="va">order_path</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Generate the lists of products</span></span></span>
+<span class="r-in"><span><span class="va">pos</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">57.8815</span>,<span class="op">-</span><span class="fl">51.6954</span><span class="op">)</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">time_window</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2019-10-21"</span>, <span class="st">"2019-11-20"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">list_safe</span> <span class="op">&lt;-</span> <span class="fu"><a href="s2_list.html">s2_list</a></span><span class="op">(</span>spatial_extent <span class="op">=</span> <span class="va">pos</span>, time_interval <span class="op">=</span> <span class="va">time_window</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">list_safe</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># (at the time the documentation was updated, this list was containing 6</span></span></span>
+<span class="r-in"><span><span class="co"># archives already available online and 3 stored in the Long Term Archive)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Order the products</span></span></span>
+<span class="r-in"><span><span class="va">ordered_prods</span> <span class="op">&lt;-</span> <span class="fu">s2_order</span><span class="op">(</span><span class="va">list_safe</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Check in a second time if the product was made available</span></span></span>
+<span class="r-in"><span><span class="op">(</span><span class="va">order_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">ordered_prods</span>, <span class="st">"path"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="safe_is_online.html">safe_is_online</a></span><span class="op">(</span><span class="va">order_path</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -207,8 +220,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

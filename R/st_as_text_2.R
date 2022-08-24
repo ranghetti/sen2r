@@ -13,6 +13,7 @@
 #'  coordinate reference system
 #' @importFrom sf sf_extSoftVersion st_crs st_as_text
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @keywords internal
 #'
 #' @examples
 #' sen2r:::st_as_text_2(sf::st_crs(32632))

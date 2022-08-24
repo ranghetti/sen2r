@@ -18,7 +18,7 @@ a vector of raster paths."><!-- mathjax --><script src="https://cdnjs.cloudflare
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1.9001</span>
       </span>
     </div>
 
@@ -99,23 +99,30 @@ a vector of raster paths.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">raster_metadata</span><span class="op">(</span><span class="va">raster_paths</span>, meta <span class="op">=</span> <span class="st">"all"</span>, format <span class="op">=</span> <span class="st">"data.table"</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">raster_metadata</span><span class="op">(</span><span class="va">raster_paths</span>, meta <span class="op">=</span> <span class="st">"all"</span>, format <span class="op">=</span> <span class="st">"data.table"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>raster_paths</dt>
 <dd><p>A vector of raster paths.</p></dd>
+
+
 <dt>meta</dt>
 <dd><p>Vector with the desired metadata: one or more values among
 'res', 'size', 'bbox', 'proj', 'unit', 'outformat', 'type'.
 Alternatively meta = 'all' (default) allows to return all metadata.</p></dd>
+
+
 <dt>format</dt>
 <dd><p>One between <code>data.table</code> (default), <code>data.frame</code> and <code>list</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data.table, data.frame or list of the output metadata.</p>
+    
+
+<p>A data.table, data.frame or list of the output metadata.</p>
     </div>
     <div id="note">
     <h2>Note</h2>
@@ -126,7 +133,7 @@ Alternatively meta = 'all' (default) allows to return all metadata.</p></dd>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -136,41 +143,41 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Define product names</span></span>
-<span class="r-in"><span class="va">examplenames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"tif/L7_ETMs.tif"</span>, package<span class="op">=</span><span class="st">"stars"</span><span class="op">)</span>,</span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif"</span>,</span>
-<span class="r-in">    package <span class="op">=</span> <span class="st">"sen2r"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="co"># Return metadata as data.table</span></span>
-<span class="r-in"><span class="fu">raster_metadata</span><span class="op">(</span><span class="va">examplenames</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                   path</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:                            /home/lranghetti/R/x86_64-pc-linux-gnu-library/4.1/stars/tif/L7_ETMs.tif</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2: /tmp/RtmprSJOqV/temp_libpath37857fe6e353/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Define product names</span></span></span>
+<span class="r-in"><span><span class="va">examplenames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"tif/L7_ETMs.tif"</span>, package<span class="op">=</span><span class="st">"stars"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif"</span>,</span></span>
+<span class="r-in"><span>    package <span class="op">=</span> <span class="st">"sen2r"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Return metadata as data.table</span></span></span>
+<span class="r-in"><span><span class="fu">raster_metadata</span><span class="op">(</span><span class="va">examplenames</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                            path</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:                                      C:/Users/luigi.ranghetti/AppData/Local/Programs/R/R-4.2.1/library/stars/tif/L7_ETMs.tif</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2: C:/Users/luigi.ranghetti/AppData/Local/Programs/R/R-4.2.1/library/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    valid res.x res.y size.x size.y nbands     xmin    ymin     xmax    ymax</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1:  TRUE  28.5  28.5    349    352      6 288776.3 9110729 298722.8 9120761</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2:  TRUE  10.0  10.0     24     42     11 580560.0 5101700 580800.0 5102120</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          proj  unit outformat   type</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1: EPSG:31985 metre     GTiff   Byte</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2: EPSG:32632 metre     GTiff UInt16</span>
-<span class="r-in"><span class="co"># }</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Return some metadata as data.table</span></span>
-<span class="r-in"><span class="fu">raster_metadata</span><span class="op">(</span><span class="va">examplenames</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"res"</span>, <span class="st">"size"</span>, <span class="st">"bbox"</span>, <span class="st">"outformat"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                   path</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:                            /home/lranghetti/R/x86_64-pc-linux-gnu-library/4.1/stars/tif/L7_ETMs.tif</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2: /tmp/RtmprSJOqV/temp_libpath37857fe6e353/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Return some metadata as data.table</span></span></span>
+<span class="r-in"><span><span class="fu">raster_metadata</span><span class="op">(</span><span class="va">examplenames</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"res"</span>, <span class="st">"size"</span>, <span class="st">"bbox"</span>, <span class="st">"outformat"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                            path</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:                                      C:/Users/luigi.ranghetti/AppData/Local/Programs/R/R-4.2.1/library/stars/tif/L7_ETMs.tif</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2: C:/Users/luigi.ranghetti/AppData/Local/Programs/R/R-4.2.1/library/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    valid res.x res.y size.x size.y     xmin    ymin     xmax    ymax outformat</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1:  TRUE  28.5  28.5    349    352 288776.3 9110729 298722.8 9120761     GTiff</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2:  TRUE  10.0  10.0     24     42 580560.0 5101700 580800.0 5102120     GTiff</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Return some metadata as list</span></span>
-<span class="r-in"><span class="fu">raster_metadata</span><span class="op">(</span><span class="va">examplenames</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"res"</span>, <span class="st">"size"</span>, <span class="st">"bbox"</span>, <span class="st">"proj"</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"list"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Return some metadata as list</span></span></span>
+<span class="r-in"><span><span class="fu">raster_metadata</span><span class="op">(</span><span class="va">examplenames</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"res"</span>, <span class="st">"size"</span>, <span class="st">"bbox"</span>, <span class="st">"proj"</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"list"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]$path</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/home/lranghetti/R/x86_64-pc-linux-gnu-library/4.1/stars/tif/L7_ETMs.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "C:/Users/luigi.ranghetti/AppData/Local/Programs/R/R-4.2.1/library/stars/tif/L7_ETMs.tif"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]$valid</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
@@ -233,7 +240,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]$path</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmprSJOqV/temp_libpath37857fe6e353/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "C:/Users/luigi.ranghetti/AppData/Local/Programs/R/R-4.2.1/library/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]$valid</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
@@ -294,18 +301,18 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ID["EPSG",32632]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Output with an invalid raster</span></span>
-<span class="r-in"><span class="va">examplenames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span class="r-in">  <span class="va">examplenames</span>, </span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/settings/gdal_formats.json"</span>, package<span class="op">=</span><span class="st">"sen2r"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="fu">raster_metadata</span><span class="op">(</span><span class="va">examplenames</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bbox"</span>, <span class="st">"proj"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> trying to read file: /tmp/RtmprSJOqV/temp_libpath37857fe6e353/sen2r/extdata/settings/gdal_formats.json</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                   path</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:                            /home/lranghetti/R/x86_64-pc-linux-gnu-library/4.1/stars/tif/L7_ETMs.tif</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2: /tmp/RtmprSJOqV/temp_libpath37857fe6e353/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3:                   /tmp/RtmprSJOqV/temp_libpath37857fe6e353/sen2r/extdata/settings/gdal_formats.json</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Output with an invalid raster</span></span></span>
+<span class="r-in"><span><span class="va">examplenames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">examplenames</span>, </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/settings/gdal_formats.json"</span>, package<span class="op">=</span><span class="st">"sen2r"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">raster_metadata</span><span class="op">(</span><span class="va">examplenames</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bbox"</span>, <span class="st">"proj"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> trying to read file: C:\Users\luigi.ranghetti\AppData\Local\Programs\R\R-4.2.1\library\sen2r\extdata\settings\gdal_formats.json</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                            path</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:                                      C:/Users/luigi.ranghetti/AppData/Local/Programs/R/R-4.2.1/library/stars/tif/L7_ETMs.tif</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2: C:/Users/luigi.ranghetti/AppData/Local/Programs/R/R-4.2.1/library/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:                   C:/Users/luigi.ranghetti/AppData/Local/Programs/R/R-4.2.1/library/sen2r/extdata/settings/gdal_formats.json</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    valid     xmin    ymin     xmax    ymax       proj</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1:  TRUE 288776.3 9110729 298722.8 9120761 EPSG:31985</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2:  TRUE 580560.0 5101700 580800.0 5102120 EPSG:32632</span>
@@ -324,8 +331,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

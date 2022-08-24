@@ -20,7 +20,7 @@ input files."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/lib
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1.9001</span>
       </span>
     </div>
 
@@ -103,22 +103,22 @@ input files.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">s2_merge</span><span class="op">(</span>
-  <span class="va">infiles</span>,
-  outdir <span class="op">=</span> <span class="st">"."</span>,
-  subdirs <span class="op">=</span> <span class="cn">NA</span>,
-  tmpdir <span class="op">=</span> <span class="cn">NA</span>,
-  rmtmp <span class="op">=</span> <span class="cn">TRUE</span>,
-  format <span class="op">=</span> <span class="cn">NA</span>,
-  compress <span class="op">=</span> <span class="st">"DEFLATE"</span>,
-  bigtiff <span class="op">=</span> <span class="cn">FALSE</span>,
-  vrt_rel_paths <span class="op">=</span> <span class="cn">NA</span>,
-  out_crs <span class="op">=</span> <span class="cn">NA</span>,
-  parallel <span class="op">=</span> <span class="cn">FALSE</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
-  .log_message <span class="op">=</span> <span class="cn">NA</span>,
-  .log_output <span class="op">=</span> <span class="cn">NA</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">s2_merge</span><span class="op">(</span></span>
+<span>  <span class="va">infiles</span>,</span>
+<span>  outdir <span class="op">=</span> <span class="st">"."</span>,</span>
+<span>  subdirs <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  tmpdir <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  rmtmp <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  format <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  compress <span class="op">=</span> <span class="st">"DEFLATE"</span>,</span>
+<span>  bigtiff <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  vrt_rel_paths <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  out_crs <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  parallel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  .log_message <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  .log_output <span class="op">=</span> <span class="cn">NA</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -128,6 +128,8 @@ input files.</p>
 of products already converted from SAFE format to a format managed by
 GDAL (use <a href="s2_translate.html">s2_translate</a> to do it); their names must be in the
 sen2r naming convention (<a href="safe_shortname.html">safe_shortname</a>).</p></dd>
+
+
 <dt>outdir</dt>
 <dd><p>(optional) Full name of the output directory where
 the files should be created (default: current directory).
@@ -135,59 +137,86 @@ the files should be created (default: current directory).
 second case, its parent directory must exists).
 If it is a relative path, it is expanded from the common parent
 directory of <code>infiles</code>.</p></dd>
+
+
 <dt>subdirs</dt>
 <dd><p>(optional) Logical: if TRUE, different output products are
 placed in separated <code>outfile</code> subdirectories; if FALSE, they are placed in
 <code>outfile</code> directory; if NA (default), subdirectories are created only if
 <code>infiles</code> relate to more than a single product.</p></dd>
+
+
 <dt>tmpdir</dt>
 <dd><p>(optional) Path where intermediate files (VRT) will be created.
 Default is a temporary directory.
 If <code>tmpdir</code> is a non-empty folder, a random subdirectory will be used.</p></dd>
+
+
 <dt>rmtmp</dt>
 <dd><p>(optional) Logical: should temporary files be removed?
 (Default: TRUE).
 This parameter takes effect only if the output files are not VRT
 (in this case temporary files cannot be deleted, because rasters of source
 bands are included within them).</p></dd>
+
+
 <dt>format</dt>
 <dd><p>(optional) Format of the output file (in a
 format recognised by GDAL). Default is to maintain each input format.</p></dd>
+
+
 <dt>compress</dt>
 <dd><p>(optional) In the case a GTiff format is
 present, the compression indicated with this parameter is used.</p></dd>
+
+
 <dt>bigtiff</dt>
 <dd><p>(optional) Logical: if TRUE, the creation of a BigTIFF is
 forced (default is FALSE).
 This option is used only in the case a GTiff format was chosen.</p></dd>
+
+
 <dt>vrt_rel_paths</dt>
 <dd><p>(optional) Logical: if TRUE (default on Linux),
 the paths present in the VRT output file are relative to the VRT position;
 if FALSE (default on Windows), they are absolute.
 This takes effect only with <code>format = "VRT"</code>.</p></dd>
+
+
 <dt>out_crs</dt>
 <dd><p>(optional) output CRS, in any format accepted by <a href="st_crs2.html">st_crs2</a>
 (default: the CRS of the first input file). The tiles with CRS different
 from <code>out_crs</code> will be reprojected (and a warning returned).</p></dd>
+
+
 <dt>parallel</dt>
 <dd><p>(optional) Logical: if TRUE, the function is run using parallel
 processing, to speed-up the computation for large rasters.
 The number of cores is automatically determined; specifying it is also
 possible (e.g. <code>parallel = 4</code>).
 If FALSE (default), single core processing is used.</p></dd>
+
+
 <dt>overwrite</dt>
 <dd><p>Logical value: should existing output files be
 overwritten? (default: FALSE)</p></dd>
+
+
 <dt>.log_message</dt>
 <dd><p>(optional) Internal parameter
 (it is used when the function is called by <code><a href="sen2r.html">sen2r()</a></code>).</p></dd>
+
+
 <dt>.log_output</dt>
 <dd><p>(optional) Internal parameter
 (it is used when the function is called by <code><a href="sen2r.html">sen2r()</a></code>).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A vector with the names of the merged products (just created or
+    
+
+<p>A vector with the names of the merged products (just created or
 already existing).</p>
     </div>
     <div id="note">
@@ -199,7 +228,7 @@ already existing).</p>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -219,8 +248,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

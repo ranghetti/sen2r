@@ -42,6 +42,7 @@
 #'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 
 #'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{https://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
+#' @keywords internal
 
 print_message <- function(
   ..., 

@@ -23,7 +23,7 @@ present in the package."><!-- mathjax --><script src="https://cdnjs.cloudflare.c
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1.9001</span>
       </span>
     </div>
 
@@ -109,7 +109,7 @@ present in the package.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">create_indices_db</span><span class="op">(</span>xslt_path <span class="op">=</span> <span class="cn">NA</span>, json_path <span class="op">=</span> <span class="cn">NA</span>, force <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">create_indices_db</span><span class="op">(</span>xslt_path <span class="op">=</span> <span class="cn">NA</span>, json_path <span class="op">=</span> <span class="cn">NA</span>, force <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -118,19 +118,26 @@ present in the package.</p>
 <dd><p>(optional) The path where to install <code>xsltml</code>,
 an external <code>xsltproc</code> script used to convert MathML index formulas
 to LaTeX (default: a subdirectory of the package).</p></dd>
+
+
 <dt>json_path</dt>
 <dd><p>(optional) The path of the output JSON file.
 <em>Warning</em>: to create a file which will be usable by the package,
 this option must be left to NA (default location is within the
 package installation). Edit this only to create the file in another
 place for external use.</p></dd>
+
+
 <dt>force</dt>
 <dd><p>(optional) Logical: if FALSE (default), the db is created only
 if missing or not updated; if TRUE, it is created in any case.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>NULL (the function is called for its side effects)</p>
+    
+
+<p>NULL (the function is called for its side effects)</p>
     </div>
     <div id="note">
     <h2>Note</h2>
@@ -141,7 +148,7 @@ if missing or not updated; if TRUE, it is created in any case.</p></dd>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -161,8 +168,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

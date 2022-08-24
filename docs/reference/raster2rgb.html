@@ -19,7 +19,7 @@ and it will be exported when it would be more generalised."><!-- mathjax --><scr
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1.9001</span>
       </span>
     </div>
 
@@ -101,48 +101,63 @@ and it will be exported when it would be more generalised.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">raster2rgb</span><span class="op">(</span>
-  <span class="va">in_rast</span>,
-  out_file <span class="op">=</span> <span class="cn">NULL</span>,
-  palette <span class="op">=</span> <span class="st">"generic_ndsi_2"</span>,
-  minval <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>,
-  maxval <span class="op">=</span> <span class="fl">1</span>,
-  bigtiff <span class="op">=</span> <span class="cn">FALSE</span>,
-  tmpdir <span class="op">=</span> <span class="cn">NA</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">raster2rgb</span><span class="op">(</span></span>
+<span>  <span class="va">in_rast</span>,</span>
+<span>  out_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  palette <span class="op">=</span> <span class="st">"generic_ndsi_2"</span>,</span>
+<span>  minval <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>,</span>
+<span>  maxval <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  bigtiff <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  tmpdir <span class="op">=</span> <span class="cn">NA</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>in_rast</dt>
 <dd><p>Path of the input multiband raster.</p></dd>
+
+
 <dt>out_file</dt>
 <dd><p>(optional) Path of the output RGB JPEG image; if NULL
 (default), a RasterLayer will be returned.</p></dd>
+
+
 <dt>palette</dt>
 <dd><p>Path of the palette file to be used (cpt or txt),
 or character value of a builtin palette ("SCL", "NDVI", the default
 "generic_ndsi" or "generic_ndsi_2").</p></dd>
+
+
 <dt>minval</dt>
 <dd><p>(to be implemented) the value corresponding to the minimum
 value of the palette (for now, only -1 is used). A quantile will be also
 accepted.</p></dd>
+
+
 <dt>maxval</dt>
 <dd><p>(to be implemented) the value corresponding to the maximum
 value of the palette (for now, only 1 is used). A quantile will be also
 accepted.</p></dd>
+
+
 <dt>bigtiff</dt>
 <dd><p>(optional) Logical: if TRUE, the creation of a BigTIFF is
 forced (default is FALSE).
 This option is used only in the case a GTiff format was chosen.</p></dd>
+
+
 <dt>tmpdir</dt>
 <dd><p>(optional) Path where intermediate files (VRT) will be created.
 Default is a temporary directory.
 If <code>tmpdir</code> is a non-empty folder, a random subdirectory will be used.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>The path of the output image; alternatively, the output image
+    
+
+<p>The path of the output image; alternatively, the output image
 as RasterLayer (if <code>out_rast = NULL</code>).</p>
     </div>
     <div id="note">
@@ -154,7 +169,7 @@ as RasterLayer (if <code>out_rast = NULL</code>).</p>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -174,8 +189,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

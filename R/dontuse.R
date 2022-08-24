@@ -6,6 +6,7 @@
 #'  causes troublings in R 4.
 #' @importFrom rgdal GDALinfo
 #' @return NULL
+#' @keywords internal
 dontuse <- function() {
   suppressWarnings(GDALinfo(
     system.file("extdata/out/S2A2A_20190723_022_Barbellino_SCL_10.tif", package = "sen2r")

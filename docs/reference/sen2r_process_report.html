@@ -18,7 +18,7 @@ at the end of a processing.."><!-- mathjax --><script src="https://cdnjs.cloudfl
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1.9001</span>
       </span>
     </div>
 
@@ -99,18 +99,18 @@ at the end of a processing..</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">sen2r_process_report</span><span class="op">(</span>
-  <span class="va">s2_list_ordered</span>,
-  s2names <span class="op">=</span> <span class="cn">NULL</span>,
-  pm <span class="op">=</span> <span class="cn">NULL</span>,
-  ignorelist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,
-  s2_list_cloudcovered <span class="op">=</span> <span class="cn">NA</span>,
-  s2_list_failed <span class="op">=</span> <span class="cn">NA</span>,
-  download_only <span class="op">=</span> <span class="cn">FALSE</span>,
-  s2_downloaded <span class="op">=</span> <span class="cn">NA</span>,
-  s2_skipped <span class="op">=</span> <span class="cn">NA</span>,
-  s2_corrected <span class="op">=</span> <span class="cn">NA</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">sen2r_process_report</span><span class="op">(</span></span>
+<span>  <span class="va">s2_list_ordered</span>,</span>
+<span>  s2names <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  pm <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ignorelist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  s2_list_cloudcovered <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  s2_list_failed <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  download_only <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  s2_downloaded <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  s2_skipped <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  s2_corrected <span class="op">=</span> <span class="cn">NA</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -118,29 +118,50 @@ at the end of a processing..</p>
     <dl><dt>s2_list_ordered</dt>
 <dd><p>List containing the lists of ordered/notordered LTA
 S2 images.</p></dd>
+
+
 <dt>s2names</dt>
 <dd><p>Output of <code><a href="compute_s2_paths.html">compute_s2_paths()</a></code>.</p></dd>
+
+
 <dt>pm</dt>
 <dd><p>List containing sen2r processing parameters.</p></dd>
+
+
 <dt>ignorelist</dt>
 <dd><p>Internal parameter.</p></dd>
+
+
 <dt>s2_list_cloudcovered</dt>
 <dd><p>Internal parameter.</p></dd>
+
+
 <dt>s2_list_failed</dt>
 <dd><p>Internal parameter.</p></dd>
+
+
 <dt>download_only</dt>
 <dd><p>Logical: if TRUE, it indicates that the processing to be
 summarised only involved download (<code>pm$preprocess = FALSE</code>).</p></dd>
+
+
 <dt>s2_downloaded</dt>
 <dd><p>Internal parameter.</p></dd>
+
+
 <dt>s2_skipped</dt>
 <dd><p>Internal parameter.</p></dd>
+
+
 <dt>s2_corrected</dt>
 <dd><p>Internal parameter.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data.frame summarising the report, and containing the following columns:</p><ul><li><p><code>time</code>: date/time of report creation;</p></li>
+    
+
+<p>A data.frame summarising the report, and containing the following columns:</p><ul><li><p><code>time</code>: date/time of report creation;</p></li>
 <li><p><code>n_req_tot_dates</code>: number of dates to be processed based on the query;</p></li>
 <li><p><code>n_ondisk_dates</code>: number of dates for which all expected products are
 already on disk;</p></li>
@@ -175,7 +196,7 @@ a date for which all products are already on disk);</p></li>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -195,8 +216,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

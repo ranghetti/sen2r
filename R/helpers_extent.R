@@ -10,6 +10,7 @@
 
 #' @name load_extent_bbox
 #' @rdname load_extent
+#' @keywords internal
 load_extent_bbox <- function() {
   
   # Define internal functions as aliases of shiny* - leaflet* ones,

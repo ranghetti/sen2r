@@ -19,7 +19,7 @@ parameters."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1.9001</span>
       </span>
     </div>
 
@@ -101,27 +101,36 @@ parameters.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">check_param_list</span><span class="op">(</span><span class="va">pm</span>, type <span class="op">=</span> <span class="st">"string"</span>, check_paths <span class="op">=</span> <span class="cn">FALSE</span>, correct <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">check_param_list</span><span class="op">(</span><span class="va">pm</span>, type <span class="op">=</span> <span class="st">"string"</span>, check_paths <span class="op">=</span> <span class="cn">FALSE</span>, correct <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>pm</dt>
 <dd><p>List of parameters or path of a JSON parameter file.</p></dd>
+
+
 <dt>type</dt>
 <dd><p>Type of the output (see <a href="print_message.html">print_message</a> for details).</p></dd>
+
+
 <dt>check_paths</dt>
 <dd><p>Logical: if TRUE, the function checks required output
 paths to be provided; if FALSE (default) these checks are skipped.</p></dd>
+
+
 <dt>correct</dt>
 <dd><p>Logical: if TRUE (default), the function corrects
 some incoherences (e.g. timewindow of length 1 is transformed in length 2)
 and returns the corrected list as output; if false, only checking is
 performed, and the output is NULL if no errors occur.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>In case of errors, depending on <code>type</code> argument, output can be
+    
+
+<p>In case of errors, depending on <code>type</code> argument, output can be
 a vector of errors (if <code>type = "string"</code>),
 the first error occurred (if <code>type = "error"</code>)
 or a set of warnings (if <code>type = "warning"</code>).
@@ -137,7 +146,7 @@ If no errors occur, output is the corrected parameter list if
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -157,8 +166,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

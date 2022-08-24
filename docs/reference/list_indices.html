@@ -18,7 +18,7 @@ computable with the package."><!-- mathjax --><script src="https://cdnjs.cloudfl
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1.9001</span>
       </span>
     </div>
 
@@ -99,7 +99,7 @@ computable with the package.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">list_indices</span><span class="op">(</span><span class="va">values</span>, pattern <span class="op">=</span> <span class="st">""</span>, all <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">list_indices</span><span class="op">(</span><span class="va">values</span>, pattern <span class="op">=</span> <span class="st">""</span>, all <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -115,16 +115,23 @@ one or more within the followings:</p><ul><li><p><code>n_index</code>: internal 
 <li><p><code>checked</code>: logical (TRUE for verified indices);</p></li>
 <li><p><code>a</code>, <code>b</code>, <code>x</code>: parameter values (NA for non required parameters).</p></li>
 </ul></dd>
+
+
 <dt>pattern</dt>
 <dd><p>A regular expression on index names.</p></dd>
+
+
 <dt>all</dt>
 <dd><p>Logical: if TRUE, all the indices retrieved from
 <a href="https://www.indexdatabase.de/db/is.php?sensor_id=96" class="external-link">IDB</a> are returned;
 if FALSE (default), only indices checked by the authors are returned.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data.frame with the required information. The table contains
+    
+
+<p>A data.frame with the required information. The table contains
 also the following attributes:</p><ul><li><p><code>creation_date</code>: timestamp of the creation date of the indices archive;</p></li>
 <li><p><code>pkg_version</code>: version of the <code>sen2r</code> package used to
 create the indices archive.</p></li>
@@ -138,7 +145,7 @@ create the indices archive.</p></li>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -148,8 +155,8 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Show index names</span></span>
-<span class="r-in"><span class="fu">list_indices</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>,<span class="st">"longname"</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Show index names</span></span></span>
+<span class="r-in"><span><span class="fu">list_indices</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>,<span class="st">"longname"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            name</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4           ARI</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6          ARVI</span>
@@ -230,17 +237,17 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 <span class="r-out co"><span class="r-pr">#&gt;</span> 228                                                                   Green Chromatic Coordinate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 229                                                                    Blue Chromatic Coordinate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 230                                                                                 Excess Green</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Return the MSAVI2 formula</span></span>
-<span class="r-in"><span class="fu">list_indices</span><span class="op">(</span><span class="st">"s2_formula"</span>, <span class="st">"^MSAVI2$"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Return the MSAVI2 formula</span></span></span>
+<span class="r-in"><span><span class="fu">list_indices</span><span class="op">(</span><span class="st">"s2_formula"</span>, <span class="st">"^MSAVI2$"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "(2*band_8+1-sqrt(power((2*band_8+1),2)-8*(band_8-band_4)))/(2)"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"pkg_version")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] ‘1.5.0’</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] '1.5.0'</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"creation_date")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2021-06-27 17:56:25 CEST"</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Return all index names (including unchecked)</span></span>
-<span class="r-in"><span class="fu">list_indices</span><span class="op">(</span><span class="st">"name"</span>, all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Return all index names (including unchecked)</span></span></span>
+<span class="r-in"><span><span class="fu">list_indices</span><span class="op">(</span><span class="st">"name"</span>, all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1] "ATSAVI"        "AFRI1600"      "AFRI2100"      "ARI"          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [5] "AVI"           "ARVI"          "ARVI2"         "BWDRVI"       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [9] "BRI"           "CARI"          "Chlgreen"      "CIgreen"      </span>
@@ -300,7 +307,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 <span class="r-out co"><span class="r-pr">#&gt;</span> [225] "NDVIre"        "NDBI"          "Rcc"           "Gcc"          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [229] "Bcc"           "ExG"          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"pkg_version")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] ‘1.5.0’</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] '1.5.0'</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"creation_date")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2021-06-27 17:56:25 CEST"</span>
 </code></pre></div>
@@ -317,8 +324,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

@@ -15,3 +15,4 @@ include package \code{rgdal} among imported dependencies.
 This is necessary since using \code{raster} without having \code{rgdal} installed
 causes troublings in R 4.
 }
+\keyword{internal}

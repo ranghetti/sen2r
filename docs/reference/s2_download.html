@@ -20,7 +20,7 @@ s2_list function
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1.9001</span>
       </span>
     </div>
 
@@ -103,17 +103,17 @@ Input filenames must be elements obtained with
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">s2_download</span><span class="op">(</span>
-  s2_prodlist <span class="op">=</span> <span class="cn">NULL</span>,
-  downloader <span class="op">=</span> <span class="st">"builtin"</span>,
-  apihub <span class="op">=</span> <span class="cn">NA</span>,
-  service <span class="op">=</span> <span class="cn">NA</span>,
-  tile <span class="op">=</span> <span class="cn">NULL</span>,
-  outdir <span class="op">=</span> <span class="st">"."</span>,
-  order_lta <span class="op">=</span> <span class="cn">TRUE</span>,
-  abort <span class="op">=</span> <span class="cn">TRUE</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">s2_download</span><span class="op">(</span></span>
+<span>  s2_prodlist <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  downloader <span class="op">=</span> <span class="st">"builtin"</span>,</span>
+<span>  apihub <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  service <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  tile <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  outdir <span class="op">=</span> <span class="st">"."</span>,</span>
+<span>  order_lta <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  abort <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -122,39 +122,58 @@ Input filenames must be elements obtained with
 <dd><p>Named character: list of the products to be downloaded,
 in the format <code>safelist</code> (see <a href="safelist-class.html">safelist</a>).
 Alternatively, it can be the path of a JSON file exported by <a href="s2_order.html">s2_order</a>.</p></dd>
+
+
 <dt>downloader</dt>
 <dd><p>Executable to use to download products
 (default: "builtin"). Alternatives are "builtin" or "aria2"
 (this requires aria2c to be installed).</p></dd>
+
+
 <dt>apihub</dt>
 <dd><p>Path of the <code>apihub.txt</code> file containing credentials
 of SciHub account.
 If NA (default), the default location inside the package will be used.</p></dd>
+
+
 <dt>service</dt>
 <dd><p>Character: it can be <code>"dhus"</code> or <code>"apihub"</code>, in which cases
 the required service is forced instead that the one present in the URLs
 passed through argument <code>s2_prodlist</code>.
 If NA (default), the service present in the URLs is maintained.</p></dd>
+
+
 <dt>tile</dt>
 <dd><p>Deprecated argument</p></dd>
+
+
 <dt>outdir</dt>
 <dd><p>(optional) Full name of the existing output directory
 where the files should be created (default: current directory).</p></dd>
+
+
 <dt>order_lta</dt>
 <dd><p>Logical: if TRUE (default), products which are not available
 for direct download are ordered from the Long Term Archive;
 if FALSE, they are simply skipped.</p></dd>
+
+
 <dt>abort</dt>
 <dd><p>Logical parameter: if TRUE (default), the function aborts
 in case of errors during downloads; if FALSE, a warning is shown and
 download of subsequent products continues.</p></dd>
+
+
 <dt>overwrite</dt>
 <dd><p>Logical value: should existing output archives be
 overwritten? (default: FALSE)</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Vector character with the list ot the output products
+    
+
+<p>Vector character with the list ot the output products
 (being downloaded or already existing).</p>
     </div>
     <div id="note">
@@ -166,7 +185,7 @@ overwritten? (default: FALSE)</p></dd>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -177,27 +196,27 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">single_s2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"https://apihub.copernicus.eu/apihub/odata/v1/"</span>,</span>
-<span class="r-in">  <span class="st">"Products(\'c7142722-42bf-4f93-b8c5-59fd1792c430\')/$value"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">single_s2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"S2A_MSIL1C_20170613T101031_N0205_R022_T32TQQ_20170613T101608.SAFE"</span></span>
-<span class="r-in"><span class="co"># (this is equivalent to:</span></span>
-<span class="r-in"><span class="co"># single_s2 &lt;- example_s2_list[1]</span></span>
-<span class="r-in"><span class="co"># where example_s2_list is the output of the example of the</span></span>
-<span class="r-in"><span class="co"># s2_list() function)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Download the whole product</span></span>
-<span class="r-in"><span class="fu">s2_download</span><span class="op">(</span><span class="va">single_s2</span>, outdir<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">#' # Download the whole product - using aria2</span></span>
-<span class="r-in"><span class="fu">s2_download</span><span class="op">(</span><span class="va">single_s2</span>, outdir<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, downloader <span class="op">=</span> <span class="st">"aria2"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Download more products, ordering the ones stored in the Long Term Archive</span></span>
-<span class="r-in"><span class="va">pos</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">57.8815</span>,<span class="op">-</span><span class="fl">51.6954</span><span class="op">)</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">time_window</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2018-02-21"</span>, <span class="st">"2018-03-20"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">list_safe</span> <span class="op">&lt;-</span> <span class="fu"><a href="s2_list.html">s2_list</a></span><span class="op">(</span>spatial_extent <span class="op">=</span> <span class="va">pos</span>, time_interval <span class="op">=</span> <span class="va">time_window</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">s2_download</span><span class="op">(</span><span class="va">list_safe</span>, outdir<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">single_s2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"https://apihub.copernicus.eu/apihub/odata/v1/"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"Products(\'c7142722-42bf-4f93-b8c5-59fd1792c430\')/$value"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">single_s2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"S2A_MSIL1C_20170613T101031_N0205_R022_T32TQQ_20170613T101608.SAFE"</span></span></span>
+<span class="r-in"><span><span class="co"># (this is equivalent to:</span></span></span>
+<span class="r-in"><span><span class="co"># single_s2 &lt;- example_s2_list[1]</span></span></span>
+<span class="r-in"><span><span class="co"># where example_s2_list is the output of the example of the</span></span></span>
+<span class="r-in"><span><span class="co"># s2_list() function)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Download the whole product</span></span></span>
+<span class="r-in"><span><span class="fu">s2_download</span><span class="op">(</span><span class="va">single_s2</span>, outdir<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#' # Download the whole product - using aria2</span></span></span>
+<span class="r-in"><span><span class="fu">s2_download</span><span class="op">(</span><span class="va">single_s2</span>, outdir<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, downloader <span class="op">=</span> <span class="st">"aria2"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Download more products, ordering the ones stored in the Long Term Archive</span></span></span>
+<span class="r-in"><span><span class="va">pos</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">57.8815</span>,<span class="op">-</span><span class="fl">51.6954</span><span class="op">)</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">time_window</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2018-02-21"</span>, <span class="st">"2018-03-20"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">list_safe</span> <span class="op">&lt;-</span> <span class="fu"><a href="s2_list.html">s2_list</a></span><span class="op">(</span>spatial_extent <span class="op">=</span> <span class="va">pos</span>, time_interval <span class="op">=</span> <span class="va">time_window</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">s2_download</span><span class="op">(</span><span class="va">list_safe</span>, outdir<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -212,8 +231,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

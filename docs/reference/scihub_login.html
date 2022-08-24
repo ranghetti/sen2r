@@ -29,7 +29,7 @@ the environmental variables SCIHUB_USER and SCIHUB_PASSWORD.'><!-- mathjax --><s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1.9001</span>
       </span>
     </div>
 
@@ -118,21 +118,21 @@ the environmental variables <code>SCIHUB_USER</code> and <code>SCIHUB_PASSWORD</
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">read_scihub_login</span><span class="op">(</span>apihub_path <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>
-
-<span class="fu">is_scihub_configured</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu">check_scihub_login</span><span class="op">(</span><span class="va">username</span>, <span class="va">password</span>, service <span class="op">=</span> <span class="st">"apihub"</span><span class="op">)</span>
-
-<span class="fu">check_scihub_connection</span><span class="op">(</span>service <span class="op">=</span> <span class="st">"apihub"</span><span class="op">)</span>
-
-<span class="fu">write_scihub_login</span><span class="op">(</span>
-  <span class="va">username</span>,
-  <span class="va">password</span>,
-  apihub_path <span class="op">=</span> <span class="cn">NA</span>,
-  check <span class="op">=</span> <span class="cn">TRUE</span>,
-  append <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_scihub_login</span><span class="op">(</span>apihub_path <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">is_scihub_configured</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">check_scihub_login</span><span class="op">(</span><span class="va">username</span>, <span class="va">password</span>, service <span class="op">=</span> <span class="st">"apihub"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">check_scihub_connection</span><span class="op">(</span>service <span class="op">=</span> <span class="st">"apihub"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">write_scihub_login</span><span class="op">(</span></span>
+<span>  <span class="va">username</span>,</span>
+<span>  <span class="va">password</span>,</span>
+<span>  apihub_path <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  check <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  append <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -140,33 +140,54 @@ the environmental variables <code>SCIHUB_USER</code> and <code>SCIHUB_PASSWORD</
     <dl><dt>apihub_path</dt>
 <dd><p>Path of the file in which login information is saved.
 If NA (default) it is automatically read from the package default location.</p></dd>
+
+
 <dt>username</dt>
 <dd><p>SciHub username.</p></dd>
+
+
 <dt>password</dt>
 <dd><p>SciHub password.</p></dd>
+
+
 <dt>service</dt>
 <dd><p>Character: it can be <code>"dhus"</code> or <code>"apihub"</code> (default).</p></dd>
+
+
 <dt>check</dt>
 <dd><p>Logical: if TRUE (default), new credentials are checked
 before writing them on <code>apihub_path</code> (if they are invalid, an error
 is provided);
 if FALSE, they are directly written.</p></dd>
+
+
 <dt>append</dt>
 <dd><p>Logical: if TRUE, new credentials are added
 to the ones existing within <code>apihub_path</code>;
 if FALSE (default), <code>apihub_path</code> is replaced with the new ones.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>read_scihub_login()</code> returns a matrix of credentials,
-in which <code>username</code> is in the first column, <code>password</code> in the second.
-<code>is_scihub_configured()</code> returns TRUE if credentials can be
-accessed, FALSE if not.
-<code>check_scihub_login()</code> returns TRUE if credentials are valid,
-FALSE elsewhere.
-<code>check_scihub_connection()</code> returns TRUE if internet connection
-is available and SciHub is accessible, FALSE otherwise.
-<code>write_scihub_login()</code> returns NULL.</p>
+    
+
+<p><code>read_scihub_login()</code> returns a matrix of credentials,
+in which <code>username</code> is in the first column, <code>password</code> in the second.</p>
+
+
+<p><code>is_scihub_configured()</code> returns TRUE if credentials can be
+accessed, FALSE if not.</p>
+
+
+<p><code>check_scihub_login()</code> returns TRUE if credentials are valid,
+FALSE elsewhere.</p>
+
+
+<p><code>check_scihub_connection()</code> returns TRUE if internet connection
+is available and SciHub is accessible, FALSE otherwise.</p>
+
+
+<p><code>write_scihub_login()</code> returns NULL.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -184,7 +205,7 @@ and password edits on old credentials are not immediately recognised.</p>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -195,16 +216,16 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="fu">is_scihub_configured</span><span class="op">(</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="fu">is_scihub_configured</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
-<span class="r-in"><span class="co"># }</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="fu">check_scihub_connection</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">check_scihub_login</span><span class="op">(</span><span class="st">"username"</span>, <span class="st">"password"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">write_scihub_login</span><span class="op">(</span><span class="st">"username"</span>, <span class="st">"password"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">read_scihub_login</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="fu">check_scihub_connection</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">check_scihub_login</span><span class="op">(</span><span class="st">"username"</span>, <span class="st">"password"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">write_scihub_login</span><span class="op">(</span><span class="st">"username"</span>, <span class="st">"password"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">read_scihub_login</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -219,8 +240,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

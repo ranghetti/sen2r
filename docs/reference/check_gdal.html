@@ -18,7 +18,7 @@ the minimum required version (2.1.2)."><!-- mathjax --><script src="https://cdnj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1.9001</span>
       </span>
     </div>
 
@@ -99,7 +99,7 @@ the minimum required version (2.1.2).</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">check_gdal</span><span class="op">(</span>abort <span class="op">=</span> <span class="cn">TRUE</span>, gdal_path <span class="op">=</span> <span class="cn">NULL</span>, force <span class="op">=</span> <span class="cn">FALSE</span>, full_scan <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">check_gdal</span><span class="op">(</span>abort <span class="op">=</span> <span class="cn">TRUE</span>, gdal_path <span class="op">=</span> <span class="cn">NULL</span>, force <span class="op">=</span> <span class="cn">FALSE</span>, full_scan <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -108,14 +108,20 @@ the minimum required version (2.1.2).</p>
 <dd><p>Logical parameter: if TRUE (default), the function aborts
 in case no GDAL installation is found; if FALSE, a warning is shown
 and FALSE is returned.</p></dd>
+
+
 <dt>gdal_path</dt>
 <dd><p>(optional) Character: the path in which GDAL must be
 searched in. If NULL (default), search is performed in the whole file system.</p></dd>
+
+
 <dt>force</dt>
 <dd><p>(optional) Logical: if TRUE, install even if it is already
 installed (default is FALSE). Notice that, defining <code>gdal_path</code>, GDAL is
 searched again even if <code>"force" = FALSE</code> in case the existing installation
 is not in <code>gdal_path</code>.</p></dd>
+
+
 <dt>full_scan</dt>
 <dd><p>(optional) Logical: in Linux and MacOS, if <code>gdal_path</code> was
 not manually defined, GDAL is searched within the system path in case this
@@ -125,10 +131,13 @@ GDAL is searched there, otherwise in the main directory <code>C:\\</code>; setti
 <code>full_scan</code> to TRUE, is is always searched in the whole <code>C:\\</code>.
 This argument takes no effect if <code>gdal_path</code> was defined, since, in that case,
 a full search is always performed in <code>gdal_path</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Logical (invisible): TRUE in case the installation is ok, FALSE
+    
+
+<p>Logical (invisible): TRUE in case the installation is ok, FALSE
 if GDAL is missing and abort=FALSE (otherwise, the function stops).</p>
     </div>
     <div id="note">
@@ -140,7 +149,7 @@ if GDAL is missing and abort=FALSE (otherwise, the function stops).</p>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -150,9 +159,9 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="fu">check_gdal</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="fu">check_gdal</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -167,8 +176,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

@@ -1,11 +1,11 @@
-pandoc: 2.17.1.1
-pkgdown: 2.0.2
-pkgdown_sha: ~
+pandoc: '2.18'
+pkgdown: 2.0.6.9000
+pkgdown_sha: 956f076f661eb2de9413f64ea24a580cf444466d
 articles:
   docker: docker.html
   installation: installation.html
   outstructure: outstructure.html
   sen2r_cmd: sen2r_cmd.html
   sen2r_gui: sen2r_gui.html
-last_built: 2022-04-05T07:04Z
+last_built: 2022-08-24T12:37Z
 

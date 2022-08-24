@@ -51,6 +51,7 @@
 #' @importFrom XML xmlToList xmlTreeParse
 #' @importFrom sf st_crs
 #' @importFrom stars st_as_stars write_stars
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #' 

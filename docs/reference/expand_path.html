@@ -22,7 +22,7 @@ do not."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mat
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1.9001</span>
       </span>
     </div>
 
@@ -107,29 +107,38 @@ do not.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">expand_path</span><span class="op">(</span><span class="va">path</span>, parent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, silent <span class="op">=</span> <span class="cn">TRUE</span>, normalize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">expand_path</span><span class="op">(</span><span class="va">path</span>, parent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, silent <span class="op">=</span> <span class="cn">TRUE</span>, normalize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>path</dt>
 <dd><p>The path name (<code>character</code>) to check ad eventually expand.</p></dd>
+
+
 <dt>parent</dt>
 <dd><p>The parent directory (<code>character</code>) to use if <code>path</code> is
 relative (default value: the working directory).</p></dd>
+
+
 <dt>silent</dt>
 <dd><p>Logical value: if TRUE (default), no message are shown;
 if FALSE, a message inform if <code>parent</code> were applied or not;
 if NA, a warning is returned if <code>path</code> is expanded, nothing if it
 is already an absolute path.</p></dd>
+
+
 <dt>normalize</dt>
 <dd><p>Logical value: if TRUE (default), the path is normalised
 (<code><a href="https://rdrr.io/r/base/normalizePath.html" class="external-link">normalizePath()</a></code> is applied); if FALSE it is simply
 appended.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>The path eventually expanded.</p>
+    
+
+<p>The path eventually expanded.</p>
     </div>
     <div id="note">
     <h2>Note</h2>
@@ -140,7 +149,7 @@ appended.</p></dd>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -160,8 +169,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

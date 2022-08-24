@@ -8,6 +8,7 @@
 #' @rdname path_check
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
 #' @author Lorenzo Busetto, PhD (2019)
+#' @keywords internal
 path_check <- function(path, mustbe_empty = FALSE, mustbe_writable = TRUE) {
   
   if (all(length(path)>0, path[1]!="")) {

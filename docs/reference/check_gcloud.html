@@ -24,7 +24,7 @@ is available and Sentinel-2 bucket is accessible on Google Cloud."><!-- mathjax 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1.9001</span>
       </span>
     </div>
 
@@ -111,17 +111,17 @@ is available and Sentinel-2 bucket is accessible on Google Cloud.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">check_gcloud</span><span class="op">(</span>
-  <span class="va">gsutil_dir</span>,
-  force <span class="op">=</span> <span class="cn">FALSE</span>,
-  full_scan <span class="op">=</span> <span class="cn">FALSE</span>,
-  abort <span class="op">=</span> <span class="cn">TRUE</span>,
-  check_creds <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-
-<span class="fu">is_gcloud_configured</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu">check_gcloud_connection</span><span class="op">(</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">check_gcloud</span><span class="op">(</span></span>
+<span>  <span class="va">gsutil_dir</span>,</span>
+<span>  force <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  full_scan <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  abort <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  check_creds <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">is_gcloud_configured</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">check_gcloud_connection</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -130,9 +130,13 @@ is available and Sentinel-2 bucket is accessible on Google Cloud.</p>
 <dd><p>(optional) Character: the path of the <code>gsutil</code> executable,
 or the directory in which it is installed.
 If not provided, <code>gsutil</code> is searched in the system path.</p></dd>
+
+
 <dt>force</dt>
 <dd><p>(optional) Logical: if TRUE, check even if it is already
 configured (default is FALSE).</p></dd>
+
+
 <dt>full_scan</dt>
 <dd><p>(optional) Logical: in Linux and MacOS, if <code>gsutil_dir</code> was
 not manually defined, <code>gsutil</code> is searched within the system path in case this
@@ -144,22 +148,33 @@ directory <code>C:\</code>; setting <code>full_scan = TRUE</code>, is is always 
 in the whole <code>C:\</code>.
 This argument takes no effect if <code>gsutil_dir</code> was defined, since, in that case,
 a full search is always performed in <code>gsutil_dir</code>.</p></dd>
+
+
 <dt>abort</dt>
 <dd><p>(optional) Logical: if TRUE (default), the function aborts
 in case no Google Cloud SDK installation is found; if FALSE,
 a warning is shown and FALSE is returned.</p></dd>
+
+
 <dt>check_creds</dt>
 <dd><p>(optional) Logical: if TRUE, check also if a user account
 (required to search and download products) was set.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>check_gcloud()</code> returns TRUE (invisible) in case Google Cloud SDK
+    
+
+<p><code>check_gcloud()</code> returns TRUE (invisible) in case Google Cloud SDK
 was correctly set, FALSE if it was not found, not configured
-(if <code>check_creds = TRUE</code>) and <code>abort = FALSE</code> (otherwise, the function stops).
-<code>is_gcloud_configured()</code> returns TRUE if Google Cloud SDK is installed
-and an account is configured, FALSE if not.
-<code>check_gcloud_connection()</code> returns TRUE if connection
+(if <code>check_creds = TRUE</code>) and <code>abort = FALSE</code> (otherwise, the function stops).</p>
+
+
+<p><code>is_gcloud_configured()</code> returns TRUE if Google Cloud SDK is installed
+and an account is configured, FALSE if not.</p>
+
+
+<p><code>check_gcloud_connection()</code> returns TRUE if connection
 is available, FALSE otherwise.</p>
     </div>
     <div id="note">
@@ -171,7 +186,7 @@ is available, FALSE otherwise.</p>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -181,14 +196,14 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="fu">check_gcloud</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">check_gcloud_connection</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="fu">is_gcloud_configured</span><span class="op">(</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="fu">check_gcloud</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">check_gcloud_connection</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="fu">is_gcloud_configured</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -203,8 +218,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

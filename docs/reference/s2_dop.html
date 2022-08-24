@@ -26,7 +26,7 @@ midnight (which corresponds to the date in local time)."><!-- mathjax --><script
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1.9001</span>
       </span>
     </div>
 
@@ -115,7 +115,7 @@ midnight (which corresponds to the date in local time).</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">s2_dop</span><span class="op">(</span>s2_orbits <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">143</span>, timewindow <span class="op">=</span> <span class="st">"10 days"</span>, mission <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2A"</span>, <span class="st">"2B"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">s2_dop</span><span class="op">(</span>s2_orbits <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">143</span>, timewindow <span class="op">=</span> <span class="st">"10 days"</span>, mission <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2A"</span>, <span class="st">"2B"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -124,6 +124,8 @@ midnight (which corresponds to the date in local time).</p>
 <dd><p>A vector of Sentinel-2 orbits (as integer numbers
 or 3-length character).
 Default is all the 143 orbits.</p></dd>
+
+
 <dt>timewindow</dt>
 <dd><p>Temporal window for querying: Date object
 of length 1 (single day) or 2 (time window).
@@ -133,13 +135,18 @@ interpreted as the next n days (if positive) or the past n days
 Also strings which can be interpreted as time ranges are accepted
 (see examples).
 Default is the next 10 days (one cycle).</p></dd>
+
+
 <dt>mission</dt>
 <dd><p>(optional) Vector with the desired Sentinel-2 missions
 ("2A", "2B" or both). Default is both.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data table with the dates (column "date"), the missions
+    
+
+<p>A data table with the dates (column "date"), the missions
 (column "mission") and the orbits (column "orbit").
 An empty data table with the same structure is returned if no passages
 were found with the passed settings.</p>
@@ -153,7 +160,7 @@ were found with the passed settings.</p>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -163,52 +170,53 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># All the passages in a cycle of 10 days over all the orbits</span></span>
-<span class="r-in"><span class="fu">s2_dop</span><span class="op">(</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># All the passages in a cycle of 10 days over all the orbits</span></span></span>
+<span class="r-in"><span><span class="fu">s2_dop</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            date mission orbit</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1: 2022-04-05      2A   116</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2: 2022-04-05      2A   117</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3: 2022-04-05      2A   118</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4: 2022-04-05      2A   119</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5: 2022-04-05      2A   120</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1: 2022-08-24      2A   001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2: 2022-08-24      2A   131</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3: 2022-08-24      2A   132</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4: 2022-08-24      2A   133</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5: 2022-08-24      2A   134</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ---                         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 282: 2022-04-14      2B   040</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 283: 2022-04-14      2B   041</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 284: 2022-04-14      2B   042</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 285: 2022-04-14      2B   043</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 286: 2022-04-14      2B   044</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># The passages in the current month over two orbits</span></span>
-<span class="r-in"><span class="fu">s2_dop</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"022"</span>, <span class="st">"065"</span><span class="op">)</span>, <span class="st">"this month"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 282: 2022-09-02      2B   054</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 283: 2022-09-02      2B   055</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 284: 2022-09-02      2B   056</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 285: 2022-09-02      2B   057</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 286: 2022-09-02      2B   058</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># The passages in the current month over two orbits</span></span></span>
+<span class="r-in"><span><span class="fu">s2_dop</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"022"</span>, <span class="st">"065"</span><span class="op">)</span>, <span class="st">"this month"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           date mission orbit</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  1: 2022-04-01      2A   065</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  2: 2022-04-03      2B   022</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  3: 2022-04-06      2B   065</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  4: 2022-04-08      2A   022</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  5: 2022-04-11      2A   065</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  6: 2022-04-13      2B   022</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  7: 2022-04-16      2B   065</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  8: 2022-04-18      2A   022</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  9: 2022-04-21      2A   065</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10: 2022-04-23      2B   022</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11: 2022-04-26      2B   065</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12: 2022-04-28      2A   022</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># The dates in which Sentinel-2A will pass in next six weeks over one orbit</span></span>
-<span class="r-in"><span class="fu">s2_dop</span><span class="op">(</span><span class="st">"022"</span>, <span class="st">"6 weeks"</span>, mission <span class="op">=</span> <span class="st">"2A"</span><span class="op">)</span><span class="op">$</span><span class="va">date</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2022-04-08" "2022-04-18" "2022-04-28" "2022-05-08"</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># The date in which Sentinel-2A would be passed in the last 10 days over one orbit</span></span>
-<span class="r-in"><span class="fu">s2_dop</span><span class="op">(</span><span class="st">"022"</span>, <span class="st">"-10 days"</span>, mission <span class="op">=</span> <span class="st">"2A"</span><span class="op">)</span><span class="op">$</span><span class="va">date</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2022-03-29"</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># All the orbits covered today</span></span>
-<span class="r-in"><span class="fu">s2_dop</span><span class="op">(</span>timewindow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span>, mission <span class="op">=</span> <span class="st">"2B"</span><span class="op">)</span><span class="op">$</span><span class="va">orbit</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "045" "046" "047" "048" "049" "050" "051" "052" "053" "054" "055" "056"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "057" "058"</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># The passages in a fixed time window for one orbit</span></span>
-<span class="r-in"><span class="fu">s2_dop</span><span class="op">(</span><span class="fl">65</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2018-08-01"</span>, <span class="st">"2018-08-31"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1: 2022-08-01      2B   022</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  2: 2022-08-04      2B   065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  3: 2022-08-06      2A   022</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  4: 2022-08-09      2A   065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5: 2022-08-11      2B   022</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  6: 2022-08-14      2B   065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  7: 2022-08-16      2A   022</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  8: 2022-08-19      2A   065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  9: 2022-08-21      2B   022</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10: 2022-08-24      2B   065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11: 2022-08-26      2A   022</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12: 2022-08-29      2A   065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13: 2022-08-31      2B   022</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># The dates in which Sentinel-2A will pass in next six weeks over one orbit</span></span></span>
+<span class="r-in"><span><span class="fu">s2_dop</span><span class="op">(</span><span class="st">"022"</span>, <span class="st">"6 weeks"</span>, mission <span class="op">=</span> <span class="st">"2A"</span><span class="op">)</span><span class="op">$</span><span class="va">date</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2022-08-26" "2022-09-05" "2022-09-15" "2022-09-25"</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># The date in which Sentinel-2A would be passed in the last 10 days over one orbit</span></span></span>
+<span class="r-in"><span><span class="fu">s2_dop</span><span class="op">(</span><span class="st">"022"</span>, <span class="st">"-10 days"</span>, mission <span class="op">=</span> <span class="st">"2A"</span><span class="op">)</span><span class="op">$</span><span class="va">date</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2022-08-16"</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># All the orbits covered today</span></span></span>
+<span class="r-in"><span><span class="fu">s2_dop</span><span class="op">(</span>timewindow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span>, mission <span class="op">=</span> <span class="st">"2B"</span><span class="op">)</span><span class="op">$</span><span class="va">orbit</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "059" "060" "061" "062" "063" "064" "065" "066" "067" "068" "069" "070"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "071" "072"</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># The passages in a fixed time window for one orbit</span></span></span>
+<span class="r-in"><span><span class="fu">s2_dop</span><span class="op">(</span><span class="fl">65</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2018-08-01"</span>, <span class="st">"2018-08-31"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          date mission orbit</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1: 2018-08-05      2B   065</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2: 2018-08-10      2A   065</span>
@@ -216,9 +224,9 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4: 2018-08-20      2A   065</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5: 2018-08-25      2B   065</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6: 2018-08-30      2A   065</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># A research with no passages found</span></span>
-<span class="r-in"><span class="fu">s2_dop</span><span class="op">(</span><span class="fl">22</span>, <span class="st">"2018-08-16"</span>, mission <span class="op">=</span> <span class="st">"2A"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># A research with no passages found</span></span></span>
+<span class="r-in"><span><span class="fu">s2_dop</span><span class="op">(</span><span class="fl">22</span>, <span class="st">"2018-08-16"</span>, mission <span class="op">=</span> <span class="st">"2A"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Empty data.table (0 rows and 3 cols): date,mission,orbit</span>
 </code></pre></div>
     </div>
@@ -234,8 +242,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

@@ -21,7 +21,7 @@ descriptions of all the other parameters)."><!-- mathjax --><script src="https:/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1.9001</span>
       </span>
     </div>
 
@@ -105,69 +105,69 @@ descriptions of all the other parameters).</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">sen2r</span><span class="op">(</span>
-  param_list <span class="op">=</span> <span class="cn">NULL</span>,
-  gui <span class="op">=</span> <span class="cn">NA</span>,
-  preprocess <span class="op">=</span> <span class="cn">TRUE</span>,
-  s2_levels <span class="op">=</span> <span class="st">"l2a"</span>,
-  sel_sensor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"s2a"</span>, <span class="st">"s2b"</span><span class="op">)</span>,
-  online <span class="op">=</span> <span class="cn">TRUE</span>,
-  server <span class="op">=</span> <span class="st">"scihub"</span>,
-  order_lta <span class="op">=</span> <span class="cn">TRUE</span>,
-  apihub <span class="op">=</span> <span class="cn">NA</span>,
-  downloader <span class="op">=</span> <span class="st">"builtin"</span>,
-  overwrite_safe <span class="op">=</span> <span class="cn">FALSE</span>,
-  rm_safe <span class="op">=</span> <span class="st">"no"</span>,
-  step_atmcorr <span class="op">=</span> <span class="st">"auto"</span>,
-  sen2cor_use_dem <span class="op">=</span> <span class="cn">NA</span>,
-  sen2cor_gipp <span class="op">=</span> <span class="cn">NA</span>,
-  max_cloud_safe <span class="op">=</span> <span class="fl">100</span>,
-  timewindow <span class="op">=</span> <span class="cn">NA</span>,
-  timeperiod <span class="op">=</span> <span class="st">"full"</span>,
-  extent <span class="op">=</span> <span class="cn">NA</span>,
-  extent_name <span class="op">=</span> <span class="st">"sen2r"</span>,
-  s2tiles_selected <span class="op">=</span> <span class="cn">NA</span>,
-  s2orbits_selected <span class="op">=</span> <span class="cn">NA</span>,
-  list_prods <span class="op">=</span> <span class="cn">NA</span>,
-  list_rgb <span class="op">=</span> <span class="cn">NA</span>,
-  list_indices <span class="op">=</span> <span class="cn">NA</span>,
-  index_source <span class="op">=</span> <span class="st">"BOA"</span>,
-  rgb_ranges <span class="op">=</span> <span class="cn">NA</span>,
-  mask_type <span class="op">=</span> <span class="cn">NA</span>,
-  max_mask <span class="op">=</span> <span class="fl">100</span>,
-  mask_smooth <span class="op">=</span> <span class="fl">0</span>,
-  mask_buffer <span class="op">=</span> <span class="fl">0</span>,
-  clip_on_extent <span class="op">=</span> <span class="cn">TRUE</span>,
-  extent_as_mask <span class="op">=</span> <span class="cn">FALSE</span>,
-  reference_path <span class="op">=</span> <span class="cn">NA</span>,
-  res <span class="op">=</span> <span class="cn">NA</span>,
-  res_s2 <span class="op">=</span> <span class="st">"10m"</span>,
-  unit <span class="op">=</span> <span class="st">"Meter"</span>,
-  proj <span class="op">=</span> <span class="cn">NA</span>,
-  resampling <span class="op">=</span> <span class="st">"near"</span>,
-  resampling_scl <span class="op">=</span> <span class="st">"near"</span>,
-  outformat <span class="op">=</span> <span class="st">"GTiff"</span>,
-  rgb_outformat <span class="op">=</span> <span class="st">"GTiff"</span>,
-  index_datatype <span class="op">=</span> <span class="st">"Int16"</span>,
-  compression <span class="op">=</span> <span class="st">"DEFLATE"</span>,
-  rgb_compression <span class="op">=</span> <span class="st">"90"</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
-  path_l1c <span class="op">=</span> <span class="cn">NA</span>,
-  path_l2a <span class="op">=</span> <span class="cn">NA</span>,
-  path_tiles <span class="op">=</span> <span class="cn">NA</span>,
-  path_merged <span class="op">=</span> <span class="cn">NA</span>,
-  path_out <span class="op">=</span> <span class="cn">NA</span>,
-  path_rgb <span class="op">=</span> <span class="cn">NA</span>,
-  path_indices <span class="op">=</span> <span class="cn">NA</span>,
-  path_subdirs <span class="op">=</span> <span class="cn">TRUE</span>,
-  thumbnails <span class="op">=</span> <span class="cn">TRUE</span>,
-  parallel <span class="op">=</span> <span class="cn">FALSE</span>,
-  processing_order <span class="op">=</span> <span class="st">"by_groups"</span>,
-  use_python <span class="op">=</span> <span class="cn">NA</span>,
-  tmpdir <span class="op">=</span> <span class="cn">NA</span>,
-  rmtmp <span class="op">=</span> <span class="cn">TRUE</span>,
-  log <span class="op">=</span> <span class="cn">NA</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">sen2r</span><span class="op">(</span></span>
+<span>  param_list <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  gui <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  preprocess <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  s2_levels <span class="op">=</span> <span class="st">"l2a"</span>,</span>
+<span>  sel_sensor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"s2a"</span>, <span class="st">"s2b"</span><span class="op">)</span>,</span>
+<span>  online <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  server <span class="op">=</span> <span class="st">"scihub"</span>,</span>
+<span>  order_lta <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  apihub <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  downloader <span class="op">=</span> <span class="st">"builtin"</span>,</span>
+<span>  overwrite_safe <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  rm_safe <span class="op">=</span> <span class="st">"no"</span>,</span>
+<span>  step_atmcorr <span class="op">=</span> <span class="st">"auto"</span>,</span>
+<span>  sen2cor_use_dem <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  sen2cor_gipp <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  max_cloud_safe <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  timewindow <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  timeperiod <span class="op">=</span> <span class="st">"full"</span>,</span>
+<span>  extent <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  extent_name <span class="op">=</span> <span class="st">"sen2r"</span>,</span>
+<span>  s2tiles_selected <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  s2orbits_selected <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  list_prods <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  list_rgb <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  list_indices <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  index_source <span class="op">=</span> <span class="st">"BOA"</span>,</span>
+<span>  rgb_ranges <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  mask_type <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  max_mask <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  mask_smooth <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  mask_buffer <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  clip_on_extent <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  extent_as_mask <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  reference_path <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  res <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  res_s2 <span class="op">=</span> <span class="st">"10m"</span>,</span>
+<span>  unit <span class="op">=</span> <span class="st">"Meter"</span>,</span>
+<span>  proj <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  resampling <span class="op">=</span> <span class="st">"near"</span>,</span>
+<span>  resampling_scl <span class="op">=</span> <span class="st">"near"</span>,</span>
+<span>  outformat <span class="op">=</span> <span class="st">"GTiff"</span>,</span>
+<span>  rgb_outformat <span class="op">=</span> <span class="st">"GTiff"</span>,</span>
+<span>  index_datatype <span class="op">=</span> <span class="st">"Int16"</span>,</span>
+<span>  compression <span class="op">=</span> <span class="st">"DEFLATE"</span>,</span>
+<span>  rgb_compression <span class="op">=</span> <span class="st">"90"</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  path_l1c <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  path_l2a <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  path_tiles <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  path_merged <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  path_out <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  path_rgb <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  path_indices <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  path_subdirs <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  thumbnails <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  parallel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  processing_order <span class="op">=</span> <span class="st">"by_groups"</span>,</span>
+<span>  use_python <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  tmpdir <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  rmtmp <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  log <span class="op">=</span> <span class="cn">NA</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -185,30 +185,42 @@ parameters.
 If <code>param_list</code> is NULL (default), values given with the
 parameters below (or default values for parameters not
 provided) are used.</p></dd>
+
+
 <dt>gui</dt>
 <dd><p>(optional) Logical: if TRUE, function <code><a href="s2_gui.html">s2_gui()</a></code> is
 launched before starting to process in order to set or load parameters;
 if FALSE, the function uses parameters passed with <code>param_list</code> or
 with other function arguments. Default is FALSE if <code>param_list</code> is not
 NULL, TRUE elsewhere.</p></dd>
+
+
 <dt>preprocess</dt>
 <dd><p>(optional) Logical: TRUE (default) to perform also
 preprocessing steps, FALSE not to (do only find, download
 and atmospheric correction).</p></dd>
+
+
 <dt>s2_levels</dt>
 <dd><p>(optional) Character vector of length 1 or 2, with
 Sentinel-2 levels required for processing steps or as output.
 This parameter is used only if <code>preprocess = FALSE</code> (otherwise, the
 required levels are derived from <code>list_prods</code>).
 Accepted values: "l1c" and "l2a"; default: "l2a".</p></dd>
+
+
 <dt>sel_sensor</dt>
 <dd><p>(optional) Character vector of length 1 or 2, with
 Sentinel-2 sensors to be used.
 Accepted values: "s2a" and "s2b"; default: c("s2a","s2b").</p></dd>
+
+
 <dt>online</dt>
 <dd><p>(optional) Logical: TRUE (default) to search for available
 products on SciHub and/or Google Cloud (and download if needed);
 FALSE to work only with already downloaded SAFE products.</p></dd>
+
+
 <dt>server</dt>
 <dd><p>(optional) Character vector of length 1 or 2, with the names of
 the servers on which SAFE archives are searched.
@@ -218,31 +230,43 @@ Default is <code>"scihub"</code>, meaning that only ESA Sentinel Hub is consider
 In case of multiple values, they are used in order of priority and
 products on LTA are always left as last choice.
 See also the section "Details" of <code><a href="s2_list.html">s2_list()</a></code>.</p></dd>
+
+
 <dt>order_lta</dt>
 <dd><p>(optional) Logical: TRUE (default) to order products from
 the Long Term Archive if unavailable for direct download; FALSE to simply
 skip them (this option has effect only in online mode).
 It takes effect only if argument <code>server</code> includes <code>"scihub"</code>.</p></dd>
+
+
 <dt>apihub</dt>
 <dd><p>Path of the text file containing credentials
 of SciHub account.
 If NA (default), the default location inside the package will be used.
 It takes effect only if argument <code>server</code> includes <code>"scihub"</code>.</p></dd>
+
+
 <dt>downloader</dt>
 <dd><p>(optional) Character value corresponding to the executable
 which should be used to download SAFE products. It could be one among
 <code>"builtin"</code> (default) and <code>"aria2"</code>.
 If <code>aria2</code> is not installed, built-in method will be used instead.
 It takes effect only if argument <code>server</code> includes <code>"scihub"</code>.</p></dd>
+
+
 <dt>overwrite_safe</dt>
 <dd><p>(optional) Logical: TRUE to overwrite existing
 products with products found online or manually corrected,
 FALSE (default) to skip download and atmospheric correction for
 products already existing.</p></dd>
+
+
 <dt>rm_safe</dt>
 <dd><p>(optional) Character: should SAFE products be deleted after
 preprocessing? "yes" (or "all") means to delete all SAFE; "no" (default)
 not to delete; "l1c" to delete only Level-1C products.</p></dd>
+
+
 <dt>step_atmcorr</dt>
 <dd><p>(optional) Character vector to determine how to obtain
 Level-2A SAFE products:</p><ul><li><p><code>"auto"</code> (default) means that L2A is first
@@ -254,6 +278,8 @@ downloaded from SciHub;</p></li>
 <li><p><code>"l2a"</code> means that they are downloaded if available on SciHub,
 otherwise they are skipped (sen2cor is never used).</p></li>
 </ul></dd>
+
+
 <dt>sen2cor_use_dem</dt>
 <dd><p>(optional) Logical, determining if a DEM should be
 used for topographic correction by Sen2Cor (see the documentation of
@@ -264,11 +290,15 @@ used by sen2r (stored in the default sen2r settings directory) is respected.</p>
 <p><em>Note</em>: in a future release of sen2r, the default value will be
 set to TRUE, so to grant homogeneity between Level-2A products downloaded
 from ESA Hub and generated using Sen2Cor.</p></dd>
+
+
 <dt>sen2cor_gipp</dt>
 <dd><p>(optional) Ground Image Processing Parameters (GIPP)
 to be passed to Sen2Cor (see the documentation of <code><a href="sen2cor.html">sen2cor()</a></code> - argument
 <code>gipp</code> - for details about the usage of this argument).
 Default value (NA) corresponds to an empty list of parameters.</p></dd>
+
+
 <dt>max_cloud_safe</dt>
 <dd><p>(optional) Integer number (0-100) containing
 the maximum cloud level of each SAFE to be considered (default: no filter).
@@ -280,6 +310,8 @@ used to set a maximum cloud coverage over output extents.
 Notice also that this value is used to filter on the basis of the metadata
 "Cloud cover percentage" associated to each SAFE, so it is not based
 on the cloud mask defined with the processing options.</p></dd>
+
+
 <dt>timewindow</dt>
 <dd><p>(optional) Temporal window for querying: Date object
 of length 1 (single day) or 2 (time window). Default is NA, meaning that
@@ -287,6 +319,8 @@ no filters are used if online = FALSE, and all found images are processed;
 if online = TRUE, last 90 days are processed.
 Is it possible to pass also integer (or difftime) values, which are
 interpreted as the last n days.</p></dd>
+
+
 <dt>timeperiod</dt>
 <dd><p>(optional) Character:</p><ul><li><p>"full" (default) means that all
 the images included in the time window are considered;</p></li>
@@ -295,29 +329,41 @@ window are used (i.e., with a time window from 2015-06-01 to
 2017-08-31, the periods 2015-06-01 to 2015-08-31, 2016-06-01
 to 2016-08-31 and 2017-06-01 to 2017-08-31 are considered).</p></li>
 </ul></dd>
+
+
 <dt>extent</dt>
 <dd><p>(optional) Spatial extent on which to clip products (it can
 be both the path of a vector file or a geoJSON).
 Default is NA for offline mode (meaning no extent:
 all found tiles are entirely used); in online mode, a sample extent is used
 as default.</p></dd>
+
+
 <dt>extent_name</dt>
 <dd><p>(optional) Name of the area set as extent, to be used in
 the output file names. Default is "sen2r" The name is an
 alphanumeric string which cannot contain points nor underscores, and that
 cannot be a five-length string with the same structure of a tile ID
 (two numeric and three uppercase character values).</p></dd>
+
+
 <dt>s2tiles_selected</dt>
 <dd><p>(optional) Character vector with the Sentinel-2
 tiles to be considered (default is NA, meaning all the tiles).</p></dd>
+
+
 <dt>s2orbits_selected</dt>
 <dd><p>(optional) Character vector with the Sentinel-2
 orbits to be considered (still to be implemented; for now,
 all the accepted values are listed).</p></dd>
+
+
 <dt>list_prods</dt>
 <dd><p>(optional) Character vector with the values of the
 products to be processed (accepted values: "TOA", "BOA", "SCL",
 "TCI"). Default is no one (NA).</p></dd>
+
+
 <dt>list_rgb</dt>
 <dd><p>(optional) Character vector with the values of the
 RGB images to be produced.
@@ -330,13 +376,19 @@ the 10th band of a BOA product (because band 10 is missing).
 (e.g., RGB432B, RGB843B)
 Default is no one (NA).</p></li>
 </ul></dd>
+
+
 <dt>list_indices</dt>
 <dd><p>(optional) Character vector with the values of the
 spectral indices to be computed. Default is no one (NA).</p></dd>
+
+
 <dt>index_source</dt>
 <dd><p>(optional) Character value: if "BOA" (default), indices
 are computed from BOA values; if "TOA", non corrected reflectances
 are instead used (be careful to use this setting!).</p></dd>
+
+
 <dt>rgb_ranges</dt>
 <dd><p>(optional) Range of valid values to be used for RGB products.
 Values must be provided in the same scale used within SAFE and BOA/TOA
@@ -347,10 +399,14 @@ Default is to use c(0,2500) for bands 2, 3 and 4; c(0,7500) for other bands.
 In case <code>list_rgb</code> is a vector of length &gt; 1, <code>rgb_ranges</code> must be a list
 of the same length (otherwise, the same range values will be used for all the RGB
 products).</p></dd>
+
+
 <dt>mask_type</dt>
 <dd><p>(optional) Character value which determines the categories
 in the Surface Classification Map to be masked (see <code><a href="s2_mask.html">s2_mask()</a></code>
 for the accepted values). Default (NA) is not to mask.</p></dd>
+
+
 <dt>max_mask</dt>
 <dd><p>(optional) Numeric value (range 0 to 100), which represents
 the maximum percentage of allowed masked surface (by clouds or any other
@@ -365,63 +421,95 @@ Notice that the percentage is computed on non-NA values (if input images
 had previously been clipped and masked using a polygon, the percentage is
 computed on the surface included in the masking polygons).</p></li>
 </ol></dd>
+
+
 <dt>mask_smooth</dt>
 <dd><p>(optional) Numeric positive value: the smoothing radius
 (expressed in unit of measure of the output projection, typically metres)
 to be applied to the cloud mask by function <code><a href="s2_mask.html">s2_mask()</a></code>.</p></dd>
+
+
 <dt>mask_buffer</dt>
 <dd><p>(optional) Numeric value: the buffering radius
 (expressed in unit of measure of the output projection, typically metres)
 to be applied to the cloud mask by function <code><a href="s2_mask.html">s2_mask()</a></code>.
 Default value (0) means that no buffer is applied; a positive value causes
 an enlargement of the masked area; a negative value cause a reduction.</p></dd>
+
+
 <dt>clip_on_extent</dt>
 <dd><p>(optional) Logical: if TRUE (default), output products
 and indices are clipped to the selected extent (and resampled/reprojected);
 if FALSE, the geometry and extension of the tiles is maintained.</p></dd>
+
+
 <dt>extent_as_mask</dt>
 <dd><p>(optional) Logical: if TRUE, pixel values outside
 the <code>extent</code> polygon are set to NA; if FALSE (default), all the values
 within the bounding box are maintained.</p></dd>
+
+
 <dt>reference_path</dt>
 <dd><p>(optional) Path of the raster file to be used as a
 reference grid. If NA (default), no reference is used.</p></dd>
+
+
 <dt>res</dt>
 <dd><p>(optional) Numeric vector of length 2 with the x-y resolution
 for output products. Default (NA) means that the resolution
 is kept as native.</p></dd>
+
+
 <dt>res_s2</dt>
 <dd><p>(optional) Character value corresponding to the native Sentinel-2
 resolution to be used. Accepted values are "10m" (default), "20m"
 and "60m".</p></dd>
+
+
 <dt>unit</dt>
 <dd><p>(optional) Character value corresponding to the unit of measure
 with which to interpret the resolution (for now, only "Meter" -
 the default value - is supported).</p></dd>
+
+
 <dt>proj</dt>
 <dd><p>(optional) Character string with the pro4string of the output
 resolution. default value (NA) means not to reproject.</p></dd>
+
+
 <dt>resampling</dt>
 <dd><p>(optional) Resampling method (one of the values supported
 by <code>gdal_translate</code>: <code>"near"</code> (default), <code>"bilinear"</code>, <code>"cubic"</code>,
 <code>"cubicspline"</code>, <code>"lanczos"</code>, <code>"average"</code> or <code>"mode"</code>).</p></dd>
+
+
 <dt>resampling_scl</dt>
 <dd><p>(optional) Resampling method for categorical products
 (for now, only SCL): one among <code>"near"</code> (default) and <code>"mode"</code>.</p></dd>
+
+
 <dt>outformat</dt>
 <dd><p>(optional) Format of the output file (in a
 format recognised by GDAL). Default is <code>"GTiff"</code>.
 Value <code>"BigTIFF"</code> can be used to generate a GeoTIFF with the option BigTIFF</p></dd>
+
+
 <dt>rgb_outformat</dt>
 <dd><p>(optional) Format of the output RGB products (in a
 format recognised by GDAL). Default is <code>"GTiff"</code>.</p></dd>
+
+
 <dt>index_datatype</dt>
 <dd><p>(optional) Numeric datatype of the output
 spectral indices (see <code><a href="s2_calcindices.html">s2_calcindices()</a></code>.</p></dd>
+
+
 <dt>compression</dt>
 <dd><p>(optional) In the case GTiff is chosen as
 output format, the compression indicated with this parameter is
 used (default is "DEFLATE").</p></dd>
+
+
 <dt>rgb_compression</dt>
 <dd><p>(optional) In the case <code>GTiff</code> is chosen as
 output format for RGB products, the compression indicated
@@ -429,23 +517,33 @@ with this parameter is used (default is <code>"DEFLATE"</code>).
 In the cases GTiff or JPEG are chosen as output format for RGB products,
 this parameter can also be a 1-100 integer value, which is interpreted
 as the compression level for a JPEG compression.</p></dd>
+
+
 <dt>overwrite</dt>
 <dd><p>(optional) Logical value: should existing output
 files be overwritten? (default: FALSE).</p></dd>
+
+
 <dt>path_l1c</dt>
 <dd><p>(optional) Path of the directory in which Level-1C SAFE
 products are searched and/or downloaded. If not provided (default), a
 temporary directory is used.</p></dd>
+
+
 <dt>path_l2a</dt>
 <dd><p>(optional) Path of the directory in which Level-2A SAFE
 products are searched, downloaded and/or generated. If not provided
 (default), a temporary directory is used.</p></dd>
+
+
 <dt>path_tiles</dt>
 <dd><p>(optional) Path of the directory in which Sentinel-2
 tiles (as generated by <code><a href="s2_translate.html">s2_translate()</a></code>) are searched and/or generated.
 If not provided (default), a temporary directory is used, and files
 are generated as virtual rasters; otherwise, they are generated in
 the format specified with <code>outformat</code> parameter.</p></dd>
+
+
 <dt>path_merged</dt>
 <dd><p>(optional) Path of the directory in which Sentinel-2
 tiles merged by orbit (as generated by <code><a href="s2_merge.html">s2_merge()</a></code>) are searched and/or
@@ -453,23 +551,33 @@ generated.
 If not provided (default), a temporary directory is used, and files
 are generated as virtual rasters; otherwise, they are generated in
 the format specified with <code>outformat</code> parameter.</p></dd>
+
+
 <dt>path_out</dt>
 <dd><p>(optional) Path of the directory in which Sentinel-2
 output products are searched and/or generated.
 If not provided (default), a temporary directory is used.</p></dd>
+
+
 <dt>path_rgb</dt>
 <dd><p>(optional) Path of the directory in RGB products
 are searched and/or generated.
 If not provided (default), <code>path_out</code> is used.</p></dd>
+
+
 <dt>path_indices</dt>
 <dd><p>(optional) Path of the directory in which files of
 spectral indices are searched and/or generated.
 If not provided (default), <code>path_out</code> is used.</p></dd>
+
+
 <dt>path_subdirs</dt>
 <dd><p>(optional) Logical: if TRUE (default), a directory
 for each output product or spectral index is generated within
 <code>path_tiles</code>, <code>path_merged</code>, <code>path_out</code> and <code>path_indices</code>; if FALSE,
 products are put directly within them.</p></dd>
+
+
 <dt>thumbnails</dt>
 <dd><p>(optional) Logical: if TRUE (default), a thumbnail is
 added for each product created. Thumbnails are JPEG or PNG georeferenced
@@ -477,6 +585,8 @@ small images (width or height of 1024 pixels) with default colour palettes
 (for more details, see the help window in the GUI). They are placed in
 a subdirectory of the products names <code>"thumbnails"</code>.
 If FALSE, they are not created.</p></dd>
+
+
 <dt>parallel</dt>
 <dd><p>(optional) Logical or integer: setting to TRUE, the processing
 is executed using multiple cores in order to speed up the execution.
@@ -485,6 +595,8 @@ The number of cores is automatically determined; specifying it is also
 possible (e.g. <code>parallel = 4</code>).
 If FALSE (default), the processing chain is forced to run with a single core
 (this can be useful if multiple <code>sen2r()</code> instances are run in parallel).</p></dd>
+
+
 <dt>processing_order</dt>
 <dd><p>(optional) Character string:
 order used to execute the processing chain (this affects the speed
@@ -524,15 +636,23 @@ then the processing steps are performed sequentially.
 This mode is similar to the previous one in terms of disk usage
 but it is slightly slower; its advantage are the lower RAM requirements.</p></li>
 </ul></dd>
+
+
 <dt>use_python</dt>
 <dd><p>Deprecated argument</p></dd>
+
+
 <dt>tmpdir</dt>
 <dd><p>(optional) Path where intermediate files will be created.
 Default is a temporary directory (unless <code>outformat = "VRT"</code>: in this case,
 default is a subdirectory named ".vrt" within <code>path_out</code>).</p></dd>
+
+
 <dt>rmtmp</dt>
 <dd><p>(optional) Logical: should temporary files be removed?
 (Default: TRUE). <code>rmtmp</code> is forced to <code>FALSE</code> if <code>outformat = "VRT"</code>.</p></dd>
+
+
 <dt>log</dt>
 <dd><p>(optional) Character string with the path where the package
 messages will be redirected.
@@ -540,10 +660,13 @@ Default (NA) is not to redirect (use standard output).
 A two-length character with two paths (which can also coincide)
 can be used to redirect also the output: in this case, the first path
 is the path for messages, the second one for the output.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A vector with the paths of the files which were created (excluded
+    
+
+<p>A vector with the paths of the files which were created (excluded
 the temporary files); NULL otherwise.
 The vector includes some attributes:</p><ul><li><p><code>cloudcovered</code> with the list of images not created due to the higher
 percentage of cloud covered pixels;</p></li>
@@ -565,7 +688,7 @@ SAFE Sentinel-2 archives eventually ordered in Long Term Archive.</p></li>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -576,63 +699,62 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="co"># Open an interactive section</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in">  <span class="fu">sen2r</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Launch a processing from a saved JSON file (here we use an internal function</span></span>
-<span class="r-in"><span class="co"># to create a testing json file - this is not intended to be used by final users)</span></span>
-<span class="r-in"><span class="va">json_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="build_example_param_file.html">build_example_param_file</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="check_gcloud.html">is_gcloud_configured</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in">  <span class="va">out_paths_2</span> <span class="op">&lt;-</span> <span class="fu">sen2r</span><span class="op">(</span><span class="va">json_path</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
-<span class="r-in">  <span class="va">out_paths_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:07:10] #### Starting sen2r execution. ####</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Open an interactive section</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="fu">sen2r</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Launch a processing from a saved JSON file (here we use an internal function</span></span></span>
+<span class="r-in"><span><span class="co"># to create a testing json file - this is not intended to be used by final users)</span></span></span>
+<span class="r-in"><span><span class="va">json_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="build_example_param_file.html">build_example_param_file</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="check_gcloud.html">is_gcloud_configured</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">out_paths_2</span> <span class="op">&lt;-</span> <span class="fu">sen2r</span><span class="op">(</span><span class="va">json_path</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">out_paths_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:41:13] #### Starting sen2r execution. ####</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required namespace: stringi</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Registered S3 method overwritten by 'geojsonlint':</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   method         from </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   print.location dplyr</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:07:11] Searching for available SAFE products...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:41:14] Searching for available SAFE products...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:07:13] Querying Google Cloud (this can take a very long</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:41:16] Querying Google Cloud (this can take a very long</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        time)...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:07:30] Computing output names...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:07:32] Starting to download the required level-2A SAFE</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:41:47] Computing output names...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:41:48] Starting to download the required level-2A SAFE</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        products.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Images</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> S2B_MSIL2A_20200801T100559_N0214_R022_T32TNS_20200801T135302.SAFE are</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> already on your system and will be skipped. Set "overwrite_safe" to</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> TRUE to re-download them.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> No L2A images are needed.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:07:32] Download of level-2A SAFE products terminated.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:07:32] Starting to download the required level-1C SAFE</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:41:48] Check if products are available for download...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:41:49] Downloading Sentinel-2 image 1 of 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>        (S2B_MSIL2A_20200801T100559_N0214_R022_T32TNS_20200801T135302.SAFE)...</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot remove file 'C:/Users/LUIGI~1.RAN/DOCUME~1/SEN2R~1/safe\LOCK_1750604210b9', reason 'Permission denied'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:42:28] Download of level-2A SAFE products terminated.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:42:28] Starting to download the required level-1C SAFE</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        products.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> No L1C images are needed.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:07:32] Download of level-1C SAFE products terminated.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:07:32] Updating output names...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:07:32] Starting to translate SAFE products in custom</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:42:28] Download of level-1C SAFE products terminated.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:42:28] Updating output names...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:42:29] Starting to translate SAFE products in custom</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        format.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using UTM zone 32N.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 2 output files were correctly created.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:07:33] Starting to merge tiles by orbit.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:07:33] Starting to edit geometry (clip, reproject,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:42:29] Starting to merge tiles by orbit.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:42:30] Starting to edit geometry (clip, reproject,</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        rescale).</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:07:34] Producing required RGB images.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:07:34] Generating image</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:42:31] Producing required RGB images.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:42:31] Generating image</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        S2B2A_20200801_022_sen2r_RGB432B_10.tif...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:07:49] Generating image</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:42:41] Generating image</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        S2B2A_20200801_022_sen2r_RGB843B_10.tif...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 2 output RGB files were correctly created.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:08:30] Computing required spectral indices.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:08:30] Computing index MSAVI2 on date 2020-08-01...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:08:44] Computing index NDVI on date 2020-08-01...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:08:58] Generating thumbnails.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:43:11] Computing required spectral indices.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:43:11] Computing index MSAVI2 on date 2020-08-01...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:43:21] Computing index NDVI on date 2020-08-01...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:43:31] Generating thumbnails.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 6 output files were correctly created.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ╔══════════════════════════════════════════════════════════════════════</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ║ sen2r Processing Report</span>
@@ -640,93 +762,94 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ║ Dates to be processed based on processing parameters: 1</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ║ Processing completed for: all expected dates.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ╚══════════════════════════════════════════════════════════════════════</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:09:13] #### sen2r session terminated. ####</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:43:42] #### sen2r session terminated. ####</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The processing chain can be re-launched with the command:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   sen2r("/home/lranghetti/.sen2r/proc_par/s2proc_20220405_090711.json")</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   sen2r("C:/Users/LUIGI~1.RAN/DOCUME~1/SEN2R~1/proc_par/s2proc_20220824_144114.json")</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched on</span>
-<span class="r-in"><span class="co"># Notice that passing the path of a JSON file results in launching</span></span>
-<span class="r-in"><span class="co"># a session without opening the gui, unless gui = TRUE is passed.</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Launch a processing using function arguments</span></span>
-<span class="r-in"><span class="va">safe_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="fu"><a href="load_binpaths.html">load_binpaths</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"path"</span><span class="op">)</span><span class="op">)</span>, <span class="st">"safe"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">out_dir_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"Barbellino_"</span><span class="op">)</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="check_gcloud.html">is_gcloud_configured</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in">  <span class="va">out_paths_3</span> <span class="op">&lt;-</span> <span class="fu">sen2r</span><span class="op">(</span></span>
-<span class="r-in">    gui <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span class="r-in">    server <span class="op">=</span> <span class="st">"gcloud"</span>,</span>
-<span class="r-in">    step_atmcorr <span class="op">=</span> <span class="st">"l2a"</span>,</span>
-<span class="r-in">    extent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/vector/barbellino.geojson"</span>, package <span class="op">=</span> <span class="st">"sen2r"</span><span class="op">)</span>,</span>
-<span class="r-in">    extent_name <span class="op">=</span> <span class="st">"Barbellino"</span>,</span>
-<span class="r-in">    timewindow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-08-01"</span><span class="op">)</span>,</span>
-<span class="r-in">    list_prods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TOA"</span>,<span class="st">"BOA"</span>,<span class="st">"SCL"</span>,<span class="st">"OAA"</span><span class="op">)</span>,</span>
-<span class="r-in">    list_indices <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NDVI"</span>,<span class="st">"MSAVI2"</span><span class="op">)</span>,</span>
-<span class="r-in">    list_rgb <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RGB432T"</span>, <span class="st">"RGB432B"</span>, <span class="st">"RGB843B"</span><span class="op">)</span>,</span>
-<span class="r-in">    mask_type <span class="op">=</span> <span class="st">"cloud_medium_proba"</span>,</span>
-<span class="r-in">    max_mask <span class="op">=</span> <span class="fl">80</span>,</span>
-<span class="r-in">    path_l1c <span class="op">=</span> <span class="va">safe_dir</span>,</span>
-<span class="r-in">    path_l2a <span class="op">=</span> <span class="va">safe_dir</span>,</span>
-<span class="r-in">    path_out <span class="op">=</span> <span class="va">out_dir_3</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
-<span class="r-in">  <span class="va">out_paths_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:09:13] #### Starting sen2r execution. ####</span>
+<span class="r-in"><span><span class="co"># Notice that passing the path of a JSON file results in launching</span></span></span>
+<span class="r-in"><span><span class="co"># a session without opening the gui, unless gui = TRUE is passed.</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Launch a processing using function arguments</span></span></span>
+<span class="r-in"><span><span class="va">safe_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="fu"><a href="load_binpaths.html">load_binpaths</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"path"</span><span class="op">)</span><span class="op">)</span>, <span class="st">"safe"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">out_dir_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"Barbellino_"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="check_gcloud.html">is_gcloud_configured</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">out_paths_3</span> <span class="op">&lt;-</span> <span class="fu">sen2r</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    gui <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>    server <span class="op">=</span> <span class="st">"gcloud"</span>,</span></span>
+<span class="r-in"><span>    step_atmcorr <span class="op">=</span> <span class="st">"l2a"</span>,</span></span>
+<span class="r-in"><span>    extent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/vector/barbellino.geojson"</span>, package <span class="op">=</span> <span class="st">"sen2r"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    extent_name <span class="op">=</span> <span class="st">"Barbellino"</span>,</span></span>
+<span class="r-in"><span>    timewindow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-08-01"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    list_prods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TOA"</span>,<span class="st">"BOA"</span>,<span class="st">"SCL"</span>,<span class="st">"OAA"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    list_indices <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NDVI"</span>,<span class="st">"MSAVI2"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    list_rgb <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RGB432T"</span>, <span class="st">"RGB432B"</span>, <span class="st">"RGB843B"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    mask_type <span class="op">=</span> <span class="st">"cloud_medium_proba"</span>,</span></span>
+<span class="r-in"><span>    max_mask <span class="op">=</span> <span class="fl">80</span>,</span></span>
+<span class="r-in"><span>    path_l1c <span class="op">=</span> <span class="va">safe_dir</span>,</span></span>
+<span class="r-in"><span>    path_l2a <span class="op">=</span> <span class="va">safe_dir</span>,</span></span>
+<span class="r-in"><span>    path_out <span class="op">=</span> <span class="va">out_dir_3</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">out_paths_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:43:42] #### Starting sen2r execution. ####</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:09:14] Searching for available SAFE products...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:43:43] Searching for available SAFE products...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:09:15] Querying Google Cloud (this can take a very long</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:43:44] Querying Google Cloud (this can take a very long</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        time)...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:09:34] Querying Google Cloud (this can take a very long</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:44:13] Querying Google Cloud (this can take a very long</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        time)...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:09:49] Computing output names...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:09:51] Starting to download the required level-2A SAFE</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:44:44] Computing output names...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:44:46] Starting to download the required level-2A SAFE</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        products.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Images</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> S2B_MSIL2A_20200801T100559_N0214_R022_T32TNS_20200801T135302.SAFE are</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> already on your system and will be skipped. Set "overwrite_safe" to</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> TRUE to re-download them.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> No L2A images are needed.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:09:51] Download of level-2A SAFE products terminated.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:09:51] Starting to download the required level-1C SAFE</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:44:46] Download of level-2A SAFE products terminated.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:44:46] Starting to download the required level-1C SAFE</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        products.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Images</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> S2B_MSIL1C_20200801T100559_N0209_R022_T32TNS_20200801T130136.SAFE are</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> already on your system and will be skipped. Set "overwrite_safe" to</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> TRUE to re-download them.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> No L1C images are needed.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:09:51] Download of level-1C SAFE products terminated.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:09:51] Updating output names...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:09:52] Starting to translate SAFE products in custom</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:44:46] Check if products are available for download...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:44:46] Downloading Sentinel-2 image 1 of 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>        (S2B_MSIL1C_20200801T100559_N0209_R022_T32TNS_20200801T130136.SAFE)...</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot remove file 'C:/Users/LUIGI~1.RAN/DOCUME~1/SEN2R~1/safe\LOCK_175046c82b42', reason 'Permission denied'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:45:05] Download of level-1C SAFE products terminated.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:45:05] Updating output names...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:45:06] Starting to translate SAFE products in custom</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        format.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using UTM zone 32N.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 1 output files were correctly created.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using UTM zone 32N.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'length(x) = 2 &gt; 1' in coercion to 'logical(1)'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'length(x) = 2 &gt; 1' in coercion to 'logical(1)'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 1 output angle files were correctly created.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 3 output files were correctly created.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:09:53] Starting to merge tiles by orbit.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:09:54] Starting to edit geometry (clip, reproject,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:45:07] Starting to merge tiles by orbit.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:45:08] Starting to edit geometry (clip, reproject,</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        rescale).</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:09:56] Starting to apply cloud masks.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:09:56] Masking file</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:45:10] Starting to apply cloud masks.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:45:10] Masking file</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        S2B1C_20200801_022_Barbellino_TOA_10.tif...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:10:15] Masking file</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:45:18] Masking file</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        S2B2A_20200801_022_Barbellino_BOA_10.tif...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:10:32] Producing required RGB images.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:10:32] Generating image</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:45:26] Producing required RGB images.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:45:26] Generating image</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        S2B1C_20200801_022_Barbellino_RGB432T_10.tif...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 1 output RGB files were correctly created.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:10:48] Generating image</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:45:36] Generating image</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        S2B2A_20200801_022_Barbellino_RGB432B_10.tif...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:11:03] Generating image</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:45:47] Generating image</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        S2B2A_20200801_022_Barbellino_RGB843B_10.tif...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 2 output RGB files were correctly created.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:11:45] Computing required spectral indices.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:11:46] Computing index NDVI on date 2020-08-01...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:11:47] Computing index MSAVI2 on date 2020-08-01...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:11:48] Generating thumbnails.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:46:16] Computing required spectral indices.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:46:16] Computing index NDVI on date 2020-08-01...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:46:17] Computing index MSAVI2 on date 2020-08-01...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:46:18] Generating thumbnails.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 9 output files were correctly created.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ╔══════════════════════════════════════════════════════════════════════</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ║ sen2r Processing Report</span>
@@ -734,53 +857,53 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ║ Dates to be processed based on processing parameters: 1</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ║ Processing completed for: all expected dates.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ╚══════════════════════════════════════════════════════════════════════</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:12:17] #### sen2r session terminated. ####</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-08-24 14:46:38] #### sen2r session terminated. ####</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The processing chain can be re-launched with the command:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   sen2r("/home/lranghetti/.sen2r/proc_par/s2proc_20220405_090913.json")</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   sen2r("C:/Users/LUIGI~1.RAN/DOCUME~1/SEN2R~1/proc_par/s2proc_20220824_144342.json")</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched on</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="check_gcloud.html">is_gcloud_configured</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Show outputs (loading thumbnails)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Generate thumbnails names</span></span>
-<span class="r-in"><span class="va">thumb_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="va">out_paths_3</span><span class="op">)</span>, <span class="st">"thumbnails"</span>, <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"tif$"</span>, <span class="st">"jpg"</span>, <span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">basename</a></span><span class="op">(</span><span class="va">out_paths_3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">thumb_3</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"SCL"</span>, <span class="va">thumb_3</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span></span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"jpg$"</span>, <span class="st">"png"</span>, <span class="va">thumb_3</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"SCL"</span>, <span class="va">thumb_3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in">  </span>
-<span class="r-in"><span class="va">oldpar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="fu">stars</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/read_stars.html" class="external-link">read_stars</a></span><span class="op">(</span><span class="va">thumb_3</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"BOA"</span>, <span class="va">thumb_3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>, rgb <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, useRaster <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="fu">stars</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/read_stars.html" class="external-link">read_stars</a></span><span class="op">(</span><span class="va">thumb_3</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"SCL"</span>, <span class="va">thumb_3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>, rgb <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, useRaster <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="fu">stars</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/read_stars.html" class="external-link">read_stars</a></span><span class="op">(</span><span class="va">thumb_3</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"MSAVI2"</span>, <span class="va">thumb_3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>, rgb <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, useRaster <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="fu">stars</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/read_stars.html" class="external-link">read_stars</a></span><span class="op">(</span><span class="va">thumb_3</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"NDVI"</span>, <span class="va">thumb_3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>, rgb <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, useRaster <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="fu">stars</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/read_stars.html" class="external-link">read_stars</a></span><span class="op">(</span><span class="va">thumb_3</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"RGB432B"</span>, <span class="va">thumb_3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>, rgb <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, useRaster <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="fu">stars</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/read_stars.html" class="external-link">read_stars</a></span><span class="op">(</span><span class="va">thumb_3</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"RGB843B"</span>, <span class="va">thumb_3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>, rgb <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, useRaster <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="va">oldpar</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="check_gcloud.html">is_gcloud_configured</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Show outputs (loading thumbnails)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Generate thumbnails names</span></span></span>
+<span class="r-in"><span><span class="va">thumb_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="va">out_paths_3</span><span class="op">)</span>, <span class="st">"thumbnails"</span>, <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"tif$"</span>, <span class="st">"jpg"</span>, <span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">basename</a></span><span class="op">(</span><span class="va">out_paths_3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">thumb_3</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"SCL"</span>, <span class="va">thumb_3</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"jpg$"</span>, <span class="st">"png"</span>, <span class="va">thumb_3</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"SCL"</span>, <span class="va">thumb_3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  </span></span>
+<span class="r-in"><span><span class="va">oldpar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="fu">stars</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/read_stars.html" class="external-link">read_stars</a></span><span class="op">(</span><span class="va">thumb_3</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"BOA"</span>, <span class="va">thumb_3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>, rgb <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, useRaster <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="fu">stars</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/read_stars.html" class="external-link">read_stars</a></span><span class="op">(</span><span class="va">thumb_3</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"SCL"</span>, <span class="va">thumb_3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>, rgb <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, useRaster <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="fu">stars</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/read_stars.html" class="external-link">read_stars</a></span><span class="op">(</span><span class="va">thumb_3</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"MSAVI2"</span>, <span class="va">thumb_3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>, rgb <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, useRaster <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="fu">stars</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/read_stars.html" class="external-link">read_stars</a></span><span class="op">(</span><span class="va">thumb_3</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"NDVI"</span>, <span class="va">thumb_3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>, rgb <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, useRaster <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="fu">stars</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/read_stars.html" class="external-link">read_stars</a></span><span class="op">(</span><span class="va">thumb_3</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"RGB432B"</span>, <span class="va">thumb_3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>, rgb <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, useRaster <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="fu">stars</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/read_stars.html" class="external-link">read_stars</a></span><span class="op">(</span><span class="va">thumb_3</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"RGB843B"</span>, <span class="va">thumb_3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>, rgb <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, useRaster <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="va">oldpar</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-plt img"><img src="sen2r-1.png" alt="" width="700" height="433"></span>
 <span class="r-plt img"><img src="sen2r-2.png" alt="" width="700" height="433"></span>
 <span class="r-plt img"><img src="sen2r-3.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="co"># }</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Launch a processing based on a JSON file, but changing some parameters</span></span>
-<span class="r-in"><span class="co"># (e.g., the same processing on a different extent)</span></span>
-<span class="r-in"><span class="va">out_dir_4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"Scalve_"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">out_paths_4</span> <span class="op">&lt;-</span> <span class="fu">sen2r</span><span class="op">(</span></span>
-<span class="r-in">  param_list <span class="op">=</span> <span class="va">json_path</span>,</span>
-<span class="r-in">  extent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/vector/scalve.kml"</span>, package <span class="op">=</span> <span class="st">"sen2r"</span><span class="op">)</span>,</span>
-<span class="r-in">  extent_name <span class="op">=</span> <span class="st">"Scalve"</span>,</span>
-<span class="r-in">  path_out <span class="op">=</span> <span class="va">out_dir_4</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Launch a processing based on a JSON file, but changing some parameters</span></span></span>
+<span class="r-in"><span><span class="co"># (e.g., the same processing on a different extent)</span></span></span>
+<span class="r-in"><span><span class="va">out_dir_4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"Scalve_"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">out_paths_4</span> <span class="op">&lt;-</span> <span class="fu">sen2r</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  param_list <span class="op">=</span> <span class="va">json_path</span>,</span></span>
+<span class="r-in"><span>  extent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/vector/scalve.kml"</span>, package <span class="op">=</span> <span class="st">"sen2r"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  extent_name <span class="op">=</span> <span class="st">"Scalve"</span>,</span></span>
+<span class="r-in"><span>  path_out <span class="op">=</span> <span class="va">out_dir_4</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -795,8 +918,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

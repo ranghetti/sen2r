@@ -30,6 +30,7 @@
 #' @param param_list path of the parameter file (passed by `sen2r()`).
 #' @return `write_ignorelist()` returns the path of the written TOML file
 #'  (invisibly).
+#' @keywords internal
 
 write_ignorelist <- function(
   pm,

@@ -48,6 +48,7 @@
 #' @importFrom raster raster
 #' @importFrom jsonlite fromJSON
 #' @export
+#' @keywords internal
 
 stack2rgb <- function(in_rast,
                       out_file = NULL,
@@ -292,6 +293,7 @@ stack2rgb <- function(in_rast,
 #' @importFrom raster raster
 #' @importFrom jsonlite fromJSON
 #' @export
+#' @keywords internal
 
 raster2rgb <- function(in_rast,
                        out_file = NULL,

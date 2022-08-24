@@ -28,6 +28,7 @@
 #' @importFrom jsonlite toJSON fromJSON
 #' @importFrom stats runif
 #' @importFrom utils capture.output download.file unzip packageVersion
+#' @keywords internal
 
 
 create_indices_db <- function(xslt_path = NA,

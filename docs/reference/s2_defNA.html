@@ -19,7 +19,7 @@ managed by s2_calcindices)."><!-- mathjax --><script src="https://cdnjs.cloudfla
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1.9001</span>
       </span>
     </div>
 
@@ -101,17 +101,20 @@ managed by <a href="s2_calcindices.html">s2_calcindices</a>).</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">s2_defNA</span><span class="op">(</span><span class="va">prod_types</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">s2_defNA</span><span class="op">(</span><span class="va">prod_types</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>prod_types</dt>
 <dd><p>Character vector of the input product types</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Numeric NA values (NA not to set any NA value), corresponding to
+    
+
+<p>Numeric NA values (NA not to set any NA value), corresponding to
 <code>prod_types</code>.</p>
     </div>
     <div id="author">
@@ -121,10 +124,10 @@ managed by <a href="s2_calcindices.html">s2_calcindices</a>).</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">sen2r</span><span class="fu">:::</span><span class="fu">s2_defNA</span><span class="op">(</span><span class="st">"BOA"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">sen2r</span><span class="fu">:::</span><span class="fu">s2_defNA</span><span class="op">(</span><span class="st">"BOA"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   BOA </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 65535 </span>
-<span class="r-in"><span class="fu">sen2r</span><span class="fu">:::</span><span class="fu">s2_defNA</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BOA"</span>,<span class="st">"BOA"</span>,<span class="st">"SCL"</span>,<span class="st">"TCI"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">sen2r</span><span class="fu">:::</span><span class="fu">s2_defNA</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BOA"</span>,<span class="st">"BOA"</span>,<span class="st">"SCL"</span>,<span class="st">"TCI"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   BOA   BOA   SCL   TCI </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 65535 65535     0     0 </span>
 </code></pre></div>
@@ -141,8 +144,7 @@ managed by <a href="s2_calcindices.html">s2_calcindices</a>).</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

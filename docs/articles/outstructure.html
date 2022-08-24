@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1.9001</span>
       </span>
     </div>
 
@@ -314,8 +314,8 @@ index computation, the function `list_indices()’ can be used. For
 example, the following command will return the formula of index
 NDVI:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/list_indices.html">list_indices</a></span><span class="op">(</span><span class="st">"s2_formula"</span>, <span class="st">"^NDVI$"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [1] "(band_8-band_4)/(band_8+band_4)"</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/list_indices.html">list_indices</a></span><span class="op">(</span><span class="st">"s2_formula"</span>, <span class="st">"^NDVI$"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "(band_8-band_4)/(band_8+band_4)"</span></span></code></pre>
 <p>See the function documentation for other examples.</p>
 <p>The output type can be both floating (in this case, the actual index
 value is provided) or integer (default; in this case, values are
@@ -442,15 +442,15 @@ or PNG images which can be used to rapidly monitor what was done (see
 <p>For example, the following command would produce the outputs listed
 below.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">json_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_example_param_file.html">build_example_param_file</a></span><span class="op">(</span><span class="op">)</span>
-<span class="va">out_dir_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"sen2r_out_1_"</span><span class="op">)</span>
-
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sen2r.ranghetti.info" class="external-link">sen2r</a></span><span class="op">)</span>
-<span class="fu"><a href="../reference/sen2r.html">sen2r</a></span><span class="op">(</span>
-  <span class="va">json_path</span>, 
-  timewindow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2019-07-13"</span>,<span class="st">"2019-07-23"</span><span class="op">)</span>,
-  path_out <span class="op">=</span> <span class="va">out_dir_1</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">json_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_example_param_file.html">build_example_param_file</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">out_dir_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"sen2r_out_1_"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sen2r.ranghetti.info" class="external-link">sen2r</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/sen2r.html">sen2r</a></span><span class="op">(</span></span>
+<span>  <span class="va">json_path</span>, </span>
+<span>  timewindow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2019-07-13"</span>,<span class="st">"2019-07-23"</span><span class="op">)</span>,</span>
+<span>  path_out <span class="op">=</span> <span class="va">out_dir_1</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <pre><code>[2020-02-06 09:42:40] #### Starting sen2r execution. ####
 [2020-02-06 09:42:40] Searching for available SAFE products on SciHub...
 [2020-02-06 09:42:46] Computing output names...
@@ -466,7 +466,7 @@ below.</p>
 The processing chain can be re-launched with the command:
   sen2r("/home/lranghetti/.sen2r/proc_par/s2proc_20200206_094240.json")</code></pre>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/system.html" class="external-link">system</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"tree"</span>, <span class="va">out_dir_1</span><span class="op">)</span><span class="op">)</span> <span class="co"># working on Linux with binary "tree" installed</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/system.html" class="external-link">system</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"tree"</span>, <span class="va">out_dir_1</span><span class="op">)</span><span class="op">)</span> <span class="co"># working on Linux with binary "tree" installed</span></span></code></pre></div>
 <pre><code>/tmp/RtmpUlAdHw/sen2r_out_1_a55119f4ed09
 ├── BOA
 │   ├── S2A2A_20190713_022_sen2r_BOA_10.tif
@@ -586,15 +586,15 @@ thumbnails can be skipped using
 <p>For example, the following command would produce the outputs listed
 below.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">out_dir_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"sen2r_out_2_"</span><span class="op">)</span>
-
-<span class="fu"><a href="../reference/sen2r.html">sen2r</a></span><span class="op">(</span>
-  <span class="va">json_path</span>, 
-  timewindow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2019-07-13"</span>,<span class="st">"2019-07-23"</span><span class="op">)</span>,
-  path_out <span class="op">=</span> <span class="va">out_dir_2</span>,
-  path_subdirs <span class="op">=</span> <span class="cn">FALSE</span>,
-  thumbnails <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">out_dir_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"sen2r_out_2_"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/sen2r.html">sen2r</a></span><span class="op">(</span></span>
+<span>  <span class="va">json_path</span>, </span>
+<span>  timewindow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2019-07-13"</span>,<span class="st">"2019-07-23"</span><span class="op">)</span>,</span>
+<span>  path_out <span class="op">=</span> <span class="va">out_dir_2</span>,</span>
+<span>  path_subdirs <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  thumbnails <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <pre><code>[2020-02-06 09:52:30] #### Starting sen2r execution. ####
 [2020-02-06 09:52:30] Searching for available SAFE products on SciHub...
 [2020-02-06 09:52:35] Computing output names...
@@ -612,7 +612,7 @@ below.</p>
 The processing chain can be re-launched with the command:
   sen2r("/home/lranghetti/.sen2r/proc_par/s2proc_20200206_095230.json")</code></pre>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/system.html" class="external-link">system</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"tree"</span>, <span class="va">out_dir_2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/system.html" class="external-link">system</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"tree"</span>, <span class="va">out_dir_2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code>/tmp/RtmpUlAdHw/sen2r_out_2_a5513ad348b0
 ├── S2A2A_20190713_022_sen2r_BOA_10.tif
 ├── S2A2A_20190713_022_sen2r_MSAVI2_10.tif
@@ -666,8 +666,7 @@ The processing chain can be re-launched with the command:
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer>

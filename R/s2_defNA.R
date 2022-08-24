@@ -6,6 +6,7 @@
 #' @return Numeric NA values (NA not to set any NA value), corresponding to 
 #'  `prod_types`.
 #' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @keywords internal
 #'
 #' @examples
 #' sen2r:::s2_defNA("BOA")

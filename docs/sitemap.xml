@@ -4,18 +4,6 @@
     <loc>/404.html</loc>
   </url>
   <url>
-    <loc>/CODE-OF-CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>/CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>/ISSUE_TEMPLATE.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE.html</loc>
-  </url>
-  <url>
     <loc>/articles/docker.html</loc>
   </url>
   <url>
@@ -37,7 +25,19 @@
     <loc>/authors.html</loc>
   </url>
   <url>
+    <loc>/CODE-OF-CONDUCT.html</loc>
+  </url>
+  <url>
+    <loc>/CONDUCT.html</loc>
+  </url>
+  <url>
     <loc>/index.html</loc>
+  </url>
+  <url>
+    <loc>/ISSUE_TEMPLATE.html</loc>
+  </url>
+  <url>
+    <loc>/LICENSE.html</loc>
   </url>
   <url>
     <loc>/news/index.html</loc>
@@ -103,6 +103,9 @@
     <loc>/reference/gdalUtil.html</loc>
   </url>
   <url>
+    <loc>/reference/gdalwarp_grid.html</loc>
+  </url>
+  <url>
     <loc>/reference/gdal_abs2rel_rel2abs.html</loc>
   </url>
   <url>
@@ -110,9 +113,6 @@
   </url>
   <url>
     <loc>/reference/gdal_warp.html</loc>
-  </url>
-  <url>
-    <loc>/reference/gdalwarp_grid.html</loc>
   </url>
   <url>
     <loc>/reference/gipp.html</loc>
@@ -214,6 +214,9 @@
     <loc>/reference/s2_translate.html</loc>
   </url>
   <url>
+    <loc>/reference/safelist-class.html</loc>
+  </url>
+  <url>
     <loc>/reference/safe_getMetadata.html</loc>
   </url>
   <url>
@@ -221,9 +224,6 @@
   </url>
   <url>
     <loc>/reference/safe_shortname.html</loc>
-  </url>
-  <url>
-    <loc>/reference/safelist-class.html</loc>
   </url>
   <url>
     <loc>/reference/scihub_login.html</loc>
@@ -244,25 +244,25 @@
     <loc>/reference/smooth_mask.html</loc>
   </url>
   <url>
-    <loc>/reference/st_as_text_2.html</loc>
-  </url>
-  <url>
-    <loc>/reference/st_crs2.html</loc>
-  </url>
-  <url>
     <loc>/reference/stack2rgb.html</loc>
   </url>
   <url>
     <loc>/reference/str_pad2.html</loc>
   </url>
   <url>
+    <loc>/reference/st_as_text_2.html</loc>
+  </url>
+  <url>
+    <loc>/reference/st_crs2.html</loc>
+  </url>
+  <url>
     <loc>/reference/suppress_warnings.html</loc>
   </url>
   <url>
-    <loc>/reference/tile_utmzone.html</loc>
+    <loc>/reference/tiles_intersects.html</loc>
   </url>
   <url>
-    <loc>/reference/tiles_intersects.html</loc>
+    <loc>/reference/tile_utmzone.html</loc>
   </url>
   <url>
     <loc>/reference/trace_function.html</loc>

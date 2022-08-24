@@ -20,3 +20,4 @@ Suppress warnings matching particular regular expressions.
 \details{
 See https://stackoverflow.com/questions/16517795/selective-suppresswarnings-that-filters-by-regular-expression
 }
+\keyword{internal}

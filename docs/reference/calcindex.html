@@ -18,7 +18,7 @@ thumbnails through raster or stars features."><!-- mathjax --><script src="https
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1.9001</span>
       </span>
     </div>
 
@@ -99,30 +99,30 @@ thumbnails through <code>raster</code> or <code>stars</code> features.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">calcindex_raster</span><span class="op">(</span>
-  <span class="va">x</span>,
-  <span class="va">sel_formula</span>,
-  <span class="va">out_file</span>,
-  NAflag <span class="op">=</span> <span class="op">-</span><span class="fl">32768</span>,
-  sel_format <span class="op">=</span> <span class="st">"GTiff"</span>,
-  compress <span class="op">=</span> <span class="st">"LZW"</span>,
-  datatype <span class="op">=</span> <span class="st">"Int32"</span>,
-  bigtiff <span class="op">=</span> <span class="cn">FALSE</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
-  minrows <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span>
-
-<span class="fu">calcindex_stars</span><span class="op">(</span>
-  <span class="va">x</span>,
-  <span class="va">sel_formula</span>,
-  <span class="va">out_file</span>,
-  NAflag <span class="op">=</span> <span class="op">-</span><span class="fl">32768</span>,
-  sel_format <span class="op">=</span> <span class="st">"GTiff"</span>,
-  compress <span class="op">=</span> <span class="st">"LZW"</span>,
-  datatype <span class="op">=</span> <span class="st">"Int16"</span>,
-  bigtiff <span class="op">=</span> <span class="cn">FALSE</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">calcindex_raster</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">sel_formula</span>,</span>
+<span>  <span class="va">out_file</span>,</span>
+<span>  NAflag <span class="op">=</span> <span class="op">-</span><span class="fl">32768</span>,</span>
+<span>  sel_format <span class="op">=</span> <span class="st">"GTiff"</span>,</span>
+<span>  compress <span class="op">=</span> <span class="st">"LZW"</span>,</span>
+<span>  datatype <span class="op">=</span> <span class="st">"Int32"</span>,</span>
+<span>  bigtiff <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  minrows <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">calcindex_stars</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">sel_formula</span>,</span>
+<span>  <span class="va">out_file</span>,</span>
+<span>  NAflag <span class="op">=</span> <span class="op">-</span><span class="fl">32768</span>,</span>
+<span>  sel_format <span class="op">=</span> <span class="st">"GTiff"</span>,</span>
+<span>  compress <span class="op">=</span> <span class="st">"LZW"</span>,</span>
+<span>  datatype <span class="op">=</span> <span class="st">"Int16"</span>,</span>
+<span>  bigtiff <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -130,35 +130,56 @@ thumbnails through <code>raster</code> or <code>stars</code> features.</p>
     <dl><dt>x</dt>
 <dd><p>Input file path, or <code>RasterLayer</code> (in <code>calcindex_raster()</code>) or
 <code>stars</code> (in <code>calcindex_stars()</code>).</p></dd>
+
+
 <dt>sel_formula</dt>
 <dd><p>Formula used to compute output raster
 (specific formats are used - documentation will be improved).</p></dd>
+
+
 <dt>out_file</dt>
 <dd><p>Output file path.</p></dd>
+
+
 <dt>NAflag</dt>
 <dd><p>(optional)</p></dd>
+
+
 <dt>sel_format</dt>
 <dd><p>(optional) Format of the output file (in a
 format recognised by GDAL). Default "GTiff".</p></dd>
+
+
 <dt>compress</dt>
 <dd><p>(optional) In the case a GTiff format is
 present, the compression indicated with this parameter is used.</p></dd>
+
+
 <dt>datatype</dt>
 <dd><p>(optional) Numeric datatype of the output rasters
 (see <code><a href="s2_calcindices.html">s2_calcindices()</a></code>).</p></dd>
+
+
 <dt>bigtiff</dt>
 <dd><p>(optional) Logical: if TRUE, the creation of a BigTIFF is
 forced (default is FALSE).
 This option is used only in the case a GTiff format was chosen.</p></dd>
+
+
 <dt>overwrite</dt>
 <dd><p>Logical value: should existing output files be
 overwritten? (default: FALSE)</p></dd>
+
+
 <dt>minrows</dt>
 <dd><p>(optional) parameter passed to <code>blockSize()</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>NULL (the function is called for its side effects)</p>
+    
+
+<p>NULL (the function is called for its side effects)</p>
     </div>
     <div id="note">
     <h2>Note</h2>
@@ -169,7 +190,7 @@ overwritten? (default: FALSE)</p></dd>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -189,8 +210,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

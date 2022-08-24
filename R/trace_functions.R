@@ -43,6 +43,7 @@
 
 #' @name start_trace
 #' @rdname trace_function
+#' @keywords internal
 start_trace <- function(trace_files, trace_funname) {
   
   # path in which trace txt files are placed
