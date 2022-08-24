@@ -103,7 +103,7 @@ work are strongly encouraged to cite this publication within their work
 The package can be installed from CRAN:
 
 ``` r
-install.packages("sen2r")
+install.packages("sen2r", dependencies = TRUE)
 ```
 
 For detailed instructions about installing the package (including

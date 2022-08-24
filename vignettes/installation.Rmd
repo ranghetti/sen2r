@@ -121,8 +121,11 @@ Moreover, if no personal libraries already exist, it is asked to create a new on
 
 After that, the package can be installed from CRAN:
 ```{r, eval = FALSE}
-install.packages("sen2r")
+install.packages("sen2r", dependencies = TRUE)
 ```
+The parameter `dependencies = TRUE` is used to install also suggested dependencies, 
+which includes Shiny packages required to run the Graphical User Interface.
+Anyway, it could be omitted as Shiny packages can be installed later, before running the GUI.
 
 Alternatively, the development version can be installed from GitHub with the R package **remotes**.
 To do it:
@@ -137,7 +140,7 @@ To do it:
     style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>:
     ```{r, eval = FALSE}
     library(remotes)
-    install_github("ranghetti/sen2r")
+    install_github("ranghetti/sen2r", dependencies = TRUE)
     ```
 
 This will install the R package along with its package dependencies,
