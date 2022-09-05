@@ -1,5 +1,6 @@
 message("\n---- Test s2_list(..., server = 'gcloud') ----")
 testthat::skip_on_cran()
+skip_full_tests()
 
 testthat::test_that(
   "Tests on s2_list - GCloud, cloudiness", {

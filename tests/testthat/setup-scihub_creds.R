@@ -1,3 +1,5 @@
+if (full_tests) {
+
 # Retrieve Travis credentials
 tests_apihub <- try(sen2r::read_scihub_login(), silent = TRUE)
 
@@ -15,4 +17,6 @@ if (!inherits(tests_apihub, "try-error")) {
   
 } else {
   message("Problems with SciHub credentials; check secrets.")
+}
+
 }

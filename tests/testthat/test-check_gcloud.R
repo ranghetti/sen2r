@@ -1,6 +1,7 @@
 message("\n---- Check GCloud connection - specific functions ----")
 testthat::skip_on_cran()
 # testthat::skip_on_ci()
+skip_full_tests()
 
 test_that("check internet connection on internal function", {
   testthat::skip_if_not(check_gcloud_connection(), "Google Cloud server is not reachable")

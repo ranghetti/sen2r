@@ -1,6 +1,7 @@
 message("\n---- Test mountpoint() ----")
 testthat::skip_on_cran()
 # testthat::skip_on_travis()
+skip_full_tests()
 
 if (Sys.info()["sysname"] == "Linux") { # FIXME test on macOS
   testthat::test_that(

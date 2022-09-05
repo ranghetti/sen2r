@@ -34,6 +34,7 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # test on raster values
+    skip_full_tests()
     exp_stars <- stars::read_stars(test1)
     testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 97.15385, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 0)
@@ -68,6 +69,7 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # test on raster values
+    skip_full_tests()
     exp_stars <- stars::read_stars(test2)
     testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 109.8916, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 125, tolerance = 1e-03)
@@ -96,6 +98,7 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # test on raster values
+    skip_full_tests()
     exp_stars <- stars::read_stars(test3)
     testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 77.44048, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 0)
@@ -125,6 +128,7 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # test on raster values
+    skip_full_tests()
     exp_stars <- stars::read_stars(test4)
     testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 77.11806, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 180, tolerance = 1e-3)
@@ -178,6 +182,7 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # test on raster values
+    skip_full_tests()
     exp_stars <- stars::read_stars(test4b)
     testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 76.65969, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 172, tolerance = 1e-3)
@@ -206,6 +211,7 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # test on raster values
+    skip_full_tests()
     exp_stars <- stars::read_stars(test4c)
     testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 77.05616, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 245, tolerance = 1e-3)
@@ -239,6 +245,7 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # test on raster values
+    skip_full_tests()
     exp_stars <- stars::read_stars(test5)
     testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 97.15385, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 100, tolerance = 1e-03)
@@ -272,6 +279,7 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # test on raster values
+    skip_full_tests()
     exp_stars <- stars::read_stars(test6)
     testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 109.8916, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 106, tolerance = 1e-03)
@@ -304,6 +312,7 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # test on raster values
+    skip_full_tests()
     exp_stars <- stars::read_stars(test7)
     testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 95.07407, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 0)
@@ -333,6 +342,7 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # test on raster values
+    skip_full_tests()
     exp_stars <- stars::read_stars(test8)
     testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 94.73444, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 67, tolerance = 1e-03)
@@ -362,6 +372,7 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # test on raster values
+    skip_full_tests()
     exp_stars <- stars::read_stars(test9)
     testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 104.4956, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 76, tolerance = 1e-03)
@@ -391,6 +402,7 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # test on raster values
+    skip_full_tests()
     exp_stars <- stars::read_stars(test10)
     testthat::expect_equal(mean(exp_stars[[1]][,,3], na.rm=TRUE), 109.8916, tolerance = 1e-03)
     testthat::expect_equal(sum(is.na(exp_stars[[1]][,,3])), 106, tolerance = 1e-03)

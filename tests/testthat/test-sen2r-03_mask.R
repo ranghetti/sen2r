@@ -3,6 +3,7 @@ testthat::skip_on_cran()
 if (Sys.info()["sysname"] == "Windows") {
   testthat::skip_on_ci() # TODO try to remove
 }
+skip_full_tests()
 
 # Required SAFE
 s2_l2a_list <- c(

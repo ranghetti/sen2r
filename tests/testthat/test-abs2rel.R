@@ -1,6 +1,7 @@
 message("\n---- Test abs2rel() ----")
 testthat::skip_on_cran()
 testthat::skip_on_ci()
+skip_full_tests()
 
 # if (Sys.info()["sysname"] != "Windows") {
 #   ref_path <- "/usr/lib/R/library/base"
