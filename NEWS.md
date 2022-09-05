@@ -10,7 +10,9 @@
 
 ## Bug fixes
 - Fix `extent_as_mask` behaviour in `sen2r()` in case of GEOMETRYCOLLECTION type 
-    (threat as POLYGON, allowing masking);.
+    (threat as POLYGON, allowing masking).
+- Simplify automatic tests: a variable `full_tests` is set to FALSE by default 
+    (in this case, only fast / strategic tests are run). Set to TRUE to run all tests.
 - Minor fixes.
 
 

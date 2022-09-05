@@ -18,7 +18,7 @@ from the JSON where they are saved when installed."><!-- mathjax --><script src=
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
       </span>
     </div>
 
@@ -140,11 +140,26 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-in"><span><span class="co"># Load only existing paths</span></span></span>
 <span class="r-in"><span><span class="va">binpaths</span> <span class="op">&lt;-</span> <span class="fu">load_binpaths</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">binpaths</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gdalinfo</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/usr/bin/gdalinfo"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gdal_calc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/usr/bin/gdal_calc.py"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gdal_fillnodata</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/usr/bin/gdal_fillnodata.py"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $aria2c</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/usr/bin/aria2c"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $gsutil</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "C:\\Users\\LUIGI~1.RAN\\AppData\\Local\\Google\\CLOUDS~1\\GOOGLE~1\\bin\\gsutil"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/opt/google-cloud-sdk/bin/gsutil"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $sen2cor</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/home/lranghetti/.sen2r/sen2cor/bin/L2A_Process"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"path")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "C:\\Users\\LUIGI~1.RAN\\DOCUME~1\\SEN2R~1/paths.json"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/home/lranghetti/.sen2r/paths.json"</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
@@ -166,7 +181,7 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
