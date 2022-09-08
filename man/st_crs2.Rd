@@ -70,7 +70,7 @@ vector_path <- system.file(
   "extdata/vector/barbellino.geojson", 
   package="sen2r"
 )
-st_crs2(raster_path)
+try( st_crs2(raster_path) )
 st_crs2(vector_path)
 
 ## CRS from spatial files

@@ -109,7 +109,7 @@ text files containing WKT like .prj (see details) .</p>
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
-<dd><p>numeric, character, or object of class <a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a> or <a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">sfc</a>, being:</p><ul><li><p>EPSG code: numeric (e.g. <code>32632</code>) or character (in the form
+<dd><p>numeric, character, or object of class sf or sfc, being:</p><ul><li><p>EPSG code: numeric (e.g. <code>32632</code>) or character (in the form
 <code>"32632"</code> or <code>"EPSG:32632"</code>);</p></li>
 <li><p>UTM zone: numeric (e.g. <code>32</code>, interpreted as 32 North) or character
 (e.g. <code>"32"</code> or <code>"32N"</code> for zone 32 North, <code>"32S"</code> for 32 South);</p></li>
@@ -124,7 +124,7 @@ the epsg code -- e.g. <code>"+init=epsg:32632"</code>, in which case the EPSG
 code is taken);</p></li>
 <li><p>path of a spatial file (managed by <a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">sf::st_read</a> or <a href="https://r-spatial.github.io/stars/reference/read_stars.html" class="external-link">stars::read_stars</a>),
 passed as character string of length 1;</p></li>
-<li><p>spatial file of class <a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a> or <a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">sfc</a>.</p></li>
+<li><p>spatial file of class sf or sfc.</p></li>
 </ul></dd>
 
 
@@ -168,9 +168,17 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PROJCRS["WGS 84 / UTM zone 9N",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     BASEGEOGCRS["WGS 84",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         DATUM["World Geodetic System 1984",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ENSEMBLE["World Geodetic System 1984 ensemble",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (Transit)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G730)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G873)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1150)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1674)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1762)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G2139)"],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ENSEMBLEACCURACY[2.0]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         PRIMEM["Greenwich",0,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",4326]],</span>
@@ -210,9 +218,17 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PROJCRS["WGS 84 / UTM zone 9N",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     BASEGEOGCRS["WGS 84",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         DATUM["World Geodetic System 1984",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ENSEMBLE["World Geodetic System 1984 ensemble",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (Transit)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G730)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G873)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1150)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1674)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1762)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G2139)"],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ENSEMBLEACCURACY[2.0]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         PRIMEM["Greenwich",0,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",4326]],</span>
@@ -254,9 +270,17 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PROJCRS["WGS 84 / UTM zone 9N",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     BASEGEOGCRS["WGS 84",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         DATUM["World Geodetic System 1984",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ENSEMBLE["World Geodetic System 1984 ensemble",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (Transit)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G730)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G873)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1150)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1674)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1762)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G2139)"],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ENSEMBLEACCURACY[2.0]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         PRIMEM["Greenwich",0,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",4326]],</span>
@@ -296,9 +320,17 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PROJCRS["WGS 84 / UTM zone 9N",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     BASEGEOGCRS["WGS 84",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         DATUM["World Geodetic System 1984",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ENSEMBLE["World Geodetic System 1984 ensemble",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (Transit)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G730)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G873)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1150)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1674)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1762)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G2139)"],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ENSEMBLEACCURACY[2.0]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         PRIMEM["Greenwich",0,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",4326]],</span>
@@ -338,9 +370,17 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PROJCRS["WGS 84 / UTM zone 9N",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     BASEGEOGCRS["WGS 84",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         DATUM["World Geodetic System 1984",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ENSEMBLE["World Geodetic System 1984 ensemble",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (Transit)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G730)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G873)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1150)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1674)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1762)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G2139)"],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ENSEMBLEACCURACY[2.0]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         PRIMEM["Greenwich",0,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",4326]],</span>
@@ -380,9 +420,17 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PROJCRS["WGS 84 / UTM zone 9S",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     BASEGEOGCRS["WGS 84",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         DATUM["World Geodetic System 1984",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ENSEMBLE["World Geodetic System 1984 ensemble",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (Transit)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G730)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G873)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1150)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1674)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1762)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G2139)"],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ENSEMBLEACCURACY[2.0]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         PRIMEM["Greenwich",0,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",4326]],</span>
@@ -507,7 +555,7 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-in"><span>  <span class="st">"extdata/vector/barbellino.geojson"</span>, </span></span>
 <span class="r-in"><span>  package<span class="op">=</span><span class="st">"sen2r"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">st_crs2</span><span class="op">(</span><span class="va">raster_path</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span> <span class="fu">st_crs2</span><span class="op">(</span><span class="va">raster_path</span><span class="op">)</span> <span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coordinate Reference System:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   User input: PROJCS["WGS 84 / UTM zone 32N",GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",9],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH],AUTHORITY["EPSG","32632"]] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
@@ -551,9 +599,17 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PROJCRS["WGS 84 / UTM zone 32N",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     BASEGEOGCRS["WGS 84",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         DATUM["World Geodetic System 1984",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ENSEMBLE["World Geodetic System 1984 ensemble",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (Transit)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G730)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G873)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1150)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1674)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1762)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G2139)"],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ENSEMBLEACCURACY[2.0]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         PRIMEM["Greenwich",0,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",4326]],</span>
@@ -595,9 +651,17 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PROJCRS["WGS 84 / UTM zone 32N",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     BASEGEOGCRS["WGS 84",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         DATUM["World Geodetic System 1984",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ENSEMBLE["World Geodetic System 1984 ensemble",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (Transit)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G730)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G873)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1150)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1674)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1762)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G2139)"],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ENSEMBLEACCURACY[2.0]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         PRIMEM["Greenwich",0,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",4326]],</span>
@@ -637,9 +701,17 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PROJCRS["WGS 84 / UTM zone 32N",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     BASEGEOGCRS["WGS 84",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         DATUM["World Geodetic System 1984",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ENSEMBLE["World Geodetic System 1984 ensemble",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (Transit)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G730)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G873)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1150)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1674)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1762)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G2139)"],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ENSEMBLEACCURACY[2.0]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         PRIMEM["Greenwich",0,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",4326]],</span>
@@ -683,9 +755,17 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PROJCRS["WGS 84 / UTM zone 9N",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     BASEGEOGCRS["WGS 84",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         DATUM["World Geodetic System 1984",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ENSEMBLE["World Geodetic System 1984 ensemble",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (Transit)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G730)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G873)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1150)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1674)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1762)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G2139)"],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ENSEMBLEACCURACY[2.0]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         PRIMEM["Greenwich",0,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",4326]],</span>
@@ -768,9 +848,17 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PROJCRS["WGS 84 / UTM zone 32N",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     BASEGEOGCRS["WGS 84",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         DATUM["World Geodetic System 1984",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ENSEMBLE["World Geodetic System 1984 ensemble",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (Transit)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G730)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G873)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1150)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1674)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1762)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G2139)"],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ENSEMBLEACCURACY[2.0]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         PRIMEM["Greenwich",0,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",4326]],</span>
