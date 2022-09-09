@@ -30,8 +30,8 @@ The error most likely occurred in:
 address 0x0, cause 'invalid permissions'
 ```
 I was not able to replicate the error; nevertheless, this line was put 
-between a `try()` so to avoid further errors
-(commit `565aa467d024cd56aa4aa67df37be5e3dc174774`).
+between a `\dontrun()` so to avoid further errors (this is not a
+relevant example, and `st_crs2()` is an accessory function).
 
 ```
 Running the tests in ‘tests/testthat.R’ failed.

@@ -45,7 +45,6 @@ See \link[sf:st_crs]{sf::st_crs} for details.
 License: GPL 3.0
 }
 \examples{
-\dontrun{
 ## CRS from EPSG
 st_crs2(32609)
 st_crs2("EPSG:32609")
@@ -62,6 +61,7 @@ st_crs2(wkt_32n)
 writeLines(wkt_32n, wkt_32n_path <- tempfile())
 st_crs2(wkt_32n_path)
 
+\dontrun{
 ## CRS from spatial file path
 raster_path <- system.file(
   "extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif", 
