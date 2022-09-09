@@ -33,6 +33,7 @@
 #'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{https://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @examples 
+#' \dontrun{
 #' ## CRS from EPSG
 #' st_crs2(32609)
 #' st_crs2("EPSG:32609")
@@ -65,7 +66,6 @@
 #' st_crs2(stars::read_stars(raster_path))
 #' st_crs2(sf::read_sf(vector_path))
 #' 
-#' \donttest{
 #' ## CRS from PROJ.4 string
 #' # (avoid using this with PROJ >= 6!)
 #' st_crs2("+init=epsg:32609") # this makes use of the EPSG code
