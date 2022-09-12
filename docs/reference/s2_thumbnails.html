@@ -22,7 +22,7 @@ Output images are georeferenced."><!-- mathjax --><script src="https://cdnjs.clo
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
       </span>
     </div>
 
@@ -107,18 +107,18 @@ Output images are georeferenced.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">s2_thumbnails</span><span class="op">(</span>
-  <span class="va">infiles</span>,
-  prod_type <span class="op">=</span> <span class="cn">NA</span>,
-  rgb_type <span class="op">=</span> <span class="st">"SwirNirR"</span>,
-  dim <span class="op">=</span> <span class="fl">1024</span>,
-  scaleRange <span class="op">=</span> <span class="cn">NA</span>,
-  outdir <span class="op">=</span> <span class="cn">NA</span>,
-  tmpdir <span class="op">=</span> <span class="cn">NA</span>,
-  rmtmp <span class="op">=</span> <span class="cn">TRUE</span>,
-  proc_mode <span class="op">=</span> <span class="st">"raster"</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">s2_thumbnails</span><span class="op">(</span></span>
+<span>  <span class="va">infiles</span>,</span>
+<span>  prod_type <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  rgb_type <span class="op">=</span> <span class="st">"SwirNirR"</span>,</span>
+<span>  dim <span class="op">=</span> <span class="fl">1024</span>,</span>
+<span>  scaleRange <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  outdir <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  tmpdir <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  rmtmp <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  proc_mode <span class="op">=</span> <span class="st">"raster"</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -129,16 +129,22 @@ of products already converted from SAFE format to a
 format managed by GDAL (use <a href="s2_translate.html">s2_translate</a> to do it);
 their names must be in the sen2r naming convention
 (<a href="safe_shortname.html">safe_shortname</a>).</p></dd>
+
+
 <dt>prod_type</dt>
 <dd><p>(optional) Output product (see <a href="safe_shortname.html">safe_shortname</a> for the
 list of accepted products). If not provided, it is retrieved from the
 file name.</p></dd>
+
+
 <dt>rgb_type</dt>
 <dd><p>(optional) For BOA and TOA products, this value determine
 the type of false colours to be used for the thumbnails:</p><ul><li><p><code>"SwirNirR"</code> (default) for SWIR-NIR-Red;</p></li>
 <li><p><code>"NirRG"</code> for NIR-Red-Green;</p></li>
 <li><p><code>"RGB"</code> for true colours;</p></li>
 </ul></dd>
+
+
 <dt>dim</dt>
 <dd><p>Integer value, with the maximum greater dimension in pixels (width or
 height) of the output images (default: 1024 px).
@@ -146,6 +152,8 @@ If this is lower than the corresponding dimension of the maps, maps are
 rescaled before producing the thumbnails; otherwise the original dimensions
 are maintained.
 To keep the original size in any case, set <code>dim = Inf</code>.</p></dd>
+
+
 <dt>scaleRange</dt>
 <dd><p>(optional) Range of valid values. If not specified
 (default), it is automatically retrieved from the product type.
@@ -155,17 +163,25 @@ For spectral indices, default range is -1 to 1 for Float products, -10000
 to 10000 for Int and 0 to 200 for Byte; for "Zscore" products, default
 range is -3 to 3 for Float and -3000 to 3000 for Int.
 It can be useful i.e. to stretch BOA "dark" products.</p></dd>
+
+
 <dt>outdir</dt>
 <dd><p>(optional) Full name of the existing output directory
 where the files should be created. Default is a subdirectory (named
 "thumbnails") of the parent directory of each input file.</p></dd>
+
+
 <dt>tmpdir</dt>
 <dd><p>(optional) Path where intermediate files (VRT) will be created.
 Default is a temporary directory.
 If <code>tmpdir</code> is a non-empty folder, a random subdirectory will be used.</p></dd>
+
+
 <dt>rmtmp</dt>
 <dd><p>(optional) Logical: should temporary files be removed?
 (Default: TRUE)</p></dd>
+
+
 <dt>proc_mode</dt>
 <dd><p>(optional) Character: if <code>"gdal_calc"</code>,
 <code>gdal_calc</code> routines are used to compute indices;
@@ -176,13 +192,18 @@ if <code>"raster"</code> or <code>"stars"</code>, R functions are instead used
 configured (no assistance is provided in case of GDAL-related problems).
 <code>"raster"</code> mode is experimental.
 See <code><a href="s2_calcindices.html">s2_calcindices()</a></code> for further details.</p></dd>
+
+
 <dt>overwrite</dt>
 <dd><p>(optional) Logical value: should existing thumbnails be
 overwritten? (default: TRUE)</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A vector with the names of the created images.</p>
+    
+
+<p>A vector with the names of the created images.</p>
     </div>
     <div id="note">
     <h2>Note</h2>
@@ -193,7 +214,7 @@ overwritten? (default: TRUE)</p></dd>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -213,8 +234,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

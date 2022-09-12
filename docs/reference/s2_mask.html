@@ -22,7 +22,7 @@ of masked rasters."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/aj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
       </span>
     </div>
 
@@ -107,35 +107,35 @@ of masked rasters.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">s2_mask</span><span class="op">(</span>
-  <span class="va">infiles</span>,
-  <span class="va">maskfiles</span>,
-  <span class="va">mask_type</span>,
-  smooth <span class="op">=</span> <span class="fl">0</span>,
-  buffer <span class="op">=</span> <span class="fl">0</span>,
-  max_mask <span class="op">=</span> <span class="fl">100</span>,
-  outdir <span class="op">=</span> <span class="st">"./masked"</span>,
-  tmpdir <span class="op">=</span> <span class="cn">NA</span>,
-  rmtmp <span class="op">=</span> <span class="cn">TRUE</span>,
-  save_binary_mask <span class="op">=</span> <span class="cn">FALSE</span>,
-  format <span class="op">=</span> <span class="cn">NA</span>,
-  subdirs <span class="op">=</span> <span class="cn">NA</span>,
-  compress <span class="op">=</span> <span class="st">"DEFLATE"</span>,
-  bigtiff <span class="op">=</span> <span class="cn">FALSE</span>,
-  parallel <span class="op">=</span> <span class="cn">FALSE</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
-  .log_message <span class="op">=</span> <span class="cn">NA</span>,
-  .log_output <span class="op">=</span> <span class="cn">NA</span>
-<span class="op">)</span>
-
-<span class="fu">s2_perc_masked</span><span class="op">(</span>
-  <span class="va">infiles</span>,
-  <span class="va">maskfiles</span>,
-  mask_type <span class="op">=</span> <span class="st">"cloud_medium_proba"</span>,
-  tmpdir <span class="op">=</span> <span class="cn">NA</span>,
-  rmtmp <span class="op">=</span> <span class="cn">TRUE</span>,
-  parallel <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">s2_mask</span><span class="op">(</span></span>
+<span>  <span class="va">infiles</span>,</span>
+<span>  <span class="va">maskfiles</span>,</span>
+<span>  <span class="va">mask_type</span>,</span>
+<span>  smooth <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  buffer <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  max_mask <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  outdir <span class="op">=</span> <span class="st">"./masked"</span>,</span>
+<span>  tmpdir <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  rmtmp <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  save_binary_mask <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  format <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  subdirs <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  compress <span class="op">=</span> <span class="st">"DEFLATE"</span>,</span>
+<span>  bigtiff <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  parallel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  .log_message <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  .log_output <span class="op">=</span> <span class="cn">NA</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">s2_perc_masked</span><span class="op">(</span></span>
+<span>  <span class="va">infiles</span>,</span>
+<span>  <span class="va">maskfiles</span>,</span>
+<span>  mask_type <span class="op">=</span> <span class="st">"cloud_medium_proba"</span>,</span>
+<span>  tmpdir <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  rmtmp <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  parallel <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -146,6 +146,8 @@ of products already converted from SAFE format to a
 format managed by GDAL (use <a href="s2_translate.html">s2_translate</a> to do it);
 their names must be in the sen2r naming convention
 (<a href="safe_shortname.html">safe_shortname</a>).</p></dd>
+
+
 <dt>maskfiles</dt>
 <dd><p>A vector of filenames from which to take the
 information about cloud coverage (for now, only SCL products
@@ -155,6 +157,8 @@ of products already converted from SAFE format to a
 format managed by GDAL (use <a href="s2_translate.html">s2_translate</a> to do it);
 their names must be in the sen2r naming convention
 (<a href="safe_shortname.html">safe_shortname</a>).</p></dd>
+
+
 <dt>mask_type</dt>
 <dd><p>Character vector which determines the type of
 mask to be applied. Accepted values are:</p><ul><li><p><code>"nomask"</code>: do not mask any pixel;</p></li>
@@ -182,16 +186,22 @@ are one or more SCL class numbers. E.g. string <code>"scl_0_8_9_11"</code> can
 be used to mask classes 0 ("No data"), 8-9 ("Cloud (high or medium
 probability)") and 11 ("Snow").</p></li>
 </ul></dd>
+
+
 <dt>smooth</dt>
 <dd><p>(optional) Numerical (positive): the size (in the unit of
 <code>inmask</code>, typically metres) to be used as radius for the smoothing
 (the higher it is, the more smooth the output mask will result).
 Default is 0 (no smoothing is applied).</p></dd>
+
+
 <dt>buffer</dt>
 <dd><p>(optional) Numerical (positive or negative): the size of the
 buffer (in the unit of <code>inmask</code>, typically metres) to be applied to the
 masked area after smoothing it (positive to enlarge, negative to reduce).
 Default is 0 (no buffer).</p></dd>
+
+
 <dt>max_mask</dt>
 <dd><p>(optional) Numeric value (range 0 to 100), which represents
 the maximum percentage of allowed masked surface (by clouds or any other
@@ -203,6 +213,8 @@ Default value is 100 (images are always produced).
 Notice that the percentage is computed on non-NA values (if input images
 had previously been clipped and masked using a polygon, the percentage is
 computed on the surface included in the masking polygons).</p></dd>
+
+
 <dt>outdir</dt>
 <dd><p>(optional) Full name of the output directory where
 the files should be created (default: <code>"masked"</code>
@@ -211,16 +223,22 @@ subdir of current directory).
 second case, its parent directory must exists).
 If it is a relative path, it is expanded from the common parent
 directory of <code>infiles</code>.</p></dd>
+
+
 <dt>tmpdir</dt>
 <dd><p>(optional) Path where intermediate files (VRT) will be created.
 Default is a temporary directory.
 If <code>tmpdir</code> is a non-empty folder, a random subdirectory will be used.</p></dd>
+
+
 <dt>rmtmp</dt>
 <dd><p>(optional) Logical: should temporary files be removed?
 (Default: TRUE).
 This parameter takes effect only if the output files are not VRT
 (in this case temporary files cannot be deleted, because rasters of source
 bands are included within them).</p></dd>
+
+
 <dt>save_binary_mask</dt>
 <dd><p>(optional) Logical: should binary masks be exported?
 Binary mask are intermediate rasters used to apply the cloud mask:
@@ -232,22 +250,32 @@ if <code>subdirs = TRUE</code>).
 Notice that the presence of <code>"MSK"</code> products is not checked before running
 <code><a href="sen2r.html">sen2r()</a></code>, as done for the other products; this means that missing products
 which are not required to apply cloud masks will not be produced.</p></dd>
+
+
 <dt>format</dt>
 <dd><p>(optional) Format of the output file (in a
 format recognised by GDAL). Default is the same format of input images
 (or <code>"GTiff"</code> in case of VRT input images).</p></dd>
+
+
 <dt>subdirs</dt>
 <dd><p>(optional) Logical: if TRUE, different indices are
 placed in separated <code>outfile</code> subdirectories; if FALSE, they are placed in
 <code>outfile</code> directory; if NA (default), subdirectories are created only if
 more than a single product is required.</p></dd>
+
+
 <dt>compress</dt>
 <dd><p>(optional) In the case a <code>GTiff</code> format is
 present, the compression indicated with this parameter is used.</p></dd>
+
+
 <dt>bigtiff</dt>
 <dd><p>(optional) Logical: if TRUE, the creation of a BigTIFF is
 forced (default is FALSE).
 This option is used only in the case a GTiff format was chosen.</p></dd>
+
+
 <dt>parallel</dt>
 <dd><p>(optional) Logical: if TRUE, masking is conducted using parallel
 processing, to speed-up the computation for large rasters.
@@ -257,22 +285,33 @@ If FALSE (default), single core processing is used.
 Multiprocess masking computation is always performed in singlecore mode
 if <code>format != "VRT"</code> (because in this case there is no gain in using
 multicore processing).</p></dd>
+
+
 <dt>overwrite</dt>
 <dd><p>(optional) Logical value: should existing output files be
 overwritten? (default: FALSE)</p></dd>
+
+
 <dt>.log_message</dt>
 <dd><p>(optional) Internal parameter
 (it is used when the function is called by <code><a href="sen2r.html">sen2r()</a></code>).</p></dd>
+
+
 <dt>.log_output</dt>
 <dd><p>(optional) Internal parameter
 (it is used when the function is called by <code><a href="sen2r.html">sen2r()</a></code>).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>s2_mask returns a vector with the names of the created products.
+    
+
+<p>s2_mask returns a vector with the names of the created products.
 An attribute <code>"toomasked"</code> contains the paths of the outputs which were not
-created cause to the high percentage of cloud coverage.
-s2_perc_masked returns a names vector with the percentages
+created cause to the high percentage of cloud coverage.</p>
+
+
+<p>s2_perc_masked returns a names vector with the percentages
 of masked surfaces.</p>
     </div>
     <div id="note">
@@ -284,7 +323,7 @@ of masked surfaces.</p>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -294,42 +333,42 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="co"># Define file names</span></span>
-<span class="r-in"><span class="va">ex_in</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span class="r-in">  <span class="st">"extdata/out/S2A2A_20190723_022_Barbellino_RGB432B_10.tif"</span>,</span>
-<span class="r-in">  package <span class="op">=</span> <span class="st">"sen2r"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="va">ex_mask</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span class="r-in">  <span class="st">"extdata/out/S2A2A_20190723_022_Barbellino_SCL_10.tif"</span>,</span>
-<span class="r-in">  package <span class="op">=</span> <span class="st">"sen2r"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Run function</span></span>
-<span class="r-in"><span class="va">ex_out</span> <span class="op">&lt;-</span> <span class="fu">s2_mask</span><span class="op">(</span></span>
-<span class="r-in">  infiles <span class="op">=</span> <span class="va">ex_in</span>,</span>
-<span class="r-in">  maskfiles <span class="op">=</span> <span class="va">ex_mask</span>,</span>
-<span class="r-in">  mask_type <span class="op">=</span> <span class="st">"land"</span>,</span>
-<span class="r-in">  outdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-04-05 09:05:41] Masking file</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Define file names</span></span></span>
+<span class="r-in"><span><span class="va">ex_in</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"extdata/out/S2A2A_20190723_022_Barbellino_RGB432B_10.tif"</span>,</span></span>
+<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"sen2r"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ex_mask</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"extdata/out/S2A2A_20190723_022_Barbellino_SCL_10.tif"</span>,</span></span>
+<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"sen2r"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Run function</span></span></span>
+<span class="r-in"><span><span class="va">ex_out</span> <span class="op">&lt;-</span> <span class="fu">s2_mask</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  infiles <span class="op">=</span> <span class="va">ex_in</span>,</span></span>
+<span class="r-in"><span>  maskfiles <span class="op">=</span> <span class="va">ex_mask</span>,</span></span>
+<span class="r-in"><span>  mask_type <span class="op">=</span> <span class="st">"land"</span>,</span></span>
+<span class="r-in"><span>  outdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2022-09-05 23:19:19] Masking file</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        S2A2A_20190723_022_Barbellino_RGB432B_10.tif...</span>
-<span class="r-in"><span class="va">ex_out</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmppPhKBn/S2A2A_20190723_022_Barbellino_RGB432B_10.tif"</span>
+<span class="r-in"><span><span class="va">ex_out</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpduLww3/S2A2A_20190723_022_Barbellino_RGB432B_10.tif"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"toomasked")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> character(0)</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Show output</span></span>
-<span class="r-in"><span class="va">oldpar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="fu">stars</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/read_stars.html" class="external-link">read_stars</a></span><span class="op">(</span><span class="va">ex_in</span><span class="op">)</span>, rgb <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, useRaster <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">2</span><span class="op">/</span><span class="fl">3</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="fu">stars</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/read_stars.html" class="external-link">read_stars</a></span><span class="op">(</span><span class="va">ex_mask</span><span class="op">)</span>, useRaster <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="fu">stars</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/read_stars.html" class="external-link">read_stars</a></span><span class="op">(</span><span class="va">ex_out</span><span class="op">)</span>, rgb <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, useRaster <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Show output</span></span></span>
+<span class="r-in"><span><span class="va">oldpar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="fu">stars</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/read_stars.html" class="external-link">read_stars</a></span><span class="op">(</span><span class="va">ex_in</span><span class="op">)</span>, rgb <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, useRaster <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">2</span><span class="op">/</span><span class="fl">3</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="fu">stars</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/read_stars.html" class="external-link">read_stars</a></span><span class="op">(</span><span class="va">ex_mask</span><span class="op">)</span>, useRaster <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="fu">stars</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/read_stars.html" class="external-link">read_stars</a></span><span class="op">(</span><span class="va">ex_out</span><span class="op">)</span>, rgb <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, useRaster <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="s2_mask-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="va">oldpar</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="va">oldpar</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -344,8 +383,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

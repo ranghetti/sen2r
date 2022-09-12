@@ -18,7 +18,7 @@ present in the WKT of the given CRS."><!-- mathjax --><script src="https://cdnjs
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
       </span>
     </div>
 
@@ -99,26 +99,33 @@ present in the WKT of the given CRS.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">projpar</span><span class="op">(</span><span class="va">x</span>, <span class="va">par</span>, abort <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="fu">projname</span><span class="op">(</span><span class="va">x</span>, abort <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">projpar</span><span class="op">(</span><span class="va">x</span>, <span class="va">par</span>, abort <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">projname</span><span class="op">(</span><span class="va">x</span>, abort <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>The CRS to be named (any <a href="st_crs2.html">st_crs2</a> input is accepted).</p></dd>
+
+
 <dt>par</dt>
 <dd><p>Character corresponding to the parameter name
 (it can be one among "name" and "unit" - case insensitive).</p></dd>
+
+
 <dt>abort</dt>
 <dd><p>logical: if TRUE, the function aborts in case an invalid
 CRS is passed; if FALSE (default), the function returns NA,
 and a warning is shown.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A character with the content of the parameter, and an
+    
+
+<p>A character with the content of the parameter, and an
 attribute <code>crs</code> with the input projection checked using
 <code><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">sf::st_crs()</a></code>.</p>
     </div>
@@ -134,7 +141,7 @@ and <code>par = "unit"</code>, and <code>projname()</code> is an alias for <code
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -144,8 +151,8 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="fu">projpar</span><span class="op">(</span><span class="fl">4326</span>, <span class="st">"name"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="fu">projpar</span><span class="op">(</span><span class="fl">4326</span>, <span class="st">"name"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "WGS 84"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"crs")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coordinate Reference System:</span>
@@ -169,7 +176,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 <span class="r-out co"><span class="r-pr">#&gt;</span>         AREA["World."],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         BBOX[-90,-180,90,180]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ID["EPSG",4326]]</span>
-<span class="r-in"><span class="fu">projpar</span><span class="op">(</span><span class="fl">4326</span>, <span class="st">"unit"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">projpar</span><span class="op">(</span><span class="fl">4326</span>, <span class="st">"unit"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "degree"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"crs")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coordinate Reference System:</span>
@@ -193,9 +200,9 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 <span class="r-out co"><span class="r-pr">#&gt;</span>         AREA["World."],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         BBOX[-90,-180,90,180]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ID["EPSG",4326]]</span>
-<span class="r-in"><span class="co"># }</span></span>
-<span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="fu">projname</span><span class="op">(</span><span class="fl">4326</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="fu">projname</span><span class="op">(</span><span class="fl">4326</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "WGS 84"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"crs")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coordinate Reference System:</span>
@@ -219,7 +226,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 <span class="r-out co"><span class="r-pr">#&gt;</span>         AREA["World."],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         BBOX[-90,-180,90,180]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ID["EPSG",4326]]</span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -234,8 +241,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

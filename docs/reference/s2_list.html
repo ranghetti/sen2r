@@ -18,7 +18,7 @@ products satisfying given search criteria."><!-- mathjax --><script src="https:/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
       </span>
     </div>
 
@@ -99,21 +99,21 @@ products satisfying given search criteria.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">s2_list</span><span class="op">(</span>
-  spatial_extent <span class="op">=</span> <span class="cn">NULL</span>,
-  tile <span class="op">=</span> <span class="cn">NULL</span>,
-  orbit <span class="op">=</span> <span class="cn">NULL</span>,
-  time_interval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">10</span>, <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,
-  time_period <span class="op">=</span> <span class="st">"full"</span>,
-  level <span class="op">=</span> <span class="st">"auto"</span>,
-  server <span class="op">=</span> <span class="st">"scihub"</span>,
-  apihub <span class="op">=</span> <span class="cn">NA</span>,
-  service <span class="op">=</span> <span class="st">"apihub"</span>,
-  max_cloud <span class="op">=</span> <span class="fl">100</span>,
-  <span class="va">availability</span>,
-  tmpdir <span class="op">=</span> <span class="cn">NA</span>,
-  output_type <span class="op">=</span> <span class="st">"deprecated"</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">s2_list</span><span class="op">(</span></span>
+<span>  spatial_extent <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  tile <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  orbit <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  time_interval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">10</span>, <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  time_period <span class="op">=</span> <span class="st">"full"</span>,</span>
+<span>  level <span class="op">=</span> <span class="st">"auto"</span>,</span>
+<span>  server <span class="op">=</span> <span class="st">"scihub"</span>,</span>
+<span>  apihub <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  service <span class="op">=</span> <span class="st">"apihub"</span>,</span>
+<span>  max_cloud <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  <span class="va">availability</span>,</span>
+<span>  tmpdir <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  output_type <span class="op">=</span> <span class="st">"deprecated"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -121,13 +121,21 @@ products satisfying given search criteria.</p>
     <dl><dt>spatial_extent</dt>
 <dd><p>A valid spatial object object of class <code>sf</code>,
 <code>sfc</code> or <code>sfg</code></p></dd>
+
+
 <dt>tile</dt>
 <dd><p><code>string array</code> Sentinel-2 Tiles to be considered string (5-length character)</p></dd>
+
+
 <dt>orbit</dt>
 <dd><p><code>string array</code> Sentinel-2 orbit numbers to be considered</p></dd>
+
+
 <dt>time_interval</dt>
 <dd><p>Dates to be considered, as a temporal vector (class <a href="https://rdrr.io/r/base/DateTimeClasses.html" class="external-link">POSIXct</a> or
 <a href="https://rdrr.io/r/base/Dates.html" class="external-link">Date</a>, or string in <code>YYYY-mm-dd</code> format) of length 1 (specific day) or 2 (time interval).</p></dd>
+
+
 <dt>time_period</dt>
 <dd><p>(optional) Character:</p><ul><li><p>"full" (default) means that all
 the images included in the time window are considered;</p></li>
@@ -136,6 +144,8 @@ window are used (i.e., with a time window from 2015-06-01 to
 2017-08-31, the periods 2015-06-01 to 2015-08-31, 2016-06-01
 to 2016-08-31 and 2017-06-01 to 2017-08-31 are considered).</p></li>
 </ul></dd>
+
+
 <dt>level</dt>
 <dd><p>Character vector with one of the following:
 - "auto" (default): check if level-2A is available on SciHub:
@@ -143,6 +153,8 @@ if so, list it; if not, list the corresponding level-1C
 product
 - "L1C": list available level-1C products
 - "L2A": list available level-2A products</p></dd>
+
+
 <dt>server</dt>
 <dd><p>The servers where archives are searched.
 Available options are <code>"scihub"</code> (ESA Sentinel Hub) and <code>"gcloud"</code>
@@ -151,17 +163,25 @@ Default is <code>"scihub"</code>, meaning that only ESA Sentinel Hub is consider
 In case of multiple values, they are used in order of priority.
 If <code>availability = "check"</code>, products on LTA are always left as last choice.
 See also the section "Details".</p></dd>
+
+
 <dt>apihub</dt>
 <dd><p>Path of the <code>apihub.txt</code> file containing credentials
 of SciHub account.
 If NA (default), the default location inside the package will be used.</p></dd>
+
+
 <dt>service</dt>
 <dd><p>Character: it can be <code>"dhus"</code> or <code>"apihub"</code> (default),
 in which cases the required service is forced instead that the one present
 in the URLs passed through argument <code>s2_prodlist</code>.</p></dd>
+
+
 <dt>max_cloud</dt>
 <dd><p>Integer number (0-100) containing the maximum cloud
 level of the tiles to be listed (default: no filter).</p></dd>
+
+
 <dt>availability</dt>
 <dd><p>Character argument, determining which products have
 to be returned:</p><ul><li><p><code>"online"</code> : only archive names already available for download are returned;</p></li>
@@ -176,17 +196,24 @@ how to distinguish each other);</p></li>
 If not provided, <code>"ignore"</code> is the default value unless
 <code>server = c("scihub","gcloud")</code> (in which case <code>"check"</code> is used).</p></li>
 </ul></dd>
+
+
 <dt>tmpdir</dt>
 <dd><p>(optional) Path where intermediate files (xml) will be created
 (it is used only if argument <code>server</code> includes <code>"gcloud"</code>).
 Default is a temporary directory.
 If <code>tmpdir</code> is a non-empty folder, a random subdirectory will be used.</p></dd>
+
+
 <dt>output_type</dt>
 <dd><p>Deprecated (use <code>as.data.table</code> to obtain a data.table).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An object of class <a href="safelist-class.html">safelist</a>.
+    
+
+<p>An object of class <a href="safelist-class.html">safelist</a>.
 The attribute <code>online</code> contains logical values: in case
 <code>availability != "ignore"</code>, values are TRUE / FALSE for
 products available for download / stored in the Long Term Archive;
@@ -226,7 +253,7 @@ in case of bugs, report them at <a href="https://github.com/ranghetti/sen2r/issu
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -239,25 +266,25 @@ function <code>getSentinel_query</code> of package
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">pos</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">9.85</span>,<span class="fl">45.81</span><span class="op">)</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">time_window</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2016-05-01"</span>, <span class="st">"2017-07-30"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Full-period list</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="scihub_login.html">is_scihub_configured</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in">  <span class="va">example_s2_list</span> <span class="op">&lt;-</span> <span class="fu">s2_list</span><span class="op">(</span></span>
-<span class="r-in">    spatial_extent <span class="op">=</span> <span class="va">pos</span>,</span>
-<span class="r-in">    tile <span class="op">=</span> <span class="st">"32TNR"</span>,</span>
-<span class="r-in">    time_interval <span class="op">=</span> <span class="va">time_window</span>,</span>
-<span class="r-in">    orbit <span class="op">=</span> <span class="st">"065"</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
-<span class="r-in">  <span class="va">example_s2_list</span> <span class="op">&lt;-</span> <span class="fu">as</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"safelist"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">pos</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">9.85</span>,<span class="fl">45.81</span><span class="op">)</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">time_window</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2016-05-01"</span>, <span class="st">"2017-07-30"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Full-period list</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="scihub_login.html">is_scihub_configured</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">example_s2_list</span> <span class="op">&lt;-</span> <span class="fu">s2_list</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    spatial_extent <span class="op">=</span> <span class="va">pos</span>,</span></span>
+<span class="r-in"><span>    tile <span class="op">=</span> <span class="st">"32TNR"</span>,</span></span>
+<span class="r-in"><span>    time_interval <span class="op">=</span> <span class="va">time_window</span>,</span></span>
+<span class="r-in"><span>    orbit <span class="op">=</span> <span class="st">"065"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">example_s2_list</span> <span class="op">&lt;-</span> <span class="fu">as</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"safelist"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched on</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">example_s2_list</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">example_s2_list</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A named vector with 47 SAFE archives.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL1C_20160502T102032_N0201_R065_T32TNR_20160502T102027.SAFE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('fde01d3f-8a0d-46cb-b65d-3e32eff93f1d')/$value" </span>
@@ -271,8 +298,8 @@ function <code>getSentinel_query</code> of package
 <span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('9bb6d780-c226-4f59-bad0-1daedfdce9d5')/$value" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...with 42 more elements.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, footprint, uuid, online.</span>
-<span class="r-in"><span class="co"># Print the dates of the retrieved products</span></span>
-<span class="r-in"><span class="fu"><a href="safe_getMetadata.html">safe_getMetadata</a></span><span class="op">(</span><span class="va">example_s2_list</span>, <span class="st">"sensing_datetime"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="co"># Print the dates of the retrieved products</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="safe_getMetadata.html">safe_getMetadata</a></span><span class="op">(</span><span class="va">example_s2_list</span>, <span class="st">"sensing_datetime"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160502T102032_N0201_R065_T32TNR_20160502T102027.SAFE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-05-02 10:20:32 UTC" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160512T102032_N0202_R065_T32TNR_20160512T102029.SAFE </span>
@@ -367,21 +394,21 @@ function <code>getSentinel_query</code> of package
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-07-21 10:20:29 UTC" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL2A_20170726T102021_N0205_R065_T32TNR_20170726T102259.SAFE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-07-26 10:20:21 UTC" </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Seasonal-period list</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="scihub_login.html">is_scihub_configured</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in">  <span class="va">example_s2_list</span> <span class="op">&lt;-</span> <span class="fu">s2_list</span><span class="op">(</span></span>
-<span class="r-in">    spatial_extent <span class="op">=</span> <span class="va">pos</span>,</span>
-<span class="r-in">    tile <span class="op">=</span> <span class="st">"32TNR"</span>,</span>
-<span class="r-in">    time_interval <span class="op">=</span> <span class="va">time_window</span>,</span>
-<span class="r-in">    time_period <span class="op">=</span> <span class="st">"seasonal"</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
-<span class="r-in">  <span class="va">example_s2_list</span> <span class="op">&lt;-</span> <span class="fu">as</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"safelist"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Seasonal-period list</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="scihub_login.html">is_scihub_configured</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">example_s2_list</span> <span class="op">&lt;-</span> <span class="fu">s2_list</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    spatial_extent <span class="op">=</span> <span class="va">pos</span>,</span></span>
+<span class="r-in"><span>    tile <span class="op">=</span> <span class="st">"32TNR"</span>,</span></span>
+<span class="r-in"><span>    time_interval <span class="op">=</span> <span class="va">time_window</span>,</span></span>
+<span class="r-in"><span>    time_period <span class="op">=</span> <span class="st">"seasonal"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">example_s2_list</span> <span class="op">&lt;-</span> <span class="fu">as</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"safelist"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched on</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">example_s2_list</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">example_s2_list</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A named vector with 28 SAFE archives.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL1C_20160502T102032_N0201_R065_T32TNR_20160502T102027.SAFE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('fde01d3f-8a0d-46cb-b65d-3e32eff93f1d')/$value" </span>
@@ -395,8 +422,8 @@ function <code>getSentinel_query</code> of package
 <span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('4abf7965-0b26-431b-8708-74de427c0112')/$value" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...with 23 more elements.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, footprint, uuid, online.</span>
-<span class="r-in"><span class="co"># Print the dates of the retrieved products</span></span>
-<span class="r-in"><span class="fu"><a href="safe_getMetadata.html">safe_getMetadata</a></span><span class="op">(</span><span class="va">example_s2_list</span>, <span class="st">"sensing_datetime"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="co"># Print the dates of the retrieved products</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="safe_getMetadata.html">safe_getMetadata</a></span><span class="op">(</span><span class="va">example_s2_list</span>, <span class="st">"sensing_datetime"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160502T102032_N0201_R065_T32TNR_20160502T102027.SAFE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-05-02 10:20:32 UTC" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160509T101032_N0202_R022_T32TNR_20160509T101645.SAFE </span>
@@ -453,8 +480,8 @@ function <code>getSentinel_query</code> of package
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-07-21 10:20:29 UTC" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL2A_20170726T102021_N0205_R065_T32TNR_20170726T102259.SAFE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-07-26 10:20:21 UTC" </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -469,8 +496,7 @@ function <code>getSentinel_query</code> of package
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -86,3 +86,4 @@ Sentinel-2 satellite data. \emph{Computers & Geosciences}, 139, 104473.
 \author{
 Lorenzo Busetto, phD (2020)
 }
+\keyword{internal}

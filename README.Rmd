@@ -92,7 +92,7 @@ are strongly encouraged to cite this publication within their work (see [Credits
 
 The package can be installed from CRAN:
 ```{r, eval = FALSE}
-install.packages("sen2r")
+install.packages("sen2r", dependencies = TRUE)
 ```
 
 For detailed instructions about installing the package (including dependencies),

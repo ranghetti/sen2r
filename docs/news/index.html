@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
       </span>
     </div>
 
@@ -92,38 +92,48 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.5.1" id="version-151">Version 1.5.1<a class="anchor" aria-label="anchor" href="#version-151"></a></h2>
+<h2 class="page-header" data-toc-text="1.5.2" id="version-152">Version 1.5.2<a class="anchor" aria-label="anchor" href="#version-152"></a></h2>
+<div class="section level3">
+<h3 id="major-changes-1-5-2">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-1-5-2"></a></h3>
+<ul><li>Manage changes occurred in baseline version 04.00 (see <a href="https://github.com/ranghetti/sen2r/issues/443" class="external-link">#443</a>):
+<ul><li>retrieve offset values from metadata;</li>
+<li>apply them to generate BOA/TOA products.</li>
+</ul></li>
+</ul></div>
+<div class="section level3">
+<h3 id="minor-changes-1-5-2">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1-5-2"></a></h3>
+<ul><li>Do not check for Google Cloud / SciHub status in <code><a href="../reference/s2_download.html">s2_download()</a></code> if not needed.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-1-5-2">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-2"></a></h3>
+<ul><li>Fix <code>extent_as_mask</code> behaviour in <code><a href="../reference/sen2r.html">sen2r()</a></code> in case of GEOMETRYCOLLECTION type (threat as POLYGON, allowing masking).</li>
+<li>Simplify automatic tests: a variable <code>full_tests</code> is set to FALSE by default (in this case, only fast / strategic tests are run). Set to TRUE to run all tests.</li>
+<li>Minor fixes.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.5.1" id="version-151">Version 1.5.1<small>2022-04-12</small><a class="anchor" aria-label="anchor" href="#version-151"></a></h2>
 <div class="section level3">
 <h3 id="major-changes-1-5-1">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-1-5-1"></a></h3>
-<ul><li>Implement the possibility to produce rasters of angles information
-stored in the SAFE xml:
-<ul><li>new internal (but documented) function <code><a href="../reference/s2_angles.html">s2_angles()</a></code> to
-do it;</li>
+<ul><li>Implement the possibility to produce rasters of angles information stored in the SAFE xml:
+<ul><li>new internal (but documented) function <code><a href="../reference/s2_angles.html">s2_angles()</a></code> to do it;</li>
 <li>integration in <code><a href="../reference/s2_translate.html">s2_translate()</a></code>;</li>
 <li>integration in <code><a href="../reference/sen2r.html">sen2r()</a></code>;</li>
-<li>tests and examples. (The GUI was not updated in order not to expose
-too much these products, since the package development is closed).</li>
+<li>tests and examples. (The GUI was not updated in order not to expose too much these products, since the package development is closed).</li>
 </ul></li>
-<li>Closing the support on GitHub issues, due to career change of the
-maintainer.</li>
+<li>Closing the support on GitHub issues, due to career change of the maintainer.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-default-values-1-5-1">Changes in default values<a class="anchor" aria-label="anchor" href="#changes-in-default-values-1-5-1"></a></h3>
-<ul><li>Change <code>naming_convention</code> default value in
-<code><a href="../reference/sen2r_getElements.html">sen2r_getElements()</a></code>.</li>
+<ul><li>Change <code>naming_convention</code> default value in <code><a href="../reference/sen2r_getElements.html">sen2r_getElements()</a></code>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="minor-changes-1-5-1">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1-5-1"></a></h3>
-<ul><li>Rename default branch <code>master</code> to <code>main</code>
-according to <a href="https://sfconservancy.org/news/2020/jun/23/gitbranchname/" class="external-link">Git and
-Branch Naming</a>
+<ul><li>Rename default branch <code>master</code> to <code>main</code> according to <a href="https://sfconservancy.org/news/2020/jun/23/gitbranchname/" class="external-link">Git and Branch Naming</a>
 </li>
-<li>Add the naming convention “sen2r_new” to
-<code><a href="../reference/sen2r_getElements.html">sen2r_getElements()</a></code> (currently used only for internal
-usage).</li>
+<li>Add the naming convention “sen2r_new” to <code><a href="../reference/sen2r_getElements.html">sen2r_getElements()</a></code> (currently used only for internal usage).</li>
 <li>New argument <code>tmpdir</code> in <code><a href="../reference/s2_list.html">s2_list()</a></code>.</li>
-<li>Allow <code><a href="../reference/s2_mask.html">s2_mask()</a></code> to manage inputs with sen2r_new naming
-convention.</li>
+<li>Allow <code><a href="../reference/s2_mask.html">s2_mask()</a></code> to manage inputs with sen2r_new naming convention.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="documentation-1-5-1">Documentation<a class="anchor" aria-label="anchor" href="#documentation-1-5-1"></a></h3>
@@ -134,8 +144,7 @@ convention.</li>
 <ul><li>Fix error with multiple SAFE and single apihub.</li>
 <li>Fix <a href="https://github.com/ranghetti/sen2r/issues/423" class="external-link">#423</a>, <a href="https://github.com/ranghetti/sen2r/issues/424" class="external-link">#424</a>, <a href="https://github.com/ranghetti/sen2r/issues/425" class="external-link">#425</a>.</li>
 <li>Small bug fixes in <code><a href="../reference/smooth_mask.html">smooth_mask()</a></code>.</li>
-<li>Test fixes (changes in system dependencies caused changes in tested
-values).</li>
+<li>Test fixes (changes in system dependencies caused changes in tested values).</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -143,14 +152,9 @@ values).</li>
 <div class="section level3">
 <h3 id="major-changes-1-5-0">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-1-5-0"></a></h3>
 <ul><li>
-<strong>Google Cloud integration</strong> to search and download
-SAFE Sentinel-2 archives (see <a href="https://luigi.ranghetti.info/post/safe-gcloud/" class="external-link uri">https://luigi.ranghetti.info/post/safe-gcloud/</a>):
-<ul><li>implementation of methods within <code><a href="../reference/s2_list.html">s2_list()</a></code> and
-<code><a href="../reference/s2_download.html">s2_download()</a></code>;</li>
-<li>new functions <code><a href="../reference/check_gcloud.html">check_gcloud()</a></code>,
-<code><a href="../reference/check_gcloud.html">is_gcloud_configured()</a></code>,
-<code><a href="../reference/check_gcloud.html">check_gcloud_connection()</a></code> to interface Google Cloud
-SDK;</li>
+<strong>Google Cloud integration</strong> to search and download SAFE Sentinel-2 archives (see <a href="https://luigi.ranghetti.info/post/safe-gcloud/" class="external-link uri">https://luigi.ranghetti.info/post/safe-gcloud/</a>):
+<ul><li>implementation of methods within <code><a href="../reference/s2_list.html">s2_list()</a></code> and <code><a href="../reference/s2_download.html">s2_download()</a></code>;</li>
+<li>new functions <code><a href="../reference/check_gcloud.html">check_gcloud()</a></code>, <code><a href="../reference/check_gcloud.html">is_gcloud_configured()</a></code>, <code><a href="../reference/check_gcloud.html">check_gcloud_connection()</a></code> to interface Google Cloud SDK;</li>
 <li>integration in <code><a href="../reference/sen2r.html">sen2r()</a></code>;</li>
 <li>documentation;</li>
 <li>new automatic tests.</li>
@@ -160,16 +164,12 @@ SDK;</li>
 <h3 id="minor-changes-1-5-0">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1-5-0"></a></h3>
 <ul><li>Restore check for existing equivalent SAFE products.</li>
 <li>Edit ENVI tags for BOA-TOA (band names, wavelengths).</li>
-<li>Automatic tests on <code><a href="../reference/sen2r.html">sen2r()</a></code> main functions were restored
-on Actions thanks to the implementation of Google Cloud download.</li>
+<li>Automatic tests on <code><a href="../reference/sen2r.html">sen2r()</a></code> main functions were restored on Actions thanks to the implementation of Google Cloud download.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-default-values-1-5-0">Changes in default values<a class="anchor" aria-label="anchor" href="#changes-in-default-values-1-5-0"></a></h3>
 <ul><li>
-<code><a href="../reference/s2_list.html">s2_list()</a></code>: argument <code>availability</code> has
-default value <code>"ignore"</code> unless
-<code>server = c("scihub", "gcloud")</code>, in which case default is
-<code>"check"</code>.</li>
+<code><a href="../reference/s2_list.html">s2_list()</a></code>: argument <code>availability</code> has default value <code>"ignore"</code> unless <code>server = c("scihub", "gcloud")</code>, in which case default is <code>"check"</code>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-5-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-0"></a></h3>
@@ -183,37 +183,28 @@ default value <code>"ignore"</code> unless
 <div class="section level3">
 <h3 id="new-functions-1-4-4">New functions<a class="anchor" aria-label="anchor" href="#new-functions-1-4-4"></a></h3>
 <ul><li>
-<code><a href="../reference/scihub_login.html">is_scihub_configured()</a></code>: accessory function which allows
-easily checking if SciHub credentials ca be read. It is used to
-selectively run tests and examples basing on that.</li>
+<code><a href="../reference/scihub_login.html">is_scihub_configured()</a></code>: accessory function which allows easily checking if SciHub credentials ca be read. It is used to selectively run tests and examples basing on that.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="minor-changes-1-4-4">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1-4-4"></a></h3>
-<ul><li>New argument <code>abort</code> in <code><a href="../reference/s2_download.html">s2_download()</a></code> (see
-documentation).</li>
+<ul><li>New argument <code>abort</code> in <code><a href="../reference/s2_download.html">s2_download()</a></code> (see documentation).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-4-4">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-4-4"></a></h3>
-<ul><li>Speed-up tests and avoid runtime GDAL being searched on CRAN (CRAN
-error with donttest).</li>
-<li>Avoid sending queries to SciHub if credentials were not configured
-(CRAN errors with donttest).</li>
+<ul><li>Speed-up tests and avoid runtime GDAL being searched on CRAN (CRAN error with donttest).</li>
+<li>Avoid sending queries to SciHub if credentials were not configured (CRAN errors with donttest).</li>
 </ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.4.3" id="version-143">Version 1.4.3<small>2021-05-04</small><a class="anchor" aria-label="anchor" href="#version-143"></a></h2>
 <div class="section level3">
 <h3 id="minor-changes-1-4-3">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1-4-3"></a></h3>
-<ul><li>Use API URLs <code>https://apihub.copernicus.eu/apihub</code>
-instead of <code>https://scihub.copernicus.eu/apihub</code> as required
-after changes at SciHub side (<a href="https://scihub.copernicus.eu/news/News00868" class="external-link uri">https://scihub.copernicus.eu/news/News00868</a>).</li>
-<li>Manage multiple SciHub credentials when ordering SAFE archives from
-LTA (experimental).</li>
+<ul><li>Use API URLs <code>https://apihub.copernicus.eu/apihub</code> instead of <code>https://scihub.copernicus.eu/apihub</code> as required after changes at SciHub side (<a href="https://scihub.copernicus.eu/news/News00868" class="external-link uri">https://scihub.copernicus.eu/news/News00868</a>).</li>
+<li>Manage multiple SciHub credentials when ordering SAFE archives from LTA (experimental).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="documentation-1-4-3">Documentation<a class="anchor" aria-label="anchor" href="#documentation-1-4-3"></a></h3>
-<ul><li>Replace <code>http://</code> with <code>https://</code> in
-documentation _URLs.</li>
+<ul><li>Replace <code>http://</code> with <code>https://</code> in documentation _URLs.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="checks-1-4-3">Checks<a class="anchor" aria-label="anchor" href="#checks-1-4-3"></a></h3>
@@ -221,10 +212,8 @@ documentation _URLs.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-4-3">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-4-3"></a></h3>
-<ul><li>Avoid topology errors on S2 footprints (to fix errors using
-<a href="https://r-spatial.github.io/sf/" class="external-link">sf</a> 1.0).</li>
-<li>Manage situations like in <a href="https://github.com/ranghetti/sen2r/issues/397" class="external-link">#397</a> (too many nodes for ESA API
-query).</li>
+<ul><li>Avoid topology errors on S2 footprints (to fix errors using <a href="https://r-spatial.github.io/sf/" class="external-link">sf</a> 1.0).</li>
+<li>Manage situations like in <a href="https://github.com/ranghetti/sen2r/issues/397" class="external-link">#397</a> (too many nodes for ESA API query).</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -238,18 +227,14 @@ query).</li>
 <h2 class="page-header" data-toc-text="1.4.1" id="version-141">Version 1.4.1<small>2021-03-02</small><a class="anchor" aria-label="anchor" href="#version-141"></a></h2>
 <div class="section level3">
 <h3 id="minor-changes-1-4-1">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1-4-1"></a></h3>
-<ul><li>Prevent Copernicus mismatches between API Hub and <code>dhus</code>
-(<a href="https://github.com/ranghetti/sen2r/issues/381" class="external-link">#381</a>)..</li>
-<li>Rescale resolutions lower than required in
-<code><a href="../reference/s2_translate.html">s2_translate()</a></code> (<a href="https://github.com/ranghetti/sen2r/issues/368" class="external-link">#368</a>).</li>
+<ul><li>Prevent Copernicus mismatches between API Hub and <code>dhus</code> (<a href="https://github.com/ranghetti/sen2r/issues/381" class="external-link">#381</a>)..</li>
+<li>Rescale resolutions lower than required in <code><a href="../reference/s2_translate.html">s2_translate()</a></code> (<a href="https://github.com/ranghetti/sen2r/issues/368" class="external-link">#368</a>).</li>
 <li>Avoid using progress bars in non-interactive sessions.</li>
-<li>Manage error 429 for <code>dhus</code> (resend APIs more times in
-case of too many requests).</li>
+<li>Manage error 429 for <code>dhus</code> (resend APIs more times in case of too many requests).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-4-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-4-1"></a></h3>
-<ul><li>Partially fix <a href="https://github.com/ranghetti/sen2r/issues/368" class="external-link">#368</a> (determine the output projection before
-processing).</li>
+<ul><li>Partially fix <a href="https://github.com/ranghetti/sen2r/issues/368" class="external-link">#368</a> (determine the output projection before processing).</li>
 <li>Fix <a href="https://github.com/ranghetti/sen2r/issues/371" class="external-link">#371</a>.</li>
 <li>Fix <a href="https://github.com/ranghetti/sen2r/issues/383" class="external-link">#383</a>.</li>
 <li>Fix after changes in units 0.7-0 (<a href="https://github.com/ranghetti/sen2r/issues/390" class="external-link">#390</a>).</li>
@@ -260,41 +245,22 @@ processing).</li>
 <div class="section level3">
 <h3 id="major-changes-1-4-0">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-1-4-0"></a></h3>
 <ul><li>
-<code><a href="../reference/gdal_warp.html">gdal_warp()</a></code> was partially rewritten: now reshaped
-rasters conserve square pixels also after warping operations. <em>This
-change also affects <code><a href="../reference/sen2r.html">sen2r()</a></code> products if reshaping features
-(reprojection or custom resolution) are required.</em> This update was
-necessary due to changes performed in GDAL since version 3.2.0 (see <a href="https://github.com/OSGeo/gdal/issues/3294" class="external-link">OSGeo/gdal♯3294</a>),
-which did not grant homogeneity between outputs produced with different
-GDAL versions. Note that, in case the user wants to update an existing
-sen2r archive produced with <a href="https://sen2r.ranghetti.info" class="external-link">sen2r</a> &lt; 1.4.0, the old
-existing grid is maintained so that product grids are equal (in order to
-produce outputs with the new grid, users must create a new
-archive).</li>
-<li>Manage images split in two SAFE products, to avoid producing black
-areas in these [uncommon] cases (see <a href="https://github.com/ranghetti/sen2r/issues/353" class="external-link">#353</a> for an explanation). As
-effects:
-<ol style="list-style-type: decimal"><li>now pixels outside footprints (including nodata outside orbits
-coverage) are always set to nodata;</li>
-<li>now <code><a href="../reference/s2_download.html">s2_download()</a></code> is no more able to use existing
-products equivalent to found ones.</li>
+<code><a href="../reference/gdal_warp.html">gdal_warp()</a></code> was partially rewritten: now reshaped rasters conserve square pixels also after warping operations. <em>This change also affects <code><a href="../reference/sen2r.html">sen2r()</a></code> products if reshaping features (reprojection or custom resolution) are required.</em> This update was necessary due to changes performed in GDAL since version 3.2.0 (see <a href="https://github.com/OSGeo/gdal/issues/3294" class="external-link">OSGeo/gdal♯3294</a>), which did not grant homogeneity between outputs produced with different GDAL versions. Note that, in case the user wants to update an existing sen2r archive produced with <a href="https://sen2r.ranghetti.info" class="external-link">sen2r</a> &lt; 1.4.0, the old existing grid is maintained so that product grids are equal (in order to produce outputs with the new grid, users must create a new archive).</li>
+<li>Manage images split in two SAFE products, to avoid producing black areas in these [uncommon] cases (see <a href="https://github.com/ranghetti/sen2r/issues/353" class="external-link">#353</a> for an explanation). As effects:
+<ol style="list-style-type: decimal"><li>now pixels outside footprints (including nodata outside orbits coverage) are always set to nodata;</li>
+<li>now <code><a href="../reference/s2_download.html">s2_download()</a></code> is no more able to use existing products equivalent to found ones.</li>
 </ol></li>
 </ul></div>
 <div class="section level3">
 <h3 id="minor-changes-1-4-0">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1-4-0"></a></h3>
 <ul><li>Add templates for GitHub issues.</li>
-<li>Do not return error in tests in case of SciHub server down
-(<a href="https://github.com/ranghetti/sen2r/issues/354" class="external-link">#354</a>).</li>
+<li>Do not return error in tests in case of SciHub server down (<a href="https://github.com/ranghetti/sen2r/issues/354" class="external-link">#354</a>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-default-values-1-4-0">Changes in default values<a class="anchor" aria-label="anchor" href="#changes-in-default-values-1-4-0"></a></h3>
-<ul><li>Pixels outside footprints (because of previous point, or - more
-frequently - because outside orbits coverage) are always set to NA even
-if no cloud masking is performed.</li>
+<ul><li>Pixels outside footprints (because of previous point, or - more frequently - because outside orbits coverage) are always set to NA even if no cloud masking is performed.</li>
 <li>
-<code><a href="../reference/s2_download.html">s2_download()</a></code> no more uses existing SAFE products
-instead than downloading new equivalent ones (this in order to manage
-images split in two SAFE archives).</li>
+<code><a href="../reference/s2_download.html">s2_download()</a></code> no more uses existing SAFE products instead than downloading new equivalent ones (this in order to manage images split in two SAFE archives).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="documentation-1-4-0">Documentation<a class="anchor" aria-label="anchor" href="#documentation-1-4-0"></a></h3>
@@ -305,31 +271,22 @@ images split in two SAFE archives).</li>
 <h2 class="page-header" data-toc-text="1.3.9" id="version-139">Version 1.3.9<small>2020-10-14</small><a class="anchor" aria-label="anchor" href="#version-139"></a></h2>
 <div class="section level3">
 <h3 id="bug-fixes-1-3-9">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-3-9"></a></h3>
-<ul><li>Fix check errors due to <a href="http://rgdal.r-forge.r-project.org" class="external-link">rgdal</a> changes in version
-1.6-17.</li>
+<ul><li>Fix check errors due to <a href="http://rgdal.r-forge.r-project.org" class="external-link">rgdal</a> changes in version 1.6-17.</li>
 </ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.3.8" id="version-138">Version 1.3.8<small>2020-08-26</small><a class="anchor" aria-label="anchor" href="#version-138"></a></h2>
 <div class="section level3">
 <h3 id="minor-changes-1-3-8">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1-3-8"></a></h3>
-<ul><li>Add argument <code>service</code> to <code><a href="../reference/s2_list.html">s2_list()</a></code> and
-<code><a href="../reference/s2_download.html">s2_download()</a></code> for using <code>"dhus"</code> API service
-instead of default <code>"apihub"</code> (this could be useful in case
-of <code>apihub</code> downtimes).</li>
-<li>Add experimental argument <code>kill_errored</code> to
-<code><a href="../reference/sen2cor.html">sen2cor()</a></code> (see documentation).</li>
-<li>Add argument <code>server</code> to <code><a href="../reference/s2_list.html">s2_list()</a></code> to be
-used for future implementations.</li>
+<ul><li>Add argument <code>service</code> to <code><a href="../reference/s2_list.html">s2_list()</a></code> and <code><a href="../reference/s2_download.html">s2_download()</a></code> for using <code>"dhus"</code> API service instead of default <code>"apihub"</code> (this could be useful in case of <code>apihub</code> downtimes).</li>
+<li>Add experimental argument <code>kill_errored</code> to <code><a href="../reference/sen2cor.html">sen2cor()</a></code> (see documentation).</li>
+<li>Add argument <code>server</code> to <code><a href="../reference/s2_list.html">s2_list()</a></code> to be used for future implementations.</li>
 <li>Replace internal URLs <a href="https://raw.githubusercontet.com/x/y" class="external-link uri">https://raw.githubusercontet.com/x/y</a> with <a href="https://github.com/x/y/raw" class="external-link uri">https://github.com/x/y/raw</a>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-default-values-1-3-8">Changes in default values<a class="anchor" aria-label="anchor" href="#changes-in-default-values-1-3-8"></a></h3>
 <ul><li>
-<code><a href="../reference/build_example_param_file.html">build_example_param_file()</a></code> now generates more recent
-images, 2020-08-01 instead than 2019-07-23 (this because the previous
-ones required two SAFE which are now on LTA); the same was done for some
-tests.</li>
+<code><a href="../reference/build_example_param_file.html">build_example_param_file()</a></code> now generates more recent images, 2020-08-01 instead than 2019-07-23 (this because the previous ones required two SAFE which are now on LTA); the same was done for some tests.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-3-8">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-3-8"></a></h3>
@@ -340,28 +297,18 @@ tests.</li>
 <h2 class="page-header" data-toc-text="1.3.7" id="version-137">Version 1.3.7<small>2020-07-06</small><a class="anchor" aria-label="anchor" href="#version-137"></a></h2>
 <div class="section level3">
 <h3 id="major-changes-1-3-7">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-1-3-7"></a></h3>
-<ul><li>Some additional products are now supported: <code>CLD</code>,
-<code>SNW</code>, <code>AOT</code>, <code>WVP</code> (see documentation
-for description). The GUI and internal functions were modified to
-support their selection and generation.</li>
+<ul><li>Some additional products are now supported: <code>CLD</code>, <code>SNW</code>, <code>AOT</code>, <code>WVP</code> (see documentation for description). The GUI and internal functions were modified to support their selection and generation.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="minor-changes-1-3-7">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1-3-7"></a></h3>
-<ul><li>Add indices Red / Green / Blue Chromatic Coordinate
-(<code>Rcc</code>, <code>Gcc</code>, <code>Bcc</code>) and Excess Green
-(<code>ExG</code>) (<a href="https://github.com/ranghetti/sen2r/issues/330" class="external-link">#330</a>).</li>
-<li>All methods based on runtime GDAL are now discouraged and never
-called by default (before this version, they were used in case GDAL was
-found on <code>paths.json</code>).</li>
+<ul><li>Add indices Red / Green / Blue Chromatic Coordinate (<code>Rcc</code>, <code>Gcc</code>, <code>Bcc</code>) and Excess Green (<code>ExG</code>) (<a href="https://github.com/ranghetti/sen2r/issues/330" class="external-link">#330</a>).</li>
+<li>All methods based on runtime GDAL are now discouraged and never called by default (before this version, they were used in case GDAL was found on <code>paths.json</code>).</li>
 <li>Output GeoTIFF files are now tiled.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="documentation-1-3-7">Documentation<a class="anchor" aria-label="anchor" href="#documentation-1-3-7"></a></h3>
-<ul><li>New products were documented in function references and in the
-article <a href="https://sen2r.ranghetti.info/articles/outstructure" class="external-link">“Output file
-structure”</a>.</li>
-<li>Function references explicit discourage the use of GDAL-based
-methods.</li>
+<ul><li>New products were documented in function references and in the article <a href="https://sen2r.ranghetti.info/articles/outstructure" class="external-link">“Output file structure”</a>.</li>
+<li>Function references explicit discourage the use of GDAL-based methods.</li>
 <li>The documentation site links to the personal page <a href="https://luigi.ranghetti.info/" class="external-link uri">https://luigi.ranghetti.info/</a>.</li>
 </ul></div>
 <div class="section level3">
@@ -373,47 +320,29 @@ methods.</li>
 <h2 class="page-header" data-toc-text="1.3.6" id="version-136">Version 1.3.6<small>2020-06-04</small><a class="anchor" aria-label="anchor" href="#version-136"></a></h2>
 <div class="section level3">
 <h3 id="bug-fixes-1-3-6">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-3-6"></a></h3>
-<ul><li>Fix GDAL usage over Windows (a new version was specifically released
-for this bug because it caused <strong><code>sen2r</code></strong>
-stopping for many Windows users).</li>
+<ul><li>Fix GDAL usage over Windows (a new version was specifically released for this bug because it caused <strong><code>sen2r</code></strong> stopping for many Windows users).</li>
 </ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.3.5" id="version-135">Version 1.3.5<small>2020-06-01</small><a class="anchor" aria-label="anchor" href="#version-135"></a></h2>
 <div class="section level3">
 <h3 id="major-changes-1-3-5">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-1-3-5"></a></h3>
-<ul><li>GDAL is no longer a mandatory external dependency, being used only
-to smooth/bufferise cloud masks (and optionally to compute spectral
-indices, RGB images and thumbnails).</li>
-<li>“Graphical” packages needed to run the GUI
-(<strong><code>leaflet</code></strong>,
-<strong><code>leafpm</code></strong>,
-<strong><code>mapedit</code></strong>,
-<strong><code>shiny</code></strong>,
-<strong><code>shinyFiles</code></strong>,
-<strong><code>shinydashboard</code></strong>,
-<strong><code>shinyjs</code></strong>,
-<strong><code>shinyWidgets</code></strong>) are now suggested
-dependencies. In the case they are missing and the user tries to run the
-GUI, an error is returned with the command for installing them.</li>
+<ul><li>GDAL is no longer a mandatory external dependency, being used only to smooth/bufferise cloud masks (and optionally to compute spectral indices, RGB images and thumbnails).</li>
+<li>“Graphical” packages needed to run the GUI (<strong><code>leaflet</code></strong>, <strong><code>leafpm</code></strong>, <strong><code>mapedit</code></strong>, <strong><code>shiny</code></strong>, <strong><code>shinyFiles</code></strong>, <strong><code>shinydashboard</code></strong>, <strong><code>shinyjs</code></strong>, <strong><code>shinyWidgets</code></strong>) are now suggested dependencies. In the case they are missing and the user tries to run the GUI, an error is returned with the command for installing them.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="minor-changes-1-3-5">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1-3-5"></a></h3>
-<ul><li>Edit the GUI in order to disable selectors when dependencies
-required to run them are not available.</li>
-<li>Automatic tests were reorganised and improved after GDAL
-changes.</li>
+<ul><li>Edit the GUI in order to disable selectors when dependencies required to run them are not available.</li>
+<li>Automatic tests were reorganised and improved after GDAL changes.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="documentation-1-3-5">Documentation<a class="anchor" aria-label="anchor" href="#documentation-1-3-5"></a></h3>
-<ul><li>Document <strong><code>sen2r</code></strong> installation over
-Ubuntu Focal.</li>
+<ul><li>Document <strong><code>sen2r</code></strong> installation over Ubuntu Focal.</li>
 <li>Update documentation according to GDAL changes.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-3-5">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-3-5"></a></h3>
-<ul><li>Fix Travis-<strong><code>lwgeom</code></strong> incompatibilities
-(<a href="https://github.com/ranghetti/sen2r/issues/319" class="external-link">#319</a>)</li>
+<ul><li>Fix Travis-<strong><code>lwgeom</code></strong> incompatibilities (<a href="https://github.com/ranghetti/sen2r/issues/319" class="external-link">#319</a>)</li>
 <li>Fix <a href="https://github.com/ranghetti/sen2r/issues/310" class="external-link">#310</a> and <a href="https://github.com/ranghetti/sen2r/issues/311" class="external-link">#311</a></li>
 </ul></div>
 </div>
@@ -422,32 +351,22 @@ Ubuntu Focal.</li>
 <div class="section level3">
 <h3 id="new-functions-1-3-4">New functions<a class="anchor" aria-label="anchor" href="#new-functions-1-3-4"></a></h3>
 <ul><li>
-<code><a href="../reference/gdalUtil.html">gdalUtil()</a></code>: function used to perform GDAL operations,
-calling C-based GDAL utilities using <code><a href="https://r-spatial.github.io/sf/reference/gdal_utils.html" class="external-link">sf::gdal_utils()</a></code>, and
-Python-based ones through system calls (a standalone GDAL environment is
-request to do it, as it was in previous versions).</li>
+<code><a href="../reference/gdalUtil.html">gdalUtil()</a></code>: function used to perform GDAL operations, calling C-based GDAL utilities using <code><a href="https://r-spatial.github.io/sf/reference/gdal_utils.html" class="external-link">sf::gdal_utils()</a></code>, and Python-based ones through system calls (a standalone GDAL environment is request to do it, as it was in previous versions).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="documentation-1-3-4">Documentation<a class="anchor" aria-label="anchor" href="#documentation-1-3-4"></a></h3>
-<ul><li>Improve documentation of vignette “Output file structure”, including
-the description of output products.</li>
+<ul><li>Improve documentation of vignette “Output file structure”, including the description of output products.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-dependency-1-3-4">New dependency<a class="anchor" aria-label="anchor" href="#new-dependency-1-3-4"></a></h3>
 <ul><li>
-<strong><code>rgdal</code></strong> is now an explicit dependency
-(this because it is used by <strong><code>raster</code></strong> but it
-is not a mandatory dependency).</li>
+<strong><code>rgdal</code></strong> is now an explicit dependency (this because it is used by <strong><code>raster</code></strong> but it is not a mandatory dependency).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="minor-changes-1-3-4">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1-3-4"></a></h3>
-<ul><li>GDAL C-based utilities are called using internal GDAL routines in
-package <strong><code>sf</code></strong> (see <code><a href="../reference/gdalUtil.html">gdalUtil()</a></code>).
-This allows reducing the use of external runtime dependencies.</li>
-<li>GDAL messages are suppressed if the suggested dependency
-<strong><code>sys</code></strong> is installed (<a href="https://github.com/ranghetti/sen2r/issues/257" class="external-link">#257</a>).</li>
-<li>The new section of the vignette “Output file documentation”
-regarding products is linked in the GUI.</li>
+<ul><li>GDAL C-based utilities are called using internal GDAL routines in package <strong><code>sf</code></strong> (see <code><a href="../reference/gdalUtil.html">gdalUtil()</a></code>). This allows reducing the use of external runtime dependencies.</li>
+<li>GDAL messages are suppressed if the suggested dependency <strong><code>sys</code></strong> is installed (<a href="https://github.com/ranghetti/sen2r/issues/257" class="external-link">#257</a>).</li>
+<li>The new section of the vignette “Output file documentation” regarding products is linked in the GUI.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-3-4">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-3-4"></a></h3>
@@ -459,29 +378,15 @@ regarding products is linked in the GUI.</li>
 <h2 class="page-header" data-toc-text="1.3.3" id="version-133">Version 1.3.3<small>2020-03-30</small><a class="anchor" aria-label="anchor" href="#version-133"></a></h2>
 <div class="section level3">
 <h3 id="major-changes-1-3-3">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-1-3-3"></a></h3>
-<ul><li>Move the list of ignored / cloud-covered images in the output path
-(<a href="https://github.com/ranghetti/sen2r/issues/271" class="external-link">#271</a>): before this release, two files (<code>*_ignorelist.txt</code>
-and <code>*_cloudlist.txt</code>) were created in the directory of the
-parameter file (if existing) and used, during subsequent
-<code><a href="../reference/sen2r.html">sen2r()</a></code> executions, in order not to try reprocessing images
-cloud covered or failed for some reason. Now these files were replaced
-with an hidden TOML file <code>.ignorelist.txt</code> containing the
-list of base names of non-produced files and the dates of cloud covered
-images. This file is placed in the output folder, so to be linked with
-the produced archive. The usefulness of this edit is twofold:
-<ol style="list-style-type: decimal"><li>this information is strictly linked with the produced output files,
-and can be generated even in the case a parameter JSON file is not
-used;</li>
-<li>using cloud-covered dates instead of file names, additional products
-(e.g. spectral indices added at a later time) related to a date which is
-known to be cloud-covered are automatically skipped.</li>
+<ul><li>Move the list of ignored / cloud-covered images in the output path (<a href="https://github.com/ranghetti/sen2r/issues/271" class="external-link">#271</a>): before this release, two files (<code>*_ignorelist.txt</code> and <code>*_cloudlist.txt</code>) were created in the directory of the parameter file (if existing) and used, during subsequent <code><a href="../reference/sen2r.html">sen2r()</a></code> executions, in order not to try reprocessing images cloud covered or failed for some reason. Now these files were replaced with an hidden TOML file <code>.ignorelist.txt</code> containing the list of base names of non-produced files and the dates of cloud covered images. This file is placed in the output folder, so to be linked with the produced archive. The usefulness of this edit is twofold:
+<ol style="list-style-type: decimal"><li>this information is strictly linked with the produced output files, and can be generated even in the case a parameter JSON file is not used;</li>
+<li>using cloud-covered dates instead of file names, additional products (e.g. spectral indices added at a later time) related to a date which is known to be cloud-covered are automatically skipped.</li>
 </ol></li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-dependency-1-3-3">New dependency<a class="anchor" aria-label="anchor" href="#new-dependency-1-3-3"></a></h3>
 <ul><li>
-<strong><code>RcppTOML</code></strong> (used to manage TOML ignore
-list TOML file).</li>
+<strong><code>RcppTOML</code></strong> (used to manage TOML ignore list TOML file).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="documentation-1-3-3">Documentation<a class="anchor" aria-label="anchor" href="#documentation-1-3-3"></a></h3>
@@ -490,9 +395,7 @@ list TOML file).</li>
 <div class="section level3">
 <h3 id="bug-fixes-1-3-3">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-3-3"></a></h3>
 <ul><li>Support for <strong><code>sf</code></strong> &gt;= 0.9 (<a href="https://github.com/ranghetti/sen2r/issues/260" class="external-link">#260</a>)</li>
-<li>Patch for <strong><code>stars</code></strong> issue, made to resolve
-the temporary incompatibility with <strong><code>sf</code></strong>
-&gt;= 0.9 (see issue <a href="https://github.com/ranghetti/sen2r/issues/295" class="external-link">#295</a>)</li>
+<li>Patch for <strong><code>stars</code></strong> issue, made to resolve the temporary incompatibility with <strong><code>sf</code></strong> &gt;= 0.9 (see issue <a href="https://github.com/ranghetti/sen2r/issues/295" class="external-link">#295</a>)</li>
 <li>Fix <a href="https://github.com/ranghetti/sen2r/issues/292" class="external-link">#292</a></li>
 <li>Small improvements</li>
 </ul></div>
@@ -501,45 +404,25 @@ the temporary incompatibility with <strong><code>sf</code></strong>
 <h2 class="page-header" data-toc-text="1.3.2" id="version-132">Version 1.3.2<small>2020-02-27</small><a class="anchor" aria-label="anchor" href="#version-132"></a></h2>
 <div class="section level3">
 <h3 id="new-features-1-3-2">New features<a class="anchor" aria-label="anchor" href="#new-features-1-3-2"></a></h3>
-<ul><li>Add argument <code>req_res</code> to <code><a href="../reference/safe_getMetadata.html">safe_isvalid()</a></code> and
-<code><a href="../reference/safe_getMetadata.html">rm_invalid_safe()</a></code>: now the presence of the JP2 images
-required by the processing chain is checked by default. L2A products
-without all the three resolutions will not be used.</li>
-<li>Add output field <code>"res"</code> to the default
-<code><a href="../reference/safe_getMetadata.html">safe_getMetadata()</a></code> output, with the list of the available
-resolutions (“<code>all</code>” is returned in case of L1C
-products).</li>
+<ul><li>Add argument <code>req_res</code> to <code><a href="../reference/safe_getMetadata.html">safe_isvalid()</a></code> and <code><a href="../reference/safe_getMetadata.html">rm_invalid_safe()</a></code>: now the presence of the JP2 images required by the processing chain is checked by default. L2A products without all the three resolutions will not be used.</li>
+<li>Add output field <code>"res"</code> to the default <code><a href="../reference/safe_getMetadata.html">safe_getMetadata()</a></code> output, with the list of the available resolutions (“<code>all</code>” is returned in case of L1C products).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-function-arguments-1-3-2">New function arguments<a class="anchor" aria-label="anchor" href="#new-function-arguments-1-3-2"></a></h3>
-<ul><li>Add argument <code>timeout</code> to <code><a href="../reference/sen2cor.html">sen2cor()</a></code> to limit
-the maximum Sen2cor execution time (after that time, Sen2Cor is
-stopped). This is useful to avoid blocking processing chains due to
-internal Sen2Cor errors.</li>
+<ul><li>Add argument <code>timeout</code> to <code><a href="../reference/sen2cor.html">sen2cor()</a></code> to limit the maximum Sen2cor execution time (after that time, Sen2Cor is stopped). This is useful to avoid blocking processing chains due to internal Sen2Cor errors.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="dependencies-1-3-2">Dependencies<a class="anchor" aria-label="anchor" href="#dependencies-1-3-2"></a></h3>
-<ul><li>Add new suggested dependency <strong><code>sys</code></strong> (it
-is used to call Sen2Cor using <code><a href="https://rdrr.io/pkg/sys/man/exec.html" class="external-link">sys::exec_wait()</a></code> instead than
-<code><a href="https://rdrr.io/r/base/system.html" class="external-link">system()</a></code>, allowing exporting Sen2Cor output to log
-files).</li>
-<li>Add new suggested dependency <strong><code>rgdal</code></strong>
-(since it is implicitly called by internal functions), as requested by
-CRAN policy.</li>
-<li>Move <strong><code>units</code></strong> and
-<strong><code>tools</code></strong> to suggested dependencies.</li>
-<li>Prepare to move <strong><code>shiny*</code></strong> and
-<strong><code>leaflet*</code></strong> dependencies to suggested (this
-will be done in a future release).</li>
+<ul><li>Add new suggested dependency <strong><code>sys</code></strong> (it is used to call Sen2Cor using <code><a href="https://rdrr.io/pkg/sys/man/exec.html" class="external-link">sys::exec_wait()</a></code> instead than <code><a href="https://rdrr.io/r/base/system.html" class="external-link">system()</a></code>, allowing exporting Sen2Cor output to log files).</li>
+<li>Add new suggested dependency <strong><code>rgdal</code></strong> (since it is implicitly called by internal functions), as requested by CRAN policy.</li>
+<li>Move <strong><code>units</code></strong> and <strong><code>tools</code></strong> to suggested dependencies.</li>
+<li>Prepare to move <strong><code>shiny*</code></strong> and <strong><code>leaflet*</code></strong> dependencies to suggested (this will be done in a future release).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="minor-changes-1-3-2">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1-3-2"></a></h3>
-<ul><li>Allow choosing if ordering SAFE products from <code>dhus</code> or
-<code>apihub</code> (experimental).</li>
-<li>Replace all <code>GET()</code> calls with <code>RETRY()</code>, so
-to avoid errors in case of temporary unavailability of services.</li>
-<li>Allow Sen2Cor running with oldname SAFE (although the usage of these
-products is generally deprecated).</li>
+<ul><li>Allow choosing if ordering SAFE products from <code>dhus</code> or <code>apihub</code> (experimental).</li>
+<li>Replace all <code>GET()</code> calls with <code>RETRY()</code>, so to avoid errors in case of temporary unavailability of services.</li>
+<li>Allow Sen2Cor running with oldname SAFE (although the usage of these products is generally deprecated).</li>
 <li>Bug fixes (<a href="https://github.com/ranghetti/sen2r/issues/272" class="external-link">#272</a>, <a href="https://github.com/ranghetti/sen2r/issues/276" class="external-link">#276</a>).</li>
 </ul></div>
 </div>
@@ -547,32 +430,24 @@ products is generally deprecated).</li>
 <h2 class="page-header" data-toc-text="1.3.1" id="version-131">Version 1.3.1<small>2020-02-07</small><a class="anchor" aria-label="anchor" href="#version-131"></a></h2>
 <div class="section level3">
 <h3 id="major-changes-1-3-1">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-1-3-1"></a></h3>
-<ul><li>Documentation was improved with three new vignettes about GUI usage,
-command line usage and output structure.</li>
+<ul><li>Documentation was improved with three new vignettes about GUI usage, command line usage and output structure.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-3-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-3-1"></a></h3>
-<ul><li>Restore checking environmental variable in
-<code><a href="../reference/init_python.html">init_python()</a></code> (this urgent bug fixing was the reason of the
-urgent release of the current version).</li>
+<ul><li>Restore checking environmental variable in <code><a href="../reference/init_python.html">init_python()</a></code> (this urgent bug fixing was the reason of the urgent release of the current version).</li>
 <li>Fix building offline footprint.</li>
 <li>Fix the Dockerfile.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-default-argument-values-1-3-1">Changes in default argument values<a class="anchor" aria-label="anchor" href="#changes-in-default-argument-values-1-3-1"></a></h3>
-<ul><li>Accept both <code>sen2r(..., rm_safe = "yes"</code>) and
-<code>"all"</code>.</li>
-<li>In the GUI, the maximum allowed cloud cover was set to 100%
-accordingly to the <code><a href="../reference/sen2r.html">sen2r()</a></code> defaults.</li>
+<ul><li>Accept both <code>sen2r(..., rm_safe = "yes"</code>) and <code>"all"</code>.</li>
+<li>In the GUI, the maximum allowed cloud cover was set to 100% accordingly to the <code><a href="../reference/sen2r.html">sen2r()</a></code> defaults.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="minor-changes-1-3-1">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1-3-1"></a></h3>
-<ul><li>Add check on <code>max_mask</code> - <code>mask_type</code>
-coherence (if <code>max_mask &lt; 100</code> and <code>mask_type</code>
-is not specified, a warning is returned).</li>
+<ul><li>Add check on <code>max_mask</code> - <code>mask_type</code> coherence (if <code>max_mask &lt; 100</code> and <code>mask_type</code> is not specified, a warning is returned).</li>
 <li>Suppress some useless warnings.</li>
-<li>Switch examples on 2019 dates (previously examples were based on
-2017 images, which were partially moved on LTA).</li>
+<li>Switch examples on 2019 dates (previously examples were based on 2017 images, which were partially moved on LTA).</li>
 <li>Do not print progress bars in logs.</li>
 </ul></div>
 </div>
@@ -581,95 +456,55 @@ is not specified, a warning is returned).</li>
 <div class="section level3">
 <h3 id="major-changes-1-3-0">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-1-3-0"></a></h3>
 <ul><li>Support for GDAL 3 / PROJ 6 was added:
-<ul><li>Edit internal function to deal with CRS instead than PROJ.4
-strings</li>
-<li>Allow <code><a href="../reference/st_crs2.html">st_crs2()</a></code> accepting also WKT strings / EPSG codes
-in the form <code>"EPSG:xxxx"</code>
+<ul><li>Edit internal function to deal with CRS instead than PROJ.4 strings</li>
+<li>Allow <code><a href="../reference/st_crs2.html">st_crs2()</a></code> accepting also WKT strings / EPSG codes in the form <code>"EPSG:xxxx"</code>
 </li>
 <li>Edit GUI to accept WKT / to warn if a PROJ.4 is passed</li>
 </ul></li>
-<li>After running <code><a href="../reference/sen2r.html">sen2r()</a></code> a short report is returned to
-output summarising the status of the required processing (see new
-internal function <code><a href="../reference/sen2r_process_report.html">sen2r_process_report()</a></code>). This should
-facilitate applying sen2r in a cycle until all “expected dates” are
-processed.</li>
-<li>Management of Sen2Cor GIPP parameters: now the user can process L1C
-SAFE images applying a topographic correction (as done to produce L2A
-images on ESA Hub) or specifying other parameters managed by
-L2A_GIPP.xml file. To allow doing that, new arguments were added to
-<code><a href="../reference/sen2cor.html">sen2cor()</a></code> and <code><a href="../reference/sen2r.html">sen2r()</a></code> (see below) and a new
-option was added in the GUI.</li>
+<li>After running <code><a href="../reference/sen2r.html">sen2r()</a></code> a short report is returned to output summarising the status of the required processing (see new internal function <code><a href="../reference/sen2r_process_report.html">sen2r_process_report()</a></code>). This should facilitate applying sen2r in a cycle until all “expected dates” are processed.</li>
+<li>Management of Sen2Cor GIPP parameters: now the user can process L1C SAFE images applying a topographic correction (as done to produce L2A images on ESA Hub) or specifying other parameters managed by L2A_GIPP.xml file. To allow doing that, new arguments were added to <code><a href="../reference/sen2cor.html">sen2cor()</a></code> and <code><a href="../reference/sen2r.html">sen2r()</a></code> (see below) and a new option was added in the GUI.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-functions-1-3-0">New functions<a class="anchor" aria-label="anchor" href="#new-functions-1-3-0"></a></h3>
 <ul><li>
-<code><a href="../reference/gipp.html">read_gipp()</a></code> and <code><a href="../reference/gipp.html">set_gipp()</a></code> to read /
-create GIPP XML files with the parameters passed to Sen2Cor.</li>
-<li>Internal function <code><a href="../reference/st_as_text_2.html">st_as_text_2()</a></code> which returns WKT or
-WKT2 depending on PROJ version</li>
-<li>Internal function <code><a href="../reference/sen2r_process_report.html">sen2r_process_report()</a></code> to manage
-processing reports returned by <code><a href="../reference/sen2r.html">sen2r()</a></code>.</li>
+<code><a href="../reference/gipp.html">read_gipp()</a></code> and <code><a href="../reference/gipp.html">set_gipp()</a></code> to read / create GIPP XML files with the parameters passed to Sen2Cor.</li>
+<li>Internal function <code><a href="../reference/st_as_text_2.html">st_as_text_2()</a></code> which returns WKT or WKT2 depending on PROJ version</li>
+<li>Internal function <code><a href="../reference/sen2r_process_report.html">sen2r_process_report()</a></code> to manage processing reports returned by <code><a href="../reference/sen2r.html">sen2r()</a></code>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="deprecated-functions-1-3-0">Deprecated functions<a class="anchor" aria-label="anchor" href="#deprecated-functions-1-3-0"></a></h3>
-<ul><li>Internal function <code><a href="../reference/init_python.html">init_python()</a></code> was deprecated (Python
-is no longer managed by <strong><code>reticulate</code></strong>).</li>
+<ul><li>Internal function <code><a href="../reference/init_python.html">init_python()</a></code> was deprecated (Python is no longer managed by <strong><code>reticulate</code></strong>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-default-argument-values-1-3-0">Changes in default argument values<a class="anchor" aria-label="anchor" href="#changes-in-default-argument-values-1-3-0"></a></h3>
-<ul><li>New argument <code>bigtiff</code> for BigTIFF management in
-functions <code><a href="../reference/s2_translate.html">s2_translate()</a></code>, <code><a href="../reference/s2_merge.html">s2_merge()</a></code>,
-<code><a href="../reference/s2_mask.html">s2_mask()</a></code>, <code><a href="../reference/s2_rgb.html">s2_rgb()</a></code> and
-<code><a href="../reference/s2_calcindices.html">s2_calcindices()</a></code>.</li>
-<li>New arguments <code>use_dem</code> / <code>gipp</code> (function
-<code><a href="../reference/sen2cor.html">sen2cor()</a></code>) and <code>sen2cor_use_dem</code> /
-<code>sen2cor_gipp</code> (<code><a href="../reference/sen2r.html">sen2r()</a></code>) to manage GIPP
-parameters in Sen2Cor.</li>
+<ul><li>New argument <code>bigtiff</code> for BigTIFF management in functions <code><a href="../reference/s2_translate.html">s2_translate()</a></code>, <code><a href="../reference/s2_merge.html">s2_merge()</a></code>, <code><a href="../reference/s2_mask.html">s2_mask()</a></code>, <code><a href="../reference/s2_rgb.html">s2_rgb()</a></code> and <code><a href="../reference/s2_calcindices.html">s2_calcindices()</a></code>.</li>
+<li>New arguments <code>use_dem</code> / <code>gipp</code> (function <code><a href="../reference/sen2cor.html">sen2cor()</a></code>) and <code>sen2cor_use_dem</code> / <code>sen2cor_gipp</code> (<code><a href="../reference/sen2r.html">sen2r()</a></code>) to manage GIPP parameters in Sen2Cor.</li>
 <li>
-<code>use_python</code> argument in <code><a href="../reference/sen2r.html">sen2r()</a></code> was
-deprecated (no longer needed).</li>
+<code>use_python</code> argument in <code><a href="../reference/sen2r.html">sen2r()</a></code> was deprecated (no longer needed).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="minor-changes-1-3-0">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1-3-0"></a></h3>
-<ul><li>All components of the order (available, ordered and notordered) are
-now saved in JSON files. This allows using them to re-do an order,
-specifying if re-ordering already ordered datasets or only order the
-ones identified as “notordered” (based on new argument “reorder”).</li>
-<li>Output messages are formatted so not to exceed output line
-length.</li>
+<ul><li>All components of the order (available, ordered and notordered) are now saved in JSON files. This allows using them to re-do an order, specifying if re-ordering already ordered datasets or only order the ones identified as “notordered” (based on new argument “reorder”).</li>
+<li>Output messages are formatted so not to exceed output line length.</li>
 <li>Add support for BigTIFF format.</li>
-<li>Dependencies <strong><code>reticulate</code></strong> and
-<strong><code>magrittr</code></strong> were removed.</li>
+<li>Dependencies <strong><code>reticulate</code></strong> and <strong><code>magrittr</code></strong> were removed.</li>
 <li>Checks on the validity of SAFE products were improved.</li>
 <li>Add NDBI / NDVIre indices (<a href="https://github.com/ranghetti/sen2r/issues/241" class="external-link">#241</a>).</li>
-<li>Add footprint among metadata retrieved using
-<code><a href="../reference/safe_getMetadata.html">safe_getMetadata()</a></code> (from existing offline SAFE archives)
-and <code><a href="../reference/s2_list.html">s2_list()</a></code> (from SciHub online metadata).</li>
-<li>Filter offline SAFE archives by footprint instead than by S2 tile
-ID, so skipping using images which do not contain any data for a
-specific Area Of Interest.</li>
-<li>Add method to convert class <code>safelist</code> to <code>sf</code>
-(using footprint).</li>
-<li>Rewrite <code><a href="../reference/st_crs2.html">st_crs2()</a></code> using class methods (see the function
-help for newly accepted inputs).</li>
+<li>Add footprint among metadata retrieved using <code><a href="../reference/safe_getMetadata.html">safe_getMetadata()</a></code> (from existing offline SAFE archives) and <code><a href="../reference/s2_list.html">s2_list()</a></code> (from SciHub online metadata).</li>
+<li>Filter offline SAFE archives by footprint instead than by S2 tile ID, so skipping using images which do not contain any data for a specific Area Of Interest.</li>
+<li>Add method to convert class <code>safelist</code> to <code>sf</code> (using footprint).</li>
+<li>Rewrite <code><a href="../reference/st_crs2.html">st_crs2()</a></code> using class methods (see the function help for newly accepted inputs).</li>
 <li>
-<code><a href="../reference/safe_getMetadata.html">safe_getMetadata()</a></code> now directly read XML SAFE files
-instead than calling GDAL through
-<strong><code>reticulate</code></strong> (this avoids errors in
-particular OS conditions).</li>
+<code><a href="../reference/safe_getMetadata.html">safe_getMetadata()</a></code> now directly read XML SAFE files instead than calling GDAL through <strong><code>reticulate</code></strong> (this avoids errors in particular OS conditions).</li>
 <li>Do not use PROJ4 string with PROJ &gt; 3 (<a href="https://rsbivand.github.io/ECS530_h19/ECS530_III.html" class="external-link uri">https://rsbivand.github.io/ECS530_h19/ECS530_III.html</a>).</li>
-<li>Retrieve the GDAL installation path using <code>gdal-config</code>
-instead than <code>whereis gdalinfo</code>.</li>
+<li>Retrieve the GDAL installation path using <code>gdal-config</code> instead than <code>whereis gdalinfo</code>.</li>
 <li>Add a test for reprojection without EPSG.</li>
 <li>Return a warning if SciHub is down.</li>
-<li>Improve documentation about the problem occurring using newly
-created credentials.</li>
+<li>Improve documentation about the problem occurring using newly created credentials.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="fixes-1-3-0">Fixes<a class="anchor" aria-label="anchor" href="#fixes-1-3-0"></a></h3>
-<ul><li>Fix errors “DLL load failed” with Python GDAL scripts on Windows
-(see <a href="https://github.com/ranghetti/sen2r/issues/231" class="external-link">#231</a> and <a href="https://github.com/ranghetti/sen2r/issues/234" class="external-link">#234</a>) due to a missing <code>proj.db</code> file in
-<strong><code>rgdal</code></strong>.</li>
+<ul><li>Fix errors “DLL load failed” with Python GDAL scripts on Windows (see <a href="https://github.com/ranghetti/sen2r/issues/231" class="external-link">#231</a> and <a href="https://github.com/ranghetti/sen2r/issues/234" class="external-link">#234</a>) due to a missing <code>proj.db</code> file in <strong><code>rgdal</code></strong>.</li>
 <li>Hide warning using PROJ &gt;= 6 (<a href="https://github.com/rspatial/raster/issues/78" class="external-link uri">https://github.com/rspatial/raster/issues/78</a>).</li>
 <li>Other various bug fixes (see issues).</li>
 </ul></div>
@@ -678,205 +513,127 @@ created credentials.</li>
 <h2 class="page-header" data-toc-text="1.2.1" id="version-121">Version 1.2.1<small>2019-11-12</small><a class="anchor" aria-label="anchor" href="#version-121"></a></h2>
 <div class="section level3">
 <h3 id="major-changes-1-2-1">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-1-2-1"></a></h3>
-<ul><li>New <code>safelist</code> class for lists of SAFE Sentinel-2
-archives (see <a href="https://sen2r.ranghetti.info/reference/safelist-class.html" class="external-link">safelist-class</a>);</li>
+<ul><li>New <code>safelist</code> class for lists of SAFE Sentinel-2 archives (see <a href="https://sen2r.ranghetti.info/reference/safelist-class.html" class="external-link">safelist-class</a>);</li>
 <li>
-<code><a href="../reference/sen2r.html">sen2r()</a></code> execution now causes saving the used parameters
-in a json file located in <code>~/.sen2r/proc_par</code> (this can be
-used to take trace of the executed processing chains);</li>
+<code><a href="../reference/sen2r.html">sen2r()</a></code> execution now causes saving the used parameters in a json file located in <code>~/.sen2r/proc_par</code> (this can be used to take trace of the executed processing chains);</li>
 <li>
-<code><a href="../reference/safe_getMetadata.html">safe_getMetadata()</a></code> function was rewritten: now files
-are scanned only if the user requires metadata which must be retrieved
-from file content, otherwise only file names are analysed. Inputs can be
-also <code>safelist</code> objects. The support for oldname SAFE
-products is deprecated.</li>
+<code><a href="../reference/safe_getMetadata.html">safe_getMetadata()</a></code> function was rewritten: now files are scanned only if the user requires metadata which must be retrieved from file content, otherwise only file names are analysed. Inputs can be also <code>safelist</code> objects. The support for oldname SAFE products is deprecated.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-functions--methods-1-2-1">New functions / methods<a class="anchor" aria-label="anchor" href="#new-functions--methods-1-2-1"></a></h3>
 <ul><li>
-<code><a href="../reference/install_sen2cor.html">link_sen2cor()</a></code> can be used to link an existing Sen2Cor
-installation to sen2r;</li>
+<code><a href="../reference/install_sen2cor.html">link_sen2cor()</a></code> can be used to link an existing Sen2Cor installation to sen2r;</li>
 <li>
-<code><a href="https://r-spatial.github.io/sf/reference/coerce-methods.html" class="external-link">as()</a></code> methods can be used to convert
-<code>safelist</code> from/to <code>character</code>,
-<code>data.frame</code> and <code>data.table</code> (as well as
-<code>as.character()',</code>as.data.frame()<code>and</code>as.data.table()`
-functions).</li>
+<code><a href="https://rdrr.io/r/methods/as.html" class="external-link">as()</a></code> methods can be used to convert <code>safelist</code> from/to <code>character</code>, <code>data.frame</code> and <code>data.table</code> (as well as <code>as.character()',</code>as.data.frame()<code>and</code>as.data.table()` functions).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-default-values-1-2-1">Changes in default values<a class="anchor" aria-label="anchor" href="#changes-in-default-values-1-2-1"></a></h3>
 <ul><li>
-<code><a href="../reference/safe_getMetadata.html">safe_getMetadata()</a></code>: new arguments <code>format</code>,
-<code>simplify</code> and <code>allow_oldnames</code> (see the function
-reference for details);</li>
+<code><a href="../reference/safe_getMetadata.html">safe_getMetadata()</a></code>: new arguments <code>format</code>, <code>simplify</code> and <code>allow_oldnames</code> (see the function reference for details);</li>
 <li>
-<code><a href="../reference/s2_list.html">s2_list()</a></code>: argument <code>output_type</code> was
-deprecated (use <code>as.data.table</code> to obtain a data.table
-instead than the new default <code>safelist</code> object);</li>
+<code><a href="../reference/s2_list.html">s2_list()</a></code>: argument <code>output_type</code> was deprecated (use <code>as.data.table</code> to obtain a data.table instead than the new default <code>safelist</code> object);</li>
 <li>
-<code><a href="../reference/safe_shortname.html">safe_shortname()</a></code>: arguments <code>tiles</code>,
-<code>force_tiles</code>, <code>set.seed</code> and
-<code>multiple_names</code> were deprecated, since they are not used
-with SAFE compact names (old names are no more supported);</li>
+<code><a href="../reference/safe_shortname.html">safe_shortname()</a></code>: arguments <code>tiles</code>, <code>force_tiles</code>, <code>set.seed</code> and <code>multiple_names</code> were deprecated, since they are not used with SAFE compact names (old names are no more supported);</li>
 </ul></div>
 <div class="section level3">
 <h3 id="minor-changes-1-2-1">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1-2-1"></a></h3>
 <ul><li>
-<code><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv()</a></code> effects now do not affect the R
-environment after exiting from sen2r() execution;</li>
+<code><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv()</a></code> effects now do not affect the R environment after exiting from sen2r() execution;</li>
 <li>
-<code><a href="../reference/safe_shortname.html">safe_shortname()</a></code> does no more support oldname SAFE
-products;</li>
-<li>the Docker version of the package was modified to support last
-package changes;</li>
-<li>the delay between SciHub registration of new credentials and the
-possibility to use them on API hub is now documented in the GUI;</li>
-<li>return a warning in case some LTA orders cannot be processed because
-user quota exceeded.</li>
+<code><a href="../reference/safe_shortname.html">safe_shortname()</a></code> does no more support oldname SAFE products;</li>
+<li>the Docker version of the package was modified to support last package changes;</li>
+<li>the delay between SciHub registration of new credentials and the possibility to use them on API hub is now documented in the GUI;</li>
+<li>return a warning in case some LTA orders cannot be processed because user quota exceeded.</li>
 </ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.2.0" id="version-120">Version 1.2.0<a class="anchor" aria-label="anchor" href="#version-120"></a></h2>
-<p>Starting from this version sen2r supports ordering products from Long
-Term Archive (LTA) (see news at <a href="https://inthub.copernicus.eu/userguide/LongTermArchive" class="external-link uri">https://inthub.copernicus.eu/userguide/LongTermArchive</a>).
-Now the user can automatically order SAFE products which are not
-available for direct download, and use them when made available. Some
-internal functions can be exploited to manually manage orders.</p>
+<p>Starting from this version sen2r supports ordering products from Long Term Archive (LTA) (see news at <a href="https://inthub.copernicus.eu/userguide/LongTermArchive" class="external-link uri">https://inthub.copernicus.eu/userguide/LongTermArchive</a>). Now the user can automatically order SAFE products which are not available for direct download, and use them when made available. Some internal functions can be exploited to manually manage orders.</p>
 <p>Here above the related changes:</p>
 <div class="section level3">
 <h3 id="new-functions-1-2-0">New functions<a class="anchor" aria-label="anchor" href="#new-functions-1-2-0"></a></h3>
 <ul><li>
-<code>safe_is_valid()</code> to check if an order was
-processed;</li>
+<code>safe_is_valid()</code> to check if an order was processed;</li>
 <li>
 <code><a href="../reference/s2_order.html">s2_order()</a></code> to order products from LTA.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-arguments-1-2-0">New arguments<a class="anchor" aria-label="anchor" href="#new-arguments-1-2-0"></a></h3>
 <ul><li>
-<code><a href="../reference/sen2r.html">sen2r()</a></code> and <code><a href="../reference/s2_download.html">s2_download()</a></code> have a new
-argument <code>order_lta</code> (default: TRUE) to order SAFE archives
-not available for direct download;</li>
+<code><a href="../reference/sen2r.html">sen2r()</a></code> and <code><a href="../reference/s2_download.html">s2_download()</a></code> have a new argument <code>order_lta</code> (default: TRUE) to order SAFE archives not available for direct download;</li>
 <li>
-<code><a href="../reference/s2_gui.html">s2_gui()</a></code> has a new checkbox to set the previous
-argument.</li>
+<code><a href="../reference/s2_gui.html">s2_gui()</a></code> has a new checkbox to set the previous argument.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="other-changes-not-related-with-lta-1-2-0">Other changes (not related with LTA)<a class="anchor" aria-label="anchor" href="#other-changes-not-related-with-lta-1-2-0"></a></h3>
-<ul><li>Function <code><a href="../reference/build_example_param_file.html">build_example_param_file()</a></code> does no more
-compute TOA and RGB432T (this to avoid downloading 2 SAFE
-archives).</li>
+<ul><li>Function <code><a href="../reference/build_example_param_file.html">build_example_param_file()</a></code> does no more compute TOA and RGB432T (this to avoid downloading 2 SAFE archives).</li>
 <li>Code coverage was expanded.</li>
-</ul><p><br> ## <strong>sen2r</strong> CRAN release
-_________________________ <strong><code>sen2r</code></strong> was
-accepted on CRAN (2019-10-21, version 1.1.0). From now, it is possible
-to install <a href="https://CRAN.R-project.org/package=sen2r" class="external-link">the CRAN
-version</a> with the following command:</p>
+</ul><p><br> ## <strong>sen2r</strong> CRAN release _________________________ <strong><code>sen2r</code></strong> was accepted on CRAN (2019-10-21, version 1.1.0). From now, it is possible to install <a href="https://CRAN.R-project.org/package=sen2r" class="external-link">the CRAN version</a> with the following command:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"sen2r"</span><span class="op">)</span></code></pre></div>
-<p>The development version – which may contain updated features – can
-still be installed with the following command:</p>
+<code class="sourceCode R"><span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"sen2r"</span><span class="op">)</span></span></code></pre></div>
+<p>The development version – which may contain updated features – can still be installed with the following command:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_packages_github</span><span class="op">(</span><span class="st">"ranghetti/sen2r"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_packages_github</span><span class="op">(</span><span class="st">"ranghetti/sen2r"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.1.0" id="version-110">Version 1.1.0<small>2019-10-21</small><a class="anchor" aria-label="anchor" href="#version-110"></a></h2>
 <div class="section level3">
 <h3 id="changes-in-default-values-1-1-0">Changes in default values<a class="anchor" aria-label="anchor" href="#changes-in-default-values-1-1-0"></a></h3>
-<ul><li>The default value for <code>"list_prods"</code> argument in
-<code><a href="../reference/sen2r.html">sen2r()</a></code> is NULL instead of <code>'BOA'</code>.</li>
-<li>Remove <code>'no'</code> value for argument
-<code>"step_atmcorr"</code> in <code><a href="../reference/sen2r.html">sen2r()</a></code> (use
-<code>'l2a'</code> without selecting any L2A products instead).</li>
-<li>Default values for <code>"smoothing"</code> and
-<code>"buffer"</code> arguments in <code><a href="../reference/s2_mask.html">s2_mask()</a></code> are now
-<code>0</code> (like in <code><a href="../reference/sen2r.html">sen2r()</a></code>) instead than 10/20 m.</li>
-<li>Set <code>parallel = FALSE</code> as default in <code><a href="../reference/sen2r.html">sen2r()</a></code>
-(parallelisation must be explicitly required).</li>
-<li>Since old name products were repackaged by ESA, these products are
-no longer supported.</li>
-<li>In the case the users manually defines the path to be used as
-temporary directory and this directory already exists, a casual
-subdirectory of the user-defined folder is used (this to prevent to
-accidentally delete existing files).</li>
+<ul><li>The default value for <code>"list_prods"</code> argument in <code><a href="../reference/sen2r.html">sen2r()</a></code> is NULL instead of <code>'BOA'</code>.</li>
+<li>Remove <code>'no'</code> value for argument <code>"step_atmcorr"</code> in <code><a href="../reference/sen2r.html">sen2r()</a></code> (use <code>'l2a'</code> without selecting any L2A products instead).</li>
+<li>Default values for <code>"smoothing"</code> and <code>"buffer"</code> arguments in <code><a href="../reference/s2_mask.html">s2_mask()</a></code> are now <code>0</code> (like in <code><a href="../reference/sen2r.html">sen2r()</a></code>) instead than 10/20 m.</li>
+<li>Set <code>parallel = FALSE</code> as default in <code><a href="../reference/sen2r.html">sen2r()</a></code> (parallelisation must be explicitly required).</li>
+<li>Since old name products were repackaged by ESA, these products are no longer supported.</li>
+<li>In the case the users manually defines the path to be used as temporary directory and this directory already exists, a casual subdirectory of the user-defined folder is used (this to prevent to accidentally delete existing files).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="major-changes-1-1-0">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-1-1-0"></a></h3>
 <ul><li>
-<strong><code>sen2r</code></strong> package directory is no more
-used to store files, but a subfolder <code>.sen2r</code> of the user
-Home directory is created and used. In this way, reinstalling sen2r will
-not require anymore to reinstall runtime dependencies / to reconfigure
-the package. The permission to write on this folder is asked to the user
-when the package is loaded for the first time.</li>
+<strong><code>sen2r</code></strong> package directory is no more used to store files, but a subfolder <code>.sen2r</code> of the user Home directory is created and used. In this way, reinstalling sen2r will not require anymore to reinstall runtime dependencies / to reconfigure the package. The permission to write on this folder is asked to the user when the package is loaded for the first time.</li>
 <li>
-<code><a href="../reference/s2_list.html">s2_list()</a></code> and <code><a href="../reference/s2_download.html">s2_download()</a></code> now use
-internal methods instead of calling python function derived from
-s2download scripts by Hagolle (this substantially improve the speed of
-SAFE search), which were removed.</li>
+<code><a href="../reference/s2_list.html">s2_list()</a></code> and <code><a href="../reference/s2_download.html">s2_download()</a></code> now use internal methods instead of calling python function derived from s2download scripts by Hagolle (this substantially improve the speed of SAFE search), which were removed.</li>
 <li>
-<strong><code>sen2r</code></strong> is now supported also on
-MacOS.</li>
+<strong><code>sen2r</code></strong> is now supported also on MacOS.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="newremoved-dependencies-1-1-0">New/removed dependencies<a class="anchor" aria-label="anchor" href="#newremoved-dependencies-1-1-0"></a></h3>
-<ul><li>Remove <strong><code>sp</code></strong> and
-<strong><code>rgdal</code></strong> from explicit dependencies.</li>
-<li>Remove <strong><code>stringr</code></strong> and
-<strong><code>gdalUtils</code></strong> dependencies.</li>
+<ul><li>Remove <strong><code>sp</code></strong> and <strong><code>rgdal</code></strong> from explicit dependencies.</li>
+<li>Remove <strong><code>stringr</code></strong> and <strong><code>gdalUtils</code></strong> dependencies.</li>
 <li>Add <strong><code>stars</code></strong> dependency.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-functions-1-1-0">New functions<a class="anchor" aria-label="anchor" href="#new-functions-1-1-0"></a></h3>
 <ul><li>
-<code><a href="../reference/str_pad2.html">str_pad2()</a></code>, equivalent to str_pad() without the needing
-to load <code>stringr</code>.</li>
+<code><a href="../reference/str_pad2.html">str_pad2()</a></code>, equivalent to str_pad() without the needing to load <code>stringr</code>.</li>
 <li>
-<code><a href="../reference/raster_metadata.html">raster_metadata()</a></code>, to get raster metadata, without
-rgdal dependency.</li>
+<code><a href="../reference/raster_metadata.html">raster_metadata()</a></code>, to get raster metadata, without rgdal dependency.</li>
 <li>
-<code><a href="../reference/scihub_login.html">check_scihub_login()</a></code> to check if SciHub credentials are
-right.</li>
+<code><a href="../reference/scihub_login.html">check_scihub_login()</a></code> to check if SciHub credentials are right.</li>
 <li>
-<code><a href="../reference/scihub_login.html">check_scihub_connection()</a></code> to check for internet
-connectivity.</li>
+<code><a href="../reference/scihub_login.html">check_scihub_connection()</a></code> to check for internet connectivity.</li>
 <li>
-<code><a href="../reference/build_example_param_file.html">build_example_param_file()</a></code> (not exported) to build an
-example parameter file.</li>
+<code><a href="../reference/build_example_param_file.html">build_example_param_file()</a></code> (not exported) to build an example parameter file.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="other-changes-1-1-0">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-1-1-0"></a></h3>
-<ul><li>Packages stability was improved by adding test functions, working
-with <strong><code>testthat</code></strong>.</li>
-<li>S2 tiles are not provided as kmz within the package, but a rds file
-is downloaded after installing the package (in this way, package
-installation is lighter, and S2 tiles are read faster).</li>
-<li>Function <code><a href="../reference/check_gdal.html">check_gdal()</a></code> was rewritten without using
-<strong><code>gdalUtils</code></strong>, in order to be simpler and
-faster.</li>
+<ul><li>Packages stability was improved by adding test functions, working with <strong><code>testthat</code></strong>.</li>
+<li>S2 tiles are not provided as kmz within the package, but a rds file is downloaded after installing the package (in this way, package installation is lighter, and S2 tiles are read faster).</li>
+<li>Function <code><a href="../reference/check_gdal.html">check_gdal()</a></code> was rewritten without using <strong><code>gdalUtils</code></strong>, in order to be simpler and faster.</li>
 <li>Some new indices were added:
 <ul><li>NDWI-NDWI2 (<a href="https://github.com/ranghetti/sen2r/issues/184" class="external-link">#184</a>);</li>
 <li>CRred-BDred-CRred2 (<a href="https://github.com/ranghetti/sen2r/issues/168" class="external-link">#168</a>);</li>
-<li>Indices from <a href="https://www.sentinel-hub.com/develop/documentation/eo_products/Sentinel2EOproducts/" class="external-link">Sentinel-hub
-indices</a> were checked.</li>
+<li>Indices from <a href="https://www.sentinel-hub.com/develop/documentation/eo_products/Sentinel2EOproducts/" class="external-link">Sentinel-hub indices</a> were checked.</li>
 </ul></li>
-<li>The minimum convex hull of the extent is used instead of the bbox to
-search SAFE images.</li>
+<li>The minimum convex hull of the extent is used instead of the bbox to search SAFE images.</li>
 <li>Several “soft” error/warning messages were introduced.</li>
-<li>ENVI headers now includes some information about band names
-(TOA/BOA) and SCL classes.</li>
-<li>Coupling SAFE: in offline mode, if some L2A products exists but not
-the corresponding L1C, and TOA-derived products are required, only the
-“coupled” SAFE archives are used.</li>
-<li>Small base example files were added to the package for testing
-purposes.</li>
-<li>Sen2Cor version which the user wants to install can be chosen in the
-GUI.</li>
-<li>Documentation was updated and improved, in particular adding
-function examples.</li>
+<li>ENVI headers now includes some information about band names (TOA/BOA) and SCL classes.</li>
+<li>Coupling SAFE: in offline mode, if some L2A products exists but not the corresponding L1C, and TOA-derived products are required, only the “coupled” SAFE archives are used.</li>
+<li>Small base example files were added to the package for testing purposes.</li>
+<li>Sen2Cor version which the user wants to install can be chosen in the GUI.</li>
+<li>Documentation was updated and improved, in particular adding function examples.</li>
 <li>Unused old code was removed.</li>
 <li>Several bugs were fixed.</li>
 </ul></div>
@@ -885,38 +642,21 @@ function examples.</li>
 <h2 class="page-header" data-toc-text="1.0.2" id="version-102">Version 1.0.2<a class="anchor" aria-label="anchor" href="#version-102"></a></h2>
 <div class="section level3">
 <h3 id="changes-in-default-argument-values-1-0-2">Changes in default argument values<a class="anchor" aria-label="anchor" href="#changes-in-default-argument-values-1-0-2"></a></h3>
-<ul><li>the default running order is now <code>"by groups"</code> instead
-than <code>"step by step"</code>: this ensures best computing speed and
-improves the management of disk usage, although it is not possible to
-see all the output messages in standard output (to see them, it is
-necessary to redirect them in a log file).</li>
-<li>cloud masks: <code>"cloud_low_proba"</code> is not yet available in
-the GUI (if is still a valid argument value for compatibility), and
-<code>"cloud_and_shadow"</code> now includes class “unclassified”. This
-in order to include “unclassified” only in “conservative” mask values,
-and to exclude it in non-conservative ones.</li>
+<ul><li>the default running order is now <code>"by groups"</code> instead than <code>"step by step"</code>: this ensures best computing speed and improves the management of disk usage, although it is not possible to see all the output messages in standard output (to see them, it is necessary to redirect them in a log file).</li>
+<li>cloud masks: <code>"cloud_low_proba"</code> is not yet available in the GUI (if is still a valid argument value for compatibility), and <code>"cloud_and_shadow"</code> now includes class “unclassified”. This in order to include “unclassified” only in “conservative” mask values, and to exclude it in non-conservative ones.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="edits-in-the-gui-1-0-2">Edits in the GUI<a class="anchor" aria-label="anchor" href="#edits-in-the-gui-1-0-2"></a></h3>
-<ul><li>add commands to manage parallelisation and running order (with
-documentation)</li>
+<ul><li>add commands to manage parallelisation and running order (with documentation)</li>
 <li>add button to export output messages in a log file</li>
 <li>add MathML code for some custom spectral indices</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-dependencies-1-0-2">New dependencies<a class="anchor" aria-label="anchor" href="#new-dependencies-1-0-2"></a></h3>
 <ul><li>
-<code>httr</code>: a change in Wget available version for Windows
-(1.20.3 instead than 1.19.4) caused the old link to break; moreover,
-downloading Wget using the new link was not possible with
-<code><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file()</a></code> due to a redirect. So, httr dependency was
-introduced, and download of Wget, aria2 and sen2cor is now performed
-with GET function.</li>
+<code>httr</code>: a change in Wget available version for Windows (1.20.3 instead than 1.19.4) caused the old link to break; moreover, downloading Wget using the new link was not possible with <code><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file()</a></code> due to a redirect. So, httr dependency was introduced, and download of Wget, aria2 and sen2cor is now performed with GET function.</li>
 <li>
-<code>dplyr</code>: the internal function
-<code><a href="../reference/tiles_intersects.html">tiles_intersects()</a></code> now perform dissolve operations over
-polygons of S2 tiles using <code>dplyr</code> commands
-(<code>group_by()</code> and <code><a href="https://r-spatial.github.io/sf/reference/tidyverse.html" class="external-link">summarise()</a></code>).</li>
+<code>dplyr</code>: the internal function <code><a href="../reference/tiles_intersects.html">tiles_intersects()</a></code> now perform dissolve operations over polygons of S2 tiles using <code>dplyr</code> commands (<code>group_by()</code> and <code>summarise()</code>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="minor-improvements-1-0-2">Minor improvements<a class="anchor" aria-label="anchor" href="#minor-improvements-1-0-2"></a></h3>
@@ -933,31 +673,19 @@ polygons of S2 tiles using <code>dplyr</code> commands
 <h3 id="changes-from-version-1-0-1">Changes from version 1.0.0<a class="anchor" aria-label="anchor" href="#changes-from-version-1-0-1"></a></h3>
 <div class="section level4">
 <h4 id="major-changes-1-0-1">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-1-0-1"></a></h4>
-<ul><li>A new algorithm was implemented in <code><a href="../reference/s2_calcindices.html">s2_calcindices()</a></code>:
-now internal raster routines are used by default instead than
-<code>gdal_calc.py</code>, allowing reducing RAM usage and computation
-time.</li>
-<li>Better RAM usage and reduction of execution time:
-<code><a href="../reference/sen2r_getElements.html">sen2r_getElements()</a></code> was rewritten in order to:
-<ol style="list-style-type: decimal"><li>avoid a RAM leak present in the function, which was causing a high
-RAM use in the first part of the execution of <code><a href="../reference/sen2r.html">sen2r()</a></code>;</li>
-<li>considerably speed up the execution (now the metadata of 100 files
-is retrieved in 4 milliseconds instead than 80).</li>
+<ul><li>A new algorithm was implemented in <code><a href="../reference/s2_calcindices.html">s2_calcindices()</a></code>: now internal raster routines are used by default instead than <code>gdal_calc.py</code>, allowing reducing RAM usage and computation time.</li>
+<li>Better RAM usage and reduction of execution time: <code><a href="../reference/sen2r_getElements.html">sen2r_getElements()</a></code> was rewritten in order to:
+<ol style="list-style-type: decimal"><li>avoid a RAM leak present in the function, which was causing a high RAM use in the first part of the execution of <code><a href="../reference/sen2r.html">sen2r()</a></code>;</li>
+<li>considerably speed up the execution (now the metadata of 100 files is retrieved in 4 milliseconds instead than 80).</li>
 </ol></li>
 </ul></div>
 <div class="section level4">
 <h4 id="changes-in-function-defaults-1-0-1">Changes in function defaults<a class="anchor" aria-label="anchor" href="#changes-in-function-defaults-1-0-1"></a></h4>
 <ul><li>
-<code><a href="../reference/s2_calcindices.html">s2_calcindices()</a></code> uses internal routines; the legacy
-mode can be used with the argument <code>proc_mode = "gdal_calc"</code>
-(default value is <code>"raster"</code>).</li>
+<code><a href="../reference/s2_calcindices.html">s2_calcindices()</a></code> uses internal routines; the legacy mode can be used with the argument <code>proc_mode = "gdal_calc"</code> (default value is <code>"raster"</code>).</li>
 <li>
-<code><a href="../reference/list_indices.html">list_indices()</a></code> now returns only checked indices by
-default (specify <code>all = TRUE</code> to return also non-checked
-ones).</li>
-<li>the default output format of <code><a href="../reference/sen2r_getElements.html">sen2r_getElements()</a></code> is now
-a data.table instead than a list (use <code>format = "list"</code> to
-reproduce the old default).</li>
+<code><a href="../reference/list_indices.html">list_indices()</a></code> now returns only checked indices by default (specify <code>all = TRUE</code> to return also non-checked ones).</li>
+<li>the default output format of <code><a href="../reference/sen2r_getElements.html">sen2r_getElements()</a></code> is now a data.table instead than a list (use <code>format = "list"</code> to reproduce the old default).</li>
 </ul></div>
 <div class="section level4">
 <h4 id="various-fixes-1-0-1">Various fixes.<a class="anchor" aria-label="anchor" href="#various-fixes-1-0-1"></a></h4>
@@ -966,38 +694,28 @@ reproduce the old default).</li>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.0.0" id="version-100">Version 1.0.0<a class="anchor" aria-label="anchor" href="#version-100"></a></h2>
-<p>First stable release of package <strong>sen2r</strong>! See the
-announcement <a href="https://luigi.ranghetti.info/post/sen2r-released" class="external-link">here</a>.</p>
+<p>First stable release of package <strong>sen2r</strong>! See the announcement <a href="https://luigi.ranghetti.info/post/sen2r-released" class="external-link">here</a>.</p>
 <div class="section level3">
 <h3 id="changes-from-version-1-0-0">Changes from version 0.3.4<a class="anchor" aria-label="anchor" href="#changes-from-version-1-0-0"></a></h3>
 <div class="section level4">
 <h4 id="gui-changes-1-0-0">GUI changes:<a class="anchor" aria-label="anchor" href="#gui-changes-1-0-0"></a></h4>
-<ul><li>Highlight selected tiles in the map (now red) in respect to
-unselected ones (grey)</li>
+<ul><li>Highlight selected tiles in the map (now red) in respect to unselected ones (grey)</li>
 <li>Hide TCI product (replaced by RGB images)</li>
 <li>Implement orbit selector and change the style of tile selector</li>
 <li>Make boxes collapsible</li>
-<li>Use shinyfiles to load extent (for coherence with other file
-selectors in the GUI)</li>
-<li>Copying <code>path_out</code> to <code>path_rgb</code> /
-<code>path_indices</code> is not yet necessary (if empty,
-<code>path_out</code> is used)</li>
+<li>Use shinyfiles to load extent (for coherence with other file selectors in the GUI)</li>
+<li>Copying <code>path_out</code> to <code>path_rgb</code> / <code>path_indices</code> is not yet necessary (if empty, <code>path_out</code> is used)</li>
 <li>Add loading spinner</li>
 <li>Other style improvements</li>
 </ul></div>
 <div class="section level4">
 <h4 id="new-functions-1-0-0">New functions<a class="anchor" aria-label="anchor" href="#new-functions-1-0-0"></a></h4>
 <ul><li>
-<code><a href="../reference/tiles_intersects.html">tiles_intersects()</a></code>: when an extent is loaded, now only
-required tiles are automatically used, instead than all the overlapping
-ones.</li>
+<code><a href="../reference/tiles_intersects.html">tiles_intersects()</a></code>: when an extent is loaded, now only required tiles are automatically used, instead than all the overlapping ones.</li>
 </ul></div>
 <div class="section level4">
 <h4 id="update-dependencies-1-0-0">Update dependencies<a class="anchor" aria-label="anchor" href="#update-dependencies-1-0-0"></a></h4>
-<ul><li>after <a href="https://www.r-bloggers.com/2019/02/a-major-upgrade-of-the-v8-package/" class="external-link">V8
-major update</a>, <a href="https://sen2r.ranghetti.info/articles/installation.html" class="external-link">Installation
-page</a> was edited to refer to <code>v8</code> instead than to
-<code>v8-3.14</code>
+<ul><li>after <a href="https://www.r-bloggers.com/2019/02/a-major-upgrade-of-the-v8-package/" class="external-link">V8 major update</a>, <a href="https://sen2r.ranghetti.info/articles/installation.html" class="external-link">Installation page</a> was edited to refer to <code>v8</code> instead than to <code>v8-3.14</code>
 </li>
 </ul></div>
 <div class="section level4">
@@ -1014,13 +732,8 @@ page</a> was edited to refer to <code>v8</code> instead than to
 <h2 class="page-header" data-toc-text="0.3.4" id="version-034">Version 0.3.4<a class="anchor" aria-label="anchor" href="#version-034"></a></h2>
 <div class="section level4">
 <h4 id="major-improvements-0-3-4">Major improvements<a class="anchor" aria-label="anchor" href="#major-improvements-0-3-4"></a></h4>
-<ul><li>Implement 4 different processing orders in order to fasterize
-processing. See “processing_order” in <code><a href="../reference/sen2r.html">sen2r()</a></code>
-documentation. The 4 different modes allow to privilege stability,
-velocity or disk space. In this version, the legacy mode (“by_step”) is
-maintained as the default.</li>
-<li>Add new function <code><a href="../reference/s2_rgb.html">s2_rgb()</a></code> to produce RGB images,
-integrating it in <code><a href="../reference/sen2r.html">sen2r()</a></code> and in the GUI.</li>
+<ul><li>Implement 4 different processing orders in order to fasterize processing. See “processing_order” in <code><a href="../reference/sen2r.html">sen2r()</a></code> documentation. The 4 different modes allow to privilege stability, velocity or disk space. In this version, the legacy mode (“by_step”) is maintained as the default.</li>
+<li>Add new function <code><a href="../reference/s2_rgb.html">s2_rgb()</a></code> to produce RGB images, integrating it in <code><a href="../reference/sen2r.html">sen2r()</a></code> and in the GUI.</li>
 <li>Add a dockerised version of sen2r: <a href="https://hub.docker.com/r/ranghetti/sen2r" class="external-link uri">https://hub.docker.com/r/ranghetti/sen2r</a>
 </li>
 </ul></div>
@@ -1028,8 +741,7 @@ integrating it in <code><a href="../reference/sen2r.html">sen2r()</a></code> and
 <h4 id="changes-0-3-4">Changes<a class="anchor" aria-label="anchor" href="#changes-0-3-4"></a></h4>
 <ul><li>Change base cloud masks:
 <ul><li>class “Saturated and defective” is masked within all masks;</li>
-<li>class “Dark area pixels” is masked in masks in which “Cloud shadows”
-was masked;</li>
+<li>class “Dark area pixels” is masked in masks in which “Cloud shadows” was masked;</li>
 <li>mask “cloud_shadow_cirrus” was renamed to “clear_sky”;</li>
 <li>a new “land” mask was added.</li>
 </ul></li>
@@ -1037,37 +749,27 @@ was masked;</li>
 </li>
 <li>Names of ratio indices now uses “:” instead of “/” (<a href="https://github.com/ranghetti/sen2r/issues/123" class="external-link">#123</a>)</li>
 <li>Index TCI_idx now is TCIdx</li>
-<li>Use a default extent name (leaving it empty is now not allowed, in
-order not to confuse with naming convention of merged files)</li>
+<li>Use a default extent name (leaving it empty is now not allowed, in order not to confuse with naming convention of merged files)</li>
 </ul></div>
 <div class="section level4">
 <h4 id="other-improvements-0-3-4">Other improvements<a class="anchor" aria-label="anchor" href="#other-improvements-0-3-4"></a></h4>
-<ul><li>Improve SAFE filtering: removing duplicates; filtering by position
-(only the ones overlapping the extent); do not perform a double check of
-existing products in offline mode.</li>
-<li>Improve GUI: improve cloud mask helper (documentation within
-<code><a href="../reference/s2_gui.html">s2_gui()</a></code> was improved by adding a modaldialog which
-explains how to apply buffer and smoothing to cloud masks)</li>
+<ul><li>Improve SAFE filtering: removing duplicates; filtering by position (only the ones overlapping the extent); do not perform a double check of existing products in offline mode.</li>
+<li>Improve GUI: improve cloud mask helper (documentation within <code><a href="../reference/s2_gui.html">s2_gui()</a></code> was improved by adding a modaldialog which explains how to apply buffer and smoothing to cloud masks)</li>
 <li>Allow sen2r working with GDAL 2.1.2</li>
 <li>Allow GDAL path to be specified in <code><a href="../reference/check_gdal.html">check_gdal()</a></code>
 </li>
 <li>Implements a faster method for masking</li>
 <li>Add max_cloud_safe argument to <code><a href="../reference/sen2r.html">sen2r()</a></code>
 </li>
-<li>Add a function <code><a href="../reference/safe_getMetadata.html">safe_isvalid()</a></code> to check for valid SAFE
-archive names, and use it to filter existing SAFE folders (<a href="https://github.com/ranghetti/sen2r/issues/104" class="external-link">#104</a>)</li>
-<li>Update installation documentation (Linux dependencies and
-Docker)</li>
+<li>Add a function <code><a href="../reference/safe_getMetadata.html">safe_isvalid()</a></code> to check for valid SAFE archive names, and use it to filter existing SAFE folders (<a href="https://github.com/ranghetti/sen2r/issues/104" class="external-link">#104</a>)</li>
+<li>Update installation documentation (Linux dependencies and Docker)</li>
 </ul></div>
 <div class="section level4">
 <h4 id="fixes-0-3-4">Fixes<a class="anchor" aria-label="anchor" href="#fixes-0-3-4"></a></h4>
 <ul><li>
-<strong>Important fix</strong>: fix indices computation (before
-that, indices with additive values were wrongly generated).</li>
-<li>Avoid errors when a SAFE directory exists but not in the right
-format</li>
-<li>Fix the fiddly error which caused several blocks when starting
-<code><a href="../reference/s2_merge.html">s2_merge()</a></code> or <code><a href="../reference/s2_calcindices.html">s2_calcindices()</a></code>
+<strong>Important fix</strong>: fix indices computation (before that, indices with additive values were wrongly generated).</li>
+<li>Avoid errors when a SAFE directory exists but not in the right format</li>
+<li>Fix the fiddly error which caused several blocks when starting <code><a href="../reference/s2_merge.html">s2_merge()</a></code> or <code><a href="../reference/s2_calcindices.html">s2_calcindices()</a></code>
 </li>
 <li>Fix searching oldname products with “auto” corr_type</li>
 <li>Fix loading a custom mask from json parameter file</li>
@@ -1077,187 +779,99 @@ format</li>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.3" id="version-033">Version 0.3.3<a class="anchor" aria-label="anchor" href="#version-033"></a></h2>
-<p>This is an improvement of version 0.3.2, with several fixes and
-improvements.</p>
+<p>This is an improvement of version 0.3.2, with several fixes and improvements.</p>
 <div class="section level4">
 <h4 id="major-changes-0-3-3">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-0-3-3"></a></h4>
-<ul><li>Add internal logging (argument <code>log</code> of function
-<code><a href="../reference/sen2r.html">sen2r()</a></code>)</li>
-<li>New function <code><a href="../reference/s2_dop.html">s2_dop()</a></code> to know the Dates Of Passage over
-orbits</li>
-<li>Cloud mask can now be smoothed and buffered, both using
-<code><a href="../reference/sen2r.html">sen2r()</a></code> and the GUI</li>
-<li>Add apihub parameter in sen2r() and in the GUI: It is now possible
-to specify a custom apihub.txt file for specific executions (i.e. for
-scheduled processes).</li>
+<ul><li>Add internal logging (argument <code>log</code> of function <code><a href="../reference/sen2r.html">sen2r()</a></code>)</li>
+<li>New function <code><a href="../reference/s2_dop.html">s2_dop()</a></code> to know the Dates Of Passage over orbits</li>
+<li>Cloud mask can now be smoothed and buffered, both using <code><a href="../reference/sen2r.html">sen2r()</a></code> and the GUI</li>
+<li>Add apihub parameter in sen2r() and in the GUI: It is now possible to specify a custom apihub.txt file for specific executions (i.e. for scheduled processes).</li>
 </ul></div>
 <div class="section level4">
 <h4 id="changes-0-3-3">Changes<a class="anchor" aria-label="anchor" href="#changes-0-3-3"></a></h4>
 <ul><li>Minor edits in GUI</li>
 <li>Parallelise functions and manage errors</li>
-<li>Create load_binpaths() (<a href="https://github.com/ranghetti/sen2r/issues/87" class="external-link">#87</a>: Create a function to load paths of
-external executables and adapt other functions to use it.</li>
+<li>Create load_binpaths() (<a href="https://github.com/ranghetti/sen2r/issues/87" class="external-link">#87</a>: Create a function to load paths of external executables and adapt other functions to use it.</li>
 <li>Implement search for ingestion date</li>
-<li>Split <code>names_missing</code> into
-<code>names_cloudcovered</code> and <code>names_missing</code>
+<li>Split <code>names_missing</code> into <code>names_cloudcovered</code> and <code>names_missing</code>
 </li>
 <li>Add some burn indices and update spectral indices from IDB</li>
-<li>Change some function names (<code>s2_getMetadata</code> -&gt;
-<code>safe_getMetadata</code>; <code>s2_shortname</code> -&gt;
-<code>safe_shortname</code>; <code>fs2nc_getElements</code> -&gt;
-<code>sen2r_getElements</code>)</li>
+<li>Change some function names (<code>s2_getMetadata</code> -&gt; <code>safe_getMetadata</code>; <code>s2_shortname</code> -&gt; <code>safe_shortname</code>; <code>fs2nc_getElements</code> -&gt; <code>sen2r_getElements</code>)</li>
 </ul></div>
 <div class="section level4">
 <h4 id="fixes-0-3-3">Fixes<a class="anchor" aria-label="anchor" href="#fixes-0-3-3"></a></h4>
 <ul><li>Ignore baseline in computing required SAFE names</li>
-<li>Fix <a href="https://github.com/ranghetti/sen2r/issues/82" class="external-link">#82</a> (Now BOA and TOA uses GTiff intermediate files instead of
-VRT (gdal_calc failed using vrt as input, computing only the first
-band))</li>
+<li>Fix <a href="https://github.com/ranghetti/sen2r/issues/82" class="external-link">#82</a> (Now BOA and TOA uses GTiff intermediate files instead of VRT (gdal_calc failed using vrt as input, computing only the first band))</li>
 <li>Uniform some default argument values</li>
 <li>Various fixes</li>
 </ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.2" id="version-032">Version 0.3.2<a class="anchor" aria-label="anchor" href="#version-032"></a></h2>
-<p>This is an improvement of version 0.3.1, with several fixes and
-improvements.</p>
+<p>This is an improvement of version 0.3.1, with several fixes and improvements.</p>
 <div class="section level4">
 <h4 id="new-functions-0-3-2">New functions<a class="anchor" aria-label="anchor" href="#new-functions-0-3-2"></a></h4>
-<ul><li><p><code><a href="../reference/check_sen2r_deps.html">check_sen2r_deps()</a></code>: a new GUI to help checking
-dependencies.</p></li>
-<li><p>Add function <code><a href="../reference/s2_mask.html">s2_perc_masked()</a></code> to compute the
-percentage of cloud-masked surface.</p></li>
+<ul><li><p><code><a href="../reference/check_sen2r_deps.html">check_sen2r_deps()</a></code>: a new GUI to help checking dependencies.</p></li>
+<li><p>Add function <code><a href="../reference/s2_mask.html">s2_perc_masked()</a></code> to compute the percentage of cloud-masked surface.</p></li>
 </ul></div>
 <div class="section level4">
 <h4 id="gui-changes-0-3-2">GUI changes<a class="anchor" aria-label="anchor" href="#gui-changes-0-3-2"></a></h4>
-<ul><li><p>Major GUI improvements in the definition of the extent: now the
-main map is used only to show the extent and the tiles, while the
-definition of the extent (drawn, specified with a bounding box or taken
-from a loaded polygon) is done in separate maps (this allows to avoid
-many errors).</p></li>
-<li><p>Add radiobutton for index datatype, to choose the datatype when
-an index is generated.</p></li>
+<ul><li><p>Major GUI improvements in the definition of the extent: now the main map is used only to show the extent and the tiles, while the definition of the extent (drawn, specified with a bounding box or taken from a loaded polygon) is done in separate maps (this allows to avoid many errors).</p></li>
+<li><p>Add radiobutton for index datatype, to choose the datatype when an index is generated.</p></li>
 <li><p>Add maximum cloud cover threshold.</p></li>
 <li><p>Implement seasonal time period (<a href="https://github.com/ranghetti/sen2r/issues/74" class="external-link">#74</a>).</p></li>
 <li><p>Implement the download with aria2c.</p></li>
 </ul></div>
 <div class="section level4">
 <h4 id="processing-chain-0-3-2">Processing chain<a class="anchor" aria-label="anchor" href="#processing-chain-0-3-2"></a></h4>
-<ul><li><p>Major commit: retrieve also existing filenames. Before this
-commit, if some products were partially retrieved (e.g. output BOA) and
-some depending on them are missing (e.g. an index) but SAFE were not
-required, the corresponding expected vectors were not retrieved (missing
-SAFE tile names nothing was generated). Now, existing names matching the
-parameters are attached to each “_exp” vector.</p></li>
+<ul><li><p>Major commit: retrieve also existing filenames. Before this commit, if some products were partially retrieved (e.g. output BOA) and some depending on them are missing (e.g. an index) but SAFE were not required, the corresponding expected vectors were not retrieved (missing SAFE tile names nothing was generated). Now, existing names matching the parameters are attached to each “_exp” vector.</p></li>
 <li>
 <p>Manage parallelisation:</p>
-<ul><li>add partial parallelisation in s2_calcindices() (on infiles, not on
-indices);</li>
+<ul><li>add partial parallelisation in s2_calcindices() (on infiles, not on indices);</li>
 <li>add “parallel” argument in sen2r() to allow singlecore mode;</li>
-<li>fix parallel=FALSE in function (force n_cores=1). In general, now
-the whole processing chain can be optionally launched in single
-core.</li>
+<li>fix parallel=FALSE in function (force n_cores=1). In general, now the whole processing chain can be optionally launched in single core.</li>
 </ul></li>
 </ul></div>
 <div class="section level4">
 <h4 id="addition-to-existing-functions-0-3-2">Addition to existing functions<a class="anchor" aria-label="anchor" href="#addition-to-existing-functions-0-3-2"></a></h4>
-<ul><li><p>Improvement in integer / byte data types for generation of
-indices: Int16 is now the default data type; choosing an integer data
-type the output values are clipped on the valid format range, and the
-scaling factor can be chosen by the user; choosing Byte, interval -1 to
-1 is coerced to 0-200 (with nodata=255).</p></li>
+<ul><li><p>Improvement in integer / byte data types for generation of indices: Int16 is now the default data type; choosing an integer data type the output values are clipped on the valid format range, and the scaling factor can be chosen by the user; choosing Byte, interval -1 to 1 is coerced to 0-200 (with nodata=255).</p></li>
 <li><p>Use standard nodata values to compute indices.</p></li>
 <li><p>Return the list of created files after processing.</p></li>
-<li><p>Accept custom mask combinations: now it is possible to define
-masks with a custom combination of SCL classes to be masked.</p></li>
-<li><p>Allow argument “timewindow” in <code><a href="../reference/sen2r.html">sen2r()</a></code> to be a
-single integer value, which is interpreted as the period between today
-and <em>n</em> days ago.</p></li>
-<li><p>Uniform temporary directories (<a href="https://github.com/ranghetti/sen2r/issues/73" class="external-link">#73</a>). Now the principal functions
-have the parameters tmpdir and rmtmp to set the temporary directory and
-the choice to delete /not to delete temporary files. Only two
-exceptions: create_indices_db() uses a fixed temporary directory (since
-it is a function intended not to be run by end users); sen2cor()
-launched from sen2r() uses a default temporary directory if
-<code>tmpdir</code> is in a SAMBA mountpoint over Windows.</p></li>
+<li><p>Accept custom mask combinations: now it is possible to define masks with a custom combination of SCL classes to be masked.</p></li>
+<li><p>Allow argument “timewindow” in <code><a href="../reference/sen2r.html">sen2r()</a></code> to be a single integer value, which is interpreted as the period between today and <em>n</em> days ago.</p></li>
+<li><p>Uniform temporary directories (<a href="https://github.com/ranghetti/sen2r/issues/73" class="external-link">#73</a>). Now the principal functions have the parameters tmpdir and rmtmp to set the temporary directory and the choice to delete /not to delete temporary files. Only two exceptions: create_indices_db() uses a fixed temporary directory (since it is a function intended not to be run by end users); sen2cor() launched from sen2r() uses a default temporary directory if <code>tmpdir</code> is in a SAMBA mountpoint over Windows.</p></li>
 </ul></div>
 <div class="section level4">
 <h4 id="other-changes-0-3-2">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-0-3-2"></a></h4>
-<ul><li><p>Update to sen2cor 2.5.5, and manage S2A L2A operational products
-(<a href="https://scihub.copernicus.eu/news/News00305" class="external-link uri">https://scihub.copernicus.eu/news/News00305</a>).</p></li>
+<ul><li><p>Update to sen2cor 2.5.5, and manage S2A L2A operational products (<a href="https://scihub.copernicus.eu/news/News00305" class="external-link uri">https://scihub.copernicus.eu/news/News00305</a>).</p></li>
 <li><p>Add a welcome message and a logo.</p></li>
-<li><p>Change package name from <strong>SALTO</strong> to
-<strong>sen2r</strong>, and rename the main function consequently to
-<code><a href="../reference/sen2r.html">sen2r()</a></code>.</p></li>
-<li><p>Remove s2download as dependence (now it is integrated within the
-package).</p></li>
+<li><p>Change package name from <strong>SALTO</strong> to <strong>sen2r</strong>, and rename the main function consequently to <code><a href="../reference/sen2r.html">sen2r()</a></code>.</p></li>
+<li><p>Remove s2download as dependence (now it is integrated within the package).</p></li>
 <li><p>Remove sprawl dependencies.</p></li>
 </ul></div>
 <div class="section level4">
 <h4 id="major-fixes-0-3-2">Major fixes<a class="anchor" aria-label="anchor" href="#major-fixes-0-3-2"></a></h4>
-<ul><li><p>Avoid blurs and artifices in thumbnails. stack2rgb() now works
-with GDAL routines; gdalwarp is used instead than gdal_translate for
-reducing the size of input images (to avoid averaging NA values, which
-produced blurs on borders of BOA thumbnails); intermediate GTiff files
-are used to bypass the presence of artifices in SCL PNG thumbnails and
-to produce JPEG multiband TOA/BOA thumbnails.</p></li>
-<li><p>Load python modules correctly. Now on Windows all the modules are
-imported using import_from_path() in init_python(), which is called
-anywhere modules are needed.</p></li>
-<li><p>Fix unrecognised osgeo in Windows. When running gdal_calc in
-Windows with multiple Python installations, the wrong one
-(i.e. Anaconda) is used, and “no module names osgeo” error is
-returned.</p></li>
+<ul><li><p>Avoid blurs and artifices in thumbnails. stack2rgb() now works with GDAL routines; gdalwarp is used instead than gdal_translate for reducing the size of input images (to avoid averaging NA values, which produced blurs on borders of BOA thumbnails); intermediate GTiff files are used to bypass the presence of artifices in SCL PNG thumbnails and to produce JPEG multiband TOA/BOA thumbnails.</p></li>
+<li><p>Load python modules correctly. Now on Windows all the modules are imported using import_from_path() in init_python(), which is called anywhere modules are needed.</p></li>
+<li><p>Fix unrecognised osgeo in Windows. When running gdal_calc in Windows with multiple Python installations, the wrong one (i.e. Anaconda) is used, and “no module names osgeo” error is returned.</p></li>
 <li><p>Other minor fixes.</p></li>
 </ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.1" id="version-031">Version 0.3.1<a class="anchor" aria-label="anchor" href="#version-031"></a></h2>
-<p>This is an improvement of version 0.3.1, with several fixes and
-secondary improvements:</p>
-<p>Changes: - Allows output directories to be created by fidolasen_s2
-(<a href="https://github.com/ranghetti/sen2r/issues/54" class="external-link">#54</a>) - Convert NA arguments to NULL - Add check that the mask polygons
-are not empty - Add parameter extent_name (<a href="https://github.com/ranghetti/sen2r/issues/58" class="external-link">#58</a>) - Add exception for Hub
-unavailable - Add support for multiple tiles and extent names - Allow to
-generate thumbnails also on maps with wrong naming convention … - Allow
-to generate thumbnails also on maps with wrong naming convention … - Add
-“tiles” argument to consider only specified tiles - Add the possibility
-to download products over Windows (<a href="https://github.com/ranghetti/sen2r/issues/49" class="external-link">#49</a>) - Add extent_name in the GUI
-(<a href="https://github.com/ranghetti/sen2r/issues/58" class="external-link">#58</a>) - Add automatic installation of Wget on Windows - Add support for
-TCI thumbnail</p>
-<p>Some fixes: - Fix recognising gdalUtils after R restarts - Fix error
-applying sen2cor on oldname SAFE - Delete also L1C product when applying
-sen2cor on a copy of the SAFE - Fix to recognise all SAFE paths - Do not
-ask for overwriting dependences in non interactive mode - Fix the check
-on dstnodata length - Fix the number of polygons required to mask -
-Combine multiple features in mask / extent - Accept non-sf extents or sf
-with NAs within fields - Change TCI mask values (use 0 instead of NA in
-order not to create problems with 8-bit format) - Various fixes (see
-solved issues)</p>
+<p>This is an improvement of version 0.3.1, with several fixes and secondary improvements:</p>
+<p>Changes: - Allows output directories to be created by fidolasen_s2 (<a href="https://github.com/ranghetti/sen2r/issues/54" class="external-link">#54</a>) - Convert NA arguments to NULL - Add check that the mask polygons are not empty - Add parameter extent_name (<a href="https://github.com/ranghetti/sen2r/issues/58" class="external-link">#58</a>) - Add exception for Hub unavailable - Add support for multiple tiles and extent names - Allow to generate thumbnails also on maps with wrong naming convention … - Allow to generate thumbnails also on maps with wrong naming convention … - Add “tiles” argument to consider only specified tiles - Add the possibility to download products over Windows (<a href="https://github.com/ranghetti/sen2r/issues/49" class="external-link">#49</a>) - Add extent_name in the GUI (<a href="https://github.com/ranghetti/sen2r/issues/58" class="external-link">#58</a>) - Add automatic installation of Wget on Windows - Add support for TCI thumbnail</p>
+<p>Some fixes: - Fix recognising gdalUtils after R restarts - Fix error applying sen2cor on oldname SAFE - Delete also L1C product when applying sen2cor on a copy of the SAFE - Fix to recognise all SAFE paths - Do not ask for overwriting dependences in non interactive mode - Fix the check on dstnodata length - Fix the number of polygons required to mask - Combine multiple features in mask / extent - Accept non-sf extents or sf with NAs within fields - Change TCI mask values (use 0 instead of NA in order not to create problems with 8-bit format) - Various fixes (see solved issues)</p>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.0" id="version-030">Version 0.3.0<a class="anchor" aria-label="anchor" href="#version-030"></a></h2>
-<p>This version allows to perform all basic operations with Sentinel-2
-data: finding and downloading the required tiles (on Linux), correcting
-them with sen2cor, processing them (merging adjacent tiles, clipping,
-reprojecting, rescaling, applying atmospheric mask) to create output
-multiband files (in a format managed by GDAL) and spectral indices.</p>
-<p>The version follows the issued scheduled for <a href="https://github.com/ranghetti/sen2r/milestone/1" class="external-link">milestone
-0.3.0</a>; future improvements with Sentinel-2 data are scheduled for <a href="https://github.com/ranghetti/sen2r/milestone/3" class="external-link">release
-0.4.0</a>.</p>
+<p>This version allows to perform all basic operations with Sentinel-2 data: finding and downloading the required tiles (on Linux), correcting them with sen2cor, processing them (merging adjacent tiles, clipping, reprojecting, rescaling, applying atmospheric mask) to create output multiband files (in a format managed by GDAL) and spectral indices.</p>
+<p>The version follows the issued scheduled for <a href="https://github.com/ranghetti/sen2r/milestone/1" class="external-link">milestone 0.3.0</a>; future improvements with Sentinel-2 data are scheduled for <a href="https://github.com/ranghetti/sen2r/milestone/3" class="external-link">release 0.4.0</a>.</p>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.2.0" id="version-020">Version 0.2.0<a class="anchor" aria-label="anchor" href="#version-020"></a></h2>
-<p>This is an intermediate version, which does not allow yet to perform
-a complete workflow, but it allows to manually find
-(<code><a href="../reference/s2_list.html">s2_list()</a></code>), download (<code><a href="../reference/s2_download.html">s2_download()</a></code>), correct
-(<code>s2_sen2cor()</code>), translate in a format managed by GDAL
-(<code><a href="../reference/s2_translate.html">s2_translate()</a></code>) and merge by orbit number
-(<code><a href="../reference/s2_merge.html">s2_merge()</a></code>) Sentinel-2 data.</p>
-<p>An example of possible manual workflow is shown in the temporary
-script <code>WIP/tutorial.R</code>. For a complete automatic workflow on
-Sentinel-2 data, wait <a href="https://github.com/ranghetti/sen2r/milestone/1" class="external-link">version
-0.3.0</a>.</p>
+<p>This is an intermediate version, which does not allow yet to perform a complete workflow, but it allows to manually find (<code><a href="../reference/s2_list.html">s2_list()</a></code>), download (<code><a href="../reference/s2_download.html">s2_download()</a></code>), correct (<code>s2_sen2cor()</code>), translate in a format managed by GDAL (<code><a href="../reference/s2_translate.html">s2_translate()</a></code>) and merge by orbit number (<code><a href="../reference/s2_merge.html">s2_merge()</a></code>) Sentinel-2 data.</p>
+<p>An example of possible manual workflow is shown in the temporary script <code>WIP/tutorial.R</code>. For a complete automatic workflow on Sentinel-2 data, wait <a href="https://github.com/ranghetti/sen2r/milestone/1" class="external-link">version 0.3.0</a>.</p>
 </div>
   </div>
 
@@ -1273,8 +887,7 @@ Sentinel-2 data, wait <a href="https://github.com/ranghetti/sen2r/milestone/1" c
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -20,7 +20,7 @@ It was not exported because it is intended to be called by s2_translate."><!-- m
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
       </span>
     </div>
 
@@ -103,44 +103,54 @@ It was not exported because it is intended to be called by <a href="s2_translate
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">s2_angles</span><span class="op">(</span>
-  <span class="va">infiles</span>,
-  outdir <span class="op">=</span> <span class="st">"."</span>,
-  subdirs <span class="op">=</span> <span class="cn">NA</span>,
-  tmpdir <span class="op">=</span> <span class="cn">NA</span>,
-  rmtmp <span class="op">=</span> <span class="cn">TRUE</span>,
-  prod_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SZA"</span>, <span class="st">"OZA"</span>, <span class="st">"SAA"</span>, <span class="st">"OAA"</span><span class="op">)</span>,
-  res <span class="op">=</span> <span class="st">"10m"</span>,
-  method <span class="op">=</span> <span class="st">"bilinear"</span>,
-  format <span class="op">=</span> <span class="st">"VRT"</span>,
-  compress <span class="op">=</span> <span class="st">"DEFLATE"</span>,
-  bigtiff <span class="op">=</span> <span class="cn">FALSE</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">s2_angles</span><span class="op">(</span></span>
+<span>  <span class="va">infiles</span>,</span>
+<span>  outdir <span class="op">=</span> <span class="st">"."</span>,</span>
+<span>  subdirs <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  tmpdir <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  rmtmp <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  prod_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SZA"</span>, <span class="st">"OZA"</span>, <span class="st">"SAA"</span>, <span class="st">"OAA"</span><span class="op">)</span>,</span>
+<span>  res <span class="op">=</span> <span class="st">"10m"</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"bilinear"</span>,</span>
+<span>  format <span class="op">=</span> <span class="st">"VRT"</span>,</span>
+<span>  compress <span class="op">=</span> <span class="st">"DEFLATE"</span>,</span>
+<span>  bigtiff <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>infiles</dt>
 <dd><p>Full paths of the input SAFE folders.</p></dd>
+
+
 <dt>outdir</dt>
 <dd><p>(optional) Full name of the output directory where
 the files should be created (default: current directory).
 <code>outdir</code> can bot be an existing or non-existing directory (in the
 second case, its parent directory must exists).
 If it is a relative path, it is expanded from the directory of <code>infile</code>.</p></dd>
+
+
 <dt>subdirs</dt>
 <dd><p>(optional) Logical: if TRUE, different output products are
 placed in separated <code>outdir</code> subdirectories; if FALSE, they are placed in
 <code>outdir</code> directory; if NA (default), subdirectories are created only if
 <code>prod_type</code> has length &gt; 1.</p></dd>
+
+
 <dt>tmpdir</dt>
 <dd><p>(optional) Path where intermediate files will be created.
 Default is a temporary directory.
 If <code>tmpdir</code> is a non-empty folder, a random subdirectory will be used.</p></dd>
+
+
 <dt>rmtmp</dt>
 <dd><p>(optional) Logical: should temporary files be removed?
 (Default: TRUE).</p></dd>
+
+
 <dt>prod_type</dt>
 <dd><p>(optional) Vector of types (angles) to be produced as outputs.
 Default is all the possible types
@@ -148,30 +158,45 @@ Default is all the possible types
 <code>"SAA"</code> for Sun Angles Grid at Azimuth,
 <code>"OZA"</code> for Viewing Incidence Angles at Zenith averaged Grid,
 <code>"OAA"</code> for Viewing Incidence Angles at Azimuth averaged Grid).</p></dd>
+
+
 <dt>res</dt>
 <dd><p>(optional) Spatial resolution (one between <code>'10m'</code>, <code>'20m'</code> or
 <code>'60m'</code>); default is <code>'10m'</code>.</p></dd>
+
+
 <dt>method</dt>
 <dd><p>(optional) A method used to resample the output rasters
 (accepted values are valid values accepted by <code>-r</code> option of gdalwarp).
 Default is <code>"bilinear"</code> (linear interpolation).</p></dd>
+
+
 <dt>format</dt>
 <dd><p>(optional) Format of the output file (in a
 format recognised by GDAL). Default value is <code>"VRT"</code> (Virtual Raster).</p></dd>
+
+
 <dt>compress</dt>
 <dd><p>(optional) In the case a GeoTIFF format is
 chosen, the compression indicated with this parameter is used.</p></dd>
+
+
 <dt>bigtiff</dt>
 <dd><p>(optional) Logical: if TRUE, the creation of a BigTIFF is
 forced (default is FALSE).
 This option is used only in the case a GeoTIFF format was chosen.</p></dd>
+
+
 <dt>overwrite</dt>
 <dd><p>Logical value: should existing output files be
 overwritten? (default: FALSE)</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A vector with the names of the created output files
+    
+
+<p>A vector with the names of the created output files
 (just created or already existing).</p>
     </div>
     <div id="note">
@@ -183,7 +208,7 @@ overwritten? (default: FALSE)</p></dd>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -194,27 +219,27 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">s2_l2a_example</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
-<span class="r-in">  <span class="st">"/existing/path"</span>,</span>
-<span class="r-in">  <span class="st">"S2B_MSIL2A_20200801T100559_N0214_R022_T32TNR_20200801T135302.SAFE"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create all products</span></span>
-<span class="r-in"><span class="fu">s2_angles</span><span class="op">(</span><span class="va">s2_l2a_example</span>, outdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create only Viewing Incidence Angles at Azimuth, at 60 m resolution,</span></span>
-<span class="r-in"><span class="co"># with cubic interpolation, in ENVI format</span></span>
-<span class="r-in"><span class="fu">s2_angles</span><span class="op">(</span></span>
-<span class="r-in">  <span class="va">s2_l2a_example</span>, </span>
-<span class="r-in">  outdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, </span>
-<span class="r-in">  prod_type <span class="op">=</span> <span class="st">"OAA"</span>, </span>
-<span class="r-in">  res <span class="op">=</span> <span class="st">"60m"</span>,</span>
-<span class="r-in">  method <span class="op">=</span> <span class="st">"cubic"</span>,</span>
-<span class="r-in">  format <span class="op">=</span> <span class="st">"ENVI"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">s2_l2a_example</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"/existing/path"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"S2B_MSIL2A_20200801T100559_N0214_R022_T32TNR_20200801T135302.SAFE"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create all products</span></span></span>
+<span class="r-in"><span><span class="fu">s2_angles</span><span class="op">(</span><span class="va">s2_l2a_example</span>, outdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create only Viewing Incidence Angles at Azimuth, at 60 m resolution,</span></span></span>
+<span class="r-in"><span><span class="co"># with cubic interpolation, in ENVI format</span></span></span>
+<span class="r-in"><span><span class="fu">s2_angles</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">s2_l2a_example</span>, </span></span>
+<span class="r-in"><span>  outdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, </span></span>
+<span class="r-in"><span>  prod_type <span class="op">=</span> <span class="st">"OAA"</span>, </span></span>
+<span class="r-in"><span>  res <span class="op">=</span> <span class="st">"60m"</span>,</span></span>
+<span class="r-in"><span>  method <span class="op">=</span> <span class="st">"cubic"</span>,</span></span>
+<span class="r-in"><span>  format <span class="op">=</span> <span class="st">"ENVI"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -229,8 +254,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

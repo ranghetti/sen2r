@@ -1,6 +1,7 @@
 message("\n---- Test compute RGB images - main function ----")
 testthat::skip_on_cran()
 # testthat::skip_on_ci() # TODO try to remove
+skip_full_tests()
 
 # Required SAFE
 s2_l1c_list <- c(

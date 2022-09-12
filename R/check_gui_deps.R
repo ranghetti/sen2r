@@ -17,6 +17,7 @@
 #'  \doi{10.1016/j.cageo.2020.104473}, URL: \url{https://sen2r.ranghetti.info/}.
 #' @note License: GPL 3.0
 #' @export
+#' @keywords internal
 #' @examples
 #' \donttest{
 #' check_gui_deps()

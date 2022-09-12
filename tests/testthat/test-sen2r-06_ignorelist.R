@@ -1,6 +1,7 @@
 message("\n---- Test ignorelist ----")
 testthat::skip_on_cran()
 testthat::skip_on_ci() # TODO try to remove
+skip_full_tests()
 testthat::skip_if_not(is_gcloud_configured(), "Google account is not set")
 testthat::skip_if_not(check_gcloud_connection(), "Google Cloud server is not reachable")
 

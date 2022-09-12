@@ -22,6 +22,7 @@
 #' @note License: GPL 3.0
 #' @export
 #' @importFrom sf st_as_text st_crs
+#' @keywords internal
 #'
 #' @examples
 #' \donttest{

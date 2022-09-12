@@ -20,7 +20,7 @@ set_gipp() modifies values of a list of GIPP in an XML file
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
       </span>
     </div>
 
@@ -103,9 +103,9 @@ from the default sen2r GIPP path or from an XML file.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">read_gipp</span><span class="op">(</span><span class="va">gipp_names</span>, gipp_path <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>
-
-<span class="fu">set_gipp</span><span class="op">(</span>gipp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, gipp_path <span class="op">=</span> <span class="cn">NA</span>, use_dem <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_gipp</span><span class="op">(</span><span class="va">gipp_names</span>, gipp_path <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">set_gipp</span><span class="op">(</span>gipp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, gipp_path <span class="op">=</span> <span class="cn">NA</span>, use_dem <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -113,25 +113,36 @@ from the default sen2r GIPP path or from an XML file.</p>
     <dl><dt>gipp_names</dt>
 <dd><p>Character vector with the names of the parameters
 to be read.</p></dd>
+
+
 <dt>gipp_path</dt>
 <dd><p>Character path of the GIPP XML file to be read
 (<code>read_gipp()</code>) or written (<code>set_gipp()</code>).
 In <code>read_gipp()</code>, if NA (default), the default sen2r GIPP path is read;
 in <code>set_gipp()</code>, setting this argument is mandatory (see details).</p></dd>
+
+
 <dt>gipp</dt>
 <dd><p>(optional) Ground Image Processing Parameters (GIPP)
 (see <code><a href="sen2cor.html">sen2cor()</a></code> for further details).
 Elements whose name is missing in the XML file are skipped.</p></dd>
+
+
 <dt>use_dem</dt>
 <dd><p>Logical, determining if a DEM should be set for being used
 for topographic correction in the XML specified with argument <code>gipp_path</code>
 (see <code><a href="sen2cor.html">sen2cor()</a></code> for further details).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>read_gipp()</code> returns a named list of GIPP with the required parameters
-(values not found in the XML are skipped).
-<code>set_gipp()</code> returns NULL (the function is called for its side effects).</p>
+    
+
+<p><code>read_gipp()</code> returns a named list of GIPP with the required parameters
+(values not found in the XML are skipped).</p>
+
+
+<p><code>set_gipp()</code> returns NULL (the function is called for its side effects).</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -152,7 +163,7 @@ as the path of the default GIPP file, which is
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -162,25 +173,25 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="fu"><a href="load_binpaths.html">load_binpaths</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">sen2cor</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># Read default values</span></span>
-<span class="r-in"><span class="fu">read_gipp</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dem_directory"</span>, <span class="st">"dem_reference"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># Set the use of a topographic correction</span></span>
-<span class="r-in"><span class="fu">set_gipp</span><span class="op">(</span>use_dem <span class="op">=</span> <span class="cn">TRUE</span>, gipp_path <span class="op">=</span> <span class="va">gipp_temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># Read the parameters in the created temporary files</span></span>
-<span class="r-in"><span class="fu">read_gipp</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DEM_Directory"</span>, <span class="st">"DEM_Reference"</span><span class="op">)</span>, gipp_path <span class="op">=</span> <span class="va">gipp_temp</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># Set not to use a topographic correction</span></span>
-<span class="r-in"><span class="fu">set_gipp</span><span class="op">(</span>use_dem <span class="op">=</span> <span class="cn">FALSE</span>, gipp_path <span class="op">=</span> <span class="va">gipp_temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># This is equivalent to:</span></span>
-<span class="r-in"><span class="co"># set_gipp(</span></span>
-<span class="r-in"><span class="co">#   list(DEM_Directory = NA, DEM_Reference = NA), </span></span>
-<span class="r-in"><span class="co">#   gipp_path = gipp_temp &lt;- tempfile()</span></span>
-<span class="r-in"><span class="co"># )</span></span>
-<span class="r-in"><span class="co"># Read again the parameters in the created temporary files</span></span>
-<span class="r-in"><span class="fu">read_gipp</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DEM_Directory"</span>, <span class="st">"DEM_Reference"</span><span class="op">)</span>, gipp_path <span class="op">=</span> <span class="va">gipp_temp</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="fu"><a href="load_binpaths.html">load_binpaths</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">sen2cor</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># Read default values</span></span></span>
+<span class="r-in"><span><span class="fu">read_gipp</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dem_directory"</span>, <span class="st">"dem_reference"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Set the use of a topographic correction</span></span></span>
+<span class="r-in"><span><span class="fu">set_gipp</span><span class="op">(</span>use_dem <span class="op">=</span> <span class="cn">TRUE</span>, gipp_path <span class="op">=</span> <span class="va">gipp_temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Read the parameters in the created temporary files</span></span></span>
+<span class="r-in"><span><span class="fu">read_gipp</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DEM_Directory"</span>, <span class="st">"DEM_Reference"</span><span class="op">)</span>, gipp_path <span class="op">=</span> <span class="va">gipp_temp</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Set not to use a topographic correction</span></span></span>
+<span class="r-in"><span><span class="fu">set_gipp</span><span class="op">(</span>use_dem <span class="op">=</span> <span class="cn">FALSE</span>, gipp_path <span class="op">=</span> <span class="va">gipp_temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># This is equivalent to:</span></span></span>
+<span class="r-in"><span><span class="co"># set_gipp(</span></span></span>
+<span class="r-in"><span><span class="co">#   list(DEM_Directory = NA, DEM_Reference = NA), </span></span></span>
+<span class="r-in"><span><span class="co">#   gipp_path = gipp_temp &lt;- tempfile()</span></span></span>
+<span class="r-in"><span><span class="co"># )</span></span></span>
+<span class="r-in"><span><span class="co"># Read again the parameters in the created temporary files</span></span></span>
+<span class="r-in"><span><span class="fu">read_gipp</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DEM_Directory"</span>, <span class="st">"DEM_Reference"</span><span class="op">)</span>, gipp_path <span class="op">=</span> <span class="va">gipp_temp</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -195,8 +206,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

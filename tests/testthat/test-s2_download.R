@@ -1,5 +1,6 @@
 message("\n---- Test s2_download() from GCloud and safe_getMetadata() ----")
 testthat::skip_on_cran()
+skip_full_tests()
 
 # NOTE: these tests require a high amount of time (depending on connection speed),
 # so the download is disabled by default if SAFE archives are already present.

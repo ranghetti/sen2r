@@ -41,3 +41,4 @@ Sentinel-2 satellite data. \emph{Computers & Geosciences}, 139, 104473.
 \author{
 Luigi Ranghetti, phD (2020) \email{luigi@ranghetti.info}
 }
+\keyword{internal}

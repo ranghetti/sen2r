@@ -19,7 +19,7 @@ Output vrt is at 10m resolution."><!-- mathjax --><script src="https://cdnjs.clo
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
       </span>
     </div>
 
@@ -101,23 +101,23 @@ Output vrt is at 10m resolution.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">s2_translate</span><span class="op">(</span>
-  <span class="va">infile</span>,
-  outdir <span class="op">=</span> <span class="st">"."</span>,
-  subdirs <span class="op">=</span> <span class="cn">NA</span>,
-  tmpdir <span class="op">=</span> <span class="cn">NA</span>,
-  rmtmp <span class="op">=</span> <span class="cn">TRUE</span>,
-  prod_type <span class="op">=</span> <span class="cn">NULL</span>,
-  tiles <span class="op">=</span> <span class="cn">NA</span>,
-  res <span class="op">=</span> <span class="st">"10m"</span>,
-  method <span class="op">=</span> <span class="st">"bilinear"</span>,
-  format <span class="op">=</span> <span class="st">"VRT"</span>,
-  compress <span class="op">=</span> <span class="st">"DEFLATE"</span>,
-  bigtiff <span class="op">=</span> <span class="cn">FALSE</span>,
-  vrt_rel_paths <span class="op">=</span> <span class="cn">NA</span>,
-  utmzone <span class="op">=</span> <span class="st">""</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">s2_translate</span><span class="op">(</span></span>
+<span>  <span class="va">infile</span>,</span>
+<span>  outdir <span class="op">=</span> <span class="st">"."</span>,</span>
+<span>  subdirs <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  tmpdir <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  rmtmp <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  prod_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  tiles <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  res <span class="op">=</span> <span class="st">"10m"</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"bilinear"</span>,</span>
+<span>  format <span class="op">=</span> <span class="st">"VRT"</span>,</span>
+<span>  compress <span class="op">=</span> <span class="st">"DEFLATE"</span>,</span>
+<span>  bigtiff <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  vrt_rel_paths <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  utmzone <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -125,41 +125,57 @@ Output vrt is at 10m resolution.</p>
     <dl><dt>infile</dt>
 <dd><p>Full path of the input SAFE folder (alternatively,
 full path of the xml file of the product with metadata).</p></dd>
+
+
 <dt>outdir</dt>
 <dd><p>(optional) Full name of the output directory where
 the files should be created (default: current directory).
 <code>outdir</code> can bot be an existing or non-existing directory (in the
 second case, its parent directory must exists).
 If it is a relative path, it is expanded from the directory of <code>infile</code>.</p></dd>
+
+
 <dt>subdirs</dt>
 <dd><p>(optional) Logical: if TRUE, different output products are
 placed in separated <code>outdir</code> subdirectories; if FALSE, they are placed in
 <code>outdir</code> directory; if NA (default), subdirectories are created only if
 <code>prod_type</code> has length &gt; 1.</p></dd>
+
+
 <dt>tmpdir</dt>
 <dd><p>(optional) Path where intermediate files (VRT) will be created.
 Default is a temporary directory.
 If <code>tmpdir</code> is a non-empty folder, a random subdirectory will be used.</p></dd>
+
+
 <dt>rmtmp</dt>
 <dd><p>(optional) Logical: should temporary files be removed?
 (Default: TRUE).
 This parameter takes effect only if the output files are not VRT
 (in this case temporary files cannot be deleted, because rasters of source
 bands are included within them).</p></dd>
+
+
 <dt>prod_type</dt>
 <dd><p>(optional) Vector of types to be produced as outputs
 (see <a href="safe_shortname.html">safe_shortname</a> for the list of accepted values). Default is
 reflectance (<code>"TOA"</code> for level 1C, <code>"BOA"</code> for level 2A).</p></dd>
+
+
 <dt>tiles</dt>
 <dd><p>(optional) Character vector with the desired output tile IDs
 (id specified IDs are not present in the input SAFE product, they are not
 produced). Default (NA) is to process all the found tiles.</p></dd>
+
+
 <dt>res</dt>
 <dd><p>(optional) Spatial resolution (one between <code>'10m'</code>, <code>'20m'</code> or
 <code>'60m'</code>); default is <code>'10m'</code>.
 Notice that, choosing <code>'10m'</code> or <code>'20m'</code>, bands with lower
 resolution will be rescaled to <code>res</code>. Band 08 is used with <code>res = '10m'</code>,
 band 08A with <code>res = '20m'</code> and <code>res = '60m'</code>.</p></dd>
+
+
 <dt>method</dt>
 <dd><p>(optional) A resampling method used to generate products
 <code>"SZA"</code> (Sun Zenith Angles), <code>"OZA"</code> (Sun Azimuth Angles),
@@ -169,21 +185,31 @@ original 5 km resolution.
 Accepted values are valid values accepted by <code>-r</code> option of
 <a href="https://gdal.org/programs/gdalwarp.html" class="external-link"><code>gdalwarp</code></a>.
 Default is <code>"bilinear"</code> (linear interpolation).</p></dd>
+
+
 <dt>format</dt>
 <dd><p>(optional) Format of the output file (in a
 format recognised by GDAL). Default value is <code>"VRT"</code> (Virtual Raster).</p></dd>
+
+
 <dt>compress</dt>
 <dd><p>(optional) In the case a GeoTIFF format is
 chosen, the compression indicated with this parameter is used.</p></dd>
+
+
 <dt>bigtiff</dt>
 <dd><p>(optional) Logical: if TRUE, the creation of a BigTIFF is
 forced (default is FALSE).
 This option is used only in the case a GeoTIFF format was chosen.</p></dd>
+
+
 <dt>vrt_rel_paths</dt>
 <dd><p>(optional) Logical: if TRUE (default on Linux),
 the paths present in the VRT output file are relative to the VRT position;
 if FALSE (default on Windows), they are absolute.
 This takes effect only with <code>format = "VRT"</code>.</p></dd>
+
+
 <dt>utmzone</dt>
 <dd><p>(optional) UTM zone of output products (default:
 the first one retrieved from input granules),
@@ -191,13 +217,18 @@ being a 3-length character (e.g. <code>"32N"</code>).
 Note that this function
 does not perform reprojections: if no granules refer to the specified
 UTM zone, no output is created.</p></dd>
+
+
 <dt>overwrite</dt>
 <dd><p>Logical value: should existing output files be
 overwritten? (default: FALSE)</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A vector with the names of the created output files
+    
+
+<p>A vector with the names of the created output files
 (just created or already existing).</p>
     </div>
     <div id="note">
@@ -209,7 +240,7 @@ overwritten? (default: FALSE)</p></dd>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -219,46 +250,46 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">s2_l1c_example</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
-<span class="r-in">  <span class="st">"/existing/path"</span>,</span>
-<span class="r-in">  <span class="st">"S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="va">s2_l2a_example</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
-<span class="r-in">  <span class="st">"/existing/path"</span>,</span>
-<span class="r-in">  <span class="st">"S2A_MSIL2A_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create a single TOA GeoTIFF in the same directory</span></span>
-<span class="r-in"><span class="fu">s2_translate</span><span class="op">(</span><span class="va">s2_l1c_example</span>, format<span class="op">=</span><span class="st">"GTiff"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create a single BOA VRT with a custom name</span></span>
-<span class="r-in"><span class="fu">s2_translate</span><span class="op">(</span></span>
-<span class="r-in">  <span class="va">s2_l2a_example</span>,</span>
-<span class="r-in">  <span class="st">"/new/path/example_sentinel2_sr.vrt"</span>,</span>
-<span class="r-in">  vrt_rel_paths <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create four products (ENVI) in the same directory at 60m resolution,</span></span>
-<span class="r-in"><span class="co"># using a cubic interpolation for "OAA"</span></span>
-<span class="r-in"><span class="fu">s2_translate</span><span class="op">(</span></span>
-<span class="r-in">  <span class="va">s2_l2a_example</span>, </span>
-<span class="r-in">  format <span class="op">=</span> <span class="st">"ENVI"</span>, </span>
-<span class="r-in">  prod_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BOA"</span>,<span class="st">"TCI"</span>,<span class="st">"SCL"</span>,<span class="st">"OAA"</span><span class="op">)</span>,</span>
-<span class="r-in">  res <span class="op">=</span> <span class="st">"60m"</span>, </span>
-<span class="r-in">  method <span class="op">=</span> <span class="st">"cubic"</span>,</span>
-<span class="r-in">  subdirs <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create all the four angle products from TOA in GeoTIFF format </span></span>
-<span class="r-in"><span class="co"># in a temporary directory</span></span>
-<span class="r-in"><span class="fu">s2_translate</span><span class="op">(</span></span>
-<span class="r-in">  <span class="va">s2_l1c_example</span>, </span>
-<span class="r-in">  format <span class="op">=</span> <span class="st">"GTiff"</span>, </span>
-<span class="r-in">  prod_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SZA"</span>, <span class="st">"OZA"</span>, <span class="st">"SAA"</span>, <span class="st">"OAA"</span><span class="op">)</span>, </span>
-<span class="r-in">  outdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">s2_l1c_example</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"/existing/path"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">s2_l2a_example</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"/existing/path"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"S2A_MSIL2A_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create a single TOA GeoTIFF in the same directory</span></span></span>
+<span class="r-in"><span><span class="fu">s2_translate</span><span class="op">(</span><span class="va">s2_l1c_example</span>, format<span class="op">=</span><span class="st">"GTiff"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create a single BOA VRT with a custom name</span></span></span>
+<span class="r-in"><span><span class="fu">s2_translate</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">s2_l2a_example</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"/new/path/example_sentinel2_sr.vrt"</span>,</span></span>
+<span class="r-in"><span>  vrt_rel_paths <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create four products (ENVI) in the same directory at 60m resolution,</span></span></span>
+<span class="r-in"><span><span class="co"># using a cubic interpolation for "OAA"</span></span></span>
+<span class="r-in"><span><span class="fu">s2_translate</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">s2_l2a_example</span>, </span></span>
+<span class="r-in"><span>  format <span class="op">=</span> <span class="st">"ENVI"</span>, </span></span>
+<span class="r-in"><span>  prod_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BOA"</span>,<span class="st">"TCI"</span>,<span class="st">"SCL"</span>,<span class="st">"OAA"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  res <span class="op">=</span> <span class="st">"60m"</span>, </span></span>
+<span class="r-in"><span>  method <span class="op">=</span> <span class="st">"cubic"</span>,</span></span>
+<span class="r-in"><span>  subdirs <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create all the four angle products from TOA in GeoTIFF format </span></span></span>
+<span class="r-in"><span><span class="co"># in a temporary directory</span></span></span>
+<span class="r-in"><span><span class="fu">s2_translate</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">s2_l1c_example</span>, </span></span>
+<span class="r-in"><span>  format <span class="op">=</span> <span class="st">"GTiff"</span>, </span></span>
+<span class="r-in"><span>  prod_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SZA"</span>, <span class="st">"OZA"</span>, <span class="st">"SAA"</span>, <span class="st">"OAA"</span><span class="op">)</span>, </span></span>
+<span class="r-in"><span>  outdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -273,8 +304,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -22,7 +22,7 @@ Old long names are no more supported.'><!-- mathjax --><script src="https://cdnj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
       </span>
     </div>
 
@@ -107,19 +107,19 @@ Old long names are no more supported.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">safe_shortname</span><span class="op">(</span>
-  <span class="va">prod_name</span>,
-  prod_type <span class="op">=</span> <span class="cn">NULL</span>,
-  ext <span class="op">=</span> <span class="cn">NULL</span>,
-  res <span class="op">=</span> <span class="st">"10m"</span>,
-  tiles <span class="op">=</span> <span class="cn">NULL</span>,
-  force_tiles <span class="op">=</span> <span class="cn">NULL</span>,
-  full.name <span class="op">=</span> <span class="cn">TRUE</span>,
-  allow_duplicated <span class="op">=</span> <span class="cn">FALSE</span>,
-  set.seed <span class="op">=</span> <span class="cn">NULL</span>,
-  multiple_names <span class="op">=</span> <span class="cn">NULL</span>,
-  abort <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">safe_shortname</span><span class="op">(</span></span>
+<span>  <span class="va">prod_name</span>,</span>
+<span>  prod_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ext <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  res <span class="op">=</span> <span class="st">"10m"</span>,</span>
+<span>  tiles <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  force_tiles <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  full.name <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  allow_duplicated <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  set.seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  multiple_names <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  abort <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -127,38 +127,61 @@ Old long names are no more supported.</p>
     <dl><dt>prod_name</dt>
 <dd><p>Input Sentinel-2 product name (it is not required
 that the file exists).</p></dd>
+
+
 <dt>prod_type</dt>
 <dd><p>(optional) Output product (default: <code>TOA</code> for L1C, <code>BOA</code>
 for L2A); see the details for the list of accepted products.</p></dd>
+
+
 <dt>ext</dt>
 <dd><p>(optional) Extension of the output filename (default: none).</p></dd>
+
+
 <dt>res</dt>
 <dd><p>(optional) Spatial resolution (one between '10m', '20m' or '60m');
 default is '10m'. Notice that, choosing '10m' or '20m', bands with lower
 resolution will be rescaled to <code>res</code>. Band 08 is used with <code>res = '10m'</code>,
 band 08A with <code>res = '20m'</code> and <code>res = '60m'</code>.</p></dd>
+
+
 <dt>tiles</dt>
 <dd><p>Deprecated (no more used).</p></dd>
+
+
 <dt>force_tiles</dt>
 <dd><p>Deprecated (no more used).</p></dd>
+
+
 <dt>full.name</dt>
 <dd><p>Logical value: if TRUE (default), all the input path
 is maintained (if existing); if FALSE, only basename is returned.</p></dd>
+
+
 <dt>allow_duplicated</dt>
 <dd><p>Logical value: if TRUE, duplicated values are
 maintained; if FALSE (default), in case of duplicated value a suffix is
 added to the tile ID (see <code><a href="add_tile_suffix.html">add_tile_suffix()</a></code>).</p></dd>
+
+
 <dt>set.seed</dt>
 <dd><p>Deprecated (no more used).</p></dd>
+
+
 <dt>multiple_names</dt>
 <dd><p>Deprecated (no more used).</p></dd>
+
+
 <dt>abort</dt>
 <dd><p>Logical parameter: if TRUE, the function aborts in case
 <code>prod_type</code> is not recognised; if FALSE (default), a warning is shown.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Output product name</p>
+    
+
+<p>Output product name</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -204,7 +227,7 @@ day on the same tile);</p></li>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -214,7 +237,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">safe_shortname</span><span class="op">(</span><span class="st">"S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"</span>, ext<span class="op">=</span><span class="st">"tif"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">safe_shortname</span><span class="op">(</span><span class="st">"S2A_MSIL1C_20170603T101031_N0205_R022_T32TQQ_20170603T101026.SAFE"</span>, ext<span class="op">=</span><span class="st">"tif"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "S2A1C_20170603_022_32TQQ_TOA_10.tif"</span>
 </code></pre></div>
     </div>
@@ -230,8 +253,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

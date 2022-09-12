@@ -22,7 +22,7 @@ if it is a valid SAFE."><!-- mathjax --><script src="https://cdnjs.cloudflare.co
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
       </span>
     </div>
 
@@ -107,23 +107,23 @@ if it is a valid SAFE.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">safe_getMetadata</span><span class="op">(</span>
-  <span class="va">s2</span>,
-  info <span class="op">=</span> <span class="st">"all"</span>,
-  format <span class="op">=</span> <span class="st">"default"</span>,
-  simplify <span class="op">=</span> <span class="cn">TRUE</span>,
-  abort <span class="op">=</span> <span class="cn">TRUE</span>,
-  allow_oldnames <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span>
-
-<span class="fu">rm_invalid_safe</span><span class="op">(</span><span class="va">s2</span>, req_res <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"10m"</span>, <span class="st">"20m"</span>, <span class="st">"60m"</span><span class="op">)</span>, allow_oldnames <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="fu">safe_isvalid</span><span class="op">(</span>
-  <span class="va">s2</span>,
-  allow_oldnames <span class="op">=</span> <span class="cn">FALSE</span>,
-  check_file <span class="op">=</span> <span class="cn">TRUE</span>,
-  req_res <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"10m"</span>, <span class="st">"20m"</span>, <span class="st">"60m"</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">safe_getMetadata</span><span class="op">(</span></span>
+<span>  <span class="va">s2</span>,</span>
+<span>  info <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  format <span class="op">=</span> <span class="st">"default"</span>,</span>
+<span>  simplify <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  abort <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  allow_oldnames <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">rm_invalid_safe</span><span class="op">(</span><span class="va">s2</span>, req_res <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"10m"</span>, <span class="st">"20m"</span>, <span class="st">"60m"</span><span class="op">)</span>, allow_oldnames <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">safe_isvalid</span><span class="op">(</span></span>
+<span>  <span class="va">s2</span>,</span>
+<span>  allow_oldnames <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  check_file <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  req_res <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"10m"</span>, <span class="st">"20m"</span>, <span class="st">"60m"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -135,6 +135,8 @@ if it is a valid SAFE.</p>
 If the product does not exist locally, the function can run only with
 option <code>info = "nameinfo"</code> (see below).</p></li>
 </ul></dd>
+
+
 <dt>info</dt>
 <dd><p>(optional) A character vector with the list of the metadata
 which should be provided.
@@ -167,11 +169,15 @@ information retrieved from the metadata stored in the XML file;</p></li>
 <li><p><code>"res"</code>: resolutions with all the output products available;</p></li>
 <li><p><code>"jp2list"</code> (data.frame with the list of the JP2 band files -
 asking for this info will cause <code>format</code> to be coerced to <code>"list"</code>).</p></li>
+<li><p><code>"offset"</code> (named vector with the offset values of each band -
+asking for this info will cause <code>format</code> to be coerced to <code>"list"</code>).</p></li>
 </ul><p>Notice that the required info are returned only if available;
 i.e., if some info requiring existing files are asked by the user, but
 input SAFE do not exist, only info retrievable by the SAFE name are
 returned.</p></li>
 </ul></dd>
+
+
 <dt>format</dt>
 <dd><p>Output format, being one of the followings:</p><ul><li><p><code>"data.table"</code> and <code>"data.frame"</code>: a table with one row per <code>s2</code>
 input and one column per required <code>info</code>;</p></li>
@@ -182,17 +188,23 @@ a named vector (with <code>s2</code> length and names) with the required <code>i
 <li><p><code>"default"</code> (default): <code>"vector"</code> if <code>info</code> is of length 1;
 <code>"data.table"</code> otherwise.</p></li>
 </ul></dd>
+
+
 <dt>simplify</dt>
 <dd><p>Logical parameter, which applies in case <code>s2</code> is of length 1:
 in this case, if TRUE (default) and <code>format</code> is <code>"list"</code> or <code>"vector"</code>,
 a single <code>info</code> list or vector is returned;
 if FALSE, a list of length 1 (containing the list or vector of the required
 <code>s2</code> product) is returned.</p></dd>
+
+
 <dt>abort</dt>
 <dd><p>Logical parameter: if TRUE (default), the function aborts
 in case some inputs are not recognised, or if some files do not exists
 (in case some <code>info</code> elements require the files to be present);
 if FALSE, a warning is shown.</p></dd>
+
+
 <dt>allow_oldnames</dt>
 <dd><p>Logical parameter: if TRUE, old (long) name products
 are managed (metadata are returned, and they are considered valid;
@@ -200,6 +212,8 @@ if FALSE (default), they are considered as non-supported files.
 Note that, from sen2r version 1.1.0, oldname products are no more supported
 within processing chains, so this function is deprecated and no more
 supported; moreover, it will be removed in next releases.</p></dd>
+
+
 <dt>req_res</dt>
 <dd><p>Character: vector of variable length (0 to 3)
 containing the names of the spatial resolution to be checked
@@ -214,17 +228,26 @@ In case of level-1C products, in which each layer band is available in a
 specific resolution, any of the previous values causes all JP2 layers to be
 checked, while <code>NULL</code> causes no scan to be performed (as in the case of L2A).
 In <code>safe_isvalid()</code>, this argument is ignored if <code>check_file = FALSE</code>.</p></dd>
+
+
 <dt>check_file</dt>
 <dd><p>Logical: if TRUE (default), the content of the provided
 paths is checked; if FALSE, only the validity of SAFE names is tested.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>safe_getMetadata()</code> returns a data.table, a data.frame or a list
-(depending on argument  <code>format</code>) with the output metadata;
-<code>rm_invalid_safe()</code> returns a named vector (with the length of <code>s2</code>) with
-TRUE if the <code>s2</code> product was removed, FALSE elsewhere.
-<code>safe_isvalid()</code> returns a named vector (with the length of <code>s2</code>) with
+    
+
+<p><code>safe_getMetadata()</code> returns a data.table, a data.frame or a list
+(depending on argument  <code>format</code>) with the output metadata;</p>
+
+
+<p><code>rm_invalid_safe()</code> returns a named vector (with the length of <code>s2</code>) with
+TRUE if the <code>s2</code> product was removed, FALSE elsewhere.</p>
+
+
+<p><code>safe_isvalid()</code> returns a named vector (with the length of <code>s2</code>) with
 TRUE if the product is a valid SAFE, FALSE if not.</p>
     </div>
     <div id="note">
@@ -236,7 +259,7 @@ TRUE if the product is a valid SAFE, FALSE if not.</p>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -246,14 +269,14 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Define product name</span></span>
-<span class="r-in"><span class="va">s2_examplenames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span class="r-in">  <span class="st">"S2A_MSIL1C_20190723T101031_N0208_R022_T32TNS_20190723T121220.SAFE"</span>,</span>
-<span class="r-in">  <span class="st">"S2A_MSIL1C_20190723T101031_N0208_R022_T32TNR_20190723T121220.SAFE"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Return the information retrievable from the file names (files are not scanned)</span></span>
-<span class="r-in"><span class="fu">safe_getMetadata</span><span class="op">(</span><span class="va">s2_examplenames</span>, info<span class="op">=</span><span class="st">"nameinfo"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Define product name</span></span></span>
+<span class="r-in"><span><span class="va">s2_examplenames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"S2A_MSIL1C_20190723T101031_N0208_R022_T32TNS_20190723T121220.SAFE"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"S2A_MSIL1C_20190723T101031_N0208_R022_T32TNR_20190723T121220.SAFE"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Return the information retrievable from the file names (files are not scanned)</span></span></span>
+<span class="r-in"><span><span class="fu">safe_getMetadata</span><span class="op">(</span><span class="va">s2_examplenames</span>, info<span class="op">=</span><span class="st">"nameinfo"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                 name validname</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1: S2A_MSIL1C_20190723T101031_N0208_R022_T32TNS_20190723T121220.SAFE      TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2: S2A_MSIL1C_20190723T101031_N0208_R022_T32TNR_20190723T121220.SAFE      TRUE</span>
@@ -263,67 +286,67 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 <span class="r-out co"><span class="r-pr">#&gt;</span>    id_tile       creation_datetime</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1:   32TNS 2019-07-23 12:12:20 UTC</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2:   32TNR 2019-07-23 12:12:20 UTC</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Return some specific information without scanning files</span></span>
-<span class="r-in"><span class="fu">safe_getMetadata</span><span class="op">(</span><span class="va">s2_examplenames</span>, info<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"level"</span>, <span class="st">"id_tile"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Return some specific information without scanning files</span></span></span>
+<span class="r-in"><span><span class="fu">safe_getMetadata</span><span class="op">(</span><span class="va">s2_examplenames</span>, info<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"level"</span>, <span class="st">"id_tile"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                 name level</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1: S2A_MSIL1C_20190723T101031_N0208_R022_T32TNS_20190723T121220.SAFE    1C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2: S2A_MSIL1C_20190723T101031_N0208_R022_T32TNR_20190723T121220.SAFE    1C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    id_tile</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1:   32TNS</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2:   32TNR</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Return a single information without scanning files</span></span>
-<span class="r-in"><span class="co"># (in this case, the default output is a vector instead than a data.table)</span></span>
-<span class="r-in"><span class="fu">safe_getMetadata</span><span class="op">(</span><span class="va">s2_examplenames</span>, info<span class="op">=</span><span class="st">"level"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Return a single information without scanning files</span></span></span>
+<span class="r-in"><span><span class="co"># (in this case, the default output is a vector instead than a data.table)</span></span></span>
+<span class="r-in"><span><span class="fu">safe_getMetadata</span><span class="op">(</span><span class="va">s2_examplenames</span>, info<span class="op">=</span><span class="st">"level"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20190723T101031_N0208_R022_T32TNS_20190723T121220.SAFE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                              "1C" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20190723T101031_N0208_R022_T32TNR_20190723T121220.SAFE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                              "1C" </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Check if the products are valid existing SAFE archives</span></span>
-<span class="r-in"><span class="fu">safe_isvalid</span><span class="op">(</span><span class="va">s2_examplenames</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Check if the products are valid existing SAFE archives</span></span></span>
+<span class="r-in"><span><span class="fu">safe_isvalid</span><span class="op">(</span><span class="va">s2_examplenames</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20190723T101031_N0208_R022_T32TNS_20190723T121220.SAFE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                             FALSE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20190723T101031_N0208_R022_T32TNR_20190723T121220.SAFE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                             FALSE </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Check if the product names are valid SAFE names</span></span>
-<span class="r-in"><span class="fu">safe_isvalid</span><span class="op">(</span><span class="va">s2_examplenames</span>, check_file <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Check if the product names are valid SAFE names</span></span></span>
+<span class="r-in"><span><span class="fu">safe_isvalid</span><span class="op">(</span><span class="va">s2_examplenames</span>, check_file <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20190723T101031_N0208_R022_T32TNS_20190723T121220.SAFE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                              TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20190723T101031_N0208_R022_T32TNR_20190723T121220.SAFE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                              TRUE </span>
-<span class="r-in"><span class="fu">safe_isvalid</span><span class="op">(</span><span class="st">"invalid_safe_name.SAFE"</span>, check_file <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">safe_isvalid</span><span class="op">(</span><span class="st">"invalid_safe_name.SAFE"</span>, check_file <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> invalid_safe_name.SAFE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                  FALSE </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># Download a sample SAFE archive (this can take a while)</span></span>
-<span class="r-in"><span class="va">s2_exampleurl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span class="r-in">  <span class="st">"S2A_MSIL1C_20190723T101031_N0208_R022_T32TNS_20190723T121220.SAFE"</span> <span class="op">=</span></span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"https://apihub.copernicus.eu/apihub/odata/v1/"</span>,</span>
-<span class="r-in">           <span class="st">"Products('19bbde60-992b-423d-8dea-a5e0ac7715fc')/$value"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="s2_download.html">s2_download</a></span><span class="op">(</span><span class="va">s2_exampleurl</span>, outdir<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">s2_examplepath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">s2_exampleurl</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Return all the available information</span></span>
-<span class="r-in"><span class="fu">safe_getMetadata</span><span class="op">(</span><span class="va">s2_examplepath</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Return some specific information</span></span>
-<span class="r-in"><span class="fu">safe_getMetadata</span><span class="op">(</span><span class="va">s2_examplepath</span>, info<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"clouds"</span>, <span class="st">"direction"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Return a single information</span></span>
-<span class="r-in"><span class="fu">safe_getMetadata</span><span class="op">(</span><span class="va">s2_examplepath</span>, info<span class="op">=</span><span class="st">"nodata_value"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Check if the downloaded SAFE is valid</span></span>
-<span class="r-in"><span class="fu">safe_isvalid</span><span class="op">(</span><span class="va">s2_examplepath</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Delete it if it is not recognised</span></span>
-<span class="r-in"><span class="fu">rm_invalid_safe</span><span class="op">(</span><span class="va">s2_examplepath</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># Download a sample SAFE archive (this can take a while)</span></span></span>
+<span class="r-in"><span><span class="va">s2_exampleurl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"S2B_MSIL2A_20220612T100559_N0400_R022_T32TNR_20220612T132443.SAFE"</span> <span class="op">=</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"gs://gcp-public-data-sentinel-2/L2/tiles/32/T/NR/"</span>,</span></span>
+<span class="r-in"><span>           <span class="st">"S2B_MSIL2A_20220612T100559_N0400_R022_T32TNR_20220612T132443.SAFE"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="s2_download.html">s2_download</a></span><span class="op">(</span><span class="va">s2_exampleurl</span>, outdir<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">s2_examplepath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">s2_exampleurl</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Return all the available information</span></span></span>
+<span class="r-in"><span><span class="fu">safe_getMetadata</span><span class="op">(</span><span class="va">s2_examplepath</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Return some specific information</span></span></span>
+<span class="r-in"><span><span class="fu">safe_getMetadata</span><span class="op">(</span><span class="va">s2_examplepath</span>, info<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"clouds"</span>, <span class="st">"direction"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Return a single information</span></span></span>
+<span class="r-in"><span><span class="fu">safe_getMetadata</span><span class="op">(</span><span class="va">s2_examplepath</span>, info<span class="op">=</span><span class="st">"nodata_value"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Check if the downloaded SAFE is valid</span></span></span>
+<span class="r-in"><span><span class="fu">safe_isvalid</span><span class="op">(</span><span class="va">s2_examplepath</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Delete it if it is not recognised</span></span></span>
+<span class="r-in"><span><span class="fu">rm_invalid_safe</span><span class="op">(</span><span class="va">s2_examplepath</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -338,8 +361,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

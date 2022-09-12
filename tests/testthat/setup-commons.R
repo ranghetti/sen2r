@@ -6,3 +6,9 @@ dir.create(safe_dir, showWarnings = FALSE)
 # Silence clock check (https://stackoverflow.com/questions/63613301/r-cmd-check-note-unable-to-verify-current-time)
 Sys.setenv('_R_CHECK_SYSTEM_CLOCK_' = 0)
 
+# Perform full tests?
+# If so, all the original tests are performed 
+# (this is useful for codecov and after major releases).
+# If neither, only fast and strategic tests are executed.
+full_tests <- FALSE
+skip_full_tests <- function() {skip_if(full_tests == FALSE, "Full tests disabled")}

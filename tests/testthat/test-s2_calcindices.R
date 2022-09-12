@@ -46,6 +46,7 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_s$extent_name, "Barbellino")
     
     # test on raster values
+    skip_full_tests()
     exp_stars <- stars::read_stars(exp_outpath_12)
     testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 0.3392678, tolerance = 1e-3)
     testthat::expect_equal(sum(is.na(exp_stars[[1]])), 0)
@@ -100,6 +101,7 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff") # default value
     
     # test on raster values
+    skip_full_tests()
     exp_stars <- stars::read_stars(exp_outpath_13[2])
     testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 126.8006, tolerance = 1e-3)
     testthat::expect_equal(sum(is.na(exp_stars[[1]])), 0)
@@ -150,6 +152,7 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff") # default value
     
     # test on raster values
+    skip_full_tests()
     exp_stars <- stars::read_stars(exp_outpath_15)
     testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 282040.7, tolerance = 1e-3)
     testthat::expect_equal(sum(is.na(exp_stars[[1]])), 0)

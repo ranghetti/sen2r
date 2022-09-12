@@ -19,7 +19,7 @@ Archive."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/ma
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
       </span>
     </div>
 
@@ -101,7 +101,7 @@ Archive.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">safe_is_online</span><span class="op">(</span>s2_prodlist <span class="op">=</span> <span class="cn">NULL</span>, apihub <span class="op">=</span> <span class="cn">NA</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">safe_is_online</span><span class="op">(</span>s2_prodlist <span class="op">=</span> <span class="cn">NULL</span>, apihub <span class="op">=</span> <span class="cn">NA</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -110,17 +110,24 @@ Archive.</p>
 <dd><p>Named character: list of the products to be checked,
 in the format <code>safelist</code> (see <a href="safelist-class.html">safelist</a>).
 Alternatively, it can be the path of a JSON file exported by <a href="s2_order.html">s2_order</a>.</p></dd>
+
+
 <dt>apihub</dt>
 <dd><p>Path of the "apihub.txt" file containing credentials
 of SciHub account.
 If NA (default), the default location inside the package will be used.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>Logical: if TRUE, provide processing messages summarising
 how many of the SAFE archives in <code>s2_prodlist</code> are available online.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A logical vector of the same length and names of the SAFE products
+    
+
+<p>A logical vector of the same length and names of the SAFE products
 passed with <code>s2_prodlist</code>,
 in which each element is TRUE if the corresponding SAFE archive is
 available for download, FALSE if it is not or NA in case of errors with
@@ -135,7 +142,7 @@ the SAFE url.</p>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -146,20 +153,20 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="scihub_login.html">is_scihub_configured</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Generate the lists of products</span></span>
-<span class="r-in"><span class="va">pos</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">57.8815</span>,<span class="op">-</span><span class="fl">51.6954</span><span class="op">)</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">time_window</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2018-02-21"</span>, <span class="st">"2018-03-20"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">list_safe</span> <span class="op">&lt;-</span> <span class="fu"><a href="s2_list.html">s2_list</a></span><span class="op">(</span>spatial_extent <span class="op">=</span> <span class="va">pos</span>, time_interval <span class="op">=</span> <span class="va">time_window</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># (at the time the documentation was written, this list was containing 5</span></span>
-<span class="r-in"><span class="co"># archives already available online and 2 stored in the Long Term Archive)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Check for availability</span></span>
-<span class="r-in"><span class="fu">safe_is_online</span><span class="op">(</span><span class="va">list_safe</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="scihub_login.html">is_scihub_configured</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Generate the lists of products</span></span></span>
+<span class="r-in"><span><span class="va">pos</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">57.8815</span>,<span class="op">-</span><span class="fl">51.6954</span><span class="op">)</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">time_window</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2018-02-21"</span>, <span class="st">"2018-03-20"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">list_safe</span> <span class="op">&lt;-</span> <span class="fu"><a href="s2_list.html">s2_list</a></span><span class="op">(</span>spatial_extent <span class="op">=</span> <span class="va">pos</span>, time_interval <span class="op">=</span> <span class="va">time_window</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># (at the time the documentation was written, this list was containing 5</span></span></span>
+<span class="r-in"><span><span class="co"># archives already available online and 2 stored in the Long Term Archive)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Check for availability</span></span></span>
+<span class="r-in"><span><span class="fu">safe_is_online</span><span class="op">(</span><span class="va">list_safe</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
@@ -180,7 +187,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                             FALSE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> S2B_MSIL1C_20180316T133639_N0206_R038_T21FVC_20180316T145348.SAFE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                             FALSE </span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -195,8 +202,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

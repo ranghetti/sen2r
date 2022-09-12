@@ -21,7 +21,7 @@ but without depending on package stringi."><!-- mathjax --><script src="https://
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
       </span>
     </div>
 
@@ -105,23 +105,32 @@ but without depending on package <code>stringi</code>.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">str_pad2</span><span class="op">(</span><span class="va">string</span>, <span class="va">width</span>, side <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"left"</span>, <span class="st">"right"</span>, <span class="st">"both"</span><span class="op">)</span>, pad <span class="op">=</span> <span class="st">" "</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">str_pad2</span><span class="op">(</span><span class="va">string</span>, <span class="va">width</span>, side <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"left"</span>, <span class="st">"right"</span>, <span class="st">"both"</span><span class="op">)</span>, pad <span class="op">=</span> <span class="st">" "</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>string</dt>
 <dd><p>A character vector.</p></dd>
+
+
 <dt>width</dt>
 <dd><p>Minimum width of padded strings.</p></dd>
+
+
 <dt>side</dt>
 <dd><p>Side on which padding character is added (left, right or both).</p></dd>
+
+
 <dt>pad</dt>
 <dd><p>Single padding character (default is a space).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A character vector.</p>
+    
+
+<p>A character vector.</p>
     </div>
     <div id="note">
     <h2>Note</h2>
@@ -132,7 +141,7 @@ but without depending on package <code>stringi</code>.</p>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -142,23 +151,23 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html" class="external-link">rbind</a></span><span class="op">(</span></span>
-<span class="r-in">  <span class="fu">str_pad2</span><span class="op">(</span><span class="st">"hadley"</span>, <span class="fl">30</span>, <span class="st">"left"</span><span class="op">)</span>,</span>
-<span class="r-in">  <span class="fu">str_pad2</span><span class="op">(</span><span class="st">"hadley"</span>, <span class="fl">30</span>, <span class="st">"right"</span><span class="op">)</span>,</span>
-<span class="r-in">  <span class="fu">str_pad2</span><span class="op">(</span><span class="st">"hadley"</span>, <span class="fl">30</span>, <span class="st">"both"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu">str_pad2</span><span class="op">(</span><span class="st">"hadley"</span>, <span class="fl">30</span>, <span class="st">"left"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu">str_pad2</span><span class="op">(</span><span class="st">"hadley"</span>, <span class="fl">30</span>, <span class="st">"right"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu">str_pad2</span><span class="op">(</span><span class="st">"hadley"</span>, <span class="fl">30</span>, <span class="st">"both"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      hadley                          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] "                        hadley"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] "hadley                        "</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,] "            hadley            "</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># All arguments are vectorised except side</span></span>
-<span class="r-in"><span class="fu">str_pad2</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"abc"</span>, <span class="st">"abcdef"</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># All arguments are vectorised except side</span></span></span>
+<span class="r-in"><span><span class="fu">str_pad2</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"abc"</span>, <span class="st">"abcdef"</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            a          abc       abcdef </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> "         a" "       abc" "    abcdef" </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Longer strings are returned unchanged</span></span>
-<span class="r-in"><span class="fu">str_pad2</span><span class="op">(</span><span class="st">"hadley"</span>, <span class="fl">3</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Longer strings are returned unchanged</span></span></span>
+<span class="r-in"><span><span class="fu">str_pad2</span><span class="op">(</span><span class="st">"hadley"</span>, <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   hadley </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> "hadley" </span>
 </code></pre></div>
@@ -175,8 +184,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -26,7 +26,7 @@ if sen2r()."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
       </span>
     </div>
 
@@ -115,214 +115,341 @@ if <code><a href="sen2r.html">sen2r()</a></code>.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">compute_s2_paths</span><span class="op">(</span>
-  <span class="va">pm</span>,
-  <span class="va">s2_list_l1c</span>,
-  <span class="va">s2_list_l2a</span>,
-  <span class="va">tmpdir</span>,
-  <span class="va">list_prods</span>,
-  force_tiles <span class="op">=</span> <span class="cn">FALSE</span>,
-  check_tmp <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">ignorelist</span>
-<span class="op">)</span>
-
-<span class="fu">list_sen2r_paths</span><span class="op">(</span>
-  param_list <span class="op">=</span> <span class="cn">NULL</span>,
-  gui <span class="op">=</span> <span class="cn">NA</span>,
-  preprocess <span class="op">=</span> <span class="cn">TRUE</span>,
-  s2_levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"l1c"</span>, <span class="st">"l2a"</span><span class="op">)</span>,
-  sel_sensor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"s2a"</span>, <span class="st">"s2b"</span><span class="op">)</span>,
-  online <span class="op">=</span> <span class="cn">TRUE</span>,
-  apihub <span class="op">=</span> <span class="cn">NA</span>,
-  downloader <span class="op">=</span> <span class="st">"builtin"</span>,
-  overwrite_safe <span class="op">=</span> <span class="cn">FALSE</span>,
-  rm_safe <span class="op">=</span> <span class="st">"no"</span>,
-  step_atmcorr <span class="op">=</span> <span class="st">"auto"</span>,
-  max_cloud_safe <span class="op">=</span> <span class="fl">100</span>,
-  timewindow <span class="op">=</span> <span class="cn">NA</span>,
-  timeperiod <span class="op">=</span> <span class="st">"full"</span>,
-  extent <span class="op">=</span> <span class="cn">NA</span>,
-  extent_name <span class="op">=</span> <span class="st">"sen2r"</span>,
-  s2tiles_selected <span class="op">=</span> <span class="cn">NA</span>,
-  s2orbits_selected <span class="op">=</span> <span class="cn">NA</span>,
-  list_prods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BOA"</span><span class="op">)</span>,
-  list_rgb <span class="op">=</span> <span class="cn">NA</span>,
-  list_indices <span class="op">=</span> <span class="cn">NA</span>,
-  index_source <span class="op">=</span> <span class="st">"BOA"</span>,
-  rgb_ranges <span class="op">=</span> <span class="cn">NA</span>,
-  mask_type <span class="op">=</span> <span class="cn">NA</span>,
-  max_mask <span class="op">=</span> <span class="fl">100</span>,
-  mask_smooth <span class="op">=</span> <span class="fl">0</span>,
-  mask_buffer <span class="op">=</span> <span class="fl">0</span>,
-  clip_on_extent <span class="op">=</span> <span class="cn">TRUE</span>,
-  extent_as_mask <span class="op">=</span> <span class="cn">FALSE</span>,
-  reference_path <span class="op">=</span> <span class="cn">NA</span>,
-  res <span class="op">=</span> <span class="cn">NA</span>,
-  res_s2 <span class="op">=</span> <span class="st">"10m"</span>,
-  unit <span class="op">=</span> <span class="st">"Meter"</span>,
-  proj <span class="op">=</span> <span class="cn">NA</span>,
-  resampling <span class="op">=</span> <span class="st">"near"</span>,
-  resampling_scl <span class="op">=</span> <span class="st">"near"</span>,
-  outformat <span class="op">=</span> <span class="st">"GTiff"</span>,
-  rgb_outformat <span class="op">=</span> <span class="st">"GTiff"</span>,
-  index_datatype <span class="op">=</span> <span class="st">"Int16"</span>,
-  compression <span class="op">=</span> <span class="st">"DEFLATE"</span>,
-  rgb_compression <span class="op">=</span> <span class="st">"90"</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
-  path_l1c <span class="op">=</span> <span class="cn">NA</span>,
-  path_l2a <span class="op">=</span> <span class="cn">NA</span>,
-  path_tiles <span class="op">=</span> <span class="cn">NA</span>,
-  path_merged <span class="op">=</span> <span class="cn">NA</span>,
-  path_out <span class="op">=</span> <span class="cn">NA</span>,
-  path_rgb <span class="op">=</span> <span class="cn">NA</span>,
-  path_indices <span class="op">=</span> <span class="cn">NA</span>,
-  path_subdirs <span class="op">=</span> <span class="cn">TRUE</span>,
-  thumbnails <span class="op">=</span> <span class="cn">TRUE</span>,
-  parallel <span class="op">=</span> <span class="cn">TRUE</span>,
-  processing_order <span class="op">=</span> <span class="st">"by_step"</span>,
-  use_python <span class="op">=</span> <span class="cn">TRUE</span>,
-  tmpdir <span class="op">=</span> <span class="cn">NA</span>,
-  rmtmp <span class="op">=</span> <span class="cn">TRUE</span>,
-  log <span class="op">=</span> <span class="cn">NA</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">compute_s2_paths</span><span class="op">(</span></span>
+<span>  <span class="va">pm</span>,</span>
+<span>  <span class="va">s2_list_l1c</span>,</span>
+<span>  <span class="va">s2_list_l2a</span>,</span>
+<span>  <span class="va">tmpdir</span>,</span>
+<span>  <span class="va">list_prods</span>,</span>
+<span>  force_tiles <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  check_tmp <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">ignorelist</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">list_sen2r_paths</span><span class="op">(</span></span>
+<span>  param_list <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  gui <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  preprocess <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  s2_levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"l1c"</span>, <span class="st">"l2a"</span><span class="op">)</span>,</span>
+<span>  sel_sensor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"s2a"</span>, <span class="st">"s2b"</span><span class="op">)</span>,</span>
+<span>  online <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  apihub <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  downloader <span class="op">=</span> <span class="st">"builtin"</span>,</span>
+<span>  overwrite_safe <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  rm_safe <span class="op">=</span> <span class="st">"no"</span>,</span>
+<span>  step_atmcorr <span class="op">=</span> <span class="st">"auto"</span>,</span>
+<span>  max_cloud_safe <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  timewindow <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  timeperiod <span class="op">=</span> <span class="st">"full"</span>,</span>
+<span>  extent <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  extent_name <span class="op">=</span> <span class="st">"sen2r"</span>,</span>
+<span>  s2tiles_selected <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  s2orbits_selected <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  list_prods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BOA"</span><span class="op">)</span>,</span>
+<span>  list_rgb <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  list_indices <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  index_source <span class="op">=</span> <span class="st">"BOA"</span>,</span>
+<span>  rgb_ranges <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  mask_type <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  max_mask <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  mask_smooth <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  mask_buffer <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  clip_on_extent <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  extent_as_mask <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  reference_path <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  res <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  res_s2 <span class="op">=</span> <span class="st">"10m"</span>,</span>
+<span>  unit <span class="op">=</span> <span class="st">"Meter"</span>,</span>
+<span>  proj <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  resampling <span class="op">=</span> <span class="st">"near"</span>,</span>
+<span>  resampling_scl <span class="op">=</span> <span class="st">"near"</span>,</span>
+<span>  outformat <span class="op">=</span> <span class="st">"GTiff"</span>,</span>
+<span>  rgb_outformat <span class="op">=</span> <span class="st">"GTiff"</span>,</span>
+<span>  index_datatype <span class="op">=</span> <span class="st">"Int16"</span>,</span>
+<span>  compression <span class="op">=</span> <span class="st">"DEFLATE"</span>,</span>
+<span>  rgb_compression <span class="op">=</span> <span class="st">"90"</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  path_l1c <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  path_l2a <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  path_tiles <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  path_merged <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  path_out <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  path_rgb <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  path_indices <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  path_subdirs <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  thumbnails <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  processing_order <span class="op">=</span> <span class="st">"by_step"</span>,</span>
+<span>  use_python <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  tmpdir <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  rmtmp <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  log <span class="op">=</span> <span class="cn">NA</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>pm</dt>
 <dd><p>List of input parameters.</p></dd>
+
+
 <dt>s2_list_l1c</dt>
 <dd><p>Names and paths of input SAFE level-1C products.</p></dd>
+
+
 <dt>s2_list_l2a</dt>
 <dd><p>Names and paths of input SAFE level-2A products.</p></dd>
+
+
 <dt>tmpdir</dt>
 <dd><p>Path of the temporary directory.</p></dd>
+
+
 <dt>list_prods</dt>
 <dd><p>Character vector with the values of the
 products to be processed (accepted values: <code>"TOA"</code>, <code>"BOA"</code>, <code>"SCL"</code>, <code>"TCI"</code>,
 <code>"AOT"</code>, <code>"WVP"</code>, <code>"CLD"</code>, <code>"SNW"</code>, <code>"SZA"</code>, <code>"OZA"</code>, <code>"SAA"</code>, <code>"OAA"</code>).</p></dd>
+
+
 <dt>force_tiles</dt>
 <dd><p>(optional) Logical: passed to <code><a href="safe_shortname.html">safe_shortname()</a></code> (default: FALSE).</p></dd>
+
+
 <dt>check_tmp</dt>
 <dd><p>(optional) Logical: if TRUE (default), temporary files
 are also searched when <code>exi</code> names are computed;
 if FALSE, only non temporary files are searched.</p></dd>
+
+
 <dt>ignorelist</dt>
 <dd><p>List of output files to be ignored (generated by <code><a href="ignorelist.html">read_ignorelist()</a></code>).</p></dd>
+
+
 <dt>param_list</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>gui</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>preprocess</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>s2_levels</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>sel_sensor</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>online</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>apihub</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>downloader</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>overwrite_safe</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>rm_safe</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>step_atmcorr</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>max_cloud_safe</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>timewindow</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>timeperiod</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>extent</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>extent_name</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>s2tiles_selected</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>s2orbits_selected</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>list_rgb</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>list_indices</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>index_source</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>rgb_ranges</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>mask_type</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>max_mask</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>mask_smooth</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>mask_buffer</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>clip_on_extent</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>extent_as_mask</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>reference_path</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>res</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>res_s2</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>unit</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>proj</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>resampling</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>resampling_scl</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>outformat</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>rgb_outformat</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>index_datatype</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>compression</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>rgb_compression</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>overwrite</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>path_l1c</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>path_l2a</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>path_tiles</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>path_merged</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>path_out</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>path_rgb</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>path_indices</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>path_subdirs</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>thumbnails</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>parallel</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>processing_order</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>use_python</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>rmtmp</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
+
 <dt>log</dt>
 <dd><p><code>sen2r</code> argument (refer to <code><a href="sen2r.html">sen2r()</a></code> documentation).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A nested list:</p><ul><li><p>first elements are <code>exi</code>, <code>exp</code>, <code>req</code> and <code>new</code>;</p></li>
+    
+
+<p>A nested list:</p><ul><li><p>first elements are <code>exi</code>, <code>exp</code>, <code>req</code> and <code>new</code>;</p></li>
 <li><p>second elements deal with the processing step: <code>tiles</code>, <code>merged</code>,
 <code>warped</code>, <code>warped_nomsk</code>, <code>rgb</code>, <code>masked</code> and <code>indices</code>;</p></li>
 <li><p>third elements are related to output products.</p></li>
@@ -355,7 +482,7 @@ because all is overwritten.</p>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -375,8 +502,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

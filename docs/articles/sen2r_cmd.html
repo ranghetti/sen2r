@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
       </span>
     </div>
 
@@ -171,27 +171,27 @@ less than 10% of the area of interest was covered by clouds;</li>
 </li>
 </ul>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Set paths</span>
-<span class="va">out_dir_1</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"sen2r_out_1_"</span><span class="op">)</span> <span class="co"># output folder</span>
-<span class="va">safe_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"sen2r_safe_"</span><span class="op">)</span>  <span class="co"># folder to store downloaded SAFE</span>
-
-<span class="va">myextent_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/vector/barbellino.geojson"</span>, package <span class="op">=</span> <span class="st">"sen2r"</span><span class="op">)</span> 
-
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sen2r.ranghetti.info" class="external-link">sen2r</a></span><span class="op">)</span>
-<span class="va">out_paths_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sen2r.html">sen2r</a></span><span class="op">(</span>
-  gui <span class="op">=</span> <span class="cn">FALSE</span>,
-  step_atmcorr <span class="op">=</span> <span class="st">"l2a"</span>,
-  extent <span class="op">=</span> <span class="va">myextent_1</span>,
-  extent_name <span class="op">=</span> <span class="st">"Barbellino"</span>,
-  timewindow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-11-13"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-11-25"</span><span class="op">)</span><span class="op">)</span>,
-  list_prods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BOA"</span>,<span class="st">"SCL"</span><span class="op">)</span>,
-  list_indices <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NDVI"</span>,<span class="st">"MSAVI2"</span><span class="op">)</span>,
-  list_rgb <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RGB432B"</span><span class="op">)</span>,
-  mask_type <span class="op">=</span> <span class="st">"cloud_and_shadow"</span>,
-  max_mask <span class="op">=</span> <span class="fl">10</span>, 
-  path_l2a <span class="op">=</span> <span class="va">safe_dir</span>,
-  path_out <span class="op">=</span> <span class="va">out_dir_1</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Set paths</span></span>
+<span><span class="va">out_dir_1</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"sen2r_out_1_"</span><span class="op">)</span> <span class="co"># output folder</span></span>
+<span><span class="va">safe_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"sen2r_safe_"</span><span class="op">)</span>  <span class="co"># folder to store downloaded SAFE</span></span>
+<span></span>
+<span><span class="va">myextent_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/vector/barbellino.geojson"</span>, package <span class="op">=</span> <span class="st">"sen2r"</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sen2r.ranghetti.info" class="external-link">sen2r</a></span><span class="op">)</span></span>
+<span><span class="va">out_paths_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sen2r.html">sen2r</a></span><span class="op">(</span></span>
+<span>  gui <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  step_atmcorr <span class="op">=</span> <span class="st">"l2a"</span>,</span>
+<span>  extent <span class="op">=</span> <span class="va">myextent_1</span>,</span>
+<span>  extent_name <span class="op">=</span> <span class="st">"Barbellino"</span>,</span>
+<span>  timewindow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-11-13"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-11-25"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  list_prods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BOA"</span>,<span class="st">"SCL"</span><span class="op">)</span>,</span>
+<span>  list_indices <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NDVI"</span>,<span class="st">"MSAVI2"</span><span class="op">)</span>,</span>
+<span>  list_rgb <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RGB432B"</span><span class="op">)</span>,</span>
+<span>  mask_type <span class="op">=</span> <span class="st">"cloud_and_shadow"</span>,</span>
+<span>  max_mask <span class="op">=</span> <span class="fl">10</span>, </span>
+<span>  path_l2a <span class="op">=</span> <span class="va">safe_dir</span>,</span>
+<span>  path_out <span class="op">=</span> <span class="va">out_dir_1</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <pre><code>[2020-11-27 16:59:58] #### Starting sen2r execution. ####
 [2020-11-27 16:59:59] Searching for available SAFE products on SciHub...
 [2020-11-27 17:00:10] Computing output names...
@@ -226,7 +226,7 @@ over the spatial extent was above the specified threshold.--></p>
 user sets also the argument <code>rm_safe</code> to
 <code>TRUE</code>).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">safe_dir</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">safe_dir</span><span class="op">)</span></span></code></pre></div>
 <pre><code>[1] "S2A_MSIL2A_20201114T101301_N0214_R022_T32TNS_20201114T120346.SAFE"
 [2] "S2A_MSIL2A_20201117T102321_N0214_R065_T32TNS_20201117T130408.SAFE"
 [3] "S2A_MSIL2A_20201124T101341_N0214_R022_T32TNS_20201124T115339.SAFE"
@@ -235,10 +235,10 @@ user sets also the argument <code>rm_safe</code> to
 <p>Outputs are automatically subsetted and masked over the study area,
 and stored in appropriate subfolders of <code>out_dir</code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">out_dir_1</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">out_dir_1</span><span class="op">)</span></span></code></pre></div>
 <pre><code>[1] "BOA"     "MSAVI2"  "NDVI"    "RGB432B" "SCL"    </code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">out_dir_1</span>, <span class="st">"NDVI"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">out_dir_1</span>, <span class="st">"NDVI"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code>[1] "S2A2A_20201114_022_Barbellino_NDVI_10.tif"
 [2] "S2A2A_20201117_065_Barbellino_NDVI_10.tif"
 [3] "S2A2A_20201124_022_Barbellino_NDVI_10.tif"
@@ -260,15 +260,15 @@ using settings specified in file <code>"myparams.json"</code> (or
 <code>"file30ac6089ea3_sen2r_params.json"</code> in the reproducible
 case):</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># set the path to an existing JSON file </span>
-<span class="co"># (commented here, and substituted with an instruction that creates </span>
-<span class="co"># a test JSON file)</span>
-<span class="co"># json_path &lt;- "/path/to/myparams.json"</span>
-<span class="va">json_path_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_example_param_file.html">build_example_param_file</a></span><span class="op">(</span><span class="op">)</span>
-<span class="va">json_path_2</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># set the path to an existing JSON file </span></span>
+<span><span class="co"># (commented here, and substituted with an instruction that creates </span></span>
+<span><span class="co"># a test JSON file)</span></span>
+<span><span class="co"># json_path &lt;- "/path/to/myparams.json"</span></span>
+<span><span class="va">json_path_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_example_param_file.html">build_example_param_file</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">json_path_2</span></span></code></pre></div>
 <pre><code>[1] "/tmp/RtmpHUtF1k/file9a625065871c_sen2r_params.json"</code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">out_paths_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sen2r.html">sen2r</a></span><span class="op">(</span>param_list <span class="op">=</span> <span class="va">json_path_2</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">out_paths_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sen2r.html">sen2r</a></span><span class="op">(</span>param_list <span class="op">=</span> <span class="va">json_path_2</span><span class="op">)</span></span></code></pre></div>
 <pre><code>[2020-11-27 17:25:23] #### Starting sen2r execution. ####
 [2020-11-27 17:25:23] Searching for available SAFE products on SciHub...
 [2020-11-27 17:25:26] Computing output names...
@@ -310,21 +310,21 @@ for a processing, but changing “manually” any desired parameter.</p>
 processing as in the previous example, but changing both the extent and
 time window of the analysis.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># use the previously saved JSON path</span>
-<span class="va">json_path_2</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># use the previously saved JSON path</span></span>
+<span><span class="va">json_path_2</span></span></code></pre></div>
 <pre><code>[1] "/tmp/RtmpDLx7qh/file30ac6089ea3_sen2r_params.json"</code></pre>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">out_dir_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"sen2r_out_3_"</span><span class="op">)</span>  <span class="co"># new output folder</span>
-
-<span class="va">myextent_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/vector/scalve.kml"</span>, package <span class="op">=</span> <span class="st">"sen2r"</span><span class="op">)</span>
-
-<span class="va">out_paths_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sen2r.html">sen2r</a></span><span class="op">(</span>
-  param_list <span class="op">=</span> <span class="va">json_path_2</span>, 
-  extent <span class="op">=</span> <span class="va">myextent_3</span>, 
-  extent_name <span class="op">=</span> <span class="st">"newxtent"</span>,
-  timewindow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-10-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-10-30"</span><span class="op">)</span><span class="op">)</span>,
-  path_out <span class="op">=</span> <span class="va">out_dir_3</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">out_dir_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"sen2r_out_3_"</span><span class="op">)</span>  <span class="co"># new output folder</span></span>
+<span></span>
+<span><span class="va">myextent_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/vector/scalve.kml"</span>, package <span class="op">=</span> <span class="st">"sen2r"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">out_paths_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sen2r.html">sen2r</a></span><span class="op">(</span></span>
+<span>  param_list <span class="op">=</span> <span class="va">json_path_2</span>, </span>
+<span>  extent <span class="op">=</span> <span class="va">myextent_3</span>, </span>
+<span>  extent_name <span class="op">=</span> <span class="st">"newxtent"</span>,</span>
+<span>  timewindow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-10-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-10-30"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  path_out <span class="op">=</span> <span class="va">out_dir_3</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>This allows for example to easily run the same processing over
 different spatial/temporal extents.</p>
 </div>
@@ -347,8 +347,7 @@ different spatial/temporal extents.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

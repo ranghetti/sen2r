@@ -34,6 +34,7 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff")
     
     # test on raster values
+    skip_full_tests()
     exp_stars <- stars::read_stars(exp_outpath_6)
     testthat::expect_true(round(mean(exp_stars[[1]][,,1], na.rm=TRUE)) %in% c(1392))
     testthat::expect_true(sum(is.na(exp_stars[[1]][,,1])) %in% c(188))
@@ -44,6 +45,7 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_msk$size, c("x" = 24, "y" = 42))
     testthat::expect_equal(exp_meta_msk$type, "Byte")
     
+    skip_full_tests()
     exp_stars <- stars::read_stars(exp_outpath_msk)
     testthat::expect_equal(max(exp_stars[[1]], na.rm=TRUE),1)
     testthat::expect_equal(min(exp_stars[[1]], na.rm=TRUE),0)
@@ -83,6 +85,7 @@ testthat::skip_on_cran() # because using runtime GDAL
 if (Sys.info()["sysname"] != "Linux") {
   testthat::skip_on_ci() # runtime GDAL not installed on Windows and macOS CI
 }
+skip_full_tests()
 
 testthat::test_that(
   "Tests on custom mask on TOA with smoothing and buffering", {

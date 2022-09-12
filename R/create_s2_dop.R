@@ -18,6 +18,7 @@
 #' @import data.table
 #' @importFrom jsonlite toJSON fromJSON
 #' @importFrom utils download.file packageVersion
+#' @keywords internal
 
 
 create_s2_dop <- function(json_path = NA, force = FALSE) {

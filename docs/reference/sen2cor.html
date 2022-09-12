@@ -20,7 +20,7 @@ sen2cor
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
       </span>
     </div>
 
@@ -103,23 +103,23 @@ Standalone version of
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">sen2cor</span><span class="op">(</span>
-  l1c_prodlist <span class="op">=</span> <span class="cn">NULL</span>,
-  l1c_dir <span class="op">=</span> <span class="cn">NULL</span>,
-  outdir <span class="op">=</span> <span class="cn">NULL</span>,
-  proc_dir <span class="op">=</span> <span class="cn">NA</span>,
-  tmpdir <span class="op">=</span> <span class="cn">NA</span>,
-  rmtmp <span class="op">=</span> <span class="cn">TRUE</span>,
-  gipp <span class="op">=</span> <span class="cn">NULL</span>,
-  use_dem <span class="op">=</span> <span class="cn">NA</span>,
-  tiles <span class="op">=</span> <span class="cn">NULL</span>,
-  parallel <span class="op">=</span> <span class="cn">FALSE</span>,
-  timeout <span class="op">=</span> <span class="fl">0</span>,
-  kill_errored <span class="op">=</span> <span class="cn">FALSE</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
-  .log_message <span class="op">=</span> <span class="cn">NA</span>,
-  .log_output <span class="op">=</span> <span class="cn">NA</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">sen2cor</span><span class="op">(</span></span>
+<span>  l1c_prodlist <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  l1c_dir <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  outdir <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  proc_dir <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  tmpdir <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  rmtmp <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  gipp <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  use_dem <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  tiles <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  parallel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  timeout <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  kill_errored <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  .log_message <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  .log_output <span class="op">=</span> <span class="cn">NA</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -129,12 +129,18 @@ Standalone version of
 product names with full/relative path or only names of SAFE products (in this case, also
 l1c_dir argument must be provided). SAFE products must be unzipped.
 Note that, at this stage, all products must be in the same directory (this will be fixed).</p></dd>
+
+
 <dt>l1c_dir</dt>
 <dd><p>Full or relative path of input L1C products.
 If NULL (default), <code>l1c_prodlist</code> must already be a vector of full paths.</p></dd>
+
+
 <dt>outdir</dt>
 <dd><p>Directory where output L2A products will be placed.
 If NULL (default), each product is left in the parent directory of <code>l1c_prodlist</code>.</p></dd>
+
+
 <dt>proc_dir</dt>
 <dd><p>(optional) Directory where processing is applied.
 If NA (default), processing is done in <code>l1c_dir</code> and output L2A product is
@@ -144,15 +150,21 @@ in this case, L1C input products are copied in a temporary directory
 processing is done there and then L2A is moved to <code>outdir</code>.
 This is required under Linux systems when <code>l1c_dir</code> is a subdirectory of
 a unit mounted with SAMBA, otherwise Sen2Cor would produce empty L2A products.</p></dd>
+
+
 <dt>tmpdir</dt>
 <dd><p>(optional) Path where processing is performed if a temporary
 working directory is required (see argument <code>proc_dir</code>). Be sure <code>tmpdir</code>
 not to be a SAMBA mountpoint under Linux.
 Default is a temporary directory.
 If <code>tmpdir</code> is a non-empty folder, a random subdirectory will be used.</p></dd>
+
+
 <dt>rmtmp</dt>
 <dd><p>(optional) Logical: should temporary files be removed?
 (Default: TRUE)</p></dd>
+
+
 <dt>gipp</dt>
 <dd><p>(optional) Ground Image Processing Parameters (GIPP)
 to be passed to Sen2Cor.
@@ -170,6 +182,8 @@ or <a href="http://step.esa.int/main/snap-supported-plugins/sen2cor/sen2cor_v2-8
 see the "Schemas of the GIPP file" at the end of each page).
 <em>Note</em>: this argument takes effect only in the current execution of
 <code>sen2cor()</code> function.</p></dd>
+
+
 <dt>use_dem</dt>
 <dd><p>(optional) Logical:
 if TRUE, Sen2Cor is set to use a Digital Elevation Model for topographic
@@ -198,20 +212,28 @@ compatibility. In a future release of sen2r, the default value will be
 set to TRUE, so to grant homogeneity between Level-2A products downloaded
 from ESA Hub and generated using Sen2Cor.</p></li>
 </ol></dd>
+
+
 <dt>tiles</dt>
 <dd><p>Vector of Sentinel-2 Tile strings (5-length character) to be
 processed (default: process all the tiles found in the input L1C products).</p></dd>
+
+
 <dt>parallel</dt>
 <dd><p>(optional) Logical: if TRUE, Sen2Cor instances are launched
 in parallel using multiple cores; if FALSE (default), they are launched in
 series on a single core.
 The number of cores is automatically determined; specifying it is also
 possible (e.g. <code>parallel = 4</code>).</p></dd>
+
+
 <dt>timeout</dt>
 <dd><p>Integer value: number of minutes after which killing Sen2Cor
 if it is still running (default, 0, means that this is never done).
 This can be useful in case Sen2Cor produced an error without exiting
 from Python (leaving a standing process running).</p></dd>
+
+
 <dt>kill_errored</dt>
 <dd><p>Logical: experimental feature allowing killing dead Sen2Cor
 processes, so leaving <code>sen2cor()</code> continuing processing on the remaining
@@ -220,19 +242,28 @@ This experimental feature is available only on Unix systems,
 and requires package "tools" to be installed.
 This option is not compatible with <code>timeout</code> (in case both are set,
 <code>kill_errored</code> will be ignored).</p></dd>
+
+
 <dt>overwrite</dt>
 <dd><p>Logical value: should existing output L2A products be overwritten?
 (default: FALSE)</p></dd>
+
+
 <dt>.log_message</dt>
 <dd><p>(optional) Internal parameter
 (it is used when the function is called by <code><a href="sen2r.html">sen2r()</a></code>).</p></dd>
+
+
 <dt>.log_output</dt>
 <dd><p>(optional) Internal parameter
 (it is used when the function is called by <code><a href="sen2r.html">sen2r()</a></code>).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Vector character with the list ot the output products
+    
+
+<p>Vector character with the list ot the output products
 (being corrected or already existing).</p>
     </div>
     <div id="note">
@@ -244,7 +275,7 @@ This option is not compatible with <code>timeout</code> (in case both are set,
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -254,23 +285,23 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># Download an L1C SAFE product</span></span>
-<span class="r-in"><span class="va">example_s2_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="s2_list.html">s2_list</a></span><span class="op">(</span></span>
-<span class="r-in">  spatial_extent <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">12.0</span>, <span class="fl">44.8</span><span class="op">)</span><span class="op">)</span>, crs<span class="op">=</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="fl">4326</span><span class="op">)</span><span class="op">)</span>, </span>
-<span class="r-in">  tile <span class="op">=</span> <span class="st">"32TQQ"</span>, </span>
-<span class="r-in">  time_interval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2017-05-01"</span>,<span class="st">"2017-07-30"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="s2_download.html">s2_download</a></span><span class="op">(</span><span class="va">example_s2_list</span>, outdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Correct it applying a topographic correction</span></span>
-<span class="r-in"><span class="fu">sen2cor</span><span class="op">(</span></span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">example_s2_list</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, </span>
-<span class="r-in">  l1c_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, </span>
-<span class="r-in">  outdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span class="r-in">  use_dem <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># Download an L1C SAFE product</span></span></span>
+<span class="r-in"><span><span class="va">example_s2_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="s2_list.html">s2_list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  spatial_extent <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">12.0</span>, <span class="fl">44.8</span><span class="op">)</span><span class="op">)</span>, crs<span class="op">=</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="fl">4326</span><span class="op">)</span><span class="op">)</span>, </span></span>
+<span class="r-in"><span>  tile <span class="op">=</span> <span class="st">"32TQQ"</span>, </span></span>
+<span class="r-in"><span>  time_interval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2017-05-01"</span>,<span class="st">"2017-07-30"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="s2_download.html">s2_download</a></span><span class="op">(</span><span class="va">example_s2_list</span>, outdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Correct it applying a topographic correction</span></span></span>
+<span class="r-in"><span><span class="fu">sen2cor</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">example_s2_list</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, </span></span>
+<span class="r-in"><span>  l1c_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, </span></span>
+<span class="r-in"><span>  outdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  use_dem <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -285,8 +316,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

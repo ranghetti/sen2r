@@ -20,7 +20,7 @@ before performing the operation."><!-- mathjax --><script src="https://cdnjs.clo
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
       </span>
     </div>
 
@@ -103,7 +103,7 @@ before performing the operation.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">abs2rel</span><span class="op">(</span><span class="va">path</span>, <span class="va">ref_path</span>, mustWork <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">abs2rel</span><span class="op">(</span><span class="va">path</span>, <span class="va">ref_path</span>, mustWork <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -112,19 +112,26 @@ before performing the operation.</p>
 <dd><p>The path to be converted (if it is not absolute,
 the current working directory is considered as its parent, and a
 warning is shown).</p></dd>
+
+
 <dt>ref_path</dt>
 <dd><p>The reference path to be compared to
 <code>path</code> to obtain the relative directory.
 <em>Important</em>: the path is considered as a directory
 also if it is the path of a file!</p></dd>
+
+
 <dt>mustWork</dt>
 <dd><p>(optional) logical: if TRUE an error is given
 if <code>path</code> or <code>ref_path</code> do not exists; if NA (default) then a
 warning; if FALSE nothing is shown.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>The relative path</p>
+    
+
+<p>The relative path</p>
     </div>
     <div id="note">
     <h2>Note</h2>
@@ -135,7 +142,7 @@ warning; if FALSE nothing is shown.</p></dd>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -145,35 +152,35 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># the reference path</span></span>
-<span class="r-in"><span class="op">(</span><span class="va">ref_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span>package<span class="op">=</span><span class="st">"sf"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/home/lranghetti/R/x86_64-pc-linux-gnu-library/4.1/sf"</span>
-<span class="r-in"><span class="co"># a path with a common parent with ref_path</span></span>
-<span class="r-in"><span class="op">(</span><span class="va">in_path_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span>package<span class="op">=</span><span class="st">"rgdal"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/home/lranghetti/R/x86_64-pc-linux-gnu-library/4.1/rgdal"</span>
-<span class="r-in"><span class="co"># a path included in ref_path</span></span>
-<span class="r-in"><span class="op">(</span><span class="va">in_path_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"DESCRIPTION"</span>, package<span class="op">=</span><span class="st">"sf"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/home/lranghetti/R/x86_64-pc-linux-gnu-library/4.1/sf/DESCRIPTION"</span>
-<span class="r-in"><span class="co"># a path external to ref_path (in Linux)</span></span>
-<span class="r-in"><span class="op">(</span><span class="va">in_path_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span>package<span class="op">=</span><span class="st">"base"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/usr/lib/R/library/base"</span>
-<span class="r-in"><span class="co"># an unexisting path</span></span>
-<span class="r-in"><span class="op">(</span><span class="va">in_path_4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"sf$"</span>,<span class="st">"unexistingpackage"</span>,<span class="va">ref_path</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/home/lranghetti/R/x86_64-pc-linux-gnu-library/4.1/unexistingpackage"</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">abs2rel</span><span class="op">(</span><span class="va">in_path_1</span>, <span class="va">ref_path</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># the reference path</span></span></span>
+<span class="r-in"><span><span class="op">(</span><span class="va">ref_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span>package<span class="op">=</span><span class="st">"sf"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/home/lranghetti/R/x86_64-pc-linux-gnu-library/4.2/sf"</span>
+<span class="r-in"><span><span class="co"># a path with a common parent with ref_path</span></span></span>
+<span class="r-in"><span><span class="op">(</span><span class="va">in_path_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span>package<span class="op">=</span><span class="st">"rgdal"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/home/lranghetti/R/x86_64-pc-linux-gnu-library/4.2/rgdal"</span>
+<span class="r-in"><span><span class="co"># a path included in ref_path</span></span></span>
+<span class="r-in"><span><span class="op">(</span><span class="va">in_path_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"DESCRIPTION"</span>, package<span class="op">=</span><span class="st">"sf"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/home/lranghetti/R/x86_64-pc-linux-gnu-library/4.2/sf/DESCRIPTION"</span>
+<span class="r-in"><span><span class="co"># a path external to ref_path (in Linux)</span></span></span>
+<span class="r-in"><span><span class="op">(</span><span class="va">in_path_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span>package<span class="op">=</span><span class="st">"base"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/usr/lib64/R/library/base"</span>
+<span class="r-in"><span><span class="co"># an unexisting path</span></span></span>
+<span class="r-in"><span><span class="op">(</span><span class="va">in_path_4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"sf$"</span>,<span class="st">"unexistingpackage"</span>,<span class="va">ref_path</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/home/lranghetti/R/x86_64-pc-linux-gnu-library/4.2/unexistingpackage"</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">abs2rel</span><span class="op">(</span><span class="va">in_path_1</span>, <span class="va">ref_path</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "../rgdal"</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">abs2rel</span><span class="op">(</span><span class="va">in_path_2</span>, <span class="va">ref_path</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">abs2rel</span><span class="op">(</span><span class="va">in_path_2</span>, <span class="va">ref_path</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "./DESCRIPTION"</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">abs2rel</span><span class="op">(</span><span class="va">in_path_3</span>, <span class="va">ref_path</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">abs2rel</span><span class="op">(</span><span class="va">in_path_3</span>, <span class="va">ref_path</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/usr/lib/R/library/base"</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">abs2rel</span><span class="op">(</span><span class="va">in_path_4</span>, <span class="va">ref_path</span>, mustWork<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">abs2rel</span><span class="op">(</span><span class="va">in_path_4</span>, <span class="va">ref_path</span>, mustWork<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "../unexistingpackage"</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">abs2rel</span><span class="op">(</span><span class="va">ref_path</span>, <span class="va">ref_path</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">abs2rel</span><span class="op">(</span><span class="va">ref_path</span>, <span class="va">ref_path</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "."</span>
 </code></pre></div>
     </div>
@@ -189,8 +196,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

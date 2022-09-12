@@ -61,6 +61,7 @@ st_crs2(wkt_32n)
 writeLines(wkt_32n, wkt_32n_path <- tempfile())
 st_crs2(wkt_32n_path)
 
+\dontrun{
 ## CRS from spatial file path
 raster_path <- system.file(
   "extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif", 
@@ -70,14 +71,13 @@ vector_path <- system.file(
   "extdata/vector/barbellino.geojson", 
   package="sen2r"
 )
-st_crs2(raster_path)
+try( st_crs2(raster_path) )
 st_crs2(vector_path)
 
 ## CRS from spatial files
 st_crs2(stars::read_stars(raster_path))
 st_crs2(sf::read_sf(vector_path))
 
-\donttest{
 ## CRS from PROJ.4 string
 # (avoid using this with PROJ >= 6!)
 st_crs2("+init=epsg:32609") # this makes use of the EPSG code

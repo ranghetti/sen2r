@@ -1,6 +1,7 @@
 message("\n---- Test abs2rel() ----")
 testthat::skip_on_cran()
 testthat::skip_on_ci()
+skip_full_tests()
 
 # if (Sys.info()["sysname"] != "Windows") {
 #   ref_path <- "/usr/lib/R/library/base"
@@ -16,15 +17,15 @@ testthat::skip_on_ci()
 #   in_path_4 <- "C:/PROGRA~1/R/R-35~1.3/library/sbas"
 # }
 # the reference path
-ref_path <- system.file(package = "base")
+ref_path <- system.file(package = "stats")
 # a path with a common parent with ref_path
-in_path_1 <- system.file(package = "datasets")
+in_path_1 <- system.file(package = "utils")
 # a path included in ref_path
-in_path_2 <- file.path(ref_path, "CITATION")
+in_path_2 <- list.files(ref_path, full.names=TRUE)[1]
 # a path external to ref_path (in Linux)
 in_path_3 <- system.file(package = "sf")
 # an unexisting path
-in_path_4 <- gsub("base","sbas",ref_path)
+in_path_4 <- gsub("stats","stazz",ref_path)
 
 testthat::test_that(
   "Test a path with a common parent with ref_path", {

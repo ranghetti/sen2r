@@ -19,7 +19,7 @@ when it would be more generalised."><!-- mathjax --><script src="https://cdnjs.c
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
       </span>
     </div>
 
@@ -101,41 +101,53 @@ when it would be more generalised.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">stack2rgb</span><span class="op">(</span>
-  <span class="va">in_rast</span>,
-  out_file <span class="op">=</span> <span class="cn">NULL</span>,
-  bands <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>,
-  minval <span class="op">=</span> <span class="fl">0</span>,
-  maxval <span class="op">=</span> <span class="fl">10000</span>,
-  format <span class="op">=</span> <span class="st">"JPEG"</span>,
-  compress <span class="op">=</span> <span class="st">"90"</span>,
-  bigtiff <span class="op">=</span> <span class="cn">FALSE</span>,
-  proc_mode <span class="op">=</span> <span class="st">"raster"</span>,
-  tmpdir <span class="op">=</span> <span class="cn">NA</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">stack2rgb</span><span class="op">(</span></span>
+<span>  <span class="va">in_rast</span>,</span>
+<span>  out_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  bands <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>,</span>
+<span>  minval <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  maxval <span class="op">=</span> <span class="fl">10000</span>,</span>
+<span>  format <span class="op">=</span> <span class="st">"JPEG"</span>,</span>
+<span>  compress <span class="op">=</span> <span class="st">"90"</span>,</span>
+<span>  bigtiff <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  proc_mode <span class="op">=</span> <span class="st">"raster"</span>,</span>
+<span>  tmpdir <span class="op">=</span> <span class="cn">NA</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>in_rast</dt>
 <dd><p>Input raster (as <code>Raster*</code> or <code>stars</code> object).</p></dd>
+
+
 <dt>out_file</dt>
 <dd><p>(optional) Path of the output RGB JPEG image; if NULL
 (default), a RasterBrick will be returned.</p></dd>
+
+
 <dt>bands</dt>
 <dd><p>(optional) 3-length integer argument, with the position of
 the three bands to be used respectively for red, green and blue.</p></dd>
+
+
 <dt>minval</dt>
 <dd><p>(optional) the value corresponding to black (default: 0).
 Also a 3-length vector is accepted
 (min values for red, green and blue respectively).</p></dd>
+
+
 <dt>maxval</dt>
 <dd><p>(optional) the value corresponding to white (default: 10000).
 Also a 3-length vector is accepted
 (max values for red, green and blue respectively).</p></dd>
+
+
 <dt>format</dt>
 <dd><p>(optional) Format of the output file (in a
 format recognised by GDAL). Default is JPEG.</p></dd>
+
+
 <dt>compress</dt>
 <dd><p>(optional) In the case a GTiff format is
 present, the compression indicated with this parameter is used.
@@ -143,10 +155,14 @@ In the case a JPEG format is present, the compression indicates the quality
 (integer, 0-100).
 In the case a GTiff format is present and an integer 0-100 number is provided,
 this is interpreted as the quality level of a JPEG compression.</p></dd>
+
+
 <dt>bigtiff</dt>
 <dd><p>(optional) Logical: if TRUE, the creation of a BigTIFF is
 forced (default is FALSE).
 This option is used only in the case a GTiff format was chosen.</p></dd>
+
+
 <dt>proc_mode</dt>
 <dd><p>(optional) Character: if <code>"gdal_calc"</code>,
 <code>gdal_calc</code> routines are used to compute indices;
@@ -157,14 +173,19 @@ if <code>"raster"</code> (default) or <code>"stars"</code>, R functions are inst
 configured (no assistance is provided in case of GDAL-related problems).
 <code>"raster"</code> mode is experimental.
 See <code><a href="s2_calcindices.html">s2_calcindices()</a></code> for further details.</p></dd>
+
+
 <dt>tmpdir</dt>
 <dd><p>(optional) Path where intermediate files will be created.
 Default is a temporary directory.
 If <code>tmpdir</code> is a non-empty folder, a random subdirectory will be used.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>The path of the output image; alternatively, the output image
+    
+
+<p>The path of the output image; alternatively, the output image
 as RasterBrick (if <code>out_rast = NULL</code>).</p>
     </div>
     <div id="note">
@@ -176,7 +197,7 @@ as RasterBrick (if <code>out_rast = NULL</code>).</p>
     <p>L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 "sen2r": An R toolbox for automatically downloading and preprocessing
 Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
-doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">10.1016/j.cageo.2020.104473</a>
+<a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link">doi:10.1016/j.cageo.2020.104473</a>
 , URL: <a href="https://sen2r.ranghetti.info/" class="external-link">https://sen2r.ranghetti.info/</a>.</p>
     </div>
     <div id="author">
@@ -196,8 +217,7 @@ doi: <a href="https://doi.org/10.1016/j.cageo.2020.104473" class="external-link"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

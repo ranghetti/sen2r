@@ -1,5 +1,4 @@
 message("\n---- Test compute RGB images - main s2_rgb() ----")
-
 testthat::test_that(
   "Tests on function s2_rgb()", {
     
@@ -16,6 +15,7 @@ testthat::test_that(
       scaleRange = list(c(0,7500), matrix(c(rep(0,3),8500,6000,4000),ncol=2)),
       outdir = outdir_17,
       compress = 90,
+      proc_mode = "stars",
       parallel = FALSE
     )
     testthat::expect_true(all(file.exists(exp_outpath_17)))
@@ -40,6 +40,7 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, rep("GTiff",2)) # default value
     
     # test on raster values
+    skip_full_tests()
     exp_stars <- stars::read_stars(exp_outpath_17)
     testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 56.30718, tolerance = 1e-3)
     testthat::expect_equal(mean(exp_stars[[2]], na.rm=TRUE), 56.71991, tolerance = 1e-3)
