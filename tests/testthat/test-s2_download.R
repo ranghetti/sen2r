@@ -96,7 +96,7 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_ex$outformat, "JP2OpenJPEG")
     
     # test SAFE metadata
-    if (Sys.info()["sysname"] != "Windows") {
+    if (Sys.info()["sysname"] == "Linux") {
       safe_metadata1 <- safe_getMetadata(exp_outsafe_1)
       testthat::expect_is(safe_metadata1, "data.table")
       testthat::expect_equal(safe_metadata1$prod_type, rep("product",2))
@@ -195,7 +195,7 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_ex$outformat, "JP2OpenJPEG")
     
     # test SAFE metadata
-    if (Sys.info()["sysname"] != "Windows") {
+    if (Sys.info()["sysname"] == "Linux") {
       safe_metadata1 <- safe_getMetadata(exp_outsafe_1)
       testthat::expect_is(safe_metadata1, "data.table")
       testthat::expect_equal(safe_metadata1$prod_type, "product")
@@ -250,7 +250,7 @@ testthat::test_that(
     testthat::skip_if_not(is_scihub_configured(), "SciHub credentials are not set")
     testthat::skip_if_not(check_scihub_connection(service = "apihub"), "API Hub server is not reachable")
     testthat::skip_if_not(check_scihub_connection(service = "dhus"), "SciHub dhus server is not reachable")
-    if (Sys.info()["sysname"] == "Windows") {
+    if (Sys.info()["sysname"] != "Linux") {
       testthat::skip_on_ci() # because sometimes the following error appears:
       # Download of file
       # S2B_MSIL1C_20210617T100559_N0300_R022_T32TNT_20210617T121634.SAFE was
@@ -308,7 +308,7 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_ex$outformat, "JP2OpenJPEG")
     
     # test SAFE metadata
-    if (Sys.info()["sysname"] != "Windows") {
+    if (Sys.info()["sysname"] == "Linux") {
       testthat::expect_error(safe_getMetadata(basename(exp_outsafe_2)))
       safe_metadata <- safe_getMetadata(exp_outsafe_2, format = "vector")
       testthat::expect_is(safe_metadata, "list")

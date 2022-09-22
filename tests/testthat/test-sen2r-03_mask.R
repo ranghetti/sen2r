@@ -1,6 +1,6 @@
 message("\n---- Test mask - main function ----")
 testthat::skip_on_cran()
-if (Sys.info()["sysname"] == "Windows") {
+if (Sys.info()["sysname"] != "Linux") {
   testthat::skip_on_ci() # TODO try to remove
 }
 skip_full_tests()

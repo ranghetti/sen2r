@@ -45,7 +45,7 @@ testthat::test_that(
   }
 )
 
-if (Sys.info()["sysname"] != "Windows") {
+if (Sys.info()["sysname"] == "Linux") {
   testthat::test_that(
     "Test a path external to ref_path (in Linux)", {
       testthat::expect_warning(

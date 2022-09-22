@@ -123,7 +123,7 @@ exp_outpath_3 <- file.path(outdir_3, c(
 testthat::test_that(
   "Tests on clip TOA on extent, reproject and resize and save as ENVI", {
     
-    testthat::skip_if(Sys.info()["sysname"] == "Windows")
+    testthat::skip_if(Sys.info()["sysname"] != "Linux")
     # FIXME because it causes Windows crashing launching gdal_utils("warp",...)
     # within gdal_warp().
     
