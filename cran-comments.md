@@ -12,20 +12,36 @@ In addition, tests were simplified so to require less time and resources
 to be executed and to avoid errors in revdep checks of some main R packages.
 
 ## Test environments
-* [local installation] Ubuntu 22.04, 64 bit, R 4.2.1: 
+* [rocker/geospatial] Ubuntu 20.04, 64 bit, R 4.2.1: 
     There were no ERRORs, WARNINGs nor NOTEs.
 * [local installation] Archlinux, 64 bit, R 4.2.1: 
     There were no ERRORs, WARNINGs nor NOTEs.
 * [local installation] Windows 10, 64 bit, R 4.2.1: 
     There were no ERRORs, WARNINGs nor NOTEs.
-* [rhub] `check_for_cran()` and `check_on_mac()`: 
+* [rhub] `check_for_cran()`: 
     There were no ERRORs, WARNINGs nor NOTEs.
-* [devtools] `check_win_devel()`, `check_win_release()`: 
+* [rhub] `check_on_mac()`: 
     There were no ERRORs, WARNINGs nor NOTEs.
-* [devtools] `check_win_oldrelease()`: 
-    There were no ERRORs nor WARNINGs.
+* [devtools] `check_win_devel()`: 
+    There were no ERRORs, WARNINGs nor NOTEs.
+* [devtools] `check_win_release()`: 
+    There were no ERRORs, WARNINGs nor NOTEs.
+* [devtools] `check_win_oldrelease()` (`https://win-builder.r-project.org/XhsW1Zc3cYAP`): 
+    There were no ERRORs nor WARNINGs (see below for one NOTE).
 * [macbuilder]
 
+
+`check_win_release()` returns the following NOTE:
+```
+Maintainer: 'Luigi Ranghetti <sen2r@ranghetti.info>'
+
+New maintainer:
+  Luigi Ranghetti <sen2r@ranghetti.info>
+Old maintainer(s):
+  Luigi Ranghetti <luigi@ranghetti.info>
+```
+The email was changed in order to use an account which does not forward to 
+Google, so to respect CRAN requirements.
 
 `check_win_oldrelease()` returns the following NOTE:
 ```

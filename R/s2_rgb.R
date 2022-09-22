@@ -14,7 +14,7 @@
 #'  It is also possible to pass a list of 3-length integer vectors
 #'  in order to create multiple RGB types for each input file.
 #'  Notice that this is the [actual number name of the bands](
-#'  https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/resolutions/spatial):
+#'  https://sentinels.copernicus.eu/web/sentinel/user-guides/sentinel-2-msi/resolutions/spatial):
 #'  so, to use i.e. BOA band 11 (1610nm) use the number 11, even if band 11 is
 #'  the 10th band of a BOA product (because band 10 is missing).
 #' @param scaleRange (optional) Range of valid values. If can be a 2-length

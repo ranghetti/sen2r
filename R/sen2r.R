@@ -135,7 +135,7 @@
 #'  - r g and b are the the number of the bands to be used respectively
 #'      for red, green and blue, in hexadecimal format.
 #'      Notice that this is the [actual number name of the bands](
-#'      https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/resolutions/spatial):
+#'      https://sentinels.copernicus.eu/web/sentinel/user-guides/sentinel-2-msi/resolutions/spatial):
 #'      so, to use i.e. BOA band 11 (1610nm) use the value "b", even if band 11 is
 #'      the 10th band of a BOA product (because band 10 is missing).
 #'  (e.g., RGB432B, RGB843B)
