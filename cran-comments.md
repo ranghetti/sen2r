@@ -7,31 +7,33 @@ OSs (Windows and Linux):
   Error in `c.stars_proxy(structure(list(S2A2A_20190723_022_Barbellino_RGBb84B_10.tif = 
   ...
 ```
-
 In addition, tests were simplified so to require less time and resources 
 to be executed and to avoid errors in revdep checks of some main R packages.
 
 ## Test environments
-* [rocker/geospatial] Ubuntu 20.04, 64 bit, R 4.2.1: 
-    There were no ERRORs, WARNINGs nor NOTEs.
 * [local installation] Archlinux, 64 bit, R 4.2.1: 
     There were no ERRORs, WARNINGs nor NOTEs.
 * [local installation] Windows 10, 64 bit, R 4.2.1: 
     There were no ERRORs, WARNINGs nor NOTEs.
-* [rhub] `check_for_cran()`: 
+* [local rocker/geospatial] Ubuntu 20.04, 64 bit, R 4.2.1: 
     There were no ERRORs, WARNINGs nor NOTEs.
-* [rhub] `check_on_mac()`: 
+* [macbuilder] macOS 11.5.2 (Mac mini Apple M1), 64 bit, R 4.2.1
+    (`https://mac.r-project.org/macbuilder/results/1663835689-203a3498c574bce5/`):
     There were no ERRORs, WARNINGs nor NOTEs.
-* [devtools] `check_win_devel()`: 
+* [devtools] `check_win_devel()`
+    (`https://win-builder.r-project.org/PLtE4uXWzU8Y/`): 
+    There were no ERRORs nor WARNINGs (1 NOTE, see below).
+* [devtools] `check_win_release()`
+    (`https://win-builder.r-project.org/2aVF3h4p7EFE/`): 
+    There were no ERRORs nor WARNINGs (1 NOTE, see below).
+* [devtools] `check_win_oldrelease()`
+    (`https://win-builder.r-project.org/JY4wC1Zq4BJ3/`): 
+    There were no ERRORs nor WARNINGs (1 NOTE, see below).
+* [rhub] `check_on_macos()`
+    (`https://builder.r-hub.io/status/original/sen2r_1.5.3.tar.gz-b7cc276b19b14a478b3895e71e795ba8`): 
     There were no ERRORs, WARNINGs nor NOTEs.
-* [devtools] `check_win_release()`: 
-    There were no ERRORs, WARNINGs nor NOTEs.
-* [devtools] `check_win_oldrelease()` (`https://win-builder.r-project.org/XhsW1Zc3cYAP`): 
-    There were no ERRORs nor WARNINGs (see below for one NOTE).
-* [macbuilder]
 
-
-`check_win_release()` returns the following NOTE:
+`check_win_release()` and `check_wind_devel()` return the following NOTE:
 ```
 Maintainer: 'Luigi Ranghetti <sen2r@ranghetti.info>'
 
@@ -52,6 +54,7 @@ Possibly mis-spelled words in DESCRIPTION:
 ```
 All these words are correctly spelled, and they do not contain package names
 nor book titles, so they should not be quoted.
+
 
 Moreover, this re-submission fixes the following additional errors reported on M1mac: `https://www.stats.ox.ac.uk/pub/bdr/M1mac/sen2r.out`):
 
