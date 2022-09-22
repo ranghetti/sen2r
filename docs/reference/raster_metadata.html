@@ -18,7 +18,7 @@ a vector of raster paths."><!-- mathjax --><script src="https://cdnjs.cloudflare
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.3</span>
       </span>
     </div>
 
@@ -154,8 +154,8 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-in"><span><span class="co"># Return metadata as data.table</span></span></span>
 <span class="r-in"><span><span class="fu">raster_metadata</span><span class="op">(</span><span class="va">examplenames</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                  path</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:                           /home/lranghetti/R/x86_64-pc-linux-gnu-library/4.2/stars/tif/L7_ETMs.tif</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2: /tmp/RtmpVoT7OS/temp_libpathdde8d1d9bfe/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:                                                /usr/local/lib/R/site-library/stars/tif/L7_ETMs.tif</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2: /tmp/RtmpqFYl4T/temp_libpatha29782a0dbb/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    valid res.x res.y size.x size.y nbands     xmin    ymin     xmax    ymax</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1:  TRUE  28.5  28.5    349    352      6 288776.3 9110729 298722.8 9120761</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2:  TRUE  10.0  10.0     24     42     11 580560.0 5101700 580800.0 5102120</span>
@@ -167,8 +167,8 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-in"><span><span class="co"># Return some metadata as data.table</span></span></span>
 <span class="r-in"><span><span class="fu">raster_metadata</span><span class="op">(</span><span class="va">examplenames</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"res"</span>, <span class="st">"size"</span>, <span class="st">"bbox"</span>, <span class="st">"outformat"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                  path</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:                           /home/lranghetti/R/x86_64-pc-linux-gnu-library/4.2/stars/tif/L7_ETMs.tif</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2: /tmp/RtmpVoT7OS/temp_libpathdde8d1d9bfe/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:                                                /usr/local/lib/R/site-library/stars/tif/L7_ETMs.tif</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2: /tmp/RtmpqFYl4T/temp_libpatha29782a0dbb/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    valid res.x res.y size.x size.y     xmin    ymin     xmax    ymax outformat</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1:  TRUE  28.5  28.5    349    352 288776.3 9110729 298722.8 9120761     GTiff</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2:  TRUE  10.0  10.0     24     42 580560.0 5101700 580800.0 5102120     GTiff</span>
@@ -177,7 +177,7 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-in"><span><span class="fu">raster_metadata</span><span class="op">(</span><span class="va">examplenames</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"res"</span>, <span class="st">"size"</span>, <span class="st">"bbox"</span>, <span class="st">"proj"</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"list"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]$path</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/home/lranghetti/R/x86_64-pc-linux-gnu-library/4.2/stars/tif/L7_ETMs.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/usr/local/lib/R/site-library/stars/tif/L7_ETMs.tif"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]$valid</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
@@ -232,15 +232,15 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[2],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     USAGE[</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         SCOPE["Engineering survey, topographic mapping."],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AREA["Brazil - between 36°W and 30°W, northern and southern hemispheres, onshore and offshore."],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SCOPE["unknown"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         AREA["Brazil - 36°W to 30°W"],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         BBOX[-23.8,-36,4.19,-29.99]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ID["EPSG",31985]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]$path</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpVoT7OS/temp_libpathdde8d1d9bfe/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpqFYl4T/temp_libpatha29782a0dbb/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]$valid</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
@@ -295,8 +295,8 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[2],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     USAGE[</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         SCOPE["Engineering survey, topographic mapping."],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AREA["Between 6°E and 12°E, northern hemisphere between equator and 84°N, onshore and offshore. Algeria. Austria. Cameroon. Denmark. Equatorial Guinea. France. Gabon. Germany. Italy. Libya. Liechtenstein. Monaco. Netherlands. Niger. Nigeria. Norway. Sao Tome and Principe. Svalbard. Sweden. Switzerland. Tunisia. Vatican City State."],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SCOPE["unknown"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         AREA["World - N hemisphere - 6°E to 12°E - by country"],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         BBOX[0,6,84,12]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ID["EPSG",32632]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -308,11 +308,11 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/settings/gdal_formats.json"</span>, package<span class="op">=</span><span class="st">"sen2r"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">raster_metadata</span><span class="op">(</span><span class="va">examplenames</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bbox"</span>, <span class="st">"proj"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> trying to read file: /tmp/RtmpVoT7OS/temp_libpathdde8d1d9bfe/sen2r/extdata/settings/gdal_formats.json</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> trying to read file: /tmp/RtmpqFYl4T/temp_libpatha29782a0dbb/sen2r/extdata/settings/gdal_formats.json</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                  path</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:                           /home/lranghetti/R/x86_64-pc-linux-gnu-library/4.2/stars/tif/L7_ETMs.tif</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2: /tmp/RtmpVoT7OS/temp_libpathdde8d1d9bfe/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3:                   /tmp/RtmpVoT7OS/temp_libpathdde8d1d9bfe/sen2r/extdata/settings/gdal_formats.json</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:                                                /usr/local/lib/R/site-library/stars/tif/L7_ETMs.tif</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2: /tmp/RtmpqFYl4T/temp_libpatha29782a0dbb/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:                   /tmp/RtmpqFYl4T/temp_libpatha29782a0dbb/sen2r/extdata/settings/gdal_formats.json</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    valid     xmin    ymin     xmax    ymax       proj</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1:  TRUE 288776.3 9110729 298722.8 9120761 EPSG:31985</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2:  TRUE 580560.0 5101700 580800.0 5102120 EPSG:32632</span>
