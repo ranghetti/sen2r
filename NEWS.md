@@ -1,3 +1,12 @@
+# Version 1.5.3
+
+## Bug fixes
+- Fix CRAN errors related to GDAL version.
+- Change maintainer's email in order to follow CRAN requirements.
+
+## Documentation
+- Update invalid URLs (`https://earth.esa.int/web/sentinel` to `https://sentinels.copernicus.eu/web/sentinel`).
+
 # Version 1.5.2
 
 ## Major changes

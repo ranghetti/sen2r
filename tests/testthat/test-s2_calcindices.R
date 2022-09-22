@@ -114,7 +114,9 @@ testthat::test_that(
 message("\n---- Test compute spectral indices - s2_calcindices(), GDAL method ----")
 testthat::skip_on_cran() # because using runtime GDAL
 if (Sys.info()["sysname"] != "Linux") {
-  testthat::skip_on_ci() # runtime GDAL not installed on Windows and macOS CI
+  # runtime GDAL not installed on Windows and macOS CI
+  testthat::skip_on_ci() 
+  skip_full_tests()
 }
 testthat::test_that(
   "Tests on indices computation with function s2_calcindices(), gdal method", {
@@ -152,7 +154,6 @@ testthat::test_that(
     testthat::expect_equal(exp_meta_r$outformat, "GTiff") # default value
     
     # test on raster values
-    skip_full_tests()
     exp_stars <- stars::read_stars(exp_outpath_15)
     testthat::expect_equal(mean(exp_stars[[1]], na.rm=TRUE), 282040.7, tolerance = 1e-3)
     testthat::expect_equal(sum(is.na(exp_stars[[1]])), 0)

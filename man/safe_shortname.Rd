@@ -62,7 +62,7 @@ names), since it is thought to be applied to entire products.
 Old long names are no more supported.
 }
 \details{
-\href{https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/naming-convention}{ESA Sentinel-2 naming convention}
+\href{https://sentinels.copernicus.eu/web/sentinel/user-guides/sentinel-2-msi/naming-convention}{ESA Sentinel-2 naming convention}
 is particularly long-winded.
 So, the convention here adopted, named "sen2r naming convention",
 follows this schema:

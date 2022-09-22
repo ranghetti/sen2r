@@ -353,7 +353,7 @@ s2_gui <- function(param_list = NULL,
                 span(
                   "Raw files in ",
                   a("raw SAFE format",
-                    href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/data-formats",
+                    href="https://sentinels.copernicus.eu/web/sentinel/user-guides/sentinel-2-msi/data-formats",
                     target="_blank"),
                   " (downloaded and/or corrected with Sen2Cor)"
                 ),
@@ -432,8 +432,8 @@ s2_gui <- function(param_list = NULL,
                     "list_levels",
                     "Select products:",
                     choiceNames = list(
-                      span("Raw", a("level-1C", href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-1c", target="_blank"), "SAFE files"),
-                      span("Raw", a("level-2A", href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-2a", target="_blank"), "SAFE files")),
+                      span("Raw", a("level-1C", href="https://sentinels.copernicus.eu/web/sentinel/user-guides/sentinel-2-msi/product-types/level-1c", target="_blank"), "SAFE files"),
+                      span("Raw", a("level-2A", href="https://sentinels.copernicus.eu/web/sentinel/user-guides/sentinel-2-msi/product-types/level-2a", target="_blank"), "SAFE files")),
                     choiceValues = list("l1c", "l2a"),
                     selected = c("l2a")
                   )
@@ -1665,7 +1665,7 @@ s2_gui <- function(param_list = NULL,
         },
         if (safe_req$l1c==TRUE) {
           a("Level-1C",
-            href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-1c",
+            href="https://sentinels.copernicus.eu/web/sentinel/user-guides/sentinel-2-msi/product-types/level-1c",
             target="_blank")
         },
         if (safe_req$l1c==TRUE & safe_req$l2a==TRUE) {
@@ -1673,7 +1673,7 @@ s2_gui <- function(param_list = NULL,
         },
         if (safe_req$l2a==TRUE) {
           a("Level-2A",
-            href="https://earth.esa.int/web/sentinel/user-guides/sentinel-2-msi/product-types/level-2a",
+            href="https://sentinels.copernicus.eu/web/sentinel/user-guides/sentinel-2-msi/product-types/level-2a",
             target="_blank")
         }
       )
@@ -3397,7 +3397,7 @@ s2_gui <- function(param_list = NULL,
           "(SWIR-NIR-Red);</li>",
           "<li>SCL maps make use of the",
           as.character(a(
-            href="https://sentinel.esa.int/web/sentinel/technical-guides/sentinel-2-msi/level-2a/algorithm",
+            href="https://sentinels.copernicus.eu/web/sentinel/technical-guides/sentinel-2-msi/level-2a/algorithm",
             target="_blank",
             "original colour scheme:"
           )),
@@ -3513,7 +3513,7 @@ s2_gui <- function(param_list = NULL,
         p(HTML(
           "If none of them is suitable for the user, it is possible to define",
           "a custom mask by manually selecting the classes to be masked.",
-          "See the <a href='https://earth.esa.int/web/sentinel/technical-guides/sentinel-2-msi/level-2a/algorithm'",
+          "See the <a href='https://sentinels.copernicus.eu/web/sentinel/technical-guides/sentinel-2-msi/level-2a/algorithm'",
           "target='_blank'>classification algorithm</a> for further details."
         )),
         p(HTML(

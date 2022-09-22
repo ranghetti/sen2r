@@ -20,7 +20,7 @@ text files containing WKT like .prj (see details) ."><!-- mathjax --><script src
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.3</span>
       </span>
     </div>
 
@@ -109,7 +109,7 @@ text files containing WKT like .prj (see details) .</p>
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
-<dd><p>numeric, character, or object of class sf or sfc, being:</p><ul><li><p>EPSG code: numeric (e.g. <code>32632</code>) or character (in the form
+<dd><p>numeric, character, or object of class <a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a> or <a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">sfc</a>, being:</p><ul><li><p>EPSG code: numeric (e.g. <code>32632</code>) or character (in the form
 <code>"32632"</code> or <code>"EPSG:32632"</code>);</p></li>
 <li><p>UTM zone: numeric (e.g. <code>32</code>, interpreted as 32 North) or character
 (e.g. <code>"32"</code> or <code>"32N"</code> for zone 32 North, <code>"32S"</code> for 32 South);</p></li>
@@ -124,7 +124,7 @@ the epsg code -- e.g. <code>"+init=epsg:32632"</code>, in which case the EPSG
 code is taken);</p></li>
 <li><p>path of a spatial file (managed by <a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">sf::st_read</a> or <a href="https://r-spatial.github.io/stars/reference/read_stars.html" class="external-link">stars::read_stars</a>),
 passed as character string of length 1;</p></li>
-<li><p>spatial file of class sf or sfc.</p></li>
+<li><p>spatial file of class <a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">sf</a> or <a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">sfc</a>.</p></li>
 </ul></dd>
 
 
@@ -168,17 +168,9 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PROJCRS["WGS 84 / UTM zone 9N",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     BASEGEOGCRS["WGS 84",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ENSEMBLE["World Geodetic System 1984 ensemble",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (Transit)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G730)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G873)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1150)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1674)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1762)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G2139)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         DATUM["World Geodetic System 1984",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ENSEMBLEACCURACY[2.0]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         PRIMEM["Greenwich",0,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",4326]],</span>
@@ -208,8 +200,8 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[2],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     USAGE[</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         SCOPE["Engineering survey, topographic mapping."],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AREA["Between 132°W and 126°W, northern hemisphere between equator and 84°N, onshore and offshore. Canada - British Columbia (BC); NorthW Territories (NWT); Yukon. United States (USA) - Alaska (AK)."],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SCOPE["unknown"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         AREA["World - N hemisphere - 132°W to 126°W - by country"],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         BBOX[0,-132,84,-126]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ID["EPSG",32609]]</span>
 <span class="r-in"><span><span class="fu">st_crs2</span><span class="op">(</span><span class="st">"EPSG:32609"</span><span class="op">)</span></span></span>
@@ -218,17 +210,9 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PROJCRS["WGS 84 / UTM zone 9N",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     BASEGEOGCRS["WGS 84",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ENSEMBLE["World Geodetic System 1984 ensemble",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (Transit)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G730)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G873)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1150)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1674)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1762)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G2139)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         DATUM["World Geodetic System 1984",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ENSEMBLEACCURACY[2.0]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         PRIMEM["Greenwich",0,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",4326]],</span>
@@ -258,8 +242,8 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[2],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     USAGE[</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         SCOPE["Engineering survey, topographic mapping."],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AREA["Between 132°W and 126°W, northern hemisphere between equator and 84°N, onshore and offshore. Canada - British Columbia (BC); NorthW Territories (NWT); Yukon. United States (USA) - Alaska (AK)."],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SCOPE["unknown"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         AREA["World - N hemisphere - 132°W to 126°W - by country"],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         BBOX[0,-132,84,-126]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ID["EPSG",32609]]</span>
 <span class="r-in"><span></span></span>
@@ -270,17 +254,9 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PROJCRS["WGS 84 / UTM zone 9N",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     BASEGEOGCRS["WGS 84",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ENSEMBLE["World Geodetic System 1984 ensemble",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (Transit)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G730)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G873)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1150)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1674)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1762)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G2139)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         DATUM["World Geodetic System 1984",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ENSEMBLEACCURACY[2.0]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         PRIMEM["Greenwich",0,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",4326]],</span>
@@ -310,8 +286,8 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[2],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     USAGE[</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         SCOPE["Engineering survey, topographic mapping."],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AREA["Between 132°W and 126°W, northern hemisphere between equator and 84°N, onshore and offshore. Canada - British Columbia (BC); NorthW Territories (NWT); Yukon. United States (USA) - Alaska (AK)."],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SCOPE["unknown"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         AREA["World - N hemisphere - 132°W to 126°W - by country"],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         BBOX[0,-132,84,-126]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ID["EPSG",32609]]</span>
 <span class="r-in"><span><span class="fu">st_crs2</span><span class="op">(</span><span class="st">"09"</span><span class="op">)</span></span></span>
@@ -320,17 +296,9 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PROJCRS["WGS 84 / UTM zone 9N",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     BASEGEOGCRS["WGS 84",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ENSEMBLE["World Geodetic System 1984 ensemble",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (Transit)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G730)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G873)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1150)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1674)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1762)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G2139)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         DATUM["World Geodetic System 1984",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ENSEMBLEACCURACY[2.0]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         PRIMEM["Greenwich",0,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",4326]],</span>
@@ -360,8 +328,8 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[2],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     USAGE[</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         SCOPE["Engineering survey, topographic mapping."],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AREA["Between 132°W and 126°W, northern hemisphere between equator and 84°N, onshore and offshore. Canada - British Columbia (BC); NorthW Territories (NWT); Yukon. United States (USA) - Alaska (AK)."],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SCOPE["unknown"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         AREA["World - N hemisphere - 132°W to 126°W - by country"],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         BBOX[0,-132,84,-126]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ID["EPSG",32609]]</span>
 <span class="r-in"><span><span class="fu">st_crs2</span><span class="op">(</span><span class="st">"9N"</span><span class="op">)</span></span></span>
@@ -370,17 +338,9 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PROJCRS["WGS 84 / UTM zone 9N",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     BASEGEOGCRS["WGS 84",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ENSEMBLE["World Geodetic System 1984 ensemble",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (Transit)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G730)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G873)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1150)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1674)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1762)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G2139)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         DATUM["World Geodetic System 1984",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ENSEMBLEACCURACY[2.0]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         PRIMEM["Greenwich",0,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",4326]],</span>
@@ -410,8 +370,8 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[2],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     USAGE[</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         SCOPE["Engineering survey, topographic mapping."],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AREA["Between 132°W and 126°W, northern hemisphere between equator and 84°N, onshore and offshore. Canada - British Columbia (BC); NorthW Territories (NWT); Yukon. United States (USA) - Alaska (AK)."],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SCOPE["unknown"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         AREA["World - N hemisphere - 132°W to 126°W - by country"],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         BBOX[0,-132,84,-126]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ID["EPSG",32609]]</span>
 <span class="r-in"><span><span class="fu">st_crs2</span><span class="op">(</span><span class="st">"09S"</span><span class="op">)</span></span></span>
@@ -420,17 +380,9 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PROJCRS["WGS 84 / UTM zone 9S",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     BASEGEOGCRS["WGS 84",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ENSEMBLE["World Geodetic System 1984 ensemble",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (Transit)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G730)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G873)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1150)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1674)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1762)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G2139)"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         DATUM["World Geodetic System 1984",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ENSEMBLEACCURACY[2.0]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         PRIMEM["Greenwich",0,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",4326]],</span>
@@ -460,8 +412,8 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[2],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     USAGE[</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         SCOPE["Engineering survey, topographic mapping."],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AREA["Between 132°W and 126°W, southern hemisphere between 80°S and equator, onshore and offshore."],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SCOPE["unknown"],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         AREA["World - S hemisphere - 132°W to 126°W - by country"],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         BBOX[-80,-132,0,-126]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ID["EPSG",32709]]</span>
 <span class="r-in"><span></span></span>
@@ -546,6 +498,7 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ID["EPSG",32609]]</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="co">## CRS from spatial file path</span></span></span>
 <span class="r-in"><span><span class="va">raster_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="st">"extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif"</span>, </span></span>
@@ -556,343 +509,18 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-in"><span>  package<span class="op">=</span><span class="st">"sen2r"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span> <span class="fu">st_crs2</span><span class="op">(</span><span class="va">raster_path</span><span class="op">)</span> <span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Coordinate Reference System:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   User input: PROJCS["WGS 84 / UTM zone 32N",GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",9],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH],AUTHORITY["EPSG","32632"]] </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PROJCRS["WGS 84 / UTM zone 32N",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     BASEGEOGCRS["WGS 84",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         DATUM["World Geodetic System 1984",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PRIMEM["Greenwich",0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",4326]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     CONVERSION["UTM zone 32N",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         METHOD["Transverse Mercator",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",9807]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["Latitude of natural origin",0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8801]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["Longitude of natural origin",9,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8802]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["Scale factor at natural origin",0.9996,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             SCALEUNIT["unity",1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8805]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["False easting",500000,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8806]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["False northing",0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8807]]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     CS[Cartesian,2],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AXIS["easting",east,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AXIS["northing",north,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[2],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     ID["EPSG",32632]]</span>
 <span class="r-in"><span><span class="fu">st_crs2</span><span class="op">(</span><span class="va">vector_path</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Coordinate Reference System:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   User input: WGS 84 / UTM zone 32N </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PROJCRS["WGS 84 / UTM zone 32N",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     BASEGEOGCRS["WGS 84",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ENSEMBLE["World Geodetic System 1984 ensemble",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (Transit)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G730)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G873)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1150)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1674)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1762)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G2139)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ENSEMBLEACCURACY[2.0]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PRIMEM["Greenwich",0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",4326]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     CONVERSION["UTM zone 32N",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         METHOD["Transverse Mercator",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",9807]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["Latitude of natural origin",0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8801]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["Longitude of natural origin",9,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8802]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["Scale factor at natural origin",0.9996,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             SCALEUNIT["unity",1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8805]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["False easting",500000,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8806]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["False northing",0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8807]]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     CS[Cartesian,2],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AXIS["(E)",east,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AXIS["(N)",north,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[2],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     USAGE[</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         SCOPE["Engineering survey, topographic mapping."],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AREA["Between 6°E and 12°E, northern hemisphere between equator and 84°N, onshore and offshore. Algeria. Austria. Cameroon. Denmark. Equatorial Guinea. France. Gabon. Germany. Italy. Libya. Liechtenstein. Monaco. Netherlands. Niger. Nigeria. Norway. Sao Tome and Principe. Svalbard. Sweden. Switzerland. Tunisia. Vatican City State."],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         BBOX[0,6,84,12]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     ID["EPSG",32632]]</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## CRS from spatial files</span></span></span>
 <span class="r-in"><span><span class="fu">st_crs2</span><span class="op">(</span><span class="fu">stars</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/read_stars.html" class="external-link">read_stars</a></span><span class="op">(</span><span class="va">raster_path</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Coordinate Reference System:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   User input: WGS 84 / UTM zone 32N </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PROJCRS["WGS 84 / UTM zone 32N",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     BASEGEOGCRS["WGS 84",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ENSEMBLE["World Geodetic System 1984 ensemble",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (Transit)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G730)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G873)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1150)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1674)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1762)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G2139)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ENSEMBLEACCURACY[2.0]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PRIMEM["Greenwich",0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",4326]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     CONVERSION["UTM zone 32N",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         METHOD["Transverse Mercator",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",9807]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["Latitude of natural origin",0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8801]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["Longitude of natural origin",9,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8802]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["Scale factor at natural origin",0.9996,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             SCALEUNIT["unity",1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8805]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["False easting",500000,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8806]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["False northing",0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8807]]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     CS[Cartesian,2],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AXIS["(E)",east,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AXIS["(N)",north,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[2],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     USAGE[</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         SCOPE["Engineering survey, topographic mapping."],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AREA["Between 6°E and 12°E, northern hemisphere between equator and 84°N, onshore and offshore. Algeria. Austria. Cameroon. Denmark. Equatorial Guinea. France. Gabon. Germany. Italy. Libya. Liechtenstein. Monaco. Netherlands. Niger. Nigeria. Norway. Sao Tome and Principe. Svalbard. Sweden. Switzerland. Tunisia. Vatican City State."],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         BBOX[0,6,84,12]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     ID["EPSG",32632]]</span>
 <span class="r-in"><span><span class="fu">st_crs2</span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="va">vector_path</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Coordinate Reference System:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   User input: WGS 84 / UTM zone 32N </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PROJCRS["WGS 84 / UTM zone 32N",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     BASEGEOGCRS["WGS 84",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ENSEMBLE["World Geodetic System 1984 ensemble",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (Transit)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G730)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G873)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1150)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1674)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1762)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G2139)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ENSEMBLEACCURACY[2.0]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PRIMEM["Greenwich",0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",4326]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     CONVERSION["UTM zone 32N",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         METHOD["Transverse Mercator",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",9807]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["Latitude of natural origin",0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8801]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["Longitude of natural origin",9,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8802]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["Scale factor at natural origin",0.9996,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             SCALEUNIT["unity",1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8805]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["False easting",500000,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8806]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["False northing",0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8807]]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     CS[Cartesian,2],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AXIS["(E)",east,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AXIS["(N)",north,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[2],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     USAGE[</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         SCOPE["Engineering survey, topographic mapping."],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AREA["Between 6°E and 12°E, northern hemisphere between equator and 84°N, onshore and offshore. Algeria. Austria. Cameroon. Denmark. Equatorial Guinea. France. Gabon. Germany. Italy. Libya. Liechtenstein. Monaco. Netherlands. Niger. Nigeria. Norway. Sao Tome and Principe. Svalbard. Sweden. Switzerland. Tunisia. Vatican City State."],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         BBOX[0,6,84,12]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     ID["EPSG",32632]]</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="co">## CRS from PROJ.4 string</span></span></span>
 <span class="r-in"><span><span class="co"># (avoid using this with PROJ &gt;= 6!)</span></span></span>
 <span class="r-in"><span><span class="fu">st_crs2</span><span class="op">(</span><span class="st">"+init=epsg:32609"</span><span class="op">)</span> <span class="co"># this makes use of the EPSG code</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Coordinate Reference System:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   User input: EPSG:32609 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PROJCRS["WGS 84 / UTM zone 9N",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     BASEGEOGCRS["WGS 84",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ENSEMBLE["World Geodetic System 1984 ensemble",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (Transit)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G730)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G873)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1150)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1674)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1762)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G2139)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ENSEMBLEACCURACY[2.0]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PRIMEM["Greenwich",0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",4326]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     CONVERSION["UTM zone 9N",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         METHOD["Transverse Mercator",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",9807]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["Latitude of natural origin",0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8801]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["Longitude of natural origin",-129,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8802]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["Scale factor at natural origin",0.9996,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             SCALEUNIT["unity",1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8805]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["False easting",500000,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8806]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["False northing",0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8807]]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     CS[Cartesian,2],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AXIS["(E)",east,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AXIS["(N)",north,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[2],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     USAGE[</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         SCOPE["Engineering survey, topographic mapping."],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AREA["Between 132°W and 126°W, northern hemisphere between equator and 84°N, onshore and offshore. Canada - British Columbia (BC); NorthW Territories (NWT); Yukon. United States (USA) - Alaska (AK)."],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         BBOX[0,-132,84,-126]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     ID["EPSG",32609]]</span>
 <span class="r-in"><span><span class="fu">st_crs2</span><span class="op">(</span><span class="st">"+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Using PROJ.4 strings is deprecated with PROJ &gt;= 6 (see</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://www.r-spatial.org/r/2020/03/17/wkt.html).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Coordinate Reference System:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   User input: +proj=utm +zone=9 +datum=WGS84 +units=m +no_defs </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PROJCRS["unknown",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     BASEGEOGCRS["unknown",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         DATUM["World Geodetic System 1984",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",6326]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PRIMEM["Greenwich",0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8901]]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     CONVERSION["UTM zone 9N",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         METHOD["Transverse Mercator",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",9807]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["Latitude of natural origin",0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8801]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["Longitude of natural origin",-129,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8802]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["Scale factor at natural origin",0.9996,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             SCALEUNIT["unity",1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8805]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["False easting",500000,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8806]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["False northing",0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8807]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",16009]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     CS[Cartesian,2],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AXIS["(E)",east,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 ID["EPSG",9001]]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AXIS["(N)",north,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[2],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 ID["EPSG",9001]]]]</span>
 <span class="r-in"><span><span class="fu">st_crs2</span><span class="op">(</span><span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a></span><span class="op">(</span><span class="va">raster_path</span><span class="op">)</span><span class="op">)</span> <span class="co"># st_crs(raster) uses the PROJ.4 as input</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Coordinate Reference System:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   User input: WGS 84 / UTM zone 32N </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PROJCRS["WGS 84 / UTM zone 32N",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     BASEGEOGCRS["WGS 84",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ENSEMBLE["World Geodetic System 1984 ensemble",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (Transit)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G730)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G873)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1150)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1674)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G1762)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             MEMBER["World Geodetic System 1984 (G2139)"],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ENSEMBLEACCURACY[2.0]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PRIMEM["Greenwich",0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",4326]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     CONVERSION["UTM zone 32N",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         METHOD["Transverse Mercator",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",9807]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["Latitude of natural origin",0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8801]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["Longitude of natural origin",9,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8802]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["Scale factor at natural origin",0.9996,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             SCALEUNIT["unity",1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8805]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["False easting",500000,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8806]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["False northing",0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8807]]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     CS[Cartesian,2],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AXIS["(E)",east,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AXIS["(N)",north,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[2],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     USAGE[</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         SCOPE["Engineering survey, topographic mapping."],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AREA["Between 6°E and 12°E, northern hemisphere between equator and 84°N, onshore and offshore. Algeria. Austria. Cameroon. Denmark. Equatorial Guinea. France. Gabon. Germany. Italy. Libya. Liechtenstein. Monaco. Netherlands. Niger. Nigeria. Norway. Sao Tome and Principe. Svalbard. Sweden. Switzerland. Tunisia. Vatican City State."],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         BBOX[0,6,84,12]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     ID["EPSG",32632]]</span>
-<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>

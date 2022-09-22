@@ -1,10 +1,49 @@
-# sen2r v. 1.5.2
+# sen2r v. 1.5.3
+
+This re-submission fixes the following error present on CRAN checks of different
+OSs (Windows and Linux):
+```
+-- Error (test-s2_rgb.R:43:5): Tests on function s2_rgb() ----------------------
+  Error in `c.stars_proxy(structure(list(S2A2A_20190723_022_Barbellino_RGBb84B_10.tif = 
+  ...
+```
+In addition, tests were simplified so to require less time and resources 
+to be executed and to avoid errors in revdep checks of some main R packages.
 
 ## Test environments
-* [local installation] Ubuntu 22.04, 64 bit, R 4.2.1
-* [local installation] Archlinux, 64 bit, R 4.2.1
-* [local installation] Windows 10, 64 bit, R 4.2.1
-There were no ERRORs nor WARNINGs.
+* [local installation] Archlinux, 64 bit, R 4.2.1: 
+    There were no ERRORs, WARNINGs nor NOTEs.
+* [local installation] Windows 10, 64 bit, R 4.2.1: 
+    There were no ERRORs, WARNINGs nor NOTEs.
+* [local rocker/geospatial] Ubuntu 20.04, 64 bit, R 4.2.1: 
+    There were no ERRORs, WARNINGs nor NOTEs.
+* [macbuilder] macOS 11.5.2 (Mac mini Apple M1), 64 bit, R 4.2.1
+    (`https://mac.r-project.org/macbuilder/results/1663835689-203a3498c574bce5/`):
+    There were no ERRORs, WARNINGs nor NOTEs.
+* [devtools] `check_win_devel()`
+    (`https://win-builder.r-project.org/PLtE4uXWzU8Y/`): 
+    There were no ERRORs nor WARNINGs (1 NOTE, see below).
+* [devtools] `check_win_release()`
+    (`https://win-builder.r-project.org/2aVF3h4p7EFE/`): 
+    There were no ERRORs nor WARNINGs (1 NOTE, see below).
+* [devtools] `check_win_oldrelease()`
+    (`https://win-builder.r-project.org/JY4wC1Zq4BJ3/`): 
+    There were no ERRORs nor WARNINGs (1 NOTE, see below).
+* [rhub] `check_on_macos()`
+    (`https://builder.r-hub.io/status/original/sen2r_1.5.3.tar.gz-b7cc276b19b14a478b3895e71e795ba8`): 
+    There were no ERRORs, WARNINGs nor NOTEs.
+
+`check_win_release()` and `check_wind_devel()` return the following NOTE:
+```
+Maintainer: 'Luigi Ranghetti <sen2r@ranghetti.info>'
+
+New maintainer:
+  Luigi Ranghetti <sen2r@ranghetti.info>
+Old maintainer(s):
+  Luigi Ranghetti <luigi@ranghetti.info>
+```
+The email was changed in order to use an account which does not forward to 
+Google, so to respect CRAN requirements.
 
 `check_win_oldrelease()` returns the following NOTE:
 ```
@@ -16,7 +55,8 @@ Possibly mis-spelled words in DESCRIPTION:
 All these words are correctly spelled, and they do not contain package names
 nor book titles, so they should not be quoted.
 
-Two additional errors was reported (M1mac: `https://www.stats.ox.ac.uk/pub/bdr/M1mac/sen2r.out`):
+
+Moreover, this re-submission fixes the following additional errors reported on M1mac: `https://www.stats.ox.ac.uk/pub/bdr/M1mac/sen2r.out`):
 
 ```
 Running examples in ‘sen2r-Ex.R’ failed
@@ -29,9 +69,9 @@ The error most likely occurred in:
  *** caught segfault ***
 address 0x0, cause 'invalid permissions'
 ```
-I was not able to replicate the error; nevertheless, this line was put 
-between a `\dontrun()` so to avoid further errors (this is not a
-relevant example, and `st_crs2()` is an accessory function).
+
+This line was put between a `\dontrun()` so to avoid further errors 
+(this is not a relevant example, and `st_crs2()` is an accessory function).
 
 ```
 Running the tests in ‘tests/testthat.R’ failed.
@@ -50,6 +90,4 @@ Complete output:
   address 0x0, cause 'invalid permissions'
 ```
 
-This test now was removed, as well as all tests requiring authentications
-(commit `17bbc70adb6fcd005aff5a55d97cac1218ac387b`),
-as requested by Roger Bivand (`https://github.com/ranghetti/sen2r/issues/447`).
+This test now was removed, as well as all tests requiring authentications.

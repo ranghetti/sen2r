@@ -1,6 +1,6 @@
 FROM rocker/geospatial:latest
 
-LABEL maintainer="Luigi Ranghetti <luigi@ranghetti.info>"
+LABEL maintainer="Luigi Ranghetti <sen2r@ranghetti.info>"
 
 # Install external dependencies
 RUN apt update && apt install -y \
