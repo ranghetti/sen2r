@@ -112,7 +112,6 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
       )
     }
     paths_gdalinfo <- normalize_path(paths_gdalinfo)
-
     if (any(length(paths_gdalinfo) == 0, paths_gdalinfo == "")) {
       print_message(
         type=message_type,
@@ -236,13 +235,14 @@ check_gdal <- function(abort = TRUE, gdal_path = NULL, force = FALSE, full_scan 
   paths_gdalcalc <- file.path(
     if (Sys.info()["sysname"] == "Darwin") {
       gsub("/osgeo\\-gdal/", "/osgeo-gdal-python/", dirname(paths_gdalinfo))
+    } else if (Sys.info()["sysname"] == "Windows") {
+      file.path(dirname(dirname(paths_gdalinfo)), "apps/Python39/Scripts")
     } else {
       dirname(paths_gdalinfo)
     },
     "gdal_calc.py"
   )
   gdal_check_py <- file.exists(paths_gdalcalc)
-
 
   if (!any(gdal_check_py)) {
     print_message(
