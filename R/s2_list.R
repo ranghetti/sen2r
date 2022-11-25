@@ -202,10 +202,10 @@ s2_list <- function(spatial_extent = NULL,
     time_interval <- as.Date(time_interval)
   }
   
-  if (anyNA(match(server, c("scihub", "gcloud")))) {
+  if (anyNA(match(server, c("scihub", "gcloud", "s2cogs")))) {
     print_message(
       type = "error",
-      "`server` must be \"scihub\" (and/or \"gcloud\" in a future release)"
+      "`server` must be \"gcloud\" or \"scihub\""
     )
   }
   
@@ -359,6 +359,28 @@ s2_list <- function(spatial_extent = NULL,
       tmpdir = tmpdir
     )
     out_dt_list[["gcloud"]][,server:=rep("gcloud", nrow(out_dt_list[["gcloud"]]))]
+  }
+  
+  ## AWS s2-COGs specific methods
+  if ("s2cogs" %in% server) {
+    if (eval(parse(text = 'requireNamespace("sen2r.addons", quietly = TRUE)'))) {
+      out_dt_list[["s2cogs"]] <- eval(parse(text = paste0(
+        "sen2r.addons::.s2_list_s2cogs(",
+        "  spatial_extent = spatial_extent,",
+        "  time_intervals = time_intervals,",
+        # "  s2bands = s2bands,", # TODO implement!
+        "  tile = tile,",
+        "  orbit = orbit,",
+        "  max_cloud = max_cloud,",
+        "  tmpdir = tmpdir",
+        ")"
+      )))
+    } else {
+      print_message(
+        type = "error",
+        "Please install package 'sen2r.addons' to use server = \"s2cogs\"."
+      )
+    }
   }
   
   ## Merge dt (in case of multiple servers)
