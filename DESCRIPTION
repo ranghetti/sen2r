@@ -31,7 +31,6 @@ Imports:
   stars (>= 0.4.1),
   data.table,
   raster,
-  rgdal,
   XML,
   jsonlite,
   geojsonio,
