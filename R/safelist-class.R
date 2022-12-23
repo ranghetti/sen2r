@@ -139,6 +139,7 @@ setAs("sf", "safelist", function(from) {
 ## Methods FROM safelist
 
 #' @export
+#' @rdname safelist-class
 as.data.frame.safelist <- function(x, row.names = NULL, optional = FALSE, ...) {
   to <- data.frame(name = names(x), url = as.vector(x), stringsAsFactors = FALSE)
   autoRN <- (is.null(row.names) || length(row.names) != nrow(to))
@@ -155,6 +156,7 @@ setAs("safelist", "data.frame", function(from) {
 })
 
 #' @export
+#' @rdname safelist-class
 as.data.table.safelist <- function(x, keep.rownames = FALSE, ...) {
   rownames <- if (keep.rownames) {
     names(x)
@@ -166,6 +168,7 @@ setAs("safelist", "data.table", function(from) {
 })
 
 #' @export
+#' @rdname safelist-class
 as.character.safelist <- function(x, ...) {
   x[seq_len(length(x))]
 }
@@ -174,6 +177,7 @@ setAs("safelist", "character", function(from) {
 })
 
 #' @export
+#' @rdname safelist-class
 st_as_sf.safelist <- function(x, ...) {
   if (!is.null(attr(x, "footprint"))) {
     sf::st_as_sf(as.data.frame(x), wkt = "footprint", crs = 4326)
@@ -188,6 +192,7 @@ setAs("safelist", "sf", function(from) {
 
 ## Print method
 #' @export
+#' @rdname safelist-class
 print.safelist = function(x, ...) {
   x_print <- as.character(x)[seq_len(min(length(x),5))]
   names(x_print) <- names(x)[seq_len(min(length(x),5))]

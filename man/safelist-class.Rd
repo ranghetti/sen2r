@@ -4,7 +4,23 @@
 \name{safelist-class}
 \alias{safelist-class}
 \alias{safelist}
+\alias{as.data.frame.safelist}
+\alias{as.data.table.safelist}
+\alias{as.character.safelist}
+\alias{st_as_sf.safelist}
+\alias{print.safelist}
 \title{Format for SAFE archive lists}
+\usage{
+\method{as.data.frame}{safelist}(x, row.names = NULL, optional = FALSE, ...)
+
+\method{as.data.table}{safelist}(x, keep.rownames = FALSE, ...)
+
+\method{as.character}{safelist}(x, ...)
+
+\method{st_as_sf}{safelist}(x, ...)
+
+\method{print}{safelist}(x, ...)
+}
 \description{
 \code{safelist} is a format thought to manage lists of SAFE
 Sentinel.2 archives.
