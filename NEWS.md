@@ -1,3 +1,10 @@
+# Version 1.5.4
+
+## Minor changes
+- Manage `"s2cogs"` (not yet implemented) value as `source` server.
+- Change default path where Python's GDAL executables should be searched.
+- Remove explicit {rgdal} dependency (`https://r-spatial.org/r/2022/12/14/evolution2.html`).
+
 # Version 1.5.3
 
 ## Bug fixes
