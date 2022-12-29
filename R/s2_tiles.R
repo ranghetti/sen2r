@@ -7,7 +7,7 @@
 #' @importFrom sf st_read st_zm st_collection_extract st_write st_cast
 #' @importFrom httr RETRY progress write_disk
 #' @importFrom stats aggregate
-#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @author Luigi Ranghetti, phD (2019)
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
 #'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 

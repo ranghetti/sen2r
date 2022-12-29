@@ -4,6 +4,7 @@
 - Manage `"s2cogs"` (not yet implemented) value as `source` server.
 - Change default path where Python's GDAL executables should be searched.
 - Remove explicit {rgdal} dependency (`https://r-spatial.org/r/2022/12/14/evolution2.html`).
+- Change maintainer's email in order to follow CRAN requirements.
 
 # Version 1.5.3
 

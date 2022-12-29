@@ -1,46 +1,36 @@
-# sen2r v. 1.5.3
+# sen2r v. 1.5.4
 
-This re-submission fixes the following error present on CRAN checks of different
-OSs (Windows and Linux):
-```
--- Error (test-s2_rgb.R:43:5): Tests on function s2_rgb() ----------------------
-  Error in `c.stars_proxy(structure(list(S2A2A_20190723_022_Barbellino_RGBb84B_10.tif = 
-  ...
-```
-In addition, tests were simplified so to require less time and resources 
-to be executed and to avoid errors in revdep checks of some main R packages.
 
 ## Test environments
-* [local installation] Archlinux, 64 bit, R 4.2.1: 
-    There were no ERRORs, WARNINGs nor NOTEs.
-* [local installation] Windows 10, 64 bit, R 4.2.1: 
-    There were no ERRORs, WARNINGs nor NOTEs.
-* [local rocker/geospatial] Ubuntu 20.04, 64 bit, R 4.2.1: 
-    There were no ERRORs, WARNINGs nor NOTEs.
+* [local installation] Windows 11, 64 bit, R 4.2.1: 
+  There were no ERRORs, WARNINGs nor NOTEs.
+* [local rocker/geospatial] Ubuntu 22.04.1, 64 bit, R 4.2.2: 
+  There were no ERRORs, WARNINGs nor NOTEs.
 * [macbuilder] macOS 11.5.2 (Mac mini Apple M1), 64 bit, R 4.2.1
-    (`https://mac.r-project.org/macbuilder/results/1663835689-203a3498c574bce5/`):
-    There were no ERRORs, WARNINGs nor NOTEs.
+  (`https://mac.r-project.org/macbuilder/results/1672324384-381ee107a5dfe5fd/`):
+  There were no ERRORs, WARNINGs nor NOTEs.
 * [devtools] `check_win_devel()`
-    (`https://win-builder.r-project.org/PLtE4uXWzU8Y/`): 
-    There were no ERRORs nor WARNINGs (1 NOTE, see below).
+  (`https://win-builder.r-project.org/X178ypsB7Ij0/`): 
+  There were no ERRORs nor WARNINGs (1 NOTE, see below).
 * [devtools] `check_win_release()`
-    (`https://win-builder.r-project.org/2aVF3h4p7EFE/`): 
-    There were no ERRORs nor WARNINGs (1 NOTE, see below).
+  (`https://win-builder.r-project.org/s81ObAlWW438/`): 
+  There were no ERRORs nor WARNINGs (1 NOTE, see below).
 * [devtools] `check_win_oldrelease()`
-    (`https://win-builder.r-project.org/JY4wC1Zq4BJ3/`): 
-    There were no ERRORs nor WARNINGs (1 NOTE, see below).
+  (`https://win-builder.r-project.org/ZAH1HwJq84h8/`): 
+  There were no ERRORs nor WARNINGs (1 NOTE, see below).
 * [rhub] `check_on_macos()`
-    (`https://builder.r-hub.io/status/original/sen2r_1.5.3.tar.gz-b7cc276b19b14a478b3895e71e795ba8`): 
-    There were no ERRORs, WARNINGs nor NOTEs.
+  (`https://builder.r-hub.io/status/sen2r_1.5.4.tar.gz-967caad4a7534a2299bc3ace102062f8`): 
+  There were no ERRORs, WARNINGs nor NOTEs.
 
 `check_win_release()` and `check_wind_devel()` return the following NOTE:
 ```
-Maintainer: 'Luigi Ranghetti <sen2r@ranghetti.info>'
+* checking CRAN incoming feasibility ... [13s] NOTE
+Maintainer: 'Luigi Ranghetti <rpackages.ranghetti@gmail.com>'
 
 New maintainer:
-  Luigi Ranghetti <sen2r@ranghetti.info>
+ Luigi Ranghetti <rpackages.ranghetti@gmail.com>
 Old maintainer(s):
-  Luigi Ranghetti <luigi@ranghetti.info>
+ Luigi Ranghetti <sen2r@ranghetti.info>
 ```
 The email was changed in order to use an account which does not forward to 
 Google, so to respect CRAN requirements.
@@ -48,46 +38,9 @@ Google, so to respect CRAN requirements.
 `check_win_oldrelease()` returns the following NOTE:
 ```
 Possibly mis-spelled words in DESCRIPTION:
-  Ranghetti (22:2)
-  al (22:15)
-  et (22:12)
+ Ranghetti (22:2)
+ al (22:15)
+ et (22:12)
 ```
 All these words are correctly spelled, and they do not contain package names
 nor book titles, so they should not be quoted.
-
-
-Moreover, this re-submission fixes the following additional errors reported on M1mac: `https://www.stats.ox.ac.uk/pub/bdr/M1mac/sen2r.out`):
-
-```
-Running examples in ‘sen2r-Ex.R’ failed
-The error most likely occurred in:
-
-> ### Name: st_crs2
-...
-> st_crs2(raster_path)
-
- *** caught segfault ***
-address 0x0, cause 'invalid permissions'
-```
-
-This line was put between a `\dontrun()` so to avoid further errors 
-(this is not a relevant example, and `st_crs2()` is an accessory function).
-
-```
-Running the tests in ‘tests/testthat.R’ failed.
-Complete output:
-  > library(testthat)
-  > library(sen2r)
-  Welcome to sen2r. To use the package from a GUI, launch
-   > sen2r()
-  Documentation: https://sen2r.ranghetti.info
-  > 
-  > test_check("sen2r")
-  Problems with SciHub credentials; check secrets.
-  trying to read file: /var/folders/pk/n4bndnt1287ctrd_ftthnnnr0000gp/T//Rtmpx1lAXp/working_dir/RtmpA93TpK/out_test7_15dab1b19bcef/BOA/S2A2A_20190723_022_Barbellino_BOA_10.tif
-  
-   *** caught segfault ***
-  address 0x0, cause 'invalid permissions'
-```
-
-This test now was removed, as well as all tests requiring authentications.

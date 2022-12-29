@@ -5,7 +5,7 @@
 #' @param prod_types Character vector of the input product types
 #' @return Numeric NA values (NA not to set any NA value), corresponding to 
 #'  `prod_types`.
-#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @author Luigi Ranghetti, phD (2019)
 #' @keywords internal
 #'
 #' @examples

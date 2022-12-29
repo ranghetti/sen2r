@@ -17,7 +17,7 @@
 #'  appended.
 #' @return The path eventually expanded.
 #' @export
-#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @author Luigi Ranghetti, phD (2019)
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
 #'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 
@@ -77,7 +77,7 @@ expand_path <- function(path, parent=getwd(), silent=TRUE, normalize=TRUE) {
 #' @param ... additional parameters passed to [normalizePath] (i.e. `mustWork`).
 #' @return The paths normalized.
 #' @export
-#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @author Luigi Ranghetti, phD (2019)
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
 #'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 

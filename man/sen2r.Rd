@@ -569,7 +569,7 @@ Sentinel-2 satellite data. \emph{Computers & Geosciences}, 139, 104473.
 \doi{10.1016/j.cageo.2020.104473}, URL: \url{https://sen2r.ranghetti.info/}.
 }
 \author{
-Luigi Ranghetti, phD (2020) \email{luigi@ranghetti.info}
+Luigi Ranghetti, phD (2020)
 
 Lorenzo Busetto, phD (2020)
 }

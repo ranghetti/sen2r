@@ -35,6 +35,6 @@ Sentinel-2 satellite data. \emph{Computers & Geosciences}, 139, 104473.
 \author{
 Lorenzo Busetto, phD (2019)
 
-Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
+Luigi Ranghetti, phD (2019)
 }
 \keyword{internal}

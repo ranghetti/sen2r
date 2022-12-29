@@ -30,7 +30,7 @@
 #' @return Vector character with the list ot the output products
 #'  (being downloaded or already existing).
 #'
-#' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
+#' @author Luigi Ranghetti, phD (2020)
 #' @author Lorenzo Busetto, phD (2019)
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 

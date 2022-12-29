@@ -40,7 +40,7 @@
 #'  overwritten? (default: FALSE)
 #' @return A vector with the names of the created output files
 #'   (just created or already existing).
-#' @author Luigi Ranghetti, phD (2022) \email{luigi@@ranghetti.info}
+#' @author Luigi Ranghetti, phD (2022)
 #' @author Marina Ranghetti (2022)
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 

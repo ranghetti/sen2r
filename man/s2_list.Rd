@@ -179,5 +179,5 @@ Lorenzo Busetto, phD (2019) - Inspired by
 function \code{getSentinel_query} of package
 \href{https://github.com/16EAGLE/getSpatialData}{\code{getSpatialData}} by J. Schwalb-Willmann
 
-Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
+Luigi Ranghetti, phD (2019)
 }

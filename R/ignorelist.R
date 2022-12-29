@@ -13,7 +13,7 @@
 #'  these lists were saved in two hidden files ( one per file not created 
 #'  because of cloud coverage, one other for all the other reasons).
 #'  To try it again, delete the files/files or set `overwrite = TRUE` in `sen2r()`).
-#' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
+#' @author Luigi Ranghetti, phD (2020)
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
 #'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 

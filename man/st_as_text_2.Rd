@@ -29,6 +29,6 @@ This function will be deleted whenever \code{sf} will manage WKT2.
 sen2r:::st_as_text_2(sf::st_crs(32632))
 }
 \author{
-Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
+Luigi Ranghetti, phD (2019)
 }
 \keyword{internal}

@@ -12,7 +12,7 @@
 #' @return Well-known Text representation of simple feature geometry or 
 #'  coordinate reference system
 #' @importFrom sf sf_extSoftVersion st_crs st_as_text
-#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @author Luigi Ranghetti, phD (2019)
 #' @keywords internal
 #'
 #' @examples
