@@ -11,7 +11,7 @@
 #'  (default is FALSE).
 #'  This argument will be removed when use_dem = TRUE will become the default.
 #' @return TRUE if the file was copied, FALSE elsewhere (invisible output)
-#' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
+#' @author Luigi Ranghetti, phD (2020)
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
 #'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 
@@ -129,7 +129,7 @@ gipp_init <- function(gipp_sen2r_path = NA, force = FALSE, dem_warning = FALSE) 
 #'  must explicitly define the argument `gipp_path`
 #'  as the path of the default GIPP file, which is
 #'  `file.path(dirname(attr(load_binpaths(), "path")), "sen2r_L2A_GIPP.xml")`.
-#' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
+#' @author Luigi Ranghetti, phD (2020)
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
 #'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 

@@ -36,7 +36,7 @@
 #' @param initial Character: prefix for the first line.
 #' @return Message (in the defined format).
 #'
-#' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
+#' @author Luigi Ranghetti, phD (2020)
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
 #'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 

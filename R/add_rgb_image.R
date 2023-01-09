@@ -2,7 +2,7 @@
 #' @description Modal dialog to define an RGB image.
 #' @param s2_bands 2-length list (one for TOA, one for BOA),
 #'  each element being a list of S2 bands, as defined in [s2_gui].
-#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @author Luigi Ranghetti, phD (2019)
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
 #'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 

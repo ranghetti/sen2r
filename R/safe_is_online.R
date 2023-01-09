@@ -15,7 +15,7 @@
 #'  in which each element is TRUE if the corresponding SAFE archive is 
 #'  available for download, FALSE if it is not or NA in case of errors with
 #'  the SAFE url.
-#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @author Luigi Ranghetti, phD (2019)
 #' @author Lorenzo Busetto, phD (2020)
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 

@@ -37,7 +37,7 @@
 #'      of the json file in which the list of the products (ordered, available
 #'      and not ordered) was saved (if `export_prodlist = TRUE`).
 #'
-#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @author Luigi Ranghetti, phD (2019)
 #' @author Lorenzo Busetto, phD (2020)
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 

@@ -16,7 +16,7 @@
 #'  Default is a temporary directory.
 #' @return NULL (the function is called for its side effects)
 #' @importFrom sf st_as_sfc st_bbox st_transform st_drivers
-#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @author Luigi Ranghetti, phD (2019)
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
 #'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 

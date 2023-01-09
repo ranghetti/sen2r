@@ -4,7 +4,7 @@
 #' @param tile_id Character: tile ID (5 chars), e.g. `"32TNR"` (multiple values
 #'  can be provided).
 #' @return A vector of the same length of `tile_id` with UTM zones (e.g. `"32N`").
-#' @author Luigi Ranghetti, phD (2020) \email{luigi@@ranghetti.info}
+#' @author Luigi Ranghetti, phD (2020)
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing 
 #'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473. 

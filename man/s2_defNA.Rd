@@ -23,6 +23,6 @@ sen2r:::s2_defNA("BOA")
 sen2r:::s2_defNA(c("BOA","BOA","SCL","TCI"))
 }
 \author{
-Luigi Ranghetti, phD (2019) \email{luigi@ranghetti.info}
+Luigi Ranghetti, phD (2019)
 }
 \keyword{internal}

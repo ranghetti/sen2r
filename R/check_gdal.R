@@ -21,7 +21,7 @@
 #' @return Logical (invisible): TRUE in case the installation is ok, FALSE
 #'  if GDAL is missing and abort=FALSE (otherwise, the function stops).
 #'
-#' @author Luigi Ranghetti, phD (2019) \email{luigi@@ranghetti.info}
+#' @author Luigi Ranghetti, phD (2019)
 #' @references L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
 #'  "sen2r": An R toolbox for automatically downloading and preprocessing
 #'  Sentinel-2 satellite data. _Computers & Geosciences_, 139, 104473.
