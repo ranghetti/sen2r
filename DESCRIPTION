@@ -50,7 +50,6 @@ Suggests:
   shinyjs,
   shinyWidgets,
   spelling,
-  geojsonlint,
   httptest,
   knitr,
   markdown,
