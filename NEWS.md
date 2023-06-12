@@ -1,3 +1,9 @@
+# Version 1.5.5
+
+## Minor changes
+- Add NMDI index, check NDMI and WDRVI indices.
+- Remove suggested dependency {geojsonlint}.
+
 # Version 1.5.4
 
 ## Minor changes

@@ -34,10 +34,12 @@ LTA
 MSAVI
 MathML
 NDBI
+NDMI
 NDVI
 NDVIre
 NDWI
 NIR
+NMDI
 NetCDF
 Nutini
 OSGeo
@@ -65,6 +67,7 @@ TOA
 TOML
 TQQ
 VRT
+WDRVI
 WKT
 WVP
 Wget
@@ -109,6 +112,7 @@ gdalwarp
 gdtools
 geoJSON
 geojsonio
+geojsonlint
 georeferenced
 gui
 httr

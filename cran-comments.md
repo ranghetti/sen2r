@@ -1,28 +1,26 @@
-# sen2r v. 1.5.4
+# sen2r v. 1.5.5
 
 
 ## Test environments
-* [local installation] Windows 11, 64 bit, R 4.2.1: 
+* [local installation] Windows 11, 64 bit, R 4.3.0: 
   There were no ERRORs, WARNINGs nor NOTEs.
-* [local rocker/geospatial] Ubuntu 22.04.1, 64 bit, R 4.2.2: 
+* [local installation] Ubuntu 22.04.2, 64 bit, R 4.3.0: 
   There were no ERRORs, WARNINGs nor NOTEs.
-* [macbuilder] macOS 11.5.2 (Mac mini Apple M1), 64 bit, R 4.2.1
-  (`https://mac.r-project.org/macbuilder/results/1672324384-381ee107a5dfe5fd/`):
+* [macbuilder] macOS 13.3.1 (Mac mini Apple M1), 64 bit, R 4.3.0
+  (`https://mac.r-project.org/macbuilder/results/1686346670-b2477c89982a7f19/`):
   There were no ERRORs, WARNINGs nor NOTEs.
 * [devtools] `check_win_devel()`
-  (`https://win-builder.r-project.org/X178ypsB7Ij0/`): 
+  (``): 
   There were no ERRORs nor WARNINGs (1 NOTE, see below).
 * [devtools] `check_win_release()`
-  (`https://win-builder.r-project.org/s81ObAlWW438/`): 
+  (``): 
   There were no ERRORs nor WARNINGs (1 NOTE, see below).
 * [devtools] `check_win_oldrelease()`
-  (`https://win-builder.r-project.org/ZAH1HwJq84h8/`): 
+  (``): 
   There were no ERRORs nor WARNINGs (1 NOTE, see below).
-* [rhub] `check_on_macos()`
-  (`https://builder.r-hub.io/status/sen2r_1.5.4.tar.gz-967caad4a7534a2299bc3ace102062f8`): 
-  There were no ERRORs, WARNINGs nor NOTEs.
 
-`check_win_release()` and `check_wind_devel()` return the following NOTE:
+`check_win_oldrelease()`, `check_win_release()` and `check_wind_devel()` return 
+the following NOTE:
 ```
 * checking CRAN incoming feasibility ... [13s] NOTE
 Maintainer: 'Luigi Ranghetti <rpackages.ranghetti@gmail.com>'
