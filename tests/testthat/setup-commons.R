@@ -12,3 +12,9 @@ Sys.setenv('_R_CHECK_SYSTEM_CLOCK_' = 0)
 # If neither, only fast and strategic tests are executed.
 full_tests <- FALSE
 skip_full_tests <- function() {skip_if(full_tests == FALSE, "Full tests disabled")}
+# Perform tests calling GDAL?
+# On some specific isolated machines, calling sf::gdal_utils() 
+# causes segmentation faults.
+# Functions which use GDAL are not tested in those cases.
+gdal_tests <- Sys.info()["user"] != "ripley"
+skip_gdal_tests <- function() {skip_if(gdal_tests == FALSE, "GDAL tests disabled")}

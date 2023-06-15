@@ -1,4 +1,5 @@
 message("\n---- Test st_crs2 ----")
+skip_gdal_tests()
 
 testthat::test_that(
   "st_crs2, input EPSG", {
