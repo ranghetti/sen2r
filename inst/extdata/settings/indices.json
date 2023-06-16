@@ -718,7 +718,7 @@
       "name": "NDMI",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=56",
       "s2_formula": "(band_8-band_11)/(band_8+band_11)",
-      "checked": false,
+      "checked": true,
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">820nm<\/mi>\n      <mo>-<\/mo>\n      <mi mathcolor=\"#443399\">1600nm<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">820nm<\/mi>\n      <mo>+<\/mo>\n      <mi mathcolor=\"#443399\">1600nm<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
     },
     {
@@ -1834,8 +1834,9 @@
       "longname": "Wide Dynamic Range Vegetation Index",
       "name": "WDRVI",
       "link": "http://www.indexdatabase.de/db/i-single.php?id=125",
-      "s2_formula": "(0.1*band_8-band_4)/(0.1*band_8+band_4)",
-      "checked": false,
+      "s2_formula": "(par_a*band_8-band_4)/(par_a*band_8+band_4)",
+      "checked": true,
+      "a": 0.1,
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mn>0.1<\/mn>\n       <mo>&amp;InvisibleTimes;<\/mo>\n       <mi mathcolor=\"#443399\">NIR<\/mi>\n      <\/mrow>\n      <mo>-<\/mo>\n      <mi mathcolor=\"#443399\">RED<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mrow>\n       <mn>0.1<\/mn>\n       <mo>&amp;InvisibleTimes;<\/mo>\n       <mi mathcolor=\"#443399\">NIR<\/mi>\n      <\/mrow>\n      <mo>+<\/mo>\n      <mi mathcolor=\"#443399\">RED<\/mi>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
     },
     {
@@ -2089,8 +2090,17 @@
       "s2_formula": "2 * band_3 - (band_2 + band_4)",
       "checked": true,
       "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mn>2<\/mn>\n  <mo>&amp;InvisibleTimes;<\/mo>\n  <mi mathcolor=\"#443399\">GREEN<\/mi>\n  <mo>-<\/mo>\n  <mo>(<\/mo>\n  <mi mathcolor=\"#443399\">RED<\/mi>\n  <mo>+<\/mo>\n  <mi mathcolor=\"#443399\">BLUE<\/mi>\n  <mo>)<\/mo>\n <\/mrow>\n<\/math>"
+    },
+    {
+      "n_index": 327,
+      "longname": "Normalized Multi-band Drought Index",
+      "name": "NMDI",
+      "link": "https://doi.org/10.1029/2007GL031021",
+      "s2_formula": "(band_8 - band_11 + band_12) / (band_8 + band_11 - band_12)",
+      "checked": true,
+      "s2_formula_mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR<\/mi>\n      <mo>-<\/mo>\n      <mrow>\n       <mo>(<\/mo>\n       <mrow>\n        <mrow>\n         <mi mathcolor=\"#443399\">SWIR1<\/mi>\n         <mo>-<\/mo>\n         <mi mathcolor=\"#443399\">SWIR2<\/mi>\n        <\/mrow>\n       <\/mrow>\n       <mo>)<\/mo>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR<\/mi>\n      <mo>+<\/mo>\n      <mrow>\n       <mo>(<\/mo>\n       <mrow>\n        <mrow>\n         <mi mathcolor=\"#443399\">SWIR1<\/mi>\n         <mo>-<\/mo>\n         <mi mathcolor=\"#443399\">SWIR2<\/mi>\n        <\/mrow>\n       <\/mrow>\n       <mo>)<\/mo>\n      <\/mrow>\n     <\/mrow>\n    <\/mrow>\n   <\/mrow>\n  <\/mfrac>\n <\/mrow>\n<\/math>"
     }
   ],
-  "pkg_version": ["1.5.0"],
-  "creation_date": ["2021-06-27 17:56:25"]
+  "pkg_version": ["1.5.4.9000"],
+  "creation_date": ["2023-05-30 16:07:39.257282"]
 }

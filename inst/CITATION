@@ -4,8 +4,8 @@ citHeader(paste(
   "To cite package 'sen2r' in publications use:"
 ))
 
-citEntry(
-  entry        = "Article",
+bibentry(
+  bibtype      = "Article",
   author       = "Luigi Ranghetti and Mirco Boschetti and Francesco Nutini and Lorenzo Busetto",
   title        = "sen2r: An R toolbox for automatically downloading and preprocessing Sentinel-2 satellite data",
   journal      = "Computers & Geosciences",

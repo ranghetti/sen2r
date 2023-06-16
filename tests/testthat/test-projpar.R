@@ -1,6 +1,7 @@
 message("\n---- Test projpar() / projname() ----")
 # testthat::skip_on_cran()
 # testthat::skip_on_travis()
+skip_gdal_tests()
 
 testthat::test_that(
   "Test longlat", {

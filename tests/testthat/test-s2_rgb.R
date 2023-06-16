@@ -1,4 +1,6 @@
 message("\n---- Test compute RGB images - main s2_rgb() ----")
+skip_gdal_tests()
+
 testthat::test_that(
   "Tests on function s2_rgb()", {
     

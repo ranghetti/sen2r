@@ -202,7 +202,8 @@ create_indices_db <- function(xslt_path = NA,
   
   # last manual corrections on formulas
   s2_table[name=="ARVI", s2_formula := gsub("band_8a", "band_8", s2_formula)] # revert manual change on IDB
-
+  s2_table[name=="WDRVI", s2_formula := gsub("0.1", "par_a", s2_formula)] # set 0.1 as parameter
+  
   # rename parameters (A, B, ...)
   s2_table[,s2_formula:=gsub("par\\_([aALyY]r?)", "par_a", s2_table$s2_formula)] # first parameters (a, A, ar, y, Y, L) -> "a"
   s2_table[,s2_formula:=gsub("par\\_([bB])", "par_b", s2_table$s2_formula)] # second parameters (b, B) -> "b"
@@ -272,7 +273,7 @@ create_indices_db <- function(xslt_path = NA,
   s2_table[name %in% c(
     "NDVI","SAVI","MCARI","MCARI2","TCARI","ARVI","NDRE",
     "BNDVI","GNDVI","NDII","TCIdx","MSAVI2","OSAVI",
-    "NBR",#"EVI2",
+    "NBR","NDMI","WDRVI",#"EVI2",
     "SIPI1", "PSSRb1", "NDII", "MSI", "EVI", "Chlred-edge", "ARI", # sentinel-hub
     "MTVI2","MCARI-MTVI2","TCARI-OSAVI"
   ),checked:=TRUE]
@@ -280,6 +281,7 @@ create_indices_db <- function(xslt_path = NA,
   # set default parameter values
   s2_table[name=="SAVI", a:=0.5] # default value for L (here "a") parameter
   s2_table[name=="ARVI", a:=1] # default value for gamma (here "a") parameter
+  s2_table[name=="WDRVI", a:=0.1] # default value for weighting coefficient "a" (0.1-0.2)
   
   # add missing indices
   s2_table_new <- rbindlist(list(
@@ -522,6 +524,16 @@ create_indices_db <- function(xslt_path = NA,
       link = "https://doi.org/10.1016/j.agrformet.2011.09.009",
       s2_formula = "2 * band_3 - (band_2 + band_4)",
       s2_formula_mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mn>2</mn>\n  <mo>&amp;InvisibleTimes;</mo>\n  <mi mathcolor=\"#443399\">GREEN</mi>\n  <mo>-</mo>\n  <mo>(</mo>\n  <mi mathcolor=\"#443399\">RED</mi>\n  <mo>+</mo>\n  <mi mathcolor=\"#443399\">BLUE</mi>\n  <mo>)</mo>\n </mrow>\n</math>",
+      checked = TRUE,
+      a = NA, b = NA, x = NA
+    ),
+    "NMDI" = data.frame(
+      n_index = 327,
+      longname = "Normalized Multi-band Drought Index",
+      name = "NMDI",
+      link = "https://doi.org/10.1029/2007GL031021",
+      s2_formula = "(band_8 - band_11 + band_12) / (band_8 + band_11 - band_12)",
+      s2_formula_mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n <mrow>\n  <mfrac>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR</mi>\n      <mo>-</mo>\n      <mrow>\n       <mo>(</mo>\n       <mrow>\n        <mrow>\n         <mi mathcolor=\"#443399\">SWIR1</mi>\n         <mo>-</mo>\n         <mi mathcolor=\"#443399\">SWIR2</mi>\n        </mrow>\n       </mrow>\n       <mo>)</mo>\n      </mrow>\n     </mrow>\n    </mrow>\n   </mrow>\n   <mrow>\n    <mrow>\n     <mrow>\n      <mi mathcolor=\"#443399\">NIR</mi>\n      <mo>+</mo>\n      <mrow>\n       <mo>(</mo>\n       <mrow>\n        <mrow>\n         <mi mathcolor=\"#443399\">SWIR1</mi>\n         <mo>-</mo>\n         <mi mathcolor=\"#443399\">SWIR2</mi>\n        </mrow>\n       </mrow>\n       <mo>)</mo>\n      </mrow>\n     </mrow>\n    </mrow>\n   </mrow>\n  </mfrac>\n </mrow>\n</math>\n",
       checked = TRUE,
       a = NA, b = NA, x = NA
     )

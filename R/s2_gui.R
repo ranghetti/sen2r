@@ -3397,7 +3397,7 @@ s2_gui <- function(param_list = NULL,
           "(SWIR-NIR-Red);</li>",
           "<li>SCL maps make use of the",
           as.character(a(
-            href="https://sentinels.copernicus.eu/web/sentinel/technical-guides/sentinel-2-msi/level-2a/algorithm",
+            href="https://sentinels.copernicus.eu/web/sentinel/user-guides/sentinel-2-msi/processing-levels/level-2",
             target="_blank",
             "original colour scheme:"
           )),
@@ -3513,7 +3513,7 @@ s2_gui <- function(param_list = NULL,
         p(HTML(
           "If none of them is suitable for the user, it is possible to define",
           "a custom mask by manually selecting the classes to be masked.",
-          "See the <a href='https://sentinels.copernicus.eu/web/sentinel/technical-guides/sentinel-2-msi/level-2a/algorithm'",
+          "See the <a href='https://sentinels.copernicus.eu/web/sentinel/user-guides/sentinel-2-msi/processing-levels/level-2'",
           "target='_blank'>classification algorithm</a> for further details."
         )),
         p(HTML(

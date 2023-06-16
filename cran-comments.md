@@ -1,46 +1,36 @@
-# sen2r v. 1.5.4
+# sen2r v. 1.5.5
 
 
 ## Test environments
-* [local installation] Windows 11, 64 bit, R 4.2.1: 
+* [local installation] Windows 11, 64 bit, R 4.3.0: 
   There were no ERRORs, WARNINGs nor NOTEs.
-* [local rocker/geospatial] Ubuntu 22.04.1, 64 bit, R 4.2.2: 
+* [local installation] Ubuntu 22.04.2, 64 bit, R 4.3.0: 
   There were no ERRORs, WARNINGs nor NOTEs.
-* [macbuilder] macOS 11.5.2 (Mac mini Apple M1), 64 bit, R 4.2.1
-  (`https://mac.r-project.org/macbuilder/results/1672324384-381ee107a5dfe5fd/`):
+* [macbuilder] macOS 13.3.1 (Mac mini Apple M1), 64 bit, R 4.3.0
+  (`https://mac.r-project.org/macbuilder/results/1686841396-983eb296818f2468/`):
   There were no ERRORs, WARNINGs nor NOTEs.
 * [devtools] `check_win_devel()`
-  (`https://win-builder.r-project.org/X178ypsB7Ij0/`): 
-  There were no ERRORs nor WARNINGs (1 NOTE, see below).
+  (`https://win-builder.r-project.org/Fw686Vbi0d3z/`): 
+  There were no ERRORs, WARNINGs nor NOTEs.
 * [devtools] `check_win_release()`
-  (`https://win-builder.r-project.org/s81ObAlWW438/`): 
-  There were no ERRORs nor WARNINGs (1 NOTE, see below).
+  (`https://win-builder.r-project.org/dSW8wwg6b57y/`): 
+  There were no ERRORs, WARNINGs nor NOTEs.
 * [devtools] `check_win_oldrelease()`
-  (`https://win-builder.r-project.org/ZAH1HwJq84h8/`): 
-  There were no ERRORs nor WARNINGs (1 NOTE, see below).
-* [rhub] `check_on_macos()`
-  (`https://builder.r-hub.io/status/sen2r_1.5.4.tar.gz-967caad4a7534a2299bc3ace102062f8`): 
+  (`https://win-builder.r-project.org/T21XO5cyA9yj/`): 
   There were no ERRORs, WARNINGs nor NOTEs.
 
-`check_win_release()` and `check_wind_devel()` return the following NOTE:
+Additional issues (`M1mac`) were present:
 ```
-* checking CRAN incoming feasibility ... [13s] NOTE
-Maintainer: 'Luigi Ranghetti <rpackages.ranghetti@gmail.com>'
+* checking tests ...
+  Running ‘spelling.R’
+  Running ‘testthat.R’/Users/ripley/R/R-devel/bin/BATCH: line 60: 50463 Segmentation fault: 11  ${R_HOME}/bin/R -f ${in} ${opts} ${R_BATCH_OPTIONS} > ${out} 2>&1
 
-New maintainer:
- Luigi Ranghetti <rpackages.ranghetti@gmail.com>
-Old maintainer(s):
- Luigi Ranghetti <sen2r@ranghetti.info>
+ ERROR
+Running the tests in ‘tests/testthat.R’ failed.
 ```
-The email was changed in order to use an account which does not forward to 
-Google, so to respect CRAN requirements.
-
-`check_win_oldrelease()` returns the following NOTE:
-```
-Possibly mis-spelled words in DESCRIPTION:
- Ranghetti (22:2)
- al (22:15)
- et (22:12)
-```
-All these words are correctly spelled, and they do not contain package names
-nor book titles, so they should not be quoted.
+This submission should have managed this issue (I cannot be sure about that
+because I was not able to reproduce this issue on any MacOS machines, see e.g.
+`https://mac.r-project.org/macbuilder/results/1686841396-983eb296818f2468/`
+and previous 
+`https://mac.r-project.org/macbuilder/results/1686565664-5f7f28746adca176/`,
+which are not showing any errors.)

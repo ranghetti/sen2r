@@ -1,4 +1,5 @@
 message("\n---- Test compute spectral indices - s2_calcindices() ----")
+skip_gdal_tests()
 
 outdir_12 <- tempfile(pattern = "out_test12_")
 testthat::test_that(

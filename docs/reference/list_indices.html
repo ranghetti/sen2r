@@ -18,7 +18,7 @@ computable with the package."><!-- mathjax --><script src="https://cdnjs.cloudfl
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.5</span>
       </span>
     </div>
 
@@ -169,6 +169,7 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span> 58       MSAVI2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 61        MTVI2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 78         NDII</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 80         NDMI</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 88        BNDVI</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 90         NDVI</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 91         NDRE</span>
@@ -181,6 +182,7 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span> 195 TCARI-OSAVI</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 196       TCARI</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 199       TCIdx</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 204       WDRVI</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 205        NDFI</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 206       NDFI2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 207        NDSI</span>
@@ -197,6 +199,7 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span> 228         Gcc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 229         Bcc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 230         ExG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 231        NMDI</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                         longname</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4                                                                  Anthocyanin reflectance index</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6                                                     Atmospherically Resistant Vegetation Index</span>
@@ -209,6 +212,7 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span> 58                                                       Modified Soil Adjusted Vegetation Index</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 61                                                        Modified Triangular Vegetation Index 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 78                                                           Normalized Difference 819/1600 NDII</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 80                           Normalized Difference 820/1600 Normalized Difference Moisture Index</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 88                    Normalized Difference NIR/Blue Blue-normalized difference vegetation index</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 90  Normalized Difference NIR/Red Normalized Difference Vegetation Index, Calibrated NDVI - CDVI</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 91                              Normalized Difference NIR/Rededge Normalized Difference Red-Edge</span>
@@ -221,6 +225,7 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span> 195                                                                                  TCARI/OSAVI</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 196                                                     Transformed Chlorophyll Absorbtion Ratio</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 199                                                                 Triangular chlorophyll index</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 204                                                          Wide Dynamic Range Vegetation Index</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 205                                                       Normalized Difference Flood Index B1B7</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 206                                                       Normalized Difference Flood Index B1B6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 207                                                              Normalize Difference Snow Index</span>
@@ -237,14 +242,15 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span> 228                                                                   Green Chromatic Coordinate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 229                                                                    Blue Chromatic Coordinate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 230                                                                                 Excess Green</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 231                                                          Normalized Multi-band Drought Index</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Return the MSAVI2 formula</span></span></span>
 <span class="r-in"><span><span class="fu">list_indices</span><span class="op">(</span><span class="st">"s2_formula"</span>, <span class="st">"^MSAVI2$"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "(2*band_8+1-sqrt(power((2*band_8+1),2)-8*(band_8-band_4)))/(2)"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"pkg_version")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] '1.5.0'</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] '1.5.4.9000'</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"creation_date")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2021-06-27 17:56:25 CEST"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2023-05-30 16:07:39 CEST"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Return all index names (including unchecked)</span></span></span>
 <span class="r-in"><span><span class="fu">list_indices</span><span class="op">(</span><span class="st">"name"</span>, all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
@@ -305,11 +311,11 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span> [217] "BDred-2B"      "BDred-0"       "CRred2"        "CRred2-2A"    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [221] "CRred2-2B"     "CRred2-0"      "NDWI"          "NDWI2"        </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [225] "NDVIre"        "NDBI"          "Rcc"           "Gcc"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [229] "Bcc"           "ExG"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [229] "Bcc"           "ExG"           "NMDI"         </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"pkg_version")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] '1.5.0'</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] '1.5.4.9000'</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"creation_date")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2021-06-27 17:56:25 CEST"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2023-05-30 16:07:39 CEST"</span>
 </code></pre></div>
     </div>
   </div>

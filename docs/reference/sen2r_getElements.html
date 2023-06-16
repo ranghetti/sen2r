@@ -19,7 +19,7 @@ naming convention (see safe_shortname)."><!-- mathjax --><script src="https://cd
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.5</span>
       </span>
     </div>
 
@@ -168,8 +168,12 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Return metadata</span></span></span>
 <span class="r-in"><span><span class="fu">sen2r_getElements</span><span class="op">(</span><span class="va">fs2nc_examplename</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    type mission level sensing_date id_orbit extent_name prod_type res file_ext</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1: tile       A    1C   2017-06-03      022       32TQQ       TOA 20m      tif</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      type mission  level sensing_date id_orbit extent_name prod_type    res</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    &lt;char&gt;  &lt;char&gt; &lt;char&gt;       &lt;Date&gt;   &lt;char&gt;      &lt;char&gt;    &lt;char&gt; &lt;char&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:   tile       A     1C   2017-06-03      022       32TQQ       TOA    20m</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    file_ext</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;char&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:      tif</span>
 </code></pre></div>
     </div>
   </div>

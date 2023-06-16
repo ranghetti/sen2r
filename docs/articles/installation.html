@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.5</span>
       </span>
     </div>
 
@@ -190,16 +190,16 @@ archives; it can be optionally installed and used.</li>
 <ul>
 <li>
 <p>Ubuntu 20.04 LTS Focal and newer:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> r-base gdal-bin aria2 libpython2-dev libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libv8-dev libssl-dev libcairo2-dev</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> r-base gdal-bin aria2 libpython2-dev libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libv8-dev libssl-dev libcairo2-dev</span></code></pre></div>
 </li>
 <li>
 <p>Older distros:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install <span class="at">-y</span> r-base gdal-bin python-gdal aria2 libpython-dev libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libv8-dev libssl-dev libcairo2-dev</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">sudo</span> apt-get install <span class="at">-y</span> r-base gdal-bin python-gdal aria2 libpython-dev libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libv8-dev libssl-dev libcairo2-dev</span></code></pre></div>
 <p>On Ubuntu 16.04 LTS Xenial, the repositories <a href="https://launchpad.net/~ubuntugis" class="external-link">ubuntugis</a> and <a href="https://launchpad.net/~opencpu" class="external-link">opencpu</a> must be added before
 installing the packages:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> add-apt-repository <span class="at">-y</span> ppa:opencpu/jq</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> add-apt-repository <span class="at">-y</span> ppa:ubuntugis/ubuntugis-unstable</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get update <span class="at">-q</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">sudo</span> add-apt-repository <span class="at">-y</span> ppa:opencpu/jq</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">sudo</span> add-apt-repository <span class="at">-y</span> ppa:ubuntugis/ubuntugis-unstable</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">sudo</span> apt-get update <span class="at">-q</span></span></code></pre></div>
 </li>
 </ul>
 <p>Installation was tested over Ubuntu 20.04 LTS focal and 18.04 LTS
@@ -209,24 +209,24 @@ not supported.</p>
 </li>
 <li>
 <p>On Debian:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install <span class="at">-y</span> r-base gdal-bin python-gdal aria2 libpython-dev libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libnode-dev libssl-dev libcairo2-dev proj-epsg</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">sudo</span> apt-get install <span class="at">-y</span> r-base gdal-bin python-gdal aria2 libpython-dev libudunits2-dev libgdal-dev libjq-dev libprotobuf-dev protobuf-compiler libnode-dev libssl-dev libcairo2-dev proj-epsg</span></code></pre></div>
 <p>Installation was tested over Debian 9 Stretch; older releases are not
 supported.</p>
 </li>
 <li>
 <p>On Fedora:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> yum install R gdal gdal-python aria2 python-devels gdal-devel proj-devel geos-devel udunits2-devel jq-devel protobuf-devel v8-devel openssl-devel cairo-devel libcurl-devel netcdf-devel libxml2-devel</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">sudo</span> yum install R gdal gdal-python aria2 python-devels gdal-devel proj-devel geos-devel udunits2-devel jq-devel protobuf-devel v8-devel openssl-devel cairo-devel libcurl-devel netcdf-devel libxml2-devel</span></code></pre></div>
 <p>Installation was tested over Fedora 29.</p>
 </li>
 <li>
 <p>On ArchLinux:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="at">--noconfirm</span> r base-devel gcc-fortran python-gdal wget aria2 jq protobuf git</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/gyp-git.git</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> gyp-git<span class="kw">;</span> <span class="ex">makepkg</span> <span class="at">-si</span> <span class="at">--noconfirm</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/v8-3.14.git</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> v8-3.14<span class="kw">;</span> <span class="ex">makepkg</span> <span class="at">-si</span> <span class="at">--noconfirm</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/udunits.git</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> udunits<span class="kw">;</span> <span class="ex">makepkg</span> <span class="at">-si</span> <span class="at">--noconfirm</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">sudo</span> pacman <span class="at">-S</span> <span class="at">--noconfirm</span> r base-devel gcc-fortran python-gdal wget aria2 jq protobuf git</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/gyp-git.git</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="bu">cd</span> gyp-git<span class="kw">;</span> <span class="ex">makepkg</span> <span class="at">-si</span> <span class="at">--noconfirm</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/v8-3.14.git</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="bu">cd</span> v8-3.14<span class="kw">;</span> <span class="ex">makepkg</span> <span class="at">-si</span> <span class="at">--noconfirm</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="bu">cd</span> /tmp<span class="kw">;</span> <span class="fu">git</span> clone https://aur.archlinux.org/udunits.git</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="bu">cd</span> udunits<span class="kw">;</span> <span class="ex">makepkg</span> <span class="at">-si</span> <span class="at">--noconfirm</span></span></code></pre></div>
 <p>Installation was tested on date 2018-11-21.</p>
 </li>
 </ul>
@@ -419,14 +419,14 @@ repository</a>. To do it:</p>
 <li>
 <p>if Homebrew is missing on your system, install it opening a
 terminal and typing:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/usr/bin/ruby</span> <span class="at">-e</span> <span class="st">"</span><span class="va">$(</span><span class="ex">curl</span> <span class="at">-fsSL</span> https://github.com/Homebrew/install/raw/master/install<span class="va">)</span><span class="st">"</span></span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="ex">/usr/bin/ruby</span> <span class="at">-e</span> <span class="st">"</span><span class="va">$(</span><span class="ex">curl</span> <span class="at">-fsSL</span> https://github.com/Homebrew/install/raw/master/install<span class="va">)</span><span class="st">"</span></span></code></pre></div>
 <p>(see <a href="https://brew.sh/" class="external-link">the Homebrew webpage</a> for
 details);</p>
 </li>
 <li>
 <p>install GDAL by typing:</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> tap osgeo/osgeo4mac</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install osgeo-gdal-python</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="ex">brew</span> tap osgeo/osgeo4mac</span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a><span class="ex">brew</span> install osgeo-gdal-python</span></code></pre></div>
 <p>(see <a href="https://github.com/OSGeo/homebrew-osgeo4mac" class="external-link">the OSGeo
 Homebrew webpage</a> for details). At this step, an error could be
 returned in case another GDAL installation was already present; in this
