@@ -161,7 +161,7 @@ can be found in the Reference page):
     Long Term Archive;
 -   [`sen2cor()`](reference/sen2cor.md) to correct level-1C products
     using
-    [Sen2Cor](http://step.esa.int/main/snap-supported-plugins/sen2cor/);
+    [Sen2Cor](https://step.esa.int/main/snap-supported-plugins/sen2cor/);
 -   [`s2_mask()`](reference/s2_mask.md) to apply a cloud mask to
     Sentinel-2 products;
 -   [`s2_rgb()`](reference/s2_rgb.md) to generate RGB images from

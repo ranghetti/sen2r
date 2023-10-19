@@ -1,6 +1,6 @@
 #' @title Download and install (or link) Sen2Cor
 #' @description [install_sen2cor()] downloads and installs a standalone version of
-#'  [Sen2Cor](http://step.esa.int/main/snap-supported-plugins/sen2cor/).
+#'  [Sen2Cor](https://step.esa.int/main/snap-supported-plugins/sen2cor/).
 #' @param sen2cor_dir Path where sen2cor will be installed or searched
 #'  (by default it is a subdirectory `"sen2cor"` of the default sen2r directory).
 #' @param version (optional) Character: Sen2Cor version (one among
@@ -94,7 +94,7 @@ install_sen2cor <- function(
   
   # Set path
   if (Sys.info()["sysname"] == "Linux") {
-    sen2cor_url <- paste0("http://step.esa.int/thirdparties/sen2cor/",
+    sen2cor_url <- paste0("https://step.esa.int/thirdparties/sen2cor/",
                           version,
                           "/Sen2Cor-",
                           str_pad2(version[,1],2,"left","0"),".",
@@ -102,7 +102,7 @@ install_sen2cor <- function(
                           str_pad2(version[,3],2,"left","0"),
                           "-Linux64.run")
   } else if (Sys.info()["sysname"] == "Windows") {
-    sen2cor_url <- paste0("http://step.esa.int/thirdparties/sen2cor/",
+    sen2cor_url <- paste0("https://step.esa.int/thirdparties/sen2cor/",
                           version,
                           "/Sen2Cor-",
                           str_pad2(version[,1],2,"left","0"),".",
@@ -110,7 +110,7 @@ install_sen2cor <- function(
                           str_pad2(version[,3],2,"left","0"),
                           "-win64.zip")
   } else if (Sys.info()["sysname"] == "Darwin") {
-    sen2cor_url <- paste0("http://step.esa.int/thirdparties/sen2cor/",
+    sen2cor_url <- paste0("https://step.esa.int/thirdparties/sen2cor/",
                           version,
                           "/Sen2Cor-",
                           str_pad2(version[,1],2,"left","0"),".",
@@ -219,7 +219,7 @@ install_sen2cor <- function(
 #' @name link_sen2cor
 #' @rdname install_sen2cor
 #' @description `link_sen2cor()` links an existing standalone version of
-#'  [Sen2Cor](http://step.esa.int/main/snap-supported-plugins/sen2cor/) to sen2r.
+#'  [Sen2Cor](https://step.esa.int/main/snap-supported-plugins/sen2cor/) to sen2r.
 #' @export
 link_sen2cor <- function(sen2cor_dir) {
   

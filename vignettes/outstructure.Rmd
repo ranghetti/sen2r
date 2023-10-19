@@ -136,7 +136,7 @@ dry summer, spring, fall: <span style='font-family:monospace;color:#FF6611;'>WVP
 dry desert or winter: <span style='font-family:monospace;color:#FF6611;'>WVP</span> = 0.3-0.8 cm.
 
 For further details about this product, see the
-<a href="http://step.esa.int/thirdparties/sen2cor/2.5.5/docs/S2-PDGS-MPC-L2A-PDD-V2.5.5.pdf" target="_blank">
+<a href="https://step.esa.int/thirdparties/sen2cor/2.5.5/docs/S2-PDGS-MPC-L2A-PDD-V2.5.5.pdf" target="_blank">
 Sentinel-2 Level 2A Product Definition</a> document.
 
 ### Aerosol Optical Thickness
@@ -152,7 +152,7 @@ If cloud masking is required by the user,
 <span style='font-family:monospace;color:#FF6611;'>AOT</span> is never masked.
 
 For further details about this product, see the
-<a href="http://step.esa.int/thirdparties/sen2cor/2.5.5/docs/S2-PDGS-MPC-L2A-PDD-V2.5.5.pdf" target="_blank">
+<a href="https://step.esa.int/thirdparties/sen2cor/2.5.5/docs/S2-PDGS-MPC-L2A-PDD-V2.5.5.pdf" target="_blank">
 Sentinel-2 Level 2A Product Definition</a> document.
 
 ### Spectral indices
