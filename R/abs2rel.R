@@ -27,7 +27,7 @@
 #' # the reference path
 #' (ref_path <- system.file(package="sf"))
 #' # a path with a common parent with ref_path
-#' (in_path_1 <- system.file(package="rgdal"))
+#' (in_path_1 <- system.file(package="stars"))
 #' # a path included in ref_path
 #' (in_path_2 <- system.file("DESCRIPTION", package="sf"))
 #' # a path external to ref_path (in Linux)

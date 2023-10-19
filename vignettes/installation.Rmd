@@ -28,9 +28,6 @@ Alternatively, <span style="color:#5793dd;vertical-align:top;font-size:90%;font-
 
 Before installing <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>, it is recommended to check [R](https://cran.r-project.org/bin/linux/) (v. 3.4.4 or higher) and the following libraries to be present:
 
-- [GDAL](https://gdal.org/), [PROJ](https://proj4.org/) and [GEOS](https://trac.osgeo.org/geos/)
-    (required by [rgdal](https://r-forge.r-project.org/projects/rgdal/)
-    and [rgeos](https://r-forge.r-project.org/projects/rgeos/));
 - [jq](https://stedolan.github.io/jq/)
     (required by [jqr](https://github.com/ropensci/jqr/));
 - [protobuf](https://github.com/protocolbuffers/protobuf/)
@@ -195,10 +192,10 @@ In the case it was already installed, it is suggested to update the existing R p
 update.packages(ask = FALSE)
 ```
 
-Packages can be installed using the compiled binaries, except from **sp**, **sf**, **rgdal** and **rgeos**,
+Packages can be installed using the compiled binaries, except from **sp** and **sf**,
 which are recommended to be compiled. To do it, use the command
 ```{r, eval = FALSE}
-install.packages(c("sp", "sf", "rgdal", "rgeos"), type = "source")
+install.packages(c("sp", "sf"), type = "source")
 ```
 __after__ having installed GDAL as described above.
 
