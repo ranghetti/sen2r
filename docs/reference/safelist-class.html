@@ -33,7 +33,7 @@ useful for reading hidden attributes."><!-- mathjax --><script src="https://cdnj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.6</span>
       </span>
     </div>
 
@@ -235,32 +235,26 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     shift</span>
 <span class="r-in"><span><span class="op">(</span><span class="va">s2_dt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">list_safe</span><span class="op">)</span><span class="op">)</span> <span class="co"># convert to a data.table</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                 name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                               &lt;char&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1: S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2: S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3: S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                     url</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                  &lt;char&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1: https://apihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2: https://apihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3: https://apihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    mission  level id_tile id_orbit    sensing_datetime  ingestion_datetime</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;char&gt; &lt;char&gt;  &lt;char&gt;   &lt;char&gt;              &lt;POSc&gt;              &lt;POSc&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:      2A    2Ap   32TNR      065 2017-05-07 10:20:31 2017-05-09 06:30:41</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2:      2A    2Ap   32TNR      065 2017-05-17 10:20:31 2017-06-08 12:21:23</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3:      2A    2Ap   32TNR      065 2017-05-27 10:20:31 2017-05-29 08:30:44</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    mission level id_tile id_orbit    sensing_datetime  ingestion_datetime</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:      2A   2Ap   32TNR      065 2017-05-07 10:20:31 2017-05-09 06:30:41</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:      2A   2Ap   32TNR      065 2017-05-17 10:20:31 2017-06-08 12:21:23</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:      2A   2Ap   32TNR      065 2017-05-27 10:20:31 2017-05-29 08:30:44</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       clouds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        &lt;num&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1: 99.999908</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2:  8.670091</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3:  6.359588</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                      footprint</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                         &lt;char&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1: POLYGON ((8.999741 46.05357, 10.4189 46.04477, 10.39425 45.05675, 8.999746 45.06526, 8.999741 46.05357, 8.999741 46.05357))</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2: POLYGON ((8.999741 46.05357, 10.4189 46.04477, 10.39425 45.05675, 8.999746 45.06526, 8.999741 46.05357, 8.999741 46.05357))</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3:                    POLYGON ((8.999741 46.05357, 10.4189 46.04477, 10.39425 45.05675, 8.999746 45.06526, 8.999741 46.05357))</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                    uuid online</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                  &lt;char&gt; &lt;lgcl&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1: a4a026c0-db7b-4ba8-9b09-53027ab0d7ab     NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2: 6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f     NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3: 868b5b3c-92ac-412a-8a04-167008a1f08f     NA</span>

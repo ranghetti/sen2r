@@ -18,7 +18,7 @@ a vector of raster paths."><!-- mathjax --><script src="https://cdnjs.cloudflare
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.6</span>
       </span>
     </div>
 
@@ -153,36 +153,31 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="co"># Return metadata as data.table</span></span></span>
 <span class="r-in"><span><span class="fu">raster_metadata</span><span class="op">(</span><span class="va">examplenames</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                                         path</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                                       &lt;char&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:                                                   C:/Users/luigi.ranghetti/AppData/Local/Programs/R/R-4.3.0/library/stars/tif/L7_ETMs.tif</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2: C:/Users/luigi.ranghetti/AppData/Local/Temp/RtmpAvzla7/temp_libpath41dc8b3244a/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     valid res.x res.y size.x size.y nbands     xmin    ymin     xmax    ymax</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    &lt;lgcl&gt; &lt;num&gt; &lt;num&gt;  &lt;num&gt;  &lt;num&gt;  &lt;int&gt;    &lt;num&gt;   &lt;num&gt;    &lt;num&gt;   &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:   TRUE  28.5  28.5    349    352      6 288776.3 9110729 298722.8 9120761</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2:   TRUE  10.0  10.0     24     42     11 580560.0 5101700 580800.0 5102120</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          proj   unit outformat   type</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        &lt;char&gt; &lt;char&gt;    &lt;char&gt; &lt;char&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1: EPSG:31985  metre     GTiff   Byte</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2: EPSG:32632  metre     GTiff UInt16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                            path</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:                                      C:/Users/luigi.ranghetti/AppData/Local/Programs/R/R-4.3.1/library/stars/tif/L7_ETMs.tif</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2: C:/Users/luigi.ranghetti/AppData/Local/Programs/R/R-4.3.1/library/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    valid res.x res.y size.x size.y nbands     xmin    ymin     xmax    ymax</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:  TRUE  28.5  28.5    349    352      6 288776.3 9110729 298722.8 9120761</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:  TRUE  10.0  10.0     24     42     11 580560.0 5101700 580800.0 5102120</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          proj  unit outformat   type</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1: EPSG:31985 metre     GTiff   Byte</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2: EPSG:32632 metre     GTiff UInt16</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Return some metadata as data.table</span></span></span>
 <span class="r-in"><span><span class="fu">raster_metadata</span><span class="op">(</span><span class="va">examplenames</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"res"</span>, <span class="st">"size"</span>, <span class="st">"bbox"</span>, <span class="st">"outformat"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                                         path</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                                       &lt;char&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:                                                   C:/Users/luigi.ranghetti/AppData/Local/Programs/R/R-4.3.0/library/stars/tif/L7_ETMs.tif</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2: C:/Users/luigi.ranghetti/AppData/Local/Temp/RtmpAvzla7/temp_libpath41dc8b3244a/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     valid res.x res.y size.x size.y     xmin    ymin     xmax    ymax outformat</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    &lt;lgcl&gt; &lt;num&gt; &lt;num&gt;  &lt;num&gt;  &lt;num&gt;    &lt;num&gt;   &lt;num&gt;    &lt;num&gt;   &lt;num&gt;    &lt;char&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:   TRUE  28.5  28.5    349    352 288776.3 9110729 298722.8 9120761     GTiff</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2:   TRUE  10.0  10.0     24     42 580560.0 5101700 580800.0 5102120     GTiff</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                            path</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:                                      C:/Users/luigi.ranghetti/AppData/Local/Programs/R/R-4.3.1/library/stars/tif/L7_ETMs.tif</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2: C:/Users/luigi.ranghetti/AppData/Local/Programs/R/R-4.3.1/library/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    valid res.x res.y size.x size.y     xmin    ymin     xmax    ymax outformat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:  TRUE  28.5  28.5    349    352 288776.3 9110729 298722.8 9120761     GTiff</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:  TRUE  10.0  10.0     24     42 580560.0 5101700 580800.0 5102120     GTiff</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Return some metadata as list</span></span></span>
 <span class="r-in"><span><span class="fu">raster_metadata</span><span class="op">(</span><span class="va">examplenames</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"res"</span>, <span class="st">"size"</span>, <span class="st">"bbox"</span>, <span class="st">"proj"</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"list"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]$path</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "C:/Users/luigi.ranghetti/AppData/Local/Programs/R/R-4.3.0/library/stars/tif/L7_ETMs.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "C:/Users/luigi.ranghetti/AppData/Local/Programs/R/R-4.3.1/library/stars/tif/L7_ETMs.tif"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]$valid</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
@@ -245,7 +240,7 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]$path</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "C:/Users/luigi.ranghetti/AppData/Local/Temp/RtmpAvzla7/temp_libpath41dc8b3244a/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "C:/Users/luigi.ranghetti/AppData/Local/Programs/R/R-4.3.1/library/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]$valid</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
@@ -313,17 +308,15 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/settings/gdal_formats.json"</span>, package<span class="op">=</span><span class="st">"sen2r"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">raster_metadata</span><span class="op">(</span><span class="va">examplenames</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bbox"</span>, <span class="st">"proj"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> trying to read file: C:\Users\luigi.ranghetti\AppData\Local\Temp\RtmpAvzla7\temp_libpath41dc8b3244a\sen2r\extdata\settings\gdal_formats.json</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                                         path</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                                       &lt;char&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:                                                   C:/Users/luigi.ranghetti/AppData/Local/Programs/R/R-4.3.0/library/stars/tif/L7_ETMs.tif</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2: C:/Users/luigi.ranghetti/AppData/Local/Temp/RtmpAvzla7/temp_libpath41dc8b3244a/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3:                   C:/Users/luigi.ranghetti/AppData/Local/Temp/RtmpAvzla7/temp_libpath41dc8b3244a/sen2r/extdata/settings/gdal_formats.json</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     valid     xmin    ymin     xmax    ymax       proj</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    &lt;lgcl&gt;    &lt;num&gt;   &lt;num&gt;    &lt;num&gt;   &lt;num&gt;     &lt;char&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:   TRUE 288776.3 9110729 298722.8 9120761 EPSG:31985</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2:   TRUE 580560.0 5101700 580800.0 5102120 EPSG:32632</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3:  FALSE       NA      NA       NA      NA       &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> trying to read file: C:\Users\luigi.ranghetti\AppData\Local\Programs\R\R-4.3.1\library\sen2r\extdata\settings\gdal_formats.json</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                            path</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:                                      C:/Users/luigi.ranghetti/AppData/Local/Programs/R/R-4.3.1/library/stars/tif/L7_ETMs.tif</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2: C:/Users/luigi.ranghetti/AppData/Local/Programs/R/R-4.3.1/library/sen2r/extdata/out/S2A2A_20190723_022_Barbellino_BOA_10.tif</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:                   C:/Users/luigi.ranghetti/AppData/Local/Programs/R/R-4.3.1/library/sen2r/extdata/settings/gdal_formats.json</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    valid     xmin    ymin     xmax    ymax       proj</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:  TRUE 288776.3 9110729 298722.8 9120761 EPSG:31985</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:  TRUE 580560.0 5101700 580800.0 5102120 EPSG:32632</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3: FALSE       NA      NA       NA      NA       &lt;NA&gt;</span>
 </code></pre></div>
     </div>
   </div>
