@@ -62,7 +62,7 @@
 #'      In case one or both these parameters were set to `"NONE"`, 
 #'      a subdirectory `"srtm90"` of the default sen2r directory is used as
 #'      DEM directory, and/or the 
-#'      [CGIAR SRTM 90m](https://cgiarcsi.community/category/data/) 
+#'      [CGIAR SRTM 90m](https://csidotinfo.wordpress.com/category/data/) 
 #'      is set as online source.
 #'      To set another directory or reference, use argument `gipp` in the form
 #'      `gipp = list(DEM_Directory = tempdir(), DEM_Reference ="another_reference", ...)`
