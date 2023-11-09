@@ -61,7 +61,7 @@ and not ordered) was saved (if \code{export_prodlist = TRUE}).
 }
 \description{
 The function orders S2 products from
-\href{https://scihub.copernicus.eu/userguide/LongTermArchive}{Long Term Archive}.
+Long Term Archive.
 }
 \note{
 License: GPL 3.0

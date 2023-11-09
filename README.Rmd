@@ -57,7 +57,7 @@ Sentinel-2 SAFE archives can be searched and retrieved only from [Google Cloud S
 to use it, **Google Cloud SDK must be installed** and configured following the 
 [official instructions](https://cloud.google.com/sdk/docs/install).
 Refer to [this post](https://luigi.ranghetti.info/post/safe-gcloud/) for details
-about how to install configure the required external depedency Google Cloud SDK.
+about how to install configure the required external dependency Google Cloud SDK.
 
 Setting the execution of this processing chain is particularly easy using the
 <span style="color:#5793dd;vertical-align:top;font-size:90%;font-weight:normal;">sen</span><span style="color:#6a7077;vertical-align:baseline;font-size:115%;font-weight:bolder;">2</span><span style="color:#2f66d5;vertical-align:baseline;font-size:90%;font-weight:bold;">r</span>

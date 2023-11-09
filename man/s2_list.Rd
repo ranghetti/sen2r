@@ -11,7 +11,7 @@ s2_list(
   time_interval = c(Sys.Date() - 10, Sys.Date()),
   time_period = "full",
   level = "auto",
-  server = "scihub",
+  server = "gcloud",
   apihub = NA,
   service = "apihub",
   max_cloud = 100,
@@ -48,21 +48,17 @@ product
 - "L1C": list available level-1C products
 - "L2A": list available level-2A products}
 
-\item{server}{The servers where archives are searched.
-Available options are \code{"scihub"} (ESA Sentinel Hub) and \code{"gcloud"}
-(Google Cloud).
-Default is \code{"scihub"}, meaning that only ESA Sentinel Hub is considered.
-In case of multiple values, they are used in order of priority.
-If \code{availability = "check"}, products on LTA are always left as last choice.
+\item{server}{(deprecate) Character vector of length 1, with the names of
+the servers on which SAFE archives are searched.
+Currently, only \code{"gcloud"} (Google Cloud) is supported.
+Old \code{"scihub"} (ESA Sentinel Hub) can no more be used, since Novembre 2023,
+when the Copernicus Sentinel Data is no longer available and has been
+replaced by the Copernicus Data Space Ecosystem.
 See also the section "Details".}
 
-\item{apihub}{Path of the \code{apihub.txt} file containing credentials
-of SciHub account.
-If NA (default), the default location inside the package will be used.}
+\item{apihub}{\emph{deprecated}}
 
-\item{service}{Character: it can be \code{"dhus"} or \code{"apihub"} (default),
-in which cases the required service is forced instead that the one present
-in the URLs passed through argument \code{s2_prodlist}.}
+\item{service}{\emph{deprecated}}
 
 \item{max_cloud}{Integer number (0-100) containing the maximum cloud
 level of the tiles to be listed (default: no filter).}
@@ -72,7 +68,7 @@ to be returned:
 \itemize{
 \item \code{"online"} : only archive names already available for download are returned;
 \item \code{"lta"}: only archive names stored in the
-\href{https://scihub.copernicus.eu/userguide/LongTermArchive}{Long Term Archive}
+Long Term Archive
 are returned;
 \item \code{"check"}: all archive names are returned, checking if they are
 available or not for download (see "Value" to know
@@ -102,30 +98,11 @@ The function retrieves the list of available Sentinel-2
 products satisfying given search criteria.
 }
 \details{
-By default, SAFE archives are searched on ESA Sentinel Hub
-(argument \code{server = "scihub"}), which is the faster and stable option.
-After the reduction of the retention time to 30 days,
-it is highly probable that products older then 30 days will not be found
-online (see \url{https://github.com/ranghetti/sen2r/issues/408}).
-Moreover, after ordering them from Long Term Archive (LTA), in several cases
-corrupted archives are obtained
-(see \url{https://github.com/ranghetti/sen2r/issues/406}, and refer to this
-reference for details about the ESA LTA policy).
-
-To avoid this problems, the research and download from Google Cloud was
-recently implemented.
-Users can set \code{server = "gcloud"} to use this data exclusively, or
-\verb{server = c("scihub", "gcloud"), availability = "check"}
-to search for products available on SciHub first, or on Google Cloud
-subsequently.
 \strong{Important}: to search and download from Google Cloud, Google Cloud SDK
 must be installed and configured following the indications in
 \url{https://cloud.google.com/sdk/docs/install}.
 Notice also that querying Google Cloud can be very slow (while downloading
 them is generally faster than from SciHub).
-
-Searching and downloading from Google Cloud is an experimental feature;
-in case of bugs, report them at \url{https://github.com/ranghetti/sen2r/issues}.
 }
 \note{
 License: GPL 3.0
@@ -134,10 +111,10 @@ License: GPL 3.0
 \donttest{
 
 pos <- sf::st_sfc(sf::st_point(c(9.85,45.81)), crs = 4326)
-time_window <- as.Date(c("2016-05-01", "2017-07-30"))
+time_window <- as.Date(c("2020-08-01", "2020-08-11"))
 
 # Full-period list
-if (is_scihub_configured()) {
+if (is_gcloud_configured()) {
   example_s2_list <- s2_list(
     spatial_extent = pos,
     tile = "32TNR",
@@ -152,7 +129,7 @@ print(example_s2_list)
 safe_getMetadata(example_s2_list, "sensing_datetime")
 
 # Seasonal-period list
-if (is_scihub_configured()) {
+if (is_gcloud_configured()) {
   example_s2_list <- s2_list(
     spatial_extent = pos,
     tile = "32TNR",

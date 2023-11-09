@@ -11,7 +11,7 @@ sen2r(
   s2_levels = "l2a",
   sel_sensor = c("s2a", "s2b"),
   online = TRUE,
-  server = "scihub",
+  server = "gcloud",
   order_lta = TRUE,
   apihub = NA,
   downloader = "builtin",
@@ -106,13 +106,12 @@ Accepted values: "s2a" and "s2b"; default: c("s2a","s2b").}
 products on SciHub and/or Google Cloud (and download if needed);
 FALSE to work only with already downloaded SAFE products.}
 
-\item{server}{(optional) Character vector of length 1 or 2, with the names of
+\item{server}{(deprecate) Character vector of length 1, with the names of
 the servers on which SAFE archives are searched.
-Available options are \code{"scihub"} (ESA Sentinel Hub) and \code{"gcloud"}
-(Google Cloud).
-Default is \code{"scihub"}, meaning that only ESA Sentinel Hub is considered.
-In case of multiple values, they are used in order of priority and
-products on LTA are always left as last choice.
+Currently, only \code{"gcloud"} (Google Cloud) is supported.
+Old \code{"scihub"} (ESA Sentinel Hub) can no more be used, since Novembre 2023,
+when the Copernicus Sentinel Data is no longer available and has been
+replaced by the Copernicus Data Space Ecosystem.
 See also the section "Details" of \code{s2_list()}.}
 
 \item{order_lta}{(optional) Logical: TRUE (default) to order products from
@@ -120,10 +119,7 @@ the Long Term Archive if unavailable for direct download; FALSE to simply
 skip them (this option has effect only in online mode).
 It takes effect only if argument \code{server} includes \code{"scihub"}.}
 
-\item{apihub}{Path of the text file containing credentials
-of SciHub account.
-If NA (default), the default location inside the package will be used.
-It takes effect only if argument \code{server} includes \code{"scihub"}.}
+\item{apihub}{\emph{deprecated}}
 
 \item{downloader}{(optional) Character value corresponding to the executable
 which should be used to download SAFE products. It could be one among
