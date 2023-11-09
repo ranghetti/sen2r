@@ -1,3 +1,9 @@
+# Version 1.6.0
+
+## Documentation
+- Remove old system requirements (#463)
+- Remove old references to rgdal
+
 # Version 1.5.5
 
 ## Minor changes

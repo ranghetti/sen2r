@@ -18,7 +18,7 @@
 #' @return `read_scihub_login()` returns a matrix of credentials,
 #'  in which `username` is in the first column, `password` in the second.
 #' @details Notice that new/recently updated SciHub credentials are recognised by API Hub
-#'  with a delay of about one week (see \url{https://scihub.copernicus.eu/twiki/do/view/SciHubWebPortal/APIHubDescription} for details).
+#'  with a delay of about one week.
 #'
 #' For this reason, newly created credentials can not immediately be used by `sen2r`, 
 #' and password edits on old credentials are not immediately recognised.

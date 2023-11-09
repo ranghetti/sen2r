@@ -503,7 +503,7 @@ s2_gui <- function(param_list = NULL,
             
             fluidRow(
               column(
-                width=4,
+                width=5,
                 
                 # online_mode (online/offline mode)
                 radioButtons(
@@ -526,17 +526,17 @@ s2_gui <- function(param_list = NULL,
                   inline = TRUE
                 ),
                 
-                checkboxGroupInput(
-                  "server",
-                  label = span(
-                    "Input servers\u2000",
-                    actionLink("help_server", icon("question-circle")), "\u2004",
-                    span(style="color:#3c8dbc;", tags$strong("NEW"))
-                  ),
-                  choiceNames = list("Google Cloud", "ESA Hub"),
-                  choiceValues = list("gcloud", "scihub"),
-                  selected = c("scihub")
-                ),
+                # checkboxGroupInput(
+                #   "server",
+                #   label = span(
+                #     "Input servers\u2000",
+                #     actionLink("help_server", icon("question-circle")), "\u2004",
+                #     span(style="color:#3c8dbc;", tags$strong("NEW"))
+                #   ),
+                #   choiceNames = list("Google Cloud"),
+                #   choiceValues = list("gcloud"),
+                #   selected = c("gcloud")
+                # ),
                 
                 conditionalPanel(
                   condition = "input.online == 'TRUE'",
@@ -552,40 +552,40 @@ s2_gui <- function(param_list = NULL,
                   )
                 )
               ),
+              # column(
+              #   width=3,
+              #   conditionalPanel(
+              #     condition = "input.online == 'TRUE' && input.server.indexOf('scihub') != -1",
+              #     div(
+              #       style="padding-bottom:5px;",
+              #       strong("ESA Hub options")
+              #     ),
+              #     checkboxInput(
+              #       "make_lta_order",
+              #       label = span(
+              #         "Order from LTA\u2000",
+              #         actionLink("help_lta_order", icon("question-circle"))
+              #       ),
+              #       value = TRUE
+              #     ),
+              #     checkboxInput(
+              #       "downloader_aria2",
+              #       label = span(
+              #         "Use aria2\u2000",
+              #         actionLink("help_downloader", icon("question-circle"))
+              #       ),
+              #       value = FALSE
+              #     ),
+              #     actionButton(
+              #       "scihub_md",
+              #       label = "\u2000Login to SciHub",
+              #       icon = icon("user-circle")
+              #     )
+              #   )
+              #   
+              # ),
               column(
-                width=3,
-                conditionalPanel(
-                  condition = "input.online == 'TRUE' && input.server.indexOf('scihub') != -1",
-                  div(
-                    style="padding-bottom:5px;",
-                    strong("ESA Hub options")
-                  ),
-                  checkboxInput(
-                    "make_lta_order",
-                    label = span(
-                      "Order from LTA\u2000",
-                      actionLink("help_lta_order", icon("question-circle"))
-                    ),
-                    value = TRUE
-                  ),
-                  checkboxInput(
-                    "downloader_aria2",
-                    label = span(
-                      "Use aria2\u2000",
-                      actionLink("help_downloader", icon("question-circle"))
-                    ),
-                    value = FALSE
-                  ),
-                  actionButton(
-                    "scihub_md",
-                    label = "\u2000Login to SciHub",
-                    icon = icon("user-circle")
-                  )
-                )
-                
-              ),
-              column(
-                width=5,
+                width=7,
                 
                 # overwrite SAFE
                 radioButtons(
@@ -1732,22 +1732,25 @@ s2_gui <- function(param_list = NULL,
     })
     
     # Google Cloud options
-    observeEvent(input$server, {
+    if (is.null(binpaths$gsutil)) {
+      # TODO add message alert about Gcloud
+    }
+    observeEvent(c(input$server, input$online), {
       # Disable Google Cloud download if it is not configured
       if (is.null(binpaths$gsutil)) {
-        updateCheckboxGroupInput(
-          session, "server", 
-          selected = "scihub"
+        updateRadioButtons(
+          session, "online",
+          selected = FALSE
         )
-        disable("server")
+        disable("online")
       } else {
-        enable("server")
+        enable("online")
       }
-      # Leave at list one selected
-      if (length(input$server) == 0) {
-        updateCheckboxGroupInput(session, "server", selected = rv$server_prev)
-      }
-      rv$server_prev <- input$server
+      # # Leave at list one selected
+      # if (length(input$server) == 0) {
+      #   updateCheckboxGroupInput(session, "server", selected = rv$server_prev)
+      # }
+      # rv$server_prev <- input$server
     }, ignoreNULL = FALSE)
     
     
@@ -2975,51 +2978,59 @@ s2_gui <- function(param_list = NULL,
           "with Sen2Cor if the corresponding level-1C images are available);",
           "the user can still filter them spatially and temporally,",
           "but this is not mandatory (if no parameters are specified,",
-          "all the SAFE images are processed).")),
+          "all the SAFE images are processed)."
+      )),
+      p(HTML(
+        "Notice that the <strong>Online</strong> mode is available only if",
+        "Google Cloud SDK is correctly installed and configured; to do it:",
+        "<ul><li>install Google Cloud SDK following <a",
+        "href='https://cloud.google.com/sdk/docs/install' target='_blank'>the",
+        "official instructions</a>;</li>",
+        "<li>configure sen2r to use Google Cloud SDK launching the function",
+        "<span style='family:monospace;'>check_gcloud()</span>.</li></ul>",
+        "For details, see <a",
+        "href='https://luigi.ranghetti.info/post/safe-gcloud/'",
+        "target='_blank'>this post</a>."
+      )),
         easyClose = TRUE,
         footer = NULL
       ))
     })
     
-    observeEvent(input$help_server, {
+    observeEvent(TRUE, { # TEMPORARY show this when the GUI is open
       showModal(modalDialog(
         title = "Input SAFE servers",
         p(HTML(
-          "Input Sentinel-2 SAFE archives can be searched and retrieved from",
-          "two sources:",
-          "<ul><li><strong><a href='https://scihub.copernicus.eu/'",
-          "target='_blank'>ESA Hub</a></strong>, the official data source, is",
-          "the default and legacy option; to use it, SciHub credentials",
-          "must be provided using the button \"Login to SciHub\";</li>",
-          "<li><strong><a",
+          "Currently, input Sentinel-2 SAFE archives can be searched",
+          "and retrieved only from <a",
           "href='https://cloud.google.com/storage/docs/public-datasets/sentinel-2'",
-          "target='_blank'>Google Cloud</a></strong> is an optional third-party",
-          "data source; to use it, Google Cloud SDK must be installed",
+          "target='_blank'>Google Cloud</a></strong>, a third-party",
+          "data source; to use it, <strong>Google Cloud SDK must be installed",
           "and configured following the <a",
-          "href='https://cloud.google.com/sdk/docs/install.'",
-          "target='_blank'>official instructions</a>.</li></ul>",
-          "The two data sources can be also used in combination (in this case,",
-          "archives are searched on Google Cloud first, and on ESA Hub subsequently)."
+          "href='https://cloud.google.com/sdk/docs/install'",
+          "target='_blank'>official instructions</a></strong>.",
         )),
         p(HTML(
-          "By default, SAFE archives are searched on ESA Hub.",
-          "After the reduction of the retention time to 30 days,",
-          "it is highly probable that products older then 30 days will not be",
-          "found online (see <a href='https://github.com/ranghetti/sen2r/issues/408'",
-          "target='_blank'>this issue</a>).",
-          "Moreover, after ordering them from Long Term Archive (LTA),",
-          "in several cases corrupted archives are obtained (see <a",
-          "href='https://github.com/ranghetti/sen2r/issues/406'",
-          "target='_blank'>this issue</a>), and refer to this reference",
-          "for details about the ESA LTA policy).",
-          "To avoid this problems, the research and download from Google Cloud",
-          "was implemented."
+          "The old official data source, ESA Hub</strong>, is no longer",
+          "available since November 2023 due to it dismission;",
+          "the replacemente with the new <a",
+          "href='https://dataspace.copernicus.eu/analyse/apis'",
+          "target='_blank'>Copernicus Data Space</a>",
+          "is not planned (anyone who wants to help can contribute on <a",
+          "href='https://github.com/ranghetti/sen2r/issues/464'",
+          "target='_blank'>GitHub</a>)"
         )),
         p(HTML(
-          "Notice that Google Cloud is an experimental data source;",
-          "in case of problems, please report them opening a",
-          "<a href='https://github.com/ranghetti/sen2r/issues'",
-          "target='_blank'>GitHub Issue</a>."
+          "Notice that the <strong>Online</strong> mode is available only if",
+          "Google Cloud SDK is correctly installed and configured; to do it:",
+          "<ul><li>install Google Cloud SDK following <a",
+          "href='https://cloud.google.com/sdk/docs/install' target='_blank'>the",
+          "official instructions</a>;</li>",
+          "<li>configure sen2r to use Google Cloud SDK launching the function",
+          "<span style='family:monospace;'>check_gcloud()</span>.</li></ul>",
+          "For details, see <a",
+          "href='https://luigi.ranghetti.info/post/safe-gcloud/'",
+          "target='_blank'>this post</a>."
         )),
         easyClose = TRUE,
         footer = NULL
@@ -3136,25 +3147,25 @@ s2_gui <- function(param_list = NULL,
       ))
     })
     
-    observeEvent(input$help_register_scihub, {
-      showModal(modalDialog(
-        title = "New/edit SciHub credentials",
-        size = "s",
-        p(HTML(
-          "Notice that SciHub credentials are recognised by API Hub",
-          "(used by sen2r) with a delay of one week (see",
-          "<a href='https://scihub.copernicus.eu/twiki/do/view/SciHubWebPortal/APIHubDescription'",
-          "target='_blank'>this alert</a>);",
-          "for this reason, newly created credentials and password edits",
-          "are generally not immediately recognised."
-        )),
-        a("Register new account", href="https://scihub.copernicus.eu/dhus/#/self-registration", target="_blank"),
-        "\u2000\u2014\u2000",
-        a("Forgot password?", href="https://scihub.copernicus.eu/dhus/#/forgot-password", target="_blank"),
-        easyClose = TRUE,
-        footer = NULL
-      ))
-    })
+    # observeEvent(input$help_register_scihub, {
+    #   showModal(modalDialog(
+    #     title = "New/edit SciHub credentials",
+    #     size = "s",
+    #     p(HTML(
+    #       "Notice that SciHub credentials are recognised by API Hub",
+    #       "(used by sen2r) with a delay of one week (see",
+    #       "<a href='https://scihub.copernicus.eu/twiki/do/view/SciHubWebPortal/APIHubDescription'",
+    #       "target='_blank'>this alert</a>);",
+    #       "for this reason, newly created credentials and password edits",
+    #       "are generally not immediately recognised."
+    #     )),
+    #     a("Register new account", href="https://scihub.copernicus.eu/dhus/#/self-registration", target="_blank"),
+    #     "\u2000\u2014\u2000",
+    #     a("Forgot password?", href="https://scihub.copernicus.eu/dhus/#/forgot-password", target="_blank"),
+    #     easyClose = TRUE,
+    #     footer = NULL
+    #   ))
+    # })
     
     # observeEvent(input$fix_online, {
     #   showModal(modalDialog(

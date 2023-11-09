@@ -53,13 +53,12 @@ allows to:
     layer);
 -   computing spectral indices and RGB images.
 
-**New feature**: starting from version 1.5.0, Sentinel-2 SAFE archives
-can be downloaded both from official [Copernicus Open Access
-Hub](https://scihub.copernicus.eu/) or from [Google Cloud Sentinel-2
-bucket](https://cloud.google.com/storage/docs/public-datasets/sentinel-2)
-(this option can be useful to bypass limitations of ESA Long Term
-Archive retention time; refer to [this
-post](https://luigi.ranghetti.info/post/safe-gcloud/) for details).
+**Important**: since November 2023,
+Sentinel-2 SAFE archives can be searched and retrieved only from [Google Cloud Sentinel-2 bucket](https://cloud.google.com/storage/docs/public-datasets/sentinel-2);
+to use it, **Google Cloud SDK must be installed** and configured following the 
+[official instructions](https://cloud.google.com/sdk/docs/install).
+Refer to [this post](https://luigi.ranghetti.info/post/safe-gcloud/) for details
+about how to install configure the required external depedency Google Cloud SDK.
 
 Setting the execution of this processing chain is particularly easy
 using the <span
