@@ -167,7 +167,7 @@ can be found in the Reference page):
     to order products from the Long Term Archive;
 -   [`sen2cor()`](https://sen2r.ranghetti.info/reference/sen2cor.html)
     to correct level-1C products using
-    [Sen2Cor](http://step.esa.int/main/snap-supported-plugins/sen2cor/);
+    [Sen2Cor](https://step.esa.int/main/snap-supported-plugins/sen2cor/);
 -   [`s2_mask()`](https://sen2r.ranghetti.info/reference/s2_mask.html)
     to apply a cloud mask to Sentinel-2 products;
 -   [`s2_rgb()`](https://sen2r.ranghetti.info/reference/s2_rgb.html) to

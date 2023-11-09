@@ -22,7 +22,7 @@ if it is a valid SAFE."><!-- mathjax --><script src="https://cdnjs.cloudflare.co
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.6</span>
       </span>
     </div>
 
@@ -278,26 +278,21 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-in"><span><span class="co"># Return the information retrievable from the file names (files are not scanned)</span></span></span>
 <span class="r-in"><span><span class="fu">safe_getMetadata</span><span class="op">(</span><span class="va">s2_examplenames</span>, info<span class="op">=</span><span class="st">"nameinfo"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                 name validname</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                               &lt;char&gt;    &lt;lgcl&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1: S2A_MSIL1C_20190723T101031_N0208_R022_T32TNS_20190723T121220.SAFE      TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2: S2A_MSIL1C_20190723T101031_N0208_R022_T32TNR_20190723T121220.SAFE      TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    prod_type version mission  level        sensing_datetime id_baseline</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       &lt;char&gt;  &lt;char&gt;  &lt;char&gt; &lt;char&gt;                  &lt;char&gt;      &lt;char&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:   product compact      2A     1C 2019-07-23 10:10:31 UTC        0208</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2:   product compact      2A     1C 2019-07-23 10:10:31 UTC        0208</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    id_orbit id_tile       creation_datetime</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;char&gt;  &lt;char&gt;                  &lt;char&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:      022   32TNS 2019-07-23 12:12:20 UTC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2:      022   32TNR 2019-07-23 12:12:20 UTC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    prod_type version mission level        sensing_datetime id_baseline id_orbit</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:   product compact      2A    1C 2019-07-23 10:10:31 UTC        0208      022</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:   product compact      2A    1C 2019-07-23 10:10:31 UTC        0208      022</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    id_tile       creation_datetime</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:   32TNS 2019-07-23 12:12:20 UTC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:   32TNR 2019-07-23 12:12:20 UTC</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Return some specific information without scanning files</span></span></span>
 <span class="r-in"><span><span class="fu">safe_getMetadata</span><span class="op">(</span><span class="va">s2_examplenames</span>, info<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"level"</span>, <span class="st">"id_tile"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                 name  level</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                               &lt;char&gt; &lt;char&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1: S2A_MSIL1C_20190723T101031_N0208_R022_T32TNS_20190723T121220.SAFE     1C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2: S2A_MSIL1C_20190723T101031_N0208_R022_T32TNR_20190723T121220.SAFE     1C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                 name level</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1: S2A_MSIL1C_20190723T101031_N0208_R022_T32TNS_20190723T121220.SAFE    1C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2: S2A_MSIL1C_20190723T101031_N0208_R022_T32TNR_20190723T121220.SAFE    1C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    id_tile</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;char&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1:   32TNS</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2:   32TNR</span>
 <span class="r-in"><span></span></span>

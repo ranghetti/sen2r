@@ -21,7 +21,7 @@ descriptions of all the other parameters)."><!-- mathjax --><script src="https:/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.6</span>
       </span>
     </div>
 
@@ -714,46 +714,45 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-in"><span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="va">out_paths_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:41:33] #### Starting sen2r execution. ####</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 16:28:48] #### Starting sen2r execution. ####</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required namespace: stringi</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'geojsonlint' not installed, skipping GeoJSON linting</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:41:34] Searching for available SAFE products...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 16:28:49] Searching for available SAFE products...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:41:35] Querying Google Cloud (this can take a very long</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 16:28:50] Querying Google Cloud (this can take a very long</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        time)...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:42:08] Computing output names...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:42:08] Starting to download the required level-2A SAFE</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 16:46:33] Computing output names...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 16:46:34] Starting to download the required level-2A SAFE</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        products.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Images</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> S2B_MSIL2A_20200801T100559_N0214_R022_T32TNS_20200801T135302.SAFE are</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> already on your system and will be skipped. Set "overwrite_safe" to</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> TRUE to re-download them.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> No L2A images are needed.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:42:08] Download of level-2A SAFE products terminated.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:42:08] Starting to download the required level-1C SAFE</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 16:46:34] Download of level-2A SAFE products terminated.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 16:46:34] Starting to download the required level-1C SAFE</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        products.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> No L1C images are needed.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:42:08] Download of level-1C SAFE products terminated.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:42:08] Updating output names...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:42:09] Starting to translate SAFE products in custom</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 16:46:34] Download of level-1C SAFE products terminated.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 16:46:34] Updating output names...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 16:46:35] Starting to translate SAFE products in custom</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        format.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using UTM zone 32N.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 2 output files were correctly created.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:42:09] Starting to merge tiles by orbit.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:42:10] Starting to edit geometry (clip, reproject,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 16:46:35] Starting to merge tiles by orbit.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 16:46:36] Starting to edit geometry (clip, reproject,</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        rescale).</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:42:11] Producing required RGB images.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:42:11] Generating image</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 16:46:37] Producing required RGB images.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 16:46:37] Generating image</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        S2B2A_20200801_022_sen2r_RGB432B_10.tif...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:42:12] Generating image</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 16:46:38] Generating image</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        S2B2A_20200801_022_sen2r_RGB843B_10.tif...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 2 output RGB files were correctly created.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:42:15] Computing required spectral indices.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:42:15] Computing index MSAVI2 on date 2020-08-01...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:42:16] Computing index NDVI on date 2020-08-01...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:42:17] Generating thumbnails.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 16:46:41] Computing required spectral indices.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 16:46:41] Computing index MSAVI2 on date 2020-08-01...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 16:46:42] Computing index NDVI on date 2020-08-01...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 16:46:43] Generating thumbnails.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 6 output files were correctly created.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ╔══════════════════════════════════════════════════════════════════════</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ║ sen2r Processing Report</span>
@@ -761,9 +760,9 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ║ Dates to be processed based on processing parameters: 1</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ║ Processing completed for: all expected dates.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ╚══════════════════════════════════════════════════════════════════════</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:42:19] #### sen2r session terminated. ####</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 16:46:45] #### sen2r session terminated. ####</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The processing chain can be re-launched with the command:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   sen2r("C:/Users/LUIGI~1.RAN/DOCUME~1/SEN2R~1/proc_par/s2proc_20230612_114134.json")</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   sen2r("C:/Users/LUIGI~1.RAN/DOCUME~1/SEN2R~1/proc_par/s2proc_20231019_162849.json")</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched on</span>
 <span class="r-in"><span><span class="co"># Notice that passing the path of a JSON file results in launching</span></span></span>
 <span class="r-in"><span><span class="co"># a session without opening the gui, unless gui = TRUE is passed.</span></span></span>
@@ -791,64 +790,63 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-in"><span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="va">out_paths_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:42:20] #### Starting sen2r execution. ####</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 16:46:46] #### Starting sen2r execution. ####</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'geojsonlint' not installed, skipping GeoJSON linting</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:42:20] Searching for available SAFE products...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 16:46:46] Searching for available SAFE products...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:42:21] Querying Google Cloud (this can take a very long</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 16:46:47] Querying Google Cloud (this can take a very long</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        time)...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:42:48] Querying Google Cloud (this can take a very long</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 17:04:23] Querying Google Cloud (this can take a very long</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        time)...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:43:13] Computing output names...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:43:14] Starting to download the required level-2A SAFE</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 17:21:55] Computing output names...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 17:21:56] Starting to download the required level-2A SAFE</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        products.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Images</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> S2B_MSIL2A_20200801T100559_N0214_R022_T32TNS_20200801T135302.SAFE are</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> already on your system and will be skipped. Set "overwrite_safe" to</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> TRUE to re-download them.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> No L2A images are needed.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:43:14] Download of level-2A SAFE products terminated.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:43:14] Starting to download the required level-1C SAFE</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 17:21:56] Download of level-2A SAFE products terminated.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 17:21:56] Starting to download the required level-1C SAFE</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        products.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Images</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> S2B_MSIL1C_20200801T100559_N0209_R022_T32TNS_20200801T130136.SAFE are</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> already on your system and will be skipped. Set "overwrite_safe" to</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> TRUE to re-download them.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> No L1C images are needed.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:43:14] Download of level-1C SAFE products terminated.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:43:14] Updating output names...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:43:15] Starting to translate SAFE products in custom</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 17:21:56] Download of level-1C SAFE products terminated.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 17:21:56] Updating output names...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 17:21:56] Starting to translate SAFE products in custom</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        format.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using UTM zone 32N.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 1 output files were correctly created.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using UTM zone 32N.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 1 output angle files were correctly created.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 3 output files were correctly created.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:43:16] Starting to merge tiles by orbit.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:43:17] Starting to edit geometry (clip, reproject,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 17:21:57] Starting to merge tiles by orbit.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 17:21:58] Starting to edit geometry (clip, reproject,</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        rescale).</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:43:18] Starting to apply cloud masks.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:43:18] Masking file</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 17:21:59] Starting to apply cloud masks.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 17:21:59] Masking file</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        S2B1C_20200801_022_Barbellino_TOA_10.tif...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:43:22] Masking file</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 17:22:02] Masking file</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        S2B2A_20200801_022_Barbellino_BOA_10.tif...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:43:25] Producing required RGB images.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:43:25] Generating image</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 17:22:05] Producing required RGB images.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 17:22:05] Generating image</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        S2B1C_20200801_022_Barbellino_RGB432T_10.tif...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 1 output RGB files were correctly created.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:43:27] Generating image</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 17:22:07] Generating image</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        S2B2A_20200801_022_Barbellino_RGB432B_10.tif...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:43:29] Generating image</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 17:22:08] Generating image</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        S2B2A_20200801_022_Barbellino_RGB843B_10.tif...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 2 output RGB files were correctly created.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:43:34] Computing required spectral indices.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:43:34] Computing index NDVI on date 2020-08-01...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:43:34] Computing index MSAVI2 on date 2020-08-01...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:43:34] Generating thumbnails.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 17:22:11] Computing required spectral indices.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 17:22:11] Computing index NDVI on date 2020-08-01...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 17:22:11] Computing index MSAVI2 on date 2020-08-01...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 17:22:11] Generating thumbnails.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 9 output files were correctly created.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ╔══════════════════════════════════════════════════════════════════════</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ║ sen2r Processing Report</span>
@@ -856,9 +854,9 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ║ Dates to be processed based on processing parameters: 1</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ║ Processing completed for: all expected dates.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ╚══════════════════════════════════════════════════════════════════════</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-06-12 11:43:39] #### sen2r session terminated. ####</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 17:22:14] #### sen2r session terminated. ####</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The processing chain can be re-launched with the command:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   sen2r("C:/Users/LUIGI~1.RAN/DOCUME~1/SEN2R~1/proc_par/s2proc_20230612_114220.json")</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   sen2r("C:/Users/LUIGI~1.RAN/DOCUME~1/SEN2R~1/proc_par/s2proc_20231019_164646.json")</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched on</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="check_gcloud.html">is_gcloud_configured</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>

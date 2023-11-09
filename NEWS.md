@@ -556,7 +556,7 @@ First stable release of package **sen2r**! See the announcement [here](https://l
 * `tiles_intersects()`: when an extent is loaded, now only required tiles are automatically used, instead than all the overlapping ones.
 
 ### Update dependencies
-* after [V8 major update](https://www.r-bloggers.com/2019/02/a-major-upgrade-of-the-v8-package/), [Installation page](https://sen2r.ranghetti.info/articles/installation.html) was edited to refer to `v8` instead than to `v8-3.14`
+* after [V8 major update](https://ropensci.org/blog/2019/02/11/v8-20/), [Installation page](https://sen2r.ranghetti.info/articles/installation.html) was edited to refer to `v8` instead than to `v8-3.14`
 
 ### Bug fixing:
 * Fix bug in SciHub login

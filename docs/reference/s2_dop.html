@@ -26,7 +26,7 @@ midnight (which corresponds to the date in local time)."><!-- mathjax --><script
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.6</span>
       </span>
     </div>
 
@@ -172,60 +172,57 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># All the passages in a cycle of 10 days over all the orbits</span></span></span>
 <span class="r-in"><span><span class="fu">s2_dop</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            date mission  orbit</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          &lt;Date&gt;  &lt;char&gt; &lt;char&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1: 2023-06-12      2A    016</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2: 2023-06-12      2A    017</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3: 2023-06-12      2A    018</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4: 2023-06-12      2A    019</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5: 2023-06-12      2A    020</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 282: 2023-06-21      2B    083</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 283: 2023-06-21      2B    084</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 284: 2023-06-21      2B    085</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 285: 2023-06-21      2B    086</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 286: 2023-06-21      2B    087</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            date mission orbit</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1: 2023-10-19      2A   002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2: 2023-10-19      2A   003</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3: 2023-10-19      2A   004</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4: 2023-10-19      2A   005</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5: 2023-10-19      2A   006</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 282: 2023-10-28      2B   068</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 283: 2023-10-28      2B   069</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 284: 2023-10-28      2B   070</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 285: 2023-10-28      2B   071</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 286: 2023-10-28      2B   072</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The passages in the current month over two orbits</span></span></span>
 <span class="r-in"><span><span class="fu">s2_dop</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"022"</span>, <span class="st">"065"</span><span class="op">)</span>, <span class="st">"this month"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           date mission  orbit</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         &lt;Date&gt;  &lt;char&gt; &lt;char&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  1: 2023-06-02      2A    022</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  2: 2023-06-05      2A    065</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  3: 2023-06-07      2B    022</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  4: 2023-06-10      2B    065</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  5: 2023-06-12      2A    022</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  6: 2023-06-15      2A    065</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  7: 2023-06-17      2B    022</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  8: 2023-06-20      2B    065</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  9: 2023-06-22      2A    022</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10: 2023-06-25      2A    065</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11: 2023-06-27      2B    022</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12: 2023-06-30      2B    065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           date mission orbit</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1: 2023-10-03      2A   065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  2: 2023-10-05      2B   022</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  3: 2023-10-08      2B   065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  4: 2023-10-10      2A   022</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5: 2023-10-13      2A   065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  6: 2023-10-15      2B   022</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  7: 2023-10-18      2B   065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  8: 2023-10-20      2A   022</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  9: 2023-10-23      2A   065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10: 2023-10-25      2B   022</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11: 2023-10-28      2B   065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12: 2023-10-30      2A   022</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The dates in which Sentinel-2A will pass in next six weeks over one orbit</span></span></span>
 <span class="r-in"><span><span class="fu">s2_dop</span><span class="op">(</span><span class="st">"022"</span>, <span class="st">"6 weeks"</span>, mission <span class="op">=</span> <span class="st">"2A"</span><span class="op">)</span><span class="op">$</span><span class="va">date</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2023-06-12" "2023-06-22" "2023-07-02" "2023-07-12" "2023-07-22"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2023-10-20" "2023-10-30" "2023-11-09" "2023-11-19"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The date in which Sentinel-2A would be passed in the last 10 days over one orbit</span></span></span>
 <span class="r-in"><span><span class="fu">s2_dop</span><span class="op">(</span><span class="st">"022"</span>, <span class="st">"-10 days"</span>, mission <span class="op">=</span> <span class="st">"2A"</span><span class="op">)</span><span class="op">$</span><span class="va">date</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2023-06-12"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2023-10-10"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># All the orbits covered today</span></span></span>
 <span class="r-in"><span><span class="fu">s2_dop</span><span class="op">(</span>timewindow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span>, mission <span class="op">=</span> <span class="st">"2B"</span><span class="op">)</span><span class="op">$</span><span class="va">orbit</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "088" "089" "090" "091" "092" "093" "094" "095" "096" "097" "098" "099"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "100" "101"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "073" "074" "075" "076" "077" "078" "079" "080" "081" "082" "083" "084"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "085" "086" "087"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The passages in a fixed time window for one orbit</span></span></span>
 <span class="r-in"><span><span class="fu">s2_dop</span><span class="op">(</span><span class="fl">65</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2018-08-01"</span>, <span class="st">"2018-08-31"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          date mission  orbit</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        &lt;Date&gt;  &lt;char&gt; &lt;char&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1: 2018-08-05      2B    065</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2: 2018-08-10      2A    065</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3: 2018-08-15      2B    065</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4: 2018-08-20      2A    065</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5: 2018-08-25      2B    065</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6: 2018-08-30      2A    065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          date mission orbit</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1: 2018-08-05      2B   065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2: 2018-08-10      2A   065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3: 2018-08-15      2B   065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4: 2018-08-20      2A   065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5: 2018-08-25      2B   065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6: 2018-08-30      2A   065</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># A research with no passages found</span></span></span>
 <span class="r-in"><span><span class="fu">s2_dop</span><span class="op">(</span><span class="fl">22</span>, <span class="st">"2018-08-16"</span>, mission <span class="op">=</span> <span class="st">"2A"</span><span class="op">)</span></span></span>
