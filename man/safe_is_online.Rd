@@ -2,62 +2,10 @@
 % Please edit documentation in R/safe_is_online.R
 \name{safe_is_online}
 \alias{safe_is_online}
-\title{Check if SAFE is available for download}
+\title{Check if SAFE is available for download (deprecated)}
 \usage{
 safe_is_online(s2_prodlist = NULL, apihub = NA, verbose = TRUE)
 }
-\arguments{
-\item{s2_prodlist}{Named character: list of the products to be checked,
-in the format \code{safelist} (see \linkS4class{safelist}).
-Alternatively, it can be the path of a JSON file exported by \link{s2_order}.}
-
-\item{apihub}{Path of the "apihub.txt" file containing credentials
-of SciHub account.
-If NA (default), the default location inside the package will be used.}
-
-\item{verbose}{Logical: if TRUE, provide processing messages summarising
-how many of the SAFE archives in \code{s2_prodlist} are available online.}
-}
-\value{
-A logical vector of the same length and names of the SAFE products
-passed with \code{s2_prodlist},
-in which each element is TRUE if the corresponding SAFE archive is
-available for download, FALSE if it is not or NA in case of errors with
-the SAFE url.
-}
 \description{
-The function checks if the required SAFE archives are
-available for download, or if they have to be ordered from the Long Term
-Archive.
-}
-\note{
-License: GPL 3.0
-}
-\examples{
-\donttest{
-if (is_scihub_configured()) {
-
-# Generate the lists of products
-pos <- sf::st_sfc(sf::st_point(c(-57.8815,-51.6954)), crs = 4326)
-time_window <- as.Date(c("2018-02-21", "2018-03-20"))
-list_safe <- s2_list(spatial_extent = pos, time_interval = time_window)
-# (at the time the documentation was written, this list was containing 5
-# archives already available online and 2 stored in the Long Term Archive)
-
-# Check for availability
-safe_is_online(list_safe)
-
-}
-}
-}
-\references{
-L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
-"sen2r": An R toolbox for automatically downloading and preprocessing
-Sentinel-2 satellite data. \emph{Computers & Geosciences}, 139, 104473.
-\doi{10.1016/j.cageo.2020.104473}, URL: \url{https://sen2r.ranghetti.info/}.
-}
-\author{
-Luigi Ranghetti, phD (2019)
-
-Lorenzo Busetto, phD (2020)
+This function is deprecated and will be removed.
 }

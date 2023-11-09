@@ -59,6 +59,12 @@ to use it, **Google Cloud SDK must be installed** and configured following the
 [official instructions](https://cloud.google.com/sdk/docs/install).
 Refer to [this post](https://luigi.ranghetti.info/post/safe-gcloud/) for details
 about how to install configure the required external dependency Google Cloud SDK.
+Notice that this mode is not optimal (a modern STAC API approach should be used),
+and searching products could be a very slow process.
+Nevertheless, the replacement of the old official data source (ESA Hub) with the
+new [Copernicus Data Space](https://dataspace.copernicus.eu/analyse/apis) is not
+planned (this package is no longer actively maintained due to a career change of the developer).
+Anyone who wants to help [can contribute](https://github.com/ranghetti/sen2r/issues/464)).
 
 Setting the execution of this processing chain is particularly easy
 using the <span

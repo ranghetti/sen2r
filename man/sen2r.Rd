@@ -109,7 +109,7 @@ FALSE to work only with already downloaded SAFE products.}
 \item{server}{(deprecate) Character vector of length 1, with the names of
 the servers on which SAFE archives are searched.
 Currently, only \code{"gcloud"} (Google Cloud) is supported.
-Old \code{"scihub"} (ESA Sentinel Hub) can no more be used, since Novembre 2023,
+Old \code{"scihub"} (ESA Sentinel Hub) can no more be used, since November 2023,
 when the Copernicus Sentinel Data is no longer available and has been
 replaced by the Copernicus Data Space Ecosystem.
 See also the section "Details" of \code{s2_list()}.}

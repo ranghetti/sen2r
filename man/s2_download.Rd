@@ -65,9 +65,9 @@ License: GPL 3.0
 }
 \examples{
 \dontrun{
-single_s2 <- paste0("https://apihub.copernicus.eu/apihub/odata/v1/",
-  "Products(\'c7142722-42bf-4f93-b8c5-59fd1792c430\')/$value")
-names(single_s2) <- "S2A_MSIL1C_20170613T101031_N0205_R022_T32TQQ_20170613T101608.SAFE"
+single_s2 <- paste0("gs://gcp-public-data-sentinel-2/L2/tiles/32/T/NR/",
+  "S2B_MSIL2A_20200804T101559_N0214_R065_T32TNR_20200804T145113.SAFE/")
+names(single_s2) <- "S2B_MSIL2A_20200804T101559_N0214_R065_T32TNR_20200804T145113.SAFE"
 # (this is equivalent to:
 # single_s2 <- example_s2_list[1]
 # where example_s2_list is the output of the example of the
@@ -75,15 +75,7 @@ names(single_s2) <- "S2A_MSIL1C_20170613T101031_N0205_R022_T32TQQ_20170613T10160
 
 # Download the whole product
 s2_download(single_s2, outdir=tempdir())
-
-#' # Download the whole product - using aria2
-s2_download(single_s2, outdir=tempdir(), downloader = "aria2")
-
-# Download more products, ordering the ones stored in the Long Term Archive
-pos <- sf::st_sfc(sf::st_point(c(-57.8815,-51.6954)), crs = 4326)
-time_window <- as.Date(c("2018-02-21", "2018-03-20"))
-list_safe <- s2_list(spatial_extent = pos, time_interval = time_window)
-s2_download(list_safe, outdir=tempdir())
+file.info(file.path(tempdir(),names(single_s2)))
 }
 }
 \references{

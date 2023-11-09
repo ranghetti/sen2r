@@ -2,7 +2,7 @@
 % Please edit documentation in R/s2_order.R
 \name{s2_order}
 \alias{s2_order}
-\title{Order S2 products.}
+\title{Order S2 products (deprecated).}
 \usage{
 s2_order(
   s2_prodlist = NULL,
@@ -13,87 +13,6 @@ s2_order(
   reorder = TRUE
 )
 }
-\arguments{
-\item{s2_prodlist}{Named character: list of the products to be ordered,
-in the format \code{safelist} (see \linkS4class{safelist}).
-Alternatively, it can be the path of a JSON file exported by a previous
-execution of \link{s2_order}, in case the user wants, for any reason, to
-resubmit the order.}
-
-\item{export_prodlist}{Logical or character: if TRUE (default),
-the list of ordered products is saved in a JSON text file, so to be easily
-retrievable at a later stage with \link{safe_is_online} or \link{s2_download};
-if FALSE, no output files are generated.
-It is also possible to pass the path of an existing folder in which the
-JSON file will be saved (otherwise, a default path is used).}
-
-\item{delay}{Numeric: time frame (in seconds) to leave between two
-consecutive orders. Default is 0.5 seconds: use a higher value if you
-encountered errors (i.e. not all the products were correctly ordered).}
-
-\item{apihub}{Path of the \code{apihub.txt} file containing credentials
-of SciHub account.
-If NA (default), the default location inside the package will be used.}
-
-\item{service}{Character: it can be \code{"dhus"} or \code{"apihub"}, in which cases
-the required service is forced instead that the one present in the URLs
-passed through argument \code{s2_prodlist}.
-If NA (default), the service present in the URLs is maintained.}
-
-\item{reorder}{Logical: If TRUE, and a json file exported by s2_order
-is passed as argument to the function, try to order again also
-the \code{"available"} and \code{"ordered"} S2 datasets.
-Otherwise, only order the \code{"notordered"} ones.}
-}
-\value{
-A named vector, containing the subset of \code{s2_prodlist} elements
-which were ordered.
-Moreover, the vector includes the following attributes:
-\itemize{
-\item \code{"available"} with the elements of \code{s2_prodlist} which were already
-available for download,
-\item \code{"notordered"} with the elements of \code{s2_prodlist} which were not ordered
-for any reasons,
-\item \code{"path"} (only if argument \code{export_prodlist} is not FALSE) with the path
-of the json file in which the list of the products (ordered, available
-and not ordered) was saved (if \code{export_prodlist = TRUE}).
-}
-}
 \description{
-The function orders S2 products from
-Long Term Archive.
-}
-\note{
-License: GPL 3.0
-}
-\examples{
-\dontrun{
-
-# Generate the lists of products
-pos <- sf::st_sfc(sf::st_point(c(-57.8815,-51.6954)), crs = 4326)
-time_window <- as.Date(c("2019-10-21", "2019-11-20"))
-list_safe <- s2_list(spatial_extent = pos, time_interval = time_window)
-print(list_safe)
-# (at the time the documentation was updated, this list was containing 6
-# archives already available online and 3 stored in the Long Term Archive)
-
-# Order the products
-ordered_prods <- s2_order(list_safe)
-
-# Check in a second time if the product was made available
-(order_path <- attr(ordered_prods, "path"))
-safe_is_online(order_path)
-
-}
-}
-\references{
-L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
-"sen2r": An R toolbox for automatically downloading and preprocessing
-Sentinel-2 satellite data. \emph{Computers & Geosciences}, 139, 104473.
-\doi{10.1016/j.cageo.2020.104473}, URL: \url{https://sen2r.ranghetti.info/}.
-}
-\author{
-Luigi Ranghetti, phD (2019)
-
-Lorenzo Busetto, phD (2020)
+This function is deprecated and will be removed.
 }

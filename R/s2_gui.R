@@ -3011,14 +3011,16 @@ s2_gui <- function(param_list = NULL,
           "target='_blank'>official instructions</a></strong>.",
         )),
         p(HTML(
-          "The old official data source, ESA Hub</strong>, is no longer",
-          "available since November 2023 due to it dismission;",
-          "the replacemente with the new <a",
-          "href='https://dataspace.copernicus.eu/analyse/apis'",
+          "This mode is not optimal (a modern STAC API approach should be used),",
+          "and searching products could be a very slow process.",
+          "Nevertheless, the old official data source, ESA Hub</strong>, is no",
+          "longer available since November 2023 due to it dismission;",
+          "since sen2r is not actively maintained, the replacement with the new",
+          "<a href='https://dataspace.copernicus.eu/analyse/apis'",
           "target='_blank'>Copernicus Data Space</a>",
           "is not planned (anyone who wants to help can contribute on <a",
           "href='https://github.com/ranghetti/sen2r/issues/464'",
-          "target='_blank'>GitHub</a>)"
+          "target='_blank'>GitHub</a>)."
         )),
         p(HTML(
           "Notice that the <strong>Online</strong> mode is available only if",
