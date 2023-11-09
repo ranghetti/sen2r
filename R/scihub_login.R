@@ -1,8 +1,13 @@
 #' @title Import / export / check SciHub username and password (deprecated)
 #' @description These functions are deprecated and will be removed.
+#' @return deprecated
 
 #' @name read_scihub_login
 #' @rdname scihub_login
+#' @param apihub_path deprecated
+#' @param username deprecated
+#' @param password deprecated
+#' @param service deprecated
 #' @export
 read_scihub_login <- function(apihub_path = NA) {
     matrix(c("",""), ncol = 2)
@@ -32,6 +37,8 @@ check_scihub_connection <- function(service = "apihub") {
 
 #' @name write_scihub_login
 #' @rdname scihub_login
+#' @param check deprecated
+#' @param append deprecated
 #' @export
 
 write_scihub_login <- function(username, password,

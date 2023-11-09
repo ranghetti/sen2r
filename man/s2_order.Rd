@@ -13,6 +13,22 @@ s2_order(
   reorder = TRUE
 )
 }
+\arguments{
+\item{s2_prodlist}{deprecated}
+
+\item{export_prodlist}{deprecated}
+
+\item{delay}{deprecated}
+
+\item{apihub}{deprecated}
+
+\item{service}{deprecated}
+
+\item{reorder}{deprecated}
+}
+\value{
+deprecated
+}
 \description{
 This function is deprecated and will be removed.
 }

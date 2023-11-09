@@ -6,6 +6,16 @@
 \usage{
 safe_is_online(s2_prodlist = NULL, apihub = NA, verbose = TRUE)
 }
+\arguments{
+\item{s2_prodlist}{deprecated}
+
+\item{apihub}{deprecated}
+
+\item{verbose}{deprecated}
+}
+\value{
+deprecated
+}
 \description{
 This function is deprecated and will be removed.
 }

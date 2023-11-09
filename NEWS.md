@@ -2,7 +2,7 @@
 
 ## Major changes
 - Remove the possibility to search/download SAFE archives from ESA SciHub due 
-    to its dismission.
+    to its discontinuation.
 - Set `"gcloud"` as the default SAFE server.
 - Begin voiding some functions related to ESA SciHub: `s2_order()`, 
     `safe_is_online()`, `*_scihub_login()`,

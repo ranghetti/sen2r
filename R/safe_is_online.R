@@ -1,5 +1,9 @@
 #' @title Check if SAFE is available for download (deprecated)
 #' @description This function is deprecated and will be removed.
+#' @param s2_prodlist deprecated
+#' @param apihub deprecated
+#' @param verbose deprecated
+#' @return deprecated
 #' @export
 
 safe_is_online <- function(s2_prodlist = NULL, apihub = NA, verbose = TRUE) {

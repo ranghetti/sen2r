@@ -24,6 +24,24 @@ write_scihub_login(
   append = FALSE
 )
 }
+\arguments{
+\item{apihub_path}{deprecated}
+
+\item{username}{deprecated}
+
+\item{password}{deprecated}
+
+\item{service}{deprecated}
+
+\item{check}{deprecated}
+
+\item{append}{deprecated}
+}
+\value{
+deprecated
+
+deprecated
+}
 \description{
 These functions are deprecated and will be removed.
 }
