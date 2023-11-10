@@ -154,6 +154,14 @@ check_param_list <- function(pm, type = "string", check_paths = FALSE, correct =
   
   
   # -- server --
+  if ("scihub" %in% pm$server) {
+    print_message(
+      type = type,
+      "Parameter \"server\" = 'scihub' is deprecated; currently, only 'gcloud' ",
+      "can be used (setting to the default)."
+    )
+    pm$server <- pm_def$server
+  }
   if (all(!pm$server %in% c("scihub", "gcloud"))) {
     print_message(
       type = type,

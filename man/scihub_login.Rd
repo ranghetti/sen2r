@@ -6,7 +6,7 @@
 \alias{check_scihub_login}
 \alias{check_scihub_connection}
 \alias{write_scihub_login}
-\title{Import / export / check SciHub username and password}
+\title{Import / export / check SciHub username and password (deprecated)}
 \usage{
 read_scihub_login(apihub_path = NA)
 
@@ -25,82 +25,23 @@ write_scihub_login(
 )
 }
 \arguments{
-\item{apihub_path}{Path of the file in which login information is saved.
-If NA (default) it is automatically read from the package default location.}
+\item{apihub_path}{deprecated}
 
-\item{username}{SciHub username.}
+\item{username}{deprecated}
 
-\item{password}{SciHub password.}
+\item{password}{deprecated}
 
-\item{service}{Character: it can be \code{"dhus"} or \code{"apihub"} (default).}
+\item{service}{deprecated}
 
-\item{check}{Logical: if TRUE (default), new credentials are checked
-before writing them on \code{apihub_path} (if they are invalid, an error
-is provided);
-if FALSE, they are directly written.}
+\item{check}{deprecated}
 
-\item{append}{Logical: if TRUE, new credentials are added
-to the ones existing within \code{apihub_path};
-if FALSE (default), \code{apihub_path} is replaced with the new ones.}
+\item{append}{deprecated}
 }
 \value{
-\code{read_scihub_login()} returns a matrix of credentials,
-in which \code{username} is in the first column, \code{password} in the second.
+deprecated
 
-\code{is_scihub_configured()} returns TRUE if credentials can be
-accessed, FALSE if not.
-
-\code{check_scihub_login()} returns TRUE if credentials are valid,
-FALSE elsewhere.
-
-\code{check_scihub_connection()} returns TRUE if internet connection
-is available and SciHub is accessible, FALSE otherwise.
-
-\code{write_scihub_login()} returns NULL.
+deprecated
 }
 \description{
-\itemize{
-\item \code{read_scihub_login()} reads the SciHub login information;
-\item \code{write_scihub_login()} saves new username and password;
-\item \code{check_scihub_login()} checks their validity;
-\item \code{is_scihub_configured()} check if SciHub credentials are configured.
-}
-
-Login information is stored in a file \code{apihub.txt} inside the
-".sen2r" subfolder of the home directory. These functions allow reading
-or writing this file, and editing it from the GUI.
-In case file \code{apihub.txt} is missing, \code{read_scihub_login()} searches inside
-the environmental variables \code{SCIHUB_USER} and \code{SCIHUB_PASSWORD}.
-}
-\details{
-Notice that new/recently updated SciHub credentials are recognised by API Hub
-with a delay of about one week (see \url{https://scihub.copernicus.eu/twiki/do/view/SciHubWebPortal/APIHubDescription} for details).
-
-For this reason, newly created credentials can not immediately be used by \code{sen2r},
-and password edits on old credentials are not immediately recognised.
-}
-\note{
-License: GPL 3.0
-}
-\examples{
-\donttest{
-is_scihub_configured()
-}
-\dontrun{
-check_scihub_connection()
-check_scihub_login("username", "password")
-write_scihub_login("username", "password")
-read_scihub_login()
-}
-}
-\references{
-L. Ranghetti, M. Boschetti, F. Nutini, L. Busetto (2020).
-"sen2r": An R toolbox for automatically downloading and preprocessing
-Sentinel-2 satellite data. \emph{Computers & Geosciences}, 139, 104473.
-\doi{10.1016/j.cageo.2020.104473}, URL: \url{https://sen2r.ranghetti.info/}.
-}
-\author{
-Luigi Ranghetti, phD (2019)
-
-Lorenzo Busetto, phD (2019)
+These functions are deprecated and will be removed.
 }

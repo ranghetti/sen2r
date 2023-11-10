@@ -35,22 +35,18 @@
 #' @param online (optional) Logical: TRUE (default) to search for available
 #'  products on SciHub and/or Google Cloud (and download if needed); 
 #'  FALSE to work only with already downloaded SAFE products.
-#' @param server (optional) Character vector of length 1 or 2, with the names of
+#' @param server (deprecate) Character vector of length 1, with the names of
 #'  the servers on which SAFE archives are searched. 
-#'  Available options are `"scihub"` (ESA Sentinel Hub) and `"gcloud"`
-#'  (Google Cloud).
-#'  Default is `"scihub"`, meaning that only ESA Sentinel Hub is considered.
-#'  In case of multiple values, they are used in order of priority and 
-#'  products on LTA are always left as last choice.
+#'  Currently, only `"gcloud"` (Google Cloud) is supported.
+#'  Old `"scihub"` (ESA Sentinel Hub) can no more be used, since November 2023,
+#'  when the Copernicus Sentinel Data is no longer available and has been 
+#'  replaced by the Copernicus Data Space Ecosystem.
 #'  See also the section "Details" of `s2_list()`.
 #' @param order_lta (optional) Logical: TRUE (default) to order products from
 #'  the Long Term Archive if unavailable for direct download; FALSE to simply
 #'  skip them (this option has effect only in online mode).
 #'  It takes effect only if argument `server` includes `"scihub"`.
-#' @param apihub Path of the text file containing credentials
-#'  of SciHub account.
-#'  If NA (default), the default location inside the package will be used.
-#'  It takes effect only if argument `server` includes `"scihub"`.
+#' @param apihub _deprecated_
 #' @param downloader (optional) Character value corresponding to the executable
 #'  which should be used to download SAFE products. It could be one among
 #'  `"builtin"` (default) and `"aria2"`.
@@ -435,7 +431,7 @@ sen2r <- function(param_list = NULL,
                   s2_levels = "l2a",
                   sel_sensor = c("s2a","s2b"),
                   online = TRUE,
-                  server = "scihub",
+                  server = "gcloud",
                   order_lta = TRUE,
                   apihub = NA,
                   downloader = "builtin",

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6.0</span>
       </span>
     </div>
 
@@ -91,6 +91,22 @@
       <small>Source: <a href="https://github.com/ranghetti/sen2r/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.6.0" id="version-160">Version 1.6.0<small>2023-11-10</small><a class="anchor" aria-label="anchor" href="#version-160"></a></h2>
+<div class="section level3">
+<h3 id="major-changes-1-6-0">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-1-6-0"></a></h3>
+<ul><li>Remove the possibility to search/download SAFE archives from ESA SciHub due to its discontinuation.</li>
+<li>Set <code>"gcloud"</code> as the default SAFE server.</li>
+<li>Begin voiding some functions related to ESA SciHub: <code><a href="../reference/s2_order.html">s2_order()</a></code>, <code><a href="../reference/safe_is_online.html">safe_is_online()</a></code>, <code>*_scihub_login()</code>, <code>"scihub"</code> methods in <code><a href="../reference/s2_list.html">s2_list()</a></code> and <code><a href="../reference/s2_download.html">s2_download()</a></code>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="documentation-1-6-0">Documentation<a class="anchor" aria-label="anchor" href="#documentation-1-6-0"></a></h3>
+<ul><li>
+<em>Partially</em> updating the documentation to reflect the above changes.</li>
+<li>Remove old system requirements (<a href="https://github.com/ranghetti/sen2r/issues/463" class="external-link">#463</a>).</li>
+<li>Remove old references to {rgdal}.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.5.5" id="version-155">Version 1.5.5<small>2023-06-16</small><a class="anchor" aria-label="anchor" href="#version-155"></a></h2>
 <div class="section level3">
@@ -554,7 +570,7 @@
 <ul><li>
 <code><a href="../reference/install_sen2cor.html">link_sen2cor()</a></code> can be used to link an existing Sen2Cor installation to sen2r;</li>
 <li>
-<code><a href="https://rdrr.io/r/methods/as.html" class="external-link">as()</a></code> methods can be used to convert <code>safelist</code> from/to <code>character</code>, <code>data.frame</code> and <code>data.table</code> (as well as <code>as.character()',</code>as.data.frame()<code>and</code>as.data.table()` functions).</li>
+<code>as()</code> methods can be used to convert <code>safelist</code> from/to <code>character</code>, <code>data.frame</code> and <code>data.table</code> (as well as <code>as.character()',</code>as.data.frame()<code>and</code>as.data.table()` functions).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-in-default-values-1-2-1">Changes in default values<a class="anchor" aria-label="anchor" href="#changes-in-default-values-1-2-1"></a></h3>

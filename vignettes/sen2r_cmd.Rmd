@@ -188,8 +188,7 @@ The processing chain can be re-launched with the command:
 ```
 
 This is for example particularly useful if a `sen2r()` processing requires 
-ordering images from the LTA archive 
-(see https://scihub.copernicus.eu/userguide/LongTermArchive).
+ordering images from the LTA archive.
 
 The user can in fact, in that case: 
 

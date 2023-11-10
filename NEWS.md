@@ -1,3 +1,18 @@
+# Version 1.6.0
+
+## Major changes
+- Remove the possibility to search/download SAFE archives from ESA SciHub due 
+    to its discontinuation.
+- Set `"gcloud"` as the default SAFE server.
+- Begin voiding some functions related to ESA SciHub: `s2_order()`, 
+    `safe_is_online()`, `*_scihub_login()`,
+    `"scihub"` methods in `s2_list()` and `s2_download()`.
+
+## Documentation
+- _Partially_ updating the documentation to reflect the above changes.
+- Remove old system requirements (#463).
+- Remove old references to {rgdal}.
+
 # Version 1.5.5
 
 ## Minor changes

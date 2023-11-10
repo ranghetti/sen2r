@@ -33,7 +33,7 @@ useful for reading hidden attributes."><!-- mathjax --><script src="https://cdnj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6.0</span>
       </span>
     </div>
 
@@ -174,147 +174,43 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-in"><span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="va">list_safe</span> <span class="op">&lt;-</span> <span class="fu">as</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"safelist"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched on</span>
 <span class="r-in"><span><span class="va">list_safe</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A named vector with 3 SAFE archives.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, footprint, uuid, online.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A named vector with 0 SAFE archives.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> character(0)</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">list_safe</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "safelist"  "character"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">list_safe</span>, <span class="st">"sensing_datetime"</span><span class="op">)</span> <span class="co"># extract an hidden attribute from a safelist</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2017-05-07 10:20:31 UTC" "2017-05-17 10:20:31 UTC"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "2017-05-27 10:20:31 UTC"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Convert to other classes</span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">s2_char</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">list_safe</span><span class="op">)</span><span class="op">)</span> <span class="co"># convert to a simple named character</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> character(0)</span>
 <span class="r-in"><span><span class="op">(</span><span class="va">s2_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">list_safe</span><span class="op">)</span><span class="op">)</span> <span class="co"># convert to a data.frame</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                    url</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 https://apihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 https://apihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 https://apihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   mission level id_tile id_orbit    sensing_datetime  ingestion_datetime</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1      2A   2Ap   32TNR      065 2017-05-07 10:20:31 2017-05-09 06:30:41</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2      2A   2Ap   32TNR      065 2017-05-17 10:20:31 2017-06-08 12:21:23</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3      2A   2Ap   32TNR      065 2017-05-27 10:20:31 2017-05-29 08:30:44</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      clouds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 99.999908</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  8.670091</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  6.359588</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                     footprint</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 POLYGON ((8.999741 46.05357, 10.4189 46.04477, 10.39425 45.05675, 8.999746 45.06526, 8.999741 46.05357, 8.999741 46.05357))</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 POLYGON ((8.999741 46.05357, 10.4189 46.04477, 10.39425 45.05675, 8.999746 45.06526, 8.999741 46.05357, 8.999741 46.05357))</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3                    POLYGON ((8.999741 46.05357, 10.4189 46.04477, 10.39425 45.05675, 8.999746 45.06526, 8.999741 46.05357))</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                   uuid online</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 a4a026c0-db7b-4ba8-9b09-53027ab0d7ab     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 868b5b3c-92ac-412a-8a04-167008a1f08f     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] url</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;0 rows&gt; (or 0-length row.names)</span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: 'data.table'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from 'package:raster':</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘data.table’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from ‘package:raster’:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     shift</span>
 <span class="r-in"><span><span class="op">(</span><span class="va">s2_dt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">list_safe</span><span class="op">)</span><span class="op">)</span> <span class="co"># convert to a data.table</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                 name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1: S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2: S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3: S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                     url</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1: https://apihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2: https://apihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3: https://apihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    mission level id_tile id_orbit    sensing_datetime  ingestion_datetime</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:      2A   2Ap   32TNR      065 2017-05-07 10:20:31 2017-05-09 06:30:41</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2:      2A   2Ap   32TNR      065 2017-05-17 10:20:31 2017-06-08 12:21:23</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3:      2A   2Ap   32TNR      065 2017-05-27 10:20:31 2017-05-29 08:30:44</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       clouds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1: 99.999908</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2:  8.670091</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3:  6.359588</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                      footprint</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1: POLYGON ((8.999741 46.05357, 10.4189 46.04477, 10.39425 45.05675, 8.999746 45.06526, 8.999741 46.05357, 8.999741 46.05357))</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2: POLYGON ((8.999741 46.05357, 10.4189 46.04477, 10.39425 45.05675, 8.999746 45.06526, 8.999741 46.05357, 8.999741 46.05357))</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3:                    POLYGON ((8.999741 46.05357, 10.4189 46.04477, 10.39425 45.05675, 8.999746 45.06526, 8.999741 46.05357))</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                    uuid online</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1: a4a026c0-db7b-4ba8-9b09-53027ab0d7ab     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2: 6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3: 868b5b3c-92ac-412a-8a04-167008a1f08f     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Empty data.table (0 rows and 1 cols): url</span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">list_safe</span>, <span class="st">"footprint"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="op">(</span><span class="va">s2_sf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span><span class="va">list_safe</span><span class="op">)</span><span class="op">)</span> <span class="co"># convert to sf</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 3 features and 11 fields</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POLYGON</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: 8.999741 ymin: 45.05675 xmax: 10.4189 ymax: 46.05357</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                    url</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 https://apihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 https://apihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 https://apihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   mission level id_tile id_orbit    sensing_datetime  ingestion_datetime</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1      2A   2Ap   32TNR      065 2017-05-07 10:20:31 2017-05-09 06:30:41</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2      2A   2Ap   32TNR      065 2017-05-17 10:20:31 2017-06-08 12:21:23</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3      2A   2Ap   32TNR      065 2017-05-27 10:20:31 2017-05-29 08:30:44</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      clouds                                 uuid online</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 99.999908 a4a026c0-db7b-4ba8-9b09-53027ab0d7ab     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  8.670091 6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  6.359588 868b5b3c-92ac-412a-8a04-167008a1f08f     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                        footprint</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 POLYGON ((8.999741 46.05357...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 POLYGON ((8.999741 46.05357...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 POLYGON ((8.999741 46.05357...</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Convert from other classes</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/methods/as.html" class="external-link">as</a></span><span class="op">(</span><span class="va">s2_char</span>, <span class="st">"safelist"</span><span class="op">)</span> <span class="co"># this causes the loss of hidden attributes</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A named vector with 3 SAFE archives.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A named vector with 0 SAFE archives.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> character(0)</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/methods/as.html" class="external-link">as</a></span><span class="op">(</span><span class="va">s2_df</span>, <span class="st">"safelist"</span><span class="op">)</span> <span class="co"># this (and followings) maintain attributes as columns</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A named vector with 3 SAFE archives.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, footprint, uuid, online.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A named vector with 0 SAFE archives.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> character(0)</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/methods/as.html" class="external-link">as</a></span><span class="op">(</span><span class="va">s2_dt</span>, <span class="st">"safelist"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A named vector with 3 SAFE archives.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('a4a026c0-db7b-4ba8-9b09-53027ab0d7ab')/$value" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('6b7bb7bb-7598-45ac-9f2c-a3bd9cdc092f')/$value" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('868b5b3c-92ac-412a-8a04-167008a1f08f')/$value" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, footprint, uuid, online.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A named vector with 0 SAFE archives.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> character(0)</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

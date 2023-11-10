@@ -20,7 +20,7 @@ s2_list function
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6.0</span>
       </span>
     </div>
 
@@ -197,9 +197,9 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="va">single_s2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"https://apihub.copernicus.eu/apihub/odata/v1/"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"Products(\'c7142722-42bf-4f93-b8c5-59fd1792c430\')/$value"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">single_s2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"S2A_MSIL1C_20170613T101031_N0205_R022_T32TQQ_20170613T101608.SAFE"</span></span></span>
+<span class="r-in"><span><span class="va">single_s2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"gs://gcp-public-data-sentinel-2/L2/tiles/32/T/NR/"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"S2B_MSIL2A_20200804T101559_N0214_R065_T32TNR_20200804T145113.SAFE/"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">single_s2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"S2B_MSIL2A_20200804T101559_N0214_R065_T32TNR_20200804T145113.SAFE"</span></span></span>
 <span class="r-in"><span><span class="co"># (this is equivalent to:</span></span></span>
 <span class="r-in"><span><span class="co"># single_s2 &lt;- example_s2_list[1]</span></span></span>
 <span class="r-in"><span><span class="co"># where example_s2_list is the output of the example of the</span></span></span>
@@ -207,15 +207,7 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Download the whole product</span></span></span>
 <span class="r-in"><span><span class="fu">s2_download</span><span class="op">(</span><span class="va">single_s2</span>, outdir<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#' # Download the whole product - using aria2</span></span></span>
-<span class="r-in"><span><span class="fu">s2_download</span><span class="op">(</span><span class="va">single_s2</span>, outdir<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, downloader <span class="op">=</span> <span class="st">"aria2"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Download more products, ordering the ones stored in the Long Term Archive</span></span></span>
-<span class="r-in"><span><span class="va">pos</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">57.8815</span>,<span class="op">-</span><span class="fl">51.6954</span><span class="op">)</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">time_window</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2018-02-21"</span>, <span class="st">"2018-03-20"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">list_safe</span> <span class="op">&lt;-</span> <span class="fu"><a href="s2_list.html">s2_list</a></span><span class="op">(</span>spatial_extent <span class="op">=</span> <span class="va">pos</span>, time_interval <span class="op">=</span> <span class="va">time_window</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">s2_download</span><span class="op">(</span><span class="va">list_safe</span>, outdir<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/file.info.html" class="external-link">file.info</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">single_s2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>

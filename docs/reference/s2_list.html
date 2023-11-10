@@ -18,7 +18,7 @@ products satisfying given search criteria."><!-- mathjax --><script src="https:/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6.0</span>
       </span>
     </div>
 
@@ -106,7 +106,7 @@ products satisfying given search criteria.</p>
 <span>  time_interval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">10</span>, <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  time_period <span class="op">=</span> <span class="st">"full"</span>,</span>
 <span>  level <span class="op">=</span> <span class="st">"auto"</span>,</span>
-<span>  server <span class="op">=</span> <span class="st">"scihub"</span>,</span>
+<span>  server <span class="op">=</span> <span class="st">"gcloud"</span>,</span>
 <span>  apihub <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  service <span class="op">=</span> <span class="st">"apihub"</span>,</span>
 <span>  max_cloud <span class="op">=</span> <span class="fl">100</span>,</span>
@@ -156,25 +156,21 @@ product
 
 
 <dt>server</dt>
-<dd><p>The servers where archives are searched.
-Available options are <code>"scihub"</code> (ESA Sentinel Hub) and <code>"gcloud"</code>
-(Google Cloud).
-Default is <code>"scihub"</code>, meaning that only ESA Sentinel Hub is considered.
-In case of multiple values, they are used in order of priority.
-If <code>availability = "check"</code>, products on LTA are always left as last choice.
+<dd><p>(deprecate) Character vector of length 1, with the names of
+the servers on which SAFE archives are searched.
+Currently, only <code>"gcloud"</code> (Google Cloud) is supported.
+Old <code>"scihub"</code> (ESA Sentinel Hub) can no more be used, since November 2023,
+when the Copernicus Sentinel Data is no longer available and has been
+replaced by the Copernicus Data Space Ecosystem.
 See also the section "Details".</p></dd>
 
 
 <dt>apihub</dt>
-<dd><p>Path of the <code>apihub.txt</code> file containing credentials
-of SciHub account.
-If NA (default), the default location inside the package will be used.</p></dd>
+<dd><p><em>deprecated</em></p></dd>
 
 
 <dt>service</dt>
-<dd><p>Character: it can be <code>"dhus"</code> or <code>"apihub"</code> (default),
-in which cases the required service is forced instead that the one present
-in the URLs passed through argument <code>s2_prodlist</code>.</p></dd>
+<dd><p><em>deprecated</em></p></dd>
 
 
 <dt>max_cloud</dt>
@@ -186,7 +182,7 @@ level of the tiles to be listed (default: no filter).</p></dd>
 <dd><p>Character argument, determining which products have
 to be returned:</p><ul><li><p><code>"online"</code> : only archive names already available for download are returned;</p></li>
 <li><p><code>"lta"</code>: only archive names stored in the
-<a href="https://scihub.copernicus.eu/userguide/LongTermArchive" class="external-link">Long Term Archive</a>
+Long Term Archive
 are returned;</p></li>
 <li><p><code>"check"</code>: all archive names are returned, checking if they are
 available or not for download (see "Value" to know
@@ -221,28 +217,11 @@ otherwise, values are set to NA.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>By default, SAFE archives are searched on ESA Sentinel Hub
-(argument <code>server = "scihub"</code>), which is the faster and stable option.
-After the reduction of the retention time to 30 days,
-it is highly probable that products older then 30 days will not be found
-online (see <a href="https://github.com/ranghetti/sen2r/issues/408" class="external-link">https://github.com/ranghetti/sen2r/issues/408</a>).
-Moreover, after ordering them from Long Term Archive (LTA), in several cases
-corrupted archives are obtained
-(see <a href="https://github.com/ranghetti/sen2r/issues/406" class="external-link">https://github.com/ranghetti/sen2r/issues/406</a>, and refer to this
-reference for details about the ESA LTA policy).</p>
-<p>To avoid this problems, the research and download from Google Cloud was
-recently implemented.
-Users can set <code>server = "gcloud"</code> to use this data exclusively, or
-<code>server = c("scihub", "gcloud"), availability = "check"</code>
-to search for products available on SciHub first, or on Google Cloud
-subsequently.
-<strong>Important</strong>: to search and download from Google Cloud, Google Cloud SDK
+    <p><strong>Important</strong>: to search and download from Google Cloud, Google Cloud SDK
 must be installed and configured following the indications in
 <a href="https://cloud.google.com/sdk/docs/install" class="external-link">https://cloud.google.com/sdk/docs/install</a>.
 Notice also that querying Google Cloud can be very slow (while downloading
 them is generally faster than from SciHub).</p>
-<p>Searching and downloading from Google Cloud is an experimental feature;
-in case of bugs, report them at <a href="https://github.com/ranghetti/sen2r/issues" class="external-link">https://github.com/ranghetti/sen2r/issues</a>.</p>
     </div>
     <div id="note">
     <h2>Note</h2>
@@ -269,10 +248,10 @@ function <code>getSentinel_query</code> of package
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">pos</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">9.85</span>,<span class="fl">45.81</span><span class="op">)</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">time_window</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2016-05-01"</span>, <span class="st">"2017-07-30"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">time_window</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2020-08-01"</span>, <span class="st">"2020-08-11"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Full-period list</span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="scihub_login.html">is_scihub_configured</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="check_gcloud.html">is_gcloud_configured</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="va">example_s2_list</span> <span class="op">&lt;-</span> <span class="fu">s2_list</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    spatial_extent <span class="op">=</span> <span class="va">pos</span>,</span></span>
 <span class="r-in"><span>    tile <span class="op">=</span> <span class="st">"32TNR"</span>,</span></span>
@@ -283,120 +262,25 @@ function <code>getSentinel_query</code> of package
 <span class="r-in"><span>  <span class="va">example_s2_list</span> <span class="op">&lt;-</span> <span class="fu">as</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"safelist"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-11-09 22:26:21] Querying Google Cloud (this can take a very long</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>        time)...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched on</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">example_s2_list</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A named vector with 47 SAFE archives.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL1C_20160502T102032_N0201_R065_T32TNR_20160502T102027.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('fde01d3f-8a0d-46cb-b65d-3e32eff93f1d')/$value" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL1C_20160512T102032_N0202_R065_T32TNR_20160512T102029.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('4b785773-ba94-49b2-ae81-9b4b08749f70')/$value" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL1C_20160522T102032_N0202_R065_T32TNR_20160522T102029.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('4abf7965-0b26-431b-8708-74de427c0112')/$value" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL1C_20160611T102032_N0202_R065_T32TNR_20160611T102026.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('68afcf6b-4ec6-48da-9b65-6cd41ff47a49')/$value" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL1C_20160621T102022_N0204_R065_T32TNR_20160621T102024.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('9bb6d780-c226-4f59-bad0-1daedfdce9d5')/$value" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ...with 42 more elements.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A named vector with 2 SAFE archives.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                     S2B_MSIL2A_20200804T101559_N0214_R065_T32TNR_20200804T145113.SAFE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "gs://gcp-public-data-sentinel-2/L2/tiles/32/T/NR/S2B_MSIL2A_20200804T101559_N0214_R065_T32TNR_20200804T145113.SAFE/" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                     S2A_MSIL2A_20200809T102031_N0214_R065_T32TNR_20200809T130506.SAFE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "gs://gcp-public-data-sentinel-2/L2/tiles/32/T/NR/S2A_MSIL2A_20200809T102031_N0214_R065_T32TNR_20200809T130506.SAFE/" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, footprint, uuid, online.</span>
 <span class="r-in"><span><span class="co"># Print the dates of the retrieved products</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="safe_getMetadata.html">safe_getMetadata</a></span><span class="op">(</span><span class="va">example_s2_list</span>, <span class="st">"sensing_datetime"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160502T102032_N0201_R065_T32TNR_20160502T102027.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-05-02 10:20:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160512T102032_N0202_R065_T32TNR_20160512T102029.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-05-12 10:20:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160522T102032_N0202_R065_T32TNR_20160522T102029.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-05-22 10:20:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160611T102032_N0202_R065_T32TNR_20160611T102026.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-06-11 10:20:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160621T102022_N0204_R065_T32TNR_20160621T102024.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-06-21 10:20:22 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160701T102022_N0204_R065_T32TNR_20160701T102057.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-07-01 10:20:22 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160711T102032_N0204_R065_T32TNR_20160711T102030.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-07-11 10:20:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160721T102032_N0204_R065_T32TNR_20160721T102059.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-07-21 10:20:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160731T102032_N0204_R065_T32TNR_20160731T102107.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-07-31 10:20:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160810T102032_N0204_R065_T32TNR_20160810T102044.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-08-10 10:20:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160820T102022_N0204_R065_T32TNR_20160820T102112.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-08-20 10:20:22 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160830T102022_N0204_R065_T32TNR_20160830T102052.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-08-30 10:20:22 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160909T102022_N0204_R065_T32TNR_20160909T102108.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-09-09 10:20:22 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160919T102022_N0204_R065_T32TNR_20160919T102112.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-09-19 10:20:22 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160929T102022_N0204_R065_T32TNR_20160929T102344.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-09-29 10:20:22 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20161009T102022_N0204_R065_T32TNR_20161009T102522.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-10-09 10:20:22 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20161019T102032_N0204_R065_T32TNR_20161019T102353.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-10-19 10:20:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20161029T102132_N0204_R065_T32TNR_20161029T102445.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-10-29 10:21:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20161108T102232_N0204_R065_T32TNR_20161108T102425.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-11-08 10:22:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20161118T102322_N0204_R065_T32TNR_20161118T102318.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-11-18 10:23:22 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20161128T102352_N0204_R065_T32TNR_20161128T102354.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-11-28 10:23:52 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20161208T102422_N0204_R065_T32TNR_20161208T102418.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-12-08 10:24:22 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20161218T102432_N0204_R065_T32TNR_20161218T102606.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-12-18 10:24:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20161228T102432_N0204_R065_T32TNR_20161228T102428.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-12-28 10:24:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20170107T102401_N0204_R065_T32TNR_20170107T102658.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-01-07 10:24:01 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20170127T102301_N0204_R065_T32TNR_20170127T102258.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-01-27 10:23:01 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20170206T102211_N0204_R065_T32TNR_20170206T102733.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-02-06 10:22:11 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20170216T102101_N0204_R065_T32TNR_20170216T102204.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-02-16 10:21:01 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20170226T102021_N0204_R065_T32TNR_20170226T102458.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-02-26 10:20:21 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20170308T102021_N0204_R065_T32TNR_20170308T102514.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-03-08 10:20:21 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20170318T102011_N0204_R065_T32TNR_20170318T102014.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-03-18 10:20:11 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20170328T102021_N0204_R065_T32TNR_20170328T102018.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-03-28 10:20:21 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20170407T102021_N0204_R065_T32TNR_20170407T102343.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-04-07 10:20:21 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20170417T102021_N0204_R065_T32TNR_20170417T102334.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-04-17 10:20:21 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL2A_20170427T102031_N0205_R065_T32TNR_20170427T102025.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-04-27 10:20:31 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-05-07 10:20:31 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-05-17 10:20:31 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-05-27 10:20:31 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL2A_20170606T102031_N0205_R065_T32TNR_20170606T102456.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-06-06 10:20:31 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL2A_20170616T102021_N0205_R065_T32TNR_20170616T102331.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-06-16 10:20:21 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL2A_20170626T102021_N0205_R065_T32TNR_20170626T102321.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-06-26 10:20:21 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2B_MSIL1C_20170701T102029_N0205_R065_T32TNR_20170701T102338.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-07-01 10:20:29 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL2A_20170706T102021_N0205_R065_T32TNR_20170706T102301.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-07-06 10:20:21 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2B_MSIL1C_20170711T102029_N0205_R065_T32TNR_20170711T102309.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-07-11 10:20:29 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20170716T102021_N0205_R065_T32TNR_20170716T102324.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-07-16 10:20:21 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2B_MSIL1C_20170721T102029_N0205_R065_T32TNR_20170721T102331.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-07-21 10:20:29 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL2A_20170726T102021_N0205_R065_T32TNR_20170726T102259.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-07-26 10:20:21 UTC" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> S2B_MSIL2A_20200804T101559_N0214_R065_T32TNR_20200804T145113.SAFE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2020-08-04 10:15:59 UTC" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL2A_20200809T102031_N0214_R065_T32TNR_20200809T130506.SAFE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2020-08-09 10:20:31 UTC" </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Seasonal-period list</span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="scihub_login.html">is_scihub_configured</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="check_gcloud.html">is_gcloud_configured</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="va">example_s2_list</span> <span class="op">&lt;-</span> <span class="fu">s2_list</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    spatial_extent <span class="op">=</span> <span class="va">pos</span>,</span></span>
 <span class="r-in"><span>    tile <span class="op">=</span> <span class="st">"32TNR"</span>,</span></span>
@@ -407,79 +291,34 @@ function <code>getSentinel_query</code> of package
 <span class="r-in"><span>  <span class="va">example_s2_list</span> <span class="op">&lt;-</span> <span class="fu">as</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"safelist"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-11-09 22:26:40] Querying Google Cloud (this can take a very long</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>        time)...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched on</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">example_s2_list</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A named vector with 28 SAFE archives.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL1C_20160502T102032_N0201_R065_T32TNR_20160502T102027.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('fde01d3f-8a0d-46cb-b65d-3e32eff93f1d')/$value" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL1C_20160509T101032_N0202_R022_T32TNR_20160509T101645.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('abf24c65-2ff6-4c9a-9309-425425475d36')/$value" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL1C_20160512T102032_N0202_R065_T32TNR_20160512T102029.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('4b785773-ba94-49b2-ae81-9b4b08749f70')/$value" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL1C_20160519T101032_N0202_R022_T32TNR_20160519T101312.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('e1f000b8-e9c3-421b-88c2-08a9046d1a82')/$value" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                      S2A_MSIL1C_20160522T102032_N0202_R065_T32TNR_20160522T102029.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "https://apihub.copernicus.eu/apihub/odata/v1/Products('4abf7965-0b26-431b-8708-74de427c0112')/$value" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ...with 23 more elements.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A named vector with 5 SAFE archives.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                     S2B_MSIL2A_20200801T100559_N0214_R022_T32TNR_20200801T135302.SAFE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "gs://gcp-public-data-sentinel-2/L2/tiles/32/T/NR/S2B_MSIL2A_20200801T100559_N0214_R022_T32TNR_20200801T135302.SAFE/" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                     S2B_MSIL2A_20200804T101559_N0214_R065_T32TNR_20200804T145113.SAFE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "gs://gcp-public-data-sentinel-2/L2/tiles/32/T/NR/S2B_MSIL2A_20200804T101559_N0214_R065_T32TNR_20200804T145113.SAFE/" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                     S2A_MSIL2A_20200806T101031_N0214_R022_T32TNR_20200806T115620.SAFE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "gs://gcp-public-data-sentinel-2/L2/tiles/32/T/NR/S2A_MSIL2A_20200806T101031_N0214_R022_T32TNR_20200806T115620.SAFE/" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                     S2A_MSIL2A_20200809T102031_N0214_R065_T32TNR_20200809T130506.SAFE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "gs://gcp-public-data-sentinel-2/L2/tiles/32/T/NR/S2A_MSIL2A_20200809T102031_N0214_R065_T32TNR_20200809T130506.SAFE/" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                     S2B_MSIL2A_20200811T100559_N0214_R022_T32TNR_20200811T133733.SAFE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "gs://gcp-public-data-sentinel-2/L2/tiles/32/T/NR/S2B_MSIL2A_20200811T100559_N0214_R022_T32TNR_20200811T133733.SAFE/" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The following attributes are included: mission, level, id_tile, id_orbit, sensing_datetime, ingestion_datetime, clouds, footprint, uuid, online.</span>
 <span class="r-in"><span><span class="co"># Print the dates of the retrieved products</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="safe_getMetadata.html">safe_getMetadata</a></span><span class="op">(</span><span class="va">example_s2_list</span>, <span class="st">"sensing_datetime"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160502T102032_N0201_R065_T32TNR_20160502T102027.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-05-02 10:20:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160509T101032_N0202_R022_T32TNR_20160509T101645.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-05-09 10:10:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160512T102032_N0202_R065_T32TNR_20160512T102029.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-05-12 10:20:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160519T101032_N0202_R022_T32TNR_20160519T101312.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-05-19 10:10:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160522T102032_N0202_R065_T32TNR_20160522T102029.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-05-22 10:20:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160529T101032_N0202_R022_T32TNR_20160529T101030.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-05-29 10:10:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160608T101032_N0202_R022_T32TNR_20160608T101220.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-06-08 10:10:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160611T102032_N0202_R065_T32TNR_20160611T102026.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-06-11 10:20:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160618T101032_N0204_R022_T32TNR_20160618T101515.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-06-18 10:10:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160621T102022_N0204_R065_T32TNR_20160621T102024.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-06-21 10:20:22 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160628T101032_N0204_R022_T32TNR_20160628T101026.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-06-28 10:10:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160701T102022_N0204_R065_T32TNR_20160701T102057.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-07-01 10:20:22 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160708T101032_N0204_R022_T32TNR_20160708T101602.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-07-08 10:10:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160711T102032_N0204_R065_T32TNR_20160711T102030.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-07-11 10:20:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160718T101032_N0204_R022_T32TNR_20160718T101028.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-07-18 10:10:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20160721T102032_N0204_R065_T32TNR_20160721T102059.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2016-07-21 10:20:32 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL2A_20170507T102031_N0205_R065_T32TNR_20170507T102319.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-05-07 10:20:31 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL2A_20170517T102031_N0205_R065_T32TNR_20170517T102352.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-05-17 10:20:31 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL2A_20170527T102031_N0205_R065_T32TNR_20170527T102301.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-05-27 10:20:31 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL2A_20170606T102031_N0205_R065_T32TNR_20170606T102456.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-06-06 10:20:31 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL2A_20170616T102021_N0205_R065_T32TNR_20170616T102331.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-06-16 10:20:21 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL2A_20170626T102021_N0205_R065_T32TNR_20170626T102321.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-06-26 10:20:21 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2B_MSIL1C_20170701T102029_N0205_R065_T32TNR_20170701T102338.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-07-01 10:20:29 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL2A_20170706T102021_N0205_R065_T32TNR_20170706T102301.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-07-06 10:20:21 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2B_MSIL1C_20170711T102029_N0205_R065_T32TNR_20170711T102309.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-07-11 10:20:29 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL1C_20170716T102021_N0205_R065_T32TNR_20170716T102324.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-07-16 10:20:21 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2B_MSIL1C_20170721T102029_N0205_R065_T32TNR_20170721T102331.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-07-21 10:20:29 UTC" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL2A_20170726T102021_N0205_R065_T32TNR_20170726T102259.SAFE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2017-07-26 10:20:21 UTC" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> S2B_MSIL2A_20200801T100559_N0214_R022_T32TNR_20200801T135302.SAFE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2020-08-01 10:05:59 UTC" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> S2B_MSIL2A_20200804T101559_N0214_R065_T32TNR_20200804T145113.SAFE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2020-08-04 10:15:59 UTC" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL2A_20200806T101031_N0214_R022_T32TNR_20200806T115620.SAFE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2020-08-06 10:10:31 UTC" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> S2A_MSIL2A_20200809T102031_N0214_R065_T32TNR_20200809T130506.SAFE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2020-08-09 10:20:31 UTC" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> S2B_MSIL2A_20200811T100559_N0214_R022_T32TNR_20200811T133733.SAFE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                         "2020-08-11 10:05:59 UTC" </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>

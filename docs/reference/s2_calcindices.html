@@ -19,7 +19,7 @@ are physical rasters (no output VRT is allowed)."><!-- mathjax --><script src="h
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sen2r</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6.0</span>
       </span>
     </div>
 
@@ -292,10 +292,25 @@ Sentinel-2 satellite data. <em>Computers &amp; Geosciences</em>, 139, 104473.
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: sp</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: abind</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: sf</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Linking to GEOS 3.11.2, GDAL 3.6.2, PROJ 9.2.0; sf_use_s2() is TRUE</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-10-19 16:28:01] Computing index EVI on date 2019-07-23...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Linking to GEOS 3.10.2, GDAL 3.4.3, PROJ 8.2.1; sf_use_s2() is TRUE</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2023-11-09 22:26:19] Computing index EVI on date 2019-07-23...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Please note that rgdal will be retired during October 2023,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> plan transition to sf/stars/terra functions using GDAL and PROJ</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> at your earliest convenience.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> See https://r-spatial.org/r/2023/05/15/evolution4.html and https://github.com/r-spatial/evolution</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> rgdal: version: 1.6-7, (SVN revision 1203)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Geospatial Data Abstraction Library extensions to R successfully loaded</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loaded GDAL runtime: GDAL 3.4.3, released 2022/04/22</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Path to GDAL shared files: /usr/share/gdal</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> GDAL binary built with GEOS: TRUE </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loaded PROJ runtime: Rel. 8.2.1, January 1st, 2022, [PJ_VERSION: 821]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Path to PROJ shared files: /home/lranghetti/.local/share/proj:/usr/share/proj</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> PROJ CDN enabled: FALSE</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Linking to sp version:1.6-1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> To mute warnings of possible GDAL/OSR exportToProj4() degradation,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> use options("rgdal_show_exportToProj4_warnings"="none") before loading sp or rgdal.</span>
 <span class="r-in"><span><span class="va">ex_out</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "C:\\Users\\luigi.ranghetti\\AppData\\Local\\Temp\\RtmpkXRmAu/S2A2A_20190723_022_Barbellino_EVI_10.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpFvTjNK/S2A2A_20190723_022_Barbellino_EVI_10.tif"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Show output</span></span></span>
 <span class="r-in"><span><span class="va">oldpar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>

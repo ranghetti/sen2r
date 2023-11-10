@@ -19,7 +19,6 @@ EVI
 EXTNAME
 GDAL
 GEOMETRYCOLLECTION
-GEOS
 GIPP
 GTiff
 GeoTIFF
@@ -55,6 +54,7 @@ SALTO
 SCL
 SNW
 SRTM
+STAC
 SWIR
 Schwalb
 SciHub
@@ -161,7 +161,6 @@ reprojections
 res
 rgb
 rgdal
-rgeos
 rmtmp
 rr
 rrr
